@@ -241,6 +241,7 @@
   "Mathlib.Tactic.Positivity.Basic":
   ["Mathlib.Algebra.GroupPower.Order",
    "Mathlib.Algebra.Order.Group.PosPart",
+   "Mathlib.Algebra.Order.Hom.Basic",
    "Mathlib.Algebra.Order.Ring.Basic",
    "Mathlib.Data.Int.CharZero",
    "Mathlib.Data.Nat.Factorial.Basic",
@@ -498,6 +499,7 @@
   "Mathlib.AlgebraicTopology.DoldKan.Notations":
   ["Mathlib.AlgebraicTopology.AlternatingFaceMapComplex"],
   "Mathlib.Algebra.Star.Module": ["Mathlib.Algebra.Module.LinearMap.Star"],
+  "Mathlib.Algebra.Ring.Int.Defs": ["Mathlib.Algebra.Ring.GrindInstances"],
   "Mathlib.Algebra.Ring.CentroidHom": ["Mathlib.Algebra.Algebra.Defs"],
   "Mathlib.Algebra.Order.Ring.Nat": ["Mathlib.Algebra.Order.Group.Nat"],
   "Mathlib.Algebra.Order.Quantale": ["Mathlib.Tactic.Variable"],
