@@ -3,12 +3,13 @@ Copyright (c) 2019 Zhouhang Zhou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zhouhang Zhou, Frédéric Dupuis, Heather Macbeth
 -/
-import Mathlib.Analysis.Convex.Basic
+
+import Mathlib.Algebra.DirectSum.Decomposition
 import Mathlib.Analysis.InnerProductSpace.Orthogonal
 import Mathlib.Analysis.InnerProductSpace.Symmetric
 import Mathlib.Analysis.NormedSpace.RCLike
 import Mathlib.Analysis.RCLike.Lemmas
-import Mathlib.Algebra.DirectSum.Decomposition
+
 
 /-!
 # The orthogonal projection
@@ -585,6 +586,30 @@ variable (K)
 /-- The orthogonal projection has norm `≤ 1`. -/
 theorem orthogonalProjection_norm_le : ‖K.orthogonalProjection‖ ≤ 1 :=
   LinearMap.mkContinuous_norm_le _ (by norm_num) _
+
+theorem norm_orthogonalProjection_apply {v : E} (hv : v ∈ K) :
+    ‖orthogonalProjection K v‖ = ‖v‖ :=
+  congr(‖$(K.orthogonalProjection_eq_self_iff.mpr hv)‖)
+
+/-- The orthogonal projection onto a closed subspace is norm non-increasing. -/
+theorem norm_orthogonalProjection_apply_le (v : E) :
+    ‖orthogonalProjection K v‖ ≤ ‖v‖ := by calc
+  ‖orthogonalProjection K v‖ ≤ ‖orthogonalProjection K‖ * ‖v‖ := K.orthogonalProjection.le_opNorm _
+  _ ≤ 1 * ‖v‖ := by gcongr; exact orthogonalProjection_norm_le K
+  _ = _ := by simp
+
+/-- The orthogonal projection onto a closed subspace is a `1`-Lipschitz map. -/
+theorem lipschitzWith_orthogonalProjection :
+    LipschitzWith 1 (orthogonalProjection K) :=
+  ContinuousLinearMap.lipschitzWith_of_opNorm_le (orthogonalProjection_norm_le K)
+
+/-- The operator norm of the orthogonal projection onto a nontrivial subspace is `1`. -/
+theorem norm_orthogonalProjection (hK : K ≠ ⊥) :
+    ‖K.orthogonalProjection‖ = 1 := by
+  refine le_antisymm K.orthogonalProjection_norm_le ?_
+  obtain ⟨x, hxK, hx_ne_zero⟩ := Submodule.exists_mem_ne_zero_of_ne_bot hK
+  simpa [K.norm_orthogonalProjection_apply hxK, norm_eq_zero, hx_ne_zero]
+    using K.orthogonalProjection.ratio_le_opNorm x
 
 variable (𝕜)
 
@@ -1262,7 +1287,7 @@ orthogonal complement. -/
 theorem OrthogonalFamily.isInternal_iff [DecidableEq ι] [FiniteDimensional 𝕜 E]
     {V : ι → Submodule 𝕜 E} (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ) :
     DirectSum.IsInternal V ↔ (iSup V)ᗮ = ⊥ :=
-  haveI h := FiniteDimensional.proper_rclike 𝕜 (↥(iSup V))
+  haveI := FiniteDimensional.proper_rclike 𝕜 (↥(iSup V))
   hV.isInternal_iff_of_isComplete (completeSpace_coe_iff_isComplete.mp inferInstance)
 
 open DirectSum

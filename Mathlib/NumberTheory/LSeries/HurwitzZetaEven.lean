@@ -419,7 +419,7 @@ lemma differentiable_completedHurwitzZetaEven₀ (a : UnitAddCircle) :
 lemma differentiableAt_one_completedHurwitzZetaEven_sub_completedHurwitzZetaEven
     (a b : UnitAddCircle) :
     DifferentiableAt ℂ (fun s ↦ completedHurwitzZetaEven a s - completedHurwitzZetaEven b s) 1 := by
-  have (s) : completedHurwitzZetaEven a s - completedHurwitzZetaEven b s =
+  have (s : _) : completedHurwitzZetaEven a s - completedHurwitzZetaEven b s =
       completedHurwitzZetaEven₀ a s - completedHurwitzZetaEven₀ b s -
       ((if a = 0 then 1 else 0) - (if b = 0 then 1 else 0)) / s := by
     simp_rw [completedHurwitzZetaEven_eq, sub_div]
@@ -713,7 +713,7 @@ lemma differentiableAt_cosZeta (a : UnitAddCircle) {s : ℂ} (hs' : s ≠ 1 ∨ 
   rcases ne_or_eq s 1 with hs' | rfl
   · exact differentiableAt_update_of_residue (fun _ ht ht' ↦
       differentiableAt_completedCosZeta a ht (Or.inl ht')) (completedCosZeta_residue_zero a) s hs'
-  · apply ((differentiableAt_completedCosZeta a one_ne_zero hs').mul
+  · apply ((differentiableAt_completedCosZeta a one_ne_zero hs').fun_mul
       (differentiable_Gammaℝ_inv.differentiableAt)).congr_of_eventuallyEq
     filter_upwards [isOpen_compl_singleton.mem_nhds one_ne_zero] with x hx
     rw [cosZeta, Function.update_of_ne hx, div_eq_mul_inv]
