@@ -35,6 +35,7 @@ abbrev mathlibOnlyLinters : Array LeanOption := #[
 abbrev mathlibLeanOptions := #[
     ⟨`pp.unicode.fun, true⟩, -- pretty-prints `fun a ↦ b`
     ⟨`autoImplicit, false⟩,
+    ⟨`linter.unusedSimpArgs, false⟩, -- Temporarily disable this linter while we work on adaptations.
     ⟨`maxSynthPendingDepth, .ofNat 3⟩
   ] ++ -- options that are used in `lake build`
     mathlibOnlyLinters.map fun s ↦ { s with name := `weak ++ s.name }
@@ -63,6 +64,7 @@ lean_lib LongestPole
 
 lean_lib MathlibTest where
   globs := #[.submodules `MathlibTest]
+  leanOptions := #[⟨`linter.unusedSimpArgs, false⟩] -- Temporarily disable this linter while we work on adaptations.
 
 lean_lib Archive where
   leanOptions := mathlibLeanOptions
