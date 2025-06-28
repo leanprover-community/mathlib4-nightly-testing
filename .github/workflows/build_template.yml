@@ -32,6 +32,9 @@ env:
   # are valid by-products of the Mathlib build. Build artifacts fetched from Lake's cache do
   # not necessarily satisfy this property.
   LAKE_NO_CACHE: true
+  # Direct Lake to store its artifact cache in `.lake`.
+  # Prevents Lake from using a directory it may not have permissions to under landrun.
+  LAKE_CACHE_DIR: .lake/cache
 
 jobs:
   build:
