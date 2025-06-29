@@ -7,9 +7,10 @@ import Mathlib.Algebra.Order.ToIntervalMod
 import Mathlib.Algebra.Ring.AddAut
 import Mathlib.Data.Nat.Totient
 import Mathlib.GroupTheory.Divisible
-import Mathlib.Topology.Connected.PathConnected
+import Mathlib.Topology.Algebra.IsUniformGroup.Basic
+import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Topology.IsLocalHomeomorph
-import Mathlib.Topology.Instances.ZMultiples
+import Mathlib.Topology.Order.T5
 
 /-!
 # The additive circle
@@ -93,7 +94,7 @@ theorem toIcoMod_eventuallyEq_toIocMod (hx : (x : 𝕜 ⧸ zmultiples p) ≠ a) 
       (by
         rw [Ico_eq_locus_Ioc_eq_iUnion_Ioo]
         exact isOpen_iUnion fun i => isOpen_Ioo) <|
-    (not_modEq_iff_toIcoMod_eq_toIocMod hp).1 <| not_modEq_iff_ne_mod_zmultiples.2 hx
+    (not_modEq_iff_toIcoMod_eq_toIocMod hp).1 <| not_modEq_iff_ne_mod_zmultiples.2 hx.symm
 
 theorem continuousAt_toIcoMod (hx : (x : 𝕜 ⧸ zmultiples p) ≠ a) : ContinuousAt (toIcoMod hp a) x :=
   let h := toIcoMod_eventuallyEq_toIocMod hp a hx
@@ -367,13 +368,16 @@ theorem coe_equivIco_mk_apply (x : 𝕜) :
 
 instance : DivisibleBy (AddCircle p) ℤ where
   div x n := (↑((n : 𝕜)⁻¹ * (equivIco p 0 x : 𝕜)) : AddCircle p)
-  div_zero x := by
-    simp only [algebraMap.coe_zero, Int.cast_zero, inv_zero, zero_mul, QuotientAddGroup.mk_zero]
+  div_zero x := by simp
   div_cancel {n} x hn := by
     replace hn : (n : 𝕜) ≠ 0 := by norm_cast
     change n • QuotientAddGroup.mk' _ ((n : 𝕜)⁻¹ * ↑(equivIco p 0 x)) = x
     rw [← map_zsmul, ← smul_mul_assoc, zsmul_eq_mul, mul_inv_cancel₀ hn, one_mul]
     exact (equivIco p 0).symm_apply_apply x
+
+omit [IsStrictOrderedRing 𝕜] in
+@[simp] lemma coe_fract (x : 𝕜) : (↑(Int.fract x) : AddCircle (1 : 𝕜)) = x := by
+  simp [← Int.self_sub_floor]
 
 end FloorRing
 
@@ -390,7 +394,7 @@ theorem addOrderOf_period_div {n : ℕ} (h : 0 < n) : addOrderOf ((p / n : 𝕜)
   rintro ⟨k, hk⟩
   rw [mul_div, eq_div_iff h.ne', nsmul_eq_mul, mul_right_comm, ← Nat.cast_mul,
     (mul_left_injective₀ hp.out.ne').eq_iff, Nat.cast_inj, mul_comm] at hk
-  exact (Nat.le_of_dvd h0 ⟨_, hk.symm⟩).not_lt hn
+  exact (Nat.le_of_dvd h0 ⟨_, hk.symm⟩).not_gt hn
 
 variable (p) in
 theorem gcd_mul_addOrderOf_div_eq {n : ℕ} (m : ℕ) (hn : 0 < n) :
@@ -518,38 +522,13 @@ end FiniteOrderPoints
 
 end LinearOrderedField
 
-variable (p : ℝ)
-
-instance pathConnectedSpace : PathConnectedSpace <| AddCircle p :=
-  (inferInstance : PathConnectedSpace (Quotient _))
-
-/-- The "additive circle" `ℝ ⧸ (ℤ ∙ p)` is compact. -/
-instance compactSpace [Fact (0 < p)] : CompactSpace <| AddCircle p := by
-  rw [← isCompact_univ_iff, ← coe_image_Icc_eq p 0]
-  exact isCompact_Icc.image (AddCircle.continuous_mk' p)
-
-/-- The action on `ℝ` by right multiplication of its the subgroup `zmultiples p` (the multiples of
-`p:ℝ`) is properly discontinuous. -/
-instance : ProperlyDiscontinuousVAdd (zmultiples p).op ℝ :=
-  (zmultiples p).properlyDiscontinuousVAdd_opposite_of_tendsto_cofinite
-    (AddSubgroup.tendsto_zmultiples_subtype_cofinite p)
-
 end AddCircle
-
-section UnitAddCircle
-
-/-- The unit circle `ℝ ⧸ ℤ`. -/
-abbrev UnitAddCircle :=
-  AddCircle (1 : ℝ)
-
-end UnitAddCircle
 
 section IdentifyIccEnds
 
 /-! This section proves that for any `a`, the natural map from `[a, a + p] ⊂ 𝕜` to `AddCircle p`
 gives an identification of `AddCircle p`, as a topological space, with the quotient of `[a, a + p]`
 by the equivalence relation identifying the endpoints. -/
-
 
 namespace AddCircle
 
@@ -655,50 +634,6 @@ theorem liftIco_zero_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f 0 
     (hc : ContinuousOn f <| Icc 0 p) : Continuous (liftIco p 0 f) :=
   liftIco_continuous (by rwa [zero_add] : f 0 = f (0 + p)) (by rwa [zero_add])
 
-@[simp] lemma coe_fract (x : ℝ) : (↑(Int.fract x) : AddCircle (1 : ℝ)) = x := by
-  simp [← Int.self_sub_floor]
-
 end AddCircle
 
 end IdentifyIccEnds
-
-namespace ZMod
-
-variable {N : ℕ} [NeZero N]
-
-/-- The `AddMonoidHom` from `ZMod N` to `ℝ / ℤ` sending `j mod N` to `j / N mod 1`. -/
-noncomputable def toAddCircle : ZMod N →+ UnitAddCircle :=
-  lift N ⟨AddMonoidHom.mk' (fun j ↦ ↑(j / N : ℝ)) (by simp [add_div]),
-    by simp [div_self (NeZero.ne _)]⟩
-
-lemma toAddCircle_intCast (j : ℤ) :
-    toAddCircle (j : ZMod N) = ↑(j / N : ℝ) := by
-  simp [toAddCircle]
-
-lemma toAddCircle_natCast (j : ℕ) :
-    toAddCircle (j : ZMod N) = ↑(j / N : ℝ) := by
-  simpa using toAddCircle_intCast (N := N) j
-
-/--
-Explicit formula for `toCircle j`. Note that this is "evil" because it uses `ZMod.val`. Where
-possible, it is recommended to lift `j` to `ℤ` and use `toAddCircle_intCast` instead.
--/
-lemma toAddCircle_apply (j : ZMod N) :
-    toAddCircle j = ↑(j.val / N : ℝ) := by
-  rw [← toAddCircle_natCast, natCast_zmod_val]
-
-variable (N) in
-lemma toAddCircle_injective : Function.Injective (toAddCircle : ZMod N → _) := by
-  intro x y hxy
-  have : (0 : ℝ) < N := Nat.cast_pos.mpr (NeZero.pos _)
-  rwa [toAddCircle_apply, toAddCircle_apply, AddCircle.coe_eq_coe_iff_of_mem_Ico,
-    div_left_inj' this.ne', Nat.cast_inj, (val_injective N).eq_iff] at hxy <;>
-  exact ⟨by positivity, by simpa only [zero_add, div_lt_one this, Nat.cast_lt] using val_lt _⟩
-
-@[simp] lemma toAddCircle_inj {j k : ZMod N} : toAddCircle j = toAddCircle k ↔ j = k :=
-  (toAddCircle_injective N).eq_iff
-
-@[simp] lemma toAddCircle_eq_zero {j : ZMod N} : toAddCircle j = 0 ↔ j = 0 :=
-  map_eq_zero_iff _ (toAddCircle_injective N)
-
-end ZMod

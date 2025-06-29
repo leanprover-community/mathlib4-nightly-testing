@@ -62,7 +62,7 @@ theorem ContMDiffWithinAt.comp {t : Set M'} {g : M' → M''} (x : M)
     filter_upwards [hf.1.tendsto (extChartAt_source_mem_nhds (I := I') (f x)),
       inter_mem_nhdsWithin s (extChartAt_source_mem_nhds (I := I) x)]
     rintro x' (hfx' : f x' ∈ e'.source) ⟨hx's, hx'⟩
-    simp only [e, e.map_source hx', true_and, e.left_inv hx', st hx's, *]
+    simp only [e, true_and, e.left_inv hx', st hx's, *]
   refine ((hg.2.comp _ (hf.2.mono inter_subset_right)
       ((mapsTo_preimage _ _).mono_left inter_subset_left)).mono_of_mem_nhdsWithin
       (inter_mem ?_ self_mem_nhdsWithin)).congr_of_eventuallyEq ?_ ?_
@@ -124,6 +124,13 @@ theorem ContMDiffAt.comp_contMDiffWithinAt {g : M' → M''} (x : M)
 
 @[deprecated (since := "2024-11-20")]
 alias SmoothAt.comp_smoothWithinAt := ContMDiffAt.comp_contMDiffWithinAt
+
+/-- `g ∘ f` is `C^n` within `s` at `x` if `g` is `C^n` at `f x` and
+`f` is `C^n` within `s` at `x`. -/
+theorem ContMDiffAt.comp_contMDiffWithinAt_of_eq {g : M' → M''} {x : M} {y : M'}
+    (hg : ContMDiffAt I' I'' n g y) (hf : ContMDiffWithinAt I I' n f s x) (hx : f x = y) :
+    ContMDiffWithinAt I I'' n (g ∘ f) s x := by
+  subst hx; exact hg.comp_contMDiffWithinAt x hf
 
 /-- The composition of `C^n` functions at points is `C^n`. -/
 nonrec theorem ContMDiffAt.comp {g : M' → M''} (x : M) (hg : ContMDiffAt I' I'' n g (f x))
@@ -372,7 +379,7 @@ lemma contMDiff_isOpenEmbedding [Nonempty M] :
   rw [h.toPartialHomeomorph_right_inv]
   · rw [I.right_inv]
     apply mem_of_subset_of_mem _ hz.1
-    exact haveI := h.singletonChartedSpace; extChartAt_target_subset_range (I := I) x
+    exact letI := h.singletonChartedSpace; extChartAt_target_subset_range (I := I) x
   · -- `hz` implies that `z ∈ range (I ∘ e)`
     have := hz.1
     rw [@extChartAt_target _ _ _ _ _ _ _ _ _ _ h.singletonChartedSpace] at this
