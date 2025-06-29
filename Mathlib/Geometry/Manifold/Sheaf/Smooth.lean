@@ -14,10 +14,10 @@ import Mathlib.Geometry.Manifold.Sheaf.Basic
 
 The sheaf of `𝕜`-smooth functions from a manifold `M` to a manifold `N` can be defined as a sheaf of
 types using the construction `StructureGroupoid.LocalInvariantProp.sheaf` from the file
-`Mathlib.Geometry.Manifold.Sheaf.Basic`.  In this file we write that down (a one-liner), then do the
-work of upgrading this to a sheaf of [groups]/[abelian groups]/[rings]/[commutative rings] when `N`
-carries more algebraic structure.  For example, if `N` is `𝕜` then the sheaf of smooth functions
-from `M` to `𝕜` is a sheaf of commutative rings, the *structure sheaf* of `M`.
+`Mathlib/Geometry/Manifold/Sheaf/Basic.lean`.  In this file we write that down (a one-liner), then
+do the work of upgrading this to a sheaf of [groups]/[abelian groups]/[rings]/[commutative rings]
+when `N` carries more algebraic structure.  For example, if `N` is `𝕜` then the sheaf of smooth
+functions from `M` to `𝕜` is a sheaf of commutative rings, the *structure sheaf* of `M`.
 
 ## Main definitions
 
@@ -351,7 +351,7 @@ def smoothSheafCommRing.eval (x : M) : (smoothSheafCommRing IM I M R).presheaf.s
     smoothSheaf.evalHom _ _ _ _ := by
   apply Limits.colimit.hom_ext
   intro U
-  show (colimit.ι _ U) ≫ _ = colimit.ι ((OpenNhds.inclusion x).op ⋙ _) U ≫ _
+  change (colimit.ι _ U) ≫ _ = colimit.ι ((OpenNhds.inclusion x).op ⋙ _) U ≫ _
   rw [smoothSheafCommRing.ι_forgetStalk_inv_assoc, smoothSheaf.ι_evalHom]
   ext x
   exact CategoryTheory.congr_fun (smoothSheafCommRing.ι_evalHom ..) x

@@ -191,7 +191,6 @@ localization with respect to a morphism_property `W` -/
 def objEquiv : C ≃ W.Localization where
   toFun := W.Q.obj
   invFun X := X.as.obj
-  left_inv _ := rfl
   right_inv := by
     rintro ⟨⟨X⟩⟩
     rfl
@@ -293,7 +292,7 @@ namespace WhiskeringLeftEquivalence
 composition with `W.Q : C ⥤ W.Localization`. -/
 @[simps!]
 def functor : (W.Localization ⥤ D) ⥤ W.FunctorsInverting D :=
-  FullSubcategory.lift _ ((whiskeringLeft _ _ D).obj W.Q) fun _ =>
+  ObjectProperty.lift _ ((whiskeringLeft _ _ D).obj W.Q) fun _ =>
     MorphismProperty.IsInvertedBy.of_comp W W.Q W.Q_inverts _
 
 /-- The function `(W.FunctorsInverting D) ⥤ (W.Localization ⥤ D)` induced by

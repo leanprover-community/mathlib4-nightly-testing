@@ -140,7 +140,7 @@ def iterateRange (f : M →ₗ[R] M) : ℕ →o (Submodule R M)ᵒᵈ where
     obtain ⟨m, rfl⟩ := h
     rw [LinearMap.mem_range]
     use (f ^ c) m
-    rw [pow_add, LinearMap.mul_apply]
+    rw [pow_add, Module.End.mul_apply]
 
 /-- Restrict the codomain of a linear map `f` to `f.range`.
 
@@ -231,7 +231,7 @@ theorem ker_le_iff [RingHomSurjective τ₁₂] {p : Submodule R M} :
   · rintro ⟨y, h₁, h₂⟩
     rw [SetLike.le_def]
     intro z hz
-    simp only [mem_ker, SetLike.mem_coe] at hz
+    simp only [mem_ker] at hz
     rw [← SetLike.mem_coe, range_coe, Set.mem_range] at h₁
     obtain ⟨x, hx⟩ := h₁
     have hx' : x ∈ p := h₂ hx
@@ -293,6 +293,14 @@ theorem comap_subtype_eq_top {p p' : Submodule R M} : comap p.subtype p' = ⊤ �
 theorem comap_subtype_self : comap p.subtype p = ⊤ :=
   comap_subtype_eq_top.2 le_rfl
 
+theorem submoduleOf_self (N : Submodule R M) : N.submoduleOf N = ⊤ := comap_subtype_self _
+
+theorem submoduleOf_sup_of_le {N₁ N₂ N : Submodule R M} (h₁ : N₁ ≤ N) (h₂ : N₂ ≤ N) :
+    (N₁ ⊔ N₂).submoduleOf N = N₁.submoduleOf N ⊔ N₂.submoduleOf N := by
+  apply Submodule.map_injective_of_injective N.subtype_injective
+  simp only [submoduleOf, map_comap_eq]
+  aesop
+
 @[simp]
 lemma comap_subtype_le_iff {p q r : Submodule R M} :
     q.comap p.subtype ≤ r.comap p.subtype ↔ p ⊓ q ≤ p ⊓ r :=
@@ -314,7 +322,7 @@ lemma restrictScalars_map [SMul R R₂] [Module R₂ M] [Module R M₂] [IsScala
 /-- If `N ⊆ M` then submodules of `N` are the same as submodules of `M` contained in `N`.
 
 See also `Submodule.mapIic`. -/
-def MapSubtype.relIso : Submodule R p ≃o { p' : Submodule R M // p' ≤ p } where
+def MapSubtype.orderIso : Submodule R p ≃o { p' : Submodule R M // p' ≤ p } where
   toFun p' := ⟨map p.subtype p', map_subtype_le p _⟩
   invFun q := comap p.subtype q
   left_inv p' := comap_map_eq_of_injective (by exact Subtype.val_injective) p'
@@ -324,10 +332,12 @@ def MapSubtype.relIso : Submodule R p ≃o { p' : Submodule R M // p' ≤ p } wh
     rw [map_le_iff_le_comap,
       comap_map_eq_of_injective (show Injective p.subtype from Subtype.coe_injective) p₂]
 
+@[deprecated (since := "2025-06-03")] alias MapSubtype.relIso := MapSubtype.orderIso
+
 /-- If `p ⊆ M` is a submodule, the ordering of submodules of `p` is embedded in the ordering of
 submodules of `M`. -/
 def MapSubtype.orderEmbedding : Submodule R p ↪o Submodule R M :=
-  (RelIso.toRelEmbedding <| MapSubtype.relIso p).trans <|
+  (RelIso.toRelEmbedding <| MapSubtype.orderIso p).trans <|
     Subtype.relEmbedding (X := Submodule R M) (fun p p' ↦ p ≤ p') _
 
 @[simp]
@@ -338,7 +348,7 @@ theorem map_subtype_embedding_eq (p' : Submodule R p) :
 /-- If `N ⊆ M` then submodules of `N` are the same as submodules of `M` contained in `N`. -/
 def mapIic (p : Submodule R M) :
     Submodule R p ≃o Set.Iic p :=
-  Submodule.MapSubtype.relIso p
+  Submodule.MapSubtype.orderIso p
 
 @[simp] lemma coe_mapIic_apply
     (p : Submodule R M) (q : Submodule R p) :

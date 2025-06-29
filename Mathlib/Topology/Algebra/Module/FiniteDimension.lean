@@ -31,7 +31,7 @@ When `E` is a normed space, this gets us the equivalence of norms in finite dime
 
 ## TODO
 
-Generalize more of `Mathlib.Analysis.Normed.Module.FiniteDimension` to general TVSs.
+Generalize more of `Mathlib/Analysis/Normed/Module/FiniteDimension.lean` to general TVSs.
 
 ## Implementation detail
 
@@ -101,7 +101,7 @@ theorem unique_topology_of_t2 {t : TopologicalSpace 𝕜} (h₁ : @IsTopological
       by_contra! h
       suffices (ξ₀ * ξ⁻¹) • ξ ∈ balancedCore 𝕜 {ξ₀}ᶜ by
         rw [smul_eq_mul, mul_assoc, inv_mul_cancel₀ hξ0, mul_one] at this
-        exact not_mem_compl_iff.mpr (mem_singleton ξ₀) ((balancedCore_subset _) this)
+        exact notMem_compl_iff.mpr (mem_singleton ξ₀) ((balancedCore_subset _) this)
       -- For that, we use that `𝓑` is balanced : since `‖ξ₀‖ < ε < ‖ξ‖`, we have `‖ξ₀ / ξ‖ ≤ 1`,
       -- hence `ξ₀ = (ξ₀ / ξ) • ξ ∈ 𝓑` because `ξ ∈ 𝓑`.
       refine (balancedCore_balanced _).smul_mem ?_ hξ
@@ -279,7 +279,6 @@ def toContinuousLinearMap : (E →ₗ[𝕜] F') ≃ₗ[𝕜] E →L[𝕜] F' whe
   invFun := (↑)
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
-  left_inv _ := rfl
   right_inv _ := ContinuousLinearMap.coe_injective rfl
 
 /-- Algebra equivalence between the linear maps and continuous linear maps on a finite dimensional
@@ -334,6 +333,14 @@ theorem isOpenMap_of_finiteDimensional (f : F →ₗ[𝕜] E) (hf : Function.Sur
 
 instance canLiftContinuousLinearMap : CanLift (E →ₗ[𝕜] F) (E →L[𝕜] F) (↑) fun _ => True :=
   ⟨fun f _ => ⟨LinearMap.toContinuousLinearMap f, rfl⟩⟩
+
+lemma toContinuousLinearMap_eq_iff_eq_toLinearMap (f : E →ₗ[𝕜] E) (g : E →L[𝕜] E) :
+    f.toContinuousLinearMap = g ↔ f = g.toLinearMap := by
+  simp [ContinuousLinearMap.ext_iff, LinearMap.ext_iff]
+
+lemma _root_.ContinuousLinearMap.toLinearMap_eq_iff_eq_toContinuousLinearMap (g : E →L[𝕜] E)
+    (f : E →ₗ[𝕜] E) : g.toLinearMap = f ↔ g = f.toContinuousLinearMap := by
+  simp [ContinuousLinearMap.ext_iff, LinearMap.ext_iff]
 
 end LinearMap
 
@@ -527,15 +534,9 @@ theorem LinearMap.isClosedEmbedding_of_injective [T2Space E] [FiniteDimensional 
       haveI := f.finiteDimensional_range
       simpa [LinearMap.range_coe f] using (LinearMap.range f).closed_of_finiteDimensional }
 
-@[deprecated (since := "2024-10-20")]
-alias LinearMap.closedEmbedding_of_injective := LinearMap.isClosedEmbedding_of_injective
-
 theorem isClosedEmbedding_smul_left [T2Space E] {c : E} (hc : c ≠ 0) :
     IsClosedEmbedding fun x : 𝕜 => x • c :=
   LinearMap.isClosedEmbedding_of_injective (LinearMap.ker_toSpanSingleton 𝕜 E hc)
-
-@[deprecated (since := "2024-10-20")]
-alias closedEmbedding_smul_left := isClosedEmbedding_smul_left
 
 -- `smul` is a closed map in the first argument.
 theorem isClosedMap_smul_left [T2Space E] (c : E) : IsClosedMap fun x : 𝕜 => x • c := by

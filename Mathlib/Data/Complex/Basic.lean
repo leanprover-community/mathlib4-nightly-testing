@@ -3,19 +3,18 @@ Copyright (c) 2017 Kevin Buzzard. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kevin Buzzard, Mario Carneiro
 -/
-import Mathlib.Algebra.GroupWithZero.Divisibility
 import Mathlib.Algebra.Ring.CharZero
 import Mathlib.Algebra.Star.Basic
 import Mathlib.Data.Real.Basic
-import Mathlib.Data.Set.Image
+import Mathlib.Order.Interval.Set.UnorderedInterval
 import Mathlib.Tactic.Ring
 
 /-!
 # The complex numbers
 
 The complex numbers are modelled as ℝ^2 in the obvious way and it is shown that they form a field
-of characteristic zero. The result that the complex numbers are algebraically closed, see
-`FieldTheory.AlgebraicClosure`.
+of characteristic zero. For the result that the complex numbers are algebraically closed, see
+`Complex.isAlgClosed` in `Mathlib.Analysis.Complex.Polynomial.Basic`.
 -/
 
 assert_not_exists Multiset Algebra
@@ -46,8 +45,6 @@ noncomputable instance : DecidableEq ℂ :=
 def equivRealProd : ℂ ≃ ℝ × ℝ where
   toFun z := ⟨z.re, z.im⟩
   invFun p := ⟨p.1, p.2⟩
-  left_inv := fun ⟨_, _⟩ => rfl
-  right_inv := fun ⟨_, _⟩ => rfl
 
 @[simp]
 theorem eta : ∀ z : ℂ, Complex.mk z.re z.im = z
@@ -80,8 +77,6 @@ def ofReal (r : ℝ) : ℂ :=
   ⟨r, 0⟩
 instance : Coe ℝ ℂ :=
   ⟨ofReal⟩
-
-@[deprecated (since := "2024-10-12")] alias ofReal' := ofReal
 
 @[simp, norm_cast]
 theorem ofReal_re (r : ℝ) : Complex.re (r : ℂ) = r :=
@@ -270,7 +265,7 @@ theorem equivRealProd_symm_apply (p : ℝ × ℝ) : equivRealProd.symm p = p.1 +
   ext <;> simp [Complex.equivRealProd, ofReal]
 
 /-- The natural `AddEquiv` from `ℂ` to `ℝ × ℝ`. -/
-@[simps! (config := { simpRhs := true }) apply symm_apply_re symm_apply_im]
+@[simps! +simpRhs apply symm_apply_re symm_apply_im]
 def equivRealProdAddHom : ℂ ≃+ ℝ × ℝ :=
   { equivRealProd with map_add' := by simp }
 
@@ -339,17 +334,17 @@ instance addGroupWithOne : AddGroupWithOne ℂ :=
   { Complex.addCommGroup with
     natCast := fun n => ⟨n, 0⟩
     natCast_zero := by
-      ext <;> simp [Nat.cast, AddMonoidWithOne.natCast_zero]
+      ext <;> simp [Nat.cast]
     natCast_succ := fun _ => by ext <;> simp [Nat.cast, AddMonoidWithOne.natCast_succ]
     intCast := fun n => ⟨n, 0⟩
     intCast_ofNat := fun _ => by ext <;> rfl
     intCast_negSucc := fun n => by
       ext
-      · simp [AddGroupWithOne.intCast_negSucc]
-        show -(1 : ℝ) + (-n) = -(↑(n + 1))
+      · simp only [Int.cast_negSucc, Nat.cast_add, Nat.cast_one, neg_add_rev, neg_re]
+        change -(1 : ℝ) + (-n) = -(↑(n + 1))
         simp [Nat.cast_add, add_comm]
-      · simp [AddGroupWithOne.intCast_negSucc]
-        show im ⟨n, 0⟩ = 0
+      · simp only [neg_im, zero_eq_neg]
+        change im ⟨n, 0⟩ = 0
         rfl
     one := 1 }
 
@@ -400,9 +395,6 @@ def imAddGroupHom : ℂ →+ ℝ where
 @[simp]
 theorem coe_imAddGroupHom : (imAddGroupHom : ℂ → ℝ) = im :=
   rfl
-
-section
-end
 
 /-! ### Cast lemmas -/
 
@@ -461,7 +453,7 @@ theorem conj_im (z : ℂ) : (conj z).im = -z.im :=
 
 @[simp]
 theorem conj_ofReal (r : ℝ) : conj (r : ℂ) = r :=
-  Complex.ext_iff.2 <| by simp [star]
+  Complex.ext_iff.2 <| by simp
 
 @[simp]
 theorem conj_I : conj I = -I :=

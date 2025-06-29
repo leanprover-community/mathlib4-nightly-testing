@@ -11,7 +11,7 @@ import Batteries.Tactic.Alias
 # Extra definitions on `Option`
 
 This file defines more operations involving `Option α`. Lemmas about them are located in other
-files under `Mathlib.Data.Option`.
+files under `Mathlib/Data/Option.lean`.
 Other basic operations on `Option` are defined in the core library.
 -/
 
@@ -20,9 +20,7 @@ namespace Option
 /-- Traverse an object of `Option α` with a function `f : α → F β` for an applicative `F`. -/
 protected def traverse.{u, v}
     {F : Type u → Type v} [Applicative F] {α : Type*} {β : Type u} (f : α → F β) :
-    Option α → F (Option β)
-  | none => pure none
-  | some x => some <$> f x
+    Option α → F (Option β) := Option.mapA f
 
 variable {α : Type*} {β : Type*}
 
@@ -44,29 +42,6 @@ theorem elim'_none_some (f : Option α → β) : (Option.elim' (f none) (f ∘ s
 lemma elim'_eq_elim {α β : Type*} (b : β) (f : α → β) (a : Option α) :
     Option.elim' b f a = Option.elim a b f := by
   cases a <;> rfl
-
-
-theorem mem_some_iff {α : Type*} {a b : α} : a ∈ some b ↔ b = a := by simp
-
-/-- `o = none` is decidable even if the wrapped type does not have decidable equality.
-This is not an instance because it is not definitionally equal to `Option.decidableEq`.
-Try to use `o.isNone` or `o.isSome` instead.
--/
-@[inline]
-def decidableEqNone {o : Option α} : Decidable (o = none) :=
-  decidable_of_decidable_of_iff isNone_iff_eq_none
-
-instance decidableForallMem {p : α → Prop} [DecidablePred p] :
-    ∀ o : Option α, Decidable (∀ a ∈ o, p a)
-  | none => isTrue (by simp [false_imp_iff])
-  | some a =>
-      if h : p a then isTrue fun _ e ↦ some_inj.1 e ▸ h
-      else isFalse <| mt (fun H ↦ H _ rfl) h
-
-instance decidableExistsMem {p : α → Prop} [DecidablePred p] :
-    ∀ o : Option α, Decidable (∃ a ∈ o, p a)
-  | none => isFalse fun ⟨a, ⟨h, _⟩⟩ ↦ by cases h
-  | some a => if h : p a then isTrue <| ⟨_, rfl, h⟩ else isFalse fun ⟨_, ⟨rfl, hn⟩⟩ ↦ h hn
 
 /-- Inhabited `get` function. Returns `a` if the input is `some a`, otherwise returns `default`. -/
 abbrev iget [Inhabited α] : Option α → α
@@ -99,10 +74,5 @@ instance merge_isId (f : α → α → α) : Std.LawfulIdentity (merge f) none w
 @[deprecated (since := "2025-04-04")] alias liftOrGet_isIdempotent :=
   merge_isIdempotent
 @[deprecated (since := "2025-04-04")] alias liftOrGet_isId := merge_isId
-
-/-- Convert `undef` to `none` to make an `LOption` into an `Option`. -/
-def _root_.Lean.LOption.toOption {α} : Lean.LOption α → Option α
-  | .some a => some a
-  | _ => none
 
 end Option

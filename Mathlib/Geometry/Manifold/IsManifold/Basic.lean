@@ -290,9 +290,6 @@ protected theorem image_eq (s : Set H) : I '' s = I.symm ⁻¹' s ∩ range I :=
 theorem isClosedEmbedding : IsClosedEmbedding I :=
   I.leftInverse.isClosedEmbedding I.continuous_symm I.continuous
 
-@[deprecated (since := "2024-10-20")]
-alias closedEmbedding := isClosedEmbedding
-
 theorem isClosed_range : IsClosed (range I) :=
   I.isClosedEmbedding.isClosed_range
 
@@ -480,7 +477,7 @@ theorem ModelWithCorners.range_eq_univ {𝕜 : Type*} [NontriviallyNormedField �
     range I = univ := ModelWithCorners.Boundaryless.range_eq_univ
 
 /-- If `I` is a `ModelWithCorners.Boundaryless` model, then it is a homeomorphism. -/
-@[simps (config := {simpRhs := true})]
+@[simps +simpRhs]
 def ModelWithCorners.toHomeomorph {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*}
     [NormedAddCommGroup E] [NormedSpace 𝕜 E] {H : Type*} [TopologicalSpace H]
     (I : ModelWithCorners 𝕜 E H) [I.Boundaryless] : H ≃ₜ E where
@@ -595,7 +592,7 @@ lemma ContDiffGroupoid.mem_of_source_eq_empty (f : PartialHomeomorph H H)
     simp_all only [mem_empty_iff_false]
   · intro x ⟨hx, _⟩
     have : f.target = ∅ := by simp [← f.image_source_eq_target, hf]
-    simp_all [hx]
+    simp_all
 
 include I in
 /-- Any change of coordinates with empty source belongs to `continuousGroupoid`. -/
@@ -693,10 +690,13 @@ theorem isManifold_of_contDiffOn {𝕜 : Type*} [NontriviallyNormedField 𝕜]
 alias smoothManifoldWithCorners_of_contDiffOn := isManifold_of_contDiffOn
 
 /-- For any model with corners, the model space is a `C^n` manifold -/
-instance intIsManifoldModelSpace {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*}
+instance instIsManifoldModelSpace {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*}
     [NormedAddCommGroup E] [NormedSpace 𝕜 E] {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners 𝕜 E H} {n : WithTop ℕ∞} : IsManifold I n H :=
   { hasGroupoid_model_space _ _ with }
+
+@[deprecated (since := "2025-04-22")]
+alias intIsManifoldModelSpace := instIsManifoldModelSpace
 
 end IsManifold
 
@@ -747,6 +747,8 @@ instance : IsManifold I 0 M := by
 instance [IsManifold I 2 M] :
     IsManifold I 1 M :=
   IsManifold.of_le one_le_two
+
+instance [IsManifold I 3 M] : IsManifold I 2 M := IsManifold.of_le (n := 3) (by norm_cast)
 
 variable (I n M) in
 /-- The maximal atlas of `M` for the `C^n` manifold with corners structure corresponding to the
@@ -831,13 +833,13 @@ instance disjointUnion : IsManifold I n (M ⊕ M') where
       · rw [hef, he'f']
         apply ContDiffGroupoid.mem_of_source_eq_empty
         ext x
-        exact ⟨fun ⟨hx₁, hx₂⟩ ↦ by simp_all [hx₂], fun hx ↦ hx.elim⟩
+        exact ⟨fun ⟨hx₁, hx₂⟩ ↦ by simp_all, fun hx ↦ hx.elim⟩
     · -- Analogous argument to the first case: is there a way to deduplicate?
       obtain (⟨f', hf', he'f'⟩ | ⟨f', hf', he'f'⟩) := ChartedSpace.mem_atlas_sum he'
       · rw [hef, he'f']
         apply ContDiffGroupoid.mem_of_source_eq_empty
         ext x
-        exact ⟨fun ⟨hx₁, hx₂⟩ ↦ by simp_all [hx₂], fun hx ↦ hx.elim⟩
+        exact ⟨fun ⟨hx₁, hx₂⟩ ↦ by simp_all, fun hx ↦ hx.elim⟩
       · rw [hef, he'f', f.lift_openEmbedding_trans f' IsOpenEmbedding.inr]
         exact hM'.compatible hf hf'
 
@@ -866,10 +868,6 @@ theorem Topology.IsOpenEmbedding.isManifold_singleton {𝕜 E H : Type*}
 
 @[deprecated (since := "2025-01-09")]
 alias Topology.IsOpenEmbedding.singleton_smoothManifoldWithCorners :=
-  Topology.IsOpenEmbedding.isManifold_singleton
-
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.singleton_smoothManifoldWithCorners :=
   Topology.IsOpenEmbedding.isManifold_singleton
 
 namespace TopologicalSpace.Opens

@@ -7,6 +7,7 @@ import Mathlib.Algebra.Order.Ring.WithTop
 import Mathlib.Algebra.Order.Sub.WithTop
 import Mathlib.Data.NNReal.Defs
 import Mathlib.Order.Interval.Set.WithBotTop
+import Mathlib.Tactic.Finiteness
 
 /-!
 # Extended non-negative reals
@@ -112,8 +113,14 @@ instance : CharZero ℝ≥0∞ := inferInstanceAs (CharZero (WithTop ℝ≥0))
 instance : Min ℝ≥0∞ := SemilatticeInf.toMin
 instance : Max ℝ≥0∞ := SemilatticeSup.toMax
 
-noncomputable instance : OrderedCommSemiring ℝ≥0∞ :=
-  inferInstanceAs (OrderedCommSemiring (WithTop ℝ≥0))
+noncomputable instance : CommSemiring ℝ≥0∞ :=
+  inferInstanceAs (CommSemiring (WithTop ℝ≥0))
+
+instance : PartialOrder ℝ≥0∞ :=
+  inferInstanceAs (PartialOrder (WithTop ℝ≥0))
+
+instance : IsOrderedRing ℝ≥0∞ :=
+  inferInstanceAs (IsOrderedRing (WithTop ℝ≥0))
 
 instance : CanonicallyOrderedAdd ℝ≥0∞ :=
   inferInstanceAs (CanonicallyOrderedAdd (WithTop ℝ≥0))
@@ -126,8 +133,14 @@ noncomputable instance : CompleteLinearOrder ℝ≥0∞ :=
 
 instance : DenselyOrdered ℝ≥0∞ := inferInstanceAs (DenselyOrdered (WithTop ℝ≥0))
 
-noncomputable instance : LinearOrderedAddCommMonoid ℝ≥0∞ :=
-  inferInstanceAs (LinearOrderedAddCommMonoid (WithTop ℝ≥0))
+instance : AddCommMonoid ℝ≥0∞ :=
+  inferInstanceAs (AddCommMonoid (WithTop ℝ≥0))
+
+noncomputable instance : LinearOrder ℝ≥0∞ :=
+  inferInstanceAs (LinearOrder (WithTop ℝ≥0))
+
+instance : IsOrderedAddMonoid ℝ≥0∞ :=
+  inferInstanceAs (IsOrderedAddMonoid (WithTop ℝ≥0))
 
 instance instSub : Sub ℝ≥0∞ := inferInstanceAs (Sub (WithTop ℝ≥0))
 instance : OrderedSub ℝ≥0∞ := inferInstanceAs (OrderedSub (WithTop ℝ≥0))
@@ -140,7 +153,7 @@ noncomputable instance : Inv ℝ≥0∞ := ⟨fun a => sInf { b | 1 ≤ a * b }�
 
 noncomputable instance : DivInvMonoid ℝ≥0∞ where
 
-variable {a b c d : ℝ≥0∞} {r p q : ℝ≥0}
+variable {a b c d : ℝ≥0∞} {r p q : ℝ≥0} {n : ℕ}
 
 -- TODO: add a `WithTop` instance and use it here
 noncomputable instance : LinearOrderedCommMonoidWithZero ℝ≥0∞ :=
@@ -506,6 +519,15 @@ lemma ofNat_lt_top {n : ℕ} [Nat.AtLeastTwo n] : ofNat(n) < ∞ := natCast_lt_t
 @[simp] theorem top_ne_ofNat {n : ℕ} [n.AtLeastTwo] : ∞ ≠ ofNat(n) :=
   ofNat_ne_top.symm
 
+@[simp, norm_cast] lemma natCast_le_ofNNReal : (n : ℝ≥0∞) ≤ r ↔ n ≤ r := by simp [← coe_le_coe]
+@[simp, norm_cast] lemma ofNNReal_le_natCast : r ≤ (n : ℝ≥0∞) ↔ r ≤ n := by simp [← coe_le_coe]
+
+@[simp, norm_cast] lemma ofNNReal_add_natCast (r : ℝ≥0) (n : ℕ) : ofNNReal (r + n) = r + n := rfl
+@[simp, norm_cast] lemma ofNNReal_natCast_add (n : ℕ) (r : ℝ≥0) : ofNNReal (n + r) = n + r := rfl
+
+@[simp, norm_cast] lemma ofNNReal_sub_natCast (r : ℝ≥0) (n : ℕ) : ofNNReal (r - n) = r - n := rfl
+@[simp, norm_cast] lemma ofNNReal_natCast_sub (n : ℕ) (r : ℝ≥0) : ofNNReal (n - r) = n - r := rfl
+
 @[deprecated ofNat_ne_top (since := "2025-01-21")] lemma two_ne_top : (2 : ℝ≥0∞) ≠ ∞ := coe_ne_top
 @[deprecated ofNat_lt_top (since := "2025-01-21")] lemma two_lt_top : (2 : ℝ≥0∞) < ∞ := coe_lt_top
 
@@ -640,7 +662,7 @@ theorem le_of_top_imp_top_of_toNNReal_le {a b : ℝ≥0∞} (h : a = ⊤ → b =
   by_contra! hlt
   lift b to ℝ≥0 using hlt.ne_top
   lift a to ℝ≥0 using mt h coe_ne_top
-  refine hlt.not_le ?_
+  refine hlt.not_ge ?_
   simpa using h_nnreal
 
 @[simp]

@@ -55,23 +55,12 @@ exists a natural number `n` such that `x ^ (ringExpChar F) ^ n` is contained in 
 subextension of `E / F` (`le_perfectClosure_iff`). -/
 @[stacks 09HH]
 def perfectClosure : IntermediateField F E where
-  carrier := {x : E | ∃ n : ℕ, x ^ (ringExpChar F) ^ n ∈ (algebraMap F E).range}
-  add_mem' := by
-    rintro x y ⟨n, hx⟩ ⟨m, hy⟩
-    use n + m
-    have := expChar_of_injective_algebraMap (algebraMap F E).injective (ringExpChar F)
-    rw [add_pow_expChar_pow, pow_add, pow_mul, mul_comm (_ ^ n), pow_mul]
-    exact add_mem (pow_mem hx _) (pow_mem hy _)
-  mul_mem' := by
-    rintro x y ⟨n, hx⟩ ⟨m, hy⟩
-    use n + m
-    rw [mul_pow, pow_add, pow_mul, mul_comm (_ ^ n), pow_mul]
-    exact mul_mem (pow_mem hx _) (pow_mem hy _)
+  __ := have := expChar_of_injective_algebraMap (algebraMap F E).injective (ringExpChar F)
+    Subalgebra.perfectClosure F E (ringExpChar F)
   inv_mem' := by
     rintro x ⟨n, hx⟩
     use n; rw [inv_pow]
     apply inv_mem (id hx : _ ∈ (⊥ : IntermediateField F E))
-  algebraMap_mem' := fun x ↦ ⟨0, by rw [pow_zero, pow_one]; exact ⟨x, rfl⟩⟩
 
 variable {F E}
 
@@ -176,6 +165,7 @@ def perfectClosure.algEquivOfAlgEquiv (i : E ≃ₐ[F] K) :
     perfectClosure F E ≃ₐ[F] perfectClosure F K :=
   (intermediateFieldMap i _).trans (equivOfEq (map_eq_of_algEquiv i))
 
+noncomputable
 alias AlgEquiv.perfectClosure := perfectClosure.algEquivOfAlgEquiv
 
 end map
@@ -424,7 +414,7 @@ theorem perfectField_of_perfectClosure_eq_bot [h : PerfectField E] (eq : perfect
     obtain ⟨y, h⟩ := surjective_frobenius E p (algebraMap F E x)
     have : y ∈ perfectClosure F E := ⟨1, x, by rw [← h, pow_one, frobenius_def, ringExpChar.eq F p]⟩
     obtain ⟨z, rfl⟩ := eq ▸ this
-    simp only [Algebra.ofId, AlgHom.coe_ringHom_mk] at h
+    simp only [Algebra.ofId] at h
     exact ⟨z, (algebraMap F E).injective (by rw [RingHom.map_frobenius]; rw [h])⟩
   exact PerfectRing.toPerfectField F p
 

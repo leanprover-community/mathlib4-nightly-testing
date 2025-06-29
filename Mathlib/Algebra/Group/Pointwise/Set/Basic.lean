@@ -538,7 +538,7 @@ scoped[Pointwise] attribute [instance] Set.NSMul Set.NPow Set.ZSMul Set.ZPow
 
 /-- `Set α` is a `Semigroup` under pointwise operations if `α` is. -/
 @[to_additive "`Set α` is an `AddSemigroup` under pointwise operations if `α` is."]
-protected noncomputable def semigroup [Semigroup α] : Semigroup (Set α) :=
+protected def semigroup [Semigroup α] : Semigroup (Set α) :=
   { Set.mul with mul_assoc := fun _ _ _ => image2_assoc mul_assoc }
 
 section CommSemigroup
@@ -547,7 +547,7 @@ variable [CommSemigroup α] {s t : Set α}
 
 /-- `Set α` is a `CommSemigroup` under pointwise operations if `α` is. -/
 @[to_additive "`Set α` is an `AddCommSemigroup` under pointwise operations if `α` is."]
-protected noncomputable def commSemigroup : CommSemigroup (Set α) :=
+protected def commSemigroup : CommSemigroup (Set α) :=
   { Set.semigroup with mul_comm := fun _ _ => image2_comm mul_comm }
 
 @[to_additive]
@@ -643,8 +643,6 @@ lemma pow_subset_pow_mul_of_sq_subset_mul (hst : s ^ 2 ⊆ t * s) (hn : n ≠ 0)
 
 @[to_additive (attr := simp) nsmul_empty]
 lemma empty_pow (hn : n ≠ 0) : (∅ : Set α) ^ n = ∅ := match n with | n + 1 => by simp [pow_succ]
-
-@[deprecated (since := "2024-10-21")] alias empty_nsmul := nsmul_empty
 
 @[to_additive]
 lemma Nonempty.pow (hs : s.Nonempty) : ∀ {n}, (s ^ n).Nonempty
@@ -851,15 +849,32 @@ lemma one_mem_inv_mul_iff : (1 : α) ∈ t⁻¹ * s ↔ ¬Disjoint s t := by
   aesop (add simp [not_disjoint_iff_nonempty_inter, mem_mul, mul_eq_one_iff_eq_inv, Set.Nonempty])
 
 @[to_additive]
-theorem not_one_mem_div_iff : (1 : α) ∉ s / t ↔ Disjoint s t :=
+theorem one_notMem_div_iff : (1 : α) ∉ s / t ↔ Disjoint s t :=
   one_mem_div_iff.not_left
 
+@[deprecated (since := "2025-05-23")] alias not_zero_mem_sub_iff := zero_notMem_sub_iff
+
+@[to_additive existing, deprecated (since := "2025-05-23")]
+alias not_one_mem_div_iff := one_notMem_div_iff
+
 @[to_additive]
-lemma not_one_mem_inv_mul_iff : (1 : α) ∉ t⁻¹ * s ↔ Disjoint s t := one_mem_inv_mul_iff.not_left
+lemma one_notMem_inv_mul_iff : (1 : α) ∉ t⁻¹ * s ↔ Disjoint s t := one_mem_inv_mul_iff.not_left
 
-alias ⟨_, _root_.Disjoint.one_not_mem_div_set⟩ := not_one_mem_div_iff
+@[deprecated (since := "2025-05-23")]
+alias not_zero_mem_neg_add_iff := zero_notMem_neg_add_iff
 
-attribute [to_additive] Disjoint.one_not_mem_div_set
+@[to_additive existing, deprecated (since := "2025-05-23")]
+alias not_one_mem_inv_mul_iff := one_notMem_inv_mul_iff
+
+alias ⟨_, _root_.Disjoint.one_notMem_div_set⟩ := one_notMem_div_iff
+
+attribute [to_additive] Disjoint.one_notMem_div_set
+
+@[deprecated (since := "2025-05-23")]
+alias _root_.Disjoint.zero_not_mem_sub_set := Disjoint.zero_notMem_sub_set
+
+@[to_additive existing, deprecated (since := "2025-05-23")]
+alias _root_.Disjoint.one_not_mem_div_set := Disjoint.one_notMem_div_set
 
 @[to_additive]
 theorem Nonempty.one_mem_div (h : s.Nonempty) : (1 : α) ∈ s / s :=
