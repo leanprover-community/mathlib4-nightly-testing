@@ -47,7 +47,7 @@ theorem norm_eq (f : α →ᵇ β) : ‖f‖ = sInf { C : ℝ | 0 ≤ C ∧ ∀ 
 theorem norm_eq_of_nonempty [h : Nonempty α] : ‖f‖ = sInf { C : ℝ | ∀ x : α, ‖f x‖ ≤ C } := by
   obtain ⟨a⟩ := h
   rw [norm_eq]
-  congr
+  congr 1
   ext
   simp only [mem_setOf_eq, and_iff_right_iff_imp]
   exact fun h' => le_trans (norm_nonneg (f a)) (h' a)

@@ -141,10 +141,7 @@ theorem leftInv_comp (p : FormalMultilinearSeries 𝕜 E F) (i : E ≃L[𝕜] F)
           _
       simp only [compContinuousLinearMap_applyComposition,
         ContinuousMultilinearMap.compAlongComposition_apply]
-      congr
-      ext c
-      congr
-      ext k
+      congr! with c k
       simp [h, Function.comp_def]
     simp [FormalMultilinearSeries.comp, A, Finset.sum_union B,
       applyComposition_ones, C, D, -Set.toFinset_setOf]

@@ -367,7 +367,7 @@ theorem tendstoInMeasure_of_tendsto_eLpNorm_top {E} [NormedAddCommGroup E] {f : 
     lt_of_le_of_lt hn
       (ENNReal.half_lt_self (ENNReal.ofReal_pos.2 hδ).ne.symm ENNReal.ofReal_lt_top.ne)
   refine ((le_of_eq ?_).trans (ae_lt_of_essSup_lt this).le).trans hε.le
-  congr with x
+  congr 1 with x
   simp only [ENNReal.ofReal_le_iff_le_toReal ENNReal.coe_lt_top.ne, ENNReal.coe_toReal, not_lt,
     coe_nnnorm, Set.mem_setOf_eq, Set.mem_compl_iff]
   rw [← dist_eq_norm (f n x) (g x)]
