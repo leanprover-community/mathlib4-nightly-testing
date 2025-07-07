@@ -674,8 +674,7 @@ theorem KaehlerDifferential.kerTotal_map' [Algebra R B]
       Submodule.span A (Set.range fun x ↦ .single (algebraMap R A x) 1)).map finsupp_map =
       (KaehlerDifferential.kerTotal R B).restrictScalars _ := by
   rw [Submodule.map_sup, ← kerTotal_map R R A B h, Submodule.map_span, ← Set.range_comp]
-  congr
-  refine congr_arg Set.range ?_
+  congr 3
   ext; simp [IsScalarTower.algebraMap_eq R A B]
 
 section
