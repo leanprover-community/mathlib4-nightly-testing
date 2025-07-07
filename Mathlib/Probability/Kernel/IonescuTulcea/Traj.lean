@@ -628,7 +628,7 @@ lemma partialTraj_compProd_traj {a b : ℕ} (hab : a ≤ b) (u : Π i : Iic a, X
   rw [Measure.map_apply, Measure.compProd_apply, ← traj_comp_partialTraj hab, comp_apply']
   · congr with x
     rw [← traj_map_updateFinset, Measure.map_apply, Measure.map_apply]
-    · congr with y
+    · congr 1 with y
       simp only [Set.mem_preimage]
       congrm (fun i ↦ ?_, fun i ↦ ?_) ∈ s <;> simp [updateFinset]
     any_goals fun_prop
