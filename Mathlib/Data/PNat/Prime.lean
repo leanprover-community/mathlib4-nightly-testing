@@ -215,7 +215,6 @@ theorem gcd_one {n : ℕ+} : gcd n 1 = 1 := by
 theorem Coprime.symm {m n : ℕ+} : m.Coprime n → n.Coprime m := by
   unfold Coprime
   rw [gcd_comm]
-  simp
 
 @[simp]
 theorem one_coprime {n : ℕ+} : (1 : ℕ+).Coprime n :=

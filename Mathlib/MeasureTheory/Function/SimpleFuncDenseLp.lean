@@ -562,7 +562,7 @@ theorem add_toSimpleFunc (f g : Lp.simpleFunc E p μ) :
   filter_upwards [toSimpleFunc_eq_toFun (f + g), toSimpleFunc_eq_toFun f,
     toSimpleFunc_eq_toFun g, Lp.coeFn_add (f : Lp E p μ) g] with _
   simp only [AddSubgroup.coe_add, Pi.add_apply]
-  iterate 4 intro h; rw [h]
+  iterate 3 intro h; rw [h]
 
 theorem neg_toSimpleFunc (f : Lp.simpleFunc E p μ) : toSimpleFunc (-f) =ᵐ[μ] -toSimpleFunc f := by
   filter_upwards [toSimpleFunc_eq_toFun (-f), toSimpleFunc_eq_toFun f,

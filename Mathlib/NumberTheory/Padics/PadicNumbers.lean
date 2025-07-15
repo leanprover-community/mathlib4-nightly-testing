@@ -489,8 +489,7 @@ theorem coe_inj {q r : ℚ} : (↑q : ℚ_[p]) = ↑r ↔ q = r :=
 instance : CharZero ℚ_[p] :=
   ⟨fun m n ↦ by
     rw [← Rat.cast_natCast]
-    norm_cast
-    exact id⟩
+    norm_cast⟩
 
 @[norm_cast]
 theorem coe_add : ∀ {x y : ℚ}, (↑(x + y) : ℚ_[p]) = ↑x + ↑y :=

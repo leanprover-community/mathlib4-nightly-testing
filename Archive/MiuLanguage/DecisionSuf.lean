@@ -86,7 +86,7 @@ theorem der_of_der_append_replicate_U_even {z : Miustr} {m : ℕ}
   induction m with
   | zero =>
     revert h
-    rw [replicate, append_nil]; exact id
+    rw [replicate, append_nil]
   | succ k hk =>
     apply hk
     simp only [succ_mul, replicate_add] at h
