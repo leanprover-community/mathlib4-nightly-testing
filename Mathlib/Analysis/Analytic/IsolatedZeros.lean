@@ -1,20 +1,21 @@
 /-
 Copyright (c) 2022 Vincent Beffara. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Vincent Beffara
+Authors: Vincent Beffara, Stefan Kebekus
 -/
 import Mathlib.Analysis.Analytic.Constructions
 import Mathlib.Analysis.Calculus.DSlope
 import Mathlib.Analysis.Calculus.FDeriv.Analytic
 import Mathlib.Analysis.Analytic.Uniqueness
+import Mathlib.Order.Filter.EventuallyConst
 import Mathlib.Topology.Perfect
 
 /-!
 # Principle of isolated zeros
 
 This file proves the fact that the zeros of a non-constant analytic function of one variable are
-isolated. It also introduces a little bit of API in the `HasFPowerSeriesAt` namespace that is
-useful in this setup.
+isolated. It also introduces a little bit of API in the `HasFPowerSeriesAt` namespace that is useful
+in this setup.
 
 ## Main results
 
@@ -24,6 +25,15 @@ useful in this setup.
 * `AnalyticOnNhd.eqOn_of_preconnected_of_frequently_eq` is the identity theorem for analytic
   functions: if a function `f` is analytic on a connected set `U` and is zero on a set with an
   accumulation point in `U` then `f` is identically `0` on `U`.
+
+## Applications
+
+* Vanishing of products of analytic functions, `eq_zero_or_eq_zero_of_smul_eq_zero`: If `f, g` are
+  analytic on a neighbourhood of the preconnected open set `U`, and `f • g = 0` on `U`, then either
+  `f = 0` on `U` or `g = 0` on `U`.
+* Preimages of codiscrete sets, `AnalyticOnNhd.preimage_mem_codiscreteWithin`: if `f` is analytic
+  on a neighbourhood of `U` and not locally constant, then the preimage of any subset codiscrete
+  within `f '' U` is codiscrete within `U`.
 -/
 
 open Filter Function Nat FormalMultilinearSeries EMetric Set
@@ -64,7 +74,7 @@ theorem has_fpower_series_dslope_fslope (hp : HasFPowerSeriesAt f p z₀) :
     HasFPowerSeriesAt (dslope f z₀) p.fslope z₀ := by
   have hpd : deriv f z₀ = p.coeff 1 := hp.deriv
   have hp0 : p.coeff 0 = f z₀ := hp.coeff_zero 1
-  simp only [hasFPowerSeriesAt_iff, apply_eq_pow_smul_coeff, coeff_fslope] at hp ⊢
+  simp only [hasFPowerSeriesAt_iff, coeff_fslope] at hp ⊢
   refine hp.mono fun x hx => ?_
   by_cases h : x = 0
   · convert hasSum_single (α := E) 0 _ <;> intros <;> simp [*]
@@ -190,95 +200,6 @@ theorem exists_eventuallyEq_pow_smul_nonzero_iff (hf : AnalyticAt 𝕜 f z₀) :
       hp.iterate_dslope_fslope_ne_zero (hf_ne.imp hp.locally_zero_iff.mpr),
       hp.eq_pow_order_mul_iterate_dslope⟩
 
-open scoped Classical in
-/-- The order of vanishing of `f` at `z₀`, as an element of `ℕ∞`.
-
-This is defined to be `∞` if `f` is identically 0 on a neighbourhood of `z₀`, and otherwise the
-unique `n` such that `f z = (z - z₀) ^ n • g z` with `g` analytic and non-vanishing at `z₀`. See
-`AnalyticAt.order_eq_top_iff` and `AnalyticAt.order_eq_nat_iff` for these equivalences. -/
-noncomputable def order (hf : AnalyticAt 𝕜 f z₀) : ENat :=
-  if h : ∀ᶠ z in 𝓝 z₀, f z = 0 then ⊤
-  else ↑(hf.exists_eventuallyEq_pow_smul_nonzero_iff.mpr h).choose
-
-lemma order_eq_top_iff (hf : AnalyticAt 𝕜 f z₀) : hf.order = ⊤ ↔ ∀ᶠ z in 𝓝 z₀, f z = 0 := by
-  unfold order
-  split_ifs with h
-  · rwa [eq_self, true_iff]
-  · simpa only [ne_eq, ENat.coe_ne_top, false_iff] using h
-
-lemma order_eq_nat_iff (hf : AnalyticAt 𝕜 f z₀) (n : ℕ) : hf.order = ↑n ↔
-    ∃ (g : 𝕜 → E), AnalyticAt 𝕜 g z₀ ∧ g z₀ ≠ 0 ∧ ∀ᶠ z in 𝓝 z₀, f z = (z - z₀) ^ n • g z := by
-  unfold order
-  split_ifs with h
-  · simp only [ENat.top_ne_coe, false_iff]
-    contrapose! h
-    rw [← hf.exists_eventuallyEq_pow_smul_nonzero_iff]
-    exact ⟨n, h⟩
-  · rw [← hf.exists_eventuallyEq_pow_smul_nonzero_iff] at h
-    refine ⟨fun hn ↦ (WithTop.coe_inj.mp hn : h.choose = n) ▸ h.choose_spec, fun h' ↦ ?_⟩
-    rw [unique_eventuallyEq_pow_smul_nonzero h.choose_spec h']
-
-/- An analytic function `f` has finite order at a point `z₀` iff it locally looks
-  like `(z - z₀) ^ order • g`, where `g` is analytic and does not vanish at
-  `z₀`. -/
-lemma order_neq_top_iff (hf : AnalyticAt 𝕜 f z₀) :
-    hf.order ≠ ⊤ ↔ ∃ (g : 𝕜 → E), AnalyticAt 𝕜 g z₀ ∧ g z₀ ≠ 0
-      ∧ f =ᶠ[𝓝 z₀] fun z ↦ (z - z₀) ^ (hf.order.toNat) • g z := by
-  simp only [← ENat.coe_toNat_eq_self, Eq.comm, EventuallyEq, ← hf.order_eq_nat_iff]
-
-/- An analytic function has order zero at a point iff it does not vanish there. -/
-lemma order_eq_zero_iff (hf : AnalyticAt 𝕜 f z₀) :
-    hf.order = 0 ↔ f z₀ ≠ 0 := by
-  rw [← ENat.coe_zero, order_eq_nat_iff hf 0]
-  constructor
-  · intro ⟨g, _, _, hg⟩
-    simpa [hg.self_of_nhds]
-  · exact fun hz ↦ ⟨f, hf, hz, by simp⟩
-
-/- An analytic function vanishes at a point if its order is nonzero when converted to ℕ. -/
-lemma apply_eq_zero_of_order_toNat_ne_zero (hf : AnalyticAt 𝕜 f z₀) :
-    hf.order.toNat ≠ 0 → f z₀ = 0 := by
-  simp [hf.order_eq_zero_iff]
-  tauto
-
-/- Helper lemma for `AnalyticAt.order_mul` -/
-lemma order_mul_of_order_eq_top {f g : 𝕜 → 𝕜} (hf : AnalyticAt 𝕜 f z₀)
-    (hg : AnalyticAt 𝕜 g z₀) (h'f : hf.order = ⊤) :
-    (hf.mul hg).order = ⊤ := by
-  rw [AnalyticAt.order_eq_top_iff, eventually_nhds_iff] at *
-  obtain ⟨t, h₁t, h₂t, h₃t⟩ := h'f
-  exact ⟨t, fun y hy ↦ (by simp [h₁t y hy]), h₂t, h₃t⟩
-
-/-- The order is additive when multiplying analytic functions. -/
-theorem order_mul {f g : 𝕜 → 𝕜} (hf : AnalyticAt 𝕜 f z₀) (hg : AnalyticAt 𝕜 g z₀) :
-    (hf.mul hg).order = hf.order + hg.order := by
-  -- Trivial cases: one of the functions vanishes around z₀
-  by_cases h₂f : hf.order = ⊤
-  · simp [hf.order_mul_of_order_eq_top hg h₂f, h₂f]
-  by_cases h₂g : hg.order = ⊤
-  · simp [mul_comm f g, hg.order_mul_of_order_eq_top hf h₂g, h₂g]
-  -- Non-trivial case: both functions do not vanish around z₀
-  obtain ⟨g₁, h₁g₁, h₂g₁, h₃g₁⟩ := hf.order_neq_top_iff.1 h₂f
-  obtain ⟨g₂, h₁g₂, h₂g₂, h₃g₂⟩ := hg.order_neq_top_iff.1 h₂g
-  rw [← ENat.coe_toNat h₂f, ← ENat.coe_toNat h₂g, ← ENat.coe_add, (hf.mul hg).order_eq_nat_iff]
-  use g₁ * g₂, by exact h₁g₁.mul h₁g₂
-  constructor
-  · simp
-    tauto
-  · obtain ⟨t, h₁t, h₂t, h₃t⟩ := eventually_nhds_iff.1 h₃g₁
-    obtain ⟨s, h₁s, h₂s, h₃s⟩ := eventually_nhds_iff.1 h₃g₂
-    exact eventually_nhds_iff.2
-      ⟨t ∩ s, fun y hy ↦ (by simp [h₁t y hy.1, h₁s y hy.2]; ring), h₂t.inter h₂s, h₃t, h₃s⟩
-
-/-- The order multiplies by `n` when taking an analytic function to its `n`th power. -/
-theorem order_pow {f : 𝕜 → 𝕜} (hf : AnalyticAt 𝕜 f z₀) {n : ℕ} :
-    (hf.pow n).order = n • hf.order := by
-  induction n
-  case zero =>
-    simp [AnalyticAt.order_eq_zero_iff]
-  case succ n hn =>
-    simp [add_mul, pow_add, (hf.pow n).order_mul hf, hn]
-
 end AnalyticAt
 
 namespace AnalyticOnNhd
@@ -342,9 +263,6 @@ theorem eq_of_frequently_eq [ConnectedSpace 𝕜] (hf : AnalyticOnNhd 𝕜 f uni
   funext fun x =>
     eqOn_of_preconnected_of_frequently_eq hf hg isPreconnected_univ (mem_univ z₀) hfg (mem_univ x)
 
-@[deprecated (since := "2024-09-26")]
-alias _root_.AnalyticOn.eq_of_frequently_eq := eq_of_frequently_eq
-
 section Mul
 /-!
 ### Vanishing of products of analytic functions
@@ -386,5 +304,68 @@ lemma eq_zero_or_eq_zero_of_mul_eq_zero [NoZeroDivisors A]
   eq_zero_or_eq_zero_of_smul_eq_zero hf hg hfg hU
 
 end Mul
-
 end AnalyticOnNhd
+
+/-!
+### Preimages of codiscrete sets
+-/
+
+section PreimgCodiscrete
+
+/-- Preimages of codiscrete sets, local version: if `f` is analytic at `x` and not locally constant,
+then the preimage of any punctured neighbourhood of `f x` is a punctured neighbourhood of `x`. -/
+theorem AnalyticAt.preimage_of_nhdsNE {x : 𝕜} {f : 𝕜 → E} {s : Set E} (hfx : AnalyticAt 𝕜 f x)
+    (h₂f : ¬EventuallyConst f (𝓝 x)) (hs : s ∈ 𝓝[≠] f x) :
+    f ⁻¹' s ∈ 𝓝[≠] x := by
+  have : ∀ᶠ (z : 𝕜) in 𝓝 x, f z ∈ insert (f x) s := by
+    filter_upwards [hfx.continuousAt.preimage_mem_nhds (insert_mem_nhds_iff.2 hs)]
+    tauto
+  contrapose! h₂f with h
+  rw [eventuallyConst_iff_exists_eventuallyEq]
+  use f x
+  rw [EventuallyEq, ← hfx.frequently_eq_iff_eventually_eq analyticAt_const]
+  apply ((frequently_imp_distrib_right.2 h).and_eventually
+    (eventually_nhdsWithin_of_eventually_nhds this)).mono
+  intro z ⟨h₁z, h₂z⟩
+  rw [Set.mem_insert_iff] at h₂z
+  tauto
+
+/-- Preimages of codiscrete sets, local filter version: if `f` is analytic at `x` and not locally
+constant, then the push-forward of the punctured neighbourhood filter `𝓝[≠] x` is less than or
+equal to the punctured neighbourhood filter `𝓝[≠] f x`. -/
+theorem AnalyticAt.map_nhdsNE {x : 𝕜} {f : 𝕜 → E} (hfx : AnalyticAt 𝕜 f x)
+    (h₂f : ¬EventuallyConst f (𝓝 x)) :
+    (𝓝[≠] x).map f ≤ (𝓝[≠] f x) := fun _ hs ↦ mem_map.1 (preimage_of_nhdsNE hfx h₂f hs)
+
+/--
+Preimages of codiscrete sets: if `f` is analytic on a neighbourhood of `U` and not locally constant,
+then the preimage of any subset codiscrete within `f '' U` is codiscrete within `U`.
+
+See `AnalyticOnNhd.preimage_zero_codiscreteWithin` for the special case that `s` is the complement
+of zero. Applications might want to use the theorem `Filter.codiscreteWithin.mono`.
+-/
+theorem AnalyticOnNhd.preimage_mem_codiscreteWithin {U : Set 𝕜} {s : Set E} {f : 𝕜 → E}
+    (hfU : AnalyticOnNhd 𝕜 f U) (h₂f : ∀ x ∈ U, ¬EventuallyConst f (𝓝 x))
+    (hs : s ∈ codiscreteWithin (f '' U)) :
+    f ⁻¹' s ∈ codiscreteWithin U := by
+  simp_rw [mem_codiscreteWithin, disjoint_principal_right, Set.compl_diff] at *
+  intro x hx
+  apply mem_of_superset ((hfU x hx).preimage_of_nhdsNE (h₂f x hx) (hs (f x) (by tauto)))
+  rw [preimage_union, preimage_compl]
+  apply union_subset_union_right (f ⁻¹' s)
+  intro x hx
+  simp only [mem_compl_iff, mem_preimage, mem_image, not_exists, not_and] at hx ⊢
+  tauto
+
+/-- Preimages of codiscrete sets, filter version: if `f` is analytic on a neighbourhood of `U` and
+not locally constant, then the push-forward of the filter of sets codiscrete within `U` is less
+than or equal to the filter of sets codiscrete within `f '' U`.
+
+Applications might want to use the theorem `Filter.codiscreteWithin.mono`.
+-/
+theorem AnalyticOnNhd.map_codiscreteWithin {U : Set 𝕜} {f : 𝕜 → E}
+    (hfU : AnalyticOnNhd 𝕜 f U) (h₂f : ∀ x ∈ U, ¬EventuallyConst f (𝓝 x)) :
+    map f (codiscreteWithin U) ≤ (codiscreteWithin (f '' U)) :=
+  fun _ hs ↦ mem_map.1 (preimage_mem_codiscreteWithin hfU h₂f hs)
+
+end PreimgCodiscrete

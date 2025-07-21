@@ -52,7 +52,7 @@ point, then the skyscraper presheaf `𝓕` with value `A` is defined by `U ↦ A
 def skyscraperPresheaf : Presheaf C X where
   obj U := if p₀ ∈ unop U then A else terminal C
   map {U V} i :=
-    if h : p₀ ∈ unop V then eqToHom <| by dsimp; rw [if_pos h, if_pos (by simpa using i.unop.le h)]
+    if h : p₀ ∈ unop V then eqToHom <| by rw [if_pos h, if_pos (by simpa using i.unop.le h)]
     else ((if_neg h).symm.ndrec terminalIsTerminal).from _
   map_id U :=
     (em (p₀ ∈ U.unop)).elim (fun h => dif_pos h) fun h =>
@@ -66,9 +66,10 @@ def skyscraperPresheaf : Presheaf C X where
 theorem skyscraperPresheaf_eq_pushforward
     [hd : ∀ U : Opens (TopCat.of PUnit.{u + 1}), Decidable (PUnit.unit ∈ U)] :
     skyscraperPresheaf p₀ A =
-      ContinuousMap.const (TopCat.of PUnit) p₀ _*
+      (ofHom (ContinuousMap.const (TopCat.of PUnit) p₀)) _*
         skyscraperPresheaf (X := TopCat.of PUnit) PUnit.unit A := by
-  convert_to @skyscraperPresheaf X p₀ (fun U => hd <| (Opens.map <| ContinuousMap.const _ p₀).obj U)
+  convert_to @skyscraperPresheaf X p₀ (fun U => hd <| (Opens.map <| ofHom <|
+      ContinuousMap.const _ p₀).obj U)
     C _ _ A = _ <;> congr
 
 /-- Taking skyscraper presheaf at a point is functorial: `c ↦ skyscraper p₀ c` defines a functor by
@@ -92,13 +93,13 @@ def SkyscraperPresheafFunctor.map' {a b : C} (f : a ⟶ b) :
 theorem SkyscraperPresheafFunctor.map'_id {a : C} :
     SkyscraperPresheafFunctor.map' p₀ (𝟙 a) = 𝟙 _ := by
   ext U
-  simp only [SkyscraperPresheafFunctor.map'_app, NatTrans.id_app]; split_ifs <;> aesop_cat
+  simp only [SkyscraperPresheafFunctor.map'_app]; split_ifs <;> aesop_cat
 
 theorem SkyscraperPresheafFunctor.map'_comp {a b c : C} (f : a ⟶ b) (g : b ⟶ c) :
     SkyscraperPresheafFunctor.map' p₀ (f ≫ g) =
       SkyscraperPresheafFunctor.map' p₀ f ≫ SkyscraperPresheafFunctor.map' p₀ g := by
   ext U
-  simp only [SkyscraperPresheafFunctor.map'_app, NatTrans.comp_app]
+  simp only [SkyscraperPresheafFunctor.map'_app]
   split_ifs with h <;> aesop_cat
 
 /-- Taking skyscraper presheaf at a point is functorial: `c ↦ skyscraper p₀ c` defines a functor by
@@ -130,7 +131,7 @@ def skyscraperPresheafCoconeOfSpecializes {y : X} (h : p₀ ⤳ y) :
     { app := fun U => eqToHom <| if_pos <| h.mem_open U.unop.1.2 U.unop.2
       naturality := fun U V inc => by
         change dite _ _ _ ≫ _ = _; rw [dif_pos]
-        swap -- Porting note: swap goal to prevent proving same thing twice
+        swap
         · exact h.mem_open V.unop.1.2 V.unop.2
         · simp only [Functor.comp_obj, Functor.op_obj, skyscraperPresheaf_obj, unop_op,
             Functor.const_obj_obj, eqToHom_trans, Functor.const_obj_map, Category.comp_id] }
@@ -147,8 +148,8 @@ noncomputable def skyscraperPresheafCoconeIsColimitOfSpecializes {y : X} (h : p�
     rw [← c.w (homOfLE <| (le_top : unop U ≤ _)).op]
     change _ ≫ _ ≫ dite _ _ _ ≫ _ = _
     rw [dif_pos]
-    · simp only [skyscraperPresheafCoconeOfSpecializes_ι_app, eqToHom_trans_assoc,
-        eqToHom_refl, Category.id_comp, unop_op, op_unop]
+    · simp only [eqToHom_trans_assoc,
+        eqToHom_refl, Category.id_comp, op_unop]
     · exact h.mem_open U.unop.1.2 U.unop.2
   uniq c f h := by
     dsimp
@@ -222,7 +223,7 @@ theorem skyscraperPresheaf_isSheaf : (skyscraperPresheaf p₀ A).IsSheaf := by
           · exact terminalIsTerminal
           · #adaptation_note /-- 2024-03-24
             Previously the universe annotation was not needed here. -/
-            exact Set.not_mem_empty PUnit.unit.{u+1})))
+            exact Set.notMem_empty PUnit.unit.{u+1})))
 
 /--
 The skyscraper presheaf supported at `p₀` with value `A` is the sheaf that assigns `A` to all opens
@@ -256,8 +257,6 @@ def toSkyscraperPresheaf {𝓕 : Presheaf C X} {c : C} (f : 𝓕.stalk p₀ ⟶ 
     if h : p₀ ∈ U.unop then 𝓕.germ _ p₀ h ≫ f ≫ eqToHom (if_pos h).symm
     else ((if_neg h).symm.ndrec terminalIsTerminal).from _
   naturality U V inc := by
-    -- Porting note: don't know why original proof fell short of working, add `aesop_cat` finished
-    -- the proofs anyway
     dsimp
     by_cases hV : p₀ ∈ V.unop
     · have hU : p₀ ∈ U.unop := leOfHom inc.unop hV
@@ -340,7 +339,7 @@ def skyscraperPresheafStalkAdjunction [HasColimits C] :
     dsimp [Presheaf.stalkFunctor, toSkyscraperPresheaf]
     ext
     simp only [Functor.comp_obj, Functor.op_obj, ι_colimMap_assoc, skyscraperPresheaf_obj,
-      whiskerLeft_app, Category.comp_id]
+      Functor.whiskerLeft_app, Category.comp_id]
     split_ifs with h
     · simp [skyscraperPresheafStalkOfSpecializes]
       rfl
@@ -364,7 +363,7 @@ def skyscraperPresheafStalkAdjunction [HasColimits C] :
 instance [HasColimits C] : (skyscraperPresheafFunctor p₀ : C ⥤ Presheaf C X).IsRightAdjoint  :=
   (skyscraperPresheafStalkAdjunction _).isRightAdjoint
 
-instance [HasColimits C] : (Presheaf.stalkFunctor C p₀).IsLeftAdjoint  :=
+instance [HasColimits C] : (Presheaf.stalkFunctor C p₀).IsLeftAdjoint :=
   -- Use a classical instance instead of the one from `variable`s
   have : ∀ U : Opens X, Decidable (p₀ ∈ U) := fun _ ↦ Classical.dec _
   (skyscraperPresheafStalkAdjunction _).isLeftAdjoint

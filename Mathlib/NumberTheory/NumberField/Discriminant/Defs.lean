@@ -52,7 +52,7 @@ theorem discr_eq_discr_of_algEquiv {L : Type*} [Field L] [NumberField L] (f : K 
     ← discr_eq_discr L ((RingOfIntegers.basis K).map f₀)]
   change _ = algebraMap ℤ ℚ _
   rw [← Algebra.discr_localizationLocalization ℤ (nonZeroDivisors ℤ) L]
-  congr
+  congr 1
   ext
   simp only [Function.comp_apply, integralBasis_apply, Basis.localizationLocalization_apply,
     Basis.map_apply]
@@ -74,7 +74,7 @@ theorem numberField_discr : discr ℚ = 1 := by
     _ = Algebra.trace ℤ (𝓞 ℚ) (b default * b default) := by
       rw [Algebra.discr_def, Matrix.det_unique, Algebra.traceMatrix_apply, Algebra.traceForm_apply]
     _ = Algebra.trace ℤ (𝓞 ℚ) 1 := by
-      rw [Basis.map_apply, RingEquiv.toAddEquiv_eq_coe, AddEquiv.toIntLinearEquiv_symm,
+      rw [Basis.map_apply, RingEquiv.toAddEquiv_eq_coe, ← AddEquiv.toIntLinearEquiv_symm,
         AddEquiv.coe_toIntLinearEquiv, Basis.singleton_apply,
         show (AddEquiv.symm ↑ringOfIntegersEquiv) (1 : ℤ) = ringOfIntegersEquiv.symm 1 by rfl,
         map_one, mul_one]
@@ -114,6 +114,6 @@ theorem Algebra.discr_eq_discr_of_toMatrix_coeff_isIntegral [NumberField K]
     rw [RingHom.map_mul, hr, hr', ← Matrix.det_mul,
       Basis.toMatrix_mul_toMatrix_flip, Matrix.det_one]
   rw [← RingHom.map_one (algebraMap ℤ ℚ), ← hr]
-  cases' Int.isUnit_iff.1 hunit with hp hm
+  rcases Int.isUnit_iff.1 hunit with hp | hm
   · simp [hp]
   · simp [hm]

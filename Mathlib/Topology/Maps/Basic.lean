@@ -533,7 +533,7 @@ theorem IsClosedMap.lift'_closure_map_eq
     (f_closed : IsClosedMap f) (f_cont : Continuous f) (F : Filter X) :
     (map f F).lift' closure = map f (F.lift' closure) := by
   rw [map_lift'_eq2 (monotone_closure Y), map_lift'_eq (monotone_closure X)]
-  congr
+  congr 1
   ext s : 1
   exact f_closed.closure_image_eq_of_continuous f_cont s
 
@@ -559,15 +559,9 @@ lemma IsOpenEmbedding.isInducing (hf : IsOpenEmbedding f) : IsInducing f :=
 lemma IsOpenEmbedding.isOpenMap (hf : IsOpenEmbedding f) : IsOpenMap f :=
   hf.isEmbedding.isInducing.isOpenMap hf.isOpen_range
 
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.isOpenMap := IsOpenEmbedding.isOpenMap
-
 theorem IsOpenEmbedding.map_nhds_eq (hf : IsOpenEmbedding f) (x : X) :
     map f (𝓝 x) = 𝓝 (f x) :=
   hf.isEmbedding.map_nhds_of_mem _ <| hf.isOpen_range.mem_nhds <| mem_range_self _
-
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.map_nhds_eq := IsOpenEmbedding.map_nhds_eq
 
 lemma IsOpenEmbedding.isOpen_iff_image_isOpen (hf : IsOpenEmbedding f) {s : Set X} :
     IsOpen s ↔ IsOpen (f '' s) where
@@ -577,35 +571,20 @@ lemma IsOpenEmbedding.isOpen_iff_image_isOpen (hf : IsOpenEmbedding f) {s : Set 
 @[deprecated (since := "2024-10-30")]
 alias IsOpenEmbedding.open_iff_image_open := IsOpenEmbedding.isOpen_iff_image_isOpen
 
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.open_iff_image_open := IsOpenEmbedding.isOpen_iff_image_isOpen
-
 theorem IsOpenEmbedding.tendsto_nhds_iff [TopologicalSpace Z] {f : ι → Y} {l : Filter ι} {y : Y}
     (hg : IsOpenEmbedding g) : Tendsto f l (𝓝 y) ↔ Tendsto (g ∘ f) l (𝓝 (g y)) :=
   hg.isEmbedding.tendsto_nhds_iff
-
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.tendsto_nhds_iff := IsOpenEmbedding.tendsto_nhds_iff
 
 theorem IsOpenEmbedding.tendsto_nhds_iff' (hf : IsOpenEmbedding f) {l : Filter Z} {x : X} :
     Tendsto (g ∘ f) (𝓝 x) l ↔ Tendsto g (𝓝 (f x)) l := by
   rw [Tendsto, ← map_map, hf.map_nhds_eq]; rfl
 
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.tendsto_nhds_iff' := IsOpenEmbedding.tendsto_nhds_iff'
-
 theorem IsOpenEmbedding.continuousAt_iff [TopologicalSpace Z] (hf : IsOpenEmbedding f) {x : X} :
     ContinuousAt (g ∘ f) x ↔ ContinuousAt g (f x) :=
   hf.tendsto_nhds_iff'
 
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.continuousAt_iff := IsOpenEmbedding.continuousAt_iff
-
 theorem IsOpenEmbedding.continuous (hf : IsOpenEmbedding f) : Continuous f :=
   hf.isEmbedding.continuous
-
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.continuous := IsOpenEmbedding.continuous
 
 lemma IsOpenEmbedding.isOpen_iff_preimage_isOpen (hf : IsOpenEmbedding f) {s : Set Y}
     (hs : s ⊆ range f) : IsOpen s ↔ IsOpen (f ⁻¹' s) := by
@@ -614,18 +593,12 @@ lemma IsOpenEmbedding.isOpen_iff_preimage_isOpen (hf : IsOpenEmbedding f) {s : S
 @[deprecated (since := "2024-10-30")]
 alias IsOpenEmbedding.open_iff_preimage_open := IsOpenEmbedding.isOpen_iff_preimage_isOpen
 
-@[deprecated (since := "2024-10-18")]
-alias OpenEmbedding.open_iff_preimage_open := IsOpenEmbedding.isOpen_iff_preimage_isOpen
-
 lemma IsOpenEmbedding.of_isEmbedding_isOpenMap (h₁ : IsEmbedding f) (h₂ : IsOpenMap f) :
     IsOpenEmbedding f :=
   ⟨h₁, h₂.isOpen_range⟩
 
 @[deprecated (since := "2024-10-26")]
 alias isOpenEmbedding_of_embedding_open := IsOpenEmbedding.of_isEmbedding_isOpenMap
-
-@[deprecated (since := "2024-10-18")]
-alias openEmbedding_of_embedding_open := IsOpenEmbedding.of_isEmbedding_isOpenMap
 
 /-- A surjective embedding is an `IsOpenEmbedding`. -/
 lemma IsEmbedding.isOpenEmbedding_of_surjective (hf : IsEmbedding f) (hsurj : f.Surjective) :
@@ -637,17 +610,11 @@ alias _root_.Embedding.toIsOpenEmbedding_of_surjective := IsEmbedding.isOpenEmbe
 
 alias IsOpenEmbedding.of_isEmbedding := IsEmbedding.isOpenEmbedding_of_surjective
 
-@[deprecated (since := "2024-10-18")]
-alias _root_.Embedding.toOpenEmbedding_of_surjective := IsEmbedding.isOpenEmbedding_of_surjective
-
 lemma isOpenEmbedding_iff_isEmbedding_isOpenMap : IsOpenEmbedding f ↔ IsEmbedding f ∧ IsOpenMap f :=
   ⟨fun h => ⟨h.1, h.isOpenMap⟩, fun h => .of_isEmbedding_isOpenMap h.1 h.2⟩
 
 @[deprecated (since := "2024-10-26")]
 alias isOpenEmbedding_iff_embedding_open := isOpenEmbedding_iff_isEmbedding_isOpenMap
-
-@[deprecated (since := "2024-10-18")]
-alias openEmbedding_iff_embedding_open := isOpenEmbedding_iff_isEmbedding_isOpenMap
 
 theorem IsOpenEmbedding.of_continuous_injective_isOpenMap
     (h₁ : Continuous f) (h₂ : Injective f) (h₃ : IsOpenMap f) : IsOpenEmbedding f := by
@@ -665,17 +632,10 @@ lemma isOpenEmbedding_iff_continuous_injective_isOpenMap :
 alias isOpenEmbedding_iff_continuous_injective_open :=
   isOpenEmbedding_iff_continuous_injective_isOpenMap
 
-@[deprecated (since := "2024-10-18")]
-alias openEmbedding_iff_continuous_injective_open :=
-  isOpenEmbedding_iff_continuous_injective_isOpenMap
-
 namespace IsOpenEmbedding
 variable [TopologicalSpace Z]
 
 protected lemma id : IsOpenEmbedding (@id X) := ⟨.id, IsOpenMap.id.isOpen_range⟩
-
-@[deprecated (since := "2024-10-18")]
-alias _root_.openEmbedding_id := IsOpenEmbedding.id
 
 protected lemma comp (hg : IsOpenEmbedding g)
     (hf : IsOpenEmbedding f) : IsOpenEmbedding (g ∘ f) :=
@@ -744,9 +704,6 @@ lemma of_isEmbedding_isClosedMap (h₁ : IsEmbedding f) (h₂ : IsClosedMap f) :
 @[deprecated (since := "2024-10-26")]
 alias _root_.IsClosedEmbedding.of_embedding_closed := of_isEmbedding_isClosedMap
 
-@[deprecated (since := "2024-10-20")]
-alias _root_.closedEmbedding_of_embedding_closed := of_isEmbedding_isClosedMap
-
 lemma of_continuous_injective_isClosedMap (h₁ : Continuous f) (h₂ : Injective f)
     (h₃ : IsClosedMap f) : IsClosedEmbedding f := by
   refine .of_isEmbedding_isClosedMap ⟨⟨?_⟩, h₂⟩ h₃
@@ -754,14 +711,12 @@ lemma of_continuous_injective_isClosedMap (h₁ : Continuous f) (h₂ : Injectiv
   refine ⟨(f '' sᶜ)ᶜ, (h₃ _ hs.isClosed_compl).isOpen_compl, ?_⟩
   rw [preimage_compl, preimage_image_eq _ h₂, compl_compl]
 
-@[deprecated (since := "2024-10-20")]
-alias _root_.closedEmbedding_of_continuous_injective_closed :=
-  IsClosedEmbedding.of_continuous_injective_isClosedMap
+lemma isClosedEmbedding_iff_continuous_injective_isClosedMap {f : X → Y} :
+    IsClosedEmbedding f ↔ Continuous f ∧ Injective f ∧ IsClosedMap f where
+  mp h := ⟨h.continuous, h.injective, h.isClosedMap⟩
+  mpr h := .of_continuous_injective_isClosedMap h.1 h.2.1 h.2.2
 
 protected theorem id : IsClosedEmbedding (@id X) := ⟨.id, IsClosedMap.id.isClosed_range⟩
-
-@[deprecated (since := "2024-10-20")]
-alias _root_.closedEmbedding_id := IsClosedEmbedding.id
 
 theorem comp (hg : IsClosedEmbedding g) (hf : IsClosedEmbedding f) :
     IsClosedEmbedding (g ∘ f) :=

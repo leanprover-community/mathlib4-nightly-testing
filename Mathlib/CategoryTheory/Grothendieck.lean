@@ -5,7 +5,7 @@ Authors: Kim Morrison, Sina Hazratpour
 -/
 import Mathlib.CategoryTheory.Category.Cat.AsSmall
 import Mathlib.CategoryTheory.Elements
-import Mathlib.CategoryTheory.Comma.Over
+import Mathlib.CategoryTheory.Comma.Over.Basic
 
 /-!
 # The Grothendieck construction
@@ -28,6 +28,16 @@ Really we should treat `Cat` as a 2-category, and allow `F` to be a 2-functor.
 There is also a closely related construction starting with `G : Cᵒᵖ ⥤ Cat`,
 where morphisms consists again of `β : b ⟶ b'` and `φ : f ⟶ (F.map (op β)).obj f'`.
 
+## Notable constructions
+
+- `Grothendieck F` is the Grothendieck construction.
+- Elements of `Grothendieck F` whose base is `c : C` can be transported along `f : c ⟶ d` using
+`transport`.
+- A natural transformation `α : F ⟶ G` induces `map α : Grothendieck F ⥤ Grothendieck G`.
+- The Grothendieck construction and `map` together form a functor (`functor`) from the functor
+category `E ⥤ Cat` to the over category `Over E`.
+- A functor `G : D ⥤ C` induces `pre F G : Grothendieck (G ⋙ F) ⥤ Grothendieck F`.
+
 ## References
 
 See also `CategoryTheory.Functor.Elements` for the category of elements of functor `F : C ⥤ Type`.
@@ -41,6 +51,8 @@ See also `CategoryTheory.Functor.Elements` for the category of elements of funct
 universe w u v u₁ v₁ u₂ v₂
 
 namespace CategoryTheory
+
+open Functor
 
 variable {C : Type u} [Category.{v} C]
 variable {D : Type u₁} [Category.{v₁} D]
@@ -104,22 +116,22 @@ instance : Category (Grothendieck F) where
   id X := Grothendieck.id X
   comp f g := Grothendieck.comp f g
   comp_id {X Y} f := by
-    dsimp; ext
+    ext
     · simp [comp, id]
     · dsimp [comp, id]
       rw [← NatIso.naturality_2 (eqToIso (F.map_id Y.base)) f.fiber]
       simp
-  id_comp f := by dsimp; ext <;> simp [comp, id]
+  id_comp f := by ext <;> simp [comp, id]
   assoc f g h := by
-    dsimp; ext
-    · simp [comp, id]
+    ext
+    · simp [comp]
     · dsimp [comp, id]
       rw [← NatIso.naturality_2 (eqToIso (F.map_comp _ _)) f.fiber]
       simp
 
 @[simp]
 theorem id_base (X : Grothendieck F) :
-    Hom.base (𝟙 X) = 𝟙 X.base := by
+    Hom.base (𝟙 X) = 𝟙 X.base :=
   rfl
 
 @[simp]
@@ -141,13 +153,66 @@ theorem comp_fiber {X Y Z : Grothendieck F} (f : X ⟶ Y) (g : Y ⟶ Z) :
 theorem congr {X Y : Grothendieck F} {f g : X ⟶ Y} (h : f = g) :
     f.fiber = eqToHom (by subst h; rfl) ≫ g.fiber := by
   subst h
-  dsimp
   simp
+
+@[simp]
+theorem base_eqToHom {X Y : Grothendieck F} (h : X = Y) :
+    (eqToHom h).base = eqToHom (congrArg Grothendieck.base h) := by subst h; rfl
+
+@[simp]
+theorem fiber_eqToHom {X Y : Grothendieck F} (h : X = Y) :
+    (eqToHom h).fiber = eqToHom (by subst h; simp) := by subst h; rfl
 
 lemma eqToHom_eq {X Y : Grothendieck F} (hF : X = Y) :
     eqToHom hF = { base := eqToHom (by subst hF; rfl), fiber := eqToHom (by subst hF; simp) } := by
   subst hF
   rfl
+
+section Transport
+
+/--
+If `F : C ⥤ Cat` is a functor and `t : c ⟶ d` is a morphism in `C`, then `transport` maps each
+`c`-based element of `Grothendieck F` to a `d`-based element.
+-/
+@[simps]
+def transport (x : Grothendieck F) {c : C} (t : x.base ⟶ c) : Grothendieck F :=
+  ⟨c, (F.map t).obj x.fiber⟩
+
+/--
+If `F : C ⥤ Cat` is a functor and `t : c ⟶ d` is a morphism in `C`, then `transport` maps each
+`c`-based element `x` of `Grothendieck F` to a `d`-based element `x.transport t`.
+
+`toTransport` is the morphism `x ⟶ x.transport t` induced by `t` and the identity on fibers.
+-/
+@[simps]
+def toTransport (x : Grothendieck F) {c : C} (t : x.base ⟶ c) : x ⟶ x.transport t :=
+  ⟨t, 𝟙 _⟩
+
+/--
+Construct an isomorphism in a Grothendieck construction from isomorphisms in its base and fiber.
+-/
+@[simps]
+def isoMk {X Y : Grothendieck F} (e₁ : X.base ≅ Y.base)
+    (e₂ : (F.map e₁.hom).obj X.fiber ≅ Y.fiber) :
+    X ≅ Y where
+  hom := ⟨e₁.hom, e₂.hom⟩
+  inv := ⟨e₁.inv, (F.map e₁.inv).map e₂.inv ≫
+    eqToHom (Functor.congr_obj (F.mapIso e₁).hom_inv_id X.fiber)⟩
+  hom_inv_id := Grothendieck.ext _ _ (by simp) (by simp)
+  inv_hom_id := Grothendieck.ext _ _ (by simp) (by
+    have := Functor.congr_hom (F.mapIso e₁).inv_hom_id e₂.inv
+    dsimp at this
+    simp [this])
+
+/--
+If `F : C ⥤ Cat` and `x : Grothendieck F`, then every `C`-isomorphism `α : x.base ≅ c` induces
+an isomorphism between `x` and its transport along `α`
+-/
+@[simps!]
+def transportIso (x : Grothendieck F) {c : C} (α : x.base ≅ c) :
+    x.transport α.hom ≅ x := (isoMk α (Iso.refl _)).symm
+
+end Transport
 section
 
 variable (F)
@@ -179,10 +244,11 @@ def map (α : F ⟶ G) : Grothendieck F ⥤ Grothendieck G where
   map_comp {X Y Z} f g := by
     dsimp
     congr 1
-    simp only [comp_fiber f g, ← Category.assoc, Functor.map_comp, eqToHom_map]
+    simp only [← Category.assoc, Functor.map_comp, eqToHom_map]
     congr 1
-    simp only [Cat.eqToHom_app, Cat.comp_obj, eqToHom_trans, eqToHom_map, Category.assoc]
-    erw [Functor.congr_hom (α.naturality g.base).symm f.fiber]
+    simp only [Cat.eqToHom_app, Cat.comp_obj, eqToHom_trans, eqToHom_map, Category.assoc,
+      ← Cat.comp_map]
+    rw [Functor.congr_hom (α.naturality g.base).symm f.fiber]
     simp
 
 theorem map_obj {α : F ⟶ G} (X : Grothendieck F) :
@@ -192,7 +258,7 @@ theorem map_map {α : F ⟶ G} {X Y : Grothendieck F} {f : X ⟶ Y} :
     (Grothendieck.map α).map f =
     ⟨f.base, (eqToHom (α.naturality f.base).symm).app X.fiber ≫ (α.app Y.base).map f.fiber⟩ := rfl
 
-/-- The functor `Grothendieck.map α : Grothendieck F ⥤ Grothendieck G` lies over `C`.-/
+/-- The functor `Grothendieck.map α : Grothendieck F ⥤ Grothendieck G` lies over `C`. -/
 theorem functor_comp_forget {α : F ⟶ G} :
     Grothendieck.map α ⋙ Grothendieck.forget G = Grothendieck.forget F := rfl
 
@@ -205,7 +271,7 @@ theorem map_id_eq : map (𝟙 F) = 𝟙 (Cat.of <| Grothendieck <| F) := by
     rfl
 
 /-- Making the equality of functors into an isomorphism. Note: we should avoid equality of functors
-if possible, and we should prefer `map_id_iso` to `map_id_eq` whenever we can. -/
+if possible, and we should prefer `mapIdIso` to `map_id_eq` whenever we can. -/
 def mapIdIso : map (𝟙 F) ≅ 𝟙 (Cat.of <| Grothendieck <| F) := eqToIso map_id_eq
 
 variable {H : C ⥤ Cat}
@@ -255,6 +321,7 @@ def compAsSmallFunctorEquivalence :
   counitIso := Iso.refl _
   unitIso := Iso.refl _
 
+variable {F} in
 /-- Mapping a Grothendieck construction along the whiskering of any natural transformation
 `α : F ⟶ G` with the functor `asSmallFunctor : Cat ⥤ Cat` is naturally isomorphic to conjugating
 `map α` with the equivalence between `Grothendieck (F ⋙ asSmallFunctor)` and `Grothendieck F`. -/
@@ -280,7 +347,7 @@ def mapWhiskerRightAsSmallFunctor (α : F ⟶ G) :
           eqToHom_map, id_fiber, Category.assoc, eqToHom_trans_assoc,
           compAsSmallFunctorEquivalenceInverse_map_fiber,
           compAsSmallFunctorEquivalenceFunctor_map_fiber, eqToHom_comp_iff, comp_eqToHom_iff]
-        simp only [eqToHom_trans_assoc, Category.assoc, conj_eqToHom_iff_heq']
+        simp only [conj_eqToHom_iff_heq']
         rw [G.map_id]
         simp )
 
@@ -288,7 +355,7 @@ end
 
 /-- The Grothendieck construction as a functor from the functor category `E ⥤ Cat` to the
 over category `Over E`. -/
-def functor {E : Cat.{v,u}} : (E ⥤ Cat.{v,u}) ⥤ Over (T := Cat.{v,u}) E where
+def functor {E : Cat.{v, u}} : (E ⥤ Cat.{v,u}) ⥤ Over (T := Cat.{v,u}) E where
   obj F := Over.mk (X := E) (Y := Cat.of (Grothendieck F)) (Grothendieck.forget F)
   map {_ _} α := Over.homMk (X:= E) (Grothendieck.map α) Grothendieck.functor_comp_forget
   map_id F := by
@@ -307,11 +374,7 @@ def grothendieckTypeToCatFunctor : Grothendieck (G ⋙ typeToCat) ⥤ G.Elements
   map f := ⟨f.1, f.2.1.1⟩
 
 /-- Auxiliary definition for `grothendieckTypeToCat`, to speed up elaboration. -/
--- Porting note:
--- `simps` is incorrectly producing Prop-valued projections here,
--- so we manually specify which ones to produce.
--- See https://leanprover.zulipchat.com/#narrow/stream/144837-PR-reviews/topic/!4.233204.20simps.20bug.20.28Grothendieck.20construction.29
-@[simps! obj_base obj_fiber_as map_base]
+@[simps!]
 def grothendieckTypeToCatInverse : G.Elements ⥤ Grothendieck (G ⋙ typeToCat) where
   obj X := ⟨X.1, ⟨X.2⟩⟩
   map f := ⟨f.1, ⟨⟨f.2⟩⟩⟩
@@ -320,12 +383,7 @@ def grothendieckTypeToCatInverse : G.Elements ⥤ Grothendieck (G ⋙ typeToCat)
 (thought of as a functor to `Cat` by realising a type as a discrete category)
 is the same as the 'category of elements' construction.
 -/
--- See porting note on grothendieckTypeToCatInverse.
--- We just want to turn off grothendieckTypeToCat_inverse_map_fiber_down_down,
--- so have to list the complement here for `@[simps]`.
-@[simps! functor_obj_fst functor_obj_snd functor_map_coe inverse_obj_base inverse_obj_fiber_as
-  inverse_map_base unitIso_hom_app_base unitIso_hom_app_fiber unitIso_inv_app_base
-  unitIso_inv_app_fiber counitIso_hom_app_coe counitIso_inv_app_coe]
+@[simps!]
 def grothendieckTypeToCat : Grothendieck (G ⋙ typeToCat) ≌ G.Elements where
   functor := grothendieckTypeToCatFunctor G
   inverse := grothendieckTypeToCatInverse G
@@ -351,11 +409,13 @@ def grothendieckTypeToCat : Grothendieck (G ⋙ typeToCat) ≌ G.Elements where
         rfl)
   functor_unitIso_comp := by
     rintro ⟨_, ⟨⟩⟩
-    dsimp
     simp
     rfl
 
-variable (F) in
+section Pre
+
+variable (F)
+
 /-- Applying a functor `G : D ⥤ C` to the base of the Grothendieck construction induces a functor
 `Grothendieck (G ⋙ F) ⥤ Grothendieck F`. -/
 @[simps]
@@ -365,13 +425,100 @@ def pre (G : D ⥤ C) : Grothendieck (G ⋙ F) ⥤ Grothendieck F where
   map_id X := Grothendieck.ext _ _ (G.map_id _) (by simp)
   map_comp f g := Grothendieck.ext _ _ (G.map_comp _ _) (by simp)
 
+@[simp]
+theorem pre_id : pre F (𝟭 C) = 𝟭 _ := rfl
+
+/--
+An natural isomorphism between functors `G ≅ H` induces a natural isomorphism between the canonical
+morphism `pre F G` and `pre F H`, up to composition with
+`Grothendieck (G ⋙ F) ⥤ Grothendieck (H ⋙ F)`.
+-/
+def preNatIso {G H : D ⥤ C} (α : G ≅ H) :
+    pre F G ≅ map (whiskerRight α.hom F) ⋙ (pre F H) :=
+  NatIso.ofComponents
+    (fun X => (transportIso ⟨G.obj X.base, X.fiber⟩ (α.app X.base)).symm)
+    (fun f => by fapply Grothendieck.ext <;> simp)
+
+/--
+Given an equivalence of categories `G`, `preInv _ G` is the (weak) inverse of the `pre _ G.functor`.
+-/
+def preInv (G : D ≌ C) : Grothendieck F ⥤ Grothendieck (G.functor ⋙ F) :=
+  map (whiskerRight G.counitInv F) ⋙ Grothendieck.pre (G.functor ⋙ F) G.inverse
+
+variable {F} in
+lemma pre_comp_map (G: D ⥤ C) {H : C ⥤ Cat} (α : F ⟶ H) :
+    pre F G ⋙ map α = map (whiskerLeft G α) ⋙ pre H G := rfl
+
+variable {F} in
+lemma pre_comp_map_assoc (G: D ⥤ C) {H : C ⥤ Cat} (α : F ⟶ H) {E : Type*} [Category E]
+    (K : Grothendieck H ⥤ E) : pre F G ⋙ map α ⋙ K= map (whiskerLeft G α) ⋙ pre H G ⋙ K := rfl
+
+variable {E : Type*} [Category E] in
+@[simp]
+lemma pre_comp (G : D ⥤ C) (H : E ⥤ D) : pre F (H ⋙ G) = pre (G ⋙ F) H ⋙ pre F G := rfl
+
+/--
+Let `G` be an equivalence of categories. The functor induced via `pre` by `G.functor ⋙ G.inverse`
+is naturally isomorphic to the functor induced via `map` by a whiskered version of `G`'s inverse
+unit.
+-/
+protected def preUnitIso (G : D ≌ C) :
+    map (whiskerRight G.unitInv _) ≅ pre (G.functor ⋙ F) (G.functor ⋙ G.inverse) :=
+  preNatIso _ G.unitIso.symm |>.symm
+
+/--
+Given a functor `F : C ⥤ Cat` and an equivalence of categories `G : D ≌ C`, the functor
+`pre F G.functor` is an equivalence between `Grothendieck (G.functor ⋙ F)` and `Grothendieck F`.
+-/
+def preEquivalence (G : D ≌ C) : Grothendieck (G.functor ⋙ F) ≌ Grothendieck F where
+  functor := pre F G.functor
+  inverse := preInv F G
+  unitIso := by
+    refine (eqToIso ?_)
+      ≪≫ (Grothendieck.preUnitIso F G |> isoWhiskerLeft (map _))
+      ≪≫ (pre_comp_map_assoc G.functor _ _ |> Eq.symm |> eqToIso)
+    calc
+      _ = map (𝟙 _) := map_id_eq.symm
+      _ = map _ := ?_
+      _ = map _ ⋙ map _ := map_comp_eq _ _
+    congr; ext X
+    simp only [Functor.comp_obj, Functor.comp_map, ← Functor.map_comp, Functor.id_obj,
+      Functor.map_id, NatTrans.comp_app, NatTrans.id_app, whiskerLeft_app, whiskerRight_app,
+      Equivalence.counitInv_functor_comp]
+  counitIso := preNatIso F G.counitIso.symm |>.symm
+  functor_unitIso_comp := by
+    intro X
+    simp only [preInv, Grothendieck.preUnitIso, pre_id,
+      Iso.trans_hom, eqToIso.hom, eqToHom_app, eqToHom_refl, isoWhiskerLeft_hom, NatTrans.comp_app]
+    fapply Grothendieck.ext <;> simp [preNatIso, transportIso]
+
+variable {F} in
+/--
+Let `F, F' : C ⥤ Cat` be functor, `G : D ≌ C` an equivalence and `α : F ⟶ F'` a natural
+transformation.
+
+Left-whiskering `α` by `G` and then taking the Grothendieck construction is, up to isomorphism,
+the same as taking the Grothendieck construction of `α` and using the equivalences `pre F G`
+and `pre F' G` to match the expected type:
+
+```
+Grothendieck (G.functor ⋙ F) ≌ Grothendieck F ⥤ Grothendieck F' ≌ Grothendieck (G.functor ⋙ F')
+```
+-/
+def mapWhiskerLeftIsoConjPreMap {F' : C ⥤ Cat} (G : D ≌ C) (α : F ⟶ F') :
+    map (whiskerLeft G.functor α) ≅
+      (preEquivalence F G).functor ⋙ map α ⋙ (preEquivalence F' G).inverse :=
+  (Functor.rightUnitor _).symm ≪≫ isoWhiskerLeft _ (preEquivalence F' G).unitIso
+
+end Pre
+
 section FunctorFrom
 
 variable {E : Type*} [Category E]
 
 variable (F) in
 /-- The inclusion of a fiber `F.obj c` of a functor `F : C ⥤ Cat` into its Grothendieck
-construction.-/
+construction. -/
 @[simps obj map]
 def ι (c : C) : F.obj c ⥤ Grothendieck F where
   obj d := ⟨c, d⟩
@@ -423,6 +570,11 @@ def ιCompFunctorFrom (c : C) : ι F c ⋙ (functorFrom fib hom hom_id hom_comp)
   NatIso.ofComponents (fun _ => Iso.refl _) (fun f => by simp [hom_id])
 
 end FunctorFrom
+
+/-- The fiber inclusion `ι F c` composed with `map α` is isomorphic to `α.app c ⋙ ι F' c`. -/
+@[simps!]
+def ιCompMap {F' : C ⥤ Cat} (α : F ⟶ F') (c : C) : ι F c ⋙ map α ≅ α.app c ⋙ ι F' c :=
+  NatIso.ofComponents (fun X => Iso.refl _) (fun f => by simp [map])
 
 end Grothendieck
 

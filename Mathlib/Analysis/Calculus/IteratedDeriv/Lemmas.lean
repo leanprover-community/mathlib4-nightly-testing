@@ -3,7 +3,7 @@ Copyright (c) 2023 Chris Birkbeck. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chris Birkbeck, Ruben Van de Velde
 -/
-import Mathlib.Analysis.Calculus.ContDiff.Basic
+import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.Calculus.Deriv.Shift
 import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
@@ -35,7 +35,8 @@ theorem iteratedDerivWithin_congr (hfg : Set.EqOn f g s) :
     exact derivWithin_congr (IH hfg) (IH hfg hy)
 
 include h hx in
-theorem iteratedDerivWithin_add (hf : ContDiffOn 𝕜 n f s) (hg : ContDiffOn 𝕜 n g s) :
+theorem iteratedDerivWithin_add
+    (hf : ContDiffWithinAt 𝕜 n f s x) (hg : ContDiffWithinAt 𝕜 n g s x) :
     iteratedDerivWithin n (f + g) s x =
       iteratedDerivWithin n f s x + iteratedDerivWithin n g s x := by
   simp_rw [iteratedDerivWithin, iteratedFDerivWithin_add_apply hf hg h hx,
@@ -44,20 +45,16 @@ theorem iteratedDerivWithin_add (hf : ContDiffOn 𝕜 n f s) (hg : ContDiffOn �
 theorem iteratedDerivWithin_const_add (hn : 0 < n) (c : F) :
     iteratedDerivWithin n (fun z => c + f z) s x = iteratedDerivWithin n f s x := by
   obtain ⟨n, rfl⟩ := n.exists_eq_succ_of_ne_zero hn.ne'
-  rcases uniqueDiffWithinAt_or_nhdsWithin_eq_bot s x with hxs | hxs; swap
-  · simp [iteratedDerivWithin_succ, derivWithin_zero_of_isolated hxs]
   rw [iteratedDerivWithin_succ', iteratedDerivWithin_succ']
-  congr with y
+  congr 1 with y
   exact derivWithin_const_add _
 
 theorem iteratedDerivWithin_const_sub (hn : 0 < n) (c : F) :
     iteratedDerivWithin n (fun z => c - f z) s x = iteratedDerivWithin n (fun z => -f z) s x := by
   obtain ⟨n, rfl⟩ := n.exists_eq_succ_of_ne_zero hn.ne'
-  rcases uniqueDiffWithinAt_or_nhdsWithin_eq_bot s x with hxs | hxs; swap
-  · simp [iteratedDerivWithin_succ, derivWithin_zero_of_isolated hxs]
   rw [iteratedDerivWithin_succ', iteratedDerivWithin_succ']
-  congr with y
-  rw [derivWithin.neg]
+  congr 1 with y
+  rw [derivWithin.fun_neg]
   exact derivWithin_const_sub _
 
 @[deprecated (since := "2024-12-10")]
@@ -82,23 +79,26 @@ theorem iteratedDerivWithin_neg :
   induction n generalizing x with
   | zero => simp
   | succ n IH =>
-    simp only [iteratedDerivWithin_succ, derivWithin_neg]
+    simp only [iteratedDerivWithin_succ]
     rw [← derivWithin.neg]
     congr with y
     exact IH
 
 variable (f) in
-theorem iteratedDerivWithin_neg' :
+theorem iteratedDerivWithin_fun_neg :
     iteratedDerivWithin n (fun z => -f z) s x = -iteratedDerivWithin n f s x :=
   iteratedDerivWithin_neg f
 
+@[deprecated (since := "2025-06-24")] alias iteratedDerivWithin_neg' := iteratedDerivWithin_fun_neg
+
 include h hx
 
-theorem iteratedDerivWithin_sub (hf : ContDiffOn 𝕜 n f s) (hg : ContDiffOn 𝕜 n g s) :
+theorem iteratedDerivWithin_sub
+    (hf : ContDiffWithinAt 𝕜 n f s x) (hg : ContDiffWithinAt 𝕜 n g s x) :
     iteratedDerivWithin n (f - g) s x =
       iteratedDerivWithin n f s x - iteratedDerivWithin n g s x := by
   rw [sub_eq_add_neg, sub_eq_add_neg, Pi.neg_def, iteratedDerivWithin_add hx h hf hg.neg,
-    iteratedDerivWithin_neg']
+    iteratedDerivWithin_fun_neg]
 
 theorem iteratedDerivWithin_comp_const_smul (hf : ContDiffOn 𝕜 n f s) (c : 𝕜)
     (hs : Set.MapsTo (c * ·) s s) :
@@ -120,7 +120,7 @@ theorem iteratedDerivWithin_comp_const_smul (hf : ContDiffOn 𝕜 n f s) (c : �
       · exact differentiableWithinAt_id'.const_mul _
       · exact hs
     rw [iteratedDerivWithin_succ, derivWithin_congr h₀ (ih hx hf.of_succ),
-      derivWithin_const_smul (c ^ n) h₂, iteratedDerivWithin_succ,
+      derivWithin_fun_const_smul (c ^ n) h₂, iteratedDerivWithin_succ,
       ← Function.comp_def,
       derivWithin.scomp x h₁ (differentiableWithinAt_id'.const_mul _) hs,
       derivWithin_const_mul _ differentiableWithinAt_id', derivWithin_id' _ _ (h _ hx),
@@ -128,11 +128,10 @@ theorem iteratedDerivWithin_comp_const_smul (hf : ContDiffOn 𝕜 n f s) (c : �
 
 end
 
-lemma iteratedDeriv_add (hf : ContDiff 𝕜 n f) (hg : ContDiff 𝕜 n g) :
+lemma iteratedDeriv_add (hf : ContDiffAt 𝕜 n f x) (hg : ContDiffAt 𝕜 n g x) :
     iteratedDeriv n (f + g) x = iteratedDeriv n f x + iteratedDeriv n g x := by
   simpa only [iteratedDerivWithin_univ] using
-    iteratedDerivWithin_add (Set.mem_univ _) uniqueDiffOn_univ
-      (contDiffOn_univ.mpr hf) (contDiffOn_univ.mpr hg)
+    iteratedDerivWithin_add (Set.mem_univ _) uniqueDiffOn_univ hf hg
 
 theorem iteratedDeriv_const_add (hn : 0 < n) (c : F) :
     iteratedDeriv n (fun z => c + f z) x = iteratedDeriv n f x := by
@@ -142,15 +141,30 @@ theorem iteratedDeriv_const_sub (hn : 0 < n) (c : F) :
     iteratedDeriv n (fun z => c - f z) x = iteratedDeriv n (-f) x := by
   simpa only [← iteratedDerivWithin_univ] using iteratedDerivWithin_const_sub hn c
 
-lemma iteratedDeriv_neg (n : ℕ) (f : 𝕜 → F) (a : 𝕜) :
+lemma iteratedDeriv_fun_neg (n : ℕ) (f : 𝕜 → F) (a : 𝕜) :
     iteratedDeriv n (fun x ↦ -(f x)) a = -(iteratedDeriv n f a) := by
   simpa only [← iteratedDerivWithin_univ] using iteratedDerivWithin_neg f
 
-lemma iteratedDeriv_sub (hf : ContDiff 𝕜 n f) (hg : ContDiff 𝕜 n g) :
+lemma iteratedDeriv_neg (n : ℕ) (f : 𝕜 → F) (a : 𝕜) :
+    iteratedDeriv n (-f) a = -(iteratedDeriv n f a) := by
+  simpa only [← iteratedDerivWithin_univ] using iteratedDerivWithin_neg f
+
+lemma iteratedDeriv_sub (hf : ContDiffAt 𝕜 n f x) (hg : ContDiffAt 𝕜 n g x) :
     iteratedDeriv n (f - g) x = iteratedDeriv n f x - iteratedDeriv n g x := by
   simpa only [iteratedDerivWithin_univ] using
-    iteratedDerivWithin_sub (Set.mem_univ _) uniqueDiffOn_univ
-      (contDiffOn_univ.mpr hf) (contDiffOn_univ.mpr hg)
+    iteratedDerivWithin_sub (Set.mem_univ _) uniqueDiffOn_univ hf hg
+
+theorem iteratedDeriv_const_smul {n : ℕ} {f : 𝕜 → F} (h : ContDiffAt 𝕜 n f x) (c : 𝕜) :
+    iteratedDeriv n (c • f) x = c • iteratedDeriv n f x := by
+  simpa only [iteratedDerivWithin_univ] using
+    iteratedDerivWithin_const_smul (Set.mem_univ x) uniqueDiffOn_univ
+      c (contDiffWithinAt_univ.mpr h)
+
+theorem iteratedDeriv_const_mul {n : ℕ} {f : 𝕜 → 𝕜} (h : ContDiffAt 𝕜 n f x) (c : 𝕜) :
+    iteratedDeriv n (fun z => c * f z) x = c * iteratedDeriv n f x := by
+  simpa only [iteratedDerivWithin_univ] using
+    iteratedDerivWithin_const_mul (Set.mem_univ x) uniqueDiffOn_univ
+      c (contDiffWithinAt_univ.mpr h)
 
 theorem iteratedDeriv_comp_const_smul {n : ℕ} {f : 𝕜 → F} (h : ContDiff 𝕜 n f) (c : 𝕜) :
     iteratedDeriv n (fun x => f (c * x)) = fun x => c ^ n • iteratedDeriv n f (c * x) := by
@@ -159,15 +173,9 @@ theorem iteratedDeriv_comp_const_smul {n : ℕ} {f : 𝕜 → F} (h : ContDiff �
     iteratedDerivWithin_comp_const_smul (Set.mem_univ x) uniqueDiffOn_univ (contDiffOn_univ.mpr h)
       c (Set.mapsTo_univ _ _)
 
-@[deprecated (since := "2024-12-20")]
-alias iteratedDeriv_const_smul := iteratedDeriv_comp_const_smul
-
 theorem iteratedDeriv_comp_const_mul {n : ℕ} {f : 𝕜 → 𝕜} (h : ContDiff 𝕜 n f) (c : 𝕜) :
     iteratedDeriv n (fun x => f (c * x)) = fun x => c ^ n * iteratedDeriv n f (c * x) := by
   simpa only [smul_eq_mul] using iteratedDeriv_comp_const_smul h c
-
-@[deprecated (since := "2024-12-20")]
-alias iteratedDeriv_const_mul := iteratedDeriv_comp_const_mul
 
 lemma iteratedDeriv_comp_neg (n : ℕ) (f : 𝕜 → F) (a : 𝕜) :
     iteratedDeriv n (fun x ↦ f (-x)) a = (-1 : 𝕜) ^ n • iteratedDeriv n f (-a) := by
@@ -176,7 +184,7 @@ lemma iteratedDeriv_comp_neg (n : ℕ) (f : 𝕜 → F) (a : 𝕜) :
   · have ih' : iteratedDeriv n (fun x ↦ f (-x)) = fun x ↦ (-1 : 𝕜) ^ n • iteratedDeriv n f (-x) :=
       funext ih
     rw [iteratedDeriv_succ, iteratedDeriv_succ, ih', pow_succ', neg_mul, one_mul,
-      deriv_comp_neg (f := fun x ↦ (-1 : 𝕜) ^ n • iteratedDeriv n f x), deriv_const_smul',
+      deriv_comp_neg (f := fun x ↦ (-1 : 𝕜) ^ n • iteratedDeriv n f x), deriv_fun_const_smul',
       neg_smul]
 
 open Topology in

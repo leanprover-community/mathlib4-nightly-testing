@@ -90,7 +90,7 @@ theorem bounded_at_infty_comp_ofComplex [ModularFormClass F Γ k] :
     using (ModularFormClass.bdd_at_infty f 1).comp_tendsto tendsto_comap_im_ofComplex
 
 theorem differentiableAt_cuspFunction [NeZero n] [ModularFormClass F Γ(n) k]
-    {q : ℂ} (hq : q.abs < 1) :
+    {q : ℂ} (hq : ‖q‖ < 1) :
     DifferentiableAt ℂ (cuspFunction n f) q := by
   have npos : 0 < (n : ℝ) := mod_cast (Nat.pos_iff_ne_zero.mpr (NeZero.ne _))
   rcases eq_or_ne q 0 with rfl | hq'
@@ -100,7 +100,7 @@ theorem differentiableAt_cuspFunction [NeZero n] [ModularFormClass F Γ(n) k]
       (bounded_at_infty_comp_ofComplex f)
   · exact Periodic.qParam_right_inv npos.ne' hq' ▸
       (periodic_comp_ofComplex n f).differentiableAt_cuspFunction npos.ne'
-        <| differentiableAt_comp_ofComplex _ <| Periodic.im_invQParam_pos_of_abs_lt_one npos hq hq'
+        <| differentiableAt_comp_ofComplex _ <| Periodic.im_invQParam_pos_of_norm_lt_one npos hq hq'
 
 lemma analyticAt_cuspFunction_zero [NeZero n] [ModularFormClass F Γ(n) k] :
     AnalyticAt ℂ (cuspFunction n f) 0 :=
@@ -117,9 +117,9 @@ lemma qExpansion_coeff (m : ℕ) :
   simp [qExpansion]
 
 lemma hasSum_qExpansion_of_abs_lt [NeZero n] [ModularFormClass F Γ(n) k]
-    {q : ℂ} (hq : q.abs < 1) :
+    {q : ℂ} (hq : ‖q‖ < 1) :
     HasSum (fun m : ℕ ↦ (qExpansion n f).coeff ℂ m • q ^ m) (cuspFunction n f q) := by
-  simp only [qExpansion_coeff, ← eq_cuspFunction n f]
+  simp only [qExpansion_coeff]
   have hdiff : DifferentiableOn ℂ (cuspFunction n f) (Metric.ball 0 1) := by
     refine fun z hz ↦ (differentiableAt_cuspFunction n f ?_).differentiableWithinAt
     simpa using hz
@@ -130,7 +130,7 @@ lemma hasSum_qExpansion_of_abs_lt [NeZero n] [ModularFormClass F Γ(n) k]
 lemma hasSum_qExpansion [NeZero n] [ModularFormClass F Γ(n) k] (τ : ℍ) :
     HasSum (fun m : ℕ ↦ (qExpansion n f).coeff ℂ m • 𝕢 n τ ^ m) (f τ) := by
   simpa only [eq_cuspFunction n f] using
-    hasSum_qExpansion_of_abs_lt n f (τ.abs_qParam_lt_one n)
+    hasSum_qExpansion_of_abs_lt n f (τ.norm_qParam_lt_one n)
 
 /--
 The `q`-expansion of a level `n` modular form, bundled as a `FormalMultilinearSeries`.
@@ -154,15 +154,15 @@ lemma qExpansionFormalMultilinearSeries_radius [NeZero n] [ModularFormClass F Γ
   apply FormalMultilinearSeries.le_radius_of_summable
   simp only [qExpansionFormalMultilinearSeries_apply_norm]
   rw [← r.abs_eq]
-  simp_rw [pow_abs, ← Complex.abs_ofReal, ofReal_pow, ← Complex.norm_eq_abs, ← norm_mul]
+  simp_rw [← Real.norm_eq_abs, ← Complex.norm_real, ← norm_pow, ← norm_mul]
   exact (hasSum_qExpansion_of_abs_lt n f (q := r) (by simpa using hr)).summable.norm
 
 /-- The `q`-expansion of `f` is an `FPowerSeries` representing `cuspFunction n f`. -/
 lemma hasFPowerSeries_cuspFunction [NeZero n] [ModularFormClass F Γ(n) k] :
     HasFPowerSeriesOnBall (cuspFunction n f) (qExpansionFormalMultilinearSeries n f) 0 1 := by
   refine ⟨qExpansionFormalMultilinearSeries_radius n f, zero_lt_one, fun hy ↦ ?_⟩
-  rw [EMetric.mem_ball, edist_zero_right, ENNReal.coe_lt_one_iff, ← NNReal.coe_lt_one,
-    coe_nnnorm, norm_eq_abs] at hy
+  rw [EMetric.mem_ball, edist_zero_right, enorm_eq_nnnorm, ENNReal.coe_lt_one_iff,
+    ← NNReal.coe_lt_one, coe_nnnorm] at hy
   simpa [qExpansionFormalMultilinearSeries] using hasSum_qExpansion_of_abs_lt n f hy
 
 end ModularFormClass

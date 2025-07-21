@@ -386,7 +386,6 @@ theorem nndist_eq_hammingDist (x y : Hamming β) :
     nndist x y = hammingDist (ofHamming x) (ofHamming y) :=
   rfl
 
--- Porting note (https://github.com/leanprover-community/mathlib4/issues/10754): new instance
 instance : DiscreteTopology (Hamming β) := ⟨rfl⟩
 
 instance : MetricSpace (Hamming β) := .ofT0PseudoMetricSpace _
@@ -402,7 +401,7 @@ instance [∀ i, AddGroup (β i)] : NormedAddGroup (Hamming β) where
   dist_eq := by push_cast; exact mod_cast hammingDist_eq_hammingNorm
 
 instance [∀ i, AddCommGroup (β i)] : NormedAddCommGroup (Hamming β) where
-  dist_eq := by push_cast; exact mod_cast hammingDist_eq_hammingNorm
+  dist_eq := fun x y => NormedAddGroup.dist_eq x y
 
 @[simp, push_cast]
 theorem nnnorm_eq_hammingNorm [∀ i, AddGroup (β i)] (x : Hamming β) :
