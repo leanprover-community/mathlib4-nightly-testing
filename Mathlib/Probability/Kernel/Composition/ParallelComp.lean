@@ -149,7 +149,8 @@ instance : IsSFiniteKernel (κ ∥ₖ η) := by
   swap
   · simp only [h, not_false_eq_true, parallelComp_of_not_isSFiniteKernel_right]
     infer_instance
-  simp_rw [← kernel_sum_seq κ, ← kernel_sum_seq η, parallelComp_sum_left, parallelComp_sum_right]
+  rw [← kernel_sum_seq κ, ← kernel_sum_seq η]
+  simp_rw [parallelComp_sum_left, parallelComp_sum_right]
   infer_instance
 
 end ProbabilityTheory.Kernel

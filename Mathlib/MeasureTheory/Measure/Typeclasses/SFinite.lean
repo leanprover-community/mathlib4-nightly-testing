@@ -61,7 +61,7 @@ lemma sfinite_sum_of_countable [Countable ι]
 
 instance [Countable ι] (m : ι → Measure α) [∀ n, SFinite (m n)] : SFinite (Measure.sum m) := by
   change SFinite (Measure.sum (fun i ↦ m i))
-  simp_rw [← sum_sfiniteSeq (m _), Measure.sum_sum]
+  simp_rw +singlePass [← sum_sfiniteSeq (m _), Measure.sum_sum]
   apply sfinite_sum_of_countable
 
 instance [SFinite μ] [SFinite ν] : SFinite (μ + ν) := by

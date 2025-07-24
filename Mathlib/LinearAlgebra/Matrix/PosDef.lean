@@ -331,8 +331,7 @@ lemma posSemidef_iff_eq_conjTranspose_mul_self {A : Matrix n n 𝕜} :
     PosSemidef A ↔ ∃ (B : Matrix n n 𝕜), A = Bᴴ * B := by
   classical
   refine ⟨fun hA ↦ ⟨hA.sqrt, ?_⟩, fun ⟨B, hB⟩ ↦ (hB ▸ posSemidef_conjTranspose_mul_self B)⟩
-  simp_rw [← PosSemidef.sq_sqrt hA, pow_two]
-  rw [hA.posSemidef_sqrt.1]
+  rw [hA.posSemidef_sqrt.1, ← pow_two, PosSemidef.sq_sqrt hA]
 
 @[deprecated (since := "2025-05-07")]
 alias posSemidef_iff_eq_transpose_mul_self := posSemidef_iff_eq_conjTranspose_mul_self

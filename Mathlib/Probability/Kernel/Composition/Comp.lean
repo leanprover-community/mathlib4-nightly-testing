@@ -199,7 +199,8 @@ instance IsFiniteKernel.comp (η : Kernel β γ) [IsFiniteKernel η] (κ : Kerne
 
 instance IsSFiniteKernel.comp (η : Kernel β γ) [IsSFiniteKernel η] (κ : Kernel α β)
     [IsSFiniteKernel κ] : IsSFiniteKernel (η ∘ₖ κ) := by
-  simp_rw [← kernel_sum_seq κ, ← kernel_sum_seq η, comp_sum_left, comp_sum_right]
+  rw [← kernel_sum_seq κ, ← kernel_sum_seq η]
+  simp_rw [comp_sum_left, comp_sum_right]
   infer_instance
 
 end Kernel

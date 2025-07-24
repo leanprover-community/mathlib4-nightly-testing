@@ -673,16 +673,16 @@ theorem dirac_prod_dirac {x : α} {y : β} : (dirac x).prod (dirac y) = dirac (x
   rw [prod_dirac, map_dirac measurable_prodMk_right]
 
 theorem prod_add (ν' : Measure β) [SFinite ν'] : μ.prod (ν + ν') = μ.prod ν + μ.prod ν' := by
-  simp_rw [← sum_sfiniteSeq ν, ← sum_sfiniteSeq ν', sum_add_sum, ← sum_sfiniteSeq μ, prod_sum,
-    sum_add_sum]
+  rw [← sum_sfiniteSeq ν, ← sum_sfiniteSeq ν', ← sum_sfiniteSeq μ]
+  simp_rw [sum_add_sum, prod_sum, sum_add_sum]
   congr
   ext1 i
   refine prod_eq fun s t _ _ => ?_
   simp_rw [add_apply, prod_prod, left_distrib]
 
 theorem add_prod (μ' : Measure α) [SFinite μ'] : (μ + μ').prod ν = μ.prod ν + μ'.prod ν := by
-  simp_rw [← sum_sfiniteSeq μ, ← sum_sfiniteSeq μ', sum_add_sum, ← sum_sfiniteSeq ν, prod_sum,
-    sum_add_sum]
+  rw [← sum_sfiniteSeq μ, ← sum_sfiniteSeq μ', ← sum_sfiniteSeq ν]
+  simp_rw [sum_add_sum, prod_sum, sum_add_sum]
   congr
   ext1 i
   refine prod_eq fun s t _ _ => ?_
@@ -699,8 +699,9 @@ theorem prod_zero (μ : Measure α) : μ.prod (0 : Measure β) = 0 := by simp [M
 theorem map_prod_map {δ} [MeasurableSpace δ] {f : α → β} {g : γ → δ} (μa : Measure α)
     (μc : Measure γ) [SFinite μa] [SFinite μc] (hf : Measurable f) (hg : Measurable g) :
     (map f μa).prod (map g μc) = map (Prod.map f g) (μa.prod μc) := by
-  simp_rw [← sum_sfiniteSeq μa, ← sum_sfiniteSeq μc, map_sum hf.aemeasurable,
-    map_sum hg.aemeasurable, prod_sum, map_sum (hf.prodMap hg).aemeasurable]
+  rw [← sum_sfiniteSeq μa, ← sum_sfiniteSeq μc]
+  simp_rw [map_sum hf.aemeasurable, map_sum hg.aemeasurable, prod_sum,
+    map_sum (hf.prodMap hg).aemeasurable]
   congr
   ext1 i
   refine prod_eq fun s t hs ht => ?_
