@@ -81,8 +81,7 @@ instance : IsMon_Hom (𝟙 M) where
 
 instance (f : M ⟶ N) (g : N ⟶ O) [IsMon_Hom f] [IsMon_Hom g] : IsMon_Hom (f ≫ g) where
 
-instance {M N : C} [Mon_Class M] [Mon_Class N] (f : M ≅ N) [IsMon_Hom f.hom] :
-   IsMon_Hom f.inv where
+instance {M N : C} [Mon_Class M] [Mon_Class N] (f : M ≅ N) [IsMon_Hom f.hom] : IsMon_Hom f.inv where
   one_hom := by simp [Iso.comp_inv_eq]
   mul_hom := by simp [Iso.comp_inv_eq]
 
@@ -253,7 +252,7 @@ variable [F.LaxMonoidal] [F'.LaxMonoidal] [G.LaxMonoidal] (X Y : C) [Mon_Class X
   (f : X ⟶ Y) [IsMon_Hom f]
 
 /-- The image of a monoid object under a lax monoidal functor is a monoid object. -/
-abbrev obj.instMon_Class : Mon_Class (F.obj X) where
+abbrev mon_ClassObj : Mon_Class (F.obj X) where
   one := ε F ≫ F.map η
   mul := LaxMonoidal.μ F X X ≫ F.map μ
   one_mul := by simp [← F.map_comp]
@@ -264,7 +263,9 @@ abbrev obj.instMon_Class : Mon_Class (F.obj X) where
     slice_lhs 3 4 => rw [← F.map_comp, Mon_Class.mul_assoc]
     simp
 
-attribute [local instance] obj.instMon_Class
+scoped[Obj] attribute [instance] CategoryTheory.Functor.mon_ClassObj
+
+open scoped Obj
 
 @[reassoc, simp] lemma obj.η_def : (η : 𝟙_ D ⟶ F.obj X) = ε F ≫ F.map η := rfl
 
@@ -331,7 +332,7 @@ end LaxMonoidal
 section Monoidal
 variable [F.Monoidal]
 
-attribute [local instance] obj.instMon_Class
+open scoped Obj
 
 protected instance Full.mapMon [F.Full] [F.Faithful] : F.mapMon.Full where
   map_surjective {X Y} f :=
@@ -566,7 +567,7 @@ theorem Mon_tensor_mul_one (M N : C) [Mon_Class M] [Mon_Class N] :
     (M ⊗ N) ◁ ((λ_ (𝟙_ C)).inv ≫ (η[M] ⊗ₘ η[N])) ≫
         tensorμ M N M N ≫ (μ[M] ⊗ₘ μ[N]) =
       (ρ_ (M ⊗ N)).hom := by
-  simp only [MonoidalCategory.whiskerLeft_comp_assoc]
+  simp only [whiskerLeft_comp_assoc]
   slice_lhs 2 3 => rw [tensorμ_natural_right]
   slice_lhs 3 4 => rw [← tensor_comp, mul_one, mul_one]
   symm
@@ -578,7 +579,7 @@ theorem Mon_tensor_mul_assoc (M N : C) [Mon_Class M] [Mon_Class N] :
       (α_ (M ⊗ N : C) (M ⊗ N) (M ⊗ N)).hom ≫
         ((M ⊗ N : C) ◁ (tensorμ M N M N ≫ (μ ⊗ₘ μ))) ≫
           tensorμ M N M N ≫ (μ ⊗ₘ μ) := by
-  simp only [comp_whiskerRight_assoc, MonoidalCategory.whiskerLeft_comp_assoc]
+  simp only [comp_whiskerRight_assoc, whiskerLeft_comp_assoc]
   slice_lhs 2 3 => rw [tensorμ_natural_left]
   slice_lhs 3 4 => rw [← tensor_comp, mul_assoc, mul_assoc, tensor_comp, tensor_comp]
   slice_lhs 1 3 => rw [tensor_associativity]
@@ -789,13 +790,13 @@ theorem mul_braiding (X Y : C) [Mon_Class X] [Mon_Class Y] :
   dsimp [tensorObj.mul_def]
   simp only [tensorμ, Category.assoc, BraidedCategory.braiding_naturality,
     BraidedCategory.braiding_tensor_right_hom, BraidedCategory.braiding_tensor_left_hom,
-    comp_whiskerRight, whisker_assoc, MonoidalCategory.whiskerLeft_comp, pentagon_assoc,
+    comp_whiskerRight, whisker_assoc, whiskerLeft_comp, pentagon_assoc,
     pentagon_inv_hom_hom_hom_inv_assoc, Iso.inv_hom_id_assoc, whiskerLeft_hom_inv_assoc]
   slice_lhs 3 4 =>
     -- We use symmetry here:
-    rw [← MonoidalCategory.whiskerLeft_comp, ← comp_whiskerRight, SymmetricCategory.symmetry]
-  simp only [id_whiskerRight, MonoidalCategory.whiskerLeft_id, Category.id_comp, Category.assoc,
-    pentagon_inv_assoc, Iso.hom_inv_id_assoc]
+    rw [← whiskerLeft_comp, ← comp_whiskerRight, SymmetricCategory.symmetry]
+  simp only [id_whiskerRight, whiskerLeft_id, Category.id_comp, Category.assoc, pentagon_inv_assoc,
+    Iso.hom_inv_id_assoc]
   slice_lhs 1 2 =>
     rw [← associator_inv_naturality_left]
   slice_lhs 2 3 =>
@@ -819,6 +820,9 @@ instance : SymmetricCategory (Mon_ C) where
   symmetry X Y := by
     ext
     simp
+
+@[simp] lemma braiding_hom_hom (M N : Mon_ C) : (β_ M N).hom.hom = (β_ M.X N.X).hom := rfl
+@[simp] lemma braiding_inv_hom (M N : Mon_ C) : (β_ M N).inv.hom = (β_ M.X N.X).inv := rfl
 
 end Mon_
 

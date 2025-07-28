@@ -212,7 +212,7 @@ variable {s : Finset ι} {t : Finset κ} {f : ι → M} {g : κ → M}
 
 @[to_additive]
 lemma prod_of_injOn (e : ι → κ) (he : Set.InjOn e s) (hest : Set.MapsTo e s t)
-    (h' : ∀ i ∈ t, i ∉ e '' s → g i = 1) (h : ∀ i ∈ s, f i = g (e i))  :
+    (h' : ∀ i ∈ t, i ∉ e '' s → g i = 1) (h : ∀ i ∈ s, f i = g (e i)) :
     ∏ i ∈ s, f i = ∏ j ∈ t, g j := by
   classical
   exact (prod_nbij e (fun a ↦ mem_image_of_mem e) he (by simp [Set.surjOn_image]) h).trans <|
@@ -491,12 +491,8 @@ theorem prod_bij_ne_one {s : Finset ι} {t : Finset κ} {f : ι → M} {g : κ �
       prod_bij (fun a ha => i a (mem_filter.mp ha).1 <| by simpa using (mem_filter.mp ha).2)
         ?_ ?_ ?_ ?_
     _ = ∏ x ∈ t, g x := prod_filter_ne_one _
-  · intros a ha
-    refine (mem_filter.mp ha).elim ?_
-    intros h₁ h₂
-    refine (mem_filter.mpr ⟨hi a h₁ _, ?_⟩)
-    specialize h a h₁ fun H ↦ by rw [H] at h₂; simp at h₂
-    rwa [← h]
+  · simp only [ne_eq, mem_filter]
+    grind
   · solve_by_elim
   · intros b hb
     refine (mem_filter.mp hb).elim fun h₁ h₂ ↦ ?_
@@ -675,11 +671,8 @@ lemma prod_involution (g : ∀ a ∈ s, ι) (hg₁ : ∀ a ha, f a * f (g a ha) 
   suffices h₃ : ∀ a (ha : a ∈ s \ {x, g x hx}), g a (sdiff_subset ha) ∈ s \ {x, g x hx} from
     ih (s \ {x, g x hx}) (ssubset_iff.2 ⟨x, by simp [insert_subset_iff, hx]⟩) _
       (by simp [hg₁]) (fun _ _ => hg₃ _ _) h₃ (fun _ _ => hg₄ _ _)
-  simp only [mem_sdiff, mem_insert, mem_singleton, not_or, g_mem, true_and]
-  rintro a ⟨ha₁, ha₂, ha₃⟩
-  refine ⟨fun h => by simp [← h, hg₄] at ha₃, fun h => ?_⟩
-  have : g (g a ha₁) (g_mem _ _) = g (g x hx) (g_mem _ _) := by simp only [h]
-  exact ha₂ (by simpa [hg₄] using this)
+  simp only [mem_sdiff, mem_insert, mem_singleton, not_or]
+  grind
 
 /-- The difference with `Finset.prod_involution` is that the involution is a non-dependent function,
 rather than being allowed to use membership of the domain of the product. -/
@@ -834,7 +827,7 @@ lemma prod_image_of_disjoint [DecidableEq ι] [PartialOrder ι] [OrderBot ι] {f
 
 @[to_additive]
 theorem prod_unique_nonempty [Unique ι] (s : Finset ι) (f : ι → M) (h : s.Nonempty) :
-   ∏ x ∈ s, f x = f default := by
+    ∏ x ∈ s, f x = f default := by
   rw [h.eq_singleton_default, Finset.prod_singleton]
 
 lemma prod_dvd_prod_of_dvd (f g : ι → M) (h : ∀ i ∈ s, f i ∣ g i) :
