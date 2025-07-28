@@ -269,7 +269,7 @@ alias unbot'_lt_iff := unbotD_lt_iff
 end LT
 
 instance preorder [Preorder α] : Preorder (WithBot α) where
-  lt_iff_le_not_le x y := by cases x <;> cases y <;> simp [lt_iff_le_not_le]
+  lt_iff_le_not_ge x y := by cases x <;> cases y <;> simp [lt_iff_le_not_ge]
   le_refl x := by cases x <;> simp [le_def]
   le_trans x y z := by cases x <;> cases y <;> cases z <;> simp [le_def]; simpa using le_trans
 
@@ -435,14 +435,18 @@ instance _root_.WithBot.instWellFoundedGT [LT α] [WellFoundedGT α] : WellFound
     | (a : α) => acc_some a
     | ⊥ => .intro _ fun | (b : α), _ => acc_some b
 
-instance denselyOrdered [LT α] [DenselyOrdered α] [NoMinOrder α] : DenselyOrdered (WithBot α) where
-  dense := fun
-    | ⊥, (b : α), _ =>
-      let ⟨a, ha⟩ := exists_lt b
-      ⟨a, by simpa⟩
-    | (a : α), (b : α), hab =>
-      let ⟨c, hac, hcb⟩ := exists_between (coe_lt_coe.1 hab)
-      ⟨c, coe_lt_coe.2 hac, coe_lt_coe.2 hcb⟩
+lemma denselyOrdered_iff [LT α] [NoMinOrder α] :
+    DenselyOrdered (WithBot α) ↔ DenselyOrdered α := by
+  constructor <;> intro h <;> constructor
+  · intro a b hab
+    obtain ⟨c, hc⟩ := exists_between (WithBot.coe_lt_coe.mpr hab)
+    induction c with
+    | bot => simp at hc
+    | coe c => exact ⟨c, by simpa using hc⟩
+  · simpa [WithBot.exists, WithBot.forall, exists_lt] using DenselyOrdered.dense
+
+instance denselyOrdered [LT α] [DenselyOrdered α] [NoMinOrder α] : DenselyOrdered (WithBot α) :=
+  denselyOrdered_iff.mpr inferInstance
 
 theorem lt_iff_exists_coe_btwn [Preorder α] [DenselyOrdered α] [NoMinOrder α] {a b : WithBot α} :
     a < b ↔ ∃ x : α, a < ↑x ∧ ↑x < b :=
@@ -770,7 +774,7 @@ alias lt_untop'_iff := lt_untopD_iff
 end LT
 
 instance preorder [Preorder α] : Preorder (WithTop α) where
-  lt_iff_le_not_le x y := by cases x <;> cases y <;> simp [lt_iff_le_not_le]
+  lt_iff_le_not_ge x y := by cases x <;> cases y <;> simp [lt_iff_le_not_ge]
   le_refl x := by cases x <;> simp [le_def]
   le_trans x y z := by cases x <;> cases y <;> cases z <;> simp [le_def]; simpa using le_trans
 
@@ -916,8 +920,6 @@ end LinearOrder
 instance instWellFoundedLT [LT α] [WellFoundedLT α] : WellFoundedLT (WithTop α) :=
   inferInstanceAs <| WellFoundedLT (WithBot αᵒᵈ)ᵒᵈ
 
-open OrderDual
-
 instance instWellFoundedGT [LT α] [WellFoundedGT α] : WellFoundedGT (WithTop α) :=
   inferInstanceAs <| WellFoundedGT (WithBot αᵒᵈ)ᵒᵈ
 
@@ -948,8 +950,13 @@ instance _root_.WithBot.isWellOrder.gt [Preorder α] [h : IsWellOrder α (· > �
     IsWellOrder (WithBot α) (· > ·) where
   trichotomous x y := by cases x <;> cases y <;> simp; simpa using trichotomous_of (· > ·) ..
 
+lemma denselyOrdered_iff [LT α] [NoMaxOrder α] :
+    DenselyOrdered (WithTop α) ↔ DenselyOrdered α := by
+  rw [← denselyOrdered_orderDual, iff_comm, ← denselyOrdered_orderDual]
+  exact WithBot.denselyOrdered_iff.symm
+
 instance [LT α] [DenselyOrdered α] [NoMaxOrder α] : DenselyOrdered (WithTop α) :=
-  OrderDual.denselyOrdered (WithBot αᵒᵈ)
+  denselyOrdered_iff.mpr inferInstance
 
 theorem lt_iff_exists_coe_btwn [Preorder α] [DenselyOrdered α] [NoMaxOrder α] {a b : WithTop α} :
     a < b ↔ ∃ x : α, a < ↑x ∧ ↑x < b :=

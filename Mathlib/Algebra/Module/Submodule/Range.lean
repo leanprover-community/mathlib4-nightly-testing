@@ -93,6 +93,12 @@ theorem range_eq_top [RingHomSurjective τ₁₂] {f : F} :
 theorem range_eq_top_of_surjective [RingHomSurjective τ₁₂] (f : F) (hf : Surjective f) :
     range f = ⊤ := range_eq_top.2 hf
 
+theorem range_add_le [RingHomSurjective τ₁₂] (f g : M →ₛₗ[τ₁₂] M₂) :
+    range (f + g) ≤ range f ⊔ range g := by
+  rintro - ⟨_, rfl⟩
+  apply add_mem_sup
+  all_goals simp only [mem_range, exists_apply_eq_apply]
+
 theorem range_le_iff_comap [RingHomSurjective τ₁₂] {f : F} {p : Submodule R₂ M₂} :
     range f ≤ p ↔ comap f p = ⊤ := by rw [range_eq_map, map_le_iff_le_comap, eq_top_iff]
 
@@ -125,7 +131,7 @@ lemma _root_.Submodule.map_comap_eq_of_le [RingHomSurjective τ₁₂] {f : F} {
 
 lemma range_restrictScalars [SMul R R₂] [Module R₂ M] [Module R M₂] [CompatibleSMul M M₂ R R₂]
     [IsScalarTower R R₂ M₂] (f : M →ₗ[R₂] M₂) :
-  LinearMap.range (f.restrictScalars R) = (LinearMap.range f).restrictScalars R := rfl
+    LinearMap.range (f.restrictScalars R) = (LinearMap.range f).restrictScalars R := rfl
 
 end
 
@@ -231,7 +237,7 @@ theorem ker_le_iff [RingHomSurjective τ₁₂] {p : Submodule R M} :
   · rintro ⟨y, h₁, h₂⟩
     rw [SetLike.le_def]
     intro z hz
-    simp only [mem_ker, SetLike.mem_coe] at hz
+    simp only [mem_ker] at hz
     rw [← SetLike.mem_coe, range_coe, Set.mem_range] at h₁
     obtain ⟨x, hx⟩ := h₁
     have hx' : x ∈ p := h₂ hx
@@ -293,6 +299,14 @@ theorem comap_subtype_eq_top {p p' : Submodule R M} : comap p.subtype p' = ⊤ �
 theorem comap_subtype_self : comap p.subtype p = ⊤ :=
   comap_subtype_eq_top.2 le_rfl
 
+theorem submoduleOf_self (N : Submodule R M) : N.submoduleOf N = ⊤ := comap_subtype_self _
+
+theorem submoduleOf_sup_of_le {N₁ N₂ N : Submodule R M} (h₁ : N₁ ≤ N) (h₂ : N₂ ≤ N) :
+    (N₁ ⊔ N₂).submoduleOf N = N₁.submoduleOf N ⊔ N₂.submoduleOf N := by
+  apply Submodule.map_injective_of_injective N.subtype_injective
+  simp only [submoduleOf, map_comap_eq]
+  simp_all
+
 @[simp]
 lemma comap_subtype_le_iff {p q r : Submodule R M} :
     q.comap p.subtype ≤ r.comap p.subtype ↔ p ⊓ q ≤ p ⊓ r :=
@@ -309,12 +323,12 @@ theorem map_subtype_range_inclusion {p p' : Submodule R M} (h : p ≤ p') :
 
 lemma restrictScalars_map [SMul R R₂] [Module R₂ M] [Module R M₂] [IsScalarTower R R₂ M]
     [IsScalarTower R R₂ M₂] (f : M →ₗ[R₂] M₂) (M' : Submodule R₂ M) :
-  (M'.map f).restrictScalars R = (M'.restrictScalars R).map (f.restrictScalars R) := rfl
+    (M'.map f).restrictScalars R = (M'.restrictScalars R).map (f.restrictScalars R) := rfl
 
 /-- If `N ⊆ M` then submodules of `N` are the same as submodules of `M` contained in `N`.
 
 See also `Submodule.mapIic`. -/
-def MapSubtype.relIso : Submodule R p ≃o { p' : Submodule R M // p' ≤ p } where
+def MapSubtype.orderIso : Submodule R p ≃o { p' : Submodule R M // p' ≤ p } where
   toFun p' := ⟨map p.subtype p', map_subtype_le p _⟩
   invFun q := comap p.subtype q
   left_inv p' := comap_map_eq_of_injective (by exact Subtype.val_injective) p'
@@ -324,10 +338,12 @@ def MapSubtype.relIso : Submodule R p ≃o { p' : Submodule R M // p' ≤ p } wh
     rw [map_le_iff_le_comap,
       comap_map_eq_of_injective (show Injective p.subtype from Subtype.coe_injective) p₂]
 
+@[deprecated (since := "2025-06-03")] alias MapSubtype.relIso := MapSubtype.orderIso
+
 /-- If `p ⊆ M` is a submodule, the ordering of submodules of `p` is embedded in the ordering of
 submodules of `M`. -/
 def MapSubtype.orderEmbedding : Submodule R p ↪o Submodule R M :=
-  (RelIso.toRelEmbedding <| MapSubtype.relIso p).trans <|
+  (RelIso.toRelEmbedding <| MapSubtype.orderIso p).trans <|
     Subtype.relEmbedding (X := Submodule R M) (fun p p' ↦ p ≤ p') _
 
 @[simp]
@@ -338,7 +354,7 @@ theorem map_subtype_embedding_eq (p' : Submodule R p) :
 /-- If `N ⊆ M` then submodules of `N` are the same as submodules of `M` contained in `N`. -/
 def mapIic (p : Submodule R M) :
     Submodule R p ≃o Set.Iic p :=
-  Submodule.MapSubtype.relIso p
+  Submodule.MapSubtype.orderIso p
 
 @[simp] lemma coe_mapIic_apply
     (p : Submodule R M) (q : Submodule R p) :

@@ -137,7 +137,7 @@ variable {β : ι → Type*} {mβ : ∀ i, MeasurableSpace (β i)}
     {κ : Kernel α Ω} : Indep m₁ m₂ κ 0 := by simp [Indep]
 
 @[simp] lemma indep_zero_left {m₁ m₂ : MeasurableSpace Ω} {_mΩ : MeasurableSpace Ω} :
-    Indep m₁ m₂ (0 : Kernel α Ω) μ  := by simp [Indep]
+    Indep m₁ m₂ (0 : Kernel α Ω) μ := by simp [Indep]
 
 @[simp] lemma iIndepSet_zero_right : iIndepSet s κ 0 := by simp [iIndepSet]
 
@@ -426,7 +426,7 @@ theorem iIndepSets.indepSets {s : ι → Set (Set Ω)} {_mΩ : MeasurableSpace �
     rcases Finset.mem_insert.mp hx with hx | hx
     · simp [hx, ht₁]
     · simp [Finset.mem_singleton.mp hx, hij.symm, ht₂]
-  have h1 : t₁ = ite (i = i) t₁ t₂ := by simp only [if_true, eq_self_iff_true]
+  have h1 : t₁ = ite (i = i) t₁ t₂ := by simp only [if_true]
   have h2 : t₂ = ite (j = i) t₁ t₂ := by simp only [hij.symm, if_false]
   have h_inter : ⋂ (t : ι) (_ : t ∈ ({i, j} : Finset ι)), ite (t = i) t₁ t₂ =
       ite (i = i) t₁ t₂ ∩ ite (j = i) t₁ t₂ := by
@@ -436,10 +436,7 @@ theorem iIndepSets.indepSets {s : ι → Set (Set Ω)} {_mΩ : MeasurableSpace �
       = κ a (ite (i = i) t₁ t₂) * κ a (ite (j = i) t₁ t₂) := by
     simp only [hij, Finset.prod_singleton, Finset.prod_insert, not_false_iff,
       Finset.mem_singleton]
-  rw [h1]
-  nth_rw 2 [h2]
-  nth_rw 4 [h2]
-  rw [← h_inter, ← h_prod, h_indep']
+  grind
 
 theorem iIndep.indep {m : ι → MeasurableSpace Ω} {_mΩ : MeasurableSpace Ω}
     {κ : Kernel α Ω} {μ : Measure α}
@@ -525,7 +522,7 @@ theorem IndepSets.indep {m1 m2 m : MeasurableSpace Ω} {κ : Kernel α Ω} {μ :
   intros t1 t2 ht1 ht2
   induction t1, ht1 using induction_on_inter hpm1 hp1 with
   | empty =>
-    simp only [Set.empty_inter, measure_empty, zero_mul, eq_self_iff_true, Filter.eventually_true]
+    simp only [Set.empty_inter, measure_empty, zero_mul, Filter.eventually_true]
   | basic t ht =>
     refine IndepSets.indep_aux h2 hp2 hpm2 hyp ht (h1 _ ?_) ht2
     rw [hpm1]
@@ -666,14 +663,14 @@ theorem iIndepSet.indep_generateFrom_lt [Preorder ι] {s : ι → Set Ω}
     Indep (generateFrom {s i}) (generateFrom { t | ∃ j < i, s j = t }) κ μ := by
   convert iIndepSet.indep_generateFrom_of_disjoint hsm hs {i} { j | j < i }
     (Set.disjoint_singleton_left.mpr (lt_irrefl _)) using 1
-  simp only [Set.mem_singleton_iff, exists_prop, exists_eq_left, Set.setOf_eq_eq_singleton']
+  simp only [Set.mem_singleton_iff, exists_eq_left, Set.setOf_eq_eq_singleton']
 
 theorem iIndepSet.indep_generateFrom_le [Preorder ι] {s : ι → Set Ω}
     (hsm : ∀ n, MeasurableSet (s n)) (hs : iIndepSet s κ μ) (i : ι) {k : ι} (hk : i < k) :
     Indep (generateFrom {s k}) (generateFrom { t | ∃ j ≤ i, s j = t }) κ μ := by
   convert iIndepSet.indep_generateFrom_of_disjoint hsm hs {k} { j | j ≤ i }
-      (Set.disjoint_singleton_left.mpr hk.not_le) using 1
-  simp only [Set.mem_singleton_iff, exists_prop, exists_eq_left, Set.setOf_eq_eq_singleton']
+      (Set.disjoint_singleton_left.mpr hk.not_ge) using 1
+  simp only [Set.mem_singleton_iff, exists_eq_left, Set.setOf_eq_eq_singleton']
 
 theorem iIndepSet.indep_generateFrom_le_nat {s : ℕ → Set Ω}
     (hsm : ∀ n, MeasurableSet (s n)) (hs : iIndepSet s κ μ) (n : ℕ) :
@@ -694,7 +691,7 @@ theorem indep_iSup_of_antitone [SemilatticeInf ι] {Ω} {m : ι → MeasurableSp
     Indep (⨆ i, m i) m' κ μ :=
   indep_iSup_of_directed_le h_indep h_le h_le' hm.directed_le
 
-theorem iIndepSets.piiUnionInter_of_not_mem {π : ι → Set (Set Ω)} {a : ι} {S : Finset ι}
+theorem iIndepSets.piiUnionInter_of_notMem {π : ι → Set (Set Ω)} {a : ι} {S : Finset ι}
     (hp_ind : iIndepSets π κ μ) (haS : a ∉ S) :
     IndepSets (piiUnionInter π S) (π a) κ μ := by
   rintro t1 t2 ⟨s, hs_mem, ft1, hft1_mem, ht1_eq⟩ ht2_mem_pia
@@ -706,15 +703,10 @@ theorem iIndepSets.piiUnionInter_of_not_mem {π : ι → Set (Set Ω)} {a : ι} 
     dsimp only [f]
     rcases Finset.mem_insert.mp hn_mem_insert with hn_mem | hn_mem
     · simp [hn_mem, ht2_mem_pia]
-    · have hn_ne_a : n ≠ a := by rintro rfl; exact haS (hs_mem hn_mem)
-      simp [hn_ne_a, hn_mem, hft1_mem n hn_mem]
+    · grind
   have h_f_mem_pi : ∀ n ∈ s, f n ∈ π n := fun x hxS => h_f_mem x (by simp [hxS])
   have h_t1 : t1 = ⋂ n ∈ s, f n := by
-    suffices h_forall : ∀ n ∈ s, f n = ft1 n by
-      rw [ht1_eq]
-      ext x
-      simp_rw [Set.mem_iInter]
-      conv => lhs; intro i hns; rw [← h_forall i hns]
+    suffices h_forall : ∀ n ∈ s, f n = ft1 n by grind
     intro n hnS
     have hn_ne_a : n ≠ a := by rintro rfl; exact haS (hs_mem hnS)
     simp_rw [f, if_pos hnS, if_neg hn_ne_a]
@@ -731,6 +723,9 @@ theorem iIndepSets.piiUnionInter_of_not_mem {π : ι → Set (Set Ω)} {a : ι} 
   filter_upwards [h_μ_t1, h_μ_inter] with a' ha1 ha2
   rw [ha2, Finset.prod_insert has, h_t2, mul_comm, ha1]
 
+@[deprecated (since := "2025-05-23")]
+alias iIndepSets.piiUnionInter_of_not_mem := iIndepSets.piiUnionInter_of_notMem
+
 /-- The measurable space structures generated by independent pi-systems are independent. -/
 theorem iIndepSets.iIndep (m : ι → MeasurableSpace Ω)
     (h_le : ∀ i, m i ≤ _mΩ) (π : ι → Set (Set Ω)) (h_pi : ∀ n, IsPiSystem (π n))
@@ -744,9 +739,9 @@ theorem iIndepSets.iIndep (m : ι → MeasurableSpace Ω)
   apply iIndep.congr (Filter.EventuallyEq.symm η_eq)
   intro s f
   refine Finset.induction ?_ ?_ s
-  · simp only [Finset.not_mem_empty, Set.mem_setOf_eq, IsEmpty.forall_iff, implies_true,
+  · simp only [Finset.notMem_empty, Set.mem_setOf_eq, IsEmpty.forall_iff, implies_true,
       Set.iInter_of_empty, Set.iInter_univ, measure_univ, Finset.prod_empty,
-      Filter.eventually_true, forall_true_left]
+      Filter.eventually_true]
   · intro a S ha_notin_S h_rec hf_m
     have hf_m_S : ∀ x ∈ S, MeasurableSet[m x] (f x) := fun x hx => hf_m x (by simp [hx])
     let p := piiUnionInter π S
@@ -756,7 +751,7 @@ theorem iIndepSets.iIndep (m : ι → MeasurableSpace Ω)
       have h_le' : ∀ i, generateFrom (π i) ≤ _mΩ := fun i ↦ (h_generate i).symm.trans_le (h_le i)
       have hm_p : m_p ≤ _mΩ := generateFrom_piiUnionInter_le π h_le' S
       exact IndepSets.indep hm_p (h_le a) hp (h_pi a) hS_eq_generate (h_generate a)
-        (iIndepSets.piiUnionInter_of_not_mem (h_ind.congr η_eq) ha_notin_S)
+        (iIndepSets.piiUnionInter_of_notMem (h_ind.congr η_eq) ha_notin_S)
     have h := h_indep.symm (f a) (⋂ n ∈ S, f n) (hf_m a (Finset.mem_insert_self a S)) ?_
     · filter_upwards [h_rec hf_m_S, h] with a' ha' h'
       rwa [Finset.set_biInter_insert, Finset.prod_insert ha_notin_S, ← ha']
@@ -898,18 +893,7 @@ theorem iIndepFun_iff_measure_inter_preimage_eq_mul {ι : Type*} {β : ι → Ty
     intro i hi_mem
     simp_rw [setsβ, dif_pos hi_mem]
     exact (h_meas i hi_mem).choose_spec.2.symm
-  have h_left_eq : ∀ a, κ a (⋂ i ∈ S, setsΩ i) = κ a (⋂ i ∈ S, (f i) ⁻¹' (setsβ i)) := by
-    intro a
-    congr with x
-    simp_rw [Set.mem_iInter]
-    constructor <;> intro h i hi_mem <;> specialize h i hi_mem
-    · rwa [h_preim i hi_mem] at h
-    · rwa [h_preim i hi_mem]
-  have h_right_eq : ∀ a, (∏ i ∈ S, κ a (setsΩ i)) = ∏ i ∈ S, κ a ((f i) ⁻¹' (setsβ i)) := by
-    refine fun a ↦ Finset.prod_congr rfl fun i hi_mem => ?_
-    rw [h_preim i hi_mem]
-  filter_upwards [h S h_measβ] with a ha
-  rw [h_left_eq a, h_right_eq a, ha]
+  simp_all
 
 alias ⟨iIndepFun.measure_inter_preimage_eq_mul, _⟩ := iIndepFun_iff_measure_inter_preimage_eq_mul
 
@@ -1081,7 +1065,7 @@ theorem iIndepFun.indepFun_finset (S T : Finset ι) (hST : Disjoint S T)
     simp only [Set.mem_preimage, Set.mem_univ_pi, Set.mem_iInter]
     constructor <;> intro h
     · intro i hi; simp_rw [sets_t', dif_pos hi]; exact h ⟨i, hi⟩
-    · rintro ⟨i, hi⟩; specialize h i hi; simp_rw [sets_t', dif_pos hi] at h; exact h
+    · grind
   replace hf_Indep := hf_Indep.congr η_eq
   rw [iIndepFun_iff_measure_inter_preimage_eq_mul] at hf_Indep
   have h_Inter_inter :
@@ -1159,7 +1143,7 @@ theorem iIndepFun.indepFun_prodMk (hf_Indep : iIndepFun f κ μ)
         p ⟨j, Finset.mem_insert_of_mem (Finset.mem_singleton_self _)⟩)) ∘
         fun a (j : s) => f j a := by
     ext1 a
-    simp only [Prod.mk_inj]
+    simp only
     constructor
   have h_meas_left : Measurable fun p : ∀ l : s, β l =>
       (p ⟨i, Finset.mem_insert_self i _⟩,
@@ -1326,7 +1310,7 @@ section CommMonoid
 variable {β : Type*} {m : MeasurableSpace β} [CommMonoid β] [MeasurableMul₂ β] {f : ι → Ω → β}
 
 @[to_additive]
-theorem iIndepFun.indepFun_finset_prod_of_not_mem (hf_Indep : iIndepFun f κ μ)
+theorem iIndepFun.indepFun_finset_prod_of_notMem (hf_Indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, Measurable (f i)) {s : Finset ι} {i : ι} (hi : i ∉ s) :
     IndepFun (∏ j ∈ s, f j) (f i) κ μ := by
   classical
@@ -1347,12 +1331,18 @@ theorem iIndepFun.indepFun_finset_prod_of_not_mem (hf_Indep : iIndepFun f κ μ)
     (hf_Indep.indepFun_finset s {i} (Finset.disjoint_singleton_left.mpr hi).symm hf_meas).comp
       h_meas_left h_meas_right
 
+@[deprecated (since := "2025-05-23")]
+alias iIndepFun.indepFun_finset_sum_of_not_mem := iIndepFun.indepFun_finset_sum_of_notMem
+
+@[to_additive existing, deprecated (since := "2025-05-23")]
+alias iIndepFun.indepFun_finset_prod_of_not_mem := iIndepFun.indepFun_finset_prod_of_notMem
+
 @[to_additive]
-theorem iIndepFun.indepFun_finset_prod_of_not_mem₀ (hf_Indep : iIndepFun f κ μ)
+theorem iIndepFun.indepFun_finset_prod_of_notMem₀ (hf_Indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, AEMeasurable (f i) (κ ∘ₘ μ)) {s : Finset ι} {i : ι} (hi : i ∉ s) :
     IndepFun (∏ j ∈ s, f j) (f i) κ μ := by
   have h : IndepFun (∏ j ∈ s, (hf_meas j).mk (f j)) ((hf_meas i).mk (f i)) κ μ := by
-    refine iIndepFun.indepFun_finset_prod_of_not_mem ?_ (fun i ↦ (hf_meas i).measurable_mk) hi
+    refine iIndepFun.indepFun_finset_prod_of_notMem ?_ (fun i ↦ (hf_meas i).measurable_mk) hi
     exact iIndepFun.congr' hf_Indep fun i ↦ Measure.ae_ae_of_ae_comp (hf_meas i).ae_eq_mk
   refine IndepFun.congr' h ?_ ?_
   · have : ∀ᵐ a ∂μ, ∀ (i : s), f i =ᵐ[κ a] (hf_meas i).mk := by
@@ -1364,17 +1354,24 @@ theorem iIndepFun.indepFun_finset_prod_of_not_mem₀ (hf_Indep : iIndepFun f κ 
     exact Finset.prod_congr rfl fun i hi ↦ (hω ⟨i, hi⟩).symm
   · exact Measure.ae_ae_of_ae_comp (hf_meas i).ae_eq_mk.symm
 
+
+@[deprecated (since := "2025-05-23")]
+alias iIndepFun.indepFun_finset_sum_of_not_mem₀ := iIndepFun.indepFun_finset_sum_of_notMem₀
+
+@[to_additive existing, deprecated (since := "2025-05-23")]
+alias iIndepFun.indepFun_finset_prod_of_not_mem₀ := iIndepFun.indepFun_finset_prod_of_notMem₀
+
 @[to_additive]
 theorem iIndepFun.indepFun_prod_range_succ {f : ℕ → Ω → β}
     (hf_Indep : iIndepFun f κ μ) (hf_meas : ∀ i, Measurable (f i)) (n : ℕ) :
     IndepFun (∏ j ∈ Finset.range n, f j) (f n) κ μ :=
-  hf_Indep.indepFun_finset_prod_of_not_mem hf_meas Finset.not_mem_range_self
+  hf_Indep.indepFun_finset_prod_of_notMem hf_meas Finset.notMem_range_self
 
 @[to_additive]
 theorem iIndepFun.indepFun_prod_range_succ₀ {f : ℕ → Ω → β}
     (hf_Indep : iIndepFun f κ μ) (hf_meas : ∀ i, AEMeasurable (f i) (κ ∘ₘ μ)) (n : ℕ) :
     IndepFun (∏ j ∈ Finset.range n, f j) (f n) κ μ :=
-  hf_Indep.indepFun_finset_prod_of_not_mem₀ hf_meas Finset.not_mem_range_self
+  hf_Indep.indepFun_finset_prod_of_notMem₀ hf_meas Finset.notMem_range_self
 
 end CommMonoid
 
@@ -1411,7 +1408,7 @@ lemma iIndepFun.cond_iInter [Finite ι] (hY : ∀ i, Measurable (Y i))
   cases nonempty_fintype ι
   let g (i' : ι) := if i' ∈ s then Y i' ⁻¹' t i' ∩ f i' else Y i' ⁻¹' t i'
   have hYt i : MeasurableSet[(mα.prod mβ).comap fun ω ↦ (X i ω, Y i ω)] (Y i ⁻¹' t i) :=
-    ⟨.univ ×ˢ t i, .prod .univ (ht _), by ext; simp [eq_comm]⟩
+    ⟨.univ ×ˢ t i, .prod .univ (ht _), by ext; simp⟩
   have hg i : MeasurableSet[(mα.prod mβ).comap fun ω ↦ (X i ω, Y i ω)] (g i) := by
     by_cases hi : i ∈ s <;> simp only [hi, ↓reduceIte, g]
     · obtain ⟨A, hA, hA'⟩ := hf i hi
@@ -1423,10 +1420,10 @@ lemma iIndepFun.cond_iInter [Finite ι] (hY : ∀ i, Measurable (Y i))
     _ = (κ a (⋂ i, Y i ⁻¹' t i))⁻¹ * κ a ((⋂ i, Y i ⁻¹' t i) ∩ ⋂ i ∈ s, f i) := by
       rw [cond_apply]; exact .iInter fun i ↦ hY i (ht i)
     _ = (κ a (⋂ i, Y i ⁻¹' t i))⁻¹ * κ a (⋂ i, g i) := by
-      congr
+      congr 2
       calc
         _ = (⋂ i, Y i ⁻¹' t i) ∩ ⋂ i, if i ∈ s then f i else .univ := by
-          congr
+          congr 1
           simp only [Set.iInter_ite, Set.iInter_univ, Set.inter_univ]
         _ = ⋂ i, Y i ⁻¹' t i ∩ (if i ∈ s then f i else .univ) := by rw [Set.iInter_inter_distrib]
         _ = _ := Set.iInter_congr fun i ↦ by by_cases hi : i ∈ s <;> simp [hi, g]

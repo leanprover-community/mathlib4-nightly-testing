@@ -172,7 +172,7 @@ theorem snd_invApp_t_app' (i j k : D.J) (U : Opens (pullback (D.f i j) (D.f i k)
   -- Porting note: I don't know what the magic was in Lean3 proof, it just skipped the proof of `eq`
   · delta IsOpenImmersion.opensFunctor
     dsimp only [Functor.op, Opens.map, IsOpenMap.functor, unop_op, Opens.coe_mk]
-    congr
+    congr 2
     have := (𝖣.t_fac k i j).symm
     rw [← IsIso.inv_comp_eq] at this
     replace this := (congr_arg ((PresheafedSpace.Hom.base ·)) this).symm
@@ -234,10 +234,7 @@ theorem ι_image_preimage_eq (i j : D.J) (U : Opens (D.U i).carrier) :
   dsimp only [Opens.map_coe, IsOpenMap.coe_functor_obj]
   rw [← show _ = (𝖣.ι i).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) i, ←
     show _ = (𝖣.ι j).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) j]
-  -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11224): change `rw` to `erw` on `coe_comp`
-  erw [TopCat.coe_comp, TopCat.coe_comp, TopCat.coe_comp]
-  rw [Set.image_comp, Set.preimage_comp]
-  erw [Set.preimage_image_eq]
+  rw [TopCat.coe_comp, TopCat.coe_comp, Set.image_comp, Set.preimage_comp, Set.preimage_image_eq]
   · refine Eq.trans (D.toTopGlueData.preimage_image_eq_image' _ _ _) ?_
     dsimp
     rw [Set.image_comp]
@@ -248,7 +245,7 @@ theorem ι_image_preimage_eq (i j : D.J) (U : Opens (D.U i).carrier) :
     change (D.t i j ≫ D.t j i).base '' _ = _
     rw [𝖣.t_inv]
     simp
-  · rw [← TopCat.coe_comp, ← TopCat.mono_iff_injective]
+  · rw [← TopCat.mono_iff_injective]
     infer_instance
 
 /-- (Implementation). The map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_{U_j}, 𝖣.ι j ⁻¹' (𝖣.ι i '' U))` -/
@@ -409,7 +406,7 @@ theorem ιInvApp_π {i : D.J} (U : Opens (D.U i).carrier) :
   dsimp [opensImagePreimageMap]
   rw [congr_app (D.t_id _), id_c_app, ← Functor.map_comp]
   erw [IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_inv_app'_assoc]
-  · simp only [eqToHom_op, eqToHom_trans, eqToHom_map (Functor.op _), ← Functor.map_comp]
+  · simp only [eqToHom_op, ← Functor.map_comp]
     rfl
   · rw [Set.range_eq_univ.mpr _]
     · simp

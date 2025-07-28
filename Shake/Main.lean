@@ -3,11 +3,6 @@ Copyright (c) 2023 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
-import Lake.Util.Error
-import Lean.Environment
-import Lean.Parser.Module
-import Lean.Util.FoldConsts
-import Lean.Util.Paths
 import Lake.CLI.Main
 
 /-! # `lake exe shake` command
@@ -160,7 +155,7 @@ Returns a pair `(imps, transImps)` where:
 
 * `j ∈ imps` if `j` is one of the module indexes in `imports`
 * `j ∈ transImps` if module `j` is transitively reachable from `imports`
- -/
+-/
 partial def loadModules (imports : Array Import) : StateT State IO (Array USize × Bitset) := do
   let mut imps := #[]
   let mut transImps := 0
@@ -210,7 +205,7 @@ abbrev Edits := Std.HashMap Name (NameSet × Bitset)
 /-- Register that we want to remove `tgt` from the imports of `src`. -/
 def Edits.remove (ed : Edits) (src tgt : Name) : Edits :=
   match ed.get? src with
-  | none => ed.insert src (RBTree.insert ∅ tgt, 0)
+  | none => ed.insert src (NameSet.insert ∅ tgt, 0)
   | some (a, b) => ed.insert src (a.insert tgt, b)
 
 /-- Register that we want to add `tgt` to the imports of `src`. -/
@@ -221,16 +216,13 @@ def Edits.add (ed : Edits) (src : Name) (tgt : Nat) : Edits :=
 
 /-- Parse a source file to extract the location of the import lines, for edits and error messages.
 
-Returns `(path, inputCtx, headerStx, endPos)` where `headerStx` is the `Lean.Parser.Module.header`
+Returns `(path, inputCtx, imports, endPos)` where `imports` is the `Lean.Parser.Module.import` list
 and `endPos` is the position of the end of the header.
 -/
-def parseHeader (srcSearchPath : SearchPath) (mod : Name) :
-    IO (System.FilePath × Parser.InputContext × Syntax × String.Pos) := do
-  -- Parse the input file
-  let some path ← srcSearchPath.findModuleWithExt "lean" mod
-    | throw <| .userError "error: failed to find source file for {mod}"
-  let text ← IO.FS.readFile path
-  let inputCtx := Parser.mkInputContext text path.toString
+def parseHeaderFromString (text path : String) :
+    IO (System.FilePath × Parser.InputContext ×
+      TSyntaxArray ``Parser.Module.import × String.Pos) := do
+  let inputCtx := Parser.mkInputContext text path
   let (header, parserState, msgs) ← Parser.parseHeader inputCtx
   if !msgs.toList.isEmpty then -- skip this file if there are parse errors
     msgs.forM fun msg => msg.toString >>= IO.println
@@ -238,7 +230,26 @@ def parseHeader (srcSearchPath : SearchPath) (mod : Name) :
   -- the insertion point for `add` is the first newline after the imports
   let insertion := header.raw.getTailPos?.getD parserState.pos
   let insertion := text.findAux (· == '\n') text.endPos insertion + ⟨1⟩
-  pure (path, inputCtx, header, insertion)
+  pure (path, inputCtx, .mk header.raw[2].getArgs, insertion)
+
+/-- Parse a source file to extract the location of the import lines, for edits and error messages.
+
+Returns `(path, inputCtx, imports, endPos)` where `imports` is the `Lean.Parser.Module.import` list
+and `endPos` is the position of the end of the header.
+-/
+def parseHeader (srcSearchPath : SearchPath) (mod : Name) :
+    IO (System.FilePath × Parser.InputContext ×
+      TSyntaxArray ``Parser.Module.import × String.Pos) := do
+  -- Parse the input file
+  let some path ← srcSearchPath.findModuleWithExt "lean" mod
+    | throw <| .userError "error: failed to find source file for {mod}"
+  let text ← IO.FS.readFile path
+  parseHeaderFromString text path.toString
+
+/-- Gets the name `Foo` in `import Foo`. -/
+def importId : TSyntax ``Parser.Module.import → Name
+  | `(Parser.Module.import| import $id) => id.getId
+  | stx => panic! s!"unexpected syntax {stx}"
 
 /-- Analyze and report issues from module `i`. Arguments:
 
@@ -250,7 +261,7 @@ def parseHeader (srcSearchPath : SearchPath) (mod : Name) :
   be initialized if `downstream` mode is disabled so we pass it in here
 * `edits`: accumulates the list of edits to apply if `--fix` is true
 * `downstream`: if true, then we report downstream files that need to be fixed too
- -/
+-/
 def visitModule (s : State) (srcSearchPath : SearchPath) (ignoreImps : Bitset)
     (i : Nat) (needs : Bitset) (edits : Edits)
     (downstream := true) (githubStyle := false) (explain := false) : IO Edits := do
@@ -291,10 +302,10 @@ def visitModule (s : State) (srcSearchPath : SearchPath) (ignoreImps : Bitset)
     edits.remove s.modNames[i]! s.modNames[n]!
   if githubStyle then
     try
-      let (path, inputCtx, header, endHeader) ← parseHeader srcSearchPath s.modNames[i]!
-      for stx in header[1].getArgs do
-        if toRemove.any fun i => s.modNames[i]! == stx[2].getId then
-          let pos := inputCtx.fileMap.toPosition stx.getPos?.get!
+      let (path, inputCtx, imports, endHeader) ← parseHeader srcSearchPath s.modNames[i]!
+      for stx in imports do
+        if toRemove.any fun i => s.modNames[i]! == importId stx then
+          let pos := inputCtx.fileMap.toPosition stx.raw.getPos?.get!
           println! "{path}:{pos.line}:{pos.column+1}: warning: unused import \
             (use `lake exe shake --fix` to fix this, or `lake exe shake --update` to ignore)"
       if !toAdd.isEmpty then
@@ -408,11 +419,11 @@ structure Args where
 
 instance {α} [FromJson α] : FromJson (NameMap α) where
   fromJson? j := do
-    (← j.getObj?).foldM (init := mkNameMap _) fun m a b => do
+    (← j.getObj?).foldlM (init := mkNameMap _) fun m a b => do
       m.insert a.toName <$> fromJson? b
 instance {α} [ToJson α] : ToJson (NameMap α) where
-  toJson m := Json.obj <| m.fold (init := ∅) fun m a b =>
-      m.insert compare (toString a) (toJson b)
+  toJson m := Json.obj <| m.foldl (init := ∅) fun m a b =>
+      m.insert (toString a) (toJson b)
 
 /-- The config file format, which we both read and write. -/
 structure ShakeCfg where
@@ -506,7 +517,7 @@ def main (args : List String) : IO UInt32 := do
   -- Parse the config file
   let ignoreMods := toBitset s (cfg.ignoreAll?.getD [])
   let ignoreImps := toBitset s (cfg.ignoreImport?.getD [])
-  let ignore := (cfg.ignore?.getD {}).fold (init := (∅ : Std.HashMap _ _)) fun m a v =>
+  let ignore := (cfg.ignore?.getD {}).foldl (init := (∅ : Std.HashMap _ _)) fun m a v =>
     m.insert a (toBitset s v.toList)
 
   let noIgnore (i : Nat) :=
@@ -549,11 +560,11 @@ def main (args : List String) : IO UInt32 := do
         if args.global then
           -- in global mode all the edits are added to `ignoreImport`
           ignoreImportSet := edits.fold (init := ignoreImportSet)
-            (fun ignore _ (remove, _) => ignore.union remove)
+            (fun ignore _ (remove, _) => ignore.append remove)
         else
           -- in local mode all the edits are added to `ignore`
           ignore := edits.fold (init := ignore) fun ignore mod (remove, _) =>
-            let ns := (ignore.findD mod #[]).foldl (init := remove) (·.insert ·)
+            let ns := (ignore.getD mod #[]).foldl (init := remove) (·.insert ·)
             if ns.isEmpty then ignore.erase mod else
               ignore.insert mod ns.toArray
       -- If an entry is in `ignoreAll`, the `ignore` key is redundant
@@ -561,7 +572,7 @@ def main (args : List String) : IO UInt32 := do
         if ignore.contains i then
           ignore := ignore.erase i
       -- If an entry is in `ignoreImport`, the `ignore` value is redundant
-      ignore := ignore.fold (init := {}) fun ignore mod ns =>
+      ignore := ignore.foldl (init := {}) fun ignore mod ns =>
         let ns := ns.filter (!ignoreImportSet.contains ·)
         if ns.isEmpty then ignore else ignore.insert mod (ns.qsort (·.toString < ·.toString))
       -- Sort the lists alphabetically
@@ -595,7 +606,7 @@ def main (args : List String) : IO UInt32 := do
       out.qsort Name.lt
 
     -- Parse the input file
-    let (path, inputCtx, header, insertion) ←
+    let (path, inputCtx, imports, insertion) ←
       try parseHeader srcSearchPath mod
       catch e => println! e.toString; return count
     let text := inputCtx.input
@@ -604,12 +615,12 @@ def main (args : List String) : IO UInt32 := do
     let mut pos : String.Pos := 0
     let mut out : String := ""
     let mut seen : NameSet := {}
-    for stx in header[1].getArgs do
-      let mod := stx[2].getId
+    for stx in imports do
+      let mod := importId stx
       if remove.contains mod || seen.contains mod then
-        out := out ++ text.extract pos stx.getPos?.get!
+        out := out ++ text.extract pos stx.raw.getPos?.get!
         -- We use the end position of the syntax, but include whitespace up to the first newline
-        pos := text.findAux (· == '\n') text.endPos stx.getTailPos?.get! + ⟨1⟩
+        pos := text.findAux (· == '\n') text.endPos stx.raw.getTailPos?.get! + ⟨1⟩
       seen := seen.insert mod
     out := out ++ text.extract pos insertion
     for mod in add do
@@ -628,3 +639,10 @@ def main (args : List String) : IO UInt32 := do
   else
     println! "No edits required."
   return 0
+
+-- self-test so that future grammar changes cause a build failure
+/-- info: #[`Lake.CLI.Main] -/
+#guard_msgs (whitespace := lax) in
+#eval show MetaM _ from do
+  let (_, _, imports, _) ← parseHeaderFromString (← getFileMap).source (← getFileName)
+  return imports.map importId

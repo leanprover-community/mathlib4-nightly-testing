@@ -98,8 +98,7 @@ instance full_ιOfLE (h : P ≤ P') : (ιOfLE h).Full := (fullyFaithfulιOfLE h)
 instance faithful_ιOfLE (h : P ≤ P') : (ιOfLE h).Faithful := (fullyFaithfulιOfLE h).faithful
 
 @[deprecated "use ιOfLECompιIso" (since := "2025-03-04")]
-theorem FullSubcategory.map_inclusion (h : P ≤ P') :
-  ιOfLE h ⋙ P'.ι = P.ι := rfl
+theorem FullSubcategory.map_inclusion (h : P ≤ P') : ιOfLE h ⋙ P'.ι = P.ι := rfl
 
 /-- If `h : P ≤ P'` is an inequality of properties of objects,
 this is the obvious isomorphism `ιOfLE h ⋙ P'.ι ≅ P.ι`. -/
@@ -120,7 +119,7 @@ def lift : C ⥤ FullSubcategory P where
   map f := F.map f
 
 @[deprecated "use liftCompιIso" (since := "2025-03-04")]
-theorem FullSubcategory.lift_comp_inclusion_eq  :
+theorem FullSubcategory.lift_comp_inclusion_eq :
     P.lift F hF ⋙ P.ι = F :=
   rfl
 
