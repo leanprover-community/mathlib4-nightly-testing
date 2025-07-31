@@ -88,8 +88,8 @@ and the pointwise scalar multiplication of `F i` and `FM j` is in `F (i +ᵥ j)`
 
 The index set `ιM` for the module can be more general, however usually we take `ιM = ι`. -/
 class IsModuleFiltration (F : ι → σ) (F_lt : outParam <| ι → σ) [IsRingFiltration F F_lt]
-    (F' : ιM → σM) (F'_lt : outParam <| ιM → σM) : Prop
-    extends IsFiltration F' F'_lt, SetLike.GradedSMul F F'
+    (F' : ιM → σM) (F'_lt : outParam <| ιM → σM) [IsFiltration F' F'_lt] : Prop
+    extends SetLike.GradedSMul F F'
 
 /-- A convenience constructor for `IsModuleFiltration` when the index is the integers. -/
 lemma IsModuleFiltration.mk_int (F : ℤ → σ) (mono : Monotone F) [SetLike.GradedMonoid F]
