@@ -80,7 +80,9 @@ lemma app_localPreimage {F G : Cᵒᵖ ⥤ A} (f : F ⟶ G) {U : Cᵒᵖ} (s : T
 
 /-- A morphism of presheaves `f : F ⟶ G` is locally surjective with respect to a grothendieck
 topology if every section of `G` is locally in the image of `f`. -/
-class IsLocallySurjective {F G : Cᵒᵖ ⥤ A} (f : F ⟶ G) : Prop where
+class IsLocallySurjective {FA : outParam (A → A → Type*)} {CA : outParam (A → Type w')}
+    [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)] [ConcreteCategory.{w'} A FA]
+    {F G : Cᵒᵖ ⥤ A} (f : F ⟶ G) : Prop where
   imageSieve_mem {U : C} (s : ToType (G.obj (op U))) : imageSieve f s ∈ J U
 
 lemma imageSieve_mem {F G : Cᵒᵖ ⥤ A} (f : F ⟶ G) [IsLocallySurjective J f] {U : Cᵒᵖ}
@@ -330,7 +332,9 @@ variable {F₁ F₂ F₃ : Sheaf J A} (φ : F₁ ⟶ F₂) (ψ : F₂ ⟶ F₃)
 
 /-- If `φ : F₁ ⟶ F₂` is a morphism of sheaves, this is an abbreviation for
 `Presheaf.IsLocallySurjective J φ.val`. -/
-abbrev IsLocallySurjective := Presheaf.IsLocallySurjective J φ.val
+abbrev IsLocallySurjective {FA : outParam (A → A → Type*)} {CA : outParam (A → Type w')}
+    [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)] [ConcreteCategory.{w'} A FA]
+    {F₁ F₂ : Sheaf J A} (φ : F₁ ⟶ F₂) := Presheaf.IsLocallySurjective J φ.val
 
 lemma isLocallySurjective_sheafToPresheaf_map_iff :
     Presheaf.IsLocallySurjective J ((sheafToPresheaf J A).map φ) ↔ IsLocallySurjective φ := by rfl
