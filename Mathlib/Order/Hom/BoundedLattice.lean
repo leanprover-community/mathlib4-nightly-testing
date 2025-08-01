@@ -73,25 +73,24 @@ section
 /-- `SupBotHomClass F α β` states that `F` is a type of finitary supremum-preserving morphisms.
 
 You should extend this class when you extend `SupBotHom`. -/
-class SupBotHomClass (F α β : Type*) [Max α] [Max β] [Bot α] [Bot β] [FunLike F α β] : Prop
-  extends SupHomClass F α β where
+class SupBotHomClass (F : Type*) (α β : outParam Type*) [Max α] [Max β] [Bot α] [Bot β]
+    [FunLike F α β] : Prop extends SupHomClass F α β where
   /-- A `SupBotHomClass` morphism preserves the bottom element. -/
   map_bot (f : F) : f ⊥ = ⊥
 
 /-- `InfTopHomClass F α β` states that `F` is a type of finitary infimum-preserving morphisms.
 
 You should extend this class when you extend `SupBotHom`. -/
-class InfTopHomClass (F α β : Type*) [Min α] [Min β] [Top α] [Top β] [FunLike F α β] : Prop
-  extends InfHomClass F α β where
+class InfTopHomClass (F : Type*) (α β : outParam Type*) [Min α] [Min β] [Top α] [Top β]
+    [FunLike F α β] : Prop extends InfHomClass F α β where
   /-- An `InfTopHomClass` morphism preserves the top element. -/
   map_top (f : F) : f ⊤ = ⊤
 
 /-- `BoundedLatticeHomClass F α β` states that `F` is a type of bounded lattice morphisms.
 
 You should extend this class when you extend `BoundedLatticeHom`. -/
-class BoundedLatticeHomClass (F α β : Type*) [Lattice α] [Lattice β] [BoundedOrder α]
-    [BoundedOrder β] [FunLike F α β] : Prop
-  extends LatticeHomClass F α β where
+class BoundedLatticeHomClass (F : Type*) (α β : outParam Type*) [Lattice α] [Lattice β]
+    [BoundedOrder α] [BoundedOrder β] [FunLike F α β] : Prop extends LatticeHomClass F α β where
   /-- A `BoundedLatticeHomClass` morphism preserves the top element. -/
   map_top (f : F) : f ⊤ = ⊤
   /-- A `BoundedLatticeHomClass` morphism preserves the bottom element. -/

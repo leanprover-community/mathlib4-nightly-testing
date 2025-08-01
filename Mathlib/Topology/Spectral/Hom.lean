@@ -74,7 +74,7 @@ section
 /-- `SpectralMapClass F α β` states that `F` is a type of spectral maps.
 
 You should extend this class when you extend `SpectralMap`. -/
-class SpectralMapClass (F α β : Type*) [TopologicalSpace α] [TopologicalSpace β]
+class SpectralMapClass (F : Type*) (α β : outParam Type*) [TopologicalSpace α] [TopologicalSpace β]
     [FunLike F α β] : Prop where
   /-- statement that `F` is a type of spectral maps -/
   map_spectral (f : F) : IsSpectralMap f
