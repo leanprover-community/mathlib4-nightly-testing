@@ -25,8 +25,6 @@ def coconeOfCoconeForget : Cocone F where
   pt := of (coconePtOfCoconeForget c)
   ι := sorry
 
-def isColimitCoconeOfForget (c : Cocone (F ⋙ forget)) (hc : IsColimit c) : IsColimit (coconeOfCoconeForget c) := sorry
-
 end
 
 section IsColimit
@@ -38,10 +36,9 @@ include hc
 theorem _root_.TopCat.coinduced_of_isColimit.extracted_1_1 {J : Type v} [inst : Category.{w, v} J] {F : J ⥤ TopCat}
   (c : Cocone F) (hc : IsColimit c) :
   let c' := coconeOfCoconeForget ((forget).mapCocone c);
-  let hc' := isColimitCoconeOfForget ((forget).mapCocone c) (isColimitOfPreserves forget hc);
-  let e := hc'.coconePointUniqueUpToIso hc;
+  let e : of (coconePtOfCoconeForget ((forget).mapCocone c)) ≅ c.1 := sorry;
   (∀ (j : J), c'.ι.app j ≫ e.hom = c.ι.app j) →
-      (⨆ i, coinduced (DFunLike.coe (@TopCat.homeoOfIso (@TopCat.of _ (⨆ j, _)) _ e)) ((coinduced (c.ι.app i) (F.obj i).str))) =
+      (⨆ i, coinduced (DFunLike.coe (@TopCat.homeoOfIso (@TopCat.of _ (⨆ j, _)) _ e)) (coinduced sorry (F.obj i).str)) =
       (⨆ j, coinduced
           (DFunLike.coe (β := fun (x : TopCat.carrier (Prefunctor.obj _ j)) ↦ TopCat.carrier _) (ConcreteCategory.hom (c.ι.app j)))
           (F.obj j).str) := by
