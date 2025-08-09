@@ -236,7 +236,7 @@ Given a file name like `"1234.tar.gz"`, makes the URL to that file on the server
 The `f/` prefix means that it's a common file for caching.
 -/
 def mkFileURL (repo URL fileName : String) : String :=
-  let pre := if repo == MATHLIBREPO then "" else s!"{repo}/"
+  let pre := if !useFROCache && repo == MATHLIBREPO then "" else s!"{repo}/"
   s!"{URL}/f/{pre}{fileName}"
 
 section Get
