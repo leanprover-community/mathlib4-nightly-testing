@@ -9,12 +9,12 @@ open Lake DSL
 require "leanprover-community" / "batteries" @ git "lean-pr-testing-9493"
 require "leanprover-community" / "Qq" @ git "master"
 require "leanprover-community" / "aesop" @ git "master"
-require "leanprover-community" / "proofwidgets" @ git "v0.0.67" -- ProofWidgets should always be pinned to a specific version
+require "leanprover-community" / "proofwidgets" @ git "v0.0.68" -- ProofWidgets should always be pinned to a specific version
   with NameMap.empty.insert `errorOnBuild
     "ProofWidgets not up-to-date. \
     Please run `lake exe cache get` to fetch the latest ProofWidgets. \
     If this does not work, report your issue on the Lean Zulip."
-require "leanprover-community" / "importGraph" @ git "main"
+require "leanprover-community" / "importGraph" @ git "nightly-testing"
 require "leanprover-community" / "LeanSearchClient" @ git "main"
 require "leanprover-community" / "plausible" @ git "main"
 
@@ -103,11 +103,6 @@ lean_exe mk_all where
   supportInterpreter := true
   -- Executables which import `Lake` must set `-lLake`.
   weakLinkArgs := #["-lLake"]
-
-/-- `lake exe shake` checks files for unnecessary imports. -/
-lean_exe shake where
-  root := `Shake.Main
-  supportInterpreter := true
 
 /-- `lake exe lint-style` runs text-based style linters. -/
 lean_exe «lint-style» where

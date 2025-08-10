@@ -68,7 +68,7 @@ def land : ℤ → ℤ → ℤ
 
 /-- `ldiff a b` performs bitwise set difference. For each corresponding
   pair of bits taken as booleans, say `aᵢ` and `bᵢ`, it applies the
-  boolean operation `aᵢ ∧ bᵢ` to obtain the `iᵗʰ` bit of the result. -/
+  boolean operation `aᵢ ∧ ¬bᵢ` to obtain the `iᵗʰ` bit of the result. -/
 def ldiff : ℤ → ℤ → ℤ
   | (m : ℕ), (n : ℕ) => Nat.ldiff m n
   | (m : ℕ), -[n +1] => m &&& n
@@ -270,7 +270,7 @@ theorem bitwise_xor : bitwise xor = Int.xor := by
     <;> simp only [bitwise, natBitwise, Bool.not_false, Bool.bne_eq_xor,
       cond_false, cond_true, negSucc.injEq, Bool.false_xor,
       Bool.true_xor, Bool.not_true,
-      Int.xor, HXor.hXor, Xor.xor, Nat.xor]
+      Int.xor, HXor.hXor, XorOp.xor, Nat.xor]
   · congr
     funext x y
     cases x <;> cases y <;> rfl
