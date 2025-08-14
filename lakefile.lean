@@ -6,7 +6,7 @@ open Lake DSL
 ## Mathlib dependencies on upstream projects
 -/
 
-require "leanprover-community" / "batteries" @ git "v4.22.0"
+require "leanprover-community" / "batteries" from git "https://github.com/ShreckYe/batteries" @ "replace-let-with-have-in-Nat-Coprime-dvd_of_dvd_mul_right"
 require "leanprover-community" / "Qq" @ git "v4.22.0"
 require "leanprover-community" / "aesop" @ git "v4.22.0"
 require "leanprover-community" / "proofwidgets" @ git "v0.0.68" -- ProofWidgets should always be pinned to a specific version
