@@ -204,7 +204,7 @@ theorem mapId_eq (Y : T) : map (𝟙 Y) = 𝟭 _ := by
     dsimp [Over, Over.map, Comma.mapRight]
     simp only [Category.comp_id]
     exact rfl
-  · intros x y u
+  · intro x y u
     dsimp [Over, Over.map, Comma.mapRight]
     simp
 
@@ -218,7 +218,7 @@ theorem mapForget_eq {X Y : T} (f : X ⟶ Y) :
     (map f) ⋙ (forget Y) = (forget X) := by
   fapply Functor.ext
   · dsimp [Over, Over.map]; intro x; exact rfl
-  · intros x y u; simp
+  · intro x y u; simp
 
 /-- The natural isomorphism arising from `mapForget_eq`. -/
 def mapForget {X Y : T} (f : X ⟶ Y) :
@@ -615,7 +615,7 @@ theorem mapId_eq (Y : T) : map (𝟙 Y) = 𝟭 _ := by
     dsimp [Under, Under.map, Comma.mapLeft]
     simp only [Category.id_comp]
     exact rfl
-  · intros x y u
+  · intro x y u
     dsimp [Under, Under.map, Comma.mapLeft]
     simp
 
@@ -628,7 +628,7 @@ theorem mapForget_eq {X Y : T} (f : X ⟶ Y) :
     (map f) ⋙ (forget X) = (forget Y) := by
   fapply Functor.ext
   · dsimp [Under, Under.map]; intro x; exact rfl
-  · intros x y u; simp
+  · intro x y u; simp
 
 /-- The natural isomorphism arising from `mapForget_eq`. -/
 def mapForget {X Y : T} (f : X ⟶ Y) :
