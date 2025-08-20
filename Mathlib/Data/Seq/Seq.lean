@@ -147,7 +147,7 @@ def head (s : Seq α) : Option α :=
 
 /-- Get the tail of a sequence (or `nil` if the sequence is `nil`) -/
 def tail (s : Seq α) : Seq α :=
-  ⟨s.1.tail, fun n' => by
+  ⟨s.1.tail, fun _ n' => by
     obtain ⟨f, al⟩ := s
     exact al n'⟩
 
@@ -682,7 +682,7 @@ def splitAt : ℕ → Seq α → List α × Seq α
 /-- Combine two sequences with a function -/
 def zipWith (f : α → β → γ) (s₁ : Seq α) (s₂ : Seq β) : Seq γ :=
   ⟨fun n => Option.map₂ f (s₁.get? n) (s₂.get? n), fun {_} hn =>
-    Option.map₂_eq_none_iff.2 <| (Option.map₂_eq_none_iff.1 hn).imp s₁.2 s₂.2⟩
+    Option.map₂_eq_none_iff.2 <| (Option.map₂_eq_none_iff.1 hn).imp (s₁.2 ·) (s₂.2 ·)⟩
 
 /-- Pair two sequences into a sequence of pairs -/
 def zip : Seq α → Seq β → Seq (α × β) :=

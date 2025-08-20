@@ -175,7 +175,7 @@ lemma full : F.Full where
   map_surjective := hF.map_surjective
 
 lemma faithful : F.Faithful where
-  map_injective := hF.map_injective
+  map_injective _ _ := hF.map_injective
 
 instance : Subsingleton F.FullyFaithful where
   allEq h₁ h₂ := by
@@ -255,7 +255,7 @@ variable {D : Type u₂} [Category.{v₂} D] {E : Type u₃} [Category.{v₃} E]
 variable (F F' : C ⥤ D) (G : D ⥤ E)
 
 instance Faithful.comp [F.Faithful] [G.Faithful] : (F ⋙ G).Faithful where
-  map_injective p := F.map_injective (G.map_injective p)
+  map_injective _ _ p := F.map_injective (G.map_injective p)
 
 theorem Faithful.of_comp [(F ⋙ G).Faithful] : F.Faithful :=
   -- Porting note: (F ⋙ G).map_injective.of_comp has the incorrect type
@@ -273,7 +273,7 @@ lemma Full.of_iso [Full F] (α : F ≅ F') : Full F' where
     ⟨F.preimage ((α.app X).hom ≫ f ≫ (α.app Y).inv), by simp [← NatIso.naturality_1 α]⟩
 
 theorem Faithful.of_iso [F.Faithful] (α : F ≅ F') : F'.Faithful :=
-  { map_injective := fun h =>
+  { map_injective _ _ h :=
       F.map_injective (by rw [← NatIso.naturality_1 α.symm, h, NatIso.naturality_1 α.symm]) }
 
 end
