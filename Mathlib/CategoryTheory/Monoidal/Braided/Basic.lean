@@ -212,21 +212,18 @@ def BraidedCategory.ofFaithful {C D : Type*} [Category C] [Category D] [Monoidal
     BraidedCategory C where
   braiding := β
   braiding_naturality_left := by
-    unfold autoParam at w
     intros
     apply F.map_injective
     refine (cancel_epi (μ F ?_ ?_)).1 ?_
     rw [Functor.map_comp, ← μ_natural_left_assoc, w, Functor.map_comp,
       reassoc_of% w, braiding_naturality_left_assoc, μ_natural_right]
   braiding_naturality_right := by
-    unfold autoParam at w
     intros
     apply F.map_injective
     refine (cancel_epi (μ F ?_ ?_)).1 ?_
     rw [Functor.map_comp, ← μ_natural_right_assoc, w, Functor.map_comp,
       reassoc_of% w, braiding_naturality_right_assoc, μ_natural_left]
   hexagon_forward := by
-    unfold autoParam at w
     intros
     apply F.map_injective
     refine (cancel_epi (μ F _ _)).1 ?_
@@ -239,7 +236,6 @@ def BraidedCategory.ofFaithful {C D : Type*} [Category C] [Category D] [Monoidal
       reassoc_of% w, braiding_naturality_right_assoc,
       Functor.LaxMonoidal.associativity, hexagon_forward_assoc]
   hexagon_reverse := by
-    unfold autoParam at w
     intros
     apply F.map_injective
     refine (cancel_epi (μ F _ _)).1 ?_
@@ -405,6 +401,17 @@ instance (F : C ⥤ D) (G : D ⥤ E) [F.LaxBraided] [G.LaxBraided] :
     slice_lhs 1 2 => rw [braided]
     simp only [Category.assoc]
 
+/--
+Given two lax monoidal, monoidally isomorphic functors, if one is lax braided, so is the other.
+-/
+def ofNatIso {F G : C ⥤ D} (i : F ≅ G) [F.LaxBraided] [G.LaxMonoidal]
+    [NatTrans.IsMonoidal i.hom] : G.LaxBraided where
+  braided X Y := by
+    have (X Y : C) : μ G X Y = (i.inv.app X ⊗ₘ i.inv.app Y) ≫ μ F X Y ≫ i.hom.app _ := by
+      simp [NatTrans.IsMonoidal.tensor X Y, ← tensor_comp_assoc]
+    rw [this X Y, this Y X, ← braiding_naturality_assoc, ← Functor.LaxBraided.braided_assoc]
+    simp
+
 end Functor.LaxBraided
 
 section
@@ -516,6 +523,15 @@ def symmetricCategoryOfFaithful {C D : Type*} [Category C] [Category D] [Monoida
     [MonoidalCategory D] [BraidedCategory C] [SymmetricCategory D] (F : C ⥤ D) [F.Braided]
     [F.Faithful] : SymmetricCategory C where
   symmetry X Y := F.map_injective (by simp)
+
+/-- Pull back a symmetric braiding along a fully faithful monoidal functor. -/
+noncomputable def symmetricCategoryOfFullyFaithful {C D : Type*} [Category C] [Category D]
+    [MonoidalCategory C] [MonoidalCategory D] (F : C ⥤ D) [F.Monoidal] [F.Full]
+    [F.Faithful] [SymmetricCategory D] : SymmetricCategory C :=
+  let h : BraidedCategory C := BraidedCategory.ofFullyFaithful F
+  let _ : F.Braided := {
+    braided X Y := by simp [h, BraidedCategory.ofFullyFaithful, BraidedCategory.ofFaithful] }
+  symmetricCategoryOfFaithful F
 
 namespace Functor.Braided
 
