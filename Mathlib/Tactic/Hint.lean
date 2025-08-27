@@ -68,14 +68,14 @@ Extracts the `MessageData` from the first clickable `Try This:` diff widget in t
 Preserves (only) contexts and tags.
 -/
 private def getFirstTryThisFromMessage? : MessageData → Option MessageData
-| .ofWidget w msg => if w.id == ``Meta.Hint.tryThisDiffWidget then msg else none
-| .nest _ msg
-| .group msg => getFirstTryThisFromMessage? msg
-| .compose msg₁ msg₂ => getFirstTryThisFromMessage? msg₁ <|> getFirstTryThisFromMessage? msg₂
-| .withContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withContext ctx
-| .withNamingContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withNamingContext ctx
-| .tagged tag msg => (getFirstTryThisFromMessage? msg).map <| .tagged tag
-| .ofFormatWithInfos _ | .ofGoal _ | .trace .. | .ofLazy .. => none
+  | .ofWidget w msg => if w.id == ``Meta.Hint.tryThisDiffWidget then msg else none
+  | .nest _ msg
+  | .group msg => getFirstTryThisFromMessage? msg
+  | .compose msg₁ msg₂ => getFirstTryThisFromMessage? msg₁ <|> getFirstTryThisFromMessage? msg₂
+  | .withContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withContext ctx
+  | .withNamingContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withNamingContext ctx
+  | .tagged tag msg => (getFirstTryThisFromMessage? msg).map <| .tagged tag
+  | .ofFormatWithInfos _ | .ofGoal _ | .trace .. | .ofLazy .. => none
 
 /--
 Construct a suggestion for a tactic.
