@@ -80,13 +80,19 @@ def suggestion (tac : TSyntax `tactic) (msgs : MessageLog := {}) : TacticM Sugge
       let e ← PrettyPrinter.ppExpr (← instantiateMVars (← g.getType))
       str := str ++ Format.pretty ("\n⊢ " ++ e)
     pure (some str)
-  let style? := if goals.isEmpty then some .success else none
+  /-
+  #adaptation_note 2025-08-27
+  Suggestion styling was deprecated in lean4#9966.
+  We use emojis for now instead.
+  -/
+  -- let style? := if goals.isEmpty then some .success else none
+  let preInfo? := if goals.isEmpty then some "🎉" else none
   let msg? ← msgs.toList.findM? fun m => do pure <|
-    m.severity == MessageSeverity.information && (← m.data.toString).startsWith "Try this: "
+    m.severity == MessageSeverity.information && (← m.data.toString).startsWith "Try this:"
   let suggestion ← match msg? with
   | some m => pure <| SuggestionText.string ((← m.data.toString).drop 10)
   | none => pure <| SuggestionText.tsyntax tac
-  return { suggestion, postInfo?, style? }
+  return { preInfo?, suggestion, postInfo? }
 
 /-- Run a tactic, returning any new messages rather than adding them to the message log. -/
 def withMessageLog (t : TacticM Unit) : TacticM MessageLog := do
