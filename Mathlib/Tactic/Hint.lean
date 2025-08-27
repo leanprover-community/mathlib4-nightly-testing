@@ -63,6 +63,17 @@ elab (name := registerHintStx)
 initialize
   Batteries.Linter.UnreachableTactic.ignoreTacticKindsRef.modify fun s => s.insert ``registerHintStx
 
+
+private def getFirstTryThisFromMessage? : MessageData → Option MessageData
+| .ofWidget w msg => if w.id == ``Meta.Hint.tryThisDiffWidget then msg else none
+| .withContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withContext ctx
+| .withNamingContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withNamingContext ctx
+| .nest _ msg
+| .group msg => getFirstTryThisFromMessage? msg
+| .compose msg₁ msg₂ => getFirstTryThisFromMessage? msg₁ <|> getFirstTryThisFromMessage? msg₂
+| .tagged tag msg => (getFirstTryThisFromMessage? msg).map (.tagged tag)
+| .ofFormatWithInfos _ | .ofGoal _ | .trace .. | .ofLazy .. => none
+
 /--
 Construct a suggestion for a tactic.
 * Check the passed `MessageLog` for an info message beginning with "Try this: ".
@@ -87,10 +98,9 @@ def suggestion (tac : TSyntax `tactic) (msgs : MessageLog := {}) : TacticM Sugge
   -/
   -- let style? := if goals.isEmpty then some .success else none
   let preInfo? := if goals.isEmpty then some "🎉 " else none
-  let msg? ← msgs.toList.findM? fun m => do pure <|
-    m.severity == MessageSeverity.information && (← m.data.toString).startsWith "Try this:"
+  let msg? : Option MessageData := msgs.toList.firstM (getFirstTryThisFromMessage? ·.data)
   let suggestion ← match msg? with
-  | some m => pure <| SuggestionText.string ((← m.data.toString).drop 10)
+  | some m => pure <| SuggestionText.string (← m.toString)
   | none => pure <| SuggestionText.tsyntax tac
   return { preInfo?, suggestion, postInfo? }
 
