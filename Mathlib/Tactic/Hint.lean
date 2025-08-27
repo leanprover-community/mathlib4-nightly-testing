@@ -63,15 +63,18 @@ elab (name := registerHintStx)
 initialize
   Batteries.Linter.UnreachableTactic.ignoreTacticKindsRef.modify fun s => s.insert ``registerHintStx
 
-
+/--
+Extracts the `MessageData` from the first clickable `Try This:` diff widget in the message.
+Preserves (only) contexts and tags.
+-/
 private def getFirstTryThisFromMessage? : MessageData → Option MessageData
 | .ofWidget w msg => if w.id == ``Meta.Hint.tryThisDiffWidget then msg else none
-| .withContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withContext ctx
-| .withNamingContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withNamingContext ctx
 | .nest _ msg
 | .group msg => getFirstTryThisFromMessage? msg
 | .compose msg₁ msg₂ => getFirstTryThisFromMessage? msg₁ <|> getFirstTryThisFromMessage? msg₂
-| .tagged tag msg => (getFirstTryThisFromMessage? msg).map (.tagged tag)
+| .withContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withContext ctx
+| .withNamingContext ctx msg => (getFirstTryThisFromMessage? msg).map <| .withNamingContext ctx
+| .tagged tag msg => (getFirstTryThisFromMessage? msg).map <| .tagged tag
 | .ofFormatWithInfos _ | .ofGoal _ | .trace .. | .ofLazy .. => none
 
 /--
