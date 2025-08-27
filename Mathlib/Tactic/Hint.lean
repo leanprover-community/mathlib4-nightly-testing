@@ -86,7 +86,7 @@ def suggestion (tac : TSyntax `tactic) (msgs : MessageLog := {}) : TacticM Sugge
   We use emojis for now instead.
   -/
   -- let style? := if goals.isEmpty then some .success else none
-  let preInfo? := if goals.isEmpty then some "🎉" else none
+  let preInfo? := if goals.isEmpty then some "🎉 " else none
   let msg? ← msgs.toList.findM? fun m => do pure <|
     m.severity == MessageSeverity.information && (← m.data.toString).startsWith "Try this:"
   let suggestion ← match msg? with
