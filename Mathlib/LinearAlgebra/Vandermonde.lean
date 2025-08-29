@@ -180,7 +180,12 @@ private theorem det_projVandermonde_of_field (v w : Fin n → K) :
     (fun i j ↦ by simp [W, r, projVandermonde_apply]), det_succ_row_zero,
     Finset.sum_eq_single 0 _ (by simp)]
   · rw [succAbove_zero, hW_eq, det_mul_column, ih]
-    field_simp [show W 0 0 = w 0 ^ n by simp [W, projVandermonde_apply], prod_univ_succ, hr]
+    simp only [Nat.succ_eq_add_one, coe_ofNat_eq_mod, Nat.zero_mod,
+      pow_zero, show W 0 0 = w 0 ^ n by simp [W, projVandermonde_apply], one_mul, hr]
+    field_simp
+    simp only [Finset.prod_div_distrib, Finset.prod_const, Finset.card_fin, Function.comp_apply]
+    field_simp
+    simp only [prod_univ_succ, Ioi_zero_eq_map, Finset.prod_map, coe_succEmb, prod_Ioi_succ]
   intro j _ hj0
   obtain ⟨j, rfl⟩ := j.eq_succ_of_ne_zero hj0
   rw [mul_eq_zero, mul_eq_zero]
@@ -255,13 +260,13 @@ theorem eval_matrixOfPolynomials_eq_vandermonde_mul_matrixOfPolynomials (v : Fin
     Matrix.of (fun i j => ((p j).eval (v i))) =
     (Matrix.vandermonde v) * (Matrix.of (fun (i j : Fin n) => (p j).coeff i)) := by
   ext i j
-  rw [Matrix.mul_apply, eval, Matrix.of_apply, eval₂]
+  simp_rw [Matrix.mul_apply, eval, Matrix.of_apply, eval₂]
   simp only [Matrix.vandermonde]
   have : (p j).support ⊆ range n := supp_subset_range <| Nat.lt_of_le_of_lt (h_deg j) <| Fin.prop j
   rw [sum_eq_of_subset _ (fun j => zero_mul ((v i) ^ j)) this, ← Fin.sum_univ_eq_sum_range]
   congr
   ext k
-  rw [mul_comm, Matrix.of_apply, RingHom.id_apply, of_apply]
+  rw [mul_comm, Matrix.of_apply, RingHom.id_apply]
 
 theorem det_eval_matrixOfPolynomials_eq_det_vandermonde (v : Fin n → R) (p : Fin n → R[X])
     (h_deg : ∀ i, (p i).natDegree = i) (h_monic : ∀ i, Monic <| p i) :
