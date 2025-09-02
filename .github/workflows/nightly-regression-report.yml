@@ -11,7 +11,7 @@ env:
 jobs:
   grind-regressions:
     name: Build
-    runs-on: pr
+    #    runs-on: pr
     if: github.repository == 'Vierkantor/mathlib4'
     steps:
     - name: cleanup
