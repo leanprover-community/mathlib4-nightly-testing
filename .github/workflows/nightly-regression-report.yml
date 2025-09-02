@@ -12,7 +12,7 @@ jobs:
   grind-regressions:
     name: Build
     runs-on: pr
-    if: github.repository == 'leanprover-community/mathlib4-nightly-testing'
+    if: github.repository == 'Vierkantor/mathlib4'
     steps:
     - name: cleanup
       run: |
@@ -71,7 +71,7 @@ jobs:
         lake build | tee "${lean_outfile}"
 
         # Skip the lines about build progress.
-        filtered_out=$(grep -v '^✔' "${lean_outfile}" | grep -v '^trace: ')
+        filtered_out=$(grep -v '^✔' "${lean_outfile}" | grep -v '^trace: ') 
 
         # Categorize the output.
         error_lines=$(grep '^error: ' <<<"${filtered_out}")
