@@ -65,12 +65,13 @@ jobs:
       id: build
       continue-on-error: true
       run: |
-        lean_out=$(lake build)
-        # Echo the output so we see it in the GitHub build log
-        echo "${lean_out}"
+        # Use a temporary file to ensure we don't overflow max variable size.
+        lean_outfile=$(mktemp)
+        # Show the stdout in the GitHub build logs, while we process it from the file.
+        lake build | tee "${lean_outfile}"
 
         # Skip the lines about build progress.
-        filtered_out=$(grep -v '^✔' <<<"${lean_out}" | grep -v '^trace: ') 
+        filtered_out=$(grep -v '^✔' "${lean_outfile}" | grep -v '^trace: ')
 
         # Categorize the output.
         error_lines=$(grep '^error: ' <<<"${filtered_out}")
