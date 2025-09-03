@@ -10,7 +10,6 @@ import Lean.Meta.Tactic.Symm
 import Lean.Meta.Tactic.TryThis
 import Mathlib.Data.Array.Defs
 import Mathlib.Data.Nat.Notation
-import Mathlib.Lean.EnvExtension
 import Mathlib.Lean.Expr.ReplaceRec
 import Mathlib.Lean.Meta.Simp
 import Mathlib.Lean.Name
