@@ -82,10 +82,6 @@ isomorphisms, provided that `Tactic.CategoryTheory.IsoReassoc` has been imported
 -/
 syntax (name := reassoc) "reassoc" (" (" &"attr" " := " Parser.Term.attrInstance,* ")")? : attr
 
-#adaptation_note /-- nightly-2025-08-25
-This used to be private.
--/
-
 /--
 IO ref for reassociation handlers `reassoc` attribute, so that it can be extended
 with additional handlers. Handlers take a proof of the equation.
@@ -93,7 +89,7 @@ with additional handlers. Handlers take a proof of the equation.
 The default handler is `reassocExprHom` for morphism reassociation.
 This will be extended in `Tactic.CategoryTheory.IsoReassoc` for isomorphism reassociation.
 -/
-initialize reassocImplRef : IO.Ref (Array (Expr → MetaM (Expr × Array MVarId))) ←
+private initialize reassocImplRef : IO.Ref (Array (Expr → MetaM (Expr × Array MVarId))) ←
   IO.mkRef #[reassocExprHom]
 
 /--
