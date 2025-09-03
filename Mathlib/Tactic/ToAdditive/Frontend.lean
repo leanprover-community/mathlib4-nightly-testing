@@ -959,7 +959,7 @@ def warnAttr {α β : Type} [Inhabited β] (stx : Syntax) (attr : SimpleScopedEn
   warnAttrCore stx (f <| attr.getState ·) thisAttr attrName src tgt
 
 /-- Warn the user when the multiplicative declaration has a parametric attribute. -/
-def warnParametricAttr {β : Type} (stx : Syntax) (attr : ParametricAttribute β)
+def warnParametricAttr {β : Type} [Inhabited β] (stx : Syntax) (attr : ParametricAttribute β)
     (thisAttr attrName src tgt : Name) : CoreM Unit :=
   warnAttrCore stx (attr.getParam? · · |>.isSome) thisAttr attrName src tgt
 
