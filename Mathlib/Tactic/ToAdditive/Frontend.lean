@@ -940,8 +940,8 @@ def copyInstanceAttribute (src tgt : Name) : CoreM Unit := do
     addInstance tgt attr_kind prio |>.run'
 
 /-- Warn the user when the multiplicative declaration has an attribute. -/
-def warnAttrCore {σ α β : Type} [Inhabited σ] (stx : Syntax)
-    (f : Environment → Name → Bool) (thisAttr attrName src tgt : Name) : CoreM Unit := do
+def warnAttrCore (stx : Syntax) (f : Environment → Name → Bool)
+    (thisAttr attrName src tgt : Name) : CoreM Unit := do
   if f (← getEnv) src then
     Linter.logLintIf linter.existingAttributeWarning stx <|
       m!"The source declaration {src} was given attribute {attrName} before calling @[{thisAttr}]. \
