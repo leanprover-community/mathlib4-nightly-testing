@@ -3,7 +3,7 @@ Copyright (c) 2021 Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kexing Ying
 -/
-import Mathlib.MeasureTheory.Decomposition.RadonNikodym
+import Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym
 import Mathlib.MeasureTheory.Measure.Haar.OfBasis
 import Mathlib.Probability.Independence.Basic
 
@@ -16,7 +16,7 @@ as the Radon–Nikodym derivative of the law of `X`. In particular, a measurable
 is said to the probability density function of a random variable `X` if for all measurable
 sets `S`, `ℙ(X ∈ S) = ∫ x in S, f x dx`. Probability density functions are one way of describing
 the distribution of a random variable, and are useful for calculating probabilities and
-finding moments (although the latter is better achieved with moment generating functions).
+finding moments (although the latter is better achieved with moment-generating functions).
 
 This file also defines the continuous uniform distribution and proves some properties about
 random variables with this distribution.
@@ -105,8 +105,6 @@ theorem HasPDF.congr (hXY : X =ᵐ[ℙ] Y) [hX : HasPDF X ℙ μ] : HasPDF Y ℙ
 theorem HasPDF.congr_iff (hXY : X =ᵐ[ℙ] Y) : HasPDF X ℙ μ ↔ HasPDF Y ℙ μ :=
   ⟨fun _ ↦ HasPDF.congr hXY, fun _ ↦ HasPDF.congr hXY.symm⟩
 
-@[deprecated (since := "2024-10-28")] alias HasPDF.congr' := HasPDF.congr_iff
-
 /-- X `HasPDF` if there is a pdf `f` such that `map X ℙ = μ.withDensity f`. -/
 theorem hasPDF_of_map_eq_withDensity (hX : AEMeasurable X ℙ) (f : E → ℝ≥0∞) (hf : AEMeasurable f μ)
     (h : map X ℙ = μ.withDensity f) : HasPDF X ℙ μ := by
@@ -163,9 +161,6 @@ theorem setLIntegral_pdf_le_map {m : MeasurableSpace Ω} (X : Ω → E) (ℙ : M
   apply (withDensity_apply_le _ s).trans
   exact withDensity_pdf_le_map _ _ _ s
 
-@[deprecated (since := "2024-06-29")]
-alias set_lintegral_pdf_le_map := setLIntegral_pdf_le_map
-
 theorem map_eq_withDensity_pdf {m : MeasurableSpace Ω} (X : Ω → E) (ℙ : Measure Ω)
     (μ : Measure E := by volume_tac) [hX : HasPDF X ℙ μ] :
     map X ℙ = μ.withDensity (pdf X ℙ μ) := by
@@ -175,9 +170,6 @@ theorem map_eq_setLIntegral_pdf {m : MeasurableSpace Ω} (X : Ω → E) (ℙ : M
     (μ : Measure E := by volume_tac) [hX : HasPDF X ℙ μ] {s : Set E}
     (hs : MeasurableSet s) : map X ℙ s = ∫⁻ x in s, pdf X ℙ μ x ∂μ := by
   rw [← withDensity_apply _ hs, map_eq_withDensity_pdf X ℙ μ]
-
-@[deprecated (since := "2024-06-29")]
-alias map_eq_set_lintegral_pdf := map_eq_setLIntegral_pdf
 
 namespace pdf
 
@@ -225,10 +217,8 @@ variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
 theorem integrable_pdf_smul_iff [IsFiniteMeasure ℙ] {X : Ω → E} [HasPDF X ℙ μ] {f : E → F}
     (hf : AEStronglyMeasurable f μ) :
     Integrable (fun x => (pdf X ℙ μ x).toReal • f x) μ ↔ Integrable (fun x => f (X x)) ℙ := by
-  -- Porting note: using `erw` because `rw` doesn't recognize `(f <| X ·)` as `f ∘ X`
-  -- https://github.com/leanprover-community/mathlib4/issues/5164
-  erw [← integrable_map_measure (hf.mono_ac HasPDF.absolutelyContinuous)
-    (HasPDF.aemeasurable X ℙ μ),
+  rw [← Function.comp_def,
+    ← integrable_map_measure (hf.mono_ac HasPDF.absolutelyContinuous) (HasPDF.aemeasurable X ℙ μ),
     map_eq_withDensity_pdf X ℙ μ, pdf_def, integrable_rnDeriv_smul_iff HasPDF.absolutelyContinuous]
   rw [withDensity_rnDeriv_eq _ _ HasPDF.absolutelyContinuous]
 
@@ -289,15 +279,14 @@ theorem integral_mul_eq_integral [HasPDF X ℙ] : ∫ x, x * (pdf X ℙ volume x
     _ = _ := integral_pdf_smul measurable_id.aestronglyMeasurable
 
 theorem hasFiniteIntegral_mul {f : ℝ → ℝ} {g : ℝ → ℝ≥0∞} (hg : pdf X ℙ =ᵐ[volume] g)
-    (hgi : ∫⁻ x, ‖f x‖₊ * g x ≠ ∞) :
+    (hgi : ∫⁻ x, ‖f x‖ₑ * g x ≠ ∞) :
     HasFiniteIntegral fun x => f x * (pdf X ℙ volume x).toReal := by
-  rw [hasFiniteIntegral_iff_nnnorm]
-  have : (fun x => ↑‖f x‖₊ * g x) =ᵐ[volume] fun x => ‖f x * (pdf X ℙ volume x).toReal‖₊ := by
-    refine ae_eq_trans (Filter.EventuallyEq.mul (ae_eq_refl fun x => (‖f x‖₊ : ℝ≥0∞))
-      (ae_eq_trans hg.symm ofReal_toReal_ae_eq.symm)) ?_
-    simp_rw [← smul_eq_mul, nnnorm_smul, ENNReal.coe_mul, smul_eq_mul]
-    refine Filter.EventuallyEq.mul (ae_eq_refl _) ?_
-    simp only [Real.ennnorm_eq_ofReal ENNReal.toReal_nonneg, ae_eq_refl]
+  rw [hasFiniteIntegral_iff_enorm]
+  have : (fun x => ‖f x‖ₑ * g x) =ᵐ[volume] fun x => ‖f x * (pdf X ℙ volume x).toReal‖ₑ := by
+    refine ae_eq_trans ((ae_eq_refl _).fun_mul (ae_eq_trans hg.symm ofReal_toReal_ae_eq.symm)) ?_
+    simp_rw [← smul_eq_mul, enorm_smul, smul_eq_mul]
+    refine .fun_mul (ae_eq_refl _) ?_
+    simp only [Real.enorm_eq_ofReal ENNReal.toReal_nonneg, ae_eq_refl]
   rwa [lt_top_iff_ne_top, ← lintegral_congr_ae this]
 
 end Real

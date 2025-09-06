@@ -74,7 +74,7 @@ def stacksTagFn : ParserFn := fun c s =>
   else if s.pos == i then
     ParserState.mkError s "stacks tag"
   else
-    let tag := Substring.mk c.input i s.pos |>.toString
+    let tag := c.extract i s.pos
     if !tag.all fun c => c.isDigit || c.isUpper then
       ParserState.mkUnexpectedError s
         "Stacks tags must consist only of digits and uppercase letters."
@@ -155,8 +155,10 @@ initialize Lean.registerBuiltinAttribute {
     let comment := (comment.map (·.getString)).getD ""
     let commentInDoc := if comment = "" then "" else s!" ({comment})"
     let newDoc := [oldDoc, s!"[{SorK} Tag {tagStr}]({url}/{tagStr}){commentInDoc}"]
-    addDocString decl <| "\n\n".intercalate (newDoc.filter (· != ""))
+    addDocStringCore decl <| "\n\n".intercalate (newDoc.filter (· != ""))
     addTagEntry decl database tagStr <| comment
+  -- docstrings are immutable once an asynchronous elaboration task has been started
+  applicationTime := .beforeElaboration
 }
 
 end Mathlib.StacksTag

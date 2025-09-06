@@ -2,6 +2,12 @@ import Mathlib.Algebra.Polynomial.Eval.Degree
 import Mathlib.Algebra.Polynomial.Inductions
 import Mathlib.Tactic.RewriteSearch
 
+#adaptation_note /-- nightly-2025-08-25
+Test disabled until we figure out the segfaults when running `rw_search` in the interpreter.
+-/
+
+/-
+
 set_option autoImplicit true
 
 open Polynomial
@@ -27,7 +33,7 @@ open Polynomial
 --   rw_search
 
 
--- All rewrite-only lemmas from `Mathlib.Algebra.Polynomial.Degree.Definitions`,
+-- All rewrite-only lemmas from `Mathlib/Algebra/Polynomial/Degree/Definitions.lean`,
 -- whose statements are equalities.
 -- TODO: `rw_search` should handle `iff` as well.
 
@@ -205,3 +211,5 @@ example {R : Type u} [Ring R] [Nontrivial R] {n : ℕ} {r : R} :
 --   -- Mathlib proof:
 --   -- rw [sub_eq_add_neg, ← map_neg C r, leadingCoeff_X_add_C]
 --   done
+
+-/

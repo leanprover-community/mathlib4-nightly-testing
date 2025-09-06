@@ -185,12 +185,10 @@ theorem dist_div_cos_oangle_center_div_two_eq_radius {s : Sphere P} {p₁ p₂ :
     vadd_vsub_assoc, add_comm, o.oangle_add_right_smul_rotation_pi_div_two, Real.Angle.cos_coe,
     Real.cos_arctan]
   · norm_cast
-    rw [one_div, div_inv_eq_mul, ←
-      mul_self_inj (mul_nonneg (norm_nonneg _) (Real.sqrt_nonneg _)) (norm_nonneg _),
-      norm_add_sq_eq_norm_sq_add_norm_sq_real (o.inner_smul_rotation_pi_div_two_right _ _), ←
-      mul_assoc, mul_comm, mul_comm _ (√_), ← mul_assoc, ← mul_assoc,
-      Real.mul_self_sqrt (add_nonneg zero_le_one (sq_nonneg _)), norm_smul,
-      LinearIsometryEquiv.norm_map]
+    rw [one_div, div_inv_eq_mul, ← mul_self_inj (by positivity) (by positivity),
+      norm_add_sq_eq_norm_sq_add_norm_sq_real (o.inner_smul_rotation_pi_div_two_right _ _),
+      ← mul_assoc, mul_comm, mul_comm _ (√_), ← mul_assoc, ← mul_assoc,
+      Real.mul_self_sqrt (by positivity), norm_smul, LinearIsometryEquiv.norm_map]
     conv_rhs =>
       rw [← mul_assoc, mul_comm _ ‖Real.Angle.tan _‖, ← mul_assoc, Real.norm_eq_abs,
         abs_mul_abs_self]
@@ -214,7 +212,7 @@ theorem dist_div_sin_oangle_div_two_eq_radius {s : Sphere P} {p₁ p₂ p₃ : P
   convert dist_div_cos_oangle_center_div_two_eq_radius hp₁ hp₃ hp₁p₃
   rw [← Real.Angle.abs_cos_eq_abs_sin_of_two_zsmul_add_two_zsmul_eq_pi
     (two_zsmul_oangle_center_add_two_zsmul_oangle_eq_pi hp₁ hp₂ hp₃ hp₁p₂.symm hp₂p₃ hp₁p₃),
-    _root_.abs_of_nonneg (Real.Angle.cos_nonneg_iff_abs_toReal_le_pi_div_two.2 _)]
+    abs_of_nonneg (Real.Angle.cos_nonneg_iff_abs_toReal_le_pi_div_two.2 _)]
   exact (abs_oangle_center_right_toReal_lt_pi_div_two hp₁ hp₃).le
 
 /-- Given three points on a circle, twice the radius of that circle may be expressed explicitly as
@@ -295,7 +293,6 @@ theorem circumsphere_eq_circumsphere_of_eq_of_eq_of_two_zsmul_oangle_eq {t₁ t�
     t₁.circumsphere = t₂.circumsphere := by
   rw [t₁.circumsphere_eq_of_dist_of_oangle h₁₂ h₁₃ h₂₃,
     t₂.circumsphere_eq_of_dist_of_oangle h₁₂ h₁₃ h₂₃,
-    -- Porting note: was `congrm ⟨((_ : ℝ)⁻¹ / 2) • _ +ᵥ _, _ / _ / 2⟩` and five more lines
     Real.Angle.tan_eq_of_two_zsmul_eq h₂, Real.Angle.abs_sin_eq_of_two_zsmul_eq h₂, h₁, h₃]
 
 /-- Given a triangle, and a fourth point such that twice the angle between two points of the

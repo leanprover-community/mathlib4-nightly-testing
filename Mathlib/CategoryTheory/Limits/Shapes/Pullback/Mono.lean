@@ -14,11 +14,11 @@ the dual statements between pushouts and epimorphisms.
 
 ## Main results
 * Monomorphisms are stable under pullback. This is available using the `PullbackCone` API as
-`mono_fst_of_is_pullback_of_mono` and `mono_snd_of_is_pullback_of_mono`, and using the `pullback`
-API as `pullback.fst_of_mono` and `pullback.snd_of_mono`.
+  `mono_fst_of_is_pullback_of_mono` and `mono_snd_of_is_pullback_of_mono`, and using the `pullback`
+  API as `pullback.fst_of_mono` and `pullback.snd_of_mono`.
 
 * A pullback cone is a limit iff its composition with a monomorphism is a limit. This is available
-as `IsLimitOfCompMono` and `pullbackIsPullbackOfCompMono` respectively.
+  as `IsLimitOfCompMono` and `pullbackIsPullbackOfCompMono` respectively.
 
 * Monomorphisms admit kernel pairs, this is `has_kernel_pair_of_mono`.
 
@@ -77,9 +77,8 @@ theorem mono_of_isLimitMkIdId (f : X ⟶ Y) (t : IsLimit (mk (𝟙 X) (𝟙 X) r
     rfl⟩
 
 /-- Suppose `f` and `g` are two morphisms with a common codomain and `s` is a limit cone over the
-    diagram formed by `f` and `g`. Suppose `f` and `g` both factor through a monomorphism `h` via
-    `x` and `y`, respectively.  Then `s` is also a limit cone over the diagram formed by `x` and
-    `y`. -/
+diagram formed by `f` and `g`. Suppose `f` and `g` both factor through a monomorphism `h` via
+`x` and `y`, respectively.  Then `s` is also a limit cone over the diagram formed by `x` and `y`. -/
 def isLimitOfFactors (f : X ⟶ Z) (g : Y ⟶ Z) (h : W ⟶ Z) [Mono h] (x : X ⟶ W) (y : Y ⟶ W)
     (hxh : x ≫ h = f) (hyh : y ≫ h = g) (s : PullbackCone f g) (hs : IsLimit s) :
     IsLimit
@@ -160,11 +159,7 @@ instance hasPullback_of_right_factors_mono : HasPullback i (f ≫ i) := by
 
 instance pullback_snd_iso_of_right_factors_mono :
     IsIso (pullback.snd i (f ≫ i)) := by
-  #adaptation_note /-- nightly-testing 2024-04-01
-  this could not be placed directly in the `show from` without `dsimp` -/
   have := limit.isoLimitCone_hom_π ⟨_, pullbackIsPullbackOfCompMono (𝟙 _) f i⟩ WalkingCospan.right
-  dsimp only [cospan_right, id_eq, eq_mpr_eq_cast, PullbackCone.mk_pt, PullbackCone.mk_π_app,
-    Functor.const_obj_obj, cospan_one] at this
   convert (congrArg IsIso (show _ ≫ pullback.snd (𝟙 Z) f = _ from this)).mp inferInstance
   · exact (Category.id_comp _).symm
   · exact (Category.id_comp _).symm
@@ -176,11 +171,7 @@ instance hasPullback_of_left_factors_mono : HasPullback (f ≫ i) i := by
 
 instance pullback_snd_iso_of_left_factors_mono :
     IsIso (pullback.fst (f ≫ i) i) := by
-  #adaptation_note /-- nightly-testing 2024-04-01
-  this could not be placed directly in the `show from` without `dsimp` -/
   have := limit.isoLimitCone_hom_π ⟨_, pullbackIsPullbackOfCompMono f (𝟙 _) i⟩ WalkingCospan.left
-  dsimp only [cospan_left, id_eq, eq_mpr_eq_cast, PullbackCone.mk_pt, PullbackCone.mk_π_app,
-    Functor.const_obj_obj, cospan_one] at this
   convert (congrArg IsIso (show _ ≫ pullback.fst f (𝟙 Z) = _ from this)).mp inferInstance
   · exact (Category.id_comp _).symm
   · exact (Category.id_comp _).symm
@@ -260,9 +251,9 @@ theorem epi_of_isColimitMkIdId (f : X ⟶ Y)
     rfl⟩
 
 /-- Suppose `f` and `g` are two morphisms with a common domain and `s` is a colimit cocone over the
-    diagram formed by `f` and `g`. Suppose `f` and `g` both factor through an epimorphism `h` via
-    `x` and `y`, respectively. Then `s` is also a colimit cocone over the diagram formed by `x` and
-    `y`. -/
+diagram formed by `f` and `g`. Suppose `f` and `g` both factor through an epimorphism `h` via
+`x` and `y`, respectively. Then `s` is also a colimit cocone over the diagram formed by `x` and
+`y`. -/
 def isColimitOfFactors (f : X ⟶ Y) (g : X ⟶ Z) (h : X ⟶ W) [Epi h] (x : W ⟶ Y) (y : W ⟶ Z)
     (hhx : h ≫ x = f) (hhy : h ≫ y = g) (s : PushoutCocone f g) (hs : IsColimit s) :
     have reassoc₁ : h ≫ x ≫ inl s = f ≫ inl s := by  -- Porting note: working around reassoc
@@ -276,11 +267,11 @@ def isColimitOfFactors (f : X ⟶ Y) (g : X ⟶ Z) (h : X ⟶ W) [Epi h] (x : W 
       ⟨hs.fac _ WalkingSpan.left, hs.fac _ WalkingSpan.right, fun hr hr' => by
         apply PushoutCocone.IsColimit.hom_ext hs
         · simp only [PushoutCocone.mk_inl, PushoutCocone.mk_inr] at hr hr' ⊢
-          simp only [hr, hr']
+          simp only [hr]
           symm
           exact hs.fac _ WalkingSpan.left
         · simp only [PushoutCocone.mk_inl, PushoutCocone.mk_inr] at hr hr' ⊢
-          simp only [hr, hr']
+          simp only [hr']
           symm
           exact hs.fac _ WalkingSpan.right⟩⟩
 

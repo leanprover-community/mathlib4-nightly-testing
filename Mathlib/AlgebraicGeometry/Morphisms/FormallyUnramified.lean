@@ -3,8 +3,8 @@ Copyright (c) 2025 Andrew Yang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Andrew Yang
 -/
-import Mathlib.AlgebraicGeometry.Morphisms.RingHomProperties
-import Mathlib.AlgebraicGeometry.Morphisms.OpenImmersion
+import Mathlib.AlgebraicGeometry.Morphisms.Separated
+import Mathlib.RingTheory.Ideal.IdempotentFG
 import Mathlib.RingTheory.RingHom.Unramified
 
 /-!
@@ -23,6 +23,18 @@ noncomputable section
 open CategoryTheory CategoryTheory.Limits Opposite TopologicalSpace
 
 universe v u
+
+open AlgebraicGeometry
+
+/-- If `S` is a formally unramified `R`-algebra, essentially of finite type, the diagonal is an
+open immersion. -/
+instance Algebra.FormallyUnramified.isOpenImmersion_SpecMap_lmul {R S : Type u} [CommRing R]
+    [CommRing S] [Algebra R S] [Algebra.FormallyUnramified R S] [Algebra.EssFiniteType R S] :
+    IsOpenImmersion (Spec.map (CommRingCat.ofHom (TensorProduct.lmul' R (S := S)).toRingHom)) := by
+  rw [isOpenImmersion_SpecMap_iff_of_surjective _ (fun x ↦ ⟨1 ⊗ₜ x, by simp⟩)]
+  apply (Ideal.isIdempotentElem_iff_of_fg _ (KaehlerDifferential.ideal_fg R S)).mp
+  apply (Ideal.cotangent_subsingleton_iff _).mp
+  exact inferInstanceAs <| Subsingleton Ω[S⁄R]
 
 namespace AlgebraicGeometry
 
@@ -93,6 +105,36 @@ instance : MorphismProperty.IsMultiplicative @FormallyUnramified where
 
 instance : MorphismProperty.IsStableUnderBaseChange @FormallyUnramified :=
   HasRingHomProperty.isStableUnderBaseChange RingHom.FormallyUnramified.isStableUnderBaseChange
+
+open MorphismProperty in
+/-- The diagonal of a formally unramified morphism of finite type is an open immersion. -/
+instance isOpenImmersion_diagonal [FormallyUnramified f] [LocallyOfFiniteType f] :
+    IsOpenImmersion (pullback.diagonal f) := by
+  wlog hX : (∃ S, X = Spec S) ∧ ∃ R, Y = Spec R
+  · let 𝒰Y := Y.affineCover
+    let 𝒰X (j : (Y.affineCover.pullbackCover f).J) :
+        ((Y.affineCover.pullbackCover f).obj j).OpenCover := Scheme.affineCover _
+    apply IsLocalAtTarget.of_range_subset_iSup _
+      (Scheme.Pullback.range_diagonal_subset_diagonalCoverDiagonalRange f 𝒰Y 𝒰X)
+    intro ⟨i, j⟩
+    rw [arrow_mk_iso_iff (P := @IsOpenImmersion)
+      (Scheme.Pullback.diagonalRestrictIsoDiagonal f 𝒰Y 𝒰X i j)]
+    have hu : FormallyUnramified ((𝒰X i).map j ≫ pullback.snd f (𝒰Y.map i)) :=
+      comp_mem _ _ _ inferInstance (pullback_snd _ _ inferInstance)
+    have hfin : LocallyOfFiniteType ((𝒰X i).map j ≫ pullback.snd f (𝒰Y.map i)) :=
+      comp_mem _ _ _ inferInstance (pullback_snd _ _ inferInstance)
+    exact this _ ⟨⟨_, rfl⟩, ⟨_, rfl⟩⟩
+  obtain ⟨⟨S, rfl⟩, R, rfl⟩ := hX
+  obtain ⟨f, rfl⟩ := Spec.map_surjective f
+  rw [HasRingHomProperty.Spec_iff (P := @FormallyUnramified),
+    HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)] at *
+  algebraize [f.hom]
+  rw [show f = CommRingCat.ofHom (algebraMap R S) from rfl, diagonal_Spec_map R S,
+    cancel_right_of_respectsIso (P := @IsOpenImmersion)]
+  infer_instance
+
+@[deprecated (since := "2025-05-03")]
+alias AlgebraicGeometry.FormallyUnramified.isOpenImmersion_diagonal := isOpenImmersion_diagonal
 
 end FormallyUnramified
 

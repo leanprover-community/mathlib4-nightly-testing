@@ -10,7 +10,7 @@ import Mathlib.Topology.Algebra.Module.WeakBilin
 /-!
 # Weak dual topology
 
-We continue in the setting of `Mathlib.Topology.Algebra.Module.WeakBilin`,
+We continue in the setting of `Mathlib/Topology/Algebra/Module/WeakBilin.lean`,
 which defines the weak topology given two vector spaces `E` and `F` over a commutative semiring
 `𝕜` and a bilinear form `B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜`. The weak topology on `E` is the coarsest topology
 such that for all `y : F` every map `fun x => B x y` is continuous.
@@ -71,6 +71,8 @@ functionals `fun v => v x` are continuous. -/
 def WeakDual (𝕜 E : Type*) [CommSemiring 𝕜] [TopologicalSpace 𝕜] [ContinuousAdd 𝕜]
     [ContinuousConstSMul 𝕜 𝕜] [AddCommMonoid E] [Module 𝕜 E] [TopologicalSpace E] :=
   WeakBilin (topDualPairing 𝕜 E)
+deriving AddCommMonoid, Module 𝕜, TopologicalSpace, ContinuousAdd, Inhabited,
+  FunLike, ContinuousLinearMapClass
 
 namespace WeakDual
 
@@ -79,28 +81,6 @@ section Semiring
 variable [CommSemiring 𝕜] [TopologicalSpace 𝕜] [ContinuousAdd 𝕜]
 variable [ContinuousConstSMul 𝕜 𝕜]
 variable [AddCommMonoid E] [Module 𝕜 E] [TopologicalSpace E]
-
--- Porting note: the next four instances should be derived from the definition
-instance instAddCommMonoid : AddCommMonoid (WeakDual 𝕜 E) :=
-  WeakBilin.instAddCommMonoid (topDualPairing 𝕜 E)
-
-instance instModule : Module 𝕜 (WeakDual 𝕜 E) :=
-  WeakBilin.instModule (topDualPairing 𝕜 E)
-
-instance instTopologicalSpace : TopologicalSpace (WeakDual 𝕜 E) :=
-  WeakBilin.instTopologicalSpace (topDualPairing 𝕜 E)
-
-instance instContinuousAdd : ContinuousAdd (WeakDual 𝕜 E) :=
-  WeakBilin.instContinuousAdd (topDualPairing 𝕜 E)
-
-instance instInhabited : Inhabited (WeakDual 𝕜 E) :=
-  ContinuousLinearMap.inhabited
-
-instance instFunLike : FunLike (WeakDual 𝕜 E) E 𝕜 :=
-  ContinuousLinearMap.funLike
-
-instance instContinuousLinearMapClass : ContinuousLinearMapClass (WeakDual 𝕜 E) 𝕜 E 𝕜 :=
-  ContinuousLinearMap.continuousSemilinearMapClass
 
 /-- If a monoid `M` distributively continuously acts on `𝕜` and this action commutes with
 multiplication on `𝕜`, then it acts on `WeakDual 𝕜 E`. -/
@@ -143,20 +123,20 @@ theorem continuous_of_continuous_eval [TopologicalSpace α] {g : α → WeakDual
   continuous_induced_rng.2 (continuous_pi_iff.mpr h)
 
 instance instT2Space [T2Space 𝕜] : T2Space (WeakDual 𝕜 E) :=
-   (WeakBilin.isEmbedding ContinuousLinearMap.coe_injective).t2Space
+  (WeakBilin.isEmbedding ContinuousLinearMap.coe_injective).t2Space
 
 end Semiring
 
 section Ring
 
-variable [CommRing 𝕜] [TopologicalSpace 𝕜] [TopologicalAddGroup 𝕜] [ContinuousConstSMul 𝕜 𝕜]
-variable [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [TopologicalAddGroup E]
+variable [CommRing 𝕜] [TopologicalSpace 𝕜] [IsTopologicalAddGroup 𝕜] [ContinuousConstSMul 𝕜 𝕜]
+variable [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [IsTopologicalAddGroup E]
 
 instance instAddCommGroup : AddCommGroup (WeakDual 𝕜 E) :=
   WeakBilin.instAddCommGroup (topDualPairing 𝕜 E)
 
-instance instTopologicalAddGroup : TopologicalAddGroup (WeakDual 𝕜 E) :=
-  WeakBilin.instTopologicalAddGroup (topDualPairing 𝕜 E)
+instance instIsTopologicalAddGroup : IsTopologicalAddGroup (WeakDual 𝕜 E) :=
+  WeakBilin.instIsTopologicalAddGroup (topDualPairing 𝕜 E)
 
 end Ring
 
@@ -167,6 +147,7 @@ end WeakDual
 def WeakSpace (𝕜 E) [CommSemiring 𝕜] [TopologicalSpace 𝕜] [ContinuousAdd 𝕜]
     [ContinuousConstSMul 𝕜 𝕜] [AddCommMonoid E] [Module 𝕜 E] [TopologicalSpace E] :=
   WeakBilin (topDualPairing 𝕜 E).flip
+deriving AddCommMonoid, Module 𝕜, TopologicalSpace, ContinuousAdd
 
 section Semiring
 
@@ -175,19 +156,6 @@ variable [ContinuousConstSMul 𝕜 𝕜]
 variable [AddCommMonoid E] [Module 𝕜 E] [TopologicalSpace E]
 
 namespace WeakSpace
-
--- Porting note: the next four instances should be derived from the definition
-instance instAddCommMonoid : AddCommMonoid (WeakSpace 𝕜 E) :=
-  WeakBilin.instAddCommMonoid (topDualPairing 𝕜 E).flip
-
-instance instModule : Module 𝕜 (WeakSpace 𝕜 E) :=
-  WeakBilin.instModule (topDualPairing 𝕜 E).flip
-
-instance instTopologicalSpace : TopologicalSpace (WeakSpace 𝕜 E) :=
-  WeakBilin.instTopologicalSpace (topDualPairing 𝕜 E).flip
-
-instance instContinuousAdd : ContinuousAdd (WeakSpace 𝕜 E) :=
-  WeakBilin.instContinuousAdd (topDualPairing 𝕜 E).flip
 
 instance instModule' [CommSemiring 𝕝] [Module 𝕝 E] : Module 𝕝 (WeakSpace 𝕜 E) :=
   WeakBilin.instModule' (topDualPairing 𝕜 E).flip
@@ -259,14 +227,14 @@ section Ring
 
 namespace WeakSpace
 
-variable [CommRing 𝕜] [TopologicalSpace 𝕜] [TopologicalAddGroup 𝕜] [ContinuousConstSMul 𝕜 𝕜]
-variable [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [TopologicalAddGroup E]
+variable [CommRing 𝕜] [TopologicalSpace 𝕜] [IsTopologicalAddGroup 𝕜] [ContinuousConstSMul 𝕜 𝕜]
+variable [AddCommGroup E] [Module 𝕜 E] [TopologicalSpace E] [IsTopologicalAddGroup E]
 
 instance instAddCommGroup : AddCommGroup (WeakSpace 𝕜 E) :=
   WeakBilin.instAddCommGroup (topDualPairing 𝕜 E).flip
 
-instance instTopologicalAddGroup : TopologicalAddGroup (WeakSpace 𝕜 E) :=
-  WeakBilin.instTopologicalAddGroup (topDualPairing 𝕜 E).flip
+instance instIsTopologicalAddGroup : IsTopologicalAddGroup (WeakSpace 𝕜 E) :=
+  WeakBilin.instIsTopologicalAddGroup (topDualPairing 𝕜 E).flip
 
 end WeakSpace
 

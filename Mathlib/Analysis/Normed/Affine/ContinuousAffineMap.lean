@@ -31,10 +31,10 @@ submultiplicative: for a composition of maps, we have only `‖f.comp g‖ ≤ �
 
 ## Main definitions:
 
- * `ContinuousAffineMap.contLinear`
- * `ContinuousAffineMap.hasNorm`
- * `ContinuousAffineMap.norm_comp_le`
- * `ContinuousAffineMap.toConstProdContinuousLinearMap`
+* `ContinuousAffineMap.contLinear`
+* `ContinuousAffineMap.hasNorm`
+* `ContinuousAffineMap.norm_comp_le`
+* `ContinuousAffineMap.toConstProdContinuousLinearMap`
 
 -/
 
@@ -98,7 +98,7 @@ theorem contLinear_eq_zero_iff_exists_const (f : P →ᴬ[R] Q) :
     intro q
     refine ⟨fun h => ?_, fun h => ?_⟩ <;> ext
     · rw [h]; rfl
-    · rw [← coe_to_affineMap, h]; rfl
+    · rw [← coe_toAffineMap, h, AffineMap.const_apply, coe_const, Function.const_apply]
   simp_rw [h₁, h₂]
   exact (f : P →ᵃ[R] Q).linear_eq_zero_iff_exists_const
 
@@ -131,6 +131,50 @@ theorem decomp (f : V →ᴬ[R] W) : (f : V → W) = f.contLinear + Function.con
   rcases f with ⟨f, h⟩
   rw [coe_mk_const_linear_eq_linear, coe_mk, f.decomp, Pi.add_apply, LinearMap.map_zero, zero_add,
     ← Function.const_def]
+
+/-- The space of continuous affine maps from `P` to `Q` is an affine space over the space of
+continuous affine maps from `P` to `W`. -/
+instance : AddTorsor (P →ᴬ[R] W) (P →ᴬ[R] Q) where
+  vadd f g := { __ := f.toAffineMap +ᵥ g.toAffineMap, cont := f.cont.vadd g.cont }
+  zero_vadd _ := ext fun _ ↦ zero_vadd _ _
+  add_vadd _ _ _ := ext fun _ ↦ add_vadd _ _ _
+  vsub f g := { __ := f.toAffineMap -ᵥ g.toAffineMap, cont := f.cont.vsub g.cont }
+  vsub_vadd' _ _ := ext fun _ ↦ vsub_vadd _ _
+  vadd_vsub' _ _ := ext fun _ ↦ vadd_vsub _ _
+
+@[simp] lemma vadd_apply (f : P →ᴬ[R] W) (g : P →ᴬ[R] Q) (p : P) : (f +ᵥ g) p = f p +ᵥ g p :=
+  rfl
+
+@[simp] lemma vsub_apply (f g : P →ᴬ[R] Q) (p : P) : (f -ᵥ g) p = f p -ᵥ g p :=
+  rfl
+
+@[simp] lemma vadd_toAffineMap (f : P →ᴬ[R] W) (g : P →ᴬ[R] Q) :
+    (f +ᵥ g).toAffineMap = f.toAffineMap +ᵥ g.toAffineMap :=
+  rfl
+
+@[simp] lemma vsub_toAffineMap (f g : P →ᴬ[R] Q) :
+    (f -ᵥ g).toAffineMap = f.toAffineMap -ᵥ g.toAffineMap :=
+  rfl
+
+section Prod
+
+variable {P₁ P₂ P₃ P₄ V₁ V₂ V₃ V₄ : Type*}
+  [NormedAddCommGroup V₁] [NormedSpace 𝕜 V₁] [MetricSpace P₁] [NormedAddTorsor V₁ P₁]
+  [NormedAddCommGroup V₂] [NormedSpace 𝕜 V₂] [MetricSpace P₂] [NormedAddTorsor V₂ P₂]
+  [NormedAddCommGroup V₃] [NormedSpace 𝕜 V₃] [MetricSpace P₃] [NormedAddTorsor V₃ P₃]
+  [NormedAddCommGroup V₄] [NormedSpace 𝕜 V₄] [MetricSpace P₄] [NormedAddTorsor V₄ P₄]
+
+@[simp]
+theorem prod_contLinear (f : P₁ →ᴬ[𝕜] P₂) (g : P₁ →ᴬ[𝕜] P₃) :
+    (f.prod g).contLinear = f.contLinear.prod g.contLinear :=
+  rfl
+
+@[simp]
+theorem prodMap_contLinear (f : P₁ →ᴬ[𝕜] P₂) (g : P₃ →ᴬ[𝕜] P₄) :
+    (f.prodMap g).contLinear = f.contLinear.prodMap g.contLinear :=
+  rfl
+
+end Prod
 
 section NormedSpaceStructure
 
@@ -181,8 +225,7 @@ noncomputable instance : NormedAddCommGroup (V →ᴬ[𝕜] W) :=
           rw [h₂]
           rfl }
 
-set_option maxSynthPendingDepth 2 in
-instance : NormedSpace 𝕜 (V →ᴬ[𝕜] W) where
+noncomputable instance : NormedSpace 𝕜 (V →ᴬ[𝕜] W) where
   norm_smul_le t f := by
     simp only [norm_def, coe_smul, Pi.smul_apply, norm_smul, smul_contLinear,
       ← mul_max_of_nonneg _ _ (norm_nonneg t), le_refl]
@@ -210,7 +253,7 @@ variable (𝕜 V W)
 /-- The space of affine maps between two normed spaces is linearly isometric to the product of the
 codomain with the space of linear maps, by taking the value of the affine map at `(0 : V)` and the
 linear part. -/
-def toConstProdContinuousLinearMap : (V →ᴬ[𝕜] W) ≃ₗᵢ[𝕜] W × (V →L[𝕜] W) where
+noncomputable def toConstProdContinuousLinearMap : (V →ᴬ[𝕜] W) ≃ₗᵢ[𝕜] W × (V →L[𝕜] W) where
   toFun f := ⟨f 0, f.contLinear⟩
   invFun p := p.2.toContinuousAffineMap + const 𝕜 V p.1
   left_inv f := by

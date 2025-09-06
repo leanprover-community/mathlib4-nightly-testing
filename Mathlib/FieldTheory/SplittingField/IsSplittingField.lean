@@ -3,8 +3,9 @@ Copyright (c) 2018 Chris Hughes. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chris Hughes
 -/
-import Mathlib.RingTheory.Adjoin.Field
 import Mathlib.FieldTheory.IntermediateField.Adjoin.Algebra
+import Mathlib.LinearAlgebra.Dimension.FreeAndStrongRankCondition
+import Mathlib.RingTheory.Adjoin.Field
 
 /-!
 # Splitting fields
@@ -47,13 +48,9 @@ namespace IsSplittingField
 
 variable {K}
 
--- Porting note: infer kinds are unsupported
--- so we provide a version of `splits'` with `f` explicit.
 theorem splits (f : K[X]) [IsSplittingField K L f] : Splits (algebraMap K L) f :=
   splits'
 
--- Porting note: infer kinds are unsupported
--- so we provide a version of `adjoin_rootSet'` with `f` explicit.
 theorem adjoin_rootSet (f : K[X]) [IsSplittingField K L f] :
     Algebra.adjoin K (f.rootSet L : Set L) = ⊤ :=
   adjoin_rootSet'
@@ -71,7 +68,7 @@ instance map (f : F[X]) [IsSplittingField F L f] : IsSplittingField K L (f.map <
 
 theorem splits_iff (f : K[X]) [IsSplittingField K L f] :
     Splits (RingHom.id K) f ↔ (⊤ : Subalgebra K L) = ⊥ :=
-  ⟨fun h => by -- Porting note: replaced term-mode proof
+  ⟨fun h => by
     rw [eq_bot_iff, ← adjoin_rootSet L f, rootSet, aroots, roots_map (algebraMap K L) h,
       Algebra.adjoin_le_iff]
     intro y hy
@@ -182,3 +179,7 @@ theorem IntermediateField.isSplittingField_iff :
 theorem IntermediateField.adjoin_rootSet_isSplittingField (hp : p.Splits (algebraMap K L)) :
     p.IsSplittingField K (adjoin K (p.rootSet L)) :=
   isSplittingField_iff.mpr ⟨splits_of_splits hp fun _ hx ↦ subset_adjoin K (p.rootSet L) hx, rfl⟩
+
+theorem Polynomial.isSplittingField_C (a : K) : Polynomial.IsSplittingField K K (C a) where
+  splits' := by simp
+  adjoin_rootSet' := by simp

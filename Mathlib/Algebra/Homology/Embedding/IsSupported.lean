@@ -36,7 +36,7 @@ variable {C : Type*} [Category C] [HasZeroMorphisms C]
 
 /-- If `K : HomologicalComplex C c'`, then `K.IsStrictlySupported e` holds for
 an embedding `e : c.Embedding c'` of complex shapes if `K.X i'` is zero
-wheneverm `i'` is not of the form `e.f i` for some `i`.-/
+whenever `i'` is not of the form `e.f i` for some `i`. -/
 class IsStrictlySupported : Prop where
   isZero (i' : ι') (hi' : ∀ i, e.f i ≠ i') : IsZero (K.X i')
 
@@ -57,14 +57,13 @@ lemma isStrictlySupported_op_iff :
   ⟨(fun _ ↦ ⟨fun i' hi' ↦ (K.op.isZero_X_of_isStrictlySupported e.op i' hi').unop⟩),
     (fun _ ↦ ⟨fun i' hi' ↦ (K.isZero_X_of_isStrictlySupported e i' hi').op⟩)⟩
 
-instance [K.IsStrictlySupported e] :
-    K.op.IsStrictlySupported e.op := by
+instance [K.IsStrictlySupported e] : K.op.IsStrictlySupported e.op := by
   rw [isStrictlySupported_op_iff]
   infer_instance
 
 /-- If `K : HomologicalComplex C c'`, then `K.IsStrictlySupported e` holds for
 an embedding `e : c.Embedding c'` of complex shapes if `K` is exact at `i'`
-whenever `i'` is not of the form `e.f i` for some `i`.-/
+whenever `i'` is not of the form `e.f i` for some `i`. -/
 class IsSupported : Prop where
   exactAt (i' : ι') (hi' : ∀ i, e.f i ≠ i') : K.ExactAt i'
 
@@ -136,9 +135,6 @@ lemma isZero_iff_isStrictlySupported_and_isStrictlySupportedOutside :
     · obtain ⟨i, rfl⟩ := hn
       exact h₂.isZero i
     · exact K.isZero_X_of_isStrictlySupported e _ (by simpa using hn)
-
-instance [K.IsStrictlySupported e] : K.op.IsStrictlySupported e.op where
-  isZero j hj' := (K.isZero_X_of_isStrictlySupported e j hj').op
 
 end
 

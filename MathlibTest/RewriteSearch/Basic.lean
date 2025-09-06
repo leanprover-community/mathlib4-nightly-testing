@@ -1,5 +1,11 @@
 import Mathlib.Tactic.RewriteSearch
 
+#adaptation_note /-- nightly-2025-08-25
+Test disabled until we figure out the segfaults when running `rw_search` in the interpreter.
+-/
+
+/-
+
 set_option autoImplicit true
 
 -- You can enable tracing of the `rw_search` algorithm using
@@ -9,7 +15,10 @@ set_option autoImplicit true
 -- set_option profiler true
 
 
-/-- info: Try this: rw [List.length_append, Nat.add_comm] -/
+/--
+info: Try this: rw [List.length_append, Nat.add_comm]
+-- no goals
+-/
 #guard_msgs in
 example (xs ys : List α) : (xs ++ ys).length = ys.length + xs.length := by
   rw_search
@@ -29,6 +38,7 @@ set_option linter.style.longLine false in
 
 /--
 info: Try this: rw [List.length_append, List.length_append, Nat.two_mul, add_rotate]
+-- no goals
 -/
 #guard_msgs in
 example (xs ys : List α) :
@@ -63,7 +73,10 @@ def makeSingleton : Nat → List Nat
   | 0 => [0]
   | b + 1 => makeSingleton b
 
-/-- info: Try this: rw [← ih] -/
+/--
+info: Try this: rw [← ih]
+-- no goals
+-/
 #guard_msgs in
 set_option maxHeartbeats 1000 in
 theorem foo (n : Nat) : makeSingleton n = [0] := by
@@ -71,3 +84,5 @@ theorem foo (n : Nat) : makeSingleton n = [0] := by
   · simp only [makeSingleton]
   · -- At one point, this failed with: unknown free variable '_uniq.62770'
     rw_search
+
+-/

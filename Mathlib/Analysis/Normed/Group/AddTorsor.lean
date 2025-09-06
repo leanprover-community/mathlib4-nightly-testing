@@ -3,11 +3,14 @@ Copyright (c) 2020 Joseph Myers. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Myers, Yury Kudryashov
 -/
-import Mathlib.Analysis.Normed.Group.Basic
+import Mathlib.Analysis.Normed.Group.Constructions
 import Mathlib.Analysis.Normed.Group.Submodule
-import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
+import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic
 import Mathlib.LinearAlgebra.AffineSpace.Midpoint
+import Mathlib.Topology.Algebra.MulAction
 import Mathlib.Topology.MetricSpace.IsometricSMul
+import Mathlib.Topology.Metrizable.Uniformity
+import Mathlib.Topology.Sequences
 
 /-!
 # Torsors of additive normed group actions.
@@ -42,7 +45,7 @@ instance (priority := 100) NormedAddTorsor.toAddTorsor' {V P : Type*} [NormedAdd
 variable {α V P W Q : Type*} [SeminormedAddCommGroup V] [PseudoMetricSpace P] [NormedAddTorsor V P]
   [NormedAddCommGroup W] [MetricSpace Q] [NormedAddTorsor W Q]
 
-instance (priority := 100) NormedAddTorsor.to_isometricVAdd : IsometricVAdd V P :=
+instance (priority := 100) NormedAddTorsor.to_isIsIsometricVAdd : IsIsometricVAdd V P :=
   ⟨fun c => Isometry.of_dist_eq fun x y => by
     simp [NormedAddTorsor.dist_eq_norm']⟩
 
@@ -56,6 +59,11 @@ instance AffineSubspace.toNormedAddTorsor {R : Type*} [Ring R] [Module R V]
     (s : AffineSubspace R P) [Nonempty s] : NormedAddTorsor s.direction s :=
   { AffineSubspace.toAddTorsor s with
     dist_eq_norm' := fun x y => NormedAddTorsor.dist_eq_norm' x.val y.val }
+
+instance : NormedAddTorsor (V × W) (P × Q) where
+  dist_eq_norm' x y := by
+    simp only [Prod.dist_eq, NormedAddTorsor.dist_eq_norm', Prod.norm_def, Prod.fst_vsub,
+      Prod.snd_vsub]
 
 section
 
@@ -161,13 +169,13 @@ theorem nndist_vsub_vsub_le (p₁ p₂ p₃ p₄ : P) :
 theorem edist_vadd_vadd_le (v v' : V) (p p' : P) :
     edist (v +ᵥ p) (v' +ᵥ p') ≤ edist v v' + edist p p' := by
   simp only [edist_nndist]
-  norm_cast  -- Porting note: was apply_mod_cast
+  norm_cast
   apply dist_vadd_vadd_le
 
 theorem edist_vsub_vsub_le (p₁ p₂ p₃ p₄ : P) :
     edist (p₁ -ᵥ p₂) (p₃ -ᵥ p₄) ≤ edist p₁ p₃ + edist p₂ p₄ := by
   simp only [edist_nndist]
-  norm_cast  -- Porting note: was apply_mod_cast
+  norm_cast
   apply dist_vsub_vsub_le
 
 /-- The pseudodistance defines a pseudometric space structure on the torsor. This
@@ -178,7 +186,6 @@ def pseudoMetricSpaceOfNormedAddCommGroupOfAddTorsor (V P : Type*) [SeminormedAd
   dist_self x := by simp
   dist_comm x y := by simp only [← neg_vsub_eq_vsub_rev y x, norm_neg]
   dist_triangle x y z := by
-    change ‖x -ᵥ z‖ ≤ ‖x -ᵥ y‖ + ‖y -ᵥ z‖
     rw [← vsub_add_vsub_cancel]
     apply norm_add_le
 
@@ -191,7 +198,6 @@ def metricSpaceOfNormedAddCommGroupOfAddTorsor (V P : Type*) [NormedAddCommGroup
   eq_of_dist_eq_zero h := by simpa using h
   dist_comm x y := by simp only [← neg_vsub_eq_vsub_rev y x, norm_neg]
   dist_triangle x y z := by
-    change ‖x -ᵥ z‖ ≤ ‖x -ᵥ y‖ + ‖y -ᵥ z‖
     rw [← vsub_add_vsub_cancel]
     apply norm_add_le
 
@@ -227,28 +233,32 @@ theorem continuous_vsub : Continuous fun x : P × P => x.1 -ᵥ x.2 :=
 
 theorem Filter.Tendsto.vsub {l : Filter α} {f g : α → P} {x y : P} (hf : Tendsto f l (𝓝 x))
     (hg : Tendsto g l (𝓝 y)) : Tendsto (f -ᵥ g) l (𝓝 (x -ᵥ y)) :=
-  (continuous_vsub.tendsto (x, y)).comp (hf.prod_mk_nhds hg)
+  (continuous_vsub.tendsto (x, y)).comp (hf.prodMk_nhds hg)
 
 section
 
 variable [TopologicalSpace α]
 
+@[fun_prop]
 theorem Continuous.vsub {f g : α → P} (hf : Continuous f) (hg : Continuous g) :
-    Continuous (f -ᵥ g) :=
-  continuous_vsub.comp (hf.prod_mk hg :)
+    Continuous (fun x ↦ f x -ᵥ g x) :=
+  continuous_vsub.comp₂ hf hg
 
+@[fun_prop]
 nonrec theorem ContinuousAt.vsub {f g : α → P} {x : α} (hf : ContinuousAt f x)
     (hg : ContinuousAt g x) :
-    ContinuousAt (f -ᵥ g) x :=
+    ContinuousAt (fun x ↦ f x -ᵥ g x) x :=
   hf.vsub hg
 
+@[fun_prop]
 nonrec theorem ContinuousWithinAt.vsub {f g : α → P} {x : α} {s : Set α}
     (hf : ContinuousWithinAt f s x) (hg : ContinuousWithinAt g s x) :
-    ContinuousWithinAt (f -ᵥ g) s x :=
+    ContinuousWithinAt (fun x ↦ f x -ᵥ g x) s x :=
   hf.vsub hg
 
+@[fun_prop]
 theorem ContinuousOn.vsub {f g : α → P} {s : Set α} (hf : ContinuousOn f s)
-    (hg : ContinuousOn g s) : ContinuousOn (f -ᵥ g) s := fun x hx ↦
+    (hg : ContinuousOn g s) : ContinuousOn (fun x ↦ f x -ᵥ g x) s := fun x hx ↦
   (hf x hx).vsub (hg x hx)
 
 end

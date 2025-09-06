@@ -310,7 +310,7 @@ elab_rules : tactic |
     `(tactic| rw_search%$tk $[[ $[-$forbidden],* ]]?) => withMainContext do
   let forbidden : NameSet :=
     ((forbidden.getD #[]).map Syntax.getId).foldl (init := ∅) fun s n => s.insert n
-  let .some init ← SearchNode.init (← getMainGoal) | throwError "Goal is not an equality."
+  let some init ← SearchNode.init (← getMainGoal) | throwError "Goal is not an equality."
   let results := init.search (forbidden := forbidden) |>.whileAtLeastHeartbeatsPercent 20
   let results ← results.force
   let min ← match results with
@@ -320,11 +320,12 @@ elab_rules : tactic |
         if r₁.rfl? = some true then r₁
         else if r₂.rfl? = some true then r₂
         else if r₁.dist?.getD 0 ≤ r₂.dist?.getD 0 then r₁ else r₂
+  let state ← saveState
   setMCtx min.mctx
   replaceMainGoal [min.goal]
   let type? ← if min.rfl? = some true then pure none else do pure <| some (← min.goal.getType)
   addRewriteSuggestion tk (min.history.toList.map (·.2))
-    type? (origSpan? := ← getRef)
+    type?.toLOption (origSpan? := ← getRef) (checkState? := state)
 
 end RewriteSearch
 

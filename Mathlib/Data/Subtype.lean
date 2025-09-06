@@ -34,7 +34,7 @@ attribute [coe] Subtype.val
 initialize_simps_projections Subtype (val → coe)
 
 /-- A version of `x.property` or `x.2` where `p` is syntactically applied to the coercion of `x`
-  instead of `x.1`. A similar result is `Subtype.mem` in `Mathlib.Data.Set.Basic`. -/
+  instead of `x.1`. A similar result is `Subtype.mem` in `Mathlib/Data/Set/Basic.lean`. -/
 theorem prop (x : Subtype p) : p x :=
   x.2
 
@@ -49,13 +49,13 @@ protected theorem exists' {q : ∀ x, p x → Prop} : (∃ x h, q x h) ↔ ∃ x
   (@Subtype.exists _ _ fun x ↦ q x.1 x.2).symm
 
 theorem heq_iff_coe_eq (h : ∀ x, p x ↔ q x) {a1 : { x // p x }} {a2 : { x // q x }} :
-    HEq a1 a2 ↔ (a1 : α) = (a2 : α) :=
+    a1 ≍ a2 ↔ (a1 : α) = (a2 : α) :=
   Eq.rec
-    (motive := fun (pp : (α → Prop)) _ ↦ ∀ a2' : {x // pp x}, HEq a1 a2' ↔ (a1 : α) = (a2' : α))
+    (motive := fun (pp : (α → Prop)) _ ↦ ∀ a2' : {x // pp x}, a1 ≍ a2' ↔ (a1 : α) = (a2' : α))
     (fun _ ↦ heq_iff_eq.trans Subtype.ext_iff) (funext <| fun x ↦ propext (h x)) a2
 
 lemma heq_iff_coe_heq {α β : Sort _} {p : α → Prop} {q : β → Prop} {a : {x // p x}}
-    {b : {y // q y}} (h : α = β) (h' : HEq p q) : HEq a b ↔ HEq (a : α) (b : β) := by
+    {b : {y // q y}} (h : α = β) (h' : p ≍ q) : a ≍ b ↔ (a : α) ≍ (b : β) := by
   subst h
   subst h'
   rw [heq_iff_eq, heq_iff_eq, Subtype.ext_iff]
@@ -73,12 +73,8 @@ theorem coe_eta (a : { a // p a }) (h : p a) : mk (↑a) h = a :=
 theorem coe_mk (a h) : (@mk α p a h : α) = a :=
   rfl
 
--- Porting note: comment out `@[simp, nolint simp_nf]`
--- Porting note: not clear if "built-in reduction doesn't always work" is still relevant
--- built-in reduction doesn't always work
--- @[simp, nolint simp_nf]
-theorem mk_eq_mk {a h a' h'} : @mk α p a h = @mk α p a' h' ↔ a = a' :=
-  Subtype.ext_iff
+/-- Restatement of `Subtype.mk.injEq` as an iff. -/
+theorem mk_eq_mk {a h a' h'} : @mk α p a h = @mk α p a' h' ↔ a = a' := by simp
 
 theorem coe_eq_of_eq_mk {a : { a // p a }} {b : α} (h : ↑a = b) : a = ⟨b, h ▸ a.2⟩ :=
   Subtype.ext h
@@ -99,8 +95,6 @@ theorem val_inj {a b : Subtype p} : a.val = b.val ↔ a = b :=
 
 lemma coe_ne_coe {a b : Subtype p} : (a : α) ≠ b ↔ a ≠ b := coe_injective.ne_iff
 
-@[deprecated (since := "2024-04-04")] alias ⟨ne_of_val_ne, _⟩ := coe_ne_coe
-
 @[simp]
 theorem _root_.exists_eq_subtype_mk_iff {a : Subtype p} {b : α} :
     (∃ h : p b, a = Subtype.mk b h) ↔ ↑a = b :=
@@ -110,6 +104,16 @@ theorem _root_.exists_eq_subtype_mk_iff {a : Subtype p} {b : α} :
 theorem _root_.exists_subtype_mk_eq_iff {a : Subtype p} {b : α} :
     (∃ h : p b, Subtype.mk b h = a) ↔ b = a := by
   simp only [@eq_comm _ b, exists_eq_subtype_mk_iff, @eq_comm _ _ a]
+
+theorem _root_.Function.extend_val_apply {p : β → Prop} {g : {x // p x} → γ} {j : β → γ}
+    {b : β} (hb : p b) : val.extend g j b = g ⟨b, hb⟩ :=
+  val_injective.extend_apply g j ⟨b, hb⟩
+
+theorem _root_.Function.extend_val_apply' {p : β → Prop} {g : {x // p x} → γ} {j : β → γ}
+    {b : β} (hb : ¬p b) : val.extend g j b = j b := by
+  refine Function.extend_apply' g j b ?_
+  rintro ⟨a, rfl⟩
+  exact hb a.2
 
 /-- Restrict a (dependent) function to a subtype -/
 def restrict {α} {β : α → Type*} (p : α → Prop) (f : ∀ x, β x) (x : Subtype p) : β x.1 :=
@@ -133,7 +137,7 @@ theorem surjective_restrict {α} {β : α → Type*} [ne : ∀ a, Nonempty (β a
   rintro ⟨x, hx⟩
   exact dif_pos hx
 
-/-- Defining a map into a subtype, this can be seen as a "coinduction principle" of `Subtype`-/
+/-- Defining a map into a subtype, this can be seen as a "coinduction principle" of `Subtype` -/
 @[simps]
 def coind {α β} (f : α → β) {p : β → Prop} (h : ∀ a, p (f a)) : α → Subtype p := fun a ↦ ⟨f a, h a⟩
 
@@ -155,7 +159,6 @@ def map {p : α → Prop} {q : β → Prop} (f : α → β) (h : ∀ a, p a → 
     Subtype p → Subtype q :=
   fun x ↦ ⟨f x, h x x.prop⟩
 
-#adaptation_note /-- nightly-2024-03-16: added to replace simp [Subtype.map] -/
 theorem map_def {p : α → Prop} {q : β → Prop} (f : α → β) (h : ∀ a, p a → q (f a)) :
     map f h = fun x ↦ ⟨f x, h x x.prop⟩ :=
   rfl
@@ -175,6 +178,18 @@ theorem map_injective {p : α → Prop} {q : β → Prop} {f : α → β} (h : �
 theorem map_involutive {p : α → Prop} {f : α → α} (h : ∀ a, p a → p (f a))
     (hf : Involutive f) : Involutive (map f h) :=
   fun x ↦ Subtype.ext (hf x)
+
+theorem map_eq {p : α → Prop} {q : β → Prop} {f g : α → β}
+    (h₁ : ∀ a : α, p a → q (f a)) (h₂ : ∀ a : α, p a → q (g a))
+    {x y : Subtype p} :
+    map f h₁ x = map g h₂ y ↔ f x = g y :=
+  Subtype.ext_iff
+
+theorem map_ne {p : α → Prop} {q : β → Prop} {f g : α → β}
+    (h₁ : ∀ a : α, p a → q (f a)) (h₂ : ∀ a : α, p a → q (g a))
+    {x y : Subtype p} :
+    map f h₁ x ≠ map g h₂ y ↔ f x ≠ g y :=
+  map_eq h₁ h₂ |>.not
 
 instance [HasEquiv α] (p : α → Prop) : HasEquiv (Subtype p) :=
   ⟨fun s t ↦ (s : α) ≈ (t : α)⟩

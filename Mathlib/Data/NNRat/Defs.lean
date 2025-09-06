@@ -17,8 +17,8 @@ import Mathlib.Order.GaloisConnection.Defs
 This file defines the nonnegative rationals as a subtype of `Rat` and provides its basic algebraic
 order structure.
 
-Note that `NNRat` is not declared as a `Semifield` here. See `Mathlib.Algebra.Field.Rat` for that
-instance.
+Note that `NNRat` is not declared as a `Semifield` here. See `Mathlib/Algebra/Field/Rat.lean` for
+that instance.
 
 We also define an instance `CanLift ℚ ℚ≥0`. This instance can be used by the `lift` tactic to
 replace `x : ℚ` and `hx : 0 ≤ x` in the proof context with `x : ℚ≥0` while replacing all occurrences
@@ -27,7 +27,7 @@ of `x` with `↑x`. This tactic also works for a function `f : α → ℚ` with 
 
 ## Notation
 
-`ℚ≥0` is notation for `NNRat` in locale `NNRat`.
+`ℚ≥0` is notation for `NNRat` in scope `NNRat`.
 
 ## Huge warning
 
@@ -194,8 +194,6 @@ def coeHom : ℚ≥0 →+* ℚ where
 theorem mk_natCast (n : ℕ) : @Eq ℚ≥0 (⟨(n : ℚ), Nat.cast_nonneg' n⟩ : ℚ≥0) n :=
   rfl
 
-@[deprecated (since := "2024-04-05")] alias mk_coe_nat := mk_natCast
-
 @[simp]
 theorem coe_coeHom : ⇑coeHom = ((↑) : ℚ≥0 → ℚ) :=
   rfl
@@ -262,7 +260,7 @@ theorem toNNRat_le_toNNRat_iff (hp : 0 ≤ p) : toNNRat q ≤ toNNRat p ↔ q �
 
 @[simp]
 theorem toNNRat_lt_toNNRat_iff' : toNNRat q < toNNRat p ↔ q < p ∧ 0 < p := by
-  simp [← coe_lt_coe, toNNRat, lt_irrefl]
+  simp [← coe_lt_coe, toNNRat]
 
 theorem toNNRat_lt_toNNRat_iff (h : 0 < p) : toNNRat q < toNNRat p ↔ q < p :=
   toNNRat_lt_toNNRat_iff'.trans (and_iff_left h)
@@ -284,8 +282,8 @@ theorem le_toNNRat_iff_coe_le {q : ℚ≥0} (hp : 0 ≤ p) : q ≤ toNNRat p ↔
   rw [← coe_le_coe, Rat.coe_toNNRat p hp]
 
 theorem le_toNNRat_iff_coe_le' {q : ℚ≥0} (hq : 0 < q) : q ≤ toNNRat p ↔ ↑q ≤ p :=
-  (le_or_lt 0 p).elim le_toNNRat_iff_coe_le fun hp ↦ by
-    simp only [(hp.trans_le q.coe_nonneg).not_le, toNNRat_eq_zero.2 hp.le, hq.not_le]
+  (le_or_gt 0 p).elim le_toNNRat_iff_coe_le fun hp ↦ by
+    simp only [(hp.trans_le q.coe_nonneg).not_ge, toNNRat_eq_zero.2 hp.le, hq.not_ge]
 
 theorem toNNRat_lt_iff_lt_coe {p : ℚ≥0} (hq : 0 ≤ q) : toNNRat q < p ↔ q < ↑p := by
   rw [← coe_lt_coe, Rat.coe_toNNRat q hq]
@@ -295,7 +293,7 @@ theorem lt_toNNRat_iff_coe_lt {q : ℚ≥0} : q < toNNRat p ↔ ↑q < p :=
 
 theorem toNNRat_mul (hp : 0 ≤ p) : toNNRat (p * q) = toNNRat p * toNNRat q := by
   rcases le_total 0 q with hq | hq
-  · ext; simp [toNNRat, hp, hq, max_eq_left, mul_nonneg]
+  · ext; simp [toNNRat, hp, hq, mul_nonneg]
   · have hpq := mul_nonpos_of_nonneg_of_nonpos hp hq
     rw [toNNRat_eq_zero.2 hq, toNNRat_eq_zero.2 hpq, mul_zero]
 
@@ -369,9 +367,9 @@ lemma divNat_inj (h₁ : d₁ ≠ 0) (h₂ : d₂ ≠ 0) : divNat n₁ d₁ = di
 
 lemma natCast_eq_divNat (n : ℕ) : (n : ℚ≥0) = divNat n 1 := (num_divNat_den _).symm
 
-lemma divNat_mul_divNat (n₁ n₂ : ℕ) {d₁ d₂} (hd₁ : d₁ ≠ 0) (hd₂ : d₂ ≠ 0) :
+lemma divNat_mul_divNat (n₁ n₂ : ℕ) {d₁ d₂} :
     divNat n₁ d₁ * divNat n₂ d₂ = divNat (n₁ * n₂) (d₁ * d₂) := by
-  ext; push_cast; exact Rat.divInt_mul_divInt _ _ (mod_cast hd₁) (mod_cast hd₂)
+  ext; push_cast; exact Rat.divInt_mul_divInt _ _
 
 lemma divNat_mul_left {a : ℕ} (ha : a ≠ 0) (n d : ℕ) : divNat (a * n) (a * d) = divNat n d := by
   ext; push_cast; exact Rat.divInt_mul_left (mod_cast ha)

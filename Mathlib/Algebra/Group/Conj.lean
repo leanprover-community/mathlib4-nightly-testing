@@ -3,7 +3,7 @@ Copyright (c) 2018 Patrick Massot. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Patrick Massot, Chris Hughes, Michael Howes
 -/
-import Mathlib.Algebra.Group.Aut
+import Mathlib.Algebra.Group.End
 import Mathlib.Algebra.Group.Semiconj.Units
 
 /-!
@@ -12,7 +12,7 @@ import Mathlib.Algebra.Group.Semiconj.Units
 See also `MulAut.conj` and `Quandle.conj`.
 -/
 
-assert_not_exists MonoidWithZero Multiset
+assert_not_exists MonoidWithZero Multiset MulAction
 
 universe u v
 
@@ -41,6 +41,9 @@ theorem isConj_comm {g h : α} : IsConj g h ↔ IsConj h g :=
 theorem IsConj.trans {a b c : α} : IsConj a b → IsConj b c → IsConj a c
   | ⟨c₁, hc₁⟩, ⟨c₂, hc₂⟩ => ⟨c₂ * c₁, hc₂.mul_left hc₁⟩
 
+theorem IsConj.pow {a b : α} (n : ℕ) : IsConj a b → IsConj (a ^ n) (b ^ n)
+  | ⟨c, hc⟩ => ⟨c, hc.pow_right n⟩
+
 @[simp]
 theorem isConj_iff_eq {α : Type*} [CommMonoid α] {a b : α} : IsConj a b ↔ a = b :=
   ⟨fun ⟨c, hc⟩ => by
@@ -50,19 +53,11 @@ theorem isConj_iff_eq {α : Type*} [CommMonoid α] {a b : α} : IsConj a b ↔ a
 protected theorem MonoidHom.map_isConj (f : α →* β) {a b : α} : IsConj a b → IsConj (f a) (f b)
   | ⟨c, hc⟩ => ⟨Units.map f c, by rw [Units.coe_map, SemiconjBy, ← f.map_mul, hc.eq, f.map_mul]⟩
 
-end Monoid
-
-section CancelMonoid
-
-variable [CancelMonoid α]
-
--- These lemmas hold for `RightCancelMonoid` with the current proofs, but for the sake of
--- not duplicating code (these lemmas also hold for `LeftCancelMonoids`) we leave these
--- not generalised.
 @[simp]
-theorem isConj_one_right {a : α} : IsConj 1 a ↔ a = 1 :=
-  ⟨fun ⟨_, hc⟩ => mul_right_cancel (hc.symm.trans ((mul_one _).trans (one_mul _).symm)), fun h => by
-    rw [h]⟩
+theorem isConj_one_right {a : α} : IsConj 1 a ↔ a = 1 := by
+  refine ⟨fun ⟨c, h⟩ => ?_, fun h => by rw [h]⟩
+  rw [SemiconjBy, mul_one] at h
+  exact c.isUnit.mul_eq_right.mp h.symm
 
 @[simp]
 theorem isConj_one_left {a : α} : IsConj a 1 ↔ a = 1 :=
@@ -70,7 +65,7 @@ theorem isConj_one_left {a : α} : IsConj a 1 ↔ a = 1 :=
     IsConj a 1 ↔ IsConj 1 a := ⟨IsConj.symm, IsConj.symm⟩
     _ ↔ a = 1 := isConj_one_right
 
-end CancelMonoid
+end Monoid
 
 section Group
 
@@ -81,8 +76,6 @@ theorem isConj_iff {a b : α} : IsConj a b ↔ ∃ c : α, c * a * c⁻¹ = b :=
   ⟨fun ⟨c, hc⟩ => ⟨c, mul_inv_eq_iff_eq_mul.2 hc⟩, fun ⟨c, hc⟩ =>
     ⟨⟨c, c⁻¹, mul_inv_cancel c, inv_mul_cancel c⟩, mul_inv_eq_iff_eq_mul.1 hc⟩⟩
 
--- Porting note: not in simp NF.
--- @[simp]
 theorem conj_inv {a b : α} : (b * a * b⁻¹)⁻¹ = b * a⁻¹ * b⁻¹ :=
   (map_inv (MulAut.conj b) a).symm
 
@@ -98,12 +91,10 @@ theorem conj_pow {i : ℕ} {a b : α} : (a * b * a⁻¹) ^ i = a * b ^ i * a⁻�
 
 @[simp]
 theorem conj_zpow {i : ℤ} {a b : α} : (a * b * a⁻¹) ^ i = a * b ^ i * a⁻¹ := by
-  induction i
-  · change (a * b * a⁻¹) ^ (_ : ℤ) = a * b ^ (_ : ℤ) * a⁻¹
-    simp [zpow_natCast]
+  cases i
+  · simp
   · simp only [zpow_negSucc, conj_pow, mul_inv_rev, inv_inv]
     rw [mul_assoc]
--- Porting note: Added `change`, `zpow_natCast`, and `rw`.
 
 theorem conj_injective {x : α} : Function.Injective fun g : α => x * g * x⁻¹ :=
   (MulAut.conj x).injective
@@ -173,38 +164,25 @@ theorem map_surjective {f : α →* β} (hf : Function.Surjective f) :
   obtain ⟨a, rfl⟩ := hf b
   exact ⟨ConjClasses.mk a, rfl⟩
 
--- Porting note: This has not been adapted to mathlib4, is it still accurate?
 library_note "slow-failing instance priority"/--
 Certain instances trigger further searches when they are considered as candidate instances;
 these instances should be assigned a priority lower than the default of 1000 (for example, 900).
 
 The conditions for this rule are as follows:
- * a class `C` has instances `instT : C T` and `instT' : C T'`
- * types `T` and `T'` are both specializations of another type `S`
- * the parameters supplied to `S` to produce `T` are not (fully) determined by `instT`,
-   instead they have to be found by instance search
+* a class `C` has instances `instT : C T` and `instT' : C T'`
+* types `T` and `T'` are both reducible specializations of another type `S`
+* the parameters supplied to `S` to produce `T` are not (fully) determined by `instT`,
+  instead they have to be found by instance search
 If those conditions hold, the instance `instT` should be assigned lower priority.
 
-For example, suppose the search for an instance of `DecidableEq (Multiset α)` tries the
-candidate instance `Con.quotient.decidableEq (c : Con M) : decidableEq c.quotient`.
-Since `Multiset` and `Con.quotient` are both quotient types, unification will check
-that the relations `List.perm` and `c.toSetoid.r` unify. However, `c.toSetoid` depends on
-a `Mul M` instance, so this unification triggers a search for `Mul (List α)`;
-this will traverse all subclasses of `Mul` before failing.
-On the other hand, the search for an instance of `DecidableEq (Con.quotient c)` for `c : Con M`
-can quickly reject the candidate instance `Multiset.decidableEq` because the type of
-`List.perm : List ?m_1 → List ?m_1 → Prop` does not unify with `M → M → Prop`.
-Therefore, we should assign `Con.quotient.decidableEq` a lower priority because it fails slowly.
-(In terms of the rules above, `C := DecidableEq`, `T := Con.quotient`,
-`instT := Con.quotient.decidableEq`, `T' := Multiset`, `instT' := Multiset.decidableEq`,
-and `S := Quot`.)
+Note that there is no issue unless `T` and `T'` are reducibly equal to `S`, Otherwise the instance
+discrimination tree can distinguish them, and the note does not apply.
 
 If the type involved is a free variable (rather than an instantiation of some type `S`),
 the instance priority should be even lower, see Note [lower instance priority].
 -/
 
--- see Note [slow-failing instance priority]
-instance (priority := 900) [DecidableRel (IsConj : α → α → Prop)] : DecidableEq (ConjClasses α) :=
+instance [DecidableRel (IsConj : α → α → Prop)] : DecidableEq (ConjClasses α) :=
   inferInstanceAs <| DecidableEq <| Quotient (IsConj.setoid α)
 
 end Monoid
@@ -223,8 +201,7 @@ theorem mk_bijective : Function.Bijective (@ConjClasses.mk α _) :=
 def mkEquiv : α ≃ ConjClasses α :=
   ⟨ConjClasses.mk, Quotient.lift id fun (_ : α) _ => isConj_iff_eq.1, Quotient.lift_mk _ _, by
     rw [Function.RightInverse, Function.LeftInverse, forall_isConj]
-    intro x
-    rw [← quotient_mk_eq_mk, ← quotient_mk_eq_mk, Quotient.lift_mk, id]⟩
+    solve_by_elim⟩
 
 end CommMonoid
 
@@ -246,7 +223,7 @@ theorem IsConj.conjugatesOf_eq {a b : α} (ab : IsConj a b) : conjugatesOf a = c
 
 theorem isConj_iff_conjugatesOf_eq {a b : α} : IsConj a b ↔ conjugatesOf a = conjugatesOf b :=
   ⟨IsConj.conjugatesOf_eq, fun h => by
-    have ha := @mem_conjugatesOf_self _ _ b -- Porting note: added `@`.
+    have ha := mem_conjugatesOf_self (a := b)
     rwa [← h] at ha⟩
 
 end Monoid

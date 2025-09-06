@@ -5,6 +5,7 @@ Authors: Moritz Doll
 -/
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Topology.Algebra.Module.Equiv
+import Mathlib.Analysis.NormedSpace.OperatorNorm.Completeness
 
 /-!
 
@@ -56,7 +57,7 @@ variable {𝕜 E F : Type*} [RCLike 𝕜]
 variable [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
 variable [NormedAddCommGroup F] [InnerProductSpace 𝕜 F]
 
-local notation "⟪" x ", " y "⟫" => @inner 𝕜 _ _ x y
+local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
 namespace LinearPMap
 
@@ -90,7 +91,7 @@ def adjointDomain : Submodule 𝕜 F where
 
 /-- The operator `fun x ↦ ⟪y, T x⟫` considered as a continuous linear operator
 from `T.adjointDomain` to `𝕜`. -/
-def adjointDomainMkCLM (y : T.adjointDomain) : T.domain →L[𝕜] 𝕜 :=
+def adjointDomainMkCLM (y : T.adjointDomain) : StrongDual 𝕜 T.domain :=
   ⟨(innerₛₗ 𝕜 (y : F)).comp T.toFun, y.prop⟩
 
 theorem adjointDomainMkCLM_apply (y : T.adjointDomain) (x : T.domain) :
@@ -101,7 +102,7 @@ variable {T}
 variable (hT : Dense (T.domain : Set E))
 
 /-- The unique continuous extension of the operator `adjointDomainMkCLM` to `E`. -/
-def adjointDomainMkCLMExtend (y : T.adjointDomain) : E →L[𝕜] 𝕜 :=
+def adjointDomainMkCLMExtend (y : T.adjointDomain) : StrongDual 𝕜 E :=
   (T.adjointDomainMkCLM y).extend (Submodule.subtypeL T.domain) hT.denseRange_val
     isUniformEmbedding_subtype_val.isUniformInducing
 
@@ -129,12 +130,7 @@ def adjointAux : T.adjointDomain →ₗ[𝕜] E where
 
 theorem adjointAux_inner (y : T.adjointDomain) (x : T.domain) :
     ⟪adjointAux hT y, x⟫ = ⟪(y : F), T x⟫ := by
-  simp only [adjointAux, LinearMap.coe_mk, InnerProductSpace.toDual_symm_apply,
-    adjointDomainMkCLMExtend_apply]
-  -- Porting note(https://github.com/leanprover-community/mathlib4/issues/5026):
-  -- mathlib3 was finished here
-  simp only [AddHom.coe_mk, InnerProductSpace.toDual_symm_apply]
-  rw [adjointDomainMkCLMExtend_apply]
+  simp [adjointAux]
 
 theorem adjointAux_unique (y : T.adjointDomain) {x₀ : E}
     (hx₀ : ∀ x : T.domain, ⟪x₀, x⟫ = ⟪(y : F), T x⟫) : adjointAux hT y = x₀ :=
@@ -143,11 +139,12 @@ theorem adjointAux_unique (y : T.adjointDomain) {x₀ : E}
 variable (T)
 
 open scoped Classical in
-/-- The adjoint operator as a partially defined linear operator. -/
+/-- The adjoint operator as a partially defined linear operator, denoted as `T†`. -/
 def adjoint : F →ₗ.[𝕜] E where
   domain := T.adjointDomain
   toFun := if hT : Dense (T.domain : Set E) then adjointAux hT else 0
 
+@[inherit_doc]
 scoped postfix:1024 "†" => LinearPMap.adjoint
 
 theorem mem_adjoint_domain_iff (y : F) : y ∈ T†.domain ↔ Continuous ((innerₛₗ 𝕜 y).comp T.toFun) :=
@@ -157,7 +154,7 @@ variable {T}
 
 theorem mem_adjoint_domain_of_exists (y : F) (h : ∃ w : E, ∀ x : T.domain, ⟪w, x⟫ = ⟪y, T x⟫) :
     y ∈ T†.domain := by
-  cases' h with w hw
+  obtain ⟨w, hw⟩ := h
   rw [T.mem_adjoint_domain_iff]
   have : Continuous ((innerSL 𝕜 w).comp T.domain.subtypeL) := by fun_prop
   convert this using 1
@@ -171,7 +168,7 @@ theorem adjoint_apply_of_not_dense (hT : ¬Dense (T.domain : Set E)) (y : T†.d
 theorem adjoint_apply_of_dense (y : T†.domain) : T† y = adjointAux hT y := by
   classical
   change (if hT : Dense (T.domain : Set E) then adjointAux hT else 0) y = _
-  simp only [hT, dif_pos, LinearMap.coe_mk]
+  simp only [hT, dif_pos]
 
 include hT in
 theorem adjoint_apply_eq (y : T†.domain) {x₀ : E} (hx₀ : ∀ x : T.domain, ⟪x₀, x⟫ = ⟪(y : F), T x⟫) :
@@ -208,10 +205,8 @@ theorem toPMap_adjoint_eq_adjoint_toPMap_of_dense (hp : Dense (p : Set E)) :
   · simp only [LinearMap.toPMap_domain, Submodule.mem_top, iff_true,
       LinearPMap.mem_adjoint_domain_iff, LinearMap.coe_comp, innerₛₗ_apply_coe]
     exact ((innerSL 𝕜 x).comp <| A.comp <| Submodule.subtypeL _).cont
-  refine LinearPMap.adjoint_apply_eq ?_ _ fun v => ?_
-  · -- Porting note: was simply `hp` as an argument above
-    simpa using hp
-  · simp only [adjoint_inner_left, hxy, LinearMap.toPMap_apply, coe_coe]
+  refine LinearPMap.adjoint_apply_eq hp _ fun v => ?_
+  simp only [adjoint_inner_left, LinearMap.toPMap_apply, coe_coe]
 
 end ContinuousLinearMap
 

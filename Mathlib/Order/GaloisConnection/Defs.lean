@@ -4,8 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl
 -/
 import Mathlib.Order.BoundedOrder.Basic
-import Mathlib.Order.Hom.Basic
 import Mathlib.Order.Monotone.Basic
+import Mathlib.Tactic.Monotonicity.Attr
+import Mathlib.Util.AssertExists
 
 /-!
 # Galois connections, insertions and coinsertions
@@ -22,7 +23,7 @@ such that `∀ a b, l a ≤ b ↔ a ≤ u b`.
 * `GaloisCoinsertion`: A Galois coinsertion is a Galois connection where `u ∘ l = id`
 -/
 
-assert_not_exists CompleteLattice
+assert_not_exists CompleteLattice RelIso
 
 open Function OrderDual Set
 
@@ -36,10 +37,6 @@ variable {α : Type u} {β : Type v} {γ : Type w} {ι : Sort x} {κ : ι → So
 but do not depend on the category theory library in mathlib. -/
 def GaloisConnection [Preorder α] [Preorder β] (l : α → β) (u : β → α) :=
   ∀ a b, l a ≤ b ↔ a ≤ u b
-
-/-- Makes a Galois connection from an order-preserving bijection. -/
-theorem OrderIso.to_galoisConnection [Preorder α] [Preorder β] (oi : α ≃o β) :
-    GaloisConnection oi oi.symm := fun _ _ => oi.rel_symm_apply.symm
 
 namespace GaloisConnection
 
@@ -222,12 +219,11 @@ theorem l_comm_iff_u_comm {X : Type*} [PartialOrder X] {Y : Type*} [Preorder Y] 
 
 end GaloisConnection
 
--- Porting note (https://github.com/leanprover-community/mathlib4/issues/5171): this used to have a `@[nolint has_nonempty_instance]`
 /-- A Galois insertion is a Galois connection where `l ∘ u = id`. It also contains a constructive
 choice function, to give better definitional equalities when lifting order structures. Dual
 to `GaloisCoinsertion` -/
 structure GaloisInsertion {α β : Type*} [Preorder α] [Preorder β] (l : α → β) (u : β → α) where
-  /-- A contructive choice function for images of `l`. -/
+  /-- A constructive choice function for images of `l`. -/
   choice : ∀ x : α, u (l x) ≤ x → β
   /-- The Galois connection associated to a Galois insertion. -/
   gc : GaloisConnection l u
@@ -235,14 +231,6 @@ structure GaloisInsertion {α β : Type*} [Preorder α] [Preorder β] (l : α �
   le_l_u : ∀ x, x ≤ l (u x)
   /-- Property of the choice function. -/
   choice_eq : ∀ a h, choice a h = l a
-
-/-- Makes a Galois insertion from an order-preserving bijection. -/
-protected def OrderIso.toGaloisInsertion [Preorder α] [Preorder β] (oi : α ≃o β) :
-    GaloisInsertion oi oi.symm where
-  choice b _ := oi b
-  gc := oi.to_galoisConnection
-  le_l_u g := le_of_eq (oi.right_inv g).symm
-  choice_eq _ _ := rfl
 
 /-- A constructor for a Galois insertion with the trivial `choice` function. -/
 def GaloisInsertion.monotoneIntro {α β : Type*} [Preorder α] [Preorder β] {l : α → β} {u : β → α}
@@ -297,12 +285,11 @@ theorem strictMono_u [Preorder α] [Preorder β] (gi : GaloisInsertion l u) : St
 
 end GaloisInsertion
 
--- Porting note (https://github.com/leanprover-community/mathlib4/issues/5171): this used to have a `@[nolint has_nonempty_instance]`
 /-- A Galois coinsertion is a Galois connection where `u ∘ l = id`. It also contains a constructive
 choice function, to give better definitional equalities when lifting order structures. Dual to
 `GaloisInsertion` -/
 structure GaloisCoinsertion [Preorder α] [Preorder β] (l : α → β) (u : β → α) where
-  /-- A contructive choice function for images of `u`. -/
+  /-- A constructive choice function for images of `u`. -/
   choice : ∀ x : β, x ≤ l (u x) → α
   /-- The Galois connection associated to a Galois coinsertion. -/
   gc : GaloisConnection l u
@@ -310,14 +297,6 @@ structure GaloisCoinsertion [Preorder α] [Preorder β] (l : α → β) (u : β 
   u_l_le : ∀ x, u (l x) ≤ x
   /-- Property of the choice function. -/
   choice_eq : ∀ a h, choice a h = u a
-
-/-- Makes a Galois coinsertion from an order-preserving bijection. -/
-protected def OrderIso.toGaloisCoinsertion [Preorder α] [Preorder β] (oi : α ≃o β) :
-    GaloisCoinsertion oi oi.symm where
-  choice b _ := oi.symm b
-  gc := oi.to_galoisConnection
-  u_l_le g := le_of_eq (oi.left_inv g)
-  choice_eq _ _ := rfl
 
 /-- Make a `GaloisInsertion` between `αᵒᵈ` and `βᵒᵈ` from a `GaloisCoinsertion` between `α` and
 `β`. -/
