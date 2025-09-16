@@ -111,7 +111,7 @@ theorem formPerm_apply_mem_of_mem (h : x ∈ l) : formPerm l x ∈ l := by
     by_cases hx : x ∈ z :: l
     · rw [formPerm_cons_cons, mul_apply, swap_apply_def]
       split_ifs
-      · simp [IH _ hx]
+      · simp
       · simp
       · simp [*]
     · replace h : x = y := Or.resolve_right (mem_cons.1 h) hx
@@ -159,7 +159,7 @@ theorem formPerm_eq_head_iff_eq_getLast (x y : α) :
   Iff.trans (by rw [formPerm_apply_getLast]) (formPerm (y :: l)).injective.eq_iff
 
 theorem formPerm_apply_lt_getElem (xs : List α) (h : Nodup xs) (n : ℕ) (hn : n + 1 < xs.length) :
-    formPerm xs xs[n] = xs[n + 1] := by
+    formPerm xs xs[n] = xs[n+1] := by
   induction n generalizing xs with
   | zero => simpa using formPerm_apply_getElem_zero _ h _
   | succ n IH =>
@@ -255,7 +255,7 @@ theorem formPerm_pow_apply_getElem (l : List α) (w : Nodup l) (n : ℕ) (i : �
   induction n with
   | zero => simp [Nat.mod_eq_of_lt h]
   | succ n hn =>
-    simp [pow_succ', mul_apply, hn, formPerm_apply_getElem _ w, Nat.succ_eq_add_one,
+    simp [pow_succ', mul_apply, hn, formPerm_apply_getElem _ w,
       ← Nat.add_assoc]
 
 theorem formPerm_pow_apply_head (x : α) (l : List α) (h : Nodup (x :: l)) (n : ℕ) :
@@ -309,7 +309,7 @@ theorem formPerm_apply_mem_eq_self_iff (hl : Nodup l) (x : α) (hx : x ∈ l) :
   · exact absurd k.zero_le (hk.trans_le hn.le).not_ge
   · rw [hn] at hk
     rcases (Nat.le_of_lt_succ hk).eq_or_lt with hk' | hk'
-    · simp [← hk', Nat.succ_le_succ_iff, eq_comm]
+    · simp [← hk', eq_comm]
     · simpa [Nat.mod_eq_of_lt (Nat.succ_lt_succ hk'), Nat.succ_lt_succ_iff] using
         (k.zero_le.trans_lt hk').ne.symm
 
@@ -359,7 +359,7 @@ theorem formPerm_eq_formPerm_iff {l l' : List α} (hl : l.Nodup) (hl' : l'.Nodup
   · rcases l' with (_ | ⟨x', _ | ⟨y', l'⟩⟩)
     · simp [formPerm_eq_one_iff _ hl, -formPerm_cons_cons]
     · simp [formPerm_eq_one_iff _ hl, -formPerm_cons_cons]
-    · simp [-formPerm_cons_cons, formPerm_ext_iff hl hl', Nat.succ_le_succ_iff]
+    · simp [-formPerm_cons_cons, formPerm_ext_iff hl hl']
 
 theorem form_perm_zpow_apply_mem_imp_mem (l : List α) (x : α) (hx : x ∈ l) (n : ℤ) :
     (formPerm l ^ n) x ∈ l := by

@@ -213,7 +213,7 @@ def ennrealEquivSum : ℝ≥0∞ ≃ᵐ ℝ≥0 ⊕ Unit :=
   { Equiv.optionEquivSumPUnit ℝ≥0 with
     measurable_toFun := measurable_of_measurable_nnreal measurable_inl
     measurable_invFun :=
-      measurable_sum measurable_coe_nnreal_ennreal (@measurable_const ℝ≥0∞ Unit _ _ ∞) }
+      measurable_fun_sum measurable_coe_nnreal_ennreal (@measurable_const ℝ≥0∞ Unit _ _ ∞) }
 
 open Function (uncurry)
 
@@ -223,7 +223,7 @@ theorem measurable_of_measurable_nnreal_prod {_ : MeasurableSpace β} {_ : Measu
   let e : ℝ≥0∞ × β ≃ᵐ (ℝ≥0 × β) ⊕ (Unit × β) :=
     (ennrealEquivSum.prodCongr (MeasurableEquiv.refl β)).trans
       (MeasurableEquiv.sumProdDistrib _ _ _)
-  e.symm.measurable_comp_iff.1 <| measurable_sum H₁ (H₂.comp measurable_id.snd)
+  e.symm.measurable_comp_iff.1 <| measurable_fun_sum H₁ (H₂.comp measurable_id.snd)
 
 theorem measurable_of_measurable_nnreal_nnreal {_ : MeasurableSpace β} {f : ℝ≥0∞ × ℝ≥0∞ → β}
     (h₁ : Measurable fun p : ℝ≥0 × ℝ≥0 => f (p.1, p.2)) (h₂ : Measurable fun r : ℝ≥0 => f (∞, r))
@@ -255,7 +255,7 @@ instance instMeasurableMul₂ : MeasurableMul₂ ℝ≥0∞ := by
 instance instMeasurableSub₂ : MeasurableSub₂ ℝ≥0∞ :=
   ⟨by
     apply measurable_of_measurable_nnreal_nnreal <;>
-      simp [← WithTop.coe_sub, tsub_eq_zero_of_le];
+      simp [tsub_eq_zero_of_le];
         exact continuous_sub.measurable.coe_nnreal_ennreal⟩
 
 instance instMeasurableInv : MeasurableInv ℝ≥0∞ :=
@@ -267,7 +267,7 @@ instance : MeasurableSMul ℝ≥0 ℝ≥0∞ where
     simp_rw [ENNReal.smul_def]
     exact measurable_coe_nnreal_ennreal.mul_const _
 
-/-- A limit (over a general filter) of measurable `ℝ≥0∞` valued functions is measurable. -/
+/-- A limit (over a general filter) of measurable `ℝ≥0∞`-valued functions is measurable. -/
 theorem measurable_of_tendsto' {ι : Type*} {f : ι → α → ℝ≥0∞} {g : α → ℝ≥0∞} (u : Filter ι)
     [NeBot u] [IsCountablyGenerated u] (hf : ∀ i, Measurable (f i)) (lim : Tendsto f u (𝓝 g)) :
     Measurable g := by
@@ -280,12 +280,12 @@ theorem measurable_of_tendsto' {ι : Type*} {f : ι → α → ℝ≥0∞} {g : 
   change Measurable fun y => liminf (fun n => (f (x n) y : ℝ≥0∞)) atTop
   exact .liminf fun n => hf (x n)
 
-/-- A sequential limit of measurable `ℝ≥0∞` valued functions is measurable. -/
+/-- A sequential limit of measurable `ℝ≥0∞`-valued functions is measurable. -/
 theorem measurable_of_tendsto {f : ℕ → α → ℝ≥0∞} {g : α → ℝ≥0∞} (hf : ∀ i, Measurable (f i))
     (lim : Tendsto f atTop (𝓝 g)) : Measurable g :=
   measurable_of_tendsto' atTop hf lim
 
-/-- A limit (over a general filter) of a.e.-measurable `ℝ≥0∞` valued functions is
+/-- A limit (over a general filter) of a.e.-measurable `ℝ≥0∞`-valued functions is
 a.e.-measurable. -/
 lemma aemeasurable_of_tendsto' {ι : Type*} {f : ι → α → ℝ≥0∞} {g : α → ℝ≥0∞}
     {μ : Measure α} (u : Filter ι) [NeBot u] [IsCountablyGenerated u]
@@ -309,7 +309,7 @@ lemma aemeasurable_of_tendsto' {ι : Type*} {f : ι → α → ℝ≥0∞} {g : 
   · exact (ite_ae_eq_of_measure_compl_zero g (fun x ↦ (⟨f (v 0) x⟩ : Nonempty ℝ≥0∞).some)
       (aeSeqSet h'f p) (aeSeq.measure_compl_aeSeqSet_eq_zero h'f hp)).symm
 
-/-- A limit of a.e.-measurable `ℝ≥0∞` valued functions is a.e.-measurable. -/
+/-- A limit of a.e.-measurable `ℝ≥0∞`-valued functions is a.e.-measurable. -/
 lemma aemeasurable_of_tendsto {f : ℕ → α → ℝ≥0∞} {g : α → ℝ≥0∞} {μ : Measure α}
     (hf : ∀ i, AEMeasurable (f i) μ) (hlim : ∀ᵐ a ∂μ, Tendsto (fun i ↦ f i a) atTop (𝓝 (g a))) :
     AEMeasurable g μ :=
@@ -352,7 +352,7 @@ theorem AEMeasurable.ennreal_toReal {f : α → ℝ≥0∞} {μ : Measure α} (h
 theorem Measurable.ennreal_tsum {ι} [Countable ι] {f : ι → α → ℝ≥0∞} (h : ∀ i, Measurable (f i)) :
     Measurable fun x => ∑' i, f i x := by
   simp_rw [ENNReal.tsum_eq_iSup_sum]
-  exact .iSup fun s ↦ s.measurable_sum fun i _ => h i
+  exact .iSup fun s ↦ s.measurable_fun_sum fun i _ => h i
 
 @[measurability, fun_prop]
 theorem Measurable.ennreal_tsum' {ι} [Countable ι] {f : ι → α → ℝ≥0∞} (h : ∀ i, Measurable (f i)) :
@@ -370,7 +370,7 @@ theorem Measurable.nnreal_tsum {ι} [Countable ι] {f : ι → α → ℝ≥0} (
 theorem AEMeasurable.ennreal_tsum {ι} [Countable ι] {f : ι → α → ℝ≥0∞} {μ : Measure α}
     (h : ∀ i, AEMeasurable (f i) μ) : AEMeasurable (fun x => ∑' i, f i x) μ := by
   simp_rw [ENNReal.tsum_eq_iSup_sum]
-  exact .iSup fun s ↦ Finset.aemeasurable_sum s fun i _ => h i
+  exact .iSup fun s ↦ Finset.aemeasurable_fun_sum s fun i _ => h i
 
 @[measurability, fun_prop]
 theorem AEMeasurable.nnreal_tsum {α : Type*} {_ : MeasurableSpace α} {ι : Type*} [Countable ι]
@@ -449,7 +449,7 @@ namespace NNReal
 instance : MeasurableSMul₂ ℝ≥0 ℝ≥0∞ where
   measurable_smul := show Measurable fun r : ℝ≥0 × ℝ≥0∞ ↦ (r.1 : ℝ≥0) * r.2 by fun_prop
 
-/-- A limit (over a general filter) of measurable `ℝ≥0` valued functions is measurable. -/
+/-- A limit (over a general filter) of measurable `ℝ≥0`-valued functions is measurable. -/
 theorem measurable_of_tendsto' {ι} {f : ι → α → ℝ≥0} {g : α → ℝ≥0} (u : Filter ι) [NeBot u]
     [IsCountablyGenerated u] (hf : ∀ i, Measurable (f i)) (lim : Tendsto f u (𝓝 g)) :
     Measurable g := by
@@ -458,7 +458,7 @@ theorem measurable_of_tendsto' {ι} {f : ι → α → ℝ≥0} {g : α → ℝ�
   rw [tendsto_pi_nhds] at lim ⊢
   exact fun x => (ENNReal.continuous_coe.tendsto (g x)).comp (lim x)
 
-/-- A sequential limit of measurable `ℝ≥0` valued functions is measurable. -/
+/-- A sequential limit of measurable `ℝ≥0`-valued functions is measurable. -/
 theorem measurable_of_tendsto {f : ℕ → α → ℝ≥0} {g : α → ℝ≥0} (hf : ∀ i, Measurable (f i))
     (lim : Tendsto f atTop (𝓝 g)) : Measurable g :=
   measurable_of_tendsto' atTop hf lim
@@ -544,7 +544,7 @@ theorem exists_spanning_measurableSet_le {f : α → ℝ≥0} (hf : Measurable f
   let norm_sets := fun n : ℕ => { x | f x ≤ n }
   have norm_sets_spanning : ⋃ n, norm_sets n = Set.univ := by
     ext1 x
-    simp only [Set.mem_iUnion, Set.mem_setOf_eq, Set.mem_univ, iff_true]
+    simp only [Set.mem_iUnion, Set.mem_univ, iff_true]
     exact exists_nat_ge (f x)
   let sets n := sigma_finite_sets n ∩ norm_sets n
   have h_meas : ∀ n, MeasurableSet (sets n) := by
@@ -576,7 +576,7 @@ lemma tendsto_measure_Icc_nhdsWithin_right' (b : ℝ) :
 
 lemma tendsto_measure_Icc_nhdsWithin_right (b : ℝ) :
     Tendsto (fun δ ↦ μ (Icc (b - δ) (b + δ))) (𝓝[≥] (0 : ℝ)) (𝓝 (μ {b})) := by
-  simp only [← nhdsWithin_right_sup_nhds_singleton, nhdsWithin_singleton, tendsto_sup,
+  simp only [← nhdsGT_sup_nhdsWithin_singleton, nhdsWithin_singleton, tendsto_sup,
     tendsto_measure_Icc_nhdsWithin_right' μ b, true_and, tendsto_pure_left]
   intro s hs
   simpa using mem_of_mem_nhds hs

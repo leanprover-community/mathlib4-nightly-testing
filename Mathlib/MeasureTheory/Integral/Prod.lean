@@ -3,6 +3,7 @@ Copyright (c) 2020 Floris van Doorn. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Floris van Doorn
 -/
+import Mathlib.MeasureTheory.Function.LpSeminorm.Prod
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.MeasureTheory.Integral.Bochner.Set
 import Mathlib.MeasureTheory.Measure.Prod
@@ -85,7 +86,7 @@ theorem MeasureTheory.StronglyMeasurable.integral_prod_right [SFinite ν] ⦃f :
       intro x; refine Finset.Subset.trans (Finset.filter_subset _ _) ?_; intro y
       simp_rw [SimpleFunc.mem_range]; rintro ⟨z, rfl⟩; exact ⟨(x, z), rfl⟩
     simp only [SimpleFunc.integral_eq_sum_of_subset (this _)]
-    refine Finset.stronglyMeasurable_sum _ fun x _ => ?_
+    refine Finset.stronglyMeasurable_fun_sum _ fun x _ => ?_
     refine (Measurable.ennreal_toReal ?_).stronglyMeasurable.smul_const _
     simp only [s', SimpleFunc.coe_comp, preimage_comp]
     apply measurable_measure_prodMk_left
@@ -93,7 +94,7 @@ theorem MeasureTheory.StronglyMeasurable.integral_prod_right [SFinite ν] ⦃f :
   have h2f' : Tendsto f' atTop (𝓝 fun x : α => ∫ y : β, f x y ∂ν) := by
     rw [tendsto_pi_nhds]; intro x
     by_cases hfx : Integrable (f x) ν
-    · have (n) : Integrable (s' n x) ν := by
+    · have (n : _) : Integrable (s' n x) ν := by
         apply (hfx.norm.add hfx.norm).mono' (s' n x).aestronglyMeasurable
         filter_upwards with y
         simp_rw [s', SimpleFunc.coe_comp]; exact SimpleFunc.norm_approxOn_zero_le _ _ (x, y) n
@@ -224,7 +225,7 @@ theorem hasFiniteIntegral_prod_iff ⦃f : α × β → E⦄ (h1f : StronglyMeasu
       (∀ᵐ x ∂μ, HasFiniteIntegral (fun y => f (x, y)) ν) ∧
         HasFiniteIntegral (fun x => ∫ y, ‖f (x, y)‖ ∂ν) μ := by
   simp only [hasFiniteIntegral_iff_enorm, lintegral_prod _ h1f.enorm.aemeasurable]
-  have (x) : ∀ᵐ y ∂ν, 0 ≤ ‖f (x, y)‖ := by filter_upwards with y using norm_nonneg _
+  have (x : _) : ∀ᵐ y ∂ν, 0 ≤ ‖f (x, y)‖ := by filter_upwards with y using norm_nonneg _
   simp_rw [integral_eq_lintegral_of_nonneg_ae (this _)
       (h1f.norm.comp_measurable measurable_prodMk_left).aestronglyMeasurable,
     enorm_eq_ofReal toReal_nonneg, ofReal_norm_eq_enorm]
@@ -302,8 +303,18 @@ theorem Integrable.op_fst_snd {F G : Type*} [NormedAddCommGroup F] [NormedAddCom
       apply le_coe_toNNReal
     _ ≤ ∫⁻ x, ∫⁻ y, .ofReal C * ‖f x‖ₑ * ‖g y‖ₑ ∂ν ∂μ := lintegral_prod_le _
     _ ≤ .ofReal C * (∫⁻ x, ‖f x‖ₑ ∂μ) * ∫⁻ y, ‖g y‖ₑ ∂ν := by
-      simp [lintegral_const_mul', lintegral_mul_const', hf.2.ne, hg.2.ne, mul_assoc]
+      simp [lintegral_const_mul', lintegral_mul_const', hg.2.ne, mul_assoc]
     _ < ∞ := by apply_rules [ENNReal.mul_lt_top, hf.2, hg.2, ENNReal.ofReal_lt_top]
+
+lemma Integrable.comp_fst {f : α → E} (hf : Integrable f μ) (ν : Measure β) [IsFiniteMeasure ν] :
+    Integrable (fun x ↦ f x.1) (μ.prod ν) := by
+  rw [← memLp_one_iff_integrable] at hf ⊢
+  exact hf.comp_fst ν
+
+lemma Integrable.comp_snd {f : β → E} (hf : Integrable f ν) (μ : Measure α) [IsFiniteMeasure μ] :
+    Integrable (fun x ↦ f x.2) (μ.prod ν) := by
+  rw [← memLp_one_iff_integrable] at hf ⊢
+  exact hf.comp_snd μ
 
 omit [SFinite ν] in
 theorem Integrable.smul_prod {R : Type*} [NormedRing R] [Module R E] [IsBoundedSMul R E]
@@ -535,6 +546,44 @@ theorem integral_fun_fst (f : α → E) : ∫ z, f z.1 ∂μ.prod ν = ν.real u
   rw [← integral_prod_swap]
   apply integral_fun_snd
 
+section ContinuousLinearMap
+
+variable {E F G : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {mE : MeasurableSpace E}
+  [NormedAddCommGroup F] [NormedSpace ℝ F] {mF : MeasurableSpace F}
+  [NormedAddCommGroup G] [NormedSpace ℝ G] {mG : MeasurableSpace G}
+  {μ : Measure E} [IsProbabilityMeasure μ] {ν : Measure F} [IsProbabilityMeasure ν]
+  {L : E × F →L[ℝ] G}
+
+lemma integrable_continuousLinearMap_prod'
+    (hLμ : Integrable (L.comp (.inl ℝ E F)) μ) (hLν : Integrable (L.comp (.inr ℝ E F)) ν) :
+    Integrable L (μ.prod ν) := by
+  change Integrable (fun v ↦ L v) (μ.prod ν)
+  simp_rw [← L.comp_inl_add_comp_inr]
+  exact (hLμ.comp_fst ν).add (hLν.comp_snd μ)
+
+lemma integrable_continuousLinearMap_prod (hμ : Integrable id μ) (hν : Integrable id ν) :
+    Integrable L (μ.prod ν) :=
+  integrable_continuousLinearMap_prod' (ContinuousLinearMap.integrable_comp _ hμ)
+    (ContinuousLinearMap.integrable_comp _ hν)
+
+variable [CompleteSpace G]
+
+lemma integral_continuousLinearMap_prod'
+    (hLμ : Integrable (L.comp (.inl ℝ E F)) μ) (hLν : Integrable (L.comp (.inr ℝ E F)) ν) :
+    ∫ p, L p ∂(μ.prod ν) = ∫ x, L.comp (.inl ℝ E F) x ∂μ + ∫ y, L.comp (.inr ℝ E F) y ∂ν := by
+  simp_rw [← L.comp_inl_add_comp_inr]
+  replace hLμ := ((memLp_one_iff_integrable.mpr hLμ).comp_fst ν).integrable le_rfl
+  replace hLν := ((memLp_one_iff_integrable.mpr hLν).comp_snd μ).integrable le_rfl
+  rw [integral_add hLμ hLν, integral_prod _ hLμ, integral_prod _ hLν]
+  simp
+
+lemma integral_continuousLinearMap_prod (hμ : Integrable id μ) (hν : Integrable id ν) :
+    ∫ p, L p ∂(μ.prod ν) = ∫ x, L.comp (.inl ℝ E F) x ∂μ + ∫ y, L.comp (.inr ℝ E F) y ∂ν :=
+  integral_continuousLinearMap_prod' (ContinuousLinearMap.integrable_comp _ hμ)
+    (ContinuousLinearMap.integrable_comp _ hν)
+
+end ContinuousLinearMap
+
 section
 
 variable {X Y : Type*}
@@ -572,7 +621,7 @@ lemma integral_integral_swap_of_hasCompactSupport
     apply (integrableOn_iff_integrable_of_support_subset (subset_tsupport f.uncurry)).mp
     refine ⟨(h'f.stronglyMeasurable_of_prod hf).aestronglyMeasurable, ?_⟩
     obtain ⟨C, hC⟩ : ∃ C, ∀ p, ‖f.uncurry p‖ ≤ C := hf.bounded_above_of_compact_support h'f
-    exact hasFiniteIntegral_of_bounded (C := C) (Eventually.of_forall hC)
+    exact .of_bounded (C := C) (.of_forall hC)
   _ = ∫ y, (∫ x in U, f x y ∂μ) ∂ν := by
     apply setIntegral_eq_integral_of_forall_compl_eq_zero (fun y hy ↦ ?_)
     have : ∀ x, f x y = 0 := by

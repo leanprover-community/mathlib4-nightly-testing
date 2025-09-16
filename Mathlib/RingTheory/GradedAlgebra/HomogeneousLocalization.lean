@@ -7,7 +7,7 @@ import Mathlib.Algebra.Group.Submonoid.Finsupp
 import Mathlib.Order.Filter.AtTopBot.Defs
 import Mathlib.RingTheory.Adjoin.Basic
 import Mathlib.RingTheory.GradedAlgebra.FiniteType
-import Mathlib.RingTheory.Localization.AtPrime
+import Mathlib.RingTheory.Localization.AtPrime.Basic
 import Mathlib.RingTheory.Localization.Away.Basic
 
 /-!
@@ -150,13 +150,13 @@ end SMul
 
 variable [AddCommMonoid ι] [DecidableEq ι] [GradedAlgebra 𝒜]
 
+open GradedOne in
 instance : One (NumDenSameDeg 𝒜 x) where
   one :=
     { deg := 0
-      -- Porting note: Changed `one_mem` to `GradedOne.one_mem`
-      num := ⟨1, GradedOne.one_mem⟩
-      den := ⟨1, GradedOne.one_mem⟩
-      den_mem := Submonoid.one_mem _ }
+      num := ⟨1, one_mem⟩
+      den := ⟨1, one_mem⟩
+      den_mem := one_mem _ }
 
 @[simp]
 theorem deg_one : (1 : NumDenSameDeg 𝒜 x).deg = 0 :=
@@ -170,8 +170,9 @@ theorem num_one : ((1 : NumDenSameDeg 𝒜 x).num : A) = 1 :=
 theorem den_one : ((1 : NumDenSameDeg 𝒜 x).den : A) = 1 :=
   rfl
 
+open GradedOne in
 instance : Zero (NumDenSameDeg 𝒜 x) where
-  zero := ⟨0, 0, ⟨1, GradedOne.one_mem⟩, Submonoid.one_mem _⟩
+  zero := ⟨0, 0, ⟨1, one_mem⟩, one_mem _⟩
 
 @[simp]
 theorem deg_zero : (0 : NumDenSameDeg 𝒜 x).deg = 0 :=
@@ -185,12 +186,12 @@ theorem num_zero : (0 : NumDenSameDeg 𝒜 x).num = 0 :=
 theorem den_zero : ((0 : NumDenSameDeg 𝒜 x).den : A) = 1 :=
   rfl
 
+open GradedMul in
 instance : Mul (NumDenSameDeg 𝒜 x) where
   mul p q :=
     { deg := p.deg + q.deg
-      -- Porting note: Changed `mul_mem` to `GradedMul.mul_mem`
-      num := ⟨p.num * q.num, GradedMul.mul_mem p.num.prop q.num.prop⟩
-      den := ⟨p.den * q.den, GradedMul.mul_mem p.den.prop q.den.prop⟩
+      num := ⟨p.num * q.num, mul_mem p.num.prop q.num.prop⟩
+      den := ⟨p.den * q.den, mul_mem p.den.prop q.den.prop⟩
       den_mem := Submonoid.mul_mem _ p.den_mem q.den_mem }
 
 @[simp]
@@ -239,9 +240,9 @@ instance : Pow (NumDenSameDeg 𝒜 x) ℕ where
   pow c n :=
     ⟨n • c.deg, @GradedMonoid.GMonoid.gnpow _ (fun i => ↥(𝒜 i)) _ _ n _ c.num,
       @GradedMonoid.GMonoid.gnpow _ (fun i => ↥(𝒜 i)) _ _ n _ c.den, by
-        induction' n with n ih
-        · simpa only [coe_gnpow, pow_zero] using Submonoid.one_mem _
-        · simpa only [pow_succ, coe_gnpow] using x.mul_mem ih c.den_mem⟩
+        induction n with
+        | zero => simp only [coe_gnpow, pow_zero, one_mem]
+        | succ n ih => simpa only [pow_succ, coe_gnpow] using x.mul_mem ih c.den_mem⟩
 
 @[simp]
 theorem deg_pow (c : NumDenSameDeg 𝒜 x) (n : ℕ) : (c ^ n).deg = n • c.deg :=
@@ -365,7 +366,7 @@ instance : Add (HomogeneousLocalization 𝒜 x) where
       fun c1 c2 (h : Localization.mk _ _ = Localization.mk _ _) c3 c4
         (h' : Localization.mk _ _ = Localization.mk _ _) => by
       change Localization.mk _ _ = Localization.mk _ _
-      simp only [num_add, den_add, ← Localization.add_mk]
+      simp only [num_add, den_add]
       convert congr_arg₂ (· + ·) h h' <;> rw [Localization.add_mk] <;> rfl
 
 @[simp] lemma mk_add (i j : NumDenSameDeg 𝒜 x) : mk (i + j) = mk i + mk j := rfl
@@ -478,6 +479,9 @@ instance : Algebra (𝒜 0) (HomogeneousLocalization 𝒜 x) :=
 
 lemma algebraMap_eq : algebraMap (𝒜 0) (HomogeneousLocalization 𝒜 x) = fromZeroRingHom 𝒜 x := rfl
 
+instance : IsScalarTower (𝒜 0) (HomogeneousLocalization 𝒜 x) (Localization x) :=
+  .of_algebraMap_eq' rfl
+
 end HomogeneousLocalization
 
 namespace HomogeneousLocalization
@@ -543,7 +547,7 @@ theorem isUnit_iff_isUnit_val (f : HomogeneousLocalization.AtPrime 𝒜 𝔭) :
       (hc ▸ Ideal.mul_mem_left _ c.1 (Ideal.mul_mem_right b _ h))
   refine isUnit_of_mul_eq_one _ (Quotient.mk'' ⟨f.1, f.3, f.2, this⟩) ?_
   rw [← mk_mul, ext_iff_val, val_mk]
-  simp [mul_comm f.den.1, Localization.mk_eq_monoidOf_mk']
+  simp [mul_comm f.den.1]
 
 instance : Nontrivial (HomogeneousLocalization.AtPrime 𝒜 𝔭) :=
   ⟨⟨0, 1, fun r => by simp [ext_iff_val, val_zero, val_one, zero_ne_one] at r⟩⟩
@@ -613,8 +617,8 @@ def map (g : A →+* B)
     simp only [← mk_mul, Quotient.map'_mk'', num_mul, map_mul, den_mul]; rfl
   map_zero' := by simp only [← mk_zero (𝒜 := 𝒜), Quotient.map'_mk'', deg_zero,
     num_zero, ZeroMemClass.coe_zero, map_zero, den_zero, map_one]; rfl
-  map_one' := by simp only [← mk_one (𝒜 := 𝒜), Quotient.map'_mk'', deg_zero,
-    num_one, ZeroMemClass.coe_zero, map_zero, den_one, map_one]; rfl
+  map_one' := by simp only [← mk_one (𝒜 := 𝒜), Quotient.map'_mk'',
+    num_one, den_one, map_one]; rfl
 
 /--
 Let `A` be a graded algebra and `P ≤ Q` be two submonoids, then the homogeneous localization of `A`
@@ -664,7 +668,7 @@ lemma range_awayMapAux_subset :
     Set.range (awayMapAux 𝒜 (f := f) ⟨_, hx⟩) ⊆ Set.range (val (𝒜 := 𝒜)) := by
   rintro _ ⟨z, rfl⟩
   obtain ⟨⟨n, ⟨a, ha⟩, ⟨b, hb'⟩, j, rfl : _ = b⟩, rfl⟩ := mk_surjective z
-  use mk ⟨n+j•e,⟨a*g^j, ?_⟩ ,⟨x^j, ?_⟩, j, rfl⟩
+  use mk ⟨n+j•e,⟨a*g^j, ?_⟩, ⟨x^j, ?_⟩, j, rfl⟩
   · simp [awayMapAux_mk 𝒜 (hx := hx)]
   · apply SetLike.mul_mem_graded ha
     exact SetLike.pow_mem_graded _ hg
@@ -795,7 +799,7 @@ theorem Away.isLocalization_mul (hd : d ≠ 0) :
     obtain ⟨⟨_, k, rfl⟩, hc⟩ := e
     refine ⟨⟨_, k + m + n, rfl⟩, ?_⟩
     ext
-    simp only [OneMemClass.coe_one, one_mul, val_mul, val_pow, val_mk, Localization.mk_pow,
+    simp only [val_mul, val_pow, val_mk, Localization.mk_pow,
       Localization.mk_eq_mk_iff, Localization.r_iff_exists, Submonoid.coe_mul, Localization.mk_mul,
       SubmonoidClass.coe_pow, Subtype.exists, exists_prop]
     refine ⟨_, ⟨k, rfl⟩, ?_⟩
@@ -885,7 +889,7 @@ theorem Away.adjoin_mk_prod_pow_eq_top_of_pos {f : A} {d : ℕ} (hf : f ∈ 𝒜
     conv => enter [1, 1, 2, i]; rw [← Nat.mod_add_div (ai i) d]
     simp_rw [smul_eq_mul, add_mul, Finset.sum_add_distrib,
       mul_assoc, ← Finset.mul_sum, mul_comm d, mul_comm (_ / _)]
-    simp only [add_tsub_cancel_right, smul_eq_mul]
+    simp only [add_tsub_cancel_right]
   have H : Away.mk 𝒜 hf a (∏ i, v i ^ ai i)
       (hai ▸ SetLike.prod_pow_mem_graded _ _ _ _ fun i _ ↦ hxd i) =
       Away.mk 𝒜 hf (a - ∑ i : ι', dv i * (ai i / d)) (∏ i, v i ^ (ai i % d))
@@ -901,7 +905,7 @@ theorem Away.adjoin_mk_prod_pow_eq_top_of_pos {f : A} {d : ℕ} (hf : f ∈ 𝒜
     · ext i
       congr
       exact Eq.symm (Nat.mod_add_div (ai i) d)
-    · simp only [SubmonoidClass.mk_pow, SubmonoidClass.coe_finset_prod, ← pow_add, ← pow_mul,
+    · simp only [SubmonoidClass.coe_finset_prod, ← pow_add, ← pow_mul,
         Finset.prod_pow_eq_pow_sum, SubmonoidClass.coe_pow]
       rw [tsub_add_cancel_of_le]
       rcases d.eq_zero_or_pos with hd | hd

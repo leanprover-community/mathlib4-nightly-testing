@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Adam Topaz, Bhavik Mehta, Dagur Asgeirsson
 -/
 import Mathlib.CategoryTheory.Monad.Limits
-import Mathlib.Topology.StoneCech
+import Mathlib.Topology.Compactification.StoneCech
 import Mathlib.Topology.UrysohnsLemma
 import Mathlib.Topology.Category.CompHausLike.Basic
 import Mathlib.Topology.Category.TopCat.Limits.Basic
@@ -159,7 +159,7 @@ def limitCone {J : Type v} [SmallCategory J] (F : J ⥤ CompHaus.{max v u}) : Li
       naturality := by
         intro _ _ f
         ext ⟨x, hx⟩
-        simp only [CategoryTheory.comp_apply, Functor.const_obj_map, CategoryTheory.id_apply]
+        simp only [Functor.const_obj_map]
         exact (hx f).symm } }
 
 /-- The limit cone `CompHaus.limitCone F` is indeed a limit cone. -/

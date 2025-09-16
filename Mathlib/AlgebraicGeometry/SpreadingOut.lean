@@ -62,7 +62,7 @@ lemma injective_germ_basicOpen (U : X.Opens) (hU : IsAffineOpen U)
     (H : Function.Injective (X.presheaf.germ U x hx)) :
     Function.Injective (X.presheaf.germ (X.basicOpen f) x hf) := by
   rw [RingHom.injective_iff_ker_eq_bot, RingHom.ker_eq_bot_iff_eq_zero] at H ⊢
-  intros t ht
+  intro t ht
   have := hU.isLocalization_basicOpen f
   obtain ⟨t, s, rfl⟩ := IsLocalization.mk'_surjective (.powers f) t
   rw [← RingHom.mem_ker, IsLocalization.mk'_eq_mul_mk'_one, Ideal.mul_unit_mem_iff_mem,
@@ -114,7 +114,7 @@ lemma isGermInjectiveAt_iff_of_isOpenImmersion {x : X} [IsOpenImmersion f] :
 The class of schemes such that for each `x : X`,
 `Γ(X, U) ⟶ X_x` is injective for some affine `U` containing `x`.
 
-This is typically satisfied when `X` is integral or locally noetherian.
+This is typically satisfied when `X` is integral or locally Noetherian.
 -/
 abbrev Scheme.IsGermInjective (X : Scheme.{u}) := ∀ x : X, X.IsGermInjectiveAt x
 
@@ -185,7 +185,7 @@ instance (priority := 100) [IsLocallyNoetherian X] : X.IsGermInjective := by
 /--
 Let `x : X` and `f g : X ⟶ Y` be two morphisms such that `f x = g x`.
 If `f` and `g` agree on the stalk of `x`, then they agree on an open neighborhood of `x`,
-provided `X` is "germ-injective" at `x` (e.g. when it's integral or locally noetherian).
+provided `X` is "germ-injective" at `x` (e.g. when it's integral or locally Noetherian).
 
 TODO: The condition on `X` is unnecessary when `Y` is locally of finite type.
 -/
@@ -316,7 +316,7 @@ Spec 𝒪_{X, x} ⟶ U ⊆ X
 Spec 𝒪_{Y, y} ⟶ Y
 ```
 provided that `Y` is locally of finite type over `S` and
-`X` is "germ-injective" at `x` (e.g. when it's integral or locally noetherian).
+`X` is "germ-injective" at `x` (e.g. when it's integral or locally Noetherian).
 
 TODO: The condition on `X` is unnecessary when `Y` is locally of finite presentation.
 -/
@@ -346,7 +346,7 @@ lemma spread_out_of_isGermInjective [LocallyOfFiniteType sY] {x : X} [X.IsGermIn
   · rw [W.fromSpecStalkOfMem_toSpecΓ_assoc x hxW, ← Spec.map_comp_assoc, ← h₁,
       Spec.map_comp, Category.assoc, ← IsAffineOpen.fromSpecStalk,
       IsAffineOpen.fromSpecStalk_eq_fromSpecStalk]
-  · simp only [Category.assoc, IsAffineOpen.isoSpec_inv_ι_assoc]
+  · simp only [Category.assoc]
     rw [← IsAffineOpen.Spec_map_appLE_fromSpec sY hU hV iVU, ← Spec.map_comp_assoc, ← h₂,
       ← Scheme.Hom.appLE, ← hW.isoSpec_hom, IsAffineOpen.Spec_map_appLE_fromSpec sX hU hW i,
       ← Iso.eq_inv_comp, IsAffineOpen.isoSpec_inv_ι_assoc]
@@ -355,7 +355,7 @@ lemma spread_out_of_isGermInjective [LocallyOfFiniteType sY] {x : X} [X.IsGermIn
 Given `S`-schemes `X Y`, a point `x : X`, and a `S`-morphism `φ : Spec 𝒪_{X, x} ⟶ Y`,
 we may spread it out to an `S`-morphism `f : U ⟶ Y`
 provided that `Y` is locally of finite type over `S` and
-`X` is "germ-injective" at `x` (e.g. when it's integral or locally noetherian).
+`X` is "germ-injective" at `x` (e.g. when it's integral or locally Noetherian).
 
 TODO: The condition on `X` is unnecessary when `Y` is locally of finite presentation.
 -/

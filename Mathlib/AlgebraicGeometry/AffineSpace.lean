@@ -93,9 +93,8 @@ def toSpecMvPolyIntEquiv : (X ⟶ Spec ℤ[n]) ≃ (n → Γ(X, ⊤)) where
     rfl
   right_inv v := by
     ext i
-    simp only [algebraMap_int_eq, RingEquiv.toRingHom_eq_coe, Scheme.comp_coeBase,
-      TopologicalSpace.Opens.map_comp_obj, TopologicalSpace.Opens.map_top, Scheme.comp_app,
-      Scheme.toSpecΓ_appTop, Scheme.ΓSpecIso_naturality, CommRingCat.comp_apply,
+    simp only [algebraMap_int_eq, RingEquiv.toRingHom_eq_coe, TopologicalSpace.Opens.map_top,
+      Scheme.comp_app, Scheme.toSpecΓ_appTop, Scheme.ΓSpecIso_naturality, CommRingCat.comp_apply,
       CommRingCat.coe_of]
     -- TODO: why does `simp` not apply this lemma?
     rw [CommRingCat.hom_inv_apply]
@@ -175,7 +174,7 @@ Also see `AffineSpace.SpecIso`.
 -/
 @[simps -isSimp hom inv]
 def isoOfIsAffine [IsAffine S] :
-    𝔸(n; S) ≅ Spec (.of (MvPolynomial n Γ(S, ⊤))) where
+    𝔸(n; S) ≅ Spec(MvPolynomial n Γ(S, ⊤)) where
       hom := 𝔸(n; S).toSpecΓ ≫ Spec.map (CommRingCat.ofHom
         (eval₂Hom ((𝔸(n; S) ↘ S).appTop).hom (coord S)))
       inv := homOfVector (Spec.map (CommRingCat.ofHom C) ≫ S.isoSpec.inv)
@@ -238,7 +237,7 @@ instance [IsAffine S] : IsAffine 𝔸(n; S) := .of_isIso (isoOfIsAffine n S).hom
 variable (n) in
 /-- The affine space over an affine base is isomorphic to the spectrum of the polynomial ring. -/
 def SpecIso (R : CommRingCat.{max u v}) :
-    𝔸(n; Spec R) ≅ Spec (.of (MvPolynomial n R)) :=
+    𝔸(n; Spec R) ≅ Spec(MvPolynomial n R) :=
   isoOfIsAffine _ _ ≪≫ Scheme.Spec.mapIso (MvPolynomial.mapEquiv _
     (Scheme.ΓSpecIso R).symm.commRingCatIsoToRingEquiv).toCommRingCatIso.op
 
@@ -248,8 +247,7 @@ lemma SpecIso_hom_appTop (R : CommRingCat.{max u v}) :
       CommRingCat.ofHom (eval₂Hom ((Scheme.ΓSpecIso _).inv ≫
         (𝔸(n; Spec R) ↘ Spec R).appTop).hom (coord (Spec R))) := by
   simp only [SpecIso, Iso.trans_hom, Functor.mapIso_hom, Iso.op_hom,
-    RingEquiv.toRingHom_eq_coe, Scheme.Spec_map, Quiver.Hom.unop_op, Scheme.comp_coeBase,
-    TopologicalSpace.Opens.map_comp_obj, TopologicalSpace.Opens.map_top, Scheme.comp_app,
+    Scheme.Spec_map, Quiver.Hom.unop_op, TopologicalSpace.Opens.map_top, Scheme.comp_app,
     isoOfIsAffine_hom_appTop, Scheme.ΓSpecIso_naturality_assoc]
   congr 1
   ext : 1
@@ -260,10 +258,8 @@ lemma SpecIso_hom_appTop (R : CommRingCat.{max u v}) :
 @[simp]
 lemma SpecIso_inv_appTop_coord (R : CommRingCat.{max u v}) (i) :
     (SpecIso n R).inv.appTop (coord _ i) = (Scheme.ΓSpecIso (.of _)).inv (.X i) := by
-  simp only [SpecIso, Iso.trans_inv, Functor.mapIso_inv, Iso.op_inv,
-    mapEquiv_symm, RingEquiv.toRingHom_eq_coe, Scheme.Spec_map, Quiver.Hom.unop_op,
-    Scheme.comp_coeBase, TopologicalSpace.Opens.map_comp_obj, TopologicalSpace.Opens.map_top,
-    Scheme.comp_app, CommRingCat.comp_apply]
+  simp only [SpecIso, Iso.trans_inv, Functor.mapIso_inv, Iso.op_inv, Scheme.Spec_map,
+    Quiver.Hom.unop_op, TopologicalSpace.Opens.map_top, Scheme.comp_app, CommRingCat.comp_apply]
   rw [isoOfIsAffine_inv_appTop_coord, ← CommRingCat.comp_apply, ← Scheme.ΓSpecIso_inv_naturality,
       CommRingCat.comp_apply]
   congr 1
@@ -272,9 +268,9 @@ lemma SpecIso_inv_appTop_coord (R : CommRingCat.{max u v}) (i) :
 @[reassoc (attr := simp)]
 lemma SpecIso_inv_over (R : CommRingCat.{max u v}) :
     (SpecIso n R).inv ≫ 𝔸(n; Spec R) ↘ Spec R = Spec.map (CommRingCat.ofHom C) := by
-  simp only [SpecIso, Iso.trans_inv, Functor.mapIso_inv, Iso.op_inv,
-    mapEquiv_symm, RingEquiv.toRingHom_eq_coe, Scheme.Spec_map, Quiver.Hom.unop_op, Category.assoc,
-    isoOfIsAffine_inv_over, Scheme.isoSpec_Spec_inv, ← Spec.map_comp]
+  simp only [SpecIso, Iso.trans_inv, Functor.mapIso_inv, Iso.op_inv, Scheme.Spec_map,
+    Quiver.Hom.unop_op, Category.assoc, isoOfIsAffine_inv_over, Scheme.isoSpec_Spec_inv,
+    ← Spec.map_comp]
   congr 1
   rw [Iso.inv_comp_eq]
   ext : 2
@@ -283,7 +279,7 @@ lemma SpecIso_inv_over (R : CommRingCat.{max u v}) :
 section functorial
 
 variable (n) in
-/-- `𝔸(n; S)` is functorial wrt `S`. -/
+/-- `𝔸(n; S)` is functorial w.r.t. `S`. -/
 def map {S T : Scheme.{max u v}} (f : S ⟶ T) : 𝔸(n; S) ⟶ 𝔸(n; T) :=
   homOfVector (𝔸(n; S) ↘ S ≫ f) (coord S)
 
@@ -323,8 +319,7 @@ lemma map_Spec_map {R S : CommRingCat.{max u v}} (φ : R ⟶ S) :
   · simp only [map_over, Category.assoc, SpecIso_inv_over, SpecIso_inv_over_assoc,
       ← Spec.map_comp, ← CommRingCat.ofHom_comp]
     rw [map_comp_C, CommRingCat.ofHom_comp, CommRingCat.ofHom_hom]
-  · simp only [Scheme.comp_coeBase, TopologicalSpace.Opens.map_comp_obj,
-      TopologicalSpace.Opens.map_top, Scheme.comp_app, CommRingCat.comp_apply]
+  · simp only [TopologicalSpace.Opens.map_top, Scheme.comp_app, CommRingCat.comp_apply]
     conv_lhs => enter[2]; tactic => exact map_appTop_coord _ _
     conv_rhs => enter[2]; tactic => exact SpecIso_inv_appTop_coord _ _
     rw [SpecIso_inv_appTop_coord, ← CommRingCat.comp_apply, ← Scheme.ΓSpecIso_inv_naturality,
@@ -344,7 +339,7 @@ lemma isPullback_map {S T : Scheme.{max u v}} (f : S ⟶ T) :
   convert (IsPullback.of_hasPullback _ _).flip
   rw [← toSpecMvPoly, ← toSpecMvPoly, map_toSpecMvPoly]
 
-/-- `𝔸(n; S)` is functorial wrt `n`. -/
+/-- `𝔸(n; S)` is functorial w.r.t. `n`. -/
 def reindex {n m : Type v} (i : m → n) (S : Scheme.{max u v}) : 𝔸(n; S) ⟶ 𝔸(m; S) :=
   homOfVector (𝔸(n; S) ↘ S) (coord S ∘ i)
 
@@ -365,7 +360,8 @@ lemma reindex_id : reindex id S = 𝟙 𝔸(n; S) := by
 @[simp, reassoc]
 lemma reindex_comp {n₁ n₂ n₃ : Type v} (i : n₁ → n₂) (j : n₂ → n₃) (S : Scheme.{max u v}) :
     reindex (j ∘ i) S = reindex j S ≫ reindex i S := by
-  have H₁ : reindex (j ∘ i) S ≫ 𝔸(n₁; S) ↘ S = (reindex j S ≫ reindex i S) ≫ 𝔸(n₁; S) ↘ S := by simp
+  have H₁ : reindex (j ∘ i) S ≫ 𝔸(n₁; S) ↘ S = (reindex j S ≫ reindex i S) ≫ 𝔸(n₁; S) ↘ S := by
+    simp
   have H₂ (k) : (reindex (j ∘ i) S).appTop (coord S k) =
       (reindex j S).appTop ((reindex i S).appTop (coord S k)) := by
     rw [reindex_appTop_coord, reindex_appTop_coord, reindex_appTop_coord]
@@ -460,6 +456,17 @@ lemma isIntegralHom_over_iff_isEmpty : IsIntegralHom (𝔸(n; S) ↘ S) ↔ IsEm
 
 lemma not_isIntegralHom [Nonempty S] [Nonempty n] : ¬ IsIntegralHom (𝔸(n; S) ↘ S) := by
   simp [isIntegralHom_over_iff_isEmpty]
+
+lemma spec_le_iff (R : CommRingCat) (p q : Spec R) : p ≤ q ↔ q.asIdeal ≤ p.asIdeal := by
+  aesop (add simp PrimeSpectrum.le_iff_specializes)
+
+/--
+One should bear this equality in mind when breaking the `Spec R/ PrimeSpectrum R` abstraction
+boundary, since these instances are not definitionally equal.
+-/
+example (R : CommRingCat) :
+    inferInstance (α := Preorder (Spec R)) = inferInstance (α := Preorder (PrimeSpectrum R)ᵒᵈ) := by
+  aesop (add simp spec_le_iff)
 
 end instances
 

@@ -291,7 +291,7 @@ theorem zero_mem_tangentCone {s : Set E} {x : E} (hx : x ∈ closure s) :
         simp only [c, norm_smul, norm_pow, pow_succ, norm_mul, d, ← dist_eq_norm']
         gcongr
         exacts [hm_le n, (hvu n).le]
-      _ = ‖r‖ * u n := by field_simp [mul_assoc]
+      _ = ‖r‖ * u n := by field_simp
   refine squeeze_zero_norm Hle ?_
   simpa using tendsto_const_nhds.mul u_lim
 
@@ -336,8 +336,7 @@ theorem tangentConeAt_nonempty_of_properSpace [ProperSpace E]
   have c_lim : Tendsto (fun n ↦ ‖c n‖) atTop atTop := by
     suffices Tendsto (fun n ↦ ‖c n‖⁻¹ ⁻¹ ) atTop atTop by simpa
     apply tendsto_inv_nhdsGT_zero.comp
-    simp only [nhdsWithin, tendsto_inf, tendsto_principal, mem_Ioi, norm_pos_iff, ne_eq,
-      eventually_atTop, ge_iff_le]
+    simp only [nhdsWithin, tendsto_inf, tendsto_principal, mem_Ioi, eventually_atTop, ge_iff_le]
     have B (n : ℕ) : ‖c n‖⁻¹ ≤ 1⁻¹ * ‖r‖ * u n := by
       apply (hc n).trans
       gcongr
@@ -436,7 +435,8 @@ theorem UniqueDiffWithinAt.congr_pt (h : UniqueDiffWithinAt 𝕜 s x) (hy : x = 
 end TVS
 
 section Normed
-variable [NormedAddCommGroup E] [NormedSpace 𝕜 E]
+variable {𝕜' : Type*} [NontriviallyNormedField 𝕜'] [NormedAlgebra 𝕜 𝕜']
+variable [NormedAddCommGroup E] [NormedSpace 𝕜 E] [NormedSpace 𝕜' E] [IsScalarTower 𝕜 𝕜' E]
 variable [NormedAddCommGroup F] [NormedSpace 𝕜 F]
 variable {x y : E} {s t : Set E}
 
@@ -514,7 +514,7 @@ theorem UniqueDiffWithinAt.univ_pi (ι : Type*) [Finite ι] (E : ι → Type*)
   refine ⟨(dense_pi univ fun i _ => (h i).1).mono ?_, fun i _ => (h i).2⟩
   norm_cast
   simp only [← Submodule.iSup_map_single, iSup_le_iff, LinearMap.map_span, Submodule.span_le,
-    ← mapsTo']
+    ← mapsTo_iff_image_subset]
   exact fun i => (mapsTo_tangentConeAt_pi fun j _ => (h j).2).mono Subset.rfl Submodule.subset_span
 
 theorem UniqueDiffWithinAt.pi (ι : Type*) [Finite ι] (E : ι → Type*)
@@ -544,6 +544,46 @@ theorem UniqueDiffOn.univ_pi (ι : Type*) [Finite ι] (E : ι → Type*)
     [∀ i, NormedAddCommGroup (E i)] [∀ i, NormedSpace 𝕜 (E i)] (s : ∀ i, Set (E i))
     (h : ∀ i, UniqueDiffOn 𝕜 (s i)) : UniqueDiffOn 𝕜 (Set.pi univ s) :=
   UniqueDiffOn.pi _ _ _ _ fun i _ => h i
+
+/--
+Given `x ∈ s` and a field extension `𝕜 ⊆ 𝕜'`, the tangent cone of `s` at `x` with
+respect to `𝕜` is contained in the tangent cone of `s` at `x` with respect to `𝕜'`.
+-/
+theorem tangentConeAt_mono_field : tangentConeAt 𝕜 s x ⊆ tangentConeAt 𝕜' s x := by
+  intro α hα
+  simp only [tangentConeAt, eventually_atTop, ge_iff_le, tendsto_norm_atTop_iff_cobounded,
+    mem_setOf_eq] at hα ⊢
+  obtain ⟨c, d, ⟨a, h₁a⟩, h₁, h₂⟩ := hα
+  use ((algebraMap 𝕜 𝕜') ∘ c), d
+  constructor
+  · use a
+  · constructor
+    · intro β hβ
+      rw [mem_map, mem_atTop_sets]
+      obtain ⟨n, hn⟩ := mem_atTop_sets.1
+        (mem_map.1 (h₁ (algebraMap_cobounded_le_cobounded (𝕜 := 𝕜) (𝕜' := 𝕜') hβ)))
+      use n, fun _ _ ↦ by simp_all
+    · simpa
+
+/--
+Assume that `E` is a normed vector space over normed fields `𝕜 ⊆ 𝕜'` and that `x ∈ s` is a point
+of unique differentiability with respect to the set `s` and the smaller field `𝕜`, then `x` is also
+a point of unique differentiability with respect to the set `s` and the larger field `𝕜'`.
+-/
+theorem UniqueDiffWithinAt.mono_field (h₂s : UniqueDiffWithinAt 𝕜 s x) :
+    UniqueDiffWithinAt 𝕜' s x := by
+  simp_all only [uniqueDiffWithinAt_iff, and_true]
+  apply Dense.mono _ h₂s.1
+  trans ↑(Submodule.span 𝕜 (tangentConeAt 𝕜' s x))
+  <;> simp [Submodule.span_mono tangentConeAt_mono_field]
+
+/--
+Assume that `E` is a normed vector space over normed fields `𝕜 ⊆ 𝕜'` and all points of `s` are
+points of unique differentiability with respect to the smaller field `𝕜`, then they are also points
+of unique differentiability with respect to the larger field `𝕜`.
+-/
+theorem UniqueDiffOn.mono_field (h₂s : UniqueDiffOn 𝕜 s) :
+    UniqueDiffOn 𝕜' s := fun x hx ↦ (h₂s x hx).mono_field
 
 end Normed
 
@@ -617,6 +657,12 @@ theorem uniqueDiffWithinAt_Ioi (a : ℝ) : UniqueDiffWithinAt ℝ (Ioi a) a :=
 
 theorem uniqueDiffWithinAt_Iio (a : ℝ) : UniqueDiffWithinAt ℝ (Iio a) a :=
   uniqueDiffWithinAt_convex (convex_Iio a) (by simp) (by simp)
+
+theorem uniqueDiffWithinAt_Ici (x : ℝ) : UniqueDiffWithinAt ℝ (Ici x) x :=
+  (uniqueDiffWithinAt_Ioi x).mono Set.Ioi_subset_Ici_self
+
+theorem uniqueDiffWithinAt_Iic (x : ℝ) : UniqueDiffWithinAt ℝ (Iic x) x :=
+  (uniqueDiffWithinAt_Iio x).mono Set.Iio_subset_Iic_self
 
 /-- In one dimension, a point is a point of unique differentiability of a set
 iff it is an accumulation point of the set. -/

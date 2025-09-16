@@ -81,17 +81,15 @@ theorem isLocallyFraction_pred {U : Opens (PrimeSpectrum.Top R)}
   rfl
 
 /- M_x is an O_SpecR(U)-module when x is in U -/
-noncomputable instance (U : (Opens (PrimeSpectrum.Top R))ᵒᵖ) (x : U.unop):
+noncomputable instance (U : (Opens (PrimeSpectrum.Top R))ᵒᵖ) (x : U.unop) :
     Module ((Spec.structureSheaf R).val.obj U) (Localizations M x):=
   Module.compHom (R := (Localization.AtPrime x.1.asIdeal)) _
     ((StructureSheaf.openToLocalization R U.unop x x.2).hom)
 
 @[simp]
-lemma sections_smul_localizations_def
-    {U : (Opens (PrimeSpectrum.Top R))ᵒᵖ} (x : U.unop)
-    (r : (Spec.structureSheaf R).val.obj U)
-    (m : Localizations M ↑x) :
-  r • m = r.1 x • m := rfl
+lemma sections_smul_localizations_def {U : (Opens (PrimeSpectrum.Top R))ᵒᵖ} (x : U.unop)
+    (r : (Spec.structureSheaf R).val.obj U) (m : Localizations M ↑x) :
+    r • m = r.1 x • m := rfl
 
 /--
 For any `R`-module `M` and any open subset `U ⊆ Spec R`, `M^~(U)` is an `𝒪_{Spec R}(U)`-submodule
@@ -105,7 +103,7 @@ noncomputable def sectionsSubmodule (U : (Opens (PrimeSpectrum R))ᵒᵖ) :
     intro a b ha hb x
     rcases ha x with ⟨Va, ma, ia, ra, sa, wa⟩
     rcases hb x with ⟨Vb, mb, ib, rb, sb, wb⟩
-    refine ⟨Va ⊓ Vb, ⟨ma, mb⟩, Opens.infLELeft _ _ ≫ ia, sb• ra+ sa•rb , sa * sb, ?_⟩
+    refine ⟨Va ⊓ Vb, ⟨ma, mb⟩, Opens.infLELeft _ _ ≫ ia, sb • ra + sa • rb, sa * sb, ?_⟩
     intro y
     rcases wa (Opens.infLELeft _ _ y : Va) with ⟨nma, wa⟩
     rcases wb (Opens.infLERight _ _ y : Vb) with ⟨nmb, wb⟩
@@ -120,13 +118,13 @@ noncomputable def sectionsSubmodule (U : (Opens (PrimeSpectrum R))ᵒᵖ) :
     intro r a ha x
     rcases ha x with ⟨Va, ma, ia, ra, sa, wa⟩
     rcases r.2 x with ⟨Vr, mr, ir, rr, sr, wr⟩
-    refine ⟨Va ⊓ Vr, ⟨ma, mr⟩, Opens.infLELeft _ _ ≫ ia, rr•ra, sr*sa, ?_⟩
+    refine ⟨Va ⊓ Vr, ⟨ma, mr⟩, Opens.infLELeft _ _ ≫ ia, rr • ra, sr * sa, ?_⟩
     intro y
     rcases wa (Opens.infLELeft _ _ y : Va) with ⟨nma, wa⟩
     rcases wr (Opens.infLERight _ _ y) with ⟨nmr, wr⟩
     fconstructor
     · intro H; cases y.1.isPrime.mem_or_mem H <;> contradiction
-    · simp only [Opens.coe_inf, Pi.smul_apply, LinearMapClass.map_smul, Opens.apply_def] at wa wr ⊢
+    · simp only [Pi.smul_apply, LinearMapClass.map_smul, Opens.apply_def] at wa wr ⊢
       rw [mul_comm, ← Algebra.smul_def] at wr
       rw [sections_smul_localizations_def, ← wa, ← mul_smul, ← smul_assoc, mul_comm sr, mul_smul,
         wr, mul_comm rr, Algebra.smul_def, ← map_mul]
@@ -148,20 +146,20 @@ noncomputable instance (U : (Opens (PrimeSpectrum.Top R))ᵒᵖ) :
   inferInstanceAs <| AddCommGroup (Tilde.sectionsSubmodule M U)
 
 noncomputable instance (U : (Opens (PrimeSpectrum.Top R))ᵒᵖ) :
-    Module ((Spec (.of R)).ringCatSheaf.1.obj U) (M.tildeInType.1.obj U) :=
+    Module (Spec(R).ringCatSheaf.1.obj U) (M.tildeInType.1.obj U) :=
   inferInstanceAs <| Module _ (Tilde.sectionsSubmodule M U)
 
 /--
 `M^~` as a sheaf of `𝒪_{Spec R}`-modules
 -/
-noncomputable def tilde : (Spec (CommRingCat.of R)).Modules where
+noncomputable def tilde : Spec(R).Modules where
   val :=
     { obj := fun U ↦ ModuleCat.of _ (M.tildeInType.val.obj U)
       map := fun {U V} i ↦ ofHom
         -- TODO: after https://github.com/leanprover-community/mathlib4/pull/19511 we need to hint `(Y := ...)`
         -- This suggests `restrictScalars` needs to be redesigned.
-        (Y := (restrictScalars ((Spec (CommRingCat.of R)).ringCatSheaf.val.map i).hom).obj
-          (of ((Spec (CommRingCat.of R)).ringCatSheaf.val.obj V) (M.tildeInType.val.obj V)))
+        (Y := (restrictScalars (Spec(R).ringCatSheaf.val.map i).hom).obj
+          (of (Spec(R).ringCatSheaf.val.obj V) (M.tildeInType.val.obj V)))
         { toFun := M.tildeInType.val.map i
           map_smul' := by intros; rfl
           map_add' := by intros; rfl } }
@@ -186,7 +184,7 @@ theorem res_apply (U V : Opens (PrimeSpectrum.Top R)) (i : V ⟶ U)
   rfl
 
 lemma smul_section_apply (r : R) (U : Opens (PrimeSpectrum.Top R))
-    (s : (tildeInModuleCat M).1.obj (op U)) (x : U) :
+    (s : (tildeInModuleCat M).obj (op U)) (x : U) :
     (r • s).1 x = r • (s.1 x) := rfl
 
 lemma smul_stalk_no_nonzero_divisor {x : PrimeSpectrum R}
@@ -203,10 +201,10 @@ If `U` is an open subset of `Spec R`, this is the morphism of `R`-modules from `
 `M^~(U)`.
 -/
 noncomputable def toOpen (U : Opens (PrimeSpectrum.Top R)) :
-    ModuleCat.of R M ⟶ (tildeInModuleCat M).1.obj (op U) :=
+    ModuleCat.of R M ⟶ (tildeInModuleCat M).obj (op U) :=
   -- TODO: after https://github.com/leanprover-community/mathlib4/pull/19511 we need to hint `(Y := ...)`
   -- This suggests `restrictScalars` needs to be redesigned.
-  ModuleCat.ofHom (Y := (tildeInModuleCat M).1.obj (op U))
+  ModuleCat.ofHom (Y := (tildeInModuleCat M).obj (op U))
   { toFun := fun f =>
     ⟨fun x ↦ LocalizedModule.mkLinearMap _ _ f, fun x ↦
       ⟨U, x.2, 𝟙 _, f, 1, fun y ↦ ⟨(Ideal.ne_top_iff_one _).1 y.1.2.1, by simp⟩⟩⟩
@@ -248,7 +246,7 @@ lemma isUnit_toStalk (x : PrimeSpectrum.Top R) (r : x.asIdeal.primeCompl) :
   refine ⟨V ⊓ O, ⟨mem_V, q.2⟩, homOfLE inf_le_right, num, r * den, fun y ↦ ?_⟩
   obtain ⟨h1, h2⟩ := hV ⟨y, y.2.1⟩
   refine ⟨y.1.asIdeal.primeCompl.mul_mem y.2.2.2 h1, ?_⟩
-  simp only [Opens.coe_inf, Opens.apply_def, isLocallyFraction_pred, mkLinearMap_apply,
+  simp only [Opens.apply_def, isLocallyFraction_pred, mkLinearMap_apply,
     smul_eq_iff_of_mem (S := y.1.1.primeCompl) (hr := h1), mk_smul_mk, one_smul, mul_one] at h2 ⊢
   simpa only [h2, mk_smul_mk, one_smul, smul'_mk, mk_eq] using ⟨1, by simp only [one_smul]; rfl⟩
 
@@ -298,7 +296,7 @@ theorem germ_comp_stalkToFiberLinearMap (U : Opens (PrimeSpectrum.Top R)) (x) (h
 
 @[simp]
 theorem stalkToFiberLinearMap_germ (U : Opens (PrimeSpectrum.Top R)) (x : PrimeSpectrum.Top R)
-    (hx : x ∈ U) (s : (tildeInModuleCat M).1.obj (op U)) :
+    (hx : x ∈ U) (s : (tildeInModuleCat M).obj (op U)) :
     (stalkToFiberLinearMap M x).hom
       (TopCat.Presheaf.germ (tildeInModuleCat M) U x hx s) = (s.1 ⟨x, hx⟩ :) :=
   DFunLike.ext_iff.1 (ModuleCat.hom_ext_iff.mp (germ_comp_stalkToFiberLinearMap M U x hx)) s

@@ -75,7 +75,7 @@ lemma essFiniteType_cond_iff (σ : Finset S) :
     · intro s
       obtain ⟨t, ht, ht', h⟩ := hσ s
       exact ⟨⟨⟨_, h⟩, ⟨t, ht⟩, ht'⟩, rfl⟩
-    · intros x y e
+    · intro x y e
       exact ⟨1, by simpa using Subtype.ext e⟩
 
 lemma essFiniteType_iff :
@@ -95,7 +95,7 @@ lemma EssFiniteType.of_isLocalization (M : Submonoid R) [IsLocalization M S] :
     EssFiniteType R S := by
   rw [essFiniteType_iff]
   use ∅
-  simp only [Finset.coe_empty, Algebra.adjoin_empty, exists_and_left, Algebra.mem_bot,
+  simp only [Finset.coe_empty, Algebra.adjoin_empty, Algebra.mem_bot,
     Set.mem_range, exists_exists_eq_and]
   intro s
   obtain ⟨⟨x, t⟩, e⟩ := IsLocalization.surj M s
@@ -165,7 +165,7 @@ instance EssFiniteType.baseChange [h : EssFiniteType R S] : EssFiniteType T (T �
   use σ.image Algebra.TensorProduct.includeRight
   intro s
   induction s using TensorProduct.induction_on with
-  | zero => exact ⟨1, one_mem _, isUnit_one, by simpa using zero_mem _⟩
+  | zero => exact ⟨1, one_mem _, isUnit_one, by simp⟩
   | tmul x y =>
     obtain ⟨t, h₁, h₂, h₃⟩ := hσ y
     have H (x : S) (hx : x ∈ Algebra.adjoin R (σ : Set S)) :
@@ -221,13 +221,7 @@ lemma EssFiniteType.algHom_ext [EssFiniteType R S]
   suffices f.comp (IsScalarTower.toAlgHom R _ S) = g.comp (IsScalarTower.toAlgHom R _ S) by
     ext; exact AlgHom.congr_fun this _
   apply AlgHom.ext_of_adjoin_eq_top (s := { x | x.1 ∈ finset R S })
-  · rw [← top_le_iff]
-    rintro ⟨x, hx⟩ _
-    refine Algebra.adjoin_induction ?_ ?_ ?_ ?_ hx
-    · intro x hx; exact Algebra.subset_adjoin hx
-    · intro r; exact Subalgebra.algebraMap_mem _ _
-    · intro x y _ _ hx hy; exact add_mem hx hy
-    · intro x y _ _ hx hy; exact mul_mem hx hy
+  · exact adjoin_mem_finset R S
   · rintro ⟨x, hx⟩ hx'; exact H x hx'
 
 end Algebra

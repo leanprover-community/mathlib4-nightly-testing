@@ -77,7 +77,7 @@ lemma IsGreatest.norm_cfc [Nontrivial A] (f : 𝕜 → 𝕜) (a : A)
 lemma IsGreatest.nnnorm_cfc [Nontrivial A] (f : 𝕜 → 𝕜) (a : A)
     (hf : ContinuousOn f (σ 𝕜 a) := by cfc_cont_tac) (ha : p a := by cfc_tac) :
     IsGreatest ((fun x ↦ ‖f x‖₊) '' σ 𝕜 a) ‖cfc f a‖₊ := by
-  convert Real.toNNReal_mono.map_isGreatest (.norm_cfc f a)
+  convert Real.toNNReal_monotone.map_isGreatest (.norm_cfc f a)
   all_goals simp [Set.image_image, norm_toNNReal]
 
 lemma norm_apply_le_norm_cfc (f : 𝕜 → 𝕜) (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σ 𝕜 a)
@@ -179,10 +179,6 @@ protected theorem isometric_cfc (f : C(S, R)) (halg : Isometry (algebraMap R S))
   toContinuousFunctionalCalculus := SpectrumRestricts.cfc f halg.isUniformEmbedding h0 h
   isometric a ha := by
     obtain ⟨ha', haf⟩ := h a |>.mp ha
-    have _inst (a : A) : CompactSpace (σ R a) := by
-      rw [← isCompact_iff_compactSpace, ← spectrum.preimage_algebraMap S]
-      exact halg.isClosedEmbedding.isCompact_preimage <|
-        ContinuousFunctionalCalculus.isCompact_spectrum a
     have := SpectrumRestricts.cfc f halg.isUniformEmbedding h0 h
     rw [cfcHom_eq_restrict f halg.isUniformEmbedding ha ha' haf]
     refine .of_dist_eq fun g₁ g₂ ↦ ?_
@@ -268,7 +264,7 @@ lemma IsGreatest.norm_cfcₙ (f : 𝕜 → 𝕜) (a : A)
 lemma IsGreatest.nnnorm_cfcₙ (f : 𝕜 → 𝕜) (a : A)
     (hf : ContinuousOn f (σₙ 𝕜 a) := by cfc_cont_tac) (hf₀ : f 0 = 0 := by cfc_zero_tac)
     (ha : p a := by cfc_tac) : IsGreatest ((fun x ↦ ‖f x‖₊) '' σₙ 𝕜 a) ‖cfcₙ f a‖₊ := by
-  convert Real.toNNReal_mono.map_isGreatest (.norm_cfcₙ f a)
+  convert Real.toNNReal_monotone.map_isGreatest (.norm_cfcₙ f a)
   all_goals simp [Set.image_image, norm_toNNReal]
 
 lemma norm_apply_le_norm_cfcₙ (f : 𝕜 → 𝕜) (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σₙ 𝕜 a)
@@ -371,10 +367,6 @@ protected theorem isometric_cfc (f : C(S, R)) (halg : Isometry (algebraMap R S))
     halg.isUniformEmbedding h0 h
   isometric a ha := by
     obtain ⟨ha', haf⟩ := h a |>.mp ha
-    have _inst (a : A) : CompactSpace (σₙ R a) := by
-      rw [← isCompact_iff_compactSpace, ← quasispectrum.preimage_algebraMap S]
-      exact halg.isClosedEmbedding.isCompact_preimage <|
-        NonUnitalContinuousFunctionalCalculus.isCompact_quasispectrum a
     have := QuasispectrumRestricts.cfc f halg.isUniformEmbedding h0 h
     rw [cfcₙHom_eq_restrict f halg.isUniformEmbedding ha ha' haf]
     refine .of_dist_eq fun g₁ g₂ ↦ ?_
@@ -610,8 +602,7 @@ instance toNonUnital : NonUnitalIsometricContinuousFunctionalCalculus 𝕜 A p w
       exact h_cpct |>.union isCompact_singleton
     rw [cfcₙHom_eq_cfcₙHom_of_cfcHom, cfcₙHom_of_cfcHom]
     refine isometry_cfcHom a |>.comp ?_
-    simp only [MulHom.coe_coe, NonUnitalStarAlgHom.coe_toNonUnitalAlgHom,
-      NonUnitalStarAlgHom.coe_coe]
+    simp only [MulHom.coe_coe, NonUnitalStarAlgHom.coe_toNonUnitalAlgHom]
     refine AddMonoidHomClass.isometry_of_norm _ fun f ↦ ?_
     let ι : C(σ 𝕜 a, σₙ 𝕜 a) := ⟨_, continuous_inclusion <| spectrum_subset_quasispectrum 𝕜 a⟩
     change ‖(f : C(σₙ 𝕜 a, 𝕜)).comp ι‖ = ‖(f : C(σₙ 𝕜 a, 𝕜))‖

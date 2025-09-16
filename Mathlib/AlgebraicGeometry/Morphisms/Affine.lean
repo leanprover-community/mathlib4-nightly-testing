@@ -62,7 +62,7 @@ instance (priority := 900) [IsAffineHom f] : QuasiCompact f :=
 
 instance [IsAffineHom f] [IsAffineHom g] : IsAffineHom (f ≫ g) := by
   constructor
-  intros U hU
+  intro U hU
   rw [Scheme.comp_base, Opens.map_comp_obj]
   apply IsAffineHom.isAffine_preimage
   apply IsAffineHom.isAffine_preimage
@@ -75,7 +75,7 @@ instance : MorphismProperty.IsMultiplicative @IsAffineHom where
 instance {X : Scheme} (r : Γ(X, ⊤)) :
     IsAffineHom (X.basicOpen r).ι := by
   constructor
-  intros U hU
+  intro U hU
   fapply (Scheme.Hom.isAffineOpen_iff_of_isOpenImmersion (X.basicOpen r).ι).mp
   convert hU.basicOpen (X.presheaf.map (homOfLE le_top).op r)
   rw [X.basicOpen_res]
@@ -87,7 +87,7 @@ lemma isAffineOpen_of_isAffineOpen_basicOpen_aux (s : Set Γ(X, ⊤))
     (hs : Ideal.span s = ⊤) (hs₂ : ∀ i ∈ s, IsAffineOpen (X.basicOpen i)) :
     QuasiSeparatedSpace X := by
   rw [quasiSeparatedSpace_iff_affine]
-  intros U V
+  intro U V
   obtain ⟨s', hs', e⟩ := (Ideal.span_eq_top_iff_finite _).mp hs
   rw [← Set.inter_univ (_ ∩ _), ← Opens.coe_top, ← iSup_basicOpen_of_span_eq_top _ _ e,
     ← iSup_subtype'', Opens.coe_iSup, Set.inter_iUnion]
@@ -120,8 +120,7 @@ lemma isAffine_of_isAffineOpen_basicOpen (s : Set Γ(X, ⊤))
   · rw [PrimeSpectrum.iSup_basicOpen_eq_top_iff, Subtype.range_coe_subtype, Set.setOf_mem_eq, hs]
   · rw [Scheme.toSpecΓ_preimage_basicOpen]
     exact hs₂ _ i.2
-  · simp only [Functor.comp_obj, Functor.rightOp_obj, Scheme.Γ_obj, Scheme.Spec_obj, id_eq,
-      eq_mpr_eq_cast, Functor.id_obj, Opens.map_top, morphismRestrict_app]
+  · simp only [Opens.map_top, morphismRestrict_app]
     refine IsIso.comp_isIso' ?_ inferInstance
     convert isIso_ΓSpec_adjunction_unit_app_basicOpen i.1 using 0
     refine congr(IsIso ((ΓSpec.adjunction.unit.app X).app $(?_)))

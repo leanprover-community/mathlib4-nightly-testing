@@ -10,11 +10,11 @@ import Mathlib.RingTheory.Smooth.Kaehler
 import Mathlib.RingTheory.Flat.Localization
 
 /-!
-# The differential module and etale algebras
+# The differential module and étale algebras
 
 ## Main results
 - `KaehlerDifferential.tensorKaehlerEquivOfFormallyEtale`:
-  The canonical isomorphism `T ⊗[S] Ω[S⁄R] ≃ₗ[T] Ω[T⁄R]` for `T` a formally etale `S`-algebra.
+  The canonical isomorphism `T ⊗[S] Ω[S⁄R] ≃ₗ[T] Ω[T⁄R]` for `T` a formally étale `S`-algebra.
 - `Algebra.tensorH1CotangentOfIsLocalization`:
   The canonical isomorphism `T ⊗[S] H¹(L_{S⁄R}) ≃ₗ[T] H¹(L_{T⁄R})` for `T` a localization of `S`.
 -/
@@ -27,7 +27,7 @@ variable [Algebra R S] [Algebra R T] [Algebra S T] [IsScalarTower R S T]
 open TensorProduct
 
 /--
-The canonical isomorphism `T ⊗[S] Ω[S⁄R] ≃ₗ[T] Ω[T⁄R]` for `T` a formally etale `S`-algebra.
+The canonical isomorphism `T ⊗[S] Ω[S⁄R] ≃ₗ[T] Ω[T⁄R]` for `T` a formally étale `S`-algebra.
 Also see `S ⊗[R] Ω[A⁄R] ≃ₗ[S] Ω[S ⊗[R] A⁄S]` at `KaehlerDifferential.tensorKaehlerEquiv`.
 -/
 @[simps! apply] noncomputable
@@ -36,7 +36,7 @@ def KaehlerDifferential.tensorKaehlerEquivOfFormallyEtale [Algebra.FormallyEtale
   refine LinearEquiv.ofBijective (mapBaseChange R S T)
     ⟨?_, fun x ↦ (KaehlerDifferential.exact_mapBaseChange_map R S T x).mp (Subsingleton.elim _ _)⟩
   rw [injective_iff_map_eq_zero]
-  intros x hx
+  intro x hx
   obtain ⟨x, rfl⟩ := (Algebra.H1Cotangent.exact_δ_mapBaseChange R S T x).mp hx
   rw [Subsingleton.elim x 0, map_zero]
 
@@ -79,7 +79,7 @@ Suppose we have a morphism of extensions of `R`-algebras
 -/
 variable {P : Extension.{u} R S} {Q : Extension.{u} R T} (f : P.Hom Q)
 
-/-- If `P → Q` is formally etale, then `T ⊗ₛ (S ⊗ₚ Ω[P/R]) ≃ T ⊗_Q Ω[Q/R]`. -/
+/-- If `P → Q` is formally étale, then `T ⊗ₛ (S ⊗ₚ Ω[P/R]) ≃ T ⊗_Q Ω[Q/R]`. -/
 noncomputable
 def tensorCotangentSpace
     (H : f.toRingHom.FormallyEtale) :
@@ -159,7 +159,7 @@ def tensorCotangentInvFun
       simp only [LinearEquiv.map_add, Submodule.coe_add, add_smul, zero_add, *]
     | tmul a b =>
       induction y with
-      | zero => simp only [LinearEquiv.map_zero, LinearMap.map_zero, smul_zero]
+      | zero => simp only [LinearMap.map_zero, smul_zero]
       | add x y hx hy => simp only [LinearMap.map_add, smul_add, hx, hy, zero_add]
       | tmul c d =>
         simp only [LinearMap.liftBaseChange_tmul, LinearMap.coe_comp, SetLike.val_smul,
@@ -203,7 +203,7 @@ def tensorCotangent [alg : Algebra P.Ring Q.Ring] (halg : algebraMap P.Ring Q.Ri
         obtain ⟨b, rfl⟩ := Cotangent.mk_surjective b
         obtain ⟨a, rfl⟩ := Q.algebraMap_surjective a
         simp only [LinearMap.liftBaseChange_tmul, Cotangent.map_mk, Hom.toAlgHom_apply,
-          algebraMap_smul, map_smul]
+          algebraMap_smul]
         refine (tensorCotangentInvFun_smul_mk f halg H a b).trans ?_
         simp [algebraMap_eq_smul_one, TensorProduct.smul_tmul']
     right_inv x := by
@@ -217,7 +217,7 @@ def tensorCotangent [alg : Algebra P.Ring Q.Ring] (halg : algebraMap P.Ring Q.Ri
         simp only [LinearMap.liftBaseChange_tmul, map_smul]
         simp [Hom.mapKer, tensorCotangentInvFun_smul_mk] }
 
-/-- If `J ≃ Q ⊗ₚ I`, `S → T` is flat and `P → Q` is formally etale, then `T ⊗ H¹(L_P) ≃ H¹(L_Q)`. -/
+/-- If `J ≃ Q ⊗ₚ I`, `S → T` is flat and `P → Q` is formally étale, then `T ⊗ H¹(L_P) ≃ H¹(L_Q)`. -/
 noncomputable
 def tensorH1Cotangent [alg : Algebra P.Ring Q.Ring] (halg : algebraMap P.Ring Q.Ring = f.toRingHom)
     [Module.Flat S T]
@@ -333,7 +333,7 @@ lemma tensorH1CotangentOfIsLocalization_toLinearMap
     LinearEquiv.coe_coe, LinearMap.liftBaseChange_tmul, one_smul]
   simp only [tensorH1CotangentOfIsLocalization, Generators.toExtension_Ring,
     Generators.toExtension_commRing, Generators.toExtension_algebra₂,
-    AlgHom.toRingHom_eq_coe, Extension.tensorH1Cotangent,
+    Extension.tensorH1Cotangent,
     LinearEquiv.ofBijective_apply, LinearMap.liftBaseChange_tmul, one_smul,
     Extension.equivH1CotangentOfFormallySmooth, LinearEquiv.trans_apply]
   letI P : Extension R S := (Generators.self R S).toExtension

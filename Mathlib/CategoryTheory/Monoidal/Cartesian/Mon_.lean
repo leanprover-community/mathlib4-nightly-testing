@@ -10,46 +10,87 @@ import Mathlib.CategoryTheory.Monoidal.Mon_
 /-!
 # Yoneda embedding of `Mon_ C`
 
-We show that monoid objects in cartesian monoidal categories are exactly those whose yoneda presheaf
+We show that monoid objects in Cartesian monoidal categories are exactly those whose yoneda presheaf
 is a presheaf of monoids, by constructing the yoneda embedding `Mon_ C ⥤ Cᵒᵖ ⥤ MonCat.{v}` and
 showing that it is fully faithful and its (essential) image is the representable functors.
 -/
 
-open CategoryTheory MonoidalCategory Limits Opposite CartesianMonoidalCategory Mon_Class
+open CategoryTheory MonoidalCategory Limits Opposite CartesianMonoidalCategory MonObj
 
 universe w v u
 variable {C : Type u} [Category.{v} C] [CartesianMonoidalCategory C]
-  {M N X Y : C} [Mon_Class M] [Mon_Class N]
+  {M N O X Y : C} [MonObj M] [MonObj N] [MonObj O]
 
-namespace Mon_Class
+namespace MonObj
 
-theorem lift_lift_assoc {A : C} {B : C} [Mon_Class B] (f g h : A ⟶ B) :
+instance : IsMon_Hom (toUnit M) where
+
+instance : IsMon_Hom η[M] where
+  mul_hom := by simp [toUnit_unique (ρ_ (𝟙_ C)).hom (λ_ (𝟙_ C)).hom]
+
+theorem lift_lift_assoc {A : C} {B : C} [MonObj B] (f g h : A ⟶ B) :
     lift (lift f g ≫ μ) h ≫ μ = lift f (lift g h ≫ μ) ≫ μ := by
   have := lift (lift f g) h ≫= mul_assoc B
   rwa [lift_whiskerRight_assoc, lift_lift_associator_hom_assoc, lift_whiskerLeft_assoc] at this
 
 @[reassoc (attr := simp)]
-theorem lift_comp_one_left {A : C} {B : C} [Mon_Class B] (f : A ⟶ 𝟙_ C) (g : A ⟶ B) :
+theorem lift_comp_one_left {A : C} {B : C} [MonObj B] (f : A ⟶ 𝟙_ C) (g : A ⟶ B) :
     lift (f ≫ η) g ≫ μ = g := by
   have := lift f g ≫= one_mul B
   rwa [lift_whiskerRight_assoc, lift_leftUnitor_hom] at this
 
 @[reassoc (attr := simp)]
-theorem lift_comp_one_right {A : C} {B : C} [Mon_Class B] (f : A ⟶ B) (g : A ⟶ 𝟙_ C) :
+theorem lift_comp_one_right {A : C} {B : C} [MonObj B] (f : A ⟶ B) (g : A ⟶ 𝟙_ C) :
     lift f (g ≫ η) ≫ μ = f := by
   have := lift f g ≫= mul_one B
   rwa [lift_whiskerLeft_assoc, lift_rightUnitor_hom] at this
 
-end Mon_Class
+variable [BraidedCategory C]
+
+attribute [local simp] tensorObj.one_def tensorObj.mul_def
+
+instance : IsMon_Hom (fst M N) where
+instance : IsMon_Hom (snd M N) where
+
+instance foo {f : M ⟶ N} {g : M ⟶ O} [IsMon_Hom f] [IsMon_Hom g] : IsMon_Hom (lift f g) where
+  mul_hom := by ext <;> simp [← tensor_comp_assoc]
+
+instance [IsCommMonObj M] : IsMon_Hom μ[M] where
+  one_hom := by simp [toUnit_unique (ρ_ (𝟙_ C)).hom (λ_ (𝟙_ C)).hom]
+
+end MonObj
+
+namespace Mon_
+variable [BraidedCategory C]
+
+attribute [local simp] tensorObj.one_def tensorObj.mul_def
+
+instance : CartesianMonoidalCategory (Mon_ C) where
+  isTerminalTensorUnit := .ofUniqueHom (fun M ↦ ⟨toUnit _⟩) fun M f ↦ by ext; exact toUnit_unique ..
+  fst M N := .mk (fst M.X N.X)
+  snd M N := .mk (snd M.X N.X)
+  tensorProductIsBinaryProduct M N :=
+    BinaryFan.IsLimit.mk _ (fun {T} f g ↦ ⟨lift f.hom g.hom⟩)
+      (by aesop_cat) (by aesop_cat) (by aesop_cat)
+  fst_def M N := by ext; simp [fst_def]; congr
+  snd_def M N := by ext; simp [snd_def]; congr
+
+variable {M N₁ N₂ : Mon_ C}
+
+@[simp] lemma lift_hom (f : M ⟶ N₁) (g : M ⟶ N₂) : (lift f g).hom = lift f.hom g.hom := rfl
+@[simp] lemma fst_hom (M N : Mon_ C) : (fst M N).hom = fst M.X N.X := rfl
+@[simp] lemma snd_hom (M N : Mon_ C) : (snd M N).hom = snd M.X N.X := rfl
+
+end Mon_
 
 variable (X) in
 /-- If `X` represents a presheaf of monoids, then `X` is a monoid object. -/
 @[simps]
-def Mon_Class.ofRepresentableBy (F : Cᵒᵖ ⥤ MonCat.{w}) (α : (F ⋙ forget _).RepresentableBy X) :
-    Mon_Class X where
+def MonObj.ofRepresentableBy (F : Cᵒᵖ ⥤ MonCat.{w}) (α : (F ⋙ forget _).RepresentableBy X) :
+    MonObj X where
   one := α.homEquiv.symm 1
   mul := α.homEquiv.symm (α.homEquiv (fst X X) * α.homEquiv (snd X X))
-  one_mul' := by
+  one_mul := by
     apply α.homEquiv.injective
     simp only [α.homEquiv_comp, Equiv.apply_symm_apply]
     simp only [Functor.comp_map, ConcreteCategory.forget_map_eq_coe, map_mul]
@@ -57,7 +98,7 @@ def Mon_Class.ofRepresentableBy (F : Cᵒᵖ ⥤ MonCat.{w}) (α : (F ⋙ forget
     simp only [whiskerRight_fst, whiskerRight_snd]
     simp only [α.homEquiv_comp, Equiv.apply_symm_apply]
     simp [leftUnitor_hom]
-  mul_one' := by
+  mul_one := by
     apply α.homEquiv.injective
     simp only [α.homEquiv_comp, Equiv.apply_symm_apply]
     simp only [Functor.comp_map, ConcreteCategory.forget_map_eq_coe, map_mul]
@@ -65,7 +106,7 @@ def Mon_Class.ofRepresentableBy (F : Cᵒᵖ ⥤ MonCat.{w}) (α : (F ⋙ forget
     simp only [whiskerLeft_fst, whiskerLeft_snd]
     simp only [α.homEquiv_comp, Equiv.apply_symm_apply]
     simp [rightUnitor_hom]
-  mul_assoc' := by
+  mul_assoc := by
     apply α.homEquiv.injective
     simp only [α.homEquiv_comp, Equiv.apply_symm_apply]
     simp only [Functor.comp_map, ConcreteCategory.forget_map_eq_coe, map_mul]
@@ -77,8 +118,12 @@ def Mon_Class.ofRepresentableBy (F : Cᵒᵖ ⥤ MonCat.{w}) (α : (F ⋙ forget
     simp only [← ConcreteCategory.forget_map_eq_coe, ← Functor.comp_map, ← α.homEquiv_comp]
     simp
 
+@[deprecated (since := "2025-09-09")] alias Mon_Class.ofRepresentableBy := MonObj.ofRepresentableBy
+
 @[deprecated (since := "2025-03-07")]
-alias Mon_ClassOfRepresentableBy := Mon_Class.ofRepresentableBy
+alias MonObjOfRepresentableBy := MonObj.ofRepresentableBy
+
+@[deprecated (since := "2025-09-09")] alias Mon_ClassOfRepresentableBy := MonObjOfRepresentableBy
 
 /-- If `M` is a monoid object, then `Hom(X, M)` has a monoid structure. -/
 abbrev Hom.monoid : Monoid (X ⟶ M) where
@@ -88,7 +133,7 @@ abbrev Hom.monoid : Monoid (X ⟶ M) where
     trans lift (lift f₁ f₂) f₃ ≫ μ ▷ M ≫ μ
     · rw [← tensorHom_id, lift_map_assoc, Category.comp_id]
     trans lift f₁ (lift f₂ f₃) ≫ M ◁ μ ≫ μ
-    · rw [Mon_Class.mul_assoc]
+    · rw [MonObj.mul_assoc]
       simp_rw [← Category.assoc]
       congr 2
       ext <;> simp
@@ -96,16 +141,16 @@ abbrev Hom.monoid : Monoid (X ⟶ M) where
   one := toUnit X ≫ η
   one_mul f := by
     change lift (toUnit _ ≫ η) f ≫ μ = f
-    rw [← Category.comp_id f, ← lift_map_assoc, tensorHom_id, Mon_Class.one_mul,
+    rw [← Category.comp_id f, ← lift_map_assoc, tensorHom_id, MonObj.one_mul,
       Category.comp_id, leftUnitor_hom]
     exact lift_snd _ _
   mul_one f := by
     change lift f (toUnit _ ≫ η) ≫ μ = f
-    rw [← Category.comp_id f, ← lift_map_assoc, id_tensorHom, Mon_Class.mul_one,
+    rw [← Category.comp_id f, ← lift_map_assoc, id_tensorHom, MonObj.mul_one,
       Category.comp_id, rightUnitor_hom]
     exact lift_fst _ _
 
-scoped[Mon_Class] attribute [instance] Hom.monoid
+scoped[MonObj] attribute [instance] Hom.monoid
 
 lemma Hom.one_def : (1 : X ⟶ M) = toUnit X ≫ η := rfl
 lemma Hom.mul_def (f₁ f₂ : X ⟶ M) : f₁ * f₂ = lift f₁ f₂ ≫ μ := rfl
@@ -114,10 +159,10 @@ section BraidedCategory
 variable [BraidedCategory C]
 
 /-- If `M` is a commutative monoid object, then `Hom(X, M)` has a commutative monoid structure. -/
-abbrev Hom.commMonoid [IsCommMon M] : CommMonoid (X ⟶ M) where
-  mul_comm f g := by simpa [-IsCommMon.mul_comm] using lift g f ≫= IsCommMon.mul_comm M
+abbrev Hom.commMonoid [IsCommMonObj M] : CommMonoid (X ⟶ M) where
+  mul_comm f g := by simpa [-IsCommMonObj.mul_comm] using lift g f ≫= IsCommMonObj.mul_comm M
 
-scoped[Mon_Class] attribute [instance] Hom.commMonoid
+scoped[MonObj] attribute [instance] Hom.commMonoid
 
 end BraidedCategory
 
@@ -134,7 +179,7 @@ def yonedaMonObj : Cᵒᵖ ⥤ MonCat.{v} where
       map_mul' f₁ f₂ := by
         change φ.unop ≫ lift f₁ f₂ ≫ μ = lift (φ.unop ≫ f₁) (φ.unop ≫ f₂) ≫ μ
         rw [← Category.assoc]
-        aesop_cat }
+        cat_disch }
   map_id _ := MonCat.hom_ext (MonoidHom.ext Category.id_comp)
   map_comp _ _ := MonCat.hom_ext (MonoidHom.ext (Category.assoc _ _))
 
@@ -144,9 +189,9 @@ a presheaf of monoids. -/
 @[simps!]
 def yonedaMonObjIsoOfRepresentableBy
     (F : Cᵒᵖ ⥤ MonCat.{v}) (α : (F ⋙ forget _).RepresentableBy X) :
-    letI := Mon_Class.ofRepresentableBy X F α
+    letI := MonObj.ofRepresentableBy X F α
     yonedaMonObj X ≅ F :=
-  letI := Mon_Class.ofRepresentableBy X F α
+  letI := MonObj.ofRepresentableBy X F α
   NatIso.ofComponents (fun Y ↦ MulEquiv.toMonCatIso
     { toEquiv := α.homEquiv
       map_mul' f₁ f₂ := by
@@ -181,13 +226,21 @@ def yonedaMonObjRepresentableBy : (yonedaMonObj M ⋙ forget _).RepresentableBy 
   Functor.representableByEquiv.symm (.refl _)
 
 variable (M) in
-lemma Mon_Class.ofRepresentableBy_yonedaMonObjRepresentableBy :
+lemma MonObj.ofRepresentableBy_yonedaMonObjRepresentableBy :
     ofRepresentableBy M _ (yonedaMonObjRepresentableBy M) = ‹_› := by
   ext; change lift (fst M M) (snd M M) ≫ μ = μ; rw [lift_fst_snd, Category.id_comp]
 
+@[deprecated (since := "2025-09-09")]
+alias Mon_Class.ofRepresentableBy_yonedaMonObjRepresentableBy :=
+  MonObj.ofRepresentableBy_yonedaMonObjRepresentableBy
+
 @[deprecated (since := "2025-03-07")]
+alias MonObjOfRepresentableBy_yonedaMonObjRepresentableBy :=
+  MonObj.ofRepresentableBy_yonedaMonObjRepresentableBy
+
+@[deprecated (since := "2025-09-09")]
 alias Mon_ClassOfRepresentableBy_yonedaMonObjRepresentableBy :=
-  Mon_Class.ofRepresentableBy_yonedaMonObjRepresentableBy
+  MonObjOfRepresentableBy_yonedaMonObjRepresentableBy
 
 /-- The yoneda embedding for `Mon_C` is fully faithful. -/
 def yonedaMonFullyFaithful : yonedaMon (C := C).FullyFaithful where
@@ -223,39 +276,55 @@ lemma essImage_yonedaMon :
   ext F
   constructor
   · rintro ⟨M, ⟨α⟩⟩
-    exact ⟨M.X, ⟨Functor.representableByEquiv.symm (isoWhiskerRight α (forget _))⟩⟩
+    exact ⟨M.X, ⟨Functor.representableByEquiv.symm (Functor.isoWhiskerRight α (forget _))⟩⟩
   · rintro ⟨X, ⟨e⟩⟩
-    letI := Mon_Class.ofRepresentableBy X F e
+    letI := MonObj.ofRepresentableBy X F e
     exact ⟨Mon_.mk X, ⟨yonedaMonObjIsoOfRepresentableBy X F e⟩⟩
 
 @[reassoc (attr := simp)]
-lemma Mon_Class.one_comp (f : M ⟶ N) [IsMon_Hom f] : (1 : X ⟶ M) ≫ f = 1 := by simp [Hom.one_def]
+lemma MonObj.one_comp (f : M ⟶ N) [IsMon_Hom f] : (1 : X ⟶ M) ≫ f = 1 := by simp [Hom.one_def]
+
+@[deprecated (since := "2025-09-09")] alias Mon_Class.one_comp := MonObj.one_comp
 
 @[reassoc]
-lemma Mon_Class.mul_comp (f₁ f₂ : X ⟶ M) (g : M ⟶ N) [IsMon_Hom g] :
+lemma MonObj.mul_comp (f₁ f₂ : X ⟶ M) (g : M ⟶ N) [IsMon_Hom g] :
     (f₁ * f₂) ≫ g = f₁ ≫ g * f₂ ≫ g := by simp [Hom.mul_def]
 
+@[deprecated (since := "2025-09-09")] alias Mon_Class.mul_comp := MonObj.mul_comp
+
 @[reassoc]
-lemma Mon_Class.pow_comp (f : X ⟶ M) (n : ℕ) (g : M ⟶ N) [IsMon_Hom g] :
+lemma MonObj.pow_comp (f : X ⟶ M) (n : ℕ) (g : M ⟶ N) [IsMon_Hom g] :
     (f ^ n) ≫ g = (f ≫ g) ^ n := by
-  induction' n with n hn <;> simp [pow_succ, Mon_Class.mul_comp, *]
+  induction n <;> simp [pow_succ, MonObj.mul_comp, *]
+
+@[deprecated (since := "2025-09-09")] alias Mon_Class.pow_comp := MonObj.pow_comp
 
 @[reassoc (attr := simp)]
-lemma Mon_Class.comp_one (f : X ⟶ Y) : f ≫ (1 : Y ⟶ M) = 1 :=
+lemma MonObj.comp_one (f : X ⟶ Y) : f ≫ (1 : Y ⟶ M) = 1 :=
   ((yonedaMon.obj <| .mk M).map f.op).hom.map_one
 
+@[deprecated (since := "2025-09-09")] alias Mon_Class.comp_one := MonObj.comp_one
+
 @[reassoc]
-lemma Mon_Class.comp_mul (f : X ⟶ Y) (g₁ g₂ : Y ⟶ M) : f ≫ (g₁ * g₂) = f ≫ g₁ * f ≫ g₂ :=
+lemma MonObj.comp_mul (f : X ⟶ Y) (g₁ g₂ : Y ⟶ M) : f ≫ (g₁ * g₂) = f ≫ g₁ * f ≫ g₂ :=
   ((yonedaMon.obj <| .mk M).map f.op).hom.map_mul _ _
 
+@[deprecated (since := "2025-09-09")] alias Mon_Class.comp_mul := MonObj.comp_mul
+
 @[reassoc]
-lemma Mon_Class.comp_pow (f : X ⟶ M) (n : ℕ) (h : Y ⟶ X) : h ≫ f ^ n = (h ≫ f) ^ n := by
-  induction' n with n hn <;> simp [pow_succ, Mon_Class.comp_mul, *]
+lemma MonObj.comp_pow (f : X ⟶ M) (n : ℕ) (h : Y ⟶ X) : h ≫ f ^ n = (h ≫ f) ^ n := by
+  induction n <;> simp [pow_succ, MonObj.comp_mul, *]
+
+@[deprecated (since := "2025-09-09")] alias Mon_Class.comp_pow := MonObj.comp_pow
 
 variable (M) in
-lemma Mon_Class.one_eq_one : η = (1 : _ ⟶ M) :=
+lemma MonObj.one_eq_one : η = (1 : _ ⟶ M) :=
   show _ = _ ≫ _ by rw [toUnit_unique (toUnit _) (𝟙 _), Category.id_comp]
 
+@[deprecated (since := "2025-09-09")] alias Mon_Class.one_eq_one := MonObj.one_eq_one
+
 variable (M) in
-lemma Mon_Class.mul_eq_mul : μ = fst M M * snd _ _ :=
+lemma MonObj.mul_eq_mul : μ = fst M M * snd _ _ :=
   show _ = _ ≫ _ by rw [lift_fst_snd, Category.id_comp]
+
+@[deprecated (since := "2025-09-09")] alias Mon_Class.mul_eq_mul := MonObj.mul_eq_mul

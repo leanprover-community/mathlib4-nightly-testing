@@ -732,7 +732,6 @@ def starLift : (A →⋆ₙₐ[R] C) ≃ (Unitization R A →⋆ₐ[R] C) :=
 { toFun := fun φ ↦
   { toAlgHom := Unitization.lift φ.toNonUnitalAlgHom
     map_star' := fun x => by
-      induction x
       simp [map_star] }
   invFun := fun φ ↦ φ.toNonUnitalStarAlgHom.comp (inrNonUnitalStarAlgHom R A),
   left_inv := fun φ => by ext; simp,
@@ -814,7 +813,7 @@ variable [StarAddMonoid R] [Star A] {a : A}
 
 @[simp]
 lemma isSelfAdjoint_inr : IsSelfAdjoint (a : Unitization R A) ↔ IsSelfAdjoint a := by
-  simp only [isSelfAdjoint_iff, ← inr_star, ← inr_mul, inr_injective.eq_iff]
+  simp only [isSelfAdjoint_iff, ← inr_star, inr_injective.eq_iff]
 
 alias ⟨_root_.IsSelfAdjoint.of_inr, _⟩ := isSelfAdjoint_inr
 
@@ -836,5 +835,13 @@ instance instIsStarNormal (a : A) [IsStarNormal a] :
   isStarNormal_inr.mpr ‹_›
 
 end StarNormal
+
+@[simp]
+lemma isIdempotentElem_inr_iff (R : Type*) {A : Type*} [MulZeroClass R]
+    [AddZeroClass A] [Mul A] [SMulWithZero R A] {a : A} :
+    IsIdempotentElem (a : Unitization R A) ↔ IsIdempotentElem a := by
+  simp only [IsIdempotentElem, ← inr_mul, inr_injective.eq_iff]
+
+alias ⟨_, IsIdempotentElem.inr⟩ := isIdempotentElem_inr_iff
 
 end Unitization

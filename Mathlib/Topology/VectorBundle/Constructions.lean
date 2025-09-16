@@ -5,7 +5,7 @@ Authors: Nicolò Cavalleri, Sébastien Gouëzel, Heather Macbeth, Floris van Doo
 -/
 import Mathlib.Topology.FiberBundle.Constructions
 import Mathlib.Topology.VectorBundle.Basic
-import Mathlib.Analysis.NormedSpace.OperatorNorm.Prod
+import Mathlib.Analysis.Normed.Operator.Prod
 
 /-!
 # Standard constructions on vector bundles
@@ -58,6 +58,29 @@ instance vectorBundle : VectorBundle 𝕜 F (Bundle.Trivial B F) where
     simp only [trivialization.coordChangeL]
     exact continuous_const.continuousOn
 
+@[simp] lemma linearMapAt_trivialization (x : B) :
+    (trivialization B F).linearMapAt 𝕜 x = LinearMap.id := by
+  ext v
+  rw [Trivialization.coe_linearMapAt_of_mem _ (by simp)]
+  rfl
+
+@[simp] lemma continuousLinearMapAt_trivialization (x : B) :
+    (trivialization B F).continuousLinearMapAt 𝕜 x = ContinuousLinearMap.id 𝕜 F := by
+  ext; simp
+
+@[simp] lemma symmₗ_trivialization (x : B) :
+    (trivialization B F).symmₗ 𝕜 x = LinearMap.id := by
+  ext; simp [Trivialization.coe_symmₗ, trivialization_symm_apply B F]
+
+@[simp] lemma symmL_trivialization (x : B) :
+    (trivialization B F).symmL 𝕜 x = ContinuousLinearMap.id 𝕜 F := by
+  ext; simp [trivialization_symm_apply B F]
+
+@[simp] lemma continuousLinearEquivAt_trivialization (x : B) :
+    (trivialization B F).continuousLinearEquivAt 𝕜 x (mem_univ _) =
+      ContinuousLinearEquiv.refl 𝕜 F := by
+  ext; simp
+
 end Bundle.Trivial
 
 /-! ### Direct sum of two vector bundles -/
@@ -96,7 +119,7 @@ theorem coordChangeL_prod [e₁.IsLinear 𝕜] [e₁'.IsLinear 𝕜] [e₂.IsLin
 variable {e₁ e₂} [∀ x : B, TopologicalSpace (E₁ x)] [∀ x : B, TopologicalSpace (E₂ x)]
   [FiberBundle F₁ E₁] [FiberBundle F₂ E₂]
 
-theorem prod_apply [e₁.IsLinear 𝕜] [e₂.IsLinear 𝕜] {x : B} (hx₁ : x ∈ e₁.baseSet)
+theorem prod_apply' [e₁.IsLinear 𝕜] [e₂.IsLinear 𝕜] {x : B} (hx₁ : x ∈ e₁.baseSet)
     (hx₂ : x ∈ e₂.baseSet) (v₁ : E₁ x) (v₂ : E₂ x) :
     prod e₁ e₂ ⟨x, (v₁, v₂)⟩ =
       ⟨x, e₁.continuousLinearEquivAt 𝕜 x hx₁ v₁, e₂.continuousLinearEquivAt 𝕜 x hx₂ v₂⟩ :=
@@ -120,7 +143,7 @@ instance VectorBundle.prod [VectorBundle 𝕜 F₁ E₁] [VectorBundle 𝕜 F₂
     rintro _ _ ⟨e₁, e₂, he₁, he₂, rfl⟩ ⟨e₁', e₂', he₁', he₂', rfl⟩
     refine (((continuousOn_coordChange 𝕜 e₁ e₁').mono ?_).prod_mapL 𝕜
       ((continuousOn_coordChange 𝕜 e₂ e₂').mono ?_)).congr ?_ <;>
-      dsimp only [baseSet_prod, mfld_simps]
+      dsimp only [prod_baseSet, mfld_simps]
     · mfld_set_tac
     · mfld_set_tac
     · rintro b hb
@@ -142,7 +165,7 @@ theorem Trivialization.continuousLinearEquivAt_prod {e₁ : Trivialization F₁ 
   ext v : 2
   obtain ⟨v₁, v₂⟩ := v
   rw [(e₁.prod e₂).continuousLinearEquivAt_apply 𝕜, Trivialization.prod]
-  exact (congr_arg Prod.snd (prod_apply 𝕜 hx.1 hx.2 v₁ v₂) :)
+  exact (congr_arg Prod.snd (prod_apply' 𝕜 hx.1 hx.2 v₁ v₂) :)
 
 end
 

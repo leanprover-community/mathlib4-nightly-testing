@@ -164,7 +164,6 @@ theorem cocycle_fst_snd (i j k : 𝒰.J) :
 theorem cocycle_snd_fst_fst (i j k : 𝒰.J) :
     t' 𝒰 f g i j k ≫ t' 𝒰 f g j k i ≫ t' 𝒰 f g k i j ≫ pullback.snd _ _ ≫ pullback.fst _ _ ≫
       pullback.fst _ _ = pullback.snd _ _ ≫ pullback.fst _ _ ≫ pullback.fst _ _ := by
-  rw [← cancel_mono (𝒰.map i)]
   simp only [pullback.condition_assoc, t'_snd_fst_fst, t'_fst_snd, t'_snd_snd]
 
 theorem cocycle_snd_fst_snd (i j k : 𝒰.J) :
@@ -300,7 +299,7 @@ theorem gluedLift_p2 : gluedLift 𝒰 f g s ≫ p2 𝒰 f g = s.snd := by
   intro b
   simp_rw [Cover.fromGlued, Multicoequalizer.π_desc_assoc, gluedLift, ← Category.assoc]
   simp_rw [(𝒰.pullbackCover s.fst).ι_glueMorphisms]
-  simp [p2, pullback.condition]
+  simp [p2]
 
 /-- (Implementation)
 The canonical map `(W ×[X] Uᵢ) ×[W] (Uⱼ ×[Z] Y) ⟶ (Uⱼ ×[Z] Y) ×[X] Uᵢ = V j i` where `W` is
@@ -356,8 +355,8 @@ def pullbackP1Iso (i : 𝒰.J) : pullback (p1 𝒰 f g) (𝒰.map i) ≅ pullbac
   · exact
       pullback.lift (pullback.snd _ _) (pullback.fst _ _ ≫ p2 𝒰 f g)
         (by rw [← pullback.condition_assoc, Category.assoc, p_comm])
-  · apply pullback.lift ((gluing 𝒰 f g).ι i) (pullback.fst _ _)
-    rw [gluing_ι, p1, Multicoequalizer.π_desc]
+  · exact pullback.lift ((gluing 𝒰 f g).ι i) (pullback.fst _ _)
+      (by rw [gluing_ι, p1, Multicoequalizer.π_desc])
   · apply pullback.hom_ext
     · simpa using lift_comp_ι 𝒰 f g i
     · simp_rw [Category.assoc, pullback.lift_snd, pullback.lift_fst, Category.id_comp]
@@ -624,7 +623,7 @@ over a scheme `Spec R` and the `Spec` of the tensor product `S ⊗[R] T`. -/
 noncomputable
 def pullbackSpecIso :
     pullback (Spec.map (CommRingCat.ofHom (algebraMap R S)))
-      (Spec.map (CommRingCat.ofHom (algebraMap R T))) ≅ Spec (.of <| S ⊗[R] T) :=
+      (Spec.map (CommRingCat.ofHom (algebraMap R T))) ≅ Spec(S ⊗[R] T) :=
   letI H := IsLimit.equivIsoLimit (PullbackCone.eta _)
     (PushoutCocone.isColimitEquivIsLimitOp _ (CommRingCat.pushoutCoconeIsColimit R S T))
   limit.isoLimitCone ⟨_, isLimitPullbackConeMapOfIsLimit Scheme.Spec _ H⟩

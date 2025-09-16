@@ -85,10 +85,6 @@ theorem IsStableUnderBaseChange.pullback_fst_appTop
     CommRingCat.hom_comp, hP'.cancel_right_isIso]
   exact hP.pushout_inl hP' _ _ H
 
-@[deprecated (since := "2024-11-23")]
-alias IsStableUnderBaseChange.pullback_fst_app_top :=
-IsStableUnderBaseChange.pullback_fst_appTop
-
 end RingHom
 
 namespace AlgebraicGeometry
@@ -152,11 +148,10 @@ theorem sourceAffineLocally_isLocal (h₁ : RingHom.RespectsIso P)
     rw [sourceAffineLocally_morphismRestrict]
     intro U hU
     have : X.basicOpen (f.appLE ⊤ U (by simp) r) = U := by
-      simp only [Scheme.Hom.appLE, Opens.map_top, CommRingCat.comp_apply, RingHom.coe_comp,
-        Function.comp_apply]
+      simp only [Scheme.Hom.appLE, Opens.map_top, CommRingCat.comp_apply]
       rw [Scheme.basicOpen_res]
       simpa using hU
-    rw [← f.appLE_congr _ rfl this (fun f => P f.hom),
+    rw [← f.appLE_congr (by simp [Scheme.Hom.appLE]) rfl this (fun f => P f.hom),
       IsAffineOpen.appLE_eq_away_map f (isAffineOpen_top Y) U.2 _ r]
     simp only [CommRingCat.hom_ofHom]
     apply (config := { allowSynthFailures := true }) h₂
@@ -208,7 +203,7 @@ lemma exists_basicOpen_le_appLE_of_appLE_of_isAffine
   have heq : f.appLE (Y.basicOpen r') (X.basicOpen s') (hBrr' ▸ hBss' ▸ ers) =
       f.appLE (Y.basicOpen r') (X.basicOpen (f.appLE U₂ V₂ e₂ r')) (by simp [Scheme.Hom.appLE]) ≫
         CommRingCat.ofHom (algebraMap _ _) := by
-    simp only [Scheme.Hom.appLE, homOfLE_leOfHom, CommRingCat.comp_apply, Category.assoc]
+    simp only [Scheme.Hom.appLE, homOfLE_leOfHom, Category.assoc]
     congr
     apply X.presheaf.map_comp
   refine ⟨r, s, hBx, ers, ?_⟩
@@ -287,8 +282,6 @@ theorem appTop (H : P f) [IsAffine X] [IsAffine Y] : Q f.appTop.hom := by
   rw [Scheme.Hom.appTop, Scheme.Hom.app_eq_appLE]
   exact appLE P f H ⟨_, isAffineOpen_top _⟩ ⟨_, isAffineOpen_top _⟩ _
 
-@[deprecated (since := "2024-11-23")] alias app_top := appTop
-
 include Q in
 theorem comp_of_isOpenImmersion [IsOpenImmersion f] (H : P g) :
     P (f ≫ g) := by
@@ -355,7 +348,7 @@ theorem of_iSup_eq_top [IsAffine Y] {ι : Type*}
     (U : ι → X.affineOpens) (hU : ⨆ i, (U i : Opens X) = ⊤)
     (H : ∀ i, Q (f.appLE ⊤ (U i).1 le_top).hom) :
     P f := by
-  have (i) : IsAffine ((X.openCoverOfISupEqTop _ hU).obj i) := (U i).2
+  have (i : _) : IsAffine ((X.openCoverOfISupEqTop _ hU).obj i) := (U i).2
   refine of_source_openCover (X.openCoverOfISupEqTop _ hU) fun i ↦ ?_
   simpa [Scheme.Hom.app_eq_appLE] using (f.appLE_congr _ rfl (by simp) (fun f => Q f.hom)).mp (H i)
 
@@ -366,7 +359,7 @@ theorem iff_of_iSup_eq_top [IsAffine Y] {ι : Type*}
 
 instance : IsLocalAtSource P := by
   apply HasAffineProperty.isLocalAtSource
-  intros X Y f _ 𝒰
+  intro X Y f _ 𝒰
   simp_rw [← HasAffineProperty.iff_of_isAffine (P := P),
     iff_of_source_openCover 𝒰.affineRefinement.openCover,
     fun i ↦ iff_of_source_openCover (P := P) (f := 𝒰.map i ≫ f) (𝒰.obj i).affineCover]
@@ -393,14 +386,12 @@ lemma isLocal_ringHomProperty_of_isLocalAtSource_of_isLocalAtTarget
     refine (RingHom.RespectsIso.isLocalization_away_iff hP ..).mp ?_
     exact (MorphismProperty.arrow_mk_iso_iff P (SpecMapRestrictBasicOpenIso
       (CommRingCat.ofHom f) r)).mp (IsLocalAtTarget.restrict H (basicOpen r))
-  · intros R S _ _ f s hs H
+  · intro R S _ _ f s hs H
     apply IsLocalAtSource.of_openCover (Scheme.affineOpenCoverOfSpanRangeEqTop
       (fun i : s ↦ (i : S)) (by simpa)).openCover
     intro i
-    simp only [CommRingCat.coe_of, Set.setOf_mem_eq, id_eq, eq_mpr_eq_cast,
-      Scheme.AffineOpenCover.openCover_obj, Scheme.affineOpenCoverOfSpanRangeEqTop_obj_carrier,
-      Scheme.AffineOpenCover.openCover_map, Scheme.affineOpenCoverOfSpanRangeEqTop_map,
-      ← Spec.map_comp]
+    simp only [CommRingCat.coe_of, Scheme.AffineOpenCover.openCover_obj, ← Spec.map_comp,
+      Scheme.AffineOpenCover.openCover_map, Scheme.affineOpenCoverOfSpanRangeEqTop_map]
     exact H i
   · intro R S _ _  f s hs H
     apply IsLocalAtTarget.of_iSup_eq_top _ (PrimeSpectrum.iSup_basicOpen_eq_top_iff
@@ -512,7 +503,7 @@ lemma isStableUnderBaseChange (hP : RingHom.IsStableUnderBaseChange Q) :
   apply HasAffineProperty.isStableUnderBaseChange
   letI := HasAffineProperty.isLocal_affineProperty P
   apply AffineTargetMorphismProperty.IsStableUnderBaseChange.mk
-  intros X Y S _ _ f g H
+  intro X Y S _ _ f g H
   rw [← HasAffineProperty.iff_of_isAffine (P := P)] at H ⊢
   wlog hX : IsAffine Y generalizing Y
   · rw [IsLocalAtSource.iff_of_openCover (P := P)
@@ -618,7 +609,7 @@ lemma iff_exists_appLE
       Q (f.appLE U V e).hom := by
   haveI inst : HasRingHomProperty P Q := inferInstance
   haveI : HasRingHomProperty P (Locally Q) := by
-    apply @copy (P' := P) (Q := Q) (Q' := Locally Q)
+    apply @copy (P := P) (P' := P) (Q := Q) (Q' := Locally Q)
     · infer_instance
     · rfl
     · intro R S _ _ f

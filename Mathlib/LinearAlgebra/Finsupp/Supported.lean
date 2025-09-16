@@ -56,7 +56,7 @@ theorem mem_supported {s : Set α} (p : α →₀ M) : p ∈ supported M R s ↔
 
 theorem mem_supported' {s : Set α} (p : α →₀ M) :
     p ∈ supported M R s ↔ ∀ x ∉ s, p x = 0 := by
-  haveI := Classical.decPred fun x : α => x ∈ s; simp [mem_supported, Set.subset_def, not_imp_comm]
+  simp [mem_supported, Set.subset_def, not_imp_comm]
 
 theorem mem_supported_support (p : α →₀ M) : p ∈ Finsupp.supported M R (p.support : Set α) := by
   rw [Finsupp.mem_supported]
@@ -72,7 +72,7 @@ theorem supported_eq_span_single (s : Set α) :
     exact single_mem_supported R 1 hp
   · rw [← l.sum_single]
     refine sum_mem fun i il => ?_
-    rw [show single i (l i) = l i • single i 1 by simp [span]]
+    rw [show single i (l i) = l i • single i 1 by simp]
     exact smul_mem _ (l i) (subset_span (mem_image_of_mem _ (hl il)))
 
 theorem span_le_supported_biUnion_support (s : Set (α →₀ M)) :
@@ -182,6 +182,10 @@ theorem disjoint_supported_supported_iff [Nontrivial M] {s t : Set α} :
 @[simp] theorem supportedEquivFinsupp_symm_apply_coe (s : Set α) [DecidablePred (· ∈ s)]
     (f : s →₀ M) : (supportedEquivFinsupp (R := R) s).symm f = f.extendDomain := by
   convert restrictSupportEquiv_symm_apply_coe ..
+
+@[simp] theorem supportedEquivFinsupp_symm_single (s : Set α) (i : s) (a : M) :
+    ((supportedEquivFinsupp (R := R) s).symm (single i a) : α →₀ M) = single ↑i a := by
+  classical simp
 
 section LMapDomain
 

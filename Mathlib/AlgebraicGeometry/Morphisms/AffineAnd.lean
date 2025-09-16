@@ -60,7 +60,7 @@ lemma affineAnd_isLocal (hPi : RingHom.RespectsIso Q) (hQl : RingHom.Localizatio
     (hQs : RingHom.OfLocalizationSpan Q) : (affineAnd Q).IsLocal where
   respectsIso := affineAnd_respectsIso hPi
   to_basicOpen {X Y _} f r := fun ⟨hX, hf⟩ ↦ by
-    simp only [Opens.map_top] at hf
+    simp only at hf
     constructor
     · simp only [Scheme.preimage_basicOpen, Opens.map_top]
       exact (isAffineOpen_top X).basicOpen _
@@ -255,6 +255,13 @@ lemma HasAffineProperty.affineAnd_eq_of_propertyIsLocal {P P' : MorphismProperty
     HasRingHomProperty.eq_affineLocally (P := P')]
   exact HasRingHomProperty.isLocal_ringHomProperty P'
 
+lemma HasAffineProperty.SpecMap_iff_of_affineAnd {P : MorphismProperty Scheme.{u}}
+    (hP : HasAffineProperty P (affineAnd Q)) (hQi : RingHom.RespectsIso Q)
+    {R S : CommRingCat.{u}} (f : R ⟶ S) : P (Spec.map f) ↔ Q f.hom := by
+  have := RingHom.toMorphismProperty_respectsIso_iff.mp hQi
+  rw [HasAffineProperty.iff_of_isAffine (P := P), affineAnd, and_iff_right]
+  exacts [MorphismProperty.arrow_mk_iso_iff (RingHom.toMorphismProperty Q)
+    (arrowIsoΓSpecOfIsAffine f).symm, inferInstance]
 variable {Q' : ∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop}
 
 lemma HasAffineProperty.affineAnd_le_affineAnd {P P' : MorphismProperty Scheme.{u}}

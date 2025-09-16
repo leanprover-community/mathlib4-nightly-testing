@@ -3,6 +3,7 @@ Copyright (c) 2024 Jeremy Tan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Tan
 -/
+import Batteries.Data.List.Count
 import Mathlib.Combinatorics.Enumerative.Catalan
 import Mathlib.Tactic.Positivity
 
@@ -165,7 +166,7 @@ def nest : DyckWord where
     apply add_le_add _ (p.count_D_le_count_U _)
     rcases i.eq_zero_or_pos with hi | hi; · simp [hi]
     rw [take_of_length_le (show [U].length ≤ i by rwa [length_singleton]), count_singleton']
-    simp only [reduceCtorEq, ite_true, ite_false]
+    simp only [reduceCtorEq, ite_false]
     rw [add_comm]
     exact add_le_add (zero_le _) (count_le_length.trans (by simp))
 
@@ -210,7 +211,7 @@ def denest (hn : p.IsNested) : DyckWord where
     set j := min (1 + i) (p.toList.length - 1)
     rw [← (p.toList.take j).take_append_drop 1, count_append, count_append, take_take,
       min_eq_left (by omega), l1, head_eq_U] at eq
-    simp only [count_singleton', ite_true, ite_false] at eq
+    simp only [count_singleton', ite_true] at eq
     omega
 
 variable (p) in
@@ -420,13 +421,7 @@ lemma infix_of_le (h : p ≤ q) : p.toList <:+: q.toList := by
       rwa [mq] at ih
     · have : [U] ++ r.insidePart ++ [D] ++ r.outsidePart = r :=
         DyckWord.ext_iff.mp (nest_insidePart_add_outsidePart hr)
-      rcases mq with hm | hm
-      · have : r.insidePart <:+: r.toList := by
-          use [U], [D] ++ r.outsidePart; rwa [← append_assoc]
-        exact ih.trans (hm ▸ this)
-      · have : r.outsidePart <:+: r.toList := by
-          use [U] ++ r.insidePart ++ [D], []; rwa [append_nil]
-        exact ih.trans (hm ▸ this)
+      grind
 
 lemma le_of_suffix (h : p.toList <:+ q.toList) : p ≤ q := by
   obtain ⟨r', h⟩ := h
