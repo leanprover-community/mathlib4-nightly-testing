@@ -6,7 +6,8 @@ Authors: Joseph Myers, Yury Kudryashov
 import Mathlib.Algebra.CharP.Invertible
 import Mathlib.Analysis.Normed.Module.Basic
 import Mathlib.Analysis.Normed.Group.AddTorsor
-import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace
+import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic
+import Mathlib.LinearAlgebra.AffineSpace.Midpoint
 import Mathlib.Topology.Instances.RealVectorSpace
 
 
@@ -31,13 +32,6 @@ section NormedSpace
 variable {𝕜 : Type*} [NormedField 𝕜] [NormedSpace 𝕜 V] [NormedSpace 𝕜 W]
 
 open AffineMap
-
-theorem AffineSubspace.isClosed_direction_iff (s : AffineSubspace 𝕜 Q) :
-    IsClosed (s.direction : Set W) ↔ IsClosed (s : Set Q) := by
-  rcases s.eq_bot_or_nonempty with (rfl | ⟨x, hx⟩); · simp [isClosed_singleton]
-  rw [← (IsometryEquiv.vaddConst x).toHomeomorph.symm.isClosed_image,
-    AffineSubspace.coe_direction_eq_vsub_set_right hx]
-  rfl
 
 @[simp]
 theorem dist_center_homothety (p₁ p₂ : P) (c : 𝕜) :
@@ -172,11 +166,16 @@ theorem nndist_right_midpoint (p₁ p₂ : P) :
     nndist p₂ (midpoint 𝕜 p₁ p₂) = ‖(2 : 𝕜)‖₊⁻¹ * nndist p₁ p₂ :=
   NNReal.eq <| dist_right_midpoint _ _
 
+/-- The midpoint of the segment AB is the same distance from A as it is from B. -/
+theorem dist_left_midpoint_eq_dist_right_midpoint (p₁ p₂ : P) :
+    dist p₁ (midpoint 𝕜 p₁ p₂) = dist p₂ (midpoint 𝕜 p₁ p₂) := by
+  rw [dist_left_midpoint p₁ p₂, dist_right_midpoint p₁ p₂]
+
 theorem dist_midpoint_midpoint_le' (p₁ p₂ p₃ p₄ : P) :
     dist (midpoint 𝕜 p₁ p₂) (midpoint 𝕜 p₃ p₄) ≤ (dist p₁ p₃ + dist p₂ p₄) / ‖(2 : 𝕜)‖ := by
   rw [dist_eq_norm_vsub V, dist_eq_norm_vsub V, dist_eq_norm_vsub V, midpoint_vsub_midpoint]
   rw [midpoint_eq_smul_add, norm_smul, invOf_eq_inv, norm_inv, ← div_eq_inv_mul]
-  exact div_le_div_of_nonneg_right (norm_add_le _ _) (norm_nonneg _)
+  grw [norm_add_le]
 
 theorem nndist_midpoint_midpoint_le' (p₁ p₂ p₃ p₄ : P) :
     nndist (midpoint 𝕜 p₁ p₂) (midpoint 𝕜 p₃ p₄) ≤ (nndist p₁ p₃ + nndist p₂ p₄) / ‖(2 : 𝕜)‖₊ :=
@@ -251,11 +250,7 @@ def AffineMap.ofMapMidpoint (f : P → Q) (h : ∀ x y, f (midpoint ℝ x y) = m
   let c := Classical.arbitrary P
   AffineMap.mk' f (↑((AddMonoidHom.ofMapMidpoint ℝ ℝ
     ((AffineEquiv.vaddConst ℝ (f <| c)).symm ∘ f ∘ AffineEquiv.vaddConst ℝ c) (by simp)
-    fun x y => by -- Porting note: was `by simp [h]`
-      simp only [c, Function.comp_apply, AffineEquiv.vaddConst_apply,
-        AffineEquiv.vaddConst_symm_apply]
-      conv_lhs => rw [(midpoint_self ℝ (Classical.arbitrary P)).symm, midpoint_vadd_midpoint, h, h,
-          midpoint_vsub_midpoint]).toRealLinearMap <| by
+    fun x y => by simp [h]).toRealLinearMap <| by
         apply_rules [Continuous.vadd, Continuous.vsub, continuous_const, hfc.comp, continuous_id]))
     c fun p => by simp
 
@@ -266,7 +261,7 @@ section
 open Dilation
 
 variable {𝕜 E : Type*} [NormedDivisionRing 𝕜] [SeminormedAddCommGroup E]
-variable [Module 𝕜 E] [BoundedSMul 𝕜 E] {P : Type*} [PseudoMetricSpace P] [NormedAddTorsor E P]
+variable [Module 𝕜 E] [NormSMulClass 𝕜 E] {P : Type*} [PseudoMetricSpace P] [NormedAddTorsor E P]
 
 -- TODO: define `ContinuousAffineEquiv` and reimplement this as one of those.
 /-- Scaling by an element `k` of the scalar ring as a `DilationEquiv` with ratio `‖k‖₊`, mapping
@@ -281,7 +276,7 @@ def DilationEquiv.smulTorsor (c : P) {k : 𝕜} (hk : k ≠ 0) : E ≃ᵈ P wher
     rw [show edist (k • x +ᵥ c) (k • y +ᵥ c) = _ from (IsometryEquiv.vaddConst c).isometry ..]
     exact edist_smul₀ ..⟩
 
-@[simp]
+-- Cannot be @[simp] because `x` and `y` cannot be inferred by `simp`.
 lemma DilationEquiv.smulTorsor_ratio {c : P} {k : 𝕜} (hk : k ≠ 0) {x y : E}
     (h : dist x y ≠ 0) : ratio (smulTorsor c hk) = ‖k‖₊ :=
   Eq.symm <| ratio_unique_of_dist_ne_zero h <| by simp [dist_eq_norm, ← smul_sub, norm_smul]

@@ -18,7 +18,11 @@ assert_not_exists TwoSidedIdeal
 
 open CategoryTheory Category Limits Pretriangulated ComposableArrows
 
-variable {C : Type*} [Category C] [Preadditive C] [HasBinaryBiproducts C]
+-- Explicit universe annotations were used in this file to improve performance https://github.com/leanprover-community/mathlib4/issues/12737
+
+universe v
+
+variable {C : Type*} [Category.{v} C] [Preadditive C] [HasBinaryBiproducts C]
   {X₁ X₂ X₃ : CochainComplex C ℤ} (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃)
 
 namespace CochainComplex
@@ -66,7 +70,7 @@ is the canonical morphism (which is an homotopy equivalence) from `mappingCone g
 the mapping cone of the morphism `mappingCone f ⟶ mappingCone (f ≫ g)`. -/
 noncomputable def hom :
     mappingCone g ⟶ mappingCone (mappingConeCompTriangle f g).mor₁ :=
-  lift _ (descCocycle g (Cochain.ofHom (inr f)) 0 (zero_add 1) (by dsimp; simp))
+  lift _ (descCocycle g (Cochain.ofHom (inr f)) 0 (zero_add 1) (by simp))
     (descCochain _ 0 (Cochain.ofHom (inr (f ≫ g))) (neg_add_cancel 1)) (by
       ext p _ rfl
       dsimp [mappingConeCompTriangle, map]
@@ -85,23 +89,22 @@ noncomputable def inv : mappingCone (mappingConeCompTriangle f g).mor₁ ⟶ map
 @[reassoc (attr := simp)]
 lemma hom_inv_id : hom f g ≫ inv f g = 𝟙 _ := by
   ext n
-  simp [hom, inv, lift_desc_f _ _ _ _ _ _ _ n (n+1) rfl, ext_from_iff _ (n + 1) _ rfl]
+  simp [hom, inv, lift_desc_f _ _ _ _ _ _ _ n (n + 1) rfl, ext_from_iff _ (n + 1) _ rfl]
 
-set_option maxHeartbeats 400000 in
 /-- Given two composable morphisms `f` and `g` in the category of cochain complexes,
 this is the `homotopyInvHomId` field of the homotopy equivalence
 `mappingConeCompHomotopyEquiv f g` between `mappingCone g` and the mapping cone of
 the morphism `mappingCone f ⟶ mappingCone (f ≫ g)`. -/
 noncomputable def homotopyInvHomId : Homotopy (inv f g ≫ hom f g) (𝟙 _) :=
   (Cochain.equivHomotopy _ _).symm ⟨-((snd _).comp ((fst (f ≫ g)).1.comp
-    ((inl f).comp (inl _) (by omega)) (show 1 + (-2) = -1 by omega)) (zero_add (-1))), by
+    ((inl f).comp (inl _) (by decide)) (show 1 + (-2) = -1 by decide)) (zero_add (-1))), by
       rw [δ_neg, δ_zero_cochain_comp _ _ _ (neg_add_cancel 1),
         Int.negOnePow_neg, Int.negOnePow_one, Units.neg_smul, one_smul,
-        δ_comp _ _ (show 1 + (-2) = -1 by omega) 2 (-1) 0 (by omega)
-          (by omega) (by omega),
-        δ_comp _ _ (show (-1) + (-1) = -2 by omega) 0 0 (-1) (by omega)
-          (by omega) (by omega), Int.negOnePow_neg, Int.negOnePow_neg,
-        Int.negOnePow_even 2 ⟨1, by omega⟩, Int.negOnePow_one, Units.neg_smul,
+        δ_comp _ _ (show 1 + (-2) = -1 by decide) 2 (-1) 0 (by decide)
+          (by decide) (by decide),
+        δ_comp _ _ (show (-1) + (-1) = -2 by decide) 0 0 (-1) (by decide)
+          (by decide) (by decide), Int.negOnePow_neg, Int.negOnePow_neg,
+        Int.negOnePow_even 2 ⟨1, by decide⟩, Int.negOnePow_one, Units.neg_smul,
         one_smul, one_smul, δ_inl, δ_inl, δ_snd, Cocycle.δ_eq_zero, Cochain.zero_comp, add_zero,
         Cochain.neg_comp, neg_neg]
       ext n
@@ -110,9 +113,9 @@ noncomputable def homotopyInvHomId : Homotopy (inv f g ≫ hom f g) (𝟙 _) :=
       dsimp [hom, inv]
       simp [ext_to_iff _ n (n + 1) rfl, map, Cochain.comp_v _ _
           (add_neg_cancel 1) n (n + 1) n (by omega) (by omega),
-        Cochain.comp_v _ _ (show 1 + -2 = -1 by omega) (n + 1) (n + 2) n
+        Cochain.comp_v _ _ (show 1 + -2 = -1 by decide) (n + 1) (n + 2) n
           (by omega) (by omega),
-        Cochain.comp_v _ _ (show (-1) + -1 = -2 by omega) (n + 2) (n + 1) n
+        Cochain.comp_v _ _ (show (-1) + -1 = -2 by decide) (n + 2) (n + 1) n
           (by omega) (by omega)]⟩
 
 end MappingConeCompHomotopyEquiv
@@ -147,7 +150,7 @@ lemma mappingConeCompHomotopyEquiv_comm₂ :
       (mappingConeCompTriangle f g).mor₃ := by
   ext n
   simp [map, mappingConeCompHomotopyEquiv, MappingConeCompHomotopyEquiv.hom,
-    lift_f _ _ _ _ _ (n+1) rfl, ext_from_iff _ (n+1) _ rfl]
+    lift_f _ _ _ _ _ (n + 1) rfl, ext_from_iff _ (n + 1) _ rfl]
 
 @[reassoc (attr := simp)]
 lemma mappingConeCompTriangleh_comm₁ :
@@ -175,7 +178,7 @@ lemma mappingConeCompTriangleh_distinguished :
       distTriang (HomotopyCategory C (ComplexShape.up ℤ)) := by
   refine ⟨_, _, (mappingConeCompTriangle f g).mor₁, ⟨?_⟩⟩
   refine Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _) (isoOfHomotopyEquiv
-    (mappingConeCompHomotopyEquiv f g)) (by aesop_cat) (by simp) ?_
+    (mappingConeCompHomotopyEquiv f g)) (by cat_disch) (by simp) ?_
   dsimp [mappingConeCompTriangleh]
   rw [CategoryTheory.Functor.map_id, comp_id, ← Functor.map_comp_assoc]
   congr 2

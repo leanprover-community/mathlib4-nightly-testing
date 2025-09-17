@@ -3,7 +3,7 @@ Copyright (c) 2021 Eric Wieser. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eric Wieser, Jujian Zhang
 -/
-import Mathlib.Algebra.Group.Subgroup.Pointwise
+import Mathlib.Algebra.GroupWithZero.Subgroup
 import Mathlib.Algebra.Order.Group.Action
 import Mathlib.LinearAlgebra.Finsupp.Supported
 import Mathlib.LinearAlgebra.Span.Basic
@@ -30,12 +30,13 @@ These actions are available in the `Pointwise` locale.
 
 ## Implementation notes
 
-For an `R`-module `M`, The action of a subset of `R` acting on a submodule of `M` introduced in
-section `set_acting_on_submodules` does not have a counterpart in the file
-`Mathlib.Algebra.Group.Submonoid.Pointwise`.
+For an `R`-module `M`, the action of a subset of `R` acting on a submodule of `M` introduced in
+section `set_acting_on_submodules` does not have a counterpart in the files
+`Mathlib/Algebra/Group/Submonoid/Pointwise.lean` and
+`Mathlib/Algebra/GroupWithZero/Submonoid/Pointwise.lean`.
 
 Other than section `set_acting_on_submodules`, most of the lemmas in this file are direct copies of
-lemmas from the file `Mathlib.Algebra.Group.Submonoid.Pointwise`.
+lemmas from the file `Mathlib/Algebra/Group/Submonoid/Pointwise.lean`.
 -/
 
 assert_not_exists Ideal
@@ -101,16 +102,18 @@ def negOrderIso : Submodule R M ≃o Submodule R M where
   toEquiv := Equiv.neg _
   map_rel_iff' := @neg_le_neg _ _ _ _ _
 
-theorem closure_neg (s : Set M) : span R (-s) = -span R s := by
+theorem span_neg_eq_neg (s : Set M) : span R (-s) = -span R s := by
   apply le_antisymm
   · rw [span_le, coe_set_neg, ← Set.neg_subset, neg_neg]
     exact subset_span
   · rw [neg_le, span_le, coe_set_neg, ← Set.neg_subset]
     exact subset_span
 
+@[deprecated (since := "2025-04-08")]
+alias closure_neg := span_neg_eq_neg
+
 @[simp]
-theorem neg_inf (S T : Submodule R M) : -(S ⊓ T) = -S ⊓ -T :=
-  SetLike.coe_injective Set.inter_neg
+theorem neg_inf (S T : Submodule R M) : -(S ⊓ T) = -S ⊓ -T := rfl
 
 @[simp]
 theorem neg_sup (S T : Submodule R M) : -(S ⊔ T) = -S ⊔ -T :=
@@ -165,12 +168,13 @@ theorem add_eq_sup (p q : Submodule R M) : p + q = p ⊔ q :=
 theorem zero_eq_bot : (0 : Submodule R M) = ⊥ :=
   rfl
 
-instance : CanonicallyOrderedAddCommMonoid (Submodule R M) :=
-  { Submodule.pointwiseAddCommMonoid,
-    Submodule.completeLattice with
-    add_le_add_left := fun _a _b => sup_le_sup_left
-    exists_add_of_le := @fun _a b h => ⟨b, (sup_eq_right.2 h).symm⟩
-    le_self_add := fun _a _b => le_sup_left }
+instance : IsOrderedAddMonoid (Submodule R M) :=
+  { add_le_add_left := fun _a _b => sup_le_sup_left }
+
+instance : CanonicallyOrderedAdd (Submodule R M) where
+  exists_add_of_le {_a b} h := ⟨b, (sup_eq_right.2 h).symm⟩
+  le_add_self _ _ := le_sup_right
+  le_self_add := fun _a _b => le_sup_left
 
 section
 
@@ -208,6 +212,10 @@ theorem pointwise_smul_toAddSubgroup {R M : Type*} [Ring R] [AddCommGroup M] [Di
     (a • S).toAddSubgroup = a • S.toAddSubgroup :=
   rfl
 
+theorem mem_smul_pointwise_iff_exists (m : M) (a : α) (S : Submodule R M) :
+    m ∈ a • S ↔ ∃ b ∈ S, a • b = m :=
+  Set.mem_smul_set
+
 theorem smul_mem_pointwise_smul (m : M) (a : α) (S : Submodule R M) : m ∈ S → a • m ∈ a • S :=
   (Set.smul_mem_smul_set : _ → _ ∈ a • (S : Set M))
 
@@ -236,7 +244,7 @@ instance pointwiseCentralScalar [DistribMulAction αᵐᵒᵖ M] [SMulCommClass 
   ⟨fun _a S => (congr_arg fun f : Module.End R M => S.map f) <| LinearMap.ext <| op_smul_eq_smul _⟩
 
 @[simp]
-theorem smul_le_self_of_tower {α : Type*} [Semiring α] [Module α R] [Module α M]
+theorem smul_le_self_of_tower {α : Type*} [Monoid α] [SMul α R] [DistribMulAction α M]
     [SMulCommClass α R M] [IsScalarTower α R M] (a : α) (S : Submodule R M) : a • S ≤ S := by
   rintro y ⟨x, hx, rfl⟩
   exact smul_of_tower_mem _ a hx
@@ -315,7 +323,7 @@ variable (sR : Set R) (s : Set S) (N : Submodule R M)
 
 lemma mem_set_smul_def (x : M) :
     x ∈ s • N ↔
-  x ∈ sInf { p : Submodule R M | ∀ ⦃r : S⦄ {n : M}, r ∈ s → n ∈ N → r • n ∈ p } := Iff.rfl
+    x ∈ sInf { p : Submodule R M | ∀ ⦃r : S⦄ {n : M}, r ∈ s → n ∈ N → r • n ∈ p } := Iff.rfl
 
 variable {s N} in
 @[aesop safe]
@@ -387,7 +395,7 @@ lemma set_smul_inductionOn {motive : (x : M) → (_ : x ∈ s • N) → Prop}
     (hx : x ∈ s • N)
     (smul₀ : ∀ ⦃r : S⦄ ⦃n : M⦄ (mem₁ : r ∈ s) (mem₂ : n ∈ N),
       motive (r • n) (mem_set_smul_of_mem_mem mem₁ mem₂))
-    (smul₁ : ∀ (r : R) ⦃m : M⦄ (mem : m ∈ s • N) ,
+    (smul₁ : ∀ (r : R) ⦃m : M⦄ (mem : m ∈ s • N),
       motive m mem → motive (r • m) (Submodule.smul_mem _ r mem)) --
     (add : ∀ ⦃m₁ m₂ : M⦄ (mem₁ : m₁ ∈ s • N) (mem₂ : m₂ ∈ s • N),
       motive m₁ mem₁ → motive m₂ mem₂ → motive (m₁ + m₂) (Submodule.add_mem _ mem₁ mem₂))
@@ -427,12 +435,12 @@ lemma set_smul_eq_map [SMulCommClass R R N] :
       · refine fun h ↦ h fun r n hr hn ↦ ?_
         rw [mem_set_smul_def, mem_sInf]
         exact fun p hp ↦ hp hr hn
-      · aesop
+      · simp_all
 
 lemma mem_set_smul (x : M) [SMulCommClass R R N] :
     x ∈ sR • N ↔ ∃ (c : R →₀ N), (c.support : Set R) ⊆ sR ∧ x = c.sum fun r m ↦ r • m := by
   fconstructor
-  · intros h
+  · intro h
     rw [set_smul_eq_map] at h
     obtain ⟨c, hc, rfl⟩ := h
     exact ⟨c, hc, rfl⟩
@@ -463,15 +471,16 @@ lemma mem_singleton_set_smul [SMulCommClass R S M] (r : S) (x : M) :
     x ∈ ({r} : Set S) • N ↔ ∃ (m : M), m ∈ N ∧ x = r • m := by
   fconstructor
   · intro hx
-    induction' x, hx using Submodule.set_smul_inductionOn with
-      t n memₜ memₙ t n mem h m₁ m₂ mem₁ mem₂ h₁ h₂
-    · aesop
-    · rcases h with ⟨n, hn, rfl⟩
-      exact ⟨t • n, by aesop,  smul_comm _ _ _⟩
-    · rcases h₁ with ⟨m₁, h₁, rfl⟩
+    induction x, hx using Submodule.set_smul_inductionOn with
+    | smul₀ => aesop
+    | @smul₁ t n mem h =>
+      rcases h with ⟨n, hn, rfl⟩
+      exact ⟨t • n, by aesop, smul_comm _ _ _⟩
+    | add mem₁ mem₂ h₁ h₂ =>
+      rcases h₁ with ⟨m₁, h₁, rfl⟩
       rcases h₂ with ⟨m₂, h₂, rfl⟩
       exact ⟨m₁ + m₂, Submodule.add_mem _ h₁ h₂, by simp⟩
-    · exact ⟨0, Submodule.zero_mem _, by simp⟩
+    | zero => exact ⟨0, Submodule.zero_mem _, by simp⟩
   · aesop
 
 lemma smul_inductionOn_pointwise [SMulCommClass S R M] {a : S} {p : (x : M) → x ∈ a • N → Prop}
@@ -495,7 +504,7 @@ lemma smul_inductionOn_pointwise [SMulCommClass S R M] {a : S} {p : (x : M) → 
 -- does not make sense. If we just focus on `R`-submodules that are also `S`-submodule, then this
 -- should be true.
 /-- A subset of a ring `R` has a multiplicative action on submodules of a module over `R`. -/
-protected def pointwiseSetMulAction [SMulCommClass R R M] :
+protected noncomputable def pointwiseSetMulAction [SMulCommClass R R M] :
     MulAction (Set R) (Submodule R M) where
   one_smul x := show {(1 : R)} • x = x from SetLike.ext fun m =>
     (mem_singleton_set_smul _ _ _).trans ⟨by rintro ⟨_, h, rfl⟩; rwa [one_smul],
@@ -514,7 +523,7 @@ scoped[Pointwise] attribute [instance] Submodule.pointwiseSetMulAction
 
 -- This cannot be generalized to `Set S` because `MulAction` can't be generalized already.
 /-- In a ring, sets acts on submodules. -/
-protected def pointwiseSetDistribMulAction [SMulCommClass R R M] :
+protected noncomputable def pointwiseSetDistribMulAction [SMulCommClass R R M] :
     DistribMulAction (Set R) (Submodule R M) where
   smul_zero s := set_smul_bot s
   smul_add s x y := le_antisymm

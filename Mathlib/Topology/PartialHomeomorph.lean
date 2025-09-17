@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sébastien Gouëzel
 -/
 import Mathlib.Logic.Equiv.PartialEquiv
+import Mathlib.Topology.Homeomorph.Lemmas
 import Mathlib.Topology.Sets.Opens
 
 /-!
@@ -25,9 +26,20 @@ instead of `e.toFun x` and `e.invFun x`.
 * `PartialHomeomorph.symm`: the inverse of a partial homeomorphism
 * `PartialHomeomorph.trans`: the composition of two partial homeomorphisms
 * `PartialHomeomorph.refl`: the identity partial homeomorphism
+* `PartialHomeomorph.const`: a partial homeomorphism which is a constant map,
+  whose source and target are necessarily singleton sets
 * `PartialHomeomorph.ofSet`: the identity on a set `s`
+* `PartialHomeomorph.restr s`: restrict a partial homeomorphism `e` to `e.source ∩ interior s`
 * `PartialHomeomorph.EqOnSource`: equivalence relation describing the "right" notion of equality
   for partial homeomorphisms
+* `PartialHomeomorph.prod`: the product of two partial homeomorphisms,
+  as a partial homeomorphism on the product space
+* `PartialHomeomorph.pi`: the product of a finite family of partial homeomorphisms
+* `PartialHomeomorph.disjointUnion`: combine two partial homeomorphisms with disjoint sources
+  and disjoint targets
+* `PartialHomeomorph.lift_openEmbedding`: extend a partial homeomorphism `X → Y`
+  under an open embedding `X → X'`, to a partial homeomorphism `X' → Z`.
+  (This is used to define the disjoint union of charted spaces.)
 
 ## Implementation notes
 
@@ -49,7 +61,6 @@ variable {X X' : Type*} {Y Y' : Type*} {Z Z' : Type*}
   [TopologicalSpace Z] [TopologicalSpace Z']
 
 /-- Partial homeomorphisms, defined on open subsets of the space -/
--- Porting note (https://github.com/leanprover-community/mathlib4/issues/5171): this linter isn't ported yet. @[nolint has_nonempty_instance]
 structure PartialHomeomorph (X : Type*) (Y : Type*) [TopologicalSpace X]
   [TopologicalSpace Y] extends PartialEquiv X Y where
   open_source : IsOpen source
@@ -177,8 +188,8 @@ end Basic
 
 /-- Interpret a `Homeomorph` as a `PartialHomeomorph` by restricting it
 to an open set `s` in the domain and to `t` in the codomain. -/
-@[simps! (config := .asFn) apply symm_apply toPartialEquiv,
-  simps! (config := .lemmasOnly) source target]
+@[simps! -fullyApplied apply symm_apply toPartialEquiv,
+  simps! -isSimp source target]
 def _root_.Homeomorph.toPartialHomeomorphOfImageEq (e : X ≃ₜ Y) (s : Set X) (hs : IsOpen s)
     (t : Set Y) (h : e '' s = t) : PartialHomeomorph X Y where
   toPartialEquiv := e.toPartialEquivOfImageEq s t h
@@ -606,7 +617,7 @@ theorem restrOpen_source (s : Set X) (hs : IsOpen s) : (e.restrOpen s hs).source
 sure that the restriction is well defined whatever the set s, since partial homeomorphisms are by
 definition defined on open sets. In applications where `s` is open, this coincides with the
 restriction of partial equivalences -/
-@[simps! (config := mfld_cfg) apply symm_apply, simps! (config := .lemmasOnly) source target]
+@[simps! (config := mfld_cfg) apply symm_apply, simps! -isSimp source target]
 protected def restr (s : Set X) : PartialHomeomorph X Y :=
   e.restrOpen (interior s) isOpen_interior
 
@@ -636,7 +647,7 @@ theorem restr_source_inter (s : Set X) : e.restr (e.source ∩ s) = e.restr s :=
   simp [e.open_source.interior_eq, ← inter_assoc]
 
 /-- The identity on the whole space as a partial homeomorphism. -/
-@[simps! (config := mfld_cfg) apply, simps! (config := .lemmasOnly) source target]
+@[simps! (config := mfld_cfg) apply, simps! -isSimp source target]
 protected def refl (X : Type*) [TopologicalSpace X] : PartialHomeomorph X X :=
   (Homeomorph.refl X).toPartialHomeomorph
 
@@ -648,13 +659,40 @@ theorem refl_partialEquiv : (PartialHomeomorph.refl X).toPartialEquiv = PartialE
 theorem refl_symm : (PartialHomeomorph.refl X).symm = PartialHomeomorph.refl X :=
   rfl
 
+/-! const: `PartialEquiv.const` as a partial homeomorphism -/
+section const
+
+variable {a : X} {b : Y}
+
+/--
+This is `PartialEquiv.single` as a partial homeomorphism: a constant map,
+whose source and target are necessarily singleton sets.
+-/
+def const (ha : IsOpen {a}) (hb : IsOpen {b}) : PartialHomeomorph X Y where
+  toPartialEquiv := PartialEquiv.single a b
+  open_source := ha
+  open_target := hb
+  continuousOn_toFun := by simp
+  continuousOn_invFun := by simp
+
+@[simp, mfld_simps]
+lemma const_apply (ha : IsOpen {a}) (hb : IsOpen {b}) (x : X) : (const ha hb) x = b := rfl
+
+@[simp, mfld_simps]
+lemma const_source (ha : IsOpen {a}) (hb : IsOpen {b}) : (const ha hb).source = {a} := rfl
+
+@[simp, mfld_simps]
+lemma const_target (ha : IsOpen {a}) (hb : IsOpen {b}) : (const ha hb).target = {b} := rfl
+
+end const
+
 /-! ofSet: the identity on a set `s` -/
 section ofSet
 
 variable {s : Set X} (hs : IsOpen s)
 
 /-- The identity partial equivalence on a set `s` -/
-@[simps! (config := mfld_cfg) apply, simps! (config := .lemmasOnly) source target]
+@[simps! (config := mfld_cfg) apply, simps! -isSimp source target]
 def ofSet (s : Set X) (hs : IsOpen s) : PartialHomeomorph X X where
   toPartialEquiv := PartialEquiv.ofSet s
   open_source := hs
@@ -682,7 +720,7 @@ variable (e' : PartialHomeomorph Y Z)
 
 /-- Composition of two partial homeomorphisms when the target of the first and the source of
 the second coincide. -/
-@[simps! apply symm_apply toPartialEquiv, simps! (config := .lemmasOnly) source target]
+@[simps! apply symm_apply toPartialEquiv, simps! -isSimp source target]
 protected def trans' (h : e.target = e'.source) : PartialHomeomorph X Z where
   toPartialEquiv := PartialEquiv.trans' e.toPartialEquiv e'.toPartialEquiv h
   open_source := e.open_source
@@ -691,7 +729,8 @@ protected def trans' (h : e.target = e'.source) : PartialHomeomorph X Z where
   continuousOn_invFun := e.continuousOn_symm.comp e'.continuousOn_symm <| h.symm ▸ e'.symm_mapsTo
 
 /-- Composing two partial homeomorphisms, by restricting to the maximal domain where their
-composition is well defined. -/
+composition is well defined.
+Within the `Manifold` namespace, there is the notation `e ≫ₕ f` for this. -/
 @[trans]
 protected def trans : PartialHomeomorph X Z :=
   PartialHomeomorph.trans' (e.symm.restrOpen e'.source e'.open_source).symm
@@ -850,6 +889,57 @@ theorem eq_of_eqOnSource_univ {e e' : PartialHomeomorph X Y} (h : e ≈ e') (s :
     (t : e.target = univ) : e = e' :=
   toPartialEquiv_injective <| PartialEquiv.eq_of_eqOnSource_univ _ _ h s t
 
+variable {s : Set X}
+
+theorem restr_symm_trans {e' : PartialHomeomorph X Y}
+    (hs : IsOpen s) (hs' : IsOpen (e '' s)) (hs'' : s ⊆ e.source) :
+    (e.restr s).symm.trans e' ≈ (e.symm.trans e').restr (e '' s) := by
+  refine ⟨?_, ?_⟩
+  · simp only [trans_toPartialEquiv, symm_toPartialEquiv, restr_toPartialEquiv,
+      PartialEquiv.trans_source, PartialEquiv.symm_source, PartialEquiv.restr_target, coe_coe_symm,
+      PartialEquiv.restr_coe_symm, PartialEquiv.restr_source]
+    rw [interior_eq_iff_isOpen.mpr hs', interior_eq_iff_isOpen.mpr hs]
+    -- Get rid of the middle term, which is merely distracting.
+    rw [inter_assoc, inter_assoc, inter_comm _ (e '' s), ← inter_assoc, ← inter_assoc]
+    congr 1
+    -- Now, just a bunch of rewrites: should this be a separate lemma?
+    rw [← image_source_inter_eq', ← image_source_eq_target]
+    refine image_inter_on ?_
+    intro x hx y hy h
+    rw [← left_inv e hy, ← left_inv e (hs'' hx), h]
+  · simp_rw [coe_trans, restr_symm_apply, restr_apply, coe_trans]
+    intro x hx
+    simp
+
+theorem symm_trans_restr (e' : PartialHomeomorph X Y) (hs : IsOpen s) :
+    e'.symm.trans (e.restr s) ≈ (e'.symm.trans e).restr (e'.target ∩ e'.symm ⁻¹' s) := by
+  have ht : IsOpen (e'.target ∩ e'.symm ⁻¹' s) := by
+    rw [← image_source_inter_eq']
+    exact isOpen_image_source_inter e' hs
+  refine ⟨?_, ?_⟩
+  · simp only [trans_toPartialEquiv, symm_toPartialEquiv, restr_toPartialEquiv,
+      PartialEquiv.trans_source, PartialEquiv.symm_source, coe_coe_symm, PartialEquiv.restr_source,
+      preimage_inter]
+    -- Shuffle the intersections, pull e'.target into the interior and use interior_inter.
+    rw [interior_eq_iff_isOpen.mpr hs,
+      ← inter_assoc, inter_comm e'.target, inter_assoc, inter_assoc]
+    congr 1
+    nth_rw 2 [← interior_eq_iff_isOpen.mpr e'.open_target]
+    rw [← interior_inter, ← inter_assoc, inter_self, interior_eq_iff_isOpen.mpr ht]
+  · simp
+    exact fun ⦃x⦄ ↦ congrFun rfl
+
+lemma restr_eqOnSource_restr {s' : Set X}
+    (hss' : e.source ∩ interior s = e.source ∩ interior s') :
+    e.restr s ≈ e.restr s' := by
+  constructor
+  · simpa [e.restr_source]
+  · simp
+    exact fun ⦃x⦄ ↦ congrFun rfl
+
+lemma restr_inter_source : e.restr (e.source ∩ s) ≈ e.restr s :=
+  e.restr_eqOnSource_restr (by simp [interior_eq_iff_isOpen.mpr e.open_source])
+
 end EqOnSource
 
 /-! product of two partial homeomorphisms -/
@@ -857,13 +947,13 @@ section Prod
 
 /-- The product of two partial homeomorphisms, as a partial homeomorphism on the product space. -/
 @[simps! (config := mfld_cfg) toPartialEquiv apply,
-  simps! (config := .lemmasOnly) source target symm_apply]
+  simps! -isSimp source target symm_apply]
 def prod (eX : PartialHomeomorph X X') (eY : PartialHomeomorph Y Y') :
     PartialHomeomorph (X × Y) (X' × Y') where
   open_source := eX.open_source.prod eY.open_source
   open_target := eX.open_target.prod eY.open_target
-  continuousOn_toFun := eX.continuousOn.prod_map eY.continuousOn
-  continuousOn_invFun := eX.continuousOn_symm.prod_map eY.continuousOn_symm
+  continuousOn_toFun := eX.continuousOn.prodMap eY.continuousOn
+  continuousOn_invFun := eX.continuousOn_symm.prodMap eY.continuousOn_symm
   toPartialEquiv := eX.toPartialEquiv.prod eY.toPartialEquiv
 
 @[simp, mfld_simps]
@@ -907,7 +997,7 @@ variable {ι : Type*} [Finite ι] {X Y : ι → Type*} [∀ i, TopologicalSpace 
   [∀ i, TopologicalSpace (Y i)] (ei : ∀ i, PartialHomeomorph (X i) (Y i))
 
 /-- The product of a finite family of `PartialHomeomorph`s. -/
-@[simps toPartialEquiv]
+@[simps! toPartialEquiv apply symm_apply source target]
 def pi : PartialHomeomorph (∀ i, X i) (∀ i, Y i) where
   toPartialEquiv := PartialEquiv.pi fun i => (ei i).toPartialEquiv
   open_source := isOpen_set_pi finite_univ fun i _ => (ei i).open_source
@@ -930,7 +1020,7 @@ To ensure the maps `toFun` and `invFun` are inverse of each other on the new `so
 the definition assumes that the sets `s` and `t` are related both by `e.is_image` and `e'.is_image`.
 To ensure that the new maps are continuous on `source`/`target`, it also assumes that `e.source` and
 `e'.source` meet `frontier s` on the same set and `e x = e' x` on this intersection. -/
-@[simps! (config := .asFn) toPartialEquiv apply]
+@[simps! -fullyApplied toPartialEquiv apply]
 def piecewise (e e' : PartialHomeomorph X Y) (s : Set X) (t : Set Y) [∀ x, Decidable (x ∈ s)]
     [∀ y, Decidable (y ∈ t)] (H : e.IsImage s t) (H' : e'.IsImage s t)
     (Hs : e.source ∩ frontier s = e'.source ∩ frontier s)
@@ -1035,7 +1125,7 @@ theorem continuousOn_iff_continuousOn_comp_left {f : Z → X} {s : Set Z} (h : s
 on the left is continuous and its image is contained in the source. -/
 theorem continuous_iff_continuous_comp_left {f : Z → X} (h : f ⁻¹' e.source = univ) :
     Continuous f ↔ Continuous (e ∘ f) := by
-  simp only [continuous_iff_continuousOn_univ]
+  simp only [← continuousOn_univ]
   exact e.continuousOn_iff_continuousOn_comp_left (Eq.symm h).subset
 
 end Continuity
@@ -1044,16 +1134,16 @@ end Continuity
 @[simps]
 def homeomorphOfImageSubsetSource {s : Set X} {t : Set Y} (hs : s ⊆ e.source) (ht : e '' s = t) :
     s ≃ₜ t :=
-  have h₁ : MapsTo e s t := mapsTo'.2 ht.subset
-  have h₂ : t ⊆ e.target := ht ▸ e.image_source_eq_target ▸ image_subset e hs
+  have h₁ : MapsTo e s t := mapsTo_iff_image_subset.2 ht.subset
+  have h₂ : t ⊆ e.target := ht ▸ e.image_source_eq_target ▸ image_mono hs
   have h₃ : MapsTo e.symm t s := ht ▸ forall_mem_image.2 fun _x hx =>
       (e.left_inv (hs hx)).symm ▸ hx
   { toFun := MapsTo.restrict e s t h₁
     invFun := MapsTo.restrict e.symm t s h₃
     left_inv := fun a => Subtype.ext (e.left_inv (hs a.2))
     right_inv := fun b => Subtype.eq <| e.right_inv (h₂ b.2)
-    continuous_toFun := (e.continuousOn.mono hs).restrict_mapsTo h₁
-    continuous_invFun := (e.continuousOn_symm.mono h₂).restrict_mapsTo h₃ }
+    continuous_toFun := (e.continuousOn.mono hs).mapsToRestrict h₁
+    continuous_invFun := (e.continuousOn_symm.mono h₂).mapsToRestrict h₃ }
 
 /-- A partial homeomorphism defines a homeomorphism between its source and target. -/
 @[simps!]
@@ -1074,7 +1164,7 @@ theorem nhds_eq_comap_inf_principal {x} (hx : x ∈ e.source) :
 /-- If a partial homeomorphism has source and target equal to univ, then it induces a homeomorphism
 between the whole spaces, expressed in this definition. -/
 @[simps (config := mfld_cfg) apply symm_apply]
--- Porting note (https://github.com/leanprover-community/mathlib4/issues/11215): TODO: add a `PartialEquiv` version
+-- TODO: add a `PartialEquiv` version
 def toHomeomorphOfSourceEqUnivTargetEqUniv (h : e.source = (univ : Set X)) (h' : e.target = univ) :
     X ≃ₜ Y where
   toFun := e
@@ -1088,9 +1178,9 @@ def toHomeomorphOfSourceEqUnivTargetEqUniv (h : e.source = (univ : Set X)) (h' :
       rw [h']
       exact mem_univ _
   continuous_toFun := by
-    simpa only [continuous_iff_continuousOn_univ, h] using e.continuousOn
+    simpa only [continuousOn_univ, h] using e.continuousOn
   continuous_invFun := by
-    simpa only [continuous_iff_continuousOn_univ, h'] using e.continuousOn_symm
+    simpa only [continuousOn_univ, h'] using e.continuousOn_symm
 
 theorem isOpenEmbedding_restrict : IsOpenEmbedding (e.source.restrict e) := by
   refine .of_continuous_injective_isOpenMap (e.continuousOn.comp_continuous
@@ -1099,17 +1189,11 @@ theorem isOpenEmbedding_restrict : IsOpenEmbedding (e.source.restrict e) := by
   exact e.isOpen_image_of_subset_source (e.open_source.isOpenMap_subtype_val V hV)
     fun _ ⟨x, _, h⟩ ↦ h ▸ x.2
 
-@[deprecated (since := "2024-10-18")]
-alias openEmbedding_restrict := isOpenEmbedding_restrict
-
 /-- A partial homeomorphism whose source is all of `X` defines an open embedding of `X` into `Y`.
 The converse is also true; see `IsOpenEmbedding.toPartialHomeomorph`. -/
 theorem to_isOpenEmbedding (h : e.source = Set.univ) : IsOpenEmbedding e :=
   e.isOpenEmbedding_restrict.comp
     ((Homeomorph.setCongr h).trans <| Homeomorph.Set.univ X).symm.isOpenEmbedding
-
-@[deprecated (since := "2024-10-18")]
-alias to_openEmbedding := to_isOpenEmbedding
 
 end PartialHomeomorph
 
@@ -1135,7 +1219,7 @@ theorem trans_toPartialHomeomorph :
 
 /-- Precompose a partial homeomorphism with a homeomorphism.
 We modify the source and target to have better definitional behavior. -/
-@[simps! (config := .asFn)]
+@[simps! -fullyApplied]
 def transPartialHomeomorph (e : X ≃ₜ Y) (f' : PartialHomeomorph Y Z) : PartialHomeomorph X Z where
   toPartialEquiv := e.toEquiv.transPartialEquiv f'.toPartialEquiv
   open_source := f'.open_source.preimage e.continuous
@@ -1222,7 +1306,7 @@ section transHomeomorph
 
 /-- Postcompose a partial homeomorphism with a homeomorphism.
 We modify the source and target to have better definitional behavior. -/
-@[simps! (config := .asFn)]
+@[simps! -fullyApplied]
 def transHomeomorph (e : PartialHomeomorph X Y) (f' : Y ≃ₜ Z) : PartialHomeomorph X Z where
   toPartialEquiv := e.toPartialEquiv.transEquiv f'.toEquiv
   open_source := e.open_source
@@ -1243,7 +1327,7 @@ theorem transHomeomorph_transHomeomorph (e : PartialHomeomorph X Y) (f' : Y ≃�
 theorem trans_transHomeomorph (e : PartialHomeomorph X Y) (e' : PartialHomeomorph Y Z)
     (f'' : Z ≃ₜ Z') :
     (e.trans e').transHomeomorph f'' = e.trans (e'.transHomeomorph f'') := by
-  simp only [transHomeomorph_eq_trans, trans_assoc, Homeomorph.trans_toPartialHomeomorph]
+  simp only [transHomeomorph_eq_trans, trans_assoc]
 
 end transHomeomorph
 
@@ -1302,7 +1386,7 @@ theorem subtypeRestr_symm_eqOn {U : Opens X} (hU : Nonempty U) :
   intro y hy
   rw [eq_comm, eq_symm_apply _ _ hy.1]
   · change restrict _ e _ = _
-    rw [← subtypeRestr_coe, (e.subtypeRestr hU).right_inv hy]
+    rw [← subtypeRestr_coe _ hU, (e.subtypeRestr hU).right_inv hy]
   · have := map_target _ hy; rwa [subtypeRestr_source] at this
 
 theorem subtypeRestr_symm_eqOn_of_le {U V : Opens X} (hU : Nonempty U) (hV : Nonempty V)
@@ -1320,21 +1404,20 @@ theorem subtypeRestr_symm_eqOn_of_le {U V : Opens X} (hU : Nonempty U) (hV : Non
     rw [PartialHomeomorph.symm_source]
     exact hyV
   · rw [(V.partialHomeomorphSubtypeCoe hV).right_inv hyV]
-    show _ = U.partialHomeomorphSubtypeCoe hU _
+    change _ = U.partialHomeomorphSubtypeCoe hU _
     rw [(U.partialHomeomorphSubtypeCoe hU).right_inv hy.2]
 
 end subtypeRestr
 
 variable {X X' Z : Type*} [TopologicalSpace X] [TopologicalSpace X'] [TopologicalSpace Z]
-    [Nonempty X] [Nonempty Z] {f : X → X'}
+  [Nonempty Z] {f : X → X'}
 
 /-- Extend a partial homeomorphism `e : X → Z` to `X' → Z`, using an open embedding `ι : X → X'`.
 On `ι(X)`, the extension is specified by `e`; its value elsewhere is arbitrary (and uninteresting).
 -/
-noncomputable def lift_openEmbedding
-    (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
+noncomputable def lift_openEmbedding (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
     PartialHomeomorph X' Z where
-  toFun := extend f e (Classical.arbitrary (α := X' → Z))
+  toFun := extend f e (fun _ ↦ (Classical.arbitrary Z))
   invFun := f ∘ e.invFun
   source := f '' e.source
   target := e.target
@@ -1352,7 +1435,9 @@ noncomputable def lift_openEmbedding
   open_source := hf.isOpenMap _ e.open_source
   open_target := e.open_target
   continuousOn_toFun := by
-    set F := (extend f (↑e) (Classical.arbitrary (X' → Z))) with F_eq
+    by_cases Nonempty X; swap
+    · intro x hx; simp_all
+    set F := (extend f e (fun _ ↦ (Classical.arbitrary Z))) with F_eq
     have heq : EqOn F (e ∘ (hf.toPartialHomeomorph).symm) (f '' e.source) := by
       intro x ⟨x₀, hx₀, hxx₀⟩
       rw [← hxx₀, F_eq, hf.injective.extend_apply e, comp_apply, hf.toPartialHomeomorph_left_inv]
@@ -1360,31 +1445,59 @@ noncomputable def lift_openEmbedding
       apply e.continuousOn_toFun.comp; swap
       · intro x' ⟨x, hx, hx'x⟩
         rw [← hx'x, hf.toPartialHomeomorph_left_inv]; exact hx
-      have : ContinuousOn (hf.toPartialHomeomorph).symm (f '' univ) := by
-        apply (hf.toPartialHomeomorph).continuousOn_invFun
-      apply this.mono; gcongr; exact fun ⦃a⦄ a ↦ trivial
-    apply ContinuousOn.congr this heq
+      have : ContinuousOn (hf.toPartialHomeomorph).symm (f '' univ) :=
+        (hf.toPartialHomeomorph).continuousOn_invFun
+      exact this.mono <| image_mono <| subset_univ _
+    exact ContinuousOn.congr this heq
   continuousOn_invFun := hf.continuous.comp_continuousOn e.continuousOn_invFun
 
-@[simp]
+@[simp, mfld_simps]
 lemma lift_openEmbedding_toFun (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
-    (e.lift_openEmbedding hf) = extend f e (Classical.arbitrary (α := (X' → Z))) := rfl
+    (e.lift_openEmbedding hf) = extend f e (fun _ ↦ (Classical.arbitrary Z)) := rfl
 
 lemma lift_openEmbedding_apply (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) {x : X} :
     (lift_openEmbedding e hf) (f x) = e x := by
   simp_rw [e.lift_openEmbedding_toFun]
   apply hf.injective.extend_apply
 
-@[simp]
-lemma lift_openEmbedding_symm (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
-    (e.lift_openEmbedding hf).symm = f ∘ e.symm := rfl
-
-@[simp]
+@[simp, mfld_simps]
 lemma lift_openEmbedding_source (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
     (e.lift_openEmbedding hf).source = f '' e.source := rfl
 
-@[simp]
+@[simp, mfld_simps]
 lemma lift_openEmbedding_target (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
     (e.lift_openEmbedding hf).target = e.target := rfl
 
+@[simp, mfld_simps]
+lemma lift_openEmbedding_symm (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
+    (e.lift_openEmbedding hf).symm = f ∘ e.symm := rfl
+
+@[simp, mfld_simps]
+lemma lift_openEmbedding_symm_source (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
+    (e.lift_openEmbedding hf).symm.source = e.target := rfl
+
+@[simp, mfld_simps]
+lemma lift_openEmbedding_symm_target (e : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
+    (e.lift_openEmbedding hf).symm.target = f '' e.source := by
+  rw [PartialHomeomorph.symm_target, e.lift_openEmbedding_source]
+
+lemma lift_openEmbedding_trans_apply
+    (e e' : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) (z : Z) :
+    (e.lift_openEmbedding hf).symm.trans (e'.lift_openEmbedding hf) z = (e.symm.trans e') z := by
+  simp [hf.injective.extend_apply e']
+
+@[simp, mfld_simps]
+lemma lift_openEmbedding_trans (e e' : PartialHomeomorph X Z) (hf : IsOpenEmbedding f) :
+    (e.lift_openEmbedding hf).symm.trans (e'.lift_openEmbedding hf) = e.symm.trans e' := by
+  ext z
+  · exact e.lift_openEmbedding_trans_apply e' hf z
+  · simp [hf.injective.extend_apply e]
+  · simp_rw [PartialHomeomorph.trans_source, e.lift_openEmbedding_symm_source, e.symm_source,
+      e.lift_openEmbedding_symm, e'.lift_openEmbedding_source]
+    refine ⟨fun ⟨hx, ⟨y, hy, hxy⟩⟩ ↦ ⟨hx, ?_⟩, fun ⟨hx, hx'⟩ ↦ ⟨hx, mem_image_of_mem f hx'⟩⟩
+    rw [mem_preimage]; rw [comp_apply] at hxy
+    exact (hf.injective hxy) ▸ hy
+
 end PartialHomeomorph
+
+set_option linter.style.longFile 1700

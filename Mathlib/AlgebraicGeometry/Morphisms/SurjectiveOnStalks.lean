@@ -4,7 +4,8 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Andrew Yang
 -/
 import Mathlib.AlgebraicGeometry.Morphisms.RingHomProperties
-import Mathlib.AlgebraicGeometry.PrimeSpectrum.TensorProduct
+import Mathlib.RingTheory.RingHom.Surjective
+import Mathlib.RingTheory.Spectrum.Prime.TensorProduct
 import Mathlib.Topology.LocalAtTarget
 
 /-!
@@ -15,7 +16,7 @@ We show that this class is stable under composition and base change.
 
 We also show that (`AlgebraicGeometry.SurjectiveOnStalks.isEmbedding_pullback`)
 if `Y ⟶ S` is surjective on stalks, then for every `X ⟶ S`, `X ×ₛ Y` is a subset of
-`X × Y` (cartesian product as topological spaces) with the induced topology.
+`X × Y` (Cartesian product as topological spaces) with the induced topology.
 -/
 
 open CategoryTheory CategoryTheory.Limits Topology
@@ -86,11 +87,19 @@ instance stableUnderBaseChange :
   apply HasRingHomProperty.isStableUnderBaseChange
   apply RingHom.IsStableUnderBaseChange.mk
   · exact (HasRingHomProperty.isLocal_ringHomProperty @SurjectiveOnStalks).respectsIso
-  intros R S T _ _ _ _ _ H
+  intro R S T _ _ _ _ _ H
   exact H.baseChange
 
+variable {f} in
+lemma mono_of_injective [SurjectiveOnStalks f] (hf : Function.Injective f.base) : Mono f := by
+  refine (Scheme.forgetToLocallyRingedSpace ⋙
+    LocallyRingedSpace.forgetToSheafedSpace).mono_of_mono_map ?_
+  apply SheafedSpace.mono_of_base_injective_of_stalk_epi
+  · exact hf
+  · exact fun x ↦ ConcreteCategory.epi_of_surjective _ (f.stalkMap_surjective x)
+
 /-- If `Y ⟶ S` is surjective on stalks, then for every `X ⟶ S`, `X ×ₛ Y` is a subset of
-`X × Y` (cartesian product as topological spaces) with the induced topology. -/
+`X × Y` (Cartesian product as topological spaces) with the induced topology. -/
 lemma isEmbedding_pullback {X Y S : Scheme.{u}} (f : X ⟶ S) (g : Y ⟶ S) [SurjectiveOnStalks g] :
     IsEmbedding (fun x ↦ ((pullback.fst f g).base x, (pullback.snd f g).base x)) := by
   let L := (fun x ↦ ((pullback.fst f g).base x, (pullback.snd f g).base x))
@@ -166,7 +175,7 @@ lemma isEmbedding_pullback {X Y S : Scheme.{u}} (f : X ⟶ S) (g : Y ⟶ S) [Sur
     · dsimp only
       rw [← hx₁', ← hz, ← Scheme.comp_base_apply]
       erw [← Scheme.comp_base_apply]
-      congr 4
+      congr 5
       apply pullback.hom_ext <;> simp [𝓤, ← pullback.condition, ← pullback.condition_assoc]
   · intro i
     have := H (S.affineOpenCover.obj i.1) (((𝒰.pullbackCover f).obj i.1).affineOpenCover.obj i.2.1)
@@ -177,10 +186,9 @@ lemma isEmbedding_pullback {X Y S : Scheme.{u}} (f : X ⟶ S) (g : Y ⟶ S) [Sur
         ((𝒲 i.1).map i.2.2 ≫ (𝒰.pullbackCover g).map i.1)
         (𝒰.map i.1) (by simp [pullback.condition]) (by simp [pullback.condition])
         inferInstance inferInstance inferInstance
-    convert this using 6
+    convert this using 7
     apply pullback.hom_ext <;>
-      simp [𝓤, ← pullback.condition, ← pullback.condition_assoc,
-        Scheme.Cover.pullbackHom]
+      simp [𝓤, Scheme.Cover.pullbackHom]
 
 end SurjectiveOnStalks
 
