@@ -9,7 +9,6 @@ import Init.Data.List.Nat.Pairwise
 import Init.Data.List.Nat.Range
 import Mathlib.NumberTheory.NumberField.Basic
 import Mathlib.RingTheory.Localization.NormTrace
-import Mathlib.Analysis.Normed.Field.Lemmas
 
 /-!
 # Number field discriminant
@@ -23,7 +22,9 @@ This file defines the discriminant of a number field.
 number field, discriminant
 -/
 
--- TODO. Rewrite some of the FLT results on the disciminant using the definitions and results of
+open Module
+
+-- TODO: Rewrite some of the FLT results on the discriminant using the definitions and results of
 -- this file
 
 namespace NumberField
@@ -57,6 +58,10 @@ theorem discr_eq_discr_of_algEquiv {L : Type*} [Field L] [NumberField L] (f : K 
   simp only [Function.comp_apply, integralBasis_apply, Basis.localizationLocalization_apply,
     Basis.map_apply]
   rfl
+
+theorem discr_eq_discr_of_ringEquiv {L : Type*} [Field L] [NumberField L] (f : K ≃+* L) :
+    discr K = discr L :=
+  discr_eq_discr_of_algEquiv _ <| AlgEquiv.ofRingEquiv (f := f) fun _ ↦ by simp
 
 end NumberField
 
