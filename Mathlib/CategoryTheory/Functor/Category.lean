@@ -57,7 +57,7 @@ instance Functor.category : Category.{max u₁ v₂} (C ⥤ D) where
 
 namespace NatTrans
 
-@[ext]
+@[ext, grind ext]
 theorem ext' {α β : F ⟶ G} (w : α.app = β.app) : α = β := NatTrans.ext w
 
 @[simp]
@@ -111,14 +111,12 @@ lemma id_comm (α β : (𝟭 C) ⟶ (𝟭 C)) : α ≫ β = β ≫ α := by
   exact (α.naturality (β.app X)).symm
 
 /-- `hcomp α β` is the horizontal composition of natural transformations. -/
-@[simps]
+@[simps (attr := grind =)]
 def hcomp {H I : D ⥤ E} (α : F ⟶ G) (β : H ⟶ I) : F ⋙ H ⟶ G ⋙ I where
   app := fun X : C => β.app (F.obj X) ≫ I.map (α.app X)
 
 /-- Notation for horizontal composition of natural transformations. -/
 infixl:80 " ◫ " => hcomp
-
-attribute [grind =] hcomp_app
 
 theorem hcomp_id_app {H : D ⥤ E} (α : F ⟶ G) (X : C) : (α ◫ 𝟙 H).app X = H.map (α.app X) := by
   simp
@@ -138,7 +136,7 @@ end NatTrans
 namespace Functor
 
 /-- Flip the arguments of a bifunctor. See also `Currying.lean`. -/
-@[simps obj_obj obj_map]
+@[simps (attr := grind =) obj_obj obj_map]
 protected def flip (F : C ⥤ D ⥤ E) : D ⥤ C ⥤ E where
   obj k :=
     { obj := fun j => (F.obj j).obj k,
@@ -147,10 +145,8 @@ protected def flip (F : C ⥤ D ⥤ E) : D ⥤ C ⥤ E where
 
 -- `@[simps]` doesn't produce a nicely stated lemma here:
 -- the implicit arguments for `app` use the definition of `flip`, rather than `flip` itself.
-@[simp] theorem flip_map_app (F : C ⥤ D ⥤ E) {d d' : D} (f : d ⟶ d') (c : C) :
+@[simp, grind =] theorem flip_map_app (F : C ⥤ D ⥤ E) {d d' : D} (f : d ⟶ d') (c : C) :
     (F.flip.map f).app c = (F.obj c).map f := rfl
-
-attribute [grind =] flip_obj_obj flip_obj_map flip_map_app
 
 /-- The left unitor, a natural isomorphism `((𝟭 _) ⋙ F) ≅ F`.
 -/

@@ -42,6 +42,13 @@ theorem iteratedDerivWithin_add
   simp_rw [iteratedDerivWithin, iteratedFDerivWithin_add_apply hf hg h hx,
     ContinuousMultilinearMap.add_apply]
 
+include h hx in
+theorem iteratedDerivWithin_fun_add
+    (hf : ContDiffWithinAt 𝕜 n f s x) (hg : ContDiffWithinAt 𝕜 n g s x) :
+    iteratedDerivWithin n (fun z ↦ f z + g z) s x =
+      iteratedDerivWithin n f s x + iteratedDerivWithin n g s x := by
+  simpa using iteratedDerivWithin_add hx h hf hg
+
 theorem iteratedDerivWithin_const_add (hn : 0 < n) (c : F) :
     iteratedDerivWithin n (fun z => c + f z) s x = iteratedDerivWithin n f s x := by
   obtain ⟨n, rfl⟩ := n.exists_eq_succ_of_ne_zero hn.ne'
@@ -176,9 +183,10 @@ theorem iteratedDeriv_comp_const_mul {n : ℕ} {f : 𝕜 → 𝕜} (h : ContDiff
 
 lemma iteratedDeriv_comp_neg (n : ℕ) (f : 𝕜 → F) (a : 𝕜) :
     iteratedDeriv n (fun x ↦ f (-x)) a = (-1 : 𝕜) ^ n • iteratedDeriv n f (-a) := by
-  induction' n with n ih generalizing a
-  · simp only [iteratedDeriv_zero, pow_zero, one_smul]
-  · have ih' : iteratedDeriv n (fun x ↦ f (-x)) = fun x ↦ (-1 : 𝕜) ^ n • iteratedDeriv n f (-x) :=
+  induction n generalizing a with
+  | zero => simp only [iteratedDeriv_zero, pow_zero, one_smul]
+  | succ n ih =>
+    have ih' : iteratedDeriv n (fun x ↦ f (-x)) = fun x ↦ (-1 : 𝕜) ^ n • iteratedDeriv n f (-x) :=
       funext ih
     rw [iteratedDeriv_succ, iteratedDeriv_succ, ih', pow_succ', neg_mul, one_mul,
       deriv_comp_neg (f := fun x ↦ (-1 : 𝕜) ^ n • iteratedDeriv n f x), deriv_fun_const_smul',

@@ -18,6 +18,7 @@ require "leanprover-community" / "importGraph" @ git "nightly-testing"
 require "leanprover-community" / "LeanSearchClient" @ git "main"
 require "leanprover-community" / "plausible" @ git "main"
 
+
 /-!
 ## Options for building mathlib
 -/
@@ -27,6 +28,7 @@ require "leanprover-community" / "plausible" @ git "main"
 abbrev mathlibOnlyLinters : Array LeanOption := #[
   ⟨`linter.mathlibStandardSet, true⟩,
   ⟨`linter.style.longFile, .ofNat 1500⟩,
+  -- ⟨`linter.nightlyRegressionSet, true⟩,
   -- `latest_import.yml` uses this comment: if you edit it, make sure that the workflow still works
 ]
 
