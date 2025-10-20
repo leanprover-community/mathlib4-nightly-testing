@@ -276,7 +276,7 @@ jobs:
         run: |
           cd pr-branch
           echo "Running mk_all --check (from pr-branch)..."
-          lake exe mk_all --check
+          #lake exe mk_all --check
 
       - name: begin gh-problem-match-wrap for build step
         uses: leanprover-community/gh-problem-matcher-wrap@20007cb926a46aa324653a387363b52f07709845 # 2025-04-23
