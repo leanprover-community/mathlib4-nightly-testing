@@ -276,7 +276,7 @@ jobs:
         run: |
           cd pr-branch
           echo "Running mk_all --check (from pr-branch)..."
-          #lake exe mk_all --check
+          lake exe mk_all --check
 
       - name: begin gh-problem-match-wrap for build step
         uses: leanprover-community/gh-problem-matcher-wrap@20007cb926a46aa324653a387363b52f07709845 # 2025-04-23
@@ -480,7 +480,7 @@ jobs:
         id: test
         run: |
           cd pr-branch
-          #lake --iofail test
+          lake --iofail test
       - name: end gh-problem-match-wrap for test step
         uses: leanprover-community/gh-problem-matcher-wrap@20007cb926a46aa324653a387363b52f07709845 # 2025-04-23
         with:
@@ -497,14 +497,14 @@ jobs:
         id: shake
         run: |
           cd pr-branch
-          #env LEAN_ABORT_ON_PANIC=1 lake exe shake --gh-style
+          env LEAN_ABORT_ON_PANIC=1 lake exe shake --gh-style
 
       - name: lint mathlib
         if: ${{ always() && steps.build.outcome == 'success' || steps.build.outcome == 'failure' }}
         id: lint
         run: |
           cd pr-branch
-          #env LEAN_ABORT_ON_PANIC=1 lake exe runLinter Mathlib
+          env LEAN_ABORT_ON_PANIC=1 lake exe runLinter Mathlib
 
       - name: end gh-problem-match-wrap for shake and lint steps
         uses: leanprover-community/gh-problem-matcher-wrap@20007cb926a46aa324653a387363b52f07709845 # 2025-04-23
@@ -616,37 +616,37 @@ jobs:
           lake build --no-build -v Counterexamples
           echo "::endgroup::"
 
-     # - name: check declarations in db files
-     #   run: |
-     #     python3 scripts/yaml_check.py docs/100.yaml docs/1000.yaml docs/overview.yaml docs/undergrad.yaml
-     #     lake exe check-yaml
+      - name: check declarations in db files
+        run: |
+          python3 scripts/yaml_check.py docs/100.yaml docs/1000.yaml docs/overview.yaml docs/undergrad.yaml
+          lake exe check-yaml
 
-     # - name: generate our import graph
-     #   run: |
-     #     lake exe graph
+      - name: generate our import graph
+        run: |
+          lake exe graph
 
-     # - name: upload the import graph
-     #   uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-     #   with:
-     #     name: import-graph
-     #     path: import_graph.dot
-     #     ## the default is 90, but we build often, so unless there's a reason
-     #     ## to care about old copies in the future, just say 7 days for now
-     #     retention-days: 7
+      - name: upload the import graph
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: import-graph
+          path: import_graph.dot
+          ## the default is 90, but we build often, so unless there's a reason
+          ## to care about old copies in the future, just say 7 days for now
+          retention-days: 7
 
-     # - name: clean up the import graph file
-     #   run: rm import_graph.dot
+      - name: clean up the import graph file
+        run: rm import_graph.dot
 
-     # - name: build everything
-     #   # make sure everything is available for test/import_all.lean
-     #   run: |
-     #     lake build Batteries Qq Aesop ProofWidgets Plausible
+      - name: build everything
+        # make sure everything is available for test/import_all.lean
+        run: |
+          lake build Batteries Qq Aesop ProofWidgets Plausible
 
-     # - name: build AesopTest (nightly-testing only)
-     #   # Only run on the mathlib4-nightly-testing repository
-     #   if: github.repository == 'leanprover-community/mathlib4-nightly-testing'
-     #   run: |
-     #     lake build AesopTest
+      - name: build AesopTest (nightly-testing only)
+        # Only run on the mathlib4-nightly-testing repository
+        if: github.repository == 'leanprover-community/mathlib4-nightly-testing'
+        run: |
+          lake build AesopTest
 
       # We no longer run `lean4checker` in regular CI, as it is quite expensive for little benefit.
       # Instead we run it in a cron job on master: see `lean4checker.yml`.
