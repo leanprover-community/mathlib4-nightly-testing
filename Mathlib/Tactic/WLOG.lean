@@ -100,7 +100,7 @@ def _root_.Lean.MVarId.wlog (goal : MVarId) (h : Option Name) (P : Expr)
   /- Split the reduction goal by cases on `h`. Keep the one with `¬h` as the reduction goal,
   and prove the easy goal by applying `H` to all its premises, which are fvars in the context. -/
   let (⟨easyGoal, hyp⟩, ⟨reductionGoal, negHyp⟩) ←
-    reductionGoal.byCases P <| if inaccessible then `_ else h
+    reductionGoal.byCases P <| if inaccessible then (← mkFreshBinderNameForTactic `h) else h
   easyGoal.withContext do
     -- Exclude ldecls from the `mkAppN` arguments
     let HArgFVarIds ← revertedFVars.filterM (notM ·.isLetVar)
