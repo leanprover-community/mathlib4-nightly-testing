@@ -8,7 +8,7 @@ import Lean.Elab.ParseImportsFast
 import Mathlib.Tactic.Linter.DirectoryDependency
 
 /-!
-#  The "header" linter
+# The "header" linter
 
 The "header" style linter checks that a file starts with
 ```
@@ -96,7 +96,7 @@ parsing the file linearly, it will only need to parse
 In conclusion, either the parsing is successful, and the linter can continue with its analysis,
 or the parsing is not successful and the linter will flag a missing module doc-string!
 -/
-def parseUpToHere (pos : String.Pos) (post : String := "") : CommandElabM Syntax := do
+def parseUpToHere (pos : String.Pos.Raw) (post : String := "") : CommandElabM Syntax := do
   let upToHere : Substring := { str := (← getFileMap).source, startPos := ⟨0⟩, stopPos := pos }
   -- Append a further string after the content of `upToHere`.
   Parser.testParseModule (← getEnv) "linter.style.header" (upToHere.toString ++ post)
@@ -104,9 +104,9 @@ def parseUpToHere (pos : String.Pos) (post : String := "") : CommandElabM Syntax
 /-- `toSyntax s pattern` converts the two input strings into a `Syntax`, assuming that `pattern`
 is a substring of `s`:
 the syntax is an atom with value `pattern` whose the range is the range of `pattern` in `s`. -/
-def toSyntax (s pattern : String) (offset : String.Pos := 0) : Syntax :=
-  let beg := ((s.splitOn pattern).getD 0 "").endPos + offset
-  let fin := (((s.splitOn pattern).getD 0 "") ++ pattern).endPos + offset
+def toSyntax (s pattern : String) (offset : String.Pos.Raw := 0) : Syntax :=
+  let beg := ((s.splitOn pattern).getD 0 "").rawEndPos.offsetBy offset
+  let fin := (((s.splitOn pattern).getD 0 "") ++ pattern).rawEndPos.offsetBy offset
   mkAtomFrom (.ofRange ⟨beg, fin⟩) pattern
 
 /-- Return if `line` looks like a correct authors line in a copyright header.
@@ -116,7 +116,7 @@ produces.
 `authorsLineChecks` computes a position for its warning *relative to `line`*.
 The `offset` input passes on the starting position of `line` in the whole file.
 -/
-def authorsLineChecks (line : String) (offset : String.Pos) : Array (Syntax × String) :=
+def authorsLineChecks (line : String) (offset : String.Pos.Raw) : Array (Syntax × String) :=
   Id.run do
   -- We cannot reasonably validate the author names, so we look only for a few common mistakes:
   -- the line starting wrongly, double spaces, using ' and ' between names,
@@ -193,7 +193,7 @@ def copyrightHeaderChecks (copyright : String) : Array (Syntax × String) := Id.
     -- If the list of authors spans multiple lines, all but the last line should end with a trailing
     -- comma. This excludes e.g. other comments in the copyright header.
     let authorsLine := "\n".intercalate authorsLines
-    let authorsStart := (("\n".intercalate [openComment, copyrightAuthor, license, ""])).endPos
+    let authorsStart := (("\n".intercalate [openComment, copyrightAuthor, license, ""])).rawEndPos
     if authorsLines.length > 1 && !authorsLines.dropLast.all (·.endsWith ",") then
       output := output.push ((toSyntax copyright authorsLine),
         "If an authors line spans multiple lines, \

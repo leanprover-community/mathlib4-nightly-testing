@@ -72,7 +72,7 @@ private lemma weightSpaceOfIsLieTower_aux (z : L) (v : V) (hv : v ∈ weightSpac
         LinearMap.smul_apply, Module.End.one_apply, forall_eq, pow_zero, hv w, sub_self, zero_mem]
     · next n hn =>
       intro m hm
-      obtain (hm | rfl) : m < n + 1 ∨ m = n + 1 := by omega
+      obtain (hm | rfl) : m < n + 1 ∨ m = n + 1 := by cutsat
       · exact U'.mono (Nat.le_succ n) (hn w m hm)
       have H : ∀ w, ⁅w, (π z ^ n) v⁆ = (T χ w) ((π z ^ n) v) + χ w • ((π z ^ n) v) := by simp
       rw [T, LinearMap.sub_apply, pow_succ', Module.End.mul_apply, LieModule.toEnd_apply_apply,
@@ -217,7 +217,6 @@ private lemma exists_forall_lie_eq_smul_of_isSolvable_of_finite
   exact exists_nontrivial_weightSpace_of_lieIdeal A hA χ'
 termination_by Module.finrank k L
 decreasing_by
-  simp_wf
   rw [← finrank_top k L]
   apply Submodule.finrank_lt_finrank_of_lt
   exact hA.lt_top
