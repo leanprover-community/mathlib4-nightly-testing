@@ -8,7 +8,7 @@ import Mathlib.Geometry.RingedSpace.OpenImmersion
 import Mathlib.Geometry.RingedSpace.LocallyRingedSpace.HasColimits
 
 /-!
-# Gluing Structured spaces
+# Gluing structured spaces
 
 Given a family of gluing data of structured spaces (presheafed spaces, sheafed spaces, or locally
 ringed spaces), we may glue them together.
@@ -41,10 +41,10 @@ Almost the whole file is dedicated to showing that `ι i` is an open immersion. 
 this is an open embedding of topological spaces follows from `Mathlib/Topology/Gluing.lean`, and it
 remains to construct `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_X, ι i '' U)` for each `U ⊆ U i`.
 Since `Γ(𝒪_X, ι i '' U)` is the limit of `diagram_over_open`, the components of the structure
-sheafs of the spaces in the gluing diagram, we need to construct a map
+sheaves of the spaces in the gluing diagram, we need to construct a map
 `ιInvApp_π_app : Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_V, U_V)` for each `V` in the gluing diagram.
 
-We will refer to ![this diagram](https://i.imgur.com/P0phrwr.png) in the following doc strings.
+We will refer to ![this diagram](https://i.imgur.com/P0phrwr.png) in the following docstrings.
 The `X` is the glued space, and the dotted arrow is a partial inverse guaranteed by the fact
 that it is an open immersion. The map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_{U_j}, _)` is given by the composition
 of the red arrows, and the map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_{V_{jk}}, _)` is given by the composition of the
@@ -155,9 +155,7 @@ theorem f_invApp_f_app (i j k : D.J) (U : Opens (D.V (i, j)).carrier) :
   erw [(π₁ i, j, k).c.naturality_assoc, reassoc_of% this, ← Functor.map_comp_assoc,
     IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_invApp_assoc, ←
     (D.V (i, k)).presheaf.map_comp, ← (D.V (i, k)).presheaf.map_comp]
-  -- Porting note: need to provide an explicit argument, otherwise Lean does not know which
-  -- category we are talking about
-  convert (Category.comp_id ((f D.toGlueData i k).c.app _)).symm
+  convert (Category.comp_id _).symm
   erw [(D.V (i, k)).presheaf.map_id]
   rfl
 
@@ -234,10 +232,7 @@ theorem ι_image_preimage_eq (i j : D.J) (U : Opens (D.U i).carrier) :
   dsimp only [Opens.map_coe, IsOpenMap.coe_functor_obj]
   rw [← show _ = (𝖣.ι i).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) i, ←
     show _ = (𝖣.ι j).base from 𝖣.ι_gluedIso_inv (PresheafedSpace.forget _) j]
-  -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11224): change `rw` to `erw` on `coe_comp`
-  erw [TopCat.coe_comp, TopCat.coe_comp, TopCat.coe_comp]
-  rw [Set.image_comp, Set.preimage_comp]
-  erw [Set.preimage_image_eq]
+  rw [TopCat.coe_comp, TopCat.coe_comp, Set.image_comp, Set.preimage_comp, Set.preimage_image_eq]
   · refine Eq.trans (D.toTopGlueData.preimage_image_eq_image' _ _ _) ?_
     dsimp
     rw [Set.image_comp]
@@ -248,7 +243,7 @@ theorem ι_image_preimage_eq (i j : D.J) (U : Opens (D.U i).carrier) :
     change (D.t i j ≫ D.t j i).base '' _ = _
     rw [𝖣.t_inv]
     simp
-  · rw [← TopCat.coe_comp, ← TopCat.mono_iff_injective]
+  · rw [← TopCat.mono_iff_injective]
     infer_instance
 
 /-- (Implementation). The map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_{U_j}, 𝖣.ι j ⁻¹' (𝖣.ι i '' U))` -/
@@ -299,7 +294,6 @@ theorem opensImagePreimageMap_app_assoc (i j k : D.J) (U : Opens (D.U i).carrier
 /-- (Implementation) Given an open subset of one of the spaces `U ⊆ Uᵢ`, the sheaf component of
 the image `ι '' U` in the glued space is the limit of this diagram. -/
 abbrev diagramOverOpen {i : D.J} (U : Opens (D.U i).carrier) :
-    -- Porting note : ↓ these need to be explicit
     (WalkingMultispan (.prod D.J))ᵒᵖ ⥤ C :=
   componentwiseDiagram 𝖣.diagram.multispan ((D.ι_isOpenEmbedding i).isOpenMap.functor.obj U)
 
@@ -320,16 +314,10 @@ def ιInvAppπApp {i : D.J} (U : Opens (D.U i).carrier) (j) :
     dsimp only [Functor.op_obj, Opens.map_coe, unop_op, IsOpenMap.coe_functor_obj]
     rw [Set.preimage_preimage]
     change (D.f j k ≫ 𝖣.ι j).base ⁻¹' _ = _
-    -- Porting note: used to be `congr 3`
-    suffices D.f j k ≫ D.ι j = colimit.ι D.diagram.multispan (WalkingMultispan.left (j, k)) by
-      rw [this]
-      rfl
+    congr 4
     exact colimit.w 𝖣.diagram.multispan (WalkingMultispan.Hom.fst (j, k))
   · exact D.opensImagePreimageMap i j U
 
-set_option maxHeartbeats 600000 in
--- Porting note: time out started in `erw [... congr_app (pullbackSymmetry_hom_comp_snd _ _)]` and
--- the last congr has a very difficult `rfl : eqToHom _ ≫ eqToHom _ ≫ ... = eqToHom ... `
 /-- (Implementation) The natural map `Γ(𝒪_{U_i}, U) ⟶ Γ(𝒪_X, 𝖣.ι i '' U)`.
 This forms the inverse of `(𝖣.ι i).c.app (op U)`. -/
 def ιInvApp {i : D.J} (U : Opens (D.U i).carrier) :
@@ -371,16 +359,14 @@ def ιInvApp {i : D.J} (U : Opens (D.U i).carrier) :
                 PresheafedSpace.comp_c_app_assoc (pullbackSymmetry _ _).hom]
             simp_rw [Category.assoc]
             congr 1
-            rw [← IsIso.eq_inv_comp,
-                IsOpenImmersion.inv_invApp]
-            simp_rw [Category.assoc]
-            erw [NatTrans.naturality_assoc, ← PresheafedSpace.comp_c_app_assoc,
-              congr_app (pullbackSymmetry_hom_comp_snd _ _)]
-            simp_rw [Category.assoc]
-            erw [IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.inv_naturality_assoc,
+            rw [← IsIso.eq_inv_comp, IsOpenImmersion.inv_invApp, Category.assoc,
+              NatTrans.naturality_assoc]
+            simp_rw [Functor.op_obj]
+            rw [← PresheafedSpace.comp_c_app_assoc, congr_app (pullbackSymmetry_hom_comp_snd _ _)]
+            simp_rw [Category.assoc, Functor.op_obj, comp_base, Opens.map_comp_obj,
+              TopCat.Presheaf.pushforward_obj_map]
+            rw [IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.inv_naturality_assoc,
               IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_invApp_assoc]
-            rw [← (D.V (j, k)).presheaf.map_comp]
-            erw [← (D.V (j, k)).presheaf.map_comp]
             repeat rw [← (D.V (j, k)).presheaf.map_comp]
             rfl } }
 
@@ -503,16 +489,18 @@ def vPullbackConeIsLimit (i j : D.J) : IsLimit (𝖣.vPullbackCone i j) :=
         rw [comp_base, comp_base] at this
         replace this := reassoc_of% this
         exact this _
-      rw [← Set.image_subset_iff, ← Set.image_univ, ← Set.image_comp, Set.image_univ]
-      -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11224): change `rw` to `erw`
-      erw [← TopCat.coe_comp]
-      rw [this, TopCat.coe_comp, ← Set.image_univ, Set.image_comp]
+      simp only [mapGlueData_U, forget_obj]
+      rw [← Set.image_subset_iff, ← Set.image_univ, ← Set.image_comp, Set.image_univ,
+        ← TopCat.coe_comp, this, TopCat.coe_comp, ← Set.image_univ, Set.image_comp]
       exact Set.image_subset_range _ _
     · apply IsOpenImmersion.lift_fac
     · rw [← cancel_mono (𝖣.ι j), Category.assoc, ← (𝖣.vPullbackCone i j).condition]
       conv_rhs => rw [← s.condition]
       erw [IsOpenImmersion.lift_fac_assoc]
-    · intro m e₁ _; rw [← cancel_mono (D.f i j)]; erw [e₁]; rw [IsOpenImmersion.lift_fac]
+    · intro m e₁ _
+      rw [← cancel_mono (D.f i j)]
+      simp only [lift_fac]
+      tauto
 
 theorem ι_jointly_surjective (x : 𝖣.glued) : ∃ (i : D.J) (y : D.U i), (𝖣.ι i).base y = x :=
   𝖣.ι_jointly_surjective (PresheafedSpace.forget _ ⋙ CategoryTheory.forget TopCat) x
@@ -651,11 +639,12 @@ theorem ι_jointly_surjective (x : 𝖣.glued) : ∃ (i : D.J) (y : D.U i), (�
       forget TopCat.{u}) x
 
 /-- The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
-
+```
 Vᵢⱼ ⟶ Uᵢ
  |      |
  ↓      ↓
  Uⱼ ⟶ X
+```
 -/
 def vPullbackConeIsLimit (i j : D.J) : IsLimit (𝖣.vPullbackCone i j) :=
   𝖣.vPullbackConeIsLimitOfMap forgetToSheafedSpace i j

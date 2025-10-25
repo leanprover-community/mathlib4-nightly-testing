@@ -156,7 +156,6 @@ theorem rootMultiplicity_X_sub_C_self [Nontrivial R] {x : R} :
     rootMultiplicity x (X - C x) = 1 :=
   pow_one (X - C x) ▸ rootMultiplicity_X_sub_C_pow x 1
 
--- Porting note: swapped instance argument order
 theorem rootMultiplicity_X_sub_C [Nontrivial R] [DecidableEq R] {x y : R} :
     rootMultiplicity x (X - C y) = if x = y then 1 else 0 := by
   split_ifs with hxy
@@ -281,7 +280,6 @@ theorem exists_multiset_roots [DecidableEq R] :
         rw [count_zero, rootMultiplicity_eq_zero (not_exists.mp h a)]⟩
 termination_by p => natDegree p
 decreasing_by {
-  simp_wf
   apply (Nat.cast_lt (α := WithBot ℕ)).mp
   simp only [degree_eq_natDegree hp, degree_eq_natDegree hd0] at wf
   assumption}
