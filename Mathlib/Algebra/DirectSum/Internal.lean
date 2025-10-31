@@ -72,7 +72,7 @@ theorem SetLike.natCast_mem_graded [Zero ι] [AddMonoidWithOne R] [SetLike σ R]
 theorem SetLike.intCast_mem_graded [Zero ι] [AddGroupWithOne R] [SetLike σ R]
     [AddSubgroupClass σ R] (A : ι → σ) [SetLike.GradedOne A] (z : ℤ) : (z : R) ∈ A 0 := by
   cases z
-  · rw [Int.ofNat_eq_coe, Int.cast_natCast]
+  · rw [Int.ofNat_eq_natCast, Int.cast_natCast]
     exact SetLike.natCast_mem_graded _ _
   · rw [Int.cast_negSucc]
     exact neg_mem (SetLike.natCast_mem_graded _ _)
@@ -364,6 +364,11 @@ variable (A : ι → σ) [SetLike.GradedMonoid A]
 `SetLike.GradedMonoid A`. -/
 instance instCommSemiring : CommSemiring (A 0) := (subsemiring A).toCommSemiring
 
+instance : Algebra (A 0) R :=
+  Algebra.ofSubsemiring <| SetLike.GradeZero.subsemiring A
+
+@[simp] lemma algebraMap_apply (x : A 0) : algebraMap (A 0) R x = x := rfl
+
 end CommSemiring
 
 section Ring
@@ -412,17 +417,6 @@ instance instAlgebra : Algebra S (A 0) := inferInstanceAs <| Algebra S (subalgeb
     ↑(algebraMap _ (A 0) s) = algebraMap _ R s := rfl
 
 end Algebra
-
-section
-
-variable [CommSemiring S] [CommSemiring R] [Algebra S R] [AddCommMonoid ι]
-variable (A : ι → Submodule S R) [SetLike.GradedMonoid A]
-
-instance : Algebra (A 0) R := (SetLike.GradeZero.subalgebra A).toAlgebra
-
-@[simp] lemma algebraMap_apply (x) : algebraMap (A 0) R x = x := rfl
-
-end
 
 end SetLike.GradeZero
 
