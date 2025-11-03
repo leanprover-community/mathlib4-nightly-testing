@@ -109,6 +109,9 @@ theorem lt_def {x y : ONote} : x < y ↔ repr x < repr y :=
 theorem le_def {x y : ONote} : x ≤ y ↔ repr x ≤ repr y :=
   Iff.rfl
 
+@[gcongr] alias ⟨repr_le_repr, _⟩ := le_def
+@[gcongr] alias ⟨repr_lt_repr, _⟩ := lt_def
+
 instance : WellFoundedRelation ONote :=
   ⟨(· < ·), InvImage.wf repr Ordinal.lt_wf⟩
 
@@ -161,7 +164,7 @@ theorem eq_of_cmp_eq : ∀ {o₁ o₂}, cmp o₁ o₂ = Ordering.eq → o₁ = o
     revert h; cases h₂ : _root_.cmp (n₁ : ℕ) n₂ <;> intro h <;> try cases h
     obtain rfl := eq_of_cmp_eq h
     rw [_root_.cmp, cmpUsing_eq_eq, not_lt, not_lt, ← le_antisymm_iff] at h₂
-    obtain rfl := Subtype.eq h₂
+    obtain rfl := Subtype.ext h₂
     simp
 
 protected theorem zero_lt_one : (0 : ONote) < 1 := by
@@ -227,11 +230,9 @@ theorem NFBelow.repr_lt {o b} (h : NFBelow o b) : repr o < ω ^ b := by
   | zero => exact opow_pos _ omega0_pos
   | oadd' _ _ h₃ _ IH =>
     rw [repr]
-    apply ((add_lt_add_iff_left _).2 IH).trans_le
-    rw [← mul_succ]
-    apply (mul_le_mul_left' (succ_le_of_lt (nat_lt_omega0 _)) _).trans
-    rw [← opow_succ]
-    exact opow_le_opow_right omega0_pos (succ_le_of_lt h₃)
+    apply (add_lt_add_left IH _).trans_le
+    grw [← mul_succ, succ_le_of_lt (nat_lt_omega0 _), ← opow_succ, succ_le_of_lt h₃]
+    exact omega0_pos
 
 theorem NFBelow.mono {o b₁ b₂} (bb : b₁ ≤ b₂) (h : NFBelow o b₁) : NFBelow o b₂ := by
   induction h with
@@ -269,8 +270,7 @@ theorem oadd_lt_oadd_2 {e o₁ o₂ : ONote} {n₁ n₂ : ℕ+} (h₁ : NF (oadd
   rwa [← mul_succ, mul_le_mul_iff_right₀ (opow_pos _ omega0_pos), succ_le_iff, Nat.cast_lt]
 
 theorem oadd_lt_oadd_3 {e n a₁ a₂} (h : a₁ < a₂) : oadd e n a₁ < oadd e n a₂ := by
-  rw [lt_def]; unfold repr
-  exact @add_lt_add_left _ _ _ _ (repr a₁) _ h _
+  rw [lt_def]; unfold repr; gcongr
 
 theorem cmp_compares : ∀ (a b : ONote) [NF a] [NF b], (cmp a b).Compares a b
   | 0, 0, _, _ => rfl
@@ -304,7 +304,7 @@ theorem cmp_compares : ∀ (a b : ONote) [NF a] [NF b], (cmp a b).Compares a b
       rw [ite_eq_iff] at nhr
       rcases nhr with nhr | nhr
       · cases nhr; contradiction
-      obtain rfl := Subtype.eq (nhl.eq_of_not_lt nhr.1)
+      obtain rfl := Subtype.ext (nhl.eq_of_not_lt nhr.1)
       have IHa := @cmp_compares _ _ h₁.snd h₂.snd
       revert IHa; cases cmp a₁ a₂ <;> intro IHa <;> dsimp at IHa
       case lt => exact oadd_lt_oadd_3 IHa
@@ -509,8 +509,6 @@ instance : Mul ONote :=
   ⟨mul⟩
 
 instance : MulZeroClass ONote where
-  mul := (· * ·)
-  zero := 0
   zero_mul o := by cases o <;> rfl
   mul_zero o := by cases o <;> rfl
 
@@ -775,14 +773,15 @@ theorem repr_opow_aux₁ {e a} [Ne : NF e] [Na : NF a] {a' : Ordinal} (e0 : repr
   rw [repr] at this
   apply (opow_le_opow_left b <| this.le).trans
   rw [← opow_mul, ← opow_mul]
-  apply opow_le_opow_right omega0_pos
   rcases le_or_gt ω (repr e) with h | h
-  · apply (mul_le_mul_left' (le_succ b) _).trans
-    rw [← add_one_eq_succ, add_mul_succ _ (one_add_of_omega0_le h), add_one_eq_succ, succ_le_iff]
-    gcongr
-    exact isSuccLimit_omega0.succ_lt l
-  · apply (principal_mul_omega0 (isSuccLimit_omega0.succ_lt h) l).le.trans
-    simpa using mul_le_mul_right' (one_le_iff_ne_zero.2 e0) ω
+  · grw [le_succ b, ← add_one_eq_succ, add_mul_succ _ (one_add_of_omega0_le h), add_one_eq_succ]
+    · gcongr
+      · exact omega0_pos
+      · exact succ_le_iff.2 <| by gcongr; exact isSuccLimit_omega0.succ_lt l
+    · exact omega0_pos
+  · grw [show _ * _ < _ from principal_mul_omega0 (isSuccLimit_omega0.succ_lt h) l]
+    · simpa using mul_le_mul_right' (one_le_iff_ne_zero.2 e0) ω
+    · exact omega0_pos
 
 section
 
@@ -863,7 +862,7 @@ theorem repr_opow_aux₂ {a0 a'} [N0 : NF a0] [Na' : NF a'] (m : ℕ) (d : ω �
     · rw [natCast_succ, add_mul_succ]
       apply add_absorp Rl
       rw [opow_mul, opow_succ]
-      apply mul_le_mul_left'
+      gcongr
       simpa [repr] using omega0_le_oadd a0 n a'
 
 end

@@ -5,6 +5,7 @@ Authors: Johan Commelin
 -/
 import Mathlib.Logic.IsEmpty
 import Mathlib.Tactic.Inhabit
+import Mathlib.Tactic.Push.Attr
 
 /-!
 # Types with a unique term
@@ -77,7 +78,7 @@ abbrev uniqueOfSubsingleton {α : Sort*} [Subsingleton α] (a : α) : Unique α 
 
 instance PUnit.instUnique : Unique PUnit.{u} where
   default := PUnit.unit
-  uniq x := subsingleton x _
+  uniq x := ext x _
 
 @[simp]
 theorem PUnit.default_eq_unit : (default : PUnit) = PUnit.unit :=
@@ -148,7 +149,7 @@ theorem unique_iff_subsingleton_and_nonempty (α : Sort u) :
 
 variable {α : Sort*}
 
-@[simp]
+@[simp, push ←]
 theorem Pi.default_def {β : α → Sort v} [∀ a, Inhabited (β a)] :
     @default (∀ a, β a) _ = fun a : α ↦ @default (β a) _ :=
   rfl

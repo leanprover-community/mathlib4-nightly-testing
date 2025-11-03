@@ -24,7 +24,7 @@ variable {R : Type*} [NormedRing R] (c : ℝ)
 open PowerSeries Filter
 open scoped Topology
 
-/-- A power series over `R` is restricted of paramerter `c` if we have
+/-- A power series over `R` is restricted of parameter `c` if we have
 `‖coeff R i f‖ * c ^ i → 0`. -/
 def IsRestricted (f : PowerSeries R) :=
   Tendsto (fun (i : ℕ) ↦ (norm (coeff i f)) * c ^ i) atTop (𝓝 0)
@@ -75,7 +75,7 @@ lemma neg {f : PowerSeries R} (hf : IsRestricted c f) : IsRestricted c (-f) := b
   simpa [isRestricted_iff] using hf
 
 lemma smul {f : PowerSeries R} (hf : IsRestricted c f) (r : R) : IsRestricted c (r • f) := by
-  if h : r = 0 then (simpa [h] using zero c) else
+  if h : r = 0 then simpa [h] using zero c else
   simp_rw [isRestricted_iff, norm_mul, norm_pow, Real.norm_eq_abs, abs_norm] at ⊢ hf
   intro ε _
   obtain ⟨n, hn⟩ := hf (ε / ‖r‖) (by positivity)
@@ -92,7 +92,7 @@ def convergenceSet (f : PowerSeries R) : Set ℝ := {‖coeff i f‖ * c^i | i :
 
 open Finset in
 lemma convergenceSet_BddAbove {f : PowerSeries R} (hf : IsRestricted c f) :
-  BddAbove (convergenceSet c f) := by
+    BddAbove (convergenceSet c f) := by
   simp_rw [isRestricted_iff] at hf
   obtain ⟨N, hf⟩ := by simpa using (hf 1)
   rw [bddAbove_def, convergenceSet]
@@ -131,7 +131,14 @@ lemma mul {f g : PowerSeries R} (hf : IsRestricted c f) (hg : IsRestricted c g) 
   obtain ⟨rfl⟩ := by simpa using hi (⟨(0, n), by simp⟩)
   calc _ ≤ ‖(coeff fst) f * (coeff snd) g‖ * |c| ^ (fst + snd) := by bound
        _ ≤ ‖(coeff fst) f‖ * |c| ^ fst * (‖(coeff snd) g‖ * |c| ^ snd) := by
-        grw [norm_mul_le]; grind
+        grw [norm_mul_le]
+        #adaptation_note
+        /--
+        Broken in `nightly-2025-10-26`: this was by `grind`, but is now no longer supported.
+        See https://github.com/leanprover/lean4/pull/10970.
+        -/
+        rw [pow_add]
+        grind
   have : max Nf Ng ≤ fst ∨ max Nf Ng ≤ snd := by omega
   rcases this with this | this
   · calc _ < ε / max a b * b := by

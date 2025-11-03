@@ -315,7 +315,7 @@ def cons {i} (m : M i) (w : Word M) (hmw : w.fstIdx ≠ some i) (h1 : m ≠ 1) :
       rintro l (rfl | hl)
       · exact h1
       · exact w.ne_one l hl
-    chain_ne := w.chain_ne.cons' (fstIdx_ne_iff.mp hmw) }
+    chain_ne := w.chain_ne.cons (fstIdx_ne_iff.mp hmw) }
 
 @[simp]
 theorem fstIdx_cons {i} (m : M i) (w : Word M) (hmw : w.fstIdx ≠ some i) (h1 : m ≠ 1) :
@@ -379,7 +379,7 @@ def consRecOn {motive : Word M → Sort*} (w : Word M) (empty : motive empty)
   | nil => exact empty
   | cons m w ih =>
     refine cons m.1 m.2 ⟨w, fun _ hl => h1 _ (List.mem_cons_of_mem _ hl), h2.tail⟩ ?_ ?_ (ih _ _)
-    · rw [List.isChain_cons'] at h2
+    · rw [List.isChain_cons] at h2
       simp only [fstIdx, ne_eq, Option.map_eq_some_iff,
         Sigma.exists, exists_and_right, exists_eq_right, not_exists]
       intro m' hm'
@@ -501,7 +501,7 @@ theorem smul_eq_of_smul {i} (m : M i) (w : Word M) :
 theorem mem_smul_iff {i j : ι} {m₁ : M i} {m₂ : M j} {w : Word M} :
     ⟨_, m₁⟩ ∈ (of m₂ • w).toList ↔
       (¬i = j ∧ ⟨i, m₁⟩ ∈ w.toList)
-      ∨ (m₁ ≠ 1 ∧ ∃ (hij : i = j),(⟨i, m₁⟩ ∈ w.toList.tail) ∨
+      ∨ (m₁ ≠ 1 ∧ ∃ (hij : i = j), (⟨i, m₁⟩ ∈ w.toList.tail) ∨
         (∃ m', ⟨j, m'⟩ ∈ w.toList.head? ∧ m₁ = hij ▸ (m₂ * m')) ∨
         (w.fstIdx ≠ some j ∧ m₁ = hij ▸ m₂)) := by
   rw [of_smul_def, mem_rcons_iff, mem_equivPair_tail_iff, equivPair_head, or_assoc]
@@ -514,7 +514,7 @@ theorem mem_smul_iff {i j : ι} {m₁ : M i} {m₂ : M j} {w : Word M} :
       intro hm1
       split_ifs with h
       · rcases h with ⟨hnil, rfl⟩
-        simp only [List.head?_eq_head hnil, Option.some.injEq]
+        simp only [List.head?_eq_some_head hnil, Option.some.injEq]
         constructor
         · rintro rfl
           exact Or.inl ⟨_, rfl, rfl⟩
@@ -524,7 +524,7 @@ theorem mem_smul_iff {i j : ι} {m₁ : M i} {m₂ : M j} {w : Word M} :
             rfl
           · simp only [fstIdx, Option.map_eq_some_iff, Sigma.exists,
               exists_and_right, exists_eq_right, not_exists, ne_eq] at hm'
-            exact (hm'.1 (w.toList.head hnil).2 (by rw [List.head?_eq_head])).elim
+            exact (hm'.1 (w.toList.head hnil).2 (by rw [List.head?_eq_some_head])).elim
       · revert h
         rw [fstIdx]
         cases w.toList

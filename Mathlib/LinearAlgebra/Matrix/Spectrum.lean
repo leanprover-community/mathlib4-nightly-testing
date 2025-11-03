@@ -109,7 +109,7 @@ theorem eigenvectorUnitary_mulVec (j : n) :
 
 theorem star_eigenvectorUnitary_mulVec (j : n) :
     (star (eigenvectorUnitary hA : Matrix n n 𝕜)) *ᵥ ⇑(hA.eigenvectorBasis j) = Pi.single j 1 := by
-  rw [← eigenvectorUnitary_mulVec, mulVec_mulVec, unitary.coe_star_mul_self, one_mulVec]
+  rw [← eigenvectorUnitary_mulVec, mulVec_mulVec, Unitary.coe_star_mul_self, one_mulVec]
 
 /-- Unitary diagonalization of a Hermitian matrix. -/
 theorem star_mul_self_mul_eq_diagonal :
@@ -166,7 +166,7 @@ lemma sort_roots_charpoly_eq_eigenvalues₀ :
     (A.charpoly.roots.map RCLike.re).sort (· ≥ ·) = List.ofFn hA.eigenvalues₀ := by
   simp_rw [hA.roots_charpoly_eq_eigenvalues₀, Fin.univ_val_map, Multiset.map_coe, List.map_ofFn,
     Function.comp_def, RCLike.ofReal_re, Multiset.coe_sort]
-  rw [List.mergeSort_of_sorted]
+  rw [List.mergeSort_of_pairwise]
   simpa [List.Sorted] using (eigenvalues₀_antitone hA).ofFn_sorted
 
 lemma eigenvalues_eq_eigenvalues_iff :
@@ -185,8 +185,8 @@ theorem det_eq_prod_eigenvalues : det A = ∏ i, (hA.eigenvalues i : 𝕜) := by
 
 /-- rank of a Hermitian matrix is the rank of after diagonalization by the eigenvector unitary -/
 lemma rank_eq_rank_diagonal : A.rank = (Matrix.diagonal hA.eigenvalues).rank := by
-  conv_lhs => rw [hA.spectral_theorem, ← unitary.coe_star]
-  simp [-isUnit_iff_ne_zero, -unitary.coe_star, rank_diagonal]
+  conv_lhs => rw [hA.spectral_theorem, ← Unitary.coe_star]
+  simp [-isUnit_iff_ne_zero, -Unitary.coe_star, rank_diagonal]
 
 /-- rank of a Hermitian matrix is the number of nonzero eigenvalues of the Hermitian matrix -/
 lemma rank_eq_card_non_zero_eigs : A.rank = Fintype.card {i // hA.eigenvalues i ≠ 0} := by

@@ -87,7 +87,7 @@ theorem Float.Zero.valid : ValidFinite emin 0 :=
       simp only [emin, emax] at *
       cutsat
     le_trans C.precMax (Nat.le_mul_of_pos_left _ Nat.zero_lt_two),
-    by (simp [sub_eq_add_neg, Int.ofNat_zero_le])⟩
+    by (simp [sub_eq_add_neg, Int.natCast_nonneg])⟩
 
 @[nolint docBlame]
 def Float.zero (s : Bool) : Float :=
@@ -207,7 +207,7 @@ instance : Neg Float :=
 unsafe def add (mode : RMode) : Float → Float → Float
   | nan, _ => nan
   | _, nan => nan
-  | inf Bool.true, inf Bool.false=> nan
+  | inf Bool.true, inf Bool.false => nan
   | inf Bool.false, inf Bool.true => nan
   | inf s₁, _ => inf s₁
   | _, inf s₂ => inf s₂

@@ -38,8 +38,8 @@ E.g. `#eval "InvHMulLEConjugate₂SMul_ne_top".splitCase` yields
 partial def _root_.String.splitCase (s : String) (i₀ : Pos.Raw := 0) (r : List String := []) :
     List String := Id.run do
   -- We test if we need to split between `i₀` and `i₁`.
-  let i₁ := s.next i₀
-  if s.atEnd i₁ then
+  let i₁ := i₀.next s
+  if i₁.atEnd s then
     -- If `i₀` is the last position, return the list.
     let r := s::r
     return r.reverse
@@ -48,27 +48,30 @@ partial def _root_.String.splitCase (s : String) (i₀ : Pos.Raw := 0) (r : List
   * We split after a name in `endCapitalNames`;
   * We split after a lower-case letter that is followed by an upper-case letter
     (unless it is part of a name in `endCapitalNames`). -/
-  if s.get i₀ == '_' || s.get i₁ == '_' then
-    return splitCase (s.extract i₁ s.endPos) 0 <| (s.extract 0 i₁)::r
-  if (s.get i₁).isUpper then
-    if let some strs := endCapitalNames[s.extract 0 i₁]? then
+  if i₀.get s == '_' || i₁.get s == '_' then
+    return splitCase (String.Pos.Raw.extract s i₁ s.rawEndPos) 0 <|
+      (String.Pos.Raw.extract s 0 i₁)::r
+  if (i₁.get s).isUpper then
+    if let some strs := endCapitalNames[String.Pos.Raw.extract s 0 i₁]? then
       if let some (pref, newS) := strs.findSome?
-        fun x : String ↦ (s.extract i₁ s.endPos).dropPrefix? x |>.map (x, ·.toString) then
-        return splitCase newS 0 <| (s.extract 0 i₁ ++ pref)::r
-    if !(s.get i₀).isUpper then
-      return splitCase (s.extract i₁ s.endPos) 0 <| (s.extract 0 i₁)::r
+        fun x : String ↦ (String.Pos.Raw.extract s i₁ s.rawEndPos).dropPrefix? x
+          |>.map (x, ·.toString) then
+        return splitCase newS 0 <| (String.Pos.Raw.extract s 0 i₁ ++ pref)::r
+    if !(i₀.get s).isUpper then
+      return splitCase (String.Pos.Raw.extract s i₁ s.rawEndPos) 0 <|
+        (String.Pos.Raw.extract s 0 i₁)::r
   return splitCase s i₁ r
 
 /-- Helper for `capitalizeLike`. -/
 partial def capitalizeLikeAux (s : String) (i : String.Pos.Raw := 0) (p : String) : String :=
-  if p.atEnd i || s.atEnd i then
+  if i.atEnd p || i.atEnd s then
     p
   else
-    let j := p.next i
-    if (s.get i).isLower then
-      capitalizeLikeAux s j <| p.set i (p.get i |>.toLower)
-    else if (s.get i).isUpper then
-      capitalizeLikeAux s j <| p.set i (p.get i |>.toUpper)
+    let j := i.next p
+    if (i.get s).isLower then
+      capitalizeLikeAux s j <| i.set p (i.get p |>.toLower)
+    else if (i.get s).isUpper then
+      capitalizeLikeAux s j <| i.set p (i.get p |>.toUpper)
     else
       capitalizeLikeAux s j p
 

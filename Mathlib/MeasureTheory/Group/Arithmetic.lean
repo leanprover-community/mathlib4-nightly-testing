@@ -399,12 +399,6 @@ theorem aemeasurable_inv_iff {G : Type*} [InvolutiveInv G] [MeasurableSpace G] [
     {f : α → G} : AEMeasurable (fun x => (f x)⁻¹) μ ↔ AEMeasurable f μ :=
   ⟨fun h => by simpa only [inv_inv] using h.inv, fun h => h.inv⟩
 
-@[deprecated (since := "2025-04-09")]
-alias measurable_inv_iff₀ := measurable_inv_iff
-
-@[deprecated (since := "2025-04-09")]
-alias aemeasurable_inv_iff₀ := aemeasurable_inv_iff
-
 @[to_additive]
 instance Pi.measurableInv {ι : Type*} {α : ι → Type*} [∀ i, Inv (α i)]
     [∀ i, MeasurableSpace (α i)] [∀ i, MeasurableInv (α i)] : MeasurableInv (∀ i, α i) :=
@@ -452,7 +446,7 @@ instance DivInvMonoid.measurableZPow (G : Type u) [DivInvMonoid G] [MeasurableSp
     [MeasurableMul₂ G] [MeasurableInv G] : MeasurablePow G ℤ :=
   ⟨measurable_from_prod_countable_left fun n => by
       rcases n with n | n
-      · simp_rw [Int.ofNat_eq_coe, zpow_natCast]
+      · simp_rw [Int.ofNat_eq_natCast, zpow_natCast]
         exact measurable_id.pow_const _
       · simp_rw [zpow_negSucc]
         exact (measurable_id.pow_const (n + 1)).inv⟩
@@ -650,7 +644,7 @@ instance SubNegMonoid.measurableSMul_int₂ (M : Type*) [SubNegMonoid M] [Measur
     refine measurable_from_prod_countable_left fun n => ?_
     cases n with
     | ofNat n =>
-      simp only [Int.ofNat_eq_coe, natCast_zsmul]
+      simp only [Int.ofNat_eq_natCast, natCast_zsmul]
       exact measurable_const_smul _
     | negSucc n =>
       simp only [negSucc_zsmul]

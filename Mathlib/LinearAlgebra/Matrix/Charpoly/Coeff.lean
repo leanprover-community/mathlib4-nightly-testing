@@ -134,6 +134,12 @@ theorem trace_eq_neg_charpoly_coeff [Nonempty n] (M : Matrix n n R) :
     prod_X_sub_C_coeff_card_pred univ (fun i : n => M i i) Fintype.card_pos, neg_neg, trace]
   simp_rw [diag_apply]
 
+theorem trace_eq_neg_charpoly_nextCoeff (M : Matrix n n R) : M.trace = -M.charpoly.nextCoeff := by
+  cases isEmpty_or_nonempty n
+  · simp [nextCoeff]
+  nontriviality
+  simp [trace_eq_neg_charpoly_coeff, nextCoeff]
+
 theorem det_eq_sign_charpoly_coeff (M : Matrix n n R) :
     M.det = (-1) ^ Fintype.card n * M.charpoly.coeff 0 := by
   rw [coeff_zero_eq_eval_zero, charpoly, eval_det, matPolyEquiv_charmatrix, ← det_smul]
@@ -206,7 +212,7 @@ lemma charpoly_of_card_eq_two [Nontrivial R] (hn : Fintype.card n = 2) :
     · simp [trace_eq_neg_charpoly_coeff, hn]
     · simpa [leadingCoeff, charpoly_natDegree_eq_dim, hn, coeff_X] using
         M.charpoly_monic.leadingCoeff
-  · rw [Finset.mem_range, not_lt, Nat.succ_le] at hi
+  · rw [Finset.mem_range, not_lt, Nat.succ_le_iff] at hi
     suffices M.charpoly.coeff i = 0 by
       simpa [show i ≠ 2 by cutsat, show 1 ≠ i by cutsat, show i ≠ 0 by cutsat, coeff_X, coeff_C]
     apply coeff_eq_zero_of_natDegree_lt

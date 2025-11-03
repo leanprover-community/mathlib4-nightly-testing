@@ -91,7 +91,7 @@ lemma ENat_card_ofStabilizer_add_one_eq (a : α) :
   congr
   simp
 
-@[deprecated  (since := "2025-07-15")]
+@[deprecated (since := "2025-07-15")]
 alias Enat_card_ofStabilizer_eq_add_one := ENat_card_ofStabilizer_add_one_eq
 
 @[to_additive]
@@ -224,7 +224,7 @@ lemma exists_smul_of_last_eq [IsPretransitive G α] {n : ℕ} (a : α) (x : Fin 
   ext i
   rcases Fin.eq_castSucc_or_eq_last i with ⟨i, rfl⟩ | ⟨rfl⟩
   · simpa [ofStabilizer.snoc] using
-      Subtype.eq_iff.mp <| Function.Embedding.codRestrict_apply _ _ H i
+      Subtype.ext_iff.mp <| Function.Embedding.codRestrict_apply _ _ H i
   · simpa only [smul_apply, ofStabilizer.snoc, Fin.Embedding.snoc_last]
 
 end SubMulAction

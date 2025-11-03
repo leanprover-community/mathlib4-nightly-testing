@@ -74,7 +74,7 @@ theorem head?_coeffList (h : P ≠ 0) :
     P.coeffList.head hP = P.leadingCoeff :=
   let h := coeffList_eq_nil.not.mp hP
   (coeffList_eq_cons_leadingCoeff h).casesOn fun _ _ ↦
-    Option.some.injEq _ _ ▸ List.head?_eq_head _ ▸ head?_coeffList h
+    Option.some.injEq _ _ ▸ List.head?_eq_some_head _ ▸ head?_coeffList h
 
 theorem length_coeffList_eq_withBotSucc_degree (P : R[X]) : P.coeffList.length = P.degree.succ := by
   simp [coeffList]
@@ -154,7 +154,9 @@ theorem coeffList_eraseLead (h : P ≠ 0) :
     · simpa using by cutsat
 
 end Semiring
+
 section Ring
+
 variable [Ring R] (P : R[X])
 
 @[simp]
@@ -165,13 +167,14 @@ theorem coeffList_neg : (-P).coeffList = P.coeffList.map (-·) := by
 
 end Ring
 
-section DivisionSemiring
-variable [DivisionSemiring R] (P : R[X])
+section NoZeroDivisors
+
+variable [Semiring R] [NoZeroDivisors R] (P : R[X])
 
 theorem coeffList_C_mul {x : R} (hx : x ≠ 0) : (C x * P).coeffList = P.coeffList.map (x * ·) := by
   by_cases hp : P = 0
   · simp [hp]
   · simp [coeffList, Polynomial.degree_C hx]
 
-end DivisionSemiring
+end NoZeroDivisors
 end Polynomial
