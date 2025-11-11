@@ -1,4 +1,4 @@
-module
+module  -- shake: keep-all, shake: keep-downstream
 
 public import Lean.Linter.Sets -- for the definition of linter sets
 public import Mathlib.Tactic.Linter.CommandStart
