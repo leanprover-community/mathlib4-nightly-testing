@@ -449,7 +449,7 @@ lemma pow_ω [Fact q.Prime] (odd : Odd q)
   have coe : (2 : X q) = (2 : ZMod q) := by rw [map_ofNat]
   rw [coe, ← RingHom.map_pow, pow2, ← coe,
     (by ring : (-2 : X q) = 2 * -1)] at this
-  refine (isUnit_of_mul_eq_one (2 : X q) ((q + 1) / 2 : ℕ) ?_).mul_left_cancel this
+  refine (IsUnit.of_mul_eq_one (M := X q) ↑((q + 1) / 2) ?_).mul_left_cancel this
   norm_cast
   simp [Nat.mul_div_cancel' odd.add_one.two_dvd]
 
@@ -700,7 +700,7 @@ lemma testTrueHelper (p : ℕ) (hp : Nat.blt 1 p = true) (h : sModNatTR (2 ^ p -
 lemma testFalseHelper (p : ℕ) (hp : Nat.blt 1 p = true)
     (h : Nat.ble 1 (sModNatTR (2 ^ p - 1) (p - 2))) : ¬ LucasLehmerTest p := by
   rw [Nat.blt_eq] at hp
-  rw [Nat.ble_eq, Nat.succ_le, Nat.pos_iff_ne_zero] at h
+  rw [Nat.ble_eq, Nat.succ_le_iff, Nat.pos_iff_ne_zero] at h
   rw [LucasLehmerTest, LucasLehmer.residue_eq_zero_iff_sMod_eq_zero p hp, ← sModNat_eq_sMod p _ hp,
     ← sModNatTR_eq_sModNat]
   simpa using h

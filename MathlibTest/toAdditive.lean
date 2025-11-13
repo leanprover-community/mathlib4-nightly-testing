@@ -426,12 +426,15 @@ run_cmd
   checkGuessName "instCoeOneHom" "instCoeZeroHom"
   checkGuessName "invFun_eq_symm" "invFun_eq_symm"
   checkGuessName "MulEquiv.symmInvFun" "AddEquiv.symmInvFun"
+  checkGuessName "IsScalarTower" "VAddAssocClass"
+  checkGuessName "isScalarTower" "vaddAssocClass"
+  checkGuessName "eventuallyLE_one_mul_atBot" "eventuallyLE_zero_add_atBot"
 
 end guessName
 
 end Test
 
-run_cmd Elab.Command.liftCoreM <| ToAdditive.insertTranslation `localize `add_localize
+run_meta ToAdditive.insertTranslation `localize `add_localize
 
 @[to_additive] def localize.r := Nat
 @[to_additive add_localize] def localize := Nat
