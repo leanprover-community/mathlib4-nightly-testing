@@ -3,7 +3,7 @@ Copyright (c) 2023 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 -/
-module
+module  -- shake: keep-downstream (out-of-line `attribute`)
 
 public meta import Mathlib.Tactic.Attr.Register
 
