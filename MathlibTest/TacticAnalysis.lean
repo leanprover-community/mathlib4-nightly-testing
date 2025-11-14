@@ -15,6 +15,26 @@ example : 1 + 1 = 2 := by
 
 end omega
 
+@[tacticAnalysis linter.tacticAnalysis.dummy]
+def foo : Mathlib.TacticAnalysis.Config :=
+  Mathlib.TacticAnalysis.terminalReplacement "simp" "simp only" ``Lean.Parser.Tactic.simp
+    (fun _ _ _ => `(tactic| simp only))
+    (reportSuccess := true) (reportFailure := true)
+
+/--
+warning: `simp only` left unsolved goals where `simp` succeeded.
+Original tactic:
+  simp
+Replacement tactic:
+  simp only
+Unsolved goals:
+  [⊢ (List.map (fun x => x + 1) [1, 2, 3]).sum = 9 ]
+-/
+#guard_msgs in
+set_option linter.tacticAnalysis.dummy true in
+example : List.sum ([1,2,3].map fun x ↦ x + 1) = 9 := by
+  simp
+
 end terminalReplacement
 
 section rwMerge
@@ -50,6 +70,30 @@ example : Fact (x = z) where
   out := by
     rw [xy]
     rw [yz]
+
+universe u
+
+def a : PUnit.{u} := ⟨⟩
+def b : PUnit.{u} := ⟨⟩
+def c : PUnit.{u} := ⟨⟩
+theorem ab : a = b := rfl
+theorem bc : b = c := rfl
+
+/--
+warning: Try this: rw [ab.{u}, bc.{u}]
+-/
+#guard_msgs in
+example : a.{u} = c := by
+  rw [ab.{u}]
+  rw [bc.{u}]
+
+theorem xyz (h : x = z → y = z) : x = y := by rw [h yz]; rfl
+
+-- The next example tripped up `rwMerge` because `rw [xyz fun h => ?_, ← h, xy]` gives
+-- an unknown identifier `h`.
+example : x = y := by
+  rw [xyz fun h => ?_]
+  rw [← h, xy]
 
 end rwMerge
 
@@ -203,10 +247,29 @@ set_library_suggestions fun _ _ => pure #[{ name := `p, score := 1.0 }]
 example : P 37 := by
   grind +suggestions
 
-set_option linter.tacticAnalysis.tryAtEachStepGrindSuggestions true
+/--
+info: Try this:
+  [apply] simp_all only [p]
+-/
+#guard_msgs in
+example : P 37 := by
+  simp_all? +suggestions
 
+set_option linter.tacticAnalysis.tryAtEachStepGrindSuggestions true in
 -- FIXME: why is the dagger here?
 /-- info: `trivial` can be replaced with `grind +suggestions✝` -/
+#guard_msgs in
+example : P 37 := by
+  trivial
+
+set_option linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions true in
+-- FIXME: why is the dagger here?
+/--
+info: Try this:
+  [apply] simp_all +suggestions✝ only [p]
+---
+info: `trivial` can be replaced with `simp_all? +suggestions✝`
+-/
 #guard_msgs in
 example : P 37 := by
   trivial
@@ -214,3 +277,40 @@ example : P 37 := by
 end
 
 end tryAtEachStep
+
+section grindReplacement
+
+set_option linter.tacticAnalysis.regressions.omegaToCutsat true
+
+-- We should not complain about `omega` (and others) failing in a `try` context.
+example : x = y := by
+  try omega
+  rfl
+
+-- Example with more than one tactic step:
+example : x = y := by
+  try
+    symm
+    symm
+    omega
+  rfl
+
+set_option linter.unusedVariables false in
+theorem create_a_few_goals (h1 : 1 + 1 = 2) (h2 : y = z) : x = y := rfl
+
+-- We should not complain about `omega` (and others) failing in an `any_goals` context.
+example : x = y := by
+  apply create_a_few_goals
+  any_goals omega
+  rfl
+
+-- Example with more than one tactic step:
+example : x = y := by
+  apply create_a_few_goals
+  any_goals
+    symm
+    symm
+    omega
+  rfl
+
+end grindReplacement
