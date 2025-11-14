@@ -5,7 +5,7 @@ Authors: Damiano Testa
 -/
 module
 
-public import Mathlib.Algebra.Notation.Defs
+public import Mathlib.Algebra.Notation.Defs  -- shake: keep (`attribute [to_additive existing]`)
 
 /-!
 # Regular elements
