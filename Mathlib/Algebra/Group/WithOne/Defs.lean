@@ -9,6 +9,10 @@ public import Mathlib.Algebra.Group.Defs
 public import Mathlib.Data.Option.Basic
 public import Mathlib.Logic.Nontrivial.Basic
 public import Mathlib.Tactic.Common
+public import Mathlib.Tactic.Coe
+public import Mathlib.Tactic.Lift
+public import Mathlib.Tactic.SimpRw
+public import Mathlib.Tactic.Spread
 
 /-!
 # Adjoining a zero/one to semigroups and related algebraic structures

@@ -5,8 +5,8 @@ Authors: Adam Topaz
 -/
 module
 
-public meta import Lean.Elab.Tactic.ElabTerm
 public meta import Mathlib.Lean.Meta.Basic
+public import Lean.Exception
 
 /-!
 # Apply at

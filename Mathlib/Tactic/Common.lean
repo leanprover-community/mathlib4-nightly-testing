@@ -118,6 +118,10 @@ public meta import Mathlib.Util.CountHeartbeats
 public meta import Mathlib.Util.PrintSorries
 public meta import Mathlib.Util.TransImports
 public meta import Mathlib.Util.WhatsNew
+public import Aesop.Frontend.Tactic
+public import Mathlib.Tactic.Hint
+public import Mathlib.Tactic.Tauto
+public import Mathlib.Tactic.FunProp.Elab
 
 /-!
 This file imports all tactics which do not have significant theory imports,

@@ -8,7 +8,8 @@ Authors: Damiano Testa
 -- this file has a valid copyright header and module docstring.
 module
 
-public meta import Mathlib.Tactic.Linter.Header
+public import Lean.Exception
+public meta import Lean.Elab.Command
 
 /-!
 This file defines the environment extension to keep track of which tactics are allowed to leave

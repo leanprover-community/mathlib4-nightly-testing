@@ -23,6 +23,7 @@ public import Mathlib.Tactic.Linter.Style
 -- This import makes the `#min_imports` command available globally.
 public import Mathlib.Tactic.MinImports
 public import Mathlib.Tactic.TacticAnalysis.Declarations
+public meta import Lean.Linter.Sets
 
 /-!
 This is the root file in Mathlib: it is imported by virtually *all* Mathlib files.

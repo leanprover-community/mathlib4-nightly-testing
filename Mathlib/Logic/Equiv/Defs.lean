@@ -7,9 +7,6 @@ module
 
 public import Mathlib.Data.FunLike.Equiv
 public import Mathlib.Data.Quot
-public import Mathlib.Data.Subtype
-public import Mathlib.Logic.Unique
-public import Mathlib.Tactic.Conv
 public import Mathlib.Tactic.Simps.Basic
 public import Mathlib.Tactic.Substs
 

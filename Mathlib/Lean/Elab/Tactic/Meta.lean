@@ -8,7 +8,6 @@ module
 public import Lean.Elab.SyntheticMVars
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public import Mathlib.Tactic.Linter.Header
 
 /-!
 # Additions to `Lean.Elab.Tactic.Meta`

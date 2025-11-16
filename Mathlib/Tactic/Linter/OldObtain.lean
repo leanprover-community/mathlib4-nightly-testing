@@ -8,7 +8,8 @@ module
 public meta import Lean.Elab.Command
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
-public meta import Mathlib.Tactic.Linter.Header
+public import Lean.Message
+public meta import Lean.Linter.Basic
 
 /-!
 # The `oldObtain` linter, against stream-of-consciousness `obtain`

@@ -6,9 +6,7 @@ Authors: Kim Morrison
 module
 
 public import Mathlib.Init
-public import Lean.Meta.Match.MatcherInfo
 public import Lean.Meta.Tactic.Delta
-public import Std.Data.HashMap.Basic
 
 /-!
 # Additional functions on `Lean.Name`.

@@ -5,9 +5,9 @@ Authors: Michael Rothgang, Damiano Testa
 -/
 module
 
-public meta import Lean.Elab.Command
-public meta import Lean.Elab.ParseImportsFast
-public meta import Mathlib.Tactic.Linter.DirectoryDependency
+public meta import Lean.Parser.Module
+public import Lean.Parser.Module
+public import Mathlib.Tactic.Linter.DirectoryDependency
 
 /-!
 # The "header" linter

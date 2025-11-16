@@ -6,11 +6,9 @@ Authors: Arthur Paulino, Aurélien Saue, Mario Carneiro
 module
 
 public meta import Lean.Elab.PreDefinition.Basic
-public meta import Lean.Elab.Tactic.ElabTerm
-public meta import Lean.Meta.Tactic.Intro
 public meta import Mathlib.Lean.Expr.Basic
-public meta import Batteries.Tactic.OpenPrivate
 public meta import Batteries.Lean.Expr
+public import Lean.Exception
 
 /-!
 # Generally useful tactics.

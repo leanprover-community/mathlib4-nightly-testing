@@ -7,6 +7,7 @@ module
 
 public meta import Lean.Meta.Tactic.Delta
 public meta import Mathlib.Lean.Expr.Basic
+public import Lean.Exception
 
 /-!
 # Term elaborators for reduction

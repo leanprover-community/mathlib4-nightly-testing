@@ -11,8 +11,9 @@ public import Mathlib.Tactic.Basic
 public import Batteries.Logic
 public import Batteries.Tactic.Trans
 public import Batteries.Util.LibraryNote
-public import Mathlib.Data.Nat.Notation
-public import Mathlib.Data.Int.Notation
+public import Mathlib.Tactic.Lemma
+public import Mathlib.Tactic.TypeStar
+public import Batteries.Tactic.Lint.Misc
 
 /-!
 # Basic logic properties

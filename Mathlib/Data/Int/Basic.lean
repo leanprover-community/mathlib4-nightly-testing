@@ -11,6 +11,7 @@ public import Mathlib.Logic.Nontrivial.Defs
 public import Mathlib.Tactic.Convert
 public import Mathlib.Tactic.Lift
 public import Mathlib.Tactic.OfNat
+public import Mathlib.Tactic.Conv
 
 /-!
 # Basic operations on the integers

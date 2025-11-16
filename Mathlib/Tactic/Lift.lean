@@ -5,9 +5,10 @@ Authors: Floris van Doorn
 -/
 module
 
-public meta import Mathlib.Tactic.Basic
 public meta import Batteries.Lean.Expr
 public meta import Batteries.Lean.Meta.UnusedNames
+public import Mathlib.Tactic.TypeStar
+public meta import Lean.Elab.Tactic.RCases
 
 /-!
 # lift tactic

@@ -6,11 +6,8 @@ Authors: Sébastien Gouëzel
 module
 
 public import Mathlib.Data.Prod.Basic
-public import Mathlib.Logic.Function.Basic
-public import Mathlib.Logic.Nontrivial.Defs
 public import Mathlib.Logic.Unique
 public import Mathlib.Order.Defs.LinearOrder
-public import Mathlib.Tactic.Attr.Register
 
 /-!
 # Nontrivial types

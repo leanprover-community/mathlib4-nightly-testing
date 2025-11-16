@@ -5,7 +5,12 @@ Authors: Kyle Miller
 -/
 module
 
-public meta import Mathlib.Tactic.Basic
+public import Lean.Exception
+public import Lean.ProjFns
+public import Lean.Data.LOption
+public meta import Lean.Meta.Basic
+public meta import Lean.Elab.Tactic.Location
+public meta import Lean.Elab.Tactic.Conv.Basic
 
 /-! # Tactics that transform types into definitionally equal types
 

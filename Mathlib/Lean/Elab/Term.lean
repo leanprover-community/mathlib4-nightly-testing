@@ -6,7 +6,6 @@ Authors: Kyle Miller
 module
 
 public import Mathlib.Init
-public import Lean.Elab.Term
 
 /-!
 # Additions to `Lean.Elab.Term`

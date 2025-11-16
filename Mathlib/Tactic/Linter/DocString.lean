@@ -5,7 +5,9 @@ Authors: Michael Rothgang, Damiano Testa
 -/
 module
 
-public meta import Mathlib.Tactic.Linter.Header
+public meta import Lean.Elab.Command
+public meta import Lean.Linter.Basic
+public import Lean.Parser.Command
 
 /-!
 # The "DocString" style linter

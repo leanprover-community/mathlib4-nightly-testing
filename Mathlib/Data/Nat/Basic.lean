@@ -9,9 +9,8 @@ public import Mathlib.Data.Nat.Init
 public import Mathlib.Data.Set.Defs
 public import Mathlib.Logic.Nontrivial.Defs
 public import Mathlib.Order.Defs.LinearOrder
-public import Mathlib.Tactic.Contrapose
 public import Mathlib.Tactic.GCongr.Core
-public import Mathlib.Util.AssertExists
+public import Mathlib.Logic.Basic
 
 /-!
 # Basic operations on the natural numbers

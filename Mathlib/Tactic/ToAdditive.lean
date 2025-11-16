@@ -6,6 +6,7 @@ Authors: Miyahara Kō
 module
 
 public meta import Mathlib.Tactic.ToAdditive.Frontend
+public import Mathlib.Tactic.ToAdditive.Frontend
 
 /-!
 ## `@[to_additive]` attributes for basic types

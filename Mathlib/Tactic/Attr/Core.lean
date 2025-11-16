@@ -5,7 +5,7 @@ Authors: Yury Kudryashov
 -/
 module  -- shake: keep-downstream (out-of-line `attribute`)
 
-public meta import Mathlib.Tactic.Attr.Register
+public import Mathlib.Tactic.Attr.Register
 
 /-!
 # Simp tags for core lemmas

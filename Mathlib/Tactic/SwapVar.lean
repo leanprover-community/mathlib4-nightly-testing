@@ -6,7 +6,6 @@ Authors: Arthur Paulino
 module
 
 public meta import Lean.Elab.ElabRules
-public meta import Mathlib.Util.Tactic
 
 /-!
 # Defines the `swap_var` tactic

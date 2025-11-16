@@ -5,7 +5,6 @@ Authors: Eric Wieser
 -/
 module
 
-public meta import Lean.Elab.SyntheticMVars
 public import Mathlib.Init
 
 /-!

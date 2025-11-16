@@ -7,7 +7,8 @@ module
 
 public meta import Lean.Elab.App
 public meta import Lean.Elab.BuiltinNotation
-public meta import Mathlib.Tactic.ToExpr
+public import Lean.Util.Trace
+public import Mathlib.Tactic.ToExpr
 
 /-! # Elaborator for functorial binary operators
 

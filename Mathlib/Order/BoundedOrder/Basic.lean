@@ -10,6 +10,7 @@ public import Mathlib.Order.ULift
 public import Mathlib.Tactic.ByCases
 public import Mathlib.Tactic.Finiteness.Attr  -- shake: keep (Aesop rule set)
 public import Mathlib.Util.AssertExists
+public import Aesop.Frontend.Attribute
 
 /-!
 # ⊤ and ⊥, bounded lattices and variants

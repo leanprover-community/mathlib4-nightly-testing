@@ -6,8 +6,6 @@ Authors: Kim Morrison
 module
 
 public import Mathlib.Init
-public import Lean.Meta.AppBuilder
-public import Lean.Meta.Coe
 
 /-!
 # Additions to `Lean.Meta.Basic`

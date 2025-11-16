@@ -6,7 +6,6 @@ Floris van Doorn, Edward Ayers
 -/
 module
 
-public import Lean.Expr
 public import Mathlib.Util.MemoFix
 
 /-!

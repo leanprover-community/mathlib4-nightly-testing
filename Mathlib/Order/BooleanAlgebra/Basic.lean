@@ -6,6 +6,7 @@ Authors: Johannes Hölzl, Bryan Gin-ge Chen
 module
 
 public import Mathlib.Order.BooleanAlgebra.Defs
+public import Mathlib.Tactic.GRewrite.Elab
 
 /-!
 # Basic properties of Boolean algebras

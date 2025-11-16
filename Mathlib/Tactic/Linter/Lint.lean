@@ -6,7 +6,10 @@ Authors: Floris van Doorn
 module
 
 public meta import Batteries.Tactic.Lint
-public meta import Mathlib.Tactic.DeclarationNames
+public meta import Lean.Linter.Basic
+public import Lean.Linter.Deprecated
+public import Mathlib.Tactic.DeclarationNames
+public import Batteries.Tactic.Lint.Basic
 
 /-!
 # Linters for Mathlib

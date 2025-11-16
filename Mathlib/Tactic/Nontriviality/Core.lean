@@ -6,8 +6,9 @@ Authors: Sébastien Gouëzel, Mario Carneiro
 module
 
 public meta import Qq.MetaM
-public meta import Mathlib.Logic.Nontrivial.Basic
-public meta import Mathlib.Tactic.Attr.Core
+public import Qq.Macro
+public import Qq.Typ
+public import Mathlib.Logic.Nontrivial.Defs
 
 /-! # The `nontriviality` tactic. -/
 

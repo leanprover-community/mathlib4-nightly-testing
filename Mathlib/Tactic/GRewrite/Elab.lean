@@ -6,6 +6,8 @@ Authors: Sebastian Zimmer, Mario Carneiro, Heather Macbeth, Jovan Gerbscheid
 module
 
 public meta import Mathlib.Tactic.GRewrite.Core
+public import Lean.Elab.Tactic.Config
+public import Mathlib.Tactic.GRewrite.Core
 
 /-!
 

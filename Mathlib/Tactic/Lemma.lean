@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Kyle Miller
 module
 
 public import Mathlib.Init
-public meta import Lean.Parser.Command
 
 /-!
 # Support for `lemma` as a synonym for `theorem`.

@@ -6,7 +6,6 @@ Authors: Robert Y. Lewis
 module
 
 public import Mathlib.Init
-public meta import Lean.Elab.Tactic.Basic
 
 /-!
 A tactic stub file for the `guard_hyp_nums` tactic.

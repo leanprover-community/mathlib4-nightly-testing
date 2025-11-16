@@ -5,7 +5,6 @@ Authors: Damiano Testa
 -/
 module
 
-public meta import Lean.Environment
 public import Mathlib.Init
 
 /-!

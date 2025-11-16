@@ -6,6 +6,8 @@ Authors: Henrik Böving, Yaël Dillies, Kyle Miller
 module
 
 public meta import Mathlib.Lean.Expr.Basic
+public import Lean.Message
+public import Lean.Meta.Sorry
 
 /-!
 # Tracking uses of `sorry`

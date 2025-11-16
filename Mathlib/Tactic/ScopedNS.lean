@@ -5,7 +5,8 @@ Authors: Gabriel Ebner, Mario Carneiro
 -/
 module
 
-public meta import Mathlib.Util.WithWeakNamespace
+public meta import Lean.Data.OpenDecl
+public import Mathlib.Util.WithWeakNamespace
 
 /-! # `scoped[NS]` syntax
 

@@ -5,8 +5,10 @@ Authors: Johannes Hölzl, Floris van Doorn, Mario Carneiro, Reid Barton, Johan C
 -/
 module
 
-public meta import Mathlib.Util.Tactic
-public meta import Mathlib.Logic.Function.Basic
+public import Lean.Expr
+public meta import Batteries.Lean.Expr
+public meta import Mathlib.Lean.Expr.Basic
+public import Mathlib.Logic.Function.Basic
 
 /-!
 # `choose` tactic

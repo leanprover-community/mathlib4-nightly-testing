@@ -5,10 +5,10 @@ Authors: Anne Baanen
 -/
 module
 
-public import Mathlib.Logic.Function.Basic
 public import Mathlib.Logic.Unique
 public import Mathlib.Util.CompileInductive
 public import Mathlib.Tactic.Simps.NotationClass
+public import Mathlib.Tactic.SplitIfs
 
 /-!
 # Typeclass for a type `F` with an injective map to `A → B`

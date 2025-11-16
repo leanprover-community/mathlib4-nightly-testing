@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.Group.Defs
 public import Mathlib.Logic.Nontrivial.Defs
-public import Mathlib.Tactic.SplitIfs
 public import Mathlib.Logic.Basic
 
 /-!
