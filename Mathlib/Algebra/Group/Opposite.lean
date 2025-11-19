@@ -5,8 +5,8 @@ Authors: Kenny Lau
 -/
 import Mathlib.Algebra.Group.Commute.Defs
 import Mathlib.Algebra.Group.InjSurj
+import Mathlib.Algebra.Group.Torsion
 import Mathlib.Algebra.Opposites
-import Mathlib.Tactic.Spread
 
 /-!
 # Group structures on the multiplicative and additive opposites
@@ -21,9 +21,6 @@ namespace MulOpposite
 /-!
 ### Additive structures on `αᵐᵒᵖ`
 -/
-
-@[to_additive] instance instNatCast [NatCast α] : NatCast αᵐᵒᵖ where natCast n := op n
-@[to_additive] instance instIntCast [IntCast α] : IntCast αᵐᵒᵖ where intCast n := op n
 
 instance instAddSemigroup [AddSemigroup α] : AddSemigroup αᵐᵒᵖ :=
   unop_injective.addSemigroup _ fun _ _ => rfl
@@ -49,17 +46,6 @@ instance instAddMonoid [AddMonoid α] : AddMonoid αᵐᵒᵖ :=
 instance instAddCommMonoid [AddCommMonoid α] : AddCommMonoid αᵐᵒᵖ :=
   unop_injective.addCommMonoid _ rfl (fun _ _ => rfl) fun _ _ => rfl
 
-instance instAddMonoidWithOne [AddMonoidWithOne α] : AddMonoidWithOne αᵐᵒᵖ where
-  toNatCast := instNatCast
-  toAddMonoid := instAddMonoid
-  toOne := instOne
-  natCast_zero := show op ((0 : ℕ) : α) = 0 by rw [Nat.cast_zero, op_zero]
-  natCast_succ := show ∀ n, op ((n + 1 : ℕ) : α) = op ↑(n : ℕ) + 1 by simp
-
-instance instAddCommMonoidWithOne [AddCommMonoidWithOne α] : AddCommMonoidWithOne αᵐᵒᵖ where
-  toAddMonoidWithOne := instAddMonoidWithOne
-  __ := instAddCommMonoid
-
 instance instSubNegMonoid [SubNegMonoid α] : SubNegMonoid αᵐᵒᵖ :=
   unop_injective.subNegMonoid _ (by exact rfl) (fun _ _ => rfl) (fun _ => rfl) (fun _ _ => rfl)
     (fun _ _ => rfl) fun _ _ => rfl
@@ -71,17 +57,6 @@ instance instAddGroup [AddGroup α] : AddGroup αᵐᵒᵖ :=
 instance instAddCommGroup [AddCommGroup α] : AddCommGroup αᵐᵒᵖ :=
   unop_injective.addCommGroup _ rfl (fun _ _ => rfl) (fun _ => rfl) (fun _ _ => rfl)
     (fun _ _ => rfl) fun _ _ => rfl
-
-instance instAddGroupWithOne [AddGroupWithOne α] : AddGroupWithOne αᵐᵒᵖ where
-  toAddMonoidWithOne := instAddMonoidWithOne
-  toIntCast := instIntCast
-  __ := instAddGroup
-  intCast_ofNat n := show op ((n : ℤ) : α) = op (n : α) by rw [Int.cast_natCast]
-  intCast_negSucc n := show op _ = op (-unop (op ((n + 1 : ℕ) : α))) by simp
-
-instance instAddCommGroupWithOne [AddCommGroupWithOne α] : AddCommGroupWithOne αᵐᵒᵖ where
-  toAddCommGroup := instAddCommGroup
-  __ := instAddGroupWithOne
 
 /-!
 ### Multiplicative structures on `αᵐᵒᵖ`
@@ -96,6 +71,8 @@ instance instIsRightCancelMul [Mul α] [IsLeftCancelMul α] : IsRightCancelMul �
 @[to_additive]
 instance instIsLeftCancelMul [Mul α] [IsRightCancelMul α] : IsLeftCancelMul αᵐᵒᵖ where
   mul_left_cancel _ _ _ h := unop_injective <| mul_right_cancel <| op_injective h
+
+@[to_additive] instance instIsCancelMul [Mul α] [IsCancelMul α] : IsCancelMul αᵐᵒᵖ where
 
 @[to_additive]
 instance instSemigroup [Semigroup α] : Semigroup αᵐᵒᵖ where
@@ -203,32 +180,6 @@ variable [DivInvMonoid α]
 
 end DivInvMonoid
 
-@[to_additive (attr := simp, norm_cast)]
-theorem op_natCast [NatCast α] (n : ℕ) : op (n : α) = n :=
-  rfl
-
-@[to_additive (attr := simp)]
-theorem op_ofNat [NatCast α] (n : ℕ) [n.AtLeastTwo] :
-    op (ofNat(n) : α) = ofNat(n) :=
-  rfl
-
-@[to_additive (attr := simp, norm_cast)]
-theorem op_intCast [IntCast α] (n : ℤ) : op (n : α) = n :=
-  rfl
-
-@[to_additive (attr := simp, norm_cast)]
-theorem unop_natCast [NatCast α] (n : ℕ) : unop (n : αᵐᵒᵖ) = n :=
-  rfl
-
-@[to_additive (attr := simp)]
-theorem unop_ofNat [NatCast α] (n : ℕ) [n.AtLeastTwo] :
-    unop (ofNat(n) : αᵐᵒᵖ) = ofNat(n) :=
-  rfl
-
-@[to_additive (attr := simp, norm_cast)]
-theorem unop_intCast [IntCast α] (n : ℤ) : unop (n : αᵐᵒᵖ) = n :=
-  rfl
-
 @[to_additive (attr := simp)]
 theorem unop_div [DivInvMonoid α] (x y : αᵐᵒᵖ) : unop (x / y) = (unop y)⁻¹ * unop x :=
   rfl
@@ -327,19 +278,8 @@ instance instCommGroup [CommGroup α] : CommGroup αᵃᵒᵖ :=
   unop_injective.commGroup _ (by exact rfl) (fun _ _ => rfl) (fun _ => rfl) (fun _ _ => rfl)
     (fun _ _ => rfl) fun _ _ => rfl
 
--- NOTE: `addMonoidWithOne α → addMonoidWithOne αᵃᵒᵖ` does not hold
-instance instAddCommMonoidWithOne [AddCommMonoidWithOne α] : AddCommMonoidWithOne αᵃᵒᵖ where
-  toNatCast := instNatCast
-  toOne := instOne
-  __ := instAddCommMonoid
-  natCast_zero := show op ((0 : ℕ) : α) = 0 by rw [Nat.cast_zero, op_zero]
-  natCast_succ := show ∀ n, op ((n + 1 : ℕ) : α) = op ↑(n : ℕ) + 1 by simp [add_comm]
-
-instance instAddCommGroupWithOne [AddCommGroupWithOne α] : AddCommGroupWithOne αᵃᵒᵖ where
-  toIntCast := instIntCast
-  toAddCommGroup := instAddCommGroup
-  __ := instAddCommMonoidWithOne
-  intCast_ofNat _ := congr_arg op <| Int.cast_natCast _
-  intCast_negSucc _ := congr_arg op <| Int.cast_negSucc _
+@[to_additive]
+instance instMulTorsionFree [Monoid α] [IsMulTorsionFree α] : IsMulTorsionFree αᵐᵒᵖ :=
+  ⟨fun _ h ↦ op_injective.comp <| (pow_left_injective h).comp <| unop_injective⟩
 
 end AddOpposite

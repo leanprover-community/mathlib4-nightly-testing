@@ -50,7 +50,7 @@ We prove the main properties of the Jacobi symbol, including the following.
   reducing to the case `0 ≤ a < b` and `a`, `b` odd, and then swaps `a`, `b` and recurses using
   quadratic reciprocity.
 
-## Notations
+## Notation
 
 We define the notation `J(a | b)` for `jacobiSym a b`, localized to `NumberTheorySymbols`.
 
@@ -70,7 +70,7 @@ prime divisors (with multiplicity) of `b`, as provided by `b.factors`. This agre
 Jacobi symbol when `b` is odd and gives less meaningful values when it is not (e.g., the symbol
 is `1` when `b = 0`). This is called `jacobiSym a b`.
 
-We define localized notation (locale `NumberTheorySymbols`) `J(a | b)` for the Jacobi
+We define localized notation (scope `NumberTheorySymbols`) `J(a | b)` for the Jacobi
 symbol `jacobiSym a b`.
 -/
 
@@ -270,7 +270,7 @@ open jacobiSym
 theorem nonsquare_of_jacobiSym_eq_neg_one {a : ℤ} {b : ℕ} (h : J(a | b) = -1) :
     ¬IsSquare (a : ZMod b) := fun ⟨r, ha⟩ => by
   rw [← r.coe_valMinAbs, ← Int.cast_mul, intCast_eq_intCast_iff', ← sq] at ha
-  apply (by norm_num : ¬(0 : ℤ) ≤ -1)
+  apply (by simp : ¬(0 : ℤ) ≤ -1)
   rw [← h, mod_left, ha, ← mod_left, pow_left]
   apply sq_nonneg
 
@@ -395,7 +395,7 @@ namespace jacobiSym
 /-- The **Law of Quadratic Reciprocity for the Jacobi symbol**, version with `qrSign` -/
 theorem quadratic_reciprocity' {a b : ℕ} (ha : Odd a) (hb : Odd b) :
     J(a | b) = qrSign b a * J(b | a) := by
-  -- define the right hand side for fixed `a` as a `ℕ →* ℤ`
+  -- define the right-hand side for fixed `a` as a `ℕ →* ℤ`
   let rhs : ℕ → ℕ →* ℤ := fun a =>
     { toFun := fun x => qrSign x a * J(x | a)
       map_one' := by convert ← mul_one (M := ℤ) _; (on_goal 1 => symm); all_goals apply one_left
@@ -450,7 +450,7 @@ theorem mod_right' (a : ℕ) {b : ℕ} (hb : Odd b) : J(a | b) = J(a | b % (4 * 
   rcases eq_or_ne a 0 with (rfl | ha₀)
   · rw [mul_zero, mod_zero]
   have hb' : Odd (b % (4 * a)) := hb.mod_even (Even.mul_right (by decide) _)
-  rcases exists_eq_pow_mul_and_not_dvd ha₀ 2 (by norm_num) with ⟨e, a', ha₁', ha₂⟩
+  rcases exists_eq_pow_mul_and_not_dvd ha₀ 2 (by simp) with ⟨e, a', ha₁', ha₂⟩
   have ha₁ := odd_iff.mpr (two_dvd_ne_zero.mp ha₁')
   nth_rw 2 [ha₂]; nth_rw 1 [ha₂]
   rw [Nat.cast_mul, mul_left, mul_left, quadratic_reciprocity' ha₁ hb,
@@ -463,7 +463,7 @@ theorem mod_right' (a : ℕ) {b : ℕ} (hb : Odd b) : J(a | b) = J(a | b % (4 * 
     · rw [mod_left ↑(b % _), mod_left b, Int.natCast_mod, Int.emod_emod_of_dvd b]
       simp only [ha₂, Nat.cast_mul, ← mul_assoc]
       apply dvd_mul_left
-  rcases e with - | e; · rfl
+  rcases e with - | e; · simp
   · rw [χ₈_nat_mod_eight, χ₈_nat_mod_eight (b % (4 * a)), mod_mod_of_dvd b]
     use 2 ^ e * a'; rw [ha₂, Nat.pow_succ]; ring
 

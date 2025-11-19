@@ -3,7 +3,6 @@ Copyright (c) 2017 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl, Jeremy Avigad
 -/
-import Mathlib.Algebra.Group.Basic
 import Mathlib.Control.Basic
 import Mathlib.Data.Set.Lattice.Image
 import Mathlib.Order.Filter.Basic
@@ -12,7 +11,7 @@ import Mathlib.Order.Filter.Basic
 # Theorems about map and comap on filters.
 -/
 
-assert_not_exists OrderedSemiring Fintype
+assert_not_exists IsOrderedRing Fintype
 
 open Function Set Order
 open scoped symmDiff
@@ -114,9 +113,6 @@ lemma mem_comap_prodMk {x : α} {s : Set β} {F : Filter (α × β)} :
     s ∈ comap (Prod.mk x) F ↔ {p : α × β | p.fst = x → p.snd ∈ s} ∈ F := by
   simp_rw [mem_comap', Prod.ext_iff, and_imp, @forall_swap β (_ = _), forall_eq, eq_comm]
 
-@[deprecated (since := "2025-03-10")]
-alias mem_comap_prod_mk := mem_comap_prodMk
-
 @[simp]
 theorem eventually_comap : (∀ᶠ a in comap f l, p a) ↔ ∀ᶠ b in l, ∀ a, f a = b → p a :=
   mem_comap'
@@ -148,6 +144,14 @@ theorem eventually_pure {a : α} {p : α → Prop} : (∀ᶠ x in pure a, p x) �
 @[simp]
 theorem principal_singleton (a : α) : 𝓟 {a} = pure a :=
   Filter.ext fun s => by simp only [mem_pure, mem_principal, singleton_subset_iff]
+
+@[simp]
+theorem biSup_pure_eq_principal (s : Set α) : ⨆ a ∈ s, pure a = 𝓟 s :=
+  Filter.ext fun s => by simp [Set.subset_def]
+
+@[simp]
+theorem iSup_pure_eq_top : ⨆ a, pure a = (⊤ : Filter α) := by
+  rw [← principal_univ, ← biSup_pure_eq_principal, iSup_univ]
 
 @[simp]
 theorem map_pure (f : α → β) (a : α) : map f (pure a) = pure (f a) :=
@@ -387,22 +391,13 @@ theorem map_le_iff_le_comap : map m f ≤ g ↔ f ≤ comap m g :=
 theorem gc_map_comap (m : α → β) : GaloisConnection (map m) (comap m) :=
   fun _ _ => map_le_iff_le_comap
 
-@[mono]
+@[gcongr, mono]
 theorem map_mono : Monotone (map m) :=
   (gc_map_comap m).monotone_l
 
-@[mono]
+@[gcongr, mono]
 theorem comap_mono : Monotone (comap m) :=
   (gc_map_comap m).monotone_u
-
-/-- Temporary lemma that we can tag with `gcongr` -/
-@[gcongr] theorem _root_.GCongr.Filter.map_le_map {F G : Filter α} (h : F ≤ G) :
-    map m F ≤ map m G := map_mono h
-
-/-- Temporary lemma that we can tag with `gcongr` -/
-@[gcongr]
-theorem _root_.GCongr.Filter.comap_le_comap {F G : Filter β} (h : F ≤ G) :
-    comap m F ≤ comap m G := comap_mono h
 
 @[simp] theorem map_bot : map m ⊥ = ⊥ := (gc_map_comap m).l_bot
 
@@ -773,7 +768,7 @@ protected theorem push_pull (f : α → β) (F : Filter α) (G : Filter β) :
     apply mem_inf_of_inter (image_mem_map V_in) Z_in
     calc
       f '' V ∩ Z = f '' (V ∩ f ⁻¹' Z) := by rw [image_inter_preimage]
-      _ ⊆ f '' (V ∩ W) := image_subset _ (inter_subset_inter_right _ ‹_›)
+      _ ⊆ f '' (V ∩ W) := by gcongr
       _ = f '' (f ⁻¹' U) := by rw [h]
       _ ⊆ U := image_preimage_subset f U
 
@@ -930,6 +925,12 @@ section Bind
 theorem eventually_bind {f : Filter α} {m : α → Filter β} {p : β → Prop} :
     (∀ᶠ y in bind f m, p y) ↔ ∀ᶠ x in f, ∀ᶠ y in m x, p y :=
   Iff.rfl
+
+@[simp]
+theorem frequently_bind {f : Filter α} {m : α → Filter β} {p : β → Prop} :
+    (∃ᶠ y in bind f m, p y) ↔ ∃ᶠ x in f, ∃ᶠ y in m x, p y := by
+  rw [← not_iff_not]
+  simp only [not_frequently, eventually_bind]
 
 @[simp]
 theorem eventuallyEq_bind {f : Filter α} {m : α → Filter β} {g₁ g₂ : β → γ} :

@@ -140,7 +140,7 @@ lemma prod_sum {κ : ι → Type*} (s : Finset ι) (t : ∀ i, Finset (κ i)) (f
       congr with ⟨v, hv⟩
       congr
       exact (Pi.cons_ne (by rintro rfl; exact ha hv)).symm
-    · exact fun _ _ _ _ => Subtype.eq ∘ Subtype.mk.inj
+    · exact fun _ _ _ _ => Subtype.ext ∘ Subtype.mk.inj
     · simpa only [mem_image, mem_attach, Subtype.mk.injEq, true_and,
         Subtype.exists, exists_prop, exists_eq_right] using ha
 
@@ -223,7 +223,7 @@ theorem sum_pow_mul_eq_add_pow (a b : R) (s : Finset ι) :
   classical
   rw [← prod_const, prod_add]
   refine Finset.sum_congr rfl fun t ht => ?_
-  rw [prod_const, prod_const, ← card_sdiff (mem_powerset.1 ht)]
+  rw [prod_const, prod_const, ← card_sdiff_of_subset (mem_powerset.1 ht)]
 
 /-- Summing `a^#s * b^(n-#s)` over all finite subsets `s` of a fintype of cardinality `n`
 gives `(a + b)^n`. The "good" proof involves expanding along all coordinates using the fact that

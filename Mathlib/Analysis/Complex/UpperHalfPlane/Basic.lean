@@ -34,7 +34,7 @@ instance : CoeOut ℍ ℂ := ⟨UpperHalfPlane.coe⟩
 instance : Inhabited ℍ :=
   ⟨⟨Complex.I, by simp⟩⟩
 
-@[ext] theorem ext {a b : ℍ} (h : (a : ℂ) = b) : a = b := Subtype.eq h
+@[ext] theorem ext {a b : ℍ} (h : (a : ℂ) = b) : a = b := Subtype.ext h
 
 @[simp, norm_cast] theorem ext_iff' {a b : ℍ} : (a : ℂ) = b ↔ a = b := UpperHalfPlane.ext_iff.symm
 
@@ -203,5 +203,17 @@ theorem vadd_im : (x +ᵥ z).im = z.im :=
   zero_add _
 
 end RealAddAction
+
+section upperHalfPlaneSet
+
+/-- The upper half plane as a subset of `ℂ`. This is convenient for taking derivatives of functions
+on the upper half plane. -/
+abbrev upperHalfPlaneSet := {z : ℂ | 0 < z.im}
+
+local notation "ℍₒ" => upperHalfPlaneSet
+
+lemma isOpen_upperHalfPlaneSet : IsOpen ℍₒ := isOpen_lt continuous_const Complex.continuous_im
+
+end upperHalfPlaneSet
 
 end UpperHalfPlane

@@ -175,9 +175,7 @@ theorem mapAlgHom_comp (C : Type*) [Semiring C] [Algebra R C] (f : B →ₐ[R] C
 
 theorem mapAlgHom_eq_eval₂AlgHom'_CAlgHom (f : A →ₐ[R] B) : mapAlgHom f = eval₂AlgHom'
     (CAlgHom.comp f) X (fun a => (commute_X (C (f a))).symm) := by
-  apply AlgHom.ext
-  intro x
-  congr
+  rfl
 
 /-- If `A` and `B` are isomorphic as `R`-algebras, then so are their polynomial rings -/
 def mapAlgEquiv (f : A ≃ₐ[R] B) : Polynomial A ≃ₐ[R] Polynomial B :=
@@ -236,11 +234,15 @@ theorem algHom_ext {f g : R[X] →ₐ[R] B} (hX : f X = g X) :
 theorem aeval_def (p : R[X]) : aeval x p = eval₂ (algebraMap R A) x p :=
   rfl
 
+@[simp]
+lemma eval_map_algebraMap (P : R[X]) (b : B) :
+    (map (algebraMap R B) P).eval b = aeval b P := by
+  rw [aeval_def, eval_map]
+
 /-- `mapAlg` is the morphism induced by `R → S`. -/
 theorem mapAlg_eq_map (S : Type v) [Semiring S] [Algebra R S] (p : R[X]) :
     mapAlg R S p = map (algebraMap R S) p := by
-  simp only [mapAlg, aeval_def, eval₂_eq_sum, map, algebraMap_apply, RingHom.coe_comp]
-  ext; congr
+  rfl
 
 theorem aeval_zero : aeval x (0 : R[X]) = 0 :=
   map_zero (aeval x)
@@ -362,6 +364,10 @@ theorem aeval_X_left : aeval (X : R[X]) = AlgHom.id R R[X] :=
 theorem aeval_X_left_apply (p : R[X]) : aeval X p = p :=
   AlgHom.congr_fun (@aeval_X_left R _) p
 
+lemma aeval_X_left_eq_map [CommSemiring S] [Algebra R S] (p : R[X]) :
+    aeval X p = map (algebraMap R S) p :=
+  rfl
+
 theorem eval_unique (φ : R[X] →ₐ[R] A) (p) : φ p = eval₂ (algebraMap R A) (φ X) p := by
   rw [← aeval_def, aeval_algHom, aeval_X_left, AlgHom.comp_id]
 
@@ -473,10 +479,9 @@ theorem isRoot_of_eval₂_map_eq_zero (hf : Function.Injective f) {r : R} :
   apply hf
   rw [← eval₂_hom, h, f.map_zero]
 
-theorem isRoot_of_aeval_algebraMap_eq_zero [Algebra R S] {p : R[X]}
-    (inj : Function.Injective (algebraMap R S)) {r : R} (hr : aeval (algebraMap R S r) p = 0) :
-    p.IsRoot r :=
-  isRoot_of_eval₂_map_eq_zero inj hr
+theorem isRoot_of_aeval_algebraMap_eq_zero [Algebra R S] [FaithfulSMul R S] {p : R[X]} {r : R}
+    (hr : p.aeval (algebraMap R S r) = 0) : p.IsRoot r :=
+  isRoot_of_eval₂_map_eq_zero (FaithfulSMul.algebraMap_injective _ _) hr
 
 end Semiring
 
@@ -572,7 +577,7 @@ theorem eval_mul_X_sub_C {p : R[X]} (r : R) : (p * (X - C r)).eval r = 0 := by
   have bound :=
     calc
       (p * (X - C r)).natDegree ≤ p.natDegree + (X - C r).natDegree := natDegree_mul_le
-      _ ≤ p.natDegree + 1 := add_le_add_left (natDegree_X_sub_C_le _) _
+      _ ≤ p.natDegree + 1 := by grw [natDegree_X_sub_C_le]
       _ < p.natDegree + 2 := lt_add_one _
   rw [sum_over_range' _ _ (p.natDegree + 2) bound]
   swap
@@ -592,6 +597,14 @@ end Ring
 
 section CommRing
 variable [CommRing R] {p : R[X]} {t : R}
+
+@[simp]
+theorem aeval_neg {p : R[X]} [Ring A] [Algebra R A] (x : A) :
+    aeval x (- p) = - aeval x p := map_neg ..
+
+@[simp]
+theorem aeval_sub {p q : R[X]} [Ring A] [Algebra R A] (x : A) :
+    aeval x (p - q) = aeval x p - aeval x q := map_sub ..
 
 theorem aeval_endomorphism {M : Type*} [AddCommGroup M] [Module R M] (f : M →ₗ[R] M)
     (v : M) (p : R[X]) : aeval f p v = p.sum fun n b => b • (f ^ n) v := by
@@ -674,7 +687,7 @@ theorem eq_zero_of_mul_eq_zero_of_smul (P : R[X]) (h : ∀ r : R, r • P = 0 �
     intro i hi
     rw [coeff_eq_zero_of_natDegree_lt hi, zero_smul]
   intro l IH
-  obtain _|hl := (natDegree_smul_le (P.coeff l) Q).lt_or_eq
+  obtain _ | hl := (natDegree_smul_le (P.coeff l) Q).lt_or_eq
   · apply eq_zero_of_mul_eq_zero_of_smul _ h (P.coeff l • Q)
     rw [smul_eq_C_mul, mul_left_comm, hQ, mul_zero]
   suffices P.coeff l * Q.leadingCoeff = 0 by
@@ -685,10 +698,10 @@ theorem eq_zero_of_mul_eq_zero_of_smul (P : R[X]) (h : ∀ r : R, r • P = 0 �
   apply Finset.sum_eq_single (l, m) _ (by simp)
   simp only [Finset.mem_antidiagonal, ne_eq, Prod.forall, Prod.mk.injEq, not_and]
   intro i j hij H
-  obtain hi|rfl|hi := lt_trichotomy i l
+  obtain hi | rfl | hi := lt_trichotomy i l
   · have hj : m < j := by omega
     rw [coeff_eq_zero_of_natDegree_lt hj, mul_zero]
-  · omega
+  · cutsat
   · rw [← coeff_C_mul, ← smul_eq_C_mul, IH _ hi, coeff_zero]
 termination_by Q.natDegree
 
@@ -697,9 +710,9 @@ open nonZeroDivisors
 /-- *McCoy theorem*: a polynomial `P : R[X]` is a zerodivisor if and only if there is `a : R`
 such that `a ≠ 0` and `a • P = 0`. -/
 theorem notMem_nonZeroDivisors_iff {P : R[X]} : P ∉ R[X]⁰ ↔ ∃ a : R, a ≠ 0 ∧ a • P = 0 := by
-  refine ⟨fun hP ↦ ?_, fun ⟨a, ha, h⟩ h1 ↦ ha <| C_eq_zero.1 <| (h1 _) <| smul_eq_C_mul a ▸ h⟩
+  refine ⟨fun hP ↦ ?_, fun ⟨a, ha, h⟩ h1 ↦ ha <| C_eq_zero.1 <| (h1.2 _) <| smul_eq_C_mul a ▸ h⟩
   by_contra! h
-  obtain ⟨Q, hQ⟩ := _root_.notMem_nonZeroDivisors_iff.1 hP
+  obtain ⟨Q, hQ⟩ := notMem_nonZeroDivisors_iff_right.1 hP
   refine hQ.2 (eq_zero_of_mul_eq_zero_of_smul P (fun a ha ↦ ?_) Q (mul_comm P _ ▸ hQ.1))
   contrapose! ha
   exact h a ha
@@ -711,7 +724,7 @@ protected lemma mem_nonZeroDivisors_iff {P : R[X]} : P ∈ R[X]⁰ ↔ ∀ a : R
 
 lemma mem_nonzeroDivisors_of_coeff_mem {p : R[X]} (n : ℕ) (hp : p.coeff n ∈ R⁰) :
     p ∈ R[X]⁰ :=
-  Polynomial.mem_nonZeroDivisors_iff.mpr fun r hr ↦ hp _ (by simpa using congr(coeff $hr n))
+  Polynomial.mem_nonZeroDivisors_iff.mpr fun r hr ↦ hp.2 _ (by simpa using congr(coeff $hr n))
 
 lemma X_mem_nonzeroDivisors : X ∈ R[X]⁰ :=
   mem_nonzeroDivisors_of_coeff_mem 1 (by simp [one_mem])

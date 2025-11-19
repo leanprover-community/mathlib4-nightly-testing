@@ -257,8 +257,7 @@ theorem lsub_lt_ord {ι} {f : ι → Ordinal} {c : Ordinal} (hι : #ι < c.cof) 
 
 theorem cof_iSup_le_lift {ι} {f : ι → Ordinal} (H : ∀ i, f i < iSup f) :
     cof (iSup f) ≤ Cardinal.lift.{v, u} #ι := by
-  rw [← Ordinal.sup] at *
-  rw [← sup_eq_lsub_iff_lt_sup.{u, v}] at H
+  rw [← iSup_eq_lsub_iff_lt_iSup] at H
   rw [H]
   exact cof_lsub_le_lift f
 
@@ -269,7 +268,7 @@ theorem cof_iSup_le {ι} {f : ι → Ordinal} (H : ∀ i, f i < iSup f) :
 
 theorem iSup_lt_ord_lift {ι} {f : ι → Ordinal} {c : Ordinal} (hι : Cardinal.lift.{v, u} #ι < c.cof)
     (hf : ∀ i, f i < c) : iSup f < c :=
-  (sup_le_lsub.{u, v} f).trans_lt (lsub_lt_ord_lift hι hf)
+  (iSup_le_lsub f).trans_lt (lsub_lt_ord_lift hι hf)
 
 theorem iSup_lt_ord {ι} {f : ι → Ordinal} {c : Ordinal} (hι : #ι < c.cof) :
     (∀ i, f i < c) → iSup f < c :=
@@ -278,7 +277,7 @@ theorem iSup_lt_ord {ι} {f : ι → Ordinal} {c : Ordinal} (hι : #ι < c.cof) 
 theorem iSup_lt_lift {ι} {f : ι → Cardinal} {c : Cardinal}
     (hι : Cardinal.lift.{v, u} #ι < c.ord.cof)
     (hf : ∀ i, f i < c) : iSup f < c := by
-  rw [← ord_lt_ord, iSup_ord (Cardinal.bddAbove_range _)]
+  rw [← ord_lt_ord, iSup_ord]
   refine iSup_lt_ord_lift hι fun i => ?_
   rw [ord_lt_ord]
   apply hf
@@ -389,8 +388,7 @@ theorem cof_succ (o) : cof (succ o) = 1 := by
     · apply cof_type_le
       refine fun a => ⟨Sum.inr PUnit.unit, Set.mem_singleton _, ?_⟩
       rcases a with (a | ⟨⟨⟨⟩⟩⟩) <;> simp [EmptyRelation]
-    · rw [Cardinal.mk_fintype, Set.card_singleton]
-      simp
+    · simp
   · rw [← Cardinal.succ_zero, succ_le_iff]
     simpa [lt_iff_le_and_ne, Cardinal.zero_le] using fun h =>
       succ_ne_zero o (cof_eq_zero.1 (Eq.symm h))
@@ -512,11 +510,10 @@ theorem exists_fundamental_sequence (a : Ordinal.{u}) :
     suffices h : ∃ i' hi', f i ≤ bfamilyOfFamily' r' (fun i => f i) i' hi' by
       rcases h with ⟨i', hi', hfg⟩
       exact hfg.trans_lt (lt_blsub _ _ _)
-    by_cases h : ∀ j, r j i → f j < f i
+    by_cases! h : ∀ j, r j i → f j < f i
     · refine ⟨typein r' ⟨i, h⟩, typein_lt_type _ _, ?_⟩
       rw [bfamilyOfFamily'_typein]
-    · push_neg at h
-      obtain ⟨hji, hij⟩ := wo.wf.min_mem _ h
+    · obtain ⟨hji, hij⟩ := wo.wf.min_mem _ h
       refine ⟨typein r' ⟨_, fun k hkj => lt_of_lt_of_le ?_ hij⟩, typein_lt_type _ _, ?_⟩
       · by_contra! H
         exact (wo.wf.not_lt_min _ h ⟨IsTrans.trans _ _ _ hkj hji, H⟩) hkj
@@ -564,7 +561,7 @@ theorem IsNormal.cof_le {f} (hf : IsNormal f) (a) : cof a ≤ cof (f a) := by
   · rw [cof_zero]
     exact zero_le _
   · rw [cof_succ, Cardinal.one_le_iff_ne_zero, cof_ne_zero, ← Ordinal.pos_iff_ne_zero]
-    exact (Ordinal.zero_le (f b)).trans_lt (hf.1 b)
+    exact (Ordinal.zero_le (f b)).trans_lt (hf.strictMono (lt_succ b))
   · rw [hf.cof_eq ha]
 
 @[simp]
@@ -663,7 +660,7 @@ theorem mk_bounded_subset {α : Type*} (h : ∀ x < #α, 2 ^ x < #α) {r : α �
   apply le_antisymm
   · have : { s : Set α | Bounded r s } = ⋃ i, 𝒫{ j | r j i } := setOf_exists _
     rw [← coe_setOf, this]
-    refine mk_iUnion_le_sum_mk.trans ((sum_le_iSup (fun i => #(𝒫{ j | r j i }))).trans
+    refine mk_iUnion_le_sum_mk.trans ((sum_le_mk_mul_iSup (fun i => #(𝒫{ j | r j i }))).trans
       ((mul_le_max_of_aleph0_le_left ha).trans ?_))
     rw [max_eq_left]
     apply ciSup_le' _
@@ -685,7 +682,6 @@ theorem mk_subset_mk_lt_cof {α : Type*} (h : ∀ x < #α, 2 ^ x < #α) :
   · simp [ha]
   have h' : IsStrongLimit #α := ⟨ha, @h⟩
   rcases ord_eq α with ⟨r, wo, hr⟩
-  haveI := wo
   apply le_antisymm
   · conv_rhs => rw [← mk_bounded_subset h hr]
     apply mk_le_mk_of_subset

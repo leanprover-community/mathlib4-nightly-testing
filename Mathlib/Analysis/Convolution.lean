@@ -34,7 +34,7 @@ has compact support (in which case the other function only needs to be locally i
 We still need to prove the properties for other pairs of conditions (e.g. both functions are
 rapidly decreasing)
 
-# Design Decisions
+## Design Decisions
 
 We use a bilinear map `L` to "multiply" the two functions in the integrand.
 This generality has several advantages
@@ -48,7 +48,7 @@ This generality has several advantages
 * We need to support the case where at least one of the functions is vector-valued, but if we use
   `smul` to multiply the functions, that would be an asymmetric definition.
 
-# Main Definitions
+## Main Definitions
 * `MeasureTheory.convolution f g L μ x = (f ⋆[L, μ] g) x = ∫ t, L (f t) (g (x - t)) ∂μ`
   is the convolution of `f` and `g` w.r.t. the continuous bilinear map `L` and measure `μ`.
 * `MeasureTheory.ConvolutionExistsAt f g x L μ` states that the convolution `(f ⋆[L, μ] g) x`
@@ -56,7 +56,7 @@ This generality has several advantages
 * `MeasureTheory.ConvolutionExists f g L μ` states that the convolution `f ⋆[L, μ] g`
   is well-defined at each point.
 
-# Main Results
+## Main Results
 * `HasCompactSupport.hasFDerivAt_convolution_right` and
   `HasCompactSupport.hasFDerivAt_convolution_left`: we can compute the total derivative
   of the convolution as a convolution with the total derivative of the right (left) function.
@@ -70,14 +70,14 @@ Versions of these statements for functions depending on a parameter are also giv
   whose support tends to a small neighborhood around `0`, the convolution tends to the right
   argument. This is specialized to bump functions in `ContDiffBump.convolution_tendsto_right`.
 
-# Notation
-The following notations are localized in the locale `Convolution`:
+## Notation
+The following notations are localized in the scope `Convolution`:
 * `f ⋆[L, μ] g` for the convolution. Note: you have to use parentheses to apply the convolution
   to an argument: `(f ⋆[L, μ] g) x`.
 * `f ⋆[L] g := f ⋆[L, volume] g`
 * `f ⋆ g := f ⋆[lsmul ℝ ℝ] g`
 
-# To do
+## To do
 * Existence and (uniform) continuity of the convolution if
   one of the maps is in `ℒ^p` and the other in `ℒ^q` with `1 / p + 1 / q = 1`.
   This might require a generalization of `MeasureTheory.MemLp.smul` where `smul` is generalized
@@ -230,9 +230,6 @@ theorem ConvolutionExistsAt.of_norm' {x₀ : G}
   rw [mul_apply', ← mul_assoc]
   apply L.le_opNorm₂
 
-@[deprecated (since := "2025-02-07")]
-alias ConvolutionExistsAt.ofNorm' := ConvolutionExistsAt.of_norm'
-
 end
 
 section Left
@@ -260,9 +257,6 @@ theorem ConvolutionExistsAt.of_norm {x₀ : G}
     ConvolutionExistsAt f g x₀ L μ :=
   h.of_norm' L hmf <|
     hmg.mono_ac (quasiMeasurePreserving_sub_left_of_right_invariant μ x₀).absolutelyContinuous
-
-@[deprecated (since := "2025-02-07")]
-alias ConvolutionExistsAt.ofNorm := ConvolutionExistsAt.of_norm
 
 end Left
 
@@ -392,17 +386,10 @@ theorem _root_.HasCompactSupport.convolutionExists_left
     (hg : LocallyIntegrable g μ) : ConvolutionExists f g L μ := fun x₀ =>
   convolutionExistsAt_flip.mp <| hcf.convolutionExists_right L.flip hg hf x₀
 
-@[deprecated (since := "2025-02-06")]
-alias _root_.HasCompactSupport.convolutionExistsLeft := HasCompactSupport.convolutionExists_left
-
 theorem _root_.HasCompactSupport.convolutionExists_right_of_continuous_left
     (hcg : HasCompactSupport g) (hf : Continuous f) (hg : LocallyIntegrable g μ) :
     ConvolutionExists f g L μ := fun x₀ =>
   convolutionExistsAt_flip.mp <| hcg.convolutionExists_left_of_continuous_right L.flip hg hf x₀
-
-@[deprecated (since := "2025-02-06")]
-alias _root_.HasCompactSupport.convolutionExistsRightOfContinuousLeft :=
-  HasCompactSupport.convolutionExists_right_of_continuous_left
 
 end CommGroup
 
@@ -554,13 +541,12 @@ theorem continuousOn_convolution_right_with_param {g : P → G → E'} {s : Set 
     ContinuousOn (fun q : P × G => (f ⋆[L, μ] g q.1) q.2) (s ×ˢ univ) := by
   /- First get rid of the case where the space is not locally compact. Then `g` vanishes everywhere
   and the conclusion is trivial. -/
-  by_cases H : ∀ p ∈ s, ∀ x, g p x = 0
+  by_cases! H : ∀ p ∈ s, ∀ x, g p x = 0
   · apply (continuousOn_const (c := 0)).congr
     rintro ⟨p, x⟩ ⟨hp, -⟩
     apply integral_eq_zero_of_ae (Eventually.of_forall (fun y ↦ ?_))
     simp [H p hp _]
   have : LocallyCompactSpace G := by
-    push_neg at H
     rcases H with ⟨p, hp, x, hx⟩
     have A : support (g p) ⊆ k := support_subset_iff'.2 (fun y hy ↦ hgs p y hp hy)
     have B : Continuous (g p) := by
@@ -810,7 +796,7 @@ theorem convolution_tendsto_right {ι} {g : ι → G → E'} {l : Filter ι} {x�
   rw [Metric.tendsto_nhds] at hcg ⊢
   simp_rw [Metric.eventually_prod_nhds_iff] at hcg
   intro ε hε
-  have h2ε : 0 < ε / 3 := div_pos hε (by norm_num)
+  have h2ε : 0 < ε / 3 := div_pos hε (by simp)
   obtain ⟨p, hp, δ, hδ, hgδ⟩ := hcg _ h2ε
   dsimp only [uncurry] at hgδ
   have h2k := hk.eventually (ball_mem_nhds x₀ <| half_pos hδ)
@@ -823,7 +809,7 @@ theorem convolution_tendsto_right {ι} {g : ι → G → E'} {l : Filter ι} {x�
     exact ((dist_triangle _ _ _).trans_lt (add_lt_add hx'.out hki)).trans_eq (add_halves δ)
   have := dist_convolution_le (add_pos h2ε h2ε).le hφi hnφi hiφi hmgi h1
   refine ((dist_triangle _ _ _).trans_lt (add_lt_add_of_le_of_lt this hgi)).trans_eq ?_
-  field_simp; ring_nf
+  ring
 
 end NormedAddCommGroup
 
@@ -887,7 +873,7 @@ theorem convolution_assoc' (hL : ∀ (x : E) (y : E') (z : E''), L₂ (L x y) z 
     _ = (f ⋆[L₃, ν] g ⋆[L₄, μ] k) x₀ := rfl
 
 /-- Convolution is associative. This requires that
-* all maps are a.e. strongly measurable w.r.t one of the measures
+* all maps are a.e. strongly measurable w.r.t. one of the measures
 * `f ⋆[L, ν] g` exists almost everywhere
 * `‖g‖ ⋆[μ] ‖k‖` exists almost everywhere
 * `‖f‖ ⋆[ν] (‖g‖ ⋆[μ] ‖k‖)` exists at `x₀` -/
@@ -972,7 +958,7 @@ theorem _root_.HasCompactSupport.hasFDerivAt_convolution_right (hcg : HasCompact
       (hg.differentiable le_rfl).differentiableAt.hasFDerivAt.comp x
         ((hasFDerivAt_id x).sub (hasFDerivAt_const t x))
   let K' := -tsupport (fderiv 𝕜 g) + closedBall x₀ 1
-  have hK' : IsCompact K' := (hcg.fderiv 𝕜).neg.add (isCompact_closedBall x₀ 1)
+  have hK' : IsCompact K' := (hcg.fderiv 𝕜).isCompact.neg.add (isCompact_closedBall x₀ 1)
   apply hasFDerivAt_integral_of_dominated_of_fderiv_le zero_lt_one h1 _ (h2 x₀)
   · filter_upwards with t x hx using
       (hcg.fderiv 𝕜).convolution_integrand_bound_right L' (hg.continuous_fderiv le_rfl)
@@ -1185,10 +1171,10 @@ theorem contDiffOn_convolution_right_with_param_aux {G : Type uP} {E' : Type uP}
     universe, which is why we make the assumption in the lemma that all the relevant spaces
     come from the same universe). -/
   induction n using ENat.nat_induction generalizing g E' F with
-  | h0 =>
+  | zero =>
     rw [WithTop.coe_zero, contDiffOn_zero] at hg ⊢
     exact continuousOn_convolution_right_with_param L hk hgs hf hg
-  | hsuc n ih =>
+  | succ n ih =>
     simp only [Nat.succ_eq_add_one, Nat.cast_add, Nat.cast_one, WithTop.coe_add,
       WithTop.coe_natCast, WithTop.coe_one] at hg ⊢
     let f' : P → G → P × G →L[𝕜] F := fun p a =>
@@ -1215,7 +1201,7 @@ theorem contDiffOn_convolution_right_with_param_aux {G : Type uP} {E' : Type uP}
         exact hgs p y hp hy
       apply ih (L.precompR (P × G) :) B
       convert hg.2.2
-  | htop ih =>
+  | top ih =>
     rw [contDiffOn_infty] at hg ⊢
     exact fun n ↦ ih n L hgs (hg n)
 
@@ -1336,7 +1322,7 @@ bilinear map `L` and measure `ν`. It is defined to be the function mapping `x` 
 `∫ t in 0..x, L (f t) (g (x - t)) ∂ν` if `0 < x`, and 0 otherwise. -/
 noncomputable def posConvolution (f : ℝ → E) (g : ℝ → E') (L : E →L[ℝ] E' →L[ℝ] F)
     (ν : Measure ℝ := by volume_tac) : ℝ → F :=
-  indicator (Ioi (0 : ℝ)) fun x => ∫ t in (0)..x, L (f t) (g (x - t)) ∂ν
+  indicator (Ioi (0 : ℝ)) fun x => ∫ t in 0..x, L (f t) (g (x - t)) ∂ν
 
 theorem posConvolution_eq_convolution_indicator (f : ℝ → E) (g : ℝ → E') (L : E →L[ℝ] E' →L[ℝ] F)
     (ν : Measure ℝ := by volume_tac) [NoAtoms ν] :
@@ -1382,7 +1368,7 @@ theorem integral_posConvolution [CompleteSpace E] [CompleteSpace E'] [CompleteSp
     {μ ν : Measure ℝ}
     [SFinite μ] [SFinite ν] [IsAddRightInvariant μ] [NoAtoms ν] {f : ℝ → E} {g : ℝ → E'}
     (hf : IntegrableOn f (Ioi 0) ν) (hg : IntegrableOn g (Ioi 0) μ) (L : E →L[ℝ] E' →L[ℝ] F) :
-    ∫ x : ℝ in Ioi 0, ∫ t : ℝ in (0)..x, L (f t) (g (x - t)) ∂ν ∂μ =
+    ∫ x : ℝ in Ioi 0, ∫ t : ℝ in 0..x, L (f t) (g (x - t)) ∂ν ∂μ =
       L (∫ x : ℝ in Ioi 0, f x ∂ν) (∫ x : ℝ in Ioi 0, g x ∂μ) := by
   rw [← integrable_indicator_iff measurableSet_Ioi] at hf hg
   simp_rw [← integral_indicator measurableSet_Ioi]

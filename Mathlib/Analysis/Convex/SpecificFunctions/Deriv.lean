@@ -61,8 +61,7 @@ theorem Finset.prod_nonneg_of_card_nonpos_even {α β : Type*}
       Finset.prod_nonneg fun x _ => by
         split_ifs with hx
         · simp [hx]
-        simp? at hx ⊢ says simp only [not_le, one_mul] at hx ⊢
-        exact le_of_lt hx
+        linarith
     _ = _ := by
       rw [Finset.prod_mul_distrib, Finset.prod_ite, Finset.prod_const_one, mul_one,
         Finset.prod_const, neg_one_pow_eq_pow_mod_two, Nat.even_iff.1 h0, pow_zero, one_mul]
@@ -89,7 +88,7 @@ theorem int_prod_range_pos {m : ℤ} {n : ℕ} (hn : Even n) (hm : m ∉ Ico (0 
   rw [eq_comm, Finset.prod_eq_zero_iff] at h
   obtain ⟨a, ha, h⟩ := h
   rw [sub_eq_zero.1 h]
-  exact ⟨Int.ofNat_zero_le _, Int.ofNat_lt.2 <| Finset.mem_range.1 ha⟩
+  exact ⟨Int.natCast_nonneg _, Int.ofNat_lt.2 <| Finset.mem_range.1 ha⟩
 
 /-- `x^m`, `m : ℤ` is convex on `(0, +∞)` for all `m` except `0` and `1`. -/
 theorem strictConvexOn_zpow {m : ℤ} (hm₀ : m ≠ 0) (hm₁ : m ≠ 1) :
@@ -139,9 +138,7 @@ theorem deriv2_sqrt_mul_log (x : ℝ) :
     convert (((hasDerivAt_log hx.ne').const_add 2).div ((hasDerivAt_sqrt hx.ne').const_mul 2) <|
       mul_ne_zero two_ne_zero h₀).deriv using 1
     nth_rw 3 [← mul_self_sqrt hx.le]
-    generalize √x = sqx at h₀ -- else field_simp rewrites sqrt x * sqrt x back to x
-    field_simp
-    ring
+    field
 
 theorem strictConcaveOn_sqrt_mul_log_Ioi :
     StrictConcaveOn ℝ (Set.Ioi 1) fun x => √x * log x := by

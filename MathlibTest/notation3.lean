@@ -199,7 +199,7 @@ local notation3 (prettyPrint := false) "#" n => Fin.mk n (by decide)
 example : Fin 5 := #1
 
 /--
-error: tactic 'decide' proved that the proposition
+error: Tactic `decide` proved that the proposition
   6 < 5
 is false
 -/
@@ -235,8 +235,6 @@ trace: [notation3] Generating matcher for pattern default
           pure✝ >=>
         pure✝
 [notation3] Creating delaborator for key Mathlib.Notation3.DelabKey.app (some `Inhabited.default) 2
----
-trace: [notation3] Defined delaborator Test.termδNat.«delab_app.Inhabited.default»
 -/
 #guard_msgs in
 set_option trace.notation3 true in

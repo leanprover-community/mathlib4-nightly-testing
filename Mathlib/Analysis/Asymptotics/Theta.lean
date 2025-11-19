@@ -140,14 +140,8 @@ alias ⟨IsTheta.of_norm_right, IsTheta.norm_right⟩ := isTheta_norm_right
 theorem IsTheta.of_norm_eventuallyEq_norm (h : (fun x ↦ ‖f x‖) =ᶠ[l] fun x ↦ ‖g x‖) : f =Θ[l] g :=
   ⟨.of_bound' h.le, .of_bound' h.symm.le⟩
 
-@[deprecated (since := "2025-01-03")]
-alias isTheta_of_norm_eventuallyEq := IsTheta.of_norm_eventuallyEq_norm
-
 theorem IsTheta.of_norm_eventuallyEq {g : α → ℝ} (h : (fun x ↦ ‖f' x‖) =ᶠ[l] g) : f' =Θ[l] g :=
   of_norm_eventuallyEq_norm <| h.mono fun x hx ↦ by simp only [← hx, norm_norm]
-
-@[deprecated (since := "2025-01-03")]
-alias isTheta_of_norm_eventuallyEq' := IsTheta.of_norm_eventuallyEq
 
 theorem IsTheta.isLittleO_congr_left (h : f' =Θ[l] g') : f' =o[l] k ↔ g' =o[l] k :=
   ⟨h.symm.trans_isLittleO, h.trans_isLittleO⟩
@@ -236,7 +230,7 @@ theorem IsTheta.pow {f : α → 𝕜} {g : α → 𝕜'} (h : f =Θ[l] g) (n : �
 theorem IsTheta.zpow {f : α → 𝕜} {g : α → 𝕜'} (h : f =Θ[l] g) (n : ℤ) :
     (fun x ↦ f x ^ n) =Θ[l] fun x ↦ g x ^ n := by
   cases n
-  · simpa only [Int.ofNat_eq_coe, zpow_natCast] using h.pow _
+  · simpa only [Int.ofNat_eq_natCast, zpow_natCast] using h.pow _
   · simpa only [zpow_negSucc] using (h.pow _).inv
 
 theorem isTheta_const_const {c₁ : E''} {c₂ : F''} (h₁ : c₁ ≠ 0) (h₂ : c₂ ≠ 0) :

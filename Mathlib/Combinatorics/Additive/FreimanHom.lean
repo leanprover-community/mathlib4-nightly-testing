@@ -14,7 +14,7 @@ import Mathlib.Data.ZMod.Defs
 /-!
 # Freiman homomorphisms
 
-In this file, we define Freiman homomorphisms and isomorphism.
+In this file, we define Freiman homomorphisms and isomorphisms.
 
 An `n`-Freiman homomorphism from `A` to `B` is a function `f : α → β` such that `f '' A ⊆ B` and
 `f x₁ * ... * f xₙ = f y₁ * ... * f yₙ` for all `x₁, ..., xₙ, y₁, ..., yₙ ∈ A` such that
@@ -57,7 +57,7 @@ an `AddMonoid`/`Monoid` instead of the `AddMonoid`/`Monoid` itself.
 
 * `MonoidHomClass.isMulFreimanHom` could be relaxed to `MulHom.toFreimanHom` by proving
   `(s.map f).prod = (t.map f).prod` directly by induction instead of going through `f s.prod`.
-* Affine maps are Freiman homs.
+* Affine maps are Freiman homomorphisms.
 -/
 
 assert_not_exists Field Ideal TwoSidedIdeal
@@ -145,7 +145,7 @@ lemma IsMulFreimanIso.mul_eq_mul (hf : IsMulFreimanIso 2 A B f) {a b c d : α}
   refine hf.map_prod_eq_map_prod ?_ ?_ (card_pair _ _) (card_pair _ _) <;> simp [ha, hb, hc, hd]
 
 /-- Characterisation of `2`-Freiman homomorphisms. -/
-@[to_additive "Characterisation of `2`-Freiman homomorphisms."]
+@[to_additive /-- Characterisation of `2`-Freiman homomorphisms. -/]
 lemma isMulFreimanHom_two :
     IsMulFreimanHom 2 A B f ↔ MapsTo f A B ∧ ∀ a ∈ A, ∀ b ∈ A, ∀ c ∈ A, ∀ d ∈ A,
       a * b = c * d → f a * f b = f c * f d where
@@ -153,7 +153,7 @@ lemma isMulFreimanHom_two :
   mpr hf := ⟨hf.1, by aesop (add simp card_eq_two)⟩
 
 /-- Characterisation of `2`-Freiman homs. -/
-@[to_additive "Characterisation of `2`-Freiman isomorphisms."]
+@[to_additive /-- Characterisation of `2`-Freiman isomorphisms. -/]
 lemma isMulFreimanIso_two :
     IsMulFreimanIso 2 A B f ↔ BijOn f A B ∧ ∀ a ∈ A, ∀ b ∈ A, ∀ c ∈ A, ∀ d ∈ A,
       f a * f b = f c * f d ↔ a * b = c * d where
@@ -209,11 +209,11 @@ lemma isMulFreimanHom_const {b : β} (hb : b ∈ B) : IsMulFreimanHom n A B fun 
 
 @[to_additive (attr := simp)]
 lemma isMulFreimanHom_zero_iff : IsMulFreimanHom 0 A B f ↔ MapsTo f A B :=
-  ⟨fun h => h.mapsTo, fun h => ⟨h, by aesop⟩⟩
+  ⟨fun h => h.mapsTo, fun h => ⟨h, by simp_all⟩⟩
 
 @[to_additive (attr := simp)]
 lemma isMulFreimanIso_zero_iff : IsMulFreimanIso 0 A B f ↔ BijOn f A B :=
-  ⟨fun h => h.bijOn, fun h => ⟨h, by aesop⟩⟩
+  ⟨fun h => h.bijOn, fun h => ⟨h, by simp_all⟩⟩
 
 @[to_additive (attr := simp) isAddFreimanHom_one_iff]
 lemma isMulFreimanHom_one_iff : IsMulFreimanHom 1 A B f ↔ MapsTo f A B :=
@@ -359,12 +359,6 @@ lemma IsMulFreimanHom.prodMap (h₁ : IsMulFreimanHom n A₁ B₁ f₁) (h₂ : 
       (by simpa) h.1, h₂.map_prod_eq_map_prod (by simpa [@forall_swap α₁] using hsA.2)
       (by simpa [@forall_swap α₁] using htA.2) (by simpa) (by simpa) h.2⟩
 
-@[deprecated (since := "2025-03-11")]
-alias IsAddFreimanHom.sum := IsAddFreimanHom.prodMap
-
-@[to_additive existing, deprecated (since := "2025-03-11")]
-alias IsMulFreimanHom.prod := IsMulFreimanHom.prodMap
-
 @[to_additive prodMap]
 lemma IsMulFreimanIso.prodMap (h₁ : IsMulFreimanIso n A₁ B₁ f₁) (h₂ : IsMulFreimanIso n A₂ B₂ f₂) :
     IsMulFreimanIso n (A₁ ×ˢ A₂) (B₁ ×ˢ B₂) (Prod.map f₁ f₂) where
@@ -377,12 +371,6 @@ lemma IsMulFreimanIso.prodMap (h₁ : IsMulFreimanIso n A₁ B₁ f₁) (h₂ : 
       h₁.map_prod_eq_map_prod (by simpa using hsA.1) (by simpa using htA.1) (by simpa) (by simpa),
       h₂.map_prod_eq_map_prod (by simpa [@forall_swap α₁] using hsA.2)
         (by simpa [@forall_swap α₁] using htA.2) (by simpa) (by simpa)]
-
-@[deprecated (since := "2025-03-11")]
-alias IsAddFreimanIso.sum := IsAddFreimanIso.prodMap
-
-@[to_additive existing, deprecated (since := "2025-03-11")]
-alias IsMulFreimanIso.prod := IsMulFreimanIso.prodMap
 
 end Prod
 
@@ -424,7 +412,7 @@ lemma isAddFreimanIso_Iio (hm : m ≠ 0) (hkmn : m * k ≤ n) :
   · simp [← bot_eq_zero]
   have hkmn' : m * k ≤ n := (Nat.mul_le_mul_left _ k.le_succ).trans hkmn
   convert isAddFreimanIso_Iic hm hkmn' using 1 <;> ext x
-  · simp [lt_iff_val_lt_val, le_iff_val_le_val, -val_fin_le, -val_fin_lt, Nat.mod_eq_of_lt,
+  · simp [lt_def, le_iff_val_le_val, -val_fin_le, -val_fin_lt, Nat.mod_eq_of_lt,
       aux hm hkmn']
     simp_rw [← Nat.cast_add_one]
     rw [Fin.val_cast_of_lt (aux hm hkmn), Nat.lt_succ_iff]

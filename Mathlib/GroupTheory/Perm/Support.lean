@@ -228,10 +228,8 @@ section Set
 
 variable (p q : Perm α)
 
-theorem set_support_inv_eq : { x | p⁻¹ x ≠ x } = { x | p x ≠ x } := by
-  ext x
-  simp only [Set.mem_setOf_eq, Ne]
-  rw [inv_def, symm_apply_eq, eq_comm]
+theorem set_support_inv_eq : {x | p⁻¹ x ≠ x} = {x | p x ≠ x} := by
+  ext; simp [inv_def, eq_symm_apply, eq_comm]
 
 theorem set_support_apply_mem {p : Perm α} {a : α} :
     p a ∈ { x | p x ≠ x } ↔ a ∈ { x | p x ≠ x } := by simp
@@ -471,7 +469,7 @@ theorem support_swap_mul_swap {x y z : α} (h : List.Nodup [x, y, z]) :
   apply le_antisymm
   · convert support_mul_le (swap x y) (swap y z) using 1
     rw [support_swap h.left.left, support_swap h.right.left]
-    simp [Finset.ext_iff]
+    simp [-Finset.union_singleton]
   · intro
     simp only [mem_insert, mem_singleton]
     rintro (rfl | rfl | rfl | _) <;>
@@ -647,6 +645,8 @@ end support
 theorem support_subtypePerm [DecidableEq α] {s : Finset α} (f : Perm α) (h) :
     (f.subtypePerm h : Perm s).support = ({x | f x ≠ x} : Finset s) := by
   ext; simp [Subtype.ext_iff]
+
+@[deprecated (since := "2025-05-19")] alias support_subtype_perm := support_subtypePerm
 
 end Equiv.Perm
 

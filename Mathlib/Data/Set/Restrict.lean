@@ -34,7 +34,7 @@ theorem restrict_eq (f : α → β) (s : Set α) : s.restrict f = f ∘ Subtype.
 
 @[simp] lemma restrict_id (s : Set α) : restrict s id = Subtype.val := rfl
 
-@[simp]
+@[simp, grind =]
 theorem restrict_apply (f : (a : α) → π a) (s : Set α) (x : s) : s.restrict f x = f x :=
   rfl
 
@@ -146,6 +146,11 @@ theorem injective_codRestrict {f : ι → α} {s : Set α} (h : ∀ x, f x ∈ s
 
 alias ⟨_, _root_.Function.Injective.codRestrict⟩ := injective_codRestrict
 
+theorem codRestrict_range_surjective (f : ι → α) :
+    ((range f).codRestrict f mem_range_self).Surjective := by
+  rintro ⟨b, ⟨a, rfl⟩⟩
+  exact ⟨a, rfl⟩
+
 variable {s : Set α} {f₁ f₂ : α → β}
 
 @[simp]
@@ -251,7 +256,7 @@ end
 section injOn
 
 theorem injOn_iff_injective : InjOn f s ↔ Injective (s.restrict f) :=
-  ⟨fun H a b h => Subtype.eq <| H a.2 b.2 h, fun H a as b bs h =>
+  ⟨fun H a b h => Subtype.ext <| H a.2 b.2 h, fun H a as b bs h =>
     congr_arg Subtype.val <| @H ⟨a, as⟩ ⟨b, bs⟩ h⟩
 
 alias ⟨InjOn.injective, _⟩ := Set.injOn_iff_injective

@@ -22,16 +22,17 @@ As such this function is not to be considered reliable, especially after future 
 This should be used with caution and basically only for demo / testing purposes
 and not in compiled code without further testing. -/
 def sleepAtLeastHeartbeats (n : Nat) : IO Unit := do
-  let i ← IO.getNumHeartbeats
-  while (← IO.getNumHeartbeats) < i + n do
-    continue
+  -- TODO: adjust docstring
+  IO.addHeartbeats n
 
 /-- do nothing for at least n heartbeats -/
 elab "sleep_heartbeats " n:num : tactic => do
   match Syntax.isNatLit? n with
   | none    => throwIllFormedSyntax
-  /- as this is a user facing command we multiply the user input by 1000 to match the maxHeartbeats
-     option -/
+  /-
+  We multiply by `1000` to convert the user-facing heartbeat count to the
+  internal heartbeat counter used by `IO.getNumHeartbeats`.
+  -/
   | some m => sleepAtLeastHeartbeats (m * 1000)
 
 example : 1 = 1 := by

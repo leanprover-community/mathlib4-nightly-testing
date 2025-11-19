@@ -58,13 +58,13 @@ def toSeq (s : WSeq α) [Productive s] : Seq α :=
     cases e : Computation.get (get? s (n + 1))
     · assumption
     have := Computation.mem_of_get_eq _ e
-    simp? [get?] at this h says simp only [get?] at this h
+    simp only [get?] at this h
     obtain ⟨a', h'⟩ := head_some_of_head_tail_some this
     have := mem_unique h' (@Computation.mem_of_get_eq _ _ _ _ h)
     contradiction⟩
 
 theorem toSeq_ofSeq (s : Seq α) : toSeq (ofSeq s) = s := by
-  apply Subtype.eq; funext n
+  apply Subtype.ext; funext n
   dsimp [toSeq]; apply get_eq_of_mem
   rw [get?_ofSeq]; apply ret_mem
 

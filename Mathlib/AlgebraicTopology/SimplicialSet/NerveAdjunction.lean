@@ -3,10 +3,11 @@ Copyright (c) 2024 Mario Carneiro and Emily Riehl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro, Emily Riehl, Joël Riou
 -/
-import Mathlib.AlgebraicTopology.SimplicialSet.HomotopyCat
 import Mathlib.AlgebraicTopology.SimplexCategory.MorphismProperty
-import Mathlib.CategoryTheory.MorphismProperty.Composition
-
+import Mathlib.AlgebraicTopology.SimplicialSet.HomotopyCat
+import Mathlib.CategoryTheory.Category.Cat.CartesianClosed
+import Mathlib.CategoryTheory.Closed.FunctorToTypes
+import Mathlib.CategoryTheory.Limits.Presheaf
 /-!
 
 # The adjunction between the nerve and the homotopy category functor.
@@ -27,6 +28,8 @@ We also prove that `nerveFunctor` is fully faithful, demonstrating that `nerveAd
 reflective. Since the category of simplicial sets is cocomplete, we conclude in
 `Mathlib/CategoryTheory/Category/Cat/Colimit.lean` that the category of categories has colimits.
 
+Finally we show that `hoFunctor : SSet.{u} ⥤ Cat.{u, u}` preserves finite cartesian products; note
+that it fails to preserve infinite products.
 -/
 
 namespace CategoryTheory
@@ -76,8 +79,6 @@ def nerve₂Adj.counit : nerveFunctor₂ ⋙ hoFunctor₂.{u} ⟶ 𝟭 Cat where
   app _ := nerve₂Adj.counit.app _
   naturality _ _ _ := nerve₂Adj.counit.naturality _
 
-local notation (priority := high) "[" n "]" => SimplexCategory.mk n
-
 variable {C : Type u} [SmallCategory C] {X : SSet.Truncated.{u} 2}
     (F : SSet.oneTruncation₂.obj X ⟶ ReflQuiv.of C)
 
@@ -86,7 +87,7 @@ in a nerve can be recovered from the underlying ReflPrefunctor. -/
 def toNerve₂.mk.app (n : SimplexCategory.Truncated 2) :
     X.obj (op n) ⟶ (nerveFunctor₂.obj (Cat.of C)).obj (op n) := by
   obtain ⟨n, hn⟩ := n
-  induction' n using SimplexCategory.rec with n
+  induction n using SimplexCategory.rec with | _ n
   match n with
   | 0 => exact fun x => .mk₀ (F.obj x)
   | 1 => exact fun f => .mk₁ (F.map ⟨f, rfl, rfl⟩)
@@ -111,7 +112,7 @@ noncomputable def nerve₂.seagull (C : Type u) [Category C] :
 instance (C : Type u) [Category C] : Mono (nerve₂.seagull C) where
   right_cancellation {X} (f g : X → ComposableArrows C 2) eq := by
     ext x
-    simp [nerve₂.seagull] at eq
+    simp only [nerve₂.seagull, prod.comp_lift] at eq
     have eq1 := congr($eq ≫ prod.fst)
     have eq2 := congr($eq ≫ prod.snd)
     simp only [limit.lift_π, BinaryFan.mk_fst, BinaryFan.mk_snd] at eq1 eq2
@@ -299,7 +300,7 @@ theorem toNerve₂.ext (F G : X ⟶ nerveFunctor₂.obj (Cat.of C))
   have eq₁ (x : X _⦋1⦌₂) : F.app (op ⦋1⦌₂) x = G.app (op ⦋1⦌₂) x :=
     congr((($hyp).map ⟨x, rfl, rfl⟩).1)
   ext ⟨⟨n, hn⟩⟩ x
-  induction' n using SimplexCategory.rec with n
+  induction n using SimplexCategory.rec with | _ n
   match n with
   | 0 => apply eq₀
   | 1 => apply eq₁
@@ -346,7 +347,6 @@ lemma nerve₂Adj.unit.naturality {X Y : SSet.Truncated.{u} 2} (f : X ⟶ Y) :
 def nerve₂Adj.unit : 𝟭 (SSet.Truncated.{u} 2) ⟶ hoFunctor₂ ⋙ nerveFunctor₂ where
   app := nerve₂Adj.unit.app
   naturality _ _ _ := unit.naturality _
-
 
 /-- The adjunction between the 2-truncated nerve functor and the 2-truncated homotopy category
 functor. -/
@@ -515,5 +515,78 @@ noncomputable def nerveFunctorCompHoFunctorIso : nerveFunctor.{u, u} ⋙ hoFunct
 noncomputable instance : Reflective nerveFunctor where
   L := hoFunctor
   adj := nerveAdjunction
+
+section
+
+instance (C D : Type v) [Category.{v} C] [Category.{v} D] :
+    IsIso (prodComparison (nerveFunctor ⋙ hoFunctor ⋙ nerveFunctor)
+      (Cat.of C) (Cat.of D)) := by
+  let iso : nerveFunctor ⋙ hoFunctor ⋙ nerveFunctor ≅ nerveFunctor :=
+    (nerveFunctor.associator hoFunctor nerveFunctor).symm ≪≫
+      isoWhiskerRight nerveFunctorCompHoFunctorIso nerveFunctor ≪≫ nerveFunctor.leftUnitor
+  exact IsIso.of_isIso_fac_right (prodComparison_natural_of_natTrans iso.hom).symm
+
+namespace hoFunctor
+
+instance : hoFunctor.IsLeftAdjoint := nerveAdjunction.isLeftAdjoint
+
+instance (C D : Type v) [Category.{v} C] [Category.{v} D] :
+    IsIso (prodComparison hoFunctor (nerve C) (nerve D)) := by
+  have : IsIso (nerveFunctor.map (prodComparison hoFunctor (nerve C) (nerve D))) := by
+    have : IsIso (prodComparison (hoFunctor ⋙ nerveFunctor) (nerve C) (nerve D)) :=
+      IsIso.of_isIso_fac_left
+        (prodComparison_comp nerveFunctor (hoFunctor ⋙ nerveFunctor)
+          (A := Cat.of C) (B := Cat.of D)).symm
+    exact IsIso.of_isIso_fac_right (prodComparison_comp hoFunctor nerveFunctor).symm
+  exact isIso_of_fully_faithful nerveFunctor _
+
+instance isIso_prodComparison_stdSimplex.{w} (n m : ℕ) :
+    IsIso (prodComparison hoFunctor (Δ[n] : SSet.{w}) Δ[m]) :=
+  IsIso.of_isIso_fac_right (prodComparison_natural
+    hoFunctor (stdSimplex.isoNerve n).hom (stdSimplex.isoNerve m).hom).symm
+
+attribute [local instance]
+  CartesianMonoidalCategory.isLeftAdjoint_prod_functor in
+lemma isIso_prodComparison_of_stdSimplex {D : SSet.{u}} (X : SSet.{u})
+    (H : ∀ m, IsIso (prodComparison hoFunctor D Δ[m])) :
+    IsIso (prodComparison hoFunctor D X) := by
+  have : IsIso (whiskerLeft (CostructuredArrow.proj uliftYoneda X ⋙ uliftYoneda)
+      (prodComparisonNatTrans hoFunctor.{u} D)) := by
+    rw [NatTrans.isIso_iff_isIso_app]
+    exact fun x ↦ H (x.left).len
+  exact isIso_app_coconePt_of_preservesColimit _ (prodComparisonNatTrans hoFunctor _) _
+    (Presheaf.isColimitTautologicalCocone' X)
+
+instance isIso_prodComparison (X Y : SSet) :
+    IsIso (prodComparison hoFunctor X Y) := isIso_prodComparison_of_stdSimplex _ fun m ↦ by
+  convert_to IsIso (hoFunctor.map (prod.braiding _ _).hom ≫
+    prodComparison hoFunctor Δ[m] X ≫ (prod.braiding _ _).hom)
+  · ext <;> simp [← Functor.map_comp]
+  suffices IsIso (prodComparison hoFunctor Δ[m] X) by infer_instance
+  exact isIso_prodComparison_of_stdSimplex _ (isIso_prodComparison_stdSimplex _)
+
+/-- The functor `hoFunctor : SSet ⥤ Cat` preserves binary products of simplicial sets `X` and
+`Y`. -/
+instance preservesBinaryProduct (X Y : SSet) :
+    PreservesLimit (pair X Y) hoFunctor :=
+  PreservesLimitPair.of_iso_prod_comparison hoFunctor X Y
+
+/-- The functor `hoFunctor : SSet ⥤ Cat` preserves limits of functors out of
+`Discrete Limits.WalkingPair`. -/
+instance preservesBinaryProducts :
+    PreservesLimitsOfShape (Discrete Limits.WalkingPair) hoFunctor where
+  preservesLimit {F} := preservesLimit_of_iso_diagram hoFunctor (diagramIsoPair F).symm
+
+/-- The functor `hoFunctor : SSet ⥤ Cat` preserves finite products of simplicial sets. -/
+instance preservesFiniteProducts : PreservesFiniteProducts hoFunctor :=
+  Limits.PreservesFiniteProducts.of_preserves_binary_and_terminal _
+
+/-- The homotopy category functor `hoFunctor : SSet.{u} ⥤ Cat.{u, u}` is (cartesian) monoidal. -/
+noncomputable instance Monoidal : Monoidal hoFunctor :=
+  Monoidal.ofChosenFiniteProducts hoFunctor
+
+end hoFunctor
+
+end
 
 end CategoryTheory

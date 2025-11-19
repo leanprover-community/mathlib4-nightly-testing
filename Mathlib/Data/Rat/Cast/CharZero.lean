@@ -22,7 +22,7 @@ lemma cast_injective : Injective ((↑) : ℚ → α)
   | ⟨n₁, d₁, d₁0, c₁⟩, ⟨n₂, d₂, d₂0, c₂⟩, h => by
     have d₁a : (d₁ : α) ≠ 0 := Nat.cast_ne_zero.2 d₁0
     have d₂a : (d₂ : α) ≠ 0 := Nat.cast_ne_zero.2 d₂0
-    rw [mk'_eq_divInt, mk'_eq_divInt] at h ⊢
+    rw [mk_eq_divInt, mk_eq_divInt] at h ⊢
     rw [cast_divInt_of_ne_zero, cast_divInt_of_ne_zero] at h <;> simp [d₁0, d₂0] at h ⊢
     rwa [eq_div_iff_mul_eq d₂a, division_def, mul_assoc, (d₁.cast_commute (d₂ : α)).inv_left₀.eq, ←
       mul_assoc, ← division_def, eq_comm, eq_div_iff_mul_eq d₁a, eq_comm, ← Int.cast_natCast d₁, ←
@@ -61,8 +61,10 @@ def castHom : ℚ →+* α where
 lemma cast_zpow (p : ℚ) (n : ℤ) : ↑(p ^ n) = (p ^ n : α) := map_zpow₀ (castHom α) ..
 
 @[norm_cast]
-theorem cast_mk (a b : ℤ) : (a /. b : α) = a / b := by
+theorem cast_divInt (a b : ℤ) : (a /. b : α) = a / b := by
   simp only [divInt_eq_div, cast_div, cast_intCast]
+
+@[deprecated (since := "2025-08-13")] alias cast_mk := cast_divInt
 
 end Rat
 

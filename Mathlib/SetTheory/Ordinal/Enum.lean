@@ -104,9 +104,8 @@ theorem enumOrd_le_of_subset {t : Set Ordinal} (hs : ¬ BddAbove s) (hst : s ⊆
     enumOrd t ≤ enumOrd s := by
   intro a
   rw [enumOrd, enumOrd]
-  apply csInf_le_csInf' (enumOrd_nonempty hs a) (inter_subset_inter hst _)
-  intro b hb c hc
-  exact (enumOrd_le_of_subset hs hst c).trans_lt <| hb c hc
+  gcongr with b c
+  exacts [enumOrd_nonempty hs a, enumOrd_le_of_subset hs hst c]
 termination_by a => a
 
 /-- A characterization of `enumOrd`: it is the unique strict monotonic function with range `s`. -/
@@ -149,6 +148,6 @@ theorem enumOrd_zero : enumOrd s 0 = sInf s := by
 noncomputable def enumOrdOrderIso (s : Set Ordinal) (hs : ¬ BddAbove s) : Ordinal ≃o s :=
   StrictMono.orderIsoOfSurjective (fun o => ⟨_, enumOrd_mem hs o⟩) (enumOrd_strictMono hs) fun s =>
     let ⟨a, ha⟩ := enumOrd_surjective hs s.prop
-    ⟨a, Subtype.eq ha⟩
+    ⟨a, Subtype.ext ha⟩
 
 end Ordinal

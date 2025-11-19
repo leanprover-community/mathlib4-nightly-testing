@@ -58,7 +58,7 @@ def augment (C : ChainComplex V ℕ) {X : V} (f : C.X 0 ⟶ X) (w : C.d 1 0 ≫ 
     | _ + 2, 0, _ => rfl
     | 0, _, _ => rfl
     | i + 1, j + 1, h => by
-      simp only; exact C.shape i j (Nat.succ_ne_succ.1 h)
+      simp only; exact C.shape i j (Nat.succ_ne_succ_iff.1 h)
   d_comp_d'
     | _, _, 0, rfl, rfl => w
     | _, _, k + 1, rfl, rfl => C.d_comp_d _ _ _
@@ -121,7 +121,6 @@ def augmentTruncate (C : ChainComplex V ℕ) :
   hom :=
     { f := fun | 0 => 𝟙 _ | _+1 => 𝟙 _
       comm' := fun i j => by
-        -- Porting note: was an rcases n with (_|_|n) but that was causing issues
         match i with
         | 0 | 1 | n+2 =>
           rcases j with - | j <;> dsimp [augment, truncate] <;> simp
@@ -129,7 +128,6 @@ def augmentTruncate (C : ChainComplex V ℕ) :
   inv :=
     { f := fun | 0 => 𝟙 _ | _+1 => 𝟙 _
       comm' := fun i j => by
-        -- Porting note: was an rcases n with (_|_|n) but that was causing issues
         match i with
           | 0 | 1 | n+2 =>
           rcases j with - | j <;> dsimp [augment, truncate] <;> simp
@@ -209,11 +207,10 @@ def augment (C : CochainComplex V ℕ) {X : V} (f : X ⟶ C.X 0) (w : f ≫ C.d 
     | i + 1, j + 1 => C.d i j
     | _, _ => 0
   shape i j s := by
-    simp? at s says simp only [ComplexShape.up_Rel] at s
     rcases j with (_ | _ | j) <;> cases i <;> try simp
     · contradiction
     · rw [C.shape]
-      simp only [ComplexShape.up_Rel]
+      simp only [ComplexShape.up_Rel] at ⊢ s
       contrapose! s
       rw [← s]
   d_comp_d' i j k hij hjk := by
@@ -286,25 +283,11 @@ def augmentTruncate (C : CochainComplex V ℕ) :
   hom :=
     { f := fun | 0 => 𝟙 _ | _+1 => 𝟙 _
       comm' := fun i j => by
-        rcases j with (_ | _ | j) <;> cases i <;>
-          · dsimp
-            -- Porting note https://github.com/leanprover-community/mathlib4/issues/10959
-            -- simp can't handle this now but aesop does
-            aesop }
+        rcases j with (_ | _ | j) <;> cases i <;> aesop }
   inv :=
     { f := fun | 0 => 𝟙 _ | _+1 => 𝟙 _
       comm' := fun i j => by
-        rcases j with (_ | _ | j) <;> rcases i with - | i <;>
-          · dsimp
-            -- Porting note https://github.com/leanprover-community/mathlib4/issues/10959
-            -- simp can't handle this now but aesop does
-            aesop }
-  hom_inv_id := by
-    ext i
-    cases i <;> simp
-  inv_hom_id := by
-    ext i
-    cases i <;> simp
+        rcases j with (_ | _ | j) <;> rcases i with - | i <;> aesop }
 
 @[simp]
 theorem augmentTruncate_hom_f_zero (C : CochainComplex V ℕ) :

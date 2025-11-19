@@ -46,7 +46,7 @@ noncomputable def cardPowDegree : AbsoluteValue Fq[X] ℤ :=
     nonneg' := fun p => by
       split_ifs
       · rfl
-      exact pow_nonneg (Int.ofNat_zero_le _) _
+      exact pow_nonneg (Int.natCast_nonneg _) _
     eq_zero' := fun p =>
       ite_eq_left_iff.trans
         ⟨fun h => by
@@ -59,7 +59,7 @@ noncomputable def cardPowDegree : AbsoluteValue Fq[X] ℤ :=
       · simp only [hpq, hp, hq, if_true, if_false]
         exact add_nonneg (pow_pos _).le (pow_pos _).le
       simp only [hpq, hp, hq, if_false]
-      exact le_trans (pow_right_mono₀ (by omega) (Polynomial.natDegree_add_le _ _)) (by grind)
+      exact le_trans (pow_right_mono₀ (by cutsat) (Polynomial.natDegree_add_le _ _)) (by grind)
     map_mul' := fun p q => by
       by_cases hp : p = 0; · simp [hp]
       by_cases hq : q = 0; · simp [hq]
