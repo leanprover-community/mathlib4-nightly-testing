@@ -3,11 +3,13 @@ Copyright (c) 2018 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro, Sean Leather
 -/
-import Batteries.Data.List.Perm
-import Mathlib.Data.List.Pairwise
-import Mathlib.Data.List.Nodup
-import Mathlib.Data.List.Lookmap
-import Mathlib.Data.Sigma.Basic
+module
+
+public import Batteries.Data.List.Perm
+public import Mathlib.Data.List.Pairwise
+public import Mathlib.Data.List.Nodup
+public import Mathlib.Data.List.Lookmap
+public import Mathlib.Data.Sigma.Basic
 
 /-!
 # Utilities for lists of sigmas
@@ -28,6 +30,8 @@ If `α : Type*` and `β : α → Type*`, then we regard `s : Sigma β` as having
 - `List.kunion` computes the union of two stores.
 - `List.kextract` returns a value with a given key and the rest of the values.
 -/
+
+@[expose] public section
 
 universe u u' v v'
 
@@ -176,7 +180,7 @@ theorem dlookup_cons_ne (l) {a} : ∀ s : Sigma β, a ≠ s.1 → dlookup a (s :
 theorem dlookup_isSome {a : α} {l : List (Sigma β)} : (dlookup a l).isSome ↔ a ∈ l.keys := by
   induction l with
   | nil => simp
-  | cons s _ _ => by_cases a = s.fst <;> grind
+  | cons s _ _ => by_cases a = s.fst <;> grind +revert
 
 theorem dlookup_eq_none {a : α} {l : List (Sigma β)} : dlookup a l = none ↔ a ∉ l.keys := by
   simp [← dlookup_isSome, Option.isNone_iff_eq_none]
@@ -185,7 +189,7 @@ theorem of_mem_dlookup {a : α} {b : β a} {l : List (Sigma β)} :
     b ∈ dlookup a l → Sigma.mk a b ∈ l := by
   induction l with
   | nil => grind
-  | cons s _ _ => by_cases a = s.fst <;> grind
+  | cons s _ _ => by_cases a = s.fst <;> grind +revert
 
 theorem mem_dlookup {a} {b : β a} {l : List (Sigma β)} (nd : l.NodupKeys) (h : Sigma.mk a b ∈ l) :
     b ∈ dlookup a l := by
@@ -197,7 +201,7 @@ theorem map_dlookup_eq_find (a : α) (l : List (Sigma β)) :
     (dlookup a l).map (Sigma.mk a) = find? (fun s => a = s.1) l := by
   induction l with
   | nil => grind
-  | cons s _ _ => by_cases s.fst = a <;> grind
+  | cons s _ _ => by_cases s.fst = a <;> grind +revert
 
 theorem mem_dlookup_iff {a : α} {b : β a} {l : List (Sigma β)} (nd : l.NodupKeys) :
     b ∈ dlookup a l ↔ Sigma.mk a b ∈ l :=
@@ -219,7 +223,7 @@ theorem dlookup_map (l : List (Sigma β))
   | nil => grind
   | cons s _ _ =>
     have (h : a ≠ s.fst) : ¬ f a = (⟨f s.fst, g s.fst s.snd⟩ : Sigma β').fst := fun he => h <| hf he
-    by_cases a = s.fst <;> grind [Sigma.map]
+    by_cases a = s.fst <;> grind +revert [Sigma.map]
 
 theorem dlookup_map₁ {β : Type v} (l : List (Σ _ : α, β))
     {f : α → α'} (hf : Function.Injective f) (a : α) :
@@ -255,7 +259,7 @@ theorem dlookup_append (l₁ l₂ : List (Sigma β)) (a : α) :
     (l₁ ++ l₂).dlookup a = (l₁.dlookup a).or (l₂.dlookup a) := by
   induction l₁ with
   | nil => rfl
-  | cons s _ _ => by_cases a = s.fst <;> grind
+  | cons s _ _ => by_cases a = s.fst <;> grind +revert
 
 theorem sublist_dlookup {l₁ l₂ : List (Sigma β)} {a : α} {b : β a}
     (nd₂ : l₂.NodupKeys) (s : l₁ <+ l₂) (mem : b ∈ l₁.dlookup a) : b ∈ l₂.dlookup a := by

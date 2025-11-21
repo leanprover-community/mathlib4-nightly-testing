@@ -3,8 +3,10 @@ Copyright (c) 2023 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou
 -/
-import Mathlib.Algebra.Homology.HomotopyCategory.HomComplex
-import Mathlib.Algebra.Homology.HomotopyCofiber
+module
+
+public import Mathlib.Algebra.Homology.HomotopyCategory.HomComplex
+public import Mathlib.Algebra.Homology.HomotopyCofiber
 
 /-! # The mapping cone of a morphism of cochain complexes
 
@@ -17,6 +19,8 @@ we redefine it as `CochainComplex.mappingCone φ`. The API involves definitions
 - `mappingCone.snd φ : Cochain (mappingCone φ) G 0`.
 
 -/
+
+@[expose] public section
 
 assert_not_exists TwoSidedIdeal
 
@@ -536,7 +540,7 @@ lemma liftCochain_descCochain :
 lemma liftCochain_v_descCochain_v (p₁ p₂ p₃ : ℤ) (h₁₂ : p₁ + n = p₂) (h₂₃ : p₂ + n' = p₃)
     (q : ℤ) (hq : p₁ + m = q) :
     (liftCochain φ α β h).v p₁ p₂ h₁₂ ≫ (descCochain φ α' β' h').v p₂ p₃ h₂₃ =
-      α.v p₁ q hq ≫ α'.v q p₃ (by cutsat) + β.v p₁ p₂ h₁₂ ≫ β'.v p₂ p₃ h₂₃ := by
+      α.v p₁ q hq ≫ α'.v q p₃ (by grind +revert) + β.v p₁ p₂ h₁₂ ≫ β'.v p₂ p₃ h₂₃ := by
   have eq := Cochain.congr_v (liftCochain_descCochain φ α β α' β' h h' p hp) p₁ p₃ (by cutsat)
   simpa only [Cochain.comp_v _ _ hp p₁ p₂ p₃ h₁₂ h₂₃, Cochain.add_v,
     Cochain.comp_v _ _ _ _ _ _ hq (show q + m' = p₃ by cutsat)] using eq

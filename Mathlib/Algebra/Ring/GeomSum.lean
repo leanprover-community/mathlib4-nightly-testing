@@ -3,9 +3,11 @@ Copyright (c) 2019 Neil Strickland. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Neil Strickland
 -/
-import Mathlib.Algebra.BigOperators.Intervals
-import Mathlib.Algebra.BigOperators.Ring.Finset
-import Mathlib.Algebra.Ring.Opposite
+module
+
+public import Mathlib.Algebra.BigOperators.Intervals
+public import Mathlib.Algebra.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Ring.Opposite
 
 /-!
 # Partial sums of geometric series in a ring
@@ -17,6 +19,8 @@ Several variants are recorded, generalising in particular to the case of a nonco
 which `x` and `y` commute. Even versions not using division or subtraction, valid in each semiring,
 are recorded.
 -/
+
+@[expose] public section
 
 assert_not_exists Field IsOrderedRing
 
@@ -61,7 +65,7 @@ lemma op_geom_sum₂ (x y : R) (n : ℕ) : ∑ i ∈ range n, op y ^ (n - 1 - i)
     ∑ i ∈ range n, op y ^ i * op x ^ (n - 1 - i) := by
   rw [← sum_range_reflect]
   refine sum_congr rfl fun j j_in => ?_
-  grind
+  grind +revert
 
 lemma geom_sum₂_with_one (x : R) (n : ℕ) :
     ∑ i ∈ range n, x ^ i * 1 ^ (n - 1 - i) = ∑ i ∈ range n, x ^ i :=
