@@ -35,10 +35,17 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
+<<<<<<< HEAD
    "rev": "301f98e357b21e7e1abb84692b1e09644443e920",
    "name": "proofwidgets",
    "manifestFile": "lake-manifest.json",
    "inputRev": "v0.0.82-pre1",
+=======
+   "rev": "2aaad968dd10a168b644b6a5afd4b92496af4710",
+   "name": "proofwidgets",
+   "manifestFile": "lake-manifest.json",
+   "inputRev": "v0.0.82",
+>>>>>>> bump/v4.27.0
    "inherited": false,
    "configFile": "lakefile.lean"},
   {"url": "https://github.com/leanprover-community/aesop",
@@ -65,7 +72,11 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
+<<<<<<< HEAD
    "rev": "7ba55a287b9c7aa570b41016540e0e7f9fbe34c5",
+=======
+   "rev": "b82adf90366985b74aa3e83df41fc90f33ac0c5e",
+>>>>>>> bump/v4.27.0
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
