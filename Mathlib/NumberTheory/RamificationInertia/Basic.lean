@@ -163,13 +163,13 @@ lemma ramificationIdx_ne_one_iff (hp : map f p ≤ P) :
   constructor
   · intro he
     have : 1 ≤ Nat.find H := Nat.find_spec H 1 (by simpa)
-    have := Nat.find_min H (m := 1) (by omega)
+    have := Nat.find_min H (m := 1) (by lia)
     push_neg at this
     obtain ⟨k, hk, h1k⟩ := this
     exact hk.trans (Ideal.pow_le_pow_right (Nat.succ_le_iff.mpr h1k))
   · intro he
     have := Nat.find_spec H 2 he
-    omega
+    lia
 
 open IsLocalRing in
 /-- The converse is true when `S` is a Dedekind domain.
@@ -447,7 +447,7 @@ theorem FinrankQuotientMap.span_eq_top [IsDomain R] [IsDomain S] [Algebra K L] [
   · rw [eq_comm, Submodule.restrictScalars_eq_top_iff, Ideal.span_singleton_eq_top]
     refine IsUnit.mk0 _ ((map_ne_zero_iff (algebraMap R L) hRL).mpr ?_)
     refine ne_zero_of_map (f := Ideal.Quotient.mk p) ?_
-    haveI := Ideal.Quotient.nontrivial hp
+    haveI := Ideal.Quotient.nontrivial_iff.mpr hp
     calc
       Ideal.Quotient.mk p A.det = Matrix.det ((Ideal.Quotient.mk p).mapMatrix A) := by
         rw [RingHom.map_det]
@@ -505,10 +505,10 @@ theorem FinrankQuotientMap.linearIndependent_of_nontrivial [IsDedekindDomain R]
     rw [map_sum, ← smul_zero a, ← eq, Finset.smul_sum]
     refine Finset.sum_congr rfl ?_
     intro i hi
-    rw [LinearMap.map_smul, ← IsScalarTower.algebraMap_smul K, hg' i hi, ← smul_assoc,
+    rw [map_smul, ← IsScalarTower.algebraMap_smul K, hg' i hi, ← smul_assoc,
       smul_eq_mul, Function.comp_apply]
   simp only [IsScalarTower.algebraMap_smul, ← map_smul, ← map_sum,
-    (f.map_eq_zero_iff hf).mp eq, LinearMap.map_zero, (· ∘ ·)]
+    (f.map_eq_zero_iff hf).mp eq, map_zero, (· ∘ ·)]
 
 variable (L)
 

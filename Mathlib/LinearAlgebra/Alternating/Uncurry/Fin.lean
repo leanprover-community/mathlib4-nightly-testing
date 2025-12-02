@@ -176,7 +176,7 @@ over all `(i j : Fin (n + 2))`, `i < j`, taken with appropriate signs.
 Here $$\hat{v_i}$$ and $$\hat{v_j}$$ mean that these vectors are removed from the tuple.
 
 We use pairs of `i j : Fin (n + 1)`, `i ≤ j`,
-to encode pairs `(i.castSucc : Fin (n + 1), j.succ : Fin (n + 1))`,
+to encode pairs `(i.castSucc : Fin (n + 2), j.succ : Fin (n + 2))`,
 so the power of `-1` is off by one compared to the informal texts.
 
 In particular, if `f` is symmetric in the first two arguments,
@@ -192,7 +192,7 @@ theorem alternatizeUncurryFin_alternatizeUncurryFinLM_comp_apply
             f (v j.succ) (v i.castSucc) (j.removeNth <| i.castSucc.removeNth v)) := by
   simp? [alternatizeUncurryFin_apply, Finset.smul_sum, sum_sum_eq_sum_triangle_add] says
     simp only [alternatizeUncurryFin_apply, Int.reduceNeg, LinearMap.coe_comp, comp_apply,
-      alternatizeUncurryFinLM_apply, Finset.smul_sum, sum_sum_eq_sum_triangle_add, coe_castSucc,
+      alternatizeUncurryFinLM_apply, Finset.smul_sum, sum_sum_eq_sum_triangle_add, val_castSucc,
       val_succ]
   refine Fintype.sum_congr _ _ fun i ↦ Finset.sum_congr rfl fun j hj ↦ ?_
   rw [Finset.mem_Ici] at hj

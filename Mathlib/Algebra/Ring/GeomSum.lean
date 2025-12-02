@@ -65,7 +65,7 @@ lemma op_geom_sum₂ (x y : R) (n : ℕ) : ∑ i ∈ range n, op y ^ (n - 1 - i)
     ∑ i ∈ range n, op y ^ i * op x ^ (n - 1 - i) := by
   rw [← sum_range_reflect]
   refine sum_congr rfl fun j j_in => ?_
-  grind +revert
+  grind
 
 lemma geom_sum₂_with_one (x : R) (n : ℕ) :
     ∑ i ∈ range n, x ^ i * 1 ^ (n - 1 - i) = ∑ i ∈ range n, x ^ i :=
@@ -155,7 +155,7 @@ lemma geom_sum₂_mul_of_le (hxy : x ≤ y) (n : ℕ) :
   simp_all only [Finset.mem_range]
   rw [mul_comm]
   congr
-  cutsat
+  lia
 
 lemma geom_sum_mul_of_one_le (hx : 1 ≤ x) (n : ℕ) :
     (∑ i ∈ range n, x ^ i) * (x - 1) = x ^ n - 1 := by simpa using geom_sum₂_mul_of_ge hx n
@@ -270,7 +270,7 @@ protected lemma Commute.geom_sum₂_succ_eq (h : Commute x y) {n : ℕ} :
   refine sum_congr rfl fun i hi => ?_
   suffices n - 1 - i + 1 = n - i by rw [this]
   rw [Finset.mem_range] at hi
-  cutsat
+  lia
 
 protected lemma Commute.geom_sum₂_Ico_mul (h : Commute x y) {m n : ℕ}
     (hmn : m ≤ n) :
@@ -359,6 +359,6 @@ lemma _root_.Odd.nat_add_dvd_pow_add_pow {n : ℕ} (h : Odd n) : x + y ∣ x ^ n
 that avoids division and subtraction. -/
 lemma geomSum_eq (hm : 2 ≤ m) (n : ℕ) : ∑ k ∈ range n, m ^ k = (m ^ n - 1) / (m - 1) := by
   refine (Nat.div_eq_of_eq_mul_left (tsub_pos_iff_lt.2 hm) <| tsub_eq_of_eq_add ?_).symm
-  simpa only [tsub_add_cancel_of_le (by cutsat : 1 ≤ m), eq_comm] using geom_sum_mul_add (m - 1) n
+  simpa only [tsub_add_cancel_of_le (by lia : 1 ≤ m), eq_comm] using geom_sum_mul_add (m - 1) n
 
 end Nat

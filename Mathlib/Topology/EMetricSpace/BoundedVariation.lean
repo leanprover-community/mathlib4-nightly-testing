@@ -304,11 +304,11 @@ theorem add_point (f : α → E) {s : Set α} {x : α} (hx : x ∈ s) (u : ℕ �
             ∑ i ∈ Finset.Ico N n, edist (f (w (1 + i + 1))) (f (w (1 + i))) := by
         congr 1
         · congr 1
-          · grind [Finset.mem_Ico, Finset.sum_congr]
+          · grind [Finset.sum_congr]
           · have A : N - 1 + 1 = N := Nat.succ_pred_eq_of_pos Npos
             have : Finset.Ico (N - 1) N = {N - 1} := by rw [← Nat.Ico_succ_singleton, A]
             simp only [this, A, Finset.sum_singleton]
-        · grind [Finset.sum_congr, Finset.mem_Ico]
+        · grind [Finset.sum_congr]
       _ = (∑ i ∈ Finset.Ico 0 (N - 1), edist (f (w (i + 1))) (f (w i))) +
               edist (f (w (N + 1))) (f (w (N - 1))) +
             ∑ i ∈ Finset.Ico (N + 1) (n + 1), edist (f (w (i + 1))) (f (w i)) := by
@@ -383,7 +383,7 @@ theorem add_le_union (f : α → E) {s t : Set α} (h : ∀ x ∈ s, ∀ y ∈ t
       · gcongr
         rintro i hi
         simp only [Finset.mem_union, Finset.mem_range, Finset.mem_Ico] at hi ⊢
-        cutsat
+        lia
       · refine Finset.disjoint_left.2 fun i hi h'i => ?_
         simp only [Finset.mem_Ico, Finset.mem_range] at hi h'i
         exact hi.not_gt (Nat.lt_of_succ_le h'i.left)
@@ -448,17 +448,17 @@ theorem sum (f : α → E) {s : Set α} {E : ℕ → α} (hE : Monotone E) {n : 
     · simp [hn₀]
     rw [← Icc_add_Icc (b := E n)]
     · rw [← ih (by intros; apply hn <;> omega), Finset.sum_range_succ]
-    · apply hE; omega
-    · apply hE; omega
+    · apply hE; lia
+    · apply hE; lia
     · apply hn <;> omega
 
 theorem sum' (f : α → E) {I : ℕ → α} (hI : Monotone I) {n : ℕ} :
     ∑ i ∈ Finset.range n, eVariationOn f (Icc (I i) (I (i + 1)))
      = eVariationOn f (Icc (I 0) (I n)) := by
   convert sum f hI (s := Icc (I 0) (I n)) (n := n)
-    (hn := by intros; rw [mem_Icc]; constructor <;> (apply hI; omega)) with i hi
+    (hn := by intros; rw [mem_Icc]; constructor <;> (apply hI; lia)) with i hi
   · simp only [right_eq_inter]
-    gcongr <;> (apply hI; rw [Finset.mem_range] at hi; omega)
+    gcongr <;> (apply hI; rw [Finset.mem_range] at hi; lia)
   · simp
 
 section Monotone

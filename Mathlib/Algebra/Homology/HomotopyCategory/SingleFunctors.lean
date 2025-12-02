@@ -42,14 +42,14 @@ noncomputable def singleFunctors : SingleFunctors C (CochainComplex C ℤ) ℤ w
   shiftIso n a a' ha' := NatIso.ofComponents
     (fun X => Hom.isoOfComponents
       (fun i => eqToIso (by
-        obtain rfl : a' = a + n := by omega
+        obtain rfl : a' = a + n := by lia
         by_cases h : i = a
         · subst h
           simp only [Functor.comp_obj, shiftFunctor_obj_X', single_obj_X_self]
         · dsimp [single]
-          rw [if_neg h, if_neg (fun h' => h (by omega))])))
+          rw [if_neg h, if_neg (fun h' => h (by lia))])))
     (fun {X Y} f => by
-      obtain rfl : a' = a + n := by omega
+      obtain rfl : a' = a + n := by lia
       ext
       simp [single])
   shiftIso_zero a := by
@@ -89,8 +89,8 @@ end CochainComplex
 
 namespace HomotopyCategory
 
-/-- The collection of all single functors `C ⥤ HomotopyCategory C (ComplexShape.up ℤ))`
-for `n : ℤ` along with their compatibilites with shifts. -/
+/-- The collection of all single functors `C ⥤ HomotopyCategory C (ComplexShape.up ℤ)`
+for `n : ℤ` along with their compatibilities with shifts. -/
 noncomputable def singleFunctors : SingleFunctors C (HomotopyCategory C (ComplexShape.up ℤ)) ℤ :=
   (CochainComplex.singleFunctors C).postcomp (HomotopyCategory.quotient _ _)
 

@@ -151,7 +151,7 @@ def seminormFromConst : RingSeminorm R where
       apply (seminormFromConst_isLimit hf1 hc hpm (x * y)).comp
         (tendsto_atTop_atTop_of_monotone (fun _ _ hnm ↦ by
           simp only [mul_le_mul_iff_right₀, Nat.succ_pos', hnm]) _)
-      · rintro n; use n; omega
+      · rintro n; use n; lia
     refine le_of_tendsto_of_tendsto' hlim ((seminormFromConst_isLimit hf1 hc hpm x).mul
       (seminormFromConst_isLimit hf1 hc hpm y)) (fun n ↦ ?_)
     simp only [seminormFromConst_seq]
@@ -186,7 +186,7 @@ theorem seminormFromConst_isPowMul : IsPowMul (seminormFromConst' hf1 hc hpm) :=
   have hlim : Tendsto (fun n ↦ seminormFromConst_seq c f (x ^ m) (m * n)) atTop
       (𝓝 (seminormFromConst' hf1 hc hpm (x ^ m))) := by
     apply (seminormFromConst_isLimit hf1 hc hpm (x ^ m)).comp
-      (tendsto_atTop_atTop_of_monotone (fun _ _ hnk ↦ mul_le_mul_left' hnk m) _)
+      (tendsto_atTop_atTop_of_monotone (fun _ _ hnk ↦ mul_le_mul_right hnk m) _)
     rintro n; use n; exact le_mul_of_one_le_left' hm
   apply tendsto_nhds_unique hlim
   convert (seminormFromConst_isLimit hf1 hc hpm x).pow m using 1
