@@ -3,9 +3,11 @@ Copyright (c) 2015 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Mario Carneiro
 -/
-import Mathlib.Data.Set.Function
-import Mathlib.Logic.Equiv.Defs
-import Mathlib.Tactic.Says
+module
+
+public import Mathlib.Data.Set.Function
+public import Mathlib.Logic.Equiv.Defs
+public import Mathlib.Tactic.Says
 
 /-!
 # Equivalences and sets
@@ -21,6 +23,8 @@ Some notable definitions are:
 This file is separate from `Equiv/Basic` such that we do not require the full lattice structure
 on sets before defining what an equivalence is.
 -/
+
+@[expose] public section
 
 
 open Function Set
@@ -285,12 +289,11 @@ theorem insert_apply_right {α} {s : Set.{u} α} [DecidablePred (· ∈ s)] {a :
     Equiv.Set.insert H ⟨b, Or.inr b.2⟩ = Sum.inl b :=
   (Equiv.Set.insert H).apply_eq_iff_eq_symm_apply.2 rfl
 
-/-- If `s : Set α` is a set with decidable membership, then `s ⊕ sᶜ` is equivalent to `α`. -/
+/-- If `s : Set α` is a set with decidable membership, then `s ⊕ sᶜ` is equivalent to `α`.
+
+See also `Equiv.sumCompl`. -/
 protected def sumCompl {α} (s : Set α) [DecidablePred (· ∈ s)] : s ⊕ (sᶜ : Set α) ≃ α :=
-  calc
-    s ⊕ (sᶜ : Set α) ≃ ↥(s ∪ sᶜ) := (Equiv.Set.union disjoint_compl_right).symm
-    _ ≃ @univ α := Equiv.setCongr (by simp)
-    _ ≃ α := Equiv.Set.univ _
+  Equiv.sumCompl (· ∈ s)
 
 @[simp]
 theorem sumCompl_apply_inl {α : Type u} (s : Set α) [DecidablePred (· ∈ s)] (x : s) :
@@ -303,25 +306,25 @@ theorem sumCompl_apply_inr {α : Type u} (s : Set α) [DecidablePred (· ∈ s)]
   rfl
 
 theorem sumCompl_symm_apply_of_mem {α : Type u} {s : Set α} [DecidablePred (· ∈ s)] {x : α}
-    (hx : x ∈ s) : (Equiv.Set.sumCompl s).symm x = Sum.inl ⟨x, hx⟩ := by
-  simp [Equiv.Set.sumCompl, Equiv.Set.univ, union_apply_left, hx]
+    (hx : x ∈ s) : (Equiv.Set.sumCompl s).symm x = Sum.inl ⟨x, hx⟩ :=
+  sumCompl_symm_apply_of_pos hx
 
 theorem sumCompl_symm_apply_of_notMem {α : Type u} {s : Set α} [DecidablePred (· ∈ s)] {x : α}
-    (hx : x ∉ s) : (Equiv.Set.sumCompl s).symm x = Sum.inr ⟨x, hx⟩ := by
-  simp [Equiv.Set.sumCompl, Equiv.Set.univ, union_apply_right, hx]
+    (hx : x ∉ s) : (Equiv.Set.sumCompl s).symm x = Sum.inr ⟨x, hx⟩ :=
+  sumCompl_symm_apply_of_neg hx
 
 @[deprecated (since := "2025-05-23")]
 alias sumCompl_symm_apply_of_not_mem := sumCompl_symm_apply_of_notMem
 
 @[simp]
-theorem sumCompl_symm_apply {α : Type*} {s : Set α} [DecidablePred (· ∈ s)] {x : s} :
+theorem sumCompl_symm_apply {α : Type*} {s : Set α} [DecidablePred (· ∈ s)] (x : s) :
     (Equiv.Set.sumCompl s).symm x = Sum.inl x :=
-  Set.sumCompl_symm_apply_of_mem x.2
+  sumCompl_symm_apply_pos x
 
 @[simp]
 theorem sumCompl_symm_apply_compl {α : Type*} {s : Set α} [DecidablePred (· ∈ s)]
-    {x : (sᶜ : Set α)} : (Equiv.Set.sumCompl s).symm x = Sum.inr x :=
-  Set.sumCompl_symm_apply_of_notMem x.2
+    (x : (sᶜ : Set α)) : (Equiv.Set.sumCompl s).symm x = Sum.inr x :=
+  sumCompl_symm_apply_neg x
 
 /-- `sumDiffSubset s t` is the natural equivalence between
 `s ⊕ (t \ s)` and `t`, where `s` and `t` are two sets. -/
@@ -620,18 +623,7 @@ theorem dite_comp_equiv_update {α : Type*} {β : Sort*} {γ : Sort*} {p : α �
     [∀ j, Decidable (p j)] :
     (fun i : α => if h : p i then (Function.update v j x) (e.symm ⟨i, h⟩) else w i) =
       Function.update (fun i : α => if h : p i then v (e.symm ⟨i, h⟩) else w i) (e j) x := by
-  ext i
-  by_cases h : p i
-  · rw [dif_pos h, Function.update_apply_equiv_apply, Equiv.symm_symm,
-      Function.update_apply, Function.update_apply, dif_pos h]
-    have h_coe : (⟨i, h⟩ : Subtype p) = e j ↔ i = e j :=
-      Subtype.ext_iff.trans (by rw [Subtype.coe_mk])
-    simp [h_coe]
-  · have : i ≠ e j := by
-      contrapose! h
-      have : p (e j : α) := (e j).2
-      rwa [← h] at this
-    simp [h, this]
+  grind
 
 section Swap
 

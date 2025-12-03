@@ -6,14 +6,34 @@ section terminalReplacement
 
 section omega
 
-set_option linter.tacticAnalysis.omegaToCutsat true
+set_option linter.tacticAnalysis.omegaToLia true
 
-/-- warning: `cutsat` can replace `omega` -/
+/-- warning: `lia` can replace `omega` -/
 #guard_msgs in
 example : 1 + 1 = 2 := by
   omega
 
 end omega
+
+@[tacticAnalysis linter.tacticAnalysis.dummy]
+def foo : Mathlib.TacticAnalysis.Config :=
+  Mathlib.TacticAnalysis.terminalReplacement "simp" "simp only" ``Lean.Parser.Tactic.simp
+    (fun _ _ _ => `(tactic| simp only))
+    (reportSuccess := true) (reportFailure := true)
+
+/--
+warning: `simp only` left unsolved goals where `simp` succeeded.
+Original tactic:
+  simp
+Replacement tactic:
+  simp only
+Unsolved goals:
+  [⊢ (List.map (fun x => x + 1) [1, 2, 3]).sum = 9 ]
+-/
+#guard_msgs in
+set_option linter.tacticAnalysis.dummy true in
+example : List.sum ([1,2,3].map fun x ↦ x + 1) = 9 := by
+  simp
 
 end terminalReplacement
 
@@ -260,7 +280,7 @@ end tryAtEachStep
 
 section grindReplacement
 
-set_option linter.tacticAnalysis.regressions.omegaToCutsat true
+set_option linter.tacticAnalysis.regressions.omegaToLia true
 
 -- We should not complain about `omega` (and others) failing in a `try` context.
 example : x = y := by

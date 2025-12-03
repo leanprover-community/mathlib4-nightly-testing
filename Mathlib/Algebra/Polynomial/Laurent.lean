@@ -3,10 +3,12 @@ Copyright (c) 2022 Damiano Testa. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Damiano Testa
 -/
-import Mathlib.Algebra.Polynomial.AlgebraMap
-import Mathlib.Algebra.Polynomial.Reverse
-import Mathlib.Algebra.Polynomial.Inductions
-import Mathlib.RingTheory.Localization.Away.Basic
+module
+
+public import Mathlib.Algebra.Polynomial.AlgebraMap
+public import Mathlib.Algebra.Polynomial.Reverse
+public import Mathlib.Algebra.Polynomial.Inductions
+public import Mathlib.RingTheory.Localization.Away.Basic
 
 /-!  # Laurent polynomials
 
@@ -66,6 +68,8 @@ Lots is missing!
 --  `Polynomial.toFinsuppIso`.
 -- Add `degree, intDegree, intTrailingDegree, leadingCoeff, trailingCoeff,...`.
 -/
+
+@[expose] public section
 
 
 open Polynomial Function AddMonoidAlgebra Finsupp
@@ -558,10 +562,10 @@ theorem eval₂_T_neg_n (n : ℕ) : eval₂ f x (T (-n)) = x⁻¹ ^ n := by
 
 @[simp]
 theorem eval₂_T (n : ℤ) : eval₂ f x (T n) = (x ^ n).val := by
-  by_cases hn : 0 ≤ n
+  by_cases! hn : 0 ≤ n
   · lift n to ℕ using hn
     apply eval₂_T_n
-  · obtain ⟨m, rfl⟩ := Int.exists_eq_neg_ofNat (Int.le_of_not_le hn)
+  · obtain ⟨m, rfl⟩ := Int.exists_eq_neg_ofNat hn.le
     rw [eval₂_T_neg_n, zpow_neg, zpow_natCast, ← inv_pow, Units.val_pow_eq_pow_val]
 
 @[simp]
