@@ -8,6 +8,7 @@ module
 public import Mathlib.Algebra.Group.Basic
 public import Mathlib.Algebra.Group.Nat.Defs
 public import Mathlib.Data.Nat.Basic
+public import Mathlib.Tactic.Simproc.ExistsAndEq
 
 /-!
 # Partial predecessor and partial subtraction on the natural numbers

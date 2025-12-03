@@ -6,7 +6,7 @@ Authors: Arend Mellendijk
 module
 
 public meta import Mathlib.Tactic.Basic
-public meta import Mathlib.Tactic.ArithMult.Init
+public import Mathlib.Tactic.ArithMult.Init
 
 /-!
 # Multiplicativity

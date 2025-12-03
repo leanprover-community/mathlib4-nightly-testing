@@ -10,6 +10,7 @@ public import Mathlib.Algebra.Group.Hom.Defs
 public import Mathlib.Algebra.Order.Monoid.Unbundled.ExistsOfLE
 public import Mathlib.Algebra.Order.ZeroLEOne
 public import Mathlib.Order.WithBot
+public import Mathlib.Tactic.Simproc.ExistsAndEq
 
 /-! # Adjoining top/bottom elements to ordered monoids.
 -/

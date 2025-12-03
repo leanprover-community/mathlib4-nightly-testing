@@ -8,7 +8,6 @@ module
 public import Batteries.Data.List.Count
 public import Mathlib.Combinatorics.Enumerative.Catalan
 public import Mathlib.Tactic.Positivity
-import Mathlib.Data.Tree.Basic
 
 /-!
 # Dyck words

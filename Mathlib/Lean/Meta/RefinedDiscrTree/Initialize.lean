@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Lean.Meta.RefinedDiscrTree.Basic
 public import Lean.Meta.CompletionName
+public import Lean.Meta
 
 /-!
 # Constructing a RefinedDiscrTree

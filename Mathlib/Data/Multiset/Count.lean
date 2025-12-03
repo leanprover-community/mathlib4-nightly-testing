@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Data.List.Nodup
 public import Mathlib.Data.Multiset.ZeroCons
+public import Mathlib.Tactic.Simproc.ExistsAndEq
 
 /-!
 # Counting multiplicity in a multiset

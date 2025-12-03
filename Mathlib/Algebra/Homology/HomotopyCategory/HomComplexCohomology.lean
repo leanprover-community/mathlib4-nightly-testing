@@ -5,9 +5,8 @@ Authors: Joël Riou
 -/
 module
 
-public import Mathlib.Algebra.Homology.ShortComplex.Ab
 public import Mathlib.Algebra.Homology.HomotopyCategory.HomComplex
-public import Mathlib.Algebra.Homology.HomotopyCategory.Shift
+public import Mathlib.Algebra.Category.Grp.Abelian
 
 /-!
 # Cohomology of the hom complex

@@ -6,7 +6,9 @@ Authors: Yuma Mizuno
 module
 
 public meta import Mathlib.Tactic.CategoryTheory.Coherence.Datatypes
-public meta import Mathlib.Tactic.CategoryTheory.BicategoricalComp
+public import Mathlib.Tactic.CategoryTheory.BicategoricalComp
+public import Mathlib.Tactic.CategoryTheory.Coherence.Datatypes
+public import Qq.Typ
 
 /-!
 # Expressions for bicategories

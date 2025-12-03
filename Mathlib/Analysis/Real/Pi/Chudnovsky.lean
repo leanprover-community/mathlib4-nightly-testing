@@ -5,9 +5,10 @@ Authors: Kim Morrison
 -/
 module
 
-public import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
-public import Batteries.Data.Rat.Float
 meta import Batteries.Data.Rat.Float  -- shake: keep (for `#eval` sanity check)
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Arctan
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.Deriv
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-!
 # Chudnovsky's formula for π

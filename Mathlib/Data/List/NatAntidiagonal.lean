@@ -6,6 +6,7 @@ Authors: Johan Commelin
 module
 
 public import Mathlib.Data.List.Nodup
+public import Mathlib.Tactic.Simproc.ExistsAndEq
 
 /-!
 # Antidiagonals in ℕ × ℕ as lists

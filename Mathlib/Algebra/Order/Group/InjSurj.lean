@@ -5,7 +5,8 @@ Authors: Jeremy Avigad, Leonardo de Moura, Mario Carneiro, Johannes Hölzl
 -/
 module
 
-public import Mathlib.Algebra.Order.Monoid.Basic
 public import Mathlib.Tactic.Linter.DeprecatedModule
+public import Mathlib.Tactic.Finiteness.Attr
+public import Mathlib.Util.CompileInductive
 
 deprecated_module (since := "2025-04-16")
