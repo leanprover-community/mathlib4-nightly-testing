@@ -3,15 +3,17 @@ Copyright (c) 2015 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad, Minchao Wu, Mario Carneiro
 -/
-import Mathlib.Algebra.NeZero
-import Mathlib.Data.Finset.Attach
-import Mathlib.Data.Finset.Disjoint
-import Mathlib.Data.Finset.Erase
-import Mathlib.Data.Finset.Filter
-import Mathlib.Data.Finset.Range
-import Mathlib.Data.Finset.Lattice.Lemmas
-import Mathlib.Data.Finset.SDiff
-import Mathlib.Data.Fintype.Defs
+module
+
+public import Mathlib.Algebra.NeZero
+public import Mathlib.Data.Finset.Attach
+public import Mathlib.Data.Finset.Disjoint
+public import Mathlib.Data.Finset.Erase
+public import Mathlib.Data.Finset.Filter
+public import Mathlib.Data.Finset.Range
+public import Mathlib.Data.Finset.Lattice.Lemmas
+public import Mathlib.Data.Finset.SDiff
+public import Mathlib.Data.Fintype.Defs
 
 /-! # Image and map operations on finite sets
 
@@ -31,7 +33,9 @@ choosing between `insert` and `Finset.cons`, or between `Finset.union` and `Fins
 * `Finset.subtype`: `s.subtype p` is the finset of `Subtype p` whose elements belong to `s`.
 * `Finset.fin`:`s.fin n` is the finset of all elements of `s` less than `n`.
 -/
-assert_not_exists Monoid OrderedCommMonoid
+
+@[expose] public section
+assert_not_exists Monoid IsOrderedMonoid
 
 variable {α β γ : Type*}
 
@@ -314,9 +318,7 @@ theorem image_congr (h : (s : Set α).EqOn f g) : Finset.image f s = Finset.imag
 
 theorem _root_.Function.Injective.mem_finset_image (hf : Injective f) :
     f a ∈ s.image f ↔ a ∈ s := by
-  refine ⟨fun h => ?_, Finset.mem_image_of_mem f⟩
-  obtain ⟨y, hy, heq⟩ := mem_image.1 h
-  exact hf heq ▸ hy
+  grind
 
 
 @[simp, norm_cast]
@@ -428,8 +430,7 @@ theorem erase_image_subset_image_erase [DecidableEq α] (f : α → β) (s : Fin
 
 @[simp]
 theorem image_erase [DecidableEq α] {f : α → β} (hf : Injective f) (s : Finset α) (a : α) :
-    (s.erase a).image f = (s.image f).erase (f a) :=
-  coe_injective <| by push_cast [Set.image_diff hf, Set.image_singleton]; rfl
+    (s.erase a).image f = (s.image f).erase (f a) := by grind
 
 @[simp]
 theorem image_eq_empty : s.image f = ∅ ↔ s = ∅ := mod_cast Set.image_eq_empty (f := f) (s := s)
@@ -477,16 +478,17 @@ theorem attach_image_val [DecidableEq α] {s : Finset α} : s.attach.image Subty
   eq_of_veq <| by rw [image_val, attach_val, Multiset.attach_map_val, dedup_eq_self]
 
 @[simp]
-theorem attach_insert [DecidableEq α] {a : α} {s : Finset α} :
+lemma attach_cons (a : α) (s : Finset α) (ha) :
+    attach (cons a s ha) =
+      cons ⟨a, mem_cons_self a s⟩
+        ((attach s).map ⟨fun x ↦ ⟨x.1, mem_cons_of_mem x.2⟩, fun x y => by simp⟩)
+          (by simpa) := by ext ⟨x, hx⟩; simpa using hx
+
+@[simp]
+theorem attach_insert [DecidableEq α] (s : Finset α) (a : α) :
     attach (insert a s) =
       insert (⟨a, mem_insert_self a s⟩ : { x // x ∈ insert a s })
-        ((attach s).image fun x => ⟨x.1, mem_insert_of_mem x.2⟩) :=
-  ext fun ⟨x, hx⟩ =>
-    ⟨Or.casesOn (mem_insert.1 hx)
-        (fun h : x = a => fun _ => mem_insert.2 <| Or.inl <| Subtype.ext h)
-        fun h : x ∈ s => fun _ =>
-          mem_insert_of_mem <| mem_image.2 <| ⟨⟨x, h⟩, mem_attach _ _, Subtype.ext rfl⟩,
-      fun _ => Finset.mem_attach _ _⟩
+        ((attach s).image fun x => ⟨x.1, mem_insert_of_mem x.2⟩) := by ext ⟨x, hx⟩; simpa using hx
 
 @[simp]
 theorem disjoint_image {s t : Finset α} {f : α → β} (hf : Injective f) :

@@ -3,10 +3,12 @@ Copyright (c) 2017 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
-import Mathlib.Order.Directed
-import Mathlib.Order.RelIso.Basic
-import Mathlib.Logic.Embedding.Set
-import Mathlib.Logic.Equiv.Set
+module
+
+public import Mathlib.Order.Directed
+public import Mathlib.Order.RelIso.Basic
+public import Mathlib.Logic.Embedding.Set
+public import Mathlib.Logic.Equiv.Set
 
 /-!
 # Interactions between relation homomorphisms and sets
@@ -14,6 +16,8 @@ import Mathlib.Logic.Equiv.Set
 It is likely that there are better homes for many of these statement,
 in files further down the import graph.
 -/
+
+@[expose] public section
 
 
 open Function
@@ -131,7 +135,7 @@ theorem RelEmbedding.codRestrict_apply (p) (f : r ↪r s) (H a) :
 section image
 
 theorem RelIso.image_eq_preimage_symm (e : r ≃r s) (t : Set α) : e '' t = e.symm ⁻¹' t :=
-  e.toEquiv.image_eq_preimage t
+  e.toEquiv.image_eq_preimage_symm t
 
 theorem RelIso.preimage_eq_image_symm (e : r ≃r s) (t : Set β) : e ⁻¹' t = e.symm '' t := by
   rw [e.symm.image_eq_preimage_symm]; rfl

@@ -3,11 +3,13 @@ Copyright (c) 2017 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl, Yury Kudryashov
 -/
-import Mathlib.Algebra.Order.Ring.WithTop
-import Mathlib.Algebra.Order.Sub.WithTop
-import Mathlib.Data.NNReal.Defs
-import Mathlib.Order.Interval.Set.WithBotTop
-import Mathlib.Tactic.Finiteness
+module
+
+public import Mathlib.Algebra.Order.Ring.WithTop
+public import Mathlib.Algebra.Order.Sub.WithTop
+public import Mathlib.Data.NNReal.Defs
+public import Mathlib.Order.Interval.Set.WithBotTop
+public import Mathlib.Tactic.Finiteness
 
 /-!
 # Extended non-negative reals
@@ -87,6 +89,8 @@ context, or if we have `(f : α → ℝ≥0∞) (hf : ∀ x, f x ≠ ∞)`.
 
 -/
 
+@[expose] public section
+
 assert_not_exists Finset
 
 open Function Set NNReal
@@ -160,7 +164,7 @@ noncomputable instance : LinearOrderedCommMonoidWithZero ℝ≥0∞ :=
   { inferInstanceAs (LinearOrderedAddCommMonoidWithTop ℝ≥0∞),
       inferInstanceAs (CommSemiring ℝ≥0∞) with
     bot_le _ := bot_le
-    mul_le_mul_left := fun _ _ => mul_le_mul_left'
+    mul_le_mul_left _ _ := mul_le_mul_left
     zero_le_one := zero_le 1 }
 
 instance : Unique (AddUnits ℝ≥0∞) where
@@ -262,29 +266,17 @@ theorem ofNNReal_toNNReal (x : ℝ) : (Real.toNNReal x : ℝ≥0∞) = ENNReal.o
 
 @[simp] theorem toNNReal_top : ∞.toNNReal = 0 := rfl
 
-@[deprecated (since := "2025-03-20")] alias top_toNNReal := toNNReal_top
-
 @[simp] theorem toReal_top : ∞.toReal = 0 := rfl
-
-@[deprecated (since := "2025-03-20")] alias top_toReal := toReal_top
 
 @[simp] theorem toReal_one : (1 : ℝ≥0∞).toReal = 1 := rfl
 
-@[deprecated (since := "2025-03-20")] alias one_toReal := toReal_one
-
 @[simp] theorem toNNReal_one : (1 : ℝ≥0∞).toNNReal = 1 := rfl
-
-@[deprecated (since := "2025-03-20")] alias one_toNNReal := toNNReal_one
 
 @[simp] theorem coe_toReal (r : ℝ≥0) : (r : ℝ≥0∞).toReal = r := rfl
 
 @[simp] theorem toNNReal_zero : (0 : ℝ≥0∞).toNNReal = 0 := rfl
 
-@[deprecated (since := "2025-03-20")] alias zero_toNNReal := toNNReal_zero
-
 @[simp] theorem toReal_zero : (0 : ℝ≥0∞).toReal = 0 := rfl
-
-@[deprecated (since := "2025-03-20")] alias zero_toReal := toReal_zero
 
 @[simp] theorem ofReal_zero : ENNReal.ofReal (0 : ℝ) = 0 := by simp [ENNReal.ofReal]
 
@@ -739,7 +731,7 @@ open Lean Meta Qq
 
 /-- Extension for the `positivity` tactic: `ENNReal.toReal`. -/
 @[positivity ENNReal.toReal _]
-def evalENNRealtoReal : PositivityExt where eval {u α} _zα _pα e := do
+meta def evalENNRealtoReal : PositivityExt where eval {u α} _zα _pα e := do
   match u, α, e with
   | 0, ~q(ℝ), ~q(ENNReal.toReal $a) =>
     assertInstancesCommute
@@ -748,7 +740,7 @@ def evalENNRealtoReal : PositivityExt where eval {u α} _zα _pα e := do
 
 /-- Extension for the `positivity` tactic: `ENNReal.ofNNReal`. -/
 @[positivity ENNReal.ofNNReal _]
-def evalENNRealOfNNReal : PositivityExt where eval {u α} _zα _pα e := do
+meta def evalENNRealOfNNReal : PositivityExt where eval {u α} _zα _pα e := do
   match u, α, e with
   | 0, ~q(ℝ≥0∞), ~q(ENNReal.ofNNReal $a) =>
     let ra ← core q(inferInstance) q(inferInstance) a

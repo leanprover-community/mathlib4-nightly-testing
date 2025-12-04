@@ -3,8 +3,10 @@ Copyright (c) 2023 Michael Stoll. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Stoll, Ralf Stephan
 -/
-import Mathlib.Data.Nat.Factorization.Defs
-import Mathlib.Data.Nat.Squarefree
+module
+
+public import Mathlib.Data.Nat.Factorization.Defs
+public import Mathlib.Data.Nat.Squarefree
 
 /-!
 # Smooth numbers
@@ -29,6 +31,8 @@ up to and including `N`, and similarly `Nat.roughNumbersUpTo` for its complement
 and we provide some API, in particular bounds for their cardinalities; see
 `Nat.smoothNumbersUpTo_card_le` and `Nat.roughNumbersUpTo_card_le`.
 -/
+
+@[expose] public section
 
 open scoped Finset
 namespace Nat
@@ -379,7 +383,7 @@ lemma pow_mul_mem_smoothNumbers {p n : ℕ} (hp : p ≠ 0) (e : ℕ) (hn : n ∈
   refine ⟨mul_ne_zero hp' hn.1, fun q hq ↦ ?_⟩
   rcases (mem_primeFactorsList_mul hp' hn.1).mp hq with H | H
   · rw [mem_primeFactorsList hp'] at H
-    exact Nat.lt_succ_iff.mpr <| le_of_dvd hp.bot_lt <| H.1.dvd_of_dvd_pow H.2
+    exact Nat.lt_succ_of_le <| le_of_dvd hp.bot_lt <| H.1.dvd_of_dvd_pow H.2
   · exact (hn.2 q H).trans <| lt_succ_self p
 
 /-- If `p` is a prime and `n` is `p`-smooth, then `p` and `n` are coprime. -/
