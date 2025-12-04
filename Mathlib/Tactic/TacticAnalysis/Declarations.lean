@@ -349,7 +349,9 @@ register_option linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions : Bool := 
 
 @[tacticAnalysis linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions,
    inherit_doc linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions]
-def tryAtEachStepSimpAllSuggestions := tryAtEachStep fun _ _ => `(tactic| simp_all? +suggestions)
+-- This `try` is needed or we get an error
+-- in `Logic/Equiv/Defs.lean` at `def cast` that I don't understand.
+def tryAtEachStepSimpAllSuggestions := tryAtEachStep fun _ _ => `(tactic| try simp_all? +suggestions)
 
 -- TODO: add compatibility with `rintro` and `intros`
 /-- Suggest merging two adjacent `intro` tactics which don't pattern match. -/
