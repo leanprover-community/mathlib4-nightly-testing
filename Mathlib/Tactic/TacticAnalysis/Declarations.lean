@@ -288,7 +288,11 @@ register_option linter.tacticAnalysis.tryAtEachStep.fraction : Nat := {
   defValue := 1
 }
 
-/-- Run a tactic at each proof step. -/
+/-- Run a tactic at each proof step, with timing.
+
+Reports elapsed time in milliseconds for each successful replacement.
+To limit tactic runtime, use `set_option maxHeartbeats N` in the build command.
+-/
 def Mathlib.TacticAnalysis.tryAtEachStep (tac : Syntax → MVarId → CommandElabM (TSyntax `tactic)) : TacticAnalysis.Config where
   run seq := do
     let fraction := linter.tacticAnalysis.tryAtEachStep.fraction.get (← getOptions)
@@ -296,12 +300,97 @@ def Mathlib.TacticAnalysis.tryAtEachStep (tac : Syntax → MVarId → CommandEla
       if let [goal] := i.tacI.goalsBefore then
         if (hash goal) % fraction = 0 then
           let tac ← tac i.tacI.stx goal
+          let startTime ← IO.monoMsNow
           let goalsAfter ← try
             i.runTacticCode goal tac
           catch _e =>
             pure [goal]
+          let elapsedMs := (← IO.monoMsNow) - startTime
           if goalsAfter.isEmpty then
-            logInfoAt i.tacI.stx m!"`{i.tacI.stx}` can be replaced with `{tac}`"
+            logInfoAt i.tacI.stx m!"`{i.tacI.stx}` can be replaced with `{tac}` ({elapsedMs}ms)"
+
+/-- Parse a string into tactic syntax.
+
+Returns `none` if parsing fails.
+-/
+def Mathlib.TacticAnalysis.parseTacticString (env : Environment) (tacticStr : String) :
+    Except String (TSyntax `tactic) := do
+  let ictx := Parser.mkInputContext tacticStr "<tactic>"
+  let s := (Parser.categoryParser `tactic 0).fn.run ictx { env, options := {} }
+    (Parser.getTokenTable env) (Parser.mkParserState tacticStr)
+  if s.hasError then
+    .error (s.toErrorMsg ictx)
+  else if s.pos.atEnd tacticStr then
+    .ok ⟨s.stxStack.back⟩
+  else
+    .error ((s.mkError "end of input").toErrorMsg ictx)
+
+/-- Run a tactic (given as a string) at each proof step, with timing.
+
+`label` is the human-readable name shown in output (e.g., "grind").
+`tacticStr` is the tactic syntax as a string (e.g., "grind +suggestions").
+
+Reports elapsed time in milliseconds for each successful replacement.
+To limit tactic runtime, use `set_option maxHeartbeats N` in the build command.
+-/
+def Mathlib.TacticAnalysis.tryAtEachStepFromStrings
+    (label : String) (tacticStr : String) : TacticAnalysis.Config where
+  run seq := do
+    let env ← getEnv
+    let tac ← match parseTacticString env tacticStr with
+      | .ok tac => pure tac
+      | .error msg => throwError msg
+    let fraction := linter.tacticAnalysis.tryAtEachStep.fraction.get (← getOptions)
+    for i in seq do
+      if let [goal] := i.tacI.goalsBefore then
+        if (hash goal) % fraction = 0 then
+          let startTime ← IO.monoMsNow
+          let goalsAfter ← try
+            i.runTacticCode goal tac
+          catch _e =>
+            pure [goal]
+          let elapsedMs := (← IO.monoMsNow) - startTime
+          if goalsAfter.isEmpty then
+            logInfoAt i.tacI.stx m!"`{i.tacI.stx}` can be replaced with `{label}` ({elapsedMs}ms)"
+
+/-- Run a custom tactic at each proof step, configured via environment variables.
+
+Reads from environment variables:
+- `TRY_AT_EACH_STEP_TACTIC`: Tactic syntax to try (e.g., "grind +suggestions") - required
+- `TRY_AT_EACH_STEP_LABEL`: Human-readable label for output (optional, defaults to tactic)
+
+If `TRY_AT_EACH_STEP_TACTIC` is missing, this linter does nothing.
+
+Example usage:
+```bash
+TRY_AT_EACH_STEP_TACTIC="grind +suggestions" \
+lake build Mathlib -Klinter.tacticAnalysis.tryAtEachStepFromEnv=true
+```
+
+This generic entry point is used by the hammer-bench benchmarking tool
+(https://github.com/leanprover-community/hammer-bench) to test arbitrary tactics
+without requiring Mathlib code changes for each new tactic variant.
+-/
+def Mathlib.TacticAnalysis.tryAtEachStepFromEnvImpl : TacticAnalysis.Config where
+  run seq := do
+    let some tacticStr := (← IO.getEnv "TRY_AT_EACH_STEP_TACTIC") | return
+    let label := (← IO.getEnv "TRY_AT_EACH_STEP_LABEL").getD tacticStr
+    let env ← getEnv
+    let tac ← match parseTacticString env tacticStr with
+      | .ok tac => pure tac
+      | .error msg => throwError "TRY_AT_EACH_STEP_TACTIC: {msg}"
+    let fraction := linter.tacticAnalysis.tryAtEachStep.fraction.get (← getOptions)
+    for i in seq do
+      if let [goal] := i.tacI.goalsBefore then
+        if (hash goal) % fraction = 0 then
+          let startTime ← IO.monoMsNow
+          let goalsAfter ← try
+            i.runTacticCode goal tac
+          catch _e =>
+            pure [goal]
+          let elapsedMs := (← IO.monoMsNow) - startTime
+          if goalsAfter.isEmpty then
+            logInfoAt i.tacI.stx m!"`{i.tacI.stx}` can be replaced with `{label}` ({elapsedMs}ms)"
 
 /-- Run `grind` at every step in proofs, reporting where it succeeds. -/
 register_option linter.tacticAnalysis.tryAtEachStepGrind : Bool := {
@@ -349,7 +438,28 @@ register_option linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions : Bool := 
 
 @[tacticAnalysis linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions,
    inherit_doc linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions]
-def tryAtEachStepSimpAllSuggestions := tryAtEachStep fun _ _ => `(tactic| simp_all? +suggestions)
+-- This `try` is needed or we get an error
+-- in `Logic/Equiv/Defs.lean` at `def cast` that I don't understand.
+def tryAtEachStepSimpAllSuggestions := tryAtEachStep fun _ _ => `(tactic| try simp_all? +suggestions)
+
+/-- Run a custom tactic at every step in proofs, configured via environment variables.
+
+Set `TRY_AT_EACH_STEP_LABEL` to the label for output messages.
+Set `TRY_AT_EACH_STEP_TACTIC` to the tactic syntax to try.
+
+Example:
+```bash
+TRY_AT_EACH_STEP_LABEL="omega" TRY_AT_EACH_STEP_TACTIC="omega" \
+  lake build Mathlib -Klinter.tacticAnalysis.tryAtEachStepFromEnv=true
+```
+-/
+register_option linter.tacticAnalysis.tryAtEachStepFromEnv : Bool := {
+  defValue := false
+}
+
+@[tacticAnalysis linter.tacticAnalysis.tryAtEachStepFromEnv,
+   inherit_doc linter.tacticAnalysis.tryAtEachStepFromEnv]
+def tryAtEachStepFromEnv := tryAtEachStepFromEnvImpl
 
 -- TODO: add compatibility with `rintro` and `intros`
 /-- Suggest merging two adjacent `intro` tactics which don't pattern match. -/
