@@ -2,6 +2,7 @@ import Mathlib.Tactic.Linter.FlexibleLinter
 import Mathlib.Tactic.Linter.UnusedTactic
 import Batteries.Linter.UnreachableTactic
 import Batteries.Tactic.PermuteGoals
+import Mathlib.Tactic.TacticAnalysis.Declarations -- only needed temporarily for the `lia` shim
 
 set_option linter.flexible true
 set_option linter.unusedVariables false
@@ -167,6 +168,12 @@ example {a b : Nat} (h : a = b) : a + b + 0 = b + a := by
 example (h : False) : 0 ≠ 0 := by
   try (simp; done)
   exact h.elim
+
+-- `ac_rfl` is an allowed follower
+#guard_msgs in
+example {a b c d : Nat} (h : False) (h' : d = a) : a + (b + c) = (b + d) + c := by
+  simp [h']
+  ac_rfl
 
 -- `grind` is another flexible tactic,
 #guard_msgs in
