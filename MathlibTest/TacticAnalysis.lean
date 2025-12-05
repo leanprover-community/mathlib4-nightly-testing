@@ -1,6 +1,6 @@
 import Mathlib.Tactic.TacticAnalysis.Declarations
 import Mathlib.Tactic.AdaptationNote
-import Lean.PremiseSelection
+import Lean.LibrarySuggestions
 
 section terminalReplacement
 
@@ -8,7 +8,7 @@ section omega
 
 set_option linter.tacticAnalysis.omegaToCutsat true
 
-/-- warning: `cutsat` can replace `omega` -/
+/-- warning: `lia` can replace `omega` -/
 #guard_msgs in
 example : 1 + 1 = 2 := by
   omega
@@ -242,17 +242,34 @@ section
 def P (_ : Nat) := True
 theorem p : P 37 := trivial
 
-set_premise_selector fun _ _ => pure #[{ name := `p, score := 1.0 }]
-
--- FIXME: remove this one `grind +premises` lands.
-macro_rules | `(tactic| grind +premises) => `(tactic| grind [p])
+set_library_suggestions fun _ _ => pure #[{ name := `p, score := 1.0 }]
 
 example : P 37 := by
-  grind +premises
+  grind +suggestions
 
-set_option linter.tacticAnalysis.tryAtEachStepGrindPremises true
+/--
+info: Try this:
+  [apply] simp_all only [p]
+-/
+#guard_msgs in
+example : P 37 := by
+  simp_all? +suggestions
 
-/-- info: `trivial` can be replaced with `grind +premises✝` -/
+set_option linter.tacticAnalysis.tryAtEachStepGrindSuggestions true in
+-- FIXME: why is the dagger here?
+/-- info: `trivial` can be replaced with `grind +suggestions✝` -/
+#guard_msgs in
+example : P 37 := by
+  trivial
+
+set_option linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions true in
+-- FIXME: why is the dagger here?
+/--
+info: Try this:
+  [apply] simp_all +suggestions✝ only [p]
+---
+info: `trivial` can be replaced with `simp_all? +suggestions✝`
+-/
 #guard_msgs in
 example : P 37 := by
   trivial
