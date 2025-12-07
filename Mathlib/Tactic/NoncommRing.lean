@@ -77,7 +77,7 @@ macro_rules
 end Mathlib.Tactic.NoncommRing
 
 /-!
-We register `noncomm_ring` with the `hint` tactic.
+We register `noncomm_ring` with the `try?` tactic.
 -/
 
-register_hint 1000 noncomm_ring
+register_try?_tactic (priority := 1000) noncomm_ring

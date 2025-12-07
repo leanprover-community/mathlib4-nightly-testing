@@ -13,14 +13,14 @@ public meta import Mathlib.Lean.Elab.InfoTree
 public meta import Mathlib.Tactic.Basic
 
 /-!
-# The `hint` tactic.
+# The `hint` tactic (deprecated).
 
-The `hint` tactic tries the kitchen sink:
-it runs every tactic registered via the `register_hint <prio> tac` command
-on the current goal, and reports which ones succeed.
+The `hint` tactic is deprecated in favor of `try?`, which is built into Lean 4.26.0+.
 
-## Future work
-It would be nice to run the tactics in parallel.
+Use `register_try?_tactic (priority := N) <tactic>` to register tactics with `try?`.
+
+The `hint` tactic and `register_hint` command are kept for backward compatibility
+but will be removed in a future release.
 -/
 
 public meta section
@@ -31,7 +31,8 @@ open Lean.Meta.Tactic.TryThis
 
 namespace Mathlib.Tactic.Hint
 
-/-- An environment extension for registering hint tactics with priorities. -/
+/-- An environment extension for registering hint tactics with priorities. (Deprecated) -/
+@[deprecated "Use `register_try?_tactic` instead" (since := "2025-12-08")]
 initialize hintExtension :
     SimplePersistentEnvExtension (Nat × TSyntax `tactic) (List (Nat × TSyntax `tactic)) ←
   registerSimplePersistentEnvExtension {
@@ -39,20 +40,25 @@ initialize hintExtension :
     addImportedFn := mkStateFromImportedEntries (·.cons) {}
   }
 
-/-- Register a new hint tactic. -/
+/-- Register a new hint tactic. (Deprecated) -/
+@[deprecated "Use `register_try?_tactic` instead" (since := "2025-12-08")]
 def addHint (prio : Nat) (stx : TSyntax `tactic) : CoreM Unit := do
   modifyEnv fun env => hintExtension.addEntry env (prio, stx)
 
-/-- Return the list of registered hint tactics. -/
+/-- Return the list of registered hint tactics. (Deprecated) -/
+@[deprecated "Use `register_try?_tactic` instead" (since := "2025-12-08")]
 def getHints : CoreM (List (Nat × TSyntax `tactic)) :=
   return hintExtension.getState (← getEnv)
 
 open Lean.Elab.Command in
 /--
 Register a tactic for use with the `hint` tactic, e.g. `register_hint 1000 simp_all`.
+(Deprecated: use `register_try?_tactic (priority := N) <tactic>` instead)
+
 The numeric argument specifies the priority: tactics with larger priorities run before
 those with smaller priorities. The priority must be provided explicitly.
 -/
+@[deprecated "Use `register_try?_tactic` instead" (since := "2025-12-08")]
 elab (name := registerHintStx)
     "register_hint" prio:num tac:tactic : command =>
     liftTermElabM do
@@ -70,7 +76,9 @@ Construct a suggestion for a tactic.
 * If found, use that as the suggestion.
 * Otherwise use the provided syntax.
 * Also, look for remaining goals and pretty print them after the suggestion.
+(Deprecated)
 -/
+@[deprecated "Use `try?` instead" (since := "2025-12-08")]
 def suggestion (tac : TSyntax `tactic) (trees : PersistentArray InfoTree) : TacticM Suggestion := do
   -- TODO `addExactSuggestion` has an option to construct `postInfo?`
   -- Factor that out so we can use it here instead of copying and pasting?
@@ -95,42 +103,20 @@ def suggestion (tac : TSyntax `tactic) (trees : PersistentArray InfoTree) : Tact
   return { preInfo?, suggestion, postInfo? }
 
 /--
-Run all tactics registered using `register_hint`.
-Print a "Try these:" suggestion for each of the successful tactics.
+The `hint` tactic is deprecated in favor of `try?`.
 
-If one tactic succeeds and closes the goal, we don't look at subsequent tactics.
--/
--- TODO We could run the tactics in parallel.
--- TODO With widget support, could we run the tactics in parallel
---      and do live updates of the widget as results come in?
-def hint (stx : Syntax) : TacticM Unit := withMainContext do
-  let tacs := (← getHints).toArray.qsort (·.1 > ·.1) |>.toList.map (·.2)
-  let tacs := Nondet.ofList tacs
-  let results := tacs.filterMapM fun t : TSyntax `tactic => do
-    if let some { msgs, trees, .. } ← observing? (withResetServerInfo (evalTactic t)) then
-      if msgs.hasErrors then
-        return none
-      else
-        return some (← getGoals, ← suggestion t trees)
-    else
-      return none
-  let results ← (results.toMLList.takeUpToFirst fun r => r.1.1.isEmpty).asArray
-  let results := results.qsort (·.1.1.length < ·.1.1.length)
-  addSuggestions stx (results.map (·.1.2))
-  match results.find? (·.1.1.isEmpty) with
-  | some r =>
-    -- We don't restore the entire state, as that would delete the suggestion messages.
-    setMCtx r.2.term.meta.meta.mctx
-  | none => admitGoal (← getMainGoal)
+The `try?` tactic provides similar functionality by trying multiple tactics
+and reporting successes. Register tactics using:
+`register_try?_tactic (priority := N) <tactic>`
 
-/--
-The `hint` tactic tries every tactic registered using `register_hint <prio> tac`,
-and reports any that succeed.
+Note: User-registered tactics run after built-in `try?` strategies.
 -/
+@[deprecated "Use `try?` instead" (since := "2025-12-08")]
 syntax (name := hintStx) "hint" : tactic
 
-@[inherit_doc hintStx]
 elab_rules : tactic
-  | `(tactic| hint%$tk) => hint tk
+  | `(tactic| hint) => do
+    logWarning "The `hint` tactic is deprecated. Use `try?` instead."
+    evalTactic (← `(tactic| try?))
 
 end Mathlib.Tactic.Hint

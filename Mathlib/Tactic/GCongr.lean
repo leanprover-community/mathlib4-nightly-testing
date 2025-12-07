@@ -16,7 +16,7 @@ The core implementation of the `gcongr` ("generalized congruence") tactic is in 
 public meta section
 
 /-!
-We register `gcongr` with the `hint` tactic.
+We register `gcongr` with the `try?` tactic.
 -/
 
-register_hint 1000 gcongr
+register_try?_tactic (priority := 1000) gcongr

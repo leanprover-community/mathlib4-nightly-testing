@@ -254,7 +254,7 @@ macro_rules
     `(tactic| ($haves;*; bound%$tk))
 
 /-!
-We register `bound` with the `hint` tactic.
+We register `bound` with the `try?` tactic.
 -/
 
-register_hint 70 bound
+register_try?_tactic (priority := 70) bound

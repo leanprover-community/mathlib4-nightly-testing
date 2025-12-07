@@ -73,6 +73,6 @@ macro (name := finiteness_nonterminal) "finiteness_nonterminal" c:Aesop.tactic_c
     (rule_sets := [$(Lean.mkIdent `finiteness):ident, -default, -builtin]))
 
 /-!
- We register `finiteness` with the `hint` tactic.
+ We register `finiteness` with the `try?` tactic.
  -/
-register_hint 1000 finiteness
+register_try?_tactic (priority := 1000) finiteness

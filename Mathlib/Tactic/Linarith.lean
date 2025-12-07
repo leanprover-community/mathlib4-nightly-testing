@@ -10,9 +10,9 @@ public meta import Mathlib.Tactic.NormNum
 public meta import Mathlib.Tactic.Hint
 
 /-!
-We register `linarith` with the `hint` tactic.
+We register `linarith` with the `try?` tactic.
 -/
 
 public meta section
 
-register_hint 100 linarith
+register_try?_tactic (priority := 100) linarith

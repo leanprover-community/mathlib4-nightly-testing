@@ -93,7 +93,7 @@ macro_rules
 end Mathlib.Tactic.Group
 
 /-!
-We register `group` with the `hint` tactic.
+We register `group` with the `try?` tactic.
 -/
 
-register_hint 900 group
+register_try?_tactic (priority := 900) group

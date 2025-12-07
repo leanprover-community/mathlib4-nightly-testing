@@ -244,7 +244,7 @@ end RingNF
 end Mathlib.Tactic
 
 /-!
-We register `ring` with the `hint` tactic.
+We register `ring` with the `try?` tactic.
 -/
 
-register_hint 1000 ring
+register_try?_tactic (priority := 1000) ring

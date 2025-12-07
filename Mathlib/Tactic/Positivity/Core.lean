@@ -532,7 +532,7 @@ We set up `positivity` as a first-pass discharger for `gcongr` side goals.
 macro_rules | `(tactic| gcongr_discharger) => `(tactic| positivity)
 
 /-!
-We register `positivity` with the `hint` tactic.
+We register `positivity` with the `try?` tactic.
 -/
 
-register_hint 1000 positivity
+register_try?_tactic (priority := 1000) positivity

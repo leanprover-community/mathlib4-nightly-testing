@@ -80,5 +80,5 @@ elab (name := field) "field" d:(ppSpace discharger)? args:(ppSpace simpArgs)? : 
 
 end Mathlib.Tactic.FieldSimp
 
-/-! We register `field` with the `hint` tactic. -/
-register_hint 850 field
+/-! We register `field` with the `try?` tactic. -/
+register_try?_tactic (priority := 850) field

@@ -309,7 +309,7 @@ macro (name := normNumCmd) "#norm_num" cfg:optConfig o:(&" only")?
 end Mathlib.Tactic
 
 /-!
-We register `norm_num` with the `hint` tactic.
+We register `norm_num` with the `try?` tactic.
 -/
 
-register_hint 1000 norm_num
+register_try?_tactic (priority := 1000) norm_num

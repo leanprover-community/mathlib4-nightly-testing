@@ -545,7 +545,7 @@ macro (name := abelConv) "abel" : conv =>
 end Mathlib.Tactic.Abel
 
 /-!
-We register `abel` with the `hint` tactic.
+We register `abel` with the `try?` tactic.
 -/
 
-register_hint 950 abel
+register_try?_tactic (priority := 950) abel
