@@ -13,7 +13,7 @@ public import Mathlib.CategoryTheory.GradedObject.Trifunctor
 
 In this file, we shall introduce various typeclasses which will allow
 the construction of the total complex of a bicomplex and of the
-the monoidal category structure on categories of homological complexes (TODO).
+monoidal category structure on categories of homological complexes (TODO).
 
 The most important definition is that of `TotalComplexShape c₁ c₂ c₁₂` given
 three complex shapes `c₁`, `c₂`, `c₁₂`: it allows the definition of a total
@@ -136,13 +136,13 @@ lemma add_rel (r : I) {p q : I} (hpq : c.Rel p q) : c.Rel (r + p) (r + q) :=
 
 @[simp]
 lemma ε_zero : c.ε 0 = 1 := by
-  apply MonoidHom.map_one
+  apply map_one
 
 lemma ε_succ {p q : I} (hpq : c.Rel p q) : c.ε q = - c.ε p :=
   TensorSigns.ε'_succ p q hpq
 
 lemma ε_add (p q : I) : c.ε (p + q) = c.ε p * c.ε q := by
-  apply MonoidHom.map_mul
+  apply map_mul
 
 lemma next_add (p q : I) (hp : c.Rel p (c.next p)) :
     c.next (p + q) = c.next p + q :=
@@ -165,8 +165,8 @@ instance : TotalComplexShape c c c where
 
 instance : TensorSigns (ComplexShape.down ℕ) where
   ε' := MonoidHom.mk' (fun (i : ℕ) => (-1 : ℤˣ) ^ i) (pow_add (-1 : ℤˣ))
-  rel_add p q r (hpq : q + 1 = p) := by dsimp; omega
-  add_rel p q r (hpq : q + 1 = p) := by dsimp; omega
+  rel_add p q r (hpq : q + 1 = p) := by dsimp; lia
+  add_rel p q r (hpq : q + 1 = p) := by dsimp; lia
   ε'_succ := by
     rintro _ q rfl
     dsimp
@@ -177,8 +177,8 @@ lemma ε_down_ℕ (n : ℕ) : (ComplexShape.down ℕ).ε n = (-1 : ℤˣ) ^ n :=
 
 instance : TensorSigns (ComplexShape.up ℤ) where
   ε' := MonoidHom.mk' Int.negOnePow Int.negOnePow_add
-  rel_add p q r (hpq : p + 1 = q) := by dsimp; omega
-  add_rel p q r (hpq : p + 1 = q) := by dsimp; omega
+  rel_add p q r (hpq : p + 1 = q) := by dsimp; lia
+  add_rel p q r (hpq : p + 1 = q) := by dsimp; lia
   ε'_succ := by
     rintro p _ rfl
     dsimp
