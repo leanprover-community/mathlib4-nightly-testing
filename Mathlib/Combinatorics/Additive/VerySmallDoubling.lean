@@ -141,10 +141,22 @@ lemma mul_inv_eq_inv_mul_of_doubling_lt_two (h : #(A * A) < 2 * #A) : A * A⁻¹
   simpa using
     mul_inv_eq_inv_mul_of_doubling_lt_two_aux (A := A⁻¹) (by simpa [← mul_inv_rev] using h)
 
+-- theorem Nat.cast_rat_nonneg (n : Nat) : 0 ≤ (n : Rat) := Nat.cast_nonneg n
+
+-- grind_pattern Nat.cast_rat_nonneg => (n : Rat)
+
+grind_pattern Nat.cast_nonneg' => (n : α)
+
+open Lean.Grind in
+attribute [local instance] Semiring.natCast in
+theorem Nat.cast_nonneg'' {α : Type _} [Lean.Grind.Semiring α] (n : Nat) : 0 ≤ (n : α) := sorry
+
+example (p q : Nat) (h : (p : Rat) < 3 / 2 * q) : (p : Rat) < 2 * q := by grind
+
 private lemma weaken_doubling (h : #(A * A) < (3 / 2 : ℚ) * #A) : #(A * A) < 2 * #A := by
   rw [← Nat.cast_lt (α := ℚ), Nat.cast_mul, Nat.cast_two]
-  linarith only [h]
-
+  grind
+#exit
 private lemma nonempty_of_doubling (h : #(A * A) < (3 / 2 : ℚ) * #A) : A.Nonempty := by
   by_contra! rfl
   simp at h
