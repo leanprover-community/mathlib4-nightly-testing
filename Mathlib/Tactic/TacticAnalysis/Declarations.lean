@@ -117,9 +117,9 @@ private def termToGrindParam (t : Syntax) : Syntax :=
   -- With no modifier, the first child is a null node
   -- If t is a simple identifier, wrap as `(id t)` to force term interpretation
   let t' : Syntax := if t.isIdent then
-      -- Create `id t` application - this ensures grind sees it as a term, not an e-match candidate
-      mkNode ``Lean.Parser.Term.app #[mkIdent `id, mkNullNode #[t]]
-    else t
+    -- Create `id t` application - this ensures grind sees it as a term, not an e-match candidate
+    mkNode ``Lean.Parser.Term.app #[mkIdent `id, mkNullNode #[t]]
+  else t
   let grindLemma := mkNode ``Lean.Parser.Tactic.grindLemma #[mkNullNode, t']
   mkNode ``Lean.Parser.Tactic.grindParam #[grindLemma]
 
@@ -188,10 +188,11 @@ def linarithToGrindRegressions := grindReplacementWith "linarith" `Mathlib.Tacti
     (extractArgs := fun stx => do
       -- linarith syntax: "linarith" "!"? linarithArgsRest
       -- linarithArgsRest := optConfig (&" only")? (" [" term,* "]")?
+      -- The args are in the last child of linarithArgsRest (index 2), which is at index 2 of linarith
       let rest := stx[2]  -- linarithArgsRest
       let argsGroup := rest[2]  -- the optional bracket group
-      guard (argsGroup.getNumArgs >= 2)
-      return ⟨argsGroup[1].getArgs⟩)
+      guard (argsGroup.getNumArgs >= 2)  -- has at least "[" and "]"
+      return ⟨argsGroup[1].getArgs⟩)  -- the term,* between brackets (getArgs gives the array)
 
 /-- Debug `grind` by identifying places where it does not yet supersede `ring`. -/
 register_option linter.tacticAnalysis.regressions.ringToGrind : Bool := {
