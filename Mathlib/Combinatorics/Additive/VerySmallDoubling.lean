@@ -145,11 +145,20 @@ lemma mul_inv_eq_inv_mul_of_doubling_lt_two (h : #(A * A) < 2 * #A) : A * A⁻¹
 
 -- grind_pattern Nat.cast_rat_nonneg => (n : Rat)
 
-grind_pattern Nat.cast_nonneg' => (n : α)
+-- grind_pattern Nat.cast_nonneg' => (n : α)
 
-open Lean.Grind in
-attribute [local instance] Semiring.natCast in
-theorem Nat.cast_nonneg'' {α : Type _} [Lean.Grind.Semiring α] (n : Nat) : 0 ≤ (n : α) := sorry
+section
+open Std Lean.Grind
+attribute [local instance] Semiring.natCast
+
+theorem Nat.cast_nonneg''
+    {α : Type _} [Lean.Grind.Semiring α] [LE α] [LT α] [IsPreorder α] [OrderedRing α]
+    (n : Nat) : 0 ≤ (n : α) :=
+  sorry
+
+grind_pattern Nat.cast_nonneg'' => (n : α)
+
+end
 
 example (p q : Nat) (h : (p : Rat) < 3 / 2 * q) : (p : Rat) < 2 * q := by grind
 
