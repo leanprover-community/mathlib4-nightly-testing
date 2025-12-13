@@ -23,9 +23,6 @@ open Lean Elab Translate
 @[inherit_doc TranslateData.ignoreArgsAttr]
 syntax (name := to_additive_ignore_args) "to_additive_ignore_args" (ppSpace num)* : attr
 
-@[inherit_doc relevantArgOption]
-syntax (name := to_additive_relevant_arg) "to_additive_relevant_arg " num : attr
-
 @[inherit_doc TranslateData.doTranslateAttr]
 syntax (name := to_additive_do_translate) "to_additive_do_translate" : attr
 
@@ -254,7 +251,7 @@ macro "to_additive?" rest:attrArgs : attr => `(attr| to_additive ? $rest)
 
 
 @[inherit_doc to_additive_ignore_args]
-initialize ignoreArgsAttr : NameMapExtension (List Nat) ←
+initialize ignoreArgsAttr : NameMapExtension' (List Nat) ←
   registerNameMapAttribute {
     name := `to_additive_ignore_args
     descr :=
@@ -266,10 +263,10 @@ initialize ignoreArgsAttr : NameMapExtension (List Nat) ←
         return ids.toList }
 
 @[inherit_doc TranslateData.argInfoAttr]
-initialize argInfoAttr : NameMapExtension ArgInfo ← registerNameMapExtension _
+initialize argInfoAttr : NameMapExtension' ArgInfo ← registerNameMapExtension' _
 
 @[inherit_doc TranslateData.doTranslateAttr]
-initialize doTranslateAttr : NameMapExtension Bool ← registerNameMapExtension _
+initialize doTranslateAttr : NameMapExtension' Bool ← registerNameMapExtension' _
 
 initialize
   registerBuiltinAttribute {
@@ -284,7 +281,7 @@ initialize
     add name _ _ := doTranslateAttr.add name false }
 
 /-- Maps multiplicative names to their additive counterparts. -/
-initialize translations : NameMapExtension Name ← registerNameMapExtension _
+initialize translations : NameMapExtension' Name ← registerNameMapExtension' _
 
 @[inherit_doc GuessName.GuessNameData.nameDict]
 def nameDict : Std.HashMap String (List String) := .ofList [
