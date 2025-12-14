@@ -45,6 +45,11 @@ def affineSegment [Ring R] [PartialOrder R] [AddCommGroup V] [Module R V]
 variable [Ring R] [PartialOrder R] [AddCommGroup V] [Module R V] [AddTorsor V P]
 variable [AddCommGroup V'] [Module R V'] [AddTorsor V' P']
 
+lemma affineSegment_subset_affineSpan (x y : P) : affineSegment R x y ⊆ line[R, x, y] := by
+  rw [affineSegment, Set.subset_def]
+  rintro p ⟨r, -, rfl⟩
+  exact lineMap_mem_affineSpan_pair _ _ _
+
 variable {R} in
 @[simp]
 theorem affineSegment_image (f : P →ᵃ[R] P') (x y : P) :
@@ -172,6 +177,19 @@ theorem Function.Injective.wbtw_map_iff {x y z : P} {f : P →ᵃ[R] P'} (hf : F
 theorem Function.Injective.sbtw_map_iff {x y z : P} {f : P →ᵃ[R] P'} (hf : Function.Injective f) :
     Sbtw R (f x) (f y) (f z) ↔ Sbtw R x y z := by
   simp_rw [Sbtw, hf.wbtw_map_iff, hf.ne_iff]
+
+lemma Set.InjOn.wbtw_map_iff {x y z : P} {f : P →ᵃ[R] P'} {s : AffineSubspace R P}
+    (hf : Set.InjOn f s) (hx : x ∈ s) (hy : y ∈ s) (hz : z ∈ s) :
+    Wbtw R (f x) (f y) (f z) ↔ Wbtw R x y z := by
+  refine ⟨fun h => ?_, fun h => h.map _⟩
+  rwa [Wbtw, ← affineSegment_image, hf.mem_image_iff
+    ((affineSegment_subset_affineSpan R x z).trans (affineSpan_le.2 (Set.pair_subset hx hz))) hy]
+    at h
+
+lemma Set.InjOn.sbtw_map_iff {x y z : P} {f : P →ᵃ[R] P'} {s : AffineSubspace R P}
+    (hf : Set.InjOn f s) (hx : x ∈ s) (hy : y ∈ s) (hz : z ∈ s) :
+    Sbtw R (f x) (f y) (f z) ↔ Sbtw R x y z := by
+  simp_rw [Sbtw, hf.wbtw_map_iff hx hy hz, hf.ne_iff hy hx, hf.ne_iff hy hz]
 
 @[simp]
 theorem AffineEquiv.wbtw_map_iff {x y z : P} (f : P ≃ᵃ[R] P') :
@@ -758,13 +776,9 @@ theorem sbtw_of_sbtw_of_sbtw_of_mem_affineSpan_pair [NoZeroSMulDivisors R V]
   have h₂₃ : i₂ ≠ i₃ := by
     rintro rfl
     simp at h₁
-  have h3 : ∀ i : Fin 3, i = i₁ ∨ i = i₂ ∨ i = i₃ := by omega
+  have h3 : ∀ i : Fin 3, i = i₁ ∨ i = i₂ ∨ i = i₃ := by lia
   have hu : (Finset.univ : Finset (Fin 3)) = {i₁, i₂, i₃} := by
     clear h₁ h₂ h₁' h₂'
-    #adaptation_note /--
-    https://github.com/leanprover/lean4/issues/11009
-    -/
-    set_option synthInstance.maxSize 1000 in
     decide +revert
   have hp : p ∈ affineSpan R (Set.range t.points) := by
     have hle : line[R, t.points i₁, p₁] ≤ affineSpan R (Set.range t.points) := by

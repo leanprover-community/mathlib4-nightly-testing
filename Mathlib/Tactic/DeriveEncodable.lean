@@ -36,7 +36,7 @@ inductive S : Type where
   | nat (n : ℕ)
   | cons (a b : S)
 ```
-We start by constructing a equivalence `S ≃ ℕ` using the `Nat.pair` function.
+We start by constructing an equivalence `S ≃ ℕ` using the `Nat.pair` function.
 
 Here is an example of how this module constructs an encoding.
 
@@ -89,7 +89,7 @@ private lemma nat_unpair_lt_2 {n : ℕ} (h : (Nat.unpair n).1 ≠ 0) : (Nat.unpa
   unfold Nat.pair
   have := Nat.le_mul_self a
   have := Nat.le_mul_self b
-  split <;> omega
+  split <;> lia
 
 private def S.decode (n : ℕ) : S :=
   let p := Nat.unpair n

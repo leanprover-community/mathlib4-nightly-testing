@@ -262,6 +262,8 @@ private lemma induction_structure (n : ℕ)
         Ideal.Quotient.mk_singleton_self, ne_eq, not_true_eq_false, false_or] at h_eq
       exact hi h_eq
 
+-- TODO: fix non-terminal simp (large simp set)
+set_option linter.flexible false in
 open IsLocalization in
 open Submodule hiding comap in
 /-- Part 4 of the induction structure applied to `Statement R₀ R n`. See the docstring of
@@ -512,7 +514,7 @@ private lemma statement : ∀ S : InductionObj R n, Statement R₀ R n S := by
             exact Finset.single_le_sum (f := fun i ↦ (c.val i).degree.succ)
               (by intros; positivity) (Finset.mem_univ _)
           _ = c.degBound ^ (c'.degBound + 1) := by rw [pow_succ']
-          _ ≤ c.degBound ^ c.degBound := by gcongr <;> omega
+          _ ≤ c.degBound ^ c.degBound := by gcongr <;> lia
       rw [coeffSubmodule]
       simp only [Submodule.span_le, Set.union_subset_iff, Set.singleton_subset_iff, SetLike.mem_coe,
         Set.iUnion_subset_iff, Set.range_subset_iff, c']

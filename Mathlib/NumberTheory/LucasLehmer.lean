@@ -110,7 +110,7 @@ lemma mersenne_mod_four {n : ℕ} (h : 2 ≤ n) : mersenne n % 4 = 3 := by
 
 lemma mersenne_mod_three {n : ℕ} (odd : Odd n) (h : 3 ≤ n) : mersenne n % 3 = 1 := by
   obtain ⟨k, rfl⟩ := odd
-  replace h : 1 ≤ k := by omega
+  replace h : 1 ≤ k := by lia
   induction k, h using Nat.le_induction with
   | base => rfl
   | succ j _ _ =>
@@ -451,7 +451,7 @@ lemma pow_ω [Fact q.Prime] (odd : Odd q)
   have := two_mul_ω_pow odd leg3
   rw [mul_pow] at this
   have coe : (2 : X q) = (2 : ZMod q) := by rw [map_ofNat]
-  rw [coe, ← RingHom.map_pow, pow2, ← coe,
+  rw [coe, ← map_pow, pow2, ← coe,
     (by ring : (-2 : X q) = 2 * -1)] at this
   refine (IsUnit.of_mul_eq_one (M := X q) ↑((q + 1) / 2) ?_).mul_left_cancel this
   norm_cast
@@ -466,7 +466,7 @@ lemma ω_pow_trace [Fact q.Prime] (odd : Odd q)
   have : (ω : X q) ^ ((q + 1) / 2) * ωb ^ ((q + 1) / 4) = -ωb ^ ((q + 1) / 4) := by
     rw [pow_ω odd leg3 leg2]
     ring
-  have div4 : (q + 1) / 2 = (q + 1) / 4 + (q + 1) / 4 := by rcases hq4 with ⟨k, hk⟩; omega
+  have div4 : (q + 1) / 2 = (q + 1) / 4 + (q + 1) / 4 := by rcases hq4 with ⟨k, hk⟩; lia
   rw [div4, pow_add, mul_assoc, ← mul_pow, ω_mul_ωb, one_pow, mul_one] at this
   rw [this]
   ring
@@ -524,6 +524,8 @@ theorem ω_pow_formula (p' : ℕ) (h : lucasLehmerResidue (p' + 2) = 0) :
   have : 1 ≤ 2 ^ (p' + 2) := Nat.one_le_pow _ _ (by decide)
   exact mod_cast h
 
+-- TODO: fix non-terminal simp (acting on two goals with different simp sets)
+set_option linter.flexible false in
 /-- `q` is the minimum factor of `mersenne p`, so `M p = 0` in `X q`. -/
 theorem mersenne_coe_X (p : ℕ) : (mersenne p : X (q p)) = 0 := by
   ext <;> simp [mersenne, q, ZMod.natCast_eq_zero_iff, -pow_pos]
@@ -642,7 +644,7 @@ theorem sModNat_eq_sMod (p k : ℕ) (hp : 2 ≤ p) : (sModNat (2 ^ p - 1) k : �
   have h1 := calc
     4 = 2 ^ 2 := by simp
     _ ≤ 2 ^ p := Nat.pow_le_pow_right (by simp) hp
-  have h2 : 1 ≤ 2 ^ p := by omega
+  have h2 : 1 ≤ 2 ^ p := by lia
   induction k with
   | zero =>
     rw [sModNat, sMod, Int.natCast_emod]

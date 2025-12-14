@@ -322,8 +322,7 @@ variable [NumberField K] [IsCyclotomicExtension {3} ℚ K]
 `S'.a + η * S'.b` and `S'.a + η ^ 2 * S'.b`. -/
 lemma lambda_sq_dvd_or_dvd_or_dvd :
     λ ^ 2 ∣ S'.a + S'.b ∨ λ ^ 2 ∣ S'.a + η * S'.b ∨ λ ^ 2 ∣ S'.a + η ^ 2 * S'.b := by
-  by_contra! h
-  rcases h with ⟨h1, h2, h3⟩
+  by_contra! ⟨h1, h2, h3⟩
   rw [← emultiplicity_lt_iff_not_dvd] at h1 h2 h3
   have h1' : FiniteMultiplicity (hζ.toInteger - 1) (S'.a + S'.b) :=
     finiteMultiplicity_iff_emultiplicity_ne_top.2 (fun ht ↦ by simp [ht] at h1)
@@ -653,7 +652,7 @@ private lemma formula2 :
   simp only [zero_mul, add_mul]
   rw [← formula1 S]
   congrm ?_ + ?_ + ?_
-  · have : (S.multiplicity-1)*3+1 = 3*S.multiplicity-2 := by have := S.two_le_multiplicity; omega
+  · have : (S.multiplicity-1)*3+1 = 3*S.multiplicity-2 := by have := S.two_le_multiplicity; lia
     calc _ = S.X^3 *(S.u₂*S.u₂⁻¹)*(η^3*S.u₁)*(λ^((S.multiplicity-1)*3)*λ) := by push_cast; ring
     _ = S.X^3*S.u₁*λ^(3*S.multiplicity-2) := by simp [hζ.toInteger_cube_eq_one, ← pow_succ, this]
   · ring
@@ -665,7 +664,7 @@ private lemma formula2 :
 set_option linter.style.commandStart false in
 private lemma lambda_sq_div_u₅_mul : λ ^ 2 ∣ S.u₅ * (λ ^ (S.multiplicity - 1) * S.X) ^ 3 := by
   use λ^(3*S.multiplicity-5)*S.u₅*(S.X^3)
-  have : 3*(S.multiplicity-1) = 2+(3*S.multiplicity-5) := by have := S.two_le_multiplicity; omega
+  have : 3*(S.multiplicity-1) = 2+(3*S.multiplicity-5) := by have := S.two_le_multiplicity; lia
   calc _ = λ^(3*(S.multiplicity-1))*S.u₅*S.X^3 := by ring
   _ = λ^2*λ^(3*S.multiplicity-5)*S.u₅*S.X^3 := by rw [this, pow_add]
   _ = λ^2*(λ^(3*S.multiplicity-5)*S.u₅*S.X^3) := by ring

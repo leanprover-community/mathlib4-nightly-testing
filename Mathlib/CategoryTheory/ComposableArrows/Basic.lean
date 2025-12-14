@@ -60,7 +60,7 @@ namespace CategoryTheory
 
 open Category
 
-variable (C : Type*) [Category C]
+variable (C : Type*) [Category* C]
 
 /-- `ComposableArrows C n` is the type of functors `Fin (n + 1) ⥤ C`. -/
 abbrev ComposableArrows (n : ℕ) := Fin (n + 1) ⥤ C
@@ -70,6 +70,7 @@ namespace ComposableArrows
 variable {C} {n m : ℕ}
 variable (F G : ComposableArrows C n)
 
+-- We do not yet replace `omega` with `lia` here, as it is measurably slower.
 /-- A wrapper for `omega` which prefaces it with some quick and useful attempts -/
 macro "valid" : tactic =>
   `(tactic| first | assumption | apply zero_le | apply le_rfl | transitivity <;> assumption | omega)
@@ -279,6 +280,18 @@ lemma ext₁ {F G : ComposableArrows C 1}
 
 lemma mk₁_surjective (X : ComposableArrows C 1) : ∃ (X₀ X₁ : C) (f : X₀ ⟶ X₁), X = mk₁ f :=
   ⟨_, _, X.map' 0 1, ext₁ rfl rfl (by simp)⟩
+
+lemma mk₁_eqToHom_comp {X₀' X₀ X₁ : C} (h : X₀' = X₀) (f : X₀ ⟶ X₁) :
+    ComposableArrows.mk₁ (eqToHom h ≫ f) = ComposableArrows.mk₁ f := by
+  cat_disch
+
+lemma mk₁_comp_eqToHom {X₀ X₁ X₁' : C} (f : X₀ ⟶ X₁) (h : X₁ = X₁') :
+    ComposableArrows.mk₁ (f ≫ eqToHom h) = ComposableArrows.mk₁ f := by
+  cat_disch
+
+lemma mk₁_hom (X : ComposableArrows C 1) :
+    mk₁ X.hom = X :=
+  ext₁ rfl rfl (by simp)
 
 /-- The bijection between `ComposableArrows C 1` and `Arrow C`. -/
 @[simps]
@@ -606,6 +619,18 @@ lemma mk₂_surjective (X : ComposableArrows C 2) :
     ∃ (X₀ X₁ X₂ : C) (f₀ : X₀ ⟶ X₁) (f₁ : X₁ ⟶ X₂), X = mk₂ f₀ f₁ :=
   ⟨_, _, _, X.map' 0 1, X.map' 1 2, ext₂ rfl rfl rfl (by simp) (by simp)⟩
 
+lemma ext₂_of_arrow {f g : ComposableArrows C 2}
+    (h₀₁ : Arrow.mk (f.map' 0 1) = Arrow.mk (g.map' 0 1))
+    (h₁₂ : Arrow.mk (f.map' 1 2) = Arrow.mk (g.map' 1 2)) : f = g := by
+  obtain ⟨x₀, x₁, x₂, f, f', rfl⟩ := mk₂_surjective f
+  obtain ⟨y₀, y₁, y₂, g, g', rfl⟩ := mk₂_surjective g
+  obtain rfl : x₀ = y₀ := congr_arg Arrow.leftFunc.obj h₀₁
+  obtain rfl : x₁ = y₁ := congr_arg Arrow.rightFunc.obj h₀₁
+  obtain rfl : x₂ = y₂ := congr_arg Arrow.rightFunc.obj h₁₂
+  obtain rfl : f = g := by rwa [← Arrow.mk_inj]
+  obtain rfl : f' = g' := by rwa [← Arrow.mk_inj]
+  rfl
+
 section
 
 variable
@@ -893,7 +918,7 @@ section
 
 open ComposableArrows
 
-variable {C} {D : Type*} [Category D] (G : C ⥤ D) (n : ℕ)
+variable {C} {D : Type*} [Category* D] (G : C ⥤ D) (n : ℕ)
 
 /-- The functor `ComposableArrows C n ⥤ ComposableArrows D n` obtained by postcomposition
 with a functor `C ⥤ D`. -/

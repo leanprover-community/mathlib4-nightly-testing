@@ -137,7 +137,7 @@ lemma RootPositiveForm.rootLength_le_of_pairingIn_eq (B : P.RootPositiveForm ℤ
   have h' := B.pairingIn_mul_eq_pairingIn_mul_swap i j
   have hi := B.rootLength_pos i
   rcases h with hij' | hij' | hij' | hij' | hij' | hij' | hij' | hij' <;>
-  rw [hij'.1, hij'.2] at h' <;> omega
+  rw [hij'.1, hij'.2] at h' <;> lia
 
 variable {P} in
 lemma RootPositiveForm.rootLength_lt_of_pairingIn_notMem
@@ -156,7 +156,7 @@ lemma RootPositiveForm.rootLength_lt_of_pairingIn_notMem
   have aux₂ := B.pairingIn_mul_eq_pairingIn_mul_swap i j
   have hi := B.rootLength_pos i
   rcases aux₁ with hji | hji <;> rcases hij' with hij' | hij' | hij' | hij' | hij' | hij' <;>
-  rw [hji, hij'] at aux₂ <;> omega
+  rw [hji, hij'] at aux₂ <;> lia
 
 @[deprecated (since := "2025-05-23")]
 alias RootPositiveForm.rootLength_lt_of_pairingIn_nmem :=
@@ -322,8 +322,7 @@ lemma exists_apply_eq_or [Nonempty ι] : ∃ i j, ∀ k,
   · refine ⟨i, i, fun j ↦ by simp [h j]⟩
   · obtain ⟨j, hji_ne⟩ := h
     refine ⟨i, j, fun k ↦ ?_⟩
-    by_contra! hk
-    obtain ⟨hki_ne, hkj_ne⟩ := hk
+    by_contra! ⟨hki_ne, hkj_ne⟩
     have hij := (B.apply_eq_or i j).resolve_left hji_ne.symm
     have hik := (B.apply_eq_or i k).resolve_left hki_ne.symm
     have hjk := (B.apply_eq_or j k).resolve_left hkj_ne.symm

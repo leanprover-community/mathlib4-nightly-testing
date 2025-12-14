@@ -415,8 +415,8 @@ structure, used by the `@[simps]` attribute.
 - The first argument is the list of names of the universe variables used in the structure
 - The second argument is an array that consists of the projection data for each projection.
 -/
-initialize structureExt : NameMapExtension (List Name × Array ProjectionData) ←
-  registerNameMapExtension (List Name × Array ProjectionData)
+initialize structureExt : NameMapExtension' (List Name × Array ProjectionData) ←
+  registerNameMapExtension' (List Name × Array ProjectionData)
 
 /-- Projection data used internally in `getRawProjections`. -/
 structure ParsedProjectionData where
@@ -774,7 +774,7 @@ The returned universe levels are the universe levels of the structure. For the p
 are three cases
 * If the declaration `{StructureName}.Simps.{projectionName}` has been declared, then the value
   of this declaration is used (after checking that it is definitionally equal to the actual
-  projection. If you rename the projection name, the declaration should have the *new* projection
+  projection). If you rename the projection name, the declaration should have the *new* projection
   name.
 * You can also declare a custom projection that is a composite of multiple projections.
 * Otherwise, for every class with the `notation_class` attribute, and the structure has an
@@ -1002,10 +1002,10 @@ def addProjection (declName : Name) (type lhs rhs : Expr) (args : Array Expr)
   inferDefEqAttr declName
   -- add term info and apply attributes
   addDeclarationRangesFromSyntax declName (← getRef) ref
+  addConstInfo ref declName
+  if cfg.isSimp then
+    addSimpTheorem simpExtension declName true false .global <| eval_prio default
   TermElabM.run' do
-    _ ← addTermInfo (isBinder := true) ref <| ← mkConstWithLevelParams declName
-    if cfg.isSimp then
-      addSimpTheorem simpExtension declName true false .global <| eval_prio default
     let attrs ← elabAttrs cfg.attrs
     Elab.Term.applyAttributes declName attrs
 

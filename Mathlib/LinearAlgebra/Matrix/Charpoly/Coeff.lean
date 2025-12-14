@@ -209,7 +209,7 @@ lemma det_one_add_smul (r : R) (M : Matrix n n R) :
 
 lemma charpoly_of_card_eq_two [Nontrivial R] (hn : Fintype.card n = 2) :
     M.charpoly = X ^ 2 - C M.trace * X + C M.det := by
-  have : Nonempty n := by rw [← Fintype.card_pos_iff]; omega
+  have : Nonempty n := by rw [← Fintype.card_pos_iff]; lia
   ext i
   by_cases hi : i ∈ Finset.range 3
   · fin_cases hi
@@ -308,6 +308,7 @@ lemma reverse_charpoly (M : Matrix n n R) :
     diagonal_one, invert.map_det]
   simp [t_inv, map_sub, map_one, map_mul, t, smul_eq_diagonal_mul]
 
+set_option linter.flexible false in -- simp followed by ac_rfl
 theorem charpoly_inv (A : Matrix n n R) (h : IsUnit A) :
     A⁻¹.charpoly = (-1) ^ Fintype.card n * C (Ring.inverse A.det) * A.charpolyRev := by
   have : Invertible A := h.invertible
@@ -317,7 +318,7 @@ theorem charpoly_inv (A : Matrix n n R) (h : IsUnit A) :
   _ = C A⁻¹.det * C A.det * (scalar n X - C.mapMatrix A⁻¹).det := by rw [det_mul]; simp
   _ = C A⁻¹.det * (C A.det * (scalar n X - C.mapMatrix A⁻¹).det) := by ac_rfl
   _ = C A⁻¹.det * (C.mapMatrix A * (scalar n X - C.mapMatrix A⁻¹)).det := by simp [RingHom.map_det]
-  _ = C A⁻¹.det * (C.mapMatrix A * scalar n X - 1).det := by rw [mul_sub, ← RingHom.map_mul]; simp
+  _ = C A⁻¹.det * (C.mapMatrix A * scalar n X - 1).det := by rw [mul_sub, ← map_mul]; simp
   _ = C A⁻¹.det * ((-1) ^ Fintype.card n * (1 - scalar n X * C.mapMatrix A).det) := by
     rw [← neg_sub, det_neg, det_one_sub_mul_comm]
   _ = _ := by simp [charpolyRev, smul_eq_diagonal_mul]; ac_rfl

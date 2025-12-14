@@ -9,7 +9,7 @@ open Lake DSL
 require "leanprover-community" / "batteries" @ git "lean-pr-testing-11402"
 require "leanprover-community" / "Qq" @ git "nightly-testing"
 require "leanprover-community" / "aesop" @ git "nightly-testing"
-require "leanprover-community" / "proofwidgets" @ git "v0.0.83-pre1" -- ProofWidgets should always be pinned to a specific version
+require "leanprover-community" / "proofwidgets" @ git "v0.0.83-pre2" -- ProofWidgets should always be pinned to a specific version
   with NameMap.empty.insert `errorOnBuild
     "ProofWidgets not up-to-date. \
     Please run `lake exe cache get` to fetch the latest ProofWidgets. \
@@ -138,7 +138,7 @@ lean_exe «check_title_labels» where
   srcDir := "scripts"
 
 /--
-`lake exe pole` queries the Mathlib speedcenter for build times for the current commit,
+`lake exe pole` queries radar for build times for the current commit,
 and then calculates the longest pole
 (i.e. the sequence of files you would be waiting for during a infinite parallelism build).
 -/
@@ -177,7 +177,7 @@ update its toolchain to match Mathlib's and fetch the new cache.
 -/
 post_update pkg do
   let rootPkg ← getRootPackage
-  if rootPkg.name = pkg.name then
+  if rootPkg.baseName = pkg.baseName then
     return -- do not run in Mathlib itself
   if (← IO.getEnv "MATHLIB_NO_CACHE_ON_UPDATE") != some "1" then
     -- Check if Lake version matches toolchain version
@@ -204,4 +204,4 @@ post_update pkg do
     finally
       IO.Process.setCurrentDir cwd
     if exitCode ≠ 0 then
-      error s!"{pkg.name}: failed to fetch cache"
+      error s!"{pkg.baseName}: failed to fetch cache"

@@ -134,7 +134,9 @@ theorem orderEmbeddingOfSet_apply [DecidablePred (· ∈ s)] {n : ℕ} :
 @[simp]
 theorem Subtype.orderIsoOfNat_apply [dP : DecidablePred (· ∈ s)] {n : ℕ} :
     Subtype.orderIsoOfNat s n = Subtype.ofNat s n := by
-  simp [orderIsoOfNat]; congr!
+  simp only [orderIsoOfNat, RelIso.ofSurjective_apply,
+    RelEmbedding.orderEmbeddingOfLTEmbedding_apply, RelEmbedding.coe_natLT]
+  congr!
 
 variable (s)
 
@@ -179,7 +181,7 @@ theorem exists_increasing_or_nonincreasing_subseq' (r : α → α → Prop) (f :
         obtain ⟨n', hn1, hn2⟩ := h
         refine ⟨n + n' - n - m, by lia, ?_⟩
         convert hn2
-        omega
+        lia
       let g' : ℕ → ℕ := @Nat.rec (fun _ => ℕ) m fun n gn => Nat.find (h gn)
       exact
         ⟨(RelEmbedding.natLT (fun n => g' n + m) fun n =>

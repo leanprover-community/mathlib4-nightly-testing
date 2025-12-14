@@ -42,7 +42,7 @@ variable {n : ℕ} (X : SSet.Truncated.{u} (n + 1))
 its `m`-simplices are uniquely determined by their spine for all `m ≤ n + 1`. -/
 structure StrictSegal where
   /-- The inverse to `spine X m`. -/
-  spineToSimplex (m : ℕ) (h : m ≤ n + 1 := by omega) : Path X m → X _⦋m⦌ₙ₊₁
+  spineToSimplex (m : ℕ) (h : m ≤ n + 1 := by lia) : Path X m → X _⦋m⦌ₙ₊₁
   /-- `spineToSimplex` is a right inverse to `spine X m`. -/
   spine_spineToSimplex (m : ℕ) (h : m ≤ n + 1) :
     spine X m ∘ spineToSimplex m = id
@@ -120,7 +120,7 @@ lemma spineToSimplex_spine_apply (m : ℕ) (h : m ≤ n + 1) (Δ : X _⦋m⦌ₙ
 
 section autoParam
 
-variable (m : ℕ) (h : m ≤ n + 1 := by omega)
+variable (m : ℕ) (h : m ≤ n + 1 := by lia)
 
 /-- The fields of `StrictSegal` define an equivalence between `X _⦋m⦌ₙ₊₁`
 and `Path X m`. -/
@@ -202,8 +202,8 @@ lemma spine_δ_vertex_lt (hij : i.castSucc < j) :
       (sx.spineToSimplex (m + 1) _ f))).vertex i = f.vertex i.castSucc := by
   rw [spine_vertex, ← FunctorToTypes.map_comp_apply, ← op_comp, ← tr_comp,
     SimplexCategory.const_comp, spineToSimplex_vertex]
-  dsimp only [δ, len_mk, mkHom, Hom.toOrderHom_mk, Fin.succAboveOrderEmb_apply,
-    OrderEmbedding.toOrderHom_coe]
+  dsimp only [SimplexCategory.δ, len_mk, mkHom, Hom.toOrderHom_mk,
+    Fin.succAboveOrderEmb_apply, OrderEmbedding.toOrderHom_coe]
   rw [Fin.succAbove_of_castSucc_lt j i hij]
 
 /-- If we take the path along the spine of the `j`th face of a `spineToSimplex`,
@@ -214,8 +214,8 @@ lemma spine_δ_vertex_ge (hij : j ≤ i.castSucc) :
       (sx.spineToSimplex (m + 1) _ f))).vertex i = f.vertex i.succ := by
   rw [spine_vertex, ← FunctorToTypes.map_comp_apply, ← op_comp, ← tr_comp,
     SimplexCategory.const_comp, spineToSimplex_vertex]
-  dsimp only [δ, len_mk, mkHom, Hom.toOrderHom_mk, Fin.succAboveOrderEmb_apply,
-    OrderEmbedding.toOrderHom_coe]
+  dsimp only [SimplexCategory.δ, len_mk, mkHom, Hom.toOrderHom_mk,
+    Fin.succAboveOrderEmb_apply, OrderEmbedding.toOrderHom_coe]
   rw [Fin.succAbove_of_le_castSucc j i hij]
 
 variable {i : Fin m} {j : Fin (m + 2)}
