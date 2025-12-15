@@ -3230,6 +3230,7 @@ public import Mathlib.Combinatorics.SimpleGraph.DegreeSum
 public import Mathlib.Combinatorics.SimpleGraph.DeleteEdges
 public import Mathlib.Combinatorics.SimpleGraph.Density
 public import Mathlib.Combinatorics.SimpleGraph.Diam
+public import Mathlib.Combinatorics.SimpleGraph.EdgeLabeling
 public import Mathlib.Combinatorics.SimpleGraph.Ends.Defs
 public import Mathlib.Combinatorics.SimpleGraph.Ends.Properties
 public import Mathlib.Combinatorics.SimpleGraph.Extremal.Basic
@@ -5620,6 +5621,7 @@ public import Mathlib.Probability.Distributions.Exponential
 public import Mathlib.Probability.Distributions.Fernique
 public import Mathlib.Probability.Distributions.Gamma
 public import Mathlib.Probability.Distributions.Gaussian.Basic
+public import Mathlib.Probability.Distributions.Gaussian.CharFun
 public import Mathlib.Probability.Distributions.Gaussian.Fernique
 public import Mathlib.Probability.Distributions.Gaussian.Real
 public import Mathlib.Probability.Distributions.Geometric
