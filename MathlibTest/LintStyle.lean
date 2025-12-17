@@ -167,6 +167,19 @@ set_option synthInstance.maxHeartbeats 20 in
 section
 end
 
+/--
+warning: Unscoped option linter.flexible is not allowed:
+Please scope this to individual declarations, as in
+```
+set_option linter.flexible in
+-- comment explaining why this is necessary
+example : ... := ...
+```
+
+Note: This linter can be disabled with `set_option linter.style.setOption false`
+-/
+#guard_msgs in
+set_option linter.flexible false
 
 end setOption
 
@@ -302,7 +315,7 @@ Note: This linter can be disabled with `set_option linter.style.lambdaSyntax fal
 example : ℕ → ℕ := by exact λ n ↦ 3 * n + 1
 
 /--
-warning: declaration uses 'sorry'
+warning: declaration uses `sorry`
 ---
 warning: Please use 'fun' and not 'λ' to define anonymous functions.
 The 'λ' syntax is deprecated in mathlib4.
