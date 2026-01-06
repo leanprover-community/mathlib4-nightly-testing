@@ -9,8 +9,8 @@ set_option autoImplicit true
 namespace Test
 
 -- [note] use the below options for diagnostics:
--- set_option trace.to_additive true
--- set_option trace.to_additive_detail true
+-- set_option trace.translate true
+-- set_option trace.translate_detail true
 -- set_option pp.universes true
 -- set_option pp.explicit true
 -- set_option pp.notation false
@@ -487,7 +487,7 @@ If this is intentional, use the `@[to_additive self]` syntax.
 Otherwise, check that your declaration name is correct (if your declaration is an instance, try naming it)
 or provide a translated name using the `@[to_additive my_add_name]` syntax.
 ---
-warning: declaration uses 'sorry'
+warning: declaration uses `sorry`
 -/
 #guard_msgs in
 @[to_additive]

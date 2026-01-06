@@ -548,10 +548,11 @@ def eraseMiddle (c : OrderedFinpartition (n + 1)) (hc : range (c.emb 0) ≠ {0})
     rw [← Nat.add_lt_add_iff_right (k := 1)]
     convert Fin.lt_def.1 (c.parts_strictMono hij)
     · rcases eq_or_ne i (c.index 0) with rfl | hi
+      -- We do not yet replace `omega` with `lia` here, as it is measurably slower.
       · simp only [↓reduceDIte, update_self, succ_mk, cast_mk, val_pred]
         have A := c.one_lt_partSize_index_zero hc
         rw [Nat.sub_add_cancel]
-        · congr; lia
+        · congr; omega
         · rw [Order.one_le_iff_pos]
           conv_lhs => rw [show (0 : ℕ) = c.emb (c.index 0) 0 by simp [emb_zero]]
           rw [← lt_def]
@@ -562,7 +563,7 @@ def eraseMiddle (c : OrderedFinpartition (n + 1)) (hc : range (c.emb 0) ≠ {0})
         have : c.emb i ⟨c.partSize i - 1, Nat.sub_one_lt_of_lt (c.partSize_pos i)⟩
             ≠ c.emb (c.index 0) 0 := c.emb_ne_emb_of_ne hi
         simp only [c.emb_zero, ne_eq, ← val_eq_val, val_zero] at this
-        lia
+        omega
     · rcases eq_or_ne j (c.index 0) with rfl | hj
       · simp only [↓reduceDIte, update_self, succ_mk, cast_mk, val_pred]
         have A := c.one_lt_partSize_index_zero hc
@@ -620,7 +621,7 @@ def eraseMiddle (c : OrderedFinpartition (n + 1)) (hc : range (c.emb 0) ≠ {0})
         congr 1
         rw [← val_eq_val]
         simp only [val_cast, val_succ, val_pred]
-        lia
+        omega
     · have A : update c.partSize (c.index 0) (c.partSize (c.index 0) - 1) i = c.partSize i := by
         simp [hi]
       exact ⟨i, Fin.cast A.symm j, by simp [hi, hij]⟩
@@ -1078,8 +1079,7 @@ theorem HasFTaylorSeriesUpToOn.comp {n : WithTop ℕ∞} {g : F → G} {f : E �
       have J : HasFDerivWithinAt (fun x ↦ q x c.length) (q (f x) c.length.succ).curryLeft
         t (f x) := hg.fderivWithin c.length (cm.trans_lt hm) (f x) (h hx)
       have K : HasFDerivWithinAt f ((continuousMultilinearCurryFin1 𝕜 E F) (p x 1)) s x :=
-        hf.hasFDerivWithinAt (le_trans (mod_cast Nat.le_add_left 1 m)
-          (ENat.add_one_natCast_le_withTop_of_lt hm)) hx
+        hf.hasFDerivWithinAt hm.ne_bot hx
       convert HasFDerivWithinAt.linear_multilinear_comp (J.comp x K h) I B
       simp only [B, Nat.succ_eq_add_one, Fintype.sum_option, comp_apply, faaDiBruno_aux1,
         faaDiBruno_aux2]

@@ -97,6 +97,7 @@ public meta import Mathlib.Tactic.SuccessIfFailWithMsg
 public meta import Mathlib.Tactic.SudoSetOption
 public meta import Mathlib.Tactic.SwapVar
 public meta import Mathlib.Tactic.Tauto
+public meta import Mathlib.Tactic.ToFun
 public meta import Mathlib.Tactic.TermCongr
 -- TFAE imports `Mathlib/Data/List/TFAE.lean` and thence `Mathlib/Data/List/Basic.lean`.
 -- import Mathlib.Tactic.TFAE
@@ -112,7 +113,6 @@ public meta import Mathlib.Tactic.Widget.CongrM
 public meta import Mathlib.Tactic.Widget.Conv
 public meta import Mathlib.Tactic.Widget.LibraryRewrite
 public meta import Mathlib.Tactic.WLOG
-public meta import Mathlib.Util.AssertExists
 public meta import Mathlib.Util.CountHeartbeats
 public meta import Mathlib.Util.PrintSorries
 public meta import Mathlib.Util.TransImports
@@ -151,3 +151,15 @@ register_hint 200 omega
 register_hint 200 fun_prop
 
 end Hint
+
+/-!
+# Register tactics with `try?`. Tactics with larger priority run first.
+-/
+
+section Try
+
+register_try?_tactic (priority := 500) tauto
+register_try?_tactic (priority := 80) aesop
+register_try?_tactic (priority := 200) fun_prop
+
+end Try

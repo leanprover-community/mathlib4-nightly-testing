@@ -71,7 +71,7 @@ initialize normNumExt : ScopedEnvExtension Entry (Entry × NormNumExt) NormNums 
   -- we only need this to deduplicate entries in the DiscrTree
   have : BEq NormNumExt := ⟨fun _ _ ↦ false⟩
   /- Insert `v : NormNumExt` into the tree `dt` on all key sequences given in `kss`. -/
-  let insert kss v dt := kss.foldl (fun dt ks ↦ dt.insertCore ks v) dt
+  let insert kss v dt := kss.foldl (fun dt ks ↦ dt.insertKeyValue ks v) dt
   registerScopedEnvExtension {
     mkInitial := pure {}
     ofOLeanEntry := fun _ e@(_, n) ↦ return (e, ← mkNormNumExt n)
@@ -313,3 +313,4 @@ We register `norm_num` with the `hint` tactic.
 -/
 
 register_hint 1000 norm_num
+register_try?_tactic (priority := 1000) norm_num

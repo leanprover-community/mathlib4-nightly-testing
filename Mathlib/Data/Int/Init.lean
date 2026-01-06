@@ -124,9 +124,9 @@ lemma inductionOn'_sub_one (hz : z ≤ b) :
   rw [hn]
   obtain _ | n := n
   · change _ = -1 at hn
-    have : z = b := by omega
+    have : z = b := by lia
     subst this; rw [inductionOn'_self]; exact heq_of_eq rfl
-  · have : z = b + -[n+1] := by rw [Int.negSucc_eq] at hn ⊢; omega
+  · have : z = b + -[n+1] := by rw [Int.negSucc_eq] at hn ⊢; lia
     subst this
     refine (cast_heq _ _).trans ?_
     congr
@@ -300,8 +300,7 @@ lemma le_add_iff_lt_of_dvd_sub (ha : 0 < a) (hab : a ∣ c - b) : a + b ≤ c �
 /-! ### sign -/
 
 lemma sign_add_eq_of_sign_eq : ∀ {m n : ℤ}, m.sign = n.sign → (m + n).sign = n.sign := by
-  have : (1 : ℤ) ≠ -1 := by decide
-  rintro ((_ | m) | m) ((_ | n) | n) <;> simp [this, this.symm] <;> omega
+  lia
 
 /-! ### toNat -/
 
@@ -319,9 +318,6 @@ lemma toNat_pred_coe_of_pos {i : ℤ} (h : 0 < i) : ((i.toNat - 1 : ℕ) : ℤ) 
 
 lemma toNat_lt_of_ne_zero {n : ℕ} (hn : n ≠ 0) : m.toNat < n ↔ m < n := by lia
 
-@[deprecated (since := "2025-05-24")]
-alias toNat_lt'' := toNat_lt_of_ne_zero
-
 /-- The modulus of an integer by another as a natural. Uses the E-rounding convention. -/
 def natMod (m n : ℤ) : ℕ := (m % n).toNat
 
@@ -330,5 +326,10 @@ lemma natMod_lt {n : ℕ} (hn : n ≠ 0) : m.natMod n < n :=
 
 /-- For use in `Mathlib/Tactic/NormNum/Pow.lean` -/
 @[simp] lemma pow_eq (m : ℤ) (n : ℕ) : m.pow n = m ^ n := rfl
+
+@[simp] lemma gcd_ofNat_negSucc (m n : ℕ) : gcd m (negSucc n) = m.gcd (n + 1) := by simp [gcd]
+@[simp] lemma gcd_negSucc_ofNat (m n : ℕ) : gcd (negSucc m) n = (m + 1).gcd n := by simp [gcd]
+@[simp] lemma gcd_negSucc_negSucc (m n : ℕ) :
+    (negSucc m).gcd (negSucc n) = (m + 1).gcd (n + 1) := by simp [gcd]
 
 end Int
