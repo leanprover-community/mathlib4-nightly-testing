@@ -6,7 +6,6 @@ Authors: Sébastien Gouëzel, Floris van Doorn, Mario Carneiro, Martin Dvorak
 module
 
 public import Mathlib.Tactic.GCongr.Core
-public import Mathlib.Util.AssertExists
 
 /-!
 # Join of a list of lists
@@ -15,7 +14,7 @@ This file proves basic properties of `List.flatten`, which concatenates a list o
 defined in `Init.Prelude`.
 -/
 
-@[expose] public section
+public section
 
 -- Make sure we don't import algebra
 assert_not_exists Monoid
