@@ -163,8 +163,8 @@ def compileInductiveOnly (iv : InductiveVal) (rv : RecursorVal) (warn := true) :
             let val := mkAppN val <| rv.rules.toArray.map fun rule =>
               let e := replaceConst repl rule.rhs
               let e := .beta e xs[:rv.getFirstMinorIdx]
-              -- This only works for non-mutual inductives
-              let e := .beta e #[mkAppN (.const name levels) xs[:rv.getFirstIndexIdx]]
+              let e := .beta e <| rvs.toArray.map fun (rv,name) =>
+                  mkAppN (.const name levels) xs[:rv.getFirstIndexIdx]
               let e := .beta e xs[rv.getFirstMinorIdx:rv.getFirstIndexIdx]
               e
             mkLambdaFVars xs val
