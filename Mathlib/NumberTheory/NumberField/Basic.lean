@@ -3,11 +3,13 @@ Copyright (c) 2021 Ashvni Narayanan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ashvni Narayanan, Anne Baanen
 -/
-import Mathlib.Algebra.Algebra.Rat
-import Mathlib.Algebra.CharZero.AddMonoidHom
-import Mathlib.Algebra.Ring.Int.Parity
-import Mathlib.Algebra.Ring.Int.Units
-import Mathlib.RingTheory.DedekindDomain.IntegralClosure
+module
+
+public import Mathlib.Algebra.Algebra.Rat
+public import Mathlib.Algebra.CharZero.AddMonoidHom
+public import Mathlib.Algebra.Ring.Int.Parity
+public import Mathlib.Algebra.Ring.Int.Units
+public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 
 /-!
 # Number fields
@@ -31,6 +33,8 @@ but are independent of that choice.
 ## Tags
 number field, ring of integers
 -/
+
+@[expose] public section
 
 
 /-- A number field is a field which has characteristic zero and is finite
@@ -121,6 +125,10 @@ instance {L : Type*} [Ring L] [Algebra K L] : Algebra (𝓞 K) L :=
   inferInstanceAs (Algebra (integralClosure _ _) L)
 instance {L : Type*} [Ring L] [Algebra K L] : IsScalarTower (𝓞 K) K L :=
   inferInstanceAs (IsScalarTower (integralClosure _ _) K L)
+instance {G : Type*} [Group G] [MulSemiringAction G K] : MulSemiringAction G (𝓞 K) :=
+  inferInstanceAs (MulSemiringAction G (integralClosure ℤ K))
+instance {G : Type*} [Group G] [MulSemiringAction G K] : SMulDistribClass G (𝓞 K) K :=
+  inferInstanceAs (SMulDistribClass G (integralClosure ℤ K) K)
 
 variable {K}
 
@@ -166,21 +174,31 @@ lemma mk_eq_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) = ⟨y, hy⟩ ↔ x = 
 
 /-- The ring homomorphism `(𝓞 K) →+* (𝓞 L)` given by restricting a ring homomorphism
   `f : K →+* L` to `𝓞 K`. -/
-def mapRingHom {K L F : Type*} [Field K] [Field L] [FunLike F K L]
-    [RingHomClass F K L] (f : F) : (𝓞 K) →+* (𝓞 L) where
+def mapRingHom {K L : Type*} [Field K] [Field L] (f : K →+* L) : (𝓞 K) →+* (𝓞 L) where
   toFun k := ⟨f k.val, map_isIntegral_int f k.2⟩
   map_zero' := by ext; simp only [map_mk, map_zero]
   map_one' := by ext; simp only [map_mk, map_one]
-  map_add' x y:= by ext; simp only [map_mk, map_add]
+  map_add' x y := by ext; simp only [map_mk, map_add]
   map_mul' x y := by ext; simp only [map_mk, map_mul]
+
+@[simp]
+theorem mapRingHom_apply {K L : Type*} [Field K] [Field L] (f : K →+* L) (x : 𝓞 K) :
+    (mapRingHom f x : L) = f (x : K) := rfl
 
 /-- The ring isomorphism `(𝓞 K) ≃+* (𝓞 L)` given by restricting
   a ring isomorphism `e : K ≃+* L` to `𝓞 K`. -/
-def mapRingEquiv {K L E : Type*} [Field K] [Field L] [EquivLike E K L]
-    [RingEquivClass E K L] (e : E) : (𝓞 K) ≃+* (𝓞 L) :=
-  RingEquiv.ofRingHom (mapRingHom e) (mapRingHom (e : K ≃+* L).symm)
+def mapRingEquiv {K L : Type*} [Field K] [Field L] (e : K ≃+* L) : (𝓞 K) ≃+* (𝓞 L) :=
+  RingEquiv.ofRingHom (mapRingHom e) (mapRingHom e.symm)
     (RingHom.ext fun x => ext (EquivLike.right_inv e x.1))
       (RingHom.ext fun x => ext (EquivLike.left_inv e x.1))
+
+@[simp]
+theorem mapRingEquiv_apply {K L : Type*} [Field K] [Field L] (e : K ≃+* L) (x : 𝓞 K) :
+    (mapRingEquiv e x : L) = e (x : K) := rfl
+
+@[simp]
+theorem mapRingEquiv_symm_apply {K L : Type*} [Field K] [Field L] (e : K ≃+* L) (x : 𝓞 L) :
+    ((mapRingEquiv e).symm x : K) = e.symm (x : L) := rfl
 
 end RingOfIntegers
 
@@ -239,6 +257,10 @@ This is a convenient abbreviation for `map_ne_zero_iff` applied to
 lemma coe_ne_zero_iff {x : 𝓞 K} : algebraMap _ K x ≠ 0 ↔ x ≠ 0 :=
   map_ne_zero_iff _ coe_injective
 
+theorem minpoly_coe (x : 𝓞 K) :
+    minpoly ℤ (x : K) = minpoly ℤ x :=
+  minpoly.algebraMap_eq RingOfIntegers.coe_injective x
+
 theorem isIntegral_coe (x : 𝓞 K) : IsIntegral ℤ (algebraMap _ K x) :=
   x.2
 
@@ -266,8 +288,7 @@ protected noncomputable def equiv (R : Type*) [CommRing R] [Algebra R K]
 
 variable (K)
 
-instance [CharZero K] : CharZero (𝓞 K) :=
-  CharZero.of_module _ K
+instance [CharZero K] : CharZero (𝓞 K) := .of_module K
 
 variable [NumberField K]
 
@@ -379,8 +400,7 @@ theorem integralBasis_repr_apply (x : (𝓞 K)) (i : Free.ChooseBasisIndex ℤ (
 
 theorem mem_span_integralBasis {x : K} :
     x ∈ Submodule.span ℤ (Set.range (integralBasis K)) ↔ x ∈ (algebraMap (𝓞 K) K).range := by
-  rw [integralBasis, Basis.localizationLocalization_span, LinearMap.mem_range,
-      IsScalarTower.coe_toAlgHom', RingHom.mem_range]
+  simp [integralBasis, Basis.localizationLocalization_span]
 
 theorem RingOfIntegers.rank : Module.finrank ℤ (𝓞 K) = Module.finrank ℚ K :=
   IsIntegralClosure.rank ℤ ℚ K (𝓞 K)
@@ -405,10 +425,14 @@ noncomputable def ringOfIntegersEquiv : 𝓞 ℚ ≃+* ℤ :=
   RingOfIntegers.equiv ℤ
 
 @[simp]
-theorem coe_ringOfIntegersEquiv (z : 𝓞 ℚ) :
+theorem ringOfIntegersEquiv_apply_coe (z : 𝓞 ℚ) :
     (Rat.ringOfIntegersEquiv z : ℚ) = algebraMap (𝓞 ℚ) ℚ z := by
   obtain ⟨z, rfl⟩ := Rat.ringOfIntegersEquiv.symm.surjective z
   simp
+
+theorem ringOfIntegersEquiv_symm_apply_coe (x : ℤ) :
+    (ringOfIntegersEquiv.symm x : ℚ) = ↑x :=
+  eq_intCast ringOfIntegersEquiv.symm _ ▸ rfl
 
 end Rat
 

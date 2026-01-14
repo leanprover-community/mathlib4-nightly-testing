@@ -3,36 +3,40 @@ Copyright (c) 2022 Oliver Nash. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Oliver Nash
 -/
-import Mathlib.Algebra.Order.ToIntervalMod
-import Mathlib.Algebra.Ring.AddAut
-import Mathlib.Data.Nat.Totient
-import Mathlib.GroupTheory.Divisible
-import Mathlib.Topology.Algebra.IsUniformGroup.Basic
-import Mathlib.Topology.Algebra.Order.Field
-import Mathlib.Topology.IsLocalHomeomorph
-import Mathlib.Topology.Order.T5
+module
+
+public import Mathlib.Algebra.Order.ToIntervalMod
+public import Mathlib.Algebra.Ring.AddAut
+public import Mathlib.Data.Nat.Totient
+public import Mathlib.GroupTheory.Divisible
+public import Mathlib.Topology.Algebra.IsUniformGroup.Basic
+public import Mathlib.Topology.Algebra.Order.Field
+public import Mathlib.Topology.Order.T5
+import Mathlib.Algebra.Order.Interval.Set.Group
+public import Mathlib.Topology.OpenPartialHomeomorph.Defs
 
 /-!
 # The additive circle
 
-We define the additive circle `AddCircle p` as the quotient `𝕜 ⧸ (ℤ ∙ p)` for some period `p : 𝕜`.
+We define the additive circle `AddCircle p` as the quotient `𝕜 ⧸ ℤ ∙ p` for some period `p : 𝕜`.
 
-See also `Circle` and `Real.angle`.  For the normed group structure on `AddCircle`, see
+See also `Circle` and `Real.Angle`.  For the normed group structure on `AddCircle`, see
 `AddCircle.NormedAddCommGroup` in a later file.
 
 ## Main definitions and results:
 
-* `AddCircle`: the additive circle `𝕜 ⧸ (ℤ ∙ p)` for some period `p : 𝕜`
+* `AddCircle`: the additive circle `𝕜 ⧸ ℤ ∙ p` for some period `p : 𝕜`
 * `UnitAddCircle`: the special case `ℝ ⧸ ℤ`
 * `AddCircle.equivAddCircle`: the rescaling equivalence `AddCircle p ≃+ AddCircle q`
-* `AddCircle.equivIco`: the natural equivalence `AddCircle p ≃ Ico a (a + p)`
+* `AddCircle.equivIco` and `AddCircle.equivIoc`: the natural equivalences
+  `AddCircle p ≃ Ico a (a + p)` and `AddCircle p ≃ Ioc a (a + p)`
 * `AddCircle.addOrderOf_div_of_gcd_eq_one`: rational points have finite order
 * `AddCircle.exists_gcd_eq_one_of_isOfFinAddOrder`: finite-order points are rational
 * `AddCircle.homeoIccQuot`: the natural topological equivalence between `AddCircle p` and
   `Icc a (a + p)` with its endpoints identified.
-* `AddCircle.liftIco_continuous`: if `f : ℝ → B` is continuous, and `f a = f (a + p)` for
-  some `a`, then there is a continuous function `AddCircle p → B` which agrees with `f` on
-  `Icc a (a + p)`.
+* `AddCircle.liftIco_continuous` and `AddCircle.liftIoc_continuous`: if `f : ℝ → B` is continuous,
+  and `f a = f (a + p)` for some `a`, then there is a continuous function `AddCircle p → B`
+  which agrees with `f` on `Icc a (a + p)`.
 
 ## Implementation notes:
 
@@ -46,6 +50,8 @@ the rational circle `AddCircle (1 : ℚ)`, and so we set things up more generall
 * Exponential equivalence to `Circle`
 
 -/
+
+@[expose] public section
 
 
 noncomputable section
@@ -112,7 +118,7 @@ theorem continuousAt_toIocMod (hx : (x : 𝕜 ⧸ zmultiples p) ≠ a) : Continu
 
 end Continuity
 
-/-- The "additive circle": `𝕜 ⧸ (ℤ ∙ p)`. See also `Circle` and `Real.angle`. -/
+/-- The "additive circle": `𝕜 ⧸ ℤ ∙ p`. See also `Circle` and `Real.Angle`. -/
 abbrev AddCircle [AddCommGroup 𝕜] (p : 𝕜) :=
   𝕜 ⧸ zmultiples p
 
@@ -155,7 +161,65 @@ protected theorem continuous_mk' [TopologicalSpace 𝕜] :
     Continuous (QuotientAddGroup.mk' (zmultiples p) : 𝕜 → AddCircle p) :=
   continuous_coinduced_rng
 
+section Torsion
+
+-- TODO: move this (and the definition `AddCircle`) to GroupTheory.QuotientGroup.Basic
+open QuotientAddGroup Cardinal in
+theorem card_torsion_le_of_isSMulRegular (n : ℕ) (h0 : n ≠ 0) (hn : IsSMulRegular 𝕜 n) :
+    {x : AddCircle p | n • x = 0}.encard ≤ n := by
+  have (x : {x : AddCircle p | n • x = 0}) : ∃ (k : Fin n) (y : 𝕜), y = x.1 ∧ n • y = k.1 • p := by
+    obtain ⟨x, hx⟩ := x
+    obtain ⟨y, rfl⟩ := mk_surjective x
+    rw [Set.mem_setOf, ← mk_nsmul, eq_zero_iff] at hx
+    have ⟨m', hm⟩ := hx
+    have : NeZero n := ⟨h0⟩
+    rw [← (Int.divModEquiv n).symm_apply_apply m', Int.divModEquiv_symm_apply] at hm
+    set m := m'.divModEquiv n
+    use m.2, y - m.1 • p
+    simp_rw [mk_sub, mk_zsmul, sub_eq_self, coe_period, smul_zero]
+    rw [smul_sub, sub_eq_iff_eq_add, ← hm, add_comm]
+    simp [add_smul, mul_comm, mul_smul]
+  choose f hf using this
+  refine (ENat.card_le_card_of_injective (f := f) fun x x' eq ↦ Subtype.ext ?_).trans (by simp)
+  have ⟨y, hyx, hy⟩ := hf x
+  have ⟨y', hyx', hy'⟩ := hf x'
+  rw [eq, ← hy', hn.eq_iff] at hy
+  rw [← hyx, hy, hyx']
+
+theorem finite_torsion_of_isSMulRegular (n : ℕ) (hn : IsSMulRegular 𝕜 n) :
+    {x : AddCircle p | n • x = 0}.Finite := by
+  nontriviality 𝕜
+  obtain rfl | h0 := eq_or_ne n 0
+  exacts [hn.not_zero.elim, ENat.card_lt_top.mp <|
+    (card_torsion_le_of_isSMulRegular p n h0 hn).trans_lt <| ENat.coe_lt_top n]
+
+theorem card_torsion_le_of_isSMulRegular_int (n : ℤ) (h0 : n ≠ 0) (hn : IsSMulRegular 𝕜 n) :
+    {x : AddCircle p | n • x = 0}.encard ≤ n.natAbs := by
+  convert card_torsion_le_of_isSMulRegular p _
+    (Int.natAbs_ne_zero.mpr h0) (IsSMulRegular.natAbs_iff.mpr hn) using 1
+  conv_lhs => rw [← n.sign_mul_natAbs]
+  obtain h | h | h := n.sign_trichotomy
+  · simp [h]
+  · exact (h0 <| by simpa using h).elim
+  · simp [h]
+
+theorem finite_torsion_of_isSMulRegular_int (n : ℤ) (hn : IsSMulRegular 𝕜 n) :
+    {x : AddCircle p | n • x = 0}.Finite := by
+  nontriviality 𝕜
+  obtain rfl | h0 := eq_or_ne n 0
+  exacts [hn.not_zero.elim, ENat.card_lt_top.mp <|
+    (card_torsion_le_of_isSMulRegular_int p n h0 hn).trans_lt <| ENat.coe_lt_top _]
+
+end Torsion
+
 variable [LinearOrder 𝕜] [IsOrderedAddMonoid 𝕜]
+
+theorem finite_torsion {n : ℕ} (hn : 0 < n) : { u : AddCircle p | n • u = 0 }.Finite :=
+  finite_torsion_of_isSMulRegular _ _ <| .of_right_eq_zero_of_smul fun _ ↦ by simp [hn.ne']
+
+theorem finite_setOf_addOrderOf_eq {n : ℕ} (hn : 0 < n) :
+    {u : AddCircle p | addOrderOf u = n}.Finite :=
+  (finite_torsion p hn).subset fun _ h ↦ ((addOrderOf_eq_iff hn).mp h).1
 
 theorem coe_eq_zero_of_pos_iff (hp : 0 < p) {x : 𝕜} (hx : 0 < x) :
     (x : AddCircle p) = 0 ↔ ∃ n : ℕ, n • p = x := by
@@ -191,6 +255,12 @@ def liftIoc (f : 𝕜 → B) : AddCircle p → B :=
 
 variable {p a}
 
+theorem equivIco_coe_eq {x : 𝕜} (hx : x ∈ Ico a (a + p)) : (equivIco p a) x = ⟨x, hx⟩ := by
+  rw [Equiv.apply_eq_iff_eq_symm_apply, equivIco, QuotientAddGroup.equivIcoMod_symm_apply]
+
+theorem equivIoc_coe_eq {x : 𝕜} (hx : x ∈ Ioc a (a + p)) : (equivIoc p a) x = ⟨x, hx⟩ := by
+  rw [Equiv.apply_eq_iff_eq_symm_apply, equivIoc, QuotientAddGroup.equivIocMod_symm_apply]
+
 theorem coe_eq_coe_iff_of_mem_Ico {x y : 𝕜} (hx : x ∈ Ico a (a + p)) (hy : y ∈ Ico a (a + p)) :
     (x : AddCircle p) = y ↔ x = y := by
   refine ⟨fun h => ?_, by tauto⟩
@@ -201,19 +271,17 @@ theorem coe_eq_coe_iff_of_mem_Ico {x y : 𝕜} (hx : x ∈ Ico a (a + p)) (hy : 
 
 theorem liftIco_coe_apply {f : 𝕜 → B} {x : 𝕜} (hx : x ∈ Ico a (a + p)) :
     liftIco p a f ↑x = f x := by
-  have : (equivIco p a) x = ⟨x, hx⟩ := by
-    rw [Equiv.apply_eq_iff_eq_symm_apply]
-    rfl
-  rw [liftIco, comp_apply, this]
-  rfl
+  simp [liftIco, equivIco_coe_eq hx]
 
 theorem liftIoc_coe_apply {f : 𝕜 → B} {x : 𝕜} (hx : x ∈ Ioc a (a + p)) :
     liftIoc p a f ↑x = f x := by
-  have : (equivIoc p a) x = ⟨x, hx⟩ := by
-    rw [Equiv.apply_eq_iff_eq_symm_apply]
-    rfl
-  rw [liftIoc, comp_apply, this]
-  rfl
+  simp [liftIoc, equivIoc_coe_eq hx]
+
+lemma liftIco_comp_apply {α β : Type*} {f : 𝕜 → α} {g : α → β} {a : 𝕜} {x : AddCircle p} :
+    liftIco p a (g ∘ f) x = g (liftIco p a f x) := rfl
+
+lemma liftIoc_comp_apply {α β : Type*} {f : 𝕜 → α} {g : α → β} {a : 𝕜} {x : AddCircle p} :
+    liftIoc p a (g ∘ f) x = g (liftIoc p a f x) := rfl
 
 lemma eq_coe_Ico (a : AddCircle p) : ∃ b, b ∈ Ico 0 p ∧ ↑b = a := by
   let b := QuotientAddGroup.equivIcoMod hp.out 0 a
@@ -252,9 +320,9 @@ theorem continuousAt_equivIoc (hx : x ≠ a) : ContinuousAt (equivIoc p a) x := 
   rw [ContinuousAt, Filter.Tendsto, QuotientAddGroup.nhds_eq, Filter.map_map]
   exact (continuousAt_toIocMod hp.out a hx).codRestrict _
 
-/-- The quotient map `𝕜 → AddCircle p` as a partial homeomorphism. -/
-@[simps] def partialHomeomorphCoe [DiscreteTopology (zmultiples p)] :
-    PartialHomeomorph 𝕜 (AddCircle p) where
+/-- The quotient map `𝕜 → AddCircle p` as an open partial homeomorphism. -/
+@[simps] def openPartialHomeomorphCoe [DiscreteTopology (zmultiples p)] :
+    OpenPartialHomeomorph 𝕜 (AddCircle p) where
   toFun := (↑)
   invFun := fun x ↦ equivIco p a x
   source := Ioo a (a + p)
@@ -277,11 +345,8 @@ theorem continuousAt_equivIoc (hx : x ≠ a) : ContinuousAt (equivIoc p a) x := 
     exact continuousOn_of_forall_continuousAt
       (fun _ ↦ continuousAt_subtype_val.comp ∘ continuousAt_equivIco p a)
 
-lemma isLocalHomeomorph_coe [DiscreteTopology (zmultiples p)] [DenselyOrdered 𝕜] :
-    IsLocalHomeomorph ((↑) : 𝕜 → AddCircle p) := by
-  intro a
-  obtain ⟨b, hb1, hb2⟩ := exists_between (sub_lt_self a hp.out)
-  exact ⟨partialHomeomorphCoe p b, ⟨hb2, lt_add_of_sub_right_lt hb1⟩, rfl⟩
+@[deprecated (since := "2025-08-29")] noncomputable alias
+  partialHomeomorphCoe := openPartialHomeomorphCoe
 
 end Continuity
 
@@ -304,6 +369,20 @@ entire space. -/
 @[simp]
 theorem coe_image_Icc_eq : ((↑) : 𝕜 → AddCircle p) '' Icc a (a + p) = univ :=
   eq_top_mono (image_mono Ico_subset_Icc_self) <| coe_image_Ico_eq _ _
+
+/-- If functions on AddCircle agree on the image of the interval `[a, a + p)` then they are equal -/
+lemma Ico_ext {α : Type*} {f g : AddCircle p → α} (a : 𝕜)
+    (h : ∀ x ∈ Ico a (a + p), f x = g x) : f = g := by
+  rw [← Set.eqOn_univ, ← coe_image_Ico_eq p a]
+  rintro - ⟨x, hx, rfl⟩
+  exact h x hx
+
+/-- If functions on AddCircle agree on the image of the interval `(a, a + p]` then they are equal -/
+lemma Ioc_ext {α : Type*} {f g : AddCircle p → α} (a : 𝕜)
+    (h : ∀ x ∈ Ioc a (a + p), f x = g x) : f = g := by
+  rw [← Set.eqOn_univ, ← coe_image_Ioc_eq p a]
+  rintro - ⟨x, hx, rfl⟩
+  exact h x hx
 
 end LinearOrderedAddCommGroup
 
@@ -377,7 +456,7 @@ instance : DivisibleBy (AddCircle p) ℤ where
 
 omit [IsStrictOrderedRing 𝕜] in
 @[simp] lemma coe_fract (x : 𝕜) : (↑(Int.fract x) : AddCircle (1 : 𝕜)) = x := by
-  simp [← Int.self_sub_floor]
+  simp [← Int.self_sub_floor, mem_zmultiples_iff]
 
 end FloorRing
 
@@ -412,7 +491,7 @@ theorem addOrderOf_div_of_gcd_eq_one {m n : ℕ} (hn : 0 < n) (h : m.gcd n = 1) 
 theorem addOrderOf_div_of_gcd_eq_one' {m : ℤ} {n : ℕ} (hn : 0 < n) (h : m.natAbs.gcd n = 1) :
     addOrderOf (↑(↑m / ↑n * p) : AddCircle p) = n := by
   cases m
-  · simp only [Int.ofNat_eq_coe, Int.cast_natCast, Int.natAbs_natCast] at h ⊢
+  · simp only [Int.ofNat_eq_natCast, Int.cast_natCast, Int.natAbs_natCast] at h ⊢
     exact addOrderOf_div_of_gcd_eq_one hn h
   · simp only [Int.cast_negSucc, neg_div, neg_mul, coe_neg, addOrderOf_neg]
     exact addOrderOf_div_of_gcd_eq_one hn h
@@ -424,7 +503,7 @@ theorem addOrderOf_coe_rat {q : ℚ} : addOrderOf (↑(↑q * p) : AddCircle p) 
   rw [← q.num_divInt_den, Rat.cast_divInt_of_ne_zero _ this, Int.cast_natCast, Rat.num_divInt_den,
     addOrderOf_div_of_gcd_eq_one' q.pos q.reduced]
 
-theorem nsmul_eq_zero_iff {u : AddCircle p} {n : ℕ} (h : 0 < n) :
+protected theorem nsmul_eq_zero_iff {u : AddCircle p} {n : ℕ} (h : 0 < n) :
     n • u = 0 ↔ ∃ m < n, ↑(↑m / ↑n * p) = u := by
   refine ⟨QuotientAddGroup.induction_on u fun k hk ↦ ?_, ?_⟩
   · rw [← addOrderOf_dvd_iff_nsmul_eq_zero]
@@ -439,7 +518,7 @@ theorem nsmul_eq_zero_iff {u : AddCircle p} {n : ℕ} (h : 0 < n) :
     zsmul_eq_mul, Int.cast_mul, Int.cast_natCast, mul_assoc, ← mul_div, mul_comm _ p,
     mul_div_cancel_right₀ p h0] at ha
   rw [← ha, coe_add, ← Int.cast_natCast, Int.natMod, Int.toNat_of_nonneg, zsmul_eq_mul,
-    mul_div_right_comm, eq_comm, add_eq_right, ←zsmul_eq_mul, coe_zsmul, coe_period, smul_zero]
+    mul_div_right_comm, eq_comm, add_eq_right, ← zsmul_eq_mul, coe_zsmul, coe_period, smul_zero]
   exact Int.emod_nonneg _ (by exact_mod_cast h.ne')
 
 theorem addOrderOf_eq_pos_iff {u : AddCircle p} {n : ℕ} (h : 0 < n) :
@@ -448,7 +527,8 @@ theorem addOrderOf_eq_pos_iff {u : AddCircle p} {n : ℕ} (h : 0 < n) :
   · rintro ⟨m, -, h₁, rfl⟩
     exact addOrderOf_div_of_gcd_eq_one h h₁
   rintro k rfl
-  obtain ⟨m, hm, hk⟩ := (nsmul_eq_zero_iff h).mp (addOrderOf_nsmul_eq_zero (k : AddCircle p))
+  obtain ⟨m, hm, hk⟩ := (AddCircle.nsmul_eq_zero_iff h).mp
+    (addOrderOf_nsmul_eq_zero (k : AddCircle p))
   refine ⟨m, hm, mul_right_cancel₀ h.ne' ?_, hk⟩
   convert gcd_mul_addOrderOf_div_eq p m h using 1
   · rw [hk]
@@ -507,18 +587,6 @@ theorem card_addOrderOf_eq_totient {n : ℕ} :
   · rw [← coe_setOf, Nat.card_congr (setAddOrderOfEquiv p hn),
       n.totient_eq_card_lt_and_coprime]
     simp only [Nat.gcd_comm]
-
-theorem finite_setOf_addOrderOf_eq {n : ℕ} (hn : 0 < n) :
-    {u : AddCircle p | addOrderOf u = n}.Finite :=
-  finite_coe_iff.mp <| Nat.finite_of_card_ne_zero <| by simp [hn.ne']
-
-@[deprecated (since := "2025-03-26")]
-alias finite_setOf_add_order_eq := finite_setOf_addOrderOf_eq
-
-theorem finite_torsion {n : ℕ} (hn : 0 < n) :
-    { u : AddCircle p | n • u = 0 }.Finite := by
-  convert Set.finite_range (fun m : Fin n ↦ (↑(↑m / ↑n * p) : AddCircle p))
-  simp_rw [nsmul_eq_zero_iff hn, range, Fin.exists_iff, exists_prop]
 
 end FiniteOrderPoints
 
@@ -607,10 +675,20 @@ def homeoIccQuot [TopologicalSpace 𝕜] [OrderTopology 𝕜] : 𝕋 ≃ₜ Quot
     continuous_quot_lift _ ((AddCircle.continuous_mk' p).comp continuous_subtype_val)
 
 /-! We now show that a continuous function on `[a, a + p]` satisfying `f a = f (a + p)` is the
-pullback of a continuous function on `AddCircle p`. -/
+pullback of a continuous function on `AddCircle p`, by first showing that
+various lifts are equivalent. -/
 
 
 variable {p a}
+
+theorem liftIoc_eq_liftIco {f : 𝕜 → B} (hf : f a = f (a + p)) :
+    liftIoc p a f = liftIco p a f := by
+  ext q
+  obtain ⟨x, hx, rfl⟩ := by simpa only [mem_image] using coe_image_Ico_eq p a ▸ mem_univ q
+  rw [liftIco_coe_apply hx]
+  obtain (⟨rfl, -⟩ | h) := by rwa [mem_Ico, le_iff_eq_or_lt, or_and_right] at hx
+  · rw [← coe_add_period, liftIoc_coe_apply (by simp [hp.out]), hf]
+  · exact liftIoc_coe_apply ⟨h.1, h.2.le⟩
 
 theorem liftIco_eq_lift_Icc {f : 𝕜 → B} (h : f a = f (a + p)) :
     liftIco p a f =
@@ -621,8 +699,21 @@ theorem liftIco_eq_lift_Icc {f : 𝕜 → B} (h : f a = f (a + p)) :
         equivIccQuot p a :=
   rfl
 
+theorem liftIoc_eq_lift_Icc {f : 𝕜 → B} (h : f a = f (a + p)) :
+    liftIoc p a f =
+      Quot.lift (restrict (Icc a <| a + p) f)
+          (by
+            rintro _ _ ⟨_⟩
+            exact h) ∘
+        equivIccQuot p a := by
+  rw [← liftIco_eq_lift_Icc h]
+  exact liftIoc_eq_liftIco h
+
 theorem liftIco_zero_coe_apply {f : 𝕜 → B} {x : 𝕜} (hx : x ∈ Ico 0 p) : liftIco p 0 f ↑x = f x :=
   liftIco_coe_apply (by rwa [zero_add])
+
+theorem liftIoc_zero_coe_apply {f : 𝕜 → B} {x : 𝕜} (hx : x ∈ Ioc 0 p) : liftIoc p 0 f ↑x = f x :=
+  liftIoc_coe_apply (by rwa [zero_add])
 
 variable [TopologicalSpace 𝕜] [OrderTopology 𝕜]
 
@@ -635,6 +726,16 @@ theorem liftIco_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f a = f (
 theorem liftIco_zero_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f 0 = f p)
     (hc : ContinuousOn f <| Icc 0 p) : Continuous (liftIco p 0 f) :=
   liftIco_continuous (by rwa [zero_add] : f 0 = f (0 + p)) (by rwa [zero_add])
+
+theorem liftIoc_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f a = f (a + p))
+    (hc : ContinuousOn f <| Icc a (a + p)) : Continuous (liftIoc p a f) := by
+  rw [liftIoc_eq_lift_Icc hf]
+  refine Continuous.comp ?_ (homeoIccQuot p a).continuous_toFun
+  exact continuous_coinduced_dom.mpr (continuousOn_iff_continuous_restrict.mp hc)
+
+theorem liftIoc_zero_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f 0 = f p)
+    (hc : ContinuousOn f <| Icc 0 p) : Continuous (liftIoc p 0 f) :=
+  liftIoc_continuous (by rwa [zero_add] : f 0 = f (0 + p)) (by rwa [zero_add])
 
 end AddCircle
 

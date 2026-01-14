@@ -3,7 +3,10 @@ Copyright (c) 2017 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl, Bryan Gin-ge Chen
 -/
-import Mathlib.Order.BooleanAlgebra.Defs
+module
+
+public import Mathlib.Order.BooleanAlgebra.Defs
+public import Mathlib.Tactic.GRewrite
 
 /-!
 # Basic properties of Boolean algebras
@@ -22,6 +25,8 @@ classes related to Boolean algebras as defined in `Mathlib/Order/BooleanAlgebra/
 generalized Boolean algebras, Boolean algebras, lattices, sdiff, compl
 
 -/
+
+@[expose] public section
 
 universe u v
 
@@ -82,6 +87,7 @@ private theorem sdiff_le' : x \ y ≤ x :=
     x \ y ≤ x ⊓ y ⊔ x \ y := le_sup_right
     _ = x := sup_inf_sdiff x y
 
+set_option backward.privateInPublic true in
 -- Use `sdiff_sup_self`
 private theorem sdiff_sup_self' : y \ x ⊔ x = y ⊔ x :=
   calc
@@ -93,13 +99,11 @@ private theorem sdiff_sup_self' : y \ x ⊔ x = y ⊔ x :=
 theorem sdiff_inf_sdiff : x \ y ⊓ y \ x = ⊥ :=
   Eq.symm <|
     calc
-      ⊥ = x ⊓ y ⊓ x \ y := by rw [inf_inf_sdiff]
-      _ = x ⊓ (y ⊓ x ⊔ y \ x) ⊓ x \ y := by rw [sup_inf_sdiff]
+      ⊥ = x ⊓ (y ⊓ x ⊔ y \ x) ⊓ x \ y := by rw [← inf_inf_sdiff, sup_inf_sdiff]
       _ = (x ⊓ (y ⊓ x) ⊔ x ⊓ y \ x) ⊓ x \ y := by rw [inf_sup_left]
       _ = (y ⊓ (x ⊓ x) ⊔ x ⊓ y \ x) ⊓ x \ y := by ac_rfl
-      _ = (y ⊓ x ⊔ x ⊓ y \ x) ⊓ x \ y := by rw [inf_idem]
-      _ = x ⊓ y ⊓ x \ y ⊔ x ⊓ y \ x ⊓ x \ y := by rw [inf_sup_right, inf_comm x y]
-      _ = x ⊓ y \ x ⊓ x \ y := by rw [inf_inf_sdiff, bot_sup_eq]
+      _ = x ⊓ y \ x ⊓ x \ y := by
+          rw [inf_idem, inf_sup_right, ← inf_comm x y, inf_inf_sdiff, bot_sup_eq]
       _ = x ⊓ x \ y ⊓ y \ x := by ac_rfl
       _ = x \ y ⊓ y \ x := by rw [inf_of_le_right sdiff_le']
 
@@ -110,12 +114,13 @@ theorem disjoint_sdiff_sdiff : Disjoint (x \ y) (y \ x) :=
 theorem inf_sdiff_self_right : x ⊓ y \ x = ⊥ :=
   calc
     x ⊓ y \ x = (x ⊓ y ⊔ x \ y) ⊓ y \ x := by rw [sup_inf_sdiff]
-    _ = x ⊓ y ⊓ y \ x ⊔ x \ y ⊓ y \ x := by rw [inf_sup_right]
-    _ = ⊥ := by rw [inf_comm x y, inf_inf_sdiff, sdiff_inf_sdiff, bot_sup_eq]
+    _ = ⊥ := by rw [inf_sup_right, inf_comm x y, inf_inf_sdiff, sdiff_inf_sdiff, bot_sup_eq]
 
 @[simp]
 theorem inf_sdiff_self_left : y \ x ⊓ x = ⊥ := by rw [inf_comm, inf_sdiff_self_right]
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 -- see Note [lower instance priority]
 instance (priority := 100) GeneralizedBooleanAlgebra.toGeneralizedCoheytingAlgebra :
     GeneralizedCoheytingAlgebra α where
@@ -126,25 +131,16 @@ instance (priority := 100) GeneralizedBooleanAlgebra.toGeneralizedCoheytingAlgeb
     ⟨fun h =>
       le_of_inf_le_sup_le
         (le_of_eq
-          (calc
-            y ⊓ y \ x = y \ x := inf_of_le_right sdiff_le'
-            _ = x ⊓ y \ x ⊔ z ⊓ y \ x := by
-              rw [inf_eq_right.2 h, inf_sdiff_self_right, bot_sup_eq]
-            _ = (x ⊔ z) ⊓ y \ x := by rw [← inf_sup_right]))
+          (by grind [sdiff_le', inf_of_le_right, inf_eq_right, inf_sdiff_self_right, bot_sup_eq,
+            inf_sup_right]))
         (calc
-          y ⊔ y \ x = y := sup_of_le_left sdiff_le'
-          _ ≤ y ⊔ (x ⊔ z) := le_sup_left
-          _ = y \ x ⊔ x ⊔ z := by rw [← sup_assoc, ← @sdiff_sup_self' _ x y]
+          y ⊔ y \ x ≤ y \ x ⊔ x ⊔ z := by
+            grind [sup_of_le_left, sdiff_le', le_sup_left, sdiff_sup_self']
           _ = x ⊔ z ⊔ y \ x := by ac_rfl),
-      fun h =>
-      le_of_inf_le_sup_le
-        (calc
-          y \ x ⊓ x = ⊥ := inf_sdiff_self_left
-          _ ≤ z ⊓ x := bot_le)
-        (calc
-          y \ x ⊔ x = y ⊔ x := sdiff_sup_self'
-          _ ≤ x ⊔ z ⊔ x := sup_le_sup_right h x
-          _ ≤ z ⊔ x := by rw [sup_assoc, sup_comm, sup_assoc, sup_idem])⟩
+      fun h => le_of_inf_le_sup_le (inf_sdiff_self_left.trans_le bot_le) (calc
+        y \ x ⊔ x = y ⊔ x := sdiff_sup_self'
+        _ ≤ x ⊔ z ⊔ x := sup_le_sup_right h x
+        _ ≤ z ⊔ x := by rw [sup_assoc, sup_comm, sup_assoc, sup_idem])⟩
 
 theorem disjoint_sdiff_self_left : Disjoint (y \ x) x :=
   disjoint_iff_inf_le.mpr inf_sdiff_self_left.le
@@ -212,16 +208,15 @@ theorem le_iff_eq_sup_sdiff (hz : z ≤ y) (hx : x ≤ y) : x ≤ z ↔ y = z �
 theorem sdiff_sup : y \ (x ⊔ z) = y \ x ⊓ y \ z :=
   sdiff_unique
     (calc
-      y ⊓ (x ⊔ z) ⊔ y \ x ⊓ y \ z = (y ⊓ (x ⊔ z) ⊔ y \ x) ⊓ (y ⊓ (x ⊔ z) ⊔ y \ z) := by
-          rw [sup_inf_left]
-      _ = (y ⊓ x ⊔ y ⊓ z ⊔ y \ x) ⊓ (y ⊓ x ⊔ y ⊓ z ⊔ y \ z) := by rw [@inf_sup_left _ _ y]
+      y ⊓ (x ⊔ z) ⊔ y \ x ⊓ y \ z = (y ⊓ x ⊔ y ⊓ z ⊔ y \ x) ⊓ (y ⊓ x ⊔ y ⊓ z ⊔ y \ z) := by
+          rw [sup_inf_left, inf_sup_left y]
       _ = (y ⊓ z ⊔ (y ⊓ x ⊔ y \ x)) ⊓ (y ⊓ x ⊔ (y ⊓ z ⊔ y \ z)) := by ac_rfl
       _ = (y ⊓ z ⊔ y) ⊓ (y ⊓ x ⊔ y) := by rw [sup_inf_sdiff, sup_inf_sdiff]
       _ = (y ⊔ y ⊓ z) ⊓ (y ⊔ y ⊓ x) := by ac_rfl
       _ = y := by rw [sup_inf_self, sup_inf_self, inf_idem])
     (calc
-      y ⊓ (x ⊔ z) ⊓ (y \ x ⊓ y \ z) = (y ⊓ x ⊔ y ⊓ z) ⊓ (y \ x ⊓ y \ z) := by rw [inf_sup_left]
-      _ = y ⊓ x ⊓ (y \ x ⊓ y \ z) ⊔ y ⊓ z ⊓ (y \ x ⊓ y \ z) := by rw [inf_sup_right]
+      y ⊓ (x ⊔ z) ⊓ (y \ x ⊓ y \ z) = y ⊓ x ⊓ (y \ x ⊓ y \ z) ⊔ y ⊓ z ⊓ (y \ x ⊓ y \ z) := by
+          rw [inf_sup_left, inf_sup_right]
       _ = y ⊓ x ⊓ y \ x ⊓ y \ z ⊔ y \ x ⊓ (y \ z ⊓ (y ⊓ z)) := by ac_rfl
       _ = ⊥ := by rw [inf_inf_sdiff, bot_inf_eq, bot_sup_eq, inf_comm (y \ z),
                       inf_inf_sdiff, inf_bot_eq])
@@ -231,18 +226,13 @@ theorem sdiff_eq_sdiff_iff_inf_eq_inf : y \ x = y \ z ↔ y ⊓ x = y ⊓ z :=
     (by rw [sup_inf_sdiff, h, sup_inf_sdiff]),
     fun h => by rw [← sdiff_inf_self_right, ← sdiff_inf_self_right z y, inf_comm, h, inf_comm]⟩
 
-theorem sdiff_eq_self_iff_disjoint : x \ y = x ↔ Disjoint y x :=
-  calc
-    x \ y = x ↔ x \ y = x \ ⊥ := by rw [sdiff_bot]
-    _ ↔ x ⊓ y = x ⊓ ⊥ := sdiff_eq_sdiff_iff_inf_eq_inf
-    _ ↔ Disjoint y x := by rw [inf_bot_eq, inf_comm, disjoint_iff]
+theorem sdiff_eq_self_iff_disjoint : x \ y = x ↔ Disjoint y x := sdiff_eq_left.trans disjoint_comm
 
-theorem sdiff_eq_self_iff_disjoint' : x \ y = x ↔ Disjoint x y := by
-  rw [sdiff_eq_self_iff_disjoint, disjoint_comm]
+@[deprecated (since := "2025-10-12")] alias sdiff_eq_self_iff_disjoint' := sdiff_eq_left
 
 theorem sdiff_lt (hx : y ≤ x) (hy : y ≠ ⊥) : x \ y < x := by
   refine sdiff_le.lt_of_ne fun h => hy ?_
-  rw [sdiff_eq_self_iff_disjoint', disjoint_iff] at h
+  rw [sdiff_eq_left, disjoint_iff] at h
   rw [← h, inf_eq_right.mpr hx]
 
 theorem sdiff_lt_left : x \ y < x ↔ ¬ Disjoint y x := by
@@ -261,11 +251,8 @@ theorem sdiff_lt_sdiff_right (h : x < y) (hz : z ≤ x) : x \ z < y \ z :=
   (sdiff_le_sdiff_right h.le).lt_of_not_ge
     fun h' => h.not_ge <| le_sdiff_sup.trans <| sup_le_of_le_sdiff_right h' hz
 
-theorem sup_inf_inf_sdiff : x ⊓ y ⊓ z ⊔ y \ z = x ⊓ y ⊔ y \ z :=
-  calc
-    x ⊓ y ⊓ z ⊔ y \ z = x ⊓ (y ⊓ z) ⊔ y \ z := by rw [inf_assoc]
-    _ = (x ⊔ y \ z) ⊓ y := by rw [sup_inf_right, sup_inf_sdiff]
-    _ = x ⊓ y ⊔ y \ z := by rw [inf_sup_right, inf_sdiff_left]
+theorem sup_inf_inf_sdiff : x ⊓ y ⊓ z ⊔ y \ z = x ⊓ y ⊔ y \ z := by
+  rw [inf_assoc, sup_inf_right, sup_inf_sdiff, inf_sup_right, inf_sdiff_left]
 
 theorem sdiff_sdiff_right : x \ (y \ z) = x \ y ⊔ x ⊓ y ⊓ z := by
   rw [sup_comm, inf_comm, ← inf_assoc, sup_inf_inf_sdiff]
@@ -274,14 +261,11 @@ theorem sdiff_sdiff_right : x \ (y \ z) = x \ y ⊔ x ⊓ y ⊓ z := by
       x ⊓ y \ z ⊔ (z ⊓ x ⊔ x \ y) = (x ⊔ (z ⊓ x ⊔ x \ y)) ⊓ (y \ z ⊔ (z ⊓ x ⊔ x \ y)) := by
           rw [sup_inf_right]
       _ = (x ⊔ x ⊓ z ⊔ x \ y) ⊓ (y \ z ⊔ (x ⊓ z ⊔ x \ y)) := by ac_rfl
-      _ = x ⊓ (y \ z ⊔ x ⊓ z ⊔ x \ y) := by rw [sup_inf_self, sup_sdiff_left, ← sup_assoc]
-      _ = x ⊓ (y \ z ⊓ (z ⊔ y) ⊔ x ⊓ (z ⊔ y) ⊔ x \ y) := by
-          rw [sup_inf_left, sdiff_sup_self', inf_sup_right, sup_comm y]
       _ = x ⊓ (y \ z ⊔ (x ⊓ z ⊔ x ⊓ y) ⊔ x \ y) := by
-          rw [inf_sdiff_sup_right, @inf_sup_left _ _ x z y]
+          rw [sup_inf_self, sup_sdiff_left, ← sup_assoc, sup_inf_left, sdiff_sup_self',
+            inf_sup_right, sup_comm y, inf_sdiff_sup_right, inf_sup_left x z y]
       _ = x ⊓ (y \ z ⊔ (x ⊓ z ⊔ (x ⊓ y ⊔ x \ y))) := by ac_rfl
-      _ = x ⊓ (y \ z ⊔ (x ⊔ x ⊓ z)) := by rw [sup_inf_sdiff, sup_comm (x ⊓ z)]
-      _ = x := by rw [sup_inf_self, sup_comm, inf_sup_self]
+      _ = x := by rw [sup_inf_sdiff, sup_comm (x ⊓ z), sup_inf_self, sup_comm, inf_sup_self]
   · calc
       x ⊓ y \ z ⊓ (z ⊓ x ⊔ x \ y) = x ⊓ y \ z ⊓ (z ⊓ x) ⊔ x ⊓ y \ z ⊓ x \ y := by rw [inf_sup_left]
       _ = x ⊓ (y \ z ⊓ z ⊓ x) ⊔ x ⊓ y \ z ⊓ x \ y := by ac_rfl
@@ -324,11 +308,9 @@ theorem sdiff_sdiff_left' : (x \ y) \ z = x \ y ⊓ x \ z := by rw [sdiff_sdiff_
 
 theorem sdiff_sdiff_sup_sdiff : z \ (x \ y ⊔ y \ x) = z ⊓ (z \ x ⊔ y) ⊓ (z \ y ⊔ x) :=
   calc
-    z \ (x \ y ⊔ y \ x) = (z \ x ⊔ z ⊓ x ⊓ y) ⊓ (z \ y ⊔ z ⊓ y ⊓ x) := by
-        rw [sdiff_sup, sdiff_sdiff_right, sdiff_sdiff_right]
-    _ = z ⊓ (z \ x ⊔ y) ⊓ (z \ y ⊔ z ⊓ y ⊓ x) := by rw [sup_inf_left, sup_comm, sup_inf_sdiff]
-    _ = z ⊓ (z \ x ⊔ y) ⊓ (z ⊓ (z \ y ⊔ x)) := by
-        rw [sup_inf_left, sup_comm (z \ y), sup_inf_sdiff]
+    z \ (x \ y ⊔ y \ x) = z ⊓ (z \ x ⊔ y) ⊓ (z ⊓ (z \ y ⊔ x)) := by
+        rw [sdiff_sup, sdiff_sdiff_right, sdiff_sdiff_right, sup_inf_left, sup_comm, sup_inf_sdiff,
+          sup_inf_left, sup_comm (z \ y), sup_inf_sdiff]
     _ = z ⊓ z ⊓ (z \ x ⊔ y) ⊓ (z \ y ⊔ x) := by ac_rfl
     _ = z ⊓ (z \ x ⊔ y) ⊓ (z \ y ⊔ x) := by rw [inf_idem]
 
@@ -352,12 +334,10 @@ lemma sdiff_sdiff_sdiff_cancel_right (hcb : z ≤ y) : (x \ z) \ (y \ z) = x \ y
 theorem inf_sdiff : (x ⊓ y) \ z = x \ z ⊓ y \ z :=
   sdiff_unique
     (calc
-      x ⊓ y ⊓ z ⊔ x \ z ⊓ y \ z = (x ⊓ y ⊓ z ⊔ x \ z) ⊓ (x ⊓ y ⊓ z ⊔ y \ z) := by rw [sup_inf_left]
       _ = (x ⊓ y ⊓ (z ⊔ x) ⊔ x \ z) ⊓ (x ⊓ y ⊓ z ⊔ y \ z) := by
-          rw [sup_inf_right, sup_sdiff_self_right, inf_sup_right, inf_sdiff_sup_right]
+          rw [sup_inf_left, sup_inf_right, sup_sdiff_self_right, inf_sup_right, inf_sdiff_sup_right]
       _ = (y ⊓ (x ⊓ (x ⊔ z)) ⊔ x \ z) ⊓ (x ⊓ y ⊓ z ⊔ y \ z) := by ac_rfl
-      _ = (y ⊓ x ⊔ x \ z) ⊓ (x ⊓ y ⊔ y \ z) := by rw [inf_sup_self, sup_inf_inf_sdiff]
-      _ = x ⊓ y ⊔ x \ z ⊓ y \ z := by rw [inf_comm y, sup_inf_left]
+      _ = x ⊓ y ⊔ x \ z ⊓ y \ z := by rw [inf_sup_self, sup_inf_inf_sdiff, inf_comm y, sup_inf_left]
       _ = x ⊓ y := sup_eq_left.2 (inf_le_inf sdiff_le sdiff_le))
     (calc
       x ⊓ y ⊓ z ⊓ (x \ z ⊓ y \ z) = x ⊓ y ⊓ (z ⊓ x \ z) ⊓ y \ z := by ac_rfl
@@ -365,14 +345,9 @@ theorem inf_sdiff : (x ⊓ y) \ z = x \ z ⊓ y \ z :=
 
 /-- See also `sdiff_inf_right_comm`. -/
 theorem inf_sdiff_assoc (x y z : α) : (x ⊓ y) \ z = x ⊓ y \ z :=
-  sdiff_unique
-    (calc
-      x ⊓ y ⊓ z ⊔ x ⊓ y \ z = x ⊓ (y ⊓ z) ⊔ x ⊓ y \ z := by rw [inf_assoc]
-      _ = x ⊓ (y ⊓ z ⊔ y \ z) := by rw [← inf_sup_left]
-      _ = x ⊓ y := by rw [sup_inf_sdiff])
-    (calc
-      x ⊓ y ⊓ z ⊓ (x ⊓ y \ z) = x ⊓ x ⊓ (y ⊓ z ⊓ y \ z) := by ac_rfl
-      _ = ⊥ := by rw [inf_inf_sdiff, inf_bot_eq])
+  sdiff_unique (by rw [inf_assoc, ← inf_sup_left, sup_inf_sdiff]) <| calc
+    x ⊓ y ⊓ z ⊓ (x ⊓ y \ z) = x ⊓ x ⊓ (y ⊓ z ⊓ y \ z) := by ac_rfl
+    _ = ⊥ := by rw [inf_inf_sdiff, inf_bot_eq]
 
 /-- See also `inf_sdiff_assoc`. -/
 theorem sdiff_inf_right_comm (x y z : α) : x \ z ⊓ y = (x ⊓ y) \ z := by
@@ -395,8 +370,7 @@ theorem sup_eq_sdiff_sup_sdiff_sup_inf : x ⊔ y = x \ y ⊔ y \ x ⊔ x ⊓ y :
     calc
       x \ y ⊔ y \ x ⊔ x ⊓ y = (x \ y ⊔ y \ x ⊔ x) ⊓ (x \ y ⊔ y \ x ⊔ y) := by rw [sup_inf_left]
       _ = (x \ y ⊔ x ⊔ y \ x) ⊓ (x \ y ⊔ (y \ x ⊔ y)) := by ac_rfl
-      _ = (x ⊔ y \ x) ⊓ (x \ y ⊔ y) := by rw [sup_sdiff_right, sup_sdiff_right]
-      _ = x ⊔ y := by rw [sup_sdiff_self_right, sup_sdiff_self_left, inf_idem]
+      _ = x ⊔ y := by simp
 
 theorem sup_lt_of_lt_sdiff_left (h : y < z \ x) (hxz : x ≤ z) : x ⊔ y < z := by
   rw [← sup_sdiff_cancel_right hxz]
@@ -427,7 +401,7 @@ end GeneralizedBooleanAlgebra
 /-!
 ### Boolean algebras
 -/
--- See note [reducible non instances]
+-- See note [reducible non-instances]
 /-- A bounded generalized Boolean algebra is a Boolean algebra. -/
 abbrev GeneralizedBooleanAlgebra.toBooleanAlgebra [GeneralizedBooleanAlgebra α] [OrderTop α] :
     BooleanAlgebra α where
@@ -664,16 +638,11 @@ protected abbrev Function.Injective.booleanAlgebra [Max α] [Min α] [Top α] [B
     (map_sdiff : ∀ a b, f (a \ b) = f a \ f b) (map_himp : ∀ a b, f (a ⇨ b) = f a ⇨ f b) :
     BooleanAlgebra α where
   __ := hf.generalizedBooleanAlgebra f map_sup map_inf map_bot map_sdiff
-  compl := compl
-  himp := himp
-  top := ⊤
   le_top _ := (@le_top β _ _ _).trans map_top.ge
   bot_le _ := map_bot.le.trans bot_le
   inf_compl_le_bot a := ((map_inf _ _).trans <| by rw [map_compl, inf_compl_eq_bot, map_bot]).le
   top_le_sup_compl a := ((map_sup _ _).trans <| by rw [map_compl, sup_compl_eq_top, map_top]).ge
-  sdiff_eq a b := by
-    refine hf ((map_sdiff _ _).trans (sdiff_eq.trans ?_))
-    rw [map_inf, map_compl]
+  sdiff_eq a b := hf <| (map_sdiff _ _).trans <| sdiff_eq.trans <| by rw [map_inf, map_compl]
   himp_eq a b := hf <| (map_himp _ _).trans <| himp_eq.trans <| by rw [map_sup, map_compl]
 
 end lift
