@@ -3,7 +3,7 @@ module
 import MathlibTest.UnusedInstancesInType.Basic
 import Mathlib.Data.Fintype.EquivFin
 
-set_option linter.mathlibStandardset true
+set_option linter.unusedFintypeInType true
 
 section unused
 
