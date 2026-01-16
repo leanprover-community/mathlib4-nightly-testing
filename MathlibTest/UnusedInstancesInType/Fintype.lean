@@ -3,7 +3,7 @@ module
 import MathlibTest.UnusedInstancesInType.Basic
 import Mathlib.Data.Fintype.EquivFin
 
-set_option linter.unusedFintypeInType true
+set_option linter.mathlibStandardset true
 
 section unused
 
@@ -65,7 +65,7 @@ Note: This linter can be disabled with `set_option linter.unusedFintypeInType fa
 theorem foo₄ {β} : let _ := 2; ∀ [Fintype β], True := trivial
 
 -- Linter should not fire when `sorry` appears in the type, even though the instances are unused
-/-- warning: declaration uses 'sorry' -/
+/-- warning: declaration uses `sorry` -/
 #guard_msgs in
 theorem fooSorry {β} [∀ α : Type, Fintype α] [Fintype β] (b : sorry) : True :=
   trivial
