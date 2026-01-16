@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.FailIfNoProgress
 import Mathlib.Tactic.Basic
 
@@ -100,5 +99,3 @@ example : let x := (fun x => x) Nat.zero; x = x := by
     guard_hyp x : Nat :=ₛ Nat.zero
 
 end failure
-
--/

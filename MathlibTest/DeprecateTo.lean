@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.DeprecateTo
 import Mathlib.Tactic.ToAdditive
 
@@ -26,5 +25,3 @@ deprecate to new_name_mul new_name_add "YYYY-MM-DD"
 /-- I also have a doc-string -/
 @[to_additive /-- With its additive doc-string -/]
 theorem mul_easy_deprecated : True := .intro
-
--/

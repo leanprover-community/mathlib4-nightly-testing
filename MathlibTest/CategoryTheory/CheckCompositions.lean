@@ -1,4 +1,3 @@
-/-
 import Mathlib.CategoryTheory.Limits.Preserves.Limits
 import Mathlib.Tactic.CategoryTheory.CheckCompositions
 import Mathlib.Tactic.Recall
@@ -49,5 +48,3 @@ example (j : J) :
   -- rw [ι_preservesColimitIso_inv]
 
   simp
-
--/

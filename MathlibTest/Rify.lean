@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Rify
 
@@ -37,5 +36,3 @@ example {n k : ℕ} (h₁ : 8 ≤ n) (h₂ : 2 * k > n) (h₃ : k + 1 < n) :
   have f₂ : n - (k + 1) ≤ n := by rify [f₁]; linarith
   rify [f₁, f₂] at *
   linarith
-
--/

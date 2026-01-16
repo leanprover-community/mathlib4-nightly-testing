@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linter.PPRoundtrip
 
 /--
@@ -70,5 +69,3 @@ set_option linter.ppRoundtrip true in
 -- check that trailing comments do not trigger the linter
 example : 0 = 0 := by
   rw [] -- this goal is closed by the `rfl` implied by `rw`
-
--/

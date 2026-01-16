@@ -1,4 +1,3 @@
-/-
 import Mathlib.Order.Defs.PartialOrder
 import Mathlib.Order.Notation
 import Mathlib.Tactic.ToAdditive
@@ -143,5 +142,3 @@ info: fun {α} [PartialOrder α] => of_eq_true (Eq.trans (forall_congr fun a => 
 run_meta
   Lean.logInfo (← Lean.getConstInfo ``lt_le_trans).value!
   Lean.logInfo (← Lean.getConstInfo ``le_refl').value!
-
--/

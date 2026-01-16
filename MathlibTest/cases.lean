@@ -1,4 +1,3 @@
-/-
 import Batteries.Logic
 import Mathlib.Tactic.Cases
 import Mathlib.Data.Nat.Notation
@@ -141,5 +140,3 @@ error: variable cannot be generalized because target depends on it
 #guard_msgs in
 example (m : ℕ) : True := by
   induction' m generalizing m
-
--/

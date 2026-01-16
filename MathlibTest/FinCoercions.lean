@@ -1,4 +1,3 @@
-/-
 -- We verify that after importing Mathlib,
 -- we have not introduced a global coercion from `Nat` to `Fin n`.
 -- Such coercions introduce unexpected invisible wrap-around arithmetic.
@@ -36,5 +35,3 @@ variable (m : Nat) (n : Fin 3)
 end
 
 example (x : Fin (n + 1)) (h : x < n) : Fin (n + 1) := x.succ.castLT (by simp [h])
-
--/

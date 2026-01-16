@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Algebra.Rat
 import Mathlib.FieldTheory.SplittingField.Construction
 
@@ -31,5 +30,3 @@ example [CharZero K] : SplittingField.instAlgebra f = DivisionRing.toRatAlgebra 
 example {q : ℚ[X]} : Ring.toIntAlgebra (SplittingField q) = SplittingField.instAlgebra q :=
   rfl
   -- TODO: by with_reducible_and_instances rfl fails
-
--/

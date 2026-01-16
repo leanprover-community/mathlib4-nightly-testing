@@ -1,4 +1,3 @@
-/-
 import Mathlib.Util.TransImports
 
 /--
@@ -9,5 +8,3 @@ info: 'MathlibTest.TransImports' has at most 2000 transitive imports
 -/
 #guard_msgs in
 #trans_imports "Mathlib.Tactic.Linter.H" at_most 2000
-
--/

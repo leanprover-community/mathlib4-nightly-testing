@@ -1,4 +1,3 @@
-/-
 import Mathlib
 import Mathlib.Topology.Category.TopCat.Basic
 
@@ -66,5 +65,3 @@ def PointedSpaceEquiv_inverse : Under (TopCat.of Unit) ⥤ PointedSpace where
       simp
       exact this.symm }
   map_comp := by intros; simp_all; rfl -- This is the slow step.
-
--/

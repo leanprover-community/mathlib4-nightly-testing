@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Trace
 
 set_option linter.unusedTactic false
@@ -18,5 +17,3 @@ info: hello world
 example : True := by
   trace "hello" ++ " world"
   trivial
-
--/

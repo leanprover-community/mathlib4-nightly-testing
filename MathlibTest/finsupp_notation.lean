@@ -1,4 +1,3 @@
-/-
 import Mathlib.Data.Finsupp.Notation
 import Mathlib.Data.DFinsupp.Notation -- to ensure it does not interfere
 import Mathlib.Data.Nat.Factorization.Basic
@@ -65,5 +64,3 @@ end PrettyPrinter
 /-- info: fun₀ | 3 => 2 | 5 => 1 -/
 #guard_msgs in
 #eval (Nat.factorization 720).filter Odd
-
--/

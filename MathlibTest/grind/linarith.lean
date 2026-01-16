@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 example {α : Type*} [LinearOrder α] [CommRing α] [IsStrictOrderedRing α]
@@ -7,5 +6,3 @@ example {α : Type*} [LinearOrder α] [CommRing α] [IsStrictOrderedRing α]
 
 example (L : ℝ) : 0 < 1 + |L| := by
   grind
-
--/

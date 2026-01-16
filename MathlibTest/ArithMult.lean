@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2023 Arend Mellendijk. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Arend Mellendijk
@@ -28,5 +27,3 @@ example (f g : ArithmeticFunction R) (hf : IsMultiplicative f) :
     IsMultiplicative (prodPrimeFactors g |>.pmul f) := by arith_mult
 
 example (n : ℕ) : IsMultiplicative <| (σ n * pow (n + 3)).ppow 2 := by arith_mult
-
--/

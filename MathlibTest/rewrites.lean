@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Ring.Nat
 import Mathlib.Data.Nat.Prime.Defs
 import Mathlib.CategoryTheory.Category.Basic
@@ -162,5 +161,3 @@ info: Try this:
 example {P : Prop} (p : P) (Q : α → Prop) (a b : α) (h₁ : P → a = b) (w : Q a) : Q b := by
   rw?
   exact w
-
--/

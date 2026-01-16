@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2024 Michael Rothgang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Rothgang, Damiano Testa
@@ -64,7 +63,7 @@ instance : Inhabited Int where
 namespace X
 
 -- Here's another example, with nested attributes.
-/-- warning: declaration uses `sorry` -/
+/-- warning: declaration uses 'sorry' -/
 #guard_msgs in
 theorem foo (x y : Nat) : x = y := sorry
 
@@ -119,5 +118,3 @@ attribute [instance 20000] X.foo
 namespace X
 
 attribute [scoped instance 0] foo
-
--/

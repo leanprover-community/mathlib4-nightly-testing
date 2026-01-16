@@ -1,4 +1,3 @@
-/-
 import Mathlib.MeasureTheory.Group.Measure
 import Mathlib.Topology.Metrizable.Urysohn
 
@@ -22,5 +21,3 @@ variable {α : Type*} [TopologicalSpace α] [MeasurableSpace α] [LocallyCompact
 
 example (μ : Measure α) [IsFiniteMeasureOnCompacts μ] : Regular μ := inferInstance
 example (μ : Measure α) [IsFiniteMeasureOnCompacts μ] : InnerRegular μ := inferInstance
-
--/

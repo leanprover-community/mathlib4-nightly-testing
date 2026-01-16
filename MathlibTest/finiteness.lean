@@ -1,4 +1,3 @@
-/-
 import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 import Mathlib.Data.ENNReal.Inv
 import Mathlib.MeasureTheory.Measure.Typeclasses.Finite
@@ -55,5 +54,3 @@ example {α : Type*} (f : α → ℕ) : ∀ i, (f i : ℝ≥0∞) ≠ ∞ := by 
 
 example {α} {_ : MeasurableSpace α} (μ : Measure α) [IsFiniteMeasure μ] (s : Set α) : μ s ≠ ∞ := by
   finiteness
-
--/

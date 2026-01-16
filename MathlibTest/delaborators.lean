@@ -1,4 +1,3 @@
-/-
 import Mathlib.Util.Delaborators
 import Mathlib.Data.Set.Lattice
 
@@ -297,5 +296,3 @@ set_option pp.fieldNotation false in
 #guard_msgs in
 #check x.2
 end prod
-
--/

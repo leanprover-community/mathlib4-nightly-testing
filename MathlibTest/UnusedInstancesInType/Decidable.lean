@@ -1,4 +1,3 @@
-/-
 module
 
 import MathlibTest.UnusedInstancesInType.Basic
@@ -64,7 +63,7 @@ Note: This linter can be disabled with `set_option linter.unusedDecidableInType 
 theorem foo₄ {β} : let _ := 2; ∀ [DecidableEq β], True := trivial
 
 -- Linter should not fire when `sorry` appears in the type, even though the instances are unused
-/-- warning: declaration uses `sorry` -/
+/-- warning: declaration uses 'sorry' -/
 #guard_msgs in
 theorem fooSorry {β} [∀ α : Type, Decidable (Nonempty α)] [DecidableEq β] (b : sorry) : True :=
   trivial
@@ -102,5 +101,3 @@ theorem fooUsing₃ [DecidablePred Nonempty] [DecidableEq (Nat → Nat)]
   fun _ => trivial
 
 end used
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.ApplyAt
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Data.Real.Basic
@@ -122,5 +121,3 @@ example (a : List Nat) (k : Nat) (hk : k < a.length) : True := by
   apply H k hk at h
   simp at h
   exact h
-
--/

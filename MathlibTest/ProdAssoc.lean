@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.ProdAssoc
 
 variable {α β γ δ : Type*}
@@ -25,5 +24,3 @@ example (x : α) (y : β) (z : γ) (w : δ) :
 
 example : (α × β) × (γ × δ) → α × (β × γ) × δ :=
   prod_assoc%
-
--/

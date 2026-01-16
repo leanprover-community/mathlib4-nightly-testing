@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.NormNum.Basic
 import Mathlib.Tactic.FunProp.Attr
 
@@ -277,5 +276,3 @@ inductive ProposeToMoveThisInductive where
 theorem theorem_with_local_inductive : Nonempty ProposeToMoveThisInductive := ⟨.foo 0⟩
 
 end Linter.UpstreamableDecl
-
--/

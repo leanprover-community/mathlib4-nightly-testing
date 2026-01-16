@@ -1,4 +1,3 @@
-/-
 import Mathlib.Data.Nat.Prime.Factorial
 import Mathlib.Data.Nat.Factorial.Basic
 
@@ -21,5 +20,3 @@ theorem euclid (n : ℕ) : ∃ N, n < N ∧ N.Prime := by
     observe : ¬ p ∣ 1
     contradiction
   · exact prime
-
--/

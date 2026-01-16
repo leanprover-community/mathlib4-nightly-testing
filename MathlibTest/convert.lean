@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Convert
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Data.Set.Image
@@ -129,5 +128,3 @@ example (x y z : Nat) (h : x + y = z) : y + x = z := by
   exact h
 
 end Tests
-
--/

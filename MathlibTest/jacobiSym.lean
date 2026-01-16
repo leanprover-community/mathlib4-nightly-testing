@@ -1,4 +1,3 @@
-/-
 import Mathlib.NumberTheory.LegendreSymbol.JacobiSymbol
 import Mathlib.Tactic.NormNum.Prime
 
@@ -44,11 +43,9 @@ instance prime_1000003 : Fact (Nat.Prime 1000003) := ⟨by norm_num1⟩
 /--
 info: 1
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 #eval! @legendreSym (2 ^ 11213 - 1) sorry 7
 
 end Csimp
-
--/

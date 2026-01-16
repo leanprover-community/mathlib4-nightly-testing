@@ -1,4 +1,3 @@
-/-
 import Mathlib.Geometry.Manifold.Notation
 import Mathlib.Geometry.Manifold.VectorBundle.Basic
 
@@ -966,5 +965,3 @@ trace: [Elab.DiffGeo.TotalSpaceMk] Section of a trivial bundle as a non-dependen
 #check T% f
 
 end trace
-
--/

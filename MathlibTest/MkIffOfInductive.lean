@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.MkIffOfInductiveProp
 import Mathlib.Data.List.Perm.Lattice
 
@@ -81,5 +80,3 @@ inductive ReflTransGen {α : Type _} (r : α → α → Prop) (a : α) : α → 
 example {α : Type} (r : α → α → Prop) (a c : α) :
     ReflTransGen r a c ↔ c = a ∨ ∃ b : α, ReflTransGen r a b ∧ r b c :=
  reflTransGen_iff r a c
-
--/

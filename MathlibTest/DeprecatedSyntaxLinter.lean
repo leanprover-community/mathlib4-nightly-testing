@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Cases
 import Mathlib.Tactic.Linter.DeprecatedSyntaxLinter
 
@@ -68,7 +67,7 @@ example {n : Nat} : n < 2 ^ n := by
 
 set_option linter.style.admit true
 /--
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 ---
 warning: The `admit` tactic is discouraged: please strongly consider using the synonymous `sorry` instead.
 
@@ -78,7 +77,7 @@ Note: This linter can be disabled with `set_option linter.style.admit false`
 example : False := by admit
 
 /--
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 ---
 warning: The `admit` tactic is discouraged: please strongly consider using the synonymous `sorry` instead.
 
@@ -107,7 +106,7 @@ example : True ∧ True := by
 
 set_option linter.style.admit false
 /--
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 example : False := by admit
@@ -252,5 +251,3 @@ Note: This linter can be disabled with `set_option linter.style.maxHeartbeats fa
 set_option maxHeartbeats 10 in
 /-- Doc-strings for the following command do not silence the linter. -/
 example : True := trivial
-
--/

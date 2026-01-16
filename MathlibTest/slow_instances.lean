@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 variable {K : Type*} [Field K] {x : K}
@@ -26,5 +25,3 @@ Hint: Additional diagnostic information may be available using the `set_option d
 -/
 #guard_msgs in
 #synth NoZeroSMulDivisors ℕ K
-
--/

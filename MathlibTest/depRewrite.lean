@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.DepRewrite
 
 /-! ## Basic tests for `rewrite!`. -/
@@ -452,5 +451,3 @@ example (x : Fin n) : P x := by
 example {x : Bool} (h : x = x) : x = x := by
   rw! [h] at h
   exact h
-
--/

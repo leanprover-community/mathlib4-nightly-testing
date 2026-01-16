@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Group.Int.Defs
 import Mathlib.Data.DFinsupp.Notation
 
@@ -48,5 +47,3 @@ info: fun₀
     | ["just two"] => 2 : Π₀ _ : List String, ℕ)
 
 end PrettyPrinter
-
--/

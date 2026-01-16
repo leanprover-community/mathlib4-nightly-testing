@@ -1,4 +1,3 @@
-/-
 module
 
 import Mathlib.Init
@@ -29,5 +28,3 @@ run_cmd do
 
 -- Disable so that this test is silent
 set_option linter.privateModule false
-
--/

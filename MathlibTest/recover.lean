@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Recover
 
 set_option linter.unusedTactic false
@@ -22,5 +21,3 @@ example : 1 = 1 := by
 example : 2 = 2 := by
     recover skip
     rfl
-
--/

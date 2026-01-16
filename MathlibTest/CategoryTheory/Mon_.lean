@@ -1,4 +1,3 @@
-/-
 import Mathlib.CategoryTheory.Monoidal.Internal.Limits
 import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Terminal
 import Mathlib.CategoryTheory.Limits.Preserves.Shapes.BinaryProducts
@@ -18,5 +17,3 @@ example (D : Type u) [Category.{v} D] [MonoidalCategory D] [HasTerminal D] :
 
 example (D : Type u) [Category.{v} D] [MonoidalCategory D] [HasBinaryProducts D] (A B : Mon D) :
   (prod A B).X ≅ prod A.X B.X := PreservesLimitPair.iso (Mon.forget D) A B
-
--/

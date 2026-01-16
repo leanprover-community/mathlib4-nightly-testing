@@ -1,4 +1,3 @@
-/-
 module
 
 import all Mathlib.Tactic.Linter.TextBased
@@ -39,5 +38,3 @@ error: module name 'Mathlib.snake_case' is not in 'UpperCamelCase': it should be
 -/
 #guard_msgs in
 #eval testModulesNotUpperCamelCase
-
--/

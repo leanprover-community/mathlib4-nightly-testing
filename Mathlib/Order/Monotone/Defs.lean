@@ -9,6 +9,7 @@ public import Mathlib.Data.Set.Operations
 public import Mathlib.Logic.Function.Iterate
 public import Mathlib.Order.Basic
 public import Mathlib.Tactic.Coe
+public import Mathlib.Util.AssertExists
 
 /-!
 # Monotonicity

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.IrreducibleDef
 import Mathlib.Util.WhatsNew
 
@@ -43,5 +42,3 @@ example : Real.zero = 42 := Real.zero_def
 
 irreducible_def y : Nat := let x := 42; x
 example : y = 42 := @y_def
-
--/

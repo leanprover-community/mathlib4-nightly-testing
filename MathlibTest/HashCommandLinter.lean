@@ -1,4 +1,3 @@
-/-
 import Lean.Elab.GuardMsgs
 import Mathlib.Tactic.AdaptationNote
 import Mathlib.Tactic.Linter.HashCommandLinter
@@ -116,5 +115,3 @@ info: `#`-commands, such as '#guard', are not allowed in 'Mathlib' [linter.hashC
 end warningAsError
 
 end linted_commands
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linter.FlexibleLinter
 
 import Mathlib.Data.ENNReal.Operations
@@ -249,5 +248,3 @@ example {a b : Nat} (h : a + b = 1 + a + b) : a + b = b + a + 0 + 1 := by
   simp
   ring_nf!
   assumption
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.DeriveEncodable
 
 /-!
@@ -87,5 +86,3 @@ Not supported: reflexive inductive types
 inductive Reflex where
   | mk (f : Bool → Reflex)
   deriving Encodable
-
--/

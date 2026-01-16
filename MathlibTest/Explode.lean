@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Explode
 import Mathlib.Data.Real.Basic
 
@@ -257,5 +256,3 @@ info: fun hNQNP ↦
       False.elim (hNP hP))
 
 end
-
--/

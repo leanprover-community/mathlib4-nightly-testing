@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.HigherOrder
 import Mathlib.Control.Functor
 
@@ -14,5 +13,3 @@ example {f : Type u → Type v} [Applicative f] [LawfulApplicative f]
   apply map_comp_pure
 
 end HigherOrderTest
-
--/

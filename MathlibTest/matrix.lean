@@ -1,5 +1,4 @@
 /-
-/-
 manually ported from
 https://github.com/leanprover-community/mathlib/blob/4f4a1c875d0baa92ab5d92f3fb1bb258ad9f3e5b/test/matrix.lean
 -/
@@ -188,5 +187,3 @@ example (ι : Type*) [Inhabited ι] : Matrix.replicateCol ι (fun (_ : Fin 3) =>
   rfl
 
 end Matrix
-
--/

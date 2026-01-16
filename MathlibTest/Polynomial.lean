@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Polynomial.Basic
 import Mathlib.Algebra.Module.ULift
 
@@ -41,5 +40,3 @@ def pu1 : (ULift.{1} ℕ)[X] :=
   ⟨⟨{1}, Pi.single 1 (ULift.up 37),
     by intro; simp [Pi.single, Function.update_apply, ←ULift.down_inj]⟩⟩
 example : reprStr pu1 = "C (ULift.up 37) * X" := by native_decide
-
--/

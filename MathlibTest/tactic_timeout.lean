@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linarith
 
 /-!
@@ -97,5 +96,3 @@ theorem linear_combination_with_10_terms
     (h9 : -a + b + c + -e + -f + h + j = 0) :
       -2*a + b + 2*c + d + -3*f + -g + 3*h + -3*i = 0 := by
   check_timeouts 250 => nlinarith
-
--/

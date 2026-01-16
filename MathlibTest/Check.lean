@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Check
 /- Override metavariable delaborator for natural metavariables to print `?m` instead
 of including a unique number, for `#guard_msgs`. -/
@@ -95,5 +94,3 @@ example (x : Nat) : True := by
   let y : Nat := ?a
   have := (by refine rfl : ?a = x)
   trace_state
-
--/

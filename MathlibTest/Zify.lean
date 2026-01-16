@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2022 Moritz Doll. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Moritz Doll, Robert Y. Lewis
@@ -53,5 +52,3 @@ example (a b c : ℕ) (h : a - b ∣ c) (h2 : b ≤ a) : True := by
   zify [h2] at h
   guard_hyp h : (a : ℤ) - b ∣ c
   trivial
-
--/

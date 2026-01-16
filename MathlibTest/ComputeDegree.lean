@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.ComputeDegree
 
 open Polynomial
@@ -254,5 +253,3 @@ example : (C 1 + X * 3 * (X + 3) ^ 4 : Polynomial ℤ).degree < 10 := by
 variable [CommRing R] in
 example : (X ^ 2 + 2 • X + C 1 : R[X]).natDegree < 3 := by
   compute_degree!
-
--/

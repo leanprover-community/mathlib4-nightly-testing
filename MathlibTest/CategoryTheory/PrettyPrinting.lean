@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2024 Markus Himmel. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Markus Himmel
@@ -32,5 +31,3 @@ info: CategoryTheory.Functor.map_id.{v₁, v₂, u₁, u₂} {C : Type u₁} [Ca
 #check CategoryTheory.Functor.map_id
 
 end
-
--/

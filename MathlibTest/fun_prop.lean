@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2024 Tomáš Skřivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomáš Skřivan
@@ -220,6 +219,4 @@ If possible, `fun_prop` theorem about `DFunLike.coe` should be state in this way
 
 
 That should be all about `fun_prop`, I hope you will enjoy using it :)
--/
-
 -/

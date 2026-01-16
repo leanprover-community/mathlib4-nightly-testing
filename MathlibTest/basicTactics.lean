@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Basic
 import Batteries.Tactic.Init
 
@@ -66,5 +65,3 @@ example (p q : Prop) : p → q → (p ∧ q) ∧ (p ∧ q ∧ p) := by
   any_goals assumption
   constructor
   any_goals assumption
-
--/

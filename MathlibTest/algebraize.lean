@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Algebraize
 
 set_option linter.unusedVariables false
@@ -260,5 +259,3 @@ example {A B : Type*} [CommRing A] [CommRing B] (f : A →+* B)
   trivial
 
 end
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Lean.Expr.ReplaceRec
 import Mathlib.Data.Nat.Notation
 import Lean.Elab.Command
@@ -45,5 +44,3 @@ run_cmd liftTermElabM do
   guard <| e == d.value!
 
 end replaceRec
-
--/

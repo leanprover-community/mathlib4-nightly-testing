@@ -1,4 +1,3 @@
-/-
 -- tests for by_contra! tactic
 import Mathlib.Tactic.ByContra
 import Mathlib.Tactic.Rename
@@ -97,5 +96,3 @@ example (p q : Prop) (hnp : ¬ p) (hnq : ¬ q) : ¬ (p ∨ q) := by
   by_contra! hp | hq
   · exact hnp hp
   · exact hnq hq
-
--/

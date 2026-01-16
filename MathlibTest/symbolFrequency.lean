@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 open Lean LibrarySuggestions
@@ -11,5 +10,3 @@ open Lean LibrarySuggestions
 run_meta do
   let n ← symbolFrequency `Nat
   logInfo s!"{decide (10_000 ≤ n)}"
-
--/

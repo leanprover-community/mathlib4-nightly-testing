@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.PNatToNat
 
 example (a b : PNat) (h : a < b) : 1 < b := by
@@ -15,5 +14,3 @@ example (a b : PNat) (h : a < b) : 1 < b := by
   have := a.pos
   pnat_to_nat
   lia
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 /-!
@@ -32,5 +31,3 @@ info: Try this:
 #guard_msgs in
 example [Subsingleton α] (x y : α) : x = y := by
   exact?
-
--/

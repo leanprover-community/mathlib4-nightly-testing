@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.CategoryTheory.MonoidalComp
 
 universe v u
@@ -29,5 +28,3 @@ example {U V W X Y : C} (f : U ⟶ V ⊗ (W ⊗ X)) (g : (V ⊗ W) ⊗ X ⟶ Y) 
   simp [monoidalComp]
 
 end CategoryTheory
-
--/

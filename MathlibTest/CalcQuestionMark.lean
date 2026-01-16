@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Widget.Calc
 
 /-!
@@ -13,7 +12,7 @@ info: Create calc tactic:
   [apply] calc
     1 = 1 := by sorry
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 example : 1 = 1 := by
@@ -26,7 +25,7 @@ info: Create calc tactic:
   [apply] calc
     a ≤ a := by sorry
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 example (a : Nat) : a ≤ a := by
@@ -39,7 +38,7 @@ info: Create calc tactic:
   [apply] calc
     a ≤ a := by sorry
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 example (a : Nat) : a ≤ a := by
@@ -57,7 +56,7 @@ info: Create calc tactic:
         8 + 8 + 8 + 8 :=
       by sorry
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 example :
@@ -66,5 +65,3 @@ example :
     1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 +
     1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 = 8 + 8 + 8 + 8 := by
   calc?
-
--/

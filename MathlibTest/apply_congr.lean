@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.ApplyCongr
 import Mathlib.Algebra.BigOperators.Group.Finset.Powerset
 
@@ -12,5 +11,3 @@ example (f g : ℤ → ℤ) (S : Finset ℤ) (h : ∀ m ∈ S, f m = g m) :
     apply_congr
     · skip
     · simp [*]
-
--/

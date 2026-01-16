@@ -1,4 +1,3 @@
-/-
 import Mathlib.Data.Nat.Basic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Order.SetNotation
@@ -317,7 +316,7 @@ Note: This linter can be disabled with `set_option linter.style.lambdaSyntax fal
 example : ℕ → ℕ := by exact λ n ↦ 3 * n + 1
 
 /--
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 ---
 warning: Please use 'fun' and not 'λ' to define anonymous functions.
 The 'λ' syntax is deprecated in mathlib4.
@@ -602,5 +601,3 @@ example := by
   rfl
 
 end showLinter
-
--/

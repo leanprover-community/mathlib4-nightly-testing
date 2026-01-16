@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Algebra.Rat
 import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
 
@@ -19,5 +18,3 @@ example [CharZero k] : AlgebraicClosure.instAlgebra k = DivisionRing.toRatAlgebr
 example : Ring.toIntAlgebra (AlgebraicClosure ℚ) = AlgebraicClosure.instAlgebra ℚ :=
   rfl
   -- TODO: by with_reducible_and_instances rfl fails
-
--/

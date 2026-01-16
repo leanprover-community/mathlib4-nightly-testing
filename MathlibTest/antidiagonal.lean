@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Order.Antidiag.Finsupp
 import Mathlib.Data.Finset.Sort
 import Mathlib.Data.Finsupp.Notation
@@ -35,5 +34,3 @@ info: {fun₀ | "C" => 3,
 -/
 #guard_msgs in
 #eval finsuppAntidiag {"A", "B", "C"} 3
-
--/

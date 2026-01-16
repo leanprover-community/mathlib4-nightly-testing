@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 universe v u
@@ -49,5 +48,3 @@ example {M N : ProfiniteGrp.{u}} (f : M ⟶ N) (x y : M) : f (x * y) = f x * f y
 
 example {M N : ProfiniteGrp.{u}} (f : M ⟶ N) : f 1 = 1 := by
   simp
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Abel
 
 set_option linter.unusedVariables false
@@ -205,5 +204,3 @@ example [AddCommGroup α] (x : α) (f : α → α) : True := by
     abel_nf
     abel_nf!
   trivial
-
--/

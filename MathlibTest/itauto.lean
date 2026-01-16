@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2021 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
@@ -89,5 +88,3 @@ example (p1 p2 p3 p4 p5 p6 f : Prop)
       (p6 → f) ∨
       False
     ) → f) : f := by itauto
-
--/

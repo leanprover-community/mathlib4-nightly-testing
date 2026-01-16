@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Nontriviality
 import Mathlib.Algebra.Order.Ring.Defs
 import Mathlib.Algebra.Ring.Nat
@@ -100,5 +99,3 @@ noncomputable instance : CommRing (R c d) := test_sorry
 example (p : R PUnit.{u+1} PUnit.{v+1}) : p = p := by
   nontriviality
   exact test_sorry
-
--/

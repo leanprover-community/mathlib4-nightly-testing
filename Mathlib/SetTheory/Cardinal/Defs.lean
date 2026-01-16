@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Data.ULift
 public import Mathlib.Util.Delaborators
+public import Mathlib.Util.AssertExists
 
 /-!
 # Cardinal Numbers

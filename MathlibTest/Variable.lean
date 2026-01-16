@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Algebra.Defs
 import Mathlib.Algebra.Field.Defs
 import Mathlib.Algebra.Module.Defs
@@ -300,5 +299,3 @@ variable? {β : Sort*} [i : foo fun _ ↦ β] =>
 end
 
 end Tests
-
--/

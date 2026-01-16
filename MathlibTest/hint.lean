@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Hint
 
 /--
@@ -38,5 +37,3 @@ info: Try these:
 -/
 #guard_msgs in
 example (h : 1 < 0) : False := by hint
-
--/

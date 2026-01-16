@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.FindSyntax
 
 infix:65 " #find_syntax_add " => Nat.add
@@ -71,5 +70,3 @@ In `Std.Tactic.Do.Syntax`:
 -/
 #guard_msgs in
 #find_syntax "refine" approx  -- a `nonReservedSymbol`
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.LinearCombination'
 import Mathlib.Tactic.Linarith
 
@@ -296,5 +295,3 @@ example (K : Type*) [Field K] [CharZero K] {x y z p q : K}
             59049 * q ^ 7 * p * x ^ 2) *
           h₂
   exact test_sorry
-
--/

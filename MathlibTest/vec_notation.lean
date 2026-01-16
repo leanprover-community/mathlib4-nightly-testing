@@ -1,5 +1,4 @@
 /-
-/-
 Manually ported from
 https://github.com/leanprover-community/mathlib/blob/fee91d74414e681a8b72cb7160e6b5ef0ec2cc0b/test/vec_notation.lean
 -/
@@ -108,5 +107,3 @@ example {a b c : α} {n : ℕ} {f : Fin (n + 2) → α} :
 --     vecCons a (vecCons b (vecCons c f)) (-1) = f (-1) := by simp
 -- example {a b c : α} {n : ℕ} {f : Fin (n + 2) → α} :
 --     vecCons a (vecCons b (vecCons c f)) (-2) = f (-2) := by simp
-
--/

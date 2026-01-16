@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Quaternion
 import Mathlib.Data.Real.Basic
 import Mathlib.NumberTheory.Zsqrtd.GaussianInt
@@ -39,5 +38,3 @@ info: { re := ⟨0, 0⟩, imI := ⟨0, 0⟩, imJ := ⟨0, 0⟩, imK := ⟨0, 0�
 -/
 #guard_msgs in
 #eval (0 : ℍ[GaussianInt])
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Peel
 import Mathlib.Topology.Instances.Real.Lemmas
 
@@ -302,5 +301,3 @@ example (α : Type*) (f g : Filter α) (p q : α → α → Prop) (h : ∀ᶠ x 
   revert h
   gcongr
   apply h₁
-
--/

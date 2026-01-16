@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 namespace Set
@@ -40,5 +39,3 @@ example {f : α → β} (s) : f '' univ ⊆ s ↔ f '' univ ⊆ s := by
   simp
 
 end Set
-
--/

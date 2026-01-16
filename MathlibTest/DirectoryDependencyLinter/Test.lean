@@ -1,17 +1,16 @@
 /-
-/-
 Copyright (c) 2025 Michael Rothgang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Rothgang
 -/
 import Mathlib.Init
-import Mathlib.Util.AssertNoSorry
 import Qq
+import Mathlib.Util.AssertExists
 
 /--
-warning: Module MathlibTest.DirectoryDependencyLinter.Test depends on Mathlib.Util.AssertNoSorry,
+warning: Module MathlibTest.DirectoryDependencyLinter.Test depends on Mathlib.Util.AssertExists,
 but is only allowed to import modules starting with one of [Mathlib.Lean].
-Note: module Mathlib.Util.AssertNoSorry is directly imported by this module
+Note: module Mathlib.Util.AssertExists is directly imported by this module
 
 Note: This linter can be disabled with `set_option linter.directoryDependency false`
 ---
@@ -35,5 +34,3 @@ set_option linter.style.header true in
 #guard Lean.Name.isPrefixOf `Mathlib.Util `Mathlib.Utils.Basic == false
 #guard Lean.Name.isPrefixOf `Mathlib.Foo `Mathlib.Util.Foo == false
 #guard Lean.Name.isPrefixOf `Mathlib.Util `Mathlib.Utils == false
-
--/

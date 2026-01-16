@@ -1,4 +1,3 @@
-/-
 import Mathlib.Util.FormatTable
 
 /--
@@ -16,5 +15,3 @@ run_cmd Lean.logInfo ("\n" ++ formatTable
     #["the fourth item", "the fourth item", "escape | this"],
     #["align left", "align center", "align right"]]
   (.some #[.left, .center, .right]))
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 
@@ -83,5 +82,3 @@ set_option pp.explicit true in
 #check min (max a b) c
 
 end
-
--/

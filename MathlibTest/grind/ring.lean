@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Order.Ring.Defs
 import Mathlib.Algebra.Field.Defs
 
@@ -34,5 +33,3 @@ example {α} [CommRing α] (x y z : α) (h₁ : x^2 = y) (h₂ : x^3 = z) : y^3 
 example (x y : ℝ) (h₁ : x^2 = x * y^3) (h₂ : x^3 * y^2 = y) : y^2 = x^4 := by grind
 example {α} [CommSemiring α] [IsRightCancelAdd α] (x y z : α) (h : x + z = y + z) : x = y := by
   grind
-
--/

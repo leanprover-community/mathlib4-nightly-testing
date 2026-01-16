@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.CategoryTheory.Bicategory.Basic
 
 open CategoryTheory Mathlib.Tactic BicategoryLike
@@ -20,5 +19,3 @@ example {f : a ⟶ b} {g : b ⟶ c} {h i : c ⟶ d} (η : h ⟶ i) :
 
 example {f g h : a ⟶ b} {η : f ⟶ g} {θ : g ⟶ h} : η ≫ θ = η ≫ θ := by
   bicategory
-
--/

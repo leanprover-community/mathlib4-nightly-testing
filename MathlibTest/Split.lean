@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Basic
 
 example : (α : Type) × List α := by
@@ -9,5 +8,3 @@ example : (α : Type) × List α := by
 --   fsplit
 --   - exact ℕ
 --   - exact [0,1]
-
--/

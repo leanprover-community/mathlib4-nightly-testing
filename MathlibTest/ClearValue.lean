@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Basic
 
 example : let x := 22; 0 ≤ x := by
@@ -41,5 +40,3 @@ example : let x := 22; let y : Nat := x; let z : Fin (y + 1) := 0; z.1 < y + 1 :
   intro x y z
   clear_value y -- `0` depends on `y` but its OK
   exact z.2
-
--/

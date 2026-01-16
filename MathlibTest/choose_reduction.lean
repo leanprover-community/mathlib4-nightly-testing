@@ -1,4 +1,3 @@
-/-
 import Mathlib.Data.Finset.Basic
 /-!
 Tests that `List.choose` and friends all reduce appropriately.
@@ -48,5 +47,3 @@ example : choose _ _ foo = 3 := by exact rfl
 example : choose _ _ foo = 3 := by decide
 
 end Finset
-
--/

@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2024 Jovan Gerbscheid. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jovan Gerbscheid
@@ -129,5 +128,3 @@ info: Unfolds for 3 + 3:
 -/
 #guard_msgs in
 #unfold? 3 + @OfNat.ofNat _ _ (@instOfNatAtLeastTwo Nat (nat_lit 3) inferInstance aux._proof_1)
-
--/

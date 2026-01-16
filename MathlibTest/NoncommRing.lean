@@ -1,4 +1,3 @@
-/-
 import Mathlib.GroupTheory.GroupAction.Ring
 import Mathlib.Tactic.NoncommRing
 
@@ -73,5 +72,3 @@ set_option linter.unusedVariables false in
 example (h : a = b) (h2 : a = c) : a = c := by
   fail_if_success noncomm_ring [h]
   noncomm_ring [h2]
-
--/

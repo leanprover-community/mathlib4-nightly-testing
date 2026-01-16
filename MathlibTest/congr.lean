@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.CongrExclamation
 import Mathlib.Algebra.BigOperators.Ring.List
 import Mathlib.Algebra.Group.Basic
@@ -358,5 +357,3 @@ def F.A (_ : F) : ℕ := 0
 def F.B (_ : F) : ℕ := 0
 theorem bug (H : F) (hp : H.A = 0) (hp' : H.B = 0) :
   H H.A hp = H H.B hp' := by with_reducible congr!
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Data.Complex.Basic
 import Mathlib.Algebra.DualNumber
 
@@ -33,5 +32,3 @@ info: Real.ofCauchy (sorry /- 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ... -/) + Real.ofCau
 -/
 #guard_msgs in
 #eval (0 : ℂ[ε])
-
--/

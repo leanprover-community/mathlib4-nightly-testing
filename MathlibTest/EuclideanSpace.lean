@@ -1,4 +1,3 @@
-/-
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 #guard_expr !₂[] = WithLp.toLp 2 (V := ∀ _ : Fin 0, _) ![]
@@ -32,5 +31,3 @@ variable {p : ENNReal} {x} (hx : x = !ₚ[1, 2, 3]) (p : True)
 end tombstoned_var
 
 end delaborator
-
--/

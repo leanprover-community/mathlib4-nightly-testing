@@ -1,4 +1,3 @@
-/-
 module
 
 import all Mathlib.Tactic.Linter.TextBased
@@ -48,5 +47,3 @@ dname»' contains a whitespace character
 -/
 #guard_msgs in
 #eval testModulesOSForbidden
-
--/

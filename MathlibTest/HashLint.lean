@@ -1,4 +1,3 @@
-/-
 module
 
 import Batteries.Tactic.Lint
@@ -14,5 +13,3 @@ info: -- Found 0 errors in 0 declarations (plus 0 automatically generated ones) 
 -/
 #guard_msgs in
 #lint
-
--/

@@ -1,4 +1,3 @@
-/-
 module
 
 import MathlibTest.UnusedInstancesInType.Basic
@@ -19,5 +18,3 @@ Note: This linter can be disabled with `set_option linter.unusedFintypeInType fa
 -/
 #guard_msgs in
 theorem foo {α} [Fintype α] : True := True.intro
-
--/

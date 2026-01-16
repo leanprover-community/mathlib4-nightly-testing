@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linter.Style
 
 /-
@@ -139,5 +138,3 @@ Note: This linter can be disabled with `set_option linter.style.longFile 0`
 #guard_msgs in
 set_option linter.style.longFile 5000 in
 #exit
-
--/

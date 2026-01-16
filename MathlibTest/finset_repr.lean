@@ -1,4 +1,3 @@
-/-
 import Mathlib.Data.Finset.Sort
 
 run_cmd Lean.Elab.Command.liftTermElabM do
@@ -10,5 +9,3 @@ run_cmd Lean.Elab.Command.liftTermElabM do
     (repr (∅ : Finset (List ℕ)) |>.pretty 15) = "∅"
   unsafe guard <|
     (repr ({[1, 2, 3], [4, 5, 6]} : Finset (List ℕ)) |>.pretty 15) = "{[1, 2, 3],\n [4, 5, 6]}"
-
--/

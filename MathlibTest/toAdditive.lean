@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Group.Defs
 import Mathlib.Lean.Exception
 import Mathlib.Tactic.ReduceModChar.Ext
@@ -490,7 +489,7 @@ If this is intentional, use the `@[to_additive self]` syntax.
 Otherwise, check that your declaration name is correct (if your declaration is an instance, try naming it)
 or provide a translated name using the `@[to_additive my_add_name]` syntax.
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 @[to_additive]
@@ -853,5 +852,3 @@ attribute [to_additive someOtherTranslation] abstractMul
 -- Test that we don't blindly translate the prefix of a name.
 def Mul.test : Nat := 5
 @[to_additive] def Mul.test' := Mul.test
-
--/

@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2025 Lenny Taelman. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Lenny Taelman
@@ -146,5 +145,3 @@ example (hC : symmDiff A B ⊆ C) (hA : A ⊆ C) : B ⊆ C := by tauto_set
 
 -- symmDiff_subset_ground_left
 example (hC : symmDiff A B ⊆ C) (hB : B ⊆ C) : A ⊆ C := by tauto_set
-
--/

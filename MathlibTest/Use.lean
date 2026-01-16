@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2022 Arthur Paulino. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Arthur Paulino
@@ -268,5 +267,3 @@ example : ∃ f : Nat → Nat, f 1 = 1 := by
   use (·)
 
 end UseTests
-
--/

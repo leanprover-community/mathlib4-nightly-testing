@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Recall
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Complex.Trigonometric
@@ -94,5 +93,3 @@ axiom bar : Nat
 #guard_msgs in recall bar := bar
 
 recall List.cons_append (a : α) (as bs : List α) : (a :: as) ++ bs = a :: (as ++ bs) := rfl
-
--/

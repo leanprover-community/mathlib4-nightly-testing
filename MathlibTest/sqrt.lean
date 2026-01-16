@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Eval
 import Mathlib.Tactic.NormNum.NatSqrt
 import Mathlib.Data.Rat.NatSqrt.Real
@@ -27,7 +26,5 @@ theorem sqrt_10005 :
               (sqrt_10005_approx + 1 / 10^(2 * 10^6) : ℝ) := by
   rw [sqrt_10005_approx_eq]
   exact_mod_cast realSqrt_mem_Ico 10005 (by norm_num)
-
--/
 
 -/

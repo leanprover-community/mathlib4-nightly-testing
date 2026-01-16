@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Category.ModuleCat.Basic
 
 universe v u
@@ -52,5 +51,3 @@ example {M N : ModuleCat.{v} R} (f : M ⟶ N) : f 0 = 0 := by
 
 example {M N : ModuleCat.{v} R} (f : M ⟶ N) (r : R) (m : M) : f (r • m) = r • f m := by
   simp
-
--/

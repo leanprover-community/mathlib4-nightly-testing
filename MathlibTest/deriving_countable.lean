@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.DeriveCountable
 import Mathlib.Data.Countable.Basic
 import Mathlib.Logic.Equiv.List
@@ -97,5 +96,3 @@ Not supported: reflexive inductive types
 inductive Reflex where
   | mk (f : Bool → Reflex)
   deriving Countable
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Lift
 import Batteries.Tactic.PermuteGoals
 import Mathlib.Tactic.Coe
@@ -244,5 +243,3 @@ def foo (n : Int) (hn : 0 ≤ n) : Int := n
 example (n : Int) (hn : 0 ≤ n) : foo n hn = n := by
   lift n to Nat using hn
   rfl
-
--/

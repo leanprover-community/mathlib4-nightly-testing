@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Simproc.ExistsAndEq
 
 universe u v
@@ -69,5 +68,3 @@ example (P Q : α × β → Prop) (a : α × β) :
 example (P Q : α × β → Prop) (a : α × β) :
     (∃ b : (α × β), (P b ∧ b = a) ∧ Q b) ↔ P a ∧ Q a := by
   simp
-
--/

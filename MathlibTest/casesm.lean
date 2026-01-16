@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.CasesM
 
 set_option autoImplicit true
@@ -128,5 +127,3 @@ theorem foo : p ∧ p := by
     constructor <;> assumption
 
 end AuxDecl
-
--/

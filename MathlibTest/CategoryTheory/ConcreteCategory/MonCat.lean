@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Category.MonCat.Basic
 
 universe v u
@@ -49,5 +48,3 @@ example {M N : MonCat} (f : M ⟶ N) (x y : M) : f (x * y) = f x * f y := by
 
 example {M N : MonCat} (f : M ⟶ N) : f 1 = 1 := by
   simp
-
--/

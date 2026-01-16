@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Category.Ring.Basic
 
 universe v u
@@ -52,5 +51,3 @@ example {M N : SemiRingCat} (f : M ⟶ N) (x y : M) : f (x * y) = f x * f y := b
 
 example {M N : SemiRingCat} (f : M ⟶ N) : f 0 = 0 := by
   simp
-
--/

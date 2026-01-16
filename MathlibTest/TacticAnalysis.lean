@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.TacticAnalysis.Declarations
 import Mathlib.Tactic.AdaptationNote
 import Lean.LibrarySuggestions
@@ -299,9 +298,10 @@ example : P 37 := by
   trivial
 
 set_option linter.tacticAnalysis.tryAtEachStepSimpAllSuggestions true in
+-- FIXME: why is the dagger here?
 /--
 info: Try this:
-  [apply] simp_all only [p]
+  [apply] simp_all +suggestions✝ only [p]
 ---
 info: `trivial` can be replaced with `simp_all? +suggestions✝`
 -/
@@ -423,5 +423,3 @@ set_option linter.tacticAnalysis.unknownTacticTest true in
 example : 1 + 1 = 2 := by rfl
 
 end unknownTactic
-
--/

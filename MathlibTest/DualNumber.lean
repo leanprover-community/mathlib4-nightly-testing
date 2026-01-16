@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.DualNumber
 
 open DualNumber
@@ -21,5 +20,3 @@ set_option eval.pp false
 /-- info: 2 + 0*ε + (0 + 0*ε)*ε -/
 #guard_msgs in
 #eval (2 : (ℕ[ε])[ε])
-
--/

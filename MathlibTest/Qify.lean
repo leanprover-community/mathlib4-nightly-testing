@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Order.Field.Rat
 import Mathlib.Data.Int.CharZero
 import Mathlib.Tactic.Qify
@@ -35,5 +34,3 @@ example (a b c : ℤ) (h : a / b = c) (hab : b ∣ a) (hb : b ≠ 0) : a = c * b
 example (a b c : ℕ) (h : a / b = c) (hab : b ∣ a) (hb : b ≠ 0) : a = c * b := by
   qify [hab] at h hb ⊢
   exact (div_eq_iff hb).1 h
-
--/

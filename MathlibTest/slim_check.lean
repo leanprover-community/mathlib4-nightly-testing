@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Group.Fin.Basic
 import Mathlib.Data.DFinsupp.Defs
 import Mathlib.Data.Finsupp.Notation
@@ -200,7 +199,7 @@ issue: 1 = 0 does not hold
 /--
 info: Unable to find a counter-example
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 example (q : ℕ) : q = 0 ∨ q ≥ 2 ∨
@@ -236,5 +235,3 @@ issue: 64 < 42 does not hold
 #guard_msgs in
 example (x : PNat) : x^3 < 2*x^2 + 10:= by
   plausible (config := { randomSeed := some 257 })
-
--/

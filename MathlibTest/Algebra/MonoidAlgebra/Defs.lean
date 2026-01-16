@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.MonoidAlgebra.Defs
 
 variable {R M A} [Semiring R] [Monoid M] [AddMonoid A]
@@ -45,5 +44,3 @@ Possible interpretations:
 #check R[R]
 
 end Notation
-
--/

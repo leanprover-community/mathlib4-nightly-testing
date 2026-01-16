@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Linarith.Oracle.FourierMotzkin
 import Mathlib.Algebra.BigOperators.Group.Finset.Pi
@@ -833,5 +832,3 @@ theorem after_k_fails (h : (a : ℤ) * 2 ^ k = 2 ^ i) (useless : k ≤ k) : True
   trivial
 
 end metavariables
-
--/

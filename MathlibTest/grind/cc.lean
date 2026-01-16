@@ -1,4 +1,3 @@
-/-
 example (a₁ a₂ b₁ b₂ c d : Nat) :
         a₁ = c → a₂ = c →
         b₁ = d → d = b₂ →
@@ -32,5 +31,3 @@ example : ∀ (a b c d : Int × Int), Rel a c → Rel b d → Rel (mul' a b) (mu
         grind
 
 end Lean3Issue1442
-
--/

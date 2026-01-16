@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Algebra.Ring.Defs
 import Mathlib.Data.Set.Insert
@@ -618,5 +617,3 @@ example (n k : ℤ) (hnk : n = 2 * k + 1)
   cc
 
 end CCPanic
-
--/

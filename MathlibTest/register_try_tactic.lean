@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Module
 
 -- Register module as a try? helper
@@ -27,5 +26,3 @@ info: Try this:
 example {R M : Type*} [CommSemiring R] [AddCommMonoid M] [Module R M] (r s : R) (x : M) :
     ((r * s) • x : M) + r • x = r • ((s + 1) • x) := by
   try?
-
--/

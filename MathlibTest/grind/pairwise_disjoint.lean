@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 abbrev S1 : Fin 3 → Finset (Fin 4)
@@ -19,5 +18,3 @@ attribute [grind] Pairwise
 
 example : Pairwise (Function.onFun Disjoint fun x ↦ S1 x) := by
   grind
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Ring.GrindInstances
 import Mathlib.Tactic.FastInstance
 
@@ -66,5 +65,3 @@ theorem normalizedFactorsMapEquivNormalizedFactorsMinPolyMk_symm_apply_eq_span.e
   {R : Type} [CommRing R] {I : Ideal R} [I.IsMaximal] {mapQ mapMinpoly : I.Quotient}
   (_ : mapQ ∈ normalizedFactors mapMinpoly) :
   0 = 0 := by grind
-
--/

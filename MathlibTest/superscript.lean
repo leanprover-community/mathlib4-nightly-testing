@@ -1,4 +1,3 @@
-/-
 import Mathlib.Util.Superscript
 import Mathlib.Tactic.UnsetOption
 import Lean.PrettyPrinter
@@ -243,5 +242,3 @@ variable {x} (hx : x = testsup(ⁿ)) (n : True) in
 end no_superscript
 
 end delab
-
--/

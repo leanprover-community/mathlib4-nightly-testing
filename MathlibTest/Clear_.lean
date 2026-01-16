@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Clear_
 import Mathlib.Tactic.Replace
 
@@ -47,5 +46,3 @@ example (_dont_delete_this : Type) (_delete_this : _dont_delete_this = _dont_del
   clear_
   fail_if_success assumption
   rfl
-
--/

@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2022 Ian Benway. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Ian Benway
@@ -50,5 +49,3 @@ set_option maxHeartbeats 3000 in
 example {_a _b _c _d _e _f _g _h : Nat} : 1 = 1 := by
   set a : Nat := test with _h
   trivial
-
--/

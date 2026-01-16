@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.TFAE
 import Mathlib.Tactic.SuccessIfFailWithMsg
 
@@ -172,5 +171,3 @@ example : TFAE [P, Q] := by
   tfae_finish
 
 end deprecation
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.CategoryTheory.IsoReassoc
 
 open CategoryTheory
@@ -86,5 +85,3 @@ info: Tests.Reassoc.foo_functor'_assoc.{v₁, v₂, u₁, u₂} {C : Type u₁} 
 #check foo_functor'_assoc
 
 end Tests.Reassoc
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.CategoryTheory.ToApp
 import Mathlib.CategoryTheory.Bicategory.Functor.Prelax
 
@@ -42,5 +41,3 @@ example {B : Type u_1} [Bicategory B] (F : PrelaxFunctor B Cat)
   testThm_app F η X
 
 end CategoryTheory.ToAppTest
-
--/

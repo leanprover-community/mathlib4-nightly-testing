@@ -1,4 +1,3 @@
-/-
 section CCAC1
 
 example (a b c : Nat) (f : Nat → Nat) : f (a + b + c) = f (c + b + a) := by
@@ -40,5 +39,3 @@ example (a b c d e : α) (f : α → α → α) :
 end
 
 end CCAC3
-
--/

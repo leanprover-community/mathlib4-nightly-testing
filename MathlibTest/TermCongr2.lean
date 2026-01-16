@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.TermCongr
 import Mathlib.Data.Fintype.Card
 import Mathlib.Tactic.Ring
@@ -34,5 +33,3 @@ example (a b c d : ℚ) (h1 : a = 4) (h2 : 3 = b) (h3 : c * 3 = d) (h4 : -d = a)
   exact this
 
 end Tests
-
--/

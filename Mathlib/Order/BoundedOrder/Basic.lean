@@ -9,6 +9,7 @@ public import Mathlib.Order.Max
 public import Mathlib.Order.ULift
 public import Mathlib.Tactic.ByCases
 public import Mathlib.Tactic.Finiteness.Attr
+public import Mathlib.Util.AssertExists
 
 /-!
 # ⊤ and ⊥, bounded lattices and variants

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linter.DeprecatedModule
 import Mathlib.Tactic.Linter.DocPrime
 import Mathlib.Tactic.Linter.DocString
@@ -53,5 +52,3 @@ with no message
 -/
 #guard_msgs in
 #show_deprecated_modules
-
--/

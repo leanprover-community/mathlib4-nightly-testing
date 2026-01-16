@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
 
@@ -263,5 +262,3 @@ example : (fun x : ℝ => x * x^2) = (fun y => y^2 * y) := by
 
 -- Test that `ring` works for division without subtraction
 example {R : Type} [Semifield R] [CharZero R] {x : R} : x / 2 + x / 2 = x := by ring
-
--/

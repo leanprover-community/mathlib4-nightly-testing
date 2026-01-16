@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2022 Heather Macbeth. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Heather Macbeth
@@ -331,5 +330,3 @@ example : myAnti 6 < myAnti 5 := by
   gcongr <;> simp
 
 end GCongrTests
-
--/

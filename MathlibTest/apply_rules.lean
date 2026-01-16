@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Order.Field.Basic
 
 set_option autoImplicit true
@@ -52,5 +51,3 @@ example [Field α] [LinearOrder α] [IsStrictOrderedRing α] {a b : α} (hb : 0 
     apply_rules (config := { transparency := .reducible }) [mul_le_mul]
   guard_target = a / 2 ≤ b / 2
   exact div_le_div₀ hb hab zero_lt_two le_rfl
-
--/

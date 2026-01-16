@@ -1,4 +1,3 @@
-/-
 import Mathlib.Control.Random
 import Mathlib.Tactic.NormNum
 import Batteries.Lean.LawfulMonad
@@ -125,5 +124,3 @@ info: GOOD
       IO.println "BAD"
 
 end RandT
-
--/

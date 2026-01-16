@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Find
 theorem add_comm_zero {n} : 0 + n = n + 0 := Nat.add_comm _ _
 
@@ -19,5 +18,3 @@ theorem add_comm_zero {n} : 0 + n = n + 0 := Nat.add_comm _ _
 
 #guard_msgs (drop info) in
 #find ?n ≤ ?m → ?n + _ ≤ ?m + _
-
--/

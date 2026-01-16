@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Linter.Style
 
 set_option linter.style.nameCheck true
@@ -19,5 +18,3 @@ Note: This linter can be disabled with `set_option linter.style.nameCheck false`
 -/
 #guard_msgs in
 def double__underscore : Unit := ()
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.CategoryTheory.Slice
 
 open CategoryTheory
@@ -29,5 +28,3 @@ example (h₁ : f₁ = f₂) : f₁ ≫ g ≫ h ≫ l = ((f₂ ≫ g) ≫ h) ≫
 
 example (h₁ : f₁ = f₂) : ((f₂ ≫ g) ≫ h) ≫ l = f₁ ≫ g ≫ h ≫ l := by
   slice_rhs 1 1 => rw [h₁]
-
--/

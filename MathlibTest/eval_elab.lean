@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.Eval
 import Mathlib.Data.Finset.Powerset
 import Mathlib.Data.Finset.Sort
@@ -54,5 +53,3 @@ unsafe nonrec instance Finset.toExpr
     {∅, {1}, {2}, {1, 2}, {3}, {1, 3}, {2, 3}, {1, 2, 3}}
 
 end from_zulip
-
--/

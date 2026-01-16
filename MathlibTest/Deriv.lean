@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 /-! Test that `simp` can prove some lemmas about derivatives. -/
@@ -24,5 +23,3 @@ example (x : ℝ) :
     deriv (fun x ↦ sin (sin (sin x)) ^ 10 + sin x) x =
     10 * sin (sin (sin x)) ^ 9 * (cos (sin (sin x)) * (cos (sin x) * cos x)) + cos x := by
   simp (maxDischargeDepth := 4)
-
--/

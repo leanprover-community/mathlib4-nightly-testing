@@ -1,4 +1,3 @@
-/-
 import Mathlib.CategoryTheory.Bicategory.Coherence
 import Mathlib.CategoryTheory.Bicategory.End
 import Mathlib.CategoryTheory.Monoidal.Free.Coherence
@@ -133,5 +132,3 @@ example (f₁ : a ⟶ b) (f₂ : b ⟶ c) :
   pure_coherence
 
 end Bicategory
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib.Analysis.Complex.UpperHalfPlane.Manifold
 import Mathlib.Geometry.Manifold.Instances.Real
 import Mathlib.Geometry.Manifold.Notation
@@ -775,5 +774,3 @@ info: mfderivWithin 𝓘(𝕜, E) (𝓘(𝕜, E).prod 𝓘(𝕜, E')) (fun x ↦
 -- TODO: skipped the test about error messages (analogous to mfderiv(Within))
 
 end HasMFDeriv
-
--/

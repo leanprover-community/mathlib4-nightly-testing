@@ -1,4 +1,3 @@
-/-
 import Mathlib.Util.Qq
 import Mathlib.Data.Finset.Basic
 
@@ -36,5 +35,3 @@ info: {1, 2, 3} : List ℕ
 #check by_elab return mkSetLiteralQ q(Finset ℕ) (List.range 4 |>.map fun n : ℕ ↦ q($n^2))
 
 end mkSetLiteralQ
-
--/

@@ -1,4 +1,3 @@
-/-
 import Mathlib
 
 /-
@@ -8,5 +7,3 @@ all of `Mathlib` is available.
 -/
 
 #check_assertions!
-
--/

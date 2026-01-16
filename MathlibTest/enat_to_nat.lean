@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.ENatToNat
 
 example (a b : ENat) (h : a = b) : a - b = b - a := by
@@ -23,5 +22,3 @@ example (a b : ENat) (h : a = b) : a - b = b - a := by
   let b : ℤ := 32
   enat_to_nat
   lia
-
--/

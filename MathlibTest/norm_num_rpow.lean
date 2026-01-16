@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2021 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro, David Renshaw
@@ -34,5 +33,3 @@ error: unsolved goals
 #guard_msgs in
 example : (-8 : ℝ) ^ (1 / 3 : ℝ) = -2 := by
   norm_num1
-
--/

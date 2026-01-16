@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.NormNum.OfScientific
 import Mathlib.Tactic.Ring.Compare
 import Mathlib.Tactic.Ring.RingNF
@@ -122,5 +121,3 @@ x y : K
 example : x + y + 4 < y + x + 4 := by ring_lt
 
 end LinearOrderedField
-
--/

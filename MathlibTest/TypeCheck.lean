@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.TypeCheck
 
 set_option linter.unusedTactic false
@@ -36,5 +35,3 @@ example : True := by
   type_check [1]
   fail_if_success type_check wrong
   trivial
-
--/

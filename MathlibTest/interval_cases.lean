@@ -1,5 +1,4 @@
 /-
-/-
 Copyright (c) 2019 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison
@@ -174,5 +173,3 @@ example (h : d ≤ 0) : d = 0 := by
   rfl
 
 end
-
--/

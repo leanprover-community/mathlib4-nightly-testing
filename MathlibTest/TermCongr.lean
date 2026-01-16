@@ -1,4 +1,3 @@
-/-
 import Mathlib.Tactic.TermCongr
 
 /-!
@@ -220,5 +219,3 @@ example {s t : α → Prop} (h : s = t) (p : α → Prop) :
 end limitations
 
 end Tests
-
--/

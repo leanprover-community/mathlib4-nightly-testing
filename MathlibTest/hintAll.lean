@@ -1,4 +1,3 @@
-/-
 import Mathlib.Algebra.Order.Floor.Semifield
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Data.ENNReal.Basic
@@ -185,7 +184,7 @@ info: Try these:
   Remaining subgoals:
   ⊢ False
 ---
-warning: declaration uses `sorry`
+warning: declaration uses 'sorry'
 -/
 #guard_msgs in
 example : 2 ≤ 1 := by hint
@@ -236,5 +235,3 @@ info: Try these:
 #guard_msgs in
 open ENNReal in
 example : (1 : ℝ≥0∞) < ∞ := by hint
-
--/

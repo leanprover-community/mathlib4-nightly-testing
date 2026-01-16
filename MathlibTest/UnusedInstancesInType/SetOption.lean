@@ -1,4 +1,3 @@
-/-
 module
 
 import MathlibTest.UnusedInstancesInType.Basic
@@ -65,5 +64,3 @@ set_option linter.unusedFintypeInType true in
 theorem foo' [Fintype Bool] [Fintype (Nat → Nat)] :
     Uses (Fintype (Nat → Nat)) → True :=
   fun _ => trivial
-
--/

@@ -1,4 +1,3 @@
-/-
 set_option autoImplicit true
 example : False → α := nofun
 example : False → α := by nofun
@@ -16,5 +15,3 @@ def ComplicatedEmpty : Bool → Type
 
 example (h : ComplicatedEmpty b) : α := nomatch b, h
 example (h : Nat → ComplicatedEmpty b) : α := nomatch b, h 1
-
--/
