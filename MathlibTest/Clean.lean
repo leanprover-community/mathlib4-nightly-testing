@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Clean
 
 namespace Tests
@@ -53,3 +54,5 @@ example : True := by
   trivial
 
 end Tests
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Group
 
 variable {G : Type} [Group G]
@@ -53,3 +54,5 @@ set_option linter.unusedTactic false in
 example (x : G) (h : x = 1) : x = 1 := by
   group
   exact h
+
+-/

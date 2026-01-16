@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.AdaptationNote
 import Mathlib.Tactic.Linter.DocString
 
@@ -126,3 +127,5 @@ structure X where
   spanning multiple lines.
   -/
   y : Unit
+
+-/

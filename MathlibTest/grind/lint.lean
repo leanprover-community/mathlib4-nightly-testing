@@ -1,3 +1,4 @@
+/-
 import Mathlib
 
 -- These each instantiate 24 further lemmas (pretty much the same ones), but they seem reasonable.
@@ -17,3 +18,5 @@ import Mathlib
 -- (Note: the above #grind_lint take about 20s as of 2025-11-21.
 -- If it becomes too slow, we may need to split this file and lint different submodules separately,
 -- to get parallelism.)
+
+-/

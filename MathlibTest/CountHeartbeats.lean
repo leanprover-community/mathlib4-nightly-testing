@@ -1,3 +1,4 @@
+/-
 import Mathlib.Util.CountHeartbeats
 import Mathlib.Util.SleepHeartbeats
 
@@ -82,3 +83,5 @@ set_option linter.unusedTactic false in
 theorem YX' : True := trivial
 
 end using_linter_option
+
+-/

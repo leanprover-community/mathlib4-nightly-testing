@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Linter.PrivateModule
 
 set_option linter.privateModule true
@@ -7,3 +8,5 @@ set_option linter.privateModule true
 private theorem foo : True := trivial
 
 private def bar : Bool := true
+
+-/

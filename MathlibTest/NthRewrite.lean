@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.NthRewrite
 import Mathlib.Algebra.Group.Defs
 import Mathlib.Data.Vector.Defs
@@ -96,3 +97,5 @@ example (x y : ℕ) (h₁ : x = y) (h₂ : x = x + x) : x + x = x := by
 
 example (x y : ℕ) (h : x = y) : x + x + x = x + y + y := by
   nth_rw 2 3 [h]
+
+-/

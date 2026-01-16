@@ -1,3 +1,4 @@
+/-
 import Mathlib
 
 open Real
@@ -26,3 +27,5 @@ example (f : ℝ → ℕ) : 4 * f ((cos x + sin x)^2) ≠ 2 + f (2 * cos x * sin
 -- Otherwise, the previous argument applies.
 example (f : ℝ → ℕ) : max 3 (4 * f ((cos x + sin x)^2)) ≠ 2 + f (2 * cos x * sin x + 1) := by
   grind
+
+-/

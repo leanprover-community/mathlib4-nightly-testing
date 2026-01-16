@@ -1,3 +1,4 @@
+/-
 module
 
 public import Mathlib.Tactic.Linter.FlexibleLinter
@@ -385,3 +386,5 @@ end
   let h := mkIdent `h
   let hc ← `(Lean.Parser.Tactic.elimTarget|$h:ident)
   IO.println s!"{(toStained (← `(tactic| cases $hc))).toArray}"
+
+-/

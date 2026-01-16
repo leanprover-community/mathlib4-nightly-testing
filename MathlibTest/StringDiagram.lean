@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Widget.StringDiagram
 import ProofWidgets.Component.Panel.SelectionPanel
 
@@ -488,3 +489,5 @@ trace: [string_diagram] Penrose substance:
 #string_diagram Bicategory.whisker_exchange
 
 end Bicategory
+
+-/

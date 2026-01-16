@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Spread
 
 set_option autoImplicit true
@@ -26,3 +27,5 @@ axiom mkDefault (α : Type) : Inhabited α
 noncomputable example (α : Type) : A α where
   __ := mkDefault α
   x := default
+
+-/

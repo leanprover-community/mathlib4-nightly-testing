@@ -1,3 +1,4 @@
+/-
 import Mathlib.Util.Notation3
 import Mathlib.Data.Nat.Basic
 
@@ -262,3 +263,5 @@ notation3 "Objet " "mathématique" => Type
 #guard_msgs in #check PSum
 
 end Test
+
+-/

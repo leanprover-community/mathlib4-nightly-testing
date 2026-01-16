@@ -1,3 +1,4 @@
+/-
 import Aesop
 import Mathlib.Tactic.Says
 
@@ -13,3 +14,5 @@ example {f : X → Y} {g : Y → Z} (hgfinj : Injective (g ∘ f)) : Injective f
     intro a₁ a₂ a
     apply hgfinj
     simp_all only [comp_apply]
+
+-/

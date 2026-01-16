@@ -1,3 +1,4 @@
+/-
 import Mathlib.Util.TermReduce
 -- On command line, tests format functions with => rather than ↦ without this.
 set_option linter.style.setOption false
@@ -79,3 +80,5 @@ set_option pp.all true in
 set_option pp.all true in
 /-- info: @C.mk A.mk : C -/
 #guard_msgs in #check reduceProj% delta% c
+
+-/

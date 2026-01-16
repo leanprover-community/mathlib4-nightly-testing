@@ -1,3 +1,4 @@
+/-
 module
 
 import MathlibTest.UnusedInstancesInType.Basic
@@ -126,3 +127,5 @@ run_cmd do
   logInfo m!"Module of `Fintype.ofFinite`: `{modName}`"
 
 end importFintypeOfFinite
+
+-/

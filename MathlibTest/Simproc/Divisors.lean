@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Simproc.Divisors
 import Mathlib.NumberTheory.Primorial
 
@@ -40,3 +41,5 @@ example : Nat.properDivisors 57 = {1, 3, 19} := by
 
 example : 2 ≤ Finset.card (Nat.divisors 3) := by
   simp [Nat.divisors_ofNat]
+
+-/

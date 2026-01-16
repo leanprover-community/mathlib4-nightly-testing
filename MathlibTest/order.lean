@@ -1,3 +1,4 @@
+/-
 import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.Tactic.Order
 
@@ -280,3 +281,5 @@ example {α : Type*} [LinearOrder α]
     (c4 : x₀ ⊔ y₀ ≥ t)
     : False := by
   order
+
+-/

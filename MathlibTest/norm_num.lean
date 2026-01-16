@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2017 Simon Hudon. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Simon Hudon, Mario Carneiro, Thomas Murrills
@@ -754,3 +755,5 @@ theorem large1 {α} [Ring α] : 2^(2^2000) + (2*2) - 2^(2^2000) = (4 : α) := by
   set_option exponentiation.threshold 20 in
     norm_num1 -- TODO: this should warn, but the warning is discarded
   simp only [add_sub_cancel_left]
+
+-/

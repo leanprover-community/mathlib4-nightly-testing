@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Category.ModuleCat.Colimits
 import Mathlib.Algebra.Category.ModuleCat.Limits
 import Mathlib.Algebra.Category.ModuleCat.FilteredColimits
@@ -26,3 +27,5 @@ variable [EssentiallySmall.{u} C]
 example (R : Type u) [Ring R] : HasSheafCompose J (forget (ModuleCat.{u} R)) := inferInstance
 
 end Large
+
+-/

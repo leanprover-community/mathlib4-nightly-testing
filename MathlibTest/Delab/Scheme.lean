@@ -1,3 +1,4 @@
+/-
 import Mathlib.AlgebraicGeometry.Restrict
 
 universe u
@@ -23,3 +24,5 @@ variable (X : Scheme.{u}) (U : X.Opens) (x : U) in
 /-- info: x : ↥U -/
 #guard_msgs in
 #check x
+
+-/

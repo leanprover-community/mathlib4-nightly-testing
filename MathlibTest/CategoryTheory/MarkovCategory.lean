@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2025 Jacob Reinhold. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jacob Reinhold
@@ -93,3 +94,5 @@ variable {C : Type u} [Category.{u} C] [MonoidalCategory.{u} C] [MarkovCategory 
 example {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) : f ≫ g ≫ ε[Z] = f ≫ ε[Y] := by simp
 
 end MarkovSimpLemmas
+
+-/

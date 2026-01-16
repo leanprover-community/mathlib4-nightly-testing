@@ -1,3 +1,4 @@
+/-
 import Batteries.Tactic.Alias
 import Mathlib.Tactic.Linter.Lint
 import Mathlib.Tactic.ToAdditive
@@ -72,3 +73,5 @@ Note: This linter can be disabled with `set_option linter.style.nameCheck false`
 #guard_msgs in
 set_option linter.style.nameCheck true in
 theorem double__underscore : True := trivial
+
+-/

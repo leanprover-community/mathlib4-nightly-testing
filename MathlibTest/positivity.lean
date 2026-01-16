@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Positivity
 import Mathlib.Analysis.Complex.Trigonometric
 import Mathlib.Data.Real.Sqrt
@@ -612,3 +613,5 @@ example [Semiring S] [PartialOrder S] [IsOrderedRing S] [Semiring R]
     (abv : R → S) [IsAbsoluteValue abv] (x : R) :
     0 ≤ abv x := by
   positivity
+
+-/

@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2024 Johan Commelin. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johan Commelin, Kim Morrison
@@ -106,3 +107,5 @@ Hint: Additional diagnostic information may be available using the `set_option d
 #synth I.IsPrime
 
 end
+
+-/

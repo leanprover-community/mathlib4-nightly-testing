@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2022 Alice Laroche. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alice Laroche, Frédéric Dupuis, Jireh Loreaux
@@ -235,3 +236,5 @@ end no_proj
 /-- info: ∀ (a b : ℕ), ∃ c d, a + b ≠ c + d -/
 #guard_msgs in
 #push_neg ¬ ∃ a b : Nat, ∀ c d : Nat, a + b = c + d
+
+-/

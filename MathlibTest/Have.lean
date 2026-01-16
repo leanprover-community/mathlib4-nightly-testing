@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2022 Arthur Paulino. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Arthur Paulino
@@ -50,3 +51,5 @@ error: type expected, got
 -/
 #guard_msgs in
 example : True := by have h : Nat.zero
+
+-/

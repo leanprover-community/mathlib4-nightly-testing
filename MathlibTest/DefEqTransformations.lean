@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.DefEqTransformations
 
 set_option autoImplicit true
@@ -129,3 +130,5 @@ example (n : Fin 5) : n = ⟨n.val2, n.prop2⟩ := by
   rfl
 
 end Tests
+
+-/

@@ -1,3 +1,4 @@
+/-
 module
 
 import Mathlib.Tactic.Linter.PrivateModule
@@ -15,3 +16,5 @@ empty file: -/
 #guard_msgs in
 run_cmd do
   logInfo m!"{(← getEnv).constants.map₂.toArray.map (MessageData.ofConstName ·.1)}"
+
+-/

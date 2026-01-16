@@ -1,3 +1,4 @@
+/-
 module
 
 import Mathlib.Init
@@ -26,3 +27,5 @@ run_cmd do logInfo m!"{isReservedName (← getEnv) ``foo.eq_1}"
 /-- info: reserved names: [] -/
 #guard_msgs in
 #show_new_reserved
+
+-/

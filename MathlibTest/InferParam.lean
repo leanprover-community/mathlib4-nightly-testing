@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.InferParam
 
 namespace InferParamTest
@@ -21,3 +22,5 @@ example : 0 ≤ 2 + 2 := by
   infer_param
 
 end InferParamTest
+
+-/

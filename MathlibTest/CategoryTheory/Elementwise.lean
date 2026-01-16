@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.CategoryTheory.Elementwise
 import Mathlib.Algebra.Category.MonCat.Basic
 
@@ -230,3 +231,5 @@ example {α β : Type} (f g : α ⟶ β) (w : f ≫ 𝟙 β = g) (a : α) : f a 
 end ConcreteCategory
 
 end ElementwiseTest
+
+-/

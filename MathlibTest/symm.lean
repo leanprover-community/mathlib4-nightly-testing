@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Group.Hom.Defs
 import Mathlib.Logic.Equiv.Basic
 
@@ -45,3 +46,5 @@ def MyEq (n m : Nat) := ∃ k, n + k = m ∧ m + k = n
 example {n m : Nat} (h : MyEq n m) : MyEq m n := by
   symm
   assumption
+
+-/

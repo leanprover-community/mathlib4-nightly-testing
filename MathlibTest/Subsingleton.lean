@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Subsingleton
 
 private axiom test_sorry : ∀ {α}, α
@@ -142,3 +143,5 @@ def fdef : ∀ {β : Type _} [BEq β], Subsingleton β := test_sorry
 
 example {α : Type} [BEq α] (x y : α) : x = y := by
   subsingleton [fdef]
+
+-/

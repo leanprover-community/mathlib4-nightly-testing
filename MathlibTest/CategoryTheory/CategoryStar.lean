@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.CategoryTheory.CategoryStar
 import Mathlib.CategoryTheory.Functor.Category
 
@@ -185,3 +186,5 @@ info: ff.{v_1, w} [Category.{v_1, 0} TypeWithParam] : Type v_1
 #check ff
 
 end
+
+-/

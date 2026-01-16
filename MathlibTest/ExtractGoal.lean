@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.ExtractGoal
 import Mathlib.Order.Basic
 import Mathlib.Data.Nat.Basic
@@ -191,3 +192,5 @@ theorem foralls_variants : ∀ (n : Nat), n + 0 = n := by
     extract_goal
     simp
   simp
+
+-/

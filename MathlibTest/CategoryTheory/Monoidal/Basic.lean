@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.CategoryTheory.Monoidal.Basic
 
 open CategoryTheory Mathlib.Tactic BicategoryLike
@@ -25,3 +26,5 @@ example {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗ 
     R V₁ V₂ ▷ V₃ ⊗≫ V₂ ◁ R V₁ V₃ =
       R V₁ V₂ ▷ V₃ ≫ (α_ _ _ _).hom ⊗≫ 𝟙 _ ≫ V₂ ◁ R V₁ V₃ := by
   monoidal
+
+-/

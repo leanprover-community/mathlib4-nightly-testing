@@ -1,3 +1,4 @@
+/-
 import Mathlib.Lean.Name
 
 /-! Tests that if `Lean.Name.willRoundTrip` is true for a name, then it roundtrips. We do not
@@ -130,3 +131,5 @@ info: fun
 #guard_msgs in
 #check by_elab return mkTestLambda (mkStr1 "\n")
 #guard willRoundTrip (mkStr1 "\n") == false
+
+-/

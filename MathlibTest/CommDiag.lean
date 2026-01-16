@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Widget.CommDiag
 import ProofWidgets.Component.Panel.SelectionPanel
 import ProofWidgets.Component.Panel.GoalTypePanel
@@ -55,3 +56,5 @@ example {X Y Z : Type} {f i : X ⟶ Y}
     rw [← h₁, h₂]
 
 end CategoryTheory
+
+-/

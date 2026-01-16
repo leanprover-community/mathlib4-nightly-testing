@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.UnsetOption
 
 set_option linter.style.setOption false
@@ -30,3 +31,5 @@ example : True := by
     -- should be true as only unset within section
     guard (t == true)
   trivial
+
+-/

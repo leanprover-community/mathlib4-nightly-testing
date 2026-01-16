@@ -1,3 +1,4 @@
+/-
 import Mathlib.Order.Interval.Finset.Basic
 
 /-!
@@ -66,3 +67,5 @@ example (a : α) : {x ≥ a | p x} = setOf fun x => x ≥ a ∧ p x := rfl
 example (a : α) : {x > a | p x} = setOf fun x => x > a ∧ p x := rfl
 
 end LocallyFiniteOrderTop
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.CategoryTheory.FiberedCategory.HomLift
 
 universe u₁ v₁ u₂ v₂
@@ -23,3 +24,5 @@ example {R S T : 𝒮} {a b c : 𝒳} (f : R ⟶ S) (g : S ⟶ T) (φ : a ⟶ b)
   guard_hyp h : p.IsHomLift (p.map (φ ≫ ψ)) (φ ≫ ψ)
   guard_target = p.map (φ ≫ ψ) = p.map (φ ≫ ψ)
   trivial
+
+-/

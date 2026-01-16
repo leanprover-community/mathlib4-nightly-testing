@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.StacksAttribute
 import Mathlib.Util.ParseCommand
 
@@ -100,3 +101,5 @@ run_cmd do
   let _ ← Lean.ofExcept <| captureException env stacksTagFn "\"A04Q\""
 
 end errors
+
+-/

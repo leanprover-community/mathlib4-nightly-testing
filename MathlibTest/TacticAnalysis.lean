@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.TacticAnalysis.Declarations
 import Mathlib.Tactic.AdaptationNote
 import Lean.LibrarySuggestions
@@ -422,3 +423,5 @@ set_option linter.tacticAnalysis.unknownTacticTest true in
 example : 1 + 1 = 2 := by rfl
 
 end unknownTactic
+
+-/

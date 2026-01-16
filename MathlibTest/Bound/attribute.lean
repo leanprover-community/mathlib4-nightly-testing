@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2024 Geoffrey Irving. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Geoffrey Irving
@@ -30,3 +31,5 @@ open Mathlib.Tactic.Bound (declPriority)
 /-- info: 141 -/
 #guard_msgs in
 #eval declPriority `Bound.pow_le_pow_right_of_le_one_or_one_le
+
+-/

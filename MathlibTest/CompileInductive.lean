@@ -1,3 +1,4 @@
+/-
 import Mathlib.Util.CompileInductive
 import Mathlib.Data.Fin.Fin2
 
@@ -39,3 +40,5 @@ def tryToCompileAllInductives : TermElabM Unit := do
   logInfo m!"{success} / {ivs.length}"
 
 -- #eval Command.liftTermElabM tryToCompileAllInductives
+
+-/

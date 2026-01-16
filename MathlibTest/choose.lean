@@ -1,3 +1,4 @@
+/-
 import Batteries.Util.ExtendedBinder
 import Mathlib.Tactic.Choose
 
@@ -82,3 +83,5 @@ example {α : Type u} (p : α → Prop) (h : ∀ i : α, p i → ∃ j : α × �
   guard_hyp f : α → α × α
   guard_hyp h : ∀ (i : α), p i → p (f i).1
   trivial
+
+-/

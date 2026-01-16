@@ -1,3 +1,4 @@
+/-
 import Mathlib.Lean.Meta.RefinedDiscrTree.Encode
 import Mathlib
 
@@ -209,3 +210,5 @@ run_meta do
   let m ← mkFreshExprMVarQ q(ℕ → ℕ → ℕ)
   for keys in ← encodeExprWithEta (labelledStars := true) q(fun x : Nat => $m x x) do
     logInfo m! "{← keysAsPattern keys}"
+
+-/

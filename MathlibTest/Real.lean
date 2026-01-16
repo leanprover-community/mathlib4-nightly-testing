@@ -1,4 +1,5 @@
 /-
+/-
 ! This file was ported from Lean 3 source file `test/real.lean`
 ! leanprover-community/mathlib commit d7943885503965d07ccaeb390d65fbc3f45962e6
 ! Please do not edit these lines, except to modify the commit id
@@ -19,3 +20,5 @@ run_cmd unsafe testRepr ⟨CauSeq.Completion.mk <| ⟨fun n ↦ 2^(-n:ℤ), test
                         "Real.ofCauchy (sorry /- 1, (1 : Rat)/2, (1 : Rat)/4, (1 : Rat)/8, \
                         (1 : Rat)/16, (1 : Rat)/32, (1 : Rat)/64, (1 : Rat)/128, (1 : Rat)/256, \
                         (1 : Rat)/512, ... -/)"
+
+-/

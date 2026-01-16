@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.Nat.Notation
 import Mathlib.Tactic.Basic
 import Mathlib.Tactic.ApplyFun
@@ -272,3 +273,5 @@ use `set_option diagnostics true` to get diagnostic information
 example (_h₁ : Function.Injective (funFamily ((List.range 128).map (fun _ => 0)).sum)) :
     true = true := by
   apply_fun funFamily 0
+
+-/

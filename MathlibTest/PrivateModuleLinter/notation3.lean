@@ -1,3 +1,4 @@
+/-
 module
 
 import all Mathlib.Tactic.Linter.PrivateModule
@@ -34,3 +35,5 @@ Note: This linter can be disabled with `set_option linter.privateModule false`
 run_cmd do
   let eoi := mkNode ``Command.eoi #[mkAtom .none ""]
   privateModule.run eoi
+
+-/

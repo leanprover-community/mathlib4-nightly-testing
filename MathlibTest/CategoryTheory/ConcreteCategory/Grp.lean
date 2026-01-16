@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Category.Grp.Basic
 
 universe v u
@@ -48,3 +49,5 @@ example {M N : GrpCat} (f : M ⟶ N) (x y : M) : f (x * y) = f x * f y := by
 
 example {M N : GrpCat} (f : M ⟶ N) : f 1 = 1 := by
   simp
+
+-/

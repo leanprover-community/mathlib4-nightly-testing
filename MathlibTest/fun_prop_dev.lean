@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2024 Tomáš Skřivan. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Tomáš Skřivan
@@ -671,3 +672,5 @@ example (f g : α → Rat) (hf : Con f) (hg : Con g) (h : ∀ x, 0 < g x) :
     goal.assign <| ← mkAuxTheorem ty (← instantiateMVars mvar))
 
 end StateReversionBug
+
+-/

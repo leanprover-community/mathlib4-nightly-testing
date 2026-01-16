@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.ClearExcept
 
 set_option linter.unusedTactic false
@@ -33,3 +34,5 @@ example (_delete_this : Nat) (dont_delete_this : Int) (dont_delete_this2 : Int) 
   clear * - dont_delete_this dont_delete_this2
   fail_if_success assumption
   exact dont_delete_this.toNat + dont_delete_this2.toNat
+
+-/

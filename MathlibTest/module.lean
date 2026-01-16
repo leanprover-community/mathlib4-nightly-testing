@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2024 Heather Macbeth. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Heather Macbeth
@@ -285,3 +286,5 @@ example (h₁ : 1 = a ^ 2 + b ^ 2) (h₂ : 1 - a ≠ 0) :
     linear_combination 4 * (a - 1) * h₁
 
 end LinearOrderedField
+
+-/

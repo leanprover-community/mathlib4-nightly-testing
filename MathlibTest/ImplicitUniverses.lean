@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.TypeStar
 import Mathlib.Tactic.SuccessIfFailWithMsg
 
@@ -52,3 +53,5 @@ of sort `Type u_1`
 #guard_msgs in
 noncomputable example : sorry := by
   exact ∀ x : Sort*, x = Prop
+
+-/

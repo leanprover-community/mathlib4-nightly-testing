@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.SimpIntro
 
 set_option autoImplicit true
@@ -20,3 +21,5 @@ example : ∀ (r : Nat → Prop), (∀ x, x > 0 → r x) → ∀ y z, y = 0 → 
 
 example : ∀ (r : Nat → Prop), (∀ x, x > 0 → r x) → ∀ y z, y = 0 → z > y → r z := by
   simp_intro r hr y z hy hz
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.Nat.Bits
 
 def Nat.popcountTR (n : Nat) : Nat :=
@@ -6,3 +7,5 @@ def Nat.popcountTR (n : Nat) : Nat :=
 /-- info: 1 -/
 #guard_msgs in
 #eval Nat.popcountTR (2 ^ 20240)
+
+-/

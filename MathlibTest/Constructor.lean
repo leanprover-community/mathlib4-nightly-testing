@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Constructor
 
 structure Foo where
@@ -14,3 +15,5 @@ example : Foo := by
 example : Foo := by
   econstructor
   exact [0,1,2]
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib
 
 /-! We test that the instances on `LocalizedModule` and `Localization` are reducibly equal. -/
@@ -16,3 +17,5 @@ example : (LocalizedModule.instCommRing : CommRing R[S⁻¹]) = OreLocalization.
 example : (LocalizedModule.algebra' : Algebra R (LocalizedModule S R)) =
     OreLocalization.instAlgebra := by
   with_reducible_and_instances rfl
+
+-/

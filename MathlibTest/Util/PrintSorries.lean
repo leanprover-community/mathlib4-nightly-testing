@@ -1,3 +1,4 @@
+/-
 import Mathlib.Util.PrintSorries
 
 set_option pp.mvars false
@@ -212,3 +213,5 @@ warning: declaration uses `sorry`
 #guard_msgs in
 #print sorries in
 theorem thm5 : True := by stop admit
+
+-/

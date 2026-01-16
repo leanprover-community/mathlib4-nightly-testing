@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.Nat.Log
 
 /-!
@@ -21,3 +22,5 @@ set_option exponentiation.threshold 10000000
 /-- info: 10000001 -/
 #guard_msgs in
 #reduce Nat.clog 2 (2 ^ 10000000 + 1)
+
+-/

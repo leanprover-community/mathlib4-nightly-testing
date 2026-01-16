@@ -1,3 +1,4 @@
+/-
 module
 
 public meta import Lean.Elab.Command
@@ -17,3 +18,5 @@ This file will be expanded as the linters gain functionality.
 
 /-- Infers an instance of its first argument in its second argument. Equal to `True`. -/
 def Uses (α : Sort u) (_ : α := by infer_instance) : Prop := True
+
+-/

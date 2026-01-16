@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.Nat.Basic
 import Mathlib.Tactic.Linter.HaveLetLinter
 import Mathlib.Tactic.Tauto
@@ -156,3 +157,5 @@ theorem ghi : True := by
   noise
   have : Nat := Nat.succ 1;
   exact .intro
+
+-/

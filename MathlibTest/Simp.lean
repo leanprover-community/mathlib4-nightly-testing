@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Algebra.Pi
 import Mathlib.Algebra.Algebra.Defs
 
@@ -17,3 +18,5 @@ example {α R : Type*} [CommRing R] (f : α → R) (r : R) (a : α) :
     (r • f) a = r • (f a) := by
   let _ : SMul R R := SMulZeroClass.toSMul
   simp only [Pi.smul_apply]
+
+-/

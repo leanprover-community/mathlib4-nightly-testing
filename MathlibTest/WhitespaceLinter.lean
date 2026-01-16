@@ -1,3 +1,4 @@
+/-
 module
 
 import Aesop.Frontend.Attribute
@@ -568,3 +569,5 @@ info: #[srcNat: 4, srcPos: 4, fmtPos: 5, msg: missing space, length: 1
 #guard Mathlib.Linter.Style.Whitespace.mkWindow "ab cd ef gh" "d ef gh".length 6 == "cd ef gh"
 
 end internal
+
+-/

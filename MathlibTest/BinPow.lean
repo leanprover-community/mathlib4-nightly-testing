@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.ZMod.Defs
 
 -- A 1024-bit prime number
@@ -11,3 +12,5 @@ abbrev g : Nat := 0xa4d1cbd5c3fd34126765a442efb99905f8104dd258ac507fd6406cff1426
 /-- info: 1 -/
 #guard_msgs in
 #eval (g : ZMod M) ^ (M - 1)
+
+-/

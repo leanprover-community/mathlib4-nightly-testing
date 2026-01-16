@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Category.Semigrp.Basic
 
 universe v u
@@ -45,3 +46,5 @@ example {X : Type*} [Semigroup X] : ⇑(MulHom.id X) = id := by simp
 
 example {M N : Semigrp} (f : M ⟶ N) (x y : M) : f (x * y) = f x * f y := by
   simp
+
+-/

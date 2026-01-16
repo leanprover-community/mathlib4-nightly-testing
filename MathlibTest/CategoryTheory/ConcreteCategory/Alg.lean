@@ -1,3 +1,4 @@
+/-
 import Mathlib
 
 universe v u
@@ -51,3 +52,5 @@ example {M N : AlgCat.{v} R} (f : M ⟶ N) : f 0 = 0 := by
 
 example {M N : AlgCat.{v} R} (f : M ⟶ N) (r : R) (m : M) : f (r • m) = r • f m := by
   simp
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.CategoryTheory.Bicategory.Normalize
 
 open CategoryTheory Mathlib.Tactic BicategoryLike
@@ -56,3 +57,5 @@ variable {f : a ⟶ b} {g : b ⟶ c} in
 #guard_expr normalize% 𝟙 (f ≫ g) = (Iso.refl (f ≫ g)).hom
 
 end CategoryTheory.Bicategory
+
+-/

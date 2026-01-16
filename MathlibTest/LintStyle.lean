@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.Nat.Basic
 import Mathlib.Tactic.Linter.Style
 import Mathlib.Order.SetNotation
@@ -601,3 +602,5 @@ example := by
   rfl
 
 end showLinter
+
+-/

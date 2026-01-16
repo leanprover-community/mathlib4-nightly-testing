@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Group.Defs
 import Mathlib.Lean.Exception
 import Mathlib.Tactic.ReduceModChar.Ext
@@ -852,3 +853,5 @@ attribute [to_additive someOtherTranslation] abstractMul
 -- Test that we don't blindly translate the prefix of a name.
 def Mul.test : Nat := 5
 @[to_additive] def Mul.test' := Mul.test
+
+-/

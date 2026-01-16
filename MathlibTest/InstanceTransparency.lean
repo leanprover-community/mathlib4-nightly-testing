@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.Real.Basic
 
 /-! # Test transparency level of `Div` field in `DivInvMonoid`
@@ -29,3 +30,5 @@ example {a b : ℝ} : a / 2 ≤ b / 2 := by
   fail_if_success with_reducible_and_instances apply mul_le_mul -- fails, as desired
   apply mul_le_mul
   repeat exact test_sorry
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.ZMod.Defs
 
 -- A Mersenne exponent, chosen so the test below takes no more than a few seconds
@@ -16,4 +17,6 @@ set_option exponentiation.threshold 100000 in
 /-- info: 1 -/
 #guard_msgs in
 #eval (37 : ZMod p)^(p-1)
+-/
+
 -/

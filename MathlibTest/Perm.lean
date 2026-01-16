@@ -1,3 +1,4 @@
+/-
 
 import Mathlib.GroupTheory.Perm.Cycle.Concrete
 import Mathlib.Tactic.DeriveFintype
@@ -14,3 +15,5 @@ open Equiv
   unsafe (reprPrec (c[0, 1] * c[1, 2] : Perm (Fin 4)) 70).pretty == "c[0, 1, 2]"
 
 example : (c[0, 1] * c[1, 2] : Perm (Fin 4)).cycleType = {3} := by decide
+
+-/

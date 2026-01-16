@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.SuccessIfFailWithMsg
 example : True := by
   success_if_fail_with_msg "No goals to be solved" trivial; trivial
@@ -73,3 +74,5 @@ def doesntFail : MetaM Unit := do
 
 #guard_msgs in
 #eval doesntFail
+
+-/

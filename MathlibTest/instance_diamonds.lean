@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2021 Eric Wieser. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eric Wieser
@@ -274,3 +275,5 @@ possible, before `Nonneg.zpow` becomes available; `Nonneg.zpow` is used to then 
 `LinearOrderedCommGroupWithZero` instance. -/
 example : (inferInstanceAs (Semifield ℚ≥0)).toCommGroupWithZero =
     (inferInstanceAs (LinearOrderedCommGroupWithZero ℚ≥0)).toCommGroupWithZero := rfl
+
+-/

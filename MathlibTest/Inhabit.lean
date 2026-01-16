@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Inhabit
 
 namespace InhabitTests
@@ -57,3 +58,5 @@ noncomputable example : Inhabited α := by
   assumption
 
 end InhabitTests
+
+-/

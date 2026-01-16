@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.RenameBVar
 import Lean
 
@@ -58,3 +59,5 @@ example (a b c : Int) (h1 : a ∣ b) (h2 : b ∣ c) : a ∣ c := by
   rename_bvar k → m
   trace_state
   exact test_sorry
+
+-/

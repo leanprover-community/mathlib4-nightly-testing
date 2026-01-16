@@ -1,3 +1,4 @@
+/-
 import Mathlib.Data.Nat.Factorial.Basic
 
 /-!
@@ -16,3 +17,5 @@ run_elab show Lean.Elab.TermElabM Unit from do
   IO.println result
   let finish ← IO.monoNanosNow
   guard (finish - start < 10_000_000_000)
+
+-/

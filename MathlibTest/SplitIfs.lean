@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.SplitIfs
 example (x : Nat) (p : Prop) [Decidable p] : x = if p then x else x := by
   split_ifs with h1
@@ -81,3 +82,5 @@ example (u : Nat) : (if u = u then 0 else 1) = 0 := by
   -- only one goal here
   rfl
   done
+
+-/

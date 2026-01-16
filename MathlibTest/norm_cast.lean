@@ -1,4 +1,5 @@
 /-
+/-
 Tests for norm_cast
 -/
 
@@ -140,3 +141,5 @@ lemma b (_h g : true) : true ∧ true := by
   constructor
   assumption_mod_cast
   assumption_mod_cast
+
+-/

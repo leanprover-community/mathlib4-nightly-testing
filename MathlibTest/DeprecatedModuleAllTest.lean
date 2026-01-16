@@ -1,3 +1,4 @@
+/-
 module
 
 import all MathlibTest.DeprecatedModuleNew
@@ -15,4 +16,6 @@ Note: This linter can be disabled with `set_option linter.deprecated.module fals
 #guard_msgs in
 /-!
 This file imports a deprecated module with `import all`.
+-/
+
 -/

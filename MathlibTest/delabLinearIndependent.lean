@@ -1,3 +1,4 @@
+/-
 import Mathlib.LinearAlgebra.LinearIndependent.Defs
 
 set_option linter.style.setOption false
@@ -20,3 +21,5 @@ variable (h : LinearIndependent K (by exact Subtype.val : s → V)) in
 variable (h : LinearIndependent K (fun b => (fun b => b : s → V) b)) in
 /-- info: h : LinearIndependent K fun (b : ↑s) ↦ (fun b ↦ ↑b) b -/
 #guard_msgs in #check h
+
+-/

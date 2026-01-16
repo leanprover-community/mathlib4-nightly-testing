@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Eqns
 def transpose {m n} (A : m → n → Nat) : n → m → Nat
   | i, j => A j i
@@ -34,3 +35,5 @@ warning: declaration uses `sorry`
 example (n : Nat) : t = n := by
   rw [t]
   admit
+
+-/

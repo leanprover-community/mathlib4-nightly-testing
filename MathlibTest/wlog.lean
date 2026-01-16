@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2018 Simon Hudon. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Simon Hudon, Johan Commelin
@@ -190,3 +191,5 @@ example (x y : ℕ) : True := by
   · guard_hyp h :ₛ x ≠ 0 ∨ y ≠ 0
     trivial
   · trivial
+
+-/

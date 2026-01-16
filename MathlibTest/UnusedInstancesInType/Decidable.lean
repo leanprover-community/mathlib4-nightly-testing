@@ -1,3 +1,4 @@
+/-
 module
 
 import MathlibTest.UnusedInstancesInType.Basic
@@ -101,3 +102,5 @@ theorem fooUsing₃ [DecidablePred Nonempty] [DecidableEq (Nat → Nat)]
   fun _ => trivial
 
 end used
+
+-/

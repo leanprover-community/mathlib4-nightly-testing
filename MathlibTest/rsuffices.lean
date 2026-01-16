@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.RSuffices
 import Mathlib.Tactic.ExistsI
 import Mathlib.Algebra.Ring.Nat
@@ -61,3 +62,5 @@ example {α} (V : Set α) (w : True → ∃ p, p ∈ (V.foo V) ∩ (V.foo V)) : 
   rsuffices ⟨_, _⟩ : ∃ p, p ∈ (V.foo V) ∩ (V.foo V)
   · trivial
   · exact w trivial
+
+-/

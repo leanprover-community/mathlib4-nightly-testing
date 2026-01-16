@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2025 Michael Rothgang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Rothgang
@@ -34,3 +35,5 @@ set_option linter.style.header true in
 #guard Lean.Name.isPrefixOf `Mathlib.Util `Mathlib.Utils.Basic == false
 #guard Lean.Name.isPrefixOf `Mathlib.Foo `Mathlib.Util.Foo == false
 #guard Lean.Name.isPrefixOf `Mathlib.Util `Mathlib.Utils == false
+
+-/

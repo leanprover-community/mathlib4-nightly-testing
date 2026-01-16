@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Linter.FindDeprecations
 import Mathlib.Tactic.Linter.CommandRanges
 
@@ -34,3 +35,5 @@ info:
   IO.println <| removeRanges file #[⟨⟨2⟩, ⟨3⟩⟩, ⟨⟨7⟩, ⟨8⟩⟩]
   guard <| -- Also removing a range followed by whitespace, removes the trailing whitespace as well
     removeRanges file #[⟨⟨2⟩, ⟨3⟩⟩, ⟨⟨7⟩, ⟨8⟩⟩] == ((file.replace "2" "").replace "7   " "")
+
+-/

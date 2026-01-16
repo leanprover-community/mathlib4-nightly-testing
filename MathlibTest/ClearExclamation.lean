@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.ClearExclamation
 
 set_option linter.unusedVariables false
@@ -31,3 +32,5 @@ example (delete_this : Nat) (dont_delete_this : Int) : Nat := by
 example (dont_delete_this : Nat) (delete_this : dont_delete_this = dont_delete_this) : Nat := by
   clear! delete_this
   assumption
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.Util.AliasIn
 
 @[alias_in Baz] def Foo.Bar.baz : Nat := 1
@@ -64,3 +65,5 @@ Look at this docstring!
 #guard_msgs in
 open Lean in
 run_cmd logInfo m!"{(← Lean.findDocString? (← getEnv) `Foo.Baz.baz5).get!}"
+
+-/

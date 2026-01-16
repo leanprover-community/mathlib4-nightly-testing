@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2024 Geoffrey Irving. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Geoffrey Irving
@@ -137,3 +138,5 @@ example (x y : ℝ) (h : x < y ∧ True) : x ≤ y := by
 -- Used to fail with `unknown identifier n`, since I wasn't elaborating [] inside the goal
 theorem test_unknown_identifier {f : ℕ → ℝ} (le : ∀ n, f n ≤ n) : ∀ n : ℕ, f n ≤ n := by
   intro n; bound [le n]
+
+-/

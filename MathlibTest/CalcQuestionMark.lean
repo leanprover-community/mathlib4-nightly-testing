@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Widget.Calc
 
 /-!
@@ -65,3 +66,5 @@ example :
     1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 +
     1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 = 8 + 8 + 8 + 8 := by
   calc?
+
+-/

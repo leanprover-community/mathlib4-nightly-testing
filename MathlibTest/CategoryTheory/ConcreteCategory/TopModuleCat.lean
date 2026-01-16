@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Category.ModuleCat.Topology.Basic
 
 universe v u
@@ -72,3 +73,5 @@ example {M N : TopModuleCat.{v} R} (f : M ⟶ N) (r : R) (m : M) : f (r • m) =
 example {M N : TopModuleCat.{v} R} (f : M ⟶ N) : Continuous f := by continuity
 
 example {M N : TopModuleCat.{v} R} (f : M ⟶ N) : Continuous f := by fun_prop
+
+-/

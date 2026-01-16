@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.FastInstance
 import Mathlib.Logic.Function.Defs
 import Mathlib.Tactic.Spread
@@ -137,3 +138,5 @@ info: @Dec.mk It dec2 : Dec It
 #guard_msgs in
 set_option pp.explicit true in
 #check fast_instance% { dec := dec2 : Dec It }
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 
 set_option autoImplicit true
@@ -36,3 +37,5 @@ example : True := by
   have h2 : MeasurableSet (∅ : Set ℕ) := MeasurableSet.empty
   guard_hyp h2 : @MeasurableSet ℕ (borel ℕ) ∅
   trivial
+
+-/

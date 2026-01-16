@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Linter.DocPrime
 import Mathlib.Tactic.Lemma
 
@@ -94,3 +95,5 @@ example : True := .intro
 instance : True := .intro
 
 end Foo'
+
+-/

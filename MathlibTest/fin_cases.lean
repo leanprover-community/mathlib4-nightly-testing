@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.NormNum.Basic
 import Mathlib.Order.Interval.Finset.Nat
@@ -137,3 +138,5 @@ example (x2 : Fin 2) (x3 : Fin 3) (n : Nat) (y : Fin n) : x2.val * x3.val = x3.v
 --   fin_cases b with [0, 1, 2] using what
 --   guard_hyp what : b = 0
 --   all_goals trivial
+
+-/

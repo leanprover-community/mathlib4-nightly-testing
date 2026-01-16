@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Linter.UnusedTactic
 import Mathlib.Tactic.AdaptationNote
 
@@ -73,3 +74,5 @@ example : True := by
   done
 
 end allowing_more_unused_tactics
+
+-/

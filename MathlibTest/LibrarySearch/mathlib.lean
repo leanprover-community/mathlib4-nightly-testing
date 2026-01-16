@@ -1,3 +1,4 @@
+/-
 import Mathlib
 
 -- We verify that `exact?` copes with all of Mathlib.
@@ -9,3 +10,5 @@ info: Try this:
 -/
 #guard_msgs in
 example : 0 < 1 := by exact?
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.GroupWithZero.Action.Opposite
 
 open MulOpposite renaming op → mop
@@ -75,3 +76,5 @@ example : a₁ +ᵥ> a₂ +ᵥ> b <+ᵥ a₃ <+ᵥ a₄ = ((a₁ +ᵥ> (a₂ +�
 -- association is chosen to match multiplication and addition
 example {M} [Mul M] {x y z : M} : x •> y <• z = x * y * z := rfl
 example {A} [Add A] {x y z : A} : x +ᵥ> y <+ᵥ z = x + y + z := rfl
+
+-/

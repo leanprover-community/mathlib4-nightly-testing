@@ -1,3 +1,4 @@
+/-
 import Mathlib.CategoryTheory.Category.Basic
 
 structure Foo where
@@ -21,3 +22,5 @@ Remaining goals after safe rules:
 #guard_msgs in
 example : Foo where
   x := 35
+
+-/

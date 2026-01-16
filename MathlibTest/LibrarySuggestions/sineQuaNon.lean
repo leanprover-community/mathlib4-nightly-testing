@@ -1,3 +1,4 @@
+/-
 import Mathlib
 
 set_library_suggestions Lean.LibrarySuggestions.sineQuaNonSelector
@@ -14,3 +15,5 @@ example (hp : 0 < p) (ht : 0 ≤ t) (hx : 0 ≤ x) :
     0 ≤ rpowIntegrand₀₁ p t x := by
   fail_if_success grind
   grind +suggestions
+
+-/

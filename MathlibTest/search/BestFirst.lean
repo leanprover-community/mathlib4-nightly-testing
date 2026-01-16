@@ -1,3 +1,4 @@
+/-
 import Mathlib.Deprecated.MLList.BestFirst
 import Mathlib.Data.Nat.Basic
 
@@ -52,3 +53,5 @@ run_cmd Elab.Command.liftTermElabM do
       (6, 3), (5, 3), (4, 3), (3, 3), (2, 3), (1, 3), (0, 3), (-1, 3), (0, 4), (0, 2), (1, 2),
       (-1, 2), (0, 1), (1, 1), (-1, 1), (0, 0)]
   then throwError "Test failed!"
+
+-/

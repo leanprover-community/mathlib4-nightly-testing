@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.DeriveFintype
 import Mathlib.Data.Fintype.Prod
 import Mathlib.Data.Fintype.Pi
@@ -202,3 +203,5 @@ instance {M : Type _} [Fintype M] [DecidableEq M] : Fintype (MyClass M) :=
   derive_fintype% _
 
 end tests
+
+-/

@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Cases
 import Mathlib.Tactic.Linter.DeprecatedSyntaxLinter
 
@@ -251,3 +252,5 @@ Note: This linter can be disabled with `set_option linter.style.maxHeartbeats fa
 set_option maxHeartbeats 10 in
 /-- Doc-strings for the following command do not silence the linter. -/
 example : True := trivial
+
+-/

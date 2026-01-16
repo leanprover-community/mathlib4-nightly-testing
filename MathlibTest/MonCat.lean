@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Category.MonCat.Basic
 
 -- We verify that the coercions of morphisms to functions work correctly:
@@ -20,3 +21,5 @@ example (R : CommMonCat.{u}) : R ⟶ R := CommMonCat.ofHom
     map_one' := by simp
     map_mul' := fun x y => by
       rw [mul_assoc x y (x * y), ← mul_assoc y x y, mul_comm y x, mul_assoc, mul_assoc] }
+
+-/

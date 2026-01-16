@@ -1,3 +1,4 @@
+/-
 import Lean.Elab.AssertExists
 
 /-- info: No assertions made. -/
@@ -74,3 +75,5 @@ assert_not_exists
   Lean.Elab.Command.elabAssertNotExists
   Lean.Elab.Command.elabAssertNotImported
   I_do_not_exist
+
+-/

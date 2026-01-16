@@ -1,4 +1,5 @@
 /-
+/-
 Copyright (c) 2022 Heather Macbeth. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Heather Macbeth
@@ -47,3 +48,5 @@ example (_h1 : 0 ≡ a [ZMOD 7]) (h2 : 0 ≡ b [ZMOD 7]) : b ≡ a + 1 [ZMOD 7] 
 example (h : True → a ^ 2 ≡ b ^ 2 [ZMOD 5]) : a ^ 2 * n + x ≡ b ^2 * n + x [ZMOD 5] := by
   gcongr 2
   exact h trivial
+
+-/

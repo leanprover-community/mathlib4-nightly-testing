@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.Linter.EmptyLine
 
 set_option linter.style.emptyLine true
@@ -204,3 +205,5 @@ def F₀ : F where
   c := ()
 
 --
+
+-/

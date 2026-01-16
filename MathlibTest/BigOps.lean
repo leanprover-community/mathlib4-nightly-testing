@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Data.Fintype.Basic
 
@@ -124,3 +125,5 @@ set_option pp.analyze true in
 #check Finset.prod {j | p j} fun i ↦ f i
 
 end
+
+-/

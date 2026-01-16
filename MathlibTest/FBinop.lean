@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.FBinop
 import Mathlib.Data.Set.Prod
 import Mathlib.Data.Finset.Prod
@@ -88,3 +89,5 @@ def DecSubObj.prod [DecidableEq X] [DecidableEq Y] (s : DecSubObj X) (t : DecSub
   carrier := s ×ˢ' t
 
 end FBinopTests
+
+-/

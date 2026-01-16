@@ -1,3 +1,4 @@
+/-
 import Mathlib.CategoryTheory.Types.Monomorphisms
 import Mathlib.CategoryTheory.MorphismProperty.TransfiniteComposition
 
@@ -11,3 +12,5 @@ example : MorphismProperty.IsStableUnderTransfiniteComposition.{v}
     (monomorphisms (Type u)) := inferInstance
 
 end CategoryTheory.Types
+
+-/

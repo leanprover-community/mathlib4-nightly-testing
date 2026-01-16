@@ -1,3 +1,4 @@
+/-
 import Mathlib.Algebra.Order.Group.Unbundled.Abs
 
 variable {α β : Type*} [Lattice α] [Lattice β] [Group α] [AddGroup β] {a : α} {b : β}
@@ -21,3 +22,5 @@ variable {α β : Type*} [Lattice α] [Lattice β] [Group α] [AddGroup β] {a :
 /-- info: |(-b)| : β -/
 #guard_msgs in
 #check |(-b)|
+
+-/

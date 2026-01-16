@@ -1,3 +1,4 @@
+/-
 import Mathlib.Tactic.CategoryTheory.Monoidal.Normalize
 
 open CategoryTheory Mathlib.Tactic BicategoryLike
@@ -43,3 +44,5 @@ variable {V₁ V₂ V₃ : C} (R : ∀ V₁ V₂ : C, V₁ ⊗ V₂ ⟶ V₂ ⊗
 #guard_expr normalize% R V₁ V₂ ▷ V₃ ⊗≫ V₂ ◁ R V₁ V₃ = _ ≫ R V₁ V₂ ▷ V₃ ≫ _ ≫ V₂ ◁ R V₁ V₃ ≫ _
 
 end CategoryTheory.MonoidalCategory
+
+-/
