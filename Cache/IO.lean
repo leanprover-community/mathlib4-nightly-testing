@@ -102,7 +102,7 @@ def getLeanTar : IO String := do
 /-- Bump this number to invalidate the cache, in case the existing hashing inputs are insufficient.
 It is not a global counter, and can be reset to 0 as long as the lean githash or lake manifest has
 changed since the last time this counter was touched. -/
-def rootHashGeneration : UInt64 := 4
+def rootHashGeneration : UInt64 := 5
 
 /--
 `CacheM` stores the following information:
@@ -115,6 +115,8 @@ def rootHashGeneration : UInt64 := 4
   setting `srcDir` in a `lean_lib`. See `mkBuildPaths` below which currently assumes
   that no such options are set in any mathlib dependency)
 * the build directory for proofwidgets
+* the environment-configured directory for the local Lake artifact cache
+* whether tho pack/unpack files to the local Lake artifact cache
 -/
 structure CacheM.Context where
   /-- source directory for mathlib files -/
@@ -123,8 +125,10 @@ structure CacheM.Context where
   srcSearchPath : SearchPath
   /-- build directory for proofwidgets -/
   proofWidgetsBuildDir : FilePath
-  /-- directory for the Lake artifact cache -/
+  /-- directory for the machine-local Lake artifact cache -/
   lakeArtifactDir? : Option FilePath
+  /-- whether cache files should be packed/unpacked to the local Kake artifact cache -/
+  useLakeCache : Bool
 
 @[inherit_doc CacheM.Context]
 abbrev CacheM := ReaderT CacheM.Context IO
@@ -149,29 +153,25 @@ def _root_.Lean.SearchPath.relativize (sp : SearchPath) : IO SearchPath := do
 
 /--
 Detects the directory Lake uses to cache artifacts.
-This is very sensitive to changes in `Lake.Env.computeCache`.
+This is very sensitive to changes in `Lake.Env.compute`.
 -/
 def getLakeArtifactDir? : IO (Option FilePath) := do
   let elan? ← Lake.findElanInstall?
   let toolchain ← Lake.Env.computeToolchain
   let some cache ← Lake.Env.computeCache? elan? toolchain
     | return none
-  let artifactDir := cache.artifactDir
-  if (← artifactDir.pathExists) then
-    return artifactDir
-  else
-    IO.eprintln <| s!"Warning: Lake's cache directory '{artifactDir}' seems not to exist, \
-      most likely `cache` will not work as expected!"
-    return none
+  return cache.artifactDir
 
 private def CacheM.getContext : IO CacheM.Context := do
   let sp ← (← getSrcSearchPath).relativize
   let mathlibSource ← CacheM.mathlibDepPath sp
+  let useLakeCache := (← IO.getEnv "MATHLIB_CACHE_USE_LAKE").bind Lake.envToBool? |>.getD true
   return {
     mathlibDepPath := mathlibSource,
     srcSearchPath := sp,
     proofWidgetsBuildDir := LAKEPACKAGESDIR / "proofwidgets" / ".lake" / "build"
-    lakeArtifactDir? := ← getLakeArtifactDir?}
+    lakeArtifactDir? := ← getLakeArtifactDir?,
+    useLakeCache}
 
 /-- Run a `CacheM` in `IO` by loading the context from `LEAN_SRC_PATH`. -/
 def CacheM.run (f : CacheM α) : IO α := do ReaderT.run f (← getContext)
@@ -357,16 +357,18 @@ def mkBuildPaths (mod : Name) : CacheM (Option BuildPaths) := OptionT.run do
   let sp := (← read).srcSearchPath
   let packageDir ← getSrcDir sp mod
   let lakeDir := packageDir / ".lake"
-  if !(← lakeDir.isDir) then
+  unless (← lakeDir.isDir) do
     IO.eprintln <| s!"Warning: {lakeDir} seems not to exist, most likely `cache` \
       will not work as expected!"
   let path := System.mkFilePath <| mod.components.map toString
   let irPath := packageDir / IRDIR / path
   let libPath := packageDir / LIBDIR / path
   let trace := libPath.withExtension "trace"
+  let artifactDir := (← read).lakeArtifactDir?.getD (lakeDir / "cache")
+  IO.FS.createDirAll artifactDir
   -- Note: the `.olean`, `.olean.server`, `.olean.private` files must be consecutive,
   -- and in this order. The corresponding `.hash` files can come afterwards, in any order.
-  if let some artifactDir := (← read).lakeArtifactDir? then
+  if (← read).useLakeCache then
     if let some outs ← readTraceOutputs trace then
       let cachePaths := #[]
       let cachePaths ← addDescrPath cachePaths artifactDir outs.olean
@@ -433,7 +435,9 @@ def packCache (hashMap : ModuleHashMap) (overwrite verbose unpackedOnly : Bool)
   IO.FS.createDirAll CACHEDIR
   IO.println "Compressing cache"
   let sp := (← read).srcSearchPath
-  let initComment := if let some c := commit? then s!"git=mathlib4@{c};" else ""
+  let usesLakeCache := (← read).useLakeCache
+  let comment := if let some c := commit? then s!"git=mathlib4@{c};" else ""
+  let comment := s!"{comment}lakeCache={usesLakeCache}"
   let mut acc : Array PackTask := #[]
   for (mod, hash) in hashMap.toList do
     let sourceFile ← Lean.findLean sp mod
@@ -442,10 +446,10 @@ def packCache (hashMap : ModuleHashMap) (overwrite verbose unpackedOnly : Bool)
     if let some buildPaths ← mkBuildPaths mod then
       if overwrite || !(← zipPath.pathExists) then
         let task ← IO.asTask do
-          let usesLakeCache := !buildPaths.cachePaths.isEmpty
-          let comment := s!"{initComment}lakeCache={usesLakeCache}"
-          let opts := #["-C", "."] ++ if usesLakeCache then #["-C", buildPaths.artifactDir.toString] else #[]
-          let mut args := opts ++ #[zipPath.toString, buildPaths.trace.toString, "-c", comment]
+          let mut args := #["-C", "."]
+          if usesLakeCache then
+            args := args ++ #["-C", buildPaths.artifactDir.toString]
+          args := args ++ #[zipPath.toString, buildPaths.trace.toString, "-c", comment]
           args := buildPaths.localPaths.foldl (· ++ #["-i", "0", toString ·]) args
           args := buildPaths.cachePaths.foldl (· ++ #["-i", "1", toString ·]) args
           discard <| runCmd (← getLeanTar) args
