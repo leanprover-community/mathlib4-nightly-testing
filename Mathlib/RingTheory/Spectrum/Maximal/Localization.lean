@@ -3,15 +3,19 @@ Copyright (c) 2022 David Kurniadi Angdinata. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: David Kurniadi Angdinata
 -/
-import Mathlib.RingTheory.Localization.AsSubring
-import Mathlib.RingTheory.Spectrum.Maximal.Basic
-import Mathlib.RingTheory.Spectrum.Prime.RingHom
+module
+
+public import Mathlib.RingTheory.Localization.AsSubring
+public import Mathlib.RingTheory.Spectrum.Maximal.Basic
+public import Mathlib.RingTheory.Spectrum.Prime.RingHom
 
 /-!
 # Maximal spectrum of a commutative (semi)ring
 
 Localization results.
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -90,7 +94,7 @@ theorem mapPiLocalization_naturality :
     (mapPiLocalization f hf).comp (toPiLocalization R) =
       (toPiLocalization S).comp f := by
   ext r I
-  show Localization.localRingHom _ _ _ rfl (algebraMap _ _ r) = algebraMap _ _ (f r)
+  change Localization.localRingHom _ _ _ rfl (algebraMap _ _ r) = algebraMap _ _ (f r)
   simp_rw [← IsLocalization.mk'_one (M := (I.1.comap f).primeCompl), Localization.localRingHom_mk',
     ← IsLocalization.mk'_one (M := I.1.primeCompl), Submonoid.coe_one, map_one f]
   rfl
@@ -138,7 +142,7 @@ variable {R}
 theorem finite_of_toPiLocalization_pi_surjective
     (h : Function.Surjective (toPiLocalization (Π i, R i))) :
     Finite ι := by
-  contrapose h; rw [not_finite_iff_infinite] at h
+  contrapose! h
   exact toPiLocalization_not_surjective_of_infinite _
 
 end Pi
@@ -211,12 +215,12 @@ variable (f : R →+* S)
 
 /-- A ring homomorphism induces a homomorphism between the products of localizations at primes. -/
 noncomputable def mapPiLocalization : PiLocalization R →+* PiLocalization S :=
-  Pi.ringHom fun I ↦ (Localization.localRingHom _ I.1 f rfl).comp (Pi.evalRingHom _ (f.specComap I))
+  Pi.ringHom fun I ↦ (Localization.localRingHom _ I.1 f rfl).comp (Pi.evalRingHom _ (comap f I))
 
 theorem mapPiLocalization_naturality :
     (mapPiLocalization f).comp (toPiLocalization R) = (toPiLocalization S).comp f := by
   ext r I
-  show Localization.localRingHom _ _ _ rfl (algebraMap _ _ r) = algebraMap _ _ (f r)
+  change Localization.localRingHom _ _ _ rfl (algebraMap _ _ r) = algebraMap _ _ (f r)
   simp_rw [← IsLocalization.mk'_one (M := (I.1.comap f).primeCompl), Localization.localRingHom_mk',
     ← IsLocalization.mk'_one (M := I.1.primeCompl), Submonoid.coe_one, map_one f]
   rfl
@@ -251,7 +255,7 @@ variable {R}
 theorem finite_of_toPiLocalization_pi_surjective
     (h : Function.Surjective (toPiLocalization (Π i, R i))) :
     Finite ι := by
-  contrapose h; rw [not_finite_iff_infinite] at h
+  contrapose! h
   exact toPiLocalization_not_surjective_of_infinite _
 
 end Pi

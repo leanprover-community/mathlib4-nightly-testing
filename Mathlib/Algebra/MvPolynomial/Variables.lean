@@ -3,8 +3,10 @@ Copyright (c) 2017 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl, Johan Commelin, Mario Carneiro
 -/
-import Mathlib.Data.Finsupp.Lex
-import Mathlib.Algebra.MvPolynomial.Degrees
+module
+
+public import Mathlib.Data.Finsupp.Lex
+public import Mathlib.Algebra.MvPolynomial.Degrees
 
 /-!
 # Variables of polynomials
@@ -38,6 +40,8 @@ This will give rise to a monomial in `MvPolynomial σ R` which mathematicians mi
 + `p : MvPolynomial σ R`
 
 -/
+
+@[expose] public section
 
 
 noncomputable section
@@ -94,9 +98,6 @@ theorem mem_support_notMem_vars_zero {f : MvPolynomial σ R} {x : σ →₀ ℕ}
   contrapose! h
   exact (mem_vars v).mpr ⟨x, H, Finsupp.mem_support_iff.mpr h⟩
 
-@[deprecated (since := "2025-05-23")]
-alias mem_support_not_mem_vars_zero := mem_support_notMem_vars_zero
-
 theorem vars_add_subset [DecidableEq σ] (p q : MvPolynomial σ R) :
     (p + q).vars ⊆ p.vars ∪ q.vars := by
   intro x hx
@@ -151,7 +152,6 @@ theorem vars_C_mul (a : A) (ha : a ≠ 0) (φ : MvPolynomial σ A) :
   simp only [mem_vars, mem_support_iff]
   apply exists_congr
   intro d
-  apply and_congr _ Iff.rfl
   rw [coeff_C_mul, mul_ne_zero_iff, eq_true ha, true_and]
 
 end IsDomain
@@ -181,14 +181,8 @@ theorem vars_sum_of_disjoint [DecidableEq σ] (h : Pairwise <| (Disjoint on fun 
   | insert _ _ has hsum =>
     rw [Finset.biUnion_insert, Finset.sum_insert has, vars_add_of_disjoint, hsum]
     unfold Pairwise onFun at h
-    rw [hsum]
     simp only [Finset.disjoint_iff_ne] at h ⊢
-    intro v hv v2 hv2
-    rw [Finset.mem_biUnion] at hv2
-    rcases hv2 with ⟨i, his, hi⟩
-    refine h ?_ _ hv _ hi
-    rintro rfl
-    contradiction
+    grind
 
 end Sum
 
@@ -290,7 +284,7 @@ theorem exists_rename_eq_of_vars_subset_range (p : MvPolynomial σ R) (f : τ �
     (hf : ↑p.vars ⊆ Set.range f) : ∃ q : MvPolynomial τ R, rename f q = p :=
   ⟨aeval (fun i : σ => Option.elim' 0 X <| partialInv f i) p,
     by
-      show (rename f).toRingHom.comp _ p = RingHom.id _ p
+      change (rename f).toRingHom.comp _ p = RingHom.id _ p
       refine hom_congr_vars ?_ ?_ ?_
       · ext1
         simp [algebraMap_eq]
@@ -311,7 +305,7 @@ theorem mem_vars_rename (f : σ → τ) (φ : MvPolynomial σ R) {j : τ} (h : j
   classical
   simpa only [exists_prop, Finset.mem_image] using vars_rename f φ h
 
-lemma aeval_ite_mem_eq_self (q : MvPolynomial σ R) {s : Set σ} (hs : q.vars.toSet ⊆ s)
+lemma aeval_ite_mem_eq_self (q : MvPolynomial σ R) {s : Set σ} (hs : (q.vars : Set σ) ⊆ s)
     [∀ i, Decidable (i ∈ s)] :
     MvPolynomial.aeval (fun i ↦ if i ∈ s then .X i else 0) q = q := by
   rw [MvPolynomial.as_sum q, MvPolynomial.aeval_sum]

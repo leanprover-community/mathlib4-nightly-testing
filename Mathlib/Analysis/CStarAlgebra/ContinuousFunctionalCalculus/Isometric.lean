@@ -3,7 +3,9 @@ Copyright (c) 2024 Jireh Loreaux. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jireh Loreaux
 -/
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances
+module
+
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances
 
 /-! # Isometric continuous functional calculus
 
@@ -13,9 +15,11 @@ the algebra for reasons discussed in the module documentation for that file.
 
 Of course, with a metric on the algebra and an isometric continuous functional calculus, the
 algebra must *be* a C⋆-algebra already. As such, it may seem like this class is not useful. However,
-the main purpose is to allow for the continuous functional calculus to be a isometric for the other
+the main purpose is to allow for the continuous functional calculus to be an isometry for the other
 scalar rings `ℝ` and `ℝ≥0` too.
 -/
+
+@[expose] public section
 
 local notation "σ" => spectrum
 local notation "σₙ" => quasispectrum
@@ -77,7 +81,7 @@ lemma IsGreatest.norm_cfc [Nontrivial A] (f : 𝕜 → 𝕜) (a : A)
 lemma IsGreatest.nnnorm_cfc [Nontrivial A] (f : 𝕜 → 𝕜) (a : A)
     (hf : ContinuousOn f (σ 𝕜 a) := by cfc_cont_tac) (ha : p a := by cfc_tac) :
     IsGreatest ((fun x ↦ ‖f x‖₊) '' σ 𝕜 a) ‖cfc f a‖₊ := by
-  convert Real.toNNReal_mono.map_isGreatest (.norm_cfc f a)
+  convert Real.toNNReal_monotone.map_isGreatest (.norm_cfc f a)
   all_goals simp [Set.image_image, norm_toNNReal]
 
 lemma norm_apply_le_norm_cfc (f : 𝕜 → 𝕜) (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σ 𝕜 a)
@@ -179,10 +183,6 @@ protected theorem isometric_cfc (f : C(S, R)) (halg : Isometry (algebraMap R S))
   toContinuousFunctionalCalculus := SpectrumRestricts.cfc f halg.isUniformEmbedding h0 h
   isometric a ha := by
     obtain ⟨ha', haf⟩ := h a |>.mp ha
-    have _inst (a : A) : CompactSpace (σ R a) := by
-      rw [← isCompact_iff_compactSpace, ← spectrum.preimage_algebraMap S]
-      exact halg.isClosedEmbedding.isCompact_preimage <|
-        ContinuousFunctionalCalculus.isCompact_spectrum a
     have := SpectrumRestricts.cfc f halg.isUniformEmbedding h0 h
     rw [cfcHom_eq_restrict f halg.isUniformEmbedding ha ha' haf]
     refine .of_dist_eq fun g₁ g₂ ↦ ?_
@@ -268,7 +268,7 @@ lemma IsGreatest.norm_cfcₙ (f : 𝕜 → 𝕜) (a : A)
 lemma IsGreatest.nnnorm_cfcₙ (f : 𝕜 → 𝕜) (a : A)
     (hf : ContinuousOn f (σₙ 𝕜 a) := by cfc_cont_tac) (hf₀ : f 0 = 0 := by cfc_zero_tac)
     (ha : p a := by cfc_tac) : IsGreatest ((fun x ↦ ‖f x‖₊) '' σₙ 𝕜 a) ‖cfcₙ f a‖₊ := by
-  convert Real.toNNReal_mono.map_isGreatest (.norm_cfcₙ f a)
+  convert Real.toNNReal_monotone.map_isGreatest (.norm_cfcₙ f a)
   all_goals simp [Set.image_image, norm_toNNReal]
 
 lemma norm_apply_le_norm_cfcₙ (f : 𝕜 → 𝕜) (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σₙ 𝕜 a)
@@ -371,10 +371,6 @@ protected theorem isometric_cfc (f : C(S, R)) (halg : Isometry (algebraMap R S))
     halg.isUniformEmbedding h0 h
   isometric a ha := by
     obtain ⟨ha', haf⟩ := h a |>.mp ha
-    have _inst (a : A) : CompactSpace (σₙ R a) := by
-      rw [← isCompact_iff_compactSpace, ← quasispectrum.preimage_algebraMap S]
-      exact halg.isClosedEmbedding.isCompact_preimage <|
-        NonUnitalContinuousFunctionalCalculus.isCompact_quasispectrum a
     have := QuasispectrumRestricts.cfc f halg.isUniformEmbedding h0 h
     rw [cfcₙHom_eq_restrict f halg.isUniformEmbedding ha ha' haf]
     refine .of_dist_eq fun g₁ g₂ ↦ ?_
@@ -413,7 +409,7 @@ open NNReal in
 instance Nonneg.instIsometricContinuousFunctionalCalculus :
     IsometricContinuousFunctionalCalculus ℝ≥0 A (0 ≤ ·) :=
   SpectrumRestricts.isometric_cfc (q := IsSelfAdjoint) ContinuousMap.realToNNReal
-    isometry_subtype_coe le_rfl (fun _ ↦ nonneg_iff_isSelfAdjoint_and_spectrumRestricts)
+    isometry_subtype_coe le_rfl (fun _ ↦ nonneg_iff_isSelfAdjoint_and_quasispectrumRestricts)
 
 end Unital
 
@@ -449,8 +445,9 @@ variable [NonnegSpectrumClass ℝ A]
 lemma IsGreatest.nnnorm_cfc_nnreal [Nontrivial A] (f : ℝ≥0 → ℝ≥0) (a : A)
     (hf : ContinuousOn f (σ ℝ≥0 a) := by cfc_cont_tac) (ha : 0 ≤ a := by cfc_tac) :
     IsGreatest (f '' σ ℝ≥0 a) ‖cfc f a‖₊ := by
-  rw [cfc_nnreal_eq_real]
-  obtain ⟨-, ha'⟩ := nonneg_iff_isSelfAdjoint_and_spectrumRestricts.mp ha
+  rw [cfc_nnreal_eq_real ..]
+  obtain ⟨-, ha'⟩ := nonneg_iff_isSelfAdjoint_and_quasispectrumRestricts.mp ha
+  rw [← SpectrumRestricts] at ha'
   convert IsGreatest.nnnorm_cfc (fun x : ℝ ↦ (f x.toNNReal : ℝ)) a ?hf_cont
   case hf_cont => exact continuous_subtype_val.comp_continuousOn <|
     ContinuousOn.comp ‹_› continuous_real_toNNReal.continuousOn <| ha'.image ▸ Set.mapsTo_image ..
@@ -527,7 +524,7 @@ variable [NonnegSpectrumClass ℝ A]
 lemma IsGreatest.nnnorm_cfcₙ_nnreal (f : ℝ≥0 → ℝ≥0) (a : A)
     (hf : ContinuousOn f (σₙ ℝ≥0 a) := by cfc_cont_tac) (hf0 : f 0 = 0 := by cfc_zero_tac)
     (ha : 0 ≤ a := by cfc_tac) : IsGreatest (f '' σₙ ℝ≥0 a) ‖cfcₙ f a‖₊ := by
-  rw [cfcₙ_nnreal_eq_real]
+  rw [cfcₙ_nnreal_eq_real ..]
   obtain ⟨-, ha'⟩ := nonneg_iff_isSelfAdjoint_and_quasispectrumRestricts.mp ha
   convert IsGreatest.nnnorm_cfcₙ (fun x : ℝ ↦ (f x.toNNReal : ℝ)) a ?hf_cont (by simpa)
   case hf_cont => exact continuous_subtype_val.comp_continuousOn <|
@@ -613,7 +610,7 @@ instance toNonUnital : NonUnitalIsometricContinuousFunctionalCalculus 𝕜 A p w
     simp only [MulHom.coe_coe, NonUnitalStarAlgHom.coe_toNonUnitalAlgHom]
     refine AddMonoidHomClass.isometry_of_norm _ fun f ↦ ?_
     let ι : C(σ 𝕜 a, σₙ 𝕜 a) := ⟨_, continuous_inclusion <| spectrum_subset_quasispectrum 𝕜 a⟩
-    show ‖(f : C(σₙ 𝕜 a, 𝕜)).comp ι‖ = ‖(f : C(σₙ 𝕜 a, 𝕜))‖
+    change ‖(f : C(σₙ 𝕜 a, 𝕜)).comp ι‖ = ‖(f : C(σₙ 𝕜 a, 𝕜))‖
     apply le_antisymm (ContinuousMap.norm_le _ (by positivity) |>.mpr ?_)
       (ContinuousMap.norm_le _ (by positivity) |>.mpr ?_)
     · rintro ⟨x, hx⟩
@@ -621,7 +618,7 @@ instance toNonUnital : NonUnitalIsometricContinuousFunctionalCalculus 𝕜 A p w
     · rintro ⟨x, hx⟩
       obtain (rfl | hx') : x = 0 ∨ x ∈ σ 𝕜 a := by
         simpa [quasispectrum_eq_spectrum_union_zero] using hx
-      · show ‖f 0‖ ≤ _
+      · change ‖f 0‖ ≤ _
         simp
       · exact (f : C(σₙ 𝕜 a, 𝕜)).comp ι |>.norm_coe_le_norm ⟨x, hx'⟩
 
