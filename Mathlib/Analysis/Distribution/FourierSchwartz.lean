@@ -158,6 +158,7 @@ variable
 variable [CompleteSpace E] [CompleteSpace F]
 
 /-- The Fourier transform satisfies `∫ 𝓕 f * g = ∫ f * 𝓕 g`, i.e., it is self-adjoint.
+
 Version where the multiplication is replaced by a general bilinear form `M`. -/
 theorem integral_bilin_fourier_eq (f : 𝓢(V, E)) (g : 𝓢(V, F)) (M : E →L[ℂ] F →L[ℂ] G) :
     ∫ ξ, M (𝓕 f ξ) (g ξ) = ∫ x, M (f x) (𝓕 g x) := by
@@ -166,6 +167,35 @@ theorem integral_bilin_fourier_eq (f : 𝓢(V, E)) (g : 𝓢(V, F)) (M : E →L[
 
 @[deprecated (since := "2025-11-16")]
 alias integral_bilin_fourierIntegral_eq := integral_bilin_fourier_eq
+
+/-- The Fourier transform satisfies `∫ 𝓕 f • g = ∫ f • 𝓕 g`, i.e., it is self-adjoint. -/
+theorem integral_fourier_smul_eq (f : 𝓢(V, ℂ)) (g : 𝓢(V, F)) :
+    ∫ ξ, 𝓕 f ξ • g ξ = ∫ x, f x • 𝓕 g x :=
+  integral_bilin_fourier_eq f g (ContinuousLinearMap.lsmul ℂ ℂ)
+
+/-- The Fourier transform satisfies `∫ 𝓕 f * g = ∫ f * 𝓕 g`, i.e., it is self-adjoint. -/
+theorem integral_fourier_mul_eq (f : 𝓢(V, ℂ)) (g : 𝓢(V, ℂ)) :
+    ∫ ξ, 𝓕 f ξ * g ξ = ∫ x, f x * 𝓕 g x :=
+  integral_bilin_fourier_eq f g (ContinuousLinearMap.mul ℂ ℂ)
+
+/-- The inverse Fourier transform satisfies `∫ 𝓕⁻ f * g = ∫ f * 𝓕⁻ g`, i.e., it is self-adjoint.
+
+Version where the multiplication is replaced by a general bilinear form `M`. -/
+theorem integral_bilin_fourierInv_eq (f : 𝓢(V, E)) (g : 𝓢(V, F)) (M : E →L[ℂ] F →L[ℂ] G) :
+    ∫ ξ, M (𝓕⁻ f ξ) (g ξ) = ∫ x, M (f x) (𝓕⁻ g x) := by
+  convert (integral_bilin_fourier_eq (𝓕⁻ f) (𝓕⁻ g) M).symm
+  · exact (FourierTransform.fourier_fourierInv_eq g).symm
+  · exact (FourierTransform.fourier_fourierInv_eq f).symm
+
+/-- The inverse Fourier transform satisfies `∫ 𝓕⁻ f • g = ∫ f • 𝓕⁻ g`, i.e., it is self-adjoint. -/
+theorem integral_fourierInv_smul_eq (f : 𝓢(V, ℂ)) (g : 𝓢(V, F)) :
+    ∫ ξ, 𝓕⁻ f ξ • g ξ = ∫ x, f x • 𝓕⁻ g x :=
+  integral_bilin_fourierInv_eq f g (ContinuousLinearMap.lsmul ℂ ℂ)
+
+/-- The inverse Fourier transform satisfies `∫ 𝓕⁻ f * g = ∫ f * 𝓕⁻ g`, i.e., it is self-adjoint. -/
+theorem integral_fourierInv_mul_eq (f : 𝓢(V, ℂ)) (g : 𝓢(V, ℂ)) :
+    ∫ ξ, 𝓕⁻ f ξ * g ξ = ∫ x, f x * 𝓕⁻ g x :=
+  integral_bilin_fourierInv_eq f g (ContinuousLinearMap.mul ℂ ℂ)
 
 theorem integral_sesq_fourier_eq (f : 𝓢(V, E)) (g : 𝓢(V, F)) (M : E →L⋆[ℂ] F →L[ℂ] G) :
     ∫ ξ, M (𝓕 f ξ) (g ξ) = ∫ x, M (f x) (𝓕⁻ g x) := by
@@ -177,7 +207,7 @@ alias integral_sesq_fourierIntegral_eq := integral_sesq_fourier_eq
 
 /-- Plancherel's theorem for Schwartz functions.
 
-Version where the multiplication is replaced by a general bilinear form `M`. -/
+Version where the inner product is replaced by a general sesquilinear form `M`. -/
 theorem integral_sesq_fourier_fourier (f : 𝓢(V, E)) (g : 𝓢(V, F)) (M : E →L⋆[ℂ] F →L[ℂ] G) :
     ∫ ξ, M (𝓕 f ξ) (𝓕 g ξ) = ∫ x, M (f x) (g x) := by
   simpa using integral_sesq_fourier_eq f (𝓕 g) M
@@ -194,7 +224,7 @@ variable {H : Type*} [NormedAddCommGroup H] [InnerProductSpace ℂ H] [CompleteS
   integral_sesq_fourier_fourier f g (innerSL ℂ)
 
 theorem integral_norm_sq_fourier (f : 𝓢(V, H)) :
-    ∫ ξ, ‖𝓕 f ξ‖^2 = ∫ x, ‖f x‖^2 := by
+    ∫ ξ, ‖𝓕 f ξ‖ ^ 2 = ∫ x, ‖f x‖ ^ 2 := by
   apply Complex.ofRealLI.injective
   simpa [← LinearIsometry.integral_comp_comm, inner_self_eq_norm_sq_to_K] using
     integral_inner_fourier_fourier f f
