@@ -444,7 +444,7 @@ theorem sSup_disjoint_iff {s : Set α} : Disjoint (sSup s) a ↔ ∀ b ∈ s, Di
   simp only [disjoint_iff, sSup_inf_eq, iSup_eq_bot]
 
 theorem disjoint_sSup_iff {s : Set α} : Disjoint a (sSup s) ↔ ∀ b ∈ s, Disjoint a b := by
-  simpa only [disjoint_comm] using @sSup_disjoint_iff
+  simpa only [disjoint_comm (a := a)] using @sSup_disjoint_iff
 
 theorem iSup_inf_of_monotone {ι : Type*} [Preorder ι] [IsDirectedOrder ι] {f g : ι → α}
     (hf : Monotone f) (hg : Monotone g) : ⨆ i, f i ⊓ g i = (⨆ i, f i) ⊓ ⨆ i, g i := by
@@ -626,7 +626,7 @@ variable [CompleteBooleanAlgebra α] {s : Set α} {f : ι → α}
 theorem compl_iInf : (iInf f)ᶜ = ⨆ i, (f i)ᶜ :=
   le_antisymm
     (compl_le_of_compl_le <| le_iInf fun i => compl_le_of_compl_le <|
-      le_iSup (HasCompl.compl ∘ f) i)
+      le_iSup (Compl.compl ∘ f) i)
     (iSup_le fun _ => compl_le_compl <| iInf_le _ _)
 
 theorem compl_iSup : (iSup f)ᶜ = ⨅ i, (f i)ᶜ :=
@@ -636,10 +636,10 @@ theorem compl_sInf : (sInf s)ᶜ = ⨆ i ∈ s, iᶜ := by simp only [sInf_eq_iI
 
 theorem compl_sSup : (sSup s)ᶜ = ⨅ i ∈ s, iᶜ := by simp only [sSup_eq_iSup, compl_iSup]
 
-theorem compl_sInf' : (sInf s)ᶜ = sSup (HasCompl.compl '' s) :=
+theorem compl_sInf' : (sInf s)ᶜ = sSup (Compl.compl '' s) :=
   compl_sInf.trans sSup_image.symm
 
-theorem compl_sSup' : (sSup s)ᶜ = sInf (HasCompl.compl '' s) :=
+theorem compl_sSup' : (sSup s)ᶜ = sInf (Compl.compl '' s) :=
   compl_sSup.trans sInf_image.symm
 
 open scoped symmDiff in
@@ -731,7 +731,7 @@ protected abbrev Function.Injective.coframeMinimalAxioms [Max α] [Min α] [SupS
 -- See note [reducible non-instances]
 /-- Pullback an `Order.Frame` along an injection. -/
 protected abbrev Function.Injective.frame [Max α] [Min α] [SupSet α] [InfSet α] [Top α] [Bot α]
-    [HasCompl α] [HImp α] [Frame β] (f : α → β) (hf : Injective f)
+    [Compl α] [HImp α] [Frame β] (f : α → β) (hf : Injective f)
     (map_sup : ∀ a b, f (a ⊔ b) = f a ⊔ f b) (map_inf : ∀ a b, f (a ⊓ b) = f a ⊓ f b)
     (map_sSup : ∀ s, f (sSup s) = ⨆ a ∈ s, f a) (map_sInf : ∀ s, f (sInf s) = ⨅ a ∈ s, f a)
     (map_top : f ⊤ = ⊤) (map_bot : f ⊥ = ⊥) (map_compl : ∀ a, f aᶜ = (f a)ᶜ)
@@ -768,7 +768,7 @@ protected abbrev Function.Injective.completeDistribLatticeMinimalAxioms [Max α]
 -- See note [reducible non-instances]
 /-- Pullback a `CompleteDistribLattice` along an injection. -/
 protected abbrev Function.Injective.completeDistribLattice [Max α] [Min α] [SupSet α] [InfSet α]
-    [Top α] [Bot α] [HasCompl α] [HImp α] [HNot α] [SDiff α] [CompleteDistribLattice β] (f : α → β)
+    [Top α] [Bot α] [Compl α] [HImp α] [HNot α] [SDiff α] [CompleteDistribLattice β] (f : α → β)
     (hf : Injective f)
     (map_sup : ∀ a b, f (a ⊔ b) = f a ⊔ f b) (map_inf : ∀ a b, f (a ⊓ b) = f a ⊓ f b)
     (map_sSup : ∀ s, f (sSup s) = ⨆ a ∈ s, f a) (map_sInf : ∀ s, f (sInf s) = ⨅ a ∈ s, f a)
@@ -800,7 +800,7 @@ protected abbrev Function.Injective.completelyDistribLatticeMinimalAxioms [Max �
 -- See note [reducible non-instances]
 /-- Pullback a `CompletelyDistribLattice` along an injection. -/
 protected abbrev Function.Injective.completelyDistribLattice [Max α] [Min α] [SupSet α] [InfSet α]
-    [Top α] [Bot α] [HasCompl α] [HImp α] [HNot α] [SDiff α] [CompletelyDistribLattice β]
+    [Top α] [Bot α] [Compl α] [HImp α] [HNot α] [SDiff α] [CompletelyDistribLattice β]
     (f : α → β) (hf : Injective f)
     (map_sup : ∀ a b, f (a ⊔ b) = f a ⊔ f b) (map_inf : ∀ a b, f (a ⊓ b) = f a ⊓ f b)
     (map_sSup : ∀ s, f (sSup s) = ⨆ a ∈ s, f a) (map_sInf : ∀ s, f (sInf s) = ⨅ a ∈ s, f a)
@@ -817,7 +817,7 @@ protected abbrev Function.Injective.completelyDistribLattice [Max α] [Min α] [
 -- See note [reducible non-instances]
 /-- Pullback a `CompleteBooleanAlgebra` along an injection. -/
 protected abbrev Function.Injective.completeBooleanAlgebra [Max α] [Min α] [SupSet α] [InfSet α]
-    [Top α] [Bot α] [HasCompl α] [HImp α] [SDiff α] [CompleteBooleanAlgebra β] (f : α → β)
+    [Top α] [Bot α] [Compl α] [HImp α] [SDiff α] [CompleteBooleanAlgebra β] (f : α → β)
     (hf : Injective f) (map_sup : ∀ a b, f (a ⊔ b) = f a ⊔ f b)
     (map_inf : ∀ a b, f (a ⊓ b) = f a ⊓ f b) (map_sSup : ∀ s, f (sSup s) = ⨆ a ∈ s, f a)
     (map_sInf : ∀ s, f (sInf s) = ⨅ a ∈ s, f a) (map_top : f ⊤ = ⊤) (map_bot : f ⊥ = ⊥)
@@ -830,7 +830,7 @@ protected abbrev Function.Injective.completeBooleanAlgebra [Max α] [Min α] [Su
 -- See note [reducible non-instances]
 /-- Pullback a `CompleteAtomicBooleanAlgebra` along an injection. -/
 protected abbrev Function.Injective.completeAtomicBooleanAlgebra [Max α] [Min α] [SupSet α]
-    [InfSet α] [Top α] [Bot α] [HasCompl α] [HImp α] [HNot α] [SDiff α]
+    [InfSet α] [Top α] [Bot α] [Compl α] [HImp α] [HNot α] [SDiff α]
     [CompleteAtomicBooleanAlgebra β] (f : α → β) (hf : Injective f)
     (map_sup : ∀ a b, f (a ⊔ b) = f a ⊔ f b) (map_inf : ∀ a b, f (a ⊓ b) = f a ⊓ f b)
     (map_sSup : ∀ s, f (sSup s) = ⨆ a ∈ s, f a) (map_sInf : ∀ s, f (sInf s) = ⨅ a ∈ s, f a)

@@ -160,6 +160,11 @@ register_option linter.translateOverwrite : Bool := {
   defValue := true
   descr := "Linter used by translate attributes that checks if the attribute was already applied" }
 
+/-- Linter used by translate attributes that checks if the attribute is redundant -/
+register_option linter.translateRedundant : Bool := {
+  defValue := true
+  descr := "Linter used by translate attributes that checks if the attribute is redundant" }
+
 @[inherit_doc translate_change_numeral]
 initialize changeNumeralAttr : NameMapExtension (List Nat) ←
   registerNameMapAttribute {
@@ -290,8 +295,6 @@ structure Config : Type where
   /-- An optional flag stating that the target of the translation is the target itself.
   This can be used to reorder arguments, such as in
   `attribute [to_dual self (reorder := 3 4)] LE.le`.
-  It can also be used to give a hint to `shouldTranslate`, such as in
-  `attribute [to_additive self] Unit`.
   If `self := true`, we should also have `existing := true`. -/
   self : Bool := false
   /-- An optional flag for not giving the new declaration a user-facing name.
@@ -418,7 +421,7 @@ e.g. `g x₁ x₂ x₃ ... xₙ` becomes `g x₂ x₁ x₃ ... xₙ` if `reorder
 -/
 def applyReplacementFun (t : TranslateData) (e : Expr) (dontTranslate : Array FVarId := #[]) :
     MetaM Expr := do
-  let e' := aux (← getEnv) (← getBoolOption `trace.translate_detail) (← expand t e)
+  let e' := aux (← getEnv) (← isTracingEnabledFor `translate_detail) (← expand t e)
   -- Make sure any new reserved names in the expr are realized; this needs to be done outside of
   -- `aux` as it is monadic.
   e'.getUsedConstants.forM fun n => do
@@ -448,7 +451,8 @@ where /-- Implementation of `applyReplacementFun`. -/
               let args := numeralArgs.foldl (·.modify · changeNumeral) args
               return mkAppN f (← args.mapM r)
       let some n₁ := findTranslation? env t n₀ <|> do
-        let n₁ := findPrefixTranslation env n₀ t; guard (n₀ != n₁); some n₁
+        let n₁ := findPrefixTranslation env n₀ t
+        guard (n₀ != n₁ && (isReservedName env n₁ || env.contains n₁)); some n₁
         | return mkAppN f (← args.mapM r)
       let { reorder, relevantArg } := t.argInfoAttr.find? env n₀ |>.getD {}
       -- Use `relevantArg` to test if the head should be translated.
@@ -539,7 +543,7 @@ def applyReplacementLambda (t : TranslateData) (dontTranslate : List Nat) (e : E
   else
     applyReplacementFun t e #[]
 
-/-- Run applyReplacementFun on the given `srcDecl` to make a new declaration with name `tgt` -/
+/-- Run `applyReplacementFun` on the given `srcDecl` to make a new declaration with name `tgt`. -/
 def updateDecl (t : TranslateData) (tgt : Name) (srcDecl : ConstantInfo)
     (reorder : List (List Nat)) (dont : List Nat) : MetaM ConstantInfo := do
   let mut decl := srcDecl.updateName tgt
@@ -674,6 +678,9 @@ partial def transformDeclRec (t : TranslateData) (ref : Syntax) (pre tgt_pre src
       pure <| dontTranslate.filterMap (namesPre[·]? >>= namesSrc.idxOf?)
   -- now transform the source declaration
   let trgDecl ← MetaM.run' <| updateDecl t tgt srcDecl reorder dontTranslate
+  if src == pre && srcDecl.isThm && trgDecl.type == srcDecl.type then
+    Linter.logLintIf linter.translateRedundant ref m!"`{t.attrName}` did not change the type \
+      of theorem `{.ofConstName src}`. Please remove the attribute."
   let value := trgDecl.value! (allowOpaque := true)
   trace[translate] "generating\n{tgt} : {trgDecl.type} :=\n  {value}"
   /- If `src` is explicitly marked as `noncomputable`, then add the new decl as a declaration but
@@ -897,6 +904,12 @@ partial def checkExistingType (t : TranslateData) (src tgt : Name) (cfg : Config
       pure reorder
     else
       pure reorder'
+  if cfg.self && reorder.isEmpty then
+    Linter.logLintIf linter.translateRedundant cfg.ref m!"\
+      `{t.attrName} self` is redundant when none of the arguments are reordered.\n\
+      Please remove the attribute, or provide an explicit `(reorder := ...)` argument.\n\
+      If you need to give a hint to `{t.attrName}` to translate expressions involving `{src}`,\n\
+      use `{t.attrName}_do_translate` instead"
   let srcType ← reorderForall reorder srcType
   if reorder.any (·.contains 0) then
     srcDecl := srcDecl.updateLevelParams srcDecl.levelParams.swapFirstTwo
@@ -1157,7 +1170,7 @@ partial def addTranslationAttr (t : TranslateData) (src : Name) (cfg : Config)
     (kind := AttributeKind.global) : AttrM (Array Name) := do
   if (kind != AttributeKind.global) then
     throwError "`{t.attrName}` can only be used as a global attribute"
-  withOptions (·.updateBool `trace.translate (cfg.trace || ·)) do
+  withOptions (fun o => if cfg.trace then o.set `trace.translate true else o) do
   let tgt ← targetName t cfg src
   let alreadyExists := (← getEnv).contains tgt
   if cfg.existing != alreadyExists && !(← isInductive src) && !cfg.self then

@@ -37,6 +37,8 @@ def ModuleCat.toMatrixModCat : ModuleCat R ⥤ ModuleCat (Matrix ι ι R) where
   map_id _ := ModuleCat.hom_ext <| LinearMap.mapMatrixModule_id
   map_comp f g := ModuleCat.hom_ext (LinearMap.mapMatrixModule_comp f.hom g.hom)
 
+variable {ι}
+
 namespace MatrixModCat
 
 open Matrix
@@ -44,11 +46,11 @@ open Matrix
 variable {M : Type*} [AddCommGroup M] [Module (Matrix ι ι R) M] [Module R M]
   [IsScalarTower R (Matrix ι ι R) M]
 
-variable {ι} (M) in
+variable (M) in
 /-- The image of `Eᵢᵢ` (the elementary matrix) acting on all elements in `M`. -/
 def toModuleCatObj (i : ι) : Submodule R M :=
   LinearMap.range (τ₁₂ := .id _) <|
-    { __ := DistribMulAction.toAddMonoidHom M (single i i 1 : Matrix ι ι R)
+    { __ := DistribSMul.toAddMonoidHom M (single i i 1 : Matrix ι ι R)
       map_smul' r x := by
         dsimp
         have : Commute (diagonal fun x : ι ↦ r) (single i i 1) := by
@@ -58,15 +60,15 @@ def toModuleCatObj (i : ι) : Submodule R M :=
         nth_rw 1 [← one_smul (Matrix ι ι R) x]
         rw [smul_assoc] }
 
-variable {R ι} in
+variable {R} in
 @[simp]
 lemma mem_toModuleCatObj (i : ι) {x : M} :
     x ∈ toModuleCatObj R M i ↔ ∃ y : M, single i i (1 : R) • y = x :=
   Iff.rfl
 
-variable {R ι} in
+variable {R} in
 /-- An `R`-linear map between `Eᵢᵢ • M` and `Eᵢᵢ • N` induced by an `Mₙ(R)`-linear map
-  from `M` to `N` -/
+  from `M` to `N`. -/
 @[simps!]
 def fromMatrixLinear {N : Type*} [AddCommGroup N] [Module (Matrix ι ι R) N] (i : ι)
     [Module R N] [IsScalarTower R (Matrix ι ι R) N] [Module R M] [IsScalarTower R (Matrix ι ι R) M]
@@ -80,30 +82,29 @@ end MatrixModCat
 universe w
 
 /-- The functor from the category of modules over `Mₙ(R)` to the category of modules over `R`
-  induced by sending `M` to the image of `Eᵢᵢ • ·` where `Eᵢᵢ` is the elementary matrix -/
+  induced by sending `M` to the image of `Eᵢᵢ • ·` where `Eᵢᵢ` is the elementary matrix. -/
 @[simps]
-def MatrixModCat.toModuleCat [Inhabited ι] : ModuleCat (Matrix ι ι R) ⥤ ModuleCat R :=
+def MatrixModCat.toModuleCat (i : ι) : ModuleCat (Matrix ι ι R) ⥤ ModuleCat R :=
   letI (M : ModuleCat (Matrix ι ι R)) := Module.compHom M (Matrix.scalar (α := R) ι)
   haveI (M : ModuleCat (Matrix ι ι R)) : IsScalarTower R (Matrix ι ι R) M :=
-    { smul_assoc r m x := show _ = (Matrix.scalar ι r) • (m • x) by
+    { smul_assoc r m x := show _ = Matrix.scalar ι r • (m • x) by
         rw [← mul_smul, Matrix.scalar_apply, Matrix.smul_eq_diagonal_mul] }
-  { obj M := ModuleCat.of R (MatrixModCat.toModuleCatObj R M default)
-    map {M N} f := ModuleCat.ofHom <| fromMatrixLinear default f.hom
+  { obj M := ModuleCat.of R (MatrixModCat.toModuleCatObj R M i)
+    map {M N} f := ModuleCat.ofHom <| fromMatrixLinear i f.hom
     map_id _ := rfl
     map_comp _ _ := rfl }
 
 open MatrixModCat Matrix
 
-variable [Inhabited ι]
-
-/-- The linear equiv induced by the equality `toModuleCat (toMatrixModCat M) = Eᵢᵢ • Mⁿ` -/
-def fromModuleCatToModuleCatLinearEquivtoModuleCatObj (M : Type*) [AddCommGroup M] [Module R M] :
-    (ModuleCat.toMatrixModCat R ι ⋙ MatrixModCat.toModuleCat R ι).obj (.of R M) ≃ₗ[R]
-    MatrixModCat.toModuleCatObj R (ι := ι) (ι → M) default where
+/-- The linear equiv induced by the equality `toModuleCat (toMatrixModCat M) = Eᵢᵢ • Mⁿ`. -/
+def fromModuleCatToModuleCatLinearEquivtoModuleCatObj
+    (M : Type*) [AddCommGroup M] [Module R M] (i : ι) :
+    (ModuleCat.toMatrixModCat R ι ⋙ MatrixModCat.toModuleCat R i).obj (.of R M) ≃ₗ[R]
+    MatrixModCat.toModuleCatObj R (ι → M) i where
   __ := AddEquiv.refl _
   map_smul' _ _ := Subtype.ext <| scalar_smul _ _
 
-/-- auxilary isomorphism showing that compose two functors gives `id` on objects. -/
+/-- Auxiliary isomorphism showing that compose two functors gives `id` on objects. -/
 @[simps]
 def fromModuleCatToModuleCatLinearEquiv (M : Type*) [AddCommGroup M] [Module R M] (i : ι) :
     MatrixModCat.toModuleCatObj R (ι → M) i ≃ₗ[R] M where
@@ -117,11 +118,11 @@ def fromModuleCatToModuleCatLinearEquiv (M : Type*) [AddCommGroup M] [Module R M
     simp [← hy]
   right_inv x := by simp
 
-/-- the natural isomorphism showing that `toModuleCat` is the left inverse of `toMatrixModCat` -/
-def MatrixModCat.unitIso :
-    ModuleCat.toMatrixModCat R ι ⋙ MatrixModCat.toModuleCat R ι ≅ 𝟭 (ModuleCat R) :=
-  NatIso.ofComponents (fun X ↦ (fromModuleCatToModuleCatLinearEquivtoModuleCatObj R ι X ≪≫ₗ
-    (fromModuleCatToModuleCatLinearEquiv R ι X default)).toModuleIso) <| by
+/-- The natural isomorphism showing that `toModuleCat` is the left inverse of `toMatrixModCat`. -/
+def MatrixModCat.unitIso (i : ι) :
+    ModuleCat.toMatrixModCat R ι ⋙ MatrixModCat.toModuleCat R i ≅ 𝟭 (ModuleCat R) :=
+  NatIso.ofComponents (fun X ↦ (fromModuleCatToModuleCatLinearEquivtoModuleCatObj R X i ≪≫ₗ
+    (fromModuleCatToModuleCatLinearEquiv R X i)).toModuleIso) <| by
     intros
     ext
     simp [fromModuleCatToModuleCatLinearEquivtoModuleCatObj]
