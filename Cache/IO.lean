@@ -126,7 +126,7 @@ structure CacheM.Context where
   /-- build directory for proofwidgets -/
   proofWidgetsBuildDir : FilePath
   /-- directory for the machine-local Lake artifact cache -/
-  lakeArtifactDir? : Option FilePath
+  lakeArtifactDir : FilePath
   /-- whether cache files should be packed/unpacked to the local Kake artifact cache -/
   useLakeCache : Bool
 
@@ -151,27 +151,32 @@ def _root_.Lean.SearchPath.relativize (sp : SearchPath) : IO SearchPath := do
   let pwd' := pwd.toString ++ System.FilePath.pathSeparator.toString
   return sp.map fun x => ⟨if x = pwd then "." else x.toString.dropPrefix pwd' |>.copy⟩
 
+/--- The directory in the workspace used for the Lake cache if no suitable system-wide cache exists. -/
+private def LAKECACHEDIR : FilePath :=
+  ".lake" / "cache"
+
 /--
 Detects the directory Lake uses to cache artifacts.
 This is very sensitive to changes in `Lake.Env.compute`.
 -/
-def getLakeArtifactDir? : IO (Option FilePath) := do
+private def getLakeArtifactDir : IO FilePath := do
   let elan? ← Lake.findElanInstall?
   let toolchain ← Lake.Env.computeToolchain
   let some cache ← Lake.Env.computeCache? elan? toolchain
-    | return none
+    | return LAKECACHEDIR
   return cache.artifactDir
 
 private def CacheM.getContext : IO CacheM.Context := do
   let sp ← (← getSrcSearchPath).relativize
   let mathlibSource ← CacheM.mathlibDepPath sp
   let useLakeCache := (← IO.getEnv "MATHLIB_CACHE_USE_LAKE").bind Lake.envToBool? |>.getD true
+  let lakeArtifactDir ← getLakeArtifactDir
+  IO.FS.createDirAll lakeArtifactDir
   return {
     mathlibDepPath := mathlibSource,
     srcSearchPath := sp,
     proofWidgetsBuildDir := LAKEPACKAGESDIR / "proofwidgets" / ".lake" / "build"
-    lakeArtifactDir? := ← getLakeArtifactDir?,
-    useLakeCache}
+    lakeArtifactDir, useLakeCache}
 
 /-- Run a `CacheM` in `IO` by loading the context from `LEAN_SRC_PATH`. -/
 def CacheM.run (f : CacheM α) : IO α := do ReaderT.run f (← getContext)
@@ -364,8 +369,7 @@ def mkBuildPaths (mod : Name) : CacheM (Option BuildPaths) := OptionT.run do
   let irPath := packageDir / IRDIR / path
   let libPath := packageDir / LIBDIR / path
   let trace := libPath.withExtension "trace"
-  let artifactDir := (← read).lakeArtifactDir?.getD (lakeDir / "cache")
-  IO.FS.createDirAll artifactDir
+  let artifactDir := (← read).lakeArtifactDir
   -- Note: the `.olean`, `.olean.server`, `.olean.private` files must be consecutive,
   -- and in this order. The corresponding `.hash` files can come afterwards, in any order.
   if (← read).useLakeCache then
@@ -564,12 +568,13 @@ def unpackCache (hashMap : ModuleHashMap) (force : Bool) : CacheM Unit := do
     -/
     let isMathlibRoot ← isMathlibRoot
     let mathlibDepPath := (← read).mathlibDepPath.toString
-    let artifactDir? := (← read).lakeArtifactDir?
+    let artifactDir := (← read).lakeArtifactDir
+    let useLakeCache := (← read).useLakeCache
     let config : Array Lean.Json := hashMap.fold (init := #[]) fun config mod hash =>
       let pathStr := s!"{CACHEDIR / hash.asLTar}"
       -- only mathlib files, when not in the mathlib4 repo, need to be redirected
       let localDir := if isMathlibRoot || !isFromMathlib mod then "." else mathlibDepPath
-      let baseDirs := if let some dir := artifactDir? then #[localDir, dir.toString] else #[localDir]
+      let baseDirs := if useLakeCache then #[localDir, artifactDir.toString] else #[localDir]
       config.push <| .mkObj [("file", pathStr), ("base", toJson baseDirs)]
     stdin.putStr <| Lean.Json.compress <| .arr config
     let exitCode ← child.wait
