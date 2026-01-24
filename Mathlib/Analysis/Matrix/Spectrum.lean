@@ -40,7 +40,7 @@ instance [DecidableEq n] : Finite (spectrum ℝ A) := A.finite_real_spectrum
 theorem spectrum_toEuclideanLin [DecidableEq n] : spectrum 𝕜 (toEuclideanLin A) = spectrum 𝕜 A :=
   AlgEquiv.spectrum_eq (Matrix.toLinAlgEquiv (PiLp.basisFun 2 𝕜 n)) _
 
-@[deprecated (since := "13-08-2025")] alias IsHermitian.spectrum_toEuclideanLin :=
+@[deprecated (since := "2025-08-13")] alias IsHermitian.spectrum_toEuclideanLin :=
   spectrum_toEuclideanLin
 
 namespace IsHermitian
@@ -172,8 +172,9 @@ lemma sort_roots_charpoly_eq_eigenvalues₀ :
     (A.charpoly.roots.map RCLike.re).sort (· ≥ ·) = List.ofFn hA.eigenvalues₀ := by
   simp_rw [hA.roots_charpoly_eq_eigenvalues₀, Fin.univ_val_map, Multiset.map_coe, List.map_ofFn,
     Function.comp_def, RCLike.ofReal_re, Multiset.coe_sort]
-  rw [List.mergeSort_of_pairwise]
-  simpa [List.Sorted] using (eigenvalues₀_antitone hA).ofFn_sorted
+  apply List.mergeSort_of_pairwise
+  simp_rw [decide_eq_true_eq, ← List.sortedGE_iff_pairwise]
+  exact (eigenvalues₀_antitone hA).sortedGE_ofFn
 
 lemma eigenvalues_eq_eigenvalues_iff :
     hA.eigenvalues = hB.eigenvalues ↔ A.charpoly = B.charpoly := by
@@ -182,7 +183,7 @@ lemma eigenvalues_eq_eigenvalues_iff :
   · suffices hA.eigenvalues₀ = hB.eigenvalues₀ by unfold eigenvalues; rw [this]
     simp_rw [← List.ofFn_inj, ← sort_roots_charpoly_eq_eigenvalues₀, h]
 
-theorem splits_charpoly (hA : A.IsHermitian) : (A.charpoly.map (RingHom.id 𝕜)).Splits :=
+theorem splits_charpoly (hA : A.IsHermitian) : A.charpoly.Splits :=
   Polynomial.splits_iff_card_roots.mpr (by simp [hA.roots_charpoly_eq_eigenvalues])
 
 /-- The determinant of a Hermitian matrix is the product of its eigenvalues. -/

@@ -10,6 +10,7 @@ public import Mathlib.Data.List.Pairwise
 public import Mathlib.Data.List.Nodup
 public import Mathlib.Data.List.Lookmap
 public import Mathlib.Data.Sigma.Basic
+public import Mathlib.Data.Nat.Basic
 
 /-!
 # Utilities for lists of sigmas
@@ -73,13 +74,8 @@ theorem mem_keys {a} {l : List (Sigma β)} : a ∈ l.keys ↔ ∃ b : β a, Sigm
 theorem notMem_keys {a} {l : List (Sigma β)} : a ∉ l.keys ↔ ∀ b : β a, Sigma.mk a b ∉ l := by
   grind
 
-@[deprecated (since := "2025-05-23")] alias not_mem_keys := notMem_keys
-
 theorem ne_key {a} {l : List (Sigma β)} : a ∉ l.keys ↔ ∀ s : Sigma β, s ∈ l → a ≠ s.1 := by
   grind
-
-@[deprecated (since := "2025-04-27")]
-alias not_eq_key := ne_key
 
 /-! ### `NodupKeys` -/
 
@@ -110,9 +106,6 @@ theorem nodupKeys_middle {s : Sigma β} :
 
 theorem notMem_keys_of_nodupKeys_cons {s : Sigma β} {l : List (Sigma β)} (h : NodupKeys (s :: l)) :
     s.1 ∉ l.keys := by grind
-
-@[deprecated (since := "2025-05-23")]
-alias not_mem_keys_of_nodupKeys_cons := notMem_keys_of_nodupKeys_cons
 
 theorem nodupKeys_of_nodupKeys_cons {s : Sigma β} {l : List (Sigma β)} (h : NodupKeys (s :: l)) :
     NodupKeys l :=
@@ -145,7 +138,6 @@ theorem nodupKeys_flatten {L : List (List (Sigma β))} :
     NodupKeys (flatten L) ↔ (∀ l ∈ L, NodupKeys l) ∧ Pairwise Disjoint (L.map keys) := by
   rw [nodupKeys_iff_pairwise, pairwise_flatten, pairwise_map]
   refine and_congr (forall₂_congr fun l _ => by simp [nodupKeys_iff_pairwise]) ?_
-  apply iff_of_eq; congr! with (l₁ l₂)
   simp [keys, disjoint_iff_ne, Sigma.forall]
 
 theorem nodup_zipIdx_map_snd (l : List α) : (l.zipIdx.map Prod.snd).Nodup := by
@@ -180,7 +172,7 @@ theorem dlookup_cons_ne (l) {a} : ∀ s : Sigma β, a ≠ s.1 → dlookup a (s :
 theorem dlookup_isSome {a : α} {l : List (Sigma β)} : (dlookup a l).isSome ↔ a ∈ l.keys := by
   induction l with
   | nil => simp
-  | cons s _ _ => by_cases a = s.fst <;> grind +revert
+  | cons s _ _ => by_cases a = s.fst <;> grind
 
 theorem dlookup_eq_none {a : α} {l : List (Sigma β)} : dlookup a l = none ↔ a ∉ l.keys := by
   simp [← dlookup_isSome, Option.isNone_iff_eq_none]
@@ -189,7 +181,7 @@ theorem of_mem_dlookup {a : α} {b : β a} {l : List (Sigma β)} :
     b ∈ dlookup a l → Sigma.mk a b ∈ l := by
   induction l with
   | nil => grind
-  | cons s _ _ => by_cases a = s.fst <;> grind +revert
+  | cons s _ _ => by_cases a = s.fst <;> grind
 
 theorem mem_dlookup {a} {b : β a} {l : List (Sigma β)} (nd : l.NodupKeys) (h : Sigma.mk a b ∈ l) :
     b ∈ dlookup a l := by
@@ -201,7 +193,7 @@ theorem map_dlookup_eq_find (a : α) (l : List (Sigma β)) :
     (dlookup a l).map (Sigma.mk a) = find? (fun s => a = s.1) l := by
   induction l with
   | nil => grind
-  | cons s _ _ => by_cases s.fst = a <;> grind +revert
+  | cons s _ _ => by_cases s.fst = a <;> grind
 
 theorem mem_dlookup_iff {a : α} {b : β a} {l : List (Sigma β)} (nd : l.NodupKeys) :
     b ∈ dlookup a l ↔ Sigma.mk a b ∈ l :=
@@ -223,7 +215,7 @@ theorem dlookup_map (l : List (Sigma β))
   | nil => grind
   | cons s _ _ =>
     have (h : a ≠ s.fst) : ¬ f a = (⟨f s.fst, g s.fst s.snd⟩ : Sigma β').fst := fun he => h <| hf he
-    by_cases a = s.fst <;> grind +revert [Sigma.map]
+    by_cases a = s.fst <;> grind [Sigma.map]
 
 theorem dlookup_map₁ {β : Type v} (l : List (Σ _ : α, β))
     {f : α → α'} (hf : Function.Injective f) (a : α) :
@@ -261,7 +253,7 @@ theorem dlookup_append (l₁ l₂ : List (Sigma β)) (a : α) :
     (l₁ ++ l₂).dlookup a = (l₁.dlookup a).or (l₂.dlookup a) := by
   induction l₁ with
   | nil => rfl
-  | cons s _ _ => by_cases a = s.fst <;> grind +revert
+  | cons s _ _ => by_cases a = s.fst <;> grind
 
 theorem sublist_dlookup {l₁ l₂ : List (Sigma β)} {a : α} {b : β a}
     (nd₂ : l₂.NodupKeys) (s : l₁ <+ l₂) (mem : b ∈ l₁.dlookup a) : b ∈ l₂.dlookup a := by
@@ -413,8 +405,6 @@ theorem kerase_of_notMem_keys {a} {l : List (Sigma β)} (h : a ∉ l.keys) : ker
   | nil => rfl
   | cons _ _ ih => simp [not_or] at h; simp [h.1, ih h.2]
 
-@[deprecated (since := "2025-05-23")] alias kerase_of_not_mem_keys := kerase_of_notMem_keys
-
 theorem kerase_sublist (a : α) (l : List (Sigma β)) : kerase a l <+ l :=
   eraseP_sublist
 
@@ -489,8 +479,6 @@ theorem notMem_keys_kerase (a) {l : List (Sigma β)} (nd : l.NodupKeys) :
     · subst h
       simp [nd.1]
     · simp [h, ih nd.2]
-
-@[deprecated (since := "2025-05-23")] alias not_mem_keys_kerase := notMem_keys_kerase
 
 @[simp]
 theorem dlookup_kerase (a) {l : List (Sigma β)} (nd : l.NodupKeys) :

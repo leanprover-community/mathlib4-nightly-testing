@@ -25,7 +25,7 @@ Please keep in sync with:
 Copy over `insert` lemmas from `Mathlib/Order/Interval/Finset/Nat.lean`.
 -/
 
-@[expose] public section
+public section
 
 assert_not_exists MonoidWithZero
 
@@ -67,7 +67,7 @@ lemma Ico_succ_succ_eq_Ioc_of_not_isMax (hb : ¬ IsMax b) (a : α) :
 /-! ##### Inserting into intervals -/
 
 lemma insert_Icc_succ_left_eq_Icc (h : a ≤ b) : insert a (Icc (succ a) b) = Icc a b := by
-  ext x; simp [or_and_left, eq_comm, ← le_iff_eq_or_succ_le]; aesop
+  ext x; simp [or_and_left, eq_comm (a := x), ← le_iff_eq_or_succ_le]; aesop
 
 lemma insert_Icc_right_eq_Icc_succ (h : a ≤ succ b) :
     insert (succ b) (Icc a b) = Icc a (succ b) := by
@@ -163,7 +163,7 @@ lemma insert_Ioc_pred_right_eq_Ioc (h : a < b) : insert b (Ioc a (pred b)) = Ioc
 
 lemma insert_Ico_left_eq_Ico_pred_of_not_isMin (h : a ≤ b) (ha : ¬ IsMin a) :
     insert (pred a) (Ico a b) = Ico (pred a) b := by
-  ext x; simp +contextual [or_and_left, pred_le_iff_eq_or_le, pred_lt_of_not_isMin_of_le ha h]
+  ext x; simp +contextual [or_and_left, pred_le_iff_eq_or_le, pred_lt_of_le_of_not_isMin h ha]
 
 lemma insert_Ico_pred_right_eq_Ico (h : a < b) : insert (pred b) (Ico a (pred b)) = Ico a b := by
   rw [Ico_insert_right (le_pred_of_lt h), Icc_pred_right_of_not_isMin h.not_isMin]
