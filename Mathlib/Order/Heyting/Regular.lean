@@ -3,13 +3,15 @@ Copyright (c) 2022 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Order.GaloisConnection
+module
+
+public import Mathlib.Order.GaloisConnection.Basic
 
 /-!
 # Heyting regular elements
 
 This file defines Heyting regular elements, elements of a Heyting algebra that are their own double
-complement, and proves that they form a boolean algebra.
+complement, and proves that they form a Boolean algebra.
 
 From a logic standpoint, this means that we can perform classical logic within intuitionistic logic
 by simply double-negating all propositions. This is practical for synthetic computability theory.
@@ -18,13 +20,17 @@ by simply double-negating all propositions. This is practical for synthetic comp
 
 * `IsRegular`: `a` is Heyting-regular if `aᶜᶜ = a`.
 * `Regular`: The subtype of Heyting-regular elements.
-* `Regular.BooleanAlgebra`: Heyting-regular elements form a boolean algebra.
+* `Regular.BooleanAlgebra`: Heyting-regular elements form a Boolean algebra.
 
 ## References
 
 * [Francis Borceux, *Handbook of Categorical Algebra III*][borceux-vol3]
 -/
 
+@[expose] public section
+
+-- We want the theorems in this file to be intuitionistic.
+set_option linter.unusedDecidableInType false
 
 open Function
 
@@ -32,9 +38,9 @@ variable {α : Type*}
 
 namespace Heyting
 
-section HasCompl
+section Compl
 
-variable [HasCompl α] {a : α}
+variable [Compl α] {a : α}
 
 /-- An element of a Heyting algebra is regular if its double complement is itself. -/
 def IsRegular (a : α) : Prop :=
@@ -46,7 +52,7 @@ protected theorem IsRegular.eq : IsRegular a → aᶜᶜ = a :=
 instance IsRegular.decidablePred [DecidableEq α] : @DecidablePred α IsRegular := fun _ =>
   ‹DecidableEq α› _ _
 
-end HasCompl
+end Compl
 
 section HeytingAlgebra
 
@@ -72,7 +78,7 @@ protected theorem IsRegular.disjoint_compl_right_iff (hb : IsRegular b) :
     Disjoint a bᶜ ↔ a ≤ b := by rw [← le_compl_iff_disjoint_right, hb.eq]
 
 -- See note [reducible non-instances]
-/-- A Heyting algebra with regular excluded middle is a boolean algebra. -/
+/-- A Heyting algebra with regular excluded middle is a Boolean algebra. -/
 abbrev _root_.BooleanAlgebra.ofRegular (h : ∀ a : α, IsRegular (a ⊔ aᶜ)) : BooleanAlgebra α :=
   have : ∀ a : α, IsCompl a aᶜ := fun a =>
     ⟨disjoint_compl_right,
@@ -86,7 +92,7 @@ abbrev _root_.BooleanAlgebra.ofRegular (h : ∀ a : α, IsRegular (a ⊔ aᶜ)) 
 
 variable (α)
 
-/-- The boolean algebra of Heyting regular elements. -/
+/-- The Boolean algebra of Heyting regular elements. -/
 def Regular : Type _ :=
   { a : α // IsRegular a }
 
@@ -94,7 +100,6 @@ variable {α}
 
 namespace Regular
 
--- Porting note: `val` and `prop` are new
 /-- The coercion `Regular α → α` -/
 @[coe] def val : Regular α → α :=
   Subtype.val
@@ -122,7 +127,7 @@ instance inf : Min (Regular α) :=
 instance himp : HImp (Regular α) :=
   ⟨fun a b => ⟨a ⇨ b, a.2.himp b.2⟩⟩
 
-instance hasCompl : HasCompl (Regular α) :=
+instance : Compl (Regular α) :=
   ⟨fun a => ⟨aᶜ, isRegular_compl _⟩⟩
 
 @[simp, norm_cast]
@@ -193,7 +198,7 @@ theorem coe_sup (a b : Regular α) : (↑(a ⊔ b) : α) = ((a : α) ⊔ b)ᶜ�
 
 instance : BooleanAlgebra (Regular α) :=
   { Regular.lattice, Regular.boundedOrder, Regular.himp,
-    Regular.hasCompl with
+    Regular.instCompl with
     le_sup_inf := fun a b c =>
       coe_le_coe.1 <| by
         dsimp
@@ -226,7 +231,6 @@ theorem isRegular_of_boolean : ∀ a : α, IsRegular a :=
   compl_compl
 
 /-- A decidable proposition is intuitionistically Heyting-regular. -/
--- Porting note: removed @[nolint decidable_classical]
 theorem isRegular_of_decidable (p : Prop) [Decidable p] : IsRegular p :=
   propext <| Decidable.not_not
 

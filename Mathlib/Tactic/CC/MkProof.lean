@@ -3,16 +3,19 @@ Copyright (c) 2016 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Miyahara Kō
 -/
-import Batteries.Data.RBMap.Alter
-import Mathlib.Logic.Basic
-import Mathlib.Tactic.CC.Datatypes
-import Mathlib.Tactic.CC.Lemmas
-import Mathlib.Tactic.Relation.Rfl
-import Mathlib.Tactic.Relation.Symm
+module
+
+public meta import Mathlib.Tactic.CC.Datatypes
+public import Mathlib.Logic.Basic
+public import Mathlib.Tactic.CC.Datatypes
+public import Mathlib.Tactic.Relation.Rfl
+public import Mathlib.Tactic.Relation.Symm
 
 /-!
 # Make proofs from a congruence closure
 -/
+
+public meta section
 
 open Lean Meta Elab Tactic Std
 
@@ -39,7 +42,7 @@ def getCache : CCM CCCongrTheoremCache := do
 
 /-- Look up an entry associated with the given expression. -/
 def getEntry (e : Expr) : CCM (Option Entry) := do
-  return (← get).entries.find? e
+  return (← get).entries[e]?
 
 /-- Use the normalizer to normalize `e`.
 
@@ -93,7 +96,7 @@ partial def isCongruent (e₁ e₂ : Expr) : CCM Bool := do
       return false
     else if ← pureIsDefEq (← inferType f) (← inferType g) then
       /- Case 1: `f` and `g` have the same type, then we can create a congruence proof for
-         `HEq (f a) (g b)` -/
+         `f a ≍ g b` -/
       return true
     else if f.isApp && g.isApp then
       -- Case 2: `f` and `g` are congruent
@@ -102,7 +105,7 @@ partial def isCongruent (e₁ e₂ : Expr) : CCM Bool := do
       /-
       f and g are not congruent nor they have the same type.
       We can't generate a congruence proof in this case because the following lemma
-        `hcongr : HEq f₁ f₂ → HEq a₁ a₂ → HEq (f₁ a₁) (f₂ a₂)`
+        `hcongr : f₁ ≍ f₂ → a₁ ≍ a₂ → f₁ a₁ ≍ f₂ a₂`
       is not provable.
       Remark: it is also not provable in MLTT, Coq and Agda (even if we assume UIP).
       -/
@@ -143,7 +146,7 @@ def setFO (e : Expr) : CCM Unit :=
 /-- Update the modification time of the congruence class of `e`. -/
 partial def updateMT (e : Expr) : CCM Unit := do
   let r ← getRoot e
-  let some ps := (← get).parents.find? r | return
+  let some ps := (← get).parents[r]? | return
   for p in ps do
     let some it ← getEntry p.expr | failure
     let gmt := (← get).gmt
@@ -282,7 +285,7 @@ partial def mkCongrProofCore (lhs rhs : Expr) (heqProofs : Bool) : CCM Expr := d
   guard (← isEqv lhsFn rhsFn <||> pureIsDefEq lhsFn rhsFn)
   guard (← pureIsDefEq (← inferType lhsFn) (← inferType rhsFn))
   /- Create `r`, a proof for
-        `lhsFn lhsArgs[0] ... lhsArgs[n-1] = lhsFn rhsArgs[0] ... rhsArgs[n-1]`
+  `lhsFn lhsArgs[0] ... lhsArgs[n-1] = lhsFn rhsArgs[0] ... rhsArgs[n-1]`
      where `n := lhsArgs.size` -/
   let some specLemma ← mkCCHCongrTheorem lhsFn lhsArgs.size | failure
   let mut kindsIt := specLemma.argKinds
@@ -320,8 +323,8 @@ partial def mkCongrProofCore (lhs rhs : Expr) (heqProofs : Bool) : CCM Expr := d
 /-- If `e₁ : R lhs₁ rhs₁`, `e₂ : R lhs₂ rhs₂` and `lhs₁ = rhs₂`, where `R` is a symmetric relation,
 prove `R lhs₁ rhs₁` is equivalent to `R lhs₂ rhs₂`.
 
- * if `lhs₁` is known to equal `lhs₂`, return `none`
- * if `lhs₁` is not known to equal `rhs₂`, fail. -/
+* if `lhs₁` is known to equal `lhs₂`, return `none`
+* if `lhs₁` is not known to equal `rhs₂`, fail. -/
 partial def mkSymmCongrProof (e₁ e₂ : Expr) (heqProofs : Bool) : CCM (Option Expr) := do
   let some (R₁, lhs₁, rhs₁) ← e₁.relSidesIfSymm? | return none
   let some (R₂, lhs₂, rhs₂) ← e₂.relSidesIfSymm? | return none
@@ -381,10 +384,10 @@ partial def mkDelayedProof (H : DelayedExpr) : CCM Expr := do
   | .heqSymm h => mkHEqSymm (← mkDelayedProof h)
 
 /-- Use the format of `H` to try and construct a proof or `lhs = rhs`:
- * If `H = .congr`, then use congruence.
- * If `H = .eqTrue`, try to prove `lhs = True` or `rhs = True`,
-   if they have the format `R a b`, by proving `a = b`.
- * Otherwise, return the (delayed) proof encoded by `H` itself. -/
+* If `H = .congr`, then use congruence.
+* If `H = .eqTrue`, try to prove `lhs = True` or `rhs = True`,
+  if they have the format `R a b`, by proving `a = b`.
+* Otherwise, return the (delayed) proof encoded by `H` itself. -/
 partial def mkProof (lhs rhs : Expr) (H : EntryExpr) (heqProofs : Bool) : CCM Expr := do
   match H with
   | .congr => mkCongrProof lhs rhs heqProofs
@@ -417,7 +420,7 @@ partial def mkProof (lhs rhs : Expr) (H : EntryExpr) (heqProofs : Bool) : CCM Ex
   | .ofDExpr H => mkDelayedProof H
 
 /--
-If `asHEq` is `true`, then build a proof for `HEq e₁ e₂`.
+If `asHEq` is `true`, then build a proof for `e₁ ≍ e₂`.
 Otherwise, build a proof for `e₁ = e₂`.
 The result is `none` if `e₁` and `e₂` are not in the same equivalence class. -/
 partial def getEqProofCore (e₁ e₂ : Expr) (asHEq : Bool) : CCM (Option Expr) := do
@@ -434,7 +437,7 @@ partial def getEqProofCore (e₁ e₂ : Expr) (asHEq : Bool) : CCM (Option Expr)
   -- 1. Retrieve "path" from `e₁` to `root`
   let mut path₁ : Array Expr := #[]
   let mut Hs₁ : Array EntryExpr := #[]
-  let mut visited : RBExprSet := ∅
+  let mut visited : ExprSet := ∅
   let mut it₁ := e₁
   repeat
     visited := visited.insert it₁
@@ -474,9 +477,9 @@ partial def getEqProofCore (e₁ e₂ : Expr) (asHEq : Bool) : CCM (Option Expr)
   -- 4. Build transitivity proof
   let mut pr? : Option Expr := none
   let mut lhs := e₁
-  for i in [:path₁.size] do
-    pr? ← some <$> mkTransOpt pr? (← mkProof lhs path₁[i]! Hs₁[i]! heqProofs) heqProofs
-    lhs := path₁[i]!
+  for h : i in [:path₁.size] do
+    pr? ← some <$> mkTransOpt pr? (← mkProof lhs path₁[i] Hs₁[i]! heqProofs) heqProofs
+    lhs := path₁[i]
   let mut i := Hs₂.size
   while i > 0 do
     i := i - 1
@@ -495,7 +498,7 @@ The result is `none` if `e₁` and `e₂` are not in the same equivalence class.
 partial def getEqProof (e₁ e₂ : Expr) : CCM (Option Expr) :=
   getEqProofCore e₁ e₂ false
 
-/-- Build a proof for `HEq e₁ e₂`.
+/-- Build a proof for `e₁ ≍ e₂`.
 The result is `none` if `e₁` and `e₂` are not in the same equivalence class. -/
 @[inline]
 partial def getHEqProof (e₁ e₂ : Expr) : CCM (Option Expr) :=
@@ -561,7 +564,7 @@ def mkACProof (e₁ e₂ : Expr) : MetaM Expr := do
 
 /-- Given `tr := t*r` `sr := s*r` `tEqs : t = s`, return a proof for `tr = sr`
 
-    We use `a*b` to denote an AC application. That is, `(a*b)*(c*a)` is the term `a*a*b*c`. -/
+We use `a*b` to denote an AC application. That is, `(a*b)*(c*a)` is the term `a*a*b*c`. -/
 def mkACSimpProof (tr t s r sr : ACApps) (tEqs : DelayedExpr) : MetaM DelayedExpr := do
   if tr == t then
     return tEqs
@@ -595,7 +598,7 @@ def simplifyACCore (e lhs rhs : ACApps) (H : DelayedExpr) :
     let r : ACApps := if newArgs.isEmpty then default else .mkApps op newArgs
     let newArgs := ACApps.append op rhs newArgs
     let newE := ACApps.mkApps op newArgs
-    let some true := (← get).opInfo.find? op | failure
+    let some true := (← get).opInfo[op]? | failure
     let newPr ← mkACSimpProof e lhs rhs r newE H
     return (newE, newPr)
 
@@ -607,7 +610,7 @@ def simplifyACStep (e : ACApps) : CCM (Option (ACApps × DelayedExpr)) := do
   if let .apps _ args := e then
     for h : i in [:args.size] do
       if i == 0 || args[i] != (args[i - 1]'(Nat.lt_of_le_of_lt (i.sub_le 1) h.2.1)) then
-        let some ae := (← get).acEntries.find? args[i] | failure
+        let some ae := (← get).acEntries[args[i]]? | failure
         let occs := ae.RLHSOccs
         let mut Rlhs? : Option ACApps := none
         for Rlhs in occs do
@@ -615,9 +618,9 @@ def simplifyACStep (e : ACApps) : CCM (Option (ACApps × DelayedExpr)) := do
             Rlhs? := some Rlhs
             break
         if let some Rlhs := Rlhs? then
-          let some (Rrhs, H) := (← get).acR.find? Rlhs | failure
+          let some (Rrhs, H) := (← get).acR[Rlhs]? | failure
           return (some <| ← simplifyACCore e Rlhs Rrhs H)
-  else if let some p := (← get).acR.find? e then
+  else if let some p := (← get).acR[e]? then
     return some p
   return none
 

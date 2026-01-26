@@ -3,10 +3,12 @@ Copyright (c) 2020 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 -/
-import Mathlib.Topology.UniformSpace.CompleteSeparated
-import Mathlib.Topology.EMetricSpace.Lipschitz
-import Mathlib.Topology.MetricSpace.Basic
-import Mathlib.Topology.MetricSpace.Bounded
+module
+
+public import Mathlib.Topology.UniformSpace.CompleteSeparated
+public import Mathlib.Topology.EMetricSpace.Lipschitz
+public import Mathlib.Topology.MetricSpace.Basic
+public import Mathlib.Topology.MetricSpace.Bounded
 
 /-!
 # Antilipschitz functions
@@ -21,6 +23,8 @@ The parameter `K` has type `ℝ≥0`. This way we avoid conjunction in the defin
 coercions both to `ℝ` and `ℝ≥0∞`. We do not require `0 < K` in the definition, mostly because
 we do not have a `posreal` type.
 -/
+
+@[expose] public section
 
 open Bornology Filter Set Topology
 open scoped NNReal ENNReal Uniformity
@@ -78,7 +82,7 @@ namespace AntilipschitzWith
 variable [PseudoEMetricSpace α] [PseudoEMetricSpace β] [PseudoEMetricSpace γ]
 variable {K : ℝ≥0} {f : α → β}
 
-open EMetric
+open Metric
 
 -- uses neither `f` nor `hf`
 /-- Extract the constant from `hf : AntilipschitzWith K f`. This is useful, e.g.,
@@ -95,12 +99,13 @@ theorem mul_le_edist (hf : AntilipschitzWith K f) (x y : α) :
   rw [mul_comm, ← div_eq_mul_inv]
   exact ENNReal.div_le_of_le_mul' (hf x y)
 
-theorem ediam_preimage_le (hf : AntilipschitzWith K f) (s : Set β) : diam (f ⁻¹' s) ≤ K * diam s :=
-  diam_le fun x hx y hy => (hf x y).trans <|
-    mul_le_mul_left' (edist_le_diam_of_mem (mem_preimage.1 hx) hy) K
+theorem ediam_preimage_le (hf : AntilipschitzWith K f) (s : Set β) :
+    ediam (f ⁻¹' s) ≤ K * ediam s :=
+  ediam_le fun x hx y hy => by grw [hf x y, edist_le_ediam_of_mem (mem_preimage.1 hx) hy]
 
-theorem le_mul_ediam_image (hf : AntilipschitzWith K f) (s : Set α) : diam s ≤ K * diam (f '' s) :=
-  (diam_mono (subset_preimage_image _ _)).trans (hf.ediam_preimage_le (f '' s))
+theorem le_mul_ediam_image (hf : AntilipschitzWith K f) (s : Set α) :
+    ediam s ≤ K * ediam (f '' s) :=
+  (ediam_mono (subset_preimage_image _ _)).trans (hf.ediam_preimage_le (f '' s))
 
 protected theorem id : AntilipschitzWith 1 (id : α → α) := fun x y => by
   simp only [ENNReal.coe_one, one_mul, id, le_refl]
@@ -109,7 +114,7 @@ theorem comp {Kg : ℝ≥0} {g : β → γ} (hg : AntilipschitzWith Kg g) {Kf : 
     (hf : AntilipschitzWith Kf f) : AntilipschitzWith (Kf * Kg) (g ∘ f) := fun x y =>
   calc
     edist x y ≤ Kf * edist (f x) (f y) := hf x y
-    _ ≤ Kf * (Kg * edist (g (f x)) (g (f y))) := mul_left_mono (hg _ _)
+    _ ≤ Kf * (Kg * edist (g (f x)) (g (f y))) := mul_right_mono (hg _ _)
     _ = _ := by rw [ENNReal.coe_mul, mul_assoc]; rfl
 
 theorem restrict (hf : AntilipschitzWith K f) (s : Set α) : AntilipschitzWith K (s.restrict f) :=
@@ -146,14 +151,9 @@ theorem isUniformInducing (hf : AntilipschitzWith K f) (hfc : UniformContinuous 
     IsUniformInducing f :=
   ⟨le_antisymm hf.comap_uniformity_le hfc.le_comap⟩
 
-@[deprecated (since := "2024-10-05")]
-alias uniformInducing := isUniformInducing
-
 lemma isUniformEmbedding {α β : Type*} [EMetricSpace α] [PseudoEMetricSpace β] {K : ℝ≥0} {f : α → β}
     (hf : AntilipschitzWith K f) (hfc : UniformContinuous f) : IsUniformEmbedding f :=
   ⟨hf.isUniformInducing hfc, hf.injective⟩
-
-@[deprecated (since := "2024-10-01")] alias uniformEmbedding := isUniformEmbedding
 
 theorem isComplete_range [CompleteSpace α] (hf : AntilipschitzWith K f)
     (hfc : UniformContinuous f) : IsComplete (range f) :=
@@ -169,13 +169,10 @@ theorem isClosedEmbedding {α : Type*} {β : Type*} [EMetricSpace α] [EMetricSp
     IsClosedEmbedding f :=
   { (hf.isUniformEmbedding hfc).isEmbedding with isClosed_range := hf.isClosed_range hfc }
 
-@[deprecated (since := "2024-10-20")]
-alias closedEmbedding := isClosedEmbedding
-
 theorem subtype_coe (s : Set α) : AntilipschitzWith 1 ((↑) : s → α) :=
   AntilipschitzWith.id.restrict s
 
-@[nontriviality] -- Porting note: added `nontriviality`
+@[nontriviality]
 theorem of_subsingleton [Subsingleton α] {K : ℝ≥0} : AntilipschitzWith K f := fun x y => by
   simp only [Subsingleton.elim x y, edist_self, zero_le]
 
@@ -207,7 +204,7 @@ protected theorem properSpace {α : Type*} [MetricSpace α] {K : ℝ≥0} {f : �
     ProperSpace β := by
   refine ⟨fun x₀ r => ?_⟩
   let K := f ⁻¹' closedBall x₀ r
-  have A : IsClosed K := isClosed_ball.preimage f_cont
+  have A : IsClosed K := isClosed_closedBall.preimage f_cont
   have B : IsBounded K := hK.isBounded_preimage isBounded_closedBall
   have : IsCompact K := isCompact_iff_isClosed_bounded.2 ⟨A, B⟩
   convert this.image f_cont
@@ -235,8 +232,3 @@ end AntilipschitzWith
 theorem LipschitzWith.to_rightInverse [PseudoEMetricSpace α] [PseudoEMetricSpace β] {K : ℝ≥0}
     {f : α → β} (hf : LipschitzWith K f) {g : β → α} (hg : Function.RightInverse g f) :
     AntilipschitzWith K g := fun x y => by simpa only [hg _] using hf (g x) (g y)
-
-/-- The preimage of a proper space under a Lipschitz homeomorphism is proper. -/
-protected theorem LipschitzWith.properSpace [PseudoMetricSpace α] [MetricSpace β] [ProperSpace β]
-    {K : ℝ≥0} {f : α ≃ₜ β} (hK : LipschitzWith K f) : ProperSpace α :=
-  (hK.to_rightInverse f.right_inv).properSpace f.symm.continuous f.symm.surjective

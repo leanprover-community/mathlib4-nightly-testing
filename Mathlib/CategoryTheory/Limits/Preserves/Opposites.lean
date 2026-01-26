@@ -3,8 +3,10 @@ Copyright (c) 2022 Markus Himmel. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Markus Himmel
 -/
-import Mathlib.CategoryTheory.Limits.Opposites
-import Mathlib.CategoryTheory.Limits.Preserves.Finite
+module
+
+public import Mathlib.CategoryTheory.Limits.Opposites
+public import Mathlib.CategoryTheory.Limits.Preserves.Finite
 
 /-!
 # Limit preservation properties of `Functor.op` and related constructions
@@ -13,6 +15,8 @@ We formulate conditions about `F` which imply that `F.op`, `F.unop`, `F.leftOp` 
 preserve certain (co)limits and vice versa.
 
 -/
+
+public section
 
 
 universe w w' v₁ v₂ u₁ u₂
@@ -27,110 +31,110 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 variable {J : Type w} [Category.{w'} J]
 
 /-- If `F : C ⥤ D` preserves colimits of `K.leftOp : Jᵒᵖ ⥤ C`, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves
-    limits of `K : J ⥤ Cᵒᵖ`. -/
+limits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesLimit_op (K : J ⥤ Cᵒᵖ) (F : C ⥤ D) [PreservesColimit K.leftOp F] :
     PreservesLimit K F.op where
   preserves {_} hc :=
     ⟨isLimitConeRightOpOfCocone _ (isColimitOfPreserves F (isColimitCoconeLeftOpOfCone _ hc))⟩
 
 /-- If `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves colimits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F : C ⥤ D` preserves
-    limits of `K : J ⥤ C`. -/
+limits of `K : J ⥤ C`. -/
 lemma preservesLimit_of_op (K : J ⥤ C) (F : C ⥤ D) [PreservesColimit K.op F.op] :
     PreservesLimit K F where
   preserves {_} hc := ⟨isLimitOfOp (isColimitOfPreserves F.op (IsLimit.op hc))⟩
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves colimits of `K.leftOp : Jᵒᵖ ⥤ C`, then `F.leftOp : Cᵒᵖ ⥤ D`
-    preserves limits of `K : J ⥤ Cᵒᵖ`. -/
+preserves limits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesLimit_leftOp (K : J ⥤ Cᵒᵖ) (F : C ⥤ Dᵒᵖ) [PreservesColimit K.leftOp F] :
     PreservesLimit K F.leftOp where
   preserves {_} hc :=
     ⟨isLimitConeUnopOfCocone _ (isColimitOfPreserves F (isColimitCoconeLeftOpOfCone _ hc))⟩
 
 /-- If `F.leftOp : Cᵒᵖ ⥤ D` preserves colimits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F : C ⥤ Dᵒᵖ` preserves
-    limits of `K : J ⥤ C`. -/
+limits of `K : J ⥤ C`. -/
 lemma preservesLimit_of_leftOp (K : J ⥤ C) (F : C ⥤ Dᵒᵖ) [PreservesColimit K.op F.leftOp] :
     PreservesLimit K F where
   preserves {_} hc :=
     ⟨isLimitOfCoconeLeftOpOfCone _ (isColimitOfPreserves F.leftOp (IsLimit.op hc))⟩
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves colimits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F.rightOp : C ⥤ Dᵒᵖ` preserves
-    limits of `K : J ⥤ C`. -/
+limits of `K : J ⥤ C`. -/
 lemma preservesLimit_rightOp (K : J ⥤ C) (F : Cᵒᵖ ⥤ D) [PreservesColimit K.op F] :
     PreservesLimit K F.rightOp where
   preserves {_} hc :=
     ⟨isLimitConeRightOpOfCocone _ (isColimitOfPreserves F hc.op)⟩
 
 /-- If `F.rightOp : C ⥤ Dᵒᵖ` preserves colimits of `K.leftOp : Jᵒᵖ ⥤ Cᵒᵖ`, then `F : Cᵒᵖ ⥤ D`
-    preserves limits of `K : J ⥤ Cᵒᵖ`. -/
+preserves limits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesLimit_of_rightOp (K : J ⥤ Cᵒᵖ) (F : Cᵒᵖ ⥤ D) [PreservesColimit K.leftOp F.rightOp] :
     PreservesLimit K F where
   preserves {_} hc :=
     ⟨isLimitOfOp (isColimitOfPreserves F.rightOp (isColimitCoconeLeftOpOfCone _ hc))⟩
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves colimits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F.unop : C ⥤ D` preserves
-    limits of `K : J ⥤ C`. -/
+limits of `K : J ⥤ C`. -/
 lemma preservesLimit_unop (K : J ⥤ C) (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesColimit K.op F] :
     PreservesLimit K F.unop where
   preserves {_} hc :=
     ⟨isLimitConeUnopOfCocone _ (isColimitOfPreserves F hc.op)⟩
 
 /-- If `F.unop : C ⥤ D` preserves colimits of `K.leftOp : Jᵒᵖ ⥤ C`, then `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves
-    limits of `K : J ⥤ Cᵒᵖ`. -/
+limits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesLimit_of_unop (K : J ⥤ Cᵒᵖ) (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesColimit K.leftOp F.unop] :
     PreservesLimit K F where
   preserves {_} hc :=
     ⟨isLimitOfCoconeLeftOpOfCone _ (isColimitOfPreserves F.unop (isColimitCoconeLeftOpOfCone _ hc))⟩
 
 /-- If `F : C ⥤ D` preserves limits of `K.leftOp : Jᵒᵖ ⥤ C`, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves
-    colimits of `K : J ⥤ Cᵒᵖ`. -/
+colimits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesColimit_op (K : J ⥤ Cᵒᵖ) (F : C ⥤ D) [PreservesLimit K.leftOp F] :
     PreservesColimit K F.op where
   preserves {_} hc :=
     ⟨isColimitCoconeRightOpOfCone _ (isLimitOfPreserves F (isLimitConeLeftOpOfCocone _ hc))⟩
 
 /-- If `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves limits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F : C ⥤ D` preserves
-    colimits of `K : J ⥤ C`. -/
+colimits of `K : J ⥤ C`. -/
 lemma preservesColimit_of_op (K : J ⥤ C) (F : C ⥤ D) [PreservesLimit K.op F.op] :
     PreservesColimit K F where
   preserves {_} hc := ⟨isColimitOfOp (isLimitOfPreserves F.op (IsColimit.op hc))⟩
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves limits of `K.leftOp : Jᵒᵖ ⥤ C`, then `F.leftOp : Cᵒᵖ ⥤ D` preserves
-    colimits of `K : J ⥤ Cᵒᵖ`. -/
+colimits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesColimit_leftOp (K : J ⥤ Cᵒᵖ) (F : C ⥤ Dᵒᵖ) [PreservesLimit K.leftOp F] :
     PreservesColimit K F.leftOp where
   preserves {_} hc :=
     ⟨isColimitCoconeUnopOfCone _ (isLimitOfPreserves F (isLimitConeLeftOpOfCocone _ hc))⟩
 
 /-- If `F.leftOp : Cᵒᵖ ⥤ D` preserves limits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F : C ⥤ Dᵒᵖ` preserves
-    colimits of `K : J ⥤ C`. -/
+colimits of `K : J ⥤ C`. -/
 lemma preservesColimit_of_leftOp (K : J ⥤ C) (F : C ⥤ Dᵒᵖ) [PreservesLimit K.op F.leftOp] :
     PreservesColimit K F where
   preserves {_} hc :=
     ⟨isColimitOfConeLeftOpOfCocone _ (isLimitOfPreserves F.leftOp (IsColimit.op hc))⟩
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves limits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F.rightOp : C ⥤ Dᵒᵖ` preserves
-    colimits of `K : J ⥤ C`. -/
+colimits of `K : J ⥤ C`. -/
 lemma preservesColimit_rightOp (K : J ⥤ C) (F : Cᵒᵖ ⥤ D) [PreservesLimit K.op F] :
     PreservesColimit K F.rightOp where
   preserves {_} hc :=
     ⟨isColimitCoconeRightOpOfCone _ (isLimitOfPreserves F hc.op)⟩
 
 /-- If `F.rightOp : C ⥤ Dᵒᵖ` preserves limits of `K.leftOp : Jᵒᵖ ⥤ C`, then `F : Cᵒᵖ ⥤ D`
-    preserves colimits of `K : J ⥤ Cᵒᵖ`. -/
+preserves colimits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesColimit_of_rightOp (K : J ⥤ Cᵒᵖ) (F : Cᵒᵖ ⥤ D) [PreservesLimit K.leftOp F.rightOp] :
     PreservesColimit K F where
   preserves {_} hc :=
     ⟨isColimitOfOp (isLimitOfPreserves F.rightOp (isLimitConeLeftOpOfCocone _ hc))⟩
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves limits of `K.op : Jᵒᵖ ⥤ Cᵒᵖ`, then `F.unop : C ⥤ D` preserves
-    colimits of `K : J ⥤ C`. -/
+colimits of `K : J ⥤ C`. -/
 lemma preservesColimit_unop (K : J ⥤ C) (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesLimit K.op F] :
     PreservesColimit K F.unop where
   preserves {_} hc :=
     ⟨isColimitCoconeUnopOfCone _ (isLimitOfPreserves F hc.op)⟩
 
 /-- If `F.unop : C ⥤ D` preserves limits of `K.op : Jᵒᵖ ⥤ C`, then `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves
-    colimits of `K : J ⥤ Cᵒᵖ`. -/
+colimits of `K : J ⥤ Cᵒᵖ`. -/
 lemma preservesColimit_of_unop (K : J ⥤ Cᵒᵖ) (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesLimit K.leftOp F.unop] :
     PreservesColimit K F where
   preserves {_} hc :=
@@ -141,82 +145,82 @@ section
 variable (J)
 
 /-- If `F : C ⥤ D` preserves colimits of shape `Jᵒᵖ`, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves limits of
-    shape `J`. -/
+shape `J`. -/
 lemma preservesLimitsOfShape_op (F : C ⥤ D) [PreservesColimitsOfShape Jᵒᵖ F] :
     PreservesLimitsOfShape J F.op where preservesLimit {K} := preservesLimit_op K F
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves colimits of shape `Jᵒᵖ`, then `F.leftOp : Cᵒᵖ ⥤ D` preserves limits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesLimitsOfShape_leftOp (F : C ⥤ Dᵒᵖ) [PreservesColimitsOfShape Jᵒᵖ F] :
     PreservesLimitsOfShape J F.leftOp where preservesLimit {K} := preservesLimit_leftOp K F
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves colimits of shape `Jᵒᵖ`, then `F.rightOp : C ⥤ Dᵒᵖ` preserves limits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesLimitsOfShape_rightOp (F : Cᵒᵖ ⥤ D) [PreservesColimitsOfShape Jᵒᵖ F] :
     PreservesLimitsOfShape J F.rightOp where preservesLimit {K} := preservesLimit_rightOp K F
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves colimits of shape `Jᵒᵖ`, then `F.unop : C ⥤ D` preserves limits of
-    shape `J`. -/
+shape `J`. -/
 lemma preservesLimitsOfShape_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesColimitsOfShape Jᵒᵖ F] :
     PreservesLimitsOfShape J F.unop where preservesLimit {K} := preservesLimit_unop K F
 
 /-- If `F : C ⥤ D` preserves limits of shape `Jᵒᵖ`, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves colimits of
-    shape `J`. -/
+shape `J`. -/
 lemma preservesColimitsOfShape_op (F : C ⥤ D) [PreservesLimitsOfShape Jᵒᵖ F] :
     PreservesColimitsOfShape J F.op where preservesColimit {K} := preservesColimit_op K F
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves limits of shape `Jᵒᵖ`, then `F.leftOp : Cᵒᵖ ⥤ D` preserves colimits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesColimitsOfShape_leftOp (F : C ⥤ Dᵒᵖ) [PreservesLimitsOfShape Jᵒᵖ F] :
     PreservesColimitsOfShape J F.leftOp where preservesColimit {K} := preservesColimit_leftOp K F
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves limits of shape `Jᵒᵖ`, then `F.rightOp : C ⥤ Dᵒᵖ` preserves colimits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesColimitsOfShape_rightOp (F : Cᵒᵖ ⥤ D) [PreservesLimitsOfShape Jᵒᵖ F] :
     PreservesColimitsOfShape J F.rightOp where preservesColimit {K} := preservesColimit_rightOp K F
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves limits of shape `Jᵒᵖ`, then `F.unop : C ⥤ D` preserves colimits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesColimitsOfShape_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesLimitsOfShape Jᵒᵖ F] :
     PreservesColimitsOfShape J F.unop where preservesColimit {K} := preservesColimit_unop K F
 
 /-- If `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves colimits of shape `Jᵒᵖ`, then `F : C ⥤ D` preserves limits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesLimitsOfShape_of_op (F : C ⥤ D) [PreservesColimitsOfShape Jᵒᵖ F.op] :
     PreservesLimitsOfShape J F where preservesLimit {K} := preservesLimit_of_op K F
 
 /-- If `F.leftOp : Cᵒᵖ ⥤ D` preserves colimits of shape `Jᵒᵖ`, then `F : C ⥤ Dᵒᵖ` preserves limits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesLimitsOfShape_of_leftOp (F : C ⥤ Dᵒᵖ) [PreservesColimitsOfShape Jᵒᵖ F.leftOp] :
     PreservesLimitsOfShape J F where preservesLimit {K} := preservesLimit_of_leftOp K F
 
 /-- If `F.rightOp : C ⥤ Dᵒᵖ` preserves colimits of shape `Jᵒᵖ`, then `F : Cᵒᵖ ⥤ D` preserves limits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesLimitsOfShape_of_rightOp (F : Cᵒᵖ ⥤ D) [PreservesColimitsOfShape Jᵒᵖ F.rightOp] :
     PreservesLimitsOfShape J F where preservesLimit {K} := preservesLimit_of_rightOp K F
 
 /-- If `F.unop : C ⥤ D` preserves colimits of shape `Jᵒᵖ`, then `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves limits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesLimitsOfShape_of_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesColimitsOfShape Jᵒᵖ F.unop] :
     PreservesLimitsOfShape J F where preservesLimit {K} := preservesLimit_of_unop K F
 
 /-- If `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves limits of shape `Jᵒᵖ`, then `F : C ⥤ D` preserves colimits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesColimitsOfShape_of_op (F : C ⥤ D) [PreservesLimitsOfShape Jᵒᵖ F.op] :
     PreservesColimitsOfShape J F where preservesColimit {K} := preservesColimit_of_op K F
 
 /-- If `F.leftOp : Cᵒᵖ ⥤ D` preserves limits of shape `Jᵒᵖ`, then `F : C ⥤ Dᵒᵖ` preserves colimits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesColimitsOfShape_of_leftOp (F : C ⥤ Dᵒᵖ) [PreservesLimitsOfShape Jᵒᵖ F.leftOp] :
     PreservesColimitsOfShape J F where preservesColimit {K} := preservesColimit_of_leftOp K F
 
 /-- If `F.rightOp : C ⥤ Dᵒᵖ` preserves limits of shape `Jᵒᵖ`, then `F : Cᵒᵖ ⥤ D` preserves colimits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesColimitsOfShape_of_rightOp (F : Cᵒᵖ ⥤ D) [PreservesLimitsOfShape Jᵒᵖ F.rightOp] :
     PreservesColimitsOfShape J F where preservesColimit {K} := preservesColimit_of_rightOp K F
 
 /-- If `F.unop : C ⥤ D` preserves limits of shape `Jᵒᵖ`, then `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves colimits
-    of shape `J`. -/
+of shape `J`. -/
 lemma preservesColimitsOfShape_of_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesLimitsOfShape Jᵒᵖ F.unop] :
     PreservesColimitsOfShape J F where preservesColimit {K} := preservesColimit_of_unop K F
 
@@ -322,8 +326,6 @@ lemma preservesLimits_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesColimits F] : Pre
 lemma preservesColimits_op (F : C ⥤ D) [PreservesLimits F] : PreservesColimits F.op where
   preservesColimitsOfShape {_} _ := preservesColimitsOfShape_op _ _
 
-@[deprecated (since := "2024-12-25")] alias perservesColimits_op := preservesColimits_op
-
 /-- If `F : C ⥤ Dᵒᵖ` preserves limits, then `F.leftOp : Cᵒᵖ ⥤ D` preserves colimits. -/
 lemma preservesColimits_leftOp (F : C ⥤ Dᵒᵖ) [PreservesLimits F] : PreservesColimits F.leftOp where
   preservesColimitsOfShape {_} _ := preservesColimitsOfShape_leftOp _ _
@@ -373,49 +375,49 @@ lemma preservesColimits_of_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesLimits F.uno
   preservesColimitsOfShape {_} _ := preservesColimitsOfShape_of_unop _ _
 
 /-- If `F : C ⥤ D` preserves finite colimits, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite
-    limits. -/
+limits. -/
 lemma preservesFiniteLimits_op (F : C ⥤ D) [PreservesFiniteColimits F] :
     PreservesFiniteLimits F.op where
   preservesFiniteLimits J _ _ := preservesLimitsOfShape_op J F
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves finite colimits, then `F.leftOp : Cᵒᵖ ⥤ D` preserves finite
-    limits. -/
+limits. -/
 lemma preservesFiniteLimits_leftOp (F : C ⥤ Dᵒᵖ) [PreservesFiniteColimits F] :
     PreservesFiniteLimits F.leftOp where
   preservesFiniteLimits J _ _ := preservesLimitsOfShape_leftOp J F
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves finite colimits, then `F.rightOp : C ⥤ Dᵒᵖ` preserves finite
-    limits. -/
+limits. -/
 lemma preservesFiniteLimits_rightOp (F : Cᵒᵖ ⥤ D) [PreservesFiniteColimits F] :
     PreservesFiniteLimits F.rightOp where
   preservesFiniteLimits J _ _ := preservesLimitsOfShape_rightOp J F
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite colimits, then `F.unop : C ⥤ D` preserves finite
-    limits. -/
+limits. -/
 lemma preservesFiniteLimits_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesFiniteColimits F] :
     PreservesFiniteLimits F.unop where
   preservesFiniteLimits J _ _ := preservesLimitsOfShape_unop J F
 
 /-- If `F : C ⥤ D` preserves finite limits, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite
-    colimits. -/
+colimits. -/
 lemma preservesFiniteColimits_op (F : C ⥤ D) [PreservesFiniteLimits F] :
     PreservesFiniteColimits F.op where
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_op J F
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves finite limits, then `F.leftOp : Cᵒᵖ ⥤ D` preserves finite
-    colimits. -/
+colimits. -/
 lemma preservesFiniteColimits_leftOp (F : C ⥤ Dᵒᵖ) [PreservesFiniteLimits F] :
     PreservesFiniteColimits F.leftOp where
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_leftOp J F
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves finite limits, then `F.rightOp : C ⥤ Dᵒᵖ` preserves finite
-    colimits. -/
+colimits. -/
 lemma preservesFiniteColimits_rightOp (F : Cᵒᵖ ⥤ D) [PreservesFiniteLimits F] :
     PreservesFiniteColimits F.rightOp where
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_rightOp J F
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite limits, then `F.unop : C ⥤ D` preserves finite
-    colimits. -/
+colimits. -/
 lemma preservesFiniteColimits_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesFiniteLimits F] :
     PreservesFiniteColimits F.unop where
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_unop J F
@@ -426,13 +428,13 @@ lemma preservesFiniteLimits_of_op (F : C ⥤ D) [PreservesFiniteColimits F.op] :
   preservesFiniteLimits J _ _ := preservesLimitsOfShape_of_op J F
 
 /-- If `F.leftOp : Cᵒᵖ ⥤ D` preserves finite colimits, then `F : C ⥤ Dᵒᵖ` preserves finite
-    limits. -/
+limits. -/
 lemma preservesFiniteLimits_of_leftOp (F : C ⥤ Dᵒᵖ) [PreservesFiniteColimits F.leftOp] :
     PreservesFiniteLimits F where
   preservesFiniteLimits J _ _ := preservesLimitsOfShape_of_leftOp J F
 
 /-- If `F.rightOp : C ⥤ Dᵒᵖ` preserves finite colimits, then `F : Cᵒᵖ ⥤ D` preserves finite
-    limits. -/
+limits. -/
 lemma preservesFiniteLimits_of_rightOp (F : Cᵒᵖ ⥤ D) [PreservesFiniteColimits F.rightOp] :
     PreservesFiniteLimits F where
   preservesFiniteLimits J _ _ := preservesLimitsOfShape_of_rightOp J F
@@ -448,13 +450,13 @@ lemma preservesFiniteColimits_of_op (F : C ⥤ D) [PreservesFiniteLimits F.op] :
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_of_op J F
 
 /-- If `F.leftOp : Cᵒᵖ ⥤ D` preserves finite limits, then `F : C ⥤ Dᵒᵖ` preserves finite
-    colimits. -/
+colimits. -/
 lemma preservesFiniteColimits_of_leftOp (F : C ⥤ Dᵒᵖ) [PreservesFiniteLimits F.leftOp] :
     PreservesFiniteColimits F where
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_of_leftOp J F
 
 /-- If `F.rightOp : C ⥤ Dᵒᵖ` preserves finite limits, then `F : Cᵒᵖ ⥤ D` preserves finite
-    colimits. -/
+colimits. -/
 lemma preservesFiniteColimits_of_rightOp (F : Cᵒᵖ ⥤ D) [PreservesFiniteLimits F.rightOp] :
     PreservesFiniteColimits F where
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_of_rightOp J F
@@ -465,67 +467,67 @@ lemma preservesFiniteColimits_of_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesFinite
   preservesFiniteColimits J _ _ := preservesColimitsOfShape_of_unop J F
 
 /-- If `F : C ⥤ D` preserves finite coproducts, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite
-    products. -/
+products. -/
 lemma preservesFiniteProducts_op (F : C ⥤ D) [PreservesFiniteCoproducts F] :
     PreservesFiniteProducts F.op where
-  preserves J _ := by
+  preserves n := by
     apply (config := { allowSynthFailures := true }) preservesLimitsOfShape_op
-    exact preservesColimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesColimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves finite coproducts, then `F.leftOp : Cᵒᵖ ⥤ D` preserves finite
-    products. -/
+products. -/
 lemma preservesFiniteProducts_leftOp (F : C ⥤ Dᵒᵖ) [PreservesFiniteCoproducts F] :
     PreservesFiniteProducts F.leftOp where
-  preserves J _ := by
+  preserves _ := by
     apply (config := { allowSynthFailures := true }) preservesLimitsOfShape_leftOp
-    exact preservesColimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesColimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves finite coproducts, then `F.rightOp : C ⥤ Dᵒᵖ` preserves finite
-    products. -/
+products. -/
 lemma preservesFiniteProducts_rightOp (F : Cᵒᵖ ⥤ D) [PreservesFiniteCoproducts F] :
     PreservesFiniteProducts F.rightOp where
-  preserves J _ := by
+  preserves _ := by
     apply (config := { allowSynthFailures := true }) preservesLimitsOfShape_rightOp
-    exact preservesColimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesColimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite coproducts, then `F.unop : C ⥤ D` preserves finite
-    products. -/
+products. -/
 lemma preservesFiniteProducts_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesFiniteCoproducts F] :
     PreservesFiniteProducts F.unop where
-  preserves J _ := by
+  preserves _ := by
     apply (config := { allowSynthFailures := true }) preservesLimitsOfShape_unop
-    exact preservesColimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesColimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 /-- If `F : C ⥤ D` preserves finite products, then `F.op : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite
-    coproducts. -/
+coproducts. -/
 lemma preservesFiniteCoproducts_op (F : C ⥤ D) [PreservesFiniteProducts F] :
     PreservesFiniteCoproducts F.op where
-  preserves J _ := by
+  preserves _ := by
     apply (config := { allowSynthFailures := true }) preservesColimitsOfShape_op
-    exact preservesLimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesLimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 /-- If `F : C ⥤ Dᵒᵖ` preserves finite products, then `F.leftOp : Cᵒᵖ ⥤ D` preserves finite
-    coproducts. -/
+coproducts. -/
 lemma preservesFiniteCoproducts_leftOp (F : C ⥤ Dᵒᵖ) [PreservesFiniteProducts F] :
     PreservesFiniteCoproducts F.leftOp where
-  preserves J _ := by
+  preserves _ := by
     apply (config := { allowSynthFailures := true }) preservesColimitsOfShape_leftOp
-    exact preservesLimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesLimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 /-- If `F : Cᵒᵖ ⥤ D` preserves finite products, then `F.rightOp : C ⥤ Dᵒᵖ` preserves finite
-    coproducts. -/
+coproducts. -/
 lemma preservesFiniteCoproducts_rightOp (F : Cᵒᵖ ⥤ D) [PreservesFiniteProducts F] :
     PreservesFiniteCoproducts F.rightOp where
-  preserves J _ := by
+  preserves _ := by
     apply (config := { allowSynthFailures := true }) preservesColimitsOfShape_rightOp
-    exact preservesLimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesLimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 /-- If `F : Cᵒᵖ ⥤ Dᵒᵖ` preserves finite products, then `F.unop : C ⥤ D` preserves finite
-    coproducts. -/
+coproducts. -/
 lemma preservesFiniteCoproducts_unop (F : Cᵒᵖ ⥤ Dᵒᵖ) [PreservesFiniteProducts F] :
     PreservesFiniteCoproducts F.unop where
-  preserves J _ := by
+  preserves _ := by
     apply (config := { allowSynthFailures := true }) preservesColimitsOfShape_unop
-    exact preservesLimitsOfShape_of_equiv (Discrete.opposite J).symm _
+    exact preservesLimitsOfShape_of_equiv (Discrete.opposite _).symm _
 
 end CategoryTheory.Limits

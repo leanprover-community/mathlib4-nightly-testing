@@ -3,13 +3,15 @@ Copyright (c) 2018 Johan Commelin. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johan Commelin
 -/
-import Mathlib.Algebra.BigOperators.Expect
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Algebra.Order.Field.Canonical
-import Mathlib.Algebra.Order.Nonneg.Floor
-import Mathlib.Data.Real.Pointwise
-import Mathlib.Data.NNReal.Defs
-import Mathlib.Order.ConditionallyCompleteLattice.Group
+module
+
+public import Mathlib.Algebra.BigOperators.Expect
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Algebra.Order.Field.Canonical
+public import Mathlib.Algebra.Order.Nonneg.Floor
+public import Mathlib.Data.Real.Pointwise
+public import Mathlib.Data.NNReal.Defs
+public import Mathlib.Order.ConditionallyCompleteLattice.Group
 
 /-!
 # Basic results on nonnegative real numbers
@@ -17,14 +19,16 @@ import Mathlib.Order.ConditionallyCompleteLattice.Group
 This file contains all results on `NNReal` that do not directly follow from its basic structure.
 As a consequence, it is a bit of a random collection of results, and is a good target for cleanup.
 
-## Notations
+## Notation
 
 This file uses `ℝ≥0` as a localized notation for `NNReal`.
 -/
 
-assert_not_exists Star
+public section
 
-open Function
+assert_not_exists TrivialStar
+
+open Function Set
 open scoped BigOperators
 
 namespace NNReal
@@ -32,9 +36,24 @@ namespace NNReal
 noncomputable instance : FloorSemiring ℝ≥0 := Nonneg.floorSemiring
 
 @[simp, norm_cast]
+theorem coe_mulIndicator {α} (s : Set α) (f : α → ℝ≥0) (a : α) :
+    ((s.mulIndicator f a : ℝ≥0) : ℝ) = s.mulIndicator (fun x => ↑(f x)) a :=
+  map_mulIndicator toRealHom _ _ _
+
+@[simp, norm_cast]
 theorem coe_indicator {α} (s : Set α) (f : α → ℝ≥0) (a : α) :
     ((s.indicator f a : ℝ≥0) : ℝ) = s.indicator (fun x => ↑(f x)) a :=
-  (toRealHom : ℝ≥0 →+ ℝ).map_indicator _ _ _
+  map_indicator toRealHom _ _ _
+
+@[simp, norm_cast]
+theorem coe_mulSingle {α} [DecidableEq α] (a : α) (b : ℝ≥0) (c : α) :
+    ((Pi.mulSingle a b : α → ℝ≥0) c : ℝ) = (Pi.mulSingle a b : α → ℝ) c := by
+  simpa using coe_mulIndicator {a} (fun _ ↦ b) c
+
+@[simp, norm_cast]
+theorem coe_single {α} [DecidableEq α] (a : α) (b : ℝ≥0) (c : α) :
+    ((Pi.single a b : α → ℝ≥0) c : ℝ) = (Pi.single a b : α → ℝ) c := by
+  simpa using coe_indicator {a} (fun _ ↦ b) c
 
 @[norm_cast]
 theorem coe_list_sum (l : List ℝ≥0) : ((l.sum : ℝ≥0) : ℝ) = (l.map (↑)).sum :=
@@ -101,7 +120,7 @@ section Sub
 
 In this section we provide a few lemmas about subtraction that do not fit well into any other
 typeclass. For lemmas about subtraction and addition see lemmas about `OrderedSub` in the file
-`Mathlib.Algebra.Order.Sub.Basic`. See also `mul_tsub` and `tsub_mul`.
+`Mathlib/Algebra/Order/Sub/Basic.lean`. See also `mul_tsub` and `tsub_mul`.
 -/
 
 theorem sub_div (a b c : ℝ≥0) : (a - b) / c = a / c - b / c :=
@@ -133,17 +152,14 @@ theorem iSup_mul (f : ι → ℝ≥0) (a : ℝ≥0) : (⨆ i, f i) * a = ⨆ i, 
 theorem iSup_div (f : ι → ℝ≥0) (a : ℝ≥0) : (⨆ i, f i) / a = ⨆ i, f i / a := by
   simp only [div_eq_mul_inv, iSup_mul]
 
--- Porting note: generalized to allow empty `ι`
 theorem mul_iSup_le {a : ℝ≥0} {g : ℝ≥0} {h : ι → ℝ≥0} (H : ∀ j, g * h j ≤ a) : g * iSup h ≤ a := by
   rw [mul_iSup]
   exact ciSup_le' H
 
--- Porting note: generalized to allow empty `ι`
 theorem iSup_mul_le {a : ℝ≥0} {g : ι → ℝ≥0} {h : ℝ≥0} (H : ∀ i, g i * h ≤ a) : iSup g * h ≤ a := by
   rw [iSup_mul]
   exact ciSup_le' H
 
--- Porting note: generalized to allow empty `ι`
 theorem iSup_mul_iSup_le {a : ℝ≥0} {g h : ι → ℝ≥0} (H : ∀ i j, g i * h j ≤ a) :
     iSup g * iSup h ≤ a :=
   iSup_mul_le fun _ => mul_iSup_le <| H _
@@ -163,5 +179,48 @@ theorem le_iInf_mul_iInf {a : ℝ≥0} {g h : ι → ℝ≥0} (H : ∀ i j, a �
   le_iInf_mul fun i => le_mul_iInf <| H i
 
 end Csupr
+
+@[simp]
+theorem range_coe : range toReal = Ici 0 := Subtype.range_coe
+
+@[simp]
+theorem image_coe_Ici (x : ℝ≥0) : toReal '' Ici x = Ici ↑x := image_subtype_val_Ici_Ici ..
+
+@[simp]
+theorem image_coe_Iic (x : ℝ≥0) : toReal '' Iic x = Icc 0 ↑x := image_subtype_val_Ici_Iic ..
+
+@[simp]
+theorem image_coe_Ioi (x : ℝ≥0) : toReal '' Ioi x = Ioi ↑x := image_subtype_val_Ici_Ioi ..
+
+@[simp]
+theorem image_coe_Iio (x : ℝ≥0) : toReal '' Iio x = Ico 0 ↑x := image_subtype_val_Ici_Iio ..
+
+@[simp]
+theorem image_coe_Icc (x y : ℝ≥0) : toReal '' Icc x y = Icc ↑x ↑y :=
+  image_subtype_val_Icc (s := Ici 0) ..
+
+@[simp]
+theorem image_coe_Ioc (x y : ℝ≥0) : toReal '' Ioc x y = Ioc ↑x ↑y :=
+  image_subtype_val_Ioc (s := Ici 0) ..
+
+@[simp]
+theorem image_coe_Ico (x y : ℝ≥0) : toReal '' Ico x y = Ico ↑x ↑y :=
+  image_subtype_val_Ico (s := Ici 0) ..
+
+@[simp]
+theorem image_coe_Ioo (x y : ℝ≥0) : toReal '' Ioo x y = Ioo ↑x ↑y :=
+  image_subtype_val_Ioo (s := Ici 0) ..
+
+@[simp]
+theorem image_coe_uIcc (x y : ℝ≥0) : toReal '' uIcc x y = uIcc ↑x ↑y :=
+  image_subtype_val_uIcc (s := Ici 0) ..
+
+@[simp]
+theorem image_coe_uIoc (x y : ℝ≥0) : toReal '' uIoc x y = uIoc ↑x ↑y :=
+  image_subtype_val_uIoc (s := Ici 0) ..
+
+@[simp]
+theorem image_coe_uIoo (x y : ℝ≥0) : toReal '' uIoo x y = uIoo ↑x ↑y :=
+  image_subtype_val_uIoo (s := Ici 0) ..
 
 end NNReal

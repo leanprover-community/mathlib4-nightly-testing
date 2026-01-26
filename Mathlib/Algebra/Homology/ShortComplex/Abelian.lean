@@ -3,9 +3,10 @@ Copyright (c) 2023 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou
 -/
+module
 
-import Mathlib.Algebra.Homology.ShortComplex.Homology
-import Mathlib.CategoryTheory.Abelian.Basic
+public import Mathlib.Algebra.Homology.ShortComplex.Homology
+public import Mathlib.CategoryTheory.Abelian.Basic
 
 /-!
 # Abelian categories have homology
@@ -24,6 +25,8 @@ provide a `HomologyData`) is obtained by using the
 coimage-image isomorphism in abelian categories.
 
 -/
+
+@[expose] public section
 
 universe v u
 
@@ -50,10 +53,10 @@ lemma abelianImageToKernel_comp_kernel_ι :
 instance : Mono S.abelianImageToKernel :=
   mono_of_mono_fac S.abelianImageToKernel_comp_kernel_ι
 
-@[reassoc (attr := simp 1100)]
+@[reassoc]
 lemma abelianImageToKernel_comp_kernel_ι_comp_cokernel_π :
     S.abelianImageToKernel ≫ kernel.ι S.g ≫ cokernel.π S.f = 0 := by
-  simp only [abelianImageToKernel_comp_kernel_ι_assoc, kernel.condition]
+  simp
 
 /-- `Abelian.image S.f` is the kernel of `kernel.ι S.g ≫ cokernel.π S.f` -/
 noncomputable def abelianImageToKernelIsKernel :

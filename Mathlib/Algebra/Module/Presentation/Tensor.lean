@@ -3,8 +3,10 @@ Copyright (c) 2024 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou
 -/
-import Mathlib.Algebra.Module.Presentation.Basic
-import Mathlib.LinearAlgebra.TensorProduct.Basic
+module
+
+public import Mathlib.Algebra.Module.Presentation.Basic
+public import Mathlib.LinearAlgebra.TensorProduct.Basic
 
 /-!
 # Presentation of the tensor product of two modules
@@ -12,6 +14,8 @@ import Mathlib.LinearAlgebra.TensorProduct.Basic
 Given presentations of two `A`-modules `M₁` and `M₂`, we obtain a presentation of `M₁ ⊗[A] M₂`.
 
 -/
+
+@[expose] public section
 
 universe w w₁₀ w₁₁ w₂₀ w₂₁ u v₁ v₂
 
@@ -32,7 +36,7 @@ noncomputable def tensor :
     Relations A where
   G := relations₁.G × relations₂.G
   R := Sum (relations₁.R × relations₂.G) (relations₁.G × relations₂.R)
-  relation r := match r with
+  relation
     | .inl ⟨r₁, g₂⟩ => Finsupp.embDomain (Function.Embedding.sectL relations₁.G g₂)
         (relations₁.relation r₁)
     | .inr ⟨g₁, r₂⟩ => Finsupp.embDomain (Function.Embedding.sectR g₁ relations₂.G)
@@ -102,6 +106,9 @@ variable (pres₁ : Presentation.{w₁₀, w₁₁} A M₁) (pres₂ : Presentat
 a presentation of `M₁` and a presentation of `M₂`. -/
 @[simps!]
 noncomputable def tensor : Presentation A (M₁ ⊗[A] M₂) where
+  G := _
+  R := _
+  relation := _
   toSolution := pres₁.toSolution.tensor pres₂.toSolution
   toIsPresentation := pres₁.toIsPresentation.tensor pres₂.toIsPresentation
 
