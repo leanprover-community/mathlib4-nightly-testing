@@ -164,7 +164,7 @@ theorem sourceAffineLocally_isLocal (h₁ : RingHom.RespectsIso P)
     rw [← f.appLE_congr (by simp [Scheme.Hom.appLE]) rfl this (fun f => P f.hom),
       IsAffineOpen.appLE_eq_away_map f (isAffineOpen_top Y) U.2 _ r]
     simp only [CommRingCat.hom_ofHom]
-    apply (config := { allowSynthFailures := true }) h₂
+    apply +allowSynthFailures h₂
     exact H U
   · introv hs hs' U
     apply h₃ _ _ hs
@@ -346,7 +346,7 @@ theorem iff_of_source_openCover [IsAffine Y] (𝒰 : X.OpenCover) [∀ i, IsAffi
 theorem iff_of_isAffine [IsAffine X] [IsAffine Y] :
     P f ↔ Q (f.appTop).hom := by
   rw [iff_of_source_openCover (P := P) (Scheme.coverOfIsIso.{u} (𝟙 _))]
-  simp
+  simp +instances
 
 theorem Spec_iff {R S : CommRingCat.{u}} {φ : R ⟶ S} :
     P (Spec.map φ) ↔ Q φ.hom := by

@@ -1105,7 +1105,8 @@ instance subsingleton_ringEquiv [Semiring R] : Subsingleton (ZMod n ≃+* R) :=
 @[simp]
 theorem ringHom_map_cast [NonAssocRing R] (f : R →+* ZMod n) (k : ZMod n) : f (cast k) = k := by
   cases n
-  · dsimp [ZMod, ZMod.cast] at f k ⊢; simp
+  · dsimp +instances [ZMod, ZMod.cast] at f k ⊢
+    simp
   · dsimp [ZMod.cast]
     rw [map_natCast, natCast_zmod_val]
 

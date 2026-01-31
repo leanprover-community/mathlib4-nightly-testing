@@ -195,7 +195,7 @@ instance hasFiniteBiproducts : HasFiniteBiproducts (Mat_ C) where
               simp only [ite_self, dite_eq_ite, Limits.comp_zero, Limits.zero_comp,
                 eqToHom_trans]
               erw [Finset.sum_sigma]
-              dsimp
+              dsimp +instances
               simp only [if_true, Finset.sum_dite_irrel, Finset.mem_univ,
                 Finset.sum_const_zero, Finset.sum_dite_eq']
               split_ifs with h h'

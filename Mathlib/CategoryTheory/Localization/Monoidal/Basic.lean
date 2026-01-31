@@ -207,7 +207,7 @@ lemma μ_inv_natural_right (X : C) {Y₁ Y₂ : C} (g : Y₁ ⟶ Y₂) :
 lemma leftUnitor_hom_app (Y : C) :
     (λ_ ((L').obj Y)).hom =
       (ε' L W ε).inv ▷ (L').obj Y ≫ (μ _ _ _ _ _).hom ≫ (L').map (λ_ Y).hom := by
-  dsimp [monoidalCategoryStruct, leftUnitor]
+  dsimp +instances [monoidalCategoryStruct, leftUnitor]
   rw [liftNatTrans_app]
   dsimp
   rw [assoc]
@@ -218,7 +218,7 @@ lemma rightUnitor_hom_app (X : C) :
     (ρ_ ((L').obj X)).hom =
       (L').obj X ◁ (ε' L W ε).inv ≫ (μ _ _ _ _ _).hom ≫
         (L').map (ρ_ X).hom := by
-  dsimp [monoidalCategoryStruct, rightUnitor]
+  dsimp +instances [monoidalCategoryStruct, rightUnitor]
   rw [liftNatTrans_app]
   dsimp
   rw [assoc]
@@ -229,7 +229,7 @@ lemma associator_hom_app (X₁ X₂ X₃ : C) :
     (α_ ((L').obj X₁) ((L').obj X₂) ((L').obj X₃)).hom =
       ((μ L W ε _ _).hom ⊗ₘ 𝟙 _) ≫ (μ L W ε _ _).hom ≫ (L').map (α_ X₁ X₂ X₃).hom ≫
         (μ L W ε _ _).inv ≫ (𝟙 _ ⊗ₘ (μ L W ε _ _).inv) := by
-  dsimp [monoidalCategoryStruct, associator]
+  dsimp +instances [monoidalCategoryStruct, associator]
   simp only [Functor.map_id, comp_id, NatTrans.id_app, id_comp]
   rw [Localization.associator_hom_app_app_app]
   rfl
@@ -249,7 +249,7 @@ lemma tensor_comp {X₁ Y₁ Z₁ X₂ Y₂ Z₂ : LocalizedMonoidal L W ε}
   simp [monoidalCategoryStruct]
 
 lemma id_tensorHom_id (X₁ X₂ : LocalizedMonoidal L W ε) : 𝟙 X₁ ⊗ₘ 𝟙 X₂ = 𝟙 (X₁ ⊗ X₂) := by
-  simp [monoidalCategoryStruct]
+  simp +instances [monoidalCategoryStruct]
 
 @[reassoc]
 theorem whiskerLeft_comp (Q : LocalizedMonoidal L W ε) {X Y Z : LocalizedMonoidal L W ε}
@@ -264,10 +264,12 @@ theorem whiskerRight_comp (Q : LocalizedMonoidal L W ε) {X Y Z : LocalizedMonoi
   simp only [← tensorHom_id, ← tensor_comp, comp_id]
 
 lemma whiskerLeft_id (X Y : LocalizedMonoidal L W ε) :
-    X ◁ (𝟙 Y) = 𝟙 _ := by simp [monoidalCategoryStruct]
+    X ◁ (𝟙 Y) = 𝟙 _ := by
+  simp +instances [monoidalCategoryStruct]
 
 lemma whiskerRight_id (X Y : LocalizedMonoidal L W ε) :
-    (𝟙 X) ▷ Y = 𝟙 _ := by simp [monoidalCategoryStruct]
+    (𝟙 X) ▷ Y = 𝟙 _ := by
+  simp +instances [monoidalCategoryStruct]
 
 @[reassoc]
 lemma whisker_exchange {Q X Y Z : LocalizedMonoidal L W ε} (f : Q ⟶ X) (g : Y ⟶ Z) :
@@ -281,7 +283,7 @@ lemma associator_naturality {X₁ X₂ X₃ Y₁ Y₂ Y₃ : LocalizedMonoidal L
   have h₁ := (((associator L W ε).hom.app Y₁).app Y₂).naturality f₃
   have h₂ := NatTrans.congr_app (((associator L W ε).hom.app Y₁).naturality f₂) X₃
   have h₃ := NatTrans.congr_app (NatTrans.congr_app ((associator L W ε).hom.naturality f₁) X₂) X₃
-  simp only [monoidalCategoryStruct, Functor.map_comp, assoc]
+  simp +instances only [monoidalCategoryStruct, Functor.map_comp, assoc]
   dsimp at h₁ h₂ h₃ ⊢
   rw [h₁, assoc, reassoc_of% h₂, reassoc_of% h₃]
 
@@ -429,10 +431,16 @@ lemma triangle (X Y : LocalizedMonoidal L W ε) :
 noncomputable instance :
     MonoidalCategory (LocalizedMonoidal L W ε) where
   tensorHom_def := by intros; simp [monoidalCategoryStruct]
-  id_tensorHom_id := by intros; simp [monoidalCategoryStruct]
+  id_tensorHom_id := by
+    intros
+    simp +instances [monoidalCategoryStruct]
   tensorHom_comp_tensorHom := by intros; simp [monoidalCategoryStruct]
-  whiskerLeft_id := by intros; simp [monoidalCategoryStruct]
-  id_whiskerRight := by intros; simp [monoidalCategoryStruct]
+  whiskerLeft_id := by
+    intros
+    simp +instances [monoidalCategoryStruct]
+  id_whiskerRight := by
+    intros
+    simp +instances [monoidalCategoryStruct]
   associator_naturality {X₁ X₂ X₃ Y₁ Y₂ Y₃} f₁ f₂ f₃ := by apply associator_naturality
   leftUnitor_naturality := by intros; simp [monoidalCategoryStruct]
   rightUnitor_naturality := fun f ↦ (rightUnitor L W ε).hom.naturality f

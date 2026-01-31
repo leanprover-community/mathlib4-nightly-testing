@@ -119,9 +119,9 @@ In particular, it extracts the position information within the string, both as n
 and as `String.Pos`.
 -/
 def mkFormatError (ls ms : String.Slice) (msg : String) (length : Nat := 1) : FormatError where
-  srcNat := ls.positions.count
+  srcNat := ls.positions.length
   srcEndPos := ls.rawEndPos
-  fmtPos := ms.positions.count
+  fmtPos := ms.positions.length
   msg := msg
   length := length
   srcStartPos := ls.rawEndPos
@@ -164,7 +164,7 @@ def parallelScanAux (as : Array FormatError) (L M : String.Slice) : Array Format
     parallelScanAux as (L.drop 3) (M.drop 3) else
   if L.take 2 == "--".toSlice then
     let newL := L.dropWhile (· != '\n')
-    let diff := L.positions.count - newL.positions.count
+    let diff := L.positions.length - newL.positions.length
     -- Assumption: if `L` contains an embedded inline comment, so does `M`
     -- (modulo additional whitespace).
     -- This holds because we call this function with `M` being a pretty-printed version of `L`.

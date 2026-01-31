@@ -181,7 +181,7 @@ theorem mrange_eq_iSup {N} [Monoid N] (f : ∀ i, M i →* N) :
     MonoidHom.mrange (lift f) = ⨆ i, MonoidHom.mrange (f i) := by
   rw [lift, Equiv.coe_fn_mk, Con.lift_range, FreeMonoid.mrange_lift,
     range_sigma_eq_iUnion_range, Submonoid.closure_iUnion]
-  simp only [MonoidHom.mclosure_range]
+  simp +instances only [MonoidHom.mclosure_range]
 
 theorem lift_mrange_le {N} [Monoid N] (f : ∀ i, M i →* N) {s : Submonoid N} :
     MonoidHom.mrange (lift f) ≤ s ↔ ∀ i, MonoidHom.mrange (f i) ≤ s := by
@@ -475,7 +475,7 @@ instance summandAction (i) : MulAction (M i) (Word M) where
     apply (equivPair i).symm_apply_eq.mpr
     simp [equivPair]
   mul_smul m m' w := by
-    dsimp [instHSMul]
+    dsimp +instances [instHSMul]
     simp [mul_assoc, ← equivPair_symm, Equiv.apply_symm_apply]
 
 instance : MulAction (CoprodI M) (Word M) :=
