@@ -184,7 +184,7 @@ equivalence `C ≌ Transported e`. -/
 abbrev equivalenceTransported : C ≌ Transported e := e
 
 instance : (equivalenceTransported e).inverse.Monoidal := by
-  dsimp only [Transported.instMonoidalCategory]
+  dsimp +instances only [Transported.instMonoidalCategory]
   infer_instance
 
 instance : (equivalenceTransported e).symm.functor.Monoidal :=

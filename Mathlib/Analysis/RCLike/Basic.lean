@@ -1009,7 +1009,7 @@ end CleanupLemmas
 section LinearMaps
 
 /-- The real part in an `RCLike` field, as a linear map. -/
-def reLm : K →ₗ[ℝ] ℝ :=
+noncomputable def reLm : K →ₗ[ℝ] ℝ :=
   { re with map_smul' := smul_re }
 
 @[simp, rclike_simps]
@@ -1035,7 +1035,7 @@ theorem continuous_re : Continuous (re : K → ℝ) :=
   reCLM.continuous
 
 /-- The imaginary part in an `RCLike` field, as a linear map. -/
-def imLm : K →ₗ[ℝ] ℝ :=
+noncomputable def imLm : K →ₗ[ℝ] ℝ :=
   { im with map_smul' := smul_im }
 
 @[simp, rclike_simps]
@@ -1152,6 +1152,20 @@ lemma lipschitzWith_im : LipschitzWith 1 (im (K := K)) := by
   calc ‖im x - im y‖ₑ
   _ = ‖im (x - y)‖ₑ := by rw [map_sub im x y]
   _ ≤ ‖x - y‖ₑ := by rw [enorm_le_iff_norm_le]; exact norm_im_le_norm (x - y)
+
+/-- The canonical map between `RCLike` types. It maps `x : 𝕜` to `re x + im x * I`. -/
+@[simps] def map (𝕜 𝕜' : Type*) [RCLike 𝕜] [RCLike 𝕜'] : 𝕜 →L[ℝ] 𝕜' where
+  toFun x := re x + im x * (I : 𝕜')
+  map_add' _ _ := by simp only [map_add, add_mul]; ring
+  map_smul' _ _ := by simp [real_smul_eq_coe_mul, mul_assoc]
+  cont := by fun_prop
+
+@[simp] theorem map_same_eq_id : map K K = .id ℝ K := by ext; simp
+
+@[simp] theorem map_to_real : map K ℝ = reCLM := by
+  ext; simp only [map_apply, I, mul_zero, add_zero]; rfl
+
+@[simp] theorem map_from_real : map ℝ K = ofRealCLM := by ext; simp
 
 end LinearMaps
 

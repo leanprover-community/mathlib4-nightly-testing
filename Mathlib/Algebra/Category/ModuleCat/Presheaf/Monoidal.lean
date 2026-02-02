@@ -44,9 +44,15 @@ variable (M₁ M₂ M₃ M₄ : PresheafOfModules.{u} (R ⋙ forget₂ _ _))
 noncomputable def tensorObjMap {X Y : Cᵒᵖ} (f : X ⟶ Y) : M₁.obj X ⊗ M₂.obj X ⟶
     (ModuleCat.restrictScalars (R.map f).hom).obj (M₁.obj Y ⊗ M₂.obj Y) :=
   ModuleCat.MonoidalCategory.tensorLift (fun m₁ m₂ ↦ M₁.map f m₁ ⊗ₜ M₂.map f m₂)
-    (by intro m₁ m₁' m₂; dsimp; rw [map_add, TensorProduct.add_tmul])
+    (by
+      intro m₁ m₁' m₂
+      dsimp +instances
+      rw [map_add, TensorProduct.add_tmul])
     (by intro a m₁ m₂; dsimp; erw [M₁.map_smul]; rfl)
-    (by intro m₁ m₂ m₂'; dsimp; rw [map_add, TensorProduct.tmul_add])
+    (by
+      intro m₁ m₂ m₂'
+      dsimp +instances
+      rw [map_add, TensorProduct.tmul_add])
     (by intro a m₁ m₂; dsimp; erw [M₂.map_smul, TensorProduct.tmul_smul (r := R.map f a)]; rfl)
 
 /-- The tensor product of two presheaves of modules. -/

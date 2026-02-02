@@ -138,15 +138,15 @@ instance (h : ShiftMkCore C A) : (Discrete.functor h.F).Monoidal :=
       associativity := by
         rintro ⟨m₁⟩ ⟨m₂⟩ ⟨m₃⟩
         ext X
-        simp [endofunctorMonoidalCategory, h.assoc_inv_app_assoc]
+        simp [h.assoc_inv_app_assoc]
       left_unitality := by
         rintro ⟨n⟩
         ext X
-        simp [endofunctorMonoidalCategory, h.zero_add_inv_app, ← Functor.map_comp]
+        simp [h.zero_add_inv_app, ← Functor.map_comp]
       right_unitality := by
         rintro ⟨n⟩
         ext X
-        simp [endofunctorMonoidalCategory, h.add_zero_inv_app] }
+        simp [h.add_zero_inv_app] }
 
 /-- Constructs a `HasShift C A` instance from `ShiftMkCore`. -/
 def hasShiftMk (h : ShiftMkCore C A) : HasShift C A where

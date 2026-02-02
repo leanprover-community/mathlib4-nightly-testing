@@ -543,7 +543,7 @@ theorem merge_node {ls ll lx lr rs rl rx rr} :
 /-! ### `insert` -/
 
 
-theorem dual_insert [LE α] [IsTotal α (· ≤ ·)] [DecidableLE α] (x : α) :
+theorem dual_insert [LE α] [@Std.Total α (· ≤ ·)] [DecidableLE α] (x : α) :
     ∀ t : Ordnode α, dual (Ordnode.insert x t) = @Ordnode.insert αᵒᵈ _ _ x (dual t)
   | nil => rfl
   | node _ l y r => by
@@ -562,7 +562,7 @@ theorem balance_eq_balance' {l x r} (hl : Balanced l) (hr : Balanced r) (sl : Si
     · rfl
     · rw [sr.eq_node'] at hr ⊢
       obtain - | ⟨rls, rll, rlx, rlr⟩ := rl <;> obtain - | ⟨rrs, rrl, rrx, rrr⟩ := rr <;>
-        dsimp [balance, balance']
+        dsimp +instances [balance, balance']
       · rfl
       · have : size rrl = 0 ∧ size rrr = 0 := by
           have := balancedSz_zero.1 hr.1.symm

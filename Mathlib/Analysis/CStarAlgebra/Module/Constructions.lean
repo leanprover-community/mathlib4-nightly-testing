@@ -347,7 +347,7 @@ Note: this instance requires `SMul ℂᵐᵒᵖ E` and `IsCentralScalar ℂ E` i
 which is unlikely to occur in practice. However, in practice one could either add those instances
 to the type `E` in question, or else supply them to this instance manually, which is reason behind
 the naming of these two instance arguments. -/
-instance instCStarModuleComplex : CStarModule ℂ E where
+noncomputable instance instCStarModuleComplex : CStarModule ℂ E where
   inner x y := ⟪x, y⟫_ℂ
   inner_add_right := by simp [_root_.inner_add_right]
   inner_self_nonneg {x} := by
