@@ -3,8 +3,10 @@ Copyright (c) 2024 Dagur Asgeirsson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Dagur Asgeirsson, Jack McKoen, Joël Riou
 -/
-import Mathlib.Algebra.Category.ModuleCat.Presheaf
-import Mathlib.Algebra.Category.ModuleCat.Monoidal.Basic
+module
+
+public import Mathlib.Algebra.Category.ModuleCat.Presheaf
+public import Mathlib.Algebra.Category.ModuleCat.Monoidal.Basic
 
 /-!
 # The monoidal category structure on presheaves of modules
@@ -21,11 +23,13 @@ This contribution was created as part of the AIM workshop
 
 -/
 
+@[expose] public section
+
 open CategoryTheory MonoidalCategory Category
 
 universe v u v₁ u₁
 
-variable {C : Type*} [Category C] {R : Cᵒᵖ ⥤ CommRingCat.{u}}
+variable {C : Type*} [Category* C] {R : Cᵒᵖ ⥤ CommRingCat.{u}}
 
 instance (X : Cᵒᵖ) : CommRing ((R ⋙ forget₂ _ RingCat).obj X) :=
   inferInstanceAs (CommRing (R.obj X))
@@ -40,9 +44,15 @@ variable (M₁ M₂ M₃ M₄ : PresheafOfModules.{u} (R ⋙ forget₂ _ _))
 noncomputable def tensorObjMap {X Y : Cᵒᵖ} (f : X ⟶ Y) : M₁.obj X ⊗ M₂.obj X ⟶
     (ModuleCat.restrictScalars (R.map f).hom).obj (M₁.obj Y ⊗ M₂.obj Y) :=
   ModuleCat.MonoidalCategory.tensorLift (fun m₁ m₂ ↦ M₁.map f m₁ ⊗ₜ M₂.map f m₂)
-    (by intro m₁ m₁' m₂; dsimp; rw [map_add, TensorProduct.add_tmul])
+    (by
+      intro m₁ m₁' m₂
+      dsimp +instances
+      rw [map_add, TensorProduct.add_tmul])
     (by intro a m₁ m₂; dsimp; erw [M₁.map_smul]; rfl)
-    (by intro m₁ m₂ m₂'; dsimp; rw [map_add, TensorProduct.tmul_add])
+    (by
+      intro m₁ m₂ m₂'
+      dsimp +instances
+      rw [map_add, TensorProduct.tmul_add])
     (by intro a m₁ m₂; dsimp; erw [M₂.map_smul, TensorProduct.tmul_smul (r := R.map f a)]; rfl)
 
 /-- The tensor product of two presheaves of modules. -/

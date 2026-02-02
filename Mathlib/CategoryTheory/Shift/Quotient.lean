@@ -3,9 +3,11 @@ Copyright (c) 2023 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou
 -/
-import Mathlib.CategoryTheory.Shift.CommShift
-import Mathlib.CategoryTheory.Shift.Induced
-import Mathlib.CategoryTheory.Quotient
+module
+
+public import Mathlib.CategoryTheory.Shift.CommShift
+public import Mathlib.CategoryTheory.Shift.Induced
+public import Mathlib.CategoryTheory.Quotient
 
 /-!
 # The shift on a quotient category
@@ -20,6 +22,8 @@ The condition `r.IsCompatibleWithShift A` on the relation `r` is a class so that
 the shift can be automatically inferred on the quotient category.
 
 -/
+
+@[expose] public section
 
 universe v v' u u' w
 
@@ -55,6 +59,9 @@ noncomputable instance Quotient.functor_commShift [r.IsCompatibleWithShift A] :
   Functor.CommShift.ofInduced _ _ _ _
 
 -- the construction is made irreducible in order to prevent timeouts and abuse of defeq
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12247
+doing so requires `allowUnsafeReducibility`. -/
+set_option allowUnsafeReducibility true in
 attribute [irreducible] HasShift.quotient Quotient.functor_commShift
 
 namespace Quotient
@@ -101,10 +108,11 @@ end LiftCommShift
 /-- When `r : HomRel C` is compatible with the shift by an additive monoid, and
 `F : C ⥤ D` is a functor which commutes with the shift and is compatible with `r`, then
 the induced functor `Quotient.lift r F _ : Quotient r ⥤ D` also commutes with the shift. -/
+@[simps -isSimp commShiftIso]
 noncomputable instance liftCommShift :
     (Quotient.lift r F hF).CommShift A where
-  iso := LiftCommShift.iso F r hF
-  zero := by
+  commShiftIso := LiftCommShift.iso F r hF
+  commShiftIso_zero := by
     ext1
     apply natTrans_ext
     ext X
@@ -115,7 +123,7 @@ noncomputable instance liftCommShift :
       lift_map_functor_map, ← F.map_comp_assoc, Iso.inv_hom_id_app]
     dsimp [lift_obj_functor_obj]
     rw [F.map_id, id_comp]
-  add a b := by
+  commShiftIso_add a b := by
     ext1
     apply natTrans_ext
     ext X
@@ -139,10 +147,9 @@ instance liftCommShift_compatibility :
   shift_comm a := by
     ext X
     dsimp
-    erw [Functor.map_id, id_comp, comp_id]
-    rw [Functor.commShiftIso_comp_hom_app]
-    erw [LiftCommShift.iso_hom_app]
-    rw [← Functor.map_comp_assoc, Iso.hom_inv_id_app, Functor.map_id, id_comp]
+    rw [Functor.commShiftIso_comp_hom_app, liftCommShift_commShiftIso,
+      LiftCommShift.iso_hom_app, ← Functor.map_comp_assoc, Iso.hom_inv_id_app]
+    simp [lift, Quotient.functor]
 
 end Quotient
 

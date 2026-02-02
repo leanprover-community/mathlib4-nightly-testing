@@ -3,12 +3,14 @@ Copyright (c) 2021 Andrew Yang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Andrew Yang
 -/
-import Mathlib.CategoryTheory.GlueData
-import Mathlib.Topology.Category.TopCat.Limits.Pullbacks
-import Mathlib.Topology.Category.TopCat.Opens
-import Mathlib.Tactic.Generalize
-import Mathlib.CategoryTheory.Elementwise
-import Mathlib.CategoryTheory.ConcreteCategory.EpiMono
+module
+
+public import Mathlib.CategoryTheory.GlueData
+public import Mathlib.Topology.Category.TopCat.Limits.Pullbacks
+public import Mathlib.Topology.Category.TopCat.Opens
+public import Mathlib.CategoryTheory.Elementwise
+public import Mathlib.CategoryTheory.Limits.Types.Coequalizers
+public import Mathlib.CategoryTheory.ConcreteCategory.EpiMono
 
 /-!
 # Gluing Topological spaces
@@ -49,6 +51,8 @@ provided.
 * `TopCat.GlueData.ι_isOpenEmbedding`: Each of the `ι i`s are open embeddings.
 
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -127,7 +131,7 @@ theorem rel_equiv : Equivalence D.Rel :=
     have eq₂ : (pullback.snd _ _ : _ ⟶ D.V _) z = y := pullbackIsoProdSubtype_inv_snd_apply _ _ _
     clear_value z
     use (pullback.fst _ _ : _ ⟶ D.V (i, k)) (D.t' _ _ _ z)
-    dsimp only at *
+    dsimp +instances only at *
     substs eq₁ eq₂ e₁ e₃ e₄
     have h₁ : D.t' j i k ≫ pullback.fst _ _ ≫ D.f i k = pullback.fst _ _ ≫ D.t j i ≫ D.f i j := by
       rw [← 𝖣.t_fac_assoc]; congr 1; exact pullback.condition
@@ -293,7 +297,7 @@ structure MkCore where
 theorem MkCore.t_inv (h : MkCore) (i j : h.J) (x : h.V j i) : h.t i j ((h.t j i) x) = x := by
   have := h.cocycle j i j x ?_
   · rw [h.t_id] at this
-    · convert Subtype.eq this
+    · convert Subtype.ext this
   rw [h.V_id]
   trivial
 
