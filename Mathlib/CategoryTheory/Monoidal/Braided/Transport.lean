@@ -72,9 +72,9 @@ instance (e : C ≌ D) [MonoidalCategory C] [BraidedCategory C] :
         Functor.Monoidal.μ_δ, comp_id, Functor.Monoidal.μ_δ_assoc]
     simp? [-Adjunction.rightAdjointLaxMonoidal_μ] at this says
       simp only [Functor.comp_obj, Functor.CoreMonoidal.toMonoidal_toLaxMonoidal,
-        Equivalence.symm_inverse, Equivalence.symm_functor,
-        Functor.CoreMonoidal.toMonoidal_toOplaxMonoidal, comp_μ, Functor.comp_map,
-        Equivalence.inv_fun_map, Functor.id_obj, comp_δ, assoc] at this
+        Equivalence.symm_inverse, Equivalence.symm_functor, comp_μ, Functor.comp_map,
+        Equivalence.inv_fun_map, Functor.id_obj, Functor.CoreMonoidal.toMonoidal_toOplaxMonoidal,
+        comp_δ, assoc] at this
     simp [-Adjunction.rightAdjointLaxMonoidal_μ, ← this]
 
 end

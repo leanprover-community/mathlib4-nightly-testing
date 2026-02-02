@@ -84,9 +84,9 @@ lemma Scheme.nonempty_of_isLimit [IsCofilteredOrEmpty I]
     let c' : LimitCone F := ⟨_, (IsLimit.postcomposeInvEquiv (asIso e) _).symm
       (isLimitOfPreserves Scheme.Spec (limit.isLimit (F ⋙ Scheme.Γ.rightOp)))⟩
     have : Nonempty c'.1.pt := by
-      apply (config := { allowSynthFailures := true }) PrimeSpectrum.instNonemptyOfNontrivial
+      apply +allowSynthFailures PrimeSpectrum.instNonemptyOfNontrivial
       have (i' : _) : Nontrivial ((F ⋙ Scheme.Γ.rightOp).leftOp.obj i') := by
-        apply (config := { allowSynthFailures := true }) Scheme.component_nontrivial
+        apply +allowSynthFailures Scheme.component_nontrivial
         simp
       exact CommRingCat.FilteredColimits.nontrivial
         (isColimitCoconeLeftOpOfCone _ (limit.isLimit (F ⋙ Scheme.Γ.rightOp)))
@@ -832,7 +832,7 @@ lemma exists_appTop_π_eq_of_isLimit [∀ {i j} (f : i ⟶ j), IsAffineHom (D.ma
         ((U y).2.preimage (D.map fjy).continuous))
       ((D.map fjx).app (U x) (t x) |_ (D.map fjx ⁻¹ᵁ U x ⊓ D.map fjy ⁻¹ᵁ U y) -
         (D.map fjy).app (U y) (t y) |_ (D.map fjx ⁻¹ᵁ U x ⊓ D.map fjy ⁻¹ᵁ U y)) (by
-      dsimp [TopCat.Presheaf.restrictOpen, TopCat.Presheaf.restrict]
+      dsimp +instances [TopCat.Presheaf.restrictOpen, TopCat.Presheaf.restrict]
       simp only [map_sub, sub_eq_zero, ← ConcreteCategory.comp_apply,
         Scheme.Hom.app_eq_appLE, Scheme.Hom.appLE_map, Scheme.Hom.appLE_comp_appLE,
         Cone.w]

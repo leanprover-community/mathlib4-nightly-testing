@@ -815,6 +815,11 @@ lemma isUnit_iff_coprime (m n : ℕ) : IsUnit (m : ZMod n) ↔ m.Coprime n := by
   rw [Nat.coprime_iff_gcd_eq_one, Nat.gcd_comm, ← H']
   exact Nat.gcd_rec n m
 
+@[simp]
+lemma coprime_mod_iff_coprime (m n : ℕ) : (m % n).Coprime n ↔ m.Coprime n := by
+  suffices (m % n).gcd n = m.gcd n by grind
+  exact Nat.ModEq.gcd_eq (by simp [Nat.ModEq])
+
 lemma isUnit_prime_iff_not_dvd {n p : ℕ} (hp : p.Prime) : IsUnit (p : ZMod n) ↔ ¬p ∣ n := by
   rw [isUnit_iff_coprime, Nat.Prime.coprime_iff_not_dvd hp]
 
@@ -1105,7 +1110,8 @@ instance subsingleton_ringEquiv [Semiring R] : Subsingleton (ZMod n ≃+* R) :=
 @[simp]
 theorem ringHom_map_cast [NonAssocRing R] (f : R →+* ZMod n) (k : ZMod n) : f (cast k) = k := by
   cases n
-  · dsimp [ZMod, ZMod.cast] at f k ⊢; simp
+  · dsimp +instances [ZMod, ZMod.cast] at f k ⊢
+    simp
   · dsimp [ZMod.cast]
     rw [map_natCast, natCast_zmod_val]
 

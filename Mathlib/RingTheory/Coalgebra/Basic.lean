@@ -283,7 +283,7 @@ instance instCoalgebra : Coalgebra R (A × B) where
     · rw [comp_assoc, comul_comp_inr, ← comp_assoc, lTensor_comp_map, counit_comp_inr,
         ← rTensor_comp_lTensor, comp_assoc, lTensor_counit_comp_comul, rTensor_comp_flip_mk]
   coassoc := by
-    dsimp only [instCoalgebraStruct]
+    dsimp +instances only [instCoalgebraStruct]
     ext x : 2 <;> dsimp only [comp_apply, LinearEquiv.coe_coe, coe_inl, coe_inr, coprod_apply]
     · simp only [map_zero, add_zero]
       simp_rw [← comp_apply, ← comp_assoc, rTensor_comp_map, lTensor_comp_map, coprod_inl,
@@ -330,7 +330,8 @@ theorem comul_comp_lsingle (i : ι) :
 
 theorem comul_comp_lapply (i : ι) :
     comul ∘ₗ (lapply i : _ →ₗ[R] A i) = TensorProduct.map (lapply i) (lapply i) ∘ₗ comul := by
-  ext j; have := eq_or_ne i j
+  ext j
+  have := eq_or_ne i j
   aesop (add simp [TensorProduct.map_map, proj_comp_single, diag])
 
 @[simp] theorem counit_comp_lsingle (i : ι) : counit ∘ₗ (lsingle i : A i →ₗ[R] _) = counit := by

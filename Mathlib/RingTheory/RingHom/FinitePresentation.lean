@@ -113,7 +113,7 @@ lemma of_span_eq_top_target (s : Set S) (hs : Ideal.span (s : Set S) = ⊤)
     obtain ⟨r, hr, hrr⟩ := this
     simp only [f']
     rw [← hrr, Ideal.Quotient.liftₐ_apply, Ideal.Quotient.lift_mk]
-    simp_rw [RingHom.coe_coe]
+    simp_rw +instances [RingHom.coe_coe]
     rw [hg']
     apply h
   exact of_span_eq_top_target_aux f' hf' t ht Ht

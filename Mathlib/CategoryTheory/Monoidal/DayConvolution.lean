@@ -1138,7 +1138,7 @@ lemma ι_map_tensorHom_eq {d₁ d₁' d₂ d₂' : D} (f : d₁ ⟶ d₂) (f' : 
     letI := mkMonoidalCategoryStruct C V D
     (ι C V D).map (f ⊗ₘ f') =
     DayConvolution.map ((ι C V D).map f) ((ι C V D).map f') := by
-  dsimp [mkMonoidalCategoryStruct]
+  dsimp +instances [mkMonoidalCategoryStruct]
   rw [tensorHom_eq]
   apply (convolutions C V d₁ d₁').corepresentableBy.homEquiv.injective
   dsimp

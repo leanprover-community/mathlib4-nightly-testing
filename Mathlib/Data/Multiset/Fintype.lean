@@ -170,6 +170,9 @@ def coeEquiv (m : Multiset α) : m ≃ m.toEnumFinset where
 theorem toEmbedding_coeEquiv_trans (m : Multiset α) :
     m.coeEquiv.toEmbedding.trans (Function.Embedding.subtype _) = m.coeEmbedding := by ext <;> rfl
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12247
+this requires `allowUnsafeReducibility`. -/
+set_option allowUnsafeReducibility true in
 @[irreducible]
 instance fintypeCoe : Fintype m :=
   Fintype.ofEquiv m.toEnumFinset m.coeEquiv.symm

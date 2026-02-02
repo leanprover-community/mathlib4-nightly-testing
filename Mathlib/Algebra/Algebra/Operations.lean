@@ -700,7 +700,7 @@ theorem map_unop_pow (n : ℕ) (M : Submodule R Aᵐᵒᵖ) :
 /-- `span` is a semiring homomorphism (recall multiplication is pointwise multiplication of subsets
 on either side). -/
 @[simps]
-def span.ringHom : SetSemiring A →+* Submodule R A where
+noncomputable def span.ringHom : SetSemiring A →+* Submodule R A where
   toFun s := Submodule.span R (SetSemiring.down s)
   map_zero' := span_empty
   map_one' := one_eq_span.symm
@@ -709,7 +709,7 @@ def span.ringHom : SetSemiring A →+* Submodule R A where
 
 variable (R) in
 /-- `(span R {·})` as a `MonoidWithZeroHom`. -/
-def spanSingleton : A →*₀ Submodule R A where
+noncomputable def spanSingleton : A →*₀ Submodule R A where
   __ := Submodule.span.ringHom.toMonoidHom.comp SetSemiring.singletonMonoidHom
   map_zero' := by simp [SetSemiring.singletonMonoidHom]
 

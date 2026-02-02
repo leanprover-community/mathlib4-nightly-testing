@@ -182,7 +182,7 @@ theorem comul_tensorObj_tensorObj_left :
       (A := ((CoalgCat.of R M ⊗ CoalgCat.of R N) ⊗ CoalgCat.of R P : CoalgCat R))
       = Coalgebra.comul (A := M ⊗[R] N ⊗[R] P) := by
   rw [ofComonObjCoalgebraStruct_comul]
-  dsimp
+  dsimp +instances
   simp only [toComonObj]
   simp [tensorμ_eq_tensorTensorTensorComm, TensorProduct.comul_def,
     AlgebraTensorModule.tensorTensorTensorComm_eq]

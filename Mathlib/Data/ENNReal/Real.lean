@@ -316,7 +316,7 @@ theorem toNNReal_mul_top (a : ℝ≥0∞) : ENNReal.toNNReal (a * ∞) = 0 := by
 theorem toNNReal_top_mul (a : ℝ≥0∞) : ENNReal.toNNReal (∞ * a) = 0 := by simp
 
 /-- `ENNReal.toNNReal` as a `MonoidHom`. -/
-def toNNRealHom : ℝ≥0∞ →*₀ ℝ≥0 where
+noncomputable def toNNRealHom : ℝ≥0∞ →*₀ ℝ≥0 where
   toFun := ENNReal.toNNReal
   map_one' := toNNReal_coe _
   map_mul' _ _ := toNNReal_mul
@@ -327,7 +327,7 @@ theorem toNNReal_pow (a : ℝ≥0∞) (n : ℕ) : (a ^ n).toNNReal = a.toNNReal 
   toNNRealHom.map_pow a n
 
 /-- `ENNReal.toReal` as a `MonoidHom`. -/
-def toRealHom : ℝ≥0∞ →*₀ ℝ :=
+noncomputable def toRealHom : ℝ≥0∞ →*₀ ℝ :=
   (NNReal.toRealHom : ℝ≥0 →*₀ ℝ).comp toNNRealHom
 
 @[simp]

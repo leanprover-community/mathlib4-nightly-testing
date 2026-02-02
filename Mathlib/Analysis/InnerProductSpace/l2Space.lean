@@ -400,7 +400,7 @@ instance instFunLike : FunLike (HilbertBasis ι 𝕜 E) ι E where
 @[simp]
 protected theorem repr_symm_single [DecidableEq ι] (b : HilbertBasis ι 𝕜 E) (i : ι) :
     b.repr.symm (lp.single 2 i (1 : 𝕜)) = b i := by
-  dsimp [instFunLike]
+  dsimp +instances [instFunLike]
   convert rfl
 
 

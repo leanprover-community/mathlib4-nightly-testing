@@ -134,7 +134,7 @@ lemma isClosedEmbedding_hom [IsTopologicalRing R] [T1Space R] :
     (.uniqueProd (⊥_ CommRingCat ⟶ R) _)).isClosedEmbedding.comp
     (isClosedEmbedding_precomp_of_surjective f this) using 2 with g
   ext x
-  simp [f]
+  simp +instances [f]
 
 instance [T2Space R] : T2Space (A ⟶ R) :=
   (isEmbedding_hom R A).t2Space
