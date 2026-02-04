@@ -7,9 +7,8 @@ module
 
 public import Mathlib.Algebra.Algebra.Subalgebra.Directed
 public import Mathlib.Algebra.Algebra.Subalgebra.IsSimpleOrder
-public import Mathlib.FieldTheory.Separable
+public import Mathlib.FieldTheory.Fixed
 public import Mathlib.FieldTheory.SplittingField.IsSplittingField
-public import Mathlib.LinearAlgebra.Dual.Lemmas
 public import Mathlib.RingTheory.Adjoin.Dimension
 public import Mathlib.RingTheory.TensorProduct.Finite
 
@@ -62,6 +61,12 @@ theorem mem_adjoin_simple_iff {α : E} (x : E) :
     x ∈ adjoin F {α} ↔ ∃ r s : F[X], x = aeval α r / aeval α s := by
   simp only [mem_adjoin_iff_div, Algebra.adjoin_singleton_eq_range_aeval,
     AlgHom.mem_range, exists_exists_eq_and]
+
+theorem forall_mem_adjoin_smul_eq_self_iff {M : Type*} [Monoid M] [MulSemiringAction M E]
+    [SMulCommClass M F E] (m : M) :
+    (∀ x ∈ adjoin F S, m • x = x) ↔ ∀ x ∈ S, m • x = x := by
+  change adjoin F S ≤ FixedBy.intermediateField F E m ↔ _
+  simp [IntermediateField.adjoin_le_iff, Set.subset_def]
 
 variable {F}
 
@@ -152,11 +157,8 @@ theorem isSplittingField_iSup {p : ι → K[X]}
   let F : IntermediateField K L := ⨆ i ∈ s, t i
   have hF : ∀ i ∈ s, t i ≤ F := fun i hi ↦ le_iSup_of_le i (le_iSup (fun _ ↦ t i) hi)
   simp only [isSplittingField_iff, Polynomial.map_prod] at h ⊢
-  refine
-    ⟨Splits.prod fun i hi ↦
-        splits_comp_of_splits (algebraMap K (t i)) (inclusion (hF i hi)).toRingHom
-          (h i hi).1,
-      ?_⟩
+  refine ⟨Splits.prod fun i hi ↦ by
+    simpa [Polynomial.map_map] using (h i hi).1.map (inclusion (hF i hi)).toRingHom, ?_⟩
   simp only [rootSet_prod p s h0, ← Set.iSup_eq_iUnion, (@gc K _ L _ _).l_iSup₂]
   exact iSup_congr fun i ↦ iSup_congr fun hi ↦ (h i hi).2
 
@@ -489,7 +491,7 @@ theorem adjoin_minpoly_coeff_of_exists_primitive_element
     apply minpoly.dvd
     rw [aeval_def, eval₂_eq_eval_map]
     erw [g.map_toSubring K'.toSubring]
-    rw [eval_map, ← aeval_def]
+    rw [eval_map_algebraMap]
     exact minpoly.aeval K α
   have finrank_eq : ∀ K : IntermediateField F E, finrank K E = natDegree (minpoly K α) := by
     intro K
@@ -668,9 +670,8 @@ theorem eq_of_root {x y : L} (hx : IsAlgebraic K x)
 noncomputable def algEquiv {x y : L} (hx : IsAlgebraic K x)
     (h_mp : minpoly K x = minpoly K y) : K⟮x⟯ ≃ₐ[K] K⟮y⟯ := by
   have hy : IsAlgebraic K y := ⟨minpoly K x, ne_zero hx.isIntegral, (h_mp ▸ aeval _ _)⟩
-  exact AlgEquiv.trans (adjoinRootEquivAdjoin K hx.isIntegral).symm
-    (AlgEquiv.trans (AdjoinRoot.algEquivOfEq _ _ h_mp)
-      (adjoinRootEquivAdjoin K hy.isIntegral))
+  exact (adjoinRootEquivAdjoin K hx.isIntegral).symm.trans <|
+    (AdjoinRoot.algEquivOfEq _ _ _ h_mp).trans (adjoinRootEquivAdjoin K hy.isIntegral)
 
 /-- `minpoly.algEquiv` sends the generator of `K⟮x⟯` to the generator of `K⟮y⟯`. -/
 theorem algEquiv_apply {x y : L} (hx : IsAlgebraic K x) (h_mp : minpoly K x = minpoly K y) :
