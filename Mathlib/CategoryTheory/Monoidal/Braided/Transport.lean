@@ -45,6 +45,7 @@ noncomputable section
 This is a def because once we have that both `(e' e).inverse` and `(e' e).functor` are
 braided, this causes a diamond.
 -/
+@[instance_reducible]
 def transportedFunctorCompInverseLaxBraided (e : C ≌ D) [MonoidalCategory C] [BraidedCategory C] :
     ((e' e).functor ⋙ (e' e).inverse).LaxBraided :=
   Functor.LaxBraided.ofNatIso (e' e).unitIso
@@ -54,6 +55,7 @@ attribute [local instance] transportedFunctorCompInverseLaxBraided in
 This is a def because once we have that both `(e' e).inverse` and `(e' e).functor` are
 braided, this causes a diamond.
 -/
+@[instance_reducible]
 def transportedFunctorCompInverseBraided (e : C ≌ D) [MonoidalCategory C] [BraidedCategory C] :
     ((e' e).functor ⋙ (e' e).inverse).Braided where
 

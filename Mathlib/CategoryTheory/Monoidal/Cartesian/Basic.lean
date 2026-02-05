@@ -850,6 +850,7 @@ omit [F.OplaxMonoidal] in
 
 This is not made an instance because it would create a diamond for the oplax monoidal structure on
 the identity and composition of functors. -/
+@[instance_reducible]
 def ofChosenFiniteProducts (F : C ⥤ D) : F.OplaxMonoidal where
   η := terminalComparison F
   δ X Y := prodComparison F X Y
@@ -907,6 +908,7 @@ omit [F.Monoidal] in
 
 This is not made an instance because it would create a diamond for the monoidal structure on
 the identity and composition of functors. -/
+@[instance_reducible]
 noncomputable def ofChosenFiniteProducts (F : C ⥤ D) [PreservesFiniteProducts F] : F.Monoidal :=
   .ofOplaxMonoidal F
 
@@ -944,6 +946,7 @@ attribute [local instance] Functor.Monoidal.ofChosenFiniteProducts in
 
 This is not made an instance because it would create a diamond for the monoidal structure on
 the identity and composition of functors. -/
+@[instance_reducible]
 noncomputable def ofChosenFiniteProducts (F : C ⥤ D) [PreservesFiniteProducts F] : F.Braided where
   braided X Y := by rw [← cancel_mono (Monoidal.μIso _ _ _).inv]; ext <;> simp [← F.map_comp]
 

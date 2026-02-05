@@ -43,7 +43,8 @@ open CategoryTheory.Limits
 section
 
 /-- A category with a terminal object and binary products has a natural monoidal structure. -/
-@[deprecated CartesianMonoidalCategory.ofHasFiniteProducts (since := "2025-10-19")]
+@[instance_reducible,
+  deprecated CartesianMonoidalCategory.ofHasFiniteProducts (since := "2025-10-19")]
 def monoidalOfHasFiniteProducts [HasTerminal C] [HasBinaryProducts C] : MonoidalCategory C :=
   have : HasFiniteProducts C := hasFiniteProducts_of_has_binary_and_terminal
   let +nondep : CartesianMonoidalCategory C := .ofHasFiniteProducts
@@ -150,6 +151,7 @@ end
 section
 
 /-- A category with an initial object and binary coproducts has a natural monoidal structure. -/
+@[instance_reducible]
 def monoidalOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C] : MonoidalCategory C :=
   letI : MonoidalCategoryStruct C := {
     tensorObj := fun X Y ↦ X ⨿ Y

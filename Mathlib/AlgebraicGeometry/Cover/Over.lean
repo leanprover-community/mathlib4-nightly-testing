@@ -49,6 +49,7 @@ protected class Cover.Over {P : MorphismProperty Scheme.{u}} [P.IsStableUnderBas
   over (j : 𝒰.I₀) : (𝒰.X j).Over S := by infer_instance
   isOver_map (j : 𝒰.I₀) : (𝒰.f j).IsOver S := by infer_instance
 
+attribute [instance_reducible] Cover.Over.over
 attribute [instance] Cover.Over.over Cover.Over.isOver_map
 
 variable [P.IsStableUnderBaseChange] [IsJointlySurjectivePreserving P]

@@ -101,7 +101,7 @@ class PseudoEMetricSpace (α : Type u) : Type u extends EDist α where
   toUniformSpace : UniformSpace α := uniformSpaceOfEDist edist edist_self edist_comm edist_triangle
   uniformity_edist : 𝓤 α = ⨅ ε > 0, 𝓟 { p : α × α | edist p.1 p.2 < ε } := by rfl
 
-attribute [instance] PseudoEMetricSpace.toUniformSpace
+attribute [instance_reducible, instance] PseudoEMetricSpace.toUniformSpace
 
 /- Pseudoemetric spaces are less common than metric spaces. Therefore, we work in a dedicated
 namespace, while notions associated to metric spaces are mostly in the root namespace. -/

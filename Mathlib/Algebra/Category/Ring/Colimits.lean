@@ -98,11 +98,9 @@ inductive Relation : Prequotient F → Prequotient F → Prop -- Make it an equi
 
 /-- The setoid corresponding to commutative expressions modulo monoid Relations and identifications.
 -/
-def colimitSetoid : Setoid (Prequotient F) where
+instance colimitSetoid : Setoid (Prequotient F) where
   r := Relation F
   iseqv := ⟨Relation.refl, Relation.symm _ _, Relation.trans _ _ _⟩
-
-attribute [instance] colimitSetoid
 
 /-- The underlying type of the colimit of a diagram in `CommRingCat`.
 -/
@@ -392,11 +390,9 @@ inductive Relation : Prequotient F → Prequotient F → Prop -- Make it an equi
 
 /-- The setoid corresponding to commutative expressions modulo monoid Relations and identifications.
 -/
-def colimitSetoid : Setoid (Prequotient F) where
+instance colimitSetoid : Setoid (Prequotient F) where
   r := Relation F
   iseqv := ⟨Relation.refl, Relation.symm _ _, Relation.trans _ _ _⟩
-
-attribute [instance] colimitSetoid
 
 /-- The underlying type of the colimit of a diagram in `CommRingCat`.
 -/

@@ -471,6 +471,7 @@ set_option backward.privateInPublic.warn false in
 /-- With the optimal candidate, construct a premetric space structure on `X ⊕ Y`, on which the
 predistance is given by the candidate. Then, we will identify points at `0` predistance
 to obtain a genuine metric space. -/
+@[instance_reducible]
 def premetricOptimalGHDist : PseudoMetricSpace (X ⊕ Y) where
   dist p q := optimalGHDist X Y (p, q)
   dist_self _ := candidates_refl (optimalGHDist_mem_candidatesB X Y)

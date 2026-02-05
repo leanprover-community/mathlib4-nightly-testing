@@ -351,6 +351,7 @@ theorem chartAt_self_eq {H : Type*} [TopologicalSpace H] {x : H} :
 We keep this as a definition (not an instance) to avoid instance search trying to search for
 `DiscreteTopology` or `Unique` instances.
 -/
+@[instance_reducible]
 def ChartedSpace.of_discreteTopology [TopologicalSpace M] [TopologicalSpace H]
     [DiscreteTopology M] [h : Unique H] : ChartedSpace H M where
   atlas :=
