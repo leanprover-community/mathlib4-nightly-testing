@@ -206,6 +206,7 @@ public import Mathlib.Algebra.Category.ModuleCat.Subobject
 public import Mathlib.Algebra.Category.ModuleCat.Tannaka
 public import Mathlib.Algebra.Category.ModuleCat.Topology.Basic
 public import Mathlib.Algebra.Category.ModuleCat.Topology.Homology
+public import Mathlib.Algebra.Category.ModuleCat.Ulift
 public import Mathlib.Algebra.Category.MonCat.Adjunctions
 public import Mathlib.Algebra.Category.MonCat.Basic
 public import Mathlib.Algebra.Category.MonCat.Colimits
@@ -1396,6 +1397,7 @@ public import Mathlib.AlgebraicTopology.FundamentalGroupoid.Product
 public import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 public import Mathlib.AlgebraicTopology.ModelCategory.Basic
 public import Mathlib.AlgebraicTopology.ModelCategory.Bifibrant
+public import Mathlib.AlgebraicTopology.ModelCategory.BifibrantObjectHomotopy
 public import Mathlib.AlgebraicTopology.ModelCategory.BrownLemma
 public import Mathlib.AlgebraicTopology.ModelCategory.CategoryWithCofibrations
 public import Mathlib.AlgebraicTopology.ModelCategory.CofibrantObjectHomotopy
@@ -2735,6 +2737,7 @@ public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.Connected
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.Cospan
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.Equalizer
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.Equifibered
+public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.EquifiberedLimits
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.HasPullback
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.BicartesianSq
@@ -6868,6 +6871,7 @@ public import Mathlib.Tactic.RewriteSearch
 public import Mathlib.Tactic.Rify
 public import Mathlib.Tactic.Ring
 public import Mathlib.Tactic.Ring.Basic
+public import Mathlib.Tactic.Ring.Common
 public import Mathlib.Tactic.Ring.Compare
 public import Mathlib.Tactic.Ring.NamePolyVars
 public import Mathlib.Tactic.Ring.PNat
