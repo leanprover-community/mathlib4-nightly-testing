@@ -244,7 +244,9 @@ lemma prod_map_erase [DecidableEq α] (f : α → M) {a} :
 
 @[to_additive] lemma Perm.prod_eq (h : Perm l₁ l₂) : prod l₁ = prod l₂ := h.foldr_op_eq
 
-@[to_additive (attr := simp)]
+-- The additive version `List.sum_reverse` exists in Core and it has less general instance
+-- parameters.
+@[simp]
 lemma prod_reverse (l : List M) : prod l.reverse = prod l := (reverse_perm l).prod_eq
 
 @[to_additive]

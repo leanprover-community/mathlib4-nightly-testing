@@ -121,7 +121,8 @@ abbrev CreatesColimits (F : C ⥤ D) :=
   CreatesColimitsOfSize.{v₂, v₂} F
 
 -- see Note [lower instance priority]
-attribute [instance 100] CreatesLimitsOfShape.CreatesLimit CreatesLimitsOfSize.CreatesLimitsOfShape
+attribute [instance_reducible, instance 100]
+  CreatesLimitsOfShape.CreatesLimit CreatesLimitsOfSize.CreatesLimitsOfShape
   CreatesColimitsOfShape.CreatesColimit CreatesColimitsOfSize.CreatesColimitsOfShape
 
 -- see Note [lower instance priority]

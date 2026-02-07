@@ -154,7 +154,8 @@ theorem PseudoMetricSpace.ext {α : Type*} {m m' : PseudoMetricSpace α}
 
 variable [PseudoMetricSpace α]
 
-attribute [instance] PseudoMetricSpace.toUniformSpace PseudoMetricSpace.toBornology
+attribute [instance_reducible, instance]
+  PseudoMetricSpace.toUniformSpace PseudoMetricSpace.toBornology
 
 -- see Note [lower instance priority]
 instance (priority := 200) PseudoMetricSpace.toEDist : EDist α :=

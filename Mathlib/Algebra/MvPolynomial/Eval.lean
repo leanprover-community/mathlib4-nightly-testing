@@ -815,6 +815,7 @@ Warning: This produces a diamond for
 `Algebra (MvPolynomial σ R) (MvPolynomial σ (MvPolynomial σ S))`. That's why it is not a
 global instance.
 -/
+@[instance_reducible]
 noncomputable def algebraMvPolynomial : Algebra (MvPolynomial σ R) (MvPolynomial σ S) :=
   (MvPolynomial.map (algebraMap R S)).toAlgebra
 

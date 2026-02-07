@@ -45,7 +45,7 @@ class Closed {C : Type u} [Category.{v} C] [MonoidalCategory.{v} C] (X : C) wher
 class MonoidalClosed (C : Type u) [Category.{v} C] [MonoidalCategory.{v} C] where
   closed (X : C) : Closed X := by infer_instance
 
-attribute [instance 100] MonoidalClosed.closed
+attribute [instance_reducible, instance 100] MonoidalClosed.closed
 
 variable {C : Type u} [Category.{v} C] [MonoidalCategory.{v} C]
 

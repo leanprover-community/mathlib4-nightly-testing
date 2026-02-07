@@ -148,6 +148,7 @@ theorem wEquiv_map {α β : TypeVec n} (g : α ⟹ β) (x y : q.P.W α) :
 
 /-- Define the fixed point as the quotient of trees under the equivalence relation.
 -/
+@[instance_reducible]
 def wSetoid (α : TypeVec n) : Setoid (q.P.W α) :=
   ⟨WEquiv, wEquiv.refl, wEquiv.symm _ _, WEquiv.trans _ _ _⟩
 

@@ -154,6 +154,7 @@ end
 
 /-- Construct an honest category from a `Type v`-enriched category.
 -/
+@[instance_reducible]
 def categoryOfEnrichedCategoryType (C : Type u₁) [𝒞 : EnrichedCategory (Type v) C] :
     Category.{v} C where
   Hom := 𝒞.Hom

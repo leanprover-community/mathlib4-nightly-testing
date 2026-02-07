@@ -420,6 +420,7 @@ lemma functorEnriched_assoc [HasFunctorEnrichedHom V F₁ F₂] [HasFunctorEnric
 variable (J C) in
 /-- If `C` is a `V`-enriched ordinary category, and `C` has suitable limits,
 then `J ⥤ C` is also a `J ⥤ V`-enriched ordinary category. -/
+@[instance_reducible]
 noncomputable def functorEnrichedCategory
     [∀ (F₁ F₂ : J ⥤ C), HasFunctorEnrichedHom V F₁ F₂] :
     EnrichedCategory (J ⥤ V) (J ⥤ C) where
@@ -457,6 +458,7 @@ attribute [local instance] functorEnrichedCategory
 variable (J C) in
 /-- If `C` is a `V`-enriched ordinary category, and `C` has suitable limits,
 then `J ⥤ C` is also a `J ⥤ V`-enriched ordinary category. -/
+@[instance_reducible]
 noncomputable def functorEnrichedOrdinaryCategory
     [∀ (F₁ F₂ : J ⥤ C), HasFunctorEnrichedHom V F₁ F₂]
     [∀ (F₁ F₂ : J ⥤ C), HasEnrichedHom V F₁ F₂] :

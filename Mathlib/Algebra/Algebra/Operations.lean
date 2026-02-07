@@ -510,6 +510,7 @@ open Pointwise
 /-- `Submodule.pointwiseNeg` distributes over multiplication.
 
 This is available as an instance in the `Pointwise` locale. -/
+@[instance_reducible]
 protected def hasDistribPointwiseNeg {A} [Ring A] [Algebra R A] : HasDistribNeg (Submodule R A) :=
   toAddSubmonoid_injective.hasDistribNeg _ neg_toAddSubmonoid mul_toAddSubmonoid
 
@@ -752,6 +753,7 @@ variable {α : Type*} [Monoid α] [MulSemiringAction α A] [SMulCommClass α R A
 This is available as an instance in the `Pointwise` locale.
 
 This is a stronger version of `Submodule.pointwiseDistribMulAction`. -/
+@[instance_reducible]
 protected def pointwiseMulSemiringAction : MulSemiringAction α (Submodule R A) where
   __ := Submodule.pointwiseDistribMulAction
   smul_mul r x y := Submodule.map_mul x y <| MulSemiringAction.toAlgHom R A r

@@ -210,6 +210,7 @@ theorem fix_eq {C : α → Sort*} (F : ∀ x : α, (∀ y : α, r y x → C y) �
   wf.fix_eq F
 
 /-- Derive a `WellFoundedRelation` instance from an `isWellFounded` instance. -/
+@[instance_reducible]
 def toWellFoundedRelation : WellFoundedRelation α :=
   ⟨r, IsWellFounded.wf⟩
 
@@ -284,7 +285,8 @@ theorem fix_eq {C : α → Sort*} (F : ∀ x : α, (∀ y : α, y < x → C y) �
   IsWellFounded.fix_eq _ F
 
 /-- Derive a `WellFoundedRelation` instance from a `WellFoundedLT` instance. -/
-@[to_dual /-- Derive a `WellFoundedRelation` instance from a `WellFoundedGT` instance. -/]
+@[to_dual (attr := instance_reducible)
+  /-- Derive a `WellFoundedRelation` instance from a `WellFoundedGT` instance. -/]
 def toWellFoundedRelation : WellFoundedRelation α :=
   IsWellFounded.toWellFoundedRelation (· < ·)
 
@@ -296,6 +298,7 @@ noncomputable def IsWellOrder.linearOrder (r : α → α → Prop) [IsWellOrder 
   linearOrderOfSTO r
 
 /-- Derive a `WellFoundedRelation` instance from an `IsWellOrder` instance. -/
+@[instance_reducible]
 def IsWellOrder.toHasWellFounded [LT α] [hwo : IsWellOrder α (· < ·)] : WellFoundedRelation α where
   rel := (· < ·)
   wf := hwo.wf
@@ -631,6 +634,15 @@ end SubsetSsubset
 @[to_dual instReflGe]
 instance instReflLe [Preorder α] : @Std.Refl α (· ≤ ·) :=
   ⟨le_refl⟩
+
+/-- A version of `Std.le_refl` that works with `Std.Refl (· ≥ ·)`.
+This is needed for `to_dual` translations because `Std.le_refl` requires `Std.Refl (· ≤ ·)`,
+but after translation `instReflLe` becomes `instReflGe : Std.Refl (· ≥ ·)`. -/
+theorem Std.ge_refl {α : Type*} [LE α] [inst : @Std.Refl α (· ≥ ·)] (a : α) : a ≤ a :=
+  @Std.Refl.refl α (· ≥ ·) inst a
+
+set_option linter.existingAttributeWarning false in
+attribute [to_dual existing Std.ge_refl] Std.le_refl
 
 @[to_dual instIsTransGe]
 instance [Preorder α] : IsTrans α (· ≤ ·) :=

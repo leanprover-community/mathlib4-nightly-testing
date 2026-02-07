@@ -37,6 +37,7 @@ namespace LinearMap
 
 /-- The intrinsic star operation on linear maps `E →ₗ F` defined by
 `(star f) x = star (f (star x))`. -/
+@[instance_reducible]
 def intrinsicStar : Star (E →ₗ[R] F) where
   star f :=
   { toFun x := star (f (star x))
@@ -50,12 +51,13 @@ open scoped IntrinsicStar
 @[simp] theorem intrinsicStar_apply (f : E →ₗ[R] F) (x : E) : (star f) x = star (f (star x)) := rfl
 
 /-- The involutive intrinsic star structure on linear maps. -/
-def intrinsicInvolutiveStar : InvolutiveStar (E →ₗ[R] F) where
+@[instance_reducible] def intrinsicInvolutiveStar : InvolutiveStar (E →ₗ[R] F) where
   star_involutive x := by ext; simp
 
 scoped[IntrinsicStar] attribute [instance] LinearMap.intrinsicInvolutiveStar
 
 /-- The intrinsic star additive monoid structure on linear maps. -/
+@[instance_reducible]
 def intrinsicStarAddMonoid : StarAddMonoid (E →ₗ[R] F) where
   star_add x y := by ext; simp
 
@@ -186,6 +188,7 @@ namespace Module.End
 open scoped IntrinsicStar
 
 /-- Intrinsic star operation for `(End R E)ˣ`. -/
+@[instance_reducible]
 def Units.intrinsicStar : Star (End R E)ˣ where
   star f := by
     refine ⟨star f, star (f⁻¹ : (End R E)ˣ), ?_, ?_⟩

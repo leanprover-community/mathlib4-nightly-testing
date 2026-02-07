@@ -359,6 +359,16 @@ theorem ext ⦃f g : (A ⊗[R] B) →ₐ[S] C⦄
 theorem ext' {g h : A ⊗[R] B →ₐ[S] C} (H : ∀ a b, g (a ⊗ₜ b) = h (a ⊗ₜ b)) : g = h :=
   ext (AlgHom.ext fun _ => H _ _) (AlgHom.ext fun _ => H _ _)
 
+@[ext high]
+lemma ringHom_ext {C : Type*} [Semiring C] {f g : A ⊗[R] B →+* C}
+    (h₁ : f.comp includeLeftRingHom = g.comp includeLeftRingHom)
+    (h₂ : f.comp includeRight.toRingHom = g.comp includeRight.toRingHom) : f = g := by
+  ext x
+  induction x with
+  | zero => simp
+  | add x y _ _ => simp_all
+  | tmul x y => simpa [← map_mul] using congr($h₁ x * $h₂ y)
+
 end ext
 
 end Semiring
@@ -589,6 +599,7 @@ multiplication, and one from this would-be instance. Arguably we could live with
 case the real fix is to address the ambiguity in notation, probably along the lines outlined here:
 https://leanprover.zulipchat.com/#narrow/stream/144837-PR-reviews/topic/.234773.20base.20change/near/240929258
 -/
+@[instance_reducible]
 protected def module : Module (A ⊗[R] B) M where
   smul x m := moduleAux x m
   zero_smul m := by simp only [(· • ·), map_zero, LinearMap.zero_apply]

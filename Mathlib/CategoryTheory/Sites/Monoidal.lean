@@ -158,6 +158,7 @@ variable (J A)
 /-- The monoidal category structure on `Sheaf J A` that is obtained
 by localization of the monoidal category structure on the category
 of presheaves. -/
+@[instance_reducible]
 noncomputable def monoidalCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J A] :
     MonoidalCategory (Sheaf J A) :=
   inferInstanceAs (MonoidalCategory

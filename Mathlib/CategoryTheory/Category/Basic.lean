@@ -349,6 +349,7 @@ universe u'
 /-- The category structure on `ULift C` that is induced from the category
 structure on `C`. This is not made a global instance because of a diamond
 when `C` is a preordered type. -/
+@[instance_reducible]
 def uliftCategory : Category.{v} (ULift.{u'} C) where
   Hom X Y := X.down ⟶ Y.down
   id X := 𝟙 X.down
