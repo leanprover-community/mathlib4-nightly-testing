@@ -86,7 +86,7 @@ namespace CategoryTheory
 /-- A preliminary structure on the way to defining a category,
 containing the data, but none of the axioms. -/
 @[pp_with_univ]
-class CategoryStruct (obj : Type u) : Type max u (v + 1) extends Quiver.{v + 1} obj where
+class CategoryStruct (obj : Type u) : Type max u (v + 1) extends Quiver.{v} obj where
   /-- The identity morphism on an object. -/
   id : ∀ X : obj, Hom X X
   /-- Composition of morphisms in a category, written `f ≫ g`. -/
@@ -349,6 +349,7 @@ universe u'
 /-- The category structure on `ULift C` that is induced from the category
 structure on `C`. This is not made a global instance because of a diamond
 when `C` is a preordered type. -/
+@[instance_reducible]
 def uliftCategory : Category.{v} (ULift.{u'} C) where
   Hom X Y := X.down ⟶ Y.down
   id X := 𝟙 X.down

@@ -601,7 +601,7 @@ protected noncomputable def unit' : 𝟭 (ModuleCat S) ⟶ restrictScalars f ⋙
 identity functor.
 -/
 @[simps]
-protected def counit' : coextendScalars f ⋙ restrictScalars f ⟶ 𝟭 (ModuleCat R) where
+protected noncomputable def counit' : coextendScalars f ⋙ restrictScalars f ⟶ 𝟭 (ModuleCat R) where
   -- TODO: after https://github.com/leanprover-community/mathlib4/pull/19511 we need to hint `(X := ...)`.
   -- This suggests `restrictScalars` needs to be redesigned.
   app X := ofHom (X := (restrictScalars f).obj ((coextendScalars f).obj X))

@@ -152,7 +152,7 @@ def id (I : C) [ChosenPullbacksAlong (𝟙 I)] : ExponentiableMorphism (𝟙 I) 
 
 theorem id_pushforward (I : C) [ChosenPullbacksAlong (𝟙 I)] :
     (id I).pushforward = 𝟭 (Over I) := by
-  dsimp only [id]
+  dsimp +instances only [id]
 
 /-- Any pushforward of the identity morphism is naturally isomorphic to the identity functor. -/
 def pushforwardId (I : C) [ChosenPullbacksAlong (𝟙 I)] [ExponentiableMorphism (𝟙 I)] :
@@ -187,7 +187,7 @@ theorem comp_pushforward {I J K : C} (f : I ⟶ J) (g : J ⟶ K)
     [ChosenPullbacksAlong f] [ChosenPullbacksAlong g] [ChosenPullbacksAlong (f ≫ g)]
     [ExponentiableMorphism f] [ExponentiableMorphism g] :
     (comp f g).pushforward = pushforward f ⋙ pushforward g := by
-  dsimp only [comp]
+  dsimp +instances only [comp]
 
 /-- The natural isomorphism between pushforward of the composition and the composition of
 pushforward functors. -/

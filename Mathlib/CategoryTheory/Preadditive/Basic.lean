@@ -69,7 +69,7 @@ class Preadditive where
 
 attribute [inherit_doc Preadditive] Preadditive.homGroup Preadditive.add_comp Preadditive.comp_add
 
-attribute [instance] Preadditive.homGroup
+attribute [instance_reducible, instance] Preadditive.homGroup
 
 -- simp can already prove reassoc version
 attribute [reassoc, simp] Preadditive.add_comp

@@ -485,6 +485,7 @@ instance : IsGroupoid (⊤ : MorphismProperty C).Localization :=
   isGroupoid <| MorphismProperty.Q ⊤
 
 /-- Localization of a category with respect to all morphisms results in a groupoid. -/
+@[instance_reducible]
 def groupoid : Groupoid (⊤ : MorphismProperty C).Localization :=
   Groupoid.ofIsGroupoid
 

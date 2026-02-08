@@ -279,6 +279,7 @@ instance (priority := 100) hasZeroObject : HasZeroObject C :=
 section ToNonPreadditiveAbelian
 
 /-- Every abelian category is, in particular, `NonPreadditiveAbelian`. -/
+@[instance_reducible]
 def nonPreadditiveAbelian : NonPreadditiveAbelian C :=
   { ‹Abelian C› with }
 

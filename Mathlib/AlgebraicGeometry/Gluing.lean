@@ -540,7 +540,7 @@ lemma exists_of_pullback_V_V {i j k : J} (x : pullback (C := Scheme) (V F i j).�
         (le_iSup_of_le ⟨l, hli ≫ k₁.2.1, hlk ≫ k₂.2.2⟩ le_rfl))
       (by simp)
   have : IsOpenImmersion α := by
-    apply (config := { allowSynthFailures := true }) IsOpenImmersion.of_comp
+    apply +allowSynthFailures IsOpenImmersion.of_comp
     · exact inferInstanceAs (IsOpenImmersion (pullback.fst _ _))
     · simp only [limit.lift_π, PullbackCone.mk_pt, PullbackCone.mk_π_app, α]
       infer_instance
@@ -748,7 +748,7 @@ def isColimitForgetToLocallyRingedSpace :
       rw [← CategoryTheory.GlueData.ι, reassoc_of% GlueData.ι_isoLocallyRingedSpace_inv,
         reassoc_of% GlueData.ι_isoLocallyRingedSpace_inv,
         ← cancel_epi (Hom.isoOpensRange (F.map _)).hom.toLRSHom]
-      simp only [Opens.iSupOpenCover, Cover.ulift, V, ← Hom.comp_toLRSHom_assoc,
+      simp +instances only [Opens.iSupOpenCover, Cover.ulift, V, ← Hom.comp_toLRSHom_assoc,
         Cover.ι_fromGlued_assoc, homOfLE_ι, Hom.isoOpensRange_hom_ι, Cover.idx]
       generalize_proofs _ _ h
       rw [homOfLE_tAux F ↓i ↓j h.choose.2.1 h.choose.2.2, Iso.hom_inv_id_assoc]
@@ -798,7 +798,7 @@ lemma ι_eq_ι_iff {i j : J} {xi : F.obj i} {xj : F.obj j} :
   simp only [Limits.colimit, ← Scheme.Hom.comp_apply,
     colimit.comp_coconePointUniqueUpToIso_inv, cocone, glueDataι_naturality]
   refine ?_ ∘ ((glueData F).ι_eq_iff _ _ _ _).mp
-  dsimp only [GlueData.Rel]
+  dsimp +instances only [GlueData.Rel]
   rintro ⟨x, rfl, rfl⟩
   obtain ⟨⟨k, ki, kj⟩, y, hy : F.map ki y = (glueData F).f i j x⟩ := mem_iSup.mp x.2
   refine ⟨k, ki, kj, y, hy, ?_⟩

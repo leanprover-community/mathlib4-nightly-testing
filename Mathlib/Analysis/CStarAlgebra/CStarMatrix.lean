@@ -622,10 +622,9 @@ variable {m n A : Type*} [Fintype m] [Fintype n]
   [NonUnitalCStarAlgebra A] [PartialOrder A] [StarOrderedRing A]
 
 set_option backward.privateInPublic true in
-private noncomputable def normedAddCommGroupAux : NormedAddCommGroup (CStarMatrix m n A) :=
+private noncomputable local instance normedAddCommGroupAux :
+    NormedAddCommGroup (CStarMatrix m n A) :=
   .ofCore CStarMatrix.normedSpaceCore
-
-attribute [local instance] normedAddCommGroupAux
 
 private noncomputable def normedSpaceAux : NormedSpace ℂ (CStarMatrix m n A) :=
   .ofCore CStarMatrix.normedSpaceCore

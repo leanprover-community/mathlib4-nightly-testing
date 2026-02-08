@@ -87,7 +87,7 @@ lemma preservesLocalization_normalizationDiagramMap :
       Γ(X, f ⁻¹ᵁ Y.basicOpen r) := by
     let : Algebra Γ(X, f ⁻¹ᵁ U.1) Γ(X, X.basicOpen (f.app _ r)) :=
       (X.presheaf.map (homOfLE (X.basicOpen_le _)).op).hom.toAlgebra
-    dsimp [inst]
+    dsimp +instances [inst]
     rw! (castMode := .all) [f.preimage_basicOpen r]
     exact isLocalization_basicOpen_of_qcqs (f.isCompact_preimage U.2.isCompact)
         (f.isQuasiSeparated_preimage U.2.isQuasiSeparated) (f.app _ r)
@@ -139,7 +139,7 @@ def toNormalization : X ⟶ f.normalization :=
       (pullbackRestrictIsoRestrict f V.1).hom = X.homOfLE
         (f.preimage_mono (toOpens_mono i.1.1)) := by
     rw [← cancel_mono (Scheme.Opens.ι _)]
-    simp [Cover.trans, Cover.locallyDirectedPullbackCover]
+    simp +instances [Cover.trans, Cover.locallyDirectedPullbackCover]
   rw [← Iso.inv_comp_eq, reassoc_of% this, ← Scheme.Opens.toSpecΓ_SpecMap_presheaf_map_assoc,
     ← Spec.map_comp_assoc]
   dsimp [normalizationOpenCover]

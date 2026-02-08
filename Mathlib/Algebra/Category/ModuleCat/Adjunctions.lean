@@ -251,10 +251,10 @@ section
 instance : Preadditive (Free R C) where
   homGroup _ _ := Finsupp.instAddCommGroup
   add_comp X Y Z f f' g := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     rw [Finsupp.sum_add_index'] <;> · simp [add_mul]
   comp_add X Y Z f g g' := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     rw [← Finsupp.sum_add]
     congr; ext r h
     rw [Finsupp.sum_add_index'] <;> · simp [mul_add]
@@ -262,17 +262,18 @@ instance : Preadditive (Free R C) where
 instance : Linear R (Free R C) where
   homModule _ _ := Finsupp.module _ R
   smul_comp X Y Z r f g := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     rw [Finsupp.sum_smul_index] <;> simp [Finsupp.smul_sum, mul_assoc]
   comp_smul X Y Z f r g := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     simp_rw [Finsupp.smul_sum]
     congr; ext h s
     rw [Finsupp.sum_smul_index] <;> simp [mul_left_comm]
 
 theorem single_comp_single {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) (r s : R) :
     (single f r ≫ single g s : Free.of R X ⟶ Free.of R Z) = single (f ≫ g) (r * s) := by
-  dsimp [CategoryTheory.categoryFree]; simp
+    dsimp +instances [CategoryTheory.categoryFree]
+    simp
 
 end
 
@@ -299,7 +300,9 @@ open Preadditive Linear
 def lift (F : C ⥤ D) : Free R C ⥤ D where
   obj X := F.obj X
   map {_ _} f := f.sum fun f' r => r • F.map f'
-  map_id := by dsimp [CategoryTheory.categoryFree]; simp
+  map_id := by
+    dsimp +instances [CategoryTheory.categoryFree]
+    simp
   map_comp {X Y Z} f g := by
     induction f using Finsupp.induction_linear with
     | zero => simp

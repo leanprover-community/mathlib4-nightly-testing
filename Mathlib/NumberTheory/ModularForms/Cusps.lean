@@ -163,7 +163,8 @@ We consider the orbits for the action of `𝒢` on its own cusps. The main resul
 -/
 
 /-- The action of `𝒢` on its own cusps. -/
-def cusps_subMulAction (𝒢 : Subgroup (GL (Fin 2) ℝ)) : SubMulAction 𝒢 (OnePoint ℝ) where
+noncomputable def cusps_subMulAction (𝒢 : Subgroup (GL (Fin 2) ℝ)) :
+    SubMulAction 𝒢 (OnePoint ℝ) where
   carrier := {c | IsCusp c 𝒢}
   smul_mem' g _ hc := IsCusp.smul_of_mem hc g.property
 

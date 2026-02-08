@@ -813,6 +813,7 @@ variable {M α : Type*} [Monoid G] [AddCommMonoid M] [MulAction G α]
 
 This is not an instance as it would conflict with the action on the range.
 See the file `MathlibTest/instance_diamonds.lean` for examples of such conflicts. -/
+@[instance_reducible]
 def comapSMul [AddCommMonoid M] : SMul G (SkewMonoidAlgebra M α) where smul g := mapDomain (g • ·)
 
 attribute [local instance] comapSMul
@@ -824,6 +825,7 @@ theorem comapSMul_single (g : G) (a : α) (b : M) : g • single a b = single (g
   mapDomain_single
 
 /-- `comapSMul` is multiplicative -/
+@[instance_reducible]
 def comapMulAction : MulAction G (SkewMonoidAlgebra M α) where
   one_smul f := by rw [comapSMul_def, one_smul_eq_id, mapDomain_id]
   mul_smul g g' f := by

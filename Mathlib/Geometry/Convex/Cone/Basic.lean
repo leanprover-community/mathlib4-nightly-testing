@@ -77,6 +77,8 @@ instance : SetLike (ConvexCone R M) M where
   coe := carrier
   coe_injective' C₁ C₂ h := by cases C₁; congr!
 
+instance : PartialOrder (ConvexCone R M) := .ofSetLike (ConvexCone R M) M
+
 @[simp, norm_cast] lemma coe_mk (s : Set M) (h₁ h₂) : ↑(mk (R := R) s h₁ h₂) = s := rfl
 
 @[simp] lemma mem_mk {h₁ h₂} : x ∈ mk (R := R) s h₁ h₂ ↔ x ∈ s := .rfl
@@ -321,6 +323,7 @@ def toPreorder (C : ConvexCone R G) (h₁ : C.Pointed) : Preorder G where
   le_trans x y z xy zy := by simpa using add_mem zy xy
 
 /-- A pointed and salient cone defines a partial order. -/
+@[instance_reducible]
 def toPartialOrder (C : ConvexCone R G) (h₁ : C.Pointed) (h₂ : C.Salient) : PartialOrder G :=
   { toPreorder C h₁ with
     le_antisymm := by

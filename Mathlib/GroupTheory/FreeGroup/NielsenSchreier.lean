@@ -75,7 +75,7 @@ A groupoid `G` is free when we have the following data:
 This definition is nonstandard. Normally one would require that functors `G ⥤ X`
 to any _groupoid_ `X` are given by graph homomorphisms from `generators`. -/
 class IsFreeGroupoid (G) [Groupoid.{v} G] where
-  quiverGenerators : Quiver.{v + 1} (IsFreeGroupoid.Generators G)
+  quiverGenerators : Quiver.{v} (IsFreeGroupoid.Generators G)
   of : ∀ {a b : IsFreeGroupoid.Generators G}, (a ⟶ b) → ((show G from a) ⟶ b)
   unique_lift :
     ∀ {X : Type v} [Group X] (f : Labelling (IsFreeGroupoid.Generators G) X),
@@ -85,7 +85,7 @@ attribute [nolint docBlame] IsFreeGroupoid.of IsFreeGroupoid.unique_lift
 
 namespace IsFreeGroupoid
 
-attribute [instance] quiverGenerators
+attribute [instance_reducible, instance] quiverGenerators
 
 /-- Two functors from a free groupoid to a group are equal when they agree on the generating
 quiver. -/
