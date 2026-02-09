@@ -125,6 +125,7 @@ theorem CompHaus.toProfinite_obj' (X : CompHaus) :
   rfl
 
 /-- Finite types are given the discrete topology. -/
+@[instance_reducible]
 def FintypeCat.botTopology (A : FintypeCat) : TopologicalSpace A := ⊥
 
 section DiscreteTopology

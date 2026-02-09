@@ -112,6 +112,7 @@ variable {R}
 equivalence with `Comon(R-Mod)`. This is just an auxiliary definition; the `MonoidalCategory`
 instance we make in `Mathlib/Algebra/Category/CoalgCat/Monoidal.lean` has better
 definitional equalities. -/
+@[instance_reducible]
 noncomputable def instMonoidalCategoryAux : MonoidalCategory (CoalgCat R) :=
   Monoidal.transport (comonEquivalence R).symm
 
@@ -183,7 +184,7 @@ theorem comul_tensorObj_tensorObj_left :
       = Coalgebra.comul (A := M ⊗[R] N ⊗[R] P) := by
   rw [ofComonObjCoalgebraStruct_comul]
   dsimp +instances
-  simp only [toComonObj]
+  simp +instances only [toComonObj]
   simp [tensorμ_eq_tensorTensorTensorComm, TensorProduct.comul_def,
     AlgebraTensorModule.tensorTensorTensorComm_eq]
   rfl

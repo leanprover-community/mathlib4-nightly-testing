@@ -218,6 +218,7 @@ This is a `def` and not an `instance`, because the path
 `Ring` => `Language.ring.Structure` => `Ring` cannot be made to
 commute by definition
 -/
+@[instance_reducible]
 def compatibleRingOfRing (R : Type*) [Add R] [Mul R] [Neg R] [One R] [Zero R] :
     CompatibleRing R :=
   { funMap := fun {n} f =>

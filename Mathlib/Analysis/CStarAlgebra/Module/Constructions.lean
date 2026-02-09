@@ -162,6 +162,7 @@ attribute [-instance] WithCStarModule.instUniformSpace WithCStarModule.instBorno
 /-- A normed additive commutative group structure on `C⋆ᵐᵒᵈ(A, E × F)` with the wrong topology,
 uniformity and bornology. This is only used to build the instance with the correct forgetful
 inheritance data. -/
+@[instance_reducible]
 noncomputable def normedAddCommGroupProdAux : NormedAddCommGroup C⋆ᵐᵒᵈ(A, E × F) :=
   NormedAddCommGroup.ofCore (CStarModule.normedSpaceCore A)
 
@@ -291,6 +292,7 @@ attribute [-instance] WithCStarModule.instUniformSpace WithCStarModule.instBorno
 /-- A normed additive commutative group structure on `C⋆ᵐᵒᵈ(A, Π i, E i)` with the wrong topology,
 uniformity and bornology. This is only used to build the instance with the correct forgetful
 inheritance data. -/
+@[instance_reducible]
 noncomputable def normedAddCommGroupPiAux : NormedAddCommGroup C⋆ᵐᵒᵈ(A, Π i, E i) :=
   NormedAddCommGroup.ofCore (CStarModule.normedSpaceCore A)
 
@@ -347,7 +349,7 @@ Note: this instance requires `SMul ℂᵐᵒᵖ E` and `IsCentralScalar ℂ E` i
 which is unlikely to occur in practice. However, in practice one could either add those instances
 to the type `E` in question, or else supply them to this instance manually, which is reason behind
 the naming of these two instance arguments. -/
-instance instCStarModuleComplex : CStarModule ℂ E where
+noncomputable instance instCStarModuleComplex : CStarModule ℂ E where
   inner x y := ⟪x, y⟫_ℂ
   inner_add_right := by simp [_root_.inner_add_right]
   inner_self_nonneg {x} := by

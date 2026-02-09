@@ -85,7 +85,7 @@ attribute [nolint docBlame] IsFreeGroupoid.of IsFreeGroupoid.unique_lift
 
 namespace IsFreeGroupoid
 
-attribute [instance] quiverGenerators
+attribute [instance_reducible, instance] quiverGenerators
 
 /-- Two functors from a free groupoid to a group are equal when they agree on the generating
 quiver. -/

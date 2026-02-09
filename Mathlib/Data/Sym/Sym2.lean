@@ -78,6 +78,7 @@ theorem Rel.is_equivalence : Equivalence (Rel α) :=
 
 /-- One can use `attribute [local instance] Sym2.Rel.setoid` to temporarily
 make `Quotient` functionality work for `α × α`. -/
+@[instance_reducible]
 def Rel.setoid (α : Type u) : Setoid (α × α) :=
   ⟨Rel α, Rel.is_equivalence⟩
 
@@ -325,6 +326,8 @@ instance : SetLike (Sym2 α) α where
     have hx := h x; have hy := h y; have hx' := h x'; have hy' := h y'
     simp only [mem_iff'] at hx hy hx' hy'
     aesop
+
+instance : PartialOrder (Sym2 α) := .ofSetLike (Sym2 α) α
 
 @[simp]
 theorem mem_iff_mem {x : α} {z : Sym2 α} : Sym2.Mem x z ↔ x ∈ z :=

@@ -337,6 +337,7 @@ instance fintypeLENat (n : ℕ) : Fintype { i | i ≤ n } := by
 
 /-- This is not an instance so that it does not conflict with the one
 in `Mathlib/Order/Interval/Finset/Defs.lean`. -/
+@[instance_reducible]
 def Nat.fintypeIio (n : ℕ) : Fintype (Iio n) :=
   Set.fintypeLTNat n
 
@@ -755,7 +756,7 @@ theorem card_empty : Fintype.card (∅ : Set α) = 0 :=
 
 theorem card_fintypeInsertOfNotMem {a : α} (s : Set α) [Fintype s] (h : a ∉ s) :
     @Fintype.card _ (fintypeInsertOfNotMem s h) = Fintype.card s + 1 := by
-  simp [fintypeInsertOfNotMem, Fintype.card_ofFinset]
+  simp [Fintype.card_ofFinset]
 
 @[simp]
 theorem card_insert {a : α} (s : Set α) [Fintype s] (h : a ∉ s)

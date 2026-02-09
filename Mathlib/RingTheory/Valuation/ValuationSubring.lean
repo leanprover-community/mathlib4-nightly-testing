@@ -52,6 +52,8 @@ instance : SetLike (ValuationSubring K) K where
     replace h := SetLike.coe_injective' h
     congr
 
+instance : PartialOrder (ValuationSubring K) := .ofSetLike (ValuationSubring K) K
+
 theorem mem_carrier (x : K) : x ∈ A.carrier ↔ x ∈ A := Iff.refl _
 
 @[simp]
@@ -704,8 +706,8 @@ theorem surjective_unitGroupToResidueFieldUnits :
 the units of the residue field of `A`. -/
 def unitsModPrincipalUnitsEquivResidueFieldUnits :
     A.unitGroup ⧸ A.principalUnitGroup.comap A.unitGroup.subtype ≃* (IsLocalRing.ResidueField A)ˣ :=
-  (QuotientGroup.quotientMulEquivOfEq A.ker_unitGroupToResidueFieldUnits.symm).trans
-    (QuotientGroup.quotientKerEquivOfSurjective _ A.surjective_unitGroupToResidueFieldUnits)
+  QuotientGroup.liftEquiv _ A.surjective_unitGroupToResidueFieldUnits
+    A.ker_unitGroupToResidueFieldUnits.symm
 
 theorem unitsModPrincipalUnitsEquivResidueFieldUnits_comp_quotientGroup_mk :
     (A.unitsModPrincipalUnitsEquivResidueFieldUnits : _ ⧸ Subgroup.comap _ _ →* _).comp
@@ -740,6 +742,7 @@ variable {G : Type*} [Group G] [MulSemiringAction G K]
 /-- The action on a valuation subring corresponding to applying the action to every element.
 
 This is available as an instance in the `Pointwise` locale. -/
+@[instance_reducible]
 def pointwiseHasSMul : SMul G (ValuationSubring K) where
   smul g S := -- TODO: if we add `ValuationSubring.map` at a later date, we should use it here
     { g • S.toSubring with
@@ -763,6 +766,7 @@ theorem pointwise_smul_toSubring (g : G) (S : ValuationSubring K) :
 This is available as an instance in the `Pointwise` locale.
 
 This is a stronger version of `ValuationSubring.pointwiseSMul`. -/
+@[instance_reducible]
 def pointwiseMulAction : MulAction G (ValuationSubring K) :=
   toSubring_injective.mulAction toSubring pointwise_smul_toSubring
 
