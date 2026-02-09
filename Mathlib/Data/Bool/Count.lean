@@ -68,7 +68,8 @@ theorem count_not_eq_count (hl : IsChain (· ≠ ·) l) (h2 : Even (length l)) (
   rcases l with - | ⟨x, l⟩
   · rfl
   rw [length_cons, Nat.even_add_one, Nat.not_even_iff] at h2
-  suffices count (!x) (x :: l) = count x (x :: l) by grind
+  suffices count (!x) (x :: l) = count x (x :: l) by grind only [= count_cons,
+    usr count_not_add_count, = length_cons, #a939, #60fe]
   rw [count_cons_of_ne x.not_ne_self.symm, hl.count_not_cons, h2, count_cons_self]
 
 theorem count_false_eq_count_true (hl : IsChain (· ≠ ·) l) (h2 : Even (length l)) :
