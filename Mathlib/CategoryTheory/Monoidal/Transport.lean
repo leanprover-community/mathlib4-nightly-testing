@@ -160,6 +160,7 @@ def transport (e : C ≌ D) : MonoidalCategory.{v₂} D :=
   induced e.inverse
     { μIso := fun _ _ => e.unitIso.app _
       εIso := e.unitIso.app _
+      #adaptation_note /-- Prior to nightly-2026-02-05 the remaining fields were provided by the auto_param -/
       whiskerLeft_eq := by simp +zetaDelta +instances
       whiskerRight_eq := by simp +zetaDelta +instances
       tensorHom_eq := by simp +zetaDelta +instances
