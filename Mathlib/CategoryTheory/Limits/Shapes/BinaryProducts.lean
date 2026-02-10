@@ -1011,7 +1011,7 @@ end
 
 noncomputable section ProdFunctor
 
-variable {C} [Category.{v} C] [HasBinaryProducts C]
+variable {C} [HasBinaryProducts C]
 
 /-- The binary product functor. -/
 @[simps]
