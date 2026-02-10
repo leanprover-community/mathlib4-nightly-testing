@@ -95,8 +95,9 @@ theorem ofLower_inj {a b : WithLower α} : ofLower a = ofLower b ↔ a = b :=
 
 /-- A recursor for `WithLower`. Use as `induction x`. -/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-protected def rec {β : WithLower α → Sort*} (h : ∀ a, β (toLower a)) : ∀ a, β a := fun a =>
-  h (ofLower a)
+protected def rec {motive : WithLower α → Sort*} (toLower : ∀ a, motive (toLower a)) :
+    ∀ a, motive a := fun a =>
+  toLower (ofLower a)
 
 instance [Nonempty α] : Nonempty (WithLower α) := ‹Nonempty α›
 instance [Inhabited α] : Inhabited (WithLower α) := ‹Inhabited α›
@@ -148,8 +149,9 @@ lemma ofUpper_inj {a b : WithUpper α} : ofUpper a = ofUpper b ↔ a = b := Iff.
 
 /-- A recursor for `WithUpper`. Use as `induction x`. -/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
-protected def rec {β : WithUpper α → Sort*} (h : ∀ a, β (toUpper a)) : ∀ a, β a := fun a =>
-  h (ofUpper a)
+protected def rec {motive : WithUpper α → Sort*} (toUpper : ∀ a, motive (toUpper a)) :
+    ∀ a, motive a := fun a =>
+  toUpper (ofUpper a)
 
 instance [Nonempty α] : Nonempty (WithUpper α) := ‹Nonempty α›
 instance [Inhabited α] : Inhabited (WithUpper α) := ‹Inhabited α›
@@ -236,8 +238,7 @@ def withLowerHomeomorph : WithLower α ≃ₜ α :=
 theorem isOpen_iff_generate_Ici_compl : IsOpen s ↔ GenerateOpen { t | ∃ a, (Ici a)ᶜ = t } s := by
   rw [topology_eq α]; rfl
 
-instance _root_.OrderDual.instIsUpper [Preorder α] [TopologicalSpace α] [IsLower α] :
-    IsUpper αᵒᵈ where
+instance _root_.OrderDual.instIsUpper : IsUpper αᵒᵈ where
   topology_eq_upperTopology := topology_eq_lowerTopology (α := α)
 
 /-- Left-closed right-infinite intervals [a, ∞) are closed in the lower topology. -/
@@ -263,7 +264,7 @@ theorem isUpperSet_of_isClosed (h : IsClosed s) : IsUpperSet s :=
 
 theorem tendsto_nhds_iff_not_le {β : Type*} {f : β → α} {l : Filter β} {x : α} :
     Filter.Tendsto f l (𝓝 x) ↔ ∀ y, ¬y ≤ x → ∀ᶠ z in l, ¬y ≤ f z := by
-  simp [topology_eq_lowerTopology, tendsto_nhds_generateFrom_iff, Filter.Eventually, Ici,
+  simp +instances [topology_eq_lowerTopology, tendsto_nhds_generateFrom_iff, Filter.Eventually, Ici,
     compl_setOf]
 
 /--
@@ -397,8 +398,7 @@ def withUpperHomeomorph : WithUpper α ≃ₜ α :=
 theorem isOpen_iff_generate_Iic_compl : IsOpen s ↔ GenerateOpen { t | ∃ a, (Iic a)ᶜ = t } s := by
   rw [topology_eq α]; rfl
 
-instance _root_.OrderDual.instIsLower [Preorder α] [TopologicalSpace α] [IsUpper α] :
-    IsLower αᵒᵈ where
+instance _root_.OrderDual.instIsLower : IsLower αᵒᵈ where
   topology_eq_lowerTopology := topology_eq_upperTopology (α := α)
 
 /-- Left-infinite right-closed intervals (-∞,a] are closed in the upper topology. -/

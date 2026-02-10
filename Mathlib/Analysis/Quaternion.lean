@@ -147,7 +147,7 @@ theorem coeComplex_coe (r : ℝ) : ((r : ℂ) : ℍ) = r :=
   rfl
 
 /-- Coercion `ℂ →ₐ[ℝ] ℍ` as an algebra homomorphism. -/
-def ofComplex : ℂ →ₐ[ℝ] ℍ where
+noncomputable def ofComplex : ℂ →ₐ[ℝ] ℍ where
   toFun := (↑)
   map_one' := rfl
   map_zero' := rfl

@@ -613,7 +613,7 @@ theorem sub_one_mul_padicValNat_factorial_lt_of_ne_zero [hp : Fact p.Prime] {n :
   rw [sub_one_mul_padicValNat_factorial n]
   refine Nat.sub_lt_self ?_ (digit_sum_le p n)
   have hnil : p.digits n ≠ [] := Nat.digits_ne_nil_iff_ne_zero.mpr hn
-  exact Nat.sum_pos_iff_exists_pos.mpr
+  exact List.sum_pos_iff_exists_pos_nat.mpr
     ⟨_, List.getLast_mem hnil, Nat.pos_of_ne_zero (Nat.getLast_digit_ne_zero p hn)⟩
 
 theorem padicValNat_factorial_lt_of_ne_zero [hp : Fact p.Prime] {n : ℕ} (hn : n ≠ 0) :

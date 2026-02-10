@@ -597,6 +597,7 @@ theorem Quotient.algebraMap_quotient_pow_ramificationIdx (x : R) :
 
 This can't be an instance since the map `f : R → S` is generally not inferable.
 -/
+@[instance_reducible]
 def Quotient.algebraQuotientOfRamificationIdxNeZero [hfp : NeZero e] :
     Algebra (R ⧸ p) (S ⧸ P) :=
   Quotient.algebraQuotientOfLEComap (le_comap_of_ramificationIdx_ne_zero hfp.out)

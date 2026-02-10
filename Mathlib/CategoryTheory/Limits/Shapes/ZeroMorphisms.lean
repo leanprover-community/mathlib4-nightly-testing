@@ -53,7 +53,7 @@ class HasZeroMorphisms where
   /-- `0` composed with `f` is `0` -/
   zero_comp : ∀ (X : C) {Y Z : C} (f : Y ⟶ Z), (0 : X ⟶ Y) ≫ f = (0 : X ⟶ Z) := by cat_disch
 
-attribute [instance] HasZeroMorphisms.zero
+attribute [instance_reducible, instance] HasZeroMorphisms.zero
 
 variable {C}
 

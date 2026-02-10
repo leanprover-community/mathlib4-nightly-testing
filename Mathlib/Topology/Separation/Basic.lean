@@ -142,6 +142,7 @@ theorem exists_isOpen_xor'_mem [T0Space X] {x y : X} (h : x ≠ y) :
   (t0Space_iff_exists_isOpen_xor'_mem X).1 ‹_› h
 
 /-- Specialization forms a partial order on a t0 topological space. -/
+@[instance_reducible]
 def specializationOrder (X) [TopologicalSpace X] [T0Space X] : PartialOrder X :=
   { specializationPreorder X, PartialOrder.lift (OrderDual.toDual ∘ 𝓝) nhds_injective with }
 

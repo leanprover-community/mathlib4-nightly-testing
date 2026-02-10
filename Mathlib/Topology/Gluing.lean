@@ -117,9 +117,7 @@ def Rel (a b : Σ i, ((D.U i : TopCat) : Type _)) : Prop :=
 
 theorem rel_equiv : Equivalence D.Rel :=
   ⟨fun x => ⟨inv (D.f _ _) x.2, IsIso.inv_hom_id_apply (D.f x.fst x.fst) _,
-    -- Use `elementwise_of%` elaborator instead of `IsIso.inv_hom_id_apply` to work around
-    -- `ConcreteCategory`/`HasForget` mismatch:
-    by simp [elementwise_of% IsIso.inv_hom_id (D.f x.fst x.fst)]⟩, by
+    by simp [IsIso.inv_hom_id_apply (D.f x.fst x.fst)]⟩, by
     rintro a b ⟨x, e₁, e₂⟩
     exact ⟨D.t _ _ x, e₂, by rw [← e₁, D.t_inv_apply]⟩, by
     rintro ⟨i, a⟩ ⟨j, b⟩ ⟨k, c⟩ ⟨x, e₁, e₂⟩
@@ -131,7 +129,7 @@ theorem rel_equiv : Equivalence D.Rel :=
     have eq₂ : (pullback.snd _ _ : _ ⟶ D.V _) z = y := pullbackIsoProdSubtype_inv_snd_apply _ _ _
     clear_value z
     use (pullback.fst _ _ : _ ⟶ D.V (i, k)) (D.t' _ _ _ z)
-    dsimp only at *
+    dsimp +instances only at *
     substs eq₁ eq₂ e₁ e₃ e₄
     have h₁ : D.t' j i k ≫ pullback.fst _ _ ≫ D.f i k = pullback.fst _ _ ≫ D.t j i ≫ D.f i j := by
       rw [← 𝖣.t_fac_assoc]; congr 1; exact pullback.condition

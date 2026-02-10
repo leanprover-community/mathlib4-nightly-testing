@@ -452,7 +452,7 @@ theorem iSup_ennreal {α : Type*} [CompleteLattice α] {f : ℝ≥0∞ → α} :
   @iInf_ennreal αᵒᵈ _ _
 
 /-- Coercion `ℝ≥0 → ℝ≥0∞` as a `RingHom`. -/
-def ofNNRealHom : ℝ≥0 →+* ℝ≥0∞ where
+noncomputable def ofNNRealHom : ℝ≥0 →+* ℝ≥0∞ where
   toFun := WithTop.some
   map_one' := coe_one
   map_mul' _ _ := coe_mul _ _

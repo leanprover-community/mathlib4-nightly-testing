@@ -365,7 +365,7 @@ instance : @OrderedStructure L M _ (L.leOfStructure M) _ := by
 /-- The order structure on an ordered language is decidable. -/
 -- This should not be a global instance,
 -- because it will match with any `LE` typeclass search
-@[local instance]
+@[instance_reducible, local instance]
 def decidableLEOfStructure
     [h : DecidableRel (fun (a b : M) => Structure.RelMap (leSymb : L.Relations 2) ![a, b])] :
     letI := L.leOfStructure M

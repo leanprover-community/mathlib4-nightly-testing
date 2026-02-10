@@ -1045,7 +1045,9 @@ def Grothendieck.structuredArrowToStructuredArrowPre (d : D) (f : F.obj d) :
     (Grothendieck.Hom.mk (by exact X.hom) (by dsimp; exact 𝟙 _))
   map := fun g => StructuredArrow.homMk
     (Grothendieck.Hom.mk (by exact g.right)
-      (eqToHom (by dsimp; rw [← StructuredArrow.w g, map_comp, Cat.Hom.comp_obj])))
+      (eqToHom (by
+        dsimp +instances
+        rw [← StructuredArrow.w g, map_comp, Cat.Hom.comp_obj])))
     (by
       simp only [StructuredArrow.mk_right]
       generalize_proofs
@@ -1059,7 +1061,7 @@ instance Grothendieck.final_pre [hG : Final G] : (Grothendieck.pre F G).Final :=
     ⟨u, ⟨c, (F.map g).toFunctor.obj f⟩, ⟨(by exact g), (by exact 𝟙 _)⟩⟩
   apply zigzag_isConnected
   rintro ⟨⟨⟨⟩⟩, ⟨bi, fi⟩, ⟨gbi, gfi⟩⟩ ⟨⟨⟨⟩⟩, ⟨bj, fj⟩, ⟨gbj, gfj⟩⟩
-  dsimp at fj fi gfi gbi gbj gfj
+  dsimp +instances at fj fi gfi gbi gbj gfj
   apply Zigzag.trans (j₂ := StructuredArrow.mk (Y := ⟨bi, ((F.map gbi).toFunctor.obj f)⟩)
       (Grothendieck.Hom.mk gbi (𝟙 _)))
     (.of_zag (.inr ⟨StructuredArrow.homMk (Grothendieck.Hom.mk (by dsimp; exact 𝟙 _)

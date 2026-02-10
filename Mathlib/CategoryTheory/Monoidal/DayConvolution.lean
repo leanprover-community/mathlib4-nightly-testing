@@ -758,6 +758,7 @@ open scoped DayConvolution
 
 /-- In a `LawfulDayConvolutionMonoidalCategoryStruct`, `ι.obj (d ⊗ d')` is a
 Day convolution of `(ι C V).obj d` and `(ι C V).d'`. -/
+@[instance_reducible]
 def convolution (d d' : D) :
     DayConvolution (ι C V D |>.obj d) (ι C V D |>.obj d') where
   convolution := (ι C V D).obj (d ⊗ d')
@@ -770,6 +771,7 @@ attribute [local instance] convolution
 /-- In a `LawfulDayConvolutionMonoidalCategoryStruct`, `ι.obj (d ⊗ d' ⊗ d'')`
 is a (triple) Day convolution of `(ι C V).obj d`, `(ι C V).obj d'` and
 `(ι C V).obj d''`. -/
+@[instance_reducible]
 def convolution₂ (d d' d'' : D) :
     DayConvolution (ι C V D |>.obj d) ((ι C V D |>.obj d') ⊛ (ι C V D |>.obj d'')) :=
   convolution C V D _ _
@@ -777,6 +779,7 @@ def convolution₂ (d d' d'' : D) :
 /-- In a `LawfulDayConvolutionMonoidalCategoryStruct`, `ι.obj ((d ⊗ d') ⊗ d'')`
 is a (triple) Day convolution of `(ι C V).obj d`, `(ι C V).obj d'` and
 `(ι C V).obj d''`. -/
+@[instance_reducible]
 def convolution₂' (d d' d'' : D) :
     DayConvolution ((ι C V D |>.obj d) ⊛ (ι C V D |>.obj d')) (ι C V D |>.obj d'') :=
   convolution C V D _ _
@@ -819,6 +822,7 @@ lemma ι_map_associator_hom_eq_associator_hom (d d' d'')
 
 /-- In a `LawfulDayConvolutionMonoidalCategoryStruct`, `ι.obj (𝟙_ D)`
 is a Day convolution unit. -/
+@[instance_reducible]
 def convolutionUnit : DayConvolutionUnit (ι C V D |>.obj <| 𝟙_ D) where
   can := unitUnit _ _ _
   isPointwiseLeftKanExtensionCan := isPointwiseLeftKanExtensionUnitUnit _ _ _
@@ -1048,7 +1052,7 @@ class InducedLawfulDayConvolutionMonoidalCategoryStructCore
 
 namespace InducedLawfulDayConvolutionMonoidalCategoryStructCore
 
-attribute [local instance] tensorUnitConvolutionUnit
+attribute [instance_reducible, local instance] tensorUnitConvolutionUnit
 
 section
 
@@ -1061,6 +1065,7 @@ and provably equal unit maps through these isomorphisms,
 we can transform a given family of Day convolutions to one with
 convolutions definitionally equals to the given objects, and component of units
 definitionally equal to the provided map family. -/
+@[instance_reducible]
 def convolutions (d d' : D) :
     DayConvolution ((ι C V D).obj d) ((ι C V D).obj d') where
   convolution := (ι C V D).obj (tensorObj C V d d')
@@ -1138,14 +1143,14 @@ lemma ι_map_tensorHom_eq {d₁ d₁' d₂ d₂' : D} (f : d₁ ⟶ d₂) (f' : 
     letI := mkMonoidalCategoryStruct C V D
     (ι C V D).map (f ⊗ₘ f') =
     DayConvolution.map ((ι C V D).map f) ((ι C V D).map f') := by
-  dsimp [mkMonoidalCategoryStruct]
+  dsimp +instances [mkMonoidalCategoryStruct]
   rw [tensorHom_eq]
   apply (convolutions C V d₁ d₁').corepresentableBy.homEquiv.injective
   dsimp
   ext ⟨u₁, u₂⟩
   dsimp
   simp only [DayConvolution.unit_app_map_app, Functor.comp_obj, tensor_obj]
-  simp [convolutions, convolutionUnitApp_eq]
+  simp +instances [convolutions, convolutionUnitApp_eq]
 
 /-- The monoidal category struct constructed in `DayConvolution.mkMonoidalCategoryStruct` extends
 to a `LawfulDayConvolutionMonoidalCategoryStruct`. -/

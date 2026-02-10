@@ -38,6 +38,7 @@ Note: due to the fact that composition of functors in mathlib is reversed compar
 one usually found in the literature, this monoidal structure is in fact the monoidal
 opposite of the one usually considered in the literature.
 -/
+@[instance_reducible]
 def endofunctorMonoidalCategory : MonoidalCategory (C ⥤ C) where
   tensorObj F G := F ⋙ G
   whiskerLeft X _ _ F := Functor.whiskerLeft X F

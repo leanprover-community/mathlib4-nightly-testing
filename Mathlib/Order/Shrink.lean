@@ -22,7 +22,7 @@ universe u v
 
 variable (α : Type v) [Small.{u} α]
 
-instance [Preorder α] : Preorder (Shrink.{u} α) :=
+noncomputable instance [Preorder α] : Preorder (Shrink.{u} α) :=
   Preorder.lift (equivShrink α).symm
 
 /-- The order isomorphism `α ≃o Shrink.{u} α`. -/
@@ -44,7 +44,7 @@ lemma orderIsoShrink_apply [Preorder α] (a : α) :
 lemma orderIsoShrink_symm_apply [Preorder α] (a : Shrink.{u} α) :
     (orderIsoShrink α).symm a = (equivShrink α).symm a := rfl
 
-instance [PartialOrder α] : PartialOrder (Shrink.{u} α) where
+noncomputable instance [PartialOrder α] : PartialOrder (Shrink.{u} α) where
   le_antisymm _ _ h₁ h₂ := (equivShrink _).symm.injective (le_antisymm h₁ h₂)
 
 noncomputable instance [LinearOrder α] : LinearOrder (Shrink.{u} α) where

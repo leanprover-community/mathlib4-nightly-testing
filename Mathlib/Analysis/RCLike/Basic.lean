@@ -83,6 +83,7 @@ class RCLike (K : semiOutParam Type*) extends DenselyNormedField K, StarRing K,
   -- note we cannot put this in the `extends` clause
   [toDecidableEq : DecidableEq K]
 
+attribute [instance_reducible] RCLike.toPartialOrder RCLike.toDecidableEq
 scoped[ComplexOrder] attribute [instance 100] RCLike.toPartialOrder
 attribute [instance 100] RCLike.toDecidableEq
 
@@ -1009,7 +1010,7 @@ end CleanupLemmas
 section LinearMaps
 
 /-- The real part in an `RCLike` field, as a linear map. -/
-def reLm : K →ₗ[ℝ] ℝ :=
+noncomputable def reLm : K →ₗ[ℝ] ℝ :=
   { re with map_smul' := smul_re }
 
 @[simp, rclike_simps]
@@ -1035,7 +1036,7 @@ theorem continuous_re : Continuous (re : K → ℝ) :=
   reCLM.continuous
 
 /-- The imaginary part in an `RCLike` field, as a linear map. -/
-def imLm : K →ₗ[ℝ] ℝ :=
+noncomputable def imLm : K →ₗ[ℝ] ℝ :=
   { im with map_smul' := smul_im }
 
 @[simp, rclike_simps]
@@ -1158,8 +1159,7 @@ lemma lipschitzWith_im : LipschitzWith 1 (im (K := K)) := by
   toFun x := re x + im x * (I : 𝕜')
   map_add' _ _ := by simp only [map_add, add_mul]; ring
   map_smul' _ _ := by simp [real_smul_eq_coe_mul, mul_assoc]
-  cont := .add (.comp continuous_ofReal reCLM.continuous)
-    (.mul (.comp continuous_ofReal imCLM.continuous) continuous_const)
+  cont := by fun_prop
 
 @[simp] theorem map_same_eq_id : map K K = .id ℝ K := by ext; simp
 

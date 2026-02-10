@@ -986,6 +986,10 @@ def coprod.leftUnitor (P : C) : (⊥_ C) ⨿ P ≅ P where
   hom_inv_id := by apply coprod.hom_ext <;> simp [eq_iff_true_of_subsingleton]
   inv_hom_id := by simp
 
+theorem coprod.leftUnitor_naturality (f : X ⟶ Y) :
+    coprod.map (𝟙 _) f ≫ (coprod.leftUnitor Y).hom = (coprod.leftUnitor X).hom ≫ f := by
+  simp
+
 /-- The right unitor isomorphism for binary coproducts with the initial object. -/
 @[simps]
 def coprod.rightUnitor (P : C) : P ⨿ ⊥_ C ≅ P where
@@ -993,6 +997,10 @@ def coprod.rightUnitor (P : C) : P ⨿ ⊥_ C ≅ P where
   inv := coprod.inl
   hom_inv_id := by apply coprod.hom_ext <;> simp [eq_iff_true_of_subsingleton]
   inv_hom_id := by simp
+
+theorem coprod.rightUnitor_naturality (f : X ⟶ Y) :
+    coprod.map f (𝟙 _) ≫ (coprod.rightUnitor Y).hom = (coprod.rightUnitor X).hom ≫ f := by
+  simp
 
 theorem coprod.triangle (X Y : C) :
     (coprod.associator X (⊥_ C) Y).hom ≫ coprod.map (𝟙 X) (coprod.leftUnitor Y).hom =
@@ -1003,7 +1011,7 @@ end
 
 noncomputable section ProdFunctor
 
-variable {C} [Category.{v} C] [HasBinaryProducts C]
+variable {C} [HasBinaryProducts C]
 
 /-- The binary product functor. -/
 @[simps]

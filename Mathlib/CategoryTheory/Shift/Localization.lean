@@ -104,6 +104,9 @@ noncomputable instance MorphismProperty.commShift_Q :
     W.Q.CommShift A :=
   Functor.CommShift.localized W.Q W A
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12247
+this requires `allowUnsafeReducibility`. -/
+set_option allowUnsafeReducibility true in
 attribute [irreducible] HasShift.localization MorphismProperty.commShift_Q
 
 variable [W.HasLocalization]
@@ -118,6 +121,9 @@ noncomputable instance MorphismProperty.commShift_Q' :
     W.Q'.CommShift A :=
   Functor.CommShift.localized W.Q' W A
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12247
+this requires `allowUnsafeReducibility`. -/
+set_option allowUnsafeReducibility true in
 attribute [irreducible] HasShift.localization' MorphismProperty.commShift_Q'
 
 end

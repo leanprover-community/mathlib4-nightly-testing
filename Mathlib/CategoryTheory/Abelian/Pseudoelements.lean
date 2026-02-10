@@ -128,6 +128,7 @@ theorem pseudoEqual_trans {P : C} : Transitive (PseudoEqual P) := by
 end
 
 /-- The arrows with codomain `P` equipped with the equivalence relation of being pseudo-equal. -/
+@[instance_reducible]
 def Pseudoelement.setoid (P : C) : Setoid (Over P) :=
   ⟨_, ⟨pseudoEqual_refl, @pseudoEqual_symm _ _ _, @pseudoEqual_trans _ _ _ _⟩⟩
 
@@ -141,6 +142,7 @@ def Pseudoelement (P : C) : Type max u v :=
 namespace Pseudoelement
 
 /-- A coercion from an object of an abelian category to its pseudoelements. -/
+@[instance_reducible]
 def objectToSort : CoeSort C (Type max u v) :=
   ⟨fun P => Pseudoelement P⟩
 
@@ -149,6 +151,7 @@ attribute [local instance] objectToSort
 scoped[Pseudoelement] attribute [instance] CategoryTheory.Abelian.Pseudoelement.objectToSort
 
 /-- A coercion from an arrow with codomain `P` to its associated pseudoelement. -/
+@[instance_reducible]
 def overToSort {P : C} : Coe (Over P) (Pseudoelement P) :=
   ⟨Quot.mk (PseudoEqual P)⟩
 
@@ -166,6 +169,7 @@ def pseudoApply {P Q : C} (f : P ⟶ Q) : P → Q :=
   Quotient.map (fun g : Over P => app f g) (pseudoApply_aux f)
 
 /-- A coercion from morphisms to functions on pseudoelements. -/
+@[instance_reducible]
 def homToFun {P Q : C} : CoeFun (P ⟶ Q) fun _ => P → Q :=
   ⟨pseudoApply⟩
 

@@ -11,6 +11,7 @@ public import Mathlib.CategoryTheory.Monoidal.Braided.Opposite
 public import Mathlib.CategoryTheory.Monoidal.Comon_
 public import Mathlib.LinearAlgebra.TensorProduct.Tower
 public import Mathlib.RingTheory.Coalgebra.TensorProduct
+public import Mathlib.Tactic.SuppressCompilation
 
 /-!
 # The category equivalence between `R`-coalgebras and comonoid objects in `R-Mod`
@@ -111,6 +112,7 @@ variable {R}
 equivalence with `Comon(R-Mod)`. This is just an auxiliary definition; the `MonoidalCategory`
 instance we make in `Mathlib/Algebra/Category/CoalgCat/Monoidal.lean` has better
 definitional equalities. -/
+@[instance_reducible]
 noncomputable def instMonoidalCategoryAux : MonoidalCategory (CoalgCat R) :=
   Monoidal.transport (comonEquivalence R).symm
 
@@ -181,8 +183,8 @@ theorem comul_tensorObj_tensorObj_left :
       (A := ((CoalgCat.of R M ⊗ CoalgCat.of R N) ⊗ CoalgCat.of R P : CoalgCat R))
       = Coalgebra.comul (A := M ⊗[R] N ⊗[R] P) := by
   rw [ofComonObjCoalgebraStruct_comul]
-  dsimp
-  simp only [toComonObj]
+  dsimp +instances
+  simp +instances only [toComonObj]
   simp [tensorμ_eq_tensorTensorTensorComm, TensorProduct.comul_def,
     AlgebraTensorModule.tensorTensorTensorComm_eq]
   rfl

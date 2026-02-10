@@ -330,6 +330,7 @@ coincide with the product one. Therefore, we do not register it as an instance. 
 temporary pseudoemetric space instance, we will show that the uniform structure is equal (but not
 defeq) to the product one, and then register an instance in which we replace the uniform structure
 by the product one using this pseudoemetric space and `PseudoEMetricSpace.replaceUniformity`. -/
+@[instance_reducible]
 def prodPseudoEMetricAux [PseudoEMetricSpace α] [PseudoEMetricSpace β] :
     PseudoEMetricSpace (WithLp p (α × β)) where
   edist_self := prod_edist_self p

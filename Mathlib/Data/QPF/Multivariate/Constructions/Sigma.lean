@@ -94,7 +94,9 @@ instance : MvQPF (Pi F) where
   P := Pi.P F
   abs := @Pi.abs _ _ F _
   repr := @Pi.repr _ _ F _
-  abs_repr := by rintro α f; simp only [Pi.abs, Pi.repr, Sigma.eta, abs_repr]
+  abs_repr := by
+    rintro α f
+    simp +instances only [Pi.abs, Pi.repr, Sigma.eta, abs_repr]
   abs_map := by rintro α β f ⟨x, g⟩; simp only [Pi.abs, (· <$$> ·), ← abs_map]; rfl
 
 end Pi

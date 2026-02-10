@@ -236,6 +236,8 @@ instance : SetLike (SubDPIdeal hI) A where
     rw [SetLike.coe_set_eq] at h
     cases p; cases q; congr
 
+instance : PartialOrder (SubDPIdeal hI) := .ofSetLike (SubDPIdeal hI) A
+
 /-- The coercion from `SubDPIdeal` to `Ideal`. -/
 @[coe]
 def toIdeal (J : hI.SubDPIdeal) : Ideal A := J.carrier
@@ -366,7 +368,7 @@ instance : CompleteLattice (SubDPIdeal hI) := by
     apply iInf_congr (fun J ↦ ?_)
     by_cases hJ : J ∈ S
     · rw [ciInf_pos hJ, ciInf_pos hJ]; rfl
-    · simp [hJ, iInf_neg, le_top, inf_of_le_left, Set.Iic.coe_top, le_refl]; rfl
+    · simp [hJ, iInf_neg, le_top, inf_of_le_left, Set.Iic.coe_top]; rfl
 
 end CompleteLattice
 
