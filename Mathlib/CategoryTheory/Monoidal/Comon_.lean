@@ -60,7 +60,7 @@ attribute [reassoc (attr := simp)] counit_comul comul_counit comul_assoc
 
 /-- The canonical comonoid structure on the monoidal unit.
 This is not a global instance to avoid conflicts with other comonoid structures. -/
-@[simps]
+@[instance_reducible, simps]
 def instTensorUnit (C : Type u₁) [Category.{v₁} C] [MonoidalCategory.{v₁} C] : ComonObj (𝟙_ C) where
   counit := 𝟙 _
   comul := (λ_ _).inv

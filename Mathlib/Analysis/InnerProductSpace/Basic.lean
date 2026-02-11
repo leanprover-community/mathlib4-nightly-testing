@@ -153,7 +153,7 @@ variable {F}
 variable {𝕜}
 
 @[deprecated (since := "2025-12-26")] alias sesqFormOfInner := innerₛₗ
-@[deprecated (since := "2025-12-26")] alias bilinFormOfRealInner := innerₗ
+@[deprecated (since := "2025-12-26")] noncomputable alias bilinFormOfRealInner := innerₗ
 
 /-- An inner product with a sum on the left. -/
 theorem sum_inner {ι : Type*} (s : Finset ι) (f : ι → E) (x : E) :
@@ -920,11 +920,11 @@ abbrev InnerProductSpace.rclikeToReal : InnerProductSpace ℝ E :=
     norm_sq_eq_re_inner := norm_sq_eq_re_inner
     conj_inner_symm := fun _ _ => inner_re_symm _ _
     add_left := fun x y z => by
-      simp only [Inner.rclikeToReal, inner_add_left, map_add]
+      simp +instances only [Inner.rclikeToReal, inner_add_left, map_add]
     smul_left := fun x y r => by
       letI := NormedSpace.restrictScalars ℝ 𝕜 E
       have : r • x = (r : 𝕜) • x := rfl
-      simp only [Inner.rclikeToReal, this, conj_trivial, inner_smul_left, conj_ofReal,
+      simp +instances only [Inner.rclikeToReal, this, conj_trivial, inner_smul_left, conj_ofReal,
         re_ofReal_mul] }
 
 variable {E}

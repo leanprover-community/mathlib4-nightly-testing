@@ -170,9 +170,10 @@ def coeEquiv (m : Multiset α) : m ≃ m.toEnumFinset where
 theorem toEmbedding_coeEquiv_trans (m : Multiset α) :
     m.coeEquiv.toEmbedding.trans (Function.Embedding.subtype _) = m.coeEmbedding := by ext <;> rfl
 
-@[irreducible]
 instance fintypeCoe : Fintype m :=
   Fintype.ofEquiv m.toEnumFinset m.coeEquiv.symm
+
+attribute [irreducible] fintypeCoe
 
 theorem map_univ_coeEmbedding (m : Multiset α) :
     (Finset.univ : Finset m).map m.coeEmbedding = m.toEnumFinset := by

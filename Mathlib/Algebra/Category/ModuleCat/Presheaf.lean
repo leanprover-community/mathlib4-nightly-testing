@@ -153,7 +153,7 @@ lemma toPresheaf_map_app_apply (f : M₁ ⟶ M₂) (X : Cᵒᵖ) (x : M₁.obj X
 instance : (toPresheaf R).Faithful where
   map_injective {_ _ f g} h := by
     ext X x
-    exact congr_fun (((evaluation _ _).obj X ⋙ forget _).congr_map h) x
+    exact congr_fun (((evaluation _ _).obj X ⋙ forget Ab).congr_map h) x
 
 section
 
@@ -190,7 +190,7 @@ noncomputable def homMk (φ : M₁.presheaf ⟶ M₂.presheaf)
     M₁ ⟶ M₂ where
   app X := ModuleCat.ofHom
     { toFun := φ.app X
-      map_add' := by simp
+      map_add' := by simp +instances
       map_smul' := hφ X }
   naturality := fun f ↦ by
     ext x

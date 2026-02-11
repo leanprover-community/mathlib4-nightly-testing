@@ -146,7 +146,8 @@ theorem comp_of_mono {f₁ : X ⟶ Y} {f₂ : Y ⟶ Z} [Mono f₂] (small_k : Is
 If `(a,b)` is the kernel pair of `f`, and `f` is a coequalizer morphism for some parallel pair, then
 `f` is a coequalizer morphism of `a` and `b`.
 -/
-def toCoequalizer (k : IsKernelPair f a b) (r : RegularEpi f) : IsColimit (Cofork.ofπ f k.w) := by
+noncomputable def toCoequalizer (k : IsKernelPair f a b) (r : RegularEpi f) :
+    IsColimit (Cofork.ofπ f k.w) := by
   let t := k.isLimit.lift (PullbackCone.mk _ _ r.w)
   have ht : t ≫ a = r.left := k.isLimit.fac _ WalkingCospan.left
   have kt : t ≫ b = r.right := k.isLimit.fac _ WalkingCospan.right

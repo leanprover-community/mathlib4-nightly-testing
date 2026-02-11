@@ -334,7 +334,8 @@ def ofConvexRange
     have : range φ = φ.target := by rw [← φ.image_source_eq_target, hsource, image_univ.symm]
     simp [this, hint]
 
-@[deprecated (since := "2025-12-19")] alias of_convex_range := ModelWithCorners.ofConvexRange
+@[deprecated (since := "2025-12-19")] noncomputable alias of_convex_range :=
+  ModelWithCorners.ofConvexRange
 
 theorem convex_range [NormedSpace ℝ E] : Convex ℝ (range I) := by
   by_cases h : IsRCLikeNormedField 𝕜

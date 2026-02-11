@@ -44,7 +44,7 @@ variable (T : C₁ ⥤ C₂) (L : C₁ ⥤ C₃) (R : C₂ ⥤ C₄) (B : C₃ �
 namespace CatCommSq
 
 /-- The vertical identity `CatCommSq` -/
-@[simps!]
+@[instance_reducible, simps!]
 def vId : CatCommSq T (𝟭 C₁) (𝟭 C₂) T where
   iso := (Functor.leftUnitor _) ≪≫ (Functor.rightUnitor _).symm
 

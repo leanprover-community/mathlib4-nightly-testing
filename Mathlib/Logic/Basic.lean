@@ -5,11 +5,12 @@ Authors: Jeremy Avigad, Leonardo de Moura
 -/
 module
 
-public import Mathlib.Tactic.Attr.Register
 public import Mathlib.Tactic.AdaptationNote
 public import Mathlib.Tactic.Basic
 public import Batteries.Logic
 public import Batteries.Util.LibraryNote
+
+import Mathlib.Tactic.Attr.Register
 
 /-!
 # Basic logic properties
@@ -696,6 +697,7 @@ namespace Classical
 
 -- use shortened names to avoid conflict when classical namespace is open.
 /-- Any prop `p` is decidable classically. A shorthand for `Classical.propDecidable`. -/
+@[instance_reducible]
 noncomputable def dec (p : Prop) : Decidable p := by infer_instance
 
 variable {α : Sort*}

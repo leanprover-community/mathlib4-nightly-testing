@@ -112,7 +112,7 @@ lemma cauchy_comap_uniformSpace {u : UniformSpace β} {α} {f : α → β} {l : 
 
 lemma cauchy_prod_iff [UniformSpace β] {F : Filter (α × β)} :
     Cauchy F ↔ Cauchy (map Prod.fst F) ∧ Cauchy (map Prod.snd F) := by
-  simp_rw [instUniformSpaceProd, ← cauchy_comap_uniformSpace, ← cauchy_inf_uniformSpace]
+  simp_rw +instances [instUniformSpaceProd, ← cauchy_comap_uniformSpace, ← cauchy_inf_uniformSpace]
 
 theorem Cauchy.prod [UniformSpace β] {f : Filter α} {g : Filter β} (hf : Cauchy f) (hg : Cauchy g) :
     Cauchy (f ×ˢ g) := by
@@ -800,7 +800,7 @@ theorem isCompact_closure_interUnionBalls {p : ℕ → Prop} {U : ℕ → SetRel
 
 In this section we prove that a uniform space is complete provided that it is sequentially complete
 (i.e., any Cauchy sequence converges) and its uniformity filter admits a countable generating set.
-In particular, this applies to (e)metric spaces, see the files `Topology/MetricSpace/EmetricSpace`
+In particular, this applies to (e)metric spaces, see the files `Topology/MetricSpace/EMetricSpace`
 and `Topology/MetricSpace/Basic`.
 
 More precisely, we assume that there is a sequence of entourages `U_n` such that any other

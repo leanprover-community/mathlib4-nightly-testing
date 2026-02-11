@@ -55,7 +55,7 @@ noncomputable def FiniteElement : Type _ :=
 
 namespace FiniteElement
 
-instance : CommRing (FiniteElement K) := by
+noncomputable instance : CommRing (FiniteElement K) := by
   unfold FiniteElement; infer_instance
 
 instance : IsDomain (FiniteElement K) := by
@@ -161,7 +161,7 @@ noncomputable instance : LinearOrder (FiniteResidueField K) :=
   @Quotient.instLinearOrder _ _ _ (by exact ordConnected_preimage_mk') (Classical.decRel _)
 
 /-- The quotient map from finite elements on the field to the associated residue field. -/
-def mk : FiniteElement K →+*o FiniteResidueField K where
+noncomputable def mk : FiniteElement K →+*o FiniteResidueField K where
   monotone' _ _ h := Quotient.mk_monotone h
   __ := IsLocalRing.residue (FiniteElement K)
 
@@ -246,7 +246,7 @@ theorem mk_ratCast (q : ℚ) : mk (q : FiniteElement K) = q := by
 
 /-- An embedding from an Archimedean field into `K` induces an embedding into
 `FiniteResidueField K`. -/
-def ofArchimedean (f : R →+*o K) : R →+*o FiniteResidueField K where
+noncomputable def ofArchimedean (f : R →+*o K) : R →+*o FiniteResidueField K where
   toFun r := mk <| .mk _ (mk_map_nonneg_of_archimedean f r)
   map_zero' := by simp
   map_one' := by simp

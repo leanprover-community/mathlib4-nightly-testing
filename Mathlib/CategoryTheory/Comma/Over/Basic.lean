@@ -80,6 +80,7 @@ def mk {X Y : T} (f : Y ⟶ X) : Over X :=
 
 /-- We can set up a coercion from arrows with codomain `X` to `over X`. This most likely should not
 be a global instance, but it is sometimes useful. -/
+@[instance_reducible]
 def coeFromHom {X Y : T} : CoeOut (Y ⟶ X) (Over X) where coe := mk
 
 section
@@ -285,6 +286,11 @@ instance forget_reflects_iso : (forget X).ReflectsIsomorphisms where
 /-- The identity over `X` is terminal. -/
 noncomputable def mkIdTerminal : Limits.IsTerminal (mk (𝟙 X)) :=
   CostructuredArrow.mkIdTerminal
+
+-- We could make this defeq if we care.
+@[simp] lemma mkIdTerminal_from_left (Y : Over X) : (mkIdTerminal.from Y).left = Y.hom := by
+  rw [mkIdTerminal.hom_ext (mkIdTerminal.from Y) (homMk Y.hom)]
+  rfl
 
 instance forget_faithful : (forget X).Faithful where
 
@@ -779,6 +785,11 @@ instance forget_reflects_iso : (forget X).ReflectsIsomorphisms where
 /-- The identity under `X` is initial. -/
 noncomputable def mkIdInitial : Limits.IsInitial (mk (𝟙 X)) :=
   StructuredArrow.mkIdInitial
+
+-- We could make this defeq if we care.
+@[simp] lemma mkIdInitial_to_right (Y : Under X) : (mkIdInitial.to Y).right = Y.hom := by
+  rw [mkIdInitial.hom_ext (mkIdInitial.to Y) (homMk Y.hom)]
+  rfl
 
 instance forget_faithful : (forget X).Faithful where
 

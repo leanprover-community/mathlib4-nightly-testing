@@ -136,12 +136,7 @@ noncomputable def FinitePlace.embedding : WithVal (v.valuation K) →+* adicComp
 theorem FinitePlace.embedding_apply (x : K) : embedding v x = ↑x := rfl
 
 noncomputable instance : (v.valuation K).RankOne where
-  hom := {
-    toFun := toNNReal (absNorm_ne_zero v)
-    map_zero' := rfl
-    map_one' := rfl
-    map_mul' := map_mul (toNNReal (absNorm_ne_zero v))
-  }
+  hom := toNNReal (absNorm_ne_zero v)
   strictMono' := toNNReal_strictMono (one_lt_absNorm_nnreal v)
   exists_val_nontrivial := by
     rcases Submodule.exists_mem_ne_zero_of_ne_bot v.ne_bot with ⟨x, hx1, hx2⟩
@@ -149,9 +144,15 @@ noncomputable instance : (v.valuation K).RankOne where
     rw [valuation_of_algebraMap]
     exact ⟨v.intValuation_ne_zero _ hx2, ((intValuation_lt_one_iff_mem _ _).2 hx1).ne⟩
 
-@[deprecated Valuation.instRankOneCompletion (since := "2026-01-05")]
 noncomputable instance instRankOneValuedAdicCompletion :
-    Valuation.RankOne (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰) := inferInstance
+    Valuation.RankOne (Valued.v : Valuation (v.adicCompletion K) ℤᵐ⁰) where
+  hom := toNNReal (absNorm_ne_zero v)
+  strictMono' := toNNReal_strictMono (one_lt_absNorm_nnreal v)
+  exists_val_nontrivial := by
+    rcases Submodule.exists_mem_ne_zero_of_ne_bot v.ne_bot with ⟨x, hx1, hx2⟩
+    use x
+    rw [valuedAdicCompletion_eq_valuation' v (x : K)]
+    simpa [valuation_of_algebraMap] using ⟨v.intValuation_ne_zero _ hx2, hx1⟩
 
 /-- The `v`-adic completion of `K` is a normed field. -/
 noncomputable instance instNormedFieldValuedAdicCompletion : NormedField (adicCompletion K v) :=
@@ -183,8 +184,8 @@ lemma isFinitePlace_iff (v : AbsoluteValue K ℝ) :
 /-- The norm of the image after the embedding associated to `v` is equal to the `v`-adic absolute
 value. -/
 theorem FinitePlace.norm_def (x : WithVal (v.valuation K)) : ‖embedding v x‖ = adicAbv v x := by
-  simp [NormedField.toNorm, instNormedFieldValuedAdicCompletion, Valued.toNormedField, Valued.norm,
-    Valuation.RankOne.hom, embedding_apply, ← toNNReal_valued_eq_adicAbv]
+  simp +instances [NormedField.toNorm, instNormedFieldValuedAdicCompletion, Valued.toNormedField,
+    Valued.norm, Valuation.RankOne.hom, embedding_apply, ← toNNReal_valued_eq_adicAbv]
 
 /-- The norm of the image after the embedding associated to `v` is equal to the norm of `v` raised
 to the power of the `v`-adic valuation. -/

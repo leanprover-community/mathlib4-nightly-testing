@@ -380,7 +380,7 @@ instance [IsOrderedAddMonoid R] : Inhabited (Partial seed) where
   default := ⟨seed.baseEmbedding, seed.isPartial_baseEmbedding⟩
 
 /-- `HahnEmbedding.Partial` as an `OrderedAddMonoidHom`. -/
-def toOrderAddMonoidHom : f.val.domain →+o Lex R⟦FiniteArchimedeanClass M⟧ where
+noncomputable def toOrderAddMonoidHom : f.val.domain →+o Lex R⟦FiniteArchimedeanClass M⟧ where
   __ := f.val.toFun
   map_zero' := by simp
   monotone' := f.prop.strictMono.monotone

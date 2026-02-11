@@ -41,6 +41,7 @@ def count (n : ℕ) : ℕ :=
 theorem count_zero : count p 0 = 0 := by simp [count]
 
 /-- A fintype instance for the set relevant to `Nat.count`. Locally an instance in scope `count` -/
+@[instance_reducible]
 def CountSet.fintype (n : ℕ) : Fintype { i // i < n ∧ p i } :=
   Fintype.ofFinset {x ∈ range n | p x} <| by
     intro x

@@ -301,6 +301,7 @@ section
 
 -- We write `f - g` for `prod.lift f g ≫ σ`.
 /-- Subtraction of morphisms in a `NonPreadditiveAbelian` category. -/
+@[instance_reducible]
 def hasSub {X Y : C} : Sub (X ⟶ Y) :=
   ⟨fun f g => prod.lift f g ≫ σ⟩
 
@@ -308,6 +309,7 @@ attribute [local instance] hasSub
 
 -- We write `-f` for `0 - f`.
 /-- Negation of morphisms in a `NonPreadditiveAbelian` category. -/
+@[instance_reducible]
 def hasNeg {X Y : C} : Neg (X ⟶ Y) where
   neg := fun f => 0 - f
 
@@ -315,6 +317,7 @@ attribute [local instance] hasNeg
 
 -- We write `f + g` for `f - (-g)`.
 /-- Addition of morphisms in a `NonPreadditiveAbelian` category. -/
+@[instance_reducible]
 def hasAdd {X Y : C} : Add (X ⟶ Y) :=
   ⟨fun f g => f - -g⟩
 

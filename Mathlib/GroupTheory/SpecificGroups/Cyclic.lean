@@ -13,6 +13,7 @@ public import Mathlib.Data.ZMod.QuotientGroup
 public import Mathlib.GroupTheory.Exponent
 public import Mathlib.GroupTheory.Subgroup.Simple
 public import Mathlib.Tactic.Group
+public import Mathlib.Tactic.IntervalCases
 
 /-!
 # Cyclic groups
@@ -103,7 +104,7 @@ instance IsCyclic.commutative [Group α] [IsCyclic α] :
 
 /-- A cyclic group is always commutative. This is not an `instance` because often we have a better
 proof of `CommGroup`. -/
-@[to_additive
+@[to_additive (attr := instance_reducible)
       /-- A cyclic group is always commutative. This is not an `instance` because often we have
       a better proof of `AddCommGroup`. -/]
 def IsCyclic.commGroup [hg : Group α] [IsCyclic α] : CommGroup α :=
@@ -784,14 +785,13 @@ noncomputable def zmodAddCyclicAddEquiv [AddGroup G] (h : IsAddCyclic G) :
     ZMod (Nat.card G) ≃+ G := by
   let n := Nat.card G
   let ⟨g, surj⟩ := Classical.indefiniteDescription _ h.exists_generator
-  have kereq : ((zmultiplesHom G) g).ker = zmultiples ↑(Nat.card G) := by
+  have kereq : zmultiples ↑(Nat.card G) = ((zmultiplesHom G) g).ker := by
     rw [zmultiplesHom_ker_eq]
     congr
     rw [← Nat.card_zmultiples]
-    exact Nat.card_congr (Equiv.subtypeUnivEquiv surj)
-  exact Int.quotientZMultiplesNatEquivZMod n
-    |>.symm.trans <| QuotientAddGroup.quotientAddEquivOfEq kereq
-    |>.symm.trans <| QuotientAddGroup.quotientKerEquivOfSurjective (zmultiplesHom G g) surj
+    exact Nat.card_congr (Equiv.subtypeUnivEquiv surj).symm
+  exact Int.quotientZMultiplesNatEquivZMod n |>.symm.trans <|
+    QuotientAddGroup.liftEquiv _ (φ := zmultiplesHom G g) surj kereq
 
 /-- A commutative simple group is isomorphic to `ZMod p` from some prime `p`. -/
 theorem exists_prime_addEquiv_ZMod [CommGroup G] [IsSimpleGroup G] :

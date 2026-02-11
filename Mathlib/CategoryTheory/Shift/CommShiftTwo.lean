@@ -108,6 +108,7 @@ abbrev CommShift₂Int [HasShift C₁ ℤ] [HasShift C₂ ℤ] [HasShift D ℤ] 
 
 namespace CommShift₂
 
+attribute [instance_reducible] commShiftObj commShiftFlipObj
 attribute [instance] commShiftObj commShiftFlipObj commShift_map commShift_flip_map
 
 instance precomp₁ {M : Type*} [AddCommMonoid M] [HasShift C₁ M] [HasShift C₁' M]

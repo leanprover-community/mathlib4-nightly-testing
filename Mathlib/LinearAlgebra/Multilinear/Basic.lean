@@ -414,11 +414,11 @@ def compMultilinearMap (g : MultilinearMap R M₁ M₂) (f : (i : ι) → Multil
   toFun m := g fun i ↦ f i (Sigma.curry m i)
   map_update_add' {hDecEqSigma} := by
     classical
-    simp [Subsingleton.elim hDecEqSigma Sigma.instDecidableEqSigma,
+    simp +instances [Subsingleton.elim hDecEqSigma Sigma.instDecidableEqSigma,
       Sigma.curry_update, Function.apply_update (fun i ↦ f i)]
   map_update_smul' {hDecEqSigma} := by
     classical
-    simp [Subsingleton.elim hDecEqSigma Sigma.instDecidableEqSigma,
+    simp +instances [Subsingleton.elim hDecEqSigma Sigma.instDecidableEqSigma,
       Sigma.curry_update, Function.apply_update (fun i ↦ f i)]
 
 end compMultilinear
@@ -879,7 +879,7 @@ section Semiring
 variable [Semiring R] [(i : ι) → AddCommMonoid (M₁ i)] [(i : ι) → Module R (M₁ i)]
   [AddCommMonoid M₂] [Module R M₂]
 
-instance [Monoid S] [DistribMulAction S M₂] [Module R M₂] [SMulCommClass R S M₂] :
+instance [Monoid S] [DistribMulAction S M₂] [SMulCommClass R S M₂] :
     DistribMulAction S (MultilinearMap R M₁ M₂) := fast_instance%
   coe_injective.distribMulAction coeAddMonoidHom fun _ _ ↦ rfl
 

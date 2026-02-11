@@ -122,6 +122,7 @@ variable (G)
 namespace DirectLimit
 
 /-- The directed limit glues together the structures along the embeddings. -/
+@[instance_reducible]
 def setoid [DirectedSystem G fun i j h => f i j h] [IsDirectedOrder ι] : Setoid (Σˣ f) where
   r := fun ⟨i, x⟩ ⟨j, y⟩ => ∃ (k : ι) (ik : i ≤ k) (jk : j ≤ k), f i k ik x = f j k jk y
   iseqv :=
@@ -135,6 +136,7 @@ def setoid [DirectedSystem G fun i j h => f i j h] [IsDirectedOrder ι] : Setoid
 
 /-- The structure on the `Σ`-type which becomes the structure on the direct limit after quotienting.
 -/
+@[instance_reducible]
 noncomputable def sigmaStructure [IsDirectedOrder ι] [Nonempty ι] : L.Structure (Σˣ f) where
   funMap F x :=
     ⟨_,
