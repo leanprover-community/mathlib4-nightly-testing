@@ -3,7 +3,11 @@ Copyright (c) 2022 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov, Mario Carneiro
 -/
-import Lean
+module
+
+public import Mathlib.Init
+public meta import Lean.Elab.Tactic.Basic
+public meta import Lean.Meta.Tactic.Replace
 
 /-!
 # Infer an optional parameter
@@ -11,6 +15,8 @@ import Lean
 In this file we define a tactic `infer_param` that closes a goal with default value by using
 this default value.
 -/
+
+public meta section
 
 namespace Mathlib.Tactic
 
@@ -30,3 +36,5 @@ elab (name := inferOptParam) "infer_param" : tactic => do
       evalTactic tacticSyntax
   else throwError
     "`infer_param` only solves goals of the form `optParam _ _` or `autoParam _ _`, not {tgt}"
+
+end Mathlib.Tactic
