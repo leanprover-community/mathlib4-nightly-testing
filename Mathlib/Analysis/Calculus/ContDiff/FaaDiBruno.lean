@@ -3,10 +3,12 @@ Copyright (c) 2024 Sébastien Gouëzel. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sébastien Gouëzel
 -/
-import Mathlib.Data.Finite.Card
-import Mathlib.Analysis.Analytic.Within
-import Mathlib.Analysis.Calculus.FDeriv.Analytic
-import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
+module
+
+public import Mathlib.Data.Finite.Card
+public import Mathlib.Analysis.Analytic.Within
+public import Mathlib.Analysis.Calculus.FDeriv.Analytic
+public import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries
 
 /-!
 # Faa di Bruno formula
@@ -75,6 +77,8 @@ and `OrderedFinpartition (n + 1)`. This equivalence shows up prominently in the 
 of Faa di Bruno formula to identify the sums that show up.
 -/
 
+@[expose] public section
+
 noncomputable section
 
 open Set Fin Filter Function
@@ -117,7 +121,7 @@ namespace OrderedFinpartition
 @[simps -fullyApplied]
 def atomic (n : ℕ) : OrderedFinpartition n where
   length := n
-  partSize _ :=  1
+  partSize _ := 1
   partSize_pos _ := _root_.zero_lt_one
   emb m _ := m
   emb_strictMono _ := Subsingleton.strictMono _
@@ -283,6 +287,8 @@ These operations are inverse to each other, giving rise to an equivalence betwee
 called `OrderedFinPartition.extendEquiv`.
 -/
 
+-- TODO: should infer_instance be considered normalising?
+set_option linter.flexible false in
 /-- Extend an ordered partition of `n` entries, by adding a new singleton part to the left. -/
 @[simps -fullyApplied length partSize]
 def extendLeft (c : OrderedFinpartition n) : OrderedFinpartition (n + 1) where
@@ -303,9 +309,9 @@ def extendLeft (c : OrderedFinpartition n) : OrderedFinpartition (n + 1) where
         simp only [cons_succ, cases_succ, comp_apply, succ_lt_succ_iff]
         exact c.parts_strictMono (by simpa using hij)
   disjoint i hi j hj hij := by
-    wlog h : j < i generalizing i j
+    wlog! h : j < i generalizing i j
     · exact .symm
-        (this j (mem_univ j) i (mem_univ i) hij.symm (lt_of_le_of_ne (le_of_not_gt h) hij))
+        (this j (mem_univ j) i (mem_univ i) hij.symm (lt_of_le_of_ne h hij))
     induction i using Fin.induction with
     | zero => simp at h
     | succ i =>
@@ -330,6 +336,8 @@ def extendLeft (c : OrderedFinpartition n) : OrderedFinpartition (n + 1) where
     · simp only [mem_range]
       exact ⟨Fin.succ (c.index i), Fin.cast (by simp) (c.invEmbedding i), by simp⟩
 
+-- TODO: should infer_instance be considered normalising?
+set_option linter.flexible false in
 @[simp] lemma range_extendLeft_zero (c : OrderedFinpartition n) :
     range (c.extendLeft.emb 0) = {0} := by
   simp only [extendLeft, cases_zero]
@@ -540,7 +548,8 @@ def eraseMiddle (c : OrderedFinpartition (n + 1)) (hc : range (c.emb 0) ≠ {0})
     rw [← Nat.add_lt_add_iff_right (k := 1)]
     convert Fin.lt_def.1 (c.parts_strictMono hij)
     · rcases eq_or_ne i (c.index 0) with rfl | hi
-      · simp only [↓reduceDIte, update_self, succ_mk, cast_mk, coe_pred]
+      -- We do not yet replace `omega` with `lia` here, as it is measurably slower.
+      · simp only [↓reduceDIte, update_self, succ_mk, cast_mk, val_pred]
         have A := c.one_lt_partSize_index_zero hc
         rw [Nat.sub_add_cancel]
         · congr; omega
@@ -549,28 +558,28 @@ def eraseMiddle (c : OrderedFinpartition (n + 1)) (hc : range (c.emb 0) ≠ {0})
           rw [← lt_def]
           apply c.emb_strictMono
           simp [lt_def]
-      · simp only [hi, ↓reduceDIte, ne_eq, not_false_eq_true, update_of_ne, cast_mk, coe_pred]
+      · simp only [hi, ↓reduceDIte, ne_eq, not_false_eq_true, update_of_ne, cast_mk, val_pred]
         apply Nat.sub_add_cancel
         have : c.emb i ⟨c.partSize i - 1, Nat.sub_one_lt_of_lt (c.partSize_pos i)⟩
             ≠ c.emb (c.index 0) 0 := c.emb_ne_emb_of_ne hi
         simp only [c.emb_zero, ne_eq, ← val_eq_val, val_zero] at this
         omega
     · rcases eq_or_ne j (c.index 0) with rfl | hj
-      · simp only [↓reduceDIte, update_self, succ_mk, cast_mk, coe_pred]
+      · simp only [↓reduceDIte, update_self, succ_mk, cast_mk, val_pred]
         have A := c.one_lt_partSize_index_zero hc
         rw [Nat.sub_add_cancel]
-        · congr; omega
+        · congr; lia
         · rw [Order.one_le_iff_pos]
           conv_lhs => rw [show (0 : ℕ) = c.emb (c.index 0) 0 by simp [emb_zero]]
           rw [← lt_def]
           apply c.emb_strictMono
           simp [lt_def]
-      · simp only [hj, ↓reduceDIte, ne_eq, not_false_eq_true, update_of_ne, cast_mk, coe_pred]
+      · simp only [hj, ↓reduceDIte, ne_eq, not_false_eq_true, update_of_ne, cast_mk, val_pred]
         apply Nat.sub_add_cancel
         have : c.emb j ⟨c.partSize j - 1, Nat.sub_one_lt_of_lt (c.partSize_pos j)⟩
             ≠ c.emb (c.index 0) 0 := c.emb_ne_emb_of_ne hj
         simp only [c.emb_zero, ne_eq, ← val_eq_val, val_zero] at this
-        omega
+        lia
   disjoint i _ j _ hij := by
     wlog h : i ≠ c.index 0 generalizing i j
     · apply Disjoint.symm
@@ -611,7 +620,7 @@ def eraseMiddle (c : OrderedFinpartition (n + 1)) (hc : range (c.emb 0) ≠ {0})
         simp only [pred_inj, ← hij]
         congr 1
         rw [← val_eq_val]
-        simp only [coe_cast, val_succ, coe_pred]
+        simp only [val_cast, val_succ, val_pred]
         omega
     · have A : update c.partSize (c.index 0) (c.partSize (c.index 0) - 1) i = c.partSize i := by
         simp [hi]
@@ -703,7 +712,7 @@ def extendEquiv (n : ℕ) :
             · simpa using c.emb_zero
             · let j' := Fin.pred (j.cast B.symm) (by simpa using hj)
               have : j = (succ j').cast B := by simp [j']
-              simp only [this, coe_cast, val_succ, cast_mk, cases_succ', comp_apply, succ_mk,
+              simp only [this, val_cast, val_succ, cast_mk, cases_succ', comp_apply, succ_mk,
                 succ_pred]
               rfl
           · simp [hi]
@@ -764,13 +773,13 @@ theorem applyOrderedFinpartition_update_left (p : ∀ (i : Fin c.length), E [×c
     simp [applyOrderedFinpartition]
   · simp [h, applyOrderedFinpartition]
 
-/-- Given a an ordered finite partition `c` of `n`, a continuous multilinear map `f` in `c.length`
+/-- Given an ordered finite partition `c` of `n`, a continuous multilinear map `f` in `c.length`
 variables, and for each `m` a continuous multilinear map `p m` in `c.partSize m` variables,
 one can form a continuous multilinear map in `n`
 variables by applying `p m` to each part of the partition, and then
 applying `f` to the resulting vector. It is called `c.compAlongOrderedFinpartition f p`. -/
 def compAlongOrderedFinpartition (f : F [×c.length]→L[𝕜] G) (p : ∀ i, E [×c.partSize i]→L[𝕜] F) :
-    E[×n]→L[𝕜] G where
+    E [×n]→L[𝕜] G where
   toMultilinearMap :=
     MultilinearMap.mk' (fun v ↦ f (c.applyOrderedFinpartition p v))
       (fun v i x y ↦ by
@@ -801,7 +810,7 @@ and multilinearly on `p`. -/
 @[simps! apply_apply]
 def compAlongOrderedFinpartitionₗ :
     (F [×c.length]→L[𝕜] G) →ₗ[𝕜]
-      MultilinearMap 𝕜 (fun i : Fin c.length ↦ E[×c.partSize i]→L[𝕜] F) (E[×n]→L[𝕜] G) where
+      MultilinearMap 𝕜 (fun i : Fin c.length ↦ E [×c.partSize i]→L[𝕜] F) (E [×n]→L[𝕜] G) where
   toFun f :=
     MultilinearMap.mk' (fun p ↦ c.compAlongOrderedFinpartition f p)
       (fun p m q q' ↦ by
@@ -811,14 +820,14 @@ def compAlongOrderedFinpartitionₗ :
         ext v
         simp [applyOrderedFinpartition_update_left])
   map_add' _ _ := rfl
-  map_smul' _ _ :=  rfl
+  map_smul' _ _ := rfl
 
 variable (𝕜 E F G) in
 /-- Bundled version of `compAlongOrderedFinpartition`, depending continuously linearly on `f`
 and continuously multilinearly on `p`. -/
 noncomputable def compAlongOrderedFinpartitionL :
     (F [×c.length]→L[𝕜] G) →L[𝕜]
-      ContinuousMultilinearMap 𝕜 (fun i ↦ E[×c.partSize i]→L[𝕜] F) (E[×n]→L[𝕜] G) := by
+      ContinuousMultilinearMap 𝕜 (fun i ↦ E [×c.partSize i]→L[𝕜] F) (E [×n]→L[𝕜] G) := by
   refine MultilinearMap.mkContinuousLinear c.compAlongOrderedFinpartitionₗ 1 fun f p ↦ ?_
   simp only [one_mul, compAlongOrderedFinpartitionₗ_apply_apply]
   apply norm_compAlongOrderedFinpartition_le
@@ -830,6 +839,26 @@ noncomputable def compAlongOrderedFinpartitionL :
 theorem norm_compAlongOrderedFinpartitionL_le :
     ‖c.compAlongOrderedFinpartitionL 𝕜 E F G‖ ≤ 1 :=
   MultilinearMap.mkContinuousLinear_norm_le _ zero_le_one _
+
+theorem norm_compAlongOrderedFinpartitionL_apply_le (f : F [×c.length]→L[𝕜] G) :
+    ‖c.compAlongOrderedFinpartitionL 𝕜 E F G f‖ ≤ ‖f‖ :=
+  (ContinuousLinearMap.le_of_opNorm_le _ c.norm_compAlongOrderedFinpartitionL_le f).trans_eq
+    (one_mul _)
+
+theorem norm_compAlongOrderedFinpartition_sub_compAlongOrderedFinpartition_le
+    (f₁ f₂ : F [×c.length]→L[𝕜] G) (g₁ g₂ : ∀ i, E [×c.partSize i]→L[𝕜] F) :
+    ‖c.compAlongOrderedFinpartition f₁ g₁ - c.compAlongOrderedFinpartition f₂ g₂‖ ≤
+      ‖f₁‖ * c.length * max ‖g₁‖ ‖g₂‖ ^ (c.length - 1) * ‖g₁ - g₂‖ + ‖f₁ - f₂‖ * ∏ i, ‖g₂ i‖ := calc
+  _ ≤ ‖c.compAlongOrderedFinpartition f₁ g₁ - c.compAlongOrderedFinpartition f₁ g₂‖ +
+      ‖c.compAlongOrderedFinpartition f₁ g₂ - c.compAlongOrderedFinpartition f₂ g₂‖ :=
+    norm_sub_le_norm_sub_add_norm_sub ..
+  _ ≤ ‖f₁‖ * c.length * (max ‖g₁‖ ‖g₂‖) ^ (c.length - 1) * ‖g₁ - g₂‖ + ‖f₁ - f₂‖ * ∏ i, ‖g₂ i‖ := by
+    gcongr ?_ + ?_
+    · refine ((c.compAlongOrderedFinpartitionL 𝕜 E F G f₁).norm_image_sub_le g₁ g₂).trans ?_
+      simp only [Fintype.card_fin]
+      gcongr
+      apply norm_compAlongOrderedFinpartitionL_apply_le
+    · exact c.norm_compAlongOrderedFinpartition_le (f₁ - f₂) g₂
 
 end OrderedFinpartition
 
@@ -871,6 +900,79 @@ protected noncomputable def taylorComp
     (q : FormalMultilinearSeries 𝕜 F G) (p : FormalMultilinearSeries 𝕜 E F) :
     FormalMultilinearSeries 𝕜 E G :=
   fun n ↦ ∑ c : OrderedFinpartition n, q.compAlongOrderedFinpartition p c
+
+/-- An upper estimate (in terms of `Asymptotics.IsBigO`)
+on the difference between two compositions of Taylor series.
+
+Let `p₁`, `p₂`, `q₁`, `q₂` be four families of formal multilinear series
+depending on a parameter `a`.
+Suppose that the norms of `(p₁ · k)`, `(q₁ · k)`, and `(q₂ · k)` are bounded along a filter `l`
+for all `k ≤ n`.
+Also, suppose that $p₁(a, k) - p₂(a, k) = O(f(a))$, $q₁(a, k) - q₂(a, k) = O(f(a))$
+along `l` for all `k ≤ n`.
+Then the difference between `n`th terms of `(p₁ a).taylorComp (q₁ a)` and `(p₂ a).taylorComp (q₂ a)`
+is `O(f(a))` too.
+
+This lemma can be used, e.g., to show that the composition of two $C^{k+α}$ functions
+is a $C^{k+α}$ function. -/
+theorem taylorComp_sub_taylorComp_isBigO
+    {α H : Type*} [NormedAddCommGroup H] {l : Filter α} {p₁ p₂ : α → FormalMultilinearSeries 𝕜 F G}
+    {q₁ q₂ : α → FormalMultilinearSeries 𝕜 E F} {f : α → H} {n : ℕ}
+    (hp_bdd : ∀ k ≤ n, l.IsBoundedUnder (· ≤ ·) (‖p₁ · k‖))
+    (hpf : ∀ k ≤ n, (fun a ↦ p₁ a k - p₂ a k) =O[l] f)
+    (hq₁_bdd : ∀ k ≤ n, l.IsBoundedUnder (· ≤ ·) (‖q₁ · k‖))
+    (hq₂_bdd : ∀ k ≤ n, l.IsBoundedUnder (· ≤ ·) (‖q₂ · k‖))
+    (hqf : ∀ k ≤ n, (fun a ↦ q₁ a k - q₂ a k) =O[l] f) :
+    (fun a ↦ (p₁ a).taylorComp (q₁ a) n - (p₂ a).taylorComp (q₂ a) n) =O[l] f := by
+  simp only [FormalMultilinearSeries.taylorComp, ← Finset.sum_sub_distrib]
+  refine .sum fun c _ ↦ ?_
+  refine .trans (.of_norm_le fun _ ↦
+    c.norm_compAlongOrderedFinpartition_sub_compAlongOrderedFinpartition_le ..) ?_
+  refine .add ?_ ?_
+  · have H₁ : (p₁ · c.length) =O[l] (1 : α → ℝ) := (hp_bdd _ c.length_le).isBigO_one ℝ
+    have H₂ : ∀ m, (q₁ · (c.partSize m)) =O[l] (1 : α → ℝ) := fun m ↦
+      (hq₁_bdd _ <| c.partSize_le _).isBigO_one ℝ
+    have H₃ : ∀ m, (q₂ · (c.partSize m)) =O[l] (1 : α → ℝ) := fun m ↦
+      (hq₂_bdd _ <| c.partSize_le _).isBigO_one ℝ
+    have H₄ : ∀ m, (fun a ↦ q₁ a (c.partSize m) - q₂ a (c.partSize m)) =O[l] f := fun m ↦
+      hqf _ <| c.partSize_le _
+    rw [← Asymptotics.isBigO_pi] at H₂ H₃ H₄
+    have H₅ := ((H₂.prod_left H₃).norm_left.pow (c.length - 1)).mul H₄.norm_norm
+    simpa [mul_assoc] using H₁.norm_left.mul <| H₅.const_mul_left c.length
+  · have H₁ : (fun a ↦ p₁ a c.length - p₂ a c.length) =O[l] f := hpf _ c.length_le
+    have H₂ : ∀ i, (q₂ · (c.partSize i)) =O[l] (1 : α → ℝ) := fun i ↦
+      (hq₂_bdd _ <| c.partSize_le i).isBigO_one ℝ
+    simpa using H₁.norm_norm.mul <| .finsetProd fun i _ ↦ (H₂ i).norm_left
+
+/-- An upper estimate (in terms of `Asymptotics.IsLittleO`)
+on the difference between two compositions of Taylor series.
+
+Let `p₁`, `p₂`, `q₁`, `q₂` be four families of formal multilinear series
+depending on a parameter `a`.
+Suppose that the norms of `(p₁ · k)`, `(q₁ · k)`, and `(q₂ · k)` are bounded along a filter `l`
+for all `k ≤ n`.
+Also, suppose that $p₁(a, k) - p₂(a, k) = o(f(a))$, $q₁(a, k) - q₂(a, k) = o(f(a))$
+along `l` for all `k ≤ n`.
+Then the difference between `n`th terms of `(p₁ a).taylorComp (q₁ a)` and `(p₂ a).taylorComp (q₂ a)`
+is `o(f(a))` too.
+-/
+theorem taylorComp_sub_taylorComp_isLittleO
+    {α H : Type*} [NormedAddCommGroup H] {l : Filter α} {p₁ p₂ : α → FormalMultilinearSeries 𝕜 F G}
+    {q₁ q₂ : α → FormalMultilinearSeries 𝕜 E F} {f : α → H} {n : ℕ}
+    (hp_bdd : ∀ k ≤ n, l.IsBoundedUnder (· ≤ ·) (‖p₁ · k‖))
+    (hpf : ∀ k ≤ n, (fun a ↦ p₁ a k - p₂ a k) =o[l] f)
+    (hq₁_bdd : ∀ k ≤ n, l.IsBoundedUnder (· ≤ ·) (‖q₁ · k‖))
+    (hq₂_bdd : ∀ k ≤ n, l.IsBoundedUnder (· ≤ ·) (‖q₂ · k‖))
+    (hqf : ∀ k ≤ n, (fun a ↦ q₁ a k - q₂ a k) =o[l] f) :
+    (fun a ↦ (p₁ a).taylorComp (q₁ a) n - (p₂ a).taylorComp (q₂ a) n) =o[l] f := calc
+  _ =O[l] fun a ↦ (fun k : Fin (n + 1) ↦ p₁ a k - p₂ a k,
+                    fun k : Fin (n + 1) ↦ q₁ a k - q₂ a k) := by
+    refine taylorComp_sub_taylorComp_isBigO hp_bdd ?_ hq₁_bdd hq₂_bdd ?_
+    all_goals simp only [← Nat.lt_succ_iff, Nat.forall_lt_iff_fin, ← Asymptotics.isBigO_pi]
+    exacts [Asymptotics.isBigO_fst_prod, Asymptotics.isBigO_snd_prod]
+  _ =o[l] f :=
+    .prod_left (Asymptotics.isLittleO_pi.2 fun k ↦ hpf k (by grind))
+      (Asymptotics.isLittleO_pi.2 fun k ↦ hqf k (by grind))
 
 end FormalMultilinearSeries
 
@@ -923,10 +1025,9 @@ private lemma faaDiBruno_aux2 {m : ℕ} (q : FormalMultilinearSeries 𝕜 F G)
       (fun i ↦ p (c.partSize i)) i).comp (p (c.partSize i + 1)).curryLeft := by
   ext e v
   simp? [OrderedFinpartition.extend, extendMiddle, applyOrderedFinpartition_apply] says
-    simp only [Nat.succ_eq_add_one, OrderedFinpartition.extend, extendMiddle,
-      ContinuousMultilinearMap.curryLeft_apply,
-      FormalMultilinearSeries.compAlongOrderedFinpartition_apply, applyOrderedFinpartition_apply,
-      ContinuousLinearMap.coe_comp', comp_apply,
+    simp only [OrderedFinpartition.extend, extendMiddle, ContinuousMultilinearMap.curryLeft_apply,
+      Nat.succ_eq_add_one, FormalMultilinearSeries.compAlongOrderedFinpartition_apply,
+      applyOrderedFinpartition_apply, ContinuousLinearMap.coe_comp', comp_apply,
       ContinuousMultilinearMap.toContinuousLinearMap_apply, compAlongOrderedFinpartitionL_apply,
       compAlongOrderFinpartition_apply]
   congr
@@ -977,8 +1078,7 @@ theorem HasFTaylorSeriesUpToOn.comp {n : WithTop ℕ∞} {g : F → G} {f : E �
       have J : HasFDerivWithinAt (fun x ↦ q x c.length) (q (f x) c.length.succ).curryLeft
         t (f x) := hg.fderivWithin c.length (cm.trans_lt hm) (f x) (h hx)
       have K : HasFDerivWithinAt f ((continuousMultilinearCurryFin1 𝕜 E F) (p x 1)) s x :=
-        hf.hasFDerivWithinAt (le_trans (mod_cast Nat.le_add_left 1 m)
-          (ENat.add_one_natCast_le_withTop_of_lt hm)) hx
+        hf.hasFDerivWithinAt hm.ne_bot hx
       convert HasFDerivWithinAt.linear_multilinear_comp (J.comp x K h) I B
       simp only [B, Nat.succ_eq_add_one, Fintype.sum_option, comp_apply, faaDiBruno_aux1,
         faaDiBruno_aux2]

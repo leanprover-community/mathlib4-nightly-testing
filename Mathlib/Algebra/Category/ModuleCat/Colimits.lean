@@ -3,9 +3,11 @@ Copyright (c) 2019 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison, Joël Riou
 -/
-import Mathlib.Algebra.Category.ModuleCat.Basic
-import Mathlib.CategoryTheory.ConcreteCategory.Elementwise
-import Mathlib.Algebra.Category.Grp.Colimits
+module
+
+public import Mathlib.Algebra.Category.ModuleCat.Basic
+public import Mathlib.CategoryTheory.ConcreteCategory.Elementwise
+public import Mathlib.Algebra.Category.Grp.Colimits
 
 /-!
 # The category of R-modules has all colimits.
@@ -20,6 +22,8 @@ TODO:
 In fact, in `ModuleCat R` there is a much nicer model of colimits as quotients
 of finitely supported functions, and we really should implement this as well.
 -/
+
+@[expose] public section
 
 universe w' w u v
 
@@ -43,13 +47,13 @@ noncomputable def coconePointSMul :
   toFun r := colimMap
     { app := fun j => (F.obj j).smul r
       naturality := fun _ _ _ => smul_naturality _ _ }
-  map_zero' := colimit.hom_ext (by simp)
-  map_one' := colimit.hom_ext (by simp)
+  map_zero' := colimit.hom_ext (by simp +instances)
+  map_one' := colimit.hom_ext (by simp +instances)
   map_add' r s := colimit.hom_ext (fun j => by
-    simp only [Functor.comp_obj, forget₂_obj, map_add, ι_colimMap]
+    simp +instances only [Functor.comp_obj, forget₂_obj, map_add, ι_colimMap]
     rw [Preadditive.add_comp, Preadditive.comp_add]
     simp only [ι_colimMap, Functor.comp_obj, forget₂_obj])
-  map_mul' r s := colimit.hom_ext (fun j => by simp)
+  map_mul' r s := colimit.hom_ext (fun j => by simp +instances)
 
 /-- The cocone for `F` constructed from the colimit of
 `(F ⋙ forget₂ (ModuleCat R) AddCommGrpCat)`. -/
@@ -57,7 +61,7 @@ noncomputable def coconePointSMul :
 noncomputable def colimitCocone : Cocone F where
   pt := mkOfSMul (coconePointSMul F)
   ι :=
-    { app := fun j => homMk (colimit.ι (F ⋙ forget₂ _ AddCommGrpCat)  j) (fun r => by
+    { app := fun j => homMk (colimit.ι (F ⋙ forget₂ _ AddCommGrpCat) j) (fun r => by
         dsimp
         -- This used to be `rw`, but we need `erw` after https://github.com/leanprover/lean4/pull/2644
         erw [mkOfSMul_smul]

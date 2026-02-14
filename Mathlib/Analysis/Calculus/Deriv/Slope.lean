@@ -3,9 +3,11 @@ Copyright (c) 2019 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 -/
-import Mathlib.Analysis.Calculus.Deriv.Add
-import Mathlib.LinearAlgebra.AffineSpace.Slope
-import Mathlib.Topology.Algebra.Module.PerfectSpace
+module
+
+public import Mathlib.Analysis.Calculus.Deriv.Add
+public import Mathlib.LinearAlgebra.AffineSpace.Slope
+public import Mathlib.Topology.Algebra.Module.PerfectSpace
 
 /-!
 # Derivative as the limit of the slope
@@ -18,12 +20,14 @@ use `slope f x y = (y - x)⁻¹ • (f y - f x)` instead of division.
 We also prove some estimates on the upper/lower limits of the slope in terms of the derivative.
 
 For a more detailed overview of one-dimensional derivatives in mathlib, see the module docstring of
-`analysis/calculus/deriv/basic`.
+`Mathlib/Analysis/Calculus/Deriv/Basic.lean`.
 
 ## Keywords
 
 derivative, slope
 -/
+
+public section
 
 universe u v
 
@@ -77,9 +81,8 @@ theorem hasDerivAt_iff_tendsto_slope_left_right [LinearOrder 𝕜] : HasDerivAt 
 
 theorem hasDerivAt_iff_tendsto_slope_zero :
     HasDerivAt f f' x ↔ Tendsto (fun t ↦ t⁻¹ • (f (x + t) - f x)) (𝓝[≠] 0) (𝓝 f') := by
-  have : 𝓝[≠] x = Filter.map (fun t ↦ x + t) (𝓝[≠] 0) := by
-    simp [nhdsWithin, map_add_left_nhds_zero x, Filter.map_inf, add_right_injective x]
-  simp [hasDerivAt_iff_tendsto_slope, this, slope, Function.comp_def]
+  have : 𝓝[≠] x = Filter.map (fun t ↦ x + t) (𝓝[≠] 0) := by simp
+  simp [hasDerivAt_iff_tendsto_slope, this, -map_add_left_nhdsNE, slope, Function.comp_def]
 
 alias ⟨HasDerivAt.tendsto_slope_zero, _⟩ := hasDerivAt_iff_tendsto_slope_zero
 

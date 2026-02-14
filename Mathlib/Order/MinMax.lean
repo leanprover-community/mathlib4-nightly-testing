@@ -3,8 +3,10 @@ Copyright (c) 2017 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
-import Mathlib.Logic.OpClass
-import Mathlib.Order.Lattice
+module
+
+public import Mathlib.Logic.OpClass
+public import Mathlib.Order.Lattice
 
 /-!
 # `max` and `min`
@@ -15,6 +17,8 @@ This file proves basic properties about maxima and minima on a `LinearOrder`.
 
 min, max
 -/
+
+@[expose] public section
 
 
 universe u v
@@ -37,6 +41,12 @@ theorem min_le_iff : min a b ≤ c ↔ a ≤ c ∨ b ≤ c :=
 
 theorem max_le_iff : max a b ≤ c ↔ a ≤ c ∧ b ≤ c :=
   sup_le_iff
+
+instance [LinearOrder α] : Std.LawfulOrderSup α where
+  max_le_iff _ _ _ := max_le_iff
+
+instance [LinearOrder α] : Std.LawfulOrderInf α where
+  le_min_iff _ _ _ := le_min_iff
 
 theorem lt_min_iff : a < min b c ↔ a < b ∧ a < c :=
   lt_inf_iff

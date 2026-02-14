@@ -3,14 +3,16 @@ Copyright (c) 2019 Kevin Kappelmann. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kevin Kappelmann, Kyle Miller, Mario Carneiro
 -/
-import Mathlib.Data.Finset.NatAntidiagonal
-import Mathlib.Data.Nat.GCD.Basic
-import Mathlib.Data.Nat.BinaryRec
-import Mathlib.Logic.Function.Iterate
-import Mathlib.Tactic.Ring
-import Mathlib.Tactic.Zify
-import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Algebra.BigOperators.Group.Finset.Basic
+module
+
+public import Mathlib.Data.Finset.NatAntidiagonal
+public import Mathlib.Data.Nat.GCD.Basic
+public import Mathlib.Data.Nat.BinaryRec
+public import Mathlib.Logic.Function.Iterate
+public import Mathlib.Tactic.Ring
+public import Mathlib.Tactic.Zify
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 
 /-!
 # Fibonacci numbers
@@ -39,6 +41,8 @@ For efficiency purposes, the sequence is defined using `Stream.iterate`.
 
 Fibonacci numbers, Fibonacci sequence
 -/
+
+@[expose] public section
 
 namespace Nat
 
@@ -173,7 +177,7 @@ Proved to be equal to `Nat.fib` in `Nat.fast_fib_eq`. -/
 def fastFib (n : ℕ) : ℕ :=
   (fastFibAux n).1
 
-theorem fast_fib_aux_bit_ff (n : ℕ) :
+theorem fastFibAux_bit_false (n : ℕ) :
     fastFibAux (bit false n) =
       let p := fastFibAux n
       (p.1 * (2 * p.2 - p.1), p.2 ^ 2 + p.1 ^ 2) := by
@@ -181,7 +185,9 @@ theorem fast_fib_aux_bit_ff (n : ℕ) :
   · rfl
   · simp
 
-theorem fast_fib_aux_bit_tt (n : ℕ) :
+@[deprecated (since := "2026-02-04")] alias fast_fib_aux_bit_ff := fastFibAux_bit_false
+
+theorem fastFibAux_bit_true (n : ℕ) :
     fastFibAux (bit true n) =
       let p := fastFibAux n
       (p.2 ^ 2 + p.1 ^ 2, p.2 * (2 * p.1 + p.2)) := by
@@ -189,15 +195,24 @@ theorem fast_fib_aux_bit_tt (n : ℕ) :
   · rfl
   · simp
 
-theorem fast_fib_aux_eq (n : ℕ) : fastFibAux n = (fib n, fib (n + 1)) := by
+@[deprecated (since := "2026-02-04")] alias fast_fib_aux_bit_tt := fastFibAux_bit_true
+
+theorem fastFibAux_eq (n : ℕ) : fastFibAux n = (fib n, fib (n + 1)) := by
   refine Nat.binaryRec ?_ ?_ n
   · simp [fastFibAux]
   · rintro (_ | _) n' ih <;>
-      simp only [fast_fib_aux_bit_ff, fast_fib_aux_bit_tt, congr_arg Prod.fst ih,
+      simp only [fastFibAux_bit_false, fastFibAux_bit_true, congr_arg Prod.fst ih,
         congr_arg Prod.snd ih, Prod.mk_inj] <;>
       simp [bit, fib_two_mul, fib_two_mul_add_one, fib_two_mul_add_two]
 
-theorem fast_fib_eq (n : ℕ) : fastFib n = fib n := by rw [fastFib, fast_fib_aux_eq]
+@[deprecated (since := "2026-02-04")] alias fast_fib_aux_eq := fastFibAux_eq
+
+theorem fastFib_eq (n : ℕ) : fastFib n = fib n := by rw [fastFib, fastFibAux_eq]
+
+@[deprecated (since := "2026-02-04")] alias fast_fib_eq := fastFib_eq
+
+@[csimp]
+theorem fib_eq_fastFib : fib = fastFib := by ext; rw [fastFib_eq]
 
 theorem gcd_fib_add_self (m n : ℕ) : gcd (fib m) (fib (n + m)) = gcd (fib m) (fib n) := by
   rcases Nat.eq_zero_or_pos n with rfl | h

@@ -3,10 +3,12 @@ Copyright (c) 2022 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Filippo A. E. Nuccio, Sam van Gool
 -/
-import Mathlib.Data.Fintype.Order
-import Mathlib.Order.Interval.Finset.Basic
-import Mathlib.Order.Irreducible
-import Mathlib.Order.UpperLower.Closure
+module
+
+public import Mathlib.Data.Fintype.Order
+public import Mathlib.Order.Interval.Finset.Basic
+public import Mathlib.Order.Irreducible
+public import Mathlib.Order.UpperLower.Closure
 
 /-!
 # Birkhoff representation
@@ -47,6 +49,8 @@ partial orders. TODO: extend to morphisms.
 
 birkhoff, representation, stone duality, lattice embedding
 -/
+
+@[expose] public section
 
 open Finset Function OrderDual UpperSet LowerSet
 
@@ -232,7 +236,7 @@ noncomputable def birkhoffFinset : α ↪o Finset {a : α // SupIrred a} := by
 @[simp] lemma birkhoffSet_apply [OrderBot α] (a : α) :
     birkhoffSet a = OrderIso.lowerSetSupIrred a := by
   have : Subsingleton (OrderBot α) := inferInstance
-  simp [birkhoffSet, this.allEq]
+  simp +instances [birkhoffSet, this.allEq]
 
 variable [DecidableEq α]
 

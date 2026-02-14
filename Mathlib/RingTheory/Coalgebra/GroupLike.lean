@@ -3,8 +3,10 @@ Copyright (c) 2025 Yaël Dillies, Michał Mrugała. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Michał Mrugała
 -/
-import Mathlib.RingTheory.Coalgebra.Equiv
-import Mathlib.RingTheory.Flat.Domain
+module
+
+public import Mathlib.RingTheory.Coalgebra.Equiv
+public import Mathlib.RingTheory.Flat.Domain
 
 /-!
 # Group-like elements in a coalgebra
@@ -18,7 +20,9 @@ This file defines group-like elements in a coalgebra, i.e. elements `a` such tha
 * `linearIndepOn_isGroupLikeElem`: Group-like elements over a domain are linearly independent.
 -/
 
-open Coalgebra Function TensorProduct
+@[expose] public section
+
+open Coalgebra Function Module TensorProduct
 
 variable {F R A B : Type*}
 
@@ -89,7 +93,7 @@ end CommSemiring
 
 section CommRing
 variable [CommRing R] [IsDomain R] [AddCommGroup A] [Module R A] [Coalgebra R A]
-  [NoZeroSMulDivisors R A]
+  [IsTorsionFree R A]
 
 open Submodule in
 /-- Group-like elements over a domain are linearly independent. -/

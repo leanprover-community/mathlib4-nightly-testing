@@ -3,9 +3,11 @@ Copyright (c) 2019 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison, Simon Hudon
 -/
-import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
-import Mathlib.CategoryTheory.Limits.Preserves.Shapes.BinaryProducts
-import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Terminal
+module
+
+public import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
+public import Mathlib.CategoryTheory.Limits.Preserves.Shapes.BinaryProducts
+public import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Terminal
 
 /-!
 # The natural monoidal structure on any category with finite (co)products.
@@ -25,6 +27,8 @@ Once we have cocartesian-monoidal categories, replace `monoidalOfHasFiniteCoprod
 `symmetricOfHasFiniteCoproducts` with `CocartesianMonoidalCategory.ofHasFiniteCoproducts`.
 -/
 
+@[expose] public section
+
 
 universe v u
 
@@ -39,7 +43,8 @@ open CategoryTheory.Limits
 section
 
 /-- A category with a terminal object and binary products has a natural monoidal structure. -/
-@[deprecated CartesianMonoidalCategory.ofHasFiniteProducts (since := "2025-10-19")]
+@[instance_reducible,
+  deprecated CartesianMonoidalCategory.ofHasFiniteProducts (since := "2025-10-19")]
 def monoidalOfHasFiniteProducts [HasTerminal C] [HasBinaryProducts C] : MonoidalCategory C :=
   have : HasFiniteProducts C := hasFiniteProducts_of_has_binary_and_terminal
   let +nondep : CartesianMonoidalCategory C := .ofHasFiniteProducts
@@ -145,7 +150,10 @@ end
 
 section
 
+#adaptation_note /-- prior to nightly-2026-02-05
+these four fields were provided by the auto_param -/
 /-- A category with an initial object and binary coproducts has a natural monoidal structure. -/
+@[instance_reducible]
 def monoidalOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C] : MonoidalCategory C :=
   letI : MonoidalCategoryStruct C := {
     tensorObj := fun X Y ↦ X ⨿ Y
@@ -154,13 +162,17 @@ def monoidalOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C] : Monoi
     tensorHom := fun f g ↦ Limits.coprod.map f g
     tensorUnit := ⊥_ C
     associator := coprod.associator
-    leftUnitor := fun P ↦ coprod.leftUnitor P
-    rightUnitor := fun P ↦ coprod.rightUnitor P
+    leftUnitor := coprod.leftUnitor
+    rightUnitor := coprod.rightUnitor
   }
   .ofTensorHom
     (pentagon := coprod.pentagon)
     (triangle := coprod.triangle)
     (associator_naturality := @coprod.associator_naturality _ _ _)
+    (id_tensorHom_id := fun _ _ => coprod.map_id_id)
+    (tensorHom_comp_tensorHom := coprod.map_map)
+    (leftUnitor_naturality := coprod.leftUnitor_naturality)
+    (rightUnitor_naturality := coprod.rightUnitor_naturality)
 
 end
 
@@ -242,7 +254,7 @@ end
 namespace monoidalOfHasFiniteProducts
 
 variable {C}
-variable {D : Type*} [Category D] (F : C ⥤ D)
+variable {D : Type*} [Category* D] (F : C ⥤ D)
   [HasTerminal C] [HasBinaryProducts C]
   [HasTerminal D] [HasBinaryProducts D]
 

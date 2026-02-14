@@ -3,10 +3,12 @@ Copyright (c) 2019 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison, Bhavik Mehta
 -/
-import Mathlib.CategoryTheory.Comma.Over.Basic
-import Mathlib.CategoryTheory.Discrete.Basic
-import Mathlib.CategoryTheory.EpiMono
-import Mathlib.CategoryTheory.Limits.Shapes.Terminal
+module
+
+public import Mathlib.CategoryTheory.Comma.Over.Basic
+public import Mathlib.CategoryTheory.Discrete.Basic
+public import Mathlib.CategoryTheory.EpiMono
+public import Mathlib.CategoryTheory.Limits.Shapes.Terminal
 
 /-!
 # Binary (co)products
@@ -27,6 +29,8 @@ braiding and associating isomorphisms, and the product comparison morphism.
 * [Stacks: Products of pairs](https://stacks.math.columbia.edu/tag/001R)
 * [Stacks: coproducts of pairs](https://stacks.math.columbia.edu/tag/04AN)
 -/
+
+@[expose] public section
 
 universe v v₁ u u₁ u₂
 
@@ -689,7 +693,7 @@ instance isIso_prod {W X Y Z : C} [HasBinaryProduct W X] [HasBinaryProduct Y Z] 
     (g : X ⟶ Z) [IsIso f] [IsIso g] : IsIso (prod.map f g) :=
   (prod.mapIso (asIso f) (asIso g)).isIso_hom
 
-instance prod.map_mono {C : Type*} [Category C] {W X Y Z : C} (f : W ⟶ Y) (g : X ⟶ Z) [Mono f]
+instance prod.map_mono {C : Type*} [Category* C] {W X Y Z : C} (f : W ⟶ Y) (g : X ⟶ Z) [Mono f]
     [Mono g] [HasBinaryProduct W X] [HasBinaryProduct Y Z] : Mono (prod.map f g) :=
   ⟨fun i₁ i₂ h => by
     ext
@@ -794,7 +798,7 @@ instance isIso_coprod {W X Y Z : C} [HasBinaryCoproduct W X] [HasBinaryCoproduct
     (g : X ⟶ Z) [IsIso f] [IsIso g] : IsIso (coprod.map f g) :=
   (coprod.mapIso (asIso f) (asIso g)).isIso_hom
 
-instance coprod.map_epi {C : Type*} [Category C] {W X Y Z : C} (f : W ⟶ Y) (g : X ⟶ Z) [Epi f]
+instance coprod.map_epi {C : Type*} [Category* C] {W X Y Z : C} (f : W ⟶ Y) (g : X ⟶ Z) [Epi f]
     [Epi g] [HasBinaryCoproduct W X] [HasBinaryCoproduct Y Z] : Epi (coprod.map f g) :=
   ⟨fun i₁ i₂ h => by
     ext
@@ -982,6 +986,10 @@ def coprod.leftUnitor (P : C) : (⊥_ C) ⨿ P ≅ P where
   hom_inv_id := by apply coprod.hom_ext <;> simp [eq_iff_true_of_subsingleton]
   inv_hom_id := by simp
 
+theorem coprod.leftUnitor_naturality (f : X ⟶ Y) :
+    coprod.map (𝟙 _) f ≫ (coprod.leftUnitor Y).hom = (coprod.leftUnitor X).hom ≫ f := by
+  simp
+
 /-- The right unitor isomorphism for binary coproducts with the initial object. -/
 @[simps]
 def coprod.rightUnitor (P : C) : P ⨿ ⊥_ C ≅ P where
@@ -989,6 +997,10 @@ def coprod.rightUnitor (P : C) : P ⨿ ⊥_ C ≅ P where
   inv := coprod.inl
   hom_inv_id := by apply coprod.hom_ext <;> simp [eq_iff_true_of_subsingleton]
   inv_hom_id := by simp
+
+theorem coprod.rightUnitor_naturality (f : X ⟶ Y) :
+    coprod.map f (𝟙 _) ≫ (coprod.rightUnitor Y).hom = (coprod.rightUnitor X).hom ≫ f := by
+  simp
 
 theorem coprod.triangle (X Y : C) :
     (coprod.associator X (⊥_ C) Y).hom ≫ coprod.map (𝟙 X) (coprod.leftUnitor Y).hom =
@@ -999,7 +1011,7 @@ end
 
 noncomputable section ProdFunctor
 
-variable {C} [Category.{v} C] [HasBinaryProducts C]
+variable {C} [HasBinaryProducts C]
 
 /-- The binary product functor. -/
 @[simps]
@@ -1324,8 +1336,6 @@ def IsLimit.binaryFanSwap (I : IsLimit s) : IsLimit s.swap where
     specialize w ⟨WalkingPair.swap j⟩
     cases j <;> exact w
 
-@[deprecated (since := "2025-05-04")] alias IsLimit.swapBinaryFan := IsLimit.binaryFanSwap
-
 /-- Construct `HasBinaryProduct Y X` from `HasBinaryProduct X Y`.
 This can't be an instance, as it would cause a loop in typeclass search. -/
 lemma HasBinaryProduct.swap (X Y : C) [HasBinaryProduct X Y] : HasBinaryProduct Y X :=
@@ -1393,6 +1403,8 @@ lemma BinaryFan.assocInv_fst (P : IsLimit sXY) (s : BinaryFan X sYZ.pt) :
 lemma BinaryFan.assocInv_snd (P : IsLimit sXY) (s : BinaryFan X sYZ.pt) :
     (assocInv P s).snd = s.snd ≫ sYZ.snd := rfl
 
+-- TODO: find a good way to fix the linter; simp applies to two goals with different simp sets
+set_option linter.flexible false in
 /-- If all the binary fans involved a limit cones, `BinaryFan.assoc` produces another limit cone. -/
 @[simps]
 protected def IsLimit.assoc (P : IsLimit sXY) (Q : IsLimit sYZ) {s : BinaryFan sXY.pt Z}

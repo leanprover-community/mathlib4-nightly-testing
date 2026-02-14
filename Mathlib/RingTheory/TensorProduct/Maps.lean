@@ -3,10 +3,12 @@ Copyright (c) 2020 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison, Johan Commelin
 -/
-import Mathlib.Algebra.Algebra.RestrictScalars
-import Mathlib.Algebra.Algebra.Subalgebra.Lattice
-import Mathlib.Algebra.Module.Rat
-import Mathlib.RingTheory.TensorProduct.Basic
+module
+
+public import Mathlib.Algebra.Algebra.RestrictScalars
+public import Mathlib.Algebra.Algebra.Subalgebra.Lattice
+public import Mathlib.Algebra.Module.Rat
+public import Mathlib.RingTheory.TensorProduct.Basic
 
 /-!
 # Maps between tensor products of R-algebras
@@ -19,7 +21,7 @@ This file provides results about maps between tensor products of `R`-algebras.
   * `Algebra.TensorProduct.lid : R ⊗[R] A ≃ₐ[R] A`
   * `Algebra.TensorProduct.rid : A ⊗[R] R ≃ₐ[S] A` (usually used with `S = R` or `S = A`)
   * `Algebra.TensorProduct.comm : A ⊗[R] B ≃ₐ[R] B ⊗[R] A`
-  * `Algebra.TensorProduct.assoc : ((A ⊗[R] B) ⊗[R] C) ≃ₐ[R] (A ⊗[R] (B ⊗[R] C))`
+  * `Algebra.TensorProduct.assoc : ((A ⊗[S] C) ⊗[R] D) ≃ₐ[T] (A ⊗[S] (C ⊗[R] D))`
 - `Algebra.TensorProduct.liftEquiv`: a universal property for the tensor product of algebras.
 
 ## References
@@ -27,6 +29,8 @@ This file provides results about maps between tensor products of `R`-algebras.
 * [C. Kassel, *Quantum Groups* (§II.4)][Kassel1995]
 
 -/
+
+@[expose] public section
 
 assert_not_exists Equiv.Perm.cycleType
 
@@ -180,6 +184,12 @@ theorem lift_comp_includeLeft (f : A →ₐ[S] C) (g : B →ₐ[R] C) (hfg : ∀
 @[simp]
 theorem lift_comp_includeRight (f : A →ₐ[S] C) (g : B →ₐ[R] C) (hfg : ∀ x y, Commute (f x) (g y)) :
     ((lift f g hfg).restrictScalars R).comp includeRight = g :=
+  AlgHom.ext <| by simp
+
+/-- Variant with the same base that doesn't need `restrictScalars`. -/
+@[simp]
+theorem lift_comp_includeRight' (f : A →ₐ[R] C) (g : B →ₐ[R] C) (hfg : ∀ x y, Commute (f x) (g y)) :
+    (lift f g hfg).comp includeRight = g :=
   AlgHom.ext <| by simp
 
 /-- The universal property of the tensor product of algebras.
@@ -358,39 +368,28 @@ end
 
 section
 
-variable {R A}
+variable [CommSemiring T] [Algebra R T] [Algebra S T]
+    [Algebra T A] [IsScalarTower R T A] [IsScalarTower S T A]
 
-unseal mul in
-theorem assoc_aux_1 (a₁ a₂ : A) (b₁ b₂ : B) (c₁ c₂ : C) :
-    (TensorProduct.assoc R A B C) ((a₁ * a₂) ⊗ₜ[R] (b₁ * b₂) ⊗ₜ[R] (c₁ * c₂)) =
-      (TensorProduct.assoc R A B C) (a₁ ⊗ₜ[R] b₁ ⊗ₜ[R] c₁) *
-        (TensorProduct.assoc R A B C) (a₂ ⊗ₜ[R] b₂ ⊗ₜ[R] c₂) :=
-  rfl
-
-theorem assoc_aux_2 : (TensorProduct.assoc R A B C) (1 ⊗ₜ[R] 1 ⊗ₜ[R] 1) = 1 :=
-  rfl
-
-variable (R A C D)
-
+variable (T C D) in
 /-- The associator for tensor product of R-algebras, as an algebra isomorphism. -/
-protected def assoc : A ⊗[S] C ⊗[R] D ≃ₐ[S] A ⊗[S] (C ⊗[R] D) :=
+protected def assoc : (A ⊗[S] C) ⊗[R] D ≃ₐ[T] A ⊗[S] (C ⊗[R] D) :=
   AlgEquiv.ofLinearEquiv
-    (AlgebraTensorModule.assoc R S S A C D)
+    (AlgebraTensorModule.assoc R S T A C D)
     (by simp [Algebra.TensorProduct.one_def])
     ((LinearMap.map_mul_iff _).mpr <| by ext; simp)
 
+variable (T C D) in
 @[simp] theorem assoc_toLinearEquiv :
-    (TensorProduct.assoc R S A C D).toLinearEquiv = AlgebraTensorModule.assoc R S S A C D := rfl
-
-variable {A C D}
+    (TensorProduct.assoc R S T A C D).toLinearEquiv = AlgebraTensorModule.assoc R S T A C D := rfl
 
 @[simp]
 theorem assoc_tmul (a : A) (b : C) (c : D) :
-    TensorProduct.assoc R S A C D ((a ⊗ₜ b) ⊗ₜ c) = a ⊗ₜ (b ⊗ₜ c) := rfl
+    TensorProduct.assoc R S T A C D ((a ⊗ₜ b) ⊗ₜ c) = a ⊗ₜ (b ⊗ₜ c) := rfl
 
 @[simp]
 theorem assoc_symm_tmul (a : A) (b : C) (c : D) :
-    (TensorProduct.assoc R S A C D).symm (a ⊗ₜ (b ⊗ₜ c)) = (a ⊗ₜ b) ⊗ₜ c := rfl
+    (TensorProduct.assoc R S T A C D).symm (a ⊗ₜ (b ⊗ₜ c)) = (a ⊗ₜ b) ⊗ₜ c := rfl
 
 end
 
@@ -531,8 +530,8 @@ variable (R A B C) in
 
 This is the algebra version of `TensorProduct.leftComm`. -/
 def leftComm : A ⊗[R] (B ⊗[R] C) ≃ₐ[R] B ⊗[R] (A ⊗[R] C) :=
-  (Algebra.TensorProduct.assoc R R A B C).symm.trans <|
-    (congr (Algebra.TensorProduct.comm R A B) .refl).trans <| TensorProduct.assoc R R B A C
+  (Algebra.TensorProduct.assoc R R R A B C).symm.trans <|
+    (congr (Algebra.TensorProduct.comm R A B) .refl).trans <| TensorProduct.assoc R R R B A C
 
 @[simp]
 theorem leftComm_tmul (m : A) (n : B) (p : C) :

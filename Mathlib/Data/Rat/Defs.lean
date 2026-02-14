@@ -3,11 +3,13 @@ Copyright (c) 2019 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl, Mario Carneiro
 -/
-import Mathlib.Algebra.Group.Defs
-import Mathlib.Data.Nat.Basic
-import Mathlib.Data.Rat.Init
-import Mathlib.Order.Basic
-import Mathlib.Tactic.Common
+module
+
+public import Mathlib.Algebra.Group.Defs
+public import Mathlib.Data.Nat.Basic
+public import Mathlib.Data.Rat.Init
+public import Mathlib.Order.Basic
+public import Mathlib.Tactic.Common
 
 /-!
 # Basics for the Rational Numbers
@@ -27,6 +29,8 @@ once the `Field` class has been defined.
 - `/.` is infix notation for `Rat.divInt`.
 
 -/
+
+@[expose] public section
 
 -- TODO: If `Inv` was defined earlier than `Algebra.Group.Defs`, we could have
 -- assert_not_exists Monoid
@@ -148,7 +152,7 @@ variable (a b c : ℚ)
 lemma divInt_one_one : 1 /. 1 = 1 := by rw [divInt_one, Rat.intCast_one]
 
 protected theorem zero_ne_one : 0 ≠ (1 : ℚ) := by
-  rw [ne_comm, ← divInt_one_one, divInt_ne_zero] <;> omega
+  rw [ne_comm, ← divInt_one_one, divInt_ne_zero] <;> lia
 
 attribute [simp] mkRat_eq_zero
 
@@ -204,14 +208,6 @@ instance monoid : Monoid ℚ := by infer_instance
 instance commSemigroup : CommSemigroup ℚ := by infer_instance
 
 instance semigroup : Semigroup ℚ := by infer_instance
-
-theorem eq_iff_mul_eq_mul {p q : ℚ} : p = q ↔ p.num * q.den = q.num * p.den := by
-  conv =>
-    lhs
-    rw [← num_divInt_den p, ← num_divInt_den q]
-  apply Rat.divInt_eq_divInt_iff <;>
-    · rw [← Int.natCast_zero, Ne, Int.ofNat_inj]
-      apply den_nz
 
 @[simp]
 theorem den_neg_eq_den (q : ℚ) : (-q).den = q.den :=

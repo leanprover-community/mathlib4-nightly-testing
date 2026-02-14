@@ -3,16 +3,20 @@ Copyright (c) 2021 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison, Johan Commelin
 -/
-import Mathlib.Algebra.Category.ModuleCat.Monoidal.Basic
-import Mathlib.CategoryTheory.Monoidal.Types.Basic
-import Mathlib.LinearAlgebra.DirectSum.Finsupp
-import Mathlib.CategoryTheory.Linear.LinearFunctor
+module
+
+public import Mathlib.Algebra.Category.ModuleCat.Monoidal.Basic
+public import Mathlib.CategoryTheory.Monoidal.Types.Basic
+public import Mathlib.LinearAlgebra.DirectSum.Finsupp
+public import Mathlib.CategoryTheory.Linear.LinearFunctor
 
 /-!
 The functor of forming finitely supported functions on a type with values in a `[Ring R]`
 is the left adjoint of
 the forgetful functor from `R`-modules to types.
 -/
+
+@[expose] public section
 
 
 assert_not_exists Cardinal
@@ -92,7 +96,7 @@ lemma adj_homEquiv (X : Type u) (M : ModuleCat.{u} R) :
     (adj R).homEquiv X M = freeHomEquiv := by
   simp only [adj, Adjunction.mkOfHomEquiv_homEquiv]
 
-instance : (forget (ModuleCat.{u} R)).IsRightAdjoint  :=
+instance : (forget (ModuleCat.{u} R)).IsRightAdjoint :=
   (adj R).isRightAdjoint
 
 end
@@ -208,7 +212,7 @@ namespace CategoryTheory
 
 universe v u
 
-/-- `Free R C` is a type synonym for `C`, which, given `[CommRing R]` and `[Category C]`,
+/-- `Free R C` is a type synonym for `C`, which, given `[CommRing R]` and `[Category* C]`,
 we will equip with a category structure where the morphisms are formal `R`-linear combinations
 of the morphisms in `C`.
 -/
@@ -238,9 +242,7 @@ instance categoryFree : Category (Free R C) where
     (f.sum (fun f' s => g.sum (fun g' t => Finsupp.single (f' ≫ g') (s * t))) : (X ⟶ Z) →₀ R)
   assoc {W X Y Z} f g h := by
     -- This imitates the proof of associativity for `MonoidAlgebra`.
-    simp only [sum_sum_index, sum_single_index, single_zero, single_add,
-      forall_true_iff, add_mul, mul_add, Category.assoc, mul_assoc,
-      zero_mul, mul_zero, sum_zero, sum_add]
+    simp [sum_sum_index, add_mul, mul_add, Category.assoc, mul_assoc]
 
 namespace Free
 
@@ -249,10 +251,10 @@ section
 instance : Preadditive (Free R C) where
   homGroup _ _ := Finsupp.instAddCommGroup
   add_comp X Y Z f f' g := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     rw [Finsupp.sum_add_index'] <;> · simp [add_mul]
   comp_add X Y Z f g g' := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     rw [← Finsupp.sum_add]
     congr; ext r h
     rw [Finsupp.sum_add_index'] <;> · simp [mul_add]
@@ -260,17 +262,18 @@ instance : Preadditive (Free R C) where
 instance : Linear R (Free R C) where
   homModule _ _ := Finsupp.module _ R
   smul_comp X Y Z r f g := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     rw [Finsupp.sum_smul_index] <;> simp [Finsupp.smul_sum, mul_assoc]
   comp_smul X Y Z f r g := by
-    dsimp [CategoryTheory.categoryFree]
+    dsimp +instances [CategoryTheory.categoryFree]
     simp_rw [Finsupp.smul_sum]
     congr; ext h s
     rw [Finsupp.sum_smul_index] <;> simp [mul_left_comm]
 
 theorem single_comp_single {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) (r s : R) :
     (single f r ≫ single g s : Free.of R X ⟶ Free.of R Z) = single (f ≫ g) (r * s) := by
-  dsimp [CategoryTheory.categoryFree]; simp
+  dsimp +instances [CategoryTheory.categoryFree]
+  simp
 
 end
 
@@ -297,7 +300,9 @@ open Preadditive Linear
 def lift (F : C ⥤ D) : Free R C ⥤ D where
   obj X := F.obj X
   map {_ _} f := f.sum fun f' r => r • F.map f'
-  map_id := by dsimp [CategoryTheory.categoryFree]; simp
+  map_id := by
+    dsimp +instances [CategoryTheory.categoryFree]
+    simp
   map_comp {X Y Z} f g := by
     induction f using Finsupp.induction_linear with
     | zero => simp

@@ -3,9 +3,11 @@ Copyright (c) 2024 Xavier Roblot. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Xavier Roblot
 -/
-import Mathlib.RingTheory.Ideal.IsPrincipal
-import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
-import Mathlib.RingTheory.ClassGroup
+module
+
+public import Mathlib.RingTheory.Ideal.IsPrincipal
+public import Mathlib.NumberTheory.NumberField.Units.DirichletTheorem
+public import Mathlib.RingTheory.ClassGroup
 
 /-!
 # Fundamental Cone
@@ -36,6 +38,8 @@ mixed space that is a fundamental domain for the action of `(𝓞 K)ˣ` modulo t
 
 number field, canonical embedding, units, principal ideals
 -/
+
+@[expose] public section
 
 variable (K : Type*) [Field K]
 
@@ -586,14 +590,14 @@ theorem card_isPrincipal_dvd_norm_le (s : ℝ) :
             × torsion K := Equiv.prodCongrLeft fun _ ↦ (Equiv.subtypeSubtypeEquivSubtypeInter
         (p := fun I : (Ideal (𝓞 K))⁰ ↦ J.1 ∣ I.1 ∧ IsPrincipal I.1 ∧ absNorm I.1 ≤ ⌊s⌋₊)
         (q := fun I ↦ absNorm I.1 = i))
-      _   ≃ {I : (Ideal (𝓞 K))⁰ // J.1 ∣ I.1 ∧ IsPrincipal I.1 ∧ absNorm I.1 = i}
-            × torsion K := Equiv.prodCongrLeft fun _ ↦ Equiv.subtypeEquivRight fun _ ↦ by aesop
-      _   ≃ {a : idealSet K J // mixedEmbedding.norm (a : mixedSpace K) = i} :=
+      _ ≃ {I : (Ideal (𝓞 K))⁰ // J.1 ∣ I.1 ∧ IsPrincipal I.1 ∧ absNorm I.1 = i}
+            × torsion K := Equiv.prodCongrLeft fun _ ↦ Equiv.subtypeEquivRight fun _ ↦ by grind
+      _ ≃ {a : idealSet K J // mixedEmbedding.norm (a : mixedSpace K) = i} :=
             (idealSetEquivNorm K J i).symm
-      _   ≃ {a : idealSet K J // intNorm (idealSetEquiv K J a).1 = i} := by
+      _ ≃ {a : idealSet K J // intNorm (idealSetEquiv K J a).1 = i} := by
         simp_rw [← intNorm_idealSetEquiv_apply, Nat.cast_inj]
         rfl
-      _   ≃ {b : {a : idealSet K J // intNorm (idealSetEquiv K J a).1 ≤ ⌊s⌋₊} //
+      _ ≃ {b : {a : idealSet K J // intNorm (idealSetEquiv K J a).1 ≤ ⌊s⌋₊} //
             intNorm (idealSetEquiv K J b).1 = i} :=
         (Equiv.subtypeSubtypeEquivSubtype fun h ↦ Finset.mem_Iic.mp (h ▸ hi)).symm
   · simp_rw [lt_iff_not_ge.mp (lt_of_lt_of_le hs (Nat.cast_nonneg _)), lt_iff_not_ge.mp

@@ -3,9 +3,11 @@ Copyright (c) 2025 Dexin Zhang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Dexin Zhang
 -/
-import Mathlib.Algebra.Group.Ideal
-import Mathlib.Algebra.Order.Monoid.Canonical.Defs
-import Mathlib.Order.WellFoundedSet
+module
+
+public import Mathlib.Algebra.Group.Ideal
+public import Mathlib.Algebra.Order.Monoid.Canonical.Defs
+public import Mathlib.Order.WellFoundedSet
 
 /-!
 # Semigroup ideals in a canonically ordered and well-quasi-ordered monoid
@@ -17,6 +19,8 @@ finitely generated, and the semigroup ideals satisfy the ascending chain conditi
 
 * [Samuel Eilenberg and M. P. Schützenberger, *Rational Sets in Commutative Monoids*][eilenberg1969]
 -/
+
+@[expose] public section
 
 namespace SemigroupIdeal
 
@@ -61,7 +65,7 @@ instance : WellFoundedGT (SemigroupIdeal M) := by
   apply (f.mono hn).antisymm
   apply (le_iSup f n).trans
   intro x hx
-  rw [SetLike.mem_coe, hI, mem_closure''] at hx
+  rw [hI, mem_closure''] at hx
   rcases hx with ⟨y, z, hz, rfl⟩
   exact SemigroupIdeal.mul_mem _ _ (f.mono (Finset.le_sup hz) (hg _ hz))
 

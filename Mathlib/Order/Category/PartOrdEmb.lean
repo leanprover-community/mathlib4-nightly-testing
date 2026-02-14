@@ -3,10 +3,12 @@ Copyright (c) 2025 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou, Johan Commelin
 -/
-import Mathlib.Order.Category.PartOrd
-import Mathlib.CategoryTheory.Limits.Filtered
-import Mathlib.CategoryTheory.Limits.Preserves.Filtered
-import Mathlib.CategoryTheory.Limits.Types.Filtered
+module
+
+public import Mathlib.Order.Category.PartOrd
+public import Mathlib.CategoryTheory.Limits.Filtered
+public import Mathlib.CategoryTheory.Limits.Preserves.Filtered
+public import Mathlib.CategoryTheory.Limits.Types.Filtered
 
 /-!
 # Category of partial orders, with order embeddings as morphisms
@@ -15,6 +17,8 @@ This defines `PartOrdEmb`, the category of partial orders with order embeddings
 as morphisms. We also show that `PartOrdEmb` has filtered colimits.
 
 -/
+
+@[expose] public section
 
 open CategoryTheory Limits
 
@@ -39,6 +43,7 @@ instance : CoeSort PartOrdEmb (Type _) :=
 
 attribute [coe] PartOrdEmb.carrier
 
+set_option backward.privateInPublic true in
 /-- The type of morphisms in `PartOrdEmb R`. -/
 @[ext]
 structure Hom (X Y : PartOrdEmb.{u}) where
@@ -46,11 +51,15 @@ structure Hom (X Y : PartOrdEmb.{u}) where
   /-- The underlying `OrderEmbedding`. -/
   hom' : X ↪o Y
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 instance : Category PartOrdEmb.{u} where
   Hom X Y := Hom X Y
   id _ := ⟨RelEmbedding.refl _⟩
   comp f g := ⟨f.hom'.trans g.hom'⟩
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 instance : ConcreteCategory PartOrdEmb (· ↪o ·) where
   hom := Hom.hom'
   ofHom := Hom.mk
@@ -82,7 +91,7 @@ lemma coe_comp {X Y Z : PartOrdEmb} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X �
 
 @[simp]
 lemma forget_map {X Y : PartOrdEmb} (f : X ⟶ Y) :
-    (forget PartOrdEmb).map f = f := rfl
+    (forget PartOrdEmb).map f = (f : _ → _) := rfl
 
 @[ext]
 lemma ext {X Y : PartOrdEmb} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=

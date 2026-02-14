@@ -3,8 +3,10 @@ Copyright (c) 2024 Christopher Hoskin. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Christopher Hoskin
 -/
-import Mathlib.Algebra.Ring.Defs
-import Mathlib.Algebra.Star.Basic
+module
+
+public import Mathlib.Algebra.Ring.Defs
+public import Mathlib.Algebra.Star.Basic
 
 /-!
 # Morphisms of star rings
@@ -28,6 +30,8 @@ This file is heavily inspired by `Mathlib/Algebra/Star/StarAlgHom.lean`.
 
 non-unital, ring, morphism, star
 -/
+
+@[expose] public section
 
 open EquivLike
 
@@ -271,7 +275,7 @@ instance (priority := 100) {F A B : Type*} [NonUnitalNonAssocSemiring A] [Star A
 def toStarRingEquiv {F A B : Type*} [Add A] [Mul A] [Star A] [Add B] [Mul B] [Star B]
     [EquivLike F A B] [RingEquivClass F A B] [StarRingEquivClass F A B] (f : F) : A ≃⋆+* B :=
   { (f : A ≃+* B) with
-    map_star' := map_star f}
+    map_star' := map_star f }
 
 /-- Any type satisfying `StarRingEquivClass` can be cast into `StarRingEquiv` via
 `StarRingEquivClass.toStarRingEquiv`. -/

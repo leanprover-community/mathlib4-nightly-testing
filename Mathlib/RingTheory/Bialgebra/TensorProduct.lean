@@ -3,9 +3,11 @@ Copyright (c) 2024 Amelia Livingston. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Amelia Livingston, Andrew Yang
 -/
-import Mathlib.RingTheory.Bialgebra.Equiv
-import Mathlib.RingTheory.Coalgebra.TensorProduct
-import Mathlib.RingTheory.TensorProduct.Basic
+module
+
+public import Mathlib.RingTheory.Bialgebra.Equiv
+public import Mathlib.RingTheory.Coalgebra.TensorProduct
+public import Mathlib.RingTheory.TensorProduct.Basic
 
 /-!
 # Tensor products of bialgebras
@@ -15,6 +17,8 @@ instance on a tensor product of bialgebras, and the tensor product of two `Bialg
 `BialgHom`. This is done by combining the corresponding API for coalgebras and algebras.
 
 -/
+
+@[expose] public section
 
 open scoped TensorProduct
 
@@ -86,7 +90,7 @@ variable (R S A C D) in
 /-- The associator for tensor products of R-bialgebras, as a bialgebra equivalence. -/
 protected noncomputable def assoc :
     (A ⊗[S] C) ⊗[R] D ≃ₐc[S] A ⊗[S] (C ⊗[R] D) :=
-  { Coalgebra.TensorProduct.assoc R S A C D, Algebra.TensorProduct.assoc R S A C D with }
+  { Coalgebra.TensorProduct.assoc R S A C D, Algebra.TensorProduct.assoc R S S A C D with }
 
 @[simp]
 theorem assoc_tmul (x : A) (y : C) (z : D) :
@@ -106,7 +110,7 @@ theorem assoc_toCoalgEquiv :
 @[simp]
 theorem assoc_toAlgEquiv :
     (Bialgebra.TensorProduct.assoc R S A C D : _ ≃ₐ[S] _) =
-    Algebra.TensorProduct.assoc R S A C D := rfl
+    Algebra.TensorProduct.assoc R S S A C D := rfl
 
 variable (R B) in
 /-- The base ring is a left identity for the tensor product of bialgebras, up to

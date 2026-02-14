@@ -3,16 +3,21 @@ Copyright (c) 2018 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
-import Batteries.Data.String.Lemmas
-import Mathlib.Data.List.Lex
-import Mathlib.Data.Char
-import Mathlib.Algebra.Order.Group.Nat
+module
+
+public import Batteries.Data.String.Lemmas
+public import Mathlib.Data.List.Lex
+public import Mathlib.Data.Char
+public import Mathlib.Algebra.Order.Group.Nat
+import all Init.Data.String.Iterator  -- for unfolding `Iterator.curr`
 
 /-!
 # Strings
 
 Supplementary theorems about the `String` type.
 -/
+
+@[expose] public section
 
 namespace String
 
@@ -32,11 +37,11 @@ instance LT' : LT String :=
 
 /-- This instance has a prime to avoid the name of the corresponding instance in core Lean. -/
 instance decidableLT' : DecidableLT String := by
-  simp only [DecidableLT, LT']
+  simp +instances only [DecidableLT, LT']
   infer_instance -- short-circuit type class inference
 
 /-- Induction on `String.ltb`. -/
-def ltb.inductionOn.{u} {motive : Legacy.Iterator → Legacy.Iterator → Sort u}
+@[no_expose] def ltb.inductionOn.{u} {motive : Legacy.Iterator → Legacy.Iterator → Sort u}
     (it₁ it₂ : Legacy.Iterator)
     (ind : ∀ s₁ s₂ i₁ i₂, Legacy.Iterator.hasNext ⟨s₂, i₂⟩ → Legacy.Iterator.hasNext ⟨s₁, i₁⟩ →
       i₁.get s₁ = i₂.get s₂ →
@@ -63,7 +68,7 @@ theorem ltb_cons_addChar' (c : Char) (s₁ s₂ : Legacy.Iterator) :
   | case1 s₁ s₂ h₁ h₂ h ih =>
     rw [ltb, Legacy.Iterator.hasNext_cons_addChar, Legacy.Iterator.hasNext_cons_addChar,
       if_pos (by simpa using h₁), if_pos (by simpa using h₂), if_pos, ← ih]
-    · simp [Legacy.Iterator.next, String.Pos.Raw.next, get_cons_addChar]
+    · simp only [Legacy.Iterator.next, Pos.Raw.next, get_cons_addChar, ofList_toList]
       congr 2 <;> apply Pos.Raw.add_char_right_comm
     · simpa [Legacy.Iterator.curr, get_cons_addChar] using h
   | case2 s₁ s₂ h₁ h₂ h =>
@@ -120,7 +125,7 @@ instance LE : LE String :=
   ⟨fun s₁ s₂ ↦ ¬s₂ < s₁⟩
 
 instance decidableLE : DecidableLE String := by
-  simp only [DecidableLE, LE]
+  simp +instances only [DecidableLE, LE]
   infer_instance -- short-circuit type class inference
 
 @[simp]
@@ -135,12 +140,13 @@ theorem asString_nil : ofList [] = "" :=
 theorem asString_toList (s : String) : ofList s.toList = s :=
   ofList_toList
 
-theorem toList_nonempty : ∀ {s : String}, s ≠ "" → s.toList = s.head :: (s.drop 1).toList
+theorem toList_nonempty :
+    ∀ {s : String}, s ≠ "" → s.toList = String.Legacy.front s :: (String.Legacy.drop s 1).toList
   | s, h => by
     obtain ⟨l, rfl⟩ := s.exists_eq_ofList
     match l with
     | [] => simp at h
-    | c::cs => simp [head, front, Pos.Raw.get, Pos.Raw.utf8GetAux]
+    | c::cs => simp [Legacy.front, Pos.Raw.get, Pos.Raw.utf8GetAux]
 
 @[simp]
 theorem head_empty : "".toList.head! = default :=
@@ -163,7 +169,7 @@ instance : LinearOrder String where
   toDecidableEq := inferInstance
   toDecidableLT := String.decidableLT'
   compare_eq_compareOfLessAndEq a b := by
-    simp only [compare, compareOfLessAndEq, instLT, List.instLT, lt_iff_toList_lt]
+    simp +instances only [compare, compareOfLessAndEq, instLT, List.instLT, lt_iff_toList_lt]
     split_ifs <;>
     simp only [List.lt_iff_lex_lt] at *
 

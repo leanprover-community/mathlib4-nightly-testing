@@ -3,9 +3,12 @@ Copyright (c) 2025 Beibei Xiong. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Beibei Xiong, Yu Shao, Weijie Jiang, Zhengfeng Yang
 -/
-import Mathlib.Tactic.Ring
-import Mathlib.Data.Nat.Factorial.Basic
-import Mathlib.Data.Nat.Choose.Basic
+module
+
+public import Mathlib.Data.Nat.Factorial.Basic
+public import Mathlib.Data.Nat.Choose.Basic
+public import Mathlib.Tactic.NormNum.Inv
+public import Mathlib.Tactic.NormNum.Pow
 
 /-!
 # Stirling Numbers
@@ -34,6 +37,8 @@ The Stirling numbers of the second kind, represent the number of ways to partiti
 
 * [Knuth, *The Art of Computer Programming*, Volume 1, §1.2.6][knuth1997]
 -/
+
+@[expose] public section
 
 open Nat
 

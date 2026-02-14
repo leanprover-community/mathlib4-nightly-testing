@@ -3,9 +3,12 @@ Copyright (c) 2017 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
-import Mathlib.Data.Nat.Find
-import Mathlib.Data.Stream.Init
-import Mathlib.Tactic.Common
+module
+
+public import Mathlib.Data.Nat.Find
+public import Mathlib.Data.Stream.Init
+public import Mathlib.Tactic.Common
+public import Batteries.Tactic.Lint.Simp
 
 /-!
 # Coinductive formalization of unbounded computations.
@@ -13,6 +16,8 @@ import Mathlib.Tactic.Common
 This file provides a `Computation` type where `Computation α` is the type of
 unbounded computations returning `α`.
 -/
+
+@[expose] public section
 
 open Function
 
@@ -216,8 +221,7 @@ theorem corec_eq (f : β → α ⊕ β) (b : β) : destruct (corec f b) = rmap (
     dsimp [Corec.f, Stream'.corec', Stream'.corec, Stream'.map, Stream'.get, Stream'.iterate]
     match (f b) with
     | Sum.inl x => rfl
-    | Sum.inr x => rfl
-    ]
+    | Sum.inr x => rfl]
   rcases h : f b with a | b'; · rfl
   dsimp [Corec.f, destruct]
   apply congr_arg; apply Subtype.ext
@@ -343,8 +347,6 @@ theorem of_think_terminates {s : Computation α} : Terminates (think s) → Term
 
 theorem notMem_empty (a : α) : a ∉ empty α := fun ⟨n, h⟩ => by contradiction
 
-@[deprecated (since := "2025-05-23")] alias not_mem_empty := notMem_empty
-
 theorem not_terminates_empty : ¬Terminates (empty α) := fun ⟨⟨a, h⟩⟩ => notMem_empty a h
 
 theorem eq_empty_of_not_terminates {s} (H : ¬Terminates s) : s = empty α := by
@@ -408,7 +410,6 @@ theorem get_thinkN (n) : get (thinkN s n) = get s :=
 theorem get_promises : s ~> get s := fun _ => get_eq_of_mem _
 
 theorem mem_of_promises {a} (p : s ~> a) : a ∈ s := by
-  obtain ⟨h⟩ := h
   obtain ⟨a', h⟩ := h
   rw [p h]
   exact h

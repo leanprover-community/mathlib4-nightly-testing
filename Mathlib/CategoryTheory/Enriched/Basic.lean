@@ -3,9 +3,11 @@ Copyright (c) 2021 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison
 -/
-import Mathlib.CategoryTheory.Monoidal.Types.Coyoneda
-import Mathlib.CategoryTheory.Monoidal.Center
-import Mathlib.Tactic.ApplyFun
+module
+
+public import Mathlib.CategoryTheory.Monoidal.Types.Coyoneda
+public import Mathlib.CategoryTheory.Monoidal.Center
+public import Mathlib.Tactic.ApplyFun
 
 /-!
 # Enriched categories
@@ -25,13 +27,15 @@ We don't yet define the `V`-object of natural transformations
 between a pair of `V`-functors (this requires limits in `V`),
 but we do provide a presheaf isomorphic to the Yoneda embedding of this object.
 
-We verify that when `V = Type v`, all these notion reduce to the usual ones.
+We verify that when `V = Type v`, all these notions reduce to the usual ones.
 
 ## References
 
 * [Kim Morrison, David Penneys, _Monoidal Categories Enriched in Braided Monoidal Categories_]
   [morrison-penney-enriched]
 -/
+
+@[expose] public section
 
 
 universe w w' v v' u₁ u₂ u₃
@@ -150,6 +154,7 @@ end
 
 /-- Construct an honest category from a `Type v`-enriched category.
 -/
+@[instance_reducible]
 def categoryOfEnrichedCategoryType (C : Type u₁) [𝒞 : EnrichedCategory (Type v) C] :
     Category.{v} C where
   Hom := 𝒞.Hom
@@ -382,7 +387,7 @@ variable {D : Type u₂} [EnrichedCategory V D]
 /-!
 We now turn to natural transformations between `V`-functors.
 
-The mostly commonly encountered definition of an enriched natural transformation
+The most commonly encountered definition of an enriched natural transformation
 is a collection of morphisms
 ```
 (𝟙_ W) ⟶ (F.obj X ⟶[V] G.obj X)

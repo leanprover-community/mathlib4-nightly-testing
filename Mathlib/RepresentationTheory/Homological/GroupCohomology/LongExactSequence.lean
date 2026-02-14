@@ -3,9 +3,11 @@ Copyright (c) 2025 Amelia Livingston. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Amelia Livingston
 -/
-import Mathlib.Algebra.Homology.ConcreteCategory
-import Mathlib.Algebra.Homology.HomologicalComplexAbelian
-import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
+module
+
+public import Mathlib.Algebra.Homology.ConcreteCategory
+public import Mathlib.Algebra.Homology.HomologicalComplexAbelian
+public import Mathlib.RepresentationTheory.Homological.GroupCohomology.Functoriality
 
 /-!
 # Long exact sequence in group cohomology
@@ -24,6 +26,8 @@ to specialize API about long exact sequences to group cohomology.
   to an exact sequence `0 ⟶ X₁ ⟶ X₂ ⟶ X₃ ⟶ 0` of representations.
 
 -/
+
+public section
 
 universe u v
 
@@ -128,9 +132,6 @@ theorem mem_cocycles₁_of_comp_eq_d₀₁
   have := congr($((mapShortComplexH1 (MonoidHom.id G) X.f).comm₂₃.symm) x)
   simp_all [shortComplexH1, LinearMap.compLeft]
 
-@[deprecated (since := "2025-07-02")]
-alias mem_oneCocycles_of_comp_eq_dZero := mem_cocycles₁_of_comp_eq_d₀₁
-
 theorem δ₀_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z : X₃ᴳ` and `y : X₂` be such that `g(y) = z`.
@@ -140,7 +141,7 @@ theorem δ₀_apply
     -- Then `x` is a 1-cocycle and `δ z = x` in `H¹(X₁)`.
     δ hX 0 1 rfl ((H0Iso X.X₃).inv z) = H1π X.X₁ ⟨x, mem_cocycles₁_of_comp_eq_d₀₁ hX hx⟩ := by
   simpa [H0Iso, H1π, ← cocyclesMk₁_eq X.X₁, ← cocyclesMk₀_eq z] using
-    δ_apply hX rfl ((cochainsIso₀ X.X₃).inv z.1) (by simp) ((cochainsIso₀ X.X₂).inv y)
+    δ_apply hX rfl ((cochainsIso₀ X.X₃).inv z.1) (by simp +instances) ((cochainsIso₀ X.X₂).inv y)
     (by ext; simp [← hy, cochainsIso₀]) ((cochainsIso₁ X.X₁).inv x) <| by
       ext g
       simpa [← hx] using congr_fun (congr($((CommSq.vert_inv
@@ -154,9 +155,6 @@ theorem mem_cocycles₂_of_comp_eq_d₁₂
   have := congr($((mapShortComplexH2 (MonoidHom.id G) X.f).comm₂₃.symm) x)
   simp_all [shortComplexH2, LinearMap.compLeft]
 
-@[deprecated (since := "2025-07-02")]
-alias mem_twoCocycles_of_comp_eq_dOne := mem_cocycles₂_of_comp_eq_d₁₂
-
 theorem δ₁_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z` be a 1-cocycle for `X₃` and `y` be a 1-cochain for `X₂` such that `g ∘ y = z`.
@@ -166,7 +164,7 @@ theorem δ₁_apply
     -- Then `x` is a 2-cocycle and `δ z = x` in `H²(X₁)`.
     δ hX 1 2 rfl (H1π X.X₃ z) = H2π X.X₁ ⟨x, mem_cocycles₂_of_comp_eq_d₁₂ hX hx⟩ := by
   simpa [H1π, H2π, ← cocyclesMk₂_eq X.X₁, ← cocyclesMk₁_eq X.X₃] using
-    δ_apply hX rfl ((cochainsIso₁ X.X₃).inv z) (by simp [cocycles₁.d₁₂_apply z])
+    δ_apply hX rfl ((cochainsIso₁ X.X₃).inv z) (by simp +instances [cocycles₁.d₁₂_apply z])
     ((cochainsIso₁ X.X₂).inv y) (by ext; simp [cochainsIso₁, ← hy])
     ((cochainsIso₂ X.X₁).inv x) <| by
       ext g

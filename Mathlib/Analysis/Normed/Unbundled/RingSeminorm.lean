@@ -3,9 +3,11 @@ Copyright (c) 2022 María Inés de Frutos-Fernández. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: María Inés de Frutos-Fernández, Yaël Dillies
 -/
-import Mathlib.Algebra.Order.Ring.IsNonarchimedean
-import Mathlib.Analysis.Normed.Field.Lemmas
-import Mathlib.Analysis.SpecialFunctions.Pow.Real
+module
+
+public import Mathlib.Algebra.Order.Ring.IsNonarchimedean
+public import Mathlib.Analysis.Normed.Field.Lemmas
+public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 /-!
 # Seminorms and norms on rings
@@ -28,8 +30,8 @@ For a ring `R`:
 
 ## Notes
 
-The corresponding hom classes are defined in `Mathlib/Analysis/Order/Hom/Basic.lean` to be used by
-absolute values.
+The corresponding hom classes are defined in `Mathlib/Algebra/Order/Hom/Basic.lean` to be used by
+absolute values; see `Mathlib/Algebra/Order/AbsoluteValue/Basic.lean` for the bundled version.
 
 ## References
 
@@ -38,6 +40,8 @@ absolute values.
 ## Tags
 ring_seminorm, ring_norm
 -/
+
+@[expose] public section
 
 
 open NNReal
@@ -416,6 +420,7 @@ def normRingNorm (R : Type*) [NonUnitalNormedRing R] : RingNorm R :=
 
 open Int
 
+set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The seminorm on a `SeminormedRing`, as a `RingSeminorm`. -/
 def SeminormedRing.toRingSeminorm (R : Type*) [SeminormedRing R] : RingSeminorm R where
   toFun     := norm
@@ -424,6 +429,12 @@ def SeminormedRing.toRingSeminorm (R : Type*) [SeminormedRing R] : RingSeminorm 
   mul_le'   := norm_mul_le
   neg'      := norm_neg
 
+@[simp]
+theorem SeminormedRing.toRingSeminorm_apply (R : Type*) [SeminormedRing R] (x : R) :
+    (SeminormedRing.toRingSeminorm R) x = ‖x‖ :=
+  rfl
+
+set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The norm on a `NormedRing`, as a `RingNorm`. -/
 @[simps]
 def NormedRing.toRingNorm (R : Type*) [NormedRing R] : RingNorm R where
@@ -439,6 +450,7 @@ theorem NormedRing.toRingNorm_apply (R : Type*) [NormedRing R] (x : R) :
     (NormedRing.toRingNorm R) x = ‖x‖ :=
   rfl
 
+set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The norm on a `NormedField`, as a `MulRingNorm`. -/
 def NormedField.toMulRingNorm (R : Type*) [NormedField R] : MulRingNorm R where
   toFun     := norm
@@ -449,6 +461,7 @@ def NormedField.toMulRingNorm (R : Type*) [NormedField R] : MulRingNorm R where
   neg'      := norm_neg
   eq_zero_of_map_eq_zero' x hx := by rw [← norm_eq_zero]; exact hx
 
+set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The norm on a `NormedField`, as an `AbsoluteValue`. -/
 def NormedField.toAbsoluteValue (R : Type*) [NormedField R] : AbsoluteValue R ℝ where
   toFun     := norm

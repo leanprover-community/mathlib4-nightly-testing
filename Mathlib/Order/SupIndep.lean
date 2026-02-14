@@ -3,12 +3,14 @@ Copyright (c) 2021 Aaron Anderson, Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Aaron Anderson, Kevin Buzzard, Yaël Dillies, Eric Wieser
 -/
-import Mathlib.Data.Finset.Lattice.Union
-import Mathlib.Data.Finset.Lattice.Prod
-import Mathlib.Data.Finset.Sigma
-import Mathlib.Data.Fintype.Basic
-import Mathlib.Order.CompleteLatticeIntervals
-import Mathlib.Order.ModularLattice
+module
+
+public import Mathlib.Data.Finset.Lattice.Union
+public import Mathlib.Data.Finset.Lattice.Prod
+public import Mathlib.Data.Finset.Sigma
+public import Mathlib.Data.Fintype.Basic
+public import Mathlib.Order.CompleteLatticeIntervals
+public import Mathlib.Order.ModularLattice
 
 /-!
 # Supremum independence
@@ -39,6 +41,8 @@ For the finite version, we avoid the "obvious" definition
 `∀ i ∈ s, Disjoint (f i) ((s.erase i).sup f)` because `erase` would require decidable equality on
 `ι`.
 -/
+
+@[expose] public section
 
 
 variable {α β ι ι' : Type*}
@@ -85,7 +89,7 @@ theorem SupIndep.subset (ht : t.SupIndep f) (h : s ⊆ t) : s.SupIndep f := fun 
   ht (hu.trans h) (h hi)
 
 lemma SupIndep.mono (hf : s.SupIndep f) (h : ∀ i ∈ s, g i ≤ f i) : s.SupIndep g :=
-  fun _ ht j hj htj ↦  (hf ht hj htj).mono (h j hj) (sup_mono_fun fun b a ↦ h b (ht a))
+  fun _ ht j hj htj ↦ (hf ht hj htj).mono (h j hj) (sup_mono_fun fun b a ↦ h b (ht a))
 
 @[simp, grind ←]
 theorem supIndep_empty (f : ι → α) : (∅ : Finset ι).SupIndep f := fun _ _ a ha =>
@@ -209,7 +213,7 @@ protected theorem SupIndep.disjoint_sup_sup {s : Finset ι} {f : ι → α} {u v
   induction u using Finset.induction generalizing v with
   | empty => simp
   | insert x u hx ih =>
-    grind [= SupIndep, = disjoint_comm, ← Disjoint.disjoint_sup_left_of_disjoint_sup_right]
+    grind [= SupIndep, Disjoint.disjoint_sup_left_of_disjoint_sup_right]
 
 theorem supIndep_sigma_iff' {β : ι → Type*} {s : Finset ι} {g : ∀ i, Finset (β i)}
     {f : Sigma β → α} : (s.sigma g).SupIndep f ↔ (s.SupIndep fun i => (g i).sup fun b => f ⟨i, b⟩)
@@ -234,6 +238,16 @@ theorem supIndep_product_iff {s : Finset ι} {t : Finset ι'} {f : ι × ι' →
   · suffices Disjoint ((s.image ((·, i))).sup f) ((s ×ˢ u).sup f) by
       simpa only [sup_image, sup_product_right]
     grind [Finset.SupIndep.disjoint_sup_sup, = product_eq_sprod, = disjoint_left]
+
+protected theorem SupIndep.union [DecidableEq ι] {s t : Finset ι} {f : ι → α}
+    (hs : s.SupIndep f) (ht : t.SupIndep f) (h : Disjoint (s.sup f) (t.sup f)) :
+    (s ∪ t).SupIndep f := by
+  rw [show s ∪ t = ({s, t} : Finset _).biUnion id by simp]
+  grind [SupIndep.biUnion, supIndep_pair]
+
+protected theorem SupIndep.insert [DecidableEq ι] {i : ι} {s : Finset ι} {f : ι → α}
+    (hs : s.SupIndep f) (h : Disjoint (f i) (s.sup f)) : (insert i s).SupIndep f := by
+  grind [insert_eq, SupIndep.union, sup_singleton]
 
 end IsModularLattice
 

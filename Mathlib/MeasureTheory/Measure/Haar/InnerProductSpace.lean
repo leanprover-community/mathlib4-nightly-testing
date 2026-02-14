@@ -3,9 +3,11 @@ Copyright (c) 2022 Sébastien Gouëzel. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sébastien Gouëzel
 -/
-import Mathlib.Analysis.InnerProductSpace.Orientation
-import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
-import Mathlib.Analysis.Normed.Lp.MeasurableSpace
+module
+
+public import Mathlib.Analysis.InnerProductSpace.Orientation
+public import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
+public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
 
 /-!
 # Volume forms and measures on inner product spaces
@@ -16,6 +18,8 @@ rise to a canonical volume form. We show that the measure coming from this volum
 measure `1` to the parallelepiped spanned by any orthonormal basis, and that it coincides with
 the canonical `volume` from the `MeasureSpace` instance.
 -/
+
+@[expose] public section
 
 open Module MeasureTheory MeasureTheory.Measure Set WithLp
 
@@ -30,10 +34,7 @@ namespace LinearIsometryEquiv
 variable (f : E ≃ₗᵢ[ℝ] F)
 
 /-- Every linear isometry equivalence is a measurable equivalence. -/
-def toMeasurableEquiv : E ≃ᵐ F where
-  toEquiv := f
-  measurable_toFun := f.continuous.measurable
-  measurable_invFun := f.symm.continuous.measurable
+def toMeasurableEquiv : E ≃ᵐ F := f.toHomeomorph.toMeasurableEquiv
 
 @[simp] theorem coe_toMeasurableEquiv : (f.toMeasurableEquiv : E → F) = f := rfl
 
@@ -144,7 +145,7 @@ theorem EuclideanSpace.volume_preserving_symm_measurableEquiv_toLp :
   suffices volume = map (MeasurableEquiv.toLp 2 (ι → ℝ)) volume by
     convert ((MeasurableEquiv.toLp 2 (ι → ℝ)).measurable.measurePreserving _).symm
   rw [← addHaarMeasure_eq_volume_pi, ← Basis.parallelepiped_basisFun, ← Basis.addHaar_def,
-    MeasurableEquiv.coe_toLp, ← PiLp.continuousLinearEquiv_symm_apply 2 ℝ, Basis.map_addHaar]
+    MeasurableEquiv.coe_toLp, ← PiLp.coe_symm_continuousLinearEquiv 2 ℝ, Basis.map_addHaar]
   exact (EuclideanSpace.basisFun _ _).addHaar_eq_volume.symm
 
 @[deprecated (since := "2025-07-26")] alias EuclideanSpace.volume_preserving_measurableEquiv :=

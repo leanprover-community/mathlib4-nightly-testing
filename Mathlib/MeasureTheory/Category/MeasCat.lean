@@ -3,9 +3,11 @@ Copyright (c) 2018 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl
 -/
-import Mathlib.MeasureTheory.Measure.GiryMonad
-import Mathlib.CategoryTheory.Monad.Algebra
-import Mathlib.Topology.Category.TopCat.Basic
+module
+
+public import Mathlib.MeasureTheory.Measure.GiryMonad
+public import Mathlib.CategoryTheory.Monad.Algebra
+public import Mathlib.Topology.Category.TopCat.Basic
 
 /-!
 # The category of measurable spaces
@@ -24,6 +26,8 @@ Measurable spaces and measurable functions form a (concrete) category `MeasCat`.
 
 measurable space, giry monad, borel
 -/
+
+@[expose] public section
 
 
 noncomputable section
@@ -76,7 +80,7 @@ the pure values are the Dirac measure, and the bind operation maps to the integr
 `(μ >>= ν) s = ∫ x. (ν x) s dμ`.
 
 In probability theory, the `MeasCat`-morphisms `X → Prob X` are (sub-)Markov kernels (here `Prob` is
-the restriction of `Measure` to (sub-)probability space.)
+the restriction of `Measure` to (sub-)probability spaces.)
 -/
 def Measure : MeasCat ⥤ MeasCat where
   obj X := of (@MeasureTheory.Measure X.1 X.2)
@@ -98,7 +102,7 @@ def Giry : CategoryTheory.Monad MeasCat where
   left_unit _ := Subtype.ext <| funext fun _ => Measure.join_dirac _
   right_unit _ := Subtype.ext <| funext fun _ => Measure.join_map_dirac _
 
-/-- An example for an algebra on `Measure`: the nonnegative Lebesgue integral is a hom, behaving
+/-- An example of an algebra on `Measure`: the nonnegative Lebesgue integral is a hom, behaving
 nicely under the monad operations. -/
 def Integral : Giry.Algebra where
   A := MeasCat.of ℝ≥0∞

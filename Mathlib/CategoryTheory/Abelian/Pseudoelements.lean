@@ -3,9 +3,11 @@ Copyright (c) 2020 Markus Himmel. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Markus Himmel
 -/
-import Mathlib.CategoryTheory.Abelian.Exact
-import Mathlib.CategoryTheory.Comma.Over.Basic
-import Mathlib.Algebra.Category.ModuleCat.EpiMono
+module
+
+public import Mathlib.CategoryTheory.Abelian.Exact
+public import Mathlib.CategoryTheory.Comma.Over.Basic
+public import Mathlib.Algebra.Category.ModuleCat.EpiMono
 
 /-!
 # Pseudoelements in abelian categories
@@ -19,7 +21,7 @@ This is done using some "diagram-chasing metatheorems" proved in this file. In m
 in the category of abelian groups can more or less directly be converted into a proof using
 pseudoelements.
 
-A classic application of pseudoelements are diagram lemmas like the four lemma or the snake lemma.
+A classic application of pseudoelements is diagram lemmas like the four lemma or the snake lemma.
 
 Pseudoelements are in some ways weaker than actual elements in a concrete category. The most
 important limitation is that there is no extensionality principle: If `f g : X ⟶ Y`, then
@@ -27,7 +29,7 @@ important limitation is that there is no extensionality principle: If `f g : X �
 it does). A corollary of this is that we cannot define arrows in abelian categories by dictating
 their action on pseudoelements. Thus, a usual style of proofs in abelian categories is this:
 First, we construct some morphism using universal properties, and then we use diagram chasing
-of pseudoelements to verify that is has some desirable property such as exactness.
+of pseudoelements to verify that it has some desirable property such as exactness.
 
 It should be noted that the Freyd-Mitchell embedding theorem
 (see `CategoryTheory.Abelian.FreydMitchell`) gives a vastly stronger notion of
@@ -71,6 +73,8 @@ writing `g a` raises a "function expected" error. This error can be fixed by wri
 
 * [F. Borceux, *Handbook of Categorical Algebra 2*][borceux-vol2]
 -/
+
+@[expose] public section
 
 
 open CategoryTheory
@@ -124,6 +128,7 @@ theorem pseudoEqual_trans {P : C} : Transitive (PseudoEqual P) := by
 end
 
 /-- The arrows with codomain `P` equipped with the equivalence relation of being pseudo-equal. -/
+@[instance_reducible]
 def Pseudoelement.setoid (P : C) : Setoid (Over P) :=
   ⟨_, ⟨pseudoEqual_refl, @pseudoEqual_symm _ _ _, @pseudoEqual_trans _ _ _ _⟩⟩
 
@@ -137,6 +142,7 @@ def Pseudoelement (P : C) : Type max u v :=
 namespace Pseudoelement
 
 /-- A coercion from an object of an abelian category to its pseudoelements. -/
+@[instance_reducible]
 def objectToSort : CoeSort C (Type max u v) :=
   ⟨fun P => Pseudoelement P⟩
 
@@ -145,6 +151,7 @@ attribute [local instance] objectToSort
 scoped[Pseudoelement] attribute [instance] CategoryTheory.Abelian.Pseudoelement.objectToSort
 
 /-- A coercion from an arrow with codomain `P` to its associated pseudoelement. -/
+@[instance_reducible]
 def overToSort {P : C} : Coe (Over P) (Pseudoelement P) :=
   ⟨Quot.mk (PseudoEqual P)⟩
 
@@ -162,6 +169,7 @@ def pseudoApply {P Q : C} (f : P ⟶ Q) : P → Q :=
   Quotient.map (fun g : Over P => app f g) (pseudoApply_aux f)
 
 /-- A coercion from morphisms to functions on pseudoelements. -/
+@[instance_reducible]
 def homToFun {P Q : C} : CoeFun (P ⟶ Q) fun _ => P → Q :=
   ⟨pseudoApply⟩
 
@@ -420,7 +428,7 @@ theorem pseudo_pullback {P Q R : C} {f : P ⟶ R} {g : Q ⟶ R} {p : P} {q : Q} 
 
 section Module
 
-/-- In the category `Module R`, if `x` and `y` are pseudoequal, then the range of the associated
+/-- In the category `ModuleCat R`, if `x` and `y` are pseudoequal, then the range of the associated
 morphisms is the same. -/
 theorem ModuleCat.eq_range_of_pseudoequal {R : Type*} [Ring R] {G : ModuleCat R} {x y : Over G}
     (h : PseudoEqual G x y) : LinearMap.range x.hom.hom = LinearMap.range y.hom.hom := by

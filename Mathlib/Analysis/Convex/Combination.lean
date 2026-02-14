@@ -3,9 +3,11 @@ Copyright (c) 2019 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 -/
-import Mathlib.Algebra.Order.BigOperators.Ring.Finset
-import Mathlib.Analysis.Convex.Hull
-import Mathlib.LinearAlgebra.AffineSpace.Basis
+module
+
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.Analysis.Convex.Hull
+public import Mathlib.LinearAlgebra.AffineSpace.Basis
 
 /-!
 # Convex combinations
@@ -22,6 +24,8 @@ We divide by the sum of the weights in the definition of `Finset.centerMass` bec
 mathematical arguments go: one doesn't change weights, but merely adds some. This also makes a few
 lemmas unconditional on the sum of the weights being `1`.
 -/
+
+@[expose] public section
 
 assert_not_exists Cardinal
 
@@ -434,6 +438,12 @@ theorem convexHull_eq_union_convexHull_finite_subsets (s : Set E) :
       · simp only [hw₁, zero_lt_one]
       · exact fun i hi => Finset.mem_coe.2 (Finset.mem_image_of_mem _ hi)
   · exact iUnion_subset fun i => iUnion_subset convexHull_mono
+
+/-- The `vectorSpan` of a segment is the span of the difference of its endpoints. -/
+theorem vectorSpan_segment {p₁ p₂ : E} :
+    vectorSpan R (segment R p₁ p₂) = R ∙ (p₂ -ᵥ p₁) := by
+  rw [← convexHull_pair, ← direction_affineSpan, affineSpan_convexHull,
+      direction_affineSpan, vectorSpan_pair_rev, vsub_eq_sub]
 
 theorem mk_mem_convexHull_prod {t : Set F} {x : E} {y : F} (hx : x ∈ convexHull R s)
     (hy : y ∈ convexHull R t) : (x, y) ∈ convexHull R (s ×ˢ t) := by

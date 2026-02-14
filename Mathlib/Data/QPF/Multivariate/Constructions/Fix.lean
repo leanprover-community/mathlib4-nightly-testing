@@ -3,8 +3,10 @@ Copyright (c) 2018 Jeremy Avigad. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Avigad, Simon Hudon
 -/
-import Mathlib.Data.PFunctor.Multivariate.W
-import Mathlib.Data.QPF.Multivariate.Basic
+module
+
+public import Mathlib.Data.PFunctor.Multivariate.W
+public import Mathlib.Data.QPF.Multivariate.Basic
 
 /-!
 # The initial algebra of a multivariate qpf is again a qpf.
@@ -36,6 +38,8 @@ See [avigad-carneiro-hudon2019] for more details.
 * Jeremy Avigad, Mario M. Carneiro and Simon Hudon.
   [*Data Types as Quotients of Polynomial Functors*][avigad-carneiro-hudon2019]
 -/
+
+@[expose] public section
 
 
 universe u v
@@ -99,7 +103,6 @@ theorem wEquiv.abs' {α : TypeVec n} (x y : q.P.W α)
   apply q.P.w_cases _ x
   intro a₀ f'₀ f₀
   apply q.P.w_cases _ y
-  intro a₁ f'₁ f₁
   apply WEquiv.abs
 
 theorem wEquiv.refl {α : TypeVec n} (x : q.P.W α) : WEquiv x x := abs' x x rfl
@@ -145,6 +148,7 @@ theorem wEquiv_map {α β : TypeVec n} (g : α ⟹ β) (x y : q.P.W α) :
 
 /-- Define the fixed point as the quotient of trees under the equivalence relation.
 -/
+@[instance_reducible]
 def wSetoid (α : TypeVec n) : Setoid (q.P.W α) :=
   ⟨WEquiv, wEquiv.refl, wEquiv.symm _ _, WEquiv.trans _ _ _⟩
 

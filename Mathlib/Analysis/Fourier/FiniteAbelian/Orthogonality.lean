@@ -3,9 +3,11 @@ Copyright (c) 2023 Yaël Dillies, Bhavik Mehta. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Bhavik Mehta
 -/
-import Mathlib.Algebra.BigOperators.Expect
-import Mathlib.Algebra.Group.AddChar
-import Mathlib.Analysis.RCLike.Inner
+module
+
+public import Mathlib.Algebra.BigOperators.Expect
+public import Mathlib.Algebra.Group.AddChar
+public import Mathlib.Analysis.RCLike.Inner
 
 /-!
 # Orthogonality of characters of a finite abelian group
@@ -13,6 +15,8 @@ import Mathlib.Analysis.RCLike.Inner
 This file proves that characters of a finite abelian group are orthogonal, and in particular that
 there are at most as many characters as there are elements of the group.
 -/
+
+public section
 
 open Finset hiding card
 open Fintype (card)
@@ -57,7 +61,7 @@ lemma wInner_cWeight_eq_boole [Fintype G] (ψ₁ ψ₂ : AddChar G R) :
     ⟪(ψ₁ : G → R), ψ₂⟫ₙ_[R] = if ψ₁ = ψ₂ then 1 else 0 := by
   split_ifs with h
   · rw [h, wInner_cWeight_self]
-  have : ψ₂ * ψ₁⁻¹  ≠ 1 := by rwa [Ne, mul_inv_eq_one, eq_comm]
+  have : ψ₂ * ψ₁⁻¹ ≠ 1 := by rwa [Ne, mul_inv_eq_one, eq_comm]
   simp_rw [wInner_cWeight_eq_expect, RCLike.inner_apply, ← inv_apply_eq_conj]
   simpa [map_neg_eq_inv] using expect_eq_zero_iff_ne_zero.2 this
 

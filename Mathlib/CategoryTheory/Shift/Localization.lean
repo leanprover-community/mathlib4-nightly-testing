@@ -3,9 +3,11 @@ Copyright (c) 2023 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou
 -/
-import Mathlib.CategoryTheory.Shift.Induced
-import Mathlib.CategoryTheory.Localization.HasLocalization
-import Mathlib.CategoryTheory.Localization.LocalizerMorphism
+module
+
+public import Mathlib.CategoryTheory.Shift.Induced
+public import Mathlib.CategoryTheory.Localization.HasLocalization
+public import Mathlib.CategoryTheory.Localization.LocalizerMorphism
 
 /-!
 # The shift induced on a localized category
@@ -17,6 +19,8 @@ then the corresponding localized category can be equipped with
 a shift by `A`, and the localization functor is compatible with the shift.
 
 -/
+
+@[expose] public section
 
 universe v₁ v₂ v₃ u₁ u₂ u₃ w
 
@@ -100,6 +104,9 @@ noncomputable instance MorphismProperty.commShift_Q :
     W.Q.CommShift A :=
   Functor.CommShift.localized W.Q W A
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12247
+this requires `allowUnsafeReducibility`. -/
+set_option allowUnsafeReducibility true in
 attribute [irreducible] HasShift.localization MorphismProperty.commShift_Q
 
 variable [W.HasLocalization]
@@ -114,6 +121,9 @@ noncomputable instance MorphismProperty.commShift_Q' :
     W.Q'.CommShift A :=
   Functor.CommShift.localized W.Q' W A
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12247
+this requires `allowUnsafeReducibility`. -/
+set_option allowUnsafeReducibility true in
 attribute [irreducible] HasShift.localization' MorphismProperty.commShift_Q'
 
 end
@@ -246,11 +256,11 @@ namespace LocalizerMorphism
 
 open Localization
 
-variable {C₁ C₂ : Type*} [Category C₁] [Category C₂]
+variable {C₁ C₂ : Type*} [Category* C₁] [Category* C₂]
   {W₁ : MorphismProperty C₁} {W₂ : MorphismProperty C₂} (Φ : LocalizerMorphism W₁ W₂)
   {M : Type*} [AddMonoid M] [HasShift C₁ M] [HasShift C₂ M]
   [Φ.functor.CommShift M]
-  {D₁ D₂ : Type*} [Category D₁] [Category D₂]
+  {D₁ D₂ : Type*} [Category* D₁] [Category* D₂]
   (L₁ : C₁ ⥤ D₁) [L₁.IsLocalization W₁] (L₂ : C₂ ⥤ D₂)
   [HasShift D₁ M] [HasShift D₂ M] [L₁.CommShift M] [L₂.CommShift M]
 

@@ -3,11 +3,11 @@ Copyright (c) 2024 Floris van Doorn and Hannah Scholz. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Floris van Doorn, Hannah Scholz
 -/
+module
 
-import Mathlib.Analysis.Normed.Module.RCLike.Real
-import Mathlib.Data.ENat.Basic
-import Mathlib.Logic.Equiv.PartialEquiv
-import Mathlib.Topology.MetricSpace.ProperSpace.Real
+public import Mathlib.Analysis.Normed.Module.RCLike.Real
+public import Mathlib.Data.ENat.Basic
+public import Mathlib.Logic.Equiv.PartialEquiv
 
 /-!
 # CW complexes
@@ -69,6 +69,8 @@ together.
 ## References
 * [A. Hatcher, *Algebraic Topology*][hatcher02]
 -/
+
+@[expose] public section
 
 noncomputable section
 
@@ -568,6 +570,8 @@ instance : SetLike (Subcomplex C) X where
     apply eq_of_eq_union_iUnion
     rw [hE, hF]
     simpa using h
+
+instance : PartialOrder (Subcomplex C) := .ofSetLike (Subcomplex C) X
 
 initialize_simps_projections Subcomplex (carrier → coe, as_prefix coe)
 

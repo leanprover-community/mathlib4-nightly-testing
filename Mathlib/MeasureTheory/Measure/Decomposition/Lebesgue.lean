@@ -3,9 +3,11 @@ Copyright (c) 2021 Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kexing Ying
 -/
-import Mathlib.MeasureTheory.Measure.Decomposition.Hahn
-import Mathlib.MeasureTheory.Function.AEEqOfLIntegral
-import Mathlib.MeasureTheory.Measure.Sub
+module
+
+public import Mathlib.MeasureTheory.Measure.Decomposition.Hahn
+public import Mathlib.MeasureTheory.Function.AEEqOfLIntegral
+public import Mathlib.MeasureTheory.Measure.Sub
 
 /-!
 # Lebesgue decomposition
@@ -43,6 +45,8 @@ The Lebesgue decomposition provides the Radon-Nikodym theorem readily.
 
 Lebesgue decomposition theorem
 -/
+
+@[expose] public section
 
 assert_not_exists MeasureTheory.VectorMeasure
 
@@ -92,7 +96,7 @@ lemma singularPart_of_not_haveLebesgueDecomposition (h : ¬ HaveLebesgueDecompos
     μ.singularPart ν = 0 := by
   rw [singularPart, dif_neg h]
 
-@[measurability, fun_prop]
+@[fun_prop]
 theorem measurable_rnDeriv (μ ν : Measure α) : Measurable <| μ.rnDeriv ν := by
   by_cases h : HaveLebesgueDecomposition μ ν
   · exact (haveLebesgueDecomposition_spec μ ν).1
@@ -1053,6 +1057,27 @@ lemma rnDeriv_add_of_mutuallySingular (ν₁ ν₂ μ : Measure α)
   simp [hx_add, hx_zero]
 
 end rnDeriv
+
+lemma add_sub_of_mutuallySingular {ξ : Measure α} (h : μ ⟂ₘ ξ) : μ + (ν - ξ) = μ + ν - ξ := by
+  let s := h.nullSet
+  have hs : MeasurableSet s := h.measurableSet_nullSet
+  have h_le_s : μ.restrict s + (ν - ξ).restrict s = μ.restrict s + ν.restrict s - ξ.restrict s := by
+    rw [h.restrict_nullSet, restrict_sub_eq_restrict_sub_restrict hs]
+    simp
+  have h_le_s_compl : μ.restrict sᶜ + (ν - ξ).restrict sᶜ =
+      μ.restrict sᶜ + ν.restrict sᶜ - ξ.restrict sᶜ := by
+    rw [restrict_sub_eq_restrict_sub_restrict hs.compl, h.restrict_compl_nullSet]
+    simp
+  calc μ + (ν - ξ)
+  _ = μ.restrict s + μ.restrict sᶜ + (ν - ξ).restrict s + (ν - ξ).restrict sᶜ := by
+    rw [restrict_add_restrict_compl hs, add_assoc, restrict_add_restrict_compl hs]
+  _ = μ.restrict s + (ν - ξ).restrict s + (μ.restrict sᶜ + (ν - ξ).restrict sᶜ) := by abel
+  _ = (μ.restrict s + ν.restrict s - ξ.restrict s) +
+      (μ.restrict sᶜ + ν.restrict sᶜ - ξ.restrict sᶜ) := by rw [h_le_s, h_le_s_compl]
+  _ = (μ + ν - ξ).restrict s + (μ + ν - ξ).restrict sᶜ := by
+      simp [restrict_sub_eq_restrict_sub_restrict hs,
+        restrict_sub_eq_restrict_sub_restrict hs.compl]
+  _ = μ + ν - ξ := by rw [restrict_add_restrict_compl hs]
 
 end Measure
 

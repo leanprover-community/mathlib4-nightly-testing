@@ -3,8 +3,10 @@ Copyright (c) 2021 Yakov Pechersky. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yakov Pechersky
 -/
-import Mathlib.Data.Fintype.EquivFin
-import Mathlib.Data.Fintype.Inv
+module
+
+public import Mathlib.Data.Fintype.EquivFin
+public import Mathlib.Data.Fintype.Inv
 
 /-! # Equivalence between fintypes
 
@@ -23,6 +25,8 @@ sides of the equivalence are `Fintype`s.
 - `Function.Embedding.toEquivRange` uses a computable inverse, but one that has poor
   computational performance, since it operates by exhaustive search over the input `Fintype`s.
 -/
+
+@[expose] public section
 
 assert_not_exists Equiv.Perm.sign
 
@@ -80,10 +84,6 @@ theorem Equiv.Perm.viaFintypeEmbedding_apply_mem_range {b : β} (h : b ∈ Set.r
 theorem Equiv.Perm.viaFintypeEmbedding_apply_notMem_range {b : β} (h : b ∉ Set.range f) :
     e.viaFintypeEmbedding f b = b := by
   rwa [Equiv.Perm.viaFintypeEmbedding, Equiv.Perm.extendDomain_apply_not_subtype]
-
-@[deprecated (since := "2025-05-23")]
-alias Equiv.Perm.viaFintypeEmbedding_apply_not_mem_range :=
-  Equiv.Perm.viaFintypeEmbedding_apply_notMem_range
 
 end Fintype
 

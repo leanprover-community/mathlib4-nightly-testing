@@ -3,8 +3,10 @@ Copyright (c) 2024 Christian Merten. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Christian Merten
 -/
-import Mathlib.AlgebraicGeometry.Morphisms.UnderlyingMap
-import Mathlib.CategoryTheory.Limits.MorphismProperty
+module
+
+public import Mathlib.AlgebraicGeometry.Morphisms.UnderlyingMap
+public import Mathlib.CategoryTheory.Limits.MorphismProperty
 
 /-!
 
@@ -17,6 +19,8 @@ that the component maps are morphisms of `S`-schemes.
 We provide instances of `𝒰.Over S` for standard constructions on covers.
 
 -/
+
+@[expose] public section
 
 universe v u
 
@@ -45,6 +49,7 @@ protected class Cover.Over {P : MorphismProperty Scheme.{u}} [P.IsStableUnderBas
   over (j : 𝒰.I₀) : (𝒰.X j).Over S := by infer_instance
   isOver_map (j : 𝒰.I₀) : (𝒰.f j).IsOver S := by infer_instance
 
+attribute [instance_reducible] Cover.Over.over
 attribute [instance] Cover.Over.over Cover.Over.isOver_map
 
 variable [P.IsStableUnderBaseChange] [IsJointlySurjectivePreserving P]

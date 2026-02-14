@@ -3,18 +3,20 @@ Copyright (c) 2018 Kenny Lau. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kenny Lau
 -/
-import Mathlib.Algebra.Group.Pi.Basic
-import Mathlib.Algebra.Group.Subgroup.Ker
-import Mathlib.Data.List.Chain
-import Mathlib.Algebra.Group.Int.Defs
-import Mathlib.Algebra.BigOperators.Group.List.Basic
+module
+
+public import Mathlib.Algebra.Group.Pi.Basic
+public import Mathlib.Algebra.Group.Subgroup.Ker
+public import Mathlib.Data.List.Chain
+public import Mathlib.Algebra.Group.Int.Defs
+public import Mathlib.Algebra.BigOperators.Group.List.Defs
 
 /-!
 # Free groups
 
 This file defines free groups over a type. Furthermore, it is shown that the free group construction
 is an instance of a monad. For the result that `FreeGroup` is the left adjoint to the forgetful
-functor from groups to types, see `Mathlib/Algebra/Category/GrpCat/Adjunctions.lean`.
+functor from groups to types, see `Mathlib/Algebra/Category/Grp/Adjunctions.lean`.
 
 ## Main definitions
 
@@ -48,6 +50,8 @@ distinguish the quotient types more easily.
 
 free group, Newman's diamond lemma, Church-Rosser theorem
 -/
+
+@[expose] public section
 
 open Relation
 open scoped List
@@ -334,7 +338,7 @@ theorem sizeof_of_step : ∀ {L₁ L₂ : List (α × Bool)},
     induction L1 with
     | nil =>
       dsimp
-      cutsat
+      lia
     | cons hd tl ih =>
       dsimp
       exact Nat.add_lt_add_left ih _
@@ -791,7 +795,7 @@ def freeGroupCongr {α β} (e : α ≃ β) : FreeGroup α ≃* FreeGroup β wher
   invFun := map e.symm
   left_inv x := by simp [map.comp]
   right_inv x := by simp [map.comp]
-  map_mul' := MonoidHom.map_mul _
+  map_mul' := map_mul _
 
 @[to_additive (attr := simp)]
 theorem freeGroupCongr_refl : freeGroupCongr (Equiv.refl α) = MulEquiv.refl _ :=
@@ -882,6 +886,9 @@ def freeGroupEmptyEquivUnit : FreeGroup Empty ≃ Unit where
   invFun _ := 1
   left_inv := by rintro ⟨_ | ⟨⟨⟨⟩, _⟩, _⟩⟩; rfl
 
+-- TODO: find a good way to fix the linter
+-- simp applies to two goals at once, with different simp sets
+set_option linter.flexible false in
 /-- The bijection between the free group on a singleton, and the integers. -/
 def freeGroupUnitEquivInt : FreeGroup Unit ≃ ℤ where
   toFun x := sum (by
@@ -953,9 +960,9 @@ instance : LawfulMonad FreeGroup.{u} := LawfulMonad.mk'
       fun x y ihx ihy => by rw [map_mul, ihx, ihy])
   (pure_bind := fun x f => pure_bind f x)
   (bind_assoc := fun x => by
-    refine FreeGroup.induction_on x ?_ ?_ ?_ ?_ <;> simp +contextual [instMonad])
+    refine FreeGroup.induction_on x ?_ ?_ ?_ ?_ <;> simp +instances +contextual [instMonad])
   (bind_pure_comp := fun f x => by
-    refine FreeGroup.induction_on x ?_ ?_ ?_ ?_ <;> simp +contextual [instMonad])
+    refine FreeGroup.induction_on x ?_ ?_ ?_ ?_ <;> simp +instances +contextual [instMonad])
 
 end Category
 
