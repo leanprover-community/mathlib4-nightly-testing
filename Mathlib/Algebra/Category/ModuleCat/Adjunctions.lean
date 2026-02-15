@@ -272,8 +272,8 @@ instance : Linear R (Free R C) where
 
 theorem single_comp_single {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) (r s : R) :
     (single f r ≫ single g s : Free.of R X ⟶ Free.of R Z) = single (f ≫ g) (r * s) := by
-    dsimp +instances [CategoryTheory.categoryFree]
-    simp
+  dsimp +instances [CategoryTheory.categoryFree]
+  simp
 
 end
 
