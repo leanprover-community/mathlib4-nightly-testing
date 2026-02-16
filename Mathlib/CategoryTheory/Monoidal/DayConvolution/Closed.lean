@@ -143,6 +143,7 @@ section ev
 
 variable [DayConvolution F H] (ℌ : DayConvolutionInternalHom F G H)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given `ℌ : DayConvolutionInternalHom F H`, if we think of `H.obj G`
 as the internal hom `[F, G]`, then this is the transformation
 corresponding to the component at `G` of the "evaluation" natural morphism
@@ -163,6 +164,7 @@ def ev_app : F ⊛ H ⟶ G :=
         rw [reassoc_of% this]
         simp }
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma unit_app_ev_app_app (x y : C) :
     ((DayConvolution.unit F H).app (x, y) ≫ (ℌ.ev_app).app (x ⊗ y)) =
@@ -172,6 +174,7 @@ lemma unit_app_ev_app_app (x y : C) :
   dsimp at this
   simp [this, ev_app]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma ev_naturality_app {G' H' : C ⥤ V} (ℌ' : DayConvolutionInternalHom F G' H')
     [DayConvolution F H'] (η : G ⟶ G') :
     DayConvolution.map (𝟙 F) (ℌ.map η ℌ') ≫ ℌ'.ev_app = ℌ.ev_app ≫ η := by
@@ -187,6 +190,7 @@ section coev
 variable {G : C ⥤ V} [DayConvolution F G]
     (ℌ : DayConvolutionInternalHom F (F ⊛ G) H)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given `ℌ : DayConvolutionInternalHom F H`, if we think of `H.obj G`
 as the internal hom `[F, G]`, then this is the transformation
 corresponding to the component at `G` of the "coevaluation" natural morphism
@@ -225,6 +229,7 @@ def coev_app : G ⟶ H where
     rw [← this]
     simp [MonoidalClosed.curry_eq]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma coev_app_π (c j : C) :
     ℌ.coev_app.app c ≫ ℌ.π c j =
@@ -235,6 +240,7 @@ lemma coev_app_π (c j : C) :
       (H.obj c) (ℌ.π c) (ℌ.hπ c),
     Wedge.IsLimit.lift_ι]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma coev_naturality_app {G' H' : C ⥤ V} [DayConvolution F G'] (η : G ⟶ G')
     (ℌ' : DayConvolutionInternalHom F (F ⊛ G') H') :
     η ≫ ℌ'.coev_app =
@@ -253,6 +259,7 @@ lemma coev_naturality_app {G' H' : C ⥤ V} [DayConvolution F G'] (η : G ⟶ G'
 
 end coev
 
+set_option backward.isDefEq.respectTransparency false in
 theorem left_triangle_components (G : C ⥤ V) [DayConvolution F G]
     (ℌ : DayConvolutionInternalHom F (F ⊛ G) H) [DayConvolution F H] :
     DayConvolution.map (𝟙 F) ℌ.coev_app ≫ ℌ.ev_app = 𝟙 (F ⊛ G) := by
@@ -262,6 +269,7 @@ theorem left_triangle_components (G : C ⥤ V) [DayConvolution F G]
   apply MonoidalClosed.curry_injective
   simp [MonoidalClosed.curry_natural_left]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem right_triangle_components (G : C ⥤ V) [DayConvolution F H]
     (ℌ : DayConvolutionInternalHom F G H) {H' : C ⥤ V}
     (ℌ' : DayConvolutionInternalHom F (F ⊛ H) H') :

@@ -98,6 +98,7 @@ theorem ihom_adjunction_counit : (ihom.adjunction A).counit = ev A :=
 theorem ihom_adjunction_unit : (ihom.adjunction A).unit = coev A :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in -- Needed in DayConvolution/Closed.lean
 @[reassoc (attr := simp)]
 theorem ev_naturality {X Y : C} (f : X ⟶ Y) :
     A ◁ (ihom A).map f ≫ (ev A).app Y = (ev A).app X ≫ f :=
