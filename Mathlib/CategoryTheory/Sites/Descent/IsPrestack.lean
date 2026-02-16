@@ -88,6 +88,7 @@ lemma pullHom_id ⦃X₁ X₂ : C⦄ ⦃M₁ : F.obj (.mk (op X₁))⦄ ⦃M₂ 
   simp [pullHom, mapComp'_comp_id_hom_app, mapComp'_comp_id_inv_app,
     ← reassoc_of% Cat.Hom₂.comp_app, Iso.inv_hom_id]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma pullHom_pullHom
     ⦃X₁ X₂ : C⦄ ⦃M₁ : F.obj (.mk (op X₁))⦄ ⦃M₂ : F.obj (.mk (op X₂))⦄
@@ -113,6 +114,7 @@ section
 
 variable (F) {S : C} (M N : F.obj (.mk (op S)))
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `F` is a pseudofunctor from `Cᵒᵖ` to `Cat`, and `M` and `N` are objects in
 `F.obj (.mk (op S))`, this is the presheaf of morphisms from `M` to `N`: it sends
 an object `T : Over S` corresponding to a morphism `p : X ⟶ S` to the type
@@ -130,6 +132,7 @@ def presheafHomObjHomEquiv {M N : (F.obj (.mk (op S)))} :
   Iso.homCongr ((Cat.Hom.toNatIso (F.mapId (.mk (op S)))).symm.app M)
     ((Cat.Hom.toNatIso (F.mapId (.mk (op S)))).symm.app N)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Compatibility isomorphism of `Pseudofunctor.presheafHom` with "restrictions". -/
 def overMapCompPresheafHomIso {S' : C} (q : S' ⟶ S) :
     (Over.map q).op ⋙ F.presheafHom M N ≅
