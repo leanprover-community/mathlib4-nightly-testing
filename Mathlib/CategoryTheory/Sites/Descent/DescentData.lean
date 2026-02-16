@@ -123,6 +123,7 @@ lemma id_hom (D : F.DescentData f) (i : ι) : Hom.hom (𝟙 D) i = 𝟙 _ := rfl
 lemma comp_hom {D₁ D₂ D₃ : F.DescentData f} (φ : D₁ ⟶ D₂) (φ' : D₂ ⟶ D₃) (i : ι) :
     (φ ≫ φ').hom i = φ.hom i ≫ φ'.hom i := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a family of morphisms `f : X i ⟶ S`, and `M : F.obj (.mk (op S))`,
 this is the object in `F.DescentData f` that is obtained by pulling back `M`
 over the `X i`. -/
@@ -158,6 +159,7 @@ def isoMk {D₁ D₂ : F.DescentData f} (e : ∀ (i : ι), D₁.obj i ≅ D₂.o
 
 end DescentData
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The functor `F.obj (.mk (op S)) ⥤ F.DescentData f`. -/
 @[simps]
 def toDescentData : F.obj (.mk (op S)) ⥤ F.DescentData f where
@@ -182,6 +184,7 @@ def pullFunctorObjHom (D : F.DescentData f)
       (by simp [w, reassoc_of% hf₂]) ≫
     (F.mapComp (p' j₂).op.toLoc f₂.op.toLoc).hom.toNatTrans.app _
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma pullFunctorObjHom_eq (D : F.DescentData f)
     ⦃Y : C⦄ (q : Y ⟶ S') ⦃j₁ j₂ : ι'⦄ (f₁ : Y ⟶ X' j₁) (f₂ : Y ⟶ X' j₂)
@@ -198,6 +201,7 @@ lemma pullFunctorObjHom_eq (D : F.DescentData f)
   subst hq' hf₁' hf₂'
   simp [mapComp'_eq_mapComp, pullFunctorObjHom]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `pullFunctor`. -/
 @[simps]
 def pullFunctorObj (D : F.DescentData f) :
@@ -227,6 +231,7 @@ def pullFunctorObj (D : F.DescentData f) :
 
 variable (F)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a family of morphisms `f : X i ⟶ S` and `f' : X' j ⟶ S'`, and suitable
 commutative diagrams `p' j ≫ f (α j) = f' j ≫ p`, this is the
 induced functor `F.DescentData f ⥤ F.DescentData f'`. (Up to a (unique) isomorphism,
@@ -254,6 +259,7 @@ isomorphism between the descent data relative to `f'` that are obtained either:
 followed by the application of `pullFunctor F w : F.DescentData f ⥤ F.DescentData f'`;
 * by considering the obvious descent data relative to `f'` given by pulling
 back the object `M` to `S'`. -/
+set_option backward.isDefEq.respectTransparency false in
 def toDescentDataCompPullFunctorIso :
     F.toDescentData f ⋙ pullFunctor F w ≅ (F.map p.op.toLoc).toFunctor ⋙ F.toDescentData f' :=
   NatIso.ofComponents
@@ -289,6 +295,7 @@ def toDescentDataCompPullFunctorIso :
 /-- Up to a (unique) isomorphism, the functor
 `pullFunctor : F.DescentData f ⥤ F.DescentData f'` does not depend
 on the auxiliary data. -/
+set_option backward.isDefEq.respectTransparency false in
 @[simps!]
 def pullFunctorIso {β : ι' → ι} {p'' : ∀ j, X' j ⟶ X (β j)}
     (w' : ∀ j, p'' j ≫ f (β j) = f' j ≫ p) :
@@ -309,6 +316,7 @@ def pullFunctorIso {β : ι' → ι} {p'' : ∀ j, X' j ⟶ X (β j)}
       ext j
       exact φ.comm _ _ _ rfl (by cat_disch))
 
+set_option backward.isDefEq.respectTransparency false in
 variable (S) in
 /-- The functor `F.DescentData f ⥤ F.DescentData f` corresponding to `pullFunctor`
 applied to identity morphisms is isomorphic to the identity functor. -/
@@ -323,6 +331,7 @@ def pullFunctorIdIso :
 
 /-- The composition of two functors `pullFunctor` is isomorphic to `pullFunctor` applied
 to the compositions. -/
+set_option backward.isDefEq.respectTransparency false in
 @[simps!]
 def pullFunctorCompIso
     {S'' : C} {q : S'' ⟶ S'} {ι'' : Type t''} {X'' : ι'' → C} {f'' : ∀ k, X'' k ⟶ S''}
@@ -350,6 +359,7 @@ def pullFunctorCompIso
 
 end
 
+set_option backward.isDefEq.respectTransparency false in
 variable {f} in
 /-- Up to an equivalence, the category `DescentData` for a pseudofunctor `F` and
 a family of morphisms `f : X i ⟶ S` is unchanged when we replace `S` by an isomorphic object,
