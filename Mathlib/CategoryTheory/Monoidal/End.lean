@@ -157,6 +157,7 @@ theorem μ_naturality {m n : M} {X Y : C} (f : X ⟶ Y) [F.LaxMonoidal] :
     (F.obj n).map ((F.obj m).map f) ≫ (μ F m n).app Y = (μ F m n).app X ≫ (F.obj _).map f :=
   (μ F m n).naturality f
 
+set_option backward.isDefEq.respectTransparency false in
 -- This is a simp lemma in the reverse direction via `NatTrans.naturality`.
 @[reassoc]
 theorem δ_naturality {m n : M} {X Y : C} (f : X ⟶ Y) [F.OplaxMonoidal] :
@@ -203,6 +204,7 @@ theorem left_unitality_app (n : M) (X : C) [F.LaxMonoidal] :
     (F.obj n).map ((ε F).app X) ≫ (μ F (𝟙_ M) n).app X ≫ (F.map (λ_ n).hom).app X = 𝟙 _ :=
   congr_app (left_unitality F n).symm X
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp, reassoc]
 theorem obj_ε_app (n : M) (X : C) [F.Monoidal] :
     (F.obj n).map ((ε F).app X) = (F.map (λ_ n).inv).app X ≫ (δ F (𝟙_ M) n).app X := by
@@ -211,6 +213,7 @@ theorem obj_ε_app (n : M) (X : C) [F.Monoidal] :
   simp only [Category.id_comp, Category.assoc, μ_δ_app, endofunctorMonoidalCategory_tensorObj_obj,
     Category.comp_id]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp, reassoc]
 theorem obj_η_app (n : M) (X : C) [F.Monoidal] :
     (F.obj n).map ((η F).app X) = (μ F (𝟙_ M) n).app X ≫ (F.map (λ_ n).hom).app X := by
@@ -222,6 +225,7 @@ theorem right_unitality_app (n : M) (X : C) [F.Monoidal] :
     (ε F).app ((F.obj n).obj X) ≫ (μ F n (𝟙_ M)).app X ≫ (F.map (ρ_ n).hom).app X = 𝟙 _ :=
   congr_app (Functor.LaxMonoidal.right_unitality F n).symm X
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem ε_app_obj (n : M) (X : C) [F.Monoidal] :
     (ε F).app ((F.obj n).obj X) = (F.map (ρ_ n).inv).app X ≫ (δ F n (𝟙_ M)).app X := by
@@ -230,6 +234,7 @@ theorem ε_app_obj (n : M) (X : C) [F.Monoidal] :
   simp only [Category.id_comp, Category.assoc, μ_δ_app,
     endofunctorMonoidalCategory_tensorObj_obj, Category.comp_id]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem η_app_obj (n : M) (X : C) [F.Monoidal] :
     (η F).app ((F.obj n).obj X) = (μ F n (𝟙_ M)).app X ≫ (F.map (ρ_ n).hom).app X := by
@@ -237,6 +242,7 @@ theorem η_app_obj (n : M) (X : C) [F.Monoidal] :
   dsimp
   simp only [Category.comp_id, μ_δ_app_assoc]
 
+set_option backward.isDefEq.respectTransparency false in -- Needed below
 @[reassoc]
 theorem associativity_app (m₁ m₂ m₃ : M) (X : C) [F.LaxMonoidal] :
     (F.obj m₃).map ((μ F m₁ m₂).app X) ≫

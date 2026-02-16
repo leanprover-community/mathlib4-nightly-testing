@@ -71,6 +71,7 @@ open Limits Localization Opposite
 
 variable {C : Type u} [Category.{v} C] (W : MorphismProperty C)
 
+set_option backward.isDefEq.respectTransparency false in
 lemma MorphismProperty.isClosedUnderColimitsOfShape_isLocal
     (J : Type u') [Category.{v'} J] [EssentiallySmall.{w} J]
     (κ : Cardinal.{w}) [Fact κ.IsRegular] [IsCardinalFiltered J κ]
@@ -165,6 +166,7 @@ noncomputable abbrev D₁.ιRight {X Y : C} (f : X ⟶ Y) (hf : W f) (g : X ⟶ 
     Y ⟶ ∐ (obj₂ (W := W) (Z := Z)) :=
   Sigma.ι (obj₂ (W := W) (Z := Z)) ⟨⟨Arrow.mk f, hf⟩, g⟩
 
+set_option backward.isDefEq.respectTransparency false in -- Needed below
 variable {W Z} in
 @[reassoc]
 lemma D₁.ι_comp_t (d : D₁ W Z) :
@@ -265,12 +267,14 @@ lemma toSucc_injectivity {X Y : C} (f : X ⟶ Y) (hf : W f)
   simpa using D₂.condition f hf (g₁ := g₁ ≫ toStep W Z) (g₂ := g₂ ≫ toStep W Z)
     (by simp [reassoc_of% hg])
 
+set_option backward.isDefEq.respectTransparency false in
 variable {W Z} in
 lemma toSucc_surjectivity {X Y : C} (f : X ⟶ Y) (hf : W f) (g : X ⟶ Z) :
     ∃ (g' : Y ⟶ succ W Z), f ≫ g' = g ≫ toSucc W Z :=
   ⟨D₁.ιRight f hf g ≫ pushout.inl _ _ ≫ fromStep W Z, by
     simp [← D₁.ιLeft_comp_t_assoc, pushout.condition_assoc]⟩
 
+set_option backward.isDefEq.respectTransparency false in
 lemma isLocal_isLocal_toSucc :
     W.isLocal.isLocal (toSucc W Z) := by
   refine fun T hT ↦ ⟨fun φ₁ φ₂ h ↦ ?_, fun g ↦ ?_⟩

@@ -270,6 +270,7 @@ lemma L₀'_exact : S.L₀'.Exact := by
 noncomputable def δ : S.L₀.X₃ ⟶ S.L₃.X₁ :=
   S.L₀'_exact.desc (S.φ₁ ≫ S.v₂₃.τ₁) (by simp only [L₁_f_φ₁_assoc, w₁₃_τ₁])
 
+set_option backward.isDefEq.respectTransparency false in -- This is needed below.
 @[reassoc (attr := simp)]
 lemma snd_δ : (pullback.snd _ _ : S.P ⟶ _) ≫ S.δ = S.φ₁ ≫ S.v₂₃.τ₁ :=
   S.L₀'_exact.g_desc _ _

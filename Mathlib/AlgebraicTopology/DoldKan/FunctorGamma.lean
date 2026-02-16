@@ -187,6 +187,7 @@ theorem map_on_summand₀ {Δ Δ' : SimplexCategoryᵒᵖ} (A : Splitting.IndexS
     congr
     exact SimplexCategory.factorThruImage_eq fac
 
+set_option backward.isDefEq.respectTransparency false in -- This is needed below
 @[reassoc]
 theorem map_on_summand₀' {Δ Δ' : SimplexCategoryᵒᵖ} (A : Splitting.IndexSet Δ) (θ : Δ ⟶ Δ') :
     Sigma.ι (summand K Δ) A ≫ map K θ =

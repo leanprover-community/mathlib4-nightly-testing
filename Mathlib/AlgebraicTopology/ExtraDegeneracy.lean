@@ -77,6 +77,7 @@ structure ExtraDegeneracy (X : SimplicialObject.Augmented C) where
 namespace ExtraDegeneracy
 
 attribute [reassoc] s₀_comp_δ₁ s_comp_δ s_comp_σ
+set_option backward.isDefEq.respectTransparency false in -- This is needed below.
 attribute [reassoc (attr := simp)] s'_comp_ε s_comp_δ₀
 
 /-- If `ed` is an extra degeneracy for `X : SimplicialObject.Augmented C` and

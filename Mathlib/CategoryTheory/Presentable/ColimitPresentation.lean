@@ -48,8 +48,10 @@ structure Total.Hom (k l : Total P) where
   hom : (P k.1).diag.obj k.2 ⟶ (P l.1).diag.obj l.2
   w : (P k.1).ι.app k.2 ≫ D.map base = hom ≫ (P l.1).ι.app l.2 := by cat_disch
 
+set_option backward.isDefEq.respectTransparency false in -- This is needed below
 attribute [reassoc] Total.Hom.w
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Composition of morphisms in the `Total` category. -/
 @[simps]
 def Total.Hom.comp {k l m : Total P} (f : k.Hom l) (g : l.Hom m) : k.Hom m where

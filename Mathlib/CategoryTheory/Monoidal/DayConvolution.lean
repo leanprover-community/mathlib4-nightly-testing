@@ -116,6 +116,7 @@ lemma unit_naturality (f : x ⟶ x') (g : y ⟶ y') :
   simpa [tensorHom_def] using (unit F G).naturality (f ×ₘ g)
 
 variable (y) in
+set_option backward.isDefEq.respectTransparency false in -- Needed in DayConvolution.lean
 @[reassoc (attr := simp)]
 lemma whiskerRight_comp_unit_app (f : x ⟶ x') :
     F.map f ▷ G.obj y ≫ (unit F G).app (x', y) =
@@ -144,6 +145,7 @@ def map (f : F ⟶ F') (g : G ⟶ G') : F ⊛ G ⟶ F' ⊛ G' :=
 
 variable (f : F ⟶ F') (g : G ⟶ G') (x y : C)
 
+set_option backward.isDefEq.respectTransparency false in -- Needed in DayConvolution.lean
 @[reassoc (attr := simp)]
 lemma unit_app_map_app :
     (unit F G).app (x, y) ≫ (map f g).app (x ⊗ y : C) =
