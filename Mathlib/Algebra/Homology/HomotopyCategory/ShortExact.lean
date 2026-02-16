@@ -33,6 +33,7 @@ variable {C : Type*} [Category* C] [Abelian C]
 
 namespace CochainComplex
 
+set_option backward.isDefEq.respectTransparency false in -- Needed in homologySequenceδ_triangleh
 @[reassoc]
 lemma homologySequenceδ_quotient_mapTriangle_obj
     (T : Triangle (CochainComplex C ℤ)) (n₀ n₁ : ℤ) (h : n₀ + 1 = n₁) :
@@ -114,6 +115,7 @@ lemma homologySequenceδ_triangleh (n₀ : ℤ) (n₁ : ℤ) (h : n₀ + 1 = n�
 
 open ComposableArrows
 
+set_option backward.isDefEq.respectTransparency false in
 include hS in
 lemma quasiIso_descShortComplex : QuasiIso (descShortComplex S) where
   quasiIsoAt n := by
