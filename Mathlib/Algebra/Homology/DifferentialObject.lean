@@ -119,6 +119,7 @@ def dgoEquivHomologicalComplexUnitIso :
     { hom := { f := fun i => 𝟙 (X.obj i) }
       inv := { f := fun i => 𝟙 (X.obj i) } })
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The counit isomorphism for `dgoEquivHomologicalComplex`.
 -/
 @[simps!]

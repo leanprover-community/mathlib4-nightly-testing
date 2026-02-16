@@ -134,6 +134,7 @@ instance : MorphismProperty.Respects @LocallyQuasiFinite @IsOpenImmersion :=
   (RingHom.QuasiFinite.stableUnderComposition.stableUnderCompositionWithLocalizationAway
     RingHom.QuasiFinite.holdsForLocalizationAway).1
 
+set_option backward.isDefEq.respectTransparency false in
 nonrec lemma IsLocallyArtinian.of_locallyQuasiFinite [LocallyQuasiFinite f]
     [IsLocallyArtinian Y] : IsLocallyArtinian X := by
   change id _ -- avoid typeclass synthesis from getting stuck on the wlog hypothesis.
@@ -151,6 +152,7 @@ nonrec lemma IsLocallyArtinian.of_locallyQuasiFinite [LocallyQuasiFinite f]
   have : Module.Finite R S := .of_quasiFinite
   exact .of_finite R S
 
+set_option backward.isDefEq.respectTransparency false in
 instance [LocallyQuasiFinite f] (y : Y) : IsLocallyArtinian (f.fiber y) :=
   .of_locallyQuasiFinite (pullback.snd _ _)
 
@@ -200,10 +202,12 @@ nonrec lemma IsFinite.of_locallyQuasiFinite (f : X ⟶ Y) [LocallyQuasiFinite f]
   algebraize [φ.hom]
   exact .of_quasiFinite
 
+set_option backward.isDefEq.respectTransparency false in
 instance (f : X ⟶ Y) [LocallyQuasiFinite f] [QuasiCompact f] (x : Y) :
     IsFinite (f.fiberToSpecResidueField x) :=
   .of_locallyQuasiFinite (pullback.snd _ _)
 
+set_option backward.isDefEq.respectTransparency false in
 nonrec lemma LocallyQuasiFinite.of_fiberToSpecResidueField
     (hf : ∀ x, LocallyQuasiFinite (f.fiberToSpecResidueField x)) : LocallyQuasiFinite f := by
   change id _ -- avoid typeclass synthesis from getting stuck on the wlog hypothesis.

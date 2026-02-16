@@ -384,6 +384,7 @@ def ιInvApp {i : D.J} (U : Opens (D.U i).carrier) :
             repeat rw [← (D.V (j, k)).presheaf.map_comp]
             rfl } }
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `ιInvApp` is the left inverse of `D.ι i` on `U`. -/
 theorem ιInvApp_π {i : D.J} (U : Opens (D.U i).carrier) :
     ∃ eq, D.ιInvApp U ≫ D.diagramOverOpenπ U i = (D.U i).presheaf.map (eqToHom eq) := by
@@ -420,6 +421,7 @@ theorem ιInvApp_π {i : D.J} (U : Opens (D.U i).carrier) :
 abbrev ιInvAppπEqMap {i : D.J} (U : Opens (D.U i).carrier) :=
   (D.U i).presheaf.map (eqToIso (D.ιInvApp_π U).choose).inv
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `ιInvApp` is the right inverse of `D.ι i` on `U`. -/
 theorem π_ιInvApp_π (i j : D.J) (U : Opens (D.U i).carrier) :
     D.diagramOverOpenπ U i ≫ D.ιInvAppπEqMap U ≫ D.ιInvApp U ≫ D.diagramOverOpenπ U j =
@@ -478,10 +480,12 @@ instance componentwise_diagram_π_isIso (i : D.J) (U : Opens (D.U i).carrier) :
   · rw [Category.assoc, (D.ιInvApp_π _).choose_spec]
     exact Iso.inv_hom_id ((D.U i).presheaf.mapIso (eqToIso _))
 
+set_option backward.isDefEq.respectTransparency false in
 instance ιIsOpenImmersion (i : D.J) : IsOpenImmersion (𝖣.ι i) where
   base_open := D.ι_isOpenEmbedding i
   c_iso U := by erw [← colimitPresheafObjIsoComponentwiseLimit_hom_π]; infer_instance
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The following diagram is a pullback, i.e. `Vᵢⱼ` is the intersection of `Uᵢ` and `Uⱼ` in `X`.
 
 Vᵢⱼ ⟶ Uᵢ
@@ -571,6 +575,7 @@ theorem ι_isoPresheafedSpace_inv (i : D.J) :
     D.toPresheafedSpaceGlueData.toGlueData.ι i ≫ D.isoPresheafedSpace.inv = (𝖣.ι i).hom :=
   𝖣.ι_gluedIso_inv _ _
 
+set_option backward.isDefEq.respectTransparency false in
 instance ιIsOpenImmersion (i : D.J) : IsOpenImmersion (𝖣.ι i) := by
   dsimp [IsOpenImmersion]
   rw [← D.ι_isoPresheafedSpace_inv]
