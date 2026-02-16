@@ -71,6 +71,7 @@ end Pretriangulated.Opposite
 
 namespace Functor
 
+set_option backward.isDefEq.respectTransparency false in -- Needed in map_opShiftFunctorEquivalence_counitIso_hom_app_unop
 @[reassoc]
 lemma op_commShiftIso_hom_app (X : Cᵒᵖ) (n m : ℤ) (h : n + m = 0) :
     (F.op.commShiftIso n).hom.app X =
@@ -142,6 +143,7 @@ lemma map_opShiftFunctorEquivalence_counitIso_hom_app_unop (X : Cᵒᵖ) (n : �
     map_shiftFunctorCompIsoId_inv_app_assoc, op_comp, op_comp_assoc, op_comp_assoc,
     NatTrans.naturality_assoc, op_map, Iso.inv_hom_id_app_assoc, Quiver.Hom.unop_op]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma map_opShiftFunctorEquivalence_counitIso_inv_app_unop (X : Cᵒᵖ) (n : ℤ) :
     F.map ((opShiftFunctorEquivalence C n).counitIso.inv.app X).unop =
@@ -165,6 +167,7 @@ variable [HasZeroObject C] [Preadditive C] [∀ (n : ℤ), (shiftFunctor C n).Ad
 
 namespace Functor
 
+set_option backward.isDefEq.respectTransparency false in
 /--
 If `F : C ⥤ D` commutes with shifts, this expresses the compatibility of `F.mapTriangle`
 with the equivalences `Pretriangulated.triangleOpEquivalence` on `C` and `D`.
