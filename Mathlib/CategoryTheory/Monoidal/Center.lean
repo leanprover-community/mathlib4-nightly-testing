@@ -314,6 +314,7 @@ def forget : Center C ⥤ C where
   obj X := X.1
   map f := f.f
 
+set_option backward.isDefEq.respectTransparency false in
 instance : (forget C).Monoidal :=
   Functor.CoreMonoidal.toMonoidal
     { εIso := Iso.refl _
@@ -369,6 +370,7 @@ def ofBraided : C ⥤ Center C where
     { f
       comm := fun U => braiding_naturality_left f U }
 
+set_option backward.isDefEq.respectTransparency false in
 instance : (ofBraided C).Monoidal :=
   Functor.CoreMonoidal.toMonoidal
     { εIso :=

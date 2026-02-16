@@ -173,9 +173,11 @@ theorem coe_circle_smul (z : Circle) (w : 𝔻) : ↑(z • w) = (z * w : ℂ) :
 @[deprecated (since := "2026-01-06")]
 alias coe_smul_circle := coe_circle_smul
 
+set_option backward.isDefEq.respectTransparency false in
 instance instMulActionClosedBall : MulAction (closedBall (0 : ℂ) 1) 𝔻 :=
   mulActionClosedBallBall
 
+set_option backward.isDefEq.respectTransparency false in
 instance instIsScalarTower_closedBall_closedBall :
     IsScalarTower (closedBall (0 : ℂ) 1) (closedBall (0 : ℂ) 1) 𝔻 :=
   isScalarTower_closedBall_closedBall_ball
@@ -202,6 +204,7 @@ theorem coe_closedBall_smul (z : closedBall (0 : ℂ) 1) (w : 𝔻) : ↑(z • 
 @[deprecated (since := "2026-01-06")]
 alias coe_smul_closedBall := coe_closedBall_smul
 
+set_option backward.isDefEq.respectTransparency false in
 instance : Pow UnitDisc ℕ+ where
   pow z n := ⟨z ^ (n : ℕ), by simp [pow_lt_one_iff_of_nonneg, z.norm_lt_one]⟩
 
@@ -298,6 +301,7 @@ alias re_conj := UnitDisc.re_star
 instance : StarMul 𝔻 where
   star_mul z w := coe_injective <| by simp [mul_comm]
 
+set_option backward.isDefEq.respectTransparency false in
 @[deprecated star_mul' (since := "2026-01-06")]
 theorem conj_mul (z w : 𝔻) : star (z * w) = star z * star w :=
   star_mul' z w

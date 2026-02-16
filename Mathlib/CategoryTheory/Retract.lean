@@ -139,6 +139,7 @@ then `F.map f` is a retract of `F.map g` for any functor `F`. -/
 def map (F : C ⥤ D) : RetractArrow (F.map f) (F.map g) :=
   Retract.map h F.mapArrow
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If a morphism `f` is a retract of `g`, then `f.op` is a retract of `g.op`. -/
 @[simps]
 def op : RetractArrow f.op g.op where
@@ -150,6 +151,7 @@ def op : RetractArrow f.op g.op where
   r.w := by simp [← op_comp]
   retract := by ext <;> simp [← op_comp]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If a morphism `f` in the opposite category is a retract of `g`,
 then `f.unop` is a retract of `g.unop`. -/
 @[simps]

@@ -180,6 +180,7 @@ section CompactDVR
 
 open Valued
 
+set_option backward.isDefEq.respectTransparency false in
 lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X := K) 𝒪[K]) :
     Nonempty (LocallyFiniteOrder (MonoidHom.mrange (Valued.v : Valuation K Γ₀))ˣ) := by
   -- TODO: generalize to `Valuation.Integer`, which will require showing that `IsCompact`
@@ -270,12 +271,14 @@ lemma locallyFiniteOrder_units_mrange_of_isCompact_integer (hc : IsCompact (X :=
       rw [dif_neg hcj]
       simp [← hj', hc]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma mulArchimedean_mrange_of_isCompact_integer (hc : IsCompact (X := K) 𝒪[K]) :
     MulArchimedean (MonoidHom.mrange (Valued.v : Valuation K Γ₀)) := by
   rw [← Units.mulArchimedean_iff]
   obtain ⟨_⟩ := locallyFiniteOrder_units_mrange_of_isCompact_integer hc
   exact MulArchimedean.of_locallyFiniteOrder
 
+set_option backward.isDefEq.respectTransparency false in
 lemma isPrincipalIdealRing_of_compactSpace [hc : CompactSpace 𝒪[K]] :
     IsPrincipalIdealRing 𝒪[K] := by
   -- The strategy to show that we have a PIR is by contradiction,
@@ -324,6 +327,7 @@ lemma compactSpace_iff_completeSpace_and_isDiscreteValuationRing_and_finite_resi
     rw [isCompact_iff_totallyBounded_isComplete]
     exact ⟨h, completeSpace_iff_isComplete_univ.mp ‹_›⟩
 
+set_option backward.isDefEq.respectTransparency false in
 lemma properSpace_iff_compactSpace_integer [(Valued.v : Valuation K Γ₀).RankOne] :
     ProperSpace K ↔ CompactSpace 𝒪[K] := by
   simp only [← isCompact_univ_iff, Subtype.isCompact_iff, Set.image_univ, Subtype.range_coe_subtype,
@@ -334,6 +338,7 @@ lemma properSpace_iff_compactSpace_integer [(Valued.v : Valuation K Γ₀).RankO
     exact IsCompact.locallyCompactSpace_of_mem_nhds_of_addGroup h <|
       Metric.closedBall_mem_nhds 0 zero_lt_one
 
+set_option backward.isDefEq.respectTransparency false in
 lemma properSpace_iff_completeSpace_and_isDiscreteValuationRing_integer_and_finite_residueField
     [(Valued.v : Valuation K Γ₀).RankOne] :
     ProperSpace K ↔ CompleteSpace K ∧ IsDiscreteValuationRing 𝒪[K] ∧ Finite 𝓀[K] := by

@@ -138,6 +138,7 @@ example (h : (5 * a ^ 3 + 8) ^ 2 = 1600 * c) : ((a / 2) ^ 3 + 1 / 5) ^ 2 = c := 
 
 end
 
+set_option backward.isDefEq.respectTransparency false in
 section
 -- simulate the type of complex numbers
 def C : Type := test_sorry

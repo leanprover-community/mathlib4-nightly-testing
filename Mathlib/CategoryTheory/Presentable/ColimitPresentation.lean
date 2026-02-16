@@ -78,6 +78,7 @@ section Small
 variable {J : Type w} {I : J → Type w} [SmallCategory J] [∀ j, SmallCategory (I j)]
   {D : J ⥤ C} {P : ∀ j, ColimitPresentation (I j) (D.obj j)}
 
+set_option backward.isDefEq.respectTransparency false in
 lemma Total.exists_hom_of_hom {j j' : J} (i : I j) (u : j ⟶ j')
     [IsFiltered (I j')] [IsFinitelyPresentable.{w} ((P j).diag.obj i)] :
     ∃ (i' : I j') (f : Total.mk P j i ⟶ Total.mk P j' i'), f.base = u := by
@@ -90,6 +91,7 @@ instance [IsFiltered J] [∀ j, IsFiltered (I j)] : Nonempty (Total P) := by
   obtain ⟨i⟩ : Nonempty (I j) := IsFiltered.nonempty
   exact ⟨⟨j, i⟩⟩
 
+set_option backward.isDefEq.respectTransparency false in
 instance [IsFiltered J] [∀ j, IsFiltered (I j)]
     [∀ j i, IsFinitelyPresentable.{w} ((P j).diag.obj i)] :
     IsFiltered (Total P) where
@@ -117,6 +119,7 @@ instance [IsFiltered J] [∀ j, IsFiltered (I j)]
       simp only [Functor.map_comp, comp_hom, reassoc_of% hpq]
       simp [← Functor.map_comp, ← IsFiltered.coeq_condition]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `P` is a colimit presentation over `J` of `X` and for every `j` we are given a colimit
 presentation `Qⱼ` over `I j` of the `P.diag.obj j`, this is the refined colimit presentation of `X`
 over `Total Q`. -/

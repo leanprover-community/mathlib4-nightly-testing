@@ -240,6 +240,7 @@ theorem integral_fourierIntegral_smul_eq_flip
       ∫ x, (f x) • (fourierIntegral e ν L.flip g x) ∂μ :=
   integral_bilin_fourierIntegral_eq_flip (ContinuousLinearMap.lsmul ℂ ℂ) he hL hf hg
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The Fourier transform satisfies `∫ 𝓕 f * conj g = ∫ f * conj (𝓕⁻¹ g)`, which together
 with the Fourier inversion theorem yields Plancherel's theorem. The stated version is more
 convenient since it does only require integrability of `f` and `g`.
@@ -297,6 +298,7 @@ variable {𝕜 ι E F V W : Type*} [Fintype ι] [NontriviallyNormedField 𝕜]
   [NormedAddCommGroup E] [NormedSpace ℂ E]
   {M : ι → Type*} [∀ i, NormedAddCommGroup (M i)] [∀ i, NormedSpace ℝ (M i)]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem fourierIntegral_continuousLinearMap_apply
     {f : V → (F →L[ℝ] E)} {a : F} {w : W} (he : Continuous e) (hf : Integrable f μ) :
     fourierIntegral e μ L.toLinearMap₁₂ f w a =
@@ -306,6 +308,7 @@ theorem fourierIntegral_continuousLinearMap_apply
   · apply (fourierIntegral_convergent_iff he _ _).2 hf
     exact L.continuous₂
 
+set_option backward.isDefEq.respectTransparency false in
 theorem fourierIntegral_continuousMultilinearMap_apply
     {f : V → (ContinuousMultilinearMap ℝ M E)} {m : (i : ι) → M i} {w : W} (he : Continuous e)
     (hf : Integrable f μ) :
@@ -460,6 +463,7 @@ lemma fourierInv_eq' (f : V → E) (w : V) :
 @[deprecated (since := "2025-11-16")]
 alias fourierIntegralInv_eq' := fourierInv_eq'
 
+set_option backward.isDefEq.respectTransparency false in
 lemma fourier_comp_linearIsometry (A : W ≃ₗᵢ[ℝ] V) (f : V → E) (w : W) :
     𝓕 (f ∘ A) w = (𝓕 f) (A w) := by
   simp only [fourier_eq, ← A.inner_map_map, Function.comp_apply,

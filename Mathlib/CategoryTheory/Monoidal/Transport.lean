@@ -193,6 +193,7 @@ variable (e : C ≌ D)
 equivalence `C ≌ Transported e`. -/
 abbrev equivalenceTransported : C ≌ Transported e := e
 
+set_option backward.isDefEq.respectTransparency false in
 instance : (equivalenceTransported e).inverse.Monoidal := by
   dsimp +instances only [Transported.instMonoidalCategory]
   infer_instance
@@ -206,6 +207,7 @@ noncomputable instance : (equivalenceTransported e).functor.Monoidal :=
 noncomputable instance : (equivalenceTransported e).symm.inverse.Monoidal :=
   inferInstanceAs (equivalenceTransported e).functor.Monoidal
 
+set_option backward.isDefEq.respectTransparency false in
 instance : (equivalenceTransported e).symm.IsMonoidal := by
   infer_instance
 

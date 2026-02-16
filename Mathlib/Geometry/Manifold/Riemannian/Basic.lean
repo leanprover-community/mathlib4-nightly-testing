@@ -212,7 +212,8 @@ the image of the neighborhood in the extended chart.
 open Manifold Metric
 open scoped NNReal
 
-set_option backward.isDefEq.respectTransparency false in
+set_option backward.isDefEq.respectTransparency false
+
 variable [RiemannianBundle (fun (x : M) ↦ TangentSpace I x)]
   [IsManifold I 1 M] [IsContinuousRiemannianBundle E (fun (x : M) ↦ TangentSpace I x)]
 

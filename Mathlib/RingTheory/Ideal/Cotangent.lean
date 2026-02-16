@@ -37,10 +37,12 @@ universe u v w
 variable {R : Type u} {S : Type v} {S' : Type w} [CommRing R] [CommSemiring S] [Algebra S R]
 variable [CommSemiring S'] [Algebra S' R] [Algebra S S'] [IsScalarTower S S' R] (I : Ideal R)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `I ⧸ I ^ 2` as a quotient of `I`. -/
 def Cotangent : Type _ := I ⧸ (I • ⊤ : Submodule R I)
 deriving Inhabited, AddCommGroup, Module (R ⧸ I)
 
+set_option backward.isDefEq.respectTransparency false in
 deriving instance Module S, IsScalarTower S S' for Cotangent I
 
 set_option backward.isDefEq.respectTransparency false in

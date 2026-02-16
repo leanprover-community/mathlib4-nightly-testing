@@ -414,20 +414,25 @@ set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma assocIsometry_symm_apply (x : E ⊗[𝕜] (F ⊗[𝕜] G)) :
     (assocIsometry 𝕜 E F G).symm x = (TensorProduct.assoc 𝕜 E F G).symm x := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma toLinearEquiv_assocIsometry :
     (assocIsometry 𝕜 E F G).toLinearEquiv = TensorProduct.assoc 𝕜 E F G := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma norm_assoc (x : E ⊗[𝕜] F ⊗[𝕜] G) :
     ‖TensorProduct.assoc 𝕜 E F G x‖ = ‖x‖ := assocIsometry 𝕜 E F G |>.norm_map x
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma nnnorm_assoc (x : E ⊗[𝕜] F ⊗[𝕜] G) :
     ‖TensorProduct.assoc 𝕜 E F G x‖₊ = ‖x‖₊ := assocIsometry 𝕜 E F G |>.nnnorm_map x
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma enorm_assoc (x : E ⊗[𝕜] F ⊗[𝕜] G) :
     ‖TensorProduct.assoc 𝕜 E F G x‖ₑ = ‖x‖ₑ := assocIsometry 𝕜 E F G |>.toLinearIsometry.enorm_map x
 
 end isometry
 
+set_option backward.isDefEq.respectTransparency false in
 -- TODO: upgrade `map` to a `ContinuousLinearMap`
 @[simp] theorem adjoint_map [FiniteDimensional 𝕜 E] [FiniteDimensional 𝕜 F] [FiniteDimensional 𝕜 G]
     [FiniteDimensional 𝕜 H] (f : E →ₗ[𝕜] F) (g : G →ₗ[𝕜] H) :
@@ -436,14 +441,17 @@ end isometry
 
 open LinearMap
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] theorem _root_.LinearMap.adjoint_rTensor [FiniteDimensional 𝕜 E] [FiniteDimensional 𝕜 F]
     [FiniteDimensional 𝕜 G] (f : E →ₗ[𝕜] F) :
     adjoint (rTensor G f) = rTensor G f.adjoint := by simp [rTensor]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] theorem _root_.LinearMap.adjoint_lTensor [FiniteDimensional 𝕜 E] [FiniteDimensional 𝕜 F]
     [FiniteDimensional 𝕜 G] (f : E →ₗ[𝕜] F) :
     adjoint (lTensor G f) = lTensor G f.adjoint := by simp [lTensor]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given `x, y : E ⊗ (F ⊗ G)`, `x = y` iff `⟪x, a ⊗ₜ (b ⊗ₜ c)⟫ = ⟪y, a ⊗ₜ (b ⊗ₜ c)⟫` for all
 `a, b, c`.
 
@@ -454,6 +462,7 @@ theorem ext_iff_inner_right_threefold' {x y : E ⊗[𝕜] (F ⊗[𝕜] G)} :
     ext_iff_inner_right_threefold, LinearIsometryEquiv.inner_map_eq_flip]
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given `x, y : E ⊗ (F ⊗ G)`, `x = y` iff `⟪a ⊗ₜ (b ⊗ₜ c), x⟫ = ⟪a ⊗ₜ (b ⊗ₜ c), y⟫` for all
 `a, b, c`.
 
@@ -470,6 +479,7 @@ variable {ι₁ ι₂ : Type*}
 
 open Module
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The tensor product of two orthonormal vectors is orthonormal. -/
 theorem Orthonormal.tmul
     {b₁ : ι₁ → E} {b₂ : ι₂ → F} (hb₁ : Orthonormal 𝕜 b₁) (hb₂ : Orthonormal 𝕜 b₂) :
@@ -496,6 +506,7 @@ protected noncomputable def tensorProduct
   (b₁.toBasis.tensorProduct b₂.toBasis).toOrthonormalBasis
     (b₁.orthonormal.basisTensorProduct b₂.orthonormal)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma tensorProduct_apply
     (b₁ : OrthonormalBasis ι₁ 𝕜 E) (b₂ : OrthonormalBasis ι₂ 𝕜 F) (i : ι₁) (j : ι₂) :
@@ -505,6 +516,7 @@ lemma tensorProduct_apply'
     (b₁ : OrthonormalBasis ι₁ 𝕜 E) (b₂ : OrthonormalBasis ι₂ 𝕜 F) (i : ι₁ × ι₂) :
     b₁.tensorProduct b₂ i = b₁ i.1 ⊗ₜ[𝕜] b₂ i.2 := tensorProduct_apply _ _ _ _
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma tensorProduct_repr_tmul_apply (b₁ : OrthonormalBasis ι₁ 𝕜 E) (b₂ : OrthonormalBasis ι₂ 𝕜 F)
     (x : E) (y : F) (i : ι₁) (j : ι₂) :

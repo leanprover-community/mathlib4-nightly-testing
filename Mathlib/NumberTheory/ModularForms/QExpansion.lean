@@ -124,6 +124,7 @@ lemma differentiableOn_cuspFunction_ball [ModularFormClass F Γ k]
   fun _ hz ↦ (differentiableAt_cuspFunction f hh hΓ <| mem_ball_zero_iff.mp hz)
     |>.differentiableWithinAt
 
+set_option backward.isDefEq.respectTransparency false in
 lemma analyticAt_cuspFunction_zero [ModularFormClass F Γ k]
     (hh : 0 < h) (hΓ : h ∈ Γ.strictPeriods) :
     AnalyticAt ℂ (cuspFunction h f) 0 :=
@@ -151,6 +152,7 @@ lemma qExpansion_coeff_zero [ModularFormClass F Γ k] (hh : 0 < h) (hΓ : h ∈ 
     (qExpansion h f).coeff 0 = valueAtInfty f := by
   simp [qExpansion_coeff, cuspFunction_apply_zero f hh hΓ]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma hasSum_qExpansion_of_norm_lt [ModularFormClass F Γ k]
     (hh : 0 < h) (hΓ : h ∈ Γ.strictPeriods) {q : ℂ} (hq : ‖q‖ < 1) :
     HasSum (fun m : ℕ ↦ (qExpansion h f).coeff m • q ^ m) (cuspFunction h f q) := by
@@ -189,6 +191,7 @@ lemma qExpansionFormalMultilinearSeries_apply_norm (m : ℕ) :
     ← (ContinuousMultilinearMap.piFieldEquiv ℂ (Fin m) ℂ).symm.norm_map]
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 lemma qExpansionFormalMultilinearSeries_radius [ModularFormClass F Γ k]
     (hh : 0 < h) (hΓ : h ∈ Γ.strictPeriods) :
     1 ≤ (qExpansionFormalMultilinearSeries h f).radius := by
@@ -209,6 +212,7 @@ lemma hasFPowerSeries_cuspFunction [ModularFormClass F Γ k]
     ← NNReal.coe_lt_one, coe_nnnorm] at hy
   simpa [qExpansionFormalMultilinearSeries, mul_comm] using hasSum_qExpansion_of_norm_lt f hh hΓ hy
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The `q`-expansion coefficient can be expressed as a `circleIntegral` for any radius `0 < R < 1`.
 -/
 lemma qExpansion_coeff_eq_circleIntegral [ModularFormClass F Γ k]
@@ -221,6 +225,7 @@ lemma qExpansion_coeff_eq_circleIntegral [ModularFormClass F Γ k]
   simp_rw [qExpansion, PowerSeries.coeff_mk, ← this, sub_zero, smul_eq_mul, one_div_mul_eq_div,
     div_eq_inv_mul]
 
+set_option backward.isDefEq.respectTransparency false in
 /--
 If `h` is a positive strict period of `f`, then the `q`-expansion coefficient can be expressed
 as an integral along a horizontal line in the upper half-plane from `t * I` to `h + t * I`, for

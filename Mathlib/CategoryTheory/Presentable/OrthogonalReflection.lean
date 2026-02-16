@@ -292,6 +292,7 @@ lemma isLocal_isLocal_toSucc :
 @[deprecated (since := "2025-11-20")] alias leftBousfieldW_isLocal_toSucc :=
   isLocal_isLocal_toSucc
 
+set_option backward.isDefEq.respectTransparency false in
 lemma isIso_toSucc_iff :
     IsIso (toSucc W Z) ↔ W.isLocal Z := by
   refine ⟨fun _ X Y f hf ↦ ?_, fun hZ ↦ ?_⟩
@@ -403,6 +404,7 @@ variable {W} {κ} [Fact κ.IsRegular]
 
 include hW
 
+set_option backward.isDefEq.respectTransparency false in
 lemma isLocal_reflectionObj :
     W.isLocal (reflectionObj W Z κ) := by
   let H := transfiniteCompositionOfShapeReflection W Z κ
@@ -430,6 +432,7 @@ lemma isLocal_reflectionObj :
     obtain ⟨g', hg'⟩ := iteration_map_succ_surjectivity f hf g
     exact ⟨g' ≫ H.incl.app (Order.succ j), by simp [reassoc_of% hg']⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The morphism `reflection W Z κ : Z ⟶ reflectionObj W Z κ` exhibits `reflectionObj W Z κ`
 as the image of `Z` by the left adjoint of the inclusion `W.isLocal.ι`. -/
 noncomputable def corepresentableBy :

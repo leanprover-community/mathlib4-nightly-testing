@@ -183,6 +183,7 @@ def consCases {P : (∀ i : Fin n.succ, α i) → Sort v} (h : ∀ x₀ x, P (Fi
     (x : ∀ i : Fin n.succ, α i) : P x :=
   _root_.cast (by rw [cons_self_tail]) <| h (x 0) (tail x)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem consCases_cons {P : (∀ i : Fin n.succ, α i) → Sort v} (h : ∀ x₀ x, P (Fin.cons x₀ x))
     (x₀ : α 0) (x : ∀ i : Fin n, α i.succ) : consCases h (cons x₀ x) = h x₀ x := by

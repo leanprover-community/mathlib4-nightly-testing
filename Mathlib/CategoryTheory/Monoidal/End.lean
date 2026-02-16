@@ -252,6 +252,7 @@ theorem associativity_app (m₁ m₂ m₃ : M) (X : C) [F.LaxMonoidal] :
   dsimp at this
   simpa using this
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp, reassoc]
 theorem obj_μ_app (m₁ m₂ m₃ : M) (X : C) [F.Monoidal] :
     (F.obj m₃).map ((μ F m₁ m₂).app X) =
@@ -261,6 +262,7 @@ theorem obj_μ_app (m₁ m₂ m₃ : M) (X : C) [F.Monoidal] :
   rw [← associativity_app_assoc]
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp, reassoc]
 theorem obj_μ_inv_app (m₁ m₂ m₃ : M) (X : C) [F.Monoidal] :
     (F.obj m₃).map ((δ F m₁ m₂).app X) =
@@ -272,6 +274,7 @@ theorem obj_μ_inv_app (m₁ m₂ m₃ : M) (X : C) [F.Monoidal] :
   simp only [Category.id_comp, Category.assoc, μ_δ_app_assoc, μ_δ_app,
     endofunctorMonoidalCategory_tensorObj_obj, Category.comp_id]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 theorem obj_zero_map_μ_app {m : M} {X Y : C} (f : X ⟶ (F.obj m).obj Y) [F.Monoidal] :
     (F.obj (𝟙_ M)).map f ≫ (μ F m (𝟙_ M)).app _ =
@@ -279,6 +282,7 @@ theorem obj_zero_map_μ_app {m : M} {X Y : C} (f : X ⟶ (F.obj m).obj Y) [F.Mon
   rw [← cancel_epi ((ε F).app _), ← cancel_mono ((δ F _ _).app _)]
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem obj_μ_zero_app (m₁ m₂ : M) (X : C) [F.Monoidal] :
     (μ F (𝟙_ M) m₂).app ((F.obj m₁).obj X) ≫ (μ F m₁ (𝟙_ M ⊗ m₂)).app X ≫
@@ -294,6 +298,7 @@ noncomputable def unitOfTensorIsoUnit (m n : M) (h : m ⊗ n ≅ 𝟙_ M) [F.Mon
     F.obj m ⋙ F.obj n ≅ 𝟭 C :=
   μIso F m n ≪≫ F.mapIso h ≪≫ (εIso F).symm
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `m ⊗ n ≅ 𝟙_M` and `n ⊗ m ≅ 𝟙_M` (subject to some commuting constraints),
   then `F.obj m` and `F.obj n` forms a self-equivalence of `C`. -/
 @[simps]

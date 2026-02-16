@@ -274,6 +274,7 @@ private lemma tendsto_log_one_sub_sub_log_nhdsGT_atAtop :
     linarith [hx.2]
   · apply tendsto_neg_atTop_iff.mpr tendsto_log_nhdsGT_zero
 
+set_option backward.isDefEq.respectTransparency false in
 private lemma tendsto_log_one_sub_sub_log_nhdsLT_one_atBot :
     Tendsto (fun p ↦ log (1 - p) - log p) (𝓝[<] 1) atBot := by
   apply Filter.tendsto_atBot_add_right_of_ge' (𝓝[<] 1) (-log (1 - 2⁻¹))
@@ -365,6 +366,7 @@ lemma deriv2_binEntropy : deriv^[2] binEntropy p = -1 / (p * (1 - p)) :=
 
 /-! ### Strict monotonicity of entropy -/
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Qary entropy is strictly increasing in the interval [0, 1 - q⁻¹]. -/
 lemma qaryEntropy_strictMonoOn (qLe2 : 2 ≤ q) :
     StrictMonoOn (qaryEntropy q) (Icc 0 (1 - 1 / q)) := by
@@ -393,6 +395,7 @@ lemma qaryEntropy_strictMonoOn (qLe2 : 2 ≤ q) :
         linarith
     exact (ne_of_gt (lt_add_neg_iff_lt.mp this : p < 1)).symm
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Qary entropy is strictly decreasing in the interval [1 - q⁻¹, 1]. -/
 lemma qaryEntropy_strictAntiOn (qLe2 : 2 ≤ q) :
     StrictAntiOn (qaryEntropy q) (Icc (1 - 1 / q) 1) := by

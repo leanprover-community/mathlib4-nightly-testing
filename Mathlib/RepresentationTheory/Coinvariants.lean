@@ -299,6 +299,7 @@ noncomputable section
 
 variable [Group G] (A : Rep k G) (S : Subgroup G) [S.Normal]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a normal subgroup `S ≤ G`, a `G`-representation `A` restricts to a `G`-representation on
 the kernel of the quotient map to the `S`-coinvariants `A_S`. -/
 abbrev toCoinvariantsKer : Rep k G := Rep.of (A.ρ.toCoinvariantsKer S)
@@ -318,6 +319,7 @@ lemma toCoinvariantsMkQ_hom :
 the coinvariants of `ρ|_S`. -/
 abbrev quotientToCoinvariants : Rep k (G ⧸ S) := ofQuotient (toCoinvariants A S) S
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a normal subgroup `S ≤ G`, a `G`-representation `A` induces a short exact sequence of
 `G`-representations `0 ⟶ Ker(mk) ⟶ A ⟶ A_S ⟶ 0` where `mk` is the quotient map to the
 `S`-coinvariants `A_S`. -/
@@ -330,6 +332,7 @@ def coinvariantsShortComplex : ShortComplex (Rep k G) where
   g := toCoinvariantsMkQ A S
   zero := by ext x; exact (Submodule.Quotient.mk_eq_zero _).2 x.2
 
+set_option backward.isDefEq.respectTransparency false in
 lemma coinvariantsShortComplex_shortExact : (coinvariantsShortComplex A S).ShortExact where
   exact := (forget₂ _ (ModuleCat k)).reflects_exact_of_faithful _ <|
     (ShortComplex.moduleCat_exact_iff _).2
@@ -342,6 +345,7 @@ end
 
 variable (k G) [Monoid G] (A B : Rep k G)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The functor sending a representation to its coinvariants. -/
 @[simps! obj_carrier map_hom]
 noncomputable def coinvariantsFunctor : Rep k G ⥤ ModuleCat k where
@@ -367,6 +371,7 @@ lemma coinvariantsFunctor_hom_ext {M : ModuleCat k} {f g : (coinvariantsFunctor 
     (hfg : (coinvariantsMk k G).app A ≫ f = (coinvariantsMk k G).app A ≫ g) :
     f = g := (cancel_epi _).1 hfg
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The linear map underlying a `G`-representation morphism `A ⟶ B`, where `B` has the trivial
 representation, factors through `A_G`. -/
 noncomputable abbrev desc [B.ρ.IsTrivial] (f : A ⟶ B) :
@@ -381,6 +386,7 @@ variable (k G)
 instance : (coinvariantsFunctor k G).Additive where
 instance : (coinvariantsFunctor k G).Linear k where
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The adjunction between the functor sending a representation to its coinvariants and the functor
 equipping a module with the trivial representation. -/
 @[simps]
@@ -396,6 +402,7 @@ theorem coinvariantsAdjunction_homEquiv_apply_hom {X : Rep k G} {Y : ModuleCat k
     ((coinvariantsAdjunction k G).homEquiv X Y f).hom = (coinvariantsMk k G).app X ≫ f := by
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem coinvariantsAdjunction_homEquiv_symm_apply_hom {X : Rep k G} {Y : ModuleCat k}
     (f : X ⟶ (trivialFunctor k G).obj Y) :
@@ -414,6 +421,7 @@ noncomputable abbrev coinvariantsTensor : Rep k G ⥤ Rep k G ⥤ ModuleCat k :=
 
 variable {k G} (A B)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The bilinear map sending `a : A, b : B` to `⟦a ⊗ₜ b⟧` in `(A ⊗[k] B)_G`. -/
 noncomputable abbrev coinvariantsTensorMk :
     A →ₗ[k] B →ₗ[k] ((coinvariantsTensor k G).obj A).obj B :=
@@ -437,6 +445,7 @@ section
 
 variable (k : Type u) {G : Type u} [CommRing k] [Group G]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a normal subgroup `S ≤ G`, this is the functor sending a `G`-representation `A` to the
 `G ⧸ S`-representation it induces on `A_S`. -/
 @[simps obj_V map_hom]
@@ -465,6 +474,7 @@ noncomputable def coinvariantsTensorFreeToFinsupp :
 
 variable {A α}
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma coinvariantsTensorFreeToFinsupp_mk_tmul_single (x : A) (i : α) (g : G) (r : k) :
     DFunLike.coe (F := (A.ρ.tprod (Representation.free k G α)).Coinvariants →ₗ[k] α →₀ A.V)
@@ -484,6 +494,7 @@ noncomputable def finsuppToCoinvariantsTensorFree :
 
 variable {A α}
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma finsuppToCoinvariantsTensorFree_single (i : α) (x : A) :
     DFunLike.coe (F := (α →₀ A.V) →ₗ[k] (A.ρ.tprod (Representation.free k G α)).Coinvariants)
@@ -493,6 +504,7 @@ lemma finsuppToCoinvariantsTensorFree_single (i : α) (x : A) :
 
 variable (A α)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a `k`-linear `G`-representation `(A, ρ)` and a type `α`, this is the linear equivalence
 `(A ⊗ (α →₀ k[G]))_G ≃ₗ[k] (α →₀ A)` sending
 `⟦a ⊗ single x (single g r)⟧ ↦ single x (r • ρ(g⁻¹)(a)).` -/

@@ -334,6 +334,7 @@ variable {K} {M : Type*}
 def restrict (f : M → K) (h : ∀ x, IsIntegral ℤ (f x)) (x : M) : 𝓞 K :=
   ⟨f x, h x⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given `f : M →+ K` such that `∀ x, IsIntegral ℤ (f x)`, the corresponding function
 `M →+ 𝓞 K`. -/
 def restrict_addMonoidHom [AddZeroClass M] (f : M →+ K) (h : ∀ x, IsIntegral ℤ (f x)) :
@@ -342,6 +343,7 @@ def restrict_addMonoidHom [AddZeroClass M] (f : M →+ K) (h : ∀ x, IsIntegral
   map_zero' := by simp only [restrict, map_zero, mk_zero]
   map_add' x y := by simp only [restrict, map_add, mk_add_mk _]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given `f : M →* K` such that `∀ x, IsIntegral ℤ (f x)`, the corresponding function
 `M →* 𝓞 K`. -/
 def restrict_monoidHom [MulOneClass M] (f : M →* K) (h : ∀ x, IsIntegral ℤ (f x)) : M →* 𝓞 K where
@@ -368,6 +370,7 @@ protected noncomputable def algEquiv (R : Type*) [CommRing R] [Algebra (𝓞 K) 
 instance extension_algebra_isIntegral : Algebra.IsIntegral (𝓞 K) (𝓞 L) :=
   IsIntegralClosure.isIntegral_algebra (𝓞 K) L
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Any extension between ring of integers of number fields is Noetherian. -/
 instance extension_isNoetherian [NumberField K] [NumberField L] : IsNoetherian (𝓞 K) (𝓞 L) :=
   IsIntegralClosure.isNoetherian (𝓞 K) K L (𝓞 L)

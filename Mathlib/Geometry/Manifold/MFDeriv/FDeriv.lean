@@ -27,6 +27,7 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {E : Type*} [NormedAddCom
 
 section MFDerivFDeriv
 
+set_option backward.isDefEq.respectTransparency false in
 theorem uniqueMDiffWithinAt_iff_uniqueDiffWithinAt :
     UniqueMDiffWithinAt 𝓘(𝕜, E) s x ↔ UniqueDiffWithinAt 𝕜 s x := by
   simp only [UniqueMDiffWithinAt, mfld_simps]
@@ -47,6 +48,7 @@ theorem ModelWithCorners.uniqueMDiffOn {H : Type*} [TopologicalSpace H]
 theorem writtenInExtChartAt_model_space : writtenInExtChartAt 𝓘(𝕜, E) 𝓘(𝕜, E') x f = f :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 theorem hasMFDerivWithinAt_iff_hasFDerivWithinAt {f'} :
     HasMFDerivWithinAt 𝓘(𝕜, E) 𝓘(𝕜, E') f s x f' ↔ HasFDerivWithinAt f f' s x := by
   simpa only [HasMFDerivWithinAt, and_iff_right_iff_imp, mfld_simps] using
@@ -98,6 +100,7 @@ theorem mdifferentiable_iff_differentiable :
 alias ⟨MDifferentiable.differentiable, Differentiable.mdifferentiable⟩ :=
   mdifferentiable_iff_differentiable
 
+set_option backward.isDefEq.respectTransparency false in
 /-- For maps between vector spaces, `mfderivWithin` and `fderivWithin` coincide -/
 @[simp]
 theorem mfderivWithin_eq_fderivWithin :

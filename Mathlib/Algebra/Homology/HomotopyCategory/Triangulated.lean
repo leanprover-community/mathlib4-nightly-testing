@@ -100,6 +100,7 @@ lemma hom_inv_id : hom f g ≫ inv f g = 𝟙 _ := by
   ext n
   simp [hom, inv, lift_desc_f _ _ _ _ _ _ _ n (n + 1) rfl, ext_from_iff _ (n + 1) _ rfl]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given two composable morphisms `f` and `g` in the category of cochain complexes,
 this is the `homotopyInvHomId` field of the homotopy equivalence
 `mappingConeCompHomotopyEquiv f g` between `mappingCone g` and the mapping cone of
@@ -129,6 +130,7 @@ noncomputable def homotopyInvHomId : Homotopy (inv f g ≫ hom f g) (𝟙 _) :=
 
 end MappingConeCompHomotopyEquiv
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given two composable morphisms `f` and `g` in the category of cochain complexes,
 this is the homotopy equivalence `mappingConeCompHomotopyEquiv f g`
 between `mappingCone g` and the mapping cone of
@@ -140,6 +142,7 @@ noncomputable def mappingConeCompHomotopyEquiv : HomotopyEquiv (mappingCone g)
   homotopyHomInvId := Homotopy.ofEq (by simp)
   homotopyInvHomId := MappingConeCompHomotopyEquiv.homotopyInvHomId f g
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma mappingConeCompHomotopyEquiv_hom_inv_id :
     (mappingConeCompHomotopyEquiv f g).hom ≫
@@ -152,6 +155,7 @@ lemma mappingConeCompHomotopyEquiv_comm₁ :
       (mappingConeCompHomotopyEquiv f g).inv = (mappingConeCompTriangle f g).mor₂ := by
   simp [map, mappingConeCompHomotopyEquiv, MappingConeCompHomotopyEquiv.inv]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma mappingConeCompHomotopyEquiv_comm₂ :
     (mappingConeCompHomotopyEquiv f g).hom ≫
@@ -161,6 +165,7 @@ lemma mappingConeCompHomotopyEquiv_comm₂ :
   simp [map, mappingConeCompHomotopyEquiv, MappingConeCompHomotopyEquiv.hom,
     lift_f _ _ _ _ _ (n + 1) rfl, ext_from_iff _ (n + 1) _ rfl]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma mappingConeCompTriangleh_comm₁ :
     (mappingConeCompTriangleh f g).mor₂ ≫
@@ -182,6 +187,7 @@ open CochainComplex
 
 variable [HasZeroObject C]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma mappingConeCompTriangleh_distinguished :
     (mappingConeCompTriangleh f g) ∈
       distTriang (HomotopyCategory C (ComplexShape.up ℤ)) := by
@@ -193,6 +199,7 @@ lemma mappingConeCompTriangleh_distinguished :
   congr 2
   exact (mappingConeCompHomotopyEquiv_comm₂ f g).symm
 
+set_option backward.isDefEq.respectTransparency false in
 noncomputable instance : IsTriangulated (HomotopyCategory C (ComplexShape.up ℤ)) :=
   IsTriangulated.mk' (by
     rintro ⟨X₁ : CochainComplex C ℤ⟩ ⟨X₂ : CochainComplex C ℤ⟩ ⟨X₃ : CochainComplex C ℤ⟩ u₁₂' u₂₃'
