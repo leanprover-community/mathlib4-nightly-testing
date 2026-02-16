@@ -374,8 +374,11 @@ where `t : ℝ` is the limit of `x * g x`. -/
 lemma tendsto_mul_log_one_add_of_tendsto {g : ℝ → ℝ} {t : ℝ}
     (hg : Tendsto (fun x ↦ x * g x) atTop (𝓝 t)) :
     Tendsto (fun x ↦ x * log (1 + g x)) atTop (𝓝 t) := by
+  #adaptation_note /-- Prior to https://github.com/leanprover/lean4/pull/12179,
+  `Real.cobounded_eq` was marked `@[simp]`, so didn't have to be passed explicitly here.
+  Now the `simpNF` linter complains about it. -/
   have hg0 := tendsto_zero_of_isBoundedUnder_smul_of_tendsto_cobounded
-    hg.norm.isBoundedUnder_le (tendsto_id'.mpr (by simp))
+    hg.norm.isBoundedUnder_le (tendsto_id'.mpr (by simp [Real.cobounded_eq]))
   rw [← tendsto_ofReal_iff] at hg ⊢
   push_cast at hg ⊢
   apply (Complex.tendsto_mul_log_one_add_of_tendsto hg).congr'
@@ -395,8 +398,11 @@ where `t : ℝ` is the limit of `x * g x`. -/
 lemma tendsto_one_add_rpow_exp_of_tendsto {g : ℝ → ℝ} {t : ℝ}
     (hg : Tendsto (fun x ↦ x * g x) atTop (𝓝 t)) :
     Tendsto (fun x ↦ (1 + g x) ^ x) atTop (𝓝 (exp t)) := by
+  #adaptation_note /-- Prior to https://github.com/leanprover/lean4/pull/12179,
+  `Real.cobounded_eq` was marked `@[simp]`, so didn't have to be passed explicitly here.
+  Now the `simpNF` linter complains about it. -/
   have hg0 := tendsto_zero_of_isBoundedUnder_smul_of_tendsto_cobounded
-    hg.norm.isBoundedUnder_le (tendsto_id'.mpr (by simp))
+    hg.norm.isBoundedUnder_le (tendsto_id'.mpr (by simp [Real.cobounded_eq]))
   rw [← tendsto_ofReal_iff] at hg ⊢
   push_cast at hg ⊢
   apply (Complex.tendsto_one_add_cpow_exp_of_tendsto hg).congr'
