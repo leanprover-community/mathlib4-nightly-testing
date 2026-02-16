@@ -287,12 +287,16 @@ end FGModuleCat
 `@[simp]` lemmas for `LinearMap.comp` and categorical identities.
 -/
 
-@[simp] theorem LinearMap.comp_id_fgModuleCat
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12179
+the simpNF linter complains about this being `@[simp]`. -/
+theorem LinearMap.comp_id_fgModuleCat
     {R} [Ring R] {G : FGModuleCat.{v} R} {H : Type v} [AddCommGroup H] [Module R H]
     (f : G →ₗ[R] H) : f.comp (ModuleCat.Hom.hom (InducedCategory.Hom.hom (𝟙 G))) = f :=
   ModuleCat.hom_ext_iff.mp <| Category.id_comp (ModuleCat.ofHom f)
 
-@[simp] theorem LinearMap.id_fgModuleCat_comp
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12179
+the simpNF linter complains about this being `@[simp]`. -/
+theorem LinearMap.id_fgModuleCat_comp
     {R} [Ring R] {G : Type v} [AddCommGroup G] [Module R G] {H : FGModuleCat.{v} R}
     (f : G →ₗ[R] H) : LinearMap.comp (ModuleCat.Hom.hom (InducedCategory.Hom.hom (𝟙 H))) f = f :=
   ModuleCat.hom_ext_iff.mp <| Category.comp_id (ModuleCat.ofHom f)

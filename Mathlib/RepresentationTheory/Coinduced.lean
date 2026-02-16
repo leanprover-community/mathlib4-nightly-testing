@@ -253,10 +253,12 @@ noncomputable def resCoindHomEquiv (B : Rep k H) (A : Rep k G) :
   left_inv := by intro; ext; simp
   right_inv z := by ext; have := hom_comm_apply z; simp_all
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12179
+the simpNF linter complains about `@[simps! counit_app_hom_hom unit_app_hom_hom]`,
+but removing it seems to be harmless. -/
 variable (k) in
 /-- Given a monoid homomorphism `φ : G →* H`, the coinduction functor `Rep k G ⥤ Rep k H` is right
 adjoint to the restriction functor along `φ`. -/
-@[simps! counit_app_hom_hom unit_app_hom_hom]
 noncomputable abbrev resCoindAdjunction : Action.res _ φ ⊣ coindFunctor k φ :=
   Adjunction.mkOfHomEquiv {
     homEquiv X Y := (resCoindHomEquiv φ X Y).toEquiv

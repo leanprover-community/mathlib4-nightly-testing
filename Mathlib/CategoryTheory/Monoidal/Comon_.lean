@@ -346,6 +346,10 @@ This definition is via transporting back and forth to monoids in the opposite ca
 instance monoidal [BraidedCategory C] : MonoidalCategory (Comon C) :=
   Monoidal.transport (Comon_EquivMon_OpOp C).symm
 
+#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12179
+the simpNF linter complains about this being `@[simp]`. -/
+attribute [-simp] monoidal_tensorObj_comon_counit
+
 variable {C} [BraidedCategory C]
 
 theorem tensorObj_X (A B : Comon C) : (A ⊗ B).X = A.X ⊗ B.X := rfl
