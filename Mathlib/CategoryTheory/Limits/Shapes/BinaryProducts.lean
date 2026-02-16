@@ -1505,3 +1505,4 @@ def BinaryFan.rightUnitor {X : C} {s : Cone (Functor.empty.{0} C)} (P : IsLimit 
 
 end unitor
 end CategoryTheory.Limits
+set_option linter.style.longFile 1700
