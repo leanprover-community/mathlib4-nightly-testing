@@ -135,7 +135,7 @@ nonrec theorem sum_bernoulli (n : ℕ) :
     (∑ k ∈ range (n + 1), ((n + 1).choose k : ℚ) • bernoulli k) = monomial n (n + 1 : ℚ) := by
   simp_rw [bernoulli_def, Finset.smul_sum, Finset.range_eq_Ico, ← Finset.sum_Ico_Ico_comm,
     Finset.sum_Ico_eq_sum_range]
-  simp only [add_tsub_cancel_left, tsub_zero, zero_add, map_add]
+  simp only [add_tsub_cancel_left, zero_add, map_add]
   simp_rw [smul_monomial, mul_comm (_root_.bernoulli _) _, smul_eq_mul, ← mul_assoc]
   conv_lhs =>
     apply_congr
@@ -302,7 +302,7 @@ theorem bernoulli_generating_function (t : A) :
   intro i hi
   -- deal with coefficients of e^X-1
   simp only [Nat.cast_choose ℚ (mem_range_le hi), coeff_mk, if_neg (mem_range_sub_ne_zero hi),
-    one_div, PowerSeries.coeff_one, coeff_exp, sub_zero, Algebra.smul_def,
+    PowerSeries.coeff_one, coeff_exp, sub_zero, Algebra.smul_def,
     mul_right_comm _ ((aeval t) _), ← mul_assoc, ← map_mul, ← Polynomial.C_eq_algebraMap,
     Polynomial.aeval_mul, Polynomial.aeval_C]
   -- finally cancel the Bernoulli polynomial and the algebra_map

@@ -609,7 +609,7 @@ lemma norm_sub_nonneg (f : α →ᵇ ℝ) :
     0 ≤ const _ ‖f‖ - f := by
   intro x
   simp only [ContinuousMap.toFun_eq_coe, coe_toContinuousMap, coe_zero, Pi.zero_apply, coe_sub,
-    const_apply, Pi.sub_apply, sub_nonneg]
+    const_apply, Pi.sub_apply]
   linarith [(abs_le.mp (norm_coe_le_norm f x)).2]
 
 end

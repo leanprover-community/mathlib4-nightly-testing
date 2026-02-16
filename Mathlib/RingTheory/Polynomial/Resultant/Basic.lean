@@ -1017,8 +1017,8 @@ private lemma sylvesterDeriv_of_natDegree_eq_three {f : R[X]} (hf : f.natDegree 
   fin_cases hi' <;>
   · simp only [and_true, Fin.isValue, Fin.mk_one, Fin.reduceFinMk, Fin.zero_eta,
       le_add_iff_nonneg_left, Matrix.cons_val_one, Matrix.cons_val_zero, Matrix.cons_val,
-      mul_one, Nat.cast_zero, Nat.reduceAdd, Nat.reduceEqDiff, Nat.reduceLeDiff, nonpos_iff_eq_zero,
-      OfNat.one_ne_ofNat, OfNat.zero_ne_ofNat, ↓reduceIte, zero_add, zero_le, zero_tsub]
+      Nat.reduceAdd, Nat.reduceEqDiff, Nat.reduceLeDiff, nonpos_iff_eq_zero,
+      OfNat.one_ne_ofNat, ↓reduceIte, zero_add, zero_le]
     fin_cases hj' <;> simp [mul_comm, one_add_one_eq_two, (by norm_num : (2 : R) + 1 = 3)]
 
 set_option backward.isDefEq.respectTransparency false in

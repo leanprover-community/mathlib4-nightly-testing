@@ -229,8 +229,8 @@ theorem sum_bernoulli (n : ℕ) :
   · congr
     funext x
     rw [bernoulli_eq_bernoulli'_of_ne_one (succ_ne_zero x ∘ succ.inj)]
-  · simp only [one_div, mul_one, bernoulli'_zero, choose_zero_right,
-      zero_add, choose_one_right, cast_succ, bernoulli'_one, one_div]
+  · simp only [mul_one, bernoulli'_zero, choose_zero_right,
+      zero_add, choose_one_right, cast_succ, bernoulli'_one]
     ring
 
 theorem bernoulli_spec' (n : ℕ) :

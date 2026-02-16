@@ -539,7 +539,7 @@ lemma exist_minSmoothness_le_ne_infty {n : WithTop ℕ∞} {m : ℕ} (hm : minSm
   split_ifs with h
   · simp only [h, ↓reduceIte] at hm
     exact ⟨m, le_rfl, hm, by simp⟩
-  · simp only [h, ↓reduceIte, top_le_iff] at hm
+  · simp only [h, ↓reduceIte] at hm
     refine ⟨ω, le_rfl, by simp [hm], by simp⟩
 
 set_option backward.isDefEq.respectTransparency false in

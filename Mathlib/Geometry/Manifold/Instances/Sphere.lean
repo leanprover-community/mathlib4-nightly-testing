@@ -225,7 +225,7 @@ theorem stereo_left_inv (hv : ‖v‖ = 1) {x : sphere (0 : E) 1} (hx : (x : E) 
     have : a < 1 := (inner_lt_one_iff_real_of_norm_eq_one hv (by simp)).mpr hx.symm
     linarith
   rw [split, Submodule.coe_smul_of_tower]
-  simp only [norm_smul, norm_div, RCLike.norm_ofNat, Real.norm_eq_abs, abs_of_nonneg ha.le]
+  simp only [norm_smul, norm_div, Real.norm_eq_abs, abs_of_nonneg ha.le]
   match_scalars
   · field_simp
     linear_combination 4 * pythag
@@ -411,7 +411,7 @@ instance EuclideanSpace.instIsManifoldSphere
         PartialEquiv.symm_source, stereographic'_target, stereographic'_source]
       simp only [modelWithCornersSelf_coe, modelWithCornersSelf_coe_symm,
         Set.range_id, Set.inter_univ, Set.univ_inter, Set.compl_singleton_eq, Set.preimage_setOf_eq]
-      simp only [id, comp_apply, Submodule.subtypeL_apply, OpenPartialHomeomorph.coe_coe_symm,
+      simp only [id, comp_apply, OpenPartialHomeomorph.coe_coe_symm,
         innerSL_apply_apply, Ne, sphere_ext_iff, real_inner_comm (v' : E)]
       rfl)
 

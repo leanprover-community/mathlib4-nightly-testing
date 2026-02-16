@@ -118,7 +118,7 @@ theorem coe_rootSpaceWeightSpaceProduct_tmul (χ₁ χ₂ χ₃ : H → R) (hχ 
     (x : rootSpace H χ₁) (m : genWeightSpace M χ₂) :
     (rootSpaceWeightSpaceProduct R L H M χ₁ χ₂ χ₃ hχ (x ⊗ₜ m) : M) = ⁅(x : L), (m : M)⁆ := by
   simp only [rootSpaceWeightSpaceProduct, rootSpaceWeightSpaceProductAux, coe_liftLie_eq_lift_coe,
-    lift_apply, LinearMap.coe_mk, AddHom.coe_mk, Submodule.coe_mk]
+    lift_apply, LinearMap.coe_mk, AddHom.coe_mk]
 
 theorem mapsTo_toEnd_genWeightSpace_add_of_mem_rootSpace (α χ : H → R)
     {x : L} (hx : x ∈ rootSpace H α) :

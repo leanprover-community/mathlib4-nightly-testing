@@ -525,7 +525,7 @@ lemma star_mul_self_add_self_mul_star {A : Type*} [NonUnitalNonAssocRing A] [Sta
     star a * a + a * star a = _ :=
       congr((star $(a_eq)) * $(a_eq) + $(a_eq) * (star $(a_eq)))
     _ = 2 • (ℜ a * ℜ a + ℑ a * ℑ a) := by
-      simp [mul_add, add_mul, smul_smul, two_smul, mul_smul_comm,
+      simp [mul_add, add_mul, smul_smul, mul_smul_comm,
         smul_mul_assoc]
       abel
 

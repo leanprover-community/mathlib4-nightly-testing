@@ -219,7 +219,7 @@ theorem powerSeriesPart_coeff (x : R⸨X⸩) (n : ℕ) :
 @[simp]
 theorem powerSeriesPart_zero : powerSeriesPart (0 : R⸨X⸩) = 0 := by
   ext
-  simp [(PowerSeries.coeff _).map_zero] -- Note: this doesn't get picked up any more
+  simp
 
 @[simp]
 theorem powerSeriesPart_eq_zero (x : R⸨X⸩) : x.powerSeriesPart = 0 ↔ x = 0 := by

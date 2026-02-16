@@ -320,7 +320,7 @@ lemma adjunction_left_triangle [HasExplicitFiniteCoproducts.{u} P]
   intro a
   erw [incl_of_counitAppApp]
   simp only [functor_obj_val, functorToPresheaves_obj_obj, Functor.id_obj,
-    counitAppAppImage, LocallyConstant.map_apply, functorToPresheaves_obj_map, Quiver.Hom.unop_op]
+    counitAppAppImage, functorToPresheaves_obj_map, Quiver.Hom.unop_op]
   ext x
   erw [← map_eq_image _ a x]
   rfl

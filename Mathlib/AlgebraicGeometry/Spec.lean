@@ -409,7 +409,6 @@ instance isLocalizedModule_toPushforwardStalkAlgHom :
         U.2
     apply_fun (Spec.topMap (CommRingCat.ofHom (algebraMap R S)) _* (structureSheaf S).1).map
         (homOfLE hrU).op at e
-    simp only [map_zero] at e
     have : algebraMap S ((structureSheaf S).presheaf.obj _) x = 0 := e
     have :=
       (@IsLocalization.mk'_one _ _ _ _ _ _

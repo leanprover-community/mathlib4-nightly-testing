@@ -116,7 +116,7 @@ lemma residueFieldMap_id (x : X) :
 lemma residueFieldMap_comp {Z : LocallyRingedSpace.{u}} (g : Y ⟶ Z) (x : X) :
     residueFieldMap (f ≫ g) x = residueFieldMap g (f.base x) ≫ residueFieldMap f x := by
   ext : 1
-  simp only [residueFieldMap, CommRingCat.hom_comp, stalkMap_comp]
+  simp only [residueFieldMap, stalkMap_comp]
   apply IsLocalRing.ResidueField.map_comp (Hom.stalkMap g (f.base x)).hom (Hom.stalkMap f x).hom
 
 @[reassoc]

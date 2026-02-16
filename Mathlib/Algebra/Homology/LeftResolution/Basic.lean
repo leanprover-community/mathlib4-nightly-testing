@@ -120,8 +120,7 @@ noncomputable def chainComplexMap : Λ.chainComplex X ⟶ Λ.chainComplex Y :=
     (ι.map_injective (by
         dsimp
         simp only [Category.assoc, Functor.map_comp, map_chainComplex_d_1_0]
-        simp only [← ι.map_comp, ← ι.map_comp_assoc, Iso.inv_hom_id_assoc,
-          Iso.inv_hom_id, comp_id]
+        simp only [← ι.map_comp, ← ι.map_comp_assoc]
         simp))
     (fun n p ↦
       ⟨(Λ.chainComplexXIso X n).hom ≫ (Λ.F.map

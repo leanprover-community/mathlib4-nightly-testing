@@ -605,8 +605,7 @@ protected noncomputable def unit' : 𝟭 (ModuleCat S) ⟶ restrictScalars f ⋙
     hom_ext <| LinearMap.ext fun y : Y => LinearMap.ext fun s : S => by
       -- Porting note (https://github.com/leanprover-community/mathlib4/issues/10745): previously simp [CoextendScalars.map_apply]
       simp only [ModuleCat.hom_comp, Functor.id_map, Functor.id_obj, Functor.comp_obj,
-        Functor.comp_map, LinearMap.coe_comp, Function.comp, CoextendScalars.map_apply,
-        restrictScalars.map_apply f]
+        Functor.comp_map]
       change s • (g y) = g (s • y)
       rw [map_smul]
 

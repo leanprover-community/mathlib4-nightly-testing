@@ -369,7 +369,7 @@ lemma Monic.not_irreducible_iff_exists_add_mul_eq_coeff (hm : p.Monic) (hnd : p.
   · push_neg
     constructor
     · rintro ⟨a, b, ha, hb, rfl, hdb⟩
-      simp only [zero_lt_two, Nat.div_self, Nat.Ioc_succ_singleton, zero_add, mem_singleton] at hdb
+      simp only [Nat.Ioc_succ_singleton, zero_add, mem_singleton] at hdb
       have hda := hnd
       rw [ha.natDegree_mul hb, hdb] at hda
       use a.coeff 0, b.coeff 0, mul_coeff_zero a b

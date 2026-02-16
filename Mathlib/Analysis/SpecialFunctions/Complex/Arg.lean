@@ -201,7 +201,7 @@ theorem arg_eq_arg_iff {x y : ℂ} (hx : x ≠ 0) (hy : y ≠ 0) :
   obtain rfl | hx := eq_or_ne x 0 <;> simp [*]
 
 @[simp]
-theorem arg_neg_one : arg (-1) = π := by simp [arg, not_le.2 (zero_lt_one' ℝ)]
+theorem arg_neg_one : arg (-1) = π := by simp [arg]
 
 @[simp]
 theorem arg_I : arg I = π / 2 := by simp [arg]

@@ -80,7 +80,7 @@ theorem hasseDeriv_coeff (n : ℕ) :
     simp only [notMem_support_iff.mp h, monomial_zero_right, mul_zero, coeff_zero]
 
 theorem hasseDeriv_zero' : hasseDeriv 0 f = f := by
-  simp only [hasseDeriv_apply, tsub_zero, Nat.choose_zero_right, Nat.cast_one, one_mul,
+  simp only [hasseDeriv_apply, Nat.choose_zero_right, Nat.cast_one, one_mul,
     sum_monomial_eq]
 
 @[simp]

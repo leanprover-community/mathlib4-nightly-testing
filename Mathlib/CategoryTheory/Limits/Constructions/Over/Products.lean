@@ -108,8 +108,8 @@ def IsLimit.pullbackConeEquivBinaryFanInverse {c : BinaryFan (Over.mk f) (.mk g)
       have := hc.uniq (pullbackConeEquivBinaryFan.functor.obj s) (Over.homMk m <| by
         have := c.fst.w
         simp only [pair_obj_left, Over.mk_left, Functor.id_obj, pair_obj_right,
-          Functor.const_obj_obj, Over.mk_hom, Functor.id_map, CostructuredArrow.right_eq_id,
-          Discrete.functor_map_id, Category.comp_id] at hm₁ this
+          Functor.const_obj_obj, Over.mk_hom, Functor.id_map, CostructuredArrow.right_eq_id]
+          at hm₁ this
         simp [← hm₁, this])
         (by rintro (_ | _) <;> ext <;> simpa)
       exact congr(($this).left)
@@ -172,8 +172,7 @@ def IsColimit.pushoutCoconeEquivBinaryCofanInverse {c : BinaryCofan (Under.mk f)
       have := hc.uniq (pushoutCoconeEquivBinaryCofan.functor.obj s) (Under.homMk m <| by
         have := c.inl.w
         simp only [pair_obj_left, Functor.const_obj_obj, Functor.id_obj, StructuredArrow.left_eq_id,
-          Discrete.functor_map_id, Category.id_comp, Under.mk_right, Under.mk_hom, Functor.id_map,
-          pair_obj_right] at this hm₁
+          Under.mk_right, Under.mk_hom, Functor.id_map, pair_obj_right] at this hm₁
         simp [← hm₁, ← Category.assoc, ← this])
         (by rintro (_ | _) <;> ext <;> simpa)
       exact congr(($this).right)

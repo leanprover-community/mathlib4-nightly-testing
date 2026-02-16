@@ -1349,7 +1349,7 @@ theorem preimage_eq_empty {s : Set β} (h : Disjoint s (range f)) :
 
 theorem preimage_eq_empty_iff {s : Set β} : f ⁻¹' s = ∅ ↔ Disjoint s (range f) :=
   ⟨fun h => by
-    simp only [eq_empty_iff_forall_notMem, disjoint_iff_inter_eq_empty, mem_preimage] at h ⊢
+    simp only [eq_empty_iff_forall_notMem, mem_preimage] at h ⊢
     grind,
   preimage_eq_empty⟩
 

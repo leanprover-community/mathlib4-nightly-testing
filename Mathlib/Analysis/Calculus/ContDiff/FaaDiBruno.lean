@@ -457,7 +457,7 @@ lemma range_emb_extendMiddle_ne_singleton_zero (c : OrderedFinpartition n) (i j 
   · have : (c.extendMiddle i).emb j 0 ∈ range ((c.extendMiddle i).emb j) :=
       mem_range_self 0
     rw [h] at this
-    simp only [extendMiddle, hij, ↓reduceDIte, comp_apply, cast_zero, mem_singleton_iff] at this
+    simp only [extendMiddle, hij, ↓reduceDIte, comp_apply, mem_singleton_iff] at this
     exact Fin.succ_ne_zero _ this
 
 /-- Extend an ordered partition of `n` entries, by adding singleton to the left or appending it

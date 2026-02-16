@@ -414,7 +414,7 @@ This may be easier to work with, as it avoids inequalities and negations. -/
 theorem _root_.normalizerCondition_iff_only_full_group_self_normalizing :
     NormalizerCondition G ↔ ∀ H : Subgroup G, H.normalizer = H → H = ⊤ := by
   apply forall_congr'; intro H
-  simp only [lt_iff_le_and_ne, le_normalizer, le_top, Ne]
+  simp only [lt_iff_le_and_ne, le_normalizer, Ne]
   tauto
 
 end Normalizer

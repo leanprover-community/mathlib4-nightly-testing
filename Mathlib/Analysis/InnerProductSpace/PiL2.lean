@@ -222,7 +222,7 @@ def DirectSum.IsInternal.isometryL2OfOrthogonalFamily [DecidableEq ι] {V : ι �
     (WithLp.linearEquiv 2 𝕜 (Π i, V i)).symm) ?_
   suffices ∀ (v w : PiLp 2 fun i => V i), ⟪v, w⟫ = ⟪e₂ (e₁.symm v), e₂ (e₁.symm w)⟫ by
     intro v₀ w₀
-    simp only [LinearEquiv.trans_apply, linearEquiv_symm_apply]
+    simp only [LinearEquiv.trans_apply]
     convert this (toLp 2 (e₁ (e₂.symm v₀))) (toLp 2 (e₁ (e₂.symm w₀))) <;> simp
   intro v w
   trans ⟪∑ i, (V i).subtypeₗᵢ (v i), ∑ i, (V i).subtypeₗᵢ (w i)⟫

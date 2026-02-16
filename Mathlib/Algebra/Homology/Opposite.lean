@@ -157,7 +157,7 @@ def opEquivalence : (HomologicalComplex V c)ᵒᵖ ≌ HomologicalComplex Vᵒ�
   functor_unitIso_comp X := by
     ext
     simp only [opUnitIso, opCounitIso, NatIso.ofComponents_hom_app, Iso.op_hom, comp_f,
-      opFunctor_map_f, Quiver.Hom.unop_op, Hom.isoOfComponents_hom_f]
+      opFunctor_map_f, Hom.isoOfComponents_hom_f]
     exact Category.comp_id _
 
 set_option backward.isDefEq.respectTransparency false in
