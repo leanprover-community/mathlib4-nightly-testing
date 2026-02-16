@@ -58,9 +58,13 @@ end logic
 
 section lambda
 
--- Note: leanprover/lean4#12341 adds `unif_hint (n * 0 =?= 0)`, so simp now unifies
--- `1 * 0` with `0` during congruence proofs. This means `with_reducible rfl` no longer
--- works after push/pull. We use `rfl` which handles the definitional equality.
+#adaptation_note
+/--
+leanprover/lean4#12341 adds `unif_hint (n * 0 =?= 0)`, so simp now unifies
+`1 * 0` with `0` during congruence proofs. This means `with_reducible rfl` no longer
+works after push/pull. We use `rfl` now, which handles the definitional equality,
+but this would have closed the goal before the `push`, so this is a regression.
+-/
 example : (fun x : ℕ ↦ x ^ 2 + 1 * 0 - 5 • 6) = id ^ 2 + 1 * 0 - 5 • 6 := by
   push fun x ↦ _
   rfl

@@ -1,4 +1,5 @@
-import Mathlib.Tactic.FindSyntax
+module
+public import Mathlib.Tactic.FindSyntax
 
 infix:65 " #find_syntax_add " => Nat.add
 
