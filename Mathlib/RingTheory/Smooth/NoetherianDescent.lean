@@ -59,11 +59,20 @@ def subalgebra (D : DescentAux A B) : Subalgebra R A :=
        (⋃ i, ⋃ x ∈ (D.p i).coeffs, x.coeffs)) : Set A)
 
 instance : CommRing (D.subalgebra R) := inferInstanceAs <| CommRing (Algebra.adjoin _ _)
+
 instance algebra₀ : Algebra R (D.subalgebra R) := inferInstanceAs <| Algebra R (Algebra.adjoin _ _)
+
+set_option backward.isDefEq.respectTransparency false in
 instance algebra₁ : Algebra (D.subalgebra R) A := inferInstanceAs <| Algebra (Algebra.adjoin _ _) A
+
+set_option backward.isDefEq.respectTransparency false in
 instance algebra₂ : Algebra (D.subalgebra R) B := inferInstanceAs <| Algebra (Algebra.adjoin _ _) B
+
+set_option backward.isDefEq.respectTransparency false in
 instance : IsScalarTower (D.subalgebra R) A B :=
   inferInstanceAs <| IsScalarTower (Algebra.adjoin _ _) _ _
+
+set_option backward.isDefEq.respectTransparency false in
 instance : FaithfulSMul (D.subalgebra R) A := inferInstanceAs <| FaithfulSMul (Algebra.adjoin _ _) _
 
 lemma fg_subalgebra [Finite D.vars] [Finite D.rels] : (D.subalgebra R).FG := by

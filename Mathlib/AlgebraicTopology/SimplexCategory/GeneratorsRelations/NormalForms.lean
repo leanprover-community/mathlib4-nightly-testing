@@ -239,6 +239,8 @@ lemma simplicialEvalσ_monotone (L : List ℕ) : Monotone (simplicialEvalσ L) :
   induction L <;> grind [Monotone]
 
 variable {m}
+
+set_option backward.isDefEq.respectTransparency false in
 /- We prove that `simplicialEvalσ` is indeed a lift of
 `(toSimplexCategory.map (standardσ m L _ _)).toOrderHom` when the list is admissible. -/
 lemma simplicialEvalσ_of_isAdmissible

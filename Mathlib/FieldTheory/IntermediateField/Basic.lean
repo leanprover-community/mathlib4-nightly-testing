@@ -390,6 +390,7 @@ instance [Semiring X] [MulSemiringAction L X] (F : IntermediateField K L) : MulS
 instance toAlgebra : Algebra S L :=
   inferInstanceAs (Algebra S.toSubalgebra L)
 
+set_option backward.isDefEq.respectTransparency false in
 instance module' {R} [Semiring R] [SMul R K] [Module R L] [IsScalarTower R K L] : Module R S :=
   inferInstanceAs (Module R S.toSubalgebra)
 
@@ -424,11 +425,15 @@ instance isScalarTower_mid' : IsScalarTower K S L :=
 instance {E} [Semiring E] [Algebra L E] : Algebra S E := inferInstanceAs (Algebra S.toSubalgebra E)
 
 section shortcut_instances
+
+set_option backward.isDefEq.respectTransparency false
+
 variable {E} [Field E] [Algebra L E] (T : IntermediateField S E) {S}
 instance : Algebra S T := T.algebra
 instance : Module S T := Algebra.toModule
 instance : SMul S T := Algebra.toSMul
 instance [Algebra K E] [IsScalarTower K L E] : IsScalarTower K S T := T.isScalarTower
+
 end shortcut_instances
 
 /-- Given `f : L →ₐ[K] L'`, `S.comap f` is the intermediate field between `K` and `L`

@@ -73,6 +73,7 @@ theorem of_module_finite [NumberField K] [Algebra K L] [Module.Finite K L] : Num
     letI := charZero_of_injective_algebraMap (algebraMap K L).injective
     Module.Finite.trans K L
 
+set_option backward.isDefEq.respectTransparency false in
 variable {K} {L} in
 instance of_intermediateField [NumberField K] [NumberField L] [Algebra K L]
     (E : IntermediateField K L) : NumberField E :=
@@ -111,22 +112,33 @@ namespace RingOfIntegers
 
 instance : CommRing (𝓞 K) :=
   inferInstanceAs (CommRing (integralClosure _ _))
+
 instance : IsDomain (𝓞 K) :=
   inferInstanceAs (IsDomain (integralClosure _ _))
+
+set_option backward.isDefEq.respectTransparency false in
 instance [NumberField K] : CharZero (𝓞 K) :=
   inferInstanceAs (CharZero (integralClosure _ _))
+
 instance : Algebra (𝓞 K) K :=
   inferInstanceAs (Algebra (integralClosure _ _) _)
+
+set_option backward.isDefEq.respectTransparency false in
 instance : IsTorsionFree (𝓞 K) K :=
   inferInstanceAs (IsTorsionFree (integralClosure _ _) _)
+
 instance : Nontrivial (𝓞 K) :=
   inferInstanceAs (Nontrivial (integralClosure _ _))
+
 instance {L : Type*} [Ring L] [Algebra K L] : Algebra (𝓞 K) L :=
   inferInstanceAs (Algebra (integralClosure _ _) L)
+
 instance {L : Type*} [Ring L] [Algebra K L] : IsScalarTower (𝓞 K) K L :=
   inferInstanceAs (IsScalarTower (integralClosure _ _) K L)
+
 instance {G : Type*} [Group G] [MulSemiringAction G K] : MulSemiringAction G (𝓞 K) :=
   inferInstanceAs (MulSemiringAction G (integralClosure ℤ K))
+
 instance {G : Type*} [Group G] [MulSemiringAction G K] : SMulDistribClass G (𝓞 K) K :=
   inferInstanceAs (SMulDistribClass G (integralClosure ℤ K) K)
 

@@ -37,10 +37,18 @@ namespace UnitDisc
 /-- Coercion to `ℂ`. -/
 @[coe] protected def coe : 𝔻 → ℂ := Subtype.val
 
+set_option backward.isDefEq.respectTransparency false in
 instance instCommSemigroup : CommSemigroup UnitDisc := by unfold UnitDisc; infer_instance
+
+set_option backward.isDefEq.respectTransparency false in
 instance instSemigroupWithZero : SemigroupWithZero UnitDisc := by unfold UnitDisc; infer_instance
+
+set_option backward.isDefEq.respectTransparency false in
 instance instIsCancelMulZero : IsCancelMulZero UnitDisc := by unfold UnitDisc; infer_instance
+
+set_option backward.isDefEq.respectTransparency false in
 instance instHasDistribNeg : HasDistribNeg UnitDisc := by unfold UnitDisc; infer_instance
+
 instance instCoe : Coe UnitDisc ℂ := ⟨UnitDisc.coe⟩
 
 @[ext]
@@ -135,7 +143,9 @@ theorem coe_zero : ((0 : 𝔻) : ℂ) = 0 :=
 theorem coe_eq_zero {z : 𝔻} : (z : ℂ) = 0 ↔ z = 0 :=
   coe_injective.eq_iff' coe_zero
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] theorem mk_zero : mk 0 (by simp) = 0 := rfl
+
 @[simp] theorem mk_eq_zero {z : ℂ} (hz : ‖z‖ < 1) : mk z hz = 0 ↔ z = 0 := by simp [← coe_inj]
 
 instance : Inhabited 𝔻 :=

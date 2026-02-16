@@ -57,6 +57,7 @@ of `I/I²` in `I`. -/
 abbrev T :=
   MvPolynomial ι R ⧸ (Ideal.span <| Set.range <| Subtype.val ∘ D.f ∘ b)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The map `R[X₁, ..., Xₙ] → S` factors via `T`, because the `bᵢ` are in `I`. -/
 def hom : D.T →ₐ[R] S := Ideal.Quotient.liftₐ _ (aeval P.val) <| by
   simp_rw [← RingHom.mem_ker, ← SetLike.le_def, Ideal.span_le, Set.range_subset_iff]
@@ -64,8 +65,13 @@ def hom : D.T →ₐ[R] S := Ideal.Quotient.liftₐ _ (aeval P.val) <| by
   simpa only [Generators.toExtension_Ring, Generators.toExtension_commRing, Function.comp_apply,
     SetLike.mem_coe, RingHom.mem_ker, ← P.algebraMap_apply] using (D.f _).property
 
+set_option backward.isDefEq.respectTransparency false in
 instance : Algebra D.T S := D.hom.toAlgebra
+
+set_option backward.isDefEq.respectTransparency false in
 instance [Nontrivial S] : Nontrivial D.T := RingHom.domain_nontrivial (algebraMap D.T S)
+
+set_option backward.isDefEq.respectTransparency false in
 instance : IsScalarTower P.Ring D.T S := by
   refine ⟨fun x y z ↦ ?_⟩
   obtain ⟨y, rfl⟩ := Ideal.Quotient.mk_surjective y

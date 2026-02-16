@@ -88,6 +88,7 @@ theorem valuation_def (x : PadicAlgCl p) : Valued.v x = ‖x‖₊ := rfl
 /-- The coercion of the valuation of `x : PadicAlgCl p` to `ℝ` agrees with its norm. -/
 @[simp] theorem valuation_coe (x : PadicAlgCl p) : ((Valued.v x : ℝ≥0) : ℝ) = ‖x‖ := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The valuation of `p : PadicAlgCl p` is `1/p`. -/
 theorem valuation_p (p : ℕ) [Fact p.Prime] : Valued.v (p : PadicAlgCl p) = 1 / (p : ℝ≥0) := by
   rw [← map_natCast (algebraMap ℚ_[p] (PadicAlgCl p))]
@@ -95,6 +96,7 @@ theorem valuation_p (p : ℕ) [Fact p.Prime] : Valued.v (p : PadicAlgCl p) = 1 /
   rw [valuation_coe, norm_extends, Padic.norm_p, one_div, NNReal.coe_inv,
     NNReal.coe_natCast]
 
+set_option backward.isDefEq.respectTransparency false in
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- The valuation on `PadicAlgCl p` has rank one. -/
 instance : RankOne (PadicAlgCl.valued p).v where
@@ -107,6 +109,7 @@ instance : RankOne (PadicAlgCl.valued p).v where
       Nat.cast_eq_one]
     exact ⟨hp.ne_zero, hp.ne_one⟩
 
+set_option backward.isDefEq.respectTransparency false in
 instance : UniformContinuousConstSMul ℚ_[p] (PadicAlgCl p) :=
   uniformContinuousConstSMul_of_continuousConstSMul ℚ_[p] (PadicAlgCl p)
 
@@ -120,6 +123,8 @@ abbrev PadicComplex := UniformSpace.Completion (PadicAlgCl p)
 notation "ℂ_[" p "]" => PadicComplex p
 
 namespace PadicComplex
+
+set_option backward.isDefEq.respectTransparency false in
 /-- `ℂ_[p]` is a valued field, where the valuation is the one extending that on `PadicAlgCl p`. -/
 instance valued : Valued ℂ_[p] ℝ≥0 := inferInstance
 

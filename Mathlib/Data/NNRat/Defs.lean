@@ -54,14 +54,21 @@ un-`@[simp]`ed):
 
 open Function
 
+set_option backward.isDefEq.respectTransparency false in
 instance Rat.instPosMulMono : PosMulMono ℚ where
   mul_le_mul_of_nonneg_left r hr p q hpq := by
     simpa [mul_sub, sub_nonneg] using Rat.mul_nonneg hr (sub_nonneg.2 hpq)
 
+set_option backward.isDefEq.respectTransparency false in
 deriving instance CommSemiring for NNRat
+
+set_option backward.isDefEq.respectTransparency false in
 deriving instance AddCancelCommMonoid for NNRat
+
 deriving instance LinearOrder for NNRat
+
 deriving instance Sub for NNRat
+
 deriving instance Inhabited for NNRat
 
 namespace NNRat

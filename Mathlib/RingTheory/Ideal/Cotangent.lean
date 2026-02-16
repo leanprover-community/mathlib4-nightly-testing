@@ -42,7 +42,10 @@ def Cotangent : Type _ := I ⧸ (I • ⊤ : Submodule R I)
 deriving Inhabited, AddCommGroup, Module (R ⧸ I)
 
 deriving instance Module S, IsScalarTower S S' for Cotangent I
-variable [IsNoetherian R I] in deriving instance IsNoetherian R for Cotangent I
+
+set_option backward.isDefEq.respectTransparency false in
+variable [IsNoetherian R I] in
+deriving instance IsNoetherian R for Cotangent I
 
 /-- The quotient map from `I` to `I ⧸ I ^ 2`. -/
 @[simps! -isSimp apply]

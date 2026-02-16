@@ -58,6 +58,7 @@ def colimit.smul (r : (R ⋙ forget _).ColimitType) (m : (M ⋙ forget _).Colimi
     simp [*, ← elementwise_of% R.map_comp, ← elementwise_of% M.map_comp, -Functor.map_comp]
 
 #adaptation_note /-- As of nightly-2026-02-10, we need to increase the maxHeartbeats limits here -/
+set_option backward.isDefEq.respectTransparency false in
 set_option maxHeartbeats 600000 in --
 set_option synthInstance.maxHeartbeats 40000 in
 /-- (Implementation). The module structure on `AddCommGrpCat.FilteredColimits.colimit`. -/
