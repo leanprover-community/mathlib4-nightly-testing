@@ -339,14 +339,21 @@ def Comon_EquivMon_OpOp : Comon C ≌ (Mon Cᵒᵖ)ᵒᵖ where
 
 #adaptation_note /-- After https://github.com/leanprover/lean4/pull/12179
 the simpNF linter complains about `monoidal_tensorObj_comon_counit` being `@[simp]`.
-So we spell out the ones we need.
+So we spell out all the other ones.
 -/
 /--
 Comonoid objects in a braided category form a monoidal category.
 
 This definition is via transporting back and forth to monoids in the opposite category.
 -/
-@[simps! associator_hom_hom leftUnitor_hom_hom rightUnitor_hom_hom]
+@[simps!
+  tensorObj_X tensorObj_comon_comul
+  whiskerLeft_hom whiskerRight_hom
+  tensorHom_hom
+  tensorUnit_X tensorUnit_comon_counit tensorUnit_comon_comul
+  associator_hom_hom associator_inv_hom
+  leftUnitor_hom_hom leftUnitor_inv_hom
+  rightUnitor_hom_hom rightUnitor_inv_hom]
 instance monoidal [BraidedCategory C] : MonoidalCategory (Comon C) :=
   Monoidal.transport (Comon_EquivMon_OpOp C).symm
 
