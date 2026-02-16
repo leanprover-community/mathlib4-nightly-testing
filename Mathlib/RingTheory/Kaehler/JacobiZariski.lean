@@ -53,6 +53,7 @@ attribute [local instance] SMulCommClass.of_commMonoid
 
 namespace Generators
 
+set_option backward.isDefEq.respectTransparency false in
 lemma Cotangent.surjective_map_ofComp :
     Function.Surjective (Extension.Cotangent.map (Q.ofComp P).toExtensionHom) := by
   intro x
@@ -63,12 +64,13 @@ lemma Cotangent.surjective_map_ofComp :
   obtain ⟨x, hx', rfl⟩ := this
   exact ⟨.mk ⟨x, hx'⟩, Extension.Cotangent.map_mk _ _⟩
 
-/-!
+set_option backward.isDefEq.respectTransparency false in
+open Extension.Cotangent in
+/--
 Given representations `0 → I → R[X] → S → 0` and `0 → K → S[Y] → T → 0`,
 we may consider the induced representation `0 → J → R[X, Y] → T → 0`, and the sequence
 `T ⊗[S] (I/I²) → J/J² → K/K²` is exact.
 -/
-open Extension.Cotangent in
 lemma Cotangent.exact :
     Function.Exact
       ((Extension.Cotangent.map (Q.toComp P).toExtensionHom).liftBaseChange T)
