@@ -510,7 +510,6 @@ set_option backward.isDefEq.respectTransparency false in
 /-- Given a `k`-linear `G`-representation `(A, ρ)` and a type `α`, this is the linear equivalence
 `(A ⊗ (α →₀ k[G]))_G ≃ₗ[k] (α →₀ A)` sending
 `⟦a ⊗ single x (single g r)⟧ ↦ single x (r • ρ(g⁻¹)(a)).` -/
-@[simps! symm_apply]
 noncomputable abbrev coinvariantsTensorFreeLEquiv :
     Coinvariants (A ⊗ free k G α).ρ ≃ₗ[k] (α →₀ A) :=
   LinearEquiv.ofLinear (coinvariantsTensorFreeToFinsupp A α) (finsuppToCoinvariantsTensorFree A α)
