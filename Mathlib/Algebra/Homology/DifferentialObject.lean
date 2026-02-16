@@ -47,6 +47,7 @@ theorem objEqToHom_refl (i : β) : X.objEqToHom (refl i) = 𝟙 _ :=
 
 -- Removing `@[simp]`, because it is in the opposite direction of `eqToHom_naturality`.
 -- Having both causes an infinite loop in the simpNF linter.
+set_option backward.isDefEq.respectTransparency false in -- Needed in dgoToHomologicalComplex
 @[reassoc]
 theorem objEqToHom_d {x y : β} (h : x = y) :
     X.objEqToHom h ≫ X.d y = X.d x ≫ X.objEqToHom (by cases h; rfl) := by cases h; simp
