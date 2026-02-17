@@ -101,16 +101,22 @@ variable [Semiring R] [Semiring S] {φ : R →+* S}
   [NonUnitalNonAssocSemiring B] [Module S B]
 
 -- see Note [lower instance priority]
-instance (priority := 100) {F R S A B : Type*}
+instance (priority := 100) instSemilinearMapClass {F R S A B : Type*}
     {_ : Semiring R} {_ : Semiring S} {φ : R →+* S}
-    {_ : NonUnitalSemiring A} {_ : NonUnitalSemiring B} [Module R A] [Module S B] [FunLike F A B]
+    {_ : NonUnitalNonAssocSemiring A} {_ : NonUnitalNonAssocSemiring B}
+    [Module R A] [Module S B] [FunLike F A B]
     [NonUnitalAlgSemiHomClass (R := R) (S := S) F φ A B] :
     SemilinearMapClass F φ A B :=
-  { ‹NonUnitalAlgSemiHomClass F φ A B› with map_smulₛₗ := map_smulₛₗ }
+  { ‹NonUnitalAlgSemiHomClass F φ A B› with
+    map_smulₛₗ :=
+      have : MulActionSemiHomClass F φ A B :=
+        inferInstanceAs (MulActionSemiHomClass F (φ : R →* S) A B)
+      map_smulₛₗ }
 
 instance (priority := 100) {F : Type*} [FunLike F A B] [Module R B] [NonUnitalAlgHomClass F R A B] :
     LinearMapClass F R A B :=
-  { ‹NonUnitalAlgHomClass F R A B› with map_smulₛₗ := map_smulₛₗ }
+  have : NonUnitalAlgSemiHomClass F (RingHom.id R : R →* R) A B := ‹_›
+  instSemilinearMapClass (F := F) (φ := RingHom.id R)
 
 /-- Turn an element of a type `F` satisfying `NonUnitalAlgSemiHomClass F φ A B` into an actual
 `NonUnitalAlgHom`. This is declared as the default coercion from `F` to `A →ₛₙₐ[φ] B`. -/
@@ -375,7 +381,7 @@ def prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : A →ₙₐ[R] B × C w
   map_zero' := by simp only [Pi.prod, Prod.mk_zero_zero, map_zero]
   map_add' x y := by simp only [Pi.prod, Prod.mk_add_mk, map_add]
   map_mul' x y := by simp only [Pi.prod, Prod.mk_mul_mk, map_mul]
-  map_smul' c x := by simp only [Pi.prod, map_smul, MonoidHom.id_apply, Prod.smul_mk]
+  map_smul' c x := Prod.ext (map_smul f c x) (map_smul g c x)
 
 theorem coe_prod (f : A →ₙₐ[R] B) (g : A →ₙₐ[R] C) : ⇑(f.prod g) = Pi.prod f g :=
   rfl
