@@ -416,11 +416,13 @@ lemma qExpansion_smul
   grind [map_smul, smul_eq_mul, qExpansion, PowerSeries.coeff_mk, cuspFunction_smul
     (analyticAt_cuspFunction_zero f hh hΓ).continuousAt, iteratedDeriv_const_smul_field]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma qExpansion_neg
     (hh : 0 < h) (hΓ : h ∈ Γ.strictPeriods) (f : F) [ModularFormClass F Γ k] :
     qExpansion h (-f) = -qExpansion h f := by
   simpa using qExpansion_smul hh hΓ (-1 : ℂ) f
 
+set_option backward.isDefEq.respectTransparency false in
 lemma qExpansion_sub (hh : 0 < h) (hΓ : h ∈ Γ.strictPeriods) {a b : ℤ}
     (f : ModularForm Γ a) (g : ModularForm Γ b) :
     qExpansion h (f - g) = qExpansion h f - qExpansion h g := by
@@ -491,6 +493,7 @@ private lemma hasSum_cuspFunction_of_hasSum_punctured
   grind [eq_cuspFunction f ⟨_, Periodic.im_invQParam_pos_of_norm_lt_one hh hq hq1⟩,
     Periodic.qParam_right_inv]
 
+set_option backward.isDefEq.respectTransparency false in
 private lemma hasFPowerSeriesOnBall_update (hh : 0 < h)
     (hΓ : h ∈ Γ.strictPeriods) {c : ℕ → ℂ} {f : F} [ModularFormClass F Γ k]
     (hf : ∀ τ : ℍ, HasSum (fun m : ℕ ↦ (c m) • 𝕢 h τ ^ m) (f τ)) :

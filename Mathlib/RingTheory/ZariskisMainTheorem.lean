@@ -740,6 +740,7 @@ lemma QuasiFiniteAt.of_quasiFiniteAt_residueField
   have : Algebra.WeaklyQuasiFiniteAt R q := .of_quasiFiniteAt_residueField p q Q hQ
   .of_weaklyQuasiFiniteAt _
 
+set_option backward.isDefEq.respectTransparency false in
 lemma QuasiFiniteAt.of_isOpen_singleton_fiber
     [FiniteType R S] (q : PrimeSpectrum S)
     (H : IsOpen (X := .comap (algebraMap R S) ⁻¹' {q.comap (algebraMap R S)}) {⟨q, rfl⟩}) :
