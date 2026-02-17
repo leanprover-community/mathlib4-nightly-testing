@@ -240,5 +240,11 @@ If your system curl is too old, a static binary is downloaded automatically on L
 | `~/.cache/mathlib/`         | Default cache directory      |
 | `~/.cache/mathlib/*.ltar`   | Cached build artifacts       |
 | `~/.cache/mathlib/curl.cfg` | Temporary curl configuration |
-| `.lake/build/lib/lean/`     | Unpacked `.olean` files      |
-| `.lake/build/ir/`           | Unpacked `.c` files          |
+
+The cache unpacks most files (everything except `*.trace`) into Lake's system cache. Lake will then make use of these files during `lake build`, hard linking them into the build directory when necessary (or copying them if hard linking is not possible) . The location of the Lake's system cache can vary based on the value of the `LAKE_CACHE_DIR` enviroment variable, but is usually located within the Lean toolchain directory at `lake/cache`. The exact directory can be obtain through `lake env printenv LAKE_CACHE_DIR`.
+
+| Path                        | Description                  |
+|-----------------------------|------------------------------|
+| `$LAKE_CACHE_DIR/artifacts` | Unpacked files               |
+| `.lake/build/lib/lean/`     | Hard linked `.olean` files   |
+| `.lake/build/ir/`           | Hard linked `.c` files       |
