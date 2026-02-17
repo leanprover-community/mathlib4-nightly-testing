@@ -10,6 +10,7 @@ public import Mathlib.CategoryTheory.Comma.Over.Pullback
 public import Mathlib.CategoryTheory.Limits.Constructions.Over.Products
 public import Mathlib.CategoryTheory.Monoidal.CommMon_
 public import Mathlib.CategoryTheory.Monoidal.Grp_
+public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
 /-!
 
@@ -69,6 +70,12 @@ lemma tensorUnit_hom : (𝟙_ (Over X)).hom = 𝟙 X := rfl
 @[simp]
 lemma lift_left {R S T : Over X} (f : R ⟶ S) (g : R ⟶ T) :
     (lift f g).left = pullback.lift f.left g.left (f.w.trans g.w.symm) := rfl
+
+@[simp]
+lemma fst_left {R S : Over X} : (fst R S).left = pullback.fst _ _ := rfl
+
+@[simp]
+lemma snd_left {R S : Over X} : (snd R S).left = pullback.snd _ _ := rfl
 
 @[simp]
 lemma toUnit_left {R : Over X} : (toUnit R).left = R.hom := rfl
