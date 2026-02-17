@@ -39,7 +39,7 @@ instance : SMul M (Σ i, α i) :=
   ⟨fun a => (Sigma.map id) fun _ => (a • ·)⟩
 
 @[to_additive]
-theorem smul_def : a • x = x.map id fun _ => (a • ·) :=
+theorem smul_def : a • x = x.map id fun i y => (a • y : α i) :=
   rfl
 
 @[to_additive (attr := simp)]
