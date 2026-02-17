@@ -3,7 +3,9 @@ Copyright (c) 2018 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
-import Mathlib.Logic.Equiv.Defs
+module
+
+public import Mathlib.Logic.Equiv.Defs
 
 /-!
 # A type for VM-erased data
@@ -12,6 +14,8 @@ This file defines a type `Erased α` which is classically isomorphic to `α`,
 but erased in the VM. That is, at runtime every value of `Erased α` is
 represented as `0`, just like types and proofs.
 -/
+
+@[expose] public section
 
 
 universe u
@@ -26,7 +30,7 @@ def Erased (α : Sort u) : Sort max 1 u :=
 namespace Erased
 
 /-- Erase a value. -/
-@[inline]
+@[macro_inline]
 def mk {α} (a : α) : Erased α :=
   ⟨fun b => a = b, a, rfl⟩
 
@@ -134,8 +138,8 @@ protected instance instLawfulMonad : LawfulMonad Erased :=
     bind_assoc := by intros; ext; simp
     bind_pure_comp := by intros; ext; simp
     bind_map := by intros; ext; simp [Seq.seq]
-    seqLeft_eq := by intros; ext; simp [Seq.seq, Functor.mapConst, SeqLeft.seqLeft]
-    seqRight_eq := by intros; ext; simp [Seq.seq, Functor.mapConst, SeqRight.seqRight]
-    pure_seq := by intros; ext; simp [Seq.seq, Functor.mapConst, SeqRight.seqRight] }
+    seqLeft_eq := by intros; ext; simp [Seq.seq, SeqLeft.seqLeft]
+    seqRight_eq := by intros; ext; simp [Seq.seq, SeqRight.seqRight]
+    pure_seq := by intros; ext; simp [Seq.seq] }
 
 end Erased

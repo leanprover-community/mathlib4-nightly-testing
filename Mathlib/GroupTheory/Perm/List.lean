@@ -3,9 +3,11 @@ Copyright (c) 2021 Yakov Pechersky. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yakov Pechersky
 -/
-import Mathlib.Algebra.Order.Group.Nat
-import Mathlib.Data.List.Rotate
-import Mathlib.GroupTheory.Perm.Support
+module
+
+public import Mathlib.Algebra.Order.Group.Nat
+public import Mathlib.Data.List.Rotate
+public import Mathlib.GroupTheory.Perm.Support
 
 /-!
 # Permutations from a list
@@ -26,6 +28,8 @@ the resulting permutation is cyclic (if `l` has at least two elements).
 The presence of duplicates in a particular placement can lead `List.formPerm` to produce a
 nontrivial permutation that is noncyclic.
 -/
+
+@[expose] public section
 
 
 namespace List
@@ -77,6 +81,7 @@ theorem zipWith_swap_prod_support' (l l' : List α) :
     { x | (zipWith swap l l').prod x ≠ x } ≤ l.toFinset ⊔ l'.toFinset := fun _ h ↦ by
   simpa using mem_or_mem_of_zipWith_swap_prod_ne h
 
+set_option backward.isDefEq.respectTransparency false in
 theorem zipWith_swap_prod_support [Fintype α] (l l' : List α) :
     (zipWith swap l l').prod.support ≤ l.toFinset ⊔ l'.toFinset := by
   intro x hx
@@ -87,6 +92,7 @@ theorem support_formPerm_le' : { x | formPerm l x ≠ x } ≤ l.toFinset := by
   refine (zipWith_swap_prod_support' l l.tail).trans ?_
   simpa [Finset.subset_iff] using tail_subset l
 
+set_option backward.isDefEq.respectTransparency false in
 theorem support_formPerm_le [Fintype α] : support (formPerm l) ≤ l.toFinset := by
   intro x hx
   have hx' : x ∈ { x | formPerm l x ≠ x } := by simpa using hx
@@ -100,8 +106,6 @@ theorem mem_of_formPerm_apply_ne (h : l.formPerm x ≠ x) : x ∈ l := by
 theorem formPerm_apply_of_notMem (h : x ∉ l) : formPerm l x = x :=
   not_imp_comm.1 mem_of_formPerm_apply_ne h
 
-@[deprecated (since := "2025-05-23")] alias formPerm_apply_of_not_mem := formPerm_apply_of_notMem
-
 theorem formPerm_apply_mem_of_mem (h : x ∈ l) : formPerm l x ∈ l := by
   rcases l with - | ⟨y, l⟩
   · simp at h
@@ -111,7 +115,7 @@ theorem formPerm_apply_mem_of_mem (h : x ∈ l) : formPerm l x ∈ l := by
     by_cases hx : x ∈ z :: l
     · rw [formPerm_cons_cons, mul_apply, swap_apply_def]
       split_ifs
-      · simp [IH _ hx]
+      · simp
       · simp
       · simp [*]
     · replace h : x = y := Or.resolve_right (mem_cons.1 h) hx
@@ -206,6 +210,7 @@ theorem support_formPerm_of_nodup' (l : List α) (h : Nodup l) (h' : ∀ x : α,
       rw [← length_eq_one_iff, ← hn', (Fin.mk.inj_iff.mp h).symm]
     · simp [Nat.mod_eq_of_lt hn'] at h
 
+set_option backward.isDefEq.respectTransparency false in
 theorem support_formPerm_of_nodup [Fintype α] (l : List α) (h : Nodup l) (h' : ∀ x : α, l ≠ [x]) :
     support (formPerm l) = l.toFinset := by
   rw [← Finset.coe_inj]
@@ -255,7 +260,7 @@ theorem formPerm_pow_apply_getElem (l : List α) (w : Nodup l) (n : ℕ) (i : �
   induction n with
   | zero => simp [Nat.mod_eq_of_lt h]
   | succ n hn =>
-    simp [pow_succ', mul_apply, hn, formPerm_apply_getElem _ w, Nat.succ_eq_add_one,
+    simp [pow_succ', mul_apply, hn, formPerm_apply_getElem _ w,
       ← Nat.add_assoc]
 
 theorem formPerm_pow_apply_head (x : α) (l : List α) (h : Nodup (x :: l)) (n : ℕ) :
@@ -309,7 +314,7 @@ theorem formPerm_apply_mem_eq_self_iff (hl : Nodup l) (x : α) (hx : x ∈ l) :
   · exact absurd k.zero_le (hk.trans_le hn.le).not_ge
   · rw [hn] at hk
     rcases (Nat.le_of_lt_succ hk).eq_or_lt with hk' | hk'
-    · simp [← hk', Nat.succ_le_succ_iff, eq_comm]
+    · simp [← hk', eq_comm]
     · simpa [Nat.mod_eq_of_lt (Nat.succ_lt_succ hk'), Nat.succ_lt_succ_iff] using
         (k.zero_le.trans_lt hk').ne.symm
 
@@ -318,17 +323,11 @@ theorem formPerm_apply_mem_ne_self_iff (hl : Nodup l) (x : α) (hx : x ∈ l) :
   rw [Ne, formPerm_apply_mem_eq_self_iff _ hl x hx, not_le]
   exact ⟨Nat.succ_le_of_lt, Nat.lt_of_succ_le⟩
 
-theorem mem_of_formPerm_ne_self (l : List α) (x : α) (h : formPerm l x ≠ x) : x ∈ l := by
-  suffices x ∈ { y | formPerm l y ≠ y } by
-    rw [← mem_toFinset]
-    exact support_formPerm_le' _ this
-  simpa using h
+@[deprecated (since := "2025-10-06")]
+alias mem_of_formPerm_ne_self := mem_of_formPerm_apply_ne
 
-theorem formPerm_eq_self_of_notMem (l : List α) (x : α) (h : x ∉ l) : formPerm l x = x :=
-  by_contra fun H => h <| mem_of_formPerm_ne_self _ _ H
-
-@[deprecated (since := "2025-05-23")]
-alias formPerm_eq_self_of_not_mem := formPerm_eq_self_of_notMem
+@[deprecated (since := "2025-10-06")]
+alias formPerm_eq_self_of_notMem := List.formPerm_apply_of_notMem
 
 theorem formPerm_eq_one_iff (hl : Nodup l) : formPerm l = 1 ↔ l.length ≤ 1 := by
   rcases l with - | ⟨hd, tl⟩
@@ -359,7 +358,7 @@ theorem formPerm_eq_formPerm_iff {l l' : List α} (hl : l.Nodup) (hl' : l'.Nodup
   · rcases l' with (_ | ⟨x', _ | ⟨y', l'⟩⟩)
     · simp [formPerm_eq_one_iff _ hl, -formPerm_cons_cons]
     · simp [formPerm_eq_one_iff _ hl, -formPerm_cons_cons]
-    · simp [-formPerm_cons_cons, formPerm_ext_iff hl hl', Nat.succ_le_succ_iff]
+    · simp [-formPerm_cons_cons, formPerm_ext_iff hl hl']
 
 theorem form_perm_zpow_apply_mem_imp_mem (l : List α) (x : α) (hx : x ∈ l) (n : ℤ) :
     (formPerm l ^ n) x ∈ l := by
