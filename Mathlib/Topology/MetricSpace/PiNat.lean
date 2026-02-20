@@ -275,6 +275,12 @@ protected theorem dist_nonneg (x y : ∀ n, E n) : 0 ≤ dist x y := by
   · simp [dist]
   · simp [dist, h]
 
+protected theorem dist_le_one (x y : ∀ n, E n) : dist x y ≤ 1 := by
+  rcases eq_or_ne x y with (rfl | h)
+  · simp [dist]
+  · simp only [dist, ne_eq, h, not_false_eq_true, ↓reduceIte, one_div, inv_pow]
+    bound
+
 theorem dist_triangle_nonarch (x y z : ∀ n, E n) : dist x z ≤ max (dist x y) (dist y z) := by
   rcases eq_or_ne x z with (rfl | hxz)
   · simp [PiNat.dist_self x, PiNat.dist_nonneg]
@@ -447,6 +453,11 @@ protected theorem completeSpace : CompleteSpace (∀ n, E n) := by
   filter_upwards [Filter.Ici_mem_atTop i] with n hn
   exact apply_eq_of_dist_lt (hu i i n le_rfl hn) le_rfl
 
+protected theorem boundedSpace : BoundedSpace (∀ n, E n) := by
+  rw [Metric.boundedSpace_iff]
+  use 1
+  apply PiNat.dist_le_one
+
 /-!
 ### Retractions inside product spaces
 
@@ -457,6 +468,7 @@ consider the longest prefix `w` that `x` shares with an element of `s`, and let 
 where `z_w` is an element of `s` starting with `w`.
 -/
 
+set_option backward.isDefEq.respectTransparency false in
 theorem exists_disjoint_cylinder {s : Set (∀ n, E n)} (hs : IsClosed s) {x : ∀ n, E n}
     (hx : x ∉ s) : ∃ n, Disjoint s (cylinder x n) := by
   rcases eq_empty_or_nonempty s with (rfl | hne)
@@ -479,6 +491,7 @@ prefix of length `n` as `x`. If there is no such `n`, then use `0` by convention
 def shortestPrefixDiff {E : ℕ → Type*} (x : ∀ n, E n) (s : Set (∀ n, E n)) : ℕ :=
   if h : ∃ n, Disjoint s (cylinder x n) then Nat.find h else 0
 
+set_option backward.isDefEq.respectTransparency false in
 theorem firstDiff_lt_shortestPrefixDiff {s : Set (∀ n, E n)} (hs : IsClosed s) {x y : ∀ n, E n}
     (hx : x ∉ s) (hy : y ∈ s) : firstDiff x y < shortestPrefixDiff x s := by
   have A := exists_disjoint_cylinder hs hx
@@ -508,6 +521,7 @@ theorem firstDiff_le_longestPrefix {s : Set (∀ n, E n)} (hs : IsClosed s) {x y
   · exact firstDiff_lt_shortestPrefixDiff hs hx hy
   · exact shortestPrefixDiff_pos hs ⟨y, hy⟩ hx
 
+set_option backward.isDefEq.respectTransparency false in
 theorem inter_cylinder_longestPrefix_nonempty {s : Set (∀ n, E n)} (hs : IsClosed s)
     (hne : s.Nonempty) (x : ∀ n, E n) : (s ∩ cylinder x (longestPrefix x s)).Nonempty := by
   by_cases hx : x ∈ s
@@ -557,6 +571,7 @@ theorem cylinder_longestPrefix_eq_of_longestPrefix_lt_firstDiff {x y : ∀ n, E 
   rw [l_eq, ← mem_cylinder_iff_eq]
   exact cylinder_anti y H.le (mem_cylinder_firstDiff x y)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a closed nonempty subset `s` of `Π (n : ℕ), E n`, there exists a Lipschitz retraction
 onto this set, i.e., a Lipschitz map with range equal to `s`, equal to the identity on `s`. -/
 theorem exists_lipschitz_retraction_of_isClosed {s : Set (∀ n, E n)} (hs : IsClosed s)
@@ -680,6 +695,7 @@ end PiNat
 
 open PiNat
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Any nonempty complete second countable metric space is the continuous image of the
 fundamental space `ℕ → ℕ`. For a version of this theorem in the context of Polish spaces, see
 `exists_nat_nat_continuous_surjective_of_polishSpace`. -/
@@ -815,6 +831,7 @@ attribute [scoped instance] PiCountable.edist
 section PseudoEMetricSpace
 variable [∀ i, PseudoEMetricSpace (F i)]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a countable family of extended pseudometric spaces,
 one may put an extended distance on their product `Π i, E i`.
 
@@ -1112,6 +1129,7 @@ lemma continuous_distDenseSeq (n : ℕ) : Continuous (distDenseSeq X n) := by
   refine continuous_projIcc.comp <| Continuous.dist continuous_id' ?_
   convert continuous_const (y := denseSeq X n)
 
+set_option backward.isDefEq.respectTransparency false in
 lemma separation {x : X} {C : Set X} (hxC : C ∈ 𝓝 x) :
     ∃ (n : ℕ), C ∈ (𝓝 (distDenseSeq X n x)).comap (distDenseSeq X n) := by
   let ε : ℝ := min (infDist x (closure Cᶜ)) 1
