@@ -11,7 +11,6 @@ public import Mathlib.Analysis.Calculus.FDeriv.Defs
 public import Mathlib.Analysis.Normed.Operator.Asymptotics
 public import Mathlib.Analysis.Calculus.TangentCone.Basic
 import Mathlib.Analysis.Asymptotics.Lemmas
-import Mathlib.Analysis.Asymptotics.Theta
 
 /-!
 # The Fréchet derivative: basic properties
@@ -507,6 +506,7 @@ theorem fderivWithin_subset (st : s ⊆ t) (ht : UniqueDiffWithinAt 𝕜 s x)
     (h : DifferentiableWithinAt 𝕜 f t x) : fderivWithin 𝕜 f s x = fderivWithin 𝕜 f t x :=
   fderivWithin_of_mem_nhdsWithin (nhdsWithin_mono _ st self_mem_nhdsWithin) ht h
 
+set_option backward.isDefEq.respectTransparency false in
 theorem fderivWithin_inter (ht : t ∈ 𝓝 x) : fderivWithin 𝕜 f (s ∩ t) x = fderivWithin 𝕜 f s x := by
   classical
   simp [fderivWithin, hasFDerivWithinAt_inter ht, DifferentiableWithinAt]
@@ -847,21 +847,10 @@ theorem HasStrictFDerivAt.isTheta_sub (hf : HasStrictFDerivAt f f' x)
     (fun p : E × E ↦ f p.1 - f p.2) =Θ[𝓝 (x, x)] (fun p ↦ p.1 - p.2) :=
   hf.isThetaTVS_sub hf' |>.isTheta
 
-@[deprecated HasStrictFDerivAt.isTheta_sub (since := "2025-02-03")]
-theorem HasStrictFDerivAt.isBigO_sub_rev {f' : E ≃L[𝕜] F}
-    (hf : HasStrictFDerivAt f (f' : E →L[𝕜] F) x) :
-    (fun p : E × E => p.1 - p.2) =O[𝓝 (x, x)] fun p : E × E => f p.1 - f p.2 :=
-  hf.isTheta_sub f'.toHomeomorph.isInducing |>.isBigO_symm
-
 theorem HasFDerivAtFilter.isTheta_sub (hf : HasFDerivAtFilter f f' x L)
     (hf' : Topology.IsInducing f') :
     (f · - f x) =Θ[L] (· - x) :=
   hf.isThetaTVS_sub hf' |>.isTheta
-
-@[deprecated HasFDerivAtFilter.isTheta_sub (since := "2025-02-03")]
-theorem HasFDerivAtFilter.isBigO_sub_rev (hf : HasFDerivAtFilter f f' x L) {C}
-    (hf' : AntilipschitzWith C f') : (fun x' => x' - x) =O[L] fun x' => f x' - f x :=
-  hf.isTheta_sub (hf'.isInducing <| map_continuous f') |>.isBigO_symm
 
 section Lipschitz
 /-! ### Estimates on the norm of the derivative vs Lipschitz-like estimates on `f` -/
@@ -914,6 +903,7 @@ theorem HasFDerivAt.le_of_lipschitz {f : E → F} {f' : E →L[𝕜] F} {x₀ : 
 
 variable (𝕜)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Converse to the mean value inequality: if `f` is `C`-lipschitz
 on a neighborhood of `x₀` then its derivative at `x₀` has norm bounded by `C`. This version
 only assumes that `‖f x - f x₀‖ ≤ C * ‖x - x₀‖` in a neighborhood of `x`. -/

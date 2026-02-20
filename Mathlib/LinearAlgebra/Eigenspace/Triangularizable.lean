@@ -26,7 +26,7 @@ This file contains basic results relevant to the triangularizability of linear e
 
 ## References
 
-* [Sheldon Axler, *Linear Algebra Done Right*][axler2015]
+* [Sheldon Axler, *Linear Algebra Done Right*][axler2024]
 * https://en.wikipedia.org/wiki/Eigenvalues_and_eigenvectors
 
 ## TODO
@@ -57,7 +57,7 @@ theorem exists_hasEigenvalue_of_genEigenspace_eq_top [Nontrivial M] {f : End R M
     exact HasUnifEigenvalue.lt zero_lt_one hμ
   simp [HasUnifEigenvalue, ← not_forall, ← iSup_eq_bot, hf]
 
--- This is Lemma 5.21 of [axler2015], although we are no longer following that proof.
+-- This is Lemma 5.19 of [axler2024], although we are no longer following that proof.
 /-- In finite dimensions, over an algebraically closed field, every linear endomorphism has an
 eigenvalue. -/
 theorem exists_eigenvalue [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial V] (f : End K V) :
@@ -69,7 +69,8 @@ noncomputable instance [IsAlgClosed K] [FiniteDimensional K V] [Nontrivial V] (f
     Inhabited f.Eigenvalues :=
   ⟨⟨f.exists_eigenvalue.choose, f.exists_eigenvalue.choose_spec⟩⟩
 
--- Lemma 8.21 of [axler2015]
+set_option backward.isDefEq.respectTransparency false in
+-- Lemma 8.22(c) of [axler2024]
 /-- In finite dimensions, over an algebraically closed field, the generalized eigenspaces of any
 linear endomorphism span the whole space. -/
 theorem iSup_maxGenEigenspace_eq_top [IsAlgClosed K] [FiniteDimensional K V] (f : End K V) :
@@ -230,6 +231,7 @@ theorem eq_iSup_inf_genEigenspace [FiniteDimensional K V] (k : ℕ∞)
 
 end Submodule
 
+set_option backward.isDefEq.respectTransparency false in
 /-- In finite dimensions, if the generalized eigenspaces of a linear endomorphism span the whole
 space then the same is true of its restriction to any invariant submodule. -/
 theorem Module.End.genEigenspace_restrict_eq_top
