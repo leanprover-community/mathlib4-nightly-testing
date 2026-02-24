@@ -3062,6 +3062,7 @@ public import Mathlib.CategoryTheory.Products.Bifunctor
 public import Mathlib.CategoryTheory.Products.Unitor
 public import Mathlib.CategoryTheory.Quotient
 public import Mathlib.CategoryTheory.Quotient.Linear
+public import Mathlib.CategoryTheory.Quotient.LocallySmall
 public import Mathlib.CategoryTheory.Quotient.Preadditive
 public import Mathlib.CategoryTheory.RegularCategory.Basic
 public import Mathlib.CategoryTheory.RepresentedBy
@@ -6805,6 +6806,7 @@ public import Mathlib.Tactic.Linarith
 public import Mathlib.Tactic.Linarith.Datatypes
 public import Mathlib.Tactic.Linarith.Frontend
 public import Mathlib.Tactic.Linarith.Lemmas
+public import Mathlib.Tactic.Linarith.NNRealPreprocessor
 public import Mathlib.Tactic.Linarith.Oracle.FourierMotzkin
 public import Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm
 public import Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.Datatypes
