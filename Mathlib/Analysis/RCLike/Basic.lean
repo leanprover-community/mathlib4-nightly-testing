@@ -634,6 +634,7 @@ theorem norm_natCast (n : ℕ) : ‖(n : K)‖ = n := by
   rw [← ofReal_natCast]
   exact norm_of_nonneg (Nat.cast_nonneg n)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp, rclike_simps, norm_cast] lemma nnnorm_natCast (n : ℕ) : ‖(n : K)‖₊ = n := by simp [nnnorm]
 
 @[simp, rclike_simps]
@@ -651,6 +652,7 @@ lemma nnnorm_two : ‖(2 : K)‖₊ = 2 := nnnorm_ofNat 2
 lemma norm_nnratCast (q : ℚ≥0) : ‖(q : K)‖ = q := by
   rw [← ofReal_nnratCast]; exact norm_of_nonneg q.cast_nonneg
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp, rclike_simps, norm_cast]
 lemma nnnorm_nnratCast (q : ℚ≥0) : ‖(q : K)‖₊ = q := by simp [nnnorm]
 

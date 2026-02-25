@@ -100,11 +100,13 @@ def lift (f : G →* H) (x : H) (hx : ∀ a : A, x * f ↑a = f (φ a : G) * x) 
     rintro _ _ ⟨a, rfl, rfl⟩
     simp [hx])
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem lift_t (f : G →* H) (x : H) (hx : ∀ a : A, x * f ↑a = f (φ a : G) * x) :
     lift f x hx t = x := by
   delta HNNExtension; simp [lift, t]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem lift_of (f : G →* H) (x : H) (hx : ∀ a : A, x * f ↑a = f (φ a : G) * x) (g : G) :
     lift f x hx (of g) = f g := by
@@ -167,6 +169,7 @@ theorem toSubgroupEquiv_one : toSubgroupEquiv φ 1 = φ := rfl
 @[simp]
 theorem toSubgroupEquiv_neg_one : toSubgroupEquiv φ (-1) = φ.symm := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem toSubgroupEquiv_neg_apply (u : ℤˣ) (a : toSubgroup A B u) :
     (toSubgroupEquiv φ (-u) (toSubgroupEquiv φ u a) : G) = a := by
@@ -251,6 +254,7 @@ def ofGroup (g : G) : NormalWord d :=
 
 instance : Inhabited (NormalWord d) := ⟨empty⟩
 
+set_option backward.whnf.reducibleClassField false in
 instance : MulAction G (NormalWord d) :=
   { smul := fun g w => { w with head := g * w.head }
     one_smul := by simp +instances [instHSMul]
@@ -457,6 +461,7 @@ noncomputable def unitsSMulEquiv : NormalWord d ≃ NormalWord d :=
     left_inv := fun _ => by rw [unitsSMul_neg]
     right_inv := fun w => by convert unitsSMul_neg _ _ w; simp }
 
+set_option backward.isDefEq.respectTransparency false in
 theorem unitsSMul_one_group_smul (g : A) (w : NormalWord d) :
     unitsSMul φ 1 ((g : G) • w) = (φ g : G) • (unitsSMul φ 1 w) := by
   unfold unitsSMul
@@ -496,14 +501,17 @@ theorem prod_group_smul (g : G) (w : NormalWord d) :
     (g • w).prod φ = of g * (w.prod φ) := by
   simp [ReducedWord.prod, mul_assoc]
 
+set_option backward.whnf.reducibleClassField false in
 theorem of_smul_eq_smul (g : G) (w : NormalWord d) :
     (of g : HNNExtension G A B φ) • w = g • w := by
   simp +instances [instHSMul, SMul.smul, MulAction.toEndHom]
 
+set_option backward.whnf.reducibleClassField false in
 theorem t_smul_eq_unitsSMul (w : NormalWord d) :
     (t : HNNExtension G A B φ) • w = unitsSMul φ 1 w := by
   simp +instances [instHSMul, SMul.smul, MulAction.toEndHom]
 
+set_option backward.whnf.reducibleClassField false in
 theorem t_pow_smul_eq_unitsSMul (u : ℤˣ) (w : NormalWord d) :
     (t ^ (u : ℤ) : HNNExtension G A B φ) • w = unitsSMul φ u w := by
   rcases Int.units_eq_one_or u with (rfl | rfl) <;>
@@ -516,6 +524,7 @@ theorem prod_cons (g : G) (u : ℤˣ) (w : NormalWord d) (h1 : w.head ∈ d.set 
     (cons g u w h1 h2).prod φ = of g * (t ^ (u : ℤ) * w.prod φ) := by
   simp [ReducedWord.prod, cons, mul_assoc]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem prod_unitsSMul (u : ℤˣ) (w : NormalWord d) :
     (unitsSMul φ u w).prod φ = (t ^ (u : ℤ) * w.prod φ : HNNExtension G A B φ) := by
   rw [unitsSMul]
