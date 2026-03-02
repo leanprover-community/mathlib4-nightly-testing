@@ -30,7 +30,7 @@ We use the filter version to prove that absolutely continuous functions are clos
 * negation - `AbsolutelyContinuousOnInterval.neg`;
 * subtraction - `AbsolutelyContinuousOnInterval.sub`;
 * scalar multiplication - `AbsolutelyContinuousOnInterval.const_smul`,
-`AbsolutelyContinuousOnInterval.const_mul`;
+  `AbsolutelyContinuousOnInterval.const_mul`;
 * multiplication - `AbsolutelyContinuousOnInterval.smul`,
 `AbsolutelyContinuousOnInterval.mul`;
 and that absolutely continuous implies uniformly continuous in
@@ -38,16 +38,17 @@ and that absolutely continuous implies uniformly continuous in
 
 We use the `ε`-`δ` definition to prove that
 * Lipschitz continuous functions are absolutely continuous -
-`LipschitzOnWith.absolutelyContinuousOnInterval`;
+  `LipschitzOnWith.absolutelyContinuousOnInterval`;
 * absolutely continuous functions have bounded variation -
-`AbsolutelyContinuousOnInterval.boundedVariationOn`.
+  `AbsolutelyContinuousOnInterval.boundedVariationOn`.
 
 We conclude that
 * absolutely continuous functions are a.e. differentiable -
-`AbsolutelyContinuousOnInterval.ae_differentiableAt`;
+  `AbsolutelyContinuousOnInterval.ae_differentiableAt`;
 * if `f` is integrable on `uIcc a b`, then for any `c` in `uIcc a b`, `fun x ↦ ∫ v in c..x, f v`
-is absolutely continuous on `uIcc a b` -
-`IntervalIntegrable.absolutelyContinuousOnInterval_intervalIntegral`.
+  is absolutely continuous on `uIcc a b` -
+  `IntervalIntegrable.absolutelyContinuousOnInterval_intervalIntegral`.
+
 ## Tags
 absolutely continuous
 -/
@@ -291,7 +292,6 @@ theorem mul {f g : ℝ → ℝ}
     AbsolutelyContinuousOnInterval (f * g) a b :=
   hf.smul hg
 
-set_option backward.isDefEq.respectTransparency false in
 /-- If `f` is Lipschitz on `uIcc a b`, then `f` is absolutely continuous on `uIcc a b`. -/
 theorem _root_.LipschitzOnWith.absolutelyContinuousOnInterval {f : ℝ → X} {K : ℝ≥0}
     (hfK : LipschitzOnWith K f (uIcc a b)) : AbsolutelyContinuousOnInterval f a b := by
@@ -310,7 +310,6 @@ theorem _root_.LipschitzOnWith.absolutelyContinuousOnInterval {f : ℝ → X} {K
     _ < (K + 1) * (ε / (K + 1)) := by gcongr; linarith
     _ = ε := by field
 
-set_option backward.isDefEq.respectTransparency false in
 /-- If `f` is absolutely continuous on `uIcc a b`, then `f` has bounded variation on `uIcc a b`. -/
 theorem boundedVariationOn (hf : AbsolutelyContinuousOnInterval f a b) :
     BoundedVariationOn f (uIcc a b) := by
@@ -403,7 +402,6 @@ theorem ae_differentiableAt {f : ℝ → ℝ} {a b : ℝ}
     ∀ᵐ (x : ℝ), x ∈ uIcc a b → DifferentiableAt ℝ f x :=
   hf.boundedVariationOn.ae_differentiableAt_of_mem_uIcc
 
-set_option backward.isDefEq.respectTransparency false in
 /-- If `f` is interval integrable on `a..b` and `c ∈ uIcc a b`, then `fun x ↦ ∫ v in c..x, f v` is
 absolutely continuous on `uIcc a b`. -/
 theorem _root_.IntervalIntegrable.absolutelyContinuousOnInterval_intervalIntegral {f : ℝ → ℝ}

@@ -246,6 +246,10 @@ theorem limit.hom_ext {F : J ⥤ C} [HasLimit F] {X : C} {f f' : X ⟶ limit F}
     (w : ∀ j, f ≫ limit.π F j = f' ≫ limit.π F j) : f = f' :=
   (limit.isLimit F).hom_ext w
 
+instance isIso_limMap {F G : J ⥤ C} [HasLimit F] [HasLimit G] (α : F ⟶ G) [IsIso α] :
+    IsIso (limMap α) :=
+  ⟨limMap (inv α), by cat_disch , by cat_disch⟩
+
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 theorem limit.lift_map {F G : J ⥤ C} [HasLimit F] [HasLimit G] (c : Cone F) (α : F ⟶ G) :
@@ -456,6 +460,12 @@ instance hasLimit_equivalence_comp (e : K ≌ J) [HasLimit F] : HasLimit (e.func
 theorem hasLimit_of_equivalence_comp (e : K ≌ J) [HasLimit (e.functor ⋙ F)] : HasLimit F := by
   haveI : HasLimit (e.inverse ⋙ e.functor ⋙ F) := Limits.hasLimit_equivalence_comp e.symm
   apply hasLimit_of_iso (e.invFunIdAssoc F)
+
+lemma hasLimit_equivalence_comp_iff (e : K ≌ J) : HasLimit (e.functor ⋙ F) ↔ HasLimit F :=
+  ⟨fun _ ↦ hasLimit_of_equivalence_comp e, fun _ ↦ inferInstance⟩
+
+lemma hasLimit_inverse_equivalence_comp_iff (e : J ≌ K) : HasLimit (e.inverse ⋙ F) ↔ HasLimit F :=
+  hasLimit_equivalence_comp_iff e.symm
 
 -- `hasLimitCompEquivalence` and `hasLimitOfCompEquivalence`
 -- are proved in `Mathlib/CategoryTheory/Adjunction/Limits.lean`.
@@ -803,6 +813,10 @@ theorem colimit.hom_ext {F : J ⥤ C} [HasColimit F] {X : C} {f f' : colimit F �
     (w : ∀ j, colimit.ι F j ≫ f = colimit.ι F j ≫ f') : f = f' :=
   (colimit.isColimit F).hom_ext w
 
+instance isIso_colimMap {F G : J ⥤ C} [HasColimit F] [HasColimit G] (α : F ⟶ G) [IsIso α] :
+    IsIso (colimMap α) :=
+  ⟨colimMap (inv α), by cat_disch , by cat_disch⟩
+
 @[simp]
 theorem colimit.desc_cocone {F : J ⥤ C} [HasColimit F] :
     colimit.desc F (colimit.cocone F) = 𝟙 (colimit F) :=
@@ -1027,6 +1041,13 @@ instance hasColimit_equivalence_comp (e : K ≌ J) [HasColimit F] : HasColimit (
 theorem hasColimit_of_equivalence_comp (e : K ≌ J) [HasColimit (e.functor ⋙ F)] : HasColimit F := by
   haveI : HasColimit (e.inverse ⋙ e.functor ⋙ F) := Limits.hasColimit_equivalence_comp e.symm
   apply hasColimit_of_iso (e.invFunIdAssoc F).symm
+
+lemma hasColimit_equivalence_comp_iff (e : K ≌ J) : HasColimit (e.functor ⋙ F) ↔ HasColimit F :=
+  ⟨fun _ ↦ hasColimit_of_equivalence_comp e, fun _ ↦ inferInstance⟩
+
+lemma hasColimit_inverse_equivalence_comp_iff (e : J ≌ K) :
+    HasColimit (e.inverse ⋙ F) ↔ HasColimit F :=
+  hasColimit_equivalence_comp_iff e.symm
 
 section ColimFunctor
 

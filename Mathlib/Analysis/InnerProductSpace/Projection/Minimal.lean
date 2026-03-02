@@ -27,7 +27,6 @@ local notation "absR" => @abs ℝ _ _
 
 open Topology RCLike Real Filter InnerProductSpace
 
-set_option backward.isDefEq.respectTransparency false in
 /-- **Existence of minimizers**, aka the **Hilbert projection theorem**.
 
 Let `u` be a point in a real inner product space, and let `K` be a nonempty complete convex subset.
@@ -98,7 +97,7 @@ theorem exists_norm_eq_iInf_of_complete_convex {K : Set F} (ne : K.Nonempty) (h�
               change u + u - (wq + wp) = u - wq + (u - wp)
               abel
             rw [eq₁, eq₂]
-          _ = 2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖) := parallelogram_law_with_norm ℝ _ _
+          _ = 2 * (‖a‖ * ‖a‖ + ‖b‖ * ‖b‖) := parallelogram_law_with_norm_mul ℝ _ _
       have eq : δ ≤ ‖u - half • (wq + wp)‖ := by
         rw [smul_add]
         apply δ_le'

@@ -26,10 +26,10 @@ in the diagram are injective).
 
 - `Monoid.PushoutI.NormalWord`: a normal form for words in the pushout
 - `Monoid.PushoutI.of_injective`: if all the maps in the diagram are injective in a pushout of
-groups then so is `of`
+  groups then so is `of`
 - `Monoid.PushoutI.Reduced.eq_empty_of_mem_range`: For any word `w` in the coproduct,
-if `w` is reduced (i.e none its letters are in the image of the base monoid), and nonempty, then
-`w` itself is not in the image of the base monoid.
+  if `w` is reduced (i.e none its letters are in the image of the base monoid), and nonempty, then
+  `w` itself is not in the image of the base monoid.
 
 ## References
 
@@ -284,6 +284,7 @@ theorem ext {w₁ w₂ : NormalWord d} (hhead : w₁.head = w₂.head)
 
 open Subgroup.IsComplement
 
+set_option backward.whnf.reducibleClassField false in
 instance baseAction : MulAction H (NormalWord d) :=
   { smul := fun h w => { w with head := h * w.head },
     one_smul := by simp +instances [instHSMul]
@@ -438,6 +439,7 @@ noncomputable def equivPair (i) : NormalWord d ≃ Pair d i :=
     left_inv := leftInv
     right_inv := fun _ => rcons_injective (leftInv _) }
 
+set_option backward.whnf.reducibleClassField false in
 noncomputable instance summandAction (i : ι) : MulAction (G i) (NormalWord d) :=
   { smul := fun g w => (equivPair i).symm
       { equivPair i w with

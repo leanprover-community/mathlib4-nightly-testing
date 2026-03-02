@@ -337,7 +337,6 @@ variable {𝕜}
 theorem re_inner_self_nonpos {x : E} : re ⟪x, x⟫ ≤ 0 ↔ x = 0 := by
   simp
 
-set_option backward.isDefEq.respectTransparency false in
 lemma re_inner_self_pos {x : E} : 0 < re ⟪x, x⟫ ↔ x ≠ 0 := by
   simp [sq_pos_iff]
 
@@ -482,16 +481,26 @@ lemma inner_eq_zero_of_right (x : E) {y : E} (h : ‖y‖ = 0) : ⟪x, y⟫_𝕜
 variable (𝕜)
 
 include 𝕜 in
-theorem parallelogram_law_with_norm (x y : E) :
+theorem parallelogram_law_with_norm_mul (x y : E) :
     ‖x + y‖ * ‖x + y‖ + ‖x - y‖ * ‖x - y‖ = 2 * (‖x‖ * ‖x‖ + ‖y‖ * ‖y‖) := by
   simp only [← @inner_self_eq_norm_mul_norm 𝕜]
   rw [← re.map_add, parallelogram_law, two_mul, two_mul]
   simp only [re.map_add]
 
 include 𝕜 in
-theorem parallelogram_law_with_nnnorm (x y : E) :
+theorem parallelogram_law_with_norm (x y : E) :
+    ‖x + y‖ ^ 2 + ‖x - y‖ ^ 2 = 2 * (‖x‖ ^ 2 + ‖y‖ ^ 2) := by
+  simp_rw [sq, parallelogram_law_with_norm_mul 𝕜 x y]
+
+include 𝕜 in
+theorem parallelogram_law_with_nnnorm_mul (x y : E) :
     ‖x + y‖₊ * ‖x + y‖₊ + ‖x - y‖₊ * ‖x - y‖₊ = 2 * (‖x‖₊ * ‖x‖₊ + ‖y‖₊ * ‖y‖₊) :=
-  Subtype.ext <| parallelogram_law_with_norm 𝕜 x y
+  Subtype.ext <| parallelogram_law_with_norm_mul 𝕜 x y
+
+include 𝕜 in
+theorem parallelogram_law_with_nnnorm (x y : E) :
+    ‖x + y‖₊ ^ 2 + ‖x - y‖₊ ^ 2 = 2 * (‖x‖₊ ^ 2 + ‖y‖₊ ^ 2) := by
+  simp_rw [sq, parallelogram_law_with_nnnorm_mul 𝕜 x y]
 
 variable {𝕜}
 
@@ -907,6 +916,7 @@ local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 since `𝕜` does not appear in the return type `Inner ℝ E`. -/
 def Inner.rclikeToReal : Inner ℝ E where inner x y := re ⟪x, y⟫
 
+set_option backward.whnf.reducibleClassField false in
 /-- A general inner product space structure implies a real inner product structure.
 
 This is not registered as an instance since
