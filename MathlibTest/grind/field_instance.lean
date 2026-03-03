@@ -2,7 +2,7 @@ import Mathlib.FieldTheory.IntermediateField.Basic
 
 #adaptation_note /-- This is currently broken by changes to Lean.
 The test case doesn't seem to be essential elsewhere in Mathlib.
-It can be made to work again by add `inv a := a⁻¹` back to `toGrindField`,
+It can be made to work again by adding `inv a := a⁻¹` back to `toGrindField`,
 but that then causes breakages elsewhere. We are still investigating.
 See https://leanprover.zulipchat.com/#narrow/channel/113488-general/topic/backward.2EisDefEq.2ErespectTransparency/near/576563746
 -/

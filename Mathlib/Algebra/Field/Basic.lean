@@ -168,6 +168,11 @@ section Field
 
 variable [Field K]
 
+#adaptation_note /--
+We have deleted the field `inv a := a⁻¹`:
+this fixes a breakage at around nightly-2026-03-02,
+but also causes a new test failure in MathlibTest/grind/field_instance.lean.
+-/
 instance (priority := 100) Field.toGrindField : Lean.Grind.Field K :=
   { CommRing.toGrindCommRing K, ‹Field K› with
     zpow := ⟨fun a n => a^n⟩
