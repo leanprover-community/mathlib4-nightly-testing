@@ -170,7 +170,6 @@ variable [Field K]
 
 instance (priority := 100) Field.toGrindField : Lean.Grind.Field K :=
   { CommRing.toGrindCommRing K, ‹Field K› with
-    inv a := a⁻¹
     zpow := ⟨fun a n => a^n⟩
     zpow_zero a := by simp
     zpow_succ a n := by
@@ -205,7 +204,6 @@ section NoncomputableDefs
 
 variable {R : Type*} [Nontrivial R]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Constructs a `DivisionRing` structure on a `Ring` consisting only of units and 0. -/
 -- See note [reducible non-instances]
 noncomputable abbrev DivisionRing.ofIsUnitOrEqZero [Ring R] (h : ∀ a : R, IsUnit a ∨ a = 0) :

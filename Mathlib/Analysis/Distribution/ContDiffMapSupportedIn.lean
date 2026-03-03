@@ -450,6 +450,7 @@ lemma structureMapLM_eq_of_scalars {i : ℕ} (𝕜' : Type*) [NontriviallyNormed
     (structureMapLM 𝕜 n i : 𝓓^{n}_{K}(E, F) → _) = structureMapLM 𝕜' n i :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 lemma structureMapLM_zero_apply {f : 𝓓^{n}_{K}(E, F)} {x : E} :
     structureMapLM 𝕜 n 0 f x = ContinuousMultilinearMap.uncurry0 ℝ E (f x) := by
   ext
@@ -613,7 +614,6 @@ protected theorem seminorm_eq_bot_of_gt {i : ℕ} (hin : n < i) :
   simp [ContDiffMapSupportedIn.seminorm_apply, BoundedContinuousFunction.ext_iff,
     structureMapCLM_apply_withOrder, this]
 
-set_option backward.isDefEq.respectTransparency false in
 protected theorem seminorm_le_iff_withOrder {C : ℝ} (hC : 0 ≤ C) (i : ℕ) (f : 𝓓^{n}_{K}(E, F)) :
     N[𝕜]_{K, n, i} f ≤ C ↔ (i ≤ n → ∀ x ∈ K, ‖iteratedFDeriv ℝ i f x‖ ≤ C) := by
   have : (∀ x, ‖iteratedFDeriv ℝ i f x‖ ≤ C) ↔ (∀ x ∈ K, ‖iteratedFDeriv ℝ i f x‖ ≤ C) := by
@@ -650,6 +650,7 @@ theorem norm_apply_le_seminorm {f : 𝓓^{n}_{K}(E, F)} {x : E} :
   rw [← norm_iteratedFDeriv_zero (𝕜 := ℝ) (f := f) (x := x)]
   exact norm_iteratedFDeriv_apply_le_seminorm_withOrder 𝕜 (zero_le _)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem norm_toBoundedContinuousFunction (f : 𝓓^{n}_{K}(E, F)) :
     ‖(f : E →ᵇ F)‖ = N[𝕜]_{K, n, 0} f := by
   simp [BoundedContinuousFunction.norm_eq_iSup_norm,

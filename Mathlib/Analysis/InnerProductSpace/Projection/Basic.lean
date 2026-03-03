@@ -139,7 +139,6 @@ theorem orthogonalProjectionFn_norm_sq (v : E) :
     orthogonalProjectionFn_inner_eq_zero _ _ (orthogonalProjectionFn_mem v)
   convert norm_add_sq_eq_norm_sq_add_norm_sq_of_inner_eq_zero (v - p) p h' using 2 <;> simp
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The orthogonal projection onto a complete subspace. -/
 def orthogonalProjection : E →L[𝕜] K :=
   LinearMap.mkContinuous
@@ -481,6 +480,7 @@ theorem starProjection_orthogonal_apply_eq_zero
   rw [starProjection_apply, coe_eq_zero]
   exact orthogonalProjection_orthogonal_apply_eq_zero hv
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `U ≤ V`, then projecting on `V` and then on `U` is the same as projecting on `U`. -/
 theorem orthogonalProjection_starProjection_of_le {U V : Submodule 𝕜 E}
     [U.HasOrthogonalProjection] [V.HasOrthogonalProjection] (h : U ≤ V) (x : E) :
