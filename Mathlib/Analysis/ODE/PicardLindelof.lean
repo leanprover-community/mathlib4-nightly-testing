@@ -336,7 +336,6 @@ lemma dist_comp_iterate_next_le (hf : IsPicardLindelof f t₀ x₀ a r L K)
       gcongr
       rwa [← mul_pow]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- A time-dependent bound on the distance between the `n`-th iterates of `next` on two curves -/
 lemma dist_iterate_next_apply_le (hf : IsPicardLindelof f t₀ x₀ a r L K)
     (hx : x ∈ closedBall x₀ r) (α β : FunSpace t₀ x₀ r L) (n : ℕ) (t : Icc tmin tmax) :
@@ -556,6 +555,7 @@ lemma contDiffOn_nat_picard_Icc
     rw [eq_of_mem_singleton ht]
     exact contDiffWithinAt_singleton
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If the time-dependent vector field `f` is $C^n$ and the curve `α` is continuous, then
 `picard f t₀ x₀ α` is also $C^n$. This version works for `n : ℕ∞`.
 
