@@ -90,7 +90,7 @@ Computes the root hash, which mixes the hashes of the content of:
 * `lean-toolchain`
 * `lake-manifest.json`
 
-and the hash of `Lean.githash`.
+and the hash of `CacheM.Context.useLakeCache`.
 -/
 def getRootHash : CacheM UInt64 := do
   let mathlibDepPath := (← read).mathlibDepPath
@@ -100,7 +100,8 @@ def getRootHash : CacheM UInt64 := do
     mathlibDepPath / "lake-manifest.json"]
   let hashes ← rootFiles.mapM fun path =>
     hashFileContents <$> IO.FS.readFile path
-  return hash (rootHashGeneration :: hashes)
+  let lakeCacheHash := hash (← read).useLakeCache
+  return hash (rootHashGeneration :: lakeCacheHash :: hashes)
 
 /--
 Computes the hash of a file, which mixes:
