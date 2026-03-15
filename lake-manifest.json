@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "7e3d4abfef33fd16a8c76b2a81e38f8f6697ac17",
+   "rev": "cf32d25686dfe0fa5bf0c12362d84da764dbec55",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "feat/simpNF-respectTransparency-option",
