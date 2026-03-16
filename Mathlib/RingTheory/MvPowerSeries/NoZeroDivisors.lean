@@ -12,8 +12,8 @@ public import Mathlib.RingTheory.MvPowerSeries.Order
 /-! # ZeroDivisors in a MvPowerSeries ring
 
 - `mem_nonZeroDivisors_of_constantCoeff` proves that
-a multivariate power series whose constant coefficient is not a zero divisor
-is itself not a zero divisor
+  a multivariate power series whose constant coefficient is not a zero divisor
+  is itself not a zero divisor
 
 
 - `MvPowerSeries.order_mul` : multiplicativity of `MvPowerSeries.order`
@@ -69,8 +69,7 @@ theorem mem_nonZeroDivisorsRight_of_constantCoeff {φ : MvPowerSeries σ R}
     · simp only [← mem_antidiagonal.mp huv, le_add_iff_nonneg_right, zero_le]
     · rintro rfl
       simp_all
-  · simp only [mem_antidiagonal, add_zero, not_true_eq_false, coeff_zero_eq_constantCoeff,
-      false_implies]
+  · simp
 
 -- TODO: derive from `mem_nonZeroDivisorsRight_of_constantCoeff` using `MulOpposite`
 theorem mem_nonZeroDivisorsLeft_of_constantCoeff {φ : MvPowerSeries σ R}
@@ -147,6 +146,7 @@ instance : NoZeroDivisors (MvPowerSeries σ R) where
       exact IsWellOrder.toIsWellFounded
     simpa only [← lexOrder_eq_top_iff_eq_zero, lexOrder_mul, WithTop.add_eq_top] using h
 
+set_option backward.isDefEq.respectTransparency false in
 theorem weightedOrder_mul (w : σ → ℕ) (f g : MvPowerSeries σ R) :
     (f * g).weightedOrder w = f.weightedOrder w + g.weightedOrder w := by
   apply le_antisymm _ (le_weightedOrder_mul w)

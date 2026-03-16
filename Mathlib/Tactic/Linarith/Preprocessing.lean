@@ -139,7 +139,7 @@ def mk_natCast_nonneg_prf (p : Expr × Expr) : MetaM (Option Expr) :=
 @[deprecated
   "Use `Expr.lt` and `Expr.equal` or `Expr.eqv` directly. \
   If you need to order expressions, consider ordering them by order seen, with AtomM."
-  (since := "2025-08-31")]
+  (since := "2025-08-31"), implicit_reducible]
 def Expr.Ord : Ord Expr :=
 ⟨fun a b => if Expr.lt a b then .lt else if a.equal b then .eq else .gt⟩
 
@@ -300,7 +300,7 @@ partial def findSquares (s : TreeSet (Nat × Bool) lexOrd.compare) (e : Expr) :
 
 /-- Get proofs of `-x^2 ≤ 0` and `-(x*x) ≤ 0`, when those terms appear in `ls` -/
 private def nlinarithGetSquareProofs (ls : List Expr) : MetaM (List Expr) :=
-  withTraceNode `linarith (return m!"{exceptEmoji ·} finding squares") do
+  withTraceNode `linarith (fun _ => return m!" finding squares") do
   -- find the squares in `AtomM` to ensure deterministic behavior
   let s ← AtomM.run .reducible do
     let si ← ls.foldrM (fun h s' => do findSquares s' (← instantiateMVars (← inferType h))) ∅
@@ -319,7 +319,7 @@ Note that the length of the resulting list is proportional to `ls.length^2`, whi
 amount of work for the linarith oracle.
 -/
 private def nlinarithGetProductsProofs (ls : List Expr) : MetaM (List Expr) :=
-  withTraceNode `linarith (return m!"{exceptEmoji ·} adding product terms") do
+  withTraceNode `linarith (fun _ => return m!" adding product terms") do
   let with_comps ← ls.mapM (fun e => do
     let tp ← inferType e
     try
@@ -363,12 +363,13 @@ end nlinarith
 section removeNe
 /--
 `removeNe_aux` case splits on any proof `h : a ≠ b` in the input,
-turning it into `a < b ∨ a > b`.
+turning it into `a < b ∨ a > b`, provided the type has a `LinearOrder` instance.
 This produces `2^n` branches when there are `n` such hypotheses in the input.
 -/
 partial def removeNe_aux : MVarId → List Expr → MetaM (List Branch) := fun g hs => do
   let some (e, α, a, b) ← hs.findSomeM? (fun e : Expr => do
     let some (α, a, b) := (← instantiateMVars (← inferType e)).ne?' | return none
+    unless (← synthInstance? (← mkAppM ``LinearOrder #[α])).isSome do return none
     return some (e, α, a, b)) | return [(g, hs)]
   let [ng1, ng2] ← g.apply (← mkAppOptM ``Or.elim #[none, none, ← g.getType,
       ← mkAppOptM ``lt_or_gt_of_ne #[α, none, a, b, e]]) | failure
@@ -381,7 +382,7 @@ partial def removeNe_aux : MVarId → List Expr → MetaM (List Branch) := fun g
 
 /--
 `removeNe` case splits on any proof `h : a ≠ b` in the input, turning it into `a < b ∨ a > b`,
-by calling `linarith.removeNe_aux`.
+by calling `linarith.removeNe_aux`, provided the type has a `LinearOrder` instance.
 This produces `2^n` branches when there are `n` such hypotheses in the input.
 -/
 def removeNe : GlobalBranchingPreprocessor where
@@ -389,12 +390,23 @@ def removeNe : GlobalBranchingPreprocessor where
   transform := removeNe_aux
 end removeNe
 
+/-- Definition overridden in `Mathlib.Tactic.Linarith.NNRealPreprocessor`. -/
+initialize nnrealToRealTransform : IO.Ref (List Expr → MetaM (List Expr)) ← IO.mkRef pure
+
+/--
+If `h` is an equality or inequality between NNReals, `nnrealToReal` lifts this inequality to the
+Reals. It also adds the facts that the reals involved are nonnegative. To avoid adding the same
+nonnegativity facts many times, it is a global preprocessor. This preprocessor does nothing unless
+`Mathlib.Tactic.Linarith.NNRealPreprocessor` is imported -/
+def nnrealToReal : GlobalPreprocessor where
+  description := "move nnreals to reals"
+  transform l := do (← nnrealToRealTransform.get) l
 
 /--
 The default list of preprocessors, in the order they should typically run.
 -/
 def defaultPreprocessors : List GlobalBranchingPreprocessor :=
-  [filterComparisons, removeNegations, natToInt, strengthenStrictInt,
+  [filterComparisons, removeNegations, nnrealToReal, natToInt, strengthenStrictInt,
     compWithZero, cancelDenoms]
 
 /--
@@ -406,7 +418,7 @@ so the size of the list may change.
 -/
 def preprocess (pps : List GlobalBranchingPreprocessor) (g : MVarId) (l : List Expr) :
     MetaM (List Branch) := do
-  withTraceNode `linarith (fun e => return m!"{exceptEmoji e} Running preprocessors") <|
+  withTraceNode `linarith (fun _ => return m!"Running preprocessors") <|
     g.withContext <|
       pps.foldlM (init := [(g, l)]) fun ls pp => do
         return (← ls.mapM fun (g, l) => do pp.process g l).flatten

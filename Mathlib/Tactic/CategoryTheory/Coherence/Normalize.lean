@@ -56,8 +56,8 @@ I would be happy to discuss.
 
 ## Main definitions
 - `Tactic.BicategoryLike.eval`: Given a Lean expression `e` that represents a morphism in a monoidal
-category, this function returns a pair of `⟨e', pf⟩` where `e'` is the normalized expression of `e`
-and `pf` is a proof that `e = e'`.
+  category, this function returns a pair of `⟨e', pf⟩` where `e'` is the normalized expression of
+  `e` and `pf` is a proof that `e = e'`.
 
 -/
 
@@ -370,7 +370,7 @@ def evalComp : NormalExpr → NormalExpr → CoherenceM ρ Eval.Result
 
 open MkEvalWhiskerLeft
 
-variable [MonadMor₁ (CoherenceM ρ)] [MonadMor₂Iso (CoherenceM ρ)]
+variable [MonadMor₁ (CoherenceM ρ)]
 
 /-- Evaluate the expression `f ◁ η` into a normalized form. -/
 def evalWhiskerLeft : Mor₁ → NormalExpr → CoherenceM ρ Eval.Result
@@ -516,7 +516,7 @@ variable {ρ : Type}
 
 /-- Trace the proof of the normalization. -/
 def traceProof (nm : Name) (result : Expr) : CoherenceM ρ Unit := do
-  withTraceNode nm (fun _ => return m!"{checkEmoji} {← inferType result}") do
+  withTraceNode nm (fun _ => return m!"{← inferType result}") do
     if ← isTracingEnabledFor nm then addTrace nm m!"proof: {result}"
 
 -- TODO: It takes a while to compile. Find out why.

@@ -420,6 +420,7 @@ theorem addVal_mul {a b : R} :
 theorem addVal_pow (a : R) (n : ℕ) : addVal R (a ^ n) = n • addVal R a :=
   (addVal R).map_pow _ _
 
+set_option backward.isDefEq.respectTransparency false in
 nonrec theorem _root_.Irreducible.addVal_pow {ϖ : R} (h : Irreducible ϖ) (n : ℕ) :
     addVal R (ϖ ^ n) = n := by
   rw [addVal_pow, addVal_uniformizer h, nsmul_one]
@@ -454,6 +455,7 @@ theorem addVal_le_iff_dvd {a b : R} : addVal R a ≤ addVal R b ↔ a ∣ b := b
 theorem addVal_add {a b : R} : min (addVal R a) (addVal R b) ≤ addVal R (a + b) :=
   (addVal R).map_add _ _
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma addVal_eq_zero_of_unit (u : Rˣ) :
     addVal R u = 0 := by
@@ -461,6 +463,7 @@ lemma addVal_eq_zero_of_unit (u : Rˣ) :
   rw [addVal_def (u : R) u hϖ 0] <;>
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 lemma addVal_eq_zero_iff {x : R} :
     addVal R x = 0 ↔ IsUnit x := by
   rcases eq_or_ne x 0 with rfl | hx
@@ -471,6 +474,7 @@ lemma addVal_eq_zero_iff {x : R} :
 
 end
 
+set_option backward.isDefEq.respectTransparency false in
 instance (R : Type*) [CommRing R] [IsDomain R] [IsDiscreteValuationRing R] :
     IsHausdorff (maximalIdeal R) R where
   haus' x hx := by
@@ -532,6 +536,7 @@ variable (R) in
 only takes two steps to terminate. Given `GCD(x,y)`, if `x ∣ y` then `y%x = 0` so we're done in one
 step; otherwise `y%x = y` and then `GCD(x,y) = GCD(y,x)` which brings us back to the first case.
 See `EuclideanDomain.to_principal_ideal_domain` for EuclideanDomain ⇒ PID. -/
+@[implicit_reducible]
 def toEuclideanDomain : EuclideanDomain R where
   quotient := quotient
   quotient_zero x := by simp [quotient]
