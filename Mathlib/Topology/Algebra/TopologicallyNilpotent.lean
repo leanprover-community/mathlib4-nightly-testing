@@ -3,9 +3,10 @@ Copyright (c) 2024 Antoine Chambert-Loir, María Inés de Frutos-Fernández. All
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Antoine Chambert-Loir, María Inés de Frutos-Fernández
 -/
-import Mathlib.Topology.Algebra.LinearTopology
-import Mathlib.RingTheory.Ideal.Basic
-import Mathlib.RingTheory.Nilpotent.Defs
+module
+
+public import Mathlib.Topology.Algebra.LinearTopology
+public import Mathlib.RingTheory.Ideal.Basic
 
 /-! # Topologically nilpotent elements
 
@@ -34,6 +35,8 @@ Let `R` be a commutative ring with a linear topology.
 These lemmas are actually deduced from their analogues for commuting elements of rings.
 
 -/
+
+@[expose] public section
 
 open Filter
 
@@ -93,7 +96,7 @@ theorem mul_right_of_commute [IsLinearTopology Rᵐᵒᵖ R]
 
 /-- If `a` and `b` commute and `b` is topologically nilpotent,
   then `a * b` is topologically nilpotent. -/
- theorem mul_left_of_commute [IsLinearTopology R R] {a b : R}
+theorem mul_left_of_commute [IsLinearTopology R R] {a b : R}
     (hb : IsTopologicallyNilpotent b) (hab : Commute a b) :
     IsTopologicallyNilpotent (a * b) := by
   simp_rw [IsTopologicallyNilpotent, hab.mul_pow]
@@ -124,7 +127,7 @@ theorem mul_right {a : R} (ha : IsTopologicallyNilpotent a) (b : R) :
   ha.mul_right_of_commute (Commute.all ..)
 
 /-- If `b` is topologically nilpotent, then `a * b` is topologically nilpotent. -/
- theorem mul_left (a : R) {b : R} (hb : IsTopologicallyNilpotent b) :
+theorem mul_left (a : R) {b : R} (hb : IsTopologicallyNilpotent b) :
     IsTopologicallyNilpotent (a * b) :=
   hb.mul_left_of_commute (Commute.all ..)
 
