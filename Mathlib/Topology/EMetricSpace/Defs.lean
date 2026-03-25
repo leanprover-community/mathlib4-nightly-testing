@@ -56,7 +56,8 @@ class EDist (α : Type*) where
 export EDist (edist)
 
 /-- Creating a uniform space from an extended distance. -/
-@[reducible] def uniformSpaceOfEDist (edist : α → α → ℝ≥0∞) (edist_self : ∀ x : α, edist x x = 0)
+@[reducible] noncomputable def uniformSpaceOfEDist
+    (edist : α → α → ℝ≥0∞) (edist_self : ∀ x : α, edist x x = 0)
     (edist_comm : ∀ x y : α, edist x y = edist y x)
     (edist_triangle : ∀ x y z : α, edist x z ≤ edist x y + edist y z) : UniformSpace α :=
   .ofFun edist edist_self edist_comm edist_triangle fun ε ε0 =>
@@ -446,6 +447,7 @@ theorem ordConnected_setOf_eball_subset (x : α) (s : Set α) : OrdConnected { r
   ⟨fun _ _ _ h₁ _ h₂ => (eball_subset_eball h₂.2).trans h₁⟩
 
 /-- Relation “two points are at a finite edistance” is an equivalence relation. -/
+@[implicit_reducible]
 def edistLtTopSetoid : Setoid α where
   r x y := edist x y < ⊤
   iseqv :=

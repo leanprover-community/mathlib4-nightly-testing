@@ -313,6 +313,7 @@ lemma tensorKaehlerQuotKerSqEquiv_symm_tmul_D (s t) :
   apply (tensorKaehlerQuotKerSqEquiv R P S).injective
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 /--
 Given a surjective algebra homomorphism `f : P →ₐ[R] S` with kernel `I`,
 there is a one-to-one correspondence between `P`-linear retractions of `I/I² →ₗ[P] S ⊗[P] Ω[P/R]`
@@ -382,6 +383,7 @@ lemma CotangentSpace.map_toInfinitesimal_bijective (P : Extension.{u} R S) :
   simp only [map_tmul, algebraMap_self, RingHom.id_apply, Hom.toAlgHom_apply]
   exact (tensorKaehlerQuotKerSqEquiv_symm_tmul_D _ _).symm
 
+set_option backward.isDefEq.respectTransparency false in
 lemma Cotangent.map_toInfinitesimal_bijective (P : Extension.{u} R S) :
     Function.Bijective (Cotangent.map P.toInfinitesimal) := by
   constructor

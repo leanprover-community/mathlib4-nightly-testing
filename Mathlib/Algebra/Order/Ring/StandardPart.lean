@@ -11,7 +11,7 @@ public import Mathlib.Data.Real.Archimedean
 public import Mathlib.Order.Quotient
 public import Mathlib.RingTheory.Valuation.ValuationSubring
 
-import Mathlib.Data.Real.CompleteField
+import Mathlib.Data.Real.Hom
 
 /-!
 # Standard part function
@@ -28,10 +28,6 @@ field, meaning we can uniquely embed it in the reals.
 Given a finite element of the field, the `ArchimedeanClass.stdPart` function returns the real number
 corresponding to this unique embedding. This function generalizes, among other things, the standard
 part function on `Hyperreal`.
-
-## TODO
-
-Redefine `Hyperreal.st` in terms of `ArchimedeanClass.stdPart`.
 
 ## References
 
@@ -58,15 +54,18 @@ namespace FiniteElement
 noncomputable instance : CommRing (FiniteElement K) := by
   unfold FiniteElement; infer_instance
 
+set_option backward.isDefEq.respectTransparency false in
 instance : IsDomain (FiniteElement K) := by
   unfold FiniteElement; infer_instance
 
+set_option backward.isDefEq.respectTransparency false in
 instance : ValuationRing (FiniteElement K) := by
   unfold FiniteElement; infer_instance
 
 instance : LinearOrder (FiniteElement K) := by
   unfold FiniteElement; infer_instance
 
+set_option backward.isDefEq.respectTransparency false in
 instance : IsStrictOrderedRing (FiniteElement K) := by
   unfold FiniteElement; infer_instance
 
@@ -173,6 +172,7 @@ instance ordConnected_preimage_mk :
     ∀ x, Set.OrdConnected (mk ⁻¹' ({x} : Set (FiniteResidueField K))) :=
   ordConnected_preimage_mk'
 
+set_option backward.isDefEq.respectTransparency false in
 theorem mk_eq_mk {x y : FiniteElement K} : mk x = mk y ↔ 0 < ArchimedeanClass.mk (x.1 - y.1) := by
   apply Quotient.eq.trans
   rw [Submodule.quotientRel_def, IsLocalRing.mem_maximalIdeal, mem_nonunits_iff,
@@ -287,7 +287,7 @@ For any infinite inputs, this function outputs a junk value of 0. -/
 @[no_expose]
 noncomputable def stdPart (x : K) : ℝ :=
   if h : 0 ≤ mk x then
-    OrderRingHom.comp default FiniteResidueField.mk (.mk x h) else 0
+    OrderRingHom.comp Classical.ofNonempty FiniteResidueField.mk (.mk x h) else 0
 
 theorem stdPart_of_mk_nonneg (f : FiniteResidueField K →+*o ℝ) (h : 0 ≤ mk x) :
     stdPart x = f (.mk <| .mk x h) := by
@@ -305,7 +305,7 @@ theorem stdPart_eq_zero {x : K} : stdPart x = 0 ↔ mk x ≠ 0 where
   mp := by
     contrapose!
     intro h
-    rwa [stdPart_of_mk_nonneg default h.ge, map_ne_zero, FiniteResidueField.mk_ne_zero]
+    rwa [stdPart_of_mk_nonneg Classical.ofNonempty h.ge, map_ne_zero, FiniteResidueField.mk_ne_zero]
 
 alias ⟨_, stdPart_of_mk_ne_zero⟩ := stdPart_eq_zero
 
@@ -383,7 +383,7 @@ theorem stdPart_div (hx : 0 ≤ mk x) (hy : 0 ≤ -mk y) :
 
 @[simp]
 theorem stdPart_ratCast (q : ℚ) : stdPart (q : K) = q := by
-  rw [stdPart_of_mk_nonneg default (mk_ratCast_nonneg q), FiniteElement.mk_ratCast,
+  rw [stdPart_of_mk_nonneg Classical.ofNonempty (mk_ratCast_nonneg q), FiniteElement.mk_ratCast,
     FiniteResidueField.mk_ratCast, map_ratCast]
 
 @[simp]

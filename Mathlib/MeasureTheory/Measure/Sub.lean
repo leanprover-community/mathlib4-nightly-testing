@@ -35,7 +35,7 @@ Specifically, note that if you have `α = {1,2}`, and `μ {1} = 2`, `μ {2} = 0`
 noncomputable instance instSub {α : Type*} [MeasurableSpace α] : Sub (Measure α) :=
   ⟨fun μ ν => sInf { τ | μ ≤ τ + ν }⟩
 
-variable {α : Type*} {m : MeasurableSpace α} {μ ν : Measure α} {s : Set α}
+variable {α : Type*} {m : MeasurableSpace α} {μ ν ξ : Measure α} {s : Set α}
 
 theorem sub_def : μ - ν = sInf { d | μ ≤ d + ν } := rfl
 
@@ -53,11 +53,11 @@ theorem sub_top : μ - ⊤ = 0 :=
   sub_eq_zero_of_le le_top
 
 @[simp]
-theorem zero_sub : 0 - μ = 0 :=
+protected theorem zero_sub : 0 - μ = 0 :=
   sub_eq_zero_of_le μ.zero_le
 
 @[simp]
-theorem sub_self : μ - μ = 0 :=
+protected theorem sub_self : μ - μ = 0 :=
   sub_eq_zero_of_le le_rfl
 
 @[simp]
@@ -144,6 +144,16 @@ theorem sub_apply_eq_zero_of_restrict_le_restrict (h_le : μ.restrict s ≤ ν.r
 
 instance isFiniteMeasure_sub [IsFiniteMeasure μ] : IsFiniteMeasure (μ - ν) :=
   isFiniteMeasure_of_le μ sub_le
+
+/-- See `sub_le_iff_le_add` for the case where both measures are finite, which does not need the
+hypothesis `ν ≤ μ`. -/
+lemma sub_le_iff_le_add_of_le [IsFiniteMeasure ν] (h_le : ν ≤ μ) : μ - ν ≤ ξ ↔ μ ≤ ξ + ν := by
+  refine ⟨fun h ↦ ?_, Measure.sub_le_of_le_add⟩
+  rw [Measure.le_iff] at h ⊢
+  intro s hs
+  specialize h s hs
+  simp only [Measure.coe_add, Pi.add_apply]
+  rwa [Measure.sub_apply hs h_le, tsub_le_iff_right] at h
 
 end Measure
 
