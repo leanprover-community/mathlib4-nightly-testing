@@ -48,6 +48,14 @@ abbrev mathlibLeanOptions := #[
 
 package mathlib where
   testDriver := "MathlibTest"
+  -- A version of Mathlib only supports the toolchain it is built with.
+  fixedToolchain := true
+  -- Mathlib oleans are built in CI and used cross-platform.
+  platformIndependent := true
+  -- Mathlib supports the Lake cache,
+  -- but it currently expects artifacts to be in the build directory.
+  enableArtifactCache := true
+  restoreAllArtifacts := true
   -- These are additional settings which do not affect the lake hash,
   -- so they can be enabled in CI and disabled locally or vice versa.
   -- Warning: Do not put any options here that actually change the olean files,
