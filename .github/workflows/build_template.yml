@@ -707,17 +707,17 @@ jobs:
         shell: bash
         run: |
           # Trim trailing whitespace from secrets to prevent issues with accidentally added spaces
-          export LAKE_CACHE_KEY="${MATHLIB_CACHE_S3_TOKEN%"${MATHLIB_CACHE_S3_TOKEN##*[![:space:]]}"}"
-          export LAKE_CACHE_ARTIFACT_ENDPOINT=https://a09a7664adc082e00f294ac190827820.r2.cloudflarestorage.com/mathlib4/a1
-          export LAKE_CACHE_REVISION_ENDPOINT=https://a09a7664adc082e00f294ac190827820.r2.cloudflarestorage.com/mathlib4/r1
+          export LAKE_CACHE_KEY="${LAKE_CACHE_KEY_RAW%"${LAKE_CACHE_KEY_RAW##*[![:space:]]}"}"
 
           echo "Uploading cache to Cloudflare..."
           lake cache put-staged lake-cache-staging --repo=${{ github.event.pull_request.head.repo.full_name || github.repository }}
         env:
-          MATHLIB_CACHE_S3_TOKEN: ${{ secrets.MATHLIB_CACHE_S3_TOKEN }}
+          LAKE_CACHE_KEY_RAW: ${{ secrets.LAKE_CACHE_KEY }}
+          LAKE_CACHE_ARTIFACT_ENDPOINT: ${{ vars.LAKE_CACHE_ENDPOINT }}/a1
+          LAKE_CACHE_REVISION_ENDPOINT: ${{ vars.LAKE_CACHE_ENDPOINT }}/r1
 
-  post_steps:
-    name: Post-Build Step
+  verify_lake_cache:
+    name: Verify Lake Cache
     needs: [build, upload_cache]
     if: ${{ always() && needs.build.result == 'success' && (needs.upload_cache.result == 'success' || needs.upload_cache.result == 'skipped') }}
     runs-on: ubuntu-latest # Note these steps run on disposable GitHub runners, so no landrun sandboxing is needed.
@@ -751,10 +751,24 @@ jobs:
           lake build --no-build --rehash -v Counterexamples
           echo "::endgroup::"
 
-      - name: remove Lake cache results
-        run: |
-          lake clean
-          lake cache clean
+  post_steps:
+    name: Post-Build Step
+    needs: [build, upload_cache]
+    if: ${{ always() && needs.build.result == 'success' && (needs.upload_cache.result == 'success' || needs.upload_cache.result == 'skipped') }}
+    runs-on: ubuntu-latest # Note these steps run on disposable GitHub runners, so no landrun sandboxing is needed.
+    steps:
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ inputs.pr_branch_ref }}
+
+      - name: Configure Lean
+        uses: leanprover/lean-action@c544e89643240c6b398f14a431bcdc6309e36b3e # v1.4.0
+        with:
+          auto-config: false # Don't run `lake build`, `lake test`, or `lake lint` automatically.
+          use-github-cache: false
+          use-mathlib-cache: false # This can be re-enabled once we are confident in the cache again.
+          reinstall-transient-toolchain: true
 
       - name: get cache for Mathlib
         run: |
