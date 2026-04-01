@@ -178,7 +178,7 @@ where
                 mkLambdaFVars args (r.expr.beta args)
             pure { r with expr := e' }
           else
-            pure { paramNames := #[], mvars := #[], expr := e }
+            pure { paramNames := #[], lmvars := #[], exprArgs := #[], expr := e }
       go instTerms (insts.push (instTerm, inst))
 
 elab_rules : tactic

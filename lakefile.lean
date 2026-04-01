@@ -8,7 +8,7 @@ open Lake DSL
 
 require "leanprover-community" / "batteries" @ git "lean-pr-testing-13025"
 require "leanprover-community" / "Qq" @ git "nightly-testing"
-require "leanprover-community" / "aesop" @ git "nightly-testing"
+require "leanprover-community" / "aesop" @ git "lean-pr-testing-13025"
 require "leanprover-community" / "proofwidgets" @ git "nightly-testing"
   with NameMap.empty.insert `errorOnBuild
     "ProofWidgets failed to reuse pre-built JS code. \
