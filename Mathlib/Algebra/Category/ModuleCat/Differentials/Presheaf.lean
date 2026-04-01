@@ -3,8 +3,10 @@ Copyright (c) 2024 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou
 -/
-import Mathlib.Algebra.Category.ModuleCat.Presheaf
-import Mathlib.Algebra.Category.ModuleCat.Differentials.Basic
+module
+
+public import Mathlib.Algebra.Category.ModuleCat.Presheaf
+public import Mathlib.Algebra.Category.ModuleCat.Differentials.Basic
 
 /-!
 # The presheaf of differentials of a presheaf of modules
@@ -35,6 +37,8 @@ to show that the two vanishing conditions `d_app` are equivalent).
 
 -/
 
+@[expose] public section
+
 universe v u v₁ v₂ u₁ u₂
 
 open CategoryTheory
@@ -44,8 +48,8 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 namespace PresheafOfModules
 
 variable {S : Cᵒᵖ ⥤ CommRingCat.{u}} {F : C ⥤ D} {S' R : Dᵒᵖ ⥤ CommRingCat.{u}}
-   (M N : PresheafOfModules.{v} (R ⋙ forget₂ _ _))
-   (φ : S ⟶ F.op ⋙ R) (φ' : S' ⟶ R)
+  (M N : PresheafOfModules.{v} (R ⋙ forget₂ _ _))
+  (φ : S ⟶ F.op ⋙ R) (φ' : S' ⟶ R)
 
 /-- Given a morphism of presheaves of commutative rings `φ : S ⟶ F.op ⋙ R`,
 this is the type of relative `φ`-derivation of a presheaf of `R`-modules `M`. -/
@@ -74,6 +78,7 @@ variable (d : M.Derivation φ)
 @[simp] lemma d_one (X : Dᵒᵖ) : d.d (X := X) 1 = 0 := by
   simpa using d.d_mul (X := X) 1 1
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The postcomposition of a derivation by a morphism of presheaves of modules. -/
 @[simps! d_apply]
 def postcomp (f : M ⟶ N) : N.Derivation φ where
@@ -128,9 +133,9 @@ namespace Derivation'
 variable {M φ'}
 
 @[simp]
-nonrec lemma d_app (d : M.Derivation' φ') {X : Dᵒᵖ} (a : S'.obj X) :
+lemma d_app (d : M.Derivation' φ') {X : Dᵒᵖ} (a : S'.obj X) :
     d.d (φ'.app X a) = 0 :=
-  d.d_app _
+  Derivation.d_app d _
 
 /-- The derivation relative to the morphism of commutative rings `φ'.app X` induced by
 a derivation relative to a morphism of presheaves of commutative rings. -/
@@ -145,6 +150,7 @@ section
 
 variable (d : ∀ (X : Dᵒᵖ), (M.obj X).Derivation (φ'.app X))
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a morphism of presheaves of commutative rings `φ'`, this is the
 in derivation `M.Derivation' φ'` that is given by a compatible family of derivations
 with values in the modules `M.obj X` for all `X`. -/
@@ -176,6 +182,7 @@ end Derivation'
 
 namespace DifferentialsConstruction
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The presheaf of relative differentials of a morphism of presheaves of
 commutative rings. -/
 @[simps -isSimp]
@@ -204,6 +211,7 @@ noncomputable def derivation' : (relativeDifferentials' φ').Derivation' φ' :=
   Derivation'.mk (fun X ↦ CommRingCat.KaehlerDifferential.D (φ'.app X))
     (fun _ _ f x ↦ (relativeDifferentials'_map_d φ' f x).symm)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The derivation `Derivation' φ'` is universal. -/
 noncomputable def isUniversal' : (derivation' φ').Universal :=
   Derivation'.Universal.mk

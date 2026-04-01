@@ -3,10 +3,11 @@ Copyright (c) 2024 Jireh Loreaux. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jireh Loreaux
 -/
+module
 
-import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unique
-import Mathlib.Topology.ContinuousMap.ContinuousSqrt
-import Mathlib.Topology.ContinuousMap.StoneWeierstrass
+public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Unique
+public import Mathlib.Topology.ContinuousMap.ContinuousSqrt
+public import Mathlib.Topology.ContinuousMap.StoneWeierstrass
 
 /-! # The positive (and negative) parts of a selfadjoint element in a C⋆-algebra
 
@@ -14,6 +15,8 @@ This file defines the positive and negative parts of a selfadjoint element in a 
 the continuous functional calculus and develops the basic API, including the uniqueness of the
 positive and negative parts.
 -/
+
+public section
 
 open scoped NNReal
 
@@ -99,6 +102,7 @@ section SMul
 
 variable [StarModule ℝ A]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma posPart_smul {r : ℝ≥0} {a : A} : (r • a)⁺ = r • a⁺ := by
   by_cases ha : IsSelfAdjoint a
@@ -202,8 +206,10 @@ local notation "σₙ" => quasispectrum
 
 open ContinuousMapZero
 
-variable [IsTopologicalRing A] [T2Space A]
+variable [IsSemitopologicalRing A] [T2Space A]
 
+set_option backward.isDefEq.respectTransparency false in
+set_option linter.flexible false in -- simp followed by `exact le_rfl`
 open NonUnitalContinuousFunctionalCalculus in
 /-- The positive and negative parts of a selfadjoint element `a` are unique. That is, if
 `a = b - c` is the difference of nonnegative elements whose product is zero, then these are
@@ -231,20 +237,19 @@ lemma posPart_negPart_unique {a b c : A} (habc : a = b - c) (hbc : b * c = 0)
     refine isCompact_iff_compactSpace.mp <| (IsCompact.union ?_ ?_).union ?_
     all_goals exact isCompact_quasispectrum _
   obtain ⟨has, hbs, hcs⟩ : σₙ ℝ a ⊆ s ∧ σₙ ℝ b ⊆ s ∧ σₙ ℝ (-c) ⊆ s := by grind
-  let zero : Zero s := ⟨0, by aesop⟩
-  have s0 : (0 : s) = (0 : ℝ) := rfl
+  have : Fact (0 ∈ s) := ⟨by aesop⟩
   /- The continuous functional calculi for functions `f g : C(s, ℝ)₀` applied to `b` and `(-c)`
   are orthogonal (i.e., the product is always zero). -/
   have mul₁ (f g : C(s, ℝ)₀) :
       (cfcₙHomSuperset hb' hbs f) * (cfcₙHomSuperset hc' hcs g) = 0 := by
-    refine f.nonUnitalStarAlgHom_apply_mul_eq_zero s0 _ _ ?id ?star_id
+    refine f.nonUnitalStarAlgHom_apply_mul_eq_zero _ _ ?id ?star_id
       (cfcₙHomSuperset_continuous hb' hbs)
     case' star_id => rw [star_trivial]
     all_goals
-      refine g.mul_nonUnitalStarAlgHom_apply_eq_zero s0 _ _ ?_ ?_
+      refine g.mul_nonUnitalStarAlgHom_apply_eq_zero _ _ ?_ ?_
         (cfcₙHomSuperset_continuous hc' hcs)
-      all_goals simp only [zero, star_trivial, cfcₙHomSuperset_id' hb' hbs,
-        cfcₙHomSuperset_id' hc' hcs, mul_neg, hbc, neg_zero]
+      all_goals simp only [star_trivial, cfcₙHomSuperset_id hb' hbs,
+        cfcₙHomSuperset_id hc' hcs, mul_neg, hbc, neg_zero]
   have mul₂ (f g : C(s, ℝ)₀) : (cfcₙHomSuperset hc' hcs f) * (cfcₙHomSuperset hb' hbs g) = 0 := by
     simpa only [star_mul, star_zero, ← map_star, star_trivial] using congr(star $(mul₁ g f))
   /- `fun f ↦ cfcₙ f b + cfcₙ f (-c)` defines a star homomorphism `ψ : C(s, ℝ)₀ →⋆ₙₐ[ℝ] A` which
@@ -256,20 +261,20 @@ lemma posPart_negPart_unique {a b c : A} (habc : a = b - c) (hbc : b * c = 0)
       toFun := cfcₙHomSuperset hb' hbs + cfcₙHomSuperset hc' hcs
       map_zero' := by simp [-cfcₙHomSuperset_apply]
       map_mul' := fun f g ↦ by
-        simp only [zero, Pi.add_apply, map_mul, mul_add, add_mul, mul₂, add_zero, mul₁,
+        simp only [Pi.add_apply, map_mul, mul_add, add_mul, mul₂, add_zero, mul₁,
           zero_add]
       map_star' := fun f ↦ by simp [← map_star] }
   have key : (cfcₙHomSuperset ha has) = ψ :=
     have : ContinuousMapZero.UniqueHom ℝ A := inferInstance
-    ContinuousMapZero.UniqueHom.eq_of_continuous_of_map_id s rfl
+    ContinuousMapZero.UniqueHom.eq_of_continuous_of_map_id s
     (cfcₙHomSuperset ha has) ψ (cfcₙHomSuperset_continuous ha has)
     ((cfcₙHomSuperset_continuous hb' hbs).add (cfcₙHomSuperset_continuous hc' hcs))
-    (by simpa [zero, ψ, -cfcₙHomSuperset_apply, cfcₙHomSuperset_id, sub_eq_add_neg] using habc)
+    (by simpa [ψ, -cfcₙHomSuperset_apply, cfcₙHomSuperset_id, sub_eq_add_neg] using habc)
   /- Applying the equality of star homomorphisms to the function `(·⁺ : ℝ → ℝ)` we find that
   `b = cfcₙ id b + cfcₙ 0 (-c) = cfcₙ (·⁺) b - cfcₙ (·⁺) (-c) = cfcₙ (·⁺) a = a⁺`, where the
   second equality follows because these functions are equal on the spectra of `b` and `-c`,
   respectively, since `0 ≤ b` and `-c ≤ 0`. -/
-  let f : C(s, ℝ)₀ := ⟨⟨(·⁺), by fun_prop⟩, by simp [s0]⟩
+  let f : C(s, ℝ)₀ := ⟨⟨(·⁺), by fun_prop⟩, by simp; exact le_rfl⟩
   replace key := congr($key f)
   simp only [cfcₙHomSuperset_apply, NonUnitalStarAlgHom.coe_mk', NonUnitalAlgHom.coe_mk, ψ,
     Pi.add_apply, cfcₙHom_eq_cfcₙ_extend (·⁺)] at key
@@ -281,7 +286,7 @@ lemma posPart_negPart_unique {a b c : A} (habc : a = b - c) (hbc : b * c = 0)
       all_goals
         refine cfcₙ_congr fun x hx ↦ Eq.symm ?_
         lift x to σₙ ℝ _ using hx
-        simp only [zero, Subtype.val_injective.extend_apply, comp_apply, coe_mk,
+        simp only [Subtype.val_injective.extend_apply, comp_apply, coe_mk,
           ContinuousMap.coe_mk, Subtype.map_coe, id_eq, _root_.posPart_eq_self, f, Pi.zero_apply,
           posPart_eq_zero]
       · exact quasispectrum_nonneg_of_nonneg b hb x.val x.property
@@ -295,7 +300,7 @@ lemma posPart_negPart_unique {a b c : A} (habc : a = b - c) (hbc : b * c = 0)
     _ = a⁺ := by
       refine cfcₙ_congr fun x hx ↦ ?_
       lift x to σₙ ℝ a using hx
-      simp [zero, f]
+      simp [f]
 
 end CFC
 

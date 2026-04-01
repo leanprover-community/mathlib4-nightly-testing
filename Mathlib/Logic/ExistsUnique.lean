@@ -3,8 +3,9 @@ Copyright (c) 2014 Microsoft Corporation. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Leonardo de Moura, Jeremy Avigad, Floris van Doorn
 -/
-import Mathlib.Tactic.TypeStar
-import Batteries.Tactic.Alias
+module
+
+public import Mathlib.Init
 
 /-!
 # `ExistsUnique`
@@ -12,6 +13,8 @@ import Batteries.Tactic.Alias
 This file defines the `ExistsUnique` predicate, notated as `∃!`, and proves some of its
 basic properties.
 -/
+
+@[expose] public section
 
 variable {α : Sort*}
 
@@ -22,7 +25,7 @@ namespace Mathlib.Notation
 open Lean
 
 /-- Checks to see that `xs` has only one binder. -/
-def isExplicitBinderSingular (xs : TSyntax ``explicitBinders) : Bool :=
+meta def isExplicitBinderSingular (xs : TSyntax ``explicitBinders) : Bool :=
   match xs with
   | `(explicitBinders| $_:binderIdent $[: $_]?) => true
   | `(explicitBinders| ($_:binderIdent : $_)) => true
@@ -52,7 +55,7 @@ macro "∃!" xs:explicitBinders ", " b:term : term => do
 Pretty-printing for `ExistsUnique`, following the same pattern as pretty printing for `Exists`.
 However, it does *not* merge binders.
 -/
-@[app_unexpander ExistsUnique] def unexpandExistsUnique : Lean.PrettyPrinter.Unexpander
+@[app_unexpander ExistsUnique] meta def unexpandExistsUnique : Lean.PrettyPrinter.Unexpander
   | `($(_) fun $x:ident ↦ $b)                      => `(∃! $x:ident, $b)
   | `($(_) fun ($x:ident : $t) ↦ $b)               => `(∃! $x:ident : $t, $b)
   | _                                               => throw ()
@@ -88,6 +91,10 @@ theorem ExistsUnique.exists {p : α → Prop} : (∃! x, p x) → ∃ x, p x | �
 theorem ExistsUnique.unique {p : α → Prop}
     (h : ∃! x, p x) {y₁ y₂ : α} (py₁ : p y₁) (py₂ : p y₂) : y₁ = y₂ :=
   let ⟨_, _, hy⟩ := h; (hy _ py₁).trans (hy _ py₂).symm
+
+theorem ExistsUnique.choose_eq_iff {p : α → Prop} {a : α} (h : ∃! x, p x) :
+    h.choose = a ↔ p a :=
+  ⟨fun ha ↦ ha ▸ h.choose_spec.left, h.unique h.choose_spec.left⟩
 
 -- TODO
 -- attribute [congr] forall_congr'
@@ -140,3 +147,15 @@ theorem ExistsUnique.unique₂ {p : α → Sort*} [∀ x, Subsingleton (p x)]
     (hpy₁ : p y₁) (hqy₁ : q y₁ hpy₁) (hpy₂ : p y₂) (hqy₂ : q y₂ hpy₂) : y₁ = y₂ := by
   simp only [existsUnique_iff_exists] at h
   exact h.unique ⟨hpy₁, hqy₁⟩ ⟨hpy₂, hqy₂⟩
+
+/-- This invokes the two `Decidable` arguments $O(n)$ times. -/
+instance List.decidableBExistsUnique {α : Type*} [DecidableEq α] (p : α → Prop) [DecidablePred p] :
+    (l : List α) → Decidable (∃! x, x ∈ l ∧ p x)
+  | [] => .isFalse <| by simp
+  | x :: xs =>
+    if hx : p x then
+      decidable_of_iff (∀ y ∈ xs, p y → x = y) (⟨fun h ↦ ⟨x, by grind⟩,
+        fun ⟨z, h⟩ y hy hp ↦ (h.2 x ⟨mem_cons_self, hx⟩).trans (by grind)⟩)
+    else
+      have := List.decidableBExistsUnique p xs
+      decidable_of_iff (∃! x, x ∈ xs ∧ p x) (by grind)

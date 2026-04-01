@@ -3,9 +3,11 @@ Copyright (c) 2018 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro, Johannes Hölzl
 -/
-import Mathlib.MeasureTheory.Integral.Lebesgue.Map
-import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
-import Mathlib.MeasureTheory.Measure.Count
+module
+
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Map
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Markov
+public import Mathlib.MeasureTheory.Measure.Count
 
 /-!
 # Lebesgue integral over finite and countable types, sets and measures
@@ -15,6 +17,8 @@ The lemmas in this file require at least one of the following of the Lebesgue in
 * The set of integration is finite or countable
 * The measure is finite, s-finite or sigma-finite
 -/
+
+public section
 
 namespace MeasureTheory
 
@@ -89,10 +93,6 @@ theorem lintegral_count [MeasurableSingletonClass α] (f : α → ℝ≥0∞) :
   congr
   exact funext fun a => lintegral_dirac a f
 
-@[deprecated ENNReal.tsum_const (since := "2025-02-06")]
-lemma _root_.ENNReal.tsum_const_eq (c : ℝ≥0∞) : ∑' _ : α, c = c * count (univ : Set α) := by
-  simp [mul_comm]
-
 /-- Markov's inequality for the counting measure with hypothesis using `tsum` in `ℝ≥0∞`. -/
 theorem _root_.ENNReal.count_const_le_le_of_tsum_le [MeasurableSingletonClass α] {a : α → ℝ≥0∞}
     (a_mble : Measurable a) {c : ℝ≥0∞} (tsum_le_c : ∑' i, a i ≤ c) {ε : ℝ≥0∞} (ε_ne_zero : ε ≠ 0)
@@ -101,12 +101,12 @@ theorem _root_.ENNReal.count_const_le_le_of_tsum_le [MeasurableSingletonClass α
   apply (MeasureTheory.meas_ge_le_lintegral_div a_mble.aemeasurable ε_ne_zero ε_ne_top).trans
   exact ENNReal.div_le_div tsum_le_c rfl.le
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Markov's inequality for the counting measure with hypothesis using `tsum` in `ℝ≥0`. -/
 theorem _root_.NNReal.count_const_le_le_of_tsum_le [MeasurableSingletonClass α] {a : α → ℝ≥0}
     (a_mble : Measurable a) (a_summable : Summable a) {c : ℝ≥0} (tsum_le_c : ∑' i, a i ≤ c)
     {ε : ℝ≥0} (ε_ne_zero : ε ≠ 0) : Measure.count { i : α | ε ≤ a i } ≤ c / ε := by
   rw [show (fun i => ε ≤ a i) = fun i => (ε : ℝ≥0∞) ≤ ((↑) ∘ a) i by
-      funext i
       simp only [ENNReal.coe_le_coe, Function.comp]]
   apply
     ENNReal.count_const_le_le_of_tsum_le (measurable_coe_nnreal_ennreal.comp a_mble) _
@@ -189,7 +189,7 @@ theorem exists_measurable_le_forall_setLIntegral_eq [SFinite μ] (f : α → ℝ
   -- we can choose a measurable function $g_{n}$
   -- such that $g_{n}(x) ≤ \min (f(x), n)$ for all $x$
   -- and both sides have the same integral over the whole space w.r.t. $μ$.
-  have (n : ℕ): ∃ g : α → ℝ≥0∞, Measurable g ∧ g ≤ f ∧ g ≤ n ∧
+  have (n : ℕ) : ∃ g : α → ℝ≥0∞, Measurable g ∧ g ≤ f ∧ g ≤ n ∧
       ∫⁻ a, min (f a) n ∂μ = ∫⁻ a, g a ∂μ := by
     simpa [and_assoc] using exists_measurable_le_lintegral_eq μ (f ⊓ n)
   choose g hgm hgf hgle hgint using this
@@ -284,6 +284,7 @@ theorem lintegral_le_of_forall_fin_meas_le [MeasurableSpace α] {μ : Measure α
   have : SigmaFinite (μ.trim le_rfl) := by rwa [trim_eq_self]
   lintegral_le_of_forall_fin_meas_trim_le _ C hf
 
+set_option backward.isDefEq.respectTransparency false in
 theorem SimpleFunc.exists_lt_lintegral_simpleFunc_of_lt_lintegral {m : MeasurableSpace α}
     {μ : Measure α} [SigmaFinite μ] {f : α →ₛ ℝ≥0} {L : ℝ≥0∞} (hL : L < ∫⁻ x, f x ∂μ) :
     ∃ g : α →ₛ ℝ≥0, (∀ x, g x ≤ f x) ∧ ∫⁻ x, g x ∂μ < ∞ ∧ L < ∫⁻ x, g x ∂μ := by
@@ -349,7 +350,7 @@ theorem exists_lt_lintegral_simpleFunc_of_lt_lintegral {m : MeasurableSpace α} 
     rw [← SimpleFunc.lintegral_eq_lintegral, SimpleFunc.coe_map]
     simp only [Function.comp_apply]
   rcases SimpleFunc.exists_lt_lintegral_simpleFunc_of_lt_lintegral h'L with ⟨g, hg, gL, gtop⟩
-  exact ⟨g, fun x => (hg x).trans (coe_le_coe.1 (hg₀ x)), gL, gtop⟩
+  exact ⟨g, fun x => (hg x).trans (ENNReal.coe_le_coe.1 (hg₀ x)), gL, gtop⟩
 
 end SFinite
 

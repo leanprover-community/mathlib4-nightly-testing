@@ -3,7 +3,9 @@ Copyright (c) 2025 Kevin Buzzard. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kevin Buzzard
 -/
-import Mathlib.MeasureTheory.Measure.Haar.Unique
+module
+
+public import Mathlib.MeasureTheory.Measure.Haar.Unique
 
 /-!
 # Scaling Haar measure by a continuous isomorphism
@@ -20,6 +22,8 @@ real constant which we call `mulEquivHaarChar φ`.
 
 -/
 
+@[expose] public section
+
 open MeasureTheory.Measure
 
 open scoped NNReal Pointwise ENNReal
@@ -31,8 +35,8 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [MeasurableSpace G]
 
 /-- If `φ : G ≃ₜ* G` then `mulEquivHaarChar φ` is the positive real factor by which
 `φ` scales Haar measures on `G`. -/
-@[to_additive "If `φ : A ≃ₜ+ A` then `addEquivAddHaarChar φ` is the positive
-real factor by which `φ` scales Haar measures on `A`."]
+@[to_additive /-- If `φ : A ≃ₜ+ A` then `addEquivAddHaarChar φ` is the positive
+real factor by which `φ` scales Haar measures on `A`. -/]
 noncomputable def mulEquivHaarChar (φ : G ≃ₜ* G) : ℝ≥0 :=
   haarScalarFactor haar (haar.map φ)
 
@@ -119,5 +123,28 @@ lemma mulEquivHaarChar_trans {φ ψ : G ≃ₜ* G} :
   have h_reg : (haar.map ψ).Regular := Regular.map ψ.toHomeomorph
   rw [MeasureTheory.Measure.haarScalarFactor_eq_mul haar (haar.map ψ),
     ← mulEquivHaarChar_eq (haar.map ψ)]
+
+@[to_additive]
+lemma mulEquivHaarChar_symm {φ : G ≃ₜ* G} :
+    mulEquivHaarChar φ.symm = (mulEquivHaarChar φ)⁻¹ := by
+  symm
+  apply inv_eq_of_mul_eq_one_right
+  simp [← mulEquivHaarChar_trans]
+
+open TopologicalSpace Set in
+@[to_additive addEquivAddHaarChar_eq_one_of_compactSpace]
+lemma mulEquivHaarChar_eq_one_of_compactSpace [CompactSpace G] (φ : G ≃ₜ* G) :
+    mulEquivHaarChar φ = 1 := by
+  set μ := haarMeasure (⟨⟨univ, isCompact_univ⟩, by simp⟩ : PositiveCompacts G)
+  have hμ : μ univ = 1 := haarMeasure_self
+  rw [mulEquivHaarChar_eq μ]
+  suffices (μ.haarScalarFactor (map φ μ) : ℝ≥0∞) = 1 by exact_mod_cast this
+  calc
+    _ = μ.haarScalarFactor (map φ μ) • (1 : ℝ≥0∞) := by rw [ENNReal.smul_def, smul_eq_mul, mul_one]
+    _ = μ.haarScalarFactor (map φ μ) • (map φ μ univ) := by
+          rw [map_apply (map_continuous φ).measurable .univ, Set.preimage_univ, hμ]
+    _ = μ univ := by
+          conv_rhs => rw [isMulInvariant_eq_smul_of_compactSpace μ (map φ μ), Measure.smul_apply]
+    _ = 1 := hμ
 
 end MeasureTheory

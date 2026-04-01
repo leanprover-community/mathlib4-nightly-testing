@@ -3,12 +3,14 @@ Copyright (c) 2023 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 -/
-import Mathlib.Topology.MetricSpace.Dilation
+module
+
+public import Mathlib.Topology.MetricSpace.Dilation
 
 /-!
 # Dilation equivalence
 
-In this file we define `DilationEquiv X Y`, a type of bundled equivalences between `X` and Y` such
+In this file we define `DilationEquiv X Y`, a type of bundled equivalences between `X` and `Y` such
 that `edist (f x) (f y) = r * edist x y` for some `r : ℝ≥0`, `r ≠ 0`.
 
 We also develop basic API about these equivalences.
@@ -18,6 +20,8 @@ We also develop basic API about these equivalences.
 - Add missing lemmas (compare to other `*Equiv` structures).
 - [after-port] Add `DilationEquivInstance` for `IsometryEquiv`.
 -/
+
+@[expose] public section
 
 open scoped NNReal ENNReal
 open Function Set Filter Bornology
@@ -33,7 +37,7 @@ class DilationEquivClass [EquivLike F X Y] : Prop where
   edist_eq' : ∀ f : F, ∃ r : ℝ≥0, r ≠ 0 ∧ ∀ x y : X, edist (f x) (f y) = r * edist x y
 
 instance (priority := 100) [EquivLike F X Y] [DilationEquivClass F X Y] : DilationClass F X Y :=
-  { inferInstanceAs (FunLike F X Y), ‹DilationEquivClass F X Y› with }
+  { (inferInstance : FunLike F X Y), ‹DilationEquivClass F X Y› with }
 
 end Class
 
@@ -90,6 +94,7 @@ initialize_simps_projections DilationEquiv (toFun → apply, invFun → symm_app
 
 lemma ratio_toDilation (e : X ≃ᵈ Y) : ratio e.toDilation = ratio e := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Identity map as a `DilationEquiv`. -/
 @[simps! -fullyApplied apply]
 def refl (X : Type*) [PseudoEMetricSpace X] : X ≃ᵈ X where
@@ -121,11 +126,10 @@ protected theorem injective (e : X ≃ᵈ Y) : Injective e := e.1.injective
 @[simp]
 theorem ratio_trans (e : X ≃ᵈ Y) (e' : Y ≃ᵈ Z) : ratio (e.trans e') = ratio e * ratio e' := by
   -- If `X` is trivial, then so is `Y`, otherwise we apply `Dilation.ratio_comp'`
-  by_cases hX : ∀ x y : X, edist x y = 0 ∨ edist x y = ∞
+  by_cases! hX : ∀ x y : X, edist x y = 0 ∨ edist x y = ∞
   · have hY : ∀ x y : Y, edist x y = 0 ∨ edist x y = ∞ := e.surjective.forall₂.2 fun x y ↦ by
       refine (hX x y).imp (fun h ↦ ?_) fun h ↦ ?_ <;> simp [*, Dilation.ratio_ne_zero]
     simp [Dilation.ratio_of_trivial, *]
-  push_neg at hX
   exact (Dilation.ratio_comp' (g := e'.toDilation) (f := e.toDilation) hX).trans (mul_comm _ _)
 
 @[simp]
@@ -177,6 +181,7 @@ def toPerm : (X ≃ᵈ X) →* Equiv.Perm X where
 theorem coe_pow (e : X ≃ᵈ X) (n : ℕ) : ⇑(e ^ n) = e^[n] := by
   rw [← coe_toEquiv, ← toPerm_apply, map_pow, Equiv.Perm.coe_pow]; rfl
 
+set_option backward.isDefEq.respectTransparency false in
 -- TODO: Once `IsometryEquiv` follows the `*EquivClass` pattern, replace this with an instance
 -- of `DilationEquivClass` assuming `IsometryEquivClass`.
 /-- Every isometry equivalence is a dilation equivalence of ratio `1`. -/

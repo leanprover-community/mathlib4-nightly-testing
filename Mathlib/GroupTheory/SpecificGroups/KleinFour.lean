@@ -3,7 +3,9 @@ Copyright (c) 2023 Newell Jensen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Newell Jensen
 -/
-import Mathlib.GroupTheory.SpecificGroups.Cyclic
+module
+
+public import Mathlib.GroupTheory.SpecificGroups.Cyclic
 
 /-!
 # Klein Four Group
@@ -17,7 +19,7 @@ produces the third one.
 * `IsKleinFour` : A mixin class which states that the group has order four and exponent two.
 * `mulEquiv'` : An equivalence between a Klein four-group and a group of exponent two which
   preserves the identity is in fact an isomorphism.
-* `mulEquiv`: Any two Klein four-groups are isomorphic via any identity preserving equivalence.
+* `mulEquiv`: Any two Klein four-groups are isomorphic via any identity-preserving equivalence.
 
 ## References
 
@@ -39,7 +41,9 @@ produces the third one.
 non-cyclic abelian group
 -/
 
-/-! # Klein four-groups as a mixin class -/
+@[expose] public section
+
+/-! ### Klein four-groups as a mixin class -/
 
 /-- An (additive) Klein four-group is an (additive) group of cardinality four and exponent two. -/
 class IsAddKleinFour (G : Type*) [AddGroup G] : Prop where
@@ -68,6 +72,11 @@ instance {G : Type*} [AddGroup G] [IsAddKleinFour G] : IsKleinFour (Multiplicati
   exponent_two := by simp
 
 namespace IsKleinFour
+
+@[to_additive]
+theorem isMulCommutative {G : Type*} [Group G] [IsKleinFour G] :
+    IsMulCommutative G where
+  is_comm.comm := mul_comm_of_exponent_two exponent_two
 
 /-- This instance is scoped, because it always applies (which makes linting and typeclass inference
 potentially *a lot* slower). -/
@@ -122,8 +131,8 @@ variable {G₁ G₂ : Type*} [Group G₁] [Group G₂] [IsKleinFour G₁]
 
 /-- An equivalence between an `IsKleinFour` group `G₁` and a group `G₂` of exponent two which sends
 `1 : G₁` to `1 : G₂` is in fact an isomorphism. -/
-@[to_additive "An equivalence between an `IsAddKleinFour` group `G₁` and a group `G₂` of exponent
-two which sends `0 : G₁` to `0 : G₂` is in fact an isomorphism."]
+@[to_additive /-- An equivalence between an `IsAddKleinFour` group `G₁` and a group `G₂` of exponent
+two which sends `0 : G₁` to `0 : G₂` is in fact an isomorphism. -/]
 def mulEquiv' (e : G₁ ≃ G₂) (he : e 1 = 1) (h : Monoid.exponent G₂ = 2) : G₁ ≃* G₂ where
   toEquiv := e
   map_mul' := by
@@ -146,13 +155,13 @@ def mulEquiv' (e : G₁ ≃ G₂) (he : e 1 = 1) (h : Monoid.exponent G₂ = 2) 
 
 /-- Any two `IsKleinFour` groups are isomorphic via any equivalence which sends the identity of one
 group to the identity of the other. -/
-@[to_additive "Any two `IsAddKleinFour` groups are isomorphic via any
-equivalence which sends the identity of one group to the identity of the other."]
+@[to_additive /-- Any two `IsAddKleinFour` groups are isomorphic via any
+equivalence which sends the identity of one group to the identity of the other. -/]
 abbrev mulEquiv [IsKleinFour G₂] (e : G₁ ≃ G₂) (he : e 1 = 1) : G₁ ≃* G₂ :=
   mulEquiv' e he exponent_two
 
 /-- Any two `IsKleinFour` groups are isomorphic. -/
-@[to_additive "Any two `IsAddKleinFour` groups are isomorphic."]
+@[to_additive /-- Any two `IsAddKleinFour` groups are isomorphic. -/]
 lemma nonempty_mulEquiv [IsKleinFour G₂] : Nonempty (G₁ ≃* G₂) := by
   classical
   let _inst₁ := Fintype.ofFinite G₁

@@ -3,8 +3,10 @@ Copyright (c) 2020 Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kexing Ying
 -/
-import Mathlib.Algebra.Group.Subgroup.Lattice
-import Mathlib.Algebra.Group.TypeTags.Hom
+module
+
+public import Mathlib.Algebra.Group.Subgroup.Lattice
+public import Mathlib.Algebra.Group.TypeTags.Hom
 
 /-!
 # `map` and `comap` for subgroups
@@ -45,7 +47,9 @@ membership of a subgroup's underlying set.
 subgroup, subgroups
 -/
 
-assert_not_exists OrderedAddCommMonoid Multiset Ring
+@[expose] public section
+
+assert_not_exists IsOrderedMonoid Multiset Ring
 
 open Function
 open scoped Int
@@ -63,8 +67,8 @@ variable {N : Type*} [Group N] {P : Type*} [Group P]
 
 /-- The preimage of a subgroup along a monoid homomorphism is a subgroup. -/
 @[to_additive
-      "The preimage of an `AddSubgroup` along an `AddMonoid` homomorphism
-      is an `AddSubgroup`."]
+      /-- The preimage of an `AddSubgroup` along an `AddMonoid` homomorphism
+      is an `AddSubgroup`. -/]
 def comap {N : Type*} [Group N] (f : G →* N) (H : Subgroup N) : Subgroup G :=
   { H.toSubmonoid.comap f with
     carrier := f ⁻¹' H
@@ -103,8 +107,8 @@ theorem _root_.AddSubgroup.toSubgroup_comap {A A₂ : Type*} [AddGroup A] [AddGr
 
 /-- The image of a subgroup along a monoid homomorphism is a subgroup. -/
 @[to_additive
-      "The image of an `AddSubgroup` along an `AddMonoid` homomorphism
-      is an `AddSubgroup`."]
+      /-- The image of an `AddSubgroup` along an `AddMonoid` homomorphism
+      is an `AddSubgroup`. -/]
 def map (f : G →* N) (H : Subgroup G) : Subgroup N :=
   { H.toSubmonoid.map f with
     carrier := f '' H
@@ -166,7 +170,7 @@ theorem mem_map_iff_mem {f : G →* N} (hf : Function.Injective f) {K : Subgroup
 @[to_additive]
 theorem map_equiv_eq_comap_symm' (f : G ≃* N) (K : Subgroup G) :
     K.map f.toMonoidHom = K.comap f.symm.toMonoidHom :=
-  SetLike.coe_injective (f.toEquiv.image_eq_preimage K)
+  SetLike.coe_injective (f.toEquiv.image_eq_preimage_symm K)
 
 @[to_additive]
 theorem map_equiv_eq_comap_symm (f : G ≃* N) (K : Subgroup G) :
@@ -254,11 +258,21 @@ theorem map_bot (f : G →* N) : (⊥ : Subgroup G).map f = ⊥ :=
   (gc_map_comap f).l_bot
 
 @[to_additive]
+lemma disjoint_map {f : G →* N} (hf : Function.Injective f) {H K : Subgroup G} (h : Disjoint H K) :
+    Disjoint (H.map f) (K.map f) := by
+  rw [disjoint_iff, ← map_inf _ _ f hf, disjoint_iff.mp h, map_bot]
+
+@[to_additive]
 theorem map_top_of_surjective (f : G →* N) (h : Function.Surjective f) : Subgroup.map f ⊤ = ⊤ := by
   rw [eq_top_iff]
   intro x _
   obtain ⟨y, hy⟩ := h x
   exact ⟨y, trivial, hy⟩
+
+@[to_additive]
+lemma codisjoint_map {f : G →* N} (hf : Function.Surjective f)
+    {H K : Subgroup G} (h : Codisjoint H K) : Codisjoint (H.map f) (K.map f) := by
+  rw [codisjoint_iff, ← map_sup, codisjoint_iff.mp h, map_top_of_surjective _ hf]
 
 @[to_additive (attr := simp)]
 lemma map_equiv_top {F : Type*} [EquivLike F G N] [MulEquivClass F G N] (f : F) :
@@ -270,17 +284,23 @@ theorem comap_top (f : G →* N) : (⊤ : Subgroup N).comap f = ⊤ :=
   (gc_map_comap f).u_top
 
 /-- For any subgroups `H` and `K`, view `H ⊓ K` as a subgroup of `K`. -/
-@[to_additive "For any subgroups `H` and `K`, view `H ⊓ K` as a subgroup of `K`."]
+@[to_additive /-- For any subgroups `H` and `K`, view `H ⊓ K` as a subgroup of `K`. -/]
 def subgroupOf (H K : Subgroup G) : Subgroup K :=
   H.comap K.subtype
 
 /-- If `H ≤ K`, then `H` as a subgroup of `K` is isomorphic to `H`. -/
-@[to_additive (attr := simps) "If `H ≤ K`, then `H` as a subgroup of `K` is isomorphic to `H`."]
+@[to_additive (attr := simps)
+/-- If `H ≤ K`, then `H` as a subgroup of `K` is isomorphic to `H`. -/]
 def subgroupOfEquivOfLe {G : Type*} [Group G] {H K : Subgroup G} (h : H ≤ K) :
     H.subgroupOf K ≃* H where
   toFun g := ⟨g.1, g.2⟩
   invFun g := ⟨⟨g.1, h g.2⟩, g.2⟩
   map_mul' _g _h := rfl
+
+@[to_additive]
+lemma subgroupOf_mono {H₁ H₂ : Subgroup G} (H₃ : Subgroup G) (h : H₁ ≤ H₂) :
+    H₁.subgroupOf H₃ ≤ H₂.subgroupOf H₃ :=
+  comap_mono h
 
 @[to_additive (attr := simp)]
 theorem comap_subtype (H K : Subgroup G) : H.comap K.subtype = H.subgroupOf K :=
@@ -353,38 +373,20 @@ theorem subgroupOf_eq_top {H K : Subgroup G} : H.subgroupOf K = ⊤ ↔ K ≤ H 
 variable (H : Subgroup G)
 
 @[to_additive]
-instance map_isMulCommutative (f : G →* G') [IsMulCommutative H] : IsMulCommutative (H.map f) :=
-  ⟨⟨by
-      rintro ⟨-, a, ha, rfl⟩ ⟨-, b, hb, rfl⟩
-      rw [Subtype.ext_iff, coe_mul, coe_mul, Subtype.coe_mk, Subtype.coe_mk, ← map_mul, ← map_mul]
-      exact congr_arg f (Subtype.ext_iff.mp (mul_comm (⟨a, ha⟩ : H) ⟨b, hb⟩))⟩⟩
-
-@[deprecated (since := "2025-04-09")] alias map_isCommutative := map_isMulCommutative
-@[deprecated (since := "2025-04-09")] alias _root_.AddSubgroup.map_isCommutative :=
-  AddSubgroup.map_isAddCommutative
+instance map_isMulCommutative (f : G →* G') [IsMulCommutative H] : IsMulCommutative (H.map f) := by
+  refine .of_setLike_mul_comm ?_
+  rintro - ⟨a, ha, rfl⟩ - ⟨b, hb, rfl⟩
+  simpa [map_mul] using congr(f $(setLike_mul_comm ha hb))
 
 @[to_additive]
 theorem comap_injective_isMulCommutative {f : G' →* G} (hf : Injective f) [IsMulCommutative H] :
     IsMulCommutative (H.comap f) :=
-  ⟨⟨fun a b =>
-      Subtype.ext
-        (by
-          have := mul_comm (⟨f a, a.2⟩ : H) (⟨f b, b.2⟩ : H)
-          rwa [Subtype.ext_iff, coe_mul, coe_mul, coe_mk, coe_mk, ← map_mul, ← map_mul,
-            hf.eq_iff] at this)⟩⟩
-
-@[deprecated (since := "2025-04-09")] alias comap_injective_isCommutative :=
-  comap_injective_isMulCommutative
-@[deprecated (since := "2025-04-09")] alias _root_.AddSubgroup.comap_injective_isCommutative :=
-  AddSubgroup.comap_injective_isAddCommutative
+  .of_setLike_mul_comm fun a (ha : f a ∈ H) b (hb : f b ∈ H) ↦ hf <| by
+    simpa using setLike_mul_comm ha hb
 
 @[to_additive]
 instance subgroupOf_isMulCommutative [IsMulCommutative H] : IsMulCommutative (H.subgroupOf K) :=
   H.comap_injective_isMulCommutative Subtype.coe_injective
-
-@[deprecated (since := "2025-04-09")] alias subgroupOf_isCommutative := subgroupOf_isMulCommutative
-@[deprecated (since := "2025-04-09")] alias _root_.AddSubgroup.addSubgroupOf_isCommutative :=
-  AddSubgroup.addSubgroupOf_isAddCommutative
 
 end Subgroup
 
@@ -398,10 +400,10 @@ defined by sending subgroups to their inverse images.
 See also `MulEquiv.mapSubgroup` which maps subgroups to their forward images.
 -/
 @[to_additive (attr := simps)
-"An isomorphism of groups gives an order isomorphism between the lattices of subgroups,
+/-- An isomorphism of groups gives an order isomorphism between the lattices of subgroups,
 defined by sending subgroups to their inverse images.
 
-See also `AddEquiv.mapAddSubgroup` which maps subgroups to their forward images."]
+See also `AddEquiv.mapAddSubgroup` which maps subgroups to their forward images. -/]
 def comapSubgroup (f : G ≃* H) : Subgroup H ≃o Subgroup G where
   toFun := Subgroup.comap f
   invFun := Subgroup.comap f.symm
@@ -424,10 +426,10 @@ defined by sending subgroups to their forward images.
 See also `MulEquiv.comapSubgroup` which maps subgroups to their inverse images.
 -/
 @[to_additive (attr := simps)
-"An isomorphism of groups gives an order isomorphism between the lattices of subgroups,
+/-- An isomorphism of groups gives an order isomorphism between the lattices of subgroups,
 defined by sending subgroups to their forward images.
 
-See also `AddEquiv.comapAddSubgroup` which maps subgroups to their inverse images."]
+See also `AddEquiv.comapAddSubgroup` which maps subgroups to their inverse images. -/]
 def mapSubgroup {H : Type*} [Group H] (f : G ≃* H) : Subgroup G ≃o Subgroup H where
   toFun := Subgroup.map f
   invFun := Subgroup.map f.symm
@@ -471,8 +473,8 @@ theorem map_eq_comap_of_inverse {f : G →* N} {g : N →* G} (hl : Function.Lef
 /-- A subgroup is isomorphic to its image under an injective function. If you have an isomorphism,
 use `MulEquiv.subgroupMap` for better definitional equalities. -/
 @[to_additive
-      "An additive subgroup is isomorphic to its image under an injective function. If you
-      have an isomorphism, use `AddEquiv.addSubgroupMap` for better definitional equalities."]
+      /-- An additive subgroup is isomorphic to its image under an injective function. If you
+      have an isomorphism, use `AddEquiv.addSubgroupMap` for better definitional equalities. -/]
 noncomputable def equivMapOfInjective (H : Subgroup G) (f : G →* N) (hf : Function.Injective f) :
     H ≃* H.map f :=
   { Equiv.Set.image f H hf with map_mul' := fun _ _ => Subtype.ext (f.map_mul _ _) }
@@ -489,8 +491,8 @@ variable {N : Type*} [Group N]
 namespace MonoidHom
 
 /-- The `MonoidHom` from the preimage of a subgroup to itself. -/
-@[to_additive (attr := simps!) "the `AddMonoidHom` from the preimage of an
-additive subgroup to itself."]
+@[to_additive (attr := simps!) /-- the `AddMonoidHom` from the preimage of an
+additive subgroup to itself. -/]
 def subgroupComap (f : G →* G') (H' : Subgroup G') : H'.comap f →* H' :=
   f.submonoidComap H'.toSubmonoid
 
@@ -500,7 +502,7 @@ lemma subgroupComap_surjective_of_surjective (f : G →* G') (H' : Subgroup G') 
   f.submonoidComap_surjective_of_surjective H'.toSubmonoid hf
 
 /-- The `MonoidHom` from a subgroup to its image. -/
-@[to_additive (attr := simps!) "the `AddMonoidHom` from an additive subgroup to its image"]
+@[to_additive (attr := simps!) /-- the `AddMonoidHom` from an additive subgroup to its image -/]
 def subgroupMap (f : G →* G') (H : Subgroup G) : H →* H.map f :=
   f.submonoidMap H.toSubmonoid
 
@@ -516,10 +518,10 @@ namespace MulEquiv
 variable {H K : Subgroup G}
 
 /-- Makes the identity isomorphism from a proof two subgroups of a multiplicative
-    group are equal. -/
+group are equal. -/
 @[to_additive
-      "Makes the identity additive isomorphism from a proof
-      two subgroups of an additive group are equal."]
+      /-- Makes the identity additive isomorphism from a proof
+      two subgroups of an additive group are equal. -/]
 def subgroupCongr (h : H = K) : H ≃* K :=
   { Equiv.setCongr <| congr_arg _ h with map_mul' := fun _ _ => rfl }
 
@@ -532,10 +534,10 @@ lemma subgroupCongr_symm_apply (h : H = K) (x) :
     ((MulEquiv.subgroupCongr h).symm x : G) = x := rfl
 
 /-- A subgroup is isomorphic to its image under an isomorphism. If you only have an injective map,
-use `Subgroup.equiv_map_of_injective`. -/
+use `Subgroup.equivMapOfInjective`. -/
 @[to_additive
-      "An additive subgroup is isomorphic to its image under an isomorphism. If you only
-      have an injective map, use `AddSubgroup.equiv_map_of_injective`."]
+      /-- An additive subgroup is isomorphic to its image under an isomorphism. If you only
+      have an injective map, use `AddSubgroup.equivMapOfInjective`. -/]
 def subgroupMap (e : G ≃* G') (H : Subgroup G) : H ≃* H.map (e : G →* G') :=
   MulEquiv.submonoidMap (e : G ≃* G') H.toSubmonoid
 
@@ -562,8 +564,8 @@ theorem closure_preimage_le (f : G →* N) (s : Set N) : closure (f ⁻¹' s) �
 /-- The image under a monoid homomorphism of the subgroup generated by a set equals the subgroup
 generated by the image of the set. -/
 @[to_additive
-      "The image under an `AddMonoid` hom of the `AddSubgroup` generated by a set equals
-      the `AddSubgroup` generated by the image of the set."]
+      /-- The image under an `AddMonoid` hom of the `AddSubgroup` generated by a set equals
+      the `AddSubgroup` generated by the image of the set. -/]
 theorem map_closure (f : G →* N) (s : Set G) : (closure s).map f = closure (f '' s) :=
   Set.image_preimage.l_comm_of_u_comm (gc_map_comap f) (Subgroup.gi N).gc (Subgroup.gi G).gc
     fun _ ↦ rfl
@@ -571,6 +573,11 @@ theorem map_closure (f : G →* N) (s : Set G) : (closure s).map f = closure (f 
 end MonoidHom
 
 namespace Subgroup
+
+@[to_additive]
+lemma surjOn_iff_le_map {f : G →* N} {H : Subgroup G} {K : Subgroup N} :
+    Set.SurjOn f H K ↔ K ≤ H.map f :=
+  Iff.rfl
 
 @[to_additive (attr := simp)]
 theorem equivMapOfInjective_coe_mulEquiv (H : Subgroup G) (e : G ≃* G') :
