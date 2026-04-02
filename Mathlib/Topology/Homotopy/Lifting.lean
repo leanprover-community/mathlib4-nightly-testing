@@ -333,7 +333,7 @@ noncomputable def liftHomotopyRel [PreconnectedSpace A]
   have rel : ∀ t, ∀ a ∈ S, cov.liftHomotopy F f₀' F_0 (t, a) = f₀' a := fun t a ha ↦ by
     rw [liftHomotopy_apply, cov.const_of_comp (ContinuousMap.continuous _) _ t 0]
     · apply cov.liftPath_zero
-    · intro t t'; simp_rw [← p.comp_apply, cov.liftPath_lifts]
+    · intro t t'; simp_rw [← Function.comp_apply (f := p), cov.liftPath_lifts]
       exact (F.prop t a ha).trans (F.prop t' a ha).symm
   { toContinuousMap := cov.liftHomotopy F f₀' F_0
     map_zero_left := cov.liftHomotopy_zero F f₀' F_0
