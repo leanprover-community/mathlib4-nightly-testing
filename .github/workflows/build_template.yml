@@ -763,6 +763,11 @@ jobs:
           use-mathlib-cache: false # This can be re-enabled once we are confident in the cache again.
           reinstall-transient-toolchain: true
 
+      # `lake cache` is currently not transitive, so we need to build dependencies
+      - name: build Mathlib dependencies
+        run: |
+          lake build batteries Qq aesop proofwidgets importGraph LeanSearchClient plausible
+
       - name: get Lake cache for Mathlib
         run: |
           lake cache get --repo=${{ github.event.pull_request.head.repo.full_name || github.repository }}
