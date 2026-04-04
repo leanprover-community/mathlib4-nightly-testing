@@ -710,7 +710,9 @@ jobs:
           export LAKE_CACHE_KEY="${LAKE_CACHE_KEY_RAW%"${LAKE_CACHE_KEY_RAW##*[![:space:]]}"}"
 
           echo "Uploading cache to Cloudflare..."
-          lake cache put-staged lake-cache-staging --repo=${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          lake cache put-staged lake-cache-staging \
+            --rev=${{ github.event.pull_request.head.sha || github.sha }} \
+            --repo=${{ github.event.pull_request.head.repo.full_name || github.repository }}
         env:
           LAKE_CACHE_KEY_RAW: ${{ secrets.LAKE_CACHE_KEY }}
           LAKE_CACHE_ARTIFACT_ENDPOINT: ${{ vars.LAKE_CACHE_ENDPOINT }}/a1
