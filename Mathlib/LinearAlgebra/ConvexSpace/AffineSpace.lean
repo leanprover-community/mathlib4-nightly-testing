@@ -112,6 +112,7 @@ public lemma _root_.convexCombination_eq_sum (f : StdSimplex R V) :
   simp [AddTorsor.convexCombination_eq_affineCombination,
     Finset.affineCombination_eq_linear_combination _ _ _ f.total, Finsupp.sum]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `convexComboPair` in an affine space is the affine line map. -/
 public theorem convexComboPair_eq_lineMap (s t : R) (hs : 0 ≤ s) (ht : 0 ≤ t)
     (h : s + t = 1) (x y : P) :

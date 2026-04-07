@@ -488,6 +488,7 @@ lemma ωScottContinuous.sup (hf : ωScottContinuous f) (hg : ωScottContinuous g
   apply ωScottContinuous.sSup
   rintro f (rfl | rfl | _) <;> assumption
 
+set_option backward.isDefEq.respectTransparency false in
 lemma ωScottContinuous.top : ωScottContinuous (⊤ : α → β) :=
   ωScottContinuous.of_monotone_map_ωSup
     ⟨monotone_const, fun c ↦ eq_of_forall_ge_iff fun a ↦ by simp⟩

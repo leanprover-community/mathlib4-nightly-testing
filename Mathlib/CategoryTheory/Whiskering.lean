@@ -110,6 +110,7 @@ instance faithful_whiskeringRight_obj {F : D ⥤ E} [F.Faithful] :
     ext X
     exact F.map_injective <| congr_fun (congr_arg NatTrans.app hαβ) X
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `F : D ⥤ E` is fully faithful, then so is
 `(whiskeringRight C D E).obj F : (C ⥤ D) ⥤ C ⥤ E`. -/
 @[simps]
@@ -380,6 +381,7 @@ theorem pentagon :
 variable {C₁ C₂ C₃ D₁ D₂ D₃ : Type*} [Category* C₁] [Category* C₂] [Category* C₃]
   [Category* D₁] [Category* D₂] [Category* D₃] (E : Type*) [Category* E]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The obvious functor `(C₁ ⥤ D₁) ⥤ (C₂ ⥤ D₂) ⥤ (D₁ ⥤ D₂ ⥤ E) ⥤ (C₁ ⥤ C₂ ⥤ E)`. -/
 @[simps!]
 def whiskeringLeft₂ :
@@ -400,6 +402,7 @@ def whiskeringLeft₃ObjObjObj (F₁ : C₁ ⥤ D₁) (F₂ : C₂ ⥤ D₂) (F�
   (whiskeringRight _ _ _).obj (((whiskeringLeft₂ E).obj F₂).obj F₃) ⋙
     (whiskeringLeft C₁ D₁ _).obj F₁
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `whiskeringLeft₃`. -/
 @[simps]
 def whiskeringLeft₃ObjObjMap (F₁ : C₁ ⥤ D₁) (F₂ : C₂ ⥤ D₂) {F₃ F₃' : C₃ ⥤ D₃} (τ₃ : F₃ ⟶ F₃') :
@@ -407,6 +410,7 @@ def whiskeringLeft₃ObjObjMap (F₁ : C₁ ⥤ D₁) (F₂ : C₂ ⥤ D₂) {F�
       whiskeringLeft₃ObjObjObj E F₁ F₂ F₃' where
   app F := whiskerLeft _ (whiskerLeft _ (((whiskeringLeft₂ E).obj F₂).map τ₃))
 
+set_option backward.isDefEq.respectTransparency false in
 variable (C₃ D₃) in
 /-- Auxiliary definition for `whiskeringLeft₃`. -/
 @[simps]
@@ -415,6 +419,7 @@ def whiskeringLeft₃ObjObj (F₁ : C₁ ⥤ D₁) (F₂ : C₂ ⥤ D₂) :
   obj F₃ := whiskeringLeft₃ObjObjObj E F₁ F₂ F₃
   map τ₃ := whiskeringLeft₃ObjObjMap E F₁ F₂ τ₃
 
+set_option backward.isDefEq.respectTransparency false in
 variable (C₃ D₃) in
 /-- Auxiliary definition for `whiskeringLeft₃`. -/
 @[simps]
@@ -430,6 +435,7 @@ def whiskeringLeft₃Obj (F₁ : C₁ ⥤ D₁) :
   obj F₂ := whiskeringLeft₃ObjObj C₃ D₃ E F₁ F₂
   map τ₂ := whiskeringLeft₃ObjMap C₃ D₃ E F₁ τ₂
 
+set_option backward.isDefEq.respectTransparency false in
 variable (C₂ C₃ D₂ D₃) in
 /-- Auxiliary definition for `whiskeringLeft₃`. -/
 @[simps]

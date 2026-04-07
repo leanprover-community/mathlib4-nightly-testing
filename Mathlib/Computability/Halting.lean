@@ -174,6 +174,7 @@ theorem ComputablePred.of_eq {α} [Primcodable α] {p q : α → Prop} (hp : Com
 
 namespace Computable
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `P` is computable, and if for every `x` there exists an `n` such that `P x n` holds,
 then the function mapping `x` to the minimal such `n` (using `Nat.find`) is computable.
 This formally bridges `Partrec.rfind` with total unbounded search. -/
@@ -328,11 +329,13 @@ theorem of_prim {n} {f : List.Vector ℕ n → ℕ} (hf : Primrec f) : @Partrec'
 theorem head {n : ℕ} : @Partrec' n.succ (@head ℕ n) :=
   prim Nat.Primrec'.head
 
+set_option backward.isDefEq.respectTransparency false in
 theorem tail {n f} (hf : @Partrec' n f) : @Partrec' n.succ fun v => f v.tail :=
   (hf.comp _ fun i => @prim _ _ <| Nat.Primrec'.get i.succ).of_eq fun v => by
     rw [← ofFn_get v.tail, funext (get_tail_succ v)]
     simp
 
+set_option backward.isDefEq.respectTransparency false in
 protected theorem bind {n f g} (hf : @Partrec' n f) (hg : @Partrec' (n + 1) g) :
     @Partrec' n fun v => (f v).bind fun a => g (a ::ᵥ v) :=
   (@comp n (n + 1) g (Fin.cases f (fun i v => some (v.get i))) hg <|
@@ -359,6 +362,7 @@ protected theorem cons {n m} {f : List.Vector ℕ n → ℕ} {g} (hf : @Partrec'
 theorem idv {n} : @Vec n n id :=
   Vec.prim Nat.Primrec'.idv
 
+set_option backward.isDefEq.respectTransparency false in
 theorem comp' {n m f g} (hf : @Partrec' m f) (hg : @Vec n m g) : Partrec' fun v => f (g v) :=
   (hf.comp _ hg).of_eq fun v => by simp
 

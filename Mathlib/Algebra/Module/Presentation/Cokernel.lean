@@ -98,6 +98,7 @@ variable (hg₁ : Submodule.span A (Set.range g₁) = ⊤)
 
 namespace cokernelSolution
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The cokernel can be defined by generators and relations. -/
 noncomputable def isPresentationCore :
     Relations.Solution.IsPresentationCore.{w}

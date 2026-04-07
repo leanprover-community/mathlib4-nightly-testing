@@ -84,6 +84,7 @@ lemma supported_eq_map :
     supported R S s = (Finsupp.supported S R s).map (coeffLinearEquiv R).symm.toLinearMap :=
   Submodule.comap_equiv_eq_map_symm ..
 
+set_option backward.isDefEq.respectTransparency false in
 variable (R S s) in
 @[to_additive (dont_translate := R)]
 lemma supported_eq_span_single : supported R R s = .span R ((fun m ↦ single m 1) '' s) := by

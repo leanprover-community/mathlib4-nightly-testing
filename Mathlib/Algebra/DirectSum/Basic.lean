@@ -39,6 +39,7 @@ def DirectSum [∀ i, AddCommMonoid (β i)] : Type _ :=
   Π₀ i, β i
 deriving AddCommMonoid, Inhabited, DFunLike
 
+set_option backward.isDefEq.respectTransparency false in
 set_option backward.inferInstanceAs.wrap.data false in
 deriving instance CoeFun for DirectSum
 
@@ -403,6 +404,7 @@ theorem IsInternal.addSubmonoid_iSup_eq_top {M : Type*} [DecidableEq ι] [AddCom
 
 variable {M S : Type*} [AddCommMonoid M] [SetLike S M] [AddSubmonoidClass S M]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem support_subset [DecidableEq ι] [DecidableEq M] (A : ι → S) (x : DirectSum ι fun i => A i) :
     (Function.support fun i => (x i : M)) ⊆ ↑(DFinsupp.support x) := by
   intro m

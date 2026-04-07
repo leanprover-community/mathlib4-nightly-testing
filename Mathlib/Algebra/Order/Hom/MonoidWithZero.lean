@@ -264,6 +264,7 @@ end LinearOrderedCommMonoidWithZero
 
 end OrderMonoidWithZeroHom
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Any ordered group is isomorphic to the units of itself adjoined with `0`. -/
 @[simps!]
 def OrderMonoidIso.unitsWithZero {α : Type*} [Group α] [Preorder α] : (WithZero α)ˣ ≃*o α where

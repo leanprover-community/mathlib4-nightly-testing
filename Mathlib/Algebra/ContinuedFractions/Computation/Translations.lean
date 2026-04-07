@@ -226,6 +226,7 @@ theorem IntFractPair.exists_succ_get?_stream_of_gcf_of_get?_eq_some {gp_n : Pair
   cases gp_n_eq
   simp_all only [Option.some.injEq, exists_eq_left']
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Shows how the entries of the sequence of the computed continued fraction can be obtained by the
 integer parts of the stream of integer and fractional parts.
 -/

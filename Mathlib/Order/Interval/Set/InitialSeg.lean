@@ -22,6 +22,7 @@ namespace Set
 
 variable {α : Type*} [Preorder α]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `Set.Iic j` is an initial segment. -/
 @[simps]
 def initialSegIic (j : α) :
@@ -45,6 +46,7 @@ def principalSegIio (j : α) :
 lemma principalSegIio_toRelEmbedding {j : α} (k : Iio j) :
     (Set.principalSegIio j).toRelEmbedding k = k.1 := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `i ≤ j`, then `Set.Iic i` is an initial segment of `Set.Iic j`. -/
 @[simps]
 def initialSegIicIicOfLE {i j : α} (h : i ≤ j) :
@@ -54,6 +56,7 @@ def initialSegIicIicOfLE {i j : α} (h : i ≤ j) :
   map_rel_iff' := by aesop
   mem_range_of_rel' x k h := ⟨⟨k.1, (Subtype.coe_le_coe.2 h.le).trans x.2⟩, rfl⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `i ≤ j`, then `Set.Iio i` is a principal segment of `Set.Iic j`. -/
 @[simps top]
 def principalSegIioIicOfLE {i j : α} (h : i ≤ j) :
@@ -71,6 +74,7 @@ lemma principalSegIioIicOfLE_toRelEmbedding {i j : α} (h : i ≤ j)
 
 end Set
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `f : α <i β` is a principal segment, this is the induced order
 isomorphism `α ≃o Set.Iio f.top`. -/
 @[simps! apply_coe]

@@ -1258,6 +1258,7 @@ end ClosedComplemented
 theorem closedComplemented_bot : ClosedComplemented (⊥ : Submodule R M) :=
   ⟨0, fun x => by simp only [zero_apply, eq_zero_of_bot_submodule x]⟩
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem closedComplemented_top : ClosedComplemented (⊤ : Submodule R M) :=
   ⟨(ContinuousLinearMap.id R M).codRestrict ⊤ fun _x => trivial,

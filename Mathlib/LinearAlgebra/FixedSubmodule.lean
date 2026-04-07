@@ -108,6 +108,7 @@ open Pointwise MulAction
 
 variable {R V : Type*} [Ring R] [AddCommGroup V] [Module R V]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- When `u : V ≃ₗ[R] V` maps a submodule `W` into itself,
 this is the induced linear equivalence of `V ⧸ W`, as a group homomorphism. -/
 def reduce (W : Submodule R V) : stabilizer (V ≃ₗ[R] V) W →* (V ⧸ W) ≃ₗ[R] (V ⧸ W) where

@@ -53,6 +53,7 @@ theorem LinearEquiv.finsuppUnique_apply (f : α →₀ M) :
 
 variable {α}
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem LinearEquiv.finsuppUnique_symm_apply (m : M) :
     (LinearEquiv.finsuppUnique R M α).symm m = Finsupp.single default m := by
