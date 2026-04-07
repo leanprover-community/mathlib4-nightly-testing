@@ -282,6 +282,7 @@ def concatRec {u v : V} (p : G.Walk u v) : motive u v p :=
 theorem concatRec_nil (u : V) :
     @concatRec _ _ motive @Hnil @Hconcat _ _ (nil : G.Walk u u) = Hnil := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem concatRec_concat {u v w : V} (p : G.Walk u v) (h : G.Adj v w) :
     @concatRec _ _ motive @Hnil @Hconcat _ _ (p.concat h) =
@@ -399,6 +400,7 @@ theorem coe_support_append' [DecidableEq V] {u v w : V} (p : G.Walk u v) (p' : G
   simp_rw [support_append, ← Multiset.coe_add, coe_support, add_comm ({v} : Multiset V),
     ← add_assoc, add_tsub_cancel_right]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem ofSupport_support {u v : V} (p : G.Walk u v) :
     ofSupport _ p.support_ne_nil p.isChain_adj_support = p.copy (by simp) (by simp) := by
@@ -434,6 +436,7 @@ theorem darts_reverse {u v : V} (p : G.Walk u v) :
 theorem mem_darts_reverse {u v : V} {d : G.Dart} {p : G.Walk u v} :
     d ∈ p.reverse.darts ↔ d.symm ∈ p.darts := by simp
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem ofDarts_darts {u v : V} {p : G.Walk u v} (hp : ¬p.Nil) :
     ofDarts _ (darts_eq_nil.not.mpr hp) p.isChain_dartAdj_darts = p.copy (by simp) (by simp) := by

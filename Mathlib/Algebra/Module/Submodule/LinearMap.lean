@@ -185,6 +185,7 @@ section
 variable {M₂' : Type*} [AddCommMonoid M₂'] [Module R₂ M₂']
   (p : M₂' →ₗ[R₂] M₂) (hp : Injective p) (h : ∀ c, f c ∈ range p)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A linear map `f : M → M₂` whose values lie in the image of an injective linear map
 `p : M₂' → M₂` admits a unique lift to a linear map `M → M₂'`. -/
 noncomputable def codLift :
@@ -219,6 +220,7 @@ theorem restrict_apply {f : M →ₗ[R] M₁} {p : Submodule R M} {q : Submodule
     (hf : ∀ x ∈ p, f x ∈ q) (x : p) : f.restrict hf x = ⟨f x, hf x.1 x.2⟩ :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 lemma restrict_sub {R M M₁ : Type*}
     [Ring R] [AddCommGroup M] [AddCommGroup M₁] [Module R M] [Module R M₁]
     {p : Submodule R M} {q : Submodule R M₁} {f g : M →ₗ[R] M₁}

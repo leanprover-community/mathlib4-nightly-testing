@@ -593,6 +593,7 @@ theorem fromRel_mono_iff (sym₁ : Symmetric r₁) (sym₂ : Symmetric r₂) :
 @[gcongr]
 alias ⟨_, fromRel_mono⟩ := fromRel_mono_iff
 
+set_option backward.isDefEq.respectTransparency false in
 theorem fromRel_bot : fromRel (α := α) (r := ⊥) (fun _ _ ↦ id) = ∅ :=
   Set.eq_empty_of_forall_notMem <| Sym2.ind <| by simp
 
@@ -602,6 +603,7 @@ theorem fromRel_bot_iff {sym : Symmetric r} : fromRel sym = ∅ ↔ r = ⊥ := b
   ext x y
   simpa [h] using fromRel_prop (sym := sym)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem fromRel_top : fromRel (α := α) (r := ⊤) (fun _ _ ↦ id) = .univ :=
   Set.eq_univ_of_forall <| Sym2.ind <| by simp
 
@@ -611,12 +613,14 @@ theorem fromRel_top_iff {sym : Symmetric r} : fromRel sym = .univ ↔ r = ⊤ :=
   ext x y
   simpa [h] using fromRel_prop (sym := sym)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem fromRel_ne : fromRel (fun (_ _ : α) z => z.symm : Symmetric Ne) = {z | ¬IsDiag z} := by
   ext z; exact z.ind (by simp)
 
 lemma diagSet_eq_fromRel_eq : diagSet = fromRel (α := α) eq_equivalence.symmetric := by
   ext ⟨a, b⟩; simp
 
+set_option backward.isDefEq.respectTransparency false in
 lemma diagSet_compl_eq_fromRel_ne : diagSetᶜ = fromRel (α := α) (r := Ne) (fun _ _ ↦ Ne.symm) := by
   ext ⟨a, b⟩; simp
 
@@ -687,6 +691,7 @@ variable (α) in
 def toRelOrderEmbedding : Set (Sym2 α) ↪o (α → α → Prop) :=
   .ofMapLEIff ToRel toRel_mono_iff
 
+set_option backward.isDefEq.respectTransparency false in
 variable (α) in
 /-- `fromRel`/`ToRel` induce an order isomorphism between symmetric relations and `Sym2` sets -/
 @[simps]

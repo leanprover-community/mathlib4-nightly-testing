@@ -428,6 +428,7 @@ fraction rings `K ≃+* L`. -/
 noncomputable def ringEquivOfRingEquiv : K ≃+* L :=
   IsLocalization.ringEquivOfRingEquiv K L h (MulEquivClass.map_nonZeroDivisors h)
 
+set_option backward.isDefEq.respectTransparency false in
 lemma ringEquivOfRingEquiv_algebraMap
     (a : A) : ringEquivOfRingEquiv h (algebraMap A K a) = algebraMap B L (h a) := by
   simp
@@ -499,6 +500,7 @@ fraction rings `K ≃ₐ[R] L`. -/
 noncomputable def algEquivOfAlgEquiv : K ≃ₐ[R] L :=
   IsLocalization.algEquivOfAlgEquiv K L h (MulEquivClass.map_nonZeroDivisors h)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma algEquivOfAlgEquiv_algebraMap
     (a : A) : algEquivOfAlgEquiv h (algebraMap A K a) = algebraMap B L (h a) := by

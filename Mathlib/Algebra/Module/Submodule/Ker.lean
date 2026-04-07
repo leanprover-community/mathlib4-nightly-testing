@@ -120,6 +120,7 @@ theorem ker_codRestrict {τ₂₁ : R₂ →+* R} (p : Submodule R M) (f : M₂ 
 lemma ker_domRestrict [AddCommMonoid M₁] [Module R M₁] (p : Submodule R M) (f : M →ₗ[R] M₁) :
     ker (domRestrict f p) = (ker f).comap p.subtype := ker_comp ..
 
+set_option backward.isDefEq.respectTransparency false in
 theorem ker_restrict [AddCommMonoid M₁] [Module R M₁] {p : Submodule R M} {q : Submodule R M₁}
     {f : M →ₗ[R] M₁} (hf : ∀ x : M, x ∈ p → f x ∈ q) :
     ker (f.restrict hf) = (ker f).comap p.subtype := by

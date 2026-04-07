@@ -249,6 +249,7 @@ theorem natCast_comp_val [NeZero n] : ((↑) : ℕ → R) ∘ (val : ZMod n → 
   · cases NeZero.ne 0 rfl
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The coercions are respectively `Int.cast`, `ZMod.cast`, and `ZMod.cast`. -/
 @[simp]
 theorem intCast_comp_cast : ((↑) : ℤ → R) ∘ (cast : ZMod n → ℤ) = cast := by
@@ -864,6 +865,7 @@ def unitsEquivCoprime {n : ℕ} [NeZero n] : (ZMod n)ˣ ≃ { x : ZMod n // Nat.
   left_inv := fun ⟨_, _, _, _⟩ => Units.ext (natCast_zmod_val _)
   right_inv := fun ⟨_, _⟩ => by simp
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The **Chinese remainder theorem**. For a pair of coprime natural numbers, `m` and `n`,
   the rings `ZMod (m * n)` and `ZMod m × ZMod n` are isomorphic.
 
@@ -1100,6 +1102,7 @@ instance subsingleton_ringEquiv [Semiring R] : Subsingleton (ZMod n ≃+* R) :=
     rw [RingEquiv.coe_ringHom_inj_iff]
     apply RingHom.ext_zmod _ _⟩
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem ringHom_map_cast [NonAssocRing R] (f : R →+* ZMod n) (k : ZMod n) : f (cast k) = k := by
   cases n

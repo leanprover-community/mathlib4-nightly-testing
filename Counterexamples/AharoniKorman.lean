@@ -206,6 +206,7 @@ lemma induction_on_level {n : ℕ} {p : (x : Hollom) → x ∈ level n → Prop}
   rintro x y _ rfl
   exact h _ _
 
+set_option backward.isDefEq.respectTransparency false in
 /--
 For each `n`, there is an order embedding from ℕ × ℕ (which has the product order) to the Hollom
 partial order.
@@ -219,6 +220,7 @@ lemma embed_apply (n : ℕ) (x y : ℕ) : embed n (x, y) = h(x, y, n) := rfl
 
 lemma embed_strictMono {n : ℕ} : StrictMono (embed n) := (embed n).strictMono
 
+set_option backward.isDefEq.respectTransparency false in
 lemma level_eq_range (n : ℕ) : level n = Set.range (embed n) := by
   simp [level, Set.range, embed]
 
@@ -810,6 +812,7 @@ variable {n : ℕ}
 
 lemma R_subset_level : R n C ⊆ level n := Set.sep_subset (level n) _
 
+set_option backward.isDefEq.respectTransparency false in
 /--
 A helper lemma to show `square_subset_R`.  In particular shows that if `C ∩ level n` is finite, the
 set of points `x` such that `x` is at least as large as every element of `C ∩ level n` contains an
@@ -851,6 +854,7 @@ lemma square_subset_above (h : (C ∩ level n).Finite) :
     specialize hab _ _ hfg
     lia
 
+set_option backward.isDefEq.respectTransparency false in
 lemma square_subset_R (h : (C ∩ level n).Finite) :
     ∀ᶠ a in atTop, embed n '' Set.Ici (a, a) ⊆ R n C \ (C ∩ level n) := by
   filter_upwards [square_subset_above h] with a ha
@@ -933,6 +937,7 @@ lemma S_subset_R : S n C ⊆ R n C := by
 
 lemma S_subset_level : S n C ⊆ level n := S_subset_R.trans R_subset_level
 
+set_option backward.isDefEq.respectTransparency false in
 /--
 Assuming `C ∩ level n` is finite, and `C ∩ level (n + 1)` is finite, that there exists cofinitely
 many `a` such that `{(x, y, n) | x ≥ a ∧ y ≥ a} ⊆ S \ (C ∩ level n)`.

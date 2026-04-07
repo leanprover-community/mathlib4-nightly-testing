@@ -61,6 +61,7 @@ instance decidableLT' : DecidableLT String := by
     else base₁ it₁.s it₂.s it₁.i it₂.i h₂ h₁
   else base₂ it₁.s it₂.s it₁.i it₂.i h₂
 
+set_option backward.isDefEq.respectTransparency false in
 theorem ltb_cons_addChar' (c : Char) (s₁ s₂ : Legacy.Iterator) :
     ltb ⟨ofList (c :: s₁.s.toList), s₁.i + c⟩ ⟨ofList (c :: s₂.s.toList), s₂.i + c⟩ =
       ltb s₁ s₂ := by

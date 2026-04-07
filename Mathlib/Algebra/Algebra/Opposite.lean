@@ -41,6 +41,7 @@ variable [IsScalarTower R S A]
 
 namespace MulOpposite
 
+set_option backward.isDefEq.respectTransparency false in
 instance instAlgebra : Algebra R Aᵐᵒᵖ where
   algebraMap := (algebraMap R A).toOpposite fun _ _ => Algebra.commutes _ _
   smul_def' c x := unop_injective <| by

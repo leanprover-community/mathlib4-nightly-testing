@@ -413,6 +413,7 @@ noncomputable alias _root_.Path.Homotopic.map_lift := Quotient.mk_map
 
 end Quotient
 
+set_option backward.isDefEq.respectTransparency false in
 -- Porting note: we didn't previously need the `α := ...` and `β := ...` hints.
 theorem hpath_hext {p₁ : Path x₀ x₁} {p₂ : Path x₂ x₃} (hp : ∀ t, p₁ t = p₂ t) :
     HEq (α := Path.Homotopic.Quotient _ _) ⟦p₁⟧ (β := Path.Homotopic.Quotient _ _) ⟦p₂⟧ := by

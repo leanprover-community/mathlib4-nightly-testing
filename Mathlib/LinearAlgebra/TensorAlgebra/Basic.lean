@@ -154,6 +154,7 @@ theorem lift_ι_apply {A : Type*} [Semiring A] [Algebra R A] (f : M →ₗ[R] A)
   conv_rhs => rw [← ι_comp_lift f]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem lift_unique {A : Type*} [Semiring A] [Algebra R A] (f : M →ₗ[R] A)
     (g : TensorAlgebra R M →ₐ[R] A) : g.toLinearMap.comp (ι R) = f ↔ g = lift R f := by
