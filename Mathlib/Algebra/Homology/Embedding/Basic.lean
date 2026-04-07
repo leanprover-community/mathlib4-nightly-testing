@@ -181,6 +181,7 @@ def embeddingUp'Add (a b : A) : Embedding (up' a) (up' a) :=
     (fun _ _ h => by simpa using h)
     (by dsimp; simp_rw [add_right_comm _ b a, add_right_cancel_iff, implies_true])
 
+set_option backward.isDefEq.respectTransparency false in
 instance (a b : A) : (embeddingUp'Add a b).IsRelIff := by dsimp [embeddingUp'Add]; infer_instance
 
 instance (a b : A) : (embeddingUp'Add a b).IsTruncGE where
@@ -193,6 +194,7 @@ def embeddingDown'Add (a b : A) : Embedding (down' a) (down' a) :=
     (fun _ _ h => by simpa using h)
     (by dsimp; simp_rw [add_right_comm _ b a, add_right_cancel_iff, implies_true])
 
+set_option backward.isDefEq.respectTransparency false in
 instance (a b : A) : (embeddingDown'Add a b).IsRelIff := by
   dsimp [embeddingDown'Add]; infer_instance
 
@@ -208,6 +210,7 @@ def embeddingUpNat : Embedding (up ℕ) (up ℤ) :=
     (fun _ _ h => by simpa using h)
     (by dsimp; lia)
 
+set_option backward.isDefEq.respectTransparency false in
 instance : embeddingUpNat.IsRelIff := by dsimp [embeddingUpNat]; infer_instance
 
 instance : embeddingUpNat.IsTruncGE where
@@ -220,6 +223,7 @@ def embeddingDownNat : Embedding (down ℕ) (up ℤ) :=
     (fun _ _ h => by simpa using h)
     (by dsimp; lia)
 
+set_option backward.isDefEq.respectTransparency false in
 instance : embeddingDownNat.IsRelIff := by dsimp [embeddingDownNat]; infer_instance
 
 instance : embeddingDownNat.IsTruncLE where
@@ -234,6 +238,7 @@ def embeddingUpIntGE : Embedding (up ℕ) (up ℤ) :=
     (fun _ _ h => by dsimp at h; lia)
     (by dsimp; lia)
 
+set_option backward.isDefEq.respectTransparency false in
 instance : (embeddingUpIntGE p).IsRelIff := by dsimp [embeddingUpIntGE]; infer_instance
 
 instance : (embeddingUpIntGE p).IsTruncGE where
@@ -246,6 +251,7 @@ def embeddingUpIntLE : Embedding (down ℕ) (up ℤ) :=
     (fun _ _ h => by dsimp at h; lia)
     (by dsimp; lia)
 
+set_option backward.isDefEq.respectTransparency false in
 instance : (embeddingUpIntLE p).IsRelIff := by dsimp [embeddingUpIntLE]; infer_instance
 
 instance : (embeddingUpIntLE p).IsTruncLE where
