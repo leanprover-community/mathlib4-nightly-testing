@@ -537,8 +537,8 @@ of `t.subtype`. -/
 def comapSubtypeEquivOfLe {p q : Submodule R M} (hpq : p ≤ q) : comap q.subtype p ≃ₗ[R] p where
   toFun x := ⟨x, x.2⟩
   invFun x := ⟨⟨x, hpq x.2⟩, x.2⟩
-  left_inv x := by simp only [SetLike.eta]
-  right_inv x := by simp only [SetLike.eta]
+  left_inv x := by simp
+  right_inv x := by simp
   map_add' _ _ := rfl
   map_smul' _ _ := rfl
 
