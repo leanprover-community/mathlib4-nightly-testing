@@ -197,6 +197,7 @@ noncomputable
 def hahnCoeff : seed.baseDomain →ₗ[K] (⨁ _ : FiniteArchimedeanClass M, R) :=
   (DirectSum.lmap seed.coeff') ∘ₗ (DirectSum.decomposeLinearEquiv _).toLinearMap
 
+set_option backward.isDefEq.respectTransparency false in
 theorem hahnCoeff_apply {x : seed.baseDomain} {f : Π₀ c, seed.stratum c}
     (h : x.val = f.sum fun c ↦ (seed.stratum c).subtype) (c : FiniteArchimedeanClass M) :
     seed.hahnCoeff x c = seed.coeff c (f c) := by

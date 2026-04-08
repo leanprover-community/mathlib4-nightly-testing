@@ -318,6 +318,7 @@ theorem tendsto_iff_tendstoUniformlyOn {ι : Type*} {p : Filter ι} [UniformSpac
   rw [(isEmbedding_coeFn σ F 𝔖).tendsto_nhds_iff, UniformOnFun.tendsto_iff_tendstoUniformlyOn]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 variable {F} in
 theorem isUniformInducing_postcomp
     [AddCommGroup G] [UniformSpace G] [IsUniformAddGroup G]
@@ -434,6 +435,7 @@ variable {𝕜₁ 𝕜₂ 𝕜₃ : Type*} [NormedField 𝕜₁] [NormedField �
 
 variable (𝔖 : Set (Set E)) (𝔗 : Set (Set F))
 
+set_option backward.isDefEq.respectTransparency false in
 variable (G) in
 /-- Pre-composition by a *fixed* continuous linear map as a continuous linear map for the uniform
 convergence topology. -/
@@ -457,6 +459,7 @@ alias precomp_uniformConvergenceCLM := precompUniformConvergenceCLM
 @[deprecated (since := "2026-01-27")]
 alias precomp_uniformConvergenceCLM_apply := precompUniformConvergenceCLM_apply
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Post-composition by a *fixed* continuous linear map as a continuous linear map for the uniform
 convergence topology. -/
 @[simps]
