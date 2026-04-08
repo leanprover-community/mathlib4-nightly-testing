@@ -189,6 +189,7 @@ def torsion : Submonoid G where
 
 variable {G}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Torsion submonoids are torsion. -/
 @[to_additive /-- Additive torsion submonoids are additively torsion. -/]
 theorem torsion.isTorsion : IsTorsion <| torsion G := fun ⟨x, n, npos, hn⟩ =>

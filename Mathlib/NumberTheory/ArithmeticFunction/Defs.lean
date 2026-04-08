@@ -187,6 +187,7 @@ instance instAddMonoid : AddMonoid (ArithmeticFunction R) where
 
 end AddMonoid
 
+set_option backward.isDefEq.respectTransparency false in
 instance instAddMonoidWithOne [AddMonoidWithOne R] : AddMonoidWithOne (ArithmeticFunction R) where
   natCast n := ⟨fun x ↦ if x = 1 then (n : R) else 0, by simp⟩
   natCast_zero := by ext; simp
@@ -392,6 +393,7 @@ theorem dirichletInverseFun_apply_ne {n : ℕ} (hn0 : n ≠ 0) (hn1 : n ≠ 1) :
 def dirichletInverse : ArithmeticFunction R :=
   ⟨dirichletInverseFun f hf, dirichletInverseFun_apply_zero f hf⟩
 
+set_option backward.isDefEq.respectTransparency false in
 theorem self_mul_dirichletInverse (f : ArithmeticFunction R) (hf : Invertible (f 1)) :
     f * dirichletInverse f hf = 1 := by
   ext n

@@ -125,7 +125,8 @@ theorem antidiagonal.snd_lt {n : ℕ} {kl : ℕ × ℕ} (hlk : kl ∈ antidiagon
                       ∃ a b, a + b = k ∧ a = i ∧ b + (n - k) = j :=
     fun i j ↦ by rw [exists_comm]; exact exists₂_congr (fun a b ↦ by rw [add_comm])
   rw [← map_prodComm_antidiagonal]
-  simp_rw [aux₁, ← map_filter, antidiagonal_filter_snd_le_of_le h, map_map]
+  simp_rw [aux₁, ← map_filter (p := fun a : ℕ × ℕ ↦ a.2 ≤ k), antidiagonal_filter_snd_le_of_le h,
+    map_map]
   ext ⟨i, j⟩
   simpa using aux₂ i j
 
@@ -149,7 +150,8 @@ theorem antidiagonal.snd_lt {n : ℕ} {kl : ℕ × ℕ} (hlk : kl ∈ antidiagon
                       ∃ a b, a + b = n - k ∧ a = i ∧ b + k = j :=
     fun i j ↦ by rw [exists_comm]; exact exists₂_congr (fun a b ↦ by rw [add_comm])
   rw [← map_prodComm_antidiagonal]
-  simp_rw [aux₁, ← map_filter, antidiagonal_filter_le_fst_of_le h, map_map]
+  simp_rw [aux₁, ← map_filter (p := fun a : ℕ × ℕ ↦ k ≤ a.fst), antidiagonal_filter_le_fst_of_le h,
+    map_map]
   ext ⟨i, j⟩
   simpa using aux₂ i j
 

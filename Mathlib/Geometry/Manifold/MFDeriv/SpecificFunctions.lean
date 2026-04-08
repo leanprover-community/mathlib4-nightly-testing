@@ -714,6 +714,7 @@ theorem hasMFDerivWithinAt_inl :
   exact (hasFDerivWithinAt_id (extChartAt I q q) _).congr_of_eventuallyEq this
     (by simp [writtenInExtChartAt, extChartAt])
 
+set_option backward.isDefEq.respectTransparency false in
 theorem hasMFDerivAt_inl :
     HasMFDerivAt% (@Sum.inl M M') q (ContinuousLinearMap.id 𝕜 (TangentSpace I p)) := by
   simpa [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inl (s := Set.univ)
@@ -727,6 +728,7 @@ theorem hasMFDerivWithinAt_inr {t : Set M'} :
   exact (hasFDerivWithinAt_id (extChartAt I q' q') _).congr_of_eventuallyEq this
     (by simp [writtenInExtChartAt, extChartAt])
 
+set_option backward.isDefEq.respectTransparency false in
 theorem hasMFDerivAt_inr :
     HasMFDerivAt% (@Sum.inr M M') q' (ContinuousLinearMap.id 𝕜 (TangentSpace I p)) := by
   simpa [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inr (t := Set.univ)
@@ -800,6 +802,7 @@ lemma HasMFDerivWithinAt.sum (hf : ∀ i ∈ t, HasMFDerivAt[s] (f i) z (f' i)) 
   | empty => simpa using hasMFDerivWithinAt_const ..
   | insert i s hi IH => grind [HasMFDerivWithinAt.add]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma HasMFDerivAt.sum (hf : ∀ i ∈ t, HasMFDerivAt% (f i) z (f' i)) :
     HasMFDerivAt% (∑ i ∈ t, f i) z (∑ i ∈ t, f' i) := by
   simp_all only [← hasMFDerivWithinAt_univ]
@@ -841,6 +844,7 @@ theorem HasMFDerivWithinAt.neg {s : Set M} (hf : HasMFDerivAt[s] f z f') :
 theorem HasMFDerivAt.neg (hf : HasMFDerivAt% f z f') : HasMFDerivAt% (-f) z (-f') :=
   ⟨hf.1.neg, hf.2.neg⟩
 
+set_option backward.isDefEq.respectTransparency false in
 theorem hasMFDerivAt_neg : HasMFDerivAt% (-f) z (-f') ↔ HasMFDerivAt% f z f' :=
   ⟨fun hf ↦ by convert hf.neg <;> rw [neg_neg], fun hf ↦ hf.neg⟩
 
@@ -969,6 +973,7 @@ lemma HasMFDerivWithinAt.prod [DecidableEq ι]
       rw [t.erase_insert_of_ne (by grind), Finset.prod_insert (by grind)]
     · simp
 
+set_option backward.isDefEq.respectTransparency false in
 lemma HasMFDerivAt.prod [DecidableEq ι]
     (hf : ∀ i ∈ t, HasMFDerivAt I 𝓘(𝕜, F') (f i) z (f' i)) :
     HasMFDerivAt I 𝓘(𝕜, F') (∏ i ∈ t, f i) z (∑ i ∈ t, (∏ j ∈ t.erase i, f j z) • (f' i)) := by

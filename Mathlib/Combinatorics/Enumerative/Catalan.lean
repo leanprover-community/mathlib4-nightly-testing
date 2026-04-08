@@ -165,6 +165,7 @@ theorem treesOfNumNodesEq_succ (n : ℕ) :
   ext
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem mem_treesOfNumNodesEq {x : Tree Unit} {n : ℕ} :
     x ∈ treesOfNumNodesEq n ↔ x.numNodes = n := by

@@ -263,6 +263,7 @@ lemma range_single_one :
     obtain ⟨a, rfl⟩ := (Finsupp.sum_eq_one_iff _).mp hp
     use a
 
+set_option backward.isDefEq.respectTransparency false in
 theorem degree_mapDomain_eq_of_subsingletonAddUnits {τ : Type*} (f : σ → τ) [AddCommMonoid M]
     [Subsingleton (AddUnits M)] (x : σ →₀ M) : degree (x.mapDomain f) = degree x := by
   classical
@@ -271,6 +272,7 @@ theorem degree_mapDomain_eq_of_subsingletonAddUnits {τ : Type*} (f : σ → τ)
   · simpa [sum, mapDomain_support_of_subsingletonAddUnits, degree] using Finset.sum_image' _
       (fun _ _ ↦ mapDomain_apply_eq_sum ..)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem degree_comapDomain_le_of_canonicallyOrderedAdd {τ : Type*} {f : σ → τ} [AddCommMonoid M]
     [PartialOrder M] [CanonicallyOrderedAdd M] {x : τ →₀ M} (hf : Set.InjOn f (f ⁻¹' x.support)) :
       degree (x.comapDomain f hf) ≤ degree x := by
@@ -323,6 +325,7 @@ lemma nsmul_single_one_image {α : Type*} {n : ℕ} {s : Set α} :
       (show single i 1 ≤ f by simpa [Nat.one_le_iff_ne_zero] using hi)
     exact ⟨x, by aesop (add simp Set.subset_def), _, ⟨_, f_supp (by simp_all), rfl⟩, hx.symm⟩
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Pointwise in
 theorem image_pow_eq_finsuppProd_image {α β : Type*} [CommMonoid β] {f : α → β} {n} {s : Set α} :
     (f '' s) ^ n = (·.prod (f · ^ ·)) '' {x : α →₀ ℕ | x.degree = n ∧ ↑x.support ⊆ s} := by
