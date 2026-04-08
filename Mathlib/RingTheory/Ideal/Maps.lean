@@ -517,6 +517,7 @@ section Bijective
 variable (hf : Function.Bijective f) {I : Ideal R} {K : Ideal S}
 include hf
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Special case of the correspondence theorem for isomorphic rings -/
 def relIsoOfBijective : Ideal S ≃o Ideal R where
   toFun := comap f
@@ -651,6 +652,7 @@ def mapHom : Ideal R →+* Ideal S where
 protected theorem map_pow (n : ℕ) : map f (I ^ n) = map f I ^ n :=
   map_pow (mapHom f) I n
 
+set_option backward.isDefEq.respectTransparency false in
 theorem comap_radical : comap f (radical K) = radical (comap f K) := by
   ext
   simp [radical]
@@ -1231,6 +1233,7 @@ theorem eq_liftOfSurjective (hf : Function.Surjective f) (g : A →+* C)
 
 end RingHom
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Any ring isomorphism induces an order isomorphism of ideals. -/
 @[simps apply]
 def RingEquiv.idealComapOrderIso {R S : Type*} [Semiring R] [Semiring S] (e : R ≃+* S) :

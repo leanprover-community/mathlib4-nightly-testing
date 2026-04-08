@@ -42,6 +42,7 @@ for the full discussion.
 def PolynomialModule (R M : Type*) [CommRing R] [AddCommGroup M] [Module R M] := ℕ →₀ M
 deriving Inhabited, FunLike, AddCommGroup
 
+set_option backward.isDefEq.respectTransparency false in
 set_option backward.inferInstanceAs.wrap.data false in
 deriving instance CoeFun for PolynomialModule
 
@@ -105,6 +106,7 @@ instance isScalarTower' (M : Type u) [AddCommGroup M] [Module R M] [Module S M]
   intro x y z
   rw [← @IsScalarTower.algebraMap_smul S R, ← @IsScalarTower.algebraMap_smul S R, smul_assoc]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem monomial_smul_single (i : ℕ) (r : R) (j : ℕ) (m : M) :
     monomial i r • single R j m = single R (i + j) (r • m) := by

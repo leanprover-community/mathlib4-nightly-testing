@@ -51,6 +51,7 @@ lemma smul_def (m : R) (g : SpecialLinearGroup n R) (A : (FixedDetMatrix n R m))
     g • A = ⟨g * A.1, by simp only [det_mul, SpecialLinearGroup.det_coe, A.2, one_mul]⟩ :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 instance (m : R) : MulAction (SpecialLinearGroup n R) (FixedDetMatrix n R m) where
   one_smul b := by rw [smul_def]; simp only [coe_one, one_mul, Subtype.coe_eta]
   mul_smul x y b := by simp_rw [smul_def, ← mul_assoc, coe_mul]
@@ -172,6 +173,7 @@ lemma S_smul_four (A : Δ m) : S • S • S • S • A = A := by
 lemma T_S_rel_smul (A : Δ m) : S • S • S • T • S • T • S • A = T⁻¹ • A := by
   simp_rw [← T_S_rel, ← smul_assoc]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma reduce_mem_reps {m : ℤ} (hm : m ≠ 0) (A : Δ m) : reduce A ∈ reps m := by
   induction A using reduce_rec with
   | step A h1 h2 => simpa only [reduce_reduceStep h1] using h2
