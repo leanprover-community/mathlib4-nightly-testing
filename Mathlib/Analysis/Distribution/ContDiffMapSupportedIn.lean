@@ -496,7 +496,6 @@ lemma structureMapLM_eq_of_scalars {i : ℕ} (𝕜' : Type*) [NontriviallyNormed
     (structureMapLM 𝕜 n i : 𝓓^{n}_{K}(E, F) → _) = structureMapLM 𝕜' n i :=
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 lemma structureMapLM_zero_apply {f : 𝓓^{n}_{K}(E, F)} {x : E} :
     structureMapLM 𝕜 n 0 f x = ContinuousMultilinearMap.uncurry0 ℝ E (f x) := by
   ext
@@ -670,7 +669,7 @@ protected theorem seminorm_le_iff {C : ℝ} (hC : 0 ≤ C) (i : ℕ) (f : 𝓓^{
   by_cases hi : i ≤ n
   · simp [hi, forall_const, ContDiffMapSupportedIn.seminorm_apply, structureMapCLM_apply,
       BoundedContinuousFunction.norm_le hC, this]
-  · push_neg at hi
+  · push Not at hi
     simp [hi, ContDiffMapSupportedIn.seminorm_eq_bot_of_gt _ hi, hC]
 
 protected theorem seminorm_top_le_iff {C : ℝ} (hC : 0 ≤ C) (i : ℕ) (f : 𝓓_{K}(E, F)) :
@@ -696,7 +695,6 @@ theorem norm_apply_le_seminorm {f : 𝓓^{n}_{K}(E, F)} {x : E} :
   rw [← norm_iteratedFDeriv_zero (𝕜 := ℝ) (f := f) (x := x)]
   exact norm_iteratedFDeriv_apply_le_seminorm 𝕜 (zero_le _)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem norm_toBoundedContinuousFunction (f : 𝓓^{n}_{K}(E, F)) :
     ‖(f : E →ᵇ F)‖ = N[𝕜]_{K, n, 0} f := by
   simp [BoundedContinuousFunction.norm_eq_iSup_norm,
@@ -720,6 +718,10 @@ lemma toBoundedContinuousFunctionCLM_eq_of_scalars (𝕜' : Type*) [Nontrivially
     [NormedSpace 𝕜' F] [SMulCommClass ℝ 𝕜' F] :
     (toBoundedContinuousFunctionCLM 𝕜 : 𝓓^{n}_{K}(E, F) → _) = toBoundedContinuousFunctionCLM 𝕜' :=
   rfl
+
+instance : ContinuousEval 𝓓^{n}_{K}(E, F) E F :=
+  ContinuousEval.of_continuous_forget
+    (toBoundedContinuousFunctionCLM ℝ).continuous
 
 instance : T3Space 𝓓^{n}_{K}(E, F) :=
   have : Injective (toBoundedContinuousFunctionCLM ℝ : 𝓓^{n}_{K}(E, F) →L[ℝ] E →ᵇ F) :=

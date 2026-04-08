@@ -80,7 +80,6 @@ theorem le_emultiplicity_iff_replicate_le_normalizedFactors {a b : R} {n : ℕ} 
 
 variable [DecidableEq R]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The multiplicity of an irreducible factor of a nonzero element is exactly the number of times
 the normalized factor occurs in the `normalizedFactors`.
 
@@ -108,7 +107,6 @@ theorem multiplicity_eq_count_normalizedFactors {a b : R} (ha : Irreducible a) (
   rwa [(finiteMultiplicity_of_emultiplicity_eq_natCast this).emultiplicity_eq_multiplicity,
     ENat.coe_inj] at this
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The number of times an irreducible factor `p` appears in `normalizedFactors x` is defined by
 the number of times it divides `x`.
 

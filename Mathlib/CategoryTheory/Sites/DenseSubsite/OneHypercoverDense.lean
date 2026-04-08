@@ -598,9 +598,13 @@ lemma presheafMap_restriction {X Y : C} {X₀ : C₀} (f : F.obj X₀ ⟶ X) (g 
   have hc' := Sieve.ofArrows.fac hc
   have hd' := Sieve.ofArrows.fac hd
   dsimp at hc hd hc' hd' ⊢
+  /- #adaptation_note Before https://github.com/leanprover/lean4/pull/13166
+  (replacing grind's canonicalizer with a type-directed normalizer), `grind` closed the `fac`
+  arguments below (i.e. `fac := by grind`). It is not yet clear whether this is due to defeq
+  abuse in Mathlib or a problem in the new canonicalizer; a minimization would help. -/
   rw [assoc, ← op_comp, restriction_map (i := Sieve.ofArrows.i hd)
-    (p := F.map c ≫ Sieve.ofArrows.h hd) (fac := by grind),
-    restriction_map (i := Sieve.ofArrows.i hc) (p := Sieve.ofArrows.h hc) (fac := by grind),
+    (p := F.map c ≫ Sieve.ofArrows.h hd) (fac := by simp; grind),
+    restriction_map (i := Sieve.ofArrows.i hc) (p := Sieve.ofArrows.h hc) (fac := by simp; grind),
     presheafMap_π_assoc]
   dsimp
   have := J₀.intersection_covering (IsDenseSubsite.imageSieve_mem J₀ J F (Sieve.ofArrows.h hc))
@@ -610,8 +614,12 @@ lemma presheafMap_restriction {X Y : C} {X₀ : C₀} (f : F.obj X₀ ⟶ X) (g 
   dsimp
   rw [assoc, assoc,
     IsDenseSubsite.mapPreimage_map_of_fac J F G₀ _ _ x₂ (by simpa using fac₂.symm),
-    IsDenseSubsite.mapPreimage_map_of_fac J F G₀ _ _ x₁ fac₁.symm,
-    restriction_map data G₀ _ _ (F.map x₁) (by grind), IsDenseSubsite.mapPreimage_map]
+    IsDenseSubsite.mapPreimage_map_of_fac J F G₀ _ _ x₁ fac₁.symm]
+  /- #adaptation_note Before https://github.com/leanprover/lean4/pull/13166
+  (replacing grind's canonicalizer with a type-directed normalizer), the last argument below was
+  `by grind` (now `by simp_all`). It is not yet clear whether this is due to defeq abuse in
+  Mathlib or a problem in the new canonicalizer; a minimization would help. -/
+  rw [restriction_map data G₀ _ _ (F.map x₁) (by simp_all), IsDenseSubsite.mapPreimage_map]
 
 lemma presheafMap_id (X : C) :
     presheafMap data G₀ (𝟙 X) = 𝟙 _ := by
@@ -642,7 +650,6 @@ namespace presheafObjObjIso
 
 variable (X₀ : C₀)
 
-set_option backward.whnf.reducibleClassField false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `OneHypercoverDenseData.essSurj.presheafObjObjIso`. -/
 noncomputable def hom : (presheaf data G₀).obj (op (F.obj X₀)) ⟶ G₀.obj.obj (op X₀) :=
@@ -662,7 +669,6 @@ noncomputable def hom : (presheaf data G₀).obj (op (F.obj X₀)) ⟶ G₀.obj.
 
 variable {X₀}
 
-set_option backward.whnf.reducibleClassField false in
 @[reassoc]
 lemma hom_map {W₀ : C₀} (a : W₀ ⟶ X₀) {i : (data (F.obj X₀)).I₀}
     (p : F.obj W₀ ⟶ F.obj ((data (F.obj X₀)).X i))
@@ -725,7 +731,6 @@ lemma inv_restriction {Y₀ : C₀} (f : F.obj Y₀ ⟶ F.obj X₀) :
 
 end presheafObjObjIso
 
-set_option backward.whnf.reducibleClassField false in
 set_option backward.isDefEq.respectTransparency false in
 /-- The presheaf `presheaf data G₀` extends `G₀`. -/
 noncomputable def presheafObjObjIso (X₀ : C₀) :
@@ -744,7 +749,6 @@ noncomputable def presheafObjObjIso (X₀ : C₀) :
     simp [presheafObjObjIso.hom_map data G₀ _ b fac, ← IsDenseSubsite.mapPreimage_comp, fac]
 
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.whnf.reducibleClassField false in
 @[reassoc (attr := simp)]
 lemma presheafMap_presheafObjObjIso_hom (X : C) (i : (data X).I₀) :
     presheafMap data G₀ ((data X).f i) ≫ (presheafObjObjIso data G₀ ((data X).X i)).hom =

@@ -240,8 +240,6 @@ end Submodule
 
 namespace Subalgebra
 
-set_option backward.isDefEq.respectTransparency false
-
 variable {K L : Type*} [Field K] [Ring L] [Algebra K L] {F E : Subalgebra K L}
   [hfin : FiniteDimensional K E]
 
@@ -525,7 +523,6 @@ theorem finrank_span_singleton {v : V} (hv : v ≠ 0) : finrank K (K ∙ v) = 1 
     apply Subtype.coe_ne_coe.mp
     simp [hv]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- A submodule over a division ring is an atom of the submodule lattice iff it has `finrank` 1. -/
 theorem Submodule.isAtom_iff_finrank_eq_one {S : Submodule K V} :
     IsAtom S ↔ finrank K S = 1 := by

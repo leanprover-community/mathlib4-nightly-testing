@@ -52,7 +52,6 @@ instance [FormallyUnramified R S] :
 
 variable [EssFiniteType R S]
 
-set_option backward.isDefEq.respectTransparency false in
 @[stacks 00UW "(2)"]
 instance [FormallyUnramified R S] :
     Module.Finite (ResidueField R) (ResidueField S) :=
@@ -60,19 +59,18 @@ instance [FormallyUnramified R S] :
   have : EssFiniteType (ResidueField R) (ResidueField S) := .of_comp R _ _
   FormallyUnramified.finite_of_free _ _
 
-set_option backward.isDefEq.respectTransparency false in
 @[stacks 00UW "(2)"]
 instance [FormallyUnramified R S] :
     Algebra.IsSeparable (ResidueField R) (ResidueField S) :=
   FormallyUnramified.isSeparable _ _
 
-set_option backward.isDefEq.respectTransparency false in
+set_option backward.inferInstanceAs.wrap.data false in
 lemma FormallyUnramified.isField_quotient_map_maximalIdeal [FormallyUnramified R S] :
     IsField (S ⧸ (maximalIdeal R).map (algebraMap R S)) := by
   let mR := (maximalIdeal R).map (algebraMap R S)
   have hmR : mR ≤ maximalIdeal S := ((local_hom_TFAE (algebraMap R S)).out 0 2 rfl rfl).mp ‹_›
-  letI : Algebra (ResidueField R) (S ⧸ mR) := inferInstanceAs (Algebra (R ⧸ _) _)
-  have : IsScalarTower R (ResidueField R) (S ⧸ mR) := inferInstanceAs (IsScalarTower R (R ⧸ _) _)
+  letI : Algebra (ResidueField R) (S ⧸ mR) := (inferInstanceAs <| Algebra (R ⧸ _) _)
+  have : IsScalarTower R (ResidueField R) (S ⧸ mR) := (inferInstanceAs <| IsScalarTower R (R ⧸ _) _)
   have : FormallyUnramified (ResidueField R) (S ⧸ mR) := .of_restrictScalars R _ _
   have : EssFiniteType (ResidueField R) (S ⧸ mR) := .of_comp R _ _
   have : Module.Finite (ResidueField R) (S ⧸ mR) := FormallyUnramified.finite_of_free _ _
@@ -93,7 +91,6 @@ lemma FormallyUnramified.map_maximalIdeal [FormallyUnramified R S] :
   rw [Ideal.Quotient.maximal_ideal_iff_isField_quotient]
   exact isField_quotient_map_maximalIdeal
 
-set_option backward.isDefEq.respectTransparency false in
 @[stacks 02FM]
 lemma FormallyUnramified.of_map_maximalIdeal
     [Algebra.IsSeparable (ResidueField R) (ResidueField S)]

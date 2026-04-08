@@ -26,7 +26,6 @@ open scoped nonZeroDivisors TensorProduct
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 variable (I : Ideal R) [I.IsPrime] (J : Ideal R[X]) [J.IsPrime]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- `κ(I[X]) ≃ₐ[κ(I)] κ(I)(X)`. -/
 noncomputable
 def residueFieldMapCAlgEquiv [J.LiesOver I] (hJ : J = I.map C) :
@@ -61,7 +60,9 @@ def residueFieldMapCAlgEquiv [J.LiesOver I] (hJ : J = I.map C) :
       apply_fun aeval (algebraMap R[X] J.ResidueField X) at hr
       simpa [hx, aeval_map_algebraMap, aeval_algebraMap_apply, Algebra.smul_def] using hr
     refine ((IsUnit.mk0 (algebraMap R I.ResidueField s) (by simpa)).map C).mul_right_injective ?_
-    simp only [← algebraMap_eq, ← Algebra.smul_def, algebraMap_smul, ← hr]
+    simp only [← algebraMap_eq, ← Algebra.smul_def]
+    erw [algebraMap_smul]
+    simp only [← hr]
     simpa [Polynomial.ext_iff, Ideal.mem_map_C_iff] using hJ.le hx
   · apply AlgHom.coe_ringHom_injective
     apply IsFractionRing.injective_comp_algebraMap (A := I.ResidueField[X])
@@ -91,7 +92,6 @@ lemma residueFieldMapCAlgEquiv_symm_X [J.LiesOver I] (hJ : J = I.map C) :
     (residueFieldMapCAlgEquiv I J hJ).symm .X = algebraMap R[X] _ .X :=
   (residueFieldMapCAlgEquiv I J hJ).injective (by simp)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- `κ(p) ⊗[R] (R[X] ⧸ I) = κ(p)[X] / I` -/
 noncomputable
 def fiberEquivQuotient (f : R[X] →ₐ[R] S) (hf : Function.Surjective f) (p : Ideal R) [p.IsPrime] :
@@ -115,7 +115,6 @@ def fiberEquivQuotient (f : R[X] →ₐ[R] S) (hf : Function.Surjective f) (p : 
     simpa using aeval_algHom_apply
       ((Algebra.TensorProduct.includeRight : S →ₐ[_] p.Fiber S).comp f) X x
 
-set_option backward.isDefEq.respectTransparency false in
 lemma fiberEquivQuotient_tmul
     (f : R[X] →ₐ[R] S) (hf : Function.Surjective f) (p : Ideal R) [p.IsPrime] (a b) :
     fiberEquivQuotient f hf p (a ⊗ₜ f b) = Ideal.Quotient.mk _ (C a * b.map (algebraMap _ _)) := by
@@ -127,8 +126,8 @@ theorem _root_.Ideal.exists_mem_span_singleton_map_residueField_eq
     (P : Ideal R) [P.IsPrime] (I : Ideal R[X]) :
     ∃ p ∈ I, Ideal.span {p.map (algebraMap R P.ResidueField)} =
       I.map (mapRingHom (algebraMap R P.ResidueField)) := by
-  obtain ⟨p, hp : _ = Ideal.span _⟩ := inferInstanceAs
-    (I.map (mapRingHom (algebraMap R P.ResidueField))).IsPrincipal
+  obtain ⟨p, hp : _ = Ideal.span _⟩ := (inferInstance :
+    (I.map (mapRingHom (algebraMap R P.ResidueField))).IsPrincipal)
   letI := (mapRingHom (algebraMap (R ⧸ P) P.ResidueField)).toAlgebra
   have := Polynomial.isLocalization (R ⧸ P)⁰ P.ResidueField
   have : p ∈ (I.map (mapRingHom (algebraMap R (R ⧸ P)))).map (algebraMap _ _) := by
