@@ -236,9 +236,8 @@ private theorem mul_assoc (a b c : ⨁ i, A i) : a * b * c = a * (b * c) := by
       simpa only [AddMonoidHom.mulLeft₃_apply, AddMonoidHom.mulRight₃_apply] using
         DFunLike.congr_fun (DFunLike.congr_fun (DFunLike.congr_fun this a) b) c
   ext ai ax bi bx ci cx : 6
-  dsimp only [coe_comp, Function.comp_apply, AddMonoidHom.mulLeft₃_apply,
-    AddMonoidHom.mulRight₃_apply]
-  simp_rw [of_mul_of]
+  simp only [coe_comp, Function.comp_apply, AddMonoidHom.mulLeft₃_apply,
+    AddMonoidHom.mulRight₃_apply, of_mul_of]
   exact of_eq_of_gradedMonoid_eq (_root_.mul_assoc (GradedMonoid.mk ai ax) ⟨bi, bx⟩ ⟨ci, cx⟩)
 
 instance instNatCast : NatCast (⨁ i, A i) where

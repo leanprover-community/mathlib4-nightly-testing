@@ -64,14 +64,14 @@ theorem mulDysonETransform.subset :
 @[to_additive]
 theorem mulDysonETransform.card :
     (mulDysonETransform e x).1.card + (mulDysonETransform e x).2.card = x.1.card + x.2.card := by
-  dsimp
+  dsimp [mulDysonETransform]
   rw [← card_smul_finset e (_ ∩ _), smul_finset_inter, smul_inv_smul, inter_comm,
     card_union_add_card_inter, card_smul_finset]
 
 @[to_additive (attr := simp)]
 theorem mulDysonETransform_idem :
     mulDysonETransform e (mulDysonETransform e x) = mulDysonETransform e x := by
-  ext : 1 <;> dsimp
+  ext : 1 <;> dsimp [mulDysonETransform]
   · rw [smul_finset_inter, smul_inv_smul, inter_comm, union_eq_left]
     exact inter_subset_union
   · rw [smul_finset_union, inv_smul_smul, union_comm, inter_eq_left]
@@ -82,7 +82,7 @@ variable {e x}
 @[to_additive]
 theorem mulDysonETransform.smul_finset_snd_subset_fst :
     e • (mulDysonETransform e x).2 ⊆ (mulDysonETransform e x).1 := by
-  dsimp
+  dsimp [mulDysonETransform]
   rw [smul_finset_inter, smul_inv_smul, inter_comm]
   exact inter_subset_union
 

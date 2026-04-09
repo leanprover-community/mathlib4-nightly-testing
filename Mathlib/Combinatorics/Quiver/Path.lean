@@ -344,7 +344,7 @@ theorem mapPath_toPath {a b : V} (f : a ⟶ b) : F.mapPath f.toPath = (F.map f).
 @[simp]
 theorem mapPath_id {a b : V} : (p : Path a b) → (𝟭q V).mapPath p = p
   | Path.nil => rfl
-  | Path.cons q e => by dsimp; rw [mapPath_id q]
+  | Path.cons q e => by rw [mapPath_cons, Prefunctor.id_map]; congr 1; exact mapPath_id q
 
 variable {U : Type u₃} [Quiver.{v₃} U] (G : W ⥤q U)
 
@@ -353,6 +353,6 @@ theorem mapPath_comp_apply {a b : V} (p : Path a b) :
     (F ⋙q G).mapPath p = G.mapPath (F.mapPath p) := by
   induction p with
   | nil => rfl
-  | cons x y h => simp [h]
+  | cons x y h => simp only [mapPath_cons, Prefunctor.comp_map, h]; rfl
 
 end Prefunctor

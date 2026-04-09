@@ -158,12 +158,15 @@ predicates `p : X → Prop` and `q : Y → Prop` so long as `p = q ∘ h`. -/
 @[simps!]
 def subtype {p : X → Prop} {q : Y → Prop} (h : X ≃ₜ Y) (h_iff : ∀ x, p x ↔ q (h x)) :
     {x // p x} ≃ₜ {y // q y} where
-  __ := h.subtypeEquiv h_iff
+  toEquiv := h.subtypeEquiv h_iff
+  continuous_toFun := h.continuous.subtype_map fun x hx => (h_iff x).mp hx
+  continuous_invFun := h.symm.continuous.subtype_map fun x hx =>
+    (h_iff (h.symm x)).mpr (by rwa [h.apply_symm_apply])
 
 @[simp]
 lemma subtype_toEquiv {p : X → Prop} {q : Y → Prop} (h : X ≃ₜ Y) (h_iff : ∀ x, p x ↔ q (h x)) :
-    (h.subtype h_iff).toEquiv = h.toEquiv.subtypeEquiv h_iff :=
-  rfl
+    (h.subtype h_iff).toEquiv = h.toEquiv.subtypeEquiv h_iff := by
+  ext; rfl
 
 /-- A homeomorphism `h : X ≃ₜ Y` lifts to a homeomorphism between sets `s : Set X` and `t : Set Y`
 whenever `h` maps `s` onto `t`. -/
@@ -173,6 +176,8 @@ abbrev sets {s : Set X} {t : Set Y} (h : X ≃ₜ Y) (h_eq : s = h ⁻¹' t) : s
 /-- If two sets are equal, then they are homeomorphic. -/
 def setCongr {s t : Set X} (h : s = t) : s ≃ₜ t where
   toEquiv := Equiv.setCongr h
+  continuous_toFun := continuous_inclusion h.subset
+  continuous_invFun := continuous_inclusion h.symm.subset
 
 section prod
 
@@ -202,8 +207,11 @@ This is `Equiv.sumPiEquivProdPi` as a `Homeomorph`.
 def sumPiEquivProdPi (S T : Type*) (A : S ⊕ T → Type*)
     [∀ st, TopologicalSpace (A st)] :
     (Π (st : S ⊕ T), A st) ≃ₜ (Π (s : S), A (.inl s)) × (Π (t : T), A (.inr t)) where
-  __ := Equiv.sumPiEquivProdPi _
-  continuous_invFun := continuous_pi <| by rintro (s | t) <;> dsimp <;> fun_prop
+  toEquiv := Equiv.sumPiEquivProdPi _
+  continuous_toFun :=
+    (continuous_pi fun s => continuous_apply _).prodMk (continuous_pi fun t => continuous_apply _)
+  continuous_invFun := continuous_pi <| by
+    rintro (s | t) <;> dsimp [Equiv.sumPiEquivProdPi] <;> fun_prop
 
 /-- The product `Π t : α, f t` of a family of topological spaces is homeomorphic to the
 space `f ⬝` when `α` only contains `⬝`.
@@ -248,6 +256,8 @@ lemma piCongrLeft_apply_apply {ι ι' : Type*} {Y : ι' → Type*} [∀ j, Topol
 def piCongrRight {ι : Type*} {Y₁ Y₂ : ι → Type*} [∀ i, TopologicalSpace (Y₁ i)]
     [∀ i, TopologicalSpace (Y₂ i)] (F : ∀ i, Y₁ i ≃ₜ Y₂ i) : (∀ i, Y₁ i) ≃ₜ ∀ i, Y₂ i where
   toEquiv := Equiv.piCongrRight fun i => (F i).toEquiv
+  continuous_toFun := continuous_pi fun i => (F i).continuous.comp (continuous_apply i)
+  continuous_invFun := continuous_pi fun i => (F i).symm.continuous.comp (continuous_apply i)
 
 @[simp]
 theorem piCongrRight_symm {ι : Type*} {Y₁ Y₂ : ι → Type*} [∀ i, TopologicalSpace (Y₁ i)]
@@ -322,6 +332,8 @@ end Distrib
 @[simps! -fullyApplied]
 def funUnique (ι X : Type*) [Unique ι] [TopologicalSpace X] : (ι → X) ≃ₜ X where
   toEquiv := Equiv.funUnique ι X
+  continuous_toFun := continuous_apply _
+  continuous_invFun := continuous_pi fun _ => continuous_id
 
 /-- Homeomorphism between dependent functions `Π i : Fin 2, X i` and `X 0 × X 1`. -/
 @[simps! -fullyApplied]

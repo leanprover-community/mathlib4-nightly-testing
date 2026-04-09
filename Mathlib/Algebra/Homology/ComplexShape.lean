@@ -198,7 +198,7 @@ variable (α : Type*) [AddRightCancelSemigroup α] [DecidableEq α]
 
 @[to_dual instDecidableRelRelDown']
 instance instDecidableRelRelUp' (a : α) : DecidableRel (ComplexShape.up' a).Rel :=
-  fun _ _ => by dsimp; infer_instance
+  fun _ _ => by dsimp [up']; infer_instance
 
 @[to_dual instDecidableRelRelDown]
 instance instDecidableRelRelUp [One α] : DecidableRel (ComplexShape.up α).Rel := by

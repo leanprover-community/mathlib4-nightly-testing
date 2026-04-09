@@ -167,8 +167,12 @@ set_option backward.isDefEq.respectTransparency false in
 noncomputable def isoSubgraphMap (f : Copy A B) (A' : A.Subgraph) :
     A'.coe ≃g (A'.map f.toHom).coe := by
   use Equiv.Set.image f.toHom _ f.injective
-  simp_rw [Subgraph.map_verts, Equiv.Set.image_apply, Subgraph.coe_adj, Subgraph.map_adj,
-    Relation.map_apply, f.injective.eq_iff, exists_eq_right_right, exists_eq_right, forall_true_iff]
+  intro a b
+  simp only [Subgraph.coe_adj, Subgraph.map_adj, Relation.map_apply]
+  constructor
+  · rintro ⟨a₁, b₁, hadj, ha, hb⟩
+    have := f.injective ha; have := f.injective hb; subst_vars; exact hadj
+  · exact fun h => ⟨a.1, b.1, h, rfl, rfl⟩
 
 /-- The subgraph of `B` corresponding to a copy of `A` inside `B`. -/
 abbrev toSubgraph (f : Copy A B) : B.Subgraph := .map f.toHom ⊤

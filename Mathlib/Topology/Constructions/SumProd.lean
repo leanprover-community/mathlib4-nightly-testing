@@ -621,6 +621,12 @@ variable {X' Y' : Type*} [TopologicalSpace X'] [TopologicalSpace Y']
 /-- Product of two homeomorphisms. -/
 def prodCongr (h₁ : X ≃ₜ X') (h₂ : Y ≃ₜ Y') : X × Y ≃ₜ X' × Y' where
   toEquiv := h₁.toEquiv.prodCongr h₂.toEquiv
+  continuous_toFun := by
+    change Continuous (Prod.map h₁ h₂)
+    exact h₁.continuous.prodMap h₂.continuous
+  continuous_invFun := by
+    change Continuous (Prod.map h₁.symm h₂.symm)
+    exact h₁.symm.continuous.prodMap h₂.symm.continuous
 
 @[simp]
 theorem prodCongr_symm (h₁ : X ≃ₜ X') (h₂ : Y ≃ₜ Y') :
@@ -838,6 +844,12 @@ variable {X' Y' : Type*} [TopologicalSpace X'] [TopologicalSpace Y']
 /-- Sum of two homeomorphisms. -/
 def sumCongr (h₁ : X ≃ₜ X') (h₂ : Y ≃ₜ Y') : X ⊕ Y ≃ₜ X' ⊕ Y' where
   toEquiv := h₁.toEquiv.sumCongr h₂.toEquiv
+  continuous_toFun := by
+    change Continuous (Sum.map h₁ h₂)
+    exact h₁.continuous.sumMap h₂.continuous
+  continuous_invFun := by
+    change Continuous (Sum.map h₁.symm h₂.symm)
+    exact h₁.symm.continuous.sumMap h₂.symm.continuous
 
 @[simp]
 lemma sumCongr_symm (h₁ : X ≃ₜ X') (h₂ : Y ≃ₜ Y') :
@@ -887,6 +899,14 @@ lemma sumAssoc_toEquiv : (sumAssoc X Y Z).toEquiv = Equiv.sumAssoc X Y Z := rfl
 /-- Four-way commutativity of the disjoint union. The name matches `add_add_add_comm`. -/
 def sumSumSumComm : (X ⊕ Y) ⊕ W ⊕ Z ≃ₜ (X ⊕ W) ⊕ Y ⊕ Z where
   toEquiv := Equiv.sumSumSumComm X Y W Z
+  continuous_toFun := by
+    unfold Equiv.sumSumSumComm
+    simp only [Equiv.sumComm_apply]
+    fun_prop
+  continuous_invFun := by
+    unfold Equiv.sumSumSumComm
+    simp only [Equiv.sumComm_symm, Equiv.sumComm_apply]
+    fun_prop
 
 @[simp]
 lemma sumSumSumComm_toEquiv : (sumSumSumComm W X Y Z).toEquiv = (Equiv.sumSumSumComm W X Y Z) := rfl

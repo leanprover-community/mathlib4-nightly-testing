@@ -223,7 +223,10 @@ section Left
 variable [∀ i, AddLeftStrictMono (α i)]
 
 instance Lex.addLeftStrictMono : AddLeftStrictMono (Lex (Π₀ i, α i)) :=
-  ⟨fun _ _ _ ⟨a, lta, ha⟩ ↦ ⟨a, fun j ja ↦ congr_arg _ (lta j ja), by dsimp; gcongr⟩⟩
+  ⟨fun f g₁ g₂ ⟨a, lta, ha⟩ ↦ ⟨a, fun j ja ↦ congr_arg _ (lta j ja), by
+    change (ofLex (f + g₁)) a < (ofLex (f + g₂)) a
+    simp only [ofLex_add, DFinsupp.add_apply]
+    exact CovariantClass.elim ((ofLex f) a) ha⟩⟩
 
 instance Colex.addLeftStrictMono : AddLeftStrictMono (Colex (Π₀ i, α i)) :=
   Lex.addLeftStrictMono (ι := ιᵒᵈ)
@@ -242,8 +245,11 @@ section Right
 variable [∀ i, AddRightStrictMono (α i)]
 
 instance Lex.addRightStrictMono : AddRightStrictMono (Lex (Π₀ i, α i)) :=
-  ⟨fun f _ _ ⟨a, lta, ha⟩ ↦
-    ⟨a, fun j ja ↦ congr_arg (· + ofLex f j) (lta j ja), by dsimp; gcongr⟩⟩
+  ⟨fun f g₁ g₂ ⟨a, lta, ha⟩ ↦
+    ⟨a, fun j ja ↦ congr_arg (· + ofLex f j) (lta j ja), by
+      change (ofLex (g₁ + f)) a < (ofLex (g₂ + f)) a
+      simp only [ofLex_add, DFinsupp.add_apply]
+      exact CovariantClass.elim (μ := Function.swap (· + ·)) ((ofLex f) a) ha⟩⟩
 
 instance Colex.addRightStrictMono : AddRightStrictMono (Colex (Π₀ i, α i)) :=
   Lex.addRightStrictMono (ι := ιᵒᵈ)

@@ -441,16 +441,14 @@ theorem unitsSMul_neg (u : ℤˣ) (w : NormalWord d) :
       have : ((d.compl (-u)).equiv w.head).1 = 1 :=
         (d.compl (-u)).equiv_fst_eq_one_of_mem_of_one_mem _ h1
       apply NormalWord.ext
-      · -- This used to `simp [this]` before https://github.com/leanprover/lean4/pull/2644
-        dsimp
-        conv_lhs => erw [IsComplement.equiv_mul_left]
-        rw [map_mul, Submonoid.coe_mul, toSubgroupEquiv_neg_apply, this]
+      · -- After simp reduces `cons_head`, remaining goal involves `toSubgroupEquiv` and `equiv`
+        simp only [cons_head]
+        rw [IsComplement.equiv_mul_left, map_mul, Submonoid.coe_mul,
+          toSubgroupEquiv_neg_apply, this]
         simp
-      · -- The next two lines were not needed before https://github.com/leanprover/lean4/pull/2644
-        dsimp
-        conv_lhs => erw [IsComplement.equiv_mul_left]
-        simp [Units.ext_iff, (d.compl (-u)).equiv_snd_eq_inv_mul, this,
-          -SetLike.coe_sort_coe]
+      · simp only [cons_toList]
+        rw [IsComplement.equiv_mul_left]
+        simp [(d.compl (-u)).equiv_snd_eq_inv_mul, this, Units.ext_iff]
 
 /-- the equivalence given by multiplication on the left by `t` -/
 @[simps]
