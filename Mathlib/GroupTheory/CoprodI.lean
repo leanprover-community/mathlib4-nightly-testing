@@ -468,7 +468,7 @@ theorem equivPair_head {i : ι} {w : Word M} :
   | empty => simp
   | cons head =>
     by_cases hi : i = head
-    · subst hi; simp [cons, consRecOn]
+    · subst hi; simp
     · simp [hi, Ne.symm hi]
 
 instance summandAction (i) : MulAction (M i) (Word M) where

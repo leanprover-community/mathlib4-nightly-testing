@@ -260,8 +260,8 @@ theorem liftLinear_apply (f : m → n → α →ₗ[R] β) (M : Matrix m n α) :
 @[simp]
 theorem liftLinear_single (f : m → n → α →ₗ[R] β) (i : m) (j : n) (a : α) :
     liftLinear S f (Matrix.single i j a) = f i j a := by
-  simp [liftLinear, -LinearMap.lsum_apply, LinearEquiv.congrLeft, of_symm_single,
-    LinearMap.lsum_piSingle]
+  dsimp [liftLinear, -LinearMap.lsum_apply, LinearEquiv.congrLeft, LinearEquiv.piCongrRight]
+  simp_rw [of_symm_single, LinearMap.lsum_piSingle]
 
 @[simp]
 theorem liftLinear_comp_singleLinearMap (f : m → n → α →ₗ[R] β) (i : m) (j : n) :

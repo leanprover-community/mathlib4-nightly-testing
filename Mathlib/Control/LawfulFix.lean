@@ -178,7 +178,7 @@ def toUnitMono (f : Part α →o Part α) : (Unit → Part α) →o Unit → Par
 theorem ωScottContinuous_toUnitMono (f : Part α → Part α) (hc : ωScottContinuous f) :
     ωScottContinuous (toUnitMono ⟨f,hc.monotone⟩) := .of_map_ωSup_of_orderHom fun _ => by
   ext ⟨⟩ : 1
-  dsimp [toUnitMono, OmegaCompletePartialOrder.ωSup]
+  dsimp [OmegaCompletePartialOrder.ωSup]
   erw [hc.map_ωSup]
   rw [Chain.map_comp]
   rfl
@@ -232,7 +232,7 @@ theorem ωScottContinuous_uncurry :
     ωScottContinuous (monotoneUncurry α β γ) :=
     .of_map_ωSup_of_orderHom fun c ↦ by
   ext ⟨x, y⟩
-  dsimp [monotoneUncurry, uncurry, ωSup]
+  dsimp [uncurry, ωSup]
   rw [map_comp, map_comp]
   rfl
 

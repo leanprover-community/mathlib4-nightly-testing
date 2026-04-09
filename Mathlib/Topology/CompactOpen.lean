@@ -459,8 +459,7 @@ theorem continuous_uncurry [LocallyCompactSpace X] [LocallyCompactSpace Y] :
     Continuous (uncurry : C(X, C(Y, Z)) → C(X × Y, Z)) := by
   apply continuous_of_continuous_uncurry
   rw [← (Homeomorph.prodAssoc _ _ _).comp_continuous_iff']
-  dsimp [Function.comp_def, Function.uncurry, Homeomorph.prodAssoc, Equiv.prodAssoc,
-    ContinuousMap.uncurry]
+  dsimp [Function.comp_def]
   exact (continuous_fst.fst.eval continuous_fst.snd).eval continuous_snd
 
 /-- The family of constant maps: `Y → C(X, Y)` as a continuous map. -/

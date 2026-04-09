@@ -103,8 +103,10 @@ variable (f : ι → ι') (hf : Function.Injective f)
 /-- Constructor for embeddings between complex shapes when we have an equivalence
 `∀ (i₁ i₂ : ι), c.Rel i₁ i₂ ↔ c'.Rel (f i₁) (f i₂)`. -/
 @[simps]
-def mk' : Embedding c c' :=
-  ⟨f, hf, fun h => (iff _ _).1 h⟩
+def mk' : Embedding c c' where
+  f := f
+  injective_f := hf
+  rel h := (iff _ _).1 h
 
 instance : (mk' c c' f hf iff).IsRelIff where
   rel' _ _ h := (iff _ _).2 h
@@ -172,20 +174,18 @@ section
 
 variable {A : Type*} [AddCommSemigroup A] [IsRightCancelAdd A] [One A]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The embedding from `up' a` to itself via (· + b). -/
 @[simps!]
 def embeddingUp'Add (a b : A) : Embedding (up' a) (up' a) :=
   Embedding.mk' _ _ (· + b)
     (fun _ _ h => by simpa using h)
-    (by simp only [up']; simp_rw [add_right_comm _ b a, add_right_cancel_iff, implies_true])
+    (by dsimp; simp_rw [add_right_comm _ b a, add_right_cancel_iff, implies_true])
 
 instance (a b : A) : (embeddingUp'Add a b).IsRelIff := by dsimp [embeddingUp'Add]; infer_instance
 
 instance (a b : A) : (embeddingUp'Add a b).IsTruncGE where
   mem_next {j _} h := ⟨j + a, (add_right_comm _ _ _).trans h⟩
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The embedding from `down' a` to itself via (· + b). -/
 @[simps!]
 def embeddingDown'Add (a b : A) : Embedding (down' a) (down' a) :=
@@ -201,7 +201,6 @@ instance (a b : A) : (embeddingDown'Add a b).IsTruncLE where
 
 end
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The obvious embedding from `up ℕ` to `up ℤ`. -/
 @[simps!]
 def embeddingUpNat : Embedding (up ℕ) (up ℤ) :=
@@ -214,7 +213,6 @@ instance : embeddingUpNat.IsRelIff := by dsimp [embeddingUpNat]; infer_instance
 instance : embeddingUpNat.IsTruncGE where
   mem_next {j _} h := ⟨j + 1, h⟩
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The embedding from `down ℕ` to `up ℤ` with sends `n` to `-n`. -/
 @[simps!]
 def embeddingDownNat : Embedding (down ℕ) (up ℤ) :=
@@ -229,7 +227,6 @@ instance : embeddingDownNat.IsTruncLE where
 
 variable (p : ℤ)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The embedding from `up ℕ` to `up ℤ` which sends `n : ℕ` to `p + n`. -/
 @[simps!]
 def embeddingUpIntGE : Embedding (up ℕ) (up ℤ) :=
@@ -242,7 +239,6 @@ instance : (embeddingUpIntGE p).IsRelIff := by dsimp [embeddingUpIntGE]; infer_i
 instance : (embeddingUpIntGE p).IsTruncGE where
   mem_next {j _} h := ⟨j + 1, by dsimp at h ⊢; lia⟩
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The embedding from `down ℕ` to `up ℤ` which sends `n : ℕ` to `p - n`. -/
 @[simps!]
 def embeddingUpIntLE : Embedding (down ℕ) (up ℤ) :=

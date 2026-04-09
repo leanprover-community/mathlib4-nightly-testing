@@ -299,23 +299,16 @@ lemma reverse_surjective : Surjective (reverse : ContextFreeGrammar T → Contex
   reverse_bijective.surjective
 
 set_option backward.isDefEq.respectTransparency false in
-lemma produces_reverse : g.reverse.Produces u.reverse v.reverse ↔ g.Produces u v := by
-  simp only [Produces, reverse_rules, Finset.mem_map]
-  constructor
-  · rintro ⟨r, ⟨r', hr', heq⟩, hrw⟩
-    refine ⟨r', hr', ?_⟩
-    change r'.reverse = r at heq; subst heq
-    exact (ContextFreeRule.rewrites_reverse).mp hrw
-  · rintro ⟨r, hr, hrw⟩
-    exact ⟨r.reverse, ⟨r, hr, rfl⟩, hrw.reverse⟩
+lemma produces_reverse : g.reverse.Produces u.reverse v.reverse ↔ g.Produces u v :=
+  (Equiv.ofBijective _ ContextFreeRule.reverse_bijective).exists_congr
+    (by simp [ContextFreeRule.reverse_involutive.eq_iff])
 
 alias ⟨_, Produces.reverse⟩ := produces_reverse
 
 set_option backward.isDefEq.respectTransparency false in
-@[simp] lemma produces_reverse_comm : g.reverse.Produces u v ↔ g.Produces u.reverse v.reverse := by
-  conv_lhs => rw [show u = u.reverse.reverse from (List.reverse_reverse u).symm,
-    show v = v.reverse.reverse from (List.reverse_reverse v).symm]
-  exact produces_reverse
+@[simp] lemma produces_reverse_comm : g.reverse.Produces u v ↔ g.Produces u.reverse v.reverse :=
+  (Equiv.ofBijective _ ContextFreeRule.reverse_bijective).exists_congr
+    (by simp [ContextFreeRule.reverse_involutive.eq_iff])
 
 protected lemma Derives.reverse (hg : g.Derives u v) : g.reverse.Derives u.reverse v.reverse := by
   induction hg with
@@ -323,35 +316,19 @@ protected lemma Derives.reverse (hg : g.Derives u v) : g.reverse.Derives u.rever
   | tail _ orig ih => exact ih.trans_produces orig.reverse
 
 lemma derives_reverse : g.reverse.Derives u.reverse v.reverse ↔ g.Derives u v :=
-  ⟨fun h ↦ by
-    convert h.reverse using 1
-    · exact (reverse_reverse g).symm
-    · exact (List.reverse_reverse u).symm
-    · exact (List.reverse_reverse v).symm, .reverse⟩
+  ⟨fun h ↦ by convert h.reverse <;> simp, .reverse⟩
 
 @[simp] lemma derives_reverse_comm : g.reverse.Derives u v ↔ g.Derives u.reverse v.reverse := by
   rw [iff_comm, ← derives_reverse, List.reverse_reverse, List.reverse_reverse]
 
-lemma generates_reverse : g.reverse.Generates u.reverse ↔ g.Generates u := by
-  unfold Generates
-  have h : [Symbol.nonterminal g.reverse.initial] =
-    [Symbol.nonterminal (T := T) g.initial].reverse := by
-    rw [reverse_initial]; rfl
-  rw [h]
-  exact derives_reverse
+lemma generates_reverse : g.reverse.Generates u.reverse ↔ g.Generates u := by simp [Generates]
 
 alias ⟨_, Generates.reverse⟩ := generates_reverse
 
 @[simp] lemma generates_reverse_comm : g.reverse.Generates u ↔ g.Generates u.reverse := by
-  conv_lhs => rw [show u = u.reverse.reverse from (List.reverse_reverse u).symm]
-  exact generates_reverse
+  simp [Generates]
 
-@[simp] lemma language_reverse : g.reverse.language = g.language.reverse := by
-  ext w
-  change g.reverse.Generates (List.map Symbol.terminal w) ↔
-    g.Generates (List.map Symbol.terminal w.reverse)
-  rw [generates_reverse_comm]
-  exact Iff.of_eq (congr_arg _ (List.map_reverse).symm)
+@[simp] lemma language_reverse : g.reverse.language = g.language.reverse := by ext; simp
 
 end ContextFreeGrammar
 

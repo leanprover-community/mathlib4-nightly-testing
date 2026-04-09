@@ -121,13 +121,10 @@ infixl:80 " ◫ " => hcomp
 
 @[to_dual self]
 theorem hcomp_id_app {H : D ⥤ E} (α : F ⟶ G) (X : C) : (α ◫ 𝟙 H).app X = H.map (α.app X) := by
-  simp only [hcomp_app, NatTrans.id_app]
-  exact Category.id_comp _
+  simp
 
 @[to_dual self]
-theorem id_hcomp_app {H : E ⥤ C} (α : F ⟶ G) (X : E) : (𝟙 H ◫ α).app X = α.app _ := by
-  simp only [hcomp_app, NatTrans.id_app, Functor.map_id]
-  exact Category.comp_id _
+theorem id_hcomp_app {H : E ⥤ C} (α : F ⟶ G) (X : E) : (𝟙 H ◫ α).app X = α.app _ := by simp
 
 -- Note that we don't yet prove a `hcomp_assoc` lemma here: even stating it is painful, because we
 -- need to use associativity of functor composition. (It's true without the explicit associator,

@@ -832,8 +832,7 @@ theorem isIndepSet_neighborSet_of_triangleFree (h : G.CliqueFree 3) (v : α) :
 set in `G` and vice versa. -/
 theorem isIndepSet_induce {F : Set α} {s : Set F} :
     ((⊤ : Subgraph G).induce F).coe.IsIndepSet s ↔ G.IsIndepSet (Subtype.val '' s) := by
-  simp only [Set.Pairwise, IsIndepSet]
-  aesop
+  simp [Set.Pairwise]
 
 end IndepSet
 

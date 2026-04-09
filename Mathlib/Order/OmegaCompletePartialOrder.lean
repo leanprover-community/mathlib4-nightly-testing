@@ -742,7 +742,7 @@ lemma ωScottContinuous_apply
     apply le_antisymm
     · apply ωSup_le
       intro i
-      change (f (c i)) (ωSup (c.map ⟨g, hg.monotone⟩)) ≤ _
+      dsimp
       rw [(f (c i)).continuous]
       apply ωSup_le
       intro j

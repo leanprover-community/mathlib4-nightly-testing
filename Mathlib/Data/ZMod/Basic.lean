@@ -440,13 +440,12 @@ def ringEquivCongr {m n : ℕ} (h : m = n) : ZMod m ≃+* ZMod n := by
         map_mul' := fun a b => by
           dsimp [ZMod]
           ext
-          simp only [finCongr_apply, Fin.val_cast, Fin.val_mul, ← h]
+          rw [Fin.val_cast, Fin.val_mul, Fin.val_mul, Fin.val_cast, Fin.val_cast, ← h]
         map_add' := fun a b => by
           dsimp [ZMod]
           ext
-          simp only [finCongr_apply, Fin.val_cast, Fin.val_add, ← h] }
+          rw [Fin.val_cast, Fin.val_add, Fin.val_add, Fin.val_cast, Fin.val_cast, ← h] }
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma ringEquivCongr_refl (a : ℕ) : ringEquivCongr (rfl : a = a) = .refl _ := by
   cases a <;> rfl
 
@@ -454,13 +453,11 @@ lemma ringEquivCongr_refl_apply {a : ℕ} (x : ZMod a) : ringEquivCongr rfl x = 
   rw [ringEquivCongr_refl]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 lemma ringEquivCongr_symm {a b : ℕ} (hab : a = b) :
     (ringEquivCongr hab).symm = ringEquivCongr hab.symm := by
   subst hab
   cases a <;> rfl
 
-set_option backward.isDefEq.respectTransparency false in
 lemma ringEquivCongr_trans {a b c : ℕ} (hab : a = b) (hbc : b = c) :
     (ringEquivCongr hab).trans (ringEquivCongr hbc) = ringEquivCongr (hab.trans hbc) := by
   subst hab hbc
@@ -471,7 +468,6 @@ lemma ringEquivCongr_ringEquivCongr_apply {a b c : ℕ} (hab : a = b) (hbc : b =
   rw [← ringEquivCongr_trans hab hbc]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 lemma ringEquivCongr_val {a b : ℕ} (h : a = b) (x : ZMod a) :
     ZMod.val ((ZMod.ringEquivCongr h) x) = ZMod.val x := by
   subst h
