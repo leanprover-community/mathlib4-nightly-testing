@@ -748,7 +748,10 @@ protected instance algebra [CommSemiring S] [Algebra S R] : Algebra S ℍ[R] :=
   inferInstanceAs <| Algebra S ℍ[R,-1,0,-1]
 
 instance : Star ℍ[R] := QuaternionAlgebra.instStarQuaternionAlgebra
+
 instance : StarRing ℍ[R] := QuaternionAlgebra.instStarRing
+
+set_option backward.isDefEq.respectTransparency.types false in
 instance : IsStarNormal a := inferInstanceAs <| IsStarNormal (R := ℍ[R,-1,0,-1]) a
 
 @[ext]

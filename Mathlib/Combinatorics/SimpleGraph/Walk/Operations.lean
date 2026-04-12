@@ -28,6 +28,8 @@ Operations on walks that produce a new walk in the same graph.
 walks
 -/
 
+set_option backward.isDefEq.respectTransparency.types false
+
 @[expose] public section
 
 open Function

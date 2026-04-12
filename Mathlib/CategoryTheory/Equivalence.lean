@@ -58,6 +58,8 @@ We write `C ≌ D` (`\backcong`, not to be confused with `≅`/`\cong`) for a bu
 
 -/
 
+set_option backward.isDefEq.respectTransparency.types false
+
 @[expose] public section
 
 namespace CategoryTheory
