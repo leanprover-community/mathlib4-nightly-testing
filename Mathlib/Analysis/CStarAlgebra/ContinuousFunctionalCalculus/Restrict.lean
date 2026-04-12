@@ -25,6 +25,8 @@ simply by proving:
 2. `0 ≤ x ↔ IsSelfAdjoint x ∧ SpectrumRestricts Real.toNNReal x`.
 -/
 
+set_option backward.isDefEq.respectTransparency.types false
+
 @[expose] public section
 
 open Set Topology
