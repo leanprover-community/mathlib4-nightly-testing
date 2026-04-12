@@ -89,6 +89,8 @@ def symm (I : X ≅ Y) : Y ≅ X where
   hom := I.inv
   inv := I.hom
 
+attribute [defeq] Iso.symm.eq_1
+
 @[to_dual (attr := simp, grind =) symm_inv]
 theorem symm_hom (α : X ≅ Y) : α.symm.hom = α.inv :=
   rfl

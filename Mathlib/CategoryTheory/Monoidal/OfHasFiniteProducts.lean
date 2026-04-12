@@ -304,7 +304,7 @@ instance :
     have : HasFiniteProducts D := hasFiniteProducts_of_has_binary_and_terminal
     let : CartesianMonoidalCategory C := .ofHasFiniteProducts
     let : CartesianMonoidalCategory D := .ofHasFiniteProducts
-    IsIso (η F) := by dsimp [η_eq]; infer_instance
+    IsIso (η F) := by rw [η_eq]; change IsIso (terminalComparison F); infer_instance
 
 set_option linter.deprecated false in
 @[deprecated inferInstance (since := "2025-10-19")]
@@ -313,7 +313,7 @@ instance (X Y : C) :
     have : HasFiniteProducts D := hasFiniteProducts_of_has_binary_and_terminal
     let : CartesianMonoidalCategory C := .ofHasFiniteProducts
     let : CartesianMonoidalCategory D := .ofHasFiniteProducts
-    IsIso (δ F X Y) := by dsimp [δ_eq]; infer_instance
+    IsIso (δ F X Y) := by rw [δ_eq]; change IsIso (prodComparison F X Y); infer_instance
 
 /-- Promote a functor that preserves finite products to a monoidal functor between
 categories equipped with the monoidal category structure given by finite products. -/

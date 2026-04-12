@@ -194,6 +194,8 @@ coproduct of objects in such a family. -/
 def summand (A : IndexSet Δ) : C :=
   N A.1.unop.len
 
+attribute [defeq] summand.eq_1
+
 /-- The cofan for `summand N Δ` induced by morphisms `N n ⟶ X _⦋n⦌` for all `n : ℕ`. -/
 def cofan' (Δ : SimplexCategoryᵒᵖ) : Cofan (summand N Δ) :=
   Cofan.mk (X.obj Δ) (fun A => φ A.1.unop.len ≫ X.map A.e.op)

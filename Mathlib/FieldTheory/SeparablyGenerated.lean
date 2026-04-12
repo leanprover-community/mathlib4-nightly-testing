@@ -160,7 +160,10 @@ theorem exists_mem_support_not_dvd_of_forall_totalDegree_le (hF0 : F ≠ 0) (hFa
   have hF'' : aeval a F'' = 0 := by
     have : (aeval a).toLinearMap ∘ₗ (Finsupp.lmapDomain k k fun s : F.support ↦ σ' s) =
         (Finsupp.linearCombination k fun s : F.support ↦ aeval a (monomial (σ' s) (1 : k))) := by
-      ext v; simp [AddMonoidAlgebra, monomial]
+      apply Finsupp.lhom_ext'; intro v; ext1
+      simp only [LinearMap.comp_apply, Finsupp.lsingle_apply, AlgHom.toLinearMap_apply,
+        Finsupp.linearCombination_single, one_smul, monomial]
+      erw [Finsupp.lmapDomain_apply, Finsupp.mapDomain_single, Finsupp.lsingle_apply]
     simp only [← hF', F'', ← this]; rfl
   suffices hpm : p * F''.totalDegree ≤ F.totalDegree by
     have hF''0' : F''.totalDegree ≠ 0 := by

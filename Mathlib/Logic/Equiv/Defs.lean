@@ -146,6 +146,8 @@ instance inhabited' : Inhabited (α ≃ α) := ⟨Equiv.refl α⟩
 @[symm]
 protected def symm (e : α ≃ β) : β ≃ α := ⟨e.invFun, e.toFun, e.right_inv, e.left_inv⟩
 
+attribute [defeq] Equiv.symm.eq_1
+
 /-- See Note [custom simps projection] -/
 def Simps.symm_apply (e : α ≃ β) : β → α := e.symm
 
@@ -721,11 +723,14 @@ is equivalent to the product. -/
 def sigmaEquivProdOfEquiv {α β} {β₁ : α → Sort _} (F : ∀ a, β₁ a ≃ β) : Sigma β₁ ≃ α × β :=
   (sigmaCongrRight F).trans (sigmaEquivProd α β)
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- The dependent product of types is associative up to an equivalence. -/
 def sigmaAssoc {α : Type*} {β : α → Type*} (γ : ∀ a : α, β a → Type*) :
     (Σ ab : Σ a : α, β a, γ ab.1 ab.2) ≃ Σ a : α, Σ b : β a, γ a b where
   toFun x := ⟨x.1.1, ⟨x.1.2, x.2⟩⟩
   invFun x := ⟨⟨x.1, x.2.1⟩, x.2.2⟩
+
+attribute [defeq] sigmaAssoc.eq_1
 
 /-- The dependent product of sorts is associative up to an equivalence. -/
 def pSigmaAssoc {α : Sort*} {β : α → Sort*} (γ : ∀ a : α, β a → Sort*) :

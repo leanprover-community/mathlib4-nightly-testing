@@ -111,6 +111,7 @@ theorem congr_map (F : C ⥤ D) {X Y : C} {f g : X ⟶ Y}
     (h : f = g) : F.map f = F.map g := by
   rw [h]
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- `F ⋙ G` is the composition of a functor `F` and a functor `G` (`F` first, then `G`).
 -/
 @[simps (attr := grind =) obj]

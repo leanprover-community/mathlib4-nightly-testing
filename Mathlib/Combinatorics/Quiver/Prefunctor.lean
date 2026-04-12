@@ -61,21 +61,31 @@ theorem ext' {V W : Type u} [Quiver V] [Quiver W] {F G : Prefunctor V W}
   ext X Y f
   simpa only [Quiver.homOfEq_rfl] using h_map X Y f
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- The identity morphism between quivers. -/
 @[simps]
 def id (V : Type*) [Quiver V] : Prefunctor V V where
   obj := fun X => X
   map f := f
 
+attribute [defeq] id_obj id_map
+attribute [-simp] id_obj id_map
+attribute [simp] id_obj id_map
+
 instance (V : Type*) [Quiver V] : Inhabited (Prefunctor V V) :=
   ⟨id V⟩
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- Composition of morphisms between quivers. -/
 @[simps]
 def comp {U : Type*} [Quiver U] {V : Type*} [Quiver V] {W : Type*} [Quiver W]
     (F : Prefunctor U V) (G : Prefunctor V W) : Prefunctor U W where
   obj X := G.obj (F.obj X)
   map f := G.map (F.map f)
+
+attribute [defeq] comp_obj comp_map
+attribute [-simp] comp_obj comp_map
+attribute [simp] comp_obj comp_map
 
 @[simp]
 theorem comp_id {U V : Type*} [Quiver U] [Quiver V] (F : Prefunctor U V) :

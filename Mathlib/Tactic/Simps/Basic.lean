@@ -1004,7 +1004,15 @@ def addProjection (declName : Name) (type lhs rhs : Expr) (args : Array Expr)
       levelParams := univs
       type := declType
       value := declValue }
-  inferDefEqAttr declName
+  -- `@[simps]` proofs are `Eq.refl` by construction (unless `simpRhs` transforms the proof),
+  -- so set `[defeq]` directly. (`inferDefEqAttr` checks `isDefEq` at `.instances` transparency,
+  -- which is too conservative for structure projections.)
+  -- When `simpRhs` has transformed the proof, fall back to `inferDefEqAttr`.
+  if prf.getAppFn.isConstOf `Eq.refl then
+    defeqAttr.setTag declName
+    validateDefEqAttr declName
+  else
+    inferDefEqAttr declName
   -- add term info and apply attributes
   addDeclarationRangesFromSyntax declName (← getRef) ref
   addTermInfo' ref (← mkConstWithLevelParams declName) (isBinder := true) |>.run'

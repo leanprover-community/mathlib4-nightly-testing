@@ -154,6 +154,7 @@ lemma next_eq_self (c : ComplexShape ι) (j : ι) (hj : ¬c.Rel j (c.next j)) :
     c.next j = j :=
   c.next_eq_self' j (fun k hk' => hj (by simpa only [c.next_eq' hk'] using hk'))
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- The `ComplexShape` allowing differentials from `X i` to `X (i+a)`.
 (For example when `a = 1`, a cohomology theory indexed by `ℕ` or `ℤ`)
 -/
@@ -162,6 +163,7 @@ def up' {α : Type*} [Add α] [IsRightCancelAdd α] (a : α) : ComplexShape α w
   next_eq hi hj := hi.symm.trans hj
   prev_eq hi hj := add_right_cancel (hi.trans hj.symm)
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- The `ComplexShape` allowing differentials from `X (j+a)` to `X j`.
 (For example when `a = 1`, a homology theory indexed by `ℕ` or `ℤ`)
 -/
@@ -171,10 +173,15 @@ def down' {α : Type*} [Add α] [IsRightCancelAdd α] (a : α) : ComplexShape α
   next_eq hi hj := add_right_cancel (hi.trans hj.symm)
   prev_eq hi hj := hi.symm.trans hj
 
+attribute [defeq] up'_Rel down'_Rel
+attribute [-simp] up'_Rel down'_Rel
+attribute [simp] up'_Rel down'_Rel
+
 @[to_dual (reorder := i j) down'_mk]
 theorem up'_mk {α : Type*} [Add α] [IsRightCancelAdd α] (a : α) (i j : α) (h : i + a = j) :
     (up' a).Rel i j := h
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- The `ComplexShape` appropriate for cohomology, so `d : X i ⟶ X j` only when `j = i + 1`.
 -/
 @[to_dual (attr := simps!) down

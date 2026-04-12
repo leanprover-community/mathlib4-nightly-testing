@@ -152,6 +152,7 @@ end Paths
 
 namespace Symmetrify
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- The inclusion of a quiver in its symmetrification -/
 @[simps]
 def of : Prefunctor V (Symmetrify V) where
@@ -200,6 +201,7 @@ theorem lift_unique [HasReverse V'] (φ : V ⥤q V') (Φ : Symmetrify V ⥤q V')
     · rfl
     · exact hΦinv (Sum.inl _)
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- A prefunctor canonically defines a prefunctor of the symmetrifications. -/
 @[simps]
 def _root_.Prefunctor.symmetrify (φ : U ⥤q V) : Symmetrify U ⥤q Symmetrify V where

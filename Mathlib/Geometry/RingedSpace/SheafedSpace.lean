@@ -54,6 +54,8 @@ instance coeSort : CoeSort (SheafedSpace C) Type* where
 def sheaf (X : SheafedSpace C) : Sheaf C (X : TopCat) :=
   ⟨X.presheaf, X.IsSheaf⟩
 
+attribute [defeq] SheafedSpace.sheaf.eq_1
+
 /-- Not `@[simp]` since it already reduces to `carrier = carrier`. -/
 theorem mk_coe (carrier) (presheaf) (h) :
     (({ carrier

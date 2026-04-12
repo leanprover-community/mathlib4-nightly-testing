@@ -208,9 +208,7 @@ theorem whiskerLeft_comp_whiskerRight {F G : C ⥤ D} {H K : D ⥤ E} (α : F �
 
 @[to_dual hcomp_eq_whiskerRight_comp_whiskerLeft]
 lemma NatTrans.hcomp_eq_whiskerLeft_comp_whiskerRight {F G : C ⥤ D} {H K : D ⥤ E}
-    (α : F ⟶ G) (β : H ⟶ K) : α ◫ β = whiskerLeft F β ≫ whiskerRight α K := by
-  ext
-  simp
+    (α : F ⟶ G) (β : H ⟶ K) : α ◫ β = whiskerLeft F β ≫ whiskerRight α K := rfl
 
 /-- If `α : G ≅ H` is a natural isomorphism then
 `isoWhiskerLeft F α : (F ⋙ G) ≅ (F ⋙ H)` has components `α.app (F.obj X)`.

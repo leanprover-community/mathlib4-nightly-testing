@@ -266,6 +266,10 @@ def subtypeEquiv {p : α → Prop} {q : β → Prop} (e : α ≃ β) (h : ∀ a,
   left_inv a := Subtype.ext <| by simp
   right_inv b := Subtype.ext <| by simp
 
+attribute [defeq] subtypeEquiv_apply
+attribute [-simp] subtypeEquiv_apply
+attribute [simp] subtypeEquiv_apply
+
 lemma coe_subtypeEquiv_eq_map {X Y} {p : X → Prop} {q : Y → Prop} (e : X ≃ Y)
     (h : ∀ x, p x ↔ q (e x)) : ⇑(e.subtypeEquiv h) = Subtype.map e (h · |>.mp) :=
   rfl
@@ -442,6 +446,7 @@ def sigmaSubtype {α : Type*} {β : α → Type*} (a : α) :
 section
 attribute [local simp] Trans.trans sigmaAssoc subtypeSigmaEquiv uniqueSigma eqRec_eq_cast
 
+set_option backward.defeq.atInstanceTransparency false in
 /-- A subtype of a dependent triple which pins down both bases is equivalent to the
 respective fiber. -/
 @[simps! +simpRhs apply]
@@ -460,7 +465,7 @@ lemma sigmaSigmaSubtype_symm_apply {α : Type*} {β : α → Type*} {γ : (a : �
     (p : (a : α) × β a → Prop) [uniq : Unique {ab // p ab}]
     {a : α} {b : β a} (c : γ a b) (h : p ⟨a, b⟩) :
     (sigmaSigmaSubtype p h).symm c = ⟨⟨a, ⟨b, c⟩⟩, h⟩ := by
-  rw [Equiv.symm_apply_eq]; simp
+  rw [Equiv.symm_apply_eq]; simp [sigmaSigmaSubtype, subtypeEquiv, sigmaAssoc]
 
 /-- A specialization of `sigmaSigmaSubtype` to the case where the second base
 does not depend on the first, and the property being checked for is simple
@@ -476,7 +481,7 @@ def sigmaSigmaSubtypeEq {α β : Type*} {γ : α → β → Type*} (a : α) (b :
 lemma sigmaSigmaSubtypeEq_apply {α β : Type*} {γ : α → β → Type*} {a : α} {b : β}
     (s : {s : (a : α) × (b : β) × γ a b // s.1 = a ∧ s.2.1 = b}) :
     sigmaSigmaSubtypeEq a b s = cast (congrArg₂ γ s.2.1 s.2.2) s.1.2.2 := by
-  simp [sigmaSigmaSubtypeEq]
+  simp [sigmaSigmaSubtypeEq, sigmaSigmaSubtype, subtypeEquiv]
 
 @[simp]
 lemma sigmaSigmaSubtypeEq_symm_apply {α β : Type*} {γ : α → β → Type*} {a : α} {b : β} (c : γ a b) :

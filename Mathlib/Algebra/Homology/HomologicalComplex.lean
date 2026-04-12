@@ -628,6 +628,8 @@ def of (X : α → V) (d : ∀ n, X (n + 1) ⟶ X n) (sq : ∀ n, d (n + 1) ≫ 
       substs hij hjk
       simp only [eqToHom_refl, id_comp, dite_eq_ite, ite_true, sq] }
 
+attribute [defeq] ChainComplex.of.eq_1
+
 variable (X : α → V) (d : ∀ n, X (n + 1) ⟶ X n) (sq : ∀ n, d (n + 1) ≫ d n = 0)
 
 @[simp]
@@ -891,6 +893,8 @@ def of (X : α → V) (d : ∀ n, X n ⟶ X (n + 1)) (sq : ∀ n, d n ≫ d (n +
       · substs h h'
         simp [sq]
       all_goals simp }
+
+attribute [defeq] CochainComplex.of.eq_1
 
 variable (X : α → V) (d : ∀ n, X n ⟶ X (n + 1)) (sq : ∀ n, d n ≫ d (n + 1) = 0)
 
