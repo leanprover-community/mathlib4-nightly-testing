@@ -11,6 +11,8 @@ public import Mathlib.Algebra.Notation.Pi.Defs
 public import Mathlib.Data.FunLike.Basic
 public import Mathlib.Logic.Function.Iterate
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Monoid and group homomorphisms
 

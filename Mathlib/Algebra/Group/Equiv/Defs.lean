@@ -8,6 +8,8 @@ module
 public import Mathlib.Algebra.Group.Hom.Defs
 public import Mathlib.Logic.Equiv.Defs
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Multiplicative and additive equivs
 
