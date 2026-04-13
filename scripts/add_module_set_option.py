@@ -12,6 +12,7 @@ Usage:
 
 import argparse
 import re
+import sys
 from pathlib import Path
 
 from set_option_utils import PROJECT_DIR, lakefile_pattern
@@ -123,24 +124,71 @@ def main():
         action="store_true",
         help="Report without modifying files",
     )
+    parser.add_argument(
+        "--deps-of",
+        nargs="*",
+        metavar="MODULE",
+        help="Only add to transitive dependencies of these modules "
+             "(module names like Mathlib.Foo.Bar)",
+    )
+    parser.add_argument(
+        "--no-lakefile",
+        action="store_true",
+        help="Skip removing the option from lakefile.lean",
+    )
     args = parser.parse_args()
 
     option = args.option
 
     # Step 1: remove from lakefile
-    lakefile = PROJECT_DIR / "lakefile.lean"
-    if lakefile.exists():
-        content = lakefile.read_text()
-        pat = lakefile_pattern(option)
-        new_content = pat.sub("", content)
-        if new_content != content:
-            if not args.dry_run:
-                lakefile.write_text(new_content)
-            print(f"Removed {option} from lakefile.lean")
+    if not args.no_lakefile:
+        lakefile = PROJECT_DIR / "lakefile.lean"
+        if lakefile.exists():
+            content = lakefile.read_text()
+            pat = lakefile_pattern(option)
+            new_content = pat.sub("", content)
+            if new_content != content:
+                if not args.dry_run:
+                    lakefile.write_text(new_content)
+                print(f"Removed {option} from lakefile.lean")
 
-    # Step 2: add to every Mathlib file
-    mathlib_dir = PROJECT_DIR / "Mathlib"
-    files = sorted(mathlib_dir.rglob("*.lean"))
+    # Step 2: determine which files to process
+    if args.deps_of:
+        # Import DAG to find dependencies
+        sys.path.insert(0, str(Path(__file__).parent))
+        from dag_traversal import DAG
+
+        dag = DAG.from_directories(PROJECT_DIR)
+        deps_set: set[str] = set()
+        for mod in args.deps_of:
+            # Collect transitive dependencies
+            frontier = {mod}
+            visited: set[str] = set()
+            while frontier:
+                next_frontier: set[str] = set()
+                for m in frontier:
+                    info = dag.modules.get(m)
+                    if info is None:
+                        continue
+                    for imp in info.imports:
+                        if imp not in visited and imp != mod:
+                            visited.add(imp)
+                            next_frontier.add(imp)
+                frontier = next_frontier
+            deps_set |= visited
+        # Convert module names to file paths
+        files = []
+        for name in sorted(deps_set):
+            info = dag.modules.get(name)
+            if info and info.filepath.startswith("Mathlib/"):
+                fp = dag.project_root / info.filepath
+                if fp.exists():
+                    files.append(fp)
+        print(f"  {len(files)} dependencies of {', '.join(args.deps_of)}")
+    else:
+        mathlib_dir = PROJECT_DIR / "Mathlib"
+        files = sorted(mathlib_dir.rglob("*.lean"))
+
     modified = 0
     for filepath in files:
         if add_to_file(filepath, option, args.dry_run):

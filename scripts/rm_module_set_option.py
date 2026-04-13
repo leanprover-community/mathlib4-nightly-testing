@@ -168,12 +168,31 @@ def _collect_all_dependents(dag: DAG, module_name: str) -> list[str]:
     return collected
 
 
+def _collect_all_dependencies(dag: DAG, module_name: str) -> set[str]:
+    """Collect all transitive dependencies (imports) of a module."""
+    collected: set[str] = set()
+    frontier = {module_name}
+    while frontier:
+        next_frontier: set[str] = set()
+        for mod in frontier:
+            info = dag.modules.get(mod)
+            if info is None:
+                continue
+            for imp in info.imports:
+                if imp not in collected and imp != module_name:
+                    collected.add(imp)
+                    next_frontier.add(imp)
+        frontier = next_frontier
+    return collected
+
+
 def make_process_file(
     removable_map: dict[str, int],
     timeout: int,
     traverser: DAGTraverser,
     dag: DAG | None = None,
     build_dependents: bool = False,
+    check_modules: list[str] | None = None,
 ):
     def process_file(module_name: str, filepath: Path) -> FileResult:
         if module_name not in removable_map:
@@ -199,6 +218,16 @@ def make_process_file(
 
             # Build the module itself
             ok, _ = traverser.lake_build(module_name, PROJECT_DIR, timeout)
+
+            # Build specific check modules if requested
+            if ok and check_modules:
+                for cm in check_modules:
+                    if traverser.shutdown_event.is_set():
+                        break
+                    cm_ok, _ = traverser.lake_build(cm, PROJECT_DIR, timeout)
+                    if not cm_ok:
+                        ok = False
+                        break
 
             # Also build dependents (reverse dependencies) if requested
             if ok and build_dependents and dag is not None:
@@ -278,6 +307,20 @@ def main():
         nargs="*",
         help="Only process these files",
     )
+    parser.add_argument(
+        "--deps-of",
+        nargs="*",
+        metavar="MODULE",
+        help="Only process transitive dependencies of these modules "
+             "(module names like Mathlib.Foo.Bar)",
+    )
+    parser.add_argument(
+        "--check-module",
+        nargs="*",
+        metavar="MODULE",
+        help="After removing an option, also build these modules to verify "
+             "they still work (module names like Mathlib.Foo.Bar)",
+    )
     args = parser.parse_args()
 
     option = args.option
@@ -298,6 +341,12 @@ def main():
             mod = f.replace("/", ".").removesuffix(".lean")
             requested.add(mod)
         removable_map = {k: v for k, v in removable_map.items() if k in requested}
+
+    if args.deps_of:
+        deps_set: set[str] = set()
+        for mod in args.deps_of:
+            deps_set |= _collect_all_dependencies(full_dag, mod)
+        removable_map = {k: v for k, v in removable_map.items() if k in deps_set}
 
     print(f"  {len(removable_map)} files with the option set")
 
@@ -348,6 +397,7 @@ def main():
     action = make_process_file(
         removable_map, args.timeout, traverser,
         dag=full_dag, build_dependents=args.build_dependents,
+        check_modules=args.check_module,
     )
 
     display.start(len(full_dag.modules))
