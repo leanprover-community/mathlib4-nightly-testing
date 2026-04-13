@@ -28,7 +28,6 @@ quasiconcavity, and monotonicity implies quasilinearity.
 
 * https://en.wikipedia.org/wiki/Quasiconvex_function
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.Topology.Clopen
 /-!
 # Continuity of indicator functions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

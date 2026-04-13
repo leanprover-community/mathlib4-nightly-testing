@@ -39,7 +39,6 @@ The following notations are scoped to the `Cardinal` namespace.
 - `ℶ_ o` is notation for `beth o`. The value `ℶ_ 1` equals the continuum `𝔠`, which is defined in
   `Mathlib/SetTheory/Cardinal/Continuum.lean`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

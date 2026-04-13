@@ -29,7 +29,6 @@ An arithmetic-geometric sequence is a sequence defined by the recurrence relatio
   monotone.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

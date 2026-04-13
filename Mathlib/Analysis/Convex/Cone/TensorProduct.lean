@@ -47,7 +47,6 @@ This requires:
 
 * [Aubrun et al. *Entangleability of cones*][aubrunEntangleabilityCones2021]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

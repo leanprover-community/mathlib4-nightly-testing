@@ -57,7 +57,6 @@ That is reflected in this file containing both the order and algebra structure.
 cardinal number, cardinal arithmetic, cardinal exponentiation, aleph,
 Cantor's theorem, König's theorem, Konig's theorem
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

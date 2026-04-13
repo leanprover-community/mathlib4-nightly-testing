@@ -39,7 +39,6 @@ convergents. We follow the naming conventions from Wikipedia and [wall2018analyt
 
 numerics, number theory, approximations, fractions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

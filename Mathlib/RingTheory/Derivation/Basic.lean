@@ -32,7 +32,6 @@ and `Mathlib/RingTheory/Derivation/ToSquareZero.lean` for
 - Generalize derivations into bimodules.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

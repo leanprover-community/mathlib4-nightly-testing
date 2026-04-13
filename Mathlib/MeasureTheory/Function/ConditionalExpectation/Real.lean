@@ -25,7 +25,6 @@ This file proves some results regarding the conditional expectation of real-valu
   expectation.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

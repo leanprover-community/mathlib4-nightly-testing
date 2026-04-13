@@ -23,7 +23,6 @@ and `W₁.rlp = W₂` if `W₂` is.
 - https://ncatlab.org/nlab/show/weak+factorization+system#retract_argument
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

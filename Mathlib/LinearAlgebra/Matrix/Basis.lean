@@ -32,7 +32,6 @@ the matrix of their coordinates with respect to some basis.
 
 matrix, basis
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

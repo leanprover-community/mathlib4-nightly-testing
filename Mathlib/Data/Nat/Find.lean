@@ -12,7 +12,6 @@ public import Batteries.Tactic.Init
 /-!
 # `Nat.find` and `Nat.findGreatest`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

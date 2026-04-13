@@ -16,7 +16,6 @@ public import Mathlib.CategoryTheory.Monoidal.FunctorCategory
 If `C` is a category with chosen finite products, then so is `J ⥤ C`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

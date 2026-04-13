@@ -14,7 +14,6 @@ public import Mathlib.RingTheory.Bialgebra.TensorProduct
 We define the Hopf algebra instance on the tensor product of two Hopf algebras.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

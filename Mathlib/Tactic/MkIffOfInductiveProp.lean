@@ -25,7 +25,6 @@ the following type:
 This tactic can be called using either the `mk_iff_of_inductive_prop` user command or
 the `mk_iff` attribute.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -14,7 +14,6 @@ public import Mathlib.Algebra.GroupWithZero.Equiv
 
 This is in a separate file to avoid needing to import `Field` in `Mathlib/Algebra/Ring/Equiv.lean`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

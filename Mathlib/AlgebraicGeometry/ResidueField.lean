@@ -27,7 +27,6 @@ The following are in the `AlgebraicGeometry.Scheme` namespace:
 
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

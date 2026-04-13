@@ -18,7 +18,6 @@ two self-maps that commute with each other.
 Current selection of inequalities is motivated by formalization of the rotation number of
 a circle homeomorphism.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

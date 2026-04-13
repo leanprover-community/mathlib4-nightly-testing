@@ -15,7 +15,6 @@ public import Mathlib.Init
 # Generally useful tactics.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

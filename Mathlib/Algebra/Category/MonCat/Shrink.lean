@@ -14,7 +14,6 @@ public import Mathlib.Algebra.Group.Shrink
 
 For a functor `C ⥤ MonCat.{w'}` with `w`-small image, we shrink to a functor `C ⥤ MonCat.{w}`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

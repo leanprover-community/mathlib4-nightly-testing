@@ -54,7 +54,6 @@ As in other polynomial files, we typically use the notation:
 + `φ ψ : MvPolynomial σ R`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -24,7 +24,6 @@ This file defines irreducible trinomials and proves an irreducibility criterion.
   trinomials.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

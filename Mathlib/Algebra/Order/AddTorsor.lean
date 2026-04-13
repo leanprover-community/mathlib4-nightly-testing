@@ -48,7 +48,6 @@ an ordered field.
 * Pi instances
 * WithTop (in a different file?)
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

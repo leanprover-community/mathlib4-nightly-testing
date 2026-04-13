@@ -17,7 +17,6 @@ public import Mathlib.GroupTheory.GroupAction.Quotient
 
 This file contains instances and definitions relating `MulSemiringAction` to `Polynomial`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

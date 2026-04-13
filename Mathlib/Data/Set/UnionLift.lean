@@ -37,7 +37,6 @@ constants, unary functions, or binary functions are preserved. These lemmas are:
 
 directed union, directed supremum, glue, gluing
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

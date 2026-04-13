@@ -16,7 +16,6 @@ public import Mathlib.GroupTheory.QuotientGroup.Defs
 In this file, we prove monomorphisms in the category of groups are injective homomorphisms and
 epimorphisms are surjective homomorphisms.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,7 +11,6 @@ public import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 /-!
 # Barycentric coordinates are smooth
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

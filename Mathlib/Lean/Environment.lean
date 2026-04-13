@@ -13,7 +13,6 @@ import Mathlib.Tactic.Linter.Header  --shake: keep
 /-!
 # Additional utilities for `Lean.Environment`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 namespace Lean.Environment
 

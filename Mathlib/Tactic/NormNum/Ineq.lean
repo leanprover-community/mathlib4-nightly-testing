@@ -13,7 +13,6 @@ public meta import Mathlib.Tactic.NormNum.Result
 /-!
 # `norm_num` extensions for inequalities.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

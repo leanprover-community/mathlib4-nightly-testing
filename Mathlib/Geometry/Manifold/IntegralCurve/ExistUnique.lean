@@ -44,7 +44,6 @@ We state simpler versions of the theorem for boundaryless manifolds as corollari
 
 integral curve, vector field, local existence, uniqueness
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

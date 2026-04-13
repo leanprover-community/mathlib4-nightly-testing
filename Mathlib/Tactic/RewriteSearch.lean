@@ -11,7 +11,6 @@ public meta import Lean.Elab.Tactic.Basic
 /-!
 # The `rw_search` tactic has been removed from Mathlib.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 namespace Mathlib.Tactic.RewriteSearch

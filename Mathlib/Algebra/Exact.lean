@@ -30,7 +30,6 @@ public import Mathlib.LinearAlgebra.Quotient.Basic
 
 * generalize to `SemilinearMap`, even `SemilinearMapClass`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -41,7 +41,6 @@ for these theorems for multigraphs from [Chou1994].
 
 acyclic graphs, trees
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

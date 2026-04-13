@@ -20,7 +20,6 @@ In this file we express trigonometric functions in terms of their series expansi
 * `Complex.hasSum_sin`, `Complex.sin_eq_tsum`: `Complex.sin` as the sum of an infinite series.
 * `Real.hasSum_sin`, `Real.sin_eq_tsum`: `Real.sin` as the sum of an infinite series.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

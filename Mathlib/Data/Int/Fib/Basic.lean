@@ -18,7 +18,6 @@ Definition of the sequence: `F₀ = 0`, `F₁ = 1`, and `Fₙ₊₂ = Fₙ₊₁
 (same as the natural number version `Nat.fib`, but here `n` is an integer).
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

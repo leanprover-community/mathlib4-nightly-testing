@@ -12,7 +12,6 @@ public import Mathlib.CategoryTheory.Limits.Shapes.Kernels
 /-!
 # The concrete (co)kernels in the category of abelian groups are categorical (co)kernels.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

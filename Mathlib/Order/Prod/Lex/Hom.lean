@@ -11,7 +11,6 @@ public import Mathlib.Order.Hom.Basic
 /-!
 # Order homomorphism for `Prod.Lex`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

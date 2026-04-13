@@ -20,7 +20,6 @@ negation. This generalizes the usual absolute value on real numbers (`|x| = max 
 - `|a|`: The *absolute value* of an element `a` of an additive lattice ordered group
 - `|a|ₘ`: The *absolute value* of an element `a` of a multiplicative lattice ordered group
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -13,7 +13,6 @@ public import Mathlib.Data.Int.Cast.Basic
 /-!
 # Ring structures on the multiplicative opposite
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

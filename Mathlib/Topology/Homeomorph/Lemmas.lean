@@ -17,7 +17,6 @@ This file proves further properties of homeomorphisms between topological spaces
 Pretty much every topological property is preserved under homeomorphisms.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

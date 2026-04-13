@@ -27,7 +27,6 @@ Related files are:
 * `Mathlib/Data/DFinsupp/WellFounded.lean`: Well-foundedness of lexicographic orders on `DFinsupp`
   and `Pi`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

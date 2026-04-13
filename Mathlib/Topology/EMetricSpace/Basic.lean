@@ -19,7 +19,6 @@ public import Mathlib.Topology.UniformSpace.UniformEmbedding
 
 Further results about extended metric spaces.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

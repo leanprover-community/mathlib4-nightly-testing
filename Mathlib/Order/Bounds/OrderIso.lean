@@ -11,7 +11,6 @@ public import Mathlib.Order.Hom.Set
 /-!
 # Order isomorphisms and bounds.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

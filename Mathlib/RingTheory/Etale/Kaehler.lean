@@ -20,7 +20,6 @@ public import Mathlib.RingTheory.Flat.Localization
 - `Algebra.tensorH1CotangentOfIsLocalization`:
   The canonical isomorphism `T ⊗[S] H¹(L_{S⁄R}) ≃ₗ[T] H¹(L_{T⁄R})` for `T` a localization of `S`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

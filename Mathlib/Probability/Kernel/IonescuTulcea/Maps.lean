@@ -12,7 +12,6 @@ public import Mathlib.Order.Restriction
 
 This file contains auxiliary maps which are used to prove the Ionescu-Tulcea theorem.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

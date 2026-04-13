@@ -22,7 +22,6 @@ name_poly_vars X, Y, Z over R
 #check Y -- Y : MvPolynomial (Fin 3) R
 ```
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

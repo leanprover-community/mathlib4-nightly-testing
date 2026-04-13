@@ -23,7 +23,6 @@ condition `e.HasLift φ`.
 * obtain dual results for morphisms `L.extend e ⟶ K`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

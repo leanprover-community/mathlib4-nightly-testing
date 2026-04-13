@@ -10,7 +10,6 @@ public import Mathlib.Init
 /-!
 Mathlib-specific pretty printer options.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

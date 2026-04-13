@@ -13,7 +13,6 @@ public import Mathlib.Topology.MetricSpace.Basic
 In this file, we transfer a distance and (pseudo-)metric space structure across an equivalence.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

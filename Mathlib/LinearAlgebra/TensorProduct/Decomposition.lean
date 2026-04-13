@@ -14,7 +14,6 @@ In this file we show that if `ℳ` is a decomposition of an `R`-module `M` index
 then the `S`-module `S ⊗[R] M` has a decomposition `fun i ↦ (ℳ i).baseChange S` indexed by the
 same `ι`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

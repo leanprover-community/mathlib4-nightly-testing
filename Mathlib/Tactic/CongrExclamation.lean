@@ -88,7 +88,6 @@ This is somewhat like `congr`.
 
 See `Congr!.Config` for all options.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

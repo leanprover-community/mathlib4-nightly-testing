@@ -39,7 +39,6 @@ The following are notations in the `OrderType` namespace:
 
 order type, order isomorphism, linear order
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public noncomputable section
 

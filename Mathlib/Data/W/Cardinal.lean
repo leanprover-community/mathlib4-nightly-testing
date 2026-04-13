@@ -23,7 +23,6 @@ this surjection can be used to put an upper bound on the cardinality of `MvPolyn
 
 W, W type, cardinal, first order
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

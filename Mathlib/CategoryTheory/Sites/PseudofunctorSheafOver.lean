@@ -18,7 +18,6 @@ which sends `X : C` to the category of sheaves on `Over X`
 with values in `A`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -36,7 +36,6 @@ infinitely many times.
 
 conservative dynamical system, Poincare recurrence theorem
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

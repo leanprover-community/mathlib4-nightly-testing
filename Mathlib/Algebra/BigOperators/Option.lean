@@ -14,7 +14,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 In this file we prove formulas for products and sums over `Finset.insertNone s` and
 `Finset.eraseNone s`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -26,7 +26,6 @@ group is nonarchimedean.
 - `NonarchimedeanRing`: nonarchimedean ring.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -34,7 +34,6 @@ fails for a non-cancellative set see `Counterexamples/HomogeneousPrimeNotPrime.l
 
 homogeneous, radical
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,7 +19,6 @@ intervals as finsets and fintypes.
 Some lemmas can be generalized using `OrderedGroup`, `CanonicallyOrderedMul` or `SuccOrder`
 and subsequently be moved upstream to `Order.Interval.Finset`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

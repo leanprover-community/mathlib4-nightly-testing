@@ -15,7 +15,6 @@ public import Mathlib.Order.Interval.Finset.Nat
 
 This file contains lemmas dealing with different flavours of induction on polynomials.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

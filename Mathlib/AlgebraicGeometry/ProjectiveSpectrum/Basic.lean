@@ -32,7 +32,6 @@ In this file we provide basic properties of the scheme.
   generates the whole ring, we can construct a map `X ⟶ Proj 𝒜`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

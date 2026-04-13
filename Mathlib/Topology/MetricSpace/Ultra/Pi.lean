@@ -20,7 +20,6 @@ This file contains results on the behavior of ultrametrics in products of ultram
 
 ultrametric, nonarchimedean
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

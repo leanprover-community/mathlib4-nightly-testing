@@ -54,7 +54,6 @@ In particular,
 For finitely presented algebras, see `Algebra.FinitePresentation`
 in file `Mathlib/RingTheory/FinitePresentation.lean`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

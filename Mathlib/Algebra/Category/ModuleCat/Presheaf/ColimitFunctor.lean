@@ -25,7 +25,6 @@ a functor `PresheafOfModules.colimitFunctor : PresheafOfModules R ⥤ ModuleCat 
 this slightly more general construction.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

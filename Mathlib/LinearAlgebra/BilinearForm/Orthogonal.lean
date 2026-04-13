@@ -31,7 +31,6 @@ In this file we use the following type variables:
 
 Bilinear form,
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -13,7 +13,6 @@ public import Batteries.Data.List
 
 This file contains the results concerning the interaction of list big operators with ordered rings.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

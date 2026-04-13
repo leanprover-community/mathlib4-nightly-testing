@@ -33,7 +33,6 @@ in the basis `[b₂, ..., bₙ]` (`basis_tl`).
   we need to port some `Seq` API to `Multiseries`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

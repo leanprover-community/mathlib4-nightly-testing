@@ -22,7 +22,6 @@ We also prove some simple lemmas about `IsFixedPt` and `∘`, `iterate`, and `Se
 
 fixed point
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

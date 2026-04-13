@@ -11,7 +11,6 @@ public import Mathlib.Data.Set.CoeSort
 # Additional Expr recognizers needing theory imports
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

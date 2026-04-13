@@ -19,7 +19,6 @@ relate to operation on lists.
 
 * [Mario Carneiro, *Formalizing computability theory via partial recursive functions*][carneiro2019]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -15,7 +15,6 @@ public import Batteries.Data.List
 This file proves basic properties of `List.countP` and `List.count`, which count the number of
 elements of a list satisfying a predicate and equal to a given element respectively.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -36,7 +36,6 @@ equivalence relation, and defines Turing degrees as the quotient under this rela
 
 Computability, Oracle, Turing Degrees, Reducibility, Equivalence Relation
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

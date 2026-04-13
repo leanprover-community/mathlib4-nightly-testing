@@ -34,7 +34,6 @@ to use a canonical `Module` typeclass throughout.
 
 semimodule, module, vector space
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

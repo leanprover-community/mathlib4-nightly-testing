@@ -13,7 +13,6 @@ public import Mathlib.Topology.ContinuousOn
 
 A clopen set is a set that is both closed and open.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

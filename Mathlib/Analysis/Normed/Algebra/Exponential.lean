@@ -88,7 +88,6 @@ with a `ℚ`-algebra structure, we use the junk value `1`.
 In the long term it may be possible to replace `Real.exp` and `Complex.exp` with `NormedSpace.exp`
 and move it back to the root namespace.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

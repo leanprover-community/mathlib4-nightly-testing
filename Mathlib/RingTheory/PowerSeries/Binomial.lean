@@ -29,7 +29,6 @@ commutative binomial ring `R`.
   `1 + XA[[X]]` into an `R`-module.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

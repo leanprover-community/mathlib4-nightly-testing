@@ -24,7 +24,6 @@ topological spaces X and Y.
   The adjunction between pullback and pushforward for sheaves on topological spaces.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

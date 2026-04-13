@@ -19,7 +19,6 @@ then the corresponding localized category can be equipped with
 a shift by `A`, and the localization functor is compatible with the shift.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -36,7 +36,6 @@ the definition of `semigroupDvd`. The results in this file could be duplicated f
 likely to be very useful.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

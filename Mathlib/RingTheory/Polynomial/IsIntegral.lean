@@ -24,7 +24,6 @@ public import Mathlib.RingTheory.IntegralClosure.IsIntegral.AlmostIntegral
 - We also provide the instance `[IsIntegrallyClosed R] : IsIntegrallyClosed R[X]`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

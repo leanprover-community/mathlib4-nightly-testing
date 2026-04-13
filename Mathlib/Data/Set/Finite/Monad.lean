@@ -16,7 +16,6 @@ public import Mathlib.Data.Set.Functor
 
 finite sets
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

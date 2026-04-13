@@ -31,7 +31,6 @@ https://en.wikipedia.org/wiki/Clifford_algebra#Antiautomorphisms
 * `CliffordAlgebra.reverse_mem_evenOdd_iff`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

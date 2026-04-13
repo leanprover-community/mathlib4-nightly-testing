@@ -27,7 +27,6 @@ This file defines the Hyperoperation sequence.
 
 hyperoperation
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

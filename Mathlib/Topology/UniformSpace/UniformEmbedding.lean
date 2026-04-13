@@ -14,7 +14,6 @@ public import Mathlib.Topology.DenseEmbedding
 
 Extension of uniform continuous functions.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -69,7 +69,6 @@ instances should not be a global instance.
 > be obtained via `ModularLattice`. This is not the case in `mathlib4`.
 > See `JordanHolderModule.instJordanHolderLattice`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -10,7 +10,6 @@ public import Mathlib.Init
 /-!
 # Additions to `Lean.Meta.DiscrTree`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

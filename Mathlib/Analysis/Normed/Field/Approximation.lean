@@ -33,7 +33,6 @@ current theorem `IsAlgClosed.of_denseRange`.
 ## Tags
 Approximation, polynomial, normed field, continuity of roots
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

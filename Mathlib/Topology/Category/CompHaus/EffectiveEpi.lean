@@ -26,7 +26,6 @@ equivalent.
 - Define coherent categories, and show that `CompHaus` is actually coherent.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -85,7 +85,6 @@ type with a zero. They are denoted `R⸨X⸩`.
   to `K⟦X⟧`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 universe u

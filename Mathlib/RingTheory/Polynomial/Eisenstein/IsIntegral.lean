@@ -23,7 +23,6 @@ In this file we gather more miscellaneous results about Eisenstein polynomials
   ring of integers of `L`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

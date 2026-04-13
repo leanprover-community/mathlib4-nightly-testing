@@ -50,7 +50,6 @@ Version for `circle`.
 
 additive combinatorics, number theory, sumset, cauchy-davenport
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

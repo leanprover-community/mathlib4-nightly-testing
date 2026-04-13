@@ -18,7 +18,6 @@ additional assumption that `A` has pullbacks (a condition which should
 be automatically satisfied (TODO)).
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

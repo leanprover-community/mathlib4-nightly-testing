@@ -35,7 +35,6 @@ neighborhood filters and so on.
 product, sum, disjoint union
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

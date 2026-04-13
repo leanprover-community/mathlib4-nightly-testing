@@ -29,7 +29,6 @@ None.
 
 This file exists mainly to avoid importing `RCLike` in the main normed space theory files.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

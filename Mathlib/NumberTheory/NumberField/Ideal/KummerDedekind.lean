@@ -46,7 +46,6 @@ Let `K` be a number field and `θ` an algebraic integer of `K`.
   in `minpoly ℤ θ`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -79,7 +79,6 @@ Generalize more results to topological vector spaces.
 derivative, differentiable, Fréchet, calculus
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

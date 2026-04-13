@@ -78,7 +78,6 @@ We did not add `IsFinite (X : Type) : Prop`, because it is simply `Nonempty (Fin
 
 finsum, finprod, finite sum, finite product
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

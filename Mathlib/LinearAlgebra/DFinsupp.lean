@@ -36,7 +36,6 @@ much more developed, but many lemmas in that file should be eligible to copy ove
 
 function with finite support, module, linear algebra
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

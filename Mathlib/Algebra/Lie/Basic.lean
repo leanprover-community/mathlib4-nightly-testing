@@ -48,7 +48,6 @@ are partially unbundled.
 
 lie bracket, jacobi identity, lie ring, lie algebra, lie module
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

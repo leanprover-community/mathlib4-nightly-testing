@@ -37,7 +37,6 @@ forms.
   intersection with the Cartan subalgebra plus a sum of root spaces.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

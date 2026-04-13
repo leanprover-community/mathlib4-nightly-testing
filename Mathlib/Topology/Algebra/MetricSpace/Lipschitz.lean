@@ -13,7 +13,6 @@ public import Mathlib.Topology.MetricSpace.Lipschitz
 
 This file develops Lipschitz continuous functions further with some results that depend on algebra.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -22,7 +22,6 @@ Various results on Cauchy sequences in (pseudo-)metric spaces, including
 
 metric, pseudometric space, Cauchy sequence
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

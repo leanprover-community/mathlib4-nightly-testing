@@ -35,7 +35,6 @@ arguments. This is in contrast with the design of `Pi.single` or `Set.piecewise`
 
 indicator, characteristic
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

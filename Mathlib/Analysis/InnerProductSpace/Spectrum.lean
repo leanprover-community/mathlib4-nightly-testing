@@ -64,7 +64,6 @@ Spectral theory for bounded self-adjoint operators.
 self-adjoint operator, spectral theorem, diagonalization theorem
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

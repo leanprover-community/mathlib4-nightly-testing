@@ -18,7 +18,6 @@ to the polynomial that has the same coefficients as `φ`, for all `m < n`,
 and `0` otherwise.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

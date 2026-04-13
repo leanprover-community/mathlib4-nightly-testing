@@ -10,7 +10,6 @@ public import Mathlib.CategoryTheory.Products.Basic
 /-!
 # Lemmas about functors out of product categories.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

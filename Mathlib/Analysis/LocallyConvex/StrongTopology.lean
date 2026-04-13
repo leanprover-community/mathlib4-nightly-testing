@@ -26,7 +26,6 @@ locally convex.
 
 locally convex, bounded convergence
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.Data.Int.Sqrt
 /-!
 # Parity of integers
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

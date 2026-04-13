@@ -22,7 +22,6 @@ algebra import hierarchy have to depend on the theory of PIDs.
 * `LinearMap.trace_restrict_eq_of_forall_mem`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

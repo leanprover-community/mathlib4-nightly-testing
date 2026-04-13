@@ -17,7 +17,6 @@ public import Mathlib.RingTheory.Coprime.Lemmas
 
 finset, lcm, prod, coprime
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

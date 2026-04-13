@@ -19,7 +19,6 @@ some basic properties of these maps.
 
 contraction, dual module, tensor product
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

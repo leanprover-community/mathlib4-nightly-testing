@@ -12,7 +12,6 @@ public import Mathlib.Init
 # The `rename'` tactic
 The `rename'` tactic renames one or several hypotheses.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

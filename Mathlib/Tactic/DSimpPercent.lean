@@ -19,7 +19,6 @@ rw [foo]
 ```
 one can do `rw [dsimp% foo]`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -16,7 +16,6 @@ TODO:
 should not.  Could this be made more structural and robust, possibly with extra `Lake` support?
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

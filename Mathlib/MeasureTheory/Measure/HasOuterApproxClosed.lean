@@ -35,7 +35,6 @@ convergence in distribution for random variables behave somewhat well in spaces 
   of all bounded continuous functions with respect to both agree.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

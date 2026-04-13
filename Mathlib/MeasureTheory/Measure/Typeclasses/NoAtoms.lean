@@ -17,7 +17,6 @@ A measure `μ` has no atoms if the measure of each singleton is zero.
 
 Should `NoAtoms` be redefined as `∀ s, 0 < μ s → ∃ t ⊆ s, 0 < μ t ∧ μ t < μ s`?
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

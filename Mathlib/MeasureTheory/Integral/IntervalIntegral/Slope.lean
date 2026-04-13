@@ -23,7 +23,6 @@ This file proves that:
 ## Tags
 interval integrable, interval integral, monotone, slope
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

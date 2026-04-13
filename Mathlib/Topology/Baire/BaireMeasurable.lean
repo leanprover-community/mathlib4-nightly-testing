@@ -26,7 +26,6 @@ A set `s` in a topological space `α` is called a `BaireMeasurableSet` or said t
 * There is an *open* set `u` such that `s =ᵇ u`. (See `BaireMeasurableSet.residual_eq_open`)
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

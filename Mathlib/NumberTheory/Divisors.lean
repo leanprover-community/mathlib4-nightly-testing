@@ -38,7 +38,6 @@ Therefore we adopt the convention that `Nat.divisors 0`, `Nat.properDivisors 0`,
 divisors, perfect numbers
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

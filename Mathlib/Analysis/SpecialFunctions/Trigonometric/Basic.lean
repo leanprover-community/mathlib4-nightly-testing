@@ -42,7 +42,6 @@ in terms of Chebyshev polynomials.
 
 sin, cos, tan, angle
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

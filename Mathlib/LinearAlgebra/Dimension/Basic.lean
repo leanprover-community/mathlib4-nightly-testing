@@ -31,7 +31,6 @@ in different universes. They should be as general as they can be without
 inserting `lift`s. The types `M`, `M'`, ... all live in different universes,
 and `M₁`, `M₂`, ... all live in the same universe.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.Data.Int.Cast.Lemmas
 # Centers of rings
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -37,7 +37,6 @@ it gives cleaner API. To use the results in a context with `[ExpChar K p]`, cons
 purely inseparable
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

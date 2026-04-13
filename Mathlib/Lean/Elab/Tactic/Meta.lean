@@ -13,7 +13,6 @@ public import Mathlib.Tactic.Linter.Header  -- shake: keep
 /-!
 # Additions to `Lean.Elab.Tactic.Meta`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

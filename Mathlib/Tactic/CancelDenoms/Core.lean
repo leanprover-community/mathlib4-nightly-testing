@@ -30,7 +30,6 @@ There are likely some rough edges to it.
 
 Improving this tactic would be a good project for someone interested in learning tactic programming.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

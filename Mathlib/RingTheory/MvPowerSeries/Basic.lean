@@ -73,7 +73,6 @@ that is needed to do this. Once I-adic completion (topological or algebraic) is 
 it should not be hard to fill in the details.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

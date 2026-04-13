@@ -11,7 +11,6 @@ public import Mathlib.Analysis.Complex.Basic
 /-!
 # Some lemmas on the spectrum and quasispectrum of elements and positivity on `ℂ`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

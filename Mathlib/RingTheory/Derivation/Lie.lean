@@ -17,7 +17,6 @@ public import Mathlib.Algebra.Lie.Prod
 - `Derivation.instLieAlgebra`: The `R`-derivations from `A` to `A` form a Lie algebra over `R`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

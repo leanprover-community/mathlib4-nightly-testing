@@ -11,7 +11,6 @@ public import Mathlib.Init
 /-!
 # The `without_cdot()` elaborator
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

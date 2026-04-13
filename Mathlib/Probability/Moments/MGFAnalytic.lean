@@ -25,7 +25,6 @@ is analytic on the interior of `integrableExpSet X μ`, the interval on which it
   `integrableExpSet X μ`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

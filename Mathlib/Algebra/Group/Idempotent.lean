@@ -27,7 +27,6 @@ including:
 
 projection, idempotent
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

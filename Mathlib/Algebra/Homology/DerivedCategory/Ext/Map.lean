@@ -15,7 +15,6 @@ In this file, we develop the map `Ext^k (M, N) → Ext^k (F(M), F(N))`,
 where `F` is an exact functor between abelian categories.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

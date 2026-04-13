@@ -40,7 +40,6 @@ over a characteristic zero field.
 
 algebra, exponential map, nilpotent
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

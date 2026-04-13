@@ -14,7 +14,6 @@ public import Mathlib.Data.Rat.Cast.CharZero
 
 This file could usefully be split further.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

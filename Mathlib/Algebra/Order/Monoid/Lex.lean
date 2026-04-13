@@ -24,7 +24,6 @@ and projections, making it the coproduct as well.
 Create the "OrdCommMon" category.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

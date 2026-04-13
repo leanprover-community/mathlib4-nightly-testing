@@ -30,7 +30,6 @@ public import Mathlib.LinearAlgebra.Finsupp.Supported
 
 function with finite support, module, linear algebra
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

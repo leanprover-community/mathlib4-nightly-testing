@@ -26,7 +26,6 @@ This file constructs the direct limit of a directed system of first-order embedd
 - `FirstOrder.Language.DirectLimit.equiv_lift` is the equivalence between limits of
   isomorphic direct systems.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

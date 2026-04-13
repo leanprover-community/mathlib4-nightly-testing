@@ -11,7 +11,6 @@ public import Mathlib.Logic.Pairwise
 /-!
 # Interaction of equivalences with `Pairwise`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

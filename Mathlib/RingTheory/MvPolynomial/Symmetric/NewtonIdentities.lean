@@ -40,7 +40,6 @@ terms).
 
 See [zeilberger1984] for the combinatorial proof of Newton's identities.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

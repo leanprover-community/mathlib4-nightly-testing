@@ -22,7 +22,6 @@ This file defines colorings for some common graphs.
 * `SimpleGraph.pathGraph.bicoloring`: Bicoloring of a path graph.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

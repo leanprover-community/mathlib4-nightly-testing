@@ -24,7 +24,6 @@ quotient `R ⧸ I` is finite.
   has finite quotients.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

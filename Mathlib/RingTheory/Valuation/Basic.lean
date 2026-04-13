@@ -61,7 +61,6 @@ In the `WithZero` locale, `Mᵐ⁰` is a shorthand for `WithZero (Multiplicative
 If ever someone extends `Valuation`, we should fully comply with `DFunLike` by migrating the
 boilerplate lemmas to `ValuationClass`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

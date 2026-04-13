@@ -79,7 +79,6 @@ In the `Distributions` scope, we introduce the following notations:
 
 distributions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

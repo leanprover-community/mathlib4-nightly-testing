@@ -142,7 +142,6 @@ that haven't been formalised at all yet and only depend on the material here are
 ## Tags
 diffeology, diffeological space, smoothness, smooth function
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

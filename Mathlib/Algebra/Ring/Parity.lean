@@ -28,7 +28,6 @@ to `Mathlib/Algebra/Group/Even.lean`.
 
 `Mathlib/Algebra/Group/Even.lean` for the definition of even elements.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

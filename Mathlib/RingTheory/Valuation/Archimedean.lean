@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.Valuation.ValuationRing
 # Ring of integers under a given valuation in a multiplicatively archimedean codomain
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

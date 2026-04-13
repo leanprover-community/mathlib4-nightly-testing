@@ -17,7 +17,6 @@ by an inequality `P ≤ Q` in `ObjectProperty C` is an equivalence iff
 `Q ≤ P.isoClosure`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

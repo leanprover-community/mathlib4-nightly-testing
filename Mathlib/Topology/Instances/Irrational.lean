@@ -30,7 +30,6 @@ instances for `{x // Irrational x}`.
 
 irrational, residual
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

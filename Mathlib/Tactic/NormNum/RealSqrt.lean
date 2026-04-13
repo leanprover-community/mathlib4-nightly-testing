@@ -11,7 +11,6 @@ public import Mathlib.Data.Real.Sqrt
 
 This module defines a `norm_num` extension for `Real.sqrt` and `NNReal.sqrt`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

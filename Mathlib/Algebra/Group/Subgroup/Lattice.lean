@@ -43,7 +43,6 @@ membership of a subgroup's underlying set.
 ## Tags
 subgroup, subgroups
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

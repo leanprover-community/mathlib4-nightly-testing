@@ -31,7 +31,6 @@ their intersection belongs to `l` as well.
 ## Tags
 filter, cardinal
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

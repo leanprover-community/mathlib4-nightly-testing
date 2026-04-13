@@ -29,7 +29,6 @@ Assume `α` is a Fintype:
   (Equivalently, `f.support` has at least 2 elements.)
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

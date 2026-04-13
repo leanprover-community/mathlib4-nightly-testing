@@ -17,7 +17,6 @@ at least when `C` has pullbacks (resp. pushouts),
 see `NatTrans.mono_iff_mono_app` and `NatTrans.epi_iff_epi_app`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -26,7 +26,6 @@ localized categories.
 * [Bruno Kahn and Georges Maltsiniotis, *Structures de dérivabilité*][KahnMaltsiniotis2008]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,7 +14,6 @@ public import Mathlib.Order.Interval.Set.Defs
 /-!
 # Order properties on tuples
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

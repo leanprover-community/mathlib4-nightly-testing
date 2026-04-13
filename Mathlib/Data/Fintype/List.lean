@@ -22,7 +22,6 @@ to the `Multiset (List α)` is provided.
 This function is applied to the `Finset.powerset` of `Finset.univ`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

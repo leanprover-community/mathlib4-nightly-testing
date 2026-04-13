@@ -15,7 +15,6 @@ This file constructs the canonical equivalence of categories `(C ⋆ D)ᵒᵖ �
 This equivalence is characterized in both directions.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

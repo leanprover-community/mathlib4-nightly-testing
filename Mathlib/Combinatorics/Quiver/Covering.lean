@@ -42,7 +42,6 @@ Clean up the namespaces by renaming `Prefunctor` to `Quiver.Prefunctor`.
 
 Cover, covering, quiver, path, lift
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

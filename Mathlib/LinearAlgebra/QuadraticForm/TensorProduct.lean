@@ -18,7 +18,6 @@ public import Mathlib.Tactic.LinearCombination
   `Q₁` on `M₁` and `Q₂` on `M₂`. This construction is not available in characteristic two.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

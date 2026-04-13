@@ -28,7 +28,6 @@ stub and only provides rudimentary support.
 ## Tags
 subsemigroup
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

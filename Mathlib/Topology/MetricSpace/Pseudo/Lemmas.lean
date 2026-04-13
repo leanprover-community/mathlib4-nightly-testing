@@ -12,7 +12,6 @@ public import Mathlib.Topology.UniformSpace.Compact
 /-!
 # Extra lemmas about pseudo-metric spaces
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

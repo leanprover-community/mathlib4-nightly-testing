@@ -30,7 +30,6 @@ the circumcenter.
 * https://en.wikipedia.org/wiki/Circumscribed_circle
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

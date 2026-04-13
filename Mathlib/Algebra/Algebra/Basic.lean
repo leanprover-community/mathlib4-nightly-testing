@@ -22,7 +22,6 @@ import Mathlib.Algebra.Ring.Hom.InjSurj
 
 This file could usefully be split further.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

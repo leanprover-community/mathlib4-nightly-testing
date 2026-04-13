@@ -31,7 +31,6 @@ This file also provides some lemmas that need `Algebra.Module.Basic` imported to
   the appropriate `RingHomInvPair` instances to be able to define the semilinear
   equivalence.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

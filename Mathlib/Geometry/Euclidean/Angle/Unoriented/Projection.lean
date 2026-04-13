@@ -14,7 +14,6 @@ public import Mathlib.Geometry.Euclidean.Projection
 This file proves lemmas relating to angles involving orthogonal projections.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

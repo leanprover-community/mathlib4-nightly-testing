@@ -37,7 +37,6 @@ convenience.
 The case for `Monotone`/`Antitone` pairs of functions over a `LinearOrder` is not deduced in this
 file because it is easily deducible from the `Monovary` API.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

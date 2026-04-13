@@ -36,7 +36,6 @@ We prove that this is stable under composition and base change, and is right can
 - `AlgebraicGeometry.locallyQuasiFinite_iff_finite_preimage_singleton`:
   If `f` is of finite type, then `f` is locally quasi-finite iff `f` has finite fibers.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

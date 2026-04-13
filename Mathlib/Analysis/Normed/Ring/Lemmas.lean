@@ -17,7 +17,6 @@ public import Mathlib.Topology.MetricSpace.Dilation
 
 In this file we continue building the theory of (semi)normed rings.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

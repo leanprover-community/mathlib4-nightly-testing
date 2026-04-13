@@ -12,7 +12,6 @@ public import Mathlib.Condensed.Light.Module
 
 # Equivalence of light condensed objects with sheaves on a small site
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -58,7 +58,6 @@ The following notation is declared in scope `SimpleGraph`:
 * Count induced copies of a graph inside another.
 * Make `copyCount`/`labelledCopyCount` computable (not necessarily efficiently).
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

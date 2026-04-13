@@ -11,7 +11,6 @@ public import Mathlib.Algebra.Ring.Subsemiring.Order
 /-!
 # Order instances on subalgebras
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

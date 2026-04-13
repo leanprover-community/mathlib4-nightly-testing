@@ -38,7 +38,6 @@ equalities.
 * [A. Grothendieck, M. Raynaud, *SGA 1*](https://arxiv.org/abs/math/0206203)
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

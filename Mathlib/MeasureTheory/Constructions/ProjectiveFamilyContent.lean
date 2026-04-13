@@ -33,7 +33,6 @@ the Kolmogorov extension theorem.
   family of measures.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

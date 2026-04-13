@@ -30,7 +30,6 @@ is in `Mathlib/RingTheory/LittleWedderburn.lean`.
 
 integral domain, finite integral domain, finite field
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

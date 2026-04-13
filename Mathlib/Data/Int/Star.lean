@@ -16,7 +16,6 @@ public import Mathlib.Algebra.Order.Star.Basic
 
 This file shows that `ℤ` is a `StarOrderedRing`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

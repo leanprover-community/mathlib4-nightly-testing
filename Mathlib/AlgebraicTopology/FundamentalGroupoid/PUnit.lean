@@ -13,7 +13,6 @@ public import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
 
 The fundamental groupoid of punit is naturally isomorphic to `CategoryTheory.Discrete PUnit`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -17,7 +17,6 @@ In this file we prove theorems about iterated derivatives of `x ^ m`, `m : ℤ` 
 
 iterated, derivative, power, open set
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -11,7 +11,6 @@ public import Mathlib.Init
 # `elabTermWithoutNewMVars`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

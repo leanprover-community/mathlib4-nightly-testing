@@ -24,7 +24,6 @@ proof of Kolmogorov's extension theorem.
   cylinder.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

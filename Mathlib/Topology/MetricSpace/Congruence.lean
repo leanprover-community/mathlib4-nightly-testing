@@ -29,7 +29,6 @@ For more details see the [Zulip discussion](https://leanprover.zulipchat.com/#na
 
 * `v₁ ≅ v₂`: for `Congruent v₁ v₂`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

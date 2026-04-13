@@ -15,7 +15,6 @@ public import Mathlib.SetTheory.Cardinal.Basic
 
 This file proves that the Cardinality of ℚ is ℵ₀
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

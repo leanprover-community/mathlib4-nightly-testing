@@ -19,7 +19,6 @@ public import Mathlib.Topology.Algebra.Nonarchimedean.AdicTopology
   `IsAdicComplete I R` is equivalent to `CompleteSpace R` and `T2Space R` in the adic topology.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

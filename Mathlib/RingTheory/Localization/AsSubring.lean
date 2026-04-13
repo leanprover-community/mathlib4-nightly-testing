@@ -18,7 +18,6 @@ does not contain zero, this file constructs the localization of `A` at `S`
 as a subalgebra of the field `K` over `A`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

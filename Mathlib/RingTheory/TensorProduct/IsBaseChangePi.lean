@@ -24,7 +24,6 @@ In particular, localization of modules commutes with binary and finite products.
 * Homomorphism modules
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

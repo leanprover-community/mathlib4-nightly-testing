@@ -19,7 +19,6 @@ preadditive categories:
   functors (analogous to `Adjunction.compYonedaIso`), in `Adjunction.compPreadditiveYonedaIso`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

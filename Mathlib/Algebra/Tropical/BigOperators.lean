@@ -32,7 +32,6 @@ Minima over `List α` are defined as producing a value in `WithTop α` so proofs
 directly transfer to minima over multisets or finsets.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

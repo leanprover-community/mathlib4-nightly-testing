@@ -14,7 +14,6 @@ public import Mathlib.Data.PNat.Defs
 This file proves that `ℕ+` is a `LocallyFiniteOrder` and calculates the cardinality of its
 intervals as finsets and fintypes.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.Finiteness.Nakayama
 /-!
 ## Lemmas on idempotent finitely generated ideals
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

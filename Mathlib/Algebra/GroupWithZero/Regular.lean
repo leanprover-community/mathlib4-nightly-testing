@@ -11,7 +11,6 @@ public import Mathlib.Tactic.Push
 /-!
 # Results about `IsRegular` and `0`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

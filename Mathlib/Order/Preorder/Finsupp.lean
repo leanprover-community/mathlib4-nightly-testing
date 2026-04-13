@@ -12,7 +12,6 @@ public import Mathlib.Data.Finsupp.Defs
 
 This file lifts order structures on `M` to `ι →₀ M`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,7 +14,6 @@ public import Mathlib.Algebra.GroupWithZero.Associated
 This file contains some theorems relating `Prime` and products of `List`s.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

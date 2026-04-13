@@ -18,7 +18,6 @@ isomorphisms by a functor `F : C ⥤ D`.
 This is used in the localization of categories API (folder `CategoryTheory.Localization`).
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

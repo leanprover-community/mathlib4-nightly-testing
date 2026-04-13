@@ -23,7 +23,6 @@ a surjective discrete valuation in `ℤᵐ⁰` is equal to `exp (-1)`.
 ## Tags
 valuation, discrete, rank one
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -35,7 +35,6 @@ public import Mathlib.CategoryTheory.Limits.Constructions.EpiMono
 - [Stephen Lack and Paweł Sobociński, Adhesive Categories][adhesive2004]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -17,7 +17,6 @@ instances. There is also an instance of the `Star` notation typeclass, but no de
 included.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

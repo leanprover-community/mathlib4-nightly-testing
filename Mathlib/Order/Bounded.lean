@@ -14,7 +14,6 @@ We prove miscellaneous lemmas about bounded and unbounded sets. Many of these ar
 the same ideas, or similar results with a few minor differences. The file is divided into these
 different general ideas.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

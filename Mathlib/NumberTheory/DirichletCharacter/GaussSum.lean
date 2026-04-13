@@ -11,7 +11,6 @@ public import Mathlib.NumberTheory.GaussSum
 /-!
 # Gauss sums for Dirichlet characters
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 variable {N : ℕ} [NeZero N] {R : Type*} [CommRing R] (e : AddChar (ZMod N) R)

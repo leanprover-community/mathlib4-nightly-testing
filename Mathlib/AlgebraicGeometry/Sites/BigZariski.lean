@@ -31,7 +31,6 @@ TODO:
   for future applications to étale cohomology.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

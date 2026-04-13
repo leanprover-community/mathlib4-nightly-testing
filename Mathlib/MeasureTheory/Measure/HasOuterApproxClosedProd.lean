@@ -52,7 +52,6 @@ We specialize these results to the cases where one of the families contains only
 
 bounded continuous function, product measure
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

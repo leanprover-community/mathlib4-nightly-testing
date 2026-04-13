@@ -20,7 +20,6 @@ This is a separate file, to avoid unnecessary imports in basic files.
 
 Previously some of these results were in the `MeasureTheory` folder.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

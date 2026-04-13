@@ -21,7 +21,6 @@ Then `⨁ i, 𝓜 i` is an `A`-module and is isomorphic to `M`.
 
 graded module
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,7 +19,6 @@ public import Mathlib.RingTheory.Finiteness.Prod
   of `f` in any basis.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

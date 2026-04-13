@@ -44,7 +44,6 @@ types used for indexing.
 
 basis, det, determinant
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

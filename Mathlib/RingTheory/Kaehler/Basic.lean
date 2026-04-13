@@ -46,7 +46,6 @@ public import Mathlib.Tactic.SuppressCompilation
 
 - Define the `IsKaehlerDifferential` predicate.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

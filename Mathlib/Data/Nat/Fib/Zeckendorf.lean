@@ -31,7 +31,6 @@ the lexicographic order.
 
 fibonacci, zeckendorf, digit
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

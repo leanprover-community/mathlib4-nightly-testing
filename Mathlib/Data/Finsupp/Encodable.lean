@@ -12,7 +12,6 @@ public import Mathlib.Data.DFinsupp.Encodable
 
 In this file we provide instances for `Encodable (α →₀ β)` and `Countable (α →₀ β)`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -34,7 +34,6 @@ properties.
   value of its leading coefficient times the product of the absolute values of its roots lying
   outside the unit disk.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

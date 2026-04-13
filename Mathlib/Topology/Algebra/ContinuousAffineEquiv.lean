@@ -33,7 +33,6 @@ which are continuous with continuous inverse.
   with multiplication corresponding to composition in `AffineEquiv.group`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

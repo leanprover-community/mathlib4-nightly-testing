@@ -16,7 +16,6 @@ public import Mathlib.Algebra.Exact
 # Finiteness of (sub)modules and finitely supported functions
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -37,7 +37,6 @@ Instead, we use weakest pre-existing typeclass that implies both
 
 ultrametric, nonarchimedean
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 open Metric NNReal

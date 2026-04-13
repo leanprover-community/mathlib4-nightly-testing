@@ -12,7 +12,6 @@ public import Mathlib.GroupTheory.Submonoid.Center
 # Centers of subgroups
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -28,7 +28,6 @@ are defined in `Mathlib/Analysis/Convex/DoublyStochasticMatrix.lean`.
   submonoid of `Matrix n n R`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

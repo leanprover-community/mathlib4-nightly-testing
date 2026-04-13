@@ -25,7 +25,6 @@ at `x` is 0 if and only if `f` is continuous at `x`, with versions for both `osc
 
 oscillation, oscillationWithin
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

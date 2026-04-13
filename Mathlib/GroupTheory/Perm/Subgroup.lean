@@ -24,7 +24,6 @@ these subgroups.
 In particular, we prove **Cayley's theorem** in `Equiv.Perm.subgroupOfMulAction`:
 every group `G` is isomorphic to a subgroup of the symmetric group acting on `G`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

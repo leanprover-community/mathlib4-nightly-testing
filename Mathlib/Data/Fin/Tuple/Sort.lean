@@ -26,7 +26,6 @@ This file provides an API for doing so, with the sorted `n`-tuple given by
 * `Tuple.monotone_sort`: `f ∘ Tuple.sort f` is `Monotone`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

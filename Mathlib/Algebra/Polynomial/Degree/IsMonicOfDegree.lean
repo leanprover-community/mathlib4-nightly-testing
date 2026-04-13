@@ -16,7 +16,6 @@ the polynomial `p` is monic and has degree `n` (i.e., `p.natDegree = n`.)
 
 We also provide some basic API.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

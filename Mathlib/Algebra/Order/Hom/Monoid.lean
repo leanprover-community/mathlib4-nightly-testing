@@ -56,7 +56,6 @@ making some definitions and lemmas irrelevant.
 
 ordered monoid, ordered group
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

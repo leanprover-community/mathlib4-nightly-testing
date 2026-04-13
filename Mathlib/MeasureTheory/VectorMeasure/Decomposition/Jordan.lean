@@ -41,7 +41,6 @@ is useful for the Lebesgue decomposition theorem.
 
 Jordan decomposition theorem
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

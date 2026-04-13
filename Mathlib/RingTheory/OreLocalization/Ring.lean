@@ -17,7 +17,6 @@ The `Monoid` and `DistribMulAction` instances and additive versions are provided
 `Mathlib/RingTheory/OreLocalization/Basic.lean`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

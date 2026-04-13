@@ -14,7 +14,6 @@ public import Mathlib.Data.Matrix.Diagonal
 In this file we prove that matrices over a ring of characteristic `p`
 with nonempty index type have the same characteristic.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

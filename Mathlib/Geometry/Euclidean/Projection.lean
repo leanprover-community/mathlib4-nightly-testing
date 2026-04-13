@@ -24,7 +24,6 @@ and reflection of a point in an affine subspace.
   affine subspace.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

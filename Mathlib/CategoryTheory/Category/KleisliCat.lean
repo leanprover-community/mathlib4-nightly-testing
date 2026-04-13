@@ -18,7 +18,6 @@ the equivalence between the two.
 
 Generalise this to work with CategoryTheory.Monad
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

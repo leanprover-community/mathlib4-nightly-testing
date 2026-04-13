@@ -34,7 +34,6 @@ positive semidefinite matrices.
 * [Paulsen, Vern I. and Raghupathi, Mrinal,
   *An introduction to the theory of reproducing kernel {H}ilbert spaces*][MR3526117]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public noncomputable section
 

@@ -34,7 +34,6 @@ other files in the `Mathlib.NumberTheory.ArithmeticFunction` directory.
 
 arithmetic functions, dirichlet convolution, divisors
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

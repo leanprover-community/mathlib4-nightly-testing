@@ -44,7 +44,6 @@ multiplication follows trivially from this after some point-free nonsense.
 * [*Algebra I*, Bourbaki : Chapter III, §4.7, example (2)][bourbaki1989]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

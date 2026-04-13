@@ -56,7 +56,6 @@ Most constructions involving `Finset`s have been split off to their own files.
 finite sets, finset
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -27,7 +27,6 @@ This file defines the topological abelianization of a topological group.
 group, topological abelianization
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

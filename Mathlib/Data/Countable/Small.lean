@@ -13,7 +13,6 @@ public import Mathlib.Data.Countable.Defs
 
 That is, any countable type is equivalent to a type in any universe.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

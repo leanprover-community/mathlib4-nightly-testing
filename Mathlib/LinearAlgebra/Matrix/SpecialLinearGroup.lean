@@ -50,7 +50,6 @@ of a regular `↑` coercion.
 
 matrix group, group, matrix inverse
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -33,7 +33,6 @@ make such a definition in this file.
 
 lie algebra, ring commutator, adjoint action
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

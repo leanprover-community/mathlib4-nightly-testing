@@ -31,7 +31,6 @@ weakly locally compact.
 
 group action, proper action, properly discontinuous, compactly generated
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 open scoped Pointwise
 

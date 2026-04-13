@@ -15,7 +15,6 @@ A measurable function with finite Lebesgue integral can be approximated by simpl
 whose support has finite measure.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -35,7 +35,6 @@ Let `K` be the localization of `R` at `R⁰ = R \ {0}` (i.e. the field of fracti
 
 fractional ideal, fractional ideals, invertible ideal
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

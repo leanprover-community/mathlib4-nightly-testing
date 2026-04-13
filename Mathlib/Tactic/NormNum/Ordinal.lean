@@ -17,7 +17,6 @@ which without a right distributive law, ordinals do not have.
 
 We must therefore define new extensions for them.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

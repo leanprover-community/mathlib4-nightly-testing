@@ -28,7 +28,6 @@ Results about localizations of submodules and quotient modules are provided in t
 - Statements regarding the exactness of localization.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -13,7 +13,6 @@ public import Mathlib.RingTheory.Coalgebra.GroupLike
 
 This file proves that group-like elements in a bialgebra form a monoid.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

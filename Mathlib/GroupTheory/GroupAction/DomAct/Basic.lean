@@ -83,7 +83,6 @@ right action, so lemmas can be formulated in terms of `DomMulAct`.
 
 group action, function, domain
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

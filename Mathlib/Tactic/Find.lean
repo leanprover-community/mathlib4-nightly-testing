@@ -25,7 +25,6 @@ Inside tactic proofs, there is a `#find` tactic with the same syntax,
 or the `find` tactic which looks for lemmas which are `apply`able against the current goal.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

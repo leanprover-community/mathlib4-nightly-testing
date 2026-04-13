@@ -52,7 +52,6 @@ In a field extension `K/k`
 * `InfiniteGalois.restrictNormalHomContinuous` : Any `restrictNormalHom` is continuous.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

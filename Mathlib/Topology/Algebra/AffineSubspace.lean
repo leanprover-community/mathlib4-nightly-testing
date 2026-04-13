@@ -20,7 +20,6 @@ affine map.
 * `AffineSubspace.subtypeA` is `AffineSubspace.subtype` as a `ContinuousAffineMap`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

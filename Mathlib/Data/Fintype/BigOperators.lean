@@ -26,7 +26,6 @@ dependency of `Fintype`.
 However many of the results here really belong in `Algebra.BigOperators.Group.Finset`
 and should be moved at some point.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

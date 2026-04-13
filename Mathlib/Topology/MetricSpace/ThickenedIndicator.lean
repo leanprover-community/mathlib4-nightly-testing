@@ -34,7 +34,6 @@ members of the approximating sequence are nonnegative bounded continuous functio
     bounded continuous functions.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -37,7 +37,6 @@ typeclass.
 
 efloor, eceil
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -11,7 +11,6 @@ public import Mathlib.Algebra.GroupWithZero.Divisibility
 /-!
 # Submonoid of primal elements
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -13,7 +13,6 @@ public import Mathlib.Tactic.ByCases
 /-!
 # The order relation on the integers
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

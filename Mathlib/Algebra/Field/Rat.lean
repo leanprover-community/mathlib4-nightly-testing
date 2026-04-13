@@ -19,7 +19,6 @@ See note [foundational algebra order theory].
 
 rat, rationals, field, ℚ, numerator, denominator, num, denom
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

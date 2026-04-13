@@ -30,7 +30,6 @@ If `V` is a normed space, `ConvexBody V` is a metric space.
 
 convex, convex body
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,7 +21,6 @@ equalities.
   `∀ a, a * a⁻¹ = 1` and associativity.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

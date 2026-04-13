@@ -32,7 +32,6 @@ It comes with a canonical bilinear map
 
 bilinear, tensor, tensor product
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

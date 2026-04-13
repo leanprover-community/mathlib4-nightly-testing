@@ -19,7 +19,6 @@ linear map is self-adjoint.
 
 self-adjoint matrix, hermitian matrix
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

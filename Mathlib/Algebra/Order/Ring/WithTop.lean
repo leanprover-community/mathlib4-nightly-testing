@@ -14,7 +14,6 @@ public import Mathlib.Algebra.Order.Monoid.WithTop
 The main results of this section are `WithTop.instOrderedCommSemiring` and
 `WithBot.instOrderedCommSemiring`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -30,7 +30,6 @@ This file defines affinely independent families of points.
 * https://en.wikipedia.org/wiki/Affine_space
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

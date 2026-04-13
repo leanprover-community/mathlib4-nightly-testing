@@ -28,7 +28,6 @@ sometimes we don't need them to prove extensionality.
 ## Tags
 semiring, ring, extensionality
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

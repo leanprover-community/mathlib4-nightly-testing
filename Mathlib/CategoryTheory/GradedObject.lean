@@ -30,7 +30,6 @@ introduced: if `p : I → J` is a map such that `C` has coproducts indexed by `p
 have a functor `map : GradedObject I C ⥤ GradedObject J C`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

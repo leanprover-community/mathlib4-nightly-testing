@@ -59,7 +59,6 @@ with a head term (`seq1`) is then transformed to a generalized continued fractio
 
 numerics, number theory, approximations, fractions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

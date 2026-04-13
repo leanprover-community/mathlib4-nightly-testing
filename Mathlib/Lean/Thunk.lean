@@ -10,7 +10,6 @@ public import Mathlib.Init
 /-!
 # Basic facts about `Thunk`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

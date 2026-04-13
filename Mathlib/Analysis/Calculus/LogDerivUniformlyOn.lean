@@ -16,7 +16,6 @@ then the logarithmic derivative of the product is the sum of the logarithmic der
 individual functions.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

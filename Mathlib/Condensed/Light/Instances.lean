@@ -18,7 +18,6 @@ but as it is essentially small, the instances can be obtained using the results
 in the file `Mathlib/CategoryTheory/Sites/Equivalence.lean`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

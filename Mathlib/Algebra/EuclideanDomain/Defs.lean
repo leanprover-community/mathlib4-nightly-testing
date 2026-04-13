@@ -60,7 +60,6 @@ value of `j`.
 
 Euclidean domain, transfinite Euclidean domain, Bézout's lemma
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.Data.Finsupp.Basic
 /-!
 # Monoid algebras and the opposite ring
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 assert_not_exists NonUnitalAlgHom AlgEquiv
 

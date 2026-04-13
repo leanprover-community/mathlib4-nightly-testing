@@ -19,7 +19,6 @@ This file defines a constructor to define a `Module` structure on a Type with an
   AddCommGroup by proving a minimized set of axioms
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

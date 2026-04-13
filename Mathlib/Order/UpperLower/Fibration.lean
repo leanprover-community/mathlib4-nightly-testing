@@ -10,7 +10,6 @@ public import Mathlib.Order.UpperLower.Basic
 /-!
 # Upper/lower sets and fibrations
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

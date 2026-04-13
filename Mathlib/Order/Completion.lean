@@ -28,7 +28,6 @@ lattice factors through it.
 
 Dedekind completion, Dedekind cut
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

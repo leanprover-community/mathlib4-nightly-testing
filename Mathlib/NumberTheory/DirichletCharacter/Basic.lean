@@ -27,7 +27,6 @@ Main definitions:
 
 dirichlet character, multiplicative character
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,7 +19,6 @@ in `C` for which `Fᵢ.map f` is an isomorphism (resp. monomorphism, resp. epimo
 for all `i` is an isomorphism.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

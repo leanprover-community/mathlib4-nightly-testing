@@ -18,7 +18,6 @@ Note that these results use `IsLinearMap`, which is mostly discouraged.
 linear algebra, vector space, module
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

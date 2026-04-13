@@ -41,7 +41,6 @@ In this file we define sequential closure, continuity, compactness etc.
 
 sequentially closed, sequentially compact, sequential space
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

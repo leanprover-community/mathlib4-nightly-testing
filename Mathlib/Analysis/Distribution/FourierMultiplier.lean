@@ -27,7 +27,6 @@ distributions. The multiplier function is throughout assumed to have temperate g
   the Fourier multiplier with `‖·‖`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

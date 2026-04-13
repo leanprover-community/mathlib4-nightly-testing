@@ -42,7 +42,6 @@ theorems.
   L¹ to `g`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

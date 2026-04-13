@@ -24,7 +24,6 @@ and `Mathlib/RingTheory/Nilpotent/Lemmas.lean`.
   * `nilpotencyClass`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,7 +14,6 @@ public import Mathlib.Topology.MetricSpace.Defs
 # Basic properties of metric spaces, and instances.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

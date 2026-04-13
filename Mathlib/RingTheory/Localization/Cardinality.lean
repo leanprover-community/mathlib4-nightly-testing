@@ -24,7 +24,6 @@ submonoid, then your localization is trivial (see `IsLocalization.uniqueOfZeroMe
   has cardinality equal to its base ring.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

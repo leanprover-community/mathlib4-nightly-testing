@@ -41,7 +41,6 @@ TODO (anyone): Add "Main results" section.
 
 pseudometric space, dist
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

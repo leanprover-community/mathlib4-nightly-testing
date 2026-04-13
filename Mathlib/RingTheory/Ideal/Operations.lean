@@ -17,7 +17,6 @@ public import Mathlib.Tactic.Order
 /-!
 # More operations on modules and ideals
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

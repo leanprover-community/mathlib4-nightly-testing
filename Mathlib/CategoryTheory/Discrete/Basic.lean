@@ -32,7 +32,6 @@ or `I`-indexed families of isomorphisms to natural transformations or natural is
 We show equivalences of types are the same as (categorical) equivalences of the corresponding
 discrete categories.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

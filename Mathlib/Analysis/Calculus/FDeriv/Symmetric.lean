@@ -61,7 +61,6 @@ in `Convex.isLittleO_alternate_sum_square`, but the argument is essentially the 
 when `v` and `w` both point towards the interior of `s`, to make sure that all the sides of the
 rectangle are contained in `s` by convexity. The general case follows by linearity, though.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

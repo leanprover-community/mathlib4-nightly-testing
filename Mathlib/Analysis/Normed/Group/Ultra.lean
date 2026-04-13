@@ -33,7 +33,6 @@ in `NNReal` is 0, so easier to make statements about maxima of empty sets.
 
 ultrametric, nonarchimedean
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 open Metric NNReal

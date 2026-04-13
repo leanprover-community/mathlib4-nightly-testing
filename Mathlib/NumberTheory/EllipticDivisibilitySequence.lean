@@ -67,7 +67,6 @@ M Ward, *Memoir on Elliptic Divisibility Sequences*
 
 elliptic, divisibility, sequence
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

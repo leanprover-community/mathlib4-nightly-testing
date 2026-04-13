@@ -11,7 +11,6 @@ public import Lean.Elab.Term
 /-!
 # Additions to `Lean.Elab.Term`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

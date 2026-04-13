@@ -17,7 +17,6 @@ lemmas about refinements and the case of `ShortComplex` appear
 in the file `Mathlib/CategoryTheory/Abelian/Refinements.lean`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -15,7 +15,6 @@ public import Mathlib.Algebra.Ring.Commute
 
 A characteristic zero domain is torsion-free.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

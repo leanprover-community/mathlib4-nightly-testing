@@ -17,7 +17,6 @@ is an embedding of complex shapes. See `restriction.sc'Iso`
 and `restriction.hasHomology`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

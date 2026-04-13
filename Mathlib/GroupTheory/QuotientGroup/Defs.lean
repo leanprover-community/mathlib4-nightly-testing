@@ -28,7 +28,6 @@ This file defines the group structure on the quotient by a normal subgroup.
 
 quotient groups
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -61,7 +61,6 @@ Let `R` be a ring and let `M` and `P` be `R`-modules. Let `N` be an `R`-submodul
 Artinian, artinian, Artinian ring, Artinian module, artinian ring, artinian module
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

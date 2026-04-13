@@ -59,7 +59,6 @@ The converse is true in some special cases, but not in general
 
 Scott topology, preorder
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

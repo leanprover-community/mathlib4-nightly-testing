@@ -20,7 +20,6 @@ the injectivity part is `LinearMap.lcomp_injective_of_surjective` in the file
 
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

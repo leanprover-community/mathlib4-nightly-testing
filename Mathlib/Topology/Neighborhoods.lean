@@ -17,7 +17,6 @@ Each point `x` of `X` gets a neighborhood filter `𝓝 x`.
 
 neighborhood
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

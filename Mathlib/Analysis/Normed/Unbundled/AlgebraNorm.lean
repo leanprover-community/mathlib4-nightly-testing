@@ -23,7 +23,6 @@ We define algebra norms and multiplicative algebra norms.
 
 norm, algebra norm
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

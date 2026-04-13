@@ -12,7 +12,6 @@ public import Mathlib.Algebra.Ring.Commute
 # Cast of natural numbers: lemmas about `Commute`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

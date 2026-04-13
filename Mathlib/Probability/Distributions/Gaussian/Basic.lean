@@ -33,7 +33,6 @@ For Gaussian distributions in `ℝ`, see the file
 * [Martin Hairer, *An introduction to stochastic PDEs*][hairer2009introduction]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

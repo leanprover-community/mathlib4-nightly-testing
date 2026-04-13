@@ -10,7 +10,6 @@ public import Mathlib.Data.List.Basic
 /-!
 # Properties of `List.enum`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -20,7 +20,6 @@ This file implements the reconstruction.
 
 The public facing declaration in this file is `proveFalseByLinarith`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

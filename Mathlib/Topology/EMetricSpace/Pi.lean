@@ -11,7 +11,6 @@ public import Mathlib.Topology.UniformSpace.Pi
 /-!
 # Indexed product of extended metric spaces
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

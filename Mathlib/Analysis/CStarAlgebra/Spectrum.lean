@@ -54,7 +54,6 @@ we can still establish a form of spectral permanence.
 + prove a variation of spectral permanence for `quasispectrum`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

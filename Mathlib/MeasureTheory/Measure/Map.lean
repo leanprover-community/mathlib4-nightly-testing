@@ -25,7 +25,6 @@ If `f` is not a.e. measurable, then we define `map f μ` to be zero.
 * `map_map`: `(μ.map f).map g = μ.map (g ∘ f)`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

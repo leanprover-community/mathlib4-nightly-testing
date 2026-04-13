@@ -51,7 +51,6 @@ with respect to other language operations.
   then `l` is the language `m∗ * n`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

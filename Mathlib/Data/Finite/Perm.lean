@@ -11,7 +11,6 @@ public import Mathlib.SetTheory.Cardinal.Finite
 /-! # Properties of `Equiv.Perm` on `Finite` types
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

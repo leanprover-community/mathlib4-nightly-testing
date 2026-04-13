@@ -81,7 +81,6 @@ weak convergence of measures, convergence in distribution, convergence in law, f
 probability measure
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

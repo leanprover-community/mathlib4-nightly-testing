@@ -29,7 +29,6 @@ The relations to these other notions are given as
 
 - Dualize to `IsCorepresentedBy`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

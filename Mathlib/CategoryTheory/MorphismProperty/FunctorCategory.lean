@@ -21,7 +21,6 @@ in `C` are stable under transfinite compositions (or coproducts),
 then the same holds in the category `J ⥤ C`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,7 +21,6 @@ The following meta-property is defined
 * `Respects`: `P` respects `Q` if `P` respects `Q` both on the left and on the right.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

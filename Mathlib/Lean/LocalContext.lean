@@ -12,7 +12,6 @@ public import Batteries.Control.AlternativeMonad
 /-!
 # Additional methods about `LocalContext`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

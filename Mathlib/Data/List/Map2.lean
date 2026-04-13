@@ -21,7 +21,6 @@ Lists together. In particular, we include lemmas about:
 * `zipRight'`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -17,7 +17,6 @@ In this file, we define the restriction of scalars functor
 attached to a morphism of sheaves of rings `α : R ⟶ R'`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

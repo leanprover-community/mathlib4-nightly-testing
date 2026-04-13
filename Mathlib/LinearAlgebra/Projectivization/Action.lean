@@ -13,7 +13,6 @@ public import Mathlib.GroupTheory.GroupAction.Ring
 
 Show that (among other groups), the general linear group of `V` acts on `ℙ K V`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

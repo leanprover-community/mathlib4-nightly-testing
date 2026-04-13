@@ -19,7 +19,6 @@ This file provides some result on multiplicative and additive subgroups in the f
 ## Tags
 subgroup, subgroups
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

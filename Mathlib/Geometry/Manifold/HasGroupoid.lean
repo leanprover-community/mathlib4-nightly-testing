@@ -10,7 +10,6 @@ public import Mathlib.Geometry.Manifold.ChartedSpace
 /-!
 # Charted spaces with a given structure groupoid
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

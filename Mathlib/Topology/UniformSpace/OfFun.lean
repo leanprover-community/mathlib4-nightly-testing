@@ -17,7 +17,6 @@ given a `dist`-like function
 
 RFC: use `UniformSpace.Core.mkOfBasis`? This will change defeq here and there
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

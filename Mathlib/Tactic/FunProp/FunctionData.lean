@@ -16,7 +16,6 @@ public meta import Std.Do
 
 `FunctionData` holds data about function in the form `fun x ↦ f x₁ ... xₙ`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -30,7 +30,6 @@ that `Mₙ(A) ≃ₐ[K] Mₘ(B)`.
 ## Tags
 Brauer group, Central simple algebra, Galois Cohomology
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

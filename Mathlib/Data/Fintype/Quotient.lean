@@ -26,7 +26,6 @@ by a finite type.
   dependent version of `Quotient.finLiftOn`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

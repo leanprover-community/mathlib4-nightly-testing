@@ -24,7 +24,6 @@ square becomes a pullback square after the application of the
 functor `yoneda.obj X` for all `X : C`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

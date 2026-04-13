@@ -18,7 +18,6 @@ opposites.
 ## Tags
 adjunction, opposite, uniqueness
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

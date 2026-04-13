@@ -87,7 +87,6 @@ Composition, partition
 
 <https://en.wikipedia.org/wiki/Composition_(combinatorics)>
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

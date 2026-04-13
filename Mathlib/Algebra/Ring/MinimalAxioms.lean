@@ -22,7 +22,6 @@ a minimum number of equalities.
   axioms
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

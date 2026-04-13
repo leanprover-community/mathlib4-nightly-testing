@@ -21,7 +21,6 @@ TODO: Provide an analogous characterization of terminal categories as codiscrete
 with a unique object.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

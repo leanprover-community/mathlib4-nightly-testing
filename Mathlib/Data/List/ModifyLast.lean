@@ -11,7 +11,6 @@ public import Mathlib.Init
 import all Init.Data.Array.Basic
 
 /-! ### List.modifyLast -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -23,7 +23,6 @@ that these are coprime. This is easy except for the prime 2. In order to deal wi
 analyze the parity of `x`, `y`, `m` and `n` and eliminate all the impossible cases. This takes up
 the bulk of the proof below.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

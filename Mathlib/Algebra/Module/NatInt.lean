@@ -26,7 +26,6 @@ This file concerns modules where the scalars are the natural numbers or the inte
 
 semimodule, module, vector space
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

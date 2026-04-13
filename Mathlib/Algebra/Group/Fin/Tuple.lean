@@ -12,7 +12,6 @@ public import Mathlib.Data.Fin.VecNotation
 /-!
 # Algebraic properties of tuples
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -34,7 +34,6 @@ making some typeclasses and instances irrelevant.
 
 ordered ring homomorphism, order homomorphism
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

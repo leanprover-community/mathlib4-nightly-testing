@@ -17,7 +17,6 @@ public import Mathlib.Order.ScottContinuity.Prod
   `sSup` on directed sets.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

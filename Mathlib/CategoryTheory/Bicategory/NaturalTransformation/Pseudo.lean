@@ -34,7 +34,6 @@ See `Pseudofunctor.StrongTrans.categoryStruct`.
 * [Niles Johnson, Donald Yau, *2-Dimensional Categories*](https://arxiv.org/abs/2002.06055)
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

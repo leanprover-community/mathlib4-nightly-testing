@@ -14,7 +14,6 @@ public import Mathlib.Data.Finsupp.Fin
 
 This file contains theorems relevant to big operators on finitely supported functions over `Fin`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

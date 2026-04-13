@@ -30,7 +30,6 @@ Almost no monoid is actually present in this file: most assumptions have been ge
 `Mul` or `MulOneClass`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

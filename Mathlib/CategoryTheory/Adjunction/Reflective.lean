@@ -17,7 +17,6 @@ Basic properties of reflective functors, especially those relating to their esse
 Note properties of reflective functors relating to limits and colimits are included in
 `Mathlib/CategoryTheory/Monad/Limits.lean`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

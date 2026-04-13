@@ -19,7 +19,6 @@ This file provides extra lemmas about `insert`, `singleton`, and `pair`.
 insert, singleton
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

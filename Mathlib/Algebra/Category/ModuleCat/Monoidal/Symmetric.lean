@@ -11,7 +11,6 @@ public import Mathlib.Algebra.Category.ModuleCat.Monoidal.Basic
 /-!
 # The symmetric monoidal structure on `Module R`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

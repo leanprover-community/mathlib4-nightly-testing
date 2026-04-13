@@ -32,7 +32,6 @@ We define and prove basic results about the regulator of a number field `K`.
 ## Tags
 number field, units, regulator
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

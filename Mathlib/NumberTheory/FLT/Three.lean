@@ -49,7 +49,6 @@ The strategy is the following:
   construct such an isomorphism, tactics like `decide` would not work.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 section case1
 

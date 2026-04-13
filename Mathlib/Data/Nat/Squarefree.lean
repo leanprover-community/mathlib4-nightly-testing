@@ -23,7 +23,6 @@ A number is squarefree when it is not divisible by any squares except the square
 squarefree, multiplicity
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

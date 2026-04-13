@@ -12,7 +12,6 @@ public import Mathlib.Algebra.GroupWithZero.NeZero
 /-!
 # Opposites of groups with zero
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

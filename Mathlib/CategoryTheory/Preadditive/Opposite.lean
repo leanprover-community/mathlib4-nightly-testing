@@ -14,7 +14,6 @@ public import Mathlib.CategoryTheory.Preadditive.AdditiveFunctor
 # If `C` is preadditive, `Cᵒᵖ` has a natural preadditive structure.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

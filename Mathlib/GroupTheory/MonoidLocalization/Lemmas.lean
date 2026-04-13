@@ -14,7 +14,6 @@ public import Mathlib.GroupTheory.MonoidLocalization.Basic
 
 that requires additional imports.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -18,6 +18,5 @@ public import Mathlib.LinearAlgebra.FreeModule.IdealQuotient
 public import Mathlib.RingTheory.Valuation.Discrete.RankOne
 
 import Mathlib.Algebra.FiniteSupport.Basic
-set_option backward.defeq.atInstanceTransparency false
 
 deprecated_module (since := "2026-03-09")

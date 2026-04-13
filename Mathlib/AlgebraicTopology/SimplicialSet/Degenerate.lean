@@ -19,7 +19,6 @@ for an epimorphism `f : ⦋n⦌ ⟶ ⦋m⦌` and a non-degenerate `m`-simplex `y
 `unique_nonDegenerate_simplex` and `unique_nonDegenerate_map`).
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

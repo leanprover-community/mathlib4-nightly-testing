@@ -21,7 +21,6 @@ For performance reasons, consider whether `Lean.Meta.Canonicalizer.canon` can be
 After canonicalizing, a `HashMap Expr Nat` suffices to keep track of previously seen atoms,
 and is much faster as it uses `Expr` equality rather than `isDefEq`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -21,7 +21,6 @@ to infinity, resp. a nonzero constant, resp. zero.
 
 Uniformize API between analytic and meromorphic functions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

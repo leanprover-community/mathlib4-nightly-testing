@@ -33,7 +33,6 @@ public import Mathlib.RingTheory.Extension.Cotangent.Basic
 
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

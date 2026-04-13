@@ -13,7 +13,6 @@ public meta import Lean.Elab.Tactic.Conv.Pattern
 
 These tactics implement repeated `cases` / `constructor` on anything satisfying a predicate.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -28,7 +28,6 @@ following are equivalent.
 * The left adjoint to `i` preserves binary (equivalently, finite) products.
 * `i` is an exponential ideal.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -9,7 +9,6 @@ public import Mathlib.Init
 public meta import Lean.Elab.Tactic.ElabTerm
 
 /-! # `clear!` tactic -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

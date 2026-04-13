@@ -29,7 +29,6 @@ The theorem that all nonzero fractional ideals are invertible in a Dedekind doma
 
 fractional ideal, invertible ideal
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

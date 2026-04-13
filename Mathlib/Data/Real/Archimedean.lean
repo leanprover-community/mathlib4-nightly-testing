@@ -16,7 +16,6 @@ public import Mathlib.Algebra.Group.Pointwise.Set.Basic
 # The real numbers are an Archimedean floor ring, and a conditionally complete linear order.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

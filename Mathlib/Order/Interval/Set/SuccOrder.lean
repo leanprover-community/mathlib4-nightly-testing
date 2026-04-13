@@ -16,7 +16,6 @@ with a successor function, then for any element `i : Set.Iic j`
 which is not the maximum, we have `↑(Order.succ i) = Order.succ ↑i`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

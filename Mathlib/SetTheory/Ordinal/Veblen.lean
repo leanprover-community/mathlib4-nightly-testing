@@ -38,7 +38,6 @@ The following notation is scoped to the `Ordinal` namespace.
 
 * [Larry W. Miller, Normal functions and constructive ordinal notations][Miller_1976]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

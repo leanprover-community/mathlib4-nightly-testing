@@ -31,7 +31,6 @@ preadditive categories).
 * [Stacks: Karoubian categories] https://stacks.math.columbia.edu/tag/09SF
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.Finiteness.Cardinality
 # Finite and projective modules
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

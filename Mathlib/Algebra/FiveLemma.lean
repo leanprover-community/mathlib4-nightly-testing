@@ -36,7 +36,6 @@ N₁ --g₁--> N₂ --g₂--> N₃ --g₃--> N₄ --g₄--> N₅
 with exact rows.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

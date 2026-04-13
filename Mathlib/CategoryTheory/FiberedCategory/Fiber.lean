@@ -20,7 +20,6 @@ In this file we define, for a functor `p : 𝒳 ⥤ 𝒴`, the fiber categories 
 For any category `C` equipped with a functor `F : C ⥤ 𝒳` such that `F ⋙ p` is constant at `S`,
 we define a functor `inducedFunctor : C ⥤ Fiber p S` that `F` factors through.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,7 +21,6 @@ This file provides two things:
 
 monoid action, group action
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

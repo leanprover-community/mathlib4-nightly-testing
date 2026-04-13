@@ -13,7 +13,6 @@ public import Mathlib.Data.List.Defs
 
 Proves various lemmas about `List.iterate`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

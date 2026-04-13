@@ -28,7 +28,6 @@ However, when the cone is also generating, its generators linearly span the modu
 
 * [Aubrun et al. *Entangleability of cones*][aubrunEntangleabilityCones2021]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

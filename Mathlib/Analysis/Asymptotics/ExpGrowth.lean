@@ -24,7 +24,6 @@ versions, using a `liminf` and a `limsup` respectively.
 
 asymptotics, exponential
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

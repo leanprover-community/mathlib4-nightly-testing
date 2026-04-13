@@ -11,7 +11,6 @@ public import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Kernels
 /-!
 # (Co)kernels in functor categories
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

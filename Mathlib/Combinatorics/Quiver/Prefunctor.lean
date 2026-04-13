@@ -10,7 +10,6 @@ public import Mathlib.Combinatorics.Quiver.Basic
 /-!
 # Morphisms of quivers
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

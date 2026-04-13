@@ -19,7 +19,6 @@ than in `UpperHalfPlane.Topology`, because they use the topology on the group as
 
 TODO: Show properness of the action of `PGL(2, ℝ)` once this is defined.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 open scoped MatrixGroups Pointwise
 

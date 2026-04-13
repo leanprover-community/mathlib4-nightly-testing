@@ -58,7 +58,6 @@ instances since they do not compute anything.
 
 finite, fintype, finite sets
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -13,7 +13,6 @@ public import Mathlib.Order.MinMax
 # Lemmas about `Fin.clamp`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 namespace Fin
 

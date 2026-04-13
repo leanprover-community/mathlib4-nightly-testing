@@ -38,7 +38,6 @@ For the explicit construction of free groups, see `GroupTheory/FreeGroup`.
   a free group basis.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

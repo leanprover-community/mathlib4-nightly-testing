@@ -9,7 +9,6 @@ public import Mathlib.Init
 public import Aesop.Frontend
 
 /-! # Finiteness tactic attribute -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

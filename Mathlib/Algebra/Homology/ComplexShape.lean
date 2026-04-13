@@ -42,7 +42,6 @@ so `d : X i ⟶ X j` is nonzero only when `i = j + 1`.
 (Later we'll introduce `CochainComplex` and `ChainComplex` as abbreviations for
 `HomologicalComplex` with one of these shapes baked in.)
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

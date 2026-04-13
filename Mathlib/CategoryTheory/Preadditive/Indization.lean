@@ -13,7 +13,6 @@ public import Mathlib.Algebra.Category.Grp.LeftExactFunctor
 /-!
 # The category of ind-objects is preadditive
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

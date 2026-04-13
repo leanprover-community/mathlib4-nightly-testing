@@ -27,7 +27,6 @@ This file is quite similar to the n-ary section of `Mathlib/Data/Set/Basic.lean`
 
 Generalize this file to semilinear maps.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

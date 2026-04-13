@@ -52,7 +52,6 @@ products of exponential unitaries.
   C⋆-algebra is the set of unitaries that can be expressed as a product of exponentials of
   selfadjoint elements.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -38,7 +38,6 @@ The scope `Matrix` gives the following notation:
 
 cross product
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

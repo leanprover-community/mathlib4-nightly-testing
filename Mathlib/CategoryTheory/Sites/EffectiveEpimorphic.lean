@@ -21,7 +21,6 @@ The analogous statement for a family of morphisms is in the theorem
 `CategoryTheory.Sieve.effectiveEpimorphic_family`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 universe w v u
 

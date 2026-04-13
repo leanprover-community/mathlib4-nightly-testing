@@ -53,7 +53,6 @@ are computable.
 
 quaternion
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

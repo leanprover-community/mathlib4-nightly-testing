@@ -56,7 +56,6 @@ Neumann boundedness in terms of that seminorm family. Together with
 
 seminorm, locally convex
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

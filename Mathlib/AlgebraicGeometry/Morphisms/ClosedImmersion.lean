@@ -30,7 +30,6 @@ is a closed immersion and the induced morphisms of stalks are all surjective.
   https://stacks.math.columbia.edu/tag/01HJ.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

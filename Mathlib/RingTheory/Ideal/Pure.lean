@@ -28,7 +28,6 @@ some properties of such ideals.
 - `Ideal.zeroLocus_inj_of_pure`: If `I` and `J` are pure ideals such that `V(I) = V(J)`, then
   `I = J`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

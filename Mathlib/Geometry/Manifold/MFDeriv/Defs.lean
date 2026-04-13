@@ -98,7 +98,6 @@ the space of equivalence classes of smooth curves in the manifold.
 ## Tags
 derivative, manifold
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

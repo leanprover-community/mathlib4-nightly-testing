@@ -32,7 +32,6 @@ number `n` such that `x ≤ n • y`.
 
 * `ℕ`, `ℤ`, and `ℚ` are archimedean.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

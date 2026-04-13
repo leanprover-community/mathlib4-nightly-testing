@@ -11,7 +11,6 @@ public import Mathlib.Init
 /-!
 # Term elaborators for reduction
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

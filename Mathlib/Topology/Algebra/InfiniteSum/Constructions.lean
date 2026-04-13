@@ -16,7 +16,6 @@ Lemmas on the interaction of `tprod`, `tsum`, `HasProd`, `HasSum` etc. with prod
 types, `MulOpposite`, etc.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

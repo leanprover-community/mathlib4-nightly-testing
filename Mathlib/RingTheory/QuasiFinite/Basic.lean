@@ -35,7 +35,6 @@ In this file, we define the notion of quasi-finite algebras and prove basic prop
   we say that `S` is `R`-quasi-finite at `p` if `Sₚ` is `R`-quasi-finite.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

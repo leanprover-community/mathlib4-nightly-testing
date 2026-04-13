@@ -17,7 +17,6 @@ This file contains the additive and multiplicative monoid instances on `Fin n`.
 
 See note [foundational algebra order theory].
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

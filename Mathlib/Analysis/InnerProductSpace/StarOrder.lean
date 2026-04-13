@@ -19,7 +19,6 @@ real spectrum is nonnegative. Consequently, when `H` is a Hilbert space, then `H
 equipped with all the usual instances of the continuous functional calculus.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -32,7 +32,6 @@ This file defines the extension of a fractional ideal along a ring homomorphism.
 
 fractional ideal, fractional ideals, extended, extension
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

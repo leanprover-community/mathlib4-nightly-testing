@@ -22,7 +22,6 @@ This file contains the definition and basic results about diagonal matrices.
 
 diag, diagonal, matrix
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

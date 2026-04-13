@@ -19,7 +19,6 @@ ending with `date₂`.
 
 See the doc-string for the command for more information.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 meta section
 

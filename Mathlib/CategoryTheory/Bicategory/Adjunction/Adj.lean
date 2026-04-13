@@ -28,7 +28,6 @@ both pullback and pushforward functors.
 * https://ncatlab.org/nlab/show/mate
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

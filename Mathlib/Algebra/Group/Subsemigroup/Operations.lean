@@ -63,7 +63,6 @@ which is necessary.
 
 subsemigroup, range, product, map, comap
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

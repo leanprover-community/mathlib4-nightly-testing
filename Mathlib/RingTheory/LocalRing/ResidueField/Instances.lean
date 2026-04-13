@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.IntegralClosure.IsIntegralClosure.Basic
 import Mathlib.RingTheory.Finiteness.Quotient
 
 /-! # Instances on residue fields -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

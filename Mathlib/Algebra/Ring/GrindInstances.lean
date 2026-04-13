@@ -11,7 +11,6 @@ public import Mathlib.Data.Int.Cast.Basic
 /-!
 # Instances for `grind`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

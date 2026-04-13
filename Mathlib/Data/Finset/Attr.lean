@@ -13,7 +13,6 @@ public import Aesop.Frontend
 
 This file defines `finsetNonempty`, an aesop rule set to prove that a given finset is nonempty.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -22,7 +22,6 @@ An instance is defined for `Part`.
 * class `Fix`
 * `Part.fix`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

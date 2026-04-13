@@ -37,7 +37,6 @@ the weak topology.
 
 double dual, inclusion, isometry, embedding, weak-star topology
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

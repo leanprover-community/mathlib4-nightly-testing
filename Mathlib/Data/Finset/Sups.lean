@@ -36,7 +36,6 @@ We define the following notation in scope `FinsetFamily`:
 
 [B. Bollobás, *Combinatorics*][bollobas1986]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -18,7 +18,6 @@ public import Mathlib.Data.Ineq
 
 Tactic to clear denominators in algebraic expressions.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

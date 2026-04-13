@@ -17,7 +17,6 @@ to concrete (co)forks.
 In particular, we show that `kernel_comparison f g G` is an isomorphism iff `G` preserves
 the limit of the parallel pair `f,0`, as well as the dual result.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

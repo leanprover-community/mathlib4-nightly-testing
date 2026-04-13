@@ -27,7 +27,6 @@ public import Mathlib.CategoryTheory.Sites.LeftExact
   sense of SGA 4 IV 4.9.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

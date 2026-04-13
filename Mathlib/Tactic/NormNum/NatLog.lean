@@ -13,7 +13,6 @@ public import Mathlib.Tactic.NormNum
 
 This module defines `norm_num` extensions for `Nat.log` and `Nat.clog`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

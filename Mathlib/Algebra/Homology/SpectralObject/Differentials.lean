@@ -20,7 +20,6 @@ file `Mathlib/Algebra/Homology/SpectralObject/Homology.lean` (TODO).
 * [Jean-Louis Verdier, *Des catégories dérivées des catégories abéliennes*, II.4][verdier1996]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

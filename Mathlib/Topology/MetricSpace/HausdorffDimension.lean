@@ -83,7 +83,6 @@ We use the following notation localized in `MeasureTheory`. It is defined in
 
 Hausdorff measure, Hausdorff dimension, dimension
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -29,7 +29,6 @@ and the exactness lemmas are
 - `KaehlerDifferential.exact_mapBaseChange_map`
 - `KaehlerDifferential.map_surjective`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.Topology.Connected.TotallyDisconnected
 /-!
 # Separation properties: profinite spaces
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

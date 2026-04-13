@@ -12,7 +12,6 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 /-!
 # Results about mapping big operators across ring equivalences
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

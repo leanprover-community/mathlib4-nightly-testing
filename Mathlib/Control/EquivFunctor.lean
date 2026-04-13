@@ -16,7 +16,6 @@ coherently mapping equivalences to equivalences.
 
 In categorical language, it is an endofunctor of the "core" of the category `Type`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

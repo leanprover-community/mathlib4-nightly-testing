@@ -26,7 +26,6 @@ n-ary generalizations of the binary `curry` and `uncurry`.
   `p`-ary heterogeneous function.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

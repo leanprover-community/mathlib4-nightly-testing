@@ -12,7 +12,6 @@ public import Mathlib.Algebra.Star.Conjneg
 /-!
 # Order properties of conjugation-negation
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

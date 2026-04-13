@@ -45,7 +45,6 @@ Suppose `P` is a formally smooth `R` algebra that surjects onto `A` with kernel 
   the `P`-linear map `I/I² → A ⊗[P] Ω[P⁄R]` is split injective.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

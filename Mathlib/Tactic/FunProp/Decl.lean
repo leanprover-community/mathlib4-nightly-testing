@@ -10,7 +10,6 @@ public import Mathlib.Init
 /-!
 ## `funProp` environment extension that stores all registered function properties
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

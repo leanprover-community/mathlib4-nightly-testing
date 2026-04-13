@@ -10,7 +10,6 @@ public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Basic
 public import Mathlib.RingTheory.GradedAlgebra.Homogeneous.Maps
 
 /-! # Functoriality of Proj -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

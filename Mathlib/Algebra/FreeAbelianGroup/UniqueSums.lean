@@ -11,7 +11,6 @@ public import Mathlib.Algebra.Group.UniqueProds.Basic
 /-!
 # Free abelian groups have unique sums
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

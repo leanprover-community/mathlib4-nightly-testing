@@ -18,7 +18,6 @@ For example, `K[x]` might not include `x⁻¹`.
 
 - `F⟮α⟯`: adjoin a single element `α` to `F` (in scope `IntermediateField`).
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

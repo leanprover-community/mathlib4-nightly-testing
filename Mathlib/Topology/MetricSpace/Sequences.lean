@@ -13,7 +13,6 @@ public import Mathlib.Topology.MetricSpace.Bounded
 
 In this file we prove 2 versions of Bolzano-Weierstrass theorem for proper metric spaces.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

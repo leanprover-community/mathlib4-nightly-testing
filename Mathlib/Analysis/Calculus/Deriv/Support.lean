@@ -18,7 +18,6 @@ compact support.
 
 derivative, support
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

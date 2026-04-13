@@ -51,7 +51,6 @@ injective whenever `n ≤ m`, and then transfer the results to any Fintype `σ`.
 `MvPolynomial.injective_esymmAlgHom` and `MvPolynomial.esymmAlgHom_surjective`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

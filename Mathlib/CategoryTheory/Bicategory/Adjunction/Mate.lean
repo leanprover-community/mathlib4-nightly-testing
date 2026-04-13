@@ -43,7 +43,6 @@ To be precise, the definitions in `Mathlib/CategoryTheory/Adjunction/Mates.lean`
 polymorphic, so they are not simple specializations of the definitions in this file.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

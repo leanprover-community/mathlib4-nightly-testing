@@ -59,7 +59,6 @@ The structure of the proof follows https://stacks.math.columbia.edu/tag/00FE, al
 not give an explicit bound on the complexity.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

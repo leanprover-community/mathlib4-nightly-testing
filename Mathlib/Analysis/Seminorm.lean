@@ -35,7 +35,6 @@ For a module over a normed ring:
 
 seminorm, locally convex, LCTVS
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

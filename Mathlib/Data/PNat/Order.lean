@@ -11,7 +11,6 @@ public import Mathlib.Data.PNat.Basic
 /-!
 # Order related instances for `ℕ+`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -34,7 +34,6 @@ space.
   cases.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 open scoped ComplexOrder InnerProductSpace

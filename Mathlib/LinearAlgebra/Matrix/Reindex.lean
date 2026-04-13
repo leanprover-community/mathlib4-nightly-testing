@@ -24,7 +24,6 @@ to an `m'` by `n'` matrix, as long as `m ≃ m'` and `n ≃ n'`.
 matrix, reindex
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

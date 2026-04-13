@@ -21,7 +21,6 @@ since the types aren't definitionally equal.
 
 topological space, group action, domain action
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

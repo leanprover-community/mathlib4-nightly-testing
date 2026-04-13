@@ -42,7 +42,6 @@ We also prove the result that the functor given by `(X × -)` preserves any
 connected limit. That is, any limit of shape `J` where `J` is a connected
 category is preserved by the functor `(X × -)`. This appears in `CategoryTheory.Limits.Connected`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

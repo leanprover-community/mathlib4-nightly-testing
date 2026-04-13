@@ -14,7 +14,6 @@ public import Mathlib.RingTheory.PrincipalIdealDomain
 
 In this file, we proved some results about the dimension of a principal ideal domain.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

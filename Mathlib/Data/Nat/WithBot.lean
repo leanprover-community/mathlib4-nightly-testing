@@ -13,7 +13,6 @@ public import Mathlib.Order.Nat
 
 Lemmas about the type of natural numbers with a bottom element adjoined.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

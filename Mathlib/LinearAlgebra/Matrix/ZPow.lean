@@ -24,7 +24,6 @@ The lemma names are taken from `Algebra.GroupWithZero.Power`.
 
 matrix inverse, matrix powers
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

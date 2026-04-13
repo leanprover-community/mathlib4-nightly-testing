@@ -16,7 +16,6 @@ public import Mathlib.Data.Nat.Basic
 Lemmas about divisibility in groups and monoids with zero.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

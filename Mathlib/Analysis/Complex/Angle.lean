@@ -25,7 +25,6 @@ Prove the corresponding results for oriented angles.
 
 arc-length, arc-distance
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

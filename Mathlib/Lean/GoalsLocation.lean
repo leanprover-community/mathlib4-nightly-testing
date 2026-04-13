@@ -10,7 +10,6 @@ public import Lean.Meta.Tactic.Util
 public import Lean.SubExpr
 
 /-! This file defines some functions for dealing with `SubExpr.GoalsLocation`. -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

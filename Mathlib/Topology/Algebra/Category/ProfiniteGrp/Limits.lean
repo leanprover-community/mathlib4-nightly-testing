@@ -32,7 +32,6 @@ its quotients by open normal subgroups.
   open normal subgroup contained in it.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

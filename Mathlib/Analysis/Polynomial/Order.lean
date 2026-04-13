@@ -33,7 +33,6 @@ This file proves that a polynomial has a fixed sign beyond its largest or smalle
 
 Generalize to real-closed fields.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

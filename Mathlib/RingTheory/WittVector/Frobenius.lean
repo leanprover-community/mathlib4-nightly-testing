@@ -46,7 +46,6 @@ and bundle it into `WittVector.frobenius`.
 
 * [Commelin and Lewis, *Formalizing the Ring of Witt Vectors*][CL21]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

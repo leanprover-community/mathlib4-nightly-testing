@@ -55,7 +55,6 @@ constants marked as `Name.isInternalDetail`, and we don't want raw projections.
 So, all such results are filtered out. This is implemented with `isUserFriendly`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

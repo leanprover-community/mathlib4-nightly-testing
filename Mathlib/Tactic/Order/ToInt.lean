@@ -27,7 +27,6 @@ the problem becomes NP-hard, and the idea is to reuse a smart and efficient proc
 
 Migrate to `grind` when it is ready.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

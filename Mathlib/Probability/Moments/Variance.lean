@@ -38,7 +38,6 @@ We define the variance of a real-valued random variable as `Var[X] = 𝔼[(X - �
 * `ProbabilityTheory.variance_le_sq_of_bounded`: the variance of a random variable `X` satisfying
   `a ≤ X ≤ b` almost everywhere is at most `((b - a) / 2) ^ 2`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

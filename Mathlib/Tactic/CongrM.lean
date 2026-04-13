@@ -16,7 +16,6 @@ is a convenient frontend for `congr(...)` congruence quotations.
 Roughly, `congrm e` is `refine congr(e')`, where `e'` is `e` with every `?m` placeholder
 replaced by `$(?m)`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

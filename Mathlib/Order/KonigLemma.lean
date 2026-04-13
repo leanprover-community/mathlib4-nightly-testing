@@ -50,7 +50,6 @@ We leave the explicitly graph-theoretic version of the statement as TODO.
 Formulate the lemma as a statement about graphs.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -37,7 +37,6 @@ in this setup.
   on a neighbourhood of `U` and not locally constant, then the preimage of any subset codiscrete
   within `f '' U` is codiscrete within `U`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

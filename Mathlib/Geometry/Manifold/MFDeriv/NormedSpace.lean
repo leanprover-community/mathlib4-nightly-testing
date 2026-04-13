@@ -20,7 +20,6 @@ In addition to the above, this file provides
 * `extDerivFun`: the exterior derivative of a scalar function, as a section of the cotangent bundle
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

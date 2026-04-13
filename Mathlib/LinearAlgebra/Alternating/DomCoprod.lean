@@ -19,7 +19,6 @@ In this file we define `AlternatingMap.domCoprod`
 to be the exterior product of two alternating maps,
 taking values in the tensor product of the codomains of the original maps.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

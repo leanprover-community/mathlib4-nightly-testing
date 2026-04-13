@@ -41,7 +41,6 @@ should be connected.
 
 bitwise, and, or, xor
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

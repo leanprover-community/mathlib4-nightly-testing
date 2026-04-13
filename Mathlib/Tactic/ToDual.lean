@@ -12,7 +12,6 @@ public import Mathlib.Tactic.Translate.ToDual
 /-!
 ## `@[to_dual]` attributes for basic types
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

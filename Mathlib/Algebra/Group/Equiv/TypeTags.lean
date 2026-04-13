@@ -13,7 +13,6 @@ public import Mathlib.Tactic.Spread
 /-!
 # Additive and multiplicative equivalences associated to `Multiplicative` and `Additive`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

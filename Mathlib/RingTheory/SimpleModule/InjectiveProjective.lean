@@ -13,7 +13,6 @@ public import Mathlib.Algebra.Module.Projective
 If `R` is a semisimple ring, then any `R`-module is both injective and projective.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

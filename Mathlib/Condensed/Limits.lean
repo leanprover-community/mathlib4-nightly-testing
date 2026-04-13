@@ -13,7 +13,6 @@ public import Mathlib.Condensed.Module
 
 This file adds some instances for limits in condensed sets and condensed modules.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

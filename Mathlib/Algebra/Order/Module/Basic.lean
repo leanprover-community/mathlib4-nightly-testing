@@ -13,7 +13,6 @@ public import Mathlib.Algebra.Order.Module.Defs
 /-!
 # Further lemmas about monotonicity of scalar multiplication
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

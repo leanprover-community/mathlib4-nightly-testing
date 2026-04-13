@@ -15,7 +15,6 @@ The file `Mathlib.Tactic.Translate.UnfoldBoundary` defines how to add unfold bou
 In this file, we define the infrastructure for tagging declaration to be used for that.
 This is in a separate file, because we need to import `Mathlib.Tactic.Translate.Core` here.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 meta section
 

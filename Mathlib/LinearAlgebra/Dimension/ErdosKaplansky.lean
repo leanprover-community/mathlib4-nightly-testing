@@ -18,7 +18,6 @@ public import Mathlib.SetTheory.Cardinal.Subfield
   equal to its cardinality.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

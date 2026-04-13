@@ -23,7 +23,6 @@ isomorphism `F.map t ≫ F.map r ≅ F.map l ≫ F.map b`
 (see `Pseudofunctor.isoMapOfCommSq`).
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -24,7 +24,6 @@ Kleitman's bound stipulates that `k` intersecting families cover at most `2ⁿ -
 
 * [D. J. Kleitman, *Families of non-disjoint subsets*][kleitman1966]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

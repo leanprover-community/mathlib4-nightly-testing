@@ -23,7 +23,6 @@ An important result about `withDensity` is the Radon-Nikodym theorem. It states 
 See `MeasureTheory.Measure.absolutelyContinuous_iff_withDensity_rnDeriv_eq`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

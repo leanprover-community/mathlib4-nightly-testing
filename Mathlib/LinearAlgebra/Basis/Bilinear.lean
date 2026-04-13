@@ -11,7 +11,6 @@ public import Mathlib.LinearAlgebra.Basis.Defs
 /-!
 # Lemmas about bilinear maps with a basis over each argument
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

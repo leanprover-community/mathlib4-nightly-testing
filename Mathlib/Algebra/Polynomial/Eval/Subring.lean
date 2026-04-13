@@ -18,7 +18,6 @@ public import Mathlib.Algebra.Ring.Subring.Basic
   polynomials with coefficients in the range of `f`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

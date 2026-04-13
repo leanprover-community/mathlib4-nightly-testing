@@ -8,7 +8,6 @@ module
 public import Mathlib.Order.WellFoundedSet
 
 /-! # Multiplication antidiagonal -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -18,7 +18,6 @@ In this file we define the product of subalgebras as a subalgebra of the product
 
 * `Subalgebra.pi`: the product of subalgebras.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

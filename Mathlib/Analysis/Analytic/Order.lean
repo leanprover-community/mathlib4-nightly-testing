@@ -21,7 +21,6 @@ of `ℕ∞`.
 
 Uniformize API between analytic and meromorphic functions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

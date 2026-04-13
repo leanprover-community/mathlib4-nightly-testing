@@ -41,7 +41,6 @@ adding them back in lemmas when they are needed.
 ## Tags
 function field, ring of integers
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

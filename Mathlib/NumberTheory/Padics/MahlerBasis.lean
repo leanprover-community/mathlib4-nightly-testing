@@ -40,7 +40,6 @@ for his bachelor's thesis at ETH Zürich.
 
 Bojanic
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

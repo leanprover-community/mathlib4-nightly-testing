@@ -19,7 +19,6 @@ We prove basic properties of (semi)normed groups.
 
 normed group
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

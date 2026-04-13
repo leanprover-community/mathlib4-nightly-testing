@@ -32,7 +32,6 @@ composition in `AffineEquiv.group`.
 
 affine space, affine equivalence
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

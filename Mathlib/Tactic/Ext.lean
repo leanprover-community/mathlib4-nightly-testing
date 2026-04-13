@@ -13,7 +13,6 @@ public import Batteries.Util.LibraryNote
 
 This file contains a library note on the use of the `ext` tactic and `@[ext]` attribute.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -12,7 +12,6 @@ public import Mathlib.Algebra.SkewMonoidAlgebra.Basic
 This file contains basic results on updating/erasing an element of a skew monoid algebra using
 one point of the domain.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

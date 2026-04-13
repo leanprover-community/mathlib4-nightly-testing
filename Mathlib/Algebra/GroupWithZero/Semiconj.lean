@@ -12,7 +12,6 @@ public import Mathlib.Algebra.Group.Semiconj.Units
 # Lemmas about semiconjugate elements in a `GroupWithZero`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

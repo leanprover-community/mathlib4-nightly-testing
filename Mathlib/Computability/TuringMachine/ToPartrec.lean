@@ -24,7 +24,6 @@ Turing machine for evaluating these functions. This amounts to a constructive pr
 * `PartrecToTM2.tr`: A TM2 Turing machine which can evaluate `code` programs
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

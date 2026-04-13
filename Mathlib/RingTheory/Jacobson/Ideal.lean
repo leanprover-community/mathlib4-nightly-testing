@@ -45,7 +45,6 @@ Furthermore when `I` is a two-sided ideal of `R`
 Jacobson, Jacobson radical, Local Ideal
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

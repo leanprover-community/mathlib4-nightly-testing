@@ -16,7 +16,6 @@ public import Mathlib.Analysis.Normed.Operator.Prod
 * `smooth_smul`: multiplication by scalars is a smooth operation
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

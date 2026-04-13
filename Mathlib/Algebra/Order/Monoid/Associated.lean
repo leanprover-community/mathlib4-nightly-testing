@@ -13,7 +13,6 @@ public import Mathlib.Algebra.Order.Monoid.Canonical.Defs
 
 This file shows that divisibility makes associates into a canonically ordered monoid.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -15,7 +15,6 @@ public import Mathlib.RingTheory.Valuation.RankOne
 
 p-adic, p adic, padic, norm, valuation, cauchy, completion, p-adic completion
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -45,7 +45,6 @@ of sets in `α` (with the reversed inclusion ordering).
 
 finer, coarser, induced topology, coinduced topology
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -29,7 +29,6 @@ This file provides results about maps between tensor products of `R`-algebras.
 * [C. Kassel, *Quantum Groups* (§II.4)][Kassel1995]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

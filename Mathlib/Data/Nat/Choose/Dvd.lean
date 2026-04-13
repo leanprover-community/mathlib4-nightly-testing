@@ -11,7 +11,6 @@ public import Mathlib.Data.Nat.Prime.Factorial
 /-!
 # Divisibility properties of binomial coefficients
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

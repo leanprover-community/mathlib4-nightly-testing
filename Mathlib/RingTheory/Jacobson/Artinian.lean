@@ -16,7 +16,6 @@ public import Mathlib.RingTheory.Jacobson.Ring
   then `A` is finite over `R` if and only if `A` is an Artinian ring.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

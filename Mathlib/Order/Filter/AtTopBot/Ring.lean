@@ -11,7 +11,6 @@ public import Mathlib.Order.Filter.AtTopBot.Group
 /-!
 # Convergence to ±infinity in ordered rings
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

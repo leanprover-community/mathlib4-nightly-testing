@@ -22,7 +22,6 @@ submonoid of the ambient group.
   archimedean additive group retains the archimedean property when restricted to the additive
   submonoid.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

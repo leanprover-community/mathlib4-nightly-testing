@@ -43,7 +43,6 @@ It is unclear if this works faster than the `Equiv.Perm.toCycle`, which relies
 on recursion over `Finset.univ`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

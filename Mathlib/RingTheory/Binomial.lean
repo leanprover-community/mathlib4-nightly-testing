@@ -64,7 +64,6 @@ Further results in Elliot's paper:
   `1 + I`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

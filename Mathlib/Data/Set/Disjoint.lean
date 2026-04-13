@@ -10,7 +10,6 @@ public import Mathlib.Data.Set.Basic
 /-!
 # Theorems about the `Disjoint` relation on `Set`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -38,7 +38,6 @@ Consider `a b : α` and `g : G` such that `hg : g • b = a`.
 * `SubMulAction.ofStabilizer.snoc` : given `x : Fin n ↪ ofStabilizer G a`,
   append `a` to obtain `y : Fin n.succ ↪ α`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

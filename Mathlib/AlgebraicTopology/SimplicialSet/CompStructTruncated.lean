@@ -20,7 +20,6 @@ Given a `2`-truncated simplicial set `X`, we introduce two types:
   will allow to obtain relations in the homotopy category of `X`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

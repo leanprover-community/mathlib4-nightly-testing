@@ -27,7 +27,6 @@ public import Mathlib.RingTheory.TensorProduct.Finite
   the index of `I ^ n` is bounded by `#(R ⧸ I) ^ (k⁰ + k¹ + ⋯ + kⁿ⁻¹)`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

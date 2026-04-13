@@ -21,7 +21,6 @@ This file defines the affine subspace orthogonal to the radius vector at a point
   inversion of that point in the sphere).
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

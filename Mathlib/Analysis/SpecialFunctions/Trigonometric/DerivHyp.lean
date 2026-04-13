@@ -23,7 +23,6 @@ computed.
 
 sinh, cosh, tanh
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

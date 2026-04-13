@@ -56,7 +56,6 @@ the colors.
 
   * develop API for partial colorings, likely as colorings of subgraphs (`H.coe.Coloring α`)
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

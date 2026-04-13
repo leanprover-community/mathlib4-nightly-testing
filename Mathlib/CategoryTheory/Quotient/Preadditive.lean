@@ -16,7 +16,6 @@ is compatible with the addition, then the quotient category `Quotient r` is also
 preadditive.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

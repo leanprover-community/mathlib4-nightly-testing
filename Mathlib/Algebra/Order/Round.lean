@@ -21,7 +21,6 @@ to the nearest integer.
 
 rounding
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

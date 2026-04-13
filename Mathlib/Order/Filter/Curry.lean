@@ -47,7 +47,6 @@ of describing the product of two sets:
 
 uniform convergence, curried filters, product filters
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

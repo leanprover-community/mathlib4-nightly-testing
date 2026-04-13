@@ -17,7 +17,6 @@ natural number.
 It also contains basic results about congruence subgroups.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

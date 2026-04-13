@@ -18,7 +18,6 @@ public import Mathlib.LinearAlgebra.Matrix.Adjugate
   is nondegenerate.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

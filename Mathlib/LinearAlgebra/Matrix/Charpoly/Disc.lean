@@ -12,7 +12,6 @@ public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 /-!
 # The discriminant of a matrix
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

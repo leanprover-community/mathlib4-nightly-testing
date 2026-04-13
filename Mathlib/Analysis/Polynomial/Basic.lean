@@ -21,7 +21,6 @@ We can then use this result to prove various limits for polynomial and rational
 functions, depending on the degrees and leading coefficients of the considered
 polynomials.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

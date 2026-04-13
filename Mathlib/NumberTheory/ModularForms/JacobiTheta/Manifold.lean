@@ -19,7 +19,6 @@ differentiability.
 
 Prove smoothness (in terms of `Smooth`).
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

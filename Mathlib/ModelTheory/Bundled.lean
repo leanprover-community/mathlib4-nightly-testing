@@ -22,7 +22,6 @@ This file bundles types together with their first-order structure.
 
 - Define category structures on bundled structures and models.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

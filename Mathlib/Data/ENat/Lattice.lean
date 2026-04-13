@@ -18,7 +18,6 @@ We also restate some lemmas about `WithTop` for `ENat` to have versions that use
 of `WithTop.some`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

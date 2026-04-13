@@ -43,7 +43,6 @@ since this provides summability.
 
 vector measure, signed measure, complex measure
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -32,7 +32,6 @@ theory.
 
 `Mathlib/Analysis/Convex/Mul.lean` for convexity of `x ↦ x ^ n`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

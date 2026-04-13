@@ -11,7 +11,6 @@ public import Mathlib.Analysis.Normed.Lp.PiLp
 /-!
 # Derivatives on `WithLp`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

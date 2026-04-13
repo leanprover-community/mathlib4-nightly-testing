@@ -22,7 +22,6 @@ of fiddling with simple tensors.
 
 module, commutative algebra
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

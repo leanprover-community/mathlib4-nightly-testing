@@ -17,7 +17,6 @@ In this file we define
 
 * `hyperfilter`: the ultrafilter extending the cofinite filter.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -22,7 +22,6 @@ essentially surjective functor `graphFunctor` that also characterizes all isomor
 By flipping the arguments to a relation, we construct an equivalence `opEquivalence` between
 `RelCat` and its opposite.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,7 +23,6 @@ operations.
 
 Finally, we provide the `Ring` structure on `AddMonoid.End`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

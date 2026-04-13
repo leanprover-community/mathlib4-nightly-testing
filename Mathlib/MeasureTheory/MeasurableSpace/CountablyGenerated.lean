@@ -41,7 +41,6 @@ The file also contains measurability results about `memPartition`, from which th
 `countablePartition` are deduced.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

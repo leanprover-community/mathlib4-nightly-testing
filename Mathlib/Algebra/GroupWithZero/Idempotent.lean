@@ -11,7 +11,6 @@ public import Mathlib.Algebra.GroupWithZero.Defs
 /-!
 # Idempotent elements of a group with zero
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.CategoryTheory.Center.Basic
 # The center of an additive category
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

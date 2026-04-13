@@ -11,7 +11,6 @@ public import Mathlib.RingTheory.SimpleModule.Basic
 /-!
 # A module over a division ring is simple iff it has rank one
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

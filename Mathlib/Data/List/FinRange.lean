@@ -14,7 +14,6 @@ public import Mathlib.Data.List.Nodup
 
 This file develops some results on `finRange n`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

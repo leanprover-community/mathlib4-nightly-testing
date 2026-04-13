@@ -15,7 +15,6 @@ public import Mathlib.Topology.OpenPartialHomeomorph.Continuity
 # Further basic lemmas about asymptotics
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

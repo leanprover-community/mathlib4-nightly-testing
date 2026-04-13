@@ -11,7 +11,6 @@ public import Mathlib.Init
 /-!
 # Extra facts about `PProd`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

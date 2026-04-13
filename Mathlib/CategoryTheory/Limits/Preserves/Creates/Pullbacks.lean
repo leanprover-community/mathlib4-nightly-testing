@@ -13,7 +13,6 @@ public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.HasPullback
 
 We show some lemmas relating creation of (co)limits and pullbacks (resp. pushouts).
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

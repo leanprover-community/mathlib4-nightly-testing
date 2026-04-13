@@ -28,7 +28,6 @@ This file defines n-dimensional simplices in affine space.
 * https://en.wikipedia.org/wiki/Simplex
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,7 +11,6 @@ public import Mathlib.Order.PartialSups
 /-!
 # Results about `partialSups` of functions taking values in a `Group`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

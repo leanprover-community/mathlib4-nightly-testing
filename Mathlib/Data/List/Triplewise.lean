@@ -16,7 +16,6 @@ public import Batteries.Data.List
 * `List.Triplewise` says that a predicate applies to all ordered triples of elements of a list.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

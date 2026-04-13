@@ -12,7 +12,6 @@ public import Mathlib.Init
 
 Changes the current namespace without causing scoped things to go out of scope.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

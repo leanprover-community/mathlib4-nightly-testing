@@ -15,7 +15,6 @@ public import Mathlib.SetTheory.Cardinal.Finite
 This file contains the results concerning the interaction of finset big operators with natural
 numbers.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

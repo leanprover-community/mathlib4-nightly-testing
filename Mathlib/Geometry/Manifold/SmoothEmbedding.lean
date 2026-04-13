@@ -40,7 +40,6 @@ This will be useful to define embedded submanifolds.
   a local diffeomorphism (and in particular, a diffeomorphism) is a smooth embedding
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 open scoped ContDiff
 open Topology

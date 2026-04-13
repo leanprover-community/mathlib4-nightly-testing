@@ -21,7 +21,6 @@ We also prove that an `OrderIso` is continuous.
 
 continuous, monotone
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

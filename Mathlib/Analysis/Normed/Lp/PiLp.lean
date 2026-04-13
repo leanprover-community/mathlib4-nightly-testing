@@ -70,7 +70,6 @@ TODO: the results about uniformity and bornology in the `Aux` section should be 
 `Mathlib.Topology.MetricSpace.Bilipschitz`, so that they can be inlined in the next section and
 the only remaining results are about `Lipschitz` and `Antilipschitz`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

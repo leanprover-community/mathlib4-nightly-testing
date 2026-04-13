@@ -27,7 +27,6 @@ This is the case if `Depth[I](M) = 0`.
   iff there is a `M`-regular in `Module.annihilator R N`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

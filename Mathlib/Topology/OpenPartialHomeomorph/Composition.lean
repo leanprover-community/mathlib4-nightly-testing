@@ -13,7 +13,6 @@ public import Mathlib.Topology.OpenPartialHomeomorph.IsImage
 
 * `OpenPartialHomeomorph.trans`: the composition of two open partial homeomorphisms
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

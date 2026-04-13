@@ -11,7 +11,6 @@ public import Mathlib.Data.Fintype.Basic
 /-!
 # Lemmas relating fintypes and order/lattice structure.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

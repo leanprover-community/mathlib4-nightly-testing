@@ -10,7 +10,6 @@ public import Mathlib.CategoryTheory.Monoidal.Rigid.Basic
 /-!
 # Transport rigid structures over a monoidal equivalence.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

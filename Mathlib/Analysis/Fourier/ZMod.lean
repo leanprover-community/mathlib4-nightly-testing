@@ -25,7 +25,6 @@ Basic definitions and properties of the discrete Fourier transform for functions
 * `DirichletCharacter.fourierTransform_eq_inv_mul_gaussSum`: the discrete Fourier transform of a
   primitive Dirichlet character `χ` is a Gauss sum times `χ⁻¹`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -50,7 +50,6 @@ public import Mathlib.Algebra.MvPolynomial.Degrees
 * `MvPowerSeries.trunc'_map` : image of a truncation under a change of rings
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

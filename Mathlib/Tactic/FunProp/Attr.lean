@@ -11,7 +11,6 @@ public import Mathlib.Tactic.FunProp.Theorems
 /-!
 ## `funProp` attribute
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

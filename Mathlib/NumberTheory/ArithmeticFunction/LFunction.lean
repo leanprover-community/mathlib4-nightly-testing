@@ -21,7 +21,6 @@ This file constructs L-functions as formal Dirichlet series.
 ## TODO
 * If each `f i` is multiplicative, then `ArithmeticFunction.eulerProduct f` is multiplicative.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

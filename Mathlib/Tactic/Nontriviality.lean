@@ -8,6 +8,5 @@ module
 public import Mathlib.Tactic.Nontriviality.Core
 
 /-! # The `nontriviality` tactic. -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section

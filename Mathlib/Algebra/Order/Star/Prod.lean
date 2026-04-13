@@ -12,7 +12,6 @@ public import Mathlib.Algebra.Ring.Prod
 /-!
 # Products of star-ordered rings
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

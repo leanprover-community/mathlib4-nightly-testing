@@ -57,7 +57,6 @@ The implementation of the seminorms is taken almost literally from `ContinuousLi
 
 Schwartz space, tempered distributions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

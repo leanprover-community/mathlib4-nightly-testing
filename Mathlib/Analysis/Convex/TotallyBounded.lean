@@ -25,7 +25,6 @@ public import Mathlib.Topology.Algebra.Module.LocallyConvex
 
 convex, totally bounded
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

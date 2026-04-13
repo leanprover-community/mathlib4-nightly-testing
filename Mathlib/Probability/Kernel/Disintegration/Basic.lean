@@ -36,7 +36,6 @@ disintegrated by some kernel, then `κ` itself is disintegrated by a kernel, nam
 `Mathlib/Probability/Kernel/Disintegration/StandardBorel.lean` for a **construction** of
 disintegrating kernels.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

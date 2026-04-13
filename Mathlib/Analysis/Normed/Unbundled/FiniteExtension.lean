@@ -39,7 +39,6 @@ at least one power-multiplicative `K`-algebra norm on `L` extending the norm on 
 
 Basis.norm, nonarchimedean
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

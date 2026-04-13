@@ -68,7 +68,6 @@ mirrored in `Mathlib/AlgebraicGeometry/EllipticCurve/Projective/Basic.lean`.
 
 elliptic curve, Jacobian, Weierstrass equation, nonsingular
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

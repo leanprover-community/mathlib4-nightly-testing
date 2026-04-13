@@ -33,7 +33,6 @@ a multiset. These coercions and definitions make it easier to sum over multisets
 
 multiset enumeration
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -36,7 +36,6 @@ contains all of them.
 
 measurable space, σ-algebra, measurable function
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

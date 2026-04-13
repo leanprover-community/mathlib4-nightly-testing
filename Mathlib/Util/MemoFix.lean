@@ -12,7 +12,6 @@ public import Mathlib.Init
 # Fixpoint function with memoisation
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 variable {α β : Type}
 

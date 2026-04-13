@@ -45,7 +45,6 @@ typeclasses to unify the two constructions on this and `LocalizedModule`, or by 
 downstream constructions (e.g. `Spec.structureSheaf`) as irreducible.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

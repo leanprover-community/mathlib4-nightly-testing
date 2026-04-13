@@ -20,7 +20,6 @@ Currently this file contains two lemmas:
 
 fixed points, iterates
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

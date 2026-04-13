@@ -34,7 +34,6 @@ In this file we prove Fubini's theorem.
 
 product measure, Fubini's theorem, Fubini-Tonelli theorem
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

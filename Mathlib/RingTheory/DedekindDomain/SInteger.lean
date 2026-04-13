@@ -41,7 +41,6 @@ This file defines the subalgebra of `S`-integers of `K` and the subgroup of `S`-
 
 S integer, S-integer, S unit, S-unit
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

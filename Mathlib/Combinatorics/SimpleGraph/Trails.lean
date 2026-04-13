@@ -35,7 +35,6 @@ as Eulerian circuits).
 Eulerian trails
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

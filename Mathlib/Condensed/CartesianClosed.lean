@@ -13,7 +13,6 @@ public import Mathlib.CategoryTheory.Sites.LeftExact
 
 # Condensed sets form a Cartesian closed category
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,7 +23,6 @@ see the module docstring of `Mathlib/Analysis/Calculus/FDeriv/Basic.lean`.
 
 derivative, power
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

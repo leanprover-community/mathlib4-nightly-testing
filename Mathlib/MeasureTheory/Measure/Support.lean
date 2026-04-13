@@ -36,7 +36,6 @@ and various descriptions of the complement of the support are provided.
 
 measure, support, Lindelöf
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

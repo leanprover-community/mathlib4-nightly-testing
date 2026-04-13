@@ -14,7 +14,6 @@ public import Mathlib.CategoryTheory.Limits.Filtered
 We construct filtered colimits and cofiltered limits in the opposite categories.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

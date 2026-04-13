@@ -17,7 +17,6 @@ We split them into their own file.
 
 This file also contains a few convenient auxiliary functions.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

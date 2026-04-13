@@ -27,7 +27,6 @@ We prove two versions of the lemma:
 
 normal space, shrinking lemma
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

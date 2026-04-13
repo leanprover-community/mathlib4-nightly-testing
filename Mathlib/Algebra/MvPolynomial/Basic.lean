@@ -64,7 +64,6 @@ the polynomial being represented.
 polynomial, multivariate polynomial, multivariable polynomial
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

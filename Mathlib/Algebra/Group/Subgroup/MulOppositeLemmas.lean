@@ -21,7 +21,6 @@ which might be organized and split up further.
 subgroup, subgroups
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

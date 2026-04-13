@@ -26,7 +26,6 @@ Given a list `l`,
   as an `OrderIso`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -54,7 +54,6 @@ in particular sense for `V = W = ℝ`.
 At present the only nontrivial lemma we prove is `fourierIntegral_continuous`, stating that the
 Fourier transform of an integrable function is continuous (under mild assumptions).
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -16,7 +16,6 @@ In an abelian category `C`, the class of morphisms
 `epimorphisms C` is stable under base change.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -29,7 +29,6 @@ cancellative `CommMonoidWithZero`.
   which is itself a prime power.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

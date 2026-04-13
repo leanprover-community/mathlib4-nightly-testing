@@ -6,6 +6,5 @@ Authors: Pim Spelier, Daan van Gent
 module
 
 public import Mathlib.Computability.TuringMachine.Computable
-set_option backward.defeq.atInstanceTransparency false
 
 deprecated_module (since := "2026-02-21")

@@ -15,7 +15,6 @@ We introduce the following typeclasses for measures:
 * `IsFiniteMeasure μ`: `μ univ < ∞`;
 * `IsLocallyFiniteMeasure μ` : `∀ x, ∃ s ∈ 𝓝 x, μ s < ∞`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

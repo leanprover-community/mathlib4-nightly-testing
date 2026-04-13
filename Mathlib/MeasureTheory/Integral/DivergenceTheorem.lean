@@ -50,7 +50,6 @@ website shows the actual terms, not those abbreviated using local notations.
 
 divergence theorem, Bochner integral
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

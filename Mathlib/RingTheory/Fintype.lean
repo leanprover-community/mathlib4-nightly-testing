@@ -11,7 +11,6 @@ public import Mathlib.Tactic.NormNum
 /-!
 # Some facts about finite rings
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

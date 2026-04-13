@@ -64,7 +64,6 @@ More advanced theorems about these definitions are located in other files in `Ma
 
 set, image, preimage
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

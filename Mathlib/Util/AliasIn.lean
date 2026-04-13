@@ -10,7 +10,6 @@ public import Batteries.Tactic.Alias
 public import Lean.Exception
 
 /-! ## The `@[alias_in]` attribute -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

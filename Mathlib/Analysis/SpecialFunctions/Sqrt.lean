@@ -18,7 +18,6 @@ dot-notation lemmas.
 
 sqrt, differentiable
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

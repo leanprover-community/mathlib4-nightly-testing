@@ -13,7 +13,6 @@ public import Mathlib.Logic.Equiv.Defs
 # Theorems about invertible elements
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

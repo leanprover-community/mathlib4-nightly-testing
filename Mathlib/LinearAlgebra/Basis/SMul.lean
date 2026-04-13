@@ -14,7 +14,6 @@ public import Mathlib.LinearAlgebra.Basis.Basic
 This file defines the scalar multiplication of bases by multiplying each basis vector.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -28,7 +28,6 @@ of the units.
 
 restricted product, adeles, ideles
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

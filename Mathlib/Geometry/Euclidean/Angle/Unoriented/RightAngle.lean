@@ -25,7 +25,6 @@ triangle unnecessarily.
 * https://en.wikipedia.org/wiki/Pythagorean_theorem
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

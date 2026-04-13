@@ -18,7 +18,6 @@ This file rephrases metric boundedness in terms of norms.
 
 normed group
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

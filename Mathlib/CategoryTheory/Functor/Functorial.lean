@@ -10,7 +10,6 @@ public import Mathlib.CategoryTheory.Functor.Basic
 /-!
 # Unbundled functors, as a typeclass decorating the object-level function.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

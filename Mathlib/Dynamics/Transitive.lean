@@ -19,7 +19,6 @@ and prove basic facts about topologically transitive actions.
 
 group action, topologically transitive
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

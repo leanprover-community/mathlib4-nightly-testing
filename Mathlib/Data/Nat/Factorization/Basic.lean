@@ -12,7 +12,6 @@ public import Mathlib.Order.Interval.Finset.Nat
 /-!
 # Basic lemmas on prime factorizations
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

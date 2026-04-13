@@ -14,7 +14,6 @@ public import Qq
 
 We construct the power functions `x ^ y`, where `x` and `y` are real numbers.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

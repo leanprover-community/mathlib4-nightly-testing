@@ -13,7 +13,6 @@ public import Mathlib.Init
 This file defines the `ExistsUnique` predicate, notated as `∃!`, and proves some of its
 basic properties.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -30,7 +30,6 @@ We also register continuous linear equiv versions of these correspondences, in
 * `ContinuousMultilinearMap.curryMid`, `ContinuousLinearMap.uncurryMid` and
   `ContinuousMultilinearMap.curryMidEquiv`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

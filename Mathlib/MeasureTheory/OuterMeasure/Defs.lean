@@ -34,7 +34,6 @@ We also define a typeclass `MeasureTheory.OuterMeasureClass`.
 
 outer measure
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

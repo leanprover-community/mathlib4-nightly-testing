@@ -16,7 +16,6 @@ public import Mathlib.Algebra.Module.Submodule.Pointwise
 
 function with finite support, module, linear algebra
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

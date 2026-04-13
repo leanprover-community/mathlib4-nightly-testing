@@ -17,7 +17,6 @@ and `c : M`, then `(.mk c : Mᵈᵐᵃ) • [f]` is represented by the function 
 
 We also prove basic properties of this action.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

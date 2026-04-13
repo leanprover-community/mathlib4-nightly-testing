@@ -16,7 +16,6 @@ public import Mathlib.LinearAlgebra.Multilinear.DFinsupp
   supported maps.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

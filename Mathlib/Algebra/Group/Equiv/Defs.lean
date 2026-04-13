@@ -32,7 +32,6 @@ notation when treating the isomorphisms as maps.
 
 Equiv, MulEquiv, AddEquiv
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

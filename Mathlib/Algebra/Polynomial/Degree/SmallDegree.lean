@@ -11,7 +11,6 @@ public import Mathlib.Data.Nat.WithBot
 /-!
 # Results on polynomials of specific small degrees
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

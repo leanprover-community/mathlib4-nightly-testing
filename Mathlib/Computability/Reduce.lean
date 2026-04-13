@@ -26,7 +26,6 @@ This file uses the local notation `⊕'` for `Sum.elim` to denote the disjoint u
 
 computability, reducibility, reduction
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

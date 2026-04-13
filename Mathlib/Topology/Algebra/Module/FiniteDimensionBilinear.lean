@@ -21,7 +21,6 @@ differential geometry part of Mathlib where we don’t want to fix a norm on tan
 instance.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

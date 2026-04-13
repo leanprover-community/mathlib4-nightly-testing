@@ -34,7 +34,6 @@ public import Mathlib.Tactic.Linarith
 
 Doubly stochastic, Birkhoff's theorem, Birkhoff-von Neumann theorem
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

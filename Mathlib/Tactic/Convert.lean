@@ -72,7 +72,6 @@ convert (config := {transparency := .default}) h
 ```
 These are passed to `congr!`. See `Congr!.Config` for options.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

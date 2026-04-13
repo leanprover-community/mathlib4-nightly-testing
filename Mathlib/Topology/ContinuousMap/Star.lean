@@ -13,7 +13,6 @@ public import Mathlib.Topology.ContinuousMap.Algebra
 # Star structures on continuous maps.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

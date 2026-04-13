@@ -15,7 +15,6 @@ In this file we define `ContinuousMap.Homotopy.affine f g`
 to be the homotopy between `f` and `g`
 such that `affine f g (t, x) = AffineMap.lineMap (f x) (g x) t`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

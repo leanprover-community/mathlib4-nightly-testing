@@ -23,7 +23,6 @@ In this file we prove various facts about membership in a submonoid:
 ## Tags
 submonoid, submonoids
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

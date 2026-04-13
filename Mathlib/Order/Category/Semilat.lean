@@ -18,7 +18,6 @@ element and inf-semilattices with a top element.
 
 * [nLab, *semilattice*](https://ncatlab.org/nlab/show/semilattice)
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

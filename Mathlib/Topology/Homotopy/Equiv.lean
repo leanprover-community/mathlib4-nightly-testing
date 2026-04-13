@@ -25,7 +25,6 @@ We introduce the notation `X ≃ₕ Y` for `ContinuousMap.HomotopyEquiv X Y` in 
 locale.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

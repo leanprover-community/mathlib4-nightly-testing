@@ -23,7 +23,6 @@ This file defines the discriminant of a number field.
 ## Tags
 number field, discriminant
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

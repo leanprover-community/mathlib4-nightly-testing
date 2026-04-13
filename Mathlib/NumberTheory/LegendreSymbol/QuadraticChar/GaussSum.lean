@@ -14,7 +14,6 @@ public import Mathlib.NumberTheory.GaussSum
 Further facts relying on Gauss sums.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

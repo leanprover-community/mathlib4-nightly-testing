@@ -55,7 +55,6 @@ notes" section of `Mathlib/Topology/FiberBundle/Basic.lean`.
 ## Tags
 Vector bundle
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

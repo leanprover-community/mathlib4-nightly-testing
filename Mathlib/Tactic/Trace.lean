@@ -12,7 +12,6 @@ public meta import Lean.Meta.Eval
 /-!
 # Defines the `trace` tactic.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

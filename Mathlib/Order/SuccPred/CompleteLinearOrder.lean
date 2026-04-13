@@ -13,7 +13,6 @@ public import Mathlib.Order.SuccPred.Limit
 # Relation between `IsSuccPrelimit` and `iSup` in (conditionally) complete linear orders.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

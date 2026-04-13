@@ -23,7 +23,6 @@ requirement.
 
 rectangular box, box partition
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

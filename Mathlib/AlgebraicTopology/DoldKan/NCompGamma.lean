@@ -22,7 +22,6 @@ which reflects isomorphisms.
 (See `Equivalence.lean` for the general strategy of proof of the Dold-Kan equivalence.)
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,7 +23,6 @@ In particular, this implies that `forget SemiRingCat` preserves filtered colimit
 Similarly for `CommSemiRingCat`, `RingCat` and `CommRingCat`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

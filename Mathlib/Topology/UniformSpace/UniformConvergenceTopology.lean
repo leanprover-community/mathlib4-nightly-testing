@@ -133,7 +133,6 @@ connection API to do most of the work.
 
 uniform convergence
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -8,7 +8,6 @@ module
 public import Mathlib.Init
 
 /-! # The `ofNat()` macro -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

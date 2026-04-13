@@ -28,7 +28,6 @@ consequences thereof.
   closed star subalgebra containing the element.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

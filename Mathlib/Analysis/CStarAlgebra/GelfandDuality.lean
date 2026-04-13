@@ -62,7 +62,6 @@ Then `η₁ : id → F ∘ G := gelfandStarTransform` and
 
 Gelfand transform, character space, C⋆-algebra
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

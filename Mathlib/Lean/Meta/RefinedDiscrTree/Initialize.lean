@@ -24,7 +24,6 @@ There is also `createModuleDiscrTree` which does the same but with the constants
 from the current file.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

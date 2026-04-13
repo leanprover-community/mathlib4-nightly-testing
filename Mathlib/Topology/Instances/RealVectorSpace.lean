@@ -15,7 +15,6 @@ public import Mathlib.Algebra.Module.Rat
 In this file we prove that a continuous map `f : E →+ F` between two topological vector spaces
 over `ℝ` is `ℝ`-linear
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

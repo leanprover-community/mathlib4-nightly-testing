@@ -29,7 +29,6 @@ Note that any `c`-antiperiodic function will necessarily also be `2 • c`-perio
 
 period, periodic, periodicity, antiperiodic
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

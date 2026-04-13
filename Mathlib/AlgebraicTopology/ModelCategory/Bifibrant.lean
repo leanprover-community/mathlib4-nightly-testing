@@ -16,7 +16,6 @@ respectively consist of cofibrant objects, fibrant objects,
 and bifibrant objects, where "bifibrant" means both cofibrant and fibrant.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

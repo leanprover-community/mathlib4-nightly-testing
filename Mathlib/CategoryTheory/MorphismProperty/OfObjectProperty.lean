@@ -15,7 +15,6 @@ Given two object properties `P` and `Q`, we introduce a morphism property
 target satisfies `Q`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

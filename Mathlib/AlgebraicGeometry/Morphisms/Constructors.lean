@@ -31,7 +31,6 @@ Also provides API for showing the standard locality and stability properties for
 types of properties.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

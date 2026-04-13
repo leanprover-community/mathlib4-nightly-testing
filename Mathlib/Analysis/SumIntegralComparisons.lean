@@ -41,7 +41,6 @@ At the moment it contains several lemmas in this direction, for antitone or mono
 
 analysis, comparison, asymptotics
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

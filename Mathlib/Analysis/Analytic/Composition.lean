@@ -65,7 +65,6 @@ double sums in a careful way. The change of variables is a canonical (combinator
 `(Σ (c : Composition n), Π (i : Fin c.length), Composition (c.blocksFun i))`, and is described
 in more details below in the paragraph on associativity.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

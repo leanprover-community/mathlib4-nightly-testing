@@ -18,7 +18,6 @@ public import Mathlib.GroupTheory.GroupAction.Ring
 * `Polynomial.derivativeFinsupp`: Iterated derivatives as a finite support function.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

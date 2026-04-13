@@ -25,7 +25,6 @@ This file defines the following operations on multisets:
   occurrences of `a` in `s` and `t`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

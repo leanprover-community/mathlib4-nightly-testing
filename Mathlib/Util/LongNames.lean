@@ -15,7 +15,6 @@ public import Mathlib.Init
 
 For finding declarations with excessively long names.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

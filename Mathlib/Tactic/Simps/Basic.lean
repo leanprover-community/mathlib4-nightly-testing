@@ -54,7 +54,6 @@ There are some small changes in the attribute. None of them should have great ef
 
 structures, projections, simp, simplifier, generates declarations
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 open Lean Elab Parser Command

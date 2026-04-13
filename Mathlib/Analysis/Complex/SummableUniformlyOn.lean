@@ -15,7 +15,6 @@ public import Mathlib.Topology.Algebra.InfiniteSum.UniformOn
 We collect some results about the differentiability of infinite sums.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

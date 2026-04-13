@@ -61,7 +61,6 @@ to `bcf`.
 
 independence, bounded continuous functions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

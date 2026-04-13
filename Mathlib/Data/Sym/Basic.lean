@@ -28,7 +28,6 @@ needs a fleshed-out interface.
 symmetric powers
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

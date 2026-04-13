@@ -76,7 +76,6 @@ The main results in the section `GoodProducts` are as follows:
 
 - [scholze2019condensed], Theorem 5.4.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

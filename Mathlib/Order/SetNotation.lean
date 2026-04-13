@@ -32,7 +32,6 @@ In this file we introduce notation for indexed suprema, infima, unions, and inte
 - `⋃ i, s i`, `⋂ i, s i`: union and intersection of an indexed family of sets.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -30,7 +30,6 @@ This file contains results about orthogonal projections in finite-dimensional sp
 * `OrthogonalFamily.decomposition`
 * `maximal_orthonormal_iff_orthogonalComplement_eq_bot`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

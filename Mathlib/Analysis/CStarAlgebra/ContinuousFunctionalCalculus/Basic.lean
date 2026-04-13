@@ -50,7 +50,6 @@ relevant instances on C⋆-algebra can be found in the `Instances` file.
   `StarOrderedRing`, the spectrum of a nonnegative element is nonnegative.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

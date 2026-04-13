@@ -16,7 +16,6 @@ public import Mathlib.Order.Preorder.Finite
 /-!
 # Indecomposable elements of monoids
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

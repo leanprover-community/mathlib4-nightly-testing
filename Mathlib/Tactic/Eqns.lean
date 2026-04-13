@@ -31,7 +31,6 @@ theorem transpose_const {m n} (c : ℕ) :
   rw [transpose]
 ```
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 open Lean Elab

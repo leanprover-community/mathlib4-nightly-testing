@@ -38,7 +38,6 @@ Chebyshev T polynomials are orthogonal with respect to `√(1 - x ^ 2)⁻¹`.
 
 -/
 
-set_option backward.defeq.atInstanceTransparency false
 public section
 
 namespace Polynomial.Chebyshev

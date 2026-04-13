@@ -14,7 +14,6 @@ public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 Results about the matrix of barycentric co-ordinates for a family of points in an affine space, with
 respect to some affine basis.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

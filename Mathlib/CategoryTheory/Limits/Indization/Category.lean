@@ -54,7 +54,6 @@ Note that:
 ## References
 * [M. Kashiwara, P. Schapira, *Categories and Sheaves*][Kashiwara2006], Chapter 6
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

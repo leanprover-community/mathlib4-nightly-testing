@@ -13,7 +13,6 @@ public import Mathlib.Algebra.GroupWithZero.Hom
 # Further lemmas about units in a `MonoidWithZero` or a `GroupWithZero`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

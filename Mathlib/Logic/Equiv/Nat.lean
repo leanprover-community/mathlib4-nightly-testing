@@ -14,7 +14,6 @@ public import Mathlib.Data.Nat.Pairing
 This file defines some additional constructive equivalences using `Encodable` and the pairing
 function on `ℕ`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,7 +21,6 @@ measure `P`, the random variable `X` has a Gaussian distribution, i.e. `IsGaussi
 
 Gaussian random variable
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 open MeasureTheory
 

@@ -19,7 +19,6 @@ interaction between union, intersection, empty set and inserting elements.
 finite sets, finset
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

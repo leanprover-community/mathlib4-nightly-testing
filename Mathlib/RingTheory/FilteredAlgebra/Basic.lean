@@ -32,7 +32,6 @@ In this file, we define the concept of filtration for abelian groups, rings, and
   is in `F (i +ᵥ j)`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,7 +21,6 @@ on an absolute value. This is useful when dealing with several absolute values o
 
 In particular this allows us to define the completion of a field at a given absolute value.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

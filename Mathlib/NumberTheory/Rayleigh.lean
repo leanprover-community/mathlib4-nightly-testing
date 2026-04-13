@@ -46,7 +46,6 @@ The main statements are:
 
 beatty, sequence, rayleigh, irrational, floor, positive
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

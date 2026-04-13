@@ -128,7 +128,6 @@ assuming `S` is commutative.
 linearly disjoint, linearly independent, tensor product
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

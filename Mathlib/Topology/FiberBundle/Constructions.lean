@@ -26,7 +26,6 @@ This file contains several standard constructions on fiber bundles:
 fiber bundle, fibre bundle, fiberwise product, pullback
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,7 +19,6 @@ In this file, we express horns as colimits:
   horns in `Δ[3]`).
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

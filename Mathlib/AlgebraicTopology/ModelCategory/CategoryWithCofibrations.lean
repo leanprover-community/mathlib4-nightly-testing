@@ -15,7 +15,6 @@ We introduce typeclasses `CategoryWithFibrations`, `CategoryWithCofibrations` an
 classes of morphisms named "fibrations", "cofibrations" or "weak equivalences".
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

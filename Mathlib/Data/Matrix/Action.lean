@@ -14,7 +14,6 @@ public import Mathlib.Algebra.Ring.Opposite
 This file provides the left- and right- module structures of square matrices on vectors, via
 `Matrix.mulVec` and `Matrix.vecMul`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

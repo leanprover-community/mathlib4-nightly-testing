@@ -12,7 +12,6 @@ public import Mathlib.Algebra.GroupWithZero.NeZero
 # Lifting groups with zero along injective/surjective maps
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

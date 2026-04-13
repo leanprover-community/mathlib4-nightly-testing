@@ -21,7 +21,6 @@ In passing, we prove that binary and finite sums, differences and scalar product
 sections are `C^n`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -26,7 +26,6 @@ TODO: simplify with a tactic and `Data.Multiset.Lattice`
 
 multiset, gcd
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

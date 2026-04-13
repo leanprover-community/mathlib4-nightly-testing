@@ -12,7 +12,6 @@ public import Mathlib.Data.Nat.SuccPred
 /-!
 # Degree of univariate monomials
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

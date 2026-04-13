@@ -19,7 +19,6 @@ public import Mathlib.Combinatorics.SimpleGraph.Copy
 
 line graph
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

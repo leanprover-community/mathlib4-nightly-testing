@@ -12,7 +12,6 @@ public import Mathlib.Data.Real.Sqrt
 /-!
   # Norm on the complex numbers
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

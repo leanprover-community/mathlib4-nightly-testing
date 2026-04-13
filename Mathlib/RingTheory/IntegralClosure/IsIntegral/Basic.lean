@@ -16,7 +16,6 @@ public import Mathlib.RingTheory.Polynomial.Tower
 
 We prove basic properties of integral elements in a ring extension.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -9,7 +9,6 @@ module
 public import Mathlib.Algebra.Module.Submodule.Range
 
 /-! ### Linear equivalences involving submodules -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

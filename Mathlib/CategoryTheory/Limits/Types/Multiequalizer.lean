@@ -17,7 +17,6 @@ that `c` is a limit iff the canonical map
 `c.toSections : c.pt → I.sections` is a bijection.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

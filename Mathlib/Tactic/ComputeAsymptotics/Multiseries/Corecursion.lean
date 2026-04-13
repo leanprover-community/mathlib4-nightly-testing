@@ -60,7 +60,6 @@ Banach fixed point theorem. We treat `Seq α` as a metric space here with the me
 
 Then `f` is friendly iff it is `1`-Lipschitz.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

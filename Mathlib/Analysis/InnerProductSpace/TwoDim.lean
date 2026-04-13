@@ -68,7 +68,6 @@ local notation "J" => o.rightAngleRotation
 ```
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

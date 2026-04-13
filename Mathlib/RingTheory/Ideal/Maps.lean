@@ -14,7 +14,6 @@ public import Mathlib.RingTheory.Ideal.Operations
 Main definitions include `Ideal.map`, `Ideal.comap`, `RingHom.ker`, `Module.annihilator`
 and `Submodule.annihilator`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

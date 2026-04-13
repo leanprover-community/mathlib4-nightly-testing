@@ -13,7 +13,6 @@ public import Mathlib.SetTheory.Ordinal.Principal
 
 This file collects results about the cardinality of different ordinal operations.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

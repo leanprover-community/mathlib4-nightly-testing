@@ -27,7 +27,6 @@ in a preorder this is equivalent to `a ⋖ b ∨ (a ≤ b ∧ b ≤ a)`
 * `a ⋖ b` means that `b` covers `a`.
 * `a ⩿ b` means that `b` weakly covers `a`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

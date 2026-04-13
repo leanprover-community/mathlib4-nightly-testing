@@ -30,7 +30,6 @@ Moreover, we can extend a linear equivalence:
   and `f` preserves the norm.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -26,7 +26,6 @@ The main results are the following:
   identity `[U, [V, W]] = [[U, V], W] + [V, [U, W]]`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

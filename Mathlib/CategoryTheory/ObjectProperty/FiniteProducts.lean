@@ -22,7 +22,6 @@ assuming `P.IsClosedUnderBinaryProducts`,
 has finite products.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

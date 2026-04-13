@@ -22,7 +22,6 @@ the usual way this is considered.
   then the triangle inequality is an equality.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

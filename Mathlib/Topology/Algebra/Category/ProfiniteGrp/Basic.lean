@@ -29,7 +29,6 @@ disconnected.
 * `ofClosedSubgroup` : A closed subgroup of a profinite group is profinite.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -31,7 +31,6 @@ like `pairwise_intersections` and `equalizer_products`.
 ## References
 * This is the definition Lurie uses in [Spectral Algebraic Geometry][LurieSAG].
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

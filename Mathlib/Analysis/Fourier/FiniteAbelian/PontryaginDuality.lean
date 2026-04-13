@@ -27,7 +27,6 @@ Structure Theorem.
 Reuse the work done in `Mathlib/GroupTheory/FiniteAbelian/Duality.lean`. This requires to write some
 more glue.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -20,7 +20,6 @@ which is notably used in the theory of Shannon entropy.
 * `negMulLog`: the function `x ↦ - x * log x` from `ℝ` to `ℝ`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

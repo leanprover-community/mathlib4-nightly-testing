@@ -19,7 +19,6 @@ from an inner product space.
 
 absolute value, derivative
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

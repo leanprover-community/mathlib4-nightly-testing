@@ -27,7 +27,6 @@ The actual tactics that users will use are given in
 - `Mathlib/Tactic/CategoryTheory/Bicategory/PureCoherence.lean`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

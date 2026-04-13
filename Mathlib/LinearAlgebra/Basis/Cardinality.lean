@@ -13,7 +13,6 @@ public import Mathlib.SetTheory.Cardinal.Pigeonhole
 /-!
 # Results relating bases and cardinality.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

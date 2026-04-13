@@ -17,7 +17,6 @@ The coequalizer of a pair of maps `(f, g)` from `X` to `Y`
 is the quotient of `Y` by `∀ x : Y, f x ~ g x`
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

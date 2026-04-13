@@ -31,7 +31,6 @@ datum that is part of the class `Lifting L W F F'`. The functions
 and natural isomorphisms between functors.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

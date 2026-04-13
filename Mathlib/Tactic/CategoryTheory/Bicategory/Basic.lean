@@ -23,7 +23,6 @@ The core function for the `bicategory` tactic is provided in
 implementation.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

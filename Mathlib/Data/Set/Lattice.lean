@@ -42,7 +42,6 @@ In lemma names,
 * `⋃₀`: `Set.sUnion`
 * `⋂₀`: `Set.sInter`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

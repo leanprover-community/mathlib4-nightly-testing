@@ -16,7 +16,6 @@ The same results are obtained here for squares `sq : Square C` where
 `C` is an additive category.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 namespace CategoryTheory

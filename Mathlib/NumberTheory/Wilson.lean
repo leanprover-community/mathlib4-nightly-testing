@@ -25,7 +25,6 @@ This could be generalized to similar results about finite abelian groups.
 
 * Give `wilsons_lemma` a descriptive name.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

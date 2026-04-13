@@ -19,7 +19,6 @@ families as coverings. We show that this precoverage is stable under the standar
 See `Mathlib/CategoryTheory/Sites/Types.lean` for the Grothendieck topology of jointly surjective
 covers.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,7 +12,6 @@ public import Mathlib.Algebra.GroupWithZero.Action.Units
 /-!
 # Group actions and (endo)morphisms
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

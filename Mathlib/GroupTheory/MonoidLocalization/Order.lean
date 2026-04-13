@@ -12,7 +12,6 @@ public import Mathlib.GroupTheory.MonoidLocalization.Basic
 # Ordered structures on localizations of commutative monoids
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

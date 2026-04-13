@@ -20,7 +20,6 @@ This file defines the double factorial,
 
 * `Nat.doubleFactorial`: The double factorial.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

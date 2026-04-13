@@ -11,7 +11,6 @@ public import Mathlib.LinearAlgebra.Basis.Basic
 /-!
 # Bases of submodules
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

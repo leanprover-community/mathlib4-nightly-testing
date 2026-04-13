@@ -13,7 +13,6 @@ public import Mathlib.Data.Finsupp.Single
 /-!
 # Additive monoid structure on `ι →₀ M`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

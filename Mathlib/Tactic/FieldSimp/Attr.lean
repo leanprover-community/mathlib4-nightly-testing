@@ -8,7 +8,6 @@ module
 public import Mathlib.Init
 
 /-! # Attribute grouping the `field_simp` simprocs -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -11,7 +11,6 @@ public import Mathlib.LinearAlgebra.Multilinear.Basic
 /-!
 # Constructions relating multilinear maps and tensor products.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

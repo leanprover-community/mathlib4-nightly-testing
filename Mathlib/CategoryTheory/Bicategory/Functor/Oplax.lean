@@ -26,7 +26,6 @@ An oplax functor `F` between bicategories `B` and `C` consists of
 * `CategoryTheory.OplaxFunctor.comp F G` : the composition of oplax functors
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

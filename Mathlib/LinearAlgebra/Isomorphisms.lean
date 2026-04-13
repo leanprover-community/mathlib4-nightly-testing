@@ -16,7 +16,6 @@ public import Mathlib.LinearAlgebra.Quotient.Card
   `Submodule.quotientQuotientEquivQuotient`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

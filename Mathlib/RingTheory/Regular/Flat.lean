@@ -18,7 +18,6 @@ public import Mathlib.RingTheory.Regular.RegularSequence
   If `[r₁, …, rₙ]` is a weakly regular `M`-sequence, then its image in `N` is a weakly regular
   `N`-sequence.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

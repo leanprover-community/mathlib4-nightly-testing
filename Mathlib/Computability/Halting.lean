@@ -17,7 +17,6 @@ A universal partial recursive function, Rice's theorem, and the halting problem.
 
 * [Mario Carneiro, *Formalizing computability theory via partial recursive functions*][carneiro2019]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

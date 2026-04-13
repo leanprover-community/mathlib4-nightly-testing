@@ -24,7 +24,6 @@ lifting property
 1) direct/inverse images, adjunctions
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

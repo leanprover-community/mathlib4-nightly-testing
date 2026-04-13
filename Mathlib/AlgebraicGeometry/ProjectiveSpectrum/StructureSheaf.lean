@@ -46,7 +46,6 @@ Then we establish that `Proj 𝒜` is a `LocallyRingedSpace`:
 
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

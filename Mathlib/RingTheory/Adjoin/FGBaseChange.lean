@@ -18,7 +18,6 @@ public import Mathlib.RingTheory.Adjoin.FG
   is contained in `C ⊗[R] B`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

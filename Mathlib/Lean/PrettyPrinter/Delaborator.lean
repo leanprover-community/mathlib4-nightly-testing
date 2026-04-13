@@ -11,7 +11,6 @@ public import Lean.PrettyPrinter.Delaborator.Basic
 /-!
 # Additions to the delaborator
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

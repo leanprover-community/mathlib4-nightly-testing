@@ -14,7 +14,6 @@ public import Mathlib.Control.Traversable.Basic
 
 Provides a `Traversable` instance for the `Tree` type.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,7 +11,6 @@ public import Mathlib.Algebra.Regular.SMul
 /-!
 # Results about `IsRegular` and `ULift`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -79,7 +79,6 @@ The measure is denoted `volume`.
 
 measure, almost everywhere, measure space, completion, null set, null measurable set
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

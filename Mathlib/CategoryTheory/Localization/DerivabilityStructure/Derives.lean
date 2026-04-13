@@ -26,7 +26,6 @@ transformation `α : F ⟶ L₂ ⋙ RF` is the right derived functor of `F` iff
 for any `X₁ : C₁`, the map `α.app (Φ.functor.obj X₁)` is an isomorphism.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

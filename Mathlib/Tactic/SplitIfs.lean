@@ -13,7 +13,6 @@ public import Mathlib.Tactic.Core
 /-!
 Tactic to split if-then-else expressions.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

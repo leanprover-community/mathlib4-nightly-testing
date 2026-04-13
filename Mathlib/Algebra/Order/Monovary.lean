@@ -21,7 +21,6 @@ of functions.
 
 `Mathlib.Algebra.Order.Rearrangement` for the n-ary rearrangement inequality
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

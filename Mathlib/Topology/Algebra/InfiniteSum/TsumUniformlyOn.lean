@@ -21,7 +21,6 @@ is the sum of the derivatives, under suitable conditions we also prove an `itera
 version.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

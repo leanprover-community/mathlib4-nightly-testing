@@ -55,7 +55,6 @@ For consequences in infinite dimension (Hilbert bases, etc.), see the file
 `Analysis.InnerProductSpace.L2Space`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

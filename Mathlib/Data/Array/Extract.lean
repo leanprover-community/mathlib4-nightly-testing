@@ -12,7 +12,6 @@ public import Batteries.Data.Array.Lemmas
 
 Some useful lemmas about Array.extract
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

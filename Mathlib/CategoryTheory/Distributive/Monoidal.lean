@@ -56,7 +56,6 @@ pointed types and the coproduct given by the wedge sum is distributive.
   Conferences, Contemporary Mathematics 202, AMS (1997) 137-166][MR1268290]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

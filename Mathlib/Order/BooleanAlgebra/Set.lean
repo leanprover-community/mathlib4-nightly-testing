@@ -24,7 +24,6 @@ complement.
 
 set, sets, subset, subsets, complement
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

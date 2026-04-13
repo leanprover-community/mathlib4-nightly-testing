@@ -14,7 +14,6 @@ import Mathlib.Geometry.Manifold.Notation
 # Differentiability of functions in vector bundles
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

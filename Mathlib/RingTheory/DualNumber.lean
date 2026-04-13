@@ -19,7 +19,6 @@ public import Mathlib.RingTheory.PrincipalIdealDomain
   ring.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

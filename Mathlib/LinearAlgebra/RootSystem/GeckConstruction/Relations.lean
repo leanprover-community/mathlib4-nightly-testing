@@ -24,7 +24,6 @@ satisfying relations associated to the Cartan matrix of the input root system.
   triples.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

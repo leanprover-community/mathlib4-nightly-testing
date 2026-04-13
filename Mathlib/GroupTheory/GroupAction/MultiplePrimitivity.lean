@@ -35,7 +35,6 @@ Let `G` be a group acting on a type `α`.
   is `m`-primitive.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

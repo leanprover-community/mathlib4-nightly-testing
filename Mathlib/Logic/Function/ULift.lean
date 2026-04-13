@@ -10,7 +10,6 @@ public import Mathlib.Init
 /-!
 # `ULift` and `PLift`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

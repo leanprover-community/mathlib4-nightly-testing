@@ -13,7 +13,6 @@ public import Mathlib.Topology.Algebra.Module.FiniteDimension
 # Measurable functions in normed spaces
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

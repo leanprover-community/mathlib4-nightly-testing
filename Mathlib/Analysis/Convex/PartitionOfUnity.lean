@@ -25,7 +25,6 @@ assumes that local functions `g` are constants.
 
 partition of unity
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

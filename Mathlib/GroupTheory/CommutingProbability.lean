@@ -21,7 +21,6 @@ This file introduces the commuting probability of finite groups.
 ## TODO
 * Neumann's theorem.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

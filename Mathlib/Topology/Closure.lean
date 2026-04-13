@@ -25,7 +25,6 @@ endowed with a topology.
 
 interior, closure, frontier
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

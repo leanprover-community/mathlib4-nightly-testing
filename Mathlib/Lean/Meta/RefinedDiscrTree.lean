@@ -98,7 +98,6 @@ matching, the lookup algorithm is most optimized for matching.
 Improve the unification lookup.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

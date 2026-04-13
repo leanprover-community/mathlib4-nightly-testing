@@ -27,7 +27,6 @@ compactness of sets (see `helly_theorem_compact`).
 
 convex hull, affine independence, Radon, Helly
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

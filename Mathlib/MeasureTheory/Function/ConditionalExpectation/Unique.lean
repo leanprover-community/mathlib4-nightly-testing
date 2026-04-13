@@ -26,7 +26,6 @@ defined in this file but is introduced in
   Requires `[SigmaFinite (μ.trim hm)]`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

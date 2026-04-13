@@ -12,7 +12,6 @@ public import Mathlib.Algebra.Ring.Defs
 /-!
 # Lemmas about regular elements in rings.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -33,7 +33,6 @@ only element in this lower boundary. Similarly, we define
 `Embedding.BoundaryLE`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

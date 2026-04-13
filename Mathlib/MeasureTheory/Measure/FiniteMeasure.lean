@@ -82,7 +82,6 @@ considerations:
 weak convergence of measures, finite measure
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

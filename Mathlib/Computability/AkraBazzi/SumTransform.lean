@@ -40,7 +40,6 @@ We develop further preliminaries required for the theorem, up to the sum transfo
 * Manuel Eberl, Asymptotic reasoning in a proof assistant
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

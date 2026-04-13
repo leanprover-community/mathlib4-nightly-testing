@@ -41,7 +41,6 @@ seminorm on `R`.
 
 smoothingSeminorm, seminorm, nonarchimedean
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

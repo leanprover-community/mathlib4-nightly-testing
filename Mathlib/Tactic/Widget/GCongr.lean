@@ -14,7 +14,6 @@ public import ProofWidgets.Component.OfRpcMethod
 This file defines a `gcongr?` tactic that displays a widget panel allowing to generate
 a `gcongr` call with holes specified by selecting subexpressions in the goal.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

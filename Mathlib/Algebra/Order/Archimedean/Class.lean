@@ -56,7 +56,6 @@ synonym (`Mul`-)`ArchimedeanOrder`, and define (`Mul`-)`ArchimedeanClass` as `An
 the order.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -34,7 +34,6 @@ ordered algebra
 
 `positivity` extension for `algebraMap`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

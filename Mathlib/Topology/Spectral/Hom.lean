@@ -25,7 +25,6 @@ compact open set is compact open.
 
 Once we have `SpectralSpace`, `IsSpectralMap` should move to `Mathlib/Topology/Spectral/Basic.lean`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

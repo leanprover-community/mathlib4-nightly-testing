@@ -20,7 +20,6 @@ In particular, `κ`-presentable objects are stable by colimits indexed
 by a category `K` such that `HasCardinalLT (Arrow K) κ`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,7 +19,6 @@ Note that we prove the more general version about barrelled spaces in
 `Analysis.LocallyConvex.Barrelled`, and the usual version below is indeed deduced from the
 more general setup.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

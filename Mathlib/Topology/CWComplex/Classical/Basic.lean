@@ -69,7 +69,6 @@ together.
 ## References
 * [A. Hatcher, *Algebraic Topology*][hatcher02]
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

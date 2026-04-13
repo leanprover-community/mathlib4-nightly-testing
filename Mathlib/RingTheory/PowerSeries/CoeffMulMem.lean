@@ -34,7 +34,6 @@ public import Mathlib.RingTheory.PowerSeries.Basic
   in `I`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

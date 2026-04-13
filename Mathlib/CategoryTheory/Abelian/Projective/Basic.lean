@@ -18,7 +18,6 @@ In an abelian category, an object `P` is projective iff the functor
 `preadditiveCoyonedaObj P` preserves finite colimits.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

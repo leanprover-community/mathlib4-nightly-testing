@@ -16,7 +16,6 @@ public import Mathlib.Algebra.Ring.Invertible
 # Further basic results about modules.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

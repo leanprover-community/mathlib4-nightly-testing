@@ -45,7 +45,6 @@ that `f v` and `v` are linearly dependent, for all `v : V`,
 but they are not left multiplication by some element.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

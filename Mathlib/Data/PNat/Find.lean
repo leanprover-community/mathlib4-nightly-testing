@@ -14,7 +14,6 @@ public import Mathlib.Data.PNat.Basic
 Implemented via calling out to `Nat.find`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -28,7 +28,6 @@ and prove its basic properties. In particular, we prove that for `ℕ` it is equ
 
 Define filters for other cardinalities of the complement.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

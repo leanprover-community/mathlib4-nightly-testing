@@ -23,7 +23,6 @@ is the same as being a splitting field (`Normal.of_isSplittingField` and
   `Algebra.IsQuadraticExtension`, is normal.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

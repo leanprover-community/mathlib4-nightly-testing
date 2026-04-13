@@ -81,7 +81,6 @@ lemmas about `midpoint`.
 
 Urysohn's lemma, normal topological space, locally compact topological space
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

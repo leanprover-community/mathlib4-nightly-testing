@@ -34,7 +34,6 @@ While the statements of these lemmas are defeq, we repeat them here due to them 
 syntactically equal. Before adding new lemmas here, consider if they would also apply to the action
 on `Set`s.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

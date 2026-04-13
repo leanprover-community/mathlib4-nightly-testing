@@ -17,7 +17,6 @@ We introduce the bundled category `HopfAlgCat` of Hopf algebras over a fixed com
 This file mimics `Mathlib/LinearAlgebra/QuadraticForm/QuadraticModuleCat.lean`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

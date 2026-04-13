@@ -28,7 +28,6 @@ We prove the central limit theorem in dimension 1.
 
 central limit theorem
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -22,7 +22,6 @@ This file defines instances for `MulActionWithZero` and related structures on `P
 * `Algebra.GroupWithZero.Action.Prod`
 * `Algebra.GroupWithZero.Action.Units`
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

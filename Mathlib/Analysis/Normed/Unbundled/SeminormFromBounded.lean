@@ -42,7 +42,6 @@ this condition holds.
 
 seminormFromBounded, RingSeminorm, Nonarchimedean
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

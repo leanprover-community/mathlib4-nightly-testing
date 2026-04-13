@@ -48,7 +48,6 @@ without first determining the normalizations once and for all.
 Valuation, Extension of Valuations
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,7 +14,6 @@ In this file, we prove that sheafification is compatible with functors which
 preserve the correct limits and colimits.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

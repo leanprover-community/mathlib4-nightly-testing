@@ -12,7 +12,6 @@ public import Mathlib.Algebra.Notation.Prod
 /-!
 # Products of `OrderedSub` types.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,7 +23,6 @@ In this file we define simple and semisimple Lie algebras, together with related
 
 lie algebra, radical, simple, semisimple
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

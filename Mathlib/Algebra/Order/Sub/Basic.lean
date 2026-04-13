@@ -13,7 +13,6 @@ public import Mathlib.Algebra.Group.Even
 /-!
 # Lemmas about subtraction in unbundled canonically ordered monoids
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

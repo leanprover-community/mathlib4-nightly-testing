@@ -21,7 +21,6 @@ a concrete condition under which the map
 important step when proving `c.IsColimit`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

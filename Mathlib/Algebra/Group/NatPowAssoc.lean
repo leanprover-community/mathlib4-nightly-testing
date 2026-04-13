@@ -36,7 +36,6 @@ We also produce the following instances:
 * `to_additive`?
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

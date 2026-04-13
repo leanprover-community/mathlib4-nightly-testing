@@ -19,7 +19,6 @@ prefunctors" for short.
 
 Note: Currently Category does not extend ReflQuiver, although it could. (TODO: do this)
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 namespace CategoryTheory

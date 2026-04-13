@@ -14,7 +14,6 @@ public import Mathlib.Data.PNat.Defs
 # Further lemmas for the Rational Numbers
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

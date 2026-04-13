@@ -21,7 +21,6 @@ public import Mathlib.Data.Finset.Lattice.Basic
 finite sets, finset
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

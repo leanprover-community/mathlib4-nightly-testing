@@ -27,7 +27,6 @@ In this file we establish exactness properties of adic completions. In particula
 All results are proven directly without using Mittag-Leffler systems.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

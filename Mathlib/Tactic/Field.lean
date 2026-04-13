@@ -15,7 +15,6 @@ This file contains the `field` tactic, a finishing tactic which roughly consists
 `field_simp; ring1`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

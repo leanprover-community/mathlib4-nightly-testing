@@ -24,7 +24,6 @@ Authors ...
 
 import statements*
 
-set_option backward.defeq.atInstanceTransparency false
 module doc-string*
 remaining file
 ```

@@ -27,7 +27,6 @@ A clique is a set of vertices that are pairwise adjacent.
 * `SimpleGraph.cliqueFinset`: Finset of `n`-cliques of a graph.
 * `SimpleGraph.CliqueFree`: Predicate for a graph to have no `n`-cliques.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -41,7 +41,6 @@ combinatorial contexts.
 
 Schroeder, Schroder
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

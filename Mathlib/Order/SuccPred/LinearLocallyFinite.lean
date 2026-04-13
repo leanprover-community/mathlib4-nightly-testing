@@ -54,7 +54,6 @@ About `toZ`:
   `OrderIso` between `ι` and `Finset.range ((toZ ⊥ ⊤).toNat + 1)`.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

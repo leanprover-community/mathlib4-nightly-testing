@@ -13,7 +13,6 @@ public import ProofWidgets.Presentation.Expr
 
 /-! This module defines tactic/meta infrastructure for displaying commutative diagrams in the
 infoview. -/
-set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

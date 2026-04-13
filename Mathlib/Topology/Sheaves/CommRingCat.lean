@@ -27,7 +27,6 @@ As more results accumulate, please consider splitting this file.
 ## References
 * https://stacks.math.columbia.edu/tag/0073
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

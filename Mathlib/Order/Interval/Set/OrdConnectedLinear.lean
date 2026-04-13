@@ -27,7 +27,6 @@ some convenience lemmas for characterising closed intervals in certain concrete 
 * `Set.Nonempty.eq_Icc_iff_nat`: characterisation of closed intervals for `ℕ`.
 * `Set.Nonempty.eq_Icc_iff_int`: characterisation of closed intervals for `ℤ`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -69,7 +69,6 @@ fractions `K`, assume `[Field K]` instead of just `[CommRing K]`.
 localization, ring localization, commutative ring localization, characteristic predicate,
 commutative ring, field of fractions
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

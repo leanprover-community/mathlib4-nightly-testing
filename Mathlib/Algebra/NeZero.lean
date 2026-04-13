@@ -14,7 +14,6 @@ public import Mathlib.Order.Defs.PartialOrder
 We give basic facts about the `NeZero n` typeclass.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

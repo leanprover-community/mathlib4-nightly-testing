@@ -16,7 +16,6 @@ public import Mathlib.RingTheory.TensorProduct.IsBaseChangeFree
 This file is a place to collect base change results for linear independence.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

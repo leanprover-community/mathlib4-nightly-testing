@@ -13,7 +13,6 @@ public import Mathlib.RingTheory.LocalProperties.Basic
 /-!
 # Meta properties of essentially of finite type ring homomorphisms
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -16,7 +16,6 @@ We derive the Mellin inversion formula as a consequence of the Fourier inversion
 ## Main results
 - `mellin_inversion`: The inverse Mellin transform of the Mellin transform applied to `x > 0` is x.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

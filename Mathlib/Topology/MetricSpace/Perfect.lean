@@ -29,7 +29,6 @@ including a version of the Cantor-Bendixson Theorem.
 
 accumulation point, perfect set, cantor-bendixson.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -19,7 +19,6 @@ and derives some well-known properties, amongst which the fact that minimal poly
 are irreducible, and uniquely determined by their defining property.
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

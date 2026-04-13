@@ -14,7 +14,6 @@ public import Mathlib.Algebra.Module.Equiv.Basic
 # Additional results about finite spanning sets in linear algebra
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

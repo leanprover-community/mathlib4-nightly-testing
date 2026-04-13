@@ -33,7 +33,6 @@ as special cases.
 
 Dirichlet L-series, Möbius function, von Mangoldt function, Riemann zeta function
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 public section
 

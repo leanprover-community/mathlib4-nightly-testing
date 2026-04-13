@@ -29,7 +29,6 @@ Shapiro's lemma for group cohomology: `Hⁿ(G, Coind_S^G(A)) ≅ Hⁿ(S, A)` for
   `Hⁿ(G, Coind_S^G(A)) ≅ Hⁿ(S, A)`, given a subgroup `S ≤ G` and an `S`-representation `A`.
 
 !-/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

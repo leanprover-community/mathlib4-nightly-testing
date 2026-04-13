@@ -27,7 +27,6 @@ Generalize to `PseudoMetrizableSpace`s.
 
 metric space, paracompact space, normal space
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

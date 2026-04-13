@@ -14,7 +14,6 @@ We provide `f ⊗≫ g`, the `bicategoricalComp` operation,
 which automatically inserts associators and unitors as needed
 to make the target of `f` match the source of `g`.
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

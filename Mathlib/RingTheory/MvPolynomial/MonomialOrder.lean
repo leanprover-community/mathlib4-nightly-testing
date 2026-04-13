@@ -88,7 +88,6 @@ and a monomial order `m : MonomialOrder σ`.
 [Becker-Weispfenning1993]
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

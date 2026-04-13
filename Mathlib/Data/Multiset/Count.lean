@@ -12,7 +12,6 @@ public import Mathlib.Data.Multiset.ZeroCons
 # Counting multiplicity in a multiset
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -24,7 +24,6 @@ typeclass for quasi-measure-preserving actions yet.
 ## Keywords
 
 -/
-set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
