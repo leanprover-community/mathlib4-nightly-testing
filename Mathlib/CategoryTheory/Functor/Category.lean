@@ -8,6 +8,8 @@ module
 public import Mathlib.CategoryTheory.NatTrans
 public import Mathlib.CategoryTheory.Iso
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # The category of functors and natural transformations between two fixed categories.
 

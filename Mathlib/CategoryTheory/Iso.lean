@@ -7,6 +7,8 @@ module
 
 public import Mathlib.Tactic.CategoryTheory.Reassoc
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Isomorphisms
 

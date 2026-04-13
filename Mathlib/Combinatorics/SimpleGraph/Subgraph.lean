@@ -8,6 +8,8 @@ module
 public import Mathlib.Combinatorics.SimpleGraph.DeleteEdges
 public import Mathlib.Data.Fintype.Powerset
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Subgraphs of a simple graph
 

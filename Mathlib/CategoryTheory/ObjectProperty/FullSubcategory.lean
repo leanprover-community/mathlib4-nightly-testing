@@ -8,6 +8,8 @@ module
 public import Mathlib.CategoryTheory.InducedCategory
 public import Mathlib.CategoryTheory.ObjectProperty.Basic
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # The full subcategory associated to a property of objects
 

@@ -9,6 +9,8 @@ public import Mathlib.Algebra.Group.Defs
 public import Mathlib.Order.OrderDual
 public import Mathlib.Order.Lex
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Group structure on the order type synonyms
 
