@@ -821,21 +821,8 @@ partial def transformDeclRec (t : TranslateData) (cfg : Config) (rootSrc rootTgt
     modifyEnv (addProtected · tgt)
   if defeqAttr.hasTag (← getEnv) src then
     /- It can be that `src` holds reflexively but `tgt` doesn't, so we need to use `inferDefEqAttr`.
-    For example in `Ici_inter_Iic : Ici a ∩ Iic b = Icc a b := rfl`.
-    If the target proof is structurally an `rfl` proof, set `[defeq]` directly.
-    (`inferDefEqAttr` checks `isDefEq` at `.instances` transparency,
-    which is too conservative for some structure projections.) -/
-    let isRflProof := do
-      let some val := tgtDecl.value? (allowOpaque := true) | return false
-      -- Strip lambda binders to find the proof body
-      let rec go : Expr → Bool
-        | .lam _ _ b _ => go b
-        | e => e.isAppOfArity ``Eq.refl 2 || e.getAppFn.isConstOf ``rfl
-      return go val
-    if (← isRflProof) then
-      defeqAttr.setTag tgt
-    else
-      MetaM.run' <| inferDefEqAttr tgt
+    For example in `Ici_inter_Iic : Ici a ∩ Iic b = Icc a b := rfl`. -/
+    MetaM.run' <| inferDefEqAttr tgt
   if let some matcherInfo ← getMatcherInfo? src then
     Match.addMatcherInfo tgt matcherInfo
   -- necessary so that e.g. match equations can be generated for `tgt`
