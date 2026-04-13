@@ -26,6 +26,7 @@ convergence from them.
 
 Uniform limit, uniform convergence, tends uniformly to
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -14,6 +14,7 @@ public import Mathlib.Algebra.ContinuedFractions.Translations
 
 We show that the continuants and convergents of a gcf stabilise once the gcf terminates.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

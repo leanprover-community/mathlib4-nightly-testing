@@ -27,6 +27,7 @@ the full subcategory `t.heart`.
 * [Beilinson, Bernstein, Deligne, Gabber, *Faisceaux pervers*][bbd-1982]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

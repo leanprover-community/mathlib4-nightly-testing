@@ -17,6 +17,7 @@ In this file we show that `Algebra.FiniteType` and `Algebra.FinitePresentation` 
 stable under base change.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

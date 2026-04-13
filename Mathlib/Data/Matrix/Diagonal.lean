@@ -22,6 +22,7 @@ This file defines diagonal matrices and the `AddCommMonoidWithOne` structure on 
 * `Matrix.diag M`: the diagonal of a square matrix
 * `Matrix.instAddCommMonoidWithOne`: matrices are an additive commutative monoid with one
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -39,6 +39,7 @@ Now say `h : ConnectData K L`.
 * Computation of `h.cochainComplex.homology k` when `k = 0` or `k = -1`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

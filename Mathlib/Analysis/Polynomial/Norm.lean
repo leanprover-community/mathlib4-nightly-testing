@@ -38,6 +38,7 @@ sometimes called the polynomial's _length_. The `l^2` norm sometimes arises due 
 theorem implying that the squared `l^2` norm of a complex polynomial is the integral of the norm of
 the polynomial's value on the unit circle.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 
 @[expose] public section supnorm_seminorm

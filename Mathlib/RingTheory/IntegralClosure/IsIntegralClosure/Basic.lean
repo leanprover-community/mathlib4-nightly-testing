@@ -21,6 +21,7 @@ import Mathlib.RingTheory.Polynomial.Subring
 We prove basic properties of `IsIntegralClosure`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

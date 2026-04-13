@@ -21,6 +21,7 @@ This file contains some results on cardinality of Ore localizations.
   with `Commute` assumption removed.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

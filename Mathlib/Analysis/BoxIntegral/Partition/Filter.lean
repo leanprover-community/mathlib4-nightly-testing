@@ -164,6 +164,7 @@ prepartition (and consider the special case `π = ⊥` separately if needed).
 
 integral, rectangular box, partition, filter
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

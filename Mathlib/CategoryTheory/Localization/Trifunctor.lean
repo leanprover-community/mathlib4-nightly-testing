@@ -19,6 +19,7 @@ The main result in this file is that we can localize "associator" isomorphisms
 (see the definition `Localization.associator`).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

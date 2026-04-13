@@ -21,6 +21,7 @@ which sends `K` to `K.stupidTrunc e` which is defined as `(K.restriction e).exte
 * define the projection `𝟭 _ ⟶ e.stupidTruncFunctor C` when `[e.IsTruncLE]`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

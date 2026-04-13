@@ -13,6 +13,7 @@ public import Mathlib.Topology.Instances.AddCircle.Defs
 # Covering maps involving `AddCircle`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

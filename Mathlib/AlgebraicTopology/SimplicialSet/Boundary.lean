@@ -22,6 +22,7 @@ a morphism `Δ[n] ⟶ ∂Δ[n]`.
 
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

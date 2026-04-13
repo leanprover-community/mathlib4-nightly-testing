@@ -8,6 +8,7 @@ module
 public import Mathlib.Data.Nat.Bits
 
 /-! Lemmas about `size`. -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

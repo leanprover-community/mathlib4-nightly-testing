@@ -28,6 +28,7 @@ This file was adapted from `Mathlib/CategoryTheory/Limits/Shapes/SplitCoequalize
 to keep them in sync.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

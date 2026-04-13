@@ -30,6 +30,7 @@ public import Mathlib.Algebra.Group.Units.Hom
   the variants when `σ` is the identity.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

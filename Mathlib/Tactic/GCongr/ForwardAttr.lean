@@ -10,6 +10,7 @@ public import Mathlib.Init
 /-!
 # Environment extension for the forward-reasoning part of the `gcongr` tactic
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

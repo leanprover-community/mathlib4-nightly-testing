@@ -32,6 +32,7 @@ More precisely, given a presheaf `F : Cᵒᵖ ⥤ Type*`, we have:
   corresponding presieve of arrows.
   See `isSheafFor_of_preservesProduct`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

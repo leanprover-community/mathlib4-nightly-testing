@@ -37,6 +37,7 @@ latter lemma to prove that the function `fun x => x⁻¹` is integrable on `a..b
 
 integrable function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

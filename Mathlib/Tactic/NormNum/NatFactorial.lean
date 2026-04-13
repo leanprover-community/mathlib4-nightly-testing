@@ -16,6 +16,7 @@ This is done by reducing each of these to `ascFactorial`, which is computed usin
 conquer strategy that improves performance and avoids exceeding the recursion depth.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

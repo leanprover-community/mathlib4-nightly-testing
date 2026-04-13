@@ -23,6 +23,7 @@ This file mirrors `Mathlib/Analysis/ODE/Transform`.
 
 integral curve, vector field
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

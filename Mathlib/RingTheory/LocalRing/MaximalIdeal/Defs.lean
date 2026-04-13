@@ -19,6 +19,7 @@ We define the maximal ideal of a local ring as the ideal of all nonunits.
   set of nonunits.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

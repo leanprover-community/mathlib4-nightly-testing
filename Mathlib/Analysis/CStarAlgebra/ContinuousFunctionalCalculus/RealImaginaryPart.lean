@@ -8,6 +8,7 @@ module
 public import Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Instances
 
 /-! # Interactions of the continuous functional calculus with the real and imaginary part -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -17,6 +17,7 @@ public import Mathlib.ModelTheory.Algebra.Ring.FreeCommRing
 This file proves that the set of zeros of a multivariable polynomial is a definable subset.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

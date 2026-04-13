@@ -30,6 +30,7 @@ We also define the functors `pullback C f : Y.Presheaf C ⥤ X.Presheaf c`,
 and provide their adjunction at
 `TopCat.Presheaf.pullbackPushforwardAdjunction`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

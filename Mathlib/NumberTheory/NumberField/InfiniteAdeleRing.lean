@@ -32,6 +32,7 @@ finite product of completions over its infinite places.
 ## Tags
 infinite adele ring, number field
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

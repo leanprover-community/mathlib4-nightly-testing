@@ -11,6 +11,7 @@ public import Mathlib.Data.Matrix.Basis
 /-!
 # The matrix algebra is a central algebra
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

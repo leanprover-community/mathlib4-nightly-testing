@@ -50,6 +50,7 @@ cohomology.
 
 * [N. Roby, *Les algèbres à puissances dividées*][Roby-1965]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

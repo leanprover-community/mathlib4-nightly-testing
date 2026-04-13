@@ -27,6 +27,7 @@ domains and valuation rings.
   the complement of any maximal ideal is a valuation ring then `Torsion R M = ⊥` iff `M` is a
   flat `R`-module.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 -- TODO: Add definition and properties of Prüfer domains.

@@ -53,6 +53,7 @@ that returns the box `⟨l, u, _⟩` if it is nonempty and `⊥` otherwise.
 
 rectangular box
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

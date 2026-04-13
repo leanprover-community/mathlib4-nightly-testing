@@ -17,6 +17,7 @@ For the concrete cyclic group of order `n`, see `Data.ZMod.Basic`.
 
 cyclic group
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

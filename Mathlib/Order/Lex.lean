@@ -34,6 +34,7 @@ coercions should be inserted:
 
 This file is similar to `Mathlib.Algebra.Group.TypeTags.Basic`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

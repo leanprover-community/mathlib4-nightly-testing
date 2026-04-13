@@ -12,6 +12,7 @@ public import Mathlib.RingTheory.Polynomial.Vieta
 /-!
 # Vieta's Formula for polynomial of small degrees.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

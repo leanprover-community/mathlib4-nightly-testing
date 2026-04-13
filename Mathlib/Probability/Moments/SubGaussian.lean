@@ -119,6 +119,7 @@ a conditional expectation, `(μ.trim hm)`-almost surely:
   science*][vershynin2018high]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

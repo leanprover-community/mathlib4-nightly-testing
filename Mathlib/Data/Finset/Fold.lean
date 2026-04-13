@@ -13,6 +13,7 @@ public import Mathlib.Data.Finset.Lattice.Lemmas
 /-!
 # The fold operation for a commutative associative operation over a finset.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

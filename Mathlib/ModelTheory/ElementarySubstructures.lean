@@ -21,6 +21,7 @@ public import Mathlib.ModelTheory.ElementaryMaps
   `FirstOrder.Language.Substructure.isElementary_of_exists` gives a simple criterion for a
   substructure to be elementary.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

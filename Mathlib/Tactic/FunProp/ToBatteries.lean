@@ -10,6 +10,7 @@ public import Mathlib.Init
 /-!
 ## `funProp` missing function from standard library
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

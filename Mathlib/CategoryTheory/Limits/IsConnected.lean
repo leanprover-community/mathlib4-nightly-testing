@@ -38,6 +38,7 @@ its codomain is connected.
 
 unit-valued, singleton, colimit
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

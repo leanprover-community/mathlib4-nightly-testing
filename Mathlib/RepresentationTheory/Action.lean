@@ -19,6 +19,7 @@ TODO (Edison) : Refactor `Rep` to be a concrete category of `Representation` and
 reconstruct the current `linearize` functor using this file.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 universe w w' u u' v v'
 @[expose] public section

@@ -30,6 +30,7 @@ is not the untilt *functor*.
 ## Tags
 Perfectoid, Tilting equivalence, Untilt
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

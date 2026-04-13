@@ -38,6 +38,7 @@ of an additive category is not closed under isomorphisms.
 * [Jean-Louis Verdier, *Des catégories dérivées des catégories abéliennes*][verdier1996]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

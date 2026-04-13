@@ -17,6 +17,7 @@ When `J` is nonempty, `const` is faithful.
 
 We have `(const J).obj X ⋙ F ≅ (const J).obj (F.obj X)` for any `F : C ⥤ D`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

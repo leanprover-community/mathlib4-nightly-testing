@@ -39,6 +39,7 @@ the outer measure induced by `m`. The induced outer measure is equal to `m` on `
 * `MeasureTheory.AddContent.measure_eq`: The measure defined through a sigma-subadditive
   content on a semiring coincides with the content on the semiring.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

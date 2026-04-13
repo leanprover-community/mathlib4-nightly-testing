@@ -37,6 +37,7 @@ sufficiently small limits in the sheaf category on the essentially small site.
   taking a sheaf to its underlying presheaf.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

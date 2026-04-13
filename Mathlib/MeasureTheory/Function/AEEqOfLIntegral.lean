@@ -27,6 +27,7 @@ The conclusion is then `f =ᵐ[μ] g`. The main lemmas are:
   have finite integral.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

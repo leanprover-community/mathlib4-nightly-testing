@@ -24,6 +24,7 @@ Please keep in sync with:
 
 Copy over `insert` lemmas from `Mathlib/Order/Interval/Finset/Nat.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

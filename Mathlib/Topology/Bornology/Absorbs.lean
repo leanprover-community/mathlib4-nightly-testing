@@ -38,6 +38,7 @@ They can be added later when someone needs them.
 
 absorbs, absorbent
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

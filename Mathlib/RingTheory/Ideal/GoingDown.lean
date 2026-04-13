@@ -29,6 +29,7 @@ of `S` lying above `q`, there exists a prime `P ≤ Q` of `S` lying above `p`.
   see `Mathlib/RingTheory/IntegralClosure/GoingDown.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

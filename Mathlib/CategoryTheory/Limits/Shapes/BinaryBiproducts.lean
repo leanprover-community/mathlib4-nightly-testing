@@ -28,6 +28,7 @@ Such a `BinaryBicone` is a biproduct if the cone is a limit cone, and the cocone
 cocone.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

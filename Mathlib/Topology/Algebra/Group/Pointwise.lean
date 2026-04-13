@@ -12,6 +12,7 @@ public import Mathlib.Topology.Maps.Proper.Basic
 # Pointwise operations on sets in topological groups
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

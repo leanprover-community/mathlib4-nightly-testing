@@ -57,6 +57,7 @@ We
 See the files `CategoryTheory.Generator.Presheaf` and `CategoryTheory.Generator.Sheaf`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

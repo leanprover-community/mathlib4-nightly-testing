@@ -21,6 +21,7 @@ nonzero prime ideal contains a prime element.
 ideal contains a prime element.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 variable {R : Type*}
 

@@ -20,6 +20,7 @@ under a specified condition.
 
 lift, tactic
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

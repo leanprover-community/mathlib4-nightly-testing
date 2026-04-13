@@ -16,6 +16,7 @@ public import Mathlib.Algebra.Group.Int.Defs
 subgroup, subgroups
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

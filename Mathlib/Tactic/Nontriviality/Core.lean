@@ -10,6 +10,7 @@ public import Mathlib.Logic.Nontrivial.Basic -- shake: keep (tactic dependency)
 public meta import Mathlib.Tactic.ToDual
 
 /-! # The `nontriviality` tactic. -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

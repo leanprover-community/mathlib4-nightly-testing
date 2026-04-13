@@ -17,6 +17,7 @@ Note that this construction has no standard name in the literature.
 
 In this file we prove basic properties of this operation.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -12,6 +12,7 @@ public import Mathlib.MeasureTheory.Integral.Lebesgue.Sub
 /-!
 # ℒp seminorms and indicator functions
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 noncomputable section

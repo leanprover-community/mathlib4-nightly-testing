@@ -17,6 +17,7 @@ public import Mathlib.LinearAlgebra.Projectivization.Basic
 We compute the cardinality of `ℙ k V` if `k` is a finite field.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

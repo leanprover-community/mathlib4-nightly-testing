@@ -21,6 +21,7 @@ TODO :
 * align with RingHomCompTriple
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

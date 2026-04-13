@@ -42,6 +42,7 @@ Finally, we define `stieltjesOfMeasurableRat`, composition of `toRatCDF` and
   function `α → StieltjesFunction ℝ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

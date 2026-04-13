@@ -28,6 +28,7 @@ The theory of the free ring over a type.
 free ring
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

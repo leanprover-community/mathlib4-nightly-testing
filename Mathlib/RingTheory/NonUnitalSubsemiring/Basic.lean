@@ -25,6 +25,7 @@ public import Mathlib.RingTheory.NonUnitalSubsemiring.Defs
 We define the `CompleteLattice` structure, and non-unital subsemiring
 `map`, `comap` and range (`srange`) of a `NonUnitalRingHom` etc.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,6 +14,7 @@ This file contains the additive group and multiplicative monoid instances on the
 
 See note [foundational algebra order theory].
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

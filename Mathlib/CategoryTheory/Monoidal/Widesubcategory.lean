@@ -22,6 +22,7 @@ them to construct monoidal, braided, and symmetric structures on
 `WideSubcategory P`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -25,6 +25,7 @@ are indexed by `i : ι`.
 
 multilinear map, alternating map, continuous
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

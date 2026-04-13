@@ -24,6 +24,7 @@ This file adds `norm_num` plugins for
 
 See other files in this directory for many more plugins.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

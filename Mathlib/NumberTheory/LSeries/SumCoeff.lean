@@ -33,6 +33,7 @@ L-series.
   to `l` when `s → 1` with `1 < s`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

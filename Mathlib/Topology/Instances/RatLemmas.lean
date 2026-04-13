@@ -28,6 +28,7 @@ compactification.
 
 - `ℚ∞` is used as a local notation for `OnePoint ℚ`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

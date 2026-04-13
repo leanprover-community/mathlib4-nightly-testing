@@ -36,6 +36,7 @@ element in a lattice ordered group.
 
 positive part, negative part
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

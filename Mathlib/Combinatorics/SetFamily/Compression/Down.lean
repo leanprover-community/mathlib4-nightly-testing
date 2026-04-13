@@ -36,6 +36,7 @@ when the resulting set is not already in `𝒜`.
 
 compression, down-compression
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -75,6 +75,7 @@ space.
 * Adapt the remaining functoriality constructions/properties from `PiTensorProduct`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -30,6 +30,7 @@ See `Mathlib/RingTheory/Localization/Defs.lean` for a design overview.
 ## Tags
 localization, commutative ring
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

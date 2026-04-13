@@ -34,6 +34,7 @@ The function `findPositiveVector` solves this problem.
   See the file `SimplexAlgorithm.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

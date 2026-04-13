@@ -18,6 +18,7 @@ induces a bijection from the type of morphisms `K ⟶ (HomotopyCategory.quotient
 morphisms in the derived category.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

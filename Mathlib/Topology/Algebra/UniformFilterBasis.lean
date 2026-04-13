@@ -17,6 +17,7 @@ of uniform spaces.
 The only result so far is a characterization of Cauchy filters in topological groups.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

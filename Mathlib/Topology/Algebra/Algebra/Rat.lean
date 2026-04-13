@@ -17,6 +17,7 @@ public import Mathlib.Topology.Algebra.Monoid.Defs
 This is just a minimal stub for now!
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

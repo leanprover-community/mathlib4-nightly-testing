@@ -43,6 +43,7 @@ pairs `Sigma`.
 
 Gaussian process, independence
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

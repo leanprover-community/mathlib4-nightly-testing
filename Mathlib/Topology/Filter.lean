@@ -32,6 +32,7 @@ This topology has the following important properties.
 
 filter, topological space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

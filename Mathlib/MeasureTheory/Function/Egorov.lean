@@ -21,6 +21,7 @@ convergence in measure.
   almost everywhere convergent functions converges uniformly except on an arbitrarily small set.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

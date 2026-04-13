@@ -17,6 +17,7 @@ Some results about upper and lower bounds over collections of sets.
 In a separate file as we need to import `Mathlib/Data/Set/Lattice.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

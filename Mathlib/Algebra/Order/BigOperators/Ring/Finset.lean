@@ -21,6 +21,7 @@ rings.
 In particular, this file contains the standard form of the Cauchy-Schwarz inequality, as well as
 some of its immediate consequences.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

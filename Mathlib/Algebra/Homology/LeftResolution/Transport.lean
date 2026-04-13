@@ -16,6 +16,7 @@ equivalences of categories `A' ≌ A` and `C' ≌ C`, we
 define `Λ.transport .. : LeftResolution ι'`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

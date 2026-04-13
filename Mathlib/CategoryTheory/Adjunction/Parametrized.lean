@@ -34,6 +34,7 @@ left adjoints).
 * https://ncatlab.org/nlab/show/two-variable+adjunction
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

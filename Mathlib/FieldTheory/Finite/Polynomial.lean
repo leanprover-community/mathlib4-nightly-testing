@@ -14,6 +14,7 @@ public import Mathlib.RingTheory.MvPolynomial.Basic
 /-!
 ## Polynomials over finite fields
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

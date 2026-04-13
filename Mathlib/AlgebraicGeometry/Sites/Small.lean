@@ -30,6 +30,7 @@ generating pretopologies.
   with `AlgebraicGeometry.Scheme.smallGrothendieckTopology`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,6 +14,7 @@ In this file, we state naturality properties of `mapId'` and `mapComp'`
 for pseudofunctors to `Cat`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

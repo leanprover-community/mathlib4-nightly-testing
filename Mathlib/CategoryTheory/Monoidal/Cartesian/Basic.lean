@@ -40,6 +40,7 @@ instead turn on the corresponding `ofChosenFiniteProducts` declaration for that 
 - Construct chosen finite products in other categories appearing "in nature".
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

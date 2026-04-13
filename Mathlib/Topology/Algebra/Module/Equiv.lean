@@ -14,6 +14,7 @@ public import Mathlib.Topology.Algebra.Module.LinearMapPiProd
 Continuous semilinear / linear / star-linear equivalences between topological modules are denoted
 by `M ≃SL[σ] M₂`, `M ≃L[R] M₂` and `M ≃L⋆[R] M₂`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

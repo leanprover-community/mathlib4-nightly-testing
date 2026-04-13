@@ -28,6 +28,7 @@ example [M1 : MeasurableSpace Ω] {M2 : MeasurableSpace Ω} {μ : Measure Ω} : 
 ```
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

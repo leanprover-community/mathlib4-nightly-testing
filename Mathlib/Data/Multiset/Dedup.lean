@@ -11,6 +11,7 @@ public import Mathlib.Data.Multiset.UnionInter
 /-!
 # Erasing duplicates in a multiset.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

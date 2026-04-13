@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Group.Nat.Units
 /-!
 # Units in the integers
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

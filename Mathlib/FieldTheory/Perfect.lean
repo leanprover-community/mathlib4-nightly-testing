@@ -34,6 +34,7 @@ prime characteristic.
   and `L` is also a perfect field.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

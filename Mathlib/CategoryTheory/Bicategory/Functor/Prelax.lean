@@ -38,6 +38,7 @@ associated prefunctors between the hom types are all functors. In other words, i
 corresponding hom types.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

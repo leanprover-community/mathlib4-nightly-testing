@@ -25,6 +25,7 @@ This file defines bundled homomorphisms of `R`-bialgebras. We simply mimic
 * `A →ₐc[R] B` : `R`-bialgebra homomorphism from `A` to `B`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

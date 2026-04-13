@@ -10,6 +10,7 @@ public import Mathlib.Analysis.Normed.Module.TransferInstance
 /-!
 # Transfer normed algebraic structures from `α` to `Shrink α`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

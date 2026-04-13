@@ -23,6 +23,7 @@ the homology of the short complex `(shortComplexFunctor C c i).obj K`, which can
 abbreviated as `K.sc i`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

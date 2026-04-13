@@ -14,6 +14,7 @@ The tactic `nth_rewrite` and `nth_rw` are variants of `rewrite` and `rw` that on
 `n`th possible rewrite.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 namespace Mathlib.Tactic

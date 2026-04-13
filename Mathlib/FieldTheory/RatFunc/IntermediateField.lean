@@ -13,6 +13,7 @@ public import Mathlib.FieldTheory.RatFunc.AsPolynomial
 
 Results relating `IntermediateField` and `RatFunc`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 variable {K : Type*} [Field K]
 

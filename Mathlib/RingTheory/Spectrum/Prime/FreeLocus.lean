@@ -33,6 +33,7 @@ Let `M` be a finitely presented `R`-module.
   If `M` is flat over `R`, then `rankAtStalk` is locally constant.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

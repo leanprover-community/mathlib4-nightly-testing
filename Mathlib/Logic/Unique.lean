@@ -41,6 +41,7 @@ rather than a `Prop`-valued predicate,
 for good definitional properties of the default term.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -25,6 +25,7 @@ casting lemmas showing the well-behavedness of this injection.
 
 rat, rationals, field, ℚ, numerator, denominator, num, denom, cast, coercion, casting
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

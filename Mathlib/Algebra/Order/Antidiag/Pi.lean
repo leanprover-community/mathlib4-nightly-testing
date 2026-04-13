@@ -40,6 +40,7 @@ identification. See `Finset.finAntidiag` for the details.
 
 `Finset.finsuppAntidiag` for the `Finset (ι →₀ μ)`-valued version of `Finset.piAntidiag`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

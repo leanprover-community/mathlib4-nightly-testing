@@ -24,6 +24,7 @@ Then, we must be very selective regarding `HasExt` instances.
 Note: this file dualizes the results in `HasEnoughProjectives.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

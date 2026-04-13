@@ -29,6 +29,7 @@ where `OnePoint ℝ` gets the topology of one-point compactification.
 
 one-point extension, projectivization
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -9,6 +9,7 @@ public import Mathlib.Analysis.Complex.AbelLimit
 public import Mathlib.Analysis.SpecialFunctions.Complex.Arctan
 
 /-! ### Leibniz's series for `π` -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

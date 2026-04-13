@@ -14,6 +14,7 @@ public import Mathlib.Topology.Sheaves.Abelian
 Results for sheaves of abelian groups on topological spaces.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

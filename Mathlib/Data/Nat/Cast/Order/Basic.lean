@@ -15,6 +15,7 @@ public import Mathlib.Order.Hom.Basic
 # Cast of natural numbers: lemmas about order
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

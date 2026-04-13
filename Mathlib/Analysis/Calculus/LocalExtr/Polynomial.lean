@@ -28,6 +28,7 @@ Namely, we prove the following facts.
 
 polynomial, Rolle's Theorem, root
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

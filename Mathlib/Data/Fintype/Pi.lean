@@ -12,6 +12,7 @@ public import Mathlib.Data.Set.Finite.Basic
 /-!
 # Fintype instances for pi types
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -48,6 +48,7 @@ separable closure, separably closed
   closed field is purely inseparable.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

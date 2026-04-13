@@ -12,6 +12,7 @@ public import Mathlib.Algebra.Group.Hom.Defs
 /-!
 # Multiplicative homomorphisms respect semiconjugation and commutation.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

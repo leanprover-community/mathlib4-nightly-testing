@@ -49,6 +49,7 @@ Some care must be taken for shrinking such functions to make sure
 their defining property is invariant through shrinking. Injective
 functions are an example of how complicated it can get.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public meta section
 

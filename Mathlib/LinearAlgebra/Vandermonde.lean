@@ -60,6 +60,7 @@ stating the strictly more general form as `det_projVandermonde`.
 
 Characterize when `rectVandermonde v w n` has linearly independent rows.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

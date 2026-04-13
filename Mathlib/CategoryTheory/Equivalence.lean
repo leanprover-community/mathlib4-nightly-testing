@@ -57,6 +57,7 @@ if it is full, faithful and essentially surjective.
 We write `C ≌ D` (`\backcong`, not to be confused with `≅`/`\cong`) for a bundled equivalence.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

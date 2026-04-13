@@ -14,6 +14,7 @@ public import Mathlib.Topology.Instances.ZMultiples
 
 Results specific to the additive circle over `ℝ`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

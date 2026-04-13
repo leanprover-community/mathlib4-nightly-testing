@@ -15,6 +15,7 @@ that `C` has zero morphisms), then there is an equivalence of categories
 `ShortComplex.functorEquivalence J C : ShortComplex (J ⥤ C) ≌ J ⥤ ShortComplex C`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

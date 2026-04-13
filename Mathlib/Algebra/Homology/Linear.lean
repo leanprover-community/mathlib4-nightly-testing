@@ -20,6 +20,7 @@ category `C` is `R`-linear.
   for short complexes in `Mathlib/Algebra/Homology/ShortComplex/Linear.lean`)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

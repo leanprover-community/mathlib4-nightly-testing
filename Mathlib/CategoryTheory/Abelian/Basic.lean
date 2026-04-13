@@ -81,6 +81,7 @@ convention:
 * [P. Aluffi, *Algebra: Chapter 0*][aluffi2016]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

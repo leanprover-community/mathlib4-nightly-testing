@@ -12,6 +12,7 @@ public import Mathlib.Logic.Unique
 /-!
 # The unit of the natural numbers
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

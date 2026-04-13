@@ -17,6 +17,7 @@ If `F₁` and `F₂` are type-valued functors, `A : Subfunctor F₁`, and
 where `f` and `g` coincide.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

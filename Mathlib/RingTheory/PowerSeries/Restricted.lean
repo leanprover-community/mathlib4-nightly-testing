@@ -17,6 +17,7 @@ public import Mathlib.Tactic.Bound
 `‖coeff R i f‖ * c ^ i → 0`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

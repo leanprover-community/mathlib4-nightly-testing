@@ -26,6 +26,7 @@ loop.
 
 uniform space, uniform continuity, compact space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

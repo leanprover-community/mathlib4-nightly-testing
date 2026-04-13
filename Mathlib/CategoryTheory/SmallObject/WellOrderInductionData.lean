@@ -27,6 +27,7 @@ allows the construction, by transfinite induction, of a section of `F`
 which restricts to `val₀`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

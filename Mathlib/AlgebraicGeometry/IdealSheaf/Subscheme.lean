@@ -28,6 +28,7 @@ Some instances are in `Mathlib/AlgebraicGeometry/Morphisms/ClosedImmersion` and
 `Mathlib/AlgebraicGeometry/Morphisms/Separated` because they need more API to prove.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

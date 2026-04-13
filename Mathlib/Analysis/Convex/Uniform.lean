@@ -30,6 +30,7 @@ the same ray).
 
 convex, uniformly convex
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

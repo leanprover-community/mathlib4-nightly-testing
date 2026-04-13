@@ -21,6 +21,7 @@ When importing this file and `Data.Nat.SuccPred`, the instances `SecondCountable
 and `OrderTopology ℕ` become available.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

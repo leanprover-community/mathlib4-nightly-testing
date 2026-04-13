@@ -31,6 +31,7 @@ Generalize all this file to affine spaces.
 Should we rename `segment` and `openSegment` to `convex.Icc` and `convex.Ioo`? Should we also
 define `clopenSegment`/`convex.Ico`/`convex.Ioc`?
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

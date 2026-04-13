@@ -40,6 +40,7 @@ is used to prove Shapiro's lemma in
   lemma.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

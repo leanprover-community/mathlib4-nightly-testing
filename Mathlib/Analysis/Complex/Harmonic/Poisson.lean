@@ -17,6 +17,7 @@ integration and with the Poisson kernel, respectively.
 
 TODO: Extend this formula to vector-valued harmonic functions
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

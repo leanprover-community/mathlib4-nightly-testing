@@ -13,6 +13,7 @@ public import Mathlib.Order.Interval.Multiset
 
 This file provides results about the interaction of algebra with `Multiset.Ixx`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

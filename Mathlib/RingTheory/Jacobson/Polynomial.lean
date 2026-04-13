@@ -11,6 +11,7 @@ public import Mathlib.RingTheory.Polynomial.Quotient
 # Jacobson radical of polynomial ring
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

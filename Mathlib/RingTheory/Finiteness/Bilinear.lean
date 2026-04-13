@@ -12,6 +12,7 @@ public import Mathlib.Algebra.Module.Submodule.Bilinear
 # Finitely generated submodules and bilinear maps
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

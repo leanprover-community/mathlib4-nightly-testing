@@ -14,6 +14,7 @@ public meta import Lean.PrettyPrinter.Delaborator
 /-!
 # `recall` command
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

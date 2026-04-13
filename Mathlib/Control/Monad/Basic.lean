@@ -38,6 +38,7 @@ and use regular `functor_norm` rules as well.
 functor, applicative, monad, simp
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

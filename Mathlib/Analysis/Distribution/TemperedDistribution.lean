@@ -33,6 +33,7 @@ public import Mathlib.Topology.Algebra.Module.Spaces.PointwiseConvergenceCLM
 * `𝓢'(E, F)`: The space of tempered distributions `TemperedDistribution E F` scoped in
   `SchwartzMap`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

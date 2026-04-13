@@ -29,6 +29,7 @@ https://en.wikipedia.org/wiki/Back-and-forth_method
 
 back and forth, dense, countable, order
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

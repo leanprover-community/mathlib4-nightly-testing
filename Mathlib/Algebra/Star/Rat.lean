@@ -13,6 +13,7 @@ public import Mathlib.Data.Rat.Cast.Defs
 /-!
 # *-ring structure on ℚ and ℚ≥0.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

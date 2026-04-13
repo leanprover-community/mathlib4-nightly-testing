@@ -23,6 +23,7 @@ The definitions in this file are definitionally equal to their `2`-truncated
 counterparts.)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

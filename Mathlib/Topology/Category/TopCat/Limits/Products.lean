@@ -17,6 +17,7 @@ public import Mathlib.Tactic.ApplyFun
 /-!
 # Products and coproducts in the category of topological spaces
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

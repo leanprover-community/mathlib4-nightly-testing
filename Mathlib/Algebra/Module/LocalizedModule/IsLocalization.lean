@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Module.LocalizedModule.Basic
 /-!
 # Equivalence between `IsLocalizedModule` and `IsLocalization`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

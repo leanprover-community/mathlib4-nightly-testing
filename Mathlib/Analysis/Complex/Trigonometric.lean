@@ -15,6 +15,7 @@ This file contains the definitions of the sine, cosine, tangent,
 hyperbolic sine, hyperbolic cosine, and hyperbolic tangent functions.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

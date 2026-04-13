@@ -34,6 +34,7 @@ This file introduces the global notation `D ≀ᵣ Q` for `RegularWreathProduct 
 ## Tags
 group, regular wreath product, sylow p-subgroup
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

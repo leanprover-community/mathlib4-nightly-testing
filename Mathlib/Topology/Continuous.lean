@@ -19,6 +19,7 @@ partially defined functions.
 
 continuity, continuous function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

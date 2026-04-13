@@ -23,6 +23,7 @@ expression changes. For example in:
 ```
 the head of expression is considered to be `f` and not `coe`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

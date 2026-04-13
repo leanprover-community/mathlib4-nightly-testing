@@ -45,6 +45,7 @@ abbreviation for `WeierstrassCurve` that can be converted using `WeierstrassCurv
 
 elliptic curve, affine, Weierstrass equation, nonsingular
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

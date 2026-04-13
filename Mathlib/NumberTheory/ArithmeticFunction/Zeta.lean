@@ -25,6 +25,7 @@ is the Riemann zeta function).
 
 arithmetic functions, dirichlet convolution, divisors
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -18,6 +18,7 @@ We also show that the unit and counit isomorphisms of the equivalence
 by the property `(opOpEquivalence C).IsTriangulated`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

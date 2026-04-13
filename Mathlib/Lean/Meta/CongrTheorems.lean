@@ -12,6 +12,7 @@ public import Mathlib.Logic.IsEmpty.Defs
 /-!
 # Additions to `Lean.Meta.CongrTheorems`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

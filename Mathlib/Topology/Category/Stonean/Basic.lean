@@ -39,6 +39,7 @@ The category `Stonean` is defined using the structure `CompHausLike`. See the fi
 `CompHausLike.Basic` for more information.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 universe u

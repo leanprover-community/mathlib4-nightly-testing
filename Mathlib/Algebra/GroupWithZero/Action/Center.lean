@@ -11,6 +11,7 @@ public import Mathlib.GroupTheory.Subgroup.Center
 /-!
 # The center of a group with zero
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

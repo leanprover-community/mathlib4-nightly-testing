@@ -22,6 +22,7 @@ morphisms are functors between these categories.
 Though `Cat` is not a concrete category, we use `bundled` to define
 its carrier type.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

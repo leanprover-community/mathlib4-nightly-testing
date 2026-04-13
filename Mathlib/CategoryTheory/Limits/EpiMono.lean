@@ -27,6 +27,7 @@ is a pullback square.
 
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

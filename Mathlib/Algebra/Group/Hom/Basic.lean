@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Group.Hom.Defs
 # Additional lemmas about monoid and group homomorphisms
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

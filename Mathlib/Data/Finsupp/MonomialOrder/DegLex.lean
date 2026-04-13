@@ -24,6 +24,7 @@ and `MonomialOrder.degLex_lt_iff` rewrite the ordering as comparisons in the typ
 * [Becker and Weispfenning, *Gröbner bases*][Becker-Weispfenning1993]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

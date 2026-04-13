@@ -23,6 +23,7 @@ The duals of the above for functors `ℕᵒᵖ ⥤ C` are given by `Functor.ofOp
 `NatTrans.ofOpSequence`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

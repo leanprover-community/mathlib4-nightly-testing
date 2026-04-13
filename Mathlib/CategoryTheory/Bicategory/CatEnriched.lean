@@ -32,6 +32,7 @@ structure extending the category structure provided by the given instance `Categ
 `Bicategory.Strict (CatEnrichedOrdinary C)`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

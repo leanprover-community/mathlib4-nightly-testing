@@ -67,6 +67,7 @@ differential equation, dynamical system, initial value problem, Picard-Lindelöf
 Cauchy-Lipschitz theorem
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

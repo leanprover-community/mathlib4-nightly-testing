@@ -21,6 +21,7 @@ is always a complemented subspace.
 
 complemented subspace, normed vector space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

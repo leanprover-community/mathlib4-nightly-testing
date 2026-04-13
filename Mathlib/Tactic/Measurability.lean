@@ -12,6 +12,7 @@ public import Mathlib.Tactic.Measurability.Init
 # Measurability
 
 We define the `measurability` tactic using `aesop`. -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

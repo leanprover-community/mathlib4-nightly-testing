@@ -66,6 +66,7 @@ naturality proofs in this file (both lemmas are in the `CompHausLike.LocallyCons
   to light condensed sets).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

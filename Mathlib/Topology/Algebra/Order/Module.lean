@@ -12,6 +12,7 @@ public import Mathlib.Topology.Algebra.MulAction
 /-!
 # Continuous nonnegative scalar multiplication
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

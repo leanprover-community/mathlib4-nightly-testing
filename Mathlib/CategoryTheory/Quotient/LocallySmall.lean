@@ -12,6 +12,7 @@ public import Mathlib.CategoryTheory.Quotient
 # Quotient categories are locally small
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

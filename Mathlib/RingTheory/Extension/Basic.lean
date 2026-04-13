@@ -31,6 +31,7 @@ public import Mathlib.RingTheory.Localization.Defs
   The cotangent space w.r.t. an extension `P → S` by `I`, i.e. the space `I/I²`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

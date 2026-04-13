@@ -51,6 +51,7 @@ reversed.
 
 product measure, Tonelli's theorem, Fubini-Tonelli theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

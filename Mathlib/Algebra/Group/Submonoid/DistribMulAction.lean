@@ -11,6 +11,7 @@ public import Mathlib.Algebra.GroupWithZero.Action.Defs
 /-!
 # Distributive actions by submonoids
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

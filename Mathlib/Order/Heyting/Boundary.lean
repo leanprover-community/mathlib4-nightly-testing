@@ -23,6 +23,7 @@ boundary.
 
 `∂ a` is notation for `Coheyting.boundary a` in scope `Heyting`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -28,6 +28,7 @@ cases of ℤ being examples of structures in ring theory.
 
 prime, irreducible, integers, normalization monoid, gcd monoid, greatest common divisor
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

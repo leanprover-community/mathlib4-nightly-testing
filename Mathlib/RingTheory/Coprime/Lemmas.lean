@@ -21,6 +21,7 @@ Notably, this includes lemmas about `Finset.prod` as this requires importing Big
 lemmas about `Pow` since these are easiest to prove via `Finset.prod`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

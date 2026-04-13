@@ -17,6 +17,7 @@ This file provides a (pointwise) cast from `ℤ` to function types.
 
 * `Pi.instIntCast`: map `n : ℤ` to the constant function `n : ∀ i, π i`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

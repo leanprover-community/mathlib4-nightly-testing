@@ -18,6 +18,7 @@ measures that have positive density with respect to a Haar measure. We also prov
 about these measures.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

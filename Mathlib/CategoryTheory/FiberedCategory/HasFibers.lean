@@ -49,6 +49,7 @@ analogously to the standard fibers.
   some fiber followed by a pullback.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

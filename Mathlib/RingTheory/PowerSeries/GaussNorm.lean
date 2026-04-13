@@ -28,6 +28,7 @@ In case `f` is a polynomial, `v` is a non-negative function with `v 0 = 0` and `
   all `x : R` and `c` is positive, then the Gauss norm is zero if and only if the power series is
   zero.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ public import Mathlib.SetTheory.Cardinal.ENat
 * `ENat.card α` is the cardinality of `α` as an extended natural number.
   If `α` is infinite, `ENat.card α = ⊤`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

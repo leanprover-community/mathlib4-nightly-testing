@@ -13,6 +13,7 @@ public import Mathlib.Tactic.CategoryTheory.CategoryStar
 
 # The category of type-valued functors has images
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

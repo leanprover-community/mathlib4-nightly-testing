@@ -18,6 +18,7 @@ by `ULift ℕ`. Similar results are obtained for the variants `CommMonCat`, `Add
 and `MonCat`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

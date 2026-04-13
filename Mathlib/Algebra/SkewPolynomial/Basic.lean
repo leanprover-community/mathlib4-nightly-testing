@@ -67,6 +67,7 @@ multiplication is determined by  $Xa = \varphi (a)X + δ (a)$, where `ϕ` is as 
 `δ` is a derivation.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

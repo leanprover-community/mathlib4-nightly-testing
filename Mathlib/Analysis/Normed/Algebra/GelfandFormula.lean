@@ -36,6 +36,7 @@ material proven here gets used in contexts that have nothing to do with complex 
 (i.e. C⋆-algebras, etc).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

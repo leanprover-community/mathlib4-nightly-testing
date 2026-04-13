@@ -19,6 +19,7 @@ pullback of `f₁` and `f₂`.
 `LocallyCartesianClosed.ChosenPullbacksAlong`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

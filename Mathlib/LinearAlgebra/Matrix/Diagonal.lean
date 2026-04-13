@@ -18,6 +18,7 @@ diagonal matrix (`range`, `ker` and `rank`).
 
 matrix, diagonal, linear map
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -28,6 +28,7 @@ example : frobnicate a 0 = a := by
 ```
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

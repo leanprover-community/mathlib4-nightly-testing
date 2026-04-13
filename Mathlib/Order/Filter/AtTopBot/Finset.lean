@@ -13,6 +13,7 @@ public import Mathlib.Order.Interval.Finset.Defs
 /-!
 # `Filter.atTop` and `Filter.atBot` filters and finite sets.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

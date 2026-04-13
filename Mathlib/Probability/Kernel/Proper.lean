@@ -26,6 +26,7 @@ event.
 
 Prove the `integral` versions of the `lintegral` lemmas below
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

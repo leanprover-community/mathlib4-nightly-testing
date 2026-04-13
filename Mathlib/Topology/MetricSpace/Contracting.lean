@@ -29,6 +29,7 @@ of convergence, and some properties of the map sending a contracting map to its 
 
 contracting map, fixed point, Banach fixed point theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

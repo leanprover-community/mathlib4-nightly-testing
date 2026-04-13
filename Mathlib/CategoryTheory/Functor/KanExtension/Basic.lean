@@ -31,6 +31,7 @@ are obtained as `leftKanExtension L F` and `rightKanExtension L F`.
 * https://ncatlab.org/nlab/show/Kan+extension
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

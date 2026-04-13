@@ -28,6 +28,7 @@ literature.
 * [Walter Rudin, Real and Complex Analysis.][Rud87]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,6 +11,7 @@ public import Mathlib.Order.Hom.Set
 /-!
 # Lemmas about images of intervals under order isomorphisms.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

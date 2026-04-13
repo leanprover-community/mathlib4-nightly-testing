@@ -12,6 +12,7 @@ public import Mathlib.CategoryTheory.Limits.Opposites
 /-!
 # The opposite of an abelian category is abelian.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -6,5 +6,6 @@ Authors: Alex J. Best
 module
 
 public import Mathlib.Data.Real.Hom
+set_option backward.defeq.atInstanceTransparency false
 
 deprecated_module (since := "2026-03-05")

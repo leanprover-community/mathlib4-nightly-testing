@@ -21,6 +21,7 @@ public import Mathlib.Data.Multiset.MapFold
 finite sets, finset
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

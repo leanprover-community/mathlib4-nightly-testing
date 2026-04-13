@@ -40,6 +40,7 @@ or `R` has characteristic zero.
   with linear weights.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

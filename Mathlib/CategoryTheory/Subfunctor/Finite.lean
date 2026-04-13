@@ -17,6 +17,7 @@ a finite index type `ι`, we say that `G` is "finite", and this gives a type
 class `G.IsFinite`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

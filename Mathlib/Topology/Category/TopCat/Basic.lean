@@ -17,6 +17,7 @@ with the corresponding discrete, resp. trivial, topology. For a proof that these
 resp. right adjoint to the forgetful functor, see
 `Mathlib/Topology/Category/TopCat/Adjunctions.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

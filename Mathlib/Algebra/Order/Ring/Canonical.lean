@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Ring.Parity
 /-!
 # Canonically ordered rings and semirings.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

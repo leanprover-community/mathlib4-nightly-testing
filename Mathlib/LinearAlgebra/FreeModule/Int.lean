@@ -16,6 +16,7 @@ This file provides lemmas about when a submodule of a free ℤ-module is a subgr
 index.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

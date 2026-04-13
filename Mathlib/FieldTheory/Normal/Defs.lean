@@ -19,6 +19,7 @@ In this file we define normal field extensions.
 
 - `Normal F K` where `K` is a field extension of `F`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

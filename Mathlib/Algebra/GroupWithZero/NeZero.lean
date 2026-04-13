@@ -14,6 +14,7 @@ public import Mathlib.Algebra.NeZero
 This file exists to minimize the dependencies of `Mathlib/Algebra/GroupWithZero/Defs.lean`,
 which is a part of the algebraic hierarchy used by basic tactics.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

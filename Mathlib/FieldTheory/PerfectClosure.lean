@@ -48,6 +48,7 @@ public import Mathlib.FieldTheory.Perfect
 perfect ring, perfect closure
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -20,6 +20,7 @@ Future work: using this notion in the development of the localization of categor
 (e.g. localization of adjunctions).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

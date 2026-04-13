@@ -21,6 +21,7 @@ This file gives a characterization of cocompact maps in terms of norm estimates.
   map is cocompact.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

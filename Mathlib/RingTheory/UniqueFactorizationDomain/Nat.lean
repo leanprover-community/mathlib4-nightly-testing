@@ -16,6 +16,7 @@ public import Mathlib.RingTheory.UniqueFactorizationDomain.NormalizedFactors
 
 * `Nat.instUniqueFactorizationMonoid`: the natural numbers have unique factorization
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

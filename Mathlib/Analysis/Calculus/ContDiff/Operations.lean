@@ -26,6 +26,7 @@ In this file, we denote `(⊤ : ℕ∞) : WithTop ℕ∞` with `∞` and `⊤ : 
 
 derivative, differentiability, higher derivative, `C^n`, multilinear, Taylor series, formal series
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -36,6 +36,7 @@ Instances are defined:
   of commutative rings is a *local* morphism.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

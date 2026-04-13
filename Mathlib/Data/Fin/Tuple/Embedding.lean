@@ -25,6 +25,7 @@ public import Mathlib.Order.Fin.Basic
   into an embedding `Fin (m + n) ↪ α` if they have disjoint ranges
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

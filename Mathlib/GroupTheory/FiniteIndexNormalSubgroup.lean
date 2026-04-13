@@ -15,6 +15,7 @@ group `G`, and its additive version `FiniteIndexNormalAddSubgroup`.
 
 This is used primarily in the definition of the profinite completion of a group.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

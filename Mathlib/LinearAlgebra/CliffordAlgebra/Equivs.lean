@@ -58,6 +58,7 @@ and vice-versa:
   algebra over `R` where `Q = 0`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

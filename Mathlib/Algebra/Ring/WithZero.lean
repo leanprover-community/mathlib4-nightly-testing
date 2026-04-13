@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Ring.Defs
 /-!
 # Adjoining a zero to a semiring
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

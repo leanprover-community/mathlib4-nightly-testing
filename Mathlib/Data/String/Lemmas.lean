@@ -11,6 +11,7 @@ public import Mathlib.Data.String.Defs
 /-!
 # Miscellaneous lemmas about strings
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

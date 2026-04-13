@@ -11,6 +11,7 @@ public import Mathlib.Data.Fintype.EquivFin
 /-!
 # Finite categories are equivalent to categories in `Type 0`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

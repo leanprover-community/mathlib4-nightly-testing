@@ -16,6 +16,7 @@ In this file we define the filters
 * `Filter.atTop`: corresponds to `n → +∞`;
 * `Filter.atBot`: corresponds to `n → -∞`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

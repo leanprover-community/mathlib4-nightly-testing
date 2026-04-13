@@ -13,6 +13,7 @@ public meta import Lean.Util.Trace
 
 This file contains datatypes used by the `#explode` command and their associated methods.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

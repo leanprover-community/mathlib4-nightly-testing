@@ -95,6 +95,7 @@ These notations are scoped in `ContDiff`.
 
 derivative, differentiability, higher derivative, `C^n`, multilinear, Taylor series, formal series
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

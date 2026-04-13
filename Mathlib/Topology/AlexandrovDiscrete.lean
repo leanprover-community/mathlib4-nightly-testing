@@ -27,6 +27,7 @@ minimal neighborhood, which we call the *neighborhoods kernel* of the set.
 
 Alexandroff, discrete, finitely generated, fg space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -41,6 +41,7 @@ We conclude that all intervals with distinct endpoints have cardinality continuu
 ## Tags
 continuum, cardinality, reals, cardinality of the reals
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

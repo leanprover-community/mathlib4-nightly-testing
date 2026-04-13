@@ -51,6 +51,7 @@ distributive lattice.
 * [Wikipedia, *Complete Heyting algebra*](https://en.wikipedia.org/wiki/Complete_Heyting_algebra)
 * [Francis Borceux, *Handbook of Categorical Algebra III*][borceux-vol3]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

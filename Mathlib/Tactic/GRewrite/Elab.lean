@@ -20,6 +20,7 @@ This file defines the tactics that use the backend defined in `Mathlib.Tactic.GR
 - `nth_grw`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -14,6 +14,7 @@ public import Mathlib.Tactic.CategoryTheory.Elementwise
 /-!
 # The category of abelian groups has finite biproducts
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

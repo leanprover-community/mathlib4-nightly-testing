@@ -10,6 +10,7 @@ public import Mathlib.Init
 /-!
 # Json serialization typeclass for `PUnit` & `Fin n` & `Subtype p`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

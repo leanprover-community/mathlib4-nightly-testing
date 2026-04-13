@@ -23,6 +23,7 @@ pushforward functors. Similar results are obtained for sheaves of modules
 in `Mathlib.Algebra.Category.ModuleCat.Sheaf.PullbackContinuous`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

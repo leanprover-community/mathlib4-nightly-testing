@@ -31,6 +31,7 @@ complexes. Here, we follow the original definitions in [Verdier's thesis, I.3][v
 * https://stacks.math.columbia.edu/tag/014P
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

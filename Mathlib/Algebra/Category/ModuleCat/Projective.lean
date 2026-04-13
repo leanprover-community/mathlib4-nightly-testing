@@ -13,6 +13,7 @@ public import Mathlib.CategoryTheory.Preadditive.Projective.Basic
 /-!
 # The category of `R`-modules has enough projectives.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

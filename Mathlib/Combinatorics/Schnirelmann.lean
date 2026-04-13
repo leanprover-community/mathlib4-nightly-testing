@@ -44,6 +44,7 @@ which reduces the proof obligations later that would arise with `Nat.card`.
 
 * [Ruzsa, Imre, *Sumsets and structure*][ruzsa2009]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

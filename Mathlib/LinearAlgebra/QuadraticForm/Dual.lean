@@ -22,6 +22,7 @@ public import Mathlib.LinearAlgebra.QuadraticForm.Prod
   from `(Q.prod <| -Q)` to `QuadraticForm.dualProd R M`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

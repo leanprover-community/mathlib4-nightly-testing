@@ -12,6 +12,7 @@ import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 
 This file collects some results related to projections, idempotents,
 and the continuous functional calculus. -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

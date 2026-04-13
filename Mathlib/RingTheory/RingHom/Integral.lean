@@ -13,6 +13,7 @@ public import Mathlib.RingTheory.Localization.Integral
 # The meta properties of integral ring homomorphisms.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

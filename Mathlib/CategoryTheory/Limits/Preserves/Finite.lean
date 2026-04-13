@@ -22,6 +22,7 @@ involved are abelian, or more generally, finitely (co)complete.
   see `Mathlib/CategoryTheory/Functor/Flat.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

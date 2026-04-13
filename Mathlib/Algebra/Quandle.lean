@@ -83,6 +83,7 @@ Use `open quandles` to use these.
 
 rack, quandle
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -27,6 +27,7 @@ extension of scalars.
   `M₀` and `N₀` to be the `ℤ`-span of roots and coroots.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

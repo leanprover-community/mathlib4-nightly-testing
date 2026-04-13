@@ -12,6 +12,7 @@ public import Mathlib.AlgebraicGeometry.Morphisms.OpenImmersion
 # Being an isomorphism is local at the target
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 universe u
 

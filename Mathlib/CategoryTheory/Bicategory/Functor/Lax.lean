@@ -35,6 +35,7 @@ since lax functors had not yet been added (e.g `FunctorBicategory.lean`). A poss
 be to mirror these constructions for lax functors.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

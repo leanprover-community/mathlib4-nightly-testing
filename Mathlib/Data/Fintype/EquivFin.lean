@@ -34,6 +34,7 @@ We provide `Infinite` instances for
 * type constructors: `Multiset α`, `List α`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

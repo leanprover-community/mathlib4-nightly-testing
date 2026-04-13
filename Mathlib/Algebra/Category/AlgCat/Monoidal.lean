@@ -13,6 +13,7 @@ public import Mathlib.RingTheory.TensorProduct.Maps
 /-!
 # The monoidal category structure on R-algebras
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

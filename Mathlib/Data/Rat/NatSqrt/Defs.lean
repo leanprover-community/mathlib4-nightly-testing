@@ -13,6 +13,7 @@ Rational approximation of the square root of a natural number.
 
 See also `Mathlib.Data.Rat.NatSqrt.Real` for comparisons with the real square root.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -32,6 +32,7 @@ is represented by a Galois object.
 * [lenstraGSchemes]: H. W. Lenstra. Galois theory for schemes.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -14,6 +14,7 @@ public import Mathlib.Tactic.HaveI
 The `mod_cases` tactic does case disjunction on `e % n`, where `e : ℤ` or `e : ℕ`,
 to yield `n` new subgoals corresponding to the possible values of `e` modulo `n`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

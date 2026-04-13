@@ -26,6 +26,7 @@ We provide a coercion to a function `R → Rᵐᵒᵖ`.
 
 Ring involution
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

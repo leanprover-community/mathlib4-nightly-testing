@@ -26,6 +26,7 @@ This file defines lemmas and theorems about the power series for large and small
 * Prove the small Schröder numbers power series.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

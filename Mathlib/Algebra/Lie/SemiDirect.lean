@@ -25,6 +25,7 @@ forms an extension of `L`.
 * https://en.wikipedia.org/wiki/Lie_algebra_extension#By_semidirect_sum
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 
 @[expose] public section

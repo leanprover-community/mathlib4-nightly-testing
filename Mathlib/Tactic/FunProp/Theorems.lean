@@ -17,6 +17,7 @@ public import Mathlib.Tactic.FunProp.Types
 /-!
 ## `fun_prop` environment extensions storing theorems for `fun_prop`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

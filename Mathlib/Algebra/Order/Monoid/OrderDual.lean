@@ -10,6 +10,7 @@ public import Mathlib.Algebra.Order.Monoid.Unbundled.OrderDual
 public import Mathlib.Algebra.Order.Monoid.Defs
 
 /-! # Ordered monoid structures on the order dual. -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,6 +12,7 @@ public import Mathlib.Order.CompleteSublattice
 
 This file provides lemmas for the `SetLike` instance for elements of `CompleteSublattice (Set X)`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

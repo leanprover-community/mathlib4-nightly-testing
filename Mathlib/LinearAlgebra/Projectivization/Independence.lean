@@ -29,6 +29,7 @@ ambient vector space. Similarly for the definition of dependence.
 - Prove the axioms of a projective geometry are satisfied by the dependence relation.
 - Define projective linear subspaces.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

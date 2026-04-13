@@ -70,6 +70,7 @@ and their multiplicative counterparts:
 
 TODO: Show that divisibility implies injectivity in the category of `AddCommGroup`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

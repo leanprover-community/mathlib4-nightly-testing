@@ -37,6 +37,7 @@ As a corollary we obtain
   commutes.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

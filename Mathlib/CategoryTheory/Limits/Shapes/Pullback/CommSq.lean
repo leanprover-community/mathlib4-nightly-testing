@@ -11,6 +11,7 @@ public import Mathlib.Tactic.Common
 public import Mathlib.Tactic.Finiteness.Attr
 public import Mathlib.Tactic.SetLike
 public import Mathlib.Util.CompileInductive
+set_option backward.defeq.atInstanceTransparency false
 
 deprecated_module
   "This module was split into three parts:

@@ -10,6 +10,7 @@ public import Mathlib.Algebra.CharP.Algebra
 /-!
 # Characteristic of subrings
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

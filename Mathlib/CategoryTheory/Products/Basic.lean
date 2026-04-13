@@ -25,6 +25,7 @@ We define:
 We further define `evaluation : C ⥤ (C ⥤ D) ⥤ D` and `evaluationUncurried : C × (C ⥤ D) ⥤ D`,
 and products of functors and natural transformations, written `F.prod G` and `α.prod β`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

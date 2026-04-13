@@ -20,6 +20,7 @@ public import Mathlib.RingTheory.Polynomial.Basic
 * `Polynomial.contract p f`: the opposite of `expand`, so it sends `∑ aₙ xⁿᵖ` to `∑ aₙ xⁿ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

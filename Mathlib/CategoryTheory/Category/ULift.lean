@@ -38,6 +38,7 @@ category instance `Category.{v} C` and makes a small category
 The forward direction of the equivalence, `C ⥤ AsSmall C`, is denoted `AsSmall.up`
 and the backward direction is `AsSmall.down`. The equivalence itself is `AsSmall.equiv`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

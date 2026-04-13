@@ -14,6 +14,7 @@ public import Mathlib.Util.Tactic
 
 This file defines the `rename_bvar` tactic, for renaming bound variables.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

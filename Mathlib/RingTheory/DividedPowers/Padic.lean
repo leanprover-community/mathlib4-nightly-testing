@@ -23,6 +23,7 @@ TODO: If `K` is a `p`-adic local field with ring of integers `R` and uniformizer
 `e ≤ p - 1`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,6 +14,7 @@ public import Mathlib.Tactic.Ring
 
 The main def is `Polynomial.binomExpansion`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -33,6 +33,7 @@ coefficients.
 
 See [M. Hindry and J. Silverman, Diophantine Geometry: an Introduction][hindrysilverman00].
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

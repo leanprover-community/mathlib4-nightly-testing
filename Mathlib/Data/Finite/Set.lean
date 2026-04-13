@@ -16,6 +16,7 @@ In this file we prove two lemmas about `Finite` and `Set`s.
 
 finiteness, finite sets
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

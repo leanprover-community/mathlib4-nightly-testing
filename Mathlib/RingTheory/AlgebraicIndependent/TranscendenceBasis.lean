@@ -33,6 +33,7 @@ transcendence basis.
 transcendence basis, transcendence degree, transcendence
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

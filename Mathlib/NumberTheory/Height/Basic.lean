@@ -63,6 +63,7 @@ We define the following variants.
 Height, absolute value
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

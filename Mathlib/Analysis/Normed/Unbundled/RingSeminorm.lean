@@ -40,6 +40,7 @@ absolute values; see `Mathlib/Algebra/Order/AbsoluteValue/Basic.lean` for the bu
 ## Tags
 ring_seminorm, ring_norm
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,6 +19,7 @@ public import Mathlib.FieldTheory.IsSepClosed
   over that field which change `E` into `E'`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -22,6 +22,7 @@ import Mathlib.Probability.Independence.InfinitePi
   the products `X` and `Y` are identically distributed.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

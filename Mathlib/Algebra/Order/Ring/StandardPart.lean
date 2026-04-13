@@ -33,6 +33,7 @@ part function on `Hyperreal`.
 
 * https://en.wikipedia.org/wiki/Standard_part_function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

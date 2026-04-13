@@ -22,6 +22,7 @@ sets.
   is the yoneda sheaf functor.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

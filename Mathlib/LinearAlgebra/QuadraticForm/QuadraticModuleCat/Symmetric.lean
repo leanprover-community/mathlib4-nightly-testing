@@ -19,6 +19,7 @@ In this file we show:
 
 This file essentially mirrors `Mathlib/Algebra/Category/AlgCat/Symmetric.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

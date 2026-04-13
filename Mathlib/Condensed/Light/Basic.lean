@@ -15,6 +15,7 @@ This file defines the category of light condensed objects in a category `C`, fol
 of Clausen-Scholze (see https://www.youtube.com/playlist?list=PLx5f8IelFRgGmu6gmL-Kf_Rl_6Mm7juZO).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

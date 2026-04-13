@@ -39,6 +39,7 @@ of requiring self adjointness in the definition.
 
 Positive operator
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

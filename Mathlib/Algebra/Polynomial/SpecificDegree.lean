@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Polynomial.FieldDivision
 
 Facts about polynomials that have a specific integer degree.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

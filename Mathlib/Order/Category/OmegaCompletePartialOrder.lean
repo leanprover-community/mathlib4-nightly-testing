@@ -24,6 +24,7 @@ an `OmegaCompletePartialOrder`.
   * an instance of `Category` and `ConcreteCategory`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

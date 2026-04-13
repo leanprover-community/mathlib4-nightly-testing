@@ -50,6 +50,7 @@ $f(n) = n ^ {1 + O(g(n))}$. This can be expressed using the existential pattern,
   `∃ (e : ℕ → ℝ) (he : e =O[l] g), f =ᶠ[l] fun n ↦ n ^ (1 + e n)`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 set_option linter.style.longFile 1600
 

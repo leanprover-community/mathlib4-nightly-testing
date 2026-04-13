@@ -20,6 +20,7 @@ public import Mathlib.Tactic.Finiteness.Attr
 
 This file contains basic results on this function.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

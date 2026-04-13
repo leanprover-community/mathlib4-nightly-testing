@@ -31,6 +31,7 @@ objects and morphisms).
   is left adjoint to the forgetful functor.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

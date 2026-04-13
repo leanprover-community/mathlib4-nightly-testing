@@ -28,6 +28,7 @@ segment in the disk), and compute its derivative.
 
 TODO: Extend to holomorphic functions on simply connected domains.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -57,6 +57,7 @@ instance should be obtained at the beginning of the proof, using the term
 * [Mark Hovey, *Model category structures on chain complexes of sheaves*][hovey-2001]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

@@ -41,6 +41,7 @@ respect to `m`.
   `∫ y, f (X a, y) ∂(condDistrib Y X μ (X a))`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

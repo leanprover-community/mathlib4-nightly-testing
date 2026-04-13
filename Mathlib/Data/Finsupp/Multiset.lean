@@ -18,6 +18,7 @@ with `Multiset.toFinsupp` the reverse equivalence and `Finsupp.orderIsoMultiset`
 promoted to an order isomorphism).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

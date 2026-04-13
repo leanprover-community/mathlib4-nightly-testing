@@ -12,6 +12,7 @@ public import Mathlib.Algebra.Order.Module.Synonym
 /-!
 # Linear equivalence for order type synonyms
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

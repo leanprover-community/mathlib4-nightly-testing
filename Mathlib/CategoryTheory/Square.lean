@@ -32,6 +32,7 @@ or a vertical morphism between two horizontal
 maps (`arrowArrowEquivalence'`).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -87,6 +87,7 @@ If you would like to work on any of these, please coordinate with Michael Rothga
 to avoid duplicating or conflicting work.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -26,6 +26,7 @@ function when the base is coprime to the modulus.
   or towers of exponents using these results.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

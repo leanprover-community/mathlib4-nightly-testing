@@ -10,6 +10,7 @@ public import Mathlib.CategoryTheory.Enriched.Limits.HasConicalProducts
 /-!
 # Existence of conical terminal objects
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

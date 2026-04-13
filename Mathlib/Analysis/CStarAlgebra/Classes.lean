@@ -21,6 +21,7 @@ These classes are not defined in `Mathlib/Analysis/CStarAlgebra/Basic.lean` beca
 heavier imports.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

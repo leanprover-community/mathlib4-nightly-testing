@@ -36,6 +36,7 @@ Such polynomials are called *Morse functions* in Section 4.4 of [serre-galois].
 * [J. P. Serre, *Topics in Galois Theory*][serre-galois], Section 4.4
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

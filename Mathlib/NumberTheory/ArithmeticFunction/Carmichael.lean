@@ -34,6 +34,7 @@ notation in statements, but the pretty-printer will use it when showing the goal
 
 arithmetic functions, totient
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

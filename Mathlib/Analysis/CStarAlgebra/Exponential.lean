@@ -19,6 +19,7 @@ In this file, we establish various properties related to the map
 * A unitary is in the path component of `1` if and only if it is a finite product of exponential
   unitaries.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

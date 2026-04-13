@@ -27,6 +27,7 @@ upstreamed to Batteries or the Lean standard library easily.
 
 See note [foundational algebra order theory].
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ public import Mathlib.Data.Finset.Insert
 finite sets, finset
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

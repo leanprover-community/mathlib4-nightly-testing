@@ -28,6 +28,7 @@ by the given command.
   representing unfinished proofs, and it has special support for "go to definition", etc.
 * Move to ImportGraph?
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

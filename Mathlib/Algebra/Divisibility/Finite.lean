@@ -11,6 +11,7 @@ public import Mathlib.Data.Fintype.Defs
 /-!
 # Divisibility in finite types
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

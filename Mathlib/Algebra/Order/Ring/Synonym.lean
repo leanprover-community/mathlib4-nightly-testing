@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Ring.Defs
 
 Transfer algebraic instances from `R` to `Rᵒᵈ` and `Lex R`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

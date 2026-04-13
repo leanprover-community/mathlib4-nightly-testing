@@ -69,6 +69,7 @@ public import Mathlib.RingTheory.SimpleModule.Basic
 
 Torsion, submodule, module, quotient
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

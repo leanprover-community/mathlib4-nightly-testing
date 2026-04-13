@@ -11,6 +11,7 @@ public import Mathlib.Data.Sym.Basic
 /-!
 # `Vector α n` and `Sym α n` are fintypes when `α` is.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

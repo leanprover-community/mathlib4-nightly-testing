@@ -45,6 +45,7 @@ respectively.
 
 comma, slice, coslice, over, under, arrow
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

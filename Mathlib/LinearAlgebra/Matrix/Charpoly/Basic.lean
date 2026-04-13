@@ -26,6 +26,7 @@ See the file `Mathlib/LinearAlgebra/Matrix/Charpoly/Coeff.lean` for corollaries 
 
 We follow a nice proof from http://drorbn.net/AcademicPensieve/2015-12/CayleyHamilton.pdf
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

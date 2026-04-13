@@ -41,6 +41,7 @@ sequences by cases (`nil` and `cons`).
 
 * `eq_of_bisim`: Bisimulation principle for sequences.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -24,6 +24,7 @@ Many lemmas about `Multiset.map` are proven in `Mathlib/Data/Multiset/Filter.lea
 should we switch the import direction?
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

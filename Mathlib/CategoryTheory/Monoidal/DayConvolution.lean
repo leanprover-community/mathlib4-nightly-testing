@@ -43,6 +43,7 @@ a monoidal structure.
 - Case `V = Type u` and its universal property.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

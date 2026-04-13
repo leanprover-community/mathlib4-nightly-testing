@@ -329,3 +329,5 @@ public import Mathlib.Tactic.Widget.SelectPanelUtils
 public import Mathlib.Tactic.Widget.StringDiagram
 public import Mathlib.Tactic.WithoutCDot
 public import Mathlib.Tactic.Zify
+
+set_option backward.defeq.atInstanceTransparency false

@@ -50,6 +50,7 @@ in `Topology.Algebra.Module.Basic`, theory over normed spaces developed in
 `ContinuousLinearMap` is to be preferred over an `IsBoundedLinearMap` hypothesis. Historical
 artifact, really.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -27,6 +27,7 @@ Further results that need the theory of localizations can be found in
 `Mathlib/RingTheory/Ideal/MinimalPrime/Localization.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

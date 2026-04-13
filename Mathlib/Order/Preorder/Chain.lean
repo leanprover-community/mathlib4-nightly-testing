@@ -27,6 +27,7 @@ Originally ported from Isabelle/HOL. The
 [original file](https://isabelle.in.tum.de/dist/library/HOL/HOL/Zorn.html) was written by Jacques D.
 Fleuriot, Tobias Nipkow, Christian Sternagel.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

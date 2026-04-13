@@ -17,6 +17,7 @@ along with the forgetful functor to `ModuleCat`.
 This file mimics `Mathlib/LinearAlgebra/QuadraticForm/QuadraticModuleCat.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -34,6 +34,7 @@ Similarly, some mathematically trivial lemmas about infinite sums are proved,
 a few of which rely on the fact that subtraction is continuous.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

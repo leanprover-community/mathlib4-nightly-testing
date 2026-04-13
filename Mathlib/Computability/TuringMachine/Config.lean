@@ -22,6 +22,7 @@ Turing machine for evaluating these functions. This amounts to a constructive pr
   `List ℕ →. List ℕ`.
   * `ToPartrec.Code.eval`: semantics for a `ToPartrec.Code` program
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -46,6 +46,7 @@ Source: [Wikipedia](https://en.wikipedia.org/wiki/Derivative_test#Proof_of_the_s
 
 derivative test, first-derivative test, second-derivative test, calculus
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

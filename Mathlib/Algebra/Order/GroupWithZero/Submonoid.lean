@@ -12,6 +12,7 @@ public import Mathlib.Order.Interval.Set.Defs
 /-!
 # The submonoid of positive elements
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

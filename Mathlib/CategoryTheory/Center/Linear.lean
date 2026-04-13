@@ -17,6 +17,7 @@ and conversely, if `C` is a preadditive category, and `φ : R →+* CatCenter C`
 is a ring morphism, we define an `R`-linear structure on `C` attached to `φ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

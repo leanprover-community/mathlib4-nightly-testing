@@ -12,6 +12,7 @@ public import Mathlib.Order.Filter.Basic
 /-!
 # Theorems about map and comap on filters.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

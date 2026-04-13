@@ -14,6 +14,7 @@ The elements with valuation less than or equal to 1.
 
 TODO: Define characteristic predicate.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

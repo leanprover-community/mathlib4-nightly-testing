@@ -27,6 +27,7 @@ on Lie submodules.
 
 Lie algebra, ideal, submodule, Lie submodule
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

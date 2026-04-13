@@ -20,6 +20,7 @@ We define the pullback and pushforward of ideal sheaves in this file.
   The Galois connection between pullback and pushforward.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

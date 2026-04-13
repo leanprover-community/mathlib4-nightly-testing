@@ -28,6 +28,7 @@ TODO: simplify with a tactic and `Data.Finset.Lattice`
 
 finset, gcd
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

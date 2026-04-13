@@ -46,6 +46,7 @@ finite-dimensional spaces.
 adjoint
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -49,6 +49,7 @@ Special cases :
   `L` is Galois.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

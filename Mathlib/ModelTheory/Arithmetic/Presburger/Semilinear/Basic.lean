@@ -41,6 +41,7 @@ any commutative monoid.
 * [Seymour Ginsburg and Edwin H. Spanier, *Bounded ALGOL-Like Languages*][ginsburg1964]
 * [Samuel Eilenberg and M. P. Schützenberger, *Rational Sets in Commutative Monoids*][eilenberg1969]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 open Set Pointwise AddSubmonoid Matrix
 

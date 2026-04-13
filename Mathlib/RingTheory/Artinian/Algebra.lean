@@ -14,6 +14,7 @@ public import Mathlib.RingTheory.IntegralClosure.IsIntegral.Basic
 
 In this file we collect results about algebras over Artinian rings.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -16,6 +16,7 @@ public import Mathlib.CategoryTheory.Presentable.Finite
   colimit presentations of the components, this is the colimit presentation over the sigma type.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

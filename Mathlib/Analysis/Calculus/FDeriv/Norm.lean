@@ -36,6 +36,7 @@ at `t • x` when `t ≠ 0`.
 differentiability, norm
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

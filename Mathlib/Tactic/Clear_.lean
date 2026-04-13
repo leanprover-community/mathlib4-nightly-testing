@@ -10,6 +10,7 @@ public meta import Lean.Meta.Tactic.Clear
 public meta import Lean.Elab.Tactic.Basic
 
 /-! # `clear_` tactic -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

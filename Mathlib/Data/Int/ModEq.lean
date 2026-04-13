@@ -21,6 +21,7 @@ which is defined to be `a % n = b % n` for integers `a b n`.
 modeq, congruence, mod, MOD, modulo, integers
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

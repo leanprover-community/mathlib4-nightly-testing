@@ -12,6 +12,7 @@ public import Mathlib.Data.Real.Sqrt
 Comparisons between rational approximations to the square root of a natural number
 and the real square root.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

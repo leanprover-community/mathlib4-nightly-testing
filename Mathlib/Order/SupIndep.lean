@@ -43,6 +43,7 @@ For the finite version, we avoid the "obvious" definition
 `∀ i ∈ s, Disjoint (f i) ((s.erase i).sup f)` because `erase` would require decidable equality on
 `ι`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

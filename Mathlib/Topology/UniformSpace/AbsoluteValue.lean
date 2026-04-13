@@ -25,6 +25,7 @@ follows exactly the same path.
 
 absolute value, uniform spaces
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

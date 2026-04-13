@@ -41,6 +41,7 @@ composition, base change, etc., so is `Locally P`.
   `Locally P`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

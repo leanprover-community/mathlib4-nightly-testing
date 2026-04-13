@@ -19,6 +19,7 @@ Direct sums of Lie algebras and Lie modules carry natural algebra and module str
 
 lie algebra, lie module, direct sum
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

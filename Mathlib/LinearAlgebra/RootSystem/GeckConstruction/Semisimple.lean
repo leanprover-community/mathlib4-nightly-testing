@@ -27,6 +27,7 @@ algebras.
   Lie algebras.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

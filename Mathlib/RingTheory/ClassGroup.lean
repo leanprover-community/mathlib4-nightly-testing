@@ -28,6 +28,7 @@ inside its field of fractions.
 The definition of `ClassGroup R` involves `FractionRing R`. However, the API should be completely
 identical no matter the choice of field of fractions for `R`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

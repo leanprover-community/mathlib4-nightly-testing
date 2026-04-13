@@ -31,6 +31,7 @@ https://ncatlab.org/nlab/show/Frobenius+reciprocity
 Frobenius reciprocity, Cartesian closed functor
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

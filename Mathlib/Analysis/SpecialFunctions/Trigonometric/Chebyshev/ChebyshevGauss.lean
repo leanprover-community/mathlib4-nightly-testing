@@ -30,6 +30,8 @@ over appropriate evaluations of the polynomial.
 The statement is proved for Chebyshev polynomials using the complex exponential representation
 of `cos`, and then deduced for arbitrary polynomials.
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 public section
 
 namespace Polynomial.Chebyshev

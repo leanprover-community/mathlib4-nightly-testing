@@ -41,6 +41,7 @@ public import Mathlib.CategoryTheory.LocallyCartesianClosed.ChosenPullbacksAlong
   the cartesian monoidal structures on slices.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

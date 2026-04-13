@@ -23,6 +23,7 @@ and provides lemmas about distributing `*` over `⨅` and `⨆`.
 This is true more generally for conditionally complete linear order whose default value is `0`. We
 don't have those yet.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

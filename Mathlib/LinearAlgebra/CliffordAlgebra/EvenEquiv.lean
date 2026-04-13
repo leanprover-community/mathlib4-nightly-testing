@@ -32,6 +32,7 @@ This file provides some notable isomorphisms regarding the even subalgebra, `Cli
   "Clifford conjugate", that is `CliffordAlgebra.reverse` composed with
   `CliffordAlgebra.involute`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

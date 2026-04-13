@@ -18,6 +18,7 @@ of their slopes.
 
 The main use is to show convexity/concavity from monotonicity of the derivative.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

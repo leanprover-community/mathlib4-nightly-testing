@@ -51,6 +51,7 @@ provided.
 * `TopCat.GlueData.ι_isOpenEmbedding`: Each of the `ι i`s are open embeddings.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

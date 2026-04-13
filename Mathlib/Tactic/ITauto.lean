@@ -81,6 +81,7 @@ grammar if it matters.)
 
 propositional logic, intuitionistic logic, decision procedure
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

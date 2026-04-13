@@ -14,6 +14,7 @@ public import Mathlib.Data.Finset.Sum
 
 In this file we prove theorems about products and sums indexed by a `Finset`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

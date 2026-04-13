@@ -69,6 +69,7 @@ expectation. This would generalise `MeasureTheory.condExp_mul_of_stronglyMeasura
 conditional expectation, conditional expected value
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

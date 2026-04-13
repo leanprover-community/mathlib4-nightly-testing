@@ -16,5 +16,6 @@ other than equality. The core implementation of `grewrite` is in the file
 `Mathlib/Tactic/GRewrite/Core.lean`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section

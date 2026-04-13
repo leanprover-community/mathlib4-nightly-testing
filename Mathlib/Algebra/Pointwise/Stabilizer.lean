@@ -14,6 +14,7 @@ public import Mathlib.Order.ConditionallyCompleteLattice.Basic
 
 This file characterises the stabilizer of a set/finset under the pointwise action of a group.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

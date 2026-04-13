@@ -37,6 +37,7 @@ in Set Theory, state in imperative programming, and others, see [Dialectica Cate
 [Dialectica Categories]: https://github.com/vcvpaiva/DialecticaCategories
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

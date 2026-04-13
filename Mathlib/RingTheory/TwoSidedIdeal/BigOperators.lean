@@ -12,6 +12,7 @@ public import Mathlib.RingTheory.TwoSidedIdeal.Basic
 # Interactions between `∑, ∏` and two-sided ideals
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

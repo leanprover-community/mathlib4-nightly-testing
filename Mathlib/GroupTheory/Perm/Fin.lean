@@ -12,6 +12,7 @@ public import Mathlib.Logic.Equiv.Fin.Rotate
 /-!
 # Permutations of `Fin n`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

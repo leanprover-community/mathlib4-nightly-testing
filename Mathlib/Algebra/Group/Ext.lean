@@ -26,6 +26,7 @@ former uses `HMul.hMul` which is the canonical spelling.
 ## Tags
 monoid, group, extensionality
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

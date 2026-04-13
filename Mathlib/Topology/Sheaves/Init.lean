@@ -15,6 +15,7 @@ This module defines the `Restrict` Aesop rule set. Aesop rule sets only become
 visible once the file in which they're declared is imported, so we must put this
 declaration into its own file.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

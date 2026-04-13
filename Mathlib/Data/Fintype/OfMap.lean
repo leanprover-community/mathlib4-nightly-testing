@@ -19,6 +19,7 @@ given maps from/to finite types.
 * `Fintype.ofBijective`, `Fintype.ofInjective`, `Fintype.ofSurjective`:
   a type is finite if there is a bi/in/surjection from/to a finite type.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

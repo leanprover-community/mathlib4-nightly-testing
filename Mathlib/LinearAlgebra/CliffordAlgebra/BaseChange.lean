@@ -31,6 +31,7 @@ We show the additional results:
 * `CliffordAlgebra.toBaseChange_involute`: the effect of base-changing an involution.
 * `CliffordAlgebra.toBaseChange_reverse`: the effect of base-changing a reversal.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

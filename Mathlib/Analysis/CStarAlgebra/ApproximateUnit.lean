@@ -38,6 +38,7 @@ moreover, this filter is an increasing approximate unit.
   increasing approximate unit.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

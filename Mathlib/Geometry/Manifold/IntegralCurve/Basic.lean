@@ -47,6 +47,7 @@ junk.
 
 integral curve, vector field
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

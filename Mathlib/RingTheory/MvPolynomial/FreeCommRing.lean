@@ -23,6 +23,7 @@ formulas whose realization is a property of an `MvPolynomial`
   `p : MvPolynomial κ R` such that `p.support ⊆ monoms i`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

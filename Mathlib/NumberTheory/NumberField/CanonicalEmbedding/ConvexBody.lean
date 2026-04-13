@@ -38,6 +38,7 @@ associated to a number field of signature `K` and proves several existence theor
 
 number field, infinite places
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

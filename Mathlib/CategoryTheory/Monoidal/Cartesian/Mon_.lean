@@ -17,6 +17,7 @@ We show that monoid objects in Cartesian monoidal categories are exactly those w
 is a presheaf of monoids, by constructing the yoneda embedding `Mon C ⥤ Cᵒᵖ ⥤ MonCat.{v}` and
 showing that it is fully faithful and its (essential) image is the representable functors.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -32,6 +32,7 @@ along the localization functor `L`.
 * https://ncatlab.org/nlab/show/derived+functor
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

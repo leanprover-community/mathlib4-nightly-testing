@@ -40,6 +40,7 @@ represented with `𝒜 : ι → Submodule ℕ A` and `𝒜 : ι → Submodule �
 
 graded algebra, graded ring, graded semiring, decomposition
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

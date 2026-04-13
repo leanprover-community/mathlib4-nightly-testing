@@ -25,6 +25,7 @@ and its additive version `ClosedAddSubgroup`.
 
 Actually provide the `Order.Frame (ClosedSubgroup G)` instance.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

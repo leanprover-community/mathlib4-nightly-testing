@@ -28,6 +28,7 @@ This file defines the multinomial coefficients and several small lemmas for mani
 - `Finset.sum_pow`: The expansion of `(s.sum x) ^ n` using multinomial coefficients
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

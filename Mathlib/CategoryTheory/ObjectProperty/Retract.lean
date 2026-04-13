@@ -17,6 +17,7 @@ public import Mathlib.CategoryTheory.Retract
 Given a category `C` and `P : ObjectProperty C` (i.e. `P : C → Prop`),
 this file introduces the type class `P.IsStableUnderRetracts`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

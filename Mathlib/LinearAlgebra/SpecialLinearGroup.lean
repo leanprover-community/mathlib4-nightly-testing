@@ -39,6 +39,7 @@ from `Matrix.SpecialLinearGroup n R` to `SpecialLinearGroup R V`,
 associated with a finite basis of `V`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

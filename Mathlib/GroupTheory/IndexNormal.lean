@@ -18,6 +18,7 @@ public import Mathlib.GroupTheory.Index
   (This does not require `G` to be finite.)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

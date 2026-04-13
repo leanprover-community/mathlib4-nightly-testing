@@ -11,6 +11,7 @@ public import Mathlib.SetTheory.Ordinal.Basic
 /-!
 # UnivLE and cardinals
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

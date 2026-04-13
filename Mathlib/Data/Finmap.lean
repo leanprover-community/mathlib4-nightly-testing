@@ -12,6 +12,7 @@ public import Mathlib.Data.Part
 /-!
 # Finite maps over `Multiset`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

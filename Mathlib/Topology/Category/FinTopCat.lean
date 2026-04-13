@@ -15,6 +15,7 @@ Definition of the category of finite topological spaces with the canonical
 forgetful functors.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

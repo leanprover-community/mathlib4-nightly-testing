@@ -21,6 +21,7 @@ assumptions on `p`. The `p`-adic valuations on `ℕ` and `ℤ` agree with that o
 The valuation induces a norm on `ℚ`. This norm is defined in
 `Mathlib/NumberTheory/Padics/PadicNorm.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

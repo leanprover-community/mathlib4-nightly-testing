@@ -18,6 +18,7 @@ where `L` and `R` are both the identity functor.
 
 comma, arrow
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

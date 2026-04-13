@@ -13,6 +13,7 @@ public import Mathlib.LinearAlgebra.FreeModule.StrongRankCondition
 /-!
 # Constructs a basis for exterior powers
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

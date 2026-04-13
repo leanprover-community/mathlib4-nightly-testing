@@ -18,6 +18,7 @@ and verify that they provide an equivalence of categories
 This is used in `CategoryTheory.Category.Cat.CartesianClosed` to equip the category of small
 categories `Cat.{u, u}` with a Cartesian closed structure.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

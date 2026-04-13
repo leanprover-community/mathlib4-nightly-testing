@@ -11,6 +11,7 @@ public import Mathlib.Logic.Small.Defs
 /-!
 # Transfer group structures from `α` to `Shrink α`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

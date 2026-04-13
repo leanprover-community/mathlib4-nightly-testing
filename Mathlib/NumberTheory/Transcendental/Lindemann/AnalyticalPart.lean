@@ -15,6 +15,7 @@ public import Mathlib.Topology.Algebra.Polynomial
 /-!
 # Analytic part of the Lindemann-Weierstrass theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

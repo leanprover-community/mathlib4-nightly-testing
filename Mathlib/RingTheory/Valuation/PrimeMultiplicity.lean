@@ -11,6 +11,7 @@ public import Mathlib.RingTheory.Valuation.Basic
 /-!
 # `multiplicity` of a prime in an integral domain as an additive valuation
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

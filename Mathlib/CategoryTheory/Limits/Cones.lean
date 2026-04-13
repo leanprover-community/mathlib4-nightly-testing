@@ -34,6 +34,7 @@ And, of course, we dualise all this to cocones as well.
 
 For more results about the category of cones, see `cone_category.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

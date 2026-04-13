@@ -20,6 +20,7 @@ computation progresses.
 - [Original Mark P Jones article introducing `Writer`](https://web.cecs.pdx.edu/~mpj/pubs/springschool.html)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

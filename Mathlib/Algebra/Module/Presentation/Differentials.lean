@@ -31,6 +31,7 @@ of `Algebra.Extension.exact_cotangentComplex_toKaehler`
 from the file `Mathlib/RingTheory/Extension/Cotangent/Basic.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

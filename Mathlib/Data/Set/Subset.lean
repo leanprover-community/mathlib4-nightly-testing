@@ -38,6 +38,7 @@ Theorem names refer to `↓∩` as `preimage_val`.
 
 subsets
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

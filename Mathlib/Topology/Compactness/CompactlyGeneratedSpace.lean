@@ -42,6 +42,7 @@ as well as a Hausdorff `WeaklyLocallyCompactSpace`.
 
 compactly generated space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

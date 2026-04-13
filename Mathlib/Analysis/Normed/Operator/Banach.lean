@@ -18,6 +18,7 @@ public import Mathlib.Analysis.Normed.Group.AddTorsor
 This file contains the Banach open mapping theorem, i.e., the fact that a bijective
 bounded linear map between Banach spaces has a bounded inverse.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

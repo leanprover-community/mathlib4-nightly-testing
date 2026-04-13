@@ -42,6 +42,7 @@ partition of a `U`-large set, one of the parts is `U`-large.
 Ramsey theory, ultrafilter
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

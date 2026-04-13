@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Regular.SMul
 /-!
 # Results about `IsRegular` and `Prod`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -13,6 +13,7 @@ public import Mathlib.Algebra.GroupWithZero.Units.Basic
 
 We intentionally keep imports minimal here as this file is used by `Mathlib/Tactic/NormNum.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

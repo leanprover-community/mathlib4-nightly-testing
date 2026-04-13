@@ -12,6 +12,7 @@ public import Mathlib.Order.Directed
 /-!
 # Finsets of ordered types
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -23,6 +23,7 @@ public import Mathlib.Algebra.Star.Subalgebra
   the polynomial functions separate points.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

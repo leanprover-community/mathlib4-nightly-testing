@@ -17,6 +17,7 @@ This file puts algebraic structure (`Group`, `AddGroup`, etc)
 on the type of locally constant functions.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

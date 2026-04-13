@@ -23,6 +23,7 @@ with `(t.truncLT n).obj X < n` and `(t.truncGE n).obj X ≥ n`.
 We obtain various properties of these truncation functors.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 universe v u
 

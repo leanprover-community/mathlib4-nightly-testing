@@ -13,6 +13,7 @@ public import Mathlib.SetTheory.Cardinal.Finsupp
 
 This file computes the cardinality of `R[M]` in terms of `#R` and `#M`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

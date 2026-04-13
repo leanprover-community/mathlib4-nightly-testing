@@ -14,6 +14,7 @@ public import Mathlib.CategoryTheory.Yoneda
 
 This file defines a few Yoneda embeddings for the category of commutative groups.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

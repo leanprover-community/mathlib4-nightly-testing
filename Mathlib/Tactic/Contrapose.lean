@@ -19,6 +19,7 @@ implication or an iff. It also avoids creating a double negation if there alread
 * `contrapose h with new_h` uses the name `new_h` for the introduced hypothesis
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -21,6 +21,7 @@ with block matrices
 ## Tags
 column matrices, row matrices, column row block matrices
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

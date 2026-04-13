@@ -44,6 +44,7 @@ Derive results from the corresponding ones `Mathlib.Data.Nat.Factorization.Multi
 
 Legendre, p-adic
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -52,6 +52,7 @@ while the "stars and bars" technique gives
 
 stars and bars, multichoose
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

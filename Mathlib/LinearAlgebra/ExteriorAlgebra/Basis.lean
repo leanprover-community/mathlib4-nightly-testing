@@ -11,6 +11,7 @@ public import Mathlib.LinearAlgebra.ExteriorPower.Basis
 /-!
 # Basis for `ExteriorAlgebra`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

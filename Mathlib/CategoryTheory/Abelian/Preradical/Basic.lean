@@ -30,6 +30,7 @@ with codomain `𝟭 C`, i.e. an element of `MonoOver (𝟭 C)`.
 
 category theory, preradical, torsion theory
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

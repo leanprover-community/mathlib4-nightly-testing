@@ -62,6 +62,7 @@ We currently only prove the equipartition version of SRL.
 
 [Yaël Dillies, Bhavik Mehta, *Formalising Szemerédi’s Regularity Lemma in Lean*][srl_itp]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

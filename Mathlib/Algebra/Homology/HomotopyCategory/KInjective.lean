@@ -23,6 +23,7 @@ and show that bounded below complexes of injective objects are K-injective.
 * [N. Spaltenstein, *Resolutions of unbounded complexes*][spaltenstein1998]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

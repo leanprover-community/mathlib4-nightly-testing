@@ -37,6 +37,7 @@ on `d` is `d ⊙ᵣ c`, and the structure isomorphisms are of the form
   copower.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

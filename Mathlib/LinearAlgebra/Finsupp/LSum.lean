@@ -25,6 +25,7 @@ Given an `R`-module `M`, the `R`-module structure on `α →₀ M` is defined in
 
 function with finite support, module, linear algebra
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

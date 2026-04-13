@@ -33,6 +33,7 @@ However, we restate some lemmas specifically for `ae`.
 
 outer measure, measure, almost everywhere
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,6 +19,7 @@ This file contains basic results on `MulEquiv` and `AddEquiv`.
 
 Equiv, MulEquiv, AddEquiv
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -28,6 +28,7 @@ This file defines the altitudes of a simplex and their feet.
 * <https://en.wikipedia.org/wiki/Altitude_(triangle)>
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

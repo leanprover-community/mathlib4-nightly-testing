@@ -19,6 +19,7 @@ bilinear map `TensorProduct.mk` is the given bilinear map `f`.  Uniqueness is sh
 
 bilinear, tensor, tensor product
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

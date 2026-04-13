@@ -40,6 +40,7 @@ See chapter 8 of [Barry Simon, *Convexity*][simon2011]
 
 Prove lemmas relating exposed sets and points to the intrinsic frontier.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

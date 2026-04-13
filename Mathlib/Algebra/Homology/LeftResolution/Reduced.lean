@@ -33,6 +33,7 @@ corresponding to the submodule spanned by the generator corresponding
 to `0 : M` (TODO).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

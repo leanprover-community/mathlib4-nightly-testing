@@ -21,6 +21,7 @@ public import Mathlib.Algebra.Ring.Hom.Defs
 
 semimodule, module, vector space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

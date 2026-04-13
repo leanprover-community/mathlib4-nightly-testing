@@ -25,6 +25,7 @@ from `Mathlib.RingTheory.Valuation.ValuativeRel.Basic`. New developments on valu
 should take this into consideration.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -16,6 +16,7 @@ public meta import Mathlib.Tactic.ToAdditive
 
 These should not be used directly in user code.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

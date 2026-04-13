@@ -24,6 +24,7 @@ After `IsLocalizedModule` and `IsLocalization` are unified, the two `IsInteger` 
 can be unified.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

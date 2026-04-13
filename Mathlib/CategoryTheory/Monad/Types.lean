@@ -18,6 +18,7 @@ public import Mathlib.Control.Basic
 This allows us to use these monads in category theory.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

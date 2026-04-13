@@ -48,6 +48,7 @@ We provide a few instances for concrete types:
 * `Bool.completeLinearOrder`
 * `Bool.completeBooleanAlgebra`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

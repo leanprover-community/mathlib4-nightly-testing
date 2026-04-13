@@ -15,6 +15,7 @@ In this file, we prove some results about measurability of functions defined by 
 `IndexedPartition.piecewise`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

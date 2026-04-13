@@ -15,6 +15,7 @@ public import Lean.Message
 /-!
 This file contains functions that are used by multiple linters.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -13,6 +13,7 @@ public import Mathlib.Tactic.CategoryTheory.Elementwise
 /-!
 # The concrete products in the category of modules are products in the categorical sense.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

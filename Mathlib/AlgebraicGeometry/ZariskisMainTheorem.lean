@@ -30,6 +30,7 @@ We then have the following corollaries
   which implies that `f` itself is finite.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 open CategoryTheory Limits
 

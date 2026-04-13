@@ -26,6 +26,7 @@ closed under subobjects.
   (TODO @joelriou)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

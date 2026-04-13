@@ -9,6 +9,7 @@ public import Mathlib.Data.Set.Image
 public import Mathlib.Order.TypeTags
 
 /-! # `Set.range` on `WithBot` and `WithTop` -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

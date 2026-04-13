@@ -33,6 +33,7 @@ consider the normalizer. This turns out to be a Lie subalgebra.
 
 lie algebra, normalizer
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

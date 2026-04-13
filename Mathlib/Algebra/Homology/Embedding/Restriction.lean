@@ -16,6 +16,7 @@ Given `c` and `c'` complex shapes on two types, and `e : c.Embedding c'`
 `e.restrictionFunctor C : HomologicalComplex C c' ⥤ HomologicalComplex C c`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

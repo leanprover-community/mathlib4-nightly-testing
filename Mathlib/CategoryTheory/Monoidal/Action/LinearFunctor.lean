@@ -28,6 +28,7 @@ express compatibility of `F` with the action of `C`:
   `δᵣ F` is a left and right inverse to `μᵣ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -28,6 +28,7 @@ At the moment, the results are stated for left Kan extensions and left Kan lifts
 similar results for right Kan extensions and right Kan lifts.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

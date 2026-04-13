@@ -27,6 +27,7 @@ Yoneda lemma is also expressed as a natural isomorphism
 ## References
 * [Stacks: Opposite Categories and the Yoneda Lemma](https://stacks.math.columbia.edu/tag/001L)
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

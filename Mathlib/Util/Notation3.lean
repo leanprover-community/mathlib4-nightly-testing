@@ -19,6 +19,7 @@ public import Mathlib.Tactic.ScopedNS
 /-!
 # The notation3 macro, simulating Lean 3's notation.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

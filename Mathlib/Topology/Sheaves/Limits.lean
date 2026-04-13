@@ -12,6 +12,7 @@ public import Mathlib.CategoryTheory.Limits.FunctorCategory.Basic
 /-!
 # Presheaves in `C` have limits and colimits when `C` does.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -12,6 +12,7 @@ public import Mathlib.CategoryTheory.ObjectProperty.Retract
 # Presentable objects are stable under retracts
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

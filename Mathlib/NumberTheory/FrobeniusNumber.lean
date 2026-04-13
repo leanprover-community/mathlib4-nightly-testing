@@ -36,6 +36,7 @@ is a multiple of n, and we're done.
 
 frobenius number, chicken mcnugget, chinese remainder theorem, AddSubmonoid.closure
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

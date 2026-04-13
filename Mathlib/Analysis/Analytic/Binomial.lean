@@ -30,6 +30,7 @@ and $x$ is an element of a normed algebra over $\mathbb{K}$.
 * `binomialSeries_radius_eq_top_of_nat`: In case `a` is natural, the series converges everywhere,
   since it is finite.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -15,6 +15,7 @@ public import Qq.Typ
 
 This is a slight simplification of the `solve_aux` tactic in Lean3.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

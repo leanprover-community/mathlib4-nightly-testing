@@ -36,6 +36,7 @@ particular cases of general constructions for points of sites from
 `Mathlib/CategoryTheory/Sites/Point/Skyscraper.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

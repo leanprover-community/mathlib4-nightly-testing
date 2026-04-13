@@ -18,6 +18,7 @@ import Lean.Elab.Term.TermElabM
 /-!
 # Additions to `Lean.Elab.InfoTree.Main`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

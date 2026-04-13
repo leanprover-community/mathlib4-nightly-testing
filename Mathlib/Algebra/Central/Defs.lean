@@ -55,6 +55,7 @@ need this assumption.
 central algebra, center, simple ring, central simple algebra
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

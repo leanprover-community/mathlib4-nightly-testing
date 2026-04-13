@@ -17,6 +17,7 @@ instances defined by `Pi.mulAction`.
 
 Note that unlike the `Pi` instance, this requires `G` to be a group.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -27,6 +27,7 @@ Two kernels `κ : Kernel α β` and `η : Kernel γ δ` can be applied in parall
 * `κ ∥ₖ η = ProbabilityTheory.Kernel.parallelComp κ η`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

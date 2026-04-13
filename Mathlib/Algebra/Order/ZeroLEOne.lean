@@ -12,6 +12,7 @@ public import Mathlib.Order.Basic
 /-!
 # Typeclass expressing `0 ≤ 1`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

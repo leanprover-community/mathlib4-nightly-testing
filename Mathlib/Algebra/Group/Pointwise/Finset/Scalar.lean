@@ -42,6 +42,7 @@ instances reducible changes the behavior of `simp`).
 finset multiplication, finset addition, pointwise addition, pointwise multiplication,
 pointwise subtraction
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

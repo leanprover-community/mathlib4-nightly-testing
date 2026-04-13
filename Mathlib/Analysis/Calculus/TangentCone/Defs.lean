@@ -32,6 +32,7 @@ are not defined yet. The property of uniqueness of the derivative is therefore p
 `Mathlib/Analysis/Calculus/FDeriv/Basic.lean`, but based on the properties of the tangent cone we
 prove here.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

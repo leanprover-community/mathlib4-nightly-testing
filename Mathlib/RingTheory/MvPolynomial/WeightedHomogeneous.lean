@@ -45,6 +45,7 @@ occurring in `φ` have the same weighted degree `m`.
 * `sum_weightedHomogeneousComponent`: every polynomial is the sum of its weighted homogeneous
   components.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

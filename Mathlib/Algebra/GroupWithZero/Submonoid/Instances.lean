@@ -11,6 +11,7 @@ public import Mathlib.Algebra.GroupWithZero.Units.Lemmas
 /-!
 # Instances for the range submonoid of a monoid with zero hom
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ consists of morphisms whose cone belongs to the triangulated subcategory
 `HomotopyCategory.subcategoryAcyclic C` of acyclic complexes.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

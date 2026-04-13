@@ -39,6 +39,7 @@ then any `ConditionallyCompletePartialOrder{Sup,Inf}` is automatically a
 required to add and maintain the infimum version is minimal.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -61,6 +61,7 @@ about the need for a non-manifold version of `SmoothPartitionOfUnity`.
   (we currently do `M = E` only).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

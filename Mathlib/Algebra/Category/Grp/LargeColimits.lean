@@ -17,6 +17,7 @@ if `Colimits.Quot F` (the quotient of the direct sum of the commutative groups `
 by the relations given by the morphisms in the diagram) is `w`-small.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

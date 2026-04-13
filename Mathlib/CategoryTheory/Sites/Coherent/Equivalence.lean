@@ -14,6 +14,7 @@ public import Mathlib.CategoryTheory.Sites.Equivalence
 This file proves that the coherent and regular topologies transfer nicely along equivalences of
 categories.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

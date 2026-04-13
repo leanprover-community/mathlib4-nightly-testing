@@ -12,6 +12,7 @@ public import Mathlib.GroupTheory.GroupAction.SubMulAction
 /-!
 # Closure and finiteness of `SubMulAction` and `SubAddAction`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

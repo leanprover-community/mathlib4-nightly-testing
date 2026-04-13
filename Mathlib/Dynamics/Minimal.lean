@@ -22,6 +22,7 @@ and prove some basic facts about minimal actions.
 
 group action, minimal
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

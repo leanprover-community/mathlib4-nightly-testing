@@ -24,6 +24,7 @@ commute with base change.
 - Show that `P.Cotangent` commutes with flat base change.
 - Show that `P.H1Cotangent` commutes with flat base change.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

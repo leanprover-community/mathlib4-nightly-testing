@@ -20,6 +20,7 @@ structures, but those cardinalities can usually be obtained by other means, usin
 explicit universal objects.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

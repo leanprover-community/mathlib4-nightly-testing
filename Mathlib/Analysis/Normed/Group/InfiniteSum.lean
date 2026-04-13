@@ -33,6 +33,7 @@ In a complete (semi)normed group,
 
 infinite series, absolute convergence, normed group
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

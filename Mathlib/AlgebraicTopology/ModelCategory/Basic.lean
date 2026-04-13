@@ -32,6 +32,7 @@ to define only local instances of `ModelCategory`, or to set these instances on 
 * https://ncatlab.org/nlab/show/model+category
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

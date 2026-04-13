@@ -17,6 +17,7 @@ public import Mathlib.Data.Int.Cast.Lemmas
 subgroup, subgroups
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

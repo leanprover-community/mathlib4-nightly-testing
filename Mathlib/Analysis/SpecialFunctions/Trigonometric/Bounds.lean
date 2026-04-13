@@ -30,6 +30,7 @@ Here we prove the following:
 
 sin, cos, tan, angle
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

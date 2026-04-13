@@ -22,6 +22,7 @@ In this file, we obtain the equivalence of categories
 which is obtained by exchanging the horizontal and vertical directions.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

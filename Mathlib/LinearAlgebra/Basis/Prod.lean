@@ -13,6 +13,7 @@ public import Mathlib.LinearAlgebra.FreeModule.Basic
 /-!
 # Bases for the product of modules
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

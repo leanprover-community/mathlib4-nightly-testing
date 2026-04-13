@@ -11,6 +11,7 @@ public import Mathlib.RingTheory.SimpleModule.WedderburnArtin
 /-!
 # Wedderburn–Artin Theorem over an algebraically closed field
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

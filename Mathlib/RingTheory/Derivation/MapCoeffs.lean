@@ -18,6 +18,7 @@ show this forms a derivation, and prove `apply_eval_eq`, which shows that for a 
 `D(p(x)) = (D.mapCoeffs p)(x) + D(x) * p'(x)`. `apply_aeval_eq` and `apply_aeval_eq'`
 are generalizations of that for algebras. We also have a special case for `DifferentialAlgebra`s.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

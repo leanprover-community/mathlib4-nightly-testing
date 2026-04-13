@@ -41,6 +41,7 @@ so we could deduce the facts here from an equivalence `HopfAlgCat R ≌ Hopf (Mo
 
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

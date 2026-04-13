@@ -30,6 +30,7 @@ public import Mathlib.RingTheory.Ideal.IdempotentFG
 - `Algebra.IsStandardEtale`: The class of standard etale algebras.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

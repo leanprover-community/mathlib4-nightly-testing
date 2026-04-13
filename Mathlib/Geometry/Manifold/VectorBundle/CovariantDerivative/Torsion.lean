@@ -24,6 +24,7 @@ bundle `TM` of some manifold `M`.
   `X` and `Y`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public noncomputable section
 

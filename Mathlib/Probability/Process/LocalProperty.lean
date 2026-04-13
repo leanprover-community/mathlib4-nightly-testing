@@ -41,6 +41,7 @@ This is notably useful for local martingales.
 
 localizing sequence, local property, stable property
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

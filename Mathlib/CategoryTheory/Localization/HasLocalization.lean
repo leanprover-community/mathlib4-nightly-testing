@@ -37,6 +37,7 @@ assumption, but one may use
 `HasLocalization.standard` in the proof instead.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

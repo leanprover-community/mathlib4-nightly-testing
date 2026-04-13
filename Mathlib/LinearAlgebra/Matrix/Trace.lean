@@ -23,6 +23,7 @@ See also `LinearAlgebra.Trace` for the trace of an endomorphism.
 matrix, trace, diagonal
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

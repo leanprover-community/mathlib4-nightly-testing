@@ -39,6 +39,7 @@ multiplication in `Equiv.Perm`, and multiplication in `CategoryTheory.End`, not 
 
 Equiv, MulEquiv, AddEquiv, RingEquiv, MulAut, AddAut, RingAut
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

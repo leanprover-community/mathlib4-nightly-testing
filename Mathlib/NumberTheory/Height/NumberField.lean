@@ -14,6 +14,7 @@ public import Mathlib.NumberTheory.Height.Basic
 We provide an instance of `Height.AdmissibleAbsValues` for algebraic number fields
 and set up some API.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -39,6 +39,7 @@ as a composite `φ ∘ (variationOnFromTo f s a)`, where `φ` has unit speed and
 
 arc-length, parameterization
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

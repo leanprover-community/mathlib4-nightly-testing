@@ -12,6 +12,7 @@ public import Mathlib.CategoryTheory.Abelian.Basic
 # Equivalence between subobjects and quotients in an abelian category
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

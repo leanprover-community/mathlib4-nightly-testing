@@ -19,6 +19,7 @@ which is equal to `f` on `s` and `g` on the complement.
 
 Should we deduplicate this from `Set.piecewise`?
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

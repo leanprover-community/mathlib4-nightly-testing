@@ -24,6 +24,7 @@ in order to keep the imports here simple.
 The fact that the real numbers are a (trivial) *-ring has similarly been deferred to
 `Mathlib/Data/Real/Star.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

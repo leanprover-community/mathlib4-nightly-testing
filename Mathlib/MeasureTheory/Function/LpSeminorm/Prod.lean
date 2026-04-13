@@ -12,6 +12,7 @@ public import Mathlib.MeasureTheory.Measure.Prod
 # ℒp spaces and products
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

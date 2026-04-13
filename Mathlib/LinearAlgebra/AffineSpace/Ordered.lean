@@ -27,6 +27,7 @@ for an ordered module interpreted as an affine space.
 
 affine space, ordered module, slope
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

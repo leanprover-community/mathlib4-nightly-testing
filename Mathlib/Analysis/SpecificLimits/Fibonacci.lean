@@ -13,6 +13,7 @@ public import Mathlib.NumberTheory.Real.GoldenRatio
 
 We prove that the ratio of consecutive Fibonacci numbers tends to the golden ratio.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

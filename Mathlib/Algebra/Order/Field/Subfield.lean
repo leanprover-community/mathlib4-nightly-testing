@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Order.Ring.InjSurj
 /-!
 # Ordered instances on subfields
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

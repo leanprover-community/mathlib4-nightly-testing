@@ -29,6 +29,7 @@ preferred spelling; it has the advantage of not requiring the user to import the
 ## Tags
 filter, countable
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

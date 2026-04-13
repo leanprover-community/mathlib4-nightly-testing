@@ -15,6 +15,7 @@ public import Mathlib.LinearAlgebra.CrossProduct
 This file proves `InnerProductGeometry.norm_withLpEquiv_crossProduct`, relating the norm of the
 cross-product of two real vectors with their individual norms.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

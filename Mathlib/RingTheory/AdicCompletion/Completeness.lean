@@ -33,6 +33,7 @@ when the ideal `I` is finitely generated.
   finitely generated.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

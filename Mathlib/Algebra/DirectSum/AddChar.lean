@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Group.AddChar
 
 This file defines the direct sum of additive characters.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

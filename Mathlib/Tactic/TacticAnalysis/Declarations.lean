@@ -18,6 +18,7 @@ public import Mathlib.Util.ParseCommand
 
 This file defines passes to run from the tactic analysis framework.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

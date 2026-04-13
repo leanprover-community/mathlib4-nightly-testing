@@ -55,6 +55,7 @@ Instead, we define graded orders by their grade function, without talking about 
 * [Konrad Engel, *Sperner Theory*][engel1997]
 * [Richard Stanley, *Enumerative Combinatorics*][stanley2012]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

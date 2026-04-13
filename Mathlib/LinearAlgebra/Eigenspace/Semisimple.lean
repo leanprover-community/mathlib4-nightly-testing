@@ -25,6 +25,7 @@ endomorphisms.
   an algebraically closed field is zero iff all eigenvalues are zero.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

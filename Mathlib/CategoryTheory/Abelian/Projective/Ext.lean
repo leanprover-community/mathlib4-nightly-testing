@@ -27,6 +27,7 @@ of the complex `R.complex` and to make computations in the `Ext`-group.
   `R.extMk f m hm hf : Ext X' Y n` by `X ⟶ X'`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -31,6 +31,7 @@ The following notation is available with `open Quaternion` or `open scoped Quate
 
 quaternion, normed ring, normed space, normed algebra
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

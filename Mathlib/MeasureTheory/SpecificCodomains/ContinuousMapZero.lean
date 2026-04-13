@@ -20,6 +20,7 @@ The structure of this file is largely similar to that of
 module docstring.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

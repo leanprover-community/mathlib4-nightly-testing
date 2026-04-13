@@ -25,6 +25,7 @@ This file studies linear maps on inner product spaces.
 inner product space, Hilbert space, norm
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

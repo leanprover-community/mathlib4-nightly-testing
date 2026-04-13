@@ -36,6 +36,7 @@ As in other polynomial files, we typically use the notation:
 + `p : MvPolynomial σ α`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

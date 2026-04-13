@@ -13,6 +13,7 @@ public import Mathlib.Topology.ContinuousMap.Algebra
 # The algebra morphism from locally constant functions to continuous functions.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

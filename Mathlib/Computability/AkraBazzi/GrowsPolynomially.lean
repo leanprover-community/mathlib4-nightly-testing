@@ -26,6 +26,7 @@ make it harder to prove that a particular function grows polynomially, this issu
 arise in practice.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

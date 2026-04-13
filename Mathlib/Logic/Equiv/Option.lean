@@ -20,6 +20,7 @@ We define
 * `Equiv.removeNone`: the `α ≃ β` constructed from `Option α ≃ Option β` by removing `none` from
   both sides.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

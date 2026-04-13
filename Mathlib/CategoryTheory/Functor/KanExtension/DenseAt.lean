@@ -29,6 +29,7 @@ corresponding property `isDenseAt F` of objects of `D`.
 * https://ncatlab.org/nlab/show/dense+functor
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

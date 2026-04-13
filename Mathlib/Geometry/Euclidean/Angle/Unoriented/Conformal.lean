@@ -14,6 +14,7 @@ public import Mathlib.Geometry.Euclidean.Angle.Unoriented.Basic
 This file proves that conformal maps preserve angles.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

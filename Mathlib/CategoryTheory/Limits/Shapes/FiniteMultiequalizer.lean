@@ -13,6 +13,7 @@ public import Mathlib.Tactic.ProxyType
 /-!
 # Finiteness instances on multi-spans
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

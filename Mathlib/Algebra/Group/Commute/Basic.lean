@@ -12,6 +12,7 @@ public import Mathlib.Algebra.Group.Semiconj.Basic
 # Additional lemmas about commuting pairs of elements in monoids
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

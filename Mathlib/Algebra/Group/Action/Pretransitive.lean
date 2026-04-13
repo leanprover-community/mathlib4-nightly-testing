@@ -26,6 +26,7 @@ More sophisticated lemmas belong in `GroupTheory.GroupAction`.
 
 group action
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

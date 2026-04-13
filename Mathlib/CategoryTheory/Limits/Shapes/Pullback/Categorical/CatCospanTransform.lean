@@ -27,6 +27,7 @@ H₁|   |H₂ |H₃
 with specified `CatCommSq`s expressing 2-commutativity of the squares. These
 transformations are used to encode 2-functoriality of categorical pullback squares.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

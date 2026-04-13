@@ -54,6 +54,7 @@ We conclude that
 ## Tags
 absolutely continuous
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

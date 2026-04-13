@@ -30,6 +30,7 @@ This contribution was created as part of the AIM workshop "Formalizing algebraic
 in June 2024.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 universe t t' w w' u v

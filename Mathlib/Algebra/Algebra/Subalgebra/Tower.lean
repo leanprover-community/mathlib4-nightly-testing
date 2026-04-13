@@ -27,6 +27,7 @@ compatibility condition `(r • s) • a = r • (s • a)`.
   given that `A/S/R` is a tower
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

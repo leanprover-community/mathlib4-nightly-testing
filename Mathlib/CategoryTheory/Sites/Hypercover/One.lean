@@ -26,6 +26,7 @@ identifies to the multiequalizer of suitable maps
 `F.obj (op (E.X i)) ⟶ F.obj (op (E.Y j))`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -25,6 +25,7 @@ is also the localized category of `HomotopyCategory C c` with respect to
 the class of quasi-isomorphisms.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ that are sent to a zero object by `G`.
 (We also translate this in terms of a left Bousfield localization.)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

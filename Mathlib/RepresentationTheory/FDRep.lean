@@ -45,6 +45,7 @@ and this is reflected in the documentation.
 * `FdRep k G ≌ FGModuleCat k[G]`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

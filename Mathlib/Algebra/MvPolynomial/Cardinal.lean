@@ -17,6 +17,7 @@ The main result in this file is `MvPolynomial.cardinalMk_le_max`, which says tha
 the cardinality of `MvPolynomial σ R` is bounded above by the maximum of `#R`, `#σ`
 and `ℵ₀`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

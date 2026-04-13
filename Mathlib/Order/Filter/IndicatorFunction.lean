@@ -19,6 +19,7 @@ Properties of additive and multiplicative indicator functions involving `=ᶠ` a
 ## Tags
 indicator, characteristic, filter
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

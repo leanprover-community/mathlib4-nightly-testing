@@ -9,6 +9,7 @@ public import Mathlib.Init
 /-!
 # Monad combinators, as in Haskell's Control.Monad.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

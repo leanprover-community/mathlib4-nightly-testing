@@ -14,6 +14,7 @@ public import Mathlib.Util.Qq
 The `vecPerm` simproc computes the new entries of a vector after applying a permutation to them.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 namespace Mathlib.Tactic.FinVec
 

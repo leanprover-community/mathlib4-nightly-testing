@@ -26,6 +26,7 @@ fractional part operator.
 
 rounding, floor, ceil
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

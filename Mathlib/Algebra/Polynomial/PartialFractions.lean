@@ -83,6 +83,7 @@ and in order we have
 `q` (`quo`), `+` (`add`), `∑` (`sum`), `r i` (`rem`), `/` (`div`).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

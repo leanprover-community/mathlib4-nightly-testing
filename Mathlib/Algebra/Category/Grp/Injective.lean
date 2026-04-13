@@ -23,6 +23,7 @@ in `Mathlib/Algebra/Category/Grp/EnoughInjectives.lean`.
 - `AddCommGrpCat.injective_of_divisible` : a divisible group is also an injective object.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

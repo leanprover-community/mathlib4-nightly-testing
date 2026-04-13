@@ -15,6 +15,7 @@ public import Mathlib.Order.SuccPred.Archimedean
 In this file we prove that `Set.Ici` etc. are monotone/antitone functions. We also prove some lemmas
 about functions monotone on intervals in `SuccOrder`s.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

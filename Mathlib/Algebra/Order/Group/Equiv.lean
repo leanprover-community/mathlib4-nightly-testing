@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Order.Group.Synonym
 /-!
 # Add/Mul equivalence for order type synonyms
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -14,6 +14,7 @@ public import Mathlib.RingTheory.Localization.Submodule
 This file contains lemmas on localization away from an element requiring more imports.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

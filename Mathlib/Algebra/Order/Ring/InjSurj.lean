@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Order.Ring.Defs
 /-!
 # Pulling back ordered rings along injective maps
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

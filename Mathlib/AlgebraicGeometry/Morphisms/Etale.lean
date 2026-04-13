@@ -24,6 +24,7 @@ and `V ⊆ f ⁻¹' U`, the induced map `Γ(Y, U) ⟶ Γ(X, V)` is étale.
   smooth of relative dimension `0`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

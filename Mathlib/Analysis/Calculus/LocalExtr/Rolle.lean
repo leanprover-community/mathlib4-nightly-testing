@@ -41,6 +41,7 @@ We prove four versions of this theorem.
 
 local extremum, Rolle's Theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

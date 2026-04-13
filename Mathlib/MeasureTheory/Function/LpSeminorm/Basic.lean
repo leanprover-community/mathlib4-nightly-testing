@@ -14,6 +14,7 @@ public import Mathlib.MeasureTheory.Integral.Lebesgue.Countable
 /-!
 # Basic theorems about ℒp space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 noncomputable section

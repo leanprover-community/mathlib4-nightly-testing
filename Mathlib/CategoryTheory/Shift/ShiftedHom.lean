@@ -17,6 +17,7 @@ defined as `X ⟶ Y⟦m⟧` for all `m : M`, and the composition on these
 shifted hom.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -19,6 +19,7 @@ public import Mathlib.RingTheory.MvPolynomial.Homogeneous
   sums up to the degree times the polynomial.
 * `IsWeightedHomogeneous.sum_weight_X_mul_pderiv`: the weighted version of Euler's identity.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

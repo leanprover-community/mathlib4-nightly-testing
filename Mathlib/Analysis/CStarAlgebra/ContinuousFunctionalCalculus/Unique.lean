@@ -25,6 +25,7 @@ the natural way, and then applying the uniqueness for `ℝ`-algebra homomorphism
 This is the reason the `ContinuousMap.UniqueHom` class exists in the first place, as
 opposed to simply appealing directly to Stone-Weierstrass to prove `StarAlgHom.ext_continuousMap`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -35,6 +35,7 @@ any bilinear form `B : E →ₗ[𝕜] F →ₗ[𝕜] 𝕜`, where `𝕜` is a no
 
 polar
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

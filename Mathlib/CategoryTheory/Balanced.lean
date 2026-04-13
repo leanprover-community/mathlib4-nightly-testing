@@ -17,6 +17,7 @@ Balanced categories arise frequently. For example, categories in which every mon
 as the category of types.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

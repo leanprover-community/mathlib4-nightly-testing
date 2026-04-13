@@ -36,6 +36,7 @@ generalized to fully semi-bilinear forms.
 Sesquilinear form, Sesquilinear map, matrix, basis
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

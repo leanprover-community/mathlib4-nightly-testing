@@ -27,6 +27,7 @@ contains a unique prime field: it is the smallest field contained in `K`.
   image of) `ZMod p`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -33,6 +33,7 @@ The proof idea is as follows.
   `n → ∞`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

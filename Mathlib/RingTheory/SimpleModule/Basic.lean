@@ -51,6 +51,7 @@ public import Mathlib.Algebra.NoZeroSMulDivisors.Basic
 * Unify with the work on Schur's Lemma in a category theory context
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

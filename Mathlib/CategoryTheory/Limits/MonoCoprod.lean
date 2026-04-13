@@ -29,6 +29,7 @@ TODO: define distributive categories, and show that they satisfy `MonoCoprod`, s
 <https://ncatlab.org/toddtrimble/published/distributivity+implies+monicity+of+coproduct+inclusions>
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

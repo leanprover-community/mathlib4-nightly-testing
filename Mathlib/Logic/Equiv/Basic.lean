@@ -26,6 +26,7 @@ other algebraic type classes.
 
 equivalence, congruence, bijective map
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

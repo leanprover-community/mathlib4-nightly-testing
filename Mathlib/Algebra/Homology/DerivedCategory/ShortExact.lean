@@ -18,6 +18,7 @@ in the derived category of `C`.
 (See `triangleOfSES` and `triangleOfSES_distinguished`.)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

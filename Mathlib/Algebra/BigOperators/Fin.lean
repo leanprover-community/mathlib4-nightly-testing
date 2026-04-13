@@ -24,6 +24,7 @@ constant function. These results have variants for sums instead of products.
 
 * `finFunctionFinEquiv`: An explicit equivalence between `Fin n → Fin m` and `Fin (m ^ n)`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

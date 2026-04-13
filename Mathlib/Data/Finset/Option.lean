@@ -25,6 +25,7 @@ Then we prove some basic lemmas about these definitions.
 
 finset, option
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

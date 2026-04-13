@@ -12,6 +12,7 @@ public import Mathlib.Algebra.Order.Group.Nat
 /-!
 # Free monoids have unique products
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

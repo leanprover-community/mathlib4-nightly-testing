@@ -12,6 +12,7 @@ public import Mathlib.Algebra.GroupWithZero.Units.Lemmas
 /-!
 # Group action on fields
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

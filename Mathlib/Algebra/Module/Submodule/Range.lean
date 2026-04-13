@@ -28,6 +28,7 @@ Note that this also means that dot notation (i.e. `f.range` for a linear map `f`
 ## Tags
 linear algebra, vector space, module, range
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

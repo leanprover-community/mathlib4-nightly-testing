@@ -20,6 +20,7 @@ bounded.
 
 `FinPartOrd` is equivalent to a small category.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

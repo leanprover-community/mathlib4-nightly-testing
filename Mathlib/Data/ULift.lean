@@ -15,6 +15,7 @@ In this file we provide `Subsingleton`, `Unique`, `DecidableEq`, and `isEmpty` i
 `ULift α` and `PLift α`. We also prove `ULift.forall`, `ULift.exists`, `PLift.forall`, and
 `PLift.exists`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -18,6 +18,7 @@ We provide constructors for combining (co)fans and show their (co)limit properti
 * Combine (co)fans on sigma types
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

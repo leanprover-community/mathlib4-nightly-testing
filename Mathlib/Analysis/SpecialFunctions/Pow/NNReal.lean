@@ -20,6 +20,7 @@ We construct the power functions `x ^ y` where
 
 We also prove basic properties of these functions.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

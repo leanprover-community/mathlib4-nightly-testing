@@ -28,6 +28,7 @@ In this file, we study the Galois theory of cyclotomic extensions of `ℚ`.
   element `[p]`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

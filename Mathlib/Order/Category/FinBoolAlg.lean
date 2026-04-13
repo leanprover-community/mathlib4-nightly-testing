@@ -27,6 +27,7 @@ FintypeCat_to_FinBoolAlg_op.left_op
 
 `FinBoolAlg` is essentially small.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

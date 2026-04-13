@@ -33,6 +33,7 @@ that if `C : Type u` and `Category.{v} C`, then
 * Refactor `DenseSubsite` using `1`-hypercovers.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

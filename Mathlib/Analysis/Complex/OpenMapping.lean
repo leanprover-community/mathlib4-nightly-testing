@@ -36,6 +36,7 @@ That second step is implemented in `DiffContOnCl.ball_subset_image_closedBall`.
 As an immediate corollary, we show that a holomorphic function whose real part is constant is itself
 constant.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

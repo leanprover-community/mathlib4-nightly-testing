@@ -14,6 +14,7 @@ public import Mathlib.RingTheory.UniqueFactorizationDomain.Ideal
 
 - IsNoetherianRing.wfDvdMonoid
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

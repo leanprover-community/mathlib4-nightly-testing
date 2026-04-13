@@ -26,6 +26,7 @@ we don't set up either construct as an instance.
 Once we have cocartesian-monoidal categories, replace `monoidalOfHasFiniteCoproducts` and
 `symmetricOfHasFiniteCoproducts` with `CocartesianMonoidalCategory.ofHasFiniteCoproducts`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

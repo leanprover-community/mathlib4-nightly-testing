@@ -12,6 +12,7 @@ public import Mathlib.Data.Set.Insert
 
 This file contains three trivial lemmas about `Bool`, `Set.univ`, and `Set.range`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

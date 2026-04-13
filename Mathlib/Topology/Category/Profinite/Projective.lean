@@ -24,6 +24,7 @@ Let `X` be a profinite set.
   is a projective presentation
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

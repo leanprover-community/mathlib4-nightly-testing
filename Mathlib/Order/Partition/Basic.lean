@@ -34,6 +34,7 @@ of `Q`.
 * Link this to `Finpartition`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 variable {α : Type*} {s t x y z : α} {S : Set α}

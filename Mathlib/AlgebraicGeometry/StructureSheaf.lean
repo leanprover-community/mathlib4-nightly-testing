@@ -46,6 +46,7 @@ boundaries.
 
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 
 universe u

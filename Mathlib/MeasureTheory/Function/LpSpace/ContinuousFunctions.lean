@@ -18,6 +18,7 @@ from the normed space of bounded continuous functions (`α →ᵇ E`) to `Lp E p
 as `BoundedContinuousFunction.toLp`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

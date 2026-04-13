@@ -24,6 +24,7 @@ know that these assumptions are satisfied for open immersions and hence the cove
 immersions can be used to deduce these assumptions in the general case.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Category.ModuleCat.Subobject
 /-!
 # The category of abelian groups is well-powered
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

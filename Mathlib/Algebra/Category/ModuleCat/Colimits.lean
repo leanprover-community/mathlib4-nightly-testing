@@ -23,6 +23,7 @@ TODO:
 In fact, in `ModuleCat R` there is a much nicer model of colimits as quotients
 of finitely supported functions, and we really should implement this as well.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

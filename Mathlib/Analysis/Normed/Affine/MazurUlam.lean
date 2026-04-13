@@ -27,6 +27,7 @@ The formalization is based on [Jussi Väisälä, *A Proof of the Mazur-Ulam Theo
 
 isometry, affine map, linear map
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

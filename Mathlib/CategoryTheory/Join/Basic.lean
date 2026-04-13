@@ -34,6 +34,7 @@ there is a unique morphism `c ⟶ d` in `C ⋆ D`.
 * [Kerodon: section 1.4.3.2](https://kerodon.net/tag/0160)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

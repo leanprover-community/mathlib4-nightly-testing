@@ -15,6 +15,7 @@ In this file we define `Algebra.adjoin` and the complete lattice structure on su
 
 More lemmas about `adjoin` can be found in `Mathlib/RingTheory/Adjoin/Basic.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

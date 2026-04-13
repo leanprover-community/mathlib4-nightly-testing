@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Group.Submonoid.Defs
 /-!
 # Submagmas with zero inherit cancellations
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

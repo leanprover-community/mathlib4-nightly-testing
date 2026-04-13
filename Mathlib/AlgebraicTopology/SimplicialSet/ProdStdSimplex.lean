@@ -21,6 +21,7 @@ is injective (or a strict mono).
 We also show that the dimension of `Δ[p] ⊗ Δ[q]` is `≤ p + q`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

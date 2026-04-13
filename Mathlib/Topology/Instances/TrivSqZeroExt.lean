@@ -26,6 +26,7 @@ one value.
 * `TrivSqZeroExt.topologicalRing`: the ring operations are continuous
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

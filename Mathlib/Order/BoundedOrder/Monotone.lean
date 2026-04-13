@@ -12,6 +12,7 @@ public import Mathlib.Order.Monotone.Basic
 # Monotone functions on bounded orders
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

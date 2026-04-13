@@ -17,6 +17,7 @@ This file contains the definition of `Ideal.IsPrime` for prime ideals.
 
 Support right ideals, and two-sided ideals over non-commutative rings.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

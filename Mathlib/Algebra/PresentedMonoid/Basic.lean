@@ -27,6 +27,7 @@ given by generators `x : α` and relations `rels`.
 
 generators, relations, monoid presentations
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

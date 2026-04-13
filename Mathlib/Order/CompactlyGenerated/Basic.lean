@@ -52,6 +52,7 @@ We also show well-founded lattices are compactly generated
 
 complete lattice, well-founded, compact
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

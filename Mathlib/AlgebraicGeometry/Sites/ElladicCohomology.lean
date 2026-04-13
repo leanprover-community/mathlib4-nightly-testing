@@ -39,6 +39,7 @@ definition using étale cohomology. This will show that the groups defined here 
 - [Bhatt, Bhargav and Scholze, Peter, The pro-étale topology for schemes][proetale2015]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

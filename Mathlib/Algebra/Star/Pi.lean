@@ -15,6 +15,7 @@ public import Mathlib.Algebra.Ring.Pi
 This file provides basic results about the star on product types defined in
 `Mathlib/Algebra/Notation/Pi/Defs.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

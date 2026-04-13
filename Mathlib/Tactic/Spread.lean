@@ -11,6 +11,7 @@ public meta import Lean.Elab.Binders
 /-!
 # Macro for spread syntax (`__ := instSomething`) in structures.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

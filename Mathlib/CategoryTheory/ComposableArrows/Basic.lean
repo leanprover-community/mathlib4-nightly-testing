@@ -39,6 +39,7 @@ TODO (@joelriou):
   up to `n = 7` in order to formalize spectral sequences following Verdier)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

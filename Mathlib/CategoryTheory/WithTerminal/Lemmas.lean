@@ -13,6 +13,7 @@ public import Mathlib.CategoryTheory.WithTerminal.Basic
 
 These lemmas and instances need more imports.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

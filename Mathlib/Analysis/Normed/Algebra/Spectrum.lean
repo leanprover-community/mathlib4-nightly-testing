@@ -36,6 +36,7 @@ Theorems specific to *complex* Banach algebras, such as *Gelfand's formula* can 
 * `spectrum.spectralRadius_le_nnnorm`: the spectral radius is bounded above by the norm.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

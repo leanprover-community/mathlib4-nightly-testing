@@ -18,6 +18,7 @@ They are separate, and if someone would like to split this file in two that may 
 * We provide the `Ring` structure on `AddMonoid.End`.
 * Results about `AddMonoid.End R` when `R` is a ring.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

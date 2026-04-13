@@ -14,6 +14,7 @@ public import Mathlib.Tactic.Core
 /-!
 The `tauto` tactic.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

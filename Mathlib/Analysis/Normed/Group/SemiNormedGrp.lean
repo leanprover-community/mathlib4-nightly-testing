@@ -16,6 +16,7 @@ public import Mathlib.CategoryTheory.Elementwise
 We define `SemiNormedGrp`, the category of seminormed groups and normed group homs between
 them, as well as `SemiNormedGrp₁`, the subcategory of norm non-increasing morphisms.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

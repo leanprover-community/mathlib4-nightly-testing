@@ -20,6 +20,7 @@ We provide a `CartesianMonoidalCategory (Over X)` instance via pullbacks, and pr
 for the induced `MonoidalCategory (Over X)` instance.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public noncomputable section
 

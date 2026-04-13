@@ -36,6 +36,7 @@ using the definition `SSet.Homotopy.toSimplicialObjectHomotopy` from the file
 `Mathlib/AlgebraicTopology/SimplicialSet/Homotopy.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

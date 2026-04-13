@@ -21,6 +21,7 @@ attached to `X`.
   using `GrothendieckTopology.Point.presheafFiber`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

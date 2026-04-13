@@ -18,6 +18,7 @@ This file provides infrastructure to compute with filters.
   lattices, while `Filter` is filters of sets (so corresponding to `CFilter (Set α) σ`).
 * `Filter.Realizer`: Realization of a `Filter`. `CFilter` that generates the given filter.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

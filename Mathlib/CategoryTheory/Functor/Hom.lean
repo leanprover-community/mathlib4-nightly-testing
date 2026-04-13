@@ -11,6 +11,7 @@ public import Mathlib.CategoryTheory.Types.Basic
 /-!
 The hom functor, sending `(X, Y)` to the type `X ⟶ Y`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

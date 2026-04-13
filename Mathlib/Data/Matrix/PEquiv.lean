@@ -33,6 +33,7 @@ inverse of this map, sending anything not in the image to zero.
 
 This file uses `ᵀ` for `Matrix.transpose`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

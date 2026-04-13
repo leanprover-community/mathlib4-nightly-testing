@@ -15,6 +15,7 @@ public import Mathlib.Algebra.Regular.Basic
 
 Move to `Mathlib/Algebra/BigOperators/Group/Finset/Basic.lean`?
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

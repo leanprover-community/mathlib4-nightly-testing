@@ -27,6 +27,7 @@ the present file would then become unnecessary: lemmas such as
 moved out of `Mathlib/MeasureTheory/Integral/Lebesgue/Basic.lean`, and the lemmas in this file could
 be moved to, e.g., `Mathlib/MeasureTheory/Constructions/BorelSpace/Metrizable.lean`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

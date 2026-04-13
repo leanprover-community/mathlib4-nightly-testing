@@ -31,6 +31,7 @@ unordered n-tuples from a given multiset. These are multiset versions of `Nat.mu
 * `theorem strictMono_sym2 : StrictMono (Multiset.sym2 : Multiset α → _)`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

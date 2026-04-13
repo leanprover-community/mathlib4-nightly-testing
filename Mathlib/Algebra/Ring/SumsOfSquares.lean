@@ -26,6 +26,7 @@ We introduce a predicate for sums of squares in a ring.
   the submonoid or subsemiring of sums of squares in an additive monoid or semiring `R`
   with multiplication.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

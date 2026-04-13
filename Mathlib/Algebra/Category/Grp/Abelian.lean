@@ -15,6 +15,7 @@ public import Mathlib.CategoryTheory.Limits.ConcreteCategory.Basic
 /-!
 # The category of abelian groups is abelian
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

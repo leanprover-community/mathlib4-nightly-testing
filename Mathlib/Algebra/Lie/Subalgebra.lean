@@ -28,6 +28,7 @@ results.
 
 lie algebra, lie subalgebra
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

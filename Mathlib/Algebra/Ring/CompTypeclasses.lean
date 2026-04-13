@@ -41,6 +41,7 @@ Instances of these typeclasses mostly involving `RingHom.id` are also provided:
 
 `RingHomCompTriple`, `RingHomInvPair`, `RingHomSurjective`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

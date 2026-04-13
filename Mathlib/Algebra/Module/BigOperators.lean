@@ -14,6 +14,7 @@ import Mathlib.Algebra.Module.End
 /-!
 # Finite sums over modules over a ring
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

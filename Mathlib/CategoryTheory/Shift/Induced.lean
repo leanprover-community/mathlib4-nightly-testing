@@ -24,6 +24,7 @@ functors, the main construction `HasShift.induced` in this file shall be
 used for both quotient and localized shifts.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

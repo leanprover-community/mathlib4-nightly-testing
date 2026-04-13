@@ -37,6 +37,7 @@ is also proved later in the file.
 
 uniformly integrable, uniformly tight, Vitali convergence theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

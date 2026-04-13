@@ -29,6 +29,7 @@ Use the statement `open scoped nonZeroDivisors nonZeroSMulDivisors` to access th
 your own code.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

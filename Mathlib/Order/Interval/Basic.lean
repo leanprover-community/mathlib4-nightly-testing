@@ -20,6 +20,7 @@ interval arithmetic.
 * `NonemptyInterval`: Nonempty intervals. Pairs where the second element is greater than the first.
 * `Interval`: Intervals. Either `∅` or a nonempty interval.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -29,6 +29,7 @@ chosen finite products.
   abstractly using the material in `CategoryTheory.Monoidal.Braided.Reflection`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

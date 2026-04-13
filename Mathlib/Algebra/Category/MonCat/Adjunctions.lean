@@ -25,6 +25,7 @@ from monoids to semigroups.
 * free-forgetful adjunction for monoids
 * adjunctions related to commutative monoids
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -41,6 +41,7 @@ in the diagram are injective).
 amalgamated product, pushout, group
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

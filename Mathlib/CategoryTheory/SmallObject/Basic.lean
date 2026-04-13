@@ -68,6 +68,7 @@ the file `Mathlib/CategoryTheory/SmallObject/TransfiniteCompositionLifting.lean`
 - https://ncatlab.org/nlab/show/small+object+argument
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

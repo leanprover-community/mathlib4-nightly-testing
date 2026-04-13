@@ -28,6 +28,7 @@ Note that this differs from the definition on stacks project where the arrows in
 Zariski site are arbitrary inclusions.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

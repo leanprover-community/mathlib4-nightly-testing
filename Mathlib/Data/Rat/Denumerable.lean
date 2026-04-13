@@ -17,6 +17,7 @@ This file proves that ℚ is denumerable.
 
 The fact that ℚ has cardinality ℵ₀ is proved in `Mathlib/Data/Rat/Cardinal.lean`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

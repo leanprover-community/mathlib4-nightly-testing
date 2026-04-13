@@ -11,6 +11,7 @@ public import Mathlib.RingTheory.Filtration
 /-!
 # Hausdorff-ness for Noetherian rings
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

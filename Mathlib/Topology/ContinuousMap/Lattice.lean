@@ -13,6 +13,7 @@ public import Mathlib.Topology.ContinuousMap.Ordered
 /-!
 # Continuous maps as a lattice ordered group
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

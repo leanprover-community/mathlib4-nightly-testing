@@ -24,6 +24,7 @@ We nevertheless use the namespace for lemmas using that combination of typeclass
 More substantial results on positive maps such as their continuity can be found in
 the `Analysis/CStarAlgebra` folder.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

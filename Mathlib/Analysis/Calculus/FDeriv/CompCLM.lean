@@ -19,6 +19,7 @@ This file contains the usual formulas (and existence assertions) for the derivat
 * composition of continuous linear maps
 * application of continuous (multi)linear maps to a constant
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

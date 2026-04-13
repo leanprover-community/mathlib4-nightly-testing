@@ -24,6 +24,7 @@ Notably this contains results about monomial ideals.
 * `MvPolynomial.mem_ideal_span_X_image`
 * `MvPolynomial.mem_pow_idealOfVars_iff`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

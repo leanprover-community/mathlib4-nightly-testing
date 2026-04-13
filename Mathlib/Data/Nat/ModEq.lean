@@ -27,6 +27,7 @@ and proves basic properties about it such as the Chinese Remainder Theorem
 
 ModEq, congruence, mod, MOD, modulo
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

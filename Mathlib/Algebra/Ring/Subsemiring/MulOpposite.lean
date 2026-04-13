@@ -16,6 +16,7 @@ public import Mathlib.Algebra.Ring.Opposite
 For every semiring `R`, we construct an equivalence between subsemirings of `R` and that of `Rᵐᵒᵖ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

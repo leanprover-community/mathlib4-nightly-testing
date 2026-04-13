@@ -24,6 +24,7 @@ to check it on the underlying sheaf of types.
 ## References
 * https://stacks.math.columbia.edu/tag/0073
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

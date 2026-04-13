@@ -20,6 +20,7 @@ The R-algebra structure on `Π i : I, A i` when each `A i` is an R-algebra.
 * `Pi.evalAlgHom`
 * `Pi.constAlgHom`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

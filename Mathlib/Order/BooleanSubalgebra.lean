@@ -12,6 +12,7 @@ public import Mathlib.Order.Sublattice
 
 This file defines Boolean subalgebras.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

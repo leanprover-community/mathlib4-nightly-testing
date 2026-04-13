@@ -45,6 +45,7 @@ The Lebesgue decomposition provides the Radon-Nikodym theorem readily.
 
 Lebesgue decomposition theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -22,6 +22,7 @@ integral lattice with an arbitrary reflexive module equipped with a bilinear for
 ## TODO
 * properties
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

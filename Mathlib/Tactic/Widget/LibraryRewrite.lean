@@ -57,6 +57,7 @@ Ways to extend `rw??`:
   just point & click.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

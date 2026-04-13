@@ -90,6 +90,7 @@ TODO: implementation notes for the definition of `ωₙ`.
 
 elliptic curve, division polynomial, torsion point
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

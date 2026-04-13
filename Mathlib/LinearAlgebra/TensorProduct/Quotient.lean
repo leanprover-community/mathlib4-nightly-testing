@@ -36,6 +36,7 @@ the following isomorphisms:
 Quotient, Tensor Product
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

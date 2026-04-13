@@ -11,6 +11,7 @@ public import Mathlib.Topology.Compactness.Compact
 /-!
 # Compact sets and compact spaces and locally finite functions
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

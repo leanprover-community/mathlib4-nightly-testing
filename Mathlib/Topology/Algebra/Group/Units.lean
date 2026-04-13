@@ -17,6 +17,7 @@ public import Mathlib.Topology.Algebra.Monoid
 This file contains lemmas about the topology of units in topological monoids,
 including results about submonoid units and units of product spaces.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

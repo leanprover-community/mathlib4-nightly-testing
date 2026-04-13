@@ -14,6 +14,7 @@ public import Mathlib.CategoryTheory.Abelian.Basic
 # The category of presheaves of modules is abelian
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

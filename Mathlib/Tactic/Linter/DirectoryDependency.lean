@@ -10,6 +10,8 @@ public meta import Lean.Elab.ParseImportsFast
 public meta import Lean.Linter.Basic
 public meta import Lean.Elab.AssertExists
 public import Lean.Message
+
+set_option backward.defeq.atInstanceTransparency false
 -- This file is imported by the Header linter, hence has no mathlib imports.
 
 /-! # The `directoryDependency` linter

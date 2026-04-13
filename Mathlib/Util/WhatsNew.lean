@@ -16,6 +16,7 @@ whatsnew in
 theorem foo : 42 = 6 * 7 := rfl
 ```
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

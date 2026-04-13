@@ -21,6 +21,7 @@ when `n + a = a'`. This is summarized by instances
 and `HomotopyCategory` namespaces.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

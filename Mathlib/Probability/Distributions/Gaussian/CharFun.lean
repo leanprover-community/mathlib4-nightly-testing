@@ -36,6 +36,7 @@ We also specialize these statements in the case of Hilbert spaces, with
 
 Gaussian measure, characteristic function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

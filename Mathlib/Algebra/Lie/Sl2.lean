@@ -26,6 +26,7 @@ about `sl₂`.
   natural number if the representation is finite-dimensional.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

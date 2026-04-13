@@ -10,6 +10,7 @@ public import Mathlib.Data.Multiset.Bind
 /-!
 # Sections of a multiset
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

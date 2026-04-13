@@ -17,6 +17,7 @@ public import Mathlib.Topology.Metrizable.Basic
 Further results about pseudo-metric spaces.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -11,6 +11,7 @@ public import Mathlib.RingTheory.SimpleRing.Basic
 /-!
 The matrix ring over a simple ring is simple
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

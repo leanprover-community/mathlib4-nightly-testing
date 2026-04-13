@@ -12,6 +12,7 @@ public meta import Lean.Elab.Command
 /-!
 Additional `conv` tactics.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

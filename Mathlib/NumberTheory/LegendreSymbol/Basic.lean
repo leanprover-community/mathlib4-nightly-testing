@@ -34,6 +34,7 @@ are squares:
 
 quadratic residue, quadratic nonresidue, Legendre symbol
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -45,6 +45,7 @@ by unbundling the `vars` field or making the field globally reducible in constru
 unification hints.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

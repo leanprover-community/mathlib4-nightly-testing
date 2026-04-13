@@ -11,6 +11,7 @@ public import Mathlib.Order.TypeTags
 /-!
 # Fintype instances for `WithTop α` and `WithBot α`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

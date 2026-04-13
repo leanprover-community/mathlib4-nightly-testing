@@ -15,6 +15,7 @@ analogues add-left-regular, add-right-regular and add-regular elements.
 
 For monoids where _every_ element is regular, see `IsCancelMul` and nearby typeclasses.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

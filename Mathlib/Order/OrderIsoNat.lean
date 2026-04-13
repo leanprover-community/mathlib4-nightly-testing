@@ -25,6 +25,7 @@ defines the limit value of an eventually-constant sequence.
 * `monotonicSequenceLimitIndex`: The index of the first occurrence of `monotonicSequenceLimit`
   in the sequence.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

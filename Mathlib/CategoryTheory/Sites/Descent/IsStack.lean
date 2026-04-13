@@ -28,6 +28,7 @@ equivalences of categories.
 * [Gérard Laumon and Laurent Moret-Bailly, *Champs algébriques*][laumon-morel-bailly-2000]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

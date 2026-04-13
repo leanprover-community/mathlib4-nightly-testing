@@ -10,6 +10,7 @@ public import Mathlib.RingTheory.Norm.Defs
 public import Mathlib.RingTheory.Trace.Defs
 
 /-! # Lemmas about `Algebra.trace` and `Algebra.norm` on `ℂ` -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

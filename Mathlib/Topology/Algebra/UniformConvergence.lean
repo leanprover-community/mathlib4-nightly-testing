@@ -38,6 +38,7 @@ to `β` endowed with the structures of uniform convergence and `𝔖`-convergenc
 uniform convergence, strong dual
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

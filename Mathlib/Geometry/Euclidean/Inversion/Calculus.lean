@@ -24,6 +24,7 @@ space in this file.
 
 inversion, derivative
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

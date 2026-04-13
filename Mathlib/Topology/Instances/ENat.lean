@@ -14,6 +14,7 @@ public import Mathlib.Topology.Algebra.Monoid.Defs
 /-!
 # Topology on extended natural numbers
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -46,6 +46,7 @@ is too strong.
   the concept here for finite systems.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

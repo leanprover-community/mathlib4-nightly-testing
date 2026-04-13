@@ -10,6 +10,7 @@ public import Mathlib.Init
 /-!
 # `ToExpr` instances for Mathlib
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

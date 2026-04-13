@@ -19,6 +19,7 @@ We provide `path_composition : paths C ⥤ C`.
 We check that the quotient of the path category of a category by the canonical relation
 (paths are related if they compose to the same path) is equivalent to the original category.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

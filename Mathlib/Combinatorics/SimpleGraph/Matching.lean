@@ -48,6 +48,7 @@ one edge, and the edges of the subgraph represent the paired vertices.
 
 * Tutte's Theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

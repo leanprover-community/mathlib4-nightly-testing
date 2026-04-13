@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Group.Pi.Basic
 /-!
 # Dependent-typed matrices
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

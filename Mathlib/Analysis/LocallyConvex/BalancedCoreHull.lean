@@ -37,6 +37,7 @@ this is `balancedCore_eq_iInter`.
 
 balanced
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ by an `R`-linear endomorphism, which require the concept of finite-dimensionalit
   over `K`, then the induced `K[X]`-module structure on `M` is pure torsion.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

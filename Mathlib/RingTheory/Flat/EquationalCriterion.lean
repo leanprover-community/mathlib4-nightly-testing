@@ -53,6 +53,7 @@ every finitely presented flat module is projective (`Module.Flat.projective_of_f
 * [Stacks: Characterizing flatness](https://stacks.math.columbia.edu/tag/058C)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

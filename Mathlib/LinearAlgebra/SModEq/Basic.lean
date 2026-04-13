@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Module.Submodule.RestrictScalars
 /-!
 # modular equivalence for submodule
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

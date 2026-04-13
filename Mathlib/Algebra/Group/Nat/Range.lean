@@ -12,6 +12,7 @@ public import Mathlib.Data.Finset.Image
 /-!
 # `Finset.range` and addition of natural numbers
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 assert_not_exists MonoidWithZero MulAction IsOrderedMonoid

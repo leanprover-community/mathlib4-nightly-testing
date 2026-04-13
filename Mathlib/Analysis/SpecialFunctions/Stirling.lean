@@ -33,6 +33,7 @@ ingredients are
 and prove that $a = \sqrt{\pi}$. Here the main ingredient is the convergence of Wallis' product
 formula for `π`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -26,6 +26,7 @@ This file contains definitions and basic results about Cartan matrices of root p
 * `RootPairing.Base.equivOfCartanMatrixEq`: a root system is determined by its Cartan matrix.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

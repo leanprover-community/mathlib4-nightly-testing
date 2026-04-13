@@ -32,6 +32,7 @@ If you are working over `ℚ`, note the existence of the diamond explained in
 `Mathlib.Algebra.QuadraticAlgebra.Defs`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

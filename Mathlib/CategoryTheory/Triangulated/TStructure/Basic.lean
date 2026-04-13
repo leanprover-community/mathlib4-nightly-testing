@@ -35,6 +35,7 @@ use depending on the context.
 * [Beilinson, Bernstein, Deligne, Gabber, *Faisceaux pervers*][bbd-1982]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

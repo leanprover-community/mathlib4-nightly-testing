@@ -20,6 +20,7 @@ and its faces (numbered from `0` to `3`) are respectively
 `mk₂ f₂ f₃`, `mk₂ f₁₂ f₃`, `mk₂ f₁ f₂₃`, `mk₂ f₁ f₂`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

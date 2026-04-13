@@ -33,6 +33,7 @@ This is useful in multiple ways:
 along with a term `a : α` if the value is `True`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

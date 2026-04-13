@@ -24,6 +24,7 @@ Mathlib 4.
 
 affine map, derivative, differentiability
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

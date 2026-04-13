@@ -11,6 +11,7 @@ public import Mathlib.Logic.Equiv.Defs
 /-!
 # The equivalence between `ℕ+` and `ℕ`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

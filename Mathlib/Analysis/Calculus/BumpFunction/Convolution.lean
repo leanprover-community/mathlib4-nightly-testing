@@ -38,6 +38,7 @@ We also provide estimates in the case if `g x` is close to `g x₀` on this ball
 
 convolution, smooth function, bump function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

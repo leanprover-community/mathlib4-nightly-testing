@@ -50,6 +50,7 @@ namely Polish spaces.
 accumulation point, perfect set, dense-in-itself, cantor-bendixson.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

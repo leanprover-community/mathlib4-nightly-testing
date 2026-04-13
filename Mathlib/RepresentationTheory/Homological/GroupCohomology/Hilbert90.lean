@@ -48,6 +48,7 @@ statement is clearer.
   for all $1 ≤ n.$
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

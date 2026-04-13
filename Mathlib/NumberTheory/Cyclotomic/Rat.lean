@@ -5,5 +5,6 @@ public import Mathlib.CategoryTheory.Category.Init
 public import Mathlib.Combinatorics.Matroid.Init
 public import Mathlib.Data.Nat.Factorial.DoubleFactorial
 public import Mathlib.NumberTheory.ArithmeticFunction.Misc
+set_option backward.defeq.atInstanceTransparency false
 
 deprecated_module (since := "2025-10-14")

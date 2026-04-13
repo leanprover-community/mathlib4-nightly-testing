@@ -16,6 +16,7 @@ public import Mathlib.Algebra.Polynomial.Eval.Defs
 * `Polynomial.leval`: `Polynomial.eval` as linear map
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

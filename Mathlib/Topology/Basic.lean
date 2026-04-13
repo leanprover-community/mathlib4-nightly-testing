@@ -30,6 +30,7 @@ Topology in mathlib heavily uses filters (even more than in Bourbaki). See expla
 
 topological space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

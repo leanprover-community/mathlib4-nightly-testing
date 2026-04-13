@@ -28,6 +28,7 @@ Given an object property `P`, we define an object property `ind P` that is satis
 
 - Dualise to obtain `CategoryTheory.ObjectProperty.pro`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

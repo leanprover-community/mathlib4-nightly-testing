@@ -32,6 +32,7 @@ Related files are:
 * `Data.PSigma.Order`: Lexicographic order on `Σₗ' i, α i`.
 * `Data.Prod.Lex`: Lexicographic order on `α × β`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

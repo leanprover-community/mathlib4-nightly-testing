@@ -23,6 +23,7 @@ general construction allows the sheafification of both the presheaf of rings
 and the presheaf of modules.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

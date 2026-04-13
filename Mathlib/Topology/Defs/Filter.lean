@@ -114,6 +114,7 @@ as well as other definitions that rely on `Filter`s.
 * `𝓝[≠] x`: the filter `nhdsWithin x {x}ᶜ` of punctured neighborhoods of `x`;
 * `𝓝ˢ s`: the filter `nhdsSet s` of neighborhoods of a set.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

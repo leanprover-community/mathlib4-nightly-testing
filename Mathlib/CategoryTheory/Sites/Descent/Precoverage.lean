@@ -31,6 +31,7 @@ Grothendieck topology associated to `J` if `F` satisfies
 that are part of `J`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 universe t t' v' v u' u
 

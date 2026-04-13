@@ -22,6 +22,7 @@ We provide the universal property, that ring homomorphisms `ℤ√d →+* R` cor
 to choices of square roots of `d` in `R`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

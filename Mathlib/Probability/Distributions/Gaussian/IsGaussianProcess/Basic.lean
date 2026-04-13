@@ -29,6 +29,7 @@ then `Y` is itself a Gaussian process.
 
 Gaussian process
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -14,6 +14,7 @@ public import Mathlib.Tactic.MinImports
 /-!
 # Order homomorphisms and sets
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

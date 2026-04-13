@@ -32,6 +32,7 @@ incompatible with the Vietoris topology.
 
 * [Ernest Michael, *Topologies on spaces of subsets*][michael1951]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

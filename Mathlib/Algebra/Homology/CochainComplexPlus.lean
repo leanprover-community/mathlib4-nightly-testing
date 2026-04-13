@@ -17,6 +17,7 @@ of `CochainComplex C ℤ` consisting of bounded below cochain complexes
 in a category `C`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

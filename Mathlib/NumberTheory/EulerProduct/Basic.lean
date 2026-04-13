@@ -43,6 +43,7 @@ for `s : Finset ℕ`.
 
 Euler product, multiplicative function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

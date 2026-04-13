@@ -43,6 +43,7 @@ TODO: add `NonUnitalAlgEquiv` when needed.
 
 non-unital, algebra, morphism
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

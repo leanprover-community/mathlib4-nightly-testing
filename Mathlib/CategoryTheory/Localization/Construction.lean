@@ -36,6 +36,7 @@ uniqueness is expressed by `uniq`.
 * [P. Gabriel, M. Zisman, *Calculus of fractions and homotopy theory*][gabriel-zisman-1967]
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -31,6 +31,7 @@ possible solution is to drop `RootPairing.pairing` and `RootPairing.coxeterWeigh
 solely on `RootPairing.pairingIn` and `RootPairing.coxeterWeightIn`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

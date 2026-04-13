@@ -12,6 +12,7 @@ public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
 /-!
 # Countable modules
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

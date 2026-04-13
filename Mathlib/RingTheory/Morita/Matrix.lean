@@ -24,6 +24,7 @@ public import Mathlib.RingTheory.Morita.Basic
 - `IsMoritaEquivalent.matrix`: `R` and `Mₙ(R)` are Morita equivalent.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

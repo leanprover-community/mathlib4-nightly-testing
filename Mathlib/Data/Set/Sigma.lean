@@ -13,6 +13,7 @@ public import Mathlib.Data.Set.BooleanAlgebra
 
 This file defines `Set.sigma`, the indexed sum of sets.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

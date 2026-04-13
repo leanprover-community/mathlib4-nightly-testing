@@ -28,6 +28,7 @@ triangulated category `C`, and this extends to a functor
 `t.spectralObjectFunctor : C ⥤ SpectralObject C EInt`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

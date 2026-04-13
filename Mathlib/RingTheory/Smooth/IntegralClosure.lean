@@ -26,6 +26,7 @@ and show that it is bijective when `S` is `R`-smooth.
 - `TensorProduct.toIntegralClosure_bijective_of_smooth`:
   If `S` is `R`-smooth, then `TensorProduct.toIntegralClosure` is bijective.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

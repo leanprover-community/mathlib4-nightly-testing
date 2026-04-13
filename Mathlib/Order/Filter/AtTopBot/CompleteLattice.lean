@@ -11,6 +11,7 @@ public import Mathlib.Order.Filter.AtTopBot.Tendsto
 /-!
 # `Filter.atTop` and `Filter.atBot` in (conditionally) complete lattices
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -60,6 +60,7 @@ All of these should be relatively straightforward.
 projective module
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

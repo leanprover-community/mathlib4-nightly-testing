@@ -47,6 +47,7 @@ the following sources:
 - [Elephant]: *Sketches of an Elephant*, P. T. Johnstone: C2.1.
 - [nLab, *Coverage*](https://ncatlab.org/nlab/show/coverage)
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

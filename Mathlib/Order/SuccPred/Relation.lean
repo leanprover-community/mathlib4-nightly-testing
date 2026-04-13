@@ -13,6 +13,7 @@ public import Mathlib.Order.SuccPred.Archimedean
 This file contains properties about relations on types with a `SuccOrder`
 and their closure operations (like the transitive closure).
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

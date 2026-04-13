@@ -19,6 +19,7 @@ which allow for plugging in new positivity functionality around a positivity-bas
 The actual behavior is in `@[positivity]`-tagged definitions in `Tactic.Positivity.Basic`
 and elsewhere.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

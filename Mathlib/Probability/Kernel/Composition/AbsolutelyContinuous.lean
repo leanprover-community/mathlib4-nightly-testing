@@ -26,6 +26,7 @@ or mutually singular.
 * `absolutelyContinuous_compProd_iff'`: `μ ⊗ₘ κ ≪ ν ⊗ₘ η ↔ μ ≪ ν ∧ ∀ᵐ a ∂μ, κ a ≪ η a`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

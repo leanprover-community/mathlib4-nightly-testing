@@ -15,6 +15,7 @@ We write a product indexed by `I` as a binary product of the products indexed by
 and its complement.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

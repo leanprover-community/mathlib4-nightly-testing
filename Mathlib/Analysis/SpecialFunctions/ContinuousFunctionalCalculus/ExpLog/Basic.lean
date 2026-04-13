@@ -41,6 +41,7 @@ definitions for them.
   products).
 + Relate `CFC.log` to `rpow`, `zpow`, `sqrt`, `inv`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

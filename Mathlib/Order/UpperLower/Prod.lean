@@ -17,6 +17,7 @@ defines said product over the types `UpperSet` and `LowerSet` and proves some of
 
 * `×ˢ` is notation for `UpperSet.prod` / `LowerSet.prod`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

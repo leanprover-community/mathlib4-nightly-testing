@@ -11,6 +11,7 @@ public import Mathlib.Logic.Small.Basic
 /-!
 # Results about `Small` on coerced sets
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

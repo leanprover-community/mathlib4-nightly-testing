@@ -13,6 +13,7 @@ public import Mathlib.Tactic.Nontriviality
 # Lemmas about commuting elements in a `MonoidWithZero` or a `GroupWithZero`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

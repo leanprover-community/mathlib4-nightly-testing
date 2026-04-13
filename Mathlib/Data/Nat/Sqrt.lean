@@ -11,6 +11,7 @@ public import Batteries.Data.Nat.Basic
 /-!
 # Properties of the natural number square root function.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

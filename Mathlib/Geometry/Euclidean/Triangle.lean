@@ -36,6 +36,7 @@ unnecessarily.
 * https://en.wikipedia.org/wiki/Law_of_sines
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

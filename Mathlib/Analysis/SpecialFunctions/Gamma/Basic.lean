@@ -37,6 +37,7 @@ set it to be `0` by convention.)
 
 Gamma
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

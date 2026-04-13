@@ -17,6 +17,7 @@ is equivalent to the category of "native" bundled monoids.
 
 Moreover, this equivalence is compatible with the forgetful functors to `Type`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

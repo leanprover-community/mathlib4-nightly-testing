@@ -21,6 +21,7 @@ Given a natural transformation `η : F ⟶ G`, we obtain a natural transformatio
 `sheafCompose J F ⟶ sheafCompose J G`, which we call `sheafCompose_map J η`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

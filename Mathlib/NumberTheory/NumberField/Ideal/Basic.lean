@@ -26,6 +26,7 @@ We study results about integral ideals of a number field `K`.
   `torsionOrder K`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

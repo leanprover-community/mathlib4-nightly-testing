@@ -28,6 +28,7 @@ we introduce `Localization.lift₂ F hF L₁ L₂ : D₁ ⥤ D₂ ⥤ E` which i
 which lifts `F`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,6 +23,7 @@ real numbers to -1, positive real numbers to 1, and 0 to 0.
 
 sign function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

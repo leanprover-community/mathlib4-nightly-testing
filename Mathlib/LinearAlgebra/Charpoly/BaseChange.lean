@@ -12,6 +12,7 @@ public import Mathlib.LinearAlgebra.TensorProduct.Tower
 
 
 /-! # The characteristic polynomial of base change -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

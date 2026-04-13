@@ -12,6 +12,7 @@ public import Mathlib.Data.Nat.Cast.Defs
 /-!
 # Order of numerals in an `AddMonoidWithOne`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

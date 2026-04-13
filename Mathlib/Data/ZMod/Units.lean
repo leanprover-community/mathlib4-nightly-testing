@@ -12,6 +12,7 @@ public import Mathlib.RingTheory.Coprime.Lemmas
 /-!
 # Lemmas about units in `ZMod`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,6 +23,7 @@ multiplication in `Equiv.Perm`, and multiplication in `CategoryTheory.End`, but 
 
 ring aut
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

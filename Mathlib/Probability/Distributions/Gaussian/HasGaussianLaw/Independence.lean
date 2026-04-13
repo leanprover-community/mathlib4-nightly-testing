@@ -37,6 +37,7 @@ We also prove that independent Gaussian random variables are jointly Gaussian.
 
 Gaussian random variable
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 open MeasureTheory WithLp Complex Finset ContinuousLinearMap InnerProductSpace
 open scoped ENNReal NNReal RealInnerProductSpace

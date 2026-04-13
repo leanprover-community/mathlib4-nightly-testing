@@ -23,6 +23,7 @@ trivial `simp` lemmas, and define the following operations on `RingHom`s and sim
 * `f.prod_map g : R × S → R' × S'`: `Prod.map f g` as a `RingHom`,
   sends `(x, y)` to `(f x, g y)`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

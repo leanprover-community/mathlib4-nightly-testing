@@ -13,6 +13,7 @@ public import Mathlib.Tactic.Positivity.Basic
 /-!
 # `a * c ^ n < (n - d)!` holds true for sufficiently large `n`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

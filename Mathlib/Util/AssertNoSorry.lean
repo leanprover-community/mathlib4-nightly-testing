@@ -14,6 +14,7 @@ public meta import Lean.Elab.Command
 
 Throws an error if the given identifier uses sorryAx.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

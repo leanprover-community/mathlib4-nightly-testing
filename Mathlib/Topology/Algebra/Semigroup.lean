@@ -16,6 +16,7 @@ right-multiplication by constants is continuous.
 
 We also state a corresponding lemma guaranteeing that a subset of `M` contains an idempotent.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

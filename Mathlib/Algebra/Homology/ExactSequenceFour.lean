@@ -18,6 +18,7 @@ to be used for exact sequences in abelian categories, but the
 construction works for preadditive balanced categories.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -10,6 +10,7 @@ public import Mathlib.Topology.UniformSpace.UniformEmbedding
 /-!
 # Indexed product of uniform spaces
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

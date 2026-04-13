@@ -11,6 +11,7 @@ public import Mathlib.Algebra.GroupWithZero.Units.Basic
 /-!
 # Conjugacy in a group with zero
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

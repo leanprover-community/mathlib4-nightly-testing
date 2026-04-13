@@ -22,6 +22,7 @@ category.
 Any functor `F` from a groupoid `G` into `C` factors through `CategoryTheory.Core C`,
 but this is not functorial with respect to `F`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

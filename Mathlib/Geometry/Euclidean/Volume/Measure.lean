@@ -43,6 +43,7 @@ TODO: show the scaling factor equals to the ratio between the volume of `d`-dime
 
 Hausdorff measure, measure, metric measure, volume, area
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 open MeasureTheory Measure
 

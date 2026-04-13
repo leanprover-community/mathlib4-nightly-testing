@@ -31,6 +31,7 @@ Note that we do not need `α` to be measurable to define an outer measure.
 
 outer measure
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

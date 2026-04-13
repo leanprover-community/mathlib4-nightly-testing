@@ -17,6 +17,7 @@ In this file, we define the singular chain complex and singular homology of a to
 We also calculate the homology of a totally disconnected space as an example.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

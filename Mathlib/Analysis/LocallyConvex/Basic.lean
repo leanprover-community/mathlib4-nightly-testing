@@ -42,6 +42,7 @@ For a module over a normed ring:
 
 absorbent, balanced, locally convex, LCTVS
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -26,6 +26,7 @@ lemma.
 
 metric space, partition of unity, locally finite
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

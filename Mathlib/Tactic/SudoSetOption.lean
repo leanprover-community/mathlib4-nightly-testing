@@ -12,6 +12,7 @@ public import Mathlib.Init
 
 Allows setting undeclared options.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

@@ -28,6 +28,7 @@ A dual API for pointwise right Kan extension is also formalized.
 * https://ncatlab.org/nlab/show/Kan+extension
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -18,6 +18,7 @@ discrete measurable space.
 
 Give the definition in the correct generality.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

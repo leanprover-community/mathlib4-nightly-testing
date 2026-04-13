@@ -59,6 +59,7 @@ equivalent to `CatCommSqOver F G X`.
 In this file, a few proofs could be removed in favor of letting autoParams fill them
 in automatically: they are kept intentionally for performance reasons.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

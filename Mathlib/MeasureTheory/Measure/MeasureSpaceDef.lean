@@ -53,6 +53,7 @@ This file does not import `MeasureTheory.MeasurableSpace.Basic`, but only `Measu
 
 measure, almost everywhere, measure space
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -32,6 +32,7 @@ all ways to construct a `Finset` by adding one element.
 finite sets, finset
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -15,6 +15,7 @@ public import Mathlib.Util.Qq
 /-!
 # Simproc for intervals of natural numbers
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

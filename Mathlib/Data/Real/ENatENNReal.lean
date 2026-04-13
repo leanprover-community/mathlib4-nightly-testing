@@ -13,6 +13,7 @@ public import Mathlib.Data.ENNReal.Basic
 
 In this file we define a coercion from `ℕ∞` to `ℝ≥0∞` and prove some basic lemmas about this map.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

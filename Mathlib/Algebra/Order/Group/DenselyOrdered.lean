@@ -15,6 +15,7 @@ public import Mathlib.Algebra.Order.Monoid.Unbundled.Pow
 /-!
 # Lemmas about densely linearly ordered groups.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

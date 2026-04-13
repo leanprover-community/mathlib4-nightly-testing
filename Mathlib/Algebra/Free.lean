@@ -29,6 +29,7 @@ import Mathlib.Tactic.Attr.Register
   `FreeSemigroup α`.
 * `FreeMagma.lift`: the universal property of the free magma, expressing its adjointness.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -20,6 +20,7 @@ In this file we prove that `Complex.exp` and `Real.exp` are analytic functions.
 
 exp, derivative
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

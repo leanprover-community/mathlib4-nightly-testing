@@ -24,6 +24,7 @@ and also different levels of equivalence when `R` is an `AddCommMonoid`,
 * `Matrix.compLinearEquiv`: `Matrix.comp` as a `LinearEquiv`
 * `Matrix.compAlgEquiv`: `Matrix.comp` as an `AlgEquiv`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

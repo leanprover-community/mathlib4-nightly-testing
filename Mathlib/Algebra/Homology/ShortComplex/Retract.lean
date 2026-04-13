@@ -12,6 +12,7 @@ public import Mathlib.CategoryTheory.MorphismProperty.Retract
 # Quasi-isomorphisms of short complexes are stable under retracts
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

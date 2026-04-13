@@ -25,6 +25,7 @@ The scope `Matrix` gives the following notation:
 * `ᴴ` for `Matrix.conjTranspose`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

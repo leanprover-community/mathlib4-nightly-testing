@@ -14,6 +14,7 @@ public import Mathlib.Algebra.Order.Monoid.Defs
 This file transfers order instances and ordered monoid/group instances from `α` to `αᵐᵒᵖ` and
 `αᵃᵒᵖ`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

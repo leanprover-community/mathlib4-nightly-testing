@@ -18,6 +18,7 @@ This file contains basic results on the natural-valued floor and ceiling functio
 
 rounding, floor, ceil
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

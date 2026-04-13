@@ -12,6 +12,7 @@ public import Mathlib.RepresentationTheory.Basic
 # Invariant submodules of a group representation
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ Standard examples of pretopologies in algebraic geometry, such as the étale sit
 this construction by intersecting with the pretopology of surjective families.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

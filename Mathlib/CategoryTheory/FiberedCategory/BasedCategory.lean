@@ -25,6 +25,7 @@ Natural transformations between based functors `F G : 𝒳 ⥤ᵇ 𝒴 ` are giv
 `BasedNatTrans F G`. These are defined as natural transformations `α` between the functors
 underlying `F` and `G` such that `α.app a` lifts `𝟙 S` whenever `𝒳.p.obj a = S`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

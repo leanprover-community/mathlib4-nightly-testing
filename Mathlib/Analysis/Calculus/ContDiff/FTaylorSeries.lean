@@ -100,6 +100,7 @@ values in `F`. This is the space in which the `n`-th derivative of a function fr
 
 In this file, we denote `⊤ : ℕ∞` with `∞`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

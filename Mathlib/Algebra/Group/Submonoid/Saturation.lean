@@ -30,6 +30,7 @@ lattice.
 * `Submonoid.saturation`: the smallest saturated submonoid containing a given submonoid.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

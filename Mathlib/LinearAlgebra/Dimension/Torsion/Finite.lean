@@ -12,6 +12,7 @@ public import Mathlib.LinearAlgebra.Dimension.Finite
 # Results relating rank and torsion.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -58,6 +58,7 @@ Related files are:
 
 colex, colexicographic, binary
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

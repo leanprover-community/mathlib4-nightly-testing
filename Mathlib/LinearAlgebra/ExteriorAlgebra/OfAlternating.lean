@@ -23,6 +23,7 @@ public import Mathlib.LinearAlgebra.ExteriorAlgebra.Basic
   exterior powers.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -27,6 +27,7 @@ closed under subobjects.
   with `IsNoetherianObject` in `Cᵒᵖ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

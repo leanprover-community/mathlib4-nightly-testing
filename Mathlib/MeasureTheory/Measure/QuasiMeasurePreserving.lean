@@ -22,6 +22,7 @@ absolutely continuous with respect to `μb`).
   respect to `μa` and `μb`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

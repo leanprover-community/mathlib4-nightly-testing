@@ -18,6 +18,7 @@ relation to decidable propositions.
 bool, boolean, Bool, De Morgan
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

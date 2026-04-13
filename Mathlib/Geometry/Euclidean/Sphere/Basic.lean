@@ -33,6 +33,7 @@ Euclidean affine spaces.
   coplanar.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

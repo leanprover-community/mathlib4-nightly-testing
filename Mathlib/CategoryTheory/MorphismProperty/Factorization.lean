@@ -32,6 +32,7 @@ and `W₂ p` and show that `W₁.comp W₂ = ⊤` iff `HasFactorization W₁ W�
 is `MorphismProperty.comp_eq_top_iff`).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

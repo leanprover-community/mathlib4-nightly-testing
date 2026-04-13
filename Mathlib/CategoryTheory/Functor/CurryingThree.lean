@@ -16,6 +16,7 @@ We study the equivalence of categories
 `currying₃ : (C₁ ⥤ C₂ ⥤ C₃ ⥤ E) ≌ C₁ × C₂ × C₃ ⥤ E`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

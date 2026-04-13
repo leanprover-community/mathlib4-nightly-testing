@@ -21,6 +21,7 @@ A polynomial `f : R[X]` splits if it is a product of constant and monic linear p
   constant and monic linear polynomials.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

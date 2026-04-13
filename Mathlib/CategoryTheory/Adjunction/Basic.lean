@@ -79,6 +79,7 @@ Conversely `Equivalence.toAdjunction` recovers the underlying adjunction from an
   adjunctions and (co)monads. There it is also shown that given an adjunction `L ⊣ R` and an
   isomorphism `L ⋙ R ≅ 𝟭 C`, the unit is an isomorphism, and similarly for the counit.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -18,6 +18,7 @@ Reference:
 https://kconrad.math.uconn.edu/blurbs/gradnumthy/padicharmonicsum.pdf
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

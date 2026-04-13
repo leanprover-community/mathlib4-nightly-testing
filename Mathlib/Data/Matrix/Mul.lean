@@ -50,6 +50,7 @@ as having the right type. Instead, `Matrix.of` should be used.
 Under various conditions, multiplication of infinite matrices makes sense.
 These have not yet been implemented.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

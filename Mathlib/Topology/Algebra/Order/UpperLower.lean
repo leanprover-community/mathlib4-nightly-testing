@@ -20,6 +20,7 @@ set).
 The same lemmas are true in the additive/multiplicative worlds. To avoid code duplication, we
 provide `HasUpperLowerClosure`, an ad hoc axiomatisation of the properties we need.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -29,6 +29,7 @@ the same `H` up to a canonical isomorphism), we shall define `[S.HasHomology]`
 and `S.homology`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

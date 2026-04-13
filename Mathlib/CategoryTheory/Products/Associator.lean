@@ -10,6 +10,7 @@ public import Mathlib.CategoryTheory.Products.Basic
 /-!
 The associator functor `((C × D) × E) ⥤ (C × (D × E))` and its inverse form an equivalence.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

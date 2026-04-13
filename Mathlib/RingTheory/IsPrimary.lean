@@ -33,6 +33,7 @@ to define the nilpotency of `r : R`.
   Chapter 4, Exercise 21.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

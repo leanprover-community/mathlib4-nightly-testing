@@ -19,6 +19,7 @@ This file gives constructions related to weakly initial objects, namely:
 
 These are primarily useful to show the General Adjoint Functor Theorem.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

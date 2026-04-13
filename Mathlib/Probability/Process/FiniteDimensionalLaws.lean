@@ -30,6 +30,7 @@ finite-dimensional distributions.
   same law.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

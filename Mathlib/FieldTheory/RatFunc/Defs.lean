@@ -48,6 +48,7 @@ the codomain is not a field or even an integral domain.
 * https://stacks.math.columbia.edu/tag/01X1
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

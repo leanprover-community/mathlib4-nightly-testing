@@ -34,6 +34,7 @@ To prove something for an arbitrary integrable function, a useful theorem is
 integrable
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

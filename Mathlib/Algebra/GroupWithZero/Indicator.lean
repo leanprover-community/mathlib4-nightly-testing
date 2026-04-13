@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Notation.Indicator
 /-!
 # Indicator functions and support of a function in groups with zero
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

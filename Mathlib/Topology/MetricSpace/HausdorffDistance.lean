@@ -50,6 +50,7 @@ This file introduces:
 ## Tags
 metric space, Hausdorff distance
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

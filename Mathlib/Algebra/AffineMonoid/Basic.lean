@@ -13,6 +13,7 @@ public import Mathlib.GroupTheory.Finiteness
 This file defines affine monoids as finitely generated cancellative torsion-free commutative
 monoids.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

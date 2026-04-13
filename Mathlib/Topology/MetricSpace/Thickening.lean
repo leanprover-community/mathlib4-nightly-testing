@@ -30,6 +30,7 @@ public import Mathlib.Topology.MetricSpace.HausdorffDistance
   of `closedBall`s of radius `δ` around `x : E`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

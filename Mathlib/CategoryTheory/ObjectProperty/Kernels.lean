@@ -21,6 +21,7 @@ Given an object property `P`, we also introduce two predicates
 (co)kernels of morphisms between objects in `P` remain in `P`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

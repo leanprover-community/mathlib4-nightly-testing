@@ -13,6 +13,7 @@ public import Mathlib.RingTheory.Ideal.Over
 /-!
 # Finiteness of quotient modules
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

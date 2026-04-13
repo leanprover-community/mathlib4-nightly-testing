@@ -39,6 +39,7 @@ For the Flypitch project:
 - [J. Han, F. van Doorn, *A formalization of forcing and the unprovability of
   the continuum hypothesis*][flypitch_itp]
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

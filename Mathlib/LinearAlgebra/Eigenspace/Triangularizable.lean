@@ -39,6 +39,7 @@ generalized eigenspaces span the whole space.
 
 eigenspace, eigenvector, eigenvalue, eigen
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

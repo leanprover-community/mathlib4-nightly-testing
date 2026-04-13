@@ -23,6 +23,7 @@ found automatically if this file and `Algebra.Category.Grp.FilteredColimits`
 are imported.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

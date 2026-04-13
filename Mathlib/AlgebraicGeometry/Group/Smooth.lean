@@ -17,6 +17,7 @@ public import Mathlib.CategoryTheory.Monoidal.Grp_
   If `G` is a group scheme over an algebraically closed field `k` that is reduced and locally
   of finite type, then `G` is smooth over `k`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

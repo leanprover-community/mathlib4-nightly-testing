@@ -11,6 +11,7 @@ public import Mathlib.Data.Option.NAry
 /-!
 # Adjoining a zero/one to semigroups and mapping
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

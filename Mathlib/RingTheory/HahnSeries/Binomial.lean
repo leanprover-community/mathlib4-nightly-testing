@@ -19,6 +19,7 @@ We introduce binomial expansions using `embDomain`.
   * coefficients of powers of binomials
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

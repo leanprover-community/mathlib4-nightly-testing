@@ -27,6 +27,7 @@ subspaces of affine spaces.
   subspace of dimension at most 1.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

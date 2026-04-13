@@ -11,6 +11,7 @@ public import Mathlib.Algebra.GroupWithZero.Units.Basic
 /-!
 # Multiplication by a nonzero element in a `GroupWithZero` is a permutation.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

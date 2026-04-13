@@ -61,6 +61,7 @@ This file contains basics about the (relative) separable closure of a field exte
 separable degree, degree, separable closure
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

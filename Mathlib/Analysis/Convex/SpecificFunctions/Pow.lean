@@ -27,6 +27,7 @@ requires slightly less imports.
 
 * Prove convexity for negative powers.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

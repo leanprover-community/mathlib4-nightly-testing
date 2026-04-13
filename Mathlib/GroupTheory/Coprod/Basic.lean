@@ -118,6 +118,7 @@ There are several reasons to build an API from scratch.
 
 group, monoid, coproduct, free product
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -26,6 +26,7 @@ reduce imports.
 * `Finset.card_finsuppAntidiag_nat_eq_choose` and `Finset.card_finsuppAntidiag_nat_eq_multichoose`:
   cardinality formula for `Finset.finsuppAntidiag s n` for natural number `n`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

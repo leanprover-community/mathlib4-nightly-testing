@@ -23,6 +23,7 @@ A monad "is just" a monoid in the category of endofunctors.
 4. `monadMonEquiv` is the equivalence between `Monad C` and `Mon (C ⥤ C)`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,6 +23,7 @@ can be found in `Mathlib/MeasureTheory/Function/JacobianOneDim.lean`
 
 integration by parts, change of variables in integrals
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

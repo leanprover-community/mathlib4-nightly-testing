@@ -23,6 +23,7 @@ Let `K` be a field with a valuation `v` and let `L` be a field extension of `K`.
   valuation of zeroth coefficient of the minimal polynomial of `x` over `K` is nonzero. This lemma
   is helpful for defining the valuation on `L` inducing `v`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

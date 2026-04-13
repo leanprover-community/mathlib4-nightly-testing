@@ -20,6 +20,7 @@ In order to achieve this, we dualize the constructions from the file
 `Embedding.TruncGE`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

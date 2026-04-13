@@ -38,6 +38,7 @@ multiplicative group actions).
 * https://en.wikipedia.org/wiki/Affine_space
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -26,6 +26,7 @@ and unique types.
 
 The results here should be used to golf the basic `Group` lemmas.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

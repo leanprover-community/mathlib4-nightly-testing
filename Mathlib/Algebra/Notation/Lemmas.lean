@@ -9,6 +9,7 @@ public import Batteries.Tactic.Init
 public import Mathlib.Tactic.ToAdditive
 
 /-! # Lemmas about inequalities with `1`. -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

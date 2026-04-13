@@ -46,6 +46,7 @@ local cohomology, local cohomology modules
     * the characterization as the cohomology of a Cech-like complex
 * Establish long exact sequence(s) in local cohomology
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -17,6 +17,7 @@ The actual linter is defined in `TextBased.lean`.
 This file defines the blocklist and other tools used by the linter.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 namespace Mathlib.Linter.TextBased.UnicodeLinter
 

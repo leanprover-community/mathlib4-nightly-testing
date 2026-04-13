@@ -13,6 +13,7 @@ public import Mathlib.Order.Interval.Set.Basic
 public import Mathlib.Logic.Pairwise
 
 /-! ### Lemmas about arithmetic operations and intervals. -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

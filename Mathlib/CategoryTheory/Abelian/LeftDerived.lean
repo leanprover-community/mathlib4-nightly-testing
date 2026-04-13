@@ -47,6 +47,7 @@ and show how to compute the components.
   and `F.leftDerived` shall be redefined using `F.leftDerivedFunctorMinus`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

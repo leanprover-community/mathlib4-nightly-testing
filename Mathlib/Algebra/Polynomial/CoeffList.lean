@@ -34,6 +34,7 @@ written as `leadingCoeff P :: List.replicate k 0 ++ coeffList P.eraseLead`. That
 of coefficients starts with the leading coefficient, followed by some number of zeros, and then the
 coefficients of `P.eraseLead`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

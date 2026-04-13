@@ -16,6 +16,7 @@ We introduce the following typeclasses for measures:
 * `SigmaFinite μ`: there exists a countable collection of sets that cover `univ`
   where `μ` is finite.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

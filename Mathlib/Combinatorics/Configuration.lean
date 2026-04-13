@@ -33,6 +33,7 @@ Together, these four statements say that any two of the following properties imp
 (a) `HasLines`, (b) `HasPoints`, (c) `|P| = |L|`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

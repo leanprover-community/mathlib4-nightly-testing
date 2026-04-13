@@ -12,6 +12,7 @@ public import Mathlib.Algebra.GroupWithZero.Action.Defs
 /-!
 # Conjugation action of a field on itself
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ See `traceForm_dualBasis_powerBasis_eq`.
 ## Main results
 - `span_coeff_minpolyDiv`: The coefficients of `minpolyDiv` span `R<x>`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ coevaluation, dual module, tensor product
 
 * Prove that this is independent of the choice of basis on `V`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

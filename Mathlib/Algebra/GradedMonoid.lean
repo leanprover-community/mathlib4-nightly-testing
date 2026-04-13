@@ -90,6 +90,7 @@ This file also defines:
 
 graded monoid
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

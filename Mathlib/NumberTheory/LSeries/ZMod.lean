@@ -55,6 +55,7 @@ Results for completed L-functions:
 * `ZMod.completedLFunction_one_sub_even` and `ZMod.completedLFunction_one_sub_odd`:
   the functional equation relating `completedLFunction Φ (1 - s)` to `completedLFunction (𝓕 Φ) s`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

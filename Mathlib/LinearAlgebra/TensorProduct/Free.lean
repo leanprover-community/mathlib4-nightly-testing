@@ -13,6 +13,7 @@ public import Mathlib.LinearAlgebra.DirectSum.Finsupp
 
 This file contains lemmas about tensoring with free modules.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

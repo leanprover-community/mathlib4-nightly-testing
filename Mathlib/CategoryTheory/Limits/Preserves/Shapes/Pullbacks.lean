@@ -26,6 +26,7 @@ The dual is also given.
 * Generalise to wide pullbacks
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

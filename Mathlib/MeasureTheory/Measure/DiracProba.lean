@@ -22,6 +22,7 @@ public import Mathlib.MeasureTheory.Measure.ProbabilityMeasure
 ## Tags
 probability measure, Dirac delta, embedding
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

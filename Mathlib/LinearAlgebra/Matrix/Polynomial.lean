@@ -25,6 +25,7 @@ In particular, we give results about the polynomial given by
 
 matrix determinant, polynomial
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -37,6 +37,7 @@ left adjoint to the functor equipping a module with the trivial representation.
   `⟦a ⊗ single x (single g r)⟧ ↦ single x (r • ρ(g⁻¹)(a))`. This is useful for group homology.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

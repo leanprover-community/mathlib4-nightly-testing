@@ -21,6 +21,7 @@ We show every category can be expressed as a disjoint union of its connected com
 particular `Decomposed J` is the category (definitionally) given by the sigma-type of the connected
 components of `J`, and it is shown that this is equivalent to `J`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

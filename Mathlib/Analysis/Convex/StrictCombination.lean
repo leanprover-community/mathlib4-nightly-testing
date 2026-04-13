@@ -16,6 +16,7 @@ This file proves lemmas about convex combinations of points in strictly convex s
 convex spaces.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

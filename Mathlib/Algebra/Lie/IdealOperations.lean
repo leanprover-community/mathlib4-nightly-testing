@@ -32,6 +32,7 @@ the action defined in this file.
 
 lie algebra, ideal operation
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

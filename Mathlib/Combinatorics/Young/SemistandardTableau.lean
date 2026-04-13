@@ -43,6 +43,7 @@ Semistandard Young tableau
 <https://en.wikipedia.org/wiki/Young_tableau>
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

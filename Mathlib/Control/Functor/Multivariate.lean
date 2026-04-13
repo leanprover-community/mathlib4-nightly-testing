@@ -19,6 +19,7 @@ Features:
 * `f <$$> x`    : notation for map
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

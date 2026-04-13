@@ -12,6 +12,7 @@ public import Mathlib.AlgebraicGeometry.Morphisms.Basic
 
 We define the endofunctor on `Scheme.Cover P` that collapses a cover to a single object cover.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

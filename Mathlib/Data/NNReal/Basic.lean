@@ -25,6 +25,7 @@ As a consequence, it is a bit of a random collection of results, and is a good t
 
 This file uses `ℝ≥0` as a localized notation for `NNReal`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

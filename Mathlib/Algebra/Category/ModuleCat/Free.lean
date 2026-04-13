@@ -27,6 +27,7 @@ This file proves results about linear independence and span in exact sequences o
 linear algebra, module, free
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

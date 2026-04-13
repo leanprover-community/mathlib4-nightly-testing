@@ -15,6 +15,7 @@ public import Mathlib.RingTheory.Noetherian.Defs
 # Compact submodules
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

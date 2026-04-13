@@ -14,6 +14,7 @@ public import Std.Data.HashMap.Basic
 
 We provide `allNames` and `allNamesByModule`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -19,6 +19,7 @@ and the evaluation functors `eval C c i : HomologicalComplex C c ⥤ C`
 commute to these.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

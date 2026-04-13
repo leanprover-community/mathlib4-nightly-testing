@@ -37,6 +37,7 @@ It is the left Kan extension of `SimplexCategory.toTop` along the Yoneda embeddi
 - Show the adjunction `sSetTopAdj` is a Quillen equivalence.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

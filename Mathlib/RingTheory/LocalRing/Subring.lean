@@ -14,6 +14,7 @@ public import Mathlib.RingTheory.LocalRing.Defs
 
 We prove basic properties of subrings of local rings.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

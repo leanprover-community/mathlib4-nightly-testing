@@ -44,6 +44,7 @@ A module `M` over a commutative ring `R` is *faithfully flat* if it is flat and 
 - `Module.FaithfullyFlat.self`: the `R`-module `R` is faithfully flat.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

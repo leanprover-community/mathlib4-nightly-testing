@@ -14,6 +14,7 @@ public import Mathlib.GroupTheory.Congruence.Defs
 This file defines the order isomorphism between the congruences on a group `G` and the congruences
 on the opposite group `Gᵒᵖ`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

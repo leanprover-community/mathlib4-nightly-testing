@@ -32,6 +32,7 @@ true in more general settings.
   finite limits and colimits.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

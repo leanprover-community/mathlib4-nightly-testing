@@ -11,6 +11,7 @@ public import Mathlib.LinearAlgebra.SModEq.Basic
 public import Mathlib.RingTheory.Ideal.Operations
 
 /-! # Lemmas about SModEq related to powers -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -34,6 +34,7 @@ over a base `X`. Here `Q = ⊤`.
   is setup in the general case to allow for a later generalization if needed.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

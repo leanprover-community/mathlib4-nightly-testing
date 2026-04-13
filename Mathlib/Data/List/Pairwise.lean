@@ -26,6 +26,7 @@ the pairwiseness of the list we have so far. It thus yields `l'` a maximal subli
 
 sorted, nodup
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

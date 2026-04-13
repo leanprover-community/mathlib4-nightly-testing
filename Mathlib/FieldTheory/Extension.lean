@@ -22,6 +22,7 @@ extends to an embedding of E/F into K/F.
 The American Mathematical Monthly
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

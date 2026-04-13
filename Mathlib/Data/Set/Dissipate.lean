@@ -15,6 +15,7 @@ The function `dissipate` takes `s : α → Set β` with `LE α` and returns `⋂
 It is related to `accumulate s := ⋃ y ≤ x, s y`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

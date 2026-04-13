@@ -51,6 +51,7 @@ This file defines ordered first-order languages and structures, as well as their
   `ℵ₀`-categorical, and thus complete.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

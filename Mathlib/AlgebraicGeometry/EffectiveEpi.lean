@@ -31,6 +31,7 @@ epimorphism, see the file `Mathlib.AlgebraicGeometry.Sites.Fpqc`.
 * https://stacks.math.columbia.edu/tag/023Q
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

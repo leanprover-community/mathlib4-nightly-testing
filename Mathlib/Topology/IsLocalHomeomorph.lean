@@ -29,6 +29,7 @@ Note that `IsLocalHomeomorph` is a global condition. This is in contrast to
 * more!
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

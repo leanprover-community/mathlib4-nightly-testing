@@ -39,6 +39,7 @@ For the classical statement of Krasner's lemma, please see the
 ## Tags
 Krasner's lemma, normed field
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -24,6 +24,7 @@ scalars.
 
 lie ring, lie algebra, extension of scalars, restriction of scalars, base change
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

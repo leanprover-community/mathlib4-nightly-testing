@@ -11,6 +11,7 @@ public import Mathlib.Data.ZMod.Basic
 /-!
 # Automorphism Group of `ZMod`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

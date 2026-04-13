@@ -23,6 +23,7 @@ See note [foundational algebra order theory].
 * `Int.inductionOn'`: Simple growing induction for numbers greater than `b`, plus simple decreasing
   induction on numbers less than `b`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

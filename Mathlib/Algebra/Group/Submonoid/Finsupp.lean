@@ -8,6 +8,7 @@ module
 public import Mathlib.Algebra.BigOperators.Finsupp.Basic
 
 /-! # Connection between `Submonoid.closure` and `Finsupp.prod` -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

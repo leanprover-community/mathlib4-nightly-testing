@@ -21,6 +21,7 @@ classes `PreservesBiproduct` and `PreservesBinaryBiproduct`. We then
   in case that the biproduct is preserved.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

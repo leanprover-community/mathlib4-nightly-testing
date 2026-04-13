@@ -32,6 +32,7 @@ These are partial orders for which every directed set has a least upper bound.
 
 complete partial order, directedly complete partial order
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

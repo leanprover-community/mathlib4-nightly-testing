@@ -23,6 +23,7 @@ We provide the following results:
 * functors which preserve initial or terminal objects preserve zero morphisms.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

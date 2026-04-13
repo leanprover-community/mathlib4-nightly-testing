@@ -12,6 +12,7 @@ public import Mathlib.Init
 public import Lean.Elab.Tactic.Config
 
 /-! ## Dependent rewrite tactic -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

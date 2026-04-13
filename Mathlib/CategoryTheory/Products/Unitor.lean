@@ -11,6 +11,7 @@ public import Mathlib.CategoryTheory.Discrete.Basic
 /-!
 # The left/right unitor equivalences `1 × C ≌ C` and `C × 1 ≌ C`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

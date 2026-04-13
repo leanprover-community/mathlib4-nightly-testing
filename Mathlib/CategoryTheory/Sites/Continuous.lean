@@ -47,6 +47,7 @@ category).
 * https://stacks.math.columbia.edu/tag/00WU
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

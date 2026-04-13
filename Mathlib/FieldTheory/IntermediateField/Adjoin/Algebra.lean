@@ -16,6 +16,7 @@ public import Mathlib.RingTheory.EssentialFiniteness
 
 This file relates `IntermediateField.adjoin` to `Algebra.adjoin`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

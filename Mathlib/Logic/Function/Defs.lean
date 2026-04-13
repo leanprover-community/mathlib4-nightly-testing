@@ -12,6 +12,7 @@ import Mathlib.Tactic.Attr.Register
 /-!
 # General operations on functions
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

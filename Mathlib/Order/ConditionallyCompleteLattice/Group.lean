@@ -13,6 +13,7 @@ public import Mathlib.Algebra.Order.Monoid.Unbundled.OrderDual
 # Conditionally complete lattices and groups.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

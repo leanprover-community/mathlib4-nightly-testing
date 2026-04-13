@@ -9,6 +9,7 @@ public import Mathlib.Data.Nat.Notation
 public import Mathlib.Order.TypeTags
 
 /-! # Definition and notation for extended natural numbers -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -23,6 +23,7 @@ is part of the natural isomorphism `homologyFunctorIso F` between the functors
 `F.mapShortComplex ⋙ homologyFunctor D` and `homologyFunctor C ⋙ F`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

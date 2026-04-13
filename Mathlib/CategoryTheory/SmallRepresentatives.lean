@@ -26,6 +26,7 @@ Given a cardinal `κ : Cardinal.{w}`, we also provide a small family of categori
 any category `C` such that `HasCardinalLT C κ` holds.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

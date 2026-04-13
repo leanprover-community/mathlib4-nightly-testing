@@ -14,6 +14,7 @@ public import Qq
 This file adds additional tools for metaprogramming with the `simp` tactic
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

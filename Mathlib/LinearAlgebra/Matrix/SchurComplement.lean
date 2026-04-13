@@ -29,6 +29,7 @@ Compare with `Matrix.invertibleOfFromBlocks₁₁Invertible`.
 * `Matrix.det_one_add_mul_comm`: the **Weinstein–Aronszajn identity**.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

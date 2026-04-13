@@ -22,6 +22,7 @@ provided a left adjoint.
 
 The duals are also shown.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

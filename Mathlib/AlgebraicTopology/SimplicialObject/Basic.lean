@@ -32,6 +32,7 @@ The following notations can be enabled via
 - `X _⦋m⦌ₙ` denotes the `m`-th term of an `n`-truncated simplicial object `X`.
 - `X ^⦋m⦌ₙ` denotes the `m`-th term of an `n`-truncated cosimplicial object `X`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

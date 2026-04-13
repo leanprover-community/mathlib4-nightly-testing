@@ -12,6 +12,7 @@ public import Mathlib.Data.Set.Finite.Basic
 /-!
 # Finiteness of support
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

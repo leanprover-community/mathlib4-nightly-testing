@@ -27,6 +27,7 @@ We also prove that the image of a closed interval under a continuous map is a cl
 
 compact, extreme value theorem
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

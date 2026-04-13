@@ -17,6 +17,7 @@ This file contains results about linear maps which respect direct sum decomposit
 domain and codomain.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

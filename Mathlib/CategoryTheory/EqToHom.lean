@@ -25,6 +25,7 @@ You have two options:
 This file introduces various `simp` lemmas which in favourable circumstances
 result in the various `eqToHom` morphisms to drop out at the appropriate moment!
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

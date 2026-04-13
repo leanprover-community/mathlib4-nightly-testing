@@ -12,6 +12,7 @@ public import Mathlib.Order.Bounds.Image
 /-!
 # Lemmas about `BddAbove`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

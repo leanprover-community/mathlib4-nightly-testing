@@ -16,6 +16,7 @@ public import Lean.Elab.Tactic.Doc
 The `tacticDocs` environment linter checks that all tactics defined in a module come with
 a (nonempty) docstring.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 open Lean Parser Elab Command
 

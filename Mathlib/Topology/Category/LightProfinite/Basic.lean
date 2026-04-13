@@ -28,6 +28,7 @@ The category `LightProfinite` is defined using the structure `CompHausLike`. See
 `CompHausLike.Basic` for more information.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

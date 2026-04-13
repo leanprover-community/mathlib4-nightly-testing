@@ -18,6 +18,7 @@ This file defines the [superfactorial](https://en.wikipedia.org/wiki/Superfactor
 
 * `Nat.superFactorial`: The superfactorial, denoted by `sf`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

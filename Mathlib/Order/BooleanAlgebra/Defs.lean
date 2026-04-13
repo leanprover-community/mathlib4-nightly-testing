@@ -57,6 +57,7 @@ that for all `a, b : α` where `a ≤ b`, the equations `x ⊔ a = b` and `x ⊓
 
 generalized Boolean algebras, Boolean algebras, lattices, sdiff, compl
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

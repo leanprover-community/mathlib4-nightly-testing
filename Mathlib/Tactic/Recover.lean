@@ -15,6 +15,7 @@ are not closed correctly. `recover tacs` for a tactic (or tactic sequence) `tacs
 applies the tactics and then adds goals
 that are not closed, starting from the original goal.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

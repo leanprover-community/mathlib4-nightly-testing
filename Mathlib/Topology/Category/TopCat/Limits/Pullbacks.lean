@@ -10,6 +10,7 @@ public import Mathlib.Topology.Category.TopCat.Limits.Products
 /-!
 # Pullbacks and pushouts in the category of topological spaces
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

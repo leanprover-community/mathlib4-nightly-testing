@@ -29,6 +29,7 @@ ideals here.
 
 ## Main results
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

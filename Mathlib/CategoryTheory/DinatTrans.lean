@@ -22,6 +22,7 @@ ordinary natural transformations.
 ## References
 * <https://ncatlab.org/nlab/show/dinatural+transformation>
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

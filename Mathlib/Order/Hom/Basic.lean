@@ -68,6 +68,7 @@ We also define two functions to convert other bundled maps to `α →o β`:
 
 monotone map, bundled morphism
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

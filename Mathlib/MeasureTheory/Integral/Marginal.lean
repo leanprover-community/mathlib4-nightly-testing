@@ -54,6 +54,7 @@ since there is no well-behaved measure on the domain of `f`.
 * Define the marginal function for functions taking values in a Banach space.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Ring.TransferInstance
 /-!
 # Transfer ring structures from `α` to `Shrink α`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

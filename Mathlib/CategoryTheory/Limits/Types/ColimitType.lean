@@ -33,6 +33,7 @@ in a categorical sense is a colimit.
 * add a similar API for limits in `Type`?
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -22,6 +22,7 @@ source and target categories by equivalent categories. This is obtained using
 that a functor between localized categories is an equivalence.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

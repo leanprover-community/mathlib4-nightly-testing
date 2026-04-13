@@ -39,6 +39,7 @@ holomorphic and meromorphic functions on a complex manifold and proving algebrai
 stalks, such as the Weierstrass preparation theorem.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

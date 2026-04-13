@@ -47,6 +47,7 @@ of `x` with `↑x`. This tactic also works for a function `f : α → ℝ` with 
 
 This file defines `ℝ≥0` as a localized notation for `NNReal`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

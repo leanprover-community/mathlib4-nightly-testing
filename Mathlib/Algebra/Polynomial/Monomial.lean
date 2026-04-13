@@ -11,6 +11,7 @@ public import Mathlib.Algebra.Polynomial.Basic
 /-!
 # Univariate monomials
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

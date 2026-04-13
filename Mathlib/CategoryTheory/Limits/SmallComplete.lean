@@ -25,6 +25,7 @@ we instead show that the homsets are subsingleton.
 
 small complete, preorder, Freyd
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

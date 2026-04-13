@@ -13,6 +13,7 @@ public import Mathlib.Data.Multiset.Range
 /-!
 # The powerset of a multiset
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

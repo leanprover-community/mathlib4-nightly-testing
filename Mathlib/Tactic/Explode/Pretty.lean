@@ -14,6 +14,7 @@ public import Mathlib.Tactic.Explode.Datatypes
 
 This file contains UI code to render the Fitch table.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

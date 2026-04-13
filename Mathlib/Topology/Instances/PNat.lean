@@ -12,6 +12,7 @@ public import Mathlib.Topology.Instances.Nat
 
 The structure of a metric space on `ℕ+` is introduced in this file, induced from `ℝ`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

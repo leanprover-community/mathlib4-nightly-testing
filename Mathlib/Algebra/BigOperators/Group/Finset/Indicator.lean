@@ -12,6 +12,7 @@ public import Mathlib.Order.CompleteLattice.Finset
 /-!
 # Interaction of big operators with indicator functions
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

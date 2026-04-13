@@ -50,6 +50,7 @@ convention.
 TODO: this file uses more made-up names; document these as well
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

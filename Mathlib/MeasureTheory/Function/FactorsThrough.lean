@@ -19,6 +19,7 @@ If `Z` is completely metrizable, the factorization map `h` can be taken to be me
 This is the content of the [Doob-Dynkin lemma](https://en.wikipedia.org/wiki/Doob–Dynkin_lemma):
 see `exists_eq_measurable_comp`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -26,6 +26,7 @@ public import Mathlib.RingTheory.LocalProperties.Submodule
 - Show that being projective is Zariski-local (very hard)
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

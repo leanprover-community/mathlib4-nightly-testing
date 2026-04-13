@@ -21,6 +21,7 @@ scalar-multiply to `a`.
 * Finset.VAddAntidiagonal : Finset antidiagonal for PWO inputs.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

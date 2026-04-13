@@ -12,6 +12,7 @@ public import Mathlib.Algebra.MonoidAlgebra.Defs
 /-!
 # Lemmas about ideals of `MonoidAlgebra` and `AddMonoidAlgebra`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

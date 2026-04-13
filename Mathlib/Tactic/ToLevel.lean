@@ -16,6 +16,7 @@ instances. This ensures that you are using the universe polymorphic `ToExpr` ins
 override the ones from Lean 4 core.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

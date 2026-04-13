@@ -16,6 +16,7 @@ abelian categories, then there is an induced triangulated functor
 `F.mapDerivedCategory : DerivedCategory C₁ ⥤ DerivedCategory C₂`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

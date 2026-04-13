@@ -64,6 +64,7 @@ possible.
 presheaf, over category, coyoneda
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

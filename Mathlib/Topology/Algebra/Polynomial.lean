@@ -35,6 +35,7 @@ In this file we prove the following lemmas.
 
 Polynomial, continuity
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

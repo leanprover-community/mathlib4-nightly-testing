@@ -12,6 +12,7 @@ public import Mathlib.Init
 
 Swap the names of two hypotheses.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

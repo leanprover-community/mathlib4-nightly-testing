@@ -46,6 +46,7 @@ invertible derivative `∂f/∂y`, see `ContDiffAt.implicitFunction`.
 
 implicit function, inverse function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

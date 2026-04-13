@@ -11,6 +11,7 @@ public import Mathlib.CategoryTheory.Monoidal.Braided.Basic
 /-!
 # Deriving `RigidCategory` instance for braided and left/right rigid categories.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,6 +11,7 @@ public import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 /-!
 # Measurability on the quotient of a module by a submodule
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

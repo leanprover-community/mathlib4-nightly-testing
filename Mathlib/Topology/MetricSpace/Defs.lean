@@ -26,6 +26,7 @@ for `PseudoMetricSpace`s in `PseudoMetric.lean`.
 
 metric, pseudometric space, dist
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

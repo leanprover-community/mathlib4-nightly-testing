@@ -21,6 +21,7 @@ the finite sets of that type.
   a linearly ordered type.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

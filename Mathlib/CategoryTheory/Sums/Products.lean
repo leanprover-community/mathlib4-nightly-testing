@@ -17,6 +17,7 @@ precompositions with the left and right inclusion as corresponding to the projec
 the product side.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -13,6 +13,7 @@ public import Mathlib.Analysis.Asymptotics.Defs
 This file contains lemmas about how operator norm on continuous linear maps interacts with `IsBigO`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

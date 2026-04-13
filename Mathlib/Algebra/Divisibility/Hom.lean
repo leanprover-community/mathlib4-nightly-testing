@@ -20,6 +20,7 @@ public import Mathlib.Algebra.Group.Hom.Defs
 
 divisibility, divides
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

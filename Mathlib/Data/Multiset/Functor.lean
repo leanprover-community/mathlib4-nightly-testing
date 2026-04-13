@@ -12,6 +12,7 @@ public import Mathlib.Control.Traversable.Instances
 /-!
 # Functoriality of `Multiset`.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

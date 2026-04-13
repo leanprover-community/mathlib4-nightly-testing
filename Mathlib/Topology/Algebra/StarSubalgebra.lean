@@ -23,6 +23,7 @@ This is just a minimal stub for now!
 The topological closure of a star subalgebra is still a star subalgebra,
 which as a star algebra is a topological star algebra.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

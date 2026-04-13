@@ -14,6 +14,7 @@ public import Mathlib.Init
 
 A tactic for applying functions at hypotheses.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public meta section
 

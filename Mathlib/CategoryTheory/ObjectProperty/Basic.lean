@@ -23,6 +23,7 @@ for predicates `C → Prop`.
   regarding terms in `ObjectProperty C` when `C` is pretriangulated
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

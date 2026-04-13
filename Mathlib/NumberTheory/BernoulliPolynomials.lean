@@ -35,6 +35,7 @@ Bernoulli polynomials are defined using `bernoulli`, the Bernoulli numbers.
   for the exponential.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

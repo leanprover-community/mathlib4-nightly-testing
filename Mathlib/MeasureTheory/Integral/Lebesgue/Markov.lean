@@ -18,6 +18,7 @@ the measure-theoretic form:
 ```
 This file proves a few variants of the inequality and other lemmas that depend on it.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

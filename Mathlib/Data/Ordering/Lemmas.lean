@@ -11,6 +11,7 @@ public import Mathlib.Order.Defs.Unbundled
 /-!
 # Some `Ordering` lemmas
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

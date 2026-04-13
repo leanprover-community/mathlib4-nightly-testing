@@ -11,6 +11,7 @@ public import Mathlib.RingTheory.Localization.NumDen
 /-!
 # Ring-theoretic fractions in `ℚ`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

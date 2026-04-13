@@ -23,6 +23,7 @@ The formulas for the dimensions are given elsewhere by `Module.finrank_mul_finra
 tower law
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

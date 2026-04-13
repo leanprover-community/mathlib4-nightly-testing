@@ -22,6 +22,7 @@ Then, when stating lemmas about cofibrations of simplicial sets, it is advisable
 to use the assumption `[Mono f]` instead of `[Cofibration f]`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -11,6 +11,7 @@ public import Mathlib.CategoryTheory.ComposableArrows.Basic
 # Functors to `ComposableArrows C 1`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

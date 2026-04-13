@@ -18,6 +18,7 @@ public import Mathlib.RingTheory.Flat.FaithfullyFlat.Basic
   is non-trivial.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

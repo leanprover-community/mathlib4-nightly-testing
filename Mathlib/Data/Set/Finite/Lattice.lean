@@ -21,6 +21,7 @@ and a `Set.Finite` constructor.
 
 finite sets
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -15,6 +15,7 @@ public import Mathlib.Tactic.Subsingleton
 
 In this file we prove many lemmas like “if `f → +∞`, then `f ± c → +∞`”.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

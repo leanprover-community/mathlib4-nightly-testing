@@ -13,6 +13,7 @@ public import Mathlib.Topology.ContinuousMap.Defs
 # Bundled continuous maps into orders, with order-compatible topology
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -71,6 +71,7 @@ respectively, since it requires a huge refactoring. We hope to add these simp le
   http://www-math.mit.edu/~etingof/egnobookfinal.pdf
 * <https://stacks.math.columbia.edu/tag/0FFK>.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

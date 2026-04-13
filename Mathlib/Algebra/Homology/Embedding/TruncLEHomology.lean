@@ -27,6 +27,7 @@ Moreover, if `C` is an abelian category, we introduce the cokernel
 sequence `K.shortComplexTruncLE e` of the monomorphism `K.ιTruncLE e`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

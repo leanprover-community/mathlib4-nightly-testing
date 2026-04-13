@@ -11,6 +11,7 @@ public import Mathlib.Topology.Homeomorph.TransferInstance
 /-!
 # Topological space structure on `Shrink X`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

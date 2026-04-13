@@ -43,6 +43,7 @@ general $R$-algebras.
 - Induction principle for `FreeProduct`
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 universe u v w w'

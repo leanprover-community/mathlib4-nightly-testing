@@ -16,6 +16,7 @@ We define the pointwise category structure on indexed families of objects in a c
 (and also the dependent generalization).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

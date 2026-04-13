@@ -15,6 +15,7 @@ public import Mathlib.LinearAlgebra.FreeModule.Finite.Quotient
   can be written as a product of quotients of `R` by principal ideals.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

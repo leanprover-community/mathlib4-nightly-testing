@@ -10,6 +10,7 @@ public import Mathlib.Algebra.Star.Pointwise
 public import Mathlib.Algebra.Group.Center
 
 /-! # `Set.center`, `Set.centralizer` and the `star` operation -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

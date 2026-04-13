@@ -16,6 +16,7 @@ for cochains and cocycles from a single complex. We also introduce similar
 definitions for cochains and cocycles to a single complex.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

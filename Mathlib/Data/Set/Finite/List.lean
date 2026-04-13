@@ -18,6 +18,7 @@ public import Mathlib.Data.Finite.Vector
 
 finite sets
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

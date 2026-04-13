@@ -28,6 +28,7 @@ Also see `AlgebraicGeometry/AffineSpace` for the affine space over arbitrary sch
 - `MvPolynomial.isOpenMap_comap_C`: The structure map `Spec R[X̲] → Spec R` is an open map.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

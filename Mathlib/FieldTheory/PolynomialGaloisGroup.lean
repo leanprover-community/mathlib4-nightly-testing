@@ -36,6 +36,7 @@ equals the number of real roots plus the number of roots not fixed by complex co
 (i.e. with some imaginary component).
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

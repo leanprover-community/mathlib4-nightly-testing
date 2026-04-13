@@ -17,6 +17,7 @@ that two morphisms in `CochainComplex C ℤ` are homotopic iff they are
 homotopic as morphisms in `CochainComplex Cᵒᵖ ℤ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

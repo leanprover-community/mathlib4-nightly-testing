@@ -27,6 +27,7 @@ Kernels built from other kernels:
   a kernel.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

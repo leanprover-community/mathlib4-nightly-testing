@@ -15,6 +15,7 @@ public import Mathlib.Logic.Equiv.Embedding
 
 This file establishes the cardinality of `α ↪ β` in full generality.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

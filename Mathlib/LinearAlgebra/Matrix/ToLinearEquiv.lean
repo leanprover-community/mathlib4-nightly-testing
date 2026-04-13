@@ -31,6 +31,7 @@ to linear equivs.
 matrix, linear equivalence, linear isomorphism, determinant, inverse
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

@@ -21,6 +21,7 @@ In this file we show that
 
 descend along faithfully flat base change.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

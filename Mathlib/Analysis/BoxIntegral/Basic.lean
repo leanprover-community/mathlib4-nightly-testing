@@ -52,6 +52,7 @@ non-Riemann filter (e.g., Henstock-Kurzweil and McShane).
 
 integral
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

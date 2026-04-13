@@ -22,6 +22,7 @@ its first derivative follows.
 
 implicit function
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 public section
 

@@ -23,6 +23,7 @@ We prove the following facts:
 * `Set.Finite.isCompact_convexHull` : convex hull of a finite set is compact;
 * `Set.Finite.isClosed_convexHull` : convex hull of a finite set is closed.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

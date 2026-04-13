@@ -13,6 +13,7 @@ public import Mathlib.CategoryTheory.Limits.Shapes.Kernels
 We construct kernels and cokernels in the opposite categories.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

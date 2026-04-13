@@ -25,6 +25,7 @@ and `Functor.IsDenseSubsite.hasSheafify_of_isEquivalence` in the file
 `Mathlib/CategoryTheory/Sites/DenseSubsite/Basic.lean`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

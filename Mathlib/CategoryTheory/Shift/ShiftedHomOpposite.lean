@@ -20,6 +20,7 @@ the homological functor `preadditiveYoneda.obj B : Cᵒᵖ ⥤ Type _` when `B` 
 in a pretriangulated category `C`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

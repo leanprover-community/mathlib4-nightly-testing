@@ -16,6 +16,7 @@ category of nonempty finite linearly ordered types, corresponds to
 the *covariant* functor which sends a type `α` to `αᵒᵈ`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

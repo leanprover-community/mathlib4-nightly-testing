@@ -13,6 +13,7 @@ public import Lean.Parser.Command
 
 The "DocString" linter validates style conventions regarding doc-string formatting.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 meta section
 
