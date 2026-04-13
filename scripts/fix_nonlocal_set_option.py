@@ -95,25 +95,10 @@ def restore_file(filepath: Path, original_text: str):
     filepath.write_text(original_text)
 
 
-def bisect_remove(
-    dag: DAG,
-    candidates: list[str],
-    check_modules: list[str],
-    option: str,
-    timeout: int,
-) -> list[str]:
-    """Binary-search remove options from candidates while check_modules build.
-
-    Returns list of modules that must keep the option.
-    Only candidates (newly-added) are touched; pre-existing options are left alone.
-    """
-    if not candidates:
-        return []
-
-    # Try removing all at once
-    print(f"    Trying to remove all {len(candidates)} at once...", flush=True)
+def _remove_options(dag: DAG, modules: list[str], option: str) -> dict[str, str]:
+    """Remove option from modules. Returns dict of module -> original text."""
     originals: dict[str, str] = {}
-    for mod in candidates:
+    for mod in modules:
         info = dag.modules.get(mod)
         if info is None:
             continue
@@ -121,18 +106,46 @@ def bisect_remove(
         orig = remove_option(fp, option)
         if orig is not None:
             originals[mod] = orig
+    return originals
 
-    if lake_build_modules(check_modules, timeout):
-        print(f"    All {len(candidates)} removed successfully!", flush=True)
-        return []
 
-    # Revert all
+def _revert_options(dag: DAG, originals: dict[str, str]):
+    """Restore files to original content."""
     for mod, orig in originals.items():
         info = dag.modules.get(mod)
         if info:
             restore_file(dag.project_root / info.filepath, orig)
-    # Rebuild to restore oleans
-    lake_build_modules(check_modules, timeout)
+
+
+def bisect_remove(
+    dag: DAG,
+    candidates: list[str],
+    check_modules: list[str],
+    option: str,
+    timeout: int,
+    _known_fail: bool = False,
+) -> list[str]:
+    """Binary-search remove options from candidates while check_modules build.
+
+    Returns list of modules that must keep the option.
+    Only candidates (newly-added) are touched; pre-existing options are left alone.
+    _known_fail: if True, skip the initial "try removing all" (caller already tried).
+    """
+    if not candidates:
+        return []
+
+    if not _known_fail:
+        # Try removing all at once
+        print(f"    Trying to remove all {len(candidates)} at once...", flush=True)
+        originals = _remove_options(dag, candidates, option)
+
+        if lake_build_modules(check_modules, timeout):
+            print(f"    All {len(candidates)} removed successfully!", flush=True)
+            return []
+
+        # Revert all
+        _revert_options(dag, originals)
+        lake_build_modules(check_modules, timeout)
 
     if len(candidates) == 1:
         print(f"    Must keep: {candidates[0]}", flush=True)
@@ -144,49 +157,30 @@ def bisect_remove(
     right = candidates[mid:]
 
     print(f"    Bisecting: trying left half ({len(left)})...", flush=True)
-    left_originals: dict[str, str] = {}
-    for mod in left:
-        info = dag.modules.get(mod)
-        if info is None:
-            continue
-        fp = dag.project_root / info.filepath
-        orig = remove_option(fp, option)
-        if orig is not None:
-            left_originals[mod] = orig
+    left_originals = _remove_options(dag, left, option)
 
     left_ok = lake_build_modules(check_modules, timeout)
     if not left_ok:
         # Revert left, some in left are needed
-        for mod, orig in left_originals.items():
-            info = dag.modules.get(mod)
-            if info:
-                restore_file(dag.project_root / info.filepath, orig)
+        _revert_options(dag, left_originals)
         lake_build_modules(check_modules, timeout)
-        needed_left = bisect_remove(dag, left, check_modules, option, timeout)
+        # Skip initial try in recursive call — we just proved it fails
+        needed_left = bisect_remove(dag, left, check_modules, option, timeout,
+                                    _known_fail=True)
     else:
         needed_left = []
 
     # Now try right half (left removals that succeeded are still in effect)
     print(f"    Bisecting: trying right half ({len(right)})...", flush=True)
-    right_originals: dict[str, str] = {}
-    for mod in right:
-        info = dag.modules.get(mod)
-        if info is None:
-            continue
-        fp = dag.project_root / info.filepath
-        orig = remove_option(fp, option)
-        if orig is not None:
-            right_originals[mod] = orig
+    right_originals = _remove_options(dag, right, option)
 
     right_ok = lake_build_modules(check_modules, timeout)
     if not right_ok:
         # Revert right, some in right are needed
-        for mod, orig in right_originals.items():
-            info = dag.modules.get(mod)
-            if info:
-                restore_file(dag.project_root / info.filepath, orig)
+        _revert_options(dag, right_originals)
         lake_build_modules(check_modules, timeout)
-        needed_right = bisect_remove(dag, right, check_modules, option, timeout)
+        needed_right = bisect_remove(dag, right, check_modules, option, timeout,
+                                     _known_fail=True)
     else:
         needed_right = []
 
