@@ -2,26 +2,28 @@
 """
 Fix non-local breakage from set_option removal.
 
-For each failing module A:
-1. Add the option to all dependencies of A
-2. Verify A builds
-3. Binary-search remove unnecessary options from deps of A,
-   checking that A (and all previously-fixed modules) still build
+Given failing modules, this script:
+1. Adds the option to all their Mathlib dependencies that don't already have it
+2. Verifies the failing modules build
+3. Bisect-removes the newly-added options (leaving pre-existing ones untouched)
+
+Pre-existing options (already committed) are never removed, only newly-added
+ones are candidates for bisect removal.
 
 Usage:
     python3 scripts/fix_nonlocal_set_option.py MODULE1 MODULE2 ...
 """
 
 import argparse
-import re
 import subprocess
 import sys
 from pathlib import Path
 
 from dag_traversal import DAG
 from set_option_utils import PROJECT_DIR
-from add_module_set_option import add_to_file, find_insert_point
-from rm_module_set_option import module_set_option_pattern, scan_files
+from add_module_set_option import add_to_file
+from rm_module_set_option import module_set_option_pattern
+
 
 DEFAULT_OPTION = "backward.defeq.atInstanceTransparency"
 
@@ -103,6 +105,7 @@ def bisect_remove(
     """Binary-search remove options from candidates while check_modules build.
 
     Returns list of modules that must keep the option.
+    Only candidates (newly-added) are touched; pre-existing options are left alone.
     """
     if not candidates:
         return []
@@ -141,7 +144,6 @@ def bisect_remove(
     right = candidates[mid:]
 
     print(f"    Bisecting: trying left half ({len(left)})...", flush=True)
-    # Try removing left half
     left_originals: dict[str, str] = {}
     for mod in left:
         info = dag.modules.get(mod)
@@ -226,48 +228,52 @@ def main():
     for mod in args.modules:
         all_deps |= collect_all_dependencies(dag, mod)
 
-    # Filter to Mathlib files
-    mathlib_deps = []
+    # Filter to Mathlib files that don't already have the option
+    newly_added: list[str] = []
+    pre_existing = 0
     for d in sorted(all_deps):
         info = dag.modules.get(d)
         if info and str(info.filepath).startswith("Mathlib/"):
-            mathlib_deps.append(d)
+            fp = dag.project_root / info.filepath
+            if fp.exists():
+                if has_option(fp, option):
+                    pre_existing += 1
+                else:
+                    if add_to_file(fp, option, dry_run=False):
+                        newly_added.append(d)
 
-    # Step 2: add option to all deps that don't already have it
-    added = []
-    for d in mathlib_deps:
-        info = dag.modules.get(d)
-        if info is None:
-            continue
-        fp = dag.project_root / info.filepath
-        if not has_option(fp, option):
-            if add_to_file(fp, option, dry_run=False):
-                added.append(d)
-    print(f"  Added option to {len(added)} dependencies of {len(args.modules)} modules",
-          flush=True)
+    print(f"  Pre-existing options in dep cone: {pre_existing}", flush=True)
+    print(f"  Newly added options: {len(newly_added)}", flush=True)
 
-    # Step 3: verify all check modules build
+    if not newly_added:
+        print("  Nothing to add — all deps already have the option.")
+        return
+
+    # Step 2: verify all check modules build
     print(f"  Verifying build of {check_modules}...", flush=True)
     if not lake_build_modules(check_modules, args.timeout):
         print("  ERROR: modules still fail after adding option to all deps!")
         print("  Cannot proceed.")
         return
 
-    print(f"  Build OK. Now minimizing {len(added)} additions...", flush=True)
+    print(f"  Build OK. Now bisect-removing {len(newly_added)} newly-added options...",
+          flush=True)
+    print(f"  (Pre-existing {pre_existing} options are untouched.)", flush=True)
 
-    # Step 4: binary search remove unnecessary options
-    needed = bisect_remove(dag, added, check_modules, option, args.timeout)
+    # Step 3: binary search remove unnecessary newly-added options
+    needed = bisect_remove(dag, newly_added, check_modules, option, args.timeout)
 
-    removed_count = len(added) - len(needed)
+    removed_count = len(newly_added) - len(needed)
     print(f"\n{'='*60}")
     print("RESULT")
     print(f"{'='*60}")
-    print(f"  Check modules:       {len(check_modules)}")
-    print(f"  Dependencies added:  {len(added)}")
-    print(f"  Removed (unnecessary): {removed_count}")
-    print(f"  Kept (needed):       {len(needed)}")
+    print(f"  Check modules:          {len(check_modules)}")
+    print(f"  Pre-existing (kept):    {pre_existing}")
+    print(f"  Newly added:            {len(newly_added)}")
+    print(f"  Removed (unnecessary):  {removed_count}")
+    print(f"  Kept (needed):          {len(needed)}")
     if needed:
-        print("\n  Needed modules:")
+        print("\n  Needed modules (newly identified):")
         for n in needed:
             print(f"    - {n}")
 
