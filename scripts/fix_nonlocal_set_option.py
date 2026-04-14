@@ -304,6 +304,20 @@ def minimize_with_restart(
         # Successfully removed candidates stay removed on disk.
         remaining = unresolved
 
+        # Sanity check: with the must-keep in place and all remaining
+        # candidates still present, the build should succeed.
+        # If it doesn't, something is wrong (stale oleans, unrelated failure).
+        if remaining:
+            print(f"    [{_elapsed()}] Sanity check: verifying build with "
+                  f"{len(needed)} kept + {len(remaining)} remaining...",
+                  flush=True)
+            if not lake_build_modules(check_modules, timeout):
+                print(f"    [{_elapsed()}] ERROR: sanity check failed!")
+                print(f"    Build fails even with all remaining candidates present.")
+                print(f"    This suggests a problem unrelated to bisection.")
+                print(f"    Stopping. Found so far: {needed}")
+                break
+
     return needed
 
 
