@@ -70,10 +70,14 @@ _BISECT_CACHE_DIR = PROJECT_DIR / "_bisect_cache"
 
 
 def _lake_env() -> dict[str, str]:
-    """Environment variables for lake build with local artifact cache."""
+    """Environment variables for lake build.
+
+    Cache disabled: after Fetched, .olean is missing from .lake/build (only
+    .olean.hash remains). Transitive deps not in importArts then fail via
+    findOLeanParts. The restoreNeededArtifacts fix resolves this.
+    """
     env = dict(os.environ)
-    env["LAKE_ARTIFACT_CACHE"] = "true"
-    env["LAKE_CACHE_DIR"] = str(_BISECT_CACHE_DIR)
+    env["LAKE_ARTIFACT_CACHE"] = "false"
     return env
 
 
