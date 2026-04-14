@@ -62,11 +62,24 @@ def collect_all_dependencies(dag: DAG, module_name: str) -> set[str]:
     return collected
 
 
+_last_failed_module: str | None = None
+
+
 def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
-    """Build specific modules. Returns True if all succeed."""
-    global _build_count
+    """Build specific modules. Returns True if all succeed.
+
+    Tries the last-failed module first to fail fast.
+    """
+    global _build_count, _last_failed_module
     _build_count += 1
-    for mod in modules:
+
+    # Reorder: try last-failed module first
+    ordered = list(modules)
+    if _last_failed_module and _last_failed_module in ordered:
+        ordered.remove(_last_failed_module)
+        ordered.insert(0, _last_failed_module)
+
+    for mod in ordered:
         result = subprocess.run(
             ["lake", "build", mod],
             cwd=PROJECT_DIR,
@@ -75,7 +88,9 @@ def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
             timeout=timeout,
         )
         if result.returncode != 0:
+            _last_failed_module = mod
             return False
+    _last_failed_module = None
     return True
 
 
@@ -142,6 +157,7 @@ def _find_one_must_keep(
     option: str,
     timeout: int,
     total_candidates: int,
+    already_resolved: int,
     found_so_far: int,
     _known_fail: bool = False,
 ) -> str | None:
@@ -150,12 +166,14 @@ def _find_one_must_keep(
     Returns the module name, or None if all candidates can be removed.
     After return, the files are in a state where all removable candidates
     have been removed and the must-keep (if any) is still present.
+
+    already_resolved: number of candidates already resolved (removed or kept)
+                      in earlier rounds/siblings, for progress display.
     """
     if not candidates:
         return None
 
-    removed_so_far = total_candidates - len(candidates)
-    pct = 100.0 * removed_so_far / total_candidates if total_candidates else 0
+    pct = 100.0 * already_resolved / total_candidates if total_candidates else 0
 
     if not _known_fail:
         print(f"    [{_elapsed()}] build#{_build_count+1} "
@@ -194,12 +212,16 @@ def _find_one_must_keep(
         lake_build_modules(check_modules, timeout)
         return _find_one_must_keep(
             dag, left, check_modules, option, timeout,
-            total_candidates, found_so_far, _known_fail=True)
+            total_candidates, already_resolved, found_so_far,
+            _known_fail=True)
 
-    # Left removed OK (stays removed). Check right half.
+    # Left removed OK (stays removed). Update resolved count.
+    resolved_after_left = already_resolved + len(left)
+    pct_after_left = 100.0 * resolved_after_left / total_candidates if total_candidates else 0
+
     print(f"    [{_elapsed()}] build#{_build_count+1} "
           f"try right {len(right)}/{len(candidates)} "
-          f"({pct:.0f}% resolved, {found_so_far} kept)",
+          f"({pct_after_left:.0f}% resolved, {found_so_far} kept)",
           flush=True)
     right_originals = _remove_options(dag, right, option)
 
@@ -210,7 +232,8 @@ def _find_one_must_keep(
         lake_build_modules(check_modules, timeout)
         return _find_one_must_keep(
             dag, right, check_modules, option, timeout,
-            total_candidates, found_so_far, _known_fail=True)
+            total_candidates, resolved_after_left, found_so_far,
+            _known_fail=True)
 
     # Both halves removed OK
     return None
@@ -245,6 +268,7 @@ def minimize_with_restart(
         found = _find_one_must_keep(
             dag, remaining, check_modules, option, timeout,
             total_candidates=total,
+            already_resolved=total - len(remaining),
             found_so_far=len(needed),
         )
 
