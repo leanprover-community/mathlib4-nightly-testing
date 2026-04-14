@@ -77,11 +77,34 @@ def _lake_env() -> dict[str, str]:
     return env
 
 
+_RESTORE_ALL_MARKER = "  restoreAllArtifacts := true  -- added by bisect script\n"
+
+
+def _ensure_restore_all_artifacts():
+    """Ensure lakefile.lean has restoreAllArtifacts := true for the Mathlib lib.
+
+    Without this, Lake's cache only restores .ilean to .lake/build,
+    but not .olean.private. Modules with `public meta import` then fail
+    with 'missing data file' because importArts doesn't include transitive
+    deps' .olean.private paths.
+    """
+    lakefile = PROJECT_DIR / "lakefile.lean"
+    text = lakefile.read_text()
+    if _RESTORE_ALL_MARKER.strip() in text:
+        return  # Already added
+    # Insert after "lean_lib Mathlib where"
+    marker = "lean_lib Mathlib where\n"
+    if marker not in text:
+        return
+    text = text.replace(marker, marker + _RESTORE_ALL_MARKER)
+    lakefile.write_text(text)
+
+
 def _wipe_build_dir():
     """Remove .lake/build to force Lake to restore from cache.
 
-    This works around a suspected bug where stale files in .lake/build
-    conflict with cache-restored artifacts, causing 'missing data file' errors.
+    This works around stale files in .lake/build conflicting with
+    cache-restored artifacts.
     """
     build_dir = PROJECT_DIR / ".lake" / "build"
     if build_dir.exists():
@@ -378,6 +401,9 @@ def main():
     args = parser.parse_args()
 
     option = args.option
+
+    # Ensure Lake restores all artifacts (including .olean.private) from cache
+    _ensure_restore_all_artifacts()
 
     print("Building import DAG...", flush=True)
     dag = DAG.from_directories(PROJECT_DIR)
