@@ -122,8 +122,9 @@ def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
     global _build_count, _last_failed_module
     _build_count += 1
 
-    # Wipe build dir so Lake restores cleanly from cache
-    _wipe_build_dir()
+    # NOTE: We do NOT wipe .lake/build — Lake's cache doesn't restore
+    # .olean.private even with restoreAllArtifacts=true (Lake bug).
+    # Keeping the build dir means unchanged modules retain their files.
 
     # Reorder: try last-failed module first
     ordered = list(modules)
