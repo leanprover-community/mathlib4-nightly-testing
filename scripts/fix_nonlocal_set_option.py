@@ -117,57 +117,52 @@ def _wipe_build_dir():
 
 
 def lake_build_modules(modules: list[str], timeout: int = 1800) -> bool:
-    """Build specific modules. Returns True if all succeed.
+    """Build specific modules in a single lake build call.
 
-    Tries the last-failed module first to fail fast.
-    Wipes .lake/build before each build to avoid stale olean conflicts
-    with the artifact cache.
+    Building all modules in one invocation avoids a Lake cache bug where
+    sequential `lake build` calls cause clearOutputArtifacts + cache restore
+    races that delete .olean files needed by concurrent parallel builds.
     """
     global _build_count, _last_failed_module
     _build_count += 1
 
-    # NOTE: We do NOT wipe .lake/build — Lake's cache doesn't restore
-    # .olean.private even with restoreAllArtifacts=true (Lake bug).
-    # Keeping the build dir means unchanged modules retain their files.
-
-    # Reorder: try last-failed module first
-    ordered = list(modules)
-    if _last_failed_module and _last_failed_module in ordered:
-        ordered.remove(_last_failed_module)
-        ordered.insert(0, _last_failed_module)
-
     env = _lake_env()
-    for mod in ordered:
-        result = subprocess.run(
-            ["lake", "build", mod],
-            cwd=PROJECT_DIR,
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-            env=env,
-        )
-        if result.returncode != 0:
-            _last_failed_module = mod
-            # Log the failure details
-            log = PROJECT_DIR / "_bisect_last_failure.log"
-            with open(log, "w") as f:
-                f.write(f"=== lake build {mod} (build #{_build_count}) ===\n")
-                f.write(f"=== STDOUT ===\n{result.stdout}\n")
-                f.write(f"=== STDERR ===\n{result.stderr}\n")
-            # Print a short summary of the error
-            err_lines = [l for l in result.stderr.splitlines()
-                         if "error" in l.lower() and "linter" not in l.lower()]
-            if err_lines:
-                print(f"      fail: {mod}: {err_lines[0][:120]}", flush=True)
-            # Abort on cache corruption
-            combined = result.stdout + result.stderr
-            if "missing data file" in combined:
-                print(f"\n  FATAL: 'missing data file' detected — likely cache corruption.",
-                      flush=True)
-                print(f"  See {log} for details.", flush=True)
-                sys.exit(1)
-            return False
-    _last_failed_module = None
+    # Build all modules in a single lake build invocation
+    result = subprocess.run(
+        ["lake", "build"] + list(modules),
+        cwd=PROJECT_DIR,
+        capture_output=True,
+        text=True,
+        timeout=timeout,
+        env=env,
+    )
+    if result.returncode != 0:
+        # Log the failure details
+        log = PROJECT_DIR / "_bisect_last_failure.log"
+        with open(log, "w") as f:
+            f.write(f"=== lake build (build #{_build_count}) ===\n")
+            f.write(f"=== modules: {modules} ===\n")
+            f.write(f"=== STDOUT ===\n{result.stdout}\n")
+            f.write(f"=== STDERR ===\n{result.stderr}\n")
+        # Print a short summary of the error
+        err_lines = [l for l in result.stderr.splitlines()
+                     if "error" in l.lower() and "linter" not in l.lower()]
+        if err_lines:
+            # Find which module failed
+            for line in err_lines:
+                if "error:" in line and "/" in line:
+                    print(f"      fail: {line[:120]}", flush=True)
+                    break
+            else:
+                print(f"      fail: {err_lines[0][:120]}", flush=True)
+        # Abort on cache corruption
+        combined = result.stdout + result.stderr
+        if "missing data file" in combined or "failed to open file" in combined:
+            print(f"\n  FATAL: cache-related error detected.",
+                  flush=True)
+            print(f"  See {log} for details.", flush=True)
+            sys.exit(1)
+        return False
     return True
 
 
