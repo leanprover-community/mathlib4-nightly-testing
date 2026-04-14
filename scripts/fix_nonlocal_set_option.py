@@ -112,7 +112,7 @@ def _wipe_build_dir():
         shutil.rmtree(build_dir)
 
 
-def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
+def lake_build_modules(modules: list[str], timeout: int = 1800) -> bool:
     """Build specific modules. Returns True if all succeed.
 
     Tries the last-failed module first to fail fast.
@@ -396,8 +396,8 @@ def main():
     parser.add_argument(
         "--timeout",
         type=int,
-        default=600,
-        help="Build timeout per module in seconds (default: 600)",
+        default=1800,
+        help="Build timeout per module in seconds (default: 1800)",
     )
     args = parser.parse_args()
 
