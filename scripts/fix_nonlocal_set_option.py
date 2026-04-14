@@ -18,6 +18,7 @@ Usage:
 """
 
 import argparse
+import os
 import subprocess
 import sys
 import time
@@ -64,11 +65,23 @@ def collect_all_dependencies(dag: DAG, module_name: str) -> set[str]:
 
 _last_failed_module: str | None = None
 
+# Dedicated cache directory for bisect runs (wipeable, sandbox-friendly)
+_BISECT_CACHE_DIR = PROJECT_DIR / "_bisect_cache"
+
+
+def _lake_env() -> dict[str, str]:
+    """Environment variables for lake build with local artifact cache."""
+    env = dict(os.environ)
+    env["LAKE_ARTIFACT_CACHE"] = "true"
+    env["LAKE_CACHE_DIR"] = str(_BISECT_CACHE_DIR)
+    return env
+
 
 def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
     """Build specific modules. Returns True if all succeed.
 
     Tries the last-failed module first to fail fast.
+    Uses a local Lake artifact cache for content-hash based olean reuse.
     """
     global _build_count, _last_failed_module
     _build_count += 1
@@ -79,6 +92,7 @@ def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
         ordered.remove(_last_failed_module)
         ordered.insert(0, _last_failed_module)
 
+    env = _lake_env()
     for mod in ordered:
         result = subprocess.run(
             ["lake", "build", mod],
@@ -86,6 +100,7 @@ def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
             capture_output=True,
             text=True,
             timeout=timeout,
+            env=env,
         )
         if result.returncode != 0:
             _last_failed_module = mod
@@ -160,18 +175,21 @@ def _find_one_must_keep(
     already_resolved: int,
     found_so_far: int,
     _known_fail: bool = False,
-) -> str | None:
+) -> tuple[str | None, list[str]]:
     """Find a single must-keep module via binary search.
 
-    Returns the module name, or None if all candidates can be removed.
-    After return, the files are in a state where all removable candidates
-    have been removed and the must-keep (if any) is still present.
+    Returns (must_keep, unresolved) where:
+    - must_keep: the module name, or None if all candidates can be removed
+    - unresolved: candidates not yet resolved (need further bisection)
+
+    After return, all resolved-as-removable candidates have been removed
+    from disk. The must-keep (if any) still has its option.
 
     already_resolved: number of candidates already resolved (removed or kept)
                       in earlier rounds/siblings, for progress display.
     """
     if not candidates:
-        return None
+        return None, []
 
     pct = 100.0 * already_resolved / total_candidates if total_candidates else 0
 
@@ -184,7 +202,7 @@ def _find_one_must_keep(
 
         if lake_build_modules(check_modules, timeout):
             print(f"    [{_elapsed()}] All {len(candidates)} removed!", flush=True)
-            return None
+            return None, []
 
         # Revert all
         _revert_options(dag, originals)
@@ -192,7 +210,7 @@ def _find_one_must_keep(
 
     if len(candidates) == 1:
         print(f"    [{_elapsed()}] *** Must keep: {candidates[0]} ***", flush=True)
-        return candidates[0]
+        return candidates[0], []
 
     # Split and try left half
     mid = len(candidates) // 2
@@ -208,12 +226,14 @@ def _find_one_must_keep(
     left_ok = lake_build_modules(check_modules, timeout)
     if not left_ok:
         # Left half has a must-keep; revert and recurse into left
+        # Right half is unresolved
         _revert_options(dag, left_originals)
         lake_build_modules(check_modules, timeout)
-        return _find_one_must_keep(
+        found, left_unresolved = _find_one_must_keep(
             dag, left, check_modules, option, timeout,
             total_candidates, already_resolved, found_so_far,
             _known_fail=True)
+        return found, left_unresolved + right
 
     # Left removed OK (stays removed). Update resolved count.
     resolved_after_left = already_resolved + len(left)
@@ -230,13 +250,14 @@ def _find_one_must_keep(
         # Right half has a must-keep; revert right and recurse
         _revert_options(dag, right_originals)
         lake_build_modules(check_modules, timeout)
-        return _find_one_must_keep(
+        found, right_unresolved = _find_one_must_keep(
             dag, right, check_modules, option, timeout,
             total_candidates, resolved_after_left, found_so_far,
             _known_fail=True)
+        return found, right_unresolved
 
     # Both halves removed OK
-    return None
+    return None, []
 
 
 def minimize_with_restart(
@@ -265,7 +286,7 @@ def minimize_with_restart(
               f"{len(needed)} found so far ===",
               flush=True)
 
-        found = _find_one_must_keep(
+        found, unresolved = _find_one_must_keep(
             dag, remaining, check_modules, option, timeout,
             total_candidates=total,
             already_resolved=total - len(remaining),
@@ -279,17 +300,9 @@ def minimize_with_restart(
             break
 
         needed.append(found)
-        # Remove the found module from candidates and restart
-        remaining = [m for m in remaining if m != found]
-        # The found module's option is still in the file (we reverted before
-        # returning it). We need to ensure it stays. But since _find_one_must_keep
-        # reverted everything before returning the must-keep, all candidates
-        # still have the option. The must-keep stays in the file.
-        # Actually, we need to remove the non-must-keep candidates again
-        # to get back to a clean state for the next round.
-        # The simplest approach: just restart fresh — the next call to
-        # _find_one_must_keep will try removing all remaining at once,
-        # which is the right thing.
+        # Continue with only the unresolved candidates (not the full list).
+        # Successfully removed candidates stay removed on disk.
+        remaining = unresolved
 
     return needed
 
@@ -380,6 +393,11 @@ def main():
         print("\n  Needed modules (newly identified):")
         for n in needed:
             print(f"    - {n}")
+
+    # Remind about bisect cache
+    if _BISECT_CACHE_DIR.exists():
+        print(f"\n  NOTE: Bisect cache still at {_BISECT_CACHE_DIR}")
+        print(f"  Remove manually when done: rm -rf {_BISECT_CACHE_DIR}")
 
 
 if __name__ == "__main__":
