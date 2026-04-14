@@ -7,6 +7,9 @@ Given failing modules, this script:
 2. Verifies the failing modules build
 3. Bisect-removes the newly-added options (leaving pre-existing ones untouched)
 
+After finding each must-keep, the bisect restarts from scratch on the remaining
+candidates (rather than continuing to bisect the current subtree).
+
 Pre-existing options (already committed) are never removed, only newly-added
 ones are candidates for bisect removal.
 
@@ -17,6 +20,7 @@ Usage:
 import argparse
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 from dag_traversal import DAG
@@ -26,6 +30,18 @@ from rm_module_set_option import module_set_option_pattern
 
 
 DEFAULT_OPTION = "backward.defeq.atInstanceTransparency"
+
+# Global build counter
+_build_count = 0
+_build_start_time = 0.0
+
+
+def _elapsed() -> str:
+    """Return elapsed time since start as HH:MM:SS."""
+    elapsed = time.time() - _build_start_time
+    h, rem = divmod(int(elapsed), 3600)
+    m, s = divmod(rem, 60)
+    return f"{h}:{m:02d}:{s:02d}"
 
 
 def collect_all_dependencies(dag: DAG, module_name: str) -> set[str]:
@@ -48,6 +64,8 @@ def collect_all_dependencies(dag: DAG, module_name: str) -> set[str]:
 
 def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
     """Build specific modules. Returns True if all succeed."""
+    global _build_count
+    _build_count += 1
     for mod in modules:
         result = subprocess.run(
             ["lake", "build", mod],
@@ -117,74 +135,139 @@ def _revert_options(dag: DAG, originals: dict[str, str]):
             restore_file(dag.project_root / info.filepath, orig)
 
 
-def bisect_remove(
+def _find_one_must_keep(
     dag: DAG,
     candidates: list[str],
     check_modules: list[str],
     option: str,
     timeout: int,
+    total_candidates: int,
+    found_so_far: int,
     _known_fail: bool = False,
-) -> list[str]:
-    """Binary-search remove options from candidates while check_modules build.
+) -> str | None:
+    """Find a single must-keep module via binary search.
 
-    Returns list of modules that must keep the option.
-    Only candidates (newly-added) are touched; pre-existing options are left alone.
-    _known_fail: if True, skip the initial "try removing all" (caller already tried).
+    Returns the module name, or None if all candidates can be removed.
+    After return, the files are in a state where all removable candidates
+    have been removed and the must-keep (if any) is still present.
     """
     if not candidates:
-        return []
+        return None
+
+    removed_so_far = total_candidates - len(candidates)
+    pct = 100.0 * removed_so_far / total_candidates if total_candidates else 0
 
     if not _known_fail:
-        # Try removing all at once
-        print(f"    Trying to remove all {len(candidates)} at once...", flush=True)
+        print(f"    [{_elapsed()}] build#{_build_count+1} "
+              f"try removing {len(candidates)} "
+              f"({pct:.0f}% resolved, {found_so_far} kept)",
+              flush=True)
         originals = _remove_options(dag, candidates, option)
 
         if lake_build_modules(check_modules, timeout):
-            print(f"    All {len(candidates)} removed successfully!", flush=True)
-            return []
+            print(f"    [{_elapsed()}] All {len(candidates)} removed!", flush=True)
+            return None
 
         # Revert all
         _revert_options(dag, originals)
         lake_build_modules(check_modules, timeout)
 
     if len(candidates) == 1:
-        print(f"    Must keep: {candidates[0]}", flush=True)
-        return candidates
+        print(f"    [{_elapsed()}] *** Must keep: {candidates[0]} ***", flush=True)
+        return candidates[0]
 
-    # Split and recurse
+    # Split and try left half
     mid = len(candidates) // 2
     left = candidates[:mid]
     right = candidates[mid:]
 
-    print(f"    Bisecting: trying left half ({len(left)})...", flush=True)
+    print(f"    [{_elapsed()}] build#{_build_count+1} "
+          f"try left {len(left)}/{len(candidates)} "
+          f"({pct:.0f}% resolved, {found_so_far} kept)",
+          flush=True)
     left_originals = _remove_options(dag, left, option)
 
     left_ok = lake_build_modules(check_modules, timeout)
     if not left_ok:
-        # Revert left, some in left are needed
+        # Left half has a must-keep; revert and recurse into left
         _revert_options(dag, left_originals)
         lake_build_modules(check_modules, timeout)
-        # Skip initial try in recursive call — we just proved it fails
-        needed_left = bisect_remove(dag, left, check_modules, option, timeout,
-                                    _known_fail=True)
-    else:
-        needed_left = []
+        return _find_one_must_keep(
+            dag, left, check_modules, option, timeout,
+            total_candidates, found_so_far, _known_fail=True)
 
-    # Now try right half (left removals that succeeded are still in effect)
-    print(f"    Bisecting: trying right half ({len(right)})...", flush=True)
+    # Left removed OK (stays removed). Check right half.
+    print(f"    [{_elapsed()}] build#{_build_count+1} "
+          f"try right {len(right)}/{len(candidates)} "
+          f"({pct:.0f}% resolved, {found_so_far} kept)",
+          flush=True)
     right_originals = _remove_options(dag, right, option)
 
     right_ok = lake_build_modules(check_modules, timeout)
     if not right_ok:
-        # Revert right, some in right are needed
+        # Right half has a must-keep; revert right and recurse
         _revert_options(dag, right_originals)
         lake_build_modules(check_modules, timeout)
-        needed_right = bisect_remove(dag, right, check_modules, option, timeout,
-                                     _known_fail=True)
-    else:
-        needed_right = []
+        return _find_one_must_keep(
+            dag, right, check_modules, option, timeout,
+            total_candidates, found_so_far, _known_fail=True)
 
-    return needed_left + needed_right
+    # Both halves removed OK
+    return None
+
+
+def minimize_with_restart(
+    dag: DAG,
+    candidates: list[str],
+    check_modules: list[str],
+    option: str,
+    timeout: int,
+) -> list[str]:
+    """Find minimal set of must-keep modules using bisect-with-restart.
+
+    After finding each must-keep, restarts bisection from scratch on
+    the remaining candidates. This avoids wasting time on right-half
+    cascades deep in the tree.
+    """
+    global _build_start_time
+    _build_start_time = time.time()
+
+    remaining = list(candidates)
+    total = len(candidates)
+    needed: list[str] = []
+
+    while remaining:
+        print(f"\n  [{_elapsed()}] === Round {len(needed)+1}: "
+              f"{len(remaining)} candidates remaining, "
+              f"{len(needed)} found so far ===",
+              flush=True)
+
+        found = _find_one_must_keep(
+            dag, remaining, check_modules, option, timeout,
+            total_candidates=total,
+            found_so_far=len(needed),
+        )
+
+        if found is None:
+            # All remaining were removed successfully
+            print(f"  [{_elapsed()}] All remaining {len(remaining)} removed!",
+                  flush=True)
+            break
+
+        needed.append(found)
+        # Remove the found module from candidates and restart
+        remaining = [m for m in remaining if m != found]
+        # The found module's option is still in the file (we reverted before
+        # returning it). We need to ensure it stays. But since _find_one_must_keep
+        # reverted everything before returning the must-keep, all candidates
+        # still have the option. The must-keep stays in the file.
+        # Actually, we need to remove the non-must-keep candidates again
+        # to get back to a clean state for the next round.
+        # The simplest approach: just restart fresh — the next call to
+        # _find_one_must_keep will try removing all remaining at once,
+        # which is the right thing.
+
+    return needed
 
 
 def main():
@@ -244,7 +327,7 @@ def main():
         return
 
     # Step 2: verify all check modules build
-    print(f"  Verifying build of {check_modules}...", flush=True)
+    print(f"  Verifying build of {len(check_modules)} modules...", flush=True)
     if not lake_build_modules(check_modules, args.timeout):
         print("  ERROR: modules still fail after adding option to all deps!")
         print("  Cannot proceed.")
@@ -254,13 +337,16 @@ def main():
           flush=True)
     print(f"  (Pre-existing {pre_existing} options are untouched.)", flush=True)
 
-    # Step 3: binary search remove unnecessary newly-added options
-    needed = bisect_remove(dag, newly_added, check_modules, option, args.timeout)
+    # Step 3: minimize with restart-after-find
+    needed = minimize_with_restart(
+        dag, newly_added, check_modules, option, args.timeout)
 
     removed_count = len(newly_added) - len(needed)
     print(f"\n{'='*60}")
     print("RESULT")
     print(f"{'='*60}")
+    print(f"  Elapsed:                {_elapsed()}")
+    print(f"  Builds:                 {_build_count}")
     print(f"  Check modules:          {len(check_modules)}")
     print(f"  Pre-existing (kept):    {pre_existing}")
     print(f"  Newly added:            {len(newly_added)}")
