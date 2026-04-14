@@ -7,8 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Functor.Category
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Natural isomorphisms
 
@@ -32,6 +30,8 @@ Note that `NatIso` is a namespace without a corresponding definition;
 we put some declarations that are specifically about natural isomorphisms in the `Iso`
 namespace so that they are available using dot notation.
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

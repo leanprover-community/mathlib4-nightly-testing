@@ -8,8 +8,6 @@ module
 public import Mathlib.Tactic.CategoryTheory.Bicategory.Basic
 public import Mathlib.Tactic.CategoryTheory.BicategoricalComp
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Adjunctions in bicategories
 
@@ -31,6 +29,8 @@ identities. The 2-morphism `η` is called the unit and `ε` is called the counit
   2-isomorphisms
   `η : 𝟙 a ≅ f ≫ g` and `ε : g ≫ f ≅ 𝟙 b`, by upgrading `η` to a unit.
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

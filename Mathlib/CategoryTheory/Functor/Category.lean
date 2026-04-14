@@ -8,8 +8,6 @@ module
 public import Mathlib.CategoryTheory.NatTrans
 public import Mathlib.CategoryTheory.Iso
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # The category of functors and natural transformations between two fixed categories.
 
@@ -27,6 +25,8 @@ this is another small category at that level.
 However if `C` and `D` are both large categories at the same universe level,
 this is a small category at the next higher level.
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

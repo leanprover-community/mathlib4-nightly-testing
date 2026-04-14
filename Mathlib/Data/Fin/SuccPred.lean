@@ -8,8 +8,6 @@ module
 public import Mathlib.Data.Fin.Basic
 public import Mathlib.Logic.Equiv.Set
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Successors and predecessor operations of `Fin n`
 
@@ -23,6 +21,8 @@ related to `Fin.succ`, `Fin.pred`, and related operations on `Fin n`.
 * `Fin.predAbove` : the (partial) inverse of `Fin.succAbove`.
 
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

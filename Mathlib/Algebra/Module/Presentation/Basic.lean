@@ -10,8 +10,6 @@ public import Mathlib.Algebra.Module.ULift
 public import Mathlib.LinearAlgebra.Quotient.Basic
 public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Presentations of modules
 
@@ -39,6 +37,8 @@ generators and relations.
 * Behaviour of presentations with respect to the extension of scalars and the restriction of scalars
 
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public noncomputable section
 

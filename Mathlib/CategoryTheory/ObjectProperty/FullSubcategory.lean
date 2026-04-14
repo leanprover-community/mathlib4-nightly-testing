@@ -8,8 +8,6 @@ module
 public import Mathlib.CategoryTheory.InducedCategory
 public import Mathlib.CategoryTheory.ObjectProperty.Basic
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # The full subcategory associated to a property of objects
 
@@ -18,6 +16,8 @@ a category structure on the type `P.FullSubcategory`
 of objects in `C` satisfying `P`.
 
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

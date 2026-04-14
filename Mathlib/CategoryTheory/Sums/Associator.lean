@@ -7,13 +7,13 @@ module
 
 public import Mathlib.CategoryTheory.Sums.Basic
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Associator for binary disjoint union of categories.
 
 The associator functor `((C ⊕ D) ⊕ E) ⥤ (C ⊕ (D ⊕ E))` and its inverse form an equivalence.
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

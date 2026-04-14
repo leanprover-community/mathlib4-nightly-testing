@@ -12,8 +12,6 @@ public import Mathlib.Algebra.Module.RingHom
 public import Mathlib.Algebra.Ring.CompTypeclasses
 public import Mathlib.GroupTheory.GroupAction.Hom
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # (Semi)linear maps
 
@@ -53,6 +51,8 @@ To ensure that composition works smoothly for semilinear maps, we use the typecl
 
 linear map
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

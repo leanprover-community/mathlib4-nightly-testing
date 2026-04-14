@@ -10,8 +10,6 @@ public import Mathlib.Algebra.GroupWithZero.Hom
 public import Mathlib.Algebra.GroupWithZero.Opposite
 public import Mathlib.Algebra.Notation.Pi.Basic
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Definitions of group actions
 
@@ -39,6 +37,8 @@ More sophisticated lemmas belong in `GroupTheory.GroupAction`.
 
 group action
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

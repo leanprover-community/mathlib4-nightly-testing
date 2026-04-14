@@ -7,8 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Functor.FullyFaithful
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Induced categories and full subcategories
 
@@ -26,6 +24,8 @@ a `1`-field structure. Use `InducedCategory.homMk` to construct
 morphisms in induced categories.
 
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

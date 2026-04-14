@@ -10,8 +10,6 @@ public import Mathlib.Algebra.Module.Defs
 public import Mathlib.Data.Finsupp.Basic
 public import Mathlib.Data.Finsupp.SMulWithZero
 
-set_option backward.defeq.atInstanceTransparency false
-
 /-!
 # Monoid algebras
 
@@ -52,6 +50,8 @@ Use `coeff`/`ofCoeff` more widely. See
 https://github.com/leanprover-community/mathlib4/pull/36746
 https://github.com/leanprover-community/mathlib4/pull/25273
 -/
+
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
