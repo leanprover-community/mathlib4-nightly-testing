@@ -10,6 +10,8 @@ public import Mathlib.Algebra.Module.Defs
 public import Mathlib.Data.Finsupp.Basic
 public import Mathlib.Data.Finsupp.SMulWithZero
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Monoid algebras
 

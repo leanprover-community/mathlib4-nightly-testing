@@ -7,6 +7,8 @@ module
 
 public import Mathlib.CategoryTheory.Functor.FullyFaithful
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Induced categories and full subcategories
 

@@ -16,6 +16,8 @@ public import Mathlib.Algebra.Module.LinearMap.End
 public import Mathlib.Algebra.Module.Pi
 public import Mathlib.Algebra.Module.Prod
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Further results on (semi)linear equivalences.
 -/

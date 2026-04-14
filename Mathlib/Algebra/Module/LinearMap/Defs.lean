@@ -12,6 +12,8 @@ public import Mathlib.Algebra.Module.RingHom
 public import Mathlib.Algebra.Ring.CompTypeclasses
 public import Mathlib.GroupTheory.GroupAction.Hom
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # (Semi)linear maps
 

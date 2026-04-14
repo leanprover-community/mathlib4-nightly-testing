@@ -8,6 +8,8 @@ module
 public import Mathlib.Data.Fin.Basic
 public import Mathlib.Logic.Equiv.Set
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Successors and predecessor operations of `Fin n`
 

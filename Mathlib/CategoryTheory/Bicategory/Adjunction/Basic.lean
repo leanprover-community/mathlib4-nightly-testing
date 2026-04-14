@@ -8,6 +8,8 @@ module
 public import Mathlib.Tactic.CategoryTheory.Bicategory.Basic
 public import Mathlib.Tactic.CategoryTheory.BicategoricalComp
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Adjunctions in bicategories
 

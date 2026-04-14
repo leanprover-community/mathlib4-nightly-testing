@@ -10,6 +10,8 @@ public import Mathlib.Algebra.Module.ULift
 public import Mathlib.LinearAlgebra.Quotient.Basic
 public import Mathlib.LinearAlgebra.Finsupp.LinearCombination
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Presentations of modules
 

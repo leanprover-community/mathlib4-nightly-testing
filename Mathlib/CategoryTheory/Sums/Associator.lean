@@ -7,6 +7,8 @@ module
 
 public import Mathlib.CategoryTheory.Sums.Basic
 
+set_option backward.defeq.atInstanceTransparency false
+
 /-!
 # Associator for binary disjoint union of categories.
 
