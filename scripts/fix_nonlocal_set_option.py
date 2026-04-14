@@ -104,6 +104,17 @@ def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
         )
         if result.returncode != 0:
             _last_failed_module = mod
+            # Log the failure details
+            log = PROJECT_DIR / "_bisect_last_failure.log"
+            with open(log, "w") as f:
+                f.write(f"=== lake build {mod} (build #{_build_count}) ===\n")
+                f.write(f"=== STDOUT ===\n{result.stdout}\n")
+                f.write(f"=== STDERR ===\n{result.stderr}\n")
+            # Print a short summary of the error
+            err_lines = [l for l in result.stderr.splitlines()
+                         if "error" in l.lower() and "linter" not in l.lower()]
+            if err_lines:
+                print(f"      fail: {mod}: {err_lines[0][:120]}", flush=True)
             return False
     _last_failed_module = None
     return True
