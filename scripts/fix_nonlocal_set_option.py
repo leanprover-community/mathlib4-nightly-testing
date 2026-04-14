@@ -115,6 +115,13 @@ def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
                          if "error" in l.lower() and "linter" not in l.lower()]
             if err_lines:
                 print(f"      fail: {mod}: {err_lines[0][:120]}", flush=True)
+            # Abort on cache corruption
+            combined = result.stdout + result.stderr
+            if "missing data file" in combined:
+                print(f"\n  FATAL: 'missing data file' detected — likely cache corruption.",
+                      flush=True)
+                print(f"  See {log} for details.", flush=True)
+                sys.exit(1)
             return False
     _last_failed_module = None
     return True
