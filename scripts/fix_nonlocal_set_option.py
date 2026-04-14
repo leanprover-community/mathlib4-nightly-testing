@@ -70,25 +70,37 @@ _BISECT_CACHE_DIR = PROJECT_DIR / "_bisect_cache"
 
 
 def _lake_env() -> dict[str, str]:
-    """Environment variables for lake build.
-
-    NOTE: LAKE_ARTIFACT_CACHE is disabled — it fails to restore data files
-    for modules with `public meta import`, causing 'missing data file' errors
-    for Mathlib.Tactic.Attr.Register.
-    """
+    """Environment variables for lake build with local artifact cache."""
     env = dict(os.environ)
-    env["LAKE_ARTIFACT_CACHE"] = "false"
+    env["LAKE_ARTIFACT_CACHE"] = "true"
+    env["LAKE_CACHE_DIR"] = str(_BISECT_CACHE_DIR)
     return env
+
+
+def _wipe_build_dir():
+    """Remove .lake/build to force Lake to restore from cache.
+
+    This works around a suspected bug where stale files in .lake/build
+    conflict with cache-restored artifacts, causing 'missing data file' errors.
+    """
+    build_dir = PROJECT_DIR / ".lake" / "build"
+    if build_dir.exists():
+        import shutil
+        shutil.rmtree(build_dir)
 
 
 def lake_build_modules(modules: list[str], timeout: int = 600) -> bool:
     """Build specific modules. Returns True if all succeed.
 
     Tries the last-failed module first to fail fast.
-    Uses a local Lake artifact cache for content-hash based olean reuse.
+    Wipes .lake/build before each build to avoid stale olean conflicts
+    with the artifact cache.
     """
     global _build_count, _last_failed_module
     _build_count += 1
+
+    # Wipe build dir so Lake restores cleanly from cache
+    _wipe_build_dir()
 
     # Reorder: try last-failed module first
     ordered = list(modules)
