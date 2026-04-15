@@ -34,6 +34,7 @@ This file expands on the development in the core library.
 * `Fin.natAddOrderEmb n i` : `Fin.natAdd` as an `OrderEmbedding`, adds `n` on `i` on the left;
 * `Fin.revOrderIso`: `Fin.rev` as an `OrderIso`, the antitone involution given by `i ↦ n-(i+1)`
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
