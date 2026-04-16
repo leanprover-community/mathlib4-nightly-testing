@@ -50,6 +50,7 @@ of `sup` over `inf`, on the left or on the right.
 semilattice, lattice
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 

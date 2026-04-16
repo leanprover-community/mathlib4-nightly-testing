@@ -31,6 +31,7 @@ law of those two operations.
 Generalize all of this to double categories.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
