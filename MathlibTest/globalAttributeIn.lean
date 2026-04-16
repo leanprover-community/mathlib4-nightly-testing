@@ -8,7 +8,7 @@ import Mathlib.Tactic.Linter.GlobalAttributeIn
 
 /-! Tests for the `globalAttributeIn` linter. -/
 
--- Since lean4#13223 applying a global attreibute using ... `in` ... is an error
+-- Since lean4#13223 applying a global attribute using ... `in` ... is an error
 
 class Dummy where
   field : True
