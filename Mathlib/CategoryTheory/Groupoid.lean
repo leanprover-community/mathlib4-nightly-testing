@@ -31,6 +31,7 @@ with `IsIso f` for every `f`.
 
 See also `CategoryTheory.Core` for the groupoid of isomorphisms in a category.
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
