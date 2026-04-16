@@ -36,6 +36,7 @@ We actually develop these material for general extensions (i.e. surjection `P â†
 apply them to infinitesimal smooth (or versal) extensions later.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
