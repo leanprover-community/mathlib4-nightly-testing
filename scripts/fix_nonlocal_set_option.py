@@ -70,12 +70,10 @@ _BISECT_CACHE_DIR = PROJECT_DIR / "_bisect_cache"
 
 
 def _lake_env() -> dict[str, str]:
-    """Environment variables for lake build. Cache disabled due to Lake bug:
-    sequential builds with cache cause race conditions where .olean files
-    are missing during parallel internal builds.
-    """
+    """Environment variables for lake build with local artifact cache."""
     env = dict(os.environ)
-    env["LAKE_ARTIFACT_CACHE"] = "false"
+    env["LAKE_ARTIFACT_CACHE"] = "true"
+    env["LAKE_CACHE_DIR"] = str(_BISECT_CACHE_DIR)
     return env
 
 
@@ -153,12 +151,17 @@ def lake_build_modules(modules: list[str], timeout: int = 1800) -> bool:
                     break
             else:
                 print(f"      fail: {err_lines[0][:120]}", flush=True)
-        # Abort on cache corruption
+        # Abort on cache corruption — preserve state for investigation
         combined = result.stdout + result.stderr
         if "missing data file" in combined or "failed to open file" in combined:
-            print(f"\n  FATAL: cache-related error detected.",
-                  flush=True)
+            cmd = ["lake", "build"] + list(modules)
+            env_str = " ".join(f"{k}={v}" for k, v in _lake_env().items()
+                               if k.startswith("LAKE_"))
+            print(f"\n  FATAL: cache-related error detected.", flush=True)
+            print(f"  State preserved for investigation.", flush=True)
             print(f"  See {log} for details.", flush=True)
+            print(f"\n  To reproduce, run from {PROJECT_DIR}:", flush=True)
+            print(f"  {env_str} {' '.join(cmd)}", flush=True)
             sys.exit(1)
         return False
     return True
