@@ -16,6 +16,7 @@ file, we define the mapping cocone, which fits in a rotated triangle:
 `mappingCocone φ ⟶ K ⟶ L ⟶ ...`.
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
