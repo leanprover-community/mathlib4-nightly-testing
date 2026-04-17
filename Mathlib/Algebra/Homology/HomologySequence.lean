@@ -30,6 +30,7 @@ the Liquid Tensor Experiment.
 * https://stacks.math.columbia.edu/tag/0111
 
 -/
+set_option backward.defeq.atInstanceTransparency false
 
 @[expose] public section
 
