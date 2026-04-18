@@ -34,7 +34,6 @@ lemma residue_def (x) : residue R x = Ideal.Quotient.mk (maximalIdeal R) x := rf
 lemma ker_residue : RingHom.ker (residue R) = maximalIdeal R :=
   Ideal.mk_ker
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma residue_eq_zero_iff (x : R) : residue R x = 0 ↔ x ∈ maximalIdeal R := by
   rw [← RingHom.mem_ker, ker_residue]
@@ -50,12 +49,12 @@ variable (R)
 
 instance ResidueField.algebra {R₀} [CommRing R₀] [Algebra R₀ R] :
     Algebra R₀ (ResidueField R) :=
-  Ideal.Quotient.algebra _
+  inferInstanceAs <| Algebra R₀ (_ ⧸ _)
 
 instance {R₁ R₂} [CommRing R₁] [CommRing R₂]
     [Algebra R₁ R₂] [Algebra R₁ R] [Algebra R₂ R] [IsScalarTower R₁ R₂ R] :
-    IsScalarTower R₁ R₂ (IsLocalRing.ResidueField R) := by
-  delta IsLocalRing.ResidueField; infer_instance
+    IsScalarTower R₁ R₂ (ResidueField R) :=
+  inferInstanceAs <| IsScalarTower R₁ R₂ (_ ⧸ _)
 
 @[simp]
 theorem ResidueField.algebraMap_eq : algebraMap R (ResidueField R) = residue R :=
@@ -166,7 +165,6 @@ section MulSemiringAction
 
 variable (G : Type*) [Group G] [MulSemiringAction G R]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- If `G` acts on `R` as a `MulSemiringAction`, then it also acts on `IsLocalRing.ResidueField R`.
 -/
 noncomputable instance : MulSemiringAction G (IsLocalRing.ResidueField R) :=
