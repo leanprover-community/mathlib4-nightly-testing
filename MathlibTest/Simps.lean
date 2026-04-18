@@ -9,6 +9,7 @@ import Mathlib.Tactic.Common
 -- set_option trace.simps.verbose true
 -- set_option pp.universes true
 set_option autoImplicit true
+set_option backward.defeq.atInstanceTransparency false
 
 open Lean Meta Elab Term Command Simps
 

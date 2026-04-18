@@ -215,8 +215,7 @@ def coev_app : G ⟶ H where
     dsimp
     apply Wedge.IsLimit.hom_ext <| ℌ.isLimitWedge c'
     intro (j : C)
-    simp only [multicospanIndexEnd_left,
-      dayConvolutionInternalHomDiagramFunctor_obj_obj_obj_obj, Multifork.ofι_pt,
+    simp only [Multifork.ofι_pt,
       Wedge.mk_ι, Category.assoc, map_comp_π]
     rw [← Wedge.mk_ι
         (F := dayConvolutionInternalHomDiagramFunctor F |>.obj _ |>.obj c)

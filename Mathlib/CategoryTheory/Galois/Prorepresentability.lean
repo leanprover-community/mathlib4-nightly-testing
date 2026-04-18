@@ -315,7 +315,7 @@ lemma endEquivSectionsFibers_π (f : End F) (A : PointedGaloisObject F) :
     (endEquivSectionsFibers F f).val A = f.app A A.pt := by
   dsimp [endEquivSectionsFibers, Types.sectionsEquiv]
   erw [Types.limitEquivSections_apply]
-  simp only [colimitCoyonedaHomIsoLimit'_π_apply, incl_obj, comp_obj, FintypeCat.incl_obj, op_obj,
+  simp only [colimitCoyonedaHomIsoLimit'_π_apply, incl_obj, comp_obj, op_obj,
     FunctorToTypes.comp]
   change (((FullyFaithful.whiskeringRight (FullyFaithful.ofFullyFaithful
       FintypeCat.incl) C).homEquiv) f).app A

@@ -4,6 +4,8 @@ import Mathlib.Init
 import Mathlib.Tactic.Linter.PrivateModule
 public import Lean.Elab.Command
 
+set_option backward.defeq.atInstanceTransparency false
+
 @[expose] public section
 
 open Lean
