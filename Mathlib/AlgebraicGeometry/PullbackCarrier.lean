@@ -89,8 +89,6 @@ lemma isPullback_SpecMap_tensor (T : Triplet f g) : CategoryTheory.IsPullback
           (Spec.map ((S.residueFieldCongr T.hy).inv ≫ g.residueFieldMap T.y)) :=
   isPullback_SpecMap_pushout _ _
 
-@[deprecated (since := "2025-10-07")] alias Spec_map_tensor_isPullback := isPullback_SpecMap_tensor
-
 section Congr
 
 /-- Given propositionally equal triplets `T₁` and `T₂` over `f` and `g`, the corresponding
@@ -139,9 +137,6 @@ lemma SpecMap_tensorInl_fromSpecResidueField :
     ← residueFieldCongr_fromSpecResidueField T.hy.symm]
   simp only [← Category.assoc, ← Spec.map_comp, pushout.condition]
 
-@[deprecated (since := "2025-10-07")]
-alias Spec_map_tensorInl_fromSpecResidueField := SpecMap_tensorInl_fromSpecResidueField
-
 /-- Given `x : X`, `y : Y` and `s : S` such that `f x = s = g y`,
 this is `Spec (κ(x) ⊗[κ(s)] κ(y)) ⟶ X ×ₛ Y`. -/
 def SpecTensorTo : Spec T.tensor ⟶ pullback f g :=
@@ -157,8 +152,6 @@ lemma fst_SpecTensorTo_apply (p : Spec T.tensor) :
   rw [← Scheme.Hom.comp_apply]
   simp
 
-@[deprecated (since := "2025-10-11")] alias specTensorTo_base_fst := fst_SpecTensorTo_apply
-
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma snd_SpecTensorTo_apply (p : Spec T.tensor) :
@@ -166,8 +159,6 @@ lemma snd_SpecTensorTo_apply (p : Spec T.tensor) :
   simp only [SpecTensorTo]
   rw [← Scheme.Hom.comp_apply]
   simp
-
-@[deprecated (since := "2025-10-11")] alias specTensorTo_base_snd := snd_SpecTensorTo_apply
 
 @[reassoc (attr := simp)]
 lemma specTensorTo_fst :
@@ -403,9 +394,6 @@ lemma pullbackComparison_forget_surjective {X Y S : Scheme.{u}} (f : X ⟶ S) (g
     rwa [← types_comp_apply (g := pullback.fst _ _), pullbackComparison_comp_fst]
   · simp only [Function.comp_apply, Types.pullbackIsoPullback_hom_snd]
     rwa [← types_comp_apply (g := pullback.snd _ _), pullbackComparison_comp_snd]
-
-@[deprecated (since := "2025-10-06")]
-alias Pullback.forget_comparison_surjective := pullbackComparison_forget_surjective
 
 instance {X Y S : Scheme.{u}} (f : X ⟶ S) (g : Y ⟶ S) :
     Epi (pullbackComparison Scheme.forgetToTop f g) := by
