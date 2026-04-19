@@ -344,7 +344,7 @@ public theorem LightCondensed.internallyProjective_free_natUnionInfty :
     rw [hc.fac]
     -- simp? [← comm] says:
     simp only [comp_obj, Limits.parallelPair_obj_one, Functor.comp_map, Functor.map_comp,
-      assoc, cocone_pt, cocone_ι_app, eqToHom_refl, Preadditive.comp_add, Preadditive.comp_sub,
+      assoc, cocone_ι_app, eqToHom_refl, Preadditive.comp_add, Preadditive.comp_sub,
       id_comp, Preadditive.add_comp, Preadditive.sub_comp, ← comm]
     simp only [← Functor.map_comp, ← Functor.comp_map, ← assoc, ← comp]
     symm
