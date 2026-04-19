@@ -22,7 +22,6 @@ study of strong (inner) anodyne extensions.
 * [Sean Moss, *Another approach to the Kan-Quillen model structure*][moss-2020]
 
 -/
-
 @[expose] public section
 
 universe u
@@ -99,8 +98,8 @@ include hxy in
 lemma unique (f : ⦋d⦌ ⟶ ⦋d + 1⦌) [Mono f]
     (hf : X.map f.op (y.cast (by rw [hxy.dim_eq, hd])).simplex = (x.cast hd).simplex) :
     f = SimplexCategory.δ (hxy.index hd) :=
-  (hxy.cast hd).2.unique ⟨by dsimp; infer_instance, hf⟩
-    ⟨by dsimp; infer_instance, hxy.δ_index hd⟩
+  (hxy.cast hd).2.unique ⟨inferInstanceAs (Mono f), hf⟩
+    ⟨inferInstanceAs (Mono (SimplexCategory.δ _)), hxy.δ_index hd⟩
 
 end
 
