@@ -63,7 +63,7 @@ lemma rev_map_σ {n : ℕ} (i : Fin (n + 1)) :
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor `SimplexCategory.rev : SimplexCategory ⥤ SimplexCategory`
 is a covariant involution. -/
-@[simps!]
+@[simps! hom_app inv_app]
 def revCompRevIso : rev ⋙ rev ≅ 𝟭 _ :=
   NatIso.ofComponents (fun _ ↦ Iso.refl _)
 
@@ -81,5 +81,7 @@ def revEquivalence : SimplexCategory ≌ SimplexCategory where
   inverse := rev
   unitIso := revCompRevIso.symm
   counitIso := revCompRevIso
+
+instance : rev.IsEquivalence := revEquivalence.isEquivalence_functor
 
 end SimplexCategory

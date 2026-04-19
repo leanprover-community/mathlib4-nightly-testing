@@ -31,7 +31,7 @@ universe w v'' v' v u'' u' u
 
 namespace CategoryTheory
 
-open Limits Opposite
+open Limits Opposite ConcreteCategory
 
 namespace GrothendieckTopology.Point
 
@@ -70,7 +70,7 @@ variable {p} in
 lemma exists_of_fiberMk_eq_fiberMk [IsCofiltered N]
     {U : N} {X : C} {f₁ f₂ : p.obj U ⟶ X} (hf : fiberMk f₁ = fiberMk f₂) :
     ∃ (V : N) (g : V ⟶ U), p.map g ≫ f₁ = p.map g ≫ f₂ := by
-  obtain ⟨V, g, hg⟩  :=
+  obtain ⟨V, g, hg⟩ :=
     (Types.FilteredColimit.isColimit_eq_iff'
       (colimit.isColimit (p.op ⋙ shrinkYoneda.{w}.obj X)) _ _).1 hf
   refine ⟨V.unop, g.unop, ?_⟩
@@ -80,7 +80,7 @@ set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma fiberMk_map_comp {U V : N} (g : V ⟶ U) {X : C} (f : p.obj U ⟶ X) :
     fiberMk.{w} (p.map g ≫ f) = fiberMk.{w} f := by
-  simp [fiberMk, ← dsimp% congr_fun (colimit.w (p.op ⋙ shrinkYoneda.{w}.obj X) g.op)
+  simp [fiberMk, ← dsimp% congr_hom (colimit.w (p.op ⋙ shrinkYoneda.{w}.obj X) g.op)
         (shrinkYonedaObjObjEquiv.symm f),
     fiber, shrinkYoneda_obj_map_shrinkYonedaObjObjEquiv_symm.{w}]
 
@@ -93,7 +93,7 @@ set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma fiber_map_fiberMk {U : N} {X : C} (f : p.obj U ⟶ X) {Y : C} (g : X ⟶ Y) :
     (fiber p).map g (fiberMk.{w} f) = fiberMk.{w} (f ≫ g) :=
-  (congr_fun (ι_colimMap (p.op.whiskerLeft (shrinkYoneda.{w}.map g)) (op U))
+  (congr_hom (ι_colimMap (p.op.whiskerLeft (shrinkYoneda.{w}.map g)) (op U))
     (shrinkYonedaObjObjEquiv.symm f)).trans (by
       simp [fiberMk, shrinkYoneda_map_app_shrinkYonedaObjObjEquiv_symm.{w}])
 
@@ -104,6 +104,7 @@ noncomputable def functor : N ⥤ (fiber.{w} p).Elements where
   obj U := Functor.elementsMk _ (p.obj U) (fiberMk (𝟙 _))
   map {U V} f := CategoryOfElements.homMk _ _ (p.map f) (by simp)
 
+set_option backward.isDefEq.respectTransparency false in
 instance [IsCofiltered N] : (functor.{w} p).Initial := by
   refine Functor.initial_of_exists_of_isCofiltered _ ?_ ?_
   · rintro ⟨X, x⟩
@@ -152,6 +153,7 @@ noncomputable def toPresheafFiberOfIsCofiltered (U : N) (P : Cᵒᵖ ⥤ A) :
     P.obj (op (p.obj U)) ⟶ (ofIsCofiltered p hp).presheafFiber.obj P :=
   (ofIsCofiltered p hp).toPresheafFiber _ (fiberMk (𝟙 _)) P
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma toPresheafFiberOfIsCofiltered_w {V U : N} (f : V ⟶ U) (P : Cᵒᵖ ⥤ A) :
     P.map (p.map f).op ≫ toPresheafFiberOfIsCofiltered p hp V P =

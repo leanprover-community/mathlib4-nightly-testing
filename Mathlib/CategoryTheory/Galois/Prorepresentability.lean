@@ -150,7 +150,7 @@ This is a colimit cocone (see `PreGaloisCategory.isColimit`) -/
 def cocone : Cocone ((incl F).op ⋙ coyoneda) where
   pt := F ⋙ FintypeCat.incl
   ι := {
-    app := fun ⟨A, a, _⟩ ↦ { app := fun X (f : (A : C) ⟶ X) ↦ F.map f a }
+    app := fun ⟨A, a, _⟩ ↦ { app X := TypeCat.ofHom (fun (f : (A : C) ⟶ X) ↦ F.map f a) }
     naturality := fun ⟨A, a, _⟩ ⟨B, b, _⟩ ⟨f, (hf : F.map f b = a)⟩ ↦ by
       ext Y (g : (A : C) ⟶ Y)
       suffices h : F.map g (F.map f b) = F.map g a by simpa
@@ -158,8 +158,8 @@ def cocone : Cocone ((incl F).op ⋙ coyoneda) where
   }
 
 @[simp]
-lemma cocone_app (A : PointedGaloisObject F) (B : C) (f : (A : C) ⟶ B) :
-    ((cocone F).ι.app ⟨A⟩).app B f = F.map f A.pt :=
+lemma cocone_app (A : PointedGaloisObject F) (B : C) :
+    ((cocone F).ι.app ⟨A⟩).app B = TypeCat.ofHom (fun (f : (A : C) ⟶ B) ↦ F.map f A.pt) :=
   rfl
 
 variable [FiberFunctor F]
@@ -187,8 +187,7 @@ noncomputable def isColimit : IsColimit (cocone F) := by
     obtain ⟨Y, i, y, h1, _, _⟩ := fiber_in_connected_component F X x
     obtain ⟨Z, f, z, hgal, hfz⟩ := exists_hom_from_galois_of_fiber F Y y
     refine ⟨⟨Z, z, hgal⟩, f ≫ i, ?_⟩
-    simp only [mapCocone_ι_app, evaluation_obj_map, cocone_app, map_comp,
-      ← h1, FintypeCat.comp_apply, hfz]
+    simp [← hfz, ← h1]
   · intro ⟨A, a, _⟩ ⟨B, b, _⟩ (u : (A : C) ⟶ X) (v : (B : C) ⟶ X) (h : F.map u a = F.map v b)
     obtain ⟨⟨Z, z, _⟩, ⟨f, hf⟩, ⟨g, hg⟩, _⟩ :=
       IsFilteredOrEmpty.cocone_objs (C := (PointedGaloisObject F)ᵒᵖ)
@@ -301,9 +300,11 @@ noncomputable def endEquivSectionsFibers : End F ≃ (incl F ⋙ F').sections :=
     (FullyFaithful.whiskeringRight (FullyFaithful.ofFullyFaithful FintypeCat.incl) C).homEquiv
   let i2 : End F' ≅ (colimit ((incl F).op ⋙ coyoneda) ⟶ F') :=
     (yoneda.obj (F ⋙ FintypeCat.incl)).mapIso (colimit.isoColimitCocone ⟨cocone F, isColimit F⟩).op
-  let i3 : (colimit ((incl F).op ⋙ coyoneda) ⟶ F') ≅ limit ((incl F ⋙ F') ⋙ uliftFunctor.{u₁}) :=
+  let i3 : (colimit ((incl F).op ⋙ coyoneda) ⟶ F') ≅
+      limit ((incl F ⋙ F') ⋙ uliftFunctor.{u₁}) :=
     colimitCoyonedaHomIsoLimit' (incl F) F'
-  let i4 : limit (incl F ⋙ F' ⋙ uliftFunctor.{u₁}) ≃ ((incl F ⋙ F') ⋙ uliftFunctor.{u₁}).sections :=
+  let i4 : limit (incl F ⋙ F' ⋙ uliftFunctor.{u₁}) ≃
+      ((incl F ⋙ F') ⋙ uliftFunctor.{u₁}).sections :=
     Types.limitEquivSections (incl F ⋙ (F ⋙ FintypeCat.incl) ⋙ uliftFunctor.{u₁, u₂})
   let i5 : ((incl F ⋙ F') ⋙ uliftFunctor.{u₁}).sections ≃ (incl F ⋙ F').sections :=
     (Types.sectionsEquiv (incl F ⋙ F')).symm
@@ -462,7 +463,7 @@ instance FiberFunctor.isPretransitive_of_isConnected (X : C) [IsConnected X] :
       dsimp [gapp, e]
       erw [FintypeCat.uSwitchEquiv_naturality (F.map f)]
       rw [← Functor.comp_map]
-      erw [← FunctorToFintypeCat.naturality, FintypeCat.uSwitchEquiv_symm_naturality (F.map f)]
+      erw [← NatTrans.naturality_apply, FintypeCat.uSwitchEquiv_symm_naturality (F.map f)]
       rfl
     refine ⟨g, show (gapp X).hom x = y from ?_⟩
     simp [gapp, ← hx', hg', hy', Equiv.apply_symm_apply]
