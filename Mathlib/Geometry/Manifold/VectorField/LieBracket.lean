@@ -207,6 +207,7 @@ theorem mlieBracketWithin_eventually_congr_set (h : s =ᶠ[𝓝 x] t) :
     mlieBracketWithin I V W s =ᶠ[𝓝 x] mlieBracketWithin I V W t :=
   mlieBracketWithin_eventually_congr_set' x <| h.filter_mono inf_le_left
 
+set_option backward.isDefEq.respectTransparency false in
 theorem _root_.Filter.EventuallyEq.mlieBracketWithin_vectorField_eq
     (hV : V₁ =ᶠ[𝓝[s] x] V) (hxV : V₁ x = V x) (hW : W₁ =ᶠ[𝓝[s] x] W) (hxW : W₁ x = W x) :
     mlieBracketWithin I V₁ W₁ s x = mlieBracketWithin I V W s x := by
@@ -735,7 +736,7 @@ end Invariance_IsSymmSndFDerivWithinAt
 section Invariance
 
 variable [IsManifold I (minSmoothness 𝕜 2) M] [IsManifold I' (minSmoothness 𝕜 2) M']
-  [CompleteSpace E] {n : WithTop ℕ∞}
+  [CompleteSpace E] {n : ℕ∞ω}
 
 /-- The pullback commutes with the Lie bracket of vector fields on manifolds. Version where one
 assumes that the map is smooth on a larger set `u` (so that the
@@ -830,7 +831,7 @@ lemma mpullback_mlieBracket
 
 /-- If two vector fields are `C^n` with `n ≥ m + 1`, then their Lie bracket is `C^m`. -/
 protected lemma _root_.ContMDiffWithinAt.mlieBracketWithin_vectorField
-    [IsManifold I (n + 1) M] {m : WithTop ℕ∞}
+    [IsManifold I (n + 1) M] {m : ℕ∞ω}
     {U V : Π (x : M), TangentSpace I x} {s : Set M} {x : M}
     (hU : CMDiffAt[s] n (T% U) x) (hV : CMDiffAt[s] n (T% V) x)
     (hs : UniqueMDiffOn I s) (hx : x ∈ s) (hmn : minSmoothness 𝕜 (m + 1) ≤ n) :
