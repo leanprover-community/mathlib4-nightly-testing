@@ -180,9 +180,6 @@ theorem normLeOne_eq_preimage_image :
     ← mem_normLeOne] at hy₁ ⊢
   rwa [← hy₂]
 
-@[deprecated (since := "2025-07-27")]
-alias normLeOne_eq_primeage_image := normLeOne_eq_preimage_image
-
 open scoped Classical in
 theorem normAtAllPlaces_normLeOne :
     normAtAllPlaces '' (normLeOne K) =
@@ -224,7 +221,7 @@ def expMap_single (w : InfinitePlace K) : OpenPartialHomeomorph ℝ ℝ where
   left_inv' _ _ := by simp only [Real.log_exp, mul_inv_cancel_left₀ mult_coe_ne_zero]
   right_inv' _ h := by simp only [inv_mul_cancel_left₀ mult_coe_ne_zero, Real.exp_log h]
   continuousOn_toFun := (continuousOn_const.mul continuousOn_id).rexp
-  continuousOn_invFun := continuousOn_const.mul (Real.continuousOn_log.mono (by aesop))
+  continuousOn_invFun := continuousOn_const.mul (Real.continuousOn_log.mono (by simp))
 
 /--
 The derivative of `expMap_single`, see `hasDerivAt_expMap_single`.
@@ -327,6 +324,7 @@ variable [NumberField K]
 
 variable {K}
 
+set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 /--
 A fixed equiv between `Fin (rank K)` and `{w : InfinitePlace K // w ≠ w₀}`.
@@ -351,8 +349,8 @@ linearly independent, see `linearIndependent_completeFamily`.
 -/
 def realSpaceToLogSpace : realSpace K →ₗ[ℝ] {w : InfinitePlace K // w ≠ w₀} → ℝ where
   toFun := fun x w ↦ x w.1 - w.1.mult * (∑ w', x w') * (Module.finrank ℚ K : ℝ)⁻¹
-  map_add' := fun _ _ ↦ funext fun _ ↦ by simpa [sum_add_distrib] using by ring
-  map_smul' := fun _ _ ↦ funext fun _ ↦ by simpa [← mul_sum] using by ring
+  map_add' := fun _ _ ↦ funext fun _ ↦ by simp [sum_add_distrib]; ring
+  map_smul' := fun _ _ ↦ funext fun _ ↦ by simp [← mul_sum]; ring
 
 theorem realSpaceToLogSpace_apply (x : realSpace K) (w : {w : InfinitePlace K // w ≠ w₀}) :
     realSpaceToLogSpace x w = x w - w.1.mult * (∑ w', x w') * (Module.finrank ℚ K : ℝ)⁻¹ := rfl
@@ -515,7 +513,7 @@ theorem prod_expMapBasis_pow (x : realSpace K) :
   simp_rw [expMapBasis_apply', Pi.smul_def, smul_eq_mul, mul_pow, prod_mul_distrib,
     prod_pow_eq_pow_sum, sum_mult_eq, ← prod_pow]
   rw [prod_comm]
-  simp_rw [Real.rpow_pow_comm (apply_nonneg _ _), Real.finset_prod_rpow _ _
+  simp_rw [Real.rpow_pow_comm (apply_nonneg _ _), Real.finsetProd_rpow _ _
     fun _ _ ↦ pow_nonneg (apply_nonneg _ _) _, prod_eq_abs_norm, Units.norm, Rat.cast_one,
     Real.one_rpow, prod_const_one, mul_one]
 
@@ -546,7 +544,7 @@ theorem logMap_expMapBasis (x : realSpace K) :
     rw [if_neg i.prop]
   simp_rw [sum_apply, ← sum_fn, map_sum, Pi.smul_apply, ← Pi.smul_def, map_smul,
     completeBasis_apply_of_ne, expMap_symm_apply, normAtAllPlaces_mixedEmbedding,
-    ← logEmbedding_component, logEmbedding_fundSystem, Finsupp.coe_finset_sum, Finsupp.coe_smul,
+    ← logEmbedding_component, logEmbedding_fundSystem, Finsupp.coe_finsetSum, Finsupp.coe_smul,
     sum_apply, Pi.smul_apply, Basis.ofZLatticeBasis_repr_apply, Basis.repr_self,
     Finsupp.single_apply, EmbeddingLike.apply_eq_iff_eq, Int.cast_ite, Int.cast_one, Int.cast_zero,
     smul_ite, smul_eq_mul, mul_one, mul_zero, Fintype.sum_ite_eq']
@@ -648,9 +646,6 @@ open scoped Classical in
 theorem interior_paramSet :
     interior (paramSet K) = Set.univ.pi fun w ↦ if w = w₀ then Set.Iio 0 else Set.Ioo 0 1 := by
   simp [interior_pi_set Set.finite_univ, apply_ite]
-
-@[deprecated (since := "2025-08-26")] alias measurableSet_interior_paramSet :=
-  measurableSet_interior
 
 open scoped Classical in
 theorem closure_paramSet :

@@ -6,7 +6,6 @@ Authors: Mario Carneiro, Heather Macbeth, Yaël Dillies
 module
 
 public meta import Mathlib.Control.Basic
-public meta import Qq
 public import Mathlib.Algebra.Order.Invertible
 public import Mathlib.Algebra.Order.Ring.Cast
 public import Mathlib.Tactic.HaveI
@@ -26,7 +25,29 @@ public meta section
 open Lean
 open Lean.Meta Qq Lean.Elab Term
 
-/-- Attribute for identifying `positivity` extensions. -/
+/-- A definition of type `PositivityExt` tagged `@[positivity t]` extends the `positivity` tactic.
+The term (with underscores) `t` indicates which expressions this extension accepts.
+An extension will be given an expression `e : α`, together with hypotheses
+`[Zero α] [PartialOrder α]` and attempts to prove `e > 0`, `e ≥ 0`, or `e ≠ 0`.
+
+When `Positivity.core` calls this extension on an expression `e`, it does not guarantee that `e`
+matches `t` perfectly: validate the form of the expression (using e.g.
+`match_expr (← withReducible (whnf e))`) before building a proof. See also the
+`let .app ... ← withReducible (whnf e) | throwError ...` lines in the example below.
+
+An extension can call `Mathlib.Meta.Positivity.core` to recursively solve subgoals.
+
+Example:
+```lean
+@[positivity ite _ _ _] def evalIte : PositivityExt where eval {u α} zα pα e := do
+  let .app (.app (.app (.app f (p : Q(Prop))) (_ : Q(Decidable $p))) (a : Q($α))) (b : Q($α))
+    ← withReducible (whnf e) | throwError "not ite"
+  haveI' : $e =Q ite $p $a $b := ⟨⟩
+  guard <| ← withDefault <| withNewMCtxDepth <| isDefEq f q(ite (α := $α))
+  let ra ← core zα pα a; let rb ← core zα pα b
+  ...
+```
+-/
 syntax (name := positivity) "positivity " term,+ : attr
 
 lemma ne_of_ne_of_eq' {α : Sort*} {a c b : α} (hab : (a : α) ≠ c) (hbc : a = b) : b ≠ c := hbc ▸ hab
@@ -491,14 +512,23 @@ namespace Tactic.Positivity
 
 open Tactic
 
-/-- Tactic solving goals of the form `0 ≤ x`, `0 < x` and `x ≠ 0`.  The tactic works recursively
-according to the syntax of the expression `x`, if the atoms composing the expression all have
-numeric lower bounds which can be proved positive/nonnegative/nonzero by `norm_num`.  This tactic
-either closes the goal or fails.
+/-- `positivity` solves goals of the form `0 ≤ x`, `0 < x` and `x ≠ 0`. The tactic works recursively
+according to the syntax of the expression `x`, by attempting to prove subexpressions are
+positive/nonnegative/nonzero and combining this into a final proof. This tactic either closes the
+goal or fails.
 
-`positivity [t₁, …, tₙ]` first executes `have := t₁; …; have := tₙ` in the current goal,
-then runs `positivity`. This is useful when `positivity` needs derived premises such as `0 < y`
-for division/reciprocal, or `0 ≤ x` for real powers.
+For each subexpression `e`, `positivity` will try to:
+* try `@[positivity]`-tagged extensions to recursively prove `e` is positive/nonnegative/nonzero
+  based on its subexpressions (see the `positivity` attribute for more details), or
+* try the `norm_num` tactic to prove `e` is positive/nonnegative/nonzero, or
+* try showing `e : t` is nonnegative because there is a `CanonicallyOrderedAdd t` instance, or
+* use a local hypothesis of the form `0 ≤ e`, `0 < e` or `e ≠ 0`.
+
+This tactic is extensible. See the `positivity` attribute documentation for more details.
+
+* `positivity [t₁, …, tₙ]` first executes `have := t₁; …; have := tₙ` in the current goal,
+  then runs `positivity`. This is useful when `positivity` needs derived premises such as `0 < y`
+  for division/reciprocal, or `0 ≤ x` for real powers.
 
 Examples:
 ```

@@ -78,6 +78,7 @@ protected lemma Submartingale.stoppedAbove [IsFiniteMeasure μ] (hf : Submarting
 
 variable {r : ℝ} {R : ℝ≥0}
 
+set_option backward.isDefEq.respectTransparency false in
 theorem stoppedAbove_le (hr : 0 ≤ r) (hf0 : f 0 = 0)
     (hbdd : ∀ᵐ ω ∂μ, ∀ i, |f (i + 1) ω - f i ω| ≤ R) (i : ℕ) :
     ∀ᵐ ω ∂μ, stoppedAbove f r i ω ≤ r + R := by
@@ -279,7 +280,7 @@ theorem process_difference_le (s : ℕ → Set Ω) (ω : Ω) (n : ℕ) :
 
 theorem integrable_process (μ : Measure Ω) [IsFiniteMeasure μ] (hs : ∀ n, MeasurableSet[ℱ n] (s n))
     (n : ℕ) : Integrable (process s n) μ :=
-  integrable_finset_sum' _ fun _ _ =>
+  integrable_finsetSum' _ fun _ _ =>
     IntegrableOn.integrable_indicator (integrable_const 1) <| ℱ.le _ _ <| hs _
 
 end BorelCantelli

@@ -27,7 +27,7 @@ event.
 Prove the `integral` versions of the `lintegral` lemmas below
 -/
 
-@[expose] public section
+public section
 
 open MeasureTheory ENNReal NNReal Set
 open scoped ProbabilityTheory
@@ -52,7 +52,7 @@ structure IsProper (π : Kernel[𝓑, 𝓧] X X) : Prop where
 lemma isProper_iff_restrict_eq_indicator_smul (h𝓑𝓧 : 𝓑 ≤ 𝓧) :
     IsProper π ↔ ∀ ⦃B : Set X⦄ (hB : MeasurableSet[𝓑] B) (x : X),
       π.restrict (h𝓑𝓧 _ hB) x = B.indicator (fun _ ↦ (1 : ℝ≥0∞)) x • π x := by
-  refine ⟨fun ⟨h⟩ ↦ ?_, fun h ↦ ⟨?_⟩⟩ <;> simpa only [inf_eq_left.2 h𝓑𝓧] using h
+  refine ⟨fun ⟨h⟩ ↦ ?_, fun h ↦ ⟨?_⟩⟩ <;> simpa +instances only [inf_eq_left.2 h𝓑𝓧] using h
 
 lemma isProper_iff_inter_eq_indicator_mul (h𝓑𝓧 : 𝓑 ≤ 𝓧) :
     IsProper π ↔

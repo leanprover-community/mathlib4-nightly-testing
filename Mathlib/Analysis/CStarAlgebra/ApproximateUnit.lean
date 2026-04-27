@@ -50,6 +50,7 @@ open Unitization NNReal CStarAlgebra
 
 variable [PartialOrder A] [StarOrderedRing A]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma CFC.monotoneOn_one_sub_one_add_inv :
     MonotoneOn (cfcₙ (fun x : ℝ≥0 ↦ 1 - (1 + x)⁻¹)) (Set.Ici (0 : A)) := by
   intro a ha b hb hab
@@ -172,7 +173,7 @@ lemma tendsto_mul_right_of_forall_nonneg_tendsto {l : Filter A}
     change m ∈ span ℂ ({x | 0 ≤ x} ∩ ball 0 1)
     simp [span_nonneg_inter_unitBall]
   simp_rw [Finset.mul_sum]
-  refine tendsto_finset_sum _ fun i _ ↦ ?_
+  refine tendsto_finsetSum _ fun i _ ↦ ?_
   simp_rw [mul_smul_comm]
   exact tendsto_const_nhds.smul <| h (x i) (x i).2.1 <| by simpa using (x i).2.2
 
@@ -250,6 +251,7 @@ lemma norm_sub_mul_self_le_of_inr {x y : A} (z : A) (hx₀ : 0 ≤ x) (hxy : x �
       ← norm_le_one_iff_of_nonneg _, norm_inr]
     exact ⟨hxy, hy₁⟩
 
+set_option backward.isDefEq.respectTransparency false in
 variable {A} in
 /-- This shows `CStarAlgebra.approximateUnit` is a one-sided approximate unit, but this is marked
 `private` because it is only used to prove `CStarAlgebra.increasingApproximateUnit`. -/
@@ -296,7 +298,7 @@ private lemma tendsto_mul_right_approximateUnit (m : A) :
           exact hm' y hy
         · exact div_le_one (by positivity) |>.mpr le_add_self
       _ = ε ^ 2 := mul_one _
-  rw [cfc_mul _ _ m (continuousOn_id' _ |>.mul hg') (continuousOn_id' _),
+  rw [cfc_mul _ _ m (continuousOn_id' _ |>.fun_mul hg') (continuousOn_id' _),
     cfc_mul _ _ m (continuousOn_id' _) hg', cfc_id' .., hm₁.star_eq]
   congr
   rw [← cfc_one (R := ℝ≥0) m, ← cfc_comp_smul _ _ _ hg.continuousOn hm₁,
