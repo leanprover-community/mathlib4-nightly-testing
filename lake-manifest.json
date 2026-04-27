@@ -61,21 +61,14 @@
    "inputRev": "v4.30.0-rc2",
    "inherited": false,
    "configFile": "lakefile.toml"},
-  {"url": "https://github.com/linesthatinterlace/batteries",
+  {"url": "https://github.com/leanprover-community/batteries",
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-<<<<<<< HEAD
-   "rev": "cc18f7fd351affcdb1f47726f085e2707eeea3d3",
-   "name": "batteries",
-   "manifestFile": "lake-manifest.json",
-   "inputRev": "countElem_Idx_functions",
-=======
    "rev": "5c57f3857ba81924a88b2cdf4f062e34ec04ff11",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "v4.30.0-rc2",
->>>>>>> master
    "inherited": false,
    "configFile": "lakefile.toml"},
   {"url": "https://github.com/leanprover/lean4-cli",
