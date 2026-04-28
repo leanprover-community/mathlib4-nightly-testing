@@ -3,8 +3,10 @@ Copyright (c) 2023 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Kim Morrison, Joël Riou
 -/
-import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
-import Mathlib.Algebra.Category.Ring.Basic
+module
+
+public import Mathlib.Algebra.Category.ModuleCat.ChangeOfRings
+public import Mathlib.Algebra.Category.Ring.Basic
 
 /-!
 # Presheaves of modules over a presheaf of rings.
@@ -25,6 +27,8 @@ of scalars of `M.obj Y` via `R.map f`.
 * Pushforward and pullback.
 -/
 
+@[expose] public section
+
 universe v v₁ u₁ u
 
 open CategoryTheory LinearMap Opposite
@@ -44,24 +48,34 @@ structure PresheafOfModules where
   map_id (X : Cᵒᵖ) :
     map (𝟙 X) = (ModuleCat.restrictScalarsId' (R.map (𝟙 X)).hom
       (congrArg RingCat.Hom.hom (R.map_id X))).inv.app _ := by
-        aesop_cat
+        cat_disch
   map_comp {X Y Z : Cᵒᵖ} (f : X ⟶ Y) (g : Y ⟶ Z) :
     map (f ≫ g) = map f ≫ (ModuleCat.restrictScalars _).map (map g) ≫
       (ModuleCat.restrictScalarsComp' (R.map f).hom (R.map g).hom (R.map (f ≫ g)).hom
-        (congrArg RingCat.Hom.hom <| R.map_comp f g)).inv.app _ := by aesop_cat
+        (congrArg RingCat.Hom.hom <| R.map_comp f g)).inv.app _ := by cat_disch
 
 namespace PresheafOfModules
 
 attribute [simp] map_id map_comp
 attribute [reassoc] map_comp
 
+#adaptation_note /-- lean-pr-testing-12564
+This is required for `Algebra.Category.ModuleCat.Differentials.Presheaf` -/
+instance {R : Cᵒᵖ ⥤ CommRingCat.{u}} (X : Cᵒᵖ) (M : PresheafOfModules.{v} (R ⋙ forget₂ _ _)) :
+    Module (R.obj X) (M.obj X) := (M.obj X).isModule
+
 variable (M M₁ M₂ : PresheafOfModules.{v} R)
 
+set_option backward.isDefEq.respectTransparency false in
 protected lemma map_smul {X Y : Cᵒᵖ} (f : X ⟶ Y) (r : R.obj X) (m : M.obj X) :
     M.map f (r • m) = R.map f r • M.map f m := by simp
 
 lemma congr_map_apply {X Y : Cᵒᵖ} {f g : X ⟶ Y} (h : f = g) (m : M.obj X) :
     M.map f m = M.map g m := by rw [h]
+
+lemma map_comp_apply {U V W : Cᵒᵖ} (i : U ⟶ V) (j : V ⟶ W) (x) :
+    M.map (i ≫ j) x = M.map j (M.map i x) := by
+  rw [M.map_comp]; rfl
 
 /-- A morphism of presheaves of modules consists of a family of linear maps which
 satisfy the naturality condition. -/
@@ -71,7 +85,7 @@ structure Hom where
   app (X : Cᵒᵖ) : M₁.obj X ⟶ M₂.obj X
   naturality {X Y : Cᵒᵖ} (f : X ⟶ Y) :
       M₁.map f ≫ (ModuleCat.restrictScalars (R.map f).hom).map (app Y) =
-        app X ≫ M₂.map f := by aesop_cat
+        app X ≫ M₂.map f := by cat_disch
 
 attribute [reassoc (attr := simp)] Hom.naturality
 
@@ -104,18 +118,19 @@ lemma naturality_apply (f : M₁ ⟶ M₂) {X Y : Cᵒᵖ} (g : X ⟶ Y) (x : M�
 def isoMk (app : ∀ (X : Cᵒᵖ), M₁.obj X ≅ M₂.obj X)
     (naturality : ∀ ⦃X Y : Cᵒᵖ⦄ (f : X ⟶ Y),
       M₁.map f ≫ (ModuleCat.restrictScalars (R.map f).hom).map (app Y).hom =
-        (app X).hom ≫ M₂.map f := by aesop_cat) : M₁ ≅ M₂ where
+        (app X).hom ≫ M₂.map f := by cat_disch) : M₁ ≅ M₂ where
   hom := { app := fun X ↦ (app X).hom }
   inv :=
     { app := fun X ↦ (app X).inv
       naturality := fun {X Y} f ↦ by
         rw [← cancel_epi (app X).hom, ← reassoc_of% (naturality f), Iso.map_hom_inv_id,
-          Category.comp_id, Iso.hom_inv_id_assoc]}
+          Category.comp_id, Iso.hom_inv_id_assoc] }
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The underlying presheaf of abelian groups of a presheaf of modules. -/
 noncomputable def presheaf : Cᵒᵖ ⥤ Ab where
   obj X := (forget₂ _ _).obj (M.obj X)
-  map f := AddCommGrp.ofHom <| AddMonoidHom.mk' (M.map f) (by simp)
+  map f := AddCommGrpCat.ofHom <| AddMonoidHom.mk' (M.map f) (by simp)
 
 @[simp]
 lemma presheaf_obj_coe (X : Cᵒᵖ) :
@@ -134,7 +149,7 @@ variable (R) in
 noncomputable def toPresheaf : PresheafOfModules.{v} R ⥤ Cᵒᵖ ⥤ Ab where
   obj M := M.presheaf
   map f :=
-    { app := fun X ↦ AddCommGrp.ofHom <| AddMonoidHom.mk' (Hom.app f X) (by simp)
+    { app := fun X ↦ AddCommGrpCat.ofHom <| AddMonoidHom.mk' (Hom.app f X) (by simp)
       naturality := fun X Y g ↦ by ext x; exact naturality_apply f g x }
 
 @[simp]
@@ -149,7 +164,7 @@ lemma toPresheaf_map_app_apply (f : M₁ ⟶ M₂) (X : Cᵒᵖ) (x : M₁.obj X
 instance : (toPresheaf R).Faithful where
   map_injective {_ _ f g} h := by
     ext X x
-    exact congr_fun (((evaluation _ _).obj X ⋙ forget _).congr_map h) x
+    exact ConcreteCategory.congr_hom (((evaluation _ _).obj X ⋙ forget Ab).congr_map h) x
 
 section
 
@@ -157,6 +172,7 @@ variable (M : Cᵒᵖ ⥤ Ab.{v}) [∀ X, Module (R.obj X) (M.obj X)]
   (map_smul : ∀ ⦃X Y : Cᵒᵖ⦄ (f : X ⟶ Y) (r : R.obj X) (m : M.obj X),
     M.map f (r • m) = R.map f r • M.map f m)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The object in `PresheafOfModules R` that is obtained from `M : Cᵒᵖ ⥤ Ab.{v}` such
 that for all `X : Cᵒᵖ`, `M.obj X` is a `R.obj X` module, in such a way that the
 restriction maps are semilinear. (This constructor should be used only in cases
@@ -186,7 +202,7 @@ noncomputable def homMk (φ : M₁.presheaf ⟶ M₂.presheaf)
     M₁ ⟶ M₂ where
   app X := ModuleCat.ofHom
     { toFun := φ.app X
-      map_add' := by simp
+      map_add' := by simp +instances
       map_smul' := hφ X }
   naturality := fun f ↦ by
     ext x
@@ -261,6 +277,7 @@ noncomputable def restriction {X Y : Cᵒᵖ} (f : X ⟶ Y) :
     evaluation R X ⟶ evaluation R Y ⋙ ModuleCat.restrictScalars (R.map f).hom where
   app M := M.map f
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The obvious free presheaf of modules of rank `1`. -/
 noncomputable def unit : PresheafOfModules R where
   obj X := ModuleCat.of _ (R.obj X)
@@ -270,7 +287,7 @@ noncomputable def unit : PresheafOfModules R where
       (Y := (ModuleCat.restrictScalars (R.map f).hom).obj (ModuleCat.of (R.obj Y) (R.obj Y)))
     { toFun := fun x ↦ R.map f x
       map_add' := by simp
-      map_smul' := by aesop_cat }
+      map_smul' := by cat_disch }
 
 lemma unit_map_one {X Y : Cᵒᵖ} (f : X ⟶ Y) : (unit R).map f (1 : R.obj X) = (1 : R.obj Y) :=
   (R.map f).hom.map_one
@@ -314,6 +331,7 @@ lemma sectionsMap_comp {M N P : PresheafOfModules.{v} R} (f : M ⟶ N) (g : N �
 lemma sectionsMap_id {M : PresheafOfModules.{v} R} (s : M.sections) :
     sectionsMap (𝟙 M) s = s := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The bijection `(unit R ⟶ M) ≃ M.sections` for `M : PresheafOfModules R`. -/
 @[simps! apply_coe]
 noncomputable def unitHomEquiv (M : PresheafOfModules R) :
@@ -359,6 +377,7 @@ noncomputable abbrev forgetToPresheafModuleCatObjObj (Y : Cᵒᵖ) : ModuleCat (
 lemma forgetToPresheafModuleCatObjObj_coe (Y : Cᵒᵖ) :
     (forgetToPresheafModuleCatObjObj X hX M Y : Type _) = M.obj Y := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `forgetToPresheafModuleCatObj`. -/
 noncomputable def forgetToPresheafModuleCatObjMap {Y Z : Cᵒᵖ} (f : Y ⟶ Z) :
     forgetToPresheafModuleCatObjObj X hX M Y ⟶
@@ -368,15 +387,14 @@ noncomputable def forgetToPresheafModuleCatObjMap {Y Z : Cᵒᵖ} (f : Y ⟶ Z) 
   { toFun := fun x => M.map f x
     map_add' := by simp
     map_smul' := fun r x => by
-      simp only [ModuleCat.restrictScalars.smul_def, AddHom.toFun_eq_coe, AddHom.coe_mk,
-        RingHom.id_apply, M.map_smul]
+      simp only [ModuleCat.restrictScalars.smul_def (R := R.obj X), RingHom.id_apply, M.map_smul]
       rw [← RingCat.comp_apply, ← R.map_comp]
       congr
       apply hX.hom_ext }
 
 @[simp]
 lemma forgetToPresheafModuleCatObjMap_apply {Y Z : Cᵒᵖ} (f : Y ⟶ Z) (m : M.obj Y) :
-  (forgetToPresheafModuleCatObjMap X hX M f).hom m = M.map f m := rfl
+    (forgetToPresheafModuleCatObjMap X hX M f).hom m = M.map f m := rfl
 
 /--
 Implementation of the functor `PresheafOfModules R ⥤ Cᵒᵖ ⥤ ModuleCat (R.obj X)`
@@ -395,6 +413,7 @@ noncomputable def forgetToPresheafModuleCatObj
 
 end
 
+set_option backward.isDefEq.respectTransparency false in
 /--
 Implementation of the functor `PresheafOfModules R ⥤ Cᵒᵖ ⥤ ModuleCat (R.obj X)`
 when `X` is initial.
@@ -411,7 +430,7 @@ noncomputable def forgetToPresheafModuleCatMap
       (Y := (forgetToPresheafModuleCatObj X hX N).obj Y)
     { toFun := f.app Y
       map_add' := by simp
-      map_smul' := fun r ↦ (f.app Y).hom.map_smul (R.1.map (hX.to Y) _) }
+      map_smul' := fun r ↦ (f.app Y).hom.map_smul (R.map (hX.to Y) _) }
   naturality Y Z g := by
     ext x
     exact naturality_apply f g x

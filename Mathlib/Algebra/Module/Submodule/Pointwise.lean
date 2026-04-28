@@ -3,10 +3,11 @@ Copyright (c) 2021 Eric Wieser. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eric Wieser, Jujian Zhang
 -/
-import Mathlib.Algebra.GroupWithZero.Subgroup
-import Mathlib.Algebra.Order.Group.Action
-import Mathlib.LinearAlgebra.Finsupp.Supported
-import Mathlib.LinearAlgebra.Span.Basic
+module
+
+public import Mathlib.Algebra.GroupWithZero.Subgroup
+public import Mathlib.Algebra.Order.Group.Action
+public import Mathlib.Algebra.Module.Submodule.Range
 
 /-! # Pointwise instances on `Submodule`s
 
@@ -35,9 +36,11 @@ section `set_acting_on_submodules` does not have a counterpart in the files
 `Mathlib/Algebra/Group/Submonoid/Pointwise.lean` and
 `Mathlib/Algebra/GroupWithZero/Submonoid/Pointwise.lean`.
 
-Other than section `set_acting_on_submodules`, most of the lemmas in this file are direct copies of
+Other than section `DistribMulAction`, most of the lemmas in this file are direct copies of
 lemmas from the file `Mathlib/Algebra/Group/Submonoid/Pointwise.lean`.
 -/
+
+@[expose] public section
 
 assert_not_exists Ideal
 
@@ -60,6 +63,7 @@ Recall that When `R` is the semiring corresponding to the nonnegative elements o
 `Submodule R' M` is the type of cones of `M`. This instance reflects such cones about `0`.
 
 This is available as an instance in the `Pointwise` locale. -/
+@[instance_reducible]
 protected def pointwiseNeg : Neg (Submodule R M) where
   neg p :=
     { -p.toAddSubmonoid with
@@ -84,33 +88,26 @@ theorem mem_neg {g : M} {S : Submodule R M} : g ∈ -S ↔ -g ∈ S :=
 /-- `Submodule.pointwiseNeg` is involutive.
 
 This is available as an instance in the `Pointwise` locale. -/
+@[instance_reducible]
 protected def involutivePointwiseNeg : InvolutiveNeg (Submodule R M) where
-  neg := Neg.neg
   neg_neg _S := SetLike.coe_injective <| neg_neg _
 
 scoped[Pointwise] attribute [instance] Submodule.involutivePointwiseNeg
 
 @[simp]
-theorem neg_le_neg (S T : Submodule R M) : -S ≤ -T ↔ S ≤ T :=
+theorem neg_le_neg {S T : Submodule R M} : -S ≤ -T ↔ S ≤ T :=
   SetLike.coe_subset_coe.symm.trans Set.neg_subset_neg
 
-theorem neg_le (S T : Submodule R M) : -S ≤ T ↔ S ≤ -T :=
+theorem neg_le {S T : Submodule R M} : -S ≤ T ↔ S ≤ -T :=
   SetLike.coe_subset_coe.symm.trans Set.neg_subset
+
+theorem neg_eq_self_iff_neg_le {S : Submodule R M} : -S = S ↔ -S ≤ S :=
+  ⟨le_of_eq, fun h => antisymm h <| neg_le.mp h⟩
 
 /-- `Submodule.pointwiseNeg` as an order isomorphism. -/
 def negOrderIso : Submodule R M ≃o Submodule R M where
   toEquiv := Equiv.neg _
   map_rel_iff' := @neg_le_neg _ _ _ _ _
-
-theorem span_neg_eq_neg (s : Set M) : span R (-s) = -span R s := by
-  apply le_antisymm
-  · rw [span_le, coe_set_neg, ← Set.neg_subset, neg_neg]
-    exact subset_span
-  · rw [neg_le, span_le, coe_set_neg, ← Set.neg_subset]
-    exact subset_span
-
-@[deprecated (since := "2025-04-08")]
-alias closure_neg := span_neg_eq_neg
 
 @[simp]
 theorem neg_inf (S T : Submodule R M) : -(S ⊓ T) = -S ⊓ -T := rfl
@@ -134,6 +131,11 @@ theorem neg_iInf {ι : Sort*} (S : ι → Submodule R M) : (-⨅ i, S i) = ⨅ i
 @[simp]
 theorem neg_iSup {ι : Sort*} (S : ι → Submodule R M) : (-⨆ i, S i) = ⨆ i, -S i :=
   (negOrderIso : Submodule R M ≃o Submodule R M).map_iSup _
+
+variable {S : Type*} [Semiring S] [SMul S R] [Module S M] [IsScalarTower S R M]
+
+@[simp] theorem neg_restrictScalars (p : Submodule R M) :
+  -(restrictScalars S p) = restrictScalars S (-p) := by ext; simp
 
 end Semiring
 
@@ -168,11 +170,12 @@ theorem add_eq_sup (p q : Submodule R M) : p + q = p ⊔ q :=
 theorem zero_eq_bot : (0 : Submodule R M) = ⊥ :=
   rfl
 
-instance : IsOrderedAddMonoid (Submodule R M) :=
-  { add_le_add_left := fun _a _b => sup_le_sup_left }
+instance : IsOrderedAddMonoid (Submodule R M) where
+  add_le_add_left _ _ := sup_le_sup_right
 
 instance : CanonicallyOrderedAdd (Submodule R M) where
-  exists_add_of_le := @fun _a b h => ⟨b, (sup_eq_right.2 h).symm⟩
+  exists_add_of_le {_a b} h := ⟨b, (sup_eq_right.2 h).symm⟩
+  le_add_self _ _ := le_sup_right
   le_self_add := fun _a _b => le_sup_left
 
 section
@@ -182,8 +185,9 @@ variable [Monoid α] [DistribMulAction α M] [SMulCommClass α R M]
 /-- The action on a submodule corresponding to applying the action to every element.
 
 This is available as an instance in the `Pointwise` locale. -/
+@[instance_reducible]
 protected def pointwiseDistribMulAction : DistribMulAction α (Submodule R M) where
-  smul a S := S.map (DistribMulAction.toLinearMap R M a : M →ₗ[R] M)
+  smul a S := S.map (DistribSMul.toLinearMap R M a : M →ₗ[R] M)
   one_smul S :=
     (congr_arg (fun f : Module.End R M => S.map f) (LinearMap.ext <| one_smul α)).trans S.map_id
   mul_smul _a₁ _a₂ S :=
@@ -194,9 +198,12 @@ protected def pointwiseDistribMulAction : DistribMulAction α (Submodule R M) wh
 
 scoped[Pointwise] attribute [instance] Submodule.pointwiseDistribMulAction
 
+theorem pointwise_smul_def {a : α} {S : Submodule R M} :
+    a • S = S.map (DistribSMul.toLinearMap R M a) := rfl
+
 open Pointwise
 
-@[simp]
+@[simp, norm_cast]
 theorem coe_pointwise_smul (a : α) (S : Submodule R M) : ↑(a • S) = a • (S : Set M) :=
   rfl
 
@@ -230,13 +237,10 @@ theorem smul_bot' (a : α) : a • (⊥ : Submodule R M) = ⊥ :=
 theorem smul_sup' (a : α) (S T : Submodule R M) : a • (S ⊔ T) = a • S ⊔ a • T :=
   map_sup _ _ _
 
-theorem smul_span (a : α) (s : Set M) : a • span R s = span R (a • s) :=
-  map_span _ _
-
-lemma smul_def (a : α) (S : Submodule R M) : a • S = span R (a • S : Set M) := by simp [← smul_span]
-
-theorem span_smul (a : α) (s : Set M) : span R (a • s) = a • span R s :=
-  Eq.symm (span_image _).symm
+/-- See also `Submodule.smul_iSup`. -/
+theorem smul_iSup' (a : α) {ι : Sort*} (f : ι → Submodule R M) :
+    a • ⨆ i, f i = ⨆ i, a • f i :=
+  map_iSup _ _
 
 instance pointwiseCentralScalar [DistribMulAction αᵐᵒᵖ M] [SMulCommClass αᵐᵒᵖ R M]
     [IsCentralScalar α M] : IsCentralScalar α (Submodule R M) :=
@@ -260,6 +264,7 @@ This is available as an instance in the `Pointwise` locale.
 
 This is a stronger version of `Submodule.pointwiseDistribMulAction`. Note that `add_smul` does
 not hold so this cannot be stated as a `Module`. -/
+@[instance_reducible]
 protected def pointwiseMulActionWithZero : MulActionWithZero α (Submodule R M) :=
   { Submodule.pointwiseDistribMulAction with
     zero_smul := fun S =>
@@ -289,22 +294,14 @@ to prove:
 To invoke this induction principle, use `induction x, hx using Submodule.set_smul_inductionOn` where
 `x : M` and `hx : x ∈ s • N`
 
-When we consider subset of `R` acting on `M`
-- `Submodule.pointwiseSetDistribMulAction` : the action described above is distributive.
-- `Submodule.mem_set_smul` : `x ∈ s • N` iff `x` can be written as `r₀ n₀ + ... + rₖ nₖ` where
-  `rᵢ ∈ s` and `nᵢ ∈ N`.
-- `Submodule.coe_span_smul`: `s • N` is the same as `⟨s⟩ • N` where `⟨s⟩` is the ideal spanned
-  by `s`.
-
-
 #### Notes
 - If we assume the addition on subsets of `R` is the `⊔` and subtraction `⊓` i.e. use `SetSemiring`,
-then this action actually gives a module structure on submodules of `M` over subsets of `R`.
+  then this action actually gives a module structure on submodules of `M` over subsets of `R`.
 - If we generalize so that `r • N` makes sense for all `r : S`, then `Submodule.singleton_set_smul`
   and `Submodule.singleton_set_smul` can be generalized as well.
 -/
 
-section set_acting_on_submodules
+section DistribMulAction
 
 variable {S : Type*} [Monoid S]
 variable [DistribMulAction S M]
@@ -313,6 +310,7 @@ variable [DistribMulAction S M]
 Let `s ⊆ R` be a set and `N ≤ M` be a submodule, then `s • N` is the smallest submodule containing
 all `r • n` where `r ∈ s` and `n ∈ N`.
 -/
+@[instance_reducible]
 protected def pointwiseSetSMul : SMul (Set S) (Submodule R M) where
   smul s N := sInf { p | ∀ ⦃r : S⦄ ⦃n : M⦄, r ∈ s → n ∈ N → r • n ∈ p }
 
@@ -322,7 +320,7 @@ variable (sR : Set R) (s : Set S) (N : Submodule R M)
 
 lemma mem_set_smul_def (x : M) :
     x ∈ s • N ↔
-  x ∈ sInf { p : Submodule R M | ∀ ⦃r : S⦄ {n : M}, r ∈ s → n ∈ N → r • n ∈ p } := Iff.rfl
+    x ∈ sInf { p : Submodule R M | ∀ ⦃r : S⦄ {n : M}, r ∈ s → n ∈ N → r • n ∈ p } := Iff.rfl
 
 variable {s N} in
 @[aesop safe]
@@ -369,13 +367,6 @@ lemma set_smul_eq_iSup [SMulCommClass S R M] (s : Set S) (N : Submodule R M) :
   simp_rw [← Set.Ici_def, iSup_le_iff, @forall_comm M]
   exact Set.ext fun _ => forall₂_congr (fun _ _ => Iff.symm map_le_iff_le_comap)
 
-theorem set_smul_span [SMulCommClass S R M] (s : Set S) (t : Set M) :
-    s • span R t = span R (s • t) := by
-  simp_rw [set_smul_eq_iSup, smul_span, iSup_span, Set.iUnion_smul_set]
-
-theorem span_set_smul [SMulCommClass S R M] (s : Set S) (t : Set M) :
-    span R (s • t) = s • span R t := (set_smul_span s t).symm
-
 variable {s N} in
 /--
 Induction principle for set acting on submodules. To prove `P` holds for all `s • N`, it is enough
@@ -394,7 +385,7 @@ lemma set_smul_inductionOn {motive : (x : M) → (_ : x ∈ s • N) → Prop}
     (hx : x ∈ s • N)
     (smul₀ : ∀ ⦃r : S⦄ ⦃n : M⦄ (mem₁ : r ∈ s) (mem₂ : n ∈ N),
       motive (r • n) (mem_set_smul_of_mem_mem mem₁ mem₂))
-    (smul₁ : ∀ (r : R) ⦃m : M⦄ (mem : m ∈ s • N) ,
+    (smul₁ : ∀ (r : R) ⦃m : M⦄ (mem : m ∈ s • N),
       motive m mem → motive (r • m) (Submodule.smul_mem _ r mem)) --
     (add : ∀ ⦃m₁ m₂ : M⦄ (mem₁ : m₁ ∈ s • N) (mem₂ : m₂ ∈ s • N),
       motive m₁ mem₁ → motive m₂ mem₂ → motive (m₁ + m₂) (Submodule.add_mem _ mem₁ mem₂))
@@ -407,46 +398,6 @@ lemma set_smul_inductionOn {motive : (x : M) → (_ : x ∈ s • N) → Prop}
       smul_mem' := fun r _ ⟨mem, h⟩ ↦ ⟨_, smul₁ r mem h⟩ }
     (fun _ _ mem mem' ↦ ⟨mem_set_smul_of_mem_mem mem mem', smul₀ mem mem'⟩) hx
   h
-
--- Implementation note: if `N` is both an `R`-submodule and `S`-submodule and `SMulCommClass R S M`,
--- this lemma is also true for any `s : Set S`.
-lemma set_smul_eq_map [SMulCommClass R R N] :
-    sR • N =
-    Submodule.map
-      (N.subtype.comp (Finsupp.lsum R <| DistribMulAction.toLinearMap _ _))
-      (Finsupp.supported N R sR) := by
-  classical
-  apply set_smul_eq_of_le
-  · intro r n hr hn
-    exact ⟨Finsupp.single r ⟨n, hn⟩, Finsupp.single_mem_supported _ _ hr, by simp⟩
-  · intro x hx
-    obtain ⟨c, hc, rfl⟩ := hx
-    simp only [LinearMap.coe_comp, coe_subtype, Finsupp.coe_lsum, Finsupp.sum, Function.comp_apply]
-    rw [AddSubmonoid.coe_finset_sum]
-    refine Submodule.sum_mem (p := sR • N) (t := c.support) ?_ _ ⟨sR • N, ?_⟩
-    · rintro r hr
-      rw [mem_set_smul_def, Submodule.mem_sInf]
-      rintro p hp
-      exact hp (hc hr) (c r).2
-    · ext x : 1
-      simp only [Set.mem_iInter, SetLike.mem_coe]
-      fconstructor
-      · refine fun h ↦ h fun r n hr hn ↦ ?_
-        rw [mem_set_smul_def, mem_sInf]
-        exact fun p hp ↦ hp hr hn
-      · aesop
-
-lemma mem_set_smul (x : M) [SMulCommClass R R N] :
-    x ∈ sR • N ↔ ∃ (c : R →₀ N), (c.support : Set R) ⊆ sR ∧ x = c.sum fun r m ↦ r • m := by
-  fconstructor
-  · intros h
-    rw [set_smul_eq_map] at h
-    obtain ⟨c, hc, rfl⟩ := h
-    exact ⟨c, hc, rfl⟩
-  · rw [mem_set_smul_def, Submodule.mem_sInf]
-    rintro ⟨c, hc1, rfl⟩ p hp
-    rw [Finsupp.sum, AddSubmonoid.coe_finset_sum]
-    exact Submodule.sum_mem _ fun r hr ↦ hp (hc1 hr) (c _).2
 
 @[simp] lemma empty_set_smul : (∅ : Set S) • N = ⊥ := by
   ext
@@ -494,57 +445,38 @@ lemma smul_inductionOn_pointwise [SMulCommClass S R M] {a : S} {p : (x : M) → 
     p x (by rwa [← Submodule.singleton_set_smul])
   refine Submodule.set_smul_inductionOn (motive := p') _ (N.singleton_set_smul a ▸ hx)
       (fun r n hr hn ↦ ?_) smul₁ add zero
-  · simp only [Set.mem_singleton_iff] at hr
+  · push _ ∈ _ at hr
     subst hr
     exact smul₀ n hn
-
--- Note that this can't be generalized to `Set S`, because even though `SMulCommClass R R M` implies
--- `SMulComm R R N` for all `R`-submodules `N`, `SMulCommClass R S N` for all `R`-submodules `N`
--- does not make sense. If we just focus on `R`-submodules that are also `S`-submodule, then this
--- should be true.
-/-- A subset of a ring `R` has a multiplicative action on submodules of a module over `R`. -/
-protected noncomputable def pointwiseSetMulAction [SMulCommClass R R M] :
-    MulAction (Set R) (Submodule R M) where
-  one_smul x := show {(1 : R)} • x = x from SetLike.ext fun m =>
-    (mem_singleton_set_smul _ _ _).trans ⟨by rintro ⟨_, h, rfl⟩; rwa [one_smul],
-      fun h => ⟨m, h, (one_smul _ _).symm⟩⟩
-  mul_smul s t x := le_antisymm
-    (set_smul_le _ _ _ <| by rintro _ _ ⟨_, _, _, _, rfl⟩ _; rw [mul_smul]; aesop)
-    (set_smul_le _ _ _ fun r m hr hm ↦ by
-      have : SMulCommClass R R x := ⟨fun r s m => Subtype.ext <| smul_comm _ _ _⟩
-      obtain ⟨c, hc1, rfl⟩ := mem_set_smul _ _ _ |>.mp hm
-      rw [Finsupp.sum, AddSubmonoid.coe_finset_sum]
-      simp only [SetLike.val_smul, Finset.smul_sum, smul_smul]
-      exact Submodule.sum_mem _ fun r' hr' ↦
-        mem_set_smul_of_mem_mem (Set.mul_mem_mul hr (hc1 hr')) (c _).2)
-
-scoped[Pointwise] attribute [instance] Submodule.pointwiseSetMulAction
-
--- This cannot be generalized to `Set S` because `MulAction` can't be generalized already.
-/-- In a ring, sets acts on submodules. -/
-protected noncomputable def pointwiseSetDistribMulAction [SMulCommClass R R M] :
-    DistribMulAction (Set R) (Submodule R M) where
-  smul_zero s := set_smul_bot s
-  smul_add s x y := le_antisymm
-    (set_smul_le _ _ _ <| by
-      rintro r m hr hm
-      rw [add_eq_sup, Submodule.mem_sup] at hm
-      obtain ⟨a, ha, b, hb, rfl⟩ := hm
-      rw [smul_add, add_eq_sup, Submodule.mem_sup]
-      exact ⟨r • a, mem_set_smul_of_mem_mem (mem1 := hr) (mem2 := ha),
-        r • b, mem_set_smul_of_mem_mem (mem1 := hr) (mem2 := hb), rfl⟩)
-    (sup_le_iff.mpr ⟨smul_mono_right _ le_sup_left, smul_mono_right _ le_sup_right⟩)
-
-scoped[Pointwise] attribute [instance] Submodule.pointwiseSetDistribMulAction
 
 lemma sup_set_smul (s t : Set S) :
     (s ⊔ t) • N = s • N ⊔ t • N :=
   set_smul_eq_of_le _ _ _
-    (by rintro _ _ (hr|hr) hn
+    (by rintro _ _ (hr | hr) hn
         · exact Submodule.mem_sup_left (mem_set_smul_of_mem_mem hr hn)
         · exact Submodule.mem_sup_right (mem_set_smul_of_mem_mem hr hn))
     (sup_le (set_smul_mono_left _ le_sup_left) (set_smul_mono_left _ le_sup_right))
 
-end set_acting_on_submodules
+end DistribMulAction
+
+section Group
+
+variable {R G M : Type*} [Semiring R] [AddCommMonoid M] [Module R M]
+    [Group G] [DistribMulAction G M] [SMulCommClass G R M]
+    {S : Submodule R M}
+
+open MulAction
+
+lemma stabilizer_coe :
+    stabilizer G S = stabilizer G (S : Set M) := by
+  ext
+  rw [mem_stabilizer_iff, SetLike.ext'_iff, coe_pointwise_smul,
+    ← mem_stabilizer_iff]
+
+theorem mem_stabilizer_submodule_iff_map_eq {e : G} :
+    e ∈ stabilizer G S ↔ S.map (DistribSMul.toLinearMap R M e) = S := by
+  rfl
+
+end Group
 
 end Submodule
