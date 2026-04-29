@@ -494,7 +494,9 @@ noncomputable def lift {g : R →+* P} (hg : ∀ y : M, IsUnit (g y)) : S →+* 
   { (toLocalizationMap M S).lift₀ g.toMonoidWithZeroHom hg with
     map_add' := by
       intro x y
-      dsimp
+      show (toLocalizationMap M S).lift₀ g.toMonoidWithZeroHom hg (x + y) =
+        (toLocalizationMap M S).lift₀ g.toMonoidWithZeroHom hg x +
+          (toLocalizationMap M S).lift₀ g.toMonoidWithZeroHom hg y
       rw [(toLocalizationMap M S).lift₀_def, (toLocalizationMap M S).lift_spec,
         mul_add, mul_comm, eq_comm, lift_spec_mul_add, add_comm, mul_comm, mul_assoc, mul_comm,
         mul_assoc, lift_spec_mul_add]
@@ -746,7 +748,7 @@ theorem isLocalization_of_base_ringEquiv [IsLocalization M S] (h : R ≃+* P) :
     obtain ⟨⟨x, s⟩, e⟩ := IsLocalization.surj M y
     refine ⟨⟨h x, _, _, s.prop, rfl⟩, ?_⟩
     dsimp only [RingHom.algebraMap_toAlgebra, RingHom.comp_apply] at e ⊢
-    convert e <;> exact h.symm_apply_apply _
+    convert e <;> exact congr_arg (algebraMap R S) (h.symm_apply_apply _)
   · intro x y
     rw [RingHom.algebraMap_toAlgebra, RingHom.comp_apply, RingHom.comp_apply,
       IsLocalization.eq_iff_exists M S]
