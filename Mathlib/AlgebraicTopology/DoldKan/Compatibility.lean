@@ -226,8 +226,9 @@ theorem equivalenceCounitIso_eq (hη : τ₀ = τ₁ hF hG η) :
   simp only [← e'.functor.map_comp_assoc]
   simp only [Functor.comp_map, Equivalence.fun_inv_map, comp_obj, id_obj, map_comp, assoc]
   simp only [← e'.functor.map_comp_assoc]
-  simp only [Iso.inv_hom_id_app_assoc, Iso.inv_hom_id_app, comp_obj, comp_id,
-    Equivalence.functor_unit_comp, map_id, id_comp]
+  simp
+  rw [← e'.functor.map_comp_assoc, Equivalence.functor_unit_comp]
+  simp
 
 variable (hF)
 
