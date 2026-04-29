@@ -109,7 +109,7 @@ set_option backward.isDefEq.respectTransparency false in
 theorem sheafificationWhiskerRightIso_inv_app :
     (J.sheafificationWhiskerRightIso F).inv.app P = (J.sheafifyCompIso F P).inv := by
   dsimp [sheafificationWhiskerRightIso, sheafifyCompIso]
-  simp only [sheafify, Category.id_comp, Category.comp_id]
+  simp [sheafify]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
