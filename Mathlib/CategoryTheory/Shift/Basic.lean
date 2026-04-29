@@ -150,10 +150,12 @@ instance (h : ShiftMkCore C A) : (Discrete.functor h.F).Monoidal :=
       left_unitality := by
         rintro ⟨n⟩
         ext X
+        simp only [Discrete.addMonoidal_tensorUnit_as]
         simp [h.zero_add_inv_app, ← Functor.map_comp]
       right_unitality := by
         rintro ⟨n⟩
         ext X
+        simp only [Discrete.addMonoidal_tensorUnit_as]
         simp [h.add_zero_inv_app] }
 
 /-- Constructs a `HasShift C A` instance from `ShiftMkCore`. -/
@@ -293,7 +295,7 @@ lemma shiftFunctorAdd'_zero_add_hom_app (a : A) (X : C) :
 set_option backward.isDefEq.respectTransparency false in
 lemma shiftFunctorAdd_zero_add_hom_app (a : A) (X : C) :
     (shiftFunctorAdd C 0 a).hom.app X =
-    eqToHom (by dsimp; rw [zero_add]) ≫ ((shiftFunctorZero C A).inv.app X)⟦a⟧' := by
+    eqToHom (by simp) ≫ ((shiftFunctorZero C A).inv.app X)⟦a⟧' := by
   simp [← shiftFunctorAdd'_zero_add_hom_app, shiftFunctorAdd']
 
 set_option backward.defeqAttrib.useBackward true in
@@ -304,7 +306,7 @@ lemma shiftFunctorAdd'_zero_add_inv_app (a : A) (X : C) :
 
 set_option backward.isDefEq.respectTransparency false in
 lemma shiftFunctorAdd_zero_add_inv_app (a : A) (X : C) : (shiftFunctorAdd C 0 a).inv.app X =
-    ((shiftFunctorZero C A).hom.app X)⟦a⟧' ≫ eqToHom (by dsimp; rw [zero_add]) := by
+    ((shiftFunctorZero C A).hom.app X)⟦a⟧' ≫ eqToHom (by simp) := by
   simp [← shiftFunctorAdd'_zero_add_inv_app, shiftFunctorAdd']
 
 set_option backward.defeqAttrib.useBackward true in
@@ -425,7 +427,7 @@ def shiftEquiv' (i j : A) (h : i + j = 0) : C ≌ C where
     (by rw [← add_left_inj j, add_assoc, h, zero_add, add_zero])
   functor_unitIso_comp X := by
     convert (equivOfTensorIsoUnit (shiftMonoidalFunctor C A) ⟨i⟩ ⟨j⟩ (Discrete.eqToIso h)
-      (Discrete.eqToIso (by dsimp; rw [← add_left_inj j, add_assoc, h, zero_add, add_zero]))
+      (Discrete.eqToIso (by show (j + i : A) = 0; rw [← add_left_inj j, add_assoc, h, zero_add, add_zero]))
       (Subsingleton.elim _ _)).functor_unitIso_comp X
     all_goals
       ext X
@@ -673,9 +675,8 @@ lemma shiftFunctorZero_inv_app_shift (n : A) :
       ((shiftFunctorZero C A).inv.app X)⟦n⟧' ≫ (shiftFunctorComm C n 0).inv.app X := by
   rw [← cancel_mono ((shiftFunctorZero C A).hom.app (X⟦n⟧)), Category.assoc, Iso.inv_hom_id_app,
     shiftFunctorZero_hom_app_shift, Iso.inv_hom_id_app_assoc, ← Functor.map_comp,
-    Iso.inv_hom_id_app]
-  dsimp
-  rw [Functor.map_id]
+    Iso.inv_hom_id_app, Functor.map_id]
+  rfl
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -703,7 +704,8 @@ lemma shiftFunctorComm_hom_app_comp_shift_shiftFunctorAdd_hom_app (m₁ m₂ m�
   simp only [Functor.map_id, Category.comp_id,
     shiftFunctorComm_eq C _ _ _ rfl, ← shiftFunctorAdd'_eq_shiftFunctorAdd]
   dsimp
-  simp only [Category.assoc, Iso.hom_inv_id_app_assoc, Iso.inv_hom_id_app_assoc,
+  simp only [Iso.trans_hom, Iso.symm_hom, Iso.trans_inv, Iso.symm_inv,
+    NatTrans.comp_app, Category.assoc, Iso.hom_inv_id_app_assoc, Iso.inv_hom_id_app_assoc,
     ← Functor.map_comp,
     shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₃ m₁ (m₂ + m₃) (m₁ + m₃) (m₁ + (m₂ + m₃)) rfl
       (add_comm m₃ m₁) (add_comm _ m₁) X,
