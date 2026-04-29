@@ -308,9 +308,8 @@ theorem unit_conjugateEquiv (α : L₂ ⟶ L₁) (c : C) :
   dsimp [conjugateEquiv]
   rw [id_comp, comp_id]
   have := unit_mateEquiv adj₁ adj₂ (L₂.leftUnitor.hom ≫ α ≫ L₁.rightUnitor.inv) c
-  dsimp at this
+  simp at this ⊢
   rw [this]
-  simp
 
 /-- A component of a transposed form of the inverse conjugation definition. -/
 theorem unit_conjugateEquiv_symm (α : R₁ ⟶ R₂) (c : C) :
@@ -359,10 +358,7 @@ theorem conjugateEquiv_comp (α : L₂ ⟶ L₁) (β : L₃ ⟶ L₂) :
     (L₂.leftUnitor.hom ≫ α ≫ L₁.rightUnitor.inv)
     (L₃.leftUnitor.hom ≫ β ≫ L₂.rightUnitor.inv)
   have vcompd := congr_app vcomp d
-  simp only [comp_obj, id_obj, mateEquiv_apply, comp_app, rightUnitor_inv_app,
-    Functor.whiskerLeft_app, associator_hom_app, associator_inv_app, Functor.whiskerRight_app,
-    hComp_app, leftUnitor_hom_app, comp_id, id_comp, Functor.id_map, map_comp, Functor.comp_map,
-    assoc, whiskerRight_comp, whiskerLeft_comp, vComp_app, map_id] at vcompd ⊢
+  simp at vcompd ⊢
   rw [vcompd]
 
 @[reassoc (attr := simp)]
