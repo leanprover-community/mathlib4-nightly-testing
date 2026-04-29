@@ -167,8 +167,8 @@ lemma vInv_vInv (h : CatCommSq T L.functor R.functor B) :
   dsimp
   simp only [Functor.map_comp, Equivalence.fun_inv_map, Functor.comp_obj,
     Functor.id_obj, assoc, Iso.inv_hom_id_app_assoc, Iso.inv_hom_id_app, comp_id]
-  rw [← B.map_comp, L.counit_app_functor, ← L.functor.map_comp, ← NatTrans.comp_app,
-    Iso.inv_hom_id, NatTrans.id_app, L.functor.map_id]
+  simp
+  rw [← Functor.map_comp_assoc, Equivalence.functor_unit_comp]
   simp
 
 /-- In a square of categories, when the left and right functors are part
