@@ -33,12 +33,14 @@ def finRotate : ∀ n, Equiv.Perm (Fin n)
 lemma finRotate_succ (n : ℕ) :
     finRotate (n + 1) = finAddFlip.trans (finCongr (Nat.add_comm 1 n)) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem finRotate_of_lt {k : ℕ} (h : k < n) :
     finRotate (n + 1) ⟨k, h.trans_le n.le_succ⟩ = ⟨k + 1, Nat.succ_lt_succ h⟩ := by
   ext
   dsimp [finRotate_succ]
   simp [finAddFlip_apply_mk_left h, Nat.add_comm]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem finRotate_last' : finRotate (n + 1) ⟨n, by lia⟩ = ⟨0, Nat.zero_lt_succ _⟩ := by
   dsimp [finRotate_succ]
   rw [finAddFlip_apply_mk_right le_rfl]

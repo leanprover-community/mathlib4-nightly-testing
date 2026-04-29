@@ -171,6 +171,7 @@ section LinearOrderedSemiring
 
 variable [Semiring R] [LinearOrder R] [IsStrictOrderedRing R] [Archimedean R]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function tends to infinity along a filter, then this function multiplied by a positive
 constant (on the left) also tends to infinity. The archimedean assumption is convenient to get a
 statement that works on `ℕ`, `ℤ` and `ℝ`, although not necessary (a version in ordered fields is
@@ -189,6 +190,7 @@ theorem Tendsto.const_mul_atTop' (hr : 0 < r) (hf : Tendsto f l atTop) :
     _ = r * (n * max b 0) := by rw [mul_assoc]
     _ ≤ r * f x := by gcongr
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function tends to infinity along a filter, then this function multiplied by a positive
 constant (on the right) also tends to infinity. The archimedean assumption is convenient to get a
 statement that works on `ℕ`, `ℤ` and `ℝ`, although not necessary (a version in ordered fields is

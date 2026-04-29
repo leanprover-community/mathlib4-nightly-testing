@@ -421,6 +421,7 @@ theorem coprime_iff_inf_one {a b : α} (ha0 : a ≠ 0) (hb0 : b ≠ 0) :
     obtain ⟨p, hp, hpa, hpb⟩ := exists_prime_dvd_of_not_inf_one ha0 hb0 hg
     exact hc hpa hpb hp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem factors_self [Nontrivial α] {p : Associates α} (hp : Irreducible p) :
     p.factors = WithTop.some {⟨p, hp⟩} :=
   FactorSet.unique

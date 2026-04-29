@@ -162,6 +162,7 @@ lemma symm {γ₁ γ₂ : OneCochain G U} {α : ZeroCochain G U} (h : OneCohomol
     mul_assoc, Cochain₀.inv_apply, map_inv, inv_mul_cancel_left,
     Cochain₀.inv_apply, map_inv, inv_mul_cancel, mul_one]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma trans {γ₁ γ₂ γ₃ : OneCochain G U} {α β : ZeroCochain G U}
     (h₁₂ : OneCohomologyRelation γ₁ γ₂ α) (h₂₃ : OneCohomologyRelation γ₂ γ₃ β) :
     OneCohomologyRelation γ₁ γ₃ (β * α) := fun i j T a b ↦ by

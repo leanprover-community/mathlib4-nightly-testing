@@ -316,6 +316,7 @@ theorem subtypeRestr_symm_eqOn {U : Opens X} (hU : Nonempty U) :
     EqOn e.symm (Subtype.val ∘ (e.subtypeRestr hU).symm) (e.subtypeRestr hU).target :=
   fun _y hy ↦ (e.subtypeRestr_symm_apply hU hy).symm
 
+set_option backward.defeqAttrib.useBackward true in
 theorem subtypeRestr_symm_eqOn_of_le {U V : Opens X} (hU : Nonempty U) (hV : Nonempty V)
     (hUV : U ≤ V) : EqOn (e.subtypeRestr hV).symm (Set.inclusion hUV ∘ (e.subtypeRestr hU).symm)
       (e.subtypeRestr hU).target := by

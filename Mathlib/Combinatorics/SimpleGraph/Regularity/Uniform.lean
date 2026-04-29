@@ -219,6 +219,7 @@ omit [IsStrictOrderedRing 𝕜] in
 theorem nonUniforms_mono {ε ε' : 𝕜} (h : ε ≤ ε') : P.nonUniforms G ε' ⊆ P.nonUniforms G ε :=
   monotone_filter_right _ fun _ _ => mt <| SimpleGraph.IsUniform.mono h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nonUniforms_bot (hε : 0 < ε) : (⊥ : Finpartition A).nonUniforms G ε = ∅ := by
   rw [eq_empty_iff_forall_notMem]
   rintro ⟨u, v⟩

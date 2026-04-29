@@ -30,6 +30,7 @@ open CategoryTheory Limits Functor
 
 namespace CategoryTheory.Cat
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A discrete category with a unique object is terminal. -/
 def isTerminalOfUniqueOfIsDiscrete {T : Type u} [Category.{v} T] [Unique T] [IsDiscrete T] :

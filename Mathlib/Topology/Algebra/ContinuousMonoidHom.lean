@@ -104,6 +104,7 @@ section
 
 variable {F : Type*} [FunLike F A B]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Turn an element of a type `F` satisfying `MonoidHomClass F A B` and `ContinuousMapClass F A B`
 into a `ContinuousMonoidHom`. This is declared as the default coercion from `F` to
 `(A →ₜ* B)`. -/
@@ -410,6 +411,7 @@ section refl
 
 variable (M)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The identity map is a continuous multiplicative isomorphism. -/
 @[to_additive (attr := refl) /-- The identity map is a continuous additive isomorphism. -/]
 def refl : M ≃ₜ* M :=

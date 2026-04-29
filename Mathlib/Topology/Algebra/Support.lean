@@ -296,6 +296,7 @@ theorem comp_isClosedEmbedding (hf : HasCompactMulSupport f) {g : α' → α}
   rw [hg.isEmbedding.closure_eq_preimage_closure_image]
   exact preimage_mono (closure_mono <| image_preimage_subset _ _)
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem comp₂_left (hf : HasCompactMulSupport f)
     (hf₂ : HasCompactMulSupport f₂) (hm : m 1 1 = 1) :

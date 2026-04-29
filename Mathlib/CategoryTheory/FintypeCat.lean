@@ -230,6 +230,7 @@ noncomputable instance : incl.IsEquivalence where
 noncomputable def equivalence : Skeleton ≌ FintypeCat :=
   incl.asEquivalence
 
+set_option backward.defeqAttrib.useBackward true in
 attribute [local instance] FintypeCat.fintype in
 @[simp]
 theorem incl_mk_nat_card (n : ℕ) :

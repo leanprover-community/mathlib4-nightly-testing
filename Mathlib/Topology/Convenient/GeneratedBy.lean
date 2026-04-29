@@ -150,6 +150,7 @@ section
 
 variable [IsGeneratedBy X Y]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The homeomorphism `WithGeneratedByTopology X Y ≃ₜ Y` when `Y` is `X`-generated. -/
 def homeomorph : WithGeneratedByTopology X Y ≃ₜ Y where
   toEquiv := WithGeneratedByTopology.equiv

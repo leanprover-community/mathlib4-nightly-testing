@@ -69,6 +69,7 @@ def Iso.mk {α β : AlexDisc} (e : α ≃ₜ β) : α ≅ β where
 
 end AlexDisc
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Sends a topological space to its specialisation order. -/
 @[simps]
 def alexDiscEquivPreord : AlexDisc ≌ Preord where

@@ -154,6 +154,7 @@ variable [F.LaxBraided] [F'.LaxBraided] [G.LaxBraided]
 
 open scoped Obj
 
+set_option backward.defeqAttrib.useBackward true in
 instance isCommMonObj_obj {M : C} [MonObj M] [IsCommMonObj M] : IsCommMonObj (F.obj M) where
   mul_comm := by
     dsimp; rw [← Functor.LaxBraided.braided_assoc, ← Functor.map_comp, IsCommMonObj.mul_comm]

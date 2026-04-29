@@ -91,6 +91,7 @@ lemma id₂_iso_hom {a b : Pith B} {x : a ⟶ b} : (𝟙 x : x ⟶ x).iso.hom = 
 @[simp]
 lemma id₂_iso_inv {a b : Pith B} {x : a ⟶ b} : (𝟙 x : x ⟶ x).iso.inv = 𝟙 _ := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simps! whiskerLeft_iso_hom whiskerLeft_iso_inv whiskerRight_iso_hom whiskerRight_iso_inv
 associator_hom_iso associator_inv_iso_hom associator_inv_iso_inv leftUnitor_hom_iso
 leftUnitor_inv_iso_hom rightUnitor_hom_iso rightUnitor_inv_iso_hom rightUnitor_inv_iso_inv]
@@ -107,6 +108,7 @@ instance : Bicategory.{w₁, v₁} (Pith B) where
 /-- The pith is a (2,1)-category. -/
 example : IsLocallyGroupoid (Pith B) := by infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The canonical inclusion from the pith of `B` to `B`, as a Pseudofunctor. -/
 @[simps]
 def inclusion : Pseudofunctor (Pith B) B where

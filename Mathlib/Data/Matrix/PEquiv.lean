@@ -60,6 +60,7 @@ theorem toMatrix_apply [DecidableEq n] [Zero α] [One α] (f : m ≃. n) (i j) :
     toMatrix f i j = if j ∈ f i then (1 : α) else 0 :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem toMatrix_mul_apply [Fintype m] [DecidableEq m] [NonAssocSemiring α] (f : l ≃. m) (i j)
     (M : Matrix m n α) : (f.toMatrix * M :) i j = Option.casesOn (f i) 0 fun fi => M fi j := by
   dsimp [toMatrix, Matrix.mul_apply]
@@ -67,6 +68,7 @@ theorem toMatrix_mul_apply [Fintype m] [DecidableEq m] [NonAssocSemiring α] (f 
   · simp
   · rw [Finset.sum_eq_single fi] <;> simp +contextual [eq_comm]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mul_toMatrix_apply [Fintype m] [NonAssocSemiring α] [DecidableEq n] (M : Matrix l m α)
     (f : m ≃. n) (i j) : (M * f.toMatrix :) i j = Option.casesOn (f.symm j) 0 (M i) := by
   dsimp [Matrix.mul_apply, toMatrix_apply]
@@ -129,6 +131,7 @@ lemma vecMul_toMatrix_toPEquiv [DecidableEq n] [Fintype m]
   ext j
   simp [toMatrix, σ.apply_eq_iff_eq_symm_apply, vecMul, dotProduct]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem toMatrix_trans [Fintype m] [DecidableEq m] [DecidableEq n] [NonAssocSemiring α] (f : l ≃. m)
     (g : m ≃. n) : ((f.trans g).toMatrix : Matrix l n α) = f.toMatrix * g.toMatrix := by
   ext i j
@@ -156,6 +159,7 @@ theorem toMatrix_injective [DecidableEq n] [MulZeroOneClass α] [Nontrivial α] 
   · use fi
     simp [hf.symm, Ne.symm hi]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem toMatrix_swap [DecidableEq n] [AddGroupWithOne α] (i j : n) :
     (Equiv.swap i j).toPEquiv.toMatrix =
       (1 : Matrix n n α) - (single i i).toMatrix - (single j j).toMatrix + (single i j).toMatrix +

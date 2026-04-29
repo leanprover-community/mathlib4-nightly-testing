@@ -123,6 +123,7 @@ def v : ℕ × ℕ :=
 def succ₂ (t : ℕ × ℕ) : ℕ × ℕ :=
   ⟨t.1.succ, t.2.succ⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem v_eq_succ_vp : u.v = succ₂ u.vp := by
   ext <;> dsimp [v, vp, w, z, a, b, succ₂] <;> ring_nf
 
@@ -199,6 +200,7 @@ theorem flip_isSpecial : (flip u).IsSpecial ↔ u.IsSpecial := by
   dsimp [IsSpecial, flip]
   rw [mul_comm u.x, mul_comm u.zp, add_comm u.zp]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem flip_v : (flip u).v = u.v.swap := by
   dsimp [v]
   ext
@@ -229,6 +231,7 @@ def start (a b : ℕ+) : XgcdType :=
 theorem start_isSpecial (a b : ℕ+) : (start a b).IsSpecial := by
   dsimp [start, IsSpecial]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem start_v (a b : ℕ+) : (start a b).v = ⟨a, b⟩ := by
   dsimp [start, v, XgcdType.a, XgcdType.b, w, z]
   have := a.pos
@@ -383,10 +386,12 @@ def gcdA' : ℕ+ :=
 def gcdB' : ℕ+ :=
   succPNat ((xgcd a b).y + (xgcd a b).zp)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem gcdA'_coe : (gcdA' a b : ℕ) = gcdW a b + gcdX a b := by
   dsimp [gcdA', gcdX, gcdW, XgcdType.w]
   rw [add_right_comm]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem gcdB'_coe : (gcdB' a b : ℕ) = gcdY a b + gcdZ a b := by
   dsimp [gcdB', gcdY, gcdZ, XgcdType.z]
   rw [add_assoc]

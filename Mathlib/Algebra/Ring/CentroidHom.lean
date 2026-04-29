@@ -443,6 +443,7 @@ lemma centroid_eq_centralizer_mulLeftRight :
     · exact congr($(h (L a) (.inl ⟨a, rfl⟩)) b).symm
     · exact congr($(h (R b) (.inr ⟨b, rfl⟩)) a).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The canonical homomorphism from the center into the center of the centroid -/
 def centerToCentroidCenter :
     NonUnitalSubsemiring.center α →ₙ+* Subsemiring.center (CentroidHom α) where

@@ -44,6 +44,7 @@ theorem cast_bit0 [One α] [Add α] (n : PosNum) : (n.bit0 : α) = (n : α) + n 
 theorem cast_bit1 [One α] [Add α] (n : PosNum) : (n.bit1 : α) = ((n : α) + n) + 1 :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp, norm_cast]
 theorem cast_to_nat [AddMonoidWithOne α] : ∀ n : PosNum, ((n : ℕ) : α) = n
   | 1 => Nat.cast_one

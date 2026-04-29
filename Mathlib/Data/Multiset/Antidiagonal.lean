@@ -39,6 +39,7 @@ theorem antidiagonal_coe (l : List α) : @antidiagonal α l = revzip (powersetAu
 theorem antidiagonal_coe' (l : List α) : @antidiagonal α l = revzip (powersetAux' l) :=
   Quot.sound revzip_powersetAux_perm_aux'
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A pair `(t₁, t₂)` of multisets is contained in `antidiagonal s`
     if and only if `t₁ + t₂ = s`. -/
 @[simp]

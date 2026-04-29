@@ -53,18 +53,21 @@ lemma eqToHomTransIso_refl_refl (x : B) :
     eqToHomTransIso (rfl : x = x) rfl = (λ_ (𝟙 x)).symm :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eqToHomTransIso_refl_right {x y : B} (e₁ : x = y) :
     eqToHomTransIso e₁ rfl = (ρ_ (eqToHom e₁)).symm := by
   ext
   subst e₁
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eqToHomTransIso_refl_left {x y : B} (e₁ : x = y) :
     eqToHomTransIso rfl e₁ = (λ_ (eqToHom e₁)).symm := by
   ext
   subst e₁
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma associator_eqToHom_hom {x y z t : B}
     (e₁ : x = y) (e₂ : y = z) (e₃ : z = t) :
@@ -76,6 +79,7 @@ lemma associator_eqToHom_hom {x y z t : B}
   subst_vars
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma associator_eqToHom_inv {x y z t : B}
     (e₁ : x = y) (e₂ : y = z) (e₃ : z = t) :

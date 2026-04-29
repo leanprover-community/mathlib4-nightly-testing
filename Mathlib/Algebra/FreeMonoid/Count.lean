@@ -30,6 +30,7 @@ def countP' (l : FreeMonoid α) : ℕ := l.toList.countP p
 @[to_additive]
 lemma countP'_one : (1 : FreeMonoid α).countP' p = 0 := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 lemma countP'_mul (l₁ l₂ : FreeMonoid α) : (l₁ * l₂).countP' p = l₁.countP' p + l₂.countP' p := by
   dsimp [countP']

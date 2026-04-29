@@ -84,6 +84,7 @@ theorem LocalizationMap.sec_zero_fst {f : LocalizationMap S N} : f (f.sec 0).fst
 
 namespace LocalizationMap
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a Localization map `f : M →*₀ N` for a Submonoid `S ⊆ M` and a map of
 `CommMonoidWithZero`s `g : M →*₀ P` such that `g y` is invertible for all `y : S`, the
 homomorphism induced from `N` to `P` sending `z : N` to `g x * (g y)⁻¹`, where `(x, y) : M × S`

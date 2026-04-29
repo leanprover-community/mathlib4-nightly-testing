@@ -116,6 +116,7 @@ end
 
 open Opposite
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Define a left action of `Cᵒᵖ` on `Dᵒᵖ` from a left action of `C` on `D` via
 the formula `(op c) ⊙ₗ (op d) = op (c ⊙ₗ d)`. -/
 @[instance_reducible, simps -isSimp]
@@ -158,6 +159,7 @@ def oppositeLeftAction [MonoidalLeftAction C D] :
     apply IsIso.inv_eq_inv.mp
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Define a left action of `C` on `D` from a left action of `Cᵒᵖ` on `Dᵒᵖ` via
 the formula `c ⊙ₗ d = unop ((op c) ⊙ₗ (op d))`. -/
 @[instance_reducible, simps -isSimp]
@@ -328,6 +330,7 @@ end
 
 open Opposite
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Define a right action of `Cᵒᵖ` on `Dᵒᵖ` from a right action of `C` on `D` via
 the formula `(op d) ⊙ᵣ (op c) = op (d ⊙ᵣ c)`. -/
 @[instance_reducible, simps -isSimp]
@@ -370,6 +373,7 @@ def oppositeRightAction [MonoidalRightAction C D] :
     apply IsIso.inv_eq_inv.mp
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Define a right action of `C` on `D` from a right action of `Cᵒᵖ` on `Dᵒᵖ` via
 the formula `d ⊙ᵣ c = unop ((op d) ⊙ᵣ (op c))`. -/
 @[instance_reducible, simps -isSimp]

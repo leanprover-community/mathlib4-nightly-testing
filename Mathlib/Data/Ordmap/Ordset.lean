@@ -402,6 +402,7 @@ set_option backward.isDefEq.respectTransparency false in
 theorem eraseMax.valid {t} (h : @Valid α _ t) : Valid (eraseMax t) := by
   rw [Valid.dual_iff, dual_eraseMax]; exact eraseMin.valid h.dual
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Valid'.glue_aux {l r o₁ o₂} (hl : Valid' o₁ l o₂) (hr : Valid' o₁ r o₂)
     (sep : l.All fun x => r.All fun y => x < y) (bal : BalancedSz (size l) (size r)) :
     Valid' o₁ (@glue α l r) o₂ ∧ size (glue l r) = size l + size r := by

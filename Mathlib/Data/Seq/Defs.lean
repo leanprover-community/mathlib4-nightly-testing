@@ -198,6 +198,7 @@ theorem get?_tail (s : Seq α) (n) : get? (tail s) n = get? s (n + 1) :=
 theorem destruct_nil : destruct (nil : Seq α) = none :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem destruct_cons (a : α) : ∀ s, destruct (cons a s) = some (a, s)
   | ⟨f, al⟩ => by
@@ -307,6 +308,7 @@ def corec (f : β → Option (α × β)) (b : β) : Seq α := by
     rw [Stream'.corec'_eq (Corec.f f) (Corec.f f o).2, Stream'.corec'_eq (Corec.f f) o]
     exact IH (Corec.f f o).2
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem corec_eq (f : β → Option (α × β)) (b : β) :
     destruct (corec f b) = omap (corec f) (f b) := by

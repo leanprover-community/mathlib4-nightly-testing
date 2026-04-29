@@ -739,6 +739,7 @@ def liftOfRightInverseAux (hf : Function.RightInverse f_inv f) (g : G₁ →* G�
     rw [f.mem_ker, f.map_mul, f.map_inv, mul_inv_eq_one, f.map_mul]
     simp only [hf _]
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem liftOfRightInverseAux_comp_apply (hf : Function.RightInverse f_inv f) (g : G₁ →* G₃)
     (hg : f.ker ≤ g.ker) (x : G₁) : (f.liftOfRightInverseAux f_inv hf g hg) (f x) = g x := by

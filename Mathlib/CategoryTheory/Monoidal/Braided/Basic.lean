@@ -391,6 +391,7 @@ namespace Functor.LaxBraided
 
 attribute [reassoc] braided
 
+set_option backward.defeqAttrib.useBackward true in
 instance id : (𝟭 C).LaxBraided where
 
 set_option backward.defeqAttrib.useBackward true in
@@ -783,6 +784,7 @@ end Tensor
 
 end MonoidalCategory
 
+set_option backward.defeqAttrib.useBackward true in
 instance : BraidedCategory Cᵒᵖ where
   braiding X Y := (β_ Y.unop X.unop).op
   braiding_naturality_right X {_ _} f := Quiver.Hom.unop_inj <| by simp
@@ -805,6 +807,7 @@ end OppositeLemmas
 
 namespace MonoidalOpposite
 
+set_option backward.defeqAttrib.useBackward true in
 instance instBraiding : BraidedCategory Cᴹᵒᵖ where
   braiding X Y := (β_ Y.unmop X.unmop).mop
   braiding_naturality_right X {_ _} f := Quiver.Hom.unmop_inj <| by simp
@@ -880,6 +883,7 @@ lemma SymmetricCategory.reverseBraiding_eq (C : Type u₁) [Category.{v₁} C]
   funext X Y
   exact Iso.ext (braiding_swap_eq_inv_braiding Y X).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The identity functor from `C` to `C`, where the codomain is given the
 reversed braiding, upgraded to a braided functor. -/
 @[implicit_reducible]

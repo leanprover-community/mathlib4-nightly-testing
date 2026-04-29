@@ -499,6 +499,7 @@ theorem ofMulEquivOfLocalizations_comp {k : N ≃* P} {j : P ≃* Q} :
       j.toMonoidHom.comp (f.ofMulEquivOfLocalizations k).toMonoidHom := by
   ext; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given `CommMonoid`s `M, P` and Submonoids `S ⊆ M, T ⊆ P`, if `f : M →* N` is a Localization
 map for `S` and `k : P ≃* M` is an isomorphism of `CommMonoid`s such that `k(T) = S`, `f ∘ k`
 is a Localization map for `T`. -/

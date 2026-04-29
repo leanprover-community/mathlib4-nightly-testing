@@ -80,6 +80,7 @@ instance [P.IsMonoidalStable] : MonoidalCategoryStruct (WideSubcategory P) where
     isoMk (ρ_ _) (P.rightUnitor_hom_mem _) (P.rightUnitor_inv_mem _)
   tensorHom f g := ⟨f.1 ⊗ₘ g.1, P.tensorHom_mem _ _ f.2 g.2⟩
 
+set_option backward.defeqAttrib.useBackward true in
 instance [P.IsMonoidalStable] : MonoidalCategory (WideSubcategory P) :=
   Monoidal.induced (wideSubcategoryInclusion P)
     { εIso := Iso.refl _

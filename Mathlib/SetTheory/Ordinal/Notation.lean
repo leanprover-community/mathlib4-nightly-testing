@@ -278,6 +278,7 @@ theorem oadd_lt_oadd_2 {e o₁ o₂ : ONote} {n₁ n₂ : ℕ+} (h₁ : NF (oadd
 theorem oadd_lt_oadd_3 {e n a₁ a₂} (h : a₁ < a₂) : oadd e n a₁ < oadd e n a₂ := by
   rw [lt_def]; unfold repr; gcongr
 
+set_option backward.defeqAttrib.useBackward true in
 theorem cmp_compares : ∀ (a b : ONote) [NF a] [NF b], (cmp a b).Compares a b
   | 0, 0, _, _ => rfl
   | oadd _ _ _, 0, _, _ => oadd_pos _ _ _

@@ -258,6 +258,7 @@ namespace Grpd
 
 open FreeGroupoid
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The free groupoid construction on a category as a functor. -/
 def free : Cat.{u, u} ⥤ Grpd.{u, u} where

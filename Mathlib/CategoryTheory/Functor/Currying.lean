@@ -67,6 +67,7 @@ def curryObj (F : C × D ⥤ E) : C ⥤ D ⥤ E where
   map_id := fun X => by ext Y; exact F.map_id _
   map_comp := fun f g => by ext Y; simp [← F.map_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The currying functor, taking a functor `(C × D) ⥤ E` and producing a functor `C ⥤ (D ⥤ E)`.
 -/
 @[simps! obj_obj_obj obj_obj_map obj_map_app map_app_app]

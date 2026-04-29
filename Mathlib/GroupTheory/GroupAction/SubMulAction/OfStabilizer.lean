@@ -201,6 +201,7 @@ theorem ofStabilizer.snoc_last {n : ℕ} (x : Fin n ↪ ofStabilizer G a) :
     snoc x (Fin.last n) = a := by
   simp [snoc]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (G) in
 @[to_additive]
 lemma exists_smul_of_last_eq [IsPretransitive G α] {n : ℕ} (a : α) (x : Fin n.succ ↪ α) :
@@ -240,6 +241,7 @@ theorem _root_.SMul.smul_stabilizer_def (s : Set α) (g : stabilizer G s) (x : s
     ((g • x : ↥s) : α) = (g : G) • (x : α) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The stabilizer of a set acts on that set -/
 @[to_additive /-- The stabilizer of a set acts on that set. -/]
 instance (s : Set α) : MulAction (stabilizer G s) s where

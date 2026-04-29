@@ -152,6 +152,7 @@ theorem mk_preimage_tprod :
     rw [forall_eq_or_imp, and_congr_right_iff]
     exact fun _ => h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem elim_preimage_pi [DecidableEq ι] {l : List ι} (hnd : l.Nodup) (h : ∀ i, i ∈ l)
     (t : ∀ i, Set (α i)) : TProd.elim' h ⁻¹' pi univ t = Set.tprod l t := by
   have h2 : { i | i ∈ l } = univ := by

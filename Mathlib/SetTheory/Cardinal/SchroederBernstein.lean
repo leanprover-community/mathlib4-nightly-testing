@@ -42,6 +42,7 @@ section antisymm
 
 variable {α : Type u} {β : Type v}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **The Schröder-Bernstein Theorem**:
 Given injections `α → β` and `β → α` that satisfy a pointwise property `R`, we can get a bijection
 `α → β` that satisfies that same pointwise property. -/

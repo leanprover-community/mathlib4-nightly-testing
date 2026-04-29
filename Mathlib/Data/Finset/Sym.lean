@@ -69,6 +69,7 @@ theorem sym2_insert [DecidableEq α] (a : α) (s : Finset α) :
 theorem sym2_map (f : α ↪ β) (s : Finset α) : (s.map f).sym2 = s.sym2.map (.sym2Map f) :=
   val_injective <| s.val.sym2_map _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem sym2_image [DecidableEq β] (f : α → β) (s : Finset α) :
     (s.image f).sym2 = s.sym2.image (Sym2.map f) := by
   apply val_injective

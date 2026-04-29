@@ -102,6 +102,7 @@ variable (J) in
 noncomputable instance yoneda_preservesLimitsOfShape (X : C) :
     PreservesLimitsOfShape J (yoneda.obj X) where
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The yoneda embeddings jointly reflect limits. -/
 def yonedaJointlyReflectsLimits (F : J ⥤ Cᵒᵖ) (c : Cone F)
@@ -148,6 +149,7 @@ variable (J) in
 noncomputable instance coyonedaPreservesLimitsOfShape (X : Cᵒᵖ) :
     PreservesLimitsOfShape J (coyoneda.obj X) where
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The coyoneda embeddings jointly reflect limits. -/
 def coyonedaJointlyReflectsLimits (F : J ⥤ C) (c : Cone F)

@@ -108,6 +108,7 @@ theorem isOpen_iff_inter :
   · intro H
     simpa [← inter_iUnion, hU.iSup_set_eq_univ] using isOpen_iUnion H
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isOpen_iff_coe_preimage :
     IsOpen s ↔ ∀ i, IsOpen ((↑) ⁻¹' s : Set (U i)) := by
   simp [hU.isOpen_iff_inter (s := s), (U _).2.isOpenEmbedding_subtypeVal.isOpen_iff_image_isOpen,
@@ -176,6 +177,7 @@ theorem isClosedEmbedding_iff_restrictPreimage (h : Continuous f) :
   · simp_rw [range_restrictPreimage]
     exact hU.isClosed_iff_coe_preimage
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isHomeomorph_iff_restrictPreimage (h : Continuous f) :
     IsHomeomorph f ↔ ∀ i, IsHomeomorph ((U i).1.restrictPreimage f) := by
   simp_rw [isHomeomorph_iff_isEmbedding_surjective, forall_and,

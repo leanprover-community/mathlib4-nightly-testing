@@ -189,6 +189,7 @@ instance : Top (Subgroupoid C) :=
 theorem mem_top {c d : C} (f : c ⟶ d) : f ∈ (⊤ : Subgroupoid C).arrows c d :=
   trivial
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mem_top_objs (c : C) : c ∈ (⊤ : Subgroupoid C).objs := by
   dsimp [Top.top, objs]
   simp only [univ_nonempty]

@@ -289,6 +289,7 @@ attribute [elementwise (attr := simp)] Iso.hom_inv_id_app Iso.inv_hom_id_app
 @[deprecated (since := "2026-02-09")] alias hom_inv_id_app_apply := Iso.hom_inv_id_app_apply
 @[deprecated (since := "2026-02-09")] alias inv_hom_id_app_apply := Iso.inv_hom_id_app_apply
 
+set_option backward.defeqAttrib.useBackward true in
 lemma naturality_symm {F G : C ⥤ Type*} (e : ∀ j, F.obj j ≃ G.obj j)
     (naturality : ∀ {j j'} (f : j ⟶ j'), e j' ∘ F.map f = G.map f ∘ e j) {j j' : C}
     (f : j ⟶ j') :
@@ -361,6 +362,7 @@ theorem mono_iff_injective {X Y : Type u} (f : X ⟶ Y) : Mono f ↔ Function.In
 theorem injective_of_mono {X Y : Type u} (f : X ⟶ Y) [hf : Mono f] : Function.Injective f :=
   (mono_iff_injective f).1 hf
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A morphism in `Type _` is an epimorphism if and only if it is surjective. -/
 @[stacks 003C]
 theorem ofHom_epi_iff_surjective {X Y : Type u} (f : X → Y) :

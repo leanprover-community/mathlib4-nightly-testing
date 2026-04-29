@@ -291,6 +291,7 @@ instance [Nonempty α] [IndiscreteTopology α] : IsSimpleOrder (Opens α) where
 def IsBasis (B : Set (Opens α)) : Prop :=
   IsTopologicalBasis (((↑) : _ → Set α) '' B)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isBasis_iff_nbhd {B : Set (Opens α)} :
     IsBasis B ↔ ∀ {U : Opens α} {x}, x ∈ U → ∃ U' ∈ B, x ∈ U' ∧ U' ≤ U := by
   constructor <;> intro h

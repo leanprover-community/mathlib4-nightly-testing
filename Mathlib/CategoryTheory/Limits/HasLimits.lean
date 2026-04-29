@@ -206,6 +206,7 @@ theorem limit.coneMorphism_hom {F : J ⥤ C} [HasLimit F] (c : Cone F) :
     (limit.coneMorphism c).hom = limit.lift F c :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem limit.coneMorphism_π {F : J ⥤ C} [HasLimit F] (c : Cone F) (j : J) :
     (limit.coneMorphism c).hom ≫ limit.π F j = c.π.app j := by simp
 

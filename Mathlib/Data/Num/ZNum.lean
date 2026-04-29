@@ -311,6 +311,7 @@ theorem ofInt'_neg : ∀ n : ℤ, ofInt' (-n) = -ofInt' n
   | 0 => show Num.toZNum (Num.ofNat' 0) = -Num.toZNum (Num.ofNat' 0) by rw [Num.ofNat'_zero]; rfl
   | (n + 1 : ℕ) => show Num.toZNumNeg _ = -Num.toZNum _ by rw [Num.zneg_toZNum]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem of_to_int' : ∀ n : ZNum, ZNum.ofInt' n = n
   | 0 => by
     dsimp [ofInt', cast_zero]

@@ -23,6 +23,7 @@ open Filter Topology Uniformity
 
 variable {G : Type*} [Group G] [TopologicalSpace G]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `G` has a topology, and `H ≤ K` are subgroups, then `H` as a subgroup of `K` is isomorphic,
 as a topological group, to `H` as a subgroup of `G`. This is `subgroupOfEquivOfLe` upgraded to a
 `ContinuousMulEquiv`. -/

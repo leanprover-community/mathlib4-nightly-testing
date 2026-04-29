@@ -380,6 +380,7 @@ instance oppositeQuandle : Quandle Qᵐᵒᵖ where
 the corresponding inner automorphism. -/
 abbrev Conj (G : Type*) := G
 
+set_option backward.defeqAttrib.useBackward true in
 instance Conj.quandle (G : Type*) [Group G] : Quandle (Conj G) where
   act x := @MulAut.conj G _ x
   self_distrib := by

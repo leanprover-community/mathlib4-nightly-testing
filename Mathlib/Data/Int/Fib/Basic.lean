@@ -61,6 +61,7 @@ theorem fib_neg (n : ℤ) : fib (-n) = if Even n then -fib n else fib n := by
 theorem coe_fib_neg (n : ℤ) : (fib (-n) : ℚ) = (-1) ^ (n + 1) * fib n := by
   aesop (add safe (by rw [fib_neg, neg_one_zpow_eq_ite]))
 
+set_option backward.defeqAttrib.useBackward true in
 theorem fib_add_two (n : ℤ) : fib (n + 2) = fib n + fib (n + 1) := by
   rcases n with (n | n)
   · dsimp

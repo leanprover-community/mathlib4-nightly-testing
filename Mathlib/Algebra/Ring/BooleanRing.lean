@@ -305,6 +305,7 @@ theorem toBoolAlg_add_add_mul (a b : α) : toBoolAlg (a + b + a * b) = toBoolAlg
 theorem toBoolAlg_add (a b : α) : toBoolAlg (a + b) = toBoolAlg a ∆ toBoolAlg b :=
   (ofBoolAlg_symmDiff a b).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Turn a ring homomorphism from Boolean rings `α` to `β` into a bounded lattice homomorphism
 from `α` to `β` considered as Boolean algebras. -/
 @[simps]

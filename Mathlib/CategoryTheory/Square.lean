@@ -325,6 +325,7 @@ def unopFunctor : (Square Cᵒᵖ)ᵒᵖ ⥤ Square C where
       comm₂₄ := Quiver.Hom.op_inj (by simp)
       comm₃₄ := Quiver.Hom.op_inj (by simp) }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The equivalence `(Square C)ᵒᵖ ≌ Square Cᵒᵖ`. -/
 def opEquivalence : (Square C)ᵒᵖ ≌ Square Cᵒᵖ where

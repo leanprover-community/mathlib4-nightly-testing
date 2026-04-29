@@ -80,6 +80,7 @@ instance : IsFibered (forget F) :=
 
 variable (F) (S : 𝒮)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] PrelaxFunctor.map₂_eqToHom in
 /-- The inclusion map from `F(S)` into `∫ᶜ F`. -/
@@ -111,6 +112,7 @@ noncomputable instance : (Fiber.inducedFunctor (comp_const F S)).Full where
       (F.mapId ⟨op S⟩).hom.toNatTrans.app Y
     ext <;> simp [hf, ← Cat.Hom₂.comp_app]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : (Fiber.inducedFunctor (comp_const F S)).Faithful where
   map_injective {a b} := by

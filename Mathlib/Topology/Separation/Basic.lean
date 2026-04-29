@@ -370,6 +370,7 @@ lemma nhdsWithin_compl_singleton_le [T1Space X] (x y : X) : 𝓝[{x}ᶜ] x ≤ �
   · rw [Ne.nhdsWithin_compl_singleton hy]
     exact nhdsWithin_le_nhds
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isOpen_setOf_eventually_nhdsWithin [T1Space X] {p : X → Prop} :
     IsOpen { x | ∀ᶠ y in 𝓝[≠] x, p y } := by
   refine isOpen_iff_mem_nhds.mpr fun a ha => ?_

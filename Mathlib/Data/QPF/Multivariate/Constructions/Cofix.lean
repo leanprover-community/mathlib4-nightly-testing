@@ -348,6 +348,7 @@ the induction step in bisimulation proofs.
 
 section LiftRMap
 
+set_option backward.defeqAttrib.useBackward true in
 theorem liftR_map {α β : TypeVec n} {F' : TypeVec n → Type u} [MvFunctor F'] [LawfulMvFunctor F']
     (R : β ⊗ β ⟹ «repeat» n Prop) (x : F' α) (f g : α ⟹ β) (h : α ⟹ Subtype_ R)
     (hh : subtypeVal _ ⊚ h = (f ⊗' g) ⊚ prod.diag) : LiftR' R (f <$$> x) (g <$$> x) := by
@@ -359,6 +360,7 @@ theorem liftR_map {α β : TypeVec n} {F' : TypeVec n → Type u} [MvFunctor F']
 
 open Function
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem liftR_map_last [lawful : LawfulMvFunctor F]
     {α : TypeVec n} {ι ι'} (R : ι' → ι' → Prop)
@@ -491,6 +493,7 @@ theorem corec_roll {α : TypeVec n} {X Y} {x₀ : X} (f : X → Y) (g : Y → F 
   refine liftR_map_last _ _ _ _ ?_
   intro a; refine ⟨a, rfl, rfl⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Cofix.dest_corec' {α : TypeVec.{u} n} {β : Type u}
     (g : β → F (α.append1 (Cofix F α ⊕ β))) (x : β) :
     Cofix.dest (Cofix.corec' g x) =

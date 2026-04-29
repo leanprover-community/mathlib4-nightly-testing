@@ -79,6 +79,7 @@ lemma isCompact_sInter_of_subset_constructibleTopologySubbasis [CompactSpace X]
   · apply (hs ht).imp <;> grind
   · exact isCompact_of_mem_constructibleTopologySubbasis (hs ht)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `X` is quasi-separated, quasi-sober, prespectral and quasi-compact, then `X`
 is still quasi-compact in the constructible topology. This holds in particular for spectral
 spaces. -/

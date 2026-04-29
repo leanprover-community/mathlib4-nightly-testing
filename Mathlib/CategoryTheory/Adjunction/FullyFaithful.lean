@@ -76,6 +76,7 @@ instance [L.Full] [L.Faithful] (X : C) : IsIso (h.unit.app X) :=
 instance unit_isIso_of_L_fully_faithful [L.Full] [L.Faithful] : IsIso (Adjunction.unit h) :=
   NatIso.isIso_of_isIso_app _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the right adjoint is faithful, then each component of the counit is an epimorphism. -/
 instance counit_epi_of_R_faithful [R.Faithful] (X : D) : Epi (h.counit.app X) where
   left_cancellation {Y} f g hfg :=
@@ -132,6 +133,7 @@ lemma faithful_L_of_mono_unit_app [∀ X, Mono (h.unit.app X)] : L.Faithful wher
     apply (h.homEquiv X (L.obj Y)).symm.injective
     simpa using hfg
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If each component of the unit is a split epimorphism, then the left adjoint is full. -/
 lemma full_L_of_isSplitEpi_unit_app [∀ X, IsSplitEpi (h.unit.app X)] : L.Full where
@@ -155,6 +157,7 @@ lemma faithful_R_of_epi_counit_app [∀ X, Epi (h.counit.app X)] : R.Faithful wh
     apply (h.homEquiv (R.obj X) Y).injective
     simpa using hfg
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If each component of the counit is a split monomorphism, then the right adjoint is full. -/
 lemma full_R_of_isSplitMono_counit_app [∀ X, IsSplitMono (h.counit.app X)] : R.Full where

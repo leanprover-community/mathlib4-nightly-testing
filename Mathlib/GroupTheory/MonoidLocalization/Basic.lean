@@ -169,6 +169,7 @@ def r' : Con (M × S) := by
       (t₂ * t₁ : M) * (b.2 * d.2 * (a.1 * c.1)) = t₂ * (d.2 * c.1) * (t₁ * (b.2 * a.1)) := by ac_rfl
       _ = (t₂ * t₁ : M) * (a.2 * c.2 * (b.1 * d.1)) := by rw [ht₁, ht₂]; ac_rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The congruence relation used to localize a `CommMonoid` at a submonoid can be expressed
 equivalently as an infimum (see `Localization.r`) or explicitly
 (see `Localization.r'`). -/
@@ -573,6 +574,7 @@ theorem mk'_one (x) : f.mk' x (1 : S) = f x := by
   rw [mk', map_one]
   exact mul_one _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a localization map `f : M →* N` for a submonoid `S ⊆ M`, for all `z : N` we have that if
 `x : M, y ∈ S` are such that `z * f y = f x`, then `f x * (f y)⁻¹ = z`. -/
 @[to_additive (attr := simp)
@@ -585,6 +587,7 @@ theorem mk'_sec (z : N) : f.mk' (f.sec z).1 (f.sec z).2 = z :=
 theorem mk'_surjective (z : N) : ∃ (x : _) (y : S), f.mk' x y = z :=
   ⟨(f.sec z).1, (f.sec z).2, f.mk'_sec z⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem mk'_spec (x) (y : S) : f.mk' x y * f y = f x :=
   show _ * _ * _ = _ by rw [mul_assoc, mul_comm _ (f y), ← mul_assoc, mul_inv_left, mul_comm]; dsimp
@@ -665,6 +668,7 @@ theorem mk'_eq_of_same {a b} {d : S} :
   rw [mk'_eq_iff_eq', map_mul, map_mul, ← eq_iff_exists f]
   exact (map_units f d).mul_left_inj
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem mk'_self' (y : S) : f.mk' (y : M) y = 1 :=
   show _ * _ = _ by rw [mul_inv_left, mul_one]; dsimp
@@ -731,6 +735,7 @@ def monoidOf : Submonoid.LocalizationMap S (Localization S) :=
 @[to_additive]
 theorem mk_one_eq_monoidOf_mk (x) : mk x 1 = monoidOf S x := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem mk_eq_monoidOf_mk'_apply (x y) : mk x y = (monoidOf S).mk' x y :=
   show _ = _ * _ from

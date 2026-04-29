@@ -40,6 +40,7 @@ theorem continuous_mk : Continuous (@mk M) := continuous_induced_rng.2 continuou
 @[to_additive (attr := continuity, fun_prop)]
 theorem continuous_mk_symm : Continuous (@mk M).symm := continuous_induced_dom
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `DomMulAct.mk` as a homeomorphism. -/
 @[to_additive (attr := simps toEquiv) /-- `DomAddAct.mk` as a homeomorphism. -/]
 def mkHomeomorph : M ≃ₜ Mᵈᵐᵃ where

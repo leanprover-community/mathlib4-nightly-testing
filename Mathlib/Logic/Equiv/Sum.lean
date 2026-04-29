@@ -252,6 +252,7 @@ end
 
 section sumCompl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For any predicate `p` on `α`,
 the sum of the two subtypes `{a // p a}` and its complement `{a // ¬ p a}`
 is naturally equivalent to `α`.

@@ -454,6 +454,7 @@ namespace QPF
 variable {F₂ : Type u → Type u} [q₂ : QPF F₂]
 variable {F₁ : Type u → Type u} [q₁ : QPF F₁]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- composition of qpfs gives another qpf -/
 @[implicit_reducible]
 def comp : QPF (Functor.Comp F₂ F₁) where
@@ -537,6 +538,7 @@ open Functor (Liftp Liftr supp)
 
 open Set
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mem_supp {α : Type u} (x : F α) (u : α) :
     u ∈ supp x ↔ ∀ a f, abs ⟨a, f⟩ = x → u ∈ f '' univ := by
   rw [supp]; dsimp; constructor

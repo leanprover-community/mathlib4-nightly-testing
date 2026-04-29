@@ -478,6 +478,7 @@ end CompleteLinearOrder
 
 end IsUpper
 
+set_option backward.defeqAttrib.useBackward true in
 instance instIsLowerProd [Preorder α] [TopologicalSpace α] [IsLower α]
     [OrderBot α] [Preorder β] [TopologicalSpace β] [IsLower β] [OrderBot β] :
     IsLower (α × β) where

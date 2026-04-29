@@ -113,6 +113,7 @@ section
 
 open Hom
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary definition for `normalize`. Here we prove that objects that are related by
 associators and unitors map to the same normal form. -/
 @[simp]
@@ -169,6 +170,7 @@ def tensorFunc : F C ⥤ N C ⥤ F C where
 theorem tensorFunc_map_app {X Y : F C} (f : X ⟶ Y) (n) : ((tensorFunc C).map f).app n = _ ◁ f :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tensorFunc_obj_map (Z : F C) {n n' : N C} (f : n ⟶ n') :
     ((tensorFunc C).obj Z).map f = inclusion.map f ▷ Z := by
   cases n

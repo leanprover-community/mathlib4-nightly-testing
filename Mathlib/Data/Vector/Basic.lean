@@ -287,6 +287,7 @@ def last (v : Vector α (n + 1)) : α :=
 theorem last_def {v : Vector α (n + 1)} : v.last = v.get (Fin.last n) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The `last` element of a vector is the `head` of the `reverse` vector. -/
 theorem reverse_get_zero {v : Vector α (n + 1)} : v.reverse.head = v.last := by
   rw [← get_zero, last_def, get_eq_get_toList, get_eq_get_toList]
@@ -547,6 +548,7 @@ theorem eraseIdx_insertIdx_self {v : Vector α n} {i : Fin (n + 1)} :
     eraseIdx i (insertIdx a i v) = v :=
   Subtype.ext (List.eraseIdx_insertIdx_self ..)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Erasing an element after inserting an element, at different indices. -/
 theorem eraseIdx_insertIdx' {v : Vector α (n + 1)} :

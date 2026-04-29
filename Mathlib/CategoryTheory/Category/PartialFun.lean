@@ -117,6 +117,7 @@ noncomputable def partialFunToPointed : PartialFun ⥤ Pointed := by
         dsimp [CategoryStruct.comp]
         rw [Part.bind_toOption g (f a), Option.elim'_eq_elim] }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The equivalence induced by `PartialFunToPointed` and `PointedToPartialFun`.
 `Part.equivOption` made functorial. -/

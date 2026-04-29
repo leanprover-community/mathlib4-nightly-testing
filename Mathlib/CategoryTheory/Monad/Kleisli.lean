@@ -53,6 +53,7 @@ instance [Inhabited C] (T : Monad C) : Inhabited (Kleisli T) := ⟨.mk T default
 
 variable (T)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local ext] Hom in
 /-- The Kleisli category on a monad `T`.
@@ -78,6 +79,7 @@ lemma hom_ext {x y : Kleisli T} {f g : x ⟶ y} (h : f.of = g.of) : f = g :=
 
 namespace Adjunction
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The left adjoint of the adjunction which induces the monad `(T, η_ T, μ_ T)`. -/
 @[simps]
@@ -158,6 +160,7 @@ lemma hom_ext {x y : Cokleisli U} {f g : x ⟶ y} (h : f.of = g.of) : f = g :=
 
 namespace Adjunction
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The right adjoint of the adjunction which induces the comonad `(U, ε_ U, δ_ U)`. -/
 @[simps]

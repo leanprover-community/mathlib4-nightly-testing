@@ -57,6 +57,7 @@ instance [Reflective i] : (reflector i).IsLeftAdjoint := ⟨_, ⟨reflectorAdjun
 def Functor.fullyFaithfulOfReflective [Reflective i] : i.FullyFaithful :=
   (reflectorAdjunction i).fullyFaithfulROfIsIsoCounit
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 -- TODO: This holds more generally for idempotent adjunctions, not just reflective adjunctions.
 /-- For a reflective functor `i` (with left adjoint `L`), with unit `η`, we have `η_iL = iL η`.
@@ -115,6 +116,7 @@ def unitCompPartialBijectiveAux [Reflective i] (A : C) (B : D) :
   ((reflectorAdjunction i).homEquiv _ _).symm.trans
     (Functor.FullyFaithful.ofFullyFaithful i).homEquiv
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The description of the inverse of the bijection `unitCompPartialBijectiveAux`. -/
 theorem unitCompPartialBijectiveAux_symm_apply [Reflective i] {A : C} {B : D}
     (f : i.obj ((reflector i).obj A) ⟶ i.obj B) :
@@ -204,6 +206,7 @@ instance [Coreflective j] : (coreflector j).IsRightAdjoint := ⟨_, ⟨coreflect
 def Functor.fullyFaithfulOfCoreflective [Coreflective j] : j.FullyFaithful :=
   (coreflectorAdjunction j).fullyFaithfulLOfIsIsoUnit
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma counit_obj_eq_map_counit [Coreflective j] (X : D) :
     (coreflectorAdjunction j).counit.app (j.obj ((coreflector j).obj X)) =

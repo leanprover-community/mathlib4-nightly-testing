@@ -209,6 +209,7 @@ theorem exists_eq_comp_of_mem_vertices {v : V} (hv : v ∈ p.vertices) :
   obtain ⟨v, p₁, p₂, hp, hv, rfl⟩ := p.exists_eq_comp_and_length_eq_of_lt_length n hn
   exact ⟨p₁, p₂, hp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Split a path at the *last* occurrence of a vertex. -/
 theorem exists_eq_comp_and_notMem_tail_of_mem_vertices {v : V} (hv : v ∈ p.vertices) :
     ∃ (p₁ : Path a v) (p₂ : Path v b),

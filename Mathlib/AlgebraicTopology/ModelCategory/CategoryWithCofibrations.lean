@@ -277,6 +277,7 @@ instance {X Y : P.FullSubcategory} (f : X ⟶ Y) [WeakEquivalence f] :
     WeakEquivalence f.hom := by
   rwa [← weakEquivalence_iff_of_objectProperty]
 
+set_option backward.defeqAttrib.useBackward true in
 instance {X Y : P.FullSubcategory} (f : X ⟶ Y) [WeakEquivalence f] :
     WeakEquivalence (P.ι.map f) := by
   dsimp

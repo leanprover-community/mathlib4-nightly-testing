@@ -48,6 +48,7 @@ theorem take_one {α : Fin (n + 1) → Sort*} (v : (i : Fin (n + 1)) → α i) :
 theorem take_eq_init {α : Fin (n + 1) → Sort*} (v : (i : Fin (n + 1)) → α i) :
     take n n.le_succ v = init v := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem take_eq_self (v : (i : Fin n) → α i) : take n (le_refl n) v = v := by
   ext i
@@ -66,6 +67,7 @@ theorem take_repeat {α : Type*} {n' : ℕ} (m : ℕ) (h : m ≤ n) (a : Fin n' 
   ext i
   simp only [take, repeat_apply, modNat, val_castLE]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Taking `m + 1` elements is equal to taking `m` elements and adding the `(m + 1)`th one. -/
 theorem take_succ_eq_snoc (m : ℕ) (h : m < n) (v : (i : Fin n) → α i) :
     take m.succ h v = snoc (take m h.le v) (v ⟨m, h⟩) := by

@@ -146,6 +146,7 @@ def ofDigits {α : Type*} [Semiring α] (b : α) : List ℕ → α
   | [] => 0
   | h :: t => h + b * ofDigits b t
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ofDigits_eq_foldr {α : Type*} [Semiring α] (b : α) (L : List ℕ) :
     ofDigits b L = List.foldr (fun x y => ↑x + b * y) 0 L := by
   induction L with
@@ -213,6 +214,7 @@ theorem digits_zero_of_eq_zero {b : ℕ} (h : b ≠ 0) :
   | _ :: _, h0, _, List.Mem.tail _ hL =>
     digits_zero_of_eq_zero h (mul_right_injective₀ h (Nat.eq_zero_of_add_eq_zero_left h0)) _ hL
 
+set_option backward.defeqAttrib.useBackward true in
 theorem digits_ofDigits (b : ℕ) (h : 1 < b) (L : List ℕ) (w₁ : ∀ l ∈ L, l < b)
     (w₂ : ∀ h : L ≠ [], L.getLast h ≠ 0) : digits b (ofDigits b L) = L := by
   induction L with
@@ -239,6 +241,7 @@ theorem digits_ofDigits (b : ℕ) (h : 1 < b) (L : List ℕ) (w₁ : ∀ l ∈ L
         rw [List.getLast_cons h']
         exact List.getLast_mem h'
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ofDigits_digits (b n : ℕ) : ofDigits b (digits b n) = n := by
   rcases b with - | b
   · rcases n with - | n

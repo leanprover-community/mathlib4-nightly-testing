@@ -874,6 +874,7 @@ lemma removeNth_fun_const {α : Type*} {n : ℕ} (i : Fin (n + 1)) (a : α) :
 @[simp] lemma removeNth_insertNth (p : Fin (n + 1)) (a : α p) (f : ∀ i, α (succAbove p i)) :
     removeNth p (insertNth p a f) = f := by ext; unfold removeNth; simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma removeNth_zero (f : ∀ i, α i) : removeNth 0 f = tail f := by
   ext; simp [tail, removeNth]
 

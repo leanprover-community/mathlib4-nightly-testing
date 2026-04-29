@@ -11,30 +11,48 @@ DEFAULT_OPTIONS = [
     "backward.isDefEq.respectTransparency",
     "backward.whnf.reducibleClassField",
     "backward.inferInstanceAs.wrap",
+    "backward.defeqAttrib.useBackward",
 ]
 
+# Options that need to be set to `true` rather than the default `false`.
+TRUE_VALUED_OPTIONS = {
+    "backward.defeqAttrib.useBackward",
+}
 
-def set_option_line(option: str, value: str = "false") -> str:
+
+def value_for(option: str) -> str:
+    return "true" if option in TRUE_VALUED_OPTIONS else "false"
+
+
+def set_option_line(option: str, value: str | None = None) -> str:
     """Return the set_option line text for an option."""
+    if value is None:
+        value = value_for(option)
     return f"set_option {option} {value} in\n"
 
 
-def removable_pattern(option: str, value: str = "false") -> re.Pattern:
+def removable_pattern(option: str, value: str | None = None) -> re.Pattern:
     """Match bare `set_option X <value> in` lines (no trailing comment)."""
+    if value is None:
+        value = value_for(option)
     escaped = re.escape(option)
     escaped_val = re.escape(value)
     return re.compile(rf"^\s*set_option {escaped} {escaped_val} in\s*$")
 
 
-def commented_pattern(option: str, value: str = "false") -> re.Pattern:
+def commented_pattern(option: str, value: str | None = None) -> re.Pattern:
     """Match `set_option X <value> in -- ...` lines."""
+    if value is None:
+        value = value_for(option)
     escaped = re.escape(option)
     escaped_val = re.escape(value)
     return re.compile(rf"^\s*set_option {escaped} {escaped_val} in\s+--")
 
 
-def lakefile_pattern(option: str, value: str = "false") -> re.Pattern:
+def lakefile_pattern(option: str, value: str | None = None) -> re.Pattern:
     """Match lakefile entries for an option."""
+    if value is None:
+        value = value_for(option)
     escaped = re.escape(option)
     escaped_val = re.escape(value)
     return re.compile(

@@ -288,6 +288,7 @@ theorem parallel_empty (S : WSeq (Computation α)) (h : S.head ~> none) : parall
     let ⟨c', h'⟩ := WSeq.head_some_of_get?_some nm
     injection h h'
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Induction principle for parallel computations.
 The reason this isn't trivial from `exists_of_mem_parallel` is because it eliminates to `Sort`. -/
 def parallelRec {S : WSeq (Computation α)} (C : α → Sort v) (H : ∀ s ∈ S, ∀ a ∈ s, C a) {a}

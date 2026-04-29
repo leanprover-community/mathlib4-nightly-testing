@@ -845,6 +845,7 @@ abbrev tensorUnitLeft : C ⥤ C := tensorLeft (𝟙_ C)
 /-- The functor `fun X ↦ X ⊗ 𝟙_ C`. -/
 abbrev tensorUnitRight : C ⥤ C := tensorRight (𝟙_ C)
 
+set_option backward.defeqAttrib.useBackward true in
 -- We can express the associator and the unitors, given componentwise above,
 -- as natural isomorphisms.
 /-- The associator as a natural isomorphism. -/

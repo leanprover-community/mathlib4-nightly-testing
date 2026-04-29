@@ -881,6 +881,7 @@ theorem mem_prod_list_ofFn {a : α} {s : Fin n → Finset α} :
   rw [← mem_coe, coe_list_prod, List.map_ofFn, Set.mem_prod_list_ofFn]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem mem_pow {a : α} {n : ℕ} :
     a ∈ s ^ n ↔ ∃ f : Fin n → s, (List.ofFn fun i => ↑(f i)).prod = a := by

@@ -196,9 +196,11 @@ def ofSet (s : Set α) [DecidablePred (· ∈ s)] :
     · simp [ne_of_mem_of_not_mem ha hb]
     · simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mem_ofSet_self_iff {s : Set α} [DecidablePred (· ∈ s)] {a : α} : a ∈ ofSet s a ↔ a ∈ s := by
   dsimp [ofSet]; split_ifs <;> simp [*]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mem_ofSet_iff {s : Set α} [DecidablePred (· ∈ s)] {a b : α} :
     a ∈ ofSet s b ↔ a = b ∧ a ∈ s := by
   dsimp [ofSet]
@@ -235,6 +237,7 @@ end OfSet
 theorem symm_trans_rev (f : α ≃. β) (g : β ≃. γ) : (f.trans g).symm = g.symm.trans f.symm :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem self_trans_symm (f : α ≃. β) : f.trans f.symm = ofSet { a | (f a).isSome } := by
   ext
   dsimp [PEquiv.trans]
@@ -301,6 +304,7 @@ def single (a : α) (b : β) :
 theorem mem_single (a : α) (b : β) : b ∈ single a b a :=
   if_pos rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mem_single_iff (a₁ a₂ : α) (b₁ b₂ : β) : b₁ ∈ single a₂ b₂ a₁ ↔ a₁ = a₂ ∧ b₁ = b₂ := by
   dsimp [single]; split_ifs <;> simp [*, eq_comm]
 
@@ -315,6 +319,7 @@ theorem single_apply (a : α) (b : β) : single a b a = some b :=
 theorem single_apply_of_ne {a₁ a₂ : α} (h : a₁ ≠ a₂) (b : β) : single a₁ b a₂ = none :=
   if_neg h.symm
 
+set_option backward.defeqAttrib.useBackward true in
 theorem single_trans_of_mem (a : α) {b : β} {c : γ} {f : β ≃. γ} (h : c ∈ f b) :
     (single a b).trans f = single a c := by
   ext
@@ -330,12 +335,14 @@ theorem single_trans_single (a : α) (b : β) (c : γ) :
     (single a b).trans (single b c) = single a c :=
   single_trans_of_mem _ (mem_single _ _)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem single_subsingleton_eq_refl [Subsingleton α] (a b : α) : single a b = PEquiv.refl α := by
   ext i j
   dsimp [single]
   rw [if_pos (Subsingleton.elim i a), Subsingleton.elim i j, Subsingleton.elim b j]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem trans_single_of_eq_none {b : β} (c : γ) {f : δ ≃. β} (h : f.symm b = none) :
     f.trans (single b c) = ⊥ := by
   ext

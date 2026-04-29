@@ -181,6 +181,7 @@ theorem GameAdd.snd_fst {a₁ a₂ b : α} (h : rα a₁ a₂) : GameAdd rα s(b
 
 end Sym2
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Acc.sym2_gameAdd {a b} (ha : Acc rα a) (hb : Acc rα b) :
     Acc (Sym2.GameAdd rα) s(a, b) := by
   induction ha generalizing b with | _ a _ iha

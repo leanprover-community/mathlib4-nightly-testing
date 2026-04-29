@@ -214,6 +214,7 @@ theorem coe_toEquiv : ⇑(e.toEquiv) = e :=
 theorem coe_toLinearMap : ⇑e.toLinearMap = e :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem toFun_eq_coe : e.toFun = e := by dsimp
 
 section

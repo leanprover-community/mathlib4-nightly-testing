@@ -422,6 +422,7 @@ attribute [local instance] obj.instComonObj
     Δ[F.obj X] = F.map Δ ≫ δ F _ _ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance map.instIsComon_Hom
     (F : C ⥤ D) [F.OplaxMonoidal]
     {X Y : C} [ComonObj X] [ComonObj Y] (f : X ⟶ Y) [IsComonHom f] :

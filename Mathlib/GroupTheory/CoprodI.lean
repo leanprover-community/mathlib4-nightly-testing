@@ -886,6 +886,7 @@ theorem empty_of_word_prod_eq_one {w : Word H} (h : lift f w.prod = 1) :
   obtain ⟨i, j, w, rfl⟩ := NeWord.of_word w hnotempty
   exact lift_word_prod_nontrivial_of_not_empty f hcard X hXnonempty hXdisj hpp w h
 
+set_option backward.defeqAttrib.useBackward true in
 include hcard in
 /-- The **Ping-Pong-Lemma**.
 

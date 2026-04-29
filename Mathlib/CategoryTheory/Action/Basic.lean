@@ -398,6 +398,7 @@ namespace CategoryTheory.Functor
 
 variable {V} {W : Type*} [Category* W]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A functor between categories induces a functor between
 the categories of `G`-actions within those categories. -/
 @[simps]

@@ -393,6 +393,7 @@ theorem limsup_eq_bot : f.limsup u = ⊥ ↔ u =ᶠ[f] ⊥ :=
 theorem liminf_eq_top : f.liminf u = ⊤ ↔ u =ᶠ[f] ⊤ :=
   limsup_eq_bot (α := αᵒᵈ)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `u : ι → α → β` be a sequence of antitone functions `α → β` indexed by `ι`. Suppose that for
 all `i : ι`, `u i` tends to `c` at infinity, and that furthermore the limsup of `i ↦ u i r` along
 the cofinite filter tends to the same `c` as `r` tends to infinity.

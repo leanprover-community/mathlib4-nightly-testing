@@ -41,6 +41,7 @@ open scoped Pointwise
 
 variable {G : Type*} [Group G]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Equivalence of `K / (H ⊓ K)` with `gKg⁻¹/ (gHg⁻¹ ⊓ gKg⁻¹)` -/
 def Subgroup.quotConjEquiv (H K : Subgroup G) (g : ConjAct G) :
     K ⧸ H.subgroupOf K ≃ (g • K : Subgroup G) ⧸ (g • H).subgroupOf (g • K) :=

@@ -139,6 +139,7 @@ theorem homMk_surjective {f f' : StructuredArrow S T} (φ : f ⟶ f') :
       φ = StructuredArrow.homMk ψ hψ :=
   ⟨φ.right, StructuredArrow.w φ, rfl⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a structured arrow `X ⟶ T(Y)`, and an arrow `Y ⟶ Y'`, we can construct a morphism of
 structured arrows given by `(X ⟶ T(Y)) ⟶ (X ⟶ T(Y) ⟶ T(Y'))`. -/
 @[simps]
@@ -146,26 +147,32 @@ def homMk' (f : StructuredArrow S T) (g : f.right ⟶ Y') : f ⟶ mk (f.hom ≫ 
   left := 𝟙 _
   right := g
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_id (f : StructuredArrow S T) : homMk' f (𝟙 f.right) = eqToHom (by cat_disch) := by
   simp [eqToHom_right]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_mk_id (f : S ⟶ T.obj Y) : homMk' (mk f) (𝟙 Y) = eqToHom (by simp) :=
   homMk'_id _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_comp (f : StructuredArrow S T) (g : f.right ⟶ Y') (g' : Y' ⟶ Y'') :
     homMk' f (g ≫ g') = homMk' f g ≫ homMk' (mk (f.hom ≫ T.map g)) g' ≫ eqToHom (by simp) := by
   simp [eqToHom_right]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_mk_comp (f : S ⟶ T.obj Y) (g : Y ⟶ Y') (g' : Y' ⟶ Y'') :
     homMk' (mk f) (g ≫ g') = homMk' (mk f) g ≫ homMk' (mk (f ≫ T.map g)) g' ≫ eqToHom (by simp) :=
   homMk'_comp _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Variant of `homMk'` where both objects are applications of `mk`. -/
 @[simps]
 def mkPostcomp (f : S ⟶ T.obj Y) (g : Y ⟶ Y') : mk f ⟶ mk (f ≫ T.map g) where
   left := 𝟙 _
   right := g
 
+set_option backward.defeqAttrib.useBackward true in
 lemma mkPostcomp_id (f : S ⟶ T.obj Y) : mkPostcomp f (𝟙 Y) = eqToHom (by simp) := by simp
 lemma mkPostcomp_comp (f : S ⟶ T.obj Y) (g : Y ⟶ Y') (g' : Y' ⟶ Y'') :
     mkPostcomp f (g ≫ g') = mkPostcomp f g ≫ mkPostcomp (f ≫ T.map g) g' ≫ eqToHom (by simp) := by

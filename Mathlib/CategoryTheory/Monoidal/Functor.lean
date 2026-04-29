@@ -206,6 +206,7 @@ def ofTensorHom : F.LaxMonoidal where
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance id : (𝟭 C).LaxMonoidal where
   ε := 𝟙 _
@@ -331,6 +332,7 @@ lemma δ_comp_whiskerLeft_δ (X Y Z : C) :
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance id : (𝟭 C).OplaxMonoidal where
   η := 𝟙 _
@@ -539,6 +541,7 @@ def commTensorRight (X : C) :
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 instance : (𝟭 C).Monoidal where
 
 variable (F : C ⥤ D) (G : D ⥤ E)
@@ -1107,6 +1110,7 @@ set_option backward.defeqAttrib.useBackward true in
 lemma ε_comp_map_ε : ε G ≫ G.map (ε F) = adj.unit.app (𝟙_ C) := by
   simp [← adj.unit_app_unit_comp_map_η]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma map_η_comp_η : F.map (η G) ≫ η F = adj.counit.app (𝟙_ D) := by
   simp [← adj.map_ε_comp_counit_app_unit]
@@ -1237,6 +1241,7 @@ instance : (refl (C := C)).inverse.Monoidal := inferInstanceAs (𝟭 C).Monoidal
 instance isMonoidal_refl : (Equivalence.refl (C := C)).IsMonoidal :=
   inferInstanceAs (Adjunction.id (C := C)).IsMonoidal
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The inverse of a monoidal category equivalence is also a monoidal category equivalence. -/
 instance isMonoidal_symm : e.symm.IsMonoidal where

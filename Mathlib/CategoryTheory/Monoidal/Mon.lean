@@ -706,6 +706,7 @@ lemma tensor_one (M N : Mon C) : η[(M ⊗ N).X] = (λ_ (𝟙_ C)).inv ≫ (η[M
 @[to_additive (attr := simp)]
 lemma tensor_mul (M N : Mon C) : μ[(M ⊗ N).X] = tensorμ M.X N.X M.X N.X ≫ (μ[M.X] ⊗ₘ μ[N.X]) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 instance monMonoidal : MonoidalCategory (Mon C) where
   tensorHom_def := by intros; ext; simp [tensorHom_def]

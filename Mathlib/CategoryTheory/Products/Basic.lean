@@ -430,6 +430,7 @@ section Opposite
 
 open Opposite
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence between the opposite of a product and the product of the opposites. -/
 @[simps!]
 def prodOpEquiv : (C × D)ᵒᵖ ≌ Cᵒᵖ × Dᵒᵖ where

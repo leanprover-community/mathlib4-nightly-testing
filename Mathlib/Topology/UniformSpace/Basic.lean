@@ -226,6 +226,7 @@ theorem Filter.HasBasis.uniformity_closure {p : ι → Prop} {U : ι → SetRel 
 theorem uniformity_hasBasis_closure : HasBasis (𝓤 α) (fun V : SetRel α α => V ∈ 𝓤 α) closure :=
   (𝓤 α).basis_sets.uniformity_closure
 
+set_option backward.defeqAttrib.useBackward true in
 theorem closure_eq_inter_uniformity {t : SetRel α α} : closure t = ⋂ d ∈ 𝓤 α, d ○ (t ○ d) :=
   calc
     closure t = ⋂ (V) (_ : V ∈ 𝓤 α ∧ SetRel.IsSymm V), V ○ t ○ V := closure_eq_uniformity t
