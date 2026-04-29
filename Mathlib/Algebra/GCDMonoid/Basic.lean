@@ -1019,6 +1019,7 @@ noncomputable def gcdMonoidOfGCD [DecidableEq α] (gcd : α → α → α)
       apply Or.resolve_left (mul_eq_zero.1 _) a0'
       rw [h, mul_zero] }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Define `NormalizedGCDMonoid` on a structure just from the `gcd` and its properties. -/
 @[implicit_reducible]
@@ -1036,7 +1037,7 @@ noncomputable def normalizedGCDMonoidOfGCD [NormalizationMonoid α] [DecidableEq
       if a = 0 then 0
       else Classical.choose (dvd_normalize_iff.2 ((gcd_dvd_left a b).trans (Dvd.intro b rfl)))
     normalize_lcm := fun a b => by
-      dsimp [normalize]
+      simp only [normalize_apply]
       split_ifs with a0
       · exact @normalize_zero α _ _
       · have := (Classical.choose_spec
@@ -1161,7 +1162,7 @@ noncomputable def normalizedGCDMonoidOfLCM [NormalizationMonoid α] [DecidableEq
       exact normalize_associated (a * b)
     normalize_lcm
     normalize_gcd := fun a b => by
-      dsimp [normalize]
+      simp only [normalize_apply]
       split_ifs with h h_1
       · apply normalize_idem
       · apply normalize_idem
@@ -1177,7 +1178,7 @@ noncomputable def normalizedGCDMonoidOfLCM [NormalizationMonoid α] [DecidableEq
       conv_lhs =>
         congr
         rw [← normalize_lcm a b]
-      rw [← normalize_apply, ← normalize.map_mul,
+      simp only [← normalize_apply, ← normalize.map_mul,
         ← Classical.choose_spec (exists_gcd a b), normalize_idem]
     lcm_zero_left := fun _ => eq_zero_of_zero_dvd (dvd_lcm_left _ _)
     lcm_zero_right := fun _ => eq_zero_of_zero_dvd (dvd_lcm_right _ _)
