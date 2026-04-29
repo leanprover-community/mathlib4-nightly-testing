@@ -291,8 +291,7 @@ def inducedOrderRingIso : β ≃+*o γ :=
       refine ⟨fun h => ?_, fun h => inducedMap_mono _ _ h⟩
       convert inducedMap_mono γ β h <;>
       · rw [inducedOrderRingHom, AddMonoidHom.coe_fn_mkRingHomOfMulSelfOfTwoNeZero, inducedAddHom]
-        dsimp
-        rw [inducedMap_inv_self β γ _] }
+        exact (inducedMap_inv_self β γ _).symm }
 
 @[simp]
 theorem coe_inducedOrderRingIso : ⇑(inducedOrderRingIso β γ) = inducedMap β γ := rfl
