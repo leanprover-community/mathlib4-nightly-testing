@@ -92,6 +92,7 @@ section
 
 variable {F : C ⥤ D} {G : D ⥤ C}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma Adjunction.isCocontinuous_iff_coverPreserving (adj : F ⊣ G) :
     F.IsCocontinuous J K ↔ CoverPreserving K J G := by
@@ -185,6 +186,7 @@ lemma liftAux_map {Y : C} (f : G.obj Y ⟶ X) {W : C} (g : W ⟶ Y) (i : S.Arrow
             .. }
         simpa [r] using s.condition r)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma liftAux_map' {Y Y' : C} (f : G.obj Y ⟶ X) (f' : G.obj Y' ⟶ X) {W : C}
     (a : W ⟶ Y) (b : W ⟶ Y') (w : G.map a ≫ f = G.map b ≫ f') :
     liftAux hF α s f ≫ F.map a.op = liftAux hF α s f' ≫ F.map b.op := by
@@ -304,6 +306,7 @@ noncomputable def sheafAdjunctionCocontinuous :
     (G.sheafPushforwardContinuousCompSheafToPresheafIso A J K).symm
     (G.sheafPushforwardCocontinuousCompSheafToPresheafIso A J K).symm
 
+set_option backward.defeqAttrib.useBackward true in
 lemma sheafAdjunctionCocontinuous_unit_app_hom (F : Sheaf K A) :
     ((G.sheafAdjunctionCocontinuous A J K).unit.app F).hom =
       (G.op.ranAdjunction A).unit.app F.obj := by
