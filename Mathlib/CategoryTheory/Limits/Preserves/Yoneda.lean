@@ -62,7 +62,8 @@ theorem yonedaYonedaColimit_app_inv {X : C} : ((yonedaYonedaColimit F).app (op X
     (colimitObjIsoColimitCompEvaluation _ _).hom ≫
       (colimit.post F (coyoneda.obj (op (yoneda.obj X)))) := by
   dsimp [yonedaYonedaColimit]
-  simp only [Iso.cancel_iso_hom_left]
+  simp only [Iso.symm_inv, NatIso.ofComponents_hom_app, colimitIsoFlipCompColim,
+    Iso.cancel_iso_hom_left]
   apply colimit.hom_ext
   intro j
   rw [colimit.ι_post, ι_colimMap_assoc]
