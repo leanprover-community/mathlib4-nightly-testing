@@ -176,6 +176,7 @@ def subinterval {n} (j l : ℕ) (hjl : j + l ≤ n) :
     monotone' := fun i i' hii' => by simpa only [Fin.mk_le_mk, add_le_add_iff_right] using hii'
   }
 
+set_option backward.defeqAttrib.useBackward true in
 lemma const_subinterval_eq {n} (j l : ℕ) (hjl : j + l ≤ n) (i : Fin (l + 1)) :
     ⦋0⦌.const ⦋l⦌ i ≫ subinterval j l hjl =
     ⦋0⦌.const ⦋n⦌ ⟨j + i.1, lt_add_of_lt_add_right (Nat.add_lt_add_left i.2 j) hjl⟩  := by
@@ -634,6 +635,7 @@ theorem epi_iff_surjective {n m : SimplexCategory} {f : n ⟶ m} :
   simp only [skeletalFunctor_obj, skeletalFunctor_map,
     NonemptyFinLinOrd.epi_iff_surjective, NonemptyFinLinOrd.coe_of, ConcreteCategory.hom_ofHom]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A monomorphism in `SimplexCategory` must increase lengths -/
 theorem len_le_of_mono {x y : SimplexCategory} (f : x ⟶ y) [Mono f] : x.len ≤ y.len := by
   simpa using Fintype.card_le_of_injective f.toOrderHom.toFun
@@ -642,6 +644,7 @@ theorem len_le_of_mono {x y : SimplexCategory} (f : x ⟶ y) [Mono f] : x.len �
 theorem le_of_mono {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) [Mono f] : n ≤ m :=
   len_le_of_mono f
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An epimorphism in `SimplexCategory` must decrease lengths -/
 theorem len_le_of_epi {x y : SimplexCategory} (f : x ⟶ y) [Epi f] : y.len ≤ x.len := by
   simpa using Fintype.card_le_of_surjective f.toOrderHom.toFun

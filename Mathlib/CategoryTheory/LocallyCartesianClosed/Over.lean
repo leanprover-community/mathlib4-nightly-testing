@@ -303,6 +303,7 @@ def forgetAdjToOver (X : C) : Over.forget X ⊣ toOver X where
   unit.app Z := Over.homMk (lift (𝟙 Z.left) (Z.hom))
   counit.app Z := fst Z X
 
+set_option backward.defeqAttrib.useBackward true in
 theorem forgetAdjToOver.homEquiv_symm {X : C} (Z : Over X) (A : C) (f : Z ⟶ (toOver X).obj A) :
      ((forgetAdjToOver X).homEquiv Z A).symm f = f.left ≫ (fst _ _) := by
    rw [Adjunction.homEquiv_counit, forgetAdjToOver_counit_app]

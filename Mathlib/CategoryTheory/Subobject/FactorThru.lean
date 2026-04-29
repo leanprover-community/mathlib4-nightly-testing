@@ -39,6 +39,7 @@ Given `h : P.Factors f`, you can recover the morphism as `P.factorThru f h`.
 def Factors {X Y : C} (P : MonoOver Y) (f : X ⟶ Y) : Prop :=
   ∃ g : X ⟶ (P : C), g ≫ P.arrow = f
 
+set_option backward.defeqAttrib.useBackward true in
 theorem factors_congr {X : C} {f g : MonoOver X} {Y : C} (h : Y ⟶ X) (e : f ≅ g) :
     f.Factors h ↔ g.Factors h :=
   ⟨fun ⟨u, hu⟩ => ⟨u ≫ ((MonoOver.forget _).map e.hom).left, by simp [hu]⟩, fun ⟨u, hu⟩ =>
@@ -73,6 +74,7 @@ theorem mk_factors_iff {X Y Z : C} (f : Y ⟶ X) [Mono f] (g : Z ⟶ X) :
     (Subobject.mk f).Factors g ↔ (MonoOver.mk f).Factors g :=
   Iff.rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mk_factors_self (f : X ⟶ Y) [Mono f] : (mk f).Factors f :=
   ⟨𝟙 _, by simp⟩
 
@@ -80,6 +82,7 @@ theorem factors_iff {X Y : C} (P : Subobject Y) (f : X ⟶ Y) :
     P.Factors f ↔ (representative.obj P).Factors f :=
   Quot.inductionOn P fun _ => MonoOver.factors_congr _ (representativeIso _).symm
 
+set_option backward.defeqAttrib.useBackward true in
 theorem factors_self {X : C} (P : Subobject X) : P.Factors P.arrow :=
   (factors_iff _ _).mpr ⟨𝟙 (P : C), by simp⟩
 
@@ -96,6 +99,7 @@ set_option backward.isDefEq.respectTransparency false in
 theorem factors_zero [HasZeroMorphisms C] {X Y : C} {P : Subobject Y} : P.Factors (0 : X ⟶ Y) :=
   (factors_iff _ _).mpr ⟨0, by simp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem factors_of_le {Y Z : C} {P Q : Subobject Y} (f : Z ⟶ Y) (h : P ≤ Q) :
     P.Factors f → Q.Factors f := by
   simp only [factors_iff]
@@ -170,6 +174,7 @@ section Preadditive
 
 variable [Preadditive C]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem factors_add {X Y : C} {P : Subobject Y} (f g : X ⟶ Y) (wf : P.Factors f)
     (wg : P.Factors g) : P.Factors (f + g) :=
   (factors_iff _ _).mpr ⟨P.factorThru f wf + P.factorThru g wg, by simp⟩
@@ -182,6 +187,7 @@ theorem factorThru_add {X Y : C} {P : Subobject Y} (f g : X ⟶ Y) (w : P.Factor
   ext
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem factors_left_of_factors_add {X Y : C} {P : Subobject Y} (f g : X ⟶ Y)
     (w : P.Factors (f + g)) (wg : P.Factors g) : P.Factors f :=
   (factors_iff _ _).mpr ⟨P.factorThru (f + g) w - P.factorThru g wg, by simp⟩
@@ -194,6 +200,7 @@ theorem factorThru_add_sub_factorThru_right {X Y : C} {P : Subobject Y} (f g : X
   ext
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem factors_right_of_factors_add {X Y : C} {P : Subobject Y} (f g : X ⟶ Y)
     (w : P.Factors (f + g)) (wf : P.Factors f) : P.Factors g :=
   (factors_iff _ _).mpr ⟨P.factorThru (f + g) w - P.factorThru f wf, by simp⟩

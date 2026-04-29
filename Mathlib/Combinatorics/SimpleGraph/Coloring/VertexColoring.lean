@@ -137,6 +137,7 @@ instance [DecidableEq α] {c : α} :
     DecidablePred (· ∈ C.colorClass c) :=
   inferInstanceAs <| DecidablePred (· ∈ { v | C v = c })
 
+set_option backward.defeqAttrib.useBackward true in
 instance [Nonempty <| G.Coloring α] [Nontrivial α] [Nonempty V] : Nontrivial <| G.Coloring α := by
   classical
   have ⟨C⟩ := ‹Nonempty <| G.Coloring α›
@@ -147,6 +148,7 @@ instance [Nonempty <| G.Coloring α] [Nontrivial α] [Nonempty V] : Nontrivial <
   dsimp [Iso.completeGraph] at this
   grind
 
+set_option backward.defeqAttrib.useBackward true in
 instance [Nonempty <| G.Coloring α] [Infinite α] [Nonempty V] : Infinite <| G.Coloring α := by
   classical
   have ⟨C⟩ := ‹Nonempty <| G.Coloring α›
@@ -406,6 +408,7 @@ theorem chromaticNumber_mono_of_hom {V' : Type*} {G' : SimpleGraph V'}
     (f : G →g G') : G.chromaticNumber ≤ G'.chromaticNumber :=
   chromaticNumber_le_of_forall_imp fun _ => Colorable.of_hom f
 
+set_option backward.defeqAttrib.useBackward true in
 lemma card_le_chromaticNumber_iff_forall_surjective [Fintype α] :
     card α ≤ G.chromaticNumber ↔ ∀ C : G.Coloring α, Surjective C := by
   refine ⟨fun h C ↦ ?_, fun h ↦ ?_⟩

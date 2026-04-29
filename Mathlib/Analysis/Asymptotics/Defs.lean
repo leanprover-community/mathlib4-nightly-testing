@@ -114,6 +114,7 @@ theorem isBigO_iff_isBigOWith : f =O[l] g ↔ ∃ c : ℝ, IsBigOWith c l f g :=
 theorem isBigO_iff : f =O[l] g ↔ ∃ c : ℝ, ∀ᶠ x in l, ‖f x‖ ≤ c * ‖g x‖ := by
   simp only [IsBigO_def, IsBigOWith_def]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Definition of `IsBigO` in terms of filters, with a positive constant. -/
 theorem isBigO_iff' {g : α → E'''} :
     f =O[l] g ↔ ∃ c > 0, ∀ᶠ x in l, ‖f x‖ ≤ c * ‖g x‖ := by
@@ -131,6 +132,7 @@ theorem isBigO_iff' {g : α → E'''} :
     obtain ⟨c, ⟨_, hc⟩⟩ := h
     exact ⟨c, hc⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Definition of `IsBigO` in terms of filters, with the constant in the lower bound. -/
 theorem isBigO_iff'' {g : α → E'''} :
     f =O[l] g ↔ ∃ c > 0, ∀ᶠ x in l, c * ‖f x‖ ≤ ‖g x‖ := by
@@ -326,6 +328,7 @@ variable {f₁ f₂ : α → E} {g₁ g₂ : α → F}
 /-! ### Congruence -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isBigOWith_congr (hc : c₁ = c₂) (hf : f₁ =ᶠ[l] f₂) (hg : g₁ =ᶠ[l] g₂) :
     IsBigOWith c₁ l f₁ g₁ ↔ IsBigOWith c₂ l f₂ g₂ := by
   simp only [IsBigOWith_def]
@@ -468,6 +471,7 @@ theorem IsBigO.mono (h : f =O[l'] g) (hl : l ≤ l') : f =O[l] g :=
 theorem IsLittleO.mono (h : f =o[l'] g) (hl : l ≤ l') : f =o[l] g :=
   IsLittleO.of_isBigOWith fun _c cpos => (h.forall_isBigOWith cpos).mono hl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsBigOWith.trans (hfg : IsBigOWith c l f g) (hgk : IsBigOWith c' l g k) (hc : 0 ≤ c) :
     IsBigOWith (c * c') l f k := by
   simp only [IsBigOWith_def] at *
@@ -915,6 +919,7 @@ protected theorem IsLittleO.comp_snd : f =o[l] g → (f ∘ Prod.snd) =o[l' ×ˢ
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsBigOWith.prod_left_same (hf : IsBigOWith c l f' k') (hg : IsBigOWith c l g' k') :
     IsBigOWith c l (fun x => (f' x, g' x)) k' := by
   rw [isBigOWith_iff] at *; filter_upwards [hf, hg] with x using max_le

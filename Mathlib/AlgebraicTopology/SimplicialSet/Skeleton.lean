@@ -90,6 +90,7 @@ lemma iSup_skeleton :
     simp only [Subfunctor.iSup_obj, Set.mem_iUnion]
     exact ⟨n + 1, mem_skeleton _ _ (by lia)⟩)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma skeleton_succ (n : ℕ) :
     X.skeleton (n + 1) =
       X.skeleton n ⊔ ⨆ (x : X.nonDegenerate n), Subcomplex.ofSimplex x.1 := by
@@ -149,6 +150,7 @@ lemma skeletonOfMono_obj_eq_top {d n : ℕ} (h : d < n) :
   rw [← top_le_iff, ← Y.skeleton_obj_eq_top h]
   exact le_sup_right
 
+set_option backward.defeqAttrib.useBackward true in
 lemma skeletonOfMono_succ (n : ℕ) :
     skeletonOfMono i (n + 1) =
       skeletonOfMono i n ⊔ ⨆ (x : Y.nonDegenerate n)

@@ -36,6 +36,7 @@ universe v₁ v₂ v₃ v₄ u₁ u₂ u₃ u₄
 variable {J : Type u₁} [Category.{v₁} J] {K : Type u₂} [Category.{v₂} K]
 variable {C : Type u₃} [Category.{v₃} C] {D : Type u₄} [Category.{v₄} D]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a cone `c` over `F`, we can interpret the legs of `c` as structured arrows
     `c.pt ⟶ F.obj -`. -/
 @[simps]
@@ -43,6 +44,7 @@ def Cone.toStructuredArrow {F : J ⥤ C} (c : Cone F) : J ⥤ StructuredArrow c.
   obj j := StructuredArrow.mk (c.π.app j)
   map f := StructuredArrow.homMk f
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `F` has a limit, then the limit projections can be interpreted as structured arrows
     `limit F ⟶ F.obj -`. -/
 @[simps]
@@ -51,6 +53,7 @@ noncomputable def limit.toStructuredArrow (F : J ⥤ C) [HasLimit F] :
   obj j := StructuredArrow.mk (limit.π F j)
   map f := StructuredArrow.homMk f
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `Cone.toStructuredArrow` can be expressed in terms of `Functor.toStructuredArrow`. -/
 def Cone.toStructuredArrowIsoToStructuredArrow {F : J ⥤ C} (c : Cone F) :
     c.toStructuredArrow ≅ (𝟭 J).toStructuredArrow c.pt F c.π.app (by simp) :=
@@ -203,6 +206,7 @@ noncomputable def IsLimit.ofReflectsConeTerminal {F : J ⥤ C} {F' : K ⥤ D} (G
     [ReflectsLimit (Functor.empty.{0} _) G] {c : Cone F} (hc : IsLimit (G.obj c)) : IsLimit c :=
   (Cone.isLimitEquivIsTerminal _).symm <| (Cone.isLimitEquivIsTerminal _ hc).isTerminalOfObj _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a cocone `c` over `F`, we can interpret the legs of `c` as costructured arrows
     `F.obj - ⟶ c.pt`. -/
 @[simps]
@@ -210,6 +214,7 @@ def Cocone.toCostructuredArrow {F : J ⥤ C} (c : Cocone F) : J ⥤ Costructured
   obj j := CostructuredArrow.mk (c.ι.app j)
   map f := CostructuredArrow.homMk f
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `F` has a colimit, then the colimit inclusions can be interpreted as costructured arrows
     `F.obj - ⟶ colimit F`. -/
 @[simps]
@@ -218,6 +223,7 @@ noncomputable def colimit.toCostructuredArrow (F : J ⥤ C) [HasColimit F] :
   obj j := CostructuredArrow.mk (colimit.ι F j)
   map f := CostructuredArrow.homMk f
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `Cocone.toCostructuredArrow` can be expressed in terms of `Functor.toCostructuredArrow`. -/
 def Cocone.toCostructuredArrowIsoToCostructuredArrow {F : J ⥤ C} (c : Cocone F) :
     c.toCostructuredArrow ≅ (𝟭 J).toCostructuredArrow F c.pt c.ι.app (by simp) :=

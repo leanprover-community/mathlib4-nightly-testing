@@ -171,6 +171,7 @@ variable {f₂ y₁ y₂}
 
 include hf₁ hy₁ hy₂
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma map_g_op_y₂ : X.map (g hf₁ f₂).op y₂ = y₁ := by
   dsimp [g]
   rw [Functor.map_comp, comp_apply, ← hy₂, hy₁, ← comp_apply, ← Functor.map_comp, ← op_comp,

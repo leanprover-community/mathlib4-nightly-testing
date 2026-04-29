@@ -75,6 +75,7 @@ namespace LiftLeftAdjoint
 variable {U : B ⥤ C} {F : C ⥤ B} (R : A ⥤ B) (F' : C ⥤ A)
 variable (adj₁ : F ⊣ U) (adj₂ : F' ⊣ R ⋙ U)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- To show that `ε_X` is a coequalizer for `(FUε_X, ε_FUX)`, it suffices to assume it's always a
 coequalizer of something (i.e. a regular epi).
@@ -130,6 +131,7 @@ variable [HasReflexiveCoequalizers A]
 noncomputable def constructLeftAdjointObj (Y : B) : A :=
   coequalizer (F'.map (U.map (adj₁.counit.app Y))) (otherMap _ _ adj₁ adj₂ Y)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The homset equivalence which helps show that `R` is a right adjoint. -/
 @[simps!]

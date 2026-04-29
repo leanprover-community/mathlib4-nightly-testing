@@ -36,6 +36,7 @@ obtained by localization. -/
 noncomputable def localization : CatCenter D :=
   Localization.liftNatTrans L W L L (𝟭 D) (𝟭 D) (Functor.whiskerRight r L)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma localization_app (X : C) :
     (r.localization L W).app (L.obj X) = L.map (r.app X) := by
@@ -49,10 +50,12 @@ lemma ext_of_localization (r s : CatCenter D)
     (h : ∀ (X : C), r.app (L.obj X) = s.app (L.obj X)) : r = s :=
   Localization.natTrans_ext L W h
 
+set_option backward.defeqAttrib.useBackward true in
 lemma localization_one :
     (1 : CatCenter C).localization L W = 1 :=
   ext_of_localization L W _ _ (fun X => by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma localization_mul :
     (r * s).localization L W = r.localization L W * s.localization L W :=
   ext_of_localization L W _ _ (fun X => by simp)

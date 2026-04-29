@@ -23,6 +23,7 @@ public section
 
 namespace Submodule
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Nakayama's Lemma**. Atiyah-Macdonald 2.5, Eisenbud 4.7, Matsumura 2.2. -/
 @[stacks 00DV]
 theorem exists_sub_one_mem_and_smul_eq_zero_of_fg_of_le_smul {R : Type*} [CommRing R] {M : Type*}

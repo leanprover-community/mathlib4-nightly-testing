@@ -42,6 +42,7 @@ section Semiring
 
 variable [Semiring R]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `derivative p` is the formal derivative of the polynomial `p` -/
 def derivative : R[X] →ₗ[R] R[X] where
   toFun p := p.sum fun n a => C (a * n) * X ^ (n - 1)

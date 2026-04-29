@@ -168,6 +168,7 @@ theorem noncommPiCoprod_mrange :
     rintro i x ⟨y, rfl⟩
     exact ⟨Pi.mulSingle i y, noncommPiCoprod_mulSingle _ _ _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 lemma commute_noncommPiCoprod {m : M}
     (comm : ∀ i (x : N i), Commute m ((ϕ i x))) (h : (i : ι) → N i) :
@@ -178,6 +179,7 @@ lemma commute_noncommPiCoprod {m : M}
   · exact Commute.one_right _
   · exact fun x _ ↦ comm x (h x)
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 lemma noncommPiCoprod_apply (h : (i : ι) → N i) :
     MonoidHom.noncommPiCoprod ϕ hcomm h = Finset.noncommProd Finset.univ (fun i ↦ ϕ i (h i))

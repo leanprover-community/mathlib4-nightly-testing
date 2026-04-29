@@ -392,6 +392,7 @@ open TensorProduct
 
 attribute [local ext high] TensorProduct.ext
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `lTensorHom M` is the natural linear map that sends a linear map `f : N →ₗ P` to `M ⊗ f`.
 
 See also `Module.End.lTensorAlgHom`. -/
@@ -405,6 +406,7 @@ def lTensorHom : (N →ₗ[R] P) →ₗ[R] M ⊗[R] N →ₗ[R] M ⊗[R] P where
     ext x y
     simp only [compr₂ₛₗ_apply, mk_apply, tmul_smul, smul_apply, lTensor_tmul]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `rTensorHom M` is the natural linear map that sends a linear map `f : N →ₗ P` to `f ⊗ M`.
 
 See also `Module.End.rTensorAlgHom`. -/

@@ -385,6 +385,7 @@ theorem exists_of_sep (P : Cᵒᵖ ⥤ D)
 
 variable [(forget D).ReflectsIsomorphisms]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `P` is separated, then `P⁺` is a sheaf. -/
 theorem isSheaf_of_sep (P : Cᵒᵖ ⥤ D)
@@ -578,6 +579,7 @@ instance plusPlusSheaf_preservesZeroMorphisms [Preadditive D] :
     erw [colimit.ι_map, comp_zero]
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The sheafification functor is left adjoint to the forgetful functor. -/
 --@[simps! unit_app counit_app_val]

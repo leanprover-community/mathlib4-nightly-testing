@@ -206,6 +206,7 @@ theorem lift_surjective_of_surjective (h : c ≤ ker f) (hf : Surjective f) :
     Surjective (c.lift f h) :=
   lift_surjective_iff.mpr hf
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a ring homomorphism `f` from `M` to `P` whose kernel contains `c`,
 the lift of `M` to `P` is injective iff `ker f = c`. -/
 theorem lift_injective_iff {h : c ≤ ker f} :

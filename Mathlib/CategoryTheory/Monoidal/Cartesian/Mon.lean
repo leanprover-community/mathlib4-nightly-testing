@@ -103,6 +103,7 @@ end MonObj
 namespace Mon
 variable [BraidedCategory C]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] tensorObj.one_def tensorObj.mul_def in
 @[to_additive]

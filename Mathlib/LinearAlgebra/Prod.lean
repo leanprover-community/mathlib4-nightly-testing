@@ -249,6 +249,7 @@ theorem coprod_comp_inl_inr (f : M × M₂ →ₗ[R] M₃) :
     (f.comp (inl R M M₂)).coprod (f.comp (inr R M M₂)) = f := by
   rw [← comp_coprod, coprod_inl_inr, comp_id]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Taking the product of two maps with the same codomain is equivalent to taking the product of
 their domains.
 

@@ -30,6 +30,7 @@ namespace Linear
 
 variable (R : Type w) [Ring R] (C : Type u) [Category.{v} C] [Preadditive C]
 
+set_option backward.defeqAttrib.useBackward true in
 open scoped IsMulCommutative in
 /-- The canonical morphism `R →+* CatCenter C` when `C` is an `R`-linear category. -/
 @[simps]
@@ -72,6 +73,7 @@ lemma smulOfRingMorphism_smul_eq' (a : R) (f : X ⟶ Y) :
 
 variable (X Y)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The `R`-module structure on the type `X ⟶ Y` of morphisms in
 a category `C` equipped with a ring morphism `R →+* CatCenter C`. -/

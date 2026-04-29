@@ -301,6 +301,7 @@ instance : IsLocalization (Algebra.algebraMapSubmonoid S (IsUnit.submonoid R)) S
 
 variable (R M)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The localization at a module of units is isomorphic to the ring. -/
 noncomputable def atUnits (H : M ≤ IsUnit.submonoid R) : R ≃ₐ[R] S := by
   refine AlgEquiv.ofBijective (Algebra.ofId R S) ⟨?_, ?_⟩

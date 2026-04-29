@@ -107,26 +107,32 @@ lemma rightUnitor_inv_app (F : J ⥤ C) (j : J) :
   rw [← cancel_mono ((ρ_ (F.obj j)).hom), Iso.inv_hom_id, ← rightUnitor_hom_app,
     Iso.inv_hom_id_app]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tensorHom_app_fst {F₁ F₁' F₂ F₂' : J ⥤ C} (f : F₁ ⟶ F₁') (g : F₂ ⟶ F₂') (j : J) :
     (f ⊗ₘ g).app j ≫ fst _ _ = fst _ _ ≫ f.app j := by
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tensorHom_app_snd {F₁ F₁' F₂ F₂' : J ⥤ C} (f : F₁ ⟶ F₁') (g : F₂ ⟶ F₂') (j : J) :
     (f ⊗ₘ g).app j ≫ snd _ _ = snd _ _ ≫ g.app j := by
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma whiskerLeft_app_fst (F₁ : J ⥤ C) {F₂ F₂' : J ⥤ C} (g : F₂ ⟶ F₂') (j : J) :
     (F₁ ◁ g).app j ≫ fst _ _ = fst _ _ := by
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma whiskerLeft_app_snd (F₁ : J ⥤ C) {F₂ F₂' : J ⥤ C} (g : F₂ ⟶ F₂') (j : J) :
     (F₁ ◁ g).app j ≫ snd _ _ = snd _ _ ≫ g.app j := by
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma whiskerRight_app_fst {F₁ F₁' : J ⥤ C} (f : F₁ ⟶ F₁') (F₂ : J ⥤ C) (j : J) :
     (f ▷ F₂).app j ≫ fst _ _ = fst _ _ ≫ f.app j := by
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma whiskerRight_app_snd {F₁ F₁' : J ⥤ C} (f : F₁ ⟶ F₁') (F₂ : J ⥤ C) (j : J) :
     (f ▷ F₂).app j ≫ snd _ _ = snd _ _ := by
   simp

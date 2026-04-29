@@ -86,6 +86,7 @@ instance : MonoidalCategoryStruct P.FullSubcategory where
   leftUnitor X := P.isoMk (λ_ X.1)
   rightUnitor X := P.isoMk (ρ_ X.1)
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 When `P : ObjectProperty C` is monoidal, the full subcategory for `P` inherits the
 monoidal structure of `C`.
@@ -95,6 +96,7 @@ instance fullMonoidalSubcategory : MonoidalCategory (FullSubcategory P) :=
     { μIso _ _ := Iso.refl _
       εIso := Iso.refl _ }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The forgetful monoidal functor from a full monoidal subcategory into the original category
 ("forgetting" the condition).
 -/
@@ -147,11 +149,13 @@ section Braided
 
 variable [BraidedCategory C]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The braided structure on a full subcategory inherited by the braided structure on `C`.
 -/
 instance fullBraidedSubcategory : BraidedCategory (FullSubcategory P) :=
   .ofFaithful P.ι fun X Y ↦ P.isoMk (β_ X.1 Y.1)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The forgetful braided functor from a full braided subcategory into the original category
 ("forgetting" the condition).
 -/

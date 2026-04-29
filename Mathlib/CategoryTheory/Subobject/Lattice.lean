@@ -52,6 +52,7 @@ theorem top_left (X : C) : ((⊤ : MonoOver X) : C) = X :=
 theorem top_arrow (X : C) : (⊤ : MonoOver X).arrow = 𝟙 X :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `map f` sends `⊤ : MonoOver X` to `⟨X, f⟩ : MonoOver Y`. -/
 def mapTop (f : X ⟶ Y) [Mono f] : (map f).obj ⊤ ≅ mk f :=
   iso_of_both_ways (homMk (𝟙 _) rfl) (homMk (𝟙 _) (by simp [id_comp f]))
@@ -60,6 +61,7 @@ section
 
 variable [HasPullbacks C]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The pullback of the top object in `MonoOver Y`
 is (isomorphic to) the top object in `MonoOver X`. -/
 def pullbackTop (f : X ⟶ Y) : (pullback f).obj ⊤ ≅ ⊤ :=
@@ -94,10 +96,12 @@ theorem bot_left (X : C) : ((⊥ : MonoOver X) : C) = ⊥_ C :=
 theorem bot_arrow {X : C} : (⊥ : MonoOver X).arrow = initial.to X :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The (unique) morphism from `⊥ : MonoOver X` to any other `f : MonoOver X`. -/
 def botLE {X : C} (f : MonoOver X) : ⊥ ⟶ f :=
   homMk (initial.to _)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `map f` sends `⊥ : MonoOver X` to `⊥ : MonoOver Y`. -/
 def mapBot (f : X ⟶ Y) [Mono f] : (map f).obj ⊥ ≅ ⊥ :=
   iso_of_both_ways (homMk (initial.to _)) (homMk (𝟙 _))
@@ -408,9 +412,11 @@ theorem inf_isPullback {A : C} (f g : Subobject A) :
   · ext
     simp [← h]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem inf_arrow_factors_left {B : C} (X Y : Subobject B) : X.Factors (X ⊓ Y).arrow :=
   (factors_iff _ _).mpr ⟨ofLE (X ⊓ Y) X (inf_le_left X Y), by simp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem inf_arrow_factors_right {B : C} (X Y : Subobject B) : Y.Factors (X ⊓ Y).arrow :=
   (factors_iff _ _).mpr ⟨ofLE (X ⊓ Y) Y (inf_le_right X Y), by simp⟩
 
@@ -474,6 +480,7 @@ theorem inf_pullback {X Y : C} (g : X ⟶ Y) (f₁ f₂) :
     pullback.condition]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `⊓` commutes with map. -/
 theorem inf_map {X Y : C} (g : Y ⟶ X) [Mono g] (f₁ f₂) :
     (map g).obj (f₁ ⊓ f₂) = (map g).obj f₁ ⊓ (map g).obj f₂ := by
@@ -727,6 +734,7 @@ end ZeroObject
 
 section SubobjectSubobject
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The subobject lattice of a subobject `Y` is order isomorphic to the interval `Set.Iic Y`. -/
 def subobjectOrderIso {X : C} (Y : Subobject X) : Subobject (Y : C) ≃o Set.Iic Y where
   toFun Z :=

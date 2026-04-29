@@ -226,6 +226,7 @@ theorem isThreeCycle_subset_alternatingGroup :
     {g : Perm α | g.IsThreeCycle} ⊆ alternatingGroup α :=
   fun _ ↦ IsThreeCycle.mem_alternatingGroup
 
+set_option backward.defeqAttrib.useBackward true in
 theorem _root_.alternatingGroup.closure_isThreeCycles_eq_top :
     Subgroup.closure {g : alternatingGroup α | Equiv.Perm.IsThreeCycle (g : Equiv.Perm α)} = ⊤ := by
   rw [← map_subtype_inj, MonoidHom.map_closure]
@@ -265,6 +266,7 @@ theorem cycleType_eq_two_two_subset_alternatingGroup :
   rw [Set.mem_setOf_eq] at hg
   simp [sign_of_cycleType, hg, ← Units.val_inj]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem _root_.alternatingGroup.closure_cycleType_eq_two_two_eq_top (h5 : 5 ≤ Nat.card α) :
     Subgroup.closure {g : alternatingGroup α | (g : Perm α).cycleType = {2, 2}} = ⊤ := by
   rw [← map_subtype_inj, MonoidHom.map_closure]

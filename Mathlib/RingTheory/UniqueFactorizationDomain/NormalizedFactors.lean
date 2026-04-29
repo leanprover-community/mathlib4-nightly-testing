@@ -370,6 +370,7 @@ open Multiset Associates
 
 variable [CommMonoidWithZero α] [UniqueFactorizationMonoid α]
 
+set_option backward.defeqAttrib.useBackward true in
 open scoped Classical in
 /-- Noncomputably defines a `normalizationMonoid` structure on a `UniqueFactorizationMonoid`. -/
 @[implicit_reducible]

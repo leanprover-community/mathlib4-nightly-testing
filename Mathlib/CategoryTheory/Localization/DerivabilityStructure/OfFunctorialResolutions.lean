@@ -46,6 +46,7 @@ open Functor
 
 variable {Φ i}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `Φ : LocalizerMorphism W₁ W₂` corresponds to a class `W₁` that is
 the inverse image of `W₂` by the functor `Φ.functor` and that we

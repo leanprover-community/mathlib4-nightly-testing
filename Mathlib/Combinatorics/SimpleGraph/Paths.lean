@@ -338,6 +338,7 @@ lemma IsCycle.isPath_of_append_left {p : G.Walk u v} {q : G.Walk v u} (h : ¬ q.
 theorem IsCycle.isPath_tail {p : G.Walk u u} (h : p.IsCycle) : p.tail.IsPath :=
   IsPath.mk' <| p.support_tail_of_not_nil h.not_nil ▸ h.support_nodup
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsPath.tail {p : G.Walk u v} (hp : p.IsPath) : p.tail.IsPath := by
   cases p with
   | nil => simp
@@ -451,6 +452,7 @@ lemma IsPath.getVert_injOn_iff (p : G.Walk u v) : Set.InjOn p.getVert {i | i ≤
       (by rwa [getVert_cons _ _ n.add_one_ne_zero, getVert_zero])
     lia
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsPath.eq_snd_of_mem_edges {p : G.Walk u v} (hp : p.IsPath) (hmem : s(u, w) ∈ p.edges) :
     w = p.snd := by
   have hnil := edges_eq_nil.not.mp <| List.ne_nil_of_mem hmem
@@ -525,6 +527,7 @@ lemma IsCycle.getVert_sub_one_ne_getVert_add_one {i : ℕ} {p : G.Walk u u} (hpc
     (by simp only [Set.mem_setOf_eq]; lia) h'
   lia
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isCycle_iff_isPath_tail_and_le_length {p : G.Walk u u} :
     p.IsCycle ↔ p.tail.IsPath ∧ 3 ≤ p.length := by
   refine ⟨fun h ↦ ⟨h.isPath_tail, h.three_le_length⟩, fun ⟨h₁, h₂⟩ ↦ ?_⟩
@@ -792,6 +795,7 @@ def cycleBypass : G.Walk v v → G.Walk v v
 
 @[simp] lemma cycleBypass_nil : (.nil : G.Walk v v).cycleBypass = .nil := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma edges_cycleBypass_subset : ∀ {w : G.Walk v v}, w.cycleBypass.edges ⊆ w.edges
   | .nil => by simp
   | .cons (v := v') hvv' w => by

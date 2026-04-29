@@ -381,6 +381,7 @@ theorem diagonalObjPullbackFstIso_inv_snd_snd {X Y Z : C} (f : X ⟶ Z) (g : Y �
   delta diagonalObjPullbackFstIso
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem diagonal_pullback_fst {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) :
     diagonal (pullback.fst f g) =
@@ -534,6 +535,7 @@ theorem inl_codiagonal : pushout.inl _ _ ≫ codiagonal f = 𝟙 _ :=
 theorem inr_codiagonal : pushout.inr _ _ ≫ codiagonal f = 𝟙 _ :=
   pushout.inr_desc _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma op_codiagonal :
     (pushout.codiagonal f).op = pullback.diagonal f.op ≫ (pullbackIsoOpPushout _ _).hom := by
@@ -561,6 +563,7 @@ end pushout
 
 variable [HasPushouts C]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 Given `f : T ⟶ X`, `g : T ⟶ Y`, and `i : S ⟶ T`, the diagram

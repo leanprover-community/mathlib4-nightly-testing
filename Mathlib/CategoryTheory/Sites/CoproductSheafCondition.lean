@@ -29,6 +29,7 @@ open Limits Opposite
 
 variable {C : Type*} [Category* C] {A : Type*} [Category* A] {S : C}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 Let `E` be a pre-`0`-hypercover with pairwise pullbacks. If `∐ᵢ Eᵢ` is a universal coproduct

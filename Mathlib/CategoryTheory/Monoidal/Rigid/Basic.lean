@@ -386,6 +386,7 @@ theorem tensorRightHomEquiv_tensor {X X' Y Y' Z Z' : C} [ExactPairing Y Y'] (f :
       (α_ _ _ _).hom ≫ (g ⊗ₘ (tensorRightHomEquiv X Y Y' Z).symm f) := by
   simp [tensorRightHomEquiv, tensorHom_def]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerLeft {Y Y' Z : C} [ExactPairing Y Y']
     (f : Y' ⟶ Z) : (tensorLeftHomEquiv _ _ _ _).symm (η_ _ _ ≫ Y ◁ f) = (ρ_ _).hom ≫ f := by
@@ -410,6 +411,7 @@ theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerLeft {X Y : C} [HasLef
   dsimp [tensorRightHomEquiv, leftAdjointMate]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerRight {Y Y' Z : C} [ExactPairing Y Y']
     (f : Y ⟶ Z) : (tensorRightHomEquiv _ Y _ _).symm (η_ Y Y' ≫ f ▷ Y') = (λ_ _).hom ≫ f :=
@@ -421,6 +423,7 @@ theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerRight {Y Y' Z : C} [Ex
     _ = _ := by
       rw [evaluation_coevaluation'']; monoidal
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem tensorLeftHomEquiv_whiskerLeft_comp_evaluation {Y Z : C} [HasLeftDual Z] (f : Y ⟶ ᘁZ) :
     (tensorLeftHomEquiv _ _ _ _) (Z ◁ f ≫ ε_ _ _) = f ≫ (ρ_ _).inv :=
@@ -444,6 +447,7 @@ theorem tensorRightHomEquiv_whiskerLeft_comp_evaluation {X Y : C} [HasRightDual 
   dsimp [tensorRightHomEquiv, rightAdjointMate]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem tensorRightHomEquiv_whiskerRight_comp_evaluation {X Y : C} [HasRightDual X] (f : Y ⟶ Xᘁ) :
     (tensorRightHomEquiv _ _ _ _) (f ▷ X ≫ ε_ X (Xᘁ)) = f ≫ (λ_ _).inv :=

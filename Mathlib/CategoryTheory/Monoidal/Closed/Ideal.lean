@@ -117,6 +117,7 @@ theorem reflective_products [Limits.HasFiniteProducts C] [Reflective i] :
 
 open MonoidalClosed MonoidalCategory CartesianMonoidalCategory
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open Limits in
 /-- Given a reflective subcategory `D` of a category with chosen finite products `C`, `D` admits

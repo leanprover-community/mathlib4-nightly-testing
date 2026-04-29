@@ -764,6 +764,7 @@ theorem toIocMod_add_toIcoMod_zero (a b : α) :
 
 end Zero
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `toIcoMod` as an equiv from the quotient. -/
 @[simps symm_apply]
 def QuotientAddGroup.equivIcoMod (a : α) : α ⧸ AddSubgroup.zmultiples p ≃ Set.Ico a (a + p) where
@@ -787,6 +788,7 @@ theorem QuotientAddGroup.equivIcoMod_zero (a : α) :
     QuotientAddGroup.equivIcoMod hp a 0 = ⟨toIcoMod hp a 0, toIcoMod_mem_Ico hp a _⟩ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `toIocMod` as an equiv from the quotient. -/
 @[simps symm_apply]
 def QuotientAddGroup.equivIocMod (a : α) : α ⧸ AddSubgroup.zmultiples p ≃ Set.Ioc a (a + p) where

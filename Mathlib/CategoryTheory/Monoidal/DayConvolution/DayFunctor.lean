@@ -75,6 +75,7 @@ lemma hom_ext {F G : C ⊛⥤ V} {α β : F ⟶ G} (h : α.natTrans = β.natTran
   cases β
   grind
 
+set_option backward.defeqAttrib.useBackward true in
 variable (C V) in
 /-- The tautological equivalence of categories between `C ⥤ V` and `C ⊛⥤ V`. -/
 @[simps! functor_obj functor_map inverse_obj_functor inverse_map_natTrans

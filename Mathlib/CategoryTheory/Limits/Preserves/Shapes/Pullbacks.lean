@@ -103,6 +103,7 @@ def isLimitOfHasPullbackOfPreservesLimit [HasPullback f g] :
     IsLimit (PullbackCone.mk (G.map (pullback.fst f g)) (G.map (pullback.snd f g)) this) :=
   isLimitPullbackConeMapOfIsLimit G _ (pullbackIsPullback f g)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `F` preserves the pullback of `f, g`, it also preserves the pullback of `g, f`. -/
 lemma preservesPullback_symmetry : PreservesLimit (cospan g f) G where
   preserves {c} hc := ⟨by
@@ -236,6 +237,7 @@ def isColimitOfHasPushoutOfPreservesColimit [i : HasPushout f g] :
       simp only [← G.map_comp, pushout.condition])) :=
   isColimitPushoutCoconeMapOfIsColimit G _ (pushoutIsPushout f g)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `F` preserves the pushout of `f, g`, it also preserves the pushout of `g, f`. -/
 lemma preservesPushout_symmetry : PreservesColimit (span g f) G where

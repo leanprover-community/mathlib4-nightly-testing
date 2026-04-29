@@ -91,6 +91,7 @@ theorem tendsto_toNNReal_iff' {f : α → ℝ≥0∞} {u : Filter α} {a : ℝ�
   rw [← toNNReal_coe a]
   exact tendsto_toNNReal_iff coe_ne_top hf
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eventuallyEq_of_toReal_eventuallyEq {l : Filter α} {f g : α → ℝ≥0∞}
     (hfi : ∀ᶠ x in l, f x ≠ ∞) (hgi : ∀ᶠ x in l, g x ≠ ∞)
     (hfg : (fun x => (f x).toReal) =ᶠ[l] fun x => (g x).toReal) : f =ᶠ[l] g := by
@@ -239,6 +240,7 @@ protected theorem tendsto_nhds_zero {f : Filter α} {u : α → ℝ≥0∞} :
     Tendsto u f (𝓝 0) ↔ ∀ ε > 0, ∀ᶠ x in f, u x ≤ ε :=
   nhds_zero_basis_Iic.tendsto_right_iff
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_const_sub_nhds_zero_iff {l : Filter α} {f : α → ℝ≥0∞} {a : ℝ≥0∞} (ha : a ≠ ∞)
     (hfa : ∀ n, f n ≤ a) :
     Tendsto (fun n ↦ a - f n) l (𝓝 0) ↔ Tendsto (fun n ↦ f n) l (𝓝 a) := by
@@ -508,6 +510,7 @@ theorem exists_frequently_lt_of_liminf_ne_top {ι : Type*} {l : Filter ι} {x : 
   simp only [eventually_map, ENNReal.coe_le_coe]
   filter_upwards [h r] with i hi using hi.trans (le_abs_self (x i))
 
+set_option backward.defeqAttrib.useBackward true in
 theorem exists_frequently_lt_of_liminf_ne_top' {ι : Type*} {l : Filter ι} {x : ι → ℝ}
     (hx : liminf (fun n => (Real.nnabs (x n) : ℝ≥0∞)) l ≠ ∞) : ∃ R, ∃ᶠ n in l, R < x n := by
   by_contra! h
@@ -831,6 +834,7 @@ lemma liminf_mul_le (h : limsup u f ≠ 0 ∨ liminf v f ≠ ∞) (h' : limsup u
     Frequently.mono (((frequently_lt_of_liminf_lt) b_v).and_eventually
     ((eventually_lt_of_limsup_lt) a_u)) fun _ ab_x ↦ (mul_lt_mul ab_x.2 ab_x.1).trans c_ab
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `u : ι → ℝ≥0∞` is bounded, then we have `liminf (toReal ∘ u) = toReal (liminf u)`. -/
 lemma liminf_toReal_eq [NeBot f] {b : ℝ≥0∞} (b_ne_top : b ≠ ∞) (le_b : ∀ᶠ i in f, u i ≤ b) :
     f.liminf (fun i ↦ (u i).toReal) = (f.liminf u).toReal := by
@@ -852,6 +856,7 @@ lemma liminf_toReal_eq [NeBot f] {b : ℝ≥0∞} (b_ne_top : b ≠ ∞) (le_b :
   rw [key]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `u : ι → ℝ≥0∞` is bounded, then we have `liminf (toReal ∘ u) = toReal (liminf u)`. -/
 lemma limsup_toReal_eq [NeBot f] {b : ℝ≥0∞} (b_ne_top : b ≠ ∞) (le_b : ∀ᶠ i in f, u i ≤ b) :
     f.limsup (fun i ↦ (u i).toReal) = (f.limsup u).toReal := by
@@ -897,6 +902,7 @@ theorem liminf_add_of_left_tendsto_zero {u : Filter ι} {f : ι → ℝ≥0∞} 
     (g : ι → ℝ≥0∞) : u.liminf (f + g) = u.liminf g := by
   rw [add_comm, liminf_add_of_right_tendsto_zero hf]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem limsup_add_of_right_tendsto_zero {u : Filter ι} {g : ι → ℝ≥0∞} (hg : u.Tendsto g (𝓝 0))
     (f : ι → ℝ≥0∞) : u.limsup (f + g) = u.limsup f := by
   refine le_antisymm ?_ <| limsup_le_limsup <| .of_forall <| by simp

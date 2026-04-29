@@ -967,6 +967,7 @@ alias ofSigmaCofork_ι_app_right := ofSigmaCofork_π
 @[deprecated (since := "2025-12-08")]
 alias ofSigmaCofork_ι_app_right' := ofSigmaCofork_π
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Constructor for isomorphisms between multicoforks. -/
 @[simps!]
 def ext {K K' : Multicofork I}
@@ -1297,6 +1298,7 @@ def ofLinearOrder (c : Multicofork I.toLinearOrder) (h : I.SymmStruct) :
       dsimp at this ⊢
       rw [← h.iso_hom_fst_assoc, ← h.iso_hom_snd_assoc, this])
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `ι` is a linearly ordered type, `I : MultispanIndex (.prod ι) C`, and
 `c` a colimit multicofork for `I`, then `c.toLinearOrder` is a colimit

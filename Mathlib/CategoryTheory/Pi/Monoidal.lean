@@ -140,6 +140,7 @@ def ihom (X : ∀ i, C i) : (∀ i, C i) ⥤ (∀ i, C i) where
   obj Y := fun i ↦ (X i ⟶[C i] Y i)
   map {Y Z} f := fun i ↦ (CategoryTheory.ihom (X i)).map (f i)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The unit for the adjunction `tensorLeft X ⊣ ihom X`. -/
 @[simps]

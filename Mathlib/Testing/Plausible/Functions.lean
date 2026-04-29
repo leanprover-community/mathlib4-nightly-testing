@@ -215,6 +215,7 @@ theorem List.applyId_zip_eq [DecidableEq α] {xs ys : List α} (h₀ : List.Nodu
         · apply xs_ih <;> solve_by_elim [Nat.succ.inj]
         · apply h₀; apply List.mem_of_getElem? h₂
 
+set_option backward.defeqAttrib.useBackward true in
 theorem applyId_mem_iff [DecidableEq α] {xs ys : List α} (h₀ : List.Nodup xs) (h₁ : xs ~ ys)
     (x : α) : List.applyId.{u} (xs.zip ys) x ∈ ys ↔ x ∈ xs := by
   simp only [List.applyId]

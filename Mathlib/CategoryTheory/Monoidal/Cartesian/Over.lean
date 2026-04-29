@@ -256,6 +256,7 @@ lemma μ_pullback_left_snd' (g₁ : Y ⟶ X) (g₂ : Z ⟶ X) :
       pullback.snd (pullback.fst g₁ g₂ ≫ g₁) f =
         pullback.snd _ _ ≫ pullback.snd _ _ := μ_pullback_left_snd ..
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma preservesTerminalIso_pullback (f : R ⟶ S) :
@@ -292,6 +293,7 @@ lemma prodComparisonIso_pullback_inv_left_fst_snd' (f : X ⟶ Y) (gA : A ⟶ Y) 
     Over.hom_left_inv_left_assoc]
   simp [CartesianMonoidalCategory.prodComparison, snd]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma prodComparisonIso_pullback_inv_left_snd' (f : X ⟶ Y) (gA : A ⟶ Y) (gB : B ⟶ Y) :

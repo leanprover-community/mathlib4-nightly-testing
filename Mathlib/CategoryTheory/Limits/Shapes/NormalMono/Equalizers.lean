@@ -30,6 +30,7 @@ namespace CategoryTheory.NormalMonoCategory
 
 variable [HasFiniteProducts C] [HasKernels C] [IsNormalMonoCategory C]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The pullback of two monomorphisms exists. -/
 lemma pullback_of_mono {X Y Z : C} (a : X ⟶ Z) (b : Y ⟶ Z) [Mono a] [Mono b] :

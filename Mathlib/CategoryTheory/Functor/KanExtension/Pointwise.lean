@@ -560,6 +560,7 @@ noncomputable def pointwiseLeftKanExtension : D ⥤ H where
     congr 1
     apply CostructuredArrow.map_comp)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The unit of the constructed pointwise left Kan extension when
 `HasPointwiseLeftKanExtension L F` holds. -/
@@ -667,6 +668,7 @@ noncomputable def pointwiseRightKanExtension : D ⥤ H where
     congr 1
     apply StructuredArrow.map_comp)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The counit of the constructed pointwise right Kan extension when
 `HasPointwiseRightKanExtension L F` holds. -/

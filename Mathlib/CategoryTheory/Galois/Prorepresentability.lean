@@ -310,6 +310,7 @@ noncomputable def endEquivSectionsFibers : End F ≃ (incl F ⋙ F').sections :=
     (Types.sectionsEquiv (incl F ⋙ F')).symm
   i1.trans <| i2.toEquiv.trans <| i3.toEquiv.trans <| i4.trans i5
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma endEquivSectionsFibers_π (f : End F) (A : PointedGaloisObject F) :

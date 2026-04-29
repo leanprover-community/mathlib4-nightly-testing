@@ -243,6 +243,7 @@ theorem overPullbackMap [IsStableUnderBaseChange P] {S S' : C} (f : S' ⟶ S)
 @[deprecated (since := "2026-03-20")]
 alias baseChange_map := overPullbackMap
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance] hasPullback_symmetry_of_hasPullbacksAlong in
 theorem pullbackMap

@@ -306,6 +306,7 @@ lemma πObj_ιIteration_app_right :
     πObj I κ f ≫ ((ιIteration I κ).app f).right =
       ((iteration I κ).obj (Arrow.mk f)).hom := by simp [πObj]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma ιObj_πObj : ιObj I κ f ≫ πObj I κ f = f := by
@@ -432,6 +433,7 @@ lemma ιObj_naturality {f g : Arrow C} (φ : f ⟶ g) :
     ιObj I κ f.hom ≫ objMap I κ φ = φ.left ≫ ιObj I κ g.hom :=
   Arrow.leftFunc.congr_map ((ιIteration I κ).naturality φ).symm
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma πObj_naturality {f g : Arrow C} (φ : f ⟶ g) :

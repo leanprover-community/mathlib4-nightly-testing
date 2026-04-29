@@ -63,6 +63,7 @@ def map (i₁ i₂ : J) (hi : i₁ ≤ i₂) (hi₂ : i₂ ≤ j) :
       have h₁' : i₁ = j := le_antisymm (hi.trans hi₂) (by simpa using h₁)
       eqToHom (by subst h₁' h₂'; rfl)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma map_id (i : J) (hi : i ≤ j) :
     map c i i (by rfl) hi = 𝟙 _ := by
   dsimp [map]
@@ -114,6 +115,7 @@ def ofCoconeObjIsoPt :
     (ofCocone c).obj ⟨j, by simp⟩ ≅ c.pt :=
   ofCocone.objIsoPt c
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ofCocone_map_to_top (i : J) (hi : i < j) :
     (ofCocone c).map (homOfLE hi.le) =
       (ofCoconeObjIso c i hi).hom ≫ c.ι.app ⟨i, hi⟩ ≫ (ofCoconeObjIsoPt c).inv := by

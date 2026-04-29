@@ -251,6 +251,7 @@ def flip : PullbackCone g f := PullbackCone.mk _ _ t.condition.symm
 @[simp] lemma flip_fst : t.flip.fst = t.snd := rfl
 @[simp] lemma flip_snd : t.flip.snd = t.fst := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Flipping a pullback cone twice gives an isomorphic cone. -/
 def flipFlipIso : t.flip.flip ≅ t := PullbackCone.ext (Iso.refl _) (by simp) (by simp)
 
@@ -475,6 +476,7 @@ def flip : PushoutCocone g f := PushoutCocone.mk _ _ t.condition.symm
 @[simp] lemma flip_inl : t.flip.inl = t.inr := rfl
 @[simp] lemma flip_inr : t.flip.inr = t.inl := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Flipping a pushout cocone twice gives an isomorphic cocone. -/
 def flipFlipIso : t.flip.flip ≅ t := PushoutCocone.ext (Iso.refl _) (by simp) (by simp)
 

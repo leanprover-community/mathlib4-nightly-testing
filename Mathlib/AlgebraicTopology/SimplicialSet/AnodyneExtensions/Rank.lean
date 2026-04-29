@@ -81,6 +81,7 @@ variable {P α} [WellFoundedLT α] [P.IsProper] (f : P.WeakRankFunction α)
 
 include f
 
+set_option backward.defeqAttrib.useBackward true in
 lemma wf_ancestralRel : WellFounded P.AncestralRel := by
   rw [wellFounded_iff_isEmpty_descending_chain]
   refine ⟨fun ⟨g, hg⟩ ↦ ?_⟩

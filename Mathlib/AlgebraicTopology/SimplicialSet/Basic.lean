@@ -50,6 +50,7 @@ lemma id_app (X : SSet) (n : SimplexCategoryᵒᵖ) :
 lemma comp_app {X Y Z : SSet} (f : X ⟶ Y) (g : Y ⟶ Z) (n : SimplexCategoryᵒᵖ) :
     (f ≫ g).app n = f.app n ≫ g.app n := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The constant map of simplicial sets `X ⟶ Y` induced by a simplex `y : Y _[0]`. -/
 @[simps]
 def const {X Y : SSet.{u}} (y : Y _⦋0⦌) : X ⟶ Y where

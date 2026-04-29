@@ -531,6 +531,7 @@ lemma associator_inv_hom_hom (G H I : Grp C) :
 @[deprecated (since := "2025-12-18")] alias associator_hom_hom := associator_hom_hom_hom
 @[deprecated (since := "2025-12-18")] alias associator_inv_hom := associator_inv_hom_hom
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 instance instMonoidalCategory : MonoidalCategory (Grp C) where
   tensorHom_def := by intros; ext; simp [tensorHom_def]

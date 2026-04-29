@@ -89,6 +89,7 @@ namespace Complex
 
 variable (x y : ℂ)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem exp_zero : exp 0 = 1 := by
   rw [exp]

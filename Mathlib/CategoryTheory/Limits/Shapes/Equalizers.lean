@@ -271,6 +271,7 @@ theorem parallelPair_map_right (f g : X ⟶ Y) : (parallelPair f g).map right = 
 theorem parallelPair_functor_obj {F : WalkingParallelPair ⥤ C} (j : WalkingParallelPair) :
     (parallelPair (F.map left) (F.map right)).obj j = F.obj j := by cases j <;> rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Every functor indexing a (co)equalizer is naturally isomorphic (actually, equal) to a
 `parallelPair` -/
 @[simps!]
@@ -333,6 +334,7 @@ def parallelPair.ext {F G : WalkingParallelPair ⥤ C} (zero : F.obj zero ≅ G.
       exacts [zero, one])
     (by rintro _ _ ⟨_⟩ <;> simp [left, right])
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Construct a natural isomorphism between `parallelPair f g` and `parallelPair f' g'` given
 equalities `f = f'` and `g = g'`. -/
 @[simps!]
@@ -515,6 +517,7 @@ theorem Cofork.IsColimit.existsUnique {s : Cofork f g} (hs : IsColimit s) {W : C
   ⟨hs.desc <| Cofork.ofπ _ h, hs.fac _ _, fun _ hm =>
     Cofork.IsColimit.hom_ext hs <| hm.symm ▸ (hs.fac (Cofork.ofπ _ h) WalkingParallelPair.one).symm⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This is a slightly more convenient method to verify that a fork is a limit cone. It
 only asks for a proof of facts that carry any mathematical content -/
 @[simps]
@@ -715,6 +718,7 @@ set_option backward.defeqAttrib.useBackward true in
 def Fork.isoForkOfι (c : Fork f g) : c ≅ Fork.ofι c.ι c.condition :=
   Fork.ext (Iso.refl _)
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If `f, g : X ⟶ Y` and `f', g : X' ⟶ Y'` pairwise form a commutative square with isomorphisms
 `X ≅ X'` and `Y ≅ Y'`, the categories of forks are equivalent.
@@ -770,6 +774,7 @@ def Fork.isLimitOfIsos {X' Y' : C} (c : Fork f g) (hc : IsLimit c)
     (comm₃ : e.hom ≫ c'.ι = c.ι ≫ e₀.hom := by cat_disch) : IsLimit c' :=
   (Fork.isLimitEquivOfIsos c c' e₀ e₁ e) hc
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Helper function for constructing morphisms between coequalizer coforks.
 -/
 @[simps]
@@ -1295,6 +1300,7 @@ noncomputable def coneOfIsSplitMono : Fork (𝟙 Y) (retraction f ≫ f) :=
 theorem coneOfIsSplitMono_ι : (coneOfIsSplitMono f).ι = f :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A split mono `f` equalizes `(retraction f ≫ f)` and `(𝟙 Y)`.
 -/
@@ -1371,6 +1377,7 @@ noncomputable def coconeOfIsSplitEpi : Cofork (𝟙 X) (f ≫ section_ f) :=
 theorem coconeOfIsSplitEpi_π : (coconeOfIsSplitEpi f).π = f :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A split epi `f` coequalizes `(f ≫ section_ f)` and `(𝟙 X)`.
 -/

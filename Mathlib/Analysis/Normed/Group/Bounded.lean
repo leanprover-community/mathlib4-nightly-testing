@@ -104,6 +104,7 @@ lemma HasCompactMulSupport.exists_bound_of_continuous [TopologicalSpace α]
     {f : α → E} (hf : HasCompactMulSupport f) (h'f : Continuous f) : ∃ C, ∀ x, ‖f x‖ ≤ C := by
   simpa using (hf.isCompact_range h'f).isBounded.exists_norm_le'
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A helper lemma used to prove that the (scalar or usual) product of a function that tends to one
 and a bounded function tends to one. This lemma is formulated for any binary operation
 `op : E → F → G` with an estimate `‖op x y‖ ≤ A * ‖x‖ * ‖y‖` for some constant A instead of

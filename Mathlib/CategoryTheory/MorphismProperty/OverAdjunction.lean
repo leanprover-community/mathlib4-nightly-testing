@@ -221,6 +221,7 @@ lemma Under.map_comp {f : X ⟶ Y} (hf : P f) {g : Y ⟶ Z} (hg : P g) :
     ext
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Promote an equality to an isomorphism of `Under.map` functors. -/
 @[simps!]
 def Under.mapCongr [Q.RespectsIso] {X Y : T} {f g : X ⟶ Y} (hfg : f = g) (hf : P f) :
@@ -258,6 +259,7 @@ instance {X Y Z} (f : Y ⟶ X) (g : Z ⟶ Y)
   HasPushoutsAlong.hasPushout (pushout.inr A.hom g)
   (IsStableUnderCobaseChangeAlong.of_isPushout (IsPushout.of_hasPushout A.hom g).flip A.prop)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `P` and `Q` are stable under cobase change and pushouts along `f` exist for morphisms in `P`,
 this is the functor `P.Under Q X ⥤ P.Under Q Y` given by cobase change along `f`. -/

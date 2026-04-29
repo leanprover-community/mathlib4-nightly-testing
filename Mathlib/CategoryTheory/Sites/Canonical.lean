@@ -173,6 +173,7 @@ def uliftYoneda [J.Subcanonical] : C ⥤ Sheaf J (Type (max v w)) :=
 
 @[deprecated (since := "2025-11-10")] alias yonedaULift := uliftYoneda
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `C` is a category with `[Category.{max w v} C]`, this is the isomorphism
 `uliftYoneda.{w} (C := C) ≅ yoneda`. -/
 @[simps!]

@@ -190,6 +190,7 @@ theorem limsup_const_mul [CountableInterFilter f] {u : α → ℝ≥0∞} {a : �
     have hfu : f.limsup u ≠ 0 := mt limsup_eq_zero_iff.1 hu
     simp only [ha_top, top_mul', h_top_le, hfu, ite_false]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- See also `limsup_mul_le'` -/
 theorem limsup_mul_le [CountableInterFilter f] (u v : α → ℝ≥0∞) :
     f.limsup (u * v) ≤ f.limsup u * f.limsup v :=
@@ -213,6 +214,7 @@ theorem limsup_liminf_le_liminf_limsup {β} [Countable β] {f : Filter α} [Coun
     exact fun b => ENNReal.eventually_le_limsup fun a => u a b
   sInf_le <| h1.mono fun x hx => Filter.liminf_le_liminf (Filter.Eventually.of_forall hx)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ofReal_limsup {u : α → ℝ}
     (h₁ : IsCoboundedUnder (· ≤ ·) f u := by isBoundedDefault)
     (h₂ : IsBoundedUnder (· ≤ ·) f u := by isBoundedDefault) :
@@ -244,6 +246,7 @@ lemma ofReal_limsup_toReal [f.NeBot] {u : α → ℝ≥0∞} {C : ℝ≥0} (hf :
   filter_upwards [hf] with x hx
   exact ENNReal.ofReal_toReal (ne_top_of_le_ne_top (by simp : C ≠ ∞) hx)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma toReal_limsup {u : α → ℝ≥0∞} (h₁ : ∀ᶠ a in f, u a ≠ ∞)
     (h₂ : IsBoundedUnder (· ≤ ·) f fun a ↦ (u a).toReal := by isBoundedDefault) :
     (limsup u f).toReal = limsup (fun a ↦ (u a).toReal) f := by

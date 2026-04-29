@@ -226,6 +226,7 @@ theorem take_isSubwalk_take {u v n k} (p : G.Walk u v) (h : n ≤ k) :
       · exact isSubwalk_of_append_left rfl
       simp [isSubwalk_iff_support_isInfix, take_support_eq_support_take_succ, List.IsPrefix.isInfix]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem drop_isSubwalk_drop {u v n k} (p : G.Walk u v) (h : n ≤ k) :
     (p.drop k).IsSubwalk (p.drop n) := by
   induction k, h using Nat.le_induction with
