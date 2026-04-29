@@ -98,7 +98,8 @@ with the property that its composition with the canonical bilinear map `M → N 
 the given bilinear map `M → N → P`. -/
 def liftAux : M ⊗[R] N →+ P₂ :=
   liftAddHom (LinearMap.toAddMonoidHom'.comp <| f'.toAddMonoidHom)
-    fun r m n => by dsimp; rw [LinearMap.map_smulₛₗ₂, map_smulₛₗ]
+    fun r m n => show f' (r • m) n = f' m (r • n) by
+      rw [LinearMap.map_smulₛₗ₂, map_smulₛₗ]
 
 theorem liftAux_tmul (m n) : liftAux f' (m ⊗ₜ n) = f' m n :=
   rfl
