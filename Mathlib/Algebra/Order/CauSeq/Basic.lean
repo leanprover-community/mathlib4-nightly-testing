@@ -806,7 +806,7 @@ protected theorem inf_eq_right {a b : CauSeq α abs} (h : b ≤ a) : a ⊓ b ≈
   obtain ⟨ε, ε0 : _ < _, i, h⟩ | h := h
   · intro _ _
     refine ⟨i, fun j hj => ?_⟩
-    dsimp
+    show |min ((a : ℕ → α) j) ((b : ℕ → α) j) - (b : ℕ → α) j| < _
     rw [← min_sub_sub_right]
     rwa [sub_self, min_eq_right, abs_zero]
     exact ε0.le.trans (h _ hj)
