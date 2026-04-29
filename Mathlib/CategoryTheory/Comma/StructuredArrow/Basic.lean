@@ -174,6 +174,7 @@ def mkPostcomp (f : S ⟶ T.obj Y) (g : Y ⟶ Y') : mk f ⟶ mk (f ≫ T.map g) 
 
 set_option backward.defeqAttrib.useBackward true in
 lemma mkPostcomp_id (f : S ⟶ T.obj Y) : mkPostcomp f (𝟙 Y) = eqToHom (by simp) := by simp
+set_option backward.defeqAttrib.useBackward true in
 lemma mkPostcomp_comp (f : S ⟶ T.obj Y) (g : Y ⟶ Y') (g' : Y' ⟶ Y'') :
     mkPostcomp f (g ≫ g') = mkPostcomp f g ≫ mkPostcomp (f ≫ T.map g) g' ≫ eqToHom (by simp) := by
   simp
@@ -225,6 +226,7 @@ objects tends to cause problems. -/
 theorem eq_mk (f : StructuredArrow S T) : f = mk f.hom :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Eta rule for structured arrows. -/
 @[simps! hom_right inv_right]
 def eta (f : StructuredArrow S T) : f ≅ mk f.hom :=
@@ -546,6 +548,7 @@ theorem homMk_surjective {f f' : CostructuredArrow S T} (φ : f ⟶ f') :
       φ = CostructuredArrow.homMk ψ hψ :=
   ⟨φ.left, CostructuredArrow.w φ, rfl⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a costructured arrow `S(Y) ⟶ X`, and an arrow `Y' ⟶ Y'`, we can construct a morphism of
 costructured arrows given by `(S(Y) ⟶ X) ⟶ (S(Y') ⟶ S(Y) ⟶ X)`. -/
 @[simps]
@@ -553,27 +556,34 @@ def homMk' (f : CostructuredArrow S T) (g : Y' ⟶ f.left) : mk (S.map g ≫ f.h
   left := g
   right := 𝟙 _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_id (f : CostructuredArrow S T) : homMk' f (𝟙 f.left) = eqToHom (by cat_disch) := by
   simp [eqToHom_left]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_mk_id (f : S.obj Y ⟶ T) : homMk' (mk f) (𝟙 Y) = eqToHom (by simp) :=
   homMk'_id _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_comp (f : CostructuredArrow S T) (g : Y' ⟶ f.left) (g' : Y'' ⟶ Y') :
     homMk' f (g' ≫ g) = eqToHom (by simp) ≫ homMk' (mk (S.map g ≫ f.hom)) g' ≫ homMk' f g := by
   simp [eqToHom_left]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma homMk'_mk_comp (f : S.obj Y ⟶ T) (g : Y' ⟶ Y) (g' : Y'' ⟶ Y') :
     homMk' (mk f) (g' ≫ g) = eqToHom (by simp) ≫ homMk' (mk (S.map g ≫ f)) g' ≫ homMk' (mk f) g :=
   homMk'_comp _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Variant of `homMk'` where both objects are applications of `mk`. -/
 @[simps]
 def mkPrecomp (f : S.obj Y ⟶ T) (g : Y' ⟶ Y) : mk (S.map g ≫ f) ⟶ mk f where
   left := g
   right := 𝟙 _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma mkPrecomp_id (f : S.obj Y ⟶ T) : mkPrecomp f (𝟙 Y) = eqToHom (by simp) := by simp
+set_option backward.defeqAttrib.useBackward true in
 lemma mkPrecomp_comp (f : S.obj Y ⟶ T) (g : Y' ⟶ Y) (g' : Y'' ⟶ Y') :
     mkPrecomp f (g' ≫ g) = eqToHom (by simp) ≫ mkPrecomp (S.map g ≫ f) g' ≫ mkPrecomp f g := by
   simp
@@ -623,6 +633,7 @@ objects tends to cause problems. -/
 theorem eq_mk (f : CostructuredArrow S T) : f = mk f.hom :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Eta rule for costructured arrows. -/
 @[simps! hom_left inv_left]
 def eta (f : CostructuredArrow S T) : f ≅ mk f.hom :=
@@ -1117,6 +1128,7 @@ theorem CostructuredArrow.w_prod_snd {A B : CostructuredArrow (S.prod S') (T, T'
     S'.map f.left.2 ≫ B.hom.2 = A.hom.2 :=
   congr_arg _root_.Prod.snd (CostructuredArrow.w f)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Implementation; see `CostructuredArrow.prodEquivalence`. -/
 @[simps]
 def CostructuredArrow.prodFunctor :
