@@ -104,8 +104,7 @@ lemma homMap_homMap (f : L₁.obj X ⟶ L₁.obj Y) :
       (Functor.associator _ _ _).symm ≪≫ Functor.isoWhiskerRight e _ ≪≫
       Functor.associator _ _ _)]
   dsimp
-  simp only [Functor.map_comp, assoc, comp_id, id_comp]
-  simp [Functor.associator]
+  simp [Functor.associator, Functor.map_comp]
 
 end LocalizerMorphism
 

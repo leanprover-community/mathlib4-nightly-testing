@@ -748,7 +748,8 @@ theorem isLocalization_of_base_ringEquiv [IsLocalization M S] (h : R ≃+* P) :
     obtain ⟨⟨x, s⟩, e⟩ := IsLocalization.surj M y
     refine ⟨⟨h x, _, _, s.prop, rfl⟩, ?_⟩
     dsimp only [RingHom.algebraMap_toAlgebra, RingHom.comp_apply] at e ⊢
-    convert e <;> exact congr_arg (algebraMap R S) (h.symm_apply_apply _)
+    convert e <;> first | exact h.symm_apply_apply _
+                        | exact congr_arg (algebraMap R S) (h.symm_apply_apply _)
   · intro x y
     rw [RingHom.algebraMap_toAlgebra, RingHom.comp_apply, RingHom.comp_apply,
       IsLocalization.eq_iff_exists M S]
