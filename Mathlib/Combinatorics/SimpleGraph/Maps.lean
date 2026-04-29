@@ -67,7 +67,8 @@ instance instDecidableMapAdj [DecidableEq W] {f : V → W} {a b}
 @[simp]
 theorem map_adj (f : V ↪ W) (G : SimpleGraph V) (u v : W) :
     (G.map f).Adj u v ↔ ∃ u' v' : V, G.Adj u' v' ∧ f u' = u ∧ f v' = v := by
-  dsimp [SimpleGraph.map, Relation.Map]
+  show u ≠ v ∧ Relation.Map G.Adj f f u v ↔ _
+  dsimp [Relation.Map]
   grind [SimpleGraph.Adj.ne]
 
 theorem map_adj' (f : V → W) (G : SimpleGraph V) (u v : W) :
@@ -108,13 +109,16 @@ theorem map_monotone (f : V → W) : Monotone (SimpleGraph.map f) := by
   exact ⟨huv, _, _, h ha, rfl, rfl⟩
 
 @[simp] lemma map_id : G.map id = G := by
-  ext
-  dsimp [SimpleGraph.map, Relation.Map]
+  ext x y
+  show x ≠ y ∧ Relation.Map G.Adj id id x y ↔ _
+  dsimp [Relation.Map]
   grind [SimpleGraph.Adj.ne]
 
 @[simp] lemma map_map (f : V → W) (g : W → X) : (G.map f).map g = G.map (g ∘ f) := by
-  ext
-  dsimp [SimpleGraph.map, Relation.Map]
+  ext x y
+  show x ≠ y ∧ Relation.Map (Ne ⊓ Relation.Map G.Adj f f) g g x y ↔
+    x ≠ y ∧ Relation.Map G.Adj (g ∘ f) (g ∘ f) x y
+  simp only [Pi.inf_apply, inf_Prop_eq, Relation.Map]
   grind [SimpleGraph.Adj.ne]
 
 theorem support_map (f : V ↪ W) (G : SimpleGraph V) :
@@ -233,8 +237,7 @@ lemma induce_adj {s : Set V} {u v : s} : (G.induce s).Adj u v ↔ G.Adj u v := .
 @[simp] lemma induce_top (s : Set V) : (completeGraph V).induce s = completeGraph s :=
   comap_top Subtype.val_injective
 
-lemma induce_bot (s : Set V) : (⊥ : SimpleGraph V).induce s = ⊥ := by
-  dsimp
+lemma induce_bot (s : Set V) : (⊥ : SimpleGraph V).induce s = ⊥ := rfl
 
 lemma support_induce_subset_coe_preimage (s : Set V) : (G.induce s).support ⊆ (↑) ⁻¹' s :=
   fun v _ ↦ v.prop
