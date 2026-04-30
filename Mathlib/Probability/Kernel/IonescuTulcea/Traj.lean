@@ -735,6 +735,7 @@ theorem condExp_traj {a b : ℕ} (hab : a ≤ b) {x₀ : Π i : Iic a, X i}
     all_goals fun_prop
   · exact (i_f'.1.comp_ae_measurable' (measurable_frestrictLe b).aemeasurable)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem condExp_traj' {a b c : ℕ} (hab : a ≤ b) (hbc : b ≤ c)
     (x₀ : Π i : Iic a, X i) (f : (Π n, X n) → E) :
     (traj κ a x₀)[f | piLE b] =ᵐ[traj κ a x₀]

@@ -82,6 +82,7 @@ section auxiliary
 variable {α β γ : Type*} [CommGroup α] [UniformSpace α] [IsUniformGroup α] [CompleteSpace α]
   [T0Space α]
 
+set_option backward.defeqAttrib.useBackward true in
 open Nat.Primes in
 @[to_additive tsum_eq_tsum_primes_of_support_subset_prime_powers]
 lemma tprod_eq_tprod_primes_of_mulSupport_subset_prime_powers {f : ℕ → α}
