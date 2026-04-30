@@ -73,6 +73,7 @@ open IsManifold
 
 variable [IsManifold I 1 M] [IsManifold I' 1 M']
 
+set_option backward.defeqAttrib.useBackward true in
 variable (I M) in
 /-- Let `M` be a `C^1` manifold with model `I` on `(E, H)`.
 Then `tangentBundleCore I M` is the vector bundle core for the tangent bundle over `M`.

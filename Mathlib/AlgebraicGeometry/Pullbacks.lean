@@ -329,12 +329,14 @@ def pullbackFstιToV (i j : 𝒰.I₀) :
   (pullbackSymmetry _ _ ≪≫ pullbackRightPullbackFstIso (p1 𝒰 f g) (𝒰.f i) _).hom ≫
     (pullback.congrHom (Multicoequalizer.π_desc ..) rfl).hom
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp, reassoc]
 theorem pullbackFstιToV_fst (i j : 𝒰.I₀) :
     pullbackFstιToV 𝒰 f g i j ≫ pullback.fst _ _ = pullback.snd _ _ := by
   simp [pullbackFstιToV, p1]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp, reassoc]
 theorem pullbackFstιToV_snd (i j : 𝒰.I₀) :

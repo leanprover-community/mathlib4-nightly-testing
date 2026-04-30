@@ -48,6 +48,7 @@ def MeromorphicNFAt :=
   f =ᶠ[𝓝 x] 0 ∨
     ∃ (n : ℤ) (g : 𝕜 → E), AnalyticAt 𝕜 g x ∧ g x ≠ 0 ∧ f =ᶠ[𝓝 x] (· - x) ^ n • g
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A meromorphic function has normal form at `x` iff it is either analytic
 there, or if it has a pole at `x` and takes the default value `0`. -/
 theorem meromorphicNFAt_iff_analyticAt_or :
@@ -210,6 +211,7 @@ theorem meromorphicNFAt_congr {g : 𝕜 → E} (hfg : f =ᶠ[𝓝 x] g) :
 ### Criteria to guarantee normal form
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Helper lemma for `meromorphicNFAt_iff_meromorphicNFAt_of_smul_analytic`: if
 `f` is meromorphic in normal form at `x` and `g` is analytic without zero at
 `x`, then `g • f` is meromorphic in normal form at `x`. -/
@@ -312,6 +314,7 @@ theorem meromorphicNFAt_finprod {x : 𝕜} {ι : Type*} {f : ι → 𝕜 → �
     exact meromorphicNFAt_prod (by aesop) (fun _ _ _ _ ↦ by aesop)
   · exact finprod_of_not_hasFiniteMulSupport h₃f ▸ analyticAt_const.meromorphicNFAt
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 Integer powers of meromorphic functions in normal form are in normal form.
 -/
@@ -335,6 +338,7 @@ theorem MeromorphicNFAt.zpow {f : 𝕜 → 𝕜} {n : ℤ} {x : 𝕜} (hf : Mero
     · filter_upwards [h₃g] with z hz
       simp [hz, mul_zpow, (zpow_mul' (z - x) n m).symm]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If `f` is meromorphic in normal form, then so is its inverse.
 -/

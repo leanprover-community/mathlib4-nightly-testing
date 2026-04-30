@@ -79,6 +79,7 @@ The next several lemmas are technical results leading up to `rpow_p_mul_one_sub_
 `rpow_p_mul_one_add_smoothingFn_ge`, which are key steps in the main proof.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_deriv_rpow_p_mul_one_sub_smoothingFn (p : ℝ) :
     deriv (fun z => z ^ p * (1 - ε z))
       =ᶠ[atTop] fun z => p * z ^ (p - 1) * (1 - ε z) + z ^ (p - 1) / (log z ^ 2) :=
@@ -96,6 +97,7 @@ lemma eventually_deriv_rpow_p_mul_one_sub_smoothingFn (p : ℝ) :
     filter_upwards [eventually_gt_atTop 0] with x hx
     rw [mul_div, ← Real.rpow_neg_one, ← Real.rpow_add (by positivity), sub_eq_add_neg]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_deriv_rpow_p_mul_one_add_smoothingFn (p : ℝ) :
     deriv (fun z => z ^ p * (1 + ε z))
       =ᶠ[atTop] fun z => p * z ^ (p - 1) * (1 + ε z) - z ^ (p - 1) / (log z ^ 2) :=
@@ -173,6 +175,7 @@ lemma isTheta_deriv_rpow_p_mul_one_add_smoothingFn {p : ℝ} (hp : p ≠ 0) :
       (isEquivalent_deriv_rpow_p_mul_one_add_smoothingFn hp).isTheta
     _ =Θ[atTop] fun z => z ^ (p - 1) := IsTheta.const_mul_left hp <| isTheta_refl _ _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma growsPolynomially_deriv_rpow_p_mul_one_sub_smoothingFn (p : ℝ) :
     GrowsPolynomially fun x => ‖deriv (fun z => z ^ p * (1 - ε z)) x‖ := by
   cases eq_or_ne p 0 with
@@ -192,6 +195,7 @@ lemma growsPolynomially_deriv_rpow_p_mul_one_sub_smoothingFn (p : ℝ) :
     filter_upwards [eventually_gt_atTop 0] with _ _
     positivity
 
+set_option backward.defeqAttrib.useBackward true in
 lemma growsPolynomially_deriv_rpow_p_mul_one_add_smoothingFn (p : ℝ) :
     GrowsPolynomially fun x => ‖deriv (fun z => z ^ p * (1 + ε z)) x‖ := by
   cases eq_or_ne p 0 with
@@ -214,6 +218,7 @@ lemma growsPolynomially_deriv_rpow_p_mul_one_add_smoothingFn (p : ℝ) :
 
 include R
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isBigO_apply_r_sub_b (q : ℝ → ℝ) (hq_diff : DifferentiableOn ℝ q (Set.Ioi 1))
     (hq_poly : GrowsPolynomially fun x => ‖deriv q x‖) (i : α) :
     (fun n => q (r i n) - q (b i * n)) =O[atTop] fun n => (deriv q n) * (r i n - b i * n) := by
@@ -247,6 +252,7 @@ lemma isBigO_apply_r_sub_b (q : ℝ → ℝ) (hq_diff : DifferentiableOn ℝ q (
     calc b i * n ≤ 1 * n := by gcongr; exact le_of_lt <| R.b_lt_one i
                  _ = n := by simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rpow_p_mul_one_sub_smoothingFn_le :
     ∀ᶠ (n : ℕ) in atTop, ∀ i, (r i n) ^ (p a b) * (1 - ε (r i n))
       ≤ (b i) ^ (p a b) * n ^ (p a b) * (1 - ε n) := by
@@ -337,6 +343,7 @@ lemma rpow_p_mul_one_sub_smoothingFn_le :
   rw [← h₁, ← sub_le_iff_le_add']
   exact hn
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rpow_p_mul_one_add_smoothingFn_ge :
     ∀ᶠ (n : ℕ) in atTop, ∀ i, (b i) ^ (p a b) * n ^ (p a b) * (1 + ε n)
       ≤ (r i n) ^ (p a b) * (1 + ε (r i n)) := by
@@ -439,6 +446,7 @@ lemma rpow_p_mul_one_add_smoothingFn_ge :
 This final section proves the Akra-Bazzi theorem.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The main proof of the upper-bound part of the Akra-Bazzi theorem. The factor `1 - ε n` does not
 change the asymptotic order, but it is needed for the induction step to go through. -/
 lemma T_isBigO_smoothingFn_mul_asympBound :
@@ -545,6 +553,7 @@ lemma T_isBigO_smoothingFn_mul_asympBound :
         _ ≤ C * c₁ * (1 - ε n) := by gcongr
     _ = C * ((1 - ε n) * asympBound g a b n) := by ring
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The main proof of the lower-bound part of the Akra-Bazzi theorem. The factor `1 + ε n` does not
 change the asymptotic order, but it is needed for the induction step to go through. -/
 lemma smoothingFn_mul_asympBound_isBigO_T :

@@ -57,6 +57,7 @@ If `f` is meromorphic of infinite order at `x`, the trailing coefficient is zero
 ## Characterization of the Trailing Coefficient
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 Definition of the trailing coefficient in case where `f` is meromorphic and a presentation of the
 form `f = (z - x) ^ order • g z` is given, with `g` analytic at `x`.
@@ -109,6 +110,7 @@ lemma AnalyticAt.meromorphicTrailingCoeffAt_of_ne_zero (h₁ : AnalyticAt 𝕜 f
   filter_upwards
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If `f` is meromorphic at `x`, then the trailing coefficient of `f` at `x` is the limit of the
 function `(· - x) ^ (-order) • f`.
@@ -196,6 +198,7 @@ lemma meromorphicTrailingCoeffAt_congr_nhdsNE {f₁ f₂ : 𝕜 → E} (h : f₁
 ## Behavior under Arithmetic Operations
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If `f₁` and `f₂` have unequal order at `x`, then the trailing coefficient of `f₁ + f₂` at `x` is the
 trailing coefficient of the function with the lowest order.

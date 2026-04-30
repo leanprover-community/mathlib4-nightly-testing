@@ -500,6 +500,7 @@ lemma integrable_add_iff_integrable_left' {f g : α → β} (hf : Integrable f �
     Integrable (fun x ↦ g x + f x) μ ↔ Integrable g μ :=
   integrable_add_iff_integrable_left hf
 
+set_option backward.defeqAttrib.useBackward true in
 lemma integrable_left_of_integrable_add_of_nonneg {f g : α → ℝ}
     (h_meas : AEStronglyMeasurable f μ) (hf : 0 ≤ᵐ[μ] f) (hg : 0 ≤ᵐ[μ] g)
     (h_int : Integrable (f + g) μ) : Integrable f μ := by
@@ -629,6 +630,7 @@ theorem integrable_of_norm_sub_le {f₀ f₁ : α → β} {g : α → ℝ} (hf�
       _ ≤ ‖f₀ a‖ + g a := by gcongr
   Integrable.mono' (hf₀_i.norm.add hg_i) hf₁_m this
 
+set_option backward.defeqAttrib.useBackward true in
 lemma integrable_of_le_of_le {f g₁ g₂ : α → ℝ} (hf : AEStronglyMeasurable f μ)
     (h_le₁ : g₁ ≤ᵐ[μ] f) (h_le₂ : f ≤ᵐ[μ] g₂)
     (h_int₁ : Integrable g₁ μ) (h_int₂ : Integrable g₂ μ) :
@@ -744,12 +746,14 @@ theorem Integrable.real_toNNReal {f : α → ℝ} (hf : Integrable f μ) :
   intro x
   simp [abs_le, le_abs_self]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ofReal_toReal_ae_eq {f : α → ℝ≥0∞} (hf : ∀ᵐ x ∂μ, f x < ∞) :
     (fun x => ENNReal.ofReal (f x).toReal) =ᵐ[μ] f := by
   filter_upwards [hf]
   intro x hx
   simp only [hx.ne, ofReal_toReal, Ne, not_false_iff]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem coe_toNNReal_ae_eq {f : α → ℝ≥0∞} (hf : ∀ᵐ x ∂μ, f x < ∞) :
     (fun x => ((f x).toNNReal : ℝ≥0∞)) =ᵐ[μ] f := by
   filter_upwards [hf]
@@ -810,6 +814,7 @@ theorem integrable_withDensity_iff_integrable_smul' {f : α → ℝ≥0∞} (hf 
   · simp_rw [NNReal.smul_def, ENNReal.toReal]
   · exact hf.ennreal_toNNReal
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integrable_withDensity_iff_integrable_coe_smul₀ {f : α → ℝ≥0} (hf : AEMeasurable f μ)
     {g : α → E} :
     Integrable g (μ.withDensity fun x => f x) ↔ Integrable (fun x => (f x : ℝ) • g x) μ :=
@@ -858,6 +863,7 @@ theorem memL1_smul_of_L1_withDensity {f : α → ℝ≥0} (f_meas : Measurable f
 
 variable (μ)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The map `u ↦ f • u` is an isometry between the `L^1` spaces for `μ.withDensity f` and `μ`. -/
 noncomputable def withDensitySMulLI {f : α → ℝ≥0} (f_meas : Measurable f) :
     Lp E 1 (μ.withDensity fun x => f x) →ₗᵢ[ℝ] Lp E 1 μ where
