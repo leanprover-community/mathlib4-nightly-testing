@@ -92,6 +92,7 @@ lemma mlieBracketWithin_apply :
       (mpullbackWithin 𝓘(𝕜, E) I (extChartAt I x₀).symm W (range I))
       ((extChartAt I x₀).symm ⁻¹' s ∩ range I)) ((extChartAt I x₀ x₀))) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma mlieBracketWithin_eq_lieBracketWithin {V W : Π (x : E), TangentSpace 𝓘(𝕜, E) x} {s : Set E} :
     mlieBracketWithin 𝓘(𝕜, E) V W s = lieBracketWithin 𝕜 V W s := by
@@ -515,6 +516,7 @@ section Invariance_IsSymmSndFDerivWithinAt
 
 variable [IsManifold I 2 M] [IsManifold I' 2 M'] [CompleteSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /- The Lie bracket of vector fields on manifolds is well defined, i.e., it is invariant under
 diffeomorphisms. Auxiliary version where one assumes that all relevant sets are contained
@@ -650,6 +652,7 @@ private lemma mpullbackWithin_mlieBracketWithin_aux [CompleteSpace E']
     · rw [nhdsWithin_le_iff, nhdsWithin_inter]
       exact Filter.inter_mem_inf self_mem_nhdsWithin (extChartAt_target_mem_nhdsWithin x₀)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /- The Lie bracket of vector fields on manifolds is well defined, i.e., it is invariant under
 diffeomorphisms. -/
@@ -829,6 +832,7 @@ lemma mpullback_mlieBracket
   simp only [← mlieBracketWithin_univ, ← mdifferentiableWithinAt_univ] at hV hW ⊢
   exact mpullback_mlieBracketWithin hV hW uniqueMDiffOn_univ hf (mem_univ _) hn (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If two vector fields are `C^n` with `n ≥ m + 1`, then their Lie bracket is `C^m`. -/
 protected lemma _root_.ContMDiffWithinAt.mlieBracketWithin_vectorField
     [IsManifold I (n + 1) M] {m : ℕ∞ω}
@@ -924,6 +928,7 @@ section Leibniz
 
 variable [IsManifold I (minSmoothness 𝕜 3) M] [CompleteSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Lie bracket of vector fields in manifolds satisfies the Leibniz identity
 `[U, [V, W]] = [[U, V], W] + [V, [U, W]]` (also called Jacobi identity). -/
 theorem leibniz_identity_mlieBracketWithin_apply

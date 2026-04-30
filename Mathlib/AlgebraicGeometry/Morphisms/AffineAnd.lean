@@ -60,6 +60,7 @@ lemma affineAnd_respectsIso (hP : RingHom.RespectsIso Q) :
   · intro X Y Z e f ⟨hZ, hf⟩
     simpa [AffineTargetMorphismProperty.toProperty, IsAffine.of_isIso e.inv, hP.cancel_left_isIso]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `affineAnd P` is local if `P` is local on the (algebraic) source. -/
 lemma affineAnd_isLocal (hPi : RingHom.RespectsIso Q) (hQl : RingHom.LocalizationAwayPreserves Q)
