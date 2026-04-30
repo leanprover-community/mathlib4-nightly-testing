@@ -947,6 +947,7 @@ lemma integralAgainstBilinLM_eq_setIntegral {B : F₁ →L[𝕜] F₂ →L[𝕜]
   intro x hx
   rw [f.zero_on_compl hx, Pi.zero_apply, map_zero, ContinuousLinearMap.zero_apply]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma norm_integralAgainstBilinLM_le {B : F₁ →L[𝕜] F₂ →L[𝕜] F₃} {μ : Measure E} {φ : E → F₂}
     {f : 𝓓^{n}_{K}(E, F₁)} :
     ‖integralAgainstBilinLM B μ φ f‖ ≤

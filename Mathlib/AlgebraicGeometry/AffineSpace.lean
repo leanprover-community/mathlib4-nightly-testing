@@ -138,6 +138,7 @@ lemma hom_ext {f g : X ⟶ 𝔸(n; S)}
   rw [toSpecMvPolyIntEquiv_comp, toSpecMvPolyIntEquiv_comp]
   exact h₂ i
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma comp_homOfVector {X Y : Scheme} (v : n → Γ(Y, ⊤)) (f : X ⟶ Y) (g : Y ⟶ S) :
     f ≫ homOfVector g v = homOfVector (f ≫ g) (f.appTop ∘ v) := by
@@ -162,6 +163,7 @@ def homOverEquiv : { f : X ⟶ 𝔸(n; S) // f.IsOver S } ≃ (n → Γ(X, ⊤))
     · rw [homOfVector_appTop_coord]
   right_inv v := by ext i; simp [-TopologicalSpace.Opens.map_top, homOfVector_appTop_coord]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (n) in
 /--
 The affine space over an affine base is isomorphic to the spectrum of the polynomial ring.
@@ -203,6 +205,7 @@ def isoOfIsAffine [IsAffine S] :
           simp only [eval₂_X]
           exact homOfVector_appTop_coord _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma isoOfIsAffine_hom_appTop [IsAffine S] :
     (isoOfIsAffine n S).hom.appTop =
@@ -229,6 +232,7 @@ def SpecIso (R : CommRingCat.{max u v}) :
   isoOfIsAffine _ _ ≪≫ Scheme.Spec.mapIso (MvPolynomial.mapEquiv _
     (Scheme.ΓSpecIso R).symm.commRingCatIsoToRingEquiv).toCommRingCatIso.op
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma SpecIso_hom_appTop (R : CommRingCat.{max u v}) :
     (SpecIso n R).hom.appTop = (Scheme.ΓSpecIso _).hom ≫
@@ -237,6 +241,7 @@ lemma SpecIso_hom_appTop (R : CommRingCat.{max u v}) :
   ext i
   simp [SpecIso]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma SpecIso_inv_appTop_coord (R : CommRingCat.{max u v}) (i) :
     (SpecIso n R).inv.appTop (coord _ i) = (Scheme.ΓSpecIso (.of _)).inv (.X i) := by
@@ -285,6 +290,7 @@ lemma map_toSpecMvPoly {S T : Scheme.{max u v}} (f : S ⟶ T) :
 lemma map_id : map n (𝟙 S) = 𝟙 𝔸(n; S) := by
   ext1 <;> simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc, simp]
 lemma map_comp {S S' S'' : Scheme} (f : S ⟶ S') (g : S' ⟶ S'') :
     map n (f ≫ g) = map n f ≫ map n g := by
@@ -292,6 +298,7 @@ lemma map_comp {S S' S'' : Scheme} (f : S ⟶ S') (g : S' ⟶ S'') :
   · simp
   · simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma map_SpecMap {R S : CommRingCat.{max u v}} (φ : R ⟶ S) :
     map n (Spec.map φ) =
       (SpecIso n S).hom ≫ Spec.map (CommRingCat.ofHom (MvPolynomial.map φ.hom)) ≫
@@ -341,11 +348,13 @@ lemma reindex_appTop_coord {n m : Type v} (i : m → n) (S : Scheme.{max u v}) (
 lemma reindex_id : reindex id S = 𝟙 𝔸(n; S) := by
   ext1 <;> simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp, reassoc]
 lemma reindex_comp {n₁ n₂ n₃ : Type v} (i : n₁ ⟶ n₂) (j : n₂ ⟶ n₃) (S : Scheme.{max u v}) :
     reindex (i ≫ j) S = reindex j S ≫ reindex i S := by
   ext k <;> simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma map_reindex {n₁ n₂ : Type v} (i : n₁ → n₂) {S T : Scheme.{max u v}} (f : S ⟶ T) :
     map n₂ f ≫ reindex i T = reindex i S ≫ map n₁ f := by

@@ -232,6 +232,7 @@ instance [IsImmersion f] : IsImmersion f.toImage :=
   have : IsImmersion (f.toImage ≫ f.imageι) := by simpa
   IsImmersion.of_comp f.toImage f.imageι
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open Scheme in
 /--

@@ -462,6 +462,7 @@ theorem _root_.tendsto_card_div_pow_atTop_volume (hs₁ : IsBounded s)
   · rw [tsum_const, nsmul_eq_mul, mul_one, Nat.cast_inj]
   · rw [setIntegral_const, smul_eq_mul, mul_one]
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem tendsto_card_div_pow₃ (hs₁ : IsBounded s)
     (hs₄ : ∀ ⦃x y : ℝ⦄, 0 < x → x ≤ y → x • s ⊆ y • s) :
     ∀ᶠ x : ℝ in atTop, (Nat.card ↑(s ∩ (⌊x⌋₊ : ℝ)⁻¹ • L) : ℝ) / x ^ card ι ≤
@@ -471,6 +472,7 @@ private theorem tendsto_card_div_pow₃ (hs₁ : IsBounded s)
   exact tendsto_card_div_pow₂ s hs₁ hs₄ (Nat.cast_pos.mpr (Nat.floor_pos.mpr hx))
     (Nat.floor_le (zero_le_one.trans hx))
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem tendsto_card_div_pow₄ (hs₁ : IsBounded s)
     (hs₄ : ∀ ⦃x y : ℝ⦄, 0 < x → x ≤ y → x • s ⊆ y • s) :
     ∀ᶠ x : ℝ in atTop, (Nat.card ↑(s ∩ x⁻¹ • L) : ℝ) / x ^ card ι ≤
@@ -479,6 +481,7 @@ private theorem tendsto_card_div_pow₄ (hs₁ : IsBounded s)
   gcongr
   exact tendsto_card_div_pow₂ s hs₁ hs₄ hx (Nat.le_ceil _)
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem tendsto_card_div_pow₅ :
     (fun x ↦ (Nat.card ↑(s ∩ (⌊x⌋₊ : ℝ)⁻¹ • L) : ℝ) / ⌊x⌋₊ ^ card ι * (⌊x⌋₊ / x) ^ card ι)
       =ᶠ[atTop] (fun x ↦ (Nat.card ↑(s ∩ (⌊x⌋₊ : ℝ)⁻¹ • L) : ℝ) / x ^ card ι) := by
@@ -486,6 +489,7 @@ private theorem tendsto_card_div_pow₅ :
   have : 0 < ⌊x⌋₊ := Nat.floor_pos.mpr hx
   rw [div_pow, mul_div, div_mul_cancel₀ _ (by positivity)]
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem tendsto_card_div_pow₆ :
     (fun x ↦ (Nat.card ↑(s ∩ (⌈x⌉₊ : ℝ)⁻¹ • L) : ℝ) / ⌈x⌉₊ ^ card ι * (⌈x⌉₊ / x) ^ card ι)
           =ᶠ[atTop] (fun x ↦ (Nat.card ↑(s ∩ (⌈x⌉₊ : ℝ)⁻¹ • L) : ℝ) / x ^ card ι) := by
