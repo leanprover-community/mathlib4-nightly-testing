@@ -828,7 +828,8 @@ lemma toCocycles_comp_isoCocycles₁_hom :
 set_option backward.isDefEq.respectTransparency false in
 lemma cocyclesMk₁_eq (x : cocycles₁ A) :
     cocyclesMk ((cochainsIso₁ A).inv x) (by
-      simp +instances [← inhomogeneousCochains.d_def, cocycles₁.d₁₂_apply x]) =
+      change ((inhomogeneousCochains A).d 1 2) ((cochainsIso₁ A).inv ⇑x) = 0
+      rw [eq_d₁₂_comp_inv_apply, cocycles₁.d₁₂_apply x, map_zero]) =
       (isoCocycles₁ A).inv x := by
   apply_fun (forget₂ _ Ab).map ((inhomogeneousCochains A).iCycles 1) using
     (AddCommGrpCat.mono_iff_injective _).1 <| (forget₂ _ _).map_mono _
@@ -878,7 +879,8 @@ lemma toCocycles_comp_isoCocycles₂_hom :
 set_option backward.isDefEq.respectTransparency false in
 lemma cocyclesMk₂_eq (x : cocycles₂ A) :
     cocyclesMk ((cochainsIso₂ A).inv x) (by
-      simp +instances [← inhomogeneousCochains.d_def, cocycles₂.d₂₃_apply x]) =
+      change ((inhomogeneousCochains A).d 2 3) ((cochainsIso₂ A).inv ⇑x) = 0
+      rw [eq_d₂₃_comp_inv_apply, cocycles₂.d₂₃_apply x, map_zero]) =
       (isoCocycles₂ A).inv x := by
   apply_fun (forget₂ _ Ab).map ((inhomogeneousCochains A).iCycles 2) using
     (AddCommGrpCat.mono_iff_injective _).1 <| (forget₂ _ _).map_mono _
