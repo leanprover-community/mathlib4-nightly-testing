@@ -359,6 +359,7 @@ protected theorem coe_surjective : Surjective ((↑) : FreeRing α → FreeCommR
     rcases hx with ⟨x, rfl⟩; rcases hy with ⟨y, rfl⟩
     exact ⟨x * y, (FreeRing.lift _).map_mul _ _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem coe_eq : ((↑) : FreeRing α → FreeCommRing α) =
     @Functor.map FreeAbelianGroup _ _ _ fun l : List α => (l : Multiset α) := by

@@ -114,7 +114,8 @@ implementation detail, but it can be useful to transfer results from `Finsupp` t
 def toFinsuppIsoAlg : R[X] ≃ₐ[R] R[ℕ] :=
   { toFinsuppIso R with
     commutes' := fun r => by
-      dsimp }
+      change (C r).toFinsupp = (algebraMap R R[ℕ]) r
+      simp [toFinsupp_C] }
 
 instance subalgebraNontrivial [Nontrivial A] : Nontrivial (Subalgebra R A[X]) :=
   ⟨⟨⊥, ⊤, by

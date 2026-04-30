@@ -265,6 +265,7 @@ theorem pushforwardToOfIso_app {X Y : TopCat} (H₁ : X ≅ Y) {ℱ : Y.Presheaf
       H₂.app (op ((Opens.map H₁.inv).obj (unop U))) ≫
         𝒢.map (eqToHom (by simp [Opens.map, Set.preimage_preimage])) := by
   simp [pushforwardToOfIso, Equivalence.toAdjunction, Adjunction.homEquiv_counit]
+  rfl
 
 end Iso
 
@@ -336,7 +337,7 @@ theorem pullbackObjObjOfImageOpen_hom_naturality {X Y : TopCat.{v}} (f : X ⟶ Y
   rw [Limits.IsColimit.comp_coconePointUniqueUpToIso_hom_assoc, reassoc_of% eq,
     Limits.IsColimit.comp_coconePointUniqueUpToIso_hom,
     Limits.coconeOfDiagramTerminal_ι_app, Limits.coconeOfDiagramTerminal_ι_app]
-  dsimp
+  simp only [Functor.comp_map]
   rw [← Functor.map_comp]
   cat_disch
 

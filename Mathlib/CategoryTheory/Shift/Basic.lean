@@ -150,12 +150,12 @@ instance (h : ShiftMkCore C A) : (Discrete.functor h.F).Monoidal :=
       left_unitality := by
         rintro ⟨n⟩
         ext X
-        simp only [Discrete.addMonoidal_tensorUnit_as]
+        change 𝟙 _ = (h.F n).map (h.zero.inv.app X) ≫ (h.add 0 n).inv.app X ≫ _
         simp [h.zero_add_inv_app, ← Functor.map_comp]
       right_unitality := by
         rintro ⟨n⟩
         ext X
-        simp only [Discrete.addMonoidal_tensorUnit_as]
+        change 𝟙 _ = h.zero.inv.app ((h.F n).obj X) ≫ (h.add n 0).inv.app X ≫ _
         simp [h.add_zero_inv_app] }
 
 /-- Constructs a `HasShift C A` instance from `ShiftMkCore`. -/
@@ -562,6 +562,7 @@ lemma shiftFunctorCompIsoId_add'_inv_app :
   congr 1
   rw [← NatTrans.naturality]
   dsimp
+  simp only [Iso.symm_inv]
   rw [← cancel_mono ((shiftFunctorAdd' C p' p 0 hp).inv.app X), Iso.hom_inv_id_app,
     Category.assoc, Category.assoc, Category.assoc, Category.assoc,
     ← shiftFunctorAdd'_assoc_inv_app p' m n n' p 0

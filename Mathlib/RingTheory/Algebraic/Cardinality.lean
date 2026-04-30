@@ -28,6 +28,7 @@ namespace Algebra.IsAlgebraic
 variable (R : Type u) [CommRing R] [IsDomain R] (L : Type v) [CommRing L] [IsDomain L] [Algebra R L]
 variable [IsTorsionFree R L] [Algebra.IsAlgebraic R L]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem lift_cardinalMk_le_sigma_polynomial :
     lift.{u} #L ≤ #(Σ p : R[X], { x : L // x ∈ p.aroots L }) := by
   have := @lift_mk_le_lift_mk_of_injective L (Σ p : R[X], {x : L | x ∈ p.aroots L})

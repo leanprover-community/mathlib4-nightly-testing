@@ -378,6 +378,7 @@ noncomputable def chgUniv {X Y : C} {m : M}
     SmallShiftedHom.{w} W X Y m ≃ SmallShiftedHom.{w''} W X Y m :=
   SmallHom.chgUniv
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma equiv_chgUniv (L : C ⥤ D) [L.IsLocalization W] [L.CommShift M] {X Y : C} {m : M}
     [HasSmallLocalizedShiftedHom.{w} W M X Y]

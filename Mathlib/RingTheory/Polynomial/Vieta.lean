@@ -34,6 +34,7 @@ section Semiring
 
 variable {R : Type*} [CommSemiring R]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A sum version of **Vieta's formula** for `Multiset`: the product of the linear terms `X + λ`
 where `λ` runs through a multiset `s` is equal to a linear combination of the symmetric functions
 `esymm s` of the `λ`'s . -/

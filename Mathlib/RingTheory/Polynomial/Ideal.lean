@@ -89,6 +89,7 @@ lemma mem_ideal_map_adjoin [CommSemiring R] [Semiring S] [Algebra R S] (x : S) (
     simp_rw [this, Algebra.smul_def]
     exact sum_mem fun i _ ↦ Ideal.mul_mem_right _ _ (Ideal.mem_map_of_mem _ (hp i))
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exists_aeval_invOf_eq_zero_of_idealMap_adjoin_sup_span_eq_top [CommRing R] [CommRing S]
     [Algebra R S] (x : S) (I : Ideal R) (hI : I ≠ ⊤) [Invertible x]
     (h : I.map (algebraMap R (R[x])) ⊔ .span {⟨x, subset_adjoin rfl⟩} = ⊤) :
