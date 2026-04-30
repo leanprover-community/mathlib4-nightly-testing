@@ -170,7 +170,7 @@ instance : (free R).Monoidal :=
       associativity := fun X Y Z ↦ by
         rw [← cancel_epi ((μIso R X Y).inv ▷ _), ← cancel_epi (μIso R _ _).inv]
         ext ⟨⟨x, y⟩, z⟩
-        dsimp
+        simp only [comp_apply]
         rw [μIso_inv_freeMk, MonoidalCategory.whiskerRight_apply, μIso_inv_freeMk,
           MonoidalCategory.whiskerRight_apply, μIso_hom_freeMk_tmul_freeMk,
           μIso_hom_freeMk_tmul_freeMk, free_map_apply,
