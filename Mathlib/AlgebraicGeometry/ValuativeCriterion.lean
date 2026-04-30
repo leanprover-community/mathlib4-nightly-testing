@@ -140,6 +140,7 @@ lemma specializingMap (H : ValuativeCriterion.Existence f) :
 instance {R S : CommRingCat} (e : R ≅ S) : IsLocalHom e.hom.hom :=
   isLocalHom_of_isIso _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma of_specializingMap (H : (topologically @SpecializingMap).universally f) :
     ValuativeCriterion.Existence f := by

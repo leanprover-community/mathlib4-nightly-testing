@@ -123,6 +123,7 @@ lemma integrableOn_cfc [TopologicalSpace X] [OpensMeasurableSpace X] {s : Set X}
     exact ae_restrict_of_forall_mem hs fun x hx ↦
       hf.comp (Continuous.prodMk_right x).continuousOn fun _ hz ↦ ⟨hx, hz⟩
 
+set_option backward.defeqAttrib.useBackward true in
 open Set in
 /-- The continuous functional calculus commutes with integration.
 For a version with stronger assumptions which in practice are often easier to verify, see
@@ -280,6 +281,7 @@ lemma integrableOn_cfcₙ [TopologicalSpace X] [OpensMeasurableSpace X] {s : Set
     exact ae_restrict_of_forall_mem hs fun x hx ↦
       hf.comp (Continuous.prodMk_right x).continuousOn fun _ hz ↦ ⟨hx, hz⟩
 
+set_option backward.defeqAttrib.useBackward true in
 open Set in
 /-- The continuous functional calculus commutes with integration.
 For a version with stronger assumptions which in practice are often easier to verify, see

@@ -183,6 +183,7 @@ theorem lintegral_comp_eq_lintegral_meas_le_mul_of_measurable_of_sigmaFinite
   exact (ENNReal.measurable_ofReal.comp (g_mble.comp measurable_snd)).aemeasurable.indicator₀
     mble₀.nullMeasurableSet
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An auxiliary version of the layer cake formula (Cavalieri's principle, tail probability
 formula), with a measurability assumption that would also essentially follow from the
 integrability assumptions.
@@ -379,6 +380,7 @@ theorem lintegral_comp_eq_lintegral_meas_le_mul_of_measurable (μ : Measure α)
   exact lintegral_comp_eq_lintegral_meas_le_mul_of_measurable_of_sigmaFinite
     ν f_nn f_mble g_intble g_mble g_nn
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The layer cake formula / **Cavalieri's principle** / tail probability formula:
 
 Let `f` be a non-negative measurable function on a measure space. Let `G` be an
@@ -463,6 +465,7 @@ section LayercakeLT
 variable {α : Type*} [MeasurableSpace α]
 variable {f : α → ℝ} {g : ℝ → ℝ}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The layer cake formula / Cavalieri's principle / tail probability formula:
 
 Let `f` be a non-negative measurable function on a measure space. Let `G` be an
@@ -486,6 +489,7 @@ theorem lintegral_comp_eq_lintegral_meas_lt_mul (μ : Measure α) (f_nn : 0 ≤�
     with t ht
   rw [ht]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The standard case of the layer cake formula / Cavalieri's principle / tail probability formula:
 
 For a nonnegative function `f` on a measure space, the Lebesgue integral of `f` can
@@ -544,6 +548,7 @@ theorem Integrable.integral_eq_integral_meas_le
   filter_upwards [meas_le_ae_eq_meas_lt μ (volume.restrict (Ioi 0)) f] with t ht
   exact congrArg ENNReal.toReal ht.symm
 
+set_option backward.defeqAttrib.useBackward true in
 lemma Integrable.integral_eq_integral_Ioc_meas_le {f : α → ℝ} {M : ℝ}
     (f_intble : Integrable f μ) (f_nn : 0 ≤ᵐ[μ] f) (f_bdd : f ≤ᵐ[μ] (fun _ ↦ M)) :
     ∫ ω, f ω ∂μ = ∫ t in Ioc 0 M, μ.real {a : α | t ≤ f a} := by

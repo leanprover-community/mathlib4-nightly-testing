@@ -282,6 +282,7 @@ open scoped BoundedContinuousFunction ComplexConjugate
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For bounded continuous functions `f`, `g` on a finite-measure topological space `α`, the L^2
 inner product is the integral of their pointwise inner product. -/
 theorem BoundedContinuousFunction.inner_toLp (f g : α →ᵇ 𝕜) :
@@ -296,6 +297,7 @@ theorem BoundedContinuousFunction.inner_toLp (f g : α →ᵇ 𝕜) :
 
 variable [CompactSpace α]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For continuous functions `f`, `g` on a compact, finite-measure topological space `α`, the L^2
 inner product is the integral of their pointwise inner product. -/
 theorem ContinuousMap.inner_toLp (f g : C(α, 𝕜)) :

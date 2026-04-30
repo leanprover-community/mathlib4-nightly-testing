@@ -91,6 +91,7 @@ lemma IsRatCondKernelCDF.iInf_rat_gt_eq (hf : IsRatCondKernelCDF f κ ν) (a : �
     ∀ᵐ b ∂(ν a), ∀ q, ⨅ r : Ioi q, f (a, b) r = f (a, b) q := by
   filter_upwards [hf.isRatStieltjesPoint_ae a] with b hb using hb.iInf_rat_gt_eq
 
+set_option backward.defeqAttrib.useBackward true in
 lemma stieltjesOfMeasurableRat_ae_eq (hf : IsRatCondKernelCDF f κ ν) (a : α) (q : ℚ) :
     (fun b ↦ stieltjesOfMeasurableRat f hf.measurable (a, b) q) =ᵐ[ν a] fun b ↦ f (a, b) q := by
   filter_upwards [hf.isRatStieltjesPoint_ae a] with a ha
@@ -280,6 +281,7 @@ lemma IsRatCondKernelCDFAux.tendsto_one_of_monotone (hf : IsRatCondKernelCDFAux 
   · filter_upwards [hf.mono a] with t ht using fun n m hnm ↦ ht (hseq hnm)
   · filter_upwards [hf.le_one a] with c hc using fun i ↦ hc (seq i)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsRatCondKernelCDFAux.tendsto_atTop_one (hf : IsRatCondKernelCDFAux f κ ν) [IsFiniteKernel ν]
     (a : α) :
     ∀ᵐ t ∂(ν a), Tendsto (f (a, t)) atTop (𝓝 1) := by
@@ -303,12 +305,14 @@ lemma IsRatCondKernelCDFAux.tendsto_atBot_zero (hf : IsRatCondKernelCDFAux f κ 
   exact hf.tendsto_zero_of_antitone _ _ Nat.mono_cast.neg
     (tendsto_neg_atBot_iff.mpr tendsto_natCast_atTop_atTop)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsRatCondKernelCDFAux.bddBelow_range (hf : IsRatCondKernelCDFAux f κ ν) (a : α) :
     ∀ᵐ t ∂(ν a), ∀ q : ℚ, BddBelow (range fun (r : Ioi q) ↦ f (a, t) r) := by
   filter_upwards [hf.nonneg a] with c hc
   refine fun q ↦ ⟨0, ?_⟩
   simp [mem_lowerBounds, hc]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsRatCondKernelCDFAux.integrable_iInf_rat_gt (hf : IsRatCondKernelCDFAux f κ ν)
     [IsFiniteKernel ν] (a : α) (q : ℚ) :
     Integrable (fun t ↦ ⨅ r : Ioi q, f (a, t) r) (ν a) := by

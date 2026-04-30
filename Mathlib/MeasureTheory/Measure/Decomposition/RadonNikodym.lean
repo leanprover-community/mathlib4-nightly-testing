@@ -78,6 +78,7 @@ lemma rnDeriv_pos [HaveLebesgueDecomposition μ ν] (hμν : μ ≪ ν) :
     ae_withDensity_iff (Measure.measurable_rnDeriv _ _), Measure.withDensity_rnDeriv_eq _ _ hμν]
   exact ae_of_all _ (fun x hx ↦ hx.pos)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_pos' [HaveLebesgueDecomposition ν μ] [SigmaFinite μ] (hμν : μ ≪ ν) :
     ∀ᵐ x ∂μ, 0 < ν.rnDeriv μ x := by
   refine (absolutelyContinuous_withDensity_rnDeriv hμν).ae_le ?_
@@ -129,6 +130,7 @@ lemma rnDeriv_withDensity_left_of_absolutelyContinuous {ν : Measure α} [SigmaF
       exact Measure.rnDeriv_lt_top _ _
     · exact (Measure.measurable_rnDeriv _ _).aemeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_withDensity_left {μ ν : Measure α} [SigmaFinite μ] [SigmaFinite ν]
     (hfν : AEMeasurable f ν) (hf_ne_top : ∀ᵐ x ∂μ, f x ≠ ∞) :
     (μ.withDensity f).rnDeriv ν =ᵐ[ν] fun x ↦ f x * μ.rnDeriv ν x := by
@@ -142,6 +144,7 @@ lemma rnDeriv_withDensity_left {μ ν : Measure α} [SigmaFinite μ] [SigmaFinit
   filter_upwards [h, h1, h2] with x hx hx1 hx2
   rw [← hx2, hx, hx1]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary lemma for `rnDeriv_withDensity_right`. -/
 lemma rnDeriv_withDensity_right_of_absolutelyContinuous {ν : Measure α}
     [HaveLebesgueDecomposition μ ν] [SigmaFinite ν] (hμν : μ ≪ ν) (hf : AEMeasurable f ν)
@@ -165,6 +168,7 @@ lemma rnDeriv_withDensity_right_of_absolutelyContinuous {ν : Measure α}
       filter_upwards [hf_ne_top] with x hx using hx.lt_top
     · exact hf.restrict
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_withDensity_right (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν]
     (hf : AEMeasurable f ν) (hf_ne_zero : ∀ᵐ x ∂ν, f x ≠ 0) (hf_ne_top : ∀ᵐ x ∂ν, f x ≠ ∞) :
     μ.rnDeriv (ν.withDensity f) =ᵐ[ν] fun x ↦ (f x)⁻¹ * μ.rnDeriv ν x := by
@@ -222,6 +226,7 @@ lemma rnDeriv_add_right_of_absolutelyContinuous_of_mutuallySingular {ν' : Measu
   rw [this, ← restrict_withDensity ht.compl, ← restrict_withDensity ht.compl,
       Measure.withDensity_rnDeriv_eq _ _ (hμν.add_right ν'), Measure.withDensity_rnDeriv_eq _ _ hμν]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary lemma for `rnDeriv_add_right_of_mutuallySingular`. -/
 lemma rnDeriv_add_right_of_mutuallySingular' {ν' : Measure α}
     [SigmaFinite μ] [SigmaFinite ν] [SigmaFinite ν']
@@ -243,6 +248,7 @@ lemma rnDeriv_add_right_of_mutuallySingular' {ν' : Measure α}
   simp only [Pi.add_apply]
   rw [hx₃, hx₄, hx₅]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_add_right_of_mutuallySingular {ν' : Measure α}
     [SigmaFinite μ] [SigmaFinite ν] [SigmaFinite ν'] (hνν' : ν ⟂ₘ ν') :
     μ.rnDeriv (ν + ν') =ᵐ[ν] μ.rnDeriv ν := by
@@ -298,6 +304,7 @@ lemma inv_rnDeriv [SigmaFinite μ] [SigmaFinite ν] (hμν : μ ≪ ν) :
     exact hx.symm
   · exact (Measure.rnDeriv_withDensity μ (Measure.measurable_rnDeriv ν μ)).symm
 
+set_option backward.defeqAttrib.useBackward true in
 lemma inv_rnDeriv' [SigmaFinite μ] [SigmaFinite ν] (hμν : μ ≪ ν) :
     (ν.rnDeriv μ)⁻¹ =ᵐ[μ] μ.rnDeriv ν := by
   filter_upwards [inv_rnDeriv hμν] with x hx; simp only [Pi.inv_apply, ← hx, inv_inv]
@@ -407,6 +414,7 @@ lemma rnDeriv_mul_rnDeriv {κ : Measure α} [SigmaFinite μ] [SigmaFinite ν] [S
   · exact rnDeriv_ne_top _ _
   · rw [Measure.withDensity_rnDeriv_eq _ _ hμν]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_mul_rnDeriv' {κ : Measure α} [SigmaFinite μ] [SigmaFinite ν] [SigmaFinite κ]
     (hνκ : ν ≪ κ) :
     μ.rnDeriv ν * ν.rnDeriv κ =ᵐ[ν] μ.rnDeriv κ := by
@@ -435,6 +443,7 @@ lemma rnDeriv_eq_one_iff_eq [HaveLebesgueDecomposition μ ν] [SigmaFinite ν] (
 
 section Ratio
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_add_self (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν] :
     μ.rnDeriv (ν + μ) =ᵐ[μ] fun x ↦ (ν.rnDeriv μ x + 1)⁻¹ := by
   have hν_ac : μ ≪ ν + μ := rfl.absolutelyContinuous.add_right' _
@@ -442,6 +451,7 @@ lemma rnDeriv_add_self (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν] :
   rw [Pi.inv_apply, h1, Pi.add_apply, h2, inv_eq_iff_eq_inv] at h3
   rw [h3]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_self_add (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν] :
     μ.rnDeriv (μ + ν) =ᵐ[ν] fun x ↦ μ.rnDeriv ν x / (μ.rnDeriv ν x + 1) := by
   have h_add : (μ + ν).rnDeriv (μ + ν) =ᵐ[ν] μ.rnDeriv (μ + ν) + ν.rnDeriv (μ + ν) :=
@@ -459,6 +469,7 @@ lemma rnDeriv_self_add (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν] :
   have h := add_mul (μ.rnDeriv ν a) 1 (μ.rnDeriv ν a + 1)⁻¹
   rwa [ENNReal.mul_inv_cancel (by simp) (by simp [ha_lt_top.ne])] at h
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_eq_div_rnDeriv_add (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν] :
     μ.rnDeriv ν =ᵐ[ν] fun x ↦ μ.rnDeriv (μ + ν) x / ν.rnDeriv (μ + ν) x := by
   filter_upwards [rnDeriv_add_self ν μ, rnDeriv_self_add μ ν, μ.rnDeriv_lt_top ν]
@@ -468,6 +479,7 @@ lemma rnDeriv_eq_div_rnDeriv_add (μ ν : Measure α) [SigmaFinite μ] [SigmaFin
   · simp
   · simp [ha_lt_top.ne]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_div_rnDeriv_eq_div_rnDeriv_add {ξ : Measure α}
     [SigmaFinite μ] [SigmaFinite ν] [SigmaFinite ξ]
     (hμ : μ ≪ ξ) (hν : ν ≪ ξ) :

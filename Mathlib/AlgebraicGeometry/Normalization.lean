@@ -222,6 +222,7 @@ def normalizationObjIso {U : Y.Opens} (hU : IsAffineOpen U) :
     (by simpa using (f.fromNormalization_preimage ⟨U, hU⟩).symm)).op ≪≫
   (f.normalizationOpenCover.f ⟨U, hU⟩).appIso ⊤ ≪≫ Scheme.ΓSpecIso _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma toNormalization_app_preimage (U : Y.affineOpens) :
     let := (f.app U.1).hom.toAlgebra
@@ -251,6 +252,7 @@ lemma toNormalization_app_preimage (U : Y.affineOpens) :
     ΓSpecIso_naturality_assoc (CommRingCat.ofHom _)]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma fromNormalization_app {U : Y.Opens} (hU : IsAffineOpen U) :

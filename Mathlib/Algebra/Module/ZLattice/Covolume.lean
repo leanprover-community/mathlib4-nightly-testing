@@ -251,6 +251,7 @@ private theorem tendsto_card_le_div''_aux
     (inv_pos_of_pos hc).le, inv_pow, inv_mul_le_iff₀ (pow_pos hc _), mul_one, and_congr_left_iff]
   exact fun _ ↦ ⟨fun h ↦ (smul_inv_smul₀ hc.ne' x) ▸ hX h hc, fun h ↦ hX h (inv_pos_of_pos hc)⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A version of `ZLattice.covolume.tendsto_card_le_div` for the general case;
 see the `Naming conventions` section in the introduction. -/
 theorem tendsto_card_le_div'' [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
