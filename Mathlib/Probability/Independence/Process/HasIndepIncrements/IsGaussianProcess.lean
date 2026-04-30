@@ -96,6 +96,7 @@ noncomputable def incrementsToRestrict (R : Type*) [Semiring R] [AddCommMonoid E
     map_smul' m x := by ext; simp [smul_sum]
     cont := by fun_prop }
 
+set_option backward.defeqAttrib.useBackward true in
 lemma incrementsToRestrict_increments_orderEmbOfFinWithBot_ae_eq_restrict [Bot T] (R : Type*)
     [Semiring R] [AddCommGroup E] [Module R E] [TopologicalSpace E] [ContinuousAdd E]
     {X : T → Ω → E} (h : ∀ᵐ ω ∂P, X ⊥ ω = 0) (I : Finset T) :

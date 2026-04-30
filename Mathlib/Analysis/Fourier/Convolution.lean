@@ -41,6 +41,7 @@ variable [NontriviallyNormedField 𝕜] [NormedAddCommGroup E]
   [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E]
   [NormedSpace 𝕜 F₁] [NormedSpace 𝕜 F₂] [NormedSpace 𝕜 F₃]
 
+set_option backward.defeqAttrib.useBackward true in
 /- The norm of the integrant of the convolution is integrable if the functions are integrable
 and continuous. -/
 theorem integrable_prod_sub (B : F₁ →L[𝕜] F₂ →L[𝕜] F₃) {f₁ : E → F₁} {f₂ : E → F₂}
@@ -200,6 +201,7 @@ theorem fourier_convolution_apply (B : F₁ →L[ℂ] F₂ →L[ℂ] F₃) (f : 
   simp [fourier_convolution, fourier_coe,
     Real.fourier_bilin_convolution_eq B f.integrable g.integrable f.continuous g.continuous]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The convolution on Schwartz functions is equal to the convolution on functions. -/
 theorem convolution_apply (B : F₁ →L[ℂ] F₂ →L[ℂ] F₃) (f : 𝓢(E, F₁)) (g : 𝓢(E, F₂)) (x : E) :
     convolution B f g x = (f ⋆[B] g) x := calc

@@ -100,6 +100,7 @@ theorem finiteIndex_iff_sup_torsion_finiteIndex (s : Subgroup (𝓞 K)ˣ) :
   rw [Subgroup.relIndex_sup_left]
   exact Subgroup.FiniteIndex.index_ne_zero
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open Subgroup in
 /--

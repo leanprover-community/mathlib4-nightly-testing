@@ -78,6 +78,7 @@ protected lemma Submartingale.stoppedAbove [IsFiniteMeasure μ] (hf : Submarting
 
 variable {r : ℝ} {R : ℝ≥0}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem stoppedAbove_le (hr : 0 ≤ r) (hf0 : f 0 = 0)
     (hbdd : ∀ᵐ ω ∂μ, ∀ i, |f (i + 1) ω - f i ω| ≤ R) (i : ℕ) :
@@ -152,6 +153,7 @@ theorem Submartingale.bddAbove_iff_exists_tendsto_aux [IsFiniteMeasure μ] (hf :
   filter_upwards [hf.exists_tendsto_of_abs_bddAbove_aux hf0 hbdd] with ω hω using
     ⟨hω, fun ⟨c, hc⟩ => hc.bddAbove_range⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- One-sided martingale bound: If `f` is a submartingale which has uniformly bounded differences,
 then for almost every `ω`, `f n ω` is bounded above (in `n`) if and only if it converges. -/
 theorem Submartingale.bddAbove_iff_exists_tendsto [IsFiniteMeasure μ] (hf : Submartingale f ℱ μ)
@@ -201,6 +203,7 @@ almost everywhere, the result follows.
 -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Martingale.bddAbove_range_iff_bddBelow_range [IsFiniteMeasure μ] (hf : Martingale f ℱ μ)
     (hbdd : ∀ᵐ ω ∂μ, ∀ i, |f (i + 1) ω - f i ω| ≤ R) :
     ∀ᵐ ω ∂μ, BddAbove (Set.range fun n => f n ω) ↔ BddBelow (Set.range fun n => f n ω) := by
@@ -287,6 +290,7 @@ end BorelCantelli
 
 open BorelCantelli
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An a.e. monotone strongly adapted process `f` with uniformly bounded differences converges to
 `+∞` if and only if its predictable part also converges to `+∞`. -/
 theorem tendsto_sum_indicator_atTop_iff [IsFiniteMeasure μ]

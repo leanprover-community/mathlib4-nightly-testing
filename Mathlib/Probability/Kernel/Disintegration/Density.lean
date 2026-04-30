@@ -434,6 +434,7 @@ lemma density_ae_eq_limitProcess (hκν : fst κ ≤ ν) [IsFiniteKernel ν]
         (fun n x ↦ densityProcess κ ν n a x s) (ν a) := by
   filter_upwards [tendsto_densityProcess_limitProcess hκν a hs] with t ht using ht.limsup_eq
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_m_density (hκν : fst κ ≤ ν) (a : α) [IsFiniteKernel ν]
     {s : Set β} (hs : MeasurableSet s) :
     ∀ᵐ x ∂(ν a),
@@ -721,6 +722,7 @@ lemma tendsto_densityProcess_fst_atTop_ae_of_monotone (κ : Kernel α (γ × β)
   rw [← hx]
   exact tendsto_densityProcess_fst_atTop_univ_of_monotone κ n a x seq hseq hseq_iUnion
 
+set_option backward.defeqAttrib.useBackward true in
 lemma density_fst_univ (κ : Kernel α (γ × β)) [IsFiniteKernel κ] (a : α) :
     ∀ᵐ x ∂(fst κ a), density κ (fst κ) a x univ = 1 := by
   have h := fun n ↦ densityProcess_fst_univ_ae κ n a
