@@ -39,6 +39,7 @@ namespace Lp
 variable (μ ν)
 variable (E : Type*) [NormedAddCommGroup E] {p : ℝ≥0∞} [Fact (1 ≤ p)]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `X` and `Y` be R₁ topological spaces
 with Borel σ-algebras and measures `μ` and `ν`, respectively.
 Suppose that `μ` is inner regular for finite measure sets with respect to compact sets

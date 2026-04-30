@@ -43,6 +43,7 @@ theorem tangentMap_chart {p q : TangentBundle I M} (h : q.1 ∈ (chartAt H p.1).
   · rfl
   · exact mdifferentiableAt_atlas (chart_mem_atlas _ _) h
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The derivative of the inverse of the chart at a base point is the inverse of the chart of the
 tangent bundle, composed with the identification between the tangent bundle of the model space and
 the product space. -/

@@ -44,6 +44,7 @@ lemma hasFiniteIntegral_of_bound [CompactSpace Y] [Zero Y] (f : X → C(Y, E)₀
   filter_upwards [bound_ge, bound_nonneg] with x bound_ge_x bound_nonneg_x
   exact ContinuousMap.norm_le _ bound_nonneg_x |>.mpr bound_ge_x
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A variant of `ContinuousMapZero.hasFiniteIntegral_of_bound` spelled in terms of
 `ContinuousMapZero.mkD`. -/
 lemma hasFiniteIntegral_mkD_of_bound [CompactSpace Y] [Zero Y] (f : X → Y → E) (g : C(Y, E)₀)
@@ -71,6 +72,7 @@ lemma hasFiniteIntegral_mkD_restrict_of_bound {s : Set Y} [CompactSpace s] [Zero
   · simpa [← continuousOn_iff_continuous_restrict]
   · simpa
 
+set_option backward.defeqAttrib.useBackward true in
 lemma aeStronglyMeasurable_mkD_of_uncurry [CompactSpace Y] [Zero Y] [TopologicalSpace X]
     [OpensMeasurableSpace X] [SecondCountableTopologyEither X (C(Y, E))]
     (f : X → Y → E) (g : C(Y, E)₀) (f_cont : Continuous (Function.uncurry f))
@@ -82,6 +84,7 @@ lemma aeStronglyMeasurable_mkD_of_uncurry [CompactSpace Y] [Zero Y] [Topological
   filter_upwards [f_zero] with x zero_x
   rw [mkD_eq_mkD_of_map_zero _ _ zero_x]
 
+set_option backward.defeqAttrib.useBackward true in
 open Set in
 lemma aeStronglyMeasurable_restrict_mkD_of_uncurry [CompactSpace Y] [Zero Y] {s : Set X}
     [TopologicalSpace X] [OpensMeasurableSpace X] [SecondCountableTopologyEither X (C(Y, E))]
@@ -95,6 +98,7 @@ lemma aeStronglyMeasurable_restrict_mkD_of_uncurry [CompactSpace Y] [Zero Y] {s 
   filter_upwards [f_zero] with x zero_x
   rw [mkD_eq_mkD_of_map_zero _ _ zero_x]
 
+set_option backward.defeqAttrib.useBackward true in
 open Set in
 lemma aeStronglyMeasurable_mkD_restrict_of_uncurry {t : Set Y} [CompactSpace t] [Zero t]
     [TopologicalSpace X] [OpensMeasurableSpace X] [SecondCountableTopologyEither X (C(t, E))]
@@ -107,6 +111,7 @@ lemma aeStronglyMeasurable_mkD_restrict_of_uncurry {t : Set Y} [CompactSpace t] 
   filter_upwards [f_zero] with x zero_x
   rw [mkD_eq_mkD_of_map_zero _ _ zero_x]
 
+set_option backward.defeqAttrib.useBackward true in
 open Set in
 lemma aeStronglyMeasurable_restrict_mkD_restrict_of_uncurry {s : Set X} {t : Set Y}
     [CompactSpace t] [Zero t] [TopologicalSpace X] [OpensMeasurableSpace X]
