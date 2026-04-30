@@ -284,6 +284,7 @@ to the approximating linear map.
 -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `f` be a function which is sufficiently close (in the Lipschitz sense) to a given linear
 map `A`. Then it expands the volume of any set by at most `m` for any `m > det A`. -/
 theorem addHaar_image_le_mul_of_det_lt (A : E →L[ℝ] E) {m : ℝ≥0}
@@ -389,6 +390,7 @@ theorem addHaar_image_le_mul_of_det_lt (A : E →L[ℝ] E) {m : ℝ≥0}
   rw [add_zero] at L
   exact ge_of_tendsto L J
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Let `f` be a function which is sufficiently close (in the Lipschitz sense) to a given linear
 map `A`. Then it expands the volume of any set by at least `m` for any `m < det A`. -/
@@ -685,6 +687,7 @@ Lusin-Souslin theorem.
 -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The derivative of a function on a measurable set is almost everywhere measurable on this set
 with respect to Lebesgue measure. Note that, in general, it is not genuinely measurable there,
 as `f'` is not unique (but only on a set of measure `0`, as the argument shows). -/

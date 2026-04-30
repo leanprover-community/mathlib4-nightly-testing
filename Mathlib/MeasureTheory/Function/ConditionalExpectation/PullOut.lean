@@ -48,6 +48,7 @@ variable {Ω : Type*} {m mΩ : MeasurableSpace Ω} {μ : Measure Ω}
   [NormedAddCommGroup F] [NormedSpace ℝ F] [NormedAddCommGroup G] [NormedSpace ℝ G]
   [CompleteSpace G] (B : F →L[ℝ] E →L[ℝ] G)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary lemma for `condExp_bilin_of_stronglyMeasurable_left`. -/
 theorem condExp_stronglyMeasurable_simpleFunc_bilin [CompleteSpace E]
     (hm : m ≤ mΩ) (f : @SimpleFunc Ω m F) {g : Ω → E} (hg : Integrable g μ) :
@@ -131,6 +132,7 @@ theorem condExp_stronglyMeasurable_bilin_of_bound [CompleteSpace E]
       ((fs n).stronglyMeasurable.mono hm).aestronglyMeasurable (ae_of_all _ <| hfs_bound n)
       integrable_condExp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem condExp_aestronglyMeasurable_bilin_of_bound [CompleteSpace E]
     (hm : m ≤ mΩ) [IsFiniteMeasure μ] {f : Ω → F} {g : Ω → E} (hf : AEStronglyMeasurable[m] f μ)
     (hg : Integrable g μ) (c : ℝ) (hf_bound : ∀ᵐ ω ∂μ, ‖f ω‖ ≤ c) :
@@ -147,6 +149,7 @@ theorem condExp_aestronglyMeasurable_bilin_of_bound [CompleteSpace E]
   _ =ᵐ[μ] fun ω ↦ B (f ω) (μ[g | m] ω) := by
     filter_upwards [hf.ae_eq_mk] with ω hω using by rw [hω]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Pull-out property of the conditional expectation. -/
 theorem condExp_bilin_of_stronglyMeasurable_left [CompleteSpace E] {f : Ω → F} {g : Ω → E}
     (hf : StronglyMeasurable[m] f) (hfg : Integrable (fun ω ↦ B (f ω) (g ω)) μ)
@@ -195,6 +198,7 @@ theorem condExp_bilin_of_stronglyMeasurable_right [CompleteSpace F] {f : Ω → 
   simp_rw [← B.flip_apply] at hfg ⊢
   exact condExp_bilin_of_stronglyMeasurable_left B.flip hg hfg hf
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Pull-out property of the conditional expectation. -/
 theorem condExp_bilin_of_aestronglyMeasurable_left [CompleteSpace E]
     {f : Ω → F} {g : Ω → E} (hf : AEStronglyMeasurable[m] f μ)

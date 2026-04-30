@@ -65,6 +65,7 @@ theorem intervalIntegrable_rpow' {r : ℝ} (h : -1 < r) :
     simp only [Pi.smul_apply, smul_eq_mul, log_neg_eq_log, mul_comm,
       rpow_def_of_pos hx.1, rpow_def_of_neg (by linarith [hx.1] : -x < 0)]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The power function `x ↦ x^s` is integrable on `(0, t)` iff `-1 < s`. -/
 lemma integrableOn_Ioo_rpow_iff {s t : ℝ} (ht : 0 < t) :
     IntegrableOn (fun x ↦ x ^ s) (Ioo (0 : ℝ) t) ↔ -1 < s := by

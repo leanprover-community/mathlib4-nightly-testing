@@ -33,6 +33,7 @@ open MeasureTheory Function Set Filter
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   {α : Type*} {f : α → E} {φ : E → ℝ} {m mα : MeasurableSpace α} {μ : Measure α} {s : Set E}
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma Convex.condExp_mem_of_hereditarilyLindelofSpace [IsFiniteMeasure μ]
     [HereditarilyLindelofSpace E] (hm : m ≤ mα) (hf_int : Integrable f μ) (hs : IsClosed s)
     (hc : Convex ℝ s) (hf : ∀ᵐ a ∂μ, f a ∈ s) :
@@ -46,6 +47,7 @@ private lemma Convex.condExp_mem_of_hereditarilyLindelofSpace [IsFiniteMeasure �
   simp_all only [condExp_const, comp_apply]
   exact hb
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma Convex.condExp_mem_of_isFiniteMeasure [IsFiniteMeasure μ] (hm : m ≤ mα)
     (hf_int : Integrable f μ) (hs : IsClosed s) (hc : Convex ℝ s) (hf : ∀ᵐ a ∂μ, f a ∈ s) :
     ∀ᵐ a ∂μ, μ[f | m] a ∈ s := by
@@ -96,6 +98,7 @@ lemma Convex.condExp_mem (hm : m ≤ mα) [SigmaFinite (μ.trim hm)]
   filter_upwards [h1, h2] with a ha hb
   simp_all
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Conditional Jensen's inequality for hereditarily Lindelof Spaces. -/
 private lemma ConvexOn.map_condExp_le_of_hereditarilyLindelofSpace [IsFiniteMeasure μ]
     [HereditarilyLindelofSpace E] (hm : m ≤ mα) (hφ_cvx : ConvexOn ℝ s φ)
@@ -112,6 +115,7 @@ private lemma ConvexOn.map_condExp_le_of_hereditarilyLindelofSpace [IsFiniteMeas
   rw [show φ (μ[f | m] a) = s.restrict φ ⟨μ[f | m] a, hq⟩ by simp, ← hLc2]
   simpa [iSup_congr hp] using ciSup_le hw
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Conditional Jensen's inequality for finite measures. -/
 private theorem ConvexOn.map_condExp_le_of_isFiniteMeasure [IsFiniteMeasure μ] (hm : m ≤ mα)
     (hφ_cvx : ConvexOn ℝ s φ) (hφ_cont : LowerSemicontinuousOn φ s) (hf : ∀ᵐ a ∂μ, f a ∈ s)
@@ -161,6 +165,7 @@ private theorem ConvexOn.map_condExp_le_of_isFiniteMeasure [IsFiniteMeasure μ] 
       · exact hs.preimage Y.subtypeL.continuous
     _ =ᵐ[μ] μ[φ ∘ f | m] := condExp_congr_ae lem3.symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Conditional Jensen's inequality**: in a Banach space `E` with a measure `μ` that is σ-finite
 on a sub-σ-algebra `m`, if `φ : E → ℝ` is convex and lower-semicontinuous on a closed set `s`, then
 for any `f : α → E` such that `f` and `φ ∘ f` are integrable, and `f` lies in `s` a.e., we have
@@ -207,6 +212,7 @@ theorem ConcaveOn.condExp_map_le_univ (hm : m ≤ mα) [SigmaFinite (μ.trim hm)
     condExp_neg (φ ∘ f) m] with a h ha
   simp_all [Pi.neg_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In a Banach space `E` with a measure `μ`, then for any `f : α → E`, we have
 `‖𝔼[f | m]‖ ≤ᵐ[μ] 𝔼[‖f‖ | m]`. -/
 theorem norm_condExp_le : (‖μ[f | m] ·‖) ≤ᵐ[μ] μ[(‖f ·‖) | m] := by

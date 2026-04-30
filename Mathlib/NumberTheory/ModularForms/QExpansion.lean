@@ -615,6 +615,7 @@ lemma qExpansion_of_mul [Γ.HasDetPlusMinusOne] (hh : 0 < h)
     qExpansion h f * qExpansion h g := by
   simpa [DirectSum.of_mul_of] using ModularForm.qExpansion_mul hh hΓ f g
 
+set_option backward.defeqAttrib.useBackward true in
 lemma qExpansion_of_pow [Γ.HasDetPlusMinusOne] (hh : 0 < h)
     (hΓ : h ∈ Γ.strictPeriods) (f : ModularForm Γ k) (n : ℕ) :
     qExpansion h ((((DirectSum.of _ k f)) ^ n) (n * k)) = (qExpansion h f) ^ n := by

@@ -324,6 +324,7 @@ private lemma norm_φ_eq_norm_φ_of_isMinOn {x : F} {z : ℝ × ℝ} (h : IsMinO
   rw [hrel, norm_sub_rev (φ ..)]
   exact (norm_sub_le ..).trans <| by simp [q, aeval_eq_φ, hw]
 
+set_option backward.defeqAttrib.useBackward true in
 open Filter Topology Bornology in
 omit [NormMulClass F] in
 /- Assuming that `‖x - algebraMap ℝ F ·‖` is bounded below by a positive constant, we show that

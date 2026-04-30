@@ -281,6 +281,7 @@ theorem one_fst : (1 : X q).1 = 1 :=
 theorem one_snd : (1 : X q).2 = 0 :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance : Monoid (X q) :=
   { (inferInstance : Mul (X q)), (inferInstance : One (X q)) with
     mul_assoc := fun x y z => by ext <;> dsimp <;> ring
@@ -311,9 +312,11 @@ instance : AddGroupWithOne (X q) :=
     intCast_ofNat := fun n => by ext <;> simp
     intCast_negSucc := fun n => by ext <;> simp }
 
+set_option backward.defeqAttrib.useBackward true in
 theorem left_distrib (x y z : X q) : x * (y + z) = x * y + x * z := by
   ext <;> dsimp <;> ring
 
+set_option backward.defeqAttrib.useBackward true in
 theorem right_distrib (x y z : X q) : (x + y) * z = x * z + y * z := by
   ext <;> dsimp <;> ring
 
@@ -325,6 +328,7 @@ instance : Ring (X q) :=
     mul_zero := fun _ ↦ by ext <;> simp
     zero_mul := fun _ ↦ by ext <;> simp }
 
+set_option backward.defeqAttrib.useBackward true in
 instance : CommRing (X q) :=
   { (inferInstance : Ring (X q)) with
     mul_comm := fun _ _ ↦ by ext <;> dsimp <;> ring }

@@ -336,6 +336,7 @@ ball of radius `1 - D`, with support equal to the ball of radius `1 + D`. -/
 def y (D : ℝ) : E → ℝ :=
   w D ⋆[lsmul ℝ ℝ, μ] φ
 
+set_option backward.defeqAttrib.useBackward true in
 theorem y_neg (D : ℝ) (x : E) : y D (-x) = y D x := by
   apply convolution_neg_of_neg_eq
   · filter_upwards with x
