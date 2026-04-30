@@ -238,6 +238,7 @@ attribute [local instance] normedSpaceTangentSpaceVectorSpace
 
 variable (I)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma eventually_norm_mfderiv_extChartAt_lt (x : M) :
     ∃ C > 0, ∀ᶠ y in 𝓝 x, ‖mfderiv% (extChartAt I x) y‖ < C := by
@@ -259,6 +260,7 @@ lemma eventually_enorm_mfderiv_extChartAt_lt (x : M) :
   simp only [enorm, nnnorm]
   exact_mod_cast hy
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma eventually_norm_mfderivWithin_symm_extChartAt_comp_lt (x : M) :
     ∃ C > 0, ∀ᶠ y in 𝓝 x, ‖mfderiv[range I] (extChartAt I x).symm (extChartAt I x y)‖ < C := by
@@ -272,6 +274,7 @@ lemma eventually_norm_mfderivWithin_symm_extChartAt_comp_lt (x : M) :
     (extChartAt I x).left_inv (by simpa using h'y)
   convert hy using 3 <;> congr
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma eventually_norm_mfderivWithin_symm_extChartAt_lt (x : M) :
     ∃ C > 0, ∀ᶠ y in 𝓝[range I] (extChartAt I x x),
@@ -369,6 +372,7 @@ lemma eventually_riemannianEDist_le_edist_extChartAt (x : M) :
   · simp only [mfderivWithin_eq_fderivWithin]
     exact le_of_eq rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If points are close for the topology, then their Riemannian distance is small. -/
 lemma eventually_riemannianEDist_lt (x : M) {c : ℝ≥0∞} (hc : 0 < c) :
     ∀ᶠ y in 𝓝 x, riemannianEDist I x y < c := by

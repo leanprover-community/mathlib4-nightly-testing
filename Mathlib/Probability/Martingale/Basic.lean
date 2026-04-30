@@ -164,6 +164,7 @@ theorem setIntegral_le [PartialOrder E] [IsOrderedAddMonoid E] [IsOrderedModule 
   refine setIntegral_mono_ae integrable_condExp.integrableOn (hf.integrable i).integrableOn ?_
   filter_upwards [hf.2.1 i j hij] with _ heq using heq
 
+set_option backward.defeqAttrib.useBackward true in
 lemma congr [LE E] (hf : Supermartingale f ℱ μ) (hg : StronglyAdapted ℱ g)
     (h_eq : ∀ t, f t =ᵐ[μ] g t) :
     Supermartingale g ℱ μ := by
@@ -171,6 +172,7 @@ lemma congr [LE E] (hf : Supermartingale f ℱ μ) (hg : StronglyAdapted ℱ g)
   filter_upwards [condExp_ae_le hf hij, condExp_congr_ae (h_eq j), h_eq i] with ω h_le hcond h_eq
   rwa [← hcond, ← h_eq]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem add [Preorder E] [AddLeftMono E] (hf : Supermartingale f ℱ μ)
     (hg : Supermartingale g ℱ μ) : Supermartingale (f + g) ℱ μ := by
   refine ⟨hf.1.add hg.1, fun i j hij => ?_, fun i => (hf.2.2 i).add (hg.2.2 i)⟩
@@ -214,6 +216,7 @@ lemma congr [LE E] (hf : Submartingale f ℱ μ) (hg : StronglyAdapted ℱ g)
   refine ⟨hg, fun i j hij ↦ ?_, fun i ↦ (integrable_congr (h_eq i)).mp (hf.integrable i)⟩
   exact (Filter.eventuallyLE_congr (h_eq i) (condExp_congr_ae (h_eq j))).mp (ae_le_condExp hf hij)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem add [Preorder E] [AddLeftMono E] (hf : Submartingale f ℱ μ)
     (hg : Submartingale g ℱ μ) : Submartingale (f + g) ℱ μ := by
   refine ⟨hf.1.add hg.1, fun i j hij => ?_, fun i => (hf.2.2 i).add (hg.2.2 i)⟩
@@ -272,6 +275,7 @@ end Submartingale
 
 section Submartingale
 
+set_option backward.defeqAttrib.useBackward true in
 theorem submartingale_of_setIntegral_le [SigmaFiniteFiltration μ ℱ]
     {f : ι → Ω → ℝ} (hadp : StronglyAdapted ℱ f)
     (hint : ∀ i, Integrable (f i) μ) (hf : ∀ i j : ι,
@@ -332,6 +336,7 @@ section
 variable {F : Type*} [NormedAddCommGroup F] [PartialOrder F] [NormedSpace ℝ F] [CompleteSpace F]
   [IsOrderedModule ℝ F]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem smul_nonneg {f : ι → Ω → F} {c : ℝ} (hc : 0 ≤ c) (hf : Supermartingale f ℱ μ) :
     Supermartingale (c • f) ℱ μ := by
   refine ⟨hf.1.smul c, fun i j hij => ?_, fun i => (hf.2.2 i).smul c⟩
@@ -400,6 +405,7 @@ section OfSucc
 
 variable [PartialOrder E] [IsOrderedAddMonoid E] [ClosedIciTopology E] [IsOrderedModule ℝ E]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem submartingale_nat [IsFiniteMeasure μ] {f : ℕ → Ω → E} (hadp : StronglyAdapted 𝒢 f)
     (hint : ∀ i, Integrable (f i) μ) (hf : ∀ i, f i ≤ᵐ[μ] μ[f (i + 1) | 𝒢 i]) :
     Submartingale f 𝒢 μ := by
@@ -467,6 +473,7 @@ end Preorder
 
 end SubSuper
 
+set_option backward.defeqAttrib.useBackward true in
 theorem martingale_nat [IsFiniteMeasure μ] {f : ℕ → Ω → E} (hadp : StronglyAdapted 𝒢 f)
     (hint : ∀ i, Integrable (f i) μ) (hf : ∀ i, f i =ᵐ[μ] μ[f (i + 1) | 𝒢 i]) :
     Martingale f 𝒢 μ := by
@@ -545,6 +552,7 @@ section SumSMul
 
 variable [PartialOrder E] [IsOrderedModule ℝ E] [ClosedIciTopology E] [IsOrderedAddMonoid E]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Submartingale.sum_smul_sub [IsFiniteMeasure μ] {R : ℝ} {f : ℕ → Ω → E} {ξ : ℕ → Ω → ℝ}
     (hf : Submartingale f 𝒢 μ) (hξ : StronglyAdapted 𝒢 ξ) (hbdd : ∀ n ω, ξ n ω ≤ R)
     (hnonneg : ∀ n ω, 0 ≤ ξ n ω) :

@@ -1394,6 +1394,7 @@ variable [NormedAddCommGroup H] [NormedSpace ℝ H] [FiniteDimensional ℝ H]
   [MeasurableSpace H] [BorelSpace H]
   [NormedAddCommGroup V] [InnerProductSpace ℂ V]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem inner_toL2_toL2_eq (f g : 𝓢(H, V)) (μ : Measure H := by volume_tac) [μ.HasTemperateGrowth] :
     inner ℂ (f.toLp 2 μ) (g.toLp 2 μ) = ∫ x, inner ℂ (f x) (g x) ∂μ := by

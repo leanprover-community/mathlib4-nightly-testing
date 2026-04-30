@@ -225,6 +225,7 @@ section
 
 variable [SecondCountableTopology ι] [IsFiniteMeasure P]
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma isPreLocalizingSequence_of_isLocalizingSequence_aux'
     {τ : ℕ → Ω → WithTop ι} {σ : ℕ → ℕ → Ω → WithTop ι}
     (hτ : IsLocalizingSequence 𝓕 τ P) (hσ : ∀ n, IsLocalizingSequence 𝓕 (σ n) P) :
@@ -270,6 +271,7 @@ private lemma le_mkStrictMonoAux (x : ℕ → ℕ) : ∀ n, x n ≤ mkStrictMono
   | 0 => by simp [mkStrictMonoAux]
   | n + 1 => by grind [mkStrictMonoAux]
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma isPreLocalizingSequence_of_isLocalizingSequence_aux
     {τ : ℕ → Ω → WithTop ι} {σ : ℕ → ℕ → Ω → WithTop ι}
     (hτ : IsLocalizingSequence 𝓕 τ P) (hσ : ∀ n, IsLocalizingSequence 𝓕 (σ n) P) :
@@ -284,6 +286,7 @@ private lemma isPreLocalizingSequence_of_isLocalizingSequence_aux
   simp [setOf]
   grind
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsLocalizingSequence.isPrelocalizingSequence_inf_extraction
     [NoMaxOrder ι] {τ : ℕ → Ω → WithTop ι} {σ : ℕ → ℕ → Ω → WithTop ι}
     (hτ : IsLocalizingSequence 𝓕 τ P) (hσ : ∀ n, IsLocalizingSequence 𝓕 (σ n) P) :

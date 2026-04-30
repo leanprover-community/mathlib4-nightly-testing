@@ -72,6 +72,7 @@ theorem circleAverage_log_norm_sub_const₀ (h : ‖a‖ < 1) : circleAverage (l
 ## Computing `circleAverage (log ‖· - a‖) 0 1` in case where `‖a‖ = 1`.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 -- Integral computation used in `circleAverage_log_norm_id_sub_const₁`
 private lemma circleAverage_log_norm_sub_const₁_integral :
     ∫ x in 0..(2 * π), log (4 * sin (x / 2) ^ 2) / 2 = 0 := by
@@ -195,6 +196,7 @@ theorem circleAverage_log_norm_add_const_eq_posLog :
   have : (log ‖· + a‖) = (log ‖· - -a‖) := by simp
   simp [this]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 Generalization of `circleAverage_log_norm_sub_const_eq_posLog`: The
 `circleAverage (log ‖· - a‖) c R` equals `log R + log⁺ (|R|⁻¹ * ‖c - a‖)`.

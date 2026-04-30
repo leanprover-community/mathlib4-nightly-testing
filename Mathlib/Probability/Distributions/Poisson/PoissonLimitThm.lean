@@ -44,6 +44,7 @@ open Filter Topology ENNReal
 
 variable {p : ℕ → ℝ} {r : ℝ} (k : ℕ)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_zero_of_tendsto_mul_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 r)) :
     Tendsto p atTop (𝓝 0) := by
   have : (fun n => (n * p n) * (1 / n)) =ᶠ[atTop] p := by
@@ -63,6 +64,7 @@ lemma tendsto_choose_mul_pow_atTop (hr : Tendsto (fun n => n * p n) atTop (𝓝 
   refine (IsEquivalent.tendsto_nhds_iff this).mpr ?_
   simpa [div_eq_mul_inv] using (hr.pow k).mul_const ((k.factorial : ℝ)⁻¹)
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 **Poisson limit Theorem**: If `n * p n → r` as `n → ∞`. Then
 `(n.choose k) * (p n)^k * (1 - p n)^(n - k) → exp (-r) * r^k / k!`.
