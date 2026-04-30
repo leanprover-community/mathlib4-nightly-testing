@@ -175,6 +175,7 @@ end AddCommGroup
 @[simp] lemma toLp_smul [SMul K V] (c : K) (x : V) : toLp p (c • x) = c • (toLp p x) := rfl
 @[simp] lemma ofLp_smul [SMul K V] (c : K) (x : WithLp p V) : ofLp (c • x) = c • ofLp x := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 instance instIsScalarTower [SMul K K'] [SMul K V] [SMul K' V] [IsScalarTower K K' V] :
     IsScalarTower K K' (WithLp p V) where

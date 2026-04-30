@@ -260,6 +260,7 @@ lemma map_radical (I : Ideal R) :
   obtain ⟨s, hs, h⟩ := hn
   refine ⟨s, hs, n + 1, by convert I.mul_mem_left (s ^ n * x) h; ring⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ideal_eq_iInf_comap_map_away {S : Finset R} (hS : Ideal.span (α := R) S = ⊤) (I : Ideal R) :
     I = ⨅ f ∈ S, (I.map (algebraMap R (Localization.Away f))).comap
     (algebraMap R (Localization.Away f)) := by

@@ -25,6 +25,7 @@ theorem lintegral_ofReal_le_lintegral_enorm (f : α → ℝ) :
   rw [Real.norm_eq_abs]
   exact le_abs_self (f x)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem lintegral_enorm_of_ae_nonneg {f : α → ℝ} (h_nonneg : 0 ≤ᵐ[μ] f) :
     ∫⁻ x, ‖f x‖ₑ ∂μ = ∫⁻ x, .ofReal (f x) ∂μ := by
   apply lintegral_congr_ae

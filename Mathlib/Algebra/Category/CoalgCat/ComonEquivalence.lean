@@ -45,6 +45,7 @@ open CategoryTheory MonoidalCategory ComonObj
 
 variable {R : Type u} [CommRing R]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simps counit comul]
 noncomputable instance (X : CoalgCat R) : ComonObj (ModuleCat.of R X) where
   counit := ModuleCat.ofHom Coalgebra.counit

@@ -269,6 +269,7 @@ theorem comul_comp_snd :
 
 @[simp] theorem counit_comp_inl : counit ∘ₗ inl R A B = counit := by ext; simp
 
+set_option backward.defeqAttrib.useBackward true in
 instance instCoalgebra : Coalgebra R (A × B) where
   rTensor_counit_comp_comul := by
     ext : 1

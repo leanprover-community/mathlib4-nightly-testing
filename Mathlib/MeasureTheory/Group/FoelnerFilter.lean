@@ -151,6 +151,7 @@ theorem mean_univ_eq_one (hfoel : IsFoelner G μ u F) :
   filter_upwards [hfoel.eventually_meas_ne_zero, hfoel.eventually_meas_ne_top] with i hi hi'
   simp [ENNReal.div_self hi hi']
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem mean_union_eq_add_of_disjoint (hfoel : IsFoelner G μ u F)
     (s t : Set X) (ht : MeasurableSet t) (hdisj : Disjoint s t) :
@@ -167,6 +168,7 @@ theorem tendsto_meas_smul_symmDiff_smul [SMulInvariantMeasure G X μ]
     Tendsto (fun i ↦ μ ((g • F i) ∆ (h • F i)) / μ (F i)) u (𝓝 0) := by
   simpa [← smul_smul] using hfoel.tendsto_meas_smul_symmDiff (h⁻¹ * g)
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem mean_smul_eq_mean_smul [SMulInvariantMeasure G X μ]
     (hfoel : IsFoelner G μ u F) (g h : G) (s : Set X) :

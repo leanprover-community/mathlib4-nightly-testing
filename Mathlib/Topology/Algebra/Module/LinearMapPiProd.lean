@@ -360,6 +360,7 @@ lemma coprod_comp_inl_inr [ContinuousAdd M₁] [ContinuousAdd M₂] (f : M × M�
     (f ∘L .inl R M M₁).coprod (f ∘L .inr R M M₁) = f := by
   rw [← ContinuousLinearMap.comp_coprod, coprod_inl_inr, comp_id]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Taking the product of two maps with the same codomain is equivalent to taking the product of
 their domains.
 See note [bundled maps over different rings] for why separate `R` and `S` semirings are used.

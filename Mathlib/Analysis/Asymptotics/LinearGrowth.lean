@@ -380,6 +380,7 @@ lemma tendsto_atTop_of_linearGrowthInf_natCast_pos (h : (linearGrowthInf fun n �
   have := tendsto_atTop_of_linearGrowthInf_pos (h.lt_of_le' (linearGrowthInf_natCast_nonneg v))
   exact (tendsto_nhds_top_iff_real.1 this M).mono fun n ↦ by exact_mod_cast le_of_lt
 
+set_option backward.defeqAttrib.useBackward true in
 lemma le_linearGrowthInf_comp (hu : 0 ≤ᶠ[atTop] u) (hv : Tendsto v atTop atTop) :
     (linearGrowthInf fun n ↦ v n : EReal) * linearGrowthInf u ≤ linearGrowthInf (u ∘ v) := by
   have uv_0 : 0 ≤ linearGrowthInf (u ∘ v) := by
@@ -394,6 +395,7 @@ lemma le_linearGrowthInf_comp (hu : 0 ≤ᶠ[atTop] u) (hv : Tendsto v atTop atT
   rw [comp_apply, mul_comm a b, mul_assoc b a]
   exact b_uvn.trans' <| by gcongr
 
+set_option backward.defeqAttrib.useBackward true in
 lemma linearGrowthSup_comp_le (hu : ∃ᶠ n in atTop, 0 ≤ u n)
     (hv₀ : (linearGrowthSup fun n ↦ v n : EReal) ≠ 0)
     (hv₁ : (linearGrowthSup fun n ↦ v n : EReal) ≠ ⊤) (hv₂ : Tendsto v atTop atTop) :
@@ -444,6 +446,7 @@ lemma linearGrowthSup_comp_nonneg (h : Monotone u) (h' : u ≠ ⊥) (hv : Tendst
     0 ≤ linearGrowthSup (u ∘ v) :=
   (linearGrowthInf_comp_nonneg h h' hv).trans linearGrowthInf_le_linearGrowthSup
 
+set_option backward.defeqAttrib.useBackward true in
 lemma _root_.Monotone.linearGrowthInf_comp_le (h : Monotone u)
     (hv₀ : (linearGrowthSup fun n ↦ v n : EReal) ≠ 0)
     (hv₁ : (linearGrowthSup fun n ↦ v n : EReal) ≠ ⊤) :

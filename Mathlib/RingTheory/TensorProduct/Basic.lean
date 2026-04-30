@@ -173,6 +173,7 @@ instance instNonUnitalNonAssocSemiring : NonUnitalNonAssocSemiring (A ⊗[R] B) 
   zero_mul a := by simp [HMul.hMul, Mul.mul]
   mul_zero a := by simp [HMul.hMul, Mul.mul]
 
+set_option backward.defeqAttrib.useBackward true in
 -- we want `isScalarTower_right` to take priority since it's better for unification elsewhere
 instance (priority := 100) isScalarTower_right [Monoid S] [DistribMulAction S A]
     [IsScalarTower S A A] [SMulCommClass R S A] : IsScalarTower S (A ⊗[R] B) (A ⊗[R] B) where
@@ -188,6 +189,7 @@ instance (priority := 100) isScalarTower_right [Monoid S] [DistribMulAction S A]
       | add x y hx hy => simp [smul_add, add_mul _, *]
     | add x y hx hy => simp [smul_add, mul_add _, *]
 
+set_option backward.defeqAttrib.useBackward true in
 -- we want `Algebra.to_smulCommClass` to take priority since it's better for unification elsewhere
 instance (priority := 100) sMulCommClass_right [Monoid S] [DistribMulAction S A]
     [SMulCommClass S A A] [SMulCommClass R S A] : SMulCommClass S (A ⊗[R] B) (A ⊗[R] B) where
@@ -340,6 +342,7 @@ theorem includeLeftRingHom_comp_algebraMap :
 section ext
 variable [Algebra R S] [Algebra S C] [IsScalarTower R S A] [IsScalarTower R S C]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A version of `TensorProduct.ext` for `AlgHom`.
 
 Using this as the `@[ext]` lemma instead of `Algebra.TensorProduct.ext'` allows `ext` to apply

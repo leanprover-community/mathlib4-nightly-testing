@@ -242,6 +242,7 @@ theorem ite_ae_eq_of_measure_zero {γ} (f : α → γ) (g : α → γ) (s : Set 
   conv_rhs => rw [← compl_compl s]
   rwa [Set.compl_subset_compl]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ite_ae_eq_of_measure_compl_zero {γ} (f : α → γ) (g : α → γ)
     (s : Set α) [DecidablePred (· ∈ s)] (hs_zero : μ sᶜ = 0) :
     (fun x => ite (x ∈ s) (f x) (g x)) =ᵐ[μ] f := by

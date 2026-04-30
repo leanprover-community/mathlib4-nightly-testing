@@ -100,6 +100,7 @@ variable {R : Type*} [Semiring R] {M : Type*} [TopologicalSpace M] [AddCommMonoi
 
 variable (R φ)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `I` and `J` are complementary index sets, the product of the kernels of the `J`th projections
 of `φ` is linearly equivalent to the product over `I`. -/
 def iInfKerProjEquiv {I J : Set ι} [DecidablePred fun i => i ∈ I] (hd : Disjoint I J)
@@ -458,6 +459,7 @@ variable (R M N : Type*) [Semiring R]
   [TopologicalSpace M] [AddCommMonoid M] [TopologicalSpace N] [AddCommMonoid N]
   [Unique N] [Module R M] [Module R N]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The natural equivalence `M × N ≃L[R] M` for any `Unique` type `N`.
 This is `Equiv.prodUnique` as a continuous linear equivalence. -/
 def prodUnique : (M × N) ≃L[R] M where
@@ -478,6 +480,7 @@ lemma prodUnique_apply (x : M × N) : prodUnique R M N x = x.1 := rfl
 @[simp]
 lemma prodUnique_symm_apply (x : M) : (prodUnique R M N).symm x = (x, default) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The natural equivalence `N × M ≃L[R] M` for any `Unique` type `N`.
 This is `Equiv.uniqueProd` as a continuous linear equivalence. -/
 def uniqueProd : (N × M) ≃L[R] M where
@@ -1208,6 +1211,7 @@ theorem ringInverse_equiv (e : M ≃L[R] M) : (↑e)⁻¹ʳ = inverse (e : M →
   simp
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `ContinuousLinearEquiv.inverse` can be written in terms of `Ring.inverse` for the
 ring of self-maps of the domain. -/
 theorem inverse_eq_ringInverse (e : M ≃L[R] M₂) (f : M →L[R] M₂) :
@@ -1416,6 +1420,7 @@ namespace MulOpposite
 variable (R : Type*) [Semiring R] [τR : TopologicalSpace R] [IsTopologicalSemiring R]
   {M : Type*} [AddCommMonoid M] [Module R M] [TopologicalSpace M] [ContinuousSMul R M]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `op` is a continuous linear equivalence. -/
 @[simps!]
 def opContinuousLinearEquiv : M ≃L[R] Mᵐᵒᵖ where

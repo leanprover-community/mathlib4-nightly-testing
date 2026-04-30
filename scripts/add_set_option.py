@@ -416,8 +416,8 @@ def main():
     )
     parser.add_argument(
         "--value",
-        default="false",
-        help="Value to set the option to (default: false)",
+        default=None,
+        help="Value to set the option to (default: per-option, see TRUE_VALUED_OPTIONS)",
     )
     parser.add_argument(
         "--max-workers",

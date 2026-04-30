@@ -119,6 +119,7 @@ theorem Measurable.mul [MeasurableMul₂ M] (hf : Measurable f) (hg : Measurable
     Measurable fun a => f a * g a :=
   measurable_mul.comp (hf.prodMk hg)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Compositional version of `Measurable.mul` for use by `fun_prop`. -/
 @[to_additive (attr := fun_prop)
 /-- Compositional version of `Measurable.add` for use by `fun_prop`. -/]
@@ -272,6 +273,7 @@ theorem Measurable.div [MeasurableDiv₂ G] (hf : Measurable f) (hg : Measurable
     Measurable fun a => f a / g a :=
   measurable_div.comp (hf.prodMk hg)
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := fun_prop)]
 lemma Measurable.div' [MeasurableDiv₂ G] {f g : α → β → G} {h : α → β} (hf : Measurable ↿f)
     (hg : Measurable ↿g) (hh : Measurable h) : Measurable fun a ↦ (f a / g a) (h a) := by
@@ -546,6 +548,7 @@ theorem Measurable.smul [MeasurableSMul₂ M X] (hf : Measurable f) (hg : Measur
     Measurable fun x => f x • g x :=
   measurable_smul.comp (hf.prodMk hg)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Compositional version of `Measurable.smul` for use by `fun_prop`. -/
 @[to_additive (attr := fun_prop)
 /-- Compositional version of `Measurable.vadd` for use by `fun_prop`. -/]

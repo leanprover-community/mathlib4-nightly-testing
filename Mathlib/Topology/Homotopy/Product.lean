@@ -60,6 +60,7 @@ section Pi
 variable {I A : Type*} {X : I → Type*} [∀ i, TopologicalSpace (X i)] [TopologicalSpace A]
   {f g : ∀ i, C(A, X i)} {S : Set A}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The relative product homotopy of `homotopies` between functions `f` and `g` -/
 @[simps!]
 def HomotopyRel.pi (homotopies : ∀ i : I, HomotopyRel (f i) (g i) S) :

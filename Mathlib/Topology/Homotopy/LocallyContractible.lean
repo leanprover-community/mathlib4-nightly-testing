@@ -166,6 +166,7 @@ end Products
 
 section Implications
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The strong notion (contractible neighborhood basis)
 implies the classical notion (null-homotopic inclusions).
 The converse is false by the Borsuk-Mazurkiewicz counterexample [borsuk_mazurkiewicz1934];

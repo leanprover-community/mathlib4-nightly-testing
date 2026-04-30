@@ -69,6 +69,7 @@ def cokernelIsColimit : IsColimit (cokernelCocone f) :=
     apply (cancel_epi (ofHom f.hom.range.mkQ)).1
     exact h
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Construct an `IsColimit` structure of cokernels given `Function.Exact`. -/
 noncomputable
 def isColimitCokernelCofork (f : M ⟶ N) (g : N ⟶ P) (H : Function.Exact f.hom g.hom)

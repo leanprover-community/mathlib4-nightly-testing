@@ -197,6 +197,7 @@ lemma currySum_apply_inl_inr (p : Ω^ (M ⊕ N) X x) (y : I^(M ⊕ N)) :
     currySum x p (y ∘ Sum.inl) (y ∘ Sum.inr) = p y := by
   simp [currySum, sumArrowHomeomorphProdArrow, Equiv.sumArrowEquivProdArrow]
 
+set_option backward.defeqAttrib.useBackward true in
 @[fun_prop]
 lemma continuous_currySum : Continuous (currySum x (M := M) (N := N)) :=
   ContinuousMap.continuous_of_continuous_uncurry _ <| Continuous.subtype_mk
@@ -341,6 +342,7 @@ theorem homotopyTo_apply (i : N) {p q : Ω^ N X x} (H : p.1.HomotopyRel q.1 <| C
     homotopyTo i H t tₙ = H (t.fst, Cube.insertAt i (t.snd, tₙ)) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem homotopicTo (i : N) {p q : Ω^ N X x} :
     Homotopic p q → (toLoop i p).Homotopic (toLoop i q) := by
   refine Nonempty.map fun H ↦ ⟨⟨⟨fun t ↦ ⟨homotopyTo i H t, ?_⟩, ?_⟩, ?_, ?_⟩, ?_⟩

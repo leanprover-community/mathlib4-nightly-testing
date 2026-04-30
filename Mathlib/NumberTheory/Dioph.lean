@@ -256,6 +256,7 @@ theorem ext (d : Dioph S) (H : ∀ v, v ∈ S ↔ v ∈ S') : Dioph S' := by rwa
 theorem of_no_dummies (S : Set (α → ℕ)) (p : Poly α) (h : ∀ v, S v ↔ p v = 0) : Dioph S :=
   ⟨PEmpty, ⟨p.map inl, fun v => (h v).trans ⟨fun h => ⟨PEmpty.elim, h⟩, fun ⟨_, ht⟩ => ht⟩⟩⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem inject_dummies_lem (f : β → γ) (g : γ → Option β) (inv : ∀ x, g (f x) = some x)
     (p : Poly (α ⊕ β)) (v : α → ℕ) :
     (∃ t, p (v ⊗ t) = 0) ↔ ∃ t, p.map (inl ⊗ inr ∘ f) (v ⊗ t) = 0 := by
@@ -279,6 +280,7 @@ theorem reindex_dioph (f : α → β) : Dioph S → Dioph {v | v ∘ f ∈ S}
           suffices v ∘ f ⊗ t = (v ⊗ t) ∘ (inl ∘ f ⊗ inr) by simp [this]
           funext fun s => by rcases s with a | b <;> rfl⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem DiophList.forall (l : List (Set <| α → ℕ)) (d : l.Forall Dioph) :
     Dioph {v | l.Forall fun S : Set (α → ℕ) => v ∈ S} := by
   suffices ∃ (β : _) (pl : List (Poly (α ⊕ β))), ∀ v, List.Forall (fun S : Set _ => S v) l ↔
@@ -418,6 +420,7 @@ open Vector3
 
 open scoped Vector3
 
+set_option backward.defeqAttrib.useBackward true in
 theorem diophFn_vec_comp1 {S : Set (Vector3 ℕ (succ n))} (d : Dioph S) {f : Vector3 ℕ n → ℕ}
     (df : DiophFn f) : Dioph {v : Vector3 ℕ n | (f v::v) ∈ S} :=
   Dioph.ext (diophFn_comp1 (reindex_dioph _ (none :: some) d) df) (fun v => by
@@ -427,6 +430,7 @@ theorem diophFn_vec_comp1 {S : Set (Vector3 ℕ (succ n))} (d : Dioph S) {f : Ve
     congr 1
     ext x; cases x <;> rfl)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Deleting the first component preserves the Diophantine property. -/
 theorem vec_ex1_dioph (n) {S : Set (Vector3 ℕ (succ n))} (d : Dioph S) :
@@ -443,6 +447,7 @@ theorem diophFn_vec (f : Vector3 ℕ n → ℕ) : DiophFn f ↔ Dioph {v | f (v 
 theorem diophPFun_vec (f : Vector3 ℕ n →. ℕ) : DiophPFun f ↔ Dioph {v | f.graph (v ∘ fs, v fz)} :=
   ⟨reindex_dioph _ (fz ::ₒ fs), reindex_dioph _ (none::some)⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem diophFn_compn :
     ∀ {n} {S : Set (α ⊕ (Fin2 n) → ℕ)} (_ : Dioph S) {f : Vector3 ((α → ℕ) → ℕ) n}
       (_ : VectorAllP DiophFn f), Dioph {v : α → ℕ | (v ⊗ fun i => f i v) ∈ S}

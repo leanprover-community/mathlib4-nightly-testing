@@ -338,6 +338,7 @@ theorem isUniformEmbedding {E₁ E₂ : Type*} [UniformSpace E₁] [UniformSpace
   e.toAlgEquiv.isUniformEmbedding e.toContinuousAlgHom.uniformContinuous
     e.symm.toContinuousAlgHom.uniformContinuous
 
+set_option backward.defeqAttrib.useBackward true in
 theorem _root_.AlgEquiv.isUniformEmbedding {E₁ E₂ : Type*} [UniformSpace E₁] [UniformSpace E₂]
     [Ring E₁] [IsUniformAddGroup E₁] [Algebra R E₁] [Ring E₂] [IsUniformAddGroup E₂] [Algebra R E₂]
     (e : E₁ ≃ₐ[R] E₂) (h₁ : Continuous e) (h₂ : Continuous e.symm) :

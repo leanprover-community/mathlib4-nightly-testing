@@ -125,6 +125,7 @@ noncomputable section NonUnitalSemiring
 variable [CommSemiring R] [∀ i, NonUnitalSemiring (A i)]
 variable [∀ i, Module R (A i)] [∀ i, SMulCommClass R (A i) (A i)] [∀ i, IsScalarTower R (A i) (A i)]
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma mul_assoc (x y z : ⨂[R] i, A i) : mul (mul x y) z = mul x (mul y z) := by
   -- restate as an equality of morphisms so that we can use `ext`
   suffices LinearMap.llcomp R _ _ _ mul ∘ₗ mul =
@@ -242,6 +243,7 @@ noncomputable section CommSemiring
 
 variable [CommSemiring R] [∀ i, CommSemiring (A i)] [∀ i, Algebra R (A i)]
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma mul_comm (x y : ⨂[R] i, A i) : mul x y = mul y x := by
   suffices mul (R := R) (A := A) = mul.flip from
     DFunLike.congr_fun (DFunLike.congr_fun this x) y

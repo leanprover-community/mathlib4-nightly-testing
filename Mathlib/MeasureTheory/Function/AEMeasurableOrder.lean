@@ -29,6 +29,7 @@ open MeasureTheory Set TopologicalSpace
 
 open ENNReal NNReal
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function `f : α → β` is such that the level sets `{f < p}` and `{q < f}` have measurable
 supersets which are disjoint up to measure zero when `p < q`, then `f` is almost-everywhere
 measurable. It is even enough to have this for `p` and `q` in a countable dense set. -/

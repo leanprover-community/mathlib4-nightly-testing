@@ -35,6 +35,7 @@ variable {α X Y Z : Type*}
   [TopologicalSpace Z]
   {μ : Measure X} {ν : Measure Y} [μ.InnerRegularCompactLTTop] [IsLocallyFiniteMeasure ν]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `X` and `Y` be R₁ topological spaces
 with Borel σ-algebras and measures `μ` and `ν`, respectively.
 Suppose that `μ` is inner regular for finite measure sets with respect to compact sets
@@ -98,6 +99,7 @@ theorem tendsto_measure_symmDiff_preimage_nhds_zero
     ← hg.measure_preimage hs, ← measure_diff_le_iff_le_add hKm hKg.subset_preimage hK']
   exact hKμ.le
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `f : Z → C(X, Y)` be a continuous (in the compact open topology) family
 of continuous measure-preserving maps.
 Let `t : Set Y` be a null measurable set of finite measure.

@@ -199,6 +199,7 @@ theorem _root_.nullMeasurableSet_eq_fun [MeasurableEq β]
     NullMeasurableSet { x | f x = g x } μ :=
   (hf.prodMk hg).nullMeasurableSet_preimage measurableSet_diagonal
 
+set_option backward.defeqAttrib.useBackward true in
 theorem exists_ae_eq_range_subset (H : AEMeasurable f μ) {t : Set β} (ht : ∀ᵐ x ∂μ, f x ∈ t)
     (h₀ : t.Nonempty) : ∃ g, Measurable g ∧ range g ⊆ t ∧ f =ᵐ[μ] g := by
   classical
