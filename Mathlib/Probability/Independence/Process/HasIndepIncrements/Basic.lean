@@ -99,6 +99,7 @@ lemma HasIndepIncrements.indepFun_sub_sub [Sub E] (hX : HasIndepIncrements X P) 
     | _ => t
   exact hX.nat (t := τ) (fun _ ↦ by grind) |>.indepFun (by grind : 0 ≠ 1)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma HasIndepIncrements.indepFun_eval_sub [SubNegZeroMonoid E] (hX : HasIndepIncrements X P)
     {r s t : T} (hrs : r ≤ s) (hst : s ≤ t) (h : ∀ᵐ ω ∂P, X r ω = 0) :
     (X s) ⟂ᵢ[P] (X t - X s) := by

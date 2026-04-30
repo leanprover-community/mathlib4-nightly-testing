@@ -332,6 +332,7 @@ theorem cyclotomicCharacter.toZModPow (p : ℕ) [Fact p.Prime] {n : ℕ}
         (HasEnoughRootsOfUnity.natCard_rootsOfUnity L (p ^ n))) g).val :=
   toZModPow_toFun _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 open IntermediateField in
 lemma cyclotomicCharacter.continuous (p : ℕ) [Fact p.Prime]
     (K L : Type*) [Field K] [Field L] [Algebra K L] :

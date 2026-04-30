@@ -88,6 +88,7 @@ variable {R M} {ι : Type*} [LinearOrder ι]
   (x : ι → M) (f : ι → Module.Dual R M)
   (h₁ : ∀ i, f i (x i) = 1) (h₀ : ∀ ⦃i j⦄, i ≠ j → f i (x j) = 0) (n : ℕ)
 
+set_option backward.defeqAttrib.useBackward true in
 include h₁ h₀ in
 lemma pairingDual_apply_apply_eq_one (a : Fin n ↪o ι) :
     pairingDual R M n (ιMulti _ _ (f ∘ a)) (ιMulti _ _ (x ∘ a)) = 1 := by
@@ -101,6 +102,7 @@ lemma pairingDual_apply_apply_eq_one (a : Fin n ↪o ι) :
     simp only [h₁, Matrix.one_apply_eq]
   · rw [h₀ (by simpa using Ne.symm hij), Matrix.one_apply_ne hij]
 
+set_option backward.defeqAttrib.useBackward true in
 include h₀ in
 lemma pairingDual_apply_apply_eq_one_zero (a b : Fin n ↪o ι) (h : a ≠ b) :
     pairingDual R M n (ιMulti _ _ (f ∘ a)) (ιMulti _ _ (x ∘ b)) = 0 := by

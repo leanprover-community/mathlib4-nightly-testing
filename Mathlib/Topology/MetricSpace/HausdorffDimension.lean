@@ -514,6 +514,7 @@ lemma hausdorffMeasure_of_finrank_lt [MeasurableSpace E] [BorelSpace E] {d : ℝ
   rw [dimH_univ_eq_finrank]
   exact mod_cast hd
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Hausdorff dimension of a non-degenerate segment in a real normed space is 1. -/
 theorem dimH_segment {x y : E} (h : x ≠ y) :
     dimH (segment ℝ x y) = 1 := by

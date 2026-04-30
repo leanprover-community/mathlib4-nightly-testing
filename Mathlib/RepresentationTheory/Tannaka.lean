@@ -111,6 +111,7 @@ end definitions
 
 variable [Finite G]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma equivHom_injective [Nontrivial k] : Function.Injective (equivHom k G) := by
   intro s t h
@@ -176,6 +177,7 @@ def ofRightFDRep [Fintype G] (X : FDRep k G) (v : X) : rightFDRep ⟶ X where
     have := sum_map univ (mulRightEmbedding t⁻¹) (φ_term X (rightRegular t f) v)
     simpa [φ_term] using this
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma toRightFDRepComp_injective {η₁ η₂ : Aut (forget k G)}
     (h : η₁.hom.hom.app rightFDRep = η₂.hom.hom.app rightFDRep) : η₁ = η₂ := by
@@ -196,6 +198,7 @@ def leftRegularFDRepHom (s : G) : End (rightFDRep : FDRep k G) where
     apply congrArg f
     exact mul_assoc ..
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma toRightFDRepComp_in_rightRegular [IsDomain k] (η : Aut (forget k G)) :
     ∃ (s : G), (η.hom.hom.app rightFDRep).hom.hom = rightRegular s := by

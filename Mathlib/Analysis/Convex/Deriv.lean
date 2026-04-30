@@ -227,6 +227,7 @@ theorem concaveOn_of_deriv2_nonpos {D : Set ℝ} (hD : Convex ℝ D) {f : ℝ �
         rwa [interior_interior]).concaveOn_of_deriv
     hD hf hf'
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function `f` is continuous on a convex set `D ⊆ ℝ`, is twice differentiable on its
 interior, and `f''` is nonnegative on the interior, then `f` is convex on `D`. -/
 lemma convexOn_of_hasDerivWithinAt2_nonneg {D : Set ℝ} (hD : Convex ℝ D) {f f' f'' : ℝ → ℝ}
@@ -243,6 +244,7 @@ lemma convexOn_of_hasDerivWithinAt2_nonneg {D : Set ℝ} (hD : Convex ℝ D) {f 
     rw [deriv_eqOn isOpen_interior (fun y hy ↦ ?_) hx]
     exact (hf'' _ hy).congr this <| by rw [this hy]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function `f` is continuous on a convex set `D ⊆ ℝ`, is twice differentiable on its
 interior, and `f''` is nonpositive on the interior, then `f` is concave on `D`. -/
 lemma concaveOn_of_hasDerivWithinAt2_nonpos {D : Set ℝ} (hD : Convex ℝ D) {f f' f'' : ℝ → ℝ}
