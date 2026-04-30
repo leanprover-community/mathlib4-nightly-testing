@@ -408,8 +408,12 @@ alias derivativeFinsupp_apply_toFun := derivativeFinsupp_apply_apply
 @[simp]
 theorem support_derivativeFinsupp_subset_range {p : R[X]} {n : ℕ} (h : p.natDegree < n) :
     (derivativeFinsupp p).support ⊆ range n := by
-  dsimp [derivativeFinsupp]
-  exact Finsupp.support_onFinset_subset.trans (Finset.range_subset_range.mpr h)
+  refine fun i hi ↦ ?_
+  rw [Finset.mem_range]
+  by_contra hi'
+  apply (Finsupp.mem_support_iff.mp hi)
+  rw [derivativeFinsupp_apply_apply]
+  exact iterate_derivative_eq_zero (Nat.lt_of_lt_of_le h (not_lt.mp hi'))
 
 @[simp]
 theorem derivativeFinsupp_C (r : R) : derivativeFinsupp (C r : R[X]) = .single 0 (C r) := by

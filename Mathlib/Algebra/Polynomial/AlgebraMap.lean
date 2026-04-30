@@ -51,6 +51,7 @@ section CommSemiring
 variable [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
 variable {p q r : R[X]}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Note that this instance also provides `Algebra R R[X]`. -/
 instance algebraOfAlgebra : Algebra R A[X] where
   smul_def' r p :=

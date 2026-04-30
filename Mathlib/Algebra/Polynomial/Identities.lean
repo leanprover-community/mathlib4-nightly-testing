@@ -99,6 +99,7 @@ def powSubPowFactor (x y : R) : ∀ i : ℕ, { z : R // x ^ i - y ^ i = z * (x -
     exists z * x + y ^ (k + 1)
     linear_combination (norm := ring) x * hz
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For any polynomial `f`, `f.eval x - f.eval y` can be expressed as `z * (x - y)`
 for some `z` in the ring.
 -/

@@ -149,6 +149,7 @@ def killCompl : MvPolynomial τ R →ₐ[R] MvPolynomial σ R :=
 
 theorem killCompl_C (r : R) : killCompl hf (C r) = C r := algHom_C _ _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem killCompl_comp_rename : (killCompl hf).comp (rename f) = AlgHom.id R _ :=
   algHom_ext fun i => by
     dsimp

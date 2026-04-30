@@ -104,12 +104,13 @@ In particular this provides the instance `Algebra R R[M]`. -/]
 instance algebra : Algebra R A[M] where
   algebraMap := singleOneRingHom.comp (algebraMap R A)
   smul_def' := fun r a => by
-    ext
-    dsimp
+    ext m
+    change r • a m = ((single (1 : M) ((algebraMap R A) r) : A[M]) * a) m
     rw [single_one_mul_apply, Algebra.smul_def]
   commutes' := fun r f => by
-    ext
-    dsimp
+    ext m
+    change ((single (1 : M) ((algebraMap R A) r) : A[M]) * f) m =
+      (f * (single (1 : M) ((algebraMap R A) r) : A[M])) m
     rw [single_one_mul_apply, mul_single_one_apply, Algebra.commutes]
 
 /-- `MonoidAlgebra.single 1` as an `AlgHom` -/
@@ -485,6 +486,7 @@ variable [Monoid M] [CommSemiring R] {V W : Type*} [AddCommMonoid V] [Module R V
   (f : V →ₗ[R] W)
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
 /-- Build a `R[M]`-linear map from a `R`-linear map and evidence that it is `M`-equivariant. -/
 def equivariantOfLinearOfComm
     (h : ∀ (g : M) (v : V), f (single g (1 : R) • v) = single g (1 : R) • f v) :
