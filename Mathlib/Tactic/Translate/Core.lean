@@ -831,9 +831,12 @@ partial def transformDeclRec (t : TranslateData) (cfg : Config) (rootSrc rootTgt
   addDeclarationRangesFromSyntax tgt (← getRef) cfg.ref
   if isProtected (← getEnv) src then
     modifyEnv (addProtected · tgt)
-  if defeqAttr.hasTag (← getEnv) src then
+  if backwardDefeqAttr.hasTag (← getEnv) src then
     /- It can be that `src` holds reflexively but `tgt` doesn't, so we need to use `inferDefEqAttr`.
-    For example in `Ici_inter_Iic : Ici a ∩ Iic b = Icc a b := rfl`. -/
+    For example in `Ici_inter_Iic : Ici a ∩ Iic b = Icc a b := rfl`.
+    Note: `[defeq]` is a subset of `[backward_defeq]`, so checking `backwardDefeqAttr` covers
+    both. Without this, `:= rfl` lemmas auto-tagged `[backward_defeq]` would lose their tag in
+    the `to_additive`-generated version. -/
     MetaM.run' <| inferDefEqAttr tgt
   if let some matcherInfo ← getMatcherInfo? src then
     Match.addMatcherInfo tgt matcherInfo
