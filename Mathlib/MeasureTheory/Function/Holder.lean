@@ -82,6 +82,7 @@ lemma norm_holder_apply_apply_le (f : Lp E p μ) (g : Lp F q μ) :
     ‖B.holder r f g‖ ≤ ‖B‖ * ‖f‖ * ‖g‖ :=
   NNReal.coe_le_coe.mpr <| nnnorm_holder_apply_apply_le B f g
 
+set_option backward.defeqAttrib.useBackward true in
 lemma holder_add_left (f₁ f₂ : Lp E p μ) (g : Lp F q μ) :
     B.holder r (f₁ + f₂) g = B.holder r f₁ g + B.holder r f₂ g := by
   simp only [holder, ← MemLp.toLp_add]
@@ -89,6 +90,7 @@ lemma holder_add_left (f₁ f₂ : Lp E p μ) (g : Lp F q μ) :
   filter_upwards [AEEqFun.coeFn_add f₁.val f₂.val] with x hx
   simp [hx]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma holder_add_right (f : Lp E p μ) (g₁ g₂ : Lp F q μ) :
     B.holder r f (g₁ + g₂) = B.holder r f g₁ + B.holder r f g₂ := by
   simp only [holder, ← MemLp.toLp_add]
@@ -96,6 +98,7 @@ lemma holder_add_right (f : Lp E p μ) (g₁ g₂ : Lp F q μ) :
   filter_upwards [AEEqFun.coeFn_add g₁.val g₂.val] with x hx
   simp [hx]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma holder_smul_left (c : 𝕜) (f : Lp E p μ) (g : Lp F q μ) :
     B.holder r (c • f) g = c • B.holder r f g := by
   simp only [holder, ← MemLp.toLp_const_smul]
@@ -103,6 +106,7 @@ lemma holder_smul_left (c : 𝕜) (f : Lp E p μ) (g : Lp F q μ) :
   filter_upwards [Lp.coeFn_smul c f] with x hx
   simp [hx]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma holder_smul_right (c : 𝕜) (f : Lp E p μ) (g : Lp F q μ) :
     B.holder r f (c • g) = c • B.holder r f g := by
   simp only [holder, ← MemLp.toLp_const_smul]
@@ -198,6 +202,7 @@ section Module
 
 variable [NormedRing 𝕜] [NormedAddCommGroup E] [Module 𝕜 E] [IsBoundedSMul 𝕜 E]
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma smul_add (f₁ f₂ : Lp 𝕜 p μ) (g : Lp E q μ) :
     (f₁ + f₂) • g = f₁ • g + f₂ • g := by
   simp only [smul_def, ← MemLp.toLp_add]
@@ -205,6 +210,7 @@ protected lemma smul_add (f₁ f₂ : Lp 𝕜 p μ) (g : Lp E q μ) :
   filter_upwards [AEEqFun.coeFn_add f₁.val f₂.val] with x hx
   simp [hx, add_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma add_smul (f : Lp 𝕜 p μ) (g₁ g₂ : Lp E q μ) :
     f • (g₁ + g₂) = f • g₁ + f • g₂ := by
   simp only [smul_def, ← MemLp.toLp_add]
@@ -212,6 +218,7 @@ protected lemma add_smul (f : Lp 𝕜 p μ) (g₁ g₂ : Lp E q μ) :
   filter_upwards [AEEqFun.coeFn_add g₁.val g₂.val] with x hx
   simp [hx, smul_add]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (E q) in
 @[simp]
 protected lemma smul_zero (f : Lp 𝕜 p μ) :
@@ -222,6 +229,7 @@ protected lemma smul_zero (f : Lp 𝕜 p μ) :
   rw [Pi.smul_apply', hx]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 variable (𝕜 p) in
 @[simp]
 protected lemma zero_smul (f : Lp E q μ) :
@@ -248,6 +256,7 @@ protected lemma neg_smul_neg (f : Lp 𝕜 p μ) (g : Lp E q μ) :
 
 variable [NormedRing 𝕜'] [Module 𝕜' E] [Module 𝕜' 𝕜] [IsBoundedSMul 𝕜' E] [IsBoundedSMul 𝕜' 𝕜]
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma smul_assoc [IsScalarTower 𝕜' 𝕜 E]
     (c : 𝕜') (f : Lp 𝕜 p μ) (g : Lp E q μ) :
     (c • f) • g = c • (f • g) := by
@@ -256,6 +265,7 @@ protected lemma smul_assoc [IsScalarTower 𝕜' 𝕜 E]
   filter_upwards [Lp.coeFn_smul c f] with x hx
   simp [-smul_eq_mul, hx]
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma smul_comm [SMulCommClass 𝕜' 𝕜 E]
     (c : 𝕜') (f : Lp 𝕜 p μ) (g : Lp E q μ) :
     c • f • g = f • c • g := by

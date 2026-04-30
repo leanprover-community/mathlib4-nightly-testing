@@ -255,6 +255,7 @@ theorem integral_piecewise [DecidablePred (· ∈ s)] (hs : MeasurableSet s) (hf
     integral_add' (hf.integrable_indicator hs) (hg.integrable_indicator hs.compl),
     integral_indicator hs, integral_indicator hs.compl]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_setIntegral_of_monotone₀
     {ι : Type*} [Preorder ι] [(atTop : Filter ι).IsCountablyGenerated]
     {s : ι → Set X} (hsm : ∀ i, NullMeasurableSet (s i) μ) (h_mono : Monotone s)
@@ -376,6 +377,7 @@ theorem integral_union_eq_left_of_ae_aux (ht_eq : ∀ᵐ x ∂μ.restrict t, f x
   rw [measure_eq_zero_iff_ae_notMem]
   filter_upwards [ae_imp_of_ae_restrict ht_eq] with x hx h'x using h'x.2 (hx h'x.1)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_union_eq_left_of_ae (ht_eq : ∀ᵐ x ∂μ.restrict t, f x = 0) :
     ∫ x in s ∪ t, f x ∂μ = ∫ x in s, f x ∂μ := by
   have ht : IntegrableOn f t μ := by apply integrableOn_zero.congr_fun_ae; symm; exact ht_eq
@@ -574,6 +576,7 @@ theorem norm_setIntegral_le_of_norm_le_const_ae {C : ℝ} (hs : μ s < ∞)
   haveI : IsFiniteMeasure (μ.restrict s) := ⟨hs⟩
   simpa using norm_integral_le_of_norm_le_const hC
 
+set_option backward.defeqAttrib.useBackward true in
 theorem norm_setIntegral_le_of_norm_le_const_ae' {C : ℝ} (hs : μ s < ∞)
     (hC : ∀ᵐ x ∂μ, x ∈ s → ‖f x‖ ≤ C) : ‖∫ x in s, f x ∂μ‖ ≤ C * μ.real s := by
   by_cases hfm : AEStronglyMeasurable f (μ.restrict s)
@@ -753,6 +756,7 @@ theorem setIntegral_mono_on_ae (hs : MeasurableSet s) (h : ∀ᵐ x ∂μ, x ∈
     ∫ x in s, f x ∂μ ≤ ∫ x in s, g x ∂μ := by
   refine setIntegral_mono_ae_restrict hf hg ?_; rwa [EventuallyLE, ae_restrict_iff' hs]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma setIntegral_mono_on_ae₀ (hs : NullMeasurableSet s μ) (h : ∀ᵐ x ∂μ, x ∈ s → f x ≤ g x) :
     ∫ x in s, f x ∂μ ≤ ∫ x in s, g x ∂μ := by
   rw [setIntegral_congr_set hs.toMeasurable_ae_eq.symm,
@@ -1089,6 +1093,7 @@ variable {G 𝕜 : Type*} [TopologicalSpace X]
 
 open Metric ContinuousLinearMap
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The parametric integral over a continuous function on a compact set is continuous,
   under mild assumptions on the topologies involved. -/
 theorem continuous_parametric_integral_of_continuous
@@ -1109,6 +1114,7 @@ theorem continuous_parametric_integral_of_continuous
   · exact integrableOn_const hs.measure_ne_top
   · filter_upwards using (by fun_prop)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Consider a parameterized integral `x ↦ ∫ y, L (g y) (f x y)` where `L` is bilinear,
 `g` is locally integrable and `f` is continuous and uniformly compactly supported. Then the
 integral depends continuously on `x`. -/
