@@ -30,6 +30,7 @@ variable
 ## Harmonicity of Analytic Functions on the Complex Plane
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 Continuously complex-differentiable functions on ℂ are harmonic.
@@ -74,6 +75,7 @@ theorem AnalyticAt.harmonicAt_conj {f : ℂ → ℂ} (h : AnalyticAt ℂ f x) : 
 ## Harmonicity of `log ‖analytic‖`
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /- Helper lemma for AnalyticAt.harmonicAt_log_norm -/
 private lemma analyticAt_harmonicAt_log_normSq {z : ℂ} {g : ℂ → ℂ} (h₁g : AnalyticAt ℂ g z)

@@ -81,6 +81,7 @@ end Layercake
 
 section LayercakeLT
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An application of the layer cake formula / Cavalieri's principle / tail probability formula:
 
 For a nonnegative function `f` on a measure space, the Lebesgue integral of `f` can

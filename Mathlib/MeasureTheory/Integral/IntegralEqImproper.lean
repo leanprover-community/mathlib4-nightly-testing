@@ -530,6 +530,7 @@ theorem integrable_of_intervalIntegral_norm_tendsto (I : ℝ)
   let ⟨I', hI'⟩ := h.isBoundedUnder_le
   integrable_of_intervalIntegral_norm_bounded I' hfi ha hb hI'
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integrableOn_Iic_of_intervalIntegral_norm_bounded (I b : ℝ)
     (hfi : ∀ i, IntegrableOn f (Ioc (a i) b) μ) (ha : Tendsto a l atBot)
     (h : ∀ᶠ i in l, (∫ x in a i..b, ‖f x‖ ∂μ) ≤ I) : IntegrableOn f (Iic b) μ := by
@@ -553,6 +554,7 @@ theorem integrableOn_Iic_of_intervalIntegral_norm_tendsto (I b : ℝ)
   let ⟨I', hI'⟩ := h.isBoundedUnder_le
   integrableOn_Iic_of_intervalIntegral_norm_bounded I' b hfi ha hI'
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integrableOn_Ioi_of_intervalIntegral_norm_bounded (I a : ℝ)
     (hfi : ∀ i, IntegrableOn f (Ioc a (b i)) μ) (hb : Tendsto b l atTop)
     (h : ∀ᶠ i in l, (∫ x in a..b i, ‖f x‖ ∂μ) ≤ I) : IntegrableOn f (Ioi a) μ := by
@@ -617,6 +619,7 @@ theorem intervalIntegral_tendsto_integral (hfi : Integrable f μ) (ha : Tendsto 
     hb.eventually (eventually_ge_atTop 0)] with i hai hbi
   exact (intervalIntegral.integral_of_le (hai.trans hbi)).symm
 
+set_option backward.defeqAttrib.useBackward true in
 theorem intervalIntegral_tendsto_integral_Iic (b : ℝ) (hfi : IntegrableOn f (Iic b) μ)
     (ha : Tendsto a l atBot) :
     Tendsto (fun i => ∫ x in a i..b, f x ∂μ) l (𝓝 <| ∫ x in Iic b, f x ∂μ) := by
@@ -627,6 +630,7 @@ theorem intervalIntegral_tendsto_integral_Iic (b : ℝ) (hfi : IntegrableOn f (I
   rw [intervalIntegral.integral_of_le hai, Measure.restrict_restrict (hφ.measurableSet i)]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_integral_Iic_zero (ha : Tendsto a l atBot) :
     Tendsto (fun i => ∫ x in Iic (a i), f x ∂μ) l (𝓝 0) := by
   by_cases! h : ∀ b, ¬ IntegrableOn f (Iic b) μ
@@ -645,6 +649,7 @@ theorem tendsto_integral_Ico_integral_Iio (b : ℝ) (hfi : IntegrableOn f (Iio b
   ((aecover_Iio_of_Ico tendsto_const_nhds ha).integral_tendsto_of_countably_generated hfi).congr'
     (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_integral_Iio_zero (ha : Tendsto a l atBot) :
     Tendsto (fun i => ∫ x in Iio (a i), f x ∂μ) l (𝓝 0) := by
   by_cases! h : ∀ b, ¬ IntegrableOn f (Iio b) μ
@@ -657,6 +662,7 @@ theorem tendsto_integral_Iio_zero (ha : Tendsto a l atBot) :
   rw [← sub_self (∫ x in Iio b, f x ∂μ)]
   exact Tendsto.congr' this (Tendsto.const_sub _ <| tendsto_integral_Ico_integral_Iio b hb ha)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem intervalIntegral_tendsto_integral_Ioi (a : ℝ) (hfi : IntegrableOn f (Ioi a) μ)
     (hb : Tendsto b l atTop) :
     Tendsto (fun i => ∫ x in a..b i, f x ∂μ) l (𝓝 <| ∫ x in Ioi a, f x ∂μ) := by
@@ -668,6 +674,7 @@ theorem intervalIntegral_tendsto_integral_Ioi (a : ℝ) (hfi : IntegrableOn f (I
     inter_comm]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_integral_Ioi_zero (hb : Tendsto b l atTop) :
     Tendsto (fun i => ∫ x in Ioi (b i), f x ∂μ) l (𝓝 0) := by
   by_cases! h : ∀ a, ¬ IntegrableOn f (Ioi a) μ
@@ -685,6 +692,7 @@ theorem tendsto_integral_Ico_integral_Ici (b : ℝ) (hfi : IntegrableOn f (Ici b
     Tendsto (fun i => ∫ x in Ico b (a i), f x ∂μ) l (𝓝 <| ∫ x in Ici b, f x ∂μ) :=
   ((aecover_Ici_of_Ico ha).integral_tendsto_of_countably_generated hfi).congr' (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_integral_Ici_zero (ha : Tendsto a l atTop) :
     Tendsto (fun i => ∫ x in Ici (a i), f x ∂μ) l (𝓝 0) := by
   by_cases! h : ∀ b, ¬ IntegrableOn f (Ici b) μ
@@ -779,6 +787,7 @@ theorem tendsto_zero_of_hasDerivAt_of_integrableOn_Ioi
 
 variable [CompleteSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Fundamental theorem of calculus-2**, on semi-infinite intervals `(a, +∞)`.
 When a function has a limit at infinity `m`, and its derivative is integrable, then the
 integral of the derivative on `(a, +∞)` is `m - f a`. Version assuming differentiability
@@ -829,6 +838,7 @@ theorem _root_.HasCompactSupport.integral_Ioi_deriv_eq (hf : ContDiff ℝ 1 f)
   rw [hasCompactSupport_iff_eventuallyEq, Filter.coclosedCompact_eq_cocompact] at h2f
   exact h2f.filter_mono _root_.atTop_le_cocompact |>.tendsto
 
+set_option backward.defeqAttrib.useBackward true in
 /-- When a function has a limit at infinity, and its derivative is nonnegative, then the derivative
 is automatically integrable on `(a, +∞)`. Version assuming differentiability
 on `(a, +∞)` and continuity at `a⁺`. -/
@@ -976,6 +986,7 @@ theorem tendsto_zero_of_hasDerivAt_of_integrableOn_Iic
 
 variable [CompleteSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Fundamental theorem of calculus-2**, on semi-infinite intervals `(-∞, a)`.
 When a function has a limit `m` at `-∞`, and its derivative is integrable, then the
 integral of the derivative on `(-∞, a)` is `f a - m`. Version assuming differentiability

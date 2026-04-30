@@ -645,6 +645,7 @@ lemma coeff_weierstrassPExceptSeries (l₀ x : ℂ) (i : ℕ) :
       simp [h₁, tsum_mul_left, sumInvPow, add_assoc,
         one_add_one_eq_two, ← zpow_natCast, -neg_add_rev]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 In the power series expansion of `℘(z) = ∑ᵢ aᵢ (z - x)ⁱ` at some `x ∉ L`,
 each `aᵢ` can be written as a sum over `l ∈ L`, i.e.
@@ -958,6 +959,7 @@ private def relation (z : ℂ) : ℂ :=
   letI := Classical.propDecidable
   if z ∈ L.lattice then 0 else ℘'[L] z ^ 2 - 4 * ℘[L] z ^ 3 + L.g₂ * ℘[L] z + L.g₃
 
+set_option backward.defeqAttrib.useBackward true in
 @[local fun_prop]
 private lemma meromorphic_relation : Meromorphic L.relation := by
   have : Meromorphic fun z ↦ ℘'[L] z ^ 2 - 4 * ℘[L] z ^ 3 + L.g₂ * ℘[L] z + L.g₃ := by fun_prop
@@ -966,6 +968,7 @@ private lemma meromorphic_relation : Meromorphic L.relation := by
     (L.compl_lattice_diff_singleton_mem_nhds _)] with w hw hw'
   rw [relation, if_neg (by simp_all)]
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma relation_mul_id_pow_six_eventuallyEq :
     (L.relation * id ^ 6) =ᶠ[nhds 0] fun z ↦
       (℘'[L - (0 : ℂ)] z * z ^ 3 - 2) ^ 2 - 4 *

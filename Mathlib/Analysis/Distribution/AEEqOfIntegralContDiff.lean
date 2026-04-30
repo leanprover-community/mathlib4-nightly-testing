@@ -39,6 +39,7 @@ variable {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
   [MeasurableSpace M] [BorelSpace M] [T2Space M]
   {f f' : M → F} {μ : Measure M}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a locally integrable function `f` on a finite-dimensional real manifold has zero integral
 when multiplied by any smooth compactly supported function, then `f` vanishes almost everywhere. -/
 theorem ae_eq_zero_of_integral_contMDiff_smul_eq_zero [SigmaCompactSpace M]
