@@ -77,6 +77,7 @@ lemma eq_condKernel_of_measure_eq_compProd_real {ρ : Measure (α × ℝ)} [IsFi
     rw [measure_iUnion hdisj hf, measure_iUnion hdisj hf]
     exact tsum_congr heq
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A finite kernel which satisfies the disintegration property is almost everywhere equal to the
 disintegration kernel. -/
 theorem eq_condKernel_of_measure_eq_compProd (κ : Kernel α Ω) [IsFiniteKernel κ]
@@ -134,6 +135,7 @@ end Measure
 
 section KernelAndMeasure
 
+set_option backward.defeqAttrib.useBackward true in
 lemma Kernel.apply_eq_measure_condKernel_of_compProd_eq
     {ρ : Kernel α (β × Ω)} [IsFiniteKernel ρ] {κ : Kernel (α × β) Ω} [IsFiniteKernel κ]
     (hκ : Kernel.fst ρ ⊗ₖ κ = ρ) (a : α) :
@@ -170,6 +172,7 @@ section Kernel
 
 The conditional kernel is unique almost everywhere. -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A finite kernel which satisfies the disintegration property is almost everywhere equal to the
 disintegration kernel. -/
 theorem eq_condKernel_of_kernel_eq_compProd [CountableOrCountablyGenerated α β]

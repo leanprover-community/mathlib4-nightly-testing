@@ -39,6 +39,7 @@ variable {α β : Type*} {mα : MeasurableSpace α} {mβ : MeasurableSpace β}
   {μ ν : Measure α} {κ η : Kernel α β} [IsFiniteKernel κ] [IsFiniteKernel η]
   [MeasurableSpace.CountableOrCountablyGenerated α β]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma MutuallySingular.compProd_of_right (μ ν : Measure α) (hκη : ∀ᵐ a ∂μ, κ a ⟂ₘ η a) :
     μ ⊗ₘ κ ⟂ₘ ν ⊗ₘ η := by
   by_cases hμ : SFinite μ
@@ -68,6 +69,7 @@ lemma mutuallySingular_compProd_right_iff [SFinite μ] :
   ⟨fun h ↦ mutuallySingular_of_mutuallySingular_compProd h AbsolutelyContinuous.rfl
     AbsolutelyContinuous.rfl, MutuallySingular.compProd_of_right _ _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma AbsolutelyContinuous.kernel_of_compProd [SFinite μ] (h : μ ⊗ₘ κ ≪ ν ⊗ₘ η) :
     ∀ᵐ a ∂μ, κ a ≪ η a := by
   suffices ∀ᵐ a ∂μ, κ.singularPart η a = 0 by
