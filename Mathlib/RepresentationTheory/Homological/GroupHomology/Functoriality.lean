@@ -52,6 +52,7 @@ theorem congr {f₁ f₂ : G →* H} (h : f₁ = f₂) {φ : A ⟶ res f₁ B} {
   subst h
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a group homomorphism `f : G →* H` and a representation morphism `φ : A ⟶ Res(f)(B)`,
 this is the chain map sending `∑ aᵢ·gᵢ : Gⁿ →₀ A` to `∑ φ(aᵢ)·(f ∘ gᵢ) : Hⁿ →₀ B`. -/
@@ -65,6 +66,7 @@ noncomputable def chainsMap :
     simpa [Fin.comp_contractNth, map_add, inhomogeneousChains.d]
       using congr(single _ $((hom_comm_apply φ (_)⁻¹ _).symm))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma lsingle_comp_chainsMap_f (n : ℕ) (x : Fin n → G) :
@@ -73,6 +75,7 @@ lemma lsingle_comp_chainsMap_f (n : ℕ) (x : Fin n → G) :
   ext
   simp [chainsMap_f]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma chainsMap_f_single (n : ℕ) (x : Fin n → G) (a : A) :
     (chainsMap f φ).f n (single x a) = single (f ∘ x) (φ.hom a) := by
@@ -91,6 +94,7 @@ lemma chainsMap_id_f_hom_eq_mapRange {A B : Rep k G} (i : ℕ) (φ : A ⟶ B) :
   refine lhom_ext fun _ _ => ?_
   simp [chainsMap_f, MonoidHom.coe_id]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma chainsMap_comp {G H K : Type u} [Group G] [Group H] [Group K]
     {A : Rep k G} {B : Rep k H} {C : Rep k K}
@@ -104,6 +108,7 @@ lemma chainsMap_id_comp {A B C : Rep k G} (φ : A ⟶ B) (ψ : B ⟶ C) :
       chainsMap (MonoidHom.id G) φ ≫ chainsMap (MonoidHom.id G) ψ :=
   chainsMap_comp (MonoidHom.id G) (MonoidHom.id G) _ _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma chainsMap_zero : chainsMap f (0 : A ⟶ res f B) = 0 := by
@@ -204,6 +209,7 @@ noncomputable abbrev chainsMap₃ :
   ModuleCat.ofHom <| mapRange.linearMap φ.hom.toLinearMap ∘ₗ
     lmapDomain A k (Prod.map f (Prod.map f f))
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp), elementwise (attr := simp)]
 lemma chainsMap_f_0_comp_chainsIso₀ :
     (chainsMap f φ).f 0 ≫ (chainsIso₀ B).hom = (chainsIso₀ A).hom ≫ φ.toModuleCatHom := by
@@ -211,18 +217,21 @@ lemma chainsMap_f_0_comp_chainsIso₀ :
   simp [chainsMap_f, Unique.eq_default (α := Fin 0 → G), Unique.eq_default (α := Fin 0 → H),
     chainsIso₀]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp), elementwise (attr := simp)]
 lemma chainsMap_f_1_comp_chainsIso₁ :
     (chainsMap f φ).f 1 ≫ (chainsIso₁ B).hom = (chainsIso₁ A).hom ≫ chainsMap₁ f φ := by
   ext x
   simp [chainsMap_f, chainsIso₁]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp), elementwise (attr := simp)]
 lemma chainsMap_f_2_comp_chainsIso₂ :
     (chainsMap f φ).f 2 ≫ (chainsIso₂ B).hom = (chainsIso₂ A).hom ≫ chainsMap₂ f φ := by
   ext
   simp [chainsMap_f, chainsIso₂]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp), elementwise (attr := simp)]
 lemma chainsMap_f_3_comp_chainsIso₃ :
     (chainsMap f φ).f 3 ≫ (chainsIso₃ B).hom = (chainsIso₃ A).hom ≫ chainsMap₃ f φ := by
@@ -808,6 +817,7 @@ noncomputable def chainsFunctor :
   map_id _ := chainsMap_id
   map_comp φ ψ := chainsMap_comp (MonoidHom.id G) (MonoidHom.id G) φ ψ
 
+set_option backward.defeqAttrib.useBackward true in
 instance : (chainsFunctor k G).PreservesZeroMorphisms where
 
 set_option backward.isDefEq.respectTransparency false in
