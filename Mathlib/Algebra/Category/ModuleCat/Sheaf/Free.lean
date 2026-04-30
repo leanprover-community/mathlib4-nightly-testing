@@ -115,6 +115,7 @@ lemma sectionsMap_freeHomEquiv_symm_freeSection
   obtain ⟨f, rfl⟩ := (freeHomEquiv M).surjective f
   cat_disch
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma ιFree_freeMap (i : I) :
     ιFree (R := R) i ≫ freeMap f = ιFree (f i) := by
@@ -155,6 +156,7 @@ noncomputable def freeSumIso : free I ⨿ free J ≅ free (R := R) (I ⊕ J) :=
     (mapIsColimitOfPreservesOfIsColimit (freeFunctor (R := R)) _ _
       (Types.binaryCoproductColimit I J))
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma inl_freeSumIso_hom :
     coprod.inl ≫ (freeSumIso (R := R) I J).hom = freeMap Sum.inl := by
@@ -162,6 +164,7 @@ lemma inl_freeSumIso_hom :
   exact IsColimit.comp_coconePointUniqueUpToIso_hom
     (coprodIsCoprod (free (R := R) I) (free J)) _ (.mk .left)
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma inr_freeSumIso_hom :
     coprod.inr ≫ (freeSumIso (R := R) I J).hom = freeMap Sum.inr := by

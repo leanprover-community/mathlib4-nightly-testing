@@ -672,6 +672,7 @@ theorem rnDeriv_smul_right_of_ne_top (ν μ : Measure α) [IsFiniteMeasure ν]
   simp_rw [this, ENNReal.smul_def, ENNReal.coe_toNNReal hr_ne_top] at h
   exact h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem rnDeriv_smul_same (ν μ : Measure α) [IsFiniteMeasure ν]
     [ν.HaveLebesgueDecomposition μ] {r : ℝ≥0} (hr : r ≠ 0) :
     (r • ν).rnDeriv (r • μ) =ᵐ[μ] ν.rnDeriv μ := by
@@ -1052,6 +1053,7 @@ lemma rnDeriv_add' (ν₁ ν₂ μ : Measure α) [SigmaFinite ν₁] [SigmaFinit
   · exact (measurable_rnDeriv _ _).aemeasurable
   · exact ((measurable_rnDeriv _ _).add (measurable_rnDeriv _ _)).aemeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_add_of_mutuallySingular (ν₁ ν₂ μ : Measure α)
     [SigmaFinite ν₁] [SigmaFinite ν₂] [SigmaFinite μ] (h : ν₂ ⟂ₘ μ) :
     (ν₁ + ν₂).rnDeriv μ =ᵐ[μ] ν₁.rnDeriv μ := by

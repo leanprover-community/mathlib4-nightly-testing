@@ -34,6 +34,7 @@ noncomputable def singleFunctorCompHomologyFunctorIso (n : ℤ) :
     Functor.isoWhiskerLeft _ (homologyFunctorFactors C n) ≪≫
       (HomologicalComplex.homologyFunctorSingleIso _ _ _)
 
+set_option backward.defeqAttrib.useBackward true in
 instance (n : ℤ) : (singleFunctor C n).Faithful where
   map_injective {_ _ f₁ f₂} h := by
     have eq₁ := NatIso.naturality_1 (singleFunctorCompHomologyFunctorIso C n) f₁
@@ -41,6 +42,7 @@ instance (n : ℤ) : (singleFunctor C n).Faithful where
     dsimp at eq₁ eq₂
     rw [← eq₁, ← eq₂, h]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance (n : ℤ) : (singleFunctor C n).Full where
   map_surjective {A B} f := by

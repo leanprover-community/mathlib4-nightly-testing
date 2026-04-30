@@ -403,6 +403,7 @@ lemma step₂ [EnoughInjectives C] [Mono f] (n₀ n₁ : ℤ)
     fun i hi ↦ quasiIsoAt_ι f n₁ (fun j hj ↦ hf j (by lia)) _ hi,
     isIso_π_f f n₁⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma step [EnoughInjectives C] [Mono f] (n₀ n₁ : ℤ)
     (hf : ∀ i ≤ n₀, QuasiIsoAt f i) (hn₁ : n₀ + 1 = n₁ := by lia) :
     ∃ (F : (cofFib f).FullSubcategory), quasiIsoLE n₁ F ∧ isIsoLE n₀ F := by
@@ -549,6 +550,7 @@ lemma midπ_w (q₁ q₂ : ℕ) (hq : q₁ ≤ q₂) :
       midπ f n₀ q₁ :=
   limit.w _ _
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma midπ_w_f (q₁ q₂ : ℕ) (hq : q₁ ≤ q₂) (i : ℤ) :
     (midπ f n₀ q₂).f i ≫ ((functor f n₀).map (homOfLE hq).op).hom.h.f i =
@@ -579,6 +581,7 @@ set_option backward.isDefEq.respectTransparency false in
 lemma ι_midπ (q : ℕ) : ι f n₀ ≫ midπ f n₀ q = ((functor f n₀).obj (op q)).obj.ι := by
   simp [ι, midπ]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma ι_midπ_f (q : ℕ) (i : ℤ) : (ι f n₀).f i ≫ (midπ f n₀ q).f i =
     ((functor f n₀).obj (op q)).obj.ι.f i := by
@@ -596,6 +599,7 @@ lemma ι_π : ι f n₀ ≫ π f n₀ = f := by
 lemma midπ_π (q : ℕ) : midπ f n₀ q ≫ ((functor f n₀).obj (op q)).obj.π = π f n₀ := by
   simp [π, ← midπ_w_assoc f n₀ 0 q (by lia)]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma midπ_π_f (q : ℕ) (i : ℤ) :
     (midπ f n₀ q).f i ≫ ((functor f n₀).obj (op q)).obj.π.f i = (π f n₀).f i := by

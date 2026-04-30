@@ -691,6 +691,7 @@ instance : MonoidalLinear k (Rep.{u} k G) where
   whiskerLeft_smul _ _ _ _ _ := by ext1; simp [smul_hom]
   smul_whiskerRight _ _ _ _ _ := by ext1; simp [smul_hom]
 
+set_option backward.defeqAttrib.useBackward true in
 instance : BraidedCategory (Rep.{u} k G) where
   braiding X Y := Rep.mkIso (Representation.TensorProduct.comm X.ρ Y.ρ)
   braiding_naturality_right _ _ _ _ := by ext1; simp [comm_comp_lTensor]

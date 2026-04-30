@@ -91,6 +91,7 @@ theorem etaFn_injective_iff_residuallyFinite :
     Function.Injective (etaFn G) ↔ Group.ResiduallyFinite G :=
   (GrpCat.mono_iff_injective (eta G)).symm.trans (mono_eta_iff_residuallyFinite G)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma denseRange : DenseRange (etaFn G) := by
   apply dense_iff_inter_open.mpr

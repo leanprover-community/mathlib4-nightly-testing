@@ -128,6 +128,7 @@ def Q : QuadraticForm ℝ ℝ :=
 theorem Q_apply (r : ℝ) : Q r = -(r * r) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Intermediate result for `CliffordAlgebraComplex.equiv`: clifford algebras over
 `CliffordAlgebraComplex.Q` above can be converted to `ℂ`. -/
@@ -164,6 +165,7 @@ def ofComplex : ℂ →ₐ[ℝ] CliffordAlgebra Q :=
 theorem ofComplex_I : ofComplex Complex.I = ι Q 1 :=
   Complex.liftAux_apply_I _ (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem toComplex_comp_ofComplex : toComplex.comp ofComplex = AlgHom.id ℝ ℂ := by
@@ -175,6 +177,7 @@ theorem toComplex_comp_ofComplex : toComplex.comp ofComplex = AlgHom.id ℝ ℂ 
 theorem toComplex_ofComplex (c : ℂ) : toComplex (ofComplex c) = c :=
   AlgHom.congr_fun toComplex_comp_ofComplex c
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem ofComplex_comp_toComplex : ofComplex.comp toComplex = AlgHom.id ℝ (CliffordAlgebra Q) := by
   ext
@@ -258,6 +261,7 @@ def quaternionBasis : QuaternionAlgebra.Basis (CliffordAlgebra (Q c₁ c₂)) c�
 
 variable {c₁ c₂}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Intermediate result of `CliffordAlgebraQuaternion.equiv`: clifford algebras over
 `CliffordAlgebraQuaternion.Q` can be converted to `ℍ[R,c₁,c₂]`. -/
 def toQuaternion : CliffordAlgebra (Q c₁ c₂) →ₐ[R] ℍ[R,c₁,0,c₂] :=

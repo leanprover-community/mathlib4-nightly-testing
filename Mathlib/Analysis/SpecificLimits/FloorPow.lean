@@ -26,6 +26,7 @@ open Filter Finset
 
 open Topology
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a monotone sequence `u` is such that `u n / n` tends to a limit `l` along subsequences with
 exponential growth rate arbitrarily close to `1`, then `u n / n` tends to `l`. -/
 theorem tendsto_div_of_monotone_of_exists_subseq_tendsto_div (u : ℕ → ℝ) (l : ℝ)

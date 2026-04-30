@@ -73,6 +73,7 @@ theorem verschiebung_shift (x : 𝕎 R) (k : ℕ) (h : ∀ i < k + 1, x.coeff i 
     congr 1
     rw [Nat.add_succ, add_comm, Nat.add_succ, add_comm]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eq_iterate_verschiebung {x : 𝕎 R} {n : ℕ} (h : ∀ i < n, x.coeff i = 0) :
     x = verschiebung^[n] (x.shift n) := by
   induction n with

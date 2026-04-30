@@ -168,10 +168,12 @@ def pushforwardNatTrans (α : F ⟶ G) :
 @[simp] lemma pushforwardNatTrans_app_val_app (α : F ⟶ G) (M U x) :
     ((pushforwardNatTrans φ α).app M).val.app U x = M.val.map (α.app U.unop).op x := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma pushforwardNatTrans_id :
     pushforwardNatTrans φ (𝟙 G) = (pushforwardCongr (by cat_disch)).hom := by cat_disch
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma pushforwardNatTrans_comp (α : F ⟶ G) (β : G ⟶ H)
     (φ : T ⟶ (H.sheafPushforwardContinuous RingCat.{u} J K).obj S) :
@@ -220,6 +222,7 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
   (H₂ : φ.hom ≫ F.op.whiskerLeft ψ.hom ≫
     Functor.whiskerRight (NatTrans.op adj.unit) S.obj = 𝟙 S.obj)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `F ⊣ G`, then the pushforwards along `F` and `G` are also adjoint. -/
 noncomputable

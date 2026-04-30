@@ -43,6 +43,7 @@ lemma Real.norm_inv_mul_rpow_sub_one_sub_log_le {p x : ℝ} (p_pos : 0 < p) (x_p
           simp only [norm_mul]
           grind [Real.norm_of_nonneg]
 
+set_option backward.defeqAttrib.useBackward true in
 open Set in
 lemma Real.tendstoLocallyUniformlyOn_rpow_sub_one_log :
     TendstoLocallyUniformlyOn (fun (p : ℝ) (x : ℝ) => p⁻¹ * (x ^ p - 1)) log (𝓝[>] 0) (Ioi 0) := by
