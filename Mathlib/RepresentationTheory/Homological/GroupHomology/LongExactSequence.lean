@@ -142,9 +142,11 @@ theorem δ₀_apply
     δ hX 1 0 rfl (H1π X.X₃ z) = H0π X.X₁ x := by
   simpa only [H1π, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply, H0π,
     ← cyclesMk₀_eq X.X₁, ← cyclesMk₁_eq X.X₃]
-  using δ_apply hX (i := 1) (j := 0) rfl ((chainsIso₁ X.X₃).inv z.1) (by simp +instances)
-    ((chainsIso₁ X.X₂).inv y) (Finsupp.ext fun _ => by simp [chainsIso₁, ← hy])
-    ((chainsIso₀ X.X₁).inv x) (Finsupp.ext fun _ => by simp [chainsIso₀, ← hx])
+  using δ_apply hX (i := 1) (j := 0) rfl ((chainsIso₁ X.X₃).inv z.1) (by
+    change ((inhomogeneousChains X.X₃).d 1 0) ((chainsIso₁ X.X₃).inv ↑z) = 0
+    rw [eq_d₁₀_comp_inv_apply, show (d₁₀ X.X₃).hom z.1 = 0 from z.2, map_zero])
+    ((chainsIso₁ X.X₂).inv y) (Finsupp.ext fun _ => by simp [chainsIso₁, ← hy]; rfl)
+    ((chainsIso₀ X.X₁).inv x) (Finsupp.ext fun _ => by simp [chainsIso₀, ← hx]; rfl)
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Stated for readability of `δ₁_apply`. -/
@@ -167,7 +169,7 @@ theorem δ₁_apply
   simpa only [H2π, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply, H1π,
     ← cyclesMk₂_eq X.X₃, ← cyclesMk₁_eq X.X₁]
   using δ_apply hX (i := 2) (j := 1) rfl ((chainsIso₂ X.X₃).inv z.1) (by simp +instances)
-    ((chainsIso₂ X.X₂).inv y) (Finsupp.ext fun _ => by simp [chainsIso₂, ← hy])
-    ((chainsIso₁ X.X₁).inv x) (Finsupp.ext fun _ => by simp [chainsIso₁, ← hx])
+    ((chainsIso₂ X.X₂).inv y) (Finsupp.ext fun _ => by simp [chainsIso₂, ← hy]; rfl)
+    ((chainsIso₁ X.X₁).inv x) (Finsupp.ext fun _ => by simp [chainsIso₁, ← hx]; rfl)
 
 end groupHomology
