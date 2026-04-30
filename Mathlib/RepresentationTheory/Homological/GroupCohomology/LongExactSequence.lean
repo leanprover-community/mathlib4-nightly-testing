@@ -136,6 +136,7 @@ theorem mem_cocycles₁_of_comp_eq_d₀₁
   have := congr($((mapShortComplexH1 (MonoidHom.id G) X.f).comm₂₃.symm) x)
   simp_all [shortComplexH1, LinearMap.compLeft]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem δ₀_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
@@ -146,11 +147,18 @@ theorem δ₀_apply
     -- Then `x` is a 1-cocycle and `δ z = x` in `H¹(X₁)`.
     δ hX 0 1 rfl ((H0Iso X.X₃).inv z) = H1π X.X₁ ⟨x, mem_cocycles₁_of_comp_eq_d₀₁ hX hx⟩ := by
   simpa [H0Iso, H1π, ← cocyclesMk₁_eq X.X₁, ← cocyclesMk₀_eq z] using
-    δ_apply hX rfl ((cochainsIso₀ X.X₃).inv z.1) (by simp +instances) ((cochainsIso₀ X.X₂).inv y)
+    δ_apply hX rfl ((cochainsIso₀ X.X₃).inv z.1) (by
+      change ((inhomogeneousCochains X.X₃).d 0 1) ((cochainsIso₀ X.X₃).inv ↑z) = 0
+      rw [eq_d₀₁_comp_inv_apply, show (d₀₁ X.X₃).hom z.1 = 0 from by
+        ext g
+        simp [d₀₁_hom_apply, sub_eq_zero, z.property g]
+        rfl, map_zero])
+        ((cochainsIso₀ X.X₂).inv y)
     (by ext; simp [← hy, cochainsIso₀]) ((cochainsIso₁ X.X₁).inv x) <| by
       ext g
-      simpa [← hx] using congr_fun (congr($((CommSq.vert_inv
-        ⟨cochainsMap_f_1_comp_cochainsIso₁ (MonoidHom.id G) X.f⟩).w) x)) g
+      rw [eq_d₀₁_comp_inv_apply]
+      simpa [← hx] using (congr_fun (congr($((CommSq.vert_inv
+        ⟨cochainsMap_f_1_comp_cochainsIso₁ (MonoidHom.id G) X.f⟩).w) x)) g).symm
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Stated for readability of `δ₁_apply`. -/
@@ -172,10 +180,11 @@ theorem δ₁_apply
     δ hX 1 2 rfl (H1π X.X₃ z) = H2π X.X₁ ⟨x, mem_cocycles₂_of_comp_eq_d₁₂ hX hx⟩ := by
   simpa [H1π, H2π, ← cocyclesMk₂_eq X.X₁, ← cocyclesMk₁_eq X.X₃] using
     δ_apply hX rfl ((cochainsIso₁ X.X₃).inv z) (by simp +instances [cocycles₁.d₁₂_apply z])
-    ((cochainsIso₁ X.X₂).inv y) (by ext; simp [cochainsIso₁, ← hy])
+    ((cochainsIso₁ X.X₂).inv y) (by ext; simp [cochainsIso₁, ← hy]; rfl)
     ((cochainsIso₂ X.X₁).inv x) <| by
       ext g
-      simpa [← hx] using congr_fun (congr($((CommSq.vert_inv
-        ⟨cochainsMap_f_2_comp_cochainsIso₂ (MonoidHom.id G) X.f⟩).w) x)) g
+      rw [eq_d₁₂_comp_inv_apply]
+      simpa [← hx] using (congr_fun (congr($((CommSq.vert_inv
+        ⟨cochainsMap_f_2_comp_cochainsIso₂ (MonoidHom.id G) X.f⟩).w) x)) g).symm
 
 end groupCohomology
