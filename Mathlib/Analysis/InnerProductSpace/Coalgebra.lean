@@ -105,6 +105,7 @@ lemma AlgebraOfCoalgebra.mul_def (x y : E) :
 
 attribute [local simp] AlgebraOfCoalgebra.mul_def
 
+set_option backward.defeqAttrib.useBackward true in
 attribute [local instance] InnerProductSpace.mulOfCoalgebra in
 /-- A finite-dimensional inner product space with a coalgebra structure induces a ring structure,
 where multiplication is given by `x * y = (adjoint comul) (x ⊗ₜ y)` and
@@ -138,6 +139,7 @@ noncomputable abbrev ringOfCoalgebra :
       adjoint_toLinearMap_eq_symm]
     exact one_smul _ _
 
+set_option backward.defeqAttrib.useBackward true in
 attribute [local instance] InnerProductSpace.ringOfCoalgebra in
 /-- A finite-dimensional inner product space with a coalgebra structure induces an algebra
 structure, where `x * y = (adjoint comul) (x ⊗ₜ y)`, `1 = (adjoint counit) 1` and

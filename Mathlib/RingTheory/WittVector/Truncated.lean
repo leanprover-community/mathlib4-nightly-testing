@@ -132,6 +132,7 @@ theorem coeff_truncateFun (x : 𝕎 R) (i : Fin n) : (truncateFun n x).coeff i =
 
 variable [CommRing R]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem out_truncateFun (x : 𝕎 R) : (truncateFun n x).out = init n x := by
   ext i

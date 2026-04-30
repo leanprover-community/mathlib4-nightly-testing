@@ -222,6 +222,7 @@ lemma extMk_surjective (α : Ext X Y n) (m : ℕ) (hm : n + 1 = m) :
   rw [← cancel_epi (R.cochainComplexXIso (-m) m rfl).hom]
   simpa [R.cochainComplex_d _ _ _ _ rfl rfl] using hf
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma extMk_comp_mk₀ {n : ℕ} (f : R.complex.X n ⟶ Y) (m : ℕ) (hm : n + 1 = m)
     (hf : R.complex.d m n ≫ f = 0) {Y' : C} (g : Y ⟶ Y') :

@@ -120,6 +120,7 @@ noncomputable def union : Lifts F E K :=
     _ le_rfl).comp
       (Subalgebra.equivOfEq _ _ <| toSubalgebra_iSup_of_directed dir)⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem le_union ⦃σ : Lifts F E K⦄ (hσ : σ ∈ c) : σ ≤ union c hc :=
   have hσ := Set.mem_insert_of_mem ⊥ hσ

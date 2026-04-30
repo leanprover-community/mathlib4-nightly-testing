@@ -106,6 +106,7 @@ end EquivEven
 
 open EquivEven
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The embedding from the smaller algebra into the new larger one. -/
 def toEven : CliffordAlgebra Q →ₐ[R] CliffordAlgebra.even (Q' Q) := by
   refine CliffordAlgebra.lift Q ⟨?_, fun m => ?_⟩

@@ -117,6 +117,7 @@ end NormedLinearOrderedField
 
 section Real
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Asymptotics.IsEquivalent.rpow {α : Type*} {u v : α → ℝ} {l : Filter α}
     (hv : 0 ≤ v) (h : u ~[l] v) {r : ℝ} :
     u ^ r ~[l] v ^ r := by
@@ -145,6 +146,7 @@ theorem Asymptotics.IsEquivalent.log {α : Type*} {l : Filter α} {f g : α → 
 
 open Finset
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Asymptotics.IsLittleO.sum_range {α : Type*} [NormedAddCommGroup α] {f : ℕ → α} {g : ℕ → ℝ}
     (h : f =o[atTop] g) (hg : 0 ≤ g) (h'g : Tendsto (fun n => ∑ i ∈ range n, g i) atTop atTop) :
     (fun n => ∑ i ∈ range n, f i) =o[atTop] fun n => ∑ i ∈ range n, g i := by
@@ -182,6 +184,7 @@ theorem Asymptotics.isLittleO_sum_range_of_tendsto_zero {α : Type*} [NormedAddC
   simp only [sum_const, card_range, Nat.smul_one_eq_cast] at this
   exact this tendsto_natCast_atTop_atTop
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Cesaro average of a converging sequence converges to the same limit. -/
 theorem Filter.Tendsto.cesaro_smul {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {u : ℕ → E}
     {l : E} (h : Tendsto u atTop (𝓝 l)) :

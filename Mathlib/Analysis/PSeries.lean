@@ -235,6 +235,7 @@ theorem summable_condensed_iff_of_nonneg {f : ℕ → ℝ} (h_nonneg : ∀ n, 0 
     (pow_right_strictMono₀ one_lt_two) two_ne_zero h_succ_diff
   simp [pow_succ, mul_two]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Cauchy condensation test for eventually antitone and nonnegative series of real numbers. -/
 theorem summable_condensed_iff_of_eventually_nonneg {f : ℕ → ℝ} (h_nonneg : 0 ≤ᶠ[Filter.atTop] f)
     (h_mono : ∀ᶠ k in Filter.atTop, f (k + 1) ≤ f k) :
@@ -444,6 +445,7 @@ section shifted
 
 open Filter Asymptotics Topology
 
+set_option backward.defeqAttrib.useBackward true in
 -- see https://github.com/leanprover-community/mathlib4/issues/29041
 set_option linter.unusedSimpArgs false in
 lemma Real.summable_one_div_nat_add_rpow (a : ℝ) (s : ℝ) :

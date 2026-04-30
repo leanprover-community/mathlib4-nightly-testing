@@ -471,6 +471,7 @@ noncomputable def coinvariantsTensorFreeToFinsupp :
 
 variable {α}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma coinvariantsTensorFreeToFinsupp_mk_tmul_single (x : A) (i : α) (g : G) (r : k) :
@@ -502,6 +503,7 @@ lemma finsuppToCoinvariantsTensorFree_single (i : α) (x : A) :
 
 variable (A α)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a `k`-linear `G`-representation `(A, ρ)` and a type `α`, this is the linear equivalence
 `(A ⊗ (α →₀ k[G]))_G ≃ₗ[k] (α →₀ A)` sending
 `⟦a ⊗ single x (single g r)⟧ ↦ single x (r • ρ(g⁻¹)(a)).` -/

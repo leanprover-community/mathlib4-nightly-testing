@@ -85,6 +85,7 @@ lemma eventually_atTop_ge_nat {b : ℝ} (hb : b ∈ Set.Ioo 0 1) (hf : GrowsPoly
   obtain ⟨c, hc_mem, hc⟩ := hf.eventually_atTop_ge hb
   exact ⟨c, hc_mem, hc.natCast_atTop⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_zero_of_frequently_zero (hf : GrowsPolynomially f) (hf' : ∃ᶠ x in atTop, f x = 0) :
     ∀ᶠ x in atTop, f x = 0 := by
   obtain ⟨c₁, hc₁_mem, c₂, hc₂_mem, hf⟩ := hf (1 / 2) (by norm_num)
@@ -153,6 +154,7 @@ lemma eventually_zero_of_frequently_zero (hf : GrowsPolynomially f) (hf' : ∃�
       exact le_of_max_le_left hx₀_ge
     exact_mod_cast Nat.floor_le this
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_atTop_nonneg_or_nonpos (hf : GrowsPolynomially f) :
     (∀ᶠ x in atTop, 0 ≤ f x) ∨ (∀ᶠ x in atTop, f x ≤ 0) := by
   obtain ⟨c₁, _, c₂, _, h⟩ := hf (1 / 2) (by norm_num)
@@ -233,6 +235,7 @@ protected lemma neg {f : ℝ → ℝ} (hf : GrowsPolynomially f) : GrowsPolynomi
 protected lemma neg_iff {f : ℝ → ℝ} : GrowsPolynomially f ↔ GrowsPolynomially (-f) :=
   ⟨fun hf => hf.neg, fun hf => by rw [← neg_neg f]; exact hf.neg⟩
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma abs (hf : GrowsPolynomially f) : GrowsPolynomially (fun x => |f x|) := by
   cases eventually_atTop_nonneg_or_nonpos hf with
   | inl hf' =>
@@ -269,6 +272,7 @@ lemma growsPolynomially_id : GrowsPolynomially (fun x => x) := by
   simp only [one_mul, Set.mem_Icc]
   exact ⟨hu.1, hu.2⟩
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma GrowsPolynomially.mul {f g : ℝ → ℝ} (hf : GrowsPolynomially f)
     (hg : GrowsPolynomially g) : GrowsPolynomially fun x => f x * g x := by
   suffices GrowsPolynomially fun x => |f x| * |g x| by
@@ -473,6 +477,7 @@ lemma GrowsPolynomially.add_isLittleO {f g : ℝ → ℝ} (hf : GrowsPolynomiall
            _ = c₂ / 3 * (3 / 2 * f x) := by ring
            _ ≤ c₂ / 3 * (f x + g x) := by gcongr
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma GrowsPolynomially.inv {f : ℝ → ℝ} (hf : GrowsPolynomially f) :
     GrowsPolynomially fun x => (f x)⁻¹ := by
   cases hf.eventually_atTop_zero_or_pos_or_neg with
@@ -528,6 +533,7 @@ protected lemma GrowsPolynomially.div {f g : ℝ → ℝ} (hf : GrowsPolynomiall
   rw [this]
   exact GrowsPolynomially.mul hf (GrowsPolynomially.inv hg)
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma GrowsPolynomially.rpow (p : ℝ) (hf : GrowsPolynomially f)
     (hf_nonneg : ∀ᶠ x in atTop, 0 ≤ f x) : GrowsPolynomially fun x => (f x) ^ p := by
   intro b hb
@@ -600,6 +606,7 @@ lemma growsPolynomially_pow (p : ℕ) : GrowsPolynomially fun x => x ^ p :=
 lemma growsPolynomially_zpow (p : ℤ) : GrowsPolynomially fun x => x ^ p :=
   growsPolynomially_id.zpow p (eventually_ge_atTop 0)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma growsPolynomially_log : GrowsPolynomially Real.log := by
   intro b hb
   have hb₀ : 0 < b := hb.1

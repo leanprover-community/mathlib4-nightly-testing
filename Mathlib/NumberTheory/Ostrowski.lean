@@ -279,6 +279,7 @@ def real : AbsoluteValue ℚ ℝ where
 
 -- ## Preliminary result
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given any two integers `n`, `m` with `m > 1`, the absolute value of `n` is bounded by
 `m + m * f m + m * (f m) ^ 2 + ... + m * (f m) ^ d` where `d` is the number of digits of the
 expansion of `n` in base `m`. -/

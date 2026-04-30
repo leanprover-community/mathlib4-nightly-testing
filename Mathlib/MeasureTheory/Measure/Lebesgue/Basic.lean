@@ -508,6 +508,7 @@ theorem measurableSet_graph (hf : Measurable f) :
     MeasurableSet { p : α × ℝ | p.snd = f p.fst } := by
   simpa using measurableSet_region_between_cc hf hf MeasurableSet.univ
 
+set_option backward.defeqAttrib.useBackward true in
 theorem volume_regionBetween_eq_lintegral' (hf : Measurable f) (hg : Measurable g)
     (hs : MeasurableSet s) :
     μ.prod volume (regionBetween f g s) = ∫⁻ y in s, ENNReal.ofReal ((g - f) y) ∂μ := by

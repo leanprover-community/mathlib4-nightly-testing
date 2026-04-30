@@ -823,6 +823,7 @@ lemma analyticAt_inverse_one_sub [HasSummableGeomSeries A] :
 
 end Geometric
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `A` is a normed algebra over `𝕜` with summable geometric series, then inversion on `A` is
 analytic at any unit. -/
 @[fun_prop]

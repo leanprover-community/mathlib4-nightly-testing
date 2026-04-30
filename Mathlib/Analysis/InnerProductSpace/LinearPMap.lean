@@ -267,6 +267,7 @@ def adjoint (g : Submodule 𝕜 (E × F)) : Submodule 𝕜 (F × E) :=
     (WithLp.linearEquiv 2 𝕜 (F × E)).symm).toLinearMap).orthogonal.map
       (WithLp.linearEquiv 2 𝕜 (F × E) : WithLp 2 (F × E) →ₗ[𝕜] F × E)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem mem_adjoint_iff (g : Submodule 𝕜 (E × F)) (x : F × E) :
     x ∈ g.adjoint ↔

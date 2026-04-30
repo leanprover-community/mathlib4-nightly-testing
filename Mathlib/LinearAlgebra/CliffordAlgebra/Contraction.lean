@@ -234,6 +234,7 @@ theorem changeFormAux_changeFormAux (B : BilinForm R M) (v : M) (x : CliffordAlg
 variable {Q}
 variable {Q' Q'' : QuadraticForm R M} {B B' : BilinForm R M}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Convert between two algebras of different quadratic forms, sending vectors to vectors, scalars
 to scalars, and adjusting products by a contraction term.
 
