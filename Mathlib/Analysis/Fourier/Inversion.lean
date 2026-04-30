@@ -51,6 +51,7 @@ variable {V E : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 
 namespace Real
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_integral_cexp_sq_smul (hf : Integrable f) :
     Tendsto (fun (c : ℝ) ↦ (∫ v : V, cexp (- c⁻¹ * ‖v‖ ^ 2) • f v))
       atTop (𝓝 (∫ v : V, f v)) := by

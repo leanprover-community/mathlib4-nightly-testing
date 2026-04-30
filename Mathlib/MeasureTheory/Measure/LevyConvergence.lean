@@ -39,6 +39,7 @@ namespace MeasureTheory
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
   [MeasurableSpace E] [BorelSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the characteristic functions of a sequence of measures `μ : ℕ → Measure E` converge pointwise
 to a function which is continuous at 0, then `{μ n | n}` is tight. -/
 lemma isTightMeasureSet_of_tendsto_charFun {μ : ℕ → Measure E} [∀ i, IsProbabilityMeasure (μ i)]
