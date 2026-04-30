@@ -179,6 +179,7 @@ lemma isTightMeasureSet_of_inner_tendsto
   isTightMeasureSet_of_forall_basis_tendsto (stdOrthonormalBasis 𝕜 E)
     fun i ↦ h (stdOrthonormalBasis 𝕜 E i)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In a finite-dimensional inner product space,
 a set of measures `S` is tight if and only if the function `r ↦ ⨆ μ ∈ S, μ {x | r < |⟪y, x⟫|}`
 tends to `0` at infinity for all `y`. -/
@@ -236,6 +237,7 @@ lemma isTightMeasureSet_range_iff_tendsto_limsup_inner :
   simp_rw [iSup_range]
   exact limsup_le_iSup
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isTightMeasureSet_range_of_tendsto_limsup_inner_of_norm_eq_one
     (h : ∀ y, ‖y‖ = 1
       → Tendsto (fun r : ℝ ↦ limsup (fun n ↦ μ n {x | r < ‖⟪y, x⟫_𝕜‖}) atTop) atTop (𝓝 0)) :

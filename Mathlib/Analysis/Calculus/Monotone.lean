@@ -38,6 +38,7 @@ open Set Filter Function Metric MeasureTheory MeasureTheory.Measure IsUnifLocDou
 
 open scoped Topology
 
+set_option backward.defeqAttrib.useBackward true in
 -- see https://github.com/leanprover-community/mathlib4/issues/29041
 set_option linter.unusedSimpArgs false in
 /-- If `(f y - f x) / (y - x)` converges to a limit as `y` tends to `x`, then the same goes if
@@ -64,6 +65,7 @@ theorem tendsto_apply_add_mul_sq_div_sub {f : ℝ → ℝ} {x a c d : ℝ} {l : 
   filter_upwards [this] with y hy
   simp [field, sub_ne_zero.2 hy]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A Stieltjes function is almost everywhere differentiable, with derivative equal to the
 Radon-Nikodym derivative of the associated Stieltjes measure with respect to Lebesgue. -/
 theorem StieltjesFunction.ae_hasDerivAt (f : StieltjesFunction ℝ) :
@@ -130,6 +132,7 @@ theorem StieltjesFunction.ae_hasDerivAt (f : StieltjesFunction ℝ) :
   rw [hasDerivAt_iff_tendsto_slope, slope_fun_def_field, ← nhdsLT_sup_nhdsGT, tendsto_sup]
   exact ⟨L4, L1⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A monotone function is almost everywhere differentiable, with derivative equal to the
 Radon-Nikodym derivative of the associated Stieltjes measure with respect to Lebesgue. -/
 theorem Monotone.ae_hasDerivAt {f : ℝ → ℝ} (hf : Monotone f) :

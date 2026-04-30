@@ -362,6 +362,7 @@ open ContinuousLinearMap (smulRight)
 local macro:arg t:term:max noWs "¹" : term => `(Fin 1 → $t)
 local macro:arg t:term:max noWs "²" : term => `(Fin 2 → $t)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Fundamental theorem of calculus, part 2**. This version assumes that `f` is continuous on the
 interval and is differentiable off a countable set `s`.
 

@@ -195,6 +195,7 @@ theorem AEStronglyMeasurable.convolution_integrand_swap_snd' {x : G}
     AEStronglyMeasurable (fun t => L (f (x - t)) (g t)) μ :=
   L.aestronglyMeasurable_comp₂ (hf.comp_measurable <| measurable_id.const_sub x) hg
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A sufficient condition to prove that `f ⋆[L, μ] g` exists.
 We assume that `f` is integrable on a set `s` and `g` is bounded and ae strongly measurable
 on `x₀ - s` (note that both properties hold if `g` is continuous with compact support). -/
@@ -605,6 +606,7 @@ theorem _root_.HasCompactSupport.continuous_convolution_right (hcg : HasCompactS
     (continuousOn_univ.2 continuous_id) hcg
     (fun p x _ hx => image_eq_zero_of_notMem_tsupport hx) hf this
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The convolution is continuous if one function is integrable and the other is bounded and
 continuous. -/
 theorem _root_.BddAbove.continuous_convolution_right_of_integrable
@@ -657,6 +659,7 @@ theorem convolution_mul_swap [NormedSpace ℝ 𝕜] {f : G → 𝕜} {g : G → 
     (f ⋆[mul 𝕜 𝕜, μ] g) x = ∫ t, f (x - t) * g t ∂μ :=
   convolution_eq_swap _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The convolution of two even functions is also even. -/
 theorem convolution_neg_of_neg_eq (h1 : ∀ᵐ x ∂μ, f (-x) = f x) (h2 : ∀ᵐ x ∂μ, g (-x) = g x) :
     (f ⋆[L, μ] g) (-x) = (f ⋆[L, μ] g) x :=

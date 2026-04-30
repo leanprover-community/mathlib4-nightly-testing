@@ -455,6 +455,7 @@ and `μ'` coincide on these supersets, this yields `μ s = μ' s`.
 See `measure_isMulInvariant_eq_smul_of_isCompact_closure`.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Two left invariant measures give the same mass to level sets of continuous compactly supported
 functions, up to the scalar `haarScalarFactor μ' μ`.
 

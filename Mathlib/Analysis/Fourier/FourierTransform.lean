@@ -83,6 +83,7 @@ def fourierIntegral (e : AddChar 𝕜 𝕊) (μ : Measure V) (L : V →ₗ[𝕜]
     (w : W) : E :=
   ∫ v, e (-L v w) • f v ∂μ
 
+set_option backward.defeqAttrib.useBackward true in
 theorem fourierIntegral_congr_ae (e : AddChar 𝕜 𝕊) (μ : Measure V) (L : V →ₗ[𝕜] W →ₗ[𝕜] 𝕜)
     {f₁ f₂ : V → E} (hf : f₁ =ᵐ[μ] f₂) : fourierIntegral e μ L f₁ = fourierIntegral e μ L f₂ := by
   ext
@@ -103,6 +104,7 @@ theorem norm_fourierIntegral_le_integral_norm (e : AddChar 𝕜 𝕊) (μ : Meas
   refine (norm_integral_le_integral_norm _).trans (le_of_eq ?_)
   simp_rw [Circle.norm_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Fourier integral converts right-translation into scalar multiplication by a phase factor. -/
 theorem fourierIntegral_comp_add_right [MeasurableAdd V] (e : AddChar 𝕜 𝕊) (μ : Measure V)
     [μ.IsAddRightInvariant] (L : V →ₗ[𝕜] W →ₗ[𝕜] 𝕜) (f : V → E) (v₀ : V) :
@@ -159,6 +161,7 @@ theorem fourierIntegral_add (he : Continuous e) (hL : Continuous fun p : V × W 
   · exact (fourierIntegral_convergent_iff he hL w).2 hf
   · exact (fourierIntegral_convergent_iff he hL w).2 hg
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Fourier integral of an `L^1` function is a continuous function. -/
 theorem fourierIntegral_continuous [FirstCountableTopology W] (he : Continuous e)
     (hL : Continuous fun p : V × W ↦ L p.1 p.2) {f : V → E} (hf : Integrable f μ) :
@@ -451,6 +454,7 @@ lemma fourier_eq' (f : V → E) (w : V) :
 @[deprecated (since := "2025-11-16")]
 alias fourierIntegral_eq' := fourier_eq'
 
+set_option backward.defeqAttrib.useBackward true in
 theorem fourier_congr_ae {f₁ f₂ : V → E} (hf : f₁ =ᵐ[volume] f₂) (x : V) : 𝓕 f₁ x = 𝓕 f₂ x := by
   apply integral_congr_ae
   filter_upwards [hf] with _ hf'
@@ -572,6 +576,7 @@ theorem fourierTransform_toLp {f : V → E} (hf : MemLp f 1) :
   ext x
   exact (Real.fourier_congr_ae hf.coeFn_toLp) x
 
+set_option backward.defeqAttrib.useBackward true in
 variable (V E) in
 /-- The Fourier transform from `L1` functions to bounded continuous functions as a continuous linear
 map. -/
