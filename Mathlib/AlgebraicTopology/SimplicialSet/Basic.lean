@@ -54,7 +54,7 @@ set_option backward.defeqAttrib.useBackward true in
 /-- The constant map of simplicial sets `X ⟶ Y` induced by a simplex `y : Y _[0]`. -/
 @[simps]
 def const {X Y : SSet.{u}} (y : Y _⦋0⦌) : X ⟶ Y where
-  app n := TypeCat.ofHom (fun _ ↦ Y.map (n.unop.const _ 0).op y)
+  app n := ↾fun _ ↦ Y.map (n.unop.const _ 0).op y
   naturality _ _ _ := by
     ext
     dsimp
