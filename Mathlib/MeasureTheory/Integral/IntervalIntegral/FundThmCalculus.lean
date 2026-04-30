@@ -379,6 +379,7 @@ theorem measure_integral_sub_linear_isLittleO_of_tendsto_ae_of_ge
   measure_integral_sub_linear_isLittleO_of_tendsto_ae_of_ge' hfm hf (FTCFilter.finiteAt_inner l) hu
     hv huv
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Fundamental theorem of calculus-1**, strict derivative in both limits for a locally finite
 measure.
 
@@ -967,6 +968,7 @@ section FTC2
 
 variable {g' g φ : ℝ → ℝ} {a b : ℝ}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Hard part of FTC-2 for integrable derivatives, real-valued functions: one has
 `g b - g a ≤ ∫ y in a..b, g' y` when `g'` is integrable.
 Auxiliary lemma in the proof of `integral_eq_sub_of_hasDeriv_right_of_le`.
@@ -1151,6 +1153,7 @@ theorem integral_eq_sub_of_hasDerivAt (hderiv : ∀ x ∈ uIcc a b, HasDerivAt f
   integral_eq_sub_of_hasDeriv_right (HasDerivAt.continuousOn hderiv)
     (fun _x hx => (hderiv _ (mem_Icc_of_Ioo hx)).hasDerivWithinAt) hint
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_eq_sub_of_hasDerivAt_of_tendsto (hab : a < b) {fa fb}
     (hderiv : ∀ x ∈ Ioo a b, HasDerivAt f (f' x) x) (hint : IntervalIntegrable f' volume a b)
     (ha : Tendsto f (𝓝[>] a) (𝓝 fa)) (hb : Tendsto f (𝓝[<] b) (𝓝 fb)) :

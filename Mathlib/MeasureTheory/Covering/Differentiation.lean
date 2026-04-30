@@ -158,6 +158,7 @@ section
 variable [SecondCountableTopology α] [BorelSpace α] [IsLocallyFiniteMeasure μ] {ρ : Measure α}
   [IsLocallyFiniteMeasure ρ]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a measure `ρ` is singular with respect to `μ`, then for `μ` almost every `x`, the ratio
 `ρ a / μ a` tends to zero when `a` shrinks to `x` along the Vitali family. This makes sense
 as `μ a` is eventually positive by `ae_eventually_measure_pos`. -/
@@ -422,6 +423,7 @@ noncomputable def limRatioMeas : α → ℝ≥0∞ :=
 theorem limRatioMeas_measurable : Measurable (v.limRatioMeas hρ) :=
   AEMeasurable.measurable_mk _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ae_tendsto_limRatioMeas :
     ∀ᵐ x ∂μ, Tendsto (fun a => ρ a / μ a) (v.filterAt x) (𝓝 (v.limRatioMeas hρ x)) := by
   filter_upwards [v.ae_tendsto_limRatio hρ, AEMeasurable.ae_eq_mk (v.aemeasurable_limRatio hρ)]
@@ -661,6 +663,7 @@ theorem withDensity_limRatioMeas_eq : μ.withDensity (v.limRatioMeas hρ) = ρ :
     filter_upwards [self_mem_nhdsWithin] with _ ht
     exact v.le_mul_withDensity hρ hs ht
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Weak version of the main theorem on differentiation of measures: given a Vitali family `v`
 for a locally finite measure `μ`, and another locally finite measure `ρ`, then for `μ`-almost
 every `x` the ratio `ρ a / μ a` converges, when `a` shrinks to `x` along the Vitali family,
@@ -681,6 +684,7 @@ end AbsolutelyContinuous
 
 variable (ρ)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Main theorem on differentiation of measures: given a Vitali family `v` for a locally finite
 measure `μ`, and another locally finite measure `ρ`, then for `μ`-almost every `x` the
 ratio `ρ a / μ a` converges, when `a` shrinks to `x` along the Vitali family, towards the
@@ -705,6 +709,7 @@ theorem ae_tendsto_rnDeriv :
 /-! ### Lebesgue density points -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a measurable set `s`, then `μ (s ∩ a) / μ a` converges when `a` shrinks to a typical
 point `x` along a Vitali family. The limit is `1` for `x ∈ s` and `0` for `x ∉ s`. This shows that
 almost every point of `s` is a Lebesgue density point for `s`. A version for non-measurable sets
@@ -717,6 +722,7 @@ theorem ae_tendsto_measure_inter_div_of_measurableSet {s : Set α} (hs : Measura
   intro x hx h'x
   simpa only [h'x, restrict_apply' hs, inter_comm] using hx
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given an arbitrary set `s`, then `μ (s ∩ a) / μ a` converges to `1` when `a` shrinks to a
 typical point of `s` along a Vitali family. This shows that almost every point of `s` is a
 Lebesgue density point for `s`. A stronger version for measurable sets is given
@@ -743,6 +749,7 @@ theorem ae_tendsto_measure_inter_div (s : Set α) :
 
 /-! ### Lebesgue differentiation theorem -/
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ae_tendsto_lintegral_div' {f : α → ℝ≥0∞} (hf : Measurable f) (h'f : (∫⁻ y, f y ∂μ) ≠ ∞) :
     ∀ᵐ x ∂μ, Tendsto (fun a => (∫⁻ y in a, f y ∂μ) / μ a) (v.filterAt x) (𝓝 (f x)) := by
   let ρ := μ.withDensity f
@@ -753,6 +760,7 @@ theorem ae_tendsto_lintegral_div' {f : α → ℝ≥0∞} (hf : Measurable f) (h
   filter_upwards [v.eventually_filterAt_measurableSet x] with a ha
   rw [← withDensity_apply f ha]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ae_tendsto_lintegral_div {f : α → ℝ≥0∞} (hf : AEMeasurable f μ) (h'f : (∫⁻ y, f y ∂μ) ≠ ∞) :
     ∀ᵐ x ∂μ, Tendsto (fun a => (∫⁻ y in a, f y ∂μ) / μ a) (v.filterAt x) (𝓝 (f x)) := by
   have A : (∫⁻ y, hf.mk f y ∂μ) ≠ ∞ := by
@@ -767,6 +775,7 @@ theorem ae_tendsto_lintegral_div {f : α → ℝ≥0∞} (hf : AEMeasurable f μ
   apply lintegral_congr_ae
   exact ae_restrict_of_ae hf.ae_eq_mk
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ae_tendsto_lintegral_enorm_sub_div'_of_integrable {f : α → E} (hf : Integrable f μ)
     (h'f : StronglyMeasurable f) :
     ∀ᵐ x ∂μ, Tendsto (fun a => (∫⁻ y in a, ‖f y - f x‖ₑ ∂μ) / μ a) (v.filterAt x) (𝓝 0) := by
@@ -834,6 +843,7 @@ theorem ae_tendsto_lintegral_enorm_sub_div'_of_integrable {f : α → E} (hf : I
         gcongr
     _ = ε * μ a := by rw [← add_mul, ENNReal.add_halves]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ae_tendsto_lintegral_enorm_sub_div_of_integrable {f : α → E} (hf : Integrable f μ) :
     ∀ᵐ x ∂μ, Tendsto (fun a => (∫⁻ y in a, ‖f y - f x‖ₑ ∂μ) / μ a) (v.filterAt x) (𝓝 0) := by
   have I : Integrable (hf.1.mk f) μ := hf.congr hf.1.ae_eq_mk
@@ -865,6 +875,7 @@ theorem ae_tendsto_lintegral_enorm_sub_div {f : α → E} (hf : LocallyIntegrabl
   refine setLIntegral_congr_fun h'a (fun y hy ↦ ?_)
   rw [indicator_of_mem (ha hy) f, indicator_of_mem hn f]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- *Lebesgue differentiation theorem*: for almost every point `x`, the
 average of `‖f y - f x‖` on `a` tends to `0` as `a` shrinks to `x` along a Vitali family. -/
 theorem ae_tendsto_average_norm_sub {f : α → E} (hf : LocallyIntegrable f μ) :
@@ -883,6 +894,7 @@ theorem ae_tendsto_average_norm_sub {f : α → E} (hf : LocallyIntegrable f μ)
   rw [lintegral_coe_eq_integral _ A, ENNReal.toReal_ofReal (by positivity)]
   simp only [coe_nnnorm, measureReal_def]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- *Lebesgue differentiation theorem*: for almost every point `x`, the
 average of `f` on `a` tends to `f x` as `a` shrinks to `x` along a Vitali family. -/
 theorem ae_tendsto_average [NormedSpace ℝ E] [CompleteSpace E] {f : α → E}

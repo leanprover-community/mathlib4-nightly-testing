@@ -119,6 +119,7 @@ theorem pdf_eq_zero_of_measure_eq_zero_or_top {X : Ω → E} {s : Set E}
   · simp only [IsUniform, ProbabilityTheory.cond, H, ENNReal.inv_top, zero_smul] at hu
     simp [pdf, hu]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem pdf_eq {X : Ω → E} {s : Set E} (hms : MeasurableSet s)
     (hu : IsUniform X s ℙ μ) : pdf X ℙ μ =ᵐ[μ] s.indicator ((μ s)⁻¹ • (1 : E → ℝ≥0∞)) := by
   by_cases hnt : μ s = ∞
@@ -142,6 +143,7 @@ theorem pdf_toReal_ae_eq {X : Ω → E} {s : Set E} (hms : MeasurableSet s)
 
 variable {X : Ω → ℝ} {s : Set ℝ}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mul_pdf_integrable (hcs : IsCompact s) (huX : IsUniform X s ℙ) :
     Integrable fun x : ℝ => x * (pdf X ℙ volume x).toReal := by
   by_cases hnt : volume s = 0 ∨ volume s = ∞

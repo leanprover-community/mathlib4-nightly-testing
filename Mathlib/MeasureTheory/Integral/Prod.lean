@@ -149,6 +149,7 @@ namespace Measure
 
 variable [SFinite ν]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integrable_measure_prodMk_left {s : Set (α × β)} (hs : MeasurableSet s)
     (h2s : (μ.prod ν) s ≠ ∞) : Integrable (fun x => ν.real (Prod.mk x ⁻¹' s)) μ := by
   refine ⟨(measurable_measure_prodMk_left hs).ennreal_toReal.aemeasurable.aestronglyMeasurable, ?_⟩
@@ -240,6 +241,7 @@ theorem Integrable.swap [SFinite μ] ⦃f : α × β → E⦄ (hf : Integrable f
     Integrable (f ∘ Prod.swap) (ν.prod μ) :=
   integrable_swap_iff.2 hf
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFiniteIntegral_prod_iff ⦃f : α × β → E⦄ (h1f : StronglyMeasurable f) :
     HasFiniteIntegral f (μ.prod ν) ↔
       (∀ᵐ x ∂μ, HasFiniteIntegral (fun y => f (x, y)) ν) ∧
@@ -258,6 +260,7 @@ theorem hasFiniteIntegral_prod_iff ⦃f : α × β → E⦄ (h1f : StronglyMeasu
     rw [ofReal_toReal]; rw [← lt_top_iff_ne_top]; exact hx
   · intro h2f; refine ae_lt_top ?_ h2f.ne; exact h1f.enorm.lintegral_prod_right'
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFiniteIntegral_prod_iff' ⦃f : α × β → E⦄ (h1f : AEStronglyMeasurable f (μ.prod ν)) :
     HasFiniteIntegral f (μ.prod ν) ↔
       (∀ᵐ x ∂μ, HasFiniteIntegral (fun y => f (x, y)) ν) ∧

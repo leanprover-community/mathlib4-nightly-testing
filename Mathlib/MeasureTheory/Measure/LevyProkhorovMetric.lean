@@ -446,6 +446,7 @@ lemma tendsto_integral_meas_thickening_le (f : Ω →ᵇ ℝ)
       · exact isClosed_le continuous_const f.continuous
     · finiteness
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The identity map `LevyProkhorov (ProbabilityMeasure Ω) → ProbabilityMeasure Ω` is continuous. -/
 lemma LevyProkhorov.continuous_toMeasure_probabilityMeasure :
     Continuous (toMeasure (α := ProbabilityMeasure Ω)) := by
@@ -525,6 +526,7 @@ open BoundedContinuousFunction TopologicalSpace
 variable {Ω : Type*} [PseudoMetricSpace Ω]
 variable [MeasurableSpace Ω] [OpensMeasurableSpace Ω]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ProbabilityMeasure.toMeasure_add_pos_gt_mem_nhds (P : ProbabilityMeasure Ω)
     {G : Set Ω} (G_open : IsOpen G) {ε : ℝ≥0∞} (ε_pos : 0 < ε) :
     {Q | P.toMeasure G < Q.toMeasure G + ε} ∈ 𝓝 P := by
