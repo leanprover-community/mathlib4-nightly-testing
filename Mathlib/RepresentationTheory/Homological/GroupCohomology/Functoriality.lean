@@ -46,6 +46,7 @@ theorem congr {f₁ f₂ : G →* H} (h : f₁ = f₂) {φ : res f₁ A ⟶ B} {
   subst h
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a group homomorphism `f : G →* H` and a representation morphism `φ : Res(f)(A) ⟶ B`,
 this is the chain map sending `x : Hⁿ → A` to `(g : Gⁿ) ↦ φ (x (f ∘ g))`. -/
