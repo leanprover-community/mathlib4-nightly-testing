@@ -126,6 +126,7 @@ end Congr
 
 variable (T : Triplet f g)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma SpecMap_tensorInl_fromSpecResidueField :
     (Spec.map T.tensorInl ≫ X.fromSpecResidueField T.x) ≫ f =

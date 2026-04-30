@@ -840,6 +840,7 @@ theorem continuous_setToFun (hT : DominatedFinMeasAdditive μ T C) :
     Continuous fun f : α →₁[μ] E => setToFun μ T hT f := by
   simp_rw [L1.setToFun_eq_setToL1 hT]; exact ContinuousLinearMap.continuous _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `F i → f` in `L1`, then `setToFun μ T hT (F i) → setToFun μ T hT f`. -/
 theorem tendsto_setToFun_of_L1 (hT : DominatedFinMeasAdditive μ T C) {ι} (f : α → E)
     (hfi : Integrable f μ) {fs : ι → α → E} {l : Filter ι} (hfsi : ∀ᶠ i in l, Integrable (fs i) μ)

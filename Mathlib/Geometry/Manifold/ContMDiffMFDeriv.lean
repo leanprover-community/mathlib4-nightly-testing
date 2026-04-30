@@ -59,6 +59,7 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {m n : WithTop ℕ∞}
 section mfderiv
 variable [Is : IsManifold I 1 M] [I's : IsManifold I' 1 M']
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function that sends `x` to the `y`-derivative of `f (x, y)` at `g (x)` is `C^m` at `x₀`,
 where the derivative is taken as a continuous linear map.
 We have to assume that `f` is `C^n` at `(x₀, g(x₀))` for `n ≥ m + 1` and `g` is `C^m` at `x₀`.
@@ -417,6 +418,7 @@ lemma contMDiff_equivTangentBundleProd :
   exact (contMDiff_fst.contMDiff_tangentMap le_rfl).prodMk
     (contMDiff_snd.contMDiff_tangentMap le_rfl)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The canonical equivalence between the product of tangent bundles and the tangent bundle of a
 product is smooth. -/

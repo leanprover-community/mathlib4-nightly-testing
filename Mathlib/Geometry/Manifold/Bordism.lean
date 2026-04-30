@@ -162,6 +162,7 @@ lemma map_M (s : SingularManifold X k I) {φ : X → Y} (hφ : Continuous φ) :
     (s.map hφ).M = s.M :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma map_comp (s : SingularManifold X k I)
     {φ : X → Y} {ψ : Y → Z} (hφ : Continuous φ) (hψ : Continuous ψ) :
     ((s.map hφ).map hψ).f = (ψ ∘ φ) ∘ s.f := by

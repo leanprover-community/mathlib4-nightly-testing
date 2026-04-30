@@ -63,6 +63,7 @@ lemma glueDataObjι_ι (U : X.affineOpens) : I.glueDataObjι U ≫ U.1.ι =
     Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk _)) ≫ U.2.fromSpec := by
   rw [glueDataObjι, Category.assoc]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ker_glueDataObjι_appTop (U : X.affineOpens) :
     RingHom.ker (I.glueDataObjι U).appTop.hom = (I.ideal U).comap U.1.topIso.hom.hom := by
   let φ : Γ(X, U) ⟶ CommRingCat.of (Γ(X, U) ⧸ I.ideal U) :=
@@ -526,6 +527,7 @@ def subschemeObjIso (U : X.affineOpens) :
   I.subscheme.presheaf.mapIso (eqToIso (by simp)).op ≪≫
     (I.subschemeCover.f U).appIso _ ≪≫ Scheme.ΓSpecIso (.of (Γ(X, U) ⧸ I.ideal U))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma subschemeι_app (U : X.affineOpens) : I.subschemeι.app U =
     CommRingCat.ofHom (Ideal.Quotient.mk (I.ideal U)) ≫
@@ -653,6 +655,7 @@ abbrev Hom.image : Scheme.{u} := f.ker.subscheme
 /-- The embedding from the scheme-theoretic image to the codomain. -/
 abbrev Hom.imageι : f.image ⟶ Y := f.ker.subschemeι
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma ideal_ker_le_ker_ΓSpecIso_inv_comp :
     f.ker.ideal U ≤ RingHom.ker ((ΓSpecIso Γ(Y, ↑U)).inv ≫

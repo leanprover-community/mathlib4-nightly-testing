@@ -93,10 +93,12 @@ theorem EuclideanHalfSpace.ext [NeZero n] (x y : EuclideanHalfSpace n)
     (h : x.1 = y.1) : x = y :=
   Subtype.ext h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem EuclideanHalfSpace.convex [NeZero n] :
     Convex ℝ { x : EuclideanSpace ℝ (Fin n) | 0 ≤ x 0 } :=
   fun _ hx _ hy _ _ _ _ _ ↦ by dsimp at hx hy ⊢; positivity
 
+set_option backward.defeqAttrib.useBackward true in
 theorem EuclideanQuadrant.convex :
     Convex ℝ { x : EuclideanSpace ℝ (Fin n) | ∀ i, 0 ≤ x i } :=
   fun _ hx _ hy _ _ _ _ _ i ↦ by dsimp at hx hy ⊢; specialize hx i; specialize hy i; positivity
@@ -261,6 +263,7 @@ lemma frontier_range_modelWithCornersEuclideanHalfSpace (n : ℕ) [NeZero n] :
       apply range_euclideanHalfSpace
     _ = { y | 0 = y 0 } := frontier_halfSpace 2 _ _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The left chart for the topological space `[x, y]`, defined on `[x,y)` and sending `x` to `0` in
 `EuclideanHalfSpace 1`.
@@ -326,6 +329,7 @@ lemma IccLeftChart_extend_bot_mem_frontier :
   rw [IccLeftChart_extend_bot, frontier_range_modelWithCornersEuclideanHalfSpace,
     mem_setOf, PiLp.zero_apply]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The right chart for the topological space `[x, y]`, defined on `(x,y]` and sending `y` to `0` in
 `EuclideanHalfSpace 1`.
