@@ -147,6 +147,7 @@ end changing_set
 -- which will be added in the planned file `CovariantDerivative/Ehresmann.lean`.
 -- In the mean-time we use the following weaker results (which are convenient to apply anyway).
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a covariant derivative `cov` on a neighborhood `s` of a point `x`, if sections `σ` and
 `σ'` agree on `s` and are differentiable at `x`, then `cov σ x = cov σ x'`. -/
 lemma congr_of_eqOn

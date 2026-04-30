@@ -126,6 +126,7 @@ protected theorem sub (hf : UnifTight f p μ) (hg : UnifTight g p μ)
   rw [sub_eq_add_neg]
   exact hf.add hg.neg hf_meas fun i => (hg_meas i).neg
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem aeeq (hf : UnifTight f p μ) (hfg : ∀ n, f n =ᵐ[μ] g n) :
     UnifTight g p μ := by
   intro ε hε

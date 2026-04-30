@@ -75,6 +75,7 @@ lemma hasFiniteIntegral_of_bound [CompactSpace Y] (f : X → C(Y, E)) (bound : X
     filter_upwards [bound_ge, bound_nonneg] with x bound_ge_x bound_nonneg_x
     exact ContinuousMap.norm_le _ bound_nonneg_x |>.mpr bound_ge_x
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A variant of `ContinuousMap.hasFiniteIntegral_of_bound` spelled in terms of
 `ContinuousMap.mkD`. -/
 lemma hasFiniteIntegral_mkD_of_bound [CompactSpace Y] (f : X → Y → E) (g : C(Y, E))
