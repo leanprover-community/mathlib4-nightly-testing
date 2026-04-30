@@ -147,6 +147,7 @@ def linearEquivFunOnFintype [Fintype ι] : (Π₀ i, M i) ≃ₗ[R] (Π i, M i) 
   map_add' _ _ := by ext; rfl
   map_smul' _ _ := by ext; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The `DFinsupp` version of `Finsupp.lsum`.
 
 See note [bundled maps over different rings] for why separate `R` and `S` semirings are used. -/

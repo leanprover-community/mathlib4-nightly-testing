@@ -163,6 +163,7 @@ def splittingOfFunOnFintypeSurjective [Finite α] (f : M →ₗ[R] α → R) (s 
   (Finsupp.lift _ _ _ fun x : α => (s (Finsupp.single x 1)).choose).comp
     (linearEquivFunOnFinite R R α).symm.toLinearMap
 
+set_option backward.defeqAttrib.useBackward true in
 theorem splittingOfFunOnFintypeSurjective_splits [Finite α] (f : M →ₗ[R] α → R)
     (s : Surjective f) : f.comp (splittingOfFunOnFintypeSurjective f s) = LinearMap.id := by
   classical
