@@ -45,6 +45,7 @@ namespace HurwitzKernelBounds
 
 section lemmas
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isBigO_exp_neg_mul_of_le {c d : ℝ} (hcd : c ≤ d) :
     (fun t ↦ exp (-d * t)) =O[atTop] fun t ↦ exp (-c * t) := by
   apply Eventually.isBigO
@@ -84,6 +85,7 @@ lemma f_le_g_nat (k : ℕ) {a t : ℝ} (ha : 0 ≤ a) (ht : 0 < t) (n : ℕ) :
 /-- The sum to be bounded (`ℕ` version). -/
 def F_nat (k : ℕ) (a t : ℝ) : ℝ := ∑' n, f_nat k a t n
 
+set_option backward.defeqAttrib.useBackward true in
 lemma summable_f_nat (k : ℕ) (a : ℝ) {t : ℝ} (ht : 0 < t) : Summable (f_nat k a t) := by
   have : Summable fun n : ℕ ↦ n ^ k * exp (-π * (n + a) ^ 2 * t) := by
     refine (((summable_pow_mul_jacobiTheta₂_term_bound (|a| * t) ht k).mul_right
@@ -176,6 +178,7 @@ lemma F_nat_one_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t) :
     rw [← Real.exp_nat_mul, mul_assoc _ (exp _), ← Real.exp_add]
     ring_nf
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isBigO_atTop_F_nat_one {a : ℝ} (ha : 0 ≤ a) : ∃ p, 0 < p ∧
     F_nat 1 a =O[atTop] fun t ↦ exp (-p * t) := by
   suffices ∃ p, 0 < p ∧ (fun t ↦ rexp (-π * (a ^ 2 + 1) * t) / (1 - rexp (-π * t)) ^ 2
@@ -245,6 +248,7 @@ lemma F_int_eq_of_mem_Icc (k : ℕ) {a : ℝ} (ha : a ∈ Icc 0 1) {t : ℝ} (ht
   · rw [f_int_ofNat _ ha.1]
   · rw [f_int_negSucc _ ha.2]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isBigO_atTop_F_int_zero_sub (a : UnitAddCircle) : ∃ p, 0 < p ∧
     (fun t ↦ F_int 0 a t - (if a = 0 then 1 else 0)) =O[atTop] fun t ↦ exp (-p * t) := by
   obtain ⟨a, ha, rfl⟩ := a.eq_coe_Ico

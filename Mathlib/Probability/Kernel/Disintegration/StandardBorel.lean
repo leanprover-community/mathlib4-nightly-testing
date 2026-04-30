@@ -235,6 +235,7 @@ instance instIsMarkovKernelBorelMarkovFromReal (η : Kernel α ℝ) [IsMarkovKer
   · rw [deterministic_apply]
     simp [(range_nonempty (embeddingReal Ω)).choose_spec]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For `κ' := map κ (Prod.map (id : β → β) e)`, the hypothesis `hη` is `fst κ' ⊗ₖ η = κ'`.
 The conclusion of the lemma is `fst κ ⊗ₖ borelMarkovFromReal Ω η = comapRight (fst κ' ⊗ₖ η) _`. -/
 lemma compProd_fst_borelMarkovFromReal_eq_comapRight_compProd

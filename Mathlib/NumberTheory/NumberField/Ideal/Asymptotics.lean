@@ -119,6 +119,7 @@ theorem tendsto_norm_le_and_mk_eq_div_atTop :
       (toMixed K).coe_toHomeomorph, (volumePreserving_toMixed K).measure_preimage
       measurableSet_frontier.nullMeasurableSet, h₂, volume_frontier_normLeOne]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 The limit of the number of nonzero integral ideals of norm `≤ s` divided by `s` when `s → +∞`.
 -/
@@ -142,6 +143,7 @@ theorem tendsto_norm_le_div_atTop₀ :
     rw [Fintype.card, Finset.card_eq_sum_card_fiberwise (f := fun I ↦ ClassGroup.mk0 I.1)
       (t := Finset.univ) (fun _ _ ↦ Finset.mem_univ _), Nat.cast_sum, Finset.sum_div]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 The limit of the number of integral ideals of norm `≤ s` divided by `s` when `s → +∞`.
 -/

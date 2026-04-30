@@ -27,6 +27,7 @@ local notation "γ" => Real.eulerMascheroniConstant
 
 namespace Real
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Explicit formula for the derivative of the Gamma function at positive integers, in terms of
 harmonic numbers and the Euler-Mascheroni constant `γ`. -/
 lemma deriv_Gamma_nat (n : ℕ) :
