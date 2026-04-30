@@ -106,6 +106,7 @@ theorem centralMoment_one [IsZeroOrProbabilityMeasure μ] : centralMoment X 1 μ
 lemma centralMoment_two_eq_variance (hX : AEMeasurable X μ) : centralMoment X 2 μ = variance X μ :=
   (variance_eq_integral hX).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Central moments are equal for almost-everywhere equal random variables. -/
 lemma centralMoment_congr_ae {X Y : Ω → ℝ} (hXY : X =ᵐ[μ] Y) :
     centralMoment X p μ = centralMoment Y p μ := by
@@ -180,6 +181,7 @@ theorem cgf_undef (hX : ¬Integrable (fun ω => exp (t * X ω)) μ) : cgf X μ t
 theorem mgf_nonneg : 0 ≤ mgf X μ t := by
   unfold mgf; positivity
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mgf_pos' (hμ : μ ≠ 0) (h_int_X : Integrable (fun ω => exp (t * X ω)) μ) :
     0 < mgf X μ t := by
   simp_rw [mgf]
@@ -221,6 +223,7 @@ lemma mgf_id_map (hX : AEMeasurable X μ) : mgf id (μ.map X) = mgf X μ := by
   rw [mgf_map hX, Function.id_comp]
   exact (measurable_const_mul _).exp.aestronglyMeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 lemma mgf_congr {Y : Ω → ℝ} (h : X =ᵐ[μ] Y) : mgf X μ t = mgf Y μ t :=
   integral_congr_ae <| by filter_upwards [h] with ω hω using by rw [hω]
 
@@ -260,6 +263,7 @@ lemma mgf_sum_measure {ι : Type*} {μ : ι → Measure Ω}
 lemma mgf_smul_measure (c : ℝ≥0∞) : mgf X (c • μ) t = c.toReal * mgf X μ t := by
   rw [mgf, integral_smul_measure, mgf, smul_eq_mul]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The moment-generating function is monotone in the random variable for `t ≥ 0`. -/
 lemma mgf_mono_of_nonneg {Y : Ω → ℝ} (hXY : X ≤ᵐ[μ] Y) (ht : 0 ≤ t)
     (htY : Integrable (fun ω ↦ exp (t * Y ω)) μ) :
@@ -490,6 +494,7 @@ lemma aemeasurable_exp_mul {X : Ω → ℝ} (t : ℝ) (hX : AEMeasurable X μ) :
     AEStronglyMeasurable (fun ω ↦ rexp (t * X ω)) μ :=
   (measurable_exp.comp_aemeasurable (hX.const_mul t)).aestronglyMeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 lemma integrable_exp_mul_of_le [IsFiniteMeasure μ] {X : Ω → ℝ} (t b : ℝ) (ht : 0 ≤ t)
     (hX : AEMeasurable X μ) (hb : ∀ᵐ ω ∂μ, X ω ≤ b) :
     Integrable (fun ω ↦ exp (t * X ω)) μ := by

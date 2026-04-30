@@ -759,6 +759,7 @@ theorem StronglyAdapted.measurable_upcrossingsBefore (hf : StronglyAdapted ℱ f
   simpa only [ENat.some_eq_coe, Nat.cast_lt] using
     hf.isStoppingTime_upperCrossingTime.measurableSet_lt_of_pred N
 
+set_option backward.defeqAttrib.useBackward true in
 theorem StronglyAdapted.integrable_upcrossingsBefore [IsFiniteMeasure μ]
     (hf : StronglyAdapted ℱ f) (hab : a < b) :
     Integrable (fun ω => (upcrossingsBefore a b f N ω : ℝ)) μ :=

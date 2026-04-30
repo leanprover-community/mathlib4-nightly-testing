@@ -42,6 +42,7 @@ section summable
 
 variable {f : ℕ → ℂ} {r : ℝ} {s : ℂ}
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem LSeriesSummable_of_sum_norm_bigO_aux (hf : f 0 = 0)
     (hO : (fun n ↦ ∑ k ∈ Icc 1 n, ‖f k‖) =O[atTop] fun n ↦ (n : ℝ) ^ r)
     (hr : 0 ≤ r) (hs : r < s.re) :
@@ -70,6 +71,7 @@ private theorem LSeriesSummable_of_sum_norm_bigO_aux (hf : f 0 = 0)
       isEquivalent_nat_floor.isBigO.rpow hr (eventually_ge_atTop 0)
   · rwa [integrableAtFilter_rpow_atTop_iff, neg_add_lt_iff_lt_add, add_neg_cancel_right]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the partial sums `∑ k ∈ Icc 1 n, ‖f k‖` are `O(n ^ r)` for some real `0 ≤ r`, then the
 L-series `LSeries f` converges at `s : ℂ` for all `s` such that `r < s.re`. -/
 theorem LSeriesSummable_of_sum_norm_bigO
@@ -192,6 +194,7 @@ private theorem lemma₁ (hlim : Tendsto (fun n : ℕ ↦ (∑ k ∈ Icc 1 n, f 
     exact (norm_ofReal_cpow_eventually_eq_atTop _).isBigO.of_norm_left
   · rwa [integrableAtFilter_rpow_atTop_iff, neg_lt_neg_iff]
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem lemma₂ {s T ε : ℝ} {S : ℝ → ℂ} (hs : 1 < s)
     (hS₁ : LocallyIntegrableOn (fun t ↦ S t) (Set.Ici 1)) (hS₂ : ∀ t ≥ T, ‖S t‖ ≤ ε * t) :
     IntegrableOn (fun t : ℝ ↦ ‖S t‖ * (t ^ (-s - 1))) (Set.Ici 1) := by
@@ -210,6 +213,7 @@ end lemmas
 section proof
 -- See `LSeries_tendsto_sub_mul_nhds_one_of_tendsto_sum_div_aux₃` for the strategy of proof
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem LSeries_tendsto_sub_mul_nhds_one_of_tendsto_sum_div_aux₁
     (hlim : Tendsto (fun n : ℕ ↦ (∑ k ∈ Icc 1 n, f k) / n) atTop (𝓝 l)) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ t : ℝ in atTop, ‖(∑ k ∈ Icc 1 ⌊t⌋₊, f k) - l * t‖ < ε * t := by
@@ -249,6 +253,7 @@ private theorem LSeries_tendsto_sub_mul_nhds_one_of_tendsto_sum_div_aux₂ {s T 
       rw [integral_Ioi_rpow_of_lt (by rwa [neg_lt_neg_iff]) zero_lt_one, Real.one_rpow]
       field [show -s + 1 ≠ 0 by linarith]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 private theorem LSeries_tendsto_sub_mul_nhds_one_of_tendsto_sum_div_aux₃
     (hlim : Tendsto (fun n : ℕ ↦ (∑ k ∈ Icc 1 n, f k) / n) atTop (𝓝 l))

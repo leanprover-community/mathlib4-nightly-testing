@@ -106,6 +106,7 @@ theorem integrableOn_rpow_mul_exp_neg_mul_sq {b : ℝ} (hb : 0 < b) {s : ℝ} (h
   simp_rw [← rpow_two]
   exact integrableOn_rpow_mul_exp_neg_mul_rpow hs one_le_two hb
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integrable_rpow_mul_exp_neg_mul_sq {b : ℝ} (hb : 0 < b) {s : ℝ} (hs : -1 < s) :
     Integrable fun x : ℝ => x ^ s * exp (-b * x ^ 2) := by
   rw [← integrableOn_univ, ← @Iio_union_Ici _ _ (0 : ℝ), integrableOn_union,
@@ -233,6 +234,7 @@ theorem integral_gaussian (b : ℝ) : ∫ x : ℝ, exp (-b * x ^ 2) = √(π / b
   convert integral_gaussian_sq_complex (by rwa [ofReal_re] : 0 < (b : ℂ).re) with _ x
   rw [ofReal_exp, ofReal_mul, ofReal_pow, ofReal_neg]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem continuousAt_gaussian_integral (b : ℂ) (hb : 0 < re b) :
     ContinuousAt (fun c : ℂ => ∫ x : ℝ, cexp (-c * (x : ℂ) ^ 2)) b := by
   let f : ℂ → ℝ → ℂ := fun (c : ℂ) (x : ℝ) => cexp (-c * (x : ℂ) ^ 2)
@@ -246,6 +248,7 @@ theorem continuousAt_gaussian_integral (b : ℂ) (hb : 0 < re b) :
   exact continuousAt_of_dominated (Eventually.of_forall (by fun_prop)) f_le_bd
     (integrable_exp_neg_mul_sq hd) (ae_of_all _ (by fun_prop))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem integral_gaussian_complex {b : ℂ} (hb : 0 < re b) :
     ∫ x : ℝ, cexp (-b * (x : ℂ) ^ 2) = (π / b) ^ (1 / 2 : ℂ) := by

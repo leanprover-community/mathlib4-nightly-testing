@@ -142,6 +142,7 @@ theorem moment_truncation_eq_intervalIntegral (hf : AEStronglyMeasurable f μ) {
   · linarith
   · exact ((measurable_id.indicator M).pow_const n).aestronglyMeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 theorem moment_truncation_eq_intervalIntegral_of_nonneg (hf : AEStronglyMeasurable f μ) {A : ℝ}
     {n : ℕ} (hn : n ≠ 0) (h'f : 0 ≤ f) :
     ∫ x, truncation f A x ^ n ∂μ = ∫ y in 0..A, y ^ n ∂Measure.map f μ := by
@@ -186,6 +187,7 @@ theorem integral_truncation_le_integral_of_nonneg (hf : Integrable f μ) (h'f : 
       _ ≤ |f x| := abs_truncation_le_abs_self _ _ _
       _ = f x := abs_of_nonneg (h'f x)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function is integrable, then the integral of its truncated versions converges to the
 integral of the whole function. -/
 theorem tendsto_integral_truncation {f : α → ℝ} (hf : Integrable f μ) :
@@ -371,6 +373,7 @@ variable (X : ℕ → Ω → ℝ) (hint : Integrable (X 0))
   (hindep : Pairwise (IndepFun on X)) (hident : ∀ i, IdentDistrib (X i) (X 0))
   (hnonneg : ∀ i ω, 0 ≤ X i ω)
 
+set_option backward.defeqAttrib.useBackward true in
 include hint hindep hident hnonneg in
 /-- The truncation of `Xᵢ` up to `i` satisfies the strong law of large numbers (with respect to
 the truncated expectation) along the sequence `c^n`, for any `c > 1`, up to a given `ε > 0`.
@@ -503,6 +506,7 @@ theorem strong_law_aux3 :
   rw [integral_finsetSum _ fun i _ => ?_]
   exact ((hident i).symm.integrable_snd hint).1.integrable_truncation
 
+set_option backward.defeqAttrib.useBackward true in
 include hint hindep hident hnonneg in
 /-- The truncation of `Xᵢ` up to `i` satisfies the strong law of large numbers
 (with respect to the original expectation) along the sequence
@@ -518,6 +522,7 @@ theorem strong_law_aux4 {c : ℝ} (c_one : 1 < c) :
   ext1 n
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 include hint hident hnonneg in
 /-- The truncated and non-truncated versions of `Xᵢ` have the same asymptotic behavior, as they
 almost surely coincide at all but finitely many steps. This follows from a probability computation
@@ -546,6 +551,7 @@ theorem strong_law_aux5 :
   ext n
   rw [sum_sub_distrib]
 
+set_option backward.defeqAttrib.useBackward true in
 include hint hindep hident hnonneg in
 /-- `Xᵢ` satisfies the strong law of large numbers along the sequence
 `c^n`, for any `c > 1`. This follows from the version for the truncated `Xᵢ`, and the fact that
@@ -590,6 +596,7 @@ theorem strong_law_aux7 :
 
 end StrongLawNonneg
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Strong law of large numbers**, almost sure version: if `X n` is a sequence of independent
 identically distributed integrable real-valued random variables, then `∑ i ∈ range n, X i / n`
 converges almost surely to `𝔼[X 0]`. We give here the strong version, due to Etemadi, that only
@@ -640,6 +647,7 @@ variable {Ω : Type*} {mΩ : MeasurableSpace Ω} {μ : Measure Ω} [IsProbabilit
 
 open Set TopologicalSpace
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Preliminary lemma for the strong law of large numbers for vector-valued random variables:
 the composition of the random variables with a simple function satisfies the strong law of large
 numbers. -/
@@ -690,6 +698,7 @@ lemma strong_law_ae_simpleFunc_comp (X : ℕ → Ω → E) (h' : Measurable (X 0
 
 variable [BorelSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Preliminary lemma for the strong law of large numbers for vector-valued random variables,
 assuming measurability in addition to integrability. This is weakened to ae measurability in
 the full version `ProbabilityTheory.strong_law_ae`. -/
@@ -780,6 +789,7 @@ lemma strong_law_ae_of_measurable
       exact hn.le
   _ < ε := hδ
 
+set_option backward.defeqAttrib.useBackward true in
 omit [IsProbabilityMeasure μ] in
 /-- **Strong law of large numbers**, almost sure version: if `X n` is a sequence of independent
 identically distributed integrable random variables taking values in a Banach space,
@@ -826,6 +836,7 @@ variable {Ω : Type*} {mΩ : MeasurableSpace Ω} {μ : Measure Ω}
   {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   [MeasurableSpace E] [BorelSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Strong law of large numbers**, Lᵖ version: if `X n` is a sequence of independent
 identically distributed random variables in Lᵖ, then `n⁻¹ • ∑ i ∈ range n, X i`
 converges in `Lᵖ` to `𝔼[X 0]`. -/

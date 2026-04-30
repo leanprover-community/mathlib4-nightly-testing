@@ -141,11 +141,13 @@ lemma martingalePart_add (hfint : ∀ n, Integrable (f n) μ)
   simp_all [martingalePart]
   abel
 
+set_option backward.defeqAttrib.useBackward true in
 lemma Martingale.martingalePart_eq (hf : Martingale f ℱ μ) (n : ℕ) :
     martingalePart f ℱ μ n =ᵐ[μ] f n := by
   filter_upwards [hf.predictablePart_eq_zero n] with ω hω
   simp [martingalePart, hω]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsPredictable.martingalePart_eq [SecondCountableTopology E] [MeasurableSpace E]
     [BorelSpace E] [SigmaFiniteFiltration μ ℱ] (hf : IsStronglyPredictable ℱ f)
     (hfint : ∀ n, Integrable (f n) μ) (n : ℕ) :
@@ -171,6 +173,7 @@ theorem integrable_martingalePart (hf_int : ∀ n, Integrable (f n) μ) (n : ℕ
   rw [martingalePart_eq_sum]
   fun_prop
 
+set_option backward.defeqAttrib.useBackward true in
 theorem martingale_martingalePart (hf : StronglyAdapted ℱ f) (hf_int : ∀ n, Integrable (f n) μ)
     [SigmaFiniteFiltration μ ℱ] : Martingale (martingalePart f ℱ μ) ℱ μ := by
   refine ⟨stronglyAdapted_martingalePart hf, fun i j hij => ?_⟩
@@ -211,6 +214,7 @@ theorem martingale_martingalePart (hf : StronglyAdapted ℱ f) (hf_int : ∀ n, 
   simp only [Finset.sum_const_zero]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 -- The following two lemmas demonstrate the essential uniqueness of the decomposition
 theorem martingalePart_add_ae_eq [SigmaFiniteFiltration μ ℱ] {f g : ℕ → Ω → E}
     (hf : Martingale f ℱ μ) (hg : StronglyAdapted ℱ fun n => g (n + 1)) (hg0 : g 0 = 0)
@@ -232,6 +236,7 @@ theorem martingalePart_add_ae_eq [SigmaFiniteFiltration μ ℱ] {f g : ℕ → �
   rw [hω, Pi.sub_apply, martingalePart]
   simp [hg0]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem predictablePart_add_ae_eq [SigmaFiniteFiltration μ ℱ] {f g : ℕ → Ω → E}
     (hf : Martingale f ℱ μ) (hg : StronglyAdapted ℱ fun n => g (n + 1)) (hg0 : g 0 = 0)
     (hgint : ∀ n, Integrable (g n) μ) (n : ℕ) : predictablePart (f + g) ℱ μ n =ᵐ[μ] g n := by
