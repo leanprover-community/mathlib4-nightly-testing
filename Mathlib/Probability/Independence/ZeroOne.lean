@@ -32,6 +32,7 @@ namespace ProbabilityTheory
 variable {α Ω ι : Type*} {_mα : MeasurableSpace α} {s : ι → MeasurableSpace Ω}
   {m m0 : MeasurableSpace Ω} {κ : Kernel α Ω} {μα : Measure α} {μ : Measure Ω}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Kernel.measure_eq_zero_or_one_or_top_of_indepSet_self {t : Set Ω}
     (h_indep : Kernel.IndepSet t t κ μα) :
     ∀ᵐ a ∂μα, κ a t = 0 ∨ κ a t = 1 ∨ κ a t = ∞ := by
@@ -50,6 +51,7 @@ theorem measure_eq_zero_or_one_or_top_of_indepSet_self {t : Set Ω}
   simpa only [ae_dirac_eq, Filter.eventually_pure]
     using Kernel.measure_eq_zero_or_one_or_top_of_indepSet_self h_indep
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Kernel.measure_eq_zero_or_one_of_indepSet_self' (h : ∀ᵐ a ∂μα, IsFiniteMeasure (κ a))
     {t : Set Ω} (h_indep : IndepSet t t κ μα) :
     ∀ᵐ a ∂μα, κ a t = 0 ∨ κ a t = 1 := by
@@ -66,6 +68,7 @@ theorem measure_eq_zero_or_one_of_indepSet_self [IsFiniteMeasure μ] {t : Set Ω
   simpa only [ae_dirac_eq, Filter.eventually_pure]
     using Kernel.measure_eq_zero_or_one_of_indepSet_self h_indep
 
+set_option backward.defeqAttrib.useBackward true in
 theorem condExp_eq_zero_or_one_of_condIndepSet_self
     [StandardBorelSpace Ω]
     (hm : m ≤ m0) [hμ : IsFiniteMeasure μ] {t : Set Ω} (ht : MeasurableSet t)
@@ -205,6 +208,7 @@ theorem condIndep_limsup_self [StandardBorelSpace Ω]
     CondIndep m (limsup s f) (limsup s f) hm μ :=
   Kernel.indep_limsup_self h_le h_indep hf hns hnsp hns_univ
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Kernel.measure_zero_or_one_of_measurableSet_limsup (h_le : ∀ n, s n ≤ m0)
     (h_indep : iIndep s κ μα)
     (hf : ∀ t, p t → tᶜ ∈ f) (hns : Directed (· ≤ ·) ns) (hnsp : ∀ a, p (ns a))
@@ -224,6 +228,7 @@ theorem measure_zero_or_one_of_measurableSet_limsup
     using Kernel.measure_zero_or_one_of_measurableSet_limsup h_le h_indep hf hns hnsp hns_univ
       ht_tail
 
+set_option backward.defeqAttrib.useBackward true in
 theorem condExp_zero_or_one_of_measurableSet_limsup [StandardBorelSpace Ω]
     (hm : m ≤ m0) [IsFiniteMeasure μ]
     (h_le : ∀ n, s n ≤ m0) (h_indep : iCondIndep m hm s μ)
@@ -266,6 +271,7 @@ theorem condIndep_limsup_atTop_self [StandardBorelSpace Ω]
     CondIndep m (limsup s atTop) (limsup s atTop) hm μ :=
   Kernel.indep_limsup_atTop_self h_le h_indep
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Kernel.measure_zero_or_one_of_measurableSet_limsup_atTop (h_le : ∀ n, s n ≤ m0)
     (h_indep : iIndep s κ μα) {t : Set Ω} (ht_tail : MeasurableSet[limsup s atTop] t) :
     ∀ᵐ a ∂μα, κ a t = 0 ∨ κ a t = 1 := by
@@ -321,6 +327,7 @@ theorem condIndep_limsup_atBot_self [StandardBorelSpace Ω]
     CondIndep m (limsup s atBot) (limsup s atBot) hm μ :=
   Kernel.indep_limsup_atBot_self h_le h_indep
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Kolmogorov's 0-1 law**, kernel version: any event in the tail σ-algebra of an independent
 sequence of sub-σ-algebras has probability 0 or 1 almost surely. -/
 theorem Kernel.measure_zero_or_one_of_measurableSet_limsup_atBot (h_le : ∀ n, s n ≤ m0)
