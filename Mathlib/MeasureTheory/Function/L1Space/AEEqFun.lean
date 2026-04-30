@@ -135,6 +135,7 @@ theorem dist_def (f g : α →₁[μ] β) : dist f g = (∫⁻ a, edist (f a) (g
 theorem norm_def (f : α →₁[μ] β) : ‖f‖ = (∫⁻ a, ‖f a‖ₑ ∂μ).toReal := by
   simp [Lp.norm_def, eLpNorm, eLpNorm'_eq_lintegral_enorm]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Computing the norm of a difference between two L¹-functions. Note that this is not a
   special case of `norm_def` since `(f - g) x` and `f x - g x` are not equal
   (but only a.e.-equal). -/
@@ -149,6 +150,7 @@ theorem ofReal_norm_eq_lintegral (f : α →₁[μ] β) : ENNReal.ofReal ‖f‖
   rw [norm_def, ENNReal.ofReal_toReal]
   exact ne_of_lt (hasFiniteIntegral_coeFn f)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Computing the norm of a difference between two L¹-functions. Note that this is not a
   special case of `ofReal_norm_eq_lintegral` since `(f - g) x` and `f x - g x` are not equal
   (but only a.e.-equal). -/

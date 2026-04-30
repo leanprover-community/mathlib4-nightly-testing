@@ -541,6 +541,7 @@ lemma exists_integrable_exp_sq_of_map_rotation_eq_self' [IsProbabilityMeasure μ
   rw [ENNReal.toReal_lt_toReal hc_one_sub_lt_top.ne hc_lt_top.ne]
   exact .inl h_one_sub_lt_self
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary lemma for `exists_integrable_exp_sq_of_map_rotation_eq_self`, in which we will replace
 the assumption `IsProbabilityMeasure μ` by the weaker `IsFiniteMeasure μ`. -/
 lemma exists_integrable_exp_sq_of_map_rotation_eq_self_of_isProbabilityMeasure

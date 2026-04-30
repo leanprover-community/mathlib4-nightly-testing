@@ -262,6 +262,7 @@ theorem mdifferentiableOn_extChartAt_symm :
   intro y hy
   exact (mdifferentiableWithinAt_extChartAt_symm hy).mono (extChartAt_target_subset_range x)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The composition of the derivative of `extChartAt` with the derivative of the inverse of
 `extChartAt` gives the identity.
 Version where the basepoint belongs to `(extChartAt I x).target`. -/
@@ -295,6 +296,7 @@ lemma mfderiv_extChartAt_comp_mfderivWithin_extChartAt_symm' {x : M}
   have : y = (extChartAt I x).symm (extChartAt I x y) := ((extChartAt I x).left_inv hy).symm
   convert mfderiv_extChartAt_comp_mfderivWithin_extChartAt_symm ((extChartAt I x).map_source hy)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The composition of the derivative of the inverse of `extChartAt` with the derivative of
 `extChartAt` gives the identity.
 Version where the basepoint belongs to `(extChartAt I x).target`. -/

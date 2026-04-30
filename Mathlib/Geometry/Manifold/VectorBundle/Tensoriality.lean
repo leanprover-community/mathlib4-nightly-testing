@@ -73,6 +73,7 @@ variable {I F F'}
 
 namespace TensorialAt
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the operation `Φ` on sections of a vector bundle `V` is tensorial at `x`, then it depends
 only on the germ of the section at `x`.
 
@@ -177,6 +178,7 @@ lemma pointwise₂
 
 variable [TopologicalSpace A] [IsTopologicalAddGroup A] [ContinuousSMul 𝕜 A]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given an `A`-valued operation `Φ` on sections of a vector bundle `V` which is tensorial at `x`,
 the construction `TensorialAt.mkHom` provides the associated continuous linear map `V x →L[𝕜] A`. -/
 noncomputable def mkHom
