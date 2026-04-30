@@ -119,6 +119,7 @@ variable {I} {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] {H' : Ty
   [TopologicalSpace H'] {I' : ModelWithCorners 𝕜 E' H'} {M' : Type*} [TopologicalSpace M']
   [ChartedSpace H' M']
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The heterogeneous differential as a linear map, denoted as `𝒅ₕ` within the `Manifold` namespace.
 Instead of taking a function as an argument, this

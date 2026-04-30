@@ -217,6 +217,7 @@ def isoCarrier :
     LocallyRingedSpace.GlueData.isoSheafedSpace _
   exact Scheme.GlueData.isoLocallyRingedSpace _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem ι_isoCarrier_inv (i : D.J) :
@@ -837,6 +838,7 @@ lemma ι_eq_ι_iff {i j : J} {xi : F.obj i} {xj : F.obj j} :
   · simp [← glueDataι_naturality F kj]; rfl
   · simp [← glueDataι_naturality F ki, ← hy]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma ι_jointly_surjective (x : ↑(colimit F)) :
     ∃ (i : J) (xi : F.obj i), colimit.ι F i xi = x := by

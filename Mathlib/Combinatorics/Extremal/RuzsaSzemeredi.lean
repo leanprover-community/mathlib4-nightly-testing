@@ -238,6 +238,7 @@ theorem ruzsaSzemerediNumberNat_lower_bound (n : ℕ) :
 
 open Asymptotics Filter
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Asymptotic lower bound on the **Ruzsa-Szemerédi problem**.
 
 There exists a graph with `n` vertices and `Ω((n ^ 2 * exp (-4 * √(log n))))` edges such that

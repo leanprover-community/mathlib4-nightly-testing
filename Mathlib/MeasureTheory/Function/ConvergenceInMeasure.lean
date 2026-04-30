@@ -166,6 +166,7 @@ theorem indicator {F : Type*} [PseudoEMetricSpace F] [Zero F] {f : ι → α →
   · refine fun n => measure_mono (fun x hx => ?_)
     by_cases x ∈ s <;> simp_all
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem congr' (h_left : ∀ᶠ i in l, f i =ᵐ[μ] f' i) (h_right : g =ᵐ[μ] g')
     (h_tendsto : TendstoInMeasure μ f l g) : TendstoInMeasure μ f' l g' := by
   intro ε hε
@@ -219,6 +220,7 @@ theorem tendstoInMeasure_of_tendsto_ae_of_measurable_edist [IsFiniteMeasure μ]
   rw [Set.mem_compl_iff, Set.notMem_setOf_iff, edist_comm, not_le]
   exact hN n hn x hx
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Convergence a.e. implies convergence in measure in a finite measure space. -/
 theorem tendstoInMeasure_of_tendsto_ae [IsFiniteMeasure μ] (hf : ∀ n, AEStronglyMeasurable (f n) μ)
     (hfg : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 (g x))) : TendstoInMeasure μ f atTop g := by

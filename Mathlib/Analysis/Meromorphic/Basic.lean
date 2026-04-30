@@ -213,6 +213,7 @@ lemma meromorphicAt_sub_iff_meromorphicAt₂ {f g : 𝕜 → E} (hg : Meromorphi
     MeromorphicAt (f - g) x ↔ MeromorphicAt f x := by
   exact ⟨fun h ↦ by simpa using h.add hg, fun _ ↦ by fun_prop⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- With our definitions, `MeromorphicAt f x` depends only on the values of `f` on a punctured
 neighbourhood of `x` (not on `f x`) -/
 lemma congr {f g : 𝕜 → E} (hf : MeromorphicAt f x) (hfg : f =ᶠ[𝓝[≠] x] g) :
@@ -291,6 +292,7 @@ lemma zpow {f : 𝕜 → 𝕜'} (hf : MeromorphicAt f x) (n : ℤ) : Meromorphic
   | ofNat m => simpa only [Int.ofNat_eq_natCast, zpow_natCast] using hf.pow m
   | negSucc m => simpa only [zpow_negSucc, inv_iff] using hf.pow (m + 1)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function is meromorphic at a point, then it is continuous at nearby points. -/
 theorem eventually_continuousAt {f : 𝕜 → E}
     (h : MeromorphicAt f x) : ∀ᶠ y in 𝓝[≠] x, ContinuousAt f y := by
@@ -333,6 +335,7 @@ lemma iff_eventuallyEq_zpow_smul_analyticAt {f : 𝕜 → E} : MeromorphicAt f x
   · refine fun ⟨n, g, hg_an, hg_eq⟩ ↦ MeromorphicAt.congr ?_ (EventuallyEq.symm hg_eq)
     exact (((MeromorphicAt.id x).sub (.const _ x)).zpow _).smul hg_an.meromorphicAt
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 Derivatives of meromorphic functions are meromorphic.
 -/
@@ -401,6 +404,7 @@ variable
   {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [NormedSpace 𝕜' F] [IsScalarTower 𝕜 𝕜' F]
   {x : 𝕜}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The composition of a meromorphic and an analytic function is meromorphic. -/
 @[fun_prop]
 lemma MeromorphicAt.comp_analyticAt {f : 𝕜' → F} {g : 𝕜 → 𝕜'}
