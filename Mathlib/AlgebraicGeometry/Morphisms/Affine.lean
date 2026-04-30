@@ -129,6 +129,7 @@ lemma isAffine_of_isAffineOpen_basicOpen (s : Set Γ(X, ⊤))
     convert isIso_ΓSpec_adjunction_unit_app_basicOpen i.1 using 0
     exact congr(IsIso ((ΓSpec.adjunction.unit.app X).app $(by simp)))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 If `s` is a spanning set of `Γ(X, U)`, such that each `X.basicOpen i` is affine, then `U` is also
