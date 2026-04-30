@@ -196,6 +196,7 @@ instance homologyFunctor_linear [CategoryWithHomology C] :
 
 end Homology
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Homotopy between morphisms of short complexes is compatible with the scalar multiplication. -/
 @[simps]
 def Homotopy.smul {φ₁ φ₂ : S₁ ⟶ S₂} (h : Homotopy φ₁ φ₂) (a : R) :

@@ -529,6 +529,7 @@ theorem invOf_diagonal_eq {α} [Semiring α] (v : n → α) [Invertible v] [Inve
   rw [@Invertible.congr _ _ _ _ _ (diagonalInvertible v) rfl]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `v` is invertible if `diagonal v` is -/
 @[implicit_reducible]
 def invertibleOfDiagonalInvertible (v : n → α) [Invertible (diagonal v)] : Invertible v where

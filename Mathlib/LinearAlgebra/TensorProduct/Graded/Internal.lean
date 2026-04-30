@@ -178,6 +178,7 @@ instance instRing : Ring (𝒜 ᵍ⊗[R] ℬ) where
   mul_zero x := by simp_rw [mul_def, map_zero]
   zero_mul x := by simp_rw [mul_def, LinearMap.map_zero₂]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The characterization of this multiplication on partially homogeneous elements. -/
 theorem tmul_coe_mul_coe_tmul {j₁ i₂ : ι} (a₁ : A) (b₁ : ℬ j₁) (a₂ : 𝒜 i₂) (b₂ : B) :
     (a₁ ᵍ⊗ₜ[R] (b₁ : B) * (a₂ : A) ᵍ⊗ₜ[R] b₂ : 𝒜 ᵍ⊗[R] ℬ) =
@@ -272,6 +273,7 @@ def includeLeft : A →ₐ[R] 𝒜 ᵍ⊗[R] ℬ where
   toRingHom := includeLeftRingHom 𝒜 ℬ
   commutes' _ := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The algebra morphism `B →ₐ[R] A ⊗[R] B` sending `b` to `1 ⊗ₜ b`. -/
 @[simps!]
 def includeRight : B →ₐ[R] (𝒜 ᵍ⊗[R] ℬ) :=
@@ -357,6 +359,7 @@ lemma algHom_ext ⦃f g : (𝒜 ᵍ⊗[R] ℬ) →ₐ[R] C⦄
     (hb : f.comp (includeRight 𝒜 ℬ) = g.comp (includeRight 𝒜 ℬ)) : f = g :=
   (liftEquiv 𝒜 ℬ).symm.injective <| Subtype.ext <| Prod.ext ha hb
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The non-trivial symmetric braiding, sending $a \otimes b$ to
 $(-1)^{\deg a' \deg b} (b \otimes a)$. -/
 def comm : (𝒜 ᵍ⊗[R] ℬ) ≃ₐ[R] (ℬ ᵍ⊗[R] 𝒜) :=

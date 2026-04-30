@@ -79,6 +79,7 @@ variable {R}
 lemma _root_.Module.finite_iff_finite [Finite R] : Module.Finite R M ↔ Finite M :=
   ⟨fun _ ↦ finite_of_finite R, fun _ ↦ .of_finite⟩
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R) in
 lemma _root_.Set.Finite.submoduleSpan [Finite R] {s : Set M} (hs : s.Finite) :
     (Submodule.span R s : Set M).Finite := by

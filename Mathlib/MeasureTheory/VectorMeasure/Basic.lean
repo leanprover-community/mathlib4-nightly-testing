@@ -1002,6 +1002,7 @@ section
 variable {M : Type*} [TopologicalSpace M] [AddCommMonoid M] [PartialOrder M]
   [AddLeftMono M] [ContinuousAdd M]
 
+set_option backward.defeqAttrib.useBackward true in
 instance instAddLeftMono : AddLeftMono (VectorMeasure α M) :=
   ⟨fun _ _ _ h i hi => by dsimp; grw [h i hi]⟩
 

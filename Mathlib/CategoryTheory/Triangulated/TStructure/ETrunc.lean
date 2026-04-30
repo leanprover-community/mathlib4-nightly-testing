@@ -33,6 +33,7 @@ namespace TStructure
 
 variable (t : TStructure C)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The functor `EInt ⥤ C ⥤ C` which sends `⊥` to the zero functor,
 `n : ℤ` to `t.truncLT n` and `⊤` to `𝟭 C`. -/
 noncomputable def eTruncLT : EInt ⥤ C ⥤ C where
@@ -74,10 +75,12 @@ lemma eTruncLT_obj_coe (n : ℤ) : t.eTruncLT.obj n = t.truncLT n := rfl
 lemma eTruncLT_map_eq_truncLTι (n : ℤ) :
     t.eTruncLT.map (homOfLE (show (n : EInt) ≤ ⊤ by simp)) = t.truncLTι n := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance (i : EInt) : (t.eTruncLT.obj i).Additive := by
   induction i using WithBotTop.rec
   all_goals dsimp; infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The functor `EInt ⥤ C ⥤ C` which sends `⊥` to `𝟭 C`,
 `n : ℤ` to `t.truncGE n` and `⊤` to the zero functor. -/
 noncomputable def eTruncGE : EInt ⥤ C ⥤ C where
@@ -117,6 +120,7 @@ lemma eTruncGE_obj_top :
 @[simp]
 lemma eTruncGE_obj_coe (n : ℤ) : t.eTruncGE.obj n = t.truncGE n := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance (i : EInt) : (t.eTruncGE.obj i).Additive := by
   induction i using WithBotTop.rec
   all_goals dsimp; infer_instance
@@ -153,6 +157,7 @@ lemma eTruncLTι_naturality (i : EInt) {X Y : C} (f : X ⟶ Y) :
     (t.eTruncLT.obj i).map f ≫ (t.eTruncLTι i).app Y = (t.eTruncLTι i).app X ≫ f :=
   (t.eTruncLTι i).naturality f
 
+set_option backward.defeqAttrib.useBackward true in
 instance : IsIso (t.eTruncLTι ⊤) := by
   dsimp [eTruncLTι]
   infer_instance
@@ -164,6 +169,7 @@ lemma eTruncLT_map_app_eTruncLTι_app {i j : EInt} (f : i ⟶ j) (X : C) :
   simp only [← NatTrans.comp_app, ← Functor.map_comp]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma eTruncLT_obj_map_eTruncLTι_app (i : EInt) (X : C) :
@@ -184,6 +190,7 @@ lemma eTruncGEπ_naturality (i : EInt) {X Y : C} (f : X ⟶ Y) :
     (t.eTruncGEπ i).app X ≫ (t.eTruncGE.obj i).map f = f ≫ (t.eTruncGEπ i).app Y :=
   ((t.eTruncGEπ i).naturality f).symm
 
+set_option backward.defeqAttrib.useBackward true in
 instance : IsIso (t.eTruncGEπ ⊥) := by
   dsimp [eTruncGEπ]
   infer_instance
@@ -195,6 +202,7 @@ lemma eTruncGEπ_app_eTruncGE_map_app {i j : EInt} (f : i ⟶ j) (X : C) :
   simp only [← NatTrans.comp_app, ← Functor.map_comp]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma eTruncGE_obj_map_eTruncGEπ_app (i : EInt) (X : C) :
@@ -202,6 +210,7 @@ lemma eTruncGE_obj_map_eTruncGEπ_app (i : EInt) (X : C) :
     (t.eTruncGEπ i).app ((t.eTruncGE.obj i).obj X) := by
   induction i using WithBotTop.rec with simp [truncGE_map_truncGEπ_app]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma eTruncLT_obj_map_eTruncLTι_app_eTruncLT_map_app
@@ -235,6 +244,7 @@ lemma eTriangleLTGE_distinguished (i : EInt) (X : C) :
     dsimp
     infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 instance (X : C) (n : ℤ) [t.IsLE X n] (i : EInt) :
     t.IsLE ((t.eTruncLT.obj i).obj X) n := by
   induction i using WithBotTop.rec with
@@ -242,6 +252,7 @@ instance (X : C) (n : ℤ) [t.IsLE X n] (i : EInt) :
   | coe _ => dsimp; infer_instance
   | top => dsimp; infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 instance (X : C) (n : ℤ) [t.IsGE X n] (i : EInt) :
     t.IsGE ((t.eTruncGE.obj i).obj X) n := by
   induction i using WithBotTop.rec with
@@ -249,6 +260,7 @@ instance (X : C) (n : ℤ) [t.IsGE X n] (i : EInt) :
   | coe _ => dsimp; infer_instance
   | top => exact isGE_of_isZero _ (by simp) _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isGE_eTruncGE_obj_obj (n : ℤ) (i : EInt) (h : n ≤ i) (X : C) :
     t.IsGE ((t.eTruncGE.obj i).obj X) n := by
   induction i using WithBotTop.rec with
@@ -258,6 +270,7 @@ lemma isGE_eTruncGE_obj_obj (n : ℤ) (i : EInt) (h : n ≤ i) (X : C) :
     exact t.isGE_of_ge _ _ _ (by simpa using h)
   | top => exact t.isGE_of_isZero (Functor.zero_obj _) _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isLE_eTruncLT_obj_obj (n : ℤ) (i : EInt) (h : i ≤ (n + 1 :)) (X : C) :
     t.IsLE (((t.eTruncLT.obj i)).obj X) n := by
   induction i using WithBotTop.rec with
@@ -304,6 +317,7 @@ lemma isIso_eTruncGE_obj_map_truncGEπ_app (a b : EInt) (h : a ≤ b) (X : C) :
     | top => simp at h
   | top => exact ⟨0, IsZero.eq_of_src (by simp) _ _, IsZero.eq_of_src (by simp) _ _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isIso_eTruncLT_obj_map_truncLTπ_app (a b : EInt) (h : a ≤ b) (X : C) :
     IsIso ((t.eTruncLT.obj a).map ((t.eTruncLTι b).app X)) := by
   induction a using WithBotTop.rec with
@@ -326,6 +340,7 @@ instance (a : EInt) (X : C) : IsIso ((t.eTruncLTι a).app ((t.eTruncLT.obj a).ob
   rw [← eTruncLT_obj_map_eTruncLTι_app]
   infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 instance (X : C) (n : ℤ) [t.IsGE X n] (i : EInt) :
     t.IsGE ((t.eTruncLT.obj i).obj X) n := by
   induction i using WithBotTop.rec with
@@ -333,6 +348,7 @@ instance (X : C) (n : ℤ) [t.IsGE X n] (i : EInt) :
   | coe _ => dsimp; infer_instance
   | top => dsimp; infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 instance (X : C) (n : ℤ) [t.IsLE X n] (i : EInt) :
     t.IsLE ((t.eTruncGE.obj i).obj X) n := by
   induction i using WithBotTop.rec with
@@ -452,6 +468,7 @@ noncomputable def eTruncLTGELTSelfToGELT :
   (Functor.associator _ _ _).inv ≫ Functor.whiskerLeft _ (t.eTruncLTι b) ≫
     (Functor.rightUnitor _).hom
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : IsIso (t.eTruncLTGELTSelfToLTGE a b) := by
   rw [NatTrans.isIso_iff_isIso_app]
@@ -474,6 +491,7 @@ instance : IsIso (t.eTruncLTGELTSelfToLTGE a b) := by
 
 variable (b : EInt) (X : C)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : IsIso (t.eTruncLTGELTSelfToGELT a b) := by
   rw [NatTrans.isIso_iff_isIso_app]

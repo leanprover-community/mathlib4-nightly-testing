@@ -237,6 +237,7 @@ section Trans
 
 variable {k : α → G}
 
+set_option backward.defeqAttrib.useBackward true in
 @[trans]
 theorem IsBigOTVS.trans (hfg : f =O[𝕜; l] g) (hgk : g =O[𝕜; l] k) : f =O[𝕜; l] k := by
   refine ⟨fun U hU₀ ↦ ?_⟩
@@ -273,6 +274,7 @@ instance instTransIsThetaOTVS :
     @Trans (α → E) (α → F) (α → G) (IsThetaTVS 𝕜 l) (IsThetaTVS 𝕜 l) (IsThetaTVS 𝕜 l) where
   trans := IsThetaTVS.trans
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsLittleOTVS.trans_isBigOTVS (hfg : f =o[𝕜; l] g) (hgk : g =O[𝕜; l] k) :
     f =o[𝕜; l] k := by
   refine ⟨fun U hU₀ ↦ ?_⟩
@@ -293,6 +295,7 @@ instance instTransIsLittleOTVSIsThetaTVS :
     @Trans (α → E) (α → F) (α → G) (IsLittleOTVS 𝕜 l) (IsThetaTVS 𝕜 l) (IsLittleOTVS 𝕜 l) where
   trans := IsLittleOTVS.trans_isThetaTVS
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsBigOTVS.trans_isLittleOTVS (hfg : f =O[𝕜; l] g) (hgk : g =o[𝕜; l] k) :
     f =o[𝕜; l] k := by
   refine ⟨fun U hU₀ ↦ ?_⟩
@@ -463,6 +466,7 @@ lemma IsLittleOTVS.insert [TopologicalSpace α] {x : α} {s : Set α}
 lemma IsLittleOTVS.bot : f =o[𝕜; ⊥] g :=
   ⟨fun u hU ↦ ⟨univ, by simp [EventuallyLE]⟩⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsLittleOTVS.prodMk [ContinuousSMul 𝕜 E] [ContinuousSMul 𝕜 F] {k : α → G}
     (hf : f =o[𝕜; l] k) (hg : g =o[𝕜; l] k) : (fun x ↦ (f x, g x)) =o[𝕜; l] k := by
   rw [((nhds_basis_balanced 𝕜 E).prod_nhds (nhds_basis_balanced 𝕜 F)).isLittleOTVS_iff
@@ -487,6 +491,7 @@ theorem isLittleOTVS_prodMk_left [ContinuousSMul 𝕜 E] [ContinuousSMul 𝕜 F]
     (fun x ↦ (f x, g x)) =o[𝕜; l] k ↔ f =o[𝕜; l] k ∧ g =o[𝕜; l] k :=
   ⟨fun h ↦ ⟨h.fst, h.snd⟩, fun h ↦ h.elim .prodMk⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsBigOTVS.prodMk [ContinuousSMul 𝕜 E] [ContinuousSMul 𝕜 F] {k : α → G}
     (hf : f =O[𝕜; l] k) (hg : g =O[𝕜; l] k) : (fun x ↦ (f x, g x)) =O[𝕜; l] k := by
   rw [((nhds_basis_balanced 𝕜 E).prod_nhds (nhds_basis_balanced 𝕜 F)).isBigOTVS_iff (basis_sets _)]
@@ -671,6 +676,7 @@ protected lemma IsLittleOTVS.smul_left (h : f =o[𝕜; l] g) (c : α → 𝕜) :
   · gcongr
   all_goals exact fun _ ↦ Filter.nonempty_of_mem ‹_›
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isLittleOTVS_one [ContinuousSMul 𝕜 E] : f =o[𝕜; l] (1 : α → 𝕜) ↔ Tendsto f l (𝓝 0) := by
   constructor
   · intro hf
@@ -721,6 +727,7 @@ lemma isLittleOTVS_iff_tendsto_inv_smul [ContinuousSMul 𝕜 E] {f : α → 𝕜
   refine (((isLittleOTVS_one (𝕜 := 𝕜)).mpr h).smul_left f).congr' (h₀.mono fun x hx ↦ ?_) (by simp)
   by_cases h : f x = 0 <;> simp [h, hx]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (𝕜) in
 /-- If `f` converges along `l` to a finite limit `x`, then `f =O[𝕜, l] 1`. -/
 lemma Filter.Tendsto.isBigOTVS_one [ContinuousAdd E] [ContinuousSMul 𝕜 E] {x : E}
@@ -755,6 +762,7 @@ variable [NontriviallyNormedField 𝕜]
 variable [SeminormedAddCommGroup E] [SeminormedAddCommGroup F] [NormedSpace 𝕜 E] [NormedSpace 𝕜 F]
 variable {f : α → E} {g : α → F} {l : Filter α}
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isLittleOTVS_iff_isLittleO : f =o[𝕜; l] g ↔ f =o[l] g := by
   rcases NormedField.exists_one_lt_norm 𝕜 with ⟨c, hc : 1 < ‖c‖₊⟩
   have hc₀ : 0 < ‖c‖₊ := one_pos.trans hc

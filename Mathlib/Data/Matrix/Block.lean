@@ -140,6 +140,7 @@ theorem fromBlocks_conjTranspose [Star α] (A : Matrix n l α) (B : Matrix n m �
     (D : Matrix o m α) : (fromBlocks A B C D)ᴴ = fromBlocks Aᴴ Cᴴ Bᴴ Dᴴ := by
   simp only [conjTranspose, fromBlocks_transpose, fromBlocks_map]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem fromBlocks_submatrix_sum_swap_left (A : Matrix n l α) (B : Matrix n m α) (C : Matrix o l α)
     (D : Matrix o m α) (f : p → l ⊕ m) :
@@ -147,6 +148,7 @@ theorem fromBlocks_submatrix_sum_swap_left (A : Matrix n l α) (B : Matrix n m �
   ext i j
   cases i <;> dsimp <;> cases f j <;> rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem fromBlocks_submatrix_sum_swap_right (A : Matrix n l α) (B : Matrix n m α) (C : Matrix o l α)
     (D : Matrix o m α) (f : p → n ⊕ o) :

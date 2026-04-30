@@ -427,6 +427,7 @@ lemma isBaseChange_tensorProduct_map {f : M →ₗ[S] N} (hf : IsBaseChange A f)
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 variable (f) in
 theorem IsBaseChange.of_lift_unique
     (h : ∀ (Q : Type max v₁ v₂ v₃) [AddCommMonoid Q],
@@ -578,6 +579,7 @@ is a pushout diagram (i.e. `S' = S ⊗[R] R'`)
 class Algebra.IsPushout : Prop where
   out : IsBaseChange S (toAlgHom R R' S').toLinearMap
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism `S' ≃ S ⊗[R] R` given `Algebra.IsPushout R S R' S'`. -/
 noncomputable
 def Algebra.IsPushout.equiv [h : Algebra.IsPushout R S R' S'] : S ⊗[R] R' ≃ₐ[S] S' where

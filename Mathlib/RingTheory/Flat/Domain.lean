@@ -25,6 +25,7 @@ variable {P Q : Type*} [AddCommGroup P] [Module R P] [AddCommGroup Q] [Module R 
 
 open TensorProduct Function
 
+set_option backward.defeqAttrib.useBackward true in
 attribute [local instance 1100] Module.Free.of_divisionRing Module.Flat.of_free in
 /-- Tensor product of injective maps over domains are injective under some flatness conditions.
 Also see `TensorProduct.map_injective_of_flat_flat`

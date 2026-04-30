@@ -56,6 +56,7 @@ lemma smul_def' (N : Matrix ι ι R) (v : ι → M) : N • v = ∑ j : ι, fun 
 lemma smul_apply (N : Matrix ι ι R) (v : ι → M) (i : ι) :
     (N • v) i = ∑ j : ι, N i j • v j := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem single_smul (i j : ι) (r : R) (v : ι → M) :
     Matrix.single i j r • v = Pi.single i (r • v j) := by

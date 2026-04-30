@@ -169,6 +169,7 @@ lemma hasProd_symmetricIoc_int_iff {α : Type*} [CommMonoid α] [TopologicalSpac
     Tendsto (fun N : ℕ ↦ ∏ n ∈ Ioc (-(N : ℤ)) (N : ℤ), f n) atTop (𝓝 a) := by
   simp [HasProd, symmetricIoc, ← Nat.map_cast_int_atTop, comp_def]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma _root_.Summable.tendsto_zero_of_even_summable_symmetricIcc {F : Type*} [NormedAddCommGroup F]
     [NormSMulClass ℤ F] {f : ℤ → F} (hf : Summable f (symmetricIcc ℤ)) (hs : f.Even) :
     Tendsto f atTop (𝓝 0) := by

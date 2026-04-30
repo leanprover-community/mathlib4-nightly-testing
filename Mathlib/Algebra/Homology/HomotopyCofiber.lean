@@ -465,6 +465,7 @@ noncomputable def nullHomotopicMap : K.cylinder ⟶ K.cylinder :=
 noncomputable def nullHomotopy : Homotopy (nullHomotopicMap K) 0 :=
   Homotopy.nullHomotopy' _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma inlX_nullHomotopy_f (i j : ι) (hij : c.Rel j i) :
     inlX K i j hij ≫ (nullHomotopicMap K).f j =
@@ -486,6 +487,7 @@ lemma inlX_nullHomotopy_f (i j : ι) (hij : c.Rel j i) :
 
 include hc
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma inrX_nullHomotopy_f (j : ι) :
     inrX K j ≫ (nullHomotopicMap K).f j = inrX K j ≫ (π K ≫ ι₀ K - 𝟙 _).f j := by

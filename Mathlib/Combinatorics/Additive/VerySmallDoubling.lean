@@ -682,6 +682,7 @@ private lemma IsFragment.nonempty (hK : K < 1) (hS : S.Nonempty) (hA : IsFragmen
 private lemma IsAtom.nonempty (hK : K < 1) (hS : S.Nonempty) (hA : IsAtom K S A) : A.Nonempty :=
   hA.isFragment.nonempty hK hS
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For `K < 1` and finite nonempty `S ⊆ G`, there exists a finite subgroup `H ≤ G` that is also
 an atom for `K` and `S`. -/
 private lemma exists_subgroup_isAtom (hK : K < 1) (hS : S.Nonempty) :

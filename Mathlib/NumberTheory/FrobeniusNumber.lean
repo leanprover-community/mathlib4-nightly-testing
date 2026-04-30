@@ -54,6 +54,7 @@ theorem frobeniusNumber_iff {n : ℕ} {s : Set ℕ} :
 
 variable {m n : ℕ}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The **Chicken McNugget theorem** stating that the Frobenius number
   of positive numbers `m` and `n` is `m * n - m - n`. -/
 theorem frobeniusNumber_pair (cop : Coprime m n) (hm : 1 < m) (hn : 1 < n) :

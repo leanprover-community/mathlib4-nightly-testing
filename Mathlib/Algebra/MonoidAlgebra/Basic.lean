@@ -104,13 +104,12 @@ In particular this provides the instance `Algebra R R[M]`. -/]
 instance algebra : Algebra R A[M] where
   algebraMap := singleOneRingHom.comp (algebraMap R A)
   smul_def' := fun r a => by
-    ext m
-    change r • a m = ((single (1 : M) ((algebraMap R A) r) : A[M]) * a) m
+    ext
+    dsimp
     rw [single_one_mul_apply, Algebra.smul_def]
   commutes' := fun r f => by
-    ext m
-    change ((single (1 : M) ((algebraMap R A) r) : A[M]) * f) m =
-      (f * (single (1 : M) ((algebraMap R A) r) : A[M])) m
+    ext
+    dsimp
     rw [single_one_mul_apply, mul_single_one_apply, Algebra.commutes]
 
 /-- `MonoidAlgebra.single 1` as an `AlgHom` -/

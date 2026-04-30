@@ -37,6 +37,7 @@ open Polynomial Matrix Equiv.Perm
 
 namespace Polynomial
 
+set_option backward.defeqAttrib.useBackward true in
 theorem natDegree_det_X_add_C_le (A B : Matrix n n α) :
     natDegree (det ((X : α[X]) • A.map C + B.map C : Matrix n n α[X])) ≤ Fintype.card n := by
   rw [det_apply]
@@ -69,6 +70,7 @@ theorem coeff_det_X_add_C_zero (A B : Matrix n n α) :
   refine Finset.prod_congr rfl ?_
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem coeff_det_X_add_C_card (A B : Matrix n n α) :
     coeff (det ((X : α[X]) • A.map C + B.map C)) (Fintype.card n) = det A := by
   rw [det_apply, det_apply, finsetSum_coeff]

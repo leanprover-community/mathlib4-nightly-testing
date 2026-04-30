@@ -84,6 +84,7 @@ theorem quotient_map_C_eq_zero {I : Ideal R} :
   rw [RingHom.comp_apply, Quotient.eq_zero_iff_mem]
   exact mem_map_of_mem _ ha
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eval₂_C_mk_eq_zero {I : Ideal R} :
     ∀ f ∈ (map (C : R →+* R[X]) I : Ideal R[X]), eval₂RingHom (C.comp (Quotient.mk I)) X f = 0 := by
   intro a ha

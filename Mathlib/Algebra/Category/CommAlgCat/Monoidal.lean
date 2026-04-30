@@ -82,6 +82,7 @@ variable (A B C) in
 variable (A B C) in
 @[simp] lemma associator_inv_hom : (α_ A B C).inv.hom = (assoc R R R A B C).symm.toAlgHom := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance : BraidedCategory (CommAlgCat.{u} R) where
   braiding S T := isoMk (comm R _ _)
   braiding_naturality_right := by intros; ext : 1; dsimp; ext <;> rfl

@@ -58,6 +58,7 @@ noncomputable def coconePointSMul :
     simp only [ι_colimMap, Functor.comp_obj, forget₂_obj])
   map_mul' r s := colimit.hom_ext (fun j => by simp +instances)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The cocone for `F` constructed from the colimit of
 `(F ⋙ forget₂ (ModuleCat R) AddCommGrpCat)`. -/

@@ -212,6 +212,7 @@ local prefix:100 "lis " => cs.leftInvSeq
 
 @[simp] theorem leftInvSeq_singleton (i : B) : lis [i] = [s i] := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem rightInvSeq_concat (ω : List B) (i : B) :
     ris (ω.concat i) = (List.map (MulAut.conj (s i)) (ris ω)).concat (s i) := by
   induction ω with

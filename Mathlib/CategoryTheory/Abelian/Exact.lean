@@ -99,6 +99,7 @@ theorem exact_iff_image_eq_kernel : S.Exact ↔ imageSubobject S.f = kernelSubob
   · intro h
     exact ⟨Subobject.ofLE _ _ h.ge, by ext; simp, by ext; simp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem exact_iff_of_forks {cg : KernelFork S.g} (hg : IsLimit cg) {cf : CokernelCofork S.f}
     (hf : IsColimit cf) : S.Exact ↔ cg.ι ≫ cf.π = 0 := by

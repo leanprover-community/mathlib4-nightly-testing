@@ -148,6 +148,7 @@ instance RelCWComplex.Subcomplex.finiteType_subcomplex_of_finiteType [T2Space X]
     let _ := FiniteType.finite_cell (C := C) (D := D) n
     Subtype.finite
 
+set_option backward.defeqAttrib.useBackward true in
 instance RelCWComplex.Subcomplex.finiteDimensional_subcomplex_of_finiteDimensional
     [T2Space X] [RelCWComplex C D] [FiniteDimensional C] (E : Subcomplex C) :
     FiniteDimensional (E : Set X) where

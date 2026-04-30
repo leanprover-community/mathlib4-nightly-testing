@@ -63,6 +63,7 @@ theorem ker_diagonal_toLin' [DecidableEq m] (w : m → K) :
   exact (iSup_range_single_eq_iInf_ker_proj K (fun _ : m => K) disjoint_compl_right this
     (Set.toFinite _)).symm
 
+set_option backward.defeqAttrib.useBackward true in
 theorem range_diagonal [DecidableEq m] (w : m → K) :
     LinearMap.range (toLin' (diagonal w)) =
       ⨆ i ∈ { i | w i ≠ 0 }, LinearMap.range (LinearMap.single K (fun _ => K) i) := by

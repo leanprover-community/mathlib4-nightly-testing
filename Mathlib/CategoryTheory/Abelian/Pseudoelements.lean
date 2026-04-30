@@ -305,6 +305,7 @@ theorem pseudo_surjective_of_epi {P Q : C} (f : P ⟶ Q) [Epi f] : Function.Surj
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A morphism that is surjective on pseudoelements is an epimorphism. -/
 theorem epi_of_pseudo_surjective {P Q : C} (f : P ⟶ Q) : Function.Surjective f → Epi f := by
@@ -393,6 +394,7 @@ theorem exact_of_pseudo_exact (S : ShortComplex C)
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If two pseudoelements `x` and `y` have the same image under some morphism `f`, then we can form
 their "difference" `z`. This pseudoelement has the properties that `f z = 0` and for all

@@ -128,6 +128,7 @@ lemma isPushout_of_isPushout (R S A B : Type u) [CommRing R] [CommRing S]
     (Algebra.IsPushout.equiv R S A B).toCommRingCatIso (by simp) (by simp)
     (by ext; simp [Algebra.IsPushout.equiv_tmul]) (by ext; simp [Algebra.IsPushout.equiv_tmul])
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
 lemma isPushout_iff_isPushout {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]

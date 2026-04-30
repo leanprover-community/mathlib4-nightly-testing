@@ -81,6 +81,7 @@ instance {A : Type*} [CommRing A] [Algebra R A] [Module.Projective R A] :
     Module.Projective (Localization S) (Localization (Algebra.algebraMapSubmonoid A S)) :=
   Module.projective_of_isLocalizedModule S (IsScalarTower.toAlgHom R A _).toLinearMap
 
+set_option backward.defeqAttrib.useBackward true in
 theorem LinearMap.split_surjective_of_localization_maximal
     (f : M →ₗ[R] N) [Module.FinitePresentation R N]
     (H : ∀ (I : Ideal R) (_ : I.IsMaximal),

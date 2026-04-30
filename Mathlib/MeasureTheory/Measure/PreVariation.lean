@@ -61,6 +61,7 @@ namespace preVariation
 
 variable (f : Set X → ℝ≥0∞)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `preVariationFun` of the empty set is equal to zero. -/
 lemma empty : preVariationFun f ∅ = 0 := by simp [preVariationFun]
 

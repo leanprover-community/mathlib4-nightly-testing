@@ -236,6 +236,7 @@ theorem ofModule_asAlgebraHom_apply_apply (r : k[G])
   · intro r f w
     simp only [w, map_smul, LinearMap.smul_apply, RestrictScalars.addEquiv_symm_map_smul_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem ofModule_asModule_act (g : G) (x : RestrictScalars k k[G] ρ.asModule) :
     ofModule ρ.asModule g x =
@@ -244,6 +245,7 @@ theorem ofModule_asModule_act (g : G) (x : RestrictScalars k k[G] ρ.asModule) :
   dsimp [ofModule, RestrictScalars.lsmul_apply_apply]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem smul_ofModule_asModule (r : k[G]) (m : (ofModule M).asModule) :
     (RestrictScalars.addEquiv k _ _) ((ofModule M).asModuleEquiv (r • m)) =
       r • (RestrictScalars.addEquiv k _ _) ((ofModule M).asModuleEquiv (G := G) m) := by

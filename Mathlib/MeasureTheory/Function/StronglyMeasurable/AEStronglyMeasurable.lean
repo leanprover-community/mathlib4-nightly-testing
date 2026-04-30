@@ -249,6 +249,7 @@ theorem _root_.Measurable.aestronglyMeasurable
     [OpensMeasurableSpace β] (hf : Measurable[m] f) : AEStronglyMeasurable[m] f μ :=
   hf.stronglyMeasurable.aestronglyMeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the restriction to a set `s` of a σ-algebra `m` is included in the restriction to `s` of
 another σ-algebra `m₂` (hypothesis `hs`), the set `s` is `m` measurable and a function `f` almost
 everywhere supported on `s` is `m`-ae-strongly-measurable, then `f` is also
@@ -524,6 +525,7 @@ protected theorem indicator₀ [Zero β] (hfm : AEStronglyMeasurable f μ) {s : 
     (hs : NullMeasurableSet s μ) : AEStronglyMeasurable (s.indicator f) μ :=
   (aestronglyMeasurable_indicator_iff₀ hs).2 hfm.restrict
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nullMeasurableSet_eq_fun {E} [TopologicalSpace E] [MetrizableSpace E] {f g : α → E}
     (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ) :
     NullMeasurableSet { x | f x = g x } μ := by
@@ -539,6 +541,7 @@ lemma nullMeasurableSet_mulSupport {E} [TopologicalSpace E] [MetrizableSpace E] 
     (hf : AEStronglyMeasurable f μ) : NullMeasurableSet (mulSupport f) μ :=
   (hf.nullMeasurableSet_eq_fun stronglyMeasurable_const.aestronglyMeasurable).compl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nullMeasurableSet_lt [Preorder β] [OrderClosedTopology β] [PseudoMetrizableSpace β]
     {f g : α → β} (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ) :
     NullMeasurableSet { a | f a < g a } μ := by
@@ -548,6 +551,7 @@ theorem nullMeasurableSet_lt [Preorder β] [OrderClosedTopology β] [PseudoMetri
   change (hf.mk f x < hg.mk g x) = (f x < g x)
   simp only [hfx, hgx]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nullMeasurableSet_le [Preorder β] [OrderClosedTopology β] [PseudoMetrizableSpace β]
     {f g : α → β} (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ) :
     NullMeasurableSet { a | f a ≤ g a } μ := by
@@ -578,6 +582,7 @@ theorem comp_quasiMeasurePreserving {γ : Type*} {_ : MeasurableSpace γ} {_ : M
     (hf : QuasiMeasurePreserving f μ ν) : AEStronglyMeasurable (g ∘ f) μ :=
   (hg.mono_ac hf.absolutelyContinuous).comp_measurable hf.measurable
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isSeparable_ae_range (hf : AEStronglyMeasurable f μ) :
     ∃ t : Set β, IsSeparable t ∧ ∀ᵐ x ∂μ, f x ∈ t := by
   refine ⟨range (hf.mk f), hf.stronglyMeasurable_mk.isSeparable_range, ?_⟩
@@ -653,6 +658,7 @@ theorem _root_.aestronglyMeasurable_of_tendsto_ae {ι : Type*} [PseudoMetrizable
     apply mem_closure_of_tendsto (h'x.comp hv)
     filter_upwards with n using mem_iUnion_of_mem n (hx n)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a sequence of almost everywhere strongly measurable functions converges almost everywhere,
 one can select a strongly measurable function as the almost everywhere limit. -/
 theorem _root_.exists_stronglyMeasurable_limit_of_tendsto_ae [PseudoMetrizableSpace β]
@@ -669,6 +675,7 @@ theorem _root_.exists_stronglyMeasurable_limit_of_tendsto_ae [PseudoMetrizableSp
   filter_upwards [hg, Hg.ae_eq_mk] with x hx h'x
   rwa [h'x] at hx
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `f` is almost everywhere strongly measurable and its range is almost everywhere contained
 in a nonempty measurable set `s`, then there is a strongly measurable representative `g` of `f`
 whose range is contained in `s`. -/

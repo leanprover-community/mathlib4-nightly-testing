@@ -129,6 +129,7 @@ def toFunLinear : A ⊗[R] Matrix n n R →ₗ[R] Matrix n n A :=
 
 variable [DecidableEq n] [Fintype n]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `(A ⊗[R] Matrix n n R) →ₐ[R] Matrix n n A`, as an algebra homomorphism.
 -/
 def toFunAlgHom : A ⊗[R] Matrix n n R →ₐ[R] Matrix n n A :=
@@ -169,6 +170,7 @@ theorem invFun_smul (a : A) (M : Matrix n n A) :
     invFun n R A (a • M) = a ⊗ₜ 1 * invFun n R A M := by
   simp [invFun, Finset.mul_sum]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem invFun_algebraMap (M : Matrix n n R) : invFun n R A (M.map (algebraMap R A)) = 1 ⊗ₜ M := by
   dsimp [invFun]

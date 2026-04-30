@@ -26,6 +26,7 @@ variable (R : Type*) (M : Type*) [CommSemiring R] [AddCommMonoid M] [Module R M]
   (n : ℕ)
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The canonical multilinear map from `n` copies of the dual of the module `M`
 to the dual of `⨂[R]^n M`. -/
 noncomputable def multilinearMapToDual :

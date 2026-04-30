@@ -107,6 +107,7 @@ theorem degreeLT_eq_span_X_pow [DecidableEq R] {n : ℕ} :
   apply mem_degreeLT.2
   exact lt_of_le_of_lt (degree_X_pow_le _) (WithBot.coe_lt_coe.2 <| Finset.mem_range.1 hk)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The first `n` coefficients on `degreeLT n` form a linear equivalence with `Fin n → R`. -/
 def degreeLTEquiv (R) [Semiring R] (n : ℕ) : degreeLT R n ≃ₗ[R] Fin n → R where
   toFun p n := (↑p : R[X]).coeff n

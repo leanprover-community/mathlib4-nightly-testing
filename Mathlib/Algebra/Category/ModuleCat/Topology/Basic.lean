@@ -120,6 +120,7 @@ def ofIso {X Y : TopModuleCat R} (e : X ≃L[R] Y) : X ≅ Y :=
   ⟨ofHom e.toContinuousLinearMap, ofHom e.symm.toContinuousLinearMap,
     by ext; exact e.symm_apply_apply _, by ext; exact e.apply_symm_apply _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 variable {R} in
 /-- Cast an iso in `TopModuleCat` into a continuous linear equiv. -/
 def _root_.CategoryTheory.Iso.toContinuousLinearEquiv
@@ -404,6 +405,7 @@ def freeObj (X : TopCat.{v}) : TopModuleCat.{max v u} R :=
 
 lemma coe_freeObj (X : TopCat.{v}) : freeObj R X = (X →₀ R) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The free topological module over a topological space is functorial. -/
 noncomputable

@@ -94,6 +94,7 @@ section
 variable {R : Type*} [Semiring R] [Module R ℝ]
 variable [ContinuousConstSMul R ℝ] [ContinuousConstSMul R ℂ]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The complex measures form a linear isomorphism to the type of pairs of signed measures. -/
 @[simps]
 def equivSignedMeasureₗ : ComplexMeasure α ≃ₗ[R] SignedMeasure α × SignedMeasure α :=

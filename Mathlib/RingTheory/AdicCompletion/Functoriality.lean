@@ -100,6 +100,7 @@ theorem map_zero : map I (0 : M →ₗ[R] N) = 0 :=
 
 end AdicCauchySequence
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A linear map induces a map on adic completions. -/
 def map (f : M →ₗ[R] N) :
     AdicCompletion I M →ₗ[AdicCompletion I R] AdicCompletion I N where

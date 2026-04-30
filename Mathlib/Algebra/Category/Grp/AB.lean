@@ -65,6 +65,7 @@ attribute [local instance] Abelian.hasFiniteBiproducts
 
 instance : AB4 AddCommGrpCat.{u} := AB4.of_AB5 _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : HasExactLimitsOfShape (Discrete J) (AddCommGrpCat.{u}) := by
   apply +allowSynthFailures hasExactLimitsOfShape_of_preservesEpi

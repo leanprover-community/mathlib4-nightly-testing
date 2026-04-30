@@ -39,6 +39,7 @@ variable {C : Type u} [Category.{v} C]
 
 namespace Presheaf
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `F : Cᵒᵖ ⥤ D` is a presheaf with values in a concrete category, if `x` and `y` are
 elements in `F.obj X`, this is the sieve of `X.unop` consisting of morphisms `f`
 such that `F.map f.op x = F.map f.op y`. -/

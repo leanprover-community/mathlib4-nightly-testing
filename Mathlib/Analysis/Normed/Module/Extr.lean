@@ -32,6 +32,7 @@ section
 
 variable {f : α → E} {l : Filter α} {s : Set α} {c : α} {y : E}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `f : α → E` is a function such that `norm ∘ f` has a maximum along a filter `l` at a point
 `c` and `y` is a vector on the same ray as `f c`, then the function `fun x => ‖f x + y‖` has
 a maximum along `l` at `c`. -/

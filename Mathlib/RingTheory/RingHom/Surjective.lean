@@ -45,6 +45,7 @@ theorem surjective_respectsIso : RespectsIso surjective := by
   intro _ _ _ _ e
   exact e.surjective
 
+set_option backward.defeqAttrib.useBackward true in
 theorem surjective_isStableUnderBaseChange : IsStableUnderBaseChange surjective := by
   refine IsStableUnderBaseChange.mk surjective_respectsIso ?_
   classical

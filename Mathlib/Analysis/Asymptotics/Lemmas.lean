@@ -116,6 +116,7 @@ theorem IsBigO.trans_tendsto_nhds (hfg : f =O[l] g') {y : F'} (hg : Tendsto g' l
     f =O[l] (fun _x => 1 : α → F) :=
   hfg.trans <| hg.isBigO_one F
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The condition `f = O[𝓝[≠] a] 1` is equivalent to `f = O[𝓝 a] 1`. -/
 lemma isBigO_one_nhds_ne_iff [TopologicalSpace α] {a : α} :
     f =O[𝓝[≠] a] (fun _ ↦ 1 : α → F) ↔ f =O[𝓝 a] (fun _ ↦ 1 : α → F) := by
@@ -751,6 +752,7 @@ lemma isBigO_nat_atTop_induction {f : ℕ → E''} {g : ℕ → F''}
       grind
     · grind
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isBigO_nat_atTop_induction_of_eventually_pos {f g : ℕ → ℝ}
     (hf : ∀ᶠ n in atTop, 0 ≤ f n) (hg : ∀ᶠ n in atTop, 0 < g n)
     (hrec : ∀ᶠ n₀ in atTop, ∃ C₀, ∀ᶠ n in atTop, ∀ C ≥ C₀,

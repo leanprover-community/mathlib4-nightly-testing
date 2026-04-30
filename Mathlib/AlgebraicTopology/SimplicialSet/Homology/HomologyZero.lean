@@ -126,6 +126,7 @@ lemma liftCycles_ιChainComplex_homologyπ_homology₀ε (x : X _⦋0⦌) :
       (X.chainComplex R).homologyπ 0 ≫ X.homology₀ε R = 𝟙 R := by
   simp [homology₀ε]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance [X.IsConnected] : IsIso (X.homology₀ε R) := by
   dsimp [homology₀ε]

@@ -73,6 +73,7 @@ theorem domCoprod.summand_mk'' (a : Mᵢ [⋀^ιa]→ₗ[R'] N₁) (b : Mᵢ [�
           σ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Swapping elements in `σ` with equal values in `v` results in an addition that cancels -/
 theorem domCoprod.summand_add_swap_smul_eq_zero (a : Mᵢ [⋀^ιa]→ₗ[R'] N₁)
     (b : Mᵢ [⋀^ιb]→ₗ[R'] N₂) (σ : Perm.ModSumCongr ιa ιb) {v : ιa ⊕ ιb → Mᵢ}

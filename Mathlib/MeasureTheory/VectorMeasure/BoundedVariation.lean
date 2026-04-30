@@ -193,6 +193,7 @@ theorem vectorMeasure_Ico (hf : BoundedVariationOn f univ) (h : a ≤ b) :
     measurableSet_Ioo, hf.vectorMeasure_Icc le_rfl, hf.vectorMeasure_Ioo h']
   abel
 
+set_option backward.defeqAttrib.useBackward true in
 theorem vectorMeasure_Ici (hf : BoundedVariationOn f univ) (a : α) :
     hf.vectorMeasure (Ici a) = limUnder atTop f - f.leftLim a := by
   have : Nonempty α := ⟨a⟩
@@ -228,6 +229,7 @@ theorem vectorMeasure_Ioi (hf : BoundedVariationOn f univ) (a : α) :
     measurableSet_Ioi, hf.vectorMeasure_Icc le_rfl] at this
   grind
 
+set_option backward.defeqAttrib.useBackward true in
 theorem vectorMeasure_Iic (hf : BoundedVariationOn f univ) (a : α) :
     hf.vectorMeasure (Iic a) = f.rightLim a - limUnder atBot f := by
   have : Nonempty α := ⟨a⟩

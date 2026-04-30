@@ -190,6 +190,7 @@ def coreE₂CohomologicalNat :
     simp only [ComplexShape.spectralSequenceNat_rel_iff] at hpq
     lia
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The data which allows to construct an `E₂`-cohomological spectral sequence
 indexed by `ℤ × Fin l` from a spectral object indexed by `Fin (l + 1)`. -/
 @[simps deg i₀ i₁ i₂ i₃]

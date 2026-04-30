@@ -265,7 +265,6 @@ theorem pushforwardToOfIso_app {X Y : TopCat} (H₁ : X ≅ Y) {ℱ : Y.Presheaf
       H₂.app (op ((Opens.map H₁.inv).obj (unop U))) ≫
         𝒢.map (eqToHom (by simp [Opens.map, Set.preimage_preimage])) := by
   simp [pushforwardToOfIso, Equivalence.toAdjunction, Adjunction.homEquiv_counit]
-  rfl
 
 end Iso
 

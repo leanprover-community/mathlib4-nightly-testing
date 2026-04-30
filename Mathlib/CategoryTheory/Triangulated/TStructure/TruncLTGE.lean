@@ -555,12 +555,14 @@ lemma to_truncLT_obj_ext {n : ℤ} {Y : C} {X : C}
     (by dsimp; apply (t.isGE_shift _ n (-1) (n + 1) (by lia)))
   rw [hg, hg', zero_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma truncLT_map_truncLTι_app (n : ℤ) (X : C) :
     (t.truncLT n).map ((t.truncLTι n).app X) = (t.truncLTι n).app ((t.truncLT n).obj X) :=
   t.to_truncLT_obj_ext (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma truncGE_map_truncGEπ_app (n : ℤ) (X : C) :
@@ -802,6 +804,7 @@ instance (a b : ℤ) (X : C) :
   rw [← t.isLE_iff_isIso_truncLTι_app (b - 1) b (by lia)]
   infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The natural transformation `t.truncGELT a b ⟶ t.truncLTGE a b`
 (which is an isomorphism, see `truncGELTIsoLTGE`.) -/
@@ -819,6 +822,7 @@ lemma truncGELTToLTGE_app_pentagon (a b : ℤ) (X : C) :
       (t.truncLTι b).app X ≫ (t.truncGEπ a).app X := by
   simp [truncGELTToLTGE]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma truncGELTToLTGE_app_pentagon_uniqueness {a b : ℤ} {X : C}
     (φ : (t.truncGELT a b).obj X ⟶ (t.truncLTGE a b).obj X)
@@ -827,6 +831,7 @@ lemma truncGELTToLTGE_app_pentagon_uniqueness {a b : ℤ} {X : C}
     (t.truncGELTToLTGE a b).app X = φ :=
   t.to_truncLT_obj_ext (by dsimp; exact t.from_truncGE_obj_ext (by cat_disch))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma truncLT_map_truncGE_map_truncLTι_app_fac (a b : ℤ) (X : C) :

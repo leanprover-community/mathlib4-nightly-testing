@@ -94,6 +94,7 @@ def lift {Y Z : C} (f : Y ⟶ Z) (P : ProjectiveResolution Y) (Q : ProjectiveRes
   ChainComplex.mkHom _ _ (liftFZero f _ _) (liftFOne f _ _) (liftFOne_zero_comm f P Q)
     fun n ⟨g, g', w⟩ => ⟨(liftFSucc P Q n g g' w).1, (liftFSucc P Q n g g' w).2⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The resolution maps intertwine the lift of a morphism and that morphism. -/
 @[reassoc (attr := simp)]
 theorem lift_commutes {Y Z : C} (f : Y ⟶ Z) (P : ProjectiveResolution Y)
@@ -101,6 +102,7 @@ theorem lift_commutes {Y Z : C} (f : Y ⟶ Z) (P : ProjectiveResolution Y)
   ext
   simp [lift, liftFZero, liftFOne]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma lift_commutes_zero {Y Z : C} (f : Y ⟶ Z)
     (P : ProjectiveResolution Y) (Q : ProjectiveResolution Z) :

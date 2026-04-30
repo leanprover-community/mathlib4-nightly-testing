@@ -264,6 +264,7 @@ variable {N : Type*} [AddCommMonoid N] [Module A N] [Module R N] [IsScalarTower 
 
 variable (f : M →ₗ[A] N) (e : M ≃ₗ[A] N)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- We can push forward derivations using linear maps, i.e., the composition of a derivation with a
 linear map is a derivation. Furthermore, this operation is linear on the spaces of derivations. -/
 def _root_.LinearMap.compDer : Derivation R A M →ₗ[A] Derivation R A N where

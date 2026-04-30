@@ -124,6 +124,7 @@ def mvPolynomialHomeomorph (σ : Type v) (R A : CommRingCat.{max u v})
 
 open Limits
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R A) in
 lemma isClosedEmbedding_hom [IsTopologicalRing R] [T1Space R] :
     IsClosedEmbedding (fun f : A ⟶ R ↦ (f.hom : A → R)) := by
@@ -145,6 +146,7 @@ instance [IsTopologicalRing R] [T1Space R] [CompactSpace R] :
 
 open Limits
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `Hom(B ⊗[A] C, R)` has the subspace topology from `Hom(B, R) × Hom(C, R)`. -/
 lemma isEmbedding_pushout [IsTopologicalRing R] (φ : A ⟶ B) (ψ : A ⟶ C) :

@@ -249,6 +249,7 @@ theorem coprod_comp_inl_inr (f : M × M₂ →ₗ[R] M₃) :
     (f.comp (inl R M M₂)).coprod (f.comp (inr R M M₂)) = f := by
   rw [← comp_coprod, coprod_inl_inr, comp_id]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Taking the product of two maps with the same codomain is equivalent to taking the product of
 their domains.
 
@@ -264,9 +265,9 @@ def coprodEquiv [Module S M₃] [SMulCommClass R S M₃] :
     ext
     simp only [Prod.snd_add, add_apply, coprod_apply, Prod.fst_add, add_add_add_comm]
   map_smul' r a := by
-    show ((r • a).1.coprod (r • a).2 : M × M₂ →ₗ[R] M₃) = r • a.1.coprod a.2
+    dsimp
     ext
-    simp only [smul_add, smul_apply, coprod_apply, Prod.smul_fst, Prod.smul_snd]
+    simp only [smul_add, smul_apply, coprod_apply]
 
 theorem prod_ext_iff {f g : M × M₂ →ₗ[R] M₃} :
     f = g ↔ f.comp (inl _ _ _) = g.comp (inl _ _ _) ∧ f.comp (inr _ _ _) = g.comp (inr _ _ _) :=

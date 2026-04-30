@@ -57,12 +57,14 @@ end
 
 variable [Semiring B] [GAlgebra R A] [Algebra R B]
 
+set_option backward.defeqAttrib.useBackward true in
 instance _root_.GradedMonoid.smulCommClass_right :
     SMulCommClass R (GradedMonoid A) (GradedMonoid A) where
   smul_comm s x y := by
     dsimp
     rw [GAlgebra.smul_def, GAlgebra.smul_def, ← mul_assoc, GAlgebra.commutes, mul_assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 instance _root_.GradedMonoid.isScalarTower_right :
     IsScalarTower R (GradedMonoid A) (GradedMonoid A) where
   smul_assoc s x y := by

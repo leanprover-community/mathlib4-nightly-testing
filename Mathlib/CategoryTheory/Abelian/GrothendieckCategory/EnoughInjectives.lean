@@ -215,6 +215,7 @@ section
 variable (A₀ : Subobject X) (J : Type w) [LinearOrder J] [OrderBot J] [SuccOrder J]
   [WellFoundedLT J]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `C` be a Grothendieck abelian category with a generator (`hG`),
 `X : C`, `A₀ : Subobject X`. Let `J` be a well-ordered type. This is
 the functor `J ⥤ MonoOver X` which corresponds to the evaluation

@@ -275,6 +275,7 @@ instance : NatTrans.CommShift (PullbackShift.natIsoComp φ F G).hom A where
 
 end NatTrans
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 The adjunction `adj`, seen as an adjunction between `PullbackShift.functor F φ`

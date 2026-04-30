@@ -205,6 +205,7 @@ theorem epi_of_mono_of_epi_of_mono (hR₁ : R₁.Exact) (hR₂ : R₂.Exact)
   epi_of_mono_of_epi_of_mono' φ hR₁
     (by simpa only [map'_comp R₂ 0 1 2] using hR₂.toIsComplex.zero 0) hR₂' h₀ h₁
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem mono_of_mono_of_mono_of_mono (hR₁ : R₁.Exact)
     (hR₂' : Mono (R₂.map' 0 1))
@@ -220,6 +221,7 @@ theorem mono_of_mono_of_mono_of_mono (hR₁ : R₁.Exact)
   rw [ShortComplex.exact_iff_mono _ (by simp)]
   exact hR₂'
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem epi_of_epi_of_epi_of_epi (hR₂ : R₂.Exact) (hR₁' : Epi (R₁.map' 1 2))
     (h₀ : Epi (app' φ 0)) (h₁ : Epi (app' φ 2)) :

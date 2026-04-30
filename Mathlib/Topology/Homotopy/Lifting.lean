@@ -194,7 +194,7 @@ theorem existsUnique_continuousMap_lifts [PathConnectedSpace A] [LocPathConnecte
       simp only [Function.comp, ContinuousMap.coe_coe, Path.trans_apply, ContinuousMap.coe_comp]
       split_ifs
       · apply congr_fun (Γ_lifts ..)
-      · simp [Path.map', p.right_inv (hUp (hγ _))]
+      · exact p.right_inv (hUp (hγ _))
     simpa using uniq
   · exact uniq _ (.const I a₀) _ (.const I e₀) (somePath a₀ a₀).source rfl (Γ_0 ..) rfl (Γ_lifts ..)
       (by simpa) (Path.target _)
