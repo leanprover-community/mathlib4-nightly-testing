@@ -216,6 +216,7 @@ lemma d₃₂_single_one_thd (g h : G) (a : A) :
 
 variable (A)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `C(G, A)` denote the complex of inhomogeneous chains of `A : Rep k G`. This lemma
 says `d₁₀` gives a simpler expression for the 0th differential: that is, the following
 square commutes:
@@ -240,6 +241,7 @@ theorem eq_d₁₀_comp_inv :
     (chainsIso₁ A).inv ≫ (inhomogeneousChains A).d 1 0 = d₁₀ A ≫ (chainsIso₀ A).inv :=
   (CommSq.horiz_inv ⟨comp_d₁₀_eq A⟩).w
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `C(G, A)` denote the complex of inhomogeneous chains of `A : Rep k G`. This lemma
 says `d₂₁` gives a simpler expression for the 1st differential: that is, the following
 square commutes:
@@ -265,6 +267,7 @@ theorem eq_d₂₁_comp_inv :
     (chainsIso₂ A).inv ≫ (inhomogeneousChains A).d 2 1 = d₂₁ A ≫ (chainsIso₁ A).inv :=
   (CommSq.horiz_inv ⟨comp_d₂₁_eq A⟩).w
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `C(G, A)` denote the complex of inhomogeneous chains of `A : Rep k G`. This lemma
 says `d₃₂` gives a simpler expression for the 2nd differential: that is, the following
 square commutes:
@@ -879,6 +882,7 @@ section IsTrivial
 
 variable [A.IsTrivial]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- When the representation on `A` is trivial, then `H₀(G, A)` is all of `A.` -/
 def H0IsoOfIsTrivial :
