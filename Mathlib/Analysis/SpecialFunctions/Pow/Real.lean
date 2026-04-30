@@ -342,6 +342,7 @@ theorem norm_cpow_eq_rpow_re_of_nonneg {x : ℝ} (hx : 0 ≤ x) {y : ℂ} (hy : 
     ‖(x : ℂ) ^ y‖ = x ^ re y := by
   rw [norm_cpow_of_imp] <;> simp [*, arg_ofReal_of_nonneg, abs_of_nonneg]
 
+set_option backward.defeqAttrib.useBackward true in
 open Filter in
 lemma norm_ofReal_cpow_eventually_eq_atTop (c : ℂ) :
     (fun t : ℝ ↦ ‖(t : ℂ) ^ c‖) =ᶠ[atTop] fun t ↦ t ^ c.re := by

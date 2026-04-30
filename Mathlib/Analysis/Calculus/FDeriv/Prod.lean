@@ -505,6 +505,7 @@ variable {n : Nat} {F' : Fin n.succ → Type*}
 variable [∀ i, NormedAddCommGroup (F' i)] [∀ i, NormedSpace 𝕜 (F' i)]
 variable {φ : E → F' 0} {φs : E → ∀ i, F' (Fin.succ i)}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFDerivAtFilter_finCons
     {φ' : E →L[𝕜] Π i, F' i} {l : Filter (E × E)} :
     HasFDerivAtFilter (fun x => Fin.cons (φ x) (φs x)) φ' l ↔

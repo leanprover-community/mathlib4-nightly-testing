@@ -217,6 +217,7 @@ def coweightHom (P : RootPairing ι R M N) : End P →* (N →ₗ[R] N)ᵐᵒᵖ
   map_one' := by
     simp only [MulOpposite.op_eq_one_iff, coweightMap_one, Module.End.one_eq_id]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma coweightHom_injective (P : RootPairing ι R M N) : Injective (coweightHom P) := by
   intro f g hfg
   ext x

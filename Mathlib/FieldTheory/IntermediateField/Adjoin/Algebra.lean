@@ -260,6 +260,7 @@ section Tower
 variable (E)
 variable {K : Type*} [Field K] [Algebra F K] [Algebra E K] [IsScalarTower F E K]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `K / E / F` is a field extension tower, `L` is an intermediate field of `K / F`, such that
 either `E / F` or `L / F` is algebraic, then `E(L) = E[L]`. -/
 theorem adjoin_intermediateField_toSubalgebra_of_isAlgebraic (L : IntermediateField F K)

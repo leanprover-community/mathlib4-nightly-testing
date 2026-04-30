@@ -43,6 +43,7 @@ namespace Derivation
 
 variable {M f}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Constructor for `ModuleCat.Derivation`. -/
 def mk (d : B → M) (d_add : ∀ (b b' : B), d (b + b') = d b + d b' := by simp)
     (d_mul : ∀ (b b' : B), d (b * b') = b • d b' + b' • d b := by simp)

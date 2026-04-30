@@ -126,6 +126,7 @@ lemma map_liftBaseChange_smul [h : Algebra.IsPushout R S A B] (b : B) (x) :
     · simp [smul_comm]
     · simp only [map_add, smul_add, *]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- (Implementation).
 The `S`-derivation `B = S ⊗[R] A` to `S ⊗[R] Ω[A⁄R]` sending `a ⊗ b` to `a ⊗ d b`. -/
 noncomputable
@@ -183,6 +184,7 @@ lemma tensorKaehlerEquiv_left_inv [Algebra.IsPushout R S A B] :
     rfl
   · simp only [map_add, TensorProduct.tmul_add, *]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The canonical isomorphism `(S ⊗[R] Ω[A⁄R]) ≃ₗ[S] Ω[B⁄S]` for `B = S ⊗[R] A`.
 Also see `KaehlerDifferential.tensorKaehlerEquiv` for the version with `B ⊗[A] Ω[A⁄R]`. -/
 @[simps! symm_apply] noncomputable

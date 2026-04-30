@@ -84,6 +84,7 @@ instance linearEquiv_is_two_pretransitive :
     simp only [one_smul, LinearEquiv.smul_def, ← qD' hD, ← hg, ← qD' hE]
     simp [f]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (K V) in
 instance generalLinearGroup_is_two_pretransitive :
     IsMultiplyPretransitive (LinearMap.GeneralLinearGroup K V) (ℙ K V) 2 := by

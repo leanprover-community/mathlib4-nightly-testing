@@ -117,6 +117,7 @@ theorem isLocalHomValStalkMap {X Y : LocallyRingedSpace.{u}} (f : Hom X Y) (x : 
     IsLocalHom (f.stalkMap x).hom :=
   f.2 x
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The identity morphism on a locally ringed space. -/
 def id (X : LocallyRingedSpace.{u}) : Hom X X :=
@@ -407,6 +408,7 @@ lemma stalkMap_congr_point {X Y : LocallyRingedSpace.{u}} (f : X ⟶ Y) (x x' : 
   subst hxx'
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma stalkMap_hom_inv (e : X ≅ Y) (y : Y) :
     e.hom.stalkMap (e.inv.base y) ≫ e.inv.stalkMap y =
@@ -420,6 +422,7 @@ lemma stalkMap_hom_inv_apply (e : X ≅ Y) (y : Y) (z) :
       Y.presheaf.stalkSpecializes (specializes_of_eq <| by simp) z :=
   DFunLike.congr_fun (CommRingCat.hom_ext_iff.mp (stalkMap_hom_inv e y)) z
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma stalkMap_inv_hom (e : X ≅ Y) (x : X) :
     e.inv.stalkMap (e.hom.base x) ≫ e.hom.stalkMap x =

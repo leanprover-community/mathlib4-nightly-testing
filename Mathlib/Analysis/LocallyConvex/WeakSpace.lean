@@ -66,6 +66,7 @@ theorem toWeakSpace_closedConvexHull_eq {s : Set E} :
   congr
   refine LinearMap.image_convexHull (toWeakSpace 𝕜 E).toLinearMap s
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `e : E →ₗ[𝕜] F` is a linear map between locally convex spaces, and `f ∘ e` is continuous
 for every continuous linear functional `f : StrongDual 𝕜 F`, then `e` commutes with the closure on
 convex sets. -/

@@ -344,10 +344,12 @@ lemma toSheafify_app_apply' (X : Cᵒᵖ) (x : M₀.obj X) :
 @[simp]
 lemma toPresheaf_map_toSheafify : (toPresheaf R₀).map (toSheafify α φ) = φ := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : IsLocallyInjective J (toSheafify α φ) := by
   dsimp [IsLocallyInjective]; infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : IsLocallySurjective J (toSheafify α φ) := by
   dsimp [IsLocallySurjective]; infer_instance

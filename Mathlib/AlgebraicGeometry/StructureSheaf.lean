@@ -410,6 +410,7 @@ def toBasicOpenₗ (f : R) :
     exact Submonoid.powers_le (P := (IsUnit.submonoid _).comap (algebraMap R _)).mpr
       (isUnit_basicOpen_end ..)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem toBasicOpenₗ_mk (s : R) (f : M) (g : Submonoid.powers s) :
     toBasicOpenₗ R M s (.mk f g) = const f g.1 (basicOpen s) (by
@@ -588,6 +589,7 @@ instance (x : PrimeSpectrum.Top R) :
       ↑(TopCat.Presheaf.stalk (moduleStructurePresheaf R M).presheaf x) :=
   .of_algebraMap_smul fun _ _ ↦ rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R M) in
 def modulePresheafStalkIso (x : PrimeSpectrum.Top R) :
     ↑(TopCat.Presheaf.stalk (moduleStructurePresheaf R M).presheaf x) ≃ₗ[R]
@@ -669,6 +671,7 @@ def localizationtoStalkₗ (x : PrimeSpectrum.Top R) :
     (LocalizedModule.mkLinearMap x.asIdeal.primeCompl M)
     (toStalkₗ' R M x).hom fun f ↦ isUnit_toStalkₗ' x f.1 f.2 :)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem localizationtoStalkₗ_mk (x : PrimeSpectrum.Top R) (f : M) (s) :
@@ -768,6 +771,7 @@ theorem localizationToStalk_stalkToFiberRingHom (x : PrimeSpectrum.Top R) :
     localizationtoStalkₗ R M x ≫ stalkToLocalizationₗ R M x = 𝟙 _ :=
   (stalkIsoₗ R M x).inv_hom_id
 
+set_option backward.defeqAttrib.useBackward true in
 instance (x : PrimeSpectrum.Top R) :
     IsLocalizedModule x.asIdeal.primeCompl (toStalkₗ' R M x).hom := by
   convert IsLocalizedModule.of_linearEquiv x.asIdeal.primeCompl
@@ -845,6 +849,7 @@ def commRingCatStalkEquivModuleStalk (x : PrimeSpectrum.Top R) :
       rfl
     · exact congr($this _).symm
 
+set_option backward.defeqAttrib.useBackward true in
 public instance (x : PrimeSpectrum.Top R) :
     IsLocalization.AtPrime ((structurePresheafInCommRingCat R).stalk x) x.asIdeal := by
   refine (isLocalizedModule_iff_isLocalization' _ _).mp ?_
@@ -1012,6 +1017,7 @@ def comapFun (U : Opens (PrimeSpectrum.Top R)) (V : Opens (PrimeSpectrum.Top S))
     Localizations N y.1 :=
   Localizations.comapFun f _ (s ⟨y.1.comap σ, hUV y.2⟩)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem isLocallyFraction_comapFun (U : Opens (PrimeSpectrum.Top R))
     (V : Opens (PrimeSpectrum.Top S)) (hUV : V.1 ⊆ PrimeSpectrum.comap σ ⁻¹' U.1)
@@ -1031,6 +1037,7 @@ theorem isLocallyFraction_comapFun (U : Opens (PrimeSpectrum.Top R))
   rw [H]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For a ring homomorphism `f : R →+* S` and open sets `U` and `V` of the prime spectra of `R` and
 `S` such that `V ⊆ (comap f) ⁻¹ U`, the induced ring homomorphism from the structure sheaf of `R`
 at `U` to the structure sheaf of `S` at `V`.
@@ -1078,6 +1085,7 @@ theorem comapₗ_eq_localRingHom (f : R →+* S) (U : Opens (PrimeSpectrum.Top R
   convert_to Localization.mk _ _ = Localization.localRingHom _ _ _ _ (Localization.mk _ _)
   simp [Localization.mk_eq_mk']
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For a ring homomorphism `f : R →+* S` and open sets `U` and `V` of the prime spectra of `R` and
 `S` such that `V ⊆ (comap f) ⁻¹ U`, the induced ring homomorphism from the structure sheaf of `R`
 at `U` to the structure sheaf of `S` at `V`.
@@ -1151,6 +1159,7 @@ theorem comap_id' (U : Opens (PrimeSpectrum.Top R)) :
     (comap (RingHom.id R) U U fun p hpU => by rwa [PrimeSpectrum.comap_id]) = RingHom.id _ := by
   rw [comap_id rfl]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem comap_comp (f : R →+* S) (g : S →+* P) (U : Opens (PrimeSpectrum.Top R))
     (V : Opens (PrimeSpectrum.Top S)) (W : Opens (PrimeSpectrum.Top P))
@@ -1163,6 +1172,7 @@ theorem comap_comp (f : R →+* S) (g : S →+* P) (U : Opens (PrimeSpectrum.Top
         rw [comap_apply, Localization.localRingHom_comp _ (PrimeSpectrum.comap g p.1).asIdeal] <;>
         simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[elementwise, reassoc]
 theorem toOpen_comp_comap (f : R →+* S) (U : Opens (PrimeSpectrum.Top R)) :
     CommRingCat.ofHom (algebraMap _ _) ≫

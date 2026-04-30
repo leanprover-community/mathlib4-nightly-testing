@@ -107,6 +107,7 @@ theorem GradedAlgebra.lift_ι_eq (i' : ZMod 2) (x' : evenOdd Q i') :
   | add x y hx hy ihx ihy =>
     rw [map_add, ihx, ihy, ← map_add]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The clifford algebra is graded by the even and odd parts. -/
 instance gradedAlgebra : GradedAlgebra (evenOdd Q) :=
   GradedAlgebra.ofAlgHom (evenOdd Q)

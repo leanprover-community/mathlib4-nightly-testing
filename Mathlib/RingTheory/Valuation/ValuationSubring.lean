@@ -215,6 +215,7 @@ theorem eq_top_iff : A = ⊤ ↔ ¬ A.valuation.IsNontrivial := by
 theorem valuation_lt_one_or_eq_one (a : A) : A.valuation a < 1 ∨ A.valuation a = 1 :=
   lt_or_eq_of_le (A.valuation_le_one a)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem valuation_lt_one_iff (a : A) : a ∈ IsLocalRing.maximalIdeal A ↔ A.valuation a < 1 := by
   rw [IsLocalRing.mem_maximalIdeal]
   dsimp [nonunits]; rw [valuation_eq_one_iff]
@@ -632,6 +633,7 @@ end nonunits
 
 section PrincipalUnitGroup
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The principal unit group of a valuation subring, as a subgroup of `Kˣ`. -/
 def principalUnitGroup : Subgroup Kˣ where
   carrier := {x | A.valuation (x - 1) < 1}

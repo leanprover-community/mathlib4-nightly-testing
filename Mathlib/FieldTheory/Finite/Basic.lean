@@ -483,6 +483,7 @@ theorem frobenius_pow {p : ℕ} [Fact p.Prime] [CharP K p] {n : ℕ} (hcard : q 
 
 open Polynomial
 
+set_option backward.defeqAttrib.useBackward true in
 theorem expand_card (f : K[X]) : expand K q f = f ^ q := by
   obtain ⟨p, hp⟩ := CharP.exists K
   rcases FiniteField.card K p with ⟨⟨n, npos⟩, ⟨hp, hn⟩⟩

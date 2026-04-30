@@ -123,6 +123,7 @@ theorem _root_.Ideal.torsionOf_eq_span_pow_pOrder (x : M) :
   convert Associates.eq_pow_find_of_dvd_irreducible_pow (Associates.irreducible_mk.mpr hp)
     this.choose_spec
 
+set_option backward.defeqAttrib.useBackward true in
 theorem p_pow_smul_lift {x y : M} {k : ℕ} (hM' : Module.IsTorsionBy R M (p ^ pOrder hM y))
     (h : p ^ k • x ∈ R ∙ y) : ∃ a : R, p ^ k • x = p ^ k • a • y := by
   by_cases! hk : k ≤ pOrder hM y

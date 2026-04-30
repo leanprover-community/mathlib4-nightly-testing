@@ -101,6 +101,7 @@ lemma cotangentComplexBaseChange_eq_lTensor_cotangentComplex :
   ext x
   simp [LinearEquiv.baseChange, cotangentComplexBaseChange_tmul]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (A) in
 lemma lTensor_cotangentComplex_eq_cotangentComplexBaseChange :
   P.cotangentComplex.baseChange A =

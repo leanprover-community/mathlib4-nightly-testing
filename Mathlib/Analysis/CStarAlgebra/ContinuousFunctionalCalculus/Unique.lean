@@ -143,6 +143,7 @@ noncomputable def realContinuousMapOfNNReal (φ : C(X, ℝ≥0) →⋆ₐ[ℝ≥
         ContinuousMap.toNNReal_algebraMap, zero_sub, neg_inj] using AlgHomClass.commutes φ r
   map_star' f := by simp only [star_trivial, star_sub, ← map_star]
 
+set_option backward.defeqAttrib.useBackward true in
 @[fun_prop]
 lemma continuous_realContinuousMapOfNNReal (φ : C(X, ℝ≥0) →⋆ₐ[ℝ≥0] A)
     (hφ : Continuous φ) : Continuous φ.realContinuousMapOfNNReal := by
@@ -319,6 +320,7 @@ noncomputable def realContinuousMapZeroOfNNReal (φ : C(X, ℝ≥0)₀ →⋆ₙ
       rw [sub_eq_add_neg, add_comm]
   map_star' f := by simp only [star_trivial, star_sub, ← map_star]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[fun_prop]
 lemma continuous_realContinuousMapZeroOfNNReal (φ : C(X, ℝ≥0)₀ →⋆ₙₐ[ℝ≥0] A)
@@ -405,6 +407,7 @@ variable {F R S A B : Type*} {p : A → Prop} {q : B → Prop}
   [ContinuousMapZero.UniqueHom R B] [FunLike F A B] [NonUnitalAlgHomClass F S A B]
   [StarHomClass F A B]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include S in
 /-- Non-unital star algebra homomorphisms commute with the non-unital continuous functional
@@ -456,6 +459,7 @@ variable {F R S A B : Type*} {p : A → Prop} {q : B → Prop}
   [ContinuousMap.UniqueHom R B] [FunLike F A B] [AlgHomClass F S A B]
   [StarHomClass F A B]
 
+set_option backward.defeqAttrib.useBackward true in
 include S in
 /-- Star algebra homomorphisms commute with the continuous functional calculus. -/
 lemma StarAlgHomClass.map_cfc (φ : F) (f : R → R) (a : A)

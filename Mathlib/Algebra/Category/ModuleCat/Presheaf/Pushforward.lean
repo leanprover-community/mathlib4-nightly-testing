@@ -53,6 +53,7 @@ def pushforward₀_obj (R : Dᵒᵖ ⥤ RingCat.{u}) (M : PresheafOfModules R) :
         (@LinearMap.ext _ _ _ _ _ _ _ _ (_) (_) _ _ _ (fun x => ?_))
       exact (M.congr_map_apply (F.op.map_comp f g) x).trans (by simp) }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The pushforward functor on presheaves of modules for a functor `F : C ⥤ D` and
 `R : Dᵒᵖ ⥤ RingCat`. On the underlying presheaves of abelian groups, it is induced

@@ -87,6 +87,7 @@ lemma inr_v_snd_v (p q : ℤ) (hpq : p + 1 = q) :
     Cochain.leftShift_v _ _ _ _ _ _ _ _ (add_zero p),
     Int.negOnePow_even 2 ⟨1, rfl⟩]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma id_X (p q : ℤ) (hpq : p + -1 = q) :
     (fst φ).f p ≫ (inl φ).v p p (add_zero p) +
