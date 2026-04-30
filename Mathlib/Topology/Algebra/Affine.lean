@@ -123,6 +123,7 @@ variable (R) [TopologicalSpace R] [Module R W] [ContinuousSMul R W] (x : Q) {s :
 
 open Topology
 
+set_option backward.defeqAttrib.useBackward true in
 theorem _root_.eventually_homothety_mem_of_mem_interior {y : Q} (hy : y ∈ interior s) :
     ∀ᶠ δ in 𝓝 (1 : R), homothety x δ y ∈ s := by
   have cont : Continuous (fun δ : R => homothety x δ y) := lineMap_continuous

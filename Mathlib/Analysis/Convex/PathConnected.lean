@@ -30,6 +30,7 @@ variable {E : Type*} [AddCommGroup E] [Module ℝ E]
 
 namespace Path
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The path from `a` to `b` going along a straight line segment -/
 @[simps]
 protected def segment (a b : E) : Path a b where

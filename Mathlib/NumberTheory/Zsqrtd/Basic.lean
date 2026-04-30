@@ -570,6 +570,7 @@ theorem nonneg_add_lem {x y z w : ℕ} (xy : Nonneg (⟨x, -y⟩ : ℤ√d)) (zw
   rw [add_def, neg_add_eq_sub]
   rwa [Int.subNatNat_eq_coe, Int.subNatNat_eq_coe] at this
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Nonneg.add {a b : ℤ√d} (ha : Nonneg a) (hb : Nonneg b) : Nonneg (a + b) := by
   rcases nonneg_cases ha with ⟨x, y, rfl | rfl | rfl⟩ <;>
     rcases nonneg_cases hb with ⟨z, w, rfl | rfl | rfl⟩

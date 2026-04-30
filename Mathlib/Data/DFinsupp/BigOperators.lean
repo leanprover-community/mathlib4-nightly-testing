@@ -250,12 +250,10 @@ def sumZeroHom [∀ i, Zero (β i)] [AddCommMonoid γ] (φ : ∀ i, ZeroHom (β 
   map_zero' := by
     simp only [toFun_eq_coe, coe_zero, Pi.zero_apply, map_zero, Finset.sum_const_zero]; rfl
 
-set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem sumZeroHom_single [∀ i, Zero (β i)] [AddCommMonoid γ] (φ : ∀ i, ZeroHom (β i) γ) (i)
     (x : β i) : sumZeroHom φ (single i x) = φ i x := by
-  dsimp [sumZeroHom, single, Trunc.lift_mk]
+  change ∑ j ∈ ({i} : Multiset ι).toFinset, (φ j) (Pi.single i x j) = φ i x
   rw [Multiset.toFinset_singleton, Finset.sum_singleton, Pi.single_eq_same]
 
 @[simp]

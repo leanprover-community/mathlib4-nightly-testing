@@ -35,6 +35,7 @@ variable [CommRing 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜]
   [Module 𝕜 E] [Module 𝕜 F] [Module E F] [IsScalarTower 𝕜 E F] [SMulCommClass 𝕜 E F]
   [IsOrderedModule 𝕜 F] [IsStrictOrderedModule E F] {s : Set G} {f : G → E} {g : G → F}
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ConvexOn.smul' (hf : ConvexOn 𝕜 s f) (hg : ConvexOn 𝕜 s g) (hf₀ : ∀ ⦃x⦄, x ∈ s → 0 ≤ f x)
     (hg₀ : ∀ ⦃x⦄, x ∈ s → 0 ≤ g x) (hfg : MonovaryOn f g s) : ConvexOn 𝕜 s (f • g) := by
   refine ⟨hf.1, fun x hx y hy a b ha hb hab ↦ ?_⟩
@@ -54,6 +55,7 @@ lemma ConvexOn.smul' (hf : ConvexOn 𝕜 s f) (hg : ConvexOn 𝕜 s g) (hf₀ : 
     ← smul_smul_smul_comm b b, smul_eq_mul, smul_eq_mul, smul_eq_mul, smul_eq_mul, mul_comm b,
     add_comm _ ((b * b) • f y • g y), add_add_add_comm, add_comm ((a * b) • f y • g x)]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ConcaveOn.smul' [IsOrderedModule 𝕜 E] (hf : ConcaveOn 𝕜 s f) (hg : ConcaveOn 𝕜 s g)
     (hf₀ : ∀ ⦃x⦄, x ∈ s → 0 ≤ f x) (hg₀ : ∀ ⦃x⦄, x ∈ s → 0 ≤ g x) (hfg : AntivaryOn f g s) :
     ConcaveOn 𝕜 s (f • g) := by
