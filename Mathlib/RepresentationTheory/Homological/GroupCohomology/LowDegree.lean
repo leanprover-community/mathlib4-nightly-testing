@@ -999,8 +999,10 @@ group homs `G → A`. -/
 def H1IsoOfIsTrivial :
     H1 A ≅ ModuleCat.of k (Additive G →+ A) :=
   (HomologicalComplex.isoHomologyπ _ 0 1 (CochainComplex.prev_nat_succ 0) <| by
-    ext; simp [inhomogeneousCochains.d_def, inhomogeneousCochains.d,
-      Unique.eq_default (α := Fin 0 → G), Pi.zero_apply (M := fun _ => A)]).symm ≪≫
+    ext
+    simp [inhomogeneousCochains.d_def, inhomogeneousCochains.d,
+      Unique.eq_default (α := Fin 0 → G), Pi.zero_apply (M := fun _ => A)]
+    rfl).symm ≪≫
   isoCocycles₁ A ≪≫ cocycles₁IsoOfIsTrivial A
 
 set_option backward.isDefEq.respectTransparency false in
