@@ -53,6 +53,7 @@ variable [ChartedSpace H M] [ChartedSpace H' M'] [ChartedSpace H'' M'']
 
 section Composition
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The composition of `C^n` functions within domains at points is `C^n`. -/
 theorem ContMDiffWithinAt.comp {t : Set M'} {g : M' → M''} (x : M)
     (hg : ContMDiffWithinAt I' I'' n g t (f x)) (hf : ContMDiffWithinAt I I' n f s x)
@@ -272,6 +273,7 @@ theorem contMDiffAt_of_notMem_mulTSupport {f : M → M'} [One M'] {x : M}
     (hx : x ∉ mulTSupport f) (n : ℕ∞ω) : ContMDiffAt I I' n f x :=
   contMDiffWithinAt_of_notMem_mulTSupport hx n univ
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given two `C^n` functions `f` and `g` which coincide locally around the frontier of a set `s`,
 then the piecewise function defined using `f` on `s` and `g` elsewhere is `C^n`. -/
 lemma ContMDiff.piecewise

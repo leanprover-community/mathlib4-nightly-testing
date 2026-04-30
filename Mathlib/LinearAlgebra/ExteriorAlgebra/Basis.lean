@@ -32,10 +32,12 @@ noncomputable def _root_.Module.Basis.ExteriorAlgebra : Basis (Finset I) R (Exte
     ((DirectSum.Decomposition.isInternal (fun n => ⋀[R]^n M)).collectedBasis b.exteriorPower)
     Set.powersetCard.prodEquiv
 
+set_option backward.defeqAttrib.useBackward true in
 lemma basis_apply (s : Finset I) :
     b.ExteriorAlgebra s = ιMulti_family R s.card b (prodEquiv.symm s).2 := by
   simp [Basis.ExteriorAlgebra]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma basis_apply_ofCard {s : Finset I} (s_card : s.card = n) :
     b.ExteriorAlgebra s = ιMulti_family R n b (ofCard s_card) := by
   subst s_card
