@@ -139,6 +139,7 @@ theorem range_cotangentToQuotientSquare :
   · rw [LinearMap.range_comp, I.toCotangent_range, Submodule.map_top]
   · rw [to_quotient_square_comp_toCotangent, LinearMap.range_comp, I.range_subtype]; ext; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence of the two definitions of `I / I ^ 2`, either as the quotient of `I` or the
 ideal of `R / I ^ 2`. -/
 noncomputable def cotangentEquivIdeal : I.Cotangent ≃ₗ[R] I.cotangentIdeal := by
@@ -252,6 +253,7 @@ lemma lift_comp_toCotangent (f : I →ₗ[R] M) (hf : ∀ (x y : I), f (x * y) =
     Cotangent.lift f hf ∘ₗ I.toCotangent = f :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma lift_surjective_iff (f : I →ₗ[R] M) (hf : ∀ (x y : I), f (x * y) = 0) :
     Function.Surjective (Cotangent.lift f hf) ↔ Function.Surjective f := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩

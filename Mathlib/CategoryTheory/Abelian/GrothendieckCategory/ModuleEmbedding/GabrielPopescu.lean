@@ -111,6 +111,7 @@ end GabrielPopescuAux
 
 open GabrielPopescuAux
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Faithfulness follows because `G` is a separator, see
 `isSeparator_iff_faithful_preadditiveCoyonedaObj`. -/

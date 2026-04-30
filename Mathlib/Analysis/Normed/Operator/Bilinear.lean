@@ -408,6 +408,7 @@ theorem nnnorm_smulRight_apply (c : StrongDual 𝕜 E) (f : Fₗ) : ‖smulRight
 @[simp] theorem nnnorm_toSpanSingleton (x : E) : ‖toSpanSingleton 𝕜 x‖₊ = ‖x‖₊ :=
   NNReal.eq <| norm_toSpanSingleton _
 
+set_option backward.defeqAttrib.useBackward true in
 variable (𝕜 E Fₗ) in
 /-- `ContinuousLinearMap.smulRight` as a continuous trilinear map:
 `smulRightL (c : StrongDual 𝕜 E) (f : F) (x : E) = c x • f`.

@@ -112,6 +112,7 @@ namespace RootPairing
 
 open LinearMap IsReflective
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The root pairing given by all reflective vectors for a bilinear form. -/
 def ofBilinear [IsReflexive R M] (B : M →ₗ[R] M →ₗ[R] R) (hNB : LinearMap.Nondegenerate B)

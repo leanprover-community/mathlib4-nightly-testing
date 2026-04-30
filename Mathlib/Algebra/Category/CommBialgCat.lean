@@ -202,6 +202,7 @@ instance {A : Type u} [CommRing A] [Bialgebra R A] [IsCocomm R A] :
     IsCommMonObj (Opposite.op <| CommAlgCat.of R A) where
   mul_comm := by ext; exact comm_comul R _
 
+set_option backward.defeqAttrib.useBackward true in
 instance {A B : Type u} [CommRing A] [Bialgebra R A] [CommRing B] [Bialgebra R B]
     (f : A →ₐc[R] B) : IsMonHom (CommAlgCat.ofHom (f : A →ₐ[R] B)).op where
 

@@ -112,6 +112,7 @@ open scoped MonoidalCategory
 variable {k : Type u} [CommSemiring k] [Module k V] [Module k W] {σ : Representation k G V}
   {ρ : Representation k G W}
 
+set_option backward.defeqAttrib.useBackward true in
 variable (X Y) in
 /-- The tensor (multiplication) of the linearize functor. -/
 @[simps toLinearMap]
@@ -139,6 +140,8 @@ lemma μ_comp_lTensor (f : X ⟶ Y) (Z : Action (Type w) G) :
       (linearizeMap (Z ◁ f)).comp (μ Z X) := by
   ext : 6; simp [linearizeMap_single _]
 
+set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
 variable (X Y Z) in
 lemma μ_comp_assoc : ((linearizeMap (α_ X Y Z).hom).comp
     (μ (X ⊗ Y) Z)).comp ((μ X Y).rTensor (linearize k G Z)) = ((μ X (Y ⊗ Z)).comp

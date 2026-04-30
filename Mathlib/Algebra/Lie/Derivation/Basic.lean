@@ -332,6 +332,7 @@ section
 
 variable (R L : Type*) [CommRing R] [LieRing L] [LieAlgebra R L]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The Lie algebra morphism from Lie derivations into linear endomorphisms. -/
 def toLinearMapLieHom : LieDerivation R L L →ₗ⁅R⁆ L →ₗ[R] L where

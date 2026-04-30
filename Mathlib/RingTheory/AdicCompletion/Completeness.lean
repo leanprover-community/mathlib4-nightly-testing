@@ -141,6 +141,7 @@ private lemma lsum_smul_comp_finsuppLEquivDirectSum_symm {ι : Type*} [Decidable
     sumEquivOfFintype_apply, sum_lof, map_mk, AdicCauchySequence.map_apply_coe, map_smul]
   rw [← Ideal.Quotient.algebraMap_eq, algebraMap_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 variable {I} in
 @[stacks 05GG "(2)"]
 theorem pow_smul_top_eq_ker_eval {n : ℕ} (h : I.FG) : I ^ n • ⊤ = (eval I M n).ker := by

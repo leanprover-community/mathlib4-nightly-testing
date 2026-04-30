@@ -390,6 +390,7 @@ lemma rightUnshift_comp {m : ℤ} {a : ℤ} (γ' : Cochain L (M⟦a⟧) m) {nm :
     comp_v _ _ (show n + m' = nm' by lia) p (p + n) q (by lia) (by lia),
     γ'.rightUnshift_v m' hm' (p + n) q (by lia) (p + n + m) rfl, assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma leftShift_comp (a n' : ℤ) (hn' : n + a = n') {m t t' : ℤ} (γ' : Cochain L M m)
     (h : n + m = t) (ht' : t + a = t') :
@@ -412,6 +413,7 @@ lemma leftShift_comp_zero_cochain (a n' : ℤ) (hn' : n + a = n') (γ' : Cochain
       (γ.leftShift a n' hn').comp γ' (add_zero n') := by
   rw [leftShift_comp γ a n' hn' γ' (add_zero _) hn', mul_zero, Int.negOnePow_zero, one_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma δ_rightShift (a n' m' : ℤ) (hn' : n' + a = n) (m : ℤ) (hm' : m' + a = m) :
     δ n' m' (γ.rightShift a n' hn') = a.negOnePow • (δ n m γ).rightShift a m' hm' := by
@@ -478,6 +480,7 @@ lemma δ_leftUnshift {a n' : ℤ} (γ : Cochain (K⟦a⟧) L n') (n : ℤ) (hn :
   simp only [leftUnshift_leftShift, γ'.δ_leftShift a n' m' hn m hm', leftUnshift_units_smul,
     smul_smul, Int.units_mul_self, one_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma δ_shift (a m : ℤ) :
@@ -594,6 +597,7 @@ lemma equivHomShift_symm_precomp
     equivHomShift.symm (z.precomp g) = g ≫ equivHomShift.symm z :=
   equivHomShift.injective (by simp [equivHomShift_comp])
 
+set_option backward.defeqAttrib.useBackward true in
 lemma equivHomShift_comp_shift (f : K ⟶ L⟦n⟧) {L' : CochainComplex C ℤ} (g : L ⟶ L') :
     equivHomShift (f ≫ g⟦n⟧') = Cocycle.postcomp (equivHomShift f) g := by
   ext p q rfl

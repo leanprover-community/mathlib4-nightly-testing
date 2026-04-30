@@ -210,6 +210,7 @@ theorem HasPoints.lineCount_le_pointCount [HasPoints P L] {p : P} {l : L} (h : p
 
 variable (P L)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a nondegenerate configuration has a unique line through any two points, then `|P| ≤ |L|`. -/
 theorem HasLines.card_le [HasLines P L] [Fintype P] [Fintype L] :
     Fintype.card P ≤ Fintype.card L := by

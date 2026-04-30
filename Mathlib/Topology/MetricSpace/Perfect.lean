@@ -72,6 +72,7 @@ theorem Perfect.small_diam_splitting (hC : Perfect C) (hnonempty : C.Nonempty) (
 
 open CantorScheme
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Any nonempty perfect set in a complete metric space admits a continuous injection
 from the Cantor space, `ℕ → Bool`. -/
 theorem Perfect.exists_nat_bool_injection

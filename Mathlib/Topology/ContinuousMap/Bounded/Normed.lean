@@ -609,6 +609,7 @@ def nnnorm (f : α →ᵇ ℝ) : α →ᵇ ℝ≥0 :=
 @[simp]
 theorem nnnorm_coeFn_eq (f : α →ᵇ ℝ) : ⇑f.nnnorm = NNNorm.nnnorm ∘ ⇑f := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 -- TODO: Use `posPart` and `negPart` here
 /-- Decompose a bounded continuous function to its positive and negative parts. -/
 theorem self_eq_nnrealPart_sub_nnrealPart_neg (f : α →ᵇ ℝ) :
@@ -617,6 +618,7 @@ theorem self_eq_nnrealPart_sub_nnrealPart_neg (f : α →ᵇ ℝ) :
   dsimp
   simp only [max_zero_sub_max_neg_zero_eq_self]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Express the absolute value of a bounded continuous function in terms of its
 positive and negative parts. -/
 theorem abs_self_eq_nnrealPart_add_nnrealPart_neg (f : α →ᵇ ℝ) :

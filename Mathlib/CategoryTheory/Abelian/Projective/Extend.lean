@@ -111,6 +111,7 @@ lemma hom'_f (n : ℤ) (m : ℕ) (h : -m = n) :
     ComplexShape.embeddingDownNat (i := m) (i' := n) (by dsimp; lia),
     cochainComplexXIso]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma hom'_comp_π' :

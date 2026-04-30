@@ -219,6 +219,7 @@ theorem eventually_nhds_zero_mapsTo {s : Set (∀ i, E i)} (hs : IsVonNBounded �
     ∀ᶠ f : ContinuousMultilinearMap 𝕜 E F in 𝓝 0, MapsTo f s U :=
   hasBasis_nhds_zero.mem_of_mem (i := (s, U)) ⟨hs, hu⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isVonNBounded_image2_apply [ContinuousConstSMul 𝕜 F]
     {S : Set (ContinuousMultilinearMap 𝕜 E F)} (hS : IsVonNBounded 𝕜 S)
     {s : Set (∀ i, E i)} (hs : IsVonNBounded 𝕜 s) :
@@ -399,6 +400,7 @@ variable {𝕜 ι : Type*} {E E₁ : ι → Type*} {F G : Type*} [NormedField �
   [AddCommGroup G] [Module 𝕜 G] [TopologicalSpace G] [IsTopologicalAddGroup G]
   [ContinuousConstSMul 𝕜 G]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (F) in
 /-- `ContinuousMultilinearMap.compContinuousLinearMap` as a bundled continuous linear equiv.
 Given a family of continuous linear equivalences `f : Π i, E i ≃L[𝕜] E₁ i`,
@@ -427,6 +429,7 @@ theorem continuousMultilinearMapCongrLeft_apply
       g.compContinuousLinearMap fun i ↦ (f i : E i →L[𝕜] E₁ i) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable (E) in
 /-- `ContinuousLinearMap.compContinuousMultilinearMap` as a bundled continuous linear equiv.
 Given a continuous linear equivalence `g : F ≃L[𝕜] G`,

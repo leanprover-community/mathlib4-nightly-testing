@@ -142,6 +142,7 @@ lemma compProd_apply_prod {κ : Kernel α β} {η : Kernel (α × β) γ}
   congr with a
   by_cases ha : a ∈ s <;> simp [ha]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma compProd_congr {κ : Kernel α β} {η η' : Kernel (α × β) γ}
     [IsSFiniteKernel η] [IsSFiniteKernel η'] (h : ∀ a, ∀ᵐ b ∂(κ a), η (a, b) = η' (a, b)) :
     κ ⊗ₖ η = κ ⊗ₖ η' := by
