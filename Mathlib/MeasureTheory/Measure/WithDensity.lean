@@ -239,6 +239,7 @@ theorem withDensity_eq_zero_iff {f : α → ℝ≥0∞} (hf : AEMeasurable f μ)
 
 alias ⟨withDensity_eq_zero, _⟩ := withDensity_eq_zero_iff
 
+set_option backward.defeqAttrib.useBackward true in
 theorem withDensity_apply_eq_zero' {f : α → ℝ≥0∞} {s : Set α} (hf : AEMeasurable f μ) :
     μ.withDensity f s = 0 ↔ μ ({ x | f x ≠ 0 } ∩ s) = 0 := by
   constructor
@@ -316,6 +317,7 @@ theorem ae_withDensity_iff_ae_restrict {p : α → Prop} {f : α → ℝ≥0∞}
     (∀ᵐ x ∂μ.withDensity f, p x) ↔ ∀ᵐ x ∂μ.restrict { x | f x ≠ 0 }, p x :=
   ae_withDensity_iff_ae_restrict' <| hf.aemeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 theorem aemeasurable_withDensity_ennreal_iff' {f : α → ℝ≥0}
     (hf : AEMeasurable f μ) {g : α → ℝ≥0∞} :
     AEMeasurable g (μ.withDensity fun x => (f x : ℝ≥0∞)) ↔
@@ -400,6 +402,7 @@ theorem setLIntegral_withDensity_eq_setLIntegral_mul (μ : Measure α) {f g : α
     ∫⁻ x in s, g x ∂μ.withDensity f = ∫⁻ x in s, (f * g) x ∂μ := by
   rw [restrict_withDensity hs, lintegral_withDensity_eq_lintegral_mul _ hf hg]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Lebesgue integral of `g` with respect to the measure `μ.withDensity f` coincides with
 the integral of `f * g`. This version assumes that `g` is almost everywhere measurable. For a
 version without conditions on `g` but requiring that `f` is almost everywhere finite, see
@@ -462,6 +465,7 @@ theorem lintegral_withDensity_le_lintegral_mul (μ : Measure α) {f : α → ℝ
   rw [lintegral_withDensity_eq_lintegral_mul _ f_meas i_meas]
   exact le_iSup₂_of_le (f * i) (f_meas.mul i_meas) <| le_iSup_of_le (by grw [hi]) le_rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem lintegral_withDensity_eq_lintegral_mul_non_measurable (μ : Measure α) {f : α → ℝ≥0∞}
     (f_meas : Measurable f) (hf : ∀ᵐ x ∂μ, f x < ∞) (g : α → ℝ≥0∞) :
     ∫⁻ a, g a ∂μ.withDensity f = ∫⁻ a, (f * g) a ∂μ := by
@@ -493,6 +497,7 @@ theorem setLIntegral_withDensity_eq_setLIntegral_mul_non_measurable (μ : Measur
     ∫⁻ a in s, g a ∂μ.withDensity f = ∫⁻ a in s, (f * g) a ∂μ := by
   rw [restrict_withDensity hs, lintegral_withDensity_eq_lintegral_mul_non_measurable _ f_meas hf]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem lintegral_withDensity_eq_lintegral_mul_non_measurable₀ (μ : Measure α) {f : α → ℝ≥0∞}
     (hf : AEMeasurable f μ) (h'f : ∀ᵐ x ∂μ, f x < ∞) (g : α → ℝ≥0∞) :
     ∫⁻ a, g a ∂μ.withDensity f = ∫⁻ a, (f * g) a ∂μ := by
@@ -544,6 +549,7 @@ lemma withDensity_inv_same_le {μ : Measure α} {f : α → ℝ≥0∞} (hf : AE
   filter_upwards with x
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma withDensity_inv_same₀ {μ : Measure α} {f : α → ℝ≥0∞}
     (hf : AEMeasurable f μ) (hf_ne_zero : ∀ᵐ x ∂μ, f x ≠ 0) (hf_ne_top : ∀ᵐ x ∂μ, f x ≠ ∞) :
     (μ.withDensity f).withDensity (fun x ↦ (f x)⁻¹) = μ := by
@@ -753,6 +759,7 @@ theorem Measure.mconv_smul_right (μ : Measure M) (ν : Measure M) [SFinite ν] 
 variable {G : Type*} [Group G] {mG : MeasurableSpace G} [MeasurableMul₂ G] [MeasurableInv G]
   {μ : Measure G} [SFinite μ] [IsMulLeftInvariant μ]
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem mconv_withDensity_eq_mlconvolution₀ {f g : G → ℝ≥0∞}
     (hf : AEMeasurable f μ) (hg : AEMeasurable g μ) :

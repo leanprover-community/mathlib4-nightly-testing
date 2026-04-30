@@ -594,6 +594,7 @@ theorem continuousAt_arg (h : x ∈ slitPlane) : ContinuousAt arg x := by
 theorem continuousOn_arg : ContinuousOn arg slitPlane :=
   fun _ h ↦ continuousAt_arg h |>.continuousWithinAt
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_arg_nhdsWithin_im_neg_of_re_neg_of_im_zero {z : ℂ} (hre : z.re < 0)
     (him : z.im = 0) : Tendsto arg (𝓝[{ z : ℂ | z.im < 0 }] z) (𝓝 (-π)) := by
   suffices H : Tendsto (fun x : ℂ => Real.arcsin ((-x).im / ‖x‖) - π)
@@ -609,6 +610,7 @@ theorem tendsto_arg_nhdsWithin_im_neg_of_re_neg_of_im_zero {z : ℂ} (hre : z.re
   · lift z to ℝ using him
     simpa using hre.ne
 
+set_option backward.defeqAttrib.useBackward true in
 theorem continuousWithinAt_arg_of_re_neg_of_im_zero {z : ℂ} (hre : z.re < 0) (him : z.im = 0) :
     ContinuousWithinAt arg { z : ℂ | 0 ≤ z.im } z := by
   have : arg =ᶠ[𝓝[{ z : ℂ | 0 ≤ z.im }] z] fun x => Real.arcsin ((-x).im / ‖x‖) + π := by

@@ -304,6 +304,7 @@ variable (R L M)
 instance (priority := 100) trivialIsNilpotent [IsTrivial L M] : IsNilpotent L M :=
   ⟨by use 1; simp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 instance instIsNilpotentSup (M₁ M₂ : LieSubmodule R L M) [IsNilpotent L M₁] [IsNilpotent L M₂] :
     IsNilpotent L (M₁ ⊔ M₂ : LieSubmodule R L M) := by
   obtain ⟨k, hk⟩ := IsNilpotent.nilpotent R L M₁

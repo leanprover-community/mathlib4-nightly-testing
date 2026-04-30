@@ -473,6 +473,7 @@ lemma basisCoeff_spec (n : ℕ) (x : X) :
     basisCoeff D n x • D.e n = (succSub D.P n) x :=
   Classical.choose_spec (exists_coeff D n x)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Constructs a Schauder basis from rank one decomposition. -/
 def basis : SchauderBasis 𝕜 X :=
   let coeff := basisCoeff D
@@ -505,6 +506,7 @@ def basis : SchauderBasis 𝕜 X :=
                    LinearMap.mkContinuous_apply, ← hcoeff]
         rw [← ContinuousLinearMap.sum_apply, sum_succSub D.P D.proj_zero] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The projections of the constructed basis correspond to the input data `D.P`. -/
 @[simp]
 theorem basis_proj : (basis D).proj = D.P := by

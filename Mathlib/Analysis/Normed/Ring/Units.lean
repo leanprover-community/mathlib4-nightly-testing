@@ -123,6 +123,7 @@ theorem inverse_one_sub_nth_order (n : ℕ) :
     rwa [← dist_zero_right]⟩
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The formula
 `Ring.inverse (x + t) =
   (∑ i ∈ Finset.range n, (- x⁻¹ * t) ^ i) * x⁻¹ + (- x⁻¹ * t) ^ n * Ring.inverse (x + t)`

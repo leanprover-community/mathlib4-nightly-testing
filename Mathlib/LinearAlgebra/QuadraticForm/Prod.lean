@@ -221,6 +221,7 @@ set_option backward.defeqAttrib.useBackward true in
       Q₂.polarBilin.compl₁₂ (.snd R M₁ M₂) (.snd R M₁ M₂) :=
   LinearMap.ext₂ <| polar_prod _ _
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] theorem associated_prod [Invertible (2 : R)]
     (Q₁ : QuadraticMap R M₁ P) (Q₂ : QuadraticMap R M₂ P) :
     associated (Q₁.prod Q₂) =
@@ -274,6 +275,7 @@ def Isometry.single [Fintype ι] [DecidableEq ι] (Q : ∀ i, QuadraticMap R (M�
   toLinearMap := LinearMap.single _ _ i
   map_app' := pi_apply_single _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `LinearMap.proj` as an isometry, when all but one quadratic form is zero. -/
 @[simps!]
 def Isometry.proj [Fintype ι] [DecidableEq ι] (i : ι) (Q : QuadraticMap R (Mᵢ i) P) :
@@ -362,6 +364,7 @@ variable [∀ i, AddCommGroup (Mᵢ i)] [AddCommGroup P] [∀ i, Module R (Mᵢ 
     (pi Q).polarBilin = ∑ i, (Q i).polarBilin.compl₁₂ (.proj i) (.proj i) :=
   LinearMap.ext₂ fun x y => (polar_pi _ _ _).trans <| by simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] theorem associated_pi [Invertible (2 : R)] (Q : ∀ i, QuadraticMap R (Mᵢ i) P) :
     associated (pi Q) = ∑ i, (Q i).associated.compl₁₂ (.proj i) (.proj i) := by
   dsimp [associated, associatedHom]

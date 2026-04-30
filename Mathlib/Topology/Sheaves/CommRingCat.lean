@@ -78,6 +78,7 @@ structure SubmonoidPresheaf (F : X.Presheaf CommRingCat) where
 
 variable {F : X.Presheaf CommRingCat.{w}} (G : F.SubmonoidPresheaf)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The localization of a presheaf of `CommRing`s with respect to a `SubmonoidPresheaf`. -/
 protected noncomputable def SubmonoidPresheaf.localizationPresheaf : X.Presheaf CommRingCat where
   obj U := CommRingCat.of <| Localization (G.obj U)

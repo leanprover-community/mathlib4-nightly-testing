@@ -453,6 +453,7 @@ section Equiv
 variable {g : A[X]} {I : Ideal A} (H : g.IsDistinguishedAt I) [IsAdicComplete I A]
 include H
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A distinguished polynomial `g` induces a natural isomorphism `A[X] / (g) ≃ₐ[A] A⟦X⟧ / (g)`. -/
 @[simps! apply symm_apply]
 noncomputable def _root_.Polynomial.IsDistinguishedAt.algEquivQuotient :

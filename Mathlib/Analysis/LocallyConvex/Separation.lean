@@ -192,6 +192,7 @@ theorem geometric_hahn_banach_of_nonempty_interior_point
 
 variable [LocallyConvexSpace ℝ E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A version of the **Hahn-Banach theorem**: given disjoint convex sets `s`, `t` where `s` is
 compact and `t` is closed, there is a continuous linear functional which strongly separates them. -/
 theorem geometric_hahn_banach_compact_closed (hs₁ : Convex ℝ s) (hs₂ : IsCompact s)

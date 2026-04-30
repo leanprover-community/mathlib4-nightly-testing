@@ -101,6 +101,7 @@ end Monoidal
 
 open Monoidal
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open ModuleCat.MonoidalCategory in
 noncomputable instance monoidalCategoryStruct :
@@ -174,38 +175,45 @@ lemma tensorObj_obj (X : Cᵒᵖ) :
 
 attribute [local simp] tensorObj_obj
 
+set_option backward.defeqAttrib.useBackward true in
 variable {M₂ M₃} in
 @[simp]
 lemma whiskerLeft_app (f : M₂ ⟶ M₃) (X : Cᵒᵖ) :
     dsimp% (M₁ ◁ f).app X = whiskerLeft (C := ModuleCat (R.obj X)) (M₁.obj X) (f.app X) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable {M₁ M₂} in
 @[simp]
 lemma whiskerRight_app (f : M₁ ⟶ M₂) (M₃ : PresheafOfModules.{u} (R ⋙ forget₂ _ _)) (X : Cᵒᵖ) :
     dsimp% (f ▷ M₃).app X = whiskerRight (C := ModuleCat (R.obj X)) (f.app X) (M₃.obj X) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable {M₁ M₂ M₃ M₄} in
 @[simp]
 lemma tensorHom_app (f : M₁ ⟶ M₂) (g : M₃ ⟶ M₄) (X : Cᵒᵖ) :
     dsimp% (f ⊗ₘ g).app X =
       MonoidalCategory.tensorHom (C := ModuleCat (R.obj X)) (f.app X) (g.app X) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma leftUnitor_hom_app (X : Cᵒᵖ) :
     dsimp% (λ_ M₁).hom.app X = (leftUnitor (C := ModuleCat (R.obj X)) (M₁.obj X)).hom :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma leftUnitor_inv_app (X : Cᵒᵖ) :
     dsimp% (λ_ M₁).inv.app X = (leftUnitor (C := ModuleCat (R.obj X)) (M₁.obj X)).inv := by
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma rightUnitor_hom_app (X : Cᵒᵖ) :
     dsimp% (ρ_ M₁).hom.app X = (rightUnitor (C := ModuleCat (R.obj X)) (M₁.obj X)).hom :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma rightUnitor_inv_app (X : Cᵒᵖ) :
     dsimp% (ρ_ M₁).inv.app X = (rightUnitor (C := ModuleCat (R.obj X)) (M₁.obj X)).inv :=
@@ -223,12 +231,14 @@ lemma associator_inv_app (X : Cᵒᵖ) :
       (associator (C := ModuleCat (R.obj X)) (M₁.obj X) (M₂.obj X) (M₃.obj X)).inv :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma braiding_hom_app (X : Cᵒᵖ) :
     dsimp% (braiding M₁ M₂).hom.app X =
       (braiding (C := ModuleCat (R.obj X)) (M₁.obj X) (M₂.obj X)).hom := by
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma braiding_inv_app (X : Cᵒᵖ) :
     dsimp% (braiding M₁ M₂).inv.app X =

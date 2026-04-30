@@ -53,6 +53,7 @@ end Locale
 def topToLocale : TopCat ⥤ Locale :=
   topCatOpToFrm.rightOp
 
+set_option backward.defeqAttrib.useBackward true in
 -- Note, `CompHaus` is too strong. We only need `T0Space`.
 instance CompHausToLocale.faithful : (compHausToTop ⋙ topToLocale.{u}).Faithful :=
   ⟨fun h => by

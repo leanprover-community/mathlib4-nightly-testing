@@ -304,6 +304,7 @@ lemma rotateHomotopyEquiv_comm₂ :
   simpa only [Functor.map_comp]
     using HomotopyCategory.eq_of_homotopy _ _ (rotateHomotopyEquivComm₂Homotopy φ)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma rotateHomotopyEquiv_comm₃ :

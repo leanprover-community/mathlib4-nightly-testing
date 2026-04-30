@@ -80,6 +80,7 @@ def Derivation.tensorProductTo (D : Derivation R S M) : S ⊗[R] S →ₗ[S] M :
 theorem Derivation.tensorProductTo_tmul (D : Derivation R S M) (s t : S) :
     D.tensorProductTo (s ⊗ₜ t) = s • D t := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Derivation.tensorProductTo_mul (D : Derivation R S M) (x y : S ⊗[R] S) :
     D.tensorProductTo (x * y) =
       TensorProduct.lmul' (S := S) R x • D.tensorProductTo y +
@@ -253,6 +254,7 @@ lemma KaehlerDifferential.subsingleton_of_surjective (h : Function.Surjective (a
 
 variable {R S}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The linear map from `Ω[S⁄R]`, associated with a derivation. -/
 def Derivation.liftKaehlerDifferential (D : Derivation R S M) : Ω[S⁄R] →ₗ[S] M := by
   refine LinearMap.comp ((((KaehlerDifferential.ideal R S) •
@@ -272,6 +274,7 @@ theorem Derivation.liftKaehlerDifferential_apply (D : Derivation R S M) (x) :
     D.liftKaehlerDifferential ((KaehlerDifferential.ideal R S).toCotangent x) =
       D.tensorProductTo x := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Derivation.liftKaehlerDifferential_comp (D : Derivation R S M) :
     D.liftKaehlerDifferential.compDer (KaehlerDifferential.D R S) = D := by
   ext a
@@ -509,6 +512,7 @@ theorem KaehlerDifferential.kerTotal_mkQ_single_smul (r : R) (x y) : (y𝖣r •
     KaehlerDifferential.kerTotal_mkQ_single_algebraMap, add_zero, ← LinearMap.map_smul_of_tower,
     Finsupp.smul_single, mul_comm, Algebra.smul_def]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The (universal) derivation into `(S →₀ S) ⧸ KaehlerDifferential.kerTotal R S`. -/
 noncomputable def KaehlerDifferential.derivationQuotKerTotal :
     Derivation R S ((S →₀ S) ⧸ KaehlerDifferential.kerTotal R S) where

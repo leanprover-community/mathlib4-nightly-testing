@@ -391,6 +391,7 @@ lemma fac (a : S.Arrow) :
             r := ⟨_, 𝟙 _, F.map d ≫ F.map b ≫ (data a.Y).f i, by
               simp only [fac₁, fac₂, assoc, id_comp]⟩ }))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable {s} in
 include hG hG₀ in

@@ -120,6 +120,7 @@ instance (M N : SheafOfModules.{v} R) : AddCommGroup (M ⟶ N) :=
 lemma add_val {M N : SheafOfModules.{v} R} (f g : M ⟶ N) :
     (f + g).val = f.val + g.val := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance : Preadditive (SheafOfModules.{v} R) where
   add_comp := by intros; ext1; dsimp; simp only [Preadditive.add_comp]
   comp_add := by tauto

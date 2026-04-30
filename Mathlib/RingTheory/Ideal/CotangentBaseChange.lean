@@ -35,6 +35,7 @@ namespace Ideal
 variable (R : Type*) {S : Type*} [CommRing R] [CommRing S] [Algebra R S]
 variable (T : Type*) [CommRing T] [Algebra R T] (I : Ideal S)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
 /-- The canonical map from the base change of the cotangent space `T ⊗[R] I/I²` to the

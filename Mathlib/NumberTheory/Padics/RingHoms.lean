@@ -454,6 +454,7 @@ def toZModPow (n : ℕ) : ℤ_[p] →+* ZMod (p ^ n) :=
       · simpa using ha
       · simpa using hb)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ker_toZModPow (n : ℕ) :
     RingHom.ker (toZModPow n : ℤ_[p] →+* ZMod (p ^ n)) = Ideal.span {(p : ℤ_[p]) ^ n} := by
   ext x
@@ -472,6 +473,7 @@ theorem ker_toZModPow (n : ℕ) :
     rw [zmod_congr_of_sub_mem_span n x _ 0 _ h, cast_zero]
     apply appr_spec
 
+set_option backward.defeqAttrib.useBackward true in
 -- This is not a simp lemma; simp can't match the LHS.
 theorem zmod_cast_comp_toZModPow (m n : ℕ) (h : m ≤ n) :
     (ZMod.castHom (pow_dvd_pow p h) (ZMod (p ^ m))).comp (@toZModPow p _ n) = @toZModPow p _ m := by
@@ -584,6 +586,7 @@ theorem nthHomSeq_one : nthHomSeq f_compat 1 ≈ 1 := by
   suffices (ZMod.cast (1 : ZMod (p ^ j)) : ℚ) = 1 by simp [nthHomSeq, nthHom, this, hε]
   rw [ZMod.cast_eq_val, ZMod.val_one, Nat.cast_one]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nthHomSeq_add (r s : R) :
     nthHomSeq f_compat (r + s) ≈ nthHomSeq f_compat r + nthHomSeq f_compat s := by
   intro ε hε
@@ -599,6 +602,7 @@ theorem nthHomSeq_add (r s : R) :
   rw [ZMod.cast_add (show p ^ n ∣ p ^ j from pow_dvd_pow _ hj)]
   simp only [sub_self]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nthHomSeq_mul (r s : R) :
     nthHomSeq f_compat (r * s) ≈ nthHomSeq f_compat r * nthHomSeq f_compat s := by
   intro ε hε
@@ -657,6 +661,7 @@ def lift : R →+* ℤ_[p] where
   map_zero' := limNthHom_zero f_compat
   map_add' := limNthHom_add f_compat
 
+set_option backward.defeqAttrib.useBackward true in
 theorem lift_sub_val_mem_span (r : R) (n : ℕ) :
     lift f_compat r - (f n r).val ∈ (Ideal.span {(p : ℤ_[p]) ^ n}) := by
   obtain ⟨k, hk⟩ :=

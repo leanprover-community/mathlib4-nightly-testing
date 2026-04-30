@@ -109,6 +109,7 @@ open Filter ContinuousLinearMap
 
 attribute [local simp] ContinuousLinearMap.coe_smul
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The function `(c,d) → |cz+d|^2` is proper, that is, preimages of bounded-above sets are finite.
 -/
@@ -848,6 +849,7 @@ lemma isClosed_coe_fd : IsClosed ((↑) '' 𝒟 : Set ℂ) := by
   refine ⟨fun ⟨him, hre, hnorm⟩ ↦ ⟨him.le, hre, hnorm⟩, fun ⟨him, hre, hnorm⟩ ↦ ⟨?_, hre, hnorm⟩⟩
   exact him.lt_of_ne' <| by grind [abs_re_eq_norm]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 The points on the fundamental domain that aren't on the bottom "arc"
 are in the closure of the open fundamental domain.

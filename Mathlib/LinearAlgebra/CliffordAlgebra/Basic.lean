@@ -329,6 +329,7 @@ variable (Q₁) in
 theorem map_id : map (QuadraticMap.Isometry.id Q₁) = AlgHom.id R (CliffordAlgebra Q₁) := by
   ext m; exact map_apply_ι _ m
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem map_comp_map (f : Q₂ →qᵢ Q₃) (g : Q₁ →qᵢ Q₂) :
     (map f).comp (map g) = map (f.comp g) := by
