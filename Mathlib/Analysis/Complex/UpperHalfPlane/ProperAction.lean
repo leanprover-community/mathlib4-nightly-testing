@@ -47,6 +47,7 @@ instance instContinuousSMulSL2R : ContinuousSMul SL(2, ℝ) ℍ where
     intro g τ
     fun_prop (disch := exact denom_ne_zero g τ)
 
+set_option backward.defeqAttrib.useBackward true in
 open Topology in
 lemma σ_eventuallyEq (g : GL (Fin 2) ℝ) : σ =ᶠ[𝓝 g] fun _ ↦ σ g := by
   by_cases hg : 0 < g.det.val

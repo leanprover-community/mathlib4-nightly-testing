@@ -203,6 +203,7 @@ lemma tendsto_zero_inv_linear_sub (z : ℂ) (b : ℤ) :
 
 end bounding_functions
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `ℤ ^ 2 → ℝ` given by `x ↦ ‖x‖ ^ (-k)` is summable if `2 < k`. We prove this by
 splitting into boxes using `Finset.box`. -/
 lemma summable_one_div_norm_rpow {k : ℝ} (hk : 2 < k) :
@@ -265,6 +266,7 @@ lemma summable_linear_left_mul_linear_left {z : ℂ} (hz : z ≠ 0) (c₁ c₂ :
   simp only [Real.rpow_two, abs_mul_abs_self, pow_two]
   simpa using (linear_inv_isBigO_left c₂ hz).mul (linear_inv_isBigO_left c₁ hz)
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma aux_isBigO_linear (z : ℍ) (a b : ℤ) :
     (fun (m : Fin 2 → ℤ) ↦ ((m 0 + a : ℂ) * z + m 1 + b)⁻¹) =O[cofinite]
     fun (m : Fin 2 → ℤ) ↦ ‖![m 0 + a, m 1 + b]‖⁻¹ := by

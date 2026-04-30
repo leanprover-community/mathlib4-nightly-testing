@@ -57,6 +57,7 @@ theorem isIso_iff_nonzero [HasKernels C] {X Y : C} [Simple X] [Simple Y] (f : X 
     simp only [← IsIso.hom_inv_id f, h, zero_comp],
    fun w => isIso_of_hom_simple w⟩
 
+set_option backward.defeqAttrib.useBackward true in
 open scoped Classical in
 /-- In any preadditive category with kernels,
 the endomorphisms of a simple object form a division ring. -/

@@ -197,6 +197,7 @@ theorem eqOn_zero_of_preconnected_of_eventuallyEq_zero_aux [CompleteSpace F] {f 
     exact this.apply_eq_zero n _
   exact HasSum.unique A B
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The *identity principle* for analytic functions: If an analytic function vanishes in a whole
 neighborhood of a point `z₀`, then it is uniformly zero along a connected set. For a one-dimensional
 version assuming only that the function vanishes at some points arbitrarily close to `z₀`, see

@@ -804,6 +804,7 @@ lemma image_zeroLocus {U : X.Opens} (s : Set Γ(X, U)) :
   · simp only [Set.mem_inter_iff, hx, and_false, iff_false]
     exact fun H ↦ hx (Set.image_subset_range _ _ H)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If
 ```
   P --fst--> X

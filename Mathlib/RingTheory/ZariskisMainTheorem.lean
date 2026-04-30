@@ -338,6 +338,7 @@ private lemma not_isStronglyTranscendental_of_weaklyQuasiFiniteAt_of_isIntegrall
   ext
   simp [Ideal.mem_map_C_iff, coeff_C, apply_ite]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This asks for an explicit `K = Frac(R)`, `L = Frac(S)`,
 `R'` the integral closure of `R` in `K`, and `S' ⊆ L` the subalgebra spanned by `R'` and `S`,
 to aid typeclass synthesis.
@@ -657,6 +658,7 @@ lemma ZariskisMainProperty.of_finiteType.{u, v} {R : Type u} {S : Type v} [CommR
     (p : Ideal S) [p.IsPrime] [Algebra.QuasiFiniteAt R p] : ZariskisMainProperty R p :=
   .of_finiteType_of_weaklyQuasiFiniteAt _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma ZariskisMainProperty.exists_fg_and_exists_notMem_and_awayMap_bijective
     [Algebra.FiniteType R S] (p : Ideal S) (H : ZariskisMainProperty R p) :

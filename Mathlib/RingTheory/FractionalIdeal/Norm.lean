@@ -84,6 +84,7 @@ theorem absNorm_eq' {I : FractionalIdeal R⁰ K} (a : R⁰) (I₀ : Ideal R)
   rw [absNorm, ← absNorm_div_norm_eq_absNorm_div_norm a I₀ h, MonoidWithZeroHom.coe_mk,
     ZeroHom.coe_mk]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem absNorm_nonneg (I : FractionalIdeal R⁰ K) : 0 ≤ absNorm I := by dsimp [absNorm]; positivity
 
 theorem absNorm_bot : absNorm (⊥ : FractionalIdeal R⁰ K) = 0 := absNorm.map_zero'

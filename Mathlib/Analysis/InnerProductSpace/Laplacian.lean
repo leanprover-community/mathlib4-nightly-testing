@@ -251,6 +251,7 @@ The Laplacian of a constant function is zero.
 ## Congruence Lemmata for Δ
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If two functions agree in a neighborhood of a point, then so do their Laplacians.
 -/
@@ -260,6 +261,7 @@ theorem laplacianWithin_congr_nhdsWithin (h : f₁ =ᶠ[𝓝[s] x] f₂) (hs : U
     eventually_mem_nhdsWithin] with x h₁x h₂x
   simp [laplacianWithin_eq_iteratedFDerivWithin_stdOrthonormalBasis _ hs h₂x, h₁x]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If two functions agree in a neighborhood of a point, then so do their Laplacians.
 -/
@@ -395,6 +397,7 @@ theorem _root_.ContDiffWithinAt.laplacianWithin_CLM_comp_left_nhds {l : F →L[�
   filter_upwards [(h.eventually (by simp)).filter_mono (nhdsWithin_mono _ (Set.subset_insert ..)),
     eventually_mem_nhdsWithin] with a h₁a using h₁a.laplacianWithin_CLM_comp_left hs
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Laplacian commutes with left composition by continuous linear maps. -/
 theorem _root_.ContDiffAt.laplacian_CLM_comp_left_nhds {l : F →L[ℝ] G} (h : ContDiffAt ℝ 2 f x) :
     Δ (l ∘ f) =ᶠ[𝓝 x] l ∘ (Δ f) := by

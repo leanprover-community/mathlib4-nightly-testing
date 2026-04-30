@@ -89,6 +89,7 @@ section AnyFieldCommAlgebra
 variable {𝕂 𝔸 : Type*} [NontriviallyNormedField 𝕂] [NormedCommRing 𝔸] [NormedAlgebra 𝕂 𝔸]
   [CompleteSpace 𝔸] [CharZero 𝕂]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The exponential map in a commutative Banach algebra `𝔸` over a normed field `𝕂` of
 characteristic zero has Fréchet derivative `NormedSpace.exp x • 1 : 𝔸 →L[𝕂] 𝔸`
 at any point `x` in the disk of convergence. -/
@@ -253,6 +254,7 @@ variable [NormedSpace 𝕂 𝕊] [NormedAlgebra 𝕂 𝔸] [Algebra 𝕊 𝔸] [
 variable [IsScalarTower 𝕂 𝕊 𝔸]
 variable [CompleteSpace 𝔸]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFDerivAt_exp_smul_const_of_mem_ball (x : 𝔸) (t : 𝕊)
     (htx : t • x ∈ Metric.eball (0 : 𝔸) (expSeries 𝕂 𝔸).radius) :
     HasFDerivAt (fun u : 𝕊 => exp (u • x)) (exp (t • x) • (1 : 𝕊 →L[𝕂] 𝕊).smulRight x) t := by

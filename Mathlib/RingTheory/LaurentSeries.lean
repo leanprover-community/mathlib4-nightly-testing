@@ -267,6 +267,7 @@ theorem coe_algebraMap [CommSemiring R] :
     ⇑(algebraMap R⟦X⟧ R⸨X⸩) = HahnSeries.ofPowerSeries ℤ R :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The localization map from power series to Laurent series. -/
 @[simps (rhsMd := .all) +simpRhs]
 instance of_powerSeries_localization [CommRing R] :

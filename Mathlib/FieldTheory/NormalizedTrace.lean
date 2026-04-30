@@ -75,6 +75,7 @@ private theorem normalizedTraceAux_eq_of_finiteDimensional [FiniteDimensional F 
 
 variable [Algebra.IsIntegral F K]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 /-- The normalized trace map from an algebraic extension `K` to the base field `F`. -/
@@ -123,6 +124,7 @@ theorem normalizedTrace_minpoly (a : K) :
   have ha : IsIntegral F a := IsIntegral.isIntegral a
   IntermediateField.adjoin.finrank ha ▸ trace_adjoinSimpleGen ha ▸ normalizedTrace_def F K a
 
+set_option backward.defeqAttrib.useBackward true in
 variable {F} in
 theorem normalizedTrace_self_apply (a : F) : normalizedTrace F F a = a := by
   dsimp [normalizedTrace]

@@ -164,6 +164,7 @@ theorem iIndepFun_iff_measure_inter_preimage_eq_mul {ι : Type*} {β : ι → Ty
 
 alias ⟨iIndepFun.measure_inter_preimage_eq_mul, _⟩ := iIndepFun_iff_measure_inter_preimage_eq_mul
 
+set_option backward.defeqAttrib.useBackward true in
 theorem iIndepFun.congr' {β : ι → Type*} {mβ : ∀ i, MeasurableSpace (β i)}
     {f g : Π i, Ω → β i} (hf : iIndepFun f κ μ)
     (h : ∀ i, ∀ᵐ a ∂μ, f i =ᵐ[κ a] g i) :
@@ -186,6 +187,7 @@ theorem iIndepFun.congr' {β : ι → Type*} {mβ : ∀ i, MeasurableSpace (β i
   convert h'a using 2 with i hi
   exact A i hi
 
+set_option backward.defeqAttrib.useBackward true in
 theorem iIndepFun_congr' {β : ι → Type*} {mβ : ∀ i, MeasurableSpace (β i)}
     {f g : Π i, Ω → β i} (h : ∀ i, ∀ᵐ a ∂μ, f i =ᵐ[κ a] g i) :
     iIndepFun f κ μ ↔ iIndepFun g κ μ where
@@ -228,6 +230,7 @@ theorem indepFun_iff_indepSet_preimage {mβ : MeasurableSpace β} {mβ' : Measur
 nonrec theorem IndepFun.symm {_ : MeasurableSpace β} {_ : MeasurableSpace β'}
     (hfg : IndepFun f g κ μ) : IndepFun g f κ μ := hfg.symm
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IndepFun.congr' {mβ : MeasurableSpace β} {mβ' : MeasurableSpace β'}
     {f' : Ω → β} {g' : Ω → β'} (hfg : IndepFun f g κ μ)
     (hf : ∀ᵐ a ∂μ, f =ᵐ[κ a] f') (hg : ∀ᵐ a ∂μ, g =ᵐ[κ a] g') :
@@ -247,6 +250,7 @@ theorem IndepFun.comp {mβ : MeasurableSpace β} {mβ' : MeasurableSpace β'}
   · exact ⟨φ ⁻¹' A, hφ hA, Set.preimage_comp.symm⟩
   · exact ⟨ψ ⁻¹' B, hψ hB, Set.preimage_comp.symm⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IndepFun.comp₀ {mβ : MeasurableSpace β} {mβ' : MeasurableSpace β'}
     {mγ : MeasurableSpace γ} {mγ' : MeasurableSpace γ'} {φ : β → γ} {ψ : β' → γ'}
     (hfg : IndepFun f g κ μ)
@@ -284,6 +288,7 @@ theorem IndepFun.neg_left {_mβ : MeasurableSpace β} {_mβ' : MeasurableSpace �
     [MeasurableNeg β] (hfg : IndepFun f g κ μ) :
     IndepFun (-f) g κ μ := hfg.comp measurable_neg measurable_id
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Two random variables `f, g` are independent given a kernel `κ` and a measure `μ` iff
 `μ ⊗ₘ κ.map (fun ω ↦ (f ω, g ω)) = μ ⊗ₘ (κ.map f ×ₖ κ.map g)`. -/
 theorem indepFun_iff_compProd_map_prod_eq_compProd_prod_map_map
@@ -325,6 +330,7 @@ section iIndepFun
 variable {β : ι → Type*} {m : ∀ i, MeasurableSpace (β i)} {f : ∀ i, Ω → β i}
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `f` is a family of mutually independent random variables (`iIndepFun m f μ`) and `S, T` are
 two disjoint finite index sets, then the tuple formed by `f i` for `i ∈ S` is independent of the
 tuple `(f i)_i` for `i ∈ T`. -/
@@ -465,6 +471,7 @@ theorem iIndepFun.indepFun_prodMk (hf_Indep : iIndepFun f κ μ)
   simp only [s, Finset.mem_insert, Finset.mem_singleton, not_or]
   exact ⟨hik.symm, hjk.symm⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem iIndepFun.indepFun_prodMk₀ (hf_Indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, AEMeasurable (f i) (κ ∘ₘ μ)) (i j k : ι) (hik : i ≠ k) (hjk : j ≠ k) :
     IndepFun (fun a ↦ (f i a, f j a)) (f k) κ μ := by
@@ -490,6 +497,7 @@ lemma iIndepFun.indepFun_prodMk_prodMk (hf_indep : iIndepFun f κ μ)
   have hg (i j : ι) : Measurable (g i j) := by fun_prop
   exact (hf_indep.indepFun_finset {i, j} {k, l} (by aesop) hf_meas).comp (hg i j) (hg k l)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem iIndepFun.indepFun_prodMk_prodMk₀ (hf_indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, AEMeasurable (f i) (κ ∘ₘ μ))
     (i j k l : ι) (hik : i ≠ k) (hil : i ≠ l) (hjk : j ≠ k) (hjl : j ≠ l) :
@@ -697,6 +705,7 @@ theorem iIndepSet.iIndepFun_indicator [Zero β] [One β] {m : MeasurableSpace β
 variable {mβ : MeasurableSpace β} {X : ι → Ω → α} {Y : ι → Ω → β}
   {f : _ → Set Ω} {t : ι → Set β} {s : Finset ι}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The probability of an intersection of preimages conditioning on another intersection factors
 into a product. -/
 lemma iIndepFun.cond_iInter [Finite ι] (hY : ∀ i, Measurable (Y i))

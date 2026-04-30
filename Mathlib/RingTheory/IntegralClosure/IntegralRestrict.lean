@@ -385,6 +385,7 @@ def Algebra.intNormAux :
 
 variable {A K L B}
 
+set_option backward.defeqAttrib.useBackward true in
 omit [FiniteDimensional K L] in
 lemma Algebra.map_intNormAux (x : B) :
     algebraMap A K (Algebra.intNormAux A K L B x) = Algebra.norm K (algebraMap B L x) := by

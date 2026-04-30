@@ -215,6 +215,7 @@ noncomputable def alternatingMapLinearEquiv : (M [⋀^Fin n]→ₗ[R] N) ≃ₗ[
       { map_add := fun _ _ => rfl
         map_smul := fun _ _ => rfl })
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma alternatingMapLinearEquiv_comp_ιMulti (f : M [⋀^Fin n]→ₗ[R] N) :
     (alternatingMapLinearEquiv f).compAlternatingMap (ιMulti R n) = f := by
@@ -426,6 +427,7 @@ lemma zeroEquiv_ιMulti (f : Fin 0 → M) :
 lemma zeroEquiv_naturality (f : M →ₗ[R] N) :
     (zeroEquiv R N).comp (map 0 f) = zeroEquiv R M := by aesop
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R M) in
 /-- The linear equivalence `M ≃ₗ[R] ⋀[R]^1 M`. -/
 @[simps! -isSimp symm_apply]

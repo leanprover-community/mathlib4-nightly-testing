@@ -164,6 +164,7 @@ variable {α E F G : Type*} {m : MeasurableSpace α}
 
 open NNReal
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eLpNorm_le_eLpNorm_top_mul_eLpNorm (p : ℝ≥0∞) (f : α → E) {g : α → F}
     (hg : AEStronglyMeasurable g μ) (b : E → F → G) (c : ℝ≥0)
     (h : ∀ᵐ x ∂μ, ‖b (f x) (g x)‖₊ ≤ c * ‖f x‖₊ * ‖g x‖₊) :

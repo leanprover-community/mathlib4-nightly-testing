@@ -461,6 +461,7 @@ theorem mkMetric_mono {m₁ m₂ : ℝ≥0∞ → ℝ≥0∞} (hle : m₁ ≤ᶠ
     (mkMetric m₁ : Measure X) ≤ mkMetric m₂ := by
   convert @mkMetric_mono_smul X _ _ _ _ m₂ _ ENNReal.one_ne_top one_ne_zero _ <;> simp [*]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A formula for `MeasureTheory.Measure.mkMetric`. -/
 theorem mkMetric_apply (m : ℝ≥0∞ → ℝ≥0∞) (s : Set X) :
     mkMetric m s =
@@ -567,6 +568,7 @@ theorem hausdorffMeasure_le_liminf_sum {β : Type*} {ι : β → Type*} [∀ n, 
     (hst : ∀ᶠ n in l, s ⊆ ⋃ i, t n i) : μH[d] s ≤ liminf (fun n => ∑ i, ediam (t n i) ^ d) l :=
   mkMetric_le_liminf_sum s r hr t ht hst _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `d₁ < d₂`, then for any set `s` we have either `μH[d₂] s = 0`, or `μH[d₁] s = ∞`. -/
 theorem hausdorffMeasure_zero_or_top {d₁ d₂ : ℝ} (h : d₁ < d₂) (s : Set X) :
@@ -741,6 +743,7 @@ end LipschitzWith
 
 open scoped Pointwise
 
+set_option backward.defeqAttrib.useBackward true in
 theorem MeasureTheory.Measure.hausdorffMeasure_smul₀ {𝕜 E : Type*} [NormedAddCommGroup E]
     [NormedDivisionRing 𝕜] [Module 𝕜 E] [NormSMulClass 𝕜 E] [MeasurableSpace E] [BorelSpace E]
     {d : ℝ} (hd : 0 ≤ d) {r : 𝕜} (hr : r ≠ 0) (s : Set E) :
@@ -874,6 +877,7 @@ instance {d : ℝ} [Group X] [IsIsometricSMul Xᵐᵒᵖ X] : IsMulRightInvarian
 -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In the space `ι → ℝ`, the Hausdorff measure coincides exactly with the Lebesgue measure. -/
 @[simp]
 theorem hausdorffMeasure_pi_real {ι : Type*} [Fintype ι] :
