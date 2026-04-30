@@ -233,7 +233,7 @@ instance commShift_op (τ : F ⟶ G) [NatTrans.CommShift τ A] :
       ← cancel_epi (((OppositeShift.functor A G).commShiftIso _).inv.app _)]
     dsimp
     simp only [assoc, Iso.inv_hom_id_app_assoc, Iso.hom_inv_id_app,
-      comp_id]
+      comp_id, Functor.comp_obj]
     exact (op_inj_iff _ _).mpr (NatTrans.shift_app_comm τ _ (unop _))
 
 end NatTrans
