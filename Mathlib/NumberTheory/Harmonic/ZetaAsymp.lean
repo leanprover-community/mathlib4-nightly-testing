@@ -287,6 +287,7 @@ lemma continuousOn_term_tsum : ContinuousOn term_tsum (Ici 1) := by
     refine setIntegral_nonneg measurableSet_Ioc (fun x hx ↦ div_nonneg ?_ (rpow_nonneg ?_ _))
     all_goals linarith [hx.1]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- First version of the limit formula, with a limit over real numbers tending to 1 from above. -/
 lemma tendsto_riemannZeta_sub_one_div_nhds_right :
     Tendsto (fun s : ℝ ↦ riemannZeta s - 1 / (s - 1)) (𝓝[>] 1) (𝓝 γ) := by
@@ -313,6 +314,7 @@ lemma tendsto_riemannZeta_sub_one_div_nhds_right :
     have := continuousOn_term_tsum.continuousWithinAt self_mem_Ici
     exact Tendsto.mono_left this (nhdsWithin_mono _ Ioi_subset_Ici_self)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `ζ s - 1 / (s - 1)` tends to `γ` as `s → 1`. -/
 theorem _root_.tendsto_riemannZeta_sub_one_div :
     Tendsto (fun s : ℂ ↦ riemannZeta s - 1 / (s - 1)) (𝓝[≠] 1) (𝓝 γ) := by

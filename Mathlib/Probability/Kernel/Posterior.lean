@@ -229,6 +229,7 @@ lemma Kernel.absolutelyContinuous_comp_of_absolutelyContinuous {ν : Measure �
   rw [← absolutelyContinuous_posterior_iff]
   exact absolutelyContinuous_posterior h_ac
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_posterior_ae_prod (h_ac : ∀ᵐ ω ∂μ, κ ω ≪ κ ∘ₘ μ) :
     ∀ᵐ p ∂(μ.prod (κ ∘ₘ μ)),
       (κ†μ).rnDeriv (Kernel.const _ μ) p.2 p.1 = κ.rnDeriv (Kernel.const _ (κ ∘ₘ μ)) p.1 p.2 := by
@@ -290,6 +291,7 @@ lemma posterior_eq_withDensity (h_ac : ∀ᵐ ω ∂μ, κ ω ≪ κ ∘ₘ μ) 
     with ω h h_eq hωs
   rw [← h, h_eq, Kernel.const_apply]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma posterior_eq_withDensity_of_countable {Ω : Type*} [Countable Ω] [MeasurableSpace Ω]
     [Nonempty Ω] [StandardBorelSpace Ω] (κ : Kernel Ω 𝓧) [IsFiniteKernel κ]
     (μ : Measure Ω) [IsFiniteMeasure μ] :
@@ -306,6 +308,7 @@ end CountableOrCountablyGenerated
 
 section Bool
 
+set_option backward.defeqAttrib.useBackward true in
 lemma posterior_boolKernel_apply_false (μ ν : Measure 𝓧) [IsFiniteMeasure μ] [IsFiniteMeasure ν]
     (π : Measure Bool) [IsFiniteMeasure π] :
     ∀ᵐ x ∂Kernel.boolKernel μ ν ∘ₘ π, ((Kernel.boolKernel μ ν)†π) x {false}
@@ -314,6 +317,7 @@ lemma posterior_boolKernel_apply_false (μ ν : Measure 𝓧) [IsFiniteMeasure �
   rw [hx]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma posterior_boolKernel_apply_true (μ ν : Measure 𝓧) [IsFiniteMeasure μ] [IsFiniteMeasure ν]
     (π : Measure Bool) [IsFiniteMeasure π] :
     ∀ᵐ x ∂Kernel.boolKernel μ ν ∘ₘ π, ((Kernel.boolKernel μ ν)†π) x {true}
