@@ -44,6 +44,7 @@ theorem frequently_zero_iff_eventuallyEq_zero (hf : MeromorphicAt f x) :
     (∃ᶠ z in 𝓝[≠] x, f z = 0) ↔ f =ᶠ[𝓝[≠] x] 0 :=
   ⟨hf.eventually_eq_zero_or_eventually_ne_zero.resolve_right, fun h ↦ h.frequently⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 Variant of the principle of isolated zeros: Let `U` be a subset of `𝕜` and assume that `x ∈ U` is
 not an isolated point of `U`. If a function `f` is meromorphic at `x` and vanishes along a subset

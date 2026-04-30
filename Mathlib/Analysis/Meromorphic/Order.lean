@@ -59,6 +59,7 @@ lemma meromorphicAt_of_meromorphicOrderAt_ne_zero (hf : meromorphicOrderAt f x �
   contrapose hf
   simp [hf]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The order of a meromorphic function `f` at a `z₀` is infinity iff `f` vanishes locally around
 `z₀`. -/
 lemma meromorphicOrderAt_eq_top_iff :
@@ -89,6 +90,7 @@ lemma eventuallyConst_nhdsNE_iff_meromorphicOrderAt_sub_eq_top :
   simp only [eventuallyConst_iff_exists_eventuallyEq, meromorphicOrderAt_eq_top_iff,
     sub_eq_zero, EventuallyEq]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The order of a meromorphic function `f` at `z₀` equals an integer `n` iff `f` can locally be
 written as `f z = (z - z₀) ^ n • g z`, where `g` is analytic and does not vanish at `z₀`. -/
 lemma meromorphicOrderAt_eq_int_iff {n : ℤ} (hf : MeromorphicAt f x) : meromorphicOrderAt f x = n ↔
@@ -144,6 +146,7 @@ theorem meromorphicOrderAt_ne_top_iff_eventually_ne_zero {f : 𝕜 → E} (hf : 
     simp_all [zpow_ne_zero, sub_ne_zero]
   · simp_all [meromorphicOrderAt_eq_top_iff, Eventually.frequently]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the order of a meromorphic function is negative, then this function converges to infinity
 at this point. See also the iff version `tendsto_cobounded_iff_meromorphicOrderAt_neg`. -/
 lemma tendsto_cobounded_of_meromorphicOrderAt_neg (ho : meromorphicOrderAt f x < 0) :
@@ -167,6 +170,7 @@ lemma tendsto_cobounded_of_meromorphicOrderAt_neg (ho : meromorphicOrderAt f x <
   apply A.congr'
   filter_upwards [hg] with z hz using by simp [hz]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the order of a meromorphic function is zero, then this function converges to a nonzero
 limit at this point. See also the iff version `tendsto_ne_zero_iff_meromorphicOrderAt_eq_zero`. -/
 lemma tendsto_ne_zero_of_meromorphicOrderAt_eq_zero
@@ -177,6 +181,7 @@ lemma tendsto_ne_zero_of_meromorphicOrderAt_eq_zero
   apply g_an.continuousAt.continuousWithinAt.tendsto.congr'
   filter_upwards [hg] with y hy using by simp [hy]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the order of a meromorphic function is positive, then this function converges to zero
 at this point. See also the iff version `tendsto_zero_iff_meromorphicOrderAt_pos`. -/
 lemma tendsto_zero_of_meromorphicOrderAt_pos (ho : 0 < meromorphicOrderAt f x) :
@@ -292,6 +297,7 @@ theorem AnalyticAt.meromorphicOrderAt_nonneg (hf : AnalyticAt 𝕜 f x) :
     0 ≤ meromorphicOrderAt f x := by
   simp [hf.meromorphicOrderAt_eq]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a function is both meromorphic and continuous at a point, then it is analytic there. -/
 protected theorem MeromorphicAt.analyticAt {f : 𝕜 → E} {x : 𝕜}
     (h : MeromorphicAt f x) (h' : ContinuousAt f x) :
@@ -384,6 +390,7 @@ The order of a constant function is `⊤` if the constant is zero and `0` otherw
 We establish additivity of the order under multiplication and taking powers.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The order is additive when multiplying scalar-valued and vector-valued meromorphic functions. -/
 @[to_fun] theorem meromorphicOrderAt_smul {f : 𝕜 → 𝕜} {g : 𝕜 → E}
     (hf : MeromorphicAt f x) (hg : MeromorphicAt g x) :
@@ -458,6 +465,7 @@ theorem meromorphicOrderAt_fun_prod {x : 𝕜} {ι : Type*} {s : Finset ι} {f :
       simp only [Nat.cast_add, Nat.cast_one]
       ring
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The order multiplies by `n` when taking a meromorphic function to its `n`th power. -/
 @[to_fun] theorem meromorphicOrderAt_zpow {f : 𝕜 → 𝕜} {x : 𝕜} (hf : MeromorphicAt f x) {n : ℤ} :
     meromorphicOrderAt (f ^ n) x = n * meromorphicOrderAt f x := by
@@ -732,6 +740,7 @@ theorem eventually_analyticAt_or_mem_compl (h : MeromorphicOn f U) (hx : x ∈ U
   · filter_upwards [h.eventually_analyticAt hx] with y hy using Or.inl hy
   · filter_upwards [self_mem_nhdsWithin] with y hy using Or.inr hy
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Meromorphic functions on `U` are analytic on `U`, outside of a discrete subset. -/
 theorem analyticAt_mem_codiscreteWithin (hf : MeromorphicOn f U) :
     { x | AnalyticAt 𝕜 f x } ∈ Filter.codiscreteWithin U := by
@@ -742,6 +751,7 @@ theorem analyticAt_mem_codiscreteWithin (hf : MeromorphicOn f U) :
   simp
   tauto
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The set where a meromorphic function has zero or infinite
 order is codiscrete within its domain of meromorphicity. -/
 theorem codiscrete_setOf_meromorphicOrderAt_eq_zero_or_top (hf : MeromorphicOn f U) :
