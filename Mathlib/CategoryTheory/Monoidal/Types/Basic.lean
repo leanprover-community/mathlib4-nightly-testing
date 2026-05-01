@@ -40,14 +40,35 @@ theorem tensor_apply {W X Y Z : Type u} (f : W ⟶ X) (g : Y ⟶ Z) (p : W ⊗ Y
     dsimp% (f ⊗ₘ g) p = (f p.1, g p.2) :=
   rfl
 
+/-- `tensor_apply` with `ConcreteCategory.hom` literally on the LHS, ensuring the simp
+discriminator tree matches goals containing the unreduced application under PR #13557's
+strict transparency. -/
+@[simp]
+theorem hom_tensor_apply {W X Y Z : Type u} (f : W ⟶ X) (g : Y ⟶ Z) (p : W ⊗ Y) :
+    (ConcreteCategory.hom (f ⊗ₘ g)) p =
+      ((ConcreteCategory.hom f) p.1, (ConcreteCategory.hom g) p.2) :=
+  rfl
+
 @[simp]
 theorem whiskerLeft_apply (X : Type u) {Y Z : Type u} (f : Y ⟶ Z) (p : X ⊗ Y) :
     dsimp% (X ◁ f) p = (p.1, f p.2) :=
   rfl
 
+/-- `whiskerLeft_apply` with `ConcreteCategory.hom` (see `hom_tensor_apply`). -/
+@[simp]
+theorem hom_whiskerLeft_apply (X : Type u) {Y Z : Type u} (f : Y ⟶ Z) (p : X ⊗ Y) :
+    (ConcreteCategory.hom (X ◁ f)) p = (p.1, (ConcreteCategory.hom f) p.2) :=
+  rfl
+
 @[simp]
 theorem whiskerRight_apply {Y Z : Type u} (f : Y ⟶ Z) (X : Type u) (p : Y ⊗ X) :
     dsimp% (f ▷ X) p = (f p.1, p.2) :=
+  rfl
+
+/-- `whiskerRight_apply` with `ConcreteCategory.hom` (see `hom_tensor_apply`). -/
+@[simp]
+theorem hom_whiskerRight_apply {Y Z : Type u} (f : Y ⟶ Z) (X : Type u) (p : Y ⊗ X) :
+    (ConcreteCategory.hom (f ▷ X)) p = ((ConcreteCategory.hom f) p.1, p.2) :=
   rfl
 
 @[simp]
