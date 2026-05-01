@@ -206,7 +206,7 @@ theorem integral_biUnion_eq_sum_powerset {ι : Type*} {t : Finset ι} {s : ι �
         (fun a ↦ (-1 : ℝ) ^ (#x + 1) • f a) a ∂μ := by
     apply Finset.sum_congr rfl (fun x hx ↦ ?_)
     rw [← integral_indicator (A x hx)]
-  rw [this, ← integral_finset_sum]; swap
+  rw [this, ← integral_finsetSum]; swap
   · intro u hu
     rw [integrable_indicator_iff (A u hu)]
     apply Integrable.smul
@@ -1034,6 +1034,7 @@ theorem measure_le_lintegral_thickenedIndicatorAux (μ : Measure X) {E : Set X}
   · apply lintegral_mono
     apply indicator_le_thickenedIndicatorAux
 
+set_option backward.defeqAttrib.useBackward true in
 theorem measure_le_lintegral_thickenedIndicator (μ : Measure X) {E : Set X}
     (E_mble : MeasurableSet E) {δ : ℝ} (δ_pos : 0 < δ) :
     μ E ≤ ∫⁻ x, (thickenedIndicator δ_pos E x : ℝ≥0∞) ∂μ := by

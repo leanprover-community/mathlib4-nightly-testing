@@ -458,6 +458,7 @@ theorem mem_of_mem_equivPair_tail {i j : ι} {w : Word M} (m : M i) :
   · exact List.mem_of_mem_tail h
   · revert h; cases w.toList <;> simp +contextual
 
+set_option backward.defeqAttrib.useBackward true in
 theorem equivPair_head {i : ι} {w : Word M} :
     (equivPair i w).head =
       if h : ∃ (h : w.toList ≠ []), (w.toList.head h).1 = i
@@ -791,11 +792,9 @@ end NeWord
 
 section PingPongLemma
 
-open Pointwise
-
 open Cardinal
-
 open scoped Function -- required for scoped `on` notation
+open scoped Pointwise
 
 variable {G : Type*} [Group G]
 variable {H : ι → Type*} [∀ i, Group (H i)]
@@ -942,9 +941,9 @@ def _root_.freeGroupEquivCoprodI {ι : Type u_1} :
 
 section PingPongLemma
 
-open Pointwise Cardinal
-
+open Cardinal
 open scoped Function -- required for scoped `on` notation
+open scoped Pointwise
 
 variable [Nontrivial ι]
 variable {G : Type u_1} [Group G] (a : ι → G)
