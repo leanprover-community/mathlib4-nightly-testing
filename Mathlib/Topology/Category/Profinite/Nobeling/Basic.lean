@@ -219,8 +219,8 @@ def spanCone [∀ (s : Finset I) (i : I), Decidable (i ∈ s)] (hC : IsCompact C
   { app s := ConcreteCategory.ofHom ⟨ProjRestrict C (· ∈ unop s), continuous_projRestrict _ _⟩
     naturality := by
       intro X Y h
-      simp only [Functor.const_obj_obj,
-        Functor.const_obj_map, Category.id_comp, ← projRestricts_comp_projRestrict C
+      simp only [
+        Functor.const_obj_map, ← projRestricts_comp_projRestrict C
         (leOfHom h.unop)]
       rfl }
 
@@ -380,6 +380,7 @@ end GoodProducts
 
 namespace Products
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eval_eq (l : Products I) (x : C) :
     l.eval C x = if ∀ i, i ∈ l.val → (x.val i = true) then 1 else 0 := by
   change LocallyConstant.evalMonoidHom x (l.eval C) = _
@@ -608,7 +609,7 @@ theorem eval_πs' {l : Products I} {o₁ o₂ : Ordinal} (h : o₁ ≤ o₂)
 
 theorem eval_πs_image {l : Products I} {o : Ordinal}
     (hl : ∀ i ∈ l.val, ord I i < o) : eval C '' { m | m < l } =
-    (πs C o) '' (eval (π C (ord I · < o)) '' { m | m < l }) := by
+    (πs C o) '' eval (π C (ord I · < o)) '' { m | m < l } := by
   ext f
   simp only [Set.mem_image, Set.mem_setOf_eq, exists_exists_and_eq_and]
   apply exists_congr; intro m
@@ -617,7 +618,7 @@ theorem eval_πs_image {l : Products I} {o : Ordinal}
 
 theorem eval_πs_image' {l : Products I} {o₁ o₂ : Ordinal} (h : o₁ ≤ o₂)
     (hl : ∀ i ∈ l.val, ord I i < o₁) : eval (π C (ord I · < o₂)) '' { m | m < l } =
-    (πs' C h) '' (eval (π C (ord I · < o₁)) '' { m | m < l }) := by
+    (πs' C h) '' eval (π C (ord I · < o₁)) '' { m | m < l } := by
   ext f
   simp only [Set.mem_image, Set.mem_setOf_eq, exists_exists_and_eq_and]
   apply exists_congr; intro m

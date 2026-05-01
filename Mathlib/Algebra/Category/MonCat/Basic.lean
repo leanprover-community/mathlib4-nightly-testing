@@ -116,10 +116,10 @@ initialize_simps_projections AddMonCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_id {X : MonCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_comp {X Y Z : MonCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[to_additive (attr := simp)]
@@ -303,10 +303,10 @@ initialize_simps_projections AddCommMonCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_id {X : CommMonCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_comp {X Y Z : CommMonCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[deprecated (since := "2026-02-15")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
@@ -469,8 +469,8 @@ in `MonCat` -/
 @[to_additive addEquivIsoAddMonCatIso]
 def mulEquivIsoMonCatIso {X Y : Type u} [Monoid X] [Monoid Y] :
     (X ≃* Y) ≅ (MonCat.of X ≅ MonCat.of Y) where
-  hom := TypeCat.ofHom (fun e ↦ e.toMonCatIso)
-  inv := TypeCat.ofHom (fun i ↦ i.monCatIsoToMulEquiv)
+  hom := ↾fun e ↦ e.toMonCatIso
+  inv := ↾fun i ↦ i.monCatIsoToMulEquiv
 
 /-- additive equivalences between `AddMonoid`s are the same
 as (isomorphic to) isomorphisms in `AddMonCat` -/
@@ -481,8 +481,8 @@ in `CommMonCat` -/
 @[to_additive addEquivIsoAddCommMonCatIso]
 def mulEquivIsoCommMonCatIso {X Y : Type u} [CommMonoid X] [CommMonoid Y] :
     (X ≃* Y) ≅ (CommMonCat.of X ≅ CommMonCat.of Y) where
-  hom := TypeCat.ofHom (fun e ↦ e.toCommMonCatIso)
-  inv := TypeCat.ofHom (fun i ↦ i.commMonCatIsoToMulEquiv)
+  hom := ↾fun e ↦ e.toCommMonCatIso
+  inv := ↾fun i ↦ i.commMonCatIsoToMulEquiv
 
 /-- additive equivalences between `AddCommMonoid`s are
 the same as (isomorphic to) isomorphisms in `AddCommMonCat` -/

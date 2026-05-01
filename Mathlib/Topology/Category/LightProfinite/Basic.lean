@@ -99,7 +99,7 @@ def FintypeCat.toLightProfinite : FintypeCat ⥤ LightProfinite where
 
 /-- `FintypeCat.toLightProfinite` is fully faithful. -/
 def FintypeCat.toLightProfiniteFullyFaithful : toLightProfinite.FullyFaithful where
-  preimage f := InducedCategory.homMk (TypeCat.ofHom (f.hom.hom.1))
+  preimage f := InducedCategory.homMk (↾(f.hom.hom.1))
   map_preimage _ := rfl
   preimage_map _ := rfl
 
@@ -321,6 +321,7 @@ def lightDiagramToLightProfinite : LightDiagram.{u} ⥤ LightProfinite.{u} where
   obj X := LightProfinite.of X.cone.pt
   map f := InducedCategory.homMk f.hom.hom
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The equivalence of categories `LightProfinite ≌ LightDiagram` -/
 noncomputable def LightProfinite.equivDiagram : LightProfinite.{u} ≌ LightDiagram.{u} where
