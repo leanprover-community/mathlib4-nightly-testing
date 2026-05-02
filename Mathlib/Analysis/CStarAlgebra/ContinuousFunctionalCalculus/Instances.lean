@@ -144,7 +144,8 @@ theorem RCLike.nonUnitalContinuousFunctionalCalculus :
         inrRangeEquiv_symm_apply, coe_codRestrict, ψ]
       fun_prop
     case injective => simpa [ψ] using
-      (inrRangeEquiv 𝕜 A).symm.injective.comp (cfcₙAux_injective hp₁ a ha).codRestrict
+      -- TODO(kmill): in pr docstring, mention fixed bug in named arg dependencies for eta args
+      (inrRangeEquiv 𝕜 A).symm.injective.comp ((cfcₙAux_injective hp₁ a ha).codRestrict _)
     case map_id => exact inr_injective (R := 𝕜) <| coe_ψ _ ▸ cfcₙAux_id hp₁ a ha
     case map_spec =>
       exact quasispectrum_eq_spectrum_inr' 𝕜 𝕜 (ψ f) ▸ coe_ψ _ ▸ spec_cfcₙAux hp₁ a ha f
