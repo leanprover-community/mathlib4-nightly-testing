@@ -42,6 +42,7 @@ namespace Option
 
 variable {α β γ δ : Type*}
 
+@[defeq]
 theorem coe_def : (fun a ↦ ↑a : α → Option α) = some :=
   rfl
 
@@ -85,6 +86,7 @@ theorem bind_congr' {f g : α → Option β} {x y : Option α} (hx : x = y)
 theorem joinM_eq_join : joinM = @join α :=
   funext fun _ ↦ rfl
 
+@[defeq]
 theorem bind_eq_bind' {α β : Type u} {f : α → Option β} {x : Option α} : x >>= f = x.bind f :=
   rfl
 
@@ -165,7 +167,7 @@ set_option linter.deprecated false in
 theorem getD_default_eq_iget [Inhabited α] (o : Option α) :
     o.getD default = o.iget := by cases o <;> rfl
 
-@[simp, grind =]
+@[defeq, simp, grind =]
 theorem failure_eq_none {α} : failure = (none : Option α) := rfl
 
 @[simp]

@@ -68,6 +68,7 @@ theorem diff_inter_distrib_right (s t r : Set α) : (t ∩ r) \ s = (t \ s) ∩ 
 
 /-! ### Lemmas about complement -/
 
+@[defeq]
 theorem compl_def (s : Set α) : sᶜ = { x | x ∉ s } :=
   rfl
 

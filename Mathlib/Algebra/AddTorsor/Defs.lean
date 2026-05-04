@@ -69,7 +69,7 @@ instance addGroupIsAddTorsor (G : Type*) [AddGroup G] : AddTorsor G G where
 
 /-- Simplify subtraction for a torsor for an `AddGroup G` over
 itself. -/
-@[simp]
+@[defeq, simp]
 theorem vsub_eq_sub {G : Type*} [AddGroup G] (g₁ g₂ : G) : g₁ -ᵥ g₂ = g₁ - g₂ :=
   rfl
 

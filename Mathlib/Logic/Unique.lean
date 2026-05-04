@@ -84,7 +84,7 @@ instance PUnit.instUnique : Unique PUnit.{u} where
   default := PUnit.unit
   uniq x := ext x _
 
-@[simp]
+@[defeq, simp]
 theorem PUnit.default_eq_unit : (default : PUnit) = PUnit.unit :=
   rfl
 
@@ -154,11 +154,12 @@ theorem unique_iff_subsingleton_and_nonempty (α : Sort u) :
 
 variable {α : Sort*}
 
-@[simp, push ←]
+@[defeq, simp, push ←]
 theorem Pi.default_def {β : α → Sort v} [∀ a, Inhabited (β a)] :
     @default (∀ a, β a) _ = fun a : α ↦ @default (β a) _ :=
   rfl
 
+@[defeq]
 theorem Pi.default_apply {β : α → Sort v} [∀ a, Inhabited (β a)] (a : α) :
     @default (∀ a, β a) _ a = default :=
   rfl

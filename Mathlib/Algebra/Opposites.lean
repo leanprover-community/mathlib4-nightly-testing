@@ -200,11 +200,11 @@ protected theorem isCancelAdd_iff [Add α] : IsCancelAdd αᵐᵒᵖ ↔ IsCance
 
 @[to_additive] instance instSMul [SMul α β] : SMul α βᵐᵒᵖ where smul c x := op (c • unop x)
 
-@[simp] lemma op_zero [Zero α] : op (0 : α) = 0 := rfl
+@[defeq, simp] lemma op_zero [Zero α] : op (0 : α) = 0 := rfl
 
 @[simp] lemma unop_zero [Zero α] : unop (0 : αᵐᵒᵖ) = 0 := rfl
 
-@[to_additive (attr := simp)] lemma op_one [One α] : op (1 : α) = 1 := rfl
+@[defeq, to_additive (attr := simp)] lemma op_one [One α] : op (1 : α) = 1 := rfl
 
 @[to_additive (attr := simp)] lemma unop_one [One α] : unop (1 : αᵐᵒᵖ) = 1 := rfl
 
@@ -264,7 +264,7 @@ namespace AddOpposite
 
 instance instOne [One α] : One αᵃᵒᵖ where one := op 1
 
-@[simp] lemma op_one [One α] : op (1 : α) = 1 := rfl
+@[defeq, simp] lemma op_one [One α] : op (1 : α) = 1 := rfl
 
 @[simp] lemma unop_one [One α] : unop 1 = (1 : α) := rfl
 

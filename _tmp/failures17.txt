@@ -1,0 +1,12 @@
+Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean
+Mathlib/AlgebraicGeometry/IdealSheaf/Basic.lean
+Mathlib/AlgebraicGeometry/Morphisms/QuasiSeparated.lean
+Mathlib/AlgebraicGeometry/Stalk.lean
+Mathlib/CategoryTheory/Monoidal/Functor/Types.lean
+Mathlib/CategoryTheory/Monoidal/Types/Coyoneda (961ms).lean
+Mathlib/CategoryTheory/Shift/Opposite.lean
+Mathlib/Geometry/Manifold/IsManifold/InteriorBoundary.lean
+Mathlib/Geometry/Manifold/MFDeriv/Tangent.lean
+Mathlib/MeasureTheory/Function/LpSpace/ContinuousCompMeasurePreserving.lean
+Mathlib/MeasureTheory/Integral/FinMeasAdditive.lean
+Mathlib/MeasureTheory/SpecificCodomains/ContinuousMapZero.lean

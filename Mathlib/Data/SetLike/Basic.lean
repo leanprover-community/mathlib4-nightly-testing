@@ -143,7 +143,7 @@ end Delab
 
 variable (p q : A)
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sort_coe : ((p : Set B) : Type _) = p :=
   rfl
 
@@ -192,7 +192,7 @@ theorem coe_mem (x : p) : (x : B) ∈ p :=
 @[aesop 5% (rule_sets := [SetLike!])]
 lemma mem_of_subset {s : Set B} (hp : s ⊆ p) {x : B} (hx : x ∈ s) : x ∈ p := hp hx
 
-@[simp]
+@[defeq, simp]
 protected theorem eta (x : p) (hx : (x : B) ∈ p) : (⟨x, hx⟩ : p) = x := rfl
 
 @[simp] lemma setOf_mem_eq (a : A) : {b | b ∈ a} = a := rfl

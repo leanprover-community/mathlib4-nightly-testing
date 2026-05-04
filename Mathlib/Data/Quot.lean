@@ -98,10 +98,12 @@ theorem factor_mk_eq {α : Type*} (r s : α → α → Prop) (h : ∀ x y, r x y
 
 variable {γ : Sort*} {r : α → α → Prop} {s : β → β → Prop}
 
+@[defeq]
 theorem lift_mk (f : α → γ) (h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂) (a : α) :
     Quot.lift f h (Quot.mk r a) = f a :=
   rfl
 
+@[defeq]
 theorem liftOn_mk (a : α) (f : α → γ) (h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂) :
     Quot.liftOn (Quot.mk r a) f h = f a :=
   rfl
@@ -745,6 +747,7 @@ section
 
 variable {s : Setoid α}
 
+@[defeq]
 protected theorem mk''_eq_mk : Quotient.mk'' = Quotient.mk s :=
   rfl
 

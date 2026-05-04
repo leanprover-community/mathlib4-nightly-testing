@@ -57,7 +57,7 @@ instance instMulAction : MulAction (IterateMulAct f) α where
   one_smul _ := rfl
   mul_smul _ _ := Function.iterate_add_apply f _ _
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mk_smul (n : ℕ) (x : α) : mk (f := f) n • x = f^[n] x := rfl
 
 end IterateMulAct

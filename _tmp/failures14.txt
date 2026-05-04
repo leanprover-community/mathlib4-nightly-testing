@@ -1,0 +1,12 @@
+Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean
+Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Basic.lean
+Mathlib/AlgebraicGeometry/Pullbacks.lean
+Mathlib/Analysis/Meromorphic/NormalForm.lean
+Mathlib/Analysis/Meromorphic/TrailingCoefficient.lean
+Mathlib/CategoryTheory/Monoidal/Functor/Types.lean
+Mathlib/CategoryTheory/Monoidal/Types/Coyoneda (980ms).lean
+Mathlib/CategoryTheory/Shift/Opposite.lean
+Mathlib/Computability/AkraBazzi/AkraBazzi.lean
+Mathlib/Geometry/Manifold/VectorBundle/MDifferentiable.lean
+Mathlib/Geometry/Manifold/VectorBundle/Tangent.lean
+Mathlib/MeasureTheory/Function/L1Space/Integrable.lean

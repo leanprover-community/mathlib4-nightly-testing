@@ -86,14 +86,14 @@ instance [One M] [MulOneClass N] : Mul (OneHom M N) where
     { toFun m := f m * g m
       map_one' := by simp }
 
-@[to_additive (attr := norm_cast)]
+@[defeq, to_additive (attr := norm_cast)]
 theorem coe_mul {M N} [One M] [MulOneClass N] (f g : OneHom M N) : ⇑(f * g) = ⇑f * ⇑g := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mul_apply {M N} [One M] [MulOneClass N] (f g : OneHom M N) (x : M) :
     (f * g) x = f x * g x := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem mul_comp [One M] [One N] [MulOneClass P] (g₁ g₂ : OneHom N P) (f : OneHom M N) :
     (g₁ * g₂).comp f = g₁.comp f * g₂.comp f := rfl
 
@@ -106,14 +106,14 @@ instance [One M] [InvOneClass N] : Inv (OneHom M N) where
     { toFun m := (f m)⁻¹
       map_one' := by simp }
 
-@[to_additive (attr := norm_cast)]
+@[defeq, to_additive (attr := norm_cast)]
 theorem coe_inv {M N} [One M] [InvOneClass N] (f : OneHom M N) : ⇑(f⁻¹) = (⇑f)⁻¹ := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem inv_apply {M N} [One M] [InvOneClass N] (f : OneHom M N) (x : M) :
     f⁻¹ x = (f x)⁻¹ := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem inv_comp [One M] [One N] [InvOneClass P] (g : OneHom N P) (f : OneHom M N) :
     (g⁻¹).comp f = (g.comp f)⁻¹ := rfl
 
@@ -126,14 +126,14 @@ instance [One M] [DivisionMonoid N] : Div (OneHom M N) where
     { toFun m := f m / g m
       map_one' := by simp }
 
-@[to_additive (attr := norm_cast)]
+@[defeq, to_additive (attr := norm_cast)]
 theorem coe_div {M N} [One M] [DivisionMonoid N] (f g : OneHom M N) : ⇑(f / g) = ⇑f / ⇑g := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem div_apply {M N} [One M] [DivisionMonoid N] (f g : OneHom M N) (x : M) :
     (f / g) x = f x / g x := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem div_comp [One M] [One N] [DivisionMonoid P] (g₁ g₂ : OneHom N P) (f : OneHom M N) :
     (g₁ / g₂).comp f = g₁.comp f / g₂.comp f := rfl
 
@@ -152,11 +152,11 @@ instance [Mul M] [CommSemigroup N] : Mul (M →ₙ* N) :=
         show f (x * y) * g (x * y) = f x * g x * (f y * g y)
         rw [f.map_mul, g.map_mul, ← mul_assoc, ← mul_assoc, mul_right_comm (f x)] }⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mul_apply {M N} [Mul M] [CommSemigroup N] (f g : M →ₙ* N) (x : M) :
     (f * g) x = f x * g x := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem mul_comp [Mul M] [Mul N] [CommSemigroup P] (g₁ g₂ : N →ₙ* P) (f : M →ₙ* N) :
     (g₁ * g₂).comp f = g₁.comp f * g₂.comp f := rfl
 
@@ -247,9 +247,9 @@ instance mul : Mul (M →* N) :=
 `f + g` is the additive monoid morphism sending `x` to `f x + g x`. -/
 add_decl_doc AddMonoidHom.add
 
-@[to_additive (attr := simp)] lemma mul_apply (f g : M →* N) (x : M) : (f * g) x = f x * g x := rfl
+@[defeq, to_additive (attr := simp)] lemma mul_apply (f g : M →* N) (x : M) : (f * g) x = f x * g x := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 lemma mul_comp [MulOneClass P] (g₁ g₂ : M →* N) (f : P →* M) :
     (g₁ * g₂).comp f = g₁.comp f * g₂.comp f := rfl
 

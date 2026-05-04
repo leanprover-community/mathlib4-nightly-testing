@@ -513,19 +513,19 @@ theorem bind_some_right (x : Part α) : x.bind some = x := by
   rw [bind_some_eq_map]
   simp [map_id']
 
-@[simp]
+@[defeq, simp]
 theorem pure_eq_some (a : α) : pure a = some a :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem ret_eq_some (a : α) : (return a : Part α) = some a :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem map_eq_map {α β} (f : α → β) (o : Part α) : f <$> o = map f o :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem bind_eq_bind {α β} (f : Part α) (g : α → Part β) : f >>= g = f.bind g :=
   rfl
 
@@ -609,10 +609,10 @@ section
 @[to_additive]
 theorem mul_def [Mul α] (a b : Part α) : a * b = bind a fun y ↦ map (y * ·) b := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem one_def [One α] : (1 : Part α) = some 1 := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem inv_def [Inv α] (a : Part α) : a⁻¹ = Part.map (·⁻¹) a := rfl
 
 @[to_additive]

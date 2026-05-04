@@ -33,7 +33,7 @@ instance (priority := 100) toEuclideanDomain : EuclideanDomain K :=
   remainder_lt := fun a b hnb => by simp [hnb],
   mul_left_not_lt := fun _ _ hnb ⟨hab, hna⟩ => Or.casesOn (mul_eq_zero.1 hab) hna hnb }
 
-@[simp]
+@[defeq, simp]
 protected theorem mod_eq (a b : K) : a % b = a - a * b / b := rfl
 
 @[simp]

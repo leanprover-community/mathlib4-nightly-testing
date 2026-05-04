@@ -73,7 +73,7 @@ def Empty (V : Type u) : Type u := V
 
 instance emptyQuiver (V : Type u) : Quiver.{u} (Empty V) := ⟨fun _ _ => PEmpty⟩
 
-@[simp, to_dual self]
+@[defeq, simp, to_dual self]
 theorem empty_arrow {V : Type u} (a b : Empty V) : (a ⟶ b) = PEmpty := rfl
 
 /-- A quiver is thin if it has no parallel arrows. -/

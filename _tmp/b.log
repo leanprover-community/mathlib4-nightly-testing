@@ -1,0 +1,2893 @@
+⚠ [843/1644] Replayed Mathlib.Tactic.NormNum.OfScientific
+warning: Mathlib/Tactic/NormNum/OfScientific.lean:39:15: This simp argument is unused:
+  Nat.cast_id
+
+Hint: Omit it from the simp argument list.
+  simp only [̵N̵a̵t̵.̵c̵a̵s̵t̵_̵i̵d̵,̵ ̵R̵a̵t̵.̵o̵f̵S̵c̵i̵e̵n̵t̵i̵f̵i̵c̵_̵f̵a̵l̵s̵e̵_̵d̵e̵f̵,̵[̲R̲a̲t̲.̲o̲f̲S̲c̲i̲e̲n̲t̲i̲f̲i̲c̲_̲f̲a̲l̲s̲e̲_̲d̲e̲f̲,̲ Nat.cast_mul, Nat.cast_pow, Nat.cast_ofNat, h,
+  ̲  ̲ ̲ ̲ ̲ ̲Nat.mul_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [869/1644] Replayed Mathlib.Data.Multiset.Count
+warning: Mathlib/Data/Multiset/Count.lean:85:43: This simp argument is unused:
+  coe_attach
+
+Hint: Omit it from the simp argument list.
+  simp only [quot_mk_to_coe, coe_countP, coe_a̵t̵t̵a̵ch̵,̵ ̵c̵oe̵_̵c̵o̵untP, ← List.countP_attach (l := l)]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [917/1644] Replayed Mathlib.Data.Fin.Tuple.Basic
+warning: Mathlib/Data/Fin/Tuple/Basic.lean:637:19: This simp argument is unused:
+  castSucc_castLT
+
+Hint: Omit it from the simp argument list.
+  simp [h, snoc,̵ ̵c̵a̵s̵t̵S̵u̵c̵c̵_̵c̵a̵s̵t̵L̵T̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Data/Fin/Tuple/Basic.lean:686:59: This simp argument is unused:
+  natAdd_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [append, addCases, castLT, cast_mk, subNat_mk, n̵a̵t̵A̵d̵d̵_̵m̵k̵,̵ ̵cast, snoc.eq_1, eq_rec_constant,
+  ̲  ̲ ̲ ̲Nat.add_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1315/1644] Replayed Mathlib.Algebra.Algebra.Prod
+warning: Mathlib/Algebra/Algebra/Prod.lean:43:4: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+warning: Mathlib/Algebra/Algebra/Prod.lean:48:4: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+⚠ [1317/1644] Replayed Mathlib.LinearAlgebra.Prod
+warning: Mathlib/LinearAlgebra/Prod.lean:267:4: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+⚠ [1377/1644] Replayed Mathlib.Data.Set.Finite.Lemmas
+warning: Mathlib/Data/Set/Finite/Lemmas.lean:42:15: This simp argument is unused:
+  Finset.coe_sort_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [F̵i̵n̵s̵e̵t̵.̵c̵o̵e̵_̵s̵o̵r̵t̵_̵c̵o̵e̵,̵ ̵Equiv.asEmbedding_range, Finite.coe_toFinset, setOf_mem_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1403/1644] Replayed Mathlib.Data.DFinsupp.BigOperators
+warning: Mathlib/Data/DFinsupp/BigOperators.lean:102:15: This simp argument is unused:
+  Finset.coe_sort_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [̵F̵i̵n̵s̵e̵t̵.̵c̵o̵e̵_̵s̵o̵r̵t̵_̵c̵o̵e̵,̵ ̵m̵e̵m̵_̵s̵u̵p̵p̵o̵r̵t̵_̵t̵o̵F̵u̵n̵,̵[̲m̲e̲m̲_̲s̲u̲p̲p̲o̲r̲t̲_̲t̲o̲F̲u̲n̲,̲ mk_apply, ne_eq, h1, not_false_iff, dite_eq_ite, ite_true,
+  ̲  ̲ ̲ ̲ ̲ ̲not_not] at h2
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Data/DFinsupp/BigOperators.lean:251:15: This simp argument is unused:
+  toFun_eq_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [̵t̵o̵F̵u̵n̵_̵e̵q̵_̵c̵o̵e̵,̵ ̵c̵o̵e̵_̵z̵e̵r̵o̵,̵[̲c̲o̲e̲_̲z̲e̲r̲o̲,̲ Pi.zero_apply, map_zero, Finset.sum_const_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Data/DFinsupp/BigOperators.lean:263:37: This simp argument is unused:
+  toFun_eq_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [sumZeroHom, Trunc.lift, t̵o̵F̵u̵n̵_̵e̵q̵_̵c̵o̵e̵,̵ ̵ZeroHom.coe_mk, coe_mk', ZeroHom.coe_comp,
+  ̵  ̵ ̵ ̵Function.comp_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1416/1644] Replayed Mathlib.LinearAlgebra.DFinsupp
+warning: Mathlib/LinearAlgebra/DFinsupp.lean:231:15: This simp argument is unused:
+  Finset.coe_sort_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [F̵i̵n̵s̵e̵t̵.̵c̵o̵e̵_̵s̵o̵r̵t̵_̵c̵o̵e̵,̵ ̵mapRange.addMonoidHom_apply, mapRange_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1545/1644] Replayed Mathlib.RingTheory.Localization.Defs
+warning: Mathlib/RingTheory/Localization/Defs.lean:497:6: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+⚠ [1619/2289] Replayed Mathlib.Data.DFinsupp.Lex
+warning: Mathlib/Data/DFinsupp/Lex.lean:222:70: 'simp' is a flexible tactic modifying '⊢'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/Data/DFinsupp/Lex.lean:222:70: Try this:
+  [apply] simp only [ofLex_add, coe_add, Pi.add_apply]
+info: Mathlib/Data/DFinsupp/Lex.lean:222:76: 'gcongr' uses '⊢'!
+warning: Mathlib/Data/DFinsupp/Lex.lean:243:60: 'simp' is a flexible tactic modifying '⊢'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/Data/DFinsupp/Lex.lean:243:60: Try this:
+  [apply] simp only [ofLex_add, coe_add, Pi.add_apply]
+info: Mathlib/Data/DFinsupp/Lex.lean:243:66: 'gcongr' uses '⊢'!
+⚠ [1814/2289] Replayed Mathlib.CategoryTheory.Category.Cat
+warning: Mathlib/CategoryTheory/Category/Cat.lean:418:15: This simp argument is unused:
+  Cat.of_α
+
+Hint: Omit it from the simp argument list.
+  simp only [C̵a̵t.̵of̵_̵α̵,̵ ̵t̵o̵CatHom_toFunctor, Cat.Hom.id_toFunctor]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Category/Cat.lean:427:15: This simp argument is unused:
+  Cat.of_α
+
+Hint: Omit it from the simp argument list.
+  simp only [C̵a̵t.̵of̵_̵α̵,̵ ̵t̵o̵CatHom_toFunctor, Cat.Hom.comp_toFunctor]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1828/2289] Replayed Mathlib.CategoryTheory.Limits.Shapes.WidePullbacks
+warning: Mathlib/CategoryTheory/Limits/Shapes/WidePullbacks.lean:243:17: This simp argument is unused:
+  hom_id
+
+Hint: Omit it from the simp argument list.
+  simp only [h̵o̵m̵_̵i̵d̵,̵ ̵Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/WidePullbacks.lean:245:17: This simp argument is unused:
+  hom_id
+
+Hint: Omit it from the simp argument list.
+  simp only [h̵o̵m̵_̵i̵d̵,̵ ̵Category.comp_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1888/2289] Replayed Mathlib.GroupTheory.Perm.Sign
+warning: Mathlib/GroupTheory/Perm/Sign.lean:277:54: This simp argument is unused:
+  ite_true
+
+Hint: Omit it from the simp argument list.
+  simp only [eq_iff_true_of_subsingleton, not_true, i̵t̵e̵_̵t̵r̵u̵e̵,̵ ̵le_refl, prod_const, IsEmpty.forall_iff]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/GroupTheory/Perm/Sign.lean:277:64: This simp argument is unused:
+  le_refl
+
+Hint: Omit it from the simp argument list.
+  simp only [eq_iff_true_of_subsingleton, not_true, ite_true, l̵e̵_̵r̵e̵f̵l̵,̵ ̵prod_const, IsEmpty.forall_iff]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/GroupTheory/Perm/Sign.lean:277:73: This simp argument is unused:
+  prod_const
+
+Hint: Omit it from the simp argument list.
+  simp only [eq_iff_true_of_subsingleton, not_true, ite_true, le_refl, p̵r̵o̵d̵_̵c̵o̵n̵s̵t̵,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵ ̵IsEmpty.forall_iff]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [1967/2289] Replayed Mathlib.CategoryTheory.Adjunction.Mates
+warning: Mathlib/CategoryTheory/Adjunction/Mates.lean:311:2: 'simp at this ⊢' is a flexible tactic modifying '⊢'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:311:2: Try this:
+  [apply] simp only [Iso.symm_inv, leftUnitor_hom_app, comp_id, id_comp] at this ⊢
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:312:2: 'rw [this]' uses '⊢'!
+warning: Mathlib/CategoryTheory/Adjunction/Mates.lean:311:2: 'simp at this ⊢' is a flexible tactic modifying 'this'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:311:2: Try this:
+  [apply] simp only [Iso.symm_inv, leftUnitor_hom_app, comp_id, id_comp] at this ⊢
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:312:2: 'rw [this]' uses 'this'!
+warning: Mathlib/CategoryTheory/Adjunction/Mates.lean:361:2: 'simp at vcompd ⊢' is a flexible tactic modifying 'vcompd'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:361:2: Try this:
+  [apply] simp only [Iso.symm_inv, leftUnitor_hom_app, comp_id, id_comp, assoc, map_comp] at vcompd ⊢
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:362:2: 'rw [vcompd]' uses 'vcompd'!
+warning: Mathlib/CategoryTheory/Adjunction/Mates.lean:361:2: 'simp at vcompd ⊢' is a flexible tactic modifying '⊢'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:361:2: Try this:
+  [apply] simp only [Iso.symm_inv, leftUnitor_hom_app, comp_id, id_comp, assoc, map_comp] at vcompd ⊢
+info: Mathlib/CategoryTheory/Adjunction/Mates.lean:362:2: 'rw [vcompd]' uses '⊢'!
+⚠ [1987/2289] Replayed Mathlib.Algebra.Category.CoalgCat.ComonEquivalence
+warning: Mathlib/Algebra/Category/CoalgCat/ComonEquivalence.lean:137:41: This simp argument is unused:
+  unop_tensorObj
+
+Hint: Omit it from the simp argument list.
+  simp only [Comon.monoidal_tensorObj_comon_comul,
+  ̵  ̵ ̵ ̵MonObj.tensorObj.mul_def, unop_comp,
+  ̲ u̵n̵o̵p̵_̵t̵e̵n̵s̵o̵r̵O̵b̵j̵,̵  ̲ ̲unop_tensorHom,
+  ̵  ̵ ̵ ̵BraidedCategory.unop_tensorμ, tensorμ_eq_tensorTensorTensorComm,
+  ̲  ̲ ̲ ̲ModuleCat.hom_comp,
+  ̵  ̵ ̵ ̵ModuleCat.hom_ofHom]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2007/2289] Replayed Mathlib.CategoryTheory.Limits.Opposites
+warning: Mathlib/CategoryTheory/Limits/Opposites.lean:45:34: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [coneLeftOpOfCocone_π_app, op_comp, Quiver.Hom.op_unop, IsColimit.fac,
+          coconeOfConeLeftOp_ι_app,̵ ̵o̵p̵_̵u̵n̵o̵p̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Opposites.lean:59:34: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [coconeLeftOpOfCone_ι_app, op_comp, Quiver.Hom.op_unop, IsLimit.fac,
+          coneOfCoconeLeftOp_π_app,̵ ̵o̵p̵_̵u̵n̵o̵p̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Opposites.lean:117:34: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [coneOfCoconeLeftOp_π_app, unop_comp, Quiver.Hom.unop_op, IsColimit.fac,
+          coconeLeftOpOfCone_ι_app,̵ ̵u̵n̵o̵p̵_̵o̵p̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Opposites.lean:131:34: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [coconeOfConeLeftOp_ι_app, unop_comp, Quiver.Hom.unop_op, IsLimit.fac,
+          coneLeftOpOfCocone_π_app,̵ ̵u̵n̵o̵p̵_̵o̵p̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2042/2289] Replayed Mathlib.CategoryTheory.Grothendieck
+warning: Mathlib/CategoryTheory/Grothendieck.lean:557:15: This simp argument is unused:
+  comp_base
+
+Hint: Omit it from the simp argument list.
+  simp only [c̵o̵m̵p̵_̵b̵a̵s̵e̵,̵ ̵← Category.assoc, eqToHom_trans, comp_fiber, Functor.map_comp,
+  ̵  ̵ ̵ ̵ ̵ ̵eqToHom_map]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2045/2289] Replayed Mathlib.CategoryTheory.Limits.Connected
+warning: Mathlib/CategoryTheory/Limits/Connected.lean:111:13: This simp argument is unused:
+  limit.cone_x
+
+Hint: Omit it from the simp argument list.
+  simp only [̵l̵i̵m̵i̵t̵.̵c̵o̵n̵e̵_̵x̵,̵ ̵l̵i̵m̵i̵t̵.̵c̵o̵n̵e̵_̵π̵,̵[̲l̲i̲m̲i̲t̲.̲c̲o̲n̲e̲_̲π̲,̲ Iso.trans_hom, Iso.symm_hom, asIso_inv, assoc, IsIso.eq_inv_comp,
+  ̲  ̲ ̲ ̲limMap_π]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Connected.lean:123:23: This simp argument is unused:
+  limit.cone_x
+
+Hint: Omit it from the simp argument list.
+  simp only [limMap_π, l̵i̵m̵i̵t̵.̵c̵o̵n̵e̵_̵x̵,̵ ̵Iso.trans_hom, assoc, limit.conePointUniqueUpToIso_hom_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Connected.lean:148:25: This simp argument is unused:
+  colimit.cocone_x
+
+Hint: Omit it from the simp argument list.
+  simp only [ι_colimMap, c̵o̵l̵i̵m̵i̵t̵.̵c̵o̵c̵o̵n̵e̵_̵x̵,̵ ̵Iso.trans_hom, colimit.comp_coconePointUniqueUpToIso_hom_assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2047/2289] Replayed Mathlib.CategoryTheory.EffectiveEpi.Basic
+warning: Mathlib/CategoryTheory/EffectiveEpi/Basic.lean:242:37: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [colimit.ι_desc_assoc, D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵Cofan.mk_ι_app, colimit.ι_desc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2052/2289] Replayed Mathlib.CategoryTheory.Limits.Shapes.Diagonal
+warning: Mathlib/CategoryTheory/Limits/Shapes/Diagonal.lean:136:53: This simp argument is unused:
+  cospan_left
+
+Hint: Omit it from the simp argument list.
+  simp only [Category.assoc, diagonal_fst, Category.comp_id, limit.lift_π,
+            PullbackCone.mk_π_app, limit.lift_π_assoc,̵ ̵c̵o̵s̵p̵a̵n̵_̵l̵e̵f̵t̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Diagonal.lean:138:53: This simp argument is unused:
+  cospan_right
+
+Hint: Omit it from the simp argument list.
+  simp only [condition_assoc, Category.assoc, diagonal_snd, Category.comp_id, limit.lift_π,
+            PullbackCone.mk_π_app, limit.lift_π_assoc,̵ ̵c̵o̵s̵p̵a̵n̵_̵r̵i̵g̵h̵t̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2211/2289] Replayed Mathlib.CategoryTheory.Adjunction.Restrict
+warning: Mathlib/CategoryTheory/Adjunction/Restrict.lean:85:4: This simp argument is unused:
+  Functor.id_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [homEquiv_apply, Functor.map_comp, map_restrictFullyFaithful_unit_app,
+  ̵  ̵ ̵ ̵F̵u̵n̵c̵t̵o̵r̵.̵i̵d̵_̵o̵b̵j̵,̵ ̵assoc,
+  ̲  ̲ ̲ ̲Functor.FullyFaithful.map_preimage]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2216/2289] Replayed Mathlib.CategoryTheory.Subobject.Lattice
+warning: Mathlib/CategoryTheory/Subobject/Lattice.lean:326:43: This simp argument is unused:
+  MonoOver.bot_left
+
+Hint: Omit it from the simp argument list.
+  simp only [MonoOver.bot_arrow_eq_zero, M̵o̵n̵o̵O̵v̵e̵r̵.̵b̵o̵t̵_̵l̵e̵f̵t̵,̵ ̵comp_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2219/2848] Replayed Mathlib.CategoryTheory.Shift.Basic
+warning: Mathlib/CategoryTheory/Shift/Basic.lean:430:100: This line exceeds the 100 character limit, please shorten it!
+
+Note: This linter can be disabled with `set_option linter.style.longLine false`
+warning: Mathlib/CategoryTheory/Shift/Basic.lean:430:28: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+warning: Mathlib/CategoryTheory/Shift/Basic.lean:708:13: This simp argument is unused:
+  Iso.trans_hom
+
+Hint: Omit it from the simp argument list.
+  simp only [̵I̵s̵o̵.̵t̵r̵a̵n̵s̵_̵h̵o̵m̵,̵ ̵I̵s̵o̵.̵s̵y̵m̵m̵_̵h̵o̵m̵,̵[̲I̲s̲o̲.̲s̲y̲m̲m̲_̲h̲o̲m̲,̲ Iso.trans_inv, Iso.symm_inv, NatTrans.comp_app, Category.assoc,
+  ̲  ̲ ̲ ̲Iso.hom_inv_id_app_assoc, Iso.inv_hom_id_app_assoc, ← Functor.map_comp,
+      shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₃ m₁ (m₂ + m₃) (m₁ + m₃) (m₁ + (m₂ + m₃)) rfl
+          (add_comm m₃ m₁) (add_comm _ m₁) X,
+      ←
+  ̲  ̲ ̲ ̲ ̲ ̲shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₁ m₃ (m₁ + m₂) (m₁ + m₃) (m₁ + (m₂ + m₃))
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_comm _ _) rfl (by rw [add_comm m₂ m₁, add_assoc]) X,
+      shiftFunctorAdd'_assoc_hom_app m₁ m₂ m₃ (m₁ + m₂) (m₂ + m₃) (m₁ + (m₂ + m₃)) rfl rfl
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_assoc _ _ _) X]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Shift/Basic.lean:708:28: This simp argument is unused:
+  Iso.symm_hom
+
+Hint: Omit it from the simp argument list.
+  simp only [Iso.trans_hom, I̵s̵o̵.̵s̵y̵m̵m̵_̵h̵o̵m̵,̵ ̵Iso.trans_inv, Iso.symm_inv, NatTrans.comp_app, Category.assoc,
+  ̲  ̲ ̲ ̲Iso.hom_inv_id_app_assoc, Iso.inv_hom_id_app_assoc, ← Functor.map_comp,
+      shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₃ m₁ (m₂ + m₃) (m₁ + m₃) (m₁ + (m₂ + m₃)) rfl
+          (add_comm m₃ m₁) (add_comm _ m₁) X,
+      ←
+  ̲  ̲ ̲ ̲ ̲ ̲shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₁ m₃ (m₁ + m₂) (m₁ + m₃) (m₁ + (m₂ + m₃))
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_comm _ _) rfl (by rw [add_comm m₂ m₁, add_assoc]) X,
+      shiftFunctorAdd'_assoc_hom_app m₁ m₂ m₃ (m₁ + m₂) (m₂ + m₃) (m₁ + (m₂ + m₃)) rfl rfl
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_assoc _ _ _) X]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Shift/Basic.lean:708:42: This simp argument is unused:
+  Iso.trans_inv
+
+Hint: Omit it from the simp argument list.
+  simp only [Iso.trans_hom, Iso.symm_hom, I̵s̵o̵.̵t̵r̵a̵n̵s̵_̵i̵n̵v̵,̵ ̵Iso.symm_inv, NatTrans.comp_app, Category.assoc,
+  ̲  ̲ ̲ ̲Iso.hom_inv_id_app_assoc, Iso.inv_hom_id_app_assoc, ← Functor.map_comp,
+      shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₃ m₁ (m₂ + m₃) (m₁ + m₃) (m₁ + (m₂ + m₃)) rfl
+          (add_comm m₃ m₁) (add_comm _ m₁) X,
+      ←
+  ̲  ̲ ̲ ̲ ̲ ̲shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₁ m₃ (m₁ + m₂) (m₁ + m₃) (m₁ + (m₂ + m₃))
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_comm _ _) rfl (by rw [add_comm m₂ m₁, add_assoc]) X,
+      shiftFunctorAdd'_assoc_hom_app m₁ m₂ m₃ (m₁ + m₂) (m₂ + m₃) (m₁ + (m₂ + m₃)) rfl rfl
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_assoc _ _ _) X]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Shift/Basic.lean:709:4: This simp argument is unused:
+  NatTrans.comp_app
+
+Hint: Omit it from the simp argument list.
+  simp only [Iso.trans_hom, Iso.symm_hom, Iso.trans_inv, Iso.symm_inv, N̵a̵t̵T̵r̵a̵n̵s̵.̵c̵o̵m̵p̵_̵a̵p̵p̵,̵ ̵Category.assoc,
+  ̲  ̲ ̲ ̲Iso.hom_inv_id_app_assoc, Iso.inv_hom_id_app_assoc, ← Functor.map_comp,
+      shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₃ m₁ (m₂ + m₃) (m₁ + m₃) (m₁ + (m₂ + m₃)) rfl
+          (add_comm m₃ m₁) (add_comm _ m₁) X,
+      ←
+  ̲  ̲ ̲ ̲ ̲ ̲shiftFunctorAdd'_assoc_hom_app_assoc m₂ m₁ m₃ (m₁ + m₂) (m₁ + m₃) (m₁ + (m₂ + m₃))
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_comm _ _) rfl (by rw [add_comm m₂ m₁, add_assoc]) X,
+      shiftFunctorAdd'_assoc_hom_app m₁ m₂ m₃ (m₁ + m₂) (m₂ + m₃) (m₁ + (m₂ + m₃)) rfl rfl
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲(add_assoc _ _ _) X]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2292/2848] Replayed Mathlib.CategoryTheory.Limits.Shapes.Opposites.Products
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:161:13: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_o̵p̵,̵ ̵u̵n̵o̵p̵_̵comp, Discrete.functor_obj, Iso.op_inv,
+  ̵  ̵ ̵ ̵Quiver.Hom.unop_op,
+  ̲  ̲ ̲ ̲IsColimit.comp_coconePointUniqueUpToIso_inv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:161:33: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_op, unop_comp, D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵Iso.op_inv, Quiver.Hom.unop_op,
+  ̲  ̲ ̲ ̲IsColimit.comp_coconePointUniqueUpToIso_inv]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:164:22: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [op_comp, o̵p̵_̵u̵n̵o̵p̵,̵ ̵Quiver.Hom.op_unop, Category.assoc,
+  ̵  ̵ ̵ ̵opCoproductIsoProduct'_inv_comp_inj]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:180:13: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [u̵n̵o̵p̵_̵o̵p̵,̵ ̵Discrete.functor_obj, Quiver.Hom.unop_op, IsColimit.fac,
+  ̵  ̵ ̵ ̵Cofan.op, unop_comp, op_comp,
+  ̲  ̲ ̲ ̲op_unop, Quiver.Hom.op_unop, Category.assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:180:22: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_op, D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵Quiver.Hom.unop_op, IsColimit.fac, Cofan.op, unop_comp, op_comp, op_unop,
+  ̲  ̲ ̲ ̲Quiver.Hom.op_unop, Category.assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:181:34: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_op, Discrete.functor_obj, Quiver.Hom.unop_op, IsColimit.fac,
+  ̵  ̵ ̵ ̵Cofan.op, unop_comp,
+  ̲  ̲ ̲ ̲op_comp, o̵p̵_̵u̵n̵o̵p̵,̵ ̵Quiver.Hom.op_unop, Category.assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:260:13: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_o̵p̵,̵ ̵u̵n̵o̵p̵_̵comp, Category.assoc, Discrete.functor_obj, Iso.op_inv,
+  ̵  ̵ ̵ ̵Quiver.Hom.unop_op,
+  ̲  ̲ ̲ ̲IsLimit.conePointUniqueUpToIso_inv_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:260:49: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_op, unop_comp, Category.assoc, D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵Iso.op_inv, Quiver.Hom.unop_op,
+  ̲  ̲ ̲ ̲IsLimit.conePointUniqueUpToIso_inv_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:263:22: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [op_comp, o̵p̵_̵u̵n̵o̵p̵,̵ ̵Quiver.Hom.op_unop, proj_comp_opProductIsoCoproduct'_hom]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:278:13: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [̵D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵u̵n̵o̵p̵_̵o̵p̵,̵[̲u̲n̲o̲p̲_̲o̲p̲,̲ Quiver.Hom.unop_op, IsLimit.fac, Fan.op, unop_comp, Category.assoc, op_comp,
+  ̲  ̲ ̲ ̲op_unop, Quiver.Hom.op_unop]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:278:35: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [Discrete.functor_obj, u̵n̵o̵p̵_̵o̵p̵,̵ ̵Quiver.Hom.unop_op, IsLimit.fac, Fan.op, unop_comp,
+      Category.assoc, op_comp, op_unop, Quiver.Hom.op_unop]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/Opposites/Products.lean:279:29: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [Discrete.functor_obj, unop_op, Quiver.Hom.unop_op, IsLimit.fac, Fan.op, unop_comp,
+      Category.assoc, op_comp, o̵p̵_̵u̵n̵o̵p̵,̵ ̵Quiver.Hom.op_unop]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2294/2848] Replayed Mathlib.CategoryTheory.Comma.Presheaf.Basic
+warning: Mathlib/CategoryTheory/Comma/Presheaf/Basic.lean:148:13: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [̵u̵n̵o̵p̵_̵o̵p̵,̵ ̵p̵.̵a̵p̵p̵_̵v̵a̵l̵]̵[̲p̲.̲a̲p̲p̲_̲v̲a̲l̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2366/2848] Replayed Mathlib.CategoryTheory.Preadditive.CommGrp_
+warning: Mathlib/CategoryTheory/Preadditive/CommGrp_.lean:71:16: This simp argument is unused:
+  Functor.id_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [̵ ̵F̵u̵n̵c̵t̵o̵r̵.̵i̵d̵_̵o̵b̵j̵,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵m̵u̵l̵_̵d̵e̵f̵,̵[̲m̲u̲l̲_̲d̲e̲f̲,̲ Iso.refl_hom, Category.comp_id, tensorHom_id, id_whiskerRight,
+  ̲  ̲ ̲ ̲Category.id_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2367/2848] Replayed Mathlib.Algebra.Category.Grp.LeftExactFunctor
+warning: Mathlib/Algebra/Category/Grp/LeftExactFunctor.lean:100:4: This simp argument is unused:
+  tensor_apply
+
+Hint: Omit it from the simp argument list.
+  simp only [TypeCat.Fun.toFun_apply, CategoryTheory.comp_apply, Equiv.toIso_hom_hom_apply,
+      Preadditive.commGrpEquivalence_functor_obj_X, Functor.comp_obj, types_tensorObj_def, hom_add,
+      t̵e̵n̵s̵o̵r̵_̵a̵p̵p̵l̵y̵,̵ ̵TypeCat.hom_ofHom, TypeCat.Fun.coe_mk, AddMonoidHom.add_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2380/2848] Replayed Mathlib.CategoryTheory.Limits.Shapes.Multiequalizer
+warning: Mathlib/CategoryTheory/Limits/Shapes/Multiequalizer.lean:1132:4: This simp argument is unused:
+  limit.cone_x
+
+Hint: Omit it from the simp argument list.
+  simp only [limit.isoLimitCone_inv_π,
+  ̵  ̵ ̵ ̵l̵i̵m̵i̵t̵.̵c̵o̵n̵e̵_̵x̵,̵ ̵MulticospanIndex.multiforkEquivPiFork_inverse_obj_π_app]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2448/2848] Replayed Mathlib.Topology.LocalAtTarget
+warning: Mathlib/Topology/LocalAtTarget.lean:193:35: This simp argument is unused:
+  SetLike.coe_sort_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [Opens.carrier_eq_coe, S̵e̵t̵L̵i̵k̵e̵.̵c̵o̵e̵_̵s̵o̵r̵t̵_̵c̵o̵e̵,̵ ̵preimage_eq_univ_iff, Subtype.range_coe_subtype, SetLike.mem_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2502/2848] Replayed Mathlib.CategoryTheory.CatCommSq
+warning: Mathlib/CategoryTheory/CatCommSq.lean:169:53: This simp argument is unused:
+  Iso.inv_hom_id_app
+
+Hint: Omit it from the simp argument list.
+  simp only [Functor.map_comp, Equivalence.fun_inv_map, Functor.comp_obj, Functor.id_obj, assoc,
+  ̲  ̲ ̲ ̲Iso.inv_hom_id_app_assoc, I̵s̵o̵.̵i̵n̵v̵_̵h̵o̵m̵_̵i̵d̵_̵a̵p̵p̵,̵ ̵comp_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/CatCommSq.lean:169:73: This simp argument is unused:
+  comp_id
+
+Hint: Omit it from the simp argument list.
+  simp only [Functor.map_comp, Equivalence.fun_inv_map, Functor.comp_obj, Functor.id_obj, assoc,
+  ̲  ̲ ̲ ̲Iso.inv_hom_id_app_assoc, I̵s̵o̵.̵i̵n̵v̵_̵h̵o̵m̵_̵i̵d̵_̵a̵p̵p̵,̵ ̵c̵o̵m̵p̵_̵i̵d̵]̵I̲s̲o̲.̲i̲n̲v̲_̲h̲o̲m̲_̲i̲d̲_̲a̲p̲p̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/CatCommSq.lean:170:2: 'simp' is a flexible tactic modifying '⊢'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/CategoryTheory/CatCommSq.lean:170:2: Try this:
+  [apply] simp only [Iso.symm_inv, Iso.inv_hom_id_app_assoc, Equivalence.functor_unit_comp_assoc,
+    iso_hom_naturality_assoc, NatIso.cancel_natIso_hom_left, comp_obj]
+info: Mathlib/CategoryTheory/CatCommSq.lean:171:2: 'rw [← Functor.map_comp_assoc, Equivalence.functor_unit_comp]' uses '⊢'!
+⚠ [2583/3629] Replayed Mathlib.CategoryTheory.Sites.EqualizerSheafCondition
+warning: Mathlib/CategoryTheory/Sites/EqualizerSheafCondition.lean:325:8: This simp argument is unused:
+  ← comp_apply
+
+Hint: Omit it from the simp argument list.
+  simp [←̵ ̵c̵o̵m̵p̵_̵a̵p̵p̵l̵y̵,̵ ̵-types_comp_apply, ← Functor.map_comp, ← op_comp, pullback.condition]
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2585/3629] Replayed Mathlib.CategoryTheory.Sites.Sheaf
+warning: Mathlib/CategoryTheory/Sites/Sheaf.lean:635:4: This simp argument is unused:
+  Subtype.coe_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [firstMap, secondMap, forkMap, limit.lift_π, limit.lift_π_assoc, assoc, Fan.mk_π_app,̵
+  ̵ ̵ ̵ ̵ ̵S̵u̵b̵t̵y̵p̵e̵.̵c̵o̵e̵_̵m̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2590/3629] Replayed Mathlib.CategoryTheory.Sites.Subsheaf
+warning: Mathlib/CategoryTheory/Sites/Subsheaf.lean:279:35: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [ObjectProperty.FullSubcategory.comp_hom, Sheaf.toImage_hom, NatTrans.comp_app,
+  ̲  ̲ ̲ ̲c̵o̵m̵p̵_̵a̵p̵p̵l̵y̵,̵ ̵o̵p̵_̵u̵n̵o̵p̵]̵c̲o̲m̲p̲_̲a̲p̲p̲l̲y̲]̲ at this E ⊢
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2600/3629] Replayed Mathlib.Topology.Category.TopCat.Limits.Pullbacks
+warning: Mathlib/Topology/Category/TopCat/Limits/Pullbacks.lean:364:17: This simp argument is unused:
+  coe_of
+
+Hint: Omit it from the simp argument list.
+  simp only [c̵o̵e̵_̵o̵f̵,̵ ̵Set.mem_preimage]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Topology/Category/TopCat/Limits/Pullbacks.lean:383:17: This simp argument is unused:
+  coe_of
+
+Hint: Omit it from the simp argument list.
+  simp only [c̵o̵e̵_̵o̵f̵,̵ ̵Set.mem_preimage]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2805/3629] Replayed Mathlib.AlgebraicTopology.SimplexCategory.Basic
+warning: Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:449:16: This simp argument is unused:
+  len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [δ, l̵e̵n̵_̵mk,̵ ̵m̵k̵Hom, comp_toOrderHom, Hom.toOrderHom_mk, OrderHom.comp_coe,
+      OrderEmbedding.toOrderHom_coe, Function.comp_apply, Fin.succAboveOrderEmb_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:465:18: This simp argument is unused:
+  len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [δ, l̵e̵n̵_̵m̵k̵,̵ ̵Nat.reduceAdd, mkHom, comp_toOrderHom, Hom.toOrderHom_mk,
+  ̵  ̵ ̵ ̵ ̵ ̵Fin.zero_eta,
+  ̲  ̲ ̲ ̲ ̲ ̲OrderHom.comp_coe, OrderEmbedding.toOrderHom_coe, Function.comp_apply,
+        mkOfSucc_homToOrderHom_zero, Fin.succAboveOrderEmb_apply,
+  ̵  ̵ ̵ ̵ ̵ ̵Fin.castSucc_succAbove_castSucc,
+  ̲  ̲ ̲ ̲ ̲ ̲Fin.succAbove_succ_self]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/SimplexCategory/Basic.lean:470:18: This simp argument is unused:
+  len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [δ, l̵e̵n̵_̵m̵k̵,̵ ̵Nat.reduceAdd, mkHom, comp_toOrderHom, Hom.toOrderHom_mk, Fin.mk_one,
+       ̵ ̵OrderHom.comp_coe, OrderEmbedding.toOrderHom_coe, Function.comp_apply,
+       ̵ ̵mkOfSucc_homToOrderHom_one, Fin.succAboveOrderEmb_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2816/3629] Replayed Mathlib.CategoryTheory.Subfunctor.OfSection
+warning: Mathlib/CategoryTheory/Subfunctor/OfSection.lean:72:46: This simp argument is unused:
+  Opposite.op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [ofSection_obj, Set.mem_setOf_eq, O̵p̵p̵o̵s̵i̵t̵e̵.̵o̵p̵_̵u̵n̵o̵p̵,̵ ̵range_obj, Set.mem_range]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2831/3629] Replayed Mathlib.AlgebraicTopology.SimplicialSet.StdSimplex
+warning: Mathlib/AlgebraicTopology/SimplicialSet/StdSimplex.lean:236:13: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [u̵n̵o̵p̵_̵o̵p̵,̵ ̵len_mk, Fin.forall_fin_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/SimplicialSet/StdSimplex.lean:236:22: This simp argument is unused:
+  len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_op, l̵e̵n̵_̵m̵k̵,̵ ̵Fin.forall_fin_one]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/SimplicialSet/StdSimplex.lean:247:13: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [u̵n̵o̵p̵_̵o̵p̵,̵ ̵len_mk, Fin.forall_fin_two]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/SimplicialSet/StdSimplex.lean:247:22: This simp argument is unused:
+  len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [unop_op, l̵e̵n̵_̵m̵k̵,̵ ̵Fin.forall_fin_two]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/SimplicialSet/StdSimplex.lean:695:49: This simp argument is unused:
+  op_unop
+
+Hint: Omit it from the simp argument list.
+  simp only [Subcomplex.mem_ofSimplex_obj_iff,̵ ̵o̵p̵_̵u̵n̵o̵p̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2889/3629] Replayed Mathlib.Data.Multiset.Fintype
+warning: Mathlib/Data/Multiset/Fintype.lean:182:38: This simp argument is unused:
+  Multiset.coe_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [Fin.exists_iff, Finset.mem_map, Finset.mem_univ, Multiset.coeEmbedding_apply,
+      Prod.mk_inj, Multiset.exists_coe, M̵u̵l̵t̵i̵s̵e̵t̵.̵c̵o̵e̵_̵m̵k̵,̵exists_prop, exists_eq_right_right, exists_eq_right,
+  ̲  ̲ ̲ ̲Multiset.mem_toEnumFinset, true_and]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [2955/3629] Replayed Mathlib.Algebra.Order.CauSeq.Basic
+warning: Mathlib/Algebra/Order/CauSeq/Basic.lean:809:4: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+⚠ [3432/4587] Replayed Mathlib.Geometry.RingedSpace.PresheafedSpace
+warning: Mathlib/Geometry/RingedSpace/PresheafedSpace.lean:240:48: This simp argument is unused:
+  Iso.symm_inv
+
+Hint: Omit it from the simp argument list.
+  simp only [Presheaf.pushforwardToOfIso_app, I̵s̵o̵.̵s̵y̵m̵m̵_̵i̵n̵v̵,̵ ̵mapIso_hom, forget_map, Iso.symm_hom, mapIso_inv,
+  ̲  ̲ ̲ ̲ ̲ ̲eqToHom_map, assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Geometry/RingedSpace/PresheafedSpace.lean:240:62: This simp argument is unused:
+  mapIso_hom
+
+Hint: Omit it from the simp argument list.
+  simp only [Presheaf.pushforwardToOfIso_app, Iso.symm_inv, m̵a̵p̵I̵s̵o̵_̵h̵o̵m̵,̵ ̵forget_map,
+  ̵  ̵ ̵ ̵ ̵ ̵Iso.symm_hom, mapIso_inv,
+  ̲  ̲ ̲ ̲ ̲ ̲eqToHom_map, assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3468/4587] Replayed Mathlib.RingTheory.Valuation.ExtendToLocalization
+warning: Mathlib/RingTheory/Valuation/ExtendToLocalization.lean:50:6: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+⚠ [3506/4587] Replayed Mathlib.RingTheory.MvPowerSeries.PiTopology
+warning: Mathlib/RingTheory/MvPowerSeries/PiTopology.lean:202:40: This simp argument is unused:
+  ← coeff_apply
+
+Hint: Omit it from the simp argument list.
+  simp only [tendsto_iff_coeff_tendsto, ←̵ ̵c̵o̵e̵f̵f̵_̵a̵p̵p̵l̵y̵,̵ ̵coeff_X, coeff_zero]
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3609/5995] Replayed Mathlib.CategoryTheory.SmallObject.WellOrderInductionData
+warning: Mathlib/CategoryTheory/SmallObject/WellOrderInductionData.lean:147:54: This simp argument is unused:
+  homOfLE_leOfHom
+
+Hint: Omit it from the simp argument list.
+  simp only [homOfLE_refl, op_id, map_id, id_apply,̵ ̵h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵] at h₁ h₂
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/SmallObject/WellOrderInductionData.lean:155:54: This simp argument is unused:
+  homOfLE_leOfHom
+
+Hint: Omit it from the simp argument list.
+  simp only [homOfLE_refl, op_id, map_id, id_apply,̵ ̵h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵] at h₁ h₂
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/SmallObject/WellOrderInductionData.lean:195:56: This simp argument is unused:
+  homOfLE_leOfHom
+
+Hint: Omit it from the simp argument list.
+  simp only [homOfLE_refl, op_id, map_id, id_apply, h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵,̵ ̵d.map_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3619/5995] Replayed Mathlib.AlgebraicTopology.DoldKan.Compatibility
+warning: Mathlib/AlgebraicTopology/DoldKan/Compatibility.lean:220:13: This simp argument is unused:
+  comp_id
+
+Hint: Omit it from the simp argument list.
+  simp only [c̵o̵m̵p̵_̵id,̵ ̵i̵d̵_comp, Functor.map_comp, equivalence₂CounitIso_eq,
+  ̵  ̵ ̵ ̵equivalence₂CounitIso_hom_app,
+  ̲  ̲ ̲ ̲assoc, equivalenceCounitIso_hom_app]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/DoldKan/Compatibility.lean:229:2: 'simp' is a flexible tactic modifying '⊢'. Try 'simp?' and use the suggested 'simp only [...]'. Alternatively, use `suffices` to explicitly state the simplified form.
+
+Note: This linter can be disabled with `set_option linter.flexible false`
+info: Mathlib/AlgebraicTopology/DoldKan/Compatibility.lean:229:2: Try this:
+  [apply] simp only [Iso.symm_inv, associator_hom_app, comp_obj, map_id, id_comp, Iso.inv_hom_id_app_assoc,
+    Iso.inv_hom_id_app, comp_id, NatTrans.naturality_assoc, Functor.comp_map]
+info: Mathlib/AlgebraicTopology/DoldKan/Compatibility.lean:230:2: 'rw [← e'.functor.map_comp_assoc, Equivalence.functor_unit_comp]' uses '⊢'!
+⚠ [3621/5995] Replayed Mathlib.AlgebraicTopology.SimplicialObject.Split
+warning: Mathlib/AlgebraicTopology/SimplicialObject/Split.lean:93:17: This simp argument is unused:
+  unop_op
+
+Hint: Omit it from the simp argument list.
+  simp only [u̵n̵o̵p̵_̵o̵p̵,̵ ̵Sigma.mk.inj_iff, Fin.mk.injEq] at h₁
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3655/5995] Replayed Mathlib.CategoryTheory.Localization.CalculusOfFractions.OfAdjunction
+warning: Mathlib/CategoryTheory/Localization/CalculusOfFractions/OfAdjunction.lean:99:13: This simp argument is unused:
+  Functor.id_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [̵F̵u̵n̵c̵t̵o̵r̵.̵i̵d̵_̵o̵b̵j̵,̵ ̵i̵n̵v̵e̵r̵s̵e̵I̵m̵a̵g̵e̵_̵i̵f̵f̵,̵[̲i̲n̲v̲e̲r̲s̲e̲I̲m̲a̲g̲e̲_̲i̲f̲f̲,̲ isomorphisms.iff]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Localization/CalculusOfFractions/OfAdjunction.lean:106:13: This simp argument is unused:
+  Functor.id_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [̵F̵u̵n̵c̵t̵o̵r̵.̵i̵d̵_̵o̵b̵j̵,̵ ̵i̵n̵v̵e̵r̵s̵e̵I̵m̵a̵g̵e̵_̵i̵f̵f̵,̵[̲i̲n̲v̲e̲r̲s̲e̲I̲m̲a̲g̲e̲_̲i̲f̲f̲,̲ isomorphisms.iff]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3673/5995] Replayed Mathlib.AlgebraicTopology.SimplicialSet.Horn
+warning: Mathlib/AlgebraicTopology/SimplicialSet/Horn.lean:97:15: This simp argument is unused:
+  SimplexCategory.len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [̵S̵i̵m̵p̵l̵e̵x̵C̵a̵t̵e̵g̵o̵r̵y̵.̵l̵e̵n̵_̵m̵k̵,̵ ̵F̵i̵n̵s̵e̵t̵.̵t̵o̵p̵_̵e̵q̵_̵u̵n̵i̵v̵,̵[̲F̲i̲n̲s̲e̲t̲.̲t̲o̲p̲_̲e̲q̲_̲u̲n̲i̲v̲,̲ Finset.card_univ, Fintype.card_fin, Finset.card_singleton,
+  ̲  ̲ ̲ ̲ ̲ ̲add_le_add_iff_right] at this
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3678/5995] Replayed Mathlib.AlgebraicTopology.SimplicialSet.StrictSegal
+warning: Mathlib/AlgebraicTopology/SimplicialSet/StrictSegal.lean:397:48: This simp argument is unused:
+  len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [SimplexCategory.δ, Hom.toOrderHom, l̵e̵n̵_̵mk,̵ ̵m̵k̵Hom, Hom.mk,
+  ̵  ̵ ̵ ̵OrderEmbedding.toOrderHom_coe,
+  ̲  ̲ ̲ ̲Fin.succAboveOrderEmb_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/AlgebraicTopology/SimplicialSet/StrictSegal.lean:409:48: This simp argument is unused:
+  len_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [SimplexCategory.δ, Hom.toOrderHom, l̵e̵n̵_̵mk,̵ ̵m̵k̵Hom, Hom.mk,
+  ̵  ̵ ̵ ̵OrderEmbedding.toOrderHom_coe,
+  ̲  ̲ ̲ ̲Fin.succAboveOrderEmb_apply]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3814/5995] Replayed Mathlib.Topology.Compactness.Paracompact
+warning: Mathlib/Topology/Compactness/Paracompact.lean:249:43: This simp argument is unused:
+  Subtype.coe_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [mem_iUnion, mem_setOf_eq,̵ ̵S̵u̵b̵t̵y̵p̵e̵.̵c̵o̵e̵_̵m̵k̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4056/6972] Replayed Mathlib.CategoryTheory.EffectiveEpi.Coproduct
+warning: Mathlib/CategoryTheory/EffectiveEpi/Coproduct.lean:72:35: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [colimit.ι_desc_assoc, D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵Cofan.mk_ι_app]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/EffectiveEpi/Coproduct.lean:78:35: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [colimit.ι_desc_assoc, D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵Cofan.mk_ι_app]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/EffectiveEpi/Coproduct.lean:89:35: This simp argument is unused:
+  Discrete.functor_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [colimit.ι_desc_assoc, D̵i̵s̵c̵r̵e̵t̵e̵.̵f̵u̵n̵c̵t̵o̵r̵_̵o̵b̵j̵,̵ ̵Cofan.mk_ι_app] at hg
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4084/6972] Replayed Mathlib.CategoryTheory.Galois.Basic
+warning: Mathlib/CategoryTheory/Galois/Basic.lean:258:34: This simp argument is unused:
+  Functor.comp_map
+
+Hint: Omit it from the simp argument list.
+  simp only [fiberEqualizerEquiv, F̵u̵n̵c̵t̵o̵r̵.̵c̵o̵m̵p̵_̵m̵a̵p̵,̵ ̵Iso.toEquiv_comp]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Galois/Basic.lean:273:33: This simp argument is unused:
+  Functor.comp_map
+
+Hint: Omit it from the simp argument list.
+  simp only [fiberPullbackEquiv, F̵u̵n̵c̵t̵o̵r̵.̵c̵o̵m̵p̵_̵m̵a̵p̵,̵ ̵Iso.toEquiv_comp, Equiv.symm_trans_apply, Iso.toEquiv_symm_fun]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Galois/Basic.lean:284:33: This simp argument is unused:
+  Functor.comp_map
+
+Hint: Omit it from the simp argument list.
+  simp only [fiberPullbackEquiv, F̵u̵n̵c̵t̵o̵r̵.̵c̵o̵m̵p̵_̵m̵a̵p̵,̵ ̵Iso.toEquiv_comp, Equiv.symm_trans_apply, Iso.toEquiv_symm_fun]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4088/6972] Replayed Mathlib.CategoryTheory.Limits.Shapes.CombinedProducts
+warning: Mathlib/CategoryTheory/Limits/Shapes/CombinedProducts.lean:60:19: This simp argument is unused:
+  pair_obj_left
+
+Hint: Omit it from the simp argument list.
+  simp only [p̵a̵i̵r̵_̵o̵b̵j̵_̵l̵e̵f̵t̵,̵ ̵mk_π_app, IsLimit.fac]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4102/6972] Replayed Mathlib.CategoryTheory.Groupoid.FreeGroupoid
+warning: Mathlib/CategoryTheory/Groupoid/FreeGroupoid.lean:169:15: This simp argument is unused:
+  ← Functor.toPrefunctor_comp
+
+Hint: Omit it from the simp argument list.
+  simp only [̵←̵ ̵F̵u̵n̵c̵t̵o̵r̵.̵t̵o̵P̵r̵e̵f̵u̵n̵c̵t̵o̵r̵_̵c̵o̵m̵p̵,̵ ̵P̵r̵e̵f̵u̵n̵c̵t̵o̵r̵.̵c̵o̵m̵p̵_̵m̵a̵p̵,̵[̲P̲r̲e̲f̲u̲n̲c̲t̲o̲r̲.̲c̲o̲m̲p̲_̲m̲a̲p̲,̲ Paths.of_map]
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4137/6972] Replayed Mathlib.CategoryTheory.Limits.Shapes.SequentialProduct
+warning: Mathlib/CategoryTheory/Limits/Shapes/SequentialProduct.lean:88:16: This simp argument is unused:
+  homOfLE_leOfHom
+
+Hint: Omit it from the simp argument list.
+  simp only [̵ ̵h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵,̵ ̵F̵u̵n̵c̵t̵o̵r̵.̵o̵f̵O̵p̵S̵e̵q̵u̵e̵n̵c̵e̵_̵m̵a̵p̵_̵h̵o̵m̵O̵f̵L̵E̵_̵s̵u̵c̵c̵,̵[̲F̲u̲n̲c̲t̲o̲r̲.̲o̲f̲O̲p̲S̲e̲q̲u̲e̲n̲c̲e̲_̲m̲a̲p̲_̲h̲o̲m̲O̲f̲L̲E̲_̲s̲u̲c̲c̲,̲ functorMap, dite_eq_ite]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/SequentialProduct.lean:89:18: This simp argument is unused:
+  dite_eq_ite
+
+Hint: Omit it from the simp argument list.
+  simp only [̵ ̵h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵,̵[̲h̲o̲m̲O̲f̲L̲E̲_̲l̲e̲O̲f̲H̲o̲m̲,̲ Functor.ofOpSequence_map_homOfLE_succ, f̵u̵n̵c̵t̵o̵r̵M̵a̵p̵,̵ ̵d̵i̵t̵e̵_̵e̵q̵_̵i̵t̵e̵]̵f̲u̲n̲c̲t̲o̲r̲M̲a̲p̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/SequentialProduct.lean:107:18: This simp argument is unused:
+  homOfLE_leOfHom
+
+Hint: Omit it from the simp argument list.
+  simp only [̵ ̵h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵,̵ ̵d̵i̵t̵e̵_̵e̵q̵_̵i̵t̵e̵,̵[̲d̲i̲t̲e̲_̲e̲q̲_̲i̲t̲e̲,̲ Functor.ofOpSequence_map_homOfLE_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/SequentialProduct.lean:107:35: This simp argument is unused:
+  dite_eq_ite
+
+Hint: Omit it from the simp argument list.
+  simp only [̵ ̵h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵,̵ ̵d̵i̵t̵e̵_̵e̵q̵_̵i̵t̵e̵,̵[̲h̲o̲m̲O̲f̲L̲E̲_̲l̲e̲O̲f̲H̲o̲m̲,̲ Functor.ofOpSequence_map_homOfLE_succ]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Limits/Shapes/SequentialProduct.lean:112:18: This simp argument is unused:
+  homOfLE_leOfHom
+
+Hint: Omit it from the simp argument list.
+  simp only [̵ ̵h̵o̵m̵O̵f̵L̵E̵_̵l̵e̵O̵f̵H̵o̵m̵,̵ ̵F̵u̵n̵c̵t̵o̵r̵.̵o̵f̵O̵p̵S̵e̵q̵u̵e̵n̵c̵e̵_̵m̵a̵p̵_̵h̵o̵m̵O̵f̵L̵E̵_̵s̵u̵c̵c̵,̵[̲F̲u̲n̲c̲t̲o̲r̲.̲o̲f̲O̲p̲S̲e̲q̲u̲e̲n̲c̲e̲_̲m̲a̲p̲_̲h̲o̲m̲O̲f̲L̲E̲_̲s̲u̲c̲c̲,̲ Category.assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4304/6972] Replayed Mathlib.Combinatorics.SimpleGraph.Maps
+warning: Mathlib/Combinatorics/SimpleGraph/Maps.lean:70:2: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+warning: Mathlib/Combinatorics/SimpleGraph/Maps.lean:113:2: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+warning: Mathlib/Combinatorics/SimpleGraph/Maps.lean:119:2: The `show` tactic should only be used to indicate intermediate goal states for readability.
+However, this tactic invocation changed the goal. Please use `change` instead for these purposes.
+
+Note: This linter can be disabled with `set_option linter.style.show false`
+⚠ [4375/6972] Replayed Mathlib.Combinatorics.Quiver.Schreier
+warning: Mathlib/Combinatorics/Quiver/Schreier.lean:136:15: This simp argument is unused:
+  Prefunctor.costar_apply
+
+Hint: Omit it from the simp argument list.
+  simp only [̵P̵r̵e̵f̵u̵n̵c̵t̵o̵r̵.̵c̵o̵s̵t̵a̵r̵_̵a̵p̵p̵l̵y̵,̵ ̵l̵a̵b̵e̵l̵l̵i̵n̵g̵_̵m̵a̵p̵]̵[̲l̲a̲b̲e̲l̲l̲i̲n̲g̲_̲m̲a̲p̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Combinatorics/Quiver/Schreier.lean:136:40: This simp argument is unused:
+  labelling_map
+
+Hint: Omit it from the simp argument list.
+  simp only [Prefunctor.costar_apply,̵ ̵l̵a̵b̵e̵l̵l̵i̵n̵g̵_̵m̵a̵p̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4393/6972] Replayed Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
+warning: Mathlib/Combinatorics/SimpleGraph/Connectivity/Connected.lean:655:28: This simp argument is unused:
+  SetLike.coe_sort_coe
+
+Hint: Omit it from the simp argument list.
+  simp_all only [map_adj, Se̵t̵L̵i̵k̵e̵.̵c̵o̵e̵_̵s̵o̵r̵t̵_̵c̵o̵e̵,̵ ̵S̵ubtype.exists, mem_supp_iff]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4421/6972] Replayed Mathlib.Combinatorics.SimpleGraph.Matching
+warning: Mathlib/Combinatorics/SimpleGraph/Matching.lean:396:50: This simp argument is unused:
+  completeGraph_eq_top
+
+Hint: Omit it from the simp argument list.
+  simp only [sup_adj, Subgraph.spanningCoe_adj, c̵o̵m̵p̵l̵e̵t̵e̵G̵r̵a̵p̵h̵_̵e̵q̵_̵t̵o̵p̵,̵ ̵edge_adj, c, Walk.toSubgraph, Subgraph.sup_adj,
+  ̲  ̲ ̲ ̲ ̲ ̲subgraphOfAdj_adj, adj_toSubgraph_mapLe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4713/6972] Replayed Mathlib.ModelTheory.Definability
+warning: Mathlib/ModelTheory/Definability.lean:206:46: This simp argument is unused:
+  Finset.coe_sort_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [Formula.Realize, mem_setOf_eq,̵ ̵F̵i̵n̵s̵e̵t̵.̵c̵o̵e̵_̵s̵o̵r̵t̵_̵c̵o̵e̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4714/6972] Replayed Mathlib.ModelTheory.ElementarySubstructures
+warning: Mathlib/ModelTheory/ElementarySubstructures.lean:221:31: This simp argument is unused:
+  SetLike.coe_sort_coe
+
+Hint: Omit it from the simp argument list.
+  simp only [Sentence.Realize, S̵e̵t̵L̵i̵k̵e̵.̵c̵o̵e̵_̵s̵o̵r̵t̵_̵c̵o̵e̵,̵ ̵Formula.realize_iExs, Formula.realize_relabel, Sum.elim_comp_inr,
+  ̲  ̲ ̲ ̲ψ] at hψS
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4792/8007] Replayed Mathlib.GroupTheory.HNNExtension
+warning: Mathlib/GroupTheory/HNNExtension.lean:178:15: This simp argument is unused:
+  toSubgroup_neg_one
+
+Hint: Omit it from the simp argument list.
+  simp only [toSubgroup_̵n̵e̵g̵_̵o̵n̵e̵,̵ ̵t̵o̵S̵u̵b̵g̵r̵o̵u̵p̵Equiv_neg_one, SetLike.coe_eq_coe]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4859/8007] Replayed Mathlib.Topology.Order.WithTop
+warning: Mathlib/Topology/Order/WithTop.lean:224:39: This simp argument is unused:
+  coe_setOf
+
+Hint: Omit it from the simp argument list.
+  simp only [← untopA_eq_untop, ne_eq, c̵o̵e̵_̵s̵e̵t̵O̵f̵,̵ ̵mem_setOf_eq]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Topology/Order/WithTop.lean:224:50: This simp argument is unused:
+  mem_setOf_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [← untopA_eq_untop, ne_eq, coe_setOf,̵ ̵m̵e̵m̵_̵s̵e̵t̵O̵f̵_̵e̵q̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [4896/8007] Replayed Mathlib.ModelTheory.PartialEquiv
+warning: Mathlib/ModelTheory/PartialEquiv.lean:362:15: This simp argument is unused:
+  cod_partialEquivLimit
+
+Hint: Omit it from the simp argument list.
+  simp only [̵c̵o̵d̵_̵p̵a̵r̵t̵i̵a̵l̵E̵q̵u̵i̵v̵L̵i̵m̵i̵t̵,̵ ̵←̵[̲←̲ Embedding.comp_assoc, subtype_comp_inclusion]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [5311/8351] Replayed Batteries.Data.Vector.Lemmas
+warning: Batteries/Data/Vector/Lemmas.lean:48:17: This simp argument is unused:
+  Nat.add_one_sub_one
+
+Hint: Omit it from the simp argument list.
+  simp only [̵N̵a̵t̵.̵a̵d̵d̵_̵o̵n̵e̵_̵s̵u̵b̵_̵o̵n̵e̵,̵ ̵t̵a̵i̵l̵_̵e̵q̵_̵c̵a̵s̵t̵_̵e̵x̵t̵r̵a̵c̵t̵,̵[̲t̲a̲i̲l̲_̲e̲q̲_̲c̲a̲s̲t̲_̲e̲x̲t̲r̲a̲c̲t̲,̲ getElem_toList, getElem_cast, getElem_extract,
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲List.getElem_tail]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✖ [5328/8368] Building Mathlib.CategoryTheory.Shift.Quotient (1.0s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Shift/Quotient.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Shift/Quotient.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Shift/Quotient.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Shift/Quotient.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Shift/Quotient.setup.json --json
+error: Mathlib/CategoryTheory/Shift/Quotient.lean:99:68: unsolved goals
+C : Type u
+inst✝⁶ : Category.{v, u} C
+D : Type u'
+inst✝⁵ : Category.{v', u'} D
+F : C ⥤ D
+r : HomRel C
+A : Type w
+inst✝⁴ : AddMonoid A
+inst✝³ : HasShift C A
+inst✝² : HasShift D A
+inst✝¹ : r.IsCompatibleWithShift A
+inst✝ : F.CommShift A
+hF : ∀ (x y : C) (f₁ f₂ : x ⟶ y), r f₁ f₂ → F.map f₁ = F.map f₂
+a : A
+X : C
+⊢ (Functor.commShiftIso F a).inv.app X ≫ (lift r F hF).map ((Functor.commShiftIso (functor r) a).symm.inv.app X) =
+    (Functor.commShiftIso F a).inv.app X ≫ (lift r F hF).map ((Functor.commShiftIso (functor r) a).hom.app X)
+error: Lean exited with code 1
+✖ [5329/8368] Building Batteries.Classes.SatisfiesM (573ms)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/Batteries/Classes/SatisfiesM.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean/Batteries/Classes/SatisfiesM.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean/Batteries/Classes/SatisfiesM.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/ir/Batteries/Classes/SatisfiesM.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/ir/Batteries/Classes/SatisfiesM.setup.json --json
+error: Batteries/Classes/SatisfiesM.lean:281:22: unsolved goals
+m : Type ?u.5 → Type ?u.4
+ε : Type ?u.5
+inst✝² : Monad m
+inst✝¹ : LawfulMonad m
+inst✝ : MonadSatisfying m
+α : Type ?u.5
+p : α → Prop
+x : ExceptT ε m α
+h : SatisfiesM p x
+⊢ (ExceptT.mk ((fun a => a.val) <$> satisfying ⋯)).run = Subtype.val <$> satisfying ⋯
+error: Lean exited with code 1
+✖ [5337/8368] Building Mathlib.CategoryTheory.Monoidal.Types.Coyoneda (1.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.setup.json --json
+error: Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.lean:35:34: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?f₁ ≫ ?g₁ ⊗ₘ ?f₂ ≫ ?g₂
+in the target expression
+  (((ConcreteCategory.hom ((↾fun p ↦ (λ_ (𝟙_ C)).inv ≫ (p.1 ⊗ₘ p.2)) ⊗ₘ 𝟙 (𝟙_ C ⟶ Z))) ((f, g), 𝟙 (𝟙_ C) ≫ h)).1 ⊗ₘ
+      ((ConcreteCategory.hom ((↾fun p ↦ (λ_ (𝟙_ C)).inv ≫ (p.1 ⊗ₘ p.2)) ⊗ₘ 𝟙 (𝟙_ C ⟶ Z))) ((f, g), 𝟙 (𝟙_ C) ≫ h)).2) ≫
+    (α_ X Y Z).hom
+
+C : Type u
+inst✝¹ : Category.{v, u} C
+inst✝ : MonoidalCategory C
+X Y Z : C
+h : 𝟙_ C ⟶ Z
+f : 𝟙_ C ⟶ X
+g : 𝟙_ C ⟶ Y
+| (((ConcreteCategory.hom ((↾fun p ↦ (λ_ (𝟙_ C)).inv ≫ (p.1 ⊗ₘ p.2)) ⊗ₘ 𝟙 (𝟙_ C ⟶ Z))) ((f, g), 𝟙 (𝟙_ C) ≫ h)).1 ⊗ₘ
+      ((ConcreteCategory.hom ((↾fun p ↦ (λ_ (𝟙_ C)).inv ≫ (p.1 ⊗ₘ p.2)) ⊗ₘ 𝟙 (𝟙_ C ⟶ Z))) ((f, g), 𝟙 (𝟙_ C) ≫ h)).2) ≫
+    (α_ X Y Z).hom
+error: Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.lean:27:2: could not synthesize default value for parameter 'left_unitality' using tactics
+error: Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.lean:27:2: tactic 'aesop' failed, failed to prove the goal after exhaustive search.
+Initial goal:
+  C : Type u
+  inst✝¹ : Category.{v, u} C
+  inst✝ : MonoidalCategory C
+  ⊢ ∀ (X : C),
+      (λ_ ((coyoneda.obj (op (𝟙_ C))).obj X)).hom =
+        ((↾fun x ↦ 𝟙 (unop (op (𝟙_ C)))) ⊗ₘ 𝟙 ((coyoneda.obj (op (𝟙_ C))).obj X)) ≫
+          (fun X Y ↦ ↾fun p ↦ (λ_ (𝟙_ C)).inv ≫ (p.1 ⊗ₘ p.2)) (𝟙_ C) X ≫ (coyoneda.obj (op (𝟙_ C))).map (λ_ X).hom
+Remaining goals after safe rules:
+  C : Type u
+  inst : Category.{v, u} C
+  inst_1 : MonoidalCategory C
+  X : C
+  ⊢ (λ_ (𝟙_ C ⟶ X)).hom =
+      (↾fun x ↦ 𝟙 (𝟙_ C)) ▷ (𝟙_ C ⟶ X) ≫ (↾fun p ↦ (λ_ (𝟙_ C)).inv ≫ (p.1 ⊗ₘ p.2)) ≫ ↾fun g ↦ g ≫ (λ_ X).hom
+error: Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.lean:39:33: unsolved goals
+C : Type u
+inst✝¹ : Category.{v, u} C
+inst✝ : MonoidalCategory C
+X : C
+f : (coyoneda.obj (op (𝟙_ C))).obj X
+⊢ (ConcreteCategory.hom (ρ_ (𝟙_ C ⟶ X)).hom) (f, PUnit.unit) =
+    (ρ_ (𝟙_ C)).inv ≫
+      (((ConcreteCategory.hom ((𝟙_ C ⟶ X) ◁ ↾fun x ↦ 𝟙 (𝟙_ C))) (f, PUnit.unit)).1 ⊗ₘ
+          ((ConcreteCategory.hom ((𝟙_ C ⟶ X) ◁ ↾fun x ↦ 𝟙 (𝟙_ C))) (f, PUnit.unit)).2) ≫
+        (ρ_ X).hom
+error: Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.lean:25:0: (kernel) declaration has metavariables 'CategoryTheory.instLaxMonoidalObjOppositeFunctorTypeCoyonedaOpTensorUnit'
+error: Lean exited with code 1
+✖ [5371/8368] Building Batteries.Data.Fin.Fold (702ms)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/Batteries/Data/Fin/Fold.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean/Batteries/Data/Fin/Fold.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean/Batteries/Data/Fin/Fold.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/ir/Batteries/Data/Fin/Fold.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/ir/Batteries/Data/Fin/Fold.setup.json --json
+error: Batteries/Data/Fin/Fold.lean:47:14: unsolved goals
+case succ
+m : Type u_1 → Type u_2
+α : Type u_1
+inst✝¹ : Monad m
+inst✝ : LawfulMonad m
+n : Nat
+ih : ∀ (f : Fin n → α → m α) (x : α), dfoldrM n (fun x => α) f x = foldrM n f x
+f : Fin (n + 1) → α → m α
+x : α
+⊢ dfoldrM n ((fun x => α) ∘ succ) (fun x => f x.succ) x >>= f 0 = foldrM n (fun x => f x.succ) x >>= f 0
+warning: Batteries/Data/Fin/Fold.lean:47:55: This simp argument is unused:
+  Function.comp_def
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldrM_succ, foldrM_succ, F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵_̵d̵e̵f̵,̵ ̵ih]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Batteries/Data/Fin/Fold.lean:47:74: This simp argument is unused:
+  ih
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldrM_succ, foldrM_succ, Function.comp_def,̵ ̵i̵h̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Batteries/Data/Fin/Fold.lean:64:9: unsolved goals
+case zero
+α : Fin (0 + 2) → Type u_1
+f : (i : Fin (0 + 1)) → α i.succ → α i.castSucc
+x : α (last (0 + 1))
+⊢ f 0 x = f ⟨0, ⋯⟩ x
+warning: Batteries/Data/Fin/Fold.lean:64:55: This simp argument is unused:
+  zero_eta
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldr_succ, dfoldr_zero, last,̵ ̵z̵e̵r̵o̵_̵e̵t̵a̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Batteries/Data/Fin/Fold.lean:71:14: unsolved goals
+case succ
+α : Type u_1
+n : Nat
+ih : ∀ (f : Fin n → α → α) (x : α), dfoldr n (fun x => α) f x = foldr n f x
+f : Fin (n + 1) → α → α
+x : α
+⊢ f 0 (dfoldr n ((fun x => α) ∘ succ) (fun x => f x.succ) x) = f 0 (foldr n (fun x => f x.succ) x)
+warning: Batteries/Data/Fin/Fold.lean:71:53: This simp argument is unused:
+  Function.comp_def
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldr_succ, foldr_succ, F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵_̵d̵e̵f̵,̵ ̵ih]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Batteries/Data/Fin/Fold.lean:71:72: This simp argument is unused:
+  ih
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldr_succ, foldr_succ, Function.comp_def,̵ ̵i̵h̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Batteries/Data/Fin/Fold.lean:110:16: `simp` made no progress
+warning: Batteries/Data/Fin/Fold.lean:109:42: This simp argument is unused:
+  Function.comp_apply
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldlM_succ, foldlM_succ, Function.comp_a̵p̵p̵l̵y̵,̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵_̵def]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Batteries/Data/Fin/Fold.lean:109:63: This simp argument is unused:
+  Function.comp_def
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldlM_succ, foldlM_succ, Function.comp_apply,̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵_̵d̵e̵f̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Batteries/Data/Fin/Fold.lean:136:11: `simp` made no progress
+warning: Batteries/Data/Fin/Fold.lean:135:40: This simp argument is unused:
+  Function.comp_apply
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldl_succ, foldl_succ, Function.comp_a̵p̵p̵l̵y̵,̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵_̵def]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Batteries/Data/Fin/Fold.lean:135:61: This simp argument is unused:
+  Function.comp_def
+
+Hint: Omit it from the simp argument list.
+  simp only [dfoldl_succ, foldl_succ, Function.comp_apply,̵ ̵F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵_̵d̵e̵f̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+✖ [5374/8368] Building Mathlib.LinearAlgebra.StdBasis (1.5s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/LinearAlgebra/StdBasis.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/StdBasis.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/StdBasis.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/StdBasis.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/StdBasis.setup.json --json
+error: Mathlib/LinearAlgebra/StdBasis.lean:99:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  single j ?x j'
+in the target expression
+  ({ toFun := fun f i ↦ (s i).repr (f i), map_add' := ⋯ } (single j ((s j) i)) j') i' =
+    (Finsupp.single ⟨j, i⟩ 1) ⟨j', i'⟩
+
+case neg
+R : Type u_2
+η : Type u_4
+ιs : η → Type u_5
+Ms : η → Type u_6
+inst✝⁴ : Semiring R
+inst✝³ : (i : η) → AddCommMonoid (Ms i)
+inst✝² : (i : η) → Module R (Ms i)
+inst✝¹ : Fintype η
+inst✝ : DecidableEq η
+s : (j : η) → Basis (ιs j) R (Ms j)
+j : η
+i : ιs j
+j' : η
+i' : ιs j'
+hj : ¬j = j'
+⊢ ({ toFun := fun f i ↦ (s i).repr (f i), map_add' := ⋯ } (single j ((s j) i)) j') i' =
+    (Finsupp.single ⟨j, i⟩ 1) ⟨j', i'⟩
+error: Lean exited with code 1
+✖ [5394/8368] Building Mathlib.Algebra.Category.Grp.Adjunctions (1.5s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/Category/Grp/Adjunctions.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Category/Grp/Adjunctions.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Category/Grp/Adjunctions.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Category/Grp/Adjunctions.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Category/Grp/Adjunctions.setup.json --json
+error: Mathlib/Algebra/Category/Grp/Adjunctions.lean:82:12: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (FreeAbelianGroup.lift ?g) ((FreeAbelianGroup.map ?f) ?x)
+in the target expression
+  (Hom.hom (ConcreteCategory.ofHom (FreeAbelianGroup.lift ⇑(ConcreteCategory.hom (f✝ ≫ g✝))))) x✝ =
+    (Hom.hom
+        (ofHom (FreeAbelianGroup.map ⇑(ConcreteCategory.hom f✝)) ≫
+          ConcreteCategory.ofHom (FreeAbelianGroup.lift ⇑(ConcreteCategory.hom g✝))))
+      x✝
+
+X'✝ X✝ : Type u
+Y✝ : AddCommGrpCat
+f✝ : X'✝ ⟶ X✝
+g✝ : X✝ ⟶ (forget AddCommGrpCat).obj Y✝
+x✝ : ↑(free.obj X'✝)
+⊢ (Hom.hom (ConcreteCategory.ofHom (FreeAbelianGroup.lift ⇑(ConcreteCategory.hom (f✝ ≫ g✝))))) x✝ =
+    (Hom.hom
+        (ofHom (FreeAbelianGroup.map ⇑(ConcreteCategory.hom f✝)) ≫
+          ConcreteCategory.ofHom (FreeAbelianGroup.lift ⇑(ConcreteCategory.hom g✝))))
+      x✝
+error: Mathlib/Algebra/Category/Grp/Adjunctions.lean:72:4: (kernel) declaration has metavariables 'AddCommGrpCat.adj'
+error: Lean exited with code 1
+✖ [5414/8368] Building Mathlib.Topology.Instances.RealVectorSpace (1.2s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Topology/Instances/RealVectorSpace.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Topology/Instances/RealVectorSpace.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Topology/Instances/RealVectorSpace.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Topology/Instances/RealVectorSpace.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Topology/Instances/RealVectorSpace.setup.json --json
+error: Mathlib/Topology/Instances/RealVectorSpace.lean:53:2: could not synthesize default value for field 'continuous_toFun' of 'ContinuousLinearEquiv' using tactics
+error: Mathlib/Topology/Instances/RealVectorSpace.lean:53:2: `fun_prop` was unable to prove `Continuous ⇑e.toEquiv`
+
+Issues:
+  No theorems found for `AddEquiv.toEquiv` in order to prove `Continuous fun a ↦ e.toEquiv a`
+error: Mathlib/Topology/Instances/RealVectorSpace.lean:53:2: could not synthesize default value for field 'continuous_invFun' of 'ContinuousLinearEquiv' using tactics
+error: Mathlib/Topology/Instances/RealVectorSpace.lean:53:2: `fun_prop` was unable to prove `Continuous ⇑e.symm`
+
+Issues:
+error: Mathlib/Topology/Instances/RealVectorSpace.lean:51:4: unknown free variable `_fvar.13353`
+error: Lean exited with code 1
+✖ [5444/8368] Building Mathlib.Data.Matrix.Basis (1.8s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Data/Matrix/Basis.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/Matrix/Basis.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/Matrix/Basis.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/Matrix/Basis.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/Matrix/Basis.setup.json --json
+error: Mathlib/Data/Matrix/Basis.lean:266:11: `simp` made no progress
+error: Lean exited with code 1
+✖ [5554/8368] Building Mathlib.LinearAlgebra.Multilinear.Pi (1.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/LinearAlgebra/Multilinear/Pi.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/Multilinear/Pi.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/Multilinear/Pi.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/Multilinear/Pi.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/Multilinear/Pi.setup.json --json
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:81:4: `dsimp` made no progress
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:84:4: `dsimp` made no progress
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:77:4: unknown free variable `_fvar.2583`
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:94:4: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:97:2: unsolved goals
+case inl
+ι : Type uι
+κ : ι → Type uκ
+R : Type uR
+M : (i : ι) → κ i → Type uM
+N : ((i : ι) → κ i) → Type uN
+inst✝⁶ : Semiring R
+inst✝⁵ : (i : ι) → (k : κ i) → AddCommMonoid (M i k)
+inst✝⁴ : (p : (i : ι) → κ i) → AddCommMonoid (N p)
+inst✝³ : (i : ι) → (k : κ i) → Module R (M i k)
+inst✝² : (p : (i : ι) → κ i) → Module R (N p)
+inst✝¹ : Fintype ι
+inst✝ : (i : ι) → DecidableEq (κ i)
+f : (p : (i : ι) → κ i) → MultilinearMap R (fun i ↦ M i (p i)) (N p)
+p : (i : ι) → κ i
+m : (i : ι) → M i (p i)
+⊢ sorry () p = (f p) m
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:109:4: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:112:2: unsolved goals
+case inl
+ι : Type uι
+κ : ι → Type uκ
+R : Type uR
+M : (i : ι) → κ i → Type uM
+N : ((i : ι) → κ i) → Type uN
+inst✝⁶ : Semiring R
+inst✝⁵ : (i : ι) → (k : κ i) → AddCommMonoid (M i k)
+inst✝⁴ : (p : (i : ι) → κ i) → AddCommMonoid (N p)
+inst✝³ : (i : ι) → (k : κ i) → Module R (M i k)
+inst✝² : (p : (i : ι) → κ i) → Module R (N p)
+inst✝¹ : Fintype ι
+inst✝ : (i : ι) → DecidableEq (κ i)
+p : (i : ι) → κ i
+f : MultilinearMap R (fun i ↦ M i (p i)) (N p)
+x : (i : ι) → (j : κ i) → M i j
+⊢ sorry () p = f fun i ↦ x i (p i)
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:113:2: unsolved goals
+case inr
+ι : Type uι
+κ : ι → Type uκ
+R : Type uR
+M : (i : ι) → κ i → Type uM
+N : ((i : ι) → κ i) → Type uN
+inst✝⁶ : Semiring R
+inst✝⁵ : (i : ι) → (k : κ i) → AddCommMonoid (M i k)
+inst✝⁴ : (p : (i : ι) → κ i) → AddCommMonoid (N p)
+inst✝³ : (i : ι) → (k : κ i) → Module R (M i k)
+inst✝² : (p : (i : ι) → κ i) → Module R (N p)
+inst✝¹ : Fintype ι
+inst✝ : (i : ι) → DecidableEq (κ i)
+p : (i : ι) → κ i
+f : MultilinearMap R (fun i ↦ M i (p i)) (N p)
+x : (i : ι) → (j : κ i) → M i j
+p' : (i : ι) → κ i
+hp : p ≠ p'
+⊢ sorry () p' = 0
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:117:4: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:124:5: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:130:4: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:131:2: No applicable extensionality theorem found for type
+  ℕ
+
+Note: Extensionality theorems can be registered by marking them with the `[ext]` attribute
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:135:4: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:135:23: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:135:36: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:136:2: No applicable extensionality theorem found for type
+  ?m.37 f g
+
+Note: Extensionality theorems can be registered by marking them with the `[ext]` attribute
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:142:4: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:142:27: Unknown identifier `piFamily`
+
+Note: It is not possible to treat `piFamily` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:143:2: No applicable extensionality theorem found for type
+  ?m.34 s f
+
+Note: Extensionality theorems can be registered by marking them with the `[ext]` attribute
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:158:11: Unknown identifier `piFamily`
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:159:14: Unknown identifier `piFamily_add`
+error: Mathlib/LinearAlgebra/Multilinear/Pi.lean:160:15: Unknown identifier `piFamily_smul`
+error: Lean exited with code 1
+✖ [5564/8368] Building Mathlib.RingTheory.LocalRing.NonLocalRing (1.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/RingTheory/LocalRing/NonLocalRing.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/RingTheory/LocalRing/NonLocalRing.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/RingTheory/LocalRing/NonLocalRing.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/RingTheory/LocalRing/NonLocalRing.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/RingTheory/LocalRing/NonLocalRing.setup.json --json
+error: Mathlib/RingTheory/LocalRing/NonLocalRing.lean:54:50: Tactic `split` failed: Could not split an `if` or `match` expression in the goal
+
+Hint: Use `set_option trace.split.failure true` to display additional diagnostic information
+
+ι : Type u_1
+inst✝² : Nontrivial ι
+R : ι → Type u_2
+inst✝¹ : (i : ι) → Semiring (R i)
+inst✝ : ∀ (i : ι), Nontrivial (R i)
+i₁ i₂ : ι
+hi : i₁ ≠ i₂
+ha : ¬IsUnit fun i ↦ if i = i₁ then 0 else 1
+hb : ¬IsUnit fun i ↦ if i = i₁ then 1 else 0
+x✝ : ι
+⊢ ((fun i ↦ if i = i₁ then 0 else 1) + fun i ↦ if i = i₁ then 1 else 0) x✝ = 1 x✝
+error: Lean exited with code 1
+✖ [5568/8368] Building Mathlib.CategoryTheory.Triangulated.Rotate (1.9s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Triangulated/Rotate.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Triangulated/Rotate.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Triangulated/Rotate.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Triangulated/Rotate.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Triangulated/Rotate.setup.json --json
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:112:6: `simp` made no progress
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:104:40: could not synthesize default value for field 'map_id' of 'CategoryTheory.Functor' using tactics
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:104:40: tactic 'aesop' failed, failed to prove the goal after exhaustive search.
+Initial goal:
+  C : Type u
+  inst✝² : Category.{v, u} C
+  inst✝¹ : Preadditive C
+  inst✝ : HasShift C ℤ
+  X : C
+  ⊢ ∀ (X : Triangle C),
+      { hom₁ := (shiftFunctor C (-1)).map (𝟙 X).hom₃, hom₂ := (𝟙 X).hom₁, hom₃ := (𝟙 X).hom₂, comm₁ := ⋯, comm₂ := ⋯,
+          comm₃ := ⋯ } =
+        𝟙 X.invRotate
+Remaining goals after safe rules:
+  C : Type u
+  inst✝² : Category.{v, u} C
+  inst✝¹ : Preadditive C
+  inst✝ : HasShift C ℤ
+  X : C
+  X✝ Y✝ : Triangle C
+  f : X✝ ⟶ Y✝
+  ⊢ (shiftFunctor C (-1)).map X✝.mor₃ ≫ (shiftFunctorCompIsoId C 1 (-1) ⋯).hom.app X✝.obj₁ ≫ f.hom₁ =
+      (shiftFunctor C (-1)).map f.hom₃ ≫
+        (shiftFunctor C (-1)).map Y✝.mor₃ ≫ (shiftFunctorCompIsoId C 1 (-1) ⋯).hom.app Y✝.obj₁
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:103:2: unknown metavariable '?_uniq.12622'
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:104:4: (kernel) declaration has metavariables 'CategoryTheory.Pretriangulated.invRotate'
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:103:2: (kernel) declaration type mismatch, 'CategoryTheory.Pretriangulated.invRotate_obj' has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but it is expected to have type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:103:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but function has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:103:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but function has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:103:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but function has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:124:31: (kernel) application type mismatch
+  (Iso.refl ((Functor.id (Triangle C)).obj T).obj₂).hom
+argument has type
+  ((Functor.id (Triangle C)).obj T).obj₂ ≅ ((Functor.id (Triangle C)).obj T).obj₂
+but function has type
+  (((Functor.id (Triangle C)).obj T).obj₂ ≅
+      ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₂) →
+    (((Functor.id (Triangle C)).obj T).obj₂ ⟶
+      ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₂)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:124:31: (kernel) application type mismatch
+  (Iso.refl ((Functor.id (Triangle C)).obj T).obj₃).hom
+argument has type
+  ((Functor.id (Triangle C)).obj T).obj₃ ≅ ((Functor.id (Triangle C)).obj T).obj₃
+but function has type
+  (((Functor.id (Triangle C)).obj T).obj₃ ≅
+      ((Functor.comp (@rotate C inst✝² inst✝¹ inst✝) (@invRotate C inst✝² inst✝¹ inst✝)).obj T).obj₃) →
+    (((Functor.id (Triangle C)).obj T).obj₃ ⟶
+      ((Functor.comp (@rotate C inst✝² inst✝¹ inst✝) (@invRotate C inst✝² inst✝¹ inst✝)).obj T).obj₃)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:124:31: (kernel) application type mismatch
+  ((shiftEquiv C 1).unitIso.app T.obj₁).hom
+argument has type
+  (Functor.id C).obj T.obj₁ ≅ ((shiftEquiv C 1).functor.comp (shiftEquiv C 1).inverse).obj T.obj₁
+but function has type
+  (((Functor.id (Triangle C)).obj T).obj₁ ≅
+      ((Functor.comp (@rotate C inst✝² inst✝¹ inst✝) (@invRotate C inst✝² inst✝¹ inst✝)).obj T).obj₁) →
+    (((Functor.id (Triangle C)).obj T).obj₁ ⟶
+      ((Functor.comp (@rotate C inst✝² inst✝¹ inst✝) (@invRotate C inst✝² inst✝¹ inst✝)).obj T).obj₁)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:124:2: (kernel) application type mismatch
+  @Triangle.isoMk C inst✝³ inst✝¹ ((Functor.id (Triangle C)).obj T)
+    ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T)
+    ((shiftEquiv C 1).unitIso.app T.obj₁)
+argument has type
+  (Functor.id C).obj T.obj₁ ≅ ((shiftEquiv C 1).functor.comp (shiftEquiv C 1).inverse).obj T.obj₁
+but function has type
+  (iso₁ :
+      ((Functor.id (Triangle C)).obj T).obj₁ ≅
+        ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁) →
+    (iso₂ :
+        ((Functor.id (Triangle C)).obj T).obj₂ ≅
+          ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₂) →
+      (iso₃ :
+          ((Functor.id (Triangle C)).obj T).obj₃ ≅
+            ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₃) →
+        autoParam
+            (CategoryStruct.comp ((Functor.id (Triangle C)).obj T).mor₁ iso₂.hom =
+              CategoryStruct.comp iso₁.hom
+                ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).mor₁)
+            Triangle.isoMk._auto_1 →
+          autoParam
+              (CategoryStruct.comp ((Functor.id (Triangle C)).obj T).mor₂ iso₃.hom =
+                CategoryStruct.comp iso₂.hom
+                  ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).mor₂)
+              Triangle.isoMk._auto_3 →
+            autoParam
+                (CategoryStruct.comp ((Functor.id (Triangle C)).obj T).mor₃ ((shiftFunctor C 1).map iso₁.hom) =
+                  CategoryStruct.comp iso₃.hom
+                    ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).mor₃)
+                Triangle.isoMk._auto_5 →
+              ((Functor.id (Triangle C)).obj T ≅
+                (Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:123:4: (kernel) application type mismatch
+  @Triangle.isoMk C inst✝³ inst✝¹ ((Functor.id (Triangle C)).obj T)
+    ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T)
+    ((shiftEquiv C 1).unitIso.app T.obj₁)
+argument has type
+  (Functor.id C).obj T.obj₁ ≅ ((shiftEquiv C 1).functor.comp (shiftEquiv C 1).inverse).obj T.obj₁
+but function has type
+  (iso₁ :
+      ((Functor.id (Triangle C)).obj T).obj₁ ≅
+        ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁) →
+    (iso₂ :
+        ((Functor.id (Triangle C)).obj T).obj₂ ≅
+          ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₂) →
+      (iso₃ :
+          ((Functor.id (Triangle C)).obj T).obj₃ ≅
+            ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).obj₃) →
+        autoParam
+            (CategoryStruct.comp ((Functor.id (Triangle C)).obj T).mor₁ iso₂.hom =
+              CategoryStruct.comp iso₁.hom
+                ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).mor₁)
+            Triangle.isoMk._auto_1 →
+          autoParam
+              (CategoryStruct.comp ((Functor.id (Triangle C)).obj T).mor₂ iso₃.hom =
+                CategoryStruct.comp iso₂.hom
+                  ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).mor₂)
+              Triangle.isoMk._auto_3 →
+            autoParam
+                (CategoryStruct.comp ((Functor.id (Triangle C)).obj T).mor₃ ((shiftFunctor C 1).map iso₁.hom) =
+                  CategoryStruct.comp iso₃.hom
+                    ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T).mor₃)
+                Triangle.isoMk._auto_5 →
+              ((Functor.id (Triangle C)).obj T ≅
+                (Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj T)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:122:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  (Functor.id C).obj X.obj₁ ⟶ ((shiftFunctor C 1).comp (shiftFunctor C (-1))).obj X.obj₁
+but function has type
+  (((Functor.id (Triangle C)).obj X).obj₁ ⟶
+      ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj X).obj₁) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:122:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₂ ⟶ X.obj₂
+but function has type
+  (((Functor.id (Triangle C)).obj X).obj₂ ⟶
+      ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj X).obj₂) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:122:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₃ ⟶ X.obj₃
+but function has type
+  (((Functor.id (Triangle C)).obj X).obj₃ ⟶
+      ((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj X).obj₃) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:122:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  ((shiftFunctor C 1).comp (shiftFunctor C (-1))).obj X.obj₁ ⟶ (Functor.id C).obj X.obj₁
+but function has type
+  (((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj X).obj₁ ⟶
+      ((Functor.id (Triangle C)).obj X).obj₁) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:122:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₂ ⟶ X.obj₂
+but function has type
+  (((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj X).obj₂ ⟶
+      ((Functor.id (Triangle C)).obj X).obj₂) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:122:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₃ ⟶ X.obj₃
+but function has type
+  (((Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj X).obj₃ ⟶
+      ((Functor.id (Triangle C)).obj X).obj₃) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:132:31: (kernel) application type mismatch
+  (Iso.refl ((Functor.comp (@invRotate C inst✝² inst✝¹ inst✝) (@rotate C inst✝² inst✝¹ inst✝)).obj T).obj₂).hom
+argument has type
+  ((Functor.comp (@invRotate C inst✝² inst✝¹ inst✝) (@rotate C inst✝² inst✝¹ inst✝)).obj T).obj₂ ≅
+    ((Functor.comp (@invRotate C inst✝² inst✝¹ inst✝) (@rotate C inst✝² inst✝¹ inst✝)).obj T).obj₂
+but function has type
+  (((Functor.comp (@invRotate C inst✝² inst✝¹ inst✝) (@rotate C inst✝² inst✝¹ inst✝)).obj T).obj₂ ≅
+      ((Functor.id (Triangle C)).obj T).obj₂) →
+    (((Functor.comp (@invRotate C inst✝² inst✝¹ inst✝) (@rotate C inst✝² inst✝¹ inst✝)).obj T).obj₂ ⟶
+      ((Functor.id (Triangle C)).obj T).obj₂)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:132:31: (kernel) application type mismatch
+  ((shiftEquiv C 1).counitIso.app T.obj₃).hom
+argument has type
+  ((shiftEquiv C 1).inverse.comp (shiftEquiv C 1).functor).obj T.obj₃ ≅ (Functor.id C).obj T.obj₃
+but function has type
+  (((Functor.comp (@invRotate C inst✝² inst✝¹ inst✝) (@rotate C inst✝² inst✝¹ inst✝)).obj T).obj₃ ≅
+      ((Functor.id (Triangle C)).obj T).obj₃) →
+    (((Functor.comp (@invRotate C inst✝² inst✝¹ inst✝) (@rotate C inst✝² inst✝¹ inst✝)).obj T).obj₃ ⟶
+      ((Functor.id (Triangle C)).obj T).obj₃)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:132:31: (kernel) application type mismatch
+  (Iso.refl ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁).hom
+argument has type
+  ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁ ≅
+    ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁
+but function has type
+  (((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁ ≅
+      ((Functor.id (Triangle C)).obj T).obj₁) →
+    (((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁ ⟶
+      ((Functor.id (Triangle C)).obj T).obj₁)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:132:2: (kernel) application type mismatch
+  @Triangle.isoMk C inst✝³ inst✝¹
+    ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T)
+    ((Functor.id (Triangle C)).obj T)
+    (Iso.refl ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁)
+argument has type
+  ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁ ≅
+    ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁
+but function has type
+  (iso₁ :
+      ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁ ≅
+        ((Functor.id (Triangle C)).obj T).obj₁) →
+    (iso₂ :
+        ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₂ ≅
+          ((Functor.id (Triangle C)).obj T).obj₂) →
+      (iso₃ :
+          ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₃ ≅
+            ((Functor.id (Triangle C)).obj T).obj₃) →
+        autoParam
+            (CategoryStruct.comp
+                ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).mor₁
+                iso₂.hom =
+              CategoryStruct.comp iso₁.hom ((Functor.id (Triangle C)).obj T).mor₁)
+            Triangle.isoMk._auto_1 →
+          autoParam
+              (CategoryStruct.comp
+                  ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).mor₂
+                  iso₃.hom =
+                CategoryStruct.comp iso₂.hom ((Functor.id (Triangle C)).obj T).mor₂)
+              Triangle.isoMk._auto_3 →
+            autoParam
+                (CategoryStruct.comp
+                    ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).mor₃
+                    ((shiftFunctor C 1).map iso₁.hom) =
+                  CategoryStruct.comp iso₃.hom ((Functor.id (Triangle C)).obj T).mor₃)
+                Triangle.isoMk._auto_5 →
+              ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T ≅
+                (Functor.id (Triangle C)).obj T)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:131:4: (kernel) application type mismatch
+  @Triangle.isoMk C inst✝³ inst✝¹
+    ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T)
+    ((Functor.id (Triangle C)).obj T)
+    (Iso.refl ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁)
+argument has type
+  ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁ ≅
+    ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁
+but function has type
+  (iso₁ :
+      ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₁ ≅
+        ((Functor.id (Triangle C)).obj T).obj₁) →
+    (iso₂ :
+        ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₂ ≅
+          ((Functor.id (Triangle C)).obj T).obj₂) →
+      (iso₃ :
+          ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).obj₃ ≅
+            ((Functor.id (Triangle C)).obj T).obj₃) →
+        autoParam
+            (CategoryStruct.comp
+                ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).mor₁
+                iso₂.hom =
+              CategoryStruct.comp iso₁.hom ((Functor.id (Triangle C)).obj T).mor₁)
+            Triangle.isoMk._auto_1 →
+          autoParam
+              (CategoryStruct.comp
+                  ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).mor₂
+                  iso₃.hom =
+                CategoryStruct.comp iso₂.hom ((Functor.id (Triangle C)).obj T).mor₂)
+              Triangle.isoMk._auto_3 →
+            autoParam
+                (CategoryStruct.comp
+                    ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T).mor₃
+                    ((shiftFunctor C 1).map iso₁.hom) =
+                  CategoryStruct.comp iso₃.hom ((Functor.id (Triangle C)).obj T).mor₃)
+                Triangle.isoMk._auto_5 →
+              ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj T ≅
+                (Functor.id (Triangle C)).obj T)
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:130:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₁ ⟶ X.obj₁
+but function has type
+  (((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj X).obj₁ ⟶
+      ((Functor.id (Triangle C)).obj X).obj₁) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:130:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₂ ⟶ X.obj₂
+but function has type
+  (((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj X).obj₂ ⟶
+      ((Functor.id (Triangle C)).obj X).obj₂) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:130:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  ((shiftFunctor C (-1)).comp (shiftFunctor C 1)).obj X.obj₃ ⟶ (Functor.id C).obj X.obj₃
+but function has type
+  (((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj X).obj₃ ⟶
+      ((Functor.id (Triangle C)).obj X).obj₃) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:130:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₁ ⟶ X.obj₁
+but function has type
+  (((Functor.id (Triangle C)).obj X).obj₁ ⟶
+      ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj X).obj₁) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:130:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  X.obj₂ ⟶ X.obj₂
+but function has type
+  (((Functor.id (Triangle C)).obj X).obj₂ ⟶
+      ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj X).obj₂) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:130:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  (Functor.id C).obj X.obj₃ ⟶ ((shiftFunctor C (-1)).comp (shiftFunctor C 1)).obj X.obj₃
+but function has type
+  (((Functor.id (Triangle C)).obj X).obj₃ ⟶
+      ((Functor.comp (@invRotate C inst✝³ inst✝² inst✝¹) (@rotate C inst✝³ inst✝² inst✝¹)).obj X).obj₃) →
+    Prop
+error: Mathlib/CategoryTheory/Triangulated/Rotate.lean:140:61: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  (Functor.id (Triangle C)).obj X_1 ⟶
+    (Functor.comp (@rotate C inst✝³ inst✝² inst✝¹) (@invRotate C inst✝³ inst✝² inst✝¹)).obj X_1
+but function has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Lean exited with code 1
+✖ [5578/8368] Building Mathlib.CategoryTheory.Monoidal.Functor.Types (1.5s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Monoidal/Functor/Types.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Monoidal/Functor/Types.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Monoidal/Functor/Types.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Monoidal/Functor/Types.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Monoidal/Functor/Types.setup.json --json
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: could not synthesize default value for field 'μ_natural_left' of 'CategoryTheory.Functor.LaxMonoidal' using tactics
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: tactic 'aesop' failed, failed to prove the goal after exhaustive search.
+Initial goal:
+  F : Type u_1 → Type u_2
+  inst✝¹ : Applicative F
+  inst✝ : LawfulApplicative F
+  ⊢ ∀ {X Y : Type u_1} (f : X ⟶ Y) (X' : Type u_1),
+      (MonoidalCategoryStruct.whiskerRight ((ofTypeFunctor F).map f) ((ofTypeFunctor F).obj X') ≫
+          ↾fun p ↦ Prod.mk <$> p.1 <*> p.2) =
+        (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫ (ofTypeFunctor F).map (MonoidalCategoryStruct.whiskerRight f X')
+Remaining goals after safe rules:
+  F : Type u_1 → Type u_2
+  inst : Applicative F
+  inst_1 : LawfulApplicative F
+  X Y : Type u_1
+  f : X ⟶ Y
+  X' : Type u_1
+  ⊢ (MonoidalCategoryStruct.whiskerRight (↾_root_.Functor.map ⇑(TypeCat.Hom.hom f)) (F X') ≫
+        ↾fun p ↦ Prod.mk <$> p.1 <*> p.2) =
+      (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫
+        ↾_root_.Functor.map ⇑(TypeCat.Hom.hom (MonoidalCategoryStruct.whiskerRight f X'))
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: could not synthesize default value for field 'μ_natural_right' of 'CategoryTheory.Functor.LaxMonoidal' using tactics
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: tactic 'aesop' failed, failed to prove the goal after exhaustive search.
+Initial goal:
+  F : Type u_1 → Type u_2
+  inst✝¹ : Applicative F
+  inst✝ : LawfulApplicative F
+  ⊢ ∀ {X Y : Type u_1} (X' : Type u_1) (f : X ⟶ Y),
+      (MonoidalCategoryStruct.whiskerLeft ((ofTypeFunctor F).obj X') ((ofTypeFunctor F).map f) ≫
+          ↾fun p ↦ Prod.mk <$> p.1 <*> p.2) =
+        (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫ (ofTypeFunctor F).map (MonoidalCategoryStruct.whiskerLeft X' f)
+Remaining goals after safe rules:
+  F : Type u_1 → Type u_2
+  inst : Applicative F
+  inst_1 : LawfulApplicative F
+  X Y X' : Type u_1
+  f : X ⟶ Y
+  ⊢ (MonoidalCategoryStruct.whiskerLeft (F X') (↾_root_.Functor.map ⇑(TypeCat.Hom.hom f)) ≫
+        ↾fun p ↦ Prod.mk <$> p.1 <*> p.2) =
+      (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫
+        ↾_root_.Functor.map ⇑(TypeCat.Hom.hom (MonoidalCategoryStruct.whiskerLeft X' f))
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: could not synthesize default value for field 'associativity' of 'CategoryTheory.Functor.LaxMonoidal' using tactics
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: tactic 'aesop' failed, failed to prove the goal after exhaustive search.
+Initial goal:
+  F : Type u_1 → Type u_2
+  inst✝¹ : Applicative F
+  inst✝ : LawfulApplicative F
+  ⊢ ∀ (X Y Z : Type u_1),
+      MonoidalCategoryStruct.whiskerRight (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ((ofTypeFunctor F).obj Z) ≫
+          (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫ (ofTypeFunctor F).map (MonoidalCategoryStruct.associator X Y Z).hom =
+        (MonoidalCategoryStruct.associator ((ofTypeFunctor F).obj X) ((ofTypeFunctor F).obj Y)
+              ((ofTypeFunctor F).obj Z)).hom ≫
+          MonoidalCategoryStruct.whiskerLeft ((ofTypeFunctor F).obj X) (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫
+            ↾fun p ↦ Prod.mk <$> p.1 <*> p.2
+Remaining goals after safe rules:
+  F : Type u_1 → Type u_2
+  inst : Applicative F
+  inst_1 : LawfulApplicative F
+  X Y Z : Type u_1
+  ⊢ MonoidalCategoryStruct.whiskerRight (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) (F Z) ≫
+        (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫
+          ↾_root_.Functor.map ⇑(TypeCat.Hom.hom (MonoidalCategoryStruct.associator X Y Z).hom) =
+      (MonoidalCategoryStruct.associator (F X) (F Y) (F Z)).hom ≫
+        MonoidalCategoryStruct.whiskerLeft (F X) (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫ ↾fun p ↦ Prod.mk <$> p.1 <*> p.2
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: could not synthesize default value for field 'left_unitality' of 'CategoryTheory.Functor.LaxMonoidal' using tactics
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: tactic 'aesop' failed, failed to prove the goal after exhaustive search.
+Initial goal:
+  F : Type u_1 → Type u_2
+  inst✝¹ : Applicative F
+  inst✝ : LawfulApplicative F
+  ⊢ ∀ (X : Type u_1),
+      (MonoidalCategoryStruct.leftUnitor ((ofTypeFunctor F).obj X)).hom =
+        MonoidalCategoryStruct.whiskerRight (↾fun x ↦ pure PUnit.unit) ((ofTypeFunctor F).obj X) ≫
+          (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫ (ofTypeFunctor F).map (MonoidalCategoryStruct.leftUnitor X).hom
+Remaining goals after safe rules:
+  F : Type u_1 → Type u_2
+  inst : Applicative F
+  inst_1 : LawfulApplicative F
+  X : Type u_1
+  ⊢ (MonoidalCategoryStruct.leftUnitor (F X)).hom =
+      MonoidalCategoryStruct.whiskerRight (↾fun x ↦ pure PUnit.unit) (F X) ≫
+        (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫
+          ↾_root_.Functor.map ⇑(TypeCat.Hom.hom (MonoidalCategoryStruct.leftUnitor X).hom)
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: could not synthesize default value for field 'right_unitality' of 'CategoryTheory.Functor.LaxMonoidal' using tactics
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:41: tactic 'aesop' failed, failed to prove the goal after exhaustive search.
+Initial goal:
+  F : Type u_1 → Type u_2
+  inst✝¹ : Applicative F
+  inst✝ : LawfulApplicative F
+  ⊢ ∀ (X : Type u_1),
+      (MonoidalCategoryStruct.rightUnitor ((ofTypeFunctor F).obj X)).hom =
+        MonoidalCategoryStruct.whiskerLeft ((ofTypeFunctor F).obj X) (↾fun x ↦ pure PUnit.unit) ≫
+          (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫ (ofTypeFunctor F).map (MonoidalCategoryStruct.rightUnitor X).hom
+Remaining goals after safe rules:
+  F : Type u_1 → Type u_2
+  inst : Applicative F
+  inst_1 : LawfulApplicative F
+  X : Type u_1
+  ⊢ (MonoidalCategoryStruct.rightUnitor (F X)).hom =
+      MonoidalCategoryStruct.whiskerLeft (F X) (↾fun x ↦ pure PUnit.unit) ≫
+        (↾fun p ↦ Prod.mk <$> p.1 <*> p.2) ≫
+          ↾_root_.Functor.map ⇑(TypeCat.Hom.hom (MonoidalCategoryStruct.rightUnitor X).hom)
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:34:2: unknown metavariable '?_uniq.62435'
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:35:0: (kernel) declaration has metavariables 'CategoryTheory.instLaxMonoidalOfTypeFunctor'
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:34:2: (kernel) declaration type mismatch, 'CategoryTheory.ε_def' has type
+  ∀ (F : Type u_1 → Type u_2) [inst : Applicative F] [inst_1 : LawfulApplicative F],
+    Functor.LaxMonoidal.ε (ofTypeFunctor F) = Functor.LaxMonoidal.ε (ofTypeFunctor F)
+but it is expected to have type
+  ∀ (F : Type u_1 → Type u_2) [inst : Applicative F] [inst_1 : LawfulApplicative F],
+    Functor.LaxMonoidal.ε (ofTypeFunctor F) = TypeCat.ofHom fun x ↦ pure PUnit.unit
+error: Mathlib/CategoryTheory/Monoidal/Functor/Types.lean:34:2: (kernel) declaration type mismatch, 'CategoryTheory.μ_def' has type
+  ∀ (F : Type u_1 → Type u_2) [inst : Applicative F] [inst_1 : LawfulApplicative F] (x x_1 : Type u_1),
+    Functor.LaxMonoidal.μ (ofTypeFunctor F) x x_1 = Functor.LaxMonoidal.μ (ofTypeFunctor F) x x_1
+but it is expected to have type
+  ∀ (F : Type u_1 → Type u_2) [inst : Applicative F] [inst_1 : LawfulApplicative F] (x x_1 : Type u_1),
+    Functor.LaxMonoidal.μ (ofTypeFunctor F) x x_1 = TypeCat.ofHom fun p ↦ Prod.mk <$> p.1 <*> p.2
+error: Lean exited with code 1
+✖ [5587/8368] Building Mathlib.CategoryTheory.Shift.Opposite (1.0s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Shift/Opposite.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Shift/Opposite.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Shift/Opposite.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Shift/Opposite.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Shift/Opposite.setup.json --json
+error: Mathlib/CategoryTheory/Shift/Opposite.lean:237:31: Application type mismatch: The argument
+  shift_app_comm τ ?m.182 (unop ?m.184)
+has type
+  (Functor.commShiftIso F ?m.182).hom.app (unop ?m.184) ≫ (shiftFunctor D ?m.182).map (τ.app (unop ?m.184)) =
+    τ.app ((shiftFunctor C ?m.182).obj (unop ?m.184)) ≫ (Functor.commShiftIso G ?m.182).hom.app (unop ?m.184)
+but is expected to have type
+  ((Functor.commShiftIso (OppositeShift.functor A F) x✝¹).inv.app x✝).unop ≫
+      ((shiftFunctor (OppositeShift D A) x✝¹).map ((OppositeShift.natTrans A τ).app x✝)).unop =
+    ((OppositeShift.natTrans A τ).app ((shiftFunctor (OppositeShift C A) x✝¹).obj x✝) ≫
+          𝟙 ((shiftFunctor (OppositeShift C A) x✝¹ ⋙ OppositeShift.functor A F).obj x✝)).unop ≫
+      ((Functor.commShiftIso (OppositeShift.functor A G) x✝¹).inv.app x✝).unop
+in the application
+  (op_inj_iff
+        (((Functor.commShiftIso (OppositeShift.functor A F) x✝¹).inv.app x✝).unop ≫
+          ((shiftFunctor (OppositeShift D A) x✝¹).map ((OppositeShift.natTrans A τ).app x✝)).unop)
+        (((OppositeShift.natTrans A τ).app ((shiftFunctor (OppositeShift C A) x✝¹).obj x✝) ≫
+              𝟙 ((shiftFunctor (OppositeShift C A) x✝¹ ⋙ OppositeShift.functor A F).obj x✝)).unop ≫
+          ((Functor.commShiftIso (OppositeShift.functor A G) x✝¹).inv.app x✝).unop)).mpr
+    (shift_app_comm τ ?m.182 (unop ?m.184))
+warning: Mathlib/CategoryTheory/Shift/Opposite.lean:236:6: This simp argument is unused:
+  comp_id
+
+Hint: Omit it from the simp argument list.
+  simp only [assoc, Iso.inv_hom_id_app_assoc, Iso.hom_inv_id_app,̵
+  ̵ ̵ ̵ ̵ ̵ ̵ ̵c̵o̵m̵p̵_̵i̵d̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+✖ [5588/8368] Building Batteries.Data.UnionFind.Basic (1.4s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/Batteries/Data/UnionFind/Basic.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean/Batteries/Data/UnionFind/Basic.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean/Batteries/Data/UnionFind/Basic.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/ir/Batteries/Data/UnionFind/Basic.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/ir/Batteries/Data/UnionFind/Basic.setup.json --json
+error: Batteries/Data/UnionFind/Basic.lean:145:37: `dsimp` made no progress
+error: Batteries/Data/UnionFind/Basic.lean:146:31: `dsimp` made no progress
+error: Lean exited with code 1
+✖ [5592/8368] Building Mathlib.CategoryTheory.Shift.Pullback (2.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Shift/Pullback.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Shift/Pullback.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Shift/Pullback.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Shift/Pullback.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Shift/Pullback.setup.json --json
+error: Mathlib/CategoryTheory/Shift/Pullback.lean:81:91: unsolved goals
+case e_a
+C : Type u_1
+inst✝³ : Category.{v_1, u_1} C
+A : Type u_2
+B : Type u_3
+inst✝² : AddMonoid A
+inst✝¹ : AddMonoid B
+inst✝ : HasShift C B
+φ : A →+ B
+X : PullbackShift C φ
+⊢ MonoidalCategoryStruct.tensorUnit (Discrete B) =
+    (Discrete.addMonoidalFunctor φ).obj (MonoidalCategoryStruct.tensorUnit (Discrete A))
+warning: Mathlib/CategoryTheory/Shift/Pullback.lean:100:13: This simp argument is unused:
+  Functor.id_obj
+
+Hint: Omit it from the simp argument list.
+  simp only [F̵u̵n̵c̵t̵o̵r̵.̵i̵d̵_̵o̵b̵j̵,̵ ̵pullbackShiftIso, eqToIso.inv, eqToHom_app, shiftFunctorZero',
+  ̵  ̵ ̵ ̵Iso.trans_inv,
+  ̲  ̲ ̲ ̲NatTrans.comp_app, eqToIso_refl, Iso.refl_inv, NatTrans.id_app, assoc]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Mathlib/CategoryTheory/Shift/Pullback.lean:290:32: unsolved goals
+C : Type u_1
+inst✝⁶ : Category.{v_1, u_1} C
+A : Type u_2
+B : Type u_3
+inst✝⁵ : AddMonoid A
+inst✝⁴ : AddMonoid B
+inst✝³ : HasShift C B
+φ : A →+ B
+X : PullbackShift C φ
+a₁ a₂ a₃ : A
+h : a₁ + a₂ = a₃
+b₁ b₂ b₃ : B
+h₁ : b₁ = φ a₁
+h₂ : b₂ = φ a₂
+h₃ : b₃ = φ a₃
+D : Type u_4
+inst✝² : Category.{v_2, u_4} D
+inst✝¹ : HasShift D B
+F✝ : C ⥤ D
+inst✝ : F✝.CommShift B
+F : C ⥤ D
+G : D ⥤ C
+adj : F ⊣ G
+x✝ : PullbackShift C φ
+⊢ 𝟙 ((𝟭 (PullbackShift D φ)).obj (F.obj x✝)) = 𝟙 (F.obj x✝)
+error: Mathlib/CategoryTheory/Shift/Pullback.lean:293:33: unsolved goals
+C : Type u_1
+inst✝⁶ : Category.{v_1, u_1} C
+A : Type u_2
+B : Type u_3
+inst✝⁵ : AddMonoid A
+inst✝⁴ : AddMonoid B
+inst✝³ : HasShift C B
+φ : A →+ B
+X : PullbackShift C φ
+a₁ a₂ a₃ : A
+h : a₁ + a₂ = a₃
+b₁ b₂ b₃ : B
+h₁ : b₁ = φ a₁
+h₂ : b₂ = φ a₂
+h₃ : b₃ = φ a₃
+D : Type u_4
+inst✝² : Category.{v_2, u_4} D
+inst✝¹ : HasShift D B
+F✝ : C ⥤ D
+inst✝ : F✝.CommShift B
+F : C ⥤ D
+G : D ⥤ C
+adj : F ⊣ G
+x✝ : PullbackShift D φ
+⊢ G.map (𝟙 ((𝟭 (PullbackShift D φ)).obj x✝)) = 𝟙 (G.obj x✝)
+error: Lean exited with code 1
+✖ [5597/8368] Building Mathlib.SetTheory.Lists (1.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/SetTheory/Lists.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/SetTheory/Lists.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/SetTheory/Lists.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/SetTheory/Lists.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/SetTheory/Lists.setup.json --json
+error: Mathlib/SetTheory/Lists.lean:327:0: instance `Lists.Equiv.decidable._mutual` target `failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)` is not a type class.
+error: Lean exited with code 1
+✖ [5598/8368] Building Mathlib.MeasureTheory.Integral.Lebesgue.Add (2.2s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/MeasureTheory/Integral/Lebesgue/Add.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/MeasureTheory/Integral/Lebesgue/Add.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/MeasureTheory/Integral/Lebesgue/Add.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/MeasureTheory/Integral/Lebesgue/Add.setup.json --json
+error: Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean:302:8: gcongr did not make progress
+error: Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean:396:8: gcongr did not make progress
+error: Mathlib/MeasureTheory/Integral/Lebesgue/Add.lean:416:7: Tactic `grewrite` failed: did not find instance of the pattern in the target expression
+  s x
+
+α : Type u_1
+m : MeasurableSpace α
+μ : Measure α
+r : ℝ≥0∞
+f : α → ℝ≥0∞
+s : α →ₛ ℝ≥0∞
+hs : ⇑s ≤ fun a ↦ f a
+x : α
+⊢ (const α r * s) x ≤ r * f x
+error: Lean exited with code 1
+✖ [5639/8368] Building Mathlib.Algebra.Homology.Monoidal (2.3s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/Homology/Monoidal.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Homology/Monoidal.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Homology/Monoidal.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Homology/Monoidal.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Homology/Monoidal.setup.json --json
+error: Mathlib/Algebra/Homology/Monoidal.lean:197:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  dite (?m.292 = ?m.292) ?m.294 ?m.295
+in the target expression
+  (((GradedObject.single₀ I).obj (𝟙_ C)).isoMk (tensorUnit C c).X fun i ↦
+            if hi : i = 0 then
+              GradedObject.singleObjApplyIsoOfEq 0 (𝟙_ C) i hi ≪≫ (singleObjXIsoOfEq c 0 (𝟙_ C) i hi).symm
+            else { hom := 0, inv := 0, hom_inv_id := ⋯, inv_hom_id := ⋯ }).symm.inv
+      0 =
+    GradedObject.Monoidal.tensorUnit₀.hom ≫ (singleObjXSelf c 0 (𝟙_ C)).inv
+
+case e_a
+C : Type u_1
+inst✝⁹ : Category.{v_1, u_1} C
+inst✝⁸ : MonoidalCategory C
+inst✝⁷ : Preadditive C
+inst✝⁶ : HasZeroObject C
+inst✝⁵ : (curriedTensor C).Additive
+inst✝⁴ : ∀ (X₁ : C), ((curriedTensor C).obj X₁).Additive
+I : Type u_2
+inst✝³ : AddMonoid I
+c : ComplexShape I
+inst✝² : c.TensorSigns
+K : HomologicalComplex C c
+inst✝¹ : DecidableEq I
+inst✝ : ∀ (X₂ : C), PreservesColimit (Functor.empty C) ((curriedTensor C).flip.obj X₂)
+i : I
+⊢ (((GradedObject.single₀ I).obj (𝟙_ C)).isoMk (tensorUnit C c).X fun i ↦
+            if hi : i = 0 then
+              GradedObject.singleObjApplyIsoOfEq 0 (𝟙_ C) i hi ≪≫ (singleObjXIsoOfEq c 0 (𝟙_ C) i hi).symm
+            else { hom := 0, inv := 0, hom_inv_id := ⋯, inv_hom_id := ⋯ }).symm.inv
+      0 =
+    GradedObject.Monoidal.tensorUnit₀.hom ≫ (singleObjXSelf c 0 (𝟙_ C)).inv
+error: Mathlib/Algebra/Homology/Monoidal.lean:247:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  dite (?m.286 = ?m.286) ?m.288 ?m.289
+in the target expression
+  (((GradedObject.single₀ I).obj (𝟙_ C)).isoMk (tensorUnit C c).X fun i ↦
+            if hi : i = 0 then
+              GradedObject.singleObjApplyIsoOfEq 0 (𝟙_ C) i hi ≪≫ (singleObjXIsoOfEq c 0 (𝟙_ C) i hi).symm
+            else { hom := 0, inv := 0, hom_inv_id := ⋯, inv_hom_id := ⋯ }).symm.inv
+      0 =
+    GradedObject.Monoidal.tensorUnit₀.hom ≫ (singleObjXSelf c 0 (𝟙_ C)).inv
+
+case e_a
+C : Type u_1
+inst✝⁹ : Category.{v_1, u_1} C
+inst✝⁸ : MonoidalCategory C
+inst✝⁷ : Preadditive C
+inst✝⁶ : HasZeroObject C
+inst✝⁵ : (curriedTensor C).Additive
+inst✝⁴ : ∀ (X₁ : C), ((curriedTensor C).obj X₁).Additive
+I : Type u_2
+inst✝³ : AddMonoid I
+c : ComplexShape I
+inst✝² : c.TensorSigns
+K : HomologicalComplex C c
+inst✝¹ : DecidableEq I
+inst✝ : ∀ (X₁ : C), PreservesColimit (Functor.empty C) ((curriedTensor C).obj X₁)
+i : I
+⊢ (((GradedObject.single₀ I).obj (𝟙_ C)).isoMk (tensorUnit C c).X fun i ↦
+            if hi : i = 0 then
+              GradedObject.singleObjApplyIsoOfEq 0 (𝟙_ C) i hi ≪≫ (singleObjXIsoOfEq c 0 (𝟙_ C) i hi).symm
+            else { hom := 0, inv := 0, hom_inv_id := ⋯, inv_hom_id := ⋯ }).symm.inv
+      0 =
+    GradedObject.Monoidal.tensorUnit₀.hom ≫ (singleObjXSelf c 0 (𝟙_ C)).inv
+error: Lean exited with code 1
+✖ [5640/8368] Building Mathlib.Algebra.Category.ModuleCat.Adjunctions (2.6s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Category/ModuleCat/Adjunctions.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Category/ModuleCat/Adjunctions.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Category/ModuleCat/Adjunctions.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Category/ModuleCat/Adjunctions.setup.json --json
+error: Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean:174:12: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (ConcreteCategory.hom (μIso ?R ?X ?Y).inv) (freeMk ?z)
+in the target expression
+  (ConcreteCategory.hom
+        ((μIso R (X ⊗ Y) Z).inv ≫
+          (μIso R X Y).inv ▷ (free R).obj Z ≫
+            (μIso R X Y).hom ▷ (free R).obj Z ≫ (μIso R (X ⊗ Y) Z).hom ≫ (free R).map (α_ X Y Z).hom))
+      (freeMk ((x, y), z)) =
+    (ConcreteCategory.hom
+        ((μIso R (X ⊗ Y) Z).inv ≫
+          (μIso R X Y).inv ▷ (free R).obj Z ≫
+            (α_ ((free R).obj X) ((free R).obj Y) ((free R).obj Z)).hom ≫
+              (free R).obj X ◁ (μIso R Y Z).hom ≫ (μIso R X (Y ⊗ Z)).hom))
+      (freeMk ((x, y), z))
+
+R : Type u
+inst✝ : CommRing R
+X Y Z : Type u
+z : Z
+x : X
+y : Y
+⊢ (ConcreteCategory.hom
+        ((μIso R (X ⊗ Y) Z).inv ≫
+          (μIso R X Y).inv ▷ (free R).obj Z ≫
+            (μIso R X Y).hom ▷ (free R).obj Z ≫ (μIso R (X ⊗ Y) Z).hom ≫ (free R).map (α_ X Y Z).hom))
+      (freeMk ((x, y), z)) =
+    (ConcreteCategory.hom
+        ((μIso R (X ⊗ Y) Z).inv ≫
+          (μIso R X Y).inv ▷ (free R).obj Z ≫
+            (α_ ((free R).obj X) ((free R).obj Y) ((free R).obj Z)).hom ≫
+              (free R).obj X ◁ (μIso R Y Z).hom ≫ (μIso R X (Y ⊗ Z)).hom))
+      (freeMk ((x, y), z))
+error: Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean:160:0: (kernel) declaration has metavariables 'ModuleCat.instMonoidalFree'
+error: Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean:190:6: (kernel) declaration type mismatch, 'ModuleCat.free_ε_one' has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but it is expected to have type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean:193:6: (kernel) declaration type mismatch, 'ModuleCat.free_η_freeMk' has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but it is expected to have type
+  ∀ (R : Type u) [inst : CommRing R] (x : PUnit.{u + 1}),
+    (ConcreteCategory.hom (η (@free R inst.toRing))) (@freeMk R inst.toRing (tensorUnit (Type u)) x) = 1
+error: Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean:197:6: (kernel) declaration type mismatch, 'ModuleCat.free_μ_freeMk_tmul_freeMk' has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but it is expected to have type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean:202:6: (kernel) declaration type mismatch, 'ModuleCat.free_δ_freeMk' has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but it is expected to have type
+  ∀ (R : Type u) [inst : CommRing R] {X Y : Type u} (z : MonoidalCategoryStruct.tensorObj X Y),
+    (ConcreteCategory.hom (δ (@free R inst.toRing) X Y))
+        (@freeMk R inst.toRing (MonoidalCategoryStruct.tensorObj X Y) z) =
+      @freeMk R inst.toRing X z.1 ⊗ₜ[R] @freeMk R inst.toRing Y z.2
+error: Lean exited with code 1
+✖ [5641/8368] Building Mathlib.LinearAlgebra.Multilinear.DFinsupp (2.9s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/LinearAlgebra/Multilinear/DFinsupp.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/Multilinear/DFinsupp.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/Multilinear/DFinsupp.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/Multilinear/DFinsupp.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/Multilinear/DFinsupp.setup.json --json
+error: Mathlib/LinearAlgebra/Multilinear/DFinsupp.lean:109:57: unsolved goals
+ι : Type uι
+κ : ι → Type uκ
+S : Type uS
+R : Type uR
+M : (i : ι) → κ i → Type uM
+N : ((i : ι) → κ i) → Type uN
+inst✝⁶ : DecidableEq ι
+inst✝⁵ : Fintype ι
+inst✝⁴ : Semiring R
+inst✝³ : (i : ι) → (k : κ i) → AddCommMonoid (M i k)
+inst✝² : (p : (i : ι) → κ i) → AddCommMonoid (N p)
+inst✝¹ : (i : ι) → (k : κ i) → Module R (M i k)
+inst✝ : (p : (i : ι) → κ i) → Module R (N p)
+f : (p : (i : ι) → κ i) → MultilinearMap R (fun i ↦ M i (p i)) (N p)
+dec : DecidableEq ι
+m : (i : ι) → Π₀ (j : κ i), M i j
+i : ι
+x y : Π₀ (j : κ i), M i j
+p : (i : ι) → κ i
+⊢ (f p) (Function.update (fun k ↦ (m k) (p k)) i (x (p i))) +
+      (f p) (Function.update (fun k ↦ (m k) (p k)) i (y (p i))) =
+    ((fun p ↦ (f p) fun i_1 ↦ (Function.update m i x i_1) (p i_1)) + fun p ↦
+        (f p) fun i_1 ↦ (Function.update m i y i_1) (p i_1))
+      p
+error: Mathlib/LinearAlgebra/Multilinear/DFinsupp.lean:112:58: unsolved goals
+ι : Type uι
+κ : ι → Type uκ
+S : Type uS
+R : Type uR
+M : (i : ι) → κ i → Type uM
+N : ((i : ι) → κ i) → Type uN
+inst✝⁶ : DecidableEq ι
+inst✝⁵ : Fintype ι
+inst✝⁴ : Semiring R
+inst✝³ : (i : ι) → (k : κ i) → AddCommMonoid (M i k)
+inst✝² : (p : (i : ι) → κ i) → AddCommMonoid (N p)
+inst✝¹ : (i : ι) → (k : κ i) → Module R (M i k)
+inst✝ : (p : (i : ι) → κ i) → Module R (N p)
+f : (p : (i : ι) → κ i) → MultilinearMap R (fun i ↦ M i (p i)) (N p)
+dec : DecidableEq ι
+m : (i : ι) → Π₀ (j : κ i), M i j
+i : ι
+c : R
+x : Π₀ (j : κ i), M i j
+p : (i : ι) → κ i
+⊢ c • (f p) (Function.update (fun k ↦ (m k) (p k)) i (x (p i))) =
+    (c • fun p ↦ (f p) fun i_1 ↦ (Function.update m i x i_1) (p i_1)) p
+error: Lean exited with code 1
+✖ [5657/8368] Building Mathlib.CategoryTheory.Sites.LeftExact (2.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Sites/LeftExact.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Sites/LeftExact.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Sites/LeftExact.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Sites/LeftExact.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Sites/LeftExact.setup.json --json
+error: Mathlib/CategoryTheory/Sites/LeftExact.lean:187:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  @Eq (?m.343 ⟶ ?m.342) ?f (?g ≫ Iso.hom ?α)
+in the target expression
+  @Eq (multiequalizer ((unop j).index (F.obj k)) ⟶ colimit (J.diagram (F.obj k) X))
+    (colimit.ι (J.diagram (F.obj k) X) j)
+    ((colimit.ι (F ⋙ J.diagramFunctor D X).flip j).app k ≫
+      (NatIso.ofComponents (fun k ↦ colimitObjIsoColimitCompEvaluation (F ⋙ J.diagramFunctor D X).flip k)
+                ⋯).symm.inv.app
+        k)
+
+case e_a
+C : Type u
+inst✝¹² : Category.{v, u} C
+J : GrothendieckTopology C
+D : Type w
+inst✝¹¹ : Category.{t, w} D
+inst✝¹⁰ : ∀ (P : Cᵒᵖ ⥤ D) (X : C) (S : J.Cover X), HasMultiequalizer (S.index P)
+inst✝⁹ : ∀ (X : C), HasColimitsOfShape (J.Cover X)ᵒᵖ D
+FD : D → D → Type u_1
+CD : D → Type t
+inst✝⁸ : (X Y : D) → FunLike (FD X Y) (CD X) (CD Y)
+inst✝⁷ : ConcreteCategory D FD
+inst✝⁶ : ∀ (X : C), PreservesColimitsOfShape (J.Cover X)ᵒᵖ (forget D)
+inst✝⁵ : ∀ (X : C), Small.{t, max u v} (J.Cover X)ᵒᵖ
+K : Type s
+inst✝⁴ : SmallCategory K
+inst✝³ : FinCategory K
+inst✝² : HasLimitsOfShape K D
+inst✝¹ : PreservesLimitsOfShape K (forget D)
+inst✝ : ReflectsLimitsOfShape K (forget D)
+F : K ⥤ Cᵒᵖ ⥤ D
+X : C
+S : Cone (F ⋙ J.plusFunctor D ⋙ (evaluation Cᵒᵖ D).obj (op X))
+k : K
+j : (J.Cover (unop (op X)))ᵒᵖ
+⊢ colimit.ι (J.diagram (F.obj k) X) j =
+    (colimit.ι (F ⋙ J.diagramFunctor D X).flip j).app k ≫
+      (NatIso.ofComponents (fun k ↦ colimitObjIsoColimitCompEvaluation (F ⋙ J.diagramFunctor D X).flip k)
+                ⋯).symm.inv.app
+        k
+error: Mathlib/CategoryTheory/Sites/LeftExact.lean:214:4: `simp` made no progress
+error: Lean exited with code 1
+✖ [5728/8368] Building Mathlib.Topology.MetricSpace.Algebra (2.8s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Topology/MetricSpace/Algebra.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Topology/MetricSpace/Algebra.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Topology/MetricSpace/Algebra.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Topology/MetricSpace/Algebra.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Topology/MetricSpace/Algebra.setup.json --json
+error: Mathlib/Topology/MetricSpace/Algebra.lean:142:32: Tactic `grewrite` failed: did not find instance of the pattern in the target expression
+  dist (?x₁ • ?y) (?x₂ • ?y)
+
+α : Type u_1
+β : Type u_2
+inst✝⁵ : PseudoMetricSpace α
+inst✝⁴ : PseudoMetricSpace β
+inst✝³ : Zero α
+inst✝² : Zero β
+inst✝¹ : SMul α β
+inst✝ : IsBoundedSMul α β
+s : Set (α × β)
+hs : IsBounded s
+C : ℝ
+hC₀ : 0 < C
+hC : s ⊆ Metric.ball 0 C
+ε : ℝ
+hε : ε > 0
+x✝¹ x✝ : α × β
+a : α
+b : β
+hab : dist a 0.1 < C ∧ dist b 0.2 < C
+x : α
+y : β
+hxy : dist x 0.1 < C ∧ dist y 0.2 < C
+h : dist a x ≤ ε / (2 * C) ∧ dist b y ≤ ε / (2 * C)
+⊢ dist (Function.uncurry (fun x1 x2 ↦ x1 • x2) (a, b)) (a • y) +
+      dist (a • y) (Function.uncurry (fun x1 x2 ↦ x1 • x2) (x, y)) ≤
+    ε
+error: Lean exited with code 1
+✖ [6026/8368] Building Mathlib.Algebra.Category.Grp.Colimits (3.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/Category/Grp/Colimits.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Category/Grp/Colimits.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Category/Grp/Colimits.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Category/Grp/Colimits.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Category/Grp/Colimits.setup.json --json
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:122:6: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?a - ?a
+in the target expression
+  (Quot.ι (F ⋙ uliftFunctor) j) (AddEquiv.ulift.symm a) -
+      ((Quot.ι (F ⋙ uliftFunctor) j).comp AddEquiv.ulift.symm.toAddMonoidHom) a =
+    0
+
+J : Type u
+inst✝¹ : Category.{v, u} J
+F : J ⥤ AddCommGrpCat
+c : Cocone F
+inst✝ : DecidableEq J
+j j' : J
+u : j ⟶ j'
+a : ↑(F.obj j)
+⊢ (Quot.ι (F ⋙ uliftFunctor) j) (AddEquiv.ulift.symm a) -
+      ((Quot.ι (F ⋙ uliftFunctor) j).comp AddEquiv.ulift.symm.toAddMonoidHom) a =
+    0
+warning: Mathlib/Algebra/Category/Grp/Colimits.lean:124:6: declaration uses `sorry`
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:184:2: `simp` made no progress
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:211:88: unsolved goals
+J : Type u
+inst✝² : Category.{v, u} J
+F : J ⥤ AddCommGrpCat
+c : Cocone F
+inst✝¹ : DecidableEq J
+A : Type w
+inst✝ : AddCommGroup A
+f : Quot F →+ A
+hc : IsColimit c
+x : Quot F
+⊢ (ConcreteCategory.hom (hc.desc (toCocone F f))) ((desc F c) x) =
+    ((Hom.hom (hc.desc (toCocone F f))).comp (desc F c)) x
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:228:21: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (ConcreteCategory.hom (c.ι.app j)) x
+in the target expression
+  (Hom.hom (c.ι.app j ≫ ofHom ((Quot.desc F s).comp (AddEquiv.ofBijective (Quot.desc F c) h).symm.toAddMonoidHom))) x
+
+J : Type u
+inst✝¹ : Category.{v, u} J
+F : J ⥤ AddCommGrpCat
+c : Cocone F
+inst✝ : DecidableEq J
+h : Function.Bijective ⇑(Quot.desc F c)
+s : Cocone F
+j : J
+x : ↑(F.obj j)
+| (Hom.hom (c.ι.app j ≫ ofHom ((Quot.desc F s).comp (AddEquiv.ofBijective (Quot.desc F c) h).symm.toAddMonoidHom))) x
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:234:4: `dsimp` made no progress
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:221:18: (kernel) declaration has metavariables 'AddCommGrpCat.Colimits.isColimit_of_bijective_desc'
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:255:12: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (Quot.ι ?F ?j') ((ConcreteCategory.hom (CategoryTheory.Functor.map ?F ?f)) ?x)
+in the target expression
+  Shrink.addEquiv.symm ((Quot.ι F x✝²) ((F.map x✝¹).hom' x✝)) =
+    (Hom.hom (ofHom (Shrink.addEquiv.symm.toAddMonoidHom.comp (Quot.ι F x✝³)) ≫ 𝟙 (of (Shrink.{w, max u w} (Quot F)))))
+      x✝
+
+J : Type u
+inst✝² : Category.{v, u} J
+F : J ⥤ AddCommGrpCat
+c : Cocone F
+inst✝¹ : DecidableEq J
+inst✝ : Small.{w, max w u} (Quot F)
+x✝³ x✝² : J
+x✝¹ : x✝³ ⟶ x✝²
+x✝ : ↑(F.obj x✝³)
+⊢ Shrink.addEquiv.symm ((Quot.ι F x✝²) ((F.map x✝¹).hom' x✝)) =
+    (Hom.hom (ofHom (Shrink.addEquiv.symm.toAddMonoidHom.comp (Quot.ι F x✝³)) ≫ 𝟙 (of (Shrink.{w, max u w} (Quot F)))))
+      x✝
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:245:2: unknown metavariable '?_uniq.73842'
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:246:18: (kernel) declaration has metavariables 'AddCommGrpCat.Colimits.colimitCocone'
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:245:2: (kernel) declaration type mismatch, 'AddCommGrpCat.Colimits.colimitCocone_pt' has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but it is expected to have type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:245:2: (kernel) application type mismatch
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+argument has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+but function has type
+  NatTrans F ((Functor.const J).obj (of (Shrink.{w, max u w} (@Quot J inst✝² F inst✝¹)))) →
+    (X : J) → F.obj X ⟶ ((Functor.const J).obj (of (Shrink.{w, max u w} (@Quot J inst✝² F inst✝¹)))).obj X
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:258:8: (kernel) application type mismatch
+  @desc J inst✝² F (@colimitCocone J inst✝² F inst✝¹ inst✝) inst✝¹ = Shrink.addEquiv.symm.toAddMonoidHom
+argument has type
+  @Quot J inst✝² F inst✝¹ →+ Shrink.{w, max u w} (@Quot J inst✝² F inst✝¹)
+but function has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:267:18: (kernel) application type mismatch
+  ⇑Shrink.addEquiv.symm.toAddMonoidHom
+argument has type
+  @Quot J inst✝² F inst✝¹ →+ Shrink.{u_2, max u_1 u_2} (@Quot J inst✝² F inst✝¹)
+but function has type
+  failed to pretty print expression (use 'set_option pp.rawOnError true' for raw representation)
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:325:54: Type mismatch
+  cokernel.π_desc_apply f ?m.153 ?m.154
+has type
+  ∀ (x : ↑H),
+    (ConcreteCategory.hom (cokernel.desc f ?m.153 ?m.154)) ((ConcreteCategory.hom (cokernel.π f)) x) =
+      (ConcreteCategory.hom ?m.153) x
+but is expected to have type
+  ∀ (z : ↑H),
+    ((Hom.hom
+              (ofHom (lift (Hom.hom f).range (Hom.hom (cokernel.π f)) ⋯) ≫
+                cokernel.desc f (ofHom (mk' (Hom.hom f).range)) ⋯)).comp
+          (mk' (Hom.hom f).range))
+        x =
+      ((Hom.hom (𝟙 (of (↑H ⧸ (Hom.hom f).range)))).comp (mk' (Hom.hom f).range)) x
+error: Mathlib/Algebra/Category/Grp/Colimits.lean:308:18: (kernel) declaration has metavariables 'AddCommGrpCat.cokernelIsoQuotient'
+error: Lean exited with code 1
+✖ [6079/8368] Building Mathlib.Algebra.Homology.ShortComplex.Homology (3.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/Homology/ShortComplex/Homology.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Homology/ShortComplex/Homology.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Homology/ShortComplex/Homology.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Homology/ShortComplex/Homology.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Homology/ShortComplex/Homology.setup.json --json
+error: Mathlib/Algebra/Homology/ShortComplex/Homology.lean:460:70: unsolved goals
+C : Type u
+inst✝³ : Category.{v, u} C
+inst✝² : HasZeroMorphisms C
+S₁ S₂ : ShortComplex C
+φ : S₁ ⟶ S₂
+h₁ : S₁.LeftHomologyData
+h₂ : S₂.LeftHomologyData
+γ : LeftHomologyMapData φ h₁ h₂
+inst✝¹ : S₁.HasHomology
+inst✝ : S₂.HasHomology
+⊢ leftHomologyMap' φ S₁.homologyData.left S₂.homologyData.left =
+    leftHomologyMap' (𝟙 S₁) S₁.homologyData.left h₁ ≫
+      leftHomologyMap' φ h₁ h₂ ≫
+        leftHomologyMap' (𝟙 S₂) h₂ S₂.leftHomologyData ≫
+          (leftHomologyMapIso' (Iso.refl S₂) S₂.leftHomologyData S₂.homologyData.left).symm.inv
+warning: Mathlib/Algebra/Homology/ShortComplex/Homology.lean:463:63: This simp argument is unused:
+  id_comp
+
+Hint: Omit it from the simp argument list.
+  simp only [← γ.leftHomologyMap'_eq, ← leftHomologyMap'_comp, i̵d̵_̵comp,̵ ̵c̵o̵m̵p̵_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Mathlib/Algebra/Homology/ShortComplex/Homology.lean:479:70: unsolved goals
+C : Type u
+inst✝³ : Category.{v, u} C
+inst✝² : HasZeroMorphisms C
+S₁ S₂ : ShortComplex C
+φ : S₁ ⟶ S₂
+h₁ : S₁.RightHomologyData
+h₂ : S₂.RightHomologyData
+γ : RightHomologyMapData φ h₁ h₂
+inst✝¹ : S₁.HasHomology
+inst✝ : S₂.HasHomology
+γ' : HomologyMapData φ S₁.homologyData S₂.homologyData
+⊢ γ'.left.φH =
+    S₁.homologyData.iso.hom ≫
+      rightHomologyMap' φ S₁.homologyData.right S₂.rightHomologyData ≫
+        (rightHomologyMapIso' (Iso.refl S₂) S₂.rightHomologyData S₂.homologyData.right).symm.inv ≫
+          S₂.homologyData.iso.inv
+warning: Mathlib/Algebra/Homology/ShortComplex/Homology.lean:484:51: This simp argument is unused:
+  γ'.right.rightHomologyMap'_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [← γ.rightHomologyMap'_eq, assoc, ← rightHomologyMap'_comp_assoc, id_comp, comp_id,
+  ̲  ̲ ̲ ̲γ'.left.leftHomologyMap'_eq, γ̵'̵.̵r̵i̵g̵h̵t̵.̵r̵i̵g̵h̵t̵H̵o̵m̵o̵l̵o̵g̵y̵M̵a̵p̵'̵_̵e̵q̵,̵ ̵← γ'.comm_assoc, Iso.hom_inv_id]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Algebra/Homology/ShortComplex/Homology.lean:484:82: This simp argument is unused:
+  ← γ'.comm_assoc
+
+Hint: Omit it from the simp argument list.
+  simp only [← γ.rightHomologyMap'_eq, assoc, ← rightHomologyMap'_comp_assoc, id_comp, comp_id,
+  ̲  ̲ ̲ ̲γ'.left.leftHomologyMap'_eq, γ'.right.rightHomologyMap'_eq, ←̵ ̵γ̵'̵.̵c̵o̵m̵m̵_̵a̵s̵s̵o̵c̵,̵Iso.hom_inv_id]
+
+Note: Simp arguments with `←` have the additional effect of removing the other direction from the simp set, even if the simp argument itself is unused. If the hint above does not work, try replacing `←` with `-` to only get that effect and silence this warning.
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Algebra/Homology/ShortComplex/Homology.lean:485:4: This simp argument is unused:
+  Iso.hom_inv_id
+
+Hint: Omit it from the simp argument list.
+  simp only [← γ.rightHomologyMap'_eq, assoc, ← rightHomologyMap'_comp_assoc, id_comp, comp_id,
+  ̲  ̲ ̲ ̲γ'.left.leftHomologyMap'_eq, γ'.right.rightHomologyMap'_eq, ← γ̵'̵.̵c̵o̵m̵m̵_̵a̵s̵s̵o̵c̵,̵
+  ̵ ̵ ̵ ̵ ̵I̵s̵o̵.̵h̵o̵m̵_̵i̵n̵v̵_̵i̵d̵]̵γ̲'̲.̲c̲o̲m̲m̲_̲a̲s̲s̲o̲c̲]̲
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Mathlib/Algebra/Homology/ShortComplex/Homology.lean:756:2: `simp` made no progress
+error: Lean exited with code 1
+✖ [6317/8368] Building Mathlib.Algebra.DirectSum.Ring (3.2s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/DirectSum/Ring.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/DirectSum/Ring.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/DirectSum/Ring.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/DirectSum/Ring.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/DirectSum/Ring.setup.json --json
+error: Mathlib/Algebra/DirectSum/Ring.lean:242:11: `simp` made no progress
+error: Lean exited with code 1
+✖ [6360/8368] Building Mathlib.Topology.Homotopy.Lifting (2.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Topology/Homotopy/Lifting.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Topology/Homotopy/Lifting.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Topology/Homotopy/Lifting.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Topology/Homotopy/Lifting.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Topology/Homotopy/Lifting.setup.json --json
+error: Mathlib/Topology/Homotopy/Lifting.lean:197:6: unsolved goals
+case neg
+E : Type u_1
+X : Type u_2
+A : Type u_3
+inst✝⁴ : TopologicalSpace E
+inst✝³ : TopologicalSpace X
+inst✝² : TopologicalSpace A
+inst✝¹ : PathConnectedSpace A
+inst✝ : LocPathConnectedSpace A
+f : C(A, X)
+a₀ : A
+e₀ : E
+Γ : (γ : C(↑I, A)) → γ 0 = a₀ → C(↑I, E)
+Γ_0 : ∀ (γ : C(↑I, A)) (a : γ 0 = a₀), (Γ γ a) 0 = e₀
+F : A → E := fun a ↦ (Γ (somePath a₀ a).toContinuousMap ⋯) 1
+a : A
+p : OpenPartialHomeomorph E X
+hep : F a ∈ p.source
+homeo : IsLocalHomeomorph ↑p
+he : ↑p e₀ = f a₀
+uniq :
+  ∀ (γ γ' : C(↑I, A)) (Γ Γ' : C(↑I, E)),
+    γ 0 = a₀ →
+      γ' 0 = a₀ → Γ 0 = e₀ → Γ' 0 = e₀ → ↑p ∘ ⇑Γ = ⇑(f.comp γ) → ↑p ∘ ⇑Γ' = ⇑(f.comp γ') → γ 1 = γ' 1 → Γ 1 = Γ' 1
+Γ_lifts : ∀ (γ : C(↑I, A)) (a : γ 0 = a₀), ↑p ∘ ⇑(Γ γ a) = ⇑(f.comp γ)
+this : ∀ (a : A), ↑p (F a) = f a
+hfap : f a ∈ p.target
+U : Set A
+haU : U ∈ 𝓝 a
+U_conn : IsPathConnected U
+hUp : id U ⊆ ⇑f ⁻¹' p.target
+x : A
+hxU : x ∈ U
+γ : Path a x
+hγ : ∀ (t : ↑I), γ t ∈ U
+Γ' : Path e₀ ((↑p.symm ∘ ⇑f) a) :=
+  { toContinuousMap := Γ (somePath a₀ a).toContinuousMap ⋯, source' := ⋯, target' := ⋯ }
+x✝ : ↑I
+h✝ : ¬↑x✝ ≤ 1 / 2
+⊢ ↑p ({ toFun := (↑p.symm ∘ ⇑f) ∘ ⇑γ, continuous_toFun := ⋯, source' := ⋯, target' := ⋯ } ⟨2 * ↑x✝ - 1, ⋯⟩) =
+    f (γ ⟨2 * ↑x✝ - 1, ⋯⟩)
+warning: Mathlib/Topology/Homotopy/Lifting.lean:197:25: This simp argument is unused:
+  p.right_inv (hUp (hγ _))
+
+Hint: Omit it from the simp argument list.
+  simp [Path.map',̵ ̵p̵.̵r̵i̵g̵h̵t̵_̵i̵n̵v̵ ̵(̵h̵U̵p̵ ̵(̵h̵γ̵ ̵_̵)̵)̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+✖ [6361/8368] Building Mathlib.RingTheory.Derivation.Basic (3.0s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/RingTheory/Derivation/Basic.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/RingTheory/Derivation/Basic.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/RingTheory/Derivation/Basic.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/RingTheory/Derivation/Basic.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/RingTheory/Derivation/Basic.setup.json --json
+error: Mathlib/RingTheory/Derivation/Basic.lean:277:34: `simp` made no progress
+error: Mathlib/RingTheory/Derivation/Basic.lean:269:4: unknown free variable `_fvar.119853`
+error: Mathlib/RingTheory/Derivation/Basic.lean:280:35: Invalid field `compDer`: The environment does not contain `LinearMap.compDer`, so it is not possible to project the field `compDer` from an expression
+  f
+of type `M →ₗ[A] N`
+error: Mathlib/RingTheory/Derivation/Basic.lean:284:22: Invalid field `compDer`: The environment does not contain `LinearMap.compDer`, so it is not possible to project the field `compDer` from an expression
+  f
+of type `M →ₗ[A] N`
+error: Mathlib/RingTheory/Derivation/Basic.lean:290:15: Invalid field `compDer`: The environment does not contain `LinearMap.compDer`, so it is not possible to project the field `compDer` from an expression
+  f
+of type `M →ₗ[A] N`
+error: Mathlib/RingTheory/Derivation/Basic.lean:288:2: unknown metavariable '?_uniq.140485'
+error: Mathlib/RingTheory/Derivation/Basic.lean:289:4: (kernel) declaration has metavariables 'Derivation.llcomp'
+error: Mathlib/RingTheory/Derivation/Basic.lean:296:18: Invalid field `compDer`: The environment does not contain `LinearMap.compDer`, so it is not possible to project the field `compDer` from an expression
+  ↑e
+of type `M →ₗ[A] N`
+error: Mathlib/RingTheory/Derivation/Basic.lean:296:2: expected structure
+error: Mathlib/RingTheory/Derivation/Basic.lean:303:5: Invalid field notation: Function `DFunLike.coe` (coerced from `LinearEquiv.compDer`) does not have a usable parameter of type `LinearEquiv ...` for which to substitute `e`
+
+Note: Such a parameter must be explicit, or implicit with a unique name, to be used by field notation
+error: Mathlib/RingTheory/Derivation/Basic.lean:308:5: Invalid field notation: Function `DFunLike.coe` (coerced from `LinearEquiv.compDer`) does not have a usable parameter of type `LinearEquiv ...` for which to substitute `e`
+
+Note: Such a parameter must be explicit, or implicit with a unique name, to be used by field notation
+error: Lean exited with code 1
+✖ [6371/8368] Building Mathlib.CategoryTheory.Action.Monoidal (3.6s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Action/Monoidal.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Action/Monoidal.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Action/Monoidal.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Action/Monoidal.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Action/Monoidal.setup.json --json
+warning: Mathlib/CategoryTheory/Action/Monoidal.lean:235:12: This simp argument is unused:
+  types_tensorObj_def
+
+Hint: Omit it from the simp argument list.
+  simp ̵[̵t̵y̵p̵e̵s̵_̵t̵e̵n̵s̵o̵r̵O̵b̵j̵_̵d̵e̵f̵]̵
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Action/Monoidal.lean:266:48: This simp argument is unused:
+  types_tensorObj_def
+
+Hint: Omit it from the simp argument list.
+  simp_all [diagonalSuccIsoTensorTrivial,̵ ̵t̵y̵p̵e̵s̵_̵t̵e̵n̵s̵o̵r̵O̵b̵j̵_̵d̵e̵f̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Mathlib/CategoryTheory/Action/Monoidal.lean:276:9: unsolved goals
+case zero
+G : Type u
+inst✝ : Group G
+g : G
+f : Fin 0 → G
+x : Fin 1
+⊢ (ConcreteCategory.hom (ρ_ G).hom)
+      ((ConcreteCategory.hom (G ◁ (tensorUnitIso (Equiv.ofUnique PUnit.{u + 1} (Fin 0 → G)).toIso).inv.hom)) (g, f)) =
+    g
+error: Lean exited with code 1
+✖ [6373/8368] Building Mathlib.MeasureTheory.VectorMeasure.Basic (3.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/MeasureTheory/VectorMeasure/Basic.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/MeasureTheory/VectorMeasure/Basic.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/MeasureTheory/VectorMeasure/Basic.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/MeasureTheory/VectorMeasure/Basic.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/MeasureTheory/VectorMeasure/Basic.setup.json --json
+error: Mathlib/MeasureTheory/VectorMeasure/Basic.lean:1006:26: `dsimp` made no progress
+error: Lean exited with code 1
+✖ [6383/8368] Building Mathlib.Algebra.Module.Torsion.Basic (4.0s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/Module/Torsion/Basic.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Module/Torsion/Basic.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/Module/Torsion/Basic.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Module/Torsion/Basic.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/Module/Torsion/Basic.setup.json --json
+error: Mathlib/Algebra/Module/Torsion/Basic.lean:460:14: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?m.88 ⊔ ⨅ i ∈ ?m.90, ?m.91 i
+in the target expression
+  torsionBySet R M ↑(OrderDual.ofDual (OrderDual.toDual (p i) ⊓ OrderDual.toDual (⨅ i ∈ T, p i))) = ⊥
+
+R : Type u_1
+M : Type u_2
+inst✝² : CommSemiring R
+inst✝¹ : AddCommMonoid M
+inst✝ : Module R M
+ι : Type u_3
+p : ι → Ideal R
+S : Finset ι
+hp : (↑S).Pairwise fun i j ↦ p i ⊔ p j = ⊤
+T : Finset ι
+hT : T ⊆ S
+i : ι
+hi : i ∈ S
+hiT : i ∉ T
+this :
+  torsionBySet R M ↑(OrderDual.ofDual (OrderDual.toDual (p i) ⊓ OrderDual.toDual (⨅ i ∈ T, p i))) =
+    torsionBySet R M ↑(p i) ⊓ torsionBySet R M ↑(⨅ i ∈ T, p i)
+⊢ torsionBySet R M ↑(OrderDual.ofDual (OrderDual.toDual (p i) ⊓ OrderDual.toDual (⨅ i ∈ T, p i))) = ⊥
+error: Lean exited with code 1
+✖ [6394/8368] Building Mathlib.LinearAlgebra.LinearPMap (5.2s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/LinearAlgebra/LinearPMap.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/LinearPMap.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/LinearAlgebra/LinearPMap.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/LinearPMap.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/LinearAlgebra/LinearPMap.setup.json --json
+error: Mathlib/LinearAlgebra/LinearPMap.lean:161:21: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?r • ?y - ?s • ?y
+in the target expression
+  ↑{ domain := R ∙ x, toFun := { toFun := fun z ↦ σ (Classical.choose ⋯) • y, map_add' := ⋯, map_smul' := ⋯ } }
+        ⟨c • x, h⟩ -
+      σ c • y =
+    0
+
+R : Type u_1
+S : Type u_2
+inst✝⁵ : Ring R
+inst✝⁴ : Ring S
+σ : R →+* S
+E : Type u_4
+inst✝³ : AddCommGroup E
+inst✝² : Module R E
+F : Type u_5
+inst✝¹ : AddCommGroup F
+inst✝ : Module S F
+x : E
+y : F
+H : ∀ (c : R), c • x = 0 → σ c • y = 0
+c : R
+h : c • x ∈ (mkSpanSingleton' x y H).domain
+⊢ ↑{ domain := R ∙ x, toFun := { toFun := fun z ↦ σ (Classical.choose ⋯) • y, map_add' := ⋯, map_smul' := ⋯ } }
+        ⟨c • x, h⟩ -
+      σ c • y =
+    0
+warning: Mathlib/LinearAlgebra/LinearPMap.lean:520:15: This simp argument is unused:
+  neg_domain
+
+Hint: Omit it from the simp argument list.
+  simp only [̵n̵e̵g̵_̵d̵o̵m̵a̵i̵n̵,̵ ̵n̵e̵g̵_̵a̵p̵p̵l̵y̵,̵[̲n̲e̲g̲_̲a̲p̲p̲l̲y̲,̲ neg_eq_iff_add_eq_zero]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+✖ [7523/8368] Building Mathlib.RingTheory.IsTensorProduct (10s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/.elan/toolchains/leanprover--lean4-pr-releases---pr-release-13557-7390eae/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/RingTheory/IsTensorProduct.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/RingTheory/IsTensorProduct.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/RingTheory/IsTensorProduct.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/RingTheory/IsTensorProduct.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/RingTheory/IsTensorProduct.setup.json --json
+error: Mathlib/RingTheory/IsTensorProduct.lean:245:47: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  (assocAux ?f ?hf ?g ?hg) ((?f ?x₁) ?x₂ ⊗ₜ[?m.567] ?x₃)
+in the target expression
+  (↑(assocAux (LinearMap.restrictScalars₁₂ R S f) hf g hg)).toEquiv
+      (((LinearMap.restrictScalars₁₂ R S f) (t • x)) z ⊗ₜ[S] y) =
+    t •
+      (↑(assocAux (LinearMap.restrictScalars₁₂ R S f) hf g hg)).toEquiv
+        (((LinearMap.restrictScalars₁₂ R S f) x) z ⊗ₜ[S] y)
+
+case tmul.tmul
+R✝ : Type u_1
+inst✝⁴² : CommSemiring R✝
+M₁✝ : Type u_2
+M₂✝ : Type u_3
+M : Type u_4
+M' : Type u_5
+inst✝⁴¹ : AddCommMonoid M₁✝
+inst✝⁴⁰ : AddCommMonoid M₂✝
+inst✝³⁹ : AddCommMonoid M
+inst✝³⁸ : AddCommMonoid M'
+inst✝³⁷ : Module R✝ M₁✝
+inst✝³⁶ : Module R✝ M₂✝
+inst✝³⁵ : Module R✝ M
+inst✝³⁴ : Module R✝ M'
+f✝¹ : M₁✝ →ₗ[R✝] M₂✝ →ₗ[R✝] M
+N₁ : Type u_6
+N₂ : Type u_7
+N : Type u_8
+inst✝³³ : AddCommMonoid N₁
+inst✝³² : AddCommMonoid N₂
+inst✝³¹ : AddCommMonoid N
+inst✝³⁰ : Module R✝ N₁
+inst✝²⁹ : Module R✝ N₂
+inst✝²⁸ : Module R✝ N
+g✝¹ : N₁ →ₗ[R✝] N₂ →ₗ[R✝] N
+R : Type u_9
+S : Type u_10
+inst✝²⁷ : CommSemiring R
+inst✝²⁶ : CommSemiring S
+inst✝²⁵ : Algebra R S
+M₁ : Type u_11
+M₂ : Type u_12
+M₃ : Type u_13
+M₁₂ : Type u_14
+M₂₃ : Type u_15
+inst✝²⁴ : AddCommMonoid M₁
+inst✝²³ : AddCommMonoid M₂
+inst✝²² : AddCommMonoid M₃
+inst✝²¹ : AddCommMonoid M₁₂
+inst✝²⁰ : AddCommMonoid M₂₃
+inst✝¹⁹ : Module R M₁
+inst✝¹⁸ : Module R M₂
+inst✝¹⁷ : Module S M₂
+inst✝¹⁶ : IsScalarTower R S M₂
+inst✝¹⁵ : Module R M₃
+inst✝¹⁴ : Module S M₃
+inst✝¹³ : IsScalarTower R S M₃
+inst✝¹² : Module R M₁₂
+inst✝¹¹ : Module S M₁₂
+inst✝¹⁰ : IsScalarTower R S M₁₂
+inst✝⁹ : Module R M₂₃
+inst✝⁸ : Module S M₂₃
+inst✝⁷ : IsScalarTower R S M₂₃
+f✝ : M₁ →ₗ[R] M₂ →ₗ[S] M₁₂
+hf✝ : IsTensorProduct (LinearMap.restrictScalars₁₂ R R f✝)
+g✝ : M₂ →ₗ[S] M₃ →ₗ[S] M₂₃
+hg✝ : IsTensorProduct g✝
+T : Type u_16
+inst✝⁶ : CommSemiring T
+inst✝⁵ : Algebra R T
+inst✝⁴ : Module T M₁
+inst✝³ : IsScalarTower R T M₁
+inst✝² : Module T M₁₂
+inst✝¹ : SMulCommClass S T M₁₂
+inst✝ : IsScalarTower R T M₁₂
+f : M₁ →ₗ[T] M₂ →ₗ[S] M₁₂
+hf : IsTensorProduct (LinearMap.restrictScalars₁₂ R R f)
+g : M₂ →ₗ[S] M₃ →ₗ[S] M₂₃
+hg : IsTensorProduct g
+t : T
+y : M₃
+x : M₁
+z : M₂
+this : t • (f x) z = (f (t • x)) z
+⊢ (↑(assocAux (LinearMap.restrictScalars₁₂ R S f) hf g hg)).toEquiv
+      (((LinearMap.restrictScalars₁₂ R S f) (t • x)) z ⊗ₜ[S] y) =
+    t •
+      (↑(assocAux (LinearMap.restrictScalars₁₂ R S f) hf g hg)).toEquiv
+        (((LinearMap.restrictScalars₁₂ R S f) x) z ⊗ₜ[S] y)
+error: Mathlib/RingTheory/IsTensorProduct.lean:448:6: `dsimp` made no progress
+error: Mathlib/RingTheory/IsTensorProduct.lean:449:6: `dsimp` made no progress
+error: Mathlib/RingTheory/IsTensorProduct.lean:586:4: `dsimp` made no progress
+error: Mathlib/RingTheory/IsTensorProduct.lean:583:4: unknown free variable `_fvar.615169`
+error: Mathlib/RingTheory/IsTensorProduct.lean:598:4: Unknown identifier `equiv`
+
+Note: It is not possible to treat `equiv` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/RingTheory/IsTensorProduct.lean:602:5: Unknown identifier `equiv`
+
+Note: It is not possible to treat `equiv` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/RingTheory/IsTensorProduct.lean:603:6: Invalid rewrite argument: Expected an equality or iff proof or definition name, but `?m.105` is a value of type
+  ?m.104
+error: Mathlib/RingTheory/IsTensorProduct.lean:606:5: Unknown identifier `equiv`
+
+Note: It is not possible to treat `equiv` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.
+error: Mathlib/RingTheory/IsTensorProduct.lean:607:6: Invalid rewrite argument: Expected an equality or iff proof or definition name, but `?m.105` is a value of type
+  ?m.104
+error: Mathlib/RingTheory/IsTensorProduct.lean:614:56: Unknown identifier `equiv`
+error: Mathlib/RingTheory/IsTensorProduct.lean:616:14: Unknown identifier `equiv_tmul`
+error: Mathlib/RingTheory/IsTensorProduct.lean:615:59: unsolved goals
+R : Type u_1
+S : Type v₃
+inst✝¹⁰ : CommSemiring R
+inst✝⁹ : CommSemiring S
+inst✝⁸ : Algebra R S
+R' : Type u_6
+S' : Type u_7
+inst✝⁷ : CommSemiring R'
+inst✝⁶ : CommSemiring S'
+inst✝⁵ : Algebra R R'
+inst✝⁴ : Algebra S S'
+inst✝³ : Algebra R' S'
+inst✝² : Algebra R S'
+inst✝¹ : IsScalarTower R R' S'
+inst✝ : IsScalarTower R S S'
+h : IsPushout R S R' S'
+x✝² : R'
+x : R' ⊗[R] S
+x✝¹ : R'
+x✝ : S
+⊢ (sorry ()) (x✝ ⊗ₜ[R] (x✝² * x✝¹)) = (algebraMap R' S') x✝² * (sorry ()) (x✝ ⊗ₜ[R] x✝¹)
+error: Mathlib/RingTheory/IsTensorProduct.lean:617:21: Unknown identifier `equiv_tmul`
+error: Mathlib/RingTheory/IsTensorProduct.lean:617:12: unsolved goals
+R : Type u_1
+S : Type v₃
+inst✝¹⁰ : CommSemiring R
+inst✝⁹ : CommSemiring S
+inst✝⁸ : Algebra R S
+R' : Type u_6
+S' : Type u_7
+inst✝⁷ : CommSemiring R'
+inst✝⁶ : CommSemiring S'
+inst✝⁵ : Algebra R R'
+inst✝⁴ : Algebra S S'
+inst✝³ : Algebra R' S'
+inst✝² : Algebra R S'
+inst✝¹ : IsScalarTower R R' S'
+inst✝ : IsScalarTower R S S'
+h : IsPushout R S R' S'
+x✝ : S
+⊢ (sorry ()) (x✝ ⊗ₜ[R] 1) = (algebraMap S S') x✝
+warning: Mathlib/RingTheory/IsTensorProduct.lean:616:44: This simp argument is unused:
+  mul_left_comm
+
+Hint: Omit it from the simp argument list.
+  simp [equiv_tmul, Algebra.smul_def,̵ ̵m̵u̵l̵_̵l̵e̵f̵t̵_̵c̵o̵m̵m̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Mathlib/RingTheory/IsTensorProduct.lean:661:6: Unknown constant `Algebra.IsPushout.equiv`
+error: Mathlib/RingTheory/IsTensorProduct.lean:666:62: unsolved goals
+R : Type u_1
+S : Type v₃
+inst✝¹³ : CommSemiring R
+inst✝¹² : CommSemiring S
+inst✝¹¹ : Algebra R S
+R' : Type u_6
+S' : Type u_7
+inst✝¹⁰ : CommSemiring R'
+inst✝⁹ : CommSemiring S'
+inst✝⁸ : Algebra R R'
+inst✝⁷ : Algebra S S'
+inst✝⁶ : Algebra R' S'
+inst✝⁵ : Algebra R S'
+inst✝⁴ : IsScalarTower R R' S'
+inst✝³ : IsScalarTower R S S'
+inst✝² : IsPushout R S R' S'
+A : Type u_8
+inst✝¹ : Semiring A
+inst✝ : Algebra R A
+f : S →ₐ[R] A
+g : R' →ₐ[R] A
+H : ∀ (x : S) (y : R'), f x * g y = g y * f x
+x : S
+⊢ (TensorProduct.lift f g H) ((sorry ()) ((algebraMap S S') x)) = f x
+error: Mathlib/RingTheory/IsTensorProduct.lean:678:35: Unknown constant `Algebra.IsPushout.equiv_symm_algebraMap_right`
+error: Mathlib/RingTheory/IsTensorProduct.lean:677:63: unsolved goals
+R : Type u_1
+S : Type v₃
+inst✝¹³ : CommSemiring R
+inst✝¹² : CommSemiring S
+inst✝¹¹ : Algebra R S
+R' : Type u_6
+S' : Type u_7
+inst✝¹⁰ : CommSemiring R'
+inst✝⁹ : CommSemiring S'
+inst✝⁸ : Algebra R R'
+inst✝⁷ : Algebra S S'
+inst✝⁶ : Algebra R' S'
+inst✝⁵ : Algebra R S'
+inst✝⁴ : IsScalarTower R R' S'
+inst✝³ : IsScalarTower R S S'
+inst✝² : IsPushout R S R' S'
+A : Type u_8
+inst✝¹ : Semiring A
+inst✝ : Algebra R A
+f : S →ₐ[R] A
+g : R' →ₐ[R] A
+H : ∀ (x : S) (y : R'), f x * g y = g y * f x
+x : R'
+⊢ (TensorProduct.lift f g H) ((sorry ()) ((algebraMap R' S') x)) = g x
+error: Mathlib/RingTheory/IsTensorProduct.lean:752:31: Unknown constant `Algebra.IsPushout.equiv`
+error: Mathlib/RingTheory/IsTensorProduct.lean:761:39: Unknown constant `Algebra.IsPushout.equiv_tmul`
+error: Mathlib/RingTheory/IsTensorProduct.lean:760:87: unsolved goals
+R : Type u_1
+S : Type v₃
+inst✝¹⁵ : CommSemiring R
+inst✝¹⁴ : CommSemiring S
+inst✝¹³ : Algebra R S
+A : Type u_8
+B : Type u_9
+inst✝¹² : CommRing A
+inst✝¹¹ : CommRing B
+inst✝¹⁰ : Algebra R A
+inst✝⁹ : Algebra R B
+inst✝⁸ : Algebra A B
+inst✝⁷ : Algebra S B
+inst✝⁶ : IsScalarTower R A B
+inst✝⁵ : IsScalarTower R S B
+inst✝⁴ : IsPushout R S A B
+M : Type u_10
+inst✝³ : AddCommGroup M
+inst✝² : Module R M
+inst✝¹ : Module A M
+inst✝ : IsScalarTower R A M
+s : S
+m : M
+⊢ (sorry R S A B M).symm (s ⊗ₜ[R] m) = (algebraMap S B) s ⊗ₜ[A] m
+warning: Mathlib/RingTheory/IsTensorProduct.lean:761:8: declaration uses `sorry`
+error: Mathlib/RingTheory/IsTensorProduct.lean:778:62: unsolved goals
+R : Type u_1
+S : Type v₃
+inst✝¹⁵ : CommSemiring R
+inst✝¹⁴ : CommSemiring S
+inst✝¹³ : Algebra R S
+A : Type u_8
+B : Type u_9
+inst✝¹² : CommRing A
+inst✝¹¹ : CommRing B
+inst✝¹⁰ : Algebra R A
+inst✝⁹ : Algebra R B
+inst✝⁸ : Algebra A B
+inst✝⁷ : Algebra S B
+inst✝⁶ : IsScalarTower R A B
+inst✝⁵ : IsScalarTower R S B
+inst✝⁴ : IsPushout R S A B
+M : Type u_10
+inst✝³ : AddCommGroup M
+inst✝² : Module R M
+inst✝¹ : Module A M
+inst✝ : IsScalarTower R A M
+m : M
+⊢ (sorry R S A B M) (1 ⊗ₜ[A] m) = 1 ⊗ₜ[R] m
+warning: Mathlib/RingTheory/IsTensorProduct.lean:780:8: declaration uses `sorry`
+warning: Mathlib/RingTheory/IsTensorProduct.lean:780:29: This simp argument is unused:
+  TensorProduct.one_def
+
+Hint: Omit it from the simp argument list.
+  simp [cancelBaseChangeAux,̵ ̵T̵e̵n̵s̵o̵r̵P̵r̵o̵d̵u̵c̵t̵.̵o̵n̵e̵_̵d̵e̵f̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+Some required targets logged failures:
+- Mathlib.CategoryTheory.Shift.Quotient
+- Batteries.Classes.SatisfiesM
+- Mathlib.CategoryTheory.Monoidal.Types.Coyoneda
+- Batteries.Data.Fin.Fold
+- Mathlib.LinearAlgebra.StdBasis
+- Mathlib.Algebra.Category.Grp.Adjunctions
+- Mathlib.Topology.Instances.RealVectorSpace
+- Mathlib.Data.Matrix.Basis
+- Mathlib.LinearAlgebra.Multilinear.Pi
+- Mathlib.RingTheory.LocalRing.NonLocalRing
+- Mathlib.CategoryTheory.Triangulated.Rotate
+- Mathlib.CategoryTheory.Monoidal.Functor.Types
+- Mathlib.CategoryTheory.Shift.Opposite
+- Batteries.Data.UnionFind.Basic
+- Mathlib.CategoryTheory.Shift.Pullback
+- Mathlib.SetTheory.Lists
+- Mathlib.MeasureTheory.Integral.Lebesgue.Add
+- Mathlib.Algebra.Homology.Monoidal
+- Mathlib.Algebra.Category.ModuleCat.Adjunctions
+- Mathlib.LinearAlgebra.Multilinear.DFinsupp
+- Mathlib.CategoryTheory.Sites.LeftExact
+- Mathlib.Topology.MetricSpace.Algebra
+- Mathlib.Algebra.Category.Grp.Colimits
+- Mathlib.Algebra.Homology.ShortComplex.Homology
+- Mathlib.Algebra.DirectSum.Ring
+- Mathlib.Topology.Homotopy.Lifting
+- Mathlib.RingTheory.Derivation.Basic
+- Mathlib.CategoryTheory.Action.Monoidal
+- Mathlib.MeasureTheory.VectorMeasure.Basic
+- Mathlib.Algebra.Module.Torsion.Basic
+- Mathlib.LinearAlgebra.LinearPMap
+- Mathlib.RingTheory.IsTensorProduct
+error: build failed

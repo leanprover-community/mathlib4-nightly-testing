@@ -568,6 +568,7 @@ def bind (c : Computation α) (f : α → Computation β) : Computation β :=
 instance : Bind Computation :=
   ⟨@bind⟩
 
+@[defeq]
 theorem has_bind_eq_bind {β} (c : Computation α) (f : α → Computation β) : c >>= f = bind c f :=
   rfl
 
@@ -727,10 +728,11 @@ instance : LawfulMonad Computation := LawfulMonad.mk'
   (pure_bind := @ret_bind)
   (bind_assoc := @bind_assoc)
 
+@[defeq]
 theorem has_map_eq_map {β} (f : α → β) (c : Computation α) : f <$> c = map f c :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem pure_def (a) : (return a : Computation α) = pure a :=
   rfl
 

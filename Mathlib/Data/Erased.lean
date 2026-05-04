@@ -119,15 +119,15 @@ protected instance Monad : Monad Erased where
   bind := @bind
   map := @map
 
-@[simp]
+@[defeq, simp]
 theorem pure_def {α} : (pure : α → Erased α) = @mk _ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem bind_def {α β} : ((· >>= ·) : Erased α → (α → Erased β) → Erased β) = @bind _ _ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem map_def {α β} : ((· <$> ·) : (α → β) → Erased α → Erased β) = @map _ _ :=
   rfl
 

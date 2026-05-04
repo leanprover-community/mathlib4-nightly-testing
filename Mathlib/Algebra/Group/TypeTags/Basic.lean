@@ -219,7 +219,7 @@ instance Multiplicative.rightCancelSemigroup [AddRightCancelSemigroup α] :
 instance [One α] : Zero (Additive α) :=
   ⟨Additive.ofMul 1⟩
 
-@[simp]
+@[defeq, simp]
 theorem ofMul_one [One α] : @Additive.ofMul α 1 = 0 := rfl
 
 @[simp]
@@ -236,7 +236,7 @@ lemma toMul_eq_one {α : Type*} [One α] {x : Additive α} :
 instance [Zero α] : One (Multiplicative α) :=
   ⟨Multiplicative.ofAdd 0⟩
 
-@[simp]
+@[defeq, simp]
 theorem ofAdd_zero [Zero α] : @Multiplicative.ofAdd α 0 = 1 :=
   rfl
 

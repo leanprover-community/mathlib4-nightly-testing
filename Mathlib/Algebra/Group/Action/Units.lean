@@ -32,9 +32,9 @@ namespace Units
 
 @[to_additive] instance [Monoid M] [SMul M α] : SMul Mˣ α where smul m a := (m : M) • a
 
-@[to_additive] lemma smul_def [Monoid M] [SMul M α] (m : Mˣ) (a : α) : m • a = (m : M) • a := rfl
+@[defeq, to_additive] lemma smul_def [Monoid M] [SMul M α] (m : Mˣ) (a : α) : m • a = (m : M) • a := rfl
 
-@[to_additive, simp]
+@[defeq, to_additive, simp]
 lemma smul_mk_apply {M α : Type*} [Monoid M] [SMul M α] (m n : M) (h₁) (h₂) (a : α) :
     (⟨m, n, h₁, h₂⟩ : Mˣ) • a = m • a := rfl
 
@@ -97,7 +97,7 @@ lemma smul_eq_mul {M} [CommMonoid M] (u₁ u₂ : Mˣ) :
   ext
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma val_smul [Group G] [Monoid M] [MulAction G M] [SMulCommClass G M M] [IsScalarTower G M M]
     (g : G) (m : Mˣ) : ↑(g • m) = g • (m : M) := rfl
 
@@ -156,8 +156,8 @@ abbrev mulDistribMulActionRight : MulDistribMulAction M Nˣ where
 
 attribute [local instance] mulDistribMulActionRight
 
-@[simp, norm_cast] lemma coe_smul (m : M) (u : Nˣ) : (m • u).val = m • u.val := rfl
-@[simp, norm_cast] lemma coe_inv_smul (m : M) (u : Nˣ) : (m • u)⁻¹.val = m • u⁻¹.val := rfl
+@[defeq, simp, norm_cast] lemma coe_smul (m : M) (u : Nˣ) : (m • u).val = m • u.val := rfl
+@[defeq, simp, norm_cast] lemma coe_inv_smul (m : M) (u : Nˣ) : (m • u)⁻¹.val = m • u⁻¹.val := rfl
 
 end MulDistribMulAction
 end Units

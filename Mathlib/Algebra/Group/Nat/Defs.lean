@@ -82,6 +82,6 @@ set_option linter.style.whitespace true
 /-! ### Miscellaneous lemmas -/
 
 -- We set the simp priority slightly lower than default; later more general lemmas will replace it.
-@[simp 900] protected lemma nsmul_eq_mul (m n : ℕ) : m • n = m * n := rfl
+@[defeq, simp 900] protected lemma nsmul_eq_mul (m n : ℕ) : m • n = m * n := rfl
 
 end Nat

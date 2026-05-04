@@ -164,7 +164,7 @@ namespace InvMemClass
 instance inv {G S : Type*} [Inv G] [SetLike S G] [InvMemClass S G] {H : S} : Inv H :=
   ⟨fun a => ⟨a⁻¹, inv_mem a.2⟩⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_inv (x : H) : (x⁻¹).1 = x.1⁻¹ :=
   rfl
 
@@ -195,7 +195,7 @@ instance div {G S : Type*} [DivInvMonoid G] [SetLike S G] [SubgroupClass S G] {H
 instance instZPow {M S} [DivInvMonoid M] [SetLike S M] [SubgroupClass S M] {H : S} : Pow H ℤ :=
   ⟨fun a n => ⟨a.1 ^ n, zpow_mem a.2 n⟩⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_div (x y : H) : (x / y).1 = x.1 / y.1 :=
   rfl
 
@@ -238,11 +238,11 @@ theorem coe_subtype : (SubgroupClass.subtype H : H → G) = ((↑) : H → G) :=
 
 variable {H}
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_pow (x : H) (n : ℕ) : ((x ^ n : H) : G) = (x : G) ^ n :=
   rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_zpow (x : H) (n : ℤ) : ((x ^ n : H) : G) = (x : G) ^ n :=
   rfl
 
@@ -355,7 +355,7 @@ theorem mem_mk {s : Submonoid G} {x : G} (h_inv) :
     x ∈ mk s h_inv ↔ x ∈ s :=
   Iff.rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_set_mk {s : Submonoid G} (h_inv) :
     (mk s h_inv : Set G) = s :=
   rfl
@@ -365,7 +365,7 @@ theorem mk_le_mk {s t : Submonoid G} (h_inv) (h_inv') :
     mk s h_inv ≤ mk t h_inv' ↔ s ≤ t :=
   Iff.rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_toSubmonoid (K : Subgroup G) : (K.toSubmonoid : Set G) = K :=
   rfl
 
@@ -516,27 +516,27 @@ protected instance npow : Pow H ℕ :=
 instance zpow : Pow H ℤ :=
   ⟨fun a n => ⟨a ^ n, H.zpow_mem a.2 n⟩⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_mul (x y : H) : (↑(x * y) : G) = ↑x * ↑y :=
   rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_one : ((1 : H) : G) = 1 :=
   rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_inv (x : H) : ↑(x⁻¹ : H) = (x⁻¹ : G) :=
   rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_div (x y : H) : (↑(x / y) : G) = ↑x / ↑y :=
   rfl
 
-@[to_additive (attr := norm_cast)]
+@[defeq, to_additive (attr := norm_cast)]
 theorem coe_mk (x : G) (hx : x ∈ H) : ((⟨x, hx⟩ : H) : G) = x :=
   rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_pow (x : H) (n : ℕ) : ((x ^ n : H) : G) = (x : G) ^ n :=
   rfl
 

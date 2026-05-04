@@ -666,7 +666,7 @@ instance Monoid.toPow {M : Type*} [Monoid M] : Pow M ℕ :=
 section Monoid
 variable {M : Type*} [Monoid M] {a b c : M}
 
-@[to_additive (attr := simp) nsmul_eq_smul]
+@[defeq, to_additive (attr := simp) nsmul_eq_smul]
 theorem npow_eq_pow (n : ℕ) (x : M) : Monoid.npow n x = x ^ n :=
   rfl
 
@@ -1039,7 +1039,7 @@ section DivInvMonoid
 
 variable [DivInvMonoid G]
 
-@[to_additive (attr := simp) zsmul_eq_smul] theorem zpow_eq_pow (n : ℤ) (x : G) :
+@[defeq, to_additive (attr := simp) zsmul_eq_smul] theorem zpow_eq_pow (n : ℤ) (x : G) :
     DivInvMonoid.zpow n x = x ^ n :=
   rfl
 

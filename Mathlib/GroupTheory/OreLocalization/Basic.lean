@@ -471,7 +471,7 @@ abbrev numeratorHom : R →* R[S⁻¹] where
   map_one' := by with_unfolding_all rfl
   map_mul' _ _ := mul_div_one.symm
 
-@[to_additive]
+@[defeq, to_additive]
 theorem numeratorHom_apply {r : R} : numeratorHom r = r /ₒ (1 : S) :=
   rfl
 

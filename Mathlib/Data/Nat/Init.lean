@@ -115,14 +115,15 @@ This section is here due to dependencies -- the lemmas here require some of the 
 proved above, and some of the results in later sections depend on the definitions in this section.
 -/
 
-@[simp]
+@[defeq, simp]
 lemma rec_zero {C : ℕ → Sort*} (h0 : C 0) (h : ∀ n, C n → C (n + 1)) : Nat.rec h0 h 0 = h0 := rfl
 
 -- Not `@[simp]` since `simp` can reduce the whole term.
+@[defeq]
 lemma rec_add_one {C : ℕ → Sort*} (h0 : C 0) (h : ∀ n, C n → C (n + 1)) (n : ℕ) :
     Nat.rec h0 h (n + 1) = h n (Nat.rec h0 h n) := rfl
 
-@[simp] lemma rec_one {C : ℕ → Sort*} (h0 : C 0) (h : ∀ n, C n → C (n + 1)) :
+@[defeq, simp] lemma rec_one {C : ℕ → Sort*} (h0 : C 0) (h : ∀ n, C n → C (n + 1)) :
     Nat.rec (motive := C) h0 h 1 = h 0 h0 := rfl
 
 /-- Recursion starting at a non-zero number: given a map `C k → C (k+1)` for each `k ≥ n`,
@@ -149,6 +150,7 @@ def leRec {n} {motive : (m : ℕ) → n ≤ m → Sort*}
 
 -- This verifies the signatures of the recursor matches the builtin one, as promised in the
 -- above.
+@[defeq]
 theorem leRec_eq_leRec : @Nat.leRec.{0} = @Nat.le.rec := rfl
 
 @[simp]

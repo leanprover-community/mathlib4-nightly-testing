@@ -1,0 +1,8 @@
+Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean
+Mathlib/CategoryTheory/Monoidal/Functor/Types.lean
+Mathlib/CategoryTheory/Monoidal/Types/Coyoneda (898ms).lean
+Mathlib/CategoryTheory/Shift/Opposite.lean
+Mathlib/NumberTheory/LSeries/HurwitzZetaEven.lean
+Mathlib/NumberTheory/LSeries/HurwitzZetaOdd.lean
+Mathlib/Probability/Kernel/Composition/AbsolutelyContinuous.lean
+Mathlib/Probability/Kernel/Disintegration/Unique.lean

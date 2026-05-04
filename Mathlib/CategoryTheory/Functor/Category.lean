@@ -60,7 +60,7 @@ namespace NatTrans
 @[ext, grind ext, to_dual self]
 theorem ext' {α β : F ⟶ G} (w : α.app = β.app) : α = β := NatTrans.ext w
 
-@[simp, to_dual self]
+@[defeq, simp, to_dual self]
 theorem vcomp_eq_comp (α : F ⟶ G) (β : G ⟶ H) : vcomp α β = α ≫ β := rfl
 
 @[to_dual self]

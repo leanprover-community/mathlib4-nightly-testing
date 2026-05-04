@@ -95,10 +95,11 @@ instance : CoeFun (ApplicativeTransformation F G) fun _ => ∀ {α}, F α → G 
 variable {F G}
 
 -- This cannot be a `simp` lemma, as the RHS is a coercion which contains `η.app`.
+@[defeq]
 theorem app_eq_coe (η : ApplicativeTransformation F G) : η.app = η :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : ∀ α : Type u, F α → G α) (pp ps) :
     (ApplicativeTransformation.mk f @pp @ps) = f :=
   rfl

@@ -29,9 +29,11 @@ namespace Prefunctor
 
 -- These lemmas cannot be `@[simp]` because after `whnfR` they have a variable on the LHS.
 -- Nevertheless they are sometimes useful when building functors.
+@[defeq]
 lemma mk_obj {V W : Type*} [Quiver V] [Quiver W] {obj : V → W} {map} {X : V} :
     (Prefunctor.mk obj map).obj X = obj X := rfl
 
+@[defeq]
 lemma mk_map {V W : Type*} [Quiver V] [Quiver W] {obj : V → W} {map} {X Y : V} {f : X ⟶ Y} :
     (Prefunctor.mk obj map).map f = map f := rfl
 

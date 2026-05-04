@@ -40,12 +40,12 @@ instance commGroup : CommGroup PUnit where
 @[to_additive] instance : Div PUnit where div _ _ := unit
 @[to_additive] instance : Inv PUnit where inv _ := unit
 
-@[to_additive (attr := simp)] lemma one_eq : (1 : PUnit) = unit := rfl
+@[defeq, to_additive (attr := simp)] lemma one_eq : (1 : PUnit) = unit := rfl
 
 -- note simp can prove this when the Boolean ring structure is introduced
-@[to_additive] lemma mul_eq (x y : PUnit) : x * y = unit := rfl
+@[defeq, to_additive] lemma mul_eq (x y : PUnit) : x * y = unit := rfl
 
-@[to_additive (attr := simp)] lemma div_eq (x y : PUnit) : x / y = unit := rfl
-@[to_additive (attr := simp)] lemma inv_eq (x : PUnit) : x⁻¹ = unit := rfl
+@[defeq, to_additive (attr := simp)] lemma div_eq (x y : PUnit) : x / y = unit := rfl
+@[defeq, to_additive (attr := simp)] lemma inv_eq (x : PUnit) : x⁻¹ = unit := rfl
 
 end PUnit

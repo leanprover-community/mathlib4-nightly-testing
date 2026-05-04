@@ -27,7 +27,7 @@ def mk.injArrow {α : Type*} {β : Type*} {x₁ : α} {y₁ : β} {x₂ : α} {y
   cases h
   exact w rfl rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk.eta {p : PProd α β} : PProd.mk p.1 p.2 = p :=
   rfl
 

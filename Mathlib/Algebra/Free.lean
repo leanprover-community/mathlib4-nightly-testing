@@ -91,7 +91,7 @@ instance [Inhabited α] : Inhabited (FreeMagma α) := ⟨of default⟩
 @[to_additive]
 instance : Mul (FreeMagma α) := ⟨FreeMagma.mul⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mul_eq (x y : FreeMagma α) : mul x y = x * y := rfl
 
 /-- Recursor for `FreeMagma` using `x * y` instead of `FreeMagma.mul x y`. -/
@@ -251,7 +251,7 @@ theorem traverse_mul' :
     Function.comp (traverse F) ∘ (HMul.hMul : FreeMagma α → FreeMagma α → FreeMagma α) = fun x y ↦
       (· * ·) <$> traverse F x <*> traverse F y := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem traverse_eq (x) : FreeMagma.traverse F x = traverse F x := rfl
 
 @[to_additive]
@@ -471,13 +471,13 @@ instance : Semigroup (FreeSemigroup α) where
   mul L1 L2 := ⟨L1.1, L1.2 ++ L2.1 :: L2.2⟩
   mul_assoc _L1 _L2 _L3 := FreeSemigroup.ext rfl <| List.append_assoc _ _ _
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem head_mul (x y : FreeSemigroup α) : (x * y).1 = x.1 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem tail_mul (x y : FreeSemigroup α) : (x * y).2 = x.2 ++ y.1 :: y.2 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mk_mul_mk (x y : α) (L1 L2 : List α) : mk x L1 * mk y L2 = mk x (L1 ++ y :: L2) := rfl
 
 /-- The embedding `α → FreeSemigroup α`. -/
@@ -645,7 +645,7 @@ theorem traverse_mul' :
 
 end
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem traverse_eq (x) : FreeSemigroup.traverse F x = traverse F x := rfl
 
 @[to_additive]

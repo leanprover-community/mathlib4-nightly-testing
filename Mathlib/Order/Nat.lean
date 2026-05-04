@@ -34,7 +34,7 @@ instance instNoMaxOrder : NoMaxOrder ℕ where
 
 /-! ### Miscellaneous lemmas -/
 
-@[simp high] protected lemma bot_eq_zero : ⊥ = 0 := rfl
+@[defeq, simp high] protected lemma bot_eq_zero : ⊥ = 0 := rfl
 
 /-- `Nat.find` is the minimum natural number satisfying a predicate `p`. -/
 lemma isLeast_find {p : ℕ → Prop} [DecidablePred p] (hp : ∃ n, p n) :

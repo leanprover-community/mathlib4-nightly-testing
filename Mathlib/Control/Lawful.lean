@@ -22,6 +22,7 @@ section
 variable {σ : Type u} {m : Type u → Type v} {α β : Type u}
 
 /-- A copy of `LawfulFunctor.map_const` for `StateT` that holds even if `m` is not lawful. -/
+@[defeq]
 protected lemma map_const [Monad m] :
     (Functor.mapConst : α → StateT σ m β → StateT σ m α) = Functor.map ∘ Function.const β :=
   rfl

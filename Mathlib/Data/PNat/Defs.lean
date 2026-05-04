@@ -143,7 +143,7 @@ instance : Inhabited ℕ+ :=
   ⟨1⟩
 
 -- Some lemmas that rewrite `PNat.mk n h`, for `n` an explicit numeral, into explicit numerals.
-@[simp]
+@[defeq, simp]
 theorem mk_one {h} : (⟨1, h⟩ : ℕ+) = (1 : ℕ+) :=
   rfl
 

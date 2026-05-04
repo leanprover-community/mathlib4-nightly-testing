@@ -34,19 +34,19 @@ variable [One M] [One N]
 instance instOne : One (M × N) :=
   ⟨(1, 1)⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem fst_one : (1 : M × N).1 = 1 :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem snd_one : (1 : M × N).2 = 1 :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem one_eq_mk : (1 : M × N) = (1, 1) :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem mk_one_one : ((1 : M), (1 : N)) = 1 := rfl
 
 @[to_additive (attr := simp)]
@@ -66,19 +66,19 @@ variable {M N : Type*} [Mul M] [Mul N]
 instance instMul : Mul (M × N) :=
   ⟨fun p q => ⟨p.1 * q.1, p.2 * q.2⟩⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem fst_mul (p q : M × N) : (p * q).1 = p.1 * q.1 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem snd_mul (p q : M × N) : (p * q).2 = p.2 * q.2 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mk_mul_mk (a₁ a₂ : M) (b₁ b₂ : N) : (a₁, b₁) * (a₂, b₂) = (a₁ * a₂, b₁ * b₂) := rfl
 
 @[to_additive (attr := simp)]
 theorem swap_mul (p q : M × N) : (p * q).swap = p.swap * q.swap := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem mul_def (p q : M × N) : p * q = (p.1 * q.1, p.2 * q.2) := rfl
 
 end Mul
@@ -91,13 +91,13 @@ variable {G H : Type*} [Inv G] [Inv H]
 instance instInv : Inv (G × H) :=
   ⟨fun p => (p.1⁻¹, p.2⁻¹)⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem fst_inv (p : G × H) : p⁻¹.1 = p.1⁻¹ := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem snd_inv (p : G × H) : p⁻¹.2 = p.2⁻¹ := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem inv_mk (a : G) (b : H) : (a, b)⁻¹ = (a⁻¹, b⁻¹) := rfl
 
 @[to_additive (attr := simp)]
@@ -113,19 +113,19 @@ variable {G H : Type*} [Div G] [Div H]
 instance instDiv : Div (G × H) :=
   ⟨fun p q => ⟨p.1 / q.1, p.2 / q.2⟩⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem fst_div (a b : G × H) : (a / b).1 = a.1 / b.1 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem snd_div (a b : G × H) : (a / b).2 = a.2 / b.2 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mk_div_mk (x₁ x₂ : G) (y₁ y₂ : H) : (x₁, y₁) / (x₂, y₂) = (x₁ / x₂, y₁ / y₂) := rfl
 
 @[to_additive (attr := simp)]
 theorem swap_div (a b : G × H) : (a / b).swap = a.swap / b.swap := rfl
 
-@[to_additive] lemma div_def (a b : G × H) : a / b = (a.1 / b.1, a.2 / b.2) := rfl
+@[defeq, to_additive] lemma div_def (a b : G × H) : a / b = (a.1 / b.1, a.2 / b.2) := rfl
 
 end Div
 
@@ -136,16 +136,16 @@ variable {E α β : Type*} [Pow α E] [Pow β E]
 @[to_additive (attr := to_additive) instSMul]
 instance instPow : Pow (α × β) E where pow p c := (p.1 ^ c, p.2 ^ c)
 
-@[to_additive (attr := to_additive, simp) (reorder := p c) smul_fst]
+@[defeq, to_additive (attr := to_additive, simp) (reorder := p c) smul_fst]
 lemma pow_fst (p : α × β) (c : E) : (p ^ c).fst = p.fst ^ c := rfl
 
-@[to_additive (attr := to_additive, simp) (reorder := p c) smul_snd]
+@[defeq, to_additive (attr := to_additive, simp) (reorder := p c) smul_snd]
 lemma pow_snd (p : α × β) (c : E) : (p ^ c).snd = p.snd ^ c := rfl
 
-@[to_additive (attr := to_additive, simp) (reorder := a b c) smul_mk]
+@[defeq, to_additive (attr := to_additive, simp) (reorder := a b c) smul_mk]
 lemma pow_mk (a : α) (b : β) (c : E) : Prod.mk a b ^ c = Prod.mk (a ^ c) (b ^ c) := rfl
 
-@[to_additive (attr := to_additive) (reorder := p c) smul_def]
+@[defeq, to_additive (attr := to_additive) (reorder := p c) smul_def]
 lemma pow_def (p : α × β) (c : E) : p ^ c = (p.1 ^ c, p.2 ^ c) := rfl
 
 @[to_additive (attr := to_additive, simp) (reorder := p c) smul_swap]
@@ -159,12 +159,13 @@ variable [Star R] [Star S]
 
 instance : Star (R × S) where star x := (star x.1, star x.2)
 
-@[simp]
+@[defeq, simp]
 theorem fst_star (x : R × S) : (star x).1 = star x.1 := rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_star (x : R × S) : (star x).2 = star x.2 := rfl
 
+@[defeq]
 theorem star_def (x : R × S) : star x = (star x.1, star x.2) := rfl
 
 end Star

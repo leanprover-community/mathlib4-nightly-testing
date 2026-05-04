@@ -57,6 +57,7 @@ def of {c : Type u → Type v} (α : Type u) [str : c α] : Bundled c :=
 instance coeSort : CoeSort (Bundled c) (Type u) :=
   ⟨Bundled.α⟩
 
+@[defeq]
 theorem coe_mk (α) (str) : (@Bundled.mk c α str : Type u) = α :=
   rfl
 

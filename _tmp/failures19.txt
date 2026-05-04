@@ -1,0 +1,8 @@
+Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean
+Mathlib/AlgebraicGeometry/Morphisms/Affine.lean
+Mathlib/CategoryTheory/Monoidal/Functor/Types.lean
+Mathlib/CategoryTheory/Monoidal/Types/Coyoneda (952ms).lean
+Mathlib/CategoryTheory/Shift/Opposite.lean
+Mathlib/Geometry/Manifold/Instances/Icc.lean
+Mathlib/Geometry/Manifold/VectorField/Pullback.lean
+Mathlib/MeasureTheory/Integral/Bochner/L1.lean

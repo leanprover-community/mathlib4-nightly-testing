@@ -138,6 +138,7 @@ instance [DecidableEq α] : LawfulSingleton α (List α) :=
   { insert_empty_eq := fun x =>
       show (if x ∈ ([] : List α) then [] else [x]) = [x] from if_neg not_mem_nil }
 
+@[defeq]
 theorem singleton_eq (x : α) : ({x} : List α) = [x] :=
   rfl
 
@@ -188,6 +189,7 @@ theorem map_subset_iff {l₁ l₂ : List α} (f : α → β) (h : Injective f) :
 
 /-! ### append -/
 
+@[defeq]
 theorem append_eq_has_append {L₁ L₂ : List α} : List.append L₁ L₂ = L₁ ++ L₂ :=
   rfl
 
@@ -248,7 +250,7 @@ theorem mem_pure (x y : α) : x ∈ (pure y : List α) ↔ x = y := by simp
 
 /-! ### bind -/
 
-@[simp]
+@[defeq, simp]
 theorem bind_eq_flatMap {α β} (f : α → List β) (l : List α) : l >>= f = l.flatMap f :=
   rfl
 
@@ -690,7 +692,7 @@ theorem infix_flatMap_of_mem {a : α} {as : List α} (h : a ∈ as) (f : α → 
     f a <:+: as.flatMap f :=
   infix_of_mem_flatten (mem_map_of_mem h)
 
-@[simp]
+@[defeq, simp]
 theorem map_eq_map {α β} (f : α → β) (l : List α) : f <$> l = map f l :=
   rfl
 

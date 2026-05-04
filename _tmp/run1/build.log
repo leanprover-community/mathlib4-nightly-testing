@@ -1,0 +1,1900 @@
+warning: batteries: repository '/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries' has local changes
+✔ [5/537] Built ImportGraph.Lean.Environment (427ms)
+✔ [6/537] Built ImportGraph.Graph.TransitiveClosure (478ms)
+✔ [15/621] Built Batteries.Lean.Meta.Inaccessible (560ms)
+✔ [16/621] Built Aesop.Forward.SlotIndex (509ms)
+✔ [18/1316] Built Batteries.Tactic.Unreachable (642ms)
+✔ [19/1316] Built ImportGraph.Imports.ImportGraph (644ms)
+✔ [20/1316] Built Batteries.Lean.Syntax (642ms)
+✔ [21/1316] Built Aesop.Forward.LevelIndex (580ms)
+✔ [22/2208] Built Batteries.Util.ProofWanted (742ms)
+✔ [23/2208] Built Batteries.Lean.NameMapAttribute (714ms)
+✔ [24/2208] Built Aesop.Check (727ms)
+✔ [25/2208] Built Aesop.Forward.PremiseIndex (662ms)
+✔ [26/2208] Built Batteries.Control.Lemmas (557ms)
+✔ [27/2208] Built Batteries.Lean.MonadBacktrack (598ms)
+✔ [28/2876] Built Aesop.Nanos (738ms)
+✔ [29/2876] Built Batteries.Data.String.Basic (783ms)
+✔ [30/2876] Built Batteries.Lean.TagAttribute (761ms)
+✔ [31/2876] Built Batteries.Lean.Meta.UnusedNames (656ms)
+✔ [32/2876] Built Aesop.Util.OrderedHashSet (681ms)
+✔ [33/2876] Built Batteries.Lean.Meta.Expr (630ms)
+✔ [34/2876] Built Batteries.Lean.HashSet (613ms)
+✔ [35/3206] Built Batteries.Tactic.Lint.Basic (1.0s)
+✔ [36/3206] Built Batteries.Util.ExtendedBinder (916ms)
+✔ [37/3206] Built Batteries.Lean.Expr (916ms)
+✔ [38/3206] Built Aesop.Util.UnionFind (826ms)
+✔ [39/3206] Built Aesop.Percent (807ms)
+✔ [40/3206] Built Batteries.Lean.PersistentHashSet (737ms)
+✔ [41/3206] Built Batteries.Control.ForInStep.Basic (645ms)
+✔ [42/3599] Built Batteries.Util.LibraryNote (1.1s)
+✔ [43/3599] Built Aesop.Index.DiscrTreeConfig (1.0s)
+✔ [44/3599] Built Aesop.Rule.Name (944ms)
+✔ [45/3599] Built Batteries.Tactic.SeqFocus (963ms)
+✔ [46/3599] Built Batteries.Lean.PersistentHashMap (807ms)
+✔ [47/3599] Built Aesop.Search.Expansion.Simp (828ms)
+✔ [48/3599] Built Batteries.Classes.RatCast (526ms)
+✔ [49/4288] Built ImportGraph.Imports.Redundant (597ms)
+✔ [50/4288] Built Qq.SortLocalDecls (851ms)
+✔ [51/4288] Built Batteries.Lean.Except (742ms)
+✔ [52/4288] Built ProofWidgets.Compat (732ms)
+✔ [53/4288] Built Plausible.Shrinkable (702ms)
+✔ [54/4288] Built LeanSearchClient.Basic (626ms)
+✔ [55/4451] Built Mathlib.Tactic.Linter.DirectoryDependency (1.4s)
+✔ [56/4451] Built Batteries.Tactic.OpenPrivate (1.3s)
+✔ [57/4451] Built Batteries.CodeAction.Deprecated (1.3s)
+✔ [58/4451] Built Batteries.Tactic.Init (1.2s)
+✔ [59/4451] Built Aesop.Options.Public (1.2s)
+✔ [60/4451] Built Batteries.Tactic.PermuteGoals (1.1s)
+✔ [61/4451] Built Aesop.RuleSet.Name (1.1s)
+✔ [62/4451] Built Batteries.Util.Cache (821ms)
+✔ [63/4451] Built ProofWidgets.Util (868ms)
+✔ [64/4451] Built Plausible.Random (838ms)
+✔ [65/4451] Built Plausible.Attr (778ms)
+✔ [66/4451] Built Batteries.Lean.Position (775ms)
+✔ [67/4451] Built Batteries.Data.Nat.Basic (765ms)
+✔ [68/5302] Built Batteries.Data.Array.Merge (1.3s)
+✔ [69/5302] Built Aesop.RuleTac.FVarIdSubst (1.3s)
+✔ [70/5302] Built Batteries.Control.LawfulMonadState (1.2s)
+✔ [71/5302] Built Aesop.Script.Tactic (1.3s)
+✔ [72/5302] Built Aesop.Script.GoalWithMVars (1.3s)
+✔ [73/5302] Built Aesop.ElabM (1.2s)
+✔ [74/5302] Built Aesop.Constants (432ms)
+✔ [75/5302] Built Aesop.Exception (1.1s)
+✔ [76/5302] Built Aesop.Frontend.Basic (1.1s)
+✔ [77/5820] Built ImportGraph.Imports.RequiredModules (1.1s)
+✔ [78/5820] Built ImportGraph.Tools.ImportDiff (863ms)
+✔ [79/5820] Built Batteries.Lean.AttributeExtra (606ms)
+✔ [80/5820] Built Aesop.Util.Unfold (1.4s)
+✔ [81/5820] Built Aesop.Script.OptimizeSyntax (1.2s)
+✔ [82/5820] Built Qq.Typ (1.2s)
+✔ [83/5820] Built Qq.ForLean.Do (1.1s)
+✔ [84/5820] Built Batteries.CodeAction.Attr (1.0s)
+✔ [85/5820] Built Batteries.Control.ForInStep.Lemmas (592ms)
+✔ [86/6698] Built Batteries.Tactic.Lint.TypeClass (659ms)
+✔ [87/6698] Built Aesop.RuleTac.RuleTerm (602ms)
+✔ [88/6698] Built Qq.ForLean.ReduceEval (1.3s)
+✔ [89/6698] Built Qq.ForLean.ToExpr (1.2s)
+✔ [90/6698] Built Batteries.Tactic.Congr (1.2s)
+✔ [91/7348] Built Batteries.Linter.UnreachableTactic (1.1s)
+✔ [92/8334] Built Batteries.Tactic.Lint.Misc (1.0s)
+✔ [93/8334] Built ImportGraph.Tools.RedundantImports (819ms)
+✔ [94/8334] Built Aesop.Util.UnorderedArraySet (608ms)
+✔ [95/8334] Built Batteries.Control.OptionT (583ms)
+✔ [96/8334] Built Batteries.Lean.Meta.DiscrTree (568ms)
+✔ [97/8334] Built ProofWidgets.Component.Basic (873ms)
+✔ [98/8334] Built Batteries.Lean.Float (589ms)
+✔ [99/8353] Built Aesop.Util.Tactic (852ms)
+✔ [100/8353] Built Batteries.Tactic.Case (1.6s)
+✔ [101/8353] Built Batteries.Data.Nat.Bitwise.Lemmas (499ms)
+✔ [102/8353] Built Mathlib.Data.List.SplitOn (537ms)
+✔ [103/8370] Built Aesop.Options.Internal (911ms)
+✔ [104/8370] Built Aesop.RuleSet.Filter (875ms)
+✔ [105/8370] Built ProofWidgets.Cancellable (986ms)
+✔ [106/8370] Built Plausible.Gen (985ms)
+✔ [107/8370] Built Mathlib.Tactic.GeneralizeProofs (565ms)
+✔ [108/8378] Built ImportGraph.Tools.MinImports (867ms)
+✔ [109/8378] Built Aesop.RuleTac.ElabRuleTerm (1.0s)
+✔ [110/8378] Built Batteries.CodeAction.Basic (985ms)
+✔ [111/8378] Built Batteries.Data.Array.Init.Lemmas (521ms)
+✔ [112/8378] Built Batteries.Tactic.Lint.Simp (1.2s)
+✔ [113/8378] Built Batteries.Control.ForInStep (591ms)
+✔ [114/8378] Built Batteries.Data.Bool (571ms)
+✔ [115/8378] Built Batteries.Data.BitVec.Basic (600ms)
+✔ [117/8380] Built ImportGraph.Tools.FindHome (1.1s)
+✔ [118/8380] Built Batteries.Data.Nat.Bitwise (498ms)
+✔ [119/8380] Built Batteries.Lean.HashMap (756ms)
+✔ [120/8380] Built Batteries.Classes.Cast (726ms)
+✔ [121/8380] Built Batteries.Data.FloatArray (594ms)
+✔ [122/8380] Built Batteries.Data.List.ArrayMap (567ms)
+✔ [123/8380] Built Batteries.Data.List.Init.Lemmas (591ms)
+✔ [124/8380] Built Mathlib.Tactic.Linter.Header (1.4s)
+✔ [125/8380] Built Batteries.Lean.EStateM (773ms)
+✔ [126/8380] Built Batteries.Lean.System.IO (741ms)
+✔ [127/8380] Built Batteries.Tactic.Lint.Frontend (1.9s)
+✔ [128/8380] Built Batteries.Data.Rat.Float (797ms)
+✔ [129/8380] Built Batteries.Data.String.Legacy (1.2s)
+✔ [130/8380] Built Batteries.Data.Array.Match (1.1s)
+✔ [131/8380] Built Batteries.Data.ByteArray (1.1s)
+✔ [132/8380] Built Batteries.Data.ByteSlice (911ms)
+✔ [133/8380] Built Batteries.Data.NameSet (913ms)
+✔ [134/8380] Built Batteries.Data.RunningStats (750ms)
+✔ [135/8380] Built Batteries.Data.Stream (812ms)
+✔ [136/8380] Built Batteries.Data.String.AsciiCasing (725ms)
+✔ [137/8380] Built Batteries.Util.Panic (691ms)
+✔ [138/8380] Built Batteries.Data.Vector.Basic (776ms)
+⚠ [139/8380] Built Batteries.Data.Vector.Lemmas (820ms)
+warning: Batteries/Data/Vector/Lemmas.lean:48:17: This simp argument is unused:
+  Nat.add_one_sub_one
+
+Hint: Omit it from the simp argument list.
+  simp only [̵N̵a̵t̵.̵a̵d̵d̵_̵o̵n̵e̵_̵s̵u̵b̵_̵o̵n̵e̵,̵ ̵t̵a̵i̵l̵_̵e̵q̵_̵c̵a̵s̵t̵_̵e̵x̵t̵r̵a̵c̵t̵,̵[̲t̲a̲i̲l̲_̲e̲q̲_̲c̲a̲s̲t̲_̲e̲x̲t̲r̲a̲c̲t̲,̲ getElem_toList, getElem_cast, getElem_extract,
+  ̲  ̲ ̲ ̲ ̲ ̲ ̲ ̲List.getElem_tail]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+✔ [140/8380] Built Batteries.Lean.IO.Process (727ms)
+✔ [141/8380] Built Batteries.Lean.Json (656ms)
+✔ [142/8380] Built Batteries.Lean.LawfulMonad (773ms)
+✔ [143/8380] Built Batteries.Lean.LawfulMonadLift (760ms)
+✔ [144/8380] Built Batteries.Lean.Util.EnvSearch (722ms)
+✔ [145/8380] Built Batteries.Util.Pickle (640ms)
+✔ [146/8380] Built Batteries.Tactic.Trans (2.0s)
+✔ [147/8380] Built Batteries.Linter.UnnecessarySeqFocus (1.5s)
+✔ [148/8380] Built Batteries.Control.AlternativeMonad (1.1s)
+✔ [149/8380] Built Aesop.Util.Tactic.Unfold (1.5s)
+✔ [150/8380] Built ProofWidgets.Component.MakeEditLink (972ms)
+✔ [151/8380] Built LeanSearchClient.Syntax (1.8s)
+✔ [152/8380] Built Batteries.Tactic.Alias (1.9s)
+✔ [153/8380] Built Plausible.Arbitrary (780ms)
+✔ [154/8380] Built Batteries.Lean.Meta.Simp (976ms)
+✔ [155/8380] Built Aesop.Options (1.1s)
+✔ [156/8380] Built ProofWidgets.Component.Panel.Basic (1.2s)
+✔ [157/8380] Built Mathlib.Lean.Elab.Tactic.Meta (654ms)
+✔ [158/8380] Built Batteries.Tactic.HelpCmd (2.2s)
+✔ [159/8380] Built Batteries.Tactic.Instances (1.0s)
+✔ [160/8380] Built Batteries.Tactic.Lemma (940ms)
+✔ [161/8380] Built Batteries.Tactic.NoMatch (1.0s)
+✔ [162/8380] Built Mathlib.Tactic.Linter.PrivateModule (735ms)
+✔ [163/8380] Built ImportGraph.Tools (778ms)
+✔ [164/8380] Built Batteries.Tactic.PrintOpaques (1.1s)
+✔ [165/8380] Built Batteries.Tactic.ShowUnused (1.0s)
+✔ [166/8380] Built Mathlib.Tactic.Lemma (870ms)
+✔ [167/8380] Built Mathlib.Tactic.Linter.TacticDocumentation (896ms)
+✔ [168/8380] Built Mathlib.Tactic.DeclarationNames (841ms)
+✔ [169/8380] Built Batteries.Data.List.Matcher (585ms)
+✔ [170/8380] Built Batteries.Data.Rat (615ms)
+✔ [171/8380] Built Batteries.Tactic.PrintDependents (1.1s)
+✔ [172/8380] Built Mathlib.Util.ParseCommand (884ms)
+✔ [173/8380] Built Mathlib.Tactic.TypeStar (947ms)
+✔ [174/8380] Built Batteries.Data.String.Matcher (686ms)
+✔ [175/8380] Built Batteries.Classes.SatisfiesM (989ms)
+✔ [176/8380] Built Batteries.Data.BinaryHeap.Basic (1.8s)
+✔ [177/8380] Built Batteries.Data.Random.MersenneTwister (1.4s)
+✔ [178/8380] Built Mathlib.Lean.Linter (1.1s)
+✔ [179/8380] Built Mathlib.Tactic.Linter.EmptyLine (1.1s)
+✔ [180/8380] Built Mathlib.Tactic.Linter.GlobalAttributeIn (1.1s)
+✔ [181/8380] Built Mathlib.Tactic.Linter.Multigoal (1.1s)
+✔ [182/8380] Built Mathlib.Tactic.Linter.OldObtain (1.0s)
+✔ [183/8380] Built Mathlib.Tactic.Linter.UnusedTacticExtension (1.1s)
+✔ [184/8380] Built Mathlib.Lean.Environment (990ms)
+✔ [185/8380] Built Batteries.Tactic.Lint (772ms)
+✔ [186/8380] Built Batteries.Linter (793ms)
+✔ [187/8380] Built Batteries.Lean.Meta.Basic (655ms)
+✔ [188/8380] Built Plausible.ArbitraryFueled (677ms)
+✔ [189/8380] Built Batteries.CodeAction.Misc (2.3s)
+✔ [190/8380] Built Mathlib.Tactic.Linter.HashCommandLinter (1.2s)
+✔ [191/8380] Built Batteries.Control.Monad (687ms)
+✔ [192/8380] Built Batteries.Data.Nat.Gcd (696ms)
+✔ [193/8380] Built Batteries.Logic (833ms)
+✔ [194/8380] Built Batteries.Data.Random (341ms)
+✔ [195/8380] Built Batteries.Data.Range.Lemmas (833ms)
+✔ [196/8380] Built Mathlib.Tactic.Linter.DocString (1.3s)
+✔ [197/8380] Built Mathlib.Tactic.MinImports (1.4s)
+✔ [198/8380] Built Batteries.Tactic.Exact (882ms)
+✔ [199/8380] Built Plausible.Sampleable (929ms)
+✔ [200/8380] Built Batteries.Data.Nat.Lemmas (897ms)
+✔ [201/8380] Built Batteries.Data.Array.Pairwise (912ms)
+✔ [202/8380] Built Batteries.Data.HashMap.Basic (896ms)
+✔ [203/8380] Built Batteries.Data.List.Monadic (527ms)
+✔ [204/8380] Built Batteries.Lean.SatisfiesM (527ms)
+✔ [205/8380] Built Mathlib.Tactic.Linter.DocPrime (1.5s)
+✔ [206/8380] Built Mathlib.Lean.Expr.Basic (1.5s)
+✔ [207/8380] Built Mathlib.Tactic.Linter.Whitespace (1.4s)
+✔ [208/8380] Built Mathlib.Lean.ContextInfo (890ms)
+✔ [209/8380] Built Batteries.Data.MLList.Basic (1.1s)
+✔ [210/8380] Built Batteries.Data.BinaryHeap (428ms)
+✔ [211/8380] Built Batteries.Tactic.PrintPrefix (1.2s)
+✔ [212/8380] Built Mathlib.Lean.Elab.InfoTree (609ms)
+✔ [213/8380] Built Batteries.Tactic.Basic (539ms)
+✔ [214/8380] Built Batteries.Lean.Meta.SavedState (536ms)
+✔ [215/8380] Built Batteries.Lean.Meta.InstantiateMVars (565ms)
+✔ [216/8380] Built Mathlib.Tactic.Linter.DeprecatedSyntaxLinter (1.5s)
+✔ [217/8380] Built Aesop.Util.Basic (2.4s)
+✔ [218/8380] Built Batteries.Tactic.GeneralizeProofs (3.4s)
+✔ [219/8380] Built Batteries.Data.DList.Basic (634ms)
+✔ [220/8380] Built LeanSearchClient.LoogleSyntax (1.5s)
+✔ [221/8380] Built Batteries.Data.MLList.IO (393ms)
+✔ [222/8380] Built Mathlib.Tactic.Linter.Lint (872ms)
+✔ [223/8380] Built Mathlib.Lean.Expr (425ms)
+✔ [224/8380] Built Batteries.Data.HashMap (539ms)
+✔ [225/8380] Built Batteries.Data.MLList.Heartbeats (509ms)
+✔ [226/8380] Built Mathlib.Tactic.Linter.FlexibleLinter (1.0s)
+✔ [227/8380] Built Mathlib.Tactic.Linter.UnusedTactic (952ms)
+✔ [228/8380] Built Batteries.Data.Int (620ms)
+✔ [229/8380] Built Mathlib.Tactic.Linter.CommandStart (578ms)
+✔ [230/8380] Built Batteries.Data.Range (666ms)
+✔ [231/8380] Built Batteries.Tactic.SqueezeScope (2.3s)
+✔ [232/8380] Built Aesop.Script.TacticState (1.1s)
+✔ [233/8380] Built Mathlib.Tactic.Lift (1.1s)
+✔ [234/8380] Built Batteries.Control.Nondet.Basic (664ms)
+✔ [235/8380] Built Mathlib.Data.Ineq (586ms)
+✔ [236/8380] Built Batteries.Data.Fin.OfBits (687ms)
+✔ [237/8380] Built Batteries.Data.DList.Lemmas (548ms)
+✔ [238/8380] Built Batteries.Data.Array.Monadic (1.3s)
+✔ [239/8380] Built ProofWidgets.Data.Html (2.9s)
+✔ [240/8380] Built LeanSearchClient (557ms)
+✔ [241/8380] Built Batteries.Classes.Order (778ms)
+✔ [242/8380] Built Mathlib.Tactic.Linter.MinImports (1.0s)
+✔ [243/8380] Built Mathlib.Util.PrintSorries (876ms)
+✔ [244/8380] Built Batteries.Data.Fin.Basic (955ms)
+✔ [245/8380] Built Batteries.Data.MLList (434ms)
+✔ [246/8380] Built Mathlib.Tactic.Linter.Style (1.7s)
+✔ [247/8380] Built Mathlib.Tactic.ExtractGoal (1.1s)
+✔ [248/8380] Built Batteries.Data.UnionFind.Basic (2.2s)
+✔ [249/8380] Built Mathlib.Tactic.Linter.UnusedInstancesInType (954ms)
+✔ [250/8380] Built Mathlib.Tactic.TacticAnalysis (1.1s)
+✔ [251/8380] Built Plausible.DeriveShrinkable (1.3s)
+✔ [252/8380] Built Batteries.Data.DList (431ms)
+✔ [253/8380] Built Batteries.Data.Vector.Monadic (366ms)
+✔ [254/8380] Built Aesop.Script.CtorNames (982ms)
+✔ [255/8380] Built Plausible.DeriveArbitrary (1.6s)
+✔ [256/8380] Built Aesop.Forward.Substitution (1.2s)
+✔ [257/8380] Built ProofWidgets.Component.FilterDetails (629ms)
+✔ [258/8380] Built Plausible.Testable (1.6s)
+✔ [259/8380] Built ProofWidgets.Component.OfRpcMethod (725ms)
+✔ [260/8380] Built ProofWidgets.Component.PenroseDiagram (789ms)
+✔ [261/8380] Built ProofWidgets.Component.HtmlDisplay (731ms)
+✔ [262/8380] Built Batteries.Data.Nat.Bisect (1.4s)
+✔ [263/8380] Built Batteries.Data.Vector (402ms)
+✔ [264/8380] Built Batteries.Data.UInt (758ms)
+✔ [265/8380] Built ProofWidgets.Presentation.Expr (871ms)
+✔ [266/8380] Built Batteries.Classes.Deprecated (678ms)
+✔ [267/8380] Built Batteries.Data.BitVec.Lemmas (1.0s)
+✔ [268/8380] Built Batteries.Data.UnionFind.Lemmas (718ms)
+✔ [269/8380] Built Batteries.Data.List.Basic (2.8s)
+✔ [270/8380] Built Batteries.Data.Fin.Fold (944ms)
+✔ [271/8380] Built Batteries.Data.Nat (414ms)
+✔ [272/8380] Built Batteries.Data.PairingHeap (1.0s)
+✔ [273/8380] Built Aesop.RulePattern.Cache (517ms)
+✔ [274/8380] Built Qq.Macro (4.5s)
+✔ [275/8380] Built Plausible.Functions (507ms)
+✔ [276/8380] Built Plausible.Tactic (484ms)
+✔ [277/8380] Built Batteries.Data.BitVec (330ms)
+✔ [278/8380] Built Batteries.Data.UnionFind (295ms)
+✔ [279/8380] Built Plausible (363ms)
+✔ [280/8380] Built Batteries.Data.List.Pairwise (448ms)
+✔ [281/8380] Built Aesop.Util.EqualUpToIds (2.9s)
+✔ [282/8380] Built Batteries.CodeAction.Match (810ms)
+✔ [283/8380] Built Batteries.Data.AssocList (1.1s)
+✔ [284/8380] Built Batteries.Data.RBMap.Basic (2.1s)
+✔ [285/8380] Built Aesop.Script.Util (650ms)
+✔ [286/8380] Built Batteries.CodeAction (381ms)
+✔ [287/8380] Built Batteries.Data.Fin.Lemmas (1.2s)
+✔ [288/8380] Built Aesop.RuleTac.Forward.Basic (745ms)
+✔ [289/8380] Built Qq.Delab (1.3s)
+✔ [290/8380] Built Batteries.Data.Fin (269ms)
+✔ [291/8380] Built Mathlib.Tactic.TacticAnalysis.Declarations (2.2s)
+✔ [292/8380] Built Batteries.Data.Array.Basic (1.7s)
+✔ [293/8380] Built Batteries.Data.BinomialHeap.Basic (2.8s)
+✔ [294/8380] Built Mathlib.Init (507ms)
+✔ [295/8380] Built Mathlib.Data.List.TFAE (886ms)
+✔ [296/8380] Built Mathlib.Data.Int.DivMod (882ms)
+✔ [297/8380] Built Mathlib.Tactic.Propose (899ms)
+✔ [298/8380] Built Mathlib.Data.List.Lookmap (1.3s)
+✔ [299/8380] Built Mathlib.Lean.Exception (1.2s)
+✔ [300/8380] Built Mathlib.Util.MemoFix (1.3s)
+✔ [301/8380] Built Mathlib.Lean.Json (1.3s)
+✔ [302/8380] Built Mathlib.Lean.LocalContext (1.3s)
+✔ [303/8380] Built Mathlib.Tactic.Ext (1.3s)
+✔ [304/8380] Built Mathlib.Tactic.Polyrith (1.2s)
+✔ [305/8380] Built Mathlib.Tactic.Relation.Symm (1.3s)
+✔ [306/8380] Built Mathlib.Util.GetAllModules (1.3s)
+✔ [307/8380] Built Batteries.Data.BinomialHeap.Lemmas (1.4s)
+✔ [308/8380] Built Aesop.Tracing (1.7s)
+✔ [309/8380] Built Qq.MetaM (1.9s)
+ℹ [310/8380] Built Mathlib.Data.Prod.PProd (1.3s)
+info: Mathlib/Data/Prod/PProd.lean:30:0: `:= rfl` theorem `PProd.mk.eta`: inferred @[defeq]
+✔ [311/8380] Built Batteries.Data.String.Lemmas (3.3s)
+✔ [312/8380] Built Mathlib.Tactic.Change (1.5s)
+✔ [313/8380] Built Mathlib.Tactic.Explode.Datatypes (1.3s)
+✔ [314/8380] Built Mathlib.Tactic.Linter.CommandRanges (1.5s)
+✔ [315/8380] Built Mathlib.Tactic.RewriteSearch (1.3s)
+✔ [316/8380] Built Mathlib.Deprecated.Aliases (1.4s)
+✔ [317/8380] Built Mathlib.Lean.CoreM (1.6s)
+✔ [318/8380] Built Mathlib.Lean.Meta.DiscrTree (1.4s)
+✔ [319/8380] Built Mathlib.Lean.Thunk (1.6s)
+✔ [320/8380] Built Mathlib.Tactic.Clean (1.6s)
+✔ [321/8380] Built Mathlib.Tactic.ReduceModChar.Ext (1.6s)
+✔ [322/8380] Built Mathlib.Lean.Meta.KAbstractPositions (1.5s)
+ℹ [323/8380] Built Mathlib.CategoryTheory.ConcreteCategory.Bundled (1.7s)
+info: Mathlib/CategoryTheory/ConcreteCategory/Bundled.lean:60:0: `:= rfl` theorem `CategoryTheory.Bundled.coe_mk`: inferred @[defeq]
+✔ [324/8380] Built Mathlib.Algebra.HierarchyDesign (1.6s)
+✔ [325/8380] Built Mathlib.Lean.FoldEnvironment (1.7s)
+✔ [326/8380] Built Mathlib.Tactic.Eval (1.8s)
+✔ [327/8380] Built Mathlib.Tactic.Generalize (1.7s)
+✔ [328/8380] Built Mathlib.Tactic.Linter.ValidatePRTitle (1.8s)
+✔ [329/8380] Built Mathlib.Tactic.DeprecateTo (1.9s)
+✔ [330/8380] Built Mathlib.Tactic.Trace (1.6s)
+✔ [331/8380] Built Mathlib.Util.SleepHeartbeats (1.9s)
+✔ [332/8380] Built Mathlib.Util.ElabWithoutMVars (1.8s)
+✔ [333/8380] Built Mathlib.Tactic.CategoryTheory.CategoryStar (1.8s)
+ℹ [334/8380] Built Mathlib.Control.Lawful (1.8s)
+info: Mathlib/Control/Lawful.lean:24:0: `:= rfl` theorem `StateT.map_const`: inferred @[defeq]
+✔ [335/8380] Built Mathlib.Data.Array.Defs (1.8s)
+✔ [336/8380] Built Mathlib.Data.Bool.AllAny (1.9s)
+✔ [337/8380] Built Mathlib.Lean.MessageData.ForExprs (1.9s)
+✔ [338/8380] Built Mathlib.Tactic.Have (1.0s)
+✔ [339/8380] Built Mathlib.Tactic.WithoutCDot (1.9s)
+✔ [340/8380] Built Mathlib.Tactic.Monotonicity.Attr (2.1s)
+✔ [341/8380] Built Mathlib.Lean.Meta.Tactic.Rewrite (1.9s)
+✔ [342/8380] Built Mathlib.Logic.Function.CompTypeclasses (1.9s)
+✔ [343/8380] Built Mathlib.Logic.Function.Coequalizer (1.0s)
+✔ [344/8380] Built Mathlib.Analysis.CStarAlgebra.ContinuousFunctionalCalculus.Note (1.0s)
+✔ [345/8380] Built Mathlib.Tactic.SimpIntro (1.0s)
+✔ [346/8380] Built Mathlib.Data.Bracket (2.1s)
+✔ [347/8380] Built Mathlib.Util.PPOptions (2.2s)
+✔ [348/8380] Built Mathlib.Lean.Expr.Rat (2.2s)
+✔ [349/8380] Built Mathlib.Tactic.FieldSimp.Attr (2.1s)
+ℹ [350/8380] Built Mathlib.Data.List.Monad (2.2s)
+info: Mathlib/Data/List/Monad.lean:27:0: `:= rfl` theorem `List.pure_def`: inferred @[defeq]
+✔ [351/8380] Built Mathlib.Data.Nat.NthRoot.Defs (2.2s)
+✔ [352/8380] Built Mathlib.Tactic.FindSyntax (2.3s)
+✔ [353/8380] Built Mathlib.Tactic.Recall (2.3s)
+✔ [354/8380] Built Mathlib.Util.Tactic (2.2s)
+✔ [355/8380] Built Mathlib.Tactic.UnsetOption (2.2s)
+✔ [356/8380] Built Mathlib.Lean.GoalsLocation (2.3s)
+✔ [357/8380] Built Mathlib.Util.TransImports (2.3s)
+✔ [358/8380] Built Mathlib.Logic.OpClass (2.3s)
+✔ [359/8380] Built Mathlib.Data.Option.NAry (2.4s)
+✔ [360/8380] Built Mathlib.Tactic.HaveI (2.4s)
+✔ [361/8380] Built Mathlib.Tactic.TryThis (2.3s)
+✔ [362/8380] Built Mathlib.Util.DischargerAsTactic (2.2s)
+ℹ [363/8380] Built Mathlib.Control.ULift (2.3s)
+info: Mathlib/Control/ULift.lean:76:0: `:= rfl` theorem `PLift.rec.constant`: inferred @[defeq]
+info: Mathlib/Control/ULift.lean:138:0: `:= rfl` theorem `ULift.rec.constant`: inferred @[defeq]
+✔ [364/8380] Built Mathlib.Data.List.ModifyLast (2.5s)
+✔ [365/8380] Built Mathlib.Lean.EnvExtension (2.4s)
+✔ [366/8380] Built Mathlib.Tactic.Linter.TextBased.UnicodeLinter (2.5s)
+✔ [367/8380] Built Mathlib.Util.AssertNoSorry (2.5s)
+✔ [368/8380] Built Batteries.Data.RBMap.WF (3.3s)
+✔ [369/8380] Built Mathlib.Tactic.Relation.Rfl (1.0s)
+✔ [370/8380] Built Mathlib.Tactic.SwapVar (2.3s)
+✔ [371/8380] Built Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.Datatypes (2.5s)
+✔ [372/8380] Built Mathlib.Tactic.TypeCheck (2.4s)
+✔ [373/8380] Built Mathlib.Tactic.Core (2.6s)
+✔ [374/8380] Built Mathlib.Tactic.InferParam (1.5s)
+✔ [375/8380] Built Mathlib.Tactic.NthRewrite (1.7s)
+✔ [376/8380] Built Mathlib.Tactic.RSuffices (1.9s)
+✔ [377/8380] Built Mathlib.Tactic.SuccessIfFailWithMsg (2.7s)
+✔ [378/8380] Built Mathlib.Tactic.SudoSetOption (2.5s)
+✔ [379/8380] Built Mathlib.Util.WhatsNew (2.6s)
+✔ [380/8380] Built Mathlib.Tactic.Cases (2.8s)
+✔ [381/8380] Built Mathlib.Util.Export (2.9s)
+✔ [382/8380] Built Mathlib.Tactic.ClearExclamation (1.5s)
+✔ [383/8380] Built Mathlib.Tactic.Clear_ (1.5s)
+✔ [384/8380] Built Mathlib.Tactic.Constructor (1.5s)
+✔ [385/8380] Built Mathlib.Tactic.ExistsI (1.6s)
+✔ [386/8380] Built Mathlib.Tactic.FunProp.Mor (1.7s)
+✔ [387/8380] Built Mathlib.Tactic.GuardGoalNums (1.9s)
+✔ [388/8380] Built Mathlib.Tactic.GuardHypNums (1.8s)
+✔ [389/8380] Built Mathlib.Tactic.Linter.PPRoundtrip (1.8s)
+✔ [390/8380] Built Mathlib.Tactic.Linter.UpstreamableDecl (1.7s)
+✔ [391/8380] Built Mathlib.Tactic.Rename (2.8s)
+✔ [392/8380] Built Mathlib.Tactic.Widget.SelectInsertParamsClass (2.8s)
+✔ [393/8380] Built Mathlib.Tactic.CategoryTheory.Coherence.Datatypes (3.1s)
+✔ [394/8380] Built Mathlib.Tactic.Linter.FindDeprecations (3.2s)
+✔ [395/8380] Built Mathlib.Data.Ordering.Basic (1.4s)
+✔ [396/8380] Built Mathlib.Logic.Function.ULift (1.3s)
+✔ [397/8380] Built Mathlib.Lean.Meta.Basic (1.5s)
+✔ [398/8380] Built Mathlib.Lean.MessageData.Trace (1.6s)
+✔ [399/8380] Built Mathlib.Tactic.Find (1.9s)
+✔ [400/8380] Built Mathlib.Util.TermReduce (1.0s)
+✔ [401/8380] Built Mathlib.Tactic.Linter.HaveLetLinter (2.0s)
+✔ [402/8380] Built Mathlib.Tactic.Observe (2.2s)
+✔ [403/8380] Built Mathlib.Tactic.Recover (2.4s)
+✔ [404/8380] Built Mathlib.Tactic.StacksAttribute (3.1s)
+✔ [405/8380] Built Mathlib.Util.WithWeakNamespace (1.3s)
+✔ [406/8380] Built Mathlib.Tactic.Substs (1.2s)
+✔ [407/8380] Built Mathlib.Control.Combinators (1.3s)
+ℹ [408/8380] Built Mathlib.Data.Option.Defs (1.4s)
+info: Mathlib/Data/Option/Defs.lean:56:0: `:= rfl` theorem `Option.iget_some`: inferred @[defeq]
+✔ [409/8380] Built Mathlib.Tactic.ToExpr (1.4s)
+✔ [410/8380] Built Mathlib.Tactic.ApplyWith (1.6s)
+✔ [411/8380] Built Mathlib.Tactic.DSimpPercent (1.7s)
+✔ [412/8380] Built Mathlib.Tactic.Set (3.1s)
+✔ [413/8380] Built Mathlib.Util.Superscript (3.2s)
+✔ [414/8380] Built Mathlib.Tactic.ApplyCongr (1.6s)
+✔ [415/8380] Built Mathlib.Tactic.PPWithUniv (1.5s)
+✔ [416/8380] Built Mathlib.Tactic.ClearExcept (1.7s)
+✔ [417/8380] Built Mathlib.Tactic.FunProp.Decl (2.1s)
+✔ [418/8380] Built Mathlib.Tactic.SuppressCompilation (3.3s)
+✔ [419/8380] Built Mathlib.Logic.IsEmpty.Defs (1.3s)
+✔ [420/8380] Built Mathlib.Lean.Elab.Term (1.4s)
+✔ [421/8380] Built Mathlib.Tactic.GCongr.ForwardAttr (1.6s)
+✔ [422/8380] Built Mathlib.Tactic.Coe (1.7s)
+✔ [423/8380] Built Mathlib.Lean.Meta.RefinedDiscrTree.Basic (2.2s)
+✔ [424/8380] Built Mathlib.Util.CountHeartbeats (3.4s)
+✔ [425/8380] Built Mathlib.Tactic.OfNat (1.2s)
+✔ [426/8380] Built Mathlib.Tactic.Inhabit (1.3s)
+✔ [427/8380] Built Mathlib.Lean.PrettyPrinter.Delaborator (1.5s)
+✔ [428/8380] Built Mathlib.Util.AtLocation (1.7s)
+✔ [429/8380] Built Mathlib.Tactic.Check (1.9s)
+✔ [430/8380] Built Mathlib.Tactic.ErwQuestion (2.0s)
+✔ [431/8380] Built Mathlib.Tactic.HigherOrder (2.3s)
+✔ [432/8380] Built Batteries.Data.BinomialHeap (966ms)
+✔ [433/8380] Built Mathlib.Data.String.Defs (1.1s)
+✔ [434/8380] Built Mathlib.Tactic.ExtendDoc (1.3s)
+✔ [435/8380] Built Mathlib.Logic.Nonempty (1.4s)
+✔ [436/8380] Built Mathlib.Tactic.FailIfNoProgress (2.2s)
+✔ [437/8380] Built Mathlib.Tactic.FunProp.ToBatteries (2.4s)
+✔ [438/8380] Built Mathlib.Data.Int.Notation (1.4s)
+✔ [439/8380] Built Mathlib.Data.Nat.Notation (1.3s)
+✔ [440/8380] Built Mathlib.Tactic.AdaptationNote (1.5s)
+✔ [441/8380] Built Mathlib.Tactic.SimpRw (1.7s)
+✔ [442/8380] Built Mathlib.Tactic.Spread (1.8s)
+✔ [443/8380] Built Mathlib.Tactic.CasesM (1.0s)
+✔ [444/8380] Built Mathlib.Tactic.Eqns (1.3s)
+✔ [445/8380] Built Mathlib.Lean.Meta (1.5s)
+✔ [446/8380] Built Mathlib.Lean.Name (1.5s)
+✔ [447/8380] Built Mathlib.Tactic.Variable (3.7s)
+✔ [448/8380] Built Batteries.Data.String (1.1s)
+✔ [449/8380] Built Mathlib.Tactic.Translate.Attributes (1.3s)
+✔ [450/8380] Built Mathlib.Tactic.Attr.Register (1.8s)
+✔ [451/8380] Built Mathlib.Lean.Expr.ReplaceRec (1.3s)
+✔ [452/8380] Built Mathlib.Tactic.Simps.NotationClass (1.6s)
+✔ [453/8380] Built Mathlib.Data.Nat.BinaryRec (1.7s)
+✔ [454/8380] Built Mathlib.Logic.ExistsUnique (1.8s)
+✔ [455/8380] Built Mathlib.Tactic.Push.Attr (1.8s)
+✔ [456/8380] Built Mathlib.Lean.Meta.Simp (1.5s)
+✔ [457/8380] Built Mathlib.Tactic.Conv (2.2s)
+✔ [458/8380] Built Mathlib.Tactic.Monotonicity.Basic (1.2s)
+✔ [459/8380] Built Mathlib.Data.List.Fold (1.2s)
+✔ [460/8380] Built Batteries.Data.RBMap.Depth (1.3s)
+✔ [461/8380] Built Mathlib.Util.AddRelatedDecl (1.9s)
+✔ [462/8380] Built Qq.Simp (1.5s)
+✔ [463/8380] Built Mathlib.Tactic.DefEqTransformations (2.9s)
+✔ [464/8380] Built Mathlib.Tactic.Linter (1.0s)
+✔ [465/8380] Built Mathlib.Tactic.ToLevel (966ms)
+✔ [466/8380] Built Mathlib.Tactic.Explode.Pretty (1.4s)
+✔ [467/8380] Built Mathlib.Tactic.Replace (1.4s)
+✔ [468/8380] Built Mathlib.Util.CompileInductive (2.2s)
+✔ [469/8380] Built Mathlib.Tactic.Use (2.2s)
+✔ [470/8380] Built Aesop.Util.Tactic.Ext (1.7s)
+✔ [471/8380] Built Qq.MatchImpl (1.6s)
+✔ [472/8380] Built Mathlib.Tactic.FastInstance (2.6s)
+✔ [473/8380] Built Mathlib.Tactic.ApplyAt (1.2s)
+✔ [474/8380] Built Mathlib.Tactic.RenameBVar (1.4s)
+✔ [475/8380] Built Mathlib.Util.AliasIn (1.4s)
+✔ [476/8380] Built Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.Gauss (1.4s)
+✔ [477/8380] Built Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.SimplexAlgorithm (1.4s)
+✔ [478/8380] Built Aesop.EMap (1.0s)
+✔ [479/8380] Built Mathlib.Tactic.Widget.SelectPanelUtils (1.5s)
+✔ [480/8380] Built Mathlib.Tactic.Translate.UnfoldBoundary (2.3s)
+✔ [481/8380] Built Mathlib.Tactic.SplitIfs (1.6s)
+✔ [482/8380] Built Aesop.Script.Step (2.2s)
+✔ [483/8380] Built Mathlib.Tactic.Attr.Core (786ms)
+ℹ [484/8380] Built Mathlib.Data.Rat.Init (1.0s)
+info: Mathlib/Data/Rat/Init.lean:75:0: `:= rfl` theorem `NNRat.cast_id`: inferred @[defeq]
+info: Mathlib/Data/Rat/Init.lean:82:0: `:= rfl` theorem `Rat.cast_id`: inferred @[defeq]
+✔ [485/8380] Built Mathlib.Data.PNat.Notation (1.0s)
+✔ [486/8380] Built Mathlib.Data.String.Lemmas (1.0s)
+✔ [487/8380] Built Mathlib.Lean.Elab.Tactic.Basic (885ms)
+✔ [488/8380] Built Mathlib.Util.LongNames (910ms)
+✔ [489/8380] Built Mathlib.Tactic.Translate.GuessName (1.2s)
+✔ [490/8380] Built Mathlib.Util.FormatTable (1.2s)
+✔ [491/8380] Built Batteries.Data.RBMap.Alter (1.8s)
+✔ [492/8380] Built Mathlib.Logic.Nontrivial.Defs (917ms)
+✔ [493/8380] Built Aesop.Stats.Basic (2.5s)
+✔ [494/8380] Built Qq.AssertInstancesCommute (2.3s)
+✔ [495/8380] Built Mathlib.Data.Stream.Defs (1.2s)
+✔ [496/8380] Built Mathlib.Tactic.FunProp.FunctionData (1.5s)
+✔ [497/8380] Built Mathlib.Lean.Meta.RefinedDiscrTree.Initialize (1.6s)
+✔ [498/8380] Built Mathlib.Lean.Meta.RefinedDiscrTree.Encode (1.6s)
+ℹ [499/8380] Built Mathlib.Data.Int.Cast.Pi (952ms)
+info: Mathlib/Data/Int/Cast/Pi.lean:31:0: `:= rfl` theorem `Pi.intCast_apply`: inferred @[defeq]
+info: Mathlib/Data/Int/Cast/Pi.lean:35:0: `:= rfl` theorem `Pi.intCast_def`: inferred @[defeq]
+✔ [500/8380] Built Mathlib.Data.Tree.RBMap (745ms)
+ℹ [501/8380] Built Mathlib.Logic.Function.Defs (1.2s)
+info: Mathlib/Logic/Function/Defs.lean:46:0: `:= rfl` theorem `Function.swap_def`: inferred @[defeq]
+info: Mathlib/Logic/Function/Defs.lean:48:0: `:= rfl` theorem `Function.onFun_swap_comm`: inferred @[defeq]
+✔ [502/8380] Built Mathlib.Tactic.FBinop (1.0s)
+ℹ [503/8380] Built Mathlib.Data.Int.Init (1.4s)
+info: Mathlib/Data/Int/Init.lean:324:0: `:= rfl` theorem `Int.pow_eq`: inferred @[defeq]
+✔ [504/8380] Built Mathlib.Tactic.DefEqAbuse (2.2s)
+✔ [505/8380] Built Mathlib.Tactic.Linarith.Oracle.SimplexAlgorithm.PositiveVector (890ms)
+✔ [506/8380] Built Batteries.Data.List.Lemmas (7.5s)
+✔ [507/8380] Built Mathlib.Data.Num.Basic (1.4s)
+✔ [508/8380] Built Mathlib.Tactic.Explode (1.3s)
+✔ [509/8380] Built Mathlib.Tactic.Translate.Reorder (2.0s)
+ℹ [510/8380] Built Mathlib.Logic.Basic (1.6s)
+info: Mathlib/Logic/Basic.lean:313:0: `:= rfl` theorem `iff_mpr_iff_true_intro`: inferred @[defeq]
+info: Mathlib/Logic/Basic.lean:393:0: `:= rfl` theorem `congr_refl_left`: inferred @[defeq]
+info: Mathlib/Logic/Basic.lean:397:0: `:= rfl` theorem `congr_refl_right`: inferred @[defeq]
+info: Mathlib/Logic/Basic.lean:401:0: `:= rfl` theorem `congr_arg_refl`: inferred @[defeq]
+info: Mathlib/Logic/Basic.lean:406:0: `:= rfl` theorem `congr_fun_rfl`: inferred @[defeq]
+info: Mathlib/Logic/Basic.lean:410:0: `:= rfl` theorem `congr_fun_congr_arg`: inferred @[defeq]
+✔ [511/8380] Built Mathlib.Tactic.ScopedNS (2.3s)
+✔ [512/8380] Built Mathlib.Lean.Meta.CongrTheorems (2.1s)
+✔ [513/8380] Built Mathlib.Tactic.Basic (1.0s)
+✔ [514/8380] Built Mathlib.Tactic.Widget.CongrM (996ms)
+✔ [515/8380] Built Mathlib.Tactic.Widget.GCongr (995ms)
+✔ [516/8380] Built Aesop.Script.UScript (923ms)
+ℹ [517/8380] Built Mathlib.Data.Nat.Init (1.9s)
+info: Mathlib/Data/Nat/Init.lean:118:0: `:= rfl` theorem `Nat.rec_zero`: inferred @[defeq]
+info: Mathlib/Data/Nat/Init.lean:122:0: `:= rfl` theorem `Nat.rec_add_one`: inferred @[defeq]
+info: Mathlib/Data/Nat/Init.lean:125:0: `:= rfl` theorem `Nat.rec_one`: inferred @[defeq]
+info: Mathlib/Data/Nat/Init.lean:152:0: `:= rfl` theorem `Nat.leRec_eq_leRec`: inferred @[defeq]
+✔ [518/8380] Built Mathlib.Tactic.IrreducibleDef (1.8s)
+✔ [519/8380] Built Mathlib.Tactic.MkIffOfInductiveProp (1.0s)
+✔ [520/8380] Built Aesop.Script.SScript (977ms)
+✔ [521/8380] Built Mathlib.Tactic.DepRewrite (4.4s)
+✔ [522/8380] Built Mathlib.Control.Basic (1.0s)
+✔ [523/8380] Built Mathlib.Data.Tree.Basic (1.4s)
+✔ [524/8380] Built Aesop.BaseM (918ms)
+✔ [525/8380] Built Aesop.Stats.Extension (959ms)
+✔ [526/8380] Built Aesop.Stats.File (906ms)
+✔ [527/8380] Built Mathlib.Logic.Relator (887ms)
+✔ [528/8380] Built Mathlib.Data.SProd (787ms)
+✔ [529/8380] Built Mathlib.Tactic.Linter.TextBased (2.3s)
+✔ [530/8380] Built Mathlib.Tactic.Widget.Calc (1.5s)
+✔ [531/8380] Built Mathlib.Tactic.Widget.InteractiveUnfold (1.5s)
+✔ [532/8380] Built Mathlib.Tactic.FunProp.Types (1.1s)
+✔ [533/8380] Built Batteries.Data.Char.Basic (851ms)
+✔ [534/8380] Built Qq.Commands (1.4s)
+✔ [535/8380] Built Mathlib.Data.Tree.Get (695ms)
+✔ [536/8380] Built Mathlib.Data.Nat.MaxPowDiv (913ms)
+✔ [537/8380] Built Aesop.Script.Check (895ms)
+✔ [538/8380] Built Mathlib.Testing.Plausible.Testable (985ms)
+✔ [539/8380] Built Mathlib.Lean.Meta.RefinedDiscrTree.Lookup (1.6s)
+✔ [540/8380] Built Mathlib.Tactic.Widget.Conv (2.1s)
+✔ [541/8380] Built Batteries.Data.Array.Lemmas (1.2s)
+✔ [542/8380] Built Aesop.Script.ScriptM (956ms)
+✔ [543/8380] Built Mathlib.Tactic.Subsingleton (1.2s)
+✔ [544/8380] Built Batteries.Data.List.Scan (1.3s)
+✔ [545/8380] Built Mathlib.Tactic.Hint (1.3s)
+✔ [546/8380] Built Aesop.Script.UScriptToSScript (1.3s)
+✔ [547/8380] Built Aesop.Stats.Report (1.1s)
+✔ [548/8380] Built Batteries.Data.List.Count (1.6s)
+✔ [549/8380] Built Mathlib.Data.Array.Extract (525ms)
+✔ [550/8380] Built Batteries.Data.Char.AsciiCasing (856ms)
+✔ [551/8380] Built Aesop.RuleTac.GoalDiff (1.4s)
+✔ [552/8380] Built Mathlib.Lean.Meta.RefinedDiscrTree (642ms)
+✔ [553/8380] Built Mathlib.Data.List.Triplewise (1.5s)
+✔ [554/8380] Built Aesop.RulePattern (1.6s)
+✔ [555/8380] Built Mathlib.Tactic.CategoryTheory.Coherence.Normalize (4.3s)
+✔ [556/8380] Built Batteries.Data.Char (520ms)
+✔ [557/8380] Built Mathlib.Tactic.Push (2.2s)
+✔ [558/8380] Built Batteries.Data.Array.Scan (1.1s)
+✔ [559/8380] Built Mathlib.Tactic.TermCongr (2.3s)
+✔ [560/8380] Built Mathlib.Tactic.CongrExclamation (2.5s)
+✔ [561/8380] Built Mathlib.Tactic.FunProp.Theorems (1.3s)
+✔ [562/8380] Built Mathlib.Tactic.Simps.Basic (3.9s)
+✔ [563/8380] Built Aesop.Script.StructureStatic (1.1s)
+✔ [564/8380] Built Mathlib.Util.Delaborators (5.2s)
+✔ [565/8380] Built Mathlib.Tactic.CategoryTheory.Coherence.PureCoherence (5.2s)
+✔ [566/8380] Built Batteries.Data.List.Perm (1.2s)
+✔ [567/8380] Built Batteries.Data.Array (492ms)
+✔ [568/8380] Built Aesop.Script.StructureDynamic (1.4s)
+✔ [569/8380] Built Mathlib.Tactic.ByContra (662ms)
+✔ [570/8380] Built Mathlib.Tactic.ToFun (617ms)
+✔ [571/8380] Built Batteries.Data.RBMap.Lemmas (2.9s)
+✔ [572/8380] Built Aesop.Forward.RuleInfo (1.1s)
+✔ [573/8380] Built Mathlib.Tactic.ByCases (671ms)
+✔ [574/8380] Built Mathlib.Tactic.Contrapose (762ms)
+✔ [575/8380] Built Mathlib.Tactic.CongrM (630ms)
+✔ [576/8380] Built Aesop.Script.SpecificTactics (1.8s)
+✔ [577/8380] Built Qq.Match (4.3s)
+✔ [578/8380] Built Mathlib.Tactic.FunProp.Attr (565ms)
+✔ [579/8380] Built Mathlib.Tactic.WLOG (856ms)
+✔ [580/8380] Built Mathlib.Data.TwoPointing (511ms)
+✔ [581/8380] Built Batteries.Data.List (282ms)
+✔ [582/8380] Built Batteries.Data.RBMap (272ms)
+✔ [583/8380] Built Mathlib.Tactic.Convert (761ms)
+✔ [584/8380] Built Aesop.Rule.Forward (434ms)
+✔ [585/8380] Built Aesop.Script.Main (504ms)
+✔ [586/8380] Built Qq (410ms)
+✔ [587/8380] Built Batteries (316ms)
+✔ [588/8380] Built Aesop.Forward.Match.Types (495ms)
+✔ [589/8380] Built Mathlib.Tactic.Says (782ms)
+✔ [590/8380] Built Mathlib.Tactic.Widget.LibraryRewrite (2.5s)
+✔ [591/8380] Built Mathlib.Util.AtomM (799ms)
+✔ [592/8380] Built Mathlib.Util.Qq (760ms)
+✔ [593/8380] Built Mathlib.Util.SynthesizeUsing (764ms)
+✔ [594/8380] Built Mathlib.Algebra.Expr (767ms)
+✔ [595/8380] Built Mathlib.Util.Simp (761ms)
+✔ [596/8380] Built Mathlib.Tactic.Translate.Core (4.4s)
+✔ [597/8380] Built Aesop.Index.Basic (696ms)
+✔ [598/8380] Built Mathlib.Util.Notation3 (4.6s)
+✔ [599/8380] Built Mathlib.Tactic.Simproc.ExistsAndEq (1.2s)
+✔ [600/8380] Built Mathlib.Util.AtomM.Recurse (650ms)
+✔ [601/8380] Built Mathlib.Tactic.Tauto (1.5s)
+✔ [602/8380] Built Mathlib.Tactic.Translate.ToAdditive (645ms)
+✔ [603/8380] Built Mathlib.Tactic.Translate.TagUnfoldBoundary (627ms)
+✔ [604/8380] Built Aesop.RuleTac.Basic (725ms)
+✔ [605/8380] Built Aesop.Index.Forward (694ms)
+✔ [606/8380] Built Aesop.Index.RulePattern (792ms)
+✔ [607/8380] Built Mathlib.Tactic.ToAdditive (379ms)
+✔ [608/8380] Built Mathlib.Algebra.Notation (441ms)
+✔ [609/8380] Built Mathlib.Tactic.Translate.ToDual (676ms)
+✔ [610/8380] Built Mathlib.Logic.Lemmas (720ms)
+✔ [611/8380] Built Aesop.RuleTac.Descr (577ms)
+✔ [612/8380] Built Aesop.Search.Expansion.Basic (594ms)
+✔ [613/8380] Built Aesop.RuleTac.Preprocess (665ms)
+✔ [614/8380] Built Mathlib.Algebra.Notation.Lemmas (573ms)
+✔ [615/8380] Built Aesop.RuleTac.Apply (778ms)
+✔ [616/8380] Built Aesop.RuleTac.Tactic (726ms)
+✔ [617/8380] Built Mathlib.Algebra.Notation.Defs (758ms)
+✔ [618/8380] Built Mathlib.Tactic.ToDual (420ms)
+✔ [619/8380] Built Aesop.RuleTac.Cases (919ms)
+✔ [620/8380] Built Mathlib.Tactic.ITauto (1.9s)
+✔ [621/8380] Built Aesop.Rule.Basic (425ms)
+✔ [622/8380] Built Mathlib.Tactic.TFAE (2.0s)
+✔ [623/8380] Built Mathlib.Algebra.Regular.Defs (338ms)
+✔ [624/8380] Built Mathlib.Tactic.FunProp.Core (3.3s)
+ℹ [625/8380] Built Mathlib.Algebra.Notation.Pi.Defs (555ms)
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:45:0: `:= rfl` theorem `Pi.one_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:48:0: `:= rfl` theorem `Pi.one_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:66:0: `:= rfl` theorem `Pi.mul_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:69:0: `:= rfl` theorem `Pi.mul_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:88:0: `:= rfl` theorem `Pi.inv_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:91:0: `:= rfl` theorem `Pi.inv_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:109:0: `:= rfl` theorem `Pi.div_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:112:0: `:= rfl` theorem `Pi.div_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:132:0: `:= rfl` theorem `Pi.pow_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:135:0: `:= rfl` theorem `Pi.pow_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:154:0: `:= rfl` theorem `Pi.star_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Pi/Defs.lean:157:0: `:= rfl` theorem `Pi.star_def`: inferred @[defeq]
+✔ [626/8380] Built Mathlib.Order.Defs.PartialOrder (773ms)
+✔ [627/8380] Built Mathlib.Data.Set.Defs (873ms)
+✔ [628/8380] Built Aesop.Rule (629ms)
+✔ [629/8380] Built Mathlib.Order.Notation (1.1s)
+✔ [630/8380] Built Mathlib.Algebra.NeZero (420ms)
+✔ [631/8380] Built Aesop.RuleSet.Member (580ms)
+✔ [632/8380] Built Mathlib.Data.Set.CoeSort (534ms)
+✔ [633/8380] Built Mathlib.Order.Bounds.Defs (505ms)
+✔ [634/8380] Built Aesop.Tree.UnsafeQueue (618ms)
+✔ [635/8380] Built Mathlib.Control.Functor (597ms)
+✔ [636/8380] Built Mathlib.Order.Defs.Unbundled (715ms)
+✔ [637/8380] Built Mathlib.Order.Defs.LinearOrder (761ms)
+✔ [638/8380] Built Mathlib.Tactic.FunProp.Elab (986ms)
+✔ [639/8380] Built Mathlib.Order.Interval.Set.Defs (693ms)
+✔ [640/8380] Built Mathlib.Order.TypeTags (652ms)
+✔ [641/8380] Built Mathlib.Lean.Expr.ExtraRecognizers (320ms)
+✔ [642/8380] Built Aesop.Builder.Basic (517ms)
+✔ [643/8380] Built Aesop.Forward.Match (1.2s)
+✔ [644/8380] Built Mathlib.Data.Ordering.Lemmas (499ms)
+✔ [645/8380] Built Mathlib.Data.Int.Order.Basic (552ms)
+ℹ [646/8380] Built Mathlib.Control.Traversable.Basic (617ms)
+info: Mathlib/Control/Traversable/Basic.lean:98:0: `:= rfl` theorem `ApplicativeTransformation.app_eq_coe`: inferred @[defeq]
+info: Mathlib/Control/Traversable/Basic.lean:101:0: `:= rfl` theorem `ApplicativeTransformation.coe_mk`: inferred @[defeq]
+✔ [647/8380] Built Mathlib.Data.Bool.Basic (640ms)
+✔ [648/8380] Built Mathlib.Tactic.FunProp (662ms)
+✔ [649/8380] Built Mathlib.Data.Sigma.Lex (645ms)
+✔ [650/8380] Built Mathlib.Data.List.Defs (812ms)
+✔ [651/8380] Built Aesop.Builder.Constructors (677ms)
+✔ [652/8380] Built Aesop.Builder.Tactic (714ms)
+✔ [653/8380] Built Aesop.Builder.Unfold (654ms)
+✔ [654/8380] Built Mathlib.Data.ENat.Defs (828ms)
+✔ [655/8380] Built Aesop.Builder.Cases (831ms)
+✔ [656/8380] Built Aesop.Builder.NormSimp (781ms)
+✔ [657/8380] Built Aesop.Builder.Apply (770ms)
+✔ [658/8380] Built Mathlib.Logic.Relation (1.2s)
+ℹ [659/8380] Built Mathlib.Logic.Function.Basic (1.3s)
+info: Mathlib/Logic/Function/Basic.lean:39:0: `:= rfl` theorem `Function.eval_apply`: inferred @[defeq]
+info: Mathlib/Logic/Function/Basic.lean:55:0: `:= rfl` theorem `Function.onFun_apply`: inferred @[defeq]
+info: Mathlib/Logic/Function/Basic.lean:132:0: `:= rfl` theorem `Function.swap_lt`: inferred @[defeq]
+info: Mathlib/Logic/Function/Basic.lean:133:0: `:= rfl` theorem `Function.swap_le`: inferred @[defeq]
+info: Mathlib/Logic/Function/Basic.lean:134:0: `:= rfl` theorem `Function.swap_gt`: inferred @[defeq]
+info: Mathlib/Logic/Function/Basic.lean:135:0: `:= rfl` theorem `Function.swap_ge`: inferred @[defeq]
+✔ [660/8380] Built Mathlib.Data.List.GetD (760ms)
+✔ [661/8380] Built Mathlib.Data.List.Indexes (577ms)
+✔ [662/8380] Built Aesop.Tree.Data.ForwardRuleMatches (1.0s)
+ℹ [663/8380] Built Mathlib.Data.Nat.Bits (801ms)
+info: Mathlib/Data/Nat/Bits.lean:130:0: `:= rfl` theorem `Nat.shiftRight_eq`: inferred @[defeq]
+ℹ [664/8380] Built Mathlib.Algebra.Group.Defs (2.8s)
+info: Mathlib/Algebra/Group/Defs.lean:669:0: `:= rfl` theorem `npow_eq_pow`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Defs.lean:1042:0: `:= rfl` theorem `zpow_eq_pow`: inferred @[defeq]
+✔ [665/8380] Built Mathlib.Logic.IsEmpty (526ms)
+✔ [666/8380] Built Aesop.Index (1.4s)
+✔ [667/8380] Built Aesop.Builder.Default (649ms)
+✔ [668/8380] Built Aesop.Builder.Forward (1.5s)
+ℹ [669/8380] Built Mathlib.Logic.Unique (647ms)
+info: Mathlib/Logic/Unique.lean:87:0: `:= rfl` theorem `PUnit.default_eq_unit`: inferred @[defeq]
+info: Mathlib/Logic/Unique.lean:157:0: `:= rfl` theorem `Pi.default_def`: inferred @[defeq]
+info: Mathlib/Logic/Unique.lean:162:0: `:= rfl` theorem `Pi.default_apply`: inferred @[defeq]
+✔ [670/8380] Built Mathlib.Logic.IsEmpty.Basic (592ms)
+ℹ [671/8380] Built Mathlib.Data.Subtype (766ms)
+info: Mathlib/Data/Subtype.lean:69:0: `:= rfl` theorem `Subtype.coe_mk`: inferred @[defeq]
+✔ [672/8380] Built Mathlib.Logic.Function.Conjugate (676ms)
+✔ [673/8380] Built Mathlib.Algebra.Notation.Pi.Basic (690ms)
+✔ [674/8380] Built Mathlib.Data.Sum.Basic (675ms)
+✔ [675/8380] Built Aesop.RuleTac.Forward (1.6s)
+✔ [676/8380] Built Mathlib.Logic.Pairwise (675ms)
+✔ [677/8380] Built Mathlib.Data.Sigma.Basic (745ms)
+✔ [678/8380] Built Mathlib.Data.Nat.Size (656ms)
+✔ [679/8380] Built Mathlib.Algebra.PEmptyInstances (664ms)
+✔ [680/8380] Built Mathlib.Algebra.Group.MinimalAxioms (678ms)
+✔ [681/8380] Built Mathlib.Tactic.Choose (1.1s)
+ℹ [682/8380] Built Mathlib.Algebra.Group.Nat.Defs (790ms)
+info: Mathlib/Algebra/Group/Nat/Defs.lean:85:0: `:= rfl` theorem `Nat.nsmul_eq_mul`: inferred @[defeq]
+ℹ [683/8380] Built Mathlib.Algebra.Group.Commutator (693ms)
+info: Mathlib/Algebra/Group/Commutator.lean:45:0: `:= rfl` theorem `commutatorElement_def`: inferred @[defeq]
+ℹ [684/8380] Built Mathlib.Algebra.Group.PUnit (762ms)
+info: Mathlib/Algebra/Group/PUnit.lean:43:0: `:= rfl` theorem `PUnit.one_eq`: inferred @[defeq]
+info: Mathlib/Algebra/Group/PUnit.lean:46:0: `:= rfl` theorem `PUnit.mul_eq`: inferred @[defeq]
+info: Mathlib/Algebra/Group/PUnit.lean:48:0: `:= rfl` theorem `PUnit.div_eq`: inferred @[defeq]
+info: Mathlib/Algebra/Group/PUnit.lean:49:0: `:= rfl` theorem `PUnit.inv_eq`: inferred @[defeq]
+✔ [685/8380] Built Mathlib.GroupTheory.EckmannHilton (805ms)
+ℹ [686/8380] Built Mathlib.Algebra.Group.Int.Defs (885ms)
+info: Mathlib/Algebra/Group/Int/Defs.lean:83:0: `:= rfl` theorem `Int.nsmul_eq_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Int/Defs.lean:86:0: `:= rfl` theorem `Int.zsmul_eq_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Int/Defs.lean:90:0: `:= rfl` theorem `zsmul_int_int`: inferred @[defeq]
+✔ [687/8380] Built Mathlib.Algebra.BigOperators.Group.List.Defs (805ms)
+✔ [688/8380] Built Mathlib.Algebra.Group.Semiconj.Defs (951ms)
+ℹ [689/8380] Built Mathlib.Data.FunLike.Basic (599ms)
+info: Mathlib/Data/FunLike/Basic.lean:177:0: `:= rfl` theorem `DFunLike.coe_eq_coe_fn`: inferred @[defeq]
+✔ [690/8380] Built Mathlib.Algebra.Group.Invertible.Defs (943ms)
+✔ [691/8380] Built Mathlib.Control.Applicative (910ms)
+✔ [692/8380] Built Mathlib.Algebra.Homology.ComplexShape (993ms)
+✔ [693/8380] Built Mathlib.Algebra.GroupWithZero.Defs (1.1s)
+ℹ [694/8380] Built Mathlib.Data.Nat.Cast.Defs (995ms)
+info: Mathlib/Data/Nat/Cast/Defs.lean:57:0: `:= rfl` theorem `Nat.cast_ofNat`: inferred @[defeq]
+info: Mathlib/Data/Nat/Cast/Defs.lean:136:0: `:= rfl` theorem `Nat.cast_two`: inferred @[defeq]
+info: Mathlib/Data/Nat/Cast/Defs.lean:138:0: `:= rfl` theorem `Nat.cast_three`: inferred @[defeq]
+info: Mathlib/Data/Nat/Cast/Defs.lean:140:0: `:= rfl` theorem `Nat.cast_four`: inferred @[defeq]
+✔ [695/8380] Built Mathlib.Logic.Function.Iterate (720ms)
+✔ [696/8380] Built Aesop.RuleTac (741ms)
+✔ [697/8380] Built Mathlib.Tactic.GCongr.Core (2.7s)
+✔ [698/8380] Built Mathlib.Data.List.Pairwise (721ms)
+✔ [699/8380] Built Mathlib.Data.FunLike.Embedding (498ms)
+ℹ [700/8380] Built Mathlib.Data.Quot (1.2s)
+info: Mathlib/Data/Quot.lean:101:0: `:= rfl` theorem `Quot.lift_mk`: inferred @[defeq]
+info: Mathlib/Data/Quot.lean:105:0: `:= rfl` theorem `Quot.liftOn_mk`: inferred @[defeq]
+info: Mathlib/Data/Quot.lean:748:0: `:= rfl` theorem `Quotient.mk''_eq_mk`: inferred @[defeq]
+✔ [701/8380] Built Mathlib.Control.Traversable.Lemmas (665ms)
+✔ [702/8380] Built Mathlib.Data.Tree.Traversable (629ms)
+✔ [703/8380] Built Mathlib.Algebra.Group.InjSurj (1.7s)
+✔ [704/8380] Built Mathlib.Algebra.GroupWithZero.Nat (610ms)
+✔ [705/8380] Built Mathlib.Data.Nat.Cast.NeZero (696ms)
+✔ [706/8380] Built Mathlib.Algebra.GroupWithZero.Regular (622ms)
+✔ [707/8380] Built Mathlib.Algebra.Homology.HasNoLoop (705ms)
+✔ [708/8380] Built Mathlib.Algebra.Homology.SpectralSequence.ComplexShape (690ms)
+✔ [709/8380] Built Mathlib.Algebra.Group.Commute.Defs (832ms)
+✔ [710/8380] Built Mathlib.Algebra.Group.Pi.Basic (1.3s)
+✔ [711/8380] Built Mathlib.Tactic.GCongr.CoreAttrs (644ms)
+✔ [712/8380] Built Mathlib.Algebra.GroupWithZero.NeZero (725ms)
+✔ [713/8380] Built Mathlib.Data.Int.Cast.Defs (740ms)
+✔ [714/8380] Built Mathlib.Data.Nat.Basic (784ms)
+ℹ [715/8380] Built Mathlib.Data.FunLike.Equiv (584ms)
+info: Mathlib/Data/FunLike/Equiv.lean:167:0: `:= rfl` theorem `EquivLike.coe_apply`: inferred @[defeq]
+✔ [716/8380] Built Mathlib.Data.Prod.Basic (962ms)
+✔ [717/8380] Built Mathlib.Tactic.GRewrite.Core (961ms)
+✔ [718/8380] Built Mathlib.Data.List.Flatten (1.0s)
+✔ [719/8380] Built Mathlib.Tactic.Sat.FromLRAT (1.3s)
+✔ [720/8380] Built Mathlib.Algebra.CharZero.Defs (552ms)
+✔ [721/8380] Built Mathlib.Data.Char (502ms)
+✔ [722/8380] Built Mathlib.Tactic.GCongr (707ms)
+✔ [723/8380] Built Mathlib.Logic.Equiv.Pairwise (559ms)
+✔ [724/8380] Built Mathlib.Algebra.GroupWithZero.InjSurj (870ms)
+✔ [725/8380] Built Mathlib.Data.Int.Basic (756ms)
+✔ [726/8380] Built Aesop.Frontend.RuleExpr (2.5s)
+✔ [727/8380] Built Mathlib.Logic.Nontrivial.Basic (722ms)
+✔ [728/8380] Built Mathlib.Data.Nat.Find (885ms)
+✔ [729/8380] Built Aesop.RuleSet (2.6s)
+ℹ [730/8380] Built Mathlib.Algebra.Notation.Prod (920ms)
+info: Mathlib/Algebra/Notation/Prod.lean:37:0: `:= rfl` theorem `Prod.fst_one`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:41:0: `:= rfl` theorem `Prod.snd_one`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:45:0: `:= rfl` theorem `Prod.one_eq_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:49:0: `:= rfl` theorem `Prod.mk_one_one`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:69:0: `:= rfl` theorem `Prod.fst_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:72:0: `:= rfl` theorem `Prod.snd_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:75:0: `:= rfl` theorem `Prod.mk_mul_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:81:0: `:= rfl` theorem `Prod.mul_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:94:0: `:= rfl` theorem `Prod.fst_inv`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:97:0: `:= rfl` theorem `Prod.snd_inv`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:100:0: `:= rfl` theorem `Prod.inv_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:116:0: `:= rfl` theorem `Prod.fst_div`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:119:0: `:= rfl` theorem `Prod.snd_div`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:122:0: `:= rfl` theorem `Prod.mk_div_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:128:0: `:= rfl` theorem `Prod.div_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:139:0: `:= rfl` theorem `Prod.pow_fst`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:142:0: `:= rfl` theorem `Prod.pow_snd`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:145:0: `:= rfl` theorem `Prod.pow_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:148:0: `:= rfl` theorem `Prod.pow_def`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:162:0: `:= rfl` theorem `Prod.fst_star`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:165:0: `:= rfl` theorem `Prod.snd_star`: inferred @[defeq]
+info: Mathlib/Algebra/Notation/Prod.lean:168:0: `:= rfl` theorem `Prod.star_def`: inferred @[defeq]
+✔ [731/8380] Built Mathlib.Data.Nat.Sqrt (1.1s)
+✔ [732/8380] Built Aesop.Forward.State (4.3s)
+✔ [733/8380] Built Mathlib.Algebra.Ring.Defs (1.4s)
+✔ [734/8380] Built Aesop.Frontend.Extension.Init (468ms)
+✔ [735/8380] Built Mathlib.Tactic.DeriveTraversable (1.7s)
+✔ [736/8380] Built Mathlib.Tactic.GRewrite.Elab (1.4s)
+✔ [737/8380] Built Mathlib.Algebra.Ring.PUnit (544ms)
+ℹ [738/8380] Built Mathlib.Algebra.Group.Units.Defs (2.0s)
+info: Mathlib/Algebra/Group/Units/Defs.lean:108:0: `:= rfl` theorem `Units.val_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Units/Defs.lean:177:0: `:= rfl` theorem `Units.val_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Units/Defs.lean:181:0: `:= rfl` theorem `Units.val_one`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Units/Defs.lean:188:0: `:= rfl` theorem `Units.inv_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Units/Defs.lean:192:0: `:= rfl` theorem `Units.inv_eq_val_inv`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Units/Defs.lean:269:0: `:= rfl` theorem `Units.val_pow_eq_pow_val`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Units/Defs.lean:272:0: `:= rfl` theorem `Units.inv_pow_eq_pow_inv`: inferred @[defeq]
+✔ [739/8380] Built Mathlib.Algebra.Ring.Nat (603ms)
+✔ [740/8380] Built Mathlib.Algebra.Ring.Semiconj (591ms)
+✔ [741/8380] Built Aesop.Forward.State.ApplyGoalDiff (747ms)
+✔ [742/8380] Built Aesop.Forward.State.Initial (768ms)
+✔ [743/8380] Built Mathlib.Tactic.GRewrite (442ms)
+✔ [744/8380] Built Mathlib.Tactic.Nontriviality.Core (1.1s)
+ℹ [745/8380] Built Mathlib.Algebra.Field.Defs (692ms)
+info: Mathlib/Algebra/Field/Defs.lean:217:0: `:= rfl` theorem `Rat.ofScientific_eq_ofScientific`: inferred @[defeq]
+ℹ [746/8380] Built Mathlib.Logic.Equiv.Defs (1.9s)
+info: Mathlib/Logic/Equiv/Defs.lean:114:0: `:= rfl` theorem `Equiv.coe_fn_mk`: inferred @[defeq]
+info: Mathlib/Logic/Equiv/Defs.lean:174:0: `:= rfl` theorem `Equiv.toFun_as_coe`: inferred @[defeq]
+info: Mathlib/Logic/Equiv/Defs.lean:948:0: `:= rfl` theorem `Equiv.max_def`: inferred @[defeq]
+info: Mathlib/Logic/Equiv/Defs.lean:956:0: `:= rfl` theorem `Equiv.min_def`: inferred @[defeq]
+info: Mathlib/Logic/Equiv/Defs.lean:964:0: `:= rfl` theorem `Equiv.ord_def`: inferred @[defeq]
+✔ [747/8380] Built Mathlib.Algebra.Group.Nat.Units (337ms)
+✔ [748/8380] Built Aesop.Frontend.Extension (889ms)
+ℹ [749/8380] Built Mathlib.Order.Basic (3.1s)
+info: Mathlib/Order/Basic.lean:508:0: `:= rfl` theorem `Pi.compl_def`: inferred @[defeq]
+info: Mathlib/Order/Basic.lean:513:0: `:= rfl` theorem `Pi.compl_apply`: inferred @[defeq]
+info: Mathlib/Order/Basic.lean:642:0: `:= rfl` theorem `Pi.sdiff_def`: inferred @[defeq]
+info: Mathlib/Order/Basic.lean:647:0: `:= rfl` theorem `Pi.sdiff_apply`: inferred @[defeq]
+info: Mathlib/Order/Basic.lean:1065:0: `:= rfl` theorem `PUnit.max_eq`: inferred @[defeq]
+info: Mathlib/Order/Basic.lean:1088:0: `:= rfl` theorem `le_Prop_eq`: inferred @[defeq]
+✔ [750/8380] Built Mathlib.Algebra.Group.Irreducible.Defs (567ms)
+✔ [751/8380] Built Mathlib.RingTheory.LocalRing.Defs (567ms)
+✔ [752/8380] Built Mathlib.Tactic.Nontriviality (567ms)
+✔ [753/8380] Built Mathlib.Data.Finite.Defs (513ms)
+ℹ [754/8380] Built Mathlib.Algebra.Group.Hom.Defs (3.4s)
+info: Mathlib/Algebra/Group/Hom/Defs.lean:542:0: `:= rfl` theorem `OneHom.coe_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:545:0: `:= rfl` theorem `OneHom.toFun_eq_coe`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:548:0: `:= rfl` theorem `MulHom.coe_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:551:0: `:= rfl` theorem `MulHom.toFun_eq_coe`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:554:0: `:= rfl` theorem `MonoidHom.coe_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:558:0: `:= rfl` theorem `MonoidHom.toOneHom_coe`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:562:0: `:= rfl` theorem `MonoidHom.toMulHom_coe`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:566:0: `:= rfl` theorem `MonoidHom.toFun_eq_coe`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:783:0: `:= rfl` theorem `OneHom.comp_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:787:0: `:= rfl` theorem `MulHom.comp_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:791:0: `:= rfl` theorem `MonoidHom.comp_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:795:0: `:= rfl` theorem `OneHom.comp_assoc`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:801:0: `:= rfl` theorem `MulHom.comp_assoc`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:805:0: `:= rfl` theorem `MonoidHom.comp_assoc`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:1002:0: `:= rfl` theorem `OneHom.one_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:1005:0: `:= rfl` theorem `MonoidHom.one_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:1008:0: `:= rfl` theorem `OneHom.one_comp`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Defs.lean:1028:0: `:= rfl` theorem `MonoidHom.one_comp`: inferred @[defeq]
+✔ [755/8380] Built Mathlib.Control.Monad.Basic (533ms)
+✔ [756/8380] Built Mathlib.Control.Traversable.Equiv (640ms)
+✔ [757/8380] Built Mathlib.Logic.Small.Defs (660ms)
+✔ [758/8380] Built Aesop.Tree.Data (1.6s)
+✔ [759/8380] Built Mathlib.Control.EquivFunctor (821ms)
+✔ [760/8380] Built Mathlib.Control.Monad.Writer (837ms)
+ℹ [761/8380] Built Mathlib.Data.Erased (859ms)
+info: Mathlib/Data/Erased.lean:122:0: `:= rfl` theorem `Erased.pure_def`: inferred @[defeq]
+info: Mathlib/Data/Erased.lean:126:0: `:= rfl` theorem `Erased.bind_def`: inferred @[defeq]
+info: Mathlib/Data/Erased.lean:130:0: `:= rfl` theorem `Erased.map_def`: inferred @[defeq]
+✔ [762/8380] Built Mathlib.Tactic.ProdAssoc (858ms)
+ℹ [763/8380] Built Mathlib.Algebra.Opposites (1.2s)
+info: Mathlib/Algebra/Opposites.lean:203:0: `:= rfl` theorem `MulOpposite.op_zero`: inferred @[defeq]
+info: Mathlib/Algebra/Opposites.lean:207:0: `:= rfl` theorem `MulOpposite.op_one`: inferred @[defeq]
+info: Mathlib/Algebra/Opposites.lean:267:0: `:= rfl` theorem `AddOpposite.op_one`: inferred @[defeq]
+✔ [764/8380] Built Mathlib.Algebra.Group.Hom.CompTypeclasses (706ms)
+✔ [765/8380] Built Mathlib.Algebra.Order.ZeroLEOne (1.1s)
+✔ [766/8380] Built Mathlib.Order.Lex (1.1s)
+✔ [767/8380] Built Mathlib.Data.Countable.Defs (858ms)
+✔ [768/8380] Built Mathlib.Logic.UnivLE (720ms)
+✔ [769/8380] Built Mathlib.Algebra.GroupWithZero.Pi (815ms)
+✔ [770/8380] Built Mathlib.Tactic.ProxyType (1.3s)
+✔ [771/8380] Built Mathlib.Order.Synonym (1.1s)
+✔ [772/8380] Built Aesop.Frontend.Attribute (1.2s)
+✔ [773/8380] Built Mathlib.Algebra.Group.Commute.Hom (883ms)
+ℹ [774/8380] Built Mathlib.Data.Opposite (773ms)
+info: Mathlib/Data/Opposite.lean:60:0: `:= rfl` theorem `Opposite.op_unop`: inferred @[defeq]
+info: Mathlib/Data/Opposite.lean:64:0: `:= rfl` theorem `Opposite.unop_op`: inferred @[defeq]
+✔ [775/8380] Built Mathlib.Algebra.Order.Sum (1.2s)
+✔ [776/8380] Built Mathlib.Data.Matrix.DMatrix (1.0s)
+✔ [777/8380] Built Mathlib.Data.List.TakeWhile (1.3s)
+✔ [778/8380] Built Aesop.Search.Queue.Class (814ms)
+✔ [779/8380] Built Aesop.Frontend.Tactic (1.3s)
+ℹ [780/8380] Built Mathlib.Order.OrderDual (1.3s)
+info: Mathlib/Order/OrderDual.lean:202:0: `:= rfl` theorem `Equiv.top_def`: inferred @[defeq]
+info: Mathlib/Order/OrderDual.lean:210:0: `:= rfl` theorem `Equiv.bot_def`: inferred @[defeq]
+info: Mathlib/Order/OrderDual.lean:218:0: `:= rfl` theorem `Equiv.compl_def`: inferred @[defeq]
+info: Mathlib/Order/OrderDual.lean:226:0: `:= rfl` theorem `Equiv.sdiff_def`: inferred @[defeq]
+info: Mathlib/Order/OrderDual.lean:234:0: `:= rfl` theorem `Equiv.himp_def`: inferred @[defeq]
+info: Mathlib/Order/OrderDual.lean:242:0: `:= rfl` theorem `Equiv.hnot_def`: inferred @[defeq]
+ℹ [781/8380] Built Mathlib.Order.ULift (1.3s)
+info: Mathlib/Order/ULift.lean:39:0: `:= rfl` theorem `ULift.up_beq`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:40:0: `:= rfl` theorem `ULift.down_beq`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:44:0: `:= rfl` theorem `ULift.up_compare`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:45:0: `:= rfl` theorem `ULift.down_compare`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:51:0: `:= rfl` theorem `ULift.up_sup`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:54:0: `:= rfl` theorem `ULift.down_sup`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:59:0: `:= rfl` theorem `ULift.up_sdiff`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:60:0: `:= rfl` theorem `ULift.down_sdiff`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:64:0: `:= rfl` theorem `ULift.up_compl`: inferred @[defeq]
+info: Mathlib/Order/ULift.lean:65:0: `:= rfl` theorem `ULift.down_compl`: inferred @[defeq]
+ℹ [782/8380] Built Mathlib.Data.PNat.Defs (1.3s)
+info: Mathlib/Data/PNat/Defs.lean:146:0: `:= rfl` theorem `PNat.mk_one`: inferred @[defeq]
+✔ [783/8380] Built Aesop.Tree.RunMetaM (922ms)
+✔ [784/8380] Built Aesop.Tree.Traversal (946ms)
+✔ [785/8380] Built Mathlib.Algebra.Group.Ext (1.2s)
+✔ [786/8380] Built Aesop.Frontend.Command (1.6s)
+✔ [787/8380] Built Mathlib.Algebra.Regular.Opposite (642ms)
+✔ [788/8380] Built Aesop.Tree.TreeM (1.2s)
+✖ [789/8380] Building Mathlib.Control.Monad.Cont (1.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Control/Monad/Cont.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Control/Monad/Cont.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Control/Monad/Cont.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Control/Monad/Cont.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Control/Monad/Cont.setup.json --json
+error: Mathlib/Control/Monad/Cont.lean:195:4: `dsimp` made no progress
+error: Mathlib/Control/Monad/Cont.lean:201:9: Tactic `rfl` failed: The left-hand side
+  (ExceptT.mk
+      (callCC fun x ↦ do
+        let x_1 ← (ExceptT.mk (goto x (Except.ok x✝) >>= pure ∘ Except.ok)).run
+        match x_1 with
+          | Except.ok x_2 => (dead✝ (ExceptT.mkLabel x) x_2).run
+          | Except.error e => pure (Except.error e))).run
+is not definitionally equal to the right-hand side
+  (pure x✝).run
+
+m : Type u → Type v
+inst✝² : Monad m
+ε : Type u
+inst✝¹ : MonadCont m
+inst✝ : LawfulMonadCont m
+α✝ β✝ : Type u
+x✝ : α✝
+dead✝ : Label α✝ (ExceptT ε m) β✝ → β✝ → ExceptT ε m α✝
+⊢ (ExceptT.mk
+        (callCC fun x ↦ do
+          let x_1 ← (ExceptT.mk (goto x (Except.ok x✝) >>= pure ∘ Except.ok)).run
+          match x_1 with
+            | Except.ok x_2 => (dead✝ (ExceptT.mkLabel x) x_2).run
+            | Except.error e => pure (Except.error e))).run =
+    (pure x✝).run
+warning: Mathlib/Control/Monad/Cont.lean:199:84: This simp argument is unused:
+  Function.comp
+
+Hint: Omit it from the simp argument list.
+  simp only [callCC, ExceptT.callCC, ExceptT.goto_mkLabel, map_eq_bind_pure_comp, ̵F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵,̵
+        ExceptT.run_bind, ExceptT.run_mk, bind_assoc, pure_bind, @callCC_bind_left m _]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Control/Monad/Cont.lean:200:24: This simp argument is unused:
+  ExceptT.run_mk
+
+Hint: Omit it from the simp argument list.
+  simp only [callCC, ExceptT.callCC, ExceptT.goto_mkLabel, map_eq_bind_pure_comp, Function.comp,
+        ExceptT.run_bind, E̵x̵c̵e̵p̵t̵T̵.̵r̵u̵n̵_̵m̵k̵,̵ ̵bind_assoc, pure_bind, @callCC_bind_left m _]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Control/Monad/Cont.lean:200:40: This simp argument is unused:
+  bind_assoc
+
+Hint: Omit it from the simp argument list.
+  simp only [callCC, ExceptT.callCC, ExceptT.goto_mkLabel, map_eq_bind_pure_comp, Function.comp,
+        ExceptT.run_bind, ExceptT.run_mk, b̵i̵n̵d̵_̵a̵s̵s̵o̵c̵,̵ ̵pure_bind, @callCC_bind_left m _]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Control/Monad/Cont.lean:200:52: This simp argument is unused:
+  pure_bind
+
+Hint: Omit it from the simp argument list.
+  simp only [callCC, ExceptT.callCC, ExceptT.goto_mkLabel, map_eq_bind_pure_comp, Function.comp,
+        ExceptT.run_bind, ExceptT.run_mk, bind_assoc, p̵u̵r̵e̵_̵b̵i̵n̵d̵,̵ ̵@callCC_bind_left m _]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/Control/Monad/Cont.lean:200:63: This simp argument is unused:
+  @callCC_bind_left m _
+
+Hint: Omit it from the simp argument list.
+  simp only [callCC, ExceptT.callCC, ExceptT.goto_mkLabel, map_eq_bind_pure_comp, Function.comp,
+        ExceptT.run_bind, ExceptT.run_mk, bind_assoc, pure_bind,̵ ̵@̵c̵a̵l̵l̵C̵C̵_̵b̵i̵n̵d̵_̵l̵e̵f̵t̵ ̵m̵ ̵_̵]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+ℹ [790/8380] Built Mathlib.Combinatorics.Quiver.Basic (733ms)
+info: Mathlib/Combinatorics/Quiver/Basic.lean:76:0: `:= rfl` theorem `Quiver.empty_arrow`: inferred @[defeq]
+✔ [791/8380] Built Aesop.BuiltinRules.Ext (922ms)
+✔ [792/8380] Built Aesop.BuiltinRules.Rfl (864ms)
+✔ [793/8380] Built Aesop.BuiltinRules.Intros (1.0s)
+✔ [794/8380] Built Aesop.BuiltinRules.Assumption (1.1s)
+✔ [795/8380] Built Aesop.BuiltinRules.ApplyHyps (1.0s)
+✔ [796/8380] Built Aesop.BuiltinRules.DestructProducts (1.1s)
+✔ [797/8380] Built Aesop.BuiltinRules.Split (1.1s)
+✔ [798/8380] Built Aesop.BuiltinRules.Subst (1.1s)
+✔ [799/8380] Built Mathlib.Data.PNat.Equiv (958ms)
+✔ [800/8380] Built Mathlib.Data.Nat.Cast.Synonym (904ms)
+✔ [801/8380] Built Mathlib.Testing.Plausible.Sampleable (1.1s)
+✔ [802/8380] Built Mathlib.Tactic.Bound.Init (925ms)
+✔ [803/8380] Built Mathlib.Order.Compare (1.2s)
+✔ [804/8380] Built Aesop.Tree.State (1.3s)
+✔ [805/8380] Built Aesop.Tree.Free (1.0s)
+ℹ [806/8380] Built Mathlib.Algebra.Group.Equiv.Defs (2.4s)
+info: Mathlib/Algebra/Group/Equiv/Defs.lean:194:0: `:= rfl` theorem `MulEquiv.coe_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Equiv/Defs.lean:210:0: `:= rfl` theorem `MulEquiv.toFun_eq_coe`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Equiv/Defs.lean:217:0: `:= rfl` theorem `MulEquiv.coe_toMulHom`: inferred @[defeq]
+✔ [807/8380] Built Aesop.Search.SearchM (1.1s)
+✔ [808/8380] Built Aesop.Forward.State.UpdateGoal (1.1s)
+✔ [809/8380] Built Aesop.Tree.Stats (1.1s)
+ℹ [810/8380] Built Mathlib.Algebra.Group.Action.Defs (1.9s)
+info: Mathlib/Algebra/Group/Action/Defs.lean:72:0: `:= rfl` theorem `smul_eq_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Action/Defs.lean:78:0: `:= rfl` theorem `MulOpposite.smul_eq_mul_unop`: inferred @[defeq]
+✔ [811/8380] Built Mathlib.Order.Max (1.6s)
+ℹ [812/8380] Built Mathlib.Combinatorics.Quiver.Prefunctor (1.0s)
+info: Mathlib/Combinatorics/Quiver/Prefunctor.lean:32:0: `:= rfl` theorem `Prefunctor.mk_obj`: inferred @[defeq]
+info: Mathlib/Combinatorics/Quiver/Prefunctor.lean:35:0: `:= rfl` theorem `Prefunctor.mk_map`: inferred @[defeq]
+✔ [813/8380] Built Mathlib.Algebra.Ring.Ext (1.4s)
+✔ [814/8380] Built Mathlib.Combinatorics.Quiver.Subquiver (1.0s)
+✔ [815/8380] Built Aesop.Tree.Tracing (1.5s)
+✔ [816/8380] Built Aesop.BuiltinRules (696ms)
+✔ [817/8380] Built Aesop.Tree.ExtractProof (1.4s)
+✔ [818/8380] Built Mathlib.Order.RelClasses (1.7s)
+✔ [819/8380] Built Mathlib.Algebra.Order.Field.Defs (649ms)
+✔ [820/8380] Built Aesop.Tree.ExtractScript (1.6s)
+✔ [821/8380] Built Mathlib.Algebra.Group.Pi.Units (642ms)
+✔ [822/8380] Built Mathlib.Algebra.Order.Group.Synonym (2.2s)
+ℹ [823/8380] Built Mathlib.Algebra.Group.ULift (832ms)
+info: Mathlib/Algebra/Group/ULift.lean:35:0: `:= rfl` theorem `ULift.one_down`: inferred @[defeq]
+info: Mathlib/Algebra/Group/ULift.lean:43:0: `:= rfl` theorem `ULift.mul_down`: inferred @[defeq]
+info: Mathlib/Algebra/Group/ULift.lean:51:0: `:= rfl` theorem `ULift.div_down`: inferred @[defeq]
+info: Mathlib/Algebra/Group/ULift.lean:59:0: `:= rfl` theorem `ULift.inv_down`: inferred @[defeq]
+info: Mathlib/Algebra/Group/ULift.lean:67:0: `:= rfl` theorem `ULift.pow_down`: inferred @[defeq]
+✔ [824/8380] Built Mathlib.Combinatorics.Quiver.Push (568ms)
+ℹ [825/8380] Built Mathlib.GroupTheory.GroupAction.IterateAct (573ms)
+info: Mathlib/GroupTheory/GroupAction/IterateAct.lean:60:0: `:= rfl` theorem `IterateMulAct.mk_smul`: inferred @[defeq]
+✔ [826/8380] Built Mathlib.Algebra.Group.Action.Faithful (752ms)
+✔ [827/8380] Built Aesop.Search.RuleSelection (808ms)
+ℹ [828/8380] Built Mathlib.Algebra.AddTorsor.Defs (695ms)
+info: Mathlib/Algebra/AddTorsor/Defs.lean:70:0: `:= rfl` theorem `vsub_eq_sub`: inferred @[defeq]
+✔ [829/8380] Built Mathlib.Order.SetIsMax (691ms)
+✔ [830/8380] Built Aesop.Tree.AddRapp (2.2s)
+✔ [831/8380] Built Aesop.Tree.Check (1.2s)
+✔ [832/8380] Built Mathlib.Algebra.GroupWithZero.ULift (532ms)
+✖ [833/8380] Building Mathlib.Combinatorics.Quiver.Path (1.1s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Combinatorics/Quiver/Path.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Combinatorics/Quiver/Path.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Combinatorics/Quiver/Path.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Combinatorics/Quiver/Path.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Combinatorics/Quiver/Path.setup.json --json
+error: Mathlib/Combinatorics/Quiver/Path.lean:338:27: `dsimp` made no progress
+error: Lean exited with code 1
+✔ [838/8380] Built Aesop.Saturate (4.5s)
+✔ [839/8380] Built Mathlib.LinearAlgebra.AffineSpace.Defs (504ms)
+✔ [840/8380] Built Mathlib.Algebra.EuclideanDomain.Defs (1.1s)
+ℹ [841/8380] Built Mathlib.Algebra.Group.Action.Option (610ms)
+info: Mathlib/Algebra/Group/Action/Option.lean:39:0: `:= rfl` theorem `Option.smul_def`: inferred @[defeq]
+✔ [842/8380] Built Mathlib.Algebra.GroupWithZero.Action.Faithful (532ms)
+✔ [843/8380] Built Mathlib.Algebra.Order.GroupWithZero.Synonym (774ms)
+ℹ [844/8380] Built Mathlib.Algebra.Group.Action.Sigma (665ms)
+info: Mathlib/Algebra/Group/Action/Sigma.lean:41:0: `:= rfl` theorem `Sigma.smul_def`: inferred @[defeq]
+ℹ [845/8380] Built Mathlib.Algebra.Group.Action.Sum (688ms)
+info: Mathlib/Algebra/Group/Action/Sum.lean:40:0: `:= rfl` theorem `Sum.smul_def`: inferred @[defeq]
+✔ [846/8380] Built Mathlib.Algebra.Order.Group.Equiv (801ms)
+✔ [847/8380] Built Aesop.Tree (502ms)
+✔ [848/8380] Built Mathlib.Algebra.Order.Group.Action.Synonym (895ms)
+✔ [849/8380] Built Mathlib.Algebra.Order.Ring.Synonym (1.2s)
+✔ [850/8380] Built Aesop.Search.Queue (527ms)
+✔ [851/8380] Built Mathlib.Logic.Equiv.Prod (5.2s)
+✔ [852/8380] Built Aesop.Frontend.Saturate (1.0s)
+✔ [853/8380] Built Aesop.Frontend (423ms)
+✖ [854/8380] Building Mathlib.Logic.Equiv.Sum (824ms)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Logic/Equiv/Sum.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Logic/Equiv/Sum.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Logic/Equiv/Sum.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Logic/Equiv/Sum.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Logic/Equiv/Sum.setup.json --json
+error: Mathlib/Logic/Equiv/Sum.lean:267:4: unsolved goals
+case inl
+α✝ : Sort u_1
+α₁ : Sort u_2
+α₂ : Sort u_3
+β : Sort u_4
+β₁ : Sort u_5
+β₂ : Sort u_6
+γ : Sort u_7
+δ : Sort u_8
+α : Type u_9
+p : α → Prop
+inst✝ : DecidablePred p
+x : α
+hx : p x
+⊢ Sum.inl ⟨Sum.elim Subtype.val Subtype.val (Sum.inl ⟨x, hx⟩), ?inl.hc⟩ = Sum.inl ⟨x, hx⟩
+
+case inl.hc
+α✝ : Sort u_1
+α₁ : Sort u_2
+α₂ : Sort u_3
+β : Sort u_4
+β₁ : Sort u_5
+β₂ : Sort u_6
+γ : Sort u_7
+δ : Sort u_8
+α : Type u_9
+p : α → Prop
+inst✝ : DecidablePred p
+x : α
+hx : p x
+⊢ p (Sum.elim Subtype.val Subtype.val (Sum.inl ⟨x, hx⟩))
+error: Mathlib/Logic/Equiv/Sum.lean:268:4: unsolved goals
+case inr
+α✝ : Sort u_1
+α₁ : Sort u_2
+α₂ : Sort u_3
+β : Sort u_4
+β₁ : Sort u_5
+β₂ : Sort u_6
+γ : Sort u_7
+δ : Sort u_8
+α : Type u_9
+p : α → Prop
+inst✝ : DecidablePred p
+x : α
+hx : ¬p x
+⊢ Sum.inr ⟨Sum.elim Subtype.val Subtype.val (Sum.inr ⟨x, hx⟩), ?inr.hnc⟩ = Sum.inr ⟨x, hx⟩
+
+case inr.hnc
+α✝ : Sort u_1
+α₁ : Sort u_2
+α₂ : Sort u_3
+β : Sort u_4
+β₁ : Sort u_5
+β₂ : Sort u_6
+γ : Sort u_7
+δ : Sort u_8
+α : Type u_9
+p : α → Prop
+inst✝ : DecidablePred p
+x : α
+hx : ¬p x
+⊢ ¬p (Sum.elim Subtype.val Subtype.val (Sum.inr ⟨x, hx⟩))
+error: Lean exited with code 1
+✔ [855/8380] Built Aesop.Search.Expansion.Norm (2.4s)
+✔ [856/8380] Built Mathlib.Tactic.SetLike (468ms)
+✔ [857/8380] Built Mathlib.Tactic.Finiteness.Attr (484ms)
+✔ [858/8380] Built Mathlib.Data.Finset.Attr (507ms)
+ℹ [859/8380] Built Mathlib.Order.BoundedOrder.Basic (1.1s)
+info: Mathlib/Order/BoundedOrder/Basic.lean:295:0: `:= rfl` theorem `Pi.bot_apply`: inferred @[defeq]
+info: Mathlib/Order/BoundedOrder/Basic.lean:299:0: `:= rfl` theorem `Pi.bot_def`: inferred @[defeq]
+info: Mathlib/Order/BoundedOrder/Basic.lean:419:0: `:= rfl` theorem `Prod.fst_top`: inferred @[defeq]
+info: Mathlib/Order/BoundedOrder/Basic.lean:420:0: `:= rfl` theorem `Prod.snd_top`: inferred @[defeq]
+info: Mathlib/Order/BoundedOrder/Basic.lean:439:0: `:= rfl` theorem `ULift.up_top`: inferred @[defeq]
+info: Mathlib/Order/BoundedOrder/Basic.lean:440:0: `:= rfl` theorem `ULift.down_top`: inferred @[defeq]
+info: Mathlib/Order/BoundedOrder/Basic.lean:473:0: `:= rfl` theorem `top_eq_true`: inferred @[defeq]
+info: Mathlib/Order/BoundedOrder/Basic.lean:477:0: `:= rfl` theorem `bot_eq_false`: inferred @[defeq]
+✔ [860/8380] Built Aesop.Search.Expansion (1.5s)
+ℹ [861/8380] Built Mathlib.Order.Nat (486ms)
+info: Mathlib/Order/Nat.lean:37:0: `:= rfl` theorem `Nat.bot_eq_zero`: inferred @[defeq]
+✔ [862/8380] Built Aesop.Search.ExpandSafePrefix (792ms)
+✔ [863/8380] Built Aesop.Search.Main (2.5s)
+✔ [864/8380] Built Aesop.Main (715ms)
+✔ [865/8380] Built Aesop (415ms)
+✔ [866/8380] Built Mathlib.Data.Set.Operations (1.1s)
+✔ [867/8380] Built Mathlib.CategoryTheory.Category.Init (617ms)
+✔ [868/8380] Built Mathlib.Topology.Sheaves.Init (712ms)
+✔ [869/8380] Built Mathlib.Tactic.Measurability.Init (640ms)
+✔ [870/8380] Built Mathlib.Data.Sym.Sym2.Init (724ms)
+✔ [871/8380] Built Mathlib.Tactic.Continuity.Init (806ms)
+✔ [872/8380] Built Mathlib.Combinatorics.Matroid.Init (811ms)
+✔ [873/8380] Built Mathlib.Tactic.ArithMult.Init (725ms)
+✔ [874/8380] Built Mathlib.Combinatorics.SimpleGraph.Init (796ms)
+ℹ [875/8380] Built Mathlib.Data.Option.Basic (834ms)
+info: Mathlib/Data/Option/Basic.lean:45:0: `:= rfl` theorem `Option.coe_def`: inferred @[defeq]
+info: Mathlib/Data/Option/Basic.lean:88:0: `:= rfl` theorem `Option.bind_eq_bind'`: inferred @[defeq]
+info: Mathlib/Data/Option/Basic.lean:168:0: `:= rfl` theorem `Option.failure_eq_none`: inferred @[defeq]
+✔ [876/8380] Built Mathlib.Tactic.ContinuousFunctionalCalculus (834ms)
+✔ [877/8380] Built Mathlib.Tactic.Common (949ms)
+✔ [879/8380] Built Mathlib.Tactic.Bound.Attribute (1.8s)
+✔ [880/8380] Built Mathlib.Data.Set.Notation (1.2s)
+✔ [881/8380] Built Mathlib.Dynamics.FixedPoints.Defs (1.2s)
+✔ [882/8380] Built Mathlib.Tactic.Continuity (1.0s)
+✔ [883/8380] Built Mathlib.Tactic.Measurability (1.2s)
+✔ [884/8380] Built Mathlib.Tactic.ArithMult (1.1s)
+✔ [885/8380] Built Mathlib.Data.Set.Opposite (1.2s)
+✔ [886/8380] Built Mathlib.Order.Monotone.Defs (1.6s)
+✔ [887/8380] Built Mathlib.CategoryTheory.EffectiveEpi.RegularEpi (1.2s)
+✔ [888/8380] Built Mathlib.Logic.Equiv.Option (1.4s)
+✔ [897/8380] Built Mathlib.CategoryTheory.Category.Grpd (1.3s)
+✔ [898/8380] Built Mathlib.Data.Nat.Choose.Mul (1.3s)
+✔ [900/8380] Built Mathlib.CategoryTheory.Closed.Cartesian (1.6s)
+✔ [901/8380] Built Mathlib.CategoryTheory.Closed.FunctorCategory.Basic (1.6s)
+✔ [902/8380] Built Mathlib.CategoryTheory.Closed.FunctorCategory.Groupoid (1.5s)
+✔ [903/8380] Built Mathlib.CategoryTheory.ConcreteCategory.BundledHom (1.5s)
+✔ [904/8380] Built Mathlib.CategoryTheory.Closed.Functor (1.6s)
+✔ [905/8380] Built Mathlib.CategoryTheory.Closed.Zero (1.6s)
+✔ [906/8380] Built Mathlib.Data.List.Map2 (1.7s)
+✔ [907/8380] Built Mathlib.Algebra.ModEq (1.7s)
+✔ [908/8380] Built Mathlib.CategoryTheory.Closed.FunctorToTypes (1.7s)
+✔ [909/8380] Built Mathlib.CategoryTheory.Closed.Types (1.7s)
+✔ [910/8380] Built Mathlib.CategoryTheory.Limits.Types.Shapes (1.7s)
+✔ [911/8380] Built Mathlib.Data.Matrix.Auto (1.8s)
+✔ [912/8380] Built Mathlib.Data.List.InsertIdx (1.9s)
+✔ [913/8380] Built Mathlib.Data.List.ProdSigma (1.9s)
+✔ [914/8380] Built Mathlib.CategoryTheory.Closed.FunctorCategory.Complete (1.8s)
+✔ [915/8380] Built Mathlib.CategoryTheory.Closed.Monoidal (1.8s)
+✔ [916/8380] Built Mathlib.Data.Int.Sqrt (1.0s)
+✔ [917/8380] Built Mathlib.Algebra.NoZeroSMulDivisors.Prod (1.9s)
+✔ [918/8380] Built Mathlib.CategoryTheory.Subpresheaf.Basic (1.0s)
+✔ [919/8380] Built Mathlib.Data.List.InsertNth (1.9s)
+✔ [920/8380] Built Mathlib.Algebra.Quotient (2.0s)
+✔ [921/8380] Built Mathlib.Control.Bifunctor (2.0s)
+✔ [922/8380] Built Mathlib.CategoryTheory.Closed.Enrichment (2.1s)
+✔ [923/8380] Built Mathlib.CategoryTheory.Closed.Ideal (2.1s)
+✔ [924/8380] Built Mathlib.CategoryTheory.ConcreteCategory.UnbundledHom (2.0s)
+✔ [925/8380] Built Mathlib.CategoryTheory.Limits.Shapes.Pullback.CommSq (2.0s)
+✔ [926/8380] Built Mathlib.CategoryTheory.Subpresheaf.Image (2.0s)
+✔ [927/8380] Built Mathlib.CategoryTheory.Subpresheaf.OfSection (1.0s)
+✔ [928/8380] Built Mathlib.CategoryTheory.Subpresheaf.Subobject (2.0s)
+✔ [929/8380] Built Mathlib.Data.List.TakeDrop (2.2s)
+✔ [930/8380] Built Mathlib.Data.List.Count (2.1s)
+✔ [931/8380] Built Mathlib.Algebra.Field.IsField (2.2s)
+✔ [932/8380] Built Mathlib.Algebra.GroupWithZero.Int (2.2s)
+✔ [933/8380] Built Mathlib.CategoryTheory.Subpresheaf.Equalizer (2.2s)
+✔ [934/8380] Built Mathlib.CategoryTheory.Subpresheaf.Finite (2.2s)
+✔ [935/8380] Built Mathlib.CategoryTheory.Subpresheaf.Sieves (2.1s)
+✔ [936/8380] Built Mathlib.Data.List.ChainOfFn (2.2s)
+✔ [937/8380] Built Mathlib.Topology.Compactness.PseudometrizableLindelof (1.3s)
+✔ [938/8380] Built Mathlib.Algebra.Group.WithOne.Defs (2.3s)
+ℹ [939/8380] Built Mathlib.Data.Rat.Defs (2.3s)
+info: Mathlib/Data/Rat/Defs.lean:46:0: `:= rfl` theorem `Rat.mk'_num_den`: inferred @[defeq]
+info: Mathlib/Data/Rat/Defs.lean:48:0: `:= rfl` theorem `Rat.ofInt_eq_cast`: inferred @[defeq]
+✔ [940/8380] Built Mathlib.Data.List.Induction (2.2s)
+ℹ [941/8380] Built Mathlib.Data.Vector.Defs (2.4s)
+info: Mathlib/Data/Vector/Defs.lean:97:0: `:= rfl` theorem `List.Vector.append_def`: inferred @[defeq]
+✔ [942/8380] Built Mathlib.CategoryTheory.Category.Basic (2.5s)
+✔ [943/8380] Built Mathlib.Data.Stream.Init (2.8s)
+✔ [944/8380] Built Mathlib.Order.SetNotation (3.2s)
+✔ [945/8380] Built Mathlib.Control.Bitraversable.Basic (824ms)
+✔ [946/8380] Built Mathlib.Data.Nat.Factorial.Basic (2.9s)
+✔ [947/8380] Built Mathlib.Data.List.Palindrome (828ms)
+✔ [948/8380] Built Mathlib.Logic.Equiv.Functor (1.1s)
+✔ [950/8380] Built Mathlib.Order.Monotone.Basic (1.0s)
+✔ [951/8380] Built Mathlib.Algebra.Group.WithOne.Map (1.0s)
+✔ [952/8380] Built Mathlib.Algebra.Group.Basic (4.4s)
+ℹ [953/8380] Built Mathlib.CategoryTheory.Category.KleisliCat (874ms)
+info: Mathlib/CategoryTheory/Category/KleisliCat.lean:56:0: `:= rfl` theorem `CategoryTheory.KleisliCat.id_def`: inferred @[defeq]
+✔ [955/8380] Built Mathlib.Control.Bitraversable.Lemmas (900ms)
+✔ [956/8380] Built Mathlib.Tactic.CategoryTheory.CheckCompositions (1.2s)
+✔ [957/8380] Built Mathlib.Tactic.Widget.CommDiag (1.2s)
+✔ [958/8380] Built Mathlib.Tactic.CategoryTheory.Slice (1.2s)
+✔ [959/8380] Built Mathlib.Tactic.CategoryTheory.Coherence.Basic (1.2s)
+✔ [960/8380] Built Mathlib.Topology.Defs.Basic (924ms)
+✔ [961/8380] Built Mathlib.CategoryTheory.Functor.Basic (1.4s)
+✔ [962/8380] Built Mathlib.Order.BoundedOrder.Monotone (1.1s)
+✔ [963/8380] Built Mathlib.Data.Nat.Choose.Basic (1.6s)
+✔ [964/8380] Built Mathlib.Order.Iterate (1.3s)
+✖ [965/8380] Building Mathlib.Data.Seq.Computation (1.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Data/Seq/Computation.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/Seq/Computation.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/Seq/Computation.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/Seq/Computation.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/Seq/Computation.setup.json --json
+error: Mathlib/Data/Seq/Computation.lean:224:19: Tactic `rfl` failed: The left-hand side
+  (Prod.fst ∘ Corec.f f) (Sum.inr b)
+is not definitionally equal to the right-hand side
+  Sum.rec some (fun x ↦ none) (Sum.inl x)
+
+α : Type u
+β : Type v
+f : β → α ⊕ β
+b : β
+x : α
+⊢ (Prod.fst ∘ Corec.f f) (Sum.inr b) = Sum.rec some (fun x ↦ none) (Sum.inl x)
+error: Mathlib/Data/Seq/Computation.lean:225:19: Tactic `rfl` failed: The left-hand side
+  (Prod.fst ∘ Corec.f f) (Sum.inr b)
+is not definitionally equal to the right-hand side
+  Sum.rec some (fun x ↦ none) (Sum.inr x)
+
+α : Type u
+β : Type v
+f : β → α ⊕ β
+b x : β
+⊢ (Prod.fst ∘ Corec.f f) (Sum.inr b) = Sum.rec some (fun x ↦ none) (Sum.inr x)
+info: Mathlib/Data/Seq/Computation.lean:571:0: `:= rfl` theorem `Computation.has_bind_eq_bind`: inferred @[defeq]
+error: Mathlib/Data/Seq/Computation.lean:601:4: Tactic `apply` failed: could not unify the conclusion of `congr_arg fun f ↦ Stream'.map f s`
+  Stream'.map ?m.35 s = Stream'.map.{u, w} ?m.36 s
+with the goal
+  Stream'.map (fun o ↦ Option.rec none (fun val ↦ (some ∘ g ∘ f) val) o) s =
+    Stream'.map.{v, w} (fun o ↦ Option.rec none (fun val ↦ (some ∘ g) val) o)
+      (Stream'.map (fun o ↦ Option.rec none (fun val ↦ (some ∘ f) val) o) s)
+
+Note: The full type of `congr_arg fun f ↦ Stream'.map f s` is
+  ?m.35 = ?m.36 → Stream'.map ?m.35 s = Stream'.map ?m.36 s
+
+α : Type u
+β : Type v
+γ : Type w
+f : α → β
+g : β → γ
+s : Stream' (Option α)
+al : ∀ ⦃n : ℕ⦄ ⦃a : α⦄, s n = some a → s (n + 1) = some a
+⊢ Stream'.map (fun o ↦ Option.rec none (fun val ↦ (some ∘ g ∘ f) val) o) s =
+    Stream'.map (fun o ↦ Option.rec none (fun val ↦ (some ∘ g) val) o)
+      (Stream'.map (fun o ↦ Option.rec none (fun val ↦ (some ∘ f) val) o) s)
+info: Mathlib/Data/Seq/Computation.lean:730:0: `:= rfl` theorem `Computation.has_map_eq_map`: inferred @[defeq]
+info: Mathlib/Data/Seq/Computation.lean:733:0: `:= rfl` theorem `Computation.pure_def`: inferred @[defeq]
+error: Lean exited with code 1
+✔ [968/8380] Built Mathlib.Algebra.Group.Semiconj.Basic (1.3s)
+ℹ [969/8380] Built Mathlib.Algebra.Group.Idempotent (1.3s)
+info: Mathlib/Algebra/Group/Idempotent.lean:76:0: `:= rfl` theorem `IsIdempotentElem.coe_one`: inferred @[defeq]
+✔ [970/8380] Built Mathlib.Data.Int.Cast.Basic (1.3s)
+✔ [971/8380] Built Mathlib.Algebra.Group.Int.Units (1.4s)
+✔ [972/8380] Built Mathlib.Data.Nat.PSub (1.3s)
+ℹ [973/8380] Built Mathlib.Data.List.Basic (4.8s)
+info: Mathlib/Data/List/Basic.lean:141:0: `:= rfl` theorem `List.singleton_eq`: inferred @[defeq]
+info: Mathlib/Data/List/Basic.lean:191:0: `:= rfl` theorem `List.append_eq_has_append`: inferred @[defeq]
+info: Mathlib/Data/List/Basic.lean:251:0: `:= rfl` theorem `List.bind_eq_flatMap`: inferred @[defeq]
+info: Mathlib/Data/List/Basic.lean:693:0: `:= rfl` theorem `List.map_eq_map`: inferred @[defeq]
+✔ [974/8380] Built Mathlib.Algebra.Ring.Regular (1.5s)
+✔ [975/8380] Built Mathlib.Order.GaloisConnection.Defs (1.8s)
+✔ [976/8380] Built Mathlib.Algebra.Group.Torsion (1.5s)
+✔ [977/8380] Built Mathlib.Algebra.Regular.Basic (1.6s)
+✔ [978/8380] Built Mathlib.Data.Nat.Log (1.8s)
+✔ [979/8380] Built Mathlib.Algebra.Ring.MinimalAxioms (1.5s)
+ℹ [980/8380] Built Mathlib.Algebra.Group.Action.Units (1.6s)
+info: Mathlib/Algebra/Group/Action/Units.lean:35:0: `:= rfl` theorem `Units.smul_def`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Action/Units.lean:37:0: `:= rfl` theorem `Units.smul_mk_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Action/Units.lean:100:0: `:= rfl` theorem `Units.val_smul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Action/Units.lean:159:0: `:= rfl` theorem `Units.coe_smul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Action/Units.lean:160:0: `:= rfl` theorem `Units.coe_inv_smul`: inferred @[defeq]
+ℹ [981/8380] Built Mathlib.Topology.ContinuousMap.Defs (1.4s)
+info: Mathlib/Topology/ContinuousMap/Defs.lean:84:0: `:= rfl` theorem `ContinuousMap.toFun_eq_coe`: inferred @[defeq]
+info: Mathlib/Topology/ContinuousMap/Defs.lean:145:0: `:= rfl` theorem `ContinuousMap.coe_mk`: inferred @[defeq]
+✔ [982/8380] Built Mathlib.Tactic.CategoryTheory.Reassoc (1.4s)
+ℹ [983/8380] Built Mathlib.CategoryTheory.Functor.Functorial (1.4s)
+info: Mathlib/CategoryTheory/Functor/Functorial.lean:53:0: `:= rfl` theorem `CategoryTheory.map_functorial_obj`: inferred @[defeq]
+✔ [984/8380] Built Mathlib.Control.Bitraversable.Instances (1.6s)
+✔ [985/8380] Built Mathlib.Algebra.GroupWithZero.Basic (1.9s)
+✔ [986/8380] Built Mathlib.Algebra.Divisibility.Basic (1.9s)
+✔ [987/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.Defs (1.9s)
+✔ [988/8380] Built Mathlib.Tactic.MoveAdd (1.9s)
+ℹ [989/8380] Built Mathlib.Algebra.Group.Hom.Basic (2.1s)
+info: Mathlib/Algebra/Group/Hom/Basic.lean:89:0: `:= rfl` theorem `OneHom.coe_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:92:0: `:= rfl` theorem `OneHom.mul_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:96:0: `:= rfl` theorem `OneHom.mul_comp`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:109:0: `:= rfl` theorem `OneHom.coe_inv`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:112:0: `:= rfl` theorem `OneHom.inv_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:116:0: `:= rfl` theorem `OneHom.inv_comp`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:129:0: `:= rfl` theorem `OneHom.coe_div`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:132:0: `:= rfl` theorem `OneHom.div_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:136:0: `:= rfl` theorem `OneHom.div_comp`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:155:0: `:= rfl` theorem `MulHom.mul_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:159:0: `:= rfl` theorem `MulHom.mul_comp`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:250:0: `:= rfl` theorem `MonoidHom.mul_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Basic.lean:252:0: `:= rfl` theorem `MonoidHom.mul_comp`: inferred @[defeq]
+✔ [991/8380] Built Mathlib.Algebra.Group.WithOne.Basic (2.1s)
+ℹ [992/8380] Built Mathlib.Algebra.GroupWithZero.Idempotent (1.0s)
+info: Mathlib/Algebra/GroupWithZero/Idempotent.lean:29:0: `:= rfl` theorem `IsIdempotentElem.coe_zero`: inferred @[defeq]
+✔ [993/8380] Built Mathlib.Algebra.Ring.Int.Defs (1.1s)
+✔ [994/8380] Built Mathlib.Algebra.Ring.GrindInstances (1.2s)
+✔ [995/8380] Built Mathlib.Tactic.Zify (1.2s)
+✔ [996/8380] Built Mathlib.Data.List.Enum (1.1s)
+✔ [997/8380] Built Mathlib.Algebra.Group.Commute.Basic (1.3s)
+✔ [998/8380] Built Mathlib.Data.List.ReduceOption (1.2s)
+✔ [999/8380] Built Mathlib.Algebra.Group.Units.Basic (2.8s)
+✔ [1000/8380] Built Mathlib.Algebra.Field.MinimalAxioms (1.2s)
+✔ [1001/8380] Built Mathlib.Data.List.DropRight (1.5s)
+✔ [1002/8380] Built Mathlib.Data.List.Lex (1.6s)
+✔ [1003/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.OrderDual (1.2s)
+✔ [1004/8380] Built Mathlib.Data.List.Lattice (1.7s)
+✔ [1005/8380] Built Mathlib.Data.List.Infix (1.6s)
+ℹ [1006/8380] Built Mathlib.Order.Lattice (3.4s)
+info: Mathlib/Order/Lattice.lean:655:0: `:= rfl` theorem `Pi.sup_apply`: inferred @[defeq]
+info: Mathlib/Order/Lattice.lean:659:0: `:= rfl` theorem `Pi.sup_def`: inferred @[defeq]
+info: Mathlib/Order/Lattice.lean:866:0: `:= rfl` theorem `Prod.mk_sup_mk`: inferred @[defeq]
+info: Mathlib/Order/Lattice.lean:871:0: `:= rfl` theorem `Prod.fst_sup`: inferred @[defeq]
+info: Mathlib/Order/Lattice.lean:875:0: `:= rfl` theorem `Prod.snd_sup`: inferred @[defeq]
+info: Mathlib/Order/Lattice.lean:883:0: `:= rfl` theorem `Prod.sup_def`: inferred @[defeq]
+info: Mathlib/Order/Lattice.lean:928:0: `:= rfl` theorem `Subtype.coe_sup`: inferred @[defeq]
+info: Mathlib/Order/Lattice.lean:934:0: `:= rfl` theorem `Subtype.mk_sup_mk`: inferred @[defeq]
+✔ [1007/8380] Built Mathlib.Algebra.Divisibility.Hom (1.2s)
+✔ [1009/8380] Built Mathlib.Data.List.Forall2 (1.7s)
+✔ [1010/8380] Built Mathlib.Algebra.Group.ModEq (1.6s)
+✔ [1011/8380] Built Mathlib.Algebra.Group.Opposite (1.8s)
+✔ [1013/8380] Built Mathlib.Data.Int.Cast.Field (954ms)
+✔ [1014/8380] Built Mathlib.CategoryTheory.NatTrans (1.5s)
+ℹ [1015/8380] Built Mathlib.Algebra.Group.TypeTags.Basic (1.0s)
+info: Mathlib/Algebra/Group/TypeTags/Basic.lean:222:0: `:= rfl` theorem `ofMul_one`: inferred @[defeq]
+info: Mathlib/Algebra/Group/TypeTags/Basic.lean:239:0: `:= rfl` theorem `ofAdd_zero`: inferred @[defeq]
+ℹ [1019/8380] Built Mathlib.Algebra.Free (3.5s)
+info: Mathlib/Algebra/Free.lean:94:0: `:= rfl` theorem `FreeMagma.mul_eq`: inferred @[defeq]
+info: Mathlib/Algebra/Free.lean:254:0: `:= rfl` theorem `FreeMagma.traverse_eq`: inferred @[defeq]
+info: Mathlib/Algebra/Free.lean:474:0: `:= rfl` theorem `FreeSemigroup.head_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Free.lean:477:0: `:= rfl` theorem `FreeSemigroup.tail_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Free.lean:480:0: `:= rfl` theorem `FreeSemigroup.mk_mul_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Free.lean:648:0: `:= rfl` theorem `FreeSemigroup.traverse_eq`: inferred @[defeq]
+✔ [1020/8380] Built Mathlib.Algebra.Order.GroupWithZero.Unbundled.Defs (1.7s)
+ℹ [1021/8380] Built Mathlib.Algebra.Ring.Idempotent (1.3s)
+info: Mathlib/Algebra/Ring/Idempotent.lean:55:0: `:= rfl` theorem `IsIdempotentElem.coe_compl`: inferred @[defeq]
+✔ [1022/8380] Built Mathlib.Data.Ordmap.Ordnode (2.3s)
+✖ [1023/8380] Building Mathlib.Algebra.GroupWithZero.Hom (1.5s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/GroupWithZero/Hom.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/GroupWithZero/Hom.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/GroupWithZero/Hom.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/GroupWithZero/Hom.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/GroupWithZero/Hom.setup.json --json
+info: Mathlib/Algebra/GroupWithZero/Hom.lean:129:0: `:= rfl` theorem `MonoidWithZeroHom.coe_mk`: inferred @[defeq]
+info: Mathlib/Algebra/GroupWithZero/Hom.lean:131:0: `:= rfl` theorem `MonoidWithZeroHom.toZeroHom_coe`: inferred @[defeq]
+info: Mathlib/Algebra/GroupWithZero/Hom.lean:133:0: `:= rfl` theorem `MonoidWithZeroHom.toMonoidHom_coe`: inferred @[defeq]
+error: Mathlib/Algebra/GroupWithZero/Hom.lean:218:33: failed to synthesize instance of type class
+  ZeroHomClass (α →* β) α β
+
+Hint: Type class instance resolution failures can be inspected with the `set_option trace.Meta.synthInstance true` command.
+error: Mathlib/Algebra/GroupWithZero/Hom.lean:218:19: unsolved goals
+F : Type u_1
+α : Type u_2
+β✝ : Type u_3
+γ : Type u_4
+δ : Type u_5
+M₀ : Type u_6
+inst✝⁵ : MulZeroOneClass α
+inst✝⁴ : MulZeroOneClass β✝
+inst✝³ : MulZeroOneClass γ
+inst✝² : MulZeroOneClass δ
+inst✝¹ : FunLike F α β✝
+β : Type ?u.21
+inst✝ : CommMonoidWithZero β
+f g : α →*₀ β
+⊢ ZeroHomClass (α →* β) α β
+info: Mathlib/Algebra/GroupWithZero/Hom.lean:230:0: `:= rfl` theorem `MonoidWithZeroHom.one_apply_def`: inferred @[defeq]
+error: Lean exited with code 1
+✔ [1027/8380] Built Mathlib.Algebra.Group.Semiconj.Units (1.2s)
+✔ [1028/8380] Built Mathlib.Algebra.Homology.Embedding.Basic (1.5s)
+✔ [1029/8380] Built Mathlib.Algebra.Divisibility.Units (1.3s)
+ℹ [1030/8380] Built Mathlib.Algebra.FreeMonoid.Basic (2.9s)
+info: Mathlib/Algebra/FreeMonoid/Basic.lean:114:0: `:= rfl` theorem `FreeMonoid.ofList_nil`: inferred @[defeq]
+info: Mathlib/Algebra/FreeMonoid/Basic.lean:350:0: `:= rfl` theorem `FreeMonoid.smul_def`: inferred @[defeq]
+✔ [1031/8380] Built Mathlib.Algebra.Ring.InjSurj (3.1s)
+✔ [1032/8380] Built Mathlib.Order.BoundedOrder.Lattice (1.4s)
+ℹ [1033/8380] Built Mathlib.Algebra.Group.Hom.Instances (2.3s)
+info: Mathlib/Algebra/Group/Hom/Instances.lean:48:0: `:= rfl` theorem `OneHom.pow_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Instances.lean:53:0: `:= rfl` theorem `MonoidHom.pow_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Instances.lean:89:0: `:= rfl` theorem `OneHom.zpow_apply`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Hom/Instances.lean:94:0: `:= rfl` theorem `MonoidHom.zpow_apply`: inferred @[defeq]
+✔ [1034/8380] Built Mathlib.Order.Monotone.Monovary (1.4s)
+✔ [1035/8380] Built Mathlib.Data.List.Intervals (1.4s)
+✔ [1036/8380] Built Mathlib.Data.List.Sections (1.4s)
+✔ [1037/8380] Built Mathlib.Algebra.GroupWithZero.Units.Basic (1.8s)
+✔ [1039/8380] Built Mathlib.CategoryTheory.Iso (2.8s)
+✔ [1040/8380] Built Mathlib.Algebra.Group.Units.Opposite (1.2s)
+✔ [1041/8380] Built Mathlib.Algebra.Group.Int.TypeTags (1.1s)
+✔ [1042/8380] Built Mathlib.Algebra.Group.Nat.TypeTags (1.1s)
+✔ [1044/8380] Built Mathlib.Data.Sigma.Order (1.6s)
+✔ [1045/8380] Built Mathlib.Algebra.Group.Units.Hom (1.9s)
+✔ [1047/8380] Built Mathlib.Algebra.GroupWithZero.Opposite (1.4s)
+ℹ [1049/8380] Built Mathlib.Algebra.Group.Action.TypeTags (1.2s)
+info: Mathlib/Algebra/Group/Action/TypeTags.lean:35:0: `:= rfl` theorem `toMul_smul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Action/TypeTags.lean:39:0: `:= rfl` theorem `toAdd_vadd`: inferred @[defeq]
+✔ [1050/8380] Built Mathlib.Data.List.Zip (1.7s)
+✔ [1052/8380] Built Mathlib.Data.PSigma.Order (1.7s)
+✔ [1053/8380] Built Mathlib.Order.MinMax (1.8s)
+✔ [1054/8380] Built Mathlib.Data.List.Perm.Basic (1.0s)
+✔ [1055/8380] Built Mathlib.Algebra.Group.TypeTags.Hom (1.7s)
+✔ [1056/8380] Built Mathlib.Algebra.Group.Action.Opposite (1.9s)
+✔ [1071/8380] Built Mathlib.Data.List.Nodup (2.2s)
+✔ [1072/8380] Built Mathlib.Algebra.Group.Commute.Units (1.5s)
+ℹ [1073/8380] Built Mathlib.Data.Fin.Basic (2.3s)
+info: Mathlib/Data/Fin/Basic.lean:301:0: `:= rfl` theorem `Fin.default_eq_zero`: inferred @[defeq]
+info: Mathlib/Data/Fin/Basic.lean:355:0: `:= rfl` theorem `Fin.ofNat_eq_cast`: inferred @[defeq]
+✔ [1074/8380] Built Mathlib.Data.List.Chain (2.3s)
+✔ [1075/8380] Built Mathlib.Data.Prod.Lex (2.4s)
+✖ [1077/8380] Building Mathlib.Algebra.FreeMonoid.Count (1.3s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/FreeMonoid/Count.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/FreeMonoid/Count.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/FreeMonoid/Count.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/FreeMonoid/Count.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/FreeMonoid/Count.setup.json --json
+warning: Mathlib/Algebra/FreeMonoid/Count.lean:33:2: declaration uses `sorry`
+error: Mathlib/Algebra/FreeMonoid/Count.lean:36:2: `simp` made no progress
+error: Lean exited with code 1
+✔ [1078/8380] Built Mathlib.Algebra.GroupWithZero.Semiconj (1.1s)
+✔ [1079/8380] Built Mathlib.Algebra.Group.Hom.End (1.2s)
+✔ [1080/8380] Built Mathlib.Algebra.GroupWithZero.Divisibility (1.3s)
+✔ [1081/8380] Built Mathlib.Algebra.Group.Action.Pretransitive (1.2s)
+✔ [1082/8380] Built Mathlib.Tactic.CategoryTheory.IsoReassoc (1.2s)
+✔ [1083/8380] Built Mathlib.Tactic.CategoryTheory.CancelIso (1.2s)
+ℹ [1084/8380] Built Mathlib.Algebra.EuclideanDomain.Field (1.3s)
+info: Mathlib/Algebra/EuclideanDomain/Field.lean:36:0: `:= rfl` theorem `Field.mod_eq`: inferred @[defeq]
+✔ [1085/8380] Built Mathlib.CategoryTheory.ObjectProperty.Basic (1.3s)
+✔ [1086/8380] Built Mathlib.Data.List.SplitLengths (1.1s)
+✔ [1087/8380] Built Mathlib.Algebra.Ring.Basic (1.6s)
+✔ [1096/8380] Built Mathlib.Data.List.Perm.Subperm (1.1s)
+✔ [1097/8380] Built Mathlib.CategoryTheory.HomCongr (1.5s)
+✔ [1098/8380] Built Mathlib.Algebra.Group.Nat.Hom (1.2s)
+✔ [1104/8380] Built Mathlib.Data.List.NatAntidiagonal (1.2s)
+✔ [1105/8380] Built Mathlib.Tactic.Order.CollectFacts (3.5s)
+✔ [1106/8380] Built Mathlib.Data.List.Duplicate (1.3s)
+ℹ [1107/8380] Built Mathlib.Order.Disjoint (2.2s)
+info: Mathlib/Order/Disjoint.lean:576:0: `:= rfl` theorem `Complementeds.coe_bot`: inferred @[defeq]
+info: Mathlib/Order/Disjoint.lean:579:0: `:= rfl` theorem `Complementeds.coe_top`: inferred @[defeq]
+info: Mathlib/Order/Disjoint.lean:598:0: `:= rfl` theorem `Complementeds.coe_sup`: inferred @[defeq]
+info: Mathlib/Order/Disjoint.lean:601:0: `:= rfl` theorem `Complementeds.coe_inf`: inferred @[defeq]
+info: Mathlib/Order/Disjoint.lean:604:0: `:= rfl` theorem `Complementeds.mk_sup_mk`: inferred @[defeq]
+info: Mathlib/Order/Disjoint.lean:608:0: `:= rfl` theorem `Complementeds.mk_inf_mk`: inferred @[defeq]
+✔ [1111/8380] Built Mathlib.Data.List.Dedup (1.5s)
+✔ [1112/8380] Built Mathlib.Data.List.Perm.Lattice (1.5s)
+✔ [1113/8380] Built Mathlib.Data.List.Range (1.4s)
+✔ [1122/8380] Built Mathlib.Algebra.Group.Invertible.Basic (1.4s)
+✔ [1124/8380] Built Mathlib.Algebra.Group.Equiv.TypeTags (1.8s)
+✔ [1125/8380] Built Mathlib.Algebra.GroupWithZero.Commute (1.3s)
+✔ [1142/8380] Built Mathlib.Data.List.SplitBy (1.5s)
+✔ [1143/8380] Built Mathlib.Data.List.OffDiag (1.7s)
+✔ [1144/8380] Built Mathlib.Data.List.Rotate (1.8s)
+✔ [1145/8380] Built Mathlib.Algebra.Prime.Defs (1.3s)
+✔ [1150/8380] Built Mathlib.CategoryTheory.ObjectProperty.ClosedUnderIsomorphisms (1.3s)
+✔ [1153/8380] Built Mathlib.Algebra.Group.Action.Hom (1.4s)
+✔ [1160/8380] Built Mathlib.Data.List.Sigma (1.9s)
+✖ [1161/8380] Building Mathlib.Data.Int.GCD (1.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Data/Int/GCD.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/Int/GCD.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/Int/GCD.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/Int/GCD.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/Int/GCD.setup.json --json
+error: Mathlib/Data/Int/GCD.lean:114:8: Tactic `rewrite` failed: Did not find an occurrence of the pattern
+  ?a % ?b
+in the target expression
+  ↑(b % a) = ↑x * (s' - ↑b / ↑a * s) + ↑y * (t' - ↑b / ↑a * t)
+
+case H1
+x y a b : ℕ
+h : 0 < a
+IH :
+  ∀ {s t s' t' : ℤ},
+    ↑(b % a) = ↑x * s + ↑y * t →
+      ↑a = ↑x * s' + ↑y * t' →
+        ↑((b % a).xgcdAux s t a s' t').1 =
+          ↑x * ((b % a).xgcdAux s t a s' t').2.1 + ↑y * ((b % a).xgcdAux s t a s' t').2.2
+s t s' t' : ℤ
+p : ↑a = ↑x * s + ↑y * t
+p' : ↑b = ↑x * s' + ↑y * t'
+⊢ ↑(b % a) = ↑x * (s' - ↑b / ↑a * s) + ↑y * (t' - ↑b / ↑a * t)
+error: Lean exited with code 1
+✔ [1162/8380] Built Mathlib.Algebra.Ring.Rat (1.4s)
+✔ [1164/8380] Built Mathlib.Data.Nat.GCD.Basic (1.6s)
+ℹ [1165/8380] Built Mathlib.CategoryTheory.Functor.Category (2.8s)
+info: Mathlib/CategoryTheory/Functor/Category.lean:63:0: `:= rfl` theorem `CategoryTheory.NatTrans.vcomp_eq_comp`: inferred @[defeq]
+ℹ [1166/8380] Built Mathlib.Order.PropInstances (947ms)
+info: Mathlib/Order/PropInstances.lean:39:0: `:= rfl` theorem `Prop.bot_eq_false`: inferred @[defeq]
+info: Mathlib/Order/PropInstances.lean:43:0: `:= rfl` theorem `Prop.top_eq_true`: inferred @[defeq]
+info: Mathlib/Order/PropInstances.lean:54:0: `:= rfl` theorem `sup_Prop_eq`: inferred @[defeq]
+info: Mathlib/Order/PropInstances.lean:58:0: `:= rfl` theorem `inf_Prop_eq`: inferred @[defeq]
+✔ [1167/8380] Built Mathlib.Data.Multiset.Defs (1.5s)
+✔ [1168/8380] Built Mathlib.Data.List.Sublists (1.5s)
+✔ [1169/8380] Built Mathlib.Tactic.Order.Graph.Basic (1.1s)
+✖ [1170/8380] Building Mathlib.Algebra.BigOperators.Group.List.Basic (2.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Algebra/BigOperators/Group/List/Basic.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/BigOperators/Group/List/Basic.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Algebra/BigOperators/Group/List/Basic.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/BigOperators/Group/List/Basic.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Algebra/BigOperators/Group/List/Basic.setup.json --json
+error: Mathlib/Algebra/BigOperators/Group/List/Basic.lean:62:2: @[to_additive] failed to add declaration `List.sum_hom₂`.
+  The translated value is not type correct.
+  For help, see the docstring of `to_additive`, section `Troubleshooting`.
+Application type mismatch: The argument
+  inst✝.toAddZeroClass.toAdd
+has type
+  Add P
+but is expected to have type
+  Mul P
+in the application
+  @prod_eq_foldr P inst✝.toAddZeroClass.toAdd
+error: Mathlib/Algebra/BigOperators/Group/List/Basic.lean:69:2: @[to_additive] failed to add declaration `List.sum_map_add`.
+  The translated value is not type correct.
+  For help, see the docstring of `to_additive`, section `Troubleshooting`.
+Application type mismatch: The argument
+  inst✝.toAddMonoid
+has type
+  AddMonoid M
+but is expected to have type
+  Monoid M
+in the application
+  @prod_hom₂ ι M M M inst✝.toAddMonoid
+error: Lean exited with code 1
+✔ [1174/8380] Built Mathlib.Algebra.Group.Prod (3.2s)
+✔ [1176/8380] Built Mathlib.Tactic.Order.ToInt (1.4s)
+✔ [1179/8380] Built Mathlib.Algebra.GroupWithZero.Invertible (1.1s)
+✔ [1180/8380] Built Mathlib.Tactic.Order.Preprocessing (1.4s)
+✔ [1181/8380] Built Mathlib.Data.List.Permutation (1.5s)
+✔ [1182/8380] Built Mathlib.Data.List.Destutter (1.6s)
+✔ [1183/8380] Built Mathlib.Data.Nat.Prime.Defs (1.3s)
+✔ [1192/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.Basic (3.8s)
+✔ [1194/8380] Built Mathlib.CategoryTheory.Thin (1.1s)
+ℹ [1195/8380] Built Mathlib.Data.List.AList (1.5s)
+info: Mathlib/Data/List/AList.lean:115:0: `:= rfl` theorem `AList.empty_entries`: inferred @[defeq]
+✔ [1196/8380] Built Mathlib.Data.Multiset.Pairwise (1.0s)
+✔ [1197/8380] Built Mathlib.Tactic.Order.Graph.Tarjan (1.0s)
+ℹ [1198/8380] Built Mathlib.Data.Nat.Cast.Prod (896ms)
+info: Mathlib/Data/Nat/Cast/Prod.lean:34:0: `:= rfl` theorem `Prod.fst_ofNat`: inferred @[defeq]
+info: Mathlib/Data/Nat/Cast/Prod.lean:42:0: `:= rfl` theorem `Prod.snd_ofNat`: inferred @[defeq]
+✔ [1199/8380] Built Mathlib.Algebra.Divisibility.Prod (981ms)
+✔ [1200/8380] Built Mathlib.Algebra.Ring.Invertible (1.4s)
+ℹ [1202/8380] Built Mathlib.Data.Multiset.ZeroCons (1.6s)
+info: Mathlib/Data/Multiset/ZeroCons.lean:73:0: `:= rfl` theorem `Multiset.empty_eq_zero`: inferred @[defeq]
+info: Mathlib/Data/Multiset/ZeroCons.lean:96:0: `:= rfl` theorem `Multiset.insert_eq_cons`: inferred @[defeq]
+info: Mathlib/Data/Multiset/ZeroCons.lean:251:0: `:= rfl` theorem `Multiset.cons_zero`: inferred @[defeq]
+info: Mathlib/Data/Multiset/ZeroCons.lean:338:0: `:= rfl` theorem `Multiset.bot_eq_zero`: inferred @[defeq]
+✔ [1203/8380] Built Mathlib.Algebra.Group.Action.Prod (1.4s)
+✔ [1208/8380] Built Mathlib.Data.Nat.GCD.Prime (951ms)
+✔ [1209/8380] Built Mathlib.Algebra.Order.Sub.Defs (1.2s)
+✔ [1210/8380] Built Mathlib.Algebra.Order.Monoid.NatCast (1.2s)
+ℹ [1211/8380] Built Mathlib.Data.Int.Cast.Prod (1.0s)
+info: Mathlib/Data/Int/Cast/Prod.lean:28:0: `:= rfl` theorem `Prod.fst_intCast`: inferred @[defeq]
+info: Mathlib/Data/Int/Cast/Prod.lean:32:0: `:= rfl` theorem `Prod.snd_intCast`: inferred @[defeq]
+✔ [1212/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.Units (1.1s)
+ℹ [1213/8380] Built Mathlib.Data.Set.Basic (2.2s)
+info: Mathlib/Data/Set/Basic.lean:91:0: `:= rfl` theorem `Set.top_eq_univ`: inferred @[defeq]
+info: Mathlib/Data/Set/Basic.lean:95:0: `:= rfl` theorem `Set.bot_eq_empty`: inferred @[defeq]
+info: Mathlib/Data/Set/Basic.lean:99:0: `:= rfl` theorem `Set.sup_eq_union`: inferred @[defeq]
+info: Mathlib/Data/Set/Basic.lean:103:0: `:= rfl` theorem `Set.inf_eq_inter`: inferred @[defeq]
+info: Mathlib/Data/Set/Basic.lean:107:0: `:= rfl` theorem `Set.le_eq_subset`: inferred @[defeq]
+info: Mathlib/Data/Set/Basic.lean:111:0: `:= rfl` theorem `Set.lt_eq_ssubset`: inferred @[defeq]
+info: Mathlib/Data/Set/Basic.lean:141:0: `:= rfl` theorem `Set.coe_eq_subtype`: inferred @[defeq]
+info: Mathlib/Data/Set/Basic.lean:260:0: `:= rfl` theorem `Set.ssubset_def`: inferred @[defeq]
+✔ [1215/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.ExistsOfLE (1.3s)
+✔ [1216/8380] Built Mathlib.Tactic.NormNum.Result (1.9s)
+✔ [1220/8380] Built Mathlib.CategoryTheory.Functor.Trifunctor (2.4s)
+✔ [1223/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.MinMax (1.4s)
+✔ [1224/8380] Built Mathlib.Algebra.Order.Monoid.Defs (1.4s)
+ℹ [1225/8380] Built Mathlib.Order.WithBot (6.0s)
+info: Mathlib/Order/WithBot.lean:62:0: `:= rfl` theorem `WithBot.none_eq_bot`: inferred @[defeq]
+info: Mathlib/Order/WithBot.lean:224:0: `:= rfl` theorem `WithBot.coe_top`: inferred @[defeq]
+info: Mathlib/Order/WithBot.lean:697:0: `:= rfl` theorem `WithBot.coe_sup`: inferred @[defeq]
+info: Mathlib/Order/WithBot.lean:833:0: `:= rfl` theorem `WithBot.coe_max`: inferred @[defeq]
+✔ [1228/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.Pow (1.7s)
+✔ [1229/8380] Built Mathlib.Data.Multiset.Basic (988ms)
+✔ [1230/8380] Built Mathlib.CategoryTheory.NatIso (2.8s)
+⚠ [1231/8380] Built Mathlib.Data.Multiset.Count (1.1s)
+warning: Mathlib/Data/Multiset/Count.lean:85:43: This simp argument is unused:
+  coe_attach
+
+Hint: Omit it from the simp argument list.
+  simp only [quot_mk_to_coe, coe_countP, coe_a̵t̵t̵a̵ch̵,̵ ̵c̵oe̵_̵c̵o̵untP, ← List.countP_attach (l := l)]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+ℹ [1232/8380] Built Mathlib.Order.Heyting.Basic (2.9s)
+info: Mathlib/Order/Heyting/Basic.lean:75:0: `:= rfl` theorem `fst_himp`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:79:0: `:= rfl` theorem `snd_himp`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:83:0: `:= rfl` theorem `fst_hnot`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:87:0: `:= rfl` theorem `snd_hnot`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:91:0: `:= rfl` theorem `fst_sdiff`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:95:0: `:= rfl` theorem `snd_sdiff`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:99:0: `:= rfl` theorem `fst_compl`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:103:0: `:= rfl` theorem `snd_compl`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:117:0: `:= rfl` theorem `Pi.himp_def`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:121:0: `:= rfl` theorem `Pi.hnot_def`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:125:0: `:= rfl` theorem `Pi.himp_apply`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:129:0: `:= rfl` theorem `Pi.hnot_apply`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1139:0: `:= rfl` theorem `PUnit.top_eq`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1143:0: `:= rfl` theorem `PUnit.bot_eq`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1147:0: `:= rfl` theorem `PUnit.sup_eq`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1151:0: `:= rfl` theorem `PUnit.inf_eq`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1155:0: `:= rfl` theorem `PUnit.compl_eq`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1159:0: `:= rfl` theorem `PUnit.sdiff_eq`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1163:0: `:= rfl` theorem `PUnit.hnot_eq`: inferred @[defeq]
+info: Mathlib/Order/Heyting/Basic.lean:1167:0: `:= rfl` theorem `PUnit.himp_eq`: inferred @[defeq]
+✔ [1234/8380] Built Mathlib.Algebra.Order.Sub.Prod (838ms)
+✔ [1236/8380] Built Mathlib.Tactic.Order (2.1s)
+ℹ [1237/8380] Built Mathlib.Data.Set.Inclusion (1.1s)
+info: Mathlib/Data/Set/Inclusion.lean:23:0: `:= rfl` theorem `Set.inclusion_self`: inferred @[defeq]
+info: Mathlib/Data/Set/Inclusion.lean:32:0: `:= rfl` theorem `Set.inclusion_mk`: inferred @[defeq]
+info: Mathlib/Data/Set/Inclusion.lean:36:0: `:= rfl` theorem `Set.inclusion_right`: inferred @[defeq]
+info: Mathlib/Data/Set/Inclusion.lean:39:0: `:= rfl` theorem `Set.inclusion_inclusion`: inferred @[defeq]
+info: Mathlib/Data/Set/Inclusion.lean:49:0: `:= rfl` theorem `Set.coe_inclusion`: inferred @[defeq]
+✔ [1238/8380] Built Mathlib.InformationTheory.Coding.UniquelyDecodable (1.0s)
+ℹ [1239/8380] Built Mathlib.Data.Nat.Order.Lemmas (1.1s)
+info: Mathlib/Data/Nat/Order/Lemmas.lean:36:0: `:= rfl` theorem `Nat.Subtype.coe_bot`: inferred @[defeq]
+✔ [1240/8380] Built Mathlib.Data.Set.Disjoint (1.2s)
+✔ [1241/8380] Built Mathlib.Algebra.Order.Group.Int (1.1s)
+✔ [1242/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.TypeTags (1.3s)
+✔ [1243/8380] Built Mathlib.Algebra.Order.Monoid.OrderDual (1.1s)
+✔ [1244/8380] Built Mathlib.Algebra.Order.Sub.Unbundled.Basic (1.4s)
+✔ [1245/8380] Built Mathlib.Data.Set.Order (1.3s)
+ℹ [1247/8380] Built Mathlib.Data.SetLike.Basic (1.4s)
+info: Mathlib/Data/SetLike/Basic.lean:146:0: `:= rfl` theorem `SetLike.coe_sort_coe`: inferred @[defeq]
+info: Mathlib/Data/SetLike/Basic.lean:195:0: `:= rfl` theorem `SetLike.eta`: inferred @[defeq]
+✔ [1248/8380] Built Mathlib.Algebra.Order.Group.Opposite (1.2s)
+✔ [1249/8380] Built Mathlib.Order.WithBotTop (1.3s)
+ℹ [1250/8380] Built Mathlib.Data.Bundle (1.5s)
+info: Mathlib/Data/Bundle.lean:85:0: `:= rfl` theorem `Bundle.TotalSpace.eta`: inferred @[defeq]
+✔ [1251/8380] Built Mathlib.Algebra.Order.AddTorsor (1.5s)
+✖ [1252/8380] Building Mathlib.Data.PEquiv (1.7s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/Data/PEquiv.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/PEquiv.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/Data/PEquiv.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/PEquiv.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/Data/PEquiv.setup.json --json
+info: Mathlib/Data/PEquiv.lean:80:0: `:= rfl` theorem `PEquiv.coe_mk`: inferred @[defeq]
+info: Mathlib/Data/PEquiv.lean:83:0: `:= rfl` theorem `PEquiv.coe_mk_apply`: inferred @[defeq]
+info: Mathlib/Data/PEquiv.lean:263:0: `:= rfl` theorem `PEquiv.bot_apply`: inferred @[defeq]
+error: Mathlib/Data/PEquiv.lean:334:95: unsolved goals
+α : Type u
+inst✝¹ : DecidableEq α
+inst✝ : Subsingleton α
+a b i j : α
+⊢ some j = some j ↔ (PEquiv.refl α) j = some j
+error: Lean exited with code 1
+ℹ [1253/8380] Built Mathlib.Order.BooleanAlgebra.Defs (1.3s)
+info: Mathlib/Order/BooleanAlgebra/Defs.lean:144:0: `:= rfl` theorem `Bool.compl_eq_bnot`: inferred @[defeq]
+✔ [1254/8380] Built Mathlib.Algebra.Order.Monoid.Canonical.Defs (1.8s)
+✔ [1256/8380] Built Mathlib.Tactic.NormNum.Core (1.0s)
+✔ [1269/8380] Built Mathlib.Data.List.MinMax (1.9s)
+✔ [1270/8380] Built Mathlib.Data.Multiset.AddSub (1.6s)
+✖ [1271/8380] Building Mathlib.CategoryTheory.Functor.FullyFaithful (1.8s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Functor/FullyFaithful.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Functor/FullyFaithful.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Functor/FullyFaithful.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Functor/FullyFaithful.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Functor/FullyFaithful.setup.json --json
+error: Mathlib/CategoryTheory/Functor/FullyFaithful.lean:345:2: Type mismatch
+  h_map
+has type
+  map✝¹ (map ?m.170) ≍ map✝ ?m.170
+but is expected to have type
+  { obj := G_obj, map := map✝¹, map_id := map_id✝¹, map_comp := map_comp✝¹ }.map
+      ({ obj := obj, map := map, map_id := ⋯, map_comp := ⋯ }.map x✝) =
+    map✝ x✝
+warning: Mathlib/CategoryTheory/Functor/FullyFaithful.lean:343:13: This simp argument is unused:
+  Function.comp_apply
+
+Hint: Omit it from the simp argument list.
+  simp only [F̵u̵n̵c̵t̵i̵o̵n̵.̵c̵o̵m̵p̵_̵a̵p̵p̵l̵y̵,̵ ̵heq_eq_eq] at h_map
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Mathlib/CategoryTheory/Functor/FullyFaithful.lean:343:34: This simp argument is unused:
+  heq_eq_eq
+
+Hint: Omit it from the simp argument list.
+  simp only [Function.comp_apply,̵ ̵h̵e̵q̵_̵e̵q̵_̵e̵q̵] at h_map
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+error: Lean exited with code 1
+✔ [1332/8380] Built Mathlib.Order.Circular (1.2s)
+✔ [1333/8380] Built Mathlib.Data.FunLike.Graded (984ms)
+✔ [1334/8380] Built Mathlib.Algebra.Order.Group.Nat (845ms)
+✔ [1335/8380] Built Mathlib.Algebra.Order.Monoid.TypeTags (779ms)
+ℹ [1339/8380] Built Mathlib.Data.Set.Insert (1.6s)
+info: Mathlib/Data/Set/Insert.lean:279:0: `:= rfl` theorem `Set.default_coe_singleton`: inferred @[defeq]
+ℹ [1341/8380] Built Mathlib.Algebra.Group.Subsemigroup.Defs (1.5s)
+info: Mathlib/Algebra/Group/Subsemigroup/Defs.lean:128:0: `:= rfl` theorem `Subsemigroup.coe_set_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subsemigroup/Defs.lean:190:0: `:= rfl` theorem `Subsemigroup.coe_top`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subsemigroup/Defs.lean:194:0: `:= rfl` theorem `Subsemigroup.coe_bot`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subsemigroup/Defs.lean:213:0: `:= rfl` theorem `Subsemigroup.coe_inf`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subsemigroup/Defs.lean:270:0: `:= rfl` theorem `MulMemClass.coe_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subsemigroup/Defs.lean:275:0: `:= rfl` theorem `MulMemClass.mk_mul_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subsemigroup/Defs.lean:280:0: `:= rfl` theorem `MulMemClass.mul_def`: inferred @[defeq]
+✔ [1342/8380] Built Mathlib.Algebra.Order.Monoid.Prod (1.0s)
+✔ [1343/8380] Built Mathlib.Data.Multiset.Replicate (898ms)
+✔ [1344/8380] Built Mathlib.Algebra.Order.Group.Unbundled.Basic (3.2s)
+ℹ [1361/8380] Built Mathlib.Algebra.Order.Monoid.Unbundled.WithTop (3.4s)
+info: Mathlib/Algebra/Order/Monoid/Unbundled/WithTop.lean:36:0: `:= rfl` theorem `WithTop.coe_one`: inferred @[defeq]
+info: Mathlib/Algebra/Order/Monoid/Unbundled/WithTop.lean:266:0: `:= rfl` theorem `WithTop.coe_nsmul`: inferred @[defeq]
+info: Mathlib/Algebra/Order/Monoid/Unbundled/WithTop.lean:291:0: `:= rfl` theorem `WithTop.coe_natCast`: inferred @[defeq]
+info: Mathlib/Algebra/Order/Monoid/Unbundled/WithTop.lean:297:0: `:= rfl` theorem `WithTop.coe_ofNat`: inferred @[defeq]
+info: Mathlib/Algebra/Order/Monoid/Unbundled/WithTop.lean:401:0: `:= rfl` theorem `WithBot.coe_one`: inferred @[defeq]
+info: Mathlib/Algebra/Order/Monoid/Unbundled/WithTop.lean:642:0: `:= rfl` theorem `WithBot.coe_natCast`: inferred @[defeq]
+info: Mathlib/Algebra/Order/Monoid/Unbundled/WithTop.lean:648:0: `:= rfl` theorem `WithBot.coe_ofNat`: inferred @[defeq]
+✔ [1362/8380] Built Mathlib.Algebra.Group.Center (3.5s)
+✔ [1364/8380] Built Mathlib.Data.List.Iterate (877ms)
+✔ [1365/8380] Built Mathlib.Data.Bool.Set (920ms)
+✔ [1366/8380] Built Mathlib.Logic.Function.FiberPartition (919ms)
+✔ [1367/8380] Built Mathlib.Data.Set.Enumerate (1.1s)
+✔ [1368/8380] Built Mathlib.Data.Set.Subsingleton (1.3s)
+ℹ [1369/8380] Built Mathlib.Order.BooleanAlgebra.Basic (2.1s)
+info: Mathlib/Order/BooleanAlgebra/Basic.lean:456:0: `:= rfl` theorem `hnot_eq_compl`: inferred @[defeq]
+✔ [1374/8380] Built Mathlib.Data.Int.Range (960ms)
+✔ [1376/8380] Built Mathlib.Algebra.FreeMonoid.FreeSemigroup (1.5s)
+✔ [1377/8380] Built Mathlib.Data.String.Basic (1.5s)
+✔ [1378/8380] Built Mathlib.Algebra.Order.Group.Defs (1.2s)
+✔ [1381/8380] Built Mathlib.Algebra.GroupWithZero.Center (888ms)
+✔ [1382/8380] Built Mathlib.Algebra.Ring.Centralizer (850ms)
+✔ [1384/8380] Built Mathlib.Algebra.Order.Monoid.WithTop (901ms)
+✔ [1385/8380] Built Mathlib.Algebra.Order.Group.Basic (1.4s)
+✔ [1386/8380] Built Mathlib.GroupTheory.Subsemigroup.Center (970ms)
+✔ [1387/8380] Built Mathlib.Algebra.Order.Sub.WithTop (902ms)
+ℹ [1388/8380] Built Mathlib.Data.Nat.Cast.WithTop (928ms)
+info: Mathlib/Data/Nat/Cast/WithTop.lean:24:0: `:= rfl` theorem `Nat.cast_withTop`: inferred @[defeq]
+info: Mathlib/Data/Nat/Cast/WithTop.lean:27:0: `:= rfl` theorem `Nat.cast_withBot`: inferred @[defeq]
+✔ [1389/8380] Built Mathlib.CategoryTheory.Bicategory.Basic (4.2s)
+✔ [1397/8380] Built Mathlib.SetTheory.Lists (1.0s)
+ℹ [1398/8380] Built Mathlib.Algebra.Group.Submonoid.Defs (1.9s)
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:182:0: `:= rfl` theorem `Submonoid.coe_set_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:252:0: `:= rfl` theorem `Submonoid.coe_top`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:256:0: `:= rfl` theorem `Submonoid.coe_bot`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:277:0: `:= rfl` theorem `Submonoid.coe_inf`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:347:0: `:= rfl` theorem `OneMemClass.coe_one`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:359:0: `:= rfl` theorem `OneMemClass.one_def`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:374:0: `:= rfl` theorem `SubmonoidClass.coe_pow`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:379:0: `:= rfl` theorem `SubmonoidClass.mk_pow`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:444:0: `:= rfl` theorem `Submonoid.coe_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:448:0: `:= rfl` theorem `Submonoid.coe_one`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:455:0: `:= rfl` theorem `Submonoid.mk_mul_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:460:0: `:= rfl` theorem `Submonoid.mul_def`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/Defs.lean:464:0: `:= rfl` theorem `Submonoid.one_def`: inferred @[defeq]
+✔ [1402/8380] Built Mathlib.Order.Heyting.Boundary (859ms)
+✔ [1403/8380] Built Mathlib.Data.Nat.WithBot (800ms)
+ℹ [1404/8380] Built Mathlib.Order.BooleanAlgebra.Set (1.3s)
+info: Mathlib/Order/BooleanAlgebra/Set.lean:71:0: `:= rfl` theorem `Set.compl_def`: inferred @[defeq]
+ℹ [1758/8380] Built Mathlib.Algebra.Order.AddGroupWithTop (1.2s)
+info: Mathlib/Algebra/Order/AddGroupWithTop.lean:270:0: `:= rfl` theorem `WithTop.LinearOrderedAddCommGroup.coe_sub`: inferred @[defeq]
+✔ [1800/8380] Built Mathlib.Algebra.GroupWithZero.Submonoid.CancelMulZero (803ms)
+✔ [1811/8380] Built Mathlib.Algebra.Order.Group.DenselyOrdered (1.3s)
+✔ [1819/8380] Built Mathlib.Tactic.CategoryTheory.BicategoricalComp (1.1s)
+✔ [1839/8380] Built Mathlib.GroupTheory.OreLocalization.OreSet (983ms)
+ℹ [1840/8380] Built Mathlib.Data.Part (1.7s)
+info: Mathlib/Data/Part.lean:516:0: `:= rfl` theorem `Part.pure_eq_some`: inferred @[defeq]
+info: Mathlib/Data/Part.lean:520:0: `:= rfl` theorem `Part.ret_eq_some`: inferred @[defeq]
+info: Mathlib/Data/Part.lean:524:0: `:= rfl` theorem `Part.map_eq_map`: inferred @[defeq]
+info: Mathlib/Data/Part.lean:528:0: `:= rfl` theorem `Part.bind_eq_bind`: inferred @[defeq]
+info: Mathlib/Data/Part.lean:612:0: `:= rfl` theorem `Part.one_def`: inferred @[defeq]
+info: Mathlib/Data/Part.lean:615:0: `:= rfl` theorem `Part.inv_def`: inferred @[defeq]
+✔ [1842/8380] Built Mathlib.Algebra.GroupWithZero.Submonoid.Primal (897ms)
+ℹ [1851/8380] Built Mathlib.Algebra.Group.Submonoid.MulAction (1.0s)
+info: Mathlib/Algebra/Group/Submonoid/MulAction.lean:101:0: `:= rfl` theorem `Submonoid.smul_def`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Submonoid/MulAction.lean:103:0: `:= rfl` theorem `Submonoid.mk_smul`: inferred @[defeq]
+✔ [1853/8380] Built Mathlib.Data.Set.BoolIndicator (777ms)
+✔ [1854/8380] Built Mathlib.Algebra.Order.PUnit (651ms)
+✔ [1855/8380] Built Mathlib.RingTheory.OreLocalization.OreSet (886ms)
+ℹ [1856/8380] Built Mathlib.Order.Filter.Defs (1.6s)
+info: Mathlib/Order/Filter/Defs.lean:265:0: `:= rfl` theorem `Filter.hnot_def`: inferred @[defeq]
+info: Mathlib/Order/Filter/Defs.lean:348:0: `:= rfl` theorem `Filter.prod_eq_inf`: inferred @[defeq]
+ℹ [1857/8380] Built Mathlib.Algebra.Group.Subgroup.Defs (2.7s)
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:167:0: `:= rfl` theorem `InvMemClass.coe_inv`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:198:0: `:= rfl` theorem `SubgroupClass.coe_div`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:241:0: `:= rfl` theorem `SubgroupClass.coe_pow`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:245:0: `:= rfl` theorem `SubgroupClass.coe_zpow`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:358:0: `:= rfl` theorem `Subgroup.coe_set_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:368:0: `:= rfl` theorem `Subgroup.coe_toSubmonoid`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:519:0: `:= rfl` theorem `Subgroup.coe_mul`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:523:0: `:= rfl` theorem `Subgroup.coe_one`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:527:0: `:= rfl` theorem `Subgroup.coe_inv`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:531:0: `:= rfl` theorem `Subgroup.coe_div`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:535:0: `:= rfl` theorem `Subgroup.coe_mk`: inferred @[defeq]
+info: Mathlib/Algebra/Group/Subgroup/Defs.lean:539:0: `:= rfl` theorem `Subgroup.coe_pow`: inferred @[defeq]
+✔ [1870/8380] Built Mathlib.Tactic.CategoryTheory.Bicategory.Datatypes (2.3s)
+✔ [1871/8380] Built Mathlib.Order.Interval.Set.Basic (3.1s)
+ℹ [3307/8380] Built Mathlib.GroupTheory.OreLocalization.Basic (3.5s)
+info: Mathlib/GroupTheory/OreLocalization/Basic.lean:474:0: `:= rfl` theorem `OreLocalization.numeratorHom_apply`: inferred @[defeq]
+✔ [3321/8380] Built Mathlib.Order.Bounded (909ms)
+✔ [3322/8380] Built Mathlib.Tactic.CategoryTheory.Bicategory.PureCoherence (1.8s)
+✔ [3323/8380] Built Mathlib.Tactic.CategoryTheory.Bicategory.Normalize (1.0s)
+✔ [3325/8380] Built Mathlib.Order.Interval.Set.LinearOrder (2.7s)
+✔ [8354/8380] Built Mathlib.Tactic.CategoryTheory.Bicategory.Basic (2.2s)
+✔ [8371/8380] Built Mathlib.CategoryTheory.Bicategory.Adjunction.Basic (2.4s)
+✖ [8373/8380] Building Mathlib.CategoryTheory.Bicategory.Adjunction.Mate (4.2s)
+trace: .> LEAN_PATH=/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Cli/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/batteries/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/Qq/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/aesop/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/proofwidgets/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/importGraph/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/packages/plausible/.lake/build/lib/lean:/home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean /home/joachim/lean4/build/release/stage2/bin/lean /home/joachim/lean4/_tmp/mathlib4/Mathlib/CategoryTheory/Bicategory/Adjunction/Mate.lean -o /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Bicategory/Adjunction/Mate.olean -i /home/joachim/lean4/_tmp/mathlib4/.lake/build/lib/lean/Mathlib/CategoryTheory/Bicategory/Adjunction/Mate.ilean -c /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Bicategory/Adjunction/Mate.c --setup /home/joachim/lean4/_tmp/mathlib4/.lake/build/ir/Mathlib/CategoryTheory/Bicategory/Adjunction/Mate.setup.json --json
+error: Mathlib/CategoryTheory/Bicategory/Adjunction/Mate.lean:693:76: unsolved goals
+B : Type u
+inst✝ : Bicategory B
+a b c d : B
+g : a ⟶ c
+h : b ⟶ d
+l₁ : a ⟶ b
+r₁ : b ⟶ a
+l₂ : c ⟶ d
+r₂ : d ⟶ c
+l₃ : c ⟶ d
+r₃ : d ⟶ c
+adj₁ : l₁ ⊣ r₁
+adj₂ : l₂ ⊣ r₂
+adj₃ : l₃ ⊣ r₃
+α : g ≫ l₂ ⟶ l₁ ≫ h
+β : l₃ ⟶ l₂
+⊢ (Iso.refl (h ≫ r₂) ≪≫ h ◁ᵢ Iso.refl r₂).hom ≫ h ◁ (conjugateEquiv adj₂ adj₃) β ≫ (h ◁ᵢ Iso.refl r₃).hom =
+    ((Iso.refl (h ≫ r₂) ≪≫ (ρ_ (h ≫ r₂)).symm) ≪≫ α_ h r₂ (𝟙 c) ≪≫ h ◁ᵢ Iso.refl (r₂ ≫ 𝟙 c)).hom ≫
+      h ◁ (mateEquiv adj₂ adj₃) ((λ_ l₃).hom ≫ β ≫ (ρ_ l₂).inv) ≫
+        ((h ◁ᵢ Iso.refl (𝟙 d ≫ r₃) ≪≫ (α_ h (𝟙 d) r₃).symm) ≪≫ ⊗𝟙 ≪≫ Iso.refl (h ≫ r₃)).hom
+error: Mathlib/CategoryTheory/Bicategory/Adjunction/Mate.lean:731:46: unsolved goals
+B : Type u
+inst✝ : Bicategory B
+a b c d : B
+g : a ⟶ c
+h : b ⟶ d
+l₁ : a ⟶ b
+r₁ : b ⟶ a
+l₂ : a ⟶ b
+r₂ : b ⟶ a
+l₃ : c ⟶ d
+r₃ : d ⟶ c
+adj₁ : l₁ ⊣ r₁
+adj₂ : l₂ ⊣ r₂
+adj₃ : l₃ ⊣ r₃
+α : l₂ ⟶ l₁
+β : g ≫ l₃ ⟶ l₂ ≫ h
+⊢ (Iso.refl r₁ ▷ᵢ g ≪≫ Iso.refl (r₁ ≫ g)).hom ≫
+      (conjugateEquiv adj₁ adj₂) α ▷ g ≫
+        ((Iso.refl (r₂ ≫ g) ≪≫ Iso.refl r₂ ▷ᵢ g) ≪≫ Iso.refl (r₂ ≫ g)).hom ≫
+          (mateEquiv adj₂ adj₃) β ≫ (Iso.refl (h ≫ r₃)).hom =
+    (Iso.refl (r₁ ≫ g) ≪≫ ⊗𝟙 ≪≫ (α_ r₁ (𝟙 a) g).symm ≪≫ Iso.refl (r₁ ≫ 𝟙 a) ▷ᵢ g ≪≫ Iso.refl ((r₁ ≫ 𝟙 a) ≫ g)).hom ≫
+      (mateEquiv adj₁ adj₂) ((λ_ l₂).hom ≫ α ≫ (ρ_ l₁).inv) ▷ g ≫
+        ((Iso.refl ((𝟙 b ≫ r₂) ≫ g) ≪≫ Iso.refl (𝟙 b ≫ r₂) ▷ᵢ g) ≪≫
+              α_ (𝟙 b) r₂ g ≪≫ λ_ (r₂ ≫ g) ≪≫ Iso.refl (r₂ ≫ g)).hom ≫
+          (mateEquiv adj₂ adj₃) β ≫
+            (((Iso.refl (h ≫ r₃) ≪≫ (λ_ (h ≫ r₃)).symm) ≪≫ (α_ (𝟙 b) h r₃).symm) ≪≫ ⊗𝟙 ≪≫ Iso.refl (h ≫ r₃)).hom
+error: Lean exited with code 1
+Some required targets logged failures:
+- Mathlib.Control.Monad.Cont
+- Mathlib.Combinatorics.Quiver.Path
+- Mathlib.Logic.Equiv.Sum
+- Mathlib.Data.Seq.Computation
+- Mathlib.Algebra.GroupWithZero.Hom
+- Mathlib.Algebra.FreeMonoid.Count
+- Mathlib.Data.Int.GCD
+- Mathlib.Algebra.BigOperators.Group.List.Basic
+- Mathlib.Data.PEquiv
+- Mathlib.CategoryTheory.Functor.FullyFaithful
+- Mathlib.CategoryTheory.Bicategory.Adjunction.Mate
+error: build failed

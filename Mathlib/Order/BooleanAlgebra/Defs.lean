@@ -141,7 +141,7 @@ theorem Bool.sup_eq_bor : (· ⊔ ·) = or := by dsimp
 
 theorem Bool.inf_eq_band : (· ⊓ ·) = and := by dsimp
 
-@[simp]
+@[defeq, simp]
 theorem Bool.compl_eq_bnot : Compl.compl = not :=
   rfl
 

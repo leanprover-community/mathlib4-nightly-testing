@@ -25,11 +25,11 @@ instance : AddGroupWithOne (α × β) :=
     intCast_ofNat := fun _ => by ext <;> simp
     intCast_negSucc := fun _ => by ext <;> simp }
 
-@[simp]
+@[defeq, simp]
 theorem fst_intCast (n : ℤ) : (n : α × β).fst = n :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_intCast (n : ℤ) : (n : α × β).snd = n :=
   rfl
 

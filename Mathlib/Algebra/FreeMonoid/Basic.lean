@@ -111,7 +111,7 @@ instance [IsEmpty α] : Unique (FreeMonoid α) := inferInstanceAs <| Unique (Lis
 @[to_additive (attr := simp)]
 theorem toList_one : toList (1 : FreeMonoid α) = [] := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem ofList_nil : ofList ([] : List α) = 1 := rfl
 
 @[to_additive (attr := deprecated toList_one (since := "2026-03-26"))]
@@ -347,7 +347,7 @@ def mkMulAction (f : α → β → β) : MulAction (FreeMonoid α) β where
   one_smul _ := rfl
   mul_smul _ _ _ := List.foldr_append
 
-@[to_additive]
+@[defeq, to_additive]
 theorem smul_def (f : α → β → β) (l : FreeMonoid α) (b : β) :
     haveI := mkMulAction f
     l • b = l.toList.foldr f b := rfl

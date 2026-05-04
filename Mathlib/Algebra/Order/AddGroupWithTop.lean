@@ -267,7 +267,7 @@ instance instSub : Sub (WithTop G) where
   | (a : G), (b : G) => (a - b : G)
 
 @[simp, norm_cast] lemma coe_neg (a : G) : (↑(-a) : WithTop G) = -a := rfl
-@[simp, norm_cast] lemma coe_sub (a b : G) : (↑(a - b) : WithTop G) = ↑a - ↑b := rfl
+@[defeq, simp, norm_cast] lemma coe_sub (a b : G) : (↑(a - b) : WithTop G) = ↑a - ↑b := rfl
 
 @[simp] lemma neg_top : -(⊤ : WithTop G) = ⊤ := rfl
 

@@ -191,7 +191,7 @@ protected theorem congr_arg {f : MulEquiv M N} {x x' : M} : x = x' → f x = f x
 protected theorem congr_fun {f g : MulEquiv M N} (h : f = g) (x : M) : f x = g x :=
   DFunLike.congr_fun h x
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_mk (f : M ≃ N) (hf : ∀ x y, f (x * y) = f x * f y) : (mk f hf : M → N) = f := rfl
 
 @[to_additive (attr := simp)]
@@ -207,14 +207,14 @@ theorem toEquiv_eq_coe (f : M ≃* N) : f.toEquiv = f :=
 theorem toMulHom_eq_coe (f : M ≃* N) : f.toMulHom = ↑f :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem toFun_eq_coe (f : M ≃* N) : f.toFun = f := rfl
 
 /-- `simp`-normal form of `toFun_eq_coe`. -/
 @[to_additive (attr := simp)]
 theorem coe_toEquiv (f : M ≃* N) : ⇑(f : M ≃ N) = f := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem coe_toMulHom {f : M ≃* N} : (f.toMulHom : M → N) = f := rfl
 
 /-- Makes a multiplicative isomorphism from a bijection which preserves multiplication. -/

@@ -539,31 +539,31 @@ initialize_simps_projections OneHom (toFun → apply)
 initialize_simps_projections MulHom (toFun → apply)
 initialize_simps_projections MonoidHom (toFun → apply)
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem OneHom.coe_mk [One M] [One N] (f : M → N) (h1) : (OneHom.mk f h1 : M → N) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem OneHom.toFun_eq_coe [One M] [One N] (f : OneHom M N) : f.toFun = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem MulHom.coe_mk [Mul M] [Mul N] (f : M → N) (hmul) : (MulHom.mk f hmul : M → N) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem MulHom.toFun_eq_coe [Mul M] [Mul N] (f : M →ₙ* N) : f.toFun = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem MonoidHom.coe_mk [MulOne M] [MulOne N] (f hmul) :
     (MonoidHom.mk f hmul : M → N) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem MonoidHom.toOneHom_coe [MulOne M] [MulOne N] (f : M →* N) :
     (f.toOneHom : M → N) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem MonoidHom.toMulHom_coe [MulOne M] [MulOne N] (f : M →* N) :
     f.toMulHom.toFun = f := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem MonoidHom.toFun_eq_coe [MulOne M] [MulOne N] (f : M →* N) : f.toFun = f := rfl
 
 @[to_additive (attr := ext)]
@@ -780,29 +780,29 @@ theorem MulHom.coe_comp [Mul M] [Mul N] [Mul P] (g : N →ₙ* P) (f : M →ₙ*
 theorem MonoidHom.coe_comp [MulOne M] [MulOne N] [MulOne P]
     (g : N →* P) (f : M →* N) : ↑(g.comp f) = g ∘ f := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem OneHom.comp_apply [One M] [One N] [One P] (g : OneHom N P) (f : OneHom M N) (x : M) :
     g.comp f x = g (f x) := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem MulHom.comp_apply [Mul M] [Mul N] [Mul P] (g : N →ₙ* P) (f : M →ₙ* N) (x : M) :
     g.comp f x = g (f x) := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem MonoidHom.comp_apply [MulOne M] [MulOne N] [MulOne P]
     (g : N →* P) (f : M →* N) (x : M) : g.comp f x = g (f x) := rfl
 
 /-- Composition of monoid homomorphisms is associative. -/
-@[to_additive /-- Composition of additive monoid homomorphisms is associative. -/]
+@[defeq, to_additive /-- Composition of additive monoid homomorphisms is associative. -/]
 theorem OneHom.comp_assoc {Q : Type*} [One M] [One N] [One P] [One Q]
     (f : OneHom M N) (g : OneHom N P) (h : OneHom P Q) :
     (h.comp g).comp f = h.comp (g.comp f) := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem MulHom.comp_assoc {Q : Type*} [Mul M] [Mul N] [Mul P] [Mul Q]
     (f : M →ₙ* N) (g : N →ₙ* P) (h : P →ₙ* Q) : (h.comp g).comp f = h.comp (g.comp f) := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem MonoidHom.comp_assoc {Q : Type*} [MulOne M] [MulOne N] [MulOne P]
     [MulOne Q] (f : M →* N) (g : N →* P) (h : P →* Q) :
     (h.comp g).comp f = h.comp (g.comp f) := rfl
@@ -999,13 +999,13 @@ instance [Mul M] [MulOneClass N] : One (M →ₙ* N) :=
 instance [MulOne M] [MulOneClass N] : One (M →* N) :=
   ⟨⟨⟨fun _ => 1, rfl⟩, fun _ _ => (one_mul 1).symm⟩⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem OneHom.one_apply [One M] [One N] (x : M) : (1 : OneHom M N) x = 1 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem MonoidHom.one_apply [MulOne M] [MulOneClass N] (x : M) : (1 : M →* N) x = 1 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem OneHom.one_comp [One M] [One N] [One P] (f : OneHom M N) :
     (1 : OneHom N P).comp f = 1 := rfl
 
@@ -1025,7 +1025,7 @@ instance [MulOne M] [MulOneClass N] : Inhabited (M →* N) := ⟨1⟩
 
 namespace MonoidHom
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem one_comp [MulOne M] [MulOne N] [MulOneClass P] (f : M →* N) :
     (1 : N →* P).comp f = 1 := rfl
 

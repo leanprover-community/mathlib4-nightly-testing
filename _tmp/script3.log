@@ -1,0 +1,13 @@
+  Modules processed:  72
+  Modules fixed:      0
+  Modules failed:     7
+  Modules skipped:    0
+  set_options added:  0
+Failed modules:
+  Mathlib.CategoryTheory.Monoidal.Types.Coyoneda: no option combination fixed error at line 25
+  Mathlib.CategoryTheory.Monoidal.Functor.Types: no option combination fixed error at line 34
+  Mathlib.CategoryTheory.Shift.Opposite: no option combination fixed error at line 237
+  Mathlib.CategoryTheory.Action.Monoidal: no option combination fixed error at line 276
+  Mathlib.Topology.Sheaves.Presheaf: no option combination fixed error at line 268
+  Mathlib.Algebra.Category.ModuleCat.Adjunctions: no option combination fixed error at line 160
+  Mathlib.Topology.Homotopy.Lifting: no option combination fixed error at line 197

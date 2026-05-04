@@ -112,7 +112,7 @@ instance : Inhabited (AList β) :=
 theorem notMem_empty (a : α) : a ∉ (∅ : AList β) :=
   not_mem_nil
 
-@[simp]
+@[defeq, simp]
 theorem empty_entries : (∅ : AList β).entries = [] :=
   rfl
 

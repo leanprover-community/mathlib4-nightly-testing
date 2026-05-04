@@ -310,6 +310,7 @@ theorem or_congr_right' {c : Prop} (h : ¬a → (b ↔ c)) : a ∨ b ↔ a ∨ c
 alias Iff.iff := iff_congr
 
 -- @[simp] -- FIXME simp ignores proof rewrites
+@[defeq]
 theorem iff_mpr_iff_true_intro {P : Prop} (h : P) : Iff.mpr (iff_true_intro h) True.intro = h := rfl
 
 theorem imp_or {a b c : Prop} : a → b ∨ c ↔ (a → b) ∨ (a → c) :=
@@ -390,23 +391,28 @@ theorem eq_equivalence {α : Sort*} : Equivalence (@Eq α) :=
   ⟨Eq.refl, @Eq.symm _, @Eq.trans _⟩
 
 -- @[simp] -- FIXME simp ignores proof rewrites
+@[defeq]
 theorem congr_refl_left {α β : Sort*} (f : α → β) {a b : α} (h : a = b) :
     congr (Eq.refl f) h = congr_arg f h := rfl
 
 -- @[simp] -- FIXME simp ignores proof rewrites
+@[defeq]
 theorem congr_refl_right {α β : Sort*} {f g : α → β} (h : f = g) (a : α) :
     congr h (Eq.refl a) = congr_fun h a := rfl
 
 -- @[simp] -- FIXME simp ignores proof rewrites
+@[defeq]
 theorem congr_arg_refl {α β : Sort*} (f : α → β) (a : α) :
     congr_arg f (Eq.refl a) = Eq.refl (f a) :=
   rfl
 
 -- @[simp] -- FIXME simp ignores proof rewrites
+@[defeq]
 theorem congr_fun_rfl {α β : Sort*} (f : α → β) (a : α) : congr_fun (Eq.refl f) a = Eq.refl (f a) :=
   rfl
 
 -- @[simp] -- FIXME simp ignores proof rewrites
+@[defeq]
 theorem congr_fun_congr_arg {α β γ : Sort*} (f : α → β → γ) {a a' : α} (p : a = a') (b : β) :
     congr_fun (congr_arg f p) b = congr_arg (fun a ↦ f a b) p := rfl
 

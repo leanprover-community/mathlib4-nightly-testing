@@ -43,9 +43,10 @@ variable {q : ℚ}
 
 theorem pos (a : ℚ) : 0 < a.den := Nat.pos_of_ne_zero a.den_nz
 
+@[defeq]
 lemma mk'_num_den (q : ℚ) : mk' q.num q.den q.den_nz q.reduced = q := rfl
 
-@[simp]
+@[defeq, simp]
 theorem ofInt_eq_cast (n : ℤ) : ofInt n = Int.cast n :=
   rfl
 

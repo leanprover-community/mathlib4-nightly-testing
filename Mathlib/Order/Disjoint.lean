@@ -573,10 +573,10 @@ theorem coe_lt_coe : (a : α) < b ↔ a < b := by simp
 instance : BoundedOrder (Complementeds α) :=
   Subtype.boundedOrder isComplemented_bot isComplemented_top
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_bot : ((⊥ : Complementeds α) : α) = ⊥ := rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_top : ((⊤ : Complementeds α) : α) = ⊤ := rfl
 
 theorem mk_bot : (⟨⊥, isComplemented_bot⟩ : Complementeds α) = ⊥ := by simp
@@ -595,17 +595,17 @@ instance : Max (Complementeds α) :=
 instance : Min (Complementeds α) :=
   ⟨fun a b => ⟨a ⊓ b, a.2.inf b.2⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sup (a b : Complementeds α) : ↑(a ⊔ b) = (a : α) ⊔ b := rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_inf (a b : Complementeds α) : ↑(a ⊓ b) = (a : α) ⊓ b := rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_sup_mk {a b : α} (ha : IsComplemented a) (hb : IsComplemented b) :
     (⟨a, ha⟩ ⊔ ⟨b, hb⟩ : Complementeds α) = ⟨a ⊔ b, ha.sup hb⟩ := rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_inf_mk {a b : α} (ha : IsComplemented a) (hb : IsComplemented b) :
     (⟨a, ha⟩ ⊓ ⟨b, hb⟩ : Complementeds α) = ⟨a ⊓ b, ha.inf hb⟩ := rfl
 

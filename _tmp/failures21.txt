@@ -1,0 +1,9 @@
+Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean
+Mathlib/AlgebraicGeometry/Morphisms/Separated.lean
+Mathlib/AlgebraicGeometry/Sites/ConstantSheaf.lean
+Mathlib/CategoryTheory/Monoidal/Functor/Types.lean
+Mathlib/CategoryTheory/Monoidal/Types/Coyoneda.lean
+Mathlib/CategoryTheory/Shift/Opposite.lean
+Mathlib/MeasureTheory/Function/Holder.lean
+Mathlib/MeasureTheory/Integral/Bochner/Set.lean
+Mathlib/MeasureTheory/Integral/Bochner/VitaliCaratheodory.lean

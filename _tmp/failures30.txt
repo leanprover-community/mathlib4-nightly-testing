@@ -1,0 +1,10 @@
+Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean
+Mathlib/Analysis/Fourier/Inversion.lean
+Mathlib/Analysis/SpecialFunctions/Gamma/BohrMollerup.lean
+Mathlib/CategoryTheory/Monoidal/Functor/Types.lean
+Mathlib/CategoryTheory/Monoidal/Types/Coyoneda (900ms).lean
+Mathlib/CategoryTheory/Shift/Opposite.lean
+Mathlib/MeasureTheory/Measure/LevyConvergence.lean
+Mathlib/Probability/Distributions/Gaussian/Fernique.lean
+Mathlib/Probability/Distributions/TwoValued.lean
+Mathlib/Probability/Martingale/Convergence.lean
