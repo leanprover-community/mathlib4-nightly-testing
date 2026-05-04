@@ -313,8 +313,12 @@ instance :
     let : CartesianMonoidalCategory C := .ofHasFiniteProducts
     let : CartesianMonoidalCategory D := .ofHasFiniteProducts
     -- Adaption note (lean4#13557): the previous `dsimp [η_eq]; infer_instance`
-    -- proof no longer fires.  This instance is deprecated, so leave a sorry.
-    IsIso (η F) := by sorry
+    -- no longer fires.  Use `extract_lets` to expose the local instances and
+    -- rewrite via the equation lemma.
+    IsIso (η F) := by
+      extract_lets _ _ _ _
+      rw [η_eq]
+      exact (PreservesTerminal.iso F).isIso_hom
 
 set_option backward.defeqAttrib.useBackward true in
 set_option linter.deprecated false in
@@ -325,8 +329,12 @@ instance (X Y : C) :
     let : CartesianMonoidalCategory C := .ofHasFiniteProducts
     let : CartesianMonoidalCategory D := .ofHasFiniteProducts
     -- Adaption note (lean4#13557): the previous `dsimp [δ_eq]; infer_instance`
-    -- proof no longer fires.  This instance is deprecated, so leave a sorry.
-    IsIso (δ F X Y) := by sorry
+    -- no longer fires.  Use `extract_lets` to expose the local instances and
+    -- rewrite via the equation lemma.
+    IsIso (δ F X Y) := by
+      extract_lets _ _ _ _
+      rw [δ_eq]
+      exact (PreservesLimitPair.iso F X Y).isIso_hom
 
 /-- Promote a functor that preserves finite products to a monoidal functor between
 categories equipped with the monoidal category structure given by finite products. -/
