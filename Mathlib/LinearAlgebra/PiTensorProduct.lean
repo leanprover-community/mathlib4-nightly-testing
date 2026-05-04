@@ -735,6 +735,7 @@ theorem reindex_symm (e : ι ≃ ι₂) :
   ext x
   simp [reindex]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem reindex_refl : reindex R s (Equiv.refl ι) = LinearEquiv.refl R _ := by
@@ -836,6 +837,7 @@ section tmulEquivDep
 
 variable (N : ι ⊕ ι₂ → Type*) [∀ i, AddCommMonoid (N i)] [∀ i, Module R (N i)]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Equivalence between a `TensorProduct` of `PiTensorProduct`s and a single
 `PiTensorProduct` indexed by a `Sum` type. If `N` is a constant family of
 modules, use the non-dependent version `PiTensorProduct.tmulEquiv` instead. -/

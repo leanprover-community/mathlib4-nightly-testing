@@ -48,6 +48,7 @@ def simpleFunc_piecewise [Finite ι] (hs : IndexedPartition s)
   finite_range' := (finite_iUnion (fun i => (f i).finite_range)).subset
     (hs.range_piecewise_subset _)
 
+set_option backward.defeqAttrib.useBackward true in
 @[fun_prop]
 theorem stronglyMeasurable_piecewise [Countable ι] (hs : IndexedPartition s)
     (hm : ∀ i, MeasurableSet (s i)) [TopologicalSpace β] (hf : ∀ i, StronglyMeasurable (f i)) :

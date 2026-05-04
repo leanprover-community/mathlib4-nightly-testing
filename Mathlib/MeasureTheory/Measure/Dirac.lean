@@ -346,6 +346,7 @@ namespace MeasureTheory.Measure
 variable {α β : Type*} {mα : MeasurableSpace α} {mβ : MeasurableSpace β}
   [MeasurableSingletonClass α] {f : β → α} {μ : Measure α} {s : Finset α} {a₁ a₂ : α}
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ae_mem_finset_iff : (∀ᵐ a ∂μ, a ∈ s) ↔ μ = ∑ a ∈ s, μ {a} • .dirac a where
   mp hμ := by
     ext t ht

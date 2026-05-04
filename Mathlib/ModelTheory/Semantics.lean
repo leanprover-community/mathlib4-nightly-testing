@@ -390,6 +390,7 @@ theorem realize_relabel {m n : ℕ} {φ : L.BoundedFormula α n} {g : α → β 
       φ.Realize (Sum.elim v (xs ∘ Fin.castAdd n) ∘ g) (xs ∘ Fin.natAdd m) := by
   apply realize_mapTermRel_add_castLe <;> simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem realize_liftAt {n n' m : ℕ} {φ : L.BoundedFormula α n} {v : α → M} {xs : Fin (n + n') → M}
     (hmn : m + n' ≤ n + 1) :
     (φ.liftAt n' m).Realize v xs ↔

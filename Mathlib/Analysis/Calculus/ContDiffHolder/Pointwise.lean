@@ -132,6 +132,7 @@ theorem fst {a : E × F} : ContDiffPointwiseHolderAt k α Prod.fst a :=
 theorem snd {a : E × F} : ContDiffPointwiseHolderAt k α Prod.snd a :=
   contDiffAt_snd.contDiffPointwiseHolderAt (WithTop.coe_lt_top _) α
 
+set_option backward.defeqAttrib.useBackward true in
 theorem prodMk {g : E → G} (hf : ContDiffPointwiseHolderAt k α f a)
     (hg : ContDiffPointwiseHolderAt k α g a) :
     ContDiffPointwiseHolderAt k α (fun x ↦ (f x, g x)) a where
@@ -149,6 +150,7 @@ theorem prodMk {g : E → G} (hf : ContDiffPointwiseHolderAt k α f a)
       simp only [ContinuousMultilinearMap.opNorm_prod, ← Prod.norm_mk]
       exact (hf.isBigO.prod_left hg.isBigO).norm_left
 
+set_option backward.defeqAttrib.useBackward true in
 variable (a) in
 /-- Composition of two $C^{k+(α)}$ functions is a $C^{k+(α)}$ function,
 provided that one of them is differentiable.

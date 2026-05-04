@@ -266,6 +266,7 @@ open Finsupp Function
 def splittingOfFinsuppSurjective (f : M →ₗ[R] α →₀ R) (s : Surjective f) : (α →₀ R) →ₗ[R] M :=
   Finsupp.lift _ _ _ fun x : α => (s (Finsupp.single x 1)).choose
 
+set_option backward.defeqAttrib.useBackward true in
 theorem splittingOfFinsuppSurjective_splits (f : M →ₗ[R] α →₀ R) (s : Surjective f) :
     f.comp (splittingOfFinsuppSurjective f s) = LinearMap.id := by
   ext x

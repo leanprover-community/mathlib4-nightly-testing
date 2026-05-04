@@ -200,6 +200,7 @@ lemma iff_of_algEquiv (e : S ≃ₐ[R] T) :
   ⟨fun _ ↦ .of_surjective_algHom e.toAlgHom e.surjective,
     fun _ ↦ .of_surjective_algHom e.symm.toAlgHom e.symm.surjective⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma of_isLocalization (M : Submonoid S) [IsLocalization M T] [QuasiFinite R S] :
     QuasiFinite R T :=
   letI : QuasiFinite S T := by

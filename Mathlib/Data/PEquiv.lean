@@ -331,6 +331,7 @@ theorem single_trans_single (a : α) (b : β) (c : γ) :
     (single a b).trans (single b c) = single a c :=
   single_trans_of_mem _ (mem_single _ _)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem single_subsingleton_eq_refl [Subsingleton α] (a b : α) : single a b = PEquiv.refl α := by
   ext i j

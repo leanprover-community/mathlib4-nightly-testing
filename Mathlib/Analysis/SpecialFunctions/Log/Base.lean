@@ -445,6 +445,7 @@ lemma tendsto_logb_nhdsGT_zero_of_base_lt_one (hb₀ : 0 < b) (hb : b < 1) :
     Tendsto (logb b) (𝓝[>] 0) atTop :=
   tendsto_log_nhdsGT_zero.atBot_mul_const_of_neg (inv_lt_zero.2 (log_neg hb₀ hb))
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 The function `|logb b x|` tends to `+∞` as `x` tendsto `+∞`.
 See also `tendsto_logb_atTop` and `tendsto_logb_atTop_of_base_lt_one`.

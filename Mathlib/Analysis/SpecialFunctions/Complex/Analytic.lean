@@ -51,6 +51,7 @@ theorem AnalyticOn.clog (fs : AnalyticOn ℂ f s) (m : ∀ z ∈ s, f z ∈ slit
     AnalyticOn ℂ (fun z ↦ log (f z)) s :=
   fun z n ↦ (analyticAt_clog (m z n)).analyticWithinAt.comp (fs z n) m
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `f z ^ g z` is analytic if `f z` is not a nonpositive real -/
 theorem AnalyticWithinAt.cpow (fa : AnalyticWithinAt ℂ f s x) (ga : AnalyticWithinAt ℂ g s x)
     (m : f x ∈ slitPlane) : AnalyticWithinAt ℂ (fun z ↦ f z ^ g z) s x := by

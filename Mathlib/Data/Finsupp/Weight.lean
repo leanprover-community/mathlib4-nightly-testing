@@ -184,6 +184,7 @@ theorem weight_eq_zero_iff_eq_zero
   · intro h
     rw [h, map_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem finite_of_nat_weight_le [Finite σ] (w : σ → ℕ) (hw : ∀ x, w x ≠ 0) (n : ℕ) :
     {d : σ →₀ ℕ | weight w d ≤ n}.Finite := by
   classical

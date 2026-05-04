@@ -59,6 +59,7 @@ theorem Int.add_eq_add_of_natAbs_eq_of_natAbs_eq {a b c d : ℤ} (hne : a ≠ b)
     · linarith
   · linarith
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The main lemma in the proof: if $P^k(t)=t$, then $P(P(t))=t$. -/
 theorem Polynomial.isPeriodicPt_eval_two {P : Polynomial ℤ} {t : ℤ}
     (ht : t ∈ periodicPts fun x => P.eval x) : IsPeriodicPt (fun x => P.eval x) 2 t := by

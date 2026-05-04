@@ -126,6 +126,7 @@ theorem kroneckerMap_smul_right [SMul R β] [SMul R γ] (f : α → β → γ) (
     kroneckerMap f A (r • B) = r • kroneckerMap f A B :=
   ext fun _ _ => hf _ _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem kroneckerMap_single_single
     [Zero α] [Zero β] [Zero γ] [DecidableEq l] [DecidableEq m] [DecidableEq n] [DecidableEq p]
     (i₁ : l) (j₁ : m) (i₂ : n) (j₂ : p)

@@ -285,6 +285,7 @@ theorem Quiver.starEquivCostar_symm_apply {u v : U} (e : u ⟶ v) :
 
 variable [Prefunctor.MapReverse φ]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Prefunctor.costar_conj_star (u : U) :
     φ.costar u = Quiver.starEquivCostar (φ.obj u) ∘ φ.star u ∘ (Quiver.starEquivCostar u).symm := by
   ext ⟨v, f⟩ <;> simp

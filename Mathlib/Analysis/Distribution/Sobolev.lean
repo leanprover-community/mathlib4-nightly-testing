@@ -234,6 +234,7 @@ theorem memSobolev_zero_iff_exists_fourier {f : 𝓢'(E, F)} :
     MemSobolev 0 2 f ↔ ∃ (f' : Lp F 2 (volume : Measure E)), 𝓕 f = f' := by
   simp [memSobolev_iff_exists_smulLeftCLM_fourier]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Fourier transform of a Sobolev function of order `s` with `s > d / 2` can be represented by
 a `L1` function.
 

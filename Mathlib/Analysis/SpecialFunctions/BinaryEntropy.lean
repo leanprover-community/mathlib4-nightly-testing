@@ -264,6 +264,7 @@ lemma hasDerivAt_qaryEntropy (hp₀ : p ≠ 0) (hp₁ : p ≠ 1) :
 
 open Filter Topology Set
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma tendsto_log_one_sub_sub_log_nhdsGT_atAtop :
     Tendsto (fun p ↦ log (1 - p) - log p) (𝓝[>] 0) atTop := by
   apply Filter.tendsto_atTop_add_left_of_le' (𝓝[>] 0) (log (1 / 2) : ℝ)
@@ -273,6 +274,7 @@ private lemma tendsto_log_one_sub_sub_log_nhdsGT_atAtop :
     linarith [hx.2]
   · apply tendsto_neg_atTop_iff.mpr tendsto_log_nhdsGT_zero
 
+set_option backward.defeqAttrib.useBackward true in
 private lemma tendsto_log_one_sub_sub_log_nhdsLT_one_atBot :
     Tendsto (fun p ↦ log (1 - p) - log p) (𝓝[<] 1) atBot := by
   apply Filter.tendsto_atBot_add_right_of_ge' (𝓝[<] 1) (-log (1 - 2⁻¹))
@@ -289,6 +291,7 @@ private lemma tendsto_log_one_sub_sub_log_nhdsLT_one_atBot :
     gcongr
     exact hx.1
 
+set_option backward.defeqAttrib.useBackward true in
 lemma not_continuousAt_deriv_qaryEntropy_one :
     ¬ContinuousAt (deriv (qaryEntropy q)) 1 := by
   have tendstoBot : Tendsto (fun p ↦ log (q - 1) + log (1 - p) - log p) (𝓝[<] 1) atBot := by
@@ -309,6 +312,7 @@ lemma not_continuousAt_deriv_qaryEntropy_one :
   · simp_all only [mem_Ioo, ne_eq]
     linarith [two_inv_lt_one (α := ℝ)]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma not_continuousAt_deriv_qaryEntropy_zero :
     ¬ContinuousAt (deriv (qaryEntropy q)) 0 := by
   have tendstoTop : Tendsto (fun p ↦ log (q - 1) + log (1 - p) - log p) (𝓝[>] 0) atTop := by

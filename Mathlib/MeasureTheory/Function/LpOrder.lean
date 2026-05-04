@@ -47,6 +47,7 @@ variable [PartialOrder E]
 theorem coeFn_le (f g : Lp E p μ) : f ≤ᵐ[μ] g ↔ f ≤ g := by
   rw [← Subtype.coe_le_coe, ← AEEqFun.coeFn_le]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem coeFn_nonneg (f : Lp E p μ) : 0 ≤ᵐ[μ] f ↔ 0 ≤ f := by
   rw [← coeFn_le]
   have h0 := Lp.coeFn_zero E p μ
@@ -56,6 +57,7 @@ theorem coeFn_nonneg (f : Lp E p μ) : 0 ≤ᵐ[μ] f ↔ 0 ≤ f := by
 
 variable [IsOrderedAddMonoid E]
 
+set_option backward.defeqAttrib.useBackward true in
 instance instAddLeftMono : AddLeftMono (Lp E p μ) := by
   refine ⟨fun f g₁ g₂ hg₁₂ => ?_⟩
   rw [← coeFn_le] at hg₁₂ ⊢
@@ -111,6 +113,7 @@ theorem coeFn_inf (f g : Lp E p μ) : ⇑(f ⊓ g) =ᵐ[μ] ⇑f ⊓ ⇑g :=
 theorem coeFn_abs (f : Lp E p μ) : ⇑|f| =ᵐ[μ] fun x => |f x| :=
   AEEqFun.coeFn_abs _
 
+set_option backward.defeqAttrib.useBackward true in
 instance instHasSolidNorm [Fact (1 ≤ p)] :
     HasSolidNorm (Lp E p μ) :=
   { solid := fun f g hfg => by

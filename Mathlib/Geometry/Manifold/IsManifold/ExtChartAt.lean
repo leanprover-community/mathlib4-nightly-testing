@@ -254,6 +254,7 @@ theorem tendsto_extend_comp_iff {α : Type*} {l : Filter α} {g : α → M}
   filter_upwards [hg, mem_map.1 (this hu)] with z hz hzu
   simpa only [(· ∘ ·), extend_left_inv _ hz, mem_preimage] using hzu
 
+set_option backward.defeqAttrib.useBackward true in
 theorem continuousWithinAt_writtenInExtend_iff {f' : OpenPartialHomeomorph M' H'} {g : M → M'}
     {y : M} (hy : y ∈ f.source) (hgy : g y ∈ f'.source) (hmaps : MapsTo g s f'.source) :
     ContinuousWithinAt (f'.extend I' ∘ g ∘ (f.extend I).symm)

@@ -65,6 +65,7 @@ lemma le_integral_rnDeriv_of_ac [IsFiniteMeasure μ] [IsProbabilityMeasure ν]
     exact ConvexOn.map_average_le hf_cvx hf_cont' isClosed_Ici (by simp)
       Measure.integrable_toReal_rnDeriv hf_int
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For a convex continuous function `f` on `[0, ∞)`, if `μ` is absolutely continuous
 with respect to `ν`, then
 `ν.real univ * f (μ.real univ / ν.real univ) ≤ ∫ x, f (μ.rnDeriv ν x).toReal ∂ν`. -/
@@ -132,6 +133,7 @@ lemma lintegral_rnDeriv_compProd [IsSFiniteKernel κ] [IsFiniteKernel η]
 
 variable [IsMarkovKernel κ] [IsMarkovKernel η]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The value of a convex function applied at a Radon-Nikodym derivative can be bounded by the
 integral of the function applied to the Radon-Nikodym derivative of composition-products. -/
 lemma _root_.ConvexOn.apply_rnDeriv_ae_le_integral (hf : StronglyMeasurable f)

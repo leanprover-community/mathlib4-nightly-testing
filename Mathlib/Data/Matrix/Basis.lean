@@ -105,6 +105,7 @@ theorem diagonal_single (i : m) (r : α) :
   dsimp [diagonal, single]
   grind
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem submatrix_single_equiv
     (f : l ≃ n) (g : m ≃ o) (i : n) (j : o) (r : α) :

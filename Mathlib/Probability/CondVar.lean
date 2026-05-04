@@ -83,6 +83,7 @@ lemma condVar_const (hm : m ≤ m₀) (c : ℝ) : Var[fun _ ↦ c; μ | m] = 0 :
 lemma stronglyMeasurable_condVar : StronglyMeasurable[m] (Var[X; μ | m]) :=
   stronglyMeasurable_condExp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma condVar_congr_ae (h : X =ᵐ[μ] Y) : Var[X; μ | m] =ᵐ[μ] Var[Y; μ | m] :=
   condExp_congr_ae <| by filter_upwards [h, condExp_congr_ae h] with ω hω hω'; dsimp; rw [hω, hω']
 
@@ -101,6 +102,7 @@ lemma setIntegral_condVar [SigmaFinite (μ.trim hm)] (hX : Integrable ((X - μ[X
     ∫ ω in s, (Var[X; μ | m]) ω ∂μ = ∫ ω in s, (X ω - (μ[X | m]) ω) ^ 2 ∂μ :=
   setIntegral_condExp _ hX hs
 
+set_option backward.defeqAttrib.useBackward true in
 -- `(· ^ 2)` is a postfix operator called `_sq` in lemma names, but
 -- `condVar_ae_eq_condExp_sq_sub_condExp_sq` is a bit ridiculous, so we exceptionally denote it by
 -- `sq_` as it were a prefix.
@@ -124,6 +126,7 @@ lemma condVar_ae_eq_condExp_sq_sub_sq_condExp (hm : m ≤ m₀) [IsFiniteMeasure
       simp [mul_assoc, sq]
     _ = μ[X ^ 2 | m] - μ[X | m] ^ 2 := by ring
 
+set_option backward.defeqAttrib.useBackward true in
 lemma condVar_ae_le_condExp_sq (hm : m ≤ m₀) [IsFiniteMeasure μ] (hX : MemLp X 2 μ) :
     Var[X; μ | m] ≤ᵐ[μ] μ[X ^ 2 | m] := by
   filter_upwards [condVar_ae_eq_condExp_sq_sub_sq_condExp hm hX] with ω hω
@@ -160,6 +163,7 @@ lemma condVar_bot [IsProbabilityMeasure μ] (hX : AEMeasurable X μ) :
     Var[X; μ | ⊥] = fun _ω ↦ Var[X; μ] := by
   simp [condVar_bot', average_eq_integral, variance_eq_integral hX]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma condVar_smul (c : ℝ) (X : Ω → ℝ) : Var[c • X; μ | m] =ᵐ[μ] c ^ 2 • Var[X; μ | m] := by
   calc
     Var[c • X; μ | m]
@@ -170,6 +174,7 @@ lemma condVar_smul (c : ℝ) (X : Ω → ℝ) : Var[c • X; μ | m] =ᵐ[μ] c 
       simp [hω, ← mul_sub, mul_pow]
     _ =ᵐ[μ] c ^ 2 • Var[X; μ | m] := condExp_smul ..
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma condVar_neg (X : Ω → ℝ) : Var[-X; μ | m] =ᵐ[μ] Var[X; μ | m] := by
   refine condExp_congr_ae ?_
   filter_upwards [condExp_neg (m := m) X] with ω hω

@@ -397,6 +397,7 @@ lemma monotoneOn_rpowIntegrand₁₂ (hp : p ∈ Ioo 1 2) (ht : 0 < t) :
   refine MonotoneOn.congr ?_ fun x hx ↦ (rpowIntegrand₁₂_eq_mul_rpowIntegrand₀₁ hx ht).symm
   apply monotoneOn_id.mul <;> grind [rpowIntegrand₀₁_monotoneOn, rpowIntegrand₀₁_nonneg]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma integrableOn_rpowIntegrand₁₂ (hp : p ∈ Ioo 1 2) (hx : 0 ≤ x) :
     IntegrableOn (rpowIntegrand₁₂ p · x) (Ioi 0) := by
   have hmain : (rpowIntegrand₁₂ p · x)
@@ -407,6 +408,7 @@ lemma integrableOn_rpowIntegrand₁₂ (hp : p ∈ Ioo 1 2) (hx : 0 ≤ x) :
   refine Integrable.const_mul ?_ _
   exact integrableOn_rpowIntegrand₀₁_Ioi (by grind) hx
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The integral representation of the function `x ↦ x^p` (where `p ∈ (1, 2)`) . -/
 lemma rpow_eq_const_mul_integral_rpowIntegrand₁₂ (hp : p ∈ Ioo 1 2) (hx : 0 ≤ x) :
     x ^ p

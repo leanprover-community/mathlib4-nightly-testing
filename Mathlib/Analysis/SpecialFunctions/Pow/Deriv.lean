@@ -318,6 +318,7 @@ theorem deriv_cpow_const (hf : DifferentiableAt ℂ f x) (hx : f x ∈ Complex.s
     deriv (fun (x : ℂ) ↦ f x ^ c) x = c * f x ^ (c - 1) * deriv f x :=
   (hf.hasDerivAt.cpow_const hx).deriv
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isTheta_deriv_ofReal_cpow_const_atTop {c : ℂ} (hc : c ≠ 0) :
     deriv (fun (x : ℝ) => (x : ℂ) ^ c) =Θ[atTop] fun x => x ^ (c.re - 1) := by
   calc
@@ -665,6 +666,7 @@ section deriv
 
 variable {f g : ℝ → ℝ} {f' g' x y p : ℝ} {s : Set ℝ}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem HasDerivWithinAt.rpow (hf : HasDerivWithinAt f f' s x) (hg : HasDerivWithinAt g g' s x)
     (h : 0 < f x) : HasDerivWithinAt (fun x => f x ^ g x)
       (f' * g x * f x ^ (g x - 1) + g' * f x ^ g x * Real.log (f x)) s x := by
@@ -697,6 +699,7 @@ theorem deriv_rpow_const (hf : DifferentiableAt ℝ f x) (hx : f x ≠ 0 ∨ 1 �
     deriv (fun x => f x ^ p) x = deriv f x * p * f x ^ (p - 1) :=
   (hf.hasDerivAt.rpow_const hx).deriv
 
+set_option backward.defeqAttrib.useBackward true in
 theorem deriv_norm_ofReal_cpow (c : ℂ) {t : ℝ} (ht : 0 < t) :
     (deriv fun x : ℝ ↦ ‖(x : ℂ) ^ c‖) t = c.re * t ^ (c.re - 1) := by
   rw [EventuallyEq.deriv_eq (f := fun x ↦ x ^ c.re)]

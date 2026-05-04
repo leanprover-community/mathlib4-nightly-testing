@@ -146,6 +146,7 @@ lemma withDensity_add_right [IsSFiniteKernel κ] {f g : α → β → ℝ≥0∞
   · fun_prop
   · exact hf.add hg
 
+set_option backward.defeqAttrib.useBackward true in
 lemma withDensity_sub_add_cancel [IsSFiniteKernel κ] {f g : α → β → ℝ≥0∞}
     (hf : Measurable (Function.uncurry f)) (hg : Measurable (Function.uncurry g))
     (hfg : ∀ a, g a ≤ᵐ[κ a] f a) :

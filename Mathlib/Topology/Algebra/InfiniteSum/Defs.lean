@@ -206,6 +206,7 @@ theorem Function.Injective.hasProd_map_iff {L : SummationFilter γ} {g : γ → 
     HasProd f a (L.map ⟨g, hg⟩) ↔ HasProd (f ∘ g) a L := by
   simp [HasProd, Function.comp_def]
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem Function.Injective.hasProd_comap_iff_of_hasSupport [L.HasSupport] {g : γ → β}
     (hg : Injective g) (hf : ∀ x ∈ L.support, x ∉ Set.range g → f x = 1) :

@@ -40,6 +40,7 @@ variable {α : Type*} {A : Set α}
 variable {β : Type*} [Zero β] [TopologicalSpace β]
 variable {ι : Type*} (L : Filter ι) {As : ι → Set α}
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_ite {β : Type*} {p : ι → Prop} [DecidablePred p] {q : Prop} [Decidable q]
     {a b : β} {F G : Filter β}
     (haG : {a}ᶜ ∈ G) (hbF : {b}ᶜ ∈ F) (haF : principal {a} ≤ F) (hbG : principal {b} ≤ G) :

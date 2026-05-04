@@ -156,6 +156,7 @@ instance instField : Field (hat K) where
   qsmul := _
   qsmul_def := fun _ _ => rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance : IsTopologicalDivisionRing (hat K) :=
   { Completion.topologicalRing with
     continuousAt_inv₀ := by

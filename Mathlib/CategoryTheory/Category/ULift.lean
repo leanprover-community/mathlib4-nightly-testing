@@ -176,6 +176,7 @@ theorem eqToHom_down {X Y : AsSmall C} (h : X = Y) :
   subst h
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The equivalence between `C` and `AsSmall C`. -/
 @[simps]

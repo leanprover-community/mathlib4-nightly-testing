@@ -289,6 +289,7 @@ theorem eventually_nhds_zero_mapsTo [TopologicalSpace F] [IsTopologicalAddGroup 
   rw [nhds_zero_eq]
   apply_rules [mem_iInf_of_mem, mem_principal_self]
 
+set_option backward.defeqAttrib.useBackward true in
 variable {σ F} in
 theorem isVonNBounded_image2_apply {R : Type*} [SeminormedRing R]
     [TopologicalSpace F] [IsTopologicalAddGroup F]

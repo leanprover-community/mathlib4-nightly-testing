@@ -93,6 +93,7 @@ theorem ae_differentiableWithinAt {f : ℝ → V} {s : Set ℝ} (h : LocallyBoun
   rw [ae_restrict_iff' hs]
   exact h.ae_differentiableWithinAt_of_mem
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A real function into a finite-dimensional real vector space with bounded variation
 is differentiable almost everywhere. -/
 theorem ae_differentiableAt {f : ℝ → V} (h : LocallyBoundedVariationOn f univ) :

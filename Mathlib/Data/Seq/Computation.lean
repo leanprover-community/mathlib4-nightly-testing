@@ -214,6 +214,7 @@ def rmap (f : β → γ) : α ⊕ β → α ⊕ γ
 
 attribute [simp] lmap rmap
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem corec_eq (f : β → α ⊕ β) (b : β) : destruct (corec f b) = rmap (corec f) (f b) := by
   dsimp [corec, destruct]
@@ -596,6 +597,7 @@ theorem map_id : ∀ s : Computation α, map id s = s
     have h : ((fun x : Option α => x) = id) := rfl
     simp [e, h, Stream'.map_id]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem map_comp (f : α → β) (g : β → γ) : ∀ s : Computation α, map (g ∘ f) s = map g (map f s)
   | ⟨s, al⟩ => by
     apply Subtype.ext; dsimp [map]

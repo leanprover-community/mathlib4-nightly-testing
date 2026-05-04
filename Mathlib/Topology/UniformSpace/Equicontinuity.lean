@@ -758,6 +758,7 @@ theorem IsUniformInducing.uniformEquicontinuousOn_iff {F : ι → β → α} {S 
   simp only [uniformEquicontinuousOn_iff_uniformContinuousOn, this.uniformContinuousOn_iff]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a set of functions is equicontinuous at some `x₀` within a set `S`, the same is true for its
 closure in *any* topology for which evaluation at any `x ∈ S ∪ {x₀}` is continuous. Since
 this will be applied to `DFunLike` types, we state it for any topological space with a map
@@ -834,6 +835,7 @@ protected theorem Set.EquicontinuousOn.closure {A : Set <| X → α} {S : Set X}
     (hA : A.EquicontinuousOn S) : (closure A).EquicontinuousOn S :=
   fun x hx ↦ Set.EquicontinuousWithinAt.closure (hA x hx)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a set of functions is uniformly equicontinuous on a set `S`, the same is true for its
 closure in *any* topology for which evaluation at any `x ∈ S` i continuous. Since this will be
 applied to `DFunLike` types, we state it for any topological space with a map to `β → α` satisfying

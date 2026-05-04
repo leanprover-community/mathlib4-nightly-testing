@@ -898,6 +898,7 @@ theorem Eventually.choice {r : α → β → Prop} {l : Filter α} [l.NeBot] (h 
   choose! f hf using fun x (hx : ∃ y, r x y) => hx
   exact ⟨f, h.mono hf⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma skolem {ι : Type*} {α : ι → Type*} [∀ i, Nonempty (α i)]
     {P : ∀ i : ι, α i → Prop} {F : Filter ι} :
     (∀ᶠ i in F, ∃ b, P i b) ↔ ∃ b : (Π i, α i), ∀ᶠ i in F, P i (b i) := by

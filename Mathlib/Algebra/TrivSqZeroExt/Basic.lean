@@ -466,11 +466,13 @@ theorem inr_mul_inl [MonoidWithZero R] [AddMonoid M] [DistribMulAction R M]
   ext (zero_mul r) <|
     show (0 : R) •> (0 : M) + m <• r = m <• r by rw [smul_zero, zero_add]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem inl_mul_eq_smul [Monoid R] [AddMonoid M] [DistribMulAction R M] [DistribMulAction Rᵐᵒᵖ M]
     (r : R) (x : tsze R M) :
     inl r * x = r •> x :=
   ext rfl (by dsimp; rw [smul_zero, add_zero])
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mul_inl_eq_op_smul [Monoid R] [AddMonoid M] [DistribMulAction R M] [DistribMulAction Rᵐᵒᵖ M]
     (x : tsze R M) (r : R) :
     x * inl r = x <• r :=
@@ -709,6 +711,7 @@ theorem fst_invOf (x : tsze R M) [Invertible x] [Invertible x.fst] : (⅟x).fst 
   letI := invertibleFstOfInvertible x
   convert (rfl : _ = ⅟x.fst)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mul_left_eq_one (r : R) (x : tsze R M) (h : r * x.fst = 1) :
     (inl r + inr (-((r •> x.snd) <• r))) * x = 1 := by
   ext <;> dsimp
@@ -716,6 +719,7 @@ theorem mul_left_eq_one (r : R) (x : tsze R M) (h : r * x.fst = 1) :
   · rw [add_zero, zero_add, smul_neg, op_smul_op_smul, h, op_one, one_smul,
       add_neg_cancel]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mul_right_eq_one (x : tsze R M) (r : R) (h : x.fst * r = 1) :
     x * (inl r + inr (-(r •> (x.snd <• r)))) = 1 := by
   ext <;> dsimp

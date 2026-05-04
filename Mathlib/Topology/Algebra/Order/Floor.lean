@@ -38,6 +38,7 @@ open scoped Nat
 variable {K : Type*} [Field K] [LinearOrder K] [IsStrictOrderedRing K] [FloorSemiring K]
   [TopologicalSpace K] [OrderTopology K]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_mul_pow_div_factorial_sub_atTop (a c : K) (d : ℕ) :
     Tendsto (fun n ↦ a * c ^ n / (n - d)!) atTop (𝓝 0) := by
   rw [tendsto_order]

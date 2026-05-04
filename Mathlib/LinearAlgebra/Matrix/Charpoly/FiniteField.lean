@@ -24,6 +24,7 @@ open scoped Polynomial
 
 variable {n : Type*} [DecidableEq n] [Fintype n]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem FiniteField.Matrix.charpoly_pow_card {K : Type*} [Field K] [Fintype K] (M : Matrix n n K) :
     (M ^ Fintype.card K).charpoly = M.charpoly := by

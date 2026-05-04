@@ -60,10 +60,12 @@ theorem map_copy (hu : u = u') (hv : v = v') :
   subst_vars
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem map_id (p : G.Walk u v) : p.map Hom.id = p := by
   induction p <;> simp [*]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem map_map : (p.map f).map f' = p.map (f'.comp f) := by
   induction p <;> simp [*]
@@ -151,6 +153,7 @@ theorem transfer_self : p.transfer G p.edges_subset_edgeSet = p := by
 
 variable {H : SimpleGraph V}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem transfer_eq_map_ofLE (hp) (GH : G ≤ H) : p.transfer H hp = p.map (.ofLE GH) := by
   induction p <;> simp [*]
 
@@ -209,11 +212,13 @@ protected def induce {u v : V} :
   | .nil, hw => rfl
   | .cons (v := u') hu w, hw => by simp [support_induce]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma map_induce {u v : V} :
     ∀ (w : G.Walk u v) (hw), (w.induce s hw).map (Embedding.induce _).toHom = w
   | .nil, hw => rfl
   | .cons (v := u') huu' w, hw => by simp [map_induce]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma map_induce_induceHomOfLE (hs : s ⊆ s') {u v : V} : ∀ (w : G.Walk u v) (hw),
     (w.induce s hw).map (G.induceHomOfLE hs).toHom = w.induce s' (subset_trans hw hs)
   | .nil, hw => rfl

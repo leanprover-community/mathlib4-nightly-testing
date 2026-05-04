@@ -364,6 +364,7 @@ variable {γ : Type*} [LinearOrder γ] [TopologicalSpace γ] [OrderTopology γ]
 variable {δ : Type*} [LinearOrder δ] [TopologicalSpace δ] [OrderTopology δ]
 variable {ι : Type*} [TopologicalSpace ι]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ContinuousAt.comp_lowerSemicontinuousWithinAt {g : γ → δ} {f : α → γ}
     (hg : ContinuousAt g (f x)) (hf : LowerSemicontinuousWithinAt f s x) (gmon : Monotone g) :
     LowerSemicontinuousWithinAt (g ∘ f) s x := by

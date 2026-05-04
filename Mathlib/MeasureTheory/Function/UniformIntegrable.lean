@@ -128,6 +128,7 @@ protected theorem sub (hf : UnifIntegrable f p μ) (hg : UnifIntegrable g p μ) 
   rw [sub_eq_add_neg]
   exact hf.add hg.neg hp hf_meas fun i => (hg_meas i).neg
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem ae_eq (hf : UnifIntegrable f p μ) (hfg : ∀ n, f n =ᵐ[μ] g n) :
     UnifIntegrable g p μ := by
   classical
@@ -189,6 +190,7 @@ section
 
 variable {f : α → β}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This lemma is weaker than `MeasureTheory.MemLp.integral_indicator_norm_ge_nonneg_le`
 as the latter provides `0 ≤ M` and does not require the measurability of `f`. -/
 theorem MemLp.integral_indicator_norm_ge_le (hf : MemLp f 1 μ) (hmeas : StronglyMeasurable f)
@@ -515,6 +517,7 @@ theorem tendsto_Lp_finite_of_tendsto_ae_of_meas [IsFiniteMeasure μ] (hp : 1 ≤
   rw [eLpNorm_neg, ← ENNReal.add_thirds ε, ← sub_eq_add_neg]
   gcongr
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A sequence of uniformly integrable functions which converges μ-a.e. converges in Lp. -/
 theorem tendsto_Lp_finite_of_tendsto_ae [IsFiniteMeasure μ] (hp : 1 ≤ p) (hp' : p ≠ ∞)
     {f : ℕ → α → β} {g : α → β} (hf : ∀ n, AEStronglyMeasurable (f n) μ) (hg : MemLp g p μ)
@@ -650,6 +653,7 @@ theorem unifIntegrable_of' (hp : 1 ≤ p) (hp' : p ≠ ∞) {f : ι → α → �
     _ ≤ ENNReal.ofReal ε := by
       rw [← ENNReal.ofReal_add (half_pos hε).le (half_pos hε).le, add_halves]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem unifIntegrable_of (hp : 1 ≤ p) (hp' : p ≠ ∞) {f : ι → α → β}
     (hf : ∀ i, AEStronglyMeasurable (f i) μ)
     (h : ∀ ε : ℝ, 0 < ε → ∃ C : ℝ≥0,
@@ -766,6 +770,7 @@ theorem uniformIntegrable_const {g : α → β} (hp : 1 ≤ p) (hp_ne_top : p �
   ⟨fun _ => hg.1, unifIntegrable_const hp hp_ne_top hg,
     ⟨(eLpNorm g p μ).toNNReal, fun _ => le_of_eq (ENNReal.coe_toNNReal hg.2.ne).symm⟩⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This lemma is superseded by `uniformIntegrable_of` which only requires
 `AEStronglyMeasurable`. -/
 theorem uniformIntegrable_of' [IsFiniteMeasure μ] (hp : 1 ≤ p) (hp' : p ≠ ∞)
@@ -803,6 +808,7 @@ theorem uniformIntegrable_of' [IsFiniteMeasure μ] (hp : 1 ≤ p) (hp' : p ≠ �
     _ = ((C : ℝ≥0∞) * μ Set.univ ^ p.toReal⁻¹ + 1 : ℝ≥0∞).toNNReal := by
       rw [ENNReal.coe_toNNReal (by finiteness)]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A sequence of functions `(fₙ)` is uniformly integrable in the probability sense if for all
 `ε > 0`, there exists some `C` such that `∫ x in {|fₙ| ≥ C}, fₙ x ∂μ ≤ ε` for all `n`. -/
 theorem uniformIntegrable_of [IsFiniteMeasure μ] (hp : 1 ≤ p) (hp' : p ≠ ∞)
@@ -859,6 +865,7 @@ theorem UniformIntegrable.spec' (hp : p ≠ 0) (hp' : p ≠ ∞) (hf : ∀ i, St
     exact lt_two_mul_self (lt_max_of_lt_right one_pos)
   exact ⟨C, fun i => hδ i _ (measurableSet_le measurable_const (hf i).nnnorm.measurable) (hC i)⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem UniformIntegrable.spec (hp : p ≠ 0) (hp' : p ≠ ∞) (hfu : UniformIntegrable f p μ) {ε : ℝ}
     (hε : 0 < ε) :
     ∃ C : ℝ≥0, ∀ i, eLpNorm ({ x | C ≤ ‖f i x‖₊ }.indicator (f i)) p μ ≤ ENNReal.ofReal ε := by

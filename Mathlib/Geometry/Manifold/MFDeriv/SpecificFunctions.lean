@@ -158,6 +158,7 @@ theorem mfderivWithin_id (hxs : UniqueMDiffWithinAt I s x) :
   rw [MDifferentiable.mfderivWithin mdifferentiableAt_id hxs]
   exact mfderiv_id
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp, mfld_simps]
 theorem tangentMap_id : tangentMap I I (id : M → M) = id := by ext1 ⟨x, v⟩; simp [tangentMap]
@@ -630,6 +631,7 @@ section disjointUnion
 
 variable {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M'] {p : M ⊕ M'}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In extended charts at `p`, `Sum.swap` looks like the identity near `p`. -/
 lemma writtenInExtChartAt_sumSwap_eventuallyEq_id :
     writtenInExtChartAt I I p Sum.swap =ᶠ[𝓝[range I] (I <| chartAt H p p)] id := by

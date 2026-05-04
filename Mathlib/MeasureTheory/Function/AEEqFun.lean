@@ -573,18 +573,21 @@ instance instSup : Max (α →ₘ[μ] β) where max f g := AEEqFun.comp₂ (· �
 theorem coeFn_sup (f g : α →ₘ[μ] β) : ⇑(f ⊔ g) =ᵐ[μ] fun x => f x ⊔ g x :=
   coeFn_comp₂ _ _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem le_sup_left (f g : α →ₘ[μ] β) : f ≤ f ⊔ g := by
   rw [← coeFn_le]
   filter_upwards [coeFn_sup f g] with _ ha
   rw [ha]
   exact le_sup_left
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem le_sup_right (f g : α →ₘ[μ] β) : g ≤ f ⊔ g := by
   rw [← coeFn_le]
   filter_upwards [coeFn_sup f g] with _ ha
   rw [ha]
   exact le_sup_right
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem sup_le (f g f' : α →ₘ[μ] β) (hf : f ≤ f') (hg : g ≤ f') : f ⊔ g ≤ f' := by
   rw [← coeFn_le] at hf hg ⊢
   filter_upwards [hf, hg, coeFn_sup f g] with _ haf hag ha_sup
@@ -602,18 +605,21 @@ instance instInf : Min (α →ₘ[μ] β) where min f g := AEEqFun.comp₂ (· �
 theorem coeFn_inf (f g : α →ₘ[μ] β) : ⇑(f ⊓ g) =ᵐ[μ] fun x => f x ⊓ g x :=
   coeFn_comp₂ _ _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem inf_le_left (f g : α →ₘ[μ] β) : f ⊓ g ≤ f := by
   rw [← coeFn_le]
   filter_upwards [coeFn_inf f g] with _ ha
   rw [ha]
   exact inf_le_left
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem inf_le_right (f g : α →ₘ[μ] β) : f ⊓ g ≤ g := by
   rw [← coeFn_le]
   filter_upwards [coeFn_inf f g] with _ ha
   rw [ha]
   exact inf_le_right
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem le_inf (f' f g : α →ₘ[μ] β) (hf : f' ≤ f) (hg : f' ≤ g) : f' ≤ f ⊓ g := by
   rw [← coeFn_le] at hf hg ⊢
   filter_upwards [hf, hg, coeFn_inf f g] with _ haf hag ha_inf
@@ -911,6 +917,7 @@ theorem lintegral_mono {f g : α →ₘ[μ] ℝ≥0∞} : f ≤ g → lintegral 
 
 section Abs
 
+set_option backward.defeqAttrib.useBackward true in
 theorem coeFn_abs {β} [TopologicalSpace β] [Lattice β] [TopologicalLattice β] [AddGroup β]
     [IsTopologicalAddGroup β] (f : α →ₘ[μ] β) : ⇑|f| =ᵐ[μ] fun x => |f x| := by
   simp_rw [abs]

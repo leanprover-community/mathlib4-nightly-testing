@@ -219,6 +219,7 @@ def Valley (cs : ι → Cube (n + 1)) (c : Cube (n + 1)) : Prop :=
 
 variable {c : Cube (n + 1)} (h : Correct cs) (v : Valley cs c)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The bottom of the unit cube is a valley -/
 theorem valley_unitCube [Nontrivial ι] (h : Correct cs) : Valley cs unitCube := by
   refine ⟨?_, ?_, ?_⟩

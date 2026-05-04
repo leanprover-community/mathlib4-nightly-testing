@@ -154,6 +154,7 @@ theorem _root_.MvPolynomial.toMvPowerSeries_isDenseInducing :
 
 variable {a : σ → S}
 
+set_option backward.defeqAttrib.useBackward true in
 /- The evaluation map on multivariate polynomials is uniformly continuous
 for the uniform structure induced by that on multivariate power series. -/
 theorem _root_.MvPolynomial.toMvPowerSeries_uniformContinuous

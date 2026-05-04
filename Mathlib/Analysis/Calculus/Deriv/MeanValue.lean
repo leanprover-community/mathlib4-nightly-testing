@@ -158,6 +158,7 @@ theorem exists_deriv_eq_slope' : ∃ c ∈ Ioo a b, deriv f c = slope f a b := b
   rw [slope_def_field]
   exact exists_deriv_eq_slope f hab hfc hfd
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A real function whose derivative tends to infinity from the right at a point is not
 differentiable on the right at that point. -/
 theorem not_differentiableWithinAt_of_deriv_tendsto_atTop_Ioi (f : ℝ → ℝ) {a : ℝ}

@@ -672,6 +672,7 @@ theorem memLp_comp_iff_of_antilipschitz {α E F} {K K'} [MeasurableSpace α] {μ
     (hg' : AntilipschitzWith K' g) (g0 : g 0 = 0) : MemLp (g ∘ f) p μ ↔ MemLp f p μ :=
   ⟨fun h => h.of_comp_antilipschitzWith hg.uniformContinuous hg' g0, fun h => hg.comp_memLp g0 h⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- When `g` is a Lipschitz function sending `0` to `0` and `f` is in `Lp`, then `g ∘ f` is well
 defined as an element of `Lp`. -/
 def compLp (hg : LipschitzWith c g) (g0 : g 0 = 0) (f : Lp E p μ) : Lp F p μ :=
@@ -687,6 +688,7 @@ theorem coeFn_compLp (hg : LipschitzWith c g) (g0 : g 0 = 0) (f : Lp E p μ) :
     hg.compLp g0 f =ᵐ[μ] g ∘ f :=
   AEEqFun.coeFn_comp _ hg.continuous _
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem compLp_zero (hg : LipschitzWith c g) (g0 : g 0 = 0) : hg.compLp g0 (0 : Lp E p μ) = 0 := by
   rw [Lp.eq_zero_iff_ae_eq_zero]
@@ -694,6 +696,7 @@ theorem compLp_zero (hg : LipschitzWith c g) (g0 : g 0 = 0) : hg.compLp g0 (0 : 
   filter_upwards [Lp.coeFn_zero E p μ] with _ ha
   simp only [ha, g0, Function.comp_apply, Pi.zero_apply]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem norm_compLp_sub_le (hg : LipschitzWith c g) (g0 : g 0 = 0) (f f' : Lp E p μ) :
     ‖hg.compLp g0 f - hg.compLp g0 f'‖ ≤ c * ‖f - f'‖ := by
   apply Lp.norm_le_mul_norm_of_ae_le_mul
@@ -759,6 +762,7 @@ theorem _root_.MeasureTheory.memLp_re_im_iff {f : α → K} :
 
 end RCLike
 
+set_option backward.defeqAttrib.useBackward true in
 theorem add_compLp (L L' : E →SL[σ] F) (f : Lp E p μ) :
     (L + L').compLp f = L.compLp f + L'.compLp f := by
   ext1
@@ -781,6 +785,7 @@ theorem norm_compLp_le (L : E →SL[σ] F) (f : Lp E p μ) : ‖L.compLp f‖ �
 
 variable (μ p)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Composing `f : Lp E p μ` with `L : E →L[𝕜] F`, seen as a `𝕜`-linear map on `Lp E p μ`. -/
 def compLpₗ (L : E →SL[σ] F) : Lp E p μ →ₛₗ[σ] Lp F p μ where
   toFun f := L.compLp f
@@ -855,6 +860,7 @@ theorem coe_posPart (f : Lp ℝ p μ) : (posPart f : α →ₘ[μ] ℝ) = (f : �
 theorem coeFn_posPart (f : Lp ℝ p μ) : ⇑(posPart f) =ᵐ[μ] fun a => max (f a) 0 :=
   AEEqFun.coeFn_posPart _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem coeFn_negPart_eq_max (f : Lp ℝ p μ) : ∀ᵐ a ∂μ, negPart f a = max (-f a) 0 := by
   rw [negPart]
   filter_upwards [coeFn_posPart (-f), coeFn_neg f] with _ h₁ h₂

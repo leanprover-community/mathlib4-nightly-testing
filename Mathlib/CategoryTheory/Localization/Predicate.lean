@@ -509,6 +509,7 @@ variable {X Y : C} (f g : X ⟶ Y)
 /-- The property that two morphisms become equal in the localized category. -/
 def AreEqualizedByLocalization : Prop := W.Q.map f = W.Q.map g
 
+set_option backward.defeqAttrib.useBackward true in
 lemma areEqualizedByLocalization_iff [L.IsLocalization W] :
     AreEqualizedByLocalization W f g ↔ L.map f = L.map g := by
   dsimp [AreEqualizedByLocalization]

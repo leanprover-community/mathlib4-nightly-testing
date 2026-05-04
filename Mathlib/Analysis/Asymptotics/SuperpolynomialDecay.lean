@@ -130,6 +130,7 @@ section OrderedCommSemiring
 
 variable [TopologicalSpace β] [CommSemiring β] [PartialOrder β] [IsOrderedRing β] [OrderTopology β]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem SuperpolynomialDecay.trans_eventuallyLE (hk : 0 ≤ᶠ[l] k) (hg : SuperpolynomialDecay l k g)
     (hg' : SuperpolynomialDecay l k g') (hfg : g ≤ᶠ[l] f) (hfg' : f ≤ᶠ[l] g') :
     SuperpolynomialDecay l k f := fun z =>

@@ -100,6 +100,7 @@ protected lemma IsSymmSndFDerivAt.eq
     fderiv 𝕜 (fderiv 𝕜 f) x v w = fderiv 𝕜 (fderiv 𝕜 f) x w v :=
   h v w
 
+set_option backward.defeqAttrib.useBackward true in
 lemma fderivWithin_fderivWithin_eq_of_mem_nhdsWithin (h : t ∈ 𝓝[s] x)
     (hf : ContDiffWithinAt 𝕜 2 f t x) (hs : UniqueDiffOn 𝕜 s) (ht : UniqueDiffOn 𝕜 t) (hx : x ∈ s) :
     fderivWithin 𝕜 (fderivWithin 𝕜 f s) s x = fderivWithin 𝕜 (fderivWithin 𝕜 f t) t x := by
@@ -212,6 +213,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddComm
 section
 include s_conv hf xs hx
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Assume that `f` is differentiable inside a convex set `s`, and that its derivative `f'` is
 differentiable at a point `x`. Then, given two vectors `v` and `w` pointing inside `s`, one can
 Taylor-expand to order two the function `f` on the segment `[x + h v, x + h (v + w)]`, giving a
@@ -364,6 +366,7 @@ theorem Convex.isLittleO_alternate_sum_square {v w : E} (h4v : x + (4 : ℝ) •
     ContinuousLinearMap.add_apply]
   abel
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Assume that `f` is differentiable inside a convex set `s`, and that its derivative `f'` is
 differentiable at a point `x`. Then, given two vectors `v` and `w` pointing inside `s`, one
 has `f'' v w = f'' w v`. Superseded by `Convex.second_derivative_within_at_symmetric`, which

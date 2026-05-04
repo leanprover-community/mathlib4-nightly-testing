@@ -32,6 +32,7 @@ section Limits
 
 open Real Filter
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `x ^ y` tends to `+∞` at `+∞` for any positive real `y`. -/
 theorem tendsto_rpow_atTop {y : ℝ} (hy : 0 < y) : Tendsto (fun x : ℝ => x ^ y) atTop atTop := by
   rw [(atTop_basis' 0).tendsto_right_iff]
@@ -49,6 +50,7 @@ theorem tendsto_rpow_neg_atTop {y : ℝ} (hy : 0 < y) : Tendsto (fun x : ℝ => 
   Tendsto.congr' (eventuallyEq_of_mem (Ioi_mem_atTop 0) fun _ hx => (rpow_neg (le_of_lt hx) y).symm)
     (tendsto_rpow_atTop hy).inv_tendsto_atTop
 
+set_option backward.defeqAttrib.useBackward true in
 open Asymptotics in
 lemma tendsto_rpow_atTop_of_base_lt_one (b : ℝ) (hb₀ : -1 < b) (hb₁ : b < 1) :
     Tendsto (b ^ · : ℝ → ℝ) atTop (𝓝 (0 : ℝ)) := by
@@ -115,6 +117,7 @@ theorem tendsto_rpow_neg_div : Tendsto (fun x => x ^ (-(1 : ℝ) / x)) atTop (�
   convert tendsto_rpow_div_mul_add (-(1 : ℝ)) _ (0 : ℝ) zero_ne_one
   ring
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `exp(x) / x ^ s` tends to `+∞` at `+∞`, for any real number `s`. -/
 theorem tendsto_exp_div_rpow_atTop (s : ℝ) : Tendsto (fun x : ℝ => exp x / x ^ s) atTop atTop := by
   obtain ⟨n, hn⟩ := archimedean_iff_nat_lt.1 Real.instArchimedean s
@@ -123,6 +126,7 @@ theorem tendsto_exp_div_rpow_atTop (s : ℝ) : Tendsto (fun x : ℝ => exp x / x
   gcongr
   simpa using rpow_le_rpow_of_exponent_le hx₁ hn.le
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `exp (b * x) / x ^ s` tends to `+∞` at `+∞`, for any real `s` and `b > 0`. -/
 theorem tendsto_exp_mul_div_rpow_atTop (s : ℝ) (b : ℝ) (hb : 0 < b) :
     Tendsto (fun x : ℝ => exp (b * x) / x ^ s) atTop atTop := by
@@ -146,6 +150,7 @@ nonrec theorem NNReal.tendsto_rpow_atTop {y : ℝ} (hy : 0 < y) :
   intro a ha
   exact mod_cast hc a (Real.toNNReal_le_iff_le_coe.mp ha)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ENNReal.tendsto_rpow_at_top {y : ℝ} (hy : 0 < y) :
     Tendsto (fun x : ℝ≥0∞ => x ^ y) (𝓝 ⊤) (𝓝 ⊤) := by
   rw [ENNReal.tendsto_nhds_top_iff_nnreal]
@@ -264,6 +269,7 @@ protected lemma IsTheta.sqrt (hfg : f =Θ[l] g) (hf : 0 ≤ᶠ[l] f) (hg : 0 ≤
     (Real.sqrt <| f ·) =Θ[l] (Real.sqrt <| g ·) :=
   ⟨hfg.1.sqrt hg, hfg.2.sqrt hf⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isBigO_atTop_natCast_rpow_of_tendsto_div_rpow {𝕜 : Type*} [RCLike 𝕜] {g : ℕ → 𝕜}
     {a : 𝕜} {r : ℝ} (hlim : Tendsto (fun n ↦ g n / (n ^ r : ℝ)) atTop (𝓝 a)) :
     g =O[atTop] fun n ↦ (n : ℝ) ^ r := by
@@ -274,6 +280,7 @@ theorem isBigO_atTop_natCast_rpow_of_tendsto_div_rpow {𝕜 : Type*} [RCLike �
 
 variable {E : Type*} [SeminormedRing E] (a b c : ℝ)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsBigO.mul_atTop_rpow_of_isBigO_rpow {f g : ℝ → E}
     (hf : f =O[atTop] fun t ↦ (t : ℝ) ^ a) (hg : g =O[atTop] fun t ↦ (t : ℝ) ^ b)
     (h : a + b ≤ c) :
@@ -284,6 +291,7 @@ theorem IsBigO.mul_atTop_rpow_of_isBigO_rpow {f g : ℝ → E}
     (zero_le_one.trans ht) (a + b))]
   exact Real.rpow_le_rpow_of_exponent_le ht h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem IsBigO.mul_atTop_rpow_natCast_of_isBigO_rpow {f g : ℕ → E}
     (hf : f =O[atTop] fun n ↦ (n : ℝ) ^ a) (hg : g =O[atTop] fun n ↦ (n : ℝ) ^ b)
     (h : a + b ≤ c) :
@@ -362,6 +370,7 @@ theorem isLittleO_log_rpow_atTop {r : ℝ} (hr : 0 < r) : log =o[atTop] fun x =>
       ((eventually_gt_atTop 0).mono fun _ hx => (log_rpow hx _).symm)
     _ =o[atTop] fun x => x ^ r := isLittleO_log_id_atTop.comp_tendsto (tendsto_rpow_atTop hr)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isLittleO_log_rpow_rpow_atTop {s : ℝ} (r : ℝ) (hs : 0 < s) :
     (fun x => log x ^ r) =o[atTop] fun x => x ^ s :=
   let r' := max r 1

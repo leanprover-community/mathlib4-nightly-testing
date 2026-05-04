@@ -88,6 +88,7 @@ theorem continuousOn_continuousLinearMapCoordChange [RingHomIsometric σ]
 variable (σ e₁ e₁' e₂ e₂')
 variable [e₁.IsLinear 𝕜₁] [e₁'.IsLinear 𝕜₁] [e₂.IsLinear 𝕜₂] [e₂'.IsLinear 𝕜₂]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given trivializations `e₁`, `e₂` for vector bundles `E₁`, `E₂` over a base `B`,
 `Pretrivialization.continuousLinearMap σ e₁ e₂` is the induced pretrivialization for the
 continuous `σ`-semilinear maps from `E₁` to `E₂`. That is, the map which will later become a
@@ -319,6 +320,7 @@ variable {𝕜 F₁ F₂ B₁ B₂ M : Type*} {E₁ : B₁ → Type*} {E₂ : B�
   {b₁ : M → B₁} {b₂ : M → B₂} {m₀ : M}
   {ϕ : Π (m : M), E₁ (b₁ m) →L[𝕜] E₂ (b₂ m)} {v : Π (m : M), E₁ (b₁ m)} {s : Set M}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Consider a continuous map `v : M → E₁` to a vector bundle, over a base map `b₁ : M → B₁`, and
 another basemap `b₂ : M → B₂`. Given linear maps `ϕ m : E₁ (b₁ m) → E₂ (b₂ m)` depending
 continuously on `m`, one can apply `ϕ m` to `g m`, and the resulting map is continuous.

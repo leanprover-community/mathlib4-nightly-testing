@@ -1,0 +1,100 @@
+[1A[2K  · Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.Transform 
+[2K[7434/7441]  Working on: 2  Fixed: 1303  Failed: 4
+[1A[2K[7435/7441]  Working on: 1  Fixed: 1303  Failed: 4
+[1A[2K  · Mathlib.NumberTheory.ModularForms.DedekindEta 
+[2K[7435/7441]  Working on: 1  Fixed: 1303  Failed: 4
+[1A[2K[7436/7441]  Working on: 3  Fixed: 1303  Failed: 4
+[1A[2K  · Mathlib.NumberTheory.ModularForms.Delta 
+[2K[7436/7441]  Working on: 3  Fixed: 1303  Failed: 4
+[1A[2K[7437/7441]  Working on: 2  Fixed: 1303  Failed: 4
+[1A[2K  · Mathlib.NumberTheory.ModularForms.EisensteinSeries.E2.MDifferentiable 
+[2K[7437/7441]  Working on: 2  Fixed: 1303  Failed: 4
+[1A[2K[7438/7441]  Working on: 2  Fixed: 1303  Failed: 4
+[1A[2K  · Mathlib.NumberTheory.ModularForms.Derivative 
+[2K[7438/7441]  Working on: 2  Fixed: 1303  Failed: 4
+[1A[2K[7439/7441]  Working on: 1  Fixed: 1303  Failed: 4
+[1A[2K  + Mathlib.NumberTheory.ModularForms.Discriminant +1
+[2K[7439/7441]  Working on: 1  Fixed: 1304  Failed: 4
+[1A[2K[7440/7441]  Working on: 1  Fixed: 1304  Failed: 4
+[1A[2K  · Mathlib.NumberTheory.ModularForms.DimensionFormulas.LevelOne 
+[2K[7440/7441]  Working on: 1  Fixed: 1304  Failed: 4
+[1A[2K[7441/7441]  Working on: 0  Fixed: 1304  Failed: 4
+[?25h
+============================================================
+SUMMARY
+============================================================
+  Modules processed:  7441
+  Modules fixed:      667
+  Modules failed:     4
+  Modules skipped:    1079
+  set_options added:  1304
+  Duration:           3495s
+
+Failed modules:
+  Mathlib.AlgebraicTopology.DoldKan.Compatibility: all options already present at line 229
+    Hint: Omit it from the simp argument list.
+      simp only [c̵o̵m̵p̵_̵id,̵ ̵i̵d̵_comp, Functor.map_comp, equivalence₂CounitIso_eq,
+      ̵  ̵ ̵ ̵equivalence₂CounitIso_hom_app,
+      ̲  ̲ ̲ ̲assoc, equivalenceCounitIso_hom_app]
+    
+    Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+    error: Lean exited with code 1
+    Some required targets logged failures:
+    - Mathlib.AlgebraicTopology.DoldKan.Compatibility
+    error: build failed
+  Mathlib.CategoryTheory.CatCommSq: no option combination fixed error at line 170
+    
+    Hint: Omit it from the simp argument list.
+      simp only [Functor.map_comp, Equivalence.fun_inv_map, Functor.comp_obj, Functor.id_obj, assoc,
+      ̲  ̲ ̲ ̲Iso.inv_hom_id_app_assoc, I̵s̵o̵.̵i̵n̵v̵_̵h̵o̵m̵_̵i̵d̵_̵a̵p̵p̵,̵ ̵c̵o̵m̵p̵_̵i̵d̵]̵I̲s̲o̲.̲i̲n̲v̲_̲h̲o̲m̲_̲i̲d̲_̲a̲p̲p̲]̲
+    
+    Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+    error: Lean exited with code 1
+    Some required targets logged failures:
+    - Mathlib.CategoryTheory.CatCommSq
+    error: build failed
+  Mathlib.CategoryTheory.Adjunction.Mates: all options already present at line 312
+                  R₃.map (L₃.leftUnitor.symm.inv.app (R₂.obj d)) ≫ R₃.map (β.app (R₂.obj d)) ≫ R₃.map (adj₂.counit.app d) =
+        adj₃.unit.app (R₁.obj d) ≫
+          R₃.map (L₃.leftUnitor.symm.inv.app (R₁.obj d)) ≫
+            R₃.map (β.app (R₁.obj d)) ≫ R₃.map (α.app (R₁.obj d)) ≫ R₃.map (adj₁.counit.app d)
+    
+    Note: The target expression is not type-correct under the `instances` transparency level, which may have triggered the failure. This is usually caused by unfolding of semireducible definitions in prior tactic steps. Use `set_option linter.tacticCheckInstances true` to investigate the source of the issue.
+    error: Lean exited with code 1
+    Some required targets logged failures:
+    - Mathlib.CategoryTheory.Adjunction.Mates
+    error: build failed
+  Mathlib.Analysis.Convex.Visible: no option combination fixed error at line 203
+    has type
+      (convexHull ℝ) s ⊆ ↑(affineSpan ℝ ({x} ∪ {y | y ∈ s ∧ IsVisible ℝ ((convexHull ℝ) s) x y}))
+    but is expected to have type
+      (convexHull ?m.228) (-x +ᵥ s) ⊆ ↑(-x +ᵥ affineSpan ℝ ({x} ∪ {y | y ∈ s ∧ IsVisible ℝ ((convexHull ℝ) s) x y}))
+    in the application
+      HasSubset.Subset.trans (subset_convexHull ?m.228 (-x +ᵥ s)) (IsClosed.convexHull_subset_affineSpan_isVisible hs hx)
+    error: Lean exited with code 1
+    Some required targets logged failures:
+    - Mathlib.Analysis.Convex.Visible
+    error: build failed
+
+Skipped modules (1079):
+  Archive
+  Archive.Examples.MersennePrimes
+  Archive.Imo.Imo2008Q3
+  Archive.Imo.Imo2025Q3
+  Archive.Wiedijk100Theorems.PerfectNumbers
+  Archive.Wiedijk100Theorems.SolutionOfCubicQuartic
+  Counterexamples
+  Counterexamples.Cyclotomic105
+  Counterexamples.DimensionPolynomial
+  Counterexamples.EulerSumOfPowers
+  Counterexamples.InvertibleModuleNotIdeal
+  Counterexamples.Pseudoelement
+  DownstreamTest.DownstreamTest
+  Mathlib
+  Mathlib.Algebra.Category.BoolRing
+  Mathlib.Algebra.Category.CommAlgCat.Basic
+  Mathlib.Algebra.Category.CommAlgCat.FiniteType
+  Mathlib.Algebra.Category.CommAlgCat.Monoidal
+  Mathlib.Algebra.Category.CommBialgCat
+  Mathlib.Algebra.Category.ContinuousCohomology.Basic
+  ... and 1059 more

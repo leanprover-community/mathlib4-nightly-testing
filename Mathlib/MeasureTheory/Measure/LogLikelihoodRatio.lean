@@ -38,9 +38,11 @@ noncomputable def llr (μ ν : Measure α) (x : α) : ℝ := log (μ.rnDeriv ν 
 
 lemma llr_def (μ ν : Measure α) : llr μ ν = fun x ↦ log (μ.rnDeriv ν x).toReal := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_self (μ : Measure α) [SigmaFinite μ] : llr μ μ =ᵐ[μ] 0 := by
   filter_upwards [μ.rnDeriv_self] with a ha using by simp [llr, ha]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exp_llr (μ ν : Measure α) [SigmaFinite μ] :
     (fun x ↦ exp (llr μ ν x))
       =ᵐ[ν] fun x ↦ if μ.rnDeriv ν x = 0 then 1 else (μ.rnDeriv ν x).toReal := by
@@ -50,29 +52,34 @@ lemma exp_llr (μ ν : Measure α) [SigmaFinite μ] :
   · rw [llr, exp_log, if_neg h_zero]
     exact ENNReal.toReal_pos h_zero hx.ne
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exp_llr_of_ac (μ ν : Measure α) [SigmaFinite μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) :
     (fun x ↦ exp (llr μ ν x)) =ᵐ[μ] fun x ↦ (μ.rnDeriv ν x).toReal := by
   filter_upwards [hμν.ae_le (exp_llr μ ν), Measure.rnDeriv_pos hμν] with x hx_eq hx_pos
   rw [hx_eq, if_neg hx_pos.ne']
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exp_llr_of_ac' (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν] (hμν : ν ≪ μ) :
     (fun x ↦ exp (llr μ ν x)) =ᵐ[ν] fun x ↦ (μ.rnDeriv ν x).toReal := by
   filter_upwards [exp_llr μ ν, Measure.rnDeriv_pos' hμν] with x hx hx_pos
   rwa [if_neg hx_pos.ne'] at hx
 
+set_option backward.defeqAttrib.useBackward true in
 lemma neg_llr [SigmaFinite μ] [SigmaFinite ν] (hμν : μ ≪ ν) :
     -llr μ ν =ᵐ[μ] llr ν μ := by
   filter_upwards [Measure.inv_rnDeriv hμν] with x hx
   rw [Pi.neg_apply, llr, llr, ← log_inv, ← ENNReal.toReal_inv]
   congr
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exp_neg_llr [SigmaFinite μ] [SigmaFinite ν] (hμν : μ ≪ ν) :
     (fun x ↦ exp (-llr μ ν x)) =ᵐ[μ] fun x ↦ (ν.rnDeriv μ x).toReal := by
   filter_upwards [neg_llr hμν, exp_llr_of_ac' ν μ hμν] with x hx hx_exp_log
   rw [Pi.neg_apply] at hx
   rw [hx, hx_exp_log]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exp_neg_llr' [SigmaFinite μ] [SigmaFinite ν] (hμν : ν ≪ μ) :
     (fun x ↦ exp (-llr μ ν x)) =ᵐ[ν] fun x ↦ (ν.rnDeriv μ x).toReal := by
   filter_upwards [neg_llr hμν, exp_llr_of_ac ν μ hμν] with x hx hx_exp_log
@@ -87,6 +94,7 @@ lemma measurable_llr (μ ν : Measure α) : Measurable (llr μ ν) :=
 lemma stronglyMeasurable_llr (μ ν : Measure α) : StronglyMeasurable (llr μ ν) :=
   (measurable_llr μ ν).stronglyMeasurable
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_smul_left [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) (c : ℝ≥0∞) (hc : c ≠ 0) (hc_ne_top : c ≠ ∞) :
     llr (c • μ) ν =ᵐ[μ] fun x ↦ llr μ ν x + log c.toReal := by
@@ -104,6 +112,7 @@ lemma llr_smul_left [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ �
     simp [hx_pos.ne', hx_ne_top.ne]
   ring
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_smul_nnreal_left [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) (c : ℝ≥0) (hc : c ≠ 0) :
     llr (c • μ) ν =ᵐ[μ] fun x ↦ llr μ ν x + log c := by
@@ -112,6 +121,7 @@ lemma llr_smul_nnreal_left [IsFiniteMeasure μ] [Measure.HaveLebesgueDecompositi
   rw [hx]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_smul_right [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) (c : ℝ≥0∞) (hc : c ≠ 0) (hc_ne_top : c ≠ ∞) :
     llr μ (c • ν) =ᵐ[μ] fun x ↦ llr μ ν x - log c.toReal := by
@@ -130,6 +140,7 @@ lemma llr_smul_right [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ 
   rw [ENNReal.toReal_inv, log_inv]
   ring
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_smul_nnreal_right [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) (c : ℝ≥0) (hc : c ≠ 0) :
     llr μ (c • ν) =ᵐ[μ] fun x ↦ llr μ ν x - log c := by
@@ -138,6 +149,7 @@ lemma llr_smul_nnreal_right [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposit
   rw [hx]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_smul_inv_left_eq_smul_right [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) (c : ℝ≥0∞) (hc : c ≠ 0) (hc_ne_top : c ≠ ∞) :
     llr (c⁻¹ • μ) ν =ᵐ[μ] llr μ (c • ν) := by
@@ -148,6 +160,7 @@ lemma llr_smul_inv_left_eq_smul_right [IsFiniteMeasure μ] [Measure.HaveLebesgue
   rw [hx_left, hx_right]
   simp [sub_eq_add_neg]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_smul_same [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) (c : ℝ≥0∞) (hc : c ≠ 0) (hc_ne_top : c ≠ ∞) :
     llr (c • μ) (c • ν) =ᵐ[μ] llr μ ν := by
@@ -156,6 +169,7 @@ lemma llr_smul_same [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ �
   norm_cast at hc
   filter_upwards [hμν.ae_le (Measure.rnDeriv_smul_same μ ν hc)] with x hx using by simp [hx]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_smul_nnreal_same [IsFiniteMeasure μ] [Measure.HaveLebesgueDecomposition μ ν]
     (hμν : μ ≪ ν) (c : ℝ≥0) (hc : c ≠ 0) :
     llr (c • μ) (c • ν) =ᵐ[μ] llr μ ν := by
@@ -174,6 +188,7 @@ lemma integral_rnDeriv_mul_log [SigmaFinite μ] [μ.HaveLebesgueDecomposition ν
 
 section llr_tilted
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_tilted_left [SigmaFinite μ] [SigmaFinite ν] (hμν : μ ≪ ν)
     (hf : Integrable (fun x ↦ exp (f x)) μ) (hfν : AEMeasurable f ν) :
     (llr (μ.tilted f) ν) =ᵐ[μ] fun x ↦ f x - log (∫ z, exp (f z) ∂μ) + llr μ ν x := by
@@ -213,6 +228,7 @@ lemma integral_llr_tilted_left [IsProbabilityMeasure μ] [SigmaFinite ν]
         simp only [integral_const, probReal_univ, smul_eq_mul, one_mul]
   _ = ∫ x, llr μ ν x ∂μ + ∫ x, f x ∂μ - log (∫ x, exp (f x) ∂μ) := by abel
 
+set_option backward.defeqAttrib.useBackward true in
 lemma llr_tilted_right [SigmaFinite μ] [SigmaFinite ν]
     (hμν : μ ≪ ν) (hf : Integrable (fun x ↦ exp (f x)) ν) :
     (llr μ (ν.tilted f)) =ᵐ[μ] fun x ↦ -f x + log (∫ z, exp (f z) ∂ν) + llr μ ν x := by

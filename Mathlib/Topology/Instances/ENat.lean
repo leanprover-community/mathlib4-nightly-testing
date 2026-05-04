@@ -86,6 +86,7 @@ instance : ContinuousMul ℕ∞ where
       | (a : ℕ), (b : ℕ) => by
         simp [ContinuousAt, nhds_prod_eq, tendsto_pure_nhds]
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem continuousAt_sub {a b : ℕ∞} (h : a ≠ ⊤ ∨ b ≠ ⊤) :
     ContinuousAt (· - ·).uncurry (a, b) := by
   match a, b, h with

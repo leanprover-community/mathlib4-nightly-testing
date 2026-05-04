@@ -809,6 +809,7 @@ theorem stepAux_write (q : Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (a b : Γ) (L R
 variable (encdec : ∀ a, dec (enc a) = a)
 include encdec
 
+set_option backward.defeqAttrib.useBackward true in
 theorem stepAux_read (f : Γ → Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (L R : ListBlank Γ) :
     stepAux (read dec f) v (trTape' enc0 L R) = stepAux (f R.head) v (trTape' enc0 L R) := by
   suffices ∀ f, stepAux (readAux n f) v (trTape' enc0 L R) =

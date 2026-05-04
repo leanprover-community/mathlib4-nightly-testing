@@ -199,6 +199,7 @@ lemma integrable_preCDF (ρ : Measure (α × ℝ)) [IsFiniteMeasure ρ] (x : ℚ
     refine (setLIntegral_le_lintegral _ _).trans (lintegral_mono_ae ?_)
     filter_upwards [preCDF_le_one ρ] with a ha using ENNReal.ofReal_toReal_le.trans (ha _)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isRatCondKernelCDFAux_preCDF (ρ : Measure (α × ℝ)) [IsFiniteMeasure ρ] :
     IsRatCondKernelCDFAux (fun p r ↦ (preCDF ρ r p.2).toReal)
       (Kernel.const Unit ρ) (Kernel.const Unit ρ.fst) where
@@ -273,6 +274,7 @@ theorem condCDF_ae_eq (ρ : Measure (α × ℝ)) [IsFiniteMeasure ρ] (r : ℚ) 
   simp_rw [condCDF_eq_stieltjesOfMeasurableRat_unit_prod ρ]
   exact stieltjesOfMeasurableRat_ae_eq (isRatCondKernelCDF_preCDF ρ) () r
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ofReal_condCDF_ae_eq (ρ : Measure (α × ℝ)) [IsFiniteMeasure ρ] (r : ℚ) :
     (fun a ↦ ENNReal.ofReal (condCDF ρ a r)) =ᵐ[ρ.fst] preCDF ρ r := by
   filter_upwards [condCDF_ae_eq ρ r, preCDF_le_one ρ] with a ha ha_le_one

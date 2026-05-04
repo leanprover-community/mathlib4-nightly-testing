@@ -198,6 +198,7 @@ lemma isCompact_setOf_finiteMeasure_le_of_isCompact
   have : CompactSpace K := isCompact_iff_compactSpace.mp hK
   exact isCompact_setOf_finiteMeasure_le_of_compactSpace _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Prokhorov theorem**: Given a sequence of compact sets `Kₙ` and a sequence `uₙ` tending
 to zero, the finite measures of mass at most `C` giving mass at most `uₙ` to the complement of `Kₙ`
 form a compact set. -/

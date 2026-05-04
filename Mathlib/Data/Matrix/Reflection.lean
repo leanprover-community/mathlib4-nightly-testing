@@ -91,6 +91,7 @@ def transposeᵣ : ∀ {m n}, Matrix (Fin m) (Fin n) α → Matrix (Fin n) (Fin 
   | _, _ + 1, A =>
     of <| vecCons (FinVec.map (fun v : Fin _ → α => v 0) A) (transposeᵣ (A.submatrix id Fin.succ))
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This can be used to prove
 ```lean
 example (a b c d : α) : transpose !![a, b; c, d] = !![a, c; b, d] := (transposeᵣ_eq _).symm

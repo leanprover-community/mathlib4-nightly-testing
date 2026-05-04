@@ -548,6 +548,7 @@ variable {M' : Type*} [TopologicalSpace M'] [ChartedSpace H M'] {n : WithTop ℕ
 
 open Topology
 
+set_option backward.defeqAttrib.useBackward true in
 lemma interiorPoint_inl (x : M) (hx : I.IsInteriorPoint x) :
     I.IsInteriorPoint (.inl x : M ⊕ M') := by
   rw [I.isInteriorPoint_iff, extChartAt, ChartedSpace.sum_chartAt_inl]
@@ -555,6 +556,7 @@ lemma interiorPoint_inl (x : M) (hx : I.IsInteriorPoint x) :
   rw [Sum.inl_injective.extend_apply (chartAt H x)]
   simpa [I.isInteriorPoint_iff, extChartAt] using hx
 
+set_option backward.defeqAttrib.useBackward true in
 lemma boundaryPoint_inl (x : M) (hx : I.IsBoundaryPoint x) :
     I.IsBoundaryPoint (.inl x : M ⊕ M') := by
   rw [I.isBoundaryPoint_iff, extChartAt, ChartedSpace.sum_chartAt_inl]
@@ -562,6 +564,7 @@ lemma boundaryPoint_inl (x : M) (hx : I.IsBoundaryPoint x) :
   rw [Sum.inl_injective.extend_apply (chartAt H x)]
   simpa [I.isBoundaryPoint_iff, extChartAt] using hx
 
+set_option backward.defeqAttrib.useBackward true in
 lemma interiorPoint_inr (x : M') (hx : I.IsInteriorPoint x) :
     I.IsInteriorPoint (.inr x : M ⊕ M') := by
   rw [I.isInteriorPoint_iff, extChartAt, ChartedSpace.sum_chartAt_inr]
@@ -569,6 +572,7 @@ lemma interiorPoint_inr (x : M') (hx : I.IsInteriorPoint x) :
   rw [Sum.inr_injective.extend_apply (chartAt H x)]
   simpa [I.isInteriorPoint_iff, extChartAt] using hx
 
+set_option backward.defeqAttrib.useBackward true in
 lemma boundaryPoint_inr (x : M') (hx : I.IsBoundaryPoint x) :
     I.IsBoundaryPoint (.inr x : M ⊕ M') := by
   rw [I.isBoundaryPoint_iff, extChartAt, ChartedSpace.sum_chartAt_inr]

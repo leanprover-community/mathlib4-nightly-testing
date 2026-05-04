@@ -109,6 +109,7 @@ abbrev numeratorRingHom : R →+* R[S⁻¹] where
   map_zero' := by with_unfolding_all exact OreLocalization.zero_def
   map_add' _ _ := add_oreDiv.symm
 
+set_option backward.defeqAttrib.useBackward true in
 instance {R₀} [CommSemiring R₀] [Algebra R₀ R] : Algebra R₀ R[S⁻¹] where
   __ := (inferInstance : Module R₀ R[S⁻¹])
   algebraMap := numeratorRingHom.comp (algebraMap R₀ R)

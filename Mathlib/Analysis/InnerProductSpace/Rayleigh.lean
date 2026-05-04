@@ -270,6 +270,7 @@ theorem hasEigenvector_of_isLocalExtrOn (hT : IsSelfAdjoint T) {x₀ : E} (hx₀
   rw [Module.End.mem_eigenspace_iff]
   exact hT.eq_smul_self_of_isLocalExtrOn hextr
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For a self-adjoint operator `T`, a maximum of the Rayleigh quotient of `T` on a sphere centred
 at the origin is an eigenvector of `T`, with eigenvalue the global supremum of the Rayleigh
 quotient. -/
@@ -289,6 +290,7 @@ theorem hasEigenvector_of_isMaxOn (hT : IsSelfAdjoint T) {x₀ : E} (hx₀ : x�
   gcongr
   exact hextr hx
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For a self-adjoint operator `T`, a minimum of the Rayleigh quotient of `T` on a sphere centred
 at the origin is an eigenvector of `T`, with eigenvalue the global infimum of the Rayleigh
 quotient. -/

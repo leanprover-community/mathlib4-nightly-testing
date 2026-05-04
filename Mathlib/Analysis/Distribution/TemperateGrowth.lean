@@ -188,6 +188,7 @@ theorem HasTemperateGrowth.neg (hf : f.HasTemperateGrowth) : (-f).HasTemperateGr
   obtain ⟨k, C, h⟩ := hf.2 n
   exact ⟨k, C, fun x ↦ by simpa [iteratedFDeriv_neg_apply] using h x⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_fun (attr := fun_prop)]
 theorem HasTemperateGrowth.add (hf : f.HasTemperateGrowth) (hg : g.HasTemperateGrowth) :
     (f + g).HasTemperateGrowth := by
@@ -487,6 +488,7 @@ lemma _root_.integrable_of_le_of_pow_mul_le {μ : Measure E} [μ.HasTemperateGro
     simp only [norm_mul, norm_pow, norm_norm]
     apply pow_mul_le_of_le_of_pow_mul_le (norm_nonneg _) (norm_nonneg _) (hf v) (h'f v)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a function such that `f` and `x ^ (k + l) * f` are bounded for a suitable `l`, then
 one can bound explicitly the integral of `x ^ k * f`. -/
 lemma _root_.integral_pow_mul_le_of_le_of_pow_mul_le

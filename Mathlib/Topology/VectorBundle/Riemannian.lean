@@ -219,6 +219,7 @@ lemma eventually_norm_symmL_trivializationAt_self_comp_lt (x : B) {r : ℝ} (hr 
     positivity
   · exact inv_le_of_inv_le₀ (by positivity) hδ.le
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In a continuous Riemannian bundle, the trivialization at a point is locally bounded in norm. -/
 lemma eventually_norm_trivializationAt_lt (x : B) :
     ∃ C > 0, ∀ᶠ y in 𝓝 x, ‖(trivializationAt F E x).continuousLinearMapAt ℝ y‖ < C := by
@@ -323,6 +324,7 @@ lemma eventually_norm_symmL_trivializationAt_comp_self_lt (x : B) {r : ℝ} (hr 
       rw [← hgx, ← hg, real_inner_self_eq_norm_sq]
       positivity
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In a continuous Riemannian bundle, the inverse of the trivialization at a point is locally
 bounded in norm. -/
 lemma eventually_norm_symmL_trivializationAt_lt (x : B) :

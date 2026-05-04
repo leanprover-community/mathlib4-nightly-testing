@@ -282,6 +282,7 @@ We provide analogous results for functions of the form `log ‖meromorphic‖`.
 TODO: Identify some of the terms that appear in the decomposition.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If `f` is meromorphic on an open set `U`, if `f` is nowhere locally constant zero, and if the
 support of the divisor of `f` is finite, then there exists an analytic function `g` on `U` without
@@ -326,6 +327,7 @@ theorem MeromorphicOn.extract_zeros_poles {f : 𝕜 → E} (h₁f : MeromorphicO
     rwa [← ((meromorphicNFOn_univ (divisor f U)) trivial).meromorphicOrderAt_eq_zero_iff,
       meromorphicOrderAt_eq, h₂a, Pi.zero_apply, WithTop.coe_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 In the setting of `MeromorphicOn.extract_zeros_poles`, the function `log ‖f‖` is equivalent, modulo
 equality on codiscrete subsets, to `∑ᶠ u, (divisor f U u * log ‖· - u‖) + log ‖g ·‖`.

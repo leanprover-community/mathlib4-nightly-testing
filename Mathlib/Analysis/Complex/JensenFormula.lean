@@ -116,6 +116,7 @@ private lemma norm_herglotzLogIntegrand_circleMap_le {w ρ : ℂ} {R r₀ r : �
       _ ≤ |log (2 * R)| + |log √(r₀ / R)| + |log ‖circleMap 0 R θ - ρ‖| := by
         gcongr <;> positivity
 
+set_option backward.defeqAttrib.useBackward true in
 -- Auxiliary lemma for `circleAverage_re_herglotzRieszKernel_mul_log`. Dominated convergence
 -- theorem: circle average can be computed by a sequence of circle averages integrating over circles
 -- in the interior

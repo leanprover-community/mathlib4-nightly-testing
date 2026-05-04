@@ -121,6 +121,7 @@ theorem nhds_mkOfNhds (n : α → Filter α) (a : α) (h₀ : pure ≤ n)
     @nhds α (TopologicalSpace.mkOfNhds n) a = n a :=
   nhds_mkOfNhds_of_hasBasis (fun a ↦ (n a).basis_sets) h₀ h₁ _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nhds_mkOfNhds_single [DecidableEq α] {a₀ : α} {l : Filter α} (h : pure a₀ ≤ l) (b : α) :
     @nhds α (TopologicalSpace.mkOfNhds (update pure a₀ l)) b =
       (update pure a₀ l : α → Filter α) b := by

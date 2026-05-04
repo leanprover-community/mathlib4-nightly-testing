@@ -49,6 +49,7 @@ theorem memLp_top (f : α →ᵇ E) : MemLp f ⊤ μ :=
 
 variable [IsFiniteMeasure μ]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A bounded continuous function on a finite-measure space is in `Lp`. -/
 theorem mem_Lp (f : α →ᵇ E) : f.toContinuousMap.toAEEqFun μ ∈ Lp E p μ := by
   refine Lp.mem_Lp_of_ae_bound ‖f‖ ?_

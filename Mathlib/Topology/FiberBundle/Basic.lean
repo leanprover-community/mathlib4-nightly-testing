@@ -565,6 +565,7 @@ theorem open_source' (i : ι) : IsOpen (Z.localTrivAsPartialEquiv i).source := b
   simp only [localTrivAsPartialEquiv_apply, prodMk_mem_set_prod_eq, mem_inter_iff, and_self_iff,
     mem_localTrivAsPartialEquiv_source, and_true, mem_univ, mem_preimage]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Extended version of the local trivialization of a fiber bundle constructed from core,
 registering additionally in its type that it is a local bundle trivialization. -/
 def localTriv (i : ι) : Trivialization F Z.proj where

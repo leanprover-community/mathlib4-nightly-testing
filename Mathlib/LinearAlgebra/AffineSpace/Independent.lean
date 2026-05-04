@@ -445,6 +445,7 @@ theorem AffineEquiv.affineIndependent_iff {p : ι → P} (e : P ≃ᵃ[k] P₂) 
     AffineIndependent k (e ∘ p) ↔ AffineIndependent k p :=
   e.toAffineMap.affineIndependent_iff e.toEquiv.injective
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Affine equivalences preserve affine independence of subsets. -/
 theorem AffineEquiv.affineIndependent_set_of_eq_iff {s : Set P} (e : P ≃ᵃ[k] P₂) :

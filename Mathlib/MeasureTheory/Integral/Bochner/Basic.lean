@@ -480,6 +480,7 @@ theorem continuous_of_dominated {F : X → α → G} {bound : α → ℝ}
       hF_meas h_bound bound_integrable h_cont
   · simp [integral, hG, continuous_const]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Bochner integral of a real-valued function `f : α → ℝ` is the difference between the
   integral of the positive part of `f` and the integral of the negative part of `f`. -/
 theorem integral_eq_lintegral_pos_part_sub_lintegral_neg_part {f : α → ℝ} (hf : Integrable f μ) :
@@ -533,6 +534,7 @@ theorem integral_eq_lintegral_of_nonneg_ae {f : α → ℝ} (hf : 0 ≤ᵐ[μ] f
       rw [Real.norm_eq_abs, abs_of_nonneg h]
     rw [this, hfi, toReal_top]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_norm_eq_lintegral_enorm {P : Type*} [NormedAddCommGroup P] {f : α → P}
     (hf : AEStronglyMeasurable f μ) : ∫ x, ‖f x‖ ∂μ = (∫⁻ x, ‖f x‖ₑ ∂μ).toReal := by
   rw [integral_eq_lintegral_of_nonneg_ae _ hf.norm]
@@ -832,6 +834,7 @@ lemma integral_tendsto_of_tendsto_of_antitone {μ : Measure α} {f : ℕ → α 
   · filter_upwards [h_mono] with x hx n m hnm using neg_le_neg_iff.mpr <| hx hnm
   · filter_upwards [h_tendsto] with x hx using hx.neg
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a monotone sequence of functions has an upper bound and the sequence of integrals of these
 functions tends to the integral of the upper bound, then the sequence of functions converges
 almost everywhere to the upper bound. -/
@@ -890,6 +893,7 @@ lemma tendsto_of_integral_tendsto_of_monotone {μ : Measure α} {f : ℕ → α 
   refine Filter.Tendsto.add ?_ tendsto_const_nhds
   exact (ENNReal.continuousAt_toReal (by finiteness)).tendsto.comp ha
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If an antitone sequence of functions has a lower bound and the sequence of integrals of these
 functions tends to the integral of the lower bound, then the sequence of functions converges
 almost everywhere to the lower bound. -/
@@ -1231,6 +1235,7 @@ theorem integral_mul_norm_le_Lp_mul_Lq {E} [NormedAddCommGroup E] {f g : α → 
   · exact ENNReal.lintegral_mul_le_Lp_mul_Lq μ hpq hf.1.nnnorm.aemeasurable.coe_nnreal_ennreal
       hg.1.nnnorm.aemeasurable.coe_nnreal_ennreal
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Hölder's inequality for functions `α → ℝ`. The integral of the product of two nonnegative
 functions is bounded by the product of their `ℒp` and `ℒq` seminorms when `p` and `q` are conjugate
 exponents. -/
@@ -1347,6 +1352,7 @@ section SnormBound
 
 variable {m0 : MeasurableSpace α} {μ : Measure α} {f : α → ℝ}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eLpNorm_one_le_of_le {r : ℝ≥0} (hfint : Integrable f μ) (hfint' : 0 ≤ ∫ x, f x ∂μ)
     (hf : ∀ᵐ ω ∂μ, f ω ≤ r) : eLpNorm f 1 μ ≤ 2 * μ Set.univ * r := by
   by_cases hr : r = 0

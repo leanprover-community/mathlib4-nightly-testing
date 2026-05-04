@@ -255,6 +255,7 @@ theorem exists_lt_lowerSemicontinuous_lintegral_ge_of_aemeasurable [SigmaFinite 
 
 variable {μ}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given an integrable function `f` with values in `ℝ≥0` in a sigma-finite space, there exists a
 lower semicontinuous function `g > f` with integral arbitrarily close to that of `f`.
 Formulation in terms of `integral`.
@@ -422,6 +423,7 @@ theorem exists_upperSemicontinuous_le_integral_le (f : α → ℝ≥0)
 /-! ### Vitali-Carathéodory theorem -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Vitali-Carathéodory Theorem**: given an integrable real function `f`, there exists an
 integrable function `g > f` which is lower semicontinuous, with integral arbitrarily close
 to that of `f`. This function has to be `EReal`-valued in general. -/

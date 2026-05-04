@@ -463,6 +463,7 @@ theorem norm_Integral_le_one : ‖Integral‖ ≤ 1 :=
 
 section PosPart
 
+set_option backward.defeqAttrib.useBackward true in
 theorem posPart_toSimpleFunc (f : α →₁ₛ[μ] ℝ) :
     toSimpleFunc (posPart f) =ᵐ[μ] (toSimpleFunc f).posPart := by
   have eq : ∀ a, (toSimpleFunc f).posPart a = max ((toSimpleFunc f) a) 0 := fun a => rfl
@@ -474,6 +475,7 @@ theorem posPart_toSimpleFunc (f : α →₁ₛ[μ] ℝ) :
   refine ae_eq.mono fun a h => ?_
   rw [h, eq]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem negPart_toSimpleFunc (f : α →₁ₛ[μ] ℝ) :
     toSimpleFunc (negPart f) =ᵐ[μ] (toSimpleFunc f).negPart := by
   rw [SimpleFunc.negPart, MeasureTheory.SimpleFunc.negPart]
@@ -484,6 +486,7 @@ theorem negPart_toSimpleFunc (f : α →₁ₛ[μ] ℝ) :
   rw [h₂]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_eq_norm_posPart_sub (f : α →₁ₛ[μ] ℝ) : integral f = ‖posPart f‖ - ‖negPart f‖ := by
   -- Convert things in `L¹` to their `SimpleFunc` counterpart
   have ae_eq₁ : (toSimpleFunc f).posPart =ᵐ[μ] (toSimpleFunc (posPart f)).map norm := by

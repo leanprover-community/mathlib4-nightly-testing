@@ -612,6 +612,7 @@ theorem comap_le_comap_smul (fₗ : N →ₗ[R] N₂) (c : R) : comap fₗ qₗ 
   simp only [SetLike.le_def, mem_comap, LinearMap.smul_apply]
   exact fun _ h ↦ smul_mem _ _ h
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given modules `M`, `M₂` over a commutative ring, together with submodules `p ⊆ M`, `q ⊆ M₂`,
 the set of maps $\{f ∈ Hom(M, M₂) | f(p) ⊆ q \}$ is a submodule of `Hom(M, M₂)`. -/
 def compatibleMaps : Submodule R (N →ₗ[R] N₂) where

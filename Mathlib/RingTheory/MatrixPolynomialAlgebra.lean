@@ -94,6 +94,7 @@ theorem matPolyEquiv_coeff_apply_aux_2 (i j : n) (p : R[X]) (k : ℕ) :
       · funext
         simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem matPolyEquiv_coeff_apply (m : Matrix n n R[X]) (k : ℕ) (i j : n) :
     coeff (matPolyEquiv m) k i j = coeff (m i j) k := by

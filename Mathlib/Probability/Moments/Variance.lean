@@ -83,6 +83,7 @@ scoped notation "Var[" X "; " μ "]" => ProbabilityTheory.variance X μ
 It is set to `0` if `X` has infinite variance. -/
 scoped notation "Var[" X "]" => Var[X; MeasureTheory.MeasureSpace.volume]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem evariance_congr (h : X =ᵐ[μ] Y) : eVar[X; μ] = eVar[Y; μ] := by
   simp_rw [evariance, integral_congr_ae h]
   apply lintegral_congr_ae
@@ -459,6 +460,7 @@ lemma variance_sum_pi [Fintype ι] {Ω : ι → Type*} {mΩ : ∀ i, MeasurableS
   · exact fun i _ j _ hij ↦
       (iIndepFun_pi fun i ↦ (h i).aestronglyMeasurable.aemeasurable).indepFun hij
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **The Bhatia-Davis inequality on variance**
 
 The variance of a random variable `X` satisfying `a ≤ X ≤ b` almost everywhere is at most

@@ -230,6 +230,7 @@ lemma condExpKernel_ae_eq_trim_condExp
     stronglyMeasurable_condExp]
   exact condExpKernel_ae_eq_condExp hm hs
 
+set_option backward.defeqAttrib.useBackward true in
 lemma condDistrib_apply_ae_eq_condExpKernel_map {β γ : Type*} {mβ : MeasurableSpace β}
     {mγ : MeasurableSpace γ} [StandardBorelSpace β] [Nonempty β] {X : Ω → β} {Y : Ω → γ}
     (hX : Measurable X) (hY : Measurable Y) {s : Set β} (hs : MeasurableSet s) :
@@ -268,6 +269,7 @@ theorem condExp_ae_eq_trim_integral_condExpKernel_of_stronglyMeasurable
   · exact hf.integral_condExpKernel
   · exact condExp_ae_eq_integral_condExpKernel hm hf_int
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The conditional expectation of `f` with respect to a σ-algebra `m` is
 (`μ.trim hm`)-almost everywhere equal to the integral `∫ y, f y ∂(condExpKernel μ m ω)`. -/
 theorem condExp_ae_eq_trim_integral_condExpKernel [NormedAddCommGroup F] {f : Ω → F}
@@ -325,6 +327,7 @@ lemma condExp_set_generateFrom_singleton (hs : MeasurableSet s) (ht : Measurable
   rw [← integral_indicator_one ht]
   exact condExp_generateFrom_singleton hs <| Integrable.indicator (integrable_const 1) ht
 
+set_option backward.defeqAttrib.useBackward true in
 lemma condExpKernel_singleton_ae_eq_cond [StandardBorelSpace Ω] (hs : MeasurableSet s)
     (ht : MeasurableSet t) :
     ∀ᵐ ω ∂μ.restrict s,

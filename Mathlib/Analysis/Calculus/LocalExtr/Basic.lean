@@ -211,6 +211,7 @@ section Real
 
 variable {f : ℝ → ℝ} {f' : ℝ} {s : Set ℝ} {a b : ℝ}
 
+set_option backward.defeqAttrib.useBackward true in
 lemma one_mem_posTangentConeAt_iff_mem_closure :
     1 ∈ posTangentConeAt s a ↔ a ∈ closure (Ioi a ∩ s) := by
   constructor

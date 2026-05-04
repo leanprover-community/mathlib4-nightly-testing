@@ -169,6 +169,7 @@ noncomputable instance : Category.{w} (ShrinkHoms C) where
   id X := equivShrink _ (𝟙 (fromShrinkHoms X))
   comp f g := equivShrink _ ((equivShrink _).symm f ≫ (equivShrink _).symm g)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Implementation of `ShrinkHoms.equivalence`. -/
 @[simps]

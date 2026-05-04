@@ -228,6 +228,7 @@ lemma isBigO_atTop_evenKernel_sub (a : UnitAddCircle) : ∃ p : ℝ, 0 < p ∧
   filter_upwards [eventually_gt_atTop 0] with t h
   simp [← (hasSum_int_evenKernel b h).tsum_eq, HurwitzKernelBounds.F_int, HurwitzKernelBounds.f_int]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The function `cosKernel a - 1` has exponential decay at `+∞`, for any `a`. -/
 lemma isBigO_atTop_cosKernel_sub (a : UnitAddCircle) :
     ∃ p, 0 < p ∧ IsBigO atTop (cosKernel a · - 1) (fun x ↦ Real.exp (-p * x)) := by
@@ -550,6 +551,7 @@ lemma hasSum_int_completedHurwitzZetaEven (a : ℝ) {s : ℂ} (hs : 1 < re s) :
 ## The un-completed even Hurwitz zeta
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Technical lemma which will give us differentiability of Hurwitz zeta at `s = 0`. -/
 lemma differentiableAt_update_of_residue
     {Λ : ℂ → ℂ} (hf : ∀ (s : ℂ) (_ : s ≠ 0) (_ : s ≠ 1), DifferentiableAt ℂ Λ s)
@@ -627,6 +629,7 @@ lemma hurwitzZetaEven_residue_one (a : UnitAddCircle) :
   filter_upwards [eventually_ne_nhdsWithin one_ne_zero] with s hs
   simp [hurwitzZetaEven_def_of_ne_or_ne (Or.inr hs), mul_div_assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma differentiableAt_hurwitzZetaEven_sub_one_div (a : UnitAddCircle) :
     DifferentiableAt ℂ (fun s ↦ hurwitzZetaEven a s - 1 / (s - 1) / Gammaℝ s) 1 := by
   suffices DifferentiableAt ℂ
@@ -710,6 +713,7 @@ theorem cosZeta_neg_two_mul_nat_add_one (a : UnitAddCircle) (n : ℕ) :
   rw [cosZeta, Function.update_of_ne this,
     Gammaℝ_eq_zero_iff.mpr ⟨n + 1, by rw [neg_mul, Nat.cast_add_one]⟩, div_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The cosine zeta function is differentiable everywhere, except at `s = 1` if `a = 0`. -/
 lemma differentiableAt_cosZeta (a : UnitAddCircle) {s : ℂ} (hs' : s ≠ 1 ∨ a ≠ 0) :
     DifferentiableAt ℂ (cosZeta a) s := by

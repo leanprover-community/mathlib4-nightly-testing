@@ -70,6 +70,7 @@ theorem condExp_indicator_aux (hs : MeasurableSet[m] s) (hf : f =ᵐ[μ.restrict
   refine ((hsf_zero (μ[f | m]) (condExp_ae_eq_restrict_zero hs.compl hf)).trans ?_).symm
   exact condExp_congr_ae (hsf_zero f hf).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The conditional expectation of the indicator of a function over an `m`-measurable set with
 respect to the σ-algebra `m` is a.e. equal to the indicator of the conditional expectation. -/
 theorem condExp_indicator (hf_int : Integrable f μ) (hs : MeasurableSet[m] s) :

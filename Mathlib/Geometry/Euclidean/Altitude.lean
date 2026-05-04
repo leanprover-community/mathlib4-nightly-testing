@@ -180,6 +180,7 @@ def altitudeFoot {n : ℕ} [NeZero n] (s : Simplex ℝ P n) (i : Fin (n + 1)) : 
   simp only [altitudeFoot, reindex_points, Function.comp_apply]
   exact orthogonalProjectionSpan_congr (s.range_faceOpposite_reindex e i) rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma altitudeFoot_map {n : ℕ} [NeZero n] (s : Simplex ℝ P n) (f : P →ᵃⁱ[ℝ] P₂)
     (i : Fin (n + 1)) :

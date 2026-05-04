@@ -321,6 +321,7 @@ same equations in a module `N`, then this is the canonical induced linear map `M
 def desc (s : relations.Solution N) : M →ₗ[A] N :=
   s.fromQuotient.comp h.linearEquiv.symm.toLinearMap
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma desc_var (s : relations.Solution N) (g : relations.G) :
     h.desc s (solution.var g) = s.var g := by

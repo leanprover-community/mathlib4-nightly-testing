@@ -87,6 +87,7 @@ theorem norm_approxOn_zero_le [OpensMeasurableSpace E] {f : β → E} (hf : Meas
   simpa [enorm, edist_eq_enorm_sub, ← ENNReal.coe_add, norm_sub_rev]
     using edist_approxOn_y0_le hf h₀ x n
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_approxOn_Lp_eLpNorm [OpensMeasurableSpace E] {f : β → E} (hf : Measurable f)
     {s : Set E} {y₀ : E} (h₀ : y₀ ∈ s) [SeparableSpace s] (hp_ne_top : p ≠ ∞) {μ : Measure β}
     (hμ : ∀ᵐ x ∂μ, f x ∈ closure s) (hi : eLpNorm (fun x => f x - y₀) p μ < ∞) :
@@ -124,6 +125,7 @@ theorem tendsto_approxOn_Lp_eLpNorm [OpensMeasurableSpace E] {f : β → E} (hf 
   -- Then we apply the Dominated Convergence Theorem
   simpa using tendsto_lintegral_of_dominated_convergence _ hF_meas h_bound h_fin h_lim
 
+set_option backward.defeqAttrib.useBackward true in
 theorem memLp_approxOn [BorelSpace E] {f : β → E} {μ : Measure β} (fmeas : Measurable f)
     (hf : MemLp f p μ) {s : Set E} {y₀ : E} (h₀ : y₀ ∈ s) [SeparableSpace s]
     (hi₀ : MemLp (fun _ => y₀) p μ) (n : ℕ) : MemLp (approxOn f fmeas s y₀ h₀ n) p μ := by
@@ -546,6 +548,7 @@ theorem toSimpleFunc_toLp (f : α →ₛ E) (hfi : MemLp f p μ) : toSimpleFunc 
 
 variable (E μ)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem zero_toSimpleFunc : toSimpleFunc (0 : Lp.simpleFunc E p μ) =ᵐ[μ] 0 := by
   filter_upwards [toSimpleFunc_eq_toFun (0 : Lp.simpleFunc E p μ),
     Lp.coeFn_zero E 1 μ] with _ h₁ _
@@ -553,6 +556,7 @@ theorem zero_toSimpleFunc : toSimpleFunc (0 : Lp.simpleFunc E p μ) =ᵐ[μ] 0 :
 
 variable {E μ}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem add_toSimpleFunc (f g : Lp.simpleFunc E p μ) :
     toSimpleFunc (f + g) =ᵐ[μ] toSimpleFunc f + toSimpleFunc g := by
   filter_upwards [toSimpleFunc_eq_toFun (f + g), toSimpleFunc_eq_toFun f,
@@ -560,12 +564,14 @@ theorem add_toSimpleFunc (f g : Lp.simpleFunc E p μ) :
   simp only [AddSubgroup.coe_add, Pi.add_apply]
   iterate 4 intro h; rw [h]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem neg_toSimpleFunc (f : Lp.simpleFunc E p μ) : toSimpleFunc (-f) =ᵐ[μ] -toSimpleFunc f := by
   filter_upwards [toSimpleFunc_eq_toFun (-f), toSimpleFunc_eq_toFun f,
     Lp.coeFn_neg (f : Lp E p μ)] with _
   simp only [Pi.neg_apply, AddSubgroup.coe_neg]
   repeat intro h; rw [h]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem sub_toSimpleFunc (f g : Lp.simpleFunc E p μ) :
     toSimpleFunc (f - g) =ᵐ[μ] toSimpleFunc f - toSimpleFunc g := by
   filter_upwards [toSimpleFunc_eq_toFun (f - g), toSimpleFunc_eq_toFun f,
@@ -575,6 +581,7 @@ theorem sub_toSimpleFunc (f g : Lp.simpleFunc E p μ) :
 
 variable [NormedRing 𝕜] [Module 𝕜 E] [IsBoundedSMul 𝕜 E]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem smul_toSimpleFunc (k : 𝕜) (f : Lp.simpleFunc E p μ) :
     toSimpleFunc (k • f) =ᵐ[μ] k • ⇑(toSimpleFunc f) := by
   filter_upwards [toSimpleFunc_eq_toFun (k • f), toSimpleFunc_eq_toFun f,
@@ -731,6 +738,7 @@ variable (p μ G)
 def coeSimpleFuncNonnegToLpNonneg :
     { g : Lp.simpleFunc G p μ // 0 ≤ g } → { g : Lp G p μ // 0 ≤ g } := fun g => ⟨g, g.2⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem denseRange_coeSimpleFuncNonnegToLpNonneg [hp : Fact (1 ≤ p)] (hp_ne_top : p ≠ ∞) :
     DenseRange (coeSimpleFuncNonnegToLpNonneg p μ G) := fun g ↦ by
   borelize G

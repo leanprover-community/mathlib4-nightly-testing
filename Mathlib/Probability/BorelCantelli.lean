@@ -64,6 +64,7 @@ theorem iIndepSet.condExp_indicator_filtrationOfSet_ae_eq (hsm : ∀ n, Measurab
 
 open Filter
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **The second Borel-Cantelli lemma**: Given a sequence of independent sets `(sₙ)` such that
 `∑ n, μ sₙ = ∞`, `limsup sₙ` has measure 1. -/
 theorem measure_limsup_eq_one {s : ℕ → Set Ω} (hsm : ∀ n, MeasurableSet (s n)) (hs : iIndepSet s μ)

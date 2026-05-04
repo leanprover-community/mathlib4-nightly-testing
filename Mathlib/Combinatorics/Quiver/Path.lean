@@ -331,6 +331,7 @@ theorem mapPath_cons {a b c : V} (p : Path a b) (e : b ⟶ c) :
     F.mapPath (Path.cons p e) = Path.cons (F.mapPath p) (F.map e) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem mapPath_comp {a b : V} (p : Path a b) :
     ∀ {c : V} (q : Path b c), F.mapPath (p.comp q) = (F.mapPath p).comp (F.mapPath q)

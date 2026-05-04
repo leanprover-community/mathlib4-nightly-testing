@@ -125,6 +125,7 @@ lemma ae_compProd_iff [SFinite μ] [IsSFiniteKernel κ] {p : α × β → Prop}
     (∀ᵐ x ∂(μ ⊗ₘ κ), p x) ↔ ∀ᵐ a ∂μ, ∀ᵐ b ∂(κ a), p (a, b) :=
   Kernel.ae_compProd_iff hp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ae_compProd_of_ae_fst (κ : Kernel α β) {p : α → Prop} (hp : MeasurableSet {x | p x})
     (h : ∀ᵐ a ∂μ, p a) :
     ∀ᵐ x ∂(μ ⊗ₘ κ), p x.1 :=

@@ -219,6 +219,7 @@ theorem eventually_nhds_zero_mapsTo {s : Set (∀ i, E i)} (hs : IsVonNBounded �
     ∀ᶠ f : ContinuousMultilinearMap 𝕜 E F in 𝓝 0, MapsTo f s U :=
   hasBasis_nhds_zero.mem_of_mem (i := (s, U)) ⟨hs, hu⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem isVonNBounded_image2_apply [ContinuousConstSMul 𝕜 F]
     {S : Set (ContinuousMultilinearMap 𝕜 E F)} (hS : IsVonNBounded 𝕜 S)
     {s : Set (∀ i, E i)} (hs : IsVonNBounded 𝕜 s) :

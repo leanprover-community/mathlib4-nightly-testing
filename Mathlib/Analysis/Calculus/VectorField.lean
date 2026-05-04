@@ -359,6 +359,7 @@ theorem _root_.Filter.EventuallyEq.lieBracketWithin_vectorField_eq_of_mem
   hV.lieBracketWithin_vectorField_eq (mem_of_mem_nhdsWithin hx hV :)
     hW (mem_of_mem_nhdsWithin hx hW :)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If vector fields coincide on a neighborhood of a point within a set, then the Lie brackets
 also coincide on a neighborhood of this point within this set. Version where one considers the Lie
 bracket within a subset. -/
@@ -529,6 +530,7 @@ open Set
 
 variable [CompleteSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a `C^2` map has an invertible derivative within a set at a point, then nearby derivatives
 can be written as continuous linear equivs, which depend in a `C^1` way on the point, as well as
 their inverse, and moreover one can compute the derivative of the inverse. -/
@@ -580,6 +582,7 @@ lemma _root_.exists_continuousLinearEquiv_fderivWithin_symm_eq
   rw [B (fderivWithin 𝕜 (fun y ↦ ((N y).symm : F →L[𝕜] E)) s x v), I]
   simp only [ContinuousLinearMap.comp_neg, eN.fderivWithin_eq e'N]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma DifferentiableWithinAt.pullbackWithin {f : E → F} {V : F → F} {s : Set E} {t : Set F} {x : E}
     (hV : DifferentiableWithinAt 𝕜 V t (f x))
     (hf : ContDiffWithinAt 𝕜 2 f s x) (hf' : (fderivWithin 𝕜 f s x).IsInvertible)
@@ -645,6 +648,7 @@ lemma pullbackWithin_lieBracketWithin_of_isSymmSndFDerivWithinAt
   · exact M_symm_smooth.differentiableWithinAt one_ne_zero
   · exact hW.comp x Af hst
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Lie bracket commutes with taking pullbacks. This requires the function to have symmetric
 second derivative. Version in a complete space. One could also give a version avoiding
 completeness but requiring that `f` is a local diffeomorphism. Variant where unique

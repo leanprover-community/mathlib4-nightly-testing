@@ -297,6 +297,7 @@ theorem tendsto_sum_mul_atTop_nhds_one_sub_integral
   rw [sum_mul_eq_sub_integral_mul' _ _ (fun t ht ↦ hf_diff _ ht.1)]
   exact hf_int.integrableOn_compact_subset Set.Icc_subset_Ici_self isCompact_Icc
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_sum_mul_atTop_nhds_one_sub_integral₀ (hc : c 0 = 0)
     (hf_diff : ∀ t ∈ Set.Ici 1, DifferentiableAt ℝ f t)
     (hf_int : LocallyIntegrableOn (deriv f) (Set.Ici 1)) {l : 𝕜}
@@ -374,6 +375,7 @@ theorem summable_mul_of_bigO_atTop
   exact_mod_cast sum_mul_eq_sub_integral_mul' _ _ (fun _ ht ↦ hf_diff _ ht.1)
     (hf_int.integrableOn_compact_subset Set.Icc_subset_Ici_self isCompact_Icc)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A version of `summable_mul_of_bigO_atTop` that can be useful to avoid difficulties near zero. -/
 theorem summable_mul_of_bigO_atTop'
     (hf_diff : ∀ t ∈ Set.Ici 1, DifferentiableAt ℝ (fun x ↦ ‖f x‖) t)

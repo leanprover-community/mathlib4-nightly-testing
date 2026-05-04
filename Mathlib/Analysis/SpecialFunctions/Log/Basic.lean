@@ -487,6 +487,7 @@ open Filter
 
 namespace Real
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_log_comp_add_sub_log (y : ℝ) :
     Tendsto (fun x : ℝ => log (x + y) - log x) atTop (𝓝 0) := by
   have : Tendsto (fun x ↦ 1 + y / x) atTop (𝓝 (1 + 0)) :=

@@ -346,6 +346,7 @@ section
 
 variable (e₁ : P₁ ≃ᴬ[k] P₂) (e₂ : P₃ ≃ᴬ[k] P₄)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Product of two continuous affine equivalences. The map comes from `Equiv.prodCongr` -/
 @[simps toAffineEquiv]
 def prodCongr : P₁ × P₃ ≃ᴬ[k] P₂ × P₄ where

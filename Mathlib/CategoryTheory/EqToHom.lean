@@ -293,6 +293,7 @@ theorem precomp_map_heq (H : E ⥤ C) (hmap : ∀ {X Y} (f : X ⟶ Y), F.map f �
     (f : X ⟶ Y) : (H ⋙ F).map f ≍ (H ⋙ G).map f :=
   hmap _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem postcomp_map_heq (H : D ⥤ E) (hx : F.obj X = G.obj X) (hy : F.obj Y = G.obj Y)
     (hmap : F.map f ≍ G.map f) : (F ⋙ H).map f ≍ (G ⋙ H).map f := by
   dsimp

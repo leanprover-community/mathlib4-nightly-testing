@@ -72,6 +72,7 @@ theorem memLp_lineDeriv (hf : LipschitzWith C f) (v : E) :
 
 variable [FiniteDimensional ℝ E] [IsAddHaarMeasure μ]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ae_lineDifferentiableAt
     (hf : LipschitzWith C f) (v : E) :
     ∀ᵐ p ∂μ, LineDifferentiableAt ℝ f p v := by
@@ -102,6 +103,7 @@ the derivative to the smooth function by integration by parts. As the derivative
 function is linear, this gives the result.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_inv_smul_sub_mul_tendsto_integral_lineDeriv_mul
     (hf : LipschitzWith C f) (hg : Integrable g μ) (v : E) :
     Tendsto (fun (t : ℝ) ↦ ∫ x, (t⁻¹ • (f (x + t • v) - f x)) * g x ∂μ) (𝓝[>] 0)
@@ -124,6 +126,7 @@ theorem integral_inv_smul_sub_mul_tendsto_integral_lineDeriv_mul
   · filter_upwards [hf.ae_lineDifferentiableAt v] with x hx
     exact hx.hasLineDerivAt.tendsto_slope_zero_right.mul tendsto_const_nhds
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_inv_smul_sub_mul_tendsto_integral_lineDeriv_mul'
     (hf : LipschitzWith C f) (h'f : HasCompactSupport f) (hg : Continuous g) (v : E) :
     Tendsto (fun (t : ℝ) ↦ ∫ x, (t⁻¹ • (f (x + t • v) - f x)) * g x ∂μ) (𝓝[>] 0)

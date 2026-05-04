@@ -294,6 +294,7 @@ section indicator
 
 variable {α : Type*} [PseudoEMetricSpace α] {β : Type*} [One β]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Pointwise, the multiplicative indicators of δ-thickenings of a set eventually coincide
 with the multiplicative indicator of the set as δ>0 tends to zero. -/
 @[to_additive /-- Pointwise, the indicators of δ-thickenings of a set eventually coincide
@@ -309,6 +310,7 @@ lemma mulIndicator_thickening_eventually_eq_mulIndicator_closure (f : α → β)
       with δ x_notin_thE _
     simp only [x_notin_thE, not_false_eq_true, mulIndicator_of_notMem, x_mem_closure]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Pointwise, the multiplicative indicators of closed δ-thickenings of a set eventually coincide
 with the multiplicative indicator of the set as δ tends to zero. -/
 @[to_additive /-- Pointwise, the indicators of closed δ-thickenings of a set eventually coincide

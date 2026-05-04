@@ -73,6 +73,7 @@ private lemma rnDeriv_measure_compProd_left_of_ac (hμν : μ ≪ ν) (κ : Kern
     congr with i
     exact hf_eq i
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary lemma for `rnDeriv_measure_compProd_left`. -/
 lemma rnDeriv_compProd_withDensity_rnDeriv (μ ν : Measure α) (κ η : Kernel α β)
     [IsFiniteMeasure μ] [IsFiniteMeasure ν] [IsFiniteKernel κ] [IsFiniteKernel η] :
@@ -102,6 +103,7 @@ lemma rnDeriv_measure_compProd_left (μ ν : Measure α) (κ : Kernel α β)
     Measure.ae_eq_compProd_of_ae_eq_fst _ (by fun_prop) (by fun_prop)
       (Measure.rnDeriv_withDensity ν (by fun_prop))
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Radon-Nikodym derivative `∂(μ ⊗ₘ κ)/∂(ν ⊗ₘ η)` equals the product of `∂μ/∂ν` and
 `∂(μ ⊗ₘ κ)/∂(μ ⊗ₘ η)`. -/
 lemma rnDeriv_compProd [IsFiniteMeasure μ] [IsFiniteKernel κ] [IsFiniteKernel η]

@@ -273,6 +273,7 @@ monomials `mFourier n` on `UnitAddTorus d` considered as elements of `L²`. -/
 @[simp]
 theorem coe_mFourierBasis : ⇑(mFourierBasis (d := d)) = mFourierLp 2 := HilbertBasis.coe_mk _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Under the isometric isomorphism `mFourierBasis` from `L²(UnitAddTorus d)` to `ℓ²(ℤᵈ, ℂ)`,
 the `i`-th coefficient is `mFourierCoeff f i`. -/
 theorem mFourierBasis_repr (f : L²(UnitAddTorus d)) (i : d → ℤ) :

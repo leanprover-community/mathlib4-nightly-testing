@@ -36,6 +36,7 @@ namespace Kernel
 
 variable {α : Type*} {mα : MeasurableSpace α} {κ : Kernel α Ω} {P : Measure α}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `X` is a process independent from `Y` and for all `i`, `X' i` is almost everywhere equal
 to `X i`, then `X'` is also independent from `Y`. This implies that independence results about
 measurable processes should generally also hold
@@ -85,6 +86,7 @@ lemma IndepFun.process_congr {𝓧 : S → Type*} {𝓨 : T → Type*}
     IndepFun (fun ω i ↦ X' i ω) (fun ω j ↦ Y' j ω) κ P :=
   (hXY.process_congr_right hY).process_congr_left hX
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A stochastic process $(X_s)_{s \in S}$ is independent from a random variable $Y$ if
 for all $s_1, ..., s_p \in S$ the family $(X_{s_1}, ..., X_{s_p})$ is independent from $Y$. -/
 lemma IndepFun.process_indepFun {𝓧 : S → Type*} {𝓨 : Type*}
@@ -188,6 +190,7 @@ lemma IndepFun.process_indepFun_process₀ {T : Type*} {𝓧 : S → Type*} {�
   exact process_congr (h I J) (fun i ↦ Measure.ae_ae_of_ae_comp (hX i).ae_eq_mk)
     (fun j ↦ Measure.ae_ae_of_ae_comp (hY j).ae_eq_mk)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If stochastic processes `X : (i : S) → (j : T i) → Ω → 𝓧 i j` are independent and
 for all `i j`, `X' i j` is almost everywhere equal to `X i j`,
 then `X'` are also independent. This implies that independence results about
@@ -231,6 +234,7 @@ lemma iIndepFun.process_congr {T : S → Type*} {𝓧 : (i : S) → (j : T i) �
   refine Finset.prod_congr rfl fun i hi ↦ ?_
   rw [measure_congr ((ha2 i hi).preimage _)]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Stochastic processes $((X^s_t)_{t \in T_s})_{s \in S}$ are mutually independent if
 for all $s_1, ..., s_n$ and all $t^{s_i}_1, ..., t^{s_i}_{p_i}$ the families
 $(X^{s_1}_{t^{s_1}_1}, ..., X^{s_1}_{t^{s_1}_{p_1}}), ...,

@@ -322,6 +322,7 @@ noncomputable def cons {i} (g : G i) (w : NormalWord d) (hmw : w.fstIdx ≠ some
       · simp
       · exact w.normalized _ _ (by assumption) }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem prod_cons {i} (g : G i) (w : NormalWord d) (hmw : w.fstIdx ≠ some i)

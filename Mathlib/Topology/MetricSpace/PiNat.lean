@@ -233,6 +233,7 @@ theorem res_injective : Injective (@res α) := by
   apply res_eq_res.mp _ (Nat.lt_succ_self _)
   rw [h]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `cylinder x n` is equal to the set of sequences `y` with the same restriction to `n` as `x`. -/
 theorem cylinder_eq_res (x : ℕ → α) (n : ℕ) :
     cylinder x n = { y | res y n = res x n } := by

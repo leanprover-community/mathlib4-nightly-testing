@@ -216,6 +216,7 @@ lemma summable_jacobiTheta₂_term_fderiv_iff (z τ : ℂ) :
     refine mul_le_mul_of_nonneg_left ?_ (pow_nonneg (Int.cast_nonneg (abs_nonneg _)) _)
     exact norm_jacobiTheta₂_term_le hτ le_rfl le_rfl n
 
+set_option backward.defeqAttrib.useBackward true in
 lemma summable_jacobiTheta₂'_term_iff (z τ : ℂ) :
     Summable (jacobiTheta₂'_term · z τ) ↔ 0 < im τ := by
   constructor

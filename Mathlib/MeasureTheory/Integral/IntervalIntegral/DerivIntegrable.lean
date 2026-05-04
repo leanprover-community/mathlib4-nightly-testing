@@ -33,6 +33,7 @@ open MeasureTheory Set Filter
 
 open scoped Topology
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `f` is monotone on `[a, b]`, then `f'` is the limit of `G n` a.e. on `[a, b]`, where each
 `G n` is `AEStronglyMeasurable` and the liminf of the lower Lebesgue integral of `‖G n ·‖ₑ` is at
 most `f b - f a`. -/

@@ -142,6 +142,7 @@ theorem toBaseChange_comp_reverseOp (Q : QuadraticForm R V) :
     Algebra.TensorProduct.opAlgEquiv_tmul, reverseOp_ι]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `reverse` acts only on the right of the tensor product. -/
 theorem toBaseChange_reverse (Q : QuadraticForm R V) (x : CliffordAlgebra (Q.baseChange A)) :
     toBaseChange A Q (reverse x) =

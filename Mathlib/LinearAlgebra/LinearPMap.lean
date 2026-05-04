@@ -154,6 +154,7 @@ theorem domain_mkSpanSingleton (x : E) (y : F) (H : ∀ c : R, c • x = 0 → �
     (mkSpanSingleton' x y H).domain = R ∙ x :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem mkSpanSingleton'_apply (x : E) (y : F) (H : ∀ c : R, c • x = 0 → σ c • y = 0) (c : R) (h) :
     mkSpanSingleton' x y H ⟨c • x, h⟩ = σ c • y := by

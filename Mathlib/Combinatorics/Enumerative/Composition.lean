@@ -349,6 +349,7 @@ theorem embedding_comp_inv (j : Fin n) : c.embedding (c.index j) (c.invEmbedding
   rw [Fin.ext_iff]
   apply add_tsub_cancel_of_le (c.sizeUpTo_index_le j)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mem_range_embedding_iff {j : Fin n} {i : Fin c.length} :
     j ∈ Set.range (c.embedding i) ↔ c.sizeUpTo i ≤ j ∧ (j : ℕ) < c.sizeUpTo (i : ℕ).succ := by
   constructor
@@ -769,6 +770,7 @@ theorem getElem_splitWrtComposition (l : List α) (c : Composition n)
     (l.splitWrtComposition c)[i] = (l.take (c.sizeUpTo (i + 1))).drop (c.sizeUpTo i) :=
   getElem_splitWrtComposition' _ _ h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem flatten_splitWrtCompositionAux {ns : List ℕ} :
     ∀ {l : List α}, ns.sum = l.length → (l.splitWrtCompositionAux ns).flatten = l := by
   induction ns with

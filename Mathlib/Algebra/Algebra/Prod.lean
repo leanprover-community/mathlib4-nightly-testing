@@ -36,6 +36,7 @@ variable (R A B)
 
 open Algebra
 
+set_option backward.defeqAttrib.useBackward true in
 instance algebra : Algebra R (A × B) where
   algebraMap := RingHom.prod (algebraMap R A) (algebraMap R B)
   commutes' := by

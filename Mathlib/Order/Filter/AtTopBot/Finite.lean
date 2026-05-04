@@ -150,6 +150,7 @@ theorem eventually_pow_lt_factorial_sub (c d : ℕ) : ∀ᶠ n in atTop, c ^ n <
   · exact Nat.pow_lt_pow_left (Nat.lt_succ_self _) (Nat.succ_ne_zero _)
   · exact (Nat.factorial_pos _)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eventually_mul_pow_lt_factorial_sub (a c d : ℕ) :
     ∀ᶠ n in atTop, a * c ^ n < (n - d)! := by
   filter_upwards [Nat.eventually_pow_lt_factorial_sub (a * c) d, Filter.eventually_gt_atTop 0]

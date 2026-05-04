@@ -247,6 +247,7 @@ lemma integral_mul_const_of_integrable {A : Type*} [NonUnitalNormedRing A] [Norm
     rw [ContinuousLinearMap.integral_comp_comm _ hf]
   · simp [integral, hA]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_withDensity_eq_integral_smul {f : X → ℝ≥0} (f_meas : Measurable f) (g : X → E) :
     ∫ x, g x ∂μ.withDensity (fun x => f x) = ∫ x, f x • g x ∂μ := by
   by_cases hE : CompleteSpace E; swap; · simp [integral, hE]
@@ -292,6 +293,7 @@ theorem integral_withDensity_eq_integral_smul {f : X → ℝ≥0} (f_meas : Meas
     · rw [hx _]
       simpa only [Ne, ENNReal.coe_eq_zero] using h'x
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_withDensity_eq_integral_smul₀ {f : X → ℝ≥0} (hf : AEMeasurable f μ) (g : X → E) :
     ∫ x, g x ∂μ.withDensity (fun x => f x) = ∫ x, f x • g x ∂μ := by
   let f' := hf.mk _

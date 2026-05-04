@@ -127,6 +127,7 @@ protected theorem Measurable.infEDist {f : β → α} (hf : Measurable f) {s : S
 @[deprecated (since := "2026-01-08")]
 alias Measurable.infEdist := Measurable.infEDist
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a set has a closed thickening with finite measure, then the measure of its `r`-closed
 thickenings converges to the measure of its closure as `r` tends to `0`. -/
 theorem tendsto_measure_cthickening {μ : Measure α} {s : Set α}

@@ -59,6 +59,7 @@ theorem prod_hom₂_nonempty {l : List ι} (f : M → N → P)
     (l.map fun i => f (f₁ i) (f₂ i)).prod = f (l.map f₁).prod (l.map f₂).prod := by
   match l, hl with | x :: xs, hl => induction xs generalizing x <;> simp_all
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem prod_hom₂ (l : List ι) (f : M → N → P) (hf : ∀ a b c d, f (a * b) (c * d) = f a c * f b d)
     (hf' : f 1 1 = 1) (f₁ : ι → M) (f₂ : ι → N) :

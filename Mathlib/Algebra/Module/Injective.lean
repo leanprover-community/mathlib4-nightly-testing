@@ -331,6 +331,7 @@ theorem ExtensionOfMaxAdjoin.extensionToFun_wd (h : Module.Baer R Q) {y : N}
   rw [Subtype.coe_mk, add_sub, ← eq1]
   exact eq_sub_of_add_eq (ExtensionOfMaxAdjoin.eqn i x).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The linear map `M ⊔ ⟨y⟩ ⟶ Q` by `x + r • y ↦ f x + φ r` is an extension of `f` -/
 def extensionOfMaxAdjoin (h : Module.Baer R Q) (y : N) : ExtensionOf i f where
   domain := supExtensionOfMaxSingleton i f y -- (extensionOfMax i f).domain ⊔ Submodule.span R {y}

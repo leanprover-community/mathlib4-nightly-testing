@@ -61,6 +61,7 @@ local notation:70 s:70 " ^^ " n:71 => piFinset fun i : Fin n ↦ s i
 namespace MvPolynomial
 variable {R : Type*} [CommRing R] [IsDomain R] [DecidableEq R]
 
+set_option backward.defeqAttrib.useBackward true in
 -- A user should be able to provide `hp` as a named argument
 -- regardless of whether one has used pattern-matching or induction to prove the lemma.
 set_option linter.unusedVariables false in

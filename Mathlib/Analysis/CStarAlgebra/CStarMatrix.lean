@@ -401,6 +401,7 @@ lemma reindexₗ_apply {l o : Type*} [Semiring R] [AddCommMonoid A] [Module R A]
     {eₘ : m ≃ l} {eₙ : n ≃ o} {M : CStarMatrix m n A} {i : l} {j : o} :
     reindexₗ R A eₘ eₙ M i j = Matrix.reindex eₘ eₙ M i j := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The natural map that reindexes a matrix's rows and columns with equivalent types is an
 equivalence. -/
 def reindexₐ (R) (A) [Fintype m] [Fintype n] [Semiring R] [AddCommMonoid A] [Mul A] [Module R A]

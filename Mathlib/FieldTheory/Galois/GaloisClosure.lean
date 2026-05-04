@@ -132,6 +132,7 @@ theorem adjoin_simple_le_iff [IsGalois k K] {x : K} {L : FiniteGaloisIntermediat
   simp only [le_iff, adjoin_val, IntermediateField.normalClosure_le_iff_of_normal,
     IntermediateField.adjoin_le_iff, Set.singleton_subset_iff, SetLike.mem_coe]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem adjoin_map [IsGalois k K] (f : K →ₐ[k] K) (s : Set K) [Finite s] :
     adjoin k (f '' s) = adjoin k s := by

@@ -174,6 +174,7 @@ noncomputable def liftOfSurjective [FormallySmooth R A] (f : A →ₐ[R] C)
     A →ₐ[R] B :=
   FormallySmooth.lift _ hg' ((Ideal.quotientKerAlgEquivOfSurjective hg).symm.toAlgHom.comp f)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem liftOfSurjective_apply [FormallySmooth R A] (f : A →ₐ[R] C) (g : B →ₐ[R] C)
@@ -345,6 +346,7 @@ theorem of_split (f : P →ₐ[R] A) (g : A →ₐ[R] P ⧸ RingHom.ker f.toRing
   obtain ⟨y, hy⟩ := Ideal.Quotient.mk_surjective (g x)
   exact ⟨y, congr(f.kerSquareLift $hy).trans congr($h x)⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem of_comp_surjective
     (H : ∀ ⦃B : Type max u v⦄ [CommRing B] [Algebra R B] (I : Ideal B) (_ : I ^ 2 = ⊥),

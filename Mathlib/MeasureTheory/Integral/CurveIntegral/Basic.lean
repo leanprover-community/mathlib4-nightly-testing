@@ -142,6 +142,7 @@ theorem curveIntegral_def [NormedSpace ℝ F] (ω : E → E →L[𝕜] F) (γ : 
     curveIntegral ω γ = ∫ t in 0..1, curveIntegralFun ω γ t := by
   simp +instances only [curveIntegral, NormedSpace.restrictScalars_eq]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem curveIntegral_eq_intervalIntegral_deriv [NormedSpace ℝ E] [NormedSpace ℝ F]
     (ω : E → E →L[𝕜] F) (γ : Path a b) :
     ∫ᶜ x in γ, ω x = ∫ t in 0..1, ω (γ.extend t) (deriv γ.extend t) := by

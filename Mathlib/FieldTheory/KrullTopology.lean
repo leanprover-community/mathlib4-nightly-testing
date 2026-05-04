@@ -98,6 +98,7 @@ theorem mem_galBasis_iff (K L : Type*) [Field K] [Field L] [Algebra K L] (U : Se
     U ∈ galBasis K L ↔ U ∈ (fun g => g.carrier) '' fixedByFinite K L :=
   Iff.rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For a field extension `L/K`, `galGroupBasis K L` is the group filter basis on `Gal(L/K)`
 whose sets are `Gal(L/E)` for finite subextensions `E/K`. -/
 @[implicit_reducible]

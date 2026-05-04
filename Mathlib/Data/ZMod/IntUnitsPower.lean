@@ -38,6 +38,7 @@ lemma ZMod.smul_units_def (z : ZMod 2) (au : Additive ℤˣ) :
 lemma ZMod.natCast_smul_units (n : ℕ) (au : Additive ℤˣ) : (n : ZMod 2) • au = n • au :=
   (Int.units_pow_eq_pow_mod_two au n).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This is an indirect way of saying that `ℤˣ` has a power operation by `ZMod 2`. -/
 instance : Module (ZMod 2) (Additive ℤˣ) where
   smul z au := .ofMul <| au.toMul ^ z.val

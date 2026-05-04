@@ -615,6 +615,7 @@ end TotalDegree
 section degreesLE
 variable {s t : Multiset σ}
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R σ s) in
 /-- The submodule of multivariate polynomials of degrees bounded by a monomial `s`. -/
 def degreesLE : Submodule R (MvPolynomial σ R) where

@@ -36,6 +36,7 @@ variable [WellFoundedLT ι]
 instance : InfSet (Πₗ i, α i) where
   sInf s := toLex (inf s)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem sInf_apply (s : Set (Πₗ i, α i)) (i : ι) :
     sInf s i = ⨅ e : {e ∈ s | ∀ j < i, e j = sInf s j}, e.1 i := by
   simp [sInf, inf]

@@ -405,6 +405,7 @@ variable {F R S A B : Type*} {p : A → Prop} {q : B → Prop}
   [ContinuousMapZero.UniqueHom R B] [FunLike F A B] [NonUnitalAlgHomClass F S A B]
   [StarHomClass F A B]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include S in
 /-- Non-unital star algebra homomorphisms commute with the non-unital continuous functional
@@ -456,6 +457,7 @@ variable {F R S A B : Type*} {p : A → Prop} {q : B → Prop}
   [ContinuousMap.UniqueHom R B] [FunLike F A B] [AlgHomClass F S A B]
   [StarHomClass F A B]
 
+set_option backward.defeqAttrib.useBackward true in
 include S in
 /-- Star algebra homomorphisms commute with the continuous functional calculus. -/
 lemma StarAlgHomClass.map_cfc (φ : F) (f : R → R) (a : A)

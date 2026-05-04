@@ -145,6 +145,7 @@ noncomputable def algEquivToLimit : Gal(K/k) →* limit (asProfiniteGaloisGroupF
     simp only [map_mul]
     rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem restrictNormalHom_continuous (L : IntermediateField k K) [Normal k L] :
     Continuous (AlgEquiv.restrictNormalHom (F := k) (K₁ := K) L) := by
   apply continuous_of_continuousAt_one _ (continuousAt_def.mpr _)

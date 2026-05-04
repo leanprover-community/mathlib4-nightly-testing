@@ -196,6 +196,7 @@ theorem skewAdjointPart_comp_subtype_skewAdjoint :
 
 variable (A)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The decomposition of elements of a star module into their self- and skew-adjoint parts,
 as a linear equivalence. -/
 @[simps!]

@@ -197,6 +197,7 @@ lemma currySum_apply_inl_inr (p : Ω^ (M ⊕ N) X x) (y : I^(M ⊕ N)) :
     currySum x p (y ∘ Sum.inl) (y ∘ Sum.inr) = p y := by
   simp [currySum, sumArrowHomeomorphProdArrow, Equiv.sumArrowEquivProdArrow]
 
+set_option backward.defeqAttrib.useBackward true in
 @[fun_prop]
 lemma continuous_currySum : Continuous (currySum x (M := M) (N := N)) :=
   ContinuousMap.continuous_of_continuous_uncurry _ <| Continuous.subtype_mk

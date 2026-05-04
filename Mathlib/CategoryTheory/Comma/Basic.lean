@@ -237,6 +237,7 @@ variable {L' : A' ⥤ T'} {R' : B' ⥤ T'}
   {F₁ : A ⥤ A'} {F₂ : B ⥤ B'} {F : T ⥤ T'}
   (α : F₁ ⋙ L' ⟶ L ⋙ F) (β : R ⋙ F ⟶ F₂ ⋙ R')
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor `Comma L R ⥤ Comma L' R'` induced by three functors `F₁`, `F₂`, `F`
 and two natural transformations `F₁ ⋙ L' ⟶ L ⋙ F` and `R ⋙ F ⟶ F₂ ⋙ R'`. -/
@@ -262,6 +263,7 @@ instance faithful_map [F₁.Faithful] [F₂.Faithful] : (map α β).Faithful whe
     · exact F₁.map_injective (congr_arg CommaMorphism.left h)
     · exact F₂.map_injective (congr_arg CommaMorphism.right h)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance full_map [F.Faithful] [F₁.Full] [F₂.Full] [IsIso α] [IsIso β] : (map α β).Full where
   map_surjective {X Y} φ :=
@@ -298,6 +300,7 @@ where `α : F₁ ⋙ L' ⟶ L ⋙ F`. -/
 theorem map_fst : map α β ⋙ fst L' R' = fst L R ⋙ F₁ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism between `map α β ⋙ fst L' R'` and `fst L R ⋙ F₁`,
 where `α : F₁ ⋙ L' ⟶ L ⋙ F`. -/
 @[simps!]
@@ -310,6 +313,7 @@ where `β : R ⋙ F ⟶ F₂ ⋙ R'`. -/
 theorem map_snd : map α β ⋙ snd L' R' = snd L R ⋙ F₂ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism between `map α β ⋙ snd L' R'` and `snd L R ⋙ F₂`,
 where `β : R ⋙ F ⟶ F₂ ⋙ R'`. -/
 @[simps!]

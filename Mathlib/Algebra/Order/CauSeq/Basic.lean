@@ -788,6 +788,7 @@ protected theorem sup_comm (a b : CauSeq α abs) : a ⊔ b = b ⊔ a := Subtype.
 
 protected theorem inf_comm (a b : CauSeq α abs) : a ⊓ b = b ⊓ a := Subtype.ext (inf_comm _ _)
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem sup_eq_right {a b : CauSeq α abs} (h : a ≤ b) : a ⊔ b ≈ b := by
   obtain ⟨ε, ε0 : _ < _, i, h⟩ | h := h
   · intro _ _
@@ -800,6 +801,7 @@ protected theorem sup_eq_right {a b : CauSeq α abs} (h : a ≤ b) : a ⊔ b ≈
   · refine Setoid.trans (sup_equiv_sup h (Setoid.refl _)) ?_
     rw [CauSeq.sup_idem]
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem inf_eq_right {a b : CauSeq α abs} (h : b ≤ a) : a ⊓ b ≈ b := by
   obtain ⟨ε, ε0 : _ < _, i, h⟩ | h := h
   · intro _ _

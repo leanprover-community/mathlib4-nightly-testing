@@ -1084,6 +1084,7 @@ lemma linearMap_apply (ij : ι₂ × ι₁) :
     (b₁.linearMap b₂ ij) = (Matrix.toLin b₁ b₂) (Matrix.stdBasis R ι₂ ι₁ ij) := by
   simp [linearMap]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma linearMap_apply_apply (ij : ι₂ × ι₁) (k : ι₁) :
     (b₁.linearMap b₂ ij) (b₁ k) = if ij.2 = k then b₂ ij.1 else 0 := by
   have := Classical.decEq ι₂

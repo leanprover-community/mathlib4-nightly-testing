@@ -110,6 +110,7 @@ theorem SemicontinuousWithinAt.mono (h : SemicontinuousWithinAt r s x) (hst : t 
     SemicontinuousWithinAt r t x := fun y hy =>
   Filter.Eventually.filter_mono (nhdsWithin_mono _ hst) (h y hy)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem SemicontinuousWithinAt.congr_of_eventuallyEq {a : α}
     (h : SemicontinuousWithinAt r s a)
     (has : a ∈ s) (hfg : ∀ᶠ x in 𝓝[s] a, ∀ y, r x y ↔ r' x y) :
@@ -304,6 +305,7 @@ theorem LowerSemicontinuousWithinAt.mono (h : LowerSemicontinuousWithinAt f s x)
     LowerSemicontinuousWithinAt f t x :=
   SemicontinuousWithinAt.mono h hst
 
+set_option backward.defeqAttrib.useBackward true in
 theorem LowerSemicontinuousWithinAt.congr_of_eventuallyEq {a : α}
     (h : LowerSemicontinuousWithinAt f s a)
     (has : a ∈ s) (hfg : f =ᶠ[𝓝[s] a] g) :
@@ -650,6 +652,7 @@ theorem LowerHemicontinuousWithinAt.mono (h : LowerHemicontinuousWithinAt f s x)
     LowerHemicontinuousWithinAt f t x :=
   SemicontinuousWithinAt.mono h hst
 
+set_option backward.defeqAttrib.useBackward true in
 theorem LowerHemicontinuousWithinAt.congr_of_eventuallyEq {a : α}
     (h : LowerHemicontinuousWithinAt f s a)
     (has : a ∈ s) (hfg : f =ᶠ[𝓝[s] a] g) :
@@ -779,6 +782,7 @@ theorem UpperHemicontinuousWithinAt.mono (h : UpperHemicontinuousWithinAt f s x)
     UpperHemicontinuousWithinAt f t x :=
   SemicontinuousWithinAt.mono h hst
 
+set_option backward.defeqAttrib.useBackward true in
 theorem UpperHemicontinuousWithinAt.congr_of_eventuallyEq {a : α}
     (h : UpperHemicontinuousWithinAt f s a)
     (has : a ∈ s) (hfg : ∀ᶠ x in nhdsWithin a s, f x = g x) :

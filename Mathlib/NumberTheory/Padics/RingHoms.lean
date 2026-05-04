@@ -584,6 +584,7 @@ theorem nthHomSeq_one : nthHomSeq f_compat 1 ≈ 1 := by
   suffices (ZMod.cast (1 : ZMod (p ^ j)) : ℚ) = 1 by simp [nthHomSeq, nthHom, this, hε]
   rw [ZMod.cast_eq_val, ZMod.val_one, Nat.cast_one]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nthHomSeq_add (r s : R) :
     nthHomSeq f_compat (r + s) ≈ nthHomSeq f_compat r + nthHomSeq f_compat s := by
   intro ε hε
@@ -599,6 +600,7 @@ theorem nthHomSeq_add (r s : R) :
   rw [ZMod.cast_add (show p ^ n ∣ p ^ j from pow_dvd_pow _ hj)]
   simp only [sub_self]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem nthHomSeq_mul (r s : R) :
     nthHomSeq f_compat (r * s) ≈ nthHomSeq f_compat r * nthHomSeq f_compat s := by
   intro ε hε

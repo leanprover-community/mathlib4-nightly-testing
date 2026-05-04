@@ -149,6 +149,7 @@ lemma eventually_r_le_b : ∀ᶠ (n : ℕ) in atTop, ∀ i, r i n ≤ (b i : ℝ
 lemma eventually_r_lt_n : ∀ᶠ (n : ℕ) in atTop, ∀ i, r i n < n := by
   filter_upwards [eventually_ge_atTop R.n₀] with n hn i using R.r_lt_n i n hn
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_bi_mul_le_r : ∀ᶠ (n : ℕ) in atTop, ∀ i, (b (min_bi b) / 2) * n ≤ r i n := by
   have gt_zero : 0 < b (min_bi b) := R.b_pos (min_bi b)
   have hlo := isLittleO_self_div_log_id
@@ -178,6 +179,7 @@ lemma exists_eventually_const_mul_le_r :
   have gt_zero : 0 < b (min_bi b) := R.b_pos (min_bi b)
   exact ⟨b (min_bi b) / 2, ⟨⟨by positivity, R.bi_min_div_two_lt_one⟩, R.eventually_bi_mul_le_r⟩⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_r_ge (C : ℝ) : ∀ᶠ (n : ℕ) in atTop, ∀ i, C ≤ r i n := by
   obtain ⟨c, hc_mem, hc⟩ := R.exists_eventually_const_mul_le_r
   filter_upwards [eventually_ge_atTop ⌈C / c⌉₊, hc] with n hn₁ hn₂ i
@@ -200,6 +202,7 @@ lemma tendsto_atTop_r (i : α) : Tendsto (r i) atTop atTop := by
 lemma tendsto_atTop_r_real (i : α) : Tendsto (fun n => (r i n : ℝ)) atTop atTop :=
   Tendsto.comp tendsto_natCast_atTop_atTop (R.tendsto_atTop_r i)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exists_eventually_r_le_const_mul :
     ∃ c ∈ Set.Ioo (0 : ℝ) 1, ∀ᶠ (n : ℕ) in atTop, ∀ i, r i n ≤ c * n := by
   let c := b (max_bi b) + (1 - b (max_bi b)) / 2
@@ -324,6 +327,7 @@ lemma eventually_one_sub_smoothingFn_pos_real : ∀ᶠ (x : ℝ) in atTop, 0 < 1
 lemma eventually_one_sub_smoothingFn_pos : ∀ᶠ (n : ℕ) in atTop, 0 < 1 - ε n :=
   eventually_one_sub_smoothingFn_pos_real.natCast_atTop
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_one_sub_smoothingFn_nonneg : ∀ᶠ (n : ℕ) in atTop, 0 ≤ 1 - ε n := by
   filter_upwards [eventually_one_sub_smoothingFn_pos] with n hn; exact le_of_lt hn
 
@@ -360,6 +364,7 @@ lemma deriv_smoothingFn {x : ℝ} : deriv ε x = -x⁻¹ / (log x ^ 2) := by
   simp_rw [one_div]
   apply deriv_inv_log
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isLittleO_deriv_smoothingFn : deriv ε =o[atTop] fun x => x⁻¹ :=
   calc deriv ε
     _ =ᶠ[atTop] fun x => -x⁻¹ / (log x ^ 2) := by
@@ -377,6 +382,7 @@ lemma isLittleO_deriv_smoothingFn : deriv ε =o[atTop] fun x => x⁻¹ :=
       · exact Filter.Eventually.of_forall (fun x hx => by rw [mul_one] at hx; simp [hx])
     _ = fun x => x⁻¹ := by simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_deriv_one_sub_smoothingFn :
     deriv (fun x => 1 - ε x) =ᶠ[atTop] fun x => x⁻¹ / (log x ^ 2) :=
   calc deriv (fun x => 1 - ε x)
@@ -386,6 +392,7 @@ lemma eventually_deriv_one_sub_smoothingFn :
       filter_upwards with x
       simp [deriv_smoothingFn, neg_div]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_deriv_one_add_smoothingFn :
     deriv (fun x => 1 + ε x) =ᶠ[atTop] fun x => -x⁻¹ / (log x ^ 2) :=
   calc deriv (fun x => 1 + ε x)
@@ -395,6 +402,7 @@ lemma eventually_deriv_one_add_smoothingFn :
       filter_upwards with x
       simp [deriv_smoothingFn]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isLittleO_deriv_one_sub_smoothingFn :
     deriv (fun x => 1 - ε x) =o[atTop] fun (x : ℝ) => x⁻¹ :=
   calc deriv (fun x => 1 - ε x)
@@ -402,6 +410,7 @@ lemma isLittleO_deriv_one_sub_smoothingFn :
       filter_upwards [eventually_gt_atTop 1] with x hx; rw [deriv_fun_sub] <;> aesop
     _ =o[atTop] fun x => x⁻¹ := by rw [isLittleO_neg_left]; exact isLittleO_deriv_smoothingFn
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isLittleO_deriv_one_add_smoothingFn :
     deriv (fun x => 1 + ε x) =o[atTop] fun (x : ℝ) => x⁻¹ :=
   calc deriv (fun x => 1 + ε x)
@@ -423,6 +432,7 @@ lemma eventually_one_add_smoothingFn_r_pos : ∀ᶠ (n : ℕ) in atTop, ∀ i, 0
   rw [Filter.eventually_all]
   exact fun i => (R.tendsto_atTop_r i).eventually (f := r i) eventually_one_add_smoothingFn_pos
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_one_add_smoothingFn_nonneg : ∀ᶠ (n : ℕ) in atTop, 0 ≤ 1 + ε n := by
   filter_upwards [eventually_one_add_smoothingFn_pos] with n hn; exact le_of_lt hn
 
@@ -444,6 +454,7 @@ lemma strictAntiOn_one_add_smoothingFn : StrictAntiOn (fun (x : ℝ) => (1 : ℝ
 section
 include R
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isEquivalent_smoothingFn_sub_self (i : α) :
     (fun (n : ℕ) => ε (b i * n) - ε n) ~[atTop] fun n => -log (b i) / (log n) ^ 2 := by
   calc (fun (n : ℕ) => 1 / log (b i * n) - 1 / log n)
@@ -591,6 +602,7 @@ lemma eventually_asympBound_r_pos : ∀ᶠ (n : ℕ) in atTop, ∀ i, 0 < asympB
   rw [Filter.eventually_all]
   exact fun i => (R.tendsto_atTop_r i).eventually R.eventually_asympBound_pos
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_atTop_sumTransform_le :
     ∃ c > 0, ∀ᶠ (n : ℕ) in atTop, ∀ i, sumTransform (p a b) g (r i n) n ≤ c * g n := by
   obtain ⟨c₁, hc₁_mem, hc₁⟩ := R.exists_eventually_const_mul_le_r
@@ -667,6 +679,7 @@ lemma eventually_atTop_sumTransform_le :
       _ = c₂ * g n := by rw [div_self (by positivity), mul_one]
       _ ≤ max c₂ (c₂ / c₁ ^ ((p a b) + 1)) * g n := by gcongr; exact le_max_left _ _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventually_atTop_sumTransform_ge :
     ∃ c > 0, ∀ᶠ (n : ℕ) in atTop, ∀ i, c * g n ≤ sumTransform (p a b) g (r i n) n := by
   obtain ⟨c₁, hc₁_mem, hc₁⟩ := R.exists_eventually_const_mul_le_r

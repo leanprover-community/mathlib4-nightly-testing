@@ -199,6 +199,7 @@ a linear map -/
 abbrev lof (i : I) : A i →ₗ[R] FreeProduct R A :=
   ι' R A ∘ₗ DirectSum.lof R I A i
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `lof R A i 1 = 1` for all `i`. -/
 theorem lof_map_one (i : I) : lof R A i 1 = 1 := by
   rw [lof]; dsimp [mkAlgHom]; exact identify_one R A i

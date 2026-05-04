@@ -100,6 +100,7 @@ lemma integrable_llr_of_integrable_llr_compProd
     continuous_mul_log.stronglyMeasurable continuous_mul_log.continuousWithinAt h_int hκη_ac
   exact (integrable_rnDeriv_mul_log_iff hμν_ac).mp h_int
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_compProd_mul_log_eq_mul_add (h_ac : μ ⊗ₘ κ ≪ μ ⊗ₘ η) :
     ∀ᵐ p ∂(ν ⊗ₘ η), ((∂μ ⊗ₘ κ/∂ν ⊗ₘ η) p).toReal * log ((∂μ ⊗ₘ κ/∂ν ⊗ₘ η) p).toReal =
       (((∂μ ⊗ₘ κ/∂ν ⊗ₘ η) p).toReal * (log ((∂μ/∂ν) p.1).toReal +
@@ -177,6 +178,7 @@ lemma integral_llr_compProd_eq_add (h_ac : μ ⊗ₘ κ ≪ ν ⊗ₘ η)
     rw [Measure.integral_compProd h_int1]
     simp [llr]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (μ ν κ) in
 @[simp]
 lemma klDiv_compProd_left : klDiv (μ ⊗ₘ κ) (ν ⊗ₘ κ) = klDiv μ ν := by

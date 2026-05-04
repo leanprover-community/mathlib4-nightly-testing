@@ -310,6 +310,7 @@ def mkOfOplax (F : B ⥤ᵒᵖᴸ C) (F' : F.PseudoCore) : B ⥤ᵖ C where
       F'.mapCompIso_hom f (g ≫ h), ← F'.mapCompIso_hom g h, whiskerLeft_hom_inv_assoc,
       hom_inv_id, comp_id]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Construct a pseudofunctor from an oplax functor whose `mapId` and `mapComp` are isomorphisms. -/
 @[simps!]
 noncomputable def mkOfOplax' (F : B ⥤ᵒᵖᴸ C) [∀ a, IsIso (F.mapId a)]

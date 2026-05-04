@@ -63,6 +63,7 @@ lemma multipliable_of_summable_log (hfn : ∀ i, 0 < f i) (hf : Summable fun i �
     Multipliable f :=
   ⟨_, hasProd_of_hasSum_log hfn hf.hasSum⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Alternate version of `Real.multipliable_of_summable_log` assuming only that positivity holds
 eventually. -/
 lemma multipliable_of_summable_log' (hfn : ∀ᶠ i in cofinite, 0 < f i)
@@ -82,6 +83,7 @@ lemma rexp_tsum_eq_tprod (hfn : ∀ i, 0 < f i) (hf : Summable fun i ↦ log (f 
     rexp (∑' i, log (f i)) = ∏' i, f i :=
   (hasProd_of_hasSum_log hfn hf.hasSum).tprod_eq.symm
 
+set_option backward.defeqAttrib.useBackward true in
 open Complex in
 lemma summable_log_one_add_of_summable (hf : Summable f) :
     Summable (fun i ↦ log (1 + f i)) := by
@@ -91,6 +93,7 @@ lemma summable_log_one_add_of_summable (hf : Summable f) :
   rw [ofReal_log, ofReal_add, ofReal_one]
   linarith
 
+set_option backward.defeqAttrib.useBackward true in
 protected lemma multipliable_one_add_of_summable (hf : Summable f) :
     Multipliable (fun i ↦ 1 + f i) := by
   refine multipliable_of_summable_log' ?_ (summable_log_one_add_of_summable hf)

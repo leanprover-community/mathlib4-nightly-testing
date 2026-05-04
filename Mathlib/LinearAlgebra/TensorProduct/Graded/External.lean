@@ -111,6 +111,7 @@ def gradedComm :
 theorem gradedComm_symm : (gradedComm R 𝒜 ℬ).symm = gradedComm R ℬ 𝒜 := by
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem gradedComm_of_tmul_of (i j : ι) (a : 𝒜 i) (b : ℬ j) :
     gradedComm R 𝒜 ℬ (lof R _ 𝒜 i a ⊗ₜ lof R _ ℬ j b) =
       (-1 : ℤˣ) ^ (j * i) • (lof R _ ℬ _ b ⊗ₜ lof R _ 𝒜 _ a) := by
@@ -121,6 +122,7 @@ theorem gradedComm_of_tmul_of (i j : ι) (a : 𝒜 i) (b : ℬ j) :
     ← Int.cast_smul_eq_zsmul R, LinearEquiv.map_smul, TensorProduct.directSum_symm_lof_tmul,
     Int.cast_smul_eq_zsmul, ← Units.smul_def]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem gradedComm_tmul_of_zero (a : ⨁ i, 𝒜 i) (b : ℬ 0) :
     gradedComm R 𝒜 ℬ (a ⊗ₜ lof R _ ℬ 0 b) = lof R _ ℬ _ b ⊗ₜ a := by
   suffices
@@ -132,6 +134,7 @@ theorem gradedComm_tmul_of_zero (a : ⨁ i, 𝒜 i) (b : ℬ 0) :
   dsimp
   rw [gradedComm_of_tmul_of, zero_mul, uzpow_zero, one_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem gradedComm_of_zero_tmul (a : 𝒜 0) (b : ⨁ i, ℬ i) :
     gradedComm R 𝒜 ℬ (lof R _ 𝒜 0 a ⊗ₜ b) = b ⊗ₜ lof R _ 𝒜 _ a := by
   suffices
@@ -186,6 +189,7 @@ noncomputable irreducible_def gradedMul :
   refine (assoc R _ _ _).toLinearMap ∘ₗ .rTensor _ ?_ ∘ₗ (assoc R _ _ _).symm.toLinearMap
   exact (gradedComm _ _ _).toLinearMap
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tmul_of_gradedMul_of_tmul (j₁ i₂ : ι)
     (a₁ : ⨁ i, 𝒜 i) (b₁ : ℬ j₁) (a₂ : 𝒜 i₂) (b₂ : ⨁ i, ℬ i) :
     gradedMul R 𝒜 ℬ (a₁ ⊗ₜ lof R _ ℬ j₁ b₁) (lof R _ 𝒜 i₂ a₂ ⊗ₜ b₂) =

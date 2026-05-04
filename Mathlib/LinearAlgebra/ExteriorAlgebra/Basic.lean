@@ -261,6 +261,7 @@ theorem ι_mul_prod_list {n : ℕ} (f : Fin n → M) (i : Fin n) :
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R) in
 /-- The product of `n` terms of the form `ι R m` is an alternating map.
 

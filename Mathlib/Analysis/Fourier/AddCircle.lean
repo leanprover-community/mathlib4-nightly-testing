@@ -372,6 +372,7 @@ theorem fourierCoeffOn.const_mul {a b : ℝ} (f : ℝ → ℂ) (c : ℂ) (n : �
     fourierCoeffOn hab (fun x => c * f x) n = c * fourierCoeffOn hab f n :=
   fourierCoeffOn.const_smul _ _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma fourierCoeffOn_congr_ae {a b : ℝ} (hab : a < b) {f g : ℝ → E}
     (h : f =ᵐ[volume.restrict (Ioc a b)] g) :
     fourierCoeffOn hab f = fourierCoeffOn hab g := by
@@ -417,6 +418,7 @@ monomials `fourier n` on the circle considered as elements of `L²`. -/
 theorem coe_fourierBasis : ⇑(@fourierBasis T hT) = @fourierLp T hT 2 _ :=
   HilbertBasis.coe_mk _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Under the isometric isomorphism `fourierBasis` from `Lp ℂ 2 haarAddCircle` to `ℓ²(ℤ, ℂ)`, the
 `i`-th coefficient is `fourierCoeff f i`, i.e., the integral over `AddCircle T` of
 `fun t => fourier (-i) t * f t` with respect to the Haar measure of total mass 1. -/
@@ -454,6 +456,7 @@ theorem tsum_sq_fourierCoeff (f : Lp ℂ 2 <| @haarAddCircle T hT) :
     ∑' i : ℤ, ‖fourierCoeff f i‖ ^ 2 = ∫ t : AddCircle T, ‖f t‖ ^ 2 ∂haarAddCircle :=
   (hasSum_sq_fourierCoeff _).tsum_eq
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Parseval's identity**: for a function `f` which is square integrable on `(a,b]`,
 the sum of the squared norms of the Fourier coefficients equals the `L²` norm of `f`. -/
 theorem hasSum_sq_fourierCoeffOn

@@ -208,6 +208,7 @@ def autAdjoinRootXPowSubC :
 
 variable {n}
 
+set_option backward.defeqAttrib.useBackward true in
 lemma autAdjoinRootXPowSubC_root (η) :
     autAdjoinRootXPowSubC n a η (root _) = ((η : Kˣ) : K) • root _ := by
   dsimp [autAdjoinRootXPowSubC, autAdjoinRootXPowSubCHom, AlgEquiv.algHomUnitsEquiv]

@@ -248,6 +248,7 @@ local notation "𝕢" => Function.Periodic.qParam
 
 open Complex ModularFormClass
 
+set_option backward.defeqAttrib.useBackward true in
 /-- General result on bounding q-expansion coefficients using a bound on the norm of the function.
 This will get used twice over, once for cusp forms (with `e = k / 2`) and once for modular forms
 (with `e = k`). -/

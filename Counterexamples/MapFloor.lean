@@ -77,6 +77,7 @@ set_option backward.isDefEq.respectTransparency false in
 instance : IsStrictOrderedRing ℤ[ε] :=
   .of_mul_pos fun p q => by simp_rw [pos_iff]; rw [trailingCoeff_mul]; exact mul_pos
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 set_option linter.flexible false in
 instance : FloorRing ℤ[ε] :=

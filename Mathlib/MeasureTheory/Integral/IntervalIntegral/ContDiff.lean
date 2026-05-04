@@ -84,6 +84,7 @@ end intervalIntegral
 
 open intervalIntegral
 
+set_option backward.defeqAttrib.useBackward true in
 theorem enorm_sub_le_lintegral_deriv_of_contDiffOn_Icc (h : ContDiffOn ℝ 1 f (Icc a b))
     (hab : a ≤ b) :
     ‖f b - f a‖ₑ ≤ ∫⁻ x in Icc a b, ‖deriv f x‖ₑ := by
@@ -106,6 +107,7 @@ theorem enorm_sub_le_lintegral_deriv_of_contDiffOn_Icc (h : ContDiffOn ℝ 1 f (
   have : fderiv ℝ g (f x) = g.toContinuousLinearMap := g.toContinuousLinearMap.fderiv
   simp [this]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem enorm_sub_le_lintegral_derivWithin_Icc_of_contDiffOn_Icc (h : ContDiffOn ℝ 1 f (Icc a b))
     (hab : a ≤ b) :
     ‖f b - f a‖ₑ ≤ ∫⁻ x in Icc a b, ‖derivWithin f (Icc a b) x‖ₑ := by

@@ -34,6 +34,7 @@ private lemma integral_log_sin_zero_pi_eq_two_mul_integral_log_sin_zero_pi_div_t
     (by linarith : π - π / 2 = π / 2)]
   ring!
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 The integral of `log ∘ sin` on `0 … π/2` equals `-log 2 * π / 2`.
 -/

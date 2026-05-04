@@ -511,6 +511,7 @@ lemma addVal_eq_iff_associated (x y : R) :
 
 variable (R)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The ideals of a discrete valuation ring are exactly the powers of the maximal ideal. -/
 @[simps apply]
 noncomputable def idealOrderIsoENat : Ideal R ≃o ENatᵒᵈ where

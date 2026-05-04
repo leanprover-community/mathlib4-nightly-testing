@@ -155,6 +155,7 @@ theorem subtypeVal_comp (hs : IsOpen s) {x : s} {f : E → s} (h : IsEvenlyCover
     (.setCongr this) (H.trans <| .prodCongr (IsEmbedding.subtypeVal.homeomorphImage U) (.refl I)),
     fun _ ↦ congr_arg Subtype.val (hH _)⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem comp_subtypeVal (hs : IsOpen s) (hfs : IsOpen (f ⁻¹' s)) {x : X} (hx : x ∈ s)
     (h : IsEvenlyCovered (fun e : f ⁻¹' s ↦ f e) x I) : IsEvenlyCovered f x I :=
   have ⟨inst, U, hxU, hU, hfU, H, hH⟩ := h

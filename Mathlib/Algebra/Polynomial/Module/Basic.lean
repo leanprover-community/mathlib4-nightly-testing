@@ -162,6 +162,7 @@ theorem smul_apply (f : R[X]) (g : PolynomialModule R M) (n : ℕ) :
     simp_rw [Polynomial.coeff_monomial, ← Finset.mem_range_succ_iff]
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `PolynomialModule R R` is isomorphic to `R[X]` as an `R[X]` module. -/
 def equivPolynomialSelf : PolynomialModule R R ≃ₗ[R[X]] R[X] :=

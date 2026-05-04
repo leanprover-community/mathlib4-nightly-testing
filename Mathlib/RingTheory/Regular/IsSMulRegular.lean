@@ -167,6 +167,7 @@ lemma smul_top_inf_eq_smul_of_isSMulRegular_on_quot :
   convert map_mono ∘ (isSMulRegular_on_quot_iff_lsmul_comap_le N r).mp using 2
   exact Eq.trans (congrArg (· ⊓ N) (map_top _)) (map_comap_eq _ _).symm
 
+set_option backward.defeqAttrib.useBackward true in
 -- Who knew this didn't rely on exactness at the right!?
 open Function in
 lemma QuotSMulTop.map_first_exact_on_four_term_exact_of_isSMulRegular_last

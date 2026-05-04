@@ -57,6 +57,7 @@ theorem tendsto_lintegral_of_dominated_convergence {F : ℕ → α → ℝ≥0�
         limsup_lintegral_le _ hF_meas h_bound h_fin
       _ = ∫⁻ a, f a ∂μ := lintegral_congr_ae <| h_lim.mono fun _ h => h.limsup_eq)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Dominated convergence theorem** for nonnegative `AEMeasurable` functions. -/
 theorem tendsto_lintegral_of_dominated_convergence' {F : ℕ → α → ℝ≥0∞} {f : α → ℝ≥0∞}
     (bound : α → ℝ≥0∞) (hF_meas : ∀ n, AEMeasurable (F n) μ) (h_bound : ∀ n, F n ≤ᵐ[μ] bound)
@@ -106,6 +107,7 @@ theorem tendsto_lintegral_filter_of_dominated_convergence {ι} {l : Filter ι}
     rw [tendsto_add_atTop_iff_nat]
     assumption
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a monotone sequence of functions has an upper bound and the sequence of integrals of these
 functions tends to the integral of the upper bound, then the sequence of functions converges
 almost everywhere to the upper bound. Auxiliary version assuming moreover that the
@@ -188,6 +190,7 @@ lemma tendsto_of_lintegral_tendsto_of_monotone {α : Type*} {mα : MeasurableSpa
   filter_upwards [this, I', h_bound] with x hx h'x h''x
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le hx tendsto_const_nhds h'x h''x
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If an antitone sequence of functions has a lower bound and the sequence of integrals of these
 functions tends to the integral of the lower bound, then the sequence of functions converges
 almost everywhere to the lower bound. -/

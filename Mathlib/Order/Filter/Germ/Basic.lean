@@ -748,6 +748,7 @@ instance instLattice [Lattice β] : Lattice (Germ l β) where
 instance instDistribLattice [DistribLattice β] : DistribLattice (Germ l β) where
   le_sup_inf f g h := inductionOn₃ f g h fun _f _g _h ↦ Eventually.of_forall fun _ ↦ le_sup_inf
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 instance instExistsMulOfLE [Mul β] [LE β] [ExistsMulOfLE β] : ExistsMulOfLE (Germ l β) where
   exists_mul_of_le {x y} := inductionOn₂ x y fun f g (h : f ≤ᶠ[l] g) ↦ by

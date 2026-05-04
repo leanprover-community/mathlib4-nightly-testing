@@ -31,6 +31,7 @@ namespace UpperHalfPlane
 def atImInfty :=
   Filter.atTop.comap UpperHalfPlane.im
 
+set_option backward.defeqAttrib.useBackward true in
 instance : atImInfty.NeBot := by
   refine comap_neBot_iff_frequently.mpr (Eventually.frequently ?_)
   filter_upwards [eventually_gt_atTop 0] with t ht

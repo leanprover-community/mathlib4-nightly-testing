@@ -432,6 +432,7 @@ For a matrix over a field, the norm defined in this section agrees with the oper
 section
 variable [NontriviallyNormedField α] [NormedAlgebra ℝ α]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma linfty_opNNNorm_eq_opNNNorm (A : Matrix m n α) :
     ‖A‖₊ = ‖ContinuousLinearMap.mk (Matrix.mulVecLin A)‖₊ := by
   rw [ContinuousLinearMap.opNNNorm_eq_of_bounds _ (linfty_opNNNorm_mulVec _) fun N hN => ?_]

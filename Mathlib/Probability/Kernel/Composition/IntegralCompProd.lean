@@ -63,6 +63,7 @@ section compProd
 
 variable {κ : Kernel α β} [IsSFiniteKernel κ] {η : Kernel (α × β) γ} [IsSFiniteKernel η]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFiniteIntegral_prodMk_left (a : α) {s : Set (β × γ)} (h2s : (κ ⊗ₖ η) a s ≠ ∞) :
     HasFiniteIntegral (fun b => (η (a, b)).real (Prod.mk b ⁻¹' s)) (κ a) := by
   let t := toMeasurable ((κ ⊗ₖ η) a) s
@@ -99,6 +100,7 @@ theorem _root_.MeasureTheory.AEStronglyMeasurable.compProd_mk_left {δ : Type*} 
 /-! ### Integrability -/
 
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFiniteIntegral_compProd_iff ⦃f : β × γ → E⦄ (h1f : StronglyMeasurable f) :
     HasFiniteIntegral f ((κ ⊗ₖ η) a) ↔
       (∀ᵐ x ∂κ a, HasFiniteIntegral (fun y => f (x, y)) (η (a, x))) ∧
@@ -117,6 +119,7 @@ theorem hasFiniteIntegral_compProd_iff ⦃f : β × γ → E⦄ (h1f : StronglyM
     rw [ofReal_toReal]; finiteness
   · intro h2f; refine ae_lt_top ?_ h2f.ne; exact h1f.enorm.lintegral_kernel_prod_right''
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFiniteIntegral_compProd_iff' ⦃f : β × γ → E⦄
     (h1f : AEStronglyMeasurable f ((κ ⊗ₖ η) a)) :
     HasFiniteIntegral f ((κ ⊗ₖ η) a) ↔
@@ -298,6 +301,7 @@ theorem _root_.MeasureTheory.AEStronglyMeasurable.comp {δ : Type*} [Topological
 
 /-! ### Integrability with respect to composition -/
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFiniteIntegral_comp_iff ⦃f : γ → E⦄ (hf : StronglyMeasurable f) :
     HasFiniteIntegral f ((η ∘ₖ κ) a) ↔
     (∀ᵐ x ∂κ a, HasFiniteIntegral f (η x)) ∧ HasFiniteIntegral (fun x ↦ ∫ y, ‖f y‖ ∂η x) (κ a) := by
@@ -314,6 +318,7 @@ theorem hasFiniteIntegral_comp_iff ⦃f : γ → E⦄ (hf : StronglyMeasurable f
     finiteness
   · exact fun h ↦ ae_lt_top hf.enorm.lintegral_kernel h.ne
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasFiniteIntegral_comp_iff' ⦃f : γ → E⦄ (hf : AEStronglyMeasurable f ((η ∘ₖ κ) a)) :
     HasFiniteIntegral f ((η ∘ₖ κ) a) ↔
     (∀ᵐ x ∂κ a, HasFiniteIntegral f (η x)) ∧ HasFiniteIntegral (fun x ↦ ∫ y, ‖f y‖ ∂η x) (κ a) := by

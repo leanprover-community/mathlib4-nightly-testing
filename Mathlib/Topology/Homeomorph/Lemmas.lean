@@ -180,6 +180,7 @@ section prod
 
 variable (X Y W Z)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `X × {*}` is homeomorphic to `X`. -/
 @[simps! symm_apply_snd]
 def prodUnique [Unique Y] :

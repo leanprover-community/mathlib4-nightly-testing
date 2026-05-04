@@ -250,6 +250,7 @@ def sumZeroHom [∀ i, Zero (β i)] [AddCommMonoid γ] (φ : ∀ i, ZeroHom (β 
   map_zero' := by
     simp only [toFun_eq_coe, coe_zero, Pi.zero_apply, map_zero, Finset.sum_const_zero]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem sumZeroHom_single [∀ i, Zero (β i)] [AddCommMonoid γ] (φ : ∀ i, ZeroHom (β i) γ) (i)
     (x : β i) : sumZeroHom φ (single i x) = φ i x := by

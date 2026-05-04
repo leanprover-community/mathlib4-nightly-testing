@@ -62,6 +62,7 @@ section Equiv
 
 variable (R) [CommSemiring R]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The algebra isomorphism between multivariable polynomials indexed by a type with a unique
 element and polynomials over the ground ring. -/
 @[simps]

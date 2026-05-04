@@ -240,6 +240,7 @@ open ENNReal Polynomial
 
 variable (𝕜)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem spectralRadius_le_pow_nnnorm_pow_one_div (a : A) (n : ℕ) :
     spectralRadius 𝕜 a ≤ (‖a ^ (n + 1)‖₊ : ℝ≥0∞) ^ (1 / (n + 1) : ℝ) *
       (‖(1 : A)‖₊ : ℝ≥0∞) ^ (1 / (n + 1) : ℝ) := by
@@ -368,6 +369,7 @@ section ExpMapping
 
 local notation "↑ₐ" => algebraMap 𝕜 A
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For `𝕜 = ℝ` or `𝕜 = ℂ`, `exp` maps the spectrum of `a` into the spectrum of `exp a`. -/
 theorem exp_mem_exp [RCLike 𝕜] [NormedRing A] [NormedAlgebra 𝕜 A] [CompleteSpace A]
     (a : A) {z : 𝕜} (hz : z ∈ spectrum 𝕜 a) : exp z ∈ spectrum 𝕜 (exp a) := by

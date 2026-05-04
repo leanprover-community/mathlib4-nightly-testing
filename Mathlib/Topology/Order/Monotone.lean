@@ -110,6 +110,7 @@ section Continuity
 
 variable [TopologicalSpace β] [OrderTopology β] [SecondCountableTopology β]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In a second countable space, the set of points where a monotone function is not right-continuous
 within a set is at most countable. Superseded by `MonotoneOn.countable_not_continuousWithinAt`
 which gives the two-sided version. -/

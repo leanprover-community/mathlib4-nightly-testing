@@ -254,6 +254,7 @@ section
 
 variable [NoZeroDivisors A]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.privateInPublic true in
 private def indepMatroid : IndepMatroid A where
   E := univ

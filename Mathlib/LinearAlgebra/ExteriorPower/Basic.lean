@@ -215,6 +215,7 @@ noncomputable def alternatingMapLinearEquiv : (M [⋀^Fin n]→ₗ[R] N) ≃ₗ[
       { map_add := fun _ _ => rfl
         map_smul := fun _ _ => rfl })
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma alternatingMapLinearEquiv_comp_ιMulti (f : M [⋀^Fin n]→ₗ[R] N) :
     (alternatingMapLinearEquiv f).compAlternatingMap (ιMulti R n) = f := by

@@ -394,6 +394,7 @@ variable {k P₁ P₂ P₃ P₄ V₁ V₂ V₃ V₄ : Type*} [Ring k]
   [AddCommGroup V₃] [Module k V₃] [AddTorsor V₃ P₃] [TopologicalSpace P₃]
   [AddCommGroup V₄] [Module k V₄] [AddTorsor V₄ P₄] [TopologicalSpace P₄]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The product of two continuous affine maps is a continuous affine map. -/
 @[simps toAffineMap]
 def prod (f : P₁ →ᴬ[k] P₂) (g : P₁ →ᴬ[k] P₃) : P₁ →ᴬ[k] P₂ × P₃ where
@@ -407,6 +408,7 @@ theorem coe_prod (f : P₁ →ᴬ[k] P₂) (g : P₁ →ᴬ[k] P₃) : prod f g 
 theorem prod_apply (f : P₁ →ᴬ[k] P₂) (g : P₁ →ᴬ[k] P₃) (p : P₁) : prod f g p = (f p, g p) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `Prod.map` of two continuous affine maps. -/
 @[simps toAffineMap]
 def prodMap (f : P₁ →ᴬ[k] P₂) (g : P₃ →ᴬ[k] P₄) : P₁ × P₃ →ᴬ[k] P₂ × P₄ where

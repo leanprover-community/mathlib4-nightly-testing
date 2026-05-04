@@ -956,6 +956,7 @@ theorem continuousOn_finsetProd {f : ι → X → M} (s : Finset ι) {t : Set X}
 @[to_additive existing, deprecated (since := "2026-04-08")]
 alias continuousOn_finset_prod := continuousOn_finsetProd
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem eventuallyEq_prod {X M : Type*} [CommMonoid M] {s : Finset ι} {l : Filter X}
     {f g : ι → X → M} (hs : ∀ i ∈ s, f i =ᶠ[l] g i) : ∏ i ∈ s, f i =ᶠ[l] ∏ i ∈ s, g i := by

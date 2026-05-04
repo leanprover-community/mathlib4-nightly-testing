@@ -103,6 +103,7 @@ theorem _root_.Measurable.lmarginal [∀ i, SigmaFinite (μ i)] (hf : Measurable
   apply lintegral_dirac'
   exact Subsingleton.measurable
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The marginal distribution is independent of the variables in `s`. -/
 theorem lmarginal_congr {x y : ∀ i, X i} (f : (∀ i, X i) → ℝ≥0∞)
     (h : ∀ i ∉ s, x i = y i) :

@@ -665,6 +665,7 @@ theorem dist_pow_map_zero_mul_translationNumber_le (n : ℕ) :
     dist ((f ^ n) 0) (n * f.translationNumber) ≤ 1 :=
   f.translationNumber_pow n ▸ (f ^ n).dist_map_zero_translationNumber_le
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_translation_number₀' :
     Tendsto (fun n : ℕ => (f ^ (n + 1) : CircleDeg1Lift) 0 / ((n : ℝ) + 1)) atTop (𝓝 <| τ f) := by
   refine

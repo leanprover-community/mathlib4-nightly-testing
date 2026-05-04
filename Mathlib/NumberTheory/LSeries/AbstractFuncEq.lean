@@ -295,6 +295,7 @@ lemma hf_modif_FE (x : ℝ) (hx : 0 < x) :
     simp_rw [rpow_neg hx.le]
     match_scalars <;> field [(rpow_pos_of_pos hx P.k).ne', P.hε]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma hf_modif_top (r : ℝ) :
     (fun x ↦ P.f_modif x - 0) =O[atTop] fun x ↦ x ^ r := by
   refine (P.hf_top r).congr' ?_ (by rfl)

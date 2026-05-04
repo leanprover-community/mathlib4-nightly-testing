@@ -223,6 +223,7 @@ instance hasColimits : Limits.HasColimits Profinite :=
 instance forget_preservesLimits : Limits.PreservesLimits (forget Profinite) := by
   apply Limits.comp_preservesLimits Profinite.toTopCat (forget TopCat)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem epi_iff_surjective {X Y : Profinite.{u}} (f : X ⟶ Y) : Epi f ↔ Function.Surjective f := by
   constructor

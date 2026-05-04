@@ -181,6 +181,7 @@ lemma comp_ofComplex_of_im_le_zero (f : ℍ → ℂ) (z z' : ℂ) (hz : z.im ≤
     (↑ₕf) z = (↑ₕf) z' := by
   simp [ofComplex_apply_of_im_nonpos, hz, hz']
 
+set_option backward.defeqAttrib.useBackward true in
 lemma eventuallyEq_coe_comp_ofComplex {z : ℂ} (hz : 0 < z.im) :
     UpperHalfPlane.coe ∘ ofComplex =ᶠ[𝓝 z] id := by
   filter_upwards [isOpen_upperHalfPlaneSet.mem_nhds hz] with x hx

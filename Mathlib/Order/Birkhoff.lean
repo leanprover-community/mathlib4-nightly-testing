@@ -239,6 +239,7 @@ noncomputable def birkhoffFinset : α ↪o Finset {a : α // SupIrred a} := by
 
 variable [DecidableEq α]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma birkhoffFinset_sup (a b : α) :
     birkhoffFinset (a ⊔ b) = birkhoffFinset a ∪ birkhoffFinset b := by
   classical
@@ -246,6 +247,7 @@ variable [DecidableEq α]
   rw [birkhoffSet_sup, OrderIso.coe_toOrderEmbedding]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma birkhoffFinset_inf (a b : α) :
     birkhoffFinset (a ⊓ b) = birkhoffFinset a ∩ birkhoffFinset b := by
   classical

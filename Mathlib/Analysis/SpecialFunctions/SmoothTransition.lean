@@ -97,6 +97,7 @@ theorem tendsto_polynomial_inv_mul_zero (p : ℝ[X]) :
   refine this.congr' <| mem_of_superset self_mem_nhdsWithin fun x hx ↦ ?_
   simp [exp_neg, div_eq_mul_inv]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasDerivAt_polynomial_eval_inv_mul (p : ℝ[X]) (x : ℝ) :
     HasDerivAt (fun x ↦ p.eval x⁻¹ * expNegInvGlue x)
       ((X ^ 2 * (p - derivative (R := ℝ) p)).eval x⁻¹ * expNegInvGlue x) x := by

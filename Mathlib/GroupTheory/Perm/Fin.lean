@@ -145,6 +145,7 @@ theorem cycleRange_of_gt (h : i < j) : cycleRange i j = j := by
   rw [cycleRange, Perm.extendDomain_apply_not_subtype]
   simpa using h
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem cycleRange_of_le [NeZero n] (h : i ≤ j) :
     cycleRange j i = if i = j then 0 else i + 1 := by

@@ -117,6 +117,7 @@ lemma IsAlmostIntegral.coeff [IsDomain R] [FaithfulSMul R S]
   simpa [hi, eraseLead_coeff_of_ne] using
     IH (p := p.eraseLead) _ (p.eraseLead_natDegree_le.trans_lt (by lia)) this rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[stacks 00H0 "(2)"]
 protected lemma IsIntegral.coeff
     {p : S[X]} (hp : IsIntegral R[X] p) (i : ℕ) : IsIntegral R (p.coeff i) := by

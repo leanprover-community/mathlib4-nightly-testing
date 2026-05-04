@@ -99,6 +99,7 @@ lemma LSeriesSummable_logMul_of_lt_re {f : ℕ → ℂ} {s : ℂ} (h : abscissaO
     LSeriesSummable (logMul f) s :=
   (LSeriesSummable_logMul_and_hasDerivAt h).1
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The abscissa of absolute convergence of the point-wise product of `log` and `f`
 is the same as that of `f`. -/
 @[simp]

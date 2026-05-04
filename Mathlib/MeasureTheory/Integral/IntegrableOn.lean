@@ -207,6 +207,7 @@ theorem integrableOn_union [PseudoMetrizableSpace ε] :
     IntegrableOn f (s ∪ t) μ ↔ IntegrableOn f s μ ∧ IntegrableOn f t μ :=
   ⟨fun h => ⟨h.left_of_union, h.right_of_union⟩, fun h => h.1.union h.2⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem integrableOn_singleton_iff {f : α → ε'} {x : α}
     [MeasurableSingletonClass α] (hfx : ‖f x‖ₑ ≠ ⊤ := by finiteness) :

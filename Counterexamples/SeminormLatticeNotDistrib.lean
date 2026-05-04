@@ -38,6 +38,7 @@ noncomputable def q1 : Seminorm ℝ (ℝ × ℝ) :=
 noncomputable def q2 : Seminorm ℝ (ℝ × ℝ) :=
   (4 : ℝ≥0) • (normSeminorm ℝ ℝ).comp (LinearMap.snd _ _ _)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eq_one : (p ⊔ q1 ⊓ q2) (1, 1) = 1 := by
   suffices ⨅ x : ℝ × ℝ, q1 x + q2 (1 - x) ≤ 1 by simpa
   apply ciInf_le_of_le bddBelow_range_add ((0, 1) : ℝ × ℝ); dsimp [q1, q2]

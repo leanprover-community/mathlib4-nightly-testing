@@ -132,6 +132,7 @@ theorem integrableOn_Ioi_rpow_of_lt {a c : ℝ} (ha : a < -1) (hc : 0 < c) :
     IntegrableOn (fun t : ℝ ↦ t ^ a) (Ioi c) := by
   simpa using integrableOn_add_rpow_Ioi_of_lt ha (by simpa : -0 < c)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integrableOn_Ioi_rpow_iff {s t : ℝ} (ht : 0 < t) :
     IntegrableOn (fun x ↦ x ^ s) (Ioi t) ↔ s < -1 := by
   refine ⟨fun h ↦ ?_, fun h ↦ integrableOn_Ioi_rpow_of_lt h ht⟩

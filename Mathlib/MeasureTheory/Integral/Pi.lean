@@ -74,6 +74,7 @@ end Integrable
 
 variable [RCLike 𝕜]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A version of **Fubini's theorem** in `n` variables, for a natural number `n`. -/
 theorem integral_fin_nat_prod_eq_prod {n : ℕ} {E : Fin n → Type*}

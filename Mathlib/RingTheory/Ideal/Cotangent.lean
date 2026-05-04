@@ -139,6 +139,7 @@ theorem range_cotangentToQuotientSquare :
   · rw [LinearMap.range_comp, I.toCotangent_range, Submodule.map_top]
   · rw [to_quotient_square_comp_toCotangent, LinearMap.range_comp, I.range_subtype]; ext; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence of the two definitions of `I / I ^ 2`, either as the quotient of `I` or the
 ideal of `R / I ^ 2`. -/
 noncomputable def cotangentEquivIdeal : I.Cotangent ≃ₗ[R] I.cotangentIdeal := by

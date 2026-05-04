@@ -930,6 +930,7 @@ protected theorem Measurable.iSup {ι} [Countable ι] {f : ι → δ → α} (hf
 --   simp_rw [iSup_apply]
 --   exact .iSup fun i ↦ by fun_prop
 
+set_option backward.defeqAttrib.useBackward true in
 @[fun_prop]
 protected theorem AEMeasurable.iSup {ι} {μ : Measure δ} [Countable ι] {f : ι → δ → α}
     (hf : ∀ i, AEMeasurable (f i) μ) : AEMeasurable (fun b => ⨆ i, f i b) μ := by

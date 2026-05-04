@@ -110,6 +110,7 @@ instance grade.gradedMonoid [AddMonoid M] [CommSemiring R] :
 
 variable [AddMonoid M] [DecidableEq ι] [AddMonoid ι] [CommSemiring R] (f : M →+ ι)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition; the canonical grade decomposition, used to provide
 `DirectSum.decompose`. -/
@@ -169,6 +170,7 @@ theorem decomposeAux_coe {i : ι} (x : gradeBy R f i) :
     apply DirectSum.of_eq_of_gradedMonoid_eq
     congr 2
 
+set_option backward.defeqAttrib.useBackward true in
 instance gradeBy.gradedAlgebra : GradedAlgebra (gradeBy R f) :=
   GradedAlgebra.ofAlgHom _ (decomposeAux f)
     (by

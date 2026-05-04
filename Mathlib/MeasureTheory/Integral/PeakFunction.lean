@@ -51,6 +51,7 @@ variable {α E ι : Type*} {hm : MeasurableSpace α} {μ : Measure α} [Topologi
   [BorelSpace α] [NormedAddCommGroup E] [NormedSpace ℝ E] {g : α → E} {l : Filter ι} {x₀ : α}
   {s t : Set α} {φ : ι → α → ℝ} {a : E}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a sequence of peak functions `φᵢ` converges uniformly to zero away from a point `x₀`, and
 `g` is integrable and has a limit at `x₀`, then `φᵢ • g` is eventually integrable. -/
 theorem integrableOn_peak_smul_of_integrableOn_of_tendsto
@@ -87,6 +88,7 @@ theorem integrableOn_peak_smul_of_integrableOn_of_tendsto
   convert A.union B
   simp only [diff_union_inter]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a sequence of peak functions `φᵢ` converges uniformly to zero away from a point `x₀` and its
 integral on some finite-measure neighborhood of `x₀` converges to `1`, and `g` is integrable and
 has a limit `a` at `x₀`, then `∫ φᵢ • g` converges to `a`.
@@ -178,6 +180,7 @@ theorem tendsto_setIntegral_peak_smul_of_integrableOn_of_tendsto_aux
 
 variable [CompleteSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a sequence of peak functions `φᵢ` converges uniformly to zero away from a point `x₀` and its
 integral on some finite-measure neighborhood of `x₀` converges to `1`, and `g` is integrable and
 has a limit `a` at `x₀`, then `∫ φᵢ • g` converges to `a`. Version localized to a subset. -/
@@ -387,6 +390,7 @@ open Module Bornology
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
   [MeasurableSpace F] [BorelSpace F] {μ : Measure F} [IsAddHaarMeasure μ]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Consider a nonnegative function `φ` with integral one, decaying quickly enough at infinity.
 Then suitable renormalizations of `φ` form a sequence of peak functions around the origin:
 `∫ (c ^ d * φ (c • x)) • g x` converges to `g 0` as `c → ∞` if `g` is continuous at `0`

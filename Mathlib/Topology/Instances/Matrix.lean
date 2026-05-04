@@ -290,6 +290,7 @@ theorem Continuous.matrix_blockDiag {A : X → Matrix (m × p) (n × p) R} (hA :
     Continuous fun x => blockDiag (A x) :=
   continuous_pi fun _i => continuous_matrix fun _j _k => hA.matrix_elem _ _
 
+set_option backward.defeqAttrib.useBackward true in
 @[continuity, fun_prop]
 theorem Continuous.matrix_blockDiagonal' [Zero R] [DecidableEq l]
     {A : X → ∀ i, Matrix (m' i) (n' i) R} (hA : Continuous A) :

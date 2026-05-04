@@ -761,6 +761,7 @@ variable [Fintype ι']
 def reindex (b : OrthonormalBasis ι 𝕜 E) (e : ι ≃ ι') : OrthonormalBasis ι' 𝕜 E :=
   OrthonormalBasis.ofRepr (b.repr.trans (LinearIsometryEquiv.piLpCongrLeft 2 𝕜 𝕜 e))
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem reindex_apply (b : OrthonormalBasis ι 𝕜 E) (e : ι ≃ ι') (i' : ι') :
     (b.reindex e) i' = b (e.symm i') := by
   classical

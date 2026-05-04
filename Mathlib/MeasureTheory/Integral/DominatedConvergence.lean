@@ -318,6 +318,7 @@ open scoped Interval
 variable {E X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace X]
   {a b b₀ b₁ b₂ : ℝ} {μ : Measure ℝ} {f : ℝ → E}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem continuousWithinAt_primitive (hb₀ : μ {b₀} = 0)
     (h_int : IntervalIntegrable f μ (min a b₁) (max a b₂)) :
     ContinuousWithinAt (fun b => ∫ x in a..b, f x ∂μ) (Icc b₁ b₂) b₀ := by
@@ -640,6 +641,7 @@ open intervalIntegral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {μ : Measure ℝ} {f : ℝ → E}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem continuousWithinAt_Ici_primitive_Ioi {a₀ : ℝ} (hf : IntegrableOn f (Ioi a₀) μ) :
     ContinuousWithinAt (fun b ↦ ∫ x in Ioi b, f x ∂μ) (Ici a₀) a₀ := by
   simp_rw [← integral_indicator measurableSet_Ioi]
@@ -675,6 +677,7 @@ theorem continuousOn_Ici_primitive_Ioi [NoAtoms μ] {a₀ : ℝ} (hf : Integrabl
     exact (continuousWithinAt_const.sub h_cwa).congr h_split (h_split a (right_mem_Icc.2 ha))
   · simpa [ha] using (hf.mono_set (Ioi_subset_Ioi ha)).continuousWithinAt_Ici_primitive_Ioi
 
+set_option backward.defeqAttrib.useBackward true in
 theorem continuousWithinAt_Iic_primitive_Iio {a₀ : ℝ} (hf : IntegrableOn f (Iio a₀) μ) :
     ContinuousWithinAt (fun b ↦ ∫ x in Iio b, f x ∂μ) (Iic a₀) a₀ := by
   simp_rw [← integral_indicator measurableSet_Iio]

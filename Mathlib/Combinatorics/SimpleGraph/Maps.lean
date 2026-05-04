@@ -233,6 +233,7 @@ lemma induce_adj {s : Set V} {u v : s} : (G.induce s).Adj u v ↔ G.Adj u v := .
 @[simp] lemma induce_top (s : Set V) : (completeGraph V).induce s = completeGraph s :=
   comap_top Subtype.val_injective
 
+set_option backward.defeqAttrib.useBackward true in
 lemma induce_bot (s : Set V) : (⊥ : SimpleGraph V).induce s = ⊥ := by
   dsimp
 

@@ -303,6 +303,7 @@ lemma AlgHom.tensorEqualizerEquiv_apply [Module.Flat R T]
     AlgHom.tensorEqualizerEquiv S T f g x = AlgHom.tensorEqualizer S T f g x :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R A) in
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
 /--

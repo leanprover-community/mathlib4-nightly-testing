@@ -311,6 +311,7 @@ lemma covariance_map_fun {Z : Ω' → Ω} (hX : AEStronglyMeasurable X (μ.map Z
 
 end Map
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IndepFun.covariance_eq_zero (h : X ⟂ᵢ[μ] Y) (hX : MemLp X 2 μ) (hY : MemLp Y 2 μ) :
      cov[X, Y; μ] = 0 := by
    by_cases h' : ∀ᵐ ω ∂μ, X ω = 0

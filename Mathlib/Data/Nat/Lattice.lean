@@ -165,6 +165,7 @@ theorem sInf_add {n : ℕ} {p : ℕ → Prop} (hn : n ≤ sInf { m | p m }) :
     rw [Nat.sInf_def hp] at hn
     exact find_add hn
 
+set_option backward.defeqAttrib.useBackward true in
 theorem sInf_add' {n : ℕ} {p : ℕ → Prop} (h : 0 < sInf { m | p m }) :
     sInf { m | p m } + n = sInf { m | p (m - n) } := by
   suffices h₁ : n ≤ sInf {m | p (m - n)} by

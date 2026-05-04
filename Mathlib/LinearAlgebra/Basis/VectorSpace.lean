@@ -235,6 +235,7 @@ end AtomsOfSubmoduleLattice
 
 variable {K V}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem LinearMap.exists_leftInverse_of_injective (f : V →ₗ[K] V') (hf_inj : LinearMap.ker f = ⊥) :
     ∃ g : V' →ₗ[K] V, g.comp f = LinearMap.id := by
   let B := Basis.ofVectorSpaceIndex K V

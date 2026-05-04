@@ -81,6 +81,7 @@ lemma tilted_zero' (μ : Measure α) : μ.tilted 0 = (μ Set.univ)⁻¹ • μ :
 
 lemma tilted_zero (μ : Measure α) [IsProbabilityMeasure μ] : μ.tilted 0 = μ := by simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tilted_congr {g : α → ℝ} (hfg : f =ᵐ[μ] g) :
     μ.tilted f = μ.tilted g := by
   have h_int_eq : ∫ x, exp (f x) ∂μ = ∫ x, exp (g x) ∂μ := by
@@ -147,6 +148,7 @@ instance isZeroOrProbabilityMeasure_tilted : IsZeroOrProbabilityMeasure (μ.tilt
 
 section lintegral
 
+set_option backward.defeqAttrib.useBackward true in
 lemma setLIntegral_tilted' (f : α → ℝ) (g : α → ℝ≥0∞) {s : Set α} (hs : MeasurableSet s) :
     ∫⁻ x in s, g x ∂(μ.tilted f)
       = ∫⁻ x in s, ENNReal.ofReal (exp (f x) / ∫ x, exp (f x) ∂μ) * g x ∂μ := by
@@ -165,6 +167,7 @@ lemma setLIntegral_tilted' (f : α → ℝ) (g : α → ℝ≥0∞) {s : Set α}
     rw [integral_undef hf']
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma setLIntegral_tilted [SFinite μ] (f : α → ℝ) (g : α → ℝ≥0∞) (s : Set α) :
     ∫⁻ x in s, g x ∂(μ.tilted f)
       = ∫⁻ x in s, ENNReal.ofReal (exp (f x) / ∫ x, exp (f x) ∂μ) * g x ∂μ := by
@@ -329,6 +332,7 @@ lemma rnDeriv_tilted_right (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν
       rw [← ENNReal.ofReal_inv_of_pos, inv_div', ← exp_neg, div_eq_mul_inv, inv_inv]
       exact div_pos (exp_pos _) (integral_exp_pos hf)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma toReal_rnDeriv_tilted_right (μ ν : Measure α) [SigmaFinite μ] [SigmaFinite ν]
     (hf : Integrable (fun x ↦ exp (f x)) ν) :
     (fun x ↦ (μ.rnDeriv (ν.tilted f) x).toReal)
@@ -347,6 +351,7 @@ lemma rnDeriv_tilted_left {ν : Measure α} [SigmaFinite μ] [SigmaFinite ν] (h
   · exact ((measurable_exp.comp_aemeasurable hfν).div_const _).ennreal_ofReal
   · exact ae_of_all _ (fun x ↦ by simp [g])
 
+set_option backward.defeqAttrib.useBackward true in
 variable (μ) in
 lemma toReal_rnDeriv_tilted_left {ν : Measure α} [SigmaFinite μ] [SigmaFinite ν]
     (hfν : AEMeasurable f ν) :
@@ -357,12 +362,14 @@ lemma toReal_rnDeriv_tilted_left {ν : Measure α} [SigmaFinite μ] [SigmaFinite
   simp only [ENNReal.toReal_mul, mul_eq_mul_right_iff, ENNReal.toReal_ofReal_eq_iff]
   exact Or.inl (by positivity)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma rnDeriv_tilted_left_self [SigmaFinite μ] (hf : AEMeasurable f μ) :
     (μ.tilted f).rnDeriv μ =ᵐ[μ] fun x ↦ ENNReal.ofReal (exp (f x) / ∫ x, exp (f x) ∂μ) := by
   refine (rnDeriv_tilted_left μ hf).trans ?_
   filter_upwards [Measure.rnDeriv_self μ] with x hx
   rw [hx, mul_one]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma log_rnDeriv_tilted_left_self [SigmaFinite μ] (hf : Integrable (fun x ↦ exp (f x)) μ) :
     (fun x ↦ log ((μ.tilted f).rnDeriv μ x).toReal)
       =ᵐ[μ] fun x ↦ f x - log (∫ x, exp (f x) ∂μ) := by

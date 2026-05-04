@@ -240,6 +240,7 @@ lemma supDegree_esymmAlgHomMonomial (hr : r ≠ 0) (t : Fin n →₀ ℕ) (hnm :
     · exact (monic_esymm this).pow toLex_add toLex.injective
     · rwa [Ne, ← leadingCoeff_eq_zero toLex.injective, leadingCoeff_esymmAlgHomMonomial _ hnm]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 omit [Fintype σ] in
 lemma IsSymmetric.antitone_supDegree [LinearOrder σ] {p : MvPolynomial σ R} (hp : p.IsSymmetric) :

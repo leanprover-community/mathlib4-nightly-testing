@@ -274,6 +274,7 @@ def Isometry.single [Fintype ι] [DecidableEq ι] (Q : ∀ i, QuadraticMap R (M�
   toLinearMap := LinearMap.single _ _ i
   map_app' := pi_apply_single _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `LinearMap.proj` as an isometry, when all but one quadratic form is zero. -/
 @[simps!]
 def Isometry.proj [Fintype ι] [DecidableEq ι] (i : ι) (Q : QuadraticMap R (Mᵢ i) P) :

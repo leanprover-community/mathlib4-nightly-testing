@@ -80,6 +80,7 @@ lemma IsKolmogorovProcess_mk (h : IsAEKolmogorovProcess X P p q M) :
 lemma ae_eq_mk (h : IsAEKolmogorovProcess X P p q M) : ∀ t, X t =ᵐ[P] h.mk X t :=
   (Classical.choose_spec h).2
 
+set_option backward.defeqAttrib.useBackward true in
 lemma kolmogorovCondition (hX : IsAEKolmogorovProcess X P p q M) (s t : T) :
     ∫⁻ ω, edist (X s ω) (X t ω) ^ p ∂P ≤ M * edist s t ^ q := by
   convert hX.IsKolmogorovProcess_mk.kolmogorovCondition s t using 1
@@ -107,6 +108,7 @@ lemma IsKolmogorovProcess.stronglyMeasurable_edist
   borelize (E × E)
   exact continuous_edist.stronglyMeasurable.comp_measurable (hX.measurablePair s t)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsAEKolmogorovProcess.aestronglyMeasurable_edist
     (hX : IsAEKolmogorovProcess X P p q M) {s t : T} :
     AEStronglyMeasurable (fun ω ↦ edist (X s ω) (X t ω)) P := by

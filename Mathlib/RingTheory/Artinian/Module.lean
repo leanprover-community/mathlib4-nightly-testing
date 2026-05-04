@@ -340,6 +340,7 @@ variable {R : Type*} (M : Type*) [CommSemiring R] [AddCommMonoid M] [Module R M]
 
 namespace IsArtinian
 
+set_option backward.defeqAttrib.useBackward true in
 theorem range_smul_pow_stabilizes (r : R) :
     ∃ n : ℕ, ∀ m, n ≤ m →
       LinearMap.range (r ^ n • LinearMap.id : M →ₗ[R] M) =

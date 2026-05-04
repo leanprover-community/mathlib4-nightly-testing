@@ -133,6 +133,7 @@ theorem cast_eq_cast {i j} (h : i = j) :
   rw [cast_refl]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R) in
 theorem tprod_mul_tprod {na nb} (a : Fin na → M) (b : Fin nb → M) :
     tprod R a ₜ* tprod R b = tprod R (Fin.append a b) := by

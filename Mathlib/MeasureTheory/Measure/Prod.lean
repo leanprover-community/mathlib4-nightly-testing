@@ -346,6 +346,7 @@ instance {X Y : Type*}
   prod.instIsFiniteMeasureOnCompacts _ _
 
 
+set_option backward.defeqAttrib.useBackward true in
 open IsUnifLocDoublingMeasure in
 /--
 The product of two uniformly locally doubling measures is a uniformly locally doubling measure,
@@ -849,6 +850,7 @@ namespace MeasurePreserving
 variable {δ : Type*} [MeasurableSpace δ] {μa : Measure α} {μb : Measure β} {μc : Measure γ}
   {μd : Measure δ}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `f : α → β` be a measure-preserving map.
 For a.e. all `a`, let `g a : γ → δ` be a measure-preserving map.
 Also suppose that `g` is measurable as a function of two arguments.

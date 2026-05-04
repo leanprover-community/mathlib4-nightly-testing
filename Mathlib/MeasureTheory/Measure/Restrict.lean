@@ -774,6 +774,7 @@ lemma nullMeasurableSet_restrict (hs : NullMeasurableSet s μ) {t : Set α} :
       h.mono_ac absolutelyContinuous_restrict
     simpa using A.union B
 
+set_option backward.defeqAttrib.useBackward true in
 lemma nullMeasurableSet_restrict_of_subset {t : Set α} (ht : t ⊆ s) :
     NullMeasurableSet t (μ.restrict s) ↔ NullMeasurableSet t μ := by
   refine ⟨fun h ↦ ?_, fun h ↦ h.mono_ac absolutelyContinuous_restrict⟩
@@ -1044,6 +1045,7 @@ theorem indicator_ae_eq_restrict_compl (hs : MeasurableSet s) :
     indicator s f =ᵐ[μ.restrict sᶜ] 0 := by
   classical exact piecewise_ae_eq_restrict_compl hs
 
+set_option backward.defeqAttrib.useBackward true in
 theorem indicator_ae_eq_of_restrict_compl_ae_eq_zero (hs : MeasurableSet s)
     (hf : f =ᵐ[μ.restrict sᶜ] 0) : s.indicator f =ᵐ[μ] f := by
   rw [Filter.EventuallyEq, ae_restrict_iff' hs.compl] at hf
@@ -1052,6 +1054,7 @@ theorem indicator_ae_eq_of_restrict_compl_ae_eq_zero (hs : MeasurableSet s)
   · simp only [hxs, Set.indicator_of_mem]
   · simp only [hx hxs, Pi.zero_apply, Set.indicator_apply_eq_zero, imp_true_iff]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem indicator_ae_eq_zero_of_restrict_ae_eq_zero (hs : MeasurableSet s)
     (hf : f =ᵐ[μ.restrict s] 0) : s.indicator f =ᵐ[μ] 0 := by
   rw [Filter.EventuallyEq, ae_restrict_iff' hs] at hf

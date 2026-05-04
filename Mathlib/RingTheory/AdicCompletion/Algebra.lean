@@ -471,6 +471,7 @@ lemma kerProj_of {f : S →ₐ[R] A} (hf : Function.Surjective f) (x : S) :
     kerProj hf (.of _ _ x) = f x :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma kerProj_surjective {f : S →ₐ[R] A} (hf : Function.Surjective f) :
     Function.Surjective (kerProj hf) := by
   dsimp [kerProj]

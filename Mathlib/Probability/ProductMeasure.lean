@@ -257,6 +257,7 @@ lemma Measure.infinitePiNat_map_piCongrLeft (e : ℕ ≃ ι) {s : Set (Π i, X i
   any_goals fun_prop
   exact hS.preimage (by fun_prop)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This is the key theorem to build the product of an arbitrary family of probability measures:
 the `piContent` of a decreasing sequence of cylinders with empty intersection converges to `0`.
 

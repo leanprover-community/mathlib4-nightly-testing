@@ -618,6 +618,7 @@ end FirstMomentReal
 section FirstMomentENNReal
 variable {N : Set α} {f : α → ℝ≥0∞}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **First moment method**. A measurable function is smaller than its mean on a set of positive
 measure. -/
 theorem measure_le_setLAverage_pos (hμ : μ s ≠ 0) (hμ₁ : μ s ≠ ∞)
@@ -637,6 +638,7 @@ theorem measure_le_setLAverage_pos (hμ : μ s ≠ 0) (hμ₁ : μ s ≠ ∞)
   simp_rw [ae_iff, not_ne_iff]
   exact measure_eq_top_of_lintegral_ne_top hf h
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **First moment method**. A measurable function is greater than its mean on a set of positive
 measure. -/
 theorem measure_setLAverage_le_pos (hμ : μ s ≠ 0) (hs : NullMeasurableSet s μ)
@@ -760,6 +762,7 @@ theorem exists_notMem_null_lintegral_le (hint : ∫⁻ a, f a ∂μ ≠ ∞) (hN
 end ProbabilityMeasure
 end FirstMomentENNReal
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the average of a function `f` along a sequence of sets `aₙ` converges to `c` (more precisely,
 we require that `⨍ y in a i, ‖f y - c‖ ∂μ` tends to `0`), then the integral of `gₙ • f` also tends
 to `c` if `gₙ` is supported in `aₙ`, has integral converging to one and supremum at most `K / μ aₙ`.

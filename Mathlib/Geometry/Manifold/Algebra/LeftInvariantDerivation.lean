@@ -201,6 +201,7 @@ theorem evalAt_coe : Derivation.evalAt g ↑X = evalAt g X :=
 theorem left_invariant : 𝒅ₕ (smoothLeftMul_one I g) (evalAt (1 : G) X) = evalAt g X :=
   X.left_invariant'' g
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem evalAt_mul : evalAt (g * h) X = 𝒅ₕ (L_apply I g h) (evalAt h X) := by
   ext f

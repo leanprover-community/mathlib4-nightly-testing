@@ -70,6 +70,7 @@ lemma smul_eq (z : CatCenter C) {X Y : C} (f : X ⟶ Y) : z • f = f ≫ z.app 
 lemma smul_eq' (z : CatCenter C) {X Y : C} (f : X ⟶ Y) : z • f = z.app X ≫ f :=
   z.naturality f
 
+set_option backward.defeqAttrib.useBackward true in
 instance {X Y : C} : SMul (CatCenter C)ˣ (X ≅ Y) where
   smul z e :=
     { hom := z.1 • e.hom

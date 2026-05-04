@@ -90,6 +90,7 @@ def restrictScalars (U : Subalgebra S A) : Subalgebra R A :=
 theorem coe_restrictScalars {U : Subalgebra S A} : (restrictScalars R U : Set A) = (U : Set A) :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem restrictScalars_top : restrictScalars R (⊤ : Subalgebra S A) = ⊤ :=
   -- Porting note: `by dsimp` used to be `rfl`. This appears to work but causes

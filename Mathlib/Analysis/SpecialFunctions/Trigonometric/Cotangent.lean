@@ -147,6 +147,7 @@ lemma cot_pi_mul_contDiffWithinAt (k : ℕ∞) (hx : x ∈ ℂ_ℤ) :
   simp_rw [Complex.cot, Complex.cos, Complex.sin]
   exact ContDiffWithinAt.div (by fun_prop) (by fun_prop) (sin_pi_mul_ne_zero hx)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_logDeriv_euler_sin_div (hx : x ∈ ℂ_ℤ) :
     Tendsto (fun n : ℕ ↦ logDeriv (fun z ↦ ∏ j ∈ Finset.range n, (1 + sineTerm z j)) x)
         atTop (𝓝 <| logDeriv (fun t ↦ (Complex.sin (π * t) / (π * t))) x) := by

@@ -277,6 +277,7 @@ private lemma not_irrational_exists_rep {x : ℝ} :
   rintro ⟨q, rfl⟩
   exact ⟨q.num, q.den, q.pos, by exact_mod_cast (Rat.num_div_den _).symm⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] theorem irrational_pi : Irrational π := by
   apply Irrational.of_div_natCast 2
   rw [Nat.cast_two]

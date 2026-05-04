@@ -600,6 +600,7 @@ theorem HasFPowerSeriesAt.tendsto_partialSum
   filter_upwards [Metric.eball_mem_nhds (0 : E) hr.r_pos] with y hy
   exact hr.tendsto_partialSum hy
 
+set_option backward.defeqAttrib.useBackward true in
 open Finset in
 /-- If a function admits a power series expansion within a ball, then the partial sums
 `p.partialSum n z` converge to `f (x + y)` as `n → ∞` and `z → y`. Note that `x + z` doesn't need

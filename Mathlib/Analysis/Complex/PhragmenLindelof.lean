@@ -75,6 +75,7 @@ theorem isBigO_sub_exp_exp {a : ℝ} {f g : ℂ → E} {l : Filter ℂ} {u : ℂ
   exacts [le_max_left _ _, le_max_left _ _, (le_max_left _ _).trans (le_max_right _ _),
     le_max_right _ _, le_max_left _ _, (le_max_right _ _).trans (le_max_right _ _)]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An auxiliary lemma that combines two “exponential of a power” estimates into a similar estimate
 on the difference of the functions. -/
 theorem isBigO_sub_exp_rpow {a : ℝ} {f g : ℂ → E} {l : Filter ℂ}
@@ -99,6 +100,7 @@ variable [NormedSpace ℂ E] {a b C : ℝ} {f g : ℂ → E} {z : ℂ}
 ### Phragmen-Lindelöf principle in a horizontal strip
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Phragmen-Lindelöf principle** in a strip `U = {z : ℂ | a < im z < b}`.
 Let `f : ℂ → E` be a function such that
 
@@ -745,6 +747,7 @@ theorem right_half_plane_of_bounded_on_real (hd : DiffContOnCl ℂ f {z | 0 < z.
       one_mul]
     exact him y
 
+set_option backward.defeqAttrib.useBackward true in
 /-- **Phragmen-Lindelöf principle** in the right half-plane. Let `f : ℂ → E` be a function such that
 
 * `f` is differentiable in the open right half-plane and is continuous on its closure;

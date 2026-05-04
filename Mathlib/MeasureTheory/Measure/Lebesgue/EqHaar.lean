@@ -486,6 +486,7 @@ theorem addHaar_real_closedBall' (x : E) {r : ℝ} (hr : 0 ≤ r) :
   left
   positivity
 
+set_option backward.defeqAttrib.useBackward true in
 theorem addHaar_unitClosedBall_eq_addHaar_unitBall :
     μ (closedBall (0 : E) 1) = μ (ball 0 1) := by
   apply le_antisymm _ (measure_mono ball_subset_closedBall)
@@ -624,6 +625,7 @@ assumption in `tendsto_addHaar_inter_smul_one_of_density_one` by applying the pr
 the measurable hull `toMeasurable μ s`
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_addHaar_inter_smul_zero_of_density_zero_aux1 (s : Set E) (x : E)
     (h : Tendsto (fun r => μ (s ∩ closedBall x r) / μ (closedBall x r)) (𝓝[>] 0) (𝓝 0)) (t : Set E)
     (u : Set E) (h'u : μ u ≠ 0) (t_bound : t ⊆ closedBall 0 1) :
@@ -664,6 +666,7 @@ theorem tendsto_addHaar_inter_smul_zero_of_density_zero_aux1 (s : Set E) (x : E)
           measure_closedBall_lt_top.ne,
         one_mul]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_addHaar_inter_smul_zero_of_density_zero_aux2 (s : Set E) (x : E)
     (h : Tendsto (fun r => μ (s ∩ closedBall x r) / μ (closedBall x r)) (𝓝[>] 0) (𝓝 0)) (t : Set E)
     (u : Set E) (h'u : μ u ≠ 0) (R : ℝ) (Rpos : 0 < R) (t_bound : t ⊆ closedBall 0 R) :
@@ -695,6 +698,7 @@ theorem tendsto_addHaar_inter_smul_zero_of_density_zero_aux2 (s : Set E) (x : E)
   dsimp
   rw [T, U]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Consider a point `x` at which a set `s` has density zero, with respect to closed balls. Then it
 also has density zero with respect to any measurable set `t`: the proportion of points in `s`
 belonging to a rescaled copy `{x} + r • t` of `t` tends to zero as `r` tends to zero. -/
@@ -757,6 +761,7 @@ theorem tendsto_addHaar_inter_smul_zero_of_density_zero (s : Set E) (x : E)
         ENNReal.div_lt_iff (Or.inl h't) (Or.inl h''t)]
     _ = ε := ENNReal.add_halves _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_addHaar_inter_smul_one_of_density_one_aux (s : Set E) (hs : MeasurableSet s)
     (x : E) (h : Tendsto (fun r => μ (s ∩ closedBall x r) / μ (closedBall x r)) (𝓝[>] 0) (𝓝 1))
     (t : Set E) (ht : MeasurableSet t) (h't : μ t ≠ 0) (h''t : μ t ≠ ∞) :
@@ -833,6 +838,7 @@ theorem tendsto_addHaar_inter_smul_one_of_density_one (s : Set E) (x : E)
   simp only [image_add_left, singleton_add]
   apply (continuous_const_add (-x)).measurable (ht.const_smul₀ r)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Consider a point `x` at which a set `s` has density one, with respect to closed balls (i.e.,
 a Lebesgue density point of `s`). Then `s` intersects the rescaled copies `{x} + r • t` of a given
 set `t` with positive measure, for any small enough `r`. -/

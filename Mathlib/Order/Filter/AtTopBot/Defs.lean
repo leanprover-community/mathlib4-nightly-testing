@@ -106,6 +106,7 @@ end Filter
 
 open Filter
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Monotone.piecewise_eventually_eq_iUnion {β : α → Type*} [Preorder ι] {s : ι → Set α}
     [∀ i, DecidablePred (· ∈ s i)] [DecidablePred (· ∈ ⋃ i, s i)]
     (hs : Monotone s) (f g : (a : α) → β a) (a : α) :

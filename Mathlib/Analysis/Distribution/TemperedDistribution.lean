@@ -162,6 +162,7 @@ def toTemperedDistribution {p : ℝ≥0∞}
   toPointwiseConvergenceCLM _ _ _ _ <|
     (lsmul ℂ ℂ).flip.lpPairing μ p (1 - p⁻¹)⁻¹ f ∘L toLpCLM ℂ ℂ (1 - p⁻¹)⁻¹ μ
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem toTemperedDistribution_apply {p : ℝ≥0∞} [hp : Fact (1 ≤ p)] (f : Lp F p μ)
@@ -177,6 +178,7 @@ instance instCoeDep {p : ℝ≥0∞} [hp : Fact (1 ≤ p)] (f : Lp F p μ) :
     CoeDep (Lp F p μ) f 𝓢'(E, F) where
   coe := toTemperedDistribution f
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem toTemperedDistribution_toLp_eq [SecondCountableTopology E] {p : ℝ≥0∞} [hp : Fact (1 ≤ p)]
     (f : 𝓢(E, F)) : ((f.toLp p μ) : 𝓢'(E, F)) = f.toTemperedDistributionCLM E F μ := by
@@ -294,6 +296,7 @@ open ENNReal MeasureTheory
 variable [MeasurableSpace E] [BorelSpace E] {μ : Measure E} [hμ : μ.HasTemperateGrowth]
   [CompleteSpace F]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Coercion of the product of two `Lp` functions to a tempered distribution is equal to the left
 multiplication if the left factor is a function of temperate growth. -/
 theorem _root_.MeasureTheory.Lp.toTemperedDistribution_smul_eq {p q r : ℝ≥0∞} [p.HolderTriple q r]

@@ -399,6 +399,7 @@ section FinitePi
 
 variable {M : ι → Type*} [∀ i, Monoid (M i)]
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem noncommProd_mulSingle [Fintype ι] [DecidableEq ι] (x : ∀ i, M i) :
     (univ.noncommProd (fun i => Pi.mulSingle i (x i)) fun i _ j _ _ =>

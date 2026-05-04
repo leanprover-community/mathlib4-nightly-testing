@@ -244,6 +244,7 @@ lemma Hom.id_toFunctor {C : Cat.{v, u}} : (𝟙 C : C ⟶ C).toFunctor = 𝟭 C 
 theorem Hom.id_obj {C : Cat.{v, u}} (X : C) : (𝟙 C : C ⟶ C).toFunctor.obj X = X := by
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem Hom.id_map {C : Cat.{v, u}} {X Y : C} (f : X ⟶ Y) : (𝟙 C : C ⟶ C).toFunctor.map f = f := by
   simp
@@ -256,6 +257,7 @@ theorem Hom.comp_obj {C D E : Cat.{v, u}} (F : C ⟶ D) (G : D ⟶ E) (X : C) :
     (F ≫ G).toFunctor.obj X = G.toFunctor.obj (F.toFunctor.obj X) := by
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem Hom.comp_map {C D E : Cat.{v, u}} (F : C ⟶ D) (G : D ⟶ E) {X Y : C} (f : X ⟶ Y) :
     (F ≫ G).toFunctor.map f = G.toFunctor.map (F.toFunctor.map f) := by

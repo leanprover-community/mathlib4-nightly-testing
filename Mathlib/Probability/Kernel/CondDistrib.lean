@@ -87,6 +87,7 @@ lemma condDistrib_comp_map (hX : AEMeasurable X μ) (hY : AEMeasurable Y μ) :
     condDistrib Y X μ ∘ₘ (μ.map X) = μ.map Y := by
   rw [← Measure.snd_compProd, compProd_map_condDistrib hY, Measure.snd_map_prodMk₀ hX]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma condDistrib_congr {X' : α → β} {Y' : α → Ω} (hY : Y =ᵐ[μ] Y') (hX : X =ᵐ[μ] X') :
     condDistrib Y X μ = condDistrib Y' X' μ := by
   rw [condDistrib, condDistrib]
@@ -158,6 +159,7 @@ theorem condDistrib_ae_eq_of_measure_eq_compProd_of_measurable
   convert hκ
   exact heq.symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `condDistrib` is a.e. uniquely defined as the kernel satisfying the defining property of
 `condKernel`. -/
 lemma condDistrib_ae_eq_of_measure_eq_compProd
@@ -204,6 +206,7 @@ lemma condDistrib_comp_self (X : α → β) {f : β → Ω} (hf : Measurable f) 
 lemma condDistrib_self (Y : α → Ω) : condDistrib Y Y μ =ᵐ[μ.map Y] Kernel.id := by
   simpa using condDistrib_comp_self Y measurable_id
 
+set_option backward.defeqAttrib.useBackward true in
 lemma condDistrib_const (X : α → β) (c : Ω) :
     condDistrib (fun _ ↦ c) X μ =ᵐ[μ.map X]
       Kernel.deterministic (mα := mβ) (fun _ ↦ c) (by fun_prop) := by

@@ -117,6 +117,7 @@ theorem sphere_zero_right (n k : ℕ) : sphere (n + 1) 0 k = ∅ := by simp [sph
 theorem sphere_subset_box : sphere n d k ⊆ box n d :=
   filter_subset _ _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem norm_of_mem_sphere {x : Fin n → ℕ} (hx : x ∈ sphere n d k) :
     ‖toLp 2 ((↑) ∘ x : Fin n → ℝ)‖ = √↑k := by
   rw [EuclideanSpace.norm_eq]
@@ -209,6 +210,7 @@ theorem sum_eq : (∑ i : Fin n, d * (2 * d + 1) ^ (i : ℕ)) = ((2 * d + 1) ^ n
 theorem sum_lt : (∑ i : Fin n, d * (2 * d + 1) ^ (i : ℕ)) < (2 * d + 1) ^ n :=
   sum_eq.trans_lt <| (Nat.div_le_self _ 2).trans_lt <| pred_lt (pow_pos (succ_pos _) _).ne'
 
+set_option backward.defeqAttrib.useBackward true in
 theorem card_sphere_le_rothNumberNat (n d k : ℕ) :
     #(sphere n d k) ≤ rothNumberNat ((2 * d - 1) ^ n) := by
   cases n

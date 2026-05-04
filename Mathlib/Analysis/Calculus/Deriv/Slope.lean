@@ -94,6 +94,7 @@ theorem HasDerivAt.tendsto_slope_zero_left [Preorder 𝕜] (h : HasDerivAt f f' 
     Tendsto (fun t ↦ t⁻¹ • (f (x + t) - f x)) (𝓝[<] 0) (𝓝 f') :=
   h.tendsto_slope_zero.mono_left (nhdsLT_le_nhdsNE 0)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a set `t` such that `s ∩ t` is dense in `s`, then the range of `derivWithin f s` is
 contained in the closure of the submodule spanned by the image of `t`. -/
 theorem range_derivWithin_subset_closure_span_image

@@ -178,6 +178,7 @@ lemma discriminant_isZeroAtImInfty : IsZeroAtImInfty Δ := by
   exact (qParam_tendsto_atImInfty zero_lt_one).mul
     (tendsto_atImInfty_tprod_one_sub_eta_q_pow.congr fun z ↦ by congr 1)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma exp_isBigO_discriminant : (fun τ ↦ Real.exp (-2 * π * τ.im)) =O[atImInfty] Δ := by
   refine .of_bound 2 ?_
   have hprod := tendsto_atImInfty_tprod_one_sub_eta_q_pow.eventually

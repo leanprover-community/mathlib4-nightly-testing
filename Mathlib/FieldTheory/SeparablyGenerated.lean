@@ -64,6 +64,7 @@ theorem aeval_toPolynomialAdjoinImageCompl_eq_zero
   simp_rw [toPolynomialAdjoinImageCompl, ← AlgEquiv.coe_algHom, ← AlgHom.comp_apply]
   congr; ext; aesop (add simp optionEquivLeft_X_some) (add simp optionEquivLeft_X_none)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem irreducible_toPolynomialAdjoinImageCompl {F : MvPolynomial ι k} (hF : Irreducible F) (i : ι)
     (H : AlgebraicIndependent k fun x : {j | j ≠ i} ↦ a x) :

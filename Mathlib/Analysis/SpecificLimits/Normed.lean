@@ -228,6 +228,7 @@ theorem tendsto_pow_atTop_nhds_zero_of_abs_lt_one {r : ℝ} (h : |r| < 1) :
     Tendsto (fun n : ℕ ↦ r ^ n) atTop (𝓝 0) :=
   tendsto_pow_atTop_nhds_zero_of_norm_lt_one h
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_pow_atTop_nhds_zero_iff_norm_lt_one {R : Type*} [SeminormedRing R] [NormMulClass R]
     {x : R} : Tendsto (fun n : ℕ ↦ x ^ n) atTop (𝓝 0) ↔ ‖x‖ < 1 := by
   -- this proof is slightly fiddly since `‖x ^ n‖ = ‖x‖ ^ n` might not hold for `n = 0`
@@ -399,6 +400,7 @@ section MulGeometric
 
 variable {R : Type*} [NormedRing R] {𝕜 : Type*} [NormedDivisionRing 𝕜]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem summable_norm_mul_geometric_of_norm_lt_one {k : ℕ} {r : R}
     (hr : ‖r‖ < 1) {u : ℕ → ℕ} (hu : (fun n ↦ (u n : ℝ)) =O[atTop] (fun n ↦ (↑(n ^ k) : ℝ))) :
     Summable fun n : ℕ ↦ ‖(u n * r ^ n : R)‖ := by
@@ -626,6 +628,7 @@ end SummableLeGeometric
 
 /-! ### Summability tests based on comparison with geometric series -/
 
+set_option backward.defeqAttrib.useBackward true in
 theorem summable_of_ratio_norm_eventually_le {α : Type*} [SeminormedAddCommGroup α]
     [CompleteSpace α] {f : ℕ → α} {r : ℝ} (hr₁ : r < 1)
     (h : ∀ᶠ n in atTop, ‖f (n + 1)‖ ≤ r * ‖f n‖) : Summable f := by
@@ -645,6 +648,7 @@ theorem summable_of_ratio_norm_eventually_le {α : Type*} [SeminormedAddCommGrou
     by_contra! h
     exact not_lt.mpr (norm_nonneg _) (lt_of_le_of_lt hn <| mul_neg_of_neg_of_pos hr₀ h)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem summable_of_ratio_test_tendsto_lt_one {α : Type*} [NormedAddCommGroup α] [CompleteSpace α]
     {f : ℕ → α} {l : ℝ} (hl₁ : l < 1) (hf : ∀ᶠ n in atTop, f n ≠ 0)
     (h : Tendsto (fun n ↦ ‖f (n + 1)‖ / ‖f n‖) atTop (𝓝 l)) : Summable f := by
@@ -671,6 +675,7 @@ theorem not_summable_of_ratio_norm_eventually_ge {α : Type*} [SeminormedAddComm
     exact hN h''.symm
   · grind
 
+set_option backward.defeqAttrib.useBackward true in
 theorem not_summable_of_ratio_test_tendsto_gt_one {α : Type*} [SeminormedAddCommGroup α]
     {f : ℕ → α} {l : ℝ} (hl : 1 < l) (h : Tendsto (fun n ↦ ‖f (n + 1)‖ / ‖f n‖) atTop (𝓝 l)) :
     ¬Summable f := by
@@ -787,6 +792,7 @@ variable {E : Type*} [Ring E] [PartialOrder E] [IsOrderedRing E]
   [TopologicalSpace E] [OrderClosedTopology E]
   {l : E} {f : ℕ → E}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating monotone series with an even number of terms provide
 upper bounds on the limit. -/
 theorem Monotone.tendsto_le_alternating_series
@@ -801,6 +807,7 @@ theorem Monotone.tendsto_le_alternating_series
     exact hfm (by lia)
   exact ha.le_of_tendsto (hfl.comp (tendsto_atTop_mono (fun n ↦ by dsimp; lia) tendsto_id)) _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating monotone series with an odd number of terms provide
 lower bounds on the limit. -/
 theorem Monotone.alternating_series_le_tendsto
@@ -816,6 +823,7 @@ theorem Monotone.alternating_series_le_tendsto
     exact hfm (by lia)
   exact hm.ge_of_tendsto (hfl.comp (tendsto_atTop_mono (fun n ↦ by dsimp; lia) tendsto_id)) _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating antitone series with an even number of terms provide
 lower bounds on the limit. -/
 theorem Antitone.alternating_series_le_tendsto
@@ -830,6 +838,7 @@ theorem Antitone.alternating_series_le_tendsto
     exact hfa (by lia)
   exact hm.ge_of_tendsto (hfl.comp (tendsto_atTop_mono (fun n ↦ by dsimp; lia) tendsto_id)) _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating antitone series with an odd number of terms provide
 upper bounds on the limit. -/
 theorem Antitone.tendsto_le_alternating_series
@@ -919,6 +928,7 @@ section NormedAddCommGroup
 variable [NormedRing K] [IsDomain K] [NormedAddCommGroup R]
 variable [Module K R] [IsTorsionFree K R] [NormSMulClass K R]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_zero_of_isBoundedUnder_smul_of_tendsto_cobounded {f : α → K} {g : α → R}
     {l : Filter α} (hmul : IsBoundedUnder (· ≤ ·) l fun x ↦ ‖f x • g x‖)
     (hf : Tendsto f l (cobounded K)) :

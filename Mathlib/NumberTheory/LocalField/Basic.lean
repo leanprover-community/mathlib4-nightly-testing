@@ -65,6 +65,7 @@ instance : IsTopologicalDivisionRing K := by
   haveI := isUniformAddGroup_of_addCommGroup (G := K)
   infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isCompact_closedBall (γ : ValueGroupWithZero K) : IsCompact { x | valuation K x ≤ γ } := by
   obtain ⟨γ, rfl⟩ := ValuativeRel.valuation_surjective γ
   by_cases hγ : γ = 0

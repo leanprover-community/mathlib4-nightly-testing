@@ -113,6 +113,7 @@ lemma integral_dual_conv_map_neg_eq_zero (L : StrongDual ℝ E) :
     rw [integral_map (by fun_prop) (by fun_prop)]
     simp [integral_neg]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `x ↦ exp (C * ‖x‖ ^ 2)` is integrable with respect to the centered Gaussian
 `μ ∗ (μ.map (ContinuousLinearEquiv.neg ℝ))`, then for all `C' < C`, `x ↦ exp (C' * ‖x‖ ^ 2)`
 is integrable with respect to `μ`. -/
@@ -181,6 +182,7 @@ section FiniteMoments
 
 variable [CompleteSpace E] [SecondCountableTopology E]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A Gaussian measure has moments of all orders.
 That is, the identity is in L^p for all finite `p`. -/

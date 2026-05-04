@@ -541,6 +541,7 @@ theorem differentiable_set_subset_D :
     · refine hR _ ⟨pow_pos (by norm_num) _, lt_of_le_of_lt ?_ hn⟩
       exact pow_le_pow_of_le_one (by norm_num) (by norm_num) (by assumption)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Harder inclusion: at a point in `D f K`, the function `f` has a derivative, in `K`. -/
 theorem D_subset_differentiable_set {K : Set F} (hK : IsComplete K) :
     D f K ⊆ { x | DifferentiableWithinAt ℝ f (Ici x) x ∧ derivWithin f (Ici x) x ∈ K } := by

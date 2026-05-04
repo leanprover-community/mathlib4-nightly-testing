@@ -461,6 +461,7 @@ noncomputable def unitsSMulEquiv : NormalWord d ≃ NormalWord d :=
     left_inv := fun _ => by rw [unitsSMul_neg]
     right_inv := fun w => by convert unitsSMul_neg _ _ w; simp }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem unitsSMul_one_group_smul (g : A) (w : NormalWord d) :
     unitsSMul φ 1 ((g : G) • w) = (φ g : G) • (unitsSMul φ 1 w) := by
@@ -521,6 +522,7 @@ theorem prod_cons (g : G) (u : ℤˣ) (w : NormalWord d) (h1 : w.head ∈ d.set 
     (cons g u w h1 h2).prod φ = of g * (t ^ (u : ℤ) * w.prod φ) := by
   simp [ReducedWord.prod, cons, mul_assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem prod_unitsSMul (u : ℤˣ) (w : NormalWord d) :
     (unitsSMul φ u w).prod φ = (t ^ (u : ℤ) * w.prod φ : HNNExtension G A B φ) := by

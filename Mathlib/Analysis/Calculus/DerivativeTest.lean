@@ -332,6 +332,7 @@ section SecondDeriv
 
 variable {f : ℝ → ℝ} {x₀ : ℝ}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If the derivative of `f` is positive at a root `x₀` of `f`, then locally the sign of `f x`
 matches `x - x₀`. -/
 lemma eventually_nhdsWithin_sign_eq_of_deriv_pos (hf : deriv f x₀ > 0) (hx : f x₀ = 0) :

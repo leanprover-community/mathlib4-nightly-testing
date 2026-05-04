@@ -185,6 +185,7 @@ lemma continuous_convexComboPair :
     simp [← coe_nnreal_ennreal_nndist, ← ENNReal.coe_mul, NNReal.toReal_le,
       dist_convexComboPair_convexComboPair, Subtype.dist_eq, dist_eq_norm]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma continuous_convexComboPair_of_isBounded
     {T : Type*} [TopologicalSpace T] (f : T → ℝ) (hf : Continuous f)
     (hf0 : ∀ t, 0 ≤ f t) (hf1 : ∀ t, f t ≤ 1) (x y : T → X)

@@ -506,6 +506,7 @@ theorem apply_f_eq_continuousPart (Hcont : #ℝ = ℵ₁) (φ : (DiscreteCopy �
     ψ.continuousPart.additive _ _ disjoint_sdiff_self_right,
     ψ.continuousPart_apply_eq_zero_of_countable _ (countable_compl_spf Hcont x), add_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem countable_ne (Hcont : #ℝ = ℵ₁) (φ : (DiscreteCopy ℝ →ᵇ ℝ) →L[ℝ] ℝ) :
     {x | φ.toBoundedAdditiveMeasure.continuousPart univ ≠ φ (f Hcont x)}.Countable := by
   have A :

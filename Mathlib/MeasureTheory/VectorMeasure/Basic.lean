@@ -218,6 +218,7 @@ lemma of_biUnion_finset {ι : Type*} {s : Finset ι} {f : ι → Set α} (hd : P
     · apply hm _ (by simp)
     · apply Finset.measurableSet_biUnion _ (by grind)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_vectorMeasure_iUnion_atTop_nat
     {s : ℕ → Set α} (hm : Monotone s) (hs : ∀ i, MeasurableSet (s i)) :
     Tendsto (fun n ↦ v (s n)) atTop (𝓝 (v (⋃ n, s n))) := by
@@ -1001,6 +1002,7 @@ section
 variable {M : Type*} [TopologicalSpace M] [AddCommMonoid M] [PartialOrder M]
   [AddLeftMono M] [ContinuousAdd M]
 
+set_option backward.defeqAttrib.useBackward true in
 instance instAddLeftMono : AddLeftMono (VectorMeasure α M) :=
   ⟨fun _ _ _ h i hi => by dsimp; grw [h i hi]⟩
 

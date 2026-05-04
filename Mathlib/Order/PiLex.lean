@@ -177,6 +177,7 @@ theorem toLex_strictMono : StrictMono (@toLex (∀ i, β i)) := fun a b h =>
     contrapose! hl
     exact ⟨j, hl, hj⟩, (h.le i).lt_of_ne hi⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem lt_toLex_update_self_iff : toLex x < toLex (update x i a) ↔ x i < a := by
   refine ⟨?_, fun h => toLex_strictMono <| lt_update_self_iff.2 h⟩
@@ -188,6 +189,7 @@ theorem lt_toLex_update_self_iff : toLex x < toLex (update x i a) ↔ x i < a :=
     exact h.false
   rwa [update_self] at h
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem toLex_update_lt_self_iff : toLex (update x i a) < toLex x ↔ a < x i := by
   refine ⟨?_, fun h => toLex_strictMono <| update_lt_self_iff.2 h⟩

@@ -221,6 +221,7 @@ lemma isFiniteMeasure (h : HasSubgaussianMGF X c κ ν) :
   filter_upwards [h.ae_integrable_exp_mul 0, h.mgf_le] with ω' h h_mgf
   simpa [integrable_const_iff] using h
 
+set_option backward.defeqAttrib.useBackward true in
 lemma measure_univ_le_one (h : HasSubgaussianMGF X c κ ν) :
     ∀ᵐ ω' ∂ν, κ ω' Set.univ ≤ 1 := by
   filter_upwards [h.isFiniteMeasure, h.mgf_le] with ω' h h_mgf
@@ -267,6 +268,7 @@ lemma neg {c : ℝ≥0} (h : HasSubgaussianMGF X c κ ν) : HasSubgaussianMGF (-
   integrable_exp_mul t := by simpa using h.integrable_exp_mul (-t)
   mgf_le := by filter_upwards [h.mgf_le] with ω' hm t using by simpa [mgf] using hm (-t)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma congr {Y : Ω → ℝ} (h : HasSubgaussianMGF X c κ ν) (h' : X =ᵐ[κ ∘ₘ ν] Y) :
     HasSubgaussianMGF Y c κ ν where
   integrable_exp_mul t := by
@@ -322,6 +324,7 @@ protected lemma const_mul (h : HasSubgaussianMGF X c κ ν) (r : ℝ) :
 
 section ChernoffBound
 
+set_option backward.defeqAttrib.useBackward true in
 lemma measure_ge_le_exp_add (h : HasSubgaussianMGF X c κ ν) (ε : ℝ) :
     ∀ᵐ ω' ∂ν, ∀ t, 0 ≤ t → (κ ω').real {ω | ε ≤ X ω} ≤ exp (-t * ε + c * t ^ 2 / 2) := by
   filter_upwards [h.mgf_le, h.ae_forall_integrable_exp_mul, h.isFiniteMeasure] with ω' h1 h2 _ t ht
@@ -351,6 +354,7 @@ end ChernoffBound
 
 section Zero
 
+set_option backward.defeqAttrib.useBackward true in
 lemma measure_pos_eq_zero_of_hasSubGaussianMGF_zero (h : HasSubgaussianMGF X 0 κ ν) :
     ∀ᵐ ω' ∂ν, (κ ω') {ω | 0 < X ω} = 0 := by
   have hs : {ω | 0 < X ω} = ⋃ ε : {ε : ℚ // 0 < ε}, {ω | ε ≤ X ω} := by
@@ -377,6 +381,7 @@ lemma measure_pos_eq_zero_of_hasSubGaussianMGF_zero (h : HasSubgaussianMGF X 0 �
   simp only [hs, measure_iUnion_null_iff, Subtype.forall]
   exact fun _ ↦ hn _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ae_eq_zero_of_hasSubgaussianMGF_zero (h : HasSubgaussianMGF X 0 κ ν) :
     ∀ᵐ ω' ∂ν, X =ᵐ[κ ω'] 0 := by
   filter_upwards [(h.neg).measure_pos_eq_zero_of_hasSubGaussianMGF_zero,
@@ -406,6 +411,7 @@ end Zero
 
 section Add
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma add {Y : Ω → ℝ} {cX cY : ℝ≥0} (hX : HasSubgaussianMGF X cX κ ν)
     (hY : HasSubgaussianMGF Y cY κ ν) :
@@ -486,6 +492,7 @@ lemma integrable_exp_add_compProd {η : Kernel (Ω' × Ω) Ω''} [IsZeroOrMarkov
     rwa [ENNReal.coe_ofNat, Measure.comp_compProd_comm, Measure.snd,
       memLp_map_measure_iff h.1 measurable_snd.aemeasurable] at h
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For `ν : Measure Ω'`, `κ : Kernel Ω' Ω` and `η : (Ω' × Ω) Ω''`, if a random variable `X : Ω → ℝ`
 has a sub-Gaussian mgf with respect to `κ` and `ν` and another random variable `Y : Ω'' → ℝ` has
 a sub-Gaussian mgf with respect to `η` and `ν ⊗ₘ κ : Measure (Ω' × Ω)`, then `X + Y` (random
@@ -563,6 +570,7 @@ lemma cgf_le (h : HasCondSubgaussianMGF m hm X c μ) :
     ∀ᵐ ω' ∂(μ.trim hm), ∀ t, cgf X (condExpKernel μ m ω') t ≤ c * t ^ 2 / 2 :=
   Kernel.HasSubgaussianMGF.cgf_le h
 
+set_option backward.defeqAttrib.useBackward true in
 lemma ae_trim_condExp_le (h : HasCondSubgaussianMGF m hm X c μ) (t : ℝ) :
     ∀ᵐ ω' ∂(μ.trim hm), (μ[fun ω ↦ exp (t * X ω) | m]) ω' ≤ exp (c * t ^ 2 / 2) := by
   have h_eq := condExp_ae_eq_trim_integral_condExpKernel hm (h.integrable_exp_mul t)

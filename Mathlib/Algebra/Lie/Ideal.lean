@@ -472,12 +472,14 @@ theorem incl_isIdealMorphism : I.incl.IsIdealMorphism := by
 
 variable {I}
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] theorem comap_incl_eq_top : I₂.comap I.incl = ⊤ ↔ I ≤ I₂ := by
   rw [← LieSubmodule.toSubmodule_inj, LieIdeal.comap_toSubmodule, LieSubmodule.top_toSubmodule,
     incl_coe]
   simp_rw [toLieSubalgebra_toSubmodule]
   rw [Submodule.comap_subtype_eq_top, LieSubmodule.toSubmodule_le_toSubmodule]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] theorem comap_incl_eq_bot : I₂.comap I.incl = ⊥ ↔ Disjoint I I₂ := by
   rw [disjoint_iff, ← LieSubmodule.toSubmodule_inj, LieIdeal.comap_toSubmodule,
     LieSubmodule.bot_toSubmodule, ← LieSubmodule.toSubmodule_inj, LieSubmodule.inf_toSubmodule,

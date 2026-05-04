@@ -226,6 +226,7 @@ def iteratedWreathToPermHom (G : Type*) [Group G] :
       exact (Fin.succFunEquiv G n).symm.permCongrHom.toMonoidHom.comp
         (RegularWreathProduct.toPerm (IteratedWreathProduct G n) G (Fin n → G))
 
+set_option backward.defeqAttrib.useBackward true in
 lemma iteratedWreathToPermHomInj (G : Type*) [Group G] :
     (n : ℕ) → Function.Injective (iteratedWreathToPermHom G n)
   | 0 => by

@@ -179,6 +179,7 @@ lemma norm_log_one_add_sub_self_le {z : ℂ} (hz : ‖z‖ < 1) :
   · simp [logTaylor_succ, logTaylor_zero, sub_eq_add_neg]
   · norm_num
 
+set_option backward.defeqAttrib.useBackward true in
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 open scoped Topology in
 lemma log_sub_logTaylor_isBigO (n : ℕ) :
@@ -294,6 +295,7 @@ open scoped Topology
 
 namespace Complex
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The limit of `x * log (1 + g x)` as `(x : ℝ) → ∞` is `t`,
 where `t : ℂ` is the limit of `x * g x`. -/
 lemma tendsto_mul_log_one_add_of_tendsto {g : ℝ → ℂ} {t : ℂ}
@@ -315,6 +317,7 @@ lemma tendsto_mul_log_one_add_of_tendsto {g : ℝ → ℂ} {t : ℂ}
       simpa using isBigO_const_of_tendsto hg (one_ne_zero (α := ℂ))
         |>.pow 2 |>.mul (isBigO_refl _ _)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The limit of `(1 + g x) ^ x` as `(x : ℝ) → ∞` is `exp t`,
 where `t : ℂ` is the limit of `x * g x`. -/
 lemma tendsto_one_add_cpow_exp_of_tendsto {g : ℝ → ℂ} {t : ℂ}
@@ -375,6 +378,7 @@ end Complex
 
 namespace Real
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The limit of `x * log (1 + g x)` as `(x : ℝ) → ∞` is `t`,
 where `t : ℝ` is the limit of `x * g x`. -/
 lemma tendsto_mul_log_one_add_of_tendsto {g : ℝ → ℝ} {t : ℝ}
@@ -395,6 +399,7 @@ theorem tendsto_mul_log_one_add_div_atTop (t : ℝ) :
       (EventuallyEq.div_mul_cancel_atTop tendsto_id).symm.trans <|
         .of_eq <| funext fun _ => mul_comm _ _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The limit of `(1 + g x) ^ x` as `(x : ℝ) → ∞` is `exp t`,
 where `t : ℝ` is the limit of `x * g x`. -/
 lemma tendsto_one_add_rpow_exp_of_tendsto {g : ℝ → ℝ} {t : ℝ}

@@ -87,6 +87,7 @@ theorem _root_.Filter.Tendsto.const_vadd_asymptoticNhds {f : α → P} {v : V} (
 variable [TopologicalSpace k] [OrderTopology k] [IsStrictOrderedRing k]
   [IsTopologicalAddGroup V] [ContinuousSMul k V]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem asymptoticNhds_eq_smul (v : V) : asymptoticNhds k V v = atTop (α := k) • 𝓝 v := by
   unfold asymptoticNhds
   apply le_antisymm
@@ -113,6 +114,7 @@ instance {v : V} : (asymptoticNhds k P v).NeBot := by
   rw [asymptoticNhds_eq_smul_vadd v p]
   infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem asymptoticNhds_zero' : asymptoticNhds k V (0 : V) = ⊤ := by
   rw [← top_le_iff, ← iSup_pure_eq_top, iSup_le_iff]
   intro v
@@ -166,6 +168,7 @@ theorem nhds_bind_asymptoticNhds (v : V) :
   · rw [← pure_bind v (asymptoticNhds k P)]
     exact bind_mono (pure_le_nhds v) .rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem asymptoticNhds_bind_nhds [TopologicalSpace P] [IsTopologicalAddTorsor P] (v : V) :
     (asymptoticNhds k P v).bind 𝓝 = asymptoticNhds k P v := by
@@ -186,6 +189,7 @@ theorem asymptoticNhds_bind_nhds [TopologicalSpace P] [IsTopologicalAddTorsor P]
   rw [← Set.image_smul, Set.forall_mem_image]
   exact fun w hw => hs (Set.smul_mem_smul hc₁ hw)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem asymptoticNhds_bind_asymptoticNhds (v : V) :
     (asymptoticNhds k V v).bind (asymptoticNhds k P) = asymptoticNhds k P v := by

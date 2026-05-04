@@ -117,6 +117,7 @@ theorem eventually_nhdsWithin' {x : X} (p : X → Prop) {s : Set X}
     (eventually_nhdsWithin_of_eventually_nhds <| e.eventually_left_inverse hx).mono fun y hy => ?_
   rw [hy]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This lemma is useful in the manifold library in the case that `e` is a chart. It states that
   locally around `e x` the set `e.symm ⁻¹' s` is the same as the set intersected with the target
   of `e` and some other neighborhood of `f x` (which will be the source of a chart on `Z`). -/

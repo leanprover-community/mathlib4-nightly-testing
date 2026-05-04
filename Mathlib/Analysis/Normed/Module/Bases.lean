@@ -505,6 +505,7 @@ def basis : SchauderBasis 𝕜 X :=
                    LinearMap.mkContinuous_apply, ← hcoeff]
         rw [← ContinuousLinearMap.sum_apply, sum_succSub D.P D.proj_zero] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The projections of the constructed basis correspond to the input data `D.P`. -/
 @[simp]
 theorem basis_proj : (basis D).proj = D.P := by

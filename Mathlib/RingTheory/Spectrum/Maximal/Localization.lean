@@ -121,6 +121,7 @@ section Pi
 
 variable {ι} (R : ι → Type*) [∀ i, CommSemiring (R i)] [∀ i, Nontrivial (R i)]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem toPiLocalization_not_surjective_of_infinite [Infinite ι] :
     ¬ Function.Surjective (toPiLocalization (Π i, R i)) := fun surj ↦ by
   classical

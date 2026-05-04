@@ -61,9 +61,11 @@ nonrec lemma IsCover.mono (hN : N₁ ⊆ N₂) (h₁ : IsCover ε s N₁) : IsCo
 
 nonrec lemma IsCover.anti (hst : s ⊆ t) (ht : IsCover ε t N) : IsCover ε s N := ht.anti hst
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsCover.mono_radius (hεδ : ε ≤ δ) (hε : IsCover ε s N) : IsCover δ s N :=
   hε.mono_entourage fun xy hxy ↦ by dsimp at *; exact le_trans hxy <| mod_cast hεδ
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsCover.image_lipschitz {f : X → Y} {s : Set X} {N : Set X} {ε K₂ : ℝ≥0}
     (hs : IsCover ε s N) (hf : LipschitzWith K₂ f) : IsCover (K₂ * ε) (f '' s) (f '' N) := by
   rintro _ ⟨x, hx, rfl⟩

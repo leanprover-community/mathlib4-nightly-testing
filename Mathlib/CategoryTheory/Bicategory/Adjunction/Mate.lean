@@ -680,6 +680,7 @@ def rightAdjointSquareConjugate.vcomp (α : r₁ ≫ g ⟶ h ≫ r₂) (β : r�
     r₁ ≫ g ⟶ h ≫ r₃ :=
   α ≫ h ◁ β
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The mates equivalence commutes with this composition, essentially by `mateEquiv_vcomp`. -/
 theorem mateEquiv_conjugateEquiv_vcomp
     (α : g ≫ l₂ ⟶ l₁ ≫ h) (β : l₃ ⟶ l₂) :
@@ -718,6 +719,7 @@ def rightAdjointConjugateSquare.vcomp (α : r₁ ⟶ r₂) (β : r₂ ≫ g ⟶ 
     r₁ ≫ g ⟶ h ≫ r₃ :=
   α ▷ g ≫ β
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The mates equivalence commutes with this composition, essentially by `mateEquiv_vcomp`. -/
 theorem conjugateEquiv_mateEquiv_vcomp
     (α : l₂ ⟶ l₁) (β : g ≫ l₃ ⟶ l₂ ≫ h) :

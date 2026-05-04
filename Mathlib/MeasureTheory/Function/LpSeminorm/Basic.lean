@@ -475,6 +475,7 @@ theorem eLpNorm_enorm_rpow (f : α → ε) (hq_pos : 0 < q) :
   rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hq_pos.le]
   exact eLpNorm'_enorm_rpow f p.toReal q hq_pos
 
+set_option backward.defeqAttrib.useBackward true in
 theorem eLpNorm_norm_rpow (f : α → F) (hq_pos : 0 < q) :
     eLpNorm (fun x => ‖f x‖ ^ q) p μ = eLpNorm f (p * ENNReal.ofReal q) μ ^ q := by
   rw [← eLpNorm_enorm_rpow f hq_pos]
@@ -554,6 +555,7 @@ theorem MemLp.of_bound [IsFiniteMeasure μ] {f : α → E} (hf : AEStronglyMeasu
     (hfC : ∀ᵐ x ∂μ, ‖f x‖ ≤ C) : MemLp f p μ :=
   (memLp_const C).of_le hf (hfC.mono fun _x hx => le_trans hx (le_abs_self _))
 
+set_option backward.defeqAttrib.useBackward true in
 theorem memLp_of_bounded [IsFiniteMeasure μ]
     {a b : ℝ} {f : α → ℝ} (h : ∀ᵐ x ∂μ, f x ∈ Set.Icc a b)
     (hX : AEStronglyMeasurable f μ) (p : ENNReal) : MemLp f p μ :=
@@ -926,6 +928,7 @@ theorem ae_bdd_liminf_atTop_rpow_of_eLpNorm_bdd {p : ℝ≥0∞} {f : ℕ → α
     sSup_le fun b ⟨a, ha⟩ =>
       (ha a le_rfl).trans ((ENNReal.rpow_inv_le_iff (ENNReal.toReal_pos hp hp')).1 (hbdd _))
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ae_bdd_liminf_atTop_of_eLpNorm_bdd {p : ℝ≥0∞} (hp : p ≠ 0) {f : ℕ → α → E}
     (hfmeas : ∀ n, Measurable (f n)) (hbdd : ∀ n, eLpNorm (f n) p μ ≤ R) :
     ∀ᵐ x ∂μ, liminf (fun n => (‖f n x‖ₑ)) atTop < ∞ := by

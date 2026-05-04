@@ -28,6 +28,7 @@ open Filter MeasureTheory Topology Asymptotics Metric
 variable {X E ι : Type*} [MeasurableSpace X] [NormedAddCommGroup E] [NormedSpace ℝ E]
   [CompleteSpace E]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Fundamental theorem of calculus for set integrals:
 if `μ` is a measure that is finite at a filter `l` and
 `f` is a measurable function that has a finite limit `b` at `l ⊓ ae μ`, then

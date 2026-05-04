@@ -242,6 +242,7 @@ instance : IsEmpty (0 : Multiset α) := Fintype.card_eq_zero_iff.mp (by simp)
 
 instance : IsEmpty (∅ : Multiset α) := Fintype.card_eq_zero_iff.mp (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 `v ::ₘ m` is equivalent to `Option m` by mapping one `v` to `none` and everything else to `m`.
 -/
@@ -295,6 +296,7 @@ lemma coe_consEquiv_of_eq_of_eq {v : α} (x : v ::ₘ m) (hx : ↑x = v) (hx2 : 
 lemma coe_consEquiv_of_eq_of_lt {v : α} (x : v ::ₘ m) (hx : ↑x = v) (hx2 : x.2 < m.count v) :
     consEquiv x = some ⟨x.1, ⟨x.2, by simpa [hx]⟩⟩ := by simp [consEquiv, hx, hx2.ne]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 There is some equivalence between `m` and `m.map f` which respects `f`.

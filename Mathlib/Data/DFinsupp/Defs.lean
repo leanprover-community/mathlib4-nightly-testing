@@ -717,6 +717,7 @@ theorem erase_add_single (i : ι) (f : Π₀ i, β i) : f.erase i + single i (f 
     else by
       simp only [add_apply, single_apply, erase_apply, dif_neg h, if_neg (Ne.symm h), add_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 protected theorem induction {p : (Π₀ i, β i) → Prop} (f : Π₀ i, β i) (h0 : p 0)
     (ha : ∀ (i b) (f : Π₀ i, β i), f i = 0 → b ≠ 0 → p f → p (single i b + f)) : p f := by
   obtain ⟨f, s⟩ := f
@@ -810,6 +811,7 @@ theorem support_mk'_subset {f : ∀ i, β i} {s : Multiset ι} {h} :
     (mk' f <| Trunc.mk ⟨s, h⟩).support ⊆ s.toFinset := fun i H =>
   Multiset.mem_toFinset.1 <| by simpa using (Finset.mem_filter.1 H).1
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp, grind =]
 theorem mem_support_toFun (f : Π₀ i, β i) (i) : i ∈ f.support ↔ f i ≠ 0 := by
   obtain ⟨f, s⟩ := f

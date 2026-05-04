@@ -126,6 +126,7 @@ lemma map_liftBaseChange_smul [h : Algebra.IsPushout R S A B] (b : B) (x) :
     · simp [smul_comm]
     · simp only [map_add, smul_add, *]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- (Implementation).
 The `S`-derivation `B = S ⊗[R] A` to `S ⊗[R] Ω[A⁄R]` sending `a ⊗ b` to `a ⊗ d b`. -/
 noncomputable

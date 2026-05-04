@@ -293,6 +293,7 @@ theorem TotallyBounded.powerset_hausdorff {t : Set α} (ht : TotallyBounded t) :
   obtain ⟨y, hy, hxy⟩ := Set.mem_iUnion₂.mp (ht (hs hx))
   exact ⟨y, ⟨hy, ⟨x, hx, hxy⟩⟩, hxy⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The neighborhoods of a totally bounded set in the Hausdorff uniformity are neighborhoods in the
 Vietoris topology. -/
 theorem TotallyBounded.nhds_vietoris_le_nhds_hausdorff {s : Set α} (hs : TotallyBounded s) :

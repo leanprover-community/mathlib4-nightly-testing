@@ -78,6 +78,7 @@ lemma toReal_rnDeriv_map [IsFiniteMeasure μ] (hμν : μ ≪ ν)
   · refine (Measurable.ennreal_toReal fun s hs ↦ ?_).aestronglyMeasurable
     exact ⟨_, Measure.measurable_rnDeriv _ _ hs, rfl⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Radon-Nikodym derivative `∂(μ.map g)/∂(ν.map g)` of the pushforward of measures by
 a function `g : 𝓧 → 𝓨` evaluated at `g x` is a.e.-equal to the conditional expectation of `∂μ/∂ν`
 with respect to the comap by `g` of the sigma-algebra on `𝓨`.
@@ -145,6 +146,7 @@ lemma toReal_rnDeriv_trim (hm : m ≤ m𝓧) [IsFiniteMeasure μ] [hsf : SigmaFi
   simp_rw [MeasurableSpace.comap_id, id_def, trim_eq_map] at h
   convert h <;> rw [MeasurableSpace.comap_id]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The Radon-Nikodym derivative `∂(μ.trim hm)/∂(ν.trim hm)` of the trimmed measures
 (for `hm : m ≤ m0` stating that `m` is a sub-sigma-algebra of `m0`) is a.e.-equal to the
 conditional expectation of `∂μ/∂ν` with respect to the sigma-algebra `m`. -/

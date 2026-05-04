@@ -253,6 +253,7 @@ section SigmaFinite
 variable (μ' ν' : Measure G) [SigmaFinite μ'] [SigmaFinite ν'] [IsMulLeftInvariant μ']
   [IsMulLeftInvariant ν']
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem ae_measure_preimage_mul_right_lt_top (hμs : μ' s ≠ ∞) :
     ∀ᵐ x ∂μ', ν' ((· * x) ⁻¹' s) < ∞ := by

@@ -375,6 +375,7 @@ end Add
 
 section Mul
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem lintegral_const_mul (r : ℝ≥0∞) {f : α → ℝ≥0∞} (hf : Measurable f) :
     ∫⁻ a, r * f a ∂μ = r * ∫⁻ a, f a ∂μ :=
@@ -404,6 +405,7 @@ theorem lintegral_const_mul'' (r : ℝ≥0∞) {f : α → ℝ≥0∞} (hf : AEM
     lintegral_congr_ae (EventuallyEq.fun_comp hf.ae_eq_mk _)
   rw [A, B, lintegral_const_mul _ hf.measurable_mk]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem lintegral_const_mul_le (r : ℝ≥0∞) (f : α → ℝ≥0∞) :
     r * ∫⁻ a, f a ∂μ ≤ ∫⁻ a, r * f a ∂μ := by
   rw [lintegral, ENNReal.mul_iSup]

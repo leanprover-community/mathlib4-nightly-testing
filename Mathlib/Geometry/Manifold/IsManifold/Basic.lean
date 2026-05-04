@@ -614,6 +614,7 @@ instance modelWithCornersSelf_boundaryless (𝕜 : Type*) [NontriviallyNormedFie
     [NormedAddCommGroup E] [NormedSpace 𝕜 E] : (modelWithCornersSelf 𝕜 E).Boundaryless :=
   ⟨by simp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If two model with corners are boundaryless, their product also is -/
 instance ModelWithCorners.range_eq_univ_prod {𝕜 : Type u} [NontriviallyNormedField 𝕜] {E : Type v}
     [NormedAddCommGroup E] [NormedSpace 𝕜 E] {H : Type w} [TopologicalSpace H]

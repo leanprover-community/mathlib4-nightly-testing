@@ -271,6 +271,7 @@ theorem lim_le_one (c : CU P) (x : X) : c.lim x ≤ 1 :=
 theorem lim_mem_Icc (c : CU P) (x : X) : c.lim x ∈ Icc (0 : ℝ) 1 :=
   ⟨c.lim_nonneg x, c.lim_le_one x⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Continuity of `Urysohns.CU.lim`. See module docstring for a sketch of the proofs. -/
 theorem continuous_lim (c : CU P) : Continuous c.lim := by
   obtain ⟨h0, h1234, h1⟩ : 0 < (2⁻¹ : ℝ) ∧ (2⁻¹ : ℝ) < 3 / 4 ∧ (3 / 4 : ℝ) < 1 := by norm_num

@@ -361,10 +361,12 @@ theorem map_id : ∀ s : Seq α, map id s = s
     apply Subtype.ext; dsimp [map]
     rw [Option.map_id, Stream'.map_id]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem map_tail (f : α → β) : ∀ s, map f (tail s) = tail (map f s)
   | ⟨s, al⟩ => by apply Subtype.ext; dsimp [tail, map]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem map_comp (f : α → β) (g : β → γ) : ∀ s : Seq α, map (g ∘ f) s = map g (map f s)
   | ⟨s, al⟩ => by
     apply Subtype.ext; dsimp [map]

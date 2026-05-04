@@ -147,6 +147,7 @@ lemma tendsto_eulerMascheroniSeq' :
     simp [eulerMascheroniSeq, eulerMascheroniSeq', eq_false_intro hn]
   exact tendsto_log_comp_add_sub_log 1
 
+set_option backward.defeqAttrib.useBackward true in
 lemma tendsto_harmonic_sub_log :
     Tendsto (fun n : ℕ ↦ harmonic n - log n) atTop (𝓝 eulerMascheroniConstant) := by
   apply tendsto_eulerMascheroniSeq'.congr'

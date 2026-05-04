@@ -130,6 +130,7 @@ def unopFunctor : RelCatᵒᵖ ⥤ RelCat where
 @[simp] theorem unopFunctor_comp_opFunctor_eq :
     Functor.comp unopFunctor opFunctor = Functor.id _ := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `RelCat` is self-dual: The map that swaps the argument order of a
 relation induces an equivalence between `RelCat` and its opposite. -/

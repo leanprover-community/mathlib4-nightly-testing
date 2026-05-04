@@ -393,6 +393,7 @@ private theorem integral_one_div_log_sq_le_explicit {x : ℝ} (hx : 4 ≤ x) :
     gcongr <;> linarith
   all_goals apply intervalIntegrable_one_div_log_sq <;> linarith
 
+set_option backward.defeqAttrib.useBackward true in
 -- Somewhat arbitrary bound which we use to estimate the second term.
 private theorem sqrt_isLittleO :
     Real.sqrt =o[atTop] (fun x ↦ x / log x ^ 2) := by
@@ -405,6 +406,7 @@ private theorem sqrt_isLittleO :
   filter_upwards [eventually_gt_atTop 1] with x hx
   apply pow_ne_zero _ <| log_ne_zero.mpr ⟨_, _, _⟩ <;> linarith
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_one_div_log_sq_isBigO :
     (fun x ↦ ∫ t in 2..x, 1 / log t ^ 2) =O[atTop] (fun x ↦ x / log x ^ 2) := by
   trans (fun x ↦ 4 * x / log x ^ 2 + √x / log 2 ^ 2)
@@ -422,6 +424,7 @@ theorem integral_one_div_log_sq_isBigO :
   conv => arg 2; ext; rw [← mul_one_div, mul_comm]
   apply IsBigO.const_mul_left sqrt_isLittleO.isBigO
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Bound on the integral in `Chebyshev.primeCounting_eq_theta_div_log_add_integral`. -/
 theorem integral_theta_div_log_sq_isBigO :
     (fun x ↦ ∫ t in 2..x, θ t / (t * log t ^ 2)) =O[atTop] (fun x ↦ x / log x ^ 2) := by
@@ -448,6 +451,7 @@ theorem integral_theta_div_log_sq_isBigO :
     _ ≤ log 4 * t / (t * log t ^ 2) := by grw [theta_le_log4_mul_x (by linarith)]
     _ = log 4 * (1 / log t ^ 2) := by field
 
+set_option backward.defeqAttrib.useBackward true in
 theorem integral_theta_div_log_sq_isLittleO :
     (fun x ↦ ∫ t in 2..x, θ t / (t * log t ^ 2)) =o[atTop] (fun x ↦ x / log x) := by
   refine integral_theta_div_log_sq_isBigO.trans_isLittleO ?_
@@ -456,6 +460,7 @@ theorem integral_theta_div_log_sq_isLittleO :
   filter_upwards [eventually_gt_atTop 0] with x hx
   field
 
+set_option backward.defeqAttrib.useBackward true in
 theorem primeCounting_sub_theta_div_log_isBigO :
     (fun x ↦ π ⌊x⌋₊ - θ x / log x) =O[atTop] (fun x ↦ x / log x ^ 2) := by
   apply integral_theta_div_log_sq_isBigO.congr' _ (by rfl)
@@ -463,6 +468,7 @@ theorem primeCounting_sub_theta_div_log_isBigO :
   rw [primeCounting_eq_theta_div_log_add_integral hx]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Chebyshev's upper bound on the prime counting function -/
 theorem eventually_primeCounting_le {ε : ℝ} (εpos : 0 < ε) :
     ∀ᶠ x in atTop, π ⌊x⌋₊ ≤ (log 4 + ε) * x / log x := by

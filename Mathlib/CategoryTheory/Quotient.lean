@@ -276,6 +276,7 @@ theorem lift_unique (Φ : Quotient r ⥤ D) (hΦ : functor r ⋙ Φ = F) : Φ = 
     simp only [heq_eq_eq]
     congr
 
+set_option backward.defeqAttrib.useBackward true in
 lemma lift_unique' (F₁ F₂ : Quotient r ⥤ D) (h : functor r ⋙ F₁ = functor r ⋙ F₂) :
     F₁ = F₂ := by
   rw [lift_unique r (functor r ⋙ F₂) _ F₂ rfl]; swap

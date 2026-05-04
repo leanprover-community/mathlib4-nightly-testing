@@ -519,6 +519,7 @@ theorem sigma_sub_ext {m₁ m₂ : Σ i : Fin (n + 1), Sym α (n - i)} (h : (m�
         ← val_eq_coe, m₂.2.2, Nat.sub_sub_self (Nat.le_of_lt_succ m₂.1.is_lt)])
     h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem fill_filterNe [DecidableEq α] (a : α) (m : Sym α n) :
     (m.filterNe a).2.fill a (m.filterNe a).1 = m :=
   Sym.ext

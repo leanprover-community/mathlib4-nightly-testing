@@ -136,6 +136,7 @@ lemma mulExact_of_comp_of_mem_range
     (h1 : g.comp f = 1) (h2 : ∀ x, g x = 1 → x ∈ range f) : MulExact f g :=
   mulExact_of_comp_eq_one_of_ker_le_range h1 h2
 
+set_option backward.defeqAttrib.useBackward true in
 /-- When we have a commutative diagram from a sequence of two maps to another,
 such that the left vertical map is surjective, the middle vertical map is bijective and the right
 vertical map is injective, then the upper row is exact iff the lower row is.
