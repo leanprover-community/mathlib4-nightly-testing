@@ -130,9 +130,8 @@ lemma forget_map {X Y : MonCat} (f : X ⟶ Y) :
 lemma ext {X Y : MonCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[to_additive]
+@[defeq, to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
-@[defeq]
 theorem coe_of (M : Type u) [Monoid M] : (MonCat.of M : Type u) = M := rfl
 
 @[defeq, to_additive (attr := simp)]

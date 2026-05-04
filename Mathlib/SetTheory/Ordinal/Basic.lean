@@ -560,8 +560,7 @@ def toTypeOrderBot {o : Ordinal} (ho : o ≠ 0) : OrderBot o.ToType where
   bot_le := enum_zero_le' (bot_lt_iff_ne_bot.2 ho)
 
 set_option linter.deprecated false in
-@[defeq]
-@[deprecated "use `WellFoundedLT.toOrderBot` if you need an `OrderBot` instance"
+@[defeq, deprecated "use `WellFoundedLT.toOrderBot` if you need an `OrderBot` instance"
 (since := "2026-04-12")]
 theorem enum_zero_eq_bot {o : Ordinal} (ho : 0 < o) :
     enum (α := o.ToType) (· < ·) ⟨0, by rwa [type_toType]⟩ =

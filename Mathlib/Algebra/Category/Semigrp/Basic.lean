@@ -134,9 +134,8 @@ lemma coe_comp {X Y Z : MagmaCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X →
 lemma ext {X Y : MagmaCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[to_additive]
+@[defeq, to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
-@[defeq]
 theorem coe_of (M : Type u) [Mul M] : (MagmaCat.of M : Type u) = M := rfl
 
 @[defeq, to_additive (attr := simp)]
@@ -297,9 +296,8 @@ lemma coe_comp {X Y Z : Semigrp} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → 
 lemma ext {X Y : Semigrp} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[to_additive]
+@[defeq, to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
-@[defeq]
 theorem coe_of (R : Type u) [Semigroup R] : ↑(Semigrp.of R) = R :=
   rfl
 

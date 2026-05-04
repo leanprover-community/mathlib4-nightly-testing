@@ -21,8 +21,7 @@ instance instNormedAddCommGroup : NormedAddCommGroup ℚ where
     rw [← abs_neg, neg_sub]
     abel_nf
 
-@[norm_cast, simp high] -- increase priority to prevent the left-hand side from simplifying
-@[defeq]
+@[defeq, norm_cast, simp high] -- increase priority to prevent the left-hand side from simplifying
 theorem norm_cast_real (r : ℚ) : ‖(r : ℝ)‖ = ‖r‖ :=
   rfl
 

@@ -126,9 +126,8 @@ lemma coe_comp {X Y Z : GrpCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z
 lemma ext {X Y : GrpCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[to_additive]
+@[defeq, to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
-@[defeq]
 theorem coe_of (R : Type u) [Group R] : ↑(GrpCat.of R) = R :=
   rfl
 
@@ -348,9 +347,8 @@ lemma ext {X Y : CommGrpCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g 
 instance : Inhabited CommGrpCat :=
   ⟨CommGrpCat.of PUnit⟩
 
-@[to_additive]
+@[defeq, to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
-@[defeq]
 theorem coe_of (R : Type u) [CommGroup R] : ↑(CommGrpCat.of R) = R :=
   rfl
 

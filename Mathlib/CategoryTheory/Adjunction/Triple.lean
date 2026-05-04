@@ -146,12 +146,14 @@ lemma rightToLeft_eq_counits :
     (Functor.associator _ _ _).inv ≫ whiskerRight t.adj₂.counit F ≫ F.leftUnitor.hom := by
   ext X; apply G.map_injective; simp [rightToLeft]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma adj₁_counit_app_rightToLeft_app (X : C) :
     t.adj₁.counit.app (H.obj X) ≫ t.rightToLeft.app X = F.map (t.adj₂.counit.app X) :=
   G.map_injective (by simp [← cancel_epi (t.adj₁.unit.app _)])
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma rightToLeft_app_adj₂_unit_app (X : C) :

@@ -372,10 +372,9 @@ instance : CompleteLattice (Con M) where
 
 /-- The infimum of two congruence relations equals the infimum of the underlying binary
 operations. -/
-@[to_additive (attr := simp, norm_cast)
+@[defeq, to_additive (attr := simp, norm_cast)
   /-- The infimum of two additive congruence relations equals the infimum of the underlying binary
   operations. -/]
-@[defeq]
 theorem coe_inf {c d : Con M} : ⇑(c ⊓ d) = ⇑c ⊓ ⇑d :=
   rfl
 
