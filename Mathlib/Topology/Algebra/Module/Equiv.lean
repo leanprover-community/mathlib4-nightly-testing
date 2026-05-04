@@ -1442,7 +1442,8 @@ instance : SMul Sˣ (V ≃L[R] W) where smul α e :=
     continuous_toFun := α.isUnit.continuous_const_smul_iff.mpr e.continuous
     continuous_invFun := α⁻¹.isUnit.continuous_const_smul_iff.mpr e.symm.continuous }
 
-@[defeq, simp] theorem smul_apply (α : Sˣ) (e : V ≃L[R] W) (x : V) : (α • e) x = (α : S) • e x := rfl
+@[defeq, simp] theorem smul_apply (α : Sˣ) (e : V ≃L[R] W) (x : V) :
+    (α • e) x = (α : S) • e x := rfl
 
 theorem symm_smul_apply (e : V ≃L[R] W) (α : Sˣ) (x : W) :
     (α • e).symm x = (↑α⁻¹ : S) • e.symm x := rfl

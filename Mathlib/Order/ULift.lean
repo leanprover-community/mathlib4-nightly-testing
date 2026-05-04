@@ -42,7 +42,8 @@ instance [BEq α] : BEq (ULift.{v} α) where beq x y := x.down == y.down
 instance [Ord α] : Ord (ULift.{v} α) where compare x y := compare x.down y.down
 
 @[defeq, simp] theorem up_compare [Ord α] (a b : α) : compare (up a) (up b) = compare a b := rfl
-@[defeq, simp] theorem down_compare [Ord α] (a b : ULift α) : compare (down a) (down b) = compare a b :=
+@[defeq, simp] theorem down_compare [Ord α] (a b : ULift α) :
+    compare (down a) (down b) = compare a b :=
   rfl
 
 @[to_dual]

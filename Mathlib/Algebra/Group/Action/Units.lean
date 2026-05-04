@@ -32,7 +32,8 @@ namespace Units
 
 @[to_additive] instance [Monoid M] [SMul M α] : SMul Mˣ α where smul m a := (m : M) • a
 
-@[defeq, to_additive] lemma smul_def [Monoid M] [SMul M α] (m : Mˣ) (a : α) : m • a = (m : M) • a := rfl
+@[defeq, to_additive] lemma smul_def [Monoid M] [SMul M α] (m : Mˣ) (a : α) :
+    m • a = (m : M) • a := rfl
 
 @[defeq, to_additive, simp]
 lemma smul_mk_apply {M α : Type*} [Monoid M] [SMul M α] (m n : M) (h₁) (h₂) (a : α) :

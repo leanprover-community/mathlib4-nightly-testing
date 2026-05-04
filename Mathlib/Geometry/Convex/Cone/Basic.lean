@@ -370,7 +370,8 @@ instance instAdd : Add (ConvexCone R M) where
       exact ⟨x₁ + y₁, add_mem hx₁ hy₁, x₂ + y₂, add_mem hx₂ hy₂, add_add_add_comm ..⟩
   }
 
-@[defeq, simp, norm_cast] lemma coe_add (C₁ C₂ : ConvexCone R M) : ↑(C₁ + C₂) = (C₁ + C₂ : Set M) := rfl
+@[defeq, simp, norm_cast] lemma coe_add (C₁ C₂ : ConvexCone R M) :
+    ↑(C₁ + C₂) = (C₁ + C₂ : Set M) := rfl
 @[simp] lemma mem_add : x ∈ C₁ + C₂ ↔ ∃ y ∈ C₁, ∃ z ∈ C₂, y + z = x := .rfl
 
 instance instAddZeroClass : AddZeroClass (ConvexCone R M) where

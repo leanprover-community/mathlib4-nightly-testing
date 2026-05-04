@@ -486,8 +486,10 @@ instance instSMulNNRat : SMul ℚ≥0 (selfAdjoint R) where
 instance instSMulRat : SMul ℚ (selfAdjoint R) where
   smul a x := ⟨a • (x : R), by rw [Rat.smul_def]; exact .mul (.ratCast a) x.prop⟩
 
-@[defeq, simp, norm_cast] lemma val_nnqsmul (q : ℚ≥0) (x : selfAdjoint R) : ↑(q • x) = q • (x : R) := rfl
-@[defeq, simp, norm_cast] lemma val_qsmul (q : ℚ) (x : selfAdjoint R) : ↑(q • x) = q • (x : R) := rfl
+@[defeq, simp, norm_cast] lemma val_nnqsmul (q : ℚ≥0) (x : selfAdjoint R) :
+    ↑(q • x) = q • (x : R) := rfl
+@[defeq, simp, norm_cast] lemma val_qsmul (q : ℚ) (x : selfAdjoint R) :
+    ↑(q • x) = q • (x : R) := rfl
 
 instance instField : Field (selfAdjoint R) :=
   Subtype.coe_injective.field _ (selfAdjoint R).coe_zero val_one

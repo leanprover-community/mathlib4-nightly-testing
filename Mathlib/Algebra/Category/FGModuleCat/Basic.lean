@@ -67,7 +67,8 @@ instance : CoeSort (FGModuleCat.{v} R) (Type v) :=
 
 attribute [coe] FGModuleCat.carrier
 
-@[defeq, simp] lemma FGModuleCat.obj_carrier (M : FGModuleCat.{v} R) : M.obj.carrier = M.carrier := rfl
+@[defeq, simp] lemma FGModuleCat.obj_carrier (M : FGModuleCat.{v} R) :
+    M.obj.carrier = M.carrier := rfl
 
 instance (M : FGModuleCat.{v} R) : Module.Finite R M :=
   M.property

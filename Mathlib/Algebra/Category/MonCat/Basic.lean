@@ -386,8 +386,8 @@ instance hasForgetToMonCat : HasForget₂ CommMonCat MonCat where
     (f : X ⟶ Y) :
     ((forget₂ CommMonCat MonCat).map f).hom = f.hom := rfl
 
-@[defeq, to_additive (attr := simp)] lemma forget₂_map_ofHom {X Y : Type u} [CommMonoid X] [CommMonoid Y]
-    (f : X →* Y) :
+@[defeq, to_additive (attr := simp)]
+lemma forget₂_map_ofHom {X Y : Type u} [CommMonoid X] [CommMonoid Y] (f : X →* Y) :
     (forget₂ CommMonCat MonCat).map (ofHom f) = MonCat.ofHom f := rfl
 
 /-- The forgetful functor from `CommMonCat` to `MonCat` is fully faithful. -/

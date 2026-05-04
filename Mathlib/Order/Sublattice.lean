@@ -95,9 +95,11 @@ instance instInfCoe : Min L where
 
 @[defeq, simp, norm_cast] lemma coe_sup (a b : L) : a ⊔ b = (a : α) ⊔ b := rfl
 @[defeq, simp, norm_cast] lemma coe_inf (a b : L) : a ⊓ b = (a : α) ⊓ b := rfl
-@[defeq, simp] lemma mk_sup_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⊔ ⟨b, hb⟩ : L) = ⟨a ⊔ b, L.supClosed ha hb⟩ :=
+@[defeq, simp] lemma mk_sup_mk (a b : α) (ha hb) :
+    (⟨a, ha⟩ ⊔ ⟨b, hb⟩ : L) = ⟨a ⊔ b, L.supClosed ha hb⟩ :=
   rfl
-@[defeq, simp] lemma mk_inf_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⊓ ⟨b, hb⟩ : L) = ⟨a ⊓ b, L.infClosed ha hb⟩ :=
+@[defeq, simp] lemma mk_inf_mk (a b : α) (ha hb) :
+    (⟨a, ha⟩ ⊓ ⟨b, hb⟩ : L) = ⟨a ⊓ b, L.infClosed ha hb⟩ :=
   rfl
 
 /-- A sublattice of a lattice inherits a lattice structure. -/

@@ -151,7 +151,8 @@ instance instSmulZeroClassRight : SMulZeroClass M (IncidenceAlgebra 𝕜 α) whe
     ⟨c • ⇑f, fun a b hab ↦ by simp_rw [Pi.smul_apply, apply_eq_zero_of_not_le hab, smul_zero]⟩
   smul_zero c := by ext; exact smul_zero _
 
-@[defeq, simp, norm_cast] lemma coe_constSMul (c : M) (f : IncidenceAlgebra 𝕜 α) : ⇑(c • f) = c • ⇑f := rfl
+@[defeq, simp, norm_cast] lemma coe_constSMul (c : M) (f : IncidenceAlgebra 𝕜 α) :
+    ⇑(c • f) = c • ⇑f := rfl
 
 @[defeq]
 lemma constSMul_apply (c : M) (f : IncidenceAlgebra 𝕜 α) (a b : α) : (c • f) a b = c • f a b := rfl
@@ -197,7 +198,8 @@ where they are `1`. -/
 instance instOne : One (IncidenceAlgebra 𝕜 α) :=
   ⟨⟨fun a b ↦ if a = b then 1 else 0, fun _a _b h ↦ ite_eq_right_iff.2 fun H ↦ (h H.le).elim⟩⟩
 
-@[defeq, simp] lemma one_apply (a b : α) : (1 : IncidenceAlgebra 𝕜 α) a b = if a = b then 1 else 0 := rfl
+@[defeq, simp] lemma one_apply (a b : α) :
+    (1 : IncidenceAlgebra 𝕜 α) a b = if a = b then 1 else 0 := rfl
 
 end One
 

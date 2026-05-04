@@ -294,8 +294,10 @@ lemma val_zero_apply (n : ℕ) : (0 : AdicCompletion I M).val n = 0 := rfl
 
 variable {I M}
 
-@[defeq, simp, norm_cast] lemma val_add (f g : AdicCompletion I M) : (f + g).val = f.val + g.val := rfl
-@[defeq, simp, norm_cast] lemma val_sub (f g : AdicCompletion I M) : (f - g).val = f.val - g.val := rfl
+@[defeq, simp, norm_cast] lemma val_add (f g : AdicCompletion I M) :
+    (f + g).val = f.val + g.val := rfl
+@[defeq, simp, norm_cast] lemma val_sub (f g : AdicCompletion I M) :
+    (f - g).val = f.val - g.val := rfl
 @[defeq, simp, norm_cast] lemma val_neg (f : AdicCompletion I M) : (-f).val = -f.val := rfl
 
 @[defeq]

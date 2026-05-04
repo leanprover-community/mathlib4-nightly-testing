@@ -28,7 +28,8 @@ instance instNNRatCast [NNRatCast α] : NNRatCast (ULift α) where nnratCast q :
 instance instRatCast [RatCast α] : RatCast (ULift α) where ratCast q := up q
 
 @[defeq, simp, norm_cast] lemma up_nnratCast [NNRatCast α] (q : ℚ≥0) : up (q : α) = q := rfl
-@[defeq, simp, norm_cast] lemma down_nnratCast [NNRatCast α] (q : ℚ≥0) : down (q : ULift α) = q := rfl
+@[defeq, simp, norm_cast] lemma down_nnratCast [NNRatCast α] (q : ℚ≥0) :
+    down (q : ULift α) = q := rfl
 @[defeq, simp, norm_cast] lemma up_ratCast [RatCast α] (q : ℚ) : up (q : α) = q := rfl
 @[defeq, simp, norm_cast] lemma down_ratCast [RatCast α] (q : ℚ) : down (q : ULift α) = q := rfl
 

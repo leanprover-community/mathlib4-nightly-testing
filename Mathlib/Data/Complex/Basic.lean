@@ -343,7 +343,8 @@ instance instIntCast : IntCast ℂ where intCast n := ofReal n
 instance instNNRatCast : NNRatCast ℂ where nnratCast q := ofReal q
 instance instRatCast : RatCast ℂ where ratCast q := ofReal q
 
-@[defeq, simp, norm_cast] lemma ofReal_ofNat (n : ℕ) [n.AtLeastTwo] : ofReal ofNat(n) = ofNat(n) := rfl
+@[defeq, simp, norm_cast] lemma ofReal_ofNat (n : ℕ) [n.AtLeastTwo] :
+    ofReal ofNat(n) = ofNat(n) := rfl
 @[defeq, simp, norm_cast] lemma ofReal_natCast (n : ℕ) : ofReal n = n := rfl
 @[defeq, simp, norm_cast] lemma ofReal_intCast (n : ℤ) : ofReal n = n := rfl
 @[defeq, simp, norm_cast] lemma ofReal_nnratCast (q : ℚ≥0) : ofReal q = q := rfl

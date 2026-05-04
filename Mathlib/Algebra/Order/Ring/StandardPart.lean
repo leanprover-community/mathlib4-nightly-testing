@@ -108,7 +108,8 @@ theorem isUnit_iff_mk_eq_zero {x : FiniteElement K} : IsUnit x ↔ mk x.1 = 0 :=
 instance : RatCast (FiniteElement K) where
   ratCast q := .mk q (mk_ratCast_nonneg q)
 
-@[defeq, simp] theorem mk_ratCast (q : ℚ) : FiniteElement.mk (q : K) (mk_ratCast_nonneg q) = q := rfl
+@[defeq, simp] theorem mk_ratCast (q : ℚ) :
+    FiniteElement.mk (q : K) (mk_ratCast_nonneg q) = q := rfl
 
 @[no_expose]
 instance : FloorRing (FiniteElement K) :=

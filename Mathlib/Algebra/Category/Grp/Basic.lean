@@ -408,8 +408,8 @@ instance hasForgetToGroup : HasForget₂ CommGrpCat GrpCat where
   forget₂.obj X := GrpCat.of X
   forget₂.map f := GrpCat.ofHom f.hom
 
-@[defeq, to_additive (attr := simp)] lemma forget₂_grp_map_ofHom {X Y : Type u} [CommGroup X] [CommGroup Y]
-    (f : X →* Y) :
+@[defeq, to_additive (attr := simp)]
+lemma forget₂_grp_map_ofHom {X Y : Type u} [CommGroup X] [CommGroup Y] (f : X →* Y) :
     (forget₂ CommGrpCat GrpCat).map (ofHom f) = GrpCat.ofHom f := rfl
 
 @[defeq, to_additive (attr := simp)] lemma forget₂_map {R S : CommGrpCat} (f : R ⟶ S) (x) :

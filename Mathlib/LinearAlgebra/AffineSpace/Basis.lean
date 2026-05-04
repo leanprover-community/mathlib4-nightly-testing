@@ -293,7 +293,8 @@ instance instVAdd : VAdd V (AffineBasis ι k P) where
       tot' := by rw [Pi.vadd_def, ← vadd_set_range, ← AffineSubspace.pointwise_vadd_span, b.tot,
         AffineSubspace.pointwise_vadd_top] }
 
-@[defeq, simp, norm_cast] lemma coe_vadd (v : V) (b : AffineBasis ι k P) : ⇑(v +ᵥ b) = v +ᵥ ⇑b := rfl
+@[defeq, simp, norm_cast] lemma coe_vadd (v : V) (b : AffineBasis ι k P) :
+    ⇑(v +ᵥ b) = v +ᵥ ⇑b := rfl
 
 @[simp] lemma basisOf_vadd (v : V) (b : AffineBasis ι k P) : (v +ᵥ b).basisOf = b.basisOf := by
   ext

@@ -247,7 +247,8 @@ instance mul : Mul (M →* N) :=
 `f + g` is the additive monoid morphism sending `x` to `f x + g x`. -/
 add_decl_doc AddMonoidHom.add
 
-@[defeq, to_additive (attr := simp)] lemma mul_apply (f g : M →* N) (x : M) : (f * g) x = f x * g x := rfl
+@[defeq, to_additive (attr := simp)] lemma mul_apply (f g : M →* N) (x : M) :
+    (f * g) x = f x * g x := rfl
 
 @[defeq, to_additive]
 lemma mul_comp [MulOneClass P] (g₁ g₂ : M →* N) (f : P →* M) :

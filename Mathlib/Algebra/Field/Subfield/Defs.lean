@@ -102,7 +102,8 @@ lemma ofScientific_mem (s : S) {b : Bool} {n m : ℕ} :
 instance instSMulNNRat (s : S) : SMul ℚ≥0 s where smul q x := ⟨q • x, nnqsmul_mem s q x.2⟩
 instance instSMulRat (s : S) : SMul ℚ s where smul q x := ⟨q • x, qsmul_mem s q x.2⟩
 
-@[defeq, simp, norm_cast] lemma coe_nnqsmul (s : S) (q : ℚ≥0) (x : s) : ↑(q • x) = q • (x : K) := rfl
+@[defeq, simp, norm_cast] lemma coe_nnqsmul (s : S) (q : ℚ≥0) (x : s) :
+    ↑(q • x) = q • (x : K) := rfl
 @[defeq, simp, norm_cast] lemma coe_qsmul (s : S) (q : ℚ) (x : s) : ↑(q • x) = q • (x : K) := rfl
 
 /-- A subfield inherits a division ring structure -/

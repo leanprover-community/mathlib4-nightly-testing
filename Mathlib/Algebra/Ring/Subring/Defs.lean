@@ -234,7 +234,8 @@ theorem mem_carrier {s : Subring R} {x : R} : x ∈ s.carrier ↔ x ∈ s :=
 @[simp]
 theorem mem_mk {S : Subsemiring R} {x : R} (h) : x ∈ (⟨S, h⟩ : Subring R) ↔ x ∈ S := Iff.rfl
 
-@[defeq, simp] theorem coe_set_mk (S : Subsemiring R) (h) : ((⟨S, h⟩ : Subring R) : Set R) = S := rfl
+@[defeq, simp] theorem coe_set_mk (S : Subsemiring R) (h) :
+    ((⟨S, h⟩ : Subring R) : Set R) = S := rfl
 
 @[simp]
 theorem mk_le_mk {S S' : Subsemiring R} (h₁ h₂) :

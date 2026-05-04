@@ -278,10 +278,14 @@ end LinearOrder
 namespace Pi
 variable {ι : Type*} {α : ι → Type*} [∀ i, Lattice (α i)] [∀ i, Group (α i)]
 
-@[defeq, to_additive (attr := simp)] lemma oneLePart_apply (f : ∀ i, α i) (i : ι) : f⁺ᵐ i = (f i)⁺ᵐ := rfl
-@[defeq, to_additive (attr := simp)] lemma leOnePart_apply (f : ∀ i, α i) (i : ι) : f⁻ᵐ i = (f i)⁻ᵐ := rfl
+@[defeq, to_additive (attr := simp)] lemma oneLePart_apply (f : ∀ i, α i) (i : ι) :
+    f⁺ᵐ i = (f i)⁺ᵐ := rfl
+@[defeq, to_additive (attr := simp)] lemma leOnePart_apply (f : ∀ i, α i) (i : ι) :
+    f⁻ᵐ i = (f i)⁻ᵐ := rfl
 
-@[defeq, to_additive (attr := push ←)] lemma oneLePart_def (f : ∀ i, α i) : f⁺ᵐ = fun i ↦ (f i)⁺ᵐ := rfl
-@[defeq, to_additive (attr := push ←)] lemma leOnePart_def (f : ∀ i, α i) : f⁻ᵐ = fun i ↦ (f i)⁻ᵐ := rfl
+@[defeq, to_additive (attr := push ←)] lemma oneLePart_def (f : ∀ i, α i) :
+    f⁺ᵐ = fun i ↦ (f i)⁺ᵐ := rfl
+@[defeq, to_additive (attr := push ←)] lemma leOnePart_def (f : ∀ i, α i) :
+    f⁻ᵐ = fun i ↦ (f i)⁻ᵐ := rfl
 
 end Pi

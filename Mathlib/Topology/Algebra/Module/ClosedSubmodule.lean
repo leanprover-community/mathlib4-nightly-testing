@@ -144,7 +144,8 @@ instance instSemilatticeInf : SemilatticeInf (ClosedSubmodule R M) :=
 lemma toSubmodule_inf (s t : ClosedSubmodule R M) :
     toSubmodule (s ⊓ t) = s.toSubmodule ⊓ t.toSubmodule := rfl
 
-@[defeq, simp, norm_cast] lemma coe_inf (s t : ClosedSubmodule R M) : ↑(s ⊓ t) = (s ⊓ t : Set M) := rfl
+@[defeq, simp, norm_cast] lemma coe_inf (s t : ClosedSubmodule R M) :
+    ↑(s ⊓ t) = (s ⊓ t : Set M) := rfl
 
 @[simp] lemma mem_inf : x ∈ s ⊓ t ↔ x ∈ s ∧ x ∈ t := .rfl
 

@@ -58,7 +58,8 @@ lemma himp_mem (ha : a ∈ L) (hb : b ∈ L) : a ⇨ b ∈ L := by
 lemma mem_carrier : a ∈ L.carrier ↔ a ∈ L := .rfl
 @[simp] lemma mem_toSublattice : a ∈ L.toSublattice ↔ a ∈ L := .rfl
 @[simp] lemma mem_mk {L : Sublattice α} (h_compl h_bot) : a ∈ mk L h_compl h_bot ↔ a ∈ L := .rfl
-@[defeq, simp] lemma coe_mk (L : Sublattice α) (h_compl h_bot) : (mk L h_compl h_bot : Set α) = L := rfl
+@[defeq, simp] lemma coe_mk (L : Sublattice α) (h_compl h_bot) :
+    (mk L h_compl h_bot : Set α) = L := rfl
 @[simp] lemma mk_le_mk {L M : Sublattice α} (hL_compl hL_bot hM_compl hM_bot) :
     mk L hL_compl hL_bot ≤ mk M hM_compl hM_bot ↔ L ≤ M := .rfl
 @[simp] lemma mk_lt_mk {L M : Sublattice α} (hL_compl hL_bot hM_compl hM_bot) :
@@ -111,14 +112,18 @@ instance instHImpCoe : HImp L where himp a b := ⟨a ⇨ b, himp_mem a.2 b.2⟩
 
 @[defeq, simp] lemma mk_bot : (⟨⊥, bot_mem⟩ : L) = ⊥ := rfl
 @[defeq, simp] lemma mk_top : (⟨⊤, top_mem⟩ : L) = ⊤ := rfl
-@[defeq, simp] lemma mk_sup_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⊔ ⟨b, hb⟩ : L) = ⟨a ⊔ b, L.supClosed ha hb⟩ :=
+@[defeq, simp] lemma mk_sup_mk (a b : α) (ha hb) :
+    (⟨a, ha⟩ ⊔ ⟨b, hb⟩ : L) = ⟨a ⊔ b, L.supClosed ha hb⟩ :=
   rfl
-@[defeq, simp] lemma mk_inf_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⊓ ⟨b, hb⟩ : L) = ⟨a ⊓ b, L.infClosed ha hb⟩ :=
+@[defeq, simp] lemma mk_inf_mk (a b : α) (ha hb) :
+    (⟨a, ha⟩ ⊓ ⟨b, hb⟩ : L) = ⟨a ⊓ b, L.infClosed ha hb⟩ :=
   rfl
 @[defeq, simp] lemma compl_mk (a : α) (ha) : (⟨a, ha⟩ : L)ᶜ = ⟨aᶜ, compl_mem ha⟩ := rfl
-@[defeq, simp] lemma mk_sdiff_mk (a b : α) (ha hb) : (⟨a, ha⟩ \ ⟨b, hb⟩ : L) = ⟨a \ b, sdiff_mem ha hb⟩ :=
+@[defeq, simp] lemma mk_sdiff_mk (a b : α) (ha hb) :
+    (⟨a, ha⟩ \ ⟨b, hb⟩ : L) = ⟨a \ b, sdiff_mem ha hb⟩ :=
   rfl
-@[defeq, simp] lemma mk_himp_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⇨ ⟨b, hb⟩ : L) = ⟨a ⇨ b, himp_mem ha hb⟩ :=
+@[defeq, simp] lemma mk_himp_mk (a b : α) (ha hb) :
+    (⟨a, ha⟩ ⇨ ⟨b, hb⟩ : L) = ⟨a ⇨ b, himp_mem ha hb⟩ :=
   rfl
 
 instance (L : BooleanSubalgebra α) : PartialOrder L :=
