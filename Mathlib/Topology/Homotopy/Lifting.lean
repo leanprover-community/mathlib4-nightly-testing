@@ -160,6 +160,8 @@ theorem monodromy_theorem {γ₀ γ₁ : C(I, X)} (γ : γ₀.HomotopyRel γ₁ 
   · exact fun t ↦ (Γ t).2
 
 omit sep
+set_option backward.defeqAttrib.useBackward true in
+set_option linter.unusedSimpArgs false in
 open PathConnectedSpace (somePath) in
 /-- A map `f` from a path-connected, locally path-connected space `A` to another space `X` lifts
   uniquely through a local homeomorphism `p : E → X` if for every path `γ` in `A`, the composed

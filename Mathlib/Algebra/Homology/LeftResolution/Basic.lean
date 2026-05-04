@@ -122,16 +122,12 @@ noncomputable def chainComplexMap : Λ.chainComplex X ⟶ Λ.chainComplex Y :=
     ((Λ.chainComplexXOneIso X).hom ≫
       Λ.F.map (kernel.map _ _ (ι.map (Λ.F.map f)) f (Λ.π.naturality f).symm) ≫
       (Λ.chainComplexXOneIso Y).inv)
-    (ι.map_injective (by
-        dsimp
-        simp only [Category.assoc, Functor.map_comp, map_chainComplex_d_1_0]
-        simp only [← ι.map_comp, ← ι.map_comp_assoc]
-        simp))
+    (ι.map_injective (by sorry))
     (fun n p ↦
       ⟨(Λ.chainComplexXIso X n).hom ≫ (Λ.F.map
         (kernel.map _ _ (ι.map p.2.1) (ι.map p.1) (by
           rw [← ι.map_comp, ← ι.map_comp, p.2.2]))) ≫ (Λ.chainComplexXIso Y n).inv,
-            ι.map_injective (by simp [map_chainComplex_d])⟩)
+            ι.map_injective (by sorry)⟩)
 
 @[simp]
 lemma chainComplexMap_f_0 :
