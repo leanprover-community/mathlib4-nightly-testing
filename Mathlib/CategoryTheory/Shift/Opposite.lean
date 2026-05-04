@@ -223,15 +223,24 @@ namespace NatTrans
 
 variable {F} {G : C ⥤ D} [F.CommShift A] [G.CommShift A]
 
+-- Adaption note (lean4#13557): with the stricter `[defeq]` rules, the previous
+-- `dsimp` here no longer reduces `OppositeShift.natTrans` to `NatTrans.op`, so
+-- the goal still mentions a residual `≫ 𝟙 (...)`. Add `comp_id` to the simp set
+-- (it now actually fires) to clean it up before the final `exact`.
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option linter.unusedSimpArgs false in
 open Opposite in
 instance commShift_op (τ : F ⟶ G) [NatTrans.CommShift τ A] :
     NatTrans.CommShift (OppositeShift.natTrans A τ) A where
   shift_comm _ := by
-    -- Adaption note (lean#13557): the type-driven match below stopped matching at
-    -- `instances` transparency; for now use `sorry` until upstream API is updated.
-    sorry
+    ext
+    rw [← cancel_mono (((OppositeShift.functor A F).commShiftIso _).inv.app _),
+      ← cancel_epi (((OppositeShift.functor A G).commShiftIso _).inv.app _)]
+    dsimp [OppositeShift.natTrans]
+    simp only [assoc, Iso.inv_hom_id_app_assoc, Iso.hom_inv_id_app,
+      comp_id, Functor.comp_obj]
+    exact (op_inj_iff _ _).mpr (NatTrans.shift_app_comm τ _ (unop _))
 
 end NatTrans
 

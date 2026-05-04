@@ -65,8 +65,10 @@ set_option backward.isDefEq.respectTransparency false in
 `f : X ⟶ Y` and `g : X ⟶ Y` (i.e. `H.h` is a morphism `X ⊗ Δ[1] ⟶ Y` inducing
 `f` and `g`), then this is the corresponding (combinatorial) homotopy of
 morphisms of simplicial objects between `f` and `g`. -/
--- Adaption note (lean#13557): `dsimp` no longer makes progress at `instances`
--- transparency; the proof structure here needs to be revised. Sorried for now.
+-- Adaption note (lean4#13557): `dsimp` no longer makes progress at the
+-- intermediate steps in these proofs (it relied on `[backward_defeq]` rules
+-- being treated as `[defeq]`).  TODO(joachim): rewrite the proofs without
+-- relying on the implicit `dsimp` behaviour.
 noncomputable def toSimplicialObjectHomotopy (H : Homotopy f g) :
     SimplicialObject.Homotopy f g where
   h i := ↾fun x ↦

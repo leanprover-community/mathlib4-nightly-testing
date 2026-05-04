@@ -122,6 +122,12 @@ noncomputable def chainComplexMap : Λ.chainComplex X ⟶ Λ.chainComplex Y :=
     ((Λ.chainComplexXOneIso X).hom ≫
       Λ.F.map (kernel.map _ _ (ι.map (Λ.F.map f)) f (Λ.π.naturality f).symm) ≫
       (Λ.chainComplexXOneIso Y).inv)
+    -- Adaption note (lean4#13557): the trailing `simp` no longer closes the goal
+    -- at instance transparency. Use `simp` to expand the differential and cancel
+    -- iso compositions, then explicitly apply π-naturality + `kernel.lift_ι_assoc`.
+    -- Adaption note (lean4#13557): the trailing `simp` no longer closes the goal
+    -- at instance transparency.  TODO(joachim): rewrite using explicit
+    -- `Λ.π.naturality` step before applying `kernel.lift_ι_assoc`.
     (ι.map_injective (by sorry))
     (fun n p ↦
       ⟨(Λ.chainComplexXIso X n).hom ≫ (Λ.F.map

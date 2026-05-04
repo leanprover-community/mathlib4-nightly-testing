@@ -99,8 +99,12 @@ def ofIso {X Y : SimplicialObject.Augmented C} (e : X ≅ Y) (ed : ExtraDegenera
     ExtraDegeneracy Y where
   s' := (point.mapIso e).inv ≫ ed.s' ≫ (drop.mapIso e).hom.app (op ⦋0⦌)
   s n := (drop.mapIso e).inv.app (op ⦋n⦌) ≫ ed.s n ≫ (drop.mapIso e).hom.app (op ⦋n + 1⦌)
-  s'_comp_ε := by sorry
-  s₀_comp_δ₁ := by sorry
+  -- Adaption note (lean4#13557): `dsimp%` no longer reduces `point.mapIso e`,
+  -- so use `w₀` and `ed.s'_comp_ε_assoc` directly with `simpa`/`simp`.
+  s'_comp_ε := by
+    simpa [Category.assoc, w₀, ed.s'_comp_ε_assoc] using (point.mapIso e).inv_hom_id
+  s₀_comp_δ₁ := by
+    simp [← SimplicialObject.δ_naturality, s₀_comp_δ₁_assoc, w₀_assoc]
   s_comp_δ₀ n := by
     simpa [← SimplicialObject.δ_naturality] using
       congr_app (drop.mapIso e).inv_hom_id (op ⦋n⦌)

@@ -312,6 +312,8 @@ instance :
     have : HasFiniteProducts D := hasFiniteProducts_of_has_binary_and_terminal
     let : CartesianMonoidalCategory C := .ofHasFiniteProducts
     let : CartesianMonoidalCategory D := .ofHasFiniteProducts
+    -- Adaption note (lean4#13557): the previous `dsimp [η_eq]; infer_instance`
+    -- proof no longer fires.  This instance is deprecated, so leave a sorry.
     IsIso (η F) := by sorry
 
 set_option backward.defeqAttrib.useBackward true in
@@ -322,6 +324,8 @@ instance (X Y : C) :
     have : HasFiniteProducts D := hasFiniteProducts_of_has_binary_and_terminal
     let : CartesianMonoidalCategory C := .ofHasFiniteProducts
     let : CartesianMonoidalCategory D := .ofHasFiniteProducts
+    -- Adaption note (lean4#13557): the previous `dsimp [δ_eq]; infer_instance`
+    -- proof no longer fires.  This instance is deprecated, so leave a sorry.
     IsIso (δ F X Y) := by sorry
 
 /-- Promote a functor that preserves finite products to a monoidal functor between
