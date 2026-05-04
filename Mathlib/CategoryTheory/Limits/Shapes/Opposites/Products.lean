@@ -275,7 +275,7 @@ theorem opProductIsoCoproduct'_inv_comp_lift {f : Fan Z} {c : Cofan (op <| Z ·)
     (hf : IsLimit f) (hc : IsColimit c) (f' : Fan Z) :
     (opProductIsoCoproduct' hf hc).inv ≫ (hf.lift f').op = hc.desc f'.op := by
   refine (Iso.inv_comp_eq _).mpr (Quiver.Hom.unop_inj (hf.hom_ext (fun ⟨j⟩ ↦ Quiver.Hom.op_inj ?_)))
-  simp only [ unop_op, Quiver.Hom.unop_op, IsLimit.fac, Fan.op, unop_comp,
+  simp only [unop_op, Quiver.Hom.unop_op, IsLimit.fac, Fan.op, unop_comp,
     Category.assoc, op_comp, op_unop, Quiver.Hom.op_unop]
   erw [← Category.assoc, proj_comp_opProductIsoCoproduct'_hom, IsColimit.fac]
   rfl

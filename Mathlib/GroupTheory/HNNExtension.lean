@@ -175,7 +175,7 @@ theorem toSubgroupEquiv_neg_apply (u : ℤˣ) (a : toSubgroup A B u) :
     (toSubgroupEquiv φ (-u) (toSubgroupEquiv φ u a) : G) = a := by
   rcases Int.units_eq_one_or u with rfl | rfl
   · simp [toSubgroup]
-  · simp only [ toSubgroupEquiv_neg_one, SetLike.coe_eq_coe]
+  · simp only [toSubgroupEquiv_neg_one, SetLike.coe_eq_coe]
     exact φ.apply_symm_apply a
 
 namespace NormalWord

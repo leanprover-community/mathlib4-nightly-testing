@@ -233,7 +233,7 @@ theorem app_inv_app' (U : Opens Y) (hU : (U : Set Y) ⊆ Set.range f.base) :
             (le_antisymm (Set.image_preimage_subset f.base U.1) <|
               (Set.image_preimage_eq_inter_range (f := f.base) (t := U.1)).symm ▸
                 Set.subset_inter_iff.mpr ⟨fun _ h => h, hU⟩)).op := by
-  simp only [ app_invApp, Opens.carrier_eq_coe, eqToHom_op]
+  simp only [app_invApp, Opens.carrier_eq_coe, eqToHom_op]
   tauto
 
 set_option backward.isDefEq.respectTransparency false in
@@ -486,7 +486,7 @@ instance forget_preservesLimitsOfLeft : PreservesLimit (cospan f g) (forget C) :
       change ∀ j, _ = 𝟙 _ ≫ _ ≫ _
       simp_rw [Category.id_comp]
       rintro (_ | _ | _) <;> symm
-      · simp only [ Functor.mapCone_π_app, PullbackCone.condition_one,
+      · simp only [Functor.mapCone_π_app, PullbackCone.condition_one,
         forget_map,
           comp_base,
           diagramIsoCospan_hom_app, PullbackCone.fst_limit_cone]

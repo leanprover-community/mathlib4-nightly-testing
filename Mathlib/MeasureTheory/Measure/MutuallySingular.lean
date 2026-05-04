@@ -256,7 +256,7 @@ lemma disjoint_of_disjoint_ae (h : Disjoint (ae μ) (ae ν)) : Disjoint μ ν :=
     measure_mono_null inter_subset_left ht]
 
 lemma mutuallySingular_tfae : List.TFAE
-    [ μ ⟂ₘ ν,
+    [μ ⟂ₘ ν,
       Disjoint μ ν,
       Disjoint (ae μ) (ae ν) ] := by
   tfae_have 1 → 2

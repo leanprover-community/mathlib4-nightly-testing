@@ -39,7 +39,7 @@ open List in
 theorem effectiveEpi_tfae
     {B X : CompHaus.{u}} (π : X ⟶ B) :
     TFAE
-    [ EffectiveEpi π
+    [EffectiveEpi π
     , Epi π
     , Function.Surjective π
     ] := by
@@ -60,7 +60,7 @@ theorem effectiveEpiFamily_tfae
     {α : Type} [Finite α] {B : CompHaus.{u}}
     (X : α → CompHaus.{u}) (π : (a : α) → (X a ⟶ B)) :
     TFAE
-    [ EffectiveEpiFamily X π
+    [EffectiveEpiFamily X π
     , Epi (Sigma.desc π)
     , ∀ b : B, ∃ (a : α) (x : X a), π a x = b
     ] := by

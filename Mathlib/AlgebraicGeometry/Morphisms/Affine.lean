@@ -124,7 +124,7 @@ lemma isAffine_of_isAffineOpen_basicOpen (s : Set Γ(X, ⊤))
   · rw [PrimeSpectrum.iSup_basicOpen_eq_top_iff, Subtype.range_coe_subtype, Set.setOf_mem_eq, hs]
   · rw [Scheme.toSpecΓ_preimage_basicOpen]
     exact hs₂ _ i.2
-  · simp only [ morphismRestrict_app]
+  · simp only [morphismRestrict_app]
     refine IsIso.comp_isIso' ?_ inferInstance
     convert isIso_ΓSpec_adjunction_unit_app_basicOpen i.1 using 0
     exact congr(IsIso ((ΓSpec.adjunction.unit.app X).app $(by simp)))

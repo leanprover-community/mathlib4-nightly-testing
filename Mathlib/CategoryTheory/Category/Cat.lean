@@ -415,7 +415,7 @@ def typeToCat : Type u ⥤ Cat where
   map f := (Discrete.functor (Discrete.mk ∘ f)).toCatHom
   map_id X := by
     ext
-    simp only [ toCatHom_toFunctor, Cat.Hom.id_toFunctor]
+    simp only [toCatHom_toFunctor, Cat.Hom.id_toFunctor]
     fapply Functor.ext
     · simp
     · intro X Y f
@@ -424,7 +424,7 @@ def typeToCat : Type u ⥤ Cat where
       cat_disch
   map_comp f g := by
     ext
-    simp only [ toCatHom_toFunctor, Cat.Hom.comp_toFunctor]
+    simp only [toCatHom_toFunctor, Cat.Hom.comp_toFunctor]
     apply Functor.ext
     cat_disch
 

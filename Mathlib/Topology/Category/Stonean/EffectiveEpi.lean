@@ -34,7 +34,7 @@ open List in
 theorem effectiveEpi_tfae
     {B X : Stonean.{u}} (π : X ⟶ B) :
     TFAE
-    [ EffectiveEpi π
+    [EffectiveEpi π
     , Epi π
     , Function.Surjective π
     ] := by
@@ -75,7 +75,7 @@ theorem effectiveEpiFamily_tfae
     {α : Type} [Finite α] {B : Stonean.{u}}
     (X : α → Stonean.{u}) (π : (a : α) → (X a ⟶ B)) :
     TFAE
-    [ EffectiveEpiFamily X π
+    [EffectiveEpiFamily X π
     , Epi (Sigma.desc π)
     , ∀ b : B, ∃ (a : α) (x : X a), π a x = b
     ] := by

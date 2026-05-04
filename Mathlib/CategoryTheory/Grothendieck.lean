@@ -554,7 +554,7 @@ def ι (c : C) : F.obj c ⥤ Grothendieck F where
     simp only [Category.comp_id]
   map_comp f g := by
     apply Grothendieck.ext _ _ (by simp)
-    simp only [ ← Category.assoc, eqToHom_trans, comp_fiber, Functor.map_comp,
+    simp only [← Category.assoc, eqToHom_trans, comp_fiber, Functor.map_comp,
       eqToHom_map]
     congr 1
     simp only [eqToHom_comp_iff, Category.assoc, eqToHom_trans_assoc]

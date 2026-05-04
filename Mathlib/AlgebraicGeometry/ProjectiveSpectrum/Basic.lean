@@ -168,7 +168,7 @@ def basicOpenIsoSpec : (basicOpen 𝒜 f).toScheme ≅ Spec (.of <| Away 𝒜 f)
     convert ProjectiveSpectrum.Proj.isIso_toSpec 𝒜 f f_deg hm using 1
     refine Eq.trans ?_ (ΓSpec.locallyRingedSpaceAdjunction.homEquiv_apply _ _ _).symm
     dsimp [basicOpenToSpec, Scheme.Opens.toSpecΓ]
-    simp only [ Category.assoc, ← Spec.map_comp]
+    simp only [Category.assoc, ← Spec.map_comp]
     rfl
   asIso (basicOpenToSpec 𝒜 f)
 
@@ -230,7 +230,7 @@ lemma awayMap_awayToSection :
   apply Subtype.ext
   ext ⟨i, hi⟩
   obtain ⟨⟨n, a, ⟨b, hb'⟩, i, rfl : _ = b⟩, rfl⟩ := mk_surjective a
-  simp only [ CommRingCat.hom_comp, RingHom.coe_comp, Function.comp_apply]
+  simp only [CommRingCat.hom_comp, RingHom.coe_comp, Function.comp_apply]
   erw [ProjectiveSpectrum.Proj.awayToSection_apply]
   rw [CommRingCat.hom_ofHom, val_awayMap_mk, Localization.mk_eq_mk', IsLocalization.map_mk',
     ← Localization.mk_eq_mk']

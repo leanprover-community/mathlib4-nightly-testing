@@ -958,12 +958,12 @@ noncomputable def ringEquivOfRingEquiv :
       · exact fun m hm n hn ↦ Submodule.mul_mem_mul (mem_map_of_mem hm) (mem_map_of_mem hn)
       · exact fun m hm n hn ↦ Submodule.mul_mem_mul hm hn
     left_inv I := by
-      simp only [ val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
+      simp only [val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
         coe_ext_iff, coe_mk]
       convert Submodule.map_id _
       ext; simp [semilinearEquivOfRingEquiv, IsLocalization.map_map]
     right_inv I := by
-      simp only [ val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
+      simp only [val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
         coe_ext_iff, coe_mk]
       convert Submodule.map_id _
       ext; simp [semilinearEquivOfRingEquiv, IsLocalization.map_map]}

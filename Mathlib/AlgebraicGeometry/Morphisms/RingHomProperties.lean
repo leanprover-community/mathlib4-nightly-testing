@@ -548,7 +548,7 @@ lemma isStableUnderBaseChange (hP : RingHom.IsStableUnderBaseChange Q) :
   · rw [IsZariskiLocalAtSource.iff_of_openCover (P := P)
       (Scheme.Pullback.openCoverOfRight Y.affineCover f g)]
     intro i
-    simp only [ Scheme.Pullback.openCoverOfRight_f,
+    simp only [Scheme.Pullback.openCoverOfRight_f,
       limit.lift_π, PullbackCone.mk_π_app, Category.comp_id]
     apply this _ (comp_of_isOpenImmersion _ _ _ H) inferInstance
   rw [iff_of_isAffine (P := P)] at H ⊢

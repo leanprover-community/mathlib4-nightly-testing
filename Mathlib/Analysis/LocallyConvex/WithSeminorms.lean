@@ -723,7 +723,7 @@ protected theorem equicontinuous_TFAE {κ : Type*}
     {q : SeminormFamily 𝕜₂ F ι'} [UniformSpace E] [IsUniformAddGroup E] [u : UniformSpace F]
     [hu : IsUniformAddGroup F] (hq : WithSeminorms q) [ContinuousSMul 𝕜 E]
     (f : κ → E →ₛₗ[σ₁₂] F) : TFAE
-    [ EquicontinuousAt ((↑) ∘ f) 0,
+    [EquicontinuousAt ((↑) ∘ f) 0,
       Equicontinuous ((↑) ∘ f),
       UniformEquicontinuous ((↑) ∘ f),
       ∀ i, ∃ p : Seminorm 𝕜 E, Continuous p ∧ ∀ k, (q i).comp (f k) ≤ p,

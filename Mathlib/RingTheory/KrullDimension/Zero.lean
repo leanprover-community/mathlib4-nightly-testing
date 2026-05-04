@@ -62,7 +62,7 @@ omit [Ring.KrullDimLE 0 R] in
 variable (R) in
 lemma Ring.krullDimLE_zero_and_isLocalRing_tfae :
     List.TFAE
-    [ Ring.KrullDimLE 0 R ∧ IsLocalRing R,
+    [Ring.KrullDimLE 0 R ∧ IsLocalRing R,
       ∃! I : Ideal R, I.IsPrime,
       ∀ x : R, IsNilpotent x ↔ ¬ IsUnit x,
       (nilradical R).IsMaximal ] := by

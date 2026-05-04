@@ -92,7 +92,7 @@ adjunction `L ⊣ R`. Denote the internal hom by `[-,-]`. The following are equi
 where `c, d, d'` are arbitrary objects of `C`/`D`, quantified over separately in each condition.
 -/
 theorem isIso_tfae : List.TFAE
-    [ ∀ (c : C) (d : D), IsIso (adj.unit.app ((ihom d).obj (R.obj c)))
+    [∀ (c : C) (d : D), IsIso (adj.unit.app ((ihom d).obj (R.obj c)))
     , ∀ (c : C) (d : D), IsIso ((pre (adj.unit.app d)).app (R.obj c))
     , ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ▷ d'))
     , ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ⊗ₘ (adj.unit.app d')))] := by

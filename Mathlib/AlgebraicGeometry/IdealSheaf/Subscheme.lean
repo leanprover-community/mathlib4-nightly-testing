@@ -178,7 +178,7 @@ lemma ideal_le_ker_glueDataObjι (U V : X.affineOpens) :
   convert RingHom.map_zero _ using 2
   rw [← RingHom.mem_ker, ker_glueDataObjι_appTop, ← Ideal.mem_comap, Ideal.comap_comap,
     ← CommRingCat.hom_comp]
-  simp only [ eqToHom_op, eqToHom_unop, ← Functor.map_comp,
+  simp only [eqToHom_op, eqToHom_unop, ← Functor.map_comp,
     Scheme.Opens.topIso_hom, Category.assoc]
   exact I.ideal_le_comap_ideal (U := X.affineBasicOpen f) (V := V)
     (hfg.trans_le (X.basicOpen_le g)) hx
@@ -200,11 +200,11 @@ noncomputable def glueDataT (U V : X.affineOpens) :
     convert_to (U.1.ι.app V.1 ≫ (F ≫ X.homOfLE inf_le_left).appLE (U.1.ι ⁻¹ᵁ V.1) ⊤
       (by rw [← Scheme.Hom.comp_preimage, Category.assoc, X.homOfLE_ι]
           exact fun x _ ↦ by simpa using (F x).2.2)).hom x = 0 using 3
-    · simp only [ Opens.ι_app, Hom.comp_appLE, homOfLE_app]
+    · simp only [Opens.ι_app, Hom.comp_appLE, homOfLE_app]
       have H : ⊤ ≤ X.homOfLE (inf_le_left (b := V.1)) ⁻¹ᵁ U.1.ι ⁻¹ᵁ V.1 := by
         rw [← Scheme.Hom.comp_preimage, X.homOfLE_ι]; exact fun x _ ↦ by simpa using x.2.2
       rw [← F.map_appLE (show ⊤ ≤ F ⁻¹ᵁ ⊤ from le_rfl) (homOfLE H).op]
-      simp only [ Opens.toScheme_presheaf_map, Quiver.Hom.unop_op,
+      simp only [Opens.toScheme_presheaf_map, Quiver.Hom.unop_op,
         Hom.opensFunctor_map_homOfLE, ← Functor.map_comp_assoc, IsAffineOpen.isoSpec_hom_appTop,
         Opens.topIso_inv, eqToHom_op, Category.assoc,
         Iso.inv_hom_id_assoc, F.app_eq_appLE]
@@ -734,7 +734,7 @@ lemma Hom.toImage_app :
   rw [← cancel_epi (f.ker.subschemeι.app U), ← Scheme.Hom.comp_app,
     Scheme.Hom.congr_app f.toImage_imageι, f.ker.subschemeι_app,
     ← IsIso.eq_comp_inv, ← Functor.map_inv]
-  simp only [ Category.assoc,
+  simp only [Category.assoc,
     Iso.inv_hom_id_assoc, eqToHom_op, inv_eqToHom]
   rw [← reassoc_of% CommRingCat.ofHom_comp, Ideal.Quotient.lift_comp_mk, CommRingCat.ofHom_hom,
     eqToHom_refl, CategoryTheory.Functor.map_id]

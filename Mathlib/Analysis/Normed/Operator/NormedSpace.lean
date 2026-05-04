@@ -285,7 +285,7 @@ variable {ι : Type*} [NontriviallyNormedField 𝕜] [NontriviallyNormedField �
 between normed spaces. See also `WithSeminorms.equicontinuous_TFAE` for similar characterizations
 between spaces satisfying `WithSeminorms`. -/
 protected theorem NormedSpace.equicontinuous_TFAE : List.TFAE
-    [ EquicontinuousAt ((↑) ∘ f) 0,
+    [EquicontinuousAt ((↑) ∘ f) 0,
       Equicontinuous ((↑) ∘ f),
       UniformEquicontinuous ((↑) ∘ f),
       ∃ C, ∀ i x, ‖f i x‖ ≤ C * ‖x‖,

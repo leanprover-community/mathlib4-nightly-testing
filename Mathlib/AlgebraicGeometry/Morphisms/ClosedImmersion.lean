@@ -164,7 +164,7 @@ instance {X Y : Scheme.{u}} (f : X ⟶ Y) [IsClosedImmersion f] :
     refine ⟨?_, f.toImage.stalkMap_surjective x⟩
     change Function.Injective (CommRingCat.Hom.hom (((TopCat.Presheaf.stalkFunctor CommRingCat
       (f.toImage x)).map f.toImage.c) ≫ X.presheaf.stalkPushforward _ _ x))
-    simp only [ CommRingCat.hom_comp, RingHom.coe_comp]
+    simp only [CommRingCat.hom_comp, RingHom.coe_comp]
     refine .comp ?_ (f.stalkFunctor_toImage_injective _)
     have := TopCat.Presheaf.stalkPushforward.stalkPushforward_iso_of_isInducing CommRingCat
       (f := f.toImage.base) f.toImage.isEmbedding.isInducing X.presheaf x

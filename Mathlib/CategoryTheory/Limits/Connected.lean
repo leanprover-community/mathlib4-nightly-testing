@@ -108,7 +108,7 @@ def Cone.isLimitOfIsIsoLimMapπ {F : J ⥤ C} [HasLimit F] (c : Cone F)
   refine IsLimit.ofIsoLimit (limit.isLimit _) (Cone.ext ((asIso (limMap c.π)).symm ≪≫
     (limit.isLimit _).conePointUniqueUpToIso (isLimitConstCone J c.pt)) ?_)
   intro j
-  simp only [ limit.cone_π, Iso.trans_hom, Iso.symm_hom,
+  simp only [limit.cone_π, Iso.trans_hom, Iso.symm_hom,
     asIso_inv, assoc, IsIso.eq_inv_comp, limMap_π]
   congr 1
   simp [← Iso.inv_comp_eq_id]

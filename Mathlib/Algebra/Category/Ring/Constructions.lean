@@ -95,7 +95,7 @@ def pushoutCoconeIsColimit : Limits.IsColimit (pushoutCocone R A B) :=
         commutes' := fun r => by
           change h (algebraMap R A r ⊗ₜ[R] 1) = s.inl (algebraMap R A r)
           rw [← eq1]
-          simp only [ coe_of]
+          simp only [coe_of]
           rfl }
     suffices h' = Algebra.TensorProduct.productMap f' g' by
       ext x

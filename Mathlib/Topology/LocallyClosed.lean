@@ -148,7 +148,7 @@ A set `s` is locally closed if one of the equivalent conditions below hold
 -/
 lemma isLocallyClosed_tfae (s : Set X) :
     List.TFAE
-    [ IsLocallyClosed s,
+    [IsLocallyClosed s,
       IsOpen (coborder s),
       ∀ x ∈ s, ∃ U ∈ 𝓝 x, IsClosed (U ↓∩ s),
       ∀ x ∈ s, ∃ U, x ∈ U ∧ IsOpen U ∧ U ∩ closure s ⊆ s,
