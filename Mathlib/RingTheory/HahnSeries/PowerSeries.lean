@@ -222,6 +222,7 @@ instance powerSeriesAlgebra {S : Type*} [CommSemiring S] [Algebra S (PowerSeries
 variable {R}
 variable {S : Type*} [CommSemiring S] [Algebra S (PowerSeries R)]
 
+@[defeq]
 theorem algebraMap_apply' (x : S) :
     algebraMap S R⟦Γ⟧ x = ofPowerSeries Γ R (algebraMap S (PowerSeries R) x) :=
   rfl

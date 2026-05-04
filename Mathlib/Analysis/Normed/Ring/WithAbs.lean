@@ -59,8 +59,9 @@ variable [Semiring R] (v : AbsoluteValue R S)
 instance : Semiring (WithAbs v) :=
   fast_instance% Equiv.semiring { toFun := ofAbs, invFun := toAbs v }
 
+@[defeq]
 lemma ofAbs_toAbs (x : R) : ofAbs (toAbs v x) = x := rfl
-@[simp] lemma toAbs_ofAbs (x : WithAbs v) : toAbs v (ofAbs x) = x := rfl
+@[defeq, simp] lemma toAbs_ofAbs (x : WithAbs v) : toAbs v (ofAbs x) = x := rfl
 
 lemma ofAbs_surjective : Function.Surjective (ofAbs (v := v)) :=
   Function.RightInverse.surjective <| ofAbs_toAbs _
@@ -211,6 +212,7 @@ variable {R T : Type*} [Semiring R] (v : AbsoluteValue R S)
 instance [SMul R T] : SMul (WithAbs v) T where
   smul x t := ofAbs x • t
 
+@[defeq]
 theorem smul_left_def [SMul R T] (x : WithAbs v) (t : T) :
     x • t = ofAbs x • t := rfl
 

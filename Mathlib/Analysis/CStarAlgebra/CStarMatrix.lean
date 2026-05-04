@@ -107,6 +107,7 @@ theorem conjTranspose_apply [Star A] (M : CStarMatrix m n A) (i j) :
 instance instStar [Star A] : Star (CStarMatrix n n A) where
   star M := M.conjTranspose
 
+@[defeq]
 lemma star_eq_conjTranspose [Star A] {M : CStarMatrix n n A} : star M = M.conjTranspose := rfl
 
 instance instInvolutiveStar [InvolutiveStar A] : InvolutiveStar (CStarMatrix n n A) where
@@ -574,6 +575,7 @@ lemma inner_toCLM_conjTranspose_right {M : CStarMatrix m n A} {v : C⋆ᵐᵒᵈ
 noncomputable instance instNorm : Norm (CStarMatrix m n A) where
   norm M := ‖toCLM M‖
 
+@[defeq]
 lemma norm_def {M : CStarMatrix m n A} : ‖M‖ = ‖toCLM M‖ := rfl
 
 lemma norm_def' {M : CStarMatrix n n A} : ‖M‖ = ‖toCLMNonUnitalAlgHom (A := A) M‖ := rfl

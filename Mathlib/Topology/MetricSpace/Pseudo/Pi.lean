@@ -47,6 +47,7 @@ instance pseudoMetricSpacePi : PseudoMetricSpace (∀ b, X b) := by
 
 lemma nndist_pi_def (f g : ∀ b, X b) : nndist f g = sup univ fun b => nndist (f b) (g b) := rfl
 
+@[defeq]
 lemma dist_pi_def (f g : ∀ b, X b) : dist f g = (sup univ fun b => nndist (f b) (g b) : ℝ≥0) := rfl
 
 lemma nndist_pi_le_iff {f g : ∀ b, X b} {r : ℝ≥0} :

@@ -262,7 +262,7 @@ instance : MulSemiringAction G (integralClosure R K) where
   smul_one g := by ext; exact smul_one g
   smul_mul g x y := by ext; exact smul_mul' g (x : K) (y : K)
 
-@[simp]
+@[defeq, simp]
 theorem integralClosure.coe_smul (g : G) (k : integralClosure R K) :
     (g • k : integralClosure R K) = g • (k : K) := rfl
 

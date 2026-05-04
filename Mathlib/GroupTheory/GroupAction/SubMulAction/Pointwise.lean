@@ -36,6 +36,7 @@ instance : One (SubMulAction R M) where
     { carrier := Set.range fun r : R => r • (1 : M)
       smul_mem' := fun r _ ⟨r', hr'⟩ => hr' ▸ ⟨r * r', mul_smul _ _ _⟩ }
 
+@[defeq]
 theorem coe_one : ↑(1 : SubMulAction R M) = Set.range fun r : R => r • (1 : M) :=
   rfl
 
@@ -58,7 +59,7 @@ instance : Mul (SubMulAction R M) where
       smul_mem' := fun r _ ⟨m₁, hm₁, m₂, hm₂, h⟩ =>
         h ▸ smul_mul_assoc r m₁ m₂ ▸ Set.mul_mem_mul (p.smul_mem _ hm₁) hm₂ }
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_mul (p q : SubMulAction R M) : ↑(p * q) = (p * q : Set M) :=
   rfl
 

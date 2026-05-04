@@ -38,11 +38,11 @@ theorem one_apply [One Y] (x : X) : (1 : LocallyConstant X Y) x = 1 :=
 @[to_additive]
 instance [Inv Y] : Inv (LocallyConstant X Y) where inv f := ⟨f⁻¹, f.isLocallyConstant.inv⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_inv [Inv Y] (f : LocallyConstant X Y) : ⇑(f⁻¹ : LocallyConstant X Y) = (f : X → Y)⁻¹ :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem inv_apply [Inv Y] (f : LocallyConstant X Y) (x : X) : f⁻¹ x = (f x)⁻¹ :=
   rfl
 
@@ -50,11 +50,11 @@ theorem inv_apply [Inv Y] (f : LocallyConstant X Y) (x : X) : f⁻¹ x = (f x)�
 instance [Mul Y] : Mul (LocallyConstant X Y) where
   mul f g := ⟨f * g, f.isLocallyConstant.mul g.isLocallyConstant⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_mul [Mul Y] (f g : LocallyConstant X Y) : ⇑(f * g) = f * g :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem mul_apply [Mul Y] (f g : LocallyConstant X Y) (x : X) : (f * g) x = f x * g x :=
   rfl
 
@@ -110,11 +110,11 @@ end CharFn
 instance [Div Y] : Div (LocallyConstant X Y) where
   div f g := ⟨f / g, f.isLocallyConstant.div g.isLocallyConstant⟩
 
-@[to_additive]
+@[defeq, to_additive]
 theorem coe_div [Div Y] (f g : LocallyConstant X Y) : ⇑(f / g) = f / g :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem div_apply [Div Y] (f g : LocallyConstant X Y) (x : X) : (f / g) x = f x / g x :=
   rfl
 

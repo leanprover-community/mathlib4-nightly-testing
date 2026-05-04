@@ -128,10 +128,11 @@ lemma ext {X Y : GrpCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
 
 @[to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
+@[defeq]
 theorem coe_of (R : Type u) [Group R] : ↑(GrpCat.of R) = R :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_id {X : GrpCat} : (𝟙 X : X ⟶ X).hom = MonoidHom.id X := rfl
 
 /- Provided for rewriting. -/
@@ -139,7 +140,7 @@ lemma hom_id {X : GrpCat} : (𝟙 X : X ⟶ X).hom = MonoidHom.id X := rfl
 lemma id_apply (X : GrpCat) (x : X) :
     (𝟙 X : X ⟶ X) x = x := by simp
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_comp {X Y T : GrpCat} (f : X ⟶ Y) (g : Y ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -152,23 +153,23 @@ lemma comp_apply {X Y T : GrpCat} (f : X ⟶ Y) (g : Y ⟶ T) (x : X) :
 lemma hom_ext {X Y : GrpCat} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_ofHom {R S : Type u} [Group R] [Group S] (f : R →* S) : (ofHom f).hom = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_hom {X Y : GrpCat} (f : X ⟶ Y) :
     ofHom (Hom.hom f) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_id {X : Type u} [Group X] : ofHom (MonoidHom.id X) = 𝟙 (of X) := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_comp {X Y Z : Type u} [Group X] [Group Y] [Group Z]
     (f : X →* Y) (g : Y →* Z) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 lemma ofHom_apply {X Y : Type u} [Group X] [Group Y] (f : X →* Y) (x : X) :
     (ofHom f) x = f x := rfl
 
@@ -191,11 +192,11 @@ instance hasForgetToMonCat : HasForget₂ GrpCat MonCat where
   forget₂.obj X := MonCat.of X
   forget₂.map f := MonCat.ofHom f.hom
 
-@[to_additive (attr := simp)] lemma forget₂_map_ofHom {X Y : Type u} [Group X] [Group Y]
+@[defeq, to_additive (attr := simp)] lemma forget₂_map_ofHom {X Y : Type u} [Group X] [Group Y]
     (f : X →* Y) :
     (forget₂ GrpCat MonCat).map (ofHom f) = MonCat.ofHom f := rfl
 
-@[to_additive (attr := simp)] lemma forget₂_map {R S : GrpCat} (f : R ⟶ S) (x) :
+@[defeq, to_additive (attr := simp)] lemma forget₂_map {R S : GrpCat} (f : R ⟶ S) (x) :
     (forget₂ GrpCat MonCat).map f x = f x := rfl
 
 @[to_additive]
@@ -205,7 +206,7 @@ instance : Coe GrpCat.{u} MonCat.{u} where coe := (forget₂ GrpCat MonCat).obj
 instance (G H : GrpCat) : One (G ⟶ H) where
   one := ofHom 1
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem one_apply (G H : GrpCat) (g : G) : ((1 : G ⟶ H) : G → H) g = 1 :=
   rfl
 
@@ -349,10 +350,11 @@ instance : Inhabited CommGrpCat :=
 
 @[to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
+@[defeq]
 theorem coe_of (R : Type u) [CommGroup R] : ↑(CommGrpCat.of R) = R :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_id {X : CommGrpCat} : (𝟙 X : X ⟶ X).hom = MonoidHom.id X := rfl
 
 /- Provided for rewriting. -/
@@ -360,7 +362,7 @@ lemma hom_id {X : CommGrpCat} : (𝟙 X : X ⟶ X).hom = MonoidHom.id X := rfl
 lemma id_apply (X : CommGrpCat) (x : X) :
     (𝟙 X : X ⟶ X) x = x := by simp
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_comp {X Y T : CommGrpCat} (f : X ⟶ Y) (g : Y ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -373,23 +375,23 @@ lemma comp_apply {X Y T : CommGrpCat} (f : X ⟶ Y) (g : Y ⟶ T) (x : X) :
 lemma hom_ext {X Y : CommGrpCat} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_ofHom {X Y : Type u} [CommGroup X] [CommGroup Y] (f : X →* Y) : (ofHom f).hom = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_hom {X Y : CommGrpCat} (f : X ⟶ Y) :
     ofHom (Hom.hom f) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_id {X : Type u} [CommGroup X] : ofHom (MonoidHom.id X) = 𝟙 (of X) := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_comp {X Y Z : Type u} [CommGroup X] [CommGroup Y] [CommGroup Z]
     (f : X →* Y) (g : Y →* Z) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 lemma ofHom_apply {X Y : Type u} [CommGroup X] [CommGroup Y] (f : X →* Y) (x : X) :
     (ofHom f) x = f x := rfl
 
@@ -408,11 +410,11 @@ instance hasForgetToGroup : HasForget₂ CommGrpCat GrpCat where
   forget₂.obj X := GrpCat.of X
   forget₂.map f := GrpCat.ofHom f.hom
 
-@[to_additive (attr := simp)] lemma forget₂_grp_map_ofHom {X Y : Type u} [CommGroup X] [CommGroup Y]
+@[defeq, to_additive (attr := simp)] lemma forget₂_grp_map_ofHom {X Y : Type u} [CommGroup X] [CommGroup Y]
     (f : X →* Y) :
     (forget₂ CommGrpCat GrpCat).map (ofHom f) = GrpCat.ofHom f := rfl
 
-@[to_additive (attr := simp)] lemma forget₂_map {R S : CommGrpCat} (f : R ⟶ S) (x) :
+@[defeq, to_additive (attr := simp)] lemma forget₂_map {R S : CommGrpCat} (f : R ⟶ S) (x) :
     (forget₂ CommGrpCat GrpCat).map f x = f x := rfl
 
 @[to_additive]
@@ -433,7 +435,7 @@ instance hasForgetToCommMonCat : HasForget₂ CommGrpCat CommMonCat where
   forget₂.obj X := CommMonCat.of X
   forget₂.map f := CommMonCat.ofHom f.hom
 
-@[to_additive (attr := simp)] lemma forget₂_commMonCat_map_ofHom {X Y : Type u}
+@[defeq, to_additive (attr := simp)] lemma forget₂_commMonCat_map_ofHom {X Y : Type u}
     [CommGroup X] [CommGroup Y] (f : X →* Y) :
     (forget₂ CommGrpCat CommMonCat).map (ofHom f) = CommMonCat.ofHom f := rfl
 
@@ -444,7 +446,7 @@ instance : Coe CommGrpCat.{u} CommMonCat.{u} where coe := (forget₂ CommGrpCat 
 instance (G H : CommGrpCat) : One (G ⟶ H) where
   one := ofHom 1
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem one_apply (G H : CommGrpCat) (g : G) : ((1 : G ⟶ H) : G → H) g = 1 :=
   rfl
 

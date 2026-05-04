@@ -87,10 +87,12 @@ instance forgetToCat_faithful : forgetToCat.Faithful where
 
 /-- Convert arrows in the category of groupoids to functors,
 which sometimes helps in applying simp lemmas -/
+@[defeq]
 theorem comp_eq_comp {C D E : Grpd.{v, u}} (f : C ⟶ D) (g : D ⟶ E) : f ≫ g = f ⋙ g :=
   rfl
 
 /-- Converts identity in the category of groupoids to the functor identity -/
+@[defeq]
 theorem id_eq_id {C : Grpd.{v, u}} : 𝟙 C = 𝟭 C :=
   rfl
 

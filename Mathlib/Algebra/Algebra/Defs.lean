@@ -183,6 +183,7 @@ theorem RingHom.smul_toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R →+*
     r • s = i r * s := rfl
 
 set_option linter.docPrime false in
+@[defeq]
 theorem RingHom.algebraMap_toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R →+* S)
     (h : ∀ c x, i c * x = x * i c) :
     @algebraMap R S _ _ (i.toAlgebra' h) = i :=
@@ -202,6 +203,7 @@ theorem RingHom.smul_toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R �
     let _ := RingHom.toAlgebra i
     r • s = i r * s := rfl
 
+@[defeq]
 theorem RingHom.algebraMap_toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R →+* S) :
     @algebraMap R S _ _ i.toAlgebra = i :=
   rfl
@@ -347,14 +349,17 @@ abbrev compHom : Algebra S A where
   commutes' _ _ := Algebra.commutes _ _
   smul_def' _ _ := Algebra.smul_def _ _
 
+@[defeq]
 theorem compHom_smul_def (s : S) (x : A) :
     letI := compHom A f
     s • x = f s • x := rfl
 
+@[defeq]
 theorem compHom_algebraMap_eq :
     letI := compHom A f
     algebraMap S A = (algebraMap R A).comp f := rfl
 
+@[defeq]
 theorem compHom_algebraMap_apply (s : S) :
     letI := compHom A f
     algebraMap S A s = (algebraMap R A) (f s) := rfl
@@ -392,12 +397,13 @@ instance (priority := 1100) id : Algebra R R where
 
 variable {R A}
 
-@[simp] lemma algebraMap_self : algebraMap R R = .id _ := rfl
+@[defeq, simp] lemma algebraMap_self : algebraMap R R = .id _ := rfl
+@[defeq]
 lemma algebraMap_self_apply (x : R) : algebraMap R R x = x := rfl
 
 namespace id
 
-@[deprecated _root_.smul_eq_mul (since := "2025-12-02")]
+@[defeq, deprecated _root_.smul_eq_mul (since := "2025-12-02")]
 theorem smul_eq_mul (x y : R) : x • y = x * y :=
   rfl
 

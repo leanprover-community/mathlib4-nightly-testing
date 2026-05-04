@@ -94,7 +94,7 @@ instance : Top (GroupTopology α) :=
   ⟨{  continuous_mul := continuous_top
       continuous_inv := continuous_top }⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem toTopologicalSpace_top : (⊤ : GroupTopology α).toTopologicalSpace = ⊤ :=
   rfl
 
@@ -106,7 +106,7 @@ instance : Bot (GroupTopology α) :=
         fun_prop
       continuous_inv := continuous_bot }⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem toTopologicalSpace_bot : (⊥ : GroupTopology α).toTopologicalSpace = ⊥ :=
   rfl
 
@@ -118,7 +118,7 @@ instance : BoundedOrder (GroupTopology α) where
 @[to_additive]
 instance : Min (GroupTopology α) where min x y := ⟨x.1 ⊓ y.1, topologicalGroup_inf x.2 y.2⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem toTopologicalSpace_inf (x y : GroupTopology α) :
     (x ⊓ y).toTopologicalSpace = x.toTopologicalSpace ⊓ y.toTopologicalSpace :=
   rfl
@@ -137,7 +137,7 @@ instance : InfSet (GroupTopology α) where
   sInf S :=
     ⟨sInf (toTopologicalSpace '' S), topologicalGroup_sInf <| forall_mem_image.2 fun t _ => t.2⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem toTopologicalSpace_sInf (s : Set (GroupTopology α)) :
     (sInf s).toTopologicalSpace = sInf (toTopologicalSpace '' s) := rfl
 

@@ -87,13 +87,15 @@ instance automorphismGroup : Group (M ≃ₗ[R] M) where
   one_mul _ := ext fun _ ↦ rfl
   inv_mul_cancel f := ext <| f.left_inv
 
+@[defeq]
 lemma one_eq_refl : (1 : M ≃ₗ[R] M) = refl R M := rfl
+@[defeq]
 lemma mul_eq_trans (f g : M ≃ₗ[R] M) : f * g = g.trans f := rfl
 
 @[simp]
 lemma coe_one : ↑(1 : M ≃ₗ[R] M) = id := rfl
 
-@[simp] lemma coe_inv (f : M ≃ₗ[R] M) : ⇑f⁻¹ = ⇑f.symm := rfl
+@[defeq, simp] lemma coe_inv (f : M ≃ₗ[R] M) : ⇑f⁻¹ = ⇑f.symm := rfl
 
 @[simp]
 lemma coe_toLinearMap_one : (↑(1 : M ≃ₗ[R] M) : M →ₗ[R] M) = LinearMap.id := rfl
@@ -127,7 +129,7 @@ instance applyDistribMulAction : DistribMulAction (M ≃ₗ[R] M) M where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[simp]
+@[defeq, simp]
 protected theorem smul_def (f : M ≃ₗ[R] M) (a : M) : f • a = f a :=
   rfl
 
@@ -427,10 +429,11 @@ instance : Zero (M ≃ₛₗ[σ₁₂] M₂) :=
 theorem zero_symm : (0 : M ≃ₛₗ[σ₁₂] M₂).symm = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : M ≃ₛₗ[σ₁₂] M₂) = 0 :=
   rfl
 
+@[defeq]
 theorem zero_apply (x : M) : (0 : M ≃ₛₗ[σ₁₂] M₂) x = 0 :=
   rfl
 

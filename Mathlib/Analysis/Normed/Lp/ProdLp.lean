@@ -1021,6 +1021,7 @@ abbrev pseudoMetricSpaceToProd [PseudoMetricSpace α] [PseudoMetricSpace β] :
       (le_antisymm (prod_antilipschitzWith_toLp p α β).tendsto_cobounded.le_comap
         (prod_lipschitzWith_toLp p α β).comap_cobounded_le) sᶜ
 
+@[defeq]
 lemma dist_pseudoMetricSpaceToProd [PseudoMetricSpace α] [PseudoMetricSpace β] (x y : α × β) :
     @dist _ (pseudoMetricSpaceToProd p α β).toDist x y = dist (toLp p x) (toLp p y) := rfl
 
@@ -1034,10 +1035,12 @@ abbrev seminormedAddCommGroupToProd [SeminormedAddCommGroup α] [SeminormedAddCo
   dist_eq x y := by
     rw [dist_pseudoMetricSpaceToProd, SeminormedAddCommGroup.dist_eq, toLp_add, toLp_neg]
 
+@[defeq]
 lemma norm_seminormedAddCommGroupToProd [SeminormedAddCommGroup α] [SeminormedAddCommGroup β]
     (x : α × β) :
     @Norm.norm _ (seminormedAddCommGroupToProd p α β).toNorm x = ‖toLp p x‖ := rfl
 
+@[defeq]
 lemma nnnorm_seminormedAddCommGroupToProd [SeminormedAddCommGroup α] [SeminormedAddCommGroup β]
     (x : α × β) :
     @NNNorm.nnnorm _ (seminormedAddCommGroupToProd p α β).toSeminormedAddGroup.toNNNorm x =

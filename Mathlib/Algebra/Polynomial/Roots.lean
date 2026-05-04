@@ -439,6 +439,7 @@ the multiset of roots of `p` regarded as a polynomial over `S`. -/
 noncomputable abbrev aroots (p : T[X]) (S) [CommRing S] [IsDomain S] [Algebra T S] : Multiset S :=
   (p.map (algebraMap T S)).roots
 
+@[defeq]
 theorem aroots_def (p : T[X]) (S) [CommRing S] [IsDomain S] [Algebra T S] :
     p.aroots S = (p.map (algebraMap T S)).roots :=
   rfl
@@ -667,7 +668,7 @@ instance [CommRing S] [Algebra S R] (G : Type*)
   one_smul x := Subtype.ext (one_smul G x.1)
   mul_smul g h x := Subtype.ext (mul_smul g h x.1)
 
-@[simp]
+@[defeq, simp]
 theorem rootSet.coe_smul [CommRing S] [Algebra S R] {G : Type*}
     [Monoid G] [MulSemiringAction G R] [SMulCommClass G S R] {f : S[X]}
     (g : G) (x : f.rootSet R) : (g • x : f.rootSet R) = g • (x : R) :=

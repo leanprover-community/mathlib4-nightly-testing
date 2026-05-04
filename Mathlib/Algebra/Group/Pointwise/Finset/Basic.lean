@@ -90,7 +90,7 @@ theorem one_subset : (1 : Finset α) ⊆ s ↔ (1 : α) ∈ s :=
 
 -- TODO: This would be a good simp lemma scoped to `Pointwise`, but it seems `@[simp]` can't be
 -- scoped
-@[to_additive]
+@[defeq, to_additive]
 theorem singleton_one : ({1} : Finset α) = 1 :=
   rfl
 
@@ -191,11 +191,11 @@ protected def inv : Inv (Finset α) :=
 
 scoped[Pointwise] attribute [instance] Finset.inv Finset.neg
 
-@[to_additive]
+@[defeq, to_additive]
 theorem inv_def : s⁻¹ = s.image fun x => x⁻¹ :=
   rfl
 
-@[to_additive] lemma image_inv_eq_inv (s : Finset α) : s.image (·⁻¹) = s⁻¹ := rfl
+@[defeq, to_additive] lemma image_inv_eq_inv (s : Finset α) : s.image (·⁻¹) = s⁻¹ := rfl
 
 @[to_additive]
 theorem mem_inv {x : α} : x ∈ s⁻¹ ↔ ∃ y ∈ s, y⁻¹ = x :=

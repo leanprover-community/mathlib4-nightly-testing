@@ -61,6 +61,7 @@ instance (priority := low) {R : Type*} [CommRing R] [ValuativeRel R] [UniformSpa
     simpa [← Valuation.restrict_lt_iff_lt_embedding] using
       (valuation R).exists_setOf_restrict_le_iff 0 _
 
+@[defeq]
 lemma v_eq_valuation {R : Type*} [CommRing R] [ValuativeRel R] [UniformSpace R]
     [IsUniformAddGroup R] [IsValuativeTopology R] :
     Valued.v = valuation R := rfl

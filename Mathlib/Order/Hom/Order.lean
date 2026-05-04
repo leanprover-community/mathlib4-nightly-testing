@@ -38,7 +38,7 @@ variable [Preorder α]
 instance [SemilatticeSup β] : Max (α →o β) where
   max f g := ⟨fun a => f a ⊔ g a, f.mono.sup g.mono⟩
 
-@[simp] lemma coe_sup [SemilatticeSup β] (f g : α →o β) :
+@[defeq, simp] lemma coe_sup [SemilatticeSup β] (f g : α →o β) :
     ((f ⊔ g : α →o β) : α → β) = (f : α → β) ⊔ g := rfl
 
 instance [SemilatticeSup β] : SemilatticeSup (α →o β) :=
@@ -51,7 +51,7 @@ instance [SemilatticeSup β] : SemilatticeSup (α →o β) :=
 instance [SemilatticeInf β] : Min (α →o β) where
   min f g := ⟨fun a => f a ⊓ g a, f.mono.inf g.mono⟩
 
-@[simp] lemma coe_inf [SemilatticeInf β] (f g : α →o β) :
+@[defeq, simp] lemma coe_inf [SemilatticeInf β] (f g : α →o β) :
     ((f ⊓ g : α →o β) : α → β) = (f : α → β) ⊓ g := rfl
 
 instance [SemilatticeInf β] : SemilatticeInf (α →o β) :=
@@ -78,7 +78,7 @@ instance orderTop [Preorder β] [OrderTop β] : OrderTop (α →o β) where
 instance [CompleteLattice β] : InfSet (α →o β) where
   sInf s := ⟨fun x => ⨅ f ∈ s, (f :) x, fun _ _ h => iInf₂_mono fun f _ => f.mono h⟩
 
-@[simp]
+@[defeq, simp]
 theorem sInf_apply [CompleteLattice β] (s : Set (α →o β)) (x : α) :
     sInf s x = ⨅ f ∈ s, (f :) x :=
   rfl
@@ -95,7 +95,7 @@ theorem coe_iInf {ι : Sort*} [CompleteLattice β] (f : ι → α →o β) :
 instance [CompleteLattice β] : SupSet (α →o β) where
   sSup s := ⟨fun x => ⨆ f ∈ s, (f :) x, fun _ _ h => iSup₂_mono fun f _ => f.mono h⟩
 
-@[simp]
+@[defeq, simp]
 theorem sSup_apply [CompleteLattice β] (s : Set (α →o β)) (x : α) :
     sSup s x = ⨆ f ∈ s, (f :) x :=
   rfl

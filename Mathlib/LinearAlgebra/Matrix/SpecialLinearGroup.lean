@@ -142,18 +142,19 @@ section CoeLemmas
 
 variable (A B : SpecialLinearGroup n R)
 
+@[defeq]
 theorem coe_mk (A : Matrix n n R) (h : det A = 1) : ↑(⟨A, h⟩ : SpecialLinearGroup n R) = A :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_inv : ↑ₘ(A⁻¹) = adjugate A :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mul : ↑ₘ(A * B) = ↑ₘA * ↑ₘB :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_one : (1 : SpecialLinearGroup n R) = (1 : Matrix n n R) :=
   rfl
 
@@ -161,7 +162,7 @@ theorem coe_one : (1 : SpecialLinearGroup n R) = (1 : Matrix n n R) :=
 theorem det_coe : det ↑ₘA = 1 :=
   A.2
 
-@[simp]
+@[defeq, simp]
 theorem coe_pow (m : ℕ) : ↑ₘ(A ^ m) = ↑ₘA ^ m :=
   rfl
 
@@ -352,7 +353,7 @@ instance instNeg : Neg (SpecialLinearGroup n R) :=
     simpa [(@Fact.out <| Even <| Fintype.card n).neg_one_pow, g.det_coe]
       using det_smul (↑ₘg) (-1)⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_neg (g : SpecialLinearGroup n R) : ↑(-g) = -(g : Matrix n n R) :=
   rfl
 

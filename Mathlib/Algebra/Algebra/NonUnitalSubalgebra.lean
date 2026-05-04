@@ -136,7 +136,7 @@ theorem mem_toNonUnitalSubsemiring {S : NonUnitalSubalgebra R A} {x} :
     x ∈ S.toNonUnitalSubsemiring ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toNonUnitalSubsemiring (S : NonUnitalSubalgebra R A) :
     (↑S.toNonUnitalSubsemiring : Set A) = S :=
   rfl
@@ -144,7 +144,7 @@ theorem coe_toNonUnitalSubsemiring (S : NonUnitalSubalgebra R A) :
 theorem mem_toSubmodule (S : NonUnitalSubalgebra R A) {x} : x ∈ S.toSubmodule ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubmodule (S : NonUnitalSubalgebra R A) : (↑S.toSubmodule : Set A) = S :=
   rfl
 
@@ -187,7 +187,7 @@ theorem mem_toNonUnitalSubring {S : NonUnitalSubalgebra R A} {x} :
     x ∈ S.toNonUnitalSubring ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toNonUnitalSubring (S : NonUnitalSubalgebra R A) :
     (↑S.toNonUnitalSubring : Set A) = S :=
   rfl
@@ -294,24 +294,29 @@ instance instIsTorsionFree [Module.IsTorsionFree R A] : Module.IsTorsionFree R S
 
 end
 
+@[defeq]
 protected theorem coe_add (x y : S) : (↑(x + y) : A) = ↑x + ↑y :=
   rfl
 
+@[defeq]
 protected theorem coe_mul (x y : S) : (↑(x * y) : A) = ↑x * ↑y :=
   rfl
 
+@[defeq]
 protected theorem coe_zero : ((0 : S) : A) = 0 :=
   rfl
 
+@[defeq]
 protected theorem coe_neg {R : Type u} {A : Type v} [CommRing R] [Ring A] [Algebra R A]
     {S : NonUnitalSubalgebra R A} (x : S) : (↑(-x) : A) = -↑x :=
   rfl
 
+@[defeq]
 protected theorem coe_sub {R : Type u} {A : Type v} [CommRing R] [Ring A] [Algebra R A]
     {S : NonUnitalSubalgebra R A} (x y : S) : (↑(x - y) : A) = ↑x - ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_smul [SMul R' R] [SMul R' A] [IsScalarTower R' R A] (r : R') (x : S) :
     ↑(r • x) = r • (x : A) :=
   rfl

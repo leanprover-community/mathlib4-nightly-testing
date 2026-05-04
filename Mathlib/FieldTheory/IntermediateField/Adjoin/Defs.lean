@@ -82,6 +82,7 @@ instance (K₁ K₂ : IntermediateField F E) : Algebra ↥(K₁ ⊓ K₂) K₁ :
 instance (K₁ K₂ : IntermediateField F E) : Algebra ↥(K₁ ⊓ K₂) K₂ :=
   inferInstanceAs <| Algebra ↑(K₁.toSubalgebra ⊓ K₂.toSubalgebra) K₂.toSubalgebra
 
+@[defeq]
 theorem sup_def (S T : IntermediateField F E) : S ⊔ T = adjoin F (S ∪ T : Set E) := rfl
 
 theorem sSup_def (S : Set (IntermediateField F E)) :
@@ -99,7 +100,7 @@ theorem coe_bot : ↑(⊥ : IntermediateField F E) = Set.range (algebraMap F E) 
 theorem mem_bot {x : E} : x ∈ (⊥ : IntermediateField F E) ↔ x ∈ Set.range (algebraMap F E) :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem bot_toSubalgebra : (⊥ : IntermediateField F E).toSubalgebra = ⊥ := rfl
 
 theorem bot_toSubfield : (⊥ : IntermediateField F E).toSubfield = (algebraMap F E).fieldRange :=

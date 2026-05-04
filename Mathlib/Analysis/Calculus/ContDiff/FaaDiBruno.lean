@@ -133,7 +133,7 @@ variable {n : ℕ} (c : OrderedFinpartition n)
 
 instance : Inhabited (OrderedFinpartition n) := ⟨atomic n⟩
 
-@[simp]
+@[defeq, simp]
 theorem default_eq : (default : OrderedFinpartition n) = atomic n := rfl
 
 lemma length_le : c.length ≤ n := by

@@ -133,11 +133,11 @@ instance instZero : Zero (Seminorm 𝕜 E) :=
   ⟨{ AddGroupSeminorm.instZeroAddGroupSeminorm.zero with
     smul' := fun _ _ => (mul_zero _).symm }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : Seminorm 𝕜 E) = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (x : E) : (0 : Seminorm 𝕜 E) x = 0 :=
   rfl
 
@@ -160,11 +160,12 @@ instance [SMul R ℝ] [SMul R ℝ≥0] [IsScalarTower R ℝ≥0 ℝ] [SMul R' �
     IsScalarTower R R' (Seminorm 𝕜 E) where
   smul_assoc r a p := ext fun x => smul_assoc r a (p x)
 
+@[defeq]
 theorem coe_smul [SMul R ℝ] [SMul R ℝ≥0] [IsScalarTower R ℝ≥0 ℝ] (r : R) (p : Seminorm 𝕜 E) :
     ⇑(r • p) = r • ⇑p :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem smul_apply [SMul R ℝ] [SMul R ℝ≥0] [IsScalarTower R ℝ≥0 ℝ] (r : R) (p : Seminorm 𝕜 E)
     (x : E) : (r • p) x = r • p x :=
   rfl
@@ -175,10 +176,11 @@ instance instAdd : Add (Seminorm 𝕜 E) where
       toFun := fun x => p x + q x
       smul' := fun a x => by simp only [map_smul_eq_mul, map_smul_eq_mul, mul_add] }
 
+@[defeq]
 theorem coe_add (p q : Seminorm 𝕜 E) : ⇑(p + q) = p + q :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (p q : Seminorm 𝕜 E) (x : E) : (p + q) x = p x + q x :=
   rfl
 
@@ -228,10 +230,11 @@ instance instSup : Max (Seminorm 𝕜 E) where
         (congr_arg₂ max (map_smul_eq_mul p x v) (map_smul_eq_mul q x v)).trans <|
           (mul_max_of_nonneg _ _ <| norm_nonneg x).symm }
 
-@[simp]
+@[defeq, simp]
 theorem coe_sup (p q : Seminorm 𝕜 E) : ⇑(p ⊔ q) = (p : E → ℝ) ⊔ (q : E → ℝ) :=
   rfl
 
+@[defeq]
 theorem sup_apply (p q : Seminorm 𝕜 E) (x : E) : (p ⊔ q) x = p x ⊔ q x :=
   rfl
 
@@ -328,10 +331,11 @@ instance instOrderBot : OrderBot (Seminorm 𝕜 E) where
   bot := 0
   bot_le := apply_nonneg
 
-@[simp]
+@[defeq, simp]
 theorem coe_bot : ⇑(⊥ : Seminorm 𝕜 E) = 0 :=
   rfl
 
+@[defeq]
 theorem bot_eq_zero : (⊥ : Seminorm 𝕜 E) = 0 :=
   rfl
 
@@ -447,7 +451,7 @@ noncomputable instance instInf : Min (Seminorm 𝕜 E) where
             (fun u => ⟨a • u, inv_smul_smul₀ ha u⟩) fun u => ?_
         rw [smul_inv_smul₀ ha] }
 
-@[simp]
+@[defeq, simp]
 theorem inf_apply (p q : Seminorm 𝕜 E) (x : E) : (p ⊓ q) x = ⨅ u : E, p u + q (x - u) :=
   rfl
 

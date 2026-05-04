@@ -577,6 +577,7 @@ lemma ValueGroupWithZero.mk_pos {x : R} {s : posSubmonoid R} :
 instance : Bot (ValueGroupWithZero R) where
   bot := 0
 
+@[defeq]
 theorem ValueGroupWithZero.bot_eq_zero : (⊥ : ValueGroupWithZero R) = 0 := rfl
 
 instance : OrderBot (ValueGroupWithZero R) where

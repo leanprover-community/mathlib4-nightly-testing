@@ -56,7 +56,7 @@ variable {a b c d m n : ℕ∞}
 
 /-- Lemmas about `WithTop` expect (and can output) `WithTop.some` but the normal form for coercion
 `ℕ → ℕ∞` is `Nat.cast`. -/
-@[simp] theorem some_eq_coe : (WithTop.some : ℕ → ℕ∞) = Nat.cast := rfl
+@[defeq, simp] theorem some_eq_coe : (WithTop.some : ℕ → ℕ∞) = Nat.cast := rfl
 
 theorem coe_inj {a b : ℕ} : (a : ℕ∞) = b ↔ a = b := WithTop.coe_inj
 
@@ -616,7 +616,7 @@ end ENat
 
 namespace ENat.WithBot
 
-@[simp]
+@[defeq, simp]
 lemma coe_eq_natCast (n : ℕ) : (n : ℕ∞) = (n : WithBot ℕ∞) := rfl
 
 lemma lt_add_one_iff {n : WithBot ℕ∞} {m : ℕ} : n < m + 1 ↔ n ≤ m := by

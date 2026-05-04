@@ -132,14 +132,14 @@ theorem mem_carrier {s : StarSubalgebra R A} {x : A} : x ∈ s.carrier ↔ x ∈
 theorem ext {S T : StarSubalgebra R A} (h : ∀ x : A, x ∈ S ↔ x ∈ T) : S = T :=
   SetLike.ext h
 
-@[simp]
+@[defeq, simp]
 lemma coe_mk (S : Subalgebra R A) (h) : ((⟨S, h⟩ : StarSubalgebra R A) : Set A) = S := rfl
 
 @[simp]
 theorem mem_toSubalgebra {S : StarSubalgebra R A} {x} : x ∈ S.toSubalgebra ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubalgebra (S : StarSubalgebra R A) : (S.toSubalgebra : Set A) = S :=
   rfl
 
@@ -371,7 +371,7 @@ theorem mem_star_iff (S : Subalgebra R A) (x : A) : x ∈ star S ↔ star x ∈ 
 theorem star_mem_star_iff (S : Subalgebra R A) (x : A) : star x ∈ star S ↔ x ∈ S := by
   simp
 
-@[simp]
+@[defeq, simp]
 theorem coe_star (S : Subalgebra R A) : ((star S : Subalgebra R A) : Set A) = star (S : Set A) :=
   rfl
 
@@ -749,6 +749,7 @@ theorem iInf_toSubalgebra {ι : Sort*} (S : ι → StarSubalgebra R A) :
     (⨅ i, S i).toSubalgebra = ⨅ i, (S i).toSubalgebra :=
   SetLike.coe_injective <| by simp
 
+@[defeq]
 theorem bot_toSubalgebra : (⊥ : StarSubalgebra R A).toSubalgebra = ⊥ := rfl
 
 theorem mem_bot {x : A} : x ∈ (⊥ : StarSubalgebra R A) ↔ x ∈ Set.range (algebraMap R A) := Iff.rfl

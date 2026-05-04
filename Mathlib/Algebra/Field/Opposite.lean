@@ -24,13 +24,13 @@ namespace MulOpposite
 @[to_additive] instance instNNRatCast [NNRatCast α] : NNRatCast αᵐᵒᵖ := ⟨fun q ↦ op q⟩
 @[to_additive] instance instRatCast [RatCast α] : RatCast αᵐᵒᵖ := ⟨fun q ↦ op q⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 lemma op_nnratCast [NNRatCast α] (q : ℚ≥0) : op (q : α) = q := rfl
 
 @[to_additive (attr := simp, norm_cast)]
 lemma unop_nnratCast [NNRatCast α] (q : ℚ≥0) : unop (q : αᵐᵒᵖ) = q := rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 lemma op_ratCast [RatCast α] (q : ℚ) : op (q : α) = q := rfl
 
 @[to_additive (attr := simp, norm_cast)]

@@ -63,29 +63,30 @@ variable {φ : G →* MulAut N}
 instance : Mul (SemidirectProduct N G φ) where
   mul a b := ⟨a.1 * φ a.2 b.1, a.2 * b.2⟩
 
+@[defeq]
 lemma mul_def (a b : SemidirectProduct N G φ) : a * b = ⟨a.1 * φ a.2 b.1, a.2 * b.2⟩ := rfl
 
-@[simp]
+@[defeq, simp]
 theorem mul_left (a b : N ⋊[φ] G) : (a * b).left = a.left * φ a.right b.left := rfl
 
-@[simp]
+@[defeq, simp]
 theorem mul_right (a b : N ⋊[φ] G) : (a * b).right = a.right * b.right := rfl
 
 instance : One (SemidirectProduct N G φ) where one := ⟨1, 1⟩
 
-@[simp]
+@[defeq, simp]
 theorem one_left : (1 : N ⋊[φ] G).left = 1 := rfl
 
-@[simp]
+@[defeq, simp]
 theorem one_right : (1 : N ⋊[φ] G).right = 1 := rfl
 
 instance : Inv (SemidirectProduct N G φ) where
   inv x := ⟨φ x.2⁻¹ x.1⁻¹, x.2⁻¹⟩
 
-@[simp]
+@[defeq, simp]
 theorem inv_left (a : N ⋊[φ] G) : a⁻¹.left = φ a.right⁻¹ a.left⁻¹ := rfl
 
-@[simp]
+@[defeq, simp]
 theorem inv_right (a : N ⋊[φ] G) : a⁻¹.right = a.right⁻¹ := rfl
 
 instance : Group (N ⋊[φ] G) where

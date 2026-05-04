@@ -100,12 +100,12 @@ theorem mem_carrier {S : VonNeumannAlgebra H} {x : H →L[ℂ] H} :
     x ∈ S.toStarSubalgebra ↔ x ∈ (S : Set (H →L[ℂ] H)) :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toStarSubalgebra (S : VonNeumannAlgebra H) :
     (S.toStarSubalgebra : Set (H →L[ℂ] H)) = S :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (S : StarSubalgebra ℂ (H →L[ℂ] H)) (h) :
     ((⟨S, h⟩ : VonNeumannAlgebra H) : Set (H →L[ℂ] H)) = S :=
   rfl

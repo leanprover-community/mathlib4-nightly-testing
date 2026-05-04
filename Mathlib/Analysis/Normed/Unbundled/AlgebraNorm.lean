@@ -75,6 +75,7 @@ instance algebraNormClass : AlgebraNormClass (AlgebraNorm R S) R S where
   eq_zero_of_map_eq_zero f := f.eq_zero_of_map_eq_zero' _
   map_smul_eq_mul f := f.smul'
 
+@[defeq]
 theorem toFun_eq_coe (p : AlgebraNorm R S) : p.toFun = p := rfl
 
 @[ext]
@@ -164,6 +165,7 @@ instance mulAlgebraNormClass : MulAlgebraNormClass (MulAlgebraNorm R S) R S wher
   eq_zero_of_map_eq_zero f := f.eq_zero_of_map_eq_zero' _
   map_smul_eq_mul f := f.smul'
 
+@[defeq]
 theorem toFun_eq_coe (p : MulAlgebraNorm R S) : p.toFun = p := rfl
 
 @[ext]

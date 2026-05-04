@@ -46,7 +46,7 @@ instance instLieRing : LieRing (L₁ × L₂) where
   lie_self := by simp
   leibniz_lie := by simp
 
-@[simp]
+@[defeq, simp]
 theorem bracket_apply (x y : L₁ × L₂) : ⁅x, y⁆ = ⟨⁅x.1, y.1⁆, ⁅x.2, y.2⁆⟩ := rfl
 
 instance instLieAlgebra : LieAlgebra R (L₁ × L₂) where

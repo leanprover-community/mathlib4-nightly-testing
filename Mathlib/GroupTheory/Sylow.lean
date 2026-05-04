@@ -77,7 +77,7 @@ instance : SubgroupClass (Sylow p G) G where
   one_mem _ := Subgroup.one_mem _
   inv_mem := Subgroup.inv_mem _
 
-@[simp]
+@[defeq, simp]
 protected theorem coe_coe (P : Sylow p G) : (P : Subgroup G) = (P : Set G) :=
   rfl
 
@@ -235,6 +235,7 @@ instance pointwiseMulAction {α : Type*} [Group α] [MulDistribMulAction α G] :
   one_smul P := ext (one_smul α P.toSubgroup)
   mul_smul g h P := ext (mul_smul g h P.toSubgroup)
 
+@[defeq]
 theorem pointwise_smul_def {α : Type*} [Group α] [MulDistribMulAction α G] {g : α}
     {P : Sylow p G} : ↑(g • P) = g • (P : Subgroup G) :=
   rfl

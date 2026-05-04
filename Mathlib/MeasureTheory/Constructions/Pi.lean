@@ -652,6 +652,7 @@ instance {G : ι → Type*} [∀ i, Group (G i)] [∀ i, MeasureSpace (G i)] [�
 
 end Measure
 
+@[defeq]
 theorem volume_pi [∀ i, MeasureSpace (α i)] :
     (volume : Measure (∀ i, α i)) = Measure.pi fun _ => volume :=
   rfl

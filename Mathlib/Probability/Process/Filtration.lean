@@ -102,7 +102,7 @@ instance : Max (Filtration ι m) :=
         sup_le ((f.mono hij).trans le_sup_left) ((g.mono hij).trans le_sup_right)
       le' := fun i => sup_le (f.le i) (g.le i) }⟩
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coeFn_sup {f g : Filtration ι m} : ⇑(f ⊔ g) = ⇑f ⊔ ⇑g :=
   rfl
 
@@ -113,7 +113,7 @@ instance : Min (Filtration ι m) :=
         le_inf (inf_le_left.trans (f.mono hij)) (inf_le_right.trans (g.mono hij))
       le' := fun i => inf_le_left.trans (f.le i) }⟩
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coeFn_inf {f g : Filtration ι m} : ⇑(f ⊓ g) = ⇑f ⊓ ⇑g :=
   rfl
 
@@ -135,6 +135,7 @@ instance : SupSet (Filtration ι m) :=
         rw [← hfm']
         exact f.le i }⟩
 
+@[defeq]
 theorem sSup_def (s : Set (Filtration ι m)) (i : ι) :
     sSup s i = sSup ((fun f : Filtration ι m => f i) '' s) :=
   rfl
@@ -159,6 +160,7 @@ noncomputable instance : InfSet (Filtration ι m) :=
         exact le_trans (sInf_le ⟨f, hf_mem, rfl⟩) (f.le i) }⟩
 
 open scoped Classical in
+@[defeq]
 theorem sInf_def (s : Set (Filtration ι m)) (i : ι) :
     sInf s i = if Set.Nonempty s then sInf ((fun f : Filtration ι m => f i) '' s) else m :=
   rfl

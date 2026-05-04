@@ -120,7 +120,7 @@ protected theorem coe_coe {F : Type*} [FunLike F A B] [NonUnitalAlgHomClass F R 
     [StarHomClass F A B] (f : F) :
     ⇑(f : A →⋆ₙₐ[R] B) = f := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toNonUnitalAlgHom {f : A →⋆ₙₐ[R] B} : (f.toNonUnitalAlgHom : A → B) = f :=
   rfl
 
@@ -146,11 +146,12 @@ theorem copy_eq (f : A →⋆ₙₐ[R] B) (f' : A → B) (h : f' = f) : f.copy f
   DFunLike.ext' h
 
 /-- `coe_mk'` below applies in more cases -/
+@[defeq]
 theorem coe_mk (f : A → B) (h₁ h₂ h₃ h₄ h₅) :
     ((⟨⟨⟨⟨f, h₁⟩, h₂, h₃⟩, h₄⟩, h₅⟩ : A →⋆ₙₐ[R] B) : A → B) = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk' (f : A →ₙₐ[R] B) (h) :
     ((⟨f, h⟩ : A →⋆ₙₐ[R] B) : A → B) = f :=
   rfl
@@ -239,10 +240,11 @@ instance : MonoidWithZero (A →⋆ₙₐ[R] A) :=
     zero_mul := fun _ => ext fun _ => rfl
     mul_zero := fun f => ext fun _ => map_zero f }
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ((0 : A →⋆ₙₐ[R] B) : A → B) = 0 :=
   rfl
 
+@[defeq]
 theorem zero_apply (a : A) : (0 : A →⋆ₙₐ[R] B) a = 0 :=
   rfl
 
@@ -343,7 +345,7 @@ protected theorem coe_coe {F : Type*} [FunLike F A B] [AlgHomClass F R A B]
 
 initialize_simps_projections StarAlgHom (toFun → apply)
 
-@[simp]
+@[defeq, simp]
 theorem coe_toAlgHom {f : A →⋆ₐ[R] B} : (f.toAlgHom : A → B) = f :=
   rfl
 
@@ -369,13 +371,13 @@ theorem coe_copy (f : A →⋆ₐ[R] B) (f' : A → B) (h : f' = f) : ⇑(f.copy
 theorem copy_eq (f : A →⋆ₐ[R] B) (f' : A → B) (h : f' = f) : f.copy f' h = f :=
   DFunLike.ext' h
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : A → B) (h₁ h₂ h₃ h₄ h₅ h₆) :
     ((⟨⟨⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩, h₅⟩, h₆⟩ : A →⋆ₐ[R] B) : A → B) = f :=
   rfl
 
 -- this is probably the more useful lemma for Lean 4 and should likely replace `coe_mk` above
-@[simp]
+@[defeq, simp]
 theorem coe_mk' (f : A →ₐ[R] B) (h) :
     ((⟨f, h⟩ : A →⋆ₐ[R] B) : A → B) = f :=
   rfl
@@ -755,7 +757,7 @@ theorem symm_symm (e : A ≃⋆ₐ[R] B) : e.symm.symm = e := rfl
 theorem symm_bijective : Function.Bijective (symm : (A ≃⋆ₐ[R] B) → B ≃⋆ₐ[R] A) :=
   Function.bijective_iff_has_inverse.mpr ⟨_, symm_symm, symm_symm⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (e h) : ⇑(⟨e, h⟩ : A ≃⋆ₐ[R] B) = e := rfl
 
 @[simp]
@@ -934,6 +936,7 @@ instance aut : Group (R ≃⋆ₐ[S] R) where
 
 @[simp] theorem one_apply (x : R) : (1 : R ≃⋆ₐ[S] R) x = x := rfl
 
+@[defeq]
 theorem aut_inv (f : R ≃⋆ₐ[S] R) : f⁻¹ = f.symm := rfl
 
 @[simp] theorem coe_pow (f : R ≃⋆ₐ[S] R) (n : ℕ) :

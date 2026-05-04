@@ -65,6 +65,7 @@ instance : LieRing (⨁ i, ℒ i) where
   lie_self _ := by simp
   leibniz_lie _ _ _ := by simp
 
+@[defeq]
 lemma bracket_apply_apply (x y : ⨁ i, ℒ i) :
     ⁅x, y⁆ =
       decomposeLinearEquiv ℒ ⁅(decomposeLinearEquiv ℒ).symm x, (decomposeLinearEquiv ℒ).symm y⁆ :=

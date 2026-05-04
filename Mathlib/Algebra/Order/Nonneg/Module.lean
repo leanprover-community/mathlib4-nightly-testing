@@ -36,11 +36,11 @@ variable [SMul R S]
 instance instSMul : SMul R≥0 S where
   smul c x := c.val • x
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_smul (a : R≥0) (x : S) : (a : R) • x = a • x :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma mk_smul (a) (ha) (x : S) : (⟨a, ha⟩ : R≥0) • x = a • x :=
   rfl
 

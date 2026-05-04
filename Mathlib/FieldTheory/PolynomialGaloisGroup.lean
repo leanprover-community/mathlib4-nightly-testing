@@ -153,6 +153,7 @@ instance galActionAux : MulAction p.Gal (rootSet p p.SplittingField) where
 instance smul [Fact ((p.map (algebraMap F E)).Splits)] : SMul p.Gal (rootSet p E) where
   smul ϕ x := rootsEquivRoots p E (ϕ • (rootsEquivRoots p E).symm x)
 
+@[defeq]
 theorem smul_def [Fact ((p.map (algebraMap F E)).Splits)] (ϕ : p.Gal) (x : rootSet p E) :
     ϕ • x = rootsEquivRoots p E (ϕ • (rootsEquivRoots p E).symm x) :=
   rfl

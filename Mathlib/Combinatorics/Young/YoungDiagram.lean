@@ -112,7 +112,7 @@ instance : Max YoungDiagram where
         rw [Finset.coe_union]
         exact μ.isLowerSet.union ν.isLowerSet }
 
-@[simp]
+@[defeq, simp]
 theorem cells_sup (μ ν : YoungDiagram) : (μ ⊔ ν).cells = μ.cells ∪ ν.cells :=
   rfl
 
@@ -131,7 +131,7 @@ instance : Min YoungDiagram where
         rw [Finset.coe_inter]
         exact μ.isLowerSet.inter ν.isLowerSet }
 
-@[simp]
+@[defeq, simp]
 theorem cells_inf (μ ν : YoungDiagram) : (μ ⊓ ν).cells = μ.cells ∩ ν.cells :=
   rfl
 
@@ -155,7 +155,7 @@ instance : OrderBot YoungDiagram where
     intro y
     simp only [mem_mk, Finset.notMem_empty] at y
 
-@[simp]
+@[defeq, simp]
 theorem cells_bot : (⊥ : YoungDiagram).cells = ∅ :=
   rfl
 

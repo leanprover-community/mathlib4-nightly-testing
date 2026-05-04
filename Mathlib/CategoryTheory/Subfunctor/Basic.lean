@@ -98,14 +98,16 @@ lemma le_def (S T : Subfunctor F) : S ≤ T ↔ ∀ U, S.obj U ≤ T.obj U := If
 
 variable (F)
 
-@[simp] lemma top_obj (i : C) : (⊤ : Subfunctor F).obj i = ⊤ := rfl
-@[simp] lemma bot_obj (i : C) : (⊥ : Subfunctor F).obj i = ⊥ := rfl
+@[defeq, simp] lemma top_obj (i : C) : (⊤ : Subfunctor F).obj i = ⊤ := rfl
+@[defeq, simp] lemma bot_obj (i : C) : (⊥ : Subfunctor F).obj i = ⊥ := rfl
 
 variable {F}
 
+@[defeq]
 lemma sSup_obj (S : Set (Subfunctor F)) (U : C) :
     (sSup S).obj U = sSup (Set.image (fun T ↦ T.obj U) S) := rfl
 
+@[defeq]
 lemma sInf_obj (S : Set (Subfunctor F)) (U : C) :
     (sInf S).obj U = sInf (Set.image (fun T ↦ T.obj U) S) := rfl
 
@@ -119,11 +121,11 @@ lemma iInf_obj {ι : Sort*} (S : ι → Subfunctor F) (U : C) :
     (⨅ i, S i).obj U = ⋂ i, (S i).obj U := by
   simp [iInf, sInf_obj]
 
-@[simp]
+@[defeq, simp]
 lemma max_obj (S T : Subfunctor F) (i : C) :
     (S ⊔ T).obj i = S.obj i ∪ T.obj i := rfl
 
-@[simp]
+@[defeq, simp]
 lemma min_obj (S T : Subfunctor F) (i : C) :
     (S ⊓ T).obj i = S.obj i ∩ T.obj i := rfl
 

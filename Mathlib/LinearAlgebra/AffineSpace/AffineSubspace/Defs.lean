@@ -611,7 +611,7 @@ theorem span_iUnion {ι : Type*} (s : ι → Set P) :
 
 variable (P) in
 /-- `⊤`, coerced to a set, is the whole set of points. -/
-@[simp]
+@[defeq, simp]
 theorem top_coe : ((⊤ : AffineSubspace k P) : Set P) = Set.univ :=
   rfl
 
@@ -637,7 +637,7 @@ theorem direction_top : (⊤ : AffineSubspace k P).direction = ⊤ := by
   rwa [vadd_vsub] at hpv
 
 /-- `⊥`, coerced to a set, is the empty set. -/
-@[simp]
+@[defeq, simp]
 theorem bot_coe : ((⊥ : AffineSubspace k P) : Set P) = ∅ :=
   rfl
 
@@ -740,7 +740,7 @@ theorem direction_eq_top_iff_of_nonempty {s : AffineSubspace k P} (h : (s : Set 
 
 /-- The inf of two affine subspaces, coerced to a set, is the intersection of the two sets of
 points. -/
-@[simp]
+@[defeq, simp]
 theorem coe_inf (s₁ s₂ : AffineSubspace k P) : (s₁ ⊓ s₂ : Set P) = (s₁ : Set P) ∩ s₂ :=
   rfl
 
@@ -771,7 +771,7 @@ theorem direction_inf_of_mem_inf {s₁ s₂ : AffineSubspace k P} {p : P} (h : p
     (s₁ ⊓ s₂).direction = s₁.direction ⊓ s₂.direction :=
   direction_inf_of_mem ((mem_inf_iff p s₁ s₂).1 h).1 ((mem_inf_iff p s₁ s₂).1 h).2
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sInf (t : Set (AffineSubspace k P)) :
     ((sInf t : AffineSubspace k P) : Set P) = ⋂ s ∈ t, s :=
   rfl

@@ -80,6 +80,7 @@ instance : AddCommMonoid (SetSemiring α) where
   add_comm := union_comm
   nsmul := nsmulRec
 
+@[defeq]
 theorem zero_def : (0 : SetSemiring α) = Set.up ∅ :=
   rfl
 
@@ -87,10 +88,11 @@ theorem zero_def : (0 : SetSemiring α) = Set.up ∅ :=
 theorem down_zero : (0 : SetSemiring α).down = ∅ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem _root_.Set.up_empty : (∅ : Set α).up = 0 :=
   rfl
 
+@[defeq]
 theorem add_def (s t : SetSemiring α) : s + t = (s.down ∪ t.down).up :=
   rfl
 
@@ -118,6 +120,7 @@ instance : NonUnitalNonAssocSemiring (SetSemiring α) where
   left_distrib := fun _ _ _ => mul_union
   right_distrib := fun _ _ _ => union_mul
 
+@[defeq]
 theorem mul_def (s t : SetSemiring α) : s * t = (s.down * t.down).up :=
   rfl
 
@@ -150,6 +153,7 @@ variable [One α]
 
 instance : One (SetSemiring α) where one := (1 : Set α).up
 
+@[defeq]
 theorem one_def : (1 : SetSemiring α) = Set.up 1 :=
   rfl
 
@@ -157,7 +161,7 @@ theorem one_def : (1 : SetSemiring α) = Set.up 1 :=
 theorem down_one : (1 : SetSemiring α).down = 1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem _root_.Set.up_one : (1 : Set α).up = 1 :=
   rfl
 

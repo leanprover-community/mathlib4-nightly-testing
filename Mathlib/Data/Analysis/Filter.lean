@@ -57,6 +57,7 @@ injective.
 instance : CoeFun (CFilter α σ) fun _ ↦ σ → α :=
   ⟨CFilter.f⟩
 
+@[defeq]
 theorem coe_mk (f pt inf h₁ h₂ a) : (@CFilter.mk α σ _ f pt inf h₁ h₂) a = f a :=
   rfl
 

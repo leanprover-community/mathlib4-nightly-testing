@@ -132,9 +132,11 @@ noncomputable abbrev normedAlgebraAux : NormedAlgebra 𝕜 (Unitization 𝕜 A) 
 
 attribute [local instance] Unitization.normedAlgebraAux
 
+@[defeq]
 theorem norm_def (x : Unitization 𝕜 A) : ‖x‖ = ‖splitMul 𝕜 A x‖ :=
   rfl
 
+@[defeq]
 theorem nnnorm_def (x : Unitization 𝕜 A) : ‖x‖₊ = ‖splitMul 𝕜 A x‖₊ :=
   rfl
 

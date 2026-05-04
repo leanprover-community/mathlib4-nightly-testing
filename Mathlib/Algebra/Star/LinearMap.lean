@@ -48,7 +48,7 @@ instance intrinsicStar : Star (WithConv (E →ₗ[R] F)) where
     map_add' := by simp
     map_smul' := by simp }
 
-@[simp] theorem intrinsicStar_apply (f : WithConv (E →ₗ[R] F)) (x : E) :
+@[defeq, simp] theorem intrinsicStar_apply (f : WithConv (E →ₗ[R] F)) (x : E) :
     (star f) x = star (f (star x)) := rfl
 
 /-- The involutive intrinsic star structure on linear maps. -/

@@ -40,6 +40,7 @@ instance instStarRing : StarRing (CliffordAlgebra Q) where
   star_mul x y := by simp only [map_mul, reverse.map_mul]
   star_add x y := by simp only [map_add]
 
+@[defeq]
 theorem star_def (x : CliffordAlgebra Q) : star x = reverse (involute x) :=
   rfl
 

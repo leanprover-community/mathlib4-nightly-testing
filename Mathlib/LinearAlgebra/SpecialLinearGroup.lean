@@ -130,22 +130,23 @@ section CoeLemmas
 
 variable (A B : SpecialLinearGroup R V)
 
+@[defeq]
 theorem coe_mk (A : V ≃ₗ[R] V) (h : A.det = 1) : ↑(⟨A, h⟩ : SpecialLinearGroup R V) = A :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mul : (A * B : SpecialLinearGroup R V) = (A * B : V ≃ₗ[R] V) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_div : (A / B : SpecialLinearGroup R V) = (A / B : V ≃ₗ[R] V) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_inv : (A : SpecialLinearGroup R V)⁻¹ = (A⁻¹ : V ≃ₗ[R] V) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_one : (1 : SpecialLinearGroup R V) = (1 : V ≃ₗ[R] V) :=
   rfl
 
@@ -153,11 +154,11 @@ theorem coe_one : (1 : SpecialLinearGroup R V) = (1 : V ≃ₗ[R] V) :=
 theorem det_coe : LinearEquiv.det (A : V ≃ₗ[R] V) = 1 :=
   A.prop
 
-@[simp]
+@[defeq, simp]
 theorem coe_pow (m : ℕ) : (A ^ m : SpecialLinearGroup R V) = (A : V ≃ₗ[R] V) ^ m :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_zpow (m : ℤ) : (A ^ m : SpecialLinearGroup R V) = (A : V ≃ₗ[R] V) ^ m :=
   rfl
 

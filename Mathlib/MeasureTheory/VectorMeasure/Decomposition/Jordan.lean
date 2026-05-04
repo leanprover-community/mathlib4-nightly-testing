@@ -91,30 +91,31 @@ instance instSMul : SMul ℝ≥0 (JordanDecomposition α) where
 instance instSMulReal : SMul ℝ (JordanDecomposition α) where
   smul r j := if 0 ≤ r then r.toNNReal • j else -((-r).toNNReal • j)
 
-@[simp]
+@[defeq, simp]
 theorem zero_posPart : (0 : JordanDecomposition α).posPart = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_negPart : (0 : JordanDecomposition α).negPart = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_posPart : (-j).posPart = j.negPart :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_negPart : (-j).negPart = j.posPart :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem smul_posPart (r : ℝ≥0) : (r • j).posPart = r • j.posPart :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem smul_negPart (r : ℝ≥0) : (r • j).negPart = r • j.negPart :=
   rfl
 
+@[defeq]
 theorem real_smul_def (r : ℝ) (j : JordanDecomposition α) :
     r • j = if 0 ≤ r then r.toNNReal • j else -((-r).toNNReal • j) :=
   rfl

@@ -85,7 +85,7 @@ instance : CompactlySupportedContinuousMapClass C_c(α, β) α β where
   map_continuous f := f.continuous_toFun
   hasCompactSupport f := f.hasCompactSupport'
 
-@[simp]
+@[defeq, simp]
 theorem coe_toContinuousMap (f : C_c(α, β)) : (f.toContinuousMap : α → β) = f :=
   rfl
 
@@ -93,7 +93,7 @@ theorem coe_toContinuousMap (f : C_c(α, β)) : (f.toContinuousMap : α → β) 
 theorem ext {f g : C_c(α, β)} (h : ∀ x, f x = g x) : f = g :=
   DFunLike.ext _ _ h
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : C(α, β)) (h : HasCompactSupport f) : ⇑(⟨f, h⟩ : C_c(α, β)) = f :=
   rfl
 
@@ -206,12 +206,13 @@ instance [Zero β] [TopologicalSpace γ] [SMulZeroClass γ β] [ContinuousSMul �
   smul f g :=
     ⟨⟨fun x ↦ f x • g x, (map_continuous f).smul (map_continuous g)⟩, g.hasCompactSupport.smul_left⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_smulc [Zero β] [TopologicalSpace γ] [SMulZeroClass γ β] [ContinuousSMul γ β]
     {F : Type*} [FunLike F α γ] [ContinuousMapClass F α γ] (f : F) (g : C_c(α, β)) :
     ⇑(f • g) = fun x => f x • g x :=
   rfl
 
+@[defeq]
 theorem smulc_apply [Zero β] [TopologicalSpace γ] [SMulZeroClass γ β] [ContinuousSMul γ β]
     {F : Type*} [FunLike F α γ] [ContinuousMapClass F α γ] (f : F) (g : C_c(α, β)) (x : α) :
     (f • g) x = f x • g x :=
@@ -247,11 +248,12 @@ instance [Zero β] {R : Type*} [SMulZeroClass R β] [ContinuousConstSMul R β] :
     SMul R C_c(α, β) := fast_instance%
   ⟨fun r f => ⟨⟨r • ⇑f, (map_continuous f).const_smul r⟩, HasCompactSupport.smul_left f.2⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_smul [Zero β] {R : Type*} [SMulZeroClass R β] [ContinuousConstSMul R β] (r : R)
     (f : C_c(α, β)) : ⇑(r • f) = r • ⇑f :=
   rfl
 
+@[defeq]
 theorem smul_apply [Zero β] {R : Type*} [SMulZeroClass R β] [ContinuousConstSMul R β] (r : R)
     (f : C_c(α, β)) (x : α) : (r • f) x = r • f x :=
   rfl
@@ -283,10 +285,11 @@ instance : Neg C_c(α, β) where
              continuous_toFun := map_continuous (-f.1)
              hasCompactSupport' := by simpa [HasCompactSupport, tsupport] using f.2 }
 
-@[simp]
+@[defeq, simp]
 theorem coe_neg : ⇑(-f) = -f :=
   rfl
 
+@[defeq]
 theorem neg_apply : (-f) x = -f x :=
   rfl
 
@@ -296,10 +299,11 @@ instance : Sub C_c(α, β) where
                hasCompactSupport' := by
                  simpa [sub_eq_add_neg] using HasCompactSupport.add f.2 (-g).2 }
 
-@[simp]
+@[defeq, simp]
 theorem coe_sub : ⇑(f - g) = f - g :=
   rfl
 
+@[defeq]
 theorem sub_apply : (f - g) x = f x - g x :=
   rfl
 
@@ -400,10 +404,11 @@ instance : Star C_c(α, β) where
         rw [support_star]
         exact f.2 }
 
-@[simp]
+@[defeq, simp]
 theorem coe_star (f : C_c(α, β)) : ⇑(star f) = star (⇑f) :=
   rfl
 
+@[defeq]
 theorem star_apply (f : C_c(α, β)) (x : α) : (star f) x = star (f x) :=
   rfl
 
@@ -463,9 +468,9 @@ instance instSup : Max C_c(α, β) where max f g :=
     continuous_toFun := Continuous.sup f.continuous g.continuous
     hasCompactSupport' := f.hasCompactSupport.sup g.hasCompactSupport }
 
-@[simp, norm_cast] lemma coe_sup (f g : C_c(α, β)) : ⇑(f ⊔ g) = ⇑f ⊔ g := rfl
+@[defeq, simp, norm_cast] lemma coe_sup (f g : C_c(α, β)) : ⇑(f ⊔ g) = ⇑f ⊔ g := rfl
 
-@[simp] lemma sup_apply (f g : C_c(α, β)) (a : α) : (f ⊔ g) a = f a ⊔ g a := rfl
+@[defeq, simp] lemma sup_apply (f g : C_c(α, β)) (a : α) : (f ⊔ g) a = f a ⊔ g a := rfl
 
 instance semilatticeSup : SemilatticeSup C_c(α, β) := fast_instance%
   DFunLike.coe_injective.semilatticeSup _ .rfl .rfl coe_sup
@@ -489,9 +494,9 @@ instance instInf : Min C_c(α, β) where min f g :=
     continuous_toFun := Continuous.inf f.continuous g.continuous
     hasCompactSupport' := f.hasCompactSupport.inf g.hasCompactSupport }
 
-@[simp, norm_cast] lemma coe_inf (f g : C_c(α, β)) : ⇑(f ⊓ g) = ⇑f ⊓ g := rfl
+@[defeq, simp, norm_cast] lemma coe_inf (f g : C_c(α, β)) : ⇑(f ⊓ g) = ⇑f ⊓ g := rfl
 
-@[simp] lemma inf_apply (f g : C_c(α, β)) (a : α) : (f ⊓ g) a = f a ⊓ g a := rfl
+@[defeq, simp] lemma inf_apply (f g : C_c(α, β)) (a : α) : (f ⊓ g) a = f a ⊓ g a := rfl
 
 instance semilatticeInf : SemilatticeInf C_c(α, β) := fast_instance%
   DFunLike.coe_injective.semilatticeInf _ .rfl .rfl coe_inf

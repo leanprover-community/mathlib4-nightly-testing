@@ -86,11 +86,11 @@ initialize_simps_projections GradedAlgHom (toFun → apply)
 @[simp] theorem coe_ofClass {F : Type*} [FunLike F A B] [GradedFunLike F 𝒜 ℬ]
     [AlgHomClass F R A B] (f : F) : ⇑(.ofClass f : 𝒜 →ₐᵍ[R] ℬ) = f := rfl
 
-@[simp] theorem coe_toAlgHom (f : 𝒜 →ₐᵍ[R] ℬ) : ⇑f.toAlgHom = f := rfl
+@[defeq, simp] theorem coe_toAlgHom (f : 𝒜 →ₐᵍ[R] ℬ) : ⇑f.toAlgHom = f := rfl
 
-@[simp] theorem coe_mk {f : A →ₐ[R] B} (h) : ((⟨f, h⟩ : 𝒜 →ₐᵍ[R] ℬ) : A → B) = f := rfl
+@[defeq, simp] theorem coe_mk {f : A →ₐ[R] B} (h) : ((⟨f, h⟩ : 𝒜 →ₐᵍ[R] ℬ) : A → B) = f := rfl
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_mks {f : A → B} (h₁ h₂ h₃ h₄ h₅ h₆) :
     ⇑(⟨⟨⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩, h₅⟩, h₆⟩ : 𝒜 →ₐᵍ[R] ℬ) = f := rfl
 
@@ -135,7 +135,7 @@ protected theorem congr_arg (f : 𝒜 →ₐᵍ[R] ℬ) {x y : A} (h : x = y) : 
 theorem ext {f₁ f₂ : 𝒜 →ₐᵍ[R] ℬ} (H : ∀ x, f₁ x = f₂ x) : f₁ = f₂ :=
   DFunLike.ext _ _ H
 
-@[simp]
+@[defeq, simp]
 theorem mk_coe {f : 𝒜 →ₐᵍ[R] ℬ} (h₁ h₂ h₃ h₄ h₅ h₆) :
     (⟨⟨⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩, h₅⟩, h₆⟩ : 𝒜 →ₐᵍ[R] ℬ) = f :=
   rfl

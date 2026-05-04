@@ -23,6 +23,7 @@ instance : SemilatticeSup (TwoSidedIdeal R) where
   le_sup_right I J := by rw [ringCon_le_iff]; exact le_sup_right
   sup_le I J K h1 h2 := by rw [ringCon_le_iff] at h1 h2 ⊢; exact sup_le h1 h2
 
+@[defeq]
 lemma sup_ringCon (I J : TwoSidedIdeal R) : (I ⊔ J).ringCon = I.ringCon ⊔ J.ringCon := rfl
 
 section sup
@@ -65,6 +66,7 @@ instance : SemilatticeInf (TwoSidedIdeal R) where
   inf_le_right I J := by rw [ringCon_le_iff]; exact inf_le_right
   le_inf I J K h1 h2 := by rw [ringCon_le_iff] at h1 h2 ⊢; exact le_inf h1 h2
 
+@[defeq]
 lemma inf_ringCon (I J : TwoSidedIdeal R) : (I ⊓ J).ringCon = I.ringCon ⊓ J.ringCon := rfl
 
 lemma mem_inf {I J : TwoSidedIdeal R} {x : R} :
@@ -74,6 +76,7 @@ lemma mem_inf {I J : TwoSidedIdeal R} {x : R} :
 instance : SupSet (TwoSidedIdeal R) where
   sSup s := { ringCon := sSup <| TwoSidedIdeal.ringCon '' s }
 
+@[defeq]
 lemma sSup_ringCon (S : Set (TwoSidedIdeal R)) :
     (sSup S).ringCon = sSup (TwoSidedIdeal.ringCon '' S) := rfl
 
@@ -87,6 +90,7 @@ instance : CompleteSemilatticeSup (TwoSidedIdeal R) where
 instance : InfSet (TwoSidedIdeal R) where
   sInf s := { ringCon := sInf <| TwoSidedIdeal.ringCon '' s }
 
+@[defeq]
 lemma sInf_ringCon (S : Set (TwoSidedIdeal R)) :
     (sInf S).ringCon = sInf (TwoSidedIdeal.ringCon '' S) := rfl
 
@@ -108,6 +112,7 @@ lemma mem_sInf {S : Set (TwoSidedIdeal R)} {x : R} :
 instance : Top (TwoSidedIdeal R) where
   top := { ringCon := ⊤ }
 
+@[defeq]
 lemma top_ringCon : (⊤ : TwoSidedIdeal R).ringCon = ⊤ := rfl
 
 @[simp]
@@ -116,6 +121,7 @@ lemma mem_top {x : R} : x ∈ (⊤ : TwoSidedIdeal R) := trivial
 instance : Bot (TwoSidedIdeal R) where
   bot := { ringCon := ⊥ }
 
+@[defeq]
 lemma bot_ringCon : (⊥ : TwoSidedIdeal R).ringCon = ⊥ := rfl
 
 @[simp]

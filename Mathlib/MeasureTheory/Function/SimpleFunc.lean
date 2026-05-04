@@ -71,8 +71,9 @@ theorem finite_range (f : α →ₛ β) : (Set.range f).Finite :=
 theorem measurableSet_fiber (f : α →ₛ β) (x : β) : MeasurableSet (f ⁻¹' {x}) :=
   f.measurableSet_fiber' x
 
-@[simp] theorem coe_mk (f : α → β) (h h') : ⇑(mk f h h') = f := rfl
+@[defeq, simp] theorem coe_mk (f : α → β) (h h') : ⇑(mk f h h') = f := rfl
 
+@[defeq]
 theorem apply_mk (f : α → β) (h h') (x : α) : SimpleFunc.mk f h h' x = f x :=
   rfl
 
@@ -390,7 +391,7 @@ instance instInf [Min β] : Min (α →ₛ β) :=
 instance instLE [LE β] : LE (α →ₛ β) :=
   ⟨fun f g => ∀ a, f a ≤ g a⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem const_one [One β] : const α (1 : β) = 1 :=
   rfl
 
@@ -550,6 +551,7 @@ instance instModule [Semiring K] [AddCommMonoid β] [Module K β] : Module K (α
   fast_instance% Function.Injective.module K ⟨⟨fun f => show α → β from f, coe_zero⟩, coe_add⟩
     coe_injective coe_smul
 
+@[defeq]
 theorem smul_eq_map [SMul K β] (k : K) (f : α →ₛ β) : k • f = f.map (k • ·) :=
   rfl
 
@@ -630,7 +632,7 @@ instance [CommSemiring K] [Semiring β] [Algebra K β] : Algebra K (α →ₛ β
   commutes' _ _ := ext fun _ ↦ Algebra.commutes ..
   smul_def' _ _ := ext fun _ ↦ Algebra.smul_def ..
 
-@[simp]
+@[defeq, simp]
 lemma const_algebraMap [CommSemiring K] [Semiring β] [Algebra K β] (k : K) :
     const α (algebraMap K β k) = algebraMap K (α →ₛ β) k := rfl
 

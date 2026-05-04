@@ -249,6 +249,7 @@ instance : Top (AbstractSimplicialComplex ι) where
     { (⊤ : PreAbstractSimplicialComplex ι) with
       singleton_mem _ := Finset.singleton_nonempty _ }
 
+@[defeq]
 lemma top_toPreAbstractSimplicialComplex :
     (⊤ : AbstractSimplicialComplex ι).toPreAbstractSimplicialComplex = ⊤ :=
   rfl

@@ -60,9 +60,9 @@ instance : FunLike (Nucleus X) X X where
 /-- See Note [custom simps projection] -/
 def Simps.apply (n : Nucleus X) : X → X := n
 
-@[simp] lemma toFun_eq_coe (n : Nucleus X) : n.toFun = n := rfl
-@[simp] lemma coe_toInfHom (n : Nucleus X) : ⇑n.toInfHom = n := rfl
-@[simp] lemma coe_mk (f : InfHom X X) (h1 h2) : ⇑(mk f h1 h2) = f := rfl
+@[defeq, simp] lemma toFun_eq_coe (n : Nucleus X) : n.toFun = n := rfl
+@[defeq, simp] lemma coe_toInfHom (n : Nucleus X) : ⇑n.toInfHom = n := rfl
+@[defeq, simp] lemma coe_mk (f : InfHom X X) (h1 h2) : ⇑(mk f h1 h2) = f := rfl
 
 initialize_simps_projections Nucleus (toFun → apply)
 
@@ -108,8 +108,8 @@ instance : Min (Nucleus X) where
     le_apply' x := le_inf m.le_apply n.le_apply
   }
 
-@[simp, norm_cast] lemma coe_inf (m n : Nucleus X) : ⇑(m ⊓ n) = ⇑m ⊓ ⇑n := rfl
-@[simp] lemma inf_apply (m n : Nucleus X) (x : X) : (m ⊓ n) x = m x ⊓ n x := rfl
+@[defeq, simp, norm_cast] lemma coe_inf (m n : Nucleus X) : ⇑(m ⊓ n) = ⇑m ⊓ ⇑n := rfl
+@[defeq, simp] lemma inf_apply (m n : Nucleus X) (x : X) : (m ⊓ n) x = m x ⊓ n x := rfl
 
 instance : SemilatticeInf (Nucleus X) :=
   DFunLike.coe_injective.semilatticeInf _ .rfl .rfl coe_inf
@@ -123,7 +123,7 @@ instance instBot : OrderBot (Nucleus X) where
   bot_le n _ := n.le_apply
 
 @[simp, norm_cast] lemma coe_bot : ⇑(⊥ : Nucleus X) = id := rfl
-@[simp] lemma bot_apply (x : X) : (⊥ : Nucleus X) x = x := rfl
+@[defeq, simp] lemma bot_apply (x : X) : (⊥ : Nucleus X) x = x := rfl
 
 variable [OrderTop X]
 
@@ -138,8 +138,8 @@ instance instTop : Top (Nucleus X) where
   top.le_apply' := by simp
   top.map_inf' := by simp
 
-@[simp, norm_cast] lemma coe_top : ⇑(⊤ : Nucleus X) = ⊤ := rfl
-@[simp] lemma top_apply (x : X) : (⊤ : Nucleus X) x = ⊤ := rfl
+@[defeq, simp, norm_cast] lemma coe_top : ⇑(⊤ : Nucleus X) = ⊤ := rfl
+@[defeq, simp] lemma top_apply (x : X) : (⊤ : Nucleus X) x = ⊤ := rfl
 
 instance : BoundedOrder (Nucleus X) where
   bot_le _ _ := le_apply
@@ -162,7 +162,7 @@ instance : InfSet (Nucleus X) where
     idempotent' x := iInf₂_mono fun f hf ↦ (f.monotone <| iInf₂_le f hf).trans_eq (f.idempotent _)
     le_apply' x := by simp [le_apply] }
 
-@[simp] lemma sInf_apply (s : Set (Nucleus X)) (x : X) : sInf s x = ⨅ j ∈ s, j x := rfl
+@[defeq, simp] lemma sInf_apply (s : Set (Nucleus X)) (x : X) : sInf s x = ⨅ j ∈ s, j x := rfl
 
 @[simp] lemma iInf_apply {ι : Type*} (f : ι → (Nucleus X)) (x : X) : iInf f x = ⨅ j, f j x := by
   rw [iInf, sInf_apply, iInf_range]
@@ -221,7 +221,7 @@ instance : HImp (Nucleus X) where
     le_apply' := by
       simpa using fun _ _ h ↦ inf_le_of_left_le <| h.trans n.le_apply }
 
-@[simp] lemma himp_apply (m n : Nucleus X) (x : X) : (m ⇨ n) x = ⨅ y ≥ x, m y ⇨ n y := rfl
+@[defeq, simp] lemma himp_apply (m n : Nucleus X) (x : X) : (m ⇨ n) x = ⨅ y ≥ x, m y ⇨ n y := rfl
 
 instance : HeytingAlgebra (Nucleus X) where
   compl m := m ⇨ ⊥

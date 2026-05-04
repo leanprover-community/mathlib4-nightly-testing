@@ -326,7 +326,7 @@ instance : FunLike (S₁ →◃ S₂) S₁ S₂ where
   coe := toFun
   coe_injective' | ⟨_, _⟩, ⟨_, _⟩, rfl => rfl
 
-@[simp] theorem toFun_eq_coe (f : S₁ →◃ S₂) : f.toFun = f := rfl
+@[defeq, simp] theorem toFun_eq_coe (f : S₁ →◃ S₂) : f.toFun = f := rfl
 
 @[simp]
 theorem map_act (f : S₁ →◃ S₂) {x y : S₁} : f (x ◃ y) = f x ◃ f y :=

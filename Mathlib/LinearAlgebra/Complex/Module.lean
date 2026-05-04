@@ -105,7 +105,7 @@ instance (priority := 95) instAlgebraOfReal [CommSemiring R] [Algebra R ℝ] : A
 instance : StarModule ℝ ℂ :=
   ⟨fun r x => by simp only [star_def, star_trivial, real_smul, map_mul, conj_ofReal]⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_algebraMap : (algebraMap ℝ ℂ : ℝ → ℂ) = ((↑) : ℝ → ℂ) :=
   rfl
 
@@ -189,7 +189,7 @@ example {A : Type*} [Ring A] [inst : Algebra ℂ A] :
     (inst.complexToReal).toModule = (inst.toModule).complexToReal := by
   with_reducible_and_instances rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem Complex.coe_smul {E : Type*} [AddCommGroup E] [Module ℂ E] (x : ℝ) (y : E) :
     (x : ℂ) • y = x • y :=
   rfl

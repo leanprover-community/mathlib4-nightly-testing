@@ -63,9 +63,9 @@ instance instOneLePart : OneLePart α where
 instance instLeOnePart : LeOnePart α where
   leOnePart a := a⁻¹ ⊔ 1
 
-@[to_additive] lemma leOnePart_def (a : α) : a⁻ᵐ = a⁻¹ ⊔ 1 := rfl
+@[defeq, to_additive] lemma leOnePart_def (a : α) : a⁻ᵐ = a⁻¹ ⊔ 1 := rfl
 
-@[to_additive] lemma oneLePart_def (a : α) : a⁺ᵐ = a ⊔ 1 := rfl
+@[defeq, to_additive] lemma oneLePart_def (a : α) : a⁺ᵐ = a ⊔ 1 := rfl
 
 @[to_additive] lemma oneLePart_mono : Monotone (·⁺ᵐ : α → α) :=
   fun _a _b hab ↦ sup_le_sup_right hab _
@@ -106,7 +106,7 @@ lemma leOnePart_le_one' : a⁻ᵐ ≤ 1 ↔ a⁻¹ ≤ 1 := by simp [leOnePart]
 @[to_additive (attr := simp) posPart_pos] lemma one_lt_oneLePart (ha : 1 < a) : 1 < a⁺ᵐ := by
   rwa [oneLePart_eq_self.2 ha.le]
 
-@[to_additive (attr := simp)] lemma oneLePart_inv (a : α) : a⁻¹⁺ᵐ = a⁻ᵐ := rfl
+@[defeq, to_additive (attr := simp)] lemma oneLePart_inv (a : α) : a⁻¹⁺ᵐ = a⁻ᵐ := rfl
 
 @[to_additive (attr := simp)] lemma leOnePart_inv (a : α) : a⁻¹⁻ᵐ = a⁺ᵐ := by
   simp [oneLePart, leOnePart]
@@ -278,10 +278,10 @@ end LinearOrder
 namespace Pi
 variable {ι : Type*} {α : ι → Type*} [∀ i, Lattice (α i)] [∀ i, Group (α i)]
 
-@[to_additive (attr := simp)] lemma oneLePart_apply (f : ∀ i, α i) (i : ι) : f⁺ᵐ i = (f i)⁺ᵐ := rfl
-@[to_additive (attr := simp)] lemma leOnePart_apply (f : ∀ i, α i) (i : ι) : f⁻ᵐ i = (f i)⁻ᵐ := rfl
+@[defeq, to_additive (attr := simp)] lemma oneLePart_apply (f : ∀ i, α i) (i : ι) : f⁺ᵐ i = (f i)⁺ᵐ := rfl
+@[defeq, to_additive (attr := simp)] lemma leOnePart_apply (f : ∀ i, α i) (i : ι) : f⁻ᵐ i = (f i)⁻ᵐ := rfl
 
-@[to_additive (attr := push ←)] lemma oneLePart_def (f : ∀ i, α i) : f⁺ᵐ = fun i ↦ (f i)⁺ᵐ := rfl
-@[to_additive (attr := push ←)] lemma leOnePart_def (f : ∀ i, α i) : f⁻ᵐ = fun i ↦ (f i)⁻ᵐ := rfl
+@[defeq, to_additive (attr := push ←)] lemma oneLePart_def (f : ∀ i, α i) : f⁺ᵐ = fun i ↦ (f i)⁺ᵐ := rfl
+@[defeq, to_additive (attr := push ←)] lemma leOnePart_def (f : ∀ i, α i) : f⁻ᵐ = fun i ↦ (f i)⁻ᵐ := rfl
 
 end Pi

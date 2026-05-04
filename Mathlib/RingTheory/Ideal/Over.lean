@@ -95,6 +95,7 @@ variable (A : Type*) [CommSemiring A] {B C : Type*} [Semiring B] [Semiring C] [A
 /-- The ideal obtained by pulling back the ideal `P` from `B` to `A`. -/
 abbrev under : Ideal A := Ideal.comap (algebraMap A B) P
 
+@[defeq]
 theorem under_def : P.under A = Ideal.comap (algebraMap A B) P := rfl
 
 instance IsPrime.under [hP : P.IsPrime] : (P.under A).IsPrime :=

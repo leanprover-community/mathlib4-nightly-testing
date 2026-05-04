@@ -35,11 +35,11 @@ instance : Neg αˣ :=
 
 /-- Representing an element of a ring's unit group as an element of the ring commutes with
 mapping this element to its additive inverse. -/
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem val_neg (u : αˣ) : (↑(-u) : α) = -u :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_neg_one : ((-1 : αˣ) : α) = -1 :=
   rfl
 

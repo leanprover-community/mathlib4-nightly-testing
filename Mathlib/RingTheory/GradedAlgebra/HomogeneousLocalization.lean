@@ -120,15 +120,15 @@ variable [NegMemClass σ A] {𝒜 : ι → σ} (x : Submonoid A)
 instance : Neg (NumDenSameDeg 𝒜 x) where
   neg c := ⟨c.deg, ⟨-c.num, neg_mem c.num.2⟩, c.den, c.den_mem⟩
 
-@[simp]
+@[defeq, simp]
 theorem deg_neg (c : NumDenSameDeg 𝒜 x) : (-c).deg = c.deg :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem num_neg (c : NumDenSameDeg 𝒜 x) : ((-c).num : A) = -c.num :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem den_neg (c : NumDenSameDeg 𝒜 x) : ((-c).den : A) = c.den :=
   rfl
 
@@ -141,15 +141,15 @@ variable {𝒜 : ι → σ} (x : Submonoid A) {α : Type*} [SMul α A] [SMulMemC
 instance : SMul α (NumDenSameDeg 𝒜 x) where
   smul m c := ⟨c.deg, m • c.num, c.den, c.den_mem⟩
 
-@[simp]
+@[defeq, simp]
 theorem deg_smul (c : NumDenSameDeg 𝒜 x) (m : α) : (m • c).deg = c.deg :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem num_smul (c : NumDenSameDeg 𝒜 x) (m : α) : ((m • c).num : A) = m • c.num :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem den_smul (c : NumDenSameDeg 𝒜 x) (m : α) : ((m • c).den : A) = c.den :=
   rfl
 
@@ -166,15 +166,15 @@ instance : One (NumDenSameDeg 𝒜 x) where
       den := ⟨1, one_mem⟩
       den_mem := one_mem _ }
 
-@[simp]
+@[defeq, simp]
 theorem deg_one : (1 : NumDenSameDeg 𝒜 x).deg = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem num_one : ((1 : NumDenSameDeg 𝒜 x).num : A) = 1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem den_one : ((1 : NumDenSameDeg 𝒜 x).den : A) = 1 :=
   rfl
 
@@ -182,15 +182,15 @@ open GradedOne in
 instance : Zero (NumDenSameDeg 𝒜 x) where
   zero := ⟨0, 0, ⟨1, one_mem⟩, one_mem _⟩
 
-@[simp]
+@[defeq, simp]
 theorem deg_zero : (0 : NumDenSameDeg 𝒜 x).deg = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem num_zero : (0 : NumDenSameDeg 𝒜 x).num = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem den_zero : ((0 : NumDenSameDeg 𝒜 x).den : A) = 1 :=
   rfl
 
@@ -202,15 +202,15 @@ instance : Mul (NumDenSameDeg 𝒜 x) where
       den := ⟨p.den * q.den, mul_mem p.den.prop q.den.prop⟩
       den_mem := Submonoid.mul_mem _ p.den_mem q.den_mem }
 
-@[simp]
+@[defeq, simp]
 theorem deg_mul (c1 c2 : NumDenSameDeg 𝒜 x) : (c1 * c2).deg = c1.deg + c2.deg :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem num_mul (c1 c2 : NumDenSameDeg 𝒜 x) : ((c1 * c2).num : A) = c1.num * c2.num :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem den_mul (c1 c2 : NumDenSameDeg 𝒜 x) : ((c1 * c2).den : A) = c1.den * c2.den :=
   rfl
 
@@ -223,16 +223,16 @@ instance : Add (NumDenSameDeg 𝒜 x) where
       den := ⟨c1.den * c2.den, GradedMul.mul_mem c1.den.2 c2.den.2⟩
       den_mem := Submonoid.mul_mem _ c1.den_mem c2.den_mem }
 
-@[simp]
+@[defeq, simp]
 theorem deg_add (c1 c2 : NumDenSameDeg 𝒜 x) : (c1 + c2).deg = c1.deg + c2.deg :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem num_add (c1 c2 : NumDenSameDeg 𝒜 x) :
     ((c1 + c2).num : A) = c1.den * c2.num + c2.den * c1.num :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem den_add (c1 c2 : NumDenSameDeg 𝒜 x) : ((c1 + c2).den : A) = c1.den * c2.den :=
   rfl
 
@@ -250,15 +250,15 @@ instance : Pow (NumDenSameDeg 𝒜 x) ℕ where
         | zero => simp only [coe_gnpow, pow_zero, one_mem]
         | succ n ih => simpa only [pow_succ, coe_gnpow] using x.mul_mem ih c.den_mem⟩
 
-@[simp]
+@[defeq, simp]
 theorem deg_pow (c : NumDenSameDeg 𝒜 x) (n : ℕ) : (c ^ n).deg = n • c.deg :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem num_pow (c : NumDenSameDeg 𝒜 x) (n : ℕ) : ((c ^ n).num : A) = (c.num : A) ^ n :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem den_pow (c : NumDenSameDeg 𝒜 x) (n : ℕ) : ((c ^ n).den : A) = (c.den : A) ^ n :=
   rfl
 
@@ -418,15 +418,17 @@ instance : Mul (HomogeneousLocalization 𝒜 x) where
 
 instance : One (HomogeneousLocalization 𝒜 x) where one := Quotient.mk'' 1
 
-@[simp] lemma mk_one : mk (1 : NumDenSameDeg 𝒜 x) = 1 := rfl
+@[defeq, simp] lemma mk_one : mk (1 : NumDenSameDeg 𝒜 x) = 1 := rfl
 
 instance : Zero (HomogeneousLocalization 𝒜 x) where zero := Quotient.mk'' 0
 
-@[simp] lemma mk_zero : mk (0 : NumDenSameDeg 𝒜 x) = 0 := rfl
+@[defeq, simp] lemma mk_zero : mk (0 : NumDenSameDeg 𝒜 x) = 0 := rfl
 
+@[defeq]
 theorem zero_eq : (0 : HomogeneousLocalization 𝒜 x) = Quotient.mk'' 0 :=
   rfl
 
+@[defeq]
 theorem one_eq : (1 : HomogeneousLocalization 𝒜 x) = Quotient.mk'' 1 :=
   rfl
 
@@ -486,7 +488,7 @@ instance homogeneousLocalizationAlgebra :
   commutes' _ _ := mul_comm _ _
   smul_def' _ _ := rfl
 
-@[simp] lemma algebraMap_apply (y) :
+@[defeq, simp] lemma algebraMap_apply (y) :
     algebraMap (HomogeneousLocalization 𝒜 x) (Localization x) y = y.val := rfl
 
 lemma mk_eq_zero_of_num (f : NumDenSameDeg 𝒜 x) (h : f.num = 0) : mk f = 0 := by
@@ -509,6 +511,7 @@ def fromZeroRingHom : 𝒜 0 →+* HomogeneousLocalization 𝒜 x where
 instance : Algebra (𝒜 0) (HomogeneousLocalization 𝒜 x) :=
   (fromZeroRingHom 𝒜 x).toAlgebra
 
+@[defeq]
 lemma algebraMap_eq : algebraMap (𝒜 0) (HomogeneousLocalization 𝒜 x) = fromZeroRingHom 𝒜 x := rfl
 
 instance : IsScalarTower (𝒜 0) (HomogeneousLocalization 𝒜 x) (Localization x) :=

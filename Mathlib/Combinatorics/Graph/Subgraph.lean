@@ -377,7 +377,7 @@ instance : OrderBot (Graph α β) where
 instance : Inhabited (Graph α β) where
   default := ⊥
 
-@[simp, grind =] lemma noEdge_empty : Graph.noEdge (∅ : Set α) β = ⊥ := rfl
+@[defeq, simp, grind =] lemma noEdge_empty : Graph.noEdge (∅ : Set α) β = ⊥ := rfl
 
 @[simp] lemma vertexSet_bot : V((⊥ : Graph α β)) = ∅ := rfl
 

@@ -382,11 +382,12 @@ instance : EquivLike (α ≃ᵢ β) α β where
 instance : IsometryClass (IsometryEquiv α β) α β where
   isometry := isometry_toFun
 
+@[defeq]
 theorem coe_eq_toEquiv (h : α ≃ᵢ β) (a : α) : h a = h.toEquiv a := rfl
 
-@[simp] theorem coe_toEquiv (h : α ≃ᵢ β) : ⇑h.toEquiv = h := rfl
+@[defeq, simp] theorem coe_toEquiv (h : α ≃ᵢ β) : ⇑h.toEquiv = h := rfl
 
-@[simp] theorem coe_mk (e : α ≃ β) (h) : ⇑(mk e h) = e := rfl
+@[defeq, simp] theorem coe_mk (e : α ≃ β) (h) : ⇑(mk e h) = e := rfl
 
 protected theorem isometry (h : α ≃ᵢ β) : Isometry h :=
   h.isometry_toFun

@@ -230,45 +230,45 @@ section AddCommGroup
 
 variable [AddCommGroup E] [AddCommGroup F]
 
-@[simp]
+@[defeq, simp]
 theorem zero_fst : (0 : C⋆ᵐᵒᵈ(A, E × F)).fst = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_snd : (0 : C⋆ᵐᵒᵈ(A, E × F)).snd = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_fst : (x + y).fst = x.fst + y.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_snd : (x + y).snd = x.snd + y.snd :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_fst : (x - y).fst = x.fst - y.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_snd : (x - y).snd = x.snd - y.snd :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_fst : (-x).fst = -x.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_snd : (-x).snd = -x.snd :=
   rfl
 
 end AddCommGroup
 
-@[simp]
+@[defeq, simp]
 theorem smul_fst : (c • x).fst = c • x.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem smul_snd : (c • x).snd = c • x.snd :=
   rfl
 
@@ -320,25 +320,25 @@ section AddCommGroup
 
 variable [∀ i, AddCommGroup (E i)]
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply : (0 : C⋆ᵐᵒᵈ(A, Π i, E i)) i = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_apply : (x + y) i = x i + y i :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_apply : (x - y) i = x i - y i :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_apply : (-x) i = -x i :=
   rfl
 
 end AddCommGroup
 
-@[simp]
+@[defeq, simp]
 theorem smul_apply : (c • x) i = c • x i :=
   rfl
 

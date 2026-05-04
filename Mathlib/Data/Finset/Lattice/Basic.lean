@@ -75,24 +75,25 @@ instance : Lattice (Finset α) :=
     inf_le_left := fun _ _ _ h => (mem_ndinter.1 h).1
     inf_le_right := fun _ _ _ h => (mem_ndinter.1 h).2 }
 
-@[simp]
+@[defeq, simp]
 theorem sup_eq_union' : (Max.max : Finset α → Finset α → Finset α) = Union.union :=
   rfl
 
-@[grind =]
+@[defeq, grind =]
 theorem sup_eq_union {s t : Finset α} : s ⊔ t = s ∪ t :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem inf_eq_inter' : (Min.min : Finset α → Finset α → Finset α) = Inter.inter :=
   rfl
 
-@[grind =]
+@[defeq, grind =]
 theorem inf_eq_inter {s t : Finset α} : s ⊓ t = s ∩ t :=
   rfl
 
 /-! #### union -/
 
+@[defeq]
 theorem union_val_nd (s t : Finset α) : (s ∪ t).1 = ndunion s.1 t.1 :=
   rfl
 
@@ -187,6 +188,7 @@ theorem union_eq_union_iff_left : s ∪ t = s ∪ u ↔ t ⊆ s ∪ u ∧ u ⊆ 
 theorem union_eq_union_iff_right : s ∪ u = t ∪ u ↔ s ⊆ t ∪ u ∧ t ⊆ s ∪ u :=
   sup_eq_sup_iff_right
 
+@[defeq]
 theorem inter_val_nd (s₁ s₂ : Finset α) : (s₁ ∩ s₂).1 = ndinter s₁.1 s₂.1 :=
   rfl
 

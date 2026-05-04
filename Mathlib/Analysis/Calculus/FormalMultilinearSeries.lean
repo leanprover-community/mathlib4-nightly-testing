@@ -65,10 +65,10 @@ end Module
 
 namespace FormalMultilinearSeries
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (n : ℕ) : (0 : FormalMultilinearSeries 𝕜 E F) n = 0 := rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (p q : FormalMultilinearSeries 𝕜 E F) (n : ℕ) : (p + q) n = p n + q n := rfl
 
 @[simp]

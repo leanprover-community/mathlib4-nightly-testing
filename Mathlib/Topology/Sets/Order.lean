@@ -58,7 +58,7 @@ def toUpperSet (s : ClopenUpperSet α) : UpperSet α :=
 protected theorem ext {s t : ClopenUpperSet α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (s : Clopens α) (h) : (mk s h : Set α) = s :=
   rfl
 
@@ -80,19 +80,19 @@ instance : Lattice (ClopenUpperSet α) :=
 instance : BoundedOrder (ClopenUpperSet α) :=
   BoundedOrder.lift ((↑) : _ → Set α) (fun _ _ => id) rfl rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_sup (s t : ClopenUpperSet α) : (↑(s ⊔ t) : Set α) = ↑s ∪ ↑t :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_inf (s t : ClopenUpperSet α) : (↑(s ⊓ t) : Set α) = ↑s ∩ ↑t :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_top : (↑(⊤ : ClopenUpperSet α) : Set α) = univ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_bot : (↑(⊥ : ClopenUpperSet α) : Set α) = ∅ :=
   rfl
 

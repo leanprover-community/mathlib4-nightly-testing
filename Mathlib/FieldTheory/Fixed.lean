@@ -126,6 +126,7 @@ theorem smul_polynomial (m : M) (p : Polynomial (FixedPoints.subfield M F)) : m 
 
 instance : Algebra (FixedPoints.subfield M F) F := by infer_instance
 
+@[defeq]
 theorem coe_algebraMap :
     algebraMap (FixedPoints.subfield M F) F = Subfield.subtype (FixedPoints.subfield M F) :=
   rfl

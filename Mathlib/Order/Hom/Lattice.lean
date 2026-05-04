@@ -175,9 +175,9 @@ instance : FunLike (SupHom α β) α β where
 instance : SupHomClass (SupHom α β) α β where
   map_sup := SupHom.map_sup'
 
-@[to_dual (attr := simp)] lemma toFun_eq_coe (f : SupHom α β) : f.toFun = f := rfl
+@[defeq, to_dual (attr := simp)] lemma toFun_eq_coe (f : SupHom α β) : f.toFun = f := rfl
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 lemma coe_mk (f : α → β) (hf) : ⇑(mk f hf) = f := rfl
 
 @[to_dual (attr := ext)]
@@ -309,7 +309,7 @@ instance [OrderTop β] : OrderTop (SupHom α β) :=
 instance [BoundedOrder β] : BoundedOrder (SupHom α β) :=
   BoundedOrder.lift ((↑) : _ → α → β) (fun _ _ => id) rfl rfl
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 theorem coe_sup (f g : SupHom α β) : ⇑(f ⊔ g) = ⇑f ⊔ ⇑g :=
   rfl
 
@@ -321,7 +321,7 @@ theorem coe_bot [Bot β] : ⇑(⊥ : SupHom α β) = ⊥ :=
 theorem coe_top [Top β] : ⇑(⊤ : SupHom α β) = ⊤ :=
   rfl
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 theorem sup_apply (f g : SupHom α β) (a : α) : (f ⊔ g) a = f a ⊔ g a :=
   rfl
 
@@ -374,10 +374,11 @@ instance : LatticeHomClass (LatticeHom α β) α β where
   map_sup f := f.map_sup'
   map_inf f := f.map_inf'
 
+@[defeq]
 lemma toFun_eq_coe (f : LatticeHom α β) : f.toFun = f := rfl
 
-@[to_dual (attr := simp)] lemma coe_toSupHom (f : LatticeHom α β) : ⇑f.toSupHom = f := rfl
-@[simp] lemma coe_mk (f : SupHom α β) (hf) : ⇑(mk f hf) = f := rfl
+@[defeq, to_dual (attr := simp)] lemma coe_toSupHom (f : LatticeHom α β) : ⇑f.toSupHom = f := rfl
+@[defeq, simp] lemma coe_mk (f : SupHom α β) (hf) : ⇑(mk f hf) = f := rfl
 
 @[ext]
 theorem ext {f g : LatticeHom α β} (h : ∀ a, f a = g a) : f = g :=

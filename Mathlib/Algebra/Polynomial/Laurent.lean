@@ -122,6 +122,7 @@ section Semiring
 
 variable [Semiring R]
 
+@[defeq]
 theorem single_zero_one_eq_one : (.single 0 1 : R[T;T⁻¹]) = (1 : R[T;T⁻¹]) :=
   rfl
 
@@ -223,7 +224,7 @@ instance invertibleT (n : ℤ) : Invertible (T n : R[T;T⁻¹]) where
   invOf_mul_self := by rw [← T_add, neg_add_cancel, T_zero]
   mul_invOf_self := by rw [← T_add, add_neg_cancel, T_zero]
 
-@[simp]
+@[defeq, simp]
 theorem invOf_T (n : ℤ) : ⅟(T n : R[T;T⁻¹]) = T (-n) :=
   rfl
 
@@ -502,7 +503,7 @@ instance algebraPolynomial (R : Type*) [CommSemiring R] : Algebra R[X] R[T;T⁻�
 theorem algebraMap_X_pow (n : ℕ) : algebraMap R[X] R[T;T⁻¹] (X ^ n) = T n :=
   Polynomial.toLaurent_X_pow n
 
-@[simp]
+@[defeq, simp]
 theorem algebraMap_eq_toLaurent (f : R[X]) : algebraMap R[X] R[T;T⁻¹] f = toLaurent f :=
   rfl
 

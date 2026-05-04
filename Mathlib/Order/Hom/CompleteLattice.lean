@@ -223,10 +223,10 @@ instance : FunLike (sSupHom α β) α β where
 instance : sSupHomClass (sSupHom α β) α β where
   map_sSup := sSupHom.map_sSup'
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 lemma toFun_eq_coe (f : sSupHom α β) : f.toFun = f := rfl
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 lemma coe_mk (f : α → β) (hf) : ⇑(mk f hf) = f := rfl
 
 @[to_dual (attr := ext)]
@@ -327,11 +327,11 @@ instance : Bot (sSupHom α β) :=
 instance : OrderBot (sSupHom α β) where
   bot_le := fun _ _ ↦ OrderBot.bot_le _
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 theorem coe_bot : ⇑(⊥ : sSupHom α β) = ⊥ :=
   rfl
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 theorem bot_apply (a : α) : (⊥ : sSupHom α β) a = ⊥ :=
   rfl
 
@@ -360,11 +360,12 @@ instance : FrameHomClass (FrameHom α β) α β where
 def toLatticeHom (f : FrameHom α β) : LatticeHom α β :=
   f
 
+@[defeq]
 lemma toFun_eq_coe (f : FrameHom α β) : f.toFun = f := rfl
 
-@[simp] lemma coe_toInfTopHom (f : FrameHom α β) : ⇑f.toInfTopHom = f := rfl
+@[defeq, simp] lemma coe_toInfTopHom (f : FrameHom α β) : ⇑f.toInfTopHom = f := rfl
 @[simp] lemma coe_toLatticeHom (f : FrameHom α β) : ⇑f.toLatticeHom = f := rfl
-@[simp] lemma coe_mk (f : InfTopHom α β) (hf) : ⇑(mk f hf) = f := rfl
+@[defeq, simp] lemma coe_mk (f : InfTopHom α β) (hf) : ⇑(mk f hf) = f := rfl
 
 @[ext]
 theorem ext {f g : FrameHom α β} (h : ∀ a, f a = g a) : f = g :=
@@ -461,15 +462,16 @@ instance : CompleteLatticeHomClass (CompleteLatticeHom α β) α β where
 def toBoundedLatticeHom (f : CompleteLatticeHom α β) : BoundedLatticeHom α β :=
   f
 
+@[defeq]
 lemma toFun_eq_coe (f : CompleteLatticeHom α β) : f.toFun = f := rfl
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 lemma coe_tosInfHom (f : CompleteLatticeHom α β) : ⇑f.tosInfHom = f := rfl
 
 @[simp]
 lemma coe_toBoundedLatticeHom (f : CompleteLatticeHom α β) : ⇑f.toBoundedLatticeHom = f := rfl
 
-@[simp] lemma coe_mk (f : sInfHom α β) (hf) : ⇑(mk f hf) = f := rfl
+@[defeq, simp] lemma coe_mk (f : sInfHom α β) (hf) : ⇑(mk f hf) = f := rfl
 
 @[ext]
 theorem ext {f g : CompleteLatticeHom α β} (h : ∀ a, f a = g a) : f = g :=

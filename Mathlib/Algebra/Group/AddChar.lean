@@ -193,12 +193,13 @@ instance instZero : Zero (AddChar A M) := ⟨1⟩
 @[simp] lemma one_apply (a : A) : (1 : AddChar A M) a = 1 := rfl
 @[simp] lemma zero_apply (a : A) : (0 : AddChar A M) a = 1 := rfl
 
+@[defeq]
 lemma one_eq_zero : (1 : AddChar A M) = (0 : AddChar A M) := rfl
 
 @[simp, norm_cast] lemma coe_eq_one : ⇑ψ = 1 ↔ ψ = 0 := by rw [← coe_zero, DFunLike.coe_fn_eq]
 
 @[simp] lemma toMonoidHomEquiv_zero : toMonoidHomEquiv (0 : AddChar A M) = 1 := rfl
-@[simp] lemma toMonoidHomEquiv_symm_one :
+@[defeq, simp] lemma toMonoidHomEquiv_symm_one :
     toMonoidHomEquiv.symm (1 : Multiplicative A →* M) = 0 := rfl
 
 @[simp] lemma toAddMonoidHomEquiv_zero : toAddMonoidHomEquiv (0 : AddChar A M) = 0 := rfl
@@ -293,6 +294,7 @@ lemma sum_apply (s : Finset ι) (ψ : ι → AddChar A M) (a : A) :
     (∑ i ∈ s, ψ i) a = ∏ i ∈ s, ψ i a := by rw [coe_sum, Finset.prod_apply]
 
 lemma mul_eq_add (ψ χ : AddChar A M) : ψ * χ = ψ + χ := rfl
+@[defeq]
 lemma pow_eq_nsmul (ψ : AddChar A M) (n : ℕ) : ψ ^ n = n • ψ := rfl
 lemma prod_eq_sum (s : Finset ι) (ψ : ι → AddChar A M) : ∏ i ∈ s, ψ i = ∑ i ∈ s, ψ i := rfl
 

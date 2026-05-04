@@ -785,7 +785,7 @@ alias roots_ne_zero_of_splits := Splits.roots_ne_zero
 alias map_rootOfSplits := eval_rootOfSplits
 
 /-- `rootOfSplits'` is definitionally equal to `rootOfSplits`. -/
-@[deprecated "`rootOfSplits'` is now deprecated." (since := "2025-12-01")]
+@[defeq, deprecated "`rootOfSplits'` is now deprecated." (since := "2025-12-01")]
 theorem rootOfSplits'_eq_rootOfSplits {f : K[X]} (hf : (f.map i).Splits) (hfd) :
     rootOfSplits hf hfd = rootOfSplits hf (f.degree_map i ▸ hfd) :=
   rfl

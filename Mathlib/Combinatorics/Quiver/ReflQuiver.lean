@@ -43,7 +43,7 @@ theorem ReflQuiver.homOfEq_id {V : Type*} [ReflQuiver V] {X X' : V} (hX : X = X'
 instance catToReflQuiver {C : Type u} [inst : Category.{v} C] : ReflQuiver.{v, u} C :=
   { inst with }
 
-@[simp] theorem ReflQuiver.id_eq_id {C : Type*} [Category* C] (X : C) : 𝟙rq X = 𝟙 X := rfl
+@[defeq, simp] theorem ReflQuiver.id_eq_id {C : Type*} [Category* C] (X : C) : 𝟙rq X = 𝟙 X := rfl
 
 /-- A morphism of reflexive quivers called a `ReflPrefunctor`. -/
 structure ReflPrefunctor (V : Type u₁) [ReflQuiver.{v₁} V] (W : Type u₂) [ReflQuiver.{v₂} W]
@@ -57,9 +57,11 @@ attribute [simp] map_id
 
 -- These lemmas cannot be `@[simp]` because after `whnfR` they have a variable on the LHS.
 -- Nevertheless they are sometimes useful when building functors.
+@[defeq]
 lemma mk_obj {V W : Type*} [ReflQuiver V] [ReflQuiver W] {obj : V → W} {map} {X : V} :
     (Prefunctor.mk obj map).obj X = obj X := rfl
 
+@[defeq]
 lemma mk_map {V W : Type*} [ReflQuiver V] [ReflQuiver W] {obj : V → W} {map} {X Y : V} {f : X ⟶ Y} :
     (Prefunctor.mk obj map).map f = map f := rfl
 

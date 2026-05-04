@@ -234,7 +234,7 @@ protected def id : X →[M] X :=
 
 variable {M N Z}
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem id_apply (x : X) :
     MulActionHom.id M x = x :=
   rfl
@@ -259,7 +259,7 @@ def comp (g : Y →ₑ[ψ] Z) (f : X →ₑ[φ] Y) [κ : CompTriple φ ψ χ] :
       _ = (ψ ∘ φ) m • g (f x) := rfl
       _ = χ m • g (f x) := by rw [κ.comp_eq] ⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem comp_apply
     (g : Y →ₑ[ψ] Z) (f : X →ₑ[φ] Y) [CompTriple φ ψ χ] (x : X) :
     g.comp f x = g (f x) := rfl
@@ -424,7 +424,7 @@ instance [SMul M X] [SMul N Y] [SMul R Y] [SMulCommClass N R Y] :
     SMul R (X →ₑ[σ] Y) where
   smul h f := ⟨h • f, by simp [smul_comm _ h]⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 lemma coe_smul [SMul M X] [SMul N Y] [SMul R Y] [SMulCommClass N R Y] (f : X →ₑ[σ] Y) (r : R) :
     ⇑(r • f) = r • ⇑f := rfl
 
@@ -432,7 +432,7 @@ instance [SMul M X] [Zero Y] [SMulZeroClass N Y] :
     Zero (X →ₑ[σ] Y) where
   zero := ⟨0, by simp⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_zero [SMul M X] [Zero Y] [SMulZeroClass N Y] : ⇑(0 : X →ₑ[σ] Y) = 0 := rfl
 
 instance [SMul M X] [AddZeroClass Y] [DistribSMul N Y] :
@@ -441,7 +441,7 @@ instance [SMul M X] [AddZeroClass Y] [DistribSMul N Y] :
   zero_add _ := ext fun _ ↦ zero_add _
   add_zero _ := ext fun _ ↦ add_zero _
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_add [SMul M X] [AddZeroClass Y] [DistribSMul N Y] (f g : X →ₑ[σ] Y) :
     ⇑(f + g) = ⇑f + ⇑g := rfl
 
@@ -489,11 +489,11 @@ instance [SMul M X] [AddGroup Y] [DistribSMul N Y] : AddGroup (X →ₑ[σ] Y) w
   zsmul_neg' _ _ := ext fun x ↦ SubNegMonoid.zsmul_neg' _ _
   zsmul_succ' _ _ := ext fun x ↦ SubNegMonoid.zsmul_succ' _ _
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_neg [SMul M X] [AddGroup Y] [DistribSMul N Y] (f : X →ₑ[σ] Y) :
     ⇑(-f) = -⇑f := rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_sub [SMul M X] [AddGroup Y] [DistribSMul N Y] (f g : X →ₑ[σ] Y) :
     ⇑(f - g) = ⇑f - ⇑g := rfl
 
@@ -507,11 +507,11 @@ instance [SMul M X] [Monoid N] [Monoid Y] [MulDistribMulAction N Y] :
   one_mul _ := ext fun x ↦ one_mul _
   mul_one _ := ext fun x ↦ mul_one _
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_mul [SMul M X] [Monoid N] [Monoid Y] [MulDistribMulAction N Y] (f g : X →ₑ[σ] Y) :
     ⇑(f * g) = ⇑f * ⇑g := rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_one [SMul M X] [Monoid N] [Monoid Y] [MulDistribMulAction N Y] :
     ⇑(1 : X →ₑ[σ] Y) = 1 := rfl
 
@@ -680,7 +680,7 @@ def _root_.SMulCommClass.toDistribMulActionHom {M} (N A : Type*) [Monoid N] [Add
     DistribSMul.toAddMonoidHom _ c with
     toFun := (c • ·) }
 
-@[to_additive (attr := simp) (dont_translate := M N)]
+@[defeq, to_additive (attr := simp) (dont_translate := M N)]
 theorem toFun_eq_coe (f : A →ₑ*[φ] B) : f.toFun = f := rfl
 
 @[to_additive (attr := norm_cast) (dont_translate := M N)]
@@ -752,7 +752,7 @@ instance _root_.DistriMulActionHom.instZero {A : Type*} [AddMonoid A] [DistribMu
 instance : One (A →*[M] A) :=
   ⟨MulDistribMulActionHom.id M⟩
 
-@[simp]
+@[defeq, simp]
 theorem _root_.DistriMulActionHom.coe_zero {A : Type*} [AddMonoid A] [DistribMulAction M A]
     {B : Type*} [AddMonoid B] [DistribMulAction N B] : ⇑(0 : A →ₑ+[φ] B) = 0 :=
   rfl
@@ -761,11 +761,12 @@ theorem _root_.DistriMulActionHom.coe_zero {A : Type*} [AddMonoid A] [DistribMul
 theorem coe_one : ⇑(1 : A →*[M] A) = id :=
   rfl
 
+@[defeq]
 theorem _root_.DistriMulActionHom.zero_apply {A : Type*} [AddMonoid A] [DistribMulAction M A]
     {B : Type*} [AddMonoid B] [DistribMulAction N B] (a : A) : (0 : A →ₑ+[φ] B) a = 0 :=
   rfl
 
-@[to_additive (dont_translate := M)]
+@[defeq, to_additive (dont_translate := M)]
 theorem one_apply (a : A) : (1 : A →*[M] A) a = a :=
   rfl
 
@@ -955,7 +956,7 @@ variable (M) {R}
 protected def id : R →+*[M] R :=
   ⟨DistribMulActionHom.id _, rfl, (fun _ _ => rfl)⟩
 
-@[simp]
+@[defeq, simp]
 theorem id_apply (x : R) : MulSemiringActionHom.id M x = x :=
   rfl
 

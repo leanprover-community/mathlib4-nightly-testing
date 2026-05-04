@@ -395,35 +395,35 @@ theorem mem_compl : x ∈ sᶜ ↔ x ∉ s :=
 theorem mem_sdiff : x ∈ s \ t ↔ x ∈ s ∧ x ∉ t :=
   Iff.rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_top : ((⊤ : L.DefinableSet A α) : Set (α → M)) = univ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_bot : ((⊥ : L.DefinableSet A α) : Set (α → M)) = ∅ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sup (s t : L.DefinableSet A α) :
     ((s ⊔ t : L.DefinableSet A α) : Set (α → M)) = (s : Set (α → M)) ∪ (t : Set (α → M)) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_inf (s t : L.DefinableSet A α) :
     ((s ⊓ t : L.DefinableSet A α) : Set (α → M)) = (s : Set (α → M)) ∩ (t : Set (α → M)) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_compl (s : L.DefinableSet A α) :
     ((sᶜ : L.DefinableSet A α) : Set (α → M)) = (s : Set (α → M))ᶜ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sdiff (s t : L.DefinableSet A α) :
     ((s \ t : L.DefinableSet A α) : Set (α → M)) = (s : Set (α → M)) \ (t : Set (α → M)) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_himp (s t : L.DefinableSet A α) : ↑(s ⇨ t) = (s ⇨ t : Set (α → M)) := rfl
 
 noncomputable instance instBooleanAlgebra : BooleanAlgebra (L.DefinableSet A α) :=

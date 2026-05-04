@@ -81,6 +81,7 @@ protected def seminormedAddCommGroup : SeminormedAddCommGroup (Matrix m n α) :=
 
 attribute [local instance] Matrix.seminormedAddCommGroup
 
+@[defeq]
 theorem norm_def (A : Matrix m n α) : ‖A‖ = ‖fun i j => A i j‖ := rfl
 
 /-- The norm of a matrix is the sup of the sup of the nnnorm of the entries -/
@@ -88,6 +89,7 @@ lemma norm_eq_sup_sup_nnnorm (A : Matrix m n α) :
     ‖A‖ = Finset.sup Finset.univ fun i ↦ Finset.sup Finset.univ fun j ↦ ‖A i j‖₊ := by
   simp_rw [Matrix.norm_def, Pi.norm_def, Pi.nnnorm_def]
 
+@[defeq]
 theorem nnnorm_def (A : Matrix m n α) : ‖A‖₊ = ‖fun i j => A i j‖₊ := rfl
 
 theorem norm_le_iff {r : ℝ} (hr : 0 ≤ r) {A : Matrix m n α} : ‖A‖ ≤ r ↔ ∀ i j, ‖A i j‖ ≤ r := by

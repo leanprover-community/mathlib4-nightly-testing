@@ -284,14 +284,14 @@ variable {M : Type*}
 section MulOneClass
 variable [MulOneClass M]
 
-@[to_additive]
+@[defeq, to_additive]
 theorem bot_def : (⊥ : SaturatedSubmonoid M) = Submonoid.saturation ⊥ := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem sup_def {s₁ s₂ : SaturatedSubmonoid M} :
     s₁ ⊔ s₂ = (s₁.toSubmonoid ⊔ s₂.toSubmonoid).saturation := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem sSup_def {f : Set (SaturatedSubmonoid M)} :
     sSup f = (sSup (toSubmonoid '' f)).saturation := rfl
 

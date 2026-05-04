@@ -47,6 +47,7 @@ instance : Inner ℝ ℍ :=
 theorem inner_self (a : ℍ) : ⟪a, a⟫ = normSq a :=
   rfl
 
+@[defeq]
 theorem inner_def (a b : ℍ) : ⟪a, b⟫ = (a * star b).re :=
   rfl
 

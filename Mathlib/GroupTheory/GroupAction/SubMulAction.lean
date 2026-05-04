@@ -117,15 +117,15 @@ instance instSMulCommClass [Mul M] [MulMemClass S M] [SMulCommClass R M M]
     (s : S) : SMulCommClass R s s where
   smul_comm r x y := Subtype.ext <| smul_comm r (x : M) (y : M)
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 protected theorem val_smul (r : R) (x : s) : (↑(r • x) : M) = r • (x : M) :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mk_smul_mk (r : R) (x : M) (hx : x ∈ s) : r • (⟨x, hx⟩ : s) = ⟨r • x, smul_mem r hx⟩ :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem smul_def (r : R) (x : s) : r • x = ⟨r • x, smul_mem r x.2⟩ :=
   rfl
 
@@ -165,16 +165,16 @@ instance (priority := 50) smul' : SMul M s where
 instance (priority := 50) : IsScalarTower M N s where
   smul_assoc m n x := Subtype.ext (smul_assoc m n x.1)
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 protected theorem val_smul_of_tower (r : M) (x : s) : (↑(r • x) : α) = r • (x : α) :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mk_smul_of_tower_mk (r : M) (x : α) (hx : x ∈ s) :
     r • (⟨x, hx⟩ : s) = ⟨r • x, smul_one_smul N r x ▸ smul_mem _ hx⟩ :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem smul_of_tower_def (r : M) (x : s) :
     r • x = ⟨r • x, smul_one_smul N r x.1 ▸ smul_mem _ x.2⟩ :=
   rfl
@@ -304,7 +304,7 @@ theorem smul_mem (r : R) (h : x ∈ p) : r • x ∈ p :=
 instance : SMul R p where smul c x := ⟨c • x.1, smul_mem _ c x.2⟩
 
 variable {p} in
-@[to_additive (attr := norm_cast, simp)]
+@[defeq, to_additive (attr := norm_cast, simp)]
 theorem val_smul (r : R) (x : p) : (↑(r • x) : M) = r • (x : M) :=
   rfl
 
@@ -386,7 +386,7 @@ instance isScalarTower' {S' : Type*} [SMul S' R] [SMul S' S] [SMul S' M] [IsScal
     [IsScalarTower S' S M] : IsScalarTower S' S p where
   smul_assoc s r x := Subtype.ext <| smul_assoc s r (x : M)
 
-@[to_additive (attr := norm_cast, simp)]
+@[defeq, to_additive (attr := norm_cast, simp)]
 theorem val_smul_of_tower (s : S) (x : p) : ((s • x : p) : M) = s • (x : M) :=
   rfl
 
@@ -473,7 +473,7 @@ theorem stabilizer_of_subMul {p : SubMulAction R M} (m : p) :
 instance : Compl (SubMulAction R M) where
   compl s := ⟨sᶜ, by simp⟩
 
-@[to_additive]
+@[defeq, to_additive]
 theorem compl_def (s : SubMulAction R M) : sᶜ.carrier = (s : Set M)ᶜ := rfl
 
 end MulActionGroup
@@ -515,7 +515,7 @@ theorem neg_mem_iff : -x ∈ p ↔ x ∈ p :=
 instance : Neg p :=
   ⟨fun x => ⟨-x.1, neg_mem _ x.2⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem val_neg (x : p) : ((-x : p) : M) = -x :=
   rfl
 

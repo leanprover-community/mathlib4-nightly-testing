@@ -61,13 +61,13 @@ instance : Group (ZeroCochain G U) := Pi.group
 
 namespace Cochain₀
 
-@[simp]
+@[defeq, simp]
 lemma one_apply (i : I) : (1 : ZeroCochain G U) i = 1 := rfl
 
-@[simp]
+@[defeq, simp]
 lemma inv_apply (γ : ZeroCochain G U) (i : I) : γ⁻¹ i = (γ i)⁻¹ := rfl
 
-@[simp]
+@[defeq, simp]
 lemma mul_apply (γ₁ γ₂ : ZeroCochain G U) (i : I) : (γ₁ * γ₂) i = γ₁ i * γ₂ i := rfl
 
 end Cochain₀
@@ -91,7 +91,7 @@ attribute [simp] OneCochain.ev_precomp
 instance : One (OneCochain G U) where
   one := { ev := fun _ _ _ _ _ ↦ 1 }
 
-@[simp]
+@[defeq, simp]
 lemma one_ev (i j : I) {T : C} (a : T ⟶ U i) (b : T ⟶ U j) :
     (1 : OneCochain G U).ev i j a b = 1 := rfl
 
@@ -100,14 +100,14 @@ variable {G U}
 instance : Mul (OneCochain G U) where
   mul γ₁ γ₂ := { ev := fun i j _ a b ↦ γ₁.ev i j a b * γ₂.ev i j a b }
 
-@[simp]
+@[defeq, simp]
 lemma mul_ev (γ₁ γ₂ : OneCochain G U) (i j : I) {T : C} (a : T ⟶ U i) (b : T ⟶ U j) :
     (γ₁ * γ₂).ev i j a b = γ₁.ev i j a b * γ₂.ev i j a b := rfl
 
 instance : Inv (OneCochain G U) where
   inv γ := { ev := fun i j _ a b ↦ (γ.ev i j a b)⁻¹ }
 
-@[simp]
+@[defeq, simp]
 lemma inv_ev (γ : OneCochain G U) (i j : I) {T : C} (a : T ⟶ U i) (b : T ⟶ U j) :
     (γ⁻¹).ev i j a b = (γ.ev i j a b)⁻¹ := rfl
 
@@ -129,7 +129,7 @@ namespace OneCocycle
 instance : One (OneCocycle G U) where
   one := OneCocycle.mk 1
 
-@[simp]
+@[defeq, simp]
 lemma one_toOneCochain : (1 : OneCocycle G U).toOneCochain = 1 := rfl
 
 @[simp]

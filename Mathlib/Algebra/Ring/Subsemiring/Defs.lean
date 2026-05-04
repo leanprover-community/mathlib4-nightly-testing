@@ -188,14 +188,14 @@ lemma mem_toNonUnitalSubsemiring {S : Subsemiring R} {x : R} :
 theorem mem_carrier {s : Subsemiring R} {x : R} : x ∈ s.carrier ↔ x ∈ s :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 lemma coe_toNonUnitalSubsemiring (S : Subsemiring R) : (S.toNonUnitalSubsemiring : Set R) = S := rfl
 
 @[simp]
 theorem mem_mk {toSubmonoid : Submonoid R} (add_mem zero_mem) {x : R} :
     x ∈ mk toSubmonoid add_mem zero_mem ↔ x ∈ toSubmonoid := .rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_set_mk {toSubmonoid : Submonoid R} (add_mem zero_mem) :
     (mk toSubmonoid add_mem zero_mem : Set R) = toSubmonoid := rfl
 
@@ -284,19 +284,19 @@ protected theorem add_mem {x y : R} : x ∈ s → y ∈ s → x + y ∈ s :=
 instance toNonAssocSemiring : NonAssocSemiring s :=
   SubsemiringClass.toNonAssocSemiring _
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_one : ((1 : s) : R) = (1 : R) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_zero : ((0 : s) : R) = (0 : R) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_add (x y : s) : ((x + y : s) : R) = (x + y : R) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_mul (x y : s) : ((x * y : s) : R) = (x * y : R) :=
   rfl
 
@@ -315,7 +315,7 @@ instance noZeroDivisors [NoZeroDivisors R] : NoZeroDivisors s where
 instance toSemiring {R} [Semiring R] (s : Subsemiring R) : Semiring s :=
   { s.toNonAssocSemiring, s.toSubmonoid.toMonoid with }
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_pow {R} [Semiring R] (s : Subsemiring R) (x : s) (n : ℕ) :
     ((x ^ n : s) : R) = (x : R) ^ n := rfl
 
@@ -343,17 +343,18 @@ theorem coe_subtype : ⇑s.subtype = ((↑) : s → R) :=
 protected theorem nsmul_mem {x : R} (hx : x ∈ s) (n : ℕ) : n • x ∈ s :=
   nsmul_mem hx n
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubmonoid (s : Subsemiring R) : (s.toSubmonoid : Set R) = s :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_carrier_toSubmonoid (s : Subsemiring R) : (s.toSubmonoid.carrier : Set R) = s :=
   rfl
 
 theorem mem_toAddSubmonoid {s : Subsemiring R} {x : R} : x ∈ s.toAddSubmonoid ↔ x ∈ s :=
   Iff.rfl
 
+@[defeq]
 theorem coe_toAddSubmonoid (s : Subsemiring R) : (s.toAddSubmonoid : Set R) = s :=
   rfl
 
@@ -365,7 +366,7 @@ instance : Top (Subsemiring R) :=
 theorem mem_top (x : R) : x ∈ (⊤ : Subsemiring R) :=
   Set.mem_univ x
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_top : ((⊤ : Subsemiring R) : Set R) = Set.univ :=
   rfl
 
@@ -378,7 +379,7 @@ instance : Min (Subsemiring R) :=
   ⟨fun s t =>
     { s.toSubmonoid ⊓ t.toSubmonoid, s.toAddSubmonoid ⊓ t.toAddSubmonoid with carrier := s ∩ t }⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_inf (p p' : Subsemiring R) : ((p ⊓ p' : Subsemiring R) : Set R) = (p : Set R) ∩ p' :=
   rfl
 

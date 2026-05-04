@@ -61,9 +61,10 @@ scoped[Simplicial] notation "⦋" n "⦌" => SimplexCategory.mk n
 
 open Simplicial
 
+@[defeq]
 theorem len_mk (n : ℕ) : ⦋n⦌.len = n := rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_len (n : SimplexCategory) : ⦋n.len⦌ = n :=
   rfl
 

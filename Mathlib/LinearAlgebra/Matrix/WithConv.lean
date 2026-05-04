@@ -24,6 +24,7 @@ open Matrix WithConv
 
 instance [Mul α] : Mul (WithConv (Matrix m n α)) where mul a b := toConv (a.ofConv ⊙ b.ofConv)
 
+@[defeq]
 lemma convMul_def [Mul α] (x y : WithConv (Matrix m n α)) :
     x * y = toConv (x.ofConv ⊙ y.ofConv) := rfl
 
@@ -43,6 +44,7 @@ instance [CommMagma α] : CommMagma (WithConv (Matrix m n α)) where
 
 instance [One α] : One (WithConv (Matrix m n α)) where one := toConv (of 1)
 
+@[defeq]
 lemma convOne_def [One α] : (1 : WithConv (Matrix m n α)) = toConv (of 1) := rfl
 
 attribute [local simp] convOne_def
@@ -72,6 +74,7 @@ instance [CommRing α] : CommRing (WithConv (Matrix m n α)) where
 
 instance [Star α] : Star (WithConv (Matrix m n α)) where star x := toConv (x.ofConv.map star)
 
+@[defeq]
 lemma intrinsicStar_def [Star α] (x : WithConv (Matrix m n α)) :
     star x = toConv (x.ofConv.map star) := rfl
 

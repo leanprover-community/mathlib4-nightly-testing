@@ -253,7 +253,7 @@ instance : FunLike S.Section G E where
 
 variable {S}
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_mk (σ : G → E) (hσ : Function.RightInverse σ S.rightHom) : (mk σ hσ : G → E) = σ := rfl
 
 variable (σ : S.Section)
@@ -290,7 +290,7 @@ instance : MonoidHomClass S.Splitting G E where
 
 variable {S}
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_mk (s : G →* E) (hs : Function.RightInverse s S.rightHom) : (mk s hs : G → E) = s := rfl
 
 @[to_additive (attr := simp)]

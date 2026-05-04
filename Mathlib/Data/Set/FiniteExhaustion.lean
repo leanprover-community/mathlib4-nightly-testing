@@ -46,7 +46,7 @@ instance {α : Type*} {s : Set α} {K : FiniteExhaustion s} {n : ℕ} : Finite (
 
 variable {α : Type*} {s : Set α} (K : FiniteExhaustion s)
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe : K.toFun = K := rfl
 
 protected theorem finite (n : ℕ) : (K n).Finite := K.finite' n

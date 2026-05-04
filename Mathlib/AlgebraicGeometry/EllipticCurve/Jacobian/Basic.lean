@@ -137,6 +137,7 @@ variable [CommRing R] [Field F] {W' : Jacobian R} {W : Jacobian F} {S : Type s} 
 scoped instance : SMul R <| Fin 3 → R :=
   ⟨fun u P => ![u ^ 2 * P x, u ^ 3 * P y, u * P z]⟩
 
+@[defeq]
 lemma smul_fin3 (P : Fin 3 → R) (u : R) : u • P = ![u ^ 2 * P x, u ^ 3 * P y, u * P z] :=
   rfl
 

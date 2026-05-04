@@ -92,19 +92,19 @@ theorem mem_carrier {s : IntermediateField K L} {x : L} : x ∈ s.carrier ↔ x 
 theorem ext {S T : IntermediateField K L} (h : ∀ x, x ∈ S ↔ x ∈ T) : S = T :=
   SetLike.ext h
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubalgebra : (S.toSubalgebra : Set L) = S :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubfield : (S.toSubfield : Set L) = S :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_type_toSubalgebra : (S.toSubalgebra : Type _) = S :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_type_toSubfield : (S.toSubfield : Type _) = S :=
   rfl
 
@@ -221,31 +221,31 @@ protected theorem zsmul_mem {x : L} (hx : x ∈ S) (n : ℤ) : n • x ∈ S :=
 protected theorem intCast_mem (n : ℤ) : (n : L) ∈ S :=
   intCast_mem S n
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_add (x y : S) : (↑(x + y) : L) = ↑x + ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_neg (x : S) : (↑(-x) : L) = -↑x :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_mul (x y : S) : (↑(x * y) : L) = ↑x * ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_inv (x : S) : (↑x⁻¹ : L) = (↑x)⁻¹ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_div (x y : S) : (↑(x / y) : L) = ↑x / ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_zero : ((0 : S) : L) = 0 :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_one : ((1 : S) : L) = 1 :=
   rfl
 
@@ -343,6 +343,7 @@ variable {X Y}
 instance [SMul L X] (F : IntermediateField K L) : SMul F X :=
   inferInstanceAs (SMul F.toSubfield X)
 
+@[defeq]
 theorem smul_def [SMul L X] {F : IntermediateField K L} (g : F) (m : X) : g • m = (g : L) • m :=
   rfl
 
@@ -412,7 +413,7 @@ instance isScalarTower {R} [Semiring R] [SMul R K] [Module R L] [IsScalarTower R
     IsScalarTower R K S :=
   inferInstanceAs (IsScalarTower R K S.toSubalgebra)
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul {R} [SMul R K] [SMul R L] [IsScalarTower R K L] (r : R) (x : S) :
     ↑(r • x : S) = (r • (x : L)) :=
   rfl

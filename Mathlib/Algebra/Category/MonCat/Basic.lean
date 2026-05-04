@@ -122,7 +122,7 @@ lemma coe_id {X : MonCat} : (𝟙 X : X → X) = id := rfl
 @[to_additive]
 lemma coe_comp {X Y Z : MonCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma forget_map {X Y : MonCat} (f : X ⟶ Y) :
     (forget MonCat).map f = (f : _ → _) := rfl
 
@@ -132,9 +132,10 @@ lemma ext {X Y : MonCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
 
 @[to_additive]
 -- This is not `simp` to avoid rewriting in types of terms.
+@[defeq]
 theorem coe_of (M : Type u) [Monoid M] : (MonCat.of M : Type u) = M := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_id {M : MonCat} : (𝟙 M : M ⟶ M).hom = MonoidHom.id M := rfl
 
 /- Provided for rewriting. -/
@@ -142,7 +143,7 @@ lemma hom_id {M : MonCat} : (𝟙 M : M ⟶ M).hom = MonoidHom.id M := rfl
 lemma id_apply (M : MonCat) (x : M) :
     (𝟙 M : M ⟶ M) x = x := by simp
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_comp {M N T : MonCat} (f : M ⟶ N) (g : N ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -155,23 +156,23 @@ lemma comp_apply {M N T : MonCat} (f : M ⟶ N) (g : N ⟶ T) (x : M) :
 lemma hom_ext {M N : MonCat} {f g : M ⟶ N} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_ofHom {M N : Type u} [Monoid M] [Monoid N] (f : M →* N) : (ofHom f).hom = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_hom {M N : MonCat} (f : M ⟶ N) :
     ofHom (Hom.hom f) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_id {M : Type u} [Monoid M] : ofHom (MonoidHom.id M) = 𝟙 (of M) := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_comp {M N P : Type u} [Monoid M] [Monoid N] [Monoid P]
     (f : M →* N) (g : N →* P) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 lemma ofHom_apply {X Y : Type u} [Monoid X] [Monoid Y] (f : X →* Y) (x : X) :
     (ofHom f) x = f x := rfl
 
@@ -192,16 +193,16 @@ instance : Inhabited MonCat :=
 @[to_additive]
 instance (X Y : MonCat.{u}) : One (X ⟶ Y) := ⟨ofHom 1⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_one (X Y : MonCat.{u}) : (1 : X ⟶ Y).hom = 1 := rfl
 
-@[to_additive]
+@[defeq, to_additive]
 lemma oneHom_apply (X Y : MonCat.{u}) (x : X) : (1 : X ⟶ Y).hom x = 1 := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma one_of {A : Type*} [Monoid A] : (1 : MonCat.of A) = (1 : A) := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma mul_of {A : Type*} [Monoid A] (a b : A) :
     @HMul.hMul (MonCat.of A) (MonCat.of A) (MonCat.of A) _ a b = a * b := rfl
 
@@ -315,7 +316,7 @@ lemma coe_comp {X Y Z : CommMonCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X �
 lemma ext {X Y : CommMonCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_id {M : CommMonCat} : (𝟙 M : M ⟶ M).hom = MonoidHom.id M := rfl
 
 /- Provided for rewriting. -/
@@ -323,7 +324,7 @@ lemma hom_id {M : CommMonCat} : (𝟙 M : M ⟶ M).hom = MonoidHom.id M := rfl
 lemma id_apply (M : CommMonCat) (x : M) :
     (𝟙 M : M ⟶ M) x = x := by simp
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_comp {M N T : CommMonCat} (f : M ⟶ N) (g : N ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -336,23 +337,23 @@ lemma comp_apply {M N T : CommMonCat} (f : M ⟶ N) (g : N ⟶ T) (x : M) :
 lemma hom_ext {M N : CommMonCat} {f g : M ⟶ N} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_ofHom {M N : Type u} [CommMonoid M] [CommMonoid N] (f : M →* N) : (ofHom f).hom = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_hom {M N : CommMonCat} (f : M ⟶ N) :
     ofHom (Hom.hom f) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_id {M : Type u} [CommMonoid M] : ofHom (MonoidHom.id M) = 𝟙 (of M) := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_comp {M N P : Type u} [CommMonoid M] [CommMonoid N] [CommMonoid P]
     (f : M →* N) (g : N →* P) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 lemma ofHom_apply {X Y : Type u} [CommMonoid X] [CommMonoid Y] (f : X →* Y) (x : X) :
     (ofHom f) x = f x := rfl
 
@@ -369,7 +370,7 @@ instance : Inhabited CommMonCat :=
   -- The default instance for `CommMonoid PUnit` is derived via `CommRing` which breaks to_additive
   ⟨@of PUnit (@CommGroup.toCommMonoid _ PUnit.commGroup)⟩
 
-@[to_additive]
+@[defeq, to_additive]
 theorem coe_of (R : Type u) [CommMonoid R] : (CommMonCat.of R : Type u) = R :=
   rfl
 
@@ -379,14 +380,14 @@ instance hasForgetToMonCat : HasForget₂ CommMonCat MonCat where
     { obj R := MonCat.of R
       map f := MonCat.ofHom f.hom }
 
-@[to_additive (attr := simp)] lemma coe_forget₂_obj (X : CommMonCat) :
+@[defeq, to_additive (attr := simp)] lemma coe_forget₂_obj (X : CommMonCat) :
     ((forget₂ CommMonCat MonCat).obj X : Type _) = X := rfl
 
-@[to_additive (attr := simp)] lemma hom_forget₂_map {X Y : CommMonCat}
+@[defeq, to_additive (attr := simp)] lemma hom_forget₂_map {X Y : CommMonCat}
     (f : X ⟶ Y) :
     ((forget₂ CommMonCat MonCat).map f).hom = f.hom := rfl
 
-@[to_additive (attr := simp)] lemma forget₂_map_ofHom {X Y : Type u} [CommMonoid X] [CommMonoid Y]
+@[defeq, to_additive (attr := simp)] lemma forget₂_map_ofHom {X Y : Type u} [CommMonoid X] [CommMonoid Y]
     (f : X →* Y) :
     (forget₂ CommMonCat MonCat).map (ofHom f) = MonCat.ofHom f := rfl
 

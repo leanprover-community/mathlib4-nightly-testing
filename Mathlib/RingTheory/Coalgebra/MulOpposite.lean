@@ -29,10 +29,12 @@ noncomputable instance [CoalgebraStruct R A] : CoalgebraStruct R Aᵐᵒᵖ wher
     comul ∘ₗ (opLinearEquiv R).symm.toLinearMap
   counit := counit ∘ₗ (opLinearEquiv R).symm.toLinearMap
 
+@[defeq]
 lemma comul_def [CoalgebraStruct R A] :
     comul (R := R) (A := Aᵐᵒᵖ) = map (opLinearEquiv R).toLinearMap (opLinearEquiv R).toLinearMap ∘ₗ
       comul ∘ₗ (opLinearEquiv R).symm.toLinearMap := rfl
 
+@[defeq]
 lemma counit_def [CoalgebraStruct R A] :
     counit (R := R) (A := Aᵐᵒᵖ) = counit ∘ₗ (opLinearEquiv R).symm.toLinearMap := rfl
 

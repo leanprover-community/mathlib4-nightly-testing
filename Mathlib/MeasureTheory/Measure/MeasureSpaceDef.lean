@@ -154,8 +154,9 @@ lemma mono_null ⦃s t : Set α⦄ (h : s ⊆ t) (ht : μ t = 0) : μ s = 0 := m
 
 end Measure
 
-@[simp] theorem Measure.coe_toOuterMeasure (μ : Measure α) : ⇑μ.toOuterMeasure = μ := rfl
+@[defeq, simp] theorem Measure.coe_toOuterMeasure (μ : Measure α) : ⇑μ.toOuterMeasure = μ := rfl
 
+@[defeq]
 theorem Measure.toOuterMeasure_apply (μ : Measure α) (s : Set α) :
     μ.toOuterMeasure s = μ s :=
   rfl

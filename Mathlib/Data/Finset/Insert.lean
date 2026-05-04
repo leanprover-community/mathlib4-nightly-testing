@@ -66,7 +66,7 @@ This differs from `insert a ∅` in that it does not require a `DecidableEq` ins
 instance : Singleton α (Finset α) :=
   ⟨fun a => ⟨{a}, nodup_singleton a⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem singleton_val (a : α) : ({a} : Finset α).1 = {a} :=
   rfl
 
@@ -210,7 +210,7 @@ instance (i : α) : Unique ({i} : Finset α) where
   default := ⟨i, mem_singleton_self i⟩
   uniq j := Subtype.ext <| mem_singleton.mp j.2
 
-@[simp]
+@[defeq, simp]
 lemma default_singleton (i : α) : ((default : ({i} : Finset α)) : α) = i := rfl
 
 instance Nontrivial.instDecidablePred : DecidablePred (Finset.Nontrivial (α := α)) := fun s =>
@@ -348,10 +348,11 @@ variable [DecidableEq α] {s t : Finset α} {a b : α} {f : α → β}
 instance : Insert α (Finset α) :=
   ⟨fun a s => ⟨_, s.2.ndinsert a⟩⟩
 
+@[defeq]
 theorem insert_def (a : α) (s : Finset α) : insert a s = ⟨_, s.2.ndinsert a⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem insert_val (a : α) (s : Finset α) : (insert a s).1 = ndinsert a s.1 :=
   rfl
 

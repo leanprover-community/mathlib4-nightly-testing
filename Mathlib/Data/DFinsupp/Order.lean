@@ -197,6 +197,7 @@ instance : OrderBot (Π₀ i, α i) where
 
 variable {α}
 
+@[defeq]
 protected theorem bot_eq_zero : (⊥ : Π₀ i, α i) = 0 :=
   rfl
 

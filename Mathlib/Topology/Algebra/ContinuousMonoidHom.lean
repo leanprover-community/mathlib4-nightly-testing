@@ -177,7 +177,7 @@ variable (A B C D E)
 instance : One (A →ₜ* B) where
   one := ⟨1, continuous_const⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma coe_one : ⇑(1 : A →ₜ* B) = 1 :=
   rfl
 
@@ -359,7 +359,7 @@ the same underlying function. -/]
 theorem ext {f g : M ≃ₜ* N} (h : ∀ x, f x = g x) : f = g :=
   DFunLike.ext f g h
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_mk (f : M ≃* N) (hf1 hf2) : ⇑(mk f hf1 hf2) = f := rfl
 
 @[to_additive]

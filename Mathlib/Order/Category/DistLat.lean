@@ -91,7 +91,7 @@ lemma coe_id {X : DistLat} : (𝟙 X : X → X) = id := rfl
 @[simp]
 lemma coe_comp {X Y Z : DistLat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma forget_map {X Y : DistLat} (f : X ⟶ Y) :
     (forget DistLat).map f = (f : _ → _) := rfl
 
@@ -100,16 +100,17 @@ lemma ext {X Y : DistLat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
 -- This is not `simp` to avoid rewriting in types of terms.
+@[defeq]
 theorem coe_of (X : Type u) [DistribLattice X] : (DistLat.of X : Type u) = X := rfl
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {X : DistLat} : (𝟙 X : X ⟶ X).hom = LatticeHom.id _ := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (X : DistLat) (x : X) :
     (𝟙 X : X ⟶ X) x = x := by simp
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {X Y Z : DistLat} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -121,24 +122,25 @@ lemma comp_apply {X Y Z : DistLat} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
 lemma hom_ext {X Y : DistLat} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[simp]
+@[defeq, simp]
 lemma hom_ofHom {X Y : Type u} [DistribLattice X] [DistribLattice Y] (f : LatticeHom X Y) :
     (ofHom f).hom = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_hom {X Y : DistLat} (f : X ⟶ Y) :
     ofHom (Hom.hom f) = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_id {X : Type u} [DistribLattice X] : ofHom (LatticeHom.id _) = 𝟙 (of X) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp {X Y Z : Type u} [DistribLattice X] [DistribLattice Y] [DistribLattice Z]
     (f : LatticeHom X Y) (g : LatticeHom Y Z) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
+@[defeq]
 lemma ofHom_apply {X Y : Type u} [DistribLattice X] [DistribLattice Y]
     (f : LatticeHom X Y) (x : X) :
     (ofHom f) x = f x := rfl

@@ -106,10 +106,10 @@ lemma injective (f : Copy A B) : Injective f.toHom := f.injective'
 
 @[ext] lemma ext {f g : Copy A B} : (∀ a, f a = g a) → f = g := DFunLike.ext _ _
 
-@[simp] lemma coe_toHom (f : Copy A B) : ⇑f.toHom = f := rfl
-@[simp] lemma toHom_apply (f : Copy A B) (a : α) : ⇑f.toHom a = f a := rfl
+@[defeq, simp] lemma coe_toHom (f : Copy A B) : ⇑f.toHom = f := rfl
+@[defeq, simp] lemma toHom_apply (f : Copy A B) (a : α) : ⇑f.toHom a = f a := rfl
 
-@[simp] lemma coe_mk (f : A →g B) (hf) : ⇑(.mk f hf : Copy A B) = f := rfl
+@[defeq, simp] lemma coe_mk (f : A →g B) (hf) : ⇑(.mk f hf : Copy A B) = f := rfl
 
 /-- A copy induces an embedding of edge sets. -/
 def mapEdgeSet (f : Copy A B) : A.edgeSet ↪ B.edgeSet where

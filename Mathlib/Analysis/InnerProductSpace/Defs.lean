@@ -376,6 +376,7 @@ def toNorm : Norm F where norm x := √(re ⟪x, x⟫)
 
 attribute [local instance] toNorm
 
+@[defeq]
 theorem norm_eq_sqrt_re_inner (x : F) : ‖x‖ = √(re ⟪x, x⟫) := rfl
 
 theorem inner_self_eq_norm_mul_norm (x : F) : re ⟪x, x⟫ = ‖x‖ * ‖x‖ := by

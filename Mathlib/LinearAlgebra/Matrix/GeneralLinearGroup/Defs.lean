@@ -131,11 +131,11 @@ section CoeLemmas
 
 variable (A B : GL n R)
 
-@[simp]
+@[defeq, simp]
 theorem coe_mul : ↑(A * B) = (↑A : Matrix n n R) * (↑B : Matrix n n R) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_one : ↑(1 : GL n R) = (1 : Matrix n n R) :=
   rfl
 
@@ -172,7 +172,7 @@ theorem map_comp (f : T →+* R) (g : R →+* S) :
     map (g.comp f) = (map g).comp (map (n := n) f) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem map_comp_apply (f : T →+* R) (g : R →+* S) (x : GL n T) :
     (map g).comp (map f) x = map g (map f x) :=
   rfl
@@ -338,11 +338,11 @@ instance : Neg (GLPos n R) :=
         (Fact.out (p := Even <| Fintype.card n)).neg_one_pow, one_mul]
       exact g.prop⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem GLPos.coe_neg_GL (g : GLPos n R) : ↑(-g) = -(g : GL n R) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem GLPos.coe_neg (g : GLPos n R) : (↑(-g) : GL n R) = -((g : GL n R) : Matrix n n R) :=
   rfl
 

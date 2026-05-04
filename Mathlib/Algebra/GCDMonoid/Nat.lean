@@ -40,9 +40,11 @@ instance : GCDMonoid ℕ where
   lcm_zero_left := Nat.lcm_zero_left
   lcm_zero_right := Nat.lcm_zero_right
 
+@[defeq]
 theorem gcd_eq_nat_gcd (m n : ℕ) : gcd m n = Nat.gcd m n :=
   rfl
 
+@[defeq]
 theorem lcm_eq_nat_lcm (m n : ℕ) : lcm m n = Nat.lcm m n :=
   rfl
 
@@ -66,6 +68,7 @@ instance normalizationMonoid : NormalizationMonoid ℤ where
     (units_eq_one_or u).elim (fun eq => eq.symm ▸ if_pos Int.one_nonneg) fun eq =>
       eq.symm ▸ if_neg (not_le_of_gt <| show (-1 : ℤ) < 0 by decide)
 
+@[defeq]
 theorem normUnit_eq (z : ℤ) : normUnit z = if 0 ≤ z then 1 else -1 := rfl
 
 theorem normalize_of_nonneg {z : ℤ} (h : 0 ≤ z) : normalize z = z := by
@@ -119,9 +122,11 @@ instance : NormalizedGCDMonoid ℤ :=
     normalize_gcd := fun _ _ => normalize_coe_nat _
     normalize_lcm := fun _ _ => normalize_coe_nat _ }
 
+@[defeq]
 theorem coe_gcd (i j : ℤ) : ↑(Int.gcd i j) = GCDMonoid.gcd i j :=
   rfl
 
+@[defeq]
 theorem coe_lcm (i j : ℤ) : ↑(Int.lcm i j) = GCDMonoid.lcm i j :=
   rfl
 

@@ -91,7 +91,7 @@ instance orderBot : OrderBot (m.syn) where
     have := m.le_add_right 0 (m.toSyn.symm a)
     simpa [map_add, zero_add]
 
-@[simp]
+@[defeq, simp]
 theorem bot_eq_zero : (⊥ : m.syn) = 0 := rfl
 
 @[simp]

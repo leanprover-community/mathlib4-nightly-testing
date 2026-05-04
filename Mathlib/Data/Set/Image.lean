@@ -184,6 +184,7 @@ section Image
 
 variable {f : α → β} {s t : Set α}
 
+@[defeq]
 theorem image_eta (f : α → β) : f '' s = (fun x => f x) '' s :=
   rfl
 

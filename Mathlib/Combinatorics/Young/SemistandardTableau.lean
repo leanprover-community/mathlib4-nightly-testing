@@ -72,7 +72,7 @@ instance instFunLike {μ : YoungDiagram} : FunLike (SemistandardYoungTableau μ)
     cases T'
     congr
 
-@[simp]
+@[defeq, simp]
 theorem to_fun_eq_coe {μ : YoungDiagram} {T : SemistandardYoungTableau μ} :
     T.entry = (T : ℕ → ℕ → ℕ) :=
   rfl

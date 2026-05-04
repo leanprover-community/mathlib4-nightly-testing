@@ -193,7 +193,8 @@ instance instCeilDiv : CeilDiv ℕ ℕ where
   ceilDiv_nonpos a ha b := by simp_rw [ha.antisymm <| zero_le _, Nat.div_zero]
   zero_ceilDiv a := by cases a <;> simp [Nat.div_eq_zero_iff]
 
-@[simp] lemma floorDiv_eq_div (a b : ℕ) : a ⌊/⌋ b = a / b := rfl
+@[defeq, simp] lemma floorDiv_eq_div (a b : ℕ) : a ⌊/⌋ b = a / b := rfl
+@[defeq]
 lemma ceilDiv_eq_add_pred_div (a b : ℕ) : a ⌈/⌉ b = (a + b - 1) / b := rfl
 
 end Nat
@@ -212,9 +213,9 @@ instance instFloorDiv : FloorDiv α (∀ i, π i) where
   floorDiv_nonpos a ha f := by ext i; exact floorDiv_of_nonpos ha _
   zero_floorDiv a := by ext i; exact zero_floorDiv a
 
-@[push ←]
+@[defeq, push ←]
 lemma floorDiv_def (f : ∀ i, π i) (a : α) : f ⌊/⌋ a = fun i ↦ f i ⌊/⌋ a := rfl
-@[simp] lemma floorDiv_apply (f : ∀ i, π i) (a : α) (i : ι) : (f ⌊/⌋ a) i = f i ⌊/⌋ a := rfl
+@[defeq, simp] lemma floorDiv_apply (f : ∀ i, π i) (a : α) (i : ι) : (f ⌊/⌋ a) i = f i ⌊/⌋ a := rfl
 
 end FloorDiv
 
@@ -227,8 +228,9 @@ instance instCeilDiv : CeilDiv α (∀ i, π i) where
   ceilDiv_nonpos a ha f := by ext i; exact ceilDiv_of_nonpos ha _
   zero_ceilDiv a := by ext; exact zero_ceilDiv _
 
+@[defeq]
 lemma ceilDiv_def (f : ∀ i, π i) (a : α) : f ⌈/⌉ a = fun i ↦ f i ⌈/⌉ a := rfl
-@[simp] lemma ceilDiv_apply (f : ∀ i, π i) (a : α) (i : ι) : (f ⌈/⌉ a) i = f i ⌈/⌉ a := rfl
+@[defeq, simp] lemma ceilDiv_apply (f : ∀ i, π i) (a : α) (i : ι) : (f ⌈/⌉ a) i = f i ⌈/⌉ a := rfl
 
 end CeilDiv
 end Pi
@@ -247,6 +249,7 @@ noncomputable instance instFloorDiv : FloorDiv α (ι →₀ β) where
   floorDiv_nonpos a ha f := by ext i; exact floorDiv_of_nonpos ha _
   zero_floorDiv a := by ext; exact zero_floorDiv _
 
+@[defeq]
 lemma floorDiv_def (f : ι →₀ β) (a : α) : f ⌊/⌋ a = f.mapRange (· ⌊/⌋ a) (zero_floorDiv _) := rfl
 set_option warning.simp.otherHead false in
 @[norm_cast] lemma coe_floorDiv (f : ι →₀ β) (a : α) : f ⌊/⌋ a = fun i ↦ f i ⌊/⌋ a := rfl
@@ -267,6 +270,7 @@ noncomputable instance instCeilDiv : CeilDiv α (ι →₀ β) where
   ceilDiv_nonpos a ha f := by ext i; exact ceilDiv_of_nonpos ha _
   zero_ceilDiv a := by ext; exact zero_ceilDiv _
 
+@[defeq]
 lemma ceilDiv_def (f : ι →₀ β) (a : α) : f ⌈/⌉ a = f.mapRange (· ⌈/⌉ a) (zero_ceilDiv _) := rfl
 set_option warning.simp.otherHead false in
 @[norm_cast] lemma coe_ceilDiv_def (f : ι →₀ β) (a : α) : f ⌈/⌉ a = fun i ↦ f i ⌈/⌉ a := rfl

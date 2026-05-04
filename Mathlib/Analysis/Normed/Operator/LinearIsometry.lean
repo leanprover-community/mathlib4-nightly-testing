@@ -149,11 +149,11 @@ instance instSemilinearIsometryClass : SemilinearIsometryClass (E →ₛₗᵢ[�
   map_smulₛₗ f := map_smulₛₗ f.toLinearMap
   norm_map f := f.norm_map'
 
-@[simp]
+@[defeq, simp]
 theorem coe_toLinearMap : ⇑f.toLinearMap = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : E →ₛₗ[σ₁₂] E₂) (hf) : ⇑(mk f hf) = f :=
   rfl
 
@@ -363,9 +363,11 @@ theorem coe_one : ((1 : E →ₗᵢ[R] E) : E → E) = _root_.id :=
 theorem coe_mul (f g : E →ₗᵢ[R] E) : ⇑(f * g) = f ∘ g :=
   rfl
 
+@[defeq]
 theorem one_def : (1 : E →ₗᵢ[R] E) = id :=
   rfl
 
+@[defeq]
 theorem mul_def (f g : E →ₗᵢ[R] E) : (f * g : E →ₗᵢ[R] E) = f.comp g :=
   rfl
 
@@ -513,11 +515,11 @@ instance instCoeFun : CoeFun (E ≃ₛₗᵢ[σ₁₂] E₂) fun _ ↦ E → E�
 theorem coe_injective : @Function.Injective (E ≃ₛₗᵢ[σ₁₂] E₂) (E → E₂) (↑) :=
   DFunLike.coe_injective
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (e : E ≃ₛₗ[σ₁₂] E₂) (he : ∀ x, ‖e x‖ = ‖x‖) : ⇑(mk e he) = e :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toLinearEquiv (e : E ≃ₛₗᵢ[σ₁₂] E₂) : ⇑e.toLinearEquiv = e :=
   rfl
 
@@ -798,16 +800,19 @@ theorem coe_one : ⇑(1 : E ≃ₗᵢ[R] E) = id :=
 theorem coe_mul (e e' : E ≃ₗᵢ[R] E) : ⇑(e * e') = e ∘ e' :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_inv (e : E ≃ₗᵢ[R] E) : ⇑e⁻¹ = e.symm :=
   rfl
 
+@[defeq]
 theorem one_def : (1 : E ≃ₗᵢ[R] E) = refl _ _ :=
   rfl
 
+@[defeq]
 theorem mul_def (e e' : E ≃ₗᵢ[R] E) : (e * e' : E ≃ₗᵢ[R] E) = e'.trans e :=
   rfl
 
+@[defeq]
 theorem inv_def (e : E ≃ₗᵢ[R] E) : (e⁻¹ : E ≃ₗᵢ[R] E) = e.symm :=
   rfl
 

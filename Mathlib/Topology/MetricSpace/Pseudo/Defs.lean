@@ -1118,6 +1118,7 @@ instance Real.pseudoMetricSpace : PseudoMetricSpace ℝ where
   dist_comm _ _ := abs_sub_comm _ _
   dist_triangle _ _ _ := abs_sub_le _ _ _
 
+@[defeq]
 theorem Real.dist_eq (x y : ℝ) : dist x y = |x - y| := rfl
 
 theorem Real.nndist_eq (x y : ℝ) : nndist x y = Real.nnabs (x - y) := rfl

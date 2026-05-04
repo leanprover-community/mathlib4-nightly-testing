@@ -148,17 +148,19 @@ def ModularFormClass.modularForm [FunLike F ℍ ℂ] [ModularFormClass F Γ k] (
 instance [FunLike F ℍ ℂ] [ModularFormClass F Γ k] : CoeTC F (ModularForm Γ k) :=
   ⟨ModularFormClass.modularForm⟩
 
+@[defeq]
 theorem ModularForm.toFun_eq_coe (f : ModularForm Γ k) : f.toFun = (f : ℍ → ℂ) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem ModularForm.toSlashInvariantForm_coe (f : ModularForm Γ k) : ⇑f.1 = f :=
   rfl
 
+@[defeq]
 theorem CuspForm.toFun_eq_coe {f : CuspForm Γ k} : f.toFun = (f : ℍ → ℂ) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem CuspForm.toSlashInvariantForm_coe (f : CuspForm Γ k) : ⇑f.1 = f := rfl
 
 @[ext]
@@ -200,11 +202,11 @@ instance add : Add (ModularForm Γ k) where add f g :=
     holo' := f.holo'.add g.holo'
     bdd_at_cusps' hc := by simpa using (f.bdd_at_cusps' hc).add (g.bdd_at_cusps' hc) }
 
-@[simp]
+@[defeq, simp]
 theorem coe_add (f g : ModularForm Γ k) : ⇑(f + g) = f + g :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (f g : ModularForm Γ k) (z : ℍ) : (f + g) z = f z + g z :=
   rfl
 
@@ -215,11 +217,11 @@ instance instZero : Zero (ModularForm Γ k) :=
         simp only [SlashInvariantForm.toFun_eq_coe, coe_zero, SlashAction.zero_slash]
         exact zero_form_isBoundedAtImInfty } ⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : ModularForm Γ k) = (0 : ℍ → ℂ) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (z : ℍ) : (0 : ModularForm Γ k) z = 0 :=
   rfl
 
@@ -253,11 +255,11 @@ instance instSMulℝ : SMul α (ModularForm Γ k) where
         SlashInvariantForm.coe_smulℝ, toSlashInvariantForm_coe, ← smul_one_smul ℂ c ⇑f, smul_slash]
         using (f.bdd_at_cusps' hc g hg).const_smul_left _ }
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul (f : ModularForm Γ k) (n : α) : ⇑(n • f) = n • ⇑f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem smul_apply (f : ModularForm Γ k) (n : α) (z : ℍ) : (n • f) z = n • f z :=
   rfl
 
@@ -276,11 +278,11 @@ instance instSMulℂ : SMul α (ModularForm Γ k) where
         SlashInvariantForm.coe_smul, toSlashInvariantForm_coe, ← smul_one_smul ℂ c ⇑f, smul_slash]
       exact (f.bdd_at_cusps' hc g hg).const_smul_left (σ g (c • (1 : ℂ))) }
 
-@[simp]
+@[defeq, simp]
 theorem IsGLPos.coe_smul (f : ModularForm Γ k) (n : α) : ⇑(n • f) = n • ⇑f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem IsGLPos.smul_apply (f : ModularForm Γ k) (n : α) (z : ℍ) : (n • f) z = n • f z :=
   rfl
 
@@ -292,22 +294,22 @@ instance instNeg : Neg (ModularForm Γ k) :=
       holo' := f.holo'.neg
       bdd_at_cusps' := fun hc g hg => by simpa using (f.bdd_at_cusps' hc g hg).neg }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_neg (f : ModularForm Γ k) : ⇑(-f) = -f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_apply (f : ModularForm Γ k) (z : ℍ) : (-f) z = -f z :=
   rfl
 
 instance instSub : Sub (ModularForm Γ k) :=
   ⟨fun f g => f + -g⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_sub (f g : ModularForm Γ k) : ⇑(f - g) = f - g :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_apply (f g : ModularForm Γ k) (z : ℍ) : (f - g) z = f z - g z :=
   rfl
 
@@ -371,7 +373,7 @@ lemma constℝ_apply [Γ.HasDetPlusMinusOne] (x : ℝ) (τ : ℍ) :
 instance [Γ.HasDetPlusMinusOne] : One (ModularForm Γ 0) where
   one := { constℝ 1 with toSlashInvariantForm := 1 }
 
-@[simp]
+@[defeq, simp]
 theorem one_coe_eq_one [Γ.HasDetPlusMinusOne] : ⇑(1 : ModularForm Γ 0) = 1 :=
   rfl
 
@@ -409,11 +411,11 @@ instance hasAdd : Add (CuspForm Γ k) :=
       holo' := f.holo'.add g.holo'
       zero_at_cusps' := fun A => by simpa using (f.zero_at_cusps' A).add (g.zero_at_cusps' A) }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_add (f g : CuspForm Γ k) : ⇑(f + g) = f + g :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (f g : CuspForm Γ k) (z : ℍ) : (f + g) z = f z + g z :=
   rfl
 
@@ -422,11 +424,11 @@ instance instZero : Zero (CuspForm Γ k) :=
       holo' := fun _ => mdifferentiableAt_const
       zero_at_cusps' hc g hg := by simpa using Filter.zero_zeroAtFilter _ } ⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : CuspForm Γ k) = (0 : ℍ → ℂ) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (z : ℍ) : (0 : CuspForm Γ k) z = 0 :=
   rfl
 
@@ -446,11 +448,11 @@ instance instSMul : SMul α (CuspForm Γ k) where smul c f :=
         SlashInvariantForm.coe_smulℝ, toSlashInvariantForm_coe, ← smul_one_smul ℂ c ⇑f, smul_slash]
       exact (f.zero_at_cusps' hc g hg).smul _ }
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul (f : CuspForm Γ k) (n : α) : ⇑(n • f) = n • ⇑f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem smul_apply (f : CuspForm Γ k) (n : α) {z : ℍ} : (n • f) z = n • f z :=
   rfl
 
@@ -470,11 +472,11 @@ instance IsGLPos.instSMul : SMul α (CuspForm Γ k) where smul c f :=
         smul_slash]
       exact (f.zero_at_cusps' hc g hg).smul _ }
 
-@[simp]
+@[defeq, simp]
 theorem IsGLPos.coe_smul (f : CuspForm Γ k) (n : α) : ⇑(n • f) = n • ⇑f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem IsGLPos.smul_apply (f : CuspForm Γ k) (n : α) {z : ℍ} : (n • f) z = n • f z :=
   rfl
 
@@ -486,22 +488,22 @@ instance instNeg : Neg (CuspForm Γ k) :=
       holo' := f.holo'.neg
       zero_at_cusps' hc g hg := by simpa using (f.zero_at_cusps' hc g hg).neg }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_neg (f : CuspForm Γ k) : ⇑(-f) = -f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_apply (f : CuspForm Γ k) (z : ℍ) : (-f) z = -f z :=
   rfl
 
 instance instSub : Sub (CuspForm Γ k) :=
   ⟨fun f g => f + -g⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_sub (f g : CuspForm Γ k) : ⇑(f - g) = f - g :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_apply (f g : CuspForm Γ k) (z : ℍ) : (f - g) z = f z - g z :=
   rfl
 

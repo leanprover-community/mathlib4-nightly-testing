@@ -23,10 +23,11 @@ instance instNormedAddCommGroup : NormedAddCommGroup ℤ where
     simp only [dist_eq, norm, cast_add, cast_neg]
     rw [abs_sub_comm, neg_add_eq_sub]
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem norm_cast_real (m : ℤ) : ‖(m : ℝ)‖ = ‖m‖ :=
   rfl
 
+@[defeq]
 theorem norm_eq_abs (n : ℤ) : ‖n‖ = |(n : ℝ)| :=
   rfl
 

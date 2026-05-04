@@ -89,11 +89,11 @@ instance instFunLike : FunLike (P₁ ≃ᴬ[k] P₂) P₁ P₂ where
   coe f := f.toAffineEquiv
   coe_injective' _ _ h := toAffineEquiv_injective (DFunLike.coe_injective h)
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_coe (e : P₁ ≃ᴬ[k] P₂) : ⇑(e : P₁ ≃ᵃ[k] P₂) = e :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toEquiv (e : P₁ ≃ᴬ[k] P₂) : ⇑e.toEquiv = e :=
   rfl
 

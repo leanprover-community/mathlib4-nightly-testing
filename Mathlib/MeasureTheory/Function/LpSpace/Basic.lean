@@ -152,11 +152,12 @@ theorem mem_Lp_iff_memLp {f : α →ₘ[μ] E} : f ∈ Lp E p μ ↔ MemLp f p �
 protected theorem antitone [IsFiniteMeasure μ] {p q : ℝ≥0∞} (hpq : p ≤ q) : Lp E q μ ≤ Lp E p μ :=
   fun f hf => (MemLp.mono_exponent ⟨f.aestronglyMeasurable, hf⟩ hpq).2
 
-@[simp]
+@[defeq, simp]
 theorem coeFn_mk {f : α →ₘ[μ] E} (hf : eLpNorm f p μ < ∞) : ((⟨f, hf⟩ : Lp E p μ) : α → E) = f :=
   rfl
 
 -- not @[simp] because dsimp can prove this
+@[defeq]
 theorem coe_mk {f : α →ₘ[μ] E} (hf : eLpNorm f p μ < ∞) : ((⟨f, hf⟩ : Lp E p μ) : α →ₘ[μ] E) = f :=
   rfl
 
@@ -212,6 +213,7 @@ instance instDist : Dist (Lp E p μ) where dist f g := ‖-f + g‖
 
 instance instEDist : EDist (Lp E p μ) where edist f g := eLpNorm (-⇑f + ⇑g) p μ
 
+@[defeq]
 theorem norm_def (f : Lp E p μ) : ‖f‖ = ENNReal.toReal (eLpNorm f p μ) :=
   rfl
 
@@ -247,6 +249,7 @@ theorem dist_eq_eLpNorm_neg_add (f g : Lp E p μ) : dist f g = (eLpNorm (-⇑f +
 theorem dist_def (f g : Lp E p μ) : dist f g = (eLpNorm (⇑f - ⇑g) p μ).toReal := by
   rw [dist_eq_eLpNorm_neg_add, ← eLpNorm_neg, neg_add, neg_neg, sub_eq_add_neg]
 
+@[defeq]
 theorem edist_eq_eLpNorm_neg_add (f g : Lp E p μ) : edist f g = eLpNorm (-⇑f + ⇑g) p μ := rfl
 
 theorem edist_def (f g : Lp E p μ) : edist f g = eLpNorm (⇑f - ⇑g) p μ := by
@@ -259,6 +262,7 @@ protected theorem edist_dist (f g : Lp E p μ) : edist f g = .ofReal (dist f g) 
 protected theorem dist_edist (f g : Lp E p μ) : dist f g = (edist f g).toReal :=
   MeasureTheory.Lp.dist_eq_eLpNorm_neg_add ..
 
+@[defeq]
 theorem dist_eq_norm (f g : Lp E p μ) : dist f g = ‖-f + g‖ := rfl
 
 @[simp]

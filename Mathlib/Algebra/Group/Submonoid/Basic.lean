@@ -75,7 +75,7 @@ instance : InfSet (Submonoid M) :=
         Set.mem_biInter fun i h =>
           i.mul_mem (by apply Set.mem_iInter₂.1 hx i h) (by apply Set.mem_iInter₂.1 hy i h) }⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_sInf (S : Set (Submonoid M)) : ((sInf S : Submonoid M) : Set M) = ⋂ s ∈ S, ↑s :=
   rfl
 

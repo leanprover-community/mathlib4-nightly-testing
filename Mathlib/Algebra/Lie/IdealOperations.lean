@@ -75,6 +75,7 @@ of submodules of `M`. -/
 instance hasBracket : Bracket (LieIdeal R L) (LieSubmodule R L M) :=
   ⟨fun I N => lieSpan R L { ⁅(x : L), (n : M)⁆ | (x : I) (n : N) }⟩
 
+@[defeq]
 theorem lieIdeal_oper_eq_span :
     ⁅I, N⁆ = lieSpan R L { ⁅(x : L), (n : M)⁆ | (x : I) (n : N) } :=
   rfl

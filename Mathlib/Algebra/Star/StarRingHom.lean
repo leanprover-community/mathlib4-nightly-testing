@@ -112,7 +112,7 @@ protected theorem coe_coe {F : Type*} [FunLike F A B] [NonUnitalRingHomClass F A
     [NonUnitalStarRingHomClass F A B] (f : F) : ⇑(f : A →⋆ₙ+* B) = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toNonUnitalRingHom (f : A →⋆ₙ+* B) : ⇑f.toNonUnitalRingHom = f :=
   rfl
 
@@ -136,7 +136,7 @@ theorem coe_copy (f : A →⋆ₙ+* B) (f' : A → B) (h : f' = f) : ⇑(f.copy 
 theorem copy_eq (f : A →⋆ₙ+* B) (f' : A → B) (h : f' = f) : f.copy f' h = f :=
   DFunLike.ext' h
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : A →ₙ+* B) (h) : ((⟨f, h⟩ : A →⋆ₙ+* B) : A → B) = f := rfl
 
 @[simp]
@@ -218,10 +218,11 @@ instance : MonoidWithZero (A →⋆ₙ+* A) where
   zero_mul := fun _ => ext fun _ => rfl
   mul_zero := fun f => ext fun _ => map_zero f
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ((0 : A →⋆ₙ+* B) : A → B) = 0 :=
   rfl
 
+@[defeq]
 theorem zero_apply (a : A) : (0 : A →⋆ₙ+* B) a = 0 :=
   rfl
 
@@ -315,7 +316,7 @@ instance : FunLike (A ≃⋆+* B) A B where
 
 instance : CoeOut (A ≃⋆+* B) (A ≃+* B) where coe := toRingEquiv
 
-@[deprecated "Now a syntactic equality" (since := "2026-04-09"), nolint synTaut]
+@[defeq, deprecated "Now a syntactic equality" (since := "2026-04-09"), nolint synTaut]
 theorem toRingEquiv_eq_coe (e : A ≃⋆+* B) : e.toRingEquiv = e :=
   rfl
 
@@ -363,7 +364,7 @@ theorem symm_symm (e : A ≃⋆+* B) : e.symm.symm = e := rfl
 theorem symm_bijective : Function.Bijective (symm : (A ≃⋆+* B) → B ≃⋆+* A) :=
   Function.bijective_iff_has_inverse.mpr ⟨_, symm_symm, symm_symm⟩
 
-@[simp] theorem coe_mk (e h₁) : ⇑(⟨e, h₁⟩ : A ≃⋆+* B) = e := rfl
+@[defeq, simp] theorem coe_mk (e h₁) : ⇑(⟨e, h₁⟩ : A ≃⋆+* B) = e := rfl
 
 @[simp]
 theorem mk_coe (e : A ≃⋆+* B) (e' h₁ h₂ h₃ h₄ h₅) :

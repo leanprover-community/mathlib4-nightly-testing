@@ -158,7 +158,7 @@ instance : Category (Comonad C) where
 instance {T : Monad C} : Inhabited (MonadHom T T) :=
   ⟨𝟙 T⟩
 
-@[simp]
+@[defeq, simp]
 theorem MonadHom.id_toNatTrans (T : Monad C) : (𝟙 T : T ⟶ T).toNatTrans = 𝟙 (T : C ⥤ C) :=
   rfl
 
@@ -170,7 +170,7 @@ theorem MonadHom.comp_toNatTrans {T₁ T₂ T₃ : Monad C} (f : T₁ ⟶ T₂) 
 instance {G : Comonad C} : Inhabited (ComonadHom G G) :=
   ⟨𝟙 G⟩
 
-@[simp]
+@[defeq, simp]
 theorem ComonadHom.id_toNatTrans (T : Comonad C) : (𝟙 T : T ⟶ T).toNatTrans = 𝟙 (T : C ⥤ C) :=
   rfl
 

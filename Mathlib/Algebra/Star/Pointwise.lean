@@ -58,7 +58,7 @@ theorem mem_star [Star α] : a ∈ s⋆ ↔ a⋆ ∈ s := Iff.rfl
 
 theorem star_mem_star [InvolutiveStar α] : a⋆ ∈ s⋆ ↔ a ∈ s := by simp only [mem_star, star_star]
 
-@[simp]
+@[defeq, simp]
 theorem star_preimage [Star α] : Star.star ⁻¹' s = s⋆ := rfl
 
 @[simp]

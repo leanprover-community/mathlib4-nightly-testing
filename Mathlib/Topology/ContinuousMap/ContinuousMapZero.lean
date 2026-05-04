@@ -69,7 +69,7 @@ scoped[ContinuousMapZero] attribute [instance] Set.zeroOfFactMem
 @[ext]
 lemma ext {f g : C(X, R)₀} (h : ∀ x, f x = g x) : f = g := DFunLike.ext f g h
 
-@[simp]
+@[defeq, simp]
 lemma coe_mk {f : C(X, R)} {h0 : f 0 = 0} : ⇑(mk f h0) = f := rfl
 
 lemma toContinuousMap_injective : Injective ((↑) : C(X, R)₀ → C(X, R)) :=
@@ -472,6 +472,7 @@ lemma isometry_toContinuousMap [MetricSpace R] [Zero R] :
 noncomputable instance [NormedAddCommGroup R] : Norm C(α, R)₀ where
   norm f := ‖(f : C(α, R))‖
 
+@[defeq]
 lemma norm_def [NormedAddCommGroup R] (f : C(α, R)₀) : ‖f‖ = ‖(f : C(α, R))‖ :=
   rfl
 

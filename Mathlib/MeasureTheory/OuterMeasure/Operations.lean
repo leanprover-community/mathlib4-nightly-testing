@@ -45,7 +45,7 @@ instance instZero : Zero (OuterMeasure α) :=
       mono _ := le_rfl
       iUnion_nat _ _ := zero_le }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : OuterMeasure α) = 0 :=
   rfl
 
@@ -63,10 +63,11 @@ instance instAdd : Add (OuterMeasure α) :=
             add_le_add (measure_iUnion_le s) (measure_iUnion_le s)
           _ = _ := ENNReal.tsum_add.symm }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_add (m₁ m₂ : OuterMeasure α) : ⇑(m₁ + m₂) = m₁ + m₂ :=
   rfl
 
+@[defeq]
 theorem add_apply (m₁ m₂ : OuterMeasure α) (s : Set α) : (m₁ + m₂) s = m₁ s + m₂ s :=
   rfl
 
@@ -86,10 +87,11 @@ instance instSMul : SMul R (OuterMeasure α) :=
         simp_rw [← smul_one_mul c (m _), ENNReal.tsum_mul_left]
         exact mul_right_mono (measure_iUnion_le _) }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul (c : R) (m : OuterMeasure α) : ⇑(c • m) = c • ⇑m :=
   rfl
 
+@[defeq]
 theorem smul_apply (c : R) (m : OuterMeasure α) (s : Set α) : (c • m) s = c • m s :=
   rfl
 
@@ -133,7 +135,7 @@ instance instModule {R : Type*} [Semiring R] [Module R ℝ≥0∞] [IsScalarTowe
 instance instBot : Bot (OuterMeasure α) :=
   ⟨0⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_bot : (⊥ : OuterMeasure α) = 0 :=
   rfl
 
@@ -173,7 +175,7 @@ instance instCompleteLattice : CompleteLattice (OuterMeasure α) :=
     completeLatticeOfSup (OuterMeasure α) fun ms =>
       ⟨fun m hm s => by apply le_iSup₂ m hm, fun _ hm s => iSup₂_le fun _ hm' => hm hm' s⟩ with }
 
-@[simp]
+@[defeq, simp]
 theorem sSup_apply (ms : Set (OuterMeasure α)) (s : Set α) :
     (sSup ms) s = ⨆ m ∈ ms, (m : OuterMeasure α) s :=
   rfl

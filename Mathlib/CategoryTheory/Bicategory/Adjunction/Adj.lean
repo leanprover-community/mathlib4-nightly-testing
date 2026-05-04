@@ -51,7 +51,7 @@ variable {B : Type u} [Bicategory.{w, v} B]
 
 namespace Adj
 
-@[simp] lemma mk_obj (b : Adj B) : mk b.obj = b := rfl
+@[defeq, simp] lemma mk_obj (b : Adj B) : mk b.obj = b := rfl
 
 section
 

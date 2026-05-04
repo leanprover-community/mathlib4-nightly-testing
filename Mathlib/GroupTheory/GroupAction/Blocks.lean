@@ -640,12 +640,12 @@ instance (a : X) : BoundedOrder (BlockMem G a) where
     simp only [Subtype.mk_le_mk, Set.le_eq_subset, Set.singleton_subset_iff]
     exact ha
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_top (a : X) :
     ((⊤ : BlockMem G a) : Set X) = Set.univ :=
   rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_bot (a : X) :
     ((⊥ : BlockMem G a) : Set X) = {a} :=
   rfl

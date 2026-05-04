@@ -84,7 +84,9 @@ section Basic
 
 variable {R A : Type*}
 
+@[defeq]
 lemma mk_toProd (x : Unitization R A) : mk x.toProd = x := rfl
+@[defeq]
 lemma toProd_mk (x : R × A) : toProd (mk x) = x := rfl
 
 /-- The canonical equivalence between `Unitization R A` and `R × A`. -/
@@ -441,20 +443,20 @@ instance instOne [One R] [Zero A] : One (Unitization R A) :=
 instance instMul [Mul R] [Add A] [Mul A] [SMul R A] : Mul (Unitization R A) :=
   ⟨fun x y => .mk (x.fst * y.fst, x.fst • y.snd + y.fst • x.snd + x.snd * y.snd)⟩
 
-@[simp]
+@[defeq, simp]
 theorem fst_one [One R] [Zero A] : (1 : Unitization R A).fst = 1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_one [One R] [Zero A] : (1 : Unitization R A).snd = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem fst_mul [Mul R] [Add A] [Mul A] [SMul R A] (x₁ x₂ : Unitization R A) :
     (x₁ * x₂).fst = x₁.fst * x₂.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_mul [Mul R] [Add A] [Mul A] [SMul R A] (x₁ x₂ : Unitization R A) :
     (x₁ * x₂).snd = x₁.fst • x₂.snd + x₂.fst • x₁.snd + x₁.snd * x₂.snd :=
   rfl
@@ -583,11 +585,11 @@ variable {R A : Type*}
 instance instStar [Star R] [Star A] : Star (Unitization R A) :=
   ⟨fun ra => .mk (star ra.fst, star ra.snd)⟩
 
-@[simp]
+@[defeq, simp]
 theorem fst_star [Star R] [Star A] (x : Unitization R A) : (star x).fst = star x.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_star [Star R] [Star A] (x : Unitization R A) : (star x).snd = star x.snd :=
   rfl
 
@@ -646,6 +648,7 @@ instance instAlgebra : Algebra S (Unitization R A) where
 theorem algebraMap_eq_inl_comp : ⇑(algebraMap S (Unitization R A)) = inl ∘ algebraMap S R :=
   rfl
 
+@[defeq]
 theorem algebraMap_eq_inlRingHom_comp :
     algebraMap S (Unitization R A) = (inlRingHom R A).comp (algebraMap S R) :=
   rfl
@@ -653,6 +656,7 @@ theorem algebraMap_eq_inlRingHom_comp :
 theorem algebraMap_eq_inl : ⇑(algebraMap R (Unitization R A)) = inl :=
   rfl
 
+@[defeq]
 theorem algebraMap_eq_inlRingHom : algebraMap R (Unitization R A) = inlRingHom R A :=
   rfl
 

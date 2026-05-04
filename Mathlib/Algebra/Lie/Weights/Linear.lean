@@ -179,7 +179,7 @@ instance : LieRingModule L (shiftedGenWeightSpace R L M χ) where
       sub_zero, smul_sub, smul_comm (χ x)]
     abel
 
-@[simp] lemma coe_lie_shiftedGenWeightSpace_apply (x : L) (m : shiftedGenWeightSpace R L M χ) :
+@[defeq, simp] lemma coe_lie_shiftedGenWeightSpace_apply (x : L) (m : shiftedGenWeightSpace R L M χ) :
     letI : Bracket L (shiftedGenWeightSpace R L M χ) := LieRingModule.toBracket
     ⁅x, m⁆ = ⁅x, (m : M)⁆ - χ x • m :=
   rfl

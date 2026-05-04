@@ -254,6 +254,7 @@ noncomputable instance : LineDeriv E 𝓓'(Ω, F) 𝓓'(Ω, F) where
   lineDerivOp v := lineDerivCLM v
 
 variable (𝕜) in
+@[defeq]
 lemma lineDerivOp_eq_lineDerivCLM {v : E} {T : 𝓓'(Ω, F)} :
     ∂_{v} T = lineDerivCLM v T :=
   rfl

@@ -24,7 +24,7 @@ open List
 
 instance functor : Functor Multiset where map := @map
 
-@[simp]
+@[defeq, simp]
 theorem fmap_def {α' β'} {s : Multiset α'} (f : α' → β') : f <$> s = s.map f :=
   rfl
 
@@ -68,11 +68,11 @@ instance : Monad Multiset :=
     pure := fun x ↦ {x}
     bind := @bind }
 
-@[simp]
+@[defeq, simp]
 theorem pure_def {α} : (pure : α → Multiset α) = singleton :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem bind_def {α β} : (· >>= ·) = @bind α β :=
   rfl
 

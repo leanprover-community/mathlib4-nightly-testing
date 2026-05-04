@@ -266,9 +266,10 @@ def smul (r : R) (v : VectorMeasure α M) : VectorMeasure α M where
 instance instSMul : SMul R (VectorMeasure α M) :=
   ⟨smul⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul (r : R) (v : VectorMeasure α M) : ⇑(r • v) = r • ⇑v := rfl
 
+@[defeq]
 theorem smul_apply (r : R) (v : VectorMeasure α M) (i : Set α) : (r • v) i = r • v i := rfl
 
 end SMul
@@ -283,9 +284,10 @@ instance instZero : Zero (VectorMeasure α M) :=
 instance instInhabited : Inhabited (VectorMeasure α M) :=
   ⟨0⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : VectorMeasure α M) = 0 := rfl
 
+@[defeq]
 theorem zero_apply (i : Set α) : (0 : VectorMeasure α M) i = 0 := rfl
 
 variable [ContinuousAdd M]

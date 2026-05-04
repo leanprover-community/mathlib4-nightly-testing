@@ -56,7 +56,7 @@ instance one : One (Completion α) :=
 instance mul : Mul (Completion α) :=
   ⟨curry <| (isDenseInducing_coe.prodMap isDenseInducing_coe).extend ((↑) ∘ uncurry (· * ·))⟩
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_one : ((1 : α) : Completion α) = 1 :=
   rfl
 

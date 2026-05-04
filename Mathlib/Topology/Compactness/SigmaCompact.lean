@@ -341,7 +341,7 @@ instance : RelHomClass (CompactExhaustion X) LE.le HasSubset.Subset where
 
 variable (K : CompactExhaustion X)
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe : K.toFun = K := rfl
 
 protected theorem isCompact (n : ℕ) : IsCompact (K n) :=

@@ -35,7 +35,7 @@ abbrev GroupSeminormClass.toSeminormedGroup [Group α] [GroupSeminormClass F α 
   dist_comm x y := by simp [← map_inv_eq_map f (x⁻¹ * y)]
   dist_triangle x y z := by convert map_mul_le_add f (x⁻¹ * y) (y⁻¹ * z) using 2; group
 
-@[to_additive]
+@[defeq, to_additive]
 lemma GroupSeminormClass.toSeminormedGroup_norm_eq [Group α] [GroupSeminormClass F α ℝ]
     (f : F) (x : α) : @norm _ (GroupSeminormClass.toSeminormedGroup f).toNorm x = f x := rfl
 
@@ -48,7 +48,7 @@ abbrev GroupSeminormClass.toSeminormedCommGroup [CommGroup α] [GroupSeminormCla
   __ := GroupSeminormClass.toSeminormedGroup f
   __ : CommGroup α := inferInstance
 
-@[to_additive]
+@[defeq, to_additive]
 lemma GroupSeminormClass.toSeminormedCommGroup_norm_eq [CommGroup α] [GroupSeminormClass F α ℝ]
     (f : F) (x : α) : @norm _ (GroupSeminormClass.toSeminormedCommGroup f).toNorm x = f x := rfl
 
@@ -61,7 +61,7 @@ abbrev GroupNormClass.toNormedGroup [Group α] [GroupNormClass F α ℝ]
   __ := GroupSeminormClass.toSeminormedGroup f
   eq_of_dist_eq_zero h := inv_mul_eq_one.mp (eq_one_of_map_eq_zero f h)
 
-@[to_additive]
+@[defeq, to_additive]
 lemma GroupNormClass.toNormedGroup_norm_eq [Group α] [GroupNormClass F α ℝ]
     (f : F) (x : α) : @norm _ (GroupNormClass.toNormedGroup f).toNorm x = f x := rfl
 
@@ -74,6 +74,6 @@ abbrev GroupNormClass.toNormedCommGroup [CommGroup α] [GroupNormClass F α ℝ]
   __ := GroupNormClass.toNormedGroup f
   __ : CommGroup α := inferInstance
 
-@[to_additive]
+@[defeq, to_additive]
 lemma GroupNormClass.toNormedCommGroup_norm_eq [CommGroup α] [GroupNormClass F α ℝ]
     (f : F) (x : α) : @norm _ (GroupNormClass.toNormedCommGroup f).toNorm x = f x := rfl

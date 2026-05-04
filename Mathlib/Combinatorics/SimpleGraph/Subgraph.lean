@@ -375,19 +375,19 @@ theorem top_adj : (⊤ : Subgraph G).Adj a b ↔ G.Adj a b :=
 theorem not_bot_adj : ¬ (⊥ : Subgraph G).Adj a b :=
   not_false
 
-@[simp]
+@[defeq, simp]
 theorem verts_sup (G₁ G₂ : G.Subgraph) : (G₁ ⊔ G₂).verts = G₁.verts ∪ G₂.verts :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem verts_inf (G₁ G₂ : G.Subgraph) : (G₁ ⊓ G₂).verts = G₁.verts ∩ G₂.verts :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem verts_top : (⊤ : G.Subgraph).verts = Set.univ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem verts_bot : (⊥ : G.Subgraph).verts = ∅ :=
   rfl
 
@@ -426,11 +426,11 @@ theorem iInf_adj_of_nonempty [Nonempty ι] {f : ι → G.Subgraph} :
   rw [iInf, sInf_adj_of_nonempty (Set.range_nonempty _)]
   simp
 
-@[simp]
+@[defeq, simp]
 theorem verts_sSup (s : Set G.Subgraph) : (sSup s).verts = ⋃ G' ∈ s, verts G' :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem verts_sInf (s : Set G.Subgraph) : (sInf s).verts = ⋂ G' ∈ s, verts G' :=
   rfl
 

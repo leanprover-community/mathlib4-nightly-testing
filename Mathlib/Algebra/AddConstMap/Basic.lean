@@ -325,9 +325,9 @@ instance : FunLike (G →+c[a, b] H) G H where
   coe := AddConstMap.toFun
   coe_injective' | ⟨_, _⟩, ⟨_, _⟩, rfl => rfl
 
-@[simp, push_cast] theorem coe_mk (f : G → H) (hf) : ⇑(mk f hf : G →+c[a, b] H) = f := rfl
-@[simp] theorem mk_coe (f : G →+c[a, b] H) : mk f f.2 = f := rfl
-@[simp] theorem toFun_eq_coe (f : G →+c[a, b] H) : f.toFun = f := rfl
+@[defeq, simp, push_cast] theorem coe_mk (f : G → H) (hf) : ⇑(mk f hf : G →+c[a, b] H) = f := rfl
+@[defeq, simp] theorem mk_coe (f : G →+c[a, b] H) : mk f f.2 = f := rfl
+@[defeq, simp] theorem toFun_eq_coe (f : G →+c[a, b] H) : f.toFun = f := rfl
 
 instance : AddConstMapClass (G →+c[a, b] H) G H a b where
   map_add_const f := f.map_add_const'
@@ -371,7 +371,7 @@ def replaceConsts (f : G →+c[a, b] H) (a' b') (ha : a = a') (hb : b = b') :
 instance {K : Type*} [VAdd K H] [VAddAssocClass K H H] : VAdd K (G →+c[a, b] H) :=
   ⟨fun c f ↦ ⟨c +ᵥ ⇑f, fun x ↦ by simp [vadd_add_assoc]⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_vadd {K : Type*} [VAdd K H] [VAddAssocClass K H H] (c : K) (f : G →+c[a, b] H) :
     ⇑(c +ᵥ f) = c +ᵥ ⇑f :=
   rfl
@@ -393,14 +393,17 @@ instance : Pow (G →+c[a, a] G) ℕ where
 instance : Monoid (G →+c[a, a] G) :=
   DFunLike.coe_injective.monoid (M₂ := Function.End G) _ rfl (fun _ _ ↦ rfl) fun _ _ ↦ rfl
 
+@[defeq]
 theorem mul_def (f g : G →+c[a, a] G) : f * g = f.comp g := rfl
 @[simp, push_cast] theorem coe_mul (f g : G →+c[a, a] G) : ⇑(f * g) = f ∘ g := rfl
 
+@[defeq]
 theorem one_def : (1 : G →+c[a, a] G) = .id := rfl
 @[simp, push_cast] theorem coe_one : ⇑(1 : G →+c[a, a] G) = id := rfl
 
-@[simp, push_cast] theorem coe_pow (f : G →+c[a, a] G) (n : ℕ) : ⇑(f ^ n) = f^[n] := rfl
+@[defeq, simp, push_cast] theorem coe_pow (f : G →+c[a, a] G) (n : ℕ) : ⇑(f ^ n) = f^[n] := rfl
 
+@[defeq]
 theorem pow_apply (f : G →+c[a, a] G) (n : ℕ) (x : G) : (f ^ n) x = f^[n] x := rfl
 
 /-- Coercion to functions as a monoid homomorphism to `Function.End G`. -/

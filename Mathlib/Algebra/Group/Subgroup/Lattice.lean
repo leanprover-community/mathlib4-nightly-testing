@@ -143,11 +143,11 @@ theorem mem_bot {x : G} : x ∈ (⊥ : Subgroup G) ↔ x = 1 :=
 theorem mem_top (x : G) : x ∈ (⊤ : Subgroup G) :=
   Set.mem_univ x
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_top : ((⊤ : Subgroup G) : Set G) = Set.univ :=
   rfl
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_bot : ((⊥ : Subgroup G) : Set G) = {1} :=
   rfl
 
@@ -155,11 +155,11 @@ theorem coe_bot : ((⊥ : Subgroup G) : Set G) = {1} :=
 instance : Unique (⊥ : Subgroup G) :=
   ⟨⟨1⟩, fun g => Subtype.ext g.2⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem top_toSubmonoid : (⊤ : Subgroup G).toSubmonoid = ⊤ :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem bot_toSubmonoid : (⊥ : Subgroup G).toSubmonoid = ⊥ :=
   rfl
 
@@ -225,7 +225,7 @@ instance : Min (Subgroup G) :=
     { H₁.toSubmonoid ⊓ H₂.toSubmonoid with
       inv_mem' := fun ⟨hx, hx'⟩ => ⟨H₁.inv_mem hx, H₂.inv_mem hx'⟩ }⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_inf (p p' : Subgroup G) : ((p ⊓ p' : Subgroup G) : Set G) = (p : Set G) ∩ p' :=
   rfl
 

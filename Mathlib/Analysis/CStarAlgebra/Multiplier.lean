@@ -146,13 +146,15 @@ instance instSMul : SMul S 𝓜(𝕜, A) where
         show (s • a.snd) x * y = x * (s • a.fst) y by
           simp only [ContinuousLinearMap.smul_apply, mul_smul_comm, smul_mul_assoc, central] }
 
-@[simp]
+@[defeq, simp]
 theorem smul_toProd (s : S) (a : 𝓜(𝕜, A)) : (s • a).toProd = s • a.toProd :=
   rfl
 
+@[defeq]
 theorem smul_fst (s : S) (a : 𝓜(𝕜, A)) : (s • a).fst = s • a.fst :=
   rfl
 
+@[defeq]
 theorem smul_snd (s : S) (a : 𝓜(𝕜, A)) : (s • a).snd = s • a.snd :=
   rfl
 
@@ -204,91 +206,107 @@ instance instPow : Pow 𝓜(𝕜, A) ℕ where
 instance instInhabited : Inhabited 𝓜(𝕜, A) :=
   ⟨0⟩
 
-@[simp]
+@[defeq, simp]
 theorem add_toProd (a b : 𝓜(𝕜, A)) : (a + b).toProd = a.toProd + b.toProd :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_toProd : (0 : 𝓜(𝕜, A)).toProd = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_toProd (a : 𝓜(𝕜, A)) : (-a).toProd = -a.toProd :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_toProd (a b : 𝓜(𝕜, A)) : (a - b).toProd = a.toProd - b.toProd :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem one_toProd : (1 : 𝓜(𝕜, A)).toProd = 1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem natCast_toProd (n : ℕ) : (n : 𝓜(𝕜, A)).toProd = n :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem intCast_toProd (n : ℤ) : (n : 𝓜(𝕜, A)).toProd = n :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem pow_toProd (n : ℕ) (a : 𝓜(𝕜, A)) : (a ^ n).toProd = a.toProd ^ n :=
   rfl
 
+@[defeq]
 theorem add_fst (a b : 𝓜(𝕜, A)) : (a + b).fst = a.fst + b.fst :=
   rfl
 
+@[defeq]
 theorem add_snd (a b : 𝓜(𝕜, A)) : (a + b).snd = a.snd + b.snd :=
   rfl
 
+@[defeq]
 theorem zero_fst : (0 : 𝓜(𝕜, A)).fst = 0 :=
   rfl
 
+@[defeq]
 theorem zero_snd : (0 : 𝓜(𝕜, A)).snd = 0 :=
   rfl
 
+@[defeq]
 theorem neg_fst (a : 𝓜(𝕜, A)) : (-a).fst = -a.fst :=
   rfl
 
+@[defeq]
 theorem neg_snd (a : 𝓜(𝕜, A)) : (-a).snd = -a.snd :=
   rfl
 
+@[defeq]
 theorem sub_fst (a b : 𝓜(𝕜, A)) : (a - b).fst = a.fst - b.fst :=
   rfl
 
+@[defeq]
 theorem sub_snd (a b : 𝓜(𝕜, A)) : (a - b).snd = a.snd - b.snd :=
   rfl
 
+@[defeq]
 theorem one_fst : (1 : 𝓜(𝕜, A)).fst = 1 :=
   rfl
 
+@[defeq]
 theorem one_snd : (1 : 𝓜(𝕜, A)).snd = 1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mul_fst (a b : 𝓜(𝕜, A)) : (a * b).fst = a.fst * b.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mul_snd (a b : 𝓜(𝕜, A)) : (a * b).snd = b.snd * a.snd :=
   rfl
 
+@[defeq]
 theorem natCast_fst (n : ℕ) : (n : 𝓜(𝕜, A)).fst = n :=
   rfl
 
+@[defeq]
 theorem natCast_snd (n : ℕ) : (n : 𝓜(𝕜, A)).snd = n :=
   rfl
 
+@[defeq]
 theorem intCast_fst (n : ℤ) : (n : 𝓜(𝕜, A)).fst = n :=
   rfl
 
+@[defeq]
 theorem intCast_snd (n : ℤ) : (n : 𝓜(𝕜, A)).snd = n :=
   rfl
 
+@[defeq]
 theorem pow_fst (n : ℕ) (a : 𝓜(𝕜, A)) : (a ^ n).fst = a.fst ^ n :=
   rfl
 
+@[defeq]
 theorem pow_snd (n : ℕ) (a : 𝓜(𝕜, A)) : (a ^ n).snd = a.snd ^ n :=
   rfl
 
@@ -362,7 +380,7 @@ instance instAlgebra : Algebra 𝕜 𝓜(𝕜, A) where
   smul_def' _ _ := ext (𝕜 := 𝕜) (A := A) _ _ <|
     Prod.ext (Algebra.smul_def _ _) ((Algebra.smul_def _ _).trans <| Algebra.commutes _ _)
 
-@[simp]
+@[defeq, simp]
 theorem algebraMap_toProd (k : 𝕜) : (algebraMap 𝕜 𝓜(𝕜, A) k).toProd = algebraMap 𝕜 _ k :=
   rfl
 
@@ -499,9 +517,11 @@ theorem norm_def (a : 𝓜(𝕜, A)) : ‖a‖ = ‖toProdHom a‖ :=
 theorem nnnorm_def (a : 𝓜(𝕜, A)) : ‖a‖₊ = ‖toProdHom a‖₊ :=
   rfl
 
+@[defeq]
 theorem norm_def' (a : 𝓜(𝕜, A)) : ‖a‖ = ‖toProdMulOppositeHom a‖ :=
   rfl
 
+@[defeq]
 theorem nnnorm_def' (a : 𝓜(𝕜, A)) : ‖a‖₊ = ‖toProdMulOppositeHom a‖₊ :=
   rfl
 

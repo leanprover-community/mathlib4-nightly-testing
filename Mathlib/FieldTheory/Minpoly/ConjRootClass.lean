@@ -47,7 +47,7 @@ variable {K}
 @[simp]
 theorem mk_eq_mk {x y : L} : mk K x = mk K y ↔ IsConjRoot K x y := Quotient.eq
 
-@[simp]
+@[defeq, simp]
 theorem mk_zero : mk K (0 : L) = 0 :=
   rfl
 

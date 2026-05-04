@@ -159,9 +159,9 @@ protected def smulFinset : SMul α (Finset β) where smul a := image <| (a • �
 
 scoped[Pointwise] attribute [instance] Finset.smulFinset Finset.vaddFinset
 
-@[to_additive] lemma smul_finset_def : a • s = s.image (a • ·) := rfl
+@[defeq, to_additive] lemma smul_finset_def : a • s = s.image (a • ·) := rfl
 
-@[to_additive] lemma image_smul : s.image (a • ·) = a • s := rfl
+@[defeq, to_additive] lemma image_smul : s.image (a • ·) = a • s := rfl
 
 @[to_additive]
 lemma mem_smul_finset {x : β} : x ∈ a • s ↔ ∃ y, y ∈ s ∧ a • y = x := by
@@ -236,10 +236,11 @@ protected def vsub : VSub (Finset α) (Finset β) :=
 
 scoped[Pointwise] attribute [instance] Finset.vsub
 
+@[defeq]
 theorem vsub_def : s -ᵥ t = image₂ (· -ᵥ ·) s t :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem image_vsub_product : image₂ (· -ᵥ ·) s t = s -ᵥ t :=
   rfl
 

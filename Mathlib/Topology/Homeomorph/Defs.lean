@@ -67,7 +67,7 @@ instance : EquivLike (X ≃ₜ Y) X Y where
   right_inv h := h.right_inv
   coe_injective' _ _ H _ := toEquiv_injective <| DFunLike.ext' H
 
-@[simp] theorem homeomorph_mk_coe (a : X ≃ Y) (b c) : (Homeomorph.mk a b c : X → Y) = a :=
+@[defeq, simp] theorem homeomorph_mk_coe (a : X ≃ Y) (b c) : (Homeomorph.mk a b c : X → Y) = a :=
   rfl
 
 /-- The unique homeomorphism between two empty types. -/
@@ -92,7 +92,7 @@ def Simps.symm_apply (h : X ≃ₜ Y) : Y → X :=
 
 initialize_simps_projections Homeomorph (toFun → apply, invFun → symm_apply, as_prefix toEquiv)
 
-@[simp]
+@[defeq, simp]
 theorem coe_toEquiv (h : X ≃ₜ Y) : ⇑h.toEquiv = h :=
   rfl
 

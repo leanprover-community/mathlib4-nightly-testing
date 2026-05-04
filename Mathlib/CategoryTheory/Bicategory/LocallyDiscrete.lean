@@ -43,7 +43,7 @@ structure LocallyDiscrete (C : Type u) where
 
 namespace LocallyDiscrete
 
-@[simp]
+@[defeq, simp]
 theorem mk_as (a : LocallyDiscrete C) : mk a.as = a := rfl
 
 /-- `LocallyDiscrete C` is equivalent to the original type `C`. -/
@@ -67,11 +67,11 @@ instance categoryStruct [CategoryStruct.{v} C] : CategoryStruct (LocallyDiscrete
 
 variable [CategoryStruct.{v} C]
 
-@[simp]
+@[defeq, simp]
 lemma id_as (a : LocallyDiscrete C) : (𝟙 a : Discrete (a.as ⟶ a.as)).as = 𝟙 a.as :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma comp_as {a b c : LocallyDiscrete C} (f : a ⟶ b) (g : b ⟶ c) : (f ≫ g).as = f.as ≫ g.as :=
   rfl
 

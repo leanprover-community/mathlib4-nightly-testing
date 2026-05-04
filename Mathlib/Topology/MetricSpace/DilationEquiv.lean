@@ -64,7 +64,7 @@ instance : EquivLike (X ≃ᵈ Y) X Y where
 instance : DilationEquivClass (X ≃ᵈ Y) X Y where
   edist_eq' f := f.edist_eq'
 
-@[simp] theorem coe_toEquiv (e : X ≃ᵈ Y) : ⇑e.toEquiv = e := rfl
+@[defeq, simp] theorem coe_toEquiv (e : X ≃ᵈ Y) : ⇑e.toEquiv = e := rfl
 
 @[ext]
 protected theorem ext {e e' : X ≃ᵈ Y} (h : ∀ x, e x = e' x) : e = e' :=
@@ -144,12 +144,16 @@ instance : Group (X ≃ᵈ X) where
   inv := symm
   inv_mul_cancel := self_trans_symm
 
+@[defeq]
 theorem mul_def (e e' : X ≃ᵈ X) : e * e' = e'.trans e := rfl
+@[defeq]
 theorem one_def : (1 : X ≃ᵈ X) = refl X := rfl
+@[defeq]
 theorem inv_def (e : X ≃ᵈ X) : e⁻¹ = e.symm := rfl
 
 @[simp] theorem coe_mul (e e' : X ≃ᵈ X) : ⇑(e * e') = e ∘ e' := rfl
 @[simp] theorem coe_one : ⇑(1 : X ≃ᵈ X) = id := rfl
+@[defeq]
 theorem coe_inv (e : X ≃ᵈ X) : ⇑(e⁻¹) = e.symm := rfl
 
 /-- `Dilation.ratio` as a monoid homomorphism. -/

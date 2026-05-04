@@ -62,6 +62,7 @@ end OfArity
 
 namespace FromTypes
 
+@[defeq]
 lemma fromTypes_fin_const (α β : Type u) (n : ℕ) :
     FromTypes (fun (_ : Fin n) => α) β = OfArity α β n := rfl
 

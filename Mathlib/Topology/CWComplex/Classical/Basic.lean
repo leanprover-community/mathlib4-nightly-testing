@@ -177,6 +177,7 @@ def RelCWComplex.toCWComplex {X : Type*} [TopologicalSpace X] (C : Set X) [RelCW
   closed' := by simpa using closed' (C := C)
   union' := by simpa using union' (C := C)
 
+@[defeq]
 lemma RelCWComplex.toCWComplex_eq {X : Type*} [TopologicalSpace X] (C : Set X)
     [h : RelCWComplex C ∅] : (toCWComplex C).instRelCWComplex = h :=
   rfl
@@ -631,6 +632,7 @@ initialize_simps_projections Subcomplex (carrier → coe, as_prefix coe)
 
 lemma mem_carrier {E : Subcomplex C} {x : X} : x ∈ E.carrier ↔ x ∈ (E : Set X) := Iff.rfl
 
+@[defeq]
 lemma coe_eq_carrier {E : Subcomplex C} : (E : Set X) = E.carrier := rfl
 
 @[ext] lemma ext {E F : Subcomplex C} (h : ∀ x, x ∈ E ↔ x ∈ F) : E = F :=

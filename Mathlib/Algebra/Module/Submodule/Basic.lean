@@ -108,6 +108,7 @@ instance [VAdd M α] [FaithfulVAdd M α] : FaithfulVAdd p α :=
 
 variable {p}
 
+@[defeq]
 theorem vadd_def [VAdd M α] (g : p) (m : α) : g +ᵥ m = (g : M) +ᵥ m :=
   rfl
 
@@ -135,7 +136,7 @@ theorem toAddSubgroup_le : p.toAddSubgroup ≤ p'.toAddSubgroup ↔ p ≤ p' :=
 theorem toAddSubgroup_mono : Monotone (toAddSubgroup : Submodule R M → AddSubgroup M) :=
   toAddSubgroup_strictMono.monotone
 
-@[simp]
+@[defeq, simp]
 theorem toAddSubgroup_toAddSubmonoid (p : Submodule R M) :
     p.toAddSubgroup.toAddSubmonoid = p.toAddSubmonoid :=
   rfl

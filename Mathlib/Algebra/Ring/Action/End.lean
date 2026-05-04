@@ -44,7 +44,7 @@ instance applyMulSemiringAction :
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[simp]
+@[defeq, simp]
 protected theorem smul_def (f : RingAut R) (r : R) : f • r = f r :=
   rfl
 

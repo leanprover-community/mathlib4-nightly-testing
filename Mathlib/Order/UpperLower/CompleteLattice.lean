@@ -49,14 +49,14 @@ initialize_simps_projections LowerSet (carrier → coe, as_prefix coe)
 theorem ext {s t : UpperSet α} : (s : Set α) = t → s = t :=
   SetLike.ext'
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 theorem carrier_eq_coe (s : UpperSet α) : s.carrier = s :=
   rfl
 
 @[to_dual (attr := simp)]
 protected lemma upper (s : UpperSet α) : IsUpperSet (s : Set α) := s.upper'
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 lemma coe_mk (s : Set α) (hs) : mk s hs = s := rfl
 
 @[to_dual (attr := simp)]
@@ -125,11 +125,11 @@ theorem coe_subset_coe : (s : Set α) ⊆ t ↔ t ≤ s :=
 @[to_dual (attr := simp 1100, norm_cast)]
 lemma coe_ssubset_coe : (s : Set α) ⊂ t ↔ t < s := Iff.rfl
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 theorem coe_top : ((⊤ : UpperSet α) : Set α) = ∅ :=
   rfl
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 theorem coe_bot : ((⊥ : UpperSet α) : Set α) = univ :=
   rfl
 
@@ -143,19 +143,19 @@ theorem coe_eq_empty : (s : Set α) = ∅ ↔ s = ⊤ := by simp [SetLike.ext'_i
 lemma coe_nonempty : (s : Set α).Nonempty ↔ s ≠ ⊤ :=
   nonempty_iff_ne_empty.trans coe_eq_empty.not
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 theorem coe_sup (s t : UpperSet α) : (↑(s ⊔ t) : Set α) = (s : Set α) ∩ t :=
   rfl
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 theorem coe_inf (s t : UpperSet α) : (↑(s ⊓ t) : Set α) = (s : Set α) ∪ t :=
   rfl
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 theorem coe_sSup (S : Set (UpperSet α)) : (↑(sSup S) : Set α) = ⋂ s ∈ S, ↑s :=
   rfl
 
-@[to_dual (attr := simp, norm_cast)]
+@[defeq, to_dual (attr := simp, norm_cast)]
 theorem coe_sInf (S : Set (UpperSet α)) : (↑(sInf S) : Set α) = ⋃ s ∈ S, ↑s :=
   rfl
 

@@ -45,6 +45,7 @@ variable {I J : FractionalIdeal R₁⁰ K}
 
 noncomputable instance : Inv (FractionalIdeal R₁⁰ K) := ⟨fun I => 1 / I⟩
 
+@[defeq]
 theorem inv_eq : I⁻¹ = 1 / I := rfl
 
 theorem inv_zero' : (0 : FractionalIdeal R₁⁰ K)⁻¹ = 0 := div_zero

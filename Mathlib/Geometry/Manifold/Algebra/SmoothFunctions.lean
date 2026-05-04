@@ -37,7 +37,7 @@ protected instance instMul {G : Type*} [Mul G] [TopologicalSpace G] [ChartedSpac
     [ContMDiffMul I' n G] : Mul C^n⟮I, N; I', G⟯ :=
   ⟨fun f g => ⟨f * g, f.contMDiff.mul g.contMDiff⟩⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_mul {G : Type*} [Mul G] [TopologicalSpace G] [ChartedSpace H' G] [ContMDiffMul I' n G]
     (f g : C^n⟮I, N; I', G⟯) : ⇑(f * g) = f * g :=
   rfl
@@ -63,7 +63,7 @@ instance instPow {G : Type*} [Monoid G] [TopologicalSpace G] [ChartedSpace H' G]
     Pow C^n⟮I, N; I', G⟯ ℕ where
   pow f n := ⟨(f : N → G) ^ n, (contMDiff_pow n).comp f.contMDiff⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_pow {G : Type*} [Monoid G] [TopologicalSpace G] [ChartedSpace H' G]
     [ContMDiffMul I' n G] (f : C^n⟮I, N; I', G⟯) (n : ℕ) :
     ⇑(f ^ n) = (f : N → G) ^ n :=
@@ -141,12 +141,12 @@ instance group {G : Type*} [Group G] [TopologicalSpace G] [ChartedSpace H' G] [L
     div := fun f g => ⟨f / g, f.contMDiff.div g.contMDiff⟩
     div_eq_mul_inv := fun f g => by ext; exact div_eq_mul_inv _ _ }
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_inv {G : Type*} [Group G] [TopologicalSpace G] [ChartedSpace H' G] [LieGroup I' n G]
     (f : C^n⟮I, N; I', G⟯) : ⇑f⁻¹ = (⇑f)⁻¹ :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_div {G : Type*} [Group G] [TopologicalSpace G] [ChartedSpace H' G] [LieGroup I' n G]
     (f g : C^n⟮I, N; I', G⟯) : ⇑(f / g) = f / g :=
   rfl
@@ -237,7 +237,7 @@ instance instSMul {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] :
     SMul 𝕜 C^n⟮I, N; 𝓘(𝕜, V), V⟯ :=
   ⟨fun r f => ⟨r • ⇑f, contMDiff_const.smul f.contMDiff⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul {V : Type*} [NormedAddCommGroup V] [NormedSpace 𝕜 V] (r : 𝕜)
     (f : C^n⟮I, N; 𝓘(𝕜, V), V⟯) : ⇑(r • f) = r • ⇑f :=
   rfl

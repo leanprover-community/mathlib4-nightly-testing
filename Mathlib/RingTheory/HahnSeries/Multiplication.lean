@@ -72,12 +72,17 @@ open Classical in
 theorem coeff_one [Zero R] [One R] {a : Γ} : (1 : R⟦Γ⟧).coeff a = if a = 0 then 1 else 0 :=
   coeff_single
 
-@[simp] theorem single_zero_one [Zero R] [One R] : single (0 : Γ) (1 : R) = 1 := rfl
+@[defeq, simp] theorem single_zero_one [Zero R] [One R] : single (0 : Γ) (1 : R) = 1 := rfl
+@[defeq]
 theorem single_zero_natCast [Zero R] [NatCast R] (n : ℕ) : single (0 : Γ) (n : R) = n := rfl
+@[defeq]
 theorem single_zero_intCast [Zero R] [IntCast R] (z : ℤ) : single (0 : Γ) (z : R) = z := rfl
+@[defeq]
 theorem single_zero_nnratCast [Zero R] [NNRatCast R] (q : ℚ≥0) : single (0 : Γ) (q : R) = q := rfl
+@[defeq]
 theorem single_zero_ratCast [Zero R] [RatCast R] (q : ℚ) : single (0 : Γ) (q : R) = q := rfl
 
+@[defeq]
 theorem single_zero_ofNat [Zero R] [NatCast R] (n : ℕ) [n.AtLeastTwo] :
     single (0 : Γ) (ofNat(n) : R) = ofNat(n) := rfl
 
@@ -395,6 +400,7 @@ variable [AddCommMonoid Γ] [PartialOrder Γ] [IsOrderedCancelAddMonoid Γ]
 instance [NonUnitalNonAssocSemiring R] : Mul R⟦Γ⟧ where
   mul x y := (HahnModule.of R).symm (x • HahnModule.of R y)
 
+@[defeq]
 theorem of_symm_smul_of_eq_mul [NonUnitalNonAssocSemiring R] {x y : R⟦Γ⟧} :
     (HahnModule.of R).symm (x • HahnModule.of R y) = x * y := rfl
 
@@ -925,9 +931,11 @@ instance : Algebra R A⟦Γ⟧ where
       Function.comp_apply, algebraMap_smul, coeff_mul_single_zero]
     rw [← Algebra.commutes, Algebra.smul_def]
 
+@[defeq]
 theorem C_eq_algebraMap : C = algebraMap R R⟦Γ⟧ :=
   rfl
 
+@[defeq]
 theorem algebraMap_apply {r : R} : algebraMap R A⟦Γ⟧ r = C (algebraMap R A r) :=
   rfl
 

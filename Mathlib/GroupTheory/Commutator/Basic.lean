@@ -77,7 +77,7 @@ namespace Subgroup
 instance commutator : Bracket (Subgroup G) (Subgroup G) :=
   ⟨fun H₁ H₂ => closure { g | ∃ g₁ ∈ H₁, ∃ g₂ ∈ H₂, ⁅g₁, g₂⁆ = g }⟩
 
-@[to_additive]
+@[defeq, to_additive]
 theorem commutator_def (H₁ H₂ : Subgroup G) :
     ⁅H₁, H₂⁆ = closure { g | ∃ g₁ ∈ H₁, ∃ g₂ ∈ H₂, ⁅g₁, g₂⁆ = g } :=
   rfl

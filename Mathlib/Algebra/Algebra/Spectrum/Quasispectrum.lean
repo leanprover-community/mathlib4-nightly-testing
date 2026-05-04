@@ -90,7 +90,7 @@ lemma val_one : (1 : PreQuasiregular R).val = 0 := rfl
 instance instMul : Mul (PreQuasiregular R) where
   mul x y := .mk (y.val + x.val + x.val * y.val)
 
-@[simp]
+@[defeq, simp]
 lemma val_mul (x y : PreQuasiregular R) : (x * y).val = y.val + x.val + x.val * y.val := rfl
 
 instance instMonoid : Monoid (PreQuasiregular R) where
@@ -292,7 +292,7 @@ lemma NonUnitalAlgHom.quasispectrum_apply_subset {F R A B : Type*}
     quasispectrum R (φ a) ⊆ quasispectrum R a :=
   NonUnitalAlgHom.quasispectrum_apply_subset' R φ a
 
-@[simp]
+@[defeq, simp]
 lemma quasispectrum.coe_zero [Nontrivial R] (a : A) : (0 : quasispectrum R a) = (0 : R) := rfl
 
 lemma quasispectrum.mem_of_not_quasiregular (a : A) {r : Rˣ}

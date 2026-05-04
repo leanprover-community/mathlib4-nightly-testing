@@ -443,7 +443,7 @@ abbrev refl : G ↪g G :=
 abbrev toHom : G →g G' :=
   f.toRelHom
 
-@[simp] lemma coe_toHom (f : G ↪g H) : ⇑f.toHom = f := rfl
+@[defeq, simp] lemma coe_toHom (f : G ↪g H) : ⇑f.toHom = f := rfl
 
 @[simp] theorem map_adj_iff {v w : V} : G'.Adj (f v) (f w) ↔ G.Adj v w :=
   f.map_rel_iff

@@ -211,12 +211,12 @@ instance : SupBotHomClass (SupBotHom α β) α β where
   map_sup f := f.map_sup'
   map_bot f := f.map_bot'
 
-@[to_dual]
+@[defeq, to_dual]
 lemma toFun_eq_coe (f : SupBotHom α β) : f.toFun = f := rfl
 
-@[to_dual (attr := simp)] lemma coe_toSupHom (f : SupBotHom α β) : ⇑f.toSupHom = f := rfl
-@[to_dual (attr := simp)] lemma coe_toBotHom (f : SupBotHom α β) : ⇑f.toBotHom = f := rfl
-@[to_dual (attr := simp)] lemma coe_mk (f : SupHom α β) (hf) : ⇑(mk f hf) = f := rfl
+@[defeq, to_dual (attr := simp)] lemma coe_toSupHom (f : SupBotHom α β) : ⇑f.toSupHom = f := rfl
+@[defeq, to_dual (attr := simp)] lemma coe_toBotHom (f : SupBotHom α β) : ⇑f.toBotHom = f := rfl
+@[defeq, to_dual (attr := simp)] lemma coe_mk (f : SupHom α β) (hf) : ⇑(mk f hf) = f := rfl
 
 @[to_dual (attr := ext)]
 theorem ext {f g : SupBotHom α β} (h : ∀ a, f a = g a) : f = g :=
@@ -312,7 +312,7 @@ instance : OrderBot (SupBotHom α β) where
   bot := ⟨⊥, rfl⟩
   bot_le _ _ := bot_le
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 theorem coe_sup (f g : SupBotHom α β) : ⇑(f ⊔ g) = ⇑f ⊔ ⇑g :=
   rfl
 
@@ -320,7 +320,7 @@ theorem coe_sup (f g : SupBotHom α β) : ⇑(f ⊔ g) = ⇑f ⊔ ⇑g :=
 theorem coe_bot : ⇑(⊥ : SupBotHom α β) = ⊥ :=
   rfl
 
-@[to_dual (attr := simp)]
+@[defeq, to_dual (attr := simp)]
 theorem sup_apply (f g : SupBotHom α β) (a : α) : (f ⊔ g) a = f a ⊔ g a :=
   rfl
 
@@ -372,13 +372,13 @@ instance instBoundedLatticeHomClass : BoundedLatticeHomClass (BoundedLatticeHom 
   map_top f := f.map_top'
   map_bot f := f.map_bot'
 
-@[simp] lemma toFun_eq_coe (f : BoundedLatticeHom α β) : f.toFun = f := rfl
+@[defeq, simp] lemma toFun_eq_coe (f : BoundedLatticeHom α β) : f.toFun = f := rfl
 
-@[simp] lemma coe_toLatticeHom (f : BoundedLatticeHom α β) : ⇑f.toLatticeHom = f := rfl
-@[to_dual (attr := simp)]
+@[defeq, simp] lemma coe_toLatticeHom (f : BoundedLatticeHom α β) : ⇑f.toLatticeHom = f := rfl
+@[defeq, to_dual (attr := simp)]
 lemma coe_toSupBotHom (f : BoundedLatticeHom α β) : ⇑f.toSupBotHom = f := rfl
 @[simp] lemma coe_toBoundedOrderHom (f : BoundedLatticeHom α β) : ⇑f.toBoundedOrderHom = f := rfl
-@[simp] lemma coe_mk (f : LatticeHom α β) (hf hf') : ⇑(mk f hf hf') = f := rfl
+@[defeq, simp] lemma coe_mk (f : LatticeHom α β) (hf hf') : ⇑(mk f hf hf') = f := rfl
 
 @[ext]
 theorem ext {f g : BoundedLatticeHom α β} (h : ∀ a, f a = g a) : f = g :=

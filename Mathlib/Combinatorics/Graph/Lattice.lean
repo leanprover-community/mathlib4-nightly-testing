@@ -62,8 +62,9 @@ instance : SemilatticeInf (Graph α β) where
     vertexSet_mono := subset_inter h₁.vertexSet_mono h₂.vertexSet_mono
     isLink_mono e x y h := by simp [h₁.isLink_mono h, h₂.isLink_mono h]}
 
-@[simp] lemma vertexSet_inf (G H : Graph α β) : V(G ⊓ H) = V(G) ∩ V(H) := rfl
+@[defeq, simp] lemma vertexSet_inf (G H : Graph α β) : V(G ⊓ H) = V(G) ∩ V(H) := rfl
 
+@[defeq]
 lemma edgeSet_inf (G H : Graph α β) :
     E(G ⊓ H) = {e ∈ E(G) ∩ E(H) | ∀ x y, G.IsLink e x y ↔ H.IsLink e x y} := rfl
 

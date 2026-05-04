@@ -134,7 +134,7 @@ noncomputable def groupSeminorm : GroupSeminorm (M ⧸ S) where
 `x + S`. -/]
 noncomputable instance instNorm : Norm (M ⧸ S) where norm := groupSeminorm
 
-@[to_additive]
+@[defeq, to_additive]
 lemma norm_eq_groupSeminorm (x : M ⧸ S) : ‖x‖ = groupSeminorm x := rfl
 
 @[to_additive]

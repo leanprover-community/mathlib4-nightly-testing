@@ -70,9 +70,11 @@ instance category : Category (SingleObj M) where
   id_comp := mul_one
   assoc x y z := (mul_assoc z y x).symm
 
+@[defeq]
 theorem id_as_one (x : SingleObj M) : 𝟙 x = 1 :=
   rfl
 
+@[defeq]
 theorem comp_as_mul {x y z : SingleObj M} (f : x ⟶ y) (g : y ⟶ z) : f ≫ g = g * f :=
   rfl
 

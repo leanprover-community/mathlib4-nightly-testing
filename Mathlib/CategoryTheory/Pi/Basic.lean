@@ -38,11 +38,11 @@ instance pi : Category.{max w₀ v₁} (∀ i, C i) where
 
 namespace Pi
 
-@[simp]
+@[defeq, simp]
 theorem id_apply (X : ∀ i, C i) (i) : (𝟙 X : ∀ i, X i ⟶ X i) i = 𝟙 (X i) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem comp_apply {X Y Z : ∀ i, C i} (f : X ⟶ Y) (g : Y ⟶ Z) (i) :
     (f ≫ g : ∀ i, X i ⟶ Z i) i = f i ≫ g i :=
   rfl

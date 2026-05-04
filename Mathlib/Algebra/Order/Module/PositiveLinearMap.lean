@@ -101,7 +101,7 @@ lemma map_smul_of_tower {S : Type*} [SMul S E₁] [SMul S E₂]
 protected lemma map_nonneg (f : E₁ →ₚ[R] E₂) {x : E₁} (hx : 0 ≤ x) : 0 ≤ f x :=
   _root_.map_nonneg f hx
 
-@[simp]
+@[defeq, simp]
 lemma coe_toLinearMap (f : E₁ →ₚ[R] E₂) : (f.toLinearMap : E₁ → E₂) = f :=
   rfl
 
@@ -115,11 +115,11 @@ lemma toLinearMap_inj {f g : E₁ →ₚ[R] E₂} : f.toLinearMap = g.toLinearMa
 instance : Zero (E₁ →ₚ[R] E₂) where
   zero := .mk (0 : E₁ →ₗ[R] E₂) fun _ ↦ by simp
 
-@[simp]
+@[defeq, simp]
 lemma toLinearMap_zero : (0 : E₁ →ₚ[R] E₂).toLinearMap = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma zero_apply (x : E₁) : (0 : E₁ →ₚ[R] E₂) x = 0 :=
   rfl
 
@@ -145,12 +145,12 @@ instance : SMul ℕ (E₁ →ₚ[R] E₂) where
     | zero => simp
     | succ n ih => simpa [add_nsmul] using add_le_add ih (OrderHomClass.mono f h)
 
-@[simp]
+@[defeq, simp]
 lemma toLinearMap_nsmul (f : E₁ →ₚ[R] E₂) (n : ℕ) :
     (n • f).toLinearMap = n • f.toLinearMap :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma nsmul_apply (f : E₁ →ₚ[R] E₂) (n : ℕ) (x : E₁) :
     (n • f) x = n • (f x) :=
   rfl

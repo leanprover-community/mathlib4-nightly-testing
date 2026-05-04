@@ -198,11 +198,11 @@ theorem bounded' (f : CauSeq β abv) (x : α) : ∃ r > x, ∀ i, abv (f i) < r 
 instance : Add (CauSeq β abv) :=
   ⟨fun f g => ⟨f + g, f.2.add g.2⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_add (f g : CauSeq β abv) : ⇑(f + g) = (f : ℕ → β) + g :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem add_apply (f g : CauSeq β abv) (i : ℕ) : (f + g) i = f i + g i :=
   rfl
 
@@ -249,11 +249,11 @@ theorem zero_apply (i) : (0 : CauSeq β abv) i = 0 :=
 theorem one_apply (i) : (1 : CauSeq β abv) i = 1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem const_zero : const 0 = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem const_one : const 1 = 1 :=
   rfl
 
@@ -262,11 +262,11 @@ theorem const_add (x y : β) : const (x + y) = const x + const y :=
 
 instance : Mul (CauSeq β abv) := ⟨fun f g ↦ ⟨f * g, f.2.mul g.2⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_mul (f g : CauSeq β abv) : ⇑(f * g) = (f : ℕ → β) * g :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem mul_apply (f g : CauSeq β abv) (i : ℕ) : (f * g) i = f i * g i :=
   rfl
 
@@ -275,11 +275,11 @@ theorem const_mul (x y : β) : const (x * y) = const x * const y :=
 
 instance : Neg (CauSeq β abv) := ⟨fun f ↦ ⟨-f, f.2.neg⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_neg (f : CauSeq β abv) : ⇑(-f) = -f :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem neg_apply (f : CauSeq β abv) (i) : (-f) i = -f i :=
   rfl
 
@@ -724,11 +724,11 @@ instance : Min (CauSeq α abs) :=
         let ⟨H₁, H₂⟩ := H _ le_rfl
         rat_inf_continuous_lemma (H₁ _ ij) (H₂ _ ij)⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sup (f g : CauSeq α abs) : ⇑(f ⊔ g) = (f : ℕ → α) ⊔ g :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_inf (f g : CauSeq α abs) : ⇑(f ⊓ g) = (f : ℕ → α) ⊓ g :=
   rfl
 

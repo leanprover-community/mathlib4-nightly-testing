@@ -51,17 +51,19 @@ instance opensHom.instFunLike : FunLike (U ⟶ V) U V where
   coe f := Set.inclusion f.le
   coe_injective' := by rintro ⟨⟨_⟩⟩ _ _; congr!
 
+@[defeq]
 lemma apply_def (f : U ⟶ V) (x : U) : f x = ⟨x, f.le x.2⟩ := rfl
 
-@[simp] lemma apply_mk (f : U ⟶ V) (x : X) (hx) : f ⟨x, hx⟩ = ⟨x, f.le hx⟩ := rfl
+@[defeq, simp] lemma apply_mk (f : U ⟶ V) (x : X) (hx) : f ⟨x, hx⟩ = ⟨x, f.le hx⟩ := rfl
 
-@[simp] lemma val_apply (f : U ⟶ V) (x : U) : (f x : X) = x := rfl
+@[defeq, simp] lemma val_apply (f : U ⟶ V) (x : U) : (f x : X) = x := rfl
 
 @[simp, norm_cast] lemma coe_id (f : U ⟶ U) : ⇑f = id := rfl
 
+@[defeq]
 lemma id_apply (f : U ⟶ U) (x : U) : f x = x := rfl
 
-@[simp] lemma comp_apply (f : U ⟶ V) (g : V ⟶ W) (x : U) : (f ≫ g) x = g (f x) := rfl
+@[defeq, simp] lemma comp_apply (f : U ⟶ V) (g : V ⟶ W) (x : U) : (f ≫ g) x = g (f x) := rfl
 
 /-!
 We now construct as morphisms various inclusions of open sets.
@@ -96,16 +98,17 @@ noncomputable def leTop (U : Opens X) : U ⟶ ⊤ :=
 
 -- We do not mark this as a simp lemma because it breaks open `x`.
 -- Nevertheless, it is useful in `SheafOfFunctions`.
+@[defeq]
 theorem infLELeft_apply (U V : Opens X) (x) :
     (infLELeft U V) x = ⟨x.1, (@inf_le_left _ _ U V : _ ≤ _) x.2⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem infLELeft_apply_mk (U V : Opens X) (x) (m) :
     (infLELeft U V) ⟨x, m⟩ = ⟨x, (@inf_le_left _ _ U V : _ ≤ _) m⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem leSupr_apply_mk {ι : Type*} (U : ι → Opens X) (i : ι) (x) (m) :
     (leSupr U i) ⟨x, m⟩ = ⟨x, (le_iSup U i :) m⟩ :=
   rfl

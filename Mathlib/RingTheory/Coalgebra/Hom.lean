@@ -124,11 +124,11 @@ protected theorem coe_coe {F : Type*} [FunLike F A B] [CoalgHomClass F R A B] (f
     ⇑(f : A →ₗc[R] B) = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk {f : A →ₗ[R] B} (h h₁) : ((⟨f, h, h₁⟩ : A →ₗc[R] B) : A → B) = f :=
   rfl
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_mks {f : A → B} (h₁ h₂ h₃ h₄) : ⇑(⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩ : A →ₗc[R] B) = f :=
   rfl
 

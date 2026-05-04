@@ -79,7 +79,7 @@ instance : SetLike (ConvexCone R M) M where
 
 instance : PartialOrder (ConvexCone R M) := .ofSetLike (ConvexCone R M) M
 
-@[simp, norm_cast] lemma coe_mk (s : Set M) (h₁ h₂) : ↑(mk (R := R) s h₁ h₂) = s := rfl
+@[defeq, simp, norm_cast] lemma coe_mk (s : Set M) (h₁ h₂) : ↑(mk (R := R) s h₁ h₂) = s := rfl
 
 @[simp] lemma mem_mk {h₁ h₂} : x ∈ mk (R := R) s h₁ h₂ ↔ x ∈ s := .rfl
 
@@ -111,7 +111,7 @@ instance : InfSet (ConvexCone R M) where
       fun _ hx _ hy ↦
       mem_biInter fun C hC ↦ add_mem (mem_iInter₂.1 hx C hC) (mem_iInter₂.1 hy C hC)⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_sInf (S : Set (ConvexCone R M)) : ↑(sInf S) = ⋂ C ∈ S, (C : Set M) := rfl
 
 @[simp] lemma mem_sInf {S : Set (ConvexCone R M)} : x ∈ sInf S ↔ ∀ C ∈ S, x ∈ C := mem_iInter₂
@@ -152,7 +152,7 @@ instance : Bot (ConvexCone R M) :=
 
 @[simp] lemma notMem_bot : x ∉ (⊥ : ConvexCone R M) := id
 
-@[simp, norm_cast] lemma coe_bot : ↑(⊥ : ConvexCone R M) = (∅ : Set M) := rfl
+@[defeq, simp, norm_cast] lemma coe_bot : ↑(⊥ : ConvexCone R M) = (∅ : Set M) := rfl
 
 @[simp, norm_cast]
 lemma coe_eq_empty : (C : Set M) = ∅ ↔ C = ⊥ := by rw [← coe_bot (R := R)]; norm_cast
@@ -354,7 +354,7 @@ instance : Zero (ConvexCone R M) :=
 
 @[simp] lemma mem_zero : x ∈ (0 : ConvexCone R M) ↔ x = 0 := .rfl
 
-@[simp, norm_cast] lemma coe_zero : ((0 : ConvexCone R M) : Set M) = 0 := rfl
+@[defeq, simp, norm_cast] lemma coe_zero : ((0 : ConvexCone R M) : Set M) = 0 := rfl
 
 theorem pointed_zero : (0 : ConvexCone R M).Pointed := by rw [Pointed, mem_zero]
 
@@ -370,7 +370,7 @@ instance instAdd : Add (ConvexCone R M) where
       exact ⟨x₁ + y₁, add_mem hx₁ hy₁, x₂ + y₂, add_mem hx₂ hy₂, add_add_add_comm ..⟩
   }
 
-@[simp, norm_cast] lemma coe_add (C₁ C₂ : ConvexCone R M) : ↑(C₁ + C₂) = (C₁ + C₂ : Set M) := rfl
+@[defeq, simp, norm_cast] lemma coe_add (C₁ C₂ : ConvexCone R M) : ↑(C₁ + C₂) = (C₁ + C₂ : Set M) := rfl
 @[simp] lemma mem_add : x ∈ C₁ + C₂ ↔ ∃ y ∈ C₁, ∃ z ∈ C₂, y + z = x := .rfl
 
 instance instAddZeroClass : AddZeroClass (ConvexCone R M) where

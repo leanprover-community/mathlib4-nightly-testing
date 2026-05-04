@@ -785,11 +785,11 @@ theorem _root_.Memℓp.star_iff {f : ∀ i, E i} : Memℓp (star f) p ↔ Memℓ
 instance : Star (lp E p) where
   star f := ⟨(star f : ∀ i, E i), f.property.star_mem⟩
 
-@[simp]
+@[defeq, simp]
 theorem coeFn_star (f : lp E p) : ⇑(star f) = star (⇑f) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 protected theorem star_apply (f : lp E p) (i : α) : star f i = star (f i) :=
   rfl
 
@@ -835,7 +835,7 @@ theorem _root_.Memℓp.infty_mul {f g : ∀ i, B i} (hf : Memℓp f ∞) (hg : M
 instance : Mul (lp B ∞) where
   mul f g := ⟨HMul.hMul (α := ∀ i, B i) _ _, f.property.infty_mul g.property⟩
 
-@[simp]
+@[defeq, simp]
 theorem infty_coeFn_mul (f g : lp B ∞) : ⇑(f * g) = ⇑f * ⇑g :=
   rfl
 

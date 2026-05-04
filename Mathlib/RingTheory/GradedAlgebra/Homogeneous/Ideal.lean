@@ -74,7 +74,7 @@ variable {𝒜}
 abbrev HomogeneousIdeal.toIdeal (I : HomogeneousIdeal 𝒜) : Ideal A :=
   I.toSubmodule
 
-@[simp] lemma coe_toIdeal (I : HomogeneousIdeal 𝒜) : (I.toIdeal : Set A) = I := rfl
+@[defeq, simp] lemma coe_toIdeal (I : HomogeneousIdeal 𝒜) : (I.toIdeal : Set A) = I := rfl
 
 theorem HomogeneousIdeal.isHomogeneous (I : HomogeneousIdeal 𝒜) :
     I.toIdeal.IsHomogeneous 𝒜 := I.is_homogeneous'
@@ -309,11 +309,11 @@ instance : SupSet (HomogeneousIdeal 𝒜) :=
 instance : InfSet (HomogeneousIdeal 𝒜) :=
   ⟨fun S => ⟨⨅ s ∈ S, toIdeal s, Ideal.IsHomogeneous.iInf₂ fun s _ => s.isHomogeneous⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_top : ((⊤ : HomogeneousIdeal 𝒜) : Set A) = univ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_bot : ((⊥ : HomogeneousIdeal 𝒜) : Set A) = 0 :=
   rfl
 
@@ -321,31 +321,31 @@ theorem coe_bot : ((⊥ : HomogeneousIdeal 𝒜) : Set A) = 0 :=
 theorem coe_sup (I J : HomogeneousIdeal 𝒜) : ↑(I ⊔ J) = (I + J : Set A) :=
   Submodule.coe_sup _ _
 
-@[simp]
+@[defeq, simp]
 theorem coe_inf (I J : HomogeneousIdeal 𝒜) : (↑(I ⊓ J) : Set A) = ↑I ∩ ↑J :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toIdeal_top : (⊤ : HomogeneousIdeal 𝒜).toIdeal = (⊤ : Ideal A) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toIdeal_bot : (⊥ : HomogeneousIdeal 𝒜).toIdeal = (⊥ : Ideal A) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toIdeal_sup (I J : HomogeneousIdeal 𝒜) : (I ⊔ J).toIdeal = I.toIdeal ⊔ J.toIdeal :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toIdeal_inf (I J : HomogeneousIdeal 𝒜) : (I ⊓ J).toIdeal = I.toIdeal ⊓ J.toIdeal :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toIdeal_sSup (ℐ : Set (HomogeneousIdeal 𝒜)) : (sSup ℐ).toIdeal = ⨆ s ∈ ℐ, toIdeal s :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toIdeal_sInf (ℐ : Set (HomogeneousIdeal 𝒜)) : (sInf ℐ).toIdeal = ⨅ s ∈ ℐ, toIdeal s :=
   rfl
 
@@ -382,7 +382,7 @@ instance completeLattice : CompleteLattice (HomogeneousIdeal 𝒜) :=
 instance : Add (HomogeneousIdeal 𝒜) :=
   ⟨(· ⊔ ·)⟩
 
-@[simp]
+@[defeq, simp]
 theorem toIdeal_add (I J : HomogeneousIdeal 𝒜) : (I + J).toIdeal = I.toIdeal + J.toIdeal :=
   rfl
 
@@ -409,7 +409,7 @@ theorem Ideal.IsHomogeneous.mul {I J : Ideal A} (HI : I.IsHomogeneous 𝒜) (HJ 
 instance : Mul (HomogeneousIdeal 𝒜) where
   mul I J := ⟨I.toIdeal * J.toIdeal, I.isHomogeneous.mul J.isHomogeneous⟩
 
-@[simp]
+@[defeq, simp]
 theorem HomogeneousIdeal.toIdeal_mul (I J : HomogeneousIdeal 𝒜) :
     (I * J).toIdeal = I.toIdeal * J.toIdeal :=
   rfl

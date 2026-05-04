@@ -163,7 +163,7 @@ instance instInhabited : Inhabited (L.Substructure M) :=
 theorem mem_top (x : M) : x ∈ (⊤ : L.Substructure M) :=
   Set.mem_univ x
 
-@[simp]
+@[defeq, simp]
 theorem coe_top : ((⊤ : L.Substructure M) : Set M) = Set.univ :=
   rfl
 
@@ -173,7 +173,7 @@ instance instInf : Min (L.Substructure M) :=
     { carrier := (S₁ : Set M) ∩ (S₂ : Set M)
       fun_mem := fun {_} f => (S₁.fun_mem f).inf (S₂.fun_mem f) }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_inf (p p' : L.Substructure M) :
     ((p ⊓ p' : L.Substructure M) : Set M) = (p : Set M) ∩ (p' : Set M) :=
   rfl
@@ -193,7 +193,7 @@ instance instInfSet : InfSet (L.Substructure M) :=
             · simpa [h] using t.fun_mem f
             · simp [h]) }⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sInf (S : Set (L.Substructure M)) :
     ((sInf S : L.Substructure M) : Set M) = ⋂ s ∈ S, (s : Set M) :=
   rfl

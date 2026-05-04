@@ -98,7 +98,7 @@ open SummableFamily
 instance : Pow (orderTopSubOnePos Γ R) R where
   pow x r := toOrderTopSubOnePos (orderTop_hsum_binomialFamily_pos x.2 r)
 
-@[simp]
+@[defeq, simp]
 theorem binomial_power {x : orderTopSubOnePos Γ R} {r : R} :
     x ^ r = toOrderTopSubOnePos (orderTop_hsum_binomialFamily_pos x.2 r) :=
   rfl

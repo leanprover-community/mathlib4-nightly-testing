@@ -52,11 +52,11 @@ variable (F E : IntermediateField K L)
 instance finiteDimensional_left [FiniteDimensional K L] : FiniteDimensional K F := .left K F L
 instance finiteDimensional_right [FiniteDimensional K L] : FiniteDimensional F L := .right K F L
 
-@[simp]
+@[defeq, simp]
 theorem rank_eq_rank_subalgebra : Module.rank K F.toSubalgebra = Module.rank K F :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem finrank_eq_finrank_subalgebra : finrank K F.toSubalgebra = finrank K F :=
   rfl
 

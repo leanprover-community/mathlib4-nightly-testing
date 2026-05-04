@@ -37,7 +37,7 @@ def lor : PosNum → PosNum → PosNum
 
 instance : OrOp PosNum where or := PosNum.lor
 
-@[simp] lemma lor_eq_or (p q : PosNum) : p.lor q = p ||| q := rfl
+@[defeq, simp] lemma lor_eq_or (p q : PosNum) : p.lor q = p ||| q := rfl
 
 /-- Bitwise "and" for `PosNum`. -/
 def land : PosNum → PosNum → Num
@@ -52,7 +52,7 @@ def land : PosNum → PosNum → Num
 
 instance : HAnd PosNum PosNum Num where hAnd := PosNum.land
 
-@[simp] lemma land_eq_and (p q : PosNum) : p.land q = p &&& q := rfl
+@[defeq, simp] lemma land_eq_and (p q : PosNum) : p.land q = p &&& q := rfl
 
 /-- Bitwise `fun a b ↦ a && !b` for `PosNum`. For example, `ldiff 5 9 = 4`:
 ```
@@ -86,7 +86,7 @@ def lxor : PosNum → PosNum → Num
 
 instance : HXor PosNum PosNum Num where hXor := PosNum.lxor
 
-@[simp] lemma lxor_eq_xor (p q : PosNum) : p.lxor q = p ^^^ q := rfl
+@[defeq, simp] lemma lxor_eq_xor (p q : PosNum) : p.lxor q = p ^^^ q := rfl
 
 /-- `a.testBit n` is `true` iff the `n`-th bit (starting from the LSB) in the binary representation
 of `a` is active. If the size of `a` is less than `n`, this evaluates to `false`. -/
@@ -111,7 +111,7 @@ def shiftl : PosNum → Nat → PosNum
 
 instance : HShiftLeft PosNum Nat PosNum where hShiftLeft := PosNum.shiftl
 
-@[simp] lemma shiftl_eq_shiftLeft (p : PosNum) (n : Nat) : p.shiftl n = p <<< n := rfl
+@[defeq, simp] lemma shiftl_eq_shiftLeft (p : PosNum) (n : Nat) : p.shiftl n = p <<< n := rfl
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 -- This shows that the tail-recursive definition is the same as the more naïve recursion.
@@ -128,7 +128,7 @@ def shiftr : PosNum → Nat → Num
 
 instance : HShiftRight PosNum Nat Num where hShiftRight := PosNum.shiftr
 
-@[simp] lemma shiftr_eq_shiftRight (p : PosNum) (n : Nat) : p.shiftr n = p >>> n := rfl
+@[defeq, simp] lemma shiftr_eq_shiftRight (p : PosNum) (n : Nat) : p.shiftr n = p >>> n := rfl
 
 end PosNum
 
@@ -142,7 +142,7 @@ protected def lor : Num → Num → Num
 
 instance : OrOp Num where or := Num.lor
 
-@[simp] lemma lor_eq_or (p q : Num) : p.lor q = p ||| q := rfl
+@[defeq, simp] lemma lor_eq_or (p q : Num) : p.lor q = p ||| q := rfl
 
 /-- Bitwise "and" for `Num`. -/
 def land : Num → Num → Num
@@ -152,7 +152,7 @@ def land : Num → Num → Num
 
 instance : AndOp Num where and := Num.land
 
-@[simp] lemma land_eq_and (p q : Num) : p.land q = p &&& q := rfl
+@[defeq, simp] lemma land_eq_and (p q : Num) : p.land q = p &&& q := rfl
 
 /-- Bitwise `fun a b ↦ a && !b` for `Num`. For example, `ldiff 5 9 = 4`:
 ```
@@ -175,7 +175,7 @@ def lxor : Num → Num → Num
 
 instance : XorOp Num where xor := Num.lxor
 
-@[simp] lemma lxor_eq_xor (p q : Num) : p.lxor q = p ^^^ q := rfl
+@[defeq, simp] lemma lxor_eq_xor (p q : Num) : p.lxor q = p ^^^ q := rfl
 
 /-- Left-shift the binary representation of a `Num`. -/
 def shiftl : Num → Nat → Num
@@ -184,7 +184,7 @@ def shiftl : Num → Nat → Num
 
 instance : HShiftLeft Num Nat Num where hShiftLeft := Num.shiftl
 
-@[simp] lemma shiftl_eq_shiftLeft (p : Num) (n : Nat) : p.shiftl n = p <<< n := rfl
+@[defeq, simp] lemma shiftl_eq_shiftLeft (p : Num) (n : Nat) : p.shiftl n = p <<< n := rfl
 
 /-- Right-shift the binary representation of a `Num`. -/
 def shiftr : Num → Nat → Num
@@ -193,7 +193,7 @@ def shiftr : Num → Nat → Num
 
 instance : HShiftRight Num Nat Num where hShiftRight := Num.shiftr
 
-@[simp] lemma shiftr_eq_shiftRight (p : Num) (n : Nat) : p.shiftr n = p >>> n := rfl
+@[defeq, simp] lemma shiftr_eq_shiftRight (p : Num) (n : Nat) : p.shiftr n = p >>> n := rfl
 
 /-- `a.testBit n` is `true` iff the `n`-th bit (starting from the LSB) in the binary representation
 of `a` is active. If the size of `a` is less than `n`, this evaluates to `false`. -/

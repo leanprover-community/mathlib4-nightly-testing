@@ -130,6 +130,7 @@ instance (priority := 600) hSpace (G : Type u) [TopologicalSpace G] [Group G]
     [IsTopologicalGroup G] : HSpace G :=
   toHSpace G
 
+@[defeq]
 theorem one_eq_hSpace_e {G : Type u} [TopologicalSpace G] [Group G] [IsTopologicalGroup G] :
     (1 : G) = HSpace.e :=
   rfl

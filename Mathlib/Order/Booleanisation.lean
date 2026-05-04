@@ -60,8 +60,8 @@ instance instCompl : Compl (Booleanisation α) where
     | lift a => comp a
     | comp a => lift a
 
-@[simp] lemma compl_lift (a : α) : (lift a)ᶜ = comp a := rfl
-@[simp] lemma compl_comp (a : α) : (comp a)ᶜ = lift a := rfl
+@[defeq, simp] lemma compl_lift (a : α) : (lift a)ᶜ = comp a := rfl
+@[defeq, simp] lemma compl_comp (a : α) : (comp a)ᶜ = lift a := rfl
 
 variable [GeneralizedBooleanAlgebra α]
 
@@ -149,23 +149,23 @@ variable {a b : α}
 @[simp] lemma lift_lt_comp : lift a < comp b ↔ Disjoint a b := ⟨by rintro ⟨_⟩; assumption, LT.sep⟩
 @[simp] lemma not_comp_lt_lift : ¬ comp a < lift b := fun h ↦ nomatch h
 
-@[simp] lemma lift_sup_lift (a b : α) : lift a ⊔ lift b = lift (a ⊔ b) := rfl
-@[simp] lemma lift_sup_comp (a b : α) : lift a ⊔ comp b = comp (b \ a) := rfl
-@[simp] lemma comp_sup_lift (a b : α) : comp a ⊔ lift b = comp (a \ b) := rfl
-@[simp] lemma comp_sup_comp (a b : α) : comp a ⊔ comp b = comp (a ⊓ b) := rfl
+@[defeq, simp] lemma lift_sup_lift (a b : α) : lift a ⊔ lift b = lift (a ⊔ b) := rfl
+@[defeq, simp] lemma lift_sup_comp (a b : α) : lift a ⊔ comp b = comp (b \ a) := rfl
+@[defeq, simp] lemma comp_sup_lift (a b : α) : comp a ⊔ lift b = comp (a \ b) := rfl
+@[defeq, simp] lemma comp_sup_comp (a b : α) : comp a ⊔ comp b = comp (a ⊓ b) := rfl
 
-@[simp] lemma lift_inf_lift (a b : α) : lift a ⊓ lift b = lift (a ⊓ b) := rfl
-@[simp] lemma lift_inf_comp (a b : α) : lift a ⊓ comp b = lift (a \ b) := rfl
-@[simp] lemma comp_inf_lift (a b : α) : comp a ⊓ lift b = lift (b \ a) := rfl
-@[simp] lemma comp_inf_comp (a b : α) : comp a ⊓ comp b = comp (a ⊔ b) := rfl
+@[defeq, simp] lemma lift_inf_lift (a b : α) : lift a ⊓ lift b = lift (a ⊓ b) := rfl
+@[defeq, simp] lemma lift_inf_comp (a b : α) : lift a ⊓ comp b = lift (a \ b) := rfl
+@[defeq, simp] lemma comp_inf_lift (a b : α) : comp a ⊓ lift b = lift (b \ a) := rfl
+@[defeq, simp] lemma comp_inf_comp (a b : α) : comp a ⊓ comp b = comp (a ⊔ b) := rfl
 
-@[simp] lemma lift_bot : lift (⊥ : α) = ⊥ := rfl
-@[simp] lemma comp_bot : comp (⊥ : α) = ⊤ := rfl
+@[defeq, simp] lemma lift_bot : lift (⊥ : α) = ⊥ := rfl
+@[defeq, simp] lemma comp_bot : comp (⊥ : α) = ⊤ := rfl
 
-@[simp] lemma lift_sdiff_lift (a b : α) : lift a \ lift b = lift (a \ b) := rfl
-@[simp] lemma lift_sdiff_comp (a b : α) : lift a \ comp b = lift (a ⊓ b) := rfl
-@[simp] lemma comp_sdiff_lift (a b : α) : comp a \ lift b = comp (a ⊔ b) := rfl
-@[simp] lemma comp_sdiff_comp (a b : α) : comp a \ comp b = lift (b \ a) := rfl
+@[defeq, simp] lemma lift_sdiff_lift (a b : α) : lift a \ lift b = lift (a \ b) := rfl
+@[defeq, simp] lemma lift_sdiff_comp (a b : α) : lift a \ comp b = lift (a ⊓ b) := rfl
+@[defeq, simp] lemma comp_sdiff_lift (a b : α) : comp a \ lift b = comp (a ⊔ b) := rfl
+@[defeq, simp] lemma comp_sdiff_comp (a b : α) : comp a \ comp b = lift (b \ a) := rfl
 
 instance instPreorder : Preorder (Booleanisation α) where
   lt := (· < ·)

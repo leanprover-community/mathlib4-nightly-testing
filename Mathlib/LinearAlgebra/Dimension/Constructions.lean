@@ -513,12 +513,12 @@ section Semiring
 
 variable {F E : Type*} [CommSemiring F] [Semiring E] [Algebra F E]
 
-@[simp]
+@[defeq, simp]
 theorem Subalgebra.rank_toSubmodule (S : Subalgebra F E) :
     Module.rank F (Subalgebra.toSubmodule S) = Module.rank F S :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem Subalgebra.finrank_toSubmodule (S : Subalgebra F E) :
     finrank F (Subalgebra.toSubmodule S) = finrank F S :=
   rfl

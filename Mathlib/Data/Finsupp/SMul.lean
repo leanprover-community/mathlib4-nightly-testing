@@ -56,6 +56,7 @@ def comapSMul : SMul G (α →₀ M) where smul g := mapDomain (g • ·)
 
 attribute [local instance] comapSMul
 
+@[defeq]
 theorem comapSMul_def (g : G) (f : α →₀ M) : g • f = mapDomain (g • ·) f :=
   rfl
 

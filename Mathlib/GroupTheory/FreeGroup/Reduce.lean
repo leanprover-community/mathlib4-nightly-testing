@@ -62,6 +62,7 @@ theorem reduce_replicate (n : ℕ) (x : α × Bool) :
     | zero => simp
     | succ n => simp [List.replicate_succ]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The first theorem that characterises the function `reduce`: a word reduces to its maximal
   reduction. -/
 @[to_additive /-- The first theorem that characterises the function `reduce`: a word reduces to its
@@ -88,6 +89,7 @@ theorem reduce.red : Red L (reduce L) := by
         exact Red.Step.cons_not_rev.to_red
       · exact Red.cons_cons ih
 
+set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 theorem reduce.not {p : Prop} :
     ∀ {L₁ L₂ L₃ : List (α × Bool)} {x b}, reduce L₁ = L₂ ++ (x, b) :: (x, !b) :: L₃ → p

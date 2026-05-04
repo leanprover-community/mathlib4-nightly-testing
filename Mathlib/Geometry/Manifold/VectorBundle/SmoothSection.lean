@@ -304,7 +304,7 @@ instance : DFunLike Cₛ^n⟮I; F, V⟯ M V where
 
 variable {s t : Cₛ^n⟮I; F, V⟯}
 
-@[simp]
+@[defeq, simp]
 theorem coeFn_mk (s : ∀ x, V x) (hs : CMDiff n (T% s)) : (mk s hs : ∀ x, V x) = s := rfl
 
 protected theorem contMDiff (s : Cₛ^n⟮I; F, V⟯) : CMDiff n (T% fun x ↦ s x) :=
@@ -325,14 +325,14 @@ variable [∀ x, AddCommGroup (V x)] [∀ x, Module 𝕜 (V x)] [VectorBundle �
 instance instAdd : Add Cₛ^n⟮I; F, V⟯ :=
   ⟨fun s t ↦ ⟨s + t, s.contMDiff.add_section t.contMDiff⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_add (s t : Cₛ^n⟮I; F, V⟯) : ⇑(s + t) = ⇑s + t :=
   rfl
 
 instance instSub : Sub Cₛ^n⟮I; F, V⟯ :=
   ⟨fun s t ↦ ⟨s - t, s.contMDiff.sub_section t.contMDiff⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_sub (s t : Cₛ^n⟮I; F, V⟯) : ⇑(s - t) = s - t :=
   rfl
 
@@ -342,14 +342,14 @@ instance instZero : Zero Cₛ^n⟮I; F, V⟯ :=
 instance inhabited : Inhabited Cₛ^n⟮I; F, V⟯ :=
   ⟨0⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : Cₛ^n⟮I; F, V⟯) = 0 :=
   rfl
 
 instance instNeg : Neg Cₛ^n⟮I; F, V⟯ :=
   ⟨fun s ↦ ⟨-s, s.contMDiff.neg_section⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_neg (s : Cₛ^n⟮I; F, V⟯) : ⇑(-s : Cₛ^n⟮I; F, V⟯) = -s :=
   rfl
 
@@ -379,7 +379,7 @@ instance instAddCommGroup : AddCommGroup Cₛ^n⟮I; F, V⟯ :=
 instance instSMul : SMul 𝕜 Cₛ^n⟮I; F, V⟯ :=
   ⟨fun c s ↦ ⟨c • ⇑s, s.contMDiff.const_smul_section⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul (r : 𝕜) (s : Cₛ^n⟮I; F, V⟯) : ⇑(r • s : Cₛ^n⟮I; F, V⟯) = r • ⇑s :=
   rfl
 

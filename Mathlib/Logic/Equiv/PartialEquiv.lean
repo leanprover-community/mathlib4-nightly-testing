@@ -163,6 +163,7 @@ def Simps.symm_apply (e : PartialEquiv α β) : β → α :=
 
 initialize_simps_projections PartialEquiv (toFun → apply, invFun → symm_apply)
 
+@[defeq]
 theorem coe_mk (f : α → β) (g s t ml mr il ir) :
     (PartialEquiv.mk f g s t ml mr il ir : α → β) = f := rfl
 

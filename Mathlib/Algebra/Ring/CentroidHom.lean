@@ -105,6 +105,7 @@ instance : CentroidHomClass (CentroidHom α) α where
   map_mul_left f := f.map_mul_left'
   map_mul_right f := f.map_mul_right'
 
+@[defeq]
 theorem toFun_eq_coe {f : CentroidHom α} : f.toFun = f := rfl
 
 @[ext]
@@ -274,7 +275,7 @@ instance hasNPowNat : Pow (CentroidHom α) ℕ :=
           rw [pow_succ']
           exact (congr_arg f.toEnd ih).trans (f.map_mul_right' _ _)}⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_zero : ⇑(0 : CentroidHom α) = 0 :=
   rfl
 
@@ -294,7 +295,7 @@ theorem coe_mul (f g : CentroidHom α) : ⇑(f * g) = f ∘ g :=
 theorem coe_smul (n : M) (f : CentroidHom α) : ⇑(n • f) = n • ⇑f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (a : α) : (0 : CentroidHom α) a = 0 :=
   rfl
 
@@ -397,7 +398,7 @@ instance applyModule : Module (CentroidHom α) α where
   smul_zero := map_zero
   smul_add := map_add
 
-@[simp]
+@[defeq, simp]
 lemma smul_def (T : CentroidHom α) (a : α) : T • a = T a := rfl
 
 instance : SMulCommClass (CentroidHom α) α α where

@@ -130,22 +130,22 @@ instance : Sub (Poly α) := ⟨fun f g => ⟨f - g, f.2.sub g.2⟩⟩
 
 instance : Mul (Poly α) := ⟨fun f g => ⟨f * g, f.2.mul g.2⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : Poly α) = const 0 := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_one : ⇑(1 : Poly α) = const 1 := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_neg (f : Poly α) : ⇑(-f) = -f := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_add (f g : Poly α) : ⇑(f + g) = f + g := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_sub (f g : Poly α) : ⇑(f - g) = f - g := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mul (f g : Poly α) : ⇑(f * g) = f * g := rfl
 
 @[simp]
@@ -154,16 +154,16 @@ theorem zero_apply (x) : (0 : Poly α) x = 0 := rfl
 @[simp]
 theorem one_apply (x) : (1 : Poly α) x = 1 := rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_apply (f : Poly α) (x) : (-f) x = -f x := rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (f g : Poly α) (x : α → ℕ) : (f + g) x = f x + g x := rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_apply (f g : Poly α) (x : α → ℕ) : (f - g) x = f x - g x := rfl
 
-@[simp]
+@[defeq, simp]
 theorem mul_apply (f g : Poly α) (x : α → ℕ) : (f * g) x = f x * g x := rfl
 
 instance (α : Type*) : Inhabited (Poly α) := ⟨0⟩

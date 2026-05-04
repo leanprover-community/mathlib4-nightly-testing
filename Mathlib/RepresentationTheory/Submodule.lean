@@ -43,9 +43,9 @@ instance : BoundedOrder ρ.invtSubmodule where
   le_top := fun ⟨p, hp⟩ ↦ by simp
   bot_le := fun ⟨p, hp⟩ ↦ by simp
 
-@[simp] protected lemma coe_top : (↑(⊤ : ρ.invtSubmodule) : Submodule k V) = ⊤ := rfl
+@[defeq, simp] protected lemma coe_top : (↑(⊤ : ρ.invtSubmodule) : Submodule k V) = ⊤ := rfl
 
-@[simp] protected lemma coe_bot : (↑(⊥ : ρ.invtSubmodule) : Submodule k V) = ⊥ := rfl
+@[defeq, simp] protected lemma coe_bot : (↑(⊥ : ρ.invtSubmodule) : Submodule k V) = ⊥ := rfl
 
 protected lemma nontrivial_iff : Nontrivial ρ.invtSubmodule ↔ Nontrivial V := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩

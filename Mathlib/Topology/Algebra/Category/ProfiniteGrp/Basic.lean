@@ -85,7 +85,7 @@ abbrev ProfiniteGrp.of (G : Type u) [Group G] [TopologicalSpace G] [IsTopologica
   group := ‹_›
   topologicalGroup := ‹_›
 
-@[to_additive]
+@[defeq, to_additive]
 lemma ProfiniteGrp.coe_of (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [CompactSpace G] [TotallyDisconnectedSpace G] : (ProfiniteGrp.of G : Type u) = G :=
   rfl
@@ -139,7 +139,7 @@ namespace ProfiniteGrp
 instance {M N : ProfiniteGrp.{u}} : CoeFun (M ⟶ N) (fun _ ↦ M → N) where
   coe f := f.hom
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_id {A : ProfiniteGrp.{u}} : (𝟙 A : A ⟶ A).hom = ContinuousMonoidHom.id A := rfl
 
 /- Provided for rewriting. -/
@@ -147,7 +147,7 @@ lemma hom_id {A : ProfiniteGrp.{u}} : (𝟙 A : A ⟶ A).hom = ContinuousMonoidH
 lemma id_apply (A : ProfiniteGrp.{u}) (a : A) :
     (𝟙 A : A ⟶ A) a = a := by simp
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_comp {A B C : ProfiniteGrp.{u}} (f : A ⟶ B) (g : B ⟶ C) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -166,22 +166,22 @@ variable {X Y Z : Type u} [Group X] [TopologicalSpace X] [IsTopologicalGroup X]
     [IsTopologicalGroup Y] [CompactSpace Y] [TotallyDisconnectedSpace Y] [Group Z]
     [TopologicalSpace Z] [IsTopologicalGroup Z] [CompactSpace Z] [TotallyDisconnectedSpace Z]
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma hom_ofHom (f : X →ₜ* Y) : (ofHom f).hom = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_hom {A B : ProfiniteGrp.{u}} (f : A ⟶ B) :
     ofHom (Hom.hom f) = f := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_id : ofHom (ContinuousMonoidHom.id X) = 𝟙 (of X) := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma ofHom_comp (f : X →ₜ* Y) (g : Y →ₜ* Z) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 lemma ofHom_apply (f : X →ₜ* Y) (x : X) : ofHom f x = f x := rfl
 
 @[to_additive]
@@ -389,11 +389,11 @@ abbrev limit : ProfiniteGrp := ProfiniteGrp.of (ProfiniteGrp.limitConePtAux F)
 lemma limit_ext (x y : limit F) (hxy : ∀ j, x.val j = y.val j) : x = y :=
   Subtype.ext (funext hxy)
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma limit_one_val (j : J) : (1 : limit F).val j = 1 :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma limit_mul_val (x y : limit F) (j : J) : (x * y).val j = x.val j * y.val j :=
   rfl
 

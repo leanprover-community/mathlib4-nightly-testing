@@ -77,29 +77,33 @@ abbrev ofHom {X Y : Type u} [UniformSpace X] [UniformSpace Y]
 instance : Inhabited UniformSpaceCat :=
   ⟨UniformSpaceCat.of Empty⟩
 
+@[defeq]
 theorem coe_of (X : Type u) [UniformSpace X] : (of X : Type u) = X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem hom_comp {X Y Z : UniformSpaceCat} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = ⟨g ∘ f, g.hom.prop.comp f.hom.prop⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem hom_id (X : UniformSpaceCat) : (𝟙 X : X ⟶ X).hom = ⟨id, uniformContinuous_id⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem hom_ofHom {X Y : Type u} [UniformSpace X] [UniformSpace Y]
     (f : { f : X → Y // UniformContinuous f }) : (ofHom f).hom = f :=
   rfl
 
+@[defeq]
 theorem coe_comp {X Y Z : UniformSpaceCat} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g : X → Z) = g ∘ f :=
   rfl
 
+@[defeq]
 theorem coe_id (X : UniformSpaceCat) : (𝟙 X : X → X) = id :=
   rfl
 
+@[defeq]
 theorem coe_mk {X Y : UniformSpaceCat} (f : X → Y) (hf : UniformContinuous f) :
     (⟨f, hf⟩ : X ⟶ Y).hom = f :=
   rfl
@@ -182,7 +186,7 @@ theorem hom_id (X : CpltSepUniformSpace) :
     ConcreteCategory.hom (𝟙 X : X ⟶ X) = ⟨id, uniformContinuous_id⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem hom_ofHom {X Y : Type u} [UniformSpace X] [UniformSpace Y]
     (f : { f : X → Y // UniformContinuous f }) : (UniformSpaceCat.ofHom f).hom = f :=
   rfl

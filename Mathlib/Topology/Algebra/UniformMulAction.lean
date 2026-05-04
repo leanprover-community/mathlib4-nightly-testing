@@ -193,7 +193,7 @@ variable [SMul M X]
 noncomputable instance : SMul M (Completion X) :=
   ⟨fun c => Completion.map (c • ·)⟩
 
-@[to_additive]
+@[defeq, to_additive]
 theorem smul_def (c : M) (x : Completion X) : c • x = Completion.map (c • ·) x :=
   rfl
 

@@ -166,7 +166,7 @@ def AsSmall.down : AsSmall C ⥤ C where
   obj X := ULift.down X
   map f := f.down
 
-@[reassoc]
+@[defeq, reassoc]
 theorem down_comp {X Y Z : AsSmall C} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).down = f.down ≫ g.down :=
   rfl
 

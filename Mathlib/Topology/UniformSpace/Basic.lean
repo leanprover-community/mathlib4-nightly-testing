@@ -481,6 +481,7 @@ theorem toTopologicalSpace_mono {u₁ u₂ : UniformSpace α} (h : u₁ ≤ u₂
     @UniformSpace.toTopologicalSpace _ u₁ ≤ @UniformSpace.toTopologicalSpace _ u₂ :=
   le_of_nhds_le_nhds <| to_nhds_mono h
 
+@[defeq]
 theorem toTopologicalSpace_comap {f : α → β} {u : UniformSpace β} :
     @UniformSpace.toTopologicalSpace _ (UniformSpace.comap f u) =
       TopologicalSpace.induced f (@UniformSpace.toTopologicalSpace β u) :=
@@ -494,8 +495,10 @@ protected lemma _root_.Filter.HasBasis.uniformSpace_eq_bot {ι p} {s : ι → Se
     u = ⊥ ↔ ∃ i, p i ∧ Pairwise fun x y : α ↦ (x, y) ∉ s i := by
   simp [uniformSpace_eq_bot, h.mem_iff, subset_def, Pairwise, not_imp_not]
 
+@[defeq]
 theorem toTopologicalSpace_bot : @UniformSpace.toTopologicalSpace α ⊥ = ⊥ := rfl
 
+@[defeq]
 theorem toTopologicalSpace_top : @UniformSpace.toTopologicalSpace α ⊤ = ⊤ := rfl
 
 theorem toTopologicalSpace_iInf {ι : Sort*} {u : ι → UniformSpace α} :
@@ -508,6 +511,7 @@ theorem toTopologicalSpace_sInf {s : Set (UniformSpace α)} :
   rw [sInf_eq_iInf]
   simp only [← toTopologicalSpace_iInf]
 
+@[defeq]
 theorem toTopologicalSpace_inf {u v : UniformSpace α} :
     (u ⊓ v).toTopologicalSpace = u.toTopologicalSpace ⊓ v.toTopologicalSpace :=
   rfl
@@ -847,6 +851,7 @@ lemma uniformContinuous_swap :
     UniformContinuous (Prod.swap : α × β → β × α) :=
   uniformContinuous_snd.prodMk uniformContinuous_fst
 
+@[defeq]
 theorem toTopologicalSpace_prod {α} {β} [u : UniformSpace α] [v : UniformSpace β] :
     @UniformSpace.toTopologicalSpace (α × β) instUniformSpaceProd =
       @instTopologicalSpaceProd α β u.toTopologicalSpace v.toTopologicalSpace :=
@@ -928,6 +933,7 @@ theorem UniformContinuous₂.bicompl {f : α → β → γ} {ga : δ → α} {gb
 
 end
 
+@[defeq]
 theorem toTopologicalSpace_subtype [u : UniformSpace α] {p : α → Prop} :
     @UniformSpace.toTopologicalSpace (Subtype p) instUniformSpaceSubtype =
       @instTopologicalSpaceSubtype α p u.toTopologicalSpace :=

@@ -61,6 +61,7 @@ instance : FunLike (P →ᴬ[R] Q) P Q where
 instance : ContinuousMapClass (P →ᴬ[R] Q) P Q where
   map_continuous := cont
 
+@[defeq]
 theorem toFun_eq_coe (f : P →ᴬ[R] Q) : f.toFun = ⇑f := rfl
 
 theorem coe_injective : @Function.Injective (P →ᴬ[R] Q) (P → Q) (⇑) :=
@@ -83,7 +84,7 @@ instance : CoeHead (P →ᴬ[R] Q) C(P, Q) :=
 @[simp]
 theorem toContinuousMap_coe (f : P →ᴬ[R] Q) : f.toContinuousMap = ↑f := rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_toAffineMap (f : P →ᴬ[R] Q) : ((f : P →ᵃ[R] Q) : P → Q) = f := rfl
 
 @[simp, norm_cast]
@@ -94,13 +95,13 @@ theorem to_continuousMap_injective {f g : P →ᴬ[R] Q} (h : (f : C(P, Q)) = (g
   ext a
   exact ContinuousMap.congr_fun h a
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_toAffineMap_mk (f : P →ᵃ[R] Q) (h) : ((⟨f, h⟩ : P →ᴬ[R] Q) : P →ᵃ[R] Q) = f := rfl
 
 @[norm_cast]
 theorem coe_continuousMap_mk (f : P →ᵃ[R] Q) (h) : ((⟨f, h⟩ : P →ᴬ[R] Q) : C(P, Q)) = ⟨f, h⟩ := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : P →ᵃ[R] Q) (h) : ((⟨f, h⟩ : P →ᴬ[R] Q) : P → Q) = f := rfl
 
 @[simp]
@@ -261,9 +262,10 @@ variable [ContinuousConstSMul S W]
 instance : SMul S (P →ᴬ[R] W) where
   smul t f := { t • (f : P →ᵃ[R] W) with cont := f.continuous.const_smul t }
 
-@[norm_cast, simp]
+@[defeq, norm_cast, simp]
 theorem coe_smul (t : S) (f : P →ᴬ[R] W) : ⇑(t • f) = t • ⇑f := rfl
 
+@[defeq]
 theorem smul_apply (t : S) (f : P →ᴬ[R] W) (x : P) : (t • f) x = t • f x := rfl
 
 instance [DistribMulAction Sᵐᵒᵖ W] [IsCentralScalar S W] : IsCentralScalar S (P →ᴬ[R] W) where
@@ -285,25 +287,28 @@ variable [IsTopologicalAddGroup W]
 instance : Add (P →ᴬ[R] W) where
   add f g := { (f : P →ᵃ[R] W) + (g : P →ᵃ[R] W) with cont := f.continuous.add g.continuous }
 
-@[norm_cast, simp]
+@[defeq, norm_cast, simp]
 theorem coe_add (f g : P →ᴬ[R] W) : ⇑(f + g) = f + g := rfl
 
+@[defeq]
 theorem add_apply (f g : P →ᴬ[R] W) (x : P) : (f + g) x = f x + g x := rfl
 
 instance : Sub (P →ᴬ[R] W) where
   sub f g := { (f : P →ᵃ[R] W) - (g : P →ᵃ[R] W) with cont := f.continuous.sub g.continuous }
 
-@[norm_cast, simp]
+@[defeq, norm_cast, simp]
 theorem coe_sub (f g : P →ᴬ[R] W) : ⇑(f - g) = f - g := rfl
 
+@[defeq]
 theorem sub_apply (f g : P →ᴬ[R] W) (x : P) : (f - g) x = f x - g x := rfl
 
 instance : Neg (P →ᴬ[R] W) :=
   { neg := fun f => { -(f : P →ᵃ[R] W) with cont := f.continuous.neg } }
 
-@[norm_cast, simp]
+@[defeq, norm_cast, simp]
 theorem coe_neg (f : P →ᴬ[R] W) : ⇑(-f) = -f := rfl
 
+@[defeq]
 theorem neg_apply (f : P →ᴬ[R] W) (x : P) : (-f) x = -f x := rfl
 
 instance : AddCommGroup (P →ᴬ[R] W) :=
@@ -353,17 +358,17 @@ instance : AddTorsor (P →ᴬ[R] W) (P →ᴬ[R] Q) where
   vsub_vadd' _ _ := ext fun _ ↦ vsub_vadd _ _
   vadd_vsub' _ _ := ext fun _ ↦ vadd_vsub _ _
 
-@[simp] lemma vadd_apply (f : P →ᴬ[R] W) (g : P →ᴬ[R] Q) (p : P) : (f +ᵥ g) p = f p +ᵥ g p :=
+@[defeq, simp] lemma vadd_apply (f : P →ᴬ[R] W) (g : P →ᴬ[R] Q) (p : P) : (f +ᵥ g) p = f p +ᵥ g p :=
   rfl
 
-@[simp] lemma vsub_apply (f g : P →ᴬ[R] Q) (p : P) : (f -ᵥ g) p = f p -ᵥ g p :=
+@[defeq, simp] lemma vsub_apply (f g : P →ᴬ[R] Q) (p : P) : (f -ᵥ g) p = f p -ᵥ g p :=
   rfl
 
-@[simp] lemma vadd_toAffineMap (f : P →ᴬ[R] W) (g : P →ᴬ[R] Q) :
+@[defeq, simp] lemma vadd_toAffineMap (f : P →ᴬ[R] W) (g : P →ᴬ[R] Q) :
     (f +ᵥ g).toAffineMap = f.toAffineMap +ᵥ g.toAffineMap :=
   rfl
 
-@[simp] lemma vsub_toAffineMap (f g : P →ᴬ[R] Q) :
+@[defeq, simp] lemma vsub_toAffineMap (f g : P →ᴬ[R] Q) :
     (f -ᵥ g).toAffineMap = f.toAffineMap -ᵥ g.toAffineMap :=
   rfl
 

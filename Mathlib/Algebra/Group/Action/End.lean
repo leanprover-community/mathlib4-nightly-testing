@@ -61,12 +61,14 @@ instance applyMulAction : MulAction (Function.End α) α where
 /-- The tautological additive action by `Additive (Function.End α)` on `α`. -/
 instance applyAddAction : AddAction (Additive (Function.End α)) α := inferInstance
 
-@[simp] lemma smul_def (f : Function.End α) (a : α) : f • a = f a := rfl
+@[defeq, simp] lemma smul_def (f : Function.End α) (a : α) : f • a = f a := rfl
 
 --TODO - This statement should be something like `toFun (f * g) = toFun f ∘ toFun g`
+@[defeq]
 lemma mul_def (f g : Function.End α) : (f * g) = f ∘ g := rfl
 
 --TODO - This statement should be something like `toFun 1 = id`
+@[defeq]
 lemma one_def : (1 : Function.End α) = id := rfl
 
 /-- `Function.End.applyMulAction` is faithful. -/
@@ -86,7 +88,7 @@ instance applyMulAction (α : Type*) : MulAction (Perm α) α where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[simp]
+@[defeq, simp]
 protected lemma smul_def {α : Type*} (f : Perm α) (a : α) : f • a = f a := rfl
 
 /-- `Equiv.Perm.applyMulAction` is faithful. -/
@@ -123,7 +125,7 @@ instance applyMulDistribMulAction : MulDistribMulAction (MulAut M) M where
   smul_one := map_one
   smul_mul := map_mul
 
-@[simp] protected lemma smul_def (f : MulAut M) (a : M) : f • a = f a := rfl
+@[defeq, simp] protected lemma smul_def (f : MulAut M) (a : M) : f • a = f a := rfl
 
 /-- `MulAut.applyDistribMulAction` is faithful. -/
 instance apply_faithfulSMul : FaithfulSMul (MulAut M) M where eq_of_smul_eq_smul := MulEquiv.ext
@@ -141,7 +143,7 @@ instance applyMulAction : MulAction (AddAut M) M where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[simp] protected lemma smul_def (f : AddAut M) (a : M) : f • a = f a := rfl
+@[defeq, simp] protected lemma smul_def (f : AddAut M) (a : M) : f • a = f a := rfl
 
 /-- `AddAut.applyDistribMulAction` is faithful. -/
 instance apply_faithfulSMul : FaithfulSMul (AddAut M) M where eq_of_smul_eq_smul := AddEquiv.ext

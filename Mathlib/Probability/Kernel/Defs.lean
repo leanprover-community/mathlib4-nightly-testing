@@ -82,7 +82,7 @@ lemma measurable (κ : Kernel α β) : Measurable κ := κ.measurable'
 
 lemma aemeasurable (κ : Kernel α β) {μ : Measure α} : AEMeasurable κ μ := κ.measurable.aemeasurable
 
-@[simp, norm_cast] lemma coe_mk (f : α → Measure β) (hf) : mk f hf = f := rfl
+@[defeq, simp, norm_cast] lemma coe_mk (f : α → Measure β) (hf) : mk f hf = f := rfl
 
 initialize_simps_projections Kernel (toFun → apply)
 
@@ -91,13 +91,13 @@ noncomputable instance instAdd : Add (Kernel α β) where add κ η := ⟨κ + �
 noncomputable instance instSMulNat : SMul ℕ (Kernel α β) where
   smul n κ := ⟨n • κ, (measurable_const (a := n)).smul κ.2⟩
 
-@[simp, norm_cast] lemma coe_zero : ⇑(0 : Kernel α β) = 0 := rfl
-@[simp, norm_cast] lemma coe_add (κ η : Kernel α β) : ⇑(κ + η) = κ + η := rfl
-@[simp, norm_cast] lemma coe_nsmul (n : ℕ) (κ : Kernel α β) : ⇑(n • κ) = n • κ := rfl
+@[defeq, simp, norm_cast] lemma coe_zero : ⇑(0 : Kernel α β) = 0 := rfl
+@[defeq, simp, norm_cast] lemma coe_add (κ η : Kernel α β) : ⇑(κ + η) = κ + η := rfl
+@[defeq, simp, norm_cast] lemma coe_nsmul (n : ℕ) (κ : Kernel α β) : ⇑(n • κ) = n • κ := rfl
 
-@[simp] lemma zero_apply (a : α) : (0 : Kernel α β) a = 0 := rfl
-@[simp] lemma add_apply (κ η : Kernel α β) (a : α) : (κ + η) a = κ a + η a := rfl
-@[simp] lemma nsmul_apply (n : ℕ) (κ : Kernel α β) (a : α) : (n • κ) a = n • κ a := rfl
+@[defeq, simp] lemma zero_apply (a : α) : (0 : Kernel α β) a = 0 := rfl
+@[defeq, simp] lemma add_apply (κ η : Kernel α β) (a : α) : (κ + η) a = κ a + η a := rfl
+@[defeq, simp] lemma nsmul_apply (n : ℕ) (κ : Kernel α β) (a : α) : (n • κ) a = n • κ a := rfl
 
 noncomputable instance instAddCommMonoid : AddCommMonoid (Kernel α β) :=
   DFunLike.coe_injective.addCommMonoid _ coe_zero coe_add (by intros; rfl)

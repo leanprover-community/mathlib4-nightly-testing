@@ -153,8 +153,9 @@ abbrev toLocalizationMap : M.LocalizationMap S where
 lemma toLocalizationMap_toMonoidHom :
     (toLocalizationMap M S).toMonoidHom = (algebraMap R S : R →*₀ S) := rfl
 
-@[simp] lemma coe_toLocalizationMap : ⇑(toLocalizationMap M S) = algebraMap R S := rfl
+@[defeq, simp] lemma coe_toLocalizationMap : ⇑(toLocalizationMap M S) = algebraMap R S := rfl
 
+@[defeq]
 lemma toLocalizationMap_apply (x) : toLocalizationMap M S x = algebraMap R S x := rfl
 
 theorem surj₂ : ∀ z w : S, ∃ z' w' : R, ∃ d : M,

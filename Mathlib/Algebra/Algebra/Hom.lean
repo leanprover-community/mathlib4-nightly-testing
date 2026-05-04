@@ -114,7 +114,7 @@ protected theorem coe_coe {F : Type*} [FunLike F A B] [AlgHomClass F R A B] (f :
     ⇑(f : A →ₐ[R] B) = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe (f : A →ₐ[R] B) : f.toFun = f :=
   rfl
 
@@ -132,11 +132,11 @@ def toAddMonoidHom' (f : A →ₐ[R] B) : A →+ B := (f : A →+* B)
 instance coeOutAddMonoidHom : CoeOut (A →ₐ[R] B) (A →+ B) :=
   ⟨AlgHom.toAddMonoidHom'⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk {f : A →+* B} (h) : ((⟨f, h⟩ : A →ₐ[R] B) : A → B) = f :=
   rfl
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_mks {f : A → B} (h₁ h₂ h₃ h₄ h₅) : ⇑(⟨⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩, h₅⟩ : A →ₐ[R] B) = f :=
   rfl
 
@@ -196,7 +196,7 @@ protected theorem congr_arg (φ : A →ₐ[R] B) {x y : A} (h : x = y) : φ x = 
 theorem ext {φ₁ φ₂ : A →ₐ[R] B} (H : ∀ x, φ₁ x = φ₂ x) : φ₁ = φ₂ :=
   DFunLike.ext _ _ H
 
-@[simp]
+@[defeq, simp]
 theorem mk_coe {f : A →ₐ[R] B} (h₁ h₂ h₃ h₄ h₅) : (⟨⟨⟨⟨f, h₁⟩, h₂⟩, h₃, h₄⟩, h₅⟩ : A →ₐ[R] B) = f :=
   rfl
 
@@ -481,7 +481,7 @@ instance : MulDistribMulAction (A →ₐ[R] A) Aˣ where
   smul_mul _ _ _ := by ext; exact map_mul _ _ _
   smul_one _ := by ext; exact map_one _
 
-@[simp]
+@[defeq, simp]
 theorem smul_units_def (f : A →ₐ[R] A) (x : Aˣ) :
     f • x = Units.map (f : A →* A) x := rfl
 

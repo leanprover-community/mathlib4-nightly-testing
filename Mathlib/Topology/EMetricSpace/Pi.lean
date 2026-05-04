@@ -35,6 +35,7 @@ variable {X : β → Type*} [Fintype β]
 instance [∀ b, EDist (X b)] : EDist (∀ b, X b) where
   edist f g := Finset.sup univ fun b => edist (f b) (g b)
 
+@[defeq]
 theorem edist_pi_def [∀ b, EDist (X b)] (f g : ∀ b, X b) :
     edist f g = Finset.sup univ fun b => edist (f b) (g b) :=
   rfl

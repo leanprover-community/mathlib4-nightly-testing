@@ -65,7 +65,7 @@ instance : LinearEquivClass (Q₁.IsometryEquiv Q₂) R M₁ M₂ where
 instance : CoeOut (Q₁.IsometryEquiv Q₂) (M₁ ≃ₗ[R] M₂) :=
   ⟨IsometryEquiv.toLinearEquiv⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_toLinearEquiv (f : Q₁.IsometryEquiv Q₂) : ⇑(f : M₁ ≃ₗ[R] M₂) = f :=
   rfl
 

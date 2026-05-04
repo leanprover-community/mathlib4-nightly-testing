@@ -42,11 +42,12 @@ variable [Norm E]
 
 instance norm : Norm (ULift E) where norm x := ‖x.down‖
 
+@[defeq]
 lemma norm_def (x : ULift E) : ‖x‖ = ‖x.down‖ := rfl
 
-@[simp] lemma norm_up (x : E) : ‖ULift.up x‖ = ‖x‖ := rfl
+@[defeq, simp] lemma norm_up (x : E) : ‖ULift.up x‖ = ‖x‖ := rfl
 
-@[simp] lemma norm_down (x : ULift E) : ‖x.down‖ = ‖x‖ := rfl
+@[defeq, simp] lemma norm_down (x : ULift E) : ‖x.down‖ = ‖x‖ := rfl
 
 end Norm
 
@@ -55,11 +56,12 @@ variable [NNNorm E]
 
 instance nnnorm : NNNorm (ULift E) where nnnorm x := ‖x.down‖₊
 
+@[defeq]
 lemma nnnorm_def (x : ULift E) : ‖x‖₊ = ‖x.down‖₊ := rfl
 
-@[simp] lemma nnnorm_up (x : E) : ‖ULift.up x‖₊ = ‖x‖₊ := rfl
+@[defeq, simp] lemma nnnorm_up (x : E) : ‖ULift.up x‖₊ = ‖x‖₊ := rfl
 
-@[simp] lemma nnnorm_down (x : ULift E) : ‖x.down‖₊ = ‖x‖₊ := rfl
+@[defeq, simp] lemma nnnorm_down (x : ULift E) : ‖x.down‖₊ = ‖x‖₊ := rfl
 
 end NNNorm
 
@@ -231,9 +233,10 @@ variable [Norm E] [Norm F] {x : E × F} {r : ℝ}
 
 instance Prod.toNorm : Norm (E × F) where norm x := ‖x.1‖ ⊔ ‖x.2‖
 
+@[defeq]
 lemma Prod.norm_def (x : E × F) : ‖x‖ = max ‖x.1‖ ‖x.2‖ := rfl
 
-@[simp] lemma Prod.norm_mk (x : E) (y : F) : ‖(x, y)‖ = max ‖x‖ ‖y‖ := rfl
+@[defeq, simp] lemma Prod.norm_mk (x : E) (y : F) : ‖(x, y)‖ = max ‖x‖ ‖y‖ := rfl
 
 lemma norm_fst_le (x : E × F) : ‖x.1‖ ≤ ‖x‖ := le_max_left _ _
 
@@ -303,7 +306,7 @@ instance Pi.seminormedGroup : SeminormedGroup (∀ i, G i) where
       congr_arg (Finset.sup Finset.univ) <| funext fun a =>
         show nndist (x a) (y a) = ‖(x a)⁻¹ * y a‖₊ from nndist_eq_nnnorm_inv_mul (x a) (y a)
 
-@[to_additive Pi.norm_def]
+@[defeq, to_additive Pi.norm_def]
 lemma Pi.norm_def' : ‖f‖ = ↑(Finset.univ.sup fun b => ‖f b‖₊) := rfl
 
 @[to_additive Pi.nnnorm_def]
@@ -432,10 +435,12 @@ instance instSeminormedAddGroup [SeminormedAddGroup E] : SeminormedAddGroup Eᵐ
 
 lemma norm_op [SeminormedAddGroup E] (a : E) : ‖MulOpposite.op a‖ = ‖a‖ := rfl
 
+@[defeq]
 lemma norm_unop [SeminormedAddGroup E] (a : Eᵐᵒᵖ) : ‖MulOpposite.unop a‖ = ‖a‖ := rfl
 
 lemma nnnorm_op [SeminormedAddGroup E] (a : E) : ‖MulOpposite.op a‖₊ = ‖a‖₊ := rfl
 
+@[defeq]
 lemma nnnorm_unop [SeminormedAddGroup E] (a : Eᵐᵒᵖ) : ‖MulOpposite.unop a‖₊ = ‖a‖₊ := rfl
 
 instance instNormedAddGroup [NormedAddGroup E] : NormedAddGroup Eᵐᵒᵖ where

@@ -406,6 +406,7 @@ section Star
 operation equal to `Matrix.conjTranspose`. -/
 instance [Star α] : Star (Matrix n n α) where star := conjTranspose
 
+@[defeq]
 theorem star_eq_conjTranspose [Star α] (M : Matrix m m α) : star M = Mᴴ :=
   rfl
 

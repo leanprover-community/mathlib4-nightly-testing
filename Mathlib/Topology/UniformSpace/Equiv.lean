@@ -58,7 +58,7 @@ instance : EquivLike (α ≃ᵤ β) α β where
   right_inv h := h.right_inv
   coe_injective' _ _ H _ := toEquiv_injective <| DFunLike.ext' H
 
-@[simp]
+@[defeq, simp]
 theorem uniformEquiv_mk_coe (a : Equiv α β) (b c) : (UniformEquiv.mk a b c : α → β) = a :=
   rfl
 
@@ -79,7 +79,7 @@ def Simps.symm_apply (h : α ≃ᵤ β) : β → α :=
 
 initialize_simps_projections UniformEquiv (toFun → apply, invFun → symm_apply)
 
-@[simp]
+@[defeq, simp]
 theorem coe_toEquiv (h : α ≃ᵤ β) : ⇑h.toEquiv = h :=
   rfl
 

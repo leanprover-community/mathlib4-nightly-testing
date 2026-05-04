@@ -85,6 +85,7 @@ def valueMonoid : Submonoid Bˣ where
 
 lemma one_mem_valueMonoid : 1 ∈ valueMonoid f := ⟨1, map_one ..⟩
 
+@[defeq]
 lemma coe_one : (⟨(1 : Bˣ), one_mem_valueMonoid f⟩ : valueMonoid f) = 1 := rfl
 
 lemma mem_valueMonoid_iff {b : Bˣ} : b ∈ valueMonoid f ↔ b ∈ (↑) ⁻¹' (range f) := Iff.rfl

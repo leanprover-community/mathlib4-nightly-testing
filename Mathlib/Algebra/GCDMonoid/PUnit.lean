@@ -36,15 +36,15 @@ instance normalizedGCDMonoid : NormalizedGCDMonoid PUnit where
   normalize_gcd := by subsingleton
   normalize_lcm := by subsingleton
 
-@[simp]
+@[defeq, simp]
 theorem gcd_eq {x y : PUnit} : gcd x y = unit :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem lcm_eq {x y : PUnit} : lcm x y = unit :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem norm_unit_eq {x : PUnit} : normUnit x = 1 :=
   rfl
 

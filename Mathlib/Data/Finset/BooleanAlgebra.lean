@@ -84,7 +84,7 @@ instance boundedOrder : BoundedOrder (Finset α) :=
     top := univ
     le_top := subset_univ }
 
-@[simp]
+@[defeq, simp]
 theorem top_eq_univ : (⊤ : Finset α) = univ :=
   rfl
 
@@ -110,6 +110,7 @@ variable [DecidableEq α] {a : α}
 theorem sdiff_eq_inter_compl (s t : Finset α) : s \ t = s ∩ tᶜ :=
   sdiff_eq
 
+@[defeq]
 theorem compl_eq_univ_sdiff (s : Finset α) : sᶜ = univ \ s :=
   rfl
 

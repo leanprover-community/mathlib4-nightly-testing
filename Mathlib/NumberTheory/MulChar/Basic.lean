@@ -112,7 +112,7 @@ noncomputable def trivial : MulChar R R' where
       simp only [IsUnit.mul_iff, boole_mul]
       split_ifs <;> tauto
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : R →* R') (hf) : (MulChar.mk f hf : R → R') = f :=
   rfl
 
@@ -205,7 +205,7 @@ theorem coe_equivToUnitHom (χ : MulChar R R') (a : Rˣ) : ↑(equivToUnitHom χ
 theorem equivToUnitHom_symm_coe (f : Rˣ →* R'ˣ) (a : Rˣ) : equivToUnitHom.symm f ↑a = f a :=
   ofUnitHom_coe f a
 
-@[simp]
+@[defeq, simp]
 lemma coe_toMonoidHom (χ : MulChar R R')
     (x : R) : χ.toMonoidHom x = χ x := rfl
 

@@ -42,7 +42,7 @@ instance Submodule.innerProductSpace (W : Submodule 𝕜 E) : InnerProductSpace 
     smul_left := fun _ _ _ => inner_smul_left _ _ _ }
 
 /-- The inner product on submodules is the same as on the ambient space. -/
-@[simp]
+@[defeq, simp]
 theorem Submodule.coe_inner (W : Submodule 𝕜 E) (x y : W) : ⟪x, y⟫ = ⟪(x : E), ↑y⟫ :=
   rfl
 

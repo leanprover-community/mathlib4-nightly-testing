@@ -109,6 +109,7 @@ theorem continuous_infEDist :
     _ = infEDist y t + 2 * edist (x, s) (y, t) := by rw [← mul_two, mul_comm]
 
 /-- By definition, the edistance on `Closeds α` is given by the Hausdorff edistance -/
+@[defeq]
 theorem edist_eq {s t : Closeds α} : edist s t = hausdorffEDist (s : Set α) t :=
   rfl
 
@@ -230,6 +231,7 @@ instance instEMetricSpace : EMetricSpace (Compacts α) where
     have : closure (s : Set α) = closure t := hausdorffEDist_zero_iff_closure_eq_closure.1 h
     rwa [s.isCompact.isClosed.closure_eq, t.isCompact.isClosed.closure_eq] at this
 
+@[defeq]
 theorem edist_eq {s t : Compacts α} : edist s t = hausdorffEDist (s : Set α) t :=
   rfl
 

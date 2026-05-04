@@ -58,9 +58,11 @@ instance : CoeSort (TopCat) (Type u) :=
 
 attribute [coe] TopCat.carrier
 
+@[defeq]
 lemma coe_of (X : Type u) [TopologicalSpace X] : (of X : Type u) = X :=
   rfl
 
+@[defeq]
 lemma of_carrier (X : TopCat.{u}) : of X = X := rfl
 
 variable {X} in
@@ -98,7 +100,7 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {X : TopCat.{u}} : (𝟙 X : X ⟶ X).hom = ContinuousMap.id X := rfl
 
 @[simp]
@@ -106,7 +108,7 @@ theorem id_app (X : TopCat.{u}) (x : ↑X) : (𝟙 X : X ⟶ X) x = x := rfl
 
 @[simp] theorem coe_id (X : TopCat.{u}) : (𝟙 X : X → X) = id := rfl
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {X Y Z : TopCat.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -125,23 +127,24 @@ lemma hom_ext {X Y : TopCat.{u}} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
 lemma ext {X Y : TopCat.{u}} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[simp]
+@[defeq, simp]
 lemma hom_ofHom {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : C(X, Y)) :
     (ofHom f).hom = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_hom {X Y : TopCat.{u}} (f : X ⟶ Y) :
     ofHom (Hom.hom f) = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_id {X : Type u} [TopologicalSpace X] : ofHom (ContinuousMap.id X) = 𝟙 (of X) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp {X Y Z : Type u} [TopologicalSpace X] [TopologicalSpace Y] [TopologicalSpace Z]
     (f : C(X, Y)) (g : C(Y, Z)) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
+@[defeq]
 lemma ofHom_apply {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y] (f : C(X, Y)) (x : X) :
     (ofHom f) x = f x := rfl
 
@@ -162,7 +165,7 @@ set_option linter.deprecated false in
 Replace a function coercion for a morphism `TopCat.of X ⟶ TopCat.of Y` with the definitionally
 equal function coercion for a continuous map `C(X, Y)`.
 -/
-@[deprecated "No replacement" (since := "2026-04-23")]
+@[defeq, deprecated "No replacement" (since := "2026-04-23")]
 theorem coe_of_of {X Y : Type u} [TopologicalSpace X] [TopologicalSpace Y]
     {f : C(X, Y)} {x} :
     @DFunLike.coe (TopCat.of X ⟶ TopCat.of Y) ((CategoryTheory.forget TopCat).obj (TopCat.of X))

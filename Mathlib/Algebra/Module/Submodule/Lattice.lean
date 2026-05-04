@@ -57,15 +57,15 @@ instance : Bot (Submodule R M) :=
 instance inhabited' : Inhabited (Submodule R M) :=
   ⟨⊥⟩
 
-@[simp]
+@[defeq, simp]
 theorem bot_coe : ((⊥ : Submodule R M) : Set M) = {0} :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem bot_toAddSubmonoid : (⊥ : Submodule R M).toAddSubmonoid = ⊥ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma bot_toAddSubgroup {R M} [Ring R] [AddCommGroup M] [Module R M] :
     (⊥ : Submodule R M).toAddSubgroup = ⊥ := rfl
 
@@ -132,7 +132,7 @@ instance : Top (Submodule R M) :=
       carrier := Set.univ
       smul_mem' := fun _ _ _ ↦ trivial }⟩
 
-@[simp]
+@[defeq, simp]
 theorem top_coe : ((⊤ : Submodule R M) : Set M) = Set.univ :=
   rfl
 
@@ -142,11 +142,11 @@ theorem coe_eq_univ : (p : Set M) = Set.univ ↔ p = ⊤ := by
 
 @[simp] lemma mem_top {x : M} : x ∈ (⊤ : Submodule R M) := trivial
 
-@[simp]
+@[defeq, simp]
 theorem top_toAddSubmonoid : (⊤ : Submodule R M).toAddSubmonoid = ⊤ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma top_toAddSubgroup {R M : Type*} [Ring R] [AddCommGroup M] [Module R M] :
     (⊤ : Submodule R M).toAddSubgroup = ⊤ := rfl
 
@@ -219,7 +219,7 @@ instance completeLattice : CompleteLattice (Submodule R M) :=
     isLUB_sSup _ := isGLB_upperBounds.mp Submodule.isGLB_sInf
     isGLB_sInf _ := Submodule.isGLB_sInf }
 
-@[simp]
+@[defeq, simp]
 theorem coe_inf : ↑(p ⊓ q) = (p ∩ q : Set M) :=
   rfl
 
@@ -227,7 +227,7 @@ theorem coe_inf : ↑(p ⊓ q) = (p ∩ q : Set M) :=
 theorem mem_inf {p q : Submodule R M} {x : M} : x ∈ p ⊓ q ↔ x ∈ p ∧ x ∈ q :=
   Iff.rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sInf (P : Set (Submodule R M)) : (↑(sInf P) : Set M) = ⋂ p ∈ P, ↑p :=
   rfl
 

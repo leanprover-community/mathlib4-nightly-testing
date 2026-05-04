@@ -70,7 +70,7 @@ instance : HopfAlgebra S (B ⊗[R] A) where
     · dsimp [Algebra.TensorProduct.one_def]
       simp [Algebra.algebraMap_eq_smul_one, smul_tmul']
 
-@[simp]
+@[defeq, simp]
 theorem antipode_def :
     antipode S (A := B ⊗[R] A) = AlgebraTensorModule.map (antipode S) (antipode R) := rfl
 

@@ -195,10 +195,10 @@ instance instFunLike : FunLike (E →SWOT[σ] F) E F where
   coe f := toCLM f
   coe_injective' := DFunLike.coe_injective.comp toCLM_injective
 
-@[simp]
+@[defeq, simp]
 lemma coe_toCLM (A : E →SWOT[σ] F) : ⇑(toCLM A : E →SL[σ] F) = A := rfl
 
-@[simp]
+@[defeq, simp]
 lemma coe_ofCLM (A : E →SL[σ] F) : ⇑(ofCLM A : E →SWOT[σ] F) = A := rfl
 
 instance instContinuousLinearMapClass : ContinuousSemilinearMapClass (E →SWOT[σ] F) σ E F where
@@ -206,16 +206,17 @@ instance instContinuousLinearMapClass : ContinuousSemilinearMapClass (E →SWOT[
   map_smulₛₗ f r x := by simp [← coe_toCLM]
   map_continuous f := f.toCLM.continuous
 
-@[simp]
+@[defeq, simp]
 lemma ofCLM_toCLM (A : E →SWOT[σ] F) : ofCLM (toCLM A) = A := rfl
 
 -- not marked `simp` because Lean just sees `A` on the left-hand side
+@[defeq]
 lemma toCLM_ofCLM (A : E →SL[σ] F) : toCLM (ofCLM A) = A := rfl
 
-@[simp]
+@[defeq, simp]
 lemma toCLM_apply {A : E →SWOT[σ] F} {x : E} : toCLM A x = A x := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofCLM_apply {A : E →SL[σ] F} {x : E} : ofCLM A x = A x := rfl
 
 @[deprecated (since := "2026-04-10")] alias _root_.ContinuousLinearMap.toWOT_apply := ofCLM_apply

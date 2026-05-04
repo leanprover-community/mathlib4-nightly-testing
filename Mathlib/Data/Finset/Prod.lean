@@ -48,7 +48,7 @@ protected def product (s : Finset α) (t : Finset β) : Finset (α × β) :=
 instance instSProd : SProd (Finset α) (Finset β) (Finset (α × β)) where
   sprod := Finset.product
 
-@[simp]
+@[defeq, simp]
 theorem product_eq_sprod : Finset.product s t = s ×ˢ t :=
   rfl
 

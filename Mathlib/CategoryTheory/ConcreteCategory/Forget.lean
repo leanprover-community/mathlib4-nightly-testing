@@ -55,7 +55,7 @@ instance : (forget C).Faithful where
 
 variable {C}
 
-@[simp]
+@[defeq, simp]
 lemma ConcreteCategory.forget_map_eq_ofHom {X Y : C} (f : X ⟶ Y) :
     (forget C).map f = ↾f :=
   rfl
@@ -63,6 +63,7 @@ lemma ConcreteCategory.forget_map_eq_ofHom {X Y : C} (f : X ⟶ Y) :
 @[deprecated (since := "2026-04-11")] alias ConcreteCategory.forget_map_eq_coe :=
   ConcreteCategory.forget_map_eq_ofHom
 
+@[defeq]
 theorem forget_obj (X : C) : (forget C).obj X = ToType X := rfl
 
 /-- Analogue of `congr_fun h x`,

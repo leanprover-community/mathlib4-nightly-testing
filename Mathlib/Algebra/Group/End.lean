@@ -79,7 +79,7 @@ instance permGroup : Group (Perm α) where
   zpow := zpowRec fun n f ↦ f ^ n
   zpow_succ' _ _ := coe_fn_injective <| Function.iterate_succ _ _
 
-@[simp]
+@[defeq, simp]
 theorem default_eq : (default : Perm α) = 1 :=
   rfl
 
@@ -104,24 +104,27 @@ theorem mul_apply (f g : Perm α) (x) : (f * g) x = f (g x) :=
 theorem one_apply (x) : (1 : Perm α) x = x :=
   rfl
 
+@[defeq]
 theorem one_def : (1 : Perm α) = Equiv.refl α :=
   rfl
 
+@[defeq]
 theorem mul_def (f g : Perm α) : f * g = g.trans f :=
   rfl
 
+@[defeq]
 theorem inv_def (f : Perm α) : f⁻¹ = f.symm :=
   rfl
 
-@[simp] lemma coe_inv (f : Perm α) : ⇑f⁻¹ = ⇑f.symm := rfl
+@[defeq, simp] lemma coe_inv (f : Perm α) : ⇑f⁻¹ = ⇑f.symm := rfl
 
 @[simp, norm_cast] lemma coe_one : ⇑(1 : Perm α) = id := rfl
 
 @[simp, norm_cast] lemma coe_mul (f g : Perm α) : ⇑(f * g) = f ∘ g := rfl
 
-@[norm_cast] lemma coe_pow (f : Perm α) (n : ℕ) : ⇑(f ^ n) = f^[n] := rfl
+@[defeq, norm_cast] lemma coe_pow (f : Perm α) (n : ℕ) : ⇑(f ^ n) = f^[n] := rfl
 
-@[simp] lemma iterate_eq_pow (f : Perm α) (n : ℕ) : f^[n] = ⇑(f ^ n) := rfl
+@[defeq, simp] lemma iterate_eq_pow (f : Perm α) (n : ℕ) : f^[n] = ⇑(f ^ n) := rfl
 
 theorem eq_inv_iff_eq {f : Perm α} {x y : α} : x = f⁻¹ y ↔ f x = y :=
   f.eq_symm_apply
@@ -653,15 +656,18 @@ theorem coe_mul (e₁ e₂ : MulAut M) : ⇑(e₁ * e₂) = e₁ ∘ e₂ :=
 theorem coe_one : ⇑(1 : MulAut M) = id :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_inv (e : MulAut M) : ⇑e⁻¹ = e.symm := rfl
 
+@[defeq]
 theorem mul_def (e₁ e₂ : MulAut M) : e₁ * e₂ = e₂.trans e₁ :=
   rfl
 
+@[defeq]
 theorem one_def : (1 : MulAut M) = MulEquiv.refl _ :=
   rfl
 
+@[defeq]
 theorem inv_def (e₁ : MulAut M) : e₁⁻¹ = e₁.symm :=
   rfl
 
@@ -759,15 +765,18 @@ theorem coe_mul (e₁ e₂ : AddAut A) : ⇑(e₁ * e₂) = e₁ ∘ e₂ :=
 theorem coe_one : ⇑(1 : AddAut A) = id :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_inv (e : AddAut A) : ⇑e⁻¹ = e.symm := rfl
 
+@[defeq]
 theorem mul_def (e₁ e₂ : AddAut A) : e₁ * e₂ = e₂.trans e₁ :=
   rfl
 
+@[defeq]
 theorem one_def : (1 : AddAut A) = AddEquiv.refl _ :=
   rfl
 
+@[defeq]
 theorem inv_def (e₁ : AddAut A) : e₁⁻¹ = e₁.symm :=
   rfl
 
@@ -785,7 +794,7 @@ theorem inv_symm (e : AddAut A) : e⁻¹.symm = e := rfl
 @[simp]
 theorem symm_inv (e : AddAut A) : e.symm⁻¹ = e := rfl
 
-@[simp]
+@[defeq, simp]
 theorem inv_apply (e : AddAut A) (a : A) : e⁻¹ a = e.symm a := rfl
 
 theorem inv_apply_self (e : AddAut A) (a : A) : e⁻¹ (e a) = a :=

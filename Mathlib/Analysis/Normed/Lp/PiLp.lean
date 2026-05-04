@@ -135,6 +135,7 @@ def projₗ (i : ι) : PiLp p β →ₗ[𝕜] β i :=
 
 end
 
+@[defeq]
 lemma toLp_apply (x : ∀ i, α i) (i : ι) : toLp p x i = x i := rfl
 
 section Single
@@ -1229,6 +1230,7 @@ abbrev pseudoMetricSpaceToPi [∀ i, PseudoMetricSpace (α i)] :
       (le_antisymm (antilipschitzWith_toLp p α).tendsto_cobounded.le_comap
         (lipschitzWith_toLp p α).comap_cobounded_le) sᶜ
 
+@[defeq]
 lemma dist_pseudoMetricSpaceToPi [∀ i, PseudoMetricSpace (α i)] (x y : Π i, α i) :
     @dist _ (pseudoMetricSpaceToPi p α).toDist x y = dist (toLp p x) (toLp p y) := rfl
 
@@ -1242,9 +1244,11 @@ abbrev seminormedAddCommGroupToPi [∀ i, SeminormedAddCommGroup (α i)] :
   dist_eq x y := by
     rw [dist_pseudoMetricSpaceToPi, SeminormedAddCommGroup.dist_eq, toLp_add, toLp_neg]
 
+@[defeq]
 lemma norm_seminormedAddCommGroupToPi [∀ i, SeminormedAddCommGroup (α i)] (x : Π i, α i) :
     @Norm.norm _ (seminormedAddCommGroupToPi p α).toNorm x = ‖toLp p x‖ := rfl
 
+@[defeq]
 lemma nnnorm_seminormedAddCommGroupToPi [∀ i, SeminormedAddCommGroup (α i)] (x : Π i, α i) :
     @NNNorm.nnnorm _ (seminormedAddCommGroupToPi p α).toSeminormedAddGroup.toNNNorm x =
     ‖toLp p x‖₊ := rfl

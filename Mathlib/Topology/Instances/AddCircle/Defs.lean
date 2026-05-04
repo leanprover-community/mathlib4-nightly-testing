@@ -214,7 +214,7 @@ theorem coe_sub (x y : 𝕜) : (↑(x - y) : AddCircle p) = (x : AddCircle p) - 
 theorem coe_neg {x : 𝕜} : (↑(-x) : AddCircle p) = -(x : AddCircle p) :=
   rfl
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_zero : ↑(0 : 𝕜) = (0 : AddCircle p) :=
   rfl
 

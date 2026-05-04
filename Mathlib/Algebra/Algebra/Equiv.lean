@@ -118,7 +118,7 @@ protected theorem congr_arg {f : A₁ ≃ₐ[R] A₂} {x x' : A₁} : x = x' →
 protected theorem congr_fun {f g : A₁ ≃ₐ[R] A₂} (h : f = g) (x : A₁) : f x = g x :=
   DFunLike.congr_fun h x
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk {toEquiv map_mul map_add commutes} :
     ⇑(⟨toEquiv, map_mul, map_add, commutes⟩ : A₁ ≃ₐ[R] A₂) = toEquiv :=
   rfl
@@ -146,7 +146,7 @@ instance : CoeOut (A₁ ≃ₐ[R] A₂) (A₁ ≃+* A₂) where coe := AlgEquiv.
 theorem coe_toEquiv : ((e : A₁ ≃ A₂) : A₁ → A₂) = e :=
   rfl
 
-@[deprecated "Now a syntactic equality" (since := "2026-04-09"), nolint synTaut]
+@[defeq, deprecated "Now a syntactic equality" (since := "2026-04-09"), nolint synTaut]
 theorem toRingEquiv_eq_coe : e.toRingEquiv = e :=
   rfl
 
@@ -154,10 +154,11 @@ theorem toRingEquiv_eq_coe : e.toRingEquiv = e :=
 lemma toRingEquiv_toRingHom : ((e : A₁ ≃+* A₂) : A₁ →+* A₂) = e :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_ringEquiv : ((e : A₁ ≃+* A₂) : A₁ → A₂) = e :=
   rfl
 
+@[defeq]
 theorem coe_ringEquiv' : (e.toRingEquiv : A₁ → A₂) = e :=
   rfl
 
@@ -653,9 +654,10 @@ theorem one_apply (x : A₁) : (1 : A₁ ≃ₐ[R] A₁) x = x :=
 theorem mul_apply (e₁ e₂ : A₁ ≃ₐ[R] A₁) (x : A₁) : (e₁ * e₂) x = e₁ (e₂ x) :=
   rfl
 
+@[defeq]
 lemma aut_inv (ϕ : A₁ ≃ₐ[R] A₁) : ϕ⁻¹ = ϕ.symm := rfl
 
-@[simp] lemma coe_inv (ϕ : A₁ ≃ₐ[R] A₁) : ⇑ϕ⁻¹ = ⇑ϕ.symm := rfl
+@[defeq, simp] lemma coe_inv (ϕ : A₁ ≃ₐ[R] A₁) : ⇑ϕ⁻¹ = ⇑ϕ.symm := rfl
 
 @[simp] theorem coe_pow (e : A₁ ≃ₐ[R] A₁) (n : ℕ) : ⇑(e ^ n) = e^[n] :=
   n.rec (by ext; simp) fun _ ih ↦ by ext; simp [pow_succ, ih]
@@ -696,7 +698,7 @@ instance applyMulSemiringAction : MulSemiringAction (A₁ ≃ₐ[R] A₁) A₁ w
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[simp]
+@[defeq, simp]
 protected theorem smul_def (f : A₁ ≃ₐ[R] A₁) (a : A₁) : f • a = f a :=
   rfl
 
@@ -718,7 +720,7 @@ instance : MulDistribMulAction (A₁ ≃ₐ[R] A₁) A₁ˣ where
   smul_mul := fun x y z => by ext; exact map_mul x _ _
   smul_one := fun x => by ext; exact map_one x
 
-@[simp]
+@[defeq, simp]
 theorem smul_units_def (f : A₁ ≃ₐ[R] A₁) (x : A₁ˣ) :
     f • x = Units.map f x := rfl
 

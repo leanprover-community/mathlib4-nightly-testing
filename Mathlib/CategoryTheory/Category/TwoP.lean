@@ -45,6 +45,7 @@ instance : CoeSort TwoP Type* :=
 abbrev of {X : Type*} (toTwoPointing : TwoPointing X) : TwoP :=
   ⟨X, toTwoPointing⟩
 
+@[defeq]
 theorem coe_of {X : Type*} (toTwoPointing : TwoPointing X) : ↥(of toTwoPointing) = X :=
   rfl
 

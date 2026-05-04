@@ -87,7 +87,7 @@ instance : CocompactMapClass (CocompactMap α β) α β where
   map_continuous f := f.continuous_toFun
   cocompact_tendsto f := f.cocompact_tendsto'
 
-@[simp]
+@[defeq, simp]
 theorem coe_toContinuousMap {f : CocompactMap α β} : (f.toContinuousMap : α → β) = f :=
   rfl
 
@@ -113,7 +113,7 @@ theorem coe_copy (f : CocompactMap α β) (f' : α → β) (h : f' = f) : ⇑(f.
 theorem copy_eq (f : CocompactMap α β) (f' : α → β) (h : f' = f) : f.copy f' h = f :=
   DFunLike.ext' h
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : C(α, β)) (h : Tendsto f (cocompact α) (cocompact β)) :
     ⇑(⟨f, h⟩ : CocompactMap α β) = f :=
   rfl

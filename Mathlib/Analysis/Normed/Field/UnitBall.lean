@@ -58,7 +58,7 @@ protected theorem Metric.unitBall.coe_mul [NonUnitalSeminormedRing 𝕜] (x y : 
 instance Metric.unitBall.instZero [Zero 𝕜] [PseudoMetricSpace 𝕜] : Zero (ball (0 : 𝕜) 1) :=
   ⟨⟨0, by simp⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem Metric.unitBall.coe_zero [Zero 𝕜] [PseudoMetricSpace 𝕜] :
     ((0 : ball (0 : 𝕜) 1) : 𝕜) = 0 :=
   rfl
@@ -116,7 +116,7 @@ instance Metric.unitClosedBall.instZero [Zero 𝕜] [PseudoMetricSpace 𝕜] :
     Zero (closedBall (0 : 𝕜) 1) where
   zero := ⟨0, by simp⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected lemma Metric.unitClosedBall.coe_zero [Zero 𝕜] [PseudoMetricSpace 𝕜] :
     ((0 : closedBall (0 : 𝕜) 1) : 𝕜) = 0 :=
   rfl
@@ -186,7 +186,7 @@ instance Metric.unitSphere.instInv [NormedDivisionRing 𝕜] : Inv (sphere (0 : 
   inv x := ⟨x⁻¹, mem_sphere_zero_iff_norm.2 <| by
     rw [norm_inv, mem_sphere_zero_iff_norm.1 x.coe_prop, inv_one]⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem Metric.unitSphere.coe_inv [NormedDivisionRing 𝕜] (x : sphere (0 : 𝕜) 1) :
     ↑x⁻¹ = (x⁻¹ : 𝕜) :=
   rfl
@@ -195,7 +195,7 @@ instance Metric.unitSphere.instDiv [NormedDivisionRing 𝕜] : Div (sphere (0 : 
   div x y := .mk (x / y) <| mem_sphere_zero_iff_norm.2 <| by
     rw [norm_div, mem_sphere_zero_iff_norm.1 x.2, mem_sphere_zero_iff_norm.1 y.coe_prop, div_one]
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem Metric.unitSphere.coe_div [NormedDivisionRing 𝕜] (x y : sphere (0 : 𝕜) 1) :
     ↑(x / y) = (x / y : 𝕜) :=
   rfl
@@ -204,7 +204,7 @@ instance Metric.unitSphere.instZPow [NormedDivisionRing 𝕜] : Pow (sphere (0 :
   pow x n := .mk ((x : 𝕜) ^ n) <| by
     rw [mem_sphere_zero_iff_norm, norm_zpow, mem_sphere_zero_iff_norm.1 x.coe_prop, one_zpow]
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem Metric.unitSphere.coe_zpow [NormedDivisionRing 𝕜] (x : sphere (0 : 𝕜) 1) (n : ℤ) :
     ↑(x ^ n) = (x : 𝕜) ^ n :=
   rfl

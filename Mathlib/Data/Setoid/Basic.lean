@@ -148,6 +148,7 @@ instance : Min (Setoid α) :=
 
 /-- The infimum of 2 equivalence relations r and s is the same relation as the infimum
 of the underlying binary operations. -/
+@[defeq]
 theorem inf_def {r s : Setoid α} : ⇑(r ⊓ s) = ⇑r ⊓ ⇑s :=
   rfl
 
@@ -189,11 +190,11 @@ instance completeLattice : CompleteLattice (Setoid α) :=
     bot := ⟨(· = ·), ⟨fun _ => rfl, fun h => h.symm, fun h1 h2 => h1.trans h2⟩⟩
     bot_le := fun r x _ h => h ▸ r.2.1 x }
 
-@[simp]
+@[defeq, simp]
 theorem top_def : ⇑(⊤ : Setoid α) = ⊤ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem bot_def : ⇑(⊥ : Setoid α) = (· = ·) :=
   rfl
 

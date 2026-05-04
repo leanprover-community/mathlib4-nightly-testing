@@ -81,6 +81,7 @@ instance : FunLike (InfinitePlace K) K ℝ where
   coe w x := w.1 x
   coe_injective' _ _ h := Subtype.ext (AbsoluteValue.ext fun x => congr_fun h x)
 
+@[defeq]
 lemma coe_apply (v : InfinitePlace K) (x : K) : v x = v.1 x := rfl
 
 @[ext]

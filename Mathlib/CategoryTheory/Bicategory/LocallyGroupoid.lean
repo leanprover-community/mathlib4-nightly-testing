@@ -51,6 +51,7 @@ namespace Pith
 
 variable (B : Type u₁)
 
+@[defeq]
 theorem mk_as (b : Pith B) : mk b.as = b := rfl
 
 instance [Inhabited B] : Inhabited (Pith B) := ⟨⟨default⟩⟩
@@ -64,10 +65,10 @@ variable [Bicategory.{w₁, v₁} B]
 
 -- @[simps!] in categoryStruct puts `Core (a.as ⟶ b.as)` in the hyps for the next two
 -- lemmas, so we record them manually instead.
-@[simp]
+@[defeq, simp]
 lemma id_of (a : Pith B) : (𝟙 a : a ⟶ a).of = 𝟙 a.as := rfl
 
-@[simp]
+@[defeq, simp]
 lemma comp_of {a b c : Pith B} (f : a ⟶ b) (g : b ⟶ c) : (f ≫ g).of = f.of ≫ g.of := rfl
 
 instance homGroupoid (a b : Pith B) :

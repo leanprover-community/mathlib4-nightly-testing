@@ -68,6 +68,7 @@ def toPerm : RingAut R →* Equiv.Perm R where
 
 variable {R}
 
+@[defeq]
 theorem one_eq_refl : (1 : R ≃+* R) = RingEquiv.refl R := rfl
 
 @[simp]
@@ -79,7 +80,7 @@ theorem coe_one : ⇑(1 : R ≃+* R) = id := rfl
 @[simp]
 theorem mul_apply (f g : R ≃+* R) (x : R) : (f * g) x = f (g x) := rfl
 
-@[simp]
+@[defeq, simp]
 theorem inv_apply (f : R ≃+* R) (x : R) : f⁻¹ x = f.symm x := rfl
 
 @[simp]

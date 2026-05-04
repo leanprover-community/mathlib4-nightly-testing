@@ -56,12 +56,12 @@ abbrev asHom (f : End X) : X ⟶ X := f
 
 -- TODO: to fix defeq abuse, this should be `(1 : End x) = of (𝟙 X)`.
 -- But that would require many more extra simp lemmas to get rid of the `of`.
-@[simp]
+@[defeq, simp]
 theorem one_def : (1 : End X) = 𝟙 X := rfl
 
 -- TODO: to fix defeq abuse, this should be `xs * ys = of (ys ≫ xs)`.
 -- But that would require many more extra simp lemmas to get rid of the `of`.
-@[simp]
+@[defeq, simp]
 theorem mul_def (xs ys : End X) : xs * ys = ys ≫ xs := rfl
 
 lemma ext {x y : End X} (h : asHom x = asHom y) : x = y := h
@@ -90,9 +90,11 @@ instance mulActionLeft {X Y : C} : MulAction (End X)ᵐᵒᵖ (X ⟶ Y) where
   one_smul := Category.id_comp
   mul_smul _ _ _ := Category.assoc _ _ _
 
+@[defeq]
 theorem smul_right {X Y : C} {r : End Y} {f : X ⟶ Y} : r • f = f ≫ r :=
   rfl
 
+@[defeq]
 theorem smul_left {X Y : C} {r : (End X)ᵐᵒᵖ} {f : X ⟶ Y} : r • f = r.unop ≫ f :=
   rfl
 
@@ -136,8 +138,10 @@ instance : Group (Aut X) where
   mul_one := Iso.refl_trans
   inv_mul_cancel := Iso.self_symm_id
 
+@[defeq]
 theorem Aut_mul_def (f g : Aut X) : f * g = g.trans f := rfl
 
+@[defeq]
 theorem Aut_inv_def (f : Aut X) : f⁻¹ = f.symm := rfl
 
 /-- Units in the monoid of endomorphisms of an object

@@ -217,6 +217,7 @@ open Laplacian LineDeriv
 instance : Laplacian 𝓢(E, F) 𝓢(E, F) where
   laplacian := laplacianCLM ℝ E 𝓢(E, F)
 
+@[defeq]
 theorem laplacianCLM_eq' (f : 𝓢(E, F)) : laplacianCLM ℝ E 𝓢(E, F) f = Δ f := rfl
 
 theorem laplacian_eq_sum [Fintype ι] (b : OrthonormalBasis ι ℝ E) (f : 𝓢(E, F)) :

@@ -910,7 +910,7 @@ instance subsingleton_normalizedGCDMonoid_of_unique_units : Subsingleton (Normal
     subst this
     rfl⟩
 
-@[simp]
+@[defeq, simp]
 theorem normUnit_eq_one (x : α) : normUnit x = 1 :=
   rfl
 

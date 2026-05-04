@@ -98,28 +98,33 @@ abbrev oneFunc : Language.ring.Functions 0 := one
 instance (α : Type*) : Zero (Language.ring.Term α) :=
 { zero := Constants.term zeroFunc }
 
+@[defeq]
 theorem zero_def (α : Type*) : (0 : Language.ring.Term α) = Constants.term zeroFunc := rfl
 
 instance (α : Type*) : One (Language.ring.Term α) :=
 { one := Constants.term oneFunc }
 
+@[defeq]
 theorem one_def (α : Type*) : (1 : Language.ring.Term α) = Constants.term oneFunc := rfl
 
 instance (α : Type*) : Add (Language.ring.Term α) :=
 { add := addFunc.apply₂ }
 
+@[defeq]
 theorem add_def (α : Type*) (t₁ t₂ : Language.ring.Term α) :
     t₁ + t₂ = addFunc.apply₂ t₁ t₂ := rfl
 
 instance (α : Type*) : Mul (Language.ring.Term α) :=
 { mul := mulFunc.apply₂ }
 
+@[defeq]
 theorem mul_def (α : Type*) (t₁ t₂ : Language.ring.Term α) :
     t₁ * t₂ = mulFunc.apply₂ t₁ t₂ := rfl
 
 instance (α : Type*) : Neg (Language.ring.Term α) :=
 { neg := negFunc.apply₁ }
 
+@[defeq]
 theorem neg_def (α : Type*) (t : Language.ring.Term α) :
     -t = negFunc.apply₁ t := rfl
 

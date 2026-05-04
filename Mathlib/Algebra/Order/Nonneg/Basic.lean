@@ -51,7 +51,7 @@ instance inhabited [Preorder α] {a : α} : Inhabited { x : α // a ≤ x } :=
 instance zero [Zero α] [Preorder α] : Zero { x : α // 0 ≤ x } :=
   ⟨⟨0, le_rfl⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_zero [Zero α] [Preorder α] : ((0 : { x : α // 0 ≤ x }) : α) = 0 :=
   rfl
 
@@ -63,13 +63,13 @@ theorem mk_eq_zero [Zero α] [Preorder α] {x : α} (hx : 0 ≤ x) :
 instance add [AddZeroClass α] [Preorder α] [AddLeftMono α] : Add { x : α // 0 ≤ x } :=
   ⟨fun x y => ⟨x + y, add_nonneg x.2 y.2⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem mk_add_mk [AddZeroClass α] [Preorder α] [AddLeftMono α] {x y : α}
     (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (⟨x, hx⟩ : { x : α // 0 ≤ x }) + ⟨y, hy⟩ = ⟨x + y, add_nonneg hx hy⟩ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_add [AddZeroClass α] [Preorder α] [AddLeftMono α]
     (a b : { x : α // 0 ≤ x }) : ((a + b : { x : α // 0 ≤ x }) : α) = a + b :=
   rfl
@@ -88,12 +88,12 @@ instance [AddZeroClass α] [Preorder α] [AddLeftMono α] [IsCancelAdd α] :
 instance nsmul [AddMonoid α] [Preorder α] [AddLeftMono α] : SMul ℕ { x : α // 0 ≤ x } :=
   ⟨fun n x => ⟨n • (x : α), nsmul_nonneg x.prop n⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem nsmul_mk [AddMonoid α] [Preorder α] [AddLeftMono α] (n : ℕ) {x : α}
     (hx : 0 ≤ x) : (n • (⟨x, hx⟩ : { x : α // 0 ≤ x })) = ⟨n • x, nsmul_nonneg hx n⟩ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_nsmul [AddMonoid α] [Preorder α] [AddLeftMono α]
     (n : ℕ) (a : { x : α // 0 ≤ x }) : ((n • a : { x : α // 0 ≤ x }) : α) = n • (a : α) :=
   rfl
@@ -105,7 +105,7 @@ variable [Zero α] [One α] [LE α] [ZeroLEOneClass α]
 instance one : One { x : α // 0 ≤ x } where
   one := ⟨1, zero_le_one⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_one : ((1 : { x : α // 0 ≤ x }) : α) = 1 :=
   rfl
 
@@ -123,12 +123,12 @@ variable [MulZeroClass α] [Preorder α] [PosMulMono α]
 instance mul : Mul { x : α // 0 ≤ x } where
   mul x y := ⟨x * y, mul_nonneg x.2 y.2⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_mul (a b : { x : α // 0 ≤ x }) :
     ((a * b : { x : α // 0 ≤ x }) : α) = a * b :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_mul_mk {x y : α} (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (⟨x, hx⟩ : { x : α // 0 ≤ x }) * ⟨y, hy⟩ = ⟨x * y, mul_nonneg hx hy⟩ :=
   rfl
@@ -182,11 +182,11 @@ variable [AddMonoidWithOne α] [PartialOrder α] [AddLeftMono α] [ZeroLEOneClas
 instance natCast : NatCast { x : α // 0 ≤ x } :=
   ⟨fun n => ⟨n, Nat.cast_nonneg' n⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_natCast (n : ℕ) : ((↑n : { x : α // 0 ≤ x }) : α) = n :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_natCast (n : ℕ) : (⟨n, n.cast_nonneg'⟩ : { x : α // 0 ≤ x }) = n :=
   rfl
 
@@ -205,12 +205,12 @@ variable [MonoidWithZero α] [Preorder α] [ZeroLEOneClass α] [PosMulMono α]
 instance pow : Pow { x : α // 0 ≤ x } ℕ where
   pow x n := ⟨(x : α) ^ n, pow_nonneg x.2 n⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_pow (a : { x : α // 0 ≤ x }) (n : ℕ) :
     (↑(a ^ n) : α) = (a : α) ^ n :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_pow {x : α} (hx : 0 ≤ x) (n : ℕ) :
     (⟨x, hx⟩ : { x : α // 0 ≤ x }) ^ n = ⟨x ^ n, pow_nonneg hx n⟩ :=
   rfl
@@ -279,7 +279,7 @@ theorem toNonneg_le {a : α} {b : { x : α // 0 ≤ x }} : toNonneg a ≤ b ↔ 
 instance sub [Sub α] : Sub { x : α // 0 ≤ x } :=
   ⟨fun x y => toNonneg (x - y)⟩
 
-@[simp]
+@[defeq, simp]
 theorem mk_sub_mk [Sub α] {x y : α} (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (⟨x, hx⟩ : { x : α // 0 ≤ x }) - ⟨y, hy⟩ = toNonneg (x - y) :=
   rfl

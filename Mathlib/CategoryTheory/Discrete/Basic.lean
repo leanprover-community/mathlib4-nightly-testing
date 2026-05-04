@@ -53,7 +53,7 @@ structure Discrete (α : Type u₁) where
   with the only morphisms being equalities. -/
   as : α
 
-@[simp]
+@[defeq, simp]
 theorem Discrete.mk_as {α : Type u₁} (X : Discrete α) : Discrete.mk X.as = X :=
   rfl
 
@@ -144,11 +144,11 @@ abbrev eqToHom' {a b : α} (h : a = b) : Discrete.mk a ⟶ Discrete.mk b :=
 abbrev eqToIso' {a b : α} (h : a = b) : Discrete.mk a ≅ Discrete.mk b :=
   Discrete.eqToIso h
 
-@[simp]
+@[defeq, simp]
 theorem id_def (X : Discrete α) : ULift.up (PLift.up (Eq.refl X.as)) = 𝟙 X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem id_def' (X : α) : ULift.up (PLift.up (Eq.refl X)) = 𝟙 (⟨X⟩ : Discrete α) :=
   rfl
 

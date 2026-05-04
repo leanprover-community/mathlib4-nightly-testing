@@ -167,7 +167,7 @@ protected def empty : Finpartition (⊥ : α) where
 instance : Inhabited (Finpartition (⊥ : α)) :=
   ⟨Finpartition.empty α⟩
 
-@[simp]
+@[defeq, simp]
 theorem default_eq_empty : (default : Finpartition (⊥ : α)) = Finpartition.empty α :=
   rfl
 
@@ -752,7 +752,7 @@ instance (s : Finset α) : Bot (Finpartition s) :=
       sup_parts := by rw [sup_map, id_comp, Embedding.coeFn_mk, Finset.sup_singleton_eq_self]
       bot_notMem := by simp }⟩
 
-@[simp]
+@[defeq, simp]
 theorem parts_bot (s : Finset α) :
     (⊥ : Finpartition s).parts = s.map ⟨singleton, singleton_injective⟩ :=
   rfl

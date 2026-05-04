@@ -40,7 +40,8 @@ namespace Kleisli
 
 variable {T : Monad C}
 
-@[simp] lemma mk_of (c : Kleisli T) : Kleisli.mk T c.of = c := rfl
+@[defeq, simp] lemma mk_of (c : Kleisli T) : Kleisli.mk T c.of = c := rfl
+@[defeq]
 lemma of_mk (c : C) : (Kleisli.mk T c).of = c := rfl
 
 /-- For (T : Monad C), morphisms `c ⟶ c'` in the Kleisli category of `T` are
@@ -132,7 +133,8 @@ namespace Cokleisli
 
 variable (U : Comonad C)
 
-@[simp] lemma mk_of (c : Cokleisli U) : Cokleisli.mk U c.of = c := rfl
+@[defeq, simp] lemma mk_of (c : Cokleisli U) : Cokleisli.mk U c.of = c := rfl
+@[defeq]
 lemma of_mk (c : C) : (Cokleisli.mk U c).of = c := rfl
 
 variable {U} in

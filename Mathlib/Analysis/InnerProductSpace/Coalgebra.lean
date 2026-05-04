@@ -100,6 +100,7 @@ noncomputable abbrev mulOfCoalgebra :
     Mul E where mul x y := adjoint (comul (R := 𝕜) (A := E)) (x ⊗ₜ y)
 
 attribute [local instance] InnerProductSpace.mulOfCoalgebra in
+@[defeq]
 lemma AlgebraOfCoalgebra.mul_def (x y : E) :
     x * y = adjoint (comul (R := 𝕜) (A := E)) (x ⊗ₜ y) := rfl
 

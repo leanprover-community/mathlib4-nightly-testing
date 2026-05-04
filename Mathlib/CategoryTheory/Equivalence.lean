@@ -228,22 +228,22 @@ end CategoryStructure
 
 /- While these abbreviations are convenient, they also cause some trouble,
 preventing structure projections from unfolding. -/
-@[simp, to_dual none]
+@[defeq, simp, to_dual none]
 theorem Equivalence_mk'_unit (functor inverse unit_iso counit_iso f) :
     (⟨functor, inverse, unit_iso, counit_iso, f⟩ : C ≌ D).unit = unit_iso.hom :=
   rfl
 
-@[simp, to_dual none]
+@[defeq, simp, to_dual none]
 theorem Equivalence_mk'_counit (functor inverse unit_iso counit_iso f) :
     (⟨functor, inverse, unit_iso, counit_iso, f⟩ : C ≌ D).counit = counit_iso.hom :=
   rfl
 
-@[simp, to_dual none]
+@[defeq, simp, to_dual none]
 theorem Equivalence_mk'_unitInv (functor inverse unit_iso counit_iso f) :
     (⟨functor, inverse, unit_iso, counit_iso, f⟩ : C ≌ D).unitInv = unit_iso.inv :=
   rfl
 
-@[simp, to_dual none]
+@[defeq, simp, to_dual none]
 theorem Equivalence_mk'_counitInv (functor inverse unit_iso counit_iso f) :
     (⟨functor, inverse, unit_iso, counit_iso, f⟩ : C ≌ D).counitInv = counit_iso.inv :=
   rfl

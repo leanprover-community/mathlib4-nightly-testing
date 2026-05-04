@@ -132,7 +132,7 @@ instance : FunLike (Con M) M (M → Prop) where
 
 variable (c)
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem rel_eq_coe (c : Con M) : c.r = c :=
   rfl
 
@@ -375,11 +375,12 @@ operations. -/
 @[to_additive (attr := simp, norm_cast)
   /-- The infimum of two additive congruence relations equals the infimum of the underlying binary
   operations. -/]
+@[defeq]
 theorem coe_inf {c d : Con M} : ⇑(c ⊓ d) = ⇑c ⊓ ⇑d :=
   rfl
 
-@[to_additive (attr := simp)] lemma toSetoid_top : (⊤ : Con M).toSetoid = ⊤ := rfl
-@[to_additive (attr := simp)] lemma toSetoid_bot : (⊥ : Con M).toSetoid = ⊥ := rfl
+@[defeq, to_additive (attr := simp)] lemma toSetoid_top : (⊤ : Con M).toSetoid = ⊤ := rfl
+@[defeq, to_additive (attr := simp)] lemma toSetoid_bot : (⊥ : Con M).toSetoid = ⊥ := rfl
 
 @[to_additive (attr := simp)]
 lemma toSetoid_eq_top : c.toSetoid = ⊤ ↔ c = ⊤ := by rw [← toSetoid_top, toSetoid_inj]

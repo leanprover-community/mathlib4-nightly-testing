@@ -351,7 +351,7 @@ variable [Fintype ι] [∀ i, DecidableEq (β i)]
 instance : Dist (Hamming β) :=
   ⟨fun x y => hammingDist (ofHamming x) (ofHamming y)⟩
 
-@[simp, push_cast]
+@[defeq, simp, push_cast]
 theorem dist_eq_hammingDist (x y : Hamming β) :
     dist x y = hammingDist (ofHamming x) (ofHamming y) :=
   rfl
@@ -393,7 +393,7 @@ instance : MetricSpace (Hamming β) := .ofT0PseudoMetricSpace _
 instance [∀ i, Zero (β i)] : Norm (Hamming β) :=
   ⟨fun x => hammingNorm (ofHamming x)⟩
 
-@[simp, push_cast]
+@[defeq, simp, push_cast]
 theorem norm_eq_hammingNorm [∀ i, Zero (β i)] (x : Hamming β) : ‖x‖ = hammingNorm (ofHamming x) :=
   rfl
 

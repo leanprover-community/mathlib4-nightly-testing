@@ -250,10 +250,11 @@ instance instHeytingHomClass : HeytingHomClass (HeytingHom α β) α β where
   map_bot f := f.map_bot'
   map_himp := HeytingHom.map_himp'
 
+@[defeq]
 theorem toFun_eq_coe {f : HeytingHom α β} : f.toFun = ⇑f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe_aux {f : HeytingHom α β} : (↑f.toLatticeHom) = ⇑f :=
   rfl
 
@@ -355,10 +356,11 @@ instance : CoheytingHomClass (CoheytingHom α β) α β where
   map_top f := f.map_top'
   map_sdiff := CoheytingHom.map_sdiff'
 
+@[defeq]
 theorem toFun_eq_coe {f : CoheytingHom α β} : f.toFun = (f : α → β) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe_aux {f : CoheytingHom α β} : (↑f.toLatticeHom) = ⇑f :=
   rfl
 
@@ -460,10 +462,11 @@ instance : BiheytingHomClass (BiheytingHom α β) α β where
   map_himp f := f.map_himp'
   map_sdiff f := f.map_sdiff'
 
+@[defeq]
 theorem toFun_eq_coe {f : BiheytingHom α β} : f.toFun = (f : α → β) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe_aux {f : BiheytingHom α β} : (↑f.toLatticeHom) = ⇑f :=
   rfl
 

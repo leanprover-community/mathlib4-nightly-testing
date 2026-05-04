@@ -50,7 +50,7 @@ namespace ONote
 instance : Zero ONote :=
   ⟨zero⟩
 
-@[simp]
+@[defeq, simp]
 theorem zero_def : zero = 0 :=
   rfl
 

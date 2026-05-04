@@ -39,8 +39,9 @@ meta def delabToConv : Delab := delabApp
 
 variable {R A B C : Type*}
 
+@[defeq]
 lemma ofConv_toConv (x : A) : ofConv (toConv x) = x := rfl
-@[simp] lemma toConv_ofConv (x : WithConv A) : toConv (ofConv x) = x := rfl
+@[defeq, simp] lemma toConv_ofConv (x : WithConv A) : toConv (ofConv x) = x := rfl
 
 lemma ofConv_surjective : Function.Surjective (@ofConv A) :=
   Function.RightInverse.surjective ofConv_toConv

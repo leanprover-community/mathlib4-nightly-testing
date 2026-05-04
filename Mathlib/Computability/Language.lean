@@ -97,18 +97,22 @@ instance : Sub (Language α) where
 instance : Mul (Language α) :=
   ⟨image2 (· ++ ·)⟩
 
+@[defeq]
 theorem zero_def : (0 : Language α) = (∅ : Set _) :=
   rfl
 
+@[defeq]
 theorem one_def : (1 : Language α) = ({[]} : Set (List α)) :=
   rfl
 
+@[defeq]
 theorem add_def (l m : Language α) : l + m = (l ∪ m : Set (List α)) :=
   rfl
 
 theorem sub_def (l m : Language α) : l - m = (l \ m : Set (List α)) :=
   rfl
 
+@[defeq]
 theorem mul_def (l m : Language α) : l * m = image2 (· ++ ·) l m :=
   rfl
 
@@ -116,6 +120,7 @@ theorem mul_def (l m : Language α) : l * m = image2 (· ++ ·) l m :=
 concatenating strings from `L`. -/
 instance : KStar (Language α) := ⟨fun l ↦ {x | ∃ L : List (List α), x = L.flatten ∧ ∀ y ∈ L, y ∈ l}⟩
 
+@[defeq]
 lemma kstar_def (l : Language α) : l∗ = {x | ∃ L : List (List α), x = L.flatten ∧ ∀ y ∈ L, y ∈ l} :=
   rfl
 

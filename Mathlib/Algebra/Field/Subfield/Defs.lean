@@ -83,8 +83,8 @@ lemma ratCast_mem (s : S) (q : ℚ) : (q : K) ∈ s := by
 instance instNNRatCast (s : S) : NNRatCast s where nnratCast q := ⟨q, nnratCast_mem s q⟩
 instance instRatCast (s : S) : RatCast s where ratCast q := ⟨q, ratCast_mem s q⟩
 
-@[simp, norm_cast] lemma coe_nnratCast (s : S) (q : ℚ≥0) : ((q : s) : K) = q := rfl
-@[simp, norm_cast] lemma coe_ratCast (s : S) (x : ℚ) : ((x : s) : K) = x := rfl
+@[defeq, simp, norm_cast] lemma coe_nnratCast (s : S) (q : ℚ≥0) : ((q : s) : K) = q := rfl
+@[defeq, simp, norm_cast] lemma coe_ratCast (s : S) (x : ℚ) : ((x : s) : K) = x := rfl
 
 @[aesop 90% (rule_sets := [SetLike])]
 lemma nnqsmul_mem (s : S) (q : ℚ≥0) (hx : x ∈ s) : q • x ∈ s := by
@@ -102,8 +102,8 @@ lemma ofScientific_mem (s : S) {b : Bool} {n m : ℕ} :
 instance instSMulNNRat (s : S) : SMul ℚ≥0 s where smul q x := ⟨q • x, nnqsmul_mem s q x.2⟩
 instance instSMulRat (s : S) : SMul ℚ s where smul q x := ⟨q • x, qsmul_mem s q x.2⟩
 
-@[simp, norm_cast] lemma coe_nnqsmul (s : S) (q : ℚ≥0) (x : s) : ↑(q • x) = q • (x : K) := rfl
-@[simp, norm_cast] lemma coe_qsmul (s : S) (q : ℚ) (x : s) : ↑(q • x) = q • (x : K) := rfl
+@[defeq, simp, norm_cast] lemma coe_nnqsmul (s : S) (q : ℚ≥0) (x : s) : ↑(q • x) = q • (x : K) := rfl
+@[defeq, simp, norm_cast] lemma coe_qsmul (s : S) (q : ℚ) (x : s) : ↑(q • x) = q • (x : K) := rfl
 
 /-- A subfield inherits a division ring structure -/
 instance (priority := 75) toDivisionRing (s : S) : DivisionRing s := fast_instance%
@@ -164,7 +164,7 @@ theorem mem_carrier {s : Subfield K} {x : K} : x ∈ s.carrier ↔ x ∈ s :=
 theorem mem_mk {S : Subring K} {x : K} (h) : x ∈ (⟨S, h⟩ : Subfield K) ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_set_mk (S : Subring K) (h) : ((⟨S, h⟩ : Subfield K) : Set K) = S :=
   rfl
 
@@ -192,7 +192,7 @@ theorem coe_copy (S : Subfield K) (s : Set K) (hs : s = ↑S) : (S.copy s hs : S
 theorem copy_eq (S : Subfield K) (s : Set K) (hs : s = ↑S) : S.copy s hs = S :=
   SetLike.coe_injective hs
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubring (s : Subfield K) : (s.toSubring : Set K) = s :=
   rfl
 
@@ -270,35 +270,35 @@ instance toDivisionRing (s : Subfield K) : DivisionRing s := SubfieldClass.toDiv
 
 instance toField {K} [Field K] (s : Subfield K) : Field s := SubfieldClass.toField s
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_add (x y : s) : (↑(x + y) : K) = ↑x + ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sub (x y : s) : (↑(x - y) : K) = ↑x - ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_neg (x : s) : (↑(-x) : K) = -↑x :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_mul (x y : s) : (↑(x * y) : K) = ↑x * ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_div (x y : s) : (↑(x / y) : K) = ↑x / ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_inv (x : s) : (↑x⁻¹ : K) = (↑x)⁻¹ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_zero : ((0 : s) : K) = 0 :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_one : ((1 : s) : K) = 1 :=
   rfl
 
@@ -331,14 +331,14 @@ theorem toSubring_subtype_eq_subtype (S : Subfield K) :
 theorem mem_toSubmonoid {s : Subfield K} {x : K} : x ∈ s.toSubmonoid ↔ x ∈ s :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubmonoid : (s.toSubmonoid : Set K) = s :=
   rfl
 
 theorem mem_toAddSubgroup {s : Subfield K} {x : K} : x ∈ s.toAddSubgroup ↔ x ∈ s :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toAddSubgroup : (s.toAddSubgroup : Set K) = s :=
   rfl
 

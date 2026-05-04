@@ -108,7 +108,7 @@ variable {R : Type u} [CommSemiring R] {M : Type*} [AddCommMonoid M] [Module R M
 
 instance : Zero (M →ₚₗ[R] N) := ⟨{ toFun' _ := 0 }⟩
 
-@[simp]
+@[defeq, simp]
 theorem zero_def (S : Type u) [CommSemiring S] [Algebra R S] :
     (0 : PolynomialLaw R M N).toFun' S = 0 := rfl
 

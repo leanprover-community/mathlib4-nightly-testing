@@ -59,9 +59,11 @@ instance : One (Cauchy abv) :=
 instance : Inhabited (Cauchy abv) :=
   ⟨0⟩
 
+@[defeq]
 theorem ofRat_zero : (ofRat 0 : Cauchy abv) = 0 :=
   rfl
 
+@[defeq]
 theorem ofRat_one : (ofRat 1 : Cauchy abv) = 1 :=
   rfl
 
@@ -185,8 +187,8 @@ variable {β : Type*} [DivisionRing β] {abv : β → α} [IsAbsoluteValue abv]
 instance instNNRatCast : NNRatCast (Cauchy abv) where nnratCast q := ofRat q
 instance instRatCast : RatCast (Cauchy abv) where ratCast q := ofRat q
 
-@[simp, norm_cast] lemma ofRat_nnratCast (q : ℚ≥0) : ofRat (q : β) = (q : Cauchy abv) := rfl
-@[simp, norm_cast] lemma ofRat_ratCast (q : ℚ) : ofRat (q : β) = (q : Cauchy abv) := rfl
+@[defeq, simp, norm_cast] lemma ofRat_nnratCast (q : ℚ≥0) : ofRat (q : β) = (q : Cauchy abv) := rfl
+@[defeq, simp, norm_cast] lemma ofRat_ratCast (q : ℚ) : ofRat (q : β) = (q : Cauchy abv) := rfl
 
 open Classical in
 noncomputable instance : Inv (Cauchy abv) :=

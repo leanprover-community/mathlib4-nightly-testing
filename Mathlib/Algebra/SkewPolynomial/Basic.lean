@@ -109,6 +109,7 @@ variable [MulSemiringAction (Multiplicative ℕ) R]
 The multiplication in a skew polynomial ring is given by `xr = φ(r)x`. -/
 abbrev φ := MulSemiringAction.toRingHom (Multiplicative ℕ) R (ofAdd 1)
 
+@[defeq]
 theorem φ_def : φ = MulSemiringAction.toRingHom (Multiplicative ℕ) R (ofAdd 1) := rfl
 
 lemma φ_iterate_apply (n : ℕ) (a : R) : (φ^[n] a) = ((ofAdd n) • a) := by

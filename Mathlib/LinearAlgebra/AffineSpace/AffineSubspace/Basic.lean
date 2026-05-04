@@ -81,11 +81,11 @@ instance toAddTorsor (s : AffineSubspace k P) [Nonempty s] : AddTorsor s.directi
     ext
     apply AddTorsor.vadd_vsub'
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_vsub (s : AffineSubspace k P) [Nonempty s] (a b : s) : ↑(a -ᵥ b) = (a : P) -ᵥ (b : P) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_vadd (s : AffineSubspace k P) [Nonempty s] (a : s.direction) (b : s) :
     ↑(a +ᵥ b) = (a : V) +ᵥ (b : P) :=
   rfl

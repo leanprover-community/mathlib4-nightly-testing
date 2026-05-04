@@ -110,13 +110,14 @@ instance instFunLike : FunLike (Basis ι R M) ι M where
   coe_injective' f g h := repr_injective <| LinearEquiv.symm_bijective.injective <|
     LinearEquiv.toLinearMap_injective <| by ext; exact congr_fun h _
 
-@[simp]
+@[defeq, simp]
 theorem coe_ofRepr (e : M ≃ₗ[R] ι →₀ R) : ⇑(ofRepr e) = fun i => e.symm (Finsupp.single i 1) :=
   rfl
 
 protected theorem injective [Nontrivial R] : Injective b :=
   b.repr.symm.injective.comp fun _ _ => (Finsupp.single_left_inj (one_ne_zero : (1 : R) ≠ 0)).mp
 
+@[defeq]
 theorem repr_symm_single_one : b.repr.symm (Finsupp.single i 1) = b i :=
   rfl
 

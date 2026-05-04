@@ -254,6 +254,7 @@ namespace Ring
 
 instance (priority := 100) instBracket : Bracket R R := ⟨fun x y => x * y - y * x⟩
 
+@[defeq]
 theorem lie_def (x y : R) : ⁅x, y⁆ = x * y - y * x := rfl
 
 end Ring

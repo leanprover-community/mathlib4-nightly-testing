@@ -297,6 +297,7 @@ variable {γ : Type*} [Zero γ]
 
 section Finsupp
 
+@[defeq]
 theorem coe_finsupp_sum (t : ι →₀ γ) (g : ι → γ → M →ₛₗ[σ₁₂] M₂) :
     ⇑(t.sum g) = t.sum fun i d => g i d := rfl
 

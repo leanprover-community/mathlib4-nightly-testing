@@ -58,6 +58,7 @@ abbrev gradeBy (f : M → ι) (i : ι) : Submodule R R[M] where
 abbrev grade (m : M) : Submodule R R[M] :=
   gradeBy R id m
 
+@[defeq]
 theorem gradeBy_id : gradeBy R (id : M → M) = grade R := rfl
 
 theorem mem_gradeBy_iff (f : M → ι) (i : ι) (a : R[M]) :

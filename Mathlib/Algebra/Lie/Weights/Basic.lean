@@ -216,7 +216,7 @@ instance instFunLike : FunLike (Weight R L M) L R where
   coe χ := χ.1
   coe_injective' χ₁ χ₂ h := by cases χ₁; cases χ₂; simp_all
 
-@[simp] lemma coe_weight_mk (χ : L → R) (h) :
+@[defeq, simp] lemma coe_weight_mk (χ : L → R) (h) :
     (↑(⟨χ, h⟩ : Weight R L M) : L → R) = χ :=
   rfl
 
@@ -238,9 +238,10 @@ instance [Subsingleton M] : IsEmpty (Weight R L M) :=
 instance [Nontrivial (genWeightSpace M (0 : L → R))] : Zero (Weight R L M) :=
   ⟨0, fun e ↦ not_nontrivial (⊥ : LieSubmodule R L M) (e ▸ ‹_›)⟩
 
-@[simp]
+@[defeq, simp]
 lemma coe_zero [Nontrivial (genWeightSpace M (0 : L → R))] : ((0 : Weight R L M) : L → R) = 0 := rfl
 
+@[defeq]
 lemma zero_apply [Nontrivial (genWeightSpace M (0 : L → R))] (x) : (0 : Weight R L M) x = 0 := rfl
 
 /-- The proposition that a weight of a Lie module is zero.

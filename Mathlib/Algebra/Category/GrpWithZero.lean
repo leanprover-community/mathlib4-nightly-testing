@@ -55,10 +55,10 @@ abbrev ofHom {X Y : Type u} [GroupWithZero X] [GroupWithZero Y]
     (f : MonoidWithZeroHom X Y) : of X ⟶ of Y :=
   ConcreteCategory.ofHom f
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {X : GrpWithZero} : ConcreteCategory.hom (𝟙 X : X ⟶ X) = MonoidWithZeroHom.id X := rfl
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {X Y Z : GrpWithZero} {f : X ⟶ Y} {g : Y ⟶ Z} :
     ConcreteCategory.hom (f ≫ g) = g.comp f := rfl
 
@@ -66,7 +66,7 @@ lemma coe_id {X : GrpWithZero} : (𝟙 X : X → X) = id := rfl
 
 lemma coe_comp {X Y Z : GrpWithZero} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[simp] lemma forget_map {X Y : GrpWithZero} (f : X ⟶ Y) :
+@[defeq, simp] lemma forget_map {X Y : GrpWithZero} (f : X ⟶ Y) :
     (forget GrpWithZero).map f = (f : _ → _) :=
   rfl
 

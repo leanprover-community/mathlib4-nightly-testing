@@ -145,6 +145,7 @@ lemma evalEval_pow (x y : R) (p : R[X][Y]) (n : ℕ) : (p ^ n).evalEval x y = p.
 lemma evalEval_dvd (x y : R) {p q : R[X][Y]} : p ∣ q → p.evalEval x y ∣ q.evalEval x y :=
   eval_dvd ∘ eval_dvd
 
+@[defeq]
 lemma coe_algebraMap_eq_CC : algebraMap R R[X][Y] = CC (R := R) := rfl
 
 /-- `evalEval x y` as a ring homomorphism. -/
@@ -231,6 +232,7 @@ the unique `R`-algebra homomorphism from `R[X][Y]` to `A` sending `X` to `x` and
 abbrev aevalAeval (x y : A) : R[X][Y] →ₐ[R] A :=
   aevalAevalEquiv R A ⟨x, y⟩
 
+@[defeq]
 lemma aevalAevalEquiv_apply (xy : A × A) : aevalAevalEquiv R A xy = aevalAeval xy.1 xy.2 :=
   rfl
 

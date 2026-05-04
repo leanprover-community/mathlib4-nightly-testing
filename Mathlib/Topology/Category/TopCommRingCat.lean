@@ -74,6 +74,7 @@ instance : ConcreteCategory TopCommRingCat.{u} fun R S => { f : R →+* S // Con
   hom f := f
   ofHom f := f
 
+@[defeq]
 theorem coe_of (X : Type u) [CommRing X] [TopologicalSpace X] [IsTopologicalRing X] :
     (of X : Type u) = X := rfl
 

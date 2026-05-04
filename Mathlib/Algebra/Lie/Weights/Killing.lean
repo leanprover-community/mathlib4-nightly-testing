@@ -169,7 +169,7 @@ instance : InvolutiveNeg (Weight K H L) where
       exact x_ne0 this⟩
   neg_neg α := by ext; simp
 
-@[simp] lemma coe_neg : ((-α : Weight K H L) : H → K) = -α := rfl
+@[defeq, simp] lemma coe_neg : ((-α : Weight K H L) : H → K) = -α := rfl
 
 lemma IsZero.neg (h : α.IsZero) : (-α).IsZero := by ext; rw [coe_neg, h, neg_zero]
 

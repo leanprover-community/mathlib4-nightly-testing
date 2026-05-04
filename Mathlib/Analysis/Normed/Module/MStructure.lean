@@ -161,14 +161,14 @@ theorem join [FaithfulSMul M X] {P Q : M} (h₁ : IsLprojection X P) (h₂ : IsL
 instance Subtype.instCompl : Compl { f : M // IsLprojection X f } :=
   ⟨fun P => ⟨1 - P, P.prop.Lcomplement⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_compl (P : { P : M // IsLprojection X P }) : ↑Pᶜ = (1 : M) - ↑P :=
   rfl
 
 instance Subtype.inf [FaithfulSMul M X] : Min { P : M // IsLprojection X P } :=
   ⟨fun P Q => ⟨P * Q, P.prop.mul Q.prop⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_inf [FaithfulSMul M X] (P Q : { P : M // IsLprojection X P }) :
     ↑(P ⊓ Q) = (↑P : M) * ↑Q :=
   rfl
@@ -176,7 +176,7 @@ theorem coe_inf [FaithfulSMul M X] (P Q : { P : M // IsLprojection X P }) :
 instance Subtype.sup [FaithfulSMul M X] : Max { P : M // IsLprojection X P } :=
   ⟨fun P Q => ⟨P + Q - P * Q, P.prop.join Q.prop⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_sup [FaithfulSMul M X] (P Q : { P : M // IsLprojection X P }) :
     ↑(P ⊔ Q) = (↑P : M) + ↑Q - ↑P * ↑Q :=
   rfl
@@ -184,7 +184,7 @@ theorem coe_sup [FaithfulSMul M X] (P Q : { P : M // IsLprojection X P }) :
 instance Subtype.sdiff [FaithfulSMul M X] : SDiff { P : M // IsLprojection X P } :=
   ⟨fun P Q => ⟨P * (1 - Q), P.prop.mul Q.prop.Lcomplement⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_sdiff [FaithfulSMul M X] (P Q : { P : M // IsLprojection X P }) :
     ↑(P \ Q) = (↑P : M) * (1 - ↑Q) :=
   rfl
@@ -206,14 +206,14 @@ instance Subtype.zero : Zero { P : M // IsLprojection X P } :=
   ⟨⟨0, ⟨by rw [IsIdempotentElem, zero_mul], fun x => by
         simp only [zero_smul, norm_zero, sub_zero, one_smul, zero_add]⟩⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ↑(0 : { P : M // IsLprojection X P }) = (0 : M) :=
   rfl
 
 instance Subtype.one : One { P : M // IsLprojection X P } :=
   ⟨⟨1, sub_zero (1 : M) ▸ (0 : { P : M // IsLprojection X P }).prop.Lcomplement⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_one : ↑(1 : { P : M // IsLprojection X P }) = (1 : M) :=
   rfl
 
@@ -224,12 +224,12 @@ instance Subtype.boundedOrder [FaithfulSMul M X] :
   bot := 0
   bot_le P := (zero_mul (P : M)).symm
 
-@[simp]
+@[defeq, simp]
 theorem coe_bot [FaithfulSMul M X] :
     ↑(BoundedOrder.toOrderBot.toBot.bot : { P : M // IsLprojection X P }) = (0 : M) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_top [FaithfulSMul M X] :
     ↑(BoundedOrder.toOrderTop.toTop.top : { P : M // IsLprojection X P }) = (1 : M) :=
   rfl

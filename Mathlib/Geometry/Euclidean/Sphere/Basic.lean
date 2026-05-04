@@ -71,9 +71,11 @@ instance : Coe (Sphere P) (Set P) :=
 instance : Membership P (Sphere P) :=
   ⟨fun s p => p ∈ (s : Set P)⟩
 
+@[defeq]
 theorem Sphere.mk_center (c : P) (r : ℝ) : (⟨c, r⟩ : Sphere P).center = c :=
   rfl
 
+@[defeq]
 theorem Sphere.mk_radius (c : P) (r : ℝ) : (⟨c, r⟩ : Sphere P).radius = r :=
   rfl
 
@@ -81,7 +83,7 @@ theorem Sphere.mk_radius (c : P) (r : ℝ) : (⟨c, r⟩ : Sphere P).radius = r 
 theorem Sphere.mk_center_radius (s : Sphere P) : (⟨s.center, s.radius⟩ : Sphere P) = s := by
   ext <;> rfl
 
-@[simp]
+@[defeq, simp]
 theorem Sphere.coe_mk (c : P) (r : ℝ) : ↑(⟨c, r⟩ : Sphere P) = Metric.sphere c r :=
   rfl
 

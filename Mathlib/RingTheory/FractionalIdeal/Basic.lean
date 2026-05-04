@@ -220,6 +220,7 @@ theorem coe_mk (I : Submodule R P) (hI : IsFractional S I) :
     coeToSubmodule ⟨I, hI⟩ = I :=
   rfl
 
+@[defeq]
 theorem coeToSet_coeToSubmodule (I : FractionalIdeal S P) :
     ((I : Submodule R P) : Set P) = I :=
   rfl
@@ -315,7 +316,7 @@ variable {S}
 theorem coe_zero : ↑(0 : FractionalIdeal S P) = (⊥ : Submodule R P) :=
   Submodule.ext fun _ => mem_zero_iff S
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coeIdeal_bot : ((⊥ : Ideal R) : FractionalIdeal S P) = 0 :=
   rfl
 
@@ -376,7 +377,7 @@ theorem num_zero_eq (h_inj : Function.Injective (algebraMap R P)) :
 
 variable (S)
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coeIdeal_top : ((⊤ : Ideal R) : FractionalIdeal S P) = 1 :=
   rfl
 
@@ -426,7 +427,7 @@ instance orderBot : OrderBot (FractionalIdeal S P) where
   bot := 0
   bot_le := zero_le
 
-@[simp]
+@[defeq, simp]
 theorem bot_eq_zero : (⊥ : FractionalIdeal S P) = 0 :=
   rfl
 
@@ -480,7 +481,7 @@ section Semiring
 instance : Add (FractionalIdeal S P) :=
   ⟨(· ⊔ ·)⟩
 
-@[simp]
+@[defeq, simp]
 theorem sup_eq_add (I J : FractionalIdeal S P) : I ⊔ J = I + J :=
   rfl
 
@@ -553,7 +554,7 @@ irreducible_def mul (lemma := mul_def') (I J : FractionalIdeal S P) : Fractional
 instance : Mul (FractionalIdeal S P) :=
   ⟨fun I J => mul I J⟩
 
-@[simp]
+@[defeq, simp]
 theorem mul_eq_mul (I J : FractionalIdeal S P) : mul I J = I * J :=
   rfl
 

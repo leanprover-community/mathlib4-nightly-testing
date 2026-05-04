@@ -59,7 +59,7 @@ namespace GroupLike
 
 instance : Inv (GroupLike R A) where inv a := ⟨antipode R a, a.2.antipode⟩
 
-@[simp] lemma val_inv (a : GroupLike R A) : ↑(a⁻¹) = (antipode R a : A) := rfl
+@[defeq, simp] lemma val_inv (a : GroupLike R A) : ↑(a⁻¹) = (antipode R a : A) := rfl
 
 instance : Group (GroupLike R A) where
   inv_mul_cancel a := by ext; simp

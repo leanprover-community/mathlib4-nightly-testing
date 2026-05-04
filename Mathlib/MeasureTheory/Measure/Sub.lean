@@ -37,6 +37,7 @@ noncomputable instance instSub {α : Type*} [MeasurableSpace α] : Sub (Measure 
 
 variable {α : Type*} {m : MeasurableSpace α} {μ ν ξ : Measure α} {s : Set α}
 
+@[defeq]
 theorem sub_def : μ - ν = sInf { d | μ ≤ d + ν } := rfl
 
 theorem sub_le_of_le_add {d} (h : μ ≤ d + ν) : μ - ν ≤ d :=

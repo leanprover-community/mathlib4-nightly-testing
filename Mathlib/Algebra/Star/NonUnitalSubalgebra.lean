@@ -175,7 +175,7 @@ theorem mem_toNonUnitalSubalgebra {S : NonUnitalStarSubalgebra R A} {x} :
     x ∈ S.toNonUnitalSubalgebra ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toNonUnitalSubalgebra (S : NonUnitalStarSubalgebra R A) :
     (↑S.toNonUnitalSubalgebra : Set A) = S :=
   rfl
@@ -225,7 +225,7 @@ theorem mem_toNonUnitalSubring {R : Type u} {A : Type v} [CommRing R] [NonUnital
     [Star A] {S : NonUnitalStarSubalgebra R A} {x} : x ∈ S.toNonUnitalSubring ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toNonUnitalSubring {R : Type u} {A : Type v} [CommRing R] [NonUnitalRing A] [Module R A]
     [Star A] (S : NonUnitalStarSubalgebra R A) : (↑S.toNonUnitalSubring : Set A) = S :=
   rfl
@@ -302,24 +302,29 @@ end
 instance instIsTorsionFree [IsTorsionFree R A] : IsTorsionFree R S :=
   Subtype.coe_injective.moduleIsTorsionFree _ (by simp)
 
+@[defeq]
 protected theorem coe_add (x y : S) : (↑(x + y) : A) = ↑x + ↑y :=
   rfl
 
+@[defeq]
 protected theorem coe_mul (x y : S) : (↑(x * y) : A) = ↑x * ↑y :=
   rfl
 
+@[defeq]
 protected theorem coe_zero : ((0 : S) : A) = 0 :=
   rfl
 
+@[defeq]
 protected theorem coe_neg {R : Type u} {A : Type v} [CommRing R] [NonUnitalNonAssocRing A]
     [Module R A] [Star A] {S : NonUnitalStarSubalgebra R A} (x : S) : (↑(-x) : A) = -↑x :=
   rfl
 
+@[defeq]
 protected theorem coe_sub {R : Type u} {A : Type v} [CommRing R] [NonUnitalNonAssocRing A]
     [Module R A] [Star A] {S : NonUnitalStarSubalgebra R A} (x y : S) : (↑(x - y) : A) = ↑x - ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_smul [SMul R' R] [SMul R' A] [IsScalarTower R' R A] (r : R') (x : S) :
     ↑(r • x) = r • (x : A) :=
   rfl
@@ -584,7 +589,7 @@ theorem mem_star_iff (S : NonUnitalSubalgebra R A) (x : A) : x ∈ star S ↔ st
 theorem star_mem_star_iff (S : NonUnitalSubalgebra R A) (x : A) : star x ∈ star S ↔ x ∈ S := by
   simp
 
-@[simp]
+@[defeq, simp]
 theorem coe_star (S : NonUnitalSubalgebra R A) : star S = star (S : Set A) :=
   rfl
 

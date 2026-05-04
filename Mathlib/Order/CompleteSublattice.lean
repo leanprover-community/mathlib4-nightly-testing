@@ -86,9 +86,9 @@ theorem sSupClosed {s : Set α} (h : s ⊆ L) : sSup s ∈ L := L.sSupClosed' h
 
 theorem sInfClosed {s : Set α} (h : s ⊆ L) : sInf s ∈ L := L.sInfClosed' h
 
-@[simp] theorem coe_bot : (↑(⊥ : L) : α) = ⊥ := rfl
+@[defeq, simp] theorem coe_bot : (↑(⊥ : L) : α) = ⊥ := rfl
 
-@[simp] theorem coe_top : (↑(⊤ : L) : α) = ⊤ := rfl
+@[defeq, simp] theorem coe_top : (↑(⊤ : L) : α) = ⊤ := rfl
 
 @[simp] theorem coe_sSup (S : Set L) : (↑(sSup S) : α) = sSup {(s : α) | s ∈ S} := rfl
 

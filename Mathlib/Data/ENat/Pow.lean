@@ -41,7 +41,7 @@ lemma epow_def {x y : ℕ∞} :
   | top => simp only [lt_self_iff_false, ↓reduceIte]; rfl
   | coe n => simp only [coe_lt_top, ↓reduceIte, toNat_coe]; rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma epow_natCast {y : ℕ} : x ^ (y : ℕ∞) = x ^ y := rfl
 
 @[simp]

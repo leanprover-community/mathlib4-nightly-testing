@@ -85,9 +85,11 @@ noncomputable instance : SeminormedAddCommGroup f.PreGNS :=
 noncomputable instance : InnerProductSpace ℂ f.PreGNS :=
   InnerProductSpace.ofCore f.preGNSpreInnerProdSpace
 
+@[defeq]
 lemma preGNS_inner_def (a b : f.PreGNS) :
     ⟪a, b⟫_ℂ = f (star (f.ofPreGNS a) * f.ofPreGNS b) := rfl
 
+@[defeq]
 lemma preGNS_norm_def (a : f.PreGNS) :
     ‖a‖ = √(f (star (f.ofPreGNS a) * f.ofPreGNS a)).re := rfl
 

@@ -99,8 +99,10 @@ attribute [coe] carrier
 
 attribute [instance] str
 
+@[defeq]
 lemma coe_of (Y : Type v) [TopologicalSpace Y] : (of (X := X) Y : Type v) = Y := rfl
 
+@[defeq]
 lemma of_carrier (Y : ContinuousGeneratedByCat.{v} X) : of (X := X) Y = Y := rfl
 
 /-- The type of morphisms in the category `ContinuousGeneratedByCat X` is

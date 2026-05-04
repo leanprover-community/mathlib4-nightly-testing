@@ -46,13 +46,14 @@ instance _root_.NNRatCast.toOfScientific {K} [NNRatCast K] : OfScientific K wher
   ofScientific (m : ℕ) (b : Bool) (d : ℕ) :=
     NNRat.cast ⟨Rat.ofScientific m b d, ofScientific_nonneg m b d⟩
 
+@[defeq]
 theorem _root_.NNRatCast.toOfScientific_def {K} [NNRatCast K] (m : ℕ) (b : Bool) (d : ℕ) :
     (OfScientific.ofScientific m b d : K) =
       NNRat.cast ⟨(OfScientific.ofScientific m b d : ℚ), ofScientific_nonneg m b d⟩ :=
   rfl
 
 /-- Casting a scientific literal via `ℚ≥0` is the same as casting directly. -/
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem _root_.NNRat.cast_ofScientific {K} [NNRatCast K] (m : ℕ) (s : Bool) (e : ℕ) :
     (OfScientific.ofScientific m s e : ℚ≥0) = (OfScientific.ofScientific m s e : K) :=
   rfl

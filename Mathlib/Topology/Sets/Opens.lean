@@ -83,10 +83,10 @@ instance instSecondCountableOpens [SecondCountableTopology α] (U : Opens α) :
 theorem «forall» {p : Opens α → Prop} : (∀ U, p U) ↔ ∀ (U : Set α) (hU : IsOpen U), p ⟨U, hU⟩ :=
   ⟨fun h _ _ => h _, fun h _ => h _ _⟩
 
-@[simp] theorem carrier_eq_coe (U : Opens α) : U.1 = ↑U := rfl
+@[defeq, simp] theorem carrier_eq_coe (U : Opens α) : U.1 = ↑U := rfl
 
 /-- the coercion `Opens α → Set α` applied to a pair is the same as taking the first component -/
-@[simp]
+@[defeq, simp]
 theorem coe_mk {U : Set α} {hU : IsOpen U} : ↑(⟨U, hU⟩ : Opens α) = U :=
   rfl
 
@@ -113,7 +113,7 @@ abbrev inclusion {U V : Opens α} (h : U ≤ V) : U → V := Set.inclusion h
 protected theorem isOpen (U : Opens α) : IsOpen (U : Set α) :=
   U.is_open'
 
-@[simp] theorem mk_coe (U : Opens α) : mk (↑U) U.isOpen = U := rfl
+@[defeq, simp] theorem mk_coe (U : Opens α) : mk (↑U) U.isOpen = U := rfl
 
 /-- See Note [custom simps projection]. -/
 def Simps.coe (U : Opens α) : Set α := U
@@ -157,19 +157,19 @@ instance : CompleteLattice (Opens α) :=
     -- sInf
     _ rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_inf_mk {U V : Set α} {hU : IsOpen U} {hV : IsOpen V} :
     (⟨U, hU⟩ ⊓ ⟨V, hV⟩ : Opens α) = ⟨U ⊓ V, IsOpen.inter hU hV⟩ :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_inf (s t : Opens α) : (↑(s ⊓ t) : Set α) = ↑s ∩ ↑t :=
   rfl
 
 @[simp]
 lemma mem_inf {s t : Opens α} {x : α} : x ∈ s ⊓ t ↔ x ∈ s ∧ x ∈ t := Iff.rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sup (s t : Opens α) : (↑(s ⊔ t) : Set α) = ↑s ∪ ↑t :=
   rfl
 
@@ -177,14 +177,14 @@ theorem coe_sup (s t : Opens α) : (↑(s ⊔ t) : Set α) = ↑s ∪ ↑t :=
 theorem mem_sup {s t : Opens α} {x : α} : x ∈ (s ⊔ t) ↔ x ∈ s ∨ x ∈ t :=
   .rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_bot : ((⊥ : Opens α) : Set α) = ∅ :=
   rfl
 
 @[simp]
 lemma mem_bot {x : α} : x ∈ (⊥ : Opens α) ↔ False := Iff.rfl
 
-@[simp] theorem mk_empty : (⟨∅, isOpen_empty⟩ : Opens α) = ⊥ := rfl
+@[defeq, simp] theorem mk_empty : (⟨∅, isOpen_empty⟩ : Opens α) = ⊥ := rfl
 
 @[simp, norm_cast]
 theorem coe_eq_empty {U : Opens α} : (U : Set α) = ∅ ↔ U = ⊥ :=
@@ -193,17 +193,17 @@ theorem coe_eq_empty {U : Opens α} : (U : Set α) = ∅ ↔ U = ⊥ :=
 @[simp]
 lemma mem_top (x : α) : x ∈ (⊤ : Opens α) := trivial
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_top : ((⊤ : Opens α) : Set α) = Set.univ :=
   rfl
 
-@[simp] theorem mk_univ : (⟨univ, isOpen_univ⟩ : Opens α) = ⊤ := rfl
+@[defeq, simp] theorem mk_univ : (⟨univ, isOpen_univ⟩ : Opens α) = ⊤ := rfl
 
 @[simp, norm_cast]
 theorem coe_eq_univ {U : Opens α} : (U : Set α) = univ ↔ U = ⊤ :=
   SetLike.coe_injective.eq_iff' rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_sSup {S : Set (Opens α)} : (↑(sSup S) : Set α) = ⋃ i ∈ S, ↑i :=
   rfl
 

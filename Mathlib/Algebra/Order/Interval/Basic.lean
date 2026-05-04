@@ -62,11 +62,11 @@ theorem fst_one : (1 : NonemptyInterval α).fst = 1 :=
 theorem snd_one : (1 : NonemptyInterval α).snd = 1 :=
   rfl
 
-@[to_additive (attr := push_cast, simp)]
+@[defeq, to_additive (attr := push_cast, simp)]
 theorem coe_one_interval : ((1 : NonemptyInterval α) : Interval α) = 1 :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem pure_one : pure (1 : α) = 1 :=
   rfl
 
@@ -141,15 +141,15 @@ namespace NonemptyInterval
 
 variable (s t : NonemptyInterval α) (a b : α)
 
-@[to_additive (attr := simp) toProd_add]
+@[defeq, to_additive (attr := simp) toProd_add]
 theorem toProd_mul : (s * t).toProd = s.toProd * t.toProd :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem fst_mul : (s * t).fst = s.fst * t.fst :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem snd_mul : (s * t).snd = s.snd * t.snd :=
   rfl
 
@@ -198,15 +198,15 @@ namespace NonemptyInterval
 variable [MulLeftMono α] [MulRightMono α]
 variable (s : NonemptyInterval α) (a : α) (n : ℕ)
 
-@[to_additive (attr := simp) toProd_nsmul]
+@[defeq, to_additive (attr := simp) toProd_nsmul]
 theorem toProd_pow : (s ^ n).toProd = s.toProd ^ n :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem fst_pow : (s ^ n).fst = s.fst ^ n :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem snd_pow : (s ^ n).snd = s.snd ^ n :=
   rfl
 
@@ -286,7 +286,7 @@ theorem fst_natCast (n : ℕ) : (n : NonemptyInterval α).fst = n := rfl
 
 theorem snd_natCast (n : ℕ) : (n : NonemptyInterval α).snd = n := rfl
 
-@[simp]
+@[defeq, simp]
 theorem pure_natCast (n : ℕ) : pure (n : α) = n := rfl
 
 end NonemptyInterval
@@ -326,11 +326,11 @@ namespace NonemptyInterval
 
 variable (s t : NonemptyInterval α) {a b : α}
 
-@[simp]
+@[defeq, simp]
 theorem fst_sub : (s - t).fst = s.fst - t.snd :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_sub : (s - t).snd = s.snd - t.fst :=
   rfl
 
@@ -384,11 +384,11 @@ namespace NonemptyInterval
 
 variable (s t : NonemptyInterval α) (a b : α)
 
-@[simp]
+@[defeq, simp]
 theorem fst_div : (s / t).fst = s.fst / t.snd :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_div : (s / t).snd = s.snd / t.fst :=
   rfl
 
@@ -440,11 +440,11 @@ namespace NonemptyInterval
 
 variable (s t : NonemptyInterval α) (a : α)
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem fst_inv : s⁻¹.fst = s.snd⁻¹ :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem snd_inv : s⁻¹.snd = s.fst⁻¹ :=
   rfl
 

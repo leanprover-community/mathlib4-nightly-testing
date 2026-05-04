@@ -86,7 +86,7 @@ instance [DecidableEq ιA] [DecidableEq ιB] [GMonoid A] [Gmodule A M] :
     SMul (⨁ i, A i) (⨁ i, M i) where
   smul x y := smulAddMonoidHom A M x y
 
-@[simp]
+@[defeq, simp]
 theorem smul_def [DecidableEq ιA] [DecidableEq ιB] [GMonoid A] [Gmodule A M]
     (x : ⨁ i, A i) (y : ⨁ i, M i) :
     x • y = smulAddMonoidHom _ _ x y := rfl

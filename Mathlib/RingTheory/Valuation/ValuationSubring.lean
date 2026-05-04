@@ -94,7 +94,7 @@ instance : IsDomain A := inferInstanceAs <| IsDomain A.toSubring
 instance : Top (ValuationSubring K) :=
   Top.mk <| { (⊤ : Subring K) with mem_or_inv_mem' := fun _ => Or.inl trivial }
 
-@[simp]
+@[defeq, simp]
 theorem toSubring_top : (⊤ : ValuationSubring K).toSubring = ⊤ := rfl
 
 @[simp]
@@ -107,12 +107,12 @@ theorem le_top : A ≤ ⊤ := fun _a _ha => mem_top _
 of itself. (That is, `⊤ : ValuationSubring K`.) -/
 instance : Field (⊤ : ValuationSubring K) := inferInstanceAs (Field (⊤ : Subfield K))
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem top_coe_div (x y : (⊤ : ValuationSubring K)) :
     ((x / y : (⊤ : ValuationSubring K)) : K) = (x : K) / (y : K) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem top_coe_inv (x : (⊤ : ValuationSubring K)) :
     ((x⁻¹ : (⊤ : ValuationSubring K)) : K) = (x : K)⁻¹ :=
   rfl
@@ -799,7 +799,7 @@ open scoped Pointwise
 @[simp]
 theorem coe_pointwise_smul (g : G) (S : ValuationSubring K) : ↑(g • S) = g • (S : Set K) := rfl
 
-@[simp]
+@[defeq, simp]
 theorem pointwise_smul_toSubring (g : G) (S : ValuationSubring K) :
     (g • S).toSubring = g • S.toSubring := rfl
 

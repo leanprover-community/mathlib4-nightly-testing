@@ -120,19 +120,19 @@ variable {X Y Z : Comma L R} {f : X ⟶ Y} {g : Y ⟶ Z}
 lemma hom_ext (f g : X ⟶ Y) (h₁ : f.left = g.left) (h₂ : f.right = g.right) : f = g :=
   CommaMorphism.ext h₁ h₂
 
-@[simp]
+@[defeq, simp]
 theorem id_left : (𝟙 X : CommaMorphism X X).left = 𝟙 X.left :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem id_right : (𝟙 X : CommaMorphism X X).right = 𝟙 X.right :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem comp_left : (f ≫ g).left = f.left ≫ g.left :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem comp_right : (f ≫ g).right = f.right ≫ g.right :=
   rfl
 

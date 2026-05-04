@@ -41,10 +41,10 @@ instance intrinsicStar : Star (WithConv (E →L[R] F)) where star f := toConv <|
       dsimp [star]
       exact .comp' continuous_star (.comp' f.ofConv.continuous continuous_star) }
 
-@[simp] theorem intrinsicStar_apply (f : WithConv (E →L[R] F)) (x : E) :
+@[defeq, simp] theorem intrinsicStar_apply (f : WithConv (E →L[R] F)) (x : E) :
     star f x = star (f (star x)) := rfl
 
-@[simp] theorem toLinearMap_intrinsicStar (f : WithConv (E →L[R] F)) :
+@[defeq, simp] theorem toLinearMap_intrinsicStar (f : WithConv (E →L[R] F)) :
     (star f).ofConv.toLinearMap = (star (toConv f.ofConv.toLinearMap)).ofConv := rfl
 
 theorem IntrinsicStar.isSelfAdjoint_iff_map_star (f : WithConv (E →L[R] F)) :

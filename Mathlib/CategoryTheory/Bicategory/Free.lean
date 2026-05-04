@@ -234,37 +234,39 @@ theorem mk_whisker_right {f g : a ⟶ b} (η : Hom₂ f g) (h : b ⟶ c) :
 
 variable (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d)
 
+@[defeq]
 theorem id_def : Hom.id (B := B) a = 𝟙 a :=
   rfl
 
+@[defeq]
 theorem comp_def : Hom.comp f g = f ≫ g :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_id : Quot.mk _ (Hom₂.id f) = 𝟙 f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_associator_hom : Quot.mk _ (Hom₂.associator f g h) = (α_ f g h).hom :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_associator_inv : Quot.mk _ (Hom₂.associator_inv f g h) = (α_ f g h).inv :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_left_unitor_hom : Quot.mk _ (Hom₂.left_unitor f) = (λ_ f).hom :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_left_unitor_inv : Quot.mk _ (Hom₂.left_unitor_inv f) = (λ_ f).inv :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_right_unitor_hom : Quot.mk _ (Hom₂.right_unitor f) = (ρ_ f).hom :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mk_right_unitor_inv : Quot.mk _ (Hom₂.right_unitor_inv f) = (ρ_ f).inv :=
   rfl
 

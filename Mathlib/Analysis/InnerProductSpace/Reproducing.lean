@@ -69,7 +69,7 @@ instance instFunLike : FunLike H X V where
 @[ext]
 lemma ext {f g : H} (h : ∀ x, f x = g x) : f = g := DFunLike.ext _ _ h
 
-@[simp]
+@[defeq, simp]
 lemma coeCLM_apply (f : H) : coeCLM 𝕜 f = f := rfl
 
 @[simp]
@@ -237,6 +237,7 @@ instance instSeminormedAddCommGroupH₀ : SeminormedAddCommGroup (H₀ K) :=
 
 instance instInnerProductSpaceH₀ : InnerProductSpace 𝕜 (H₀ K) := .ofCore _
 
+@[defeq]
 private lemma inner_H₀_def (f g : H₀ K) :
     ⟪f, g⟫_𝕜 = f.sum fun ⟨y, u⟩ z ↦ g.sum fun ⟨x, v⟩ w ↦ star z * w * ⟪K x y u, v⟫_𝕜 := rfl
 

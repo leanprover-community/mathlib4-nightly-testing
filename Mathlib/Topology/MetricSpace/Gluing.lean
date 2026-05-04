@@ -290,6 +290,7 @@ def metricSpaceSum : MetricSpace (X ⊕ Y) where
 
 attribute [local instance] metricSpaceSum
 
+@[defeq]
 theorem Sum.dist_eq {x y : X ⊕ Y} : dist x y = Sum.dist x y := rfl
 
 /-- The left injection of a space in a disjoint union is an isometry -/

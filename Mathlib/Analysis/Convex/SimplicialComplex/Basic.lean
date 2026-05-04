@@ -230,6 +230,7 @@ instance : Inhabited (SimplicialComplex 𝕜 E) :=
 
 variable {𝕜 E}
 
+@[defeq]
 theorem faces_bot : (⊥ : SimplicialComplex 𝕜 E).faces = ∅ := rfl
 
 theorem space_bot : (⊥ : SimplicialComplex 𝕜 E).space = ∅ :=

@@ -68,18 +68,18 @@ instance : SMulMemClass (ClosedSubmodule R M) R M where
 instance : Coe (ClosedSubmodule R M) (Submodule R M) where
   coe := toSubmodule
 
-@[simp] lemma carrier_eq_coe (s : ClosedSubmodule R M) : s.carrier = s := rfl
+@[defeq, simp] lemma carrier_eq_coe (s : ClosedSubmodule R M) : s.carrier = s := rfl
 
 @[simp] lemma mem_mk {s : Submodule R M} {hs} : x ∈ mk s hs ↔ x ∈ s := .rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma coe_toSubmodule (s : ClosedSubmodule R M) : (s.toSubmodule : Set M) = s := rfl
 
 @[simp]
 lemma mem_toSubmodule_iff (x : M) (s : ClosedSubmodule R M) : x ∈ s.toSubmodule ↔ x ∈ s := by
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma coe_toCloseds (s : ClosedSubmodule R M) : (s.toCloseds : Set M) = s := rfl
 
 lemma isClosed (s : ClosedSubmodule R M) : IsClosed (s : Set M) := s.isClosed'
@@ -115,7 +115,7 @@ instance instInf : Min (ClosedSubmodule R M) where
 instance instInfSet : InfSet (ClosedSubmodule R M) where
   sInf S := ⟨⨅ s ∈ S, s, by simpa using isClosed_biInter fun x hx ↦ x.isClosed⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma toSubmodule_sInf (S : Set (ClosedSubmodule R M)) :
     toSubmodule (sInf S) = ⨅ s ∈ S, s.toSubmodule := rfl
 
@@ -140,11 +140,11 @@ lemma coe_iInf (f : ι → ClosedSubmodule R M) : ↑(⨅ i, f i) = ⨅ i, (f i 
 instance instSemilatticeInf : SemilatticeInf (ClosedSubmodule R M) :=
   toSubmodule_injective.semilatticeInf _ .rfl .rfl fun _ _ ↦ rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 lemma toSubmodule_inf (s t : ClosedSubmodule R M) :
     toSubmodule (s ⊓ t) = s.toSubmodule ⊓ t.toSubmodule := rfl
 
-@[simp, norm_cast] lemma coe_inf (s t : ClosedSubmodule R M) : ↑(s ⊓ t) = (s ⊓ t : Set M) := rfl
+@[defeq, simp, norm_cast] lemma coe_inf (s t : ClosedSubmodule R M) : ↑(s ⊓ t) = (s ⊓ t : Set M) := rfl
 
 @[simp] lemma mem_inf : x ∈ s ⊓ t ↔ x ∈ s ∧ x ∈ t := .rfl
 
@@ -155,9 +155,9 @@ instance : OrderTop (ClosedSubmodule R M) where
   top := ⟨⊤, isClosed_univ⟩
   le_top s := le_top (a := s.toSubmodule)
 
-@[simp, norm_cast] lemma toSubmodule_top : toSubmodule (⊤ : ClosedSubmodule R M) = ⊤ := rfl
+@[defeq, simp, norm_cast] lemma toSubmodule_top : toSubmodule (⊤ : ClosedSubmodule R M) = ⊤ := rfl
 
-@[simp, norm_cast] lemma coe_top : ((⊤ : ClosedSubmodule R M) : Set M) = .univ := rfl
+@[defeq, simp, norm_cast] lemma coe_top : ((⊤ : ClosedSubmodule R M) : Set M) = .univ := rfl
 
 @[simp] lemma mem_top : x ∈ (⊤ : ClosedSubmodule R M) := trivial
 
@@ -168,9 +168,9 @@ instance instOrderBot : OrderBot (ClosedSubmodule R M) where
   bot := ⟨⊥, isClosed_singleton⟩
   bot_le s := bot_le (a := s.toSubmodule)
 
-@[simp, norm_cast] lemma toSubmodule_bot : toSubmodule (⊥ : ClosedSubmodule R M) = ⊥ := rfl
+@[defeq, simp, norm_cast] lemma toSubmodule_bot : toSubmodule (⊥ : ClosedSubmodule R M) = ⊥ := rfl
 
-@[simp, norm_cast] lemma coe_bot : ((⊥ : ClosedSubmodule R M) : Set M) = {0} := rfl
+@[defeq, simp, norm_cast] lemma coe_bot : ((⊥ : ClosedSubmodule R M) : Set M) = {0} := rfl
 
 @[simp] lemma mem_bot : x ∈ (⊥ : ClosedSubmodule R M) ↔ x = 0 := .rfl
 
@@ -236,7 +236,7 @@ variable {s t : ClosedSubmodule R N} {x : N}
 instance : Max (ClosedSubmodule R N) where
   max s t := (s.toSubmodule ⊔ t.toSubmodule).closure
 
-@[simp]
+@[defeq, simp]
 lemma toSubmodule_sup :
   toSubmodule (s ⊔ t) = (s.toSubmodule ⊔ t.toSubmodule).closure := rfl
 
@@ -252,7 +252,7 @@ lemma coe_sup :
 instance : SupSet (ClosedSubmodule R N) where
   sSup S := ⟨(⨆ s ∈ S, s.toSubmodule).closure, isClosed_closure⟩
 
-@[simp]
+@[defeq, simp]
 lemma toSubmodule_sSup (S : Set (ClosedSubmodule R N)) :
     toSubmodule (sSup S) = (⨆ s ∈ S, s.toSubmodule).closure := rfl
 

@@ -74,7 +74,7 @@ def ofClass [FunLike F A B] [MonoidHomClass F A B] [StarHomClass F A B] (f : F) 
   map_mul' := map_mul f
   map_star' := map_star f
 
-@[simp]
+@[defeq, simp]
 theorem coe_toMonoidHom (f : A →⋆* B) : ⇑f.toMonoidHom = f :=
   rfl
 
@@ -97,7 +97,7 @@ theorem coe_copy (f : A →⋆* B) (f' : A → B) (h : f' = f) : ⇑(f.copy f' h
 theorem copy_eq (f : A →⋆* B) (f' : A → B) (h : f' = f) : f.copy f' h = f :=
   DFunLike.ext' h
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : A →* B) (h) : ((⟨f, h⟩ : A →⋆* B) : A → B) = f := rfl
 
 section Id
@@ -242,6 +242,7 @@ theorem symm_symm (e : A ≃⋆* B) : e.symm.symm = e := rfl
 theorem symm_bijective : Function.Bijective (symm : (A ≃⋆* B) → B ≃⋆* A) :=
   Function.bijective_iff_has_inverse.mpr ⟨_, symm_symm, symm_symm⟩
 
+@[defeq]
 theorem coe_mk (e h₁) : ⇑(⟨e, h₁⟩ : A ≃⋆* B) = e := rfl
 
 /-- Construct a `StarMulEquiv` from an equivalence in some type which preserves `*` and `star`. -/
@@ -255,7 +256,7 @@ def ofClass [EquivLike F A B] [MulEquivClass F A B] [StarHomClass F A B] (f : F)
   map_mul' := map_mul f
   map_star' := map_star f
 
-@[simp]
+@[defeq, simp]
 theorem coe_toMulEquiv (f : A ≃⋆* B) : ⇑f.toMulEquiv = f :=
   rfl
 

@@ -48,7 +48,7 @@ variable [Monoid M] [AddMonoid A]
 lemma coe_mul_coe [SetLike S M] [SubmonoidClass S M] (H : S) : H * H = (H : Set M) := by
   aesop (add simp mem_mul)
 
-@[to_additive]
+@[defeq, to_additive]
 lemma Set.subtype_smul_set {S α β : Type*} [SMul α β] [SetLike S α] {s : S} (x : s) (t : Set β) :
     (x • t : Set β) = (x : α) • t :=
   rfl
@@ -137,7 +137,7 @@ protected def inv : Inv (Submonoid G) where
 
 scoped[Pointwise] attribute [instance] Submonoid.inv AddSubmonoid.neg
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_inv (S : Submonoid G) : ↑S⁻¹ = (S : Set G)⁻¹ :=
   rfl
 

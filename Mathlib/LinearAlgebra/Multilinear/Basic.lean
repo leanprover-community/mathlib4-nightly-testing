@@ -124,11 +124,11 @@ def mk' [DecidableEq ι] (f : (∀ i, M₁ i) → M₂)
   map_update_add' m i x y := by convert h₁ m i x y
   map_update_smul' m i c x := by convert h₂ m i c x
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe : f.toFun = ⇑f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : (∀ i, M₁ i) → M₂) (h₁ h₂) : ⇑(⟨f, h₁, h₂⟩ : MultilinearMap R M₁ M₂) = f :=
   rfl
 
@@ -149,7 +149,7 @@ theorem coe_inj {f g : MultilinearMap R M₁ M₂} : (f : (∀ i, M₁ i) → M�
 theorem ext {f f' : MultilinearMap R M₁ M₂} (H : ∀ x, f x = f' x) : f = f' :=
   DFunLike.ext _ _ H
 
-@[simp]
+@[defeq, simp]
 theorem mk_coe (f : MultilinearMap R M₁ M₂) (h₁ h₂) :
     (⟨f, h₁, h₂⟩ : MultilinearMap R M₁ M₂) = f := rfl
 
@@ -183,7 +183,7 @@ instance : Add (MultilinearMap R M₁ M₂) :=
     ⟨fun x => f x + f' x, fun m i x y => by simp [add_left_comm, add_assoc], fun m i c x => by
       simp [smul_add]⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (m : ∀ i, M₁ i) : (f + f') m = f m + f' m :=
   rfl
 
@@ -193,7 +193,7 @@ instance : Zero (MultilinearMap R M₁ M₂) :=
 instance : Inhabited (MultilinearMap R M₁ M₂) :=
   ⟨0⟩
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (m : ∀ i, M₁ i) : (0 : MultilinearMap R M₁ M₂) m = 0 :=
   rfl
 
@@ -206,10 +206,11 @@ instance : SMul S (MultilinearMap R M₁ M₂) :=
     ⟨fun m => c • f m, fun m i x y => by simp [smul_add], fun l i x d => by
       simp [← smul_comm x c (_ : M₂)]⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem smul_apply (f : MultilinearMap R M₁ M₂) (c : S) (m : ∀ i, M₁ i) : (c • f) m = c • f m :=
   rfl
 
+@[defeq]
 theorem coe_smul (c : S) (f : MultilinearMap R M₁ M₂) : ⇑(c • f) = c • (⇑f) := rfl
 
 end SMul
@@ -1288,7 +1289,7 @@ variable [Semiring R] [∀ i, AddCommMonoid (M₁ i)] [AddCommGroup M₂] [∀ i
 instance : Neg (MultilinearMap R M₁ M₂) :=
   ⟨fun f => ⟨fun m => -f m, fun m i x y => by simp [add_comm], fun m i c x => by simp⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem neg_apply (m : ∀ i, M₁ i) : (-f) m = -f m :=
   rfl
 
@@ -1299,7 +1300,7 @@ instance : Sub (MultilinearMap R M₁ M₂) :=
       abel,
       fun m i c x => by simp only [MultilinearMap.map_update_smul, smul_sub]⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem sub_apply (m : ∀ i, M₁ i) : (f - g) m = f m - g m :=
   rfl
 

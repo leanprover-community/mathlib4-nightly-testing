@@ -52,6 +52,7 @@ protected def pointwiseAddAction : AddAction V (AffineSubspace k P) :=
 
 scoped[Pointwise] attribute [instance] AffineSubspace.pointwiseAddAction
 
+@[defeq]
 theorem pointwise_vadd_eq_map (v : V) (s : AffineSubspace k P) :
     v +ᵥ s = s.map (AffineEquiv.constVAdd k P v) :=
   rfl
@@ -101,6 +102,7 @@ scoped[Pointwise] attribute [instance] AffineSubspace.pointwiseSMul
 @[simp, norm_cast]
 lemma coe_smul (a : M) (s : AffineSubspace k V) : ↑(a • s) = a • (s : Set V) := rfl
 
+@[defeq]
 lemma smul_eq_map (a : M) (s : AffineSubspace k V) :
     a • s = s.map (DistribSMul.toLinearMap k _ a).toAffineMap := rfl
 

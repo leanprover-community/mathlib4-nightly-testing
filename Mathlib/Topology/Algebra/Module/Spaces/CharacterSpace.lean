@@ -68,7 +68,7 @@ instance instContinuousLinearMapClass : ContinuousLinearMapClass (characterSpace
 
 /-- This has to come after `WeakDual.CharacterSpace.instFunLike`, otherwise the right-hand side
 gets coerced via `Subtype.val` instead of directly via `DFunLike`. -/
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 protected theorem coe_coe (φ : characterSpace 𝕜 A) : ⇑(φ : WeakDual 𝕜 A) = (φ : A → 𝕜) :=
   rfl
 

@@ -309,6 +309,7 @@ instance : Min (SubDPIdeal hI) :=
       isSubideal := fun _ hx ↦ J.isSubideal hx.1
       dpow_mem   := fun _ hn x hx ↦ ⟨J.dpow_mem _ hn x hx.1, J'.dpow_mem _ hn x hx.2⟩ }⟩
 
+@[defeq]
 theorem inf_carrier_def (J J' : SubDPIdeal hI) : (J ⊓ J').carrier = J.carrier ⊓ J'.carrier := rfl
 
 instance : InfSet (SubDPIdeal hI) :=
@@ -321,12 +322,14 @@ instance : InfSet (SubDPIdeal hI) :=
         simp only [mem_iInf] at hx ⊢
         exact fun s hs ↦ s.dpow_mem _ hn x (hx s hs) }⟩
 
+@[defeq]
 theorem sInf_carrier_def (S : Set (SubDPIdeal hI)) :
     (sInf S).carrier = ⨅ s ∈ Insert.insert ⊤ S, (s : hI.SubDPIdeal).carrier := rfl
 
 instance : Max (SubDPIdeal hI) :=
   ⟨fun J J' ↦ SubDPIdeal.mk' (isSubDPIdeal_sup J.toIsSubDPIdeal J'.toIsSubDPIdeal)⟩
 
+@[defeq]
 theorem sup_carrier_def (J J' : SubDPIdeal hI) : (J ⊔ J').carrier = J ⊔ J' := rfl
 
 instance : SupSet (SubDPIdeal hI) :=

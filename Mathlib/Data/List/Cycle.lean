@@ -458,7 +458,7 @@ theorem coe_eq_nil (l : List α) : (l : Cycle α) = nil ↔ l = [] :=
 instance : EmptyCollection (Cycle α) :=
   ⟨nil⟩
 
-@[simp]
+@[defeq, simp]
 theorem empty_eq : ∅ = @nil α :=
   rfl
 

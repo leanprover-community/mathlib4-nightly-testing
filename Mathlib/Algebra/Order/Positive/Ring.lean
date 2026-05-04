@@ -33,7 +33,7 @@ variable [AddMonoid M] [Preorder M] [AddLeftStrictMono M]
 instance : Add { x : M // 0 < x } :=
   ⟨fun x y => ⟨x + y, add_pos x.2 y.2⟩⟩
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_add (x y : { x : M // 0 < x }) : ↑(x + y) = (x + y : M) :=
   rfl
 
@@ -83,14 +83,14 @@ variable [Semiring R] [PartialOrder R] [IsStrictOrderedRing R]
 instance : Mul { x : R // 0 < x } :=
   ⟨fun x y => ⟨x * y, mul_pos x.2 y.2⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem val_mul (x y : { x : R // 0 < x }) : ↑(x * y) = (x * y : R) :=
   rfl
 
 instance : Pow { x : R // 0 < x } ℕ :=
   ⟨fun x n => ⟨(x : R) ^ n, pow_pos x.2 n⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem val_pow (x : { x : R // 0 < x }) (n : ℕ) :
     ↑(x ^ n) = (x : R) ^ n :=
   rfl
@@ -104,7 +104,7 @@ instance : Distrib { x : R // 0 < x } := fast_instance%
 instance : One { x : R // 0 < x } :=
   ⟨⟨1, one_pos⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem val_one : ((1 : { x : R // 0 < x }) : R) = 1 :=
   rfl
 

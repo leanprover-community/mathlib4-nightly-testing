@@ -61,6 +61,7 @@ variable (F : Ctop α σ)
 instance : CoeFun (Ctop α σ) fun _ ↦ σ → Set α :=
   ⟨Ctop.f⟩
 
+@[defeq]
 theorem coe_mk (f T h₁ I h₂ h₃ a) : (@Ctop.mk α σ f T h₁ I h₂ h₃) a = f a := rfl
 
 /-- Map a Ctop to an equivalent representation type. -/

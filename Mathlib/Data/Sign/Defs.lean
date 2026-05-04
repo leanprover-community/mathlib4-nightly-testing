@@ -46,15 +46,15 @@ instance : Neg SignType :=
     | zero => zero
     | pos => neg⟩
 
-@[simp]
+@[defeq, simp]
 theorem zero_eq_zero : zero = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_eq_neg_one : neg = -1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem pos_eq_one : pos = 1 :=
   rfl
 

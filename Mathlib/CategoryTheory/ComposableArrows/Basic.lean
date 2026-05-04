@@ -279,6 +279,7 @@ def isoMk₁ {F G : ComposableArrows C 1}
     rw [← cancel_mono right.hom, assoc, assoc, w, right.inv_hom_id, left.inv_hom_id_assoc]
     apply comp_id)
 
+@[defeq]
 lemma map'_eq_hom₁ (F : ComposableArrows C 1) : F.map' 0 1 = F.hom := rfl
 
 lemma isIso_iff₁ {F G : ComposableArrows C 1} (f : F ⟶ G) :

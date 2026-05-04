@@ -50,6 +50,7 @@ namespace Bornology
 -/
 
 
+@[defeq]
 theorem cobounded_prod : cobounded (α × β) = (cobounded α).coprod (cobounded β) :=
   rfl
 
@@ -93,6 +94,7 @@ theorem isBounded_prod_self : IsBounded (s ×ˢ s) ↔ IsBounded s := by
 -/
 
 
+@[defeq]
 theorem cobounded_pi : cobounded (∀ i, X i) = Filter.coprodᵢ fun i => cobounded (X i) :=
   rfl
 

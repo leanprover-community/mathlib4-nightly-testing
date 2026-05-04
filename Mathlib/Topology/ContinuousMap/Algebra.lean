@@ -56,11 +56,11 @@ variable [TopologicalSpace α] [TopologicalSpace β] [TopologicalSpace γ]
 instance instMul [Mul β] [ContinuousMul β] : Mul C(α, β) :=
   ⟨fun f g => ⟨f * g, continuous_mul.comp (f.continuous.prodMk g.continuous :)⟩⟩
 
-@[to_additive (attr := norm_cast, simp)]
+@[defeq, to_additive (attr := norm_cast, simp)]
 theorem coe_mul [Mul β] [ContinuousMul β] (f g : C(α, β)) : ⇑(f * g) = f * g :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mul_apply [Mul β] [ContinuousMul β] (f g : C(α, β)) (x : α) : (f * g) x = f x * g x :=
   rfl
 
@@ -90,7 +90,7 @@ theorem one_comp [One γ] (g : C(α, β)) : (1 : C(β, γ)).comp g = 1 :=
 @[to_additive (attr := simp)]
 theorem comp_one [One β] (g : C(β, γ)) : g.comp (1 : C(α, β)) = const α (g 1) := rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem const_one [One β] : const α (1 : β) = 1 := rfl
 
 /-! ### `Nat.cast` -/
@@ -125,11 +125,11 @@ theorem intCast_apply [IntCast β] (n : ℤ) (x : α) : (n : C(α, β)) x = n :=
 instance instPow [Monoid β] [ContinuousMul β] : Pow C(α, β) ℕ :=
   ⟨fun f n => ⟨(⇑f) ^ n, f.continuous.pow n⟩⟩
 
-@[to_additive (attr := norm_cast) (reorder := 7 8)]
+@[defeq, to_additive (attr := norm_cast) (reorder := 7 8)]
 theorem coe_pow [Monoid β] [ContinuousMul β] (f : C(α, β)) (n : ℕ) : ⇑(f ^ n) = (⇑f) ^ n :=
   rfl
 
-@[to_additive (attr := norm_cast)]
+@[defeq, to_additive (attr := norm_cast)]
 theorem pow_apply [Monoid β] [ContinuousMul β] (f : C(α, β)) (n : ℕ) (x : α) :
     (f ^ n) x = f x ^ n :=
   rfl
@@ -151,11 +151,11 @@ attribute [simp] pow_comp
 @[to_additive]
 instance [Inv β] [ContinuousInv β] : Inv C(α, β) where inv f := ⟨f⁻¹, f.continuous.inv⟩
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem coe_inv [Inv β] [ContinuousInv β] (f : C(α, β)) : ⇑f⁻¹ = (⇑f)⁻¹ :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem inv_apply [Inv β] [ContinuousInv β] (f : C(α, β)) (x : α) : f⁻¹ x = (f x)⁻¹ :=
   rfl
 
@@ -170,11 +170,11 @@ theorem inv_comp [Inv γ] [ContinuousInv γ] (f : C(β, γ)) (g : C(α, β)) :
 instance [Div β] [ContinuousDiv β] : Div C(α, β) where
   div f g := ⟨f / g, f.continuous.div' g.continuous⟩
 
-@[to_additive (attr := norm_cast, simp)]
+@[defeq, to_additive (attr := norm_cast, simp)]
 theorem coe_div [Div β] [ContinuousDiv β] (f g : C(α, β)) : ⇑(f / g) = f / g :=
   rfl
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem div_apply [Div β] [ContinuousDiv β] (f g : C(α, β)) (x : α) : (f / g) x = f x / g x :=
   rfl
 
@@ -189,11 +189,11 @@ theorem div_comp [Div γ] [ContinuousDiv γ] (f g : C(β, γ)) (h : C(α, β)) :
 instance instZPow [Group β] [IsTopologicalGroup β] : Pow C(α, β) ℤ where
   pow f z := ⟨(⇑f) ^ z, f.continuous.zpow z⟩
 
-@[to_additive (attr := norm_cast) (reorder := 7 8)]
+@[defeq, to_additive (attr := norm_cast) (reorder := 7 8)]
 theorem coe_zpow [Group β] [IsTopologicalGroup β] (f : C(α, β)) (z : ℤ) : ⇑(f ^ z) = (⇑f) ^ z :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem zpow_apply [Group β] [IsTopologicalGroup β] (f : C(α, β)) (z : ℤ) (x : α) :
     (f ^ z) x = f x ^ z :=
   rfl
@@ -537,11 +537,11 @@ instance [TopologicalSpace R] [SMul R M] [ContinuousSMul R M] :
     ContinuousSMul R C(α, M) :=
   ⟨(continuous_postcomp ⟨_, continuous_smul⟩).comp continuous_prodMk_const⟩
 
-@[to_additive (attr := simp, norm_cast)]
+@[defeq, to_additive (attr := simp, norm_cast)]
 theorem coe_smul [SMul R M] [ContinuousConstSMul R M] (c : R) (f : C(α, M)) : ⇑(c • f) = c • ⇑f :=
   rfl
 
-@[to_additive]
+@[defeq, to_additive]
 theorem smul_apply [SMul R M] [ContinuousConstSMul R M] (c : R) (f : C(α, M)) (a : α) :
     (c • f) a = c • f a :=
   rfl
@@ -808,13 +808,14 @@ instance instSMul' : SMul C(α, R) C(α, M) :=
 
 /-- Coercion to a function for a scalar-valued continuous map multiplying a vector-valued one
 (as opposed to `ContinuousMap.coe_smul` which is multiplication by a constant scalar). -/
-@[simp] lemma coe_smul' (f : C(α, R)) (g : C(α, M)) :
+@[defeq, simp] lemma coe_smul' (f : C(α, R)) (g : C(α, M)) :
     ⇑(f • g) = ⇑f • ⇑g :=
   rfl
 
 /-- Evaluation of a scalar-valued continuous map multiplying a vector-valued one
 (as opposed to `ContinuousMap.smul_apply` which is multiplication by a constant scalar). -/
 -- (this doesn't need to be @[simp] since it can be derived from `coe_smul'` and `Pi.smul_apply'`)
+@[defeq]
 lemma smul_apply' (f : C(α, R)) (g : C(α, M)) (x : α) :
     (f • g) x = f x • g x :=
   rfl

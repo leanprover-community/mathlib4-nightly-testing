@@ -59,7 +59,7 @@ instance : PartialOrder (Submodule R M) := .ofSetLike (Submodule R M) M
 
 initialize_simps_projections Submodule (carrier → coe, as_prefix coe)
 
-@[simp] lemma carrier_eq_coe (s : Submodule R M) : s.carrier = s := rfl
+@[defeq, simp] lemma carrier_eq_coe (s : Submodule R M) : s.carrier = s := rfl
 
 /-- The actual `Submodule` obtained from an element of a `SMulMemClass` and `AddSubmonoidClass`. -/
 @[simps]
@@ -109,11 +109,11 @@ variable {p q : Submodule R M}
 theorem mem_mk {S : AddSubmonoid M} {x : M} (h) : x ∈ (⟨S, h⟩ : Submodule R M) ↔ x ∈ S :=
   Iff.rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_set_mk (S : AddSubmonoid M) (h) : ((⟨S, h⟩ : Submodule R M) : Set M) = S :=
   rfl
 
-@[simp] theorem eta (h) : ({ p with smul_mem' := h } : Submodule R M) = p :=
+@[defeq, simp] theorem eta (h) : ({ p with smul_mem' := h } : Submodule R M) = p :=
   rfl
 
 @[simp]
@@ -144,7 +144,7 @@ theorem toAddSubmonoid_injective : Injective (toAddSubmonoid : Submodule R M →
 theorem toAddSubmonoid_inj : p.toAddSubmonoid = q.toAddSubmonoid ↔ p = q :=
   toAddSubmonoid_injective.eq_iff
 
-@[simp]
+@[defeq, simp]
 theorem coe_toAddSubmonoid (p : Submodule R M) : (p.toAddSubmonoid : Set M) = p :=
   rfl
 
@@ -154,7 +154,7 @@ theorem toSubMulAction_injective : Injective (toSubMulAction : Submodule R M →
 theorem toSubMulAction_inj : p.toSubMulAction = q.toSubMulAction ↔ p = q :=
   toSubMulAction_injective.eq_iff
 
-@[simp]
+@[defeq, simp]
 theorem coe_toSubMulAction (p : Submodule R M) : (p.toSubMulAction : Set M) = p :=
   rfl
 
@@ -267,24 +267,24 @@ variable {p}
 theorem coe_eq_zero {x : p} : (x : M) = 0 ↔ x = 0 :=
   (SetLike.coe_eq_coe : (x : M) = (0 : p) ↔ x = 0)
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_add (x y : p) : (↑(x + y) : M) = ↑x + ↑y :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_zero : ((0 : p) : M) = 0 :=
   rfl
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_smul (r : R) (x : p) : ((r • x : p) : M) = r • (x : M) :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_smul_of_tower [SMul S R] [SMul S M] [IsScalarTower S R M] (r : S) (x : p) :
     ((r • x : p) : M) = r • (x : M) :=
   rfl
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_mk (x : M) (hx : x ∈ p) : ((⟨x, hx⟩ : p) : M) = x :=
   rfl
 
@@ -326,7 +326,7 @@ protected theorem neg_mem (hx : x ∈ p) : -x ∈ p :=
 def toAddSubgroup : AddSubgroup M :=
   { p.toAddSubmonoid with neg_mem' := fun {_} => p.neg_mem }
 
-@[simp]
+@[defeq, simp]
 theorem coe_toAddSubgroup : (p.toAddSubgroup : Set M) = p :=
   rfl
 

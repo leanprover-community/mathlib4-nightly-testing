@@ -156,7 +156,7 @@ theorem neg_eq_eval [AddCommGroup M] [Semiring S] [Module S M] [Ring R] [Module 
 instance [Mul R] : SMul R (NF R M) where
   smul r l := l.map fun (a, x) ↦ (r * a, x)
 
-@[simp] theorem smul_apply [Mul R] (r : R) (l : NF R M) : r • l = l.map fun (a, x) ↦ (r * a, x) :=
+@[defeq, simp] theorem smul_apply [Mul R] (r : R) (l : NF R M) : r • l = l.map fun (a, x) ↦ (r * a, x) :=
   rfl
 
 theorem eval_smul [AddCommMonoid M] [Semiring R] [Module R M] {l : NF R M} {x : M} (h : x = l.eval)

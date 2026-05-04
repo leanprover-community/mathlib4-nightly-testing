@@ -68,7 +68,7 @@ instance nonnegHomClass : NonnegHomClass (AbsoluteValue R S) R S :=
 instance subadditiveHomClass : SubadditiveHomClass (AbsoluteValue R S) R S :=
   { AbsoluteValue.zeroHomClass (R := R) (S := S) with map_add_le_add := fun f => f.add_le' }
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : R →ₙ* S) {h₁ h₂ h₃} : (AbsoluteValue.mk f h₁ h₂ h₃ : R → S) = f :=
   rfl
 
@@ -82,7 +82,7 @@ def Simps.apply (f : AbsoluteValue R S) : R → S :=
 
 initialize_simps_projections AbsoluteValue (toFun → apply)
 
-@[simp]
+@[defeq, simp]
 theorem coe_toMulHom : ⇑abv.toMulHom = abv :=
   rfl
 

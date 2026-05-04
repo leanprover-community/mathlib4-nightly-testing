@@ -39,6 +39,7 @@ namespace UpperHalfPlane
 instance : Dist ℍ :=
   ⟨fun z w => 2 * arsinh (dist (z : ℂ) w / (2 * √(z.im * w.im)))⟩
 
+@[defeq]
 theorem dist_eq (z w : ℍ) : dist z w = 2 * arsinh (dist (z : ℂ) w / (2 * √(z.im * w.im))) :=
   rfl
 

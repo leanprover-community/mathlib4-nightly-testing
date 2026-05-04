@@ -154,7 +154,7 @@ instance Quotient.commGroup {G : Type*} [CommGroup G] (N : Subgroup G) : CommGro
 
 local notation " Q" => G ⧸ N
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem mk_one : ((1 : G) : Q) = 1 :=
   rfl
 

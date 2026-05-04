@@ -98,15 +98,15 @@ theorem im_sqrtd : (sqrtd : ℤ√d).im = 1 :=
 instance : Add (ℤ√d) :=
   ⟨fun z w => ⟨z.1 + w.1, z.2 + w.2⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem add_def (x y x' y' : ℤ) : (⟨x, y⟩ + ⟨x', y'⟩ : ℤ√d) = ⟨x + x', y + y'⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem re_add (z w : ℤ√d) : (z + w).re = z.re + w.re :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem im_add (z w : ℤ√d) : (z + w).im = z.im + w.im :=
   rfl
 
@@ -114,11 +114,11 @@ theorem im_add (z w : ℤ√d) : (z + w).im = z.im + w.im :=
 instance : Neg (ℤ√d) :=
   ⟨fun z => ⟨-z.1, -z.2⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem re_neg (z : ℤ√d) : (-z).re = -z.re :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem im_neg (z : ℤ√d) : (-z).im = -z.im :=
   rfl
 
@@ -126,11 +126,11 @@ theorem im_neg (z : ℤ√d) : (-z).im = -z.im :=
 instance : Mul (ℤ√d) :=
   ⟨fun z w => ⟨z.1 * w.1 + d * z.2 * w.2, z.1 * w.2 + z.2 * w.1⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem re_mul (z w : ℤ√d) : (z * w).re = z.re * w.re + d * z.im * w.im :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem im_mul (z w : ℤ√d) : (z * w).im = z.re * w.im + z.im * w.re :=
   rfl
 
@@ -205,15 +205,15 @@ instance : Distrib (ℤ√d) := by infer_instance
 instance : Star (ℤ√d) where
   star z := ⟨z.1, -z.2⟩
 
-@[simp]
+@[defeq, simp]
 theorem star_mk (x y : ℤ) : star (⟨x, y⟩ : ℤ√d) = ⟨x, -y⟩ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem re_star (z : ℤ√d) : (star z).re = z.re :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem im_star (z : ℤ√d) : (star z).im = -z.im :=
   rfl
 

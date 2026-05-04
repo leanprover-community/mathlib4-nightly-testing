@@ -120,6 +120,7 @@ noncomputable instance : SupSet ℝ :=
   ⟨fun s => if h : s.Nonempty ∧ BddAbove s then Classical.choose (exists_isLUB h.1 h.2) else 0⟩
 
 open scoped Classical in
+@[defeq]
 theorem sSup_def (s : Set ℝ) :
     sSup s = if h : s.Nonempty ∧ BddAbove s then Classical.choose (exists_isLUB h.1 h.2) else 0 :=
   rfl
@@ -131,6 +132,7 @@ protected theorem isLUB_sSup (h₁ : s.Nonempty) (h₂ : BddAbove s) : IsLUB s (
 noncomputable instance : InfSet ℝ :=
   ⟨fun s => -sSup (-s)⟩
 
+@[defeq]
 theorem sInf_def (s : Set ℝ) : sInf s = -sSup (-s) := rfl
 
 protected theorem isGLB_sInf (h₁ : s.Nonempty) (h₂ : BddBelow s) : IsGLB s (sInf s) := by

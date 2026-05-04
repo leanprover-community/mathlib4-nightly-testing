@@ -339,10 +339,10 @@ noncomputable instance : NormalizedGCDMonoid (Ideal A) :=
     normalize_lcm := fun _ _ => normalize_eq _ }
 
 -- In fact, any lawful gcd and lcm would equal sup and inf respectively.
-@[simp]
+@[defeq, simp]
 theorem gcd_eq_sup (I J : Ideal A) : gcd I J = I ⊔ J := rfl
 
-@[simp]
+@[defeq, simp]
 theorem lcm_eq_inf (I J : Ideal A) : lcm I J = I ⊓ J := rfl
 
 theorem isCoprime_iff_gcd {I J : Ideal A} : IsCoprime I J ↔ gcd I J = 1 := by

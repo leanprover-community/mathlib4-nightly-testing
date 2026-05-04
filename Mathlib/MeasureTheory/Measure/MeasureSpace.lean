@@ -826,11 +826,11 @@ instance instZero {_ : MeasurableSpace α} : Zero (Measure α) :=
       m_iUnion := fun _f _hf _hd => tsum_zero.symm
       trim_le := OuterMeasure.trim_zero.le }⟩
 
-@[simp]
+@[defeq, simp]
 theorem zero_toOuterMeasure {_m : MeasurableSpace α} : (0 : Measure α).toOuterMeasure = 0 :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_zero {_m : MeasurableSpace α} : ⇑(0 : Measure α) = 0 :=
   rfl
 
@@ -872,15 +872,16 @@ instance instAdd {_ : MeasurableSpace α} : Add (Measure α) :=
           rw [ENNReal.tsum_add, measure_iUnion hd hs, measure_iUnion hd hs]
       trim_le := by rw [OuterMeasure.trim_add, μ₁.trimmed, μ₂.trimmed] }⟩
 
-@[simp]
+@[defeq, simp]
 theorem add_toOuterMeasure {_m : MeasurableSpace α} (μ₁ μ₂ : Measure α) :
     (μ₁ + μ₂).toOuterMeasure = μ₁.toOuterMeasure + μ₂.toOuterMeasure :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_add {_m : MeasurableSpace α} (μ₁ μ₂ : Measure α) : ⇑(μ₁ + μ₂) = μ₁ + μ₂ :=
   rfl
 
+@[defeq]
 theorem add_apply {_m : MeasurableSpace α} (μ₁ μ₂ : Measure α) (s : Set α) :
     (μ₁ + μ₂) s = μ₁ s + μ₂ s :=
   rfl
@@ -898,19 +899,19 @@ instance instSMul {_ : MeasurableSpace α} : SMul R (Measure α) :=
           measure_iUnion hd hs]
       trim_le := by rw [OuterMeasure.trim_smul, μ.trimmed] }⟩
 
-@[simp]
+@[defeq, simp]
 theorem smul_toOuterMeasure {_m : MeasurableSpace α} (c : R) (μ : Measure α) :
     (c • μ).toOuterMeasure = c • μ.toOuterMeasure :=
   rfl
 
-@[simp, norm_cast]
+@[defeq, simp, norm_cast]
 theorem coe_smul {_m : MeasurableSpace α} (c : R) (μ : Measure α) : ⇑(c • μ) = c • ⇑μ :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma coe_nnreal_smul (c : ℝ≥0) (μ : Measure α) : (c : ℝ≥0∞) • μ = c • μ := rfl
 
-@[simp]
+@[defeq, simp]
 theorem smul_apply {_m : MeasurableSpace α} (c : R) (μ : Measure α) (s : Set α) :
     (c • μ) s = c • μ s :=
   rfl
@@ -974,12 +975,12 @@ instance instModuleIsTorsionFree [Semiring R] [Module R ℝ≥0∞] [IsScalarTow
 @[simp] lemma ennreal_smul_eq_zero {c : ℝ≥0∞} {μ : Measure α} : c • μ = 0 ↔ c = 0 ∨ μ = 0 := by
   simp [Measure.ext_iff', forall_or_left]
 
-@[simp]
+@[defeq, simp]
 theorem coe_nnreal_smul_apply {_m : MeasurableSpace α} (c : ℝ≥0) (μ : Measure α) (s : Set α) :
     (c • μ) s = c * μ s :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem nnreal_smul_coe_apply {_m : MeasurableSpace α} (c : ℝ≥0) (μ : Measure α) (s : Set α) :
     c • μ s = c * μ s :=
   rfl
@@ -1205,7 +1206,7 @@ theorem _root_.MeasureTheory.OuterMeasure.toMeasure_top :
       (⊤ : Measure α) :=
   toOuterMeasure_toMeasure (μ := ⊤)
 
-@[simp]
+@[defeq, simp]
 theorem toOuterMeasure_top {_ : MeasurableSpace α} :
     (⊤ : Measure α).toOuterMeasure = (⊤ : OuterMeasure α) :=
   rfl

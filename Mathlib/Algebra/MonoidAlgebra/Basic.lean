@@ -526,7 +526,7 @@ scoped[AlgebraMonoidAlgebra] attribute [instance] MonoidAlgebra.algebraMonoidAlg
 
 open scoped AlgebraMonoidAlgebra
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 lemma algebraMap_def : algebraMap R[M] S[M] = mapRingHom M (algebraMap R S) := rfl
 
 @[to_additive (dont_translate := R)]

@@ -927,11 +927,11 @@ instance instCompleteBooleanAlgebra : CompleteBooleanAlgebra PUnit where
 instance instCompleteAtomicBooleanAlgebra : CompleteAtomicBooleanAlgebra PUnit where
   iInf_iSup_eq _ := rfl
 
-@[simp]
+@[defeq, simp]
 theorem sSup_eq : sSup s = unit :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sInf_eq : sInf s = unit :=
   rfl
 

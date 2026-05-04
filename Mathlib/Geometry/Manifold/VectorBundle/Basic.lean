@@ -91,6 +91,7 @@ instance FiberBundle.chartedSpace' : ChartedSpace (B × F) (TotalSpace F E) wher
     (trivializationAt F E x.proj).mem_source.mpr (mem_baseSet_trivializationAt F E x.proj)
   chart_mem_atlas _ := mem_image_of_mem _ (trivialization_mem_atlas F E _)
 
+@[defeq]
 theorem FiberBundle.chartedSpace'_chartAt (x : TotalSpace F E) :
     chartAt (B × F) x = (trivializationAt F E x.proj).toOpenPartialHomeomorph :=
   rfl

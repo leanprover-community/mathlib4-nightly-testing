@@ -118,7 +118,7 @@ instance : NonUnitalRingHomClass (α →ₙ+* β) α β where
 
 initialize_simps_projections NonUnitalRingHom (toFun → apply)
 
-@[simp]
+@[defeq, simp]
 theorem coe_toMulHom (f : α →ₙ+* β) : ⇑f.toMulHom = f :=
   rfl
 
@@ -127,6 +127,7 @@ theorem coe_mulHom_mk (f : α → β) (h₁ h₂ h₃) :
     ((⟨⟨f, h₁⟩, h₂, h₃⟩ : α →ₙ+* β) : α →ₙ* β) = ⟨f, h₁⟩ :=
   rfl
 
+@[defeq]
 theorem coe_toAddMonoidHom (f : α →ₙ+* β) : ⇑f.toAddMonoidHom = f := rfl
 
 @[simp]
@@ -185,15 +186,15 @@ instance : Zero (α →ₙ+* β) :=
 instance : Inhabited (α →ₙ+* β) :=
   ⟨0⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : α →ₙ+* β) = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (x : α) : (0 : α →ₙ+* β) x = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem id_apply (x : α) : NonUnitalRingHom.id α x = x :=
   rfl
 
@@ -213,6 +214,7 @@ def comp (g : β →ₙ+* γ) (f : α →ₙ+* β) : α →ₙ+* γ :=
   { g.toMulHom.comp f.toMulHom, g.toAddMonoidHom.comp f.toAddMonoidHom with }
 
 /-- Composition of non-unital ring homomorphisms is associative. -/
+@[defeq]
 theorem comp_assoc {δ} {_ : NonUnitalNonAssocSemiring δ} (f : α →ₙ+* β) (g : β →ₙ+* γ)
     (h : γ →ₙ+* δ) : (h.comp g).comp f = h.comp (g.comp f) :=
   rfl
@@ -221,7 +223,7 @@ theorem comp_assoc {δ} {_ : NonUnitalNonAssocSemiring δ} (f : α →ₙ+* β) 
 theorem coe_comp (g : β →ₙ+* γ) (f : α →ₙ+* β) : ⇑(g.comp f) = g ∘ f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem comp_apply (g : β →ₙ+* γ) (f : α →ₙ+* β) (x : α) : g.comp f x = g (f x) :=
   rfl
 
@@ -262,6 +264,7 @@ instance : MonoidWithZero (α →ₙ+* α) where
   mul_zero := comp_zero
   zero_mul := zero_comp
 
+@[defeq]
 theorem one_def : (1 : α →ₙ+* α) = NonUnitalRingHom.id α :=
   rfl
 
@@ -269,6 +272,7 @@ theorem one_def : (1 : α →ₙ+* α) = NonUnitalRingHom.id α :=
 theorem coe_one : ⇑(1 : α →ₙ+* α) = id :=
   rfl
 
+@[defeq]
 theorem mul_def (f g : α →ₙ+* α) : f * g = f.comp g :=
   rfl
 
@@ -374,10 +378,11 @@ instance instRingHomClass : RingHomClass (α →+* β) α β where
 
 initialize_simps_projections RingHom (toFun → apply)
 
+@[defeq]
 theorem toFun_eq_coe (f : α →+* β) : f.toFun = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : α →* β) (h₁ h₂) : ((⟨f, h₁, h₂⟩ : α →+* β) : α → β) = f :=
   rfl
 
@@ -522,7 +527,7 @@ instance : Inhabited (α →+* α) :=
 @[simp, norm_cast]
 theorem coe_id : ⇑(RingHom.id α) = _root_.id := rfl
 
-@[simp]
+@[defeq, simp]
 theorem id_apply (x : α) : RingHom.id α x = x :=
   rfl
 
@@ -542,6 +547,7 @@ def comp (g : β →+* γ) (f : α →+* β) : α →+* γ :=
   { g.toNonUnitalRingHom.comp f.toNonUnitalRingHom with toFun x := g (f x), map_one' := by simp }
 
 /-- Composition of semiring homomorphisms is associative. -/
+@[defeq]
 theorem comp_assoc {δ} {_ : NonAssocSemiring δ} (f : α →+* β) (g : β →+* γ) (h : γ →+* δ) :
     (h.comp g).comp f = h.comp (g.comp f) :=
   rfl
@@ -550,6 +556,7 @@ theorem comp_assoc {δ} {_ : NonAssocSemiring δ} (f : α →+* β) (g : β →+
 theorem coe_comp (hnp : β →+* γ) (hmn : α →+* β) : (hnp.comp hmn : α → γ) = hnp ∘ hmn :=
   rfl
 
+@[defeq]
 theorem comp_apply (hnp : β →+* γ) (hmn : α →+* β) (x : α) :
     (hnp.comp hmn : α → γ) x = hnp (hmn x) :=
   rfl
@@ -565,8 +572,10 @@ theorem id_comp (f : α →+* β) : (id β).comp f = f :=
 instance instOne : One (α →+* α) where one := id _
 instance instMul : Mul (α →+* α) where mul := comp
 
+@[defeq]
 lemma one_def : (1 : α →+* α) = id α := rfl
 
+@[defeq]
 lemma mul_def (f g : α →+* α) : f * g = f.comp g := rfl
 
 @[simp, norm_cast] lemma coe_one : ⇑(1 : α →+* α) = _root_.id := rfl

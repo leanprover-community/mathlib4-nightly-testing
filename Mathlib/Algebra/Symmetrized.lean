@@ -141,7 +141,7 @@ instance [Inv α] : Inv αˢʸᵐ where inv a := sym <| (unsym a)⁻¹
 
 instance (R : Type*) [SMul R α] : SMul R αˢʸᵐ where smul r a := sym (r • unsym a)
 
-@[to_additive (attr := simp)]
+@[defeq, to_additive (attr := simp)]
 theorem sym_one [One α] : sym (1 : α) = 1 :=
   rfl
 
@@ -173,6 +173,7 @@ theorem sym_neg [Neg α] (a : α) : sym (-a) = -sym a :=
 theorem unsym_neg [Neg α] (a : αˢʸᵐ) : unsym (-a) = -unsym a :=
   rfl
 
+@[defeq]
 theorem mul_def [Add α] [Mul α] [One α] [OfNat α 2] [Invertible (2 : α)] (a b : αˢʸᵐ) :
     a * b = sym (⅟2 * (unsym a * unsym b + unsym b * unsym a)) := rfl
 
@@ -244,7 +245,7 @@ instance [Mul α] [AddMonoidWithOne α] [Invertible (2 : α)] (a : α) [Invertib
   mul_invOf_self := by
     rw [sym_mul_sym, mul_invOf_self, invOf_mul_self, one_add_one_eq_two, invOf_mul_self, sym_one]
 
-@[simp]
+@[defeq, simp]
 theorem invOf_sym [Mul α] [AddMonoidWithOne α] [Invertible (2 : α)] (a : α) [Invertible a] :
     ⅟(sym a) = sym (⅟a) :=
   rfl

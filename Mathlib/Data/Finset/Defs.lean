@@ -178,7 +178,7 @@ instance PiFinsetCoe.canLift' (ι α : Type*) [_ne : Nonempty α] (s : Finset ι
 instance FinsetCoe.canLift (s : Finset α) : CanLift α s (↑) fun a => a ∈ s where
   prf a ha := ⟨⟨a, ha⟩, rfl⟩
 
-@[norm_cast]
+@[defeq, norm_cast]
 theorem coe_sort_coe (s : Finset α) : ((s : Set α) : Sort _) = s :=
   rfl
 
@@ -273,7 +273,7 @@ theorem Subset.antisymm_iff {s₁ s₂ : Finset α} : s₁ = s₂ ↔ s₁ ⊆ s
 
 theorem not_subset : ¬s ⊆ t ↔ ∃ x ∈ s, x ∉ t := by simp only [← coe_subset, Set.not_subset, mem_coe]
 
-@[simp]
+@[defeq, simp]
 theorem le_eq_subset : ((· ≤ ·) : Finset α → Finset α → Prop) = (· ⊆ ·) :=
   rfl
 

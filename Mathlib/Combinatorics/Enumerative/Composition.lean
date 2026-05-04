@@ -147,6 +147,7 @@ instance (n : ℕ) : ToString (Composition n) :=
 abbrev length : ℕ :=
   c.blocks.length
 
+@[defeq]
 theorem blocks_length : c.blocks.length = c.length :=
   rfl
 

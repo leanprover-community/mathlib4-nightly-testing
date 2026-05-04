@@ -83,16 +83,17 @@ initialize_simps_projections ContinuousAlternatingMap (toFun → apply)
 @[continuity]
 theorem coe_continuous : Continuous f := f.cont
 
-@[simp]
+@[defeq, simp]
 theorem coe_toContinuousMultilinearMap : ⇑f.toContinuousMultilinearMap = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : ContinuousMultilinearMap R (fun _ : ι => M) N) (h) : ⇑(mk f h) = f :=
   rfl
 
 -- not a `simp` lemma because this projection is a reducible call to `mk`, so `simp` can prove
 -- this lemma
+@[defeq]
 theorem coe_toAlternatingMap : ⇑f.toAlternatingMap = f := rfl
 
 @[ext]
@@ -147,15 +148,15 @@ instance : Zero (M [⋀^ι]→L[R] N) :=
 instance : Inhabited (M [⋀^ι]→L[R] N) :=
   ⟨0⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : M [⋀^ι]→L[R] N) = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toContinuousMultilinearMap_zero : (0 : M [⋀^ι]→L[R] N).toContinuousMultilinearMap = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toAlternatingMap_zero : (0 : M [⋀^ι]→L[R] N).toAlternatingMap = 0 :=
   rfl
 
@@ -168,19 +169,20 @@ variable {R' R'' A : Type*} [Monoid R'] [Monoid R''] [Semiring A] [Module A M] [
 instance : SMul R' (M [⋀^ι]→L[A] N) :=
   ⟨fun c f => ⟨c • f.1, (c • f.toAlternatingMap).map_eq_zero_of_eq⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul (f : M [⋀^ι]→L[A] N) (c : R') : ⇑(c • f) = c • ⇑f :=
   rfl
 
+@[defeq]
 theorem smul_apply (f : M [⋀^ι]→L[A] N) (c : R') (v : ι → M) : (c • f) v = c • f v :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toContinuousMultilinearMap_smul (c : R') (f : M [⋀^ι]→L[A] N) :
     (c • f).toContinuousMultilinearMap = c • f.toContinuousMultilinearMap :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toAlternatingMap_smul (c : R') (f : M [⋀^ι]→L[A] N) :
     (c • f).toAlternatingMap = c • f.toAlternatingMap :=
   rfl
@@ -206,19 +208,19 @@ variable [ContinuousAdd N]
 instance : Add (M [⋀^ι]→L[R] N) :=
   ⟨fun f g => ⟨f.1 + g.1, (f.toAlternatingMap + g.toAlternatingMap).map_eq_zero_of_eq⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_add : ⇑(f + g) = ⇑f + ⇑g :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (v : ι → M) : (f + g) v = f v + g v :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toContinuousMultilinearMap_add (f g : M [⋀^ι]→L[R] N) : (f + g).1 = f.1 + g.1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem toAlternatingMap_add (f g : M [⋀^ι]→L[R] N) :
     (f + g).toAlternatingMap = f.toAlternatingMap + g.toAlternatingMap :=
   rfl
@@ -479,10 +481,11 @@ variable [IsTopologicalAddGroup N]
 instance : Neg (M [⋀^ι]→L[R] N) :=
   ⟨fun f => { -f.toAlternatingMap with toContinuousMultilinearMap := -f.1 }⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_neg : ⇑(-f) = -f :=
   rfl
 
+@[defeq]
 theorem neg_apply (m : ι → M) : (-f) m = -f m :=
   rfl
 
@@ -490,8 +493,9 @@ instance : Sub (M [⋀^ι]→L[R] N) :=
   ⟨fun f g =>
     { f.toAlternatingMap - g.toAlternatingMap with toContinuousMultilinearMap := f.1 - g.1 }⟩
 
-@[simp] theorem coe_sub : ⇑(f - g) = ⇑f - ⇑g := rfl
+@[defeq, simp] theorem coe_sub : ⇑(f - g) = ⇑f - ⇑g := rfl
 
+@[defeq]
 theorem sub_apply (m : ι → M) : (f - g) m = f m - g m := rfl
 
 instance : AddCommGroup (M [⋀^ι]→L[R] N) := fast_instance%

@@ -164,13 +164,13 @@ instance continuousSemilinearEquivClass :
   map_continuous := continuous_toFun
   inv_continuous := continuous_invFun
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (e : M₁ ≃ₛₗ[σ₁₂] M₂) (a b) : ⇑(ContinuousLinearEquiv.mk e a b) = e := rfl
 
 theorem coe_apply (e : M₁ ≃SL[σ₁₂] M₂) (b : M₁) : (e : M₁ →SL[σ₁₂] M₂) b = e b :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toLinearEquiv (f : M₁ ≃SL[σ₁₂] M₂) : ⇑f.toLinearEquiv = f :=
   rfl
 
@@ -1442,7 +1442,7 @@ instance : SMul Sˣ (V ≃L[R] W) where smul α e :=
     continuous_toFun := α.isUnit.continuous_const_smul_iff.mpr e.continuous
     continuous_invFun := α⁻¹.isUnit.continuous_const_smul_iff.mpr e.symm.continuous }
 
-@[simp] theorem smul_apply (α : Sˣ) (e : V ≃L[R] W) (x : V) : (α • e) x = (α : S) • e x := rfl
+@[defeq, simp] theorem smul_apply (α : Sˣ) (e : V ≃L[R] W) (x : V) : (α • e) x = (α : S) • e x := rfl
 
 theorem symm_smul_apply (e : V ≃L[R] W) (α : Sˣ) (x : W) :
     (α • e).symm x = (↑α⁻¹ : S) • e.symm x := rfl
@@ -1450,7 +1450,7 @@ theorem symm_smul_apply (e : V ≃L[R] W) (α : Sˣ) (x : W) :
 @[simp] theorem symm_smul [SMulCommClass R S V]
     (e : V ≃L[R] W) (α : Sˣ) : (α • e).symm = α⁻¹ • e.symm := rfl
 
-@[simp] theorem toLinearEquiv_smul (e : V ≃L[R] W) (α : Sˣ) :
+@[defeq, simp] theorem toLinearEquiv_smul (e : V ≃L[R] W) (α : Sˣ) :
     (α • e).toLinearEquiv = α • e.toLinearEquiv := rfl
 
 theorem smul_trans [SMulCommClass R S V] [IsScalarTower S R G] (α : Sˣ) (e : G ≃L[R] V)

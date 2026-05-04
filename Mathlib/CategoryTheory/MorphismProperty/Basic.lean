@@ -54,6 +54,7 @@ lemma le_def {P Q : MorphismProperty C} :
 instance : Inhabited (MorphismProperty C) :=
   ⟨⊤⟩
 
+@[defeq]
 lemma top_eq : (⊤ : MorphismProperty C) = fun _ _ _ => True := rfl
 
 variable {C}

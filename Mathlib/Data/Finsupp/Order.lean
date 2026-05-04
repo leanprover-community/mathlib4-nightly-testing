@@ -215,6 +215,7 @@ instance orderBot : OrderBot (ι →₀ α) where
   bot := 0
   bot_le := by simp only [le_def, coe_zero, Pi.zero_apply, imp_true_iff, zero_le]
 
+@[defeq]
 protected theorem bot_eq_zero : (⊥ : ι →₀ α) = 0 :=
   rfl
 

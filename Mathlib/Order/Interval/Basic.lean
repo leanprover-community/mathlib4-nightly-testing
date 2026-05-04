@@ -233,6 +233,7 @@ theorem coe_ssubset_coe : (s : Set α) ⊂ t ↔ s < t :=
 theorem coe_coeHom : (coeHom : NonemptyInterval α → Set α) = ((↑) : NonemptyInterval α → Set α) :=
   rfl
 
+@[defeq]
 theorem coe_def (s : NonemptyInterval α) : (s : Set α) = Set.Icc s.toProd.1 s.toProd.2 := rfl
 
 @[simp, norm_cast]
@@ -266,11 +267,11 @@ instance : Max (NonemptyInterval α) :=
 instance : SemilatticeSup (NonemptyInterval α) :=
   fast_instance% toDualProd_injective.semilatticeSup _ .rfl .rfl fun _ _ => rfl
 
-@[simp]
+@[defeq, simp]
 theorem fst_sup (s t : NonemptyInterval α) : (s ⊔ t).fst = s.fst ⊓ t.fst :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_sup (s t : NonemptyInterval α) : (s ⊔ t).snd = s.snd ⊔ t.snd :=
   rfl
 

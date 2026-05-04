@@ -97,6 +97,7 @@ attribute [coe] carrier
 instance : Membership X (Prototile G X) where
   mem p x := x ∈ (p : Set X)
 
+@[defeq]
 lemma coe_mk (c s) : (⟨c, s⟩ : Prototile G X) = c := rfl
 
 @[simp] lemma mem_coe {x : X} {p : Prototile G X} : x ∈ (p : Set X) ↔ x ∈ p := Iff.rfl
@@ -122,6 +123,7 @@ instance : CoeFun (Protoset G X ιₚ) (fun _ ↦ ιₚ → Prototile G X) where
 
 attribute [coe] tiles
 
+@[defeq]
 lemma coe_mk (t) : (⟨t⟩ : Protoset G X ιₚ) = t := rfl
 
 @[simp, norm_cast] lemma coe_inj {ps₁ ps₂ : Protoset G X ιₚ} :

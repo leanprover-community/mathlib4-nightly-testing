@@ -162,7 +162,7 @@ instance : FunLike (A →ₛₙₐ[φ] B) A B where
   coe f := f.toFun
   coe_injective' := by rintro ⟨⟨⟨f, _⟩, _⟩, _⟩ ⟨⟨⟨g, _⟩, _⟩, _⟩ h; congr
 
-@[simp]
+@[defeq, simp]
 theorem toFun_eq_coe (f : A →ₛₙₐ[φ] B) : f.toFun = ⇑f :=
   rfl
 
@@ -198,7 +198,7 @@ theorem ext {f g : A →ₛₙₐ[φ] B} (h : ∀ x, f x = g x) : f = g :=
 theorem congr_fun {f g : A →ₛₙₐ[φ] B} (h : f = g) (x : A) : f x = g x :=
   h ▸ rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (f : A → B) (h₁ h₂ h₃ h₄) : ⇑(⟨⟨⟨f, h₁⟩, h₂, h₃⟩, h₄⟩ : A →ₛₙₐ[φ] B) = f :=
   rfl
 
@@ -273,7 +273,7 @@ instance : Zero (A →ₛₙₐ[φ] B) :=
 instance : One (A →ₙₐ[R] A) :=
   ⟨NonUnitalAlgHom.id R A⟩
 
-@[simp]
+@[defeq, simp]
 theorem coe_zero : ⇑(0 : A →ₛₙₐ[φ] B) = 0 :=
   rfl
 
@@ -281,6 +281,7 @@ theorem coe_zero : ⇑(0 : A →ₛₙₐ[φ] B) = 0 :=
 theorem coe_one : ((1 : A →ₙₐ[R] A) : A → A) = id :=
   rfl
 
+@[defeq]
 theorem zero_apply (a : A) : (0 : A →ₛₙₐ[φ] B) a = 0 :=
   rfl
 

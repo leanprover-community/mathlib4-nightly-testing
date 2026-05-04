@@ -78,6 +78,7 @@ noncomputable scoped instance : InnerProductSpace ℝ H where
   add_left := by simp
   smul_left := by simp
 
+@[defeq]
 lemma inner_real_eq_re_inner (x y : H) : inner ℝ x y = ⟪x, y⟫.re := rfl
 
 /-- The imaginary unit as an invertible element. -/

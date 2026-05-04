@@ -389,7 +389,7 @@ instance [IsDomain R] : OrderBot (PrimeSpectrum R) where
   bot := ⟨⊥, Ideal.isPrime_bot⟩
   bot_le I := @bot_le _ _ _ I.asIdeal
 
-@[simp]
+@[defeq, simp]
 theorem asIdeal_bot [IsDomain R] : (⊥ : PrimeSpectrum R).asIdeal = ⊥ := rfl
 
 instance {R : Type*} [Field R] : Unique (PrimeSpectrum R) where

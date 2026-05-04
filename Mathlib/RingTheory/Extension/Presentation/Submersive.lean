@@ -401,6 +401,7 @@ lemma baseChange_toPresentation :
     (P.baseChange R).toPresentation = P.toPresentation.baseChange R :=
   rfl
 
+@[defeq]
 lemma baseChange_ring : (P.baseChange R).Ring = P.Ring := rfl
 
 @[simp]

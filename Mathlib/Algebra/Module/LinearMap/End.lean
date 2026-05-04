@@ -48,14 +48,16 @@ instance : One (Module.End R M) := ⟨LinearMap.id⟩
 
 instance : Mul (Module.End R M) := ⟨fun f g => LinearMap.comp f g⟩
 
+@[defeq]
 theorem one_eq_id : (1 : Module.End R M) = .id := rfl
 
+@[defeq]
 theorem mul_eq_comp (f g : Module.End R M) : f * g = f.comp g := rfl
 
-@[simp]
+@[defeq, simp]
 theorem one_apply (x : M) : (1 : Module.End R M) x = x := rfl
 
-@[simp]
+@[defeq, simp]
 theorem mul_apply (f g : Module.End R M) (x : M) : (f * g) x = f (g x) := rfl
 
 theorem coe_one : ⇑(1 : Module.End R M) = _root_.id := rfl
@@ -84,10 +86,10 @@ instance instSemiring : Semiring (Module.End R M) where
   natCast_succ := fun n ↦ AddMonoid.nsmul_succ n (1 : M →ₗ[R] M)
 
 /-- See also `Module.End.natCast_def`. -/
-@[simp]
+@[defeq, simp]
 theorem natCast_apply (n : ℕ) (m : M) : (↑n : Module.End R M) m = n • m := rfl
 
-@[simp]
+@[defeq, simp]
 theorem ofNat_apply (n : ℕ) [n.AtLeastTwo] (m : M) :
     (ofNat(n) : Module.End R M) m = ofNat(n) • m := rfl
 
@@ -97,7 +99,7 @@ instance instRing : Ring (Module.End R N₁) where
   intCast_negSucc := negSucc_zsmul _
 
 /-- See also `Module.End.intCast_def`. -/
-@[simp]
+@[defeq, simp]
 theorem intCast_apply (z : ℤ) (m : N₁) : (z : Module.End R N₁) m = z • m :=
   rfl
 
@@ -205,7 +207,7 @@ instance applyModule : Module (Module.End R M) M where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[simp]
+@[defeq, simp]
 protected theorem smul_def (f : Module.End R M) (a : M) : f • a = f a :=
   rfl
 

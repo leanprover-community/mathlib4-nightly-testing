@@ -101,21 +101,21 @@ theorem ext (H : ∀ x y : M, B x y = D x y) : B = D := ext₂ H
 
 theorem congr_fun (h : B = D) (x y : M) : B x y = D x y := congr_fun₂ h _ _
 
-@[simp]
+@[defeq, simp]
 theorem zero_apply (x y : M) : (0 : BilinForm R M) x y = 0 :=
   rfl
 
 variable (B D B₁ D₁)
 
-@[simp]
+@[defeq, simp]
 theorem add_apply (x y : M) : (B + D) x y = B x y + D x y :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_apply (x y : M₁) : (-B₁) x y = -B₁ x y :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem sub_apply (x y : M₁) : (B₁ - D₁) x y = B₁ x y - D₁ x y :=
   rfl
 

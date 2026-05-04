@@ -42,6 +42,7 @@ instance : CoeSort Pointed Type* :=
 abbrev of {X : Type*} (point : X) : Pointed :=
   ⟨X, point⟩
 
+@[defeq]
 theorem coe_of {X : Type*} (point : X) : ↥(of point) = X :=
   rfl
 

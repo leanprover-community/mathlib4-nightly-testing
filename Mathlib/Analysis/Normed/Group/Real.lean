@@ -30,14 +30,14 @@ namespace NNReal
 instance : NNNorm ℝ≥0 where
   nnnorm x := x
 
-@[simp] lemma nnnorm_eq_self (x : ℝ≥0) : ‖x‖₊ = x := rfl
+@[defeq, simp] lemma nnnorm_eq_self (x : ℝ≥0) : ‖x‖₊ = x := rfl
 
 end NNReal
 
 instance : ENorm ℝ≥0∞ where
   enorm x := x
 
-@[simp] lemma enorm_eq_self (x : ℝ≥0∞) : ‖x‖ₑ = x := rfl
+@[defeq, simp] lemma enorm_eq_self (x : ℝ≥0∞) : ‖x‖ₑ = x := rfl
 
 noncomputable instance : ENormedAddCommMonoid ℝ≥0∞ where
   continuous_enorm := continuous_id
@@ -52,7 +52,7 @@ variable {r : ℝ}
 instance norm : Norm ℝ where
   norm r := |r|
 
-@[simp]
+@[defeq, simp]
 theorem norm_eq_abs (r : ℝ) : ‖r‖ = |r| :=
   rfl
 

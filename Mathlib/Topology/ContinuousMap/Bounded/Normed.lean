@@ -39,6 +39,7 @@ variable (f g : α →ᵇ β) {x : α} {C : ℝ}
 
 instance instNorm : Norm (α →ᵇ β) := ⟨(dist · 0)⟩
 
+@[defeq]
 theorem norm_def : ‖f‖ = dist f 0 := rfl
 
 /-- The norm of a bounded continuous function is the supremum of `‖f x‖`.
@@ -189,10 +190,10 @@ instance instSMulInt : SMul ℤ (α →ᵇ β) where
     { toContinuousMap := n • f.toContinuousMap
       map_bounded' := by simpa using (zsmulRec (· • ·) n f).map_bounded' }
 
-@[simp]
+@[defeq, simp]
 theorem coe_zsmul (r : ℤ) (f : α →ᵇ β) : ⇑(r • f) = r • ⇑f := rfl
 
-@[simp]
+@[defeq, simp]
 theorem zsmul_apply (r : ℤ) (f : α →ᵇ β) (v : α) : (r • f) v = r • f v := rfl
 
 instance instAddCommGroup : AddCommGroup (α →ᵇ β) := fast_instance%
@@ -559,9 +560,9 @@ instance instInf : Min (α →ᵇ β) where
         simp_rw [dist_eq_norm_sub] at hf hg ⊢
         exact (norm_inf_sub_inf_le_add_norm _ _ _ _).trans (add_le_add (hf _ _) (hg _ _)) }
 
-@[simp, norm_cast] lemma coe_sup (f g : α →ᵇ β) : ⇑(f ⊔ g) = ⇑f ⊔ ⇑g := rfl
+@[defeq, simp, norm_cast] lemma coe_sup (f g : α →ᵇ β) : ⇑(f ⊔ g) = ⇑f ⊔ ⇑g := rfl
 
-@[simp, norm_cast] lemma coe_inf (f g : α →ᵇ β) : ⇑(f ⊓ g) = ⇑f ⊓ ⇑g := rfl
+@[defeq, simp, norm_cast] lemma coe_inf (f g : α →ᵇ β) : ⇑(f ⊓ g) = ⇑f ⊓ ⇑g := rfl
 
 instance instSemilatticeSup : SemilatticeSup (α →ᵇ β) := fast_instance%
   DFunLike.coe_injective.semilatticeSup _ .rfl .rfl coe_sup

@@ -596,6 +596,7 @@ instance : Inhabited W'.Point :=
 instance : Zero W'.Point :=
   ⟨zero⟩
 
+@[defeq]
 lemma zero_def : 0 = (zero : W'.Point) :=
   rfl
 
@@ -612,6 +613,7 @@ def neg : W'.Point → W'.Point
 instance : Neg W'.Point :=
   ⟨neg⟩
 
+@[defeq]
 lemma neg_def (P : W'.Point) : -P = P.neg :=
   rfl
 
@@ -654,6 +656,7 @@ instance : AddZeroClass W.Point where
   zero_add := by rintro (_ | _) <;> rfl
   add_zero := by rintro (_ | _) <;> rfl
 
+@[defeq]
 lemma add_def (P Q : W.Point) : P + Q = P.add Q :=
   rfl
 

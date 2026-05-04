@@ -88,6 +88,7 @@ instance : CStarModule A A where
     simpa [sq] using Eq.symm <| CStarRing.norm_self_mul_star
 
 open scoped InnerProductSpace in
+@[defeq]
 lemma inner_def (x y : A) : ⟪x, y⟫_A = y * star x := rfl
 
 end Self
@@ -106,6 +107,7 @@ variable [CStarModule A E] [CStarModule A F]
 noncomputable instance : Norm C⋆ᵐᵒᵈ(A, E × F) where
   norm x := √‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖
 
+@[defeq]
 lemma prod_norm (x : C⋆ᵐᵒᵈ(A, E × F)) : ‖x‖ = √‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖ := rfl
 
 lemma prod_norm_sq (x : C⋆ᵐᵒᵈ(A, E × F)) : ‖x‖ ^ 2 = ‖⟪x.1, x.1⟫_A + ⟪x.2, x.2⟫_A‖ := by
@@ -137,6 +139,7 @@ noncomputable instance : CStarModule A C⋆ᵐᵒᵈ(A, E × F) where
   star_inner x y := by simp
   norm_eq_sqrt_norm_inner_self {x} := by with_reducible_and_instances rfl
 
+@[defeq]
 lemma prod_inner (x y : C⋆ᵐᵒᵈ(A, E × F)) : ⟪x, y⟫_A = ⟪x.1, y.1⟫_A + ⟪x.2, y.2⟫_A := rfl
 
 lemma max_le_prod_norm (x : C⋆ᵐᵒᵈ(A, E × F)) : max ‖x.1‖ ‖x.2‖ ≤ ‖x‖ := by
@@ -245,6 +248,7 @@ noncomputable instance : CStarModule A C⋆ᵐᵒᵈ(A, Π i, E i) where
   star_inner x y := by simp
   norm_eq_sqrt_norm_inner_self {x} := by with_reducible_and_instances rfl
 
+@[defeq]
 lemma pi_inner (x y : C⋆ᵐᵒᵈ(A, Π i, E i)) : ⟪x, y⟫_A = ∑ i, ⟪x i, y i⟫_A := rfl
 
 @[simp]

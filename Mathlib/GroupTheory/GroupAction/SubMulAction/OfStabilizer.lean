@@ -235,7 +235,7 @@ instance _root_.SMul.ofStabilizer (s : Set α) :
     convert Set.smul_mem_smul_set x.prop
     exact (mem_stabilizer_iff.mp g.prop).symm⟩
 
-@[simp]
+@[defeq, simp]
 theorem _root_.SMul.smul_stabilizer_def (s : Set α) (g : stabilizer G s) (x : s) :
     ((g • x : ↥s) : α) = (g : G) • (x : α) :=
   rfl

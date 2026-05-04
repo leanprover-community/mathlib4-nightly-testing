@@ -322,11 +322,11 @@ instance : EquivLike (P ≃ᵃⁱ[𝕜] P₂) P P₂ where
     congr
     simpa [DFunLike.coe_injective.eq_iff] using h
 
-@[simp]
+@[defeq, simp]
 theorem coe_mk (e : P ≃ᵃ[𝕜] P₂) (he : ∀ x, ‖e.linear x‖ = ‖x‖) : ⇑(mk e he) = e :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_toAffineEquiv (e : P ≃ᵃⁱ[𝕜] P₂) : ⇑e.toAffineEquiv = e :=
   rfl
 
@@ -591,7 +591,7 @@ theorem coe_one : ⇑(1 : P ≃ᵃⁱ[𝕜] P) = id :=
 theorem coe_mul (e e' : P ≃ᵃⁱ[𝕜] P) : ⇑(e * e') = e ∘ e' :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_inv (e : P ≃ᵃⁱ[𝕜] P) : ⇑e⁻¹ = e.symm :=
   rfl
 

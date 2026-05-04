@@ -110,6 +110,7 @@ variable [AddCommMonoidWithOne B] [Module R B]
 
 instance : One (A ⊗[R] B) where one := 1 ⊗ₜ 1
 
+@[defeq]
 theorem one_def : (1 : A ⊗[R] B) = (1 : A) ⊗ₜ (1 : B) :=
   rfl
 
@@ -119,6 +120,7 @@ instance instAddCommMonoidWithOne : AddCommMonoidWithOne (A ⊗[R] B) where
   natCast_succ n := by simp [add_tmul, one_def]
   add_comm := add_comm
 
+@[defeq]
 theorem natCast_def (n : ℕ) : (n : A ⊗[R] B) = (n : A) ⊗ₜ (1 : B) := rfl
 
 theorem natCast_def' (n : ℕ) : (n : A ⊗[R] B) = (1 : A) ⊗ₜ (n : B) := by
@@ -292,6 +294,7 @@ instance leftAlgebra [SMulCommClass R S A] : Algebra S (A ⊗[R] B) :=
       rw [algebraMap_eq_smul_one, ← smul_tmul', smul_mul_assoc, ← one_def, one_mul]
     algebraMap := TensorProduct.includeLeftRingHom.comp (algebraMap S A) }
 
+@[defeq]
 lemma algebraMap_def [SMulCommClass R S A] :
     algebraMap S (A ⊗[R] B) = includeLeftRingHom.comp (algebraMap S A) := rfl
 
@@ -390,6 +393,7 @@ instance instAddCommGroupWithOne : AddCommGroupWithOne (A ⊗[R] B) where
   intCast_ofNat n := by simp [natCast_def]
   intCast_negSucc n := by simp [natCast_def, add_tmul, neg_tmul, one_def]
 
+@[defeq]
 theorem intCast_def (z : ℤ) : (z : A ⊗[R] B) = (z : A) ⊗ₜ (1 : B) := rfl
 
 end AddCommGroupWithOne

@@ -73,11 +73,11 @@ scoped[Pointwise] attribute [instance] Submodule.pointwiseNeg
 
 open scoped Pointwise
 
-@[simp]
+@[defeq, simp]
 theorem coe_set_neg (S : Submodule R M) : ↑(-S) = -(S : Set M) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem neg_toAddSubmonoid (S : Submodule R M) : (-S).toAddSubmonoid = -S.toAddSubmonoid :=
   rfl
 
@@ -162,11 +162,11 @@ instance pointwiseAddCommMonoid : AddCommMonoid (Submodule R M) where
   add_comm := sup_comm
   nsmul := nsmulRec
 
-@[simp]
+@[defeq, simp]
 theorem add_eq_sup (p q : Submodule R M) : p + q = p ⊔ q :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem zero_eq_bot : (0 : Submodule R M) = ⊥ :=
   rfl
 
@@ -198,6 +198,7 @@ protected def pointwiseDistribMulAction : DistribMulAction α (Submodule R M) wh
 
 scoped[Pointwise] attribute [instance] Submodule.pointwiseDistribMulAction
 
+@[defeq]
 theorem pointwise_smul_def {a : α} {S : Submodule R M} :
     a • S = S.map (DistribSMul.toLinearMap R M a) := rfl
 

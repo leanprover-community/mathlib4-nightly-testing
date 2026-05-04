@@ -140,8 +140,8 @@ instance instLattice : Lattice (Multiset α) where
   inf_le_left _ _ := inter_le_left
   inf_le_right _ _ := inter_le_right
 
-@[simp] lemma sup_eq_union (s t : Multiset α) : s ⊔ t = s ∪ t := rfl
-@[simp] lemma inf_eq_inter (s t : Multiset α) : s ⊓ t = s ∩ t := rfl
+@[defeq, simp] lemma sup_eq_union (s t : Multiset α) : s ⊔ t = s ∪ t := rfl
+@[defeq, simp] lemma inf_eq_inter (s t : Multiset α) : s ⊓ t = s ∩ t := rfl
 
 @[simp] lemma le_inter_iff : s ≤ t ∩ u ↔ s ≤ t ∧ s ≤ u := le_inf_iff
 @[simp] lemma union_le_iff : s ∪ t ≤ u ↔ s ≤ u ∧ t ≤ u := sup_le_iff
