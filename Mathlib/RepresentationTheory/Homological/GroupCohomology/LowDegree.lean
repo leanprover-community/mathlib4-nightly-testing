@@ -142,6 +142,7 @@ def d₂₃ : ModuleCat.of k (G × G → A) ⟶ ModuleCat.of k (G × G × G → 
           add_sub_assoc, add_sub_assoc]
     map_smul' r x := funext fun g => by dsimp; simp only [map_smul, smul_add, smul_sub] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Let `C(G, A)` denote the complex of inhomogeneous cochains of `A : Rep k G`. This lemma
 says `d₀₁` gives a simpler expression for the 0th differential: that is, the following
 square commutes:

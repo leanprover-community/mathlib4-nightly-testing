@@ -102,6 +102,7 @@ lemma pullbackPushforwardAdjunction_homEquiv_pullbackObjUnitToUnit :
       unitToPushforwardObjUnit φ :=
   Equiv.apply_symm_apply _ _
 
+set_option backward.defeqAttrib.useBackward true in
 instance [F.Final] : IsIso (pullbackObjUnitToUnit φ) := by
   rw [isIso_iff_coyoneda_map_bijective]
   intro M
