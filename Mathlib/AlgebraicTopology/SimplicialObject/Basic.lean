@@ -421,6 +421,7 @@ def drop : Augmented C ⥤ SimplicialObject C :=
 def point : Augmented C ⥤ C :=
   Comma.snd _ _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor from augmented objects to arrows. -/
 @[simps]
@@ -438,6 +439,7 @@ def toArrow : Augmented C ⥤ Arrow C where
         erw [η.w]
         rfl }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The compatibility of a morphism with the augmentation, on 0-simplices -/
 @[reassoc]
 theorem w₀ {X Y : Augmented C} (f : X ⟶ Y) :
@@ -483,6 +485,7 @@ def whiskering (D : Type u') [Category.{v'} D] : (C ⥤ D) ⥤ Augmented C ⥤ A
 
 variable {C}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The constant augmented simplicial object functor. -/
 @[simps]
 def const : C ⥤ Augmented C where
@@ -513,6 +516,7 @@ def augment (X : SimplicialObject C) (X₀ : C) (f : X _⦋0⦌ ⟶ X₀)
         rw [← g.op_unop]
         simpa only [← X.map_comp, ← Category.assoc, Category.comp_id, ← op_comp] using w _ _ _ }
 
+set_option backward.defeqAttrib.useBackward true in
 -- Not `@[simp]` since `simp` can prove this.
 theorem augment_hom_zero (X : SimplicialObject C) (X₀ : C) (f : X _⦋0⦌ ⟶ X₀) (w) :
     (X.augment X₀ f w).hom.app (op ⦋0⦌) = f := by simp
@@ -798,6 +802,7 @@ def drop : Augmented C ⥤ CosimplicialObject C :=
 def point : Augmented C ⥤ C :=
   Comma.fst _ _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor from augmented objects to arrows. -/
 @[simps!]
@@ -853,6 +858,7 @@ def whiskering (D : Type u') [Category.{v'} D] : (C ⥤ D) ⥤ Augmented C ⥤ A
 
 variable {C}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The constant augmented cosimplicial object functor. -/
 @[simps]
 def const : C ⥤ Augmented C where
@@ -883,6 +889,7 @@ def augment (X : CosimplicialObject C) (X₀ : C) (f : X₀ ⟶ X.obj ⦋0⦌)
         dsimp
         rw [Category.id_comp, Category.assoc, ← X.map_comp, w] }
 
+set_option backward.defeqAttrib.useBackward true in
 -- Not `@[simp]` since `simp` can prove this.
 theorem augment_hom_zero (X : CosimplicialObject C) (X₀ : C) (f : X₀ ⟶ X.obj ⦋0⦌) (w) :
     (X.augment X₀ f w).hom.app ⦋0⦌ = f := by simp

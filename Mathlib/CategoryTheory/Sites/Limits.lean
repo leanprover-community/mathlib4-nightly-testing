@@ -227,6 +227,7 @@ instance [HasFiniteColimits D] : HasFiniteColimits (Sheaf J D) :=
 instance [HasColimitsOfSize.{u₁, u₂} D] : HasColimitsOfSize.{u₁, u₂} (Sheaf J D) :=
   ⟨inferInstance⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 If every cocone on a diagram of sheaves which is a colimit on the level of presheaves satisfies

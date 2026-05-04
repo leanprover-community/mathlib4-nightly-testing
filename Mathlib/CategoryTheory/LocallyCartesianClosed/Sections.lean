@@ -123,6 +123,7 @@ open Adjunction
 
 variable (I)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- An auxiliary definition which is used to define the adjunction between the star functor
 and the sections functor. See `starSectionsAdjunction`. -/

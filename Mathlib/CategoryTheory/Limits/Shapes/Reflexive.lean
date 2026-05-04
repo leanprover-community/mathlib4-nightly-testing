@@ -409,6 +409,7 @@ variable {F G : WalkingReflexivePair ⥤ C}
   (h₂ : F.map right ≫ e₀ = e₁ ≫ G.map right := by cat_disch)
   (h₃ : F.map reflexion ≫ e₁ = e₀ ≫ G.map reflexion := by cat_disch)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.privateInPublic true in
 /-- A constructor for natural transformations between functors from `WalkingReflexivePair`. -/
 def mkNatTrans : F ⟶ G where
@@ -454,6 +455,7 @@ def mkNatIso (e₀ : F.obj zero ≅ G.obj zero) (e₁ : F.obj one ≅ G.obj one)
 
 variable (F)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Every functor out of `WalkingReflexivePair` is isomorphic to the `reflexivePair` given by
 its components -/
 @[simps!]

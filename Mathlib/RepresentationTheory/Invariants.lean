@@ -185,6 +185,7 @@ section Rep
 
 variable {k : Type u} [CommRing k] {G : Type v} [Group G] {X Y : Rep.{w} k G}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem mem_invariants_iff_comm (f : X.V →ₗ[k] Y.V) (g : G) :
     (linHom X.ρ Y.ρ) g f = f ↔ f.comp (X.ρ g) = (Y.ρ g).comp f := by
   dsimp

@@ -143,6 +143,7 @@ section
 
 variable [HasZeroMorphisms D]
 
+set_option backward.defeqAttrib.useBackward true in
 instance : HasZeroMorphisms (C ⥤ D) where
   zero F G := ⟨{ app := fun _ => 0 }⟩
   comp_zero := fun η H => by

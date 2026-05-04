@@ -339,6 +339,7 @@ attribute [simp, reassoc] Hom.comm
 
 end Split
 
+set_option backward.defeqAttrib.useBackward true in
 instance : Category (Split C) where
   Hom := Split.Hom
   id S :=

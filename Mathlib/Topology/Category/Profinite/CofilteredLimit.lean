@@ -185,6 +185,7 @@ theorem exists_locallyConstant_finite_nonempty {α : Type*} [Finite α] [Nonempt
     · exact hh1.symm
     · exact False.elim (bot_ne_top hhh)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Any locally constant function from a cofiltered limit of profinite sets factors through
 one of the components. -/

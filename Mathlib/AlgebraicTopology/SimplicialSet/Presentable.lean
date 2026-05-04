@@ -33,6 +33,7 @@ instance (n : SimplexCategory) :
     IsFinitelyPresentable.{u} (stdSimplex.{u}.obj n) :=
   inferInstanceAs (IsFinitelyPresentable.{u} (uliftYoneda.obj n))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma exists_epi_from_isCardinalPresentable (X : SSet.{u}) [X.Finite] :
     ∃ (Y : SSet.{u}) (_ : Y.Finite) (_ : IsFinitelyPresentable.{u} Y)
@@ -48,6 +49,7 @@ lemma exists_epi_from_isCardinalPresentable (X : SSet.{u}) [X.Finite] :
         colimit.ι_desc, Cofan.mk_ι_app, ← N.iSup_subcomplex_eq_top,
         Subcomplex.range_eq_ofSimplex, Equiv.apply_symm_apply]
 
+set_option backward.defeqAttrib.useBackward true in
 instance (X : SSet.{u}) [X.Finite] : IsFinitelyPresentable.{u} X := by
   obtain ⟨Y, _, _, p, _⟩ := exists_epi_from_isCardinalPresentable X
   obtain ⟨Z, _, _, q, _⟩ := exists_epi_from_isCardinalPresentable (pullback p p)

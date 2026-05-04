@@ -91,6 +91,7 @@ open Monad
 
 variable [HasBinaryCoproducts C]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `X ⨿ -` has a monad structure. This is sometimes called the either monad. -/
 @[simps!]

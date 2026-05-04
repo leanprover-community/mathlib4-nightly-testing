@@ -139,6 +139,7 @@ lemma functor_map {x₀ x₁ : X _⦋0⦌₂} (e : Edge x₀ x₁)
     {y₀ y₁ : Y _⦋0⦌₂} (e' : Edge y₀ y₁) :
     (functor X Y).map (homMk (e.tensor e')) = (homMk e, homMk e') := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable (X Y) in
 /-- The functor `X.HomotopyCategory ⥤ Y.HomotopyCategory ⥤ (X ⊗ Y).HomotopyCategory`
 when `X` and `Y` are `2`-truncated simplicial sets. -/
@@ -192,6 +193,7 @@ lemma functorCompInverseIso_hom_app (x : X _⦋0⦌₂) (y : Y _⦋0⦌₂) :
 lemma functorCompInverseIso_inv_app (x : X _⦋0⦌₂) (y : Y _⦋0⦌₂) :
     (functorCompInverseIso X Y).inv.app (mk (x, y)) = 𝟙 _ := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable (X Y) in
 /-- Auxiliary definition for `equivalence`. -/
 def inverseCompFunctorIso : inverse X Y ⋙ functor X Y ≅ 𝟭 _ :=
@@ -237,6 +239,7 @@ def iso :
   hom_inv_id := by ext; exact functor_comp_inverse X Y
   inv_hom_id := by ext; exact inverse_comp_functor X Y
 
+set_option backward.defeqAttrib.useBackward true in
 variable {X} in
 /-- The naturality of `HomotopyCategory.BinaryProduct.inverse`
 with respect to the first variable. -/

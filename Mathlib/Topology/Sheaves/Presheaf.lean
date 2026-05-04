@@ -316,6 +316,7 @@ def pullbackObjObjOfImageOpen {X Y : TopCat.{v}} (f : X ⟶ Y) (ℱ : Y.Presheaf
     ((Opens.map f).op.isPointwiseLeftKanExtensionLeftKanExtensionUnit ℱ (op U))
     (colimitOfDiagramTerminal hx _)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `U ⊆ V` and `f '' U`, `f '' V` are open, then the isomorphisms `f⁻¹ℱ U ≅ ℱ (f '' U)`,
 `f⁻¹ℱ V ≅ ℱ (f '' V)` given by `pullbackObjObjOfImageOpen` are compatible with the restriction

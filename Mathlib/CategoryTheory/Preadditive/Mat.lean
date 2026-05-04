@@ -162,6 +162,7 @@ instance : Preadditive (Mat_ C) where
 
 open CategoryTheory.Limits
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open scoped Classical in
 /-- We now prove that `Mat_ C` has finite biproducts.

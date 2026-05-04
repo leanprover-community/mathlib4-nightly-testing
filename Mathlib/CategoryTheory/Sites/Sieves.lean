@@ -1017,6 +1017,7 @@ lemma functorPushforward_ofArrows {X : C} {ι : Type*} {Y : ι → C} (f : ∀ i
     functorPushforward F (ofArrows Y f) = ofArrows _ fun i : ι ↦ F.map (f i) := by
   rw [← generate_map_eq_functorPushforward, Presieve.map_ofArrows]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem functorPushforward_id (R : Sieve X) : R.functorPushforward (𝟭 _) = R := by
   ext X f

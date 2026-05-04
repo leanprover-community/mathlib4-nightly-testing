@@ -1213,6 +1213,7 @@ lemma hasRightHomology_of_iso {S₁ S₂ : ShortComplex C}
 
 namespace RightHomologyMapData
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This right homology map data expresses compatibilities of the right homology data
 constructed by `RightHomologyData.ofEpiOfIsIsoOfMono` -/
 @[simps]

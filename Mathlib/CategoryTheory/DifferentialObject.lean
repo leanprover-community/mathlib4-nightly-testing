@@ -140,6 +140,7 @@ theorem isoApp_symm {X Y : DifferentialObject S C} (f : X ≅ Y) : isoApp f.symm
 theorem isoApp_trans {X Y Z : DifferentialObject S C} (f : X ≅ Y) (g : Y ≅ Z) :
     isoApp (f ≪≫ g) = isoApp f ≪≫ isoApp g := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An isomorphism of differential objects can be constructed
 from an isomorphism of the underlying objects that commutes with the differentials. -/
 @[simps]

@@ -97,6 +97,7 @@ lemma IsPreservedBy.hg : PreservesLimit (parallelPair S.g 0) F :=
 preserves the cokernel of `h.f' : S.X₁ ⟶ h.K`. -/
 lemma IsPreservedBy.hf' : PreservesColimit (parallelPair h.f' 0) F := IsPreservedBy.f'
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- When a left homology data `h` of a short complex `S` is preserved by a functor `F`,
 this is the induced left homology data `h.map F` for the short complex `S.map F`. -/
@@ -181,6 +182,7 @@ preserves the kernel of `h.g' : h.Q ⟶ S.X₃`. -/
 lemma IsPreservedBy.hg' : PreservesLimit (parallelPair h.g' 0) F :=
   @IsPreservedBy.g' _ _ _ _ _ _ _ h F _ _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- When a right homology data `h` of a short complex `S` is preserved by a functor `F`,
 this is the induced right homology data `h.map F` for the short complex `S.map F`. -/
@@ -298,6 +300,7 @@ instance PreservesHomology.preservesRightHomologyOf [F.PreservesHomology] :
 
 variable {S}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a functor preserves a certain left homology data of a short complex `S`, then it
 preserves the left homology of `S`. -/
 lemma PreservesLeftHomologyOf.mk' (h : S.LeftHomologyData) [h.IsPreservedBy F] :
@@ -311,6 +314,7 @@ lemma PreservesLeftHomologyOf.mk' (h : S.LeftHomologyData) [h.IsPreservedBy F] :
             (by simp) (by simp)
         exact preservesColimit_of_iso_diagram F e }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a functor preserves a certain right homology data of a short complex `S`, then it
 preserves the right homology of `S`. -/
 lemma PreservesRightHomologyOf.mk' (h : S.RightHomologyData) [h.IsPreservedBy F] :

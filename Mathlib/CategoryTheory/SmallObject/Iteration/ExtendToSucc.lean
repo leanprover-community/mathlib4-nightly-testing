@@ -85,6 +85,7 @@ lemma map_eq (i₁ i₂ : J) (hi : i₁ ≤ i₂) (hi₂ : i₂ ≤ j) :
         (objIso F X ⟨i₂, hi₂⟩).inv :=
   dif_pos hi₂
 
+set_option backward.defeqAttrib.useBackward true in
 lemma map_self_succ :
     map hj F τ j (Order.succ j) (Order.le_succ j) (by rfl) =
       (objIso F X ⟨j, by simp⟩).hom ≫ τ ≫ (objSuccIso hj F X).inv := by
@@ -92,6 +93,7 @@ lemma map_self_succ :
   rw [dif_neg (by simpa only [Order.succ_le_iff_isMax] using hj),
     dif_pos (by rfl), Functor.map_id, comp_id, id_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma map_id (i : J) (hi : i ≤ Order.succ j) :
     map hj F τ i i (by rfl) hi = 𝟙 _ := by
@@ -102,6 +104,7 @@ lemma map_id (i : J) (hi : i ≤ Order.succ j) :
     rw [dif_neg (by simpa only [Order.succ_le_iff_isMax] using hj),
       dif_neg h₁]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma map_comp (i₁ i₂ i₃ : J) (h₁₂ : i₁ ≤ i₂) (h₂₃ : i₂ ≤ i₃) (h : i₃ ≤ Order.succ j) :
     map hj F τ i₁ i₃ (h₁₂.trans h₂₃) h =
       map hj F τ i₁ i₂ h₁₂ (h₂₃.trans h) ≫ map hj F τ i₂ i₃ h₂₃ h := by

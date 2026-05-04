@@ -144,6 +144,7 @@ alias orderHom := functorMap
 
 attribute [local simp] nerveMap_app
 
+set_option backward.defeqAttrib.useBackward true in
 attribute [local simp] types_tensorObj_def in
 /--
 The simplicial thickening defines a functor from the category of linear orders to the category of

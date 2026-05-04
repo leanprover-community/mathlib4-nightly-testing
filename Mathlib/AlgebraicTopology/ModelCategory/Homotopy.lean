@@ -213,6 +213,7 @@ lemma precomp_bijective_of_weakEquivalence
   obtain ⟨φ, rfl⟩ := φ.mk_surjective
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 lemma whitehead [IsCofibrant X] [IsCofibrant Y] [IsFibrant X] [IsFibrant Y]
     (f : X ⟶ Y) [WeakEquivalence f] :
     ∃ (g : Y ⟶ X), RightHomotopyRel (f ≫ g) (𝟙 X) ∧ RightHomotopyRel (g ≫ f) (𝟙 Y) := by

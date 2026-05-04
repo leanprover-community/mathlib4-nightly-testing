@@ -50,6 +50,7 @@ lemma smul_eq (hr : ∀ (a : R) ⦃X Y : C⦄ (f₁ f₂ : X ⟶ Y) (_ : r f₁ 
     a • (functor r).map f = (functor r).map (a • f) := rfl
 
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary definition for `Quotient.Linear.module`. -/
 @[implicit_reducible]
 def module' (hr : ∀ (a : R) ⦃X Y : C⦄ (f₁ f₂ : X ⟶ Y) (_ : r f₁ f₂), r (a • f₁) (a • f₂))

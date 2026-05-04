@@ -161,6 +161,7 @@ noncomputable def autEquivAutWhiskerRight {G : FintypeCat.{w} ⥤ FintypeCat.{v}
 
 variable [GaloisCategory C] [FiberFunctor F]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 If `H` is an open subset of `Aut F` such that `1 ∈ H`, there exists a finite

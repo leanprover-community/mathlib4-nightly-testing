@@ -210,6 +210,7 @@ def toPlus : P ⟶ J.plusObj P where
     dsimp [Cover.Arrow.base]
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 theorem toPlus_naturality {P Q : Cᵒᵖ ⥤ D} (η : P ⟶ Q) :

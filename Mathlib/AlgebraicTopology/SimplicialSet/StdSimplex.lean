@@ -510,6 +510,7 @@ lemma facePairComplIso_hom_ι {n : ℕ} (i j : Fin (n + 3)) (h : i < j) :
       stdSimplex.δ (i.castPred (Fin.ne_last_of_lt h)) ≫ stdSimplex.δ j :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma facePairComplIso_hom_ι' {n : ℕ} (i j : Fin (n + 3)) (h : i < j) :
     (facePairComplIso.{u} i j h).hom ≫ (face {i, j}ᶜ).ι =
@@ -601,6 +602,7 @@ identify to subsets of `Fin (n + 1)` of cardinality `d + 1`. -/
     (Δ[n] : SSet.{u}).nonDegenerate d ≃ { S : Finset (Fin (n + 1)) | S.card = d + 1 } :=
   Equiv.ofBijective _ (bijective_image_objEquiv_toOrderHom_univ n d)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma nonDegenerateEquiv'_iff {n d : ℕ} (x : (Δ[n] : SSet.{u}).nonDegenerate d) (j : Fin (n + 1)) :
     j ∈ (nonDegenerateEquiv' x).val ↔ ∃ (i : Fin (d + 1)), x.val i = j := by

@@ -82,6 +82,7 @@ lemma opFunctorCompOpFunctorIso_inv_app_app (X : SimplicialObject C) (n : Simple
     (opFunctorCompOpFunctorIso.inv.app X).app n = opObjIso.inv ≫ opObjIso.inv := by
   simp [opFunctorCompOpFunctorIso, opObjIso, opFunctor]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The functor `opFunctor : SimplicialObject C ⥤ SimplicialObject C`
 as an equivalence of categories. -/
 @[simps]

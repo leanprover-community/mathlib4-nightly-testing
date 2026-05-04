@@ -270,6 +270,7 @@ structure Hom (E : PreZeroHypercover.{w} S) (F : PreZeroHypercover.{w'} S) where
 
 attribute [reassoc (attr := simp)] Hom.w₀
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The identity refinement of a pre-`0`-hypercover. -/
 @[simps]
 def Hom.id (E : PreZeroHypercover S) : Hom E E where
@@ -278,6 +279,7 @@ def Hom.id (E : PreZeroHypercover S) : Hom E E where
 
 variable {G : PreZeroHypercover S}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Composition of refinement morphisms of pre-`0`-hypercovers. -/
 @[simps]
 def Hom.comp (f : E.Hom F) (g : F.Hom G) : E.Hom G where
@@ -398,6 +400,7 @@ lemma sieve₀_map : (E.map F).sieve₀ = E.sieve₀.functorPushforward F := by
 
 end Functoriality
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Pullback symmetry isomorphism. -/
 @[simps]
@@ -423,18 +426,21 @@ section
 
 variable (F : PreZeroHypercover.{w'} S) {G : PreZeroHypercover.{w''} S}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The left inclusion into the disjoint union. -/
 @[simps]
 def sumInl : E.Hom (E.sum F) where
   s₀ := Sum.inl
   h₀ _ := 𝟙 _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The right inclusion into the disjoint union. -/
 @[simps]
 def sumInr : F.Hom (E.sum F) where
   s₀ := Sum.inr
   h₀ _ := 𝟙 _
 
+set_option backward.defeqAttrib.useBackward true in
 variable {E F} in
 /-- To give a refinement of the disjoint union, it suffices to give refinements of both
 components. -/
@@ -577,6 +583,7 @@ class Precoverage.RespectsIso (J : Precoverage C) : Prop where
 
 variable {J : Precoverage C}
 
+set_option backward.defeqAttrib.useBackward true in
 lemma Precoverage.RespectsIso.of_forall_exists_iso [J.RespectsIso] {S : C} {R T : Presieve S}
     (hRT : ∀ ⦃Z : C⦄ (g : Z ⟶ S), R g → ∃ (Y : C) (e : Y ≅ Z), T (e.hom ≫ g))
     (hTR : ∀ ⦃Z : C⦄ (g : Z ⟶ S), T g → ∃ (Y : C) (e : Y ≅ Z), R (e.hom ≫ g))

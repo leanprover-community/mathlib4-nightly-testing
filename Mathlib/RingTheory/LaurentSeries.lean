@@ -139,6 +139,7 @@ theorem hasseDeriv_zero : hasseDeriv R 0 = LinearMap.id (M := LaurentSeries V) :
   ext f n
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 theorem hasseDeriv_single_add (k : ℕ) (n : ℤ) (x : V) :
     hasseDeriv R k (single (n + k) x) = single n ((Ring.choose (n + k) k) • x) := by
   ext m

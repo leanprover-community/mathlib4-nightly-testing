@@ -108,6 +108,7 @@ def functor : Mon (ModuleCat.{u} R) ⥤ AlgCat R where
       commutes' := fun r =>
         LinearMap.congr_fun (ModuleCat.hom_ext_iff.mp (IsMonHom.one_hom f.hom)) r }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Converting a bundled algebra to a monoid object in `ModuleCat R`.
 -/
 @[instance_reducible, simps]

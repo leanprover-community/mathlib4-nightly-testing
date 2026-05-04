@@ -59,6 +59,7 @@ def monadToMon : Monad C ⥤ Mon (C ⥤ C) where
   obj := toMon
   map f := .mk' f.toNatTrans
 
+set_option backward.defeqAttrib.useBackward true in
 /-- To every monoid object in `C ⥤ C` we associate a `Monad C`. -/
 @[simps «η» «μ»]
 def ofMon (M : Mon (C ⥤ C)) : Monad C where

@@ -171,6 +171,7 @@ theorem spineToSimplex_interval (f : Path X m) (j l : ℕ) (hjl : j + l ≤ m) :
   convert spine_map_subinterval X m h j l hjl <| sx.spineToSimplex m h f
   exact sx.spine_spineToSimplex_apply m h f |>.symm
 
+set_option backward.defeqAttrib.useBackward true in
 theorem spineToSimplex_edge (f : Path X m) (j l : ℕ) (hjl : j + l ≤ m) :
     X.map (tr (intervalEdge j l hjl)).op (sx.spineToSimplex m h f) =
       sx.spineToDiagonal l (by lia) (f.interval j l hjl) := by
@@ -180,6 +181,7 @@ theorem spineToSimplex_edge (f : Path X m) (j l : ℕ) (hjl : j + l ≤ m) :
 
 end spineToSimplex
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For any `σ : X ⟶ Y` between `n + 1`-truncated `StrictSegal` simplicial sets,
 `spineToSimplex` commutes with `Path.map`. -/
 lemma spineToSimplex_map {X Y : SSet.Truncated.{u} (n + 1)} (sx : StrictSegal X)
@@ -366,6 +368,7 @@ theorem spineToSimplex_edge :
 
 end interval
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For any `σ : X ⟶ Y` between `StrictSegal` simplicial sets, `spineToSimplex`
 commutes with `Path.map`. -/
 lemma spineToSimplex_map {X Y : SSet.{u}} (sx : StrictSegal X)
@@ -452,6 +455,7 @@ namespace StrictSegalCore
 
 variable {X} (h : ∀ n, X.StrictSegalCore n) {n : ℕ} (p : X.Path n)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary definition for `StrictSegalCore.spineToSimplex`. -/
 def spineToSimplexAux : { s : X _⦋n⦌ // X.spine _ s = p } := by
   induction n with

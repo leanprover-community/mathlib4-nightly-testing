@@ -141,6 +141,7 @@ theorem comp_hom' {M N K : Bimod A B} (f : M ⟶ N) (g : N ⟶ K) :
     (f ≫ g : Hom M K).hom = f.hom ≫ g.hom :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Construct an isomorphism of bimodules by giving an isomorphism between the underlying objects
 and checking compatibility with left and right actions only in the forward direction.
 -/

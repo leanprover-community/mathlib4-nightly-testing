@@ -27,6 +27,7 @@ namespace CategoryTheory.Monoidal
 
 variable {C D : Type*} [Groupoid C] [Category* D] [MonoidalCategory D]
 
+set_option backward.defeqAttrib.useBackward true in
 instance functorHasRightDual [RightRigidCategory D] (F : C ⥤ D) : HasRightDual F where
   rightDual :=
     { obj := fun X => (F.obj X)ᘁ
@@ -52,6 +53,7 @@ instance functorHasRightDual [RightRigidCategory D] (F : C ⥤ D) : HasRightDual
 
 instance rightRigidFunctorCategory [RightRigidCategory D] : RightRigidCategory (C ⥤ D) where
 
+set_option backward.defeqAttrib.useBackward true in
 instance functorHasLeftDual [LeftRigidCategory D] (F : C ⥤ D) : HasLeftDual F where
   leftDual :=
     { obj := fun X => ᘁ(F.obj X)

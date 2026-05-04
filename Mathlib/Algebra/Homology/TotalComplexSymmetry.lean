@@ -152,6 +152,7 @@ section
 
 variable [TotalComplexShapeSymmetry c₂ c₁ c] [TotalComplexShapeSymmetrySymmetry c₁ c₂ c]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma flip_totalFlipIso : K.flip.totalFlipIso c = (K.totalFlipIso c).symm := by
   ext j i₁ i₂ h
   rw [Iso.symm_hom, ιTotal_totalFlipIso_f_hom]

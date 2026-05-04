@@ -244,6 +244,7 @@ theorem IsSheaf.hom_ext {A : Type u₂} [Category.{v₂} A] {E : A} {X : C} {P :
     (h : ∀ I : S.Arrow, e₁ ≫ P.map I.f.op = e₂ ≫ P.map I.f.op) : e₁ = e₂ :=
   (hP _ _ S.condition).isSeparatedFor.ext fun Y f hf => h ⟨Y, f, hf⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma IsSheaf.hom_ext_ofArrows
     {P : Cᵒᵖ ⥤ A} (hP : Presheaf.IsSheaf J P) {I : Type*} {S : C} {X : I → C}
     (f : ∀ i, X i ⟶ S) (hf : Sieve.ofArrows _ f ∈ J S) {E : A}
@@ -439,6 +440,7 @@ lemma Presheaf.IsSheaf.of_le {K : GrothendieckTopology C} {F : Cᵒᵖ ⥤ A} (h
     Presheaf.IsSheaf J F :=
   fun _ _ _ hS ↦ h _ _ (hle _ hS)
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 The category of sheaves on the bottom (trivial) Grothendieck topology is
 equivalent to the category of presheaves.

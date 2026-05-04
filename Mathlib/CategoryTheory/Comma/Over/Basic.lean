@@ -239,6 +239,7 @@ better computational properties, when used, for instance, in
 developing the theory of Beck-Chevalley transformations.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The natural isomorphism arising from `mapForget_eq`. -/
 @[simps!]
 def mapId (Y : T) : map (𝟙 Y) ≅ 𝟭 _ :=
@@ -293,6 +294,7 @@ variable (T) in
 
 end coherences
 
+set_option backward.defeqAttrib.useBackward true in
 instance forget_reflects_iso : (forget X).ReflectsIsomorphisms where
   reflects f _ := ⟨Over.homMk (inv ((forget X).map f) :), by cat_disch⟩
 
@@ -353,6 +355,7 @@ section IteratedSlice
 
 variable (f : Over X)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given f : Y ⟶ X, this is the obvious functor from (T/X)/f to T/Y -/
 @[simps]
 def iteratedSliceForward : Over f ⥤ Over f.left where
@@ -610,6 +613,7 @@ def functor : CostructuredArrow (toOver F X) Y ⥤ CostructuredArrow F Y.left wh
   map f :=
     CostructuredArrow.homMk f.left.left (by rw [← CostructuredArrow.w f]; dsimp)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Auxiliary definition for `costructuredArrowToOverEquivalence`. -/
 @[simps]
 def inverse : CostructuredArrow F Y.left ⥤ CostructuredArrow (toOver F X) Y where
@@ -818,6 +822,7 @@ demonstrate, for instance, that under categories assemble into a
 functor `mapFunctor : Tᵒᵖ ⥤ Cat`.
 -/
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Mapping by the identity morphism is just the identity functor. -/
 @[simps!]
 def mapId (Y : T) : map (𝟙 Y) ≅ 𝟭 _ :=
@@ -868,6 +873,7 @@ variable (T) in
 
 end coherences
 
+set_option backward.defeqAttrib.useBackward true in
 instance forget_reflects_iso : (forget X).ReflectsIsomorphisms where
   reflects {Y Z} f t := ⟨Under.homMk (inv ((forget X).map f) :), by cat_disch⟩
 

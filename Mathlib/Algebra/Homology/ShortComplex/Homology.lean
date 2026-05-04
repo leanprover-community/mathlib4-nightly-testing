@@ -413,6 +413,7 @@ lemma LeftHomologyData.homologyIso_leftHomologyData [S.HasHomology] :
   dsimp [homologyIso, leftHomologyIso, ShortComplex.leftHomologyIso]
   rw [← leftHomologyMap'_comp, comp_id]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma RightHomologyData.homologyIso_rightHomologyData [S.HasHomology] :
     S.rightHomologyData.homologyIso = S.rightHomologyIso.symm := by

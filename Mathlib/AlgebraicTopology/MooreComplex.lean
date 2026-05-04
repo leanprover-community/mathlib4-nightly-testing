@@ -95,6 +95,7 @@ def objD : ∀ n : ℕ, (objX X (n + 1) : C) ⟶ (objX X n : C)
     rw [← factorThru_arrow _ _ (finset_inf_arrow_factors Finset.univ _ i.succ (by simp)),
       Category.assoc, kernelSubobject_arrow_comp_assoc, zero_comp, comp_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem d_squared (n : ℕ) : objD X (n + 1) ≫ objD X n = 0 := by
   -- It's a pity we need to do a case split here;
@@ -120,6 +121,7 @@ def obj (X : SimplicialObject C) : ChainComplex C ℕ :=
 
 variable {X} {Y : SimplicialObject C} (f : X ⟶ Y)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The normalized Moore complex functor, on morphisms.
 -/
 @[simps!]

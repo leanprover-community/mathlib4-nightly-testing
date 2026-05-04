@@ -212,6 +212,7 @@ lemma conj (H : IsArithFrobAt R σ Q) (τ : G) : IsArithFrobAt R (τ * σ * τ�
 
 variable [Finite G] [Algebra.IsInvariant R S G]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (R G Q) in
 attribute [local instance] Ideal.Quotient.field in
 /-- Let `G` be a finite group acting on `S`, and `R` be the fixed subring.

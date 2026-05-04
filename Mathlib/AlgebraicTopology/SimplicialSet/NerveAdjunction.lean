@@ -98,6 +98,7 @@ lemma hδ'₁ (x : X _⦋2⦌₂) :
     f₁ (X.map (δ₂ 1).op x) = Y.map (δ₂ 1).op (f₂ f₀ f₁ hδ₁ hδ₀ hY x) :=
   H x (f₂ f₀ f₁ hδ₁ hδ₀ hY x) (hδ'₂ f₀ f₁ hδ₁ hδ₀ hY x) (hδ'₀ f₀ f₁ hδ₁ hδ₀ hY x)
 
+set_option backward.defeqAttrib.useBackward true in
 include hσ in
 lemma hσ'₀ (x : X _⦋1⦌₂) :
     f₂ f₀ f₁ hδ₁ hδ₀ hY (X.map (σ₂ 0).op x) = Y.map (σ₂ 0).op (f₁ x) := by
@@ -116,6 +117,7 @@ lemma hσ'₀ (x : X _⦋1⦌₂) :
     simp [StrictSegal.spineEquiv, SimplexCategory.mkOfSucc_one_eq_δ,
       ← Functor.map_comp_apply, ← op_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 include hσ in
 lemma hσ'₁ (x : X _⦋1⦌₂) :
     f₂ f₀ f₁ hδ₁ hδ₀ hY (X.map (σ₂ 1).op x) = Y.map (σ₂ 1).op (f₁ x) := by

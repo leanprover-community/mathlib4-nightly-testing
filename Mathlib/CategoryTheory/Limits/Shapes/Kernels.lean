@@ -131,6 +131,7 @@ def KernelFork.IsLimit.lift' {s : KernelFork f} (hs : IsLimit s) {W : C} (k : W 
     (h : k ≫ f = 0) : { l : W ⟶ s.pt // l ≫ Fork.ι s = k } :=
   ⟨hs.lift <| KernelFork.ofι _ h, hs.fac _ _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- This is a slightly more convenient method to verify that a kernel fork is a limit cone. It
 only asks for a proof of facts that carry any mathematical content -/
 def isLimitAux (t : KernelFork f) (lift : ∀ s : KernelFork f, s.pt ⟶ t.pt)

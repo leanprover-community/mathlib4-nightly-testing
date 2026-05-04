@@ -169,6 +169,7 @@ instance : CoeFun (Coverage C) (fun _ => (X : C) → Set (Presieve X)) where
 
 end Coverage
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 Associate a coverage to any Grothendieck topology.
 If `J` is a Grothendieck topology, and `K` is the associated coverage, then a presieve
@@ -269,6 +270,7 @@ instance : PartialOrder (Coverage C) where
   le_antisymm _ _ h1 h2 := Coverage.ext <| funext <|
     fun X => le_antisymm (h1 X) (h2 X)
 
+set_option backward.defeqAttrib.useBackward true in
 variable (C) in
 /--
 The two constructions `Coverage.toGrothendieck` and `Coverage.ofGrothendieck` form

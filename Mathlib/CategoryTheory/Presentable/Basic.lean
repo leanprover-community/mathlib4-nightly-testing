@@ -156,6 +156,7 @@ instance (X : (isCardinalPresentable C κ).FullSubcategory) :
     IsCardinalPresentable X.obj κ :=
   X.property
 
+set_option backward.defeqAttrib.useBackward true in
 instance (X : (isCardinalPresentable C κ).FullSubcategory) :
     IsCardinalPresentable ((isCardinalPresentable C κ).ι.obj X) κ := by
   dsimp

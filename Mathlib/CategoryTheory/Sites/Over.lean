@@ -69,6 +69,7 @@ def overEquiv {X : C} (Y : Over X) :
     · intro h
       exact ⟨Over.mk ((g ≫ Y.hom)), Over.homMk g, 𝟙 _, h, by simp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma overEquiv_top {X : C} (Y : Over X) :
     overEquiv Y ⊤ = ⊤ := by

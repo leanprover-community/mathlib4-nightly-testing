@@ -27,6 +27,7 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 
 namespace StructuredArrow
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The structured arrow category `StructuredArrow d T` depends on the chosen domain `d : D` in a
 functorial way, inducing a functor `Dᵒᵖ ⥤ Cat`. -/
@@ -45,6 +46,7 @@ end StructuredArrow
 
 namespace CostructuredArrow
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The costructured arrow category `CostructuredArrow T d` depends on the chosen codomain `d : D`
 in a functorial way, inducing a functor `D ⥤ Cat`. -/
@@ -92,6 +94,7 @@ def commaToGrothendieckPrecompFunctor : Comma L R ⥤ Grothendieck (R ⋙ functo
   map_id X := Grothendieck.ext _ _ rfl (by simp)
   map_comp f g := Grothendieck.ext _ _ rfl (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- For `L : C ⥤ D`, taking the Grothendieck construction of `CostructuredArrow.functor L`
 precomposed with another functor `R : E ⥤ D` results in a category which is equivalent to

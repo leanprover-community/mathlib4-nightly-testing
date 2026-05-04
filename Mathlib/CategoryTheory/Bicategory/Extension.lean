@@ -113,6 +113,7 @@ theorem whisker_unit (t : LeftExtension f g) {x : B} (h : c ⟶ x) :
     (t.whisker h).unit = t.unit ▷ h ≫ (α_ f t.extension h).hom :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Whiskering a 1-morphism is a functor. -/
 @[simps]
 def whiskering {x : B} (h : c ⟶ x) : LeftExtension f g ⥤ LeftExtension f (g ≫ h) where
@@ -140,6 +141,7 @@ def whiskerHom (i : s ⟶ t) {x : B} (h : c ⟶ x) :
       _ = unit t ▷ h := congrArg (· ▷ h) (LeftExtension.w i)
       _ = _ := by simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Construct an isomorphism between whiskered extensions. -/
 def whiskerIso (i : s ≅ t) {x : B} (h : c ⟶ x) :
     s.whisker h ≅ t.whisker h :=
@@ -234,6 +236,7 @@ theorem whisker_unit (t : LeftLift f g) {x : B} (h : x ⟶ c) :
     (t.whisker h).unit = h ◁ t.unit ≫ (α_ h t.lift f).inv :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Whiskering a 1-morphism is a functor. -/
 @[simps]
 def whiskering {x : B} (h : x ⟶ c) : LeftLift f g ⥤ LeftLift f (h ≫ g) where
@@ -263,6 +266,7 @@ def whiskerHom (i : s ⟶ t) {x : B} (h : x ⟶ c) :
       _ = h ◁ unit t := congrArg (h ◁ ·) (LeftLift.w i)
       _ = _ := by simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Construct an isomorphism between whiskered lifts. -/
 def whiskerIso (i : s ≅ t) {x : B} (h : x ⟶ c) :
     s.whisker h ≅ t.whisker h :=

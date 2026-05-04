@@ -51,6 +51,7 @@ section Bicone
 
 variable {J : Type w₁}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The image of a bicone under a functor. -/
 @[simps]
@@ -375,12 +376,14 @@ section Bicone
 
 variable {J : Type w₁} (f : J → C) [HasBiproduct f] [PreservesBiproduct f F] {W : C}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem biproduct.map_lift_mapBiprod (g : ∀ j, W ⟶ f j) :
     F.map (biproduct.lift g) ≫ (F.mapBiproduct f).hom = biproduct.lift fun j => F.map (g j) := by
   ext j
   dsimp only [Function.comp_def]
   simp only [mapBiproduct_hom, Category.assoc, biproduct.lift_π, ← F.map_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem biproduct.mapBiproduct_inv_map_desc (g : ∀ j, f j ⟶ W) :
     (F.mapBiproduct f).inv ≫ F.map (biproduct.desc g) = biproduct.desc fun j => F.map (g j) := by
   ext j

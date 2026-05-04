@@ -463,6 +463,7 @@ lemma Ideal.Quotient.exists_algHom_fixedPoint_quotient_under
     simpa [MulSemiringAction.charpoly, sub_eq_zero, Finset.prod_eq_zero_iff] using this
   exact ⟨Ideal.Quotient.mk _ (τ • x), hτ.symm⟩
 
+set_option backward.defeqAttrib.useBackward true in
 include G in
 /--
 For any domain `k` containing `B ⧸ Q`,

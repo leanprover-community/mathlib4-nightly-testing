@@ -27,6 +27,7 @@ namespace PresheafOfModules
 
 variable {C : Type u'} [Category.{v'} C] {R R' : Cᵒᵖ ⥤ RingCat.{u}}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The restriction of scalars of presheaves of modules, on objects. -/
 @[simps]
 noncomputable def restrictScalarsObj (M' : PresheafOfModules.{v} R') (α : R ⟶ R') :

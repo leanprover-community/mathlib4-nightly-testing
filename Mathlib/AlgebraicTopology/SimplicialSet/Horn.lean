@@ -102,6 +102,7 @@ lemma horn_obj_eq_univ {n : ℕ} (i : Fin (n + 1)) (m : ℕ) (h : m + 1 < n := b
     ⟨j, hij, fun k hk ↦ hj ⟨k, hk⟩⟩
   simpa [horn_eq_iSup] using this
 
+set_option backward.defeqAttrib.useBackward true in
 lemma subcomplex_le_horn_iff {n : ℕ}
     (A : Δ[n + 1].Subcomplex) (i : Fin (n + 2)) :
     A ≤ horn.{u} (n + 1) i ↔ ¬ stdSimplex.face {i}ᶜ ≤ A := by

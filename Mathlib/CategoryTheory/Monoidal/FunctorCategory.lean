@@ -155,6 +155,7 @@ theorem associator_inv_app {F G H : C ⥤ D} {X} :
     ((α_ F G H).inv : F ⊗ G ⊗ H ⟶ (F ⊗ G) ⊗ H).app X = (α_ (F.obj X) (G.obj X) (H.obj X)).inv :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- When `C` is any category, and `D` is a monoidal category,
 the functor category `C ⥤ D` has a natural pointwise monoidal structure,
 where `(F ⊗ G).obj X = F.obj X ⊗ G.obj X`.
@@ -169,6 +170,7 @@ open CategoryTheory.BraidedCategory
 
 variable [BraidedCategory.{v₂} D]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- When `C` is any category, and `D` is a braided monoidal category,
 the natural pointwise monoidal structure on the functor category `C ⥤ D`
 is also braided.

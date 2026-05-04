@@ -45,6 +45,7 @@ abbrev objEqToHom {i j : β} (h : i = j) :
 theorem objEqToHom_refl (i : β) : X.objEqToHom (refl i) = 𝟙 _ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 -- Removing `@[simp]`, because it is in the opposite direction of `eqToHom_naturality`.
 -- Having both causes an infinite loop in the simpNF linter.
 set_option backward.isDefEq.respectTransparency false in -- Needed in dgoToHomologicalComplex
@@ -99,6 +100,7 @@ def dgoToHomologicalComplex :
         have : f.f i ≫ Y.d i = X.d i ≫ f.f _ := (congr_fun f.comm i).symm
         simp only [dite_true, Category.assoc, eqToHom_f', reassoc_of% this] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The functor from homological complexes to differential graded objects.
 -/
 @[simps]

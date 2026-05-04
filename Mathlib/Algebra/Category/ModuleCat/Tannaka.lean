@@ -22,6 +22,7 @@ universe u
 
 open CategoryTheory
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] add_smul mul_smul in
 attribute [local ext] End.ext in

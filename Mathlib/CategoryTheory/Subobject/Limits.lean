@@ -44,6 +44,7 @@ theorem pullback_factors (y : Subobject Y) (h : W ⟶ X) (hF : y.Factors (h ≫ 
     ⟨(Subobject.isPullback f y).lift h' h w,
       (Subobject.isPullback f y).lift_snd h' h w⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem pullback_factors_iff (y : Subobject Y) (h : W ⟶ X) :
     Subobject.Factors ((Subobject.pullback f).obj y) h ↔ y.Factors (h ≫ f) := by
   refine ⟨fun hf ↦ ?_, fun hF ↦ pullback_factors f y h hF⟩
@@ -141,6 +142,7 @@ theorem kernelSubobject_arrow_comp : (kernelSubobject f).arrow ≫ f = 0 := by
   rw [← kernelSubobject_arrow]
   simp only [Category.assoc, kernel.condition, comp_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem kernelSubobject_factors {W : C} (h : W ⟶ X) (w : h ≫ f = 0) :
     (kernelSubobject f).Factors h :=
   ⟨kernel.lift _ h w, by simp⟩
@@ -254,6 +256,7 @@ instance kernelSubobject_comp_mono_isIso (f : X ⟶ Y) [HasKernel f] {Z : C} (h 
   · infer_instance
   · simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Taking cokernels is an order-reversing map from the subobjects of `X` to the quotient objects
 of `X`. -/
@@ -342,6 +345,7 @@ theorem imageSubobject_arrow_comp_eq_zero [HasZeroMorphisms C] {X Y Z : C} {f : 
     (imageSubobject f).arrow ≫ g = 0 :=
   zero_of_epi_comp (factorThruImageSubobject f) <| by simp [h]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem imageSubobject_factors_comp_self {W : C} (k : W ⟶ X) : (imageSubobject f).Factors (k ≫ f) :=
   ⟨k ≫ factorThruImage f, by simp⟩
 

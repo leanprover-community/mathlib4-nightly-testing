@@ -77,6 +77,7 @@ instance : Small.{v} (colimit (F ⋙ yoneda) ⟶ G) where
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 instance : LocallySmall.{v} (ObjectProperty.FullSubcategory (IsIndObject (C := C))) where
   hom_small X Y := by
     obtain ⟨⟨P⟩⟩ := X.2

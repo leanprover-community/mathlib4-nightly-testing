@@ -64,6 +64,7 @@ structure Hom (X Y : FormalCoproduct.{w} C) where
   /-- The map on each component. -/
   φ (i : X.I) : X.obj i ⟶ Y.obj (f i)
 
+set_option backward.defeqAttrib.useBackward true in
 -- this category identifies to the full subcategory of the category of
 -- presheaves of sets on `C` which are coproducts of representable presheaves
 @[simps!] instance category : Category (FormalCoproduct.{w} C) where
@@ -176,6 +177,7 @@ theorem cofan_inj (i : 𝒜) : (cofan 𝒜 f).inj i = ⟨fun x ↦ ⟨i, x⟩, f
 
 end simp_lemmas
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The explicit `Equiv` between maps from the constructed coproduct `cofan 𝒜 f` and families of
 maps from each component, which is the universal property of coproducts. -/
@@ -361,6 +363,7 @@ set_option backward.isDefEq.respectTransparency false in
 
 variable {C A}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `eval(F)` preserves arbitrary coproducts. -/
 def isColimitEvalMapCoconeCofan : IsColimit (((eval.{w} C A).obj F).mapCocone (cofan.{w} J f)) where

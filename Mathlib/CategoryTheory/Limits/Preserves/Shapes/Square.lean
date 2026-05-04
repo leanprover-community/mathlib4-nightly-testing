@@ -74,6 +74,7 @@ lemma isPullback_iff_map_coyoneda_isPullback :
   ⟨fun h _ ↦ h.map _, fun h ↦ IsPullback.mk _
     ((sq.pullbackCone.isLimitCoyonedaEquiv).symm (fun X ↦ (h X).isLimit))⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isPushout_iff_op_map_yoneda_isPullback :
     sq.IsPushout ↔ ∀ (X : C), (sq.op.map (yoneda.obj X)).IsPullback :=
   ⟨fun h _ ↦ h.op.map _, fun h ↦ IsPushout.mk _

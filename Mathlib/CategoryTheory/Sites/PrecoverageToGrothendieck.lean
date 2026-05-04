@@ -220,6 +220,7 @@ lemma PreZeroHypercover.isSheafFor_iff_of_iso {F : Cᵒᵖ ⥤ Type*} {S : C}
   rw [Presieve.isSheafFor_iff_generate, ← Sieve.ofArrows, ← PreZeroHypercover.sieve₀,
     PreZeroHypercover.sieve₀_eq_of_iso e, ← Presieve.isSheafFor_iff_generate]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma Presieve.isSheafFor_ofArrows_comp_iff {F : Cᵒᵖ ⥤ Type*} {X : C} {ι : Type*} {Y Z : ι → C}
     (g : ∀ i, Z i ⟶ X) (e : ∀ i, Y i ≅ Z i) :
     IsSheafFor F (ofArrows _ (fun i ↦ (e i).hom ≫ g i)) ↔ IsSheafFor F (ofArrows _ g) := by

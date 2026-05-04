@@ -247,6 +247,7 @@ def binaryCofanIsColimit (X Y : TopCat.{u}) : IsColimit (TopCat.binaryCofan X Y)
     ext (x | x)
     exacts [ConcreteCategory.congr_hom h₁ x, ConcreteCategory.congr_hom h₂ x]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem binaryCofan_isColimit_iff {X Y : TopCat.{u}} (c : BinaryCofan X Y) :
     Nonempty (IsColimit c) ↔

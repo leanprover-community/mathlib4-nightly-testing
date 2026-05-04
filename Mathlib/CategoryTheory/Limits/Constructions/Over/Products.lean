@@ -75,6 +75,7 @@ def pullbackConeEquivBinaryFan : PullbackCone f g ≌ BinaryFan (Over.mk f) (.mk
     (by intros; ext; simp [BinaryFan.ext])
   functor_unitIso_comp c := by ext; simp [BinaryFan.ext]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A binary fan in `Over X` is a limit if its corresponding pullback cone to `X` is a limit. -/
 -- `IsLimit.ofConeEquiv` isn't used here because the lift it defines is `𝟙 _ ≫ pullback.lift`.
@@ -136,6 +137,7 @@ def pushoutCoconeEquivBinaryCofan : PushoutCocone f g ≌ BinaryCofan (Under.mk 
     (by intros; ext; simp)
   functor_unitIso_comp c := by ext; simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A binary cofan in `Under X` is a colimit if its corresponding pushout cocone from `X` is a
 colimit. -/

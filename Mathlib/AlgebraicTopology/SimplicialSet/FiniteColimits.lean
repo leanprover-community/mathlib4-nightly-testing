@@ -62,11 +62,13 @@ instance : (⊥_ SSet.{u}).Finite := by
   apply finite_of_isColimit (initialIsInitial (C := SSet.{u}))
   rintro ⟨⟨⟩⟩
 
+set_option backward.defeqAttrib.useBackward true in
 instance (X Y : SSet.{u}) [X.Finite] [Y.Finite] :
     (X ⨿ Y).Finite := by
   apply finite_of_isColimit (coprodIsCoprod X Y)
   rintro ⟨_ | _⟩ <;> dsimp <;> infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 instance {ι : Type v} [Finite ι] (X : ι → SSet.{u}) [HasCoproduct X]
     [∀ j, (X j).Finite] :
     (∐ X).Finite := by

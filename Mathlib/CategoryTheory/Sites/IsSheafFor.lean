@@ -854,6 +854,7 @@ theorem isSheafFor_ofArrows_iff_bijective_toCompabible :
     subst hy
     exact ⟨y, fun _ ↦ rfl, fun y' hy' ↦ h.1 (by ext; apply hy')⟩
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma isSheafFor_pullback_iff (P : Cᵒᵖ ⥤ Type w) {X : C} (R : Sieve X)
     {Y : C} (f : Y ⟶ X) [IsIso f] :
@@ -907,6 +908,7 @@ lemma isSheafFor_over_map_op_comp_ofArrows_iff
     ← e.bijective.of_comp_iff']
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isSheafFor_over_map_op_comp_iff
     {B B' : C} (p : B ⟶ B') (P : (Over B')ᵒᵖ ⥤ Type w)
     {X : Over B} (R : Sieve X) {X' : Over B'}

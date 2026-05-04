@@ -208,6 +208,7 @@ def coreE₂CohomologicalNat :
     we need to re-enable model-based theory combination in `lia` for this to go through. -/
     lia +mbtc
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The data which allows to construct an `E₂`-cohomological spectral sequence
 indexed by `ℤ × Fin l` from a spectral object indexed by `Fin (l + 1)`. -/
 @[simps deg i₀ i₁ i₂ i₃]

@@ -126,6 +126,7 @@ theorem initial_of_final_op (F : C ⥤ D) [Final F.op] : Initial F :=
 
 attribute [local simp] Adjunction.homEquiv_unit Adjunction.homEquiv_counit
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If a functor `R : D ⥤ C` is a right adjoint, it is final. -/
 theorem final_of_adjunction {L : C ⥤ D} {R : D ⥤ C} (adj : L ⊣ R) : Final R :=
   { out := fun c =>
@@ -1068,6 +1069,7 @@ variable (F : D ⥤ Cat) (G : C ⥤ D)
 
 open Functor
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A prefunctor mapping structured arrows on `G` to structured arrows on `pre F G` with their
 action on fibers being the identity. -/
@@ -1189,6 +1191,7 @@ end Prod
 
 namespace ObjectProperty
 
+set_option backward.defeqAttrib.useBackward true in
 /-- For the full subcategory induced by an object property `P` on `C`, to show initiality of
 the inclusion functor it is enough to consider arrows to objects outside of the subcategory. -/
 theorem initial_ι {C : Type u₁} [Category.{v₁} C] (P : ObjectProperty C)

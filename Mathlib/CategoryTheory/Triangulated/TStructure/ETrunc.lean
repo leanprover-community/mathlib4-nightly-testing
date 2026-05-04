@@ -33,6 +33,7 @@ namespace TStructure
 
 variable (t : TStructure C)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The functor `EInt ⥤ C ⥤ C` which sends `⊥` to the zero functor,
 `n : ℤ` to `t.truncLT n` and `⊤` to `𝟭 C`. -/
 noncomputable def eTruncLT : EInt ⥤ C ⥤ C where
@@ -74,10 +75,12 @@ lemma eTruncLT_obj_coe (n : ℤ) : t.eTruncLT.obj n = t.truncLT n := rfl
 lemma eTruncLT_map_eq_truncLTι (n : ℤ) :
     t.eTruncLT.map (homOfLE (show (n : EInt) ≤ ⊤ by simp)) = t.truncLTι n := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance (i : EInt) : (t.eTruncLT.obj i).Additive := by
   induction i using WithBotTop.rec
   all_goals dsimp; infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The functor `EInt ⥤ C ⥤ C` which sends `⊥` to `𝟭 C`,
 `n : ℤ` to `t.truncGE n` and `⊤` to the zero functor. -/
 noncomputable def eTruncGE : EInt ⥤ C ⥤ C where
@@ -117,6 +120,7 @@ lemma eTruncGE_obj_top :
 @[simp]
 lemma eTruncGE_obj_coe (n : ℤ) : t.eTruncGE.obj n = t.truncGE n := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance (i : EInt) : (t.eTruncGE.obj i).Additive := by
   induction i using WithBotTop.rec
   all_goals dsimp; infer_instance
@@ -153,6 +157,7 @@ lemma eTruncLTι_naturality (i : EInt) {X Y : C} (f : X ⟶ Y) :
     (t.eTruncLT.obj i).map f ≫ (t.eTruncLTι i).app Y = (t.eTruncLTι i).app X ≫ f :=
   (t.eTruncLTι i).naturality f
 
+set_option backward.defeqAttrib.useBackward true in
 instance : IsIso (t.eTruncLTι ⊤) := by
   dsimp [eTruncLTι]
   infer_instance
@@ -164,6 +169,7 @@ lemma eTruncLT_map_app_eTruncLTι_app {i j : EInt} (f : i ⟶ j) (X : C) :
   simp only [← NatTrans.comp_app, ← Functor.map_comp]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma eTruncLT_obj_map_eTruncLTι_app (i : EInt) (X : C) :

@@ -418,6 +418,7 @@ lemma id_comp (x y : C) [Closed x] :
       uncurry_curry, triangle_assoc_comp_right_assoc, whiskerLeft_inv_hom_assoc,
       uncurry_id_eq_ev _ _]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Right unitality of the enriched structure -/
 @[reassoc (attr := simp)]
@@ -431,6 +432,7 @@ lemma comp_id (x y : C) [Closed x] [Closed y] :
   rw [← uncurry_natural_left]
   simp [id_eq, uncurry_id_eq_ev]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Associativity of the enriched structure -/
 @[reassoc]
@@ -509,6 +511,7 @@ lemma curry'_whiskerRight_comp {X Y Z : C} [Closed X] [Closed Y] (f : X ⟶ Y) :
     whiskerLeft_curry'_ihom_ev_app, comp_whiskerRight_assoc, triangle_assoc_comp_right_assoc,
     whiskerLeft_inv_hom_assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma whiskerLeft_curry'_comp {X Y Z : C} [Closed X] [Closed Y] (f : Y ⟶ Z) :

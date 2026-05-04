@@ -511,18 +511,21 @@ lemma congrIndexOneOfEqIso_refl {i j : E.I₀} (k : E.I₁ i j) :
     E.congrIndexOneOfEqIso rfl rfl k = Iso.refl _ := by
   simp [congrIndexOneOfEqIso]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma congrIndexOneOfEqIso_hom_p₁ (k : E.I₁ i j) :
     (E.congrIndexOneOfEqIso hii' hjj' k).hom ≫ E.p₁ _ = E.p₁ _ ≫ eqToHom (by rw [hii']) := by
   subst hii' hjj'
   simp [congrIndexOneOfEqIso, congrIndexOneOfEq]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma congrIndexOneOfEqIso_inv_p₁ (k : E.I₁ i j) :
     (E.congrIndexOneOfEqIso hii' hjj' k).inv ≫ E.p₁ _ = E.p₁ k ≫ eqToHom (by rw [hii']) := by
   subst hii' hjj'
   simp [congrIndexOneOfEqIso, congrIndexOneOfEq]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma congrIndexOneOfEqIso_inv_p₂ (k : E.I₁ i j) :
     (E.congrIndexOneOfEqIso hii' hjj' k).inv ≫ E.p₂ _ = E.p₂ k ≫ eqToHom (by rw [hjj']) := by
@@ -543,6 +546,7 @@ lemma congrIndexOneOfEqIso_hom_naturality :
   subst hii' hjj'
   simp [congrIndexOneOfEqIso, congrIndexOneOfEq]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma congrIndexOneOfEqIso_inv_naturality :
     (E.congrIndexOneOfEqIso hii' hjj' k).inv ≫
@@ -577,6 +581,7 @@ lemma Hom.ext' {E F : PreOneHypercover S} {f g : E.Hom F}
   rw [hh₁ i j k]
   exact Category.comp_id _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma Hom.ext'_iff {E F : PreOneHypercover S} {f g : E.Hom F} :
     f = g ↔ ∃ (hs₀ : f.s₀ = g.s₀) (_ : ∀ i, f.h₀ i = g.h₀ i ≫ eqToHom (by simp [hs₀]))
       (hs₁ : ∀ (i j : E.I₀) (k : E.I₁ i j),

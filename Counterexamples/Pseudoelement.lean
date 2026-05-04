@@ -53,6 +53,7 @@ theorem fst_x_pseudo_eq_fst_y : PseudoEqual _ (app biprod.fst x) (app biprod.fst
   · dsimp [x, y]
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `biprod.snd ≫ x` is pseudoequal to `biprod.snd y`. -/
 theorem snd_x_pseudo_eq_snd_y : PseudoEqual _ (app biprod.snd x) (app biprod.snd y) := by
@@ -63,6 +64,7 @@ theorem snd_x_pseudo_eq_snd_y : PseudoEqual _ (app biprod.snd x) (app biprod.snd
     refine ConcreteCategory.hom_ext _ _ fun a => ?_
     simp_rw [biprod.lift_snd]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 -- Porting note: locally disable instance to avoid inferred/synthesized clash
 attribute [-instance] AddCommGroup.toIntModule in

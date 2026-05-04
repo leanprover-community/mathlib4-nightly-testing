@@ -46,6 +46,7 @@ lemma δ₀Iter_one (n : ℕ) :
 lemma δ₀Iter_succ (i : ℕ) {n m : ℕ} (h : n + i = m := by lia) :
     δ₀Iter (i + 1) = δ₀Iter i h ≫ δ 0 := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma δ₀Iter_succ' (i : ℕ) {n m : ℕ} (h : n + (i + 1) = m := by lia) :
     δ₀Iter (i + 1) h = δ 0 ≫ δ₀Iter i := by
@@ -66,6 +67,7 @@ lemma δ₀Iter_δ (i : ℕ) {n m : ℕ} (j : Fin (m + 2))
     Fin.succAbove_of_le_castSucc _ _ (by grind)]
   simp [add_assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma δ₀Iter_δ' {n : ℕ} (i : Fin (n + 2)) (j : ℕ) {m : ℕ}
     (i' : Fin (m + 2)) (h : n + j = m := by lia)
@@ -81,6 +83,7 @@ lemma δ₀Iter_δ' {n : ℕ} (i : Fin (n + 2)) (j : ℕ) {m : ℕ}
       ← reassoc_of% dsimp% δ_comp_δ (i := 0) (j := i) (by simp),
       ← hj _ i' _ (by grind)]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma δ₀Iter_σ (i : ℕ) {n m : ℕ} (j : Fin (m + 1))
     (hi : n + (i + 1) = m + 1 := by lia)
@@ -93,6 +96,7 @@ lemma δ₀Iter_σ (i : ℕ) {n m : ℕ} (j : Fin (m + 1))
     Fin.predAbove_of_castSucc_lt _ _ (by grind)]
   dsimp
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma δ₀Iter_σ' (i : ℕ) {n m : ℕ} (j : Fin (m + 1))
     (j' : Fin (n + 1))
@@ -145,6 +149,7 @@ lemma σ₀Iter_zero (n : ℕ) :
   ext
   simp [σ₀Iter]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma σ₀Iter_one (n : ℕ) : σ₀Iter 1 (n := n) rfl = σ 0 := by
   refine ConcreteCategory.hom_ext _ _ (fun k ↦ ?_)
@@ -206,6 +211,7 @@ lemma δ_σ₀Iter {n : ℕ} (i : Fin (n + 2)) (j : ℕ) {m : ℕ} (h : m + (j +
     · rw [Fin.succAbove_of_le_castSucc _ _ hk', σ₀Iter_coe_eq_of_lt ..]
     · rw [Fin.succAbove_of_castSucc_lt _ _ (by lia), σ₀Iter_coe_eq_of_lt ..]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma δ_σ₀Iter' {n : ℕ} (i : Fin (n + 2)) (j : ℕ) {m : ℕ}
     (i' : Fin (m + 2)) (h : m + j = n := by lia)
@@ -256,6 +262,7 @@ lemma σ_σ₀Iter' (i : ℕ) {n m : ℕ} (j : Fin (m + 1)) (j' : Fin (n + 1))
       reassoc_of% hi' _ j'.succ (by lia) (by grind),
       ← σ_comp_σ (by simp), Fin.castSucc_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma δ₀Iter_σ₀Iter (i : ℕ) {n m : ℕ} (hi : n + i = m := by lia) :
     δ₀Iter i hi ≫ σ₀Iter i hi = 𝟙 _ := by

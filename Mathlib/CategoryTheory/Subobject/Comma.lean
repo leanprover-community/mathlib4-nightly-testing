@@ -63,6 +63,7 @@ theorem projectSubobject_mk [HasFiniteLimits C] [PreservesFiniteLimits T]
     (f : P ⟶ A) [Mono f] : projectSubobject (Subobject.mk f) = Subobject.mk f.right :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem projectSubobject_factors [HasFiniteLimits C] [PreservesFiniteLimits T]
     {A : StructuredArrow S T} :
@@ -79,6 +80,7 @@ def liftSubobject {A : StructuredArrow S T} (P : Subobject A.right) {q}
     (hq : q ≫ T.map P.arrow = A.hom) : Subobject A :=
   Subobject.mk (homMk P.arrow hq : mk q ⟶ A)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Projecting and then lifting a subobject recovers the original subobject, because there is at
     most one morphism making the projected subobject into a structured arrow. -/
@@ -206,6 +208,7 @@ theorem unop_left_comp_ofMkLEMk_unop {A : CostructuredArrow S T} {P Q : (Costruc
   rw [← unop_comp]
   simp only [Subobject.ofMkLEMk_comp, Quiver.Hom.unop_op]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `A : S.obj B ⟶ T` is a costructured arrow for `S : C ⥤ D` and `T : D`, then we can
     explicitly describe the quotients of `A` as the quotients `P` of `B` in `C` for which `A.hom`

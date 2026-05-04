@@ -35,6 +35,7 @@ lemma essentiallySmall_of_finiteType [ObjectProperty.EssentiallySmall.{u} Q]
   obtain ⟨T, e, he⟩ := hφ.exists_smallRepr
   exact ⟨_, ⟨⟨_, hR'⟩, T⟩, ⟨RingEquiv.toCommRingCatIso e.symm⟩⟩
 
+set_option backward.defeqAttrib.useBackward true in
 lemma essentiallySmall_of_localizationAway [ObjectProperty.EssentiallySmall.{u} Q]
     (hPQ : ∀ S, P S → ∃ s : Set S, Ideal.span s = ⊤ ∧ ∀ f ∈ s, Q (.of (Localization.Away f))) :
     ObjectProperty.EssentiallySmall.{u} P := by

@@ -105,6 +105,7 @@ lemma additive_of_iso {G : C ⥤ D} (e : F ≅ G) : G.Additive := by
 
 variable (F)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma additive_of_full_essSurj_comp [Full F] [EssSurj F] (G : D ⥤ E)
     [(F ⋙ G).Additive] : G.Additive where
   map_add {X Y f g} := by

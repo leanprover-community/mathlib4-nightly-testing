@@ -169,6 +169,7 @@ def tensorFunc : F C ⥤ N C ⥤ F C where
 theorem tensorFunc_map_app {X Y : F C} (f : X ⟶ Y) (n) : ((tensorFunc C).map f).app n = _ ◁ f :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem tensorFunc_obj_map (Z : F C) {n n' : N C} (f : n ⟶ n') :
     ((tensorFunc C).obj Z).map f = inclusion.map f ▷ Z := by
   cases n

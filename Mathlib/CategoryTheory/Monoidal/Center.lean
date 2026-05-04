@@ -353,6 +353,7 @@ def braiding (X Y : Center C) : X ⊗ Y ≅ Y ⊗ X :=
         ← HalfBraiding.naturality_assoc, HalfBraiding.monoidal]
       simp⟩
 
+set_option backward.defeqAttrib.useBackward true in
 instance braidedCategoryCenter : BraidedCategory (Center C) where
   braiding := braiding
 

@@ -150,6 +150,7 @@ theorem factors_prod_eq_basis (x : π C (· ∈ s)) :
   split_ifs with h <;> [exact factors_prod_eq_basis_of_eq _ _ h;
     exact factors_prod_eq_basis_of_ne _ _ h]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem GoodProducts.finsuppSum_mem_span_eval {a : I} {as : List I}
     (ha : List.IsChain (· > ·) (a :: as)) {c : Products I →₀ ℤ}
     (hc : (c.support : Set (Products I)) ⊆ {m | m.val ≤ as}) :
@@ -168,6 +169,7 @@ theorem GoodProducts.finsuppSum_mem_span_eval {a : I} {as : List I}
   refine ⟨⟨a :: m.val, ha.cons_of_le m.prop hmas⟩, ⟨List.cons_le_cons a hmas, ?_⟩⟩
   simp only [Products.eval, List.map, List.prod_cons]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `s` is a finite subset of `I`, then the good products span. -/
 theorem GoodProducts.spanFin [WellFoundedLT I] :
     ⊤ ≤ Submodule.span ℤ (Set.range (eval (π C (· ∈ s)))) := by

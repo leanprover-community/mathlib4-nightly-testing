@@ -107,6 +107,7 @@ variable [CommRing R]
 
 namespace FreeMonoidal
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The canonical isomorphism `𝟙_ (ModuleCat R) ≅ (free R).obj (𝟙_ (Type u))`.
 (This should not be used directly: it is part of the implementation of the
 monoidal structure on the functor `free R`.) -/

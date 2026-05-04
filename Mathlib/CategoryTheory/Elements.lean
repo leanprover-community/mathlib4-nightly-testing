@@ -166,6 +166,7 @@ def map {F₁ F₂ : C ⥤ Type w} (α : F₁ ⟶ F₂) : F₁.Elements ⥤ F₂
 theorem map_π {F₁ F₂ : C ⥤ Type w} (α : F₁ ⟶ F₂) : map α ⋙ π F₂ = π F₁ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The forward direction of the equivalence `F.Elements ≅ (*, F)`. -/
 def toStructuredArrow : F.Elements ⥤ StructuredArrow PUnit F where
   obj X := StructuredArrow.mk <| ↾fun _ => X.2
@@ -192,12 +193,14 @@ def fromStructuredArrow : StructuredArrow PUnit F ⥤ F.Elements where
 theorem fromStructuredArrow_obj (X) : (fromStructuredArrow F).obj X = ⟨X.right, X.hom PUnit.unit⟩ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem fromStructuredArrow_map {X Y} (f : X ⟶ Y) :
     (fromStructuredArrow F).map f =
       ⟨f.right, by simp [ConcreteCategory.congr_hom f.w.symm PUnit.unit]; rfl⟩ :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence between the category of elements `F.Elements`
 and the comma category `(*, F)`. -/
 @[simps]
@@ -209,6 +212,7 @@ def structuredArrowEquivalence : F.Elements ≌ StructuredArrow PUnit F where
 
 open Opposite
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The forward direction of the equivalence `F.Elementsᵒᵖ ≅ (yoneda, F)`,
 given by `CategoryTheory.yonedaEquiv`.
 -/

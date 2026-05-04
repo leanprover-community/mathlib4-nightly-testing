@@ -139,6 +139,7 @@ def isoMk {f g : MonoOver X} (h : f.obj.left ≅ g.obj.left)
   hom := homMk h.hom w
   inv := homMk h.inv (by rw [h.inv_comp_eq, w])
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `f : MonoOver X`, then `mk' f.arrow` is of course just `f`, but not definitionally, so we
 package it as an isomorphism. -/
 @[simps!]
@@ -315,6 +316,7 @@ end Pullback
 
 section IsPullback
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 Given two monomorphisms `S` and `T` over `X` and `Y` and two morphisms `f` and `f'` between them
 forming the following pullback square:

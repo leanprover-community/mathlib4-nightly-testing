@@ -185,6 +185,7 @@ lemma isLocallySurjective_of_le {K : GrothendieckTopology C} (hJK : J ≤ K) {F 
     (f : F ⟶ G) (h : IsLocallySurjective J f) : IsLocallySurjective K f where
   imageSieve_mem s := by apply hJK; exact h.1 _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isLocallyInjective_of_isLocallyInjective_of_isLocallySurjective
     {F₁ F₂ F₃ : Cᵒᵖ ⥤ A} (f₁ : F₁ ⟶ F₂) (f₂ : F₂ ⟶ F₃)
     [IsLocallyInjective J (f₁ ≫ f₂)] [IsLocallySurjective J f₁] :
@@ -357,6 +358,7 @@ theorem isLocallySurjective_iff_isIso {F G : Sheaf J (Type w)} (f : F ⟶ G) :
     Subfunctor.eq_top_iff_isIso]
   exact isIso_iff_of_reflects_iso (f := Sheaf.imageι f) (F := sheafToPresheaf J (Type w))
 
+set_option backward.defeqAttrib.useBackward true in
 instance epi_of_isLocallySurjective' {F₁ F₂ : Sheaf J (Type w)} (φ : F₁ ⟶ F₂)
     [IsLocallySurjective φ] : Epi φ where
   left_cancellation {Z} f₁ f₂ h := by

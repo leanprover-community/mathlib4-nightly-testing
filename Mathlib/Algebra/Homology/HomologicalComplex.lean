@@ -99,6 +99,7 @@ def XIsoOfEq (K : HomologicalComplex V c) {p q : ι} (h : p = q) : K.X p ≅ K.X
 lemma XIsoOfEq_rfl (K : HomologicalComplex V c) (p : ι) :
     K.XIsoOfEq (rfl : p = p) = Iso.refl _ := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma XIsoOfEq_hom_comp_XIsoOfEq_hom (K : HomologicalComplex V c) {p₁ p₂ p₃ : ι}
     (h₁₂ : p₁ = p₂) (h₂₃ : p₂ = p₃) :
@@ -106,6 +107,7 @@ lemma XIsoOfEq_hom_comp_XIsoOfEq_hom (K : HomologicalComplex V c) {p₁ p₂ p�
   dsimp [XIsoOfEq]
   simp only [eqToHom_trans]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma XIsoOfEq_hom_comp_XIsoOfEq_inv (K : HomologicalComplex V c) {p₁ p₂ p₃ : ι}
     (h₁₂ : p₁ = p₂) (h₃₂ : p₃ = p₂) :
@@ -113,6 +115,7 @@ lemma XIsoOfEq_hom_comp_XIsoOfEq_inv (K : HomologicalComplex V c) {p₁ p₂ p�
   dsimp [XIsoOfEq]
   simp only [eqToHom_trans]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma XIsoOfEq_inv_comp_XIsoOfEq_hom (K : HomologicalComplex V c) {p₁ p₂ p₃ : ι}
     (h₂₁ : p₂ = p₁) (h₂₃ : p₂ = p₃) :
@@ -120,6 +123,7 @@ lemma XIsoOfEq_inv_comp_XIsoOfEq_hom (K : HomologicalComplex V c) {p₁ p₂ p�
   dsimp [XIsoOfEq]
   simp only [eqToHom_trans]
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma XIsoOfEq_inv_comp_XIsoOfEq_inv (K : HomologicalComplex V c) {p₁ p₂ p₃ : ι}
     (h₂₁ : p₂ = p₁) (h₃₂ : p₃ = p₂) :
@@ -655,6 +659,7 @@ variable (X : α → V) (d : ∀ n, X (n + 1) ⟶ X n) (sq : ∀ n, d (n + 1) �
 theorem of_X : (of X d sq).X = X :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem of_d (j : α) : of.d X d (j + 1) j = d j := by
   dsimp [of.d]
@@ -796,6 +801,7 @@ theorem mk'_d_1_0 : (mk' X₀ X₁ d₀ succ').d 1 0 = d₀ := by
   change ite (1 = 0 + 1) (𝟙 X₁ ≫ d₀) 0 = d₀
   rw [if_pos rfl, Category.id_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism from `(mk' X₀ X₁ d₀ succ').X (n + 2)` that is given by
 the inductive construction. -/
 def mk'XIso (n : ℕ) :
@@ -915,6 +921,7 @@ variable (X : α → V) (d : ∀ n, X n ⟶ X (n + 1)) (sq : ∀ n, d n ≫ d (n
 theorem of_X : (of X d sq).X = X :=
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem of_d (j : α) : of.d X d j (j + 1) = d j := by
   dsimp [of.d]

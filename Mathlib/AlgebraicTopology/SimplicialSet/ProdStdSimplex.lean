@@ -48,10 +48,12 @@ def objEquiv {n : ℕ} :
       (SimplexCategory.Hom.mk (OrderHom.snd.comp f))⟩
   left_inv := fun ⟨x, y⟩ ↦ by simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma objEquiv_apply_fst {n : ℕ} (x : (Δ[p] ⊗ Δ[q] : SSet.{u}) _⦋n⦌) (i : Fin (n + 1)) :
     dsimp% (objEquiv x i).1 = x.1 i := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma objEquiv_apply_snd {n : ℕ} (x : (Δ[p] ⊗ Δ[q] : SSet.{u}) _⦋n⦌) (i : Fin (n + 1)) :
     dsimp% (objEquiv x i).2 = x.2 i := rfl
