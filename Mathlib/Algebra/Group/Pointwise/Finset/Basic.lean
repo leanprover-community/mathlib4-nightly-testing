@@ -166,10 +166,10 @@ lemma max'_one [LinearOrder α] : (1 : Finset α).max' one_nonempty = 1 := rfl
 @[to_additive (attr := simp)]
 lemma min'_one [LinearOrder α] : (1 : Finset α).min' one_nonempty = 1 := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma image_op_one [DecidableEq α] : (1 : Finset α).image op = 1 := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma map_op_one : (1 : Finset α).map opEquiv.toEmbedding = 1 := rfl
 
 @[to_additive (attr := simp)]
@@ -265,7 +265,7 @@ lemma map_op_inv (s : Finset α) : s⁻¹.map opEquiv.toEmbedding = (s.map opEqu
 
 end Inv
 
-open Pointwise
+open scoped Pointwise
 
 section InvolutiveInv
 variable [DecidableEq α] [InvolutiveInv α] {s : Finset α} {a : α}
@@ -1268,7 +1268,7 @@ lemma piFinset_inv [∀ i, Inv (α i)] (s : ∀ i, Finset (α i)) :
 
 end Fintype
 
-open Pointwise
+open scoped Pointwise
 
 namespace Set
 

@@ -393,7 +393,7 @@ a prime if `p ^ (k  + 1) ≠ 2`. -/
 lemma prime_norm_toInteger_sub_one_of_prime_pow_ne_two [IsCyclotomicExtension {p ^ (k + 1)} ℚ K]
     (hζ : IsPrimitiveRoot ζ (p ^ (k + 1))) (htwo : p ^ (k + 1) ≠ 2) :
     Prime (Algebra.norm ℤ (hζ.toInteger - 1)) := by
-  have := hζ.norm_toInteger_pow_sub_one_of_prime_pow_ne_two (zero_le _) htwo
+  have := hζ.norm_toInteger_pow_sub_one_of_prime_pow_ne_two zero_le htwo
   simp only [pow_zero, pow_one] at this
   rw [this]
   exact Nat.prime_iff_prime_int.1 hp.out
@@ -404,7 +404,6 @@ lemma prime_norm_toInteger_sub_one_of_prime_ne_two [hcycl : IsCyclotomicExtensio
     (hζ : IsPrimitiveRoot ζ (p ^ (k + 1))) (hodd : p ≠ 2) :
     Prime (Algebra.norm ℤ (hζ.toInteger - 1)) := by
   have := hζ.norm_toInteger_sub_one_of_prime_ne_two hodd
-  simp only at this
   rw [this]
   exact Nat.prime_iff_prime_int.1 hp.out
 
@@ -508,7 +507,7 @@ lemma toInteger_sub_one_dvd_prime [hcycl : IsCyclotomicExtension {p ^ (k + 1)} �
     exact ⟨-1, by ring⟩
   suffices (hζ.toInteger - 1) ∣ (p : ℤ) by simpa
   have := IsCyclotomicExtension.numberField {p ^ (k + 1)} ℚ K
-  have H := hζ.norm_toInteger_pow_sub_one_of_prime_pow_ne_two (zero_le _) htwo
+  have H := hζ.norm_toInteger_pow_sub_one_of_prime_pow_ne_two zero_le htwo
   rw [pow_zero, pow_one] at H
   rw [← Ideal.norm_dvd_iff, H]
   · simp
@@ -600,6 +599,7 @@ open nonZeroDivisors IsPrimitiveRoot
 variable (K p k)
 variable [CharZero K]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- We compute the absolute discriminant of a `p ^ k`-th cyclotomic field.
   Beware that in the cases `p ^ k = 1` and `p ^ k = 2` the formula uses `1 / 2 = 0` and `0 - 1 = 0`.
   See also the results below. -/

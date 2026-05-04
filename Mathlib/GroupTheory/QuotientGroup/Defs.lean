@@ -148,7 +148,6 @@ theorem eq_iff_div_mem {N : Subgroup G} [nN : N.Normal] {x y : G} :
   rw [nN.mem_comm_iff, div_eq_mul_inv]
 
 -- for commutative groups we don't need normality assumption
-
 @[to_additive]
 instance Quotient.commGroup {G : Type*} [CommGroup G] (N : Subgroup G) : CommGroup (G ⧸ N) where
   mul_comm := fun a b => Quotient.inductionOn₂' a b fun a b => congr_arg mk (mul_comm a b)
@@ -253,7 +252,7 @@ def lift (φ : G →* M) (HN : N ≤ φ.ker) : Q →* M :=
 theorem lift_mk {φ : G →* M} (HN : N ≤ φ.ker) (g : G) : lift N φ HN (g : Q) = φ g :=
   rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 theorem lift_mk' {φ : G →* M} (HN : N ≤ φ.ker) (g : G) : lift N φ HN (mk g : Q) = φ g :=
   rfl
 -- TODO: replace `mk` with `mk'`)
@@ -293,7 +292,7 @@ noncomputable def liftEquiv {φ : G →* H} (hφ : Function.Surjective φ)
 theorem liftEquiv_coe {φ : G →* H} (hφ : Function.Surjective φ) (HN : N = φ.ker) (g : G) :
     liftEquiv N hφ HN (g : Q) = φ g := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 theorem liftEquiv_mk {φ : G →* H} (hφ : Function.Surjective φ) (HN : N = φ.ker) (g : G) :
     liftEquiv N hφ HN (mk g : Q) = φ g := rfl
 
