@@ -397,7 +397,7 @@ theorem add_const [AddGroup ι] [Preorder ι] [AddRightMono ι]
   simp only
   have h_eq : {ω | τ ω + i ≤ j} = {ω | τ ω ≤ j - i} := by
     ext ω
-    simp only [Set.mem_setOf_eq, coe_sub]
+    simp only [Set.mem_setOf_eq]
     cases τ ω with
     | top => simp
     | coe a => norm_cast; simp_rw [← le_sub_iff_add_le]

@@ -243,8 +243,7 @@ lemma mulHeightBound_eq (p : ι' → MvPolynomial ι K) :
 variable (K ι ι') in
 lemma max_mulHeightBound_zero_one_eq_one :
     max (mulHeightBound (0 : ι' → MvPolynomial ι K)) 1 = 1 := by
-  simp only [mulHeightBound_eq, Pi.zero_apply, support_zero, coeff_zero, AbsoluteValue.map_zero,
-    Real.iSup_of_isEmpty, zero_le_one, sup_of_le_right]
+  simp only [mulHeightBound_eq, Pi.zero_apply, coeff_zero, AbsoluteValue.map_zero]
   set_option backward.isDefEq.respectTransparency false in -- temporary measure
   simp only [Finsupp.sum_zero_index] -- singling this out for needing the above
   simp only [Real.iSup_const_zero, Multiset.map_const', Multiset.prod_replicate, zero_pow_eq]

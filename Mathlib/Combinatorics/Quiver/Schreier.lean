@@ -133,7 +133,7 @@ def labellingCostarEquiv (x : SchreierGraph V ι) :
   invFun := fun ⟨_, s⟩ => ⟨(ι s)⁻¹ • x, s, by simp⟩
   left_inv := by
     rintro ⟨v, s, hs⟩
-    simp only [Prefunctor.costar_apply, labelling_map]
+    simp only []
     have : (ι s)⁻¹ • x = v := by rw [← hs, inv_smul_smul]
     subst this; rfl
   right_inv := fun ⟨_, _⟩ => rfl

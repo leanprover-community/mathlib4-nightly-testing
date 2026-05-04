@@ -413,8 +413,7 @@ lemma baseChange_jacobian [Finite σ] : (P.baseChange T).jacobian = 1 ⊗ₜ P.j
       (MvPolynomial.map (algebraMap R T)).mapMatrix P.jacobiMatrix := by
     ext i j : 1
     simp only [baseChange, jacobiMatrix_apply, Presentation.baseChange_relation,
-      RingHom.mapMatrix_apply, Matrix.map_apply,
-      Presentation.baseChange_toGenerators, MvPolynomial.pderiv_map]
+      RingHom.mapMatrix_apply, Matrix.map_apply, MvPolynomial.pderiv_map]
   rw [h, ← RingHom.map_det, Generators.algebraMap_apply, aeval_map_algebraMap, P.algebraMap_apply]
   apply aeval_one_tmul
 

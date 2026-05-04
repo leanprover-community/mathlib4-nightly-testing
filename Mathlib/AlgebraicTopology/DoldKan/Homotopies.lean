@@ -137,7 +137,7 @@ theorem Hσ_eq_zero (q : ℕ) : (Hσ q : K[X] ⟶ K[X]).f 0 = 0 := by
   rw [nullHomotopicMap'_f_of_not_rel_left (c_mk 1 0 rfl) cs_down_0_not_rel_left]
   rcases q with (_ | q)
   · rw [hσ'_eq (show 0 = 0 + 0 by rfl) (c_mk 1 0 rfl)]
-    simp only [AlternatingFaceMapComplex.obj_X, Nat.reduceAdd, Int.reduceNeg, pow_zero,
+    simp only [ Nat.reduceAdd, Int.reduceNeg, pow_zero,
       Fin.zero_eta, Fin.isValue, one_smul, eqToHom_refl, comp_id,
       AlternatingFaceMapComplex.obj_d_eq, Fin.sum_univ_two, Fin.coe_ofNat_eq_mod, Nat.zero_mod,
       Nat.mod_succ, pow_one, neg_smul, comp_add, comp_neg]

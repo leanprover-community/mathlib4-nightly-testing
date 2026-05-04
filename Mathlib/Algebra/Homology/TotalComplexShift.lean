@@ -135,7 +135,7 @@ noncomputable def totalShift₁XIso (n n' : ℤ) (h : n + x = n') :
   hom_inv_id := by
     ext p q h
     dsimp
-    simp only [ι_totalDesc_assoc, CochainComplex.shiftFunctor_obj_X', ι_totalDesc, comp_id]
+    simp only [ι_totalDesc_assoc, ι_totalDesc, comp_id]
     exact ((shiftFunctor₁ C x).obj K).XXIsoOfEq_inv_ιTotal _ (by lia) rfl _ _
   inv_hom_id := by
     ext

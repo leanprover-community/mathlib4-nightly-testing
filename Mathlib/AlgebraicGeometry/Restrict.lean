@@ -265,7 +265,7 @@ theorem Scheme.homOfLE_apply {U V : X.Opens} (e : U ≤ V) (x : U) :
 
 theorem Scheme.ι_image_homOfLE_le_ι_image {U V : X.Opens} (e : U ≤ V) (W : Opens V) :
     U.ι ''ᵁ X.homOfLE e ⁻¹ᵁ W ≤ V.ι ''ᵁ W := by
-  simp only [homOfLE_base, homOfLE_leOfHom, ← SetLike.coe_subset_coe, Hom.coe_image, Opens.ι_apply,
+  simp only [homOfLE_base, ← SetLike.coe_subset_coe, Hom.coe_image, Opens.ι_apply,
     Opens.map_coe, Set.image_subset_iff]
   rintro _ h
   exact ⟨_, h, rfl⟩

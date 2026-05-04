@@ -1093,16 +1093,16 @@ def comap (f : R →+* S) (U : Opens (PrimeSpectrum.Top R)) (V : Opens (PrimeSpe
   __ := comapₗ f.toSemilinearMap U V hUV
   map_one' := Subtype.ext <| funext fun _ ↦ by
     dsimp
-    simp only [comapₗ_eq_localRingHom, PrimeSpectrum.comap_asIdeal]
+    simp only [comapₗ_eq_localRingHom]
     exact (Localization.localRingHom ..).map_one
   map_mul' r s := Subtype.ext <| funext fun p ↦ by
     dsimp
     change _ = (comapₗ f.toSemilinearMap U V hUV r).1 p * (comapₗ f.toSemilinearMap U V hUV s).1 p
-    simp only [comapₗ_eq_localRingHom, PrimeSpectrum.comap_asIdeal]
+    simp only [comapₗ_eq_localRingHom]
     exact (Localization.localRingHom ..).map_mul _ _
   map_zero' := Subtype.ext <| funext fun _ ↦ by
     dsimp
-    simp only [comapₗ_eq_localRingHom, PrimeSpectrum.comap_asIdeal]
+    simp only [comapₗ_eq_localRingHom]
     exact (Localization.localRingHom ..).map_zero
 
 @[simp]

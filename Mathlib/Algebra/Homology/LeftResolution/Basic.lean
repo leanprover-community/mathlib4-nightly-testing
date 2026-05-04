@@ -141,7 +141,7 @@ noncomputable def chainComplexMap : Λ.chainComplex X ⟶ Λ.chainComplex Y :=
               have nat := (Λ.π.naturality (kernel.map _ _ (ι.map p.2.1) (ι.map p.1) (by
                 rw [← ι.map_comp, ← ι.map_comp, p.2.2])))
               simp only [Functor.comp_map, Functor.id_map] at nat
-              simp [reassoc_of% nat, kernel.lift_ι_assoc])⟩)
+              simp [reassoc_of% nat])⟩)
 
 @[simp]
 lemma chainComplexMap_f_0 :

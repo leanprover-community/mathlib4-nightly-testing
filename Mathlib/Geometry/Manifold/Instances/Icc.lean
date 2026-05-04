@@ -203,6 +203,6 @@ lemma mfderiv_subtype_coe_Icc_one (z : Icc x y) :
     intro z hz
     simp [projIcc_of_mem h.out.le hz]
   rw [← mfderivWithin_comp_projIcc_one, A]
-  simp only [id_eq, mfderivWithin_eq_fderivWithin]
+  simp only [ mfderivWithin_eq_fderivWithin]
   rw [fderivWithin_id (uniqueDiffOn_Icc h.out _ z.2)]
   rfl

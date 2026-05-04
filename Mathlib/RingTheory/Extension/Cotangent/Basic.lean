@@ -156,7 +156,7 @@ set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma map_tmul (f : Hom P P') (x y) :
     CotangentSpace.map f (x ⊗ₜ .D _ _ y) = (algebraMap _ _ x) ⊗ₜ .D _ _ (f.toAlgHom y) := by
-  simp only [CotangentSpace.map, AlgHom.toRingHom_eq_coe, LinearMap.liftBaseChange_tmul,
+  simp only [CotangentSpace.map, LinearMap.liftBaseChange_tmul,
     LinearMap.coe_comp, LinearMap.coe_restrictScalars, Function.comp_apply, map_D, mk_apply]
   rw [smul_tmul', ← Algebra.algebraMap_eq_smul_one]
   rfl

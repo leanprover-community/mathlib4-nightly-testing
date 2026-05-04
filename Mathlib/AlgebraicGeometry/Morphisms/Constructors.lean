@@ -355,12 +355,12 @@ variable {P : ∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop
 lemma stalkwise_respectsIso (hP : RingHom.RespectsIso P) :
     (stalkwise P).RespectsIso where
   precomp {X Y Z} e (he : IsIso e) f hf := by
-    simp only [stalkwise, Scheme.Hom.comp_base, TopCat.coe_comp, Function.comp_apply]
+    simp only [stalkwise]
     intro x
     rw [Scheme.Hom.stalkMap_comp]
     exact (RingHom.RespectsIso.cancel_right_isIso hP _ _).mpr <| hf (e x)
   postcomp {X Y Z} e (he : IsIso _) f hf := by
-    simp only [stalkwise, Scheme.Hom.comp_base, TopCat.coe_comp, Function.comp_apply]
+    simp only [stalkwise]
     intro x
     rw [Scheme.Hom.stalkMap_comp]
     exact (RingHom.RespectsIso.cancel_left_isIso hP _ _).mpr <| hf x

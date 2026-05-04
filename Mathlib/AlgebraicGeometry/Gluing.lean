@@ -677,9 +677,9 @@ def glueData : Scheme.GlueData where
     refine ⟨α.opensRange, ⟨_, e⟩, ?_⟩
     rw [← cancel_mono (pullback.snd _ _), ← cancel_mono (Scheme.Opens.ι _)]
     simp only [t, Category.assoc, limit.lift_π, PullbackCone.mk_π_app,
-      limit.lift_π_assoc, cospan_left, IsOpenImmersion.lift_fac, Category.id_comp]
+      limit.lift_π_assoc, IsOpenImmersion.lift_fac, Category.id_comp]
     rw [IsOpenImmersion.comp_lift_assoc]
-    simp only [limit.lift_π_assoc, cospan_left, PullbackCone.mk_π_app]
+    simp only [limit.lift_π_assoc, PullbackCone.mk_π_app]
     rw [← cancel_epi α.isoOpensRange.hom]
     simp_rw [Scheme.Hom.isoOpensRange_hom_ι_assoc, IsOpenImmersion.comp_lift_assoc]
     simp only [reassoc_of% hα₁, homOfLE_tAux F _ _ fi fj, Iso.hom_inv_id_assoc, reassoc_of% hα₂]

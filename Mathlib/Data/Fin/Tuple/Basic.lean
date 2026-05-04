@@ -634,7 +634,7 @@ theorem comp_snoc {α : Sort*} {β : Sort*} (g : α → β) (q : Fin n → α) (
     g ∘ snoc q y = snoc (g ∘ q) (g y) := by
   ext j
   by_cases h : j.val < n
-  · simp [h, snoc, castSucc_castLT]
+  · simp [h, snoc]
   · rw [eq_last_of_not_lt h]
     simp
 
@@ -683,7 +683,7 @@ theorem append_snoc {α : Sort*} (as : Fin n → α) (bs : Fin m → α) (b : α
     Fin.append as (snoc bs b) = snoc (Fin.append as bs) b := by
   funext i
   rcases i with ⟨i, isLt⟩
-  simp only [append, addCases, castLT, cast_mk, subNat_mk, natAdd_mk, cast, snoc.eq_1,
+  simp only [append, addCases, castLT, cast_mk, subNat_mk, cast, snoc.eq_1,
     eq_rec_constant, Nat.add_eq]
   split_ifs with lt_n lt_add sub_lt nlt_add lt_add <;> (try rfl)
   · have := Nat.lt_add_right m lt_n

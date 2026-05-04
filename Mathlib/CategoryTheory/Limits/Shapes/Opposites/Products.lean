@@ -158,7 +158,7 @@ theorem opCoproductIsoProduct'_comp_self {c c' : Cofan Z} {f : Fan (op <| Z ·)}
   apply hc'.hom_ext
   intro ⟨j⟩
   change c'.inj _ ≫ _ = _
-  simp only [unop_op, unop_comp, Discrete.functor_obj, Iso.op_inv,
+  simp only [unop_op, unop_comp, Iso.op_inv,
     Quiver.Hom.unop_op, IsColimit.comp_coconePointUniqueUpToIso_inv]
   apply Quiver.Hom.op_inj
   simp only [op_comp, op_unop, Quiver.Hom.op_unop, Category.assoc,
@@ -177,7 +177,7 @@ theorem desc_op_comp_opCoproductIsoProduct'_hom {c : Cofan Z} {f : Fan (op <| Z 
     (hc : IsColimit c) (hf : IsLimit f) (c' : Cofan Z) :
     (hc.desc c').op ≫ (opCoproductIsoProduct' hc hf).hom = hf.lift c'.op := by
   refine (Iso.eq_comp_inv _).mp (Quiver.Hom.unop_inj (hc.hom_ext (fun ⟨j⟩ ↦ Quiver.Hom.op_inj ?_)))
-  simp only [unop_op, Discrete.functor_obj, Quiver.Hom.unop_op, IsColimit.fac,
+  simp only [unop_op, Quiver.Hom.unop_op, IsColimit.fac,
     Cofan.op, unop_comp, op_comp, op_unop, Quiver.Hom.op_unop, Category.assoc]
   erw [opCoproductIsoProduct'_inv_comp_inj, IsLimit.fac]
   rfl
@@ -257,7 +257,7 @@ theorem opProductIsoCoproduct'_comp_self {f f' : Fan Z} {c : Cofan (op <| Z ·)}
   apply hf.hom_ext
   intro ⟨j⟩
   change _ ≫ f.proj _ = _
-  simp only [unop_op, unop_comp, Category.assoc, Discrete.functor_obj, Iso.op_inv,
+  simp only [unop_op, unop_comp, Category.assoc, Iso.op_inv,
     Quiver.Hom.unop_op, IsLimit.conePointUniqueUpToIso_inv_comp]
   apply Quiver.Hom.op_inj
   simp only [op_comp, op_unop, Quiver.Hom.op_unop, proj_comp_opProductIsoCoproduct'_hom]
@@ -275,7 +275,7 @@ theorem opProductIsoCoproduct'_inv_comp_lift {f : Fan Z} {c : Cofan (op <| Z ·)
     (hf : IsLimit f) (hc : IsColimit c) (f' : Fan Z) :
     (opProductIsoCoproduct' hf hc).inv ≫ (hf.lift f').op = hc.desc f'.op := by
   refine (Iso.inv_comp_eq _).mpr (Quiver.Hom.unop_inj (hf.hom_ext (fun ⟨j⟩ ↦ Quiver.Hom.op_inj ?_)))
-  simp only [Discrete.functor_obj, unop_op, Quiver.Hom.unop_op, IsLimit.fac, Fan.op, unop_comp,
+  simp only [ unop_op, Quiver.Hom.unop_op, IsLimit.fac, Fan.op, unop_comp,
     Category.assoc, op_comp, op_unop, Quiver.Hom.op_unop]
   erw [← Category.assoc, proj_comp_opProductIsoCoproduct'_hom, IsColimit.fac]
   rfl

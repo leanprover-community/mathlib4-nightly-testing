@@ -221,7 +221,7 @@ lemma continuousOn_untopA [Nonempty ι] : ContinuousOn untopA { a : WithTop ι |
 lemma tendsto_untop (a : {a : WithTop ι | a ≠ ⊤}) :
     Tendsto (fun x ↦ untop x.1 x.2) (𝓝 a) (𝓝 (untop a.1 a.2)) := by
   have : Nonempty ι := ⟨untop a.1 a.2⟩
-  simp only [← untopA_eq_untop, ne_eq, coe_setOf, mem_setOf_eq]
+  simp only [← untopA_eq_untop, ne_eq]
   exact (tendsto_untopA a.2).comp <| tendsto_subtype_rng.mp tendsto_id
 
 lemma continuous_untop : Continuous (fun x : {a : WithTop ι | a ≠ ⊤} ↦ untop x.1 x.2) :=

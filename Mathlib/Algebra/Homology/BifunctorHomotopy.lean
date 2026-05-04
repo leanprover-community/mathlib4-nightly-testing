@@ -127,8 +127,7 @@ lemma comm₁ (j : J) :
     simp only [ι_mapBifunctorMap, h₁.comm i₁, dNext_eq_dFrom_fromNext, dFrom, fromNext,
       AddMonoidHom.mk'_apply, prevD_eq_toPrev_dTo, toPrev, dTo, Functor.map_add,
       Functor.map_comp, NatTrans.app_add, NatTrans.comp_app,
-      Preadditive.add_comp, assoc, HomologicalComplex₂.total_d,
-      Functor.mapBifunctorHomologicalComplex_obj_obj_toGradedObject, Preadditive.comp_add,
+      Preadditive.add_comp, assoc, HomologicalComplex₂.total_d, Preadditive.comp_add,
       HomologicalComplex₂.ι_D₁_assoc,
       HomologicalComplex₂.ι_D₂_assoc, add_left_inj]
   have : ∀ {X Y : D} (a b c d e f : X ⟶ Y), a = c → b = e → f = -d →

@@ -958,12 +958,12 @@ noncomputable def ringEquivOfRingEquiv :
       · exact fun m hm n hn ↦ Submodule.mul_mem_mul (mem_map_of_mem hm) (mem_map_of_mem hn)
       · exact fun m hm n hn ↦ Submodule.mul_mem_mul hm hn
     left_inv I := by
-      simp only [RingEquiv.symm_symm, val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
+      simp only [ val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
         coe_ext_iff, coe_mk]
       convert Submodule.map_id _
       ext; simp [semilinearEquivOfRingEquiv, IsLocalization.map_map]
     right_inv I := by
-      simp only [RingEquiv.symm_symm, val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
+      simp only [ val_eq_coe, ← Submodule.map_comp, LinearEquiv.comp_coe,
         coe_ext_iff, coe_mk]
       convert Submodule.map_id _
       ext; simp [semilinearEquivOfRingEquiv, IsLocalization.map_map]}
@@ -983,7 +983,7 @@ lemma ringEquivOfRingEquiv_trans {T : Type*} [CommRing T] [IsDomain T] (M : Type
       (ringEquivOfRingEquiv K L f).trans (ringEquivOfRingEquiv L M g) := by
   have : RingHomCompTriple f (g : S →+* T) (f.trans g : R →+* T) := ⟨rfl⟩
   ext1 I
-  simp only [ringEquivOfRingEquiv, RingEquiv.coe_ringHom_trans, Function.comp_apply,
+  simp only [ringEquivOfRingEquiv, Function.comp_apply,
     semilinearEquivOfRingEquiv_comp K L f M, LinearEquiv.coe_trans,
     Submodule.map_comp, RingEquiv.coe_mk, Equiv.coe_fn_mk, RingEquiv.coe_trans]
 
@@ -997,14 +997,14 @@ lemma ringEquivOfRingEquiv_trans_apply {T : Type*} [CommRing T] [IsDomain T] (M 
 lemma ringEquivOfRingEquiv_refl :
     ringEquivOfRingEquiv K K (RingEquiv.refl R) = RingEquiv.refl (FractionalIdeal R⁰ K) := by
   ext I x
-  simp only [ringEquivOfRingEquiv_apply, RingEquiv.coe_ringHom_refl, RingEquiv.symm_refl,
+  simp only [ringEquivOfRingEquiv_apply,
     val_eq_coe, RingEquiv.refl_apply, ← mem_coe]
   simp [semilinearEquivOfRingEquiv]
 
 lemma ringEquivOfRingEquiv_spanSingleton (x : K) :
     FractionalIdeal.ringEquivOfRingEquiv K L f (spanSingleton R⁰ x) =
       spanSingleton S⁰ (IsFractionRing.ringEquivOfRingEquiv (L := L) f x) := by
-  simp only [ringEquivOfRingEquiv, val_eq_coe, RingEquiv.symm_symm, RingEquiv.coe_mk,
+  simp only [ringEquivOfRingEquiv, val_eq_coe, RingEquiv.coe_mk,
     Equiv.coe_fn_mk, coe_spanSingleton, IsFractionRing.ringEquivOfRingEquiv_apply]
   rw [SetLike.ext_iff]
   intro y

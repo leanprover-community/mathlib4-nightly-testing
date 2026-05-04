@@ -118,7 +118,7 @@ theorem GabrielPopescu.full (G : C) (hG : IsSeparator G) : (preadditiveCoyonedaO
   map_surjective {A B} f := by
     have := (isSeparator_iff_epi G).1 hG A
     have h := kernel_ι_d_comp_d hG (𝟙 _) inferInstance f
-    simp only [ModuleCat.hom_id, LinearMap.id_coe, id_eq, d] at h
+    simp only [ModuleCat.hom_id, d] at h
     refine ⟨epiDesc _ _ h, ?_⟩
     ext q
     simpa [-comp_epiDesc] using Sigma.ι _ q ≫= comp_epiDesc _ _ h

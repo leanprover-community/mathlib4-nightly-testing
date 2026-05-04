@@ -343,7 +343,7 @@ instance (P : ObjectProperty C) :
     rw [← eHomEquiv_id]
     rfl
   homEquiv_comp f g := by
-    simp only [ObjectProperty.ι_obj, Equiv.trans_apply]
+    simp only [ Equiv.trans_apply]
     change (eHomEquiv V) (P.ι.map (f ≫ g)) = _
     rw [Functor.map_comp, eHomEquiv_comp]
     rfl

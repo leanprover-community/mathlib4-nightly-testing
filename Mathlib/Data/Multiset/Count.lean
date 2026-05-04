@@ -82,7 +82,7 @@ theorem countP_False {s : Multiset α} : countP (fun _ => False) s = 0 :=
 
 lemma countP_attach (s : Multiset α) : s.attach.countP (fun a : {a // a ∈ s} ↦ p a) = s.countP p :=
   Quotient.inductionOn s fun l => by
-    simp only [quot_mk_to_coe, coe_countP, coe_attach, coe_countP, ← List.countP_attach (l := l)]
+    simp only [quot_mk_to_coe, coe_countP, coe_countP, ← List.countP_attach (l := l)]
     rfl
 
 variable {p}

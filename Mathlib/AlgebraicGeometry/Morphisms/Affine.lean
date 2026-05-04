@@ -124,7 +124,7 @@ lemma isAffine_of_isAffineOpen_basicOpen (s : Set Γ(X, ⊤))
   · rw [PrimeSpectrum.iSup_basicOpen_eq_top_iff, Subtype.range_coe_subtype, Set.setOf_mem_eq, hs]
   · rw [Scheme.toSpecΓ_preimage_basicOpen]
     exact hs₂ _ i.2
-  · simp only [Opens.map_top, morphismRestrict_app]
+  · simp only [ morphismRestrict_app]
     refine IsIso.comp_isIso' ?_ inferInstance
     convert isIso_ΓSpec_adjunction_unit_app_basicOpen i.1 using 0
     exact congr(IsIso ((ΓSpec.adjunction.unit.app X).app $(by simp)))
@@ -165,7 +165,7 @@ instance : HasAffineProperty @IsAffineHom fun X _ _ _ ↦ IsAffine X where
       simpa [Scheme.preimage_basicOpen] using this
   eq_targetAffineLocally' := by
     ext X Y f
-    simp only [targetAffineLocally, Scheme.affineOpens, Set.coe_setOf, Set.mem_setOf_eq,
+    simp only [targetAffineLocally, Scheme.affineOpens, Set.mem_setOf_eq,
       Subtype.forall, isAffineHom_iff]
     rfl
 
@@ -272,7 +272,7 @@ lemma isIso_morphismRestrict_iff_isIso_app [IsAffineHom f] {U : Y.Opens} (hU : I
   refine (HasAffineProperty.iff_of_isAffine (P := .isomorphisms _)).trans <|
     (and_iff_right (hU.preimage f)).trans ?_
   rw [Scheme.Hom.app_eq_appLE]
-  simp only [morphismRestrict_app', TopologicalSpace.Opens.map_top]
+  simp only [morphismRestrict_app']
   congr! <;> simp [Scheme.Opens.toScheme_presheaf_obj]
 
 theorem diagonal_isAffine_iff_forall_isAffineOpen_inf [IsAffine Y] (f : X ⟶ Y) :

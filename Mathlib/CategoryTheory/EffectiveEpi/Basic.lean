@@ -239,7 +239,7 @@ def effectiveEpiFamilyStructOfIsIsoDesc {B : C} {α : Type*} (X : α → C)
   uniq e h m hm := by
     simp only [asIso_inv, IsIso.eq_inv_comp]
     ext a
-    simp only [colimit.ι_desc_assoc, Discrete.functor_obj, Cofan.mk_ι_app,
+    simp only [colimit.ι_desc_assoc, Cofan.mk_ι_app,
       colimit.ι_desc]
     exact hm a
 

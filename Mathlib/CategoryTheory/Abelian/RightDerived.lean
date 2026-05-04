@@ -287,8 +287,7 @@ lemma toRightDerivedZero'_naturality {C} [Category* C] [Abelian C] {X Y : C} (f 
       P.toRightDerivedZero' F ≫
         HomologicalComplex.cyclesMap ((F.mapHomologicalComplex _).map φ) 0 := by
   simp only [← cancel_mono (HomologicalComplex.iCycles _ _), assoc,
-    toRightDerivedZero'_comp_iCycles,
-    CochainComplex.single₀_obj_zero, HomologicalComplex.cyclesMap_i,
+    toRightDerivedZero'_comp_iCycles, HomologicalComplex.cyclesMap_i,
     Functor.mapHomologicalComplex_map_f, toRightDerivedZero'_comp_iCycles_assoc,
     ← F.map_comp, comm]
 

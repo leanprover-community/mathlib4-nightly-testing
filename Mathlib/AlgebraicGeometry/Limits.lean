@@ -193,7 +193,7 @@ lemma sigmaι_eq_iff [Small.{u} σ] (i j : σ) (x y) :
     Sigma.ι g i x = Sigma.ι g j y ↔ (Sigma.mk i x : Σ i, g i) = Sigma.mk j y := by
   refine (Scheme.IsLocallyDirected.ι_eq_ι_iff _).trans ⟨?_, ?_⟩
   · rintro ⟨k, ⟨⟨⟨⟩⟩⟩, ⟨⟨⟨⟩⟩⟩, x, rfl, rfl⟩; simp
-  · simp only [Discrete.functor_obj_eq_as, Sigma.mk.injEq]
+  · simp only [ Sigma.mk.injEq]
     rintro ⟨rfl, e⟩
     obtain rfl := (heq_eq_eq x y).mp e
     exact ⟨⟨i⟩, 𝟙 _, 𝟙 _, x, by simp⟩

@@ -85,8 +85,8 @@ lemma functorMap_commSq_aux {n m k : ℕ} (h : n ≤ m) (hh : ¬(k < m)) :
         homOfLE (by lia : n ≤ m) ≫ homOfLE (by lia : m ≤ m + 1) := by simp
     rw [this, op_comp, Functor.map_comp]
     slice_lhs 2 4 => rw [ih]
-    simp only [ homOfLE_leOfHom, Functor.ofOpSequence_map_homOfLE_succ,
-      functorMap, dite_eq_ite]
+    simp only [ Functor.ofOpSequence_map_homOfLE_succ,
+      functorMap]
     split_ifs
     · omega
     simp [dif_neg (by lia : ¬(k < m)), dif_neg hh]
@@ -104,12 +104,12 @@ lemma functorMap_commSq {n m : ℕ} (h : ¬(m < n)) :
       simp [functorMap]
   | succ m =>
       rw [← functorMap_commSq_succ f (m + 1)]
-      simp only [ homOfLE_leOfHom, dite_eq_ite,
+      simp only [
         Functor.ofOpSequence_map_homOfLE_succ]
       have : homOfLE (by lia : n ≤ m + 1 + 1) =
           homOfLE (by lia : n ≤ m + 1) ≫ homOfLE (by lia : m + 1 ≤ m + 1 + 1) := by simp
       rw [this, op_comp, Functor.map_comp]
-      simp only [ homOfLE_leOfHom, Functor.ofOpSequence_map_homOfLE_succ,
+      simp only [ Functor.ofOpSequence_map_homOfLE_succ,
         Category.assoc]
       congr 1
       exact functorMap_commSq_aux f (by lia) (by lia)
