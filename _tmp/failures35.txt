@@ -1,7 +1,0 @@
-Mathlib/Algebra/Category/ModuleCat/Adjunctions.lean
-Mathlib/CategoryTheory/Monoidal/Functor/Types.lean
-Mathlib/CategoryTheory/Monoidal/Types/Coyoneda (855ms).lean
-Mathlib/CategoryTheory/Shift/Opposite.lean
-Mathlib/NumberTheory/LSeries/PrimesInAP.lean
-Mathlib/Probability/Kernel/Condexp.lean
-Mathlib/Probability/Kernel/IonescuTulcea/Traj.lean
