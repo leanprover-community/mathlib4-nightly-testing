@@ -77,7 +77,7 @@ lemma monotone_apply {n i : ℕ} (x : Δ[n] _⦋i⦌) :
 lemma ext {n d : ℕ} (x y : Δ[n] _⦋d⦌) (h : ∀ (i : Fin (d + 1)), x i = y i) : x = y :=
   DFunLike.ext _ _ h
 
-@[simp]
+@[defeq, simp]
 lemma objEquiv_toOrderHom_apply {n i : ℕ}
     (x : (stdSimplex.{u} ^⦋n⦌).obj (op ⦋i⦌)) (j : Fin (i + 1)) :
     DFunLike.coe (F := Fin (i + 1) →o Fin (n + 1))

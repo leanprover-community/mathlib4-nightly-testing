@@ -263,21 +263,21 @@ theorem neg_snd (x : X q) : (-x).2 = -x.2 :=
 
 instance : Mul (X q) where mul x y := (x.1 * y.1 + 3 * x.2 * y.2, x.1 * y.2 + x.2 * y.1)
 
-@[simp]
+@[defeq, simp]
 theorem mul_fst (x y : X q) : (x * y).1 = x.1 * y.1 + 3 * x.2 * y.2 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem mul_snd (x y : X q) : (x * y).2 = x.1 * y.2 + x.2 * y.1 :=
   rfl
 
 instance : One (X q) where one := ⟨1, 0⟩
 
-@[simp]
+@[defeq, simp]
 theorem one_fst : (1 : X q).1 = 1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem one_snd : (1 : X q).2 = 0 :=
   rfl
 
@@ -290,15 +290,15 @@ instance : Monoid (X q) :=
 instance : NatCast (X q) where
     natCast := fun n => ⟨n, 0⟩
 
-@[simp] theorem fst_natCast (n : ℕ) : (n : X q).fst = (n : ZMod q) := rfl
+@[defeq, simp] theorem fst_natCast (n : ℕ) : (n : X q).fst = (n : ZMod q) := rfl
 
-@[simp] theorem snd_natCast (n : ℕ) : (n : X q).snd = (0 : ZMod q) := rfl
+@[defeq, simp] theorem snd_natCast (n : ℕ) : (n : X q).snd = (0 : ZMod q) := rfl
 
-@[simp] theorem ofNat_fst (n : ℕ) [n.AtLeastTwo] :
+@[defeq, simp] theorem ofNat_fst (n : ℕ) [n.AtLeastTwo] :
     (ofNat(n) : X q).fst = OfNat.ofNat n :=
   rfl
 
-@[simp] theorem ofNat_snd (n : ℕ) [n.AtLeastTwo] :
+@[defeq, simp] theorem ofNat_snd (n : ℕ) [n.AtLeastTwo] :
     (ofNat(n) : X q).snd = 0 :=
   rfl
 
@@ -334,11 +334,11 @@ instance : CommRing (X q) :=
 instance [Fact (1 < (q : ℕ))] : Nontrivial (X q) :=
   ⟨⟨0, 1, ne_of_apply_ne Prod.fst zero_ne_one⟩⟩
 
-@[simp]
+@[defeq, simp]
 theorem fst_intCast (n : ℤ) : (n : X q).fst = (n : ZMod q) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem snd_intCast (n : ℤ) : (n : X q).snd = (0 : ZMod q) :=
   rfl
 

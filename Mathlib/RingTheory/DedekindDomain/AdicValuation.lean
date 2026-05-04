@@ -522,10 +522,11 @@ ring of integers, denoted `v.adicCompletionIntegers`. -/
 def adicValued : Valued K ℤᵐ⁰ :=
   Valued.mk' (v.valuation K)
 
+@[defeq]
 theorem adicValued_apply {x : K} : v.adicValued.v x = v.valuation K x :=
   rfl
 
-@[deprecated adicValued_apply (since := "2026-01-28")]
+@[defeq, deprecated adicValued_apply (since := "2026-01-28")]
 theorem adicValued_apply' (x : WithVal (v.valuation K)) :
     v.adicValued.v (WithVal.equiv _ x) = v.valuation K (WithVal.equiv _ x) :=
   rfl
@@ -535,6 +536,7 @@ variable (K)
 /-- The completion of `K` with respect to its `v`-adic valuation. -/
 abbrev adicCompletion := (v.valuation K).Completion
 
+@[defeq]
 theorem valuedAdicCompletion_def {x : v.adicCompletion K} :
   Valued.v x = Valued.extensionValuation x := rfl
 
@@ -679,7 +681,7 @@ lemma coe_mem_adicCompletionIntegers (r : R) :
   rw [mem_adicCompletionIntegers, valuedAdicCompletion_eq_valuation]
   exact valuation_le_one v r
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul_adicCompletionIntegers (r : R) (x : v.adicCompletionIntegers K) :
     (↑(r • x) : v.adicCompletion K) = r • (x : v.adicCompletion K) :=
   rfl

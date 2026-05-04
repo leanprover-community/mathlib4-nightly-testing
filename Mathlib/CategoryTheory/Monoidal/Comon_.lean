@@ -414,11 +414,11 @@ abbrev obj.instComonObj (A : C) [ComonObj A] (F : C ⥤ D) [F.OplaxMonoidal] :
 
 attribute [local instance] obj.instComonObj
 
-@[reassoc, simp] lemma obj.ε_def (F : C ⥤ D) [F.OplaxMonoidal] (X : C) [ComonObj X] :
+@[defeq, reassoc, simp] lemma obj.ε_def (F : C ⥤ D) [F.OplaxMonoidal] (X : C) [ComonObj X] :
     ε[F.obj X] = F.map ε ≫ η F :=
   rfl
 
-@[reassoc, simp] lemma obj.Δ_def (F : C ⥤ D) [F.OplaxMonoidal] (X : C) [ComonObj X] :
+@[defeq, reassoc, simp] lemma obj.Δ_def (F : C ⥤ D) [F.OplaxMonoidal] (X : C) [ComonObj X] :
     Δ[F.obj X] = F.map Δ ≫ δ F _ _ :=
   rfl
 

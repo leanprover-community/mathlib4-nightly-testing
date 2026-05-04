@@ -67,7 +67,7 @@ instance : CoeSort (FGModuleCat.{v} R) (Type v) :=
 
 attribute [coe] FGModuleCat.carrier
 
-@[simp] lemma FGModuleCat.obj_carrier (M : FGModuleCat.{v} R) : M.obj.carrier = M.carrier := rfl
+@[defeq, simp] lemma FGModuleCat.obj_carrier (M : FGModuleCat.{v} R) : M.obj.carrier = M.carrier := rfl
 
 instance (M : FGModuleCat.{v} R) : Module.Finite R M :=
   M.property
@@ -95,7 +95,7 @@ instance : Inhabited (FGModuleCat.{v} R) :=
 abbrev of (V : Type v) [AddCommGroup V] [Module R V] [Module.Finite R V] : FGModuleCat R :=
   ⟨ModuleCat.of R V, inferInstanceAs <| Module.Finite R V⟩
 
-@[simp]
+@[defeq, simp]
 lemma of_carrier (V : Type v) [AddCommGroup V] [Module R V] [Module.Finite R V] :
     of R V = V := rfl
 
@@ -169,8 +169,8 @@ instance : (ModuleCat.isFG R).IsMonoidal where
 
 open MonoidalCategory
 
-@[simp] lemma tensorUnit_obj : (𝟙_ (FGModuleCat R)).obj = 𝟙_ (ModuleCat R) := rfl
-@[simp] lemma tensorObj_obj (M N : FGModuleCat.{u} R) : (M ⊗ N).obj = (M.obj ⊗ N.obj) := rfl
+@[defeq, simp] lemma tensorUnit_obj : (𝟙_ (FGModuleCat R)).obj = 𝟙_ (ModuleCat R) := rfl
+@[defeq, simp] lemma tensorObj_obj (M N : FGModuleCat.{u} R) : (M ⊗ N).obj = (M.obj ⊗ N.obj) := rfl
 
 instance : (forget₂ (FGModuleCat.{u} R) (ModuleCat.{u} R)).Additive where
 instance : (forget₂ (FGModuleCat.{u} R) (ModuleCat.{u} R)).Linear R where

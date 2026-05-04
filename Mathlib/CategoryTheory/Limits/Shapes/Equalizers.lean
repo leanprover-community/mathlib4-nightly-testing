@@ -107,7 +107,7 @@ instance walkingParallelPairHomCategory : SmallCategory WalkingParallelPair wher
   id_comp := id_comp
   assoc := assoc
 
-@[simp]
+@[defeq, simp]
 theorem walkingParallelPairHom_id (X : WalkingParallelPair) : WalkingParallelPairHom.id X = 𝟙 X :=
   rfl
 
@@ -223,8 +223,8 @@ def parallelPairObj (X Y : C) (x : WalkingParallelPair) : C :=
   | zero => X
   | one => Y
 
-@[simp] theorem parallelPairObj_zero : parallelPairObj X Y zero = X := rfl
-@[simp] theorem parallelPairObj_one : parallelPairObj X Y one = Y := rfl
+@[defeq, simp] theorem parallelPairObj_zero : parallelPairObj X Y zero = X := rfl
+@[defeq, simp] theorem parallelPairObj_one : parallelPairObj X Y one = Y := rfl
 
 variable [Category.{v} C]
 

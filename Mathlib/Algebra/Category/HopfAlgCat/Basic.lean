@@ -54,11 +54,11 @@ abbrev of (X : Type v) [Ring X] [HopfAlgebra R X] :
     HopfAlgCat R where
   carrier := X
 
-@[simp]
+@[defeq, simp]
 lemma of_comul {X : Type v} [Ring X] [HopfAlgebra R X] :
     Coalgebra.comul (A := of R X) = Coalgebra.comul (R := R) (A := X) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma of_counit {X : Type v} [Ring X] [HopfAlgebra R X] :
     Coalgebra.counit (A := of R X) = Coalgebra.counit (R := R) (A := X) := rfl
 
@@ -97,11 +97,11 @@ lemma hom_ext {X Y : HopfAlgCat.{v} R} (f g : X ⟶ Y) (h : f.toBialgHom = g.toB
     f = g :=
   Hom.ext h
 
-@[simp] theorem toBialgHom_comp {X Y Z : HopfAlgCat.{v} R} (f : X ⟶ Y) (g : Y ⟶ Z) :
+@[defeq, simp] theorem toBialgHom_comp {X Y Z : HopfAlgCat.{v} R} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).toBialgHom = g.toBialgHom.comp f.toBialgHom :=
   rfl
 
-@[simp] theorem toBialgHom_id {M : HopfAlgCat.{v} R} :
+@[defeq, simp] theorem toBialgHom_id {M : HopfAlgCat.{v} R} :
     Hom.toBialgHom (𝟙 M) = BialgHom.id _ _ :=
   rfl
 
@@ -110,12 +110,12 @@ instance hasForgetToBialgebra : HasForget₂ (HopfAlgCat R) (BialgCat R) where
     { obj := fun X => BialgCat.of R X
       map := fun {_ _} f => BialgCat.ofHom f.toBialgHom }
 
-@[simp]
+@[defeq, simp]
 theorem forget₂_bialgebra_obj (X : HopfAlgCat R) :
     (forget₂ (HopfAlgCat R) (BialgCat R)).obj X = BialgCat.of R X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem forget₂_bialgebra_map (X Y : HopfAlgCat R) (f : X ⟶ Y) :
     (forget₂ (HopfAlgCat R) (BialgCat R)).map f = BialgCat.ofHom f.toBialgHom :=
   rfl

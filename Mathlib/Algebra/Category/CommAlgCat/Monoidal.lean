@@ -62,19 +62,19 @@ instance : MonoidalCategory (CommAlgCat.{u} R) where
   leftUnitor _ := isoMk (lid R _)
   rightUnitor _ := isoMk (rid R R _)
 
-@[simp] lemma coe_tensorUnit : 𝟙_ (CommAlgCat.{u} R) = R := rfl
+@[defeq, simp] lemma coe_tensorUnit : 𝟙_ (CommAlgCat.{u} R) = R := rfl
 
-@[simp] lemma coe_tensorObj : A ⊗ B = A ⊗[R] B := rfl
+@[defeq, simp] lemma coe_tensorObj : A ⊗ B = A ⊗[R] B := rfl
 
 variable {A B}
 
-@[simp] lemma tensorHom_hom (f : A ⟶ C) (g : B ⟶ D) : (f ⊗ₘ g).hom = map f.hom g.hom := rfl
+@[defeq, simp] lemma tensorHom_hom (f : A ⟶ C) (g : B ⟶ D) : (f ⊗ₘ g).hom = map f.hom g.hom := rfl
 
 variable (C) in
-@[simp] lemma whiskerRight_hom (f : A ⟶ B) : (f ▷ C).hom = map f.hom (.id _ _) := rfl
+@[defeq, simp] lemma whiskerRight_hom (f : A ⟶ B) : (f ▷ C).hom = map f.hom (.id _ _) := rfl
 
 variable (C) in
-@[simp] lemma whiskerLeft_hom (f : A ⟶ B) : (C ◁ f).hom = map (.id _ _) f.hom := rfl
+@[defeq, simp] lemma whiskerLeft_hom (f : A ⟶ B) : (C ◁ f).hom = map (.id _ _) f.hom := rfl
 
 variable (A B C) in
 @[simp] lemma associator_hom_hom : (α_ A B C).hom.hom = (assoc R R R A B C).toAlgHom := rfl

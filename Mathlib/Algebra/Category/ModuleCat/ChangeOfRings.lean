@@ -457,7 +457,7 @@ instance hasSMul : SMul S <| (restrictScalars f).obj (of _ S) →ₗ[R] M where
       map_smul' := fun r (t : S) => by
         simp [← map_smul, ModuleCat.restrictScalars.smul_def (M := ModuleCat.of _ S), mul_assoc] }
 
-@[simp]
+@[defeq, simp]
 theorem smul_apply' (s : S) (g : (restrictScalars f).obj (of _ S) →ₗ[R] M) (s' : S) :
     (s • g) s' = g (s' * s : S) :=
   rfl

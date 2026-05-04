@@ -89,7 +89,7 @@ lemma coe_id {X : PartOrdEmb} : (𝟙 X : X → X) = id := rfl
 @[simp]
 lemma coe_comp {X Y Z : PartOrdEmb} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma forget_map {X Y : PartOrdEmb} (f : X ⟶ Y) :
     (forget PartOrdEmb).map f = (f : _ → _) := rfl
 
@@ -98,15 +98,17 @@ lemma ext {X Y : PartOrdEmb} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g 
   ConcreteCategory.hom_ext _ _ w
 
 -- This is not `simp` to avoid rewriting in types of terms.
+@[defeq]
 theorem coe_of (X : Type u) [PartialOrder X] : (PartOrdEmb.of X : Type u) = X := rfl
 
+@[defeq]
 lemma hom_id {X : PartOrdEmb} : (𝟙 X : X ⟶ X).hom = RelEmbedding.refl _ := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (X : PartOrdEmb) (x : X) :
     (𝟙 X : X ⟶ X) x = x := by simp
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {X Y Z : PartOrdEmb} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = f.hom.trans g.hom := rfl
 
@@ -125,23 +127,24 @@ lemma Hom.le_iff_le {X Y : PartOrdEmb.{u}} (f : X ⟶ Y) (x₁ x₂ : X) :
 lemma hom_ext {X Y : PartOrdEmb} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[simp]
+@[defeq, simp]
 lemma hom_ofHom {X Y : Type u} [PartialOrder X] [PartialOrder Y] (f : X ↪o Y) :
     (ofHom f).hom = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_hom {X Y : PartOrdEmb} (f : X ⟶ Y) : ofHom (Hom.hom f) = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_id {X : Type u} [PartialOrder X] : ofHom (RelEmbedding.refl _) = 𝟙 (of X) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp {X Y Z : Type u} [PartialOrder X] [PartialOrder Y] [PartialOrder Z]
     (f : X ↪o Y) (g : Y ↪o Z) :
     ofHom (f.trans g) = ofHom f ≫ ofHom g :=
   rfl
 
+@[defeq]
 lemma ofHom_apply {X Y : Type u} [PartialOrder X] [PartialOrder Y] (f : X ↪o Y) (x : X) :
     (ofHom f) x = f x := rfl
 

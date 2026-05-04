@@ -100,7 +100,7 @@ instance WalkingParallelFamily.category : SmallCategory (WalkingParallelFamily J
   id := WalkingParallelFamily.Hom.id
   comp := WalkingParallelFamily.Hom.comp
 
-@[simp]
+@[defeq, simp]
 theorem WalkingParallelFamily.hom_id (X : WalkingParallelFamily J) :
     WalkingParallelFamily.Hom.id X = 𝟙 X :=
   rfl
@@ -195,11 +195,11 @@ abbrev Trident.ι (t : Trident f) :=
 abbrev Cotrident.π (t : Cotrident f) :=
   t.ι.app one
 
-@[simp]
+@[defeq, simp]
 theorem Trident.ι_eq_app_zero (t : Trident f) : t.ι = t.π.app zero :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem Cotrident.π_eq_app_one (t : Cotrident f) : t.π = t.ι.app one :=
   rfl
 

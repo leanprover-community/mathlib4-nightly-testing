@@ -88,7 +88,7 @@ noncomputable local instance : PseudoMetricSpace ℕ where
   dist_comm := fun _ _ ↦ abs_sub_comm ..
   dist_triangle := fun _ _ _ ↦ abs_sub_le ..
 
-@[simp]
+@[defeq, simp]
 lemma dist_def {n m : ℕ} : dist n m = |2 ^ (-n : ℤ) - 2 ^ (-m : ℤ)| := rfl
 
 lemma Int.eq_of_pow_sub_le {d : ℕ} {m n : ℤ} (hd1 : 1 < d)

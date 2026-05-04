@@ -61,6 +61,7 @@ variable [VeroffAlgebra α] (a b c : α)
 
 instance : Compl α where compl a := a | a
 
+@[defeq]
 lemma compl_def : aᶜ = a | a := rfl
 
 lemma meredith : a | b | aᶜ = a := by
@@ -147,8 +148,10 @@ instance : Lattice α where
     rw [← compl_le_compl_iff_le] at h₁ h₂ ⊢
     simpa only [compl_compl] using sup_le _ _ _ h₁ h₂
 
+@[defeq]
 lemma sup_def : a ⊔ b = aᶜ | bᶜ := rfl
 
+@[defeq]
 lemma inf_def : a ⊓ b = (a | b)ᶜ := rfl
 
 /-- The top element, equal to `a | aᶜ` for any `a`. -/

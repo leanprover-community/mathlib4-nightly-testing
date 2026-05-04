@@ -321,14 +321,17 @@ open MonoidalCategory
 instance : CommRing ((𝟙_ (ModuleCat.{u} R) : ModuleCat.{u} R) : Type u) :=
   inferInstanceAs <| CommRing R
 
+@[defeq]
 theorem hom_tensorHom {K L M N : ModuleCat.{u} R} (f : K ⟶ L) (g : M ⟶ N) :
     (f ⊗ₘ g).hom = TensorProduct.map f.hom g.hom :=
   rfl
 
+@[defeq]
 theorem hom_whiskerLeft (L : ModuleCat.{u} R) {M N : ModuleCat.{u} R} (f : M ⟶ N) :
     (L ◁ f).hom = f.hom.lTensor L :=
   rfl
 
+@[defeq]
 theorem hom_whiskerRight {L M : ModuleCat.{u} R} (f : L ⟶ M) (N : ModuleCat.{u} R) :
     (f ▷ N).hom = f.hom.rTensor N :=
   rfl

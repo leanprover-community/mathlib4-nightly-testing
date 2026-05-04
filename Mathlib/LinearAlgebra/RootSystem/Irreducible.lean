@@ -60,9 +60,9 @@ instance : BoundedOrder P.invtRootSubmodule where
 instance [Nontrivial M] : Nontrivial P.invtRootSubmodule where
   exists_pair_ne := ⟨⊥, ⊤, by rw [ne_eq, Subtype.ext_iff]; exact bot_ne_top⟩
 
-@[simp] lemma coe_bot : ((⊥ : P.invtRootSubmodule) : Submodule R M) = ⊥ := rfl
+@[defeq, simp] lemma coe_bot : ((⊥ : P.invtRootSubmodule) : Submodule R M) = ⊥ := rfl
 
-@[simp] lemma coe_top : ((⊤ : P.invtRootSubmodule) : Submodule R M) = ⊤ := rfl
+@[defeq, simp] lemma coe_top : ((⊤ : P.invtRootSubmodule) : Submodule R M) = ⊤ := rfl
 
 lemma eq_zero_iff_forall_coroot'_eq_zero [P.IsRootSystem] {x : M} :
     x = 0 ↔ ∀ i, P.coroot' i x = 0 := by

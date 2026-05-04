@@ -77,6 +77,7 @@ typeclasses. This is the preferred way to construct a term of `ModuleCat R`. -/
 abbrev of (X : Type v) [AddCommGroup X] [Module R X] : ModuleCat.{v} R :=
   ⟨X⟩
 
+@[defeq]
 lemma coe_of (X : Type v) [Ring X] [Module R X] : (of R X : Type v) = X :=
   rfl
 
@@ -129,14 +130,14 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {M : ModuleCat.{v} R} : (𝟙 M : M ⟶ M).hom = LinearMap.id := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (M : ModuleCat.{v} R) (x : M) :
     (𝟙 M : M ⟶ M) x = x := by simp
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {M N O : ModuleCat.{v} R} (f : M ⟶ N) (g : N ⟶ O) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -163,24 +164,25 @@ lemma hom_surjective {M N : ModuleCat.{v} R} :
     Function.Surjective (Hom.hom : (M ⟶ N) → (M →ₗ[R] N)) :=
   hom_bijective.surjective
 
-@[simp]
+@[defeq, simp]
 lemma hom_ofHom {X Y : Type v} [AddCommGroup X] [Module R X] [AddCommGroup Y]
     [Module R Y] (f : X →ₗ[R] Y) : (ofHom f).hom = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_hom {M N : ModuleCat.{v} R} (f : M ⟶ N) :
     ofHom (Hom.hom f) = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_id {M : Type v} [AddCommGroup M] [Module R M] : ofHom LinearMap.id = 𝟙 (of R M) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp {M N O : Type v} [AddCommGroup M] [AddCommGroup N] [AddCommGroup O] [Module R M]
     [Module R N] [Module R O] (f : M →ₗ[R] N) (g : N →ₗ[R] O) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
 /- Doesn't need to be `@[simp]` since `simp only` can solve this. -/
+@[defeq]
 lemma ofHom_apply {M N : Type v} [AddCommGroup M] [AddCommGroup N] [Module R M] [Module R N]
     (f : M →ₗ[R] N) (x : M) : ofHom f x = f x := rfl
 
@@ -215,9 +217,10 @@ end
 
 /- Not a `@[simp]` lemma since it will rewrite the (co)domain of maps and cause
 definitional equality issues. -/
+@[defeq]
 lemma forget_obj {M : ModuleCat.{v} R} : (forget (ModuleCat.{v} R)).obj M = M := rfl
 
-@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-02")]
+@[defeq, deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-02")]
 lemma forget_map {M N : ModuleCat.{v} R} (f : M ⟶ N) :
     (forget (ModuleCat.{v} R)).map f = (f : _ → _) :=
   rfl
@@ -227,11 +230,12 @@ instance hasForgetToAddCommGroup : HasForget₂ (ModuleCat R) AddCommGrpCat wher
     { obj := fun M => AddCommGrpCat.of M
       map := fun f => AddCommGrpCat.ofHom f.hom.toAddMonoidHom }
 
-@[simp]
+@[defeq, simp]
 theorem forget₂_obj (X : ModuleCat R) :
     (forget₂ (ModuleCat R) AddCommGrpCat).obj X = AddCommGrpCat.of X :=
   rfl
 
+@[defeq]
 theorem forget₂_obj_moduleCat_of (X : Type v) [AddCommGroup X] [Module R X] :
     (forget₂ (ModuleCat R) AddCommGrpCat).obj (of R X) = AddCommGrpCat.of X :=
   rfl
@@ -244,7 +248,7 @@ theorem forget₂_map (X Y : ModuleCat R) (f : X ⟶ Y) :
 instance : Inhabited (ModuleCat R) :=
   ⟨of R PUnit⟩
 
-@[simp] theorem of_coe (X : ModuleCat R) : of R X = X := rfl
+@[defeq, simp] theorem of_coe (X : ModuleCat R) : of R X = X := rfl
 
 variable {R}
 
@@ -315,42 +319,42 @@ set_option backward.privateInPublic.warn false in
 instance : Add (M ⟶ N) where
   add f g := ⟨f.hom + g.hom⟩
 
-@[simp] lemma hom_add (f g : M ⟶ N) : (f + g).hom = f.hom + g.hom := rfl
+@[defeq, simp] lemma hom_add (f g : M ⟶ N) : (f + g).hom = f.hom + g.hom := rfl
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : Zero (M ⟶ N) where
   zero := ⟨0⟩
 
-@[simp] lemma hom_zero : (0 : M ⟶ N).hom = 0 := rfl
+@[defeq, simp] lemma hom_zero : (0 : M ⟶ N).hom = 0 := rfl
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : SMul ℕ (M ⟶ N) where
   smul n f := ⟨n • f.hom⟩
 
-@[simp] lemma hom_nsmul (n : ℕ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
+@[defeq, simp] lemma hom_nsmul (n : ℕ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : Neg (M ⟶ N) where
   neg f := ⟨-f.hom⟩
 
-@[simp] lemma hom_neg (f : M ⟶ N) : (-f).hom = -f.hom := rfl
+@[defeq, simp] lemma hom_neg (f : M ⟶ N) : (-f).hom = -f.hom := rfl
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : Sub (M ⟶ N) where
   sub f g := ⟨f.hom - g.hom⟩
 
-@[simp] lemma hom_sub (f g : M ⟶ N) : (f - g).hom = f.hom - g.hom := rfl
+@[defeq, simp] lemma hom_sub (f g : M ⟶ N) : (f - g).hom = f.hom - g.hom := rfl
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : SMul ℤ (M ⟶ N) where
   smul n f := ⟨n • f.hom⟩
 
-@[simp] lemma hom_zsmul (n : ℤ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
+@[defeq, simp] lemma hom_zsmul (n : ℤ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
 
 instance : AddCommGroup (M ⟶ N) :=
   Function.Injective.addCommGroup (Hom.hom) hom_injective
@@ -396,7 +400,7 @@ set_option backward.privateInPublic.warn false in
 instance : SMul S (M ⟶ N) where
   smul c f := ⟨c • f.hom⟩
 
-@[simp] lemma hom_smul (s : S) (f : M ⟶ N) : (s • f).hom = s • f.hom := rfl
+@[defeq, simp] lemma hom_smul (s : S) (f : M ⟶ N) : (s • f).hom = s • f.hom := rfl
 
 end SMul
 
@@ -528,7 +532,7 @@ instance : AddCommGroup (mkOfSMul' φ) :=
 
 instance : SMul R (mkOfSMul' φ) := ⟨fun r (x : A) => (show A ⟶ A from φ r) x⟩
 
-@[simp]
+@[defeq, simp]
 lemma mkOfSMul'_smul (r : R) (x : mkOfSMul' φ) :
     r • x = (show A ⟶ A from φ r) x := rfl
 

@@ -75,6 +75,7 @@ typeclasses. This is the preferred way to construct a term of `SemimoduleCat R`.
 abbrev of (X : Type v) [AddCommMonoid X] [Module R X] : SemimoduleCat.{v} R :=
   ⟨X⟩
 
+@[defeq]
 lemma coe_of (X : Type v) [Semiring X] [Module R X] : (of R X : Type v) = X :=
   rfl
 
@@ -122,14 +123,14 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {M : SemimoduleCat.{v} R} : (𝟙 M : M ⟶ M).hom = LinearMap.id := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (M : SemimoduleCat.{v} R) (x : M) :
     (𝟙 M : M ⟶ M) x = x := by simp
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {M N O : SemimoduleCat.{v} R} (f : M ⟶ N) (g : N ⟶ O) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -156,24 +157,25 @@ lemma hom_surjective {M N : SemimoduleCat.{v} R} :
     Function.Surjective (Hom.hom : (M ⟶ N) → (M →ₗ[R] N)) :=
   hom_bijective.surjective
 
-@[simp]
+@[defeq, simp]
 lemma hom_ofHom {X Y : Type v} [AddCommMonoid X] [Module R X] [AddCommMonoid Y]
     [Module R Y] (f : X →ₗ[R] Y) : (ofHom f).hom = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_hom {M N : SemimoduleCat.{v} R} (f : M ⟶ N) :
     ofHom (Hom.hom f) = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_id {M : Type v} [AddCommMonoid M] [Module R M] : ofHom LinearMap.id = 𝟙 (of R M) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp {M N O : Type v} [AddCommMonoid M] [AddCommMonoid N] [AddCommMonoid O] [Module R M]
     [Module R N] [Module R O] (f : M →ₗ[R] N) (g : N →ₗ[R] O) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
 /- Doesn't need to be `@[simp]` since `simp only` can solve this. -/
+@[defeq]
 lemma ofHom_apply {M N : Type v} [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module R N]
     (f : M →ₗ[R] N) (x : M) : ofHom f x = f x := rfl
 
@@ -192,10 +194,11 @@ end
 
 /- Not a `@[simp]` lemma since it will rewrite the (co)domain of maps and cause
 definitional equality issues. -/
+@[defeq]
 lemma forget_obj {M : SemimoduleCat.{v} R} : ((forget (SemimoduleCat.{v} R)).obj M : Type _) = M :=
   rfl
 
-@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-02-25")]
+@[defeq, deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-02-25")]
 lemma forget_map {M N : SemimoduleCat.{v} R} (f : M ⟶ N) :
     (forget (SemimoduleCat.{v} R)).map f = (f : _ → _) :=
   rfl
@@ -205,11 +208,12 @@ instance hasForgetToAddCommMonoid : HasForget₂ (SemimoduleCat R) AddCommMonCat
     { obj := fun M => .of M
       map := fun f => AddCommMonCat.ofHom f.hom.toAddMonoidHom }
 
-@[simp]
+@[defeq, simp]
 theorem forget₂_obj (X : SemimoduleCat R) :
     (forget₂ (SemimoduleCat R) AddCommMonCat).obj X = .of X :=
   rfl
 
+@[defeq]
 theorem forget₂_obj_moduleCat_of (X : Type v) [AddCommMonoid X] [Module R X] :
     (forget₂ (SemimoduleCat R) AddCommMonCat).obj (of R X) = .of X :=
   rfl
@@ -222,7 +226,7 @@ theorem forget₂_map (X Y : SemimoduleCat R) (f : X ⟶ Y) :
 instance : Inhabited (SemimoduleCat R) :=
   ⟨of R PUnit⟩
 
-@[simp] theorem of_coe (X : SemimoduleCat R) : of R X = X := rfl
+@[defeq, simp] theorem of_coe (X : SemimoduleCat R) : of R X = X := rfl
 
 variable {R}
 
@@ -287,17 +291,17 @@ variable {M N : SemimoduleCat.{v} R}
 instance : Add (M ⟶ N) where
   add f g := ⟨f.hom + g.hom⟩
 
-@[simp] lemma hom_add (f g : M ⟶ N) : (f + g).hom = f.hom + g.hom := rfl
+@[defeq, simp] lemma hom_add (f g : M ⟶ N) : (f + g).hom = f.hom + g.hom := rfl
 
 instance : Zero (M ⟶ N) where
   zero := ⟨0⟩
 
-@[simp] lemma hom_zero : (0 : M ⟶ N).hom = 0 := rfl
+@[defeq, simp] lemma hom_zero : (0 : M ⟶ N).hom = 0 := rfl
 
 instance : SMul ℕ (M ⟶ N) where
   smul n f := ⟨n • f.hom⟩
 
-@[simp] lemma hom_nsmul (n : ℕ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
+@[defeq, simp] lemma hom_nsmul (n : ℕ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
 
 -- There is no `ℤ`-smul operation on a general semimodule!
 @[deprecated (since := "2026-01-06")]
@@ -346,7 +350,7 @@ variable {S : Type*} [Monoid S] [DistribMulAction S N] [SMulCommClass R S N]
 instance : SMul S (M ⟶ N) where
   smul c f := ⟨c • f.hom⟩
 
-@[simp] lemma hom_smul (s : S) (f : M ⟶ N) : (s • f).hom = s • f.hom := rfl
+@[defeq, simp] lemma hom_smul (s : S) (f : M ⟶ N) : (s • f).hom = s • f.hom := rfl
 
 end SMul
 

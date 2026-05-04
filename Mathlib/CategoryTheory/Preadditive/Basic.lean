@@ -457,10 +457,10 @@ instance : SMul (Units ℤ) (X ≅ Y) where
       inv_hom_id := by
         simp only [comp_zsmul, zsmul_comp, smul_smul, Units.mul_inv, one_smul, e.inv_hom_id] }
 
-@[simp]
+@[defeq, simp]
 lemma smul_iso_hom (a : Units ℤ) (e : X ≅ Y) : (a • e).hom = a • e.hom := rfl
 
-@[simp]
+@[defeq, simp]
 lemma smul_iso_inv (a : Units ℤ) (e : X ≅ Y) : (a • e).inv = a⁻¹ • e.inv := rfl
 
 instance : Neg (X ≅ Y) where
@@ -468,10 +468,10 @@ instance : Neg (X ≅ Y) where
     { hom := -e.hom
       inv := -e.inv }
 
-@[simp]
+@[defeq, simp]
 lemma neg_iso_hom (e : X ≅ Y) : (-e).hom = -e.hom := rfl
 
-@[simp]
+@[defeq, simp]
 lemma neg_iso_inv (e : X ≅ Y) : (-e).inv = -e.inv := rfl
 
 end

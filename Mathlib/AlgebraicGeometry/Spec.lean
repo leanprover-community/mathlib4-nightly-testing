@@ -340,6 +340,7 @@ theorem toPushforwardStalk_comp :
 instance : Algebra R ((Spec.topMap f _* (structureSheaf S).1).stalk p) :=
   (f ≫ StructureSheaf.toPushforwardStalk f p).hom.toAlgebra
 
+@[defeq]
 theorem algebraMap_pushforward_stalk :
     algebraMap R ((Spec.topMap f _* (structureSheaf S).1).stalk p) =
       (f ≫ StructureSheaf.toPushforwardStalk f p).hom :=

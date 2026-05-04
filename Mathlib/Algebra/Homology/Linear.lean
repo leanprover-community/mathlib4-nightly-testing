@@ -36,10 +36,10 @@ variable {X Y : HomologicalComplex C c}
 instance : SMul R (X ⟶ Y) where
   smul r f := { f := fun n => r • f.f n }
 
-@[simp]
+@[defeq, simp]
 lemma smul_f_apply (r : R) (f : X ⟶ Y) (n : ι) : (r • f).f n = r • f.f n := rfl
 
-@[simp]
+@[defeq, simp]
 lemma units_smul_f_apply (r : Rˣ) (f : X ⟶ Y) (n : ι) : (r • f).f n = r • f.f n := rfl
 
 instance (X Y : HomologicalComplex C c) : Module R (X ⟶ Y) where

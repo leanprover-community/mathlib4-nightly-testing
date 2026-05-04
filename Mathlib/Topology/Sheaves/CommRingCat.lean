@@ -276,7 +276,7 @@ instance algebra_section_stalk (F : X.Presheaf CommRingCat) {U : Opens X} (x : U
     Algebra (F.obj <| op U) (F.stalk x) :=
   (F.germ U x.1 x.2).hom.toAlgebra
 
-@[simp]
+@[defeq, simp]
 theorem stalk_open_algebraMap {X : TopCat.{v}} (F : X.Presheaf CommRingCat) {U : Opens X} (x : U) :
     algebraMap (F.obj <| op U) (F.stalk x) = (F.germ U x.1 x.2).hom :=
   rfl

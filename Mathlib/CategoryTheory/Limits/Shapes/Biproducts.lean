@@ -435,7 +435,7 @@ notation "⨁ " f:20 => biproduct f
 abbrev biproduct.π (f : J → C) [HasBiproduct f] (b : J) : ⨁ f ⟶ f b :=
   (biproduct.bicone f).π b
 
-@[simp]
+@[defeq, simp]
 theorem biproduct.bicone_π (f : J → C) [HasBiproduct f] (b : J) :
     (biproduct.bicone f).π b = biproduct.π f b := rfl
 
@@ -443,7 +443,7 @@ theorem biproduct.bicone_π (f : J → C) [HasBiproduct f] (b : J) :
 abbrev biproduct.ι (f : J → C) [HasBiproduct f] (b : J) : f b ⟶ ⨁ f :=
   (biproduct.bicone f).ι b
 
-@[simp]
+@[defeq, simp]
 theorem biproduct.bicone_ι (f : J → C) [HasBiproduct f] (b : J) :
     (biproduct.bicone f).ι b = biproduct.ι f b := rfl
 

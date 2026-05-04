@@ -38,7 +38,7 @@ instance Discrete.monoidal : MonoidalCategory (Discrete M) where
   rightUnitor X := Discrete.eqToIso (mul_one X.as)
   associator _ _ _ := Discrete.eqToIso (mul_assoc _ _ _)
 
-@[to_additive (attr := simp) Discrete.addMonoidal_tensorUnit_as]
+@[defeq, to_additive (attr := simp) Discrete.addMonoidal_tensorUnit_as]
 lemma Discrete.monoidal_tensorUnit_as : (𝟙_ (Discrete M)).as = 1 := rfl
 
 variable {M} {N : Type u'} [Monoid N]

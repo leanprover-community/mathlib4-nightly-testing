@@ -66,7 +66,7 @@ abbrev Hom.group : Group (X ⟶ G) where
 scoped[CategoryTheory.MonObj] attribute [instance] Hom.group
 scoped[CategoryTheory.AddMonObj] attribute [instance] Hom.addGroup
 
-@[to_additive]
+@[defeq, to_additive]
 lemma Hom.inv_def (f : X ⟶ G) : f⁻¹ = f ≫ ι := rfl
 
 variable (G) in

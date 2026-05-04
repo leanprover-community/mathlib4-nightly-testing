@@ -348,7 +348,7 @@ lemma forgetToTop_comp_forget : forgetToTop ⋙ CategoryTheory.forget TopCat = f
 -- poor performance consequences.
 unif_hint forget_obj_eq_coe (X : Scheme) where ⊢ forget.obj X ≟ (X : Type*)
 
-@[simp] lemma forget_obj (X) : Scheme.forget.obj X = X := rfl
+@[defeq, simp] lemma forget_obj (X) : Scheme.forget.obj X = X := rfl
 lemma forget_map' {X Y} (f : X ⟶ Y) : (forget.map f : _ → _) = f := rfl
 @[simp] lemma forget_map {X Y} (f : X ⟶ Y) : forget.map f = ↾f := rfl
 
@@ -367,7 +367,7 @@ theorem id_appTop {X : Scheme} :
     (𝟙 X :).appTop = 𝟙 _ :=
   rfl
 
-@[reassoc]
+@[defeq, reassoc]
 theorem comp_toLRSHom {X Y Z : Scheme} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).toLRSHom = f.toLRSHom ≫ g.toLRSHom :=
   rfl

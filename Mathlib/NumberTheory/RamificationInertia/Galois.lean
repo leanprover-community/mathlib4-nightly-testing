@@ -79,11 +79,11 @@ instance : MulAction G (primesOver p B) where
   one_smul Q := Subtype.ext (one_smul G Q.1)
   mul_smul σ τ Q := Subtype.ext (mul_smul σ τ Q.1)
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul_primesOver (σ : G) (P : primesOver p B) : (σ • P).1 = σ • P.1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem coe_smul_primesOver_mk (σ : G) (P : Ideal B) [P.IsPrime] [P.LiesOver p] :
     (σ • primesOver.mk p P).1 = σ • P :=
   rfl
@@ -104,10 +104,12 @@ noncomputable instance : MulAction Gal(L/K) (primesOver p B) where
     rw [map_mul]
     exact (Q.1.map_map ((galRestrict A K L B) τ).toRingHom ((galRestrict A K L B) σ).toRingHom).symm
 
+@[defeq]
 theorem coe_smul_primesOver_eq_map_galRestrict (σ : Gal(L/K)) (P : primesOver p B) :
     (σ • P).1 = map (galRestrict A K L B σ) P :=
   rfl
 
+@[defeq]
 theorem coe_smul_primesOver_mk_eq_map_galRestrict (σ : Gal(L/K)) (P : Ideal B) [P.IsPrime]
     [P.LiesOver p] : (σ • primesOver.mk p P).1 = map (galRestrict A K L B σ) P :=
   rfl

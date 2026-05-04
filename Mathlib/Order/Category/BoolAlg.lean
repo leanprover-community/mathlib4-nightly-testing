@@ -89,7 +89,7 @@ lemma coe_id {X : BoolAlg} : (𝟙 X : X → X) = id := rfl
 @[simp]
 lemma coe_comp {X Y Z : BoolAlg} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma forget_map {X Y : BoolAlg} (f : X ⟶ Y) :
     (forget BoolAlg).map f = (f : _ → _) := rfl
 
@@ -98,16 +98,17 @@ lemma ext {X Y : BoolAlg} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
 -- This is not `simp` to avoid rewriting in types of terms.
+@[defeq]
 theorem coe_of (X : Type u) [BooleanAlgebra X] : (BoolAlg.of X : Type u) = X := rfl
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {X : BoolAlg} : (𝟙 X : X ⟶ X).hom = BoundedLatticeHom.id _ := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (X : BoolAlg) (x : X) :
     (𝟙 X : X ⟶ X) x = x := by simp
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {X Y Z : BoolAlg} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -119,24 +120,25 @@ lemma comp_apply {X Y Z : BoolAlg} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
 lemma hom_ext {X Y : BoolAlg} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[simp]
+@[defeq, simp]
 lemma hom_ofHom {X Y : Type u} [BooleanAlgebra X] [BooleanAlgebra Y] (f : BoundedLatticeHom X Y) :
     (ofHom f).hom = f :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_hom {X Y : BoolAlg} (f : X ⟶ Y) :
     ofHom (Hom.hom f) = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_id {X : Type u} [BooleanAlgebra X] : ofHom (BoundedLatticeHom.id _) = 𝟙 (of X) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp {X Y Z : Type u} [BooleanAlgebra X] [BooleanAlgebra Y] [BooleanAlgebra Z]
     (f : BoundedLatticeHom X Y) (g : BoundedLatticeHom Y Z) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
+@[defeq]
 lemma ofHom_apply {X Y : Type u} [BooleanAlgebra X] [BooleanAlgebra Y]
     (f : BoundedLatticeHom X Y) (x : X) :
     (ofHom f) x = f x := rfl

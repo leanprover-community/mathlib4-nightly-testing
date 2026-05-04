@@ -50,6 +50,7 @@ open OmegaCompletePartialOrder
 instance : CoeSort ωCPO Type* :=
   ⟨carrier⟩
 
+@[defeq]
 theorem coe_of (α : Type*) [OmegaCompletePartialOrder α] : ↥(of α) = α :=
   rfl
 

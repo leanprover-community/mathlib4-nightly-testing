@@ -608,13 +608,13 @@ theorem top_apply (f : Y ⟶ X) : (⊤ : Sieve X) f :=
 theorem bot_apply (f : Y ⟶ X) : (⊥ : Sieve X) f ↔ False :=
   .rfl
 
-@[simp]
+@[defeq, simp]
 lemma arrows_top : (⊤ : Sieve X).arrows = ⊤ := rfl
 
 lemma arrows_eq_top_iff {S : Sieve X} : S.arrows = ⊤ ↔ S = ⊤ :=
   ⟨fun h ↦ arrows_ext (h ▸ arrows_top), fun h ↦ h ▸ arrows_top⟩
 
-@[simp]
+@[defeq, simp]
 lemma arrows_bot : (⊥ : Sieve X).arrows = ⊥ := rfl
 
 lemma arrows_eq_bot_iff {S : Sieve X} : S.arrows = ⊥ ↔ S = ⊥ :=

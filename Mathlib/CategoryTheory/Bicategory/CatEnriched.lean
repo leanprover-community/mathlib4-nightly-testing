@@ -58,8 +58,10 @@ instance : CategoryStruct (CatEnriched C) where
   id X := (eId Cat X).toFunctor.obj ⟨⟨()⟩⟩
   comp {X Y Z} f g := (eComp Cat X Y Z).toFunctor.obj (f, g)
 
+@[defeq]
 theorem id_eq (X : CatEnriched C) : 𝟙 X = (eId Cat X).toFunctor.obj ⟨⟨()⟩⟩ := rfl
 
+@[defeq]
 theorem comp_eq {X Y Z : CatEnriched C} (f : X ⟶ Y) (g : Y ⟶ Z) :
     f ≫ g = (eComp Cat X Y Z).toFunctor.obj (f, g) := rfl
 
@@ -226,12 +228,14 @@ instance {X Y : CatEnrichedOrdinary C} : CategoryStruct (X ⟶ Y) where
   id f := Hom.mk (𝟙 (homEquiv f))
   comp α β := Hom.mk (Hom.base α ≫ Hom.base β)
 
+@[defeq]
 theorem Hom.id_eq {X Y : CatEnrichedOrdinary C} (f : X ⟶ Y) :
     𝟙 f = Hom.mk (𝟙 (homEquiv f)) := rfl
 
 @[simp] theorem Hom.base_id {X Y : CatEnrichedOrdinary C} (f : X ⟶ Y) :
     Hom.base (𝟙 f) = 𝟙 (homEquiv f) := rfl
 
+@[defeq]
 theorem Hom.comp_eq {X Y : CatEnrichedOrdinary C} {f g h : X ⟶ Y}
     (α : f ⟶ g) (β : g ⟶ h) : (α ≫ β) = Hom.mk (Hom.base α ≫ Hom.base β) := rfl
 

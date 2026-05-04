@@ -40,6 +40,7 @@ instance : CoeSort CompleteLat (Type _) :=
 
 attribute [coe] CompleteLat.carrier
 
+@[defeq]
 theorem coe_of (α : Type*) [CompleteLattice α] : ↥(of α) = α :=
   rfl
 

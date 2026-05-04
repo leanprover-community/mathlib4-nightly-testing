@@ -208,7 +208,7 @@ instance : Neg (BoundedAdditiveMeasure α) :=
       additive' := fun s t hst => by simp only [f.additive s t hst, add_comm, neg_add_rev]
       exists_bound := ⟨f.C, fun s => by simp [f.abs_le_bound]⟩ }⟩
 
-@[simp]
+@[defeq, simp]
 theorem neg_apply (f : BoundedAdditiveMeasure α) (s : Set α) : (-f) s = -f s :=
   rfl
 

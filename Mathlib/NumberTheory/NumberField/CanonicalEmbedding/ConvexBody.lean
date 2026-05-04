@@ -259,6 +259,7 @@ variable {K}
 norm and it used to define `convexBodySum`. -/
 noncomputable abbrev convexBodySumFun (x : mixedSpace K) : ℝ := ∑ w, mult w * normAtPlace w x
 
+@[defeq]
 theorem convexBodySumFun_apply (x : mixedSpace K) :
     convexBodySumFun x = ∑ w, mult w * normAtPlace w x := rfl
 

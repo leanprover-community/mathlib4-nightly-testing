@@ -600,6 +600,7 @@ instance (x : SimplexCategory) : Fintype (ToType x) :=
 instance (x : SimplexCategory) (n : ℕ) : OfNat (ToType x) n :=
   inferInstanceAs (OfNat (Fin _) n)
 
+@[defeq]
 lemma toType_apply (x : SimplexCategory) : ToType x = Fin (x.len + 1) := rfl
 
 @[simp]

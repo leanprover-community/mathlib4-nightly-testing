@@ -261,6 +261,7 @@ instance commShiftMapCochainComplex :
       CochainComplex.shiftFunctorAdd_inv_app_f, HomologicalComplex.XIsoOfEq, eqToIso,
       eqToHom_map, eqToHom_trans, eqToHom_refl]
 
+@[defeq]
 lemma mapHomologicalComplex_commShiftIso_eq (n : ℤ) :
     (F.mapHomologicalComplex (ComplexShape.up ℤ)).commShiftIso n =
       F.mapCochainComplexShiftIso n := rfl

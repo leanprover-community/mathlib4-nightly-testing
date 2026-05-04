@@ -325,7 +325,7 @@ instance : SemilatticeSup (Coverage C) where
   le_sup_right _ _ _ := Set.subset_union_right
   sup_le _ _ _ hx hy X := Set.union_subset_iff.mpr ⟨hx X, hy X⟩
 
-@[simp]
+@[defeq, simp]
 lemma sup_covering (x y : Coverage C) (B : C) :
     (x ⊔ y) B = x B ∪ y B :=
   rfl

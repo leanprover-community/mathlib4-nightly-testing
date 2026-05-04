@@ -282,7 +282,7 @@ theorem hom_f_injective {C₁ C₂ : HomologicalComplex V c} :
 instance (X Y : HomologicalComplex V c) : Zero (X ⟶ Y) :=
   ⟨{ f := fun _ => 0}⟩
 
-@[simp]
+@[defeq, simp]
 theorem zero_f (C D : HomologicalComplex V c) (i : ι) : (0 : C ⟶ D).f i = 0 :=
   rfl
 
@@ -656,6 +656,7 @@ abbrev of (X : α → V) (d : ∀ n, X (n + 1) ⟶ X n) (sq : ∀ n, d (n + 1) �
 
 variable (X : α → V) (d : ∀ n, X (n + 1) ⟶ X n) (sq : ∀ n, d (n + 1) ≫ d n = 0)
 
+@[defeq]
 theorem of_X : (of X d sq).X = X :=
   rfl
 
@@ -918,6 +919,7 @@ abbrev of (X : α → V) (d : ∀ n, X n ⟶ X (n + 1)) (sq : ∀ n, d n ≫ d (
 
 variable (X : α → V) (d : ∀ n, X n ⟶ X (n + 1)) (sq : ∀ n, d n ≫ d (n + 1) = 0)
 
+@[defeq]
 theorem of_X : (of X d sq).X = X :=
   rfl
 

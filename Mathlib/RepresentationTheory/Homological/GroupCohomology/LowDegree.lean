@@ -285,10 +285,10 @@ variable {A}
 
 instance : FunLike (cocycles₁ A) G A := ⟨Subtype.val, Subtype.val_injective⟩
 
-@[simp]
+@[defeq, simp]
 theorem cocycles₁.coe_mk (f : G → A) (hf) : ((⟨f, hf⟩ : cocycles₁ A) : G → A) = f := rfl
 
-@[simp]
+@[defeq, simp]
 theorem cocycles₁.val_eq_coe (f : cocycles₁ A) : f.1 = f := rfl
 
 @[ext]
@@ -351,10 +351,10 @@ def cocycles₁IsoOfIsTrivial [hA : A.IsTrivial] :
 
 instance : FunLike (cocycles₂ A) (G × G) A := ⟨Subtype.val, Subtype.val_injective⟩
 
-@[simp]
+@[defeq, simp]
 theorem cocycles₂.coe_mk (f : G × G → A) (hf) : ((⟨f, hf⟩ : cocycles₂ A) : G × G → A) = f := rfl
 
-@[simp]
+@[defeq, simp]
 theorem cocycles₂.val_eq_coe (f : cocycles₂ A) : f.1 = f := rfl
 
 @[ext]
@@ -419,11 +419,11 @@ variable {A}
 
 instance : FunLike (coboundaries₁ A) G A := ⟨Subtype.val, Subtype.val_injective⟩
 
-@[simp]
+@[defeq, simp]
 theorem coboundaries₁.coe_mk (f : G → A) (hf) :
     ((⟨f, hf⟩ : coboundaries₁ A) : G → A) = f := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coboundaries₁.val_eq_coe (f : coboundaries₁ A) : f.1 = f := rfl
 
 @[ext]
@@ -451,11 +451,11 @@ theorem coboundaries₁_eq_bot_of_isTrivial (A : Rep k G) [A.IsTrivial] :
 
 instance : FunLike (coboundaries₂ A) (G × G) A := ⟨Subtype.val, Subtype.val_injective⟩
 
-@[simp]
+@[defeq, simp]
 theorem coboundaries₂.coe_mk (f : G × G → A) (hf) :
     ((⟨f, hf⟩ : coboundaries₂ A) : G × G → A) = f := rfl
 
-@[simp]
+@[defeq, simp]
 theorem coboundaries₂.val_eq_coe (f : coboundaries₂ A) : f.1 = f := rfl
 
 @[ext]

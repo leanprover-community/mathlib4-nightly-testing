@@ -328,10 +328,13 @@ def hasAdd {X Y : C} : Add (X ⟶ Y) :=
 
 attribute [local instance] hasAdd
 
+@[defeq]
 theorem sub_def {X Y : C} (a b : X ⟶ Y) : a - b = prod.lift a b ≫ σ := rfl
 
+@[defeq]
 theorem add_def {X Y : C} (a b : X ⟶ Y) : a + b = a - -b := rfl
 
+@[defeq]
 theorem neg_def {X Y : C} (a : X ⟶ Y) : -a = 0 - a := rfl
 
 theorem sub_zero {X Y : C} (a : X ⟶ Y) : a - 0 = a := by

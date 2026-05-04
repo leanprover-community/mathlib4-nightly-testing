@@ -27,34 +27,35 @@ variable {M N : AddCommGrpCat.{u}}
 instance : Add (M ⟶ N) where
   add f g := ofHom (f.hom + g.hom)
 
-@[simp] lemma hom_add (f g : M ⟶ N) : (f + g).hom = f.hom + g.hom := rfl
+@[defeq, simp] lemma hom_add (f g : M ⟶ N) : (f + g).hom = f.hom + g.hom := rfl
 
+@[defeq]
 lemma hom_add_apply {P Q : AddCommGrpCat} (f g : P ⟶ Q) (x : P) : (f + g) x = f x + g x := rfl
 
 instance : Zero (M ⟶ N) where
   zero := ofHom 0
 
-@[simp] lemma hom_zero : (0 : M ⟶ N).hom = 0 := rfl
+@[defeq, simp] lemma hom_zero : (0 : M ⟶ N).hom = 0 := rfl
 
 instance : SMul ℕ (M ⟶ N) where
   smul n f := ofHom (n • f.hom)
 
-@[simp] lemma hom_nsmul (n : ℕ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
+@[defeq, simp] lemma hom_nsmul (n : ℕ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
 
 instance : Neg (M ⟶ N) where
   neg f := ofHom (-f.hom)
 
-@[simp] lemma hom_neg (f : M ⟶ N) : (-f).hom = -f.hom := rfl
+@[defeq, simp] lemma hom_neg (f : M ⟶ N) : (-f).hom = -f.hom := rfl
 
 instance : Sub (M ⟶ N) where
   sub f g := ofHom (f.hom - g.hom)
 
-@[simp] lemma hom_sub (f g : M ⟶ N) : (f - g).hom = f.hom - g.hom := rfl
+@[defeq, simp] lemma hom_sub (f g : M ⟶ N) : (f - g).hom = f.hom - g.hom := rfl
 
 instance : SMul ℤ (M ⟶ N) where
   smul n f := ofHom (n • f.hom)
 
-@[simp] lemma hom_zsmul (n : ℤ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
+@[defeq, simp] lemma hom_zsmul (n : ℤ) (f : M ⟶ N) : (n • f).hom = n • f.hom := rfl
 
 instance (P Q : AddCommGrpCat) : AddCommGroup (P ⟶ Q) :=
   Function.Injective.addCommGroup (Hom.hom) ConcreteCategory.hom_injective

@@ -114,7 +114,7 @@ variable [(shiftFunctor C (1 : S)).PreservesZeroMorphisms]
 
 instance {X Y : DifferentialObject S C} : Zero (X ⟶ Y) := ⟨{f := 0}⟩
 
-@[simp]
+@[defeq, simp]
 theorem zero_f (P Q : DifferentialObject S C) : (0 : P ⟶ Q).f = 0 := rfl
 
 instance hasZeroMorphisms : HasZeroMorphisms (DifferentialObject S C) where

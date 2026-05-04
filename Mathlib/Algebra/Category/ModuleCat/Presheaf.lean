@@ -213,7 +213,7 @@ instance : Zero (M₁ ⟶ M₂) where
   zero := { app := fun _ ↦ 0 }
 
 variable (M₁ M₂) in
-@[simp] lemma zero_app (X : Cᵒᵖ) : (0 : M₁ ⟶ M₂).app X = 0 := rfl
+@[defeq, simp] lemma zero_app (X : Cᵒᵖ) : (0 : M₁ ⟶ M₂).app X = 0 := rfl
 
 instance : Neg (M₁ ⟶ M₂) where
   neg f :=
@@ -236,9 +236,9 @@ instance : Sub (M₁ ⟶ M₂) where
         ext x
         simp [← naturality_apply] }
 
-@[simp] lemma neg_app (f : M₁ ⟶ M₂) (X : Cᵒᵖ) : (-f).app X = -f.app X := rfl
-@[simp] lemma add_app (f g : M₁ ⟶ M₂) (X : Cᵒᵖ) : (f + g).app X = f.app X + g.app X := rfl
-@[simp] lemma sub_app (f g : M₁ ⟶ M₂) (X : Cᵒᵖ) : (f - g).app X = f.app X - g.app X := rfl
+@[defeq, simp] lemma neg_app (f : M₁ ⟶ M₂) (X : Cᵒᵖ) : (-f).app X = -f.app X := rfl
+@[defeq, simp] lemma add_app (f g : M₁ ⟶ M₂) (X : Cᵒᵖ) : (f + g).app X = f.app X + g.app X := rfl
+@[defeq, simp] lemma sub_app (f g : M₁ ⟶ M₂) (X : Cᵒᵖ) : (f - g).app X = f.app X - g.app X := rfl
 
 instance : AddCommGroup (M₁ ⟶ M₂) where
   add_assoc := by intros; ext1; simp only [add_app, add_assoc]

@@ -55,6 +55,7 @@ typeclasses. This is the preferred way to construct a term of `CommAlgCat R`. -/
 abbrev of (X : Type v) [CommRing X] [Algebra R X] : CommAlgCat.{v} R := ⟨X⟩
 
 variable (R) in
+@[defeq]
 lemma coe_of (X : Type v) [CommRing X] [Algebra R X] : (of R X : Type v) = X := rfl
 
 set_option backward.privateInPublic true in
@@ -93,26 +94,27 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[simp] lemma hom_id : (𝟙 A : A ⟶ A).hom = AlgHom.id R A := rfl
+@[defeq, simp] lemma hom_id : (𝟙 A : A ⟶ A).hom = AlgHom.id R A := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (A : CommAlgCat.{v} R) (a : A) : (𝟙 A : A ⟶ A) a = a := by simp
 
-@[simp] lemma hom_comp (f : A ⟶ B) (g : B ⟶ C) : (f ≫ g).hom = g.hom.comp f.hom := rfl
+@[defeq, simp] lemma hom_comp (f : A ⟶ B) (g : B ⟶ C) : (f ≫ g).hom = g.hom.comp f.hom := rfl
 
 /- Provided for rewriting. -/
 lemma comp_apply (f : A ⟶ B) (g : B ⟶ C) (a : A) : (f ≫ g) a = g (f a) := by simp
 
 @[ext] lemma hom_ext {f g : A ⟶ B} (hf : f.hom = g.hom) : f = g := Hom.ext hf
 
-@[simp] lemma hom_ofHom (f : X →ₐ[R] Y) : (ofHom f).hom = f := rfl
-@[simp] lemma ofHom_hom (f : A ⟶ B) : ofHom f.hom = f := rfl
+@[defeq, simp] lemma hom_ofHom (f : X →ₐ[R] Y) : (ofHom f).hom = f := rfl
+@[defeq, simp] lemma ofHom_hom (f : A ⟶ B) : ofHom f.hom = f := rfl
 
-@[simp] lemma ofHom_id : ofHom (.id R X) = 𝟙 (of R X) := rfl
+@[defeq, simp] lemma ofHom_id : ofHom (.id R X) = 𝟙 (of R X) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp (f : X →ₐ[R] Y) (g : Y →ₐ[R] Z) : ofHom (g.comp f) = ofHom f ≫ ofHom g := rfl
 
+@[defeq]
 lemma ofHom_apply (f : X →ₐ[R] Y) (x : X) : ofHom f x = f x := rfl
 
 lemma inv_hom_apply (e : A ≅ B) (x : A) : e.inv (e.hom x) = x := by simp
@@ -120,9 +122,10 @@ lemma hom_inv_apply (e : A ≅ B) (x : B) : e.hom (e.inv x) = x := by simp
 
 instance : Inhabited (CommAlgCat R) := ⟨of R R⟩
 
+@[defeq]
 lemma forget_obj (A : CommAlgCat.{v} R) : (forget (CommAlgCat.{v} R)).obj A = A := rfl
 
-@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-06")]
+@[defeq, deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-06")]
 lemma forget_map (f : A ⟶ B) : (forget (CommAlgCat.{v} R)).map f = (f : _ → _) := rfl
 
 instance : CommRing ((forget (CommAlgCat R)).obj A) := inferInstanceAs <| CommRing A
@@ -137,16 +140,16 @@ instance hasForgetToAlgCat : HasForget₂ (CommAlgCat.{v} R) (AlgCat.{v} R) wher
   forget₂.obj A := .of R A
   forget₂.map f := AlgCat.ofHom f.hom
 
-@[simp] lemma forget₂_commRingCat_obj (A : CommAlgCat.{v} R) :
+@[defeq, simp] lemma forget₂_commRingCat_obj (A : CommAlgCat.{v} R) :
     (forget₂ (CommAlgCat.{v} R) CommRingCat.{v}).obj A = .of A := rfl
 
 @[simp] lemma forget₂_commRingCat_map (f : A ⟶ B) :
     (forget₂ (CommAlgCat.{v} R) CommRingCat.{v}).map f = CommRingCat.ofHom f.hom := rfl
 
-@[simp] lemma forget₂_algCat_obj (A : CommAlgCat.{v} R) :
+@[defeq, simp] lemma forget₂_algCat_obj (A : CommAlgCat.{v} R) :
     (forget₂ (CommAlgCat.{v} R) (AlgCat.{v} R)).obj A = .of R A := rfl
 
-@[simp] lemma forget₂_algCat_map (f : A ⟶ B) :
+@[defeq, simp] lemma forget₂_algCat_map (f : A ⟶ B) :
     (forget₂ (CommAlgCat.{v} R) (AlgCat.{v} R)).map f = AlgCat.ofHom f.hom := rfl
 
 /-- Build an isomorphism in the category `CommAlgCat R` from an `AlgEquiv` between commutative

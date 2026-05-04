@@ -78,14 +78,14 @@ The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep 
 lemma ext {M N : SemiNormedGrp} {f₁ f₂ : M ⟶ N} (h : ∀ (x : M), f₁ x = f₂ x) : f₁ = f₂ :=
   ConcreteCategory.ext_apply h
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {M : SemiNormedGrp} : (𝟙 M : M ⟶ M).hom = NormedAddGroupHom.id M := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (M : SemiNormedGrp) (r : M) :
     (𝟙 M : M ⟶ M) r = r := by simp
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {M N O : SemiNormedGrp} (f : M ⟶ N) (g : N ⟶ O) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -97,24 +97,25 @@ lemma comp_apply {M N O : SemiNormedGrp} (f : M ⟶ N) (g : N ⟶ O) (r : M) :
 lemma hom_ext {M N : SemiNormedGrp} {f g : M ⟶ N} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[simp]
+@[defeq, simp]
 lemma hom_ofHom {M N : Type u} [SeminormedAddCommGroup M] [SeminormedAddCommGroup N]
     (f : NormedAddGroupHom M N) : (ofHom f).hom = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_hom {M N : SemiNormedGrp} (f : M ⟶ N) :
     ofHom (Hom.hom f) = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_id {M : Type u} [SeminormedAddCommGroup M] :
     ofHom (NormedAddGroupHom.id M) = 𝟙 (of M) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp {M N O : Type u} [SeminormedAddCommGroup M] [SeminormedAddCommGroup N]
     [SeminormedAddCommGroup O] (f : NormedAddGroupHom M N) (g : NormedAddGroupHom N O) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
+@[defeq]
 lemma ofHom_apply {M N : Type u} [SeminormedAddCommGroup M] [SeminormedAddCommGroup N]
     (f : NormedAddGroupHom M N) (r : M) : ofHom f r = f r := rfl
 
@@ -124,6 +125,7 @@ lemma inv_hom_apply {M N : SemiNormedGrp} (e : M ≅ N) (r : M) : e.inv (e.hom r
 lemma hom_inv_apply {M N : SemiNormedGrp} (e : M ≅ N) (s : N) : e.hom (e.inv s) = s := by
   simp
 
+@[defeq]
 theorem coe_of (V : Type u) [SeminormedAddCommGroup V] : (SemiNormedGrp.of V : Type u) = V :=
   rfl
 
@@ -140,7 +142,7 @@ instance : Inhabited SemiNormedGrp :=
 instance {M N : SemiNormedGrp} : Zero (M ⟶ N) where
   zero := ofHom 0
 
-@[simp]
+@[defeq, simp]
 theorem hom_zero {V W : SemiNormedGrp} : (0 : V ⟶ W).hom = 0 :=
   rfl
 
@@ -169,35 +171,35 @@ theorem iso_isometry_of_normNoninc {V W : SemiNormedGrp} (i : V ≅ W) (h1 : i.h
 instance Hom.add {M N : SemiNormedGrp} : Add (M ⟶ N) where
   add f g := ofHom (f.hom + g.hom)
 
-@[simp]
+@[defeq, simp]
 theorem hom_add {V W : SemiNormedGrp} (f g : V ⟶ W) : (f + g).hom = f.hom + g.hom :=
   rfl
 
 instance Hom.neg {M N : SemiNormedGrp} : Neg (M ⟶ N) where
   neg f := ofHom (- f.hom)
 
-@[simp]
+@[defeq, simp]
 theorem hom_neg {V W : SemiNormedGrp} (f : V ⟶ W) : (-f).hom = -f.hom :=
   rfl
 
 instance Hom.sub {M N : SemiNormedGrp} : Sub (M ⟶ N) where
   sub f g := ofHom (f.hom - g.hom)
 
-@[simp]
+@[defeq, simp]
 theorem hom_sub {V W : SemiNormedGrp} (f g : V ⟶ W) : (f - g).hom = f.hom - g.hom :=
   rfl
 
 instance Hom.nsmul {M N : SemiNormedGrp} : SMul ℕ (M ⟶ N) where
   smul n f := ofHom (n • f.hom)
 
-@[simp]
+@[defeq, simp]
 theorem hom_nsum {V W : SemiNormedGrp} (n : ℕ) (f : V ⟶ W) : (n • f).hom = n • f.hom :=
   rfl
 
 instance Hom.zsmul {M N : SemiNormedGrp} : SMul ℤ (M ⟶ N) where
   smul n f := ofHom (n • f.hom)
 
-@[simp]
+@[defeq, simp]
 theorem hom_zsum {V W : SemiNormedGrp} (n : ℤ) (f : V ⟶ W) : (n • f).hom = n • f.hom :=
   rfl
 
@@ -270,6 +272,7 @@ initialize_simps_projections Hom (hom' → hom)
 instance (X Y : SemiNormedGrp₁) : CoeFun (X ⟶ Y) (fun _ => X → Y) where
   coe f := f.hom.1
 
+@[defeq]
 theorem mkHom_apply {M N : Type u} [SeminormedAddCommGroup M] [SeminormedAddCommGroup N]
     (f : NormedAddGroupHom M N) (i : f.NormNoninc) (x) :
     mkHom f i x = f x :=
@@ -282,14 +285,14 @@ The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep 
 lemma ext {M N : SemiNormedGrp₁} {f₁ f₂ : M ⟶ N} (h : ∀ (x : M), f₁ x = f₂ x) : f₁ = f₂ :=
   ConcreteCategory.ext_apply h
 
-@[simp]
+@[defeq, simp]
 lemma hom_id {M : SemiNormedGrp₁} : (𝟙 M : M ⟶ M).hom = NormedAddGroupHom.id M := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (M : SemiNormedGrp₁) (r : M) :
     (𝟙 M : M ⟶ M) r = r := by simp
 
-@[simp]
+@[defeq, simp]
 lemma hom_comp {M N O : SemiNormedGrp₁} (f : M ⟶ N) (g : N ⟶ O) :
     (f ≫ g).hom.1 = g.hom.1.comp f.hom.1 := rfl
 
@@ -301,19 +304,19 @@ lemma comp_apply {M N O : SemiNormedGrp₁} (f : M ⟶ N) (g : N ⟶ O) (r : M) 
 lemma hom_ext {M N : SemiNormedGrp₁} {f g : M ⟶ N} (hf : f.hom = g.hom) : f = g :=
   Hom.ext (congr_arg Subtype.val hf)
 
-@[simp]
+@[defeq, simp]
 lemma hom_mkHom {M N : Type u} [SeminormedAddCommGroup M] [SeminormedAddCommGroup N]
     (f : NormedAddGroupHom M N) (hf : f.NormNoninc) : (mkHom f hf).hom = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma mkHom_hom {M N : SemiNormedGrp₁} (f : M ⟶ N) :
     mkHom (Hom.hom f) f.normNoninc = f := rfl
 
-@[simp]
+@[defeq, simp]
 lemma mkHom_id {M : Type u} [SeminormedAddCommGroup M] :
     mkHom (NormedAddGroupHom.id M) NormedAddGroupHom.NormNoninc.id = 𝟙 (of M) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma mkHom_comp {M N O : Type u} [SeminormedAddCommGroup M] [SeminormedAddCommGroup N]
     [SeminormedAddCommGroup O] (f : NormedAddGroupHom M N) (g : NormedAddGroupHom N O)
     (hf : f.NormNoninc) (hg : g.NormNoninc) (hgf : (g.comp f).NormNoninc) :
@@ -345,6 +348,7 @@ instance : HasForget₂ SemiNormedGrp₁ SemiNormedGrp where
     { obj := fun X => SemiNormedGrp.of X
       map := fun f => SemiNormedGrp.ofHom f.1 }
 
+@[defeq]
 theorem coe_of (V : Type u) [SeminormedAddCommGroup V] : (SemiNormedGrp₁.of V : Type u) = V :=
   rfl
 

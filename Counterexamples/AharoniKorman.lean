@@ -87,8 +87,8 @@ structure Hollom where
 
 open Hollom
 
-@[simp] lemma ofHollom_toHollom (x) : ofHollom (toHollom x) = x := rfl
-@[simp] lemma toHollom_ofHollom (x) : toHollom (ofHollom x) = x := rfl
+@[defeq, simp] lemma ofHollom_toHollom (x) : ofHollom (toHollom x) = x := rfl
+@[defeq, simp] lemma toHollom_ofHollom (x) : toHollom (ofHollom x) = x := rfl
 
 /-- `toHollom` and `ofHollom` as an equivalence. -/
 @[simps]
@@ -460,7 +460,7 @@ namespace SpinalMap
 variable (f : SpinalMap C)
 
 @[ext] lemma ext {f g : SpinalMap C} (h : ∀ x, f x = g x) : f = g := DFunLike.ext f g h
-@[simp] lemma toFun_eq_coe : f.toFun = f := rfl
+@[defeq, simp] lemma toFun_eq_coe : f.toFun = f := rfl
 @[simp] lemma mem (x : α) : f x ∈ C := f.mem' x
 lemma eq_self_of_mem {x : α} (hx : x ∈ C) : f x = x := f.eq_self_of_mem' x hx
 lemma fibre_antichain (x : α) : IsAntichain (· ≤ ·) (f ⁻¹' {x}) := f.fibre_antichain' x

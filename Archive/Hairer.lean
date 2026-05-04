@@ -51,7 +51,7 @@ instance : FunLike (ContDiffSupportedOn 𝕜 E F n s) E F where
   coe := Subtype.val
   coe_injective' := Subtype.coe_injective
 
-@[simp]
+@[defeq, simp]
 lemma coe_mk (f : E → F) (h) : (⟨f, h⟩ : ContDiffSupportedOn 𝕜 E F n s) = f := rfl
 
 lemma tsupport_subset (f : ContDiffSupportedOn 𝕜 E F n s) : tsupport f ⊆ s := f.2.1

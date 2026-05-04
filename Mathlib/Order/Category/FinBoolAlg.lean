@@ -50,6 +50,7 @@ instance : CoeSort FinBoolAlg Type* :=
 abbrev of (α : Type*) [BooleanAlgebra α] [Fintype α] : FinBoolAlg where
   carrier := α
 
+@[defeq]
 theorem coe_of (α : Type*) [BooleanAlgebra α] [Fintype α] : ↥(of α) = α :=
   rfl
 

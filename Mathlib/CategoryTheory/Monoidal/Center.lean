@@ -97,11 +97,11 @@ instance : Category (Center C) where
   id X := { f := 𝟙 X.1 }
   comp f g := { f := f.f ≫ g.f }
 
-@[simp]
+@[defeq, simp]
 theorem id_f (X : Center C) : Hom.f (𝟙 X) = 𝟙 X.1 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem comp_f {X Y Z : Center C} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).f = f.f ≫ g.f :=
   rfl
 
@@ -391,13 +391,13 @@ instance : (ofBraided C).Monoidal :=
         { hom := { f := 𝟙 _ }
           inv := { f := 𝟙 _ } } }
 
-@[simp] lemma ofBraided_ε_f : (ε (ofBraided C)).f = 𝟙 _ := rfl
-@[simp] lemma ofBraided_η_f : (η (ofBraided C)).f = 𝟙 _ := rfl
+@[defeq, simp] lemma ofBraided_ε_f : (ε (ofBraided C)).f = 𝟙 _ := rfl
+@[defeq, simp] lemma ofBraided_η_f : (η (ofBraided C)).f = 𝟙 _ := rfl
 
 variable {C}
 
-@[simp] lemma ofBraided_μ_f (X Y : C) : (μ (ofBraided C) X Y).f = 𝟙 _ := rfl
-@[simp] lemma ofBraided_δ_f (X Y : C) : (δ (ofBraided C) X Y).f = 𝟙 _ := rfl
+@[defeq, simp] lemma ofBraided_μ_f (X Y : C) : (μ (ofBraided C) X Y).f = 𝟙 _ := rfl
+@[defeq, simp] lemma ofBraided_δ_f (X Y : C) : (δ (ofBraided C) X Y).f = 𝟙 _ := rfl
 
 end
 

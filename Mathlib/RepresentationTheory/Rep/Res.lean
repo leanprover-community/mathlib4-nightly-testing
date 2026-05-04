@@ -35,10 +35,12 @@ abbrev res (f : H →* G) (M : Rep k G) := (resFunctor f).obj M
 
 variable (f : H →* G) (M : Rep k G)
 
-@[simp] lemma res_obj_ρ : (res f M).ρ = (M.ρ.comp f) := rfl
+@[defeq, simp] lemma res_obj_ρ : (res f M).ρ = (M.ρ.comp f) := rfl
 
+@[defeq]
 lemma coe_res_obj_ρ' (h : H) : (res f M).ρ h = M.ρ (f h) := rfl
 
+@[defeq]
 lemma res_obj_V : (res f M).V = M.V := rfl
 
 lemma res_map_hom_toLinearMap {M N : Rep k G} (p : M ⟶ N) :
@@ -57,7 +59,7 @@ instance : (resFunctor (k := k) f).Faithful where
 abbrev liftHomOfSurj {X Y : Rep k G} (hf : Function.Surjective f) (f' : res f X ⟶ res f Y) :
     X ⟶ Y := ofHom ⟨f'.hom.toLinearMap, fun g ↦ by obtain ⟨h, rfl⟩ := hf g; simpa using f'.hom.2 h⟩
 
-@[simp]
+@[defeq, simp]
 lemma liftHomOfSurj_toLinearMap {X Y : Rep k G} (hf : Function.Surjective f)
     (f' : res f X ⟶ res f Y) : (liftHomOfSurj f hf f').hom.toLinearMap =
       f'.hom.toLinearMap := rfl

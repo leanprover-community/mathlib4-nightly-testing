@@ -382,7 +382,7 @@ lemma toHom_one (P : RootPairing ι R M N) :
     (1 : RootPairing.Equiv P P).toHom = (1 : RootPairing.Hom P P) :=
   rfl
 
-@[simp]
+@[defeq, simp]
 lemma mul_eq_comp {P : RootPairing ι R M N} (x y : RootPairing.Equiv P P) :
     x * y = Equiv.comp x y :=
   rfl

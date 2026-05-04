@@ -29,8 +29,10 @@ instance typesCartesianMonoidalCategory : CartesianMonoidalCategory (Type u) whe
 
 instance : BraidedCategory (Type u) := .ofCartesianMonoidalCategory
 
+@[defeq]
 theorem types_tensorObj_def {X Y : Type u} : X ⊗ Y = (X × Y) := rfl
 
+@[defeq]
 theorem types_tensorUnit_def : 𝟙_ (Type u) = PUnit := rfl
 
 attribute [local simp] types_tensorObj_def types_tensorUnit_def

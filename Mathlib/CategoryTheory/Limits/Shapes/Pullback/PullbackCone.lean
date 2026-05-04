@@ -100,8 +100,10 @@ abbrev fst (t : PullbackCone f g) : t.pt ⟶ X :=
 abbrev snd (t : PullbackCone f g) : t.pt ⟶ Y :=
   t.π.app WalkingCospan.right
 
+@[defeq]
 theorem π_app_left (c : PullbackCone f g) : c.π.app WalkingCospan.left = c.fst := rfl
 
+@[defeq]
 theorem π_app_right (c : PullbackCone f g) : c.π.app WalkingCospan.right = c.snd := rfl
 
 set_option backward.defeqAttrib.useBackward true in
@@ -321,9 +323,11 @@ abbrev inr (t : PushoutCocone f g) : Z ⟶ t.pt :=
   t.ι.app WalkingSpan.right
 
 -- This cannot be `@[simp]` because `c.inl` is reducibly defeq to the LHS.
+@[defeq]
 theorem ι_app_left (c : PushoutCocone f g) : c.ι.app WalkingSpan.left = c.inl := rfl
 
 -- This cannot be `@[simp]` because `c.inr` is reducibly defeq to the LHS.
+@[defeq]
 theorem ι_app_right (c : PushoutCocone f g) : c.ι.app WalkingSpan.right = c.inr := rfl
 
 set_option backward.defeqAttrib.useBackward true in

@@ -70,31 +70,31 @@ def appHom (X : C) : (F ⟶ G) →+ (F.obj X ⟶ G.obj X) where
   map_zero' := rfl
   map_add' _ _ := rfl
 
-@[simp]
+@[defeq, simp]
 theorem app_zero (X : C) : (0 : F ⟶ G).app X = 0 :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem app_add (X : C) (α β : F ⟶ G) : (α + β).app X = α.app X + β.app X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem app_sub (X : C) (α β : F ⟶ G) : (α - β).app X = α.app X - β.app X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem app_neg (X : C) (α : F ⟶ G) : (-α).app X = -α.app X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem app_nsmul (X : C) (α : F ⟶ G) (n : ℕ) : (n • α).app X = n • α.app X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem app_zsmul (X : C) (α : F ⟶ G) (n : ℤ) : (n • α).app X = n • α.app X :=
   rfl
 
-@[simp]
+@[defeq, simp]
 theorem app_units_zsmul (X : C) (α : F ⟶ G) (n : ℤˣ) : (n • α).app X = n • α.app X :=
   rfl
 

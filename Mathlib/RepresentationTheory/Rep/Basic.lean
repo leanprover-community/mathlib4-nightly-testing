@@ -105,13 +105,13 @@ initialize_simps_projections Hom (hom' → hom)
 /-
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
-@[simp] lemma hom_id : (𝟙 A : A ⟶ A).hom = .id A.ρ := rfl
+@[defeq, simp] lemma hom_id : (𝟙 A : A ⟶ A).hom = .id A.ρ := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (a : A) : (𝟙 A : A ⟶ A) a = a := by
   simp [Representation.IntertwiningMap.id]
 
-@[simp] lemma hom_comp (f : A ⟶ B) (g : B ⟶ C) : (f ≫ g).hom = g.hom.comp f.hom := rfl
+@[defeq, simp] lemma hom_comp (f : A ⟶ B) (g : B ⟶ C) : (f ≫ g).hom = g.hom.comp f.hom := rfl
 
 /- Provided for rewriting. -/
 variable {A B C} in
@@ -126,15 +126,16 @@ lemma hom_comm_apply (f : A ⟶ B) (g : G) (a : A) : f.hom (A.ρ g a) = B.ρ g (
 
 variable {Z : Type w} [AddCommGroup Z] [Module k Z] {τ : Representation k G Z}
 
-@[simp] lemma hom_ofHom (f : ρ.IntertwiningMap σ) : (ofHom f).hom = f := rfl
-@[simp] lemma ofHom_hom (f : A ⟶ B) : ofHom f.hom = f := rfl
+@[defeq, simp] lemma hom_ofHom (f : ρ.IntertwiningMap σ) : (ofHom f).hom = f := rfl
+@[defeq, simp] lemma ofHom_hom (f : A ⟶ B) : ofHom f.hom = f := rfl
 
-@[simp] lemma ofHom_id : ofHom (.id σ) = 𝟙 (of σ) := rfl
+@[defeq, simp] lemma ofHom_id : ofHom (.id σ) = 𝟙 (of σ) := rfl
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_comp (f : ρ.IntertwiningMap σ) (g : σ.IntertwiningMap τ) :
   ofHom (g.comp f) = ofHom f ≫ ofHom g := rfl
 
+@[defeq]
 lemma ofHom_apply (f : ρ.IntertwiningMap σ) (x : X) : ofHom f x = f x := rfl
 
 lemma inv_hom_apply (e : A ≅ B) (x : A) : e.inv.hom (e.hom.hom x) = x := by simp
@@ -143,8 +144,10 @@ lemma hom_inv_apply (e : A ≅ B) (x : B) : e.hom.hom (e.inv.hom x) = x := by si
 
 instance : Inhabited (Rep.{u} k G) := ⟨of (Representation.trivial k G PUnit)⟩
 
+@[defeq]
 lemma forget_obj : (forget (Rep.{w} k G)).obj A = A := rfl
 
+@[defeq]
 lemma forget_map (f : A ⟶ B) : (forget (Rep.{w} k G)).map f = (f : _ → _) := rfl
 
 /-- An equiv between the underlying representations induce isomorphism between objects in
@@ -214,9 +217,11 @@ def homEquiv : (A ⟶ B) ≃ (A.ρ.IntertwiningMap B.ρ) where
 
 instance : Add (A ⟶ B) where add f g := ofHom (f.hom + g.hom)
 
+@[defeq]
 lemma ofHom_add (f g : ρ.IntertwiningMap σ) :
     ofHom (f + g) = ofHom f + ofHom g := rfl
 
+@[defeq]
 lemma add_hom (f g : A ⟶ B) : (f + g).hom = f.hom + g.hom := rfl
 
 lemma hom_comp_toLinearMap (f : A ⟶ B) (g : B ⟶ C) :
@@ -235,35 +240,43 @@ lemma comp_add (f : A ⟶ B) (g₁ g₂ : B ⟶ C) :
 instance : Zero (A ⟶ B) where
   zero := ofHom (0 : A.ρ.IntertwiningMap B.ρ)
 
-@[simp]
+@[defeq, simp]
 lemma ofHom_zero : ofHom (0 : ρ.IntertwiningMap σ) = 0 := rfl
 
-@[simp]
+@[defeq, simp]
 lemma zero_hom : (0 : A ⟶ B).hom = 0 := rfl
 
 instance : SMul ℕ (A ⟶ B) where smul n f := ofHom (n • f.hom)
 
+@[defeq]
 lemma ofHom_nsmul (f : ρ.IntertwiningMap σ) (n : ℕ) :
     ofHom (n • f) = n • ofHom f := rfl
 
+@[defeq]
 lemma nsmul_hom (f : A ⟶ B) (n : ℕ) : (n • f).hom = n • f.hom := rfl
 
 instance : Neg (A ⟶ B) where neg f := ofHom (-f.hom)
 
+@[defeq]
 lemma ofHom_neg (f : ρ.IntertwiningMap σ) : ofHom (-f) = -ofHom f := rfl
 
+@[defeq]
 lemma neg_hom (f : A ⟶ B) : (-f).hom = -f.hom := rfl
 
 instance : Sub (A ⟶ B) where sub f g := ofHom (f.hom - g.hom)
 
+@[defeq]
 lemma ofHom_sub (f g : ρ.IntertwiningMap σ) : ofHom (f - g) = ofHom f - ofHom g := rfl
 
+@[defeq]
 lemma sub_hom (f g : A ⟶ B) : (f - g).hom = f.hom - g.hom := rfl
 
 instance : SMul ℤ (A ⟶ B) where smul n f := ofHom (n • f.hom)
 
+@[defeq]
 lemma ofHom_zsmul (f : ρ.IntertwiningMap σ) (n : ℤ) : ofHom (n • f) = n • ofHom f := rfl
 
+@[defeq]
 lemma zsmul_hom (f : A ⟶ B) (n : ℤ) : (n • f).hom = n • f.hom := rfl
 
 instance : AddCommGroup (A ⟶ B) := fast_instance% hom_injective.addCommGroup
@@ -292,6 +305,7 @@ variable (k G) in
 abbrev trivial (V : Type w) [AddCommGroup V] [Module k V] : Rep k G :=
   Rep.of (Representation.trivial k G V)
 
+@[defeq]
 lemma trivial_V {V : Type w} [AddCommGroup V] [Module k V] : (trivial k G V).V = V := rfl
 
 lemma trivial_ρ {V : Type w} [AddCommGroup V] [Module k V] (g : G) :
@@ -468,10 +482,10 @@ instance hasForgetToModuleCat :
 abbrev Hom.toModuleCatHom (f : A ⟶ B) : ModuleCat.of k A.V ⟶ ModuleCat.of k B.V :=
   ModuleCat.ofHom f.hom.toLinearMap
 
-@[simp] lemma forget₂_moduleCat_obj (A : Rep.{w} k G) :
+@[defeq, simp] lemma forget₂_moduleCat_obj (A : Rep.{w} k G) :
     (forget₂ (Rep.{w} k G) (ModuleCat.{w} k)).obj A = .of k A := rfl
 
-@[simp] lemma forget₂_moduleCat_map (f : A ⟶ B) :
+@[defeq, simp] lemma forget₂_moduleCat_map (f : A ⟶ B) :
     (forget₂ (Rep.{w} k G) (ModuleCat.{w} k)).map f = ModuleCat.ofHom f.hom.toLinearMap := rfl
 
 instance : (forget₂ (Rep.{w} k G) (ModuleCat.{w} k)).Faithful := inferInstance
@@ -566,10 +580,12 @@ variable {k : Type u} {G : Type v} [CommSemiring k] [Monoid G]
 instance {M N : Rep k G} : SMul k (M ⟶ N) where
   smul r f := ofHom (r • f.hom)
 
+@[defeq]
 lemma ofHom_smul {M N : Type w} [AddCommGroup M] [AddCommGroup N] [Module k M] [Module k N]
     {σ : Representation k G M} {ρ : Representation k G N} (f : σ.IntertwiningMap ρ) (r : k) :
     ofHom (r • f) = r • ofHom f := rfl
 
+@[defeq]
 lemma smul_hom {M N : Rep k G} (f : M ⟶ N) (r : k) : (r • f).hom = r • f.hom := rfl
 
 lemma smul_comp {M N O : Rep k G} (r : k) (f : M ⟶ N) (g : N ⟶ O) :
@@ -624,31 +640,31 @@ instance : MonoidalCategory (Rep.{u} k G) where
   pentagon _ _ _ _ := by ext; simp
   triangle X Y := by ext; simp
 
-@[simp]
+@[defeq, simp]
 lemma tensorUnit_V : (𝟙_ (Rep.{u} k G)).V = k := rfl
 
-@[simp]
+@[defeq, simp]
 lemma tensorUnit_ρ : (𝟙_ (Rep.{u} k G)).ρ = Representation.trivial k G k := rfl
 
-@[simp]
+@[defeq, simp]
 lemma tensor_V {X Y : Rep k G} : (X ⊗ Y).V = TensorProduct k X.V Y.V := rfl
 
-@[simp]
+@[defeq, simp]
 lemma tensor_ρ {X Y : Rep k G} : (X ⊗ Y).ρ = X.ρ.tprod Y.ρ := rfl
 
-@[simp]
+@[defeq, simp]
 lemma hom_whiskerRight {X₁ X₂ Y : Rep k G} (f : X₁ ⟶ X₂) :
     (f ▷ Y).hom = .rTensor _ f.hom := rfl
 
-@[simp]
+@[defeq, simp]
 lemma hom_whiskerLeft {X Y₁ Y₂ : Rep k G} (f : Y₁ ⟶ Y₂) :
     (X ◁ f).hom = .lTensor _ f.hom := rfl
 
-@[simp]
+@[defeq, simp]
 lemma hom_tensorHom {X₁ X₂ Y₁ Y₂ : Rep k G} (f : X₁ ⟶ Y₁) (g : X₂ ⟶ Y₂) :
     (f ⊗ₘ g).hom = f.hom.tensor g.hom := rfl
 
-@[simp]
+@[defeq, simp]
 lemma of_tensor {X Y : Type u} [AddCommGroup X] [AddCommGroup Y] [Module k X] [Module k Y]
     (σ : Representation k G X) (ρ : Representation k G Y) :
     of (σ.tprod ρ) = of σ ⊗ of ρ := rfl
@@ -869,7 +885,7 @@ variable {k G} in
 abbrev finsupp : Rep k G :=
   Rep.of (Representation.finsupp A.ρ α)
 
-@[simp] lemma finsupp_V : (finsupp α A).V = (α →₀ A.V) := rfl
+@[defeq, simp] lemma finsupp_V : (finsupp α A).V = (α →₀ A.V) := rfl
 
 /-- The representation on `α →₀ k[G]` defined pointwise by the left regular representation on
 `k[G]`. -/
@@ -962,24 +978,32 @@ section
 
 open MonoidalCategory Representation.LinearizeMonoidal
 
+@[defeq]
 lemma μ_def {X Y : Action (Type u) G} : Functor.LaxMonoidal.μ (linearization k G) X Y =
     ofHom (μ X Y) := rfl
 
+@[defeq]
 lemma μ_hom {X Y : Action (Type u) G} : (Functor.LaxMonoidal.μ (linearization k G) X Y).hom
     = μ X Y := rfl
 
+@[defeq]
 lemma ε_def : Functor.LaxMonoidal.ε (linearization k G) = ofHom (ε k G) := rfl
 
+@[defeq]
 lemma ε_hom : (Functor.LaxMonoidal.ε (linearization k G)).hom = ε k G := rfl
 
+@[defeq]
 lemma δ_def {X Y : Action (Type u) G} : Functor.OplaxMonoidal.δ (linearization k G) X Y =
     ofHom (δ X Y) := rfl
 
+@[defeq]
 lemma δ_hom {X Y : Action (Type u) G} : (Functor.OplaxMonoidal.δ (linearization k G) X Y).hom
     = δ X Y := rfl
 
+@[defeq]
 lemma η_def : Functor.OplaxMonoidal.η (linearization k G) = ofHom (η k G) := rfl
 
+@[defeq]
 lemma η_hom : (Functor.OplaxMonoidal.η (linearization k G)).hom = η k G := rfl
 
 end

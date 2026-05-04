@@ -365,7 +365,7 @@ open Polynomial
 Something similar might be needed after the refactor from `Valued` to `ValuativeRel`. -/
 instance valuedRatFunc : Valued K⟮X⟯ ℤᵐ⁰ := Valued.mk' ((idealX K).valuation _)
 
-@[simp]
+@[defeq, simp]
 theorem v_def {x : K⟮X⟯} :
     Valued.v x = (idealX K).valuation _ x := rfl
 

@@ -55,6 +55,7 @@ def sheaf (X : SheafedSpace C) : Sheaf C (X : TopCat) :=
   ⟨X.presheaf, X.IsSheaf⟩
 
 /-- Not `@[simp]` since it already reduces to `carrier = carrier`. -/
+@[defeq]
 theorem mk_coe (carrier) (presheaf) (h) :
     (({ carrier
         presheaf
