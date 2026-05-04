@@ -582,6 +582,7 @@ lemma inverts : W.IsInvertedBy (Q W) := fun _ _ s hs =>
 
 variable {W}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor `Localization W ⥤ E` that is induced by a functor `C ⥤ E` which inverts `W`,
 when `W` has a left calculus of fractions. -/
@@ -610,6 +611,7 @@ noncomputable def lift (F : C ⥤ E) (hF : W.IsInvertedBy F) :
     dsimp
     rw [F.map_comp, F.map_comp, map_comp_map_s_assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma fac (F : C ⥤ E) (hF : W.IsInvertedBy F) : Q W ⋙ lift F hF = F :=
   Functor.ext (fun _ => rfl) (fun X Y f => by

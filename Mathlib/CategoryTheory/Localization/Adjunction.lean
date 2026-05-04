@@ -82,6 +82,7 @@ lemma η_app (X₂ : C₂) :
 end Localization
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
 /-- If `adj : G ⊣ F` is an adjunction between two categories `C₁` and `C₂` that
 are equipped with localization functors `L₁ : C₁ ⥤ D₁` and `L₂ : C₂ ⥤ D₂` with
 respect to `W₁ : MorphismProperty C₁` and `W₂ : MorphismProperty C₂`, and that

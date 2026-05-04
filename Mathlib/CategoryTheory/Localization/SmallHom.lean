@@ -113,6 +113,7 @@ noncomputable def equiv (L : C ⥤ D) [L.IsLocalization W] {X Y : C}
   letI := small_of_hasSmallLocalizedHom.{w} W W.Q X Y
   (equivShrink _).symm.trans (homEquiv W W.Q L)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma equiv_equiv_symm (L : C ⥤ D) [L.IsLocalization W]
     (L' : C ⥤ D') [L'.IsLocalization W] (G : D ⥤ D')
@@ -158,6 +159,7 @@ noncomputable def comp {X Y Z : C} [HasSmallLocalizedHom.{w} W X Y]
     SmallHom.{w} W X Z :=
   (equiv W W.Q).symm (equiv W W.Q α ≫ equiv W W.Q β)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma equiv_comp (L : C ⥤ D) [L.IsLocalization W] {X Y Z : C} [HasSmallLocalizedHom.{w} W X Y]
     [HasSmallLocalizedHom.{w} W Y Z] [HasSmallLocalizedHom.{w} W X Z]
@@ -223,6 +225,7 @@ noncomputable def chgUniv {X Y : C}
     SmallHom.{w} W X Y ≃ SmallHom.{w''} W X Y :=
   (equiv.{w} W W.Q).trans (equiv.{w''} W W.Q).symm
 
+set_option backward.defeqAttrib.useBackward true in
 lemma equiv_chgUniv (L : C ⥤ D) [L.IsLocalization W] {X Y : C}
     [HasSmallLocalizedHom.{w} W X Y] [HasSmallLocalizedHom.{w''} W X Y]
     (e : SmallHom.{w} W X Y) :
