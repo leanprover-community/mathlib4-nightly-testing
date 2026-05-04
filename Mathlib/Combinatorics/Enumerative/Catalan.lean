@@ -1,9 +1,6 @@
-/-
-Copyright (c) 2022 Julian Kuelshammer. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
-Authors: Julian Kuelshammer
--/
-module
+module -- shake: keep-all
+public import Mathlib.Combinatorics.Enumerative.Catalan.Basic
+public import Mathlib.Combinatorics.Enumerative.Catalan.Tree
 
 public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Data.Finset.NatAntidiagonal

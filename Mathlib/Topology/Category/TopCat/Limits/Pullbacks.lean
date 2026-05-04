@@ -51,6 +51,7 @@ def pullbackCone (f : X ⟶ Z) (g : Y ⟶ Z) : PullbackCone f g :=
       ext ⟨x, h⟩
       simpa)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The constructed cone is a limit. -/
 def pullbackConeIsLimit (f : X ⟶ Z) (g : Y ⟶ Z) : IsLimit (pullbackCone f g) :=
   PullbackCone.isLimitAux' _
@@ -187,7 +188,7 @@ theorem range_pullback_map {W X Y Z S T : TopCat} (f₁ : W ⟶ S) (f₂ : X ⟶
   · rintro ⟨y, rfl⟩
     simp only [Set.mem_inter_iff, Set.mem_preimage, Set.mem_range]
     rw [← ConcreteCategory.comp_apply, ← ConcreteCategory.comp_apply]
-    simp only [limit.lift_π, PullbackCone.mk_pt, PullbackCone.mk_π_app]
+    simp only [limit.lift_π, PullbackCone.mk_π_app]
     exact ⟨exists_apply_eq_apply _ _, exists_apply_eq_apply _ _⟩
   rintro ⟨⟨x₁, hx₁⟩, ⟨x₂, hx₂⟩⟩
   have : f₁ x₁ = f₂ x₂ := by
@@ -347,8 +348,8 @@ theorem snd_iso_of_left_embedding_range_subset {X Y S : TopCat} {f : X ⟶ S} (h
   convert (isoOfHomeo esto).isIso_hom
 
 theorem pullback_snd_image_fst_preimage (f : X ⟶ Z) (g : Y ⟶ Z) (U : Set X) :
-    (pullback.snd f g) '' ((pullback.fst f g) ⁻¹' U) =
-      g ⁻¹' (f '' U) := by
+    (pullback.snd f g) '' (pullback.fst f g) ⁻¹' U =
+      g ⁻¹' f '' U := by
   ext x
   constructor
   · rintro ⟨y, hy, rfl⟩
@@ -364,8 +365,8 @@ theorem pullback_snd_image_fst_preimage (f : X ⟶ Z) (g : Y ⟶ Z) (U : Set X) 
     · rw [pullbackIsoProdSubtype_inv_snd_apply]
 
 theorem pullback_fst_image_snd_preimage (f : X ⟶ Z) (g : Y ⟶ Z) (U : Set Y) :
-    (pullback.fst f g) '' ((pullback.snd f g) ⁻¹' U) =
-      f ⁻¹' (g '' U) := by
+    (pullback.fst f g) '' (pullback.snd f g) ⁻¹' U =
+      f ⁻¹' g '' U := by
   ext x
   constructor
   · rintro ⟨y, hy, rfl⟩

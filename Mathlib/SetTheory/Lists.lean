@@ -328,7 +328,8 @@ variable [DecidableEq α]
 
 set_option backward.isDefEq.respectTransparency false in
 mutual
-  def Equiv.decidable : ∀ l₁ l₂ : Lists α, Decidable (l₁ ~ l₂)
+  @[implicit_reducible]
+  instance Equiv.decidable : ∀ l₁ l₂ : Lists α, Decidable (l₁ ~ l₂)
     | ⟨false, l₁⟩, ⟨false, l₂⟩ =>
       decidable_of_iff' (l₁ = l₂) <| by
         cases l₁
@@ -350,7 +351,8 @@ mutual
         Subset.decidable l₂ l₁
       exact decidable_of_iff' _ Equiv.antisymm_iff
   termination_by x y => sizeOf x + sizeOf y
-  def Subset.decidable : ∀ l₁ l₂ : Lists' α true, Decidable (l₁ ⊆ l₂)
+  @[implicit_reducible]
+  instance Subset.decidable : ∀ l₁ l₂ : Lists' α true, Decidable (l₁ ⊆ l₂)
     | Lists'.nil, _ => isTrue Lists'.Subset.nil
     | @Lists'.cons' _ b a l₁, l₂ => by
       haveI :=
@@ -363,7 +365,8 @@ mutual
         Subset.decidable l₁ l₂
       exact decidable_of_iff' _ (@Lists'.cons_subset _ ⟨_, _⟩ _ _)
   termination_by x y => sizeOf x + sizeOf y
-  def mem.decidable : ∀ (a : Lists α) (l : Lists' α true), Decidable (a ∈ l)
+  @[implicit_reducible]
+  instance mem.decidable : ∀ (a : Lists α) (l : Lists' α true), Decidable (a ∈ l)
     | a, Lists'.nil => isFalse <| by rintro ⟨_, ⟨⟩, _⟩
     | a, Lists'.cons' b l₂ => by
       haveI :=
@@ -379,13 +382,6 @@ mutual
       rw [← Lists'.mem_cons]; rfl
   termination_by x y => sizeOf x + sizeOf y
 end
-
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12263
-we now wrap these as `instance`;
-we can't just add the `instance` attribute to the above definitions in the mutual block. -/
-instance : ∀ l₁ l₂ : Lists α, Decidable (l₁ ~ l₂) := Equiv.decidable
-instance : ∀ l₁ l₂ : Lists' α true, Decidable (l₁ ⊆ l₂) := Subset.decidable
-instance : ∀ (a : Lists α) (l : Lists' α true), Decidable (a ∈ l) := mem.decidable
 
 /-- Copy over the decidability to the `Setoid` instance. -/
 instance : DecidableRel ((· ≈ ·) : Lists α → Lists α → Prop) :=

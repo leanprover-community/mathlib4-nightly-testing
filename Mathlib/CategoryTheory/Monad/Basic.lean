@@ -22,6 +22,8 @@ For the fact that monads are "just" monoids in the category of endofunctors, see
 `CategoryTheory.Monad.EquivMon`.
 -/
 
+set_option backward.defeqAttrib.useBackward true
+
 @[expose] public section
 
 
@@ -35,10 +37,10 @@ universe v₁ u₁
 variable (C : Type u₁) [Category.{v₁} C]
 
 /-- The data of a monad on C consists of an endofunctor T together with natural transformations
-η : 𝟭 C ⟶ T and μ : T ⋙ T ⟶ T satisfying three equations:
-- T μ_X ≫ μ_X = μ_(TX) ≫ μ_X (associativity)
-- η_(TX) ≫ μ_X = 1_X (left unit)
-- Tη_X ≫ μ_X = 1_X (right unit)
+`η : 𝟭 C ⟶ T` and `μ : T ⋙ T ⟶ T` satisfying three equations:
+- `T μ_X ≫ μ_X = μ_(TX) ≫ μ_X` (associativity)
+- `η_(TX) ≫ μ_X = 1_X` (left unit)
+- `Tη_X ≫ μ_X = 1_X` (right unit)
 -/
 structure Monad extends C ⥤ C where
   /-- The unit for the monad. -/
@@ -60,10 +62,10 @@ lemma Monad.mu_naturality (T : Monad C) ⦃X Y : C⦄ (f : X ⟶ Y) :
   T.μ.naturality _
 
 /-- The data of a comonad on C consists of an endofunctor G together with natural transformations
-ε : G ⟶ 𝟭 C and δ : G ⟶ G ⋙ G satisfying three equations:
-- δ_X ≫ G δ_X = δ_X ≫ δ_(GX) (coassociativity)
-- δ_X ≫ ε_(GX) = 1_X (left counit)
-- δ_X ≫ G ε_X = 1_X (right counit)
+`ε : G ⟶ 𝟭 C` and `δ : G ⟶ G ⋙ G` satisfying three equations:
+- `δ_X ≫ G δ_X = δ_X ≫ δ_(GX)` (coassociativity)
+- `δ_X ≫ ε_(GX) = 1_X` (left counit)
+- `δ_X ≫ G ε_X = 1_X` (right counit)
 -/
 structure Comonad extends C ⥤ C where
   /-- The counit for the comonad. -/
@@ -144,6 +146,7 @@ instance : Category (Monad C) where
         { app := fun X => f.app X ≫ g.app X
           naturality := fun X Y h => by rw [assoc, f.1.naturality_assoc, g.1.naturality] } }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : Category (Comonad C) where
   id M := { toNatTrans := 𝟙 (M : C ⥤ C) }
@@ -288,6 +291,7 @@ end Monad
 
 namespace Comonad
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The identity comonad. -/
 @[simps!]
 def id : Comonad C where
@@ -306,6 +310,7 @@ variable {C}
 
 namespace Monad
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Transport a monad structure on a functor along an isomorphism of functors. -/
 def transport {F : C ⥤ C} (T : Monad C) (i : (T : C ⥤ C) ≅ F) : Monad C where

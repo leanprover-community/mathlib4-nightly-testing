@@ -34,7 +34,7 @@ preserves finite products. We achieve this characterization in this file.
 - [*Algebraic Theories*, Chapter 2.][Adamek_Rosicky_Vitale_2010]
 -/
 
-@[expose] public section
+public section
 
 universe w v v₁ v₂ u u₁ u₂
 
@@ -65,6 +65,7 @@ namespace IsSifted
 
 variable {C}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Being sifted is preserved by equivalences of categories -/
 lemma isSifted_of_equiv [IsSifted C] {D : Type u₁} [Category.{v₁} D] (e : D ≌ C) : IsSifted D :=
   letI : Final (diag D) := by
@@ -96,6 +97,7 @@ instance [IsSifted C] : IsConnected C :=
           · simpa using Zag.of_inv X.hom.snd
         · rfl)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A category with binary coproducts is sifted or empty. -/
 instance [HasBinaryCoproducts C] : IsSiftedOrEmpty C := by
@@ -145,6 +147,7 @@ open scoped MonoidalCategory.ExternalProduct
 
 variable (X Y : C ⥤ Type u)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Through the isomorphisms `PreservesColimit₂.isoColimitUncurryWhiskeringLeft₂` and
 `externalProductCompDiagIso`, the comparison map `colimit.pre (X ⊠ Y) (diag C)` identifies with the
@@ -152,7 +155,8 @@ product comparison map for the colimit functor. -/
 lemma factorization_prodComparison_colim :
     (HasColimit.isoOfNatIso ((externalProductCompDiagIso _ _).app (X, Y)).symm).hom ≫
       colimit.pre (X ⊠ Y) (diag C) ≫
-        (PreservesColimit₂.isoColimitUncurryWhiskeringLeft₂ X Y <| curriedTensor <| Type u).hom =
+        (PreservesColimit₂.isoColimitUncurryWhiskeringLeft₂ X Y <|
+          curriedTensor <| Type u).hom =
     CartesianMonoidalCategory.prodComparison colim X Y := by
   apply colimit.hom_ext
   intro j
@@ -220,7 +224,8 @@ theorem isSiftedOrEmpty_of_colim_preservesBinaryProducts
       HasColimit.isoOfNatIso <| isoWhiskerLeft _ <| .refl _
     _ ≅ colimit (_ ⊗ _) := HasColimit.isoOfNatIso <| .refl _
     _ ≅ (colimit _) ⊗ (colimit _) := CartesianMonoidalCategory.prodComparisonIso colim _ _
-    _ ≅ PUnit ⊗ PUnit := (Coyoneda.colimitCoyonedaIso _) ⊗ᵢ (Coyoneda.colimitCoyonedaIso _)
+    _ ≅ PUnit ⊗ PUnit :=
+      (Coyoneda.colimitCoyonedaIso _) ⊗ᵢ (Coyoneda.colimitCoyonedaIso _)
     _ ≅ PUnit := λ_ _
 
 lemma isSiftedOrEmpty_of_colim_preservesFiniteProducts

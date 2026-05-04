@@ -29,8 +29,6 @@ open Equiv Fintype Function
 
 open Finset (range sum_const)
 
-open Set (Iic)
-
 namespace Imo1987Q1
 
 set_option backward.isDefEq.respectTransparency false in

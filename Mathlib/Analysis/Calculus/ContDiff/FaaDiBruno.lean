@@ -224,6 +224,7 @@ lemma neZero_partSize (c : OrderedFinpartition n) (i : Fin c.length) : NeZero (c
 
 attribute [local instance] neZero_length neZero_partSize
 
+set_option backward.defeqAttrib.useBackward true in
 instance instUniqueOne : Unique (OrderedFinpartition 1) where
   uniq c := by
     have h₁ : c.length = 1 := le_antisymm c.length_le (c.length_pos Nat.zero_lt_one)
@@ -1049,6 +1050,7 @@ private lemma faaDiBruno_aux2 {m : ℕ} (q : FormalMultilinearSeries 𝕜 F G)
     apply FormalMultilinearSeries.congr _ (by simp [hij])
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- *Faa di Bruno* formula: If two functions `g` and `f` have Taylor series up to `n` given by
 `q` and `p`, then `g ∘ f` also has a Taylor series, given by `q.taylorComp p`. -/
@@ -1105,7 +1107,7 @@ theorem HasFTaylorSeriesUpToOn.comp {n : WithTop ℕ∞} {g : F → G} {f : E �
     rw [Finset.sum_sigma']
     exact Fintype.sum_equiv (OrderedFinpartition.extendEquiv m) _ _ (fun p ↦ rfl)
   · intro m hm
-    apply continuousOn_finset_sum _ (fun c _ ↦ ?_)
+    apply continuousOn_finsetSum _ (fun c _ ↦ ?_)
     let B := c.compAlongOrderedFinpartitionL 𝕜 E F G
     change ContinuousOn
       ((fun p ↦ B p.1 p.2) ∘ (fun x ↦ (q (f x) c.length, fun i ↦ p x (c.partSize i)))) s

@@ -216,6 +216,7 @@ def pushforwardEq {X Y : TopCat.{w}} {f g : X ⟶ Y} (h : f = g) (ℱ : X.Preshe
 theorem pushforward_eq' {X Y : TopCat.{w}} {f g : X ⟶ Y} (h : f = g) (ℱ : X.Presheaf C) :
     f _* ℱ = g _* ℱ := by rw [h]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem pushforwardEq_hom_app {X Y : TopCat.{w}} {f g : X ⟶ Y}
     (h : f = g) (ℱ : X.Presheaf C) (U) :
@@ -240,6 +241,7 @@ def toPushforwardOfIso {X Y : TopCat} (H : X ≅ Y) {ℱ : X.Presheaf C} {𝒢 :
     (α : H.hom _* ℱ ⟶ 𝒢) : ℱ ⟶ H.inv _* 𝒢 :=
   (presheafEquivOfIso _ H).toAdjunction.homEquiv ℱ 𝒢 α
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem toPushforwardOfIso_app {X Y : TopCat} (H₁ : X ≅ Y) {ℱ : X.Presheaf C} {𝒢 : Y.Presheaf C}
     (H₂ : H₁.hom _* ℱ ⟶ 𝒢) (U : (Opens X)ᵒᵖ) :
@@ -255,6 +257,7 @@ def pushforwardToOfIso {X Y : TopCat} (H₁ : X ≅ Y) {ℱ : Y.Presheaf C} {�
     (H₂ : ℱ ⟶ H₁.hom _* 𝒢) : H₁.inv _* ℱ ⟶ 𝒢 :=
   ((presheafEquivOfIso _ H₁.symm).toAdjunction.homEquiv ℱ 𝒢).symm H₂
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem pushforwardToOfIso_app {X Y : TopCat} (H₁ : X ≅ Y) {ℱ : Y.Presheaf C} {𝒢 : X.Presheaf C}
     (H₂ : ℱ ⟶ H₁.hom _* 𝒢) (U : (Opens X)ᵒᵖ) :
@@ -326,13 +329,13 @@ theorem pullbackObjObjOfImageOpen_hom_naturality {X Y : TopCat.{v}} (f : X ⟶ Y
     (fun j ↦ ?_)
   have eq : ((LeftExtension.mk ((Opens.map f).op.leftKanExtension ℱ)
       ((Opens.map f).op.leftKanExtensionUnit ℱ)).coconeAt
-      (op V)).ι.app j ≫ ((pullback C f).obj ℱ).map (homOfLE le).op  =
+      (op V)).ι.app j ≫ ((pullback C f).obj ℱ).map (homOfLE le).op =
       ((LeftExtension.mk ((Opens.map f).op.leftKanExtension ℱ)
       ((Opens.map f).op.leftKanExtensionUnit ℱ)).coconeAt
       (op U)).ι.app ((CostructuredArrow.map (homOfLE le).op).obj j) := by cat_disch
   rw [Limits.IsColimit.comp_coconePointUniqueUpToIso_hom_assoc, reassoc_of% eq,
     Limits.IsColimit.comp_coconePointUniqueUpToIso_hom,
-    Limits.coconeOfDiagramTerminal_ι_app,Limits.coconeOfDiagramTerminal_ι_app]
+    Limits.coconeOfDiagramTerminal_ι_app, Limits.coconeOfDiagramTerminal_ι_app]
   dsimp
   rw [← Functor.map_comp]
   cat_disch
@@ -361,6 +364,7 @@ def pullbackObjIso {X Y : TopCat.{v}} {f : X ⟶ Y} (hf : IsOpenMap f) (ℱ : Y.
     (fun {U V} i ↦ (pullbackObjObjOfImageOpen_hom_naturality f ℱ (hf (unop V).1 (unop V).2)
       (hf (unop U).1 (unop U).2) (leOfHom i.unop)))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 If `f : X ⟶ Y` is an open map, this expresses the naturality of the isomorphism

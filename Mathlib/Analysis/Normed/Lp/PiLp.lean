@@ -950,6 +950,7 @@ variable {ι : Type*} {κ : ι → Type*} (p : ℝ≥0∞) [Fact (1 ≤ p)]
   [Fintype ι] [∀ i, Fintype (κ i)]
   (α : ∀ i, κ i → Type*) [∀ i k, SeminormedAddCommGroup (α i k)] [∀ i k, Module 𝕜 (α i k)]
 
+set_option backward.defeqAttrib.useBackward true in
 variable (𝕜) in
 /-- `LinearEquiv.piCurry` for `PiLp`, as an isometry. -/
 def _root_.LinearIsometryEquiv.piLpCurry :
@@ -1026,8 +1027,7 @@ theorem nnnorm_single (i : ι) (b : β i) : ‖single p i b‖₊ = ‖b‖₊ :
       ciSup_eq_of_forall_le_of_forall_lt_exists_gt (fun j => ?_) fun n hn => ⟨i, hn.trans_eq ?_⟩
     · obtain rfl | hij := Decidable.eq_or_ne i j
       · rw [single_eq_same]
-      · rw [single_eq_of_ne' _ hij, nnnorm_zero]
-        exact zero_le _
+      · simp [hij]
     · rw [single_eq_same]
   | coe p =>
     have hp0 : (p : ℝ) ≠ 0 :=

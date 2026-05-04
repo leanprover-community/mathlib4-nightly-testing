@@ -195,9 +195,6 @@ lemma SortedLE.wbtw {l : List R} (h : l.SortedLE) : l.Wbtw R := by
         exact fun a ha ↦ .of_le_of_le h.1 (h.2.2.1 a ha)
       · simp
 
-@[deprecated (since := "2025-10-13")]
-alias Sorted.wbtw := SortedLE.wbtw
-
 lemma SortedLT.sbtw {l : List R} (h : l.SortedLT) : l.Sbtw R :=
   ⟨h.sortedLE.wbtw, h.nodup⟩
 

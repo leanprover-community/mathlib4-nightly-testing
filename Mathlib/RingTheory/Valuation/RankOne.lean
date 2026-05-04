@@ -31,6 +31,7 @@ We define rank one valuations.
 
 valuation, rank one
 -/
+
 @[expose] public section
 
 noncomputable section
@@ -66,8 +67,8 @@ lemma nonempty_rankOne_iff_mulArchimedean {v : Valuation R Γ₀} [v.IsNontrivia
     exact MulArchimedean.comap hv.hom'.toMonoidHom hv.strictMono'
   · intro _
     obtain ⟨f, hf⟩ :=
-      Archimedean.exists_orderAddMonoidHom_real_injective (Additive  (ValueGroup₀ v)ˣ)
-    let e := AddMonoidHom.toMultiplicativeRight (α :=  (ValueGroup₀ v)ˣ) (β := ℝ) f
+      Archimedean.exists_orderAddMonoidHom_real_injective (Additive (ValueGroup₀ v)ˣ)
+    let e := AddMonoidHom.toMultiplicativeRight (α := (ValueGroup₀ v)ˣ) (β := ℝ) f
     have he : StrictMono e := by
       simp only [AddMonoidHom.coe_toMultiplicativeRight, AddMonoidHom.coe_coe, e]
       -- toAdd_strictMono is already in an applied form, do defeq abuse instead
@@ -146,6 +147,7 @@ instance restrict_RankOne : RankOne (v.restrict) where
 lemma restrict_RankOne_hom_eq :
   RankOne.hom v.restrict = (RankOne.hom v).comp embedding := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 variable {K} in
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_val_lt {γ : ℝ≥0} (hγ : γ ≠ 0) : ∃ x ≠ 0, RankOne.hom v (v.restrict x) < γ := by
@@ -156,7 +158,7 @@ theorem exists_val_lt {γ : ℝ≥0} (hγ : γ ≠ 0) : ∃ x ≠ 0, RankOne.hom
   · simp only [restrict₀_apply, restrict_def, map_eq_zero, dite_eq_left_iff, coe_ne_zero,
       imp_false, not_not] at hk
     by_contra h0
-    rw [dif_pos (by  rw [dif_pos ((zero_iff v).mpr h0)]), eq_comm] at hk
+    rw [dif_pos (by rw [dif_pos ((zero_iff v).mpr h0)]), eq_comm] at hk
     simp at hk
   · convert h
     simp only [restrict_RankOne_hom_eq, coe_comp, Function.comp_apply, ← hk]

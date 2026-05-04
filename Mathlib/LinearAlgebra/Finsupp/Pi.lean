@@ -215,7 +215,7 @@ theorem range_mapRange_linearMap (f : M →ₗ[R] N) (hf : LinearMap.ker f = ⊥
     choose y hy using hx
     refine ⟨⟨x.support, y, fun i => ?_⟩, by ext; simp_all⟩
     constructor
-    <;> contrapose!
+    <;> contrapose
     <;> simp_all +contextual [← hy, map_zero, LinearMap.ker_eq_bot'.1 hf]
 
 end Finsupp
@@ -236,7 +236,7 @@ lemma map_apply_apply [Fintype X] [Finite Y] [DecidableEq Y] (f : X → Y) (s : 
   dsimp [map]
   simp only [Equiv.symm_apply_apply]
   nth_rw 1 [← Finsupp.univ_sum_single s]
-  rw [Finsupp.mapDomain_finset_sum]
+  rw [Finsupp.mapDomain_finsetSum]
   simp [Finset.sum_filter]
   congr
   aesop

@@ -71,7 +71,7 @@ def homotopicMapsNatIso (H : ContinuousMap.Homotopy f g) : map f ⟶ map g where
   naturality := by
     rintro ⟨x⟩ ⟨y⟩ p
     rcases Path.Homotopic.Quotient.mk_surjective p with ⟨p, rfl⟩
-    simp only [map_map, map_obj_as, Path.Homotopic.Quotient.mk''_eq_mk, comp_eq,
+    simp only [map_map, Path.Homotopic.Quotient.mk''_eq_mk, comp_eq,
       ← Path.Homotopic.Quotient.mk_map, ← Path.Homotopic.Quotient.mk_trans]
     rw [Path.Homotopic.Quotient.eq]
     exact .map_trans_evalAt _ _
@@ -181,6 +181,7 @@ variable {X Y : TopCat.{u}} {f g : C(X, Y)} (H : ContinuousMap.Homotopy f g) {x�
 /-!
 These definitions set up the following diagram, for each path `p`:
 
+```
             f(p)
         *--------*
         | \      |
@@ -188,6 +189,7 @@ These definitions set up the following diagram, for each path `p`:
         |     \  |
         *--------*
             g(p)
+```
 
 Here, `H₀ = H.evalAt x₀` is the path from `f(x₀)` to `g(x₀)`,
 and similarly for `H₁`. Similarly, `f(p)` denotes the

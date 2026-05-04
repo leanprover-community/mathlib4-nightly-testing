@@ -132,6 +132,7 @@ theorem isAlgebraic_of_mem_vars_of_forall_totalDegree_le (hFa : F.aeval a = 0) (
       (Finsupp.mem_support_iff.mp hσi) ?_, aeval_toPolynomialAdjoinImageCompl_eq_zero hFa ..⟩
   rw [h, Polynomial.coeff_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hp H in
 theorem exists_mem_support_not_dvd_of_forall_totalDegree_le (hF0 : F ≠ 0) (hFa : F.aeval a = 0) :
@@ -164,7 +165,7 @@ theorem exists_mem_support_not_dvd_of_forall_totalDegree_le (hF0 : F ≠ 0) (hFa
     simp only [← hF', F'', ← this]; rfl
   suffices hpm : p * F''.totalDegree ≤ F.totalDegree by
     have hF''0' : F''.totalDegree ≠ 0 := by
-      contrapose! hF''0
+      contrapose hF''0
       rw [totalDegree_eq_zero_iff_eq_C.mp hF''0, aeval_C, map_eq_zero] at hF''
       rw [totalDegree_eq_zero_iff_eq_C.mp hF''0, hF'', map_zero]
     replace this := hpm.trans ((HF F'' hF''0 hF'').trans_eq (one_mul _).symm)
@@ -223,7 +224,7 @@ lemma exists_isTranscendenceBasis_and_isSeparable_of_linearIndepOn_pow
   have hF₂irr := (hF₁irr.isPrimitive fun h ↦ coeff_ne <| Polynomial.coeff_eq_zero_of_natDegree_lt <|
     h.trans_lt <| Nat.pos_iff_ne_zero.2 hσi).irreducible_iff_irreducible_map_fraction_map
     (K := k').1 hF₁irr
-  contrapose! coeff_ne with Hsep
+  contrapose coeff_ne with Hsep
   have : CharP k' p := (expChar_of_injective_algebraMap (algebraMap k k').injective p).casesOn
     (fun e ↦ (e rfl).elim) (fun _ _ _ ↦ ‹_›) hp.ne_one
   obtain ⟨g, hg, eq⟩ := (((minpoly k' (a i)).separable_or p (minpoly.irreducible

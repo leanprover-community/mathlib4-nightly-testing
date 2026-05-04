@@ -44,6 +44,8 @@ simplicial objects in any category.
 
 -/
 
+set_option backward.defeqAttrib.useBackward true
+
 @[expose] public section
 
 
@@ -89,6 +91,8 @@ def map {D : Type*} [Category* D] {X : SimplicialObject.Augmented C} (ed : Extra
   s' := F.map ed.s'
   s n := F.map (ed.s n)
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 /-- If `X` and `Y` are isomorphic augmented simplicial objects, then an extra
 degeneracy for `X` gives also an extra degeneracy for `Y` -/
 def ofIso {X Y : SimplicialObject.Augmented C} (e : X ≅ Y) (ed : ExtraDegeneracy X) :
@@ -96,9 +100,9 @@ def ofIso {X Y : SimplicialObject.Augmented C} (e : X ≅ Y) (ed : ExtraDegenera
   s' := (point.mapIso e).inv ≫ ed.s' ≫ (drop.mapIso e).hom.app (op ⦋0⦌)
   s n := (drop.mapIso e).inv.app (op ⦋n⦌) ≫ ed.s n ≫ (drop.mapIso e).hom.app (op ⦋n + 1⦌)
   s'_comp_ε := by
-    simpa [w₀, ed.s'_comp_ε_assoc] using (point.mapIso e).inv_hom_id
+    simpa [dsimp% w₀] using dsimp% (point.mapIso e).inv_hom_id
   s₀_comp_δ₁ := by
-    simp [← SimplicialObject.δ_naturality, s₀_comp_δ₁_assoc, w₀_assoc]
+    simp [← SimplicialObject.δ_naturality, s₀_comp_δ₁_assoc, dsimp% w₀_assoc]
   s_comp_δ₀ n := by
     simpa [← SimplicialObject.δ_naturality] using
       congr_app (drop.mapIso e).inv_hom_id (op ⦋n⦌)
@@ -187,27 +191,27 @@ open SSet.stdSimplex in
 /-- The obvious extra degeneracy on the standard simplex. -/
 protected noncomputable def extraDegeneracy (Δ : SimplexCategory) :
     SimplicialObject.Augmented.ExtraDegeneracy (stdSimplex.obj Δ) where
-  s' _ := objMk (OrderHom.const _ 0)
-  s _ f := objEquiv.symm (shift (objEquiv f))
+  s' := ↾fun _ ↦ objMk (OrderHom.const _ 0)
+  s _ := ↾fun f ↦ objEquiv.symm (shift (objEquiv f))
   s'_comp_ε := by
     dsimp
     subsingleton
   s₀_comp_δ₁ := by
     dsimp
-    ext1 x
+    ext x
     apply objEquiv.injective
     ext j
     fin_cases j
     rfl
   s_comp_δ₀ n := by
-    ext1 φ
+    ext φ
     apply objEquiv.injective
     apply SimplexCategory.Hom.ext
     ext i : 2
     dsimp [SimplicialObject.δ, SimplexCategory.δ, SSet.stdSimplex,
       objEquiv, Equiv.ulift, uliftFunctor]
   s_comp_δ n i := by
-    ext1 φ
+    ext φ
     apply objEquiv.injective
     apply SimplexCategory.Hom.ext
     ext j : 2
@@ -215,7 +219,7 @@ protected noncomputable def extraDegeneracy (Δ : SimplexCategory) :
       objEquiv, Equiv.ulift, uliftFunctor]
     cases j using Fin.cases <;> simp
   s_comp_σ n i := by
-    ext1 φ
+    ext φ
     apply objEquiv.injective
     apply SimplexCategory.Hom.ext
     ext j : 2
@@ -245,7 +249,6 @@ variable {C : Type*} [Category* C] (f : Arrow C)
   [∀ n : ℕ, HasWidePullback f.right (fun _ : Fin (n + 1) => f.left) fun _ => f.hom]
   (S : SplitEpi f.hom)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The extra degeneracy map on the Čech nerve of a split epi. It is
 given on the `0`-projection by the given section of the split epi,
 and by shifting the indices on the other projections. -/

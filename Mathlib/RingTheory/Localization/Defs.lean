@@ -671,7 +671,7 @@ set_option backward.isDefEq.respectTransparency false in
 /-- If `S`, `Q` are localizations of `R` and `P` at submonoids `M, T` respectively, an
 isomorphism `j : R ≃+* P` such that `j(M) = T` induces an isomorphism of localizations
 `S ≃+* Q`. -/
-@[simps]
+@[simps apply]
 noncomputable def ringEquivOfRingEquiv (h : R ≃+* P) (H : M.map h.toMonoidHom = T) : S ≃+* Q :=
   have H' : T.map h.symm.toMonoidHom = M := by
     rw [← M.map_id, ← H, Submonoid.map_map]
@@ -712,15 +712,6 @@ theorem ringEquivOfRingEquiv_symm {j : R ≃+* P} (H : M.map j = T) :
           Submonoid.comap_map_eq_of_injective (j : R ≃* P).injective]) := rfl
 
 end Map
-
-section at_units
-lemma at_units (S : Submonoid R)
-    (hS : S ≤ IsUnit.submonoid R) : IsLocalization S R where
-  map_units y := hS y.prop
-  surj := fun s ↦ ⟨⟨s, 1⟩, by simp⟩
-  exists_of_eq := fun {x y} (e : x = y) ↦ ⟨1, e ▸ rfl⟩
-
-end at_units
 
 section
 

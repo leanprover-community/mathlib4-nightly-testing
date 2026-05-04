@@ -47,7 +47,7 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜]
 section ChartedSpace
 variable [ChartedSpace H M] [ChartedSpace H' M'] [ChartedSpace H'' M'']
   -- declare functions, sets, points and smoothness indices
-  {f : M → M'} {s : Set M} {x : M} {n : WithTop ℕ∞}
+  {f : M → M'} {s : Set M} {x : M} {n : ℕ∞ω}
 
 /-! ### Regularity of the composition of `C^n` functions between manifolds -/
 
@@ -261,7 +261,7 @@ theorem contMDiff_of_mulTSupport [One M'] {f : M → M'}
 
 @[to_additive contMDiffWithinAt_of_notMem]
 theorem contMDiffWithinAt_of_notMem_mulTSupport {f : M → M'} [One M'] {x : M}
-    (hx : x ∉ mulTSupport f) (n : WithTop ℕ∞) (s : Set M) : ContMDiffWithinAt I I' n f s x := by
+    (hx : x ∉ mulTSupport f) (n : ℕ∞ω) (s : Set M) : ContMDiffWithinAt I I' n f s x := by
   apply contMDiffWithinAt_const.congr_of_eventuallyEq
     (eventually_nhdsWithin_of_eventually_nhds <| notMem_mulTSupport_iff_eventuallyEq.mp hx)
     (image_eq_one_of_notMem_mulTSupport hx)
@@ -269,7 +269,7 @@ theorem contMDiffWithinAt_of_notMem_mulTSupport {f : M → M'} [One M'] {x : M}
 /-- `f` is continuously differentiable at each point outside of its `mulTSupport`. -/
 @[to_additive contMDiffAt_of_notMem]
 theorem contMDiffAt_of_notMem_mulTSupport {f : M → M'} [One M'] {x : M}
-    (hx : x ∉ mulTSupport f) (n : WithTop ℕ∞) : ContMDiffAt I I' n f x :=
+    (hx : x ∉ mulTSupport f) (n : ℕ∞ω) : ContMDiffAt I I' n f x :=
   contMDiffWithinAt_of_notMem_mulTSupport hx n univ
 
 /-- Given two `C^n` functions `f` and `g` which coincide locally around the frontier of a set `s`,
@@ -293,7 +293,7 @@ lemma ContMDiff.piecewise
   · apply (hg x).congr_of_eventuallyEq
     filter_upwards [isClosed_closure.isOpen_compl.mem_nhds h'x] with y hy
     rw [piecewise_eq_of_notMem]
-    contrapose! hy
+    contrapose hy
     simpa using subset_closure hy
 
 /-- Given two `C^n` functions `f` and `g` from `ℝ` to a real manifold which coincide locally
@@ -361,16 +361,16 @@ section Inclusion
 
 open TopologicalSpace
 
-theorem contMDiffAt_subtype_iff {n : WithTop ℕ∞} {U : Opens M} {f : M → M'} {x : U} :
+theorem contMDiffAt_subtype_iff {n : ℕ∞ω} {U : Opens M} {f : M → M'} {x : U} :
     ContMDiffAt I I' n (fun x : U ↦ f x) x ↔ ContMDiffAt I I' n f x :=
   ((contDiffWithinAt_localInvariantProp n).liftPropAt_iff_comp_subtype_val _ _).symm
 
-theorem contMDiff_subtype_val {n : WithTop ℕ∞} {U : Opens M} :
+theorem contMDiff_subtype_val {n : ℕ∞ω} {U : Opens M} :
     ContMDiff I I n (Subtype.val : U → M) :=
   fun _ ↦ contMDiffAt_subtype_iff.mpr contMDiffAt_id
 
 @[to_additive]
-theorem ContMDiff.extend_one [T2Space M] [One M'] {n : WithTop ℕ∞} {U : Opens M} {f : U → M'}
+theorem ContMDiff.extend_one [T2Space M] [One M'] {n : ℕ∞ω} {U : Opens M} {f : U → M'}
     (supp : HasCompactMulSupport f) (diff : ContMDiff I I' n f) :
     ContMDiff I I' n (Subtype.val.extend f 1) := fun x ↦ by
   refine contMDiff_of_mulTSupport (fun x h ↦ ?_) _
@@ -381,7 +381,7 @@ theorem ContMDiff.extend_one [T2Space M] [One M'] {n : WithTop ℕ∞} {U : Open
   rw [extend_comp Subtype.val_injective]
   exact diff.contMDiffAt
 
-theorem contMDiff_inclusion {n : WithTop ℕ∞} {U V : Opens M} (h : U ≤ V) :
+theorem contMDiff_inclusion {n : ℕ∞ω} {U V : Opens M} (h : U ≤ V) :
     ContMDiff I I n (Opens.inclusion h : U → V) := fun _ ↦
   (contDiffWithinAt_localInvariantProp n).liftProp_inclusion (contDiffWithinAtProp_id ·) _ _
 
@@ -409,7 +409,7 @@ end ChartedSpace
 
 section
 
-variable {e : M → H} (h : IsOpenEmbedding e) {n : WithTop ℕ∞}
+variable {e : M → H} (h : IsOpenEmbedding e) {n : ℕ∞ω}
 
 set_option backward.isDefEq.respectTransparency false in
 /-- If the `ChartedSpace` structure on a manifold `M` is given by an open embedding `e : M → H`,

@@ -5,7 +5,7 @@ Authors: Mario Carneiro
 -/
 module
 
-public import Mathlib.Computability.PartrecCode
+public import Mathlib.Computability.RE
 public import Mathlib.Data.Set.Subsingleton
 
 /-!
@@ -18,54 +18,11 @@ A universal partial recursive function, Rice's theorem, and the halting problem.
 * [Mario Carneiro, *Formalizing computability theory via partial recursive functions*][carneiro2019]
 -/
 
-@[expose] public section
+public section
 
-open List (Vector)
 open Encodable Denumerable
-
-namespace Nat.Partrec
-
 open Computable Part
-
-theorem merge' {f g} (hf : Nat.Partrec f) (hg : Nat.Partrec g) :
-    ∃ h, Nat.Partrec h ∧
-      ∀ a, (∀ x ∈ h a, x ∈ f a ∨ x ∈ g a) ∧ ((h a).Dom ↔ (f a).Dom ∨ (g a).Dom) := by
-  obtain ⟨cf, rfl⟩ := Code.exists_code.1 hf
-  obtain ⟨cg, rfl⟩ := Code.exists_code.1 hg
-  have : Nat.Partrec fun n => Nat.rfindOpt fun k => cf.evaln k n <|> cg.evaln k n :=
-    Partrec.nat_iff.1
-      (Partrec.rfindOpt <|
-        Primrec.option_orElse.to_comp.comp
-          (Code.primrec_evaln.to_comp.comp <| (snd.pair (const cf)).pair fst)
-          (Code.primrec_evaln.to_comp.comp <| (snd.pair (const cg)).pair fst))
-  refine ⟨_, this, fun n => ?_⟩
-  have : ∀ x ∈ rfindOpt fun k ↦ Code.evaln k cf n <|> Code.evaln k cg n,
-      x ∈ Code.eval cf n ∨ x ∈ Code.eval cg n := by
-    intro x h
-    obtain ⟨k, e⟩ := Nat.rfindOpt_spec h
-    rw [Option.mem_def, Option.orElse_eq_some, ← Option.mem_def, ← Option.mem_def] at e
-    obtain e | ⟨-, e⟩ := e <;> simp [Code.evaln_sound e]
-  refine ⟨this, fun h ↦ (this _ ⟨h, rfl⟩).imp Exists.fst Exists.fst, fun h ↦ ?_⟩
-  rw [Nat.rfindOpt_dom]
-  simp only [dom_iff_mem, Code.evaln_complete, Option.mem_def] at h
-  obtain ⟨x, k, e⟩ | ⟨x, k, e⟩ := h
-  · exact ⟨k, x, by simp [e]⟩
-  · refine ⟨k, ?_⟩
-    rcases cf.evaln k n with - | y
-    · exact ⟨x, by simp [e]⟩
-    · exact ⟨y, by simp⟩
-
-end Nat.Partrec
-
-namespace Partrec
-
-variable {α : Type*} {β : Type*} {γ : Type*} {σ : Type*}
-variable [Primcodable α] [Primcodable β] [Primcodable γ] [Primcodable σ]
-
-open Computable Part
-
 open Nat.Partrec (Code)
-
 open Nat.Partrec.Code
 
 theorem merge' {f g : α →. σ} (hf : Partrec f) (hg : Partrec g) :
@@ -192,35 +149,6 @@ namespace ComputablePred
 
 variable {α : Type*} [Primcodable α]
 
-open Nat.Partrec (Code)
-
-open Nat.Partrec.Code Computable
-
-theorem computable_iff {p : α → Prop} :
-    ComputablePred p ↔ ∃ f : α → Bool, Computable f ∧ p = fun a => (f a : Prop) :=
-  ⟨fun ⟨_, h⟩ => ⟨_, h, funext fun _ => propext (Bool.decide_iff _).symm⟩, by
-    rintro ⟨f, h, rfl⟩; exact ⟨by infer_instance, by simpa using h⟩⟩
-
-protected theorem not {p : α → Prop} :
-    (hp : ComputablePred p) → ComputablePred fun a => ¬p a
-  | ⟨_, hp⟩ => Computable.computablePred <| Primrec.not.to_comp.comp hp |>.of_eq <| by simp
-
-/-- The computable functions are closed under if-then-else definitions
-with computable predicates. -/
-theorem ite {f₁ f₂ : ℕ → ℕ} (hf₁ : Computable f₁) (hf₂ : Computable f₂)
-    {c : ℕ → Prop} [DecidablePred c] (hc : ComputablePred c) :
-    Computable fun k ↦ if c k then f₁ k else f₂ k := by
-  simpa [Bool.cond_decide] using hc.decide.cond hf₁ hf₂
-
-theorem to_re {p : α → Prop} (hp : ComputablePred p) : REPred p := by
-  obtain ⟨f, hf, rfl⟩ := computable_iff.1 hp
-  unfold REPred
-  dsimp only []
-  refine
-    (Partrec.cond hf (Decidable.Partrec.const' (Part.some ())) Partrec.none).of_eq fun n =>
-      Part.ext fun a => ?_
-  cases a; cases f n <;> simp
-
 /-- **Rice's Theorem** -/
 theorem rice (C : Set (ℕ →. ℕ)) (h : ComputablePred fun c => eval c ∈ C) {f g} (hf : Nat.Partrec f)
     (hg : Nat.Partrec g) (fC : f ∈ C) : g ∈ C := by
@@ -256,31 +184,6 @@ theorem halting_problem_re (n) : REPred fun c => (eval c n).Dom :=
 /-- The **Halting problem** is not computable -/
 theorem halting_problem (n) : ¬ComputablePred fun c => (eval c n).Dom
   | h => rice { f | (f n).Dom } h Nat.Partrec.zero Nat.Partrec.none trivial
-
--- Post's theorem on the equivalence of r.e., co-r.e. sets and
--- computable sets. The assumption that p is decidable is required
--- unless we assume Markov's principle or LEM.
-set_option linter.unusedDecidableInType false in
-theorem computable_iff_re_compl_re {p : α → Prop} [DecidablePred p] :
-    ComputablePred p ↔ REPred p ∧ REPred fun a => ¬p a :=
-  ⟨fun h => ⟨h.to_re, h.not.to_re⟩, fun ⟨h₁, h₂⟩ =>
-    ⟨‹_›, by
-      obtain ⟨k, pk, hk⟩ :=
-        Partrec.merge (h₁.map (Computable.const true).to₂) (h₂.map (Computable.const false).to₂)
-        (by
-          intro a x hx y hy
-          simp only [Part.mem_map_iff, Part.mem_assert_iff, Part.mem_some_iff, exists_prop,
-            and_true, exists_const] at hx hy
-          cases hy.1 hx.1)
-      refine Partrec.of_eq pk fun n => Part.eq_some_iff.2 ?_
-      rw [hk]
-      simp only [Part.mem_map_iff, Part.mem_assert_iff, Part.mem_some_iff, exists_prop, and_true,
-        true_eq_decide_iff, and_self, exists_const, false_eq_decide_iff]
-      apply Decidable.em⟩⟩
-
-theorem computable_iff_re_compl_re' {p : α → Prop} :
-    ComputablePred p ↔ REPred p ∧ REPred fun a => ¬p a := by
-  classical exact computable_iff_re_compl_re
 
 theorem halting_problem_not_re (n) : ¬REPred fun c => ¬(eval c n).Dom
   | h => halting_problem _ <| computable_iff_re_compl_re'.2 ⟨halting_problem_re _, h⟩

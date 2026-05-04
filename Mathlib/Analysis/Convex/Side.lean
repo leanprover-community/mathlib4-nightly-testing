@@ -746,7 +746,6 @@ section Normed
 variable [SeminormedAddCommGroup V] [NormedSpace ℝ V] [PseudoMetricSpace P]
 variable [NormedAddTorsor V P]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isConnected_setOf_wSameSide {s : AffineSubspace ℝ P} (x : P) (h : (s : Set P).Nonempty) :
     IsConnected { y | s.WSameSide x y } := by
   obtain ⟨p, hp⟩ := h
@@ -768,7 +767,6 @@ theorem isPreconnected_setOf_wSameSide (s : AffineSubspace ℝ P) (x : P) :
     exact isPreconnected_empty
   · exact (isConnected_setOf_wSameSide x h).isPreconnected
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isConnected_setOf_sSameSide {s : AffineSubspace ℝ P} {x : P} (hx : x ∉ s)
     (h : (s : Set P).Nonempty) : IsConnected { y | s.SSameSide x y } := by
   obtain ⟨p, hp⟩ := h
@@ -789,7 +787,6 @@ theorem isPreconnected_setOf_sSameSide (s : AffineSubspace ℝ P) (x : P) :
       exact isPreconnected_empty
     · exact (isConnected_setOf_sSameSide hx h).isPreconnected
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isConnected_setOf_wOppSide {s : AffineSubspace ℝ P} (x : P) (h : (s : Set P).Nonempty) :
     IsConnected { y | s.WOppSide x y } := by
   obtain ⟨p, hp⟩ := h
@@ -811,7 +808,6 @@ theorem isPreconnected_setOf_wOppSide (s : AffineSubspace ℝ P) (x : P) :
     exact isPreconnected_empty
   · exact (isConnected_setOf_wOppSide x h).isPreconnected
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isConnected_setOf_sOppSide {s : AffineSubspace ℝ P} {x : P} (hx : x ∉ s)
     (h : (s : Set P).Nonempty) : IsConnected { y | s.SOppSide x y } := by
   obtain ⟨p, hp⟩ := h
@@ -857,10 +853,10 @@ lemma sSameSide_affineSpan_faceOpposite_of_sign_eq {w₁ w₂ : Fin (n + 1) → 
   have hj' : s.points j ∈ affineSpan R (Set.range (s.faceOpposite i).points) := by
     simpa using hj
   refine (wSameSide_iff_exists_left hj').2 (.inr ?_)
-  rw [← Finset.univ.affineCombination_affineCombinationSingleWeights R s.points
+  rw [← Finset.univ.affineCombination_piSingle R s.points
     (Finset.mem_univ j), Finset.affineCombination_vsub]
   let w₃ : Fin (n + 1) → R :=
-    w₂ - w₂ i • (w₁ i)⁻¹ • (w₁ - Finset.affineCombinationSingleWeights R j)
+    w₂ - w₂ i • (w₁ i)⁻¹ • (w₁ - Pi.single j 1)
   have hw₃1 : ∑ k, w₃ k = 1 := by simp [w₃, hw₂, ← Finset.mul_sum, hw₁]
   have hw₃i : w₃ i = 0 := by simp [w₃, hj.symm, h0]
   refine ⟨Finset.univ.affineCombination R s.points w₃,
@@ -998,9 +994,8 @@ lemma sSameSide_affineSpan_faceOpposite_point_left_iff {w : Fin (n + 1) → R}
     (hw : ∑ j, w j = 1) {i : Fin (n + 1)} :
     (affineSpan R (Set.range (s.faceOpposite i).points)).SSameSide (s.points i)
       (Finset.univ.affineCombination R s.points w) ↔ 0 < w i := by
-  rw [← Finset.univ.affineCombination_affineCombinationSingleWeights R s.points (Finset.mem_univ i),
-    s.sSameSide_affineSpan_faceOpposite_iff
-      (Finset.univ.sum_affineCombinationSingleWeights _ (Finset.mem_univ _)) hw, eq_comm]
+  rw [← Finset.univ.affineCombination_piSingle R s.points (Finset.mem_univ i),
+    s.sSameSide_affineSpan_faceOpposite_iff (Fintype.sum_pi_single' _ _) hw, eq_comm]
   simp [sign_eq_one_iff]
 
 lemma sSameSide_affineSpan_faceOpposite_point_right_iff {w : Fin (n + 1) → R}
@@ -1013,9 +1008,8 @@ lemma sOppSide_affineSpan_faceOpposite_point_left_iff {w : Fin (n + 1) → R}
     (hw : ∑ j, w j = 1) {i : Fin (n + 1)} :
     (affineSpan R (Set.range (s.faceOpposite i).points)).SOppSide (s.points i)
       (Finset.univ.affineCombination R s.points w) ↔ w i < 0 := by
-  rw [← Finset.univ.affineCombination_affineCombinationSingleWeights R s.points (Finset.mem_univ i),
-    s.sOppSide_affineSpan_faceOpposite_iff
-      (Finset.univ.sum_affineCombinationSingleWeights _ (Finset.mem_univ _)) hw, eq_comm,
+  rw [← Finset.univ.affineCombination_piSingle R s.points (Finset.mem_univ i),
+    s.sOppSide_affineSpan_faceOpposite_iff (Fintype.sum_pi_single' _ _) hw, eq_comm,
     neg_eq_iff_eq_neg]
   simp [sign_eq_neg_one_iff]
 
@@ -1029,9 +1023,8 @@ lemma wSameSide_affineSpan_faceOpposite_point_left_iff {w : Fin (n + 1) → R}
     (hw : ∑ j, w j = 1) {i : Fin (n + 1)} :
     (affineSpan R (Set.range (s.faceOpposite i).points)).WSameSide (s.points i)
       (Finset.univ.affineCombination R s.points w) ↔ 0 ≤ w i := by
-  rw [← Finset.univ.affineCombination_affineCombinationSingleWeights R s.points (Finset.mem_univ i),
-    s.wSameSide_affineSpan_faceOpposite_iff
-      (Finset.univ.sum_affineCombinationSingleWeights _ (Finset.mem_univ _)) hw, eq_comm]
+  rw [← Finset.univ.affineCombination_piSingle R s.points (Finset.mem_univ i),
+    s.wSameSide_affineSpan_faceOpposite_iff (Fintype.sum_pi_single' _ _) hw, eq_comm]
   simp [sign_eq_one_iff, le_iff_eq_or_lt', or_comm]
 
 lemma wSameSide_affineSpan_faceOpposite_point_right_iff {w : Fin (n + 1) → R}
@@ -1044,9 +1037,8 @@ lemma wOppSide_affineSpan_faceOpposite_point_left_iff {w : Fin (n + 1) → R}
     (hw : ∑ j, w j = 1) {i : Fin (n + 1)} :
     (affineSpan R (Set.range (s.faceOpposite i).points)).WOppSide (s.points i)
       (Finset.univ.affineCombination R s.points w) ↔ w i ≤ 0 := by
-  rw [← Finset.univ.affineCombination_affineCombinationSingleWeights R s.points (Finset.mem_univ i),
-    s.wOppSide_affineSpan_faceOpposite_iff
-      (Finset.univ.sum_affineCombinationSingleWeights _ (Finset.mem_univ _)) hw, eq_comm,
+  rw [← Finset.univ.affineCombination_piSingle R s.points (Finset.mem_univ i),
+    s.wOppSide_affineSpan_faceOpposite_iff (Fintype.sum_pi_single' _ _) hw, eq_comm,
     neg_eq_iff_eq_neg]
   simp [sign_eq_neg_one_iff, le_iff_eq_or_lt, or_comm]
 

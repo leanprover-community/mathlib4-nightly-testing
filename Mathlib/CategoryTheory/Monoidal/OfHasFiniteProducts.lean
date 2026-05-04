@@ -158,7 +158,7 @@ end
 section
 
 #adaptation_note /-- prior to nightly-2026-02-05
-these four fields were provided by the auto_param -/
+the four fields starting from `id_tensorHom_id` were provided by the auto_param -/
 /-- A category with an initial object and binary coproducts has a natural monoidal structure. -/
 @[instance_reducible]
 def monoidalOfHasFiniteCoproducts [HasInitial C] [HasBinaryCoproducts C] : MonoidalCategory C :=
@@ -297,6 +297,7 @@ lemma δ_eq (X Y : C) :
 variable [PreservesLimit (Functor.empty.{0} C) F]
   [PreservesLimitsOfShape (Discrete WalkingPair) F]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option linter.deprecated false in
 @[deprecated inferInstance (since := "2025-10-19")]
 instance :
@@ -306,6 +307,7 @@ instance :
     let : CartesianMonoidalCategory D := .ofHasFiniteProducts
     IsIso (η F) := by dsimp [η_eq]; infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 set_option linter.deprecated false in
 @[deprecated inferInstance (since := "2025-10-19")]
 instance (X Y : C) :

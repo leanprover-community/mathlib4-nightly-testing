@@ -560,7 +560,8 @@ end IsComplement
 
 section Action
 
-open Pointwise MulAction
+open scoped Pointwise
+open MulAction
 
 /-- The collection of left transversals of a subgroup -/
 @[to_additive /-- The collection of left transversals of a subgroup. -/]
