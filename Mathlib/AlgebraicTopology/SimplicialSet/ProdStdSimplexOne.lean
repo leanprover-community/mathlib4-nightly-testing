@@ -73,6 +73,7 @@ noncomputable def nonDegenerateEquiv₁ :
           Fin.coe_ofNat_eq_mod, Nat.zero_mod, add_zero] at this
         lia)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma nonDegenerateEquiv₁_fst (i : Fin (p + 1)) :
     dsimp% (nonDegenerateEquiv₁ i).1.1 =
