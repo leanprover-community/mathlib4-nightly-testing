@@ -123,17 +123,25 @@ noncomputable def chainComplexMap : Λ.chainComplex X ⟶ Λ.chainComplex Y :=
       Λ.F.map (kernel.map _ _ (ι.map (Λ.F.map f)) f (Λ.π.naturality f).symm) ≫
       (Λ.chainComplexXOneIso Y).inv)
     -- Adaption note (lean4#13557): the trailing `simp` no longer closes the goal
-    -- at instance transparency. Use `simp` to expand the differential and cancel
-    -- iso compositions, then explicitly apply π-naturality + `kernel.lift_ι_assoc`.
-    -- Adaption note (lean4#13557): the trailing `simp` no longer closes the goal
-    -- at instance transparency.  TODO(joachim): rewrite using explicit
-    -- `Λ.π.naturality` step before applying `kernel.lift_ι_assoc`.
-    (ι.map_injective (by sorry))
+    -- at instance transparency. Use the natural transformation `Λ.π`'s
+    -- naturality square explicitly, then `kernel.lift_ι` (kernel.map = kernel.lift).
+    (ι.map_injective (by
+      dsimp
+      simp [map_chainComplex_d_1_0]
+      have nat := (Λ.π.naturality
+        (kernel.map (Λ.π.app X) (Λ.π.app Y) (ι.map (Λ.F.map f)) f (Λ.π.naturality f).symm))
+      simp only [Functor.comp_map, Functor.id_map] at nat
+      simp [reassoc_of% nat, kernel.lift_ι_assoc]))
     (fun n p ↦
       ⟨(Λ.chainComplexXIso X n).hom ≫ (Λ.F.map
         (kernel.map _ _ (ι.map p.2.1) (ι.map p.1) (by
           rw [← ι.map_comp, ← ι.map_comp, p.2.2]))) ≫ (Λ.chainComplexXIso Y n).inv,
-            ι.map_injective (by sorry)⟩)
+            ι.map_injective (by
+              simp [map_chainComplex_d]
+              have nat := (Λ.π.naturality (kernel.map _ _ (ι.map p.2.1) (ι.map p.1) (by
+                rw [← ι.map_comp, ← ι.map_comp, p.2.2])))
+              simp only [Functor.comp_map, Functor.id_map] at nat
+              simp [reassoc_of% nat, kernel.lift_ι_assoc])⟩)
 
 @[simp]
 lemma chainComplexMap_f_0 :
