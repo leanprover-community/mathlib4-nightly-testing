@@ -1,5 +1,7 @@
 import Mathlib.Tactic.Clean
 
+set_option backward.defeqAttrib.useBackward true
+
 namespace Tests
 
 def x : Id Nat := by dsimp [Id]; exact 1

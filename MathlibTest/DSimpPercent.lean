@@ -6,6 +6,8 @@ Authors: Robin Carlier
 import Mathlib.Tactic.DSimpPercent
 import Mathlib.Data.Nat.Basic
 
+set_option backward.defeqAttrib.useBackward true
+
 /-!
 Tests for the behavior of `dsimp%`.
 -/

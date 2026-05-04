@@ -175,6 +175,7 @@ https://github.com/leanprover-community/mathlib4/issues/10590
 -/
 section goal_depends_on_hyp
 open Part
+set_option backward.defeqAttrib.useBackward true in
 example (p : Prop) (o : Part α) (h : p → o.Dom) (a : α) :
     a ∈ restrict p o h ↔ p ∧ a ∈ o := by
   dsimp [restrict, mem_eq]
