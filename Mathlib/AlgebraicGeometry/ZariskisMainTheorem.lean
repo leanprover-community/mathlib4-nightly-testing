@@ -115,6 +115,7 @@ theorem exists_etale_isCompl_of_quasiFiniteAt [IsSeparated f]
 
 variable {X Y S : Scheme.{u}} (f : X ⟶ Y)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma Scheme.Hom.exists_mem_and_isIso_morphismRestrict_toNormalization
     [LocallyOfFiniteType f] [IsSeparated f] [QuasiCompact f]
@@ -188,6 +189,7 @@ lemma Scheme.Hom.exists_mem_and_isIso_morphismRestrict_toNormalization
     (Q := @Surjective ⊓ @Flat ⊓ @LocallyOfFinitePresentation) this
     ⟨⟨‹_›, inferInstance⟩, inferInstance⟩ ‹_›
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 **Zariski's main theorem**
 

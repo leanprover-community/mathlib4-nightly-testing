@@ -250,6 +250,7 @@ lemma exists_awayMap_injective_of_localRingHom_injective
   dsimp only at hk ⊢
   rw [pow_add, mul_assoc, e, mul_pow, ← e, mul_assoc, mul_left_comm, hk, mul_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma exists_awayMap_bijective_of_localRingHom_bijective
     [Module.Finite R S] [q.LiesOver p] (hRS : (RingHom.ker (algebraMap R S)).FG)

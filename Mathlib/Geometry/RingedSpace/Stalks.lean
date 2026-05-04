@@ -107,6 +107,7 @@ end Restrict
 
 namespace stalkMap
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem id (X : PresheafedSpace.{_, _, v} C) (x : X) :

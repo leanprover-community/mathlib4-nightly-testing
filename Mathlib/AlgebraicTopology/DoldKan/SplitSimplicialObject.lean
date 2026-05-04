@@ -95,6 +95,7 @@ theorem cofan_inj_comp_PInfty_eq_zero {X : SimplicialObject C} (s : SimplicialOb
   rw [SimplicialObject.Splitting.IndexSet.eqId_iff_mono] at hA
   rw [SimplicialObject.Splitting.cofan_inj_eq, assoc, degeneracy_comp_PInfty X n A.e hA, comp_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem comp_PInfty_eq_zero_iff {Z : C} {n : ℕ} (f : Z ⟶ X _⦋n⦌) :
     f ≫ PInfty.f n = 0 ↔ f ≫ s.πSummand (IndexSet.id (op ⦋n⦌)) = 0 := by
@@ -130,6 +131,7 @@ theorem PInfty_comp_πSummand_id (n : ℕ) :
   rw [← sub_eq_zero, ← sub_comp, ← comp_PInfty_eq_zero_iff, sub_comp, id_comp, PInfty_f_idem,
     sub_self]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 theorem πSummand_comp_cofan_inj_id_comp_PInfty_eq_PInfty (n : ℕ) :
@@ -155,6 +157,7 @@ theorem ιSummand_comp_d_comp_πSummand_eq_zero (j k : ℕ) (A : IndexSet (op �
   rw [← assoc, ← s.comp_PInfty_eq_zero_iff, assoc, ← PInfty.comm j k, s.cofan_inj_eq, assoc,
     degeneracy_comp_PInfty_assoc X j A.e hA, zero_comp, comp_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `s` is a splitting of a simplicial object `X` in a preadditive category,
 `s.nondegComplex` is a chain complex which is given in degree `n` by

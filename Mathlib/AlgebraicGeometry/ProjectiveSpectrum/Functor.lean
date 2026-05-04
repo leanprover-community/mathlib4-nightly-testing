@@ -156,6 +156,7 @@ noncomputable def map : Proj ℬ ⟶ Proj 𝒜 where
 @[simp] theorem map_preimage_basicOpen (s : A) :
     map f hf ⁻¹ᵁ basicOpen 𝒜 s = basicOpen ℬ (f s) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 theorem ι_comp_map (s : A) : (basicOpen ℬ (f s)).ι ≫ map f hf =
     (map f hf).resLE _ _ le_rfl ≫ (basicOpen 𝒜 s).ι := by simp
 
@@ -173,6 +174,7 @@ theorem ι_comp_map (s : A) : (basicOpen ℬ (f s)).ι ≫ map f hf =
   ext
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 The following square commutes:
@@ -200,6 +202,7 @@ an affine open cover of `Proj ℬ` consisting of `D(f(s))` for `s ∈ A` positiv
     Ideal.map_le_of_le_comap <| (toIdeal_irrelevant_le _).mpr fun i hi x hx ↦
     Ideal.subset_span ⟨⟨⟨i, hi⟩, ⟨x, hx⟩⟩, rfl⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem map_comp : map (g.comp f) (irrelevant_le_map_comp hf hg) = map g hg ≫ map f hf := by
   refine (mapAffineOpenCover _ <| irrelevant_le_map_comp hf hg).openCover.hom_ext _ _ fun s ↦ ?_
@@ -207,6 +210,7 @@ theorem map_comp : map (g.comp f) (irrelevant_le_map_comp hf hg) = map g hg ≫ 
     mapAffineOpenCover_f, awayι_comp_map (g.comp f) _ s.1.2 _ s.2.2]
   simp [awayι_comp_map_assoc _ _ _ _ (map_mem f s.2.2), awayι_comp_map _ _ _ _ s.2.2]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem map_id : map (.id 𝒜) (by simp) = 𝟙 (Proj 𝒜) := by
   refine (affineOpenCover _).openCover.hom_ext _ _ fun s ↦ ?_

@@ -145,6 +145,7 @@ theorem rel_equiv : Equivalence D.Rel :=
 
 open CategoryTheory.Limits.WalkingParallelPair
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem eqvGen_of_π_eq
     {x y : ↑(∐ D.U)} (h : 𝖣.π x = 𝖣.π y) :
@@ -317,6 +318,7 @@ def MkCore.t' (h : MkCore.{u}) (i j k : h.J) :
     exact h.t_inter _ ⟨x, hx⟩ hx'
   fun_prop
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- This is a constructor of `TopCat.GlueData` whose arguments are in terms of elements and
 intersections rather than subobjects and pullbacks. Please refer to `TopCat.GlueData.MkCore` for

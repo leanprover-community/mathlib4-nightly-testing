@@ -129,6 +129,7 @@ lemma isKInjective_of_injective_aux {K L : CochainComplex C ℤ}
       Cochain.single_v_eq_zero _ _ _ _ _ (by lia)]
     simp [hβ, u]
 
+set_option backward.defeqAttrib.useBackward true in
 open Cochain.InductionUp in
 lemma isKInjective_of_injective (L : CochainComplex C ℤ) (d : ℤ)
     [L.IsStrictlyGE d] [∀ (n : ℤ), Injective (L.X n)] :

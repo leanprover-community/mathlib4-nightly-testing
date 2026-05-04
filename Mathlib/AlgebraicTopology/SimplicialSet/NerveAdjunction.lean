@@ -305,6 +305,7 @@ def functorEquiv :
         simp only [← f.tgt_eq, NatTrans.naturality_apply]
         rfl)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma homToNerveMk_comp {D : Type u} [SmallCategory D]

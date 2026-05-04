@@ -54,6 +54,7 @@ lemma π_naturality : ι.map (Λ.F.map f) ≫ Λ.π.app Y = Λ.π.app X ≫ f :=
 
 variable [ι.Full] [ι.Faithful] [HasZeroMorphisms C] [Abelian A]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given `ι : C ⥤ A`, `Λ : LeftResolution ι`, `X : A`, this is a chain complex
 which is a (functorial) resolution of `A` that is obtained inductively by using
 the epimorphisms given by `Λ`. -/
@@ -85,6 +86,7 @@ noncomputable def chainComplexXIso (n : ℕ) :
     (Λ.chainComplex X).X (n + 2) ≅ Λ.F.obj (kernel (ι.map ((Λ.chainComplex X).d (n + 1) n))) := by
   apply ChainComplex.mk'XIso
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma map_chainComplex_d (n : ℕ) :
     ι.map ((Λ.chainComplex X).d (n + 2) (n + 1)) =

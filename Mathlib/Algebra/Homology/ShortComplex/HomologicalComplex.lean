@@ -910,6 +910,7 @@ noncomputable def homologyIsoSc' : K.homology j ≅ (K.sc' i j k).homology :=
 lemma homology_sc'_eq_homology [(K.sc' (c.prev j) j (c.next j)).HasHomology] :
     (K.sc' (c.prev j) j (c.next j)).homology = K.homology j := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma homologyIsoSc'_eq_refl
     [(K.sc' (c.prev j) j (c.next j)).HasHomology] :

@@ -268,6 +268,7 @@ variable {f g} in
 lemma IsAffineHom.comp_iff [IsAffineHom g] : IsAffineHom (f ≫ g) ↔ IsAffineHom f :=
   ⟨fun _ ↦ .of_comp f g, fun _ ↦ inferInstance⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[stacks 01KM]
 instance isClosedImmersion_equalizer_ι_left {S : Scheme} {X Y : Over S} [IsSeparated Y.hom]

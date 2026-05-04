@@ -218,6 +218,7 @@ lemma Scheme.Opens.ι_image_basicOpen (r : Γ(U, ⊤)) :
     U.ι ''ᵁ U.toScheme.basicOpen r = X.basicOpen r := by
   rw [Scheme.Opens.ι_image_basicOpen', Scheme.basicOpen_res_eq]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma Scheme.Opens.ι_image_basicOpen_topIso_inv (r : Γ(X, U)) :
     U.ι ''ᵁ U.toScheme.basicOpen (U.topIso.inv r) = X.basicOpen r := by
@@ -269,6 +270,7 @@ theorem Scheme.ι_image_homOfLE_le_ι_image {U V : X.Opens} (e : U ≤ V) (W : O
   rintro _ h
   exact ⟨_, h, rfl⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem Scheme.homOfLE_app {U V : X.Opens} (e : U ≤ V) (W : Opens V) :
@@ -432,6 +434,7 @@ lemma Scheme.isoOfEq_rfl (X : Scheme.{u}) (U : X.Opens) : X.isoOfEq (refl U) = I
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The restriction of an isomorphism onto an open set. -/
 noncomputable def Scheme.Hom.preimageIso {X Y : Scheme.{u}} (f : X ⟶ Y) [IsIso (C := Scheme) f]
     (U : Y.Opens) : (f ⁻¹ᵁ U).toScheme ≅ U := by
@@ -729,10 +732,12 @@ lemma le_resLE_preimage_iff {U : Y.Opens} {V : X.Opens} (e : V ≤ f ⁻¹ᵁ U)
     W ≤ (f.resLE U V e) ⁻¹ᵁ O ↔ V.ι ''ᵁ W ≤ f ⁻¹ᵁ U.ι ''ᵁ O := by
   simp [resLE_preimage, ← image_le_image_iff V.ι, image_preimage_eq_opensRange_inf, V.ι_image_le]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma resLE_app_top : (f.resLE U V e).app ⊤ =
     U.topIso.hom ≫ f.appLE U V e ≫ V.topIso.inv := by simp [Scheme.Hom.resLE]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma resLE_appLE {U : Y.Opens} {V : X.Opens} (e : V ≤ f ⁻¹ᵁ U)
     (O : U.toScheme.Opens) (W : V.toScheme.Opens) (e' : W ≤ resLE f U V e ⁻¹ᵁ O) :

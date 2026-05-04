@@ -428,6 +428,7 @@ lemma δ_shape (hnm : ¬ n + 1 = m) (z : Cochain F G n) : δ n m z = 0 := by
 
 variable (F G) (R)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The differential on the complex of morphisms between cochain complexes, as a linear map. -/
 @[simps!]
 def δ_hom : Cochain F G n →ₗ[R] Cochain F G m where
@@ -466,6 +467,7 @@ variable {F G R}
 @[simp] lemma δ_units_smul (k : Rˣ) (z : Cochain F G n) : δ n m (k • z) = k • δ n m z :=
   δ_smul ..
 
+set_option backward.defeqAttrib.useBackward true in
 lemma δ_δ (n₀ n₁ n₂ : ℤ) (z : Cochain F G n₀) : δ n₁ n₂ (δ n₀ n₁ z) = 0 := by
   by_cases h₁₂ : n₁ + 1 = n₂; swap
   · rw [δ_shape _ _ h₁₂]
@@ -482,6 +484,7 @@ lemma δ_δ (n₀ n₁ n₂ : ℤ) (z : Cochain F G n₀) : δ n₁ n₂ (δ n�
     add_zero, add_neg_cancel, Units.neg_smul,
     Linear.units_smul_comp, Linear.comp_units_smul]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma δ_comp {n₁ n₂ n₁₂ : ℤ} (z₁ : Cochain F G n₁) (z₂ : Cochain G K n₂) (h : n₁ + n₂ = n₁₂)
     (m₁ m₂ m₁₂ : ℤ) (h₁₂ : n₁₂ + 1 = m₁₂) (h₁ : n₁ + 1 = m₁) (h₂ : n₂ + 1 = m₂) :
@@ -632,6 +635,7 @@ lemma coe_units_smul (z : Cocycle F G n) (x : Rˣ) :
 lemma coe_sub (z₁ z₂ : Cocycle F G n) :
     (↑(z₁ - z₂) : Cochain F G n) = (z₁ : Cochain F G n) - (z₂ : Cochain F G n) := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance : Module R (Cocycle F G n) where
   one_smul _ := by aesop
   mul_smul _ _ _ := by ext; dsimp; rw [smul_smul]
@@ -833,6 +837,7 @@ lemma single_v {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (hpq : p + n = q) :
   rw [if_pos, id_comp, comp_id]
   tauto
 
+set_option backward.defeqAttrib.useBackward true in
 lemma single_v_eq_zero {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (p' q' : ℤ) (hpq' : p' + n = q')
     (hp' : p' ≠ p) :
     (single f n).v p' q' hpq' = 0 := by
@@ -841,6 +846,7 @@ lemma single_v_eq_zero {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (p' q' : ℤ)
   intro h
   exact hp' (by lia)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Variant of `single_v_eq_zero` where the assumption is `q' ≠ q` rather than `p' ≠ p`. -/
 lemma single_v_eq_zero' {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (p' q' : ℤ) (hpq' : p' + n = q')
     (hq' : q' ≠ q) :
@@ -922,6 +928,7 @@ variable (K L n)
 @[simp]
 protected lemma map_zero : (0 : Cochain K L n).map Φ = 0 := by cat_disch
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma map_comp {n₁ n₂ n₁₂ : ℤ} (z₁ : Cochain F G n₁) (z₂ : Cochain G K n₂) (h : n₁ + n₂ = n₁₂)
@@ -939,6 +946,7 @@ end Cochain
 
 variable (n)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma δ_map : δ n m (z.map Φ) = (δ n m z).map Φ := by

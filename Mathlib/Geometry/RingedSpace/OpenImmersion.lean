@@ -399,6 +399,7 @@ def pullbackConeOfLeftLift : s.pt ⟶ (pullbackConeOfLeft f g).pt where
         erw [← s.pt.presheaf.map_comp, ← s.pt.presheaf.map_comp]
         congr 1 }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 -- this lemma is not a `simp` lemma, because it is an implementation detail
 theorem pullbackConeOfLeftLift_fst :
@@ -1000,6 +1001,7 @@ instance mono : Mono f :=
 instance : SheafedSpace.IsOpenImmersion (LocallyRingedSpace.forgetToSheafedSpace.map f) :=
   H
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- An explicit pullback cone over `cospan f g` if `f` is an open immersion. -/
 def pullbackConeOfLeft : PullbackCone f g := by

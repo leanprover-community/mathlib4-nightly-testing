@@ -81,6 +81,7 @@ an open `V` and a section of `F(V)` that maps to `s |_ V` via `g`. -/
 abbrev Under := StructuredArrow ⟨op U, s⟩ (Functor.whiskerRight g.hom
   (CategoryTheory.forget AddCommGrpCat.{u})).mapElements
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /- The next lemma proves that the relation `fun x y ↦ Nonempty (y ⟶ x)` on `Under g s`
 satisfies the requirements for applying Zorn's lemma -/

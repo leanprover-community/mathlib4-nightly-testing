@@ -636,6 +636,7 @@ section Semiring
 
 variable [Semiring A] [Algebra R A] [FaithfulSMul R A]
 
+set_option backward.defeqAttrib.useBackward true in
 open LinearMap in
 set_option backward.privateInPublic true in
 private theorem projective_units_and_mul'_comp_lTensor_bijective (I : (Submodule R A)ˣ) :

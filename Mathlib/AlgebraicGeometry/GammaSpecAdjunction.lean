@@ -71,11 +71,13 @@ variable (X : LocallyRingedSpace.{u})
 def toΓSpecFun : X → PrimeSpectrum (Γ.obj (op X)) := fun x =>
   comap (X.presheaf.Γgerm x).hom (IsLocalRing.closedPoint (X.presheaf.stalk x))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem notMem_prime_iff_unit_in_stalk (r : Γ.obj (op X)) (x : X) :
     r ∉ (X.toΓSpecFun x).asIdeal ↔ IsUnit (X.presheaf.Γgerm x r) := by
   simp [toΓSpecFun, IsLocalRing.closedPoint]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The preimage of a basic open in `Spec Γ(X)` under the unit is the basic
 open in `X` defined by the same element (they are equal as sets). -/

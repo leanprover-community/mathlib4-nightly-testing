@@ -76,6 +76,7 @@ theorem PInfty_comp_map_mono_eq_zero (X : SimplicialObject C) {n : ℕ} {Δ' : S
       by_contra
       exact hj₁ (by simp only [Fin.ext_iff, Fin.val_zero]; lia)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 theorem Γ₀_obj_termwise_mapMono_comp_PInfty (X : SimplicialObject C) {Δ Δ' : SimplexCategory}
@@ -182,6 +183,7 @@ theorem natTrans_app_f_app (P : Karoubi (SimplicialObject C)) :
 
 end Γ₂N₂
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem compatibility_Γ₂N₁_Γ₂N₂_natTrans (X : SimplicialObject C) :
     Γ₂N₁.natTrans.app X =
@@ -226,6 +228,7 @@ theorem identity_N₂ :
     NatTrans.id_app, Functor.comp_obj]
   rw [Γ₂.map_id, N₂.map_id, comp_id, id_comp, id_comp, identity_N₂_objectwise P]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : IsIso (Γ₂N₂.natTrans : (N₂ : Karoubi (SimplicialObject C) ⥤ _) ⋙ _ ⟶ _) := by
   have : ∀ P : Karoubi (SimplicialObject C), IsIso (Γ₂N₂.natTrans.app P) := by

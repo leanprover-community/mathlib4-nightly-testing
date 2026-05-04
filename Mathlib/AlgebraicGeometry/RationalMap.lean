@@ -530,6 +530,7 @@ def RationalMap.openCoverDomain (f : X ⤏ Y) : f.domain.toScheme.OpenCover wher
     use ⟨_, (TopologicalSpace.Opens.mem_sSup.mp x.2).choose_spec.1⟩
     exact ⟨⟨x.1, (TopologicalSpace.Opens.mem_sSup.mp x.2).choose_spec.2⟩, Subtype.ext (by simp)⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `f : X ⤏ Y` is a rational map from a reduced scheme to a separated scheme,
 then `f` can be represented as a partial map on its domain of definition. -/

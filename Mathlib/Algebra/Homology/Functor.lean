@@ -37,6 +37,7 @@ namespace HomologicalComplex
 
 variable [HasZeroMorphisms V] {ι : Type*} {c : ComplexShape ι}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A complex of functors gives a functor to complexes. -/
 @[simps]
 def asFunctor (C : HomologicalComplex (T ⥤ V) c) :

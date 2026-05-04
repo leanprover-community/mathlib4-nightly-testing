@@ -253,6 +253,7 @@ def mapHomotopyCategoryProdIdCompInverseIso (f : X ⟶ X') :
       simp
       rfl))
 
+set_option backward.defeqAttrib.useBackward true in
 variable {Y} in
 /-- The naturality of `HomotopyCategory.BinaryProduct.inverse`
 with respect to the second variable. -/

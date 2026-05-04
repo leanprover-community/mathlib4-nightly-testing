@@ -260,6 +260,7 @@ theorem Spec.locallyRingedSpaceMap_comp {R S T : CommRingCat.{u}} (f : R ⟶ S) 
   LocallyRingedSpace.Hom.ext' <| by
     rw [Spec.locallyRingedSpaceMap_toHom, Spec.sheafedSpaceMap_comp]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Spec, as a contravariant functor from commutative rings to locally ringed spaces.
 -/
 @[simps]
@@ -297,6 +298,7 @@ def LocallyRingedSpace.SpecΓIdentity : Spec.toLocallyRingedSpace.rightOp ⋙ Γ
 
 end SpecΓ
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The stalk map of `Spec M⁻¹R ⟶ Spec R` is an iso for each `p : Spec M⁻¹R`. -/
 theorem isIso_SpecMap_stakMap_localization (R : CommRingCat.{u}) (M : Submonoid R)

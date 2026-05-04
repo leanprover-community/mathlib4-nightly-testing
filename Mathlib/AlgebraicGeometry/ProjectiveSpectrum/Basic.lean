@@ -140,6 +140,7 @@ noncomputable
 def basicOpenToSpec : (basicOpen 𝒜 f).toScheme ⟶ Spec (.of <| Away 𝒜 f) :=
   (basicOpen 𝒜 f).toSpecΓ ≫ Spec.map (awayToSection 𝒜 f)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma basicOpenToSpec_app_top :
     (basicOpenToSpec 𝒜 f).app ⊤ = (Scheme.ΓSpecIso _).hom ≫ awayToSection 𝒜 f ≫
       (basicOpen 𝒜 f).topIso.inv := by

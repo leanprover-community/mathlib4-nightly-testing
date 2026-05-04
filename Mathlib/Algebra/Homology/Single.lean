@@ -307,12 +307,14 @@ noncomputable def fromSingle₀Equiv (C : CochainComplex V ℕ) (X : V) :
   left_inv φ := by cat_disch
   right_inv := by cat_disch
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma fromSingle₀Equiv_symm_apply_f_zero {C : CochainComplex V ℕ} {X : V}
     (f : X ⟶ C.X 0) (hf : f ≫ C.d 0 1 = 0) :
     ((fromSingle₀Equiv C X).symm ⟨f, hf⟩).f 0 = f := by
   simp [fromSingle₀Equiv]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Morphisms to a single object cochain complex with `X` concentrated in degree 0
 to an `ℕ`-indexed cochain complex `C` are the same as morphisms `f : C.X 0 ⟶ X`.
 -/
@@ -324,6 +326,7 @@ noncomputable def toSingle₀Equiv (C : CochainComplex V ℕ) (X : V) :
   left_inv := by cat_disch
   right_inv := by cat_disch
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma toSingle₀Equiv_symm_apply_f_zero
     {C : CochainComplex V ℕ} {X : V} (f : C.X 0 ⟶ X) :

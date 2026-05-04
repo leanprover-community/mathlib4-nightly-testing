@@ -349,11 +349,13 @@ lemma Scheme.Opens.toSpecΓ_top {X : Scheme} :
     (⊤ : X.Opens).toSpecΓ = (⊤ : X.Opens).ι ≫ X.toSpecΓ := by
   simp [Scheme.Opens.toSpecΓ, toSpecΓ_naturality]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma Scheme.Opens.toSpecΓ_appTop {X : Scheme.{u}} (U : X.Opens) :
     U.toSpecΓ.appTop = (Scheme.ΓSpecIso Γ(X, U)).hom ≫ U.topIso.inv := by
   simp [Scheme.Opens.toSpecΓ]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma Scheme.Opens.toSpecΓ_naturality {X Y : Scheme} (f : X ⟶ Y) (U : Y.Opens) :
@@ -401,6 +403,7 @@ lemma isoSpec_hom_apply (x : U) :
   congr 1
   exact IsLocalRing.comap_closedPoint (U.stalkIso x).inv.hom
 
+set_option backward.defeqAttrib.useBackward true in
 lemma isoSpec_hom_appTop :
     hU.isoSpec.hom.appTop = (Scheme.ΓSpecIso Γ(X, U)).hom ≫ U.topIso.inv := by
   simp [isoSpec, Scheme.isoSpec]
@@ -611,6 +614,7 @@ theorem ι_basicOpen_preimage (r : Γ(X, ⊤)) :
     ← Scheme.basicOpen_res _ _ (homOfLE le_top).op]
   exact hU.basicOpen _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hU in
 theorem exists_basicOpen_le {V : X.Opens} (x : V) (h : ↑x ∈ U) :
@@ -649,6 +653,7 @@ instance basicOpenSectionsToAffine_isIso :
   (hU.fromSpec.isIso_app _ (hU.opensRange_fromSpec.symm ▸ X.basicOpen_le f)).comp_isIso'
     inferInstance
 
+set_option backward.defeqAttrib.useBackward true in
 include hU in
 theorem isLocalization_basicOpen :
     IsLocalization.Away f Γ(X, X.basicOpen f) := by
@@ -1116,6 +1121,7 @@ lemma eq_zeroLocus_of_isClosed_of_isAffine [IsAffine X] (s : Set X) :
   · rintro ⟨I, rfl⟩
     exact zeroLocus_isClosed X I.carrier
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma Opens.toSpecΓ_preimage_basicOpen {X : Scheme.{u}} (U : X.Opens) (r : Γ(X, U)) :
     U.toSpecΓ ⁻¹ᵁ PrimeSpectrum.basicOpen r = U.ι ⁻¹ᵁ X.basicOpen r := by

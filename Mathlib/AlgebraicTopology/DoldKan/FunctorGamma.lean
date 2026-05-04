@@ -198,6 +198,7 @@ end Obj
 
 variable [HasFiniteCoproducts C]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor `Γ₀ : ChainComplex C ℕ ⥤ SimplicialObject C`, on objects. -/
 @[simps]

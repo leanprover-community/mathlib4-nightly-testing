@@ -311,9 +311,11 @@ instance : AddGroupWithOne (X q) :=
     intCast_ofNat := fun n => by ext <;> simp
     intCast_negSucc := fun n => by ext <;> simp }
 
+set_option backward.defeqAttrib.useBackward true in
 theorem left_distrib (x y z : X q) : x * (y + z) = x * y + x * z := by
   ext <;> dsimp <;> ring
 
+set_option backward.defeqAttrib.useBackward true in
 theorem right_distrib (x y z : X q) : (x + y) * z = x * z + y * z := by
   ext <;> dsimp <;> ring
 

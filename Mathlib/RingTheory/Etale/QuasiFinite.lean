@@ -84,6 +84,7 @@ universe u v
 variable {R : Type u} {S : Type v} {T : Type*}
   [CommRing R] [CommRing S] [CommRing T] [Algebra R S] [Algebra R T]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Suppose `f : S →ₐ[R] T` is an `R`-algebra homomorphism with `S` integral and `T` of finite type,
 such that the induced map `S[1/g] → T[1/g]` is surjective for some `g : S`.
@@ -140,6 +141,7 @@ lemma Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ
     refine RingHom.finiteType_algebraMap.mpr ?_
     exact .of_restrictScalars_finiteType R _ _
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance high] Algebra.TensorProduct.leftAlgebra IsScalarTower.right
   DivisionRing.instIsArtinianRing in
@@ -295,6 +297,7 @@ lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq_aux
       (P''.over_def P)).comp_algebraMap, ← Polynomial.map_map, ← ha']
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq_aux₂
     {R S R' R'' : Type*} [CommRing R] [CommRing S] [Algebra R S] [Algebra.FiniteType R S]

@@ -669,6 +669,7 @@ def localizationtoStalkₗ (x : PrimeSpectrum.Top R) :
     (LocalizedModule.mkLinearMap x.asIdeal.primeCompl M)
     (toStalkₗ' R M x).hom fun f ↦ isUnit_toStalkₗ' x f.1 f.2 :)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem localizationtoStalkₗ_mk (x : PrimeSpectrum.Top R) (f : M) (s) :
@@ -845,6 +846,7 @@ def commRingCatStalkEquivModuleStalk (x : PrimeSpectrum.Top R) :
       rfl
     · exact congr($this _).symm
 
+set_option backward.defeqAttrib.useBackward true in
 public instance (x : PrimeSpectrum.Top R) :
     IsLocalization.AtPrime ((structurePresheafInCommRingCat R).stalk x) x.asIdeal := by
   refine (isLocalizedModule_iff_isLocalization' _ _).mp ?_
@@ -1151,6 +1153,7 @@ theorem comap_id' (U : Opens (PrimeSpectrum.Top R)) :
     (comap (RingHom.id R) U U fun p hpU => by rwa [PrimeSpectrum.comap_id]) = RingHom.id _ := by
   rw [comap_id rfl]; rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem comap_comp (f : R →+* S) (g : S →+* P) (U : Opens (PrimeSpectrum.Top R))
     (V : Opens (PrimeSpectrum.Top S)) (W : Opens (PrimeSpectrum.Top P))
@@ -1163,6 +1166,7 @@ theorem comap_comp (f : R →+* S) (g : S →+* P) (U : Opens (PrimeSpectrum.Top
         rw [comap_apply, Localization.localRingHom_comp _ (PrimeSpectrum.comap g p.1).asIdeal] <;>
         simp
 
+set_option backward.defeqAttrib.useBackward true in
 @[elementwise, reassoc]
 theorem toOpen_comp_comap (f : R →+* S) (U : Opens (PrimeSpectrum.Top R)) :
     CommRingCat.ofHom (algebraMap _ _) ≫

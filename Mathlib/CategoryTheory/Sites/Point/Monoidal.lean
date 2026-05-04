@@ -31,6 +31,7 @@ open Limits MonoidalCategory Functor
 variable {C : Type u} [Category.{v} C] {J : GrothendieckTopology C} (Φ : Point.{w} J)
   {A : Type u'} [Category.{v'} A] [MonoidalCategory A] [HasColimitsOfSize.{w, w} A]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 noncomputable instance :
     (Φ.presheafFiber (A := A)).OplaxMonoidal where

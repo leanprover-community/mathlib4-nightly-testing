@@ -160,6 +160,7 @@ def Cover.pushforwardIso [P.RespectsIso] [P.ContainsIdentities] [P.IsStableUnder
     ((Equiv.punitProd _).symm.trans (Equiv.sigmaEquivProd PUnit 𝒰.I₀).symm) (fun _ => Iso.refl _)
     fun _ => (Category.id_comp _).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Adding map satisfying `P` into a cover gives another cover. -/
 @[simps toPreZeroHypercover]
 nonrec def Cover.add {X Y : Scheme.{u}} (𝒰 : X.Cover (precoverage P)) (f : Y ⟶ X)

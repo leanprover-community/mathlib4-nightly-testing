@@ -331,6 +331,7 @@ theorem num_mem_carrier_iff (hm : 0 < m) (q : Spec.T A⁰_ f)
   · have := degree_eq_of_mem_mem 𝒜 (SetLike.pow_mem_graded n f_deg) (hn.symm ▸ z.den.2) this
     rw [← smul_eq_mul, this]; exact z.num.2
 
+set_option backward.defeqAttrib.useBackward true in
 theorem carrier.add_mem (q : Spec.T A⁰_ f) {a b : A} (ha : a ∈ carrier f_deg q)
     (hb : b ∈ carrier f_deg q) : a + b ∈ carrier f_deg q := by
   refine fun i => (q.2.mem_or_mem ?_).elim id id
@@ -438,6 +439,7 @@ theorem carrier.asIdeal.homogeneous : (carrier.asIdeal f_deg hm q).IsHomogeneous
 def carrier.asHomogeneousIdeal : HomogeneousIdeal 𝒜 :=
   ⟨carrier.asIdeal f_deg hm q, carrier.asIdeal.homogeneous f_deg hm q⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem carrier.denom_notMem : f ∉ carrier.asIdeal f_deg hm q := fun rid =>
   q.isPrime.ne_top <|
     (Ideal.eq_top_iff_one _).mpr
@@ -455,6 +457,7 @@ theorem carrier.relevant : ¬HomogeneousIdeal.irrelevant 𝒜 ≤ carrier.asHomo
 theorem carrier.asIdeal.ne_top : carrier.asIdeal f_deg hm q ≠ ⊤ := fun rid =>
   carrier.denom_notMem f_deg hm q (rid.symm ▸ Submodule.mem_top)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem carrier.asIdeal.prime : (carrier.asIdeal f_deg hm q).IsPrime :=
   (carrier.asIdeal.homogeneous f_deg hm q).isPrime_of_homogeneous_mem_or_mem
     (carrier.asIdeal.ne_top f_deg hm q) fun {x y} ⟨nx, hnx⟩ ⟨ny, hny⟩ hxy =>
@@ -613,6 +616,7 @@ lemma awayToSection_germ (f x hx) :
   apply (Proj.stalkIso' 𝒜 x).eq_symm_apply.mpr
   apply Proj.stalkIso'_germ
 
+set_option backward.defeqAttrib.useBackward true in
 lemma awayToSection_apply (f : A) (x p) :
     (((ProjectiveSpectrum.Proj.awayToSection 𝒜 f).1 x).val p).val =
       IsLocalization.map (M := Submonoid.powers f) (T := p.1.1.toIdeal.primeCompl) _

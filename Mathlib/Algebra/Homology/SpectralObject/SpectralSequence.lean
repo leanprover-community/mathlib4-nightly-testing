@@ -622,6 +622,7 @@ lemma spectralSequenceHomologyData_right_homologyIso_eq_left_homologyIso
   ext1
   simp [ShortComplex.HomologyData.right_homologyIso_eq_left_homologyIso_trans_iso]
 
+set_option backward.defeqAttrib.useBackward true in
 unseal spectralSequence in
 lemma spectralSequence_iso (hn₁ : n₀ + 1 = n₁ := by lia) (hn₂ : n₁ + 1 = n₂ := by lia) :
     (X.spectralSequence data).iso r r' pq' =

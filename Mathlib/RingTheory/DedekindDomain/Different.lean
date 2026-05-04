@@ -284,6 +284,7 @@ lemma mem_dual (hI : I ≠ 0) {x} :
 
 variable (A K)
 
+set_option backward.defeqAttrib.useBackward true in
 lemma dual_ne_zero (hI : I ≠ 0) :
     dual A K I ≠ 0 := by
   obtain ⟨b, hb, hb'⟩ := I.prop

@@ -79,6 +79,7 @@ lemma HasStandardEtaleSurjectionOn.isStandardEtale
 
 namespace Algebra.IsUnramifiedAt
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 private theorem exists_hasStandardEtaleSurjectionOn_of_exists_adjoin_singleton_eq_top_aux₁
     (P : Ideal R) [P.IsPrime] (x : S) (hx : R[x] = ⊤) :
@@ -127,6 +128,7 @@ private theorem exists_hasStandardEtaleSurjectionOn_of_exists_adjoin_singleton_e
   · apply algebra_ext; intros r; congr 1; ext x; simp [← IsScalarTower.algebraMap_apply]
   · simp [← TensorProduct.right_algebraMap_apply, ← IsScalarTower.algebraMap_apply]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] aeval_algebraMap_apply in
 -- Subsumed by `Algebra.IsUnramifiedAt.exists_hasStandardEtaleSurjectionOn`.

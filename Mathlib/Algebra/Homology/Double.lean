@@ -112,6 +112,7 @@ variable {f} (h : i₀ ≠ i₁) {K : HomologicalComplex C c} (φ₀ : X₀ ⟶ 
   (comm : φ₀ ≫ K.d i₀ i₁ = f ≫ φ₁)
   (hφ : ∀ (k : ι), c.Rel i₁ k → φ₁ ≫ K.d i₁ k = 0)
 
+set_option backward.defeqAttrib.useBackward true in
 open Classical in
 /-- Constructor for morphisms from a homological complex `double f hi₀₁`. -/
 noncomputable def mkHomFromDouble : double f hi₀₁ ⟶ K where
@@ -135,6 +136,7 @@ noncomputable def mkHomFromDouble : double f hi₀₁ ⟶ K where
           double_d_eq_zero₀ _ _ _ _ h.symm, zero_comp]
       · apply (isZero_double_X f hi₀₁ k₀ h₀ h₁).eq_of_src
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp, reassoc]
 lemma mkHomFromDouble_f₀ :
     (mkHomFromDouble hi₀₁ h φ₀ φ₁ comm hφ).f i₀ =
@@ -142,6 +144,7 @@ lemma mkHomFromDouble_f₀ :
   dsimp [mkHomFromDouble]
   rw [if_pos rfl, id_comp, comp_id]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp, reassoc]
 lemma mkHomFromDouble_f₁ :
     (mkHomFromDouble hi₀₁ h φ₀ φ₁ comm hφ).f i₁ =
