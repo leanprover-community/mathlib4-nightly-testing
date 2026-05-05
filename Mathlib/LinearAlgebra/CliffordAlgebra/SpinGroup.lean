@@ -232,7 +232,7 @@ theorem star_mem_iff {x : CliffordAlgebra Q} : star x ∈ pinGroup Q ↔ x ∈ p
 instance : Star (pinGroup Q) where
   star x := ⟨star x, star_mem x.prop⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_star {x : pinGroup Q} : ↑(star x) = (star x : CliffordAlgebra Q) :=
   rfl
 
@@ -262,11 +262,9 @@ instance : StarMul (pinGroup Q) where
 instance : Inhabited (pinGroup Q) :=
   ⟨1⟩
 
-@[defeq]
 theorem star_eq_inv (x : pinGroup Q) : star x = x⁻¹ :=
   rfl
 
-@[defeq]
 theorem star_eq_inv' : (star : pinGroup Q → pinGroup Q) = Inv.inv :=
   rfl
 
@@ -365,7 +363,7 @@ theorem star_mem_iff {x : CliffordAlgebra Q} : star x ∈ spinGroup Q ↔ x ∈ 
 instance : Star (spinGroup Q) where
   star x := ⟨star x, star_mem x.prop⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_star {x : spinGroup Q} : ↑(star x) = (star x : CliffordAlgebra Q) :=
   rfl
 
@@ -395,11 +393,9 @@ instance : StarMul (spinGroup Q) where
 instance : Inhabited (spinGroup Q) :=
   ⟨1⟩
 
-@[defeq]
 theorem star_eq_inv (x : spinGroup Q) : star x = x⁻¹ :=
   rfl
 
-@[defeq]
 theorem star_eq_inv' : (star : spinGroup Q → spinGroup Q) = Inv.inv :=
   rfl
 

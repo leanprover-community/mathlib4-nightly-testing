@@ -129,10 +129,10 @@ theorem diagonal_mem_matrix_iff [Zero α] {S : Set α} (hS : 0 ∈ S) {d : n →
 instance [Zero α] [NatCast α] : NatCast (Matrix n n α) where
   natCast m := diagonal fun _ => m
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem diagonal_natCast [Zero α] [NatCast α] (m : ℕ) : diagonal (fun _ : n => (m : α)) = m := rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem diagonal_natCast' [Zero α] [NatCast α] (m : ℕ) : diagonal ((m : n → α)) = m := rfl
 
 @[simp]
@@ -140,11 +140,9 @@ theorem diagonal_eq_natCast [Zero α] [NatCast α] {d : n → α} {m : ℕ} :
     diagonal d = m ↔ d = m :=
   diagonal_injective.eq_iff' <| diagonal_natCast' _
 
-@[defeq]
 theorem diagonal_ofNat [Zero α] [NatCast α] (m : ℕ) [m.AtLeastTwo] :
     diagonal (fun _ : n => (ofNat(m) : α)) = ofNat(m) := rfl
 
-@[defeq]
 theorem diagonal_ofNat' [Zero α] [NatCast α] (m : ℕ) [m.AtLeastTwo] :
     diagonal (ofNat(m) : n → α) = ofNat(m) := rfl
 
@@ -156,10 +154,10 @@ theorem diagonal_eq_ofNat [Zero α] [NatCast α] {d : n → α} {m : ℕ} [m.AtL
 instance [Zero α] [IntCast α] : IntCast (Matrix n n α) where
   intCast m := diagonal fun _ => m
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem diagonal_intCast [Zero α] [IntCast α] (m : ℤ) : diagonal (fun _ : n => (m : α)) = m := rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem diagonal_intCast' [Zero α] [IntCast α] (m : ℤ) : diagonal ((m : n → α)) = m := rfl
 
 @[simp]
@@ -223,11 +221,11 @@ variable [Zero α] [One α]
 instance one : One (Matrix n n α) :=
   ⟨diagonal fun _ => 1⟩
 
-@[defeq, simp]
+@[simp]
 theorem diagonal_one : (diagonal fun _ => 1 : Matrix n n α) = 1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem diagonal_one' : (diagonal 1 : Matrix n n α) = 1 :=
   rfl
 

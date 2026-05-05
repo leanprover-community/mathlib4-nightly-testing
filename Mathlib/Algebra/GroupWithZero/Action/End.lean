@@ -65,7 +65,7 @@ instance AddMonoid.End.applyDistribMulAction [AddMonoid α] :
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[defeq, simp]
+@[simp]
 theorem AddMonoid.End.smul_def [AddMonoid α] (f : AddMonoid.End α) (a : α) : f • a = f a :=
   rfl
 

@@ -92,7 +92,7 @@ def Simps.coe {s : α} (P : Partition s) : Set α := P
 
 initialize_simps_projections Partition (parts → coe, as_prefix coe)
 
-@[defeq, simp] lemma coe_parts : P.parts = P := rfl
+@[simp] lemma coe_parts : P.parts = P := rfl
 
 @[ext] lemma ext (hP : ∀ x, x ∈ P ↔ x ∈ Q) : P = Q :=
   SetLike.ext hP
@@ -225,7 +225,6 @@ instance instOrderTop : OrderTop (Partition s) where
   top := removeBot {s} (sSupIndep_singleton s) sSup_singleton
   le_top P x hxP := by simp [P.ne_bot_of_mem' hxP, P.le_of_mem hxP]
 
-@[defeq]
 lemma top_def : (⊤ : Partition s) = removeBot {s} (sSupIndep_singleton s) sSup_singleton := rfl
 
 @[simp] lemma parts_top (hs : s ≠ ⊥) : ((⊤ : Partition s) : Set α) = {s} := by

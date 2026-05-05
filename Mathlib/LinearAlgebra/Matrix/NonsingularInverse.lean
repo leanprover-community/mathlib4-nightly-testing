@@ -169,7 +169,6 @@ theorem isUnit_det_transpose (h : IsUnit A.det) : IsUnit Aᵀ.det := by
 noncomputable instance inv : Inv (Matrix n n α) :=
   ⟨fun A => A.det⁻¹ʳ • A.adjugate⟩
 
-@[defeq]
 theorem inv_def (A : Matrix n n α) : A⁻¹ = A.det⁻¹ʳ • A.adjugate :=
   rfl
 

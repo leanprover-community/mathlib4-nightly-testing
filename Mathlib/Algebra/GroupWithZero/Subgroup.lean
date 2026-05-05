@@ -65,7 +65,6 @@ protected def pointwiseMulAction : MulAction M (AddSubgroup A) where
 
 scoped[Pointwise] attribute [instance] AddSubgroup.pointwiseMulAction
 
-@[defeq]
 lemma pointwise_smul_def (S : AddSubgroup A) :
     a • S = S.map (DistribMulAction.toAddMonoidEnd _ _ a) :=
   rfl

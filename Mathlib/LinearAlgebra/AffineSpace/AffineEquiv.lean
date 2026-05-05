@@ -96,7 +96,7 @@ instance : CoeOut (P₁ ≃ᵃ[k] P₂) (P₁ ≃ P₂) :=
 theorem map_vadd (e : P₁ ≃ᵃ[k] P₂) (p : P₁) (v : V₁) : e (v +ᵥ p) = e.linear v +ᵥ e p :=
   e.map_vadd' p v
 
-@[defeq, simp]
+@[simp]
 theorem coe_toEquiv (e : P₁ ≃ᵃ[k] P₂) : ⇑e.toEquiv = e :=
   rfl
 
@@ -132,7 +132,7 @@ theorem toEquiv_injective : Injective (toEquiv : (P₁ ≃ᵃ[k] P₂) → P₁ 
 theorem toEquiv_inj {e e' : P₁ ≃ᵃ[k] P₂} : e.toEquiv = e'.toEquiv ↔ e = e' :=
   toEquiv_injective.eq_iff
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (e : P₁ ≃ P₂) (e' : V₁ ≃ₗ[k] V₂) (h) : ((⟨e, e', h⟩ : P₁ ≃ᵃ[k] P₂) : P₁ → P₂) = e :=
   rfl
 
@@ -323,7 +323,6 @@ instance group : Group (P₁ ≃ᵃ[k] P₁) where
   mul_one := refl_trans
   inv_mul_cancel := self_trans_symm
 
-@[defeq]
 theorem one_def : (1 : P₁ ≃ᵃ[k] P₁) = refl k P₁ :=
   rfl
 
@@ -331,7 +330,6 @@ theorem one_def : (1 : P₁ ≃ᵃ[k] P₁) = refl k P₁ :=
 theorem coe_one : ⇑(1 : P₁ ≃ᵃ[k] P₁) = id :=
   rfl
 
-@[defeq]
 theorem mul_def (e e' : P₁ ≃ᵃ[k] P₁) : e * e' = e'.trans e :=
   rfl
 
@@ -339,7 +337,6 @@ theorem mul_def (e e' : P₁ ≃ᵃ[k] P₁) : e * e' = e'.trans e :=
 theorem coe_mul (e e' : P₁ ≃ᵃ[k] P₁) : ⇑(e * e') = e ∘ e' :=
   rfl
 
-@[defeq]
 theorem inv_def (e : P₁ ≃ᵃ[k] P₁) : e⁻¹ = e.symm :=
   rfl
 

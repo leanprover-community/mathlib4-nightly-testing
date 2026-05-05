@@ -98,9 +98,9 @@ instance isScalarTower [SMul α β] [SMul M' α] [SMul M' β] [IsScalarTower M' 
 section SMul
 variable [SMul M' α] {S : Submonoid M'}
 
-@[defeq, to_additive] lemma smul_def (g : S) (a : α) : g • a = (g : M') • a := rfl
+@[to_additive] lemma smul_def (g : S) (a : α) : g • a = (g : M') • a := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma mk_smul (g : M') (hg : g ∈ S) (a : α) : (⟨g, hg⟩ : S) • a = g • a := rfl
 
 end SMul

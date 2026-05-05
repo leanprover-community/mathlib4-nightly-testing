@@ -45,7 +45,6 @@ attribute [instance] BddLat.isBoundedOrder
 abbrev of (α : Type*) [Lattice α] [BoundedOrder α] : BddLat where
   carrier := α
 
-@[defeq]
 theorem coe_of (α : Type*) [Lattice α] [BoundedOrder α] : ↥(of α) = α :=
   rfl
 
@@ -89,14 +88,14 @@ def Hom.Simps.hom (X Y : BddLat.{u}) (f : Hom X Y) :=
 
 initialize_simps_projections Hom (hom' → hom)
 
-@[defeq, simp]
+@[simp]
 lemma hom_id {X : Lat} : (𝟙 X : X ⟶ X).hom = LatticeHom.id _ := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (X : Lat) (x : X) :
     (𝟙 X : X ⟶ X) x = x := by simp
 
-@[defeq, simp]
+@[simp]
 lemma hom_comp {X Y Z : Lat} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -128,20 +127,20 @@ instance hasForgetToSemilatInf : HasForget₂ BddLat SemilatInfCat where
   forget₂.obj X := .of X
   forget₂.map f := f.hom.toInfTopHom
 
-@[defeq, simp]
+@[simp]
 theorem coe_forget_to_bddOrd (X : BddLat) : ↥((forget₂ BddLat BddOrd).obj X) = ↥X :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_forget_to_lat (X : BddLat) : ↥((forget₂ BddLat Lat).obj X) = ↥X :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_forget_to_semilatSup (X : BddLat) :
     ↥((forget₂ BddLat SemilatSupCat).obj X) = ↥X :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_forget_to_semilatInf (X : BddLat) :
     ↥((forget₂ BddLat SemilatInfCat).obj X) = ↥X :=
   rfl

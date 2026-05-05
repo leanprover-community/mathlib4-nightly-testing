@@ -326,12 +326,11 @@ instance {α : Type*} {p : α → Prop} [PseudoEMetricSpace α] : PseudoEMetricS
 
 /-- The extended pseudodistance on a subset of a pseudoemetric space is the restriction of
 the original pseudodistance, by definition. -/
-@[defeq]
 theorem Subtype.edist_eq {p : α → Prop} (x y : Subtype p) : edist x y = edist (x : α) y := rfl
 
 /-- The extended pseudodistance on a subtype of a pseudoemetric space is the restriction of
 the original pseudodistance, by definition. -/
-@[defeq, simp]
+@[simp]
 theorem Subtype.edist_mk_mk {p : α → Prop} {x y : α} (hx : p x) (hy : p y) :
     edist (⟨x, hx⟩ : Subtype p) ⟨y, hy⟩ = edist x y :=
   rfl
@@ -362,7 +361,7 @@ namespace MulOpposite
 instance {α : Type*} [PseudoEMetricSpace α] : PseudoEMetricSpace αᵐᵒᵖ :=
   PseudoEMetricSpace.induced unop ‹_›
 
-@[defeq, to_additive]
+@[to_additive]
 theorem edist_unop (x y : αᵐᵒᵖ) : edist (unop x) (unop y) = edist x y := rfl
 
 @[to_additive]
@@ -374,10 +373,9 @@ section ULift
 
 instance : PseudoEMetricSpace (ULift α) := PseudoEMetricSpace.induced ULift.down ‹_›
 
-@[defeq]
 theorem ULift.edist_eq (x y : ULift α) : edist x y = edist x.down y.down := rfl
 
-@[defeq, simp]
+@[simp]
 theorem ULift.edist_up_up (x y : α) : edist (ULift.up x) (ULift.up y) = edist x y := rfl
 
 end ULift
@@ -397,7 +395,6 @@ instance Prod.pseudoEMetricSpaceMax [PseudoEMetricSpace β] :
     simp [PseudoEMetricSpace.uniformity_edist, ← iInf_inf_eq, setOf_and]
   toUniformSpace := inferInstance
 
-@[defeq]
 theorem Prod.edist_eq [PseudoEMetricSpace β] (x y : α × β) :
     edist x y = max (edist x.1 y.1) (edist x.2 y.2) :=
   rfl

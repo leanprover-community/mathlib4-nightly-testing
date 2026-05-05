@@ -137,11 +137,11 @@ instance smulZeroClass {S : Type*} [SMulZeroClass S R] : SMulZeroClass S R[X] wh
 -- to avoid a bug in the `ring` tactic
 instance (priority := 1) pow : Pow R[X] ℕ where pow p n := npowRec n p
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_zero : (⟨0⟩ : R[X]) = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_one : (⟨1⟩ : R[X]) = 1 :=
   rfl
 
@@ -162,11 +162,11 @@ theorem ofFinsupp_sub {R : Type u} [Ring R] {a b} : (⟨a - b⟩ : R[X]) = ⟨a�
 theorem ofFinsupp_mul (a b) : (⟨a * b⟩ : R[X]) = ⟨a⟩ * ⟨b⟩ :=
   (rfl)
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_nsmul (a : ℕ) (b) : (⟨a • b⟩ : R[X]) = (a • ⟨b⟩ : R[X]) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_smul {S : Type*} [SMulZeroClass S R] (a : S) (b) :
     (⟨a • b⟩ : R[X]) = (a • ⟨b⟩ : R[X]) :=
   rfl
@@ -179,11 +179,11 @@ theorem ofFinsupp_pow (a) (n : ℕ) : (⟨a ^ n⟩ : R[X]) = ⟨a⟩ ^ n := by
   | zero        => simp [npowRec]
   | succ n n_ih => simp [npowRec, n_ih, pow_succ]
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_zero : (0 : R[X]).toFinsupp = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_one : (1 : R[X]).toFinsupp = 1 :=
   rfl
 
@@ -205,11 +205,11 @@ theorem toFinsupp_sub {R : Type u} [Ring R] (a b : R[X]) :
 theorem toFinsupp_mul (a b : R[X]) : (a * b).toFinsupp = a.toFinsupp * b.toFinsupp :=
   (rfl)
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_nsmul (a : ℕ) (b : R[X]) : (a • b).toFinsupp = a • b.toFinsupp :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_smul {S : Type*} [SMulZeroClass S R] (a : S) (b : R[X]) :
     (a • b).toFinsupp = a • b.toFinsupp :=
   rfl
@@ -253,16 +253,16 @@ instance inhabited : Inhabited R[X] :=
 
 instance instNatCast : NatCast R[X] where natCast n := ofFinsupp n
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_natCast (n : ℕ) : (⟨n⟩ : R[X]) = n := rfl
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_natCast (n : ℕ) : (n : R[X]).toFinsupp = n := rfl
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_ofNat (n : ℕ) [n.AtLeastTwo] : (⟨ofNat(n)⟩ : R[X]) = ofNat(n) := rfl
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_ofNat (n : ℕ) [n.AtLeastTwo] : (ofNat(n) : R[X]).toFinsupp = ofNat(n) := rfl
 
 instance semiring : Semiring R[X] :=
@@ -1082,22 +1082,22 @@ variable [Ring R]
 instance instZSMul : SMul ℤ R[X] where
   smul r p := ⟨r • p.toFinsupp⟩
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_zsmul (a : ℤ) (b) :
     (⟨a • b⟩ : R[X]) = (a • ⟨b⟩ : R[X]) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_zsmul (a : ℤ) (b : R[X]) :
     (a • b).toFinsupp = a • b.toFinsupp :=
   rfl
 
 instance instIntCast : IntCast R[X] where intCast n := ofFinsupp n
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_intCast (z : ℤ) : (⟨z⟩ : R[X]) = z := rfl
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_intCast (z : ℤ) : (z : R[X]).toFinsupp = z := rfl
 
 instance ring : Ring R[X] :=

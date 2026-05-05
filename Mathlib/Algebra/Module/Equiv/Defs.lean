@@ -178,7 +178,7 @@ instance : SemilinearEquivClass (M ≃ₛₗ[σ] M₂) σ M M₂ where
 theorem toLinearMap_eq_coe {e : M ≃ₛₗ[σ] M₂} : e.toLinearMap = SemilinearMapClass.semilinearMap e :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk {f invFun left_inv right_inv} :
     ((⟨f, invFun, left_inv, right_inv⟩ : M ≃ₛₗ[σ] M₂) : M → M₂) = f := rfl
 
@@ -202,7 +202,7 @@ variable {module_M : Module R M} {module_S_M₂ : Module S M₂} {σ : R →+* S
 variable {re₁ : RingHomInvPair σ σ'} {re₂ : RingHomInvPair σ' σ}
 variable (e e' : M ≃ₛₗ[σ] M₂)
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_coe : ⇑(e : M →ₛₗ[σ] M₂) = e :=
   rfl
 
@@ -210,7 +210,7 @@ theorem coe_coe : ⇑(e : M →ₛₗ[σ] M₂) = e :=
 theorem coe_toEquiv : ⇑(e.toEquiv) = e :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toLinearMap : ⇑e.toLinearMap = e :=
   rfl
 
@@ -623,8 +623,7 @@ instance : SMul Sˣ (V ≃ₗ[R] W) where smul α e :=
     left_inv _ := by simp [LinearMapClass.map_smul_of_tower e.symm, smul_smul]
     right_inv _ := by simp [smul_smul] }
 
-@[defeq, simp] theorem smul_apply (α : Sˣ) (e : V ≃ₗ[R] W) (x : V) :
-    (α • e) x = (α : S) • e x := rfl
+@[simp] theorem smul_apply (α : Sˣ) (e : V ≃ₗ[R] W) (x : V) : (α • e) x = (α : S) • e x := rfl
 
 theorem symm_smul_apply (e : V ≃ₗ[R] W) (α : Sˣ) (x : W) :
     (α • e).symm x = (↑α⁻¹ : S) • e.symm x := rfl
@@ -632,7 +631,7 @@ theorem symm_smul_apply (e : V ≃ₗ[R] W) (α : Sˣ) (x : W) :
 @[simp] theorem symm_smul [SMulCommClass R S V] (e : V ≃ₗ[R] W) (α : Sˣ) :
     (α • e).symm = α⁻¹ • e.symm := rfl
 
-@[defeq, simp] theorem toLinearMap_smul (e : V ≃ₗ[R] W) (α : Sˣ) :
+@[simp] theorem toLinearMap_smul (e : V ≃ₗ[R] W) (α : Sˣ) :
     (α • e).toLinearMap = (α : S) • e.toLinearMap := rfl
 
 theorem smul_trans [SMulCommClass R S V] [IsScalarTower S R G]

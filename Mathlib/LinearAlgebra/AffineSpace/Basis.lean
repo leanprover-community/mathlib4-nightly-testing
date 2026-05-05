@@ -293,8 +293,7 @@ instance instVAdd : VAdd V (AffineBasis ι k P) where
       tot' := by rw [Pi.vadd_def, ← vadd_set_range, ← AffineSubspace.pointwise_vadd_span, b.tot,
         AffineSubspace.pointwise_vadd_top] }
 
-@[defeq, simp, norm_cast] lemma coe_vadd (v : V) (b : AffineBasis ι k P) :
-    ⇑(v +ᵥ b) = v +ᵥ ⇑b := rfl
+@[simp, norm_cast] lemma coe_vadd (v : V) (b : AffineBasis ι k P) : ⇑(v +ᵥ b) = v +ᵥ ⇑b := rfl
 
 @[simp] lemma basisOf_vadd (v : V) (b : AffineBasis ι k P) : (v +ᵥ b).basisOf = b.basisOf := by
   ext
@@ -329,7 +328,7 @@ instance instSMul : SMul G (AffineBasis ι k V) where
         rw [Pi.smul_def, ← smul_set_range, ← AffineSubspace.smul_span, b.tot,
           AffineSubspace.smul_top (Group.isUnit a)] }
 
-@[defeq, simp, norm_cast] lemma coe_smul (a : G) (b : AffineBasis ι k V) : ⇑(a • b) = a • ⇑b := rfl
+@[simp, norm_cast] lemma coe_smul (a : G) (b : AffineBasis ι k V) : ⇑(a • b) = a • ⇑b := rfl
 
 /-- TODO: generalize to include `SMul (P ≃ᵃ[k] P) (AffineBasis ι k P)`, which acts on `P` with a
 `VAdd` version of a `DistribMulAction`. -/

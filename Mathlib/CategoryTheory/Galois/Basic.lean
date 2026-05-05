@@ -195,7 +195,6 @@ instance (X : C) : MulAction (Aut F) (F.obj X) where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[defeq]
 lemma mulAction_def {X : C} (σ : Aut F) (x : F.obj X) :
     σ • x = σ.hom.app X x :=
   rfl

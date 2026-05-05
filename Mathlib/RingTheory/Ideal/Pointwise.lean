@@ -63,7 +63,6 @@ protected def pointwiseMulSemiringAction {R : Type*} [CommRing R] [MulSemiringAc
 
 scoped[Pointwise] attribute [instance] Ideal.pointwiseMulSemiringAction
 
-@[defeq]
 theorem pointwise_smul_def {a : M} (S : Ideal R) :
     a • S = S.map (MulSemiringAction.toRingHom _ _ a) :=
   rfl

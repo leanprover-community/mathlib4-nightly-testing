@@ -39,29 +39,29 @@ instance distrib [Distrib R] : Distrib (ULift R) where
 instance instNatCast [NatCast R] : NatCast (ULift R) := ⟨(up ·)⟩
 instance instIntCast [IntCast R] : IntCast (ULift R) := ⟨(up ·)⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem up_natCast [NatCast R] (n : ℕ) : up (n : R) = n :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem up_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
     up (ofNat(n) : R) = ofNat(n) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem up_intCast [IntCast R] (n : ℤ) : up (n : R) = n :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem down_natCast [NatCast R] (n : ℕ) : down (n : ULift R) = n :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem down_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
     down (ofNat(n) : ULift R) = ofNat(n) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem down_intCast [IntCast R] (n : ℤ) : down (n : ULift R) = n :=
   rfl
 

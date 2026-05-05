@@ -57,7 +57,6 @@ This is the preferred way to construct a term of `CommBialgCat R`. -/
 abbrev of (X : Type v) [CommRing X] [Bialgebra R X] : CommBialgCat.{v} R := ⟨X⟩
 
 variable (R) in
-@[defeq]
 lemma coe_of (X : Type v) [CommRing X] [Bialgebra R X] : (of R X : Type v) = X := rfl
 
 set_option backward.privateInPublic true in
@@ -99,22 +98,21 @@ The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep 
 -/
 
 @[simp] lemma hom_id : (𝟙 A : A ⟶ A).hom = AlgHom.id R A := rfl
-@[defeq, simp] lemma hom_comp (f : A ⟶ B) (g : B ⟶ C) : (f ≫ g).hom = g.hom.comp f.hom := rfl
+@[simp] lemma hom_comp (f : A ⟶ B) (g : B ⟶ C) : (f ≫ g).hom = g.hom.comp f.hom := rfl
 
 lemma id_apply (A : CommBialgCat.{v} R) (a : A) : (𝟙 A : A ⟶ A) a = a := by simp
 lemma comp_apply (f : A ⟶ B) (g : B ⟶ C) (a : A) : (f ≫ g) a = g (f a) := by simp
 
 @[ext] lemma hom_ext {f g : A ⟶ B} (hf : f.hom = g.hom) : f = g := Hom.ext hf
 
-@[defeq, simp] lemma hom_ofHom (f : X →ₐc[R] Y) : (ofHom f).hom = f := rfl
-@[defeq, simp] lemma ofHom_hom (f : A ⟶ B) : ofHom f.hom = f := rfl
+@[simp] lemma hom_ofHom (f : X →ₐc[R] Y) : (ofHom f).hom = f := rfl
+@[simp] lemma ofHom_hom (f : A ⟶ B) : ofHom f.hom = f := rfl
 
-@[defeq, simp] lemma ofHom_id : ofHom (.id R X) = 𝟙 (of R X) := rfl
+@[simp] lemma ofHom_id : ofHom (.id R X) = 𝟙 (of R X) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_comp (f : X →ₐc[R] Y) (g : Y →ₐc[R] Z) : ofHom (g.comp f) = ofHom f ≫ ofHom g := rfl
 
-@[defeq]
 lemma ofHom_apply (f : X →ₐc[R] Y) (x : X) : ofHom f x = f x := rfl
 
 lemma inv_hom_apply (e : A ≅ B) (x : A) : e.inv (e.hom x) = x := by simp
@@ -122,11 +120,10 @@ lemma hom_inv_apply (e : A ≅ B) (x : B) : e.hom (e.inv x) = x := by simp
 
 instance : Inhabited (CommBialgCat R) := ⟨of R R⟩
 
-@[defeq]
 lemma forget_obj (A : CommBialgCat.{v} R) : (forget (CommBialgCat.{v} R)).obj A = A :=
   rfl
 
-@[defeq, deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-06")]
+@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-06")]
 lemma forget_map (f : A ⟶ B) : (forget (CommBialgCat.{v} R)).map f = (f : _ → _) := rfl
 
 instance : CommRing ((forget (CommBialgCat R)).obj A) := inferInstanceAs <| CommRing A
@@ -137,10 +134,10 @@ instance hasForgetToCommAlgCat : HasForget₂ (CommBialgCat.{v} R) (CommAlgCat.{
   forget₂.obj M := .of R M
   forget₂.map f := CommAlgCat.ofHom f.hom
 
-@[defeq, simp] lemma forget₂_commAlgCat_obj (A : CommBialgCat.{v} R) :
+@[simp] lemma forget₂_commAlgCat_obj (A : CommBialgCat.{v} R) :
     (forget₂ (CommBialgCat.{v} R) (CommAlgCat.{v} R)).obj A = .of R A := rfl
 
-@[defeq, simp] lemma forget₂_commAlgCat_map (f : A ⟶ B) :
+@[simp] lemma forget₂_commAlgCat_map (f : A ⟶ B) :
     (forget₂ (CommBialgCat.{v} R) (CommAlgCat.{v} R)).map f = CommAlgCat.ofHom f.hom := rfl
 
 /-- Forgetting to the underlying type and then building the bundled object returns the original

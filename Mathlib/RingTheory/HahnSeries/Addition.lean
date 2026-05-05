@@ -51,11 +51,11 @@ instance : SMul R V⟦Γ⟧ :=
 theorem support_smul_subset (r : R) (x : HahnSeries Γ V) : (r • x).support ⊆ x.support :=
   Function.support_const_smul_subset ..
 
-@[defeq, simp]
+@[simp]
 theorem coeff_smul' (r : R) (x : V⟦Γ⟧) : (r • x).coeff = r • x.coeff :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coeff_smul {r : R} {x : V⟦Γ⟧} {a : Γ} : (r • x).coeff a = r • x.coeff a :=
   rfl
 
@@ -107,11 +107,10 @@ instance : Add R⟦Γ⟧ where
 theorem support_add_subset (x y : R⟦Γ⟧) : (x + y).support ⊆ x.support ∪ y.support :=
   Function.support_add ..
 
-@[defeq, simp]
+@[simp]
 theorem coeff_add' (x y : R⟦Γ⟧) : (x + y).coeff = x.coeff + y.coeff :=
   rfl
 
-@[defeq]
 theorem coeff_add {x y : R⟦Γ⟧} {a : Γ} : (x + y).coeff a = x.coeff a + y.coeff a :=
   rfl
 
@@ -356,11 +355,10 @@ instance : Sub R⟦Γ⟧ where
 theorem support_sub_subset (x y : R⟦Γ⟧) : (x - y).support ⊆ x.support ∪ y.support :=
   Function.support_sub ..
 
-@[defeq, simp]
+@[simp]
 theorem coeff_sub' (x y : R⟦Γ⟧) : (x - y).coeff = x.coeff - y.coeff :=
   rfl
 
-@[defeq]
 theorem coeff_sub {x y : R⟦Γ⟧} {a : Γ} : (x - y).coeff a = x.coeff a - y.coeff a :=
   rfl
 

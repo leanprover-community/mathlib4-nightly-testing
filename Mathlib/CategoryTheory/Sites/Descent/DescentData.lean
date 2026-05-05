@@ -118,10 +118,10 @@ lemma hom_ext {D₁ D₂ : F.DescentData f} {φ φ' : D₁ ⟶ D₂}
     (h : ∀ i, φ.hom i = φ'.hom i) : φ = φ' :=
   Hom.ext (funext h)
 
-@[defeq, simp]
+@[simp]
 lemma id_hom (D : F.DescentData f) (i : ι) : Hom.hom (𝟙 D) i = 𝟙 _ := rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma comp_hom {D₁ D₂ D₃ : F.DescentData f} (φ : D₁ ⟶ D₂) (φ' : D₂ ⟶ D₃) (i : ι) :
     (φ ≫ φ').hom i = φ.hom i ≫ φ'.hom i := rfl
 

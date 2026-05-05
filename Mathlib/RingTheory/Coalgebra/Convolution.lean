@@ -55,11 +55,10 @@ variable
 instance convMul : Mul (WithConv (C →ₗ[R] A)) where
   mul f g := toConv (mul' R A ∘ₗ map f.ofConv g.ofConv ∘ₗ comul)
 
-@[defeq]
 lemma convMul_def (f g : WithConv (C →ₗ[R] A)) :
     f * g = toConv (mul' R A ∘ₗ map f.ofConv g.ofConv ∘ₗ comul) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma convMul_apply (f g : WithConv (C →ₗ[R] A)) (c : C) :
     (f * g) c = mul' R A (.map f.ofConv g.ofConv (comul c)) := rfl
 
@@ -165,7 +164,6 @@ variable [Coalgebra R C]
 /-- Convolution unit on linear maps from a coalgebra to an algebra. -/
 instance convOne : One (WithConv (C →ₗ[R] A)) where one := toConv (Algebra.linearMap R A ∘ₗ counit)
 
-@[defeq]
 lemma convOne_def : (1 : WithConv (C →ₗ[R] A)) = toConv (Algebra.linearMap R A ∘ₗ counit) := rfl
 
 @[simp] lemma convOne_apply (c : C) :

@@ -34,7 +34,7 @@ open QuadraticForm QuadraticMap
 instance : CoeSort (QuadraticModuleCat.{v} R) (Type v) :=
   ⟨(·.carrier)⟩
 
-@[defeq, simp] theorem moduleCat_of_toModuleCat (X : QuadraticModuleCat.{v} R) :
+@[simp] theorem moduleCat_of_toModuleCat (X : QuadraticModuleCat.{v} R) :
     ModuleCat.of R X.toModuleCat = X.toModuleCat :=
   rfl
 
@@ -80,11 +80,11 @@ lemma hom_ext {M N : QuadraticModuleCat.{v} R} (f g : M ⟶ N) (h : f.toIsometry
     f = g :=
   Hom.ext h
 
-@[defeq, simp] theorem toIsometry_comp {M N U : QuadraticModuleCat.{v} R} (f : M ⟶ N) (g : N ⟶ U) :
+@[simp] theorem toIsometry_comp {M N U : QuadraticModuleCat.{v} R} (f : M ⟶ N) (g : N ⟶ U) :
     (f ≫ g).toIsometry = g.toIsometry.comp f.toIsometry :=
   rfl
 
-@[defeq, simp] theorem toIsometry_id {M : QuadraticModuleCat.{v} R} :
+@[simp] theorem toIsometry_id {M : QuadraticModuleCat.{v} R} :
     Hom.toIsometry (𝟙 M) = Isometry.id _ :=
   rfl
 
@@ -93,12 +93,12 @@ instance hasForgetToModule : HasForget₂ (QuadraticModuleCat R) (ModuleCat R) w
     { obj := fun M => ModuleCat.of R M
       map := fun f => ModuleCat.ofHom f.toIsometry.toLinearMap }
 
-@[defeq, simp]
+@[simp]
 theorem forget₂_obj (X : QuadraticModuleCat R) :
     (forget₂ (QuadraticModuleCat R) (ModuleCat R)).obj X = ModuleCat.of R X :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem forget₂_map (X Y : QuadraticModuleCat R) (f : X ⟶ Y) :
     (forget₂ (QuadraticModuleCat R) (ModuleCat R)).map f =
       ModuleCat.ofHom f.toIsometry.toLinearMap :=

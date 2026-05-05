@@ -53,7 +53,7 @@ instance [Add α] : Add (Completion α) :=
 instance [Sub α] : Sub (Completion α) :=
   ⟨Completion.map₂ Sub.sub⟩
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem UniformSpace.Completion.coe_zero [Zero α] : ((0 : α) : Completion α) = 0 :=
   rfl
 

@@ -130,7 +130,7 @@ lemma finsuppLeft_smul' (s : S) (t : (ι →₀ M) ⊗[R] N) :
 
 @[deprecated (since := "2026-01-01")] alias finsuppLeft' := finsuppLeft
 
-@[defeq, nolint synTaut, deprecated "is syntactic rfl now" (since := "2026-01-01")]
+@[nolint synTaut, deprecated "is syntactic rfl now" (since := "2026-01-01")]
 lemma finsuppLeft'_apply (x : (ι →₀ M) ⊗[R] N) :
     finsuppLeft R S M N ι x = finsuppLeft R S M N ι x := rfl
 
@@ -195,7 +195,7 @@ theorem finsuppScalarRight_smul (s : S) (t) :
 
 @[deprecated (since := "2026-01-01")] alias finsuppScalarRight' := finsuppScalarRight
 
-@[defeq, nolint synTaut, deprecated "is syntactic rfl now" (since := "2026-01-01")]
+@[nolint synTaut, deprecated "is syntactic rfl now" (since := "2026-01-01")]
 theorem coe_finsuppScalarRight' :
     ⇑(finsuppScalarRight R S M ι) = finsuppScalarRight R S M ι :=
   rfl

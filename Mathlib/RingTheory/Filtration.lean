@@ -126,19 +126,19 @@ instance : Top (I.Filtration M) :=
 instance : Bot (I.Filtration M) :=
   ⟨I.trivialFiltration ⊥⟩
 
-@[defeq, simp]
+@[simp]
 theorem sup_N : (F ⊔ F').N = F.N ⊔ F'.N :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sSup_N (S : Set (I.Filtration M)) : (sSup S).N = sSup (Ideal.Filtration.N '' S) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inf_N : (F ⊓ F').N = F.N ⊓ F'.N :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sInf_N (S : Set (I.Filtration M)) : (sInf S).N = sInf (Ideal.Filtration.N '' S) :=
   rfl
 

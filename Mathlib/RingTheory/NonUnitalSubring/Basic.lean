@@ -105,14 +105,14 @@ instance : Top (NonUnitalSubring R) :=
 theorem mem_top (x : R) : x ∈ (⊤ : NonUnitalSubring R) :=
   Set.mem_univ x
 
-@[defeq, simp]
+@[simp]
 theorem coe_top : ((⊤ : NonUnitalSubring R) : Set R) = Set.univ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 lemma toNonUnitalSubsemiring_top : (⊤ : NonUnitalSubring R).toNonUnitalSubsemiring = ⊤ := rfl
 
-@[defeq, simp] lemma toAddSubgroup_top : (⊤ : NonUnitalSubring R).toAddSubgroup = ⊤ := rfl
+@[simp] lemma toAddSubgroup_top : (⊤ : NonUnitalSubring R).toAddSubgroup = ⊤ := rfl
 
 @[simp]
 lemma toNonUnitalSubsemiring_eq_top {S : NonUnitalSubring R} :
@@ -274,7 +274,7 @@ instance : Min (NonUnitalSubring R) :=
     { s.toSubsemigroup ⊓ t.toSubsemigroup, s.toAddSubgroup ⊓ t.toAddSubgroup with
       carrier := s ∩ t }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_inf (p p' : NonUnitalSubring R) :
     ((p ⊓ p' : NonUnitalSubring R) : Set R) = (p : Set R) ∩ p' :=
   rfl

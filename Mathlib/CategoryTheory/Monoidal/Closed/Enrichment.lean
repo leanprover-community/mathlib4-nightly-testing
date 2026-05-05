@@ -46,7 +46,6 @@ section
 
 variable {C}
 
-@[defeq]
 lemma enrichedCategorySelf_hom (X Y : C) :
     EnrichedCategory.Hom X Y = (ihom X).obj Y := rfl
 

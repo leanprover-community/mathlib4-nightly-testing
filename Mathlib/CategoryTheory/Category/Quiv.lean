@@ -54,11 +54,9 @@ def forget : Cat.{v, u} ⥤ Quiv.{v, u} where
   map F := F.toFunctor.toPrefunctor
 
 /-- The identity in the category of quivers equals the identity prefunctor. -/
-@[defeq]
 theorem id_eq_id (X : Quiv) : 𝟙 X = 𝟭q X := rfl
 
 /-- Composition in the category of quivers equals prefunctor composition. -/
-@[defeq]
 theorem comp_eq_comp {X Y Z : Quiv} (F : X ⟶ Y) (G : Y ⟶ Z) : F ≫ G = F ⋙q G := rfl
 
 end Quiv

@@ -36,34 +36,33 @@ instance [LT α] : LT (ULift.{v} α) where lt x y := x.down < y.down
 
 instance [BEq α] : BEq (ULift.{v} α) where beq x y := x.down == y.down
 
-@[defeq, simp] theorem up_beq [BEq α] (a b : α) : (up a == up b) = (a == b) := rfl
-@[defeq, simp] theorem down_beq [BEq α] (a b : ULift α) : (down a == down b) = (a == b) := rfl
+@[simp] theorem up_beq [BEq α] (a b : α) : (up a == up b) = (a == b) := rfl
+@[simp] theorem down_beq [BEq α] (a b : ULift α) : (down a == down b) = (a == b) := rfl
 
 instance [Ord α] : Ord (ULift.{v} α) where compare x y := compare x.down y.down
 
-@[defeq, simp] theorem up_compare [Ord α] (a b : α) : compare (up a) (up b) = compare a b := rfl
-@[defeq, simp] theorem down_compare [Ord α] (a b : ULift α) :
-    compare (down a) (down b) = compare a b :=
+@[simp] theorem up_compare [Ord α] (a b : α) : compare (up a) (up b) = compare a b := rfl
+@[simp] theorem down_compare [Ord α] (a b : ULift α) : compare (down a) (down b) = compare a b :=
   rfl
 
 @[to_dual]
 instance [Max α] : Max (ULift.{v} α) where max x y := up <| x.down ⊔ y.down
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem up_sup [Max α] (a b : α) : up (a ⊔ b) = up a ⊔ up b := rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem down_sup [Max α] (a b : ULift α) : down (a ⊔ b) = down a ⊔ down b := rfl
 
 instance [SDiff α] : SDiff (ULift.{v} α) where sdiff x y := up <| x.down \ y.down
 
-@[defeq, simp] theorem up_sdiff [SDiff α] (a b : α) : up (a \ b) = up a \ up b := rfl
-@[defeq, simp] theorem down_sdiff [SDiff α] (a b : ULift α) : down (a \ b) = down a \ down b := rfl
+@[simp] theorem up_sdiff [SDiff α] (a b : α) : up (a \ b) = up a \ up b := rfl
+@[simp] theorem down_sdiff [SDiff α] (a b : ULift α) : down (a \ b) = down a \ down b := rfl
 
 instance [Compl α] : Compl (ULift.{v} α) where compl x := up <| x.downᶜ
 
-@[defeq, simp] theorem up_compl [Compl α] (a : α) : up (aᶜ) = (up a)ᶜ := rfl
-@[defeq, simp] theorem down_compl [Compl α] (a : ULift α) : down aᶜ = (down a)ᶜ := rfl
+@[simp] theorem up_compl [Compl α] (a : α) : up (aᶜ) = (up a)ᶜ := rfl
+@[simp] theorem down_compl [Compl α] (a : ULift α) : down aᶜ = (down a)ᶜ := rfl
 
 instance [Ord α] [inst : Std.OrientedOrd α] : Std.OrientedOrd (ULift.{v} α) where
   eq_swap := inst.eq_swap

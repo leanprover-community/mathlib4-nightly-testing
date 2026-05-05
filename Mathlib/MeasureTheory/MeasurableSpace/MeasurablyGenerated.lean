@@ -191,7 +191,7 @@ theorem mem_coe (a : α) (s : Subtype (MeasurableSet : Set α → Prop)) : a ∈
 instance Subtype.instEmptyCollection : EmptyCollection (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨⟨∅, MeasurableSet.empty⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_empty : ↑(∅ : Subtype (MeasurableSet : Set α → Prop)) = (∅ : Set α) :=
   rfl
 
@@ -199,7 +199,7 @@ instance Subtype.instInsert [MeasurableSingletonClass α] :
     Insert α (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun a s => ⟨insert a (s : Set α), s.prop.insert a⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_insert [MeasurableSingletonClass α] (a : α)
     (s : Subtype (MeasurableSet : Set α → Prop)) :
     ↑(Insert.insert a s) = (Insert.insert a s : Set α) :=
@@ -209,7 +209,7 @@ instance Subtype.instSingleton [MeasurableSingletonClass α] :
     Singleton α (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun a => ⟨{a}, .singleton _⟩⟩
 
-@[defeq, simp] theorem coe_singleton [MeasurableSingletonClass α] (a : α) :
+@[simp] theorem coe_singleton [MeasurableSingletonClass α] (a : α) :
     ↑({a} : Subtype (MeasurableSet : Set α → Prop)) = ({a} : Set α) :=
   rfl
 
@@ -220,34 +220,34 @@ instance Subtype.instLawfulSingleton [MeasurableSingletonClass α] :
 instance Subtype.instCompl : Compl (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun x => ⟨xᶜ, x.prop.compl⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_compl (s : Subtype (MeasurableSet : Set α → Prop)) : ↑sᶜ = (sᶜ : Set α) :=
   rfl
 
 instance Subtype.instUnion : Union (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun x y => ⟨(x : Set α) ∪ y, x.prop.union y.prop⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_union (s t : Subtype (MeasurableSet : Set α → Prop)) : ↑(s ∪ t) = (s ∪ t : Set α) :=
   rfl
 
 instance Subtype.instSup : Max (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun x y => x ∪ y⟩
 
-@[defeq, simp]
+@[simp]
 protected theorem sup_eq_union (s t : {s : Set α // MeasurableSet s}) : s ⊔ t = s ∪ t := rfl
 
 instance Subtype.instInter : Inter (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun x y => ⟨x ∩ y, x.prop.inter y.prop⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_inter (s t : Subtype (MeasurableSet : Set α → Prop)) : ↑(s ∩ t) = (s ∩ t : Set α) :=
   rfl
 
 instance Subtype.instInf : Min (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨fun x y => x ∩ y⟩
 
-@[defeq, simp]
+@[simp]
 protected theorem inf_eq_inter (s t : {s : Set α // MeasurableSet s}) : s ⊓ t = s ∩ t := rfl
 
 instance Subtype.instSDiff : SDiff (Subtype (MeasurableSet : Set α → Prop)) :=
@@ -257,27 +257,27 @@ instance Subtype.instSDiff : SDiff (Subtype (MeasurableSet : Set α → Prop)) :
 noncomputable instance Subtype.instHImp : HImp (Subtype (MeasurableSet : Set α → Prop)) where
   himp x y := ⟨x ⇨ y, x.prop.himp y.prop⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_sdiff (s t : Subtype (MeasurableSet : Set α → Prop)) : ↑(s \ t) = (s : Set α) \ t :=
   rfl
 
-@[defeq, simp]
+@[simp]
 lemma coe_himp (s t : Subtype (MeasurableSet : Set α → Prop)) : ↑(s ⇨ t) = (s ⇨ t : Set α) := rfl
 
 instance Subtype.instBot : Bot (Subtype (MeasurableSet : Set α → Prop)) := ⟨∅⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_bot : ↑(⊥ : Subtype (MeasurableSet : Set α → Prop)) = (⊥ : Set α) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem subtype_bot_eq : (⟨∅, .empty⟩ : Subtype (MeasurableSet : Set α → Prop)) = ⊥ :=
   rfl
 
 instance Subtype.instTop : Top (Subtype (MeasurableSet : Set α → Prop)) :=
   ⟨⟨Set.univ, MeasurableSet.univ⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_top : ↑(⊤ : Subtype (MeasurableSet : Set α → Prop)) = (⊤ : Set α) :=
   rfl
 

@@ -509,7 +509,7 @@ theorem quot_map_mk (β : Type v) (f : List (α × Bool) → List (β × Bool))
 instance : One (FreeGroup α) :=
   ⟨mk []⟩
 
-@[defeq, to_additive]
+@[to_additive]
 theorem one_eq_mk : (1 : FreeGroup α) = mk [] :=
   rfl
 

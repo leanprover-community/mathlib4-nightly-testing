@@ -174,7 +174,6 @@ protected irreducible_def prod (μ : Measure α) (ν : Measure β) : Measure (α
 instance prod.measureSpace {α β} [MeasureSpace α] [MeasureSpace β] : MeasureSpace (α × β) where
   volume := volume.prod volume
 
-@[defeq]
 theorem volume_eq_prod (α β) [MeasureSpace α] [MeasureSpace β] :
     (volume : Measure (α × β)) = (volume : Measure α).prod (volume : Measure β) :=
   rfl

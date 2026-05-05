@@ -425,13 +425,13 @@ instance instCommMonoid [CommMonoid M] : CommMonoid (Germ l M) :=
 
 instance instNatCast [NatCast M] : NatCast (Germ l M) where natCast n := (n : α → M)
 
-@[defeq, simp]
+@[simp]
 theorem natCast_def [NatCast M] (n : ℕ) : ((fun _ ↦ n : α → M) : Germ l M) = n := rfl
 
 @[simp, norm_cast]
 theorem const_nat [NatCast M] (n : ℕ) : ((n : M) : Germ l M) = n := rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_ofNat [NatCast M] (n : ℕ) [n.AtLeastTwo] :
     ((ofNat(n) : α → M) : Germ l M) = OfNat.ofNat n :=
   rfl
@@ -443,7 +443,7 @@ theorem const_ofNat [NatCast M] (n : ℕ) [n.AtLeastTwo] :
 
 instance instIntCast [IntCast M] : IntCast (Germ l M) where intCast n := (n : α → M)
 
-@[defeq, simp]
+@[simp]
 theorem intCast_def [IntCast M] (n : ℤ) : ((fun _ ↦ n : α → M) : Germ l M) = n := rfl
 
 instance instAddMonoidWithOne [AddMonoidWithOne M] : AddMonoidWithOne (Germ l M) where
@@ -673,7 +673,6 @@ end Module
 
 instance instLE [LE β] : LE (Germ l β) := ⟨LiftRel (· ≤ ·)⟩
 
-@[defeq]
 theorem le_def [LE β] : ((· ≤ ·) : Germ l β → Germ l β → Prop) = LiftRel (· ≤ ·) :=
   rfl
 
@@ -701,11 +700,11 @@ instance instPartialOrder [PartialOrder β] : PartialOrder (Germ l β) where
 instance instBot [Bot β] : Bot (Germ l β) := ⟨↑(⊥ : β)⟩
 instance instTop [Top β] : Top (Germ l β) := ⟨↑(⊤ : β)⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem const_bot [Bot β] : (↑(⊥ : β) : Germ l β) = ⊥ :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem const_top [Top β] : (↑(⊤ : β) : Germ l β) = ⊤ :=
   rfl
 

@@ -54,7 +54,6 @@ namespace MeasCat
 instance : CoeSort MeasCat Type* :=
   ⟨carrier⟩
 
-@[defeq]
 theorem coe_of (X : Type u) [MeasurableSpace X] : (of X : Type u) = X :=
   rfl
 

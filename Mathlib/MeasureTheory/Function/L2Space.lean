@@ -135,7 +135,6 @@ open scoped ComplexConjugate
 instance : Inner 𝕜 (α →₂[μ] E) :=
   ⟨fun f g => ∫ a, ⟪f a, g a⟫ ∂μ⟩
 
-@[defeq]
 theorem inner_def (f g : α →₂[μ] E) : ⟪f, g⟫ = ∫ a : α, ⟪f a, g a⟫ ∂μ :=
   rfl
 

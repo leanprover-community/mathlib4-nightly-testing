@@ -64,7 +64,7 @@ lemma val_ofNat (n : ℕ) [NeZero n] :
     ((ofNat(n) : ℕ+) : ℕ) = OfNat.ofNat n :=
   rfl
 
-@[defeq, simp]
+@[simp]
 lemma mk_ofNat (n : ℕ) (h : 0 < n) :
     @Eq ℕ+ (⟨ofNat(n), h⟩ : ℕ+) (haveI : NeZero n := ⟨h.ne'⟩; OfNat.ofNat n) :=
   rfl
@@ -139,7 +139,7 @@ instance instOrderBot : OrderBot ℕ+ where
   bot := 1
   bot_le a := a.property
 
-@[defeq, simp]
+@[simp]
 theorem bot_eq_one : (⊥ : ℕ+) = 1 :=
   rfl
 

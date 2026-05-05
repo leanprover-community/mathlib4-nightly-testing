@@ -46,7 +46,6 @@ instance : MeasureSpace ℍ :=
   ⟨(volume.comap UpperHalfPlane.coe).withDensity
     fun z ↦ ↑((1 / NNReal.mk z.im z.im_pos.le : ℝ≥0) ^ 2)⟩
 
-@[defeq]
 theorem volume_def :
     (volume : Measure ℍ) = (volume.comap UpperHalfPlane.coe).withDensity fun z ↦
       ↑((1 / NNReal.mk z.im z.im_pos.le : ℝ≥0) ^ 2) :=

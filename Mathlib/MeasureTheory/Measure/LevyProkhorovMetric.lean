@@ -315,15 +315,12 @@ noncomputable instance instPseudoMetricSpaceProbabilityMeasure :
     PseudoMetricSpace (LevyProkhorov (ProbabilityMeasure Ω)) :=
   .induced (LevyProkhorov.ofMeasure ·.toMeasure.toFiniteMeasure) inferInstance
 
-@[defeq]
 lemma edist_measure_def (μ ν : LevyProkhorov (Measure Ω)) :
     edist μ ν = levyProkhorovEDist μ.toMeasure ν.toMeasure := rfl
 
-@[defeq]
 lemma edist_finiteMeasure_def (μ ν : LevyProkhorov (FiniteMeasure Ω)) :
     edist μ ν = levyProkhorovEDist μ.toMeasure.toMeasure ν.toMeasure.toMeasure := rfl
 
-@[defeq]
 lemma dist_finiteMeasure_def (μ ν : LevyProkhorov (FiniteMeasure Ω)) :
     dist μ ν = levyProkhorovDist μ.toMeasure.toMeasure ν.toMeasure.toMeasure := rfl
 

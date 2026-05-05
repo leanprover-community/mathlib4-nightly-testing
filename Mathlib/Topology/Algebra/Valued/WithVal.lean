@@ -70,9 +70,8 @@ theorem le_def {v : Valuation R Γ₀} {a b : WithVal v} : a ≤ b ↔ v a.ofVal
 
 theorem lt_def {v : Valuation R Γ₀} {a b : WithVal v} : a < b ↔ v a.ofVal < v b.ofVal := .rfl
 
-@[defeq]
 lemma ofVal_toVal (x : R) : ofVal (toVal v x) = x := rfl
-@[defeq, simp] lemma toVal_ofVal (x : WithVal v) : toVal v (ofVal x) = x := rfl
+@[simp] lemma toVal_ofVal (x : WithVal v) : toVal v (ofVal x) = x := rfl
 
 lemma ofVal_surjective : Function.Surjective (ofVal (v := v)) :=
   Function.RightInverse.surjective <| ofVal_toVal _
@@ -204,7 +203,6 @@ variable [Ring R] (v : Valuation R Γ₀) {S : Type*}
 instance [SMul R S] : SMul (WithVal v) S where
   smul x s := ofVal x • s
 
-@[defeq]
 theorem smul_left_def [SMul R S] (x : WithVal v) (s : S) : x • s = ofVal x • s := rfl
 
 instance [SMul R S] [FaithfulSMul R S] : FaithfulSMul (WithVal v) S where

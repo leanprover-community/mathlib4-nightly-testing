@@ -50,7 +50,7 @@ instance _root_.PUnit.algebra : Algebra R PUnit.{v + 1} where
   commutes' _ _ := rfl
   smul_def' _ _ := rfl
 
-@[defeq, simp]
+@[simp]
 theorem algebraMap_pUnit (r : R) : algebraMap R PUnit r = PUnit.unit :=
   rfl
 
@@ -66,12 +66,11 @@ instance _root_.ULift.algebra : Algebra R (ULift A) :=
     commutes' := fun r x => ULift.down_injective <| Algebra.commutes r x.down
     smul_def' := fun r x => ULift.down_injective <| Algebra.smul_def' r x.down }
 
-@[defeq]
 theorem _root_.ULift.algebraMap_eq (r : R) :
     algebraMap R (ULift A) r = ULift.up (algebraMap R A r) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem _root_.ULift.down_algebraMap (r : R) : (algebraMap R (ULift A) r).down = algebraMap R A r :=
   rfl
 
@@ -223,11 +222,10 @@ instance End.instAlgebra : Algebra R (Module.End S M) :=
 -- to prove this is a special case of the above
 example : Algebra R (Module.End R M) := End.instAlgebra _ _ _
 
-@[defeq]
 theorem algebraMap_end_eq_smul_id (a : R) : algebraMap R (End S M) a = a • LinearMap.id :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem algebraMap_end_apply (a : R) (m : M) : algebraMap R (End S M) a m = a • m :=
   rfl
 
@@ -316,7 +314,7 @@ instance (priority := 99) Ring.toIntAlgebra : Algebra ℤ R where
   algebraMap := Int.castRingHom R
 
 /-- A special case of `eq_intCast'` that happens to be true definitionally -/
-@[defeq, simp]
+@[simp]
 theorem algebraMap_int_eq : algebraMap ℤ R = Int.castRingHom R :=
   rfl
 

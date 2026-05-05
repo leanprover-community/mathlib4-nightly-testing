@@ -94,7 +94,7 @@ variable (μ : Content G)
 
 @[simp] lemma toFun_eq_toNNReal_apply (K : Compacts G) : μ.toFun K = (μ K).toNNReal := rfl
 
-@[defeq, simp]
+@[simp]
 lemma mk_apply (toFun : Compacts G → ℝ≥0) (mono' sup_disjoint' sup_le') (K : Compacts G) :
     mk toFun mono' sup_disjoint' sup_le' K = toFun K := rfl
 

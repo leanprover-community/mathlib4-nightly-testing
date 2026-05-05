@@ -27,10 +27,9 @@ namespace Rat
 instance : MetricSpace ℚ :=
   fast_instance% MetricSpace.induced (↑) Rat.cast_injective Real.metricSpace
 
-@[defeq]
 theorem dist_eq (x y : ℚ) : dist x y = |(x : ℝ) - y| := rfl
 
-@[defeq, norm_cast, simp]
+@[norm_cast, simp]
 theorem dist_cast (x y : ℚ) : dist (x : ℝ) y = dist x y :=
   rfl
 

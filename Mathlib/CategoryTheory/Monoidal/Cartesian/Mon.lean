@@ -122,10 +122,10 @@ variable {M N N₁ N₂ : Mon C}
 @[to_additive (attr := simp)]
 lemma lift_hom (f : M ⟶ N₁) (g : M ⟶ N₂) : (lift f g).hom = lift f.hom g.hom := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma fst_hom (M N : Mon C) : (fst M N).hom = fst M.X N.X := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma snd_hom (M N : Mon C) : (snd M N).hom = snd M.X N.X := rfl
 
 /-! ### Comm monoid objects are internal monoid objects -/
@@ -138,10 +138,10 @@ instance [IsCommMonObj M.X] : MonObj M where
   one := .mk η[M.X]
   mul := .mk μ[M.X]
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma hom_one (M : Mon C) [IsCommMonObj M.X] : η[M].hom = η[M.X] := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma hom_mul (M : Mon C) [IsCommMonObj M.X] : μ[M].hom = μ[M.X] := rfl
 
 /-- A commutative monoid object is a commutative monoid object in the category of monoid objects. -/
@@ -211,9 +211,9 @@ abbrev Hom.monoid : Monoid (X ⟶ M) where
 scoped[CategoryTheory.MonObj] attribute [instance] Hom.monoid
 scoped[CategoryTheory.AddMonObj] attribute [instance] Hom.addMonoid
 
-@[defeq, to_additive]
+@[to_additive]
 lemma Hom.one_def : (1 : X ⟶ M) = toUnit X ≫ η := rfl
-@[defeq, to_additive]
+@[to_additive]
 lemma Hom.mul_def (f₁ f₂ : X ⟶ M) : f₁ * f₂ = lift f₁ f₂ ≫ μ := rfl
 
 namespace Functor

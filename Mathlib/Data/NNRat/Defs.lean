@@ -77,7 +77,7 @@ instance instOrderBot : OrderBot ℚ≥0 where
   bot := 0
   bot_le q := q.2
 
-@[defeq, simp] lemma val_eq_cast (q : ℚ≥0) : q.1 = q := rfl
+@[simp] lemma val_eq_cast (q : ℚ≥0) : q.1 = q := rfl
 
 instance instCharZero : CharZero ℚ≥0 where
   cast_injective a b hab := by simpa using congr_arg num hab
@@ -101,7 +101,7 @@ theorem ne_iff {x y : ℚ≥0} : (x : ℚ) ≠ (y : ℚ) ↔ x ≠ y :=
   NNRat.coe_inj.not
 
 -- TODO: We have to write `NNRat.cast` explicitly, else the statement picks up `Subtype.val` instead
-@[defeq, simp, norm_cast] lemma coe_mk (q : ℚ) (hq) : NNRat.cast ⟨q, hq⟩ = q := rfl
+@[simp, norm_cast] lemma coe_mk (q : ℚ) (hq) : NNRat.cast ⟨q, hq⟩ = q := rfl
 
 lemma «forall» {p : ℚ≥0 → Prop} : (∀ q, p q) ↔ ∀ q hq, p ⟨q, hq⟩ := Subtype.forall
 lemma «exists» {p : ℚ≥0 → Prop} : (∃ q, p q) ↔ ∃ q hq, p ⟨q, hq⟩ := Subtype.exists
@@ -155,7 +155,7 @@ theorem coe_eq_zero : (q : ℚ) = 0 ↔ q = 0 := by norm_cast
 theorem coe_ne_zero : (q : ℚ) ≠ 0 ↔ q ≠ 0 :=
   coe_eq_zero.not
 
-@[defeq, simp]
+@[simp]
 theorem mk_zero : (⟨0, le_rfl⟩ : ℚ≥0) = 0 := rfl
 
 @[norm_cast]

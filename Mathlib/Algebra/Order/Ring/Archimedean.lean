@@ -52,7 +52,7 @@ variable [IsStrictOrderedRing R]
 instance : Zero (ArchimedeanClass R) where
   zero := mk 1
 
-@[defeq, simp] theorem mk_one : mk (1 : R) = 0 := rfl
+@[simp] theorem mk_one : mk (1 : R) = 0 := rfl
 
 @[simp] lemma top_ne_zero : (⊤ : ArchimedeanClass R) ≠ 0 := by simp [← mk_one]
 @[simp] lemma zero_ne_top : 0 ≠ (⊤ : ArchimedeanClass R) := top_ne_zero.symm

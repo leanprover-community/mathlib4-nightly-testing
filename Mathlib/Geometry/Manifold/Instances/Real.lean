@@ -396,7 +396,7 @@ instance instIccChartedSpace (x y : ℝ) [h : Fact (x < y)] :
       simpa only [not_lt] using h'
   chart_mem_atlas z := by by_cases h' : (z : ℝ) < y <;> simp [h']
 
-@[defeq, simp]
+@[simp]
 lemma Icc_chartedSpaceChartAt {z : Set.Icc x y} :
     chartAt _ z = if z.val < y then IccLeftChart x y else IccRightChart x y := rfl
 

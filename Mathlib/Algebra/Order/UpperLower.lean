@@ -117,16 +117,16 @@ omit [IsOrderedMonoid α] in
 theorem coe_one : ((1 : UpperSet α) : Set α) = Set.Ici 1 :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_mul (s t : UpperSet α) : (↑(s * t) : Set α) = s * t :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_div (s t : UpperSet α) : (↑(s / t) : Set α) = s / t :=
   rfl
 
 omit [IsOrderedMonoid α] in
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem Ici_one : Ici (1 : α) = 1 :=
   rfl
 
@@ -173,16 +173,16 @@ instance : Div (LowerSet α) :=
 instance : SMul α (LowerSet α) :=
   ⟨fun a s ↦ ⟨(a • ·) '' s, s.2.smul⟩⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_mul (s t : LowerSet α) : (↑(s * t) : Set α) = s * t :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_div (s t : LowerSet α) : (↑(s / t) : Set α) = s / t :=
   rfl
 
 omit [IsOrderedMonoid α] in
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem Iic_one : Iic (1 : α) = 1 :=
   rfl
 

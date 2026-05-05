@@ -939,7 +939,6 @@ abbrev InnerProductSpace.rclikeToReal : InnerProductSpace ℝ E :=
 
 variable {E}
 
-@[defeq]
 theorem real_inner_eq_re_inner (x y : E) :
     (Inner.rclikeToReal 𝕜 E).inner x y = re ⟪x, y⟫ :=
   rfl

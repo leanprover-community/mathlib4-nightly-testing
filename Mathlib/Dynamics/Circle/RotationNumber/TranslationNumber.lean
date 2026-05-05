@@ -139,11 +139,11 @@ instance : FunLike CircleDeg1Lift ℝ ℝ where
 instance : OrderHomClass CircleDeg1Lift ℝ ℝ where
   map_rel f _ _ h := f.monotone' h
 
-@[defeq, simp] theorem coe_mk (f h) : ⇑(mk f h) = f := rfl
+@[simp] theorem coe_mk (f h) : ⇑(mk f h) = f := rfl
 
 variable (f g : CircleDeg1Lift)
 
-@[defeq, simp] theorem coe_toOrderHom : ⇑f.toOrderHom = f := rfl
+@[simp] theorem coe_toOrderHom : ⇑f.toOrderHom = f := rfl
 
 protected theorem monotone : Monotone f := f.monotone'
 
@@ -369,11 +369,11 @@ noncomputable instance : Lattice CircleDeg1Lift where
   inf_le_right f g x := min_le_right (f x) (g x)
   le_inf _ _ _ h₂ h₃ x := le_min (h₂ x) (h₃ x)
 
-@[defeq, simp]
+@[simp]
 theorem sup_apply (x : ℝ) : (f ⊔ g) x = max (f x) (g x) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inf_apply (x : ℝ) : (f ⊓ g) x = min (f x) (g x) :=
   rfl
 

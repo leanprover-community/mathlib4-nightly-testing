@@ -60,10 +60,8 @@ variable {p : α → Prop}
 instance pseudoMetricSpace : PseudoMetricSpace (Subtype p) :=
   PseudoMetricSpace.induced Subtype.val ‹_›
 
-@[defeq]
 lemma dist_eq (x y : Subtype p) : dist x y = dist (x : α) y := rfl
 
-@[defeq]
 lemma nndist_eq (x y : Subtype p) : nndist x y = nndist (x : α) y := rfl
 
 @[simp]
@@ -93,13 +91,13 @@ namespace MulOpposite
 instance instPseudoMetricSpace : PseudoMetricSpace αᵐᵒᵖ :=
   PseudoMetricSpace.induced MulOpposite.unop ‹_›
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma dist_unop (x y : αᵐᵒᵖ) : dist (unop x) (unop y) = dist x y := rfl
 
 @[to_additive (attr := simp)]
 lemma dist_op (x y : α) : dist (op x) (op y) = dist x y := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma nndist_unop (x y : αᵐᵒᵖ) : nndist (unop x) (unop y) = nndist x y := rfl
 
 @[to_additive (attr := simp)]
@@ -161,15 +159,13 @@ variable [PseudoMetricSpace β]
 instance : PseudoMetricSpace (ULift β) :=
   fast_instance% PseudoMetricSpace.induced ULift.down ‹_›
 
-@[defeq]
 lemma dist_eq (x y : ULift β) : dist x y = dist x.down y.down := rfl
 
-@[defeq]
 lemma nndist_eq (x y : ULift β) : nndist x y = nndist x.down y.down := rfl
 
-@[defeq, simp] lemma dist_up_up (x y : β) : dist (ULift.up x) (ULift.up y) = dist x y := rfl
+@[simp] lemma dist_up_up (x y : β) : dist (ULift.up x) (ULift.up y) = dist x y := rfl
 
-@[defeq, simp] lemma nndist_up_up (x y : β) : nndist (ULift.up x) (ULift.up y) = nndist x y := rfl
+@[simp] lemma nndist_up_up (x y : β) : nndist (ULift.up x) (ULift.up y) = nndist x y := rfl
 
 end ULift
 
@@ -186,7 +182,6 @@ instance Prod.pseudoMetricSpaceMax : PseudoMetricSpace (α × β) :=
       eventually_and, ← forall_and, ← max_le_iff]
     rfl
 
-@[defeq]
 lemma Prod.dist_eq {x y : α × β} : dist x y = max (dist x.1 y.1) (dist x.2 y.2) := rfl
 
 @[simp]

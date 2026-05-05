@@ -179,11 +179,11 @@ instance : CompleteLattice (RingCon R) where
       add' := congr_arg₂ _ }
   bot_le c := fun x _y h => h ▸ c.refl x
 
-@[defeq, simp, norm_cast] lemma coe_top : ⇑(⊤ : RingCon R) = ⊤ := rfl
-@[defeq, simp, norm_cast] lemma coe_bot : ⇑(⊥ : RingCon R) = Eq := rfl
+@[simp, norm_cast] lemma coe_top : ⇑(⊤ : RingCon R) = ⊤ := rfl
+@[simp, norm_cast] lemma coe_bot : ⇑(⊥ : RingCon R) = Eq := rfl
 
-@[defeq, simp] lemma toCon_top : (⊤ : RingCon R).toCon = ⊤ := rfl
-@[defeq, simp] lemma toCon_bot : (⊥ : RingCon R).toCon = ⊥ := rfl
+@[simp] lemma toCon_top : (⊤ : RingCon R).toCon = ⊤ := rfl
+@[simp] lemma toCon_bot : (⊥ : RingCon R).toCon = ⊥ := rfl
 
 @[simp] lemma toCon_eq_top : c.toCon = ⊤ ↔ c = ⊤ := by rw [← toCon_top, toCon_inj]
 @[simp] lemma toCon_eq_bot : c.toCon = ⊥ ↔ c = ⊥ := by rw [← toCon_bot, toCon_inj]
@@ -195,7 +195,7 @@ instance : CompleteLattice (RingCon R) where
 
 /-- The infimum of two congruence relations equals the infimum of the underlying binary
 operations. -/
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_inf {c d : RingCon R} : ⇑(c ⊓ d) = ⇑c ⊓ ⇑d := rfl
 
 /-- Definition of the infimum of two congruence relations. -/

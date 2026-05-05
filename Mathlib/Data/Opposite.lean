@@ -57,11 +57,10 @@ theorem op_injective : Function.Injective (op : α → αᵒᵖ) := fun _ _ => c
 
 theorem unop_injective : Function.Injective (unop : αᵒᵖ → α) := fun _ _ h => congrArg op h
 
-@[defeq, simp]
+@[simp]
 theorem op_unop (x : αᵒᵖ) : op (unop x) = x :=
   rfl
 
-@[defeq]
 theorem unop_op (x : α) : unop (op x) = x :=
   rfl
 

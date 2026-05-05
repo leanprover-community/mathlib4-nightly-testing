@@ -309,11 +309,11 @@ instance (A : CommMon C) : (commMonToLaxBraidedObj A).LaxMonoidal where
 
 open Functor.LaxMonoidal
 
-@[defeq, simp]
+@[simp]
 lemma commMonToLaxBraidedObj_ε (A : CommMon C) :
     ε (commMonToLaxBraidedObj A) = η[A.X] := rfl
 
-@[defeq, simp]
+@[simp]
 lemma commMonToLaxBraidedObj_μ (A : CommMon C) (X Y) :
     «μ» (commMonToLaxBraidedObj A) X Y = μ[A.X] := rfl
 

@@ -371,7 +371,6 @@ theorem Quotient.algHom_ext {I : Ideal A} [I.IsTwoSided]
     (h : f.comp (Quotient.mkₐ R₁ I) = g.comp (Quotient.mkₐ R₁ I)) : f = g :=
   AlgHom.ext fun x => Quotient.inductionOn' x <| AlgHom.congr_fun h
 
-@[defeq]
 theorem Quotient.alg_map_eq {A} [CommRing A] [Algebra R₁ A] (I : Ideal A) :
     algebraMap R₁ (A ⧸ I) = (algebraMap A (A ⧸ I)).comp (algebraMap R₁ A) :=
   rfl
@@ -384,17 +383,17 @@ theorem Quotient.mkₐ_toRingHom (I : Ideal A) [I.IsTwoSided] :
 theorem Quotient.mkₐ_eq_mk (I : Ideal A) [I.IsTwoSided] : ⇑(Quotient.mkₐ R₁ I) = Quotient.mk I :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem Quotient.algebraMap_eq {R} [CommRing R] (I : Ideal R) :
     algebraMap R (R ⧸ I) = Quotient.mk I :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem Quotient.mk_comp_algebraMap (I : Ideal A) [I.IsTwoSided] :
     (Quotient.mk I).comp (algebraMap R₁ A) = algebraMap R₁ (A ⧸ I) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem Quotient.mk_algebraMap (I : Ideal A) [I.IsTwoSided] (x : R₁) :
     Quotient.mk I (algebraMap R₁ A x) = algebraMap R₁ (A ⧸ I) x :=
   rfl

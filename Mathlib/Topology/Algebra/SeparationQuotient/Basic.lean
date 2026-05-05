@@ -275,10 +275,10 @@ instance instNonUnitalSemiring [NonUnitalSemiring R] [IsTopologicalSemiring R] :
 instance instNatCast [NatCast R] : NatCast (SeparationQuotient R) where
   natCast n := mk n
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem mk_natCast [NatCast R] (n : ℕ) : mk (n : R) = n := rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
     mk (ofNat(n) : R) = OfNat.ofNat n :=
   rfl
@@ -286,7 +286,7 @@ theorem mk_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
 instance instIntCast [IntCast R] : IntCast (SeparationQuotient R) where
   intCast n := mk n
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem mk_intCast [IntCast R] (n : ℤ) : mk (n : R) = n := rfl
 
 instance instNonAssocSemiring [NonAssocSemiring R] [IsTopologicalSemiring R] :

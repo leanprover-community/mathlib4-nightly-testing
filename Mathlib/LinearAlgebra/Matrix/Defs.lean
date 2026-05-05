@@ -229,7 +229,7 @@ theorem zero_apply [Zero α] (i : m) (j : n) : (0 : Matrix m n α) i j = 0 := rf
 theorem add_apply [Add α] (A B : Matrix m n α) (i : m) (j : n) :
     (A + B) i j = (A i j) + (B i j) := rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply [SMul β α] (r : β) (A : Matrix m n α) (i : m) (j : n) :
     (r • A) i j = r • (A i j) := rfl
 

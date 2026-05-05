@@ -285,19 +285,15 @@ end BaseType
 
 open Lean Parser.Tactic Elab Command Elab.Tactic Meta Qq
 
-@[defeq]
 theorem Nat.cast_eq_algebraMap (A : Type*) [CommSemiring A] (n : ℕ) :
     Nat.cast n = algebraMap ℕ A n := rfl
 
-@[defeq]
 theorem Nat.algebraMap_eq_cast (A : Type*) [CommSemiring A] (n : ℕ) :
     algebraMap ℕ A n = Nat.cast n := rfl
 
-@[defeq]
 theorem Int.cast_eq_algebraMap (A : Type*) [CommRing A] (n : ℤ) :
     Int.cast n = algebraMap ℤ A n := rfl
 
-@[defeq]
 theorem Int.algebraMap_eq_cast (A : Type*) [CommRing A] (n : ℤ) :
     algebraMap ℤ A n = Int.cast n := rfl
 

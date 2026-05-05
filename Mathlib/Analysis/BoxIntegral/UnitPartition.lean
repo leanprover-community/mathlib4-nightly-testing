@@ -127,7 +127,7 @@ theorem mem_box_iff' [NeZero n] {ν : ι → ℤ} {x : ι → ℝ} :
 /-- The tag of (the index of) a `unitPartition.box`. -/
 abbrev tag (ν : ι → ℤ) : ι → ℝ := fun i ↦ (ν i + 1) / n
 
-@[defeq, simp]
+@[simp]
 theorem tag_apply (ν : ι → ℤ) (i : ι) : tag n ν i = (ν i + 1) / n := rfl
 
 variable [NeZero n]

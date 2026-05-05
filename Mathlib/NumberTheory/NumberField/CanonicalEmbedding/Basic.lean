@@ -1169,7 +1169,7 @@ The map from the `mixedSpace K` to `realSpace K` that sends each component to it
 abbrev normAtAllPlaces (x : mixedSpace K) : realSpace K :=
     fun w ↦ normAtPlace w x
 
-@[defeq, simp]
+@[simp]
 theorem normAtAllPlaces_apply (x : mixedSpace K) (w : InfinitePlace K) :
     normAtAllPlaces x w = normAtPlace w x := rfl
 

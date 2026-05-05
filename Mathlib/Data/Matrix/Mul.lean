@@ -304,7 +304,6 @@ instance [Fintype n] [Mul α] [AddCommMonoid α] : Mul (Matrix n n α) where
 
 instance [Fintype n] [DecidableEq n] [MulOne α] [AddCommMonoid α] : MulOne (Matrix n n α) where
 
-@[defeq]
 theorem mul_apply' [Fintype m] [Mul α] [AddCommMonoid α] {M : Matrix l m α} {N : Matrix m n α}
     {i k} : (M * N) i k = (M i) ⬝ᵥ fun j => N j k :=
   rfl

@@ -333,7 +333,7 @@ theorem testBit_lnot : ∀ n k, testBit (lnot n) k = not (testBit n k)
   | (n : ℕ), k => by simp [lnot, testBit]
   | -[n+1], k => by simp [lnot, testBit]
 
-@[defeq, simp]
+@[simp]
 theorem shiftLeft_neg (m n : ℤ) : m <<< (-n) = m >>> n :=
   rfl
 
@@ -347,7 +347,7 @@ theorem shiftLeft_natCast (m n : ℕ) : (m : ℤ) <<< (n : ℤ) = ↑(m <<< n) :
 @[simp]
 theorem shiftRight_natCast (m n : ℕ) : (m : ℤ) >>> (n : ℤ) = m >>> n := by cases n <;> rfl
 
-@[defeq, simp]
+@[simp]
 theorem shiftLeft_negSucc (m n : ℕ) : -[m+1] <<< (n : ℤ) = -[Nat.shiftLeft' true m n+1] :=
   rfl
 

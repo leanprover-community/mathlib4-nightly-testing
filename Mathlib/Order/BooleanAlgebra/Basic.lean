@@ -453,7 +453,7 @@ instance (priority := 100) BooleanAlgebra.toBiheytingAlgebra : BiheytingAlgebra 
   himp_bot _ := _root_.himp_eq.trans (bot_sup_eq _)
   top_sdiff a := by rw [sdiff_eq, top_inf_eq]
 
-@[defeq, simp]
+@[simp]
 theorem hnot_eq_compl : ￢x = xᶜ :=
   rfl
 

@@ -89,7 +89,7 @@ open scoped Pointwise
 
 -- TODO: This would be a good simp lemma scoped to `Pointwise`, but it seems `@[simp]` can't be
 -- scoped
-@[defeq, to_additive]
+@[to_additive]
 theorem singleton_one : ({1} : Set α) = 1 :=
   rfl
 
@@ -166,7 +166,7 @@ theorem inv_setOf (p : α → Prop) : {x | p x}⁻¹ = {x | p x⁻¹} :=
 theorem mem_inv : a ∈ s⁻¹ ↔ a⁻¹ ∈ s :=
   Iff.rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem inv_preimage : Inv.inv ⁻¹' s = s⁻¹ :=
   rfl
 
@@ -298,7 +298,7 @@ protected def mul : Mul (Set α) :=
 
 scoped[Pointwise] attribute [instance] Set.mul Set.add
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem image2_mul : image2 (· * ·) s t = s * t :=
   rfl
 
@@ -440,7 +440,7 @@ protected def div : Div (Set α) :=
 
 scoped[Pointwise] attribute [instance] Set.div Set.sub
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem image2_div : image2 (· / ·) s t = s / t :=
   rfl
 

@@ -57,17 +57,14 @@ instance : MonoidalCategoryStruct (AlgCat.{u} R) where
   leftUnitor X := (Algebra.TensorProduct.lid R X).toAlgebraIso
   rightUnitor X := (Algebra.TensorProduct.rid R R X).toAlgebraIso
 
-@[defeq]
 theorem hom_tensorHom {K L M N : AlgCat.{u} R} (f : K ⟶ L) (g : M ⟶ N) :
     (f ⊗ₘ g).hom = Algebra.TensorProduct.map f.hom g.hom :=
   rfl
 
-@[defeq]
 theorem hom_whiskerLeft (L : AlgCat.{u} R) {M N : AlgCat.{u} R} (f : M ⟶ N) :
     (L ◁ f).hom = Algebra.TensorProduct.map (.id _ _) f.hom :=
   rfl
 
-@[defeq]
 theorem hom_whiskerRight {L M : AlgCat.{u} R} (f : L ⟶ M) (N : AlgCat.{u} R) :
     (f ▷ N).hom = Algebra.TensorProduct.map f.hom (.id _ _) :=
   rfl

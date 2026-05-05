@@ -220,10 +220,10 @@ theorem truncateFun_surjective : Surjective (@truncateFun p n R) :=
 
 variable [Fact p.Prime]
 
-@[defeq, simp]
+@[simp]
 theorem truncateFun_zero : truncateFun n (0 : 𝕎 R) = 0 := rfl
 
-@[defeq, simp]
+@[simp]
 theorem truncateFun_one : truncateFun n (1 : 𝕎 R) = 1 := rfl
 
 variable {p R}
@@ -254,10 +254,8 @@ theorem truncateFun_zsmul (m : ℤ) (x : 𝕎 R) : truncateFun n (m • x) = m �
 theorem truncateFun_pow (x : 𝕎 R) (m : ℕ) : truncateFun n (x ^ m) = truncateFun n x ^ m := by
   witt_truncateFun_tac
 
-@[defeq]
 theorem truncateFun_natCast (m : ℕ) : truncateFun n (m : 𝕎 R) = m := rfl
 
-@[defeq]
 theorem truncateFun_intCast (m : ℤ) : truncateFun n (m : 𝕎 R) = m := rfl
 
 end WittVector

@@ -42,10 +42,10 @@ variable [∀ i, One (M i)]
 @[to_additive]
 instance instOne : One (∀ i, M i) where one _ := 1
 
-@[defeq, to_additive (attr := simp high)]
+@[to_additive (attr := simp high)]
 lemma one_apply (i : ι) : (1 : ∀ i, M i) i = 1 := rfl
 
-@[defeq, to_additive (attr := push ← high)]
+@[to_additive (attr := push ← high)]
 lemma one_def : (1 : ∀ i, M i) = fun _ ↦ 1 := rfl
 
 variable {M : Type*} [One M]
@@ -63,10 +63,10 @@ variable [∀ i, Mul (M i)]
 @[to_additive]
 instance instMul : Mul (∀ i, M i) where mul f g i := f i * g i
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma mul_apply (f g : ∀ i, M i) (i : ι) : (f * g) i = f i * g i := rfl
 
-@[defeq, to_additive (attr := push ←)]
+@[to_additive (attr := push ←)]
 lemma mul_def (f g : ∀ i, M i) : f * g = fun i ↦ f i * g i := rfl
 
 variable {M : Type*} [Mul M]
@@ -85,10 +85,10 @@ variable [∀ i, Inv (G i)]
 @[to_additive]
 instance instInv : Inv (∀ i, G i) where inv f i := (f i)⁻¹
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma inv_apply (f : ∀ i, G i) (i : ι) : f⁻¹ i = (f i)⁻¹ := rfl
 
-@[defeq, to_additive (attr := push ←)]
+@[to_additive (attr := push ←)]
 lemma inv_def (f : ∀ i, G i) : f⁻¹ = fun i ↦ (f i)⁻¹ := rfl
 
 variable {G : Type*} [Inv G]
@@ -106,10 +106,10 @@ variable [∀ i, Div (G i)]
 @[to_additive]
 instance instDiv : Div (∀ i, G i) where div f g i := f i / g i
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma div_apply (f g : ∀ i, G i) (i : ι) : (f / g) i = f i / g i := rfl
 
-@[defeq, to_additive (attr := push ←)]
+@[to_additive (attr := push ←)]
 lemma div_def (f g : ∀ i, G i) : f / g = fun i ↦ f i / g i := rfl
 
 variable {G : Type*} [Div G]
@@ -129,10 +129,10 @@ variable [∀ i, Pow (M i) α]
 @[to_additive (attr := to_additive) instSMul]
 instance instPow : Pow (∀ i, M i) α where pow f a i := f i ^ a
 
-@[defeq, to_additive (attr := simp, to_additive) (reorder := 5 6) smul_apply]
+@[to_additive (attr := simp, to_additive) (reorder := 5 6) smul_apply]
 lemma pow_apply (f : ∀ i, M i) (a : α) (i : ι) : (f ^ a) i = f i ^ a := rfl
 
-@[defeq, to_additive (attr := push ←, to_additive) (reorder := 5 6) smul_def]
+@[to_additive (attr := push ←, to_additive) (reorder := 5 6) smul_def]
 lemma pow_def (f : ∀ i, M i) (a : α) : f ^ a = fun i ↦ f i ^ a := rfl
 
 variable {M : Type*} [Pow M α]
@@ -151,10 +151,10 @@ variable [∀ i, Star (R i)]
 
 instance : Star (∀ i, R i) where star x i := star (x i)
 
-@[defeq, simp]
+@[simp]
 theorem star_apply (x : ∀ i, R i) (i : ι) : star x i = star (x i) := rfl
 
-@[defeq, push ←]
+@[push ←]
 theorem star_def (x : ∀ i, R i) : star x = fun i => star (x i) := rfl
 
 end Star

@@ -38,10 +38,8 @@ end CStarAlgebra
 
 namespace CFC
 
-@[defeq]
 lemma posPart_def (a : A) : a⁺ = cfcₙ (·⁺ : ℝ → ℝ) a := rfl
 
-@[defeq]
 lemma negPart_def (a : A) : a⁻ = cfcₙ (·⁻ : ℝ → ℝ) a := rfl
 
 @[simp]

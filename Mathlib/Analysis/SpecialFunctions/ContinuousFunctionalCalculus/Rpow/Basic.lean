@@ -60,7 +60,7 @@ namespace NNReal
 in order to speed up automation such as `cfc_cont_tac`. -/
 noncomputable abbrev nnrpow (a : ℝ≥0) (b : ℝ≥0) : ℝ≥0 := a ^ (b : ℝ)
 
-@[defeq, simp] lemma nnrpow_def (a b : ℝ≥0) : nnrpow a b = a ^ (b : ℝ) := rfl
+@[simp] lemma nnrpow_def (a b : ℝ≥0) : nnrpow a b = a ^ (b : ℝ) := rfl
 
 @[fun_prop]
 lemma continuous_nnrpow_const (y : ℝ≥0) : Continuous (nnrpow · y) :=
@@ -94,7 +94,7 @@ not take priority over other instances when they are available. -/
 noncomputable instance (priority := 100) : Pow A ℝ≥0 where
   pow a y := nnrpow a y
 
-@[defeq, simp]
+@[simp]
 lemma nnrpow_eq_pow {a : A} {y : ℝ≥0} : nnrpow a y = a ^ y := rfl
 
 @[simp]
@@ -405,7 +405,7 @@ not take priority over other instances when they are available (such as `Pow ℝ
 noncomputable instance (priority := 100) : Pow A ℝ where
   pow a y := rpow a y
 
-@[defeq, simp]
+@[simp]
 lemma rpow_eq_pow {a : A} {y : ℝ} : rpow a y = a ^ y := rfl
 
 @[simp]

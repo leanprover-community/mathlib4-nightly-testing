@@ -58,8 +58,7 @@ lemma himp_mem (ha : a ∈ L) (hb : b ∈ L) : a ⇨ b ∈ L := by
 lemma mem_carrier : a ∈ L.carrier ↔ a ∈ L := .rfl
 @[simp] lemma mem_toSublattice : a ∈ L.toSublattice ↔ a ∈ L := .rfl
 @[simp] lemma mem_mk {L : Sublattice α} (h_compl h_bot) : a ∈ mk L h_compl h_bot ↔ a ∈ L := .rfl
-@[defeq, simp] lemma coe_mk (L : Sublattice α) (h_compl h_bot) :
-    (mk L h_compl h_bot : Set α) = L := rfl
+@[simp] lemma coe_mk (L : Sublattice α) (h_compl h_bot) : (mk L h_compl h_bot : Set α) = L := rfl
 @[simp] lemma mk_le_mk {L M : Sublattice α} (hL_compl hL_bot hM_compl hM_bot) :
     mk L hL_compl hL_bot ≤ mk M hM_compl hM_bot ↔ L ≤ M := .rfl
 @[simp] lemma mk_lt_mk {L M : Sublattice α} (hL_compl hL_bot hM_compl hM_bot) :
@@ -102,28 +101,24 @@ instance instSDiffCoe : SDiff L where sdiff a b := ⟨a \ b, sdiff_mem a.2 b.2�
 /-- A Boolean subalgebra of a lattice inherits a Heyting implication. -/
 instance instHImpCoe : HImp L where himp a b := ⟨a ⇨ b, himp_mem a.2 b.2⟩
 
-@[defeq, simp, norm_cast] lemma val_bot : (⊥ : L) = (⊥ : α) := rfl
-@[defeq, simp, norm_cast] lemma val_top : (⊤ : L) = (⊤ : α) := rfl
-@[defeq, simp, norm_cast] lemma val_sup (a b : L) : a ⊔ b = (a : α) ⊔ b := rfl
-@[defeq, simp, norm_cast] lemma val_inf (a b : L) : a ⊓ b = (a : α) ⊓ b := rfl
-@[defeq, simp, norm_cast] lemma val_compl (a : L) : aᶜ = (a : α)ᶜ := rfl
-@[defeq, simp, norm_cast] lemma val_sdiff (a b : L) : a \ b = (a : α) \ b := rfl
-@[defeq, simp, norm_cast] lemma val_himp (a b : L) : a ⇨ b = (a : α) ⇨ b := rfl
+@[simp, norm_cast] lemma val_bot : (⊥ : L) = (⊥ : α) := rfl
+@[simp, norm_cast] lemma val_top : (⊤ : L) = (⊤ : α) := rfl
+@[simp, norm_cast] lemma val_sup (a b : L) : a ⊔ b = (a : α) ⊔ b := rfl
+@[simp, norm_cast] lemma val_inf (a b : L) : a ⊓ b = (a : α) ⊓ b := rfl
+@[simp, norm_cast] lemma val_compl (a : L) : aᶜ = (a : α)ᶜ := rfl
+@[simp, norm_cast] lemma val_sdiff (a b : L) : a \ b = (a : α) \ b := rfl
+@[simp, norm_cast] lemma val_himp (a b : L) : a ⇨ b = (a : α) ⇨ b := rfl
 
-@[defeq, simp] lemma mk_bot : (⟨⊥, bot_mem⟩ : L) = ⊥ := rfl
-@[defeq, simp] lemma mk_top : (⟨⊤, top_mem⟩ : L) = ⊤ := rfl
-@[defeq, simp] lemma mk_sup_mk (a b : α) (ha hb) :
-    (⟨a, ha⟩ ⊔ ⟨b, hb⟩ : L) = ⟨a ⊔ b, L.supClosed ha hb⟩ :=
+@[simp] lemma mk_bot : (⟨⊥, bot_mem⟩ : L) = ⊥ := rfl
+@[simp] lemma mk_top : (⟨⊤, top_mem⟩ : L) = ⊤ := rfl
+@[simp] lemma mk_sup_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⊔ ⟨b, hb⟩ : L) = ⟨a ⊔ b, L.supClosed ha hb⟩ :=
   rfl
-@[defeq, simp] lemma mk_inf_mk (a b : α) (ha hb) :
-    (⟨a, ha⟩ ⊓ ⟨b, hb⟩ : L) = ⟨a ⊓ b, L.infClosed ha hb⟩ :=
+@[simp] lemma mk_inf_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⊓ ⟨b, hb⟩ : L) = ⟨a ⊓ b, L.infClosed ha hb⟩ :=
   rfl
-@[defeq, simp] lemma compl_mk (a : α) (ha) : (⟨a, ha⟩ : L)ᶜ = ⟨aᶜ, compl_mem ha⟩ := rfl
-@[defeq, simp] lemma mk_sdiff_mk (a b : α) (ha hb) :
-    (⟨a, ha⟩ \ ⟨b, hb⟩ : L) = ⟨a \ b, sdiff_mem ha hb⟩ :=
+@[simp] lemma compl_mk (a : α) (ha) : (⟨a, ha⟩ : L)ᶜ = ⟨aᶜ, compl_mem ha⟩ := rfl
+@[simp] lemma mk_sdiff_mk (a b : α) (ha hb) : (⟨a, ha⟩ \ ⟨b, hb⟩ : L) = ⟨a \ b, sdiff_mem ha hb⟩ :=
   rfl
-@[defeq, simp] lemma mk_himp_mk (a b : α) (ha hb) :
-    (⟨a, ha⟩ ⇨ ⟨b, hb⟩ : L) = ⟨a ⇨ b, himp_mem ha hb⟩ :=
+@[simp] lemma mk_himp_mk (a b : α) (ha hb) : (⟨a, ha⟩ ⇨ ⟨b, hb⟩ : L) = ⟨a ⇨ b, himp_mem ha hb⟩ :=
   rfl
 
 instance (L : BooleanSubalgebra α) : PartialOrder L :=
@@ -206,11 +201,11 @@ def topEquiv : (⊤ : BooleanSubalgebra α) ≃o α where
   toEquiv := Equiv.Set.univ _
   map_rel_iff' := .rfl
 
-@[defeq, simp, norm_cast] lemma coe_top : (⊤ : BooleanSubalgebra α) = (univ : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_bot : (⊥ : BooleanSubalgebra α) = ({⊥, ⊤} : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_inf (L M : BooleanSubalgebra α) : L ⊓ M = (L : Set α) ∩ M := rfl
+@[simp, norm_cast] lemma coe_top : (⊤ : BooleanSubalgebra α) = (univ : Set α) := rfl
+@[simp, norm_cast] lemma coe_bot : (⊥ : BooleanSubalgebra α) = ({⊥, ⊤} : Set α) := rfl
+@[simp, norm_cast] lemma coe_inf (L M : BooleanSubalgebra α) : L ⊓ M = (L : Set α) ∩ M := rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 lemma coe_sInf (S : Set (BooleanSubalgebra α)) : sInf S = ⋂ L ∈ S, (L : Set α) := rfl
 
 @[simp, norm_cast]

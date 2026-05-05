@@ -65,7 +65,6 @@ variable [Semiring R] [AddCommMonoid M] [Module R M]
 
 /-- This duplicates the global `smul_eq_mul`, but doesn't have to unfold anywhere near as much to
 apply. -/
-@[defeq]
 protected theorem _root_.Ideal.smul_eq_mul (I J : Ideal R) : I • J = I * J :=
   rfl
 
@@ -248,11 +247,11 @@ section Add
 
 variable {R : Type u} [Semiring R]
 
-@[defeq, simp]
+@[simp]
 theorem add_eq_sup {I J : Ideal R} : I + J = I ⊔ J :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem zero_eq_bot : (0 : Ideal R) = ⊥ :=
   rfl
 

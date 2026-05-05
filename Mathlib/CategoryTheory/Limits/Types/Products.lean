@@ -67,7 +67,7 @@ def isTerminalPUnit : IsTerminal (PUnit : Type u) :=
   letI (X : Type u) : Unique (X ⟶ PUnit) := TypeCat.homEquiv.unique
   .ofUnique _
 
-@[defeq, simp]
+@[simp]
 lemma isTerminalPUnit_from_apply {X : Type u} (x : X) : isTerminalPUnit.from X x = .unit := rfl
 
 @[deprecated (since := "2026-02-08")] alias isTerminalPunit := isTerminalPUnit

@@ -83,15 +83,14 @@ def ofReal (r : ℝ) : ℂ :=
 instance : Coe ℝ ℂ :=
   ⟨ofReal⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem ofReal_re (r : ℝ) : Complex.re (r : ℂ) = r :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem ofReal_im (r : ℝ) : (r : ℂ).im = 0 :=
   rfl
 
-@[defeq]
 theorem ofReal_def (r : ℝ) : (r : ℂ) = ⟨r, 0⟩ :=
   rfl
 
@@ -121,15 +120,15 @@ instance : Zero ℂ :=
 instance : Inhabited ℂ :=
   ⟨0⟩
 
-@[defeq, simp]
+@[simp]
 theorem zero_re : (0 : ℂ).re = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem zero_im : (0 : ℂ).im = 0 :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem ofReal_zero : ((0 : ℝ) : ℂ) = 0 :=
   rfl
 
@@ -143,15 +142,15 @@ theorem ofReal_ne_zero {z : ℝ} : (z : ℂ) ≠ 0 ↔ z ≠ 0 :=
 instance : One ℂ :=
   ⟨(1 : ℝ)⟩
 
-@[defeq, simp]
+@[simp]
 theorem one_re : (1 : ℂ).re = 1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem one_im : (1 : ℂ).im = 0 :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem ofReal_one : ((1 : ℝ) : ℂ) = 1 :=
   rfl
 
@@ -165,11 +164,11 @@ theorem ofReal_ne_one {z : ℝ} : (z : ℂ) ≠ 1 ↔ z ≠ 1 :=
 instance : Add ℂ :=
   ⟨fun z w => ⟨z.re + w.re, z.im + w.im⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem add_re (z w : ℂ) : (z + w).re = z.re + w.re :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem add_im (z w : ℂ) : (z + w).im = z.im + w.im :=
   rfl
 
@@ -180,11 +179,11 @@ theorem ofReal_add (r s : ℝ) : ((r + s : ℝ) : ℂ) = r + s :=
 instance : Neg ℂ :=
   ⟨fun z => ⟨-z.re, -z.im⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem neg_re (z : ℂ) : (-z).re = -z.re :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem neg_im (z : ℂ) : (-z).im = -z.im :=
   rfl
 
@@ -316,7 +315,7 @@ theorem smul_re (r : R) (z : ℂ) : (r • z).re = r • z.re :=
 theorem smul_im (r : R) (z : ℂ) : (r • z).im = r • z.im :=
   show r • z.im + 0 * z.re = r • z.im by simp
 
-@[defeq, simp]
+@[simp]
 theorem real_smul {x : ℝ} {z : ℂ} : x • z = x * z :=
   rfl
 
@@ -343,23 +342,22 @@ instance instIntCast : IntCast ℂ where intCast n := ofReal n
 instance instNNRatCast : NNRatCast ℂ where nnratCast q := ofReal q
 instance instRatCast : RatCast ℂ where ratCast q := ofReal q
 
-@[defeq, simp, norm_cast] lemma ofReal_ofNat (n : ℕ) [n.AtLeastTwo] :
-    ofReal ofNat(n) = ofNat(n) := rfl
-@[defeq, simp, norm_cast] lemma ofReal_natCast (n : ℕ) : ofReal n = n := rfl
-@[defeq, simp, norm_cast] lemma ofReal_intCast (n : ℤ) : ofReal n = n := rfl
-@[defeq, simp, norm_cast] lemma ofReal_nnratCast (q : ℚ≥0) : ofReal q = q := rfl
-@[defeq, simp, norm_cast] lemma ofReal_ratCast (q : ℚ) : ofReal q = q := rfl
+@[simp, norm_cast] lemma ofReal_ofNat (n : ℕ) [n.AtLeastTwo] : ofReal ofNat(n) = ofNat(n) := rfl
+@[simp, norm_cast] lemma ofReal_natCast (n : ℕ) : ofReal n = n := rfl
+@[simp, norm_cast] lemma ofReal_intCast (n : ℤ) : ofReal n = n := rfl
+@[simp, norm_cast] lemma ofReal_nnratCast (q : ℚ≥0) : ofReal q = q := rfl
+@[simp, norm_cast] lemma ofReal_ratCast (q : ℚ) : ofReal q = q := rfl
 
-@[defeq, simp] lemma re_ofNat (n : ℕ) [n.AtLeastTwo] : (ofNat(n) : ℂ).re = ofNat(n) := rfl
-@[defeq, simp] lemma im_ofNat (n : ℕ) [n.AtLeastTwo] : (ofNat(n) : ℂ).im = 0 := rfl
-@[defeq, simp, norm_cast] lemma natCast_re (n : ℕ) : (n : ℂ).re = n := rfl
-@[defeq, simp, norm_cast] lemma natCast_im (n : ℕ) : (n : ℂ).im = 0 := rfl
-@[defeq, simp, norm_cast] lemma intCast_re (n : ℤ) : (n : ℂ).re = n := rfl
-@[defeq, simp, norm_cast] lemma intCast_im (n : ℤ) : (n : ℂ).im = 0 := rfl
-@[defeq, simp, norm_cast] lemma re_nnratCast (q : ℚ≥0) : (q : ℂ).re = q := rfl
-@[defeq, simp, norm_cast] lemma im_nnratCast (q : ℚ≥0) : (q : ℂ).im = 0 := rfl
-@[defeq, simp, norm_cast] lemma ratCast_re (q : ℚ) : (q : ℂ).re = q := rfl
-@[defeq, simp, norm_cast] lemma ratCast_im (q : ℚ) : (q : ℂ).im = 0 := rfl
+@[simp] lemma re_ofNat (n : ℕ) [n.AtLeastTwo] : (ofNat(n) : ℂ).re = ofNat(n) := rfl
+@[simp] lemma im_ofNat (n : ℕ) [n.AtLeastTwo] : (ofNat(n) : ℂ).im = 0 := rfl
+@[simp, norm_cast] lemma natCast_re (n : ℕ) : (n : ℂ).re = n := rfl
+@[simp, norm_cast] lemma natCast_im (n : ℕ) : (n : ℂ).im = 0 := rfl
+@[simp, norm_cast] lemma intCast_re (n : ℤ) : (n : ℂ).re = n := rfl
+@[simp, norm_cast] lemma intCast_im (n : ℤ) : (n : ℂ).im = 0 := rfl
+@[simp, norm_cast] lemma re_nnratCast (q : ℚ≥0) : (q : ℂ).re = q := rfl
+@[simp, norm_cast] lemma im_nnratCast (q : ℚ≥0) : (q : ℂ).im = 0 := rfl
+@[simp, norm_cast] lemma ratCast_re (q : ℚ) : (q : ℂ).re = q := rfl
+@[simp, norm_cast] lemma ratCast_im (q : ℚ) : (q : ℂ).im = 0 := rfl
 
 
 /-! ### Ring structure -/
@@ -578,7 +576,7 @@ def ofRealHom : ℝ →+* ℂ where
   map_mul' := ofReal_mul
   map_add' := ofReal_add
 
-@[defeq, simp] lemma ofRealHom_eq_coe (r : ℝ) : ofRealHom r = r := rfl
+@[simp] lemma ofRealHom_eq_coe (r : ℝ) : ofRealHom r = r := rfl
 
 variable {α : Type*}
 
@@ -616,11 +614,11 @@ lemma I_pow_eq_pow_mod (n : ℕ) : I ^ n = I ^ (n % 4) := by
   conv_lhs => rw [← Nat.div_add_mod n 4]
   simp [pow_add, pow_mul, I_pow_four]
 
-@[defeq, simp]
+@[simp]
 theorem sub_re (z w : ℂ) : (z - w).re = z.re - w.re :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sub_im (z w : ℂ) : (z - w).im = z.im - w.im :=
   rfl
 

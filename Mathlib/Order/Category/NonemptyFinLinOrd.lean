@@ -54,7 +54,6 @@ instance (X : NonemptyFinLinOrd) : BoundedOrder X :=
 abbrev of (α : Type*) [Nonempty α] [Fintype α] [LinearOrder α] : NonemptyFinLinOrd where
   carrier := α
 
-@[defeq]
 theorem coe_of (α : Type*) [Nonempty α] [Fintype α] [LinearOrder α] : ↥(of α) = α :=
   rfl
 

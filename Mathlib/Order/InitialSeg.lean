@@ -105,7 +105,7 @@ instance [PartialOrder α] [PartialOrder β] : OrderHomClass (α ≤i β) α β 
 @[ext] lemma ext {f g : r ≼i s} (h : ∀ x, f x = g x) : f = g :=
   DFunLike.ext f g h
 
-@[defeq, simp]
+@[simp]
 theorem coe_coe_fn (f : r ≼i s) : ((f : r ↪r s) : α → β) = f :=
   rfl
 
@@ -281,7 +281,7 @@ theorem ext [Std.Irrefl s] [Std.Trichotomous s] {f g : r ≺i s} (h : ∀ x, f x
   ext
   exact h _
 
-@[defeq, simp]
+@[simp]
 theorem coe_fn_mk (f : r ↪r s) (t o) : (@PrincipalSeg.mk _ _ r s f t o : α → β) = f :=
   rfl
 
@@ -309,7 +309,6 @@ theorem surjOn (f : r ≺i s) : Set.SurjOn f Set.univ { b | s b f.top } := by
 instance hasCoeInitialSeg [IsTrans β s] : Coe (r ≺i s) (r ≼i s) :=
   ⟨fun f => ⟨f.toRelEmbedding, fun _ _ => f.mem_range_of_rel⟩⟩
 
-@[defeq]
 theorem coe_coe_fn' [IsTrans β s] (f : r ≺i s) : ((f : r ≼i s) : α → β) = f :=
   rfl
 

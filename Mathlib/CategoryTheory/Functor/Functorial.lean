@@ -50,7 +50,7 @@ end Functor
 instance (F : C ⥤ D) : Functorial.{v₁, v₂} F.obj :=
   { F with map := F.map }
 
-@[defeq, simp, grind =]
+@[simp, grind =]
 theorem map_functorial_obj (F : C ⥤ D) {X Y : C} (f : X ⟶ Y) : map F.obj f = F.map f :=
   rfl
 

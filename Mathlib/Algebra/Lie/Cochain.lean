@@ -74,7 +74,7 @@ lemma twoCochain_skew (a : twoCochain R L M) (x y : L) : - a x y = a y x := by
   rw [neg_eq_iff_add_eq_zero, add_comm]
   simpa [map_add, twoCochain_alt a x, twoCochain_alt a y] using twoCochain_alt a (x + y)
 
-@[defeq, simp]
+@[simp]
 lemma twoCochain_val_apply (a : twoCochain R L M) (x : L) :
     a.val x = a x :=
   rfl

@@ -45,7 +45,7 @@ structure Codiscrete (α : Type u) where
   with a unique morphism between any two objects of the category. -/
   as : α
 
-@[defeq, simp]
+@[simp]
 theorem Codiscrete.mk_as {α : Type u} (X : Codiscrete α) : Codiscrete.mk X.as = X := rfl
 
 /-- `Codiscrete α` is equivalent to the original type `α`. -/

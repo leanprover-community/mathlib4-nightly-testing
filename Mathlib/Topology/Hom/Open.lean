@@ -74,12 +74,11 @@ instance : ContinuousOpenMapClass (α →CO β) α β where
   map_continuous f := f.continuous_toFun
   map_open f := f.map_open'
 
-@[defeq]
 theorem toFun_eq_coe {f : α →CO β} : f.toFun = (f : α → β) :=
   rfl
 
 /-- `simp`-normal form of `toFun_eq_coe`. -/
-@[defeq, simp]
+@[simp]
 theorem coe_toContinuousMap (f : α →CO β) : (f.toContinuousMap : α → β) = f := rfl
 
 @[ext]

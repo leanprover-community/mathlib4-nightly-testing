@@ -86,11 +86,11 @@ theorem OverMorphism.ext {X : T} {U V : Over X} {f g : U ⟶ V} (h : f.left = g.
 @[simp]
 theorem over_right (U : Over X) : U.right = ⟨⟨⟩⟩ := by simp only
 
-@[defeq, simp]
+@[simp]
 theorem id_left (U : Over X) : Hom.left (𝟙 U) = 𝟙 U.left :=
   rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 theorem comp_left (a b c : Over X) (f : a ⟶ b) (g : b ⟶ c) : (f ≫ g).left = f.left ≫ g.left :=
   rfl
 
@@ -693,11 +693,11 @@ theorem UnderMorphism.ext {X : T} {U V : Under X} {f g : U ⟶ V} (h : f.right =
 @[simp]
 theorem under_left (U : Under X) : U.left = ⟨⟨⟩⟩ := by simp only
 
-@[defeq, simp]
+@[simp]
 theorem id_right (U : Under X) : Hom.right (𝟙 U) = 𝟙 U.right :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem comp_right (a b c : Under X) (f : a ⟶ b) (g : b ⟶ c) : (f ≫ g).right = f.right ≫ g.right :=
   rfl
 

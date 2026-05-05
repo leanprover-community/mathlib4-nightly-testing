@@ -26,7 +26,7 @@ instance [MulZeroOneClass G] [MulZeroOneClass H] (f : G →*₀ H) :
   zero_mul _ := Subtype.ext (zero_mul _)
   mul_zero _ := Subtype.ext (mul_zero _)
 
-@[defeq, simp]
+@[simp]
 lemma val_mrange_zero [MulZeroOneClass G] [MulZeroOneClass H] (f : G →*₀ H) :
     ((0 : MonoidHom.mrange f) : H) = 0 :=
   rfl

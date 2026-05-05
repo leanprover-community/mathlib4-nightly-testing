@@ -32,7 +32,7 @@ namespace ULift
 instance one [One α] : One (ULift α) :=
   ⟨⟨1⟩⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem one_down [One α] : (1 : ULift α).down = 1 :=
   rfl
 
@@ -40,7 +40,7 @@ theorem one_down [One α] : (1 : ULift α).down = 1 :=
 instance mul [Mul α] : Mul (ULift α) :=
   ⟨fun f g => ⟨f.down * g.down⟩⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem mul_down [Mul α] : (x * y).down = x.down * y.down :=
   rfl
 
@@ -48,7 +48,7 @@ theorem mul_down [Mul α] : (x * y).down = x.down * y.down :=
 instance div [Div α] : Div (ULift α) :=
   ⟨fun f g => ⟨f.down / g.down⟩⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem div_down [Div α] : (x / y).down = x.down / y.down :=
   rfl
 
@@ -56,7 +56,7 @@ theorem div_down [Div α] : (x / y).down = x.down / y.down :=
 instance inv [Inv α] : Inv (ULift α) :=
   ⟨fun f => ⟨f.down⁻¹⟩⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem inv_down [Inv α] : x⁻¹.down = x.down⁻¹ :=
   rfl
 
@@ -64,7 +64,7 @@ theorem inv_down [Inv α] : x⁻¹.down = x.down⁻¹ :=
 instance pow [Pow α β] : Pow (ULift α) β :=
   ⟨fun x n => up (x.down ^ n)⟩
 
-@[defeq, to_additive (attr := to_additive, simp) smul_down]
+@[to_additive (attr := to_additive, simp) smul_down]
 theorem pow_down [Pow α β] (a : ULift.{w} α) (b : β) : (a ^ b).down = a.down ^ b :=
   rfl
 

@@ -652,11 +652,11 @@ variable {ι : Type*} {α' : ι → Type*}
 instance [∀ i, Max (α' i)] : Max (∀ i, α' i) :=
   ⟨fun f g i => f i ⊔ g i⟩
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem sup_apply [∀ i, Max (α' i)] (f g : ∀ i, α' i) (i : ι) : (f ⊔ g) i = f i ⊔ g i :=
   rfl
 
-@[defeq, to_dual (attr := push ←)]
+@[to_dual (attr := push ←)]
 theorem sup_def [∀ i, Max (α' i)] (f g : ∀ i, α' i) : f ⊔ g = fun i => f i ⊔ g i :=
   rfl
 
@@ -863,16 +863,16 @@ variable (α β)
 instance [Max α] [Max β] : Max (α × β) :=
   ⟨fun p q => ⟨p.1 ⊔ q.1, p.2 ⊔ q.2⟩⟩
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem mk_sup_mk [Max α] [Max β] (a₁ a₂ : α) (b₁ b₂ : β) :
     (a₁, b₁) ⊔ (a₂, b₂) = (a₁ ⊔ a₂, b₁ ⊔ b₂) :=
   rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem fst_sup [Max α] [Max β] (p q : α × β) : (p ⊔ q).fst = p.fst ⊔ q.fst :=
   rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem snd_sup [Max α] [Max β] (p q : α × β) : (p ⊔ q).snd = p.snd ⊔ q.snd :=
   rfl
 
@@ -880,7 +880,7 @@ theorem snd_sup [Max α] [Max β] (p q : α × β) : (p ⊔ q).snd = p.snd ⊔ q
 theorem swap_sup [Max α] [Max β] (p q : α × β) : (p ⊔ q).swap = p.swap ⊔ q.swap :=
   rfl
 
-@[defeq, to_dual]
+@[to_dual]
 theorem sup_def [Max α] [Max β] (p q : α × β) : p ⊔ q = (p.fst ⊔ q.fst, p.snd ⊔ q.snd) :=
   rfl
 
@@ -925,13 +925,13 @@ protected abbrev lattice [Lattice α] {P : α → Prop} (Psup : ∀ ⦃x y⦄, P
   __ := Subtype.semilatticeInf Pinf
   __ := Subtype.semilatticeSup Psup
 
-@[defeq, to_dual (attr := simp, norm_cast) (rename := Psup → Pinf)]
+@[to_dual (attr := simp, norm_cast) (rename := Psup → Pinf)]
 theorem coe_sup [SemilatticeSup α] {P : α → Prop}
     (Psup : ∀ ⦃x y⦄, P x → P y → P (x ⊔ y)) (x y : Subtype P) :
     (haveI := Subtype.semilatticeSup Psup; (x ⊔ y : Subtype P) : α) = (x ⊔ y : α) :=
   rfl
 
-@[defeq, to_dual (attr := simp) (rename := Psup → Pinf)]
+@[to_dual (attr := simp) (rename := Psup → Pinf)]
 theorem mk_sup_mk [SemilatticeSup α] {P : α → Prop}
     (Psup : ∀ ⦃x y⦄, P x → P y → P (x ⊔ y)) {x y : α} (hx : P x) (hy : P y) :
     (haveI := Subtype.semilatticeSup Psup; (⟨x, hx⟩ ⊔ ⟨y, hy⟩ : Subtype P)) =

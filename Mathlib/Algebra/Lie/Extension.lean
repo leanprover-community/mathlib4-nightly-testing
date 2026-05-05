@@ -198,7 +198,6 @@ instance : LieRing (ofTwoCocycle c) where
     rw [this]
     abel
 
-@[defeq]
 lemma bracket_ofTwoCocycle {c : twoCocycle R L M} (x y : ofTwoCocycle c) :
     letI x₁ := ((ofProd c).symm x).1; letI x₂ := ((ofProd c).symm x).2
     letI y₁ := ((ofProd c).symm y).1; letI y₂ := ((ofProd c).symm y).2

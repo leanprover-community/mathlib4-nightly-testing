@@ -141,7 +141,7 @@ theorem uniformSpace_eq [UniformSpace F] [IsUniformAddGroup F] (𝔖 : Set (Set 
         (UniformOnFun.uniformSpace E F 𝔖) := by
   rw [instUniformSpace, UniformSpace.replaceTopology_eq]
 
-@[defeq, simp]
+@[simp]
 theorem uniformity_toTopologicalSpace_eq [UniformSpace F] [IsUniformAddGroup F] (𝔖 : Set (Set E)) :
     (UniformConvergenceCLM.instUniformSpace σ F 𝔖).toTopologicalSpace =
       UniformConvergenceCLM.instTopologicalSpace σ F 𝔖 :=

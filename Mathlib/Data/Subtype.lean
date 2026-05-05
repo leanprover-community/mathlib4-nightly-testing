@@ -66,7 +66,6 @@ lemma heq_iff_coe_heq {α β : Sort _} {p : α → Prop} {q : β → Prop} {a : 
 theorem coe_eta (a : { a // p a }) (h : p a) : mk (↑a) h = a :=
   Subtype.ext rfl
 
-@[defeq]
 theorem coe_mk (a h) : (@mk α p a h : α) = a :=
   rfl
 

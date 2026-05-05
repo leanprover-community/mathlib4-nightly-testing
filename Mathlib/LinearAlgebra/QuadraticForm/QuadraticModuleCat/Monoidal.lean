@@ -69,18 +69,15 @@ instance : MonoidalCategoryStruct (QuadraticModuleCat.{u} R) where
   rightUnitor X := ofIso (tensorRId X.form)
 
 
-@[defeq]
 theorem toIsometry_tensorHom {K L M N : QuadraticModuleCat.{u} R} (f : K ⟶ L) (g : M ⟶ N) :
     (f ⊗ₘ g).toIsometry = f.toIsometry.tmul g.toIsometry :=
   rfl
 
-@[defeq]
 theorem toIsometry_whiskerLeft
     (L : QuadraticModuleCat.{u} R) {M N : QuadraticModuleCat.{u} R} (f : M ⟶ N) :
     (L ◁ f).toIsometry = .tmul (.id _) f.toIsometry :=
   rfl
 
-@[defeq]
 theorem toIsometry_whiskerRight
     {L M : QuadraticModuleCat.{u} R} (f : L ⟶ M) (N : QuadraticModuleCat.{u} R) :
     (f ▷ N).toIsometry = .tmul f.toIsometry (.id _) :=
@@ -110,7 +107,7 @@ theorem hom_inv_associator {M N K : QuadraticModuleCat.{u} R} :
     (α_ M N K).inv.toIsometry = (tensorAssoc _ _ _).symm.toIsometry :=
   rfl
 
-@[defeq, simp] theorem toModuleCat_tensor (X Y : QuadraticModuleCat.{u} R) :
+@[simp] theorem toModuleCat_tensor (X Y : QuadraticModuleCat.{u} R) :
     (X ⊗ Y).toModuleCat = X.toModuleCat ⊗ Y.toModuleCat := rfl
 
 theorem forget₂_map_associator_hom (X Y Z : QuadraticModuleCat.{u} R) :

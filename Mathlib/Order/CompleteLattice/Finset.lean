@@ -124,11 +124,9 @@ end minimal
 
 section Lattice
 
-@[defeq]
 theorem iSup_coe [SupSet β] (f : α → β) (s : Finset α) : ⨆ x ∈ (↑s : Set α), f x = ⨆ x ∈ s, f x :=
   rfl
 
-@[defeq]
 theorem iInf_coe [InfSet β] (f : α → β) (s : Finset α) : ⨅ x ∈ (↑s : Set α), f x = ⨅ x ∈ s, f x :=
   rfl
 
@@ -186,11 +184,9 @@ theorem iInf_biUnion (s : Finset γ) (t : γ → Finset α) (f : α → β) :
 
 end Lattice
 
-@[defeq]
 theorem set_biUnion_coe (s : Finset α) (t : α → Set β) : ⋃ x ∈ (↑s : Set α), t x = ⋃ x ∈ s, t x :=
   rfl
 
-@[defeq]
 theorem set_biInter_coe (s : Finset α) (t : α → Set β) : ⋂ x ∈ (↑s : Set α), t x = ⋂ x ∈ s, t x :=
   rfl
 

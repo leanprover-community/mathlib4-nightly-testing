@@ -336,7 +336,7 @@ theorem ext : (s : Set α) = t → s = t :=
 theorem mem_coe_iff : a ∈ (s : Set α) ↔ a ∈ s :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Set α) (h₁ h₂) : (mk s h₁ h₂ : Set α) = s :=
   rfl
 

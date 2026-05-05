@@ -490,7 +490,6 @@ theorem aleph0_ne_zero : ℵ₀ ≠ 0 :=
 theorem lift_aleph0 : lift ℵ₀ = ℵ₀ :=
   lift_lift _
 
-@[defeq]
 theorem lift_mk_fin (n : ℕ) : lift #(Fin n) = n := rfl
 
 /-! ### Cardinalities of basic sets and types -/

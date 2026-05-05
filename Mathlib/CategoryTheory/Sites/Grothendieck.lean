@@ -324,11 +324,11 @@ instance : CompleteLattice (GrothendieckTopology C) :=
 instance : Inhabited (GrothendieckTopology C) :=
   ⟨⊤⟩
 
-@[defeq, simp]
+@[simp]
 theorem trivial_eq_bot : trivial C = ⊥ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem discrete_eq_top : discrete C = ⊤ :=
   rfl
 

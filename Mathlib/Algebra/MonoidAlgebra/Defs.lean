@@ -392,7 +392,7 @@ i.e. the function that is `1` at `1` and `0` elsewhere. -/
 i.e. the function that is `1` at `1` and `0` elsewhere. -/]
 instance one : One R[M] where one := single 1 1
 
-@[defeq, to_additive (dont_translate := R) one_def]
+@[to_additive (dont_translate := R) one_def]
 lemma one_def : (1 : R[M]) = single 1 1 := rfl
 
 end One
@@ -538,7 +538,7 @@ instance nonAssocSemiring : NonAssocSemiring R[M] where
   one_mul := by simp [mul_def, one_def]
   mul_one := by simp [mul_def, one_def]
 
-@[defeq, to_additive (dont_translate := R)]
+@[to_additive (dont_translate := R)]
 lemma natCast_def (n : ℕ) : (n : R[M]) = single (1 : M) (n : R) := rfl
 
 @[to_additive (dont_translate := R) mul_single_zero_apply]
@@ -761,7 +761,7 @@ instance nonAssocRing [MulOneClass M] : NonAssocRing R[M] where
   intCast_ofNat n := by simp [natCast_def]
   intCast_negSucc n := by simp [natCast_def, one_def]
 
-@[defeq, to_additive (dont_translate := R)]
+@[to_additive (dont_translate := R)]
 lemma intCast_def [MulOneClass M] (z : ℤ) : (z : R[M]) = single 1 (z : R) := rfl
 
 @[to_additive (dont_translate := R)]

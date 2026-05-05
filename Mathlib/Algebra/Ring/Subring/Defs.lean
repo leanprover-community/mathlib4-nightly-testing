@@ -148,10 +148,10 @@ lemma subtype_injective :
 theorem coe_subtype : (subtype s : s → R) = ((↑) : s → R) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_natCast (n : ℕ) : ((n : s) : R) = n := rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_intCast (n : ℤ) : ((n : s) : R) = n := rfl
 
 end SubringClass
@@ -234,8 +234,7 @@ theorem mem_carrier {s : Subring R} {x : R} : x ∈ s.carrier ↔ x ∈ s :=
 @[simp]
 theorem mem_mk {S : Subsemiring R} {x : R} (h) : x ∈ (⟨S, h⟩ : Subring R) ↔ x ∈ S := Iff.rfl
 
-@[defeq, simp] theorem coe_set_mk (S : Subsemiring R) (h) :
-    ((⟨S, h⟩ : Subring R) : Set R) = S := rfl
+@[simp] theorem coe_set_mk (S : Subsemiring R) (h) : ((⟨S, h⟩ : Subring R) : Set R) = S := rfl
 
 @[simp]
 theorem mk_le_mk {S S' : Subsemiring R} (h₁ h₂) :
@@ -329,23 +328,23 @@ protected theorem zsmul_mem {x : R} (hx : x ∈ s) (n : ℤ) : n • x ∈ s :=
 protected theorem pow_mem {R : Type*} [Ring R] (s : Subring R) {x : R} (hx : x ∈ s) (n : ℕ) :
     x ^ n ∈ s := pow_mem hx n
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_add (x y : s) : (↑(x + y) : R) = ↑x + ↑y :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_neg (x : s) : (↑(-x) : R) = -↑x :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_mul (x y : s) : (↑(x * y) : R) = ↑x * ↑y :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_zero : ((0 : s) : R) = 0 :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_one : ((1 : s) : R) = 1 :=
   rfl
 
@@ -390,29 +389,29 @@ lemma subtype_injective (s : Subring R) :
 theorem coe_subtype : ⇑s.subtype = ((↑) : s → R) :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_natCast (n : ℕ) : ((n : s) : R) = n := rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_intCast (n : ℤ) : ((n : s) : R) = n := rfl
 
 /-! ## Partial order -/
 
-@[defeq, simp]
+@[simp]
 theorem coe_toSubsemiring (s : Subring R) : (s.toSubsemiring : Set R) = s :=
   rfl
 
 theorem mem_toSubmonoid {s : Subring R} {x : R} : x ∈ s.toSubmonoid ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toSubmonoid (s : Subring R) : (s.toSubmonoid : Set R) = s :=
   rfl
 
 theorem mem_toAddSubgroup {s : Subring R} {x : R} : x ∈ s.toAddSubgroup ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toAddSubgroup (s : Subring R) : (s.toAddSubgroup : Set R) = s :=
   rfl
 

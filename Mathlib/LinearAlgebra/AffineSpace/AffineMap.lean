@@ -105,12 +105,12 @@ variable {k : Type*} {V1 : Type*} {P1 : Type*} {V2 : Type*} {P2 : Type*} {V3 : T
 
 /-- Constructing an affine map and coercing back to a function
 produces the same map. -/
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : P1 → P2) (linear add) : ((mk f linear add : P1 →ᵃ[k] P2) : P1 → P2) = f :=
   rfl
 
 /-- `toFun` is the same as the result of coercing to a function. -/
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe (f : P1 →ᵃ[k] P2) : f.toFun = ⇑f :=
   rfl
 
@@ -218,11 +218,11 @@ instance mulAction : MulAction R (P1 →ᵃ[k] V2) where
   one_smul _ := ext fun _ => one_smul _ _
   mul_smul _ _ _ := ext fun _ => mul_smul _ _ _
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_smul (c : R) (f : P1 →ᵃ[k] V2) : ⇑(c • f) = c • ⇑f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_linear (t : R) (f : P1 →ᵃ[k] V2) : (t • f).linear = t • f.linear :=
   rfl
 
@@ -243,35 +243,35 @@ instance : Sub (P1 →ᵃ[k] V2) where
 instance : Neg (P1 →ᵃ[k] V2) where
   neg f := ⟨-f, -f.linear, fun p v => by simp [add_comm, map_vadd f]⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_zero : ⇑(0 : P1 →ᵃ[k] V2) = 0 :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_add (f g : P1 →ᵃ[k] V2) : ⇑(f + g) = f + g :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_neg (f : P1 →ᵃ[k] V2) : ⇑(-f) = -f :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_sub (f g : P1 →ᵃ[k] V2) : ⇑(f - g) = f - g :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem zero_linear : (0 : P1 →ᵃ[k] V2).linear = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem add_linear (f g : P1 →ᵃ[k] V2) : (f + g).linear = f.linear + g.linear :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sub_linear (f g : P1 →ᵃ[k] V2) : (f - g).linear = f.linear - g.linear :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem neg_linear (f : P1 →ᵃ[k] V2) : (-f).linear = -f.linear :=
   rfl
 
@@ -294,19 +294,19 @@ instance : AffineSpace (P1 →ᵃ[k] V2) (P1 →ᵃ[k] P2) where
   vsub_vadd' f g := ext fun p => vsub_vadd (f p) (g p)
   vadd_vsub' f g := ext fun p => vadd_vsub (f p) (g p)
 
-@[defeq, simp]
+@[simp]
 theorem vadd_apply (f : P1 →ᵃ[k] V2) (g : P1 →ᵃ[k] P2) (p : P1) : (f +ᵥ g) p = f p +ᵥ g p :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem vadd_linear (f : P1 →ᵃ[k] V2) (g : P1 →ᵃ[k] P2) : (f +ᵥ g).linear = f.linear + g.linear :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem vsub_apply (f g : P1 →ᵃ[k] P2) (p : P1) : (f -ᵥ g : P1 →ᵃ[k] V2) p = f p -ᵥ g p :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem vsub_linear (f g : P1 →ᵃ[k] P2) : (f -ᵥ g).linear = f.linear - g.linear :=
   rfl
 

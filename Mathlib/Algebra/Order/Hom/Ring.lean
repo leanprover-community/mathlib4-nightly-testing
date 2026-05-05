@@ -152,7 +152,6 @@ instance : RingHomClass (α →+*o β) α β where
   map_add f := f.map_add'
   map_zero f := f.map_zero'
 
-@[defeq]
 theorem toFun_eq_coe (f : α →+*o β) : f.toFun = f :=
   rfl
 
@@ -319,7 +318,6 @@ instance : RingEquivClass (α ≃+*o β) α β where
 
 instance : CoeOut (α ≃+*o β) (α ≃+* β) where coe := toRingEquiv
 
-@[defeq]
 theorem toFun_eq_coe (f : α ≃+*o β) : f.toFun = f :=
   rfl
 
@@ -327,7 +325,7 @@ theorem toFun_eq_coe (f : α ≃+*o β) : f.toFun = f :=
 theorem ext {f g : α ≃+*o β} (h : ∀ a, f a = g a) : f = g :=
   DFunLike.ext f g h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (e : α ≃+* β) (h) : ⇑(⟨e, h⟩ : α ≃+*o β) = e :=
   rfl
 
@@ -343,7 +341,7 @@ theorem toRingEquiv_eq_coe (f : α ≃+*o β) : f.toRingEquiv = f :=
 theorem toOrderIso_eq_coe (f : α ≃+*o β) : f.toOrderIso = f :=
   OrderIso.ext rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toRingEquiv (f : α ≃+*o β) : ⇑(f : α ≃+* β) = f :=
   rfl
 

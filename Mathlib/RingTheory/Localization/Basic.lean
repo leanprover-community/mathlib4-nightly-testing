@@ -599,7 +599,6 @@ end
 
 variable (Rₘ Sₘ)
 
-@[defeq]
 theorem localizationAlgebraMap_def :
     @algebraMap Rₘ Sₘ _ _ (localizationAlgebra M S) =
       map Sₘ (algebraMap R S)

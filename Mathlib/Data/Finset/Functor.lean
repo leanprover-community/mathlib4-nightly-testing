@@ -46,7 +46,7 @@ instance lawfulFunctor : LawfulFunctor Finset where
   comp_map _ _ _ := image_image.symm
   map_const {α} {β} := by simp only [Functor.mapConst, Functor.map]
 
-@[defeq, simp]
+@[simp]
 theorem fmap_def {s : Finset α} (f : α → β) : f <$> s = s.image f := rfl
 
 end Functor
@@ -57,7 +57,7 @@ end Functor
 protected instance pure : Pure Finset :=
   ⟨fun x => {x}⟩
 
-@[defeq, simp]
+@[simp]
 theorem pure_def {α} : (pure : α → Finset α) = singleton := rfl
 
 /-! ### Applicative functor -/
@@ -73,15 +73,15 @@ protected instance applicative : Applicative Finset :=
     seqLeft := fun s t => if t () = ∅ then ∅ else s
     seqRight := fun s t => if s = ∅ then ∅ else t () }
 
-@[defeq, simp]
+@[simp]
 theorem seq_def (s : Finset α) (t : Finset (α → β)) : t <*> s = t.sup fun f => s.image f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem seqLeft_def (s : Finset α) (t : Finset β) : s <* t = if t = ∅ then ∅ else s :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem seqRight_def (s : Finset α) (t : Finset β) : s *> t = if s = ∅ then ∅ else t :=
   rfl
 
@@ -152,7 +152,7 @@ variable [∀ P, Decidable P]
 instance : Monad Finset :=
   { Finset.applicative with bind := sup }
 
-@[defeq, simp]
+@[simp]
 theorem bind_def {α β} : (· >>= ·) = sup (α := Finset α) (β := β) :=
   rfl
 

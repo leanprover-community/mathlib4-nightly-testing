@@ -289,7 +289,6 @@ instance baseAction : MulAction H (NormalWord d) :=
     one_smul := by simp +instances [instHSMul]
     mul_smul := by simp +instances [instHSMul, mul_assoc] }
 
-@[defeq]
 theorem base_smul_def' (h : H) (w : NormalWord d) :
     h • w = { w with head := h * w.head } := rfl
 /-- Take the product of a normal word as an element of the `PushoutI`. We show that this is
@@ -451,7 +450,6 @@ noncomputable instance summandAction (i : ι) : MulAction (G i) (NormalWord d) :
       dsimp +instances [instHSMul]
       simp [mul_assoc, Equiv.apply_symm_apply] }
 
-@[defeq]
 theorem summand_smul_def' {i : ι} (g : G i) (w : NormalWord d) :
     g • w = (equivPair i).symm
       { equivPair i w with

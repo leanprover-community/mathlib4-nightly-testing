@@ -92,7 +92,7 @@ instance (F : C ⥤ C) : CategoryStruct (Algebra F) where
 lemma ext {A B : Algebra F} {f g : A ⟶ B} (w : f.f = g.f := by cat_disch) : f = g :=
   Hom.ext w
 
-@[defeq, simp]
+@[simp]
 theorem id_eq_id : Algebra.Hom.id A = 𝟙 A :=
   rfl
 
@@ -102,7 +102,7 @@ theorem id_f : (𝟙 _ : A ⟶ A).1 = 𝟙 A.1 :=
 
 variable (f : A₀ ⟶ A₁) (g : A₁ ⟶ A₂)
 
-@[defeq, simp]
+@[simp]
 theorem comp_eq_comp : Algebra.Hom.comp f g = f ≫ g :=
   rfl
 
@@ -283,7 +283,7 @@ instance (F : C ⥤ C) : CategoryStruct (Coalgebra F) where
 lemma ext {A B : Coalgebra F} {f g : A ⟶ B} (w : f.f = g.f := by cat_disch) : f = g :=
   Hom.ext w
 
-@[defeq, simp]
+@[simp]
 theorem id_eq_id : Coalgebra.Hom.id V = 𝟙 V :=
   rfl
 
@@ -293,7 +293,7 @@ theorem id_f : (𝟙 _ : V ⟶ V).1 = 𝟙 V.1 :=
 
 variable (f : V₀ ⟶ V₁) (g : V₁ ⟶ V₂)
 
-@[defeq, simp]
+@[simp]
 theorem comp_eq_comp : Coalgebra.Hom.comp f g = f ≫ g :=
   rfl
 

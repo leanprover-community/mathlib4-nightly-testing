@@ -51,7 +51,6 @@ instance : CoeSort SemilatSupCat Type* :=
 
 attribute [instance] isSemilatticeSup isOrderBot
 
-@[defeq]
 theorem coe_of (α : Type*) [SemilatticeSup α] [OrderBot α] : ↥(of α) = α :=
   rfl
 
@@ -74,7 +73,7 @@ instance hasForgetToPartOrd : HasForget₂ SemilatSupCat PartOrd where
   forget₂.obj X := .of X
   forget₂.map f := PartOrd.ofHom ⟨f.toSupHom, OrderHomClass.mono f.toSupHom⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_forget_to_partOrd (X : SemilatSupCat) :
     ↥((forget₂ SemilatSupCat PartOrd).obj X) = ↥X :=
   rfl
@@ -88,7 +87,6 @@ instance : CoeSort SemilatInfCat Type* :=
 
 attribute [instance] isSemilatticeInf isOrderTop
 
-@[defeq]
 theorem coe_of (α : Type*) [SemilatticeInf α] [OrderTop α] : ↥(of α) = α :=
   rfl
 
@@ -111,7 +109,7 @@ instance hasForgetToPartOrd : HasForget₂ SemilatInfCat PartOrd where
   forget₂.obj X := .of X
   forget₂.map f := PartOrd.ofHom ⟨f.toInfHom, OrderHomClass.mono f.toInfHom⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_forget_to_partOrd (X : SemilatInfCat) :
     ↥((forget₂ SemilatInfCat PartOrd).obj X) = ↥X :=
   rfl

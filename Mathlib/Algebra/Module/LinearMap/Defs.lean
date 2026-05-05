@@ -216,10 +216,10 @@ lemma coe_coe {F : Type*} [FunLike F M M₃] [SemilinearMapClass F σ M M₃] {f
 def toDistribMulActionHom (f : M →ₛₗ[σ] M₃) : DistribMulActionHom σ.toMonoidHom M M₃ :=
   { f with map_zero' := show f 0 = 0 from map_zero f }
 
-@[defeq, simp]
+@[simp]
 theorem coe_toAddHom (f : M →ₛₗ[σ] M₃) : ⇑f.toAddHom = f := rfl
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {f : M →ₛₗ[σ] M₃} : f.toFun = (f : M → M₃) := rfl
 
 @[ext]
@@ -242,7 +242,7 @@ theorem copy_eq (f : M →ₛₗ[σ] M₃) (f' : M → M₃) (h : f' = ⇑f) : f
 
 initialize_simps_projections LinearMap (toFun → apply)
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk {σ : R →+* S} (f : AddHom M M₃) (h) :
     ((LinearMap.mk f h : M →ₛₗ[σ] M₃) : M → M₃) = f :=
   rfl
@@ -268,7 +268,6 @@ theorem toLinearMap_injective {F : Type*} [FunLike F M M₃] [SemilinearMapClass
 def id : M →ₗ[R] M :=
   { DistribMulActionHom.id R with toFun x := x }
 
-@[defeq]
 theorem id_apply (x : M) : @id R M _ _ _ x = x :=
   rfl
 
@@ -316,7 +315,7 @@ protected theorem congr_fun (h : f = g) (x : M) : f x = g x :=
   DFunLike.congr_fun h x
 
 @[simp] lemma mk_coe (f : M →ₛₗ[σ] M₃) (h) : (mk f h : M →ₛₗ[σ] M₃) = f := rfl
-@[defeq, simp] lemma mk_coe' (f : M →ₛₗ[σ] M₃) (h) : (mk f.toAddHom h : M →ₛₗ[σ] M₃) = f := rfl
+@[simp] lemma mk_coe' (f : M →ₛₗ[σ] M₃) (h) : (mk f.toAddHom h : M →ₛₗ[σ] M₃) = f := rfl
 
 variable (fₗ f g)
 
@@ -501,7 +500,6 @@ notation3:80 (name := compNotation) f:81 " ∘ₗ " g:80 =>
 
 @[inherit_doc] infixr:90 " ∘ₛₗ " => comp
 
-@[defeq]
 theorem comp_apply (x : M₁) : f.comp g x = f (g x) :=
   rfl
 
@@ -509,15 +507,14 @@ theorem comp_apply (x : M₁) : f.comp g x = f (g x) :=
 theorem coe_comp : (f.comp g : M₁ → M₃) = f ∘ g :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem comp_id : f.comp id = f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem id_comp : id.comp f = f :=
   rfl
 
-@[defeq]
 theorem comp_assoc
     {R₄ M₄ : Type*} [Semiring R₄] [AddCommMonoid M₄] [Module R₄ M₄]
     {σ₃₄ : R₃ →+* R₄} {σ₂₄ : R₂ →+* R₄} {σ₁₄ : R₁ →+* R₄}
@@ -749,11 +746,11 @@ instance : SMul S (M →ₛₗ[σ₁₂] M₂) :=
       map_add' := fun x y ↦ by simp only [Pi.smul_apply, f.map_add, smul_add]
       map_smul' := fun c x ↦ by simp [Pi.smul_apply, smul_comm] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply (a : S) (f : M →ₛₗ[σ₁₂] M₂) (x : M) : (a • f) x = a • f x :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul (a : S) (f : M →ₛₗ[σ₁₂] M₂) : (a • f : M →ₛₗ[σ₁₂] M₂) = a • (f : M → M₂) :=
   rfl
 
@@ -791,7 +788,7 @@ instance : Zero (M →ₛₗ[σ₁₂] M₂) :=
 @[simp] lemma coe_zero_iff (f : M →ₛₗ[σ₁₂] M₂) : ⇑f = 0 ↔ f = 0 := by
   aesop
 
-@[defeq, simp]
+@[simp]
 theorem zero_apply (x : M) : (0 : M →ₛₗ[σ₁₂] M₂) x = 0 :=
   rfl
 
@@ -799,14 +796,14 @@ theorem zero_apply (x : M) : (0 : M →ₛₗ[σ₁₂] M₂) x = 0 :=
 theorem comp_zero (g : M₂ →ₛₗ[σ₂₃] M₃) : (g.comp (0 : M →ₛₗ[σ₁₂] M₂) : M →ₛₗ[σ₁₃] M₃) = 0 :=
   ext fun c ↦ by rw [comp_apply, zero_apply, zero_apply, g.map_zero]
 
-@[defeq, simp]
+@[simp]
 theorem zero_comp (f : M →ₛₗ[σ₁₂] M₂) : ((0 : M₂ →ₛₗ[σ₂₃] M₃).comp f : M →ₛₗ[σ₁₃] M₃) = 0 :=
   rfl
 
 instance : Inhabited (M →ₛₗ[σ₁₂] M₂) :=
   ⟨0⟩
 
-@[defeq, simp]
+@[simp]
 theorem default_def : (default : M →ₛₗ[σ₁₂] M₂) = 0 :=
   rfl
 
@@ -833,11 +830,10 @@ instance : Add (M →ₛₗ[σ₁₂] M₂) :=
       map_add' := by simp [add_comm, add_left_comm]
       map_smul' := by simp [smul_add] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem add_apply (f g : M →ₛₗ[σ₁₂] M₂) (x : M) : (f + g) x = f x + g x :=
   rfl
 
-@[defeq]
 theorem add_comp (f : M →ₛₗ[σ₁₂] M₂) (g h : M₂ →ₛₗ[σ₂₃] M₃) :
     ((h + g).comp f : M →ₛₗ[σ₁₃] M₃) = h.comp f + g.comp f :=
   rfl
@@ -861,13 +857,13 @@ instance : Neg (M →ₛₗ[σ₁₂] N₂) :=
       map_add' := by simp [add_comm]
       map_smul' := by simp }⟩
 
-@[defeq, simp] protected theorem coe_neg (f : M →ₛₗ[σ₁₂] N₂) : ⇑(-f) = -⇑f := rfl
+@[simp] protected theorem coe_neg (f : M →ₛₗ[σ₁₂] N₂) : ⇑(-f) = -⇑f := rfl
 
-@[defeq, simp]
+@[simp]
 theorem neg_apply (f : M →ₛₗ[σ₁₂] N₂) (x : M) : (-f) x = -f x :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem neg_comp (f : M →ₛₗ[σ₁₂] M₂) (g : M₂ →ₛₗ[σ₂₃] N₃) : (-g).comp f = -g.comp f :=
   rfl
 
@@ -882,11 +878,10 @@ instance : Sub (M →ₛₗ[σ₁₂] N₂) :=
       map_add' := fun x y ↦ by simp only [Pi.sub_apply, map_add, add_sub_add_comm]
       map_smul' := fun r x ↦ by simp [Pi.sub_apply, smul_sub] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem sub_apply (f g : M →ₛₗ[σ₁₂] N₂) (x : M) : (f - g) x = f x - g x :=
   rfl
 
-@[defeq]
 theorem sub_comp (f : M →ₛₗ[σ₁₂] M₂) (g h : M₂ →ₛₗ[σ₂₃] N₃) :
     (g - h).comp f = g.comp f - h.comp f :=
   rfl
@@ -939,7 +934,6 @@ instance : DistribMulAction S (M →ₛₗ[σ₁₂] M₂) where
   smul_add _ _ _ := ext fun _ ↦ smul_add _ _ _
   smul_zero _ := ext fun _ ↦ smul_zero _
 
-@[defeq]
 theorem smul_comp (a : S₃) (g : M₂ →ₛₗ[σ₂₃] M₃) (f : M →ₛₗ[σ₁₂] M₂) :
     (a • g).comp f = a • g.comp f :=
   rfl

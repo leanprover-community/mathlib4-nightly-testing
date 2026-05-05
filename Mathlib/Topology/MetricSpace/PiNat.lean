@@ -806,7 +806,6 @@ protected def edist : EDist (∀ i, F i) where
 
 attribute [scoped instance] PiCountable.edist
 
-@[defeq]
 lemma edist_eq_tsum (x y : ∀ i, F i) :
     edist x y = ∑' i, min (2⁻¹ ^ encode i) (edist (x i) (y i)) := rfl
 
@@ -922,7 +921,6 @@ protected def dist : Dist (∀ i, F i) where
 
 attribute [scoped instance] PiCountable.dist
 
-@[defeq]
 lemma dist_eq_tsum (x y : ∀ i, F i) : dist x y = ∑' i, min (2⁻¹ ^ encode i) (dist (x i) (y i)) :=
   rfl
 

@@ -197,19 +197,19 @@ attribute [local instance] monoidalOfHasFiniteCoproducts
 
 open scoped MonoidalCategory
 
-@[defeq, simp]
+@[simp]
 theorem tensorObj (X Y : C) : X ⊗ Y = (X ⨿ Y) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem tensorHom {W X Y Z : C} (f : W ⟶ X) (g : Y ⟶ Z) : f ⊗ₘ g = Limits.coprod.map f g :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem whiskerLeft (X : C) {Y Z : C} (f : Y ⟶ Z) : X ◁ f = Limits.coprod.map (𝟙 X) f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem whiskerRight {X Y : C} (f : X ⟶ Y) (Z : C) : f ▷ Z = Limits.coprod.map f (𝟙 Z) :=
   rfl
 

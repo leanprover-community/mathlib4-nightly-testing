@@ -62,7 +62,7 @@ instance {G H : Type*} [Add G] [Add H] {a : G} {b : H} :
 lemma toEquiv_inj {e₁ e₂ : G ≃+c[a, b] H} : e₁.toEquiv = e₂.toEquiv ↔ e₁ = e₂ :=
   toEquiv_injective.eq_iff
 
-@[defeq, simp] lemma coe_toEquiv (e : G ≃+c[a, b] H) : ⇑e.toEquiv = e := rfl
+@[simp] lemma coe_toEquiv (e : G ≃+c[a, b] H) : ⇑e.toEquiv = e := rfl
 
 /-- Inverse map of an `AddConstEquiv`, as an `AddConstEquiv`. -/
 def symm (e : G ≃+c[a, b] H) : H ≃+c[b, a] G where

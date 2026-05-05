@@ -54,7 +54,6 @@ set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance : Bracket (A ⊗[R] L) (A ⊗[R] M) where bracket x m := bracket' R A L M x m
 
-@[defeq]
 private theorem bracket_def (x : A ⊗[R] L) (m : A ⊗[R] M) : ⁅x, m⁆ = bracket' R A L M x m :=
   rfl
 

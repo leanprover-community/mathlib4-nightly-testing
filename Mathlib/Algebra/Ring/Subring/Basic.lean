@@ -156,12 +156,12 @@ instance : Top (Subring R) :=
 theorem mem_top (x : R) : x ∈ (⊤ : Subring R) :=
   Set.mem_univ x
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_top : ((⊤ : Subring R) : Set R) = Set.univ :=
   rfl
 
-@[defeq, simp] lemma toSubsemiring_top : (⊤ : Subring R).toSubsemiring = ⊤ := rfl
-@[defeq, simp] lemma toAddSubgroup_top : (⊤ : Subring R).toAddSubgroup = ⊤ := rfl
+@[simp] lemma toSubsemiring_top : (⊤ : Subring R).toSubsemiring = ⊤ := rfl
+@[simp] lemma toAddSubgroup_top : (⊤ : Subring R).toAddSubgroup = ⊤ := rfl
 
 @[simp] lemma toSubsemiring_eq_top {S : Subring R} : S.toSubsemiring = ⊤ ↔ S = ⊤ := by
   simp [← SetLike.coe_set_eq]
@@ -305,7 +305,7 @@ instance : Min (Subring R) :=
   ⟨fun s t =>
     { s.toSubmonoid ⊓ t.toSubmonoid, s.toAddSubgroup ⊓ t.toAddSubgroup with carrier := s ∩ t }⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_inf (p p' : Subring R) : ((p ⊓ p' : Subring R) : Set R) = (p : Set R) ∩ p' :=
   rfl
 
@@ -426,11 +426,11 @@ instance instField : Field (center K) where
   qsmul := _
   qsmul_def := fun _ _ => rfl
 
-@[defeq, simp]
+@[simp]
 theorem center.coe_inv (a : center K) : ((a⁻¹ : center K) : K) = (a : K)⁻¹ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem center.coe_div (a b : center K) : ((a / b : center K) : K) = (a : K) / (b : K) :=
   rfl
 
@@ -1048,7 +1048,6 @@ variable {α β : Type*}
 /-- The action by a subring is the action by the underlying ring. -/
 example [SMul R α] (S : Subring R) : SMul S α := by infer_instance
 
-@[defeq]
 theorem smul_def [SMul R α] {S : Subring R} (g : S) (m : α) : g • m = (g : R) • m :=
   rfl
 

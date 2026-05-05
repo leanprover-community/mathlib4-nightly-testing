@@ -94,11 +94,11 @@ instance funLike : FunLike (α →ᵈ β) α β where
 instance toDilationClass : DilationClass (α →ᵈ β) α β where
   edist_eq' f := edist_eq' f
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {f : α →ᵈ β} : f.toFun = (f : α → β) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : α → β) (h) : ⇑(⟨f, h⟩ : α →ᵈ β) = f :=
   rfl
 
@@ -329,11 +329,9 @@ instance : Monoid (α →ᵈ α) where
   one_mul := id_comp
   mul_assoc _ _ _ := comp_assoc _ _ _
 
-@[defeq]
 theorem one_def : (1 : α →ᵈ α) = Dilation.id α :=
   rfl
 
-@[defeq]
 theorem mul_def (f g : α →ᵈ α) : f * g = f.comp g :=
   rfl
 

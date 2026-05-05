@@ -292,11 +292,11 @@ instance : MonoidHomClass (α →*o β) α β where
 theorem ext (h : ∀ a, f a = g a) : f = g :=
   DFunLike.ext f g h
 
-@[defeq, to_additive]
+@[to_additive]
 theorem toFun_eq_coe (f : α →*o β) : f.toFun = (f : α → β) :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem coe_mk (f : α →* β) (h) : (OrderMonoidHom.mk f h : α → β) = f :=
   rfl
 
@@ -411,11 +411,11 @@ theorem cancel_left {g : β →*o γ} {f₁ f₂ : α →*o β} (hg : Function.I
 instance : One (α →*o β) :=
   ⟨{ (1 : α →* β) with monotone' := monotone_const }⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem coe_one : ⇑(1 : α →*o β) = 1 :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem one_apply (a : α) : (1 : α →*o β) a = 1 :=
   rfl
 
@@ -522,11 +522,11 @@ instance : MulEquivClass (α ≃*o β) α β where
 theorem ext (h : ∀ a, f a = g a) : f = g :=
   DFunLike.ext f g h
 
-@[defeq, to_additive]
+@[to_additive]
 theorem toFun_eq_coe (f : α ≃*o β) : f.toFun = (f : α → β) :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem coe_mk (f : α ≃* β) (h) : (OrderMonoidIso.mk f h : α → β) = f :=
   rfl
 

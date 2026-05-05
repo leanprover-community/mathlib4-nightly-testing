@@ -25,8 +25,7 @@ open MulOpposite
 /-- The inner product of `Hᵐᵒᵖ` is given by `⟪x, y⟫ ↦ ⟪x.unop, y.unop⟫`. -/
 instance [Inner 𝕜 H] : Inner 𝕜 Hᵐᵒᵖ where inner x y := inner 𝕜 x.unop y.unop
 
-@[defeq, simp] theorem inner_unop [Inner 𝕜 H] (x y : Hᵐᵒᵖ) :
-    inner 𝕜 x.unop y.unop = inner 𝕜 x y := rfl
+@[simp] theorem inner_unop [Inner 𝕜 H] (x y : Hᵐᵒᵖ) : inner 𝕜 x.unop y.unop = inner 𝕜 x y := rfl
 
 @[simp] theorem inner_op [Inner 𝕜 H] (x y : H) : inner 𝕜 (op x) (op y) = inner 𝕜 x y := rfl
 

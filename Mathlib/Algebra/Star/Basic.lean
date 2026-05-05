@@ -61,7 +61,7 @@ variable {S : Type w} [Star R] [SetLike S R] [hS : StarMemClass S R] (s : S)
 instance instStar : Star s where
   star r := ⟨star (r : R), star_mem r.prop⟩
 
-@[defeq, simp] lemma coe_star (x : s) : star x = star (x : R) := rfl
+@[simp] lemma coe_star (x : s) : star x = star (x : R) := rfl
 
 end StarMemClass
 
@@ -339,7 +339,6 @@ instance RingHom.involutiveStar {S : Type*} [NonAssocSemiring S] : InvolutiveSta
     ext
     simp only [RingHom.coe_comp, Function.comp_apply, starRingEnd_self_apply]
 
-@[defeq]
 theorem RingHom.star_def {S : Type*} [NonAssocSemiring S] (f : S →+* R) :
     Star.star f = RingHom.comp (starRingEnd R) f := rfl
 
@@ -449,11 +448,11 @@ instance : StarMul Rˣ where
   star_involutive _ := Units.ext (star_involutive _)
   star_mul _ _ := Units.ext (star_mul _ _)
 
-@[defeq, simp]
+@[simp]
 theorem coe_star (u : Rˣ) : ↑(star u) = (star ↑u : R) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_star_inv (u : Rˣ) : ↑(star u)⁻¹ = (star ↑u⁻¹ : R) :=
   rfl
 

@@ -88,27 +88,27 @@ instance instBoundedOrder : BoundedOrder (Set α) where
 instance : HasSSubset (Set α) :=
   ⟨(· < ·)⟩
 
-@[defeq, simp]
+@[simp]
 theorem top_eq_univ : (⊤ : Set α) = univ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem bot_eq_empty : (⊥ : Set α) = ∅ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sup_eq_union : ((· ⊔ ·) : Set α → Set α → Set α) = (· ∪ ·) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inf_eq_inter : ((· ⊓ ·) : Set α → Set α → Set α) = (· ∩ ·) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem le_eq_subset : ((· ≤ ·) : Set α → Set α → Prop) = (· ⊆ ·) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem lt_eq_ssubset : ((· < ·) : Set α → Set α → Prop) = (· ⊂ ·) :=
   rfl
 
@@ -138,7 +138,6 @@ variable {α : Type u}
 
 instance (s : Set α) : CoeTC s α := ⟨fun x => x.1⟩
 
-@[defeq]
 theorem Set.coe_eq_subtype (s : Set α) : ↥s = { x // x ∈ s } :=
   rfl
 
@@ -258,7 +257,7 @@ instance : IsNonstrictStrictOrder (Set α) (· ⊆ ·) (· ⊂ ·) :=
 theorem subset_def : (s ⊆ t) = ∀ x, x ∈ s → x ∈ t :=
   rfl
 
-@[defeq, grind =]
+@[grind =]
 theorem ssubset_def : (s ⊂ t) = (s ⊆ t ∧ ¬t ⊆ s) :=
   rfl
 

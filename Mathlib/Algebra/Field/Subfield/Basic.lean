@@ -108,7 +108,7 @@ instance : Inhabited (Subfield K) :=
 theorem mem_top (x : K) : x ∈ (⊤ : Subfield K) :=
   Set.mem_univ x
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_top : ((⊤ : Subfield K) : Set K) = Set.univ :=
   rfl
 
@@ -233,7 +233,7 @@ instance : Min (Subfield K) :=
         Subring.mem_inf.mpr
           ⟨s.inv_mem (Subring.mem_inf.mp hx).1, t.inv_mem (Subring.mem_inf.mp hx).2⟩ }⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_inf (p p' : Subfield K) : ((p ⊓ p' : Subfield K) : Set K) = p.carrier ∩ p'.carrier :=
   rfl
 
@@ -552,7 +552,6 @@ protected theorem prod_mem {ι : Type*} {t : Finset ι} {f : ι → K} (h : ∀ 
 instance toAlgebra : Algebra s K :=
   fast_instance% RingHom.toAlgebra s.subtype
 
-@[defeq]
 theorem algebraMap_ofSubfield : algebraMap s K = s.subtype :=
   rfl
 
@@ -625,7 +624,6 @@ variable {X Y}
 instance [SMul K X] (F : Subfield K) : SMul F X :=
   inferInstanceAs (SMul F.toSubsemiring X)
 
-@[defeq]
 theorem smul_def [SMul K X] {F : Subfield K} (g : F) (m : X) : g • m = (g : K) • m :=
   rfl
 

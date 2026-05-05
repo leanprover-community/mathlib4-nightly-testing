@@ -52,7 +52,6 @@ instance forgetToTop_faithful : (forget₂ AlexDisc TopCat).Faithful where
 abbrev of (X : Type*) [TopologicalSpace X] [AlexandrovDiscrete X] : AlexDisc where
   toTopCat := TopCat.of X
 
-@[defeq]
 lemma coe_of (α : Type*) [TopologicalSpace α] [AlexandrovDiscrete α] : ↥(of α) = α := rfl
 
 @[simp] lemma forgetToTop_of (α : Type*) [TopologicalSpace α] [AlexandrovDiscrete α] :

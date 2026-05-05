@@ -482,17 +482,17 @@ instance instMonoidalCategoryStruct : MonoidalCategoryStruct (Grp C) where
   leftUnitor G := (Grp.fullyFaithfulForget₂Mon C).preimageIso (leftUnitor G.toMon)
   rightUnitor G := (Grp.fullyFaithfulForget₂Mon C).preimageIso (rightUnitor G.toMon)
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorUnit_X : (𝟙_ (Grp C)).X = 𝟙_ C := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorUnit_one : η[(𝟙_ (Grp C)).X] = η[𝟙_ C] := rfl
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorUnit_mul : μ[(𝟙_ (Grp C)).X] = μ[𝟙_ C] := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorObj_one (G H : Grp C) : η[(G ⊗ H).X] = η[G.X ⊗ H.X] := rfl
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorObj_mul (G H : Grp C) : μ[(G ⊗ H).X] = μ[G.X ⊗ H.X] := rfl
 
 @[to_additive (attr := simp)]
@@ -607,7 +607,7 @@ abbrev grpObjObj {G : C} [GrpObj G] : GrpObj (F.obj G) where
 scoped[CategoryTheory.Obj] attribute [instance] CategoryTheory.Functor.grpObjObj
   CategoryTheory.Functor.addGrpObjObj
 
-@[defeq, to_additive (attr := reassoc, simp) neg_def]
+@[to_additive (attr := reassoc, simp) neg_def]
 lemma obj.ι_def {G : C} [GrpObj G] : ι[F.obj G] = F.map ι := rfl
 
 open Monoidal

@@ -32,7 +32,7 @@ variable {M α β : Type*} (e : α ≃ β)
 @[to_additive /-- Transfer `Zero` across an `Equiv` -/]
 protected abbrev one [One β] : One α where one := e.symm 1
 
-@[defeq, to_additive]
+@[to_additive]
 lemma one_def [One β] :
     letI := e.one
     1 = e.symm 1 := rfl
@@ -41,7 +41,7 @@ lemma one_def [One β] :
 @[to_additive /-- Transfer `Add` across an `Equiv` -/]
 protected abbrev mul [Mul β] : Mul α where mul x y := e.symm (e x * e y)
 
-@[defeq, to_additive]
+@[to_additive]
 lemma mul_def [Mul β] (x y : α) :
     letI := Equiv.mul e
     x * y = e.symm (e x * e y) := rfl
@@ -51,7 +51,7 @@ lemma mul_def [Mul β] (x y : α) :
 protected abbrev div [Div β] : Div α :=
   ⟨fun x y => e.symm (e x / e y)⟩
 
-@[defeq, to_additive]
+@[to_additive]
 lemma div_def [Div β] (x y : α) :
     letI := Equiv.div e
     x / y = e.symm (e x / e y) := rfl
@@ -62,7 +62,7 @@ lemma div_def [Div β] (x y : α) :
 @[to_additive /-- Transfer `Neg` across an `Equiv` -/]
 protected abbrev Inv [Inv β] : Inv α where inv x := e.symm (e x)⁻¹
 
-@[defeq, to_additive]
+@[to_additive]
 lemma inv_def [Inv β] (x : α) :
     letI := e.Inv
     x⁻¹ = e.symm (e x)⁻¹ := rfl
@@ -73,7 +73,7 @@ variable (M) in
 /-- Transfer `SMul` across an `Equiv` -/]
 protected abbrev pow [Pow β M] : Pow α M where pow x n := e.symm (e x ^ n)
 
-@[defeq, to_additive (attr := to_additive) smul_def]
+@[to_additive (attr := to_additive) smul_def]
 lemma pow_def [Pow β M] (n : M) (x : α) :
     letI := e.pow M
     x ^ n = e.symm (e x ^ n) := rfl

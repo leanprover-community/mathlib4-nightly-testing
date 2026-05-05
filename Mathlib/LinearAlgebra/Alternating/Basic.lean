@@ -100,11 +100,11 @@ instance instFunLike : FunLike (M [⋀^ι]→ₗ[R] N) (ι → M) N where
 
 initialize_simps_projections AlternatingMap (toFun → apply)
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe : f.toFun = f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : MultilinearMap R (fun _ : ι => M) N) (h) :
     ⇑(⟨f, h⟩ : M [⋀^ι]→ₗ[R] N) = f :=
   rfl
@@ -131,7 +131,7 @@ attribute [coe] AlternatingMap.toMultilinearMap
 instance instCoe : Coe (M [⋀^ι]→ₗ[R] N) (MultilinearMap R (fun _ : ι => M) N) :=
   ⟨fun x => x.toMultilinearMap⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_multilinearMap : ⇑(f : MultilinearMap R (fun _ : ι => M) N) = f :=
   rfl
 
@@ -211,15 +211,14 @@ instance instSMul : SMul S (M [⋀^ι]→ₗ[R] N) :=
     { c • (f : MultilinearMap R (fun _ : ι => M) N) with
       map_eq_zero_of_eq' := fun v i j h hij => by simp [f.map_eq_zero_of_eq v h hij] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply (c : S) (m : ι → M) : (c • f) m = c • f m :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_smul (c : S) : ↑(c • f) = c • (f : MultilinearMap R (fun _ : ι => M) N) :=
   rfl
 
-@[defeq]
 theorem coeFn_smul (c : S) (f : M [⋀^ι]→ₗ[R] N) : ⇑(c • f) = c • ⇑f :=
   rfl
 
@@ -279,11 +278,11 @@ instance instAdd : Add (M [⋀^ι]→ₗ[R] N) where
       map_eq_zero_of_eq' := fun v i j h hij => by
         simp [a.map_eq_zero_of_eq v h hij, b.map_eq_zero_of_eq v h hij] }
 
-@[defeq, simp]
+@[simp]
 theorem add_apply : (f + f') v = f v + f' v :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_add : (↑(f + f') : MultilinearMap R (fun _ : ι => M) N) = f + f' :=
   rfl
 
@@ -291,15 +290,15 @@ instance instZero : Zero (M [⋀^ι]→ₗ[R] N) :=
   ⟨{ (0 : MultilinearMap R (fun _ : ι => M) N) with
       map_eq_zero_of_eq' := fun _ _ _ _ _ => by simp }⟩
 
-@[defeq, simp]
+@[simp]
 theorem zero_apply : (0 : M [⋀^ι]→ₗ[R] N) v = 0 :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_zero : ((0 : M [⋀^ι]→ₗ[R] N) : MultilinearMap R (fun _ : ι => M) N) = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_zero :
     mk (0 : MultilinearMap R (fun _ : ι ↦ M) N) (0 : M [⋀^ι]→ₗ[R] N).2 = 0 :=
   rfl
@@ -315,11 +314,11 @@ instance instNeg : Neg (M [⋀^ι]→ₗ[R] N') :=
     { -(f : MultilinearMap R (fun _ : ι => M) N') with
       map_eq_zero_of_eq' := fun v i j h hij => by simp [f.map_eq_zero_of_eq v h hij] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem neg_apply (m : ι → M) : (-g) m = -g m :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_neg : ((-g : M [⋀^ι]→ₗ[R] N') : MultilinearMap R (fun _ : ι => M) N') = -g :=
   rfl
 
@@ -329,11 +328,11 @@ instance instSub : Sub (M [⋀^ι]→ₗ[R] N') :=
       map_eq_zero_of_eq' := fun v i j h hij => by
         simp [f.map_eq_zero_of_eq v h hij, g.map_eq_zero_of_eq v h hij] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem sub_apply (m : ι → M) : (g - g₂) m = g m - g₂ m :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_sub : (↑(g - g₂) : MultilinearMap R (fun _ : ι => M) N') = g - g₂ :=
   rfl
 

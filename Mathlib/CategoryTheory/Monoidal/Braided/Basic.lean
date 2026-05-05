@@ -715,8 +715,8 @@ instance tensorMonoidal : (tensor C).Monoidal :=
 
 @[simp] lemma tensor_ε : ε (tensor C) = (λ_ (𝟙_ C)).inv := rfl
 @[simp] lemma tensor_η : η (tensor C) = (λ_ (𝟙_ C)).hom := rfl
-@[defeq, simp] lemma tensor_μ (X Y : C × C) : μ (tensor C) X Y = tensorμ X.1 X.2 Y.1 Y.2 := rfl
-@[defeq, simp] lemma tensor_δ (X Y : C × C) : δ (tensor C) X Y = tensorδ X.1 X.2 Y.1 Y.2 := rfl
+@[simp] lemma tensor_μ (X Y : C × C) : μ (tensor C) X Y = tensorμ X.1 X.2 Y.1 Y.2 := rfl
+@[simp] lemma tensor_δ (X Y : C × C) : δ (tensor C) X Y = tensorδ X.1 X.2 Y.1 Y.2 := rfl
 
 @[reassoc]
 theorem leftUnitor_monoidal (X₁ X₂ : C) :
@@ -793,7 +793,7 @@ section OppositeLemmas
 
 open Opposite
 
-@[defeq, simp] lemma op_braiding (X Y : C) : (β_ X Y).op = β_ (op Y) (op X) := rfl
+@[simp] lemma op_braiding (X Y : C) : (β_ X Y).op = β_ (op Y) (op X) := rfl
 @[simp] lemma unop_braiding (X Y : Cᵒᵖ) : (β_ X Y).unop = β_ (unop Y) (unop X) := rfl
 
 @[simp] lemma op_hom_braiding (X Y : C) : (β_ X Y).hom.op = (β_ (op Y) (op X)).hom := rfl
@@ -813,7 +813,7 @@ instance instBraiding : BraidedCategory Cᴹᵒᵖ where
 
 section MonoidalOppositeLemmas
 
-@[defeq, simp] lemma mop_braiding (X Y : C) : (β_ X Y).mop = β_ (mop Y) (mop X) := rfl
+@[simp] lemma mop_braiding (X Y : C) : (β_ X Y).mop = β_ (mop Y) (mop X) := rfl
 @[simp] lemma unmop_braiding (X Y : Cᴹᵒᵖ) : (β_ X Y).unmop = β_ (unmop Y) (unmop X) := rfl
 
 @[simp] lemma mop_hom_braiding (X Y : C) : (β_ X Y).hom.mop = (β_ (mop Y) (mop X)).hom := rfl
@@ -835,8 +835,8 @@ instance : (mopFunctor C).Monoidal :=
 
 @[simp] lemma mopFunctor_ε : ε (mopFunctor C) = 𝟙 _ := rfl
 @[simp] lemma mopFunctor_η : η (mopFunctor C) = 𝟙 _ := rfl
-@[defeq, simp] lemma mopFunctor_μ (X Y : C) : μ (mopFunctor C) X Y = (β_ (mop X) (mop Y)).hom := rfl
-@[defeq, simp] lemma mopFunctor_δ (X Y : C) : δ (mopFunctor C) X Y = (β_ (mop X) (mop Y)).inv := rfl
+@[simp] lemma mopFunctor_μ (X Y : C) : μ (mopFunctor C) X Y = (β_ (mop X) (mop Y)).hom := rfl
+@[simp] lemma mopFunctor_δ (X Y : C) : δ (mopFunctor C) X Y = (β_ (mop X) (mop Y)).inv := rfl
 
 set_option backward.defeqAttrib.useBackward true in
 instance : (unmopFunctor C).Monoidal :=
@@ -847,9 +847,9 @@ instance : (unmopFunctor C).Monoidal :=
 
 @[simp] lemma unmopFunctor_ε : ε (unmopFunctor C) = 𝟙 _ := rfl
 @[simp] lemma unmopFunctor_η : η (unmopFunctor C) = 𝟙 _ := rfl
-@[defeq, simp] lemma unmopFunctor_μ (X Y : Cᴹᵒᵖ) :
+@[simp] lemma unmopFunctor_μ (X Y : Cᴹᵒᵖ) :
     μ (unmopFunctor C) X Y = (β_ (unmop X) (unmop Y)).hom := rfl
-@[defeq, simp] lemma unmopFunctor_δ (X Y : Cᴹᵒᵖ) :
+@[simp] lemma unmopFunctor_δ (X Y : Cᴹᵒᵖ) :
     δ (unmopFunctor C) X Y = (β_ (unmop X) (unmop Y)).inv := rfl
 
 /-- The identity functor on `C`, viewed as a functor from `C` to its

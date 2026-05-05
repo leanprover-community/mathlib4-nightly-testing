@@ -156,17 +156,17 @@ section CoeLemmas
 
 variable (A B : unitaryGroup n α)
 
-@[defeq, simp] theorem inv_val : ↑A⁻¹ = (star A : Matrix n n α) := rfl
+@[simp] theorem inv_val : ↑A⁻¹ = (star A : Matrix n n α) := rfl
 
-@[defeq, simp] theorem inv_apply : ⇑A⁻¹ = (star A : Matrix n n α) := rfl
+@[simp] theorem inv_apply : ⇑A⁻¹ = (star A : Matrix n n α) := rfl
 
-@[defeq, simp] theorem mul_val : ↑(A * B) = A.1 * B.1 := rfl
+@[simp] theorem mul_val : ↑(A * B) = A.1 * B.1 := rfl
 
-@[defeq, simp] theorem mul_apply : ⇑(A * B) = A.1 * B.1 := rfl
+@[simp] theorem mul_apply : ⇑(A * B) = A.1 * B.1 := rfl
 
-@[defeq, simp] theorem one_val : ↑(1 : unitaryGroup n α) = (1 : Matrix n n α) := rfl
+@[simp] theorem one_val : ↑(1 : unitaryGroup n α) = (1 : Matrix n n α) := rfl
 
-@[defeq, simp] theorem one_apply : ⇑(1 : unitaryGroup n α) = (1 : Matrix n n α) := rfl
+@[simp] theorem one_apply : ⇑(1 : unitaryGroup n α) = (1 : Matrix n n α) := rfl
 
 @[simp]
 theorem toLin'_mul : toLin' (A * B) = (toLin' A).comp (toLin' B) :=
@@ -268,12 +268,11 @@ instance : StarMul (specialUnitaryGroup n α) where
   star_mul A B := Subtype.ext <| star_mul A.1 B.1
   star_involutive A := Subtype.ext <| star_involutive A.1
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem specialUnitaryGroup.coe_star (A : specialUnitaryGroup n α) : (star A).1 = star A.1 := rfl
 
 instance : Inv (specialUnitaryGroup n α) where inv := star
 
-@[defeq]
 theorem star_eq_inv (A : specialUnitaryGroup n α) : star A = A⁻¹ :=
   rfl
 

@@ -58,7 +58,6 @@ instance {C : Type*} [CommSemiring C] [Algebra R C] (S₁ S₂ : Subalgebra R C)
 instance {C : Type*} [CommSemiring C] [Algebra R C] (S₁ S₂ : Subalgebra R C) :
   Algebra ↑(S₁ ⊓ S₂) S₂ := RingHom.toAlgebra (Subalgebra.inclusion inf_le_right).toRingHom
 
-@[defeq]
 theorem sup_def (S T : Subalgebra R A) : S ⊔ T = adjoin R (S ∪ T : Set A) := rfl
 
 theorem sSup_def (S : Set (Subalgebra R A)) : sSup S = adjoin R (⋃₀ (SetLike.coe '' S)) := rfl
@@ -253,7 +252,7 @@ theorem _root_.AlgHom.range_eq_top (f : A →ₐ[R] B) :
     f.range = (⊤ : Subalgebra R B) ↔ Function.Surjective f :=
   Algebra.eq_top_iff
 
-@[defeq, simp]
+@[simp]
 theorem range_ofId : (Algebra.ofId R A).range = ⊥ := rfl
 
 @[simp]

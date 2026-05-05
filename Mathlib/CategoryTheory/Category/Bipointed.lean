@@ -39,7 +39,6 @@ instance : CoeSort Bipointed Type* := ⟨Bipointed.X⟩
 abbrev of {X : Type*} (to_prod : X × X) : Bipointed :=
   ⟨X, to_prod⟩
 
-@[defeq]
 theorem coe_of {X : Type*} (to_prod : X × X) : ↥(of to_prod) = X :=
   rfl
 

@@ -103,7 +103,7 @@ theorem equivTuple_apply {R : Type*} (c₁ c₂ c₃ : R) (x : ℍ[R,c₁,c₂,c
     equivTuple c₁ c₂ c₃ x = ![x.re, x.imI, x.imJ, x.imK] :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk.eta {R : Type*} {c₁ c₂ c₃} (a : ℍ[R,c₁,c₂,c₃]) : mk a.1 a.2 a.3 a.4 = a := rfl
 
 variable {S T R : Type*} {c₁ c₂ c₃ : R} (r x y : R) (a b : ℍ[R,c₁,c₂,c₃])
@@ -195,7 +195,7 @@ variable [Add R]
 instance : Add ℍ[R,c₁,c₂,c₃] :=
   ⟨fun a b => ⟨a.1 + b.1, a.2 + b.2, a.3 + b.3, a.4 + b.4⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem mk_add_mk (a₁ a₂ a₃ a₄ b₁ b₂ b₃ b₄ : R) :
     (mk a₁ a₂ a₃ a₄ : ℍ[R,c₁,c₂,c₃]) + mk b₁ b₂ b₃ b₄ =
     mk (a₁ + b₁) (a₂ + b₂) (a₃ + b₃) (a₄ + b₄) :=
@@ -238,7 +238,7 @@ variable [Neg R]
 @[simps]
 instance : Neg ℍ[R,c₁,c₂,c₃] := ⟨fun a => ⟨-a.1, -a.2, -a.3, -a.4⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem neg_mk (a₁ a₂ a₃ a₄ : R) : -(mk a₁ a₂ a₃ a₄ : ℍ[R,c₁,c₂,c₃]) = ⟨-a₁, -a₂, -a₃, -a₄⟩ :=
   rfl
 
@@ -260,7 +260,7 @@ instance : Sub ℍ[R,c₁,c₂,c₃] :=
 @[simp] theorem im_sub : (a - b).im = a.im - b.im :=
   QuaternionAlgebra.ext (sub_zero _).symm rfl rfl rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_sub_mk (a₁ a₂ a₃ a₄ b₁ b₂ b₃ b₄ : R) :
     (mk a₁ a₂ a₃ a₄ : ℍ[R,c₁,c₂,c₃]) - mk b₁ b₂ b₃ b₄ =
     mk (a₁ - b₁) (a₂ - b₂) (a₃ - b₃) (a₄ - b₄) :=
@@ -304,7 +304,7 @@ instance : Mul ℍ[R,c₁,c₂,c₃] :=
       a.1 * b.3 + c₁ * a.2 * b.4 + a.3 * b.1 + c₂ * a.3 * b.2 - c₁ * a.4 * b.2,
       a.1 * b.4 + a.2 * b.3 + c₂ * a.2 * b.4 - a.3 * b.2 + a.4 * b.1⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem mk_mul_mk (a₁ a₂ a₃ a₄ b₁ b₂ b₃ b₄ : R) :
     (mk a₁ a₂ a₃ a₄ : ℍ[R,c₁,c₂,c₃]) * mk b₁ b₂ b₃ b₄ =
     mk
@@ -331,7 +331,7 @@ instance [SMulCommClass S T R] : SMulCommClass S T ℍ[R,c₁,c₂,c₃] where
 @[simp] theorem im_smul {S} [CommRing R] [SMulZeroClass S R] (s : S) : (s • a).im = s • a.im :=
   QuaternionAlgebra.ext (smul_zero s).symm rfl rfl rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_mk (re im_i im_j im_k : R) :
     s • (⟨re, im_i, im_j, im_k⟩ : ℍ[R,c₁,c₂,c₃]) = ⟨s • re, s • im_i, s • im_j, s • im_k⟩ :=
   rfl
@@ -388,7 +388,7 @@ theorem imK_natCast (n : ℕ) : (n : ℍ[R,c₁,c₂,c₃]).imK = 0 :=
 theorem im_natCast (n : ℕ) : (n : ℍ[R,c₁,c₂,c₃]).im = 0 :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_natCast (n : ℕ) : ↑(n : R) = (n : ℍ[R,c₁,c₂,c₃]) :=
   rfl
 
@@ -427,7 +427,7 @@ theorem imK_intCast (z : ℤ) : (z : ℍ[R,c₁,c₂,c₃]).imK = 0 :=
 theorem im_intCast (z : ℤ) : (z : ℍ[R,c₁,c₂,c₃]).im = 0 :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_intCast (z : ℤ) : ↑(z : R) = (z : ℍ[R,c₁,c₂,c₃]) :=
   rfl
 
@@ -449,7 +449,7 @@ instance instRing : Ring ℍ[R,c₁,c₂,c₃] where
 @[norm_cast, simp]
 theorem coe_mul : ((x * y : R) : ℍ[R,c₁,c₂,c₃]) = x * y := by ext <;> simp
 
-@[defeq, norm_cast, simp]
+@[norm_cast, simp]
 lemma coe_ofNat {n : ℕ} [n.AtLeastTwo] :
     ((ofNat(n) : R) : ℍ[R,c₁,c₂,c₃]) = (ofNat(n) : ℍ[R,c₁,c₂,c₃]) :=
   rfl
@@ -569,7 +569,7 @@ theorem coe_mul_eq_smul : ↑r * a = r • a :=
 
 theorem mul_coe_eq_smul : a * r = r • a := by rw [← coe_commutes, coe_mul_eq_smul]
 
-@[defeq, norm_cast, simp]
+@[norm_cast, simp]
 theorem coe_algebraMap : ⇑(algebraMap R ℍ[R,c₁,c₂,c₃]) = coe :=
   rfl
 
@@ -579,17 +579,17 @@ theorem smul_coe : x • (y : ℍ[R,c₁,c₂,c₃]) = ↑(x * y) := by rw [coe_
 instance instStarQuaternionAlgebra : Star ℍ[R,c₁,c₂,c₃] where star a :=
   ⟨a.1 + c₂ * a.2, -a.2, -a.3, -a.4⟩
 
-@[defeq, simp] theorem re_star : (star a).re = a.re + c₂ * a.imI := rfl
+@[simp] theorem re_star : (star a).re = a.re + c₂ * a.imI := rfl
 
-@[defeq, simp]
+@[simp]
 theorem imI_star : (star a).imI = -a.imI :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem imJ_star : (star a).imJ = -a.imJ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem imK_star : (star a).imK = -a.imK :=
   rfl
 
@@ -597,7 +597,7 @@ theorem imK_star : (star a).imK = -a.imK :=
 theorem im_star : (star a).im = -a.im :=
   QuaternionAlgebra.ext neg_zero.symm rfl rfl rfl
 
-@[defeq, simp]
+@[simp]
 theorem star_mk (a₁ a₂ a₃ a₄ : R) : star (mk a₁ a₂ a₃ a₄ : ℍ[R,c₁,c₂,c₃]) =
     ⟨a₁ + c₂ * a₂, -a₂, -a₃, -a₄⟩ := rfl
 
@@ -1169,9 +1169,9 @@ instance instRatCast : RatCast ℍ[R] where ratCast q := (q : R)
 @[simp, norm_cast] lemma imJ_ratCast (q : ℚ) : (q : ℍ[R]).imJ = 0 := rfl
 @[simp, norm_cast] lemma imK_ratCast (q : ℚ) : (q : ℍ[R]).imK = 0 := rfl
 
-@[defeq, norm_cast] lemma coe_nnratCast (q : ℚ≥0) : ↑(q : R) = (q : ℍ[R]) := rfl
+@[norm_cast] lemma coe_nnratCast (q : ℚ≥0) : ↑(q : R) = (q : ℍ[R]) := rfl
 
-@[defeq, norm_cast] lemma coe_ratCast (q : ℚ) : ↑(q : R) = (q : ℍ[R]) := rfl
+@[norm_cast] lemma coe_ratCast (q : ℚ) : ↑(q : R) = (q : ℍ[R]) := rfl
 
 variable [LinearOrder R] [IsStrictOrderedRing R] (a b : ℍ[R])
 

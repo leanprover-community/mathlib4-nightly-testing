@@ -122,11 +122,11 @@ instance : Monad Semiquot where
   map := @Semiquot.map
   bind := @Semiquot.bind
 
-@[defeq, simp]
+@[simp]
 theorem map_def {β} : ((· <$> ·) : (α → β) → Semiquot α → Semiquot β) = map :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem bind_def {β} : ((· >>= ·) : Semiquot α → (α → Semiquot β) → Semiquot β) = bind :=
   rfl
 

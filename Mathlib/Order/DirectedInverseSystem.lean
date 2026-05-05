@@ -285,7 +285,6 @@ abbrev piLT (X : ι → Type*) (i : ι) := ∀ l : Iio i, X l
 /-- The projection from a Pi type to the Pi type over an initial segment of its indexing type. -/
 abbrev piLTProj (f : piLT X j) : piLT X i := fun l ↦ f ⟨l, l.2.trans_le h⟩
 
-@[defeq]
 theorem piLTProj_intro {l : Iio j} {f : piLT X j} (hl : l < i) :
     f l = piLTProj h f ⟨l, hl⟩ := rfl
 

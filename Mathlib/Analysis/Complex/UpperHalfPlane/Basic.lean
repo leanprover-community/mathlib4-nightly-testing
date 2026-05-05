@@ -97,11 +97,10 @@ theorem mk_re (z : ℂ) (h : 0 < z.im) : (mk z h).re = z.re :=
 theorem mk_im (z : ℂ) (h : 0 < z.im) : (mk z h).im = z.im :=
   rfl
 
-@[defeq]
 theorem coe_mk (z : ℂ) (h : 0 < z.im) : (mk z h : ℂ) = z :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_coe (z : ℍ) (h : 0 < (z : ℂ).im := z.2) : mk z h = z :=
   rfl
 
@@ -114,7 +113,7 @@ lemma I_re : I.re = 0 := Complex.I_re
 @[simp, norm_cast]
 lemma coe_I : I = Complex.I := rfl
 
-@[defeq, deprecated coe_mk (since := "2026-01-29")]
+@[deprecated coe_mk (since := "2026-01-29")]
 lemma coe_mk_subtype {z : ℂ} (hz : 0 < z.im) :
     UpperHalfPlane.coe ⟨z, hz⟩ = z :=
   rfl
@@ -202,7 +201,7 @@ instance posRealAction : MulAction {x : ℝ // 0 < x} ℍ where
 
 variable (x : {x : ℝ // 0 < x}) (z : ℍ)
 
-@[defeq, simp]
+@[simp]
 theorem coe_pos_real_smul : ↑(x • z) = (x : ℝ) • (z : ℂ) :=
   rfl
 
@@ -230,7 +229,7 @@ instance : AddAction ℝ ℍ where
 
 variable (x : ℝ) (z : ℍ)
 
-@[defeq, simp]
+@[simp]
 theorem coe_vadd : ↑(x +ᵥ z) = (x + z : ℂ) :=
   rfl
 

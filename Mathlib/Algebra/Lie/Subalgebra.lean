@@ -167,7 +167,7 @@ theorem mem_mk_iff' (p : Submodule R L) (h) {x : L} :
 theorem mem_coe {x : L} : x ∈ (L' : Set L) ↔ x ∈ L' :=
   Iff.rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_bracket (x y : L') : (↑⁅x, y⁆ : L) = ⁅(↑x : L), ↑y⁆ :=
   rfl
 
@@ -184,12 +184,11 @@ theorem ext (L₁' L₂' : LieSubalgebra R L) (h : ∀ x, x ∈ L₁' ↔ x ∈ 
 theorem ext_iff' (L₁' L₂' : LieSubalgebra R L) : L₁' = L₂' ↔ ∀ x, x ∈ L₁' ↔ x ∈ L₂' :=
   SetLike.ext_iff
 
-@[defeq, simp]
+@[simp]
 theorem mk_coe (S : Set L) (h₁ h₂ h₃ h₄) :
     ((⟨⟨⟨⟨S, h₁⟩, h₂⟩, h₃⟩, h₄⟩ : LieSubalgebra R L) : Set L) = S :=
   rfl
 
-@[defeq]
 theorem toSubmodule_mk (p : Submodule R L) (h) :
     (({ p with lie_mem' := h } : LieSubalgebra R L) : Submodule R L) = p := rfl
 
@@ -211,7 +210,6 @@ theorem toSubmodule_inj (L₁' L₂' : LieSubalgebra R L) :
     (L₁' : Submodule R L) = (L₂' : Submodule R L) ↔ L₁' = L₂' :=
   toSubmodule_injective.eq_iff
 
-@[defeq]
 theorem coe_toSubmodule : ((L' : Submodule R L) : Set L) = L' :=
   rfl
 
@@ -223,7 +221,7 @@ variable {N : Type w₁} [AddCommGroup N] [LieRingModule L N] [Module R N]
 instance : Bracket L' M where
   bracket x m := ⁅(x : L), m⁆
 
-@[defeq, simp]
+@[simp]
 theorem coe_bracket_of_module (x : L') (m : M) : ⁅x, m⁆ = ⁅(x : L), m⁆ :=
   rfl
 
@@ -396,11 +394,11 @@ theorem toSubmodule_le_toSubmodule : (K : Submodule R L) ≤ K' ↔ K ≤ K' :=
 instance : Bot (LieSubalgebra R L) :=
   ⟨0⟩
 
-@[defeq, simp]
+@[simp]
 theorem bot_coe : ((⊥ : LieSubalgebra R L) : Set L) = {0} :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem bot_toSubmodule : ((⊥ : LieSubalgebra R L) : Submodule R L) = ⊥ :=
   rfl
 
@@ -414,11 +412,11 @@ theorem mem_bot (x : L) : x ∈ (⊥ : LieSubalgebra R L) ↔ x = 0 :=
 instance : Top (LieSubalgebra R L) :=
   ⟨{ (⊤ : Submodule R L) with lie_mem' := @fun x y _ _ ↦ mem_univ ⁅x, y⁆ }⟩
 
-@[defeq, simp]
+@[simp]
 theorem top_coe : ((⊤ : LieSubalgebra R L) : Set L) = univ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem top_toSubmodule : ((⊤ : LieSubalgebra R L) : Submodule R L) = ⊤ :=
   rfl
 
@@ -447,11 +445,11 @@ instance : InfSet (LieSubalgebra R L) :=
         intro K hK
         exact K.lie_mem (hx K hK) (hy K hK) }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_inf : (↑(K ⊓ K') : Set L) = (K : Set L) ∩ (K' : Set L) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sInf_toSubmodule (S : Set (LieSubalgebra R L)) :
     (↑(sInf S) : Submodule R L) = sInf {(s : Submodule R L) | s ∈ S} :=
   rfl
@@ -507,11 +505,11 @@ instance : CanonicallyOrderedAdd (LieSubalgebra R L) where
   le_add_self _ _ := le_sup_right
   le_self_add _ _ := le_sup_left
 
-@[defeq, simp]
+@[simp]
 theorem add_eq_sup : K + K' = K ⊔ K' :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inf_toSubmodule :
     (↑(K ⊓ K') : Submodule R L) = (K : Submodule R L) ⊓ (K' : Submodule R L) :=
   rfl

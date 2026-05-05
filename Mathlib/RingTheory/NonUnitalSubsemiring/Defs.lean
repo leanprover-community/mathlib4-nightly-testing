@@ -232,15 +232,15 @@ namespace NonUnitalSubsemiring
 variable [NonUnitalNonAssocSemiring S]
 variable {F : Type*} [FunLike F R S] [NonUnitalRingHomClass F R S] (s : NonUnitalSubsemiring R)
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_zero : ((0 : s) : R) = (0 : R) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_add (x y : s) : ((x + y : s) : R) = (x + y : R) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_mul (x y : s) : ((x * y : s) : R) = (x * y : R) :=
   rfl
 
@@ -251,7 +251,7 @@ theorem coe_mul (x y : s) : ((x * y : s) : R) = (x * y : R) :=
 theorem mem_toSubsemigroup {s : NonUnitalSubsemiring R} {x : R} : x ∈ s.toSubsemigroup ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, simp high]
+@[simp high]
 theorem coe_toSubsemigroup (s : NonUnitalSubsemiring R) : (s.toSubsemigroup : Set R) = s :=
   rfl
 
@@ -259,7 +259,7 @@ theorem coe_toSubsemigroup (s : NonUnitalSubsemiring R) : (s.toSubsemigroup : Se
 theorem mem_toAddSubmonoid {s : NonUnitalSubsemiring R} {x : R} : x ∈ s.toAddSubmonoid ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toAddSubmonoid (s : NonUnitalSubsemiring R) : (s.toAddSubmonoid : Set R) = s :=
   rfl
 
@@ -271,11 +271,11 @@ instance : Top (NonUnitalSubsemiring R) :=
 theorem mem_top (x : R) : x ∈ (⊤ : NonUnitalSubsemiring R) :=
   Set.mem_univ x
 
-@[defeq, simp]
+@[simp]
 theorem coe_top : ((⊤ : NonUnitalSubsemiring R) : Set R) = Set.univ :=
   rfl
 
-@[defeq, simp] lemma toAddSubmonoid_top : (⊤ : NonUnitalSubsemiring R).toAddSubmonoid = ⊤ := rfl
+@[simp] lemma toAddSubmonoid_top : (⊤ : NonUnitalSubsemiring R).toAddSubmonoid = ⊤ := rfl
 
 @[simp]
 lemma toAddSubmonoid_eq_top {S : NonUnitalSubsemiring R} : S.toAddSubmonoid = ⊤ ↔ S = ⊤ := by
@@ -295,7 +295,6 @@ instance : Bot (NonUnitalSubsemiring R) :=
 instance : Inhabited (NonUnitalSubsemiring R) :=
   ⟨⊥⟩
 
-@[defeq]
 theorem coe_bot : ((⊥ : NonUnitalSubsemiring R) : Set R) = {0} :=
   rfl
 
@@ -308,7 +307,7 @@ instance : Min (NonUnitalSubsemiring R) :=
     { s.toSubsemigroup ⊓ t.toSubsemigroup, s.toAddSubmonoid ⊓ t.toAddSubmonoid with
       carrier := s ∩ t }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_inf (p p' : NonUnitalSubsemiring R) :
     ((p ⊓ p' : NonUnitalSubsemiring R) : Set R) = (p : Set R) ∩ p' :=
   rfl

@@ -336,7 +336,7 @@ lemma map_comp_apply (f : X → Y) (g : Y → Z) (x : stdSimplex S X) :
 abbrev vertex [DecidableEq X] (x : X) : stdSimplex S X :=
   ⟨Pi.single x 1, single_mem_stdSimplex S x⟩
 
-@[defeq, simp]
+@[simp]
 lemma vertex_coe [DecidableEq X] (x : X) :
     ⇑(vertex (S := S) x) = Pi.single x 1 := rfl
 

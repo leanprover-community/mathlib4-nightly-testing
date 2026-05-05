@@ -190,8 +190,8 @@ protected theorem coe_injective : Injective ((↑) : ℝ≥0 → ℝ) := Subtype
 
 @[simp, norm_cast] lemma coe_one : ((1 : ℝ≥0) : ℝ) = 1 := rfl
 
-@[defeq, simp] lemma mk_zero : NNReal.mk 0 le_rfl = 0 := rfl
-@[defeq, simp] lemma mk_one : NNReal.mk 1 zero_le_one = 1 := rfl
+@[simp] lemma mk_zero : NNReal.mk 0 le_rfl = 0 := rfl
+@[simp] lemma mk_one : NNReal.mk 1 zero_le_one = 1 := rfl
 
 @[simp, norm_cast]
 protected theorem coe_add (r₁ r₂ : ℝ≥0) : ((r₁ + r₂ : ℝ≥0) : ℝ) = r₁ + r₂ :=
@@ -249,7 +249,6 @@ instance {M : Type*} [SMul ℝ M] : SMul ℝ≥0 M :=
 instance {M : Type*} [MulAction ℝ M] : MulAction ℝ≥0 M :=
   fast_instance% MulAction.compHom M toRealHom.toMonoidHom
 
-@[defeq]
 theorem smul_def {M : Type*} [SMul ℝ M] (c : ℝ≥0) (x : M) : c • x = (c : ℝ) • x :=
   rfl
 
@@ -492,7 +491,6 @@ theorem lt_iff_exists_rat_btwn (a b : ℝ≥0) :
         simp [Real.coe_toNNReal _ this, NNReal.coe_lt_coe.symm, haq, hqb]⟩)
     fun ⟨_, _, haq, hqb⟩ => lt_trans haq hqb
 
-@[defeq]
 theorem bot_eq_zero : (⊥ : ℝ≥0) = 0 := rfl
 
 theorem mul_sup (a b c : ℝ≥0) : a * (b ⊔ c) = a * b ⊔ a * c :=

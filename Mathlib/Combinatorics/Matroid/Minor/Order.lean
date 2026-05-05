@@ -102,10 +102,10 @@ lemma IsMinor.le (h : N ≤m M) : N ≤ M := h
 
 lemma IsStrictMinor.lt (h : N <m M) : N < M := h
 
-@[defeq, simp]
+@[simp]
 lemma le_eq_isMinor : (fun M M' : Matroid α ↦ M ≤ M') = Matroid.IsMinor := rfl
 
-@[defeq, simp]
+@[simp]
 lemma lt_eq_isStrictMinor : (fun M M' : Matroid α ↦ M < M') = Matroid.IsStrictMinor := rfl
 
 lemma isStrictMinor_iff_isMinor_ne : N <m M ↔ N ≤m M ∧ N ≠ M :=

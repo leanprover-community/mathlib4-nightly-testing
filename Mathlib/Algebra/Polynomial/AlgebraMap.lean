@@ -65,7 +65,7 @@ instance algebraOfAlgebra : Algebra R A[X] where
       convert Algebra.commutes' r p.toFinsupp
   algebraMap := C.comp (algebraMap R A)
 
-@[defeq, simp]
+@[simp]
 theorem algebraMap_apply (r : R) : algebraMap R A[X] r = C (algebraMap R A r) :=
   rfl
 
@@ -83,11 +83,10 @@ theorem ofFinsupp_algebraMap (r : R) : (⟨algebraMap R _ r⟩ : A[X]) = algebra
 (But note that `C` is defined when `R` is not necessarily commutative, in which case
 `algebraMap` is not available.)
 -/
-@[defeq]
 theorem C_eq_algebraMap (r : R) : C r = algebraMap R R[X] r :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem algebraMap_eq : algebraMap R R[X] = C :=
   rfl
 

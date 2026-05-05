@@ -39,7 +39,7 @@ instance instMulZeroClass : MulZeroClass (WithTop α) where
     | (b : α) => congr_arg some <| zero_mul _
     | ⊤ => if_pos rfl
 
-@[defeq, simp, norm_cast] lemma coe_mul (a b : α) : (↑(a * b) : WithTop α) = a * b := rfl
+@[simp, norm_cast] lemma coe_mul (a b : α) : (↑(a * b) : WithTop α) = a * b := rfl
 
 lemma mul_top' : ∀ (a : WithTop α), a * ⊤ = if a = 0 then 0 else ⊤
   | (a : α) => if_congr coe_eq_zero.symm rfl rfl
@@ -53,7 +53,7 @@ lemma top_mul' : ∀ (b : WithTop α), ⊤ * b = if b = 0 then 0 else ⊤
 
 @[simp] lemma top_mul (hb : b ≠ 0) : ⊤ * b = ⊤ := by rw [top_mul', if_neg hb]
 
-@[defeq, simp] lemma top_mul_top : (⊤ * ⊤ : WithTop α) = ⊤ := rfl
+@[simp] lemma top_mul_top : (⊤ * ⊤ : WithTop α) = ⊤ := rfl
 
 lemma mul_def (a b : WithTop α) :
     a * b = if a = 0 ∨ b = 0 then 0 else WithTop.map₂ (· * ·) a b := by
@@ -176,7 +176,7 @@ instance instMonoidWithZero : MonoidWithZero (WithTop α) where
   npow_zero a := by cases a <;> simp
   npow_succ n a := by cases n <;> cases a <;> simp [pow_succ]
 
-@[defeq, simp, norm_cast] lemma coe_pow (a : α) (n : ℕ) : (↑(a ^ n) : WithTop α) = a ^ n := rfl
+@[simp, norm_cast] lemma coe_pow (a : α) (n : ℕ) : (↑(a ^ n) : WithTop α) = a ^ n := rfl
 
 @[simp] lemma top_pow : ∀ {n : ℕ}, n ≠ 0 → (⊤ : WithTop α) ^ n = ⊤ | _ + 1, _ => rfl
 

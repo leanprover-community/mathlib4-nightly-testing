@@ -484,7 +484,6 @@ instance summandAction (i) : MulAction (M i) (Word M) where
 instance : MulAction (CoprodI M) (Word M) :=
   MulAction.ofEndHom (lift fun _ => MulAction.toEndHom)
 
-@[defeq]
 theorem smul_def {i} (m : M i) (w : Word M) :
     m • w = rcons { equivPair i w with head := m * (equivPair i w).head } :=
   rfl

@@ -126,11 +126,10 @@ instance coeToZeroHom : Coe (α →*₀ β) (ZeroHom α β) := ⟨toZeroHom⟩
 -- This must come after the coe_toFun definitions
 initialize_simps_projections MonoidWithZeroHom (toFun → apply)
 
-@[defeq, simp] lemma coe_mk (f h1 hmul) : (mk f h1 hmul : α → β) = (f : α → β) := rfl
+@[simp] lemma coe_mk (f h1 hmul) : (mk f h1 hmul : α → β) = (f : α → β) := rfl
 
-@[defeq, simp] lemma toZeroHom_coe (f : α →*₀ β) : (f.toZeroHom : α → β) = f := rfl
+@[simp] lemma toZeroHom_coe (f : α →*₀ β) : (f.toZeroHom : α → β) = f := rfl
 
-@[defeq]
 lemma toMonoidHom_coe (f : α →*₀ β) : f.toMonoidHom.toFun = f := rfl
 
 @[ext] lemma ext ⦃f g : α →*₀ β⦄ (h : ∀ x, f x = g x) : f = g := DFunLike.ext _ _ h
@@ -229,7 +228,6 @@ protected instance one (M₀ N₀ : Type*) [MulZeroOneClass M₀] [MulZeroOneCla
   one.map_one' := by simp
   one.map_mul' x y := by split_ifs <;> simp_all
 
-@[defeq]
 lemma one_apply_def {M₀ N₀ : Type*} [MulZeroOneClass M₀] [MulZeroOneClass N₀]
     [DecidablePred fun x : M₀ ↦ x = 0] [Nontrivial M₀] [NoZeroDivisors M₀] (x : M₀) :
     (1 : M₀ →*₀ N₀) x = if x = 0 then 0 else 1 :=

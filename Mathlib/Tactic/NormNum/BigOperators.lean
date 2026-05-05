@@ -172,7 +172,6 @@ def Multiset.ProveZeroOrConsResult.eq_trans {α : Q(Type u)} {s t : Q(Multiset $
   | .zero pf => .zero q(Eq.trans $eq $pf)
   | .cons a s' pf => .cons a s' q(Eq.trans $eq $pf)
 
-@[defeq]
 lemma Multiset.insert_eq_cons {α : Type*} (a : α) (s : Multiset α) :
     insert a s = Multiset.cons a s :=
   rfl

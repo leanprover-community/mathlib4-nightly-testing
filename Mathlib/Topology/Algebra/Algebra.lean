@@ -170,7 +170,7 @@ theorem coe_inj {f g : A →A[R] B} : (f : A →ₐ[R] B) = g ↔ f = g := by
 @[simp]
 theorem coe_mk (f : A →ₐ[R] B) (h) : (mk f h : A →ₐ[R] B) = f := rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk' (f : A →ₐ[R] B) (h) : (mk f h : A → B) = f := rfl
 
 @[simp, norm_cast]
@@ -315,7 +315,6 @@ protected def id : A →A[R] A := ⟨AlgHom.id R A, continuous_id⟩
 
 instance : One (A →A[R] A) := ⟨ContinuousAlgHom.id R A⟩
 
-@[defeq]
 theorem one_def : (1 : A →A[R] A) = ContinuousAlgHom.id R A := rfl
 
 theorem id_apply (x : A) : ContinuousAlgHom.id R A x = x := rfl
@@ -370,7 +369,6 @@ theorem comp_assoc {D : Type*} [Semiring D] [Algebra R D] [TopologicalSpace D] (
 
 instance : Mul (A →A[R] A) := ⟨comp⟩
 
-@[defeq]
 theorem mul_def (f g : A →A[R] A) : f * g = f.comp g := rfl
 
 @[simp]

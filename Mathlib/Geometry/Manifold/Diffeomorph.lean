@@ -140,7 +140,7 @@ protected theorem mdifferentiable (h : M ≃ₘ^n⟮I, I'⟯ M') (hn : n ≠ 0) 
 protected theorem mdifferentiableOn (h : M ≃ₘ^n⟮I, I'⟯ M') (s : Set M) (hn : n ≠ 0) : MDiff[s] h :=
   (h.mdifferentiable hn).mdifferentiableOn
 
-@[defeq, simp]
+@[simp]
 theorem coe_toEquiv (h : M ≃ₘ^n⟮I, I'⟯ M') : ⇑h.toEquiv = h :=
   rfl
 

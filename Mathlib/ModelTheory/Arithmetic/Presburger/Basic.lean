@@ -91,13 +91,13 @@ instance : presburger.Structure M where
   | .one, v => 1
   | .add, v => v 0 + v 1
 
-@[defeq, simp] theorem funMap_zero {v} :
+@[simp] theorem funMap_zero {v} :
     Structure.funMap (L := presburger) (M := M) presburgerFunc.zero v = 0 := rfl
 
-@[defeq, simp] theorem funMap_one {v} :
+@[simp] theorem funMap_one {v} :
     Structure.funMap (L := presburger) (M := M) presburgerFunc.one v = 1 := rfl
 
-@[defeq, simp] theorem funMap_add {v} :
+@[simp] theorem funMap_add {v} :
     Structure.funMap (L := presburger) (M := M) presburgerFunc.add v = v 0 + v 1 := rfl
 
 @[simp] theorem realize_zero : Term.realize v (0 : presburger.Term α) = 0 := rfl

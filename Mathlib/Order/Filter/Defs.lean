@@ -262,7 +262,6 @@ instance instHNot : HNot (Filter α) where
 
 theorem mem_sdiff : s ∈ f \ g ↔ ∀ t ∈ g, s ⊆ t → t ∈ f := .rfl
 
-@[defeq]
 protected theorem hnot_def : ￢f = 𝓟 f.kerᶜ := rfl
 
 
@@ -346,7 +345,6 @@ of elements of the component filters. -/
 instance instSProd : SProd (Filter α) (Filter β) (Filter (α × β)) where
   sprod f g := f.comap Prod.fst ⊓ g.comap Prod.snd
 
-@[defeq]
 theorem prod_eq_inf (f : Filter α) (g : Filter β) : f ×ˢ g = f.comap Prod.fst ⊓ g.comap Prod.snd :=
   rfl
 

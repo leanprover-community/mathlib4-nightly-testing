@@ -291,7 +291,7 @@ instance homClass : HomClass L (M →[L] N) M N where
 instance [L.IsAlgebraic] : StrongHomClass L (M →[L] N) M N :=
   HomClass.strongHomClassOfIsAlgebraic
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {f : M →[L] N} : f.toFun = (f : M → N) :=
   rfl
 

@@ -33,7 +33,7 @@ variable [One α] {a : α}
 instance one : One (WithTop α) :=
   ⟨(1 : α)⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_one : ((1 : α) : WithTop α) = 1 :=
   rfl
 
@@ -263,7 +263,7 @@ instance addMonoid : AddMonoid (WithTop α) where
   nsmul_zero a := by cases a <;> simp [zero_nsmul]
   nsmul_succ n a := by cases a <;> cases n <;> simp [succ_nsmul, coe_add]
 
-@[defeq, simp, norm_cast] lemma coe_nsmul (a : α) (n : ℕ) : ↑(n • a) = n • (a : WithTop α) := rfl
+@[simp, norm_cast] lemma coe_nsmul (a : α) (n : ℕ) : ↑(n • a) = n • (a : WithTop α) := rfl
 
 /-- Coercion from `α` to `WithTop α` as an `AddMonoidHom`. -/
 def addHom : α →+ WithTop α where
@@ -288,13 +288,13 @@ instance addMonoidWithOne : AddMonoidWithOne (WithTop α) where
   natCast_zero := by simp [NatCast.natCast]
   natCast_succ := fun n => by simp [NatCast.natCast]
 
-@[defeq, simp, norm_cast] lemma coe_natCast (n : ℕ) : ((n : α) : WithTop α) = n := rfl
+@[simp, norm_cast] lemma coe_natCast (n : ℕ) : ((n : α) : WithTop α) = n := rfl
 
 @[simp] lemma top_ne_natCast (n : ℕ) : (⊤ : WithTop α) ≠ n := top_ne_coe
 @[simp] lemma natCast_ne_top (n : ℕ) : (n : WithTop α) ≠ ⊤ := coe_ne_top
 @[simp] lemma natCast_lt_top [LT α] (n : ℕ) : (n : WithTop α) < ⊤ := coe_lt_top _
 
-@[defeq, simp] lemma coe_ofNat (n : ℕ) [n.AtLeastTwo] :
+@[simp] lemma coe_ofNat (n : ℕ) [n.AtLeastTwo] :
     ((ofNat(n) : α) : WithTop α) = ofNat(n) := rfl
 @[simp] lemma coe_eq_ofNat (n : ℕ) [n.AtLeastTwo] (m : α) :
     (m : WithTop α) = ofNat(n) ↔ m = ofNat(n) :=
@@ -398,7 +398,7 @@ variable [One α] {a : α}
 
 @[to_additive] instance one : One (WithBot α) := ⟨(1 : α)⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)] lemma coe_one : ((1 : α) : WithBot α) = 1 := rfl
+@[to_additive (attr := simp, norm_cast)] lemma coe_one : ((1 : α) : WithBot α) = 1 := rfl
 
 @[to_additive (attr := simp, norm_cast)]
 lemma coe_eq_one : (a : WithBot α) = 1 ↔ a = 1 := coe_eq_coe
@@ -639,13 +639,13 @@ variable [AddMonoidWithOne α]
 instance addMonoidWithOne : AddMonoidWithOne (WithBot α) :=
   inferInstanceAs <| AddMonoidWithOne (WithTop α)
 
-@[defeq, norm_cast] lemma coe_natCast (n : ℕ) : ((n : α) : WithBot α) = n := rfl
+@[norm_cast] lemma coe_natCast (n : ℕ) : ((n : α) : WithBot α) = n := rfl
 
 @[simp] lemma natCast_ne_bot (n : ℕ) : (n : WithBot α) ≠ ⊥ := coe_ne_bot
 
 @[simp] lemma bot_ne_natCast (n : ℕ) : (⊥ : WithBot α) ≠ n := bot_ne_coe
 
-@[defeq, simp] lemma coe_ofNat (n : ℕ) [n.AtLeastTwo] :
+@[simp] lemma coe_ofNat (n : ℕ) [n.AtLeastTwo] :
     ((ofNat(n) : α) : WithBot α) = ofNat(n) := rfl
 @[simp] lemma coe_eq_ofNat (n : ℕ) [n.AtLeastTwo] (m : α) :
     (m : WithBot α) = ofNat(n) ↔ m = ofNat(n) :=

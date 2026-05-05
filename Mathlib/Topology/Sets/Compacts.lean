@@ -78,11 +78,11 @@ instance : CanLift (Set α) (Compacts α) (↑) IsCompact where prf K hK := ⟨�
 protected theorem ext {s t : Compacts α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Set α) (h) : (mk s h : Set α) = s :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem carrier_eq_coe (s : Compacts α) : s.carrier = s :=
   rfl
 
@@ -116,19 +116,19 @@ instance : Inhabited (Compacts α) := ⟨⊥⟩
 instance [IsEmpty α] : Unique (Compacts α) where
   uniq _ := Compacts.ext (Subsingleton.elim _ _)
 
-@[defeq, simp]
+@[simp]
 theorem coe_sup (s t : Compacts α) : (↑(s ⊔ t) : Set α) = ↑s ∪ ↑t :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_inf [T2Space α] (s t : Compacts α) : (↑(s ⊓ t) : Set α) = ↑s ∩ ↑t :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_top [CompactSpace α] : (↑(⊤ : Compacts α) : Set α) = univ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_bot : (↑(⊥ : Compacts α) : Set α) = ∅ :=
   rfl
 
@@ -262,7 +262,7 @@ space. -/
 protected abbrev prod (K : Compacts α) (L : Compacts β) : Compacts (α × β) :=
   K ×ˢ L
 
-@[defeq, simp]
+@[simp]
 theorem coe_prod (K : Compacts α) (L : Compacts β) :
     (K ×ˢ L : Compacts (α × β)) = (K : Set α) ×ˢ (L : Set β) :=
   rfl
@@ -331,15 +331,14 @@ theorem toCloseds_injective [T2Space α] : Function.Injective (toCloseds (α := 
 protected theorem ext {s t : NonemptyCompacts α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Compacts α) (h) : (mk s h : Set α) = s :=
   rfl
 
-@[defeq]
 theorem carrier_eq_coe (s : NonemptyCompacts α) : s.carrier = s :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toCompacts (s : NonemptyCompacts α) : (s.toCompacts : Set α) = s := rfl
 
 @[simp]
@@ -370,16 +369,16 @@ instance : SemilatticeSup (NonemptyCompacts α) :=
 instance [CompactSpace α] [Nonempty α] : OrderTop (NonemptyCompacts α) :=
   fast_instance% OrderTop.lift ((↑) : _ → Set α) (fun _ _ => id) rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_sup (s t : NonemptyCompacts α) : (↑(s ⊔ t) : Set α) = ↑s ∪ ↑t :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toCompacts_sup (s t : NonemptyCompacts α) :
     (s ⊔ t).toCompacts = s.toCompacts ⊔ t.toCompacts :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_top [CompactSpace α] [Nonempty α] : (↑(⊤ : NonemptyCompacts α) : Set α) = univ :=
   rfl
 
@@ -503,12 +502,12 @@ protected abbrev prod (K : NonemptyCompacts α) (L : NonemptyCompacts β) :
     NonemptyCompacts (α × β) :=
   K ×ˢ L
 
-@[defeq, simp]
+@[simp]
 theorem coe_prod (K : NonemptyCompacts α) (L : NonemptyCompacts β) :
     (K ×ˢ L : NonemptyCompacts (α × β)) = (K : Set α) ×ˢ (L : Set β) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toCompacts_prod (K : NonemptyCompacts α) (L : NonemptyCompacts β) :
     (K ×ˢ L).toCompacts = K.toCompacts ×ˢ L.toCompacts :=
   rfl
@@ -565,15 +564,14 @@ def toNonemptyCompacts (s : PositiveCompacts α) : NonemptyCompacts α :=
 protected theorem ext {s t : PositiveCompacts α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Compacts α) (h) : (mk s h : Set α) = s :=
   rfl
 
-@[defeq]
 theorem carrier_eq_coe (s : PositiveCompacts α) : s.carrier = s :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toCompacts (s : PositiveCompacts α) : (s.toCompacts : Set α) = s :=
   rfl
 
@@ -591,11 +589,11 @@ instance : SemilatticeSup (PositiveCompacts α) :=
 instance [CompactSpace α] [Nonempty α] : OrderTop (PositiveCompacts α) :=
   fast_instance% OrderTop.lift ((↑) : _ → Set α) (fun _ _ => id) rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_sup (s t : PositiveCompacts α) : (↑(s ⊔ t) : Set α) = ↑s ∪ ↑t :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_top [CompactSpace α] [Nonempty α] : (↑(⊤ : PositiveCompacts α) : Set α) = univ :=
   rfl
 
@@ -656,7 +654,7 @@ protected abbrev prod (K : PositiveCompacts α) (L : PositiveCompacts β) :
     PositiveCompacts (α × β) :=
   K ×ˢ L
 
-@[defeq, simp]
+@[simp]
 theorem coe_prod (K : PositiveCompacts α) (L : PositiveCompacts β) :
     (K ×ˢ L : PositiveCompacts (α × β)) = (K : Set α) ×ˢ (L : Set β) :=
   rfl
@@ -705,7 +703,7 @@ def toClopens [T2Space α] (s : CompactOpens α) : Clopens α :=
 protected theorem ext {s t : CompactOpens α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Compacts α) (h) : (mk s h : Set α) = s :=
   rfl
 
@@ -714,8 +712,8 @@ instance : Max (CompactOpens α) :=
 
 instance : Bot (CompactOpens α) where bot := ⟨⊥, isOpen_empty⟩
 
-@[defeq, simp, norm_cast] lemma coe_sup (s t : CompactOpens α) : ↑(s ⊔ t) = (s ∪ t : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_bot : ↑(⊥ : CompactOpens α) = (∅ : Set α) := rfl
+@[simp, norm_cast] lemma coe_sup (s t : CompactOpens α) : ↑(s ⊔ t) = (s ∪ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_bot : ↑(⊥ : CompactOpens α) = (∅ : Set α) := rfl
 
 instance : SemilatticeSup (CompactOpens α) :=
   fast_instance% SetLike.coe_injective.semilatticeSup _ .rfl .rfl coe_sup
@@ -739,7 +737,7 @@ instance instInf : Min (CompactOpens α) where
   min U V :=
     ⟨⟨U ∩ V, QuasiSeparatedSpace.inter_isCompact U.1.1 V.1.1 U.2 U.1.2 V.2 V.1.2⟩, U.2.inter V.2⟩
 
-@[defeq, simp, norm_cast] lemma coe_inf (s t : CompactOpens α) : ↑(s ⊓ t) = (s ∩ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_inf (s t : CompactOpens α) : ↑(s ⊓ t) = (s ∩ t : Set α) := rfl
 
 instance instSemilatticeInf : SemilatticeInf (CompactOpens α) :=
   fast_instance% SetLike.coe_injective.semilatticeInf _ .rfl .rfl coe_inf
@@ -752,7 +750,7 @@ variable [T2Space α]
 instance instSDiff : SDiff (CompactOpens α) where
   sdiff s t := ⟨⟨s \ t, s.isCompact.diff t.isOpen⟩, s.isOpen.sdiff t.isCompact.isClosed⟩
 
-@[defeq, simp, norm_cast] lemma coe_sdiff (s t : CompactOpens α) : ↑(s \ t) = (s \ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_sdiff (s t : CompactOpens α) : ↑(s \ t) = (s \ t : Set α) := rfl
 
 instance instGeneralizedBooleanAlgebra : GeneralizedBooleanAlgebra (CompactOpens α) :=
   fast_instance% SetLike.coe_injective.generalizedBooleanAlgebra _
@@ -765,7 +763,7 @@ variable [CompactSpace α]
 
 instance instTop : Top (CompactOpens α) where top := ⟨⊤, isOpen_univ⟩
 
-@[defeq, simp, norm_cast] lemma coe_top : ↑(⊤ : CompactOpens α) = (univ : Set α) := rfl
+@[simp, norm_cast] lemma coe_top : ↑(⊤ : CompactOpens α) = (univ : Set α) := rfl
 
 instance instBoundedOrder : BoundedOrder (CompactOpens α) :=
   fast_instance% BoundedOrder.lift ((↑) : _ → Set α) (fun _ _ => id) coe_top coe_bot
@@ -781,8 +779,8 @@ instance instHImp : HImp (CompactOpens α) where
     (by simpa [himp_eq] using t.isCompact.isClosed.union s.isOpen.isClosed_compl)⟩,
     by simpa [himp_eq] using t.isOpen.union s.isCompact.isClosed.isOpen_compl⟩
 
-@[defeq, simp, norm_cast] lemma coe_compl (s : CompactOpens α) : ↑sᶜ = (sᶜ : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_himp (s t : CompactOpens α) : ↑(s ⇨ t) = (s ⇨ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_compl (s : CompactOpens α) : ↑sᶜ = (sᶜ : Set α) := rfl
+@[simp, norm_cast] lemma coe_himp (s t : CompactOpens α) : ↑(s ⇨ t) = (s ⇨ t : Set α) := rfl
 
 instance instBooleanAlgebra : BooleanAlgebra (CompactOpens α) :=
   fast_instance% SetLike.coe_injective.booleanAlgebra _
@@ -823,7 +821,7 @@ protected abbrev prod (K : CompactOpens α) (L : CompactOpens β) :
     CompactOpens (α × β) :=
   K ×ˢ L
 
-@[defeq, simp]
+@[simp]
 theorem coe_prod (K : CompactOpens α) (L : CompactOpens β) :
     (K ×ˢ L : CompactOpens (α × β)) = (K : Set α) ×ˢ (L : Set β) :=
   rfl

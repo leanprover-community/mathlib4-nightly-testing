@@ -175,7 +175,6 @@ instance instCommMonoid : CommMonoid (PerfectClosure K p) :=
         Quot.inductionOn f fun ⟨n, y⟩ =>
           congr_arg (Quot.mk _) <| by simp only [add_comm, mul_comm] }
 
-@[defeq]
 theorem one_def : (1 : PerfectClosure K p) = mk K p (0, 1) :=
   rfl
 
@@ -233,13 +232,12 @@ theorem neg_mk (x : ℕ × K) : -mk K p x = mk K p (x.1, -x.2) :=
 instance instZero : Zero (PerfectClosure K p) :=
   ⟨mk K p (0, 0)⟩
 
-@[defeq]
 theorem zero_def : (0 : PerfectClosure K p) = mk K p (0, 0) :=
   rfl
 
 /-- Prior to https://github.com/leanprover-community/mathlib4/pull/15862, this lemma was called `mk_zero_zero`.
 See `mk_zero_right` for the lemma used to be called `mk_zero`. -/
-@[defeq, simp]
+@[simp]
 theorem mk_zero : mk K p 0 = 0 :=
   rfl
 

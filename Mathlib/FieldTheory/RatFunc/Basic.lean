@@ -518,7 +518,6 @@ def coePolynomial (P : Polynomial K) : K⟮X⟯ := algebraMap _ _ P
 
 instance : Coe (Polynomial K) K⟮X⟯ := ⟨coePolynomial⟩
 
-@[defeq]
 theorem mk_one (x : K[X]) : RatFunc.mk x 1 = algebraMap _ _ x :=
   rfl
 

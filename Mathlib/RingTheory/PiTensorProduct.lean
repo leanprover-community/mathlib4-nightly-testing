@@ -34,7 +34,6 @@ variable [CommSemiring R] [∀ i, AddCommMonoidWithOne (A i)] [∀ i, Module R (
 instance instOne : One (⨂[R] i, A i) where
   one := tprod R 1
 
-@[defeq]
 lemma one_def : 1 = tprod R (1 : Π i, A i) := rfl
 
 instance instAddCommMonoidWithOne : AddCommMonoidWithOne (⨂[R] i, A i) where
@@ -62,7 +61,6 @@ def mul : (⨂[R] i, A i) →ₗ[R] (⨂[R] i, A i) →ₗ[R] (⨂[R] i, A i) :=
 instance instMul : Mul (⨂[R] i, A i) where
   mul x y := mul x y
 
-@[defeq]
 lemma mul_def (x y : ⨂[R] i, A i) : x * y = mul x y := rfl
 
 @[simp] lemma tprod_mul_tprod (x y : (i : ι) → A i) :

@@ -54,10 +54,10 @@ instance : Category (SheafOfModules.{v} R) where
 lemma hom_ext {X Y : SheafOfModules.{v} R} {f g : X ⟶ Y} (h : f.val = g.val) : f = g :=
   Hom.ext h
 
-@[defeq, simp]
+@[simp]
 lemma id_val (X : SheafOfModules.{v} R) : Hom.val (𝟙 X) = 𝟙 X.val := rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma comp_val {X Y Z : SheafOfModules.{v} R} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).val = f.val ≫ g.val := rfl
 

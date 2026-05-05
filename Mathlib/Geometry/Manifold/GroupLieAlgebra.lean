@@ -93,7 +93,7 @@ group is obtained by taking the Lie bracket of the associated invariant vector f
 noncomputable instance : Bracket (GroupLieAlgebra I G) (GroupLieAlgebra I G) where
   bracket v w := mlieBracket I (mulInvariantVectorField v) (mulInvariantVectorField w) (1 : G)
 
-@[defeq, to_additive]
+@[to_additive]
 lemma GroupLieAlgebra.bracket_def (v w : GroupLieAlgebra I G) :
     ⁅v, w⁆ = mlieBracket I (mulInvariantVectorField v) (mulInvariantVectorField w) (1 : G) := rfl
 

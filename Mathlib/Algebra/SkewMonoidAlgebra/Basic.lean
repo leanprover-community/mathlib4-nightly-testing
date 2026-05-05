@@ -51,7 +51,7 @@ section AddMonoid
 
 variable [AddMonoid k]
 
-@[defeq, simp]
+@[simp]
 theorem eta (f : SkewMonoidAlgebra k G) : ofFinsupp f.toFinsupp = f := rfl
 
 set_option backward.privateInPublic true in
@@ -78,7 +78,7 @@ instance {S : Type*} [SMulZeroClass S k] :
   smul s f := smul s f
   smul_zero a := by exact congr_arg ofFinsupp (smul_zero a)
 
-@[defeq, simp]
+@[simp]
 theorem ofFinsupp_zero : (⟨0⟩ : SkewMonoidAlgebra k G) = 0 := rfl
 
 @[simp]
@@ -90,7 +90,7 @@ theorem ofFinsupp_smul {S : Type*} [SMulZeroClass S k] (a : S) (b : G →₀ k) 
     (⟨a • b⟩ : SkewMonoidAlgebra k G) = (a • ⟨b⟩ : SkewMonoidAlgebra k G) :=
   show _ = smul _ _ by rw [smul]
 
-@[defeq, simp]
+@[simp]
 theorem toFinsupp_zero : (0 : SkewMonoidAlgebra k G).toFinsupp = 0 := rfl
 
 @[simp]
@@ -317,10 +317,9 @@ theorem ofFinsupp_eq_one {a} :
     (⟨a⟩ : SkewMonoidAlgebra k G) = 1 ↔ a = Finsupp.single 1 1 := by
   simp [← toFinsupp_inj]
 
-@[defeq, simp]
+@[simp]
 theorem single_one_one : single (1 : G) (1 : k) = 1 := rfl
 
-@[defeq]
 theorem one_def : (1 : SkewMonoidAlgebra k G) = single 1 1 := rfl
 
 @[simp]
@@ -641,7 +640,6 @@ variable [SMul G k] [NonUnitalNonAssocSemiring k]
 instance : Mul (SkewMonoidAlgebra k G) :=
   ⟨fun f g ↦ f.sum fun a₁ b₁ ↦ g.sum fun a₂ b₂ ↦ single (a₁ * a₂) (b₁ * (a₁ • b₂))⟩
 
-@[defeq]
 theorem mul_def {f g : SkewMonoidAlgebra k G} :
     f * g = f.sum fun a₁ b₁ ↦ g.sum fun a₂ b₂ ↦ single (a₁ * a₂) (b₁ * (a₁ • b₂)) :=
   rfl
@@ -821,7 +819,6 @@ def comapSMul : SMul G (SkewMonoidAlgebra M α) where smul g := mapDomain (g •
 
 attribute [local instance] comapSMul
 
-@[defeq]
 theorem comapSMul_def (g : G) (f : SkewMonoidAlgebra M α) : g • f = mapDomain (g • ·) f := rfl
 
 @[simp]

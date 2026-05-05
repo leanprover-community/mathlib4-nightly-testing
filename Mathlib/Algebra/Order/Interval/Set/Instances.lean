@@ -64,19 +64,19 @@ instance instOne : One (Icc (0 : R) 1) where one := ⟨1, right_mem_Icc.2 zero_l
 
 instance instZeroLEOneClass : ZeroLEOneClass (Icc (0 : R) 1) := ⟨Subtype.coe_le_coe.mp zero_le_one⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_zero : ↑(0 : Icc (0 : R) 1) = (0 : R) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_one : ↑(1 : Icc (0 : R) 1) = (1 : R) :=
   rfl
 
-@[defeq, simp, grind =]
+@[simp, grind =]
 theorem mk_zero (h : (0 : R) ∈ Icc (0 : R) 1) : (⟨0, h⟩ : Icc (0 : R) 1) = 0 :=
   rfl
 
-@[defeq, simp, grind =]
+@[simp, grind =]
 theorem mk_one (h : (1 : R) ∈ Icc (0 : R) 1) : (⟨1, h⟩ : Icc (0 : R) 1) = 1 :=
   rfl
 
@@ -118,11 +118,11 @@ instance instMul : Mul (Icc (0 : R) 1) where
 instance instPow : Pow (Icc (0 : R) 1) ℕ where
   pow p n := ⟨p.1 ^ n, ⟨pow_nonneg p.2.1 n, pow_le_one₀ p.2.1 p.2.2⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_mul (x y : Icc (0 : R) 1) : ↑(x * y) = (x * y : R) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_pow (x : Icc (0 : R) 1) (n : ℕ) : ↑(x ^ n) = ((x : R) ^ n) :=
   rfl
 
@@ -175,11 +175,11 @@ namespace Set.Ico
 
 instance instZero [Nontrivial R] : Zero (Ico (0 : R) 1) where zero := ⟨0, by simp⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_zero [Nontrivial R] : ↑(0 : Ico (0 : R) 1) = (0 : R) :=
   rfl
 
-@[defeq, simp, grind =]
+@[simp, grind =]
 theorem mk_zero [Nontrivial R] (h : (0 : R) ∈ Ico (0 : R) 1) : (⟨0, h⟩ : Ico (0 : R) 1) = 0 :=
   rfl
 
@@ -207,7 +207,7 @@ instance instMul : Mul (Ico (0 : R) 1) where
   mul p q :=
     ⟨p * q, ⟨mul_nonneg p.2.1 q.2.1, mul_lt_one_of_nonneg_of_lt_one_right p.2.2.le q.2.1 q.2.2⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_mul (x y : Ico (0 : R) 1) : ↑(x * y) = (x * y : R) :=
   rfl
 
@@ -237,11 +237,11 @@ namespace Set.Ioc
 
 instance instOne : One (Ioc (0 : R) 1) where one := ⟨1, ⟨zero_lt_one, le_refl 1⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_one : ↑(1 : Ioc (0 : R) 1) = (1 : R) :=
   rfl
 
-@[defeq, simp, grind =]
+@[simp, grind =]
 theorem mk_one (h : (1 : R) ∈ Ioc (0 : R) 1) : (⟨1, h⟩ : Ioc (0 : R) 1) = 1 :=
   rfl
 
@@ -271,11 +271,11 @@ instance instMul : Mul (Ioc (0 : R) 1) where
 instance instPow : Pow (Ioc (0 : R) 1) ℕ where
   pow p n := ⟨p.1 ^ n, ⟨pow_pos p.2.1 n, pow_le_one₀ (le_of_lt p.2.1) p.2.2⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_mul (x y : Ioc (0 : R) 1) : ↑(x * y) = (x * y : R) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_pow (x : Ioc (0 : R) 1) (n : ℕ) : ↑(x ^ n) = ((x : R) ^ n) :=
   rfl
 
@@ -332,7 +332,7 @@ instance instMul : Mul (Ioo (0 : R) 1) where
   mul p q :=
     ⟨p.1 * q.1, ⟨mul_pos p.2.1 q.2.1, mul_lt_one_of_nonneg_of_lt_one_right p.2.2.le q.2.1.le q.2.2⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_mul (x y : Ioo (0 : R) 1) : ↑(x * y) = (x * y : R) :=
   rfl
 

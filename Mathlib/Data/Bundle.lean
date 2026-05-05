@@ -82,7 +82,6 @@ theorem TotalSpace.mk_injective (b : B) : Injective (mk b : E b → TotalSpace F
 instance {x : B} : CoeTC (E x) (TotalSpace F E) :=
   ⟨TotalSpace.mk x⟩
 
-@[defeq]
 theorem TotalSpace.eta (z : TotalSpace F E) : TotalSpace.mk z.proj z.2 = z := rfl
 
 @[simp]

@@ -45,14 +45,12 @@ instance instCoalgebraStruct : CoalgebraStruct S (A ⊗[R] B) where
       AlgebraTensorModule.map comul comul
   counit := AlgebraTensorModule.rid R S S ∘ₗ AlgebraTensorModule.map counit counit
 
-@[defeq]
 lemma comul_def :
     Coalgebra.comul (R := S) (A := A ⊗[R] B) =
       AlgebraTensorModule.tensorTensorTensorComm R S R S A A B B ∘ₗ
         AlgebraTensorModule.map Coalgebra.comul Coalgebra.comul :=
   rfl
 
-@[defeq]
 lemma counit_def :
     Coalgebra.counit (R := S) (A := A ⊗[R] B) =
       AlgebraTensorModule.rid R S S ∘ₗ AlgebraTensorModule.map counit counit :=

@@ -81,7 +81,7 @@ instance instFunLike : FunLike C(X, Y) X Y where
 instance instContinuousMapClass : ContinuousMapClass C(X, Y) X Y where
   map_continuous := ContinuousMap.continuous_toFun
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {f : C(X, Y)} : f.toFun = (f : X → Y) :=
   rfl
 
@@ -142,7 +142,7 @@ protected theorem congr_arg (f : C(X, Y)) {x y : X} (h : x = y) : f x = f y :=
 theorem coe_injective : Function.Injective (DFunLike.coe : C(X, Y) → (X → Y)) :=
   DFunLike.coe_injective
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : X → Y) (h : Continuous f) : ⇑(⟨f, h⟩ : C(X, Y)) = f :=
   rfl
 

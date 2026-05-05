@@ -362,7 +362,7 @@ section Zero
 
 instance instZero : Zero (E →ₛₗ.[σ] F) := ⟨⊤, 0⟩
 
-@[defeq, simp]
+@[simp]
 theorem zero_domain : (0 : E →ₛₗ.[σ] F).domain = ⊤ := rfl
 
 @[simp]
@@ -380,7 +380,7 @@ instance instSMul : SMul M (E →ₛₗ.[σ] F) :=
     { domain := f.domain
       toFun := a • f.toFun }⟩
 
-@[defeq, simp]
+@[simp]
 theorem smul_domain (a : M) (f : E →ₛₗ.[σ] F) : (a • f).domain = f.domain :=
   rfl
 
@@ -406,7 +406,7 @@ end SMul
 instance instNeg : Neg (E →ₛₗ.[σ] F) :=
   ⟨fun f => ⟨f.domain, -f.toFun⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem neg_domain (f : E →ₛₗ.[σ] F) : (-f).domain = f.domain := rfl
 
 @[simp]
@@ -427,7 +427,6 @@ instance instAdd : Add (E →ₛₗ.[σ] F) :=
       toFun := f.toFun.comp (inclusion (inf_le_left : f.domain ⊓ g.domain ≤ _))
         + g.toFun.comp (inclusion (inf_le_right : f.domain ⊓ g.domain ≤ _)) }⟩
 
-@[defeq]
 theorem add_domain (f g : E →ₛₗ.[σ] F) : (f + g).domain = f.domain ⊓ g.domain := rfl
 
 theorem add_apply (f g : E →ₛₗ.[σ] F) (x : (f.domain ⊓ g.domain : Submodule R E)) :
@@ -471,7 +470,7 @@ instance instVAdd : VAdd (E →ₛₗ[σ] F) (E →ₛₗ.[σ] F) :=
     { domain := g.domain
       toFun := f.comp g.domain.subtype + g.toFun }⟩
 
-@[defeq, simp]
+@[simp]
 theorem vadd_domain (f : E →ₛₗ[σ] F) (g : E →ₛₗ.[σ] F) : (f +ᵥ g).domain = g.domain :=
   rfl
 
@@ -498,7 +497,6 @@ instance instSub : Sub (E →ₛₗ.[σ] F) :=
       toFun := f.toFun.comp (inclusion (inf_le_left : f.domain ⊓ g.domain ≤ _))
         - g.toFun.comp (inclusion (inf_le_right : f.domain ⊓ g.domain ≤ _)) }⟩
 
-@[defeq]
 theorem sub_domain (f g : E →ₛₗ.[σ] F) : (f - g).domain = f.domain ⊓ g.domain := rfl
 
 theorem sub_apply (f g : E →ₛₗ.[σ] F) (x : (f.domain ⊓ g.domain : Submodule R E)) :

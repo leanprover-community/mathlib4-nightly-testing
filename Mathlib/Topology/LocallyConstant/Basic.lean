@@ -220,11 +220,11 @@ def Simps.apply (f : LocallyConstant X Y) : X → Y := f
 
 initialize_simps_projections LocallyConstant (toFun → apply)
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe (f : LocallyConstant X Y) : f.toFun = f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : X → Y) (h) : ⇑(⟨f, h⟩ : LocallyConstant X Y) = f :=
   rfl
 

@@ -20,7 +20,6 @@ variable {α : Type*} {s t u : Set α}
 /-- `inclusion` is the "identity" function between two subsets `s` and `t`, where `s ⊆ t` -/
 abbrev inclusion (h : s ⊆ t) : s → t := fun x ↦ ⟨x, h x.prop⟩
 
-@[defeq]
 theorem inclusion_self (x : s) : inclusion Subset.rfl x = x :=
   rfl
 
@@ -30,15 +29,14 @@ theorem inclusion_eq_id (h : s ⊆ s) : inclusion h = id :=
 theorem inclusion_eq_subtype_map (h : s ⊆ t) : inclusion h = Subtype.map id h :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inclusion_mk {h : s ⊆ t} (a : α) (ha : a ∈ s) : inclusion h ⟨a, ha⟩ = ⟨a, h ha⟩ :=
   rfl
 
-@[defeq]
 theorem inclusion_right (h : s ⊆ t) (x : t) (m : (x : α) ∈ s) : inclusion h ⟨x, m⟩ = x :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inclusion_inclusion (hst : s ⊆ t) (htu : t ⊆ u) (x : s) :
     inclusion htu (inclusion hst x) = inclusion (hst.trans htu) x :=
   rfl
@@ -48,7 +46,7 @@ theorem inclusion_comp_inclusion {α} {s t u : Set α} (hst : s ⊆ t) (htu : t 
     inclusion htu ∘ inclusion hst = inclusion (hst.trans htu) :=
   funext (inclusion_inclusion hst htu)
 
-@[defeq, simp]
+@[simp]
 theorem coe_inclusion (h : s ⊆ t) (x : s) : (inclusion h x : α) = (x : α) :=
   rfl
 

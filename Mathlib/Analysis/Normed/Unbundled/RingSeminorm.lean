@@ -98,7 +98,7 @@ instance ringSeminormClass : RingSeminormClass (RingSeminorm R) R ℝ where
   map_mul_le_mul f := f.mul_le'
   map_neg_eq_map f := f.neg'
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe (p : RingSeminorm R) : (p.toAddGroupSeminorm : R → ℝ) = p :=
   rfl
 
@@ -132,7 +132,7 @@ instance [DecidableEq R] : One (RingSeminorm R) :=
           simp only [if_false, h, left_ne_zero_of_mul h, right_ne_zero_of_mul h, mul_one,
             le_refl] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem apply_one [DecidableEq R] (x : R) : (1 : RingSeminorm R) x = if x = 0 then 0 else 1 :=
   rfl
 
@@ -243,7 +243,6 @@ instance ringNormClass : RingNormClass (RingNorm R) R ℝ where
   map_neg_eq_map f := f.neg'
   eq_zero_of_map_eq_zero f := f.eq_zero_of_map_eq_zero' _
 
-@[defeq]
 theorem toFun_eq_coe (p : RingNorm R) : p.toFun = p := rfl
 
 @[ext]
@@ -257,7 +256,7 @@ variable (R)
 instance [DecidableEq R] : One (RingNorm R) :=
   ⟨{ (1 : RingSeminorm R), (1 : AddGroupNorm R) with }⟩
 
-@[defeq, simp]
+@[simp]
 theorem apply_one [DecidableEq R] (x : R) : (1 : RingNorm R) x = if x = 0 then 0 else 1 :=
   rfl
 
@@ -295,7 +294,7 @@ instance mulRingSeminormClass : MulRingSeminormClass (MulRingSeminorm R) R ℝ w
   map_mul f := f.map_mul'
   map_neg_eq_map f := f.neg'
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe (p : MulRingSeminorm R) : (p.toAddGroupSeminorm : R → ℝ) = p :=
   rfl
 
@@ -317,7 +316,7 @@ instance : One (MulRingSeminorm R) :=
         · simp
         · simp [hx, hy] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem apply_one (x : R) : (1 : MulRingSeminorm R) x = if x = 0 then 0 else 1 :=
   rfl
 
@@ -347,7 +346,6 @@ instance mulRingNormClass : MulRingNormClass (MulRingNorm R) R ℝ where
   map_neg_eq_map f := f.neg'
   eq_zero_of_map_eq_zero f := f.eq_zero_of_map_eq_zero' _
 
-@[defeq]
 theorem toFun_eq_coe (p : MulRingNorm R) : p.toFun = p := rfl
 
 @[ext]
@@ -362,7 +360,7 @@ other element. -/
 instance : One (MulRingNorm R) :=
   ⟨{ (1 : MulRingSeminorm R), (1 : AddGroupNorm R) with }⟩
 
-@[defeq, simp]
+@[simp]
 theorem apply_one (x : R) : (1 : MulRingNorm R) x = if x = 0 then 0 else 1 :=
   rfl
 

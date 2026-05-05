@@ -115,7 +115,6 @@ section
 
 variable {I J : Submodule R A} {N P : Submodule R M}
 
-@[defeq]
 theorem smul_toAddSubmonoid : (I • N).toAddSubmonoid = I.toAddSubmonoid • N.toAddSubmonoid := rfl
 
 theorem smul_mem_smul {r} {n} (hr : r ∈ I) (hn : n ∈ N) : r • n ∈ I • N :=
@@ -317,7 +316,6 @@ theorem mul_top_eq_top_of_mul_eq_one (h : N * P = 1) : N * ⊤ = ⊤ :=
     conv_lhs => rw [← Submodule.one_mul ⊤, ← h, mul_assoc]
     exact smul_mono le_rfl le_top
 
-@[defeq]
 theorem pow_eq_npowRec {n : ℕ} : M ^ n = npowRec n M := rfl
 
 protected theorem pow_zero : M ^ 0 = 1 := rfl
@@ -826,7 +824,6 @@ noncomputable instance moduleSet : Module (SetSemiring A) (Submodule R A) where
 
 variable {R A}
 
-@[defeq]
 theorem setSemiring_smul_def (s : SetSemiring A) (P : Submodule R A) :
     s • P = span R (SetSemiring.down (α := A) s) * P :=
   rfl

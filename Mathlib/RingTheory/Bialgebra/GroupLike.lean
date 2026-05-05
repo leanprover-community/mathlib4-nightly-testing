@@ -69,9 +69,9 @@ instance : One (GroupLike R A) where one := ⟨1, .one⟩
 instance : Mul (GroupLike R A) where mul a b := ⟨a * b, a.2.mul b.2⟩
 instance : Pow (GroupLike R A) ℕ where pow a n := ⟨a ^ n, a.2.pow⟩
 
-@[defeq, simp] lemma val_one : (1 : GroupLike R A) = (1 : A) := rfl
-@[defeq, simp] lemma val_mul (a b : GroupLike R A) : ↑(a * b) = (a * b : A) := rfl
-@[defeq, simp] lemma val_pow (a : GroupLike R A) (n : ℕ) : ↑(a ^ n) = (a ^ n : A) := rfl
+@[simp] lemma val_one : (1 : GroupLike R A) = (1 : A) := rfl
+@[simp] lemma val_mul (a b : GroupLike R A) : ↑(a * b) = (a * b : A) := rfl
+@[simp] lemma val_pow (a : GroupLike R A) (n : ℕ) : ↑(a ^ n) = (a ^ n : A) := rfl
 
 instance : Monoid (GroupLike R A) := val_injective.monoid val val_one val_mul val_pow
 

@@ -239,7 +239,6 @@ noncomputable def Functor.CommShift.ofInduced :
         rw [Functor.map_id, Category.id_comp, Iso.inv_hom_id_app_assoc,
           ← F.map_comp_assoc, Iso.hom_inv_id_app, F.map_id, Category.id_comp] }
 
-@[defeq]
 lemma Functor.commShiftIso_eq_ofInduced (a : A) :
     letI := HasShift.induced F A s i
     letI := Functor.CommShift.ofInduced F A s i

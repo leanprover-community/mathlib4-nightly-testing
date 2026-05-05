@@ -59,7 +59,6 @@ variable {n : ℕ}
 /-- The centroid of a simplex is the `Finset.centroid` of the set of all its vertices. -/
 abbrev centroid (t : Affine.Simplex k P n) : P := Finset.univ.centroid k t.points
 
-@[defeq]
 theorem univ_centroid_eq (s : Simplex k P n) :
     Finset.univ.centroid k s.points = s.centroid := rfl
 

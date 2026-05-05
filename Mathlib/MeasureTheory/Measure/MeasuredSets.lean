@@ -50,7 +50,6 @@ noncomputable instance : PseudoEMetricSpace (MeasuredSets μ) where
   edist_comm := by grind
   edist_triangle s t u := measure_symmDiff_le _ _ _
 
-@[defeq]
 lemma MeasuredSets.edist_def (s t : MeasuredSets μ) : edist s t = μ ((s : Set α) ∆ t) := rfl
 
 /-- Measure on `MeasuredSets` is a 1-lipschitz function.
@@ -69,7 +68,6 @@ noncomputable instance [IsFiniteMeasure μ] : PseudoMetricSpace (MeasuredSets μ
     (fun s t ↦ μ.real ((s : Set α) ∆ t)) (fun s t ↦ ENNReal.toReal_nonneg)
     (fun s t ↦ by simp [Measure.real, MeasuredSets.edist_def])
 
-@[defeq]
 lemma MeasuredSets.dist_def [IsFiniteMeasure μ] (s t : MeasuredSets μ) :
     dist s t = μ.real ((s : Set α) ∆ t) := rfl
 

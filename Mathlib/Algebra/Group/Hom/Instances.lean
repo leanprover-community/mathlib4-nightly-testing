@@ -45,12 +45,12 @@ instance MonoidHom.instPow [MulOneClass M] [CommMonoid N] : Pow (M →* N) ℕ w
       map_one' := by simp
       map_mul' x y := by simp [mul_pow] }
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma OneHom.pow_apply [One M] [Monoid N] (f : OneHom M N) (n : ℕ) (x : M) :
     (f ^ n) x = f x ^ n :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma MonoidHom.pow_apply [MulOneClass M] [CommMonoid N] (f : M →* N) (n : ℕ) (x : M) :
     (f ^ n) x = f x ^ n :=
   rfl
@@ -86,12 +86,12 @@ instance MonoidHom.instZPow [MulOneClass M] [CommGroup N] : Pow (M →* N) ℤ w
       map_one' := by simp
       map_mul' x y := by simp [mul_zpow] }
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma OneHom.zpow_apply [One M] [Group N] (f : OneHom M N) (z : ℤ) (x : M) :
     (f ^ z) x = f x ^ z :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma MonoidHom.zpow_apply [MulOneClass M] [CommGroup N] (f : M →* N) (z : ℤ) (x : M) :
     (f ^ z) x = f x ^ z :=
   rfl

@@ -427,7 +427,7 @@ theorem toMonoidHom_injective : Injective (toMonoidHom : LocalizationMap S N →
   map_one f := f.toMonoidHom.map_one
   map_mul f := f.map_mul
 
-@[defeq, to_additive (attr := simp)] lemma toMonoidHom_apply (f : LocalizationMap S N) (x : M) :
+@[to_additive (attr := simp)] lemma toMonoidHom_apply (f : LocalizationMap S N) (x : M) :
     f.toMonoidHom x = f x := rfl
 
 @[to_additive (attr := ext)]

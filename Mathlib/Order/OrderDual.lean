@@ -199,7 +199,6 @@ variable {β : Type*} (e : α ≃ β)
 protected abbrev top [Top β] : Top α where
   top := e.symm ⊤
 
-@[defeq]
 lemma top_def [Top β] :
     letI := e.top
     ⊤ = e.symm ⊤ := rfl
@@ -208,7 +207,6 @@ lemma top_def [Top β] :
 protected abbrev bot [Bot β] : Bot α where
   bot := e.symm ⊥
 
-@[defeq]
 lemma bot_def [Bot β] :
     letI := e.bot
     ⊥ = e.symm ⊥ := rfl
@@ -217,7 +215,6 @@ lemma bot_def [Bot β] :
 protected abbrev compl [Compl β] : Compl α where
   compl a := e.symm (e a)ᶜ
 
-@[defeq]
 lemma compl_def [Compl β] (a : α) :
     letI := e.compl
     aᶜ = e.symm (e a)ᶜ := rfl
@@ -226,7 +223,6 @@ lemma compl_def [Compl β] (a : α) :
 protected abbrev sdiff [SDiff β] : SDiff α where
   sdiff a b := e.symm (e a \ e b)
 
-@[defeq]
 lemma sdiff_def [SDiff β] (a b : α) :
     letI := e.sdiff
     a \ b = e.symm (e a \ e b) := rfl
@@ -235,7 +231,6 @@ lemma sdiff_def [SDiff β] (a b : α) :
 protected abbrev himp [HImp β] : HImp α where
   himp a b := e.symm (e a ⇨ e b)
 
-@[defeq]
 lemma himp_def [HImp β] (a b : α) :
     letI := e.himp
     a ⇨ b = e.symm (e a ⇨ e b) := rfl
@@ -244,7 +239,6 @@ lemma himp_def [HImp β] (a b : α) :
 protected abbrev hnot [HNot β] : HNot α where
   hnot a := e.symm (￢e a)
 
-@[defeq]
 lemma hnot_def [HNot β] (a : α) :
     letI := e.hnot
     ￢a = e.symm (￢e a) := rfl

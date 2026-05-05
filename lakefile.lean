@@ -43,6 +43,10 @@ abbrev mathlibLeanOptions := #[
     ⟨`pp.unicode.fun, true⟩, -- pretty-prints `fun a ↦ b`
     ⟨`autoImplicit, false⟩,
     ⟨`maxSynthPendingDepth, .ofNat 3⟩,
+    -- Adaption helper for lean4#13557: tag `:= rfl` theorems `[defeq]` whenever the strict
+    -- check passes, instead of only `[backward_defeq]`. Avoids needing explicit `[defeq]`
+    -- annotations across the library.
+    ⟨`backward.inferDefEqOnRfl, true⟩,
   ] ++ -- options that are used in `lake build`
     mathlibOnlyLinters.map fun s ↦ { s with name := `weak ++ s.name }
 

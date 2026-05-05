@@ -56,30 +56,29 @@ variable {D Q}
 instance : Mul (D ≀ᵣ Q) where
   mul a b := ⟨a.1 * (fun x ↦ b.1 (a.2⁻¹ * x)), a.2 * b.2⟩
 
-@[defeq]
 lemma mul_def (a b : D ≀ᵣ Q) : a * b = ⟨a.1 * fun x ↦ b.1 (a.2⁻¹ * x), a.2 * b.2⟩ := rfl
 
-@[defeq, simp]
+@[simp]
 theorem mul_left (a b : D ≀ᵣ Q) : (a * b).1 = a.1 * fun x ↦ b.1 (a.2⁻¹ * x) := rfl
 
-@[defeq, simp]
+@[simp]
 theorem mul_right (a b : D ≀ᵣ Q) : (a * b).right = a.right * b.right := rfl
 
 instance : One (RegularWreathProduct D Q) where one := ⟨1, 1⟩
 
-@[defeq, simp]
+@[simp]
 theorem one_left : (1 : D ≀ᵣ Q).left = 1 := rfl
 
-@[defeq, simp]
+@[simp]
 theorem one_right : (1 : D ≀ᵣ Q).right = 1 := rfl
 
 instance : Inv (RegularWreathProduct D Q) where
   inv x := ⟨fun k ↦ x.1⁻¹ (x.2 * k), x.2⁻¹⟩
 
-@[defeq, simp]
+@[simp]
 theorem inv_left (a : D ≀ᵣ Q) : a⁻¹.left = fun x ↦ a.left⁻¹ (a.right * x) := rfl
 
-@[defeq, simp]
+@[simp]
 theorem inv_right (a : D ≀ᵣ Q) : a⁻¹.right = a.right⁻¹ := rfl
 
 instance : Group (RegularWreathProduct D Q) where
@@ -149,7 +148,7 @@ variable (D Q) (Λ : Type*) [MulAction D Λ]
 instance : SMul (D ≀ᵣ Q) (Λ × Q) where
   smul w p := ⟨(w.left (w.right * p.2)) • p.1, w.right * p.2⟩
 
-@[defeq, simp]
+@[simp]
 lemma smul_def {w : D ≀ᵣ Q} {p : Λ × Q} : w • p = ⟨(w.1 (w.2 * p.2)) • p.1, w.2 * p.2⟩ := rfl
 
 instance : MulAction (D ≀ᵣ Q) (Λ × Q) where

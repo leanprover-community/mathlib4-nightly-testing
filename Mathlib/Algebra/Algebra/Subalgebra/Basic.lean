@@ -50,7 +50,7 @@ instance : PartialOrder (Subalgebra R A) := .ofSetLike (Subalgebra R A) A
 
 initialize_simps_projections Subalgebra (carrier → coe, as_prefix coe)
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Subsemiring A) (h) : (Subalgebra.mk (R := R) s h : Set A) = s :=
   rfl
 
@@ -101,7 +101,7 @@ theorem mem_carrier {s : Subalgebra R A} {x : A} : x ∈ s.carrier ↔ x ∈ s :
 theorem ext {S T : Subalgebra R A} (h : ∀ x : A, x ∈ S ↔ x ∈ T) : S = T :=
   SetLike.ext h
 
-@[defeq, simp]
+@[simp]
 theorem coe_toSubsemiring (S : Subalgebra R A) : (↑S.toSubsemiring : Set A) = S :=
   rfl
 
@@ -249,7 +249,6 @@ theorem mem_toSubring {R : Type u} {A : Type v} [CommRing R] [Ring A] [Algebra R
     {S : Subalgebra R A} {x} : x ∈ S.toSubring ↔ x ∈ S :=
   Iff.rfl
 
-@[defeq]
 theorem coe_toSubring {R : Type u} {A : Type v} [CommRing R] [Ring A] [Algebra R A]
     (S : Subalgebra R A) : (↑S.toSubring : Set A) = S :=
   rfl
@@ -304,7 +303,7 @@ def toSubmodule : Subalgebra R A ↪o Submodule R A where
 @[simp]
 theorem mem_toSubmodule {x} : x ∈ (toSubmodule S) ↔ x ∈ S := Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toSubmodule (S : Subalgebra R A) : (toSubmodule S : Set A) = S := rfl
 
 theorem toSubmodule_injective : Function.Injective (toSubmodule : Subalgebra R A → Submodule R A) :=
@@ -352,27 +351,21 @@ end
 instance instIsTorsionFree [IsTorsionFree R A] : IsTorsionFree R S :=
   S.toSubmodule.instIsTorsionFree
 
-@[defeq]
 protected theorem coe_add (x y : S) : (↑(x + y) : A) = ↑x + ↑y := rfl
 
-@[defeq]
 protected theorem coe_mul (x y : S) : (↑(x * y) : A) = ↑x * ↑y := rfl
 
-@[defeq]
 protected theorem coe_zero : ((0 : S) : A) = 0 := rfl
 
-@[defeq]
 protected theorem coe_one : ((1 : S) : A) = 1 := rfl
 
-@[defeq]
 protected theorem coe_neg {R : Type u} {A : Type v} [CommRing R] [Ring A] [Algebra R A]
     {S : Subalgebra R A} (x : S) : (↑(-x) : A) = -↑x := rfl
 
-@[defeq]
 protected theorem coe_sub {R : Type u} {A : Type v} [CommRing R] [Ring A] [Algebra R A]
     {S : Subalgebra R A} (x y : S) : (↑(x - y) : A) = ↑x - ↑y := rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_smul [SMul R' R] [SMul R' A] [IsScalarTower R' R A] (r : R') (x : S) :
     (↑(r • x) : A) = r • (x : A) := rfl
 
@@ -490,7 +483,7 @@ instance (priority := 75) toAlgebra : Algebra R s where
   commutes' r x := Subtype.ext <| Algebra.commutes r (x : A)
   smul_def' r x := Subtype.ext <| (algebraMap_smul A r (x : A)).symm
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 lemma coe_algebraMap (r : R) : (algebraMap R s r : A) = algebraMap R A r := rfl
 
 /-- Embedding of a subalgebra into the algebra, as an algebra homomorphism. -/
@@ -806,7 +799,6 @@ variable {α β : Type*}
 instance [SMul A α] (S : Subalgebra R A) : SMul S α :=
   inferInstanceAs (SMul S.toSubsemiring α)
 
-@[defeq]
 theorem smul_def [SMul A α] {S : Subalgebra R A} (g : S) (m : α) : g • m = (g : A) • m := rfl
 
 instance smulCommClass_left [SMul A β] [SMul α β] [SMulCommClass A α β] (S : Subalgebra R A) :

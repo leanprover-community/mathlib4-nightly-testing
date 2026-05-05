@@ -54,7 +54,7 @@ Rather than referencing this library note, use `ofNat(n)` as a shorthand for
 Some discussion is [on Zulip here](https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/.E2.9C.94.20Polynomial.2Ecoeff.20example/near/395438147).
 -/
 
-@[defeq, simp, norm_cast] theorem Nat.cast_ofNat {n : ℕ} [NatCast R] [Nat.AtLeastTwo n] :
+@[simp, norm_cast] theorem Nat.cast_ofNat {n : ℕ} [NatCast R] [Nat.AtLeastTwo n] :
     (Nat.cast ofNat(n) : R) = ofNat(n) := rfl
 
 /-! ### Additive monoids with one -/
@@ -133,13 +133,10 @@ theorem binCast_eq [AddMonoidWithOne R] (n : ℕ) :
         rw [h1, Nat.add_comm 1, Nat.succ_mul, Nat.one_mul]
         simp only [Nat.cast_add, Nat.cast_one]
 
-@[defeq]
 theorem cast_two [NatCast R] : ((2 : ℕ) : R) = (2 : R) := rfl
 
-@[defeq]
 theorem cast_three [NatCast R] : ((3 : ℕ) : R) = (3 : R) := rfl
 
-@[defeq]
 theorem cast_four [NatCast R] : ((4 : ℕ) : R) = (4 : R) := rfl
 
 attribute [simp, norm_cast] Int.natAbs_natCast

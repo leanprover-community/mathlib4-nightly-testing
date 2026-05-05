@@ -95,10 +95,10 @@ attribute [coe] GradedRingHom.toRingHom
 @[simp]
 theorem toRingHom_eq_toRingHom (f : 𝒜 →+*ᵍ ℬ) : RingHomClass.toRingHom f = f.toRingHom := rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toRingHom (f : 𝒜 →+*ᵍ ℬ) : ⇑f.toRingHom = f := rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : A →+* B) (h) : ((⟨f, h⟩ : 𝒜 →+*ᵍ ℬ) : A → B) = f := rfl
 
 @[simp]
@@ -227,10 +227,8 @@ theorem id_comp (f : 𝒜 →+*ᵍ ℬ) : (id ℬ).comp f = f :=
 instance instOne : One (𝒜 →+*ᵍ 𝒜) where one := id _
 instance instMul : Mul (𝒜 →+*ᵍ 𝒜) where mul := comp
 
-@[defeq]
 lemma one_def : (1 : 𝒜 →+*ᵍ 𝒜) = id 𝒜 := rfl
 
-@[defeq]
 lemma mul_def (f g : 𝒜 →+*ᵍ 𝒜) : f * g = f.comp g := rfl
 
 @[simp, norm_cast] lemma coe_one : ⇑(1 : 𝒜 →+*ᵍ 𝒜) = _root_.id := rfl

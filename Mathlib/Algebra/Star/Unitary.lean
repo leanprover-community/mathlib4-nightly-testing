@@ -75,7 +75,7 @@ theorem star_mem_iff {U : R} : star U ∈ unitary R ↔ U ∈ unitary R :=
 instance : Star (unitary R) :=
   ⟨fun U => ⟨star U, star_mem U.prop⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_star {U : unitary R} : ↑(star U) = (star U : R) :=
   rfl
 
@@ -113,11 +113,9 @@ instance : StarMul (unitary R) :=
 instance : Inhabited (unitary R) :=
   ⟨1⟩
 
-@[defeq]
 theorem star_eq_inv (U : unitary R) : star U = U⁻¹ :=
   rfl
 
-@[defeq]
 theorem star_eq_inv' : (star : unitary R → unitary R) = Inv.inv :=
   rfl
 
@@ -246,7 +244,7 @@ lemma smul_mem (r : unitary R) {a : A} (ha : a ∈ unitary A) :
 instance : SMul (unitary R) (unitary A) where
   smul r a := ⟨r • a, smul_mem r a.prop⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 lemma coe_smul (r : unitary R) (a : unitary A) : ↑(r • a) = r • (a : A) := rfl
 
 instance : MulAction (unitary R) (unitary A) where
@@ -397,7 +395,7 @@ instance : Neg (unitary R) where
   neg U :=
     ⟨-U, by simp [mem_iff, star_neg]⟩
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_neg (U : unitary R) : ↑(-U) = (-U : R) :=
   rfl
 

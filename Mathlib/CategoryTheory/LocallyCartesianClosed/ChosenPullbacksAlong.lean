@@ -191,7 +191,6 @@ abbrev fst' : (Over.map g).obj ((pullback g).obj (Over.mk f)) ⟶ Over.mk f :=
 /-- The first projection from the chosen pullback along `g` of `f` to the domain of `f`. -/
 abbrev fst : pullbackObj f g ⟶ Y := fst' f g |>.left
 
-@[defeq]
 theorem fst'_left : (fst' f g).left = fst f g := rfl
 
 /-- The second projection from the chosen pullback along `g` of `f` to the domain of `g`. -/

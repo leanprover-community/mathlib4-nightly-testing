@@ -70,7 +70,7 @@ instance [IsEmpty α] : Unique (Multiset α) where
 theorem coe_nil : (@nil α : Multiset α) = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem empty_eq_zero : (∅ : Multiset α) = 0 :=
   rfl
 
@@ -93,7 +93,7 @@ infixr:67 " ::ₘ " => Multiset.cons
 instance : Insert α (Multiset α) :=
   ⟨cons⟩
 
-@[defeq, simp]
+@[simp]
 theorem insert_eq_cons (a : α) (s : Multiset α) : insert a s = a ::ₘ s :=
   rfl
 
@@ -248,7 +248,7 @@ instance : Singleton α (Multiset α) :=
 instance : LawfulSingleton α (Multiset α) :=
   ⟨fun _ => rfl⟩
 
-@[defeq, simp]
+@[simp]
 theorem cons_zero (a : α) : a ::ₘ 0 = {a} :=
   rfl
 
@@ -336,7 +336,7 @@ instance : OrderBot (Multiset α) where
   bot_le := zero_le
 
 /-- This is a `rfl` and `simp` version of `bot_eq_zero`. -/
-@[defeq, simp]
+@[simp]
 theorem bot_eq_zero : (⊥ : Multiset α) = 0 :=
   rfl
 

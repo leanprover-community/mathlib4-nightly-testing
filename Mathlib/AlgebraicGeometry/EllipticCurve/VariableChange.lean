@@ -72,7 +72,6 @@ instance : One (VariableChange R) where
   one := ⟨1, 0, 0, 0⟩
 
 /-- The identity linear change of variables given by the identity matrix. -/
-@[defeq]
 lemma one_def : (1 : VariableChange R) = ⟨1, 0, 0, 0⟩ := rfl
 
 instance : Mul (VariableChange R) where
@@ -83,7 +82,6 @@ instance : Mul (VariableChange R) where
     t := C.t * C'.u ^ 3 + C.r * C'.s * C'.u ^ 2 + C'.t }
 
 /-- The composition of two linear changes of variables given by matrix multiplication. -/
-@[defeq]
 lemma mul_def : C * C' = {
     u := C.u * C'.u
     r := C.r * C'.u ^ 2 + C'.r
@@ -98,7 +96,6 @@ instance : Inv (VariableChange R) where
     t := (C.r * C.s - C.t) * C.u⁻¹ ^ 3 }
 
 /-- The inverse of a linear change of variables given by matrix inversion. -/
-@[defeq]
 lemma inv_def : C⁻¹ = {
     u := C.u⁻¹
     r := -C.r * C.u⁻¹ ^ 2
@@ -137,7 +134,6 @@ instance : SMul (VariableChange R) (WeierstrassCurve R) where
 
 /-- The Weierstrass curve over `R` induced by an admissible linear change of variables
 `(X, Y) ↦ (u²X + r, u³Y + u²sX + t)` for some `u` in `Rˣ` and some `r, s, t` in `R`. -/
-@[defeq]
 lemma variableChange_def : C • W = {
     a₁ := C.u⁻¹ * (W.a₁ + 2 * C.s)
     a₂ := C.u⁻¹ ^ 2 * (W.a₂ - C.s * W.a₁ + 3 * C.r - C.s ^ 2)
@@ -178,21 +174,16 @@ instance : MulAction (VariableChange R) (WeierstrassCurve R) where
           - C.r * C.t * C.u⁻¹ ^ 6 * ↑C'.u⁻¹ * (C'.s * 2 + W.a₁) * pow_mul_pow_eq_one 5 C'.u.inv_mul
           + C.u⁻¹ ^ 6 * (C.r ^ 3 - C.t ^ 2) * pow_mul_pow_eq_one 6 C'.u.inv_mul
 
-@[defeq]
 lemma variableChange_a₁ : (C • W).a₁ = C.u⁻¹ * (W.a₁ + 2 * C.s) := rfl
 
-@[defeq]
 lemma variableChange_a₂ : (C • W).a₂ = C.u⁻¹ ^ 2 * (W.a₂ - C.s * W.a₁ + 3 * C.r - C.s ^ 2) := rfl
 
-@[defeq]
 lemma variableChange_a₃ : (C • W).a₃ = C.u⁻¹ ^ 3 * (W.a₃ + C.r * W.a₁ + 2 * C.t) := rfl
 
-@[defeq]
 lemma variableChange_a₄ : (C • W).a₄ =
     C.u⁻¹ ^ 4 * (W.a₄ - C.s * W.a₃ + 2 * C.r * W.a₂ - (C.t + C.r * C.s) * W.a₁ + 3 * C.r ^ 2
       - 2 * C.s * C.t) := rfl
 
-@[defeq]
 lemma variableChange_a₆ : (C • W).a₆ =
     C.u⁻¹ ^ 6 * (W.a₆ + C.r * W.a₄ + C.r ^ 2 * W.a₂ + C.r ^ 3 - C.t * W.a₃ - C.t ^ 2
       - C.r * C.t * W.a₁) := rfl

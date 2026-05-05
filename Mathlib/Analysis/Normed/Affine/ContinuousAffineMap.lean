@@ -56,7 +56,6 @@ we do _not_ necessarily have `‖f.comp g‖ ≤ ‖f‖ * ‖g‖`. See `norm_c
 noncomputable instance hasNorm : Norm (V →ᴬ[𝕜] W) :=
   ⟨fun f => max ‖f 0‖ ‖f.contLinear‖⟩
 
-@[defeq]
 theorem norm_def : ‖f‖ = max ‖f 0‖ ‖f.contLinear‖ :=
   rfl
 

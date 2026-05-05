@@ -48,7 +48,6 @@ scoped[Pointwise] attribute [instance] Subsemiring.pointwiseMulAction
 
 open scoped Pointwise
 
-@[defeq]
 theorem pointwise_smul_def {a : M} (S : Subsemiring R) :
     a • S = S.map (MulSemiringAction.toRingHom _ _ a) :=
   rfl

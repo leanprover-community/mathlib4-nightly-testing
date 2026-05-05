@@ -192,12 +192,10 @@ abbrev BinaryFan.snd {X Y : C} (s : BinaryFan X Y) :=
   s.π.app ⟨WalkingPair.right⟩
 
 -- Marking this `@[simp]` causes loops since `s.fst` is reducibly defeq to the LHS.
-@[defeq]
 theorem BinaryFan.π_app_left {X Y : C} (s : BinaryFan X Y) : s.π.app ⟨WalkingPair.left⟩ = s.fst :=
   rfl
 
 -- Marking this `@[simp]` causes loops since `s.snd` is reducibly defeq to the LHS.
-@[defeq]
 theorem BinaryFan.π_app_right {X Y : C} (s : BinaryFan X Y) : s.π.app ⟨WalkingPair.right⟩ = s.snd :=
   rfl
 
@@ -253,12 +251,10 @@ lemma BinaryCofan.ext_hom_hom {A B : C} {c c' : BinaryCofan A B} (e : c.pt ≅ c
     (ext e h₁ h₂).hom.hom = e.hom := rfl
 
 -- This cannot be `@[simp]` because `s.inl` is reducibly defeq to the LHS.
-@[defeq]
 theorem BinaryCofan.ι_app_left {X Y : C} (s : BinaryCofan X Y) :
     s.ι.app ⟨WalkingPair.left⟩ = s.inl := rfl
 
 -- This cannot be `@[simp]` because `s.inr` is reducibly defeq to the LHS.
-@[defeq]
 theorem BinaryCofan.ι_app_right {X Y : C} (s : BinaryCofan X Y) :
     s.ι.app ⟨WalkingPair.right⟩ = s.inr := rfl
 

@@ -68,11 +68,11 @@ def homOfLE {x y : X} (h : x ≤ y) : x ⟶ y :=
 @[inherit_doc homOfLE]
 abbrev _root_.LE.le.hom := @homOfLE
 
-@[defeq, simp]
+@[simp]
 theorem homOfLE_refl {x : X} (h : x ≤ x) : h.hom = 𝟙 x :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem homOfLE_comp {x y z : X} (h : x ≤ y) (k : y ≤ z) :
     homOfLE h ≫ homOfLE k = homOfLE (h.trans k) :=
   rfl
@@ -98,22 +98,22 @@ lemma isIso_homOfLE {x y : X} (h : x = y) :
   change IsIso (𝟙 _)
   infer_instance
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma homOfLE_comp_eqToHom {a b c : X} (hab : a ≤ b) (hbc : b = c) :
     homOfLE hab ≫ eqToHom hbc = homOfLE (hab.trans (le_of_eq hbc)) :=
   rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma eqToHom_comp_homOfLE {a b c : X} (hab : a = b) (hbc : b ≤ c) :
     eqToHom hab ≫ homOfLE hbc = homOfLE ((le_of_eq hab).trans hbc) :=
   rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma homOfLE_op_comp_eqToHom {a b c : X} (hab : b ≤ a) (hbc : op b = op c) :
     (homOfLE hab).op ≫ eqToHom hbc = (homOfLE ((le_of_eq (op_injective hbc.symm)).trans hab)).op :=
   rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma eqToHom_comp_homOfLE_op {a b c : X} (hab : op a = op b) (hbc : c ≤ b) :
     eqToHom hab ≫ (homOfLE hbc).op = (homOfLE (hbc.trans (le_of_eq (op_injective hab.symm)))).op :=
   rfl

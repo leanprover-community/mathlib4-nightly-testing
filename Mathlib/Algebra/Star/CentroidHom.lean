@@ -41,7 +41,7 @@ instance : Star (CentroidHom α) where
     map_mul_left' := fun a b => by simp only [star_mul, map_mul_right, star_star]
     map_mul_right' := fun a b => by simp only [star_mul, map_mul_left, star_star] }
 
-@[defeq, simp] lemma star_apply (f : CentroidHom α) (a : α) : (star f) a = star (f (star a)) := rfl
+@[simp] lemma star_apply (f : CentroidHom α) (a : α) : (star f) a = star (f (star a)) := rfl
 
 instance instStarAddMonoid : StarAddMonoid (CentroidHom α) where
   star_involutive f := ext (fun _ => by

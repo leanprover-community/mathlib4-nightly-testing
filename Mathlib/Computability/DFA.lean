@@ -275,7 +275,6 @@ Given a DFA `M`, `Mᶜ` is also a DFA such that `L(Mᶜ) = {x ∣ x ∉ L(M)}`. 
 instance : Compl (DFA α σ) where
   compl M := ⟨M.step, M.start, M.acceptᶜ⟩
 
-@[defeq]
 theorem compl_def : Mᶜ = ⟨M.step, M.start, M.acceptᶜ⟩ :=
   rfl
 

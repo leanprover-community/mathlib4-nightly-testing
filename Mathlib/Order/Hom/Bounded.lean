@@ -290,11 +290,11 @@ instance : OrderTop (TopHom α β) where
   top := ⟨⊤, rfl⟩
   le_top := fun _ => @le_top (α → β) _ _ _
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem coe_top : ⇑(⊤ : TopHom α β) = ⊤ :=
   rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem top_apply (a : α) : (⊤ : TopHom α β) a = ⊤ :=
   rfl
 
@@ -312,11 +312,11 @@ instance : Min (TopHom α β) :=
 instance : SemilatticeInf (TopHom α β) :=
   DFunLike.coe_injective.semilatticeInf _ .rfl .rfl fun _ _ ↦ rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem coe_inf : ⇑(f ⊓ g) = ⇑f ⊓ ⇑g :=
   rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem inf_apply (a : α) : (f ⊓ g) a = f a ⊓ g a :=
   rfl
 
@@ -334,11 +334,11 @@ instance : Max (TopHom α β) :=
 instance : SemilatticeSup (TopHom α β) :=
   DFunLike.coe_injective.semilatticeSup _ .rfl .rfl fun _ _ ↦ rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem coe_sup : ⇑(f ⊔ g) = ⇑f ⊔ ⇑g :=
   rfl
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem sup_apply (a : α) : (f ⊔ g) a = f a ⊔ g a :=
   rfl
 

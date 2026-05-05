@@ -660,26 +660,26 @@ instance monMonoidalStruct : MonoidalCategoryStruct (Mon C) where
   leftUnitor M := mkIso' <| leftUnitor M.X
   rightUnitor M := mkIso' <| rightUnitor M.X
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorUnit_X : (𝟙_ (Mon C)).X = 𝟙_ C := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorUnit_one : η[(𝟙_ (Mon C)).X] = 𝟙 (𝟙_ C) := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorUnit_mul : μ[(𝟙_ (Mon C)).X] = (λ_ (𝟙_ C)).hom := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorObj_one (X Y : Mon C) : η[(X ⊗ Y).X] = (λ_ (𝟙_ C)).inv ≫ (η[X.X] ⊗ₘ η[Y.X]) := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensorObj_mul (X Y : Mon C) :
     μ[(X ⊗ Y).X] = tensorμ X.X Y.X X.X Y.X ≫ (μ[X.X] ⊗ₘ μ[Y.X]) := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma whiskerLeft_hom {X Y : Mon C} (f : X ⟶ Y) (Z : Mon C) : (f ▷ Z).hom = f.hom ▷ Z.X := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma whiskerRight_hom (X : Mon C) {Y Z : Mon C} (f : Y ⟶ Z) : (X ◁ f).hom = X.X ◁ f.hom := rfl
 
 @[to_additive (attr := simp)]
@@ -700,10 +700,10 @@ lemma associator_hom_hom (X Y Z : Mon C) : (α_ X Y Z).hom.hom = (α_ X.X Y.X Z.
 @[to_additive (attr := simp)]
 lemma associator_inv_hom (X Y Z : Mon C) : (α_ X Y Z).inv.hom = (α_ X.X Y.X Z.X).inv := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensor_one (M N : Mon C) : η[(M ⊗ N).X] = (λ_ (𝟙_ C)).inv ≫ (η[M.X] ⊗ₘ η[N.X]) := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma tensor_mul (M N : Mon C) : μ[(M ⊗ N).X] = tensorμ M.X N.X M.X N.X ≫ (μ[M.X] ⊗ₘ μ[N.X]) := rfl
 
 @[to_additive]
@@ -833,10 +833,10 @@ scoped[CategoryTheory.Obj] attribute [instance] CategoryTheory.Functor.monObjObj
 
 open scoped Obj
 
-@[defeq, to_additive (attr := reassoc, simp) ζ_def]
+@[to_additive (attr := reassoc, simp) ζ_def]
 lemma obj.η_def : (η : 𝟙_ D ⟶ F.obj X) = ε F ≫ F.map η := rfl
 
-@[defeq, to_additive (attr := reassoc, simp) σ_def]
+@[to_additive (attr := reassoc, simp) σ_def]
 lemma obj.μ_def : μ = LaxMonoidal.μ F X X ≫ F.map μ := rfl
 
 @[to_additive]
@@ -1106,11 +1106,11 @@ instance (A : Mon C) : (monToLaxMonoidalObj A).LaxMonoidal where
   ε := η[A.X]
   «μ» _ _ := μ[A.X]
 
-@[defeq, to_additive (attr := simp) addMonToLaxMonoidalObj_ε]
+@[to_additive (attr := simp) addMonToLaxMonoidalObj_ε]
 lemma monToLaxMonoidalObj_ε (A : Mon C) :
     ε (monToLaxMonoidalObj A) = η[A.X] := rfl
 
-@[defeq, to_additive (attr := simp) addMonToLaxMonoidalObj_μ]
+@[to_additive (attr := simp) addMonToLaxMonoidalObj_μ]
 lemma monToLaxMonoidalObj_μ (A : Mon C) (X Y) :
     «μ» (monToLaxMonoidalObj A) X Y = μ[A.X] := rfl
 

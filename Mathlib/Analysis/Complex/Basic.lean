@@ -345,15 +345,12 @@ noncomputable instance : RCLike ℂ where
   toPartialOrder := Complex.partialOrder
   le_iff_re_im := Iff.rfl
 
-@[defeq]
 theorem _root_.RCLike.re_eq_complex_re : ⇑(RCLike.re : ℂ →+ ℝ) = Complex.re :=
   rfl
 
-@[defeq]
 theorem _root_.RCLike.im_eq_complex_im : ⇑(RCLike.im : ℂ →+ ℝ) = Complex.im :=
   rfl
 
-@[defeq]
 theorem _root_.RCLike.ofReal_eq_complex_ofReal : (RCLike.ofReal : ℝ → ℂ) = Complex.ofReal := rfl
 
 -- TODO: Replace `mul_conj` and `conj_mul` once `norm` has replaced `abs`
@@ -487,15 +484,15 @@ local notation "imC" => @RCLike.im ℂ _
 local notation "IC" => @RCLike.I ℂ _
 local notation "norm_sqC" => @RCLike.normSq ℂ _
 
-@[defeq, simp]
+@[simp]
 theorem re_to_complex {x : ℂ} : reC x = x.re :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem im_to_complex {x : ℂ} : imC x = x.im :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem I_to_complex : IC = Complex.I :=
   rfl
 

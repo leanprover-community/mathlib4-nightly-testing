@@ -228,7 +228,7 @@ instance : FunLike (α →o β) α β where
 instance : OrderHomClass (α →o β) α β where
   map_rel f _ _ h := f.monotone' h
 
-@[defeq, simp] theorem coe_mk (f : α → β) (hf : Monotone f) : ⇑(mk f hf) = f := rfl
+@[simp] theorem coe_mk (f : α → β) (hf : Monotone f) : ⇑(mk f hf) = f := rfl
 
 protected theorem monotone (f : α →o β) : Monotone f :=
   f.monotone'
@@ -244,7 +244,7 @@ def Simps.coe (f : α →o β) : α → β := f
 for the projection names. Maybe we should change this. -/
 initialize_simps_projections OrderHom (toFun → coe)
 
-@[defeq, simp] theorem toFun_eq_coe (f : α →o β) : f.toFun = f := rfl
+@[simp] theorem toFun_eq_coe (f : α →o β) : f.toFun = f := rfl
 
 -- See library note [partially-applied ext lemmas]
 @[ext]
@@ -724,7 +724,7 @@ instance : EquivLike (α ≃o β) α β :=
 instance : OrderIsoClass (α ≃o β) α β where
   map_le_map_iff f _ _ := f.map_rel_iff'
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {f : α ≃o β} : f.toFun = f :=
   rfl
 
@@ -806,7 +806,7 @@ theorem symm_injective : Function.Injective (symm : α ≃o β → β ≃o α) :
 theorem toEquiv_symm (e : α ≃o β) : e.symm.toEquiv = e.toEquiv.symm :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toEquiv (e : α ≃o β) : ⇑e.toEquiv = e := rfl
 
 @[simp]

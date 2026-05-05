@@ -129,7 +129,7 @@ instance instAlgebraInteger : Algebra vR.integer vA.integer where
 theorem val_smul (r : vR.integer) (a : vA.integer) : ↑(r • a : vA.integer) = (r : R) • (a : A) := by
   rfl
 
-@[defeq, simp]
+@[simp]
 lemma mk_smul_mk (r : R) (hr) (a : A) (ha) :
     (⟨r, hr⟩ : vR.integer) • (⟨a, ha⟩ : vA.integer) =
       ⟨r • a, Algebra.smul_def r a ▸ mul_mem ((val_map_le_one_iff vR vA _).mpr hr) ha⟩ := rfl

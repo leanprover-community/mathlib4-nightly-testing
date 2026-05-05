@@ -83,7 +83,7 @@ instance : CanLift (Submodule R M) (LieSubmodule R L M) (·)
     (fun N ↦ ∀ {x : L} {m : M}, m ∈ N → ⁅x, m⁆ ∈ N) where
   prf N hN := ⟨⟨N, hN⟩, rfl⟩
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_toSubmodule : ((N : Submodule R M) : Set M) = N :=
   rfl
 
@@ -113,7 +113,7 @@ protected theorem zero_mem : (0 : M) ∈ N :=
 theorem mk_eq_zero {x} (h : x ∈ N) : (⟨x, h⟩ : N) = 0 ↔ x = 0 :=
   Subtype.ext_iff
 
-@[defeq, simp]
+@[simp]
 theorem coe_toSet_mk (S : Set M) (h₁ h₂ h₃ h₄) :
     ((⟨⟨⟨⟨S, h₁⟩, h₂⟩, h₃⟩, h₄⟩ : LieSubmodule R L M) : Set M) = S :=
   rfl
@@ -155,27 +155,27 @@ instance : LieRingModule L N where
   lie_add := by intro x m n; apply SetCoe.ext; apply lie_add
   leibniz_lie := by intro x y m; apply SetCoe.ext; apply leibniz_lie
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_zero : ((0 : N) : M) = (0 : M) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_add (m m' : N) : (↑(m + m') : M) = (m : M) + (m' : M) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_neg (m : N) : (↑(-m) : M) = -(m : M) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_sub (m m' : N) : (↑(m - m') : M) = (m : M) - (m' : M) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_smul (t : R) (m : N) : (↑(t • m) : M) = t • (m : M) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_bracket (x : L) (m : N) :
     (↑⁅x, m⁆ : M) = ⁅x, ↑m⁆ :=
   rfl
@@ -274,11 +274,11 @@ instance : Bot (LieSubmodule R L M) :=
 instance instUniqueBot : Unique (⊥ : LieSubmodule R L M) :=
   inferInstanceAs <| Unique (⊥ : Submodule R M)
 
-@[defeq, simp]
+@[simp]
 theorem bot_coe : ((⊥ : LieSubmodule R L M) : Set M) = {0} :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem bot_toSubmodule : ((⊥ : LieSubmodule R L M) : Submodule R M) = ⊥ :=
   rfl
 
@@ -297,11 +297,11 @@ theorem mem_bot (x : M) : x ∈ (⊥ : LieSubmodule R L M) ↔ x = 0 :=
 instance : Top (LieSubmodule R L M) :=
   ⟨{ (⊤ : Submodule R M) with lie_mem := fun {x m} _ ↦ mem_univ ⁅x, m⁆ }⟩
 
-@[defeq, simp]
+@[simp]
 theorem top_coe : ((⊤ : LieSubmodule R L M) : Set M) = univ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem top_toSubmodule : ((⊤ : LieSubmodule R L M) : Submodule R M) = ⊤ :=
   rfl
 
@@ -330,16 +330,16 @@ instance : InfSet (LieSubmodule R L M) :=
           forall_apply_eq_imp_iff₂, forall_exists_index, and_imp] at h ⊢
         intro N hN; apply N.lie_mem (h N hN) }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_inf : (↑(N ⊓ N') : Set M) = ↑N ∩ ↑N' :=
   rfl
 
-@[defeq, norm_cast, simp]
+@[norm_cast, simp]
 theorem inf_toSubmodule :
     (↑(N ⊓ N') : Submodule R M) = (N : Submodule R M) ⊓ (N' : Submodule R M) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sInf_toSubmodule (S : Set (LieSubmodule R L M)) :
     (↑(sInf S) : Submodule R M) = sInf {(s : Submodule R M) | s ∈ S} :=
   rfl
@@ -405,7 +405,7 @@ theorem sup_toSubmodule :
     (↑(N ⊔ N') : Submodule R M) = (N : Submodule R M) ⊔ (N' : Submodule R M) := by
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sSup_toSubmodule (S : Set (LieSubmodule R L M)) :
     (↑(sSup S) : Submodule R M) = sSup {(s : Submodule R M) | s ∈ S} :=
   rfl
@@ -483,7 +483,7 @@ instance : AddCommMonoid (LieSubmodule R L M) where
 
 variable (N N')
 
-@[defeq, simp]
+@[simp]
 theorem add_eq_sup : N + N' = N ⊔ N' :=
   rfl
 

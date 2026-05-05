@@ -144,7 +144,6 @@ abbrev val (x : 𝓞 K) : K := algebraMap _ _ x
 /-- This instance has to be `CoeHead` because we only want to apply it from `𝓞 K` to `K`. -/
 instance : CoeHead (𝓞 K) K := ⟨val⟩
 
-@[defeq]
 lemma coe_eq_algebraMap (x : 𝓞 K) : (x : K) = algebraMap _ _ x := rfl
 
 @[ext] theorem ext {x y : 𝓞 K} (h : (x : K) = (y : K)) : x = y :=
@@ -156,27 +155,23 @@ theorem eq_iff {x y : 𝓞 K} : (x : K) = (y : K) ↔ x = y :=
 
 @[simp] lemma map_mk (x : K) (hx) : algebraMap (𝓞 K) K ⟨x, hx⟩ = x := rfl
 
-@[defeq]
 lemma coe_mk {x : K} (hx) : ((⟨x, hx⟩ : 𝓞 K) : K) = x := rfl
 
 lemma mk_eq_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) = ⟨y, hy⟩ ↔ x = y := by simp
 
-@[defeq, simp] lemma mk_one : (⟨1, one_mem _⟩ : 𝓞 K) = 1 :=
+@[simp] lemma mk_one : (⟨1, one_mem _⟩ : 𝓞 K) = 1 :=
   rfl
 
-@[defeq, simp] lemma mk_zero : (⟨0, zero_mem _⟩ : 𝓞 K) = 0 :=
+@[simp] lemma mk_zero : (⟨0, zero_mem _⟩ : 𝓞 K) = 0 :=
   rfl
 -- TODO: these lemmas don't seem to fire?
-@[defeq, simp] lemma mk_add_mk (x y : K) (hx hy) :
-    (⟨x, hx⟩ : 𝓞 K) + ⟨y, hy⟩ = ⟨x + y, add_mem hx hy⟩ :=
+@[simp] lemma mk_add_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) + ⟨y, hy⟩ = ⟨x + y, add_mem hx hy⟩ :=
   rfl
 
-@[defeq, simp] lemma mk_mul_mk (x y : K) (hx hy) :
-    (⟨x, hx⟩ : 𝓞 K) * ⟨y, hy⟩ = ⟨x * y, mul_mem hx hy⟩ :=
+@[simp] lemma mk_mul_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) * ⟨y, hy⟩ = ⟨x * y, mul_mem hx hy⟩ :=
   rfl
 
-@[defeq, simp] lemma mk_sub_mk (x y : K) (hx hy) :
-    (⟨x, hx⟩ : 𝓞 K) - ⟨y, hy⟩ = ⟨x - y, sub_mem hx hy⟩ :=
+@[simp] lemma mk_sub_mk (x y : K) (hx hy) : (⟨x, hx⟩ : 𝓞 K) - ⟨y, hy⟩ = ⟨x - y, sub_mem hx hy⟩ :=
   rfl
 
 @[simp] lemma neg_mk (x : K) (hx) : (-⟨x, hx⟩ : 𝓞 K) = ⟨-x, neg_mem hx⟩ :=

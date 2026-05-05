@@ -83,14 +83,13 @@ instance : FunLike (RingCon R) R (R → Prop) where
 
 variable (c)
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Con R) (h) : ⇑(mk s h) = s := rfl
 
-@[defeq]
 theorem rel_eq_coe : c.r = c :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toCon_coe_eq_coe : (c.toCon : R → R → Prop) = c :=
   rfl
 
@@ -308,7 +307,7 @@ variable [AddMonoidWithOne R] [Mul R] (c : RingCon R)
 instance : NatCast c.Quotient :=
   ⟨fun n => ↑(n : R)⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_natCast (n : ℕ) : (↑(n : R) : c.Quotient) = n :=
   rfl
 
@@ -321,7 +320,7 @@ variable [AddGroupWithOne R] [Mul R] (c : RingCon R)
 instance : IntCast c.Quotient :=
   ⟨fun z => ↑(z : R)⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_intCast (n : ℕ) : (↑(n : R) : c.Quotient) = n :=
   rfl
 

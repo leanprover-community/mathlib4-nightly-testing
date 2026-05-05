@@ -298,7 +298,7 @@ instance inhabitedFinOneAdd (n : ℕ) : Inhabited (Fin (1 + n)) :=
   haveI : NeZero (1 + n) := by rw [Nat.add_comm]; infer_instance
   inferInstance
 
-@[defeq, simp]
+@[simp]
 theorem default_eq_zero (n : ℕ) [NeZero n] : (default : Fin n) = 0 :=
   rfl
 
@@ -352,7 +352,7 @@ section OfNatCoe
 -- We allow the coercion from `Nat` to `Fin` in this section.
 open Fin.NatCast
 
-@[defeq, simp]
+@[simp]
 theorem ofNat_eq_cast (n : ℕ) [NeZero n] (a : ℕ) : Fin.ofNat n a = (a : Fin n) :=
   rfl
 

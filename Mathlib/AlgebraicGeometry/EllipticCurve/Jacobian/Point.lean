@@ -375,18 +375,15 @@ structure Point where
 
 namespace Point
 
-@[defeq]
 lemma mk_point {P : PointClass R} (h : W'.NonsingularLift P) : (mk h).point = P :=
   rfl
 
 instance [Nontrivial R] : Zero W'.Point :=
   ⟨⟨nonsingularLift_zero⟩⟩
 
-@[defeq]
 lemma zero_def [Nontrivial R] : (0 : W'.Point) = ⟨nonsingularLift_zero⟩ :=
   rfl
 
-@[defeq]
 lemma zero_point [Nontrivial R] : (0 : W'.Point).point = ⟦![1, 1, 0]⟧ :=
   rfl
 
@@ -419,7 +416,6 @@ def neg (P : W.Point) : W.Point :=
 instance : Neg W.Point :=
   ⟨neg⟩
 
-@[defeq]
 lemma neg_def (P : W.Point) : -P = P.neg :=
   rfl
 
@@ -435,7 +431,6 @@ noncomputable def add (P Q : W.Point) : W.Point :=
 noncomputable instance : Add W.Point :=
   ⟨add⟩
 
-@[defeq]
 lemma add_def (P Q : W.Point) : P + Q = P.add Q :=
   rfl
 

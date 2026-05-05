@@ -28,7 +28,7 @@ noncomputable def cpow (x y : ℂ) : ℂ :=
 noncomputable instance : Pow ℂ ℂ :=
   ⟨cpow⟩
 
-@[defeq, simp]
+@[simp]
 theorem cpow_eq_pow (x y : ℂ) : cpow x y = x ^ y :=
   rfl
 

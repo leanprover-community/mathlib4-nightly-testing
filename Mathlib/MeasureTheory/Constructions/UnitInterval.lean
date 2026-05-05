@@ -25,7 +25,6 @@ namespace unitInterval
 
 noncomputable instance : MeasureSpace I := Measure.Subtype.measureSpace
 
-@[defeq]
 theorem volume_def : (volume : Measure I) = volume.comap Subtype.val := rfl
 
 instance : IsProbabilityMeasure (volume : Measure I) where

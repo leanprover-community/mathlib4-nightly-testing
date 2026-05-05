@@ -259,14 +259,13 @@ instance : MulAction G (NormalWord d) :=
     one_smul := by simp +instances [instHSMul]
     mul_smul := by simp +instances [instHSMul, mul_assoc] }
 
-@[defeq]
 theorem group_smul_def (g : G) (w : NormalWord d) :
     g • w = { w with head := g * w.head } := rfl
 
-@[defeq, simp]
+@[simp]
 theorem group_smul_head (g : G) (w : NormalWord d) : (g • w).head = g * w.head := rfl
 
-@[defeq, simp]
+@[simp]
 theorem group_smul_toList (g : G) (w : NormalWord d) : (g • w).toList = w.toList := rfl
 
 instance : FaithfulSMul G (NormalWord d) := ⟨by simp [group_smul_def]⟩

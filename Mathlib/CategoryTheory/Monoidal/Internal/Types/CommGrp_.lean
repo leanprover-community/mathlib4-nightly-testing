@@ -53,12 +53,12 @@ theorem inverse_obj_X {A : CommGrpCat.{u}} : (inverse.obj A).X = A := rfl
 @[simp]
 theorem inverse_obj_one {A : CommGrpCat.{u}} {x} : dsimp% η[(inverse.obj A).X] x = (1 : A) := rfl
 
-@[defeq, simp]
+@[simp]
 theorem inverse_obj_mul {A : CommGrpCat.{u}} {p} :
     dsimp% μ[(inverse.obj A).X] p = (p.1 : A) * p.2 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inverse_obj_inv {A : CommGrpCat.{u}} {x} : dsimp% ι[(inverse.obj A).X] x = (x : A)⁻¹ := rfl
 
 end CommGrpTypeEquivalenceCommGrp

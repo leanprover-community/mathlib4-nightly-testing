@@ -399,7 +399,7 @@ variable [Ring R] [StarRing R]
 instance : One (selfAdjoint R) :=
   ⟨⟨1, .one R⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_one : ↑(1 : selfAdjoint R) = (1 : R) :=
   rfl
 
@@ -415,7 +415,7 @@ instance : IntCast (selfAdjoint R) where
 instance : Pow (selfAdjoint R) ℕ where
   pow x n := ⟨(x : R) ^ n, x.prop.pow n⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_pow (x : selfAdjoint R) (n : ℕ) : ↑(x ^ n) = (x : R) ^ n :=
   rfl
 
@@ -428,7 +428,7 @@ variable [NonUnitalCommRing R] [StarRing R]
 instance : Mul (selfAdjoint R) where
   mul x y := ⟨(x : R) * y, x.prop.mul y.prop⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_mul (x y : selfAdjoint R) : ↑(x * y) = (x : R) * y :=
   rfl
 
@@ -453,21 +453,21 @@ variable [Field R] [StarRing R]
 instance : Inv (selfAdjoint R) where
   inv x := ⟨x.val⁻¹, x.prop.inv₀⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_inv (x : selfAdjoint R) : ↑x⁻¹ = (x : R)⁻¹ :=
   rfl
 
 instance : Div (selfAdjoint R) where
   div x y := ⟨x / y, x.prop.div y.prop⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_div (x y : selfAdjoint R) : ↑(x / y) = (x / y : R) :=
   rfl
 
 instance : Pow (selfAdjoint R) ℤ where
   pow x z := ⟨(x : R) ^ z, x.prop.zpow₀ z⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_zpow (x : selfAdjoint R) (z : ℤ) : ↑(x ^ z) = (x : R) ^ z :=
   rfl
 
@@ -477,8 +477,8 @@ instance instNNRatCast : NNRatCast (selfAdjoint R) where
 instance instRatCast : RatCast (selfAdjoint R) where
   ratCast q := ⟨q, .ratCast q⟩
 
-@[defeq, simp, norm_cast] lemma val_nnratCast (q : ℚ≥0) : (q : selfAdjoint R) = (q : R) := rfl
-@[defeq, simp, norm_cast] lemma val_ratCast (q : ℚ) : (q : selfAdjoint R) = (q : R) := rfl
+@[simp, norm_cast] lemma val_nnratCast (q : ℚ≥0) : (q : selfAdjoint R) = (q : R) := rfl
+@[simp, norm_cast] lemma val_ratCast (q : ℚ) : (q : selfAdjoint R) = (q : R) := rfl
 
 instance instSMulNNRat : SMul ℚ≥0 (selfAdjoint R) where
   smul a x := ⟨a • (x : R), by rw [NNRat.smul_def]; exact .mul (.nnratCast a) x.prop⟩
@@ -486,10 +486,8 @@ instance instSMulNNRat : SMul ℚ≥0 (selfAdjoint R) where
 instance instSMulRat : SMul ℚ (selfAdjoint R) where
   smul a x := ⟨a • (x : R), by rw [Rat.smul_def]; exact .mul (.ratCast a) x.prop⟩
 
-@[defeq, simp, norm_cast] lemma val_nnqsmul (q : ℚ≥0) (x : selfAdjoint R) :
-    ↑(q • x) = q • (x : R) := rfl
-@[defeq, simp, norm_cast] lemma val_qsmul (q : ℚ) (x : selfAdjoint R) :
-    ↑(q • x) = q • (x : R) := rfl
+@[simp, norm_cast] lemma val_nnqsmul (q : ℚ≥0) (x : selfAdjoint R) : ↑(q • x) = q • (x : R) := rfl
+@[simp, norm_cast] lemma val_qsmul (q : ℚ) (x : selfAdjoint R) : ↑(q • x) = q • (x : R) := rfl
 
 instance instField : Field (selfAdjoint R) :=
   Subtype.coe_injective.field _ (selfAdjoint R).coe_zero val_one
@@ -506,7 +504,7 @@ variable [Star R] [TrivialStar R] [AddGroup A] [StarAddMonoid A]
 instance [SMul R A] [StarModule R A] : SMul R (selfAdjoint A) where
   smul r x := ⟨r • (x : A), (IsSelfAdjoint.all _).smul x.prop⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_smul [SMul R A] [StarModule R A] (r : R) (x : selfAdjoint A) : ↑(r • x) = r • (x : A) :=
   rfl
 
@@ -580,7 +578,7 @@ theorem smul_mem [Monoid R] [DistribMulAction R A] [StarModule R A] (r : R) {x :
 instance [Monoid R] [DistribMulAction R A] [StarModule R A] : SMul R (skewAdjoint A) where
   smul r x := ⟨r • (x : A), smul_mem r x.prop⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_smul [Monoid R] [DistribMulAction R A] [StarModule R A] (r : R) (x : skewAdjoint A) :
     ↑(r • x) = r • (x : A) :=
   rfl

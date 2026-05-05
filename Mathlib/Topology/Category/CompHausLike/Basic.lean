@@ -117,7 +117,6 @@ abbrev of : CompHausLike P where
   is_hausdorff := ‹_›
   prop := HasProp.hasProp
 
-@[defeq]
 theorem coe_of : (CompHausLike.of P X : Type _) = X := rfl
 
 @[simp]

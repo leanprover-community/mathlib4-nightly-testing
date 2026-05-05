@@ -37,7 +37,7 @@ variable [SMul M α] [SMul M β] [SMul N α] [SMul N β] (a : M) (b : α) (c : �
 instance instSMul : SMul M (α ⊕ β) :=
   ⟨fun a => Sum.map (a • ·) (a • ·)⟩
 
-@[defeq, to_additive]
+@[to_additive]
 theorem smul_def : a • x = x.map (a • ·) (a • ·) :=
   rfl
 

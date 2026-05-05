@@ -60,7 +60,6 @@ def ofNodupList [DecidableEq α] (xs : List α) (h : ∀ x : α, x ∈ xs) (h' :
 def ofList [DecidableEq α] (xs : List α) (h : ∀ x : α, x ∈ xs) : FinEnum α :=
   ofNodupList xs.dedup (by simp [*]) (List.nodup_dedup _)
 
-@[defeq]
 lemma card_ofList [DecidableEq α] (xs : List α) (h : ∀ x : α, x ∈ xs) :
     (FinEnum.ofList xs h).card = xs.dedup.length := rfl
 
@@ -301,15 +300,15 @@ instance (n : ℕ) : FinEnum (BitVec n) where
   card := 2 ^ n
   equiv := ⟨BitVec.toFin, BitVec.ofFin, by intro x; simp, by intro x; simp⟩
 
-@[defeq, simp, grind =] lemma card_UInt8 : card UInt8 = 2 ^ 8 := rfl
-@[defeq, simp, grind =] lemma card_UInt16 : card UInt16 = 2 ^ 16 := rfl
-@[defeq, simp, grind =] lemma card_UInt32 : card UInt32 = 2 ^ 32 := rfl
-@[defeq, simp, grind =] lemma card_UInt64 : card UInt64 = 2 ^ 64 := rfl
-@[defeq, simp, grind =] lemma card_Int8 : card Int8 = 2 ^ 8 := rfl
-@[defeq, simp, grind =] lemma card_Int16 : card Int16 = 2 ^ 16 := rfl
-@[defeq, simp, grind =] lemma card_Int32 : card Int32 = 2 ^ 32 := rfl
-@[defeq, simp, grind =] lemma card_Int64 : card Int64 = 2 ^ 64 := rfl
-@[defeq, simp, grind =] lemma card_bitVec (n : ℕ) : card (BitVec n) = 2 ^ n := rfl
+@[simp, grind =] lemma card_UInt8 : card UInt8 = 2 ^ 8 := rfl
+@[simp, grind =] lemma card_UInt16 : card UInt16 = 2 ^ 16 := rfl
+@[simp, grind =] lemma card_UInt32 : card UInt32 = 2 ^ 32 := rfl
+@[simp, grind =] lemma card_UInt64 : card UInt64 = 2 ^ 64 := rfl
+@[simp, grind =] lemma card_Int8 : card Int8 = 2 ^ 8 := rfl
+@[simp, grind =] lemma card_Int16 : card Int16 = 2 ^ 16 := rfl
+@[simp, grind =] lemma card_Int32 : card Int32 = 2 ^ 32 := rfl
+@[simp, grind =] lemma card_Int64 : card Int64 = 2 ^ 64 := rfl
+@[simp, grind =] lemma card_bitVec (n : ℕ) : card (BitVec n) = 2 ^ n := rfl
 
 end FinEnum
 

@@ -36,31 +36,31 @@ instance : Alternative Set where
   orElse s t := s ∪ t ()
   failure := ∅
 
-@[defeq, simp]
+@[simp]
 theorem fmap_eq_image (f : α → β) : f <$> s = f '' s :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem seq_eq_set_seq (s : Set (α → β)) (t : Set α) : s <*> t = s.seq t :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem seqLeft_def (s : Set α) (t : Set β) : s <* t = {a | a ∈ s ∧ t.Nonempty} :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem seqRight_def (s : Set α) (t : Set β) : s *> t = {a | s.Nonempty ∧ a ∈ t} :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem pure_def (a : α) : (pure a : Set α) = {a} :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem failure_def : (failure : Set α) = ∅ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem orElse_def (s : Set α) (t : Set α) : (s <|> t) = s ∪ t :=
   rfl
 
@@ -104,7 +104,7 @@ protected def monad : AlternativeMonad.{u} Set where
 section with_instance
 attribute [local instance] Set.monad
 
-@[defeq, simp]
+@[simp]
 theorem bind_def : s >>= f = ⋃ i ∈ s, f i :=
   rfl
 

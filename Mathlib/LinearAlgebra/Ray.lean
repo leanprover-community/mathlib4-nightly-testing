@@ -374,7 +374,7 @@ instance {R : Type*} : Neg (RayVector R M) :=
   ⟨fun v => ⟨-v, neg_ne_zero.2 v.prop⟩⟩
 
 /-- Negating a nonzero vector commutes with coercion to the underlying module. -/
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_neg {R : Type*} (v : RayVector R M) : ↑(-v) = -(v : M) :=
   rfl
 

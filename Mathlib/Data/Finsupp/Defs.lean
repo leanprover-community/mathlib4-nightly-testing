@@ -130,27 +130,27 @@ theorem nontrivial_of_nontrivial [h : Nontrivial (α →₀ M)] : Nontrivial M :
 
 lemma ne_iff {f g : α →₀ M} : f ≠ g ↔ ∃ a, f a ≠ g a := DFunLike.ne_iff
 
-@[defeq, simp, norm_cast, grind =]
+@[simp, norm_cast, grind =]
 theorem coe_mk (f : α → M) (s : Finset α) (h : ∀ a, a ∈ s ↔ f a ≠ 0) : ⇑(⟨s, f, h⟩ : α →₀ M) = f :=
   rfl
 
 instance instZero : Zero (α →₀ M) :=
   ⟨⟨∅, 0, fun _ => ⟨fun h ↦ (notMem_empty _ h).elim, fun H => (H rfl).elim⟩⟩⟩
 
-@[defeq, simp, norm_cast] lemma coe_zero : ⇑(0 : α →₀ M) = 0 := rfl
+@[simp, norm_cast] lemma coe_zero : ⇑(0 : α →₀ M) = 0 := rfl
 
-@[defeq, grind =]
+@[grind =]
 theorem zero_apply {a : α} : (0 : α →₀ M) a = 0 :=
   rfl
 
-@[defeq, simp, grind =]
+@[simp, grind =]
 theorem support_zero : (0 : α →₀ M).support = ∅ :=
   rfl
 
 instance instInhabited : Inhabited (α →₀ M) :=
   ⟨0⟩
 
-@[defeq, simp] lemma default_eq_zero : (default : α →₀ M) = 0 := rfl
+@[simp] lemma default_eq_zero : (default : α →₀ M) = 0 := rfl
 
 @[simp, grind =]
 theorem mem_support_iff {f : α →₀ M} : ∀ {a : α}, a ∈ f.support ↔ f a ≠ 0 :=

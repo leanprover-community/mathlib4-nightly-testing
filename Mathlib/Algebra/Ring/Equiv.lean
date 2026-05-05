@@ -151,7 +151,7 @@ protected theorem congr_arg {f : R ≃+* S} {x x' : R} : x = x' → f x = f x' :
 protected theorem congr_fun {f g : R ≃+* S} (h : f = g) (x : R) : f x = g x :=
   DFunLike.congr_fun h x
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (e h₃ h₄) : ⇑(⟨e, h₃, h₄⟩ : R ≃+* S) = e :=
   rfl
 

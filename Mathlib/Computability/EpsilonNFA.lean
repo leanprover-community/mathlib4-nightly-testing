@@ -337,27 +337,27 @@ instance : One (εNFA α σ) :=
 instance : Inhabited (εNFA α σ) :=
   ⟨0⟩
 
-@[defeq, simp]
+@[simp]
 theorem step_zero (s a) : (0 : εNFA α σ).step s a = ∅ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem step_one (s a) : (1 : εNFA α σ).step s a = ∅ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem start_zero : (0 : εNFA α σ).start = ∅ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem start_one : (1 : εNFA α σ).start = univ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem accept_zero : (0 : εNFA α σ).accept = ∅ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem accept_one : (1 : εNFA α σ).accept = univ :=
   rfl
 

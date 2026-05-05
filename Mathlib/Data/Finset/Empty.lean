@@ -170,7 +170,7 @@ instance : OrderBot (Finset α) where
   bot := ∅
   bot_le := empty_subset
 
-@[defeq, simp, grind =]
+@[simp, grind =]
 theorem bot_eq_empty : (⊥ : Finset α) = ∅ :=
   rfl
 

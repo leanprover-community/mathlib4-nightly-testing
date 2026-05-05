@@ -72,7 +72,6 @@ instance : AddMonoidHomClass (Derivation R A M) A M where
   map_zero D := D.toLinearMap.map_zero
 
 -- Not a simp lemma because it can be proved via `coeFn_coe` + `toLinearMap_eq_coe`
-@[defeq]
 theorem toFun_eq_coe : D.toFun = ⇑D :=
   rfl
 
@@ -86,11 +85,11 @@ attribute [coe] toLinearMap
 instance hasCoeToLinearMap : Coe (Derivation R A M) (A →ₗ[R] M) :=
   ⟨fun D => D.toLinearMap⟩
 
-@[defeq, simp]
+@[simp]
 theorem mk_coe (f : A →ₗ[R] M) (h₁ h₂) : ((⟨f, h₁, h₂⟩ : Derivation R A M) : A → M) = f :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coeFn_coe (f : Derivation R A M) : ⇑(f : A →ₗ[R] M) = f :=
   rfl
 
@@ -171,15 +170,14 @@ instance : Zero (Derivation R A M) :=
       map_one_eq_zero' := rfl
       leibniz' := fun a b => by simp only [add_zero, LinearMap.zero_apply, smul_zero] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_zero : ⇑(0 : Derivation R A M) = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_zero_linearMap : ↑(0 : Derivation R A M) = (0 : A →ₗ[R] M) :=
   rfl
 
-@[defeq]
 theorem zero_apply (a : A) : (0 : Derivation R A M) a = 0 :=
   rfl
 
@@ -190,15 +188,14 @@ instance : Add (Derivation R A M) :=
       leibniz' := fun a b => by
         simp only [leibniz, LinearMap.add_apply, coeFn_coe, smul_add, add_add_add_comm] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_add (D1 D2 : Derivation R A M) : ⇑(D1 + D2) = D1 + D2 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_add_linearMap (D1 D2 : Derivation R A M) : ↑(D1 + D2) = (D1 + D2 : A →ₗ[R] M) :=
   rfl
 
-@[defeq]
 theorem add_apply : (D1 + D2) a = D1 a + D2 a :=
   rfl
 
@@ -218,15 +215,14 @@ instance : SMul S (Derivation R A M) :=
       leibniz' := fun a b => by simp only [LinearMap.smul_apply, coeFn_coe, leibniz, smul_add,
         smul_comm r (_ : A) (_ : M)] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul (r : S) (D : Derivation R A M) : ⇑(r • D) = r • ⇑D :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul_linearMap (r : S) (D : Derivation R A M) : ↑(r • D) = r • (D : A →ₗ[R] M) :=
   rfl
 
-@[defeq]
 theorem smul_apply (r : S) (D : Derivation R A M) : (r • D) a = r • D a :=
   rfl
 

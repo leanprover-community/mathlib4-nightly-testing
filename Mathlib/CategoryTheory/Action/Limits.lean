@@ -284,7 +284,7 @@ variable [HasZeroMorphisms V]
 
 instance {X Y : Action V G} : Zero (X ⟶ Y) := ⟨0, by simp⟩
 
-@[defeq, simp]
+@[simp]
 theorem zero_hom {X Y : Action V G} : (0 : X ⟶ Y).hom = 0 :=
   rfl
 
@@ -320,11 +320,11 @@ instance : SMul ℕ (X ⟶ Y) where
 instance : SMul ℤ (X ⟶ Y) where
   smul n f := ⟨n • f.hom, by simp [f.comm]⟩
 
-@[defeq, simp] lemma add_hom (f g : X ⟶ Y) : (f + g).hom = f.hom + g.hom := rfl
-@[defeq, simp] lemma neg_hom (f : X ⟶ Y) : (-f).hom = -f.hom := rfl
-@[defeq, simp] lemma sub_hom (f g : X ⟶ Y) : (f - g).hom = f.hom - g.hom := rfl
-@[defeq, simp] lemma nsmul_hom (n : ℕ) (f : X ⟶ Y) : (n • f).hom = n • f.hom := rfl
-@[defeq, simp] lemma zsmul_hom (n : ℤ) (f : X ⟶ Y) : (n • f).hom = n • f.hom := rfl
+@[simp] lemma add_hom (f g : X ⟶ Y) : (f + g).hom = f.hom + g.hom := rfl
+@[simp] lemma neg_hom (f : X ⟶ Y) : (-f).hom = -f.hom := rfl
+@[simp] lemma sub_hom (f g : X ⟶ Y) : (f - g).hom = f.hom - g.hom := rfl
+@[simp] lemma nsmul_hom (n : ℕ) (f : X ⟶ Y) : (n • f).hom = n • f.hom := rfl
+@[simp] lemma zsmul_hom (n : ℤ) (f : X ⟶ Y) : (n • f).hom = n • f.hom := rfl
 
 instance : Preadditive (Action V G) where
   homGroup X Y :=
@@ -374,7 +374,7 @@ instance forget₂_linear {FV : V → V → Type*} {CV : V → Type*}
 instance functorCategoryEquivalence_linear :
     Functor.Linear R (functorCategoryEquivalence V G).functor where
 
-@[defeq, simp]
+@[simp]
 theorem smul_hom {X Y : Action V G} (r : R) (f : X ⟶ Y) : (r • f).hom = r • f.hom :=
   rfl
 

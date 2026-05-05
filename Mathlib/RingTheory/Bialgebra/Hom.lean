@@ -138,11 +138,11 @@ protected theorem coe_coe {F : Type*} [FunLike F A B] [BialgHomClass F R A B] (f
     ⇑(f : A →ₐc[R] B) = f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk {f : A →ₗc[R] B} (h h₁) : ((⟨f, h, h₁⟩ : A →ₐc[R] B) : A → B) = f :=
   rfl
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_mks {f : A → B} (h₀ h₁ h₂ h₃ h₄ h₅) :
     ⇑(⟨⟨⟨⟨f, h₀⟩, h₁⟩, h₂, h₃⟩, h₄, h₅⟩ : A →ₐc[R] B) = f :=
   rfl
@@ -156,7 +156,6 @@ theorem coe_coalgHom_mk {f : A →ₗc[R] B} (h h₁) :
 theorem coe_toCoalgHom (f : A →ₐc[R] B) : ⇑(f : A →ₗc[R] B) = f :=
   rfl
 
-@[defeq]
 lemma toCoalgHom_apply (f : A →ₐc[R] B) (a : A) : f.toCoalgHom a = f a := rfl
 
 @[simp, norm_cast]
@@ -204,7 +203,7 @@ theorem ext {φ₁ φ₂ : A →ₐc[R] B} (H : ∀ x, φ₁ x = φ₂ x) : φ�
 theorem ext_of_ring {f g : R →ₐc[R] A} (h : f 1 = g 1) : f = g :=
   coe_linearMap_injective (by ext; assumption)
 
-@[defeq, simp]
+@[simp]
 theorem mk_coe {f : A →ₐc[R] B} (h₀ h₁ h₂ h₃ h₄ h₅) :
     (⟨⟨⟨⟨f, h₀⟩, h₁⟩, h₂, h₃⟩, h₄, h₅⟩ : A →ₐc[R] B) = f :=
   rfl

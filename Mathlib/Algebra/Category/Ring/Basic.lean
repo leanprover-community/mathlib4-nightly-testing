@@ -58,11 +58,9 @@ instance : CoeSort SemiRingCat (Type u) :=
 
 attribute [coe] SemiRingCat.carrier
 
-@[defeq]
 lemma coe_of (R : Type u) [Semiring R] : (of R : Type u) = R :=
   rfl
 
-@[defeq]
 lemma of_carrier (R : SemiRingCat.{u}) : of R = R := rfl
 
 set_option backward.privateInPublic true in
@@ -105,14 +103,14 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[defeq, simp]
+@[simp]
 lemma hom_id {R : SemiRingCat} : (𝟙 R : R ⟶ R).hom = RingHom.id R := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (R : SemiRingCat) (r : R) :
     (𝟙 R : R ⟶ R) r = r := by simp
 
-@[defeq, simp]
+@[simp]
 lemma hom_comp {R S T : SemiRingCat} (f : R ⟶ S) (g : S ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -124,23 +122,22 @@ lemma comp_apply {R S T : SemiRingCat} (f : R ⟶ S) (g : S ⟶ T) (r : R) :
 lemma hom_ext {R S : SemiRingCat} {f g : R ⟶ S} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[defeq, simp]
+@[simp]
 lemma hom_ofHom {R S : Type u} [Semiring R] [Semiring S] (f : R →+* S) : (ofHom f).hom = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_hom {R S : SemiRingCat} (f : R ⟶ S) :
     ofHom (Hom.hom f) = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_id {R : Type u} [Semiring R] : ofHom (RingHom.id R) = 𝟙 (of R) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_comp {R S T : Type u} [Semiring R] [Semiring S] [Semiring T]
     (f : R →+* S) (g : S →+* T) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[defeq]
 lemma ofHom_apply {R S : Type u} [Semiring R] [Semiring S]
     (f : R →+* S) (r : R) : ofHom f r = f r := rfl
 
@@ -174,10 +171,10 @@ instance hasForgetToAddCommMonCat : HasForget₂ SemiRingCat AddCommMonCat where
     { obj := fun R ↦ AddCommMonCat.of R
       map := fun f ↦ AddCommMonCat.ofHom f.hom.toAddMonoidHom }
 
-@[defeq, simp] lemma forget₂_monCat_map {R S : SemiRingCat} (f : R ⟶ S) (x) :
+@[simp] lemma forget₂_monCat_map {R S : SemiRingCat} (f : R ⟶ S) (x) :
     (forget₂ SemiRingCat MonCat).map f x = f x := rfl
 
-@[defeq, simp] lemma forget₂_addCommMonCat_map {R S : SemiRingCat} (f : R ⟶ S) (x) :
+@[simp] lemma forget₂_addCommMonCat_map {R S : SemiRingCat} (f : R ⟶ S) (x) :
     (forget₂ SemiRingCat AddCommMonCat).map f x = f x := rfl
 
 /-- Ring equivalences are isomorphisms in category of semirings -/
@@ -227,11 +224,9 @@ instance : CoeSort RingCat (Type u) :=
 
 attribute [coe] RingCat.carrier
 
-@[defeq]
 lemma coe_of (R : Type u) [Ring R] : (of R : Type u) = R :=
   rfl
 
-@[defeq]
 lemma of_carrier (R : RingCat.{u}) : of R = R := rfl
 
 set_option backward.privateInPublic true in
@@ -274,14 +269,14 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[defeq, simp]
+@[simp]
 lemma hom_id {R : RingCat} : (𝟙 R : R ⟶ R).hom = RingHom.id R := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (R : RingCat) (r : R) :
     (𝟙 R : R ⟶ R) r = r := by simp
 
-@[defeq, simp]
+@[simp]
 lemma hom_comp {R S T : RingCat} (f : R ⟶ S) (g : S ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -293,23 +288,22 @@ lemma comp_apply {R S T : RingCat} (f : R ⟶ S) (g : S ⟶ T) (r : R) :
 lemma hom_ext {R S : RingCat} {f g : R ⟶ S} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[defeq, simp]
+@[simp]
 lemma hom_ofHom {R S : Type u} [Ring R] [Ring S] (f : R →+* S) : (ofHom f).hom = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_hom {R S : RingCat} (f : R ⟶ S) :
     ofHom (Hom.hom f) = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_id {R : Type u} [Ring R] : ofHom (RingHom.id R) = 𝟙 (of R) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_comp {R S T : Type u} [Ring R] [Ring S] [Ring T]
     (f : R →+* S) (g : S →+* T) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[defeq]
 lemma ofHom_apply {R S : Type u} [Ring R] [Ring S]
     (f : R →+* S) (r : R) : ofHom f r = f r := rfl
 
@@ -342,7 +336,7 @@ instance hasForgetToSemiRingCat : HasForget₂ RingCat SemiRingCat where
     { obj := fun R ↦ SemiRingCat.of R
       map := fun f ↦ SemiRingCat.ofHom f.hom }
 
-@[defeq, simp] lemma forget₂_map {R S : RingCat} (f : R ⟶ S) (x) :
+@[simp] lemma forget₂_map {R S : RingCat} (f : R ⟶ S) (x) :
     (forget₂ RingCat SemiRingCat).map f x = f x := rfl
 
 /-- The forgetful functor from `RingCat` to `SemiRingCat` is fully faithful. -/
@@ -405,11 +399,9 @@ instance : CoeSort (CommSemiRingCat) (Type u) :=
 
 attribute [coe] CommSemiRingCat.carrier
 
-@[defeq]
 lemma coe_of (R : Type u) [CommSemiring R] : (of R : Type u) = R :=
   rfl
 
-@[defeq]
 lemma of_carrier (R : CommSemiRingCat.{u}) : of R = R := rfl
 
 set_option backward.privateInPublic true in
@@ -452,14 +444,14 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[defeq, simp]
+@[simp]
 lemma hom_id {R : CommSemiRingCat} : (𝟙 R : R ⟶ R).hom = RingHom.id R := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (R : CommSemiRingCat) (r : R) :
     (𝟙 R : R ⟶ R) r = r := by simp
 
-@[defeq, simp]
+@[simp]
 lemma hom_comp {R S T : CommSemiRingCat} (f : R ⟶ S) (g : S ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -471,24 +463,23 @@ lemma comp_apply {R S T : CommSemiRingCat} (f : R ⟶ S) (g : S ⟶ T) (r : R) :
 lemma hom_ext {R S : CommSemiRingCat} {f g : R ⟶ S} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[defeq, simp]
+@[simp]
 lemma hom_ofHom {R S : Type u} [CommSemiring R] [CommSemiring S] (f : R →+* S) :
     (ofHom f).hom = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_hom {R S : CommSemiRingCat} (f : R ⟶ S) :
     ofHom (Hom.hom f) = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_id {R : Type u} [CommSemiring R] : ofHom (RingHom.id R) = 𝟙 (of R) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_comp {R S T : Type u} [CommSemiring R] [CommSemiring S] [CommSemiring T]
     (f : R →+* S) (g : S →+* T) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[defeq]
 lemma ofHom_apply {R S : Type u} [CommSemiring R] [CommSemiring S]
     (f : R →+* S) (r : R) : ofHom f r = f r := rfl
 
@@ -581,11 +572,9 @@ instance : CoeSort CommRingCat (Type u) :=
 
 attribute [coe] CommRingCat.carrier
 
-@[defeq]
 lemma coe_of (R : Type u) [CommRing R] : (of R : Type u) = R :=
   rfl
 
-@[defeq]
 lemma of_carrier (R : CommRingCat.{u}) : of R = R := rfl
 
 set_option backward.privateInPublic true in
@@ -628,14 +617,14 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[defeq, simp]
+@[simp]
 lemma hom_id {R : CommRingCat} : (𝟙 R : R ⟶ R).hom = RingHom.id R := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (R : CommRingCat) (r : R) :
     (𝟙 R : R ⟶ R) r = r := by simp
 
-@[defeq, simp]
+@[simp]
 lemma hom_comp {R S T : CommRingCat} (f : R ⟶ S) (g : S ⟶ T) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -647,23 +636,22 @@ lemma comp_apply {R S T : CommRingCat} (f : R ⟶ S) (g : S ⟶ T) (r : R) :
 lemma hom_ext {R S : CommRingCat} {f g : R ⟶ S} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[defeq, simp]
+@[simp]
 lemma hom_ofHom {R S : Type u} [CommRing R] [CommRing S] (f : R →+* S) : (ofHom f).hom = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_hom {R S : CommRingCat} (f : R ⟶ S) :
     ofHom (Hom.hom f) = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_id {R : Type u} [CommRing R] : ofHom (RingHom.id R) = 𝟙 (of R) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_comp {R S T : Type u} [CommRing R] [CommRing S] [CommRing T]
     (f : R →+* S) (g : S →+* T) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[defeq]
 lemma ofHom_apply {R S : Type u} [CommRing R] [CommRing S]
     (f : R →+* S) (r : R) : ofHom f r = f r := rfl
 
@@ -703,11 +691,11 @@ def fullyFaithfulForget₂ToRingCat :
 instance : (forget₂ CommRingCat RingCat).Full :=
   fullyFaithfulForget₂ToRingCat.full
 
-@[defeq, simp] lemma forgetToRingCat_map_hom {R S : CommRingCat} (f : R ⟶ S) :
+@[simp] lemma forgetToRingCat_map_hom {R S : CommRingCat} (f : R ⟶ S) :
     ((forget₂ CommRingCat RingCat).map f).hom = f.hom :=
   rfl
 
-@[defeq, simp] lemma forgetToRingCat_obj {R : CommRingCat} :
+@[simp] lemma forgetToRingCat_obj {R : CommRingCat} :
     (((forget₂ CommRingCat RingCat).obj R) : Type u) = R :=
   rfl
 
@@ -770,13 +758,11 @@ def commRingCatIsoToRingEquiv {R S : CommRingCat.{u}} (e : R ≅ S) : R ≃+* S 
 
 end CategoryTheory.Iso
 
-@[defeq]
 lemma RingCat.forget_map_apply {R S : RingCat} (f : R ⟶ S)
     (x : (CategoryTheory.forget RingCat).obj R) :
     (forget _).map f x = f x :=
   rfl
 
-@[defeq]
 lemma CommRingCat.forget_map_apply {R S : CommRingCat} (f : R ⟶ S)
     (x : (CategoryTheory.forget CommRingCat).obj R) :
     (forget _).map f x = f x :=

@@ -57,7 +57,7 @@ theorem min_val [Monoid α] [LinearOrder α] (a b : αˣ) : (min a b).val = min 
 instance [Monoid α] [Ord α] : Ord αˣ where
   compare a b := compare a.val b.val
 
-@[defeq, to_additive]
+@[to_additive]
 theorem compare_val [Monoid α] [Ord α] (a b : αˣ) : compare a.val b.val = compare a b := rfl
 
 @[to_additive]

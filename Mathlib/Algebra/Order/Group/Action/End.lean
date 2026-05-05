@@ -26,7 +26,7 @@ instance applyMulAction : MulAction (r →r r) α where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[defeq, simp] lemma smul_def (f : r →r r) (a : α) : f • a = f a := rfl
+@[simp] lemma smul_def (f : r →r r) (a : α) : f • a = f a := rfl
 
 instance apply_faithfulSMul : FaithfulSMul (r →r r) α where eq_of_smul_eq_smul h := RelHom.ext h
 
@@ -41,7 +41,7 @@ instance applyMulAction : MulAction (r ↪r r) α where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[defeq, simp] lemma smul_def (f : r ↪r r) (a : α) : f • a = f a := rfl
+@[simp] lemma smul_def (f : r ↪r r) (a : α) : f • a = f a := rfl
 
 instance apply_faithfulSMul : FaithfulSMul (r ↪r r) α where eq_of_smul_eq_smul h := ext h
 
@@ -56,7 +56,7 @@ instance applyMulAction : MulAction (r ≃r r) α where
   one_smul _ := rfl
   mul_smul _ _ _ := rfl
 
-@[defeq, simp] lemma smul_def (f : r ≃r r) (a : α) : f • a = f a := rfl
+@[simp] lemma smul_def (f : r ≃r r) (a : α) : f • a = f a := rfl
 
 instance apply_faithfulSMul : FaithfulSMul (r ≃r r) α where eq_of_smul_eq_smul h := RelIso.ext h
 

@@ -119,7 +119,7 @@ section
 
 variable [HasZeroMorphisms C]
 
-@[defeq, simp] lemma op_zero (X Y : C) : (0 : X ⟶ Y).op = 0 := rfl
+@[simp] lemma op_zero (X Y : C) : (0 : X ⟶ Y).op = 0 := rfl
 
 @[simp] lemma unop_zero (X Y : Cᵒᵖ) : (0 : X ⟶ Y).unop = 0 := rfl
 
@@ -151,7 +151,7 @@ instance : HasZeroMorphisms (C ⥤ D) where
   zero_comp := fun F {G H} η => by
     ext X; dsimp; apply zero_comp
 
-@[defeq, simp]
+@[simp]
 theorem zero_app (F G : C ⥤ D) (j : C) : (0 : F ⟶ G).app j = 0 := rfl
 
 end
@@ -639,7 +639,6 @@ def _root_.CategoryTheory.Functor.FullyFaithful.hasZeroMorphisms (hF : F.FullyFa
     simp
 
 omit [HasZeroObject C] in
-@[defeq]
 lemma _root_.CategoryTheory.Functor.FullyFaithful.hasZeroMorphisms_def (hF : F.FullyFaithful)
     (X Y : D) : letI : HasZeroMorphisms D := hF.hasZeroMorphisms
     (0 : X ⟶ Y) = hF.preimage 0 := rfl
@@ -813,7 +812,7 @@ instance : HasZeroMorphisms P.FullSubcategory where
   zero _ _ := { zero := P.homMk 0 }
   __ := P.fullyFaithfulι.hasZeroMorphisms
 
-@[defeq, simp]
+@[simp]
 lemma homMk_zero (X Y : P.FullSubcategory) :
     P.homMk (0 : X.obj ⟶ Y.obj) = 0 := rfl
 

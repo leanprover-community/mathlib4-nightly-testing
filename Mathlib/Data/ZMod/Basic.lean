@@ -1201,7 +1201,7 @@ namespace AddSubgroupClass
 
 instance instZModSMul : SMul (ZMod n) K where smul a x := ⟨a • x, zmod_smul_mem x.2 _⟩
 
-@[defeq, simp, norm_cast] lemma coe_zmod_smul (a : ZMod n) (x : K) : ↑(a • x) = (a • x : G) := rfl
+@[simp, norm_cast] lemma coe_zmod_smul (a : ZMod n) (x : K) : ↑(a • x) = (a • x : G) := rfl
 
 instance instZModModule : Module (ZMod n) K := fast_instance%
   Subtype.coe_injective.module _ (AddSubmonoidClass.subtype K) coe_zmod_smul

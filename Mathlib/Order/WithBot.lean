@@ -59,7 +59,7 @@ protected theorem «forall» {p : WithBot α → Prop} : (∀ x, p x) ↔ p ⊥ 
 protected theorem «exists» {p : WithBot α → Prop} : (∃ x, p x) ↔ p ⊥ ∨ ∃ x : α, p x :=
   Option.exists
 
-@[defeq, to_dual]
+@[to_dual]
 theorem none_eq_bot : (none : WithBot α) = (⊥ : WithBot α) :=
   rfl
 
@@ -221,7 +221,7 @@ instance canLift : CanLift (WithBot α) α (↑) fun r => r ≠ ⊥ where
 instance instTop [Top α] : Top (WithBot α) where
   top := (⊤ : α)
 
-@[defeq, to_dual (attr := simp, norm_cast)]
+@[to_dual (attr := simp, norm_cast)]
 lemma coe_top [Top α] : ((⊤ : α) : WithBot α) = ⊤ := rfl
 @[to_dual (attr := simp, norm_cast)]
 lemma coe_eq_top [Top α] {a : α} : (a : WithBot α) = ⊤ ↔ a = ⊤ := coe_eq_coe
@@ -694,7 +694,7 @@ instance _root_.WithTop.semilatticeSup [SemilatticeSup α] : SemilatticeSup (Wit
   le_sup_right x y := by cases x <;> cases y <;> simp
   sup_le x y z := by cases x <;> cases y <;> cases z <;> simp; simpa using sup_le
 
-@[defeq, to_dual (attr := simp, norm_cast)]
+@[to_dual (attr := simp, norm_cast)]
 theorem coe_sup [SemilatticeSup α] (a b : α) :
     ((a ⊔ b : α) : WithBot α) = (a : WithBot α) ⊔ b := rfl
 
@@ -830,7 +830,7 @@ variable [LinearOrder α] {x y : WithBot α}
 
 @[to_dual]
 lemma coe_min (a b : α) : ↑(min a b) = min (a : WithBot α) b := rfl
-@[defeq, to_dual]
+@[to_dual]
 lemma coe_max (a b : α) : ↑(max a b) = max (a : WithBot α) b := rfl
 
 variable [DenselyOrdered α] [NoMinOrder α]

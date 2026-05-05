@@ -177,7 +177,6 @@ noncomputable
 instance : SMul ℚ (DivisibleHull M) where
   smul a x := (SignType.sign a : ℤ) • (show ℚ≥0 from ⟨|a|, abs_nonneg _⟩) • x
 
-@[defeq]
 theorem qsmul_def (a : ℚ) (x : DivisibleHull M) :
     a • x = (SignType.sign a : ℤ) • (show ℚ≥0 from ⟨|a|, abs_nonneg _⟩) • x :=
   rfl

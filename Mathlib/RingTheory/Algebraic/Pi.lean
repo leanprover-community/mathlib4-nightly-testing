@@ -40,12 +40,12 @@ noncomputable def Polynomial.hasSMulPi' [CommSemiring R] [Semiring S] [Algebra R
 
 attribute [local instance] Polynomial.hasSMulPi Polynomial.hasSMulPi'
 
-@[defeq, simp]
+@[simp]
 theorem polynomial_smul_apply [Semiring R] [SMul R S] (p : R[X]) (f : R → S) (x : R) :
     (p • f) x = eval x p • f x :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem polynomial_smul_apply' [CommSemiring R] [Semiring S] [Algebra R S] [SMul S T]
     (p : R[X]) (f : S → T) (x : S) : (p • f) x = aeval x p • f x :=
   rfl
@@ -69,7 +69,7 @@ noncomputable def Polynomial.algebraPi : Algebra R[X] (S → T) where
 
 attribute [local instance] Polynomial.algebraPi
 
-@[defeq, simp]
+@[simp]
 theorem Polynomial.algebraMap_pi_eq_aeval :
     (algebraMap R[X] (S → T) : R[X] → S → T) = fun p z => algebraMap _ _ (aeval z p) :=
   rfl

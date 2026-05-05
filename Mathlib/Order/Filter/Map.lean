@@ -216,11 +216,11 @@ instance : Alternative Filter where
   failure := ⊥
   orElse x y := x ⊔ y ()
 
-@[defeq, simp]
+@[simp]
 theorem map_def {α β} (m : α → β) (f : Filter α) : m <$> f = map m f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem bind_def {α β} (f : Filter α) (m : α → Filter β) : f >>= m = bind f m :=
   rfl
 
@@ -909,7 +909,6 @@ theorem prod_map_seq_comm (f : Filter α) (g : Filter β) :
     rw [Set.prod_image_seq_comm]
     exact seq_mem_seq (image_mem_map ht) hu
 
-@[defeq]
 theorem seq_eq_filter_seq {α β : Type u} (f : Filter (α → β)) (g : Filter α) :
     f <*> g = seq f g :=
   rfl

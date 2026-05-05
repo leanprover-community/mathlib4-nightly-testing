@@ -108,11 +108,10 @@ instance : OrderHomClass (α →*₀o β) α β where
 theorem ext (h : ∀ a, f a = g a) : f = g :=
   DFunLike.ext f g h
 
-@[defeq]
 theorem toFun_eq_coe (f : α →*₀o β) : f.toFun = (f : α → β) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : α →*₀ β) (h) : (OrderMonoidWithZeroHom.mk f h : α → β) = f :=
   rfl
 

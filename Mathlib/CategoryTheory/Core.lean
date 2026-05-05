@@ -57,7 +57,7 @@ instance coreCategory : Groupoid.{v₁} (Core C) where
   comp f g := .mk <| Iso.trans f.iso g.iso
   inv {_ _} f := .mk <| Iso.symm f.iso
 
-@[defeq, simp]
+@[simp]
 lemma coreCategory_comp_iso {x y z : Core C} (f : x ⟶ y) (g : y ⟶ z) :
     (f ≫ g).iso = f.iso ≪≫ g.iso := rfl
 

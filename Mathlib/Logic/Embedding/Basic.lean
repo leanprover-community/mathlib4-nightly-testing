@@ -70,11 +70,10 @@ example (s : Finset (Fin 3)) (f : Equiv.Perm (Fin 3)) : s.map f = s.map f.toEmbe
 protected def toEmbedding : α ↪ β :=
   ⟨f, f.injective⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_toEmbedding : (f.toEmbedding : α → β) = f :=
   rfl
 
-@[defeq]
 theorem toEmbedding_apply (a : α) : f.toEmbedding a = f a :=
   rfl
 
@@ -101,15 +100,15 @@ instance {α β : Sort*} [IsEmpty α] : Unique (α ↪ β) where
   default := ⟨isEmptyElim, Function.injective_of_subsingleton _⟩
   uniq := by intro; ext v; exact isEmptyElim v
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {α β} (f : α ↪ β) : toFun f = f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coeFn_mk {α β} (f : α → β) (i) : (@mk _ _ f i : α → β) = f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_coe {α β : Type*} (f : α ↪ β) (inj) : (⟨f, inj⟩ : α ↪ β) = f :=
   rfl
 

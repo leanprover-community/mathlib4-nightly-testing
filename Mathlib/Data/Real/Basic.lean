@@ -42,7 +42,7 @@ notation "ℝ" => Real
 namespace CauSeq.Completion
 
 -- this can't go in `Data.Real.CauSeqCompletion` as the structure on `ℚ` isn't available
-@[defeq, simp]
+@[simp]
 theorem ofRat_rat {abv : ℚ → ℚ} [IsAbsoluteValue abv] (q : ℚ) :
     ofRat (q : ℚ) = (q : Cauchy abv) :=
   rfl
@@ -173,22 +173,14 @@ instance instIntCast : IntCast ℝ where intCast z := ⟨z⟩
 instance instNNRatCast : NNRatCast ℝ where nnratCast q := ⟨q⟩
 instance instRatCast : RatCast ℝ where ratCast q := ⟨q⟩
 
-@[defeq]
 lemma ofCauchy_natCast (n : ℕ) : (⟨n⟩ : ℝ) = n := rfl
-@[defeq]
 lemma ofCauchy_intCast (z : ℤ) : (⟨z⟩ : ℝ) = z := rfl
-@[defeq]
 lemma ofCauchy_nnratCast (q : ℚ≥0) : (⟨q⟩ : ℝ) = q := rfl
-@[defeq]
 lemma ofCauchy_ratCast (q : ℚ) : (⟨q⟩ : ℝ) = q := rfl
 
-@[defeq]
 lemma cauchy_natCast (n : ℕ) : (n : ℝ).cauchy = n := rfl
-@[defeq]
 lemma cauchy_intCast (z : ℤ) : (z : ℝ).cauchy = z := rfl
-@[defeq]
 lemma cauchy_nnratCast (q : ℚ≥0) : (q : ℝ).cauchy = q := rfl
-@[defeq]
 lemma cauchy_ratCast (q : ℚ) : (q : ℝ).cauchy = q := rfl
 
 instance commRing : CommRing ℝ where

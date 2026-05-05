@@ -80,7 +80,7 @@ instance instDFunLike : DFunLike (Π₀ i, β i) ι β :=
     congr
     subsingleton ⟩
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe (f : Π₀ i, β i) : f.toFun = f :=
   rfl
 
@@ -96,11 +96,10 @@ instance : Zero (Π₀ i, β i) :=
 instance : Inhabited (Π₀ i, β i) :=
   ⟨0⟩
 
-@[defeq, simp, norm_cast] lemma coe_mk' (f : ∀ i, β i) (s) : ⇑(⟨f, s⟩ : Π₀ i, β i) = f := rfl
+@[simp, norm_cast] lemma coe_mk' (f : ∀ i, β i) (s) : ⇑(⟨f, s⟩ : Π₀ i, β i) = f := rfl
 
-@[defeq, simp, norm_cast] lemma coe_zero : ⇑(0 : Π₀ i, β i) = 0 := rfl
+@[simp, norm_cast] lemma coe_zero : ⇑(0 : Π₀ i, β i) = 0 := rfl
 
-@[defeq]
 theorem zero_apply (i : ι) : (0 : Π₀ i, β i) i = 0 :=
   rfl
 

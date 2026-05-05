@@ -424,7 +424,6 @@ protected def pointwiseMulAction : MulAction α (Subgroup G) where
 
 scoped[Pointwise] attribute [instance] Subgroup.pointwiseMulAction
 
-@[defeq]
 theorem pointwise_smul_def {a : α} (S : Subgroup G) :
     a • S = S.map (MulDistribMulAction.toMonoidEnd _ _ a) :=
   rfl

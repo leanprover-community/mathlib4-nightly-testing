@@ -116,7 +116,7 @@ instance instFunLike : FunLike (SpectralMap α β) α β where
 instance : SpectralMapClass (SpectralMap α β) α β where
   map_spectral f := f.spectral'
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {f : SpectralMap α β} : f.toFun = (f : α → β) :=
   rfl
 

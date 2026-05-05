@@ -293,7 +293,7 @@ noncomputable instance : OrderTop (MulArchimedeanClass M) where
 @[to_additive]
 noncomputable instance : Inhabited (MulArchimedeanClass M) := ⟨⊤⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem mk_one : mk 1 = (⊤ : MulArchimedeanClass M) := rfl
 
 @[to_additive (attr := simp)]

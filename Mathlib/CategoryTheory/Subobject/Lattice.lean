@@ -466,7 +466,6 @@ theorem prod_eq_inf {A : C} {f₁ f₂ : Subobject A} [HasBinaryProduct f₁ f�
   · apply leOfHom
     exact prod.lift (inf_le_left _ _).hom (inf_le_right _ _).hom
 
-@[defeq]
 theorem inf_def {B : C} (m m' : Subobject B) : m ⊓ m' = (inf.obj m).obj m' :=
   rfl
 

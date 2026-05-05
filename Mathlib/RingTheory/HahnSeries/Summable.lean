@@ -81,7 +81,7 @@ instance : FunLike (SummableFamily Γ R α) α R⟦Γ⟧ where
   coe := toFun
   coe_injective' | ⟨_, _, _⟩, ⟨_, _, _⟩, rfl => rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (toFun : α → R⟦Γ⟧) (h1 h2) :
     (⟨toFun, h1, h2⟩ : SummableFamily Γ R α) = toFun :=
   rfl
@@ -123,19 +123,17 @@ instance : Zero (SummableFamily Γ R α) :=
 instance : Inhabited (SummableFamily Γ R α) :=
   ⟨0⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_add (s t : SummableFamily Γ R α) : ⇑(s + t) = s + t :=
   rfl
 
-@[defeq]
 theorem add_apply {s t : SummableFamily Γ R α} {a : α} : (s + t) a = s a + t a :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_zero : ((0 : SummableFamily Γ R α) : α → R⟦Γ⟧) = 0 :=
   rfl
 
-@[defeq]
 theorem zero_apply {a : α} : (0 : SummableFamily Γ R α) a = 0 :=
   rfl
 
@@ -157,11 +155,10 @@ instance : SMul M (SummableFamily Γ R β) :=
         simp only [Function.mem_support, ne_eq]
         exact right_ne_zero_of_smul hi } ⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul' (m : M) (s : SummableFamily Γ R α) : ⇑(m • s) = m • s :=
   rfl
 
-@[defeq]
 theorem smul_apply' (m : M) (s : SummableFamily Γ R α) (a : α) : (m • s) a = m • s a :=
   rfl
 
@@ -334,11 +331,10 @@ instance : Neg (SummableFamily Γ R α) where
         simp only [coeff_neg', Pi.neg_apply, Ne, neg_eq_zero]
         exact s.finite_co_support g }
 
-@[defeq, simp]
+@[simp]
 theorem coe_neg (s : SummableFamily Γ R α) : ⇑(-s) = -s :=
   rfl
 
-@[defeq]
 theorem neg_apply : (-s) a = -s a :=
   rfl
 
@@ -352,11 +348,10 @@ instance : Sub (SummableFamily Γ R α) where
         simp_rw [sub_eq_add_neg]
         exact (s + -s').finite_co_support' _ }
 
-@[defeq, simp]
+@[simp]
 theorem coe_sub (s t : SummableFamily Γ R α) : ⇑(s - t) = s - t :=
   rfl
 
-@[defeq]
 theorem sub_apply : (s - t) a = s a - t a :=
   rfl
 
@@ -490,7 +485,6 @@ theorem smul_hsum {R} {V} [Semiring R] [AddCommMonoid V] [Module R V]
 instance : SMul R⟦Γ⟧ (SummableFamily Γ' V β) where
   smul x t := Equiv (Equiv.punitProd β) <| smul (const Unit x) t
 
-@[defeq]
 theorem smul_eq {x : R⟦Γ⟧} {t : SummableFamily Γ' V β} :
     x • t = Equiv (Equiv.punitProd β) (smul (const Unit x) t) :=
   rfl

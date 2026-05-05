@@ -51,10 +51,9 @@ scoped infixr:26 " ⊛⥤ " => DayFunctor
 variable {C : Type u₁} [Category.{v₁} C] {V : Type u₂} [Category.{v₂} V]
     [MonoidalCategory C] [MonoidalCategory V]
 
-@[defeq]
 lemma mk_functor (F : C ⥤ V) : (mk F).functor = F := rfl
 
-@[defeq, simp]
+@[simp]
 lemma functor_mk (F : C ⊛⥤ V) : mk F.functor = F := rfl
 
 /-- Morphisms of Day functors are natural transformations of the underlying

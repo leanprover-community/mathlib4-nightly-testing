@@ -59,11 +59,11 @@ instance (priority := 100) SlashInvariantFormClass.slashInvariantForm :
 
 variable {F Γ k}
 
-@[defeq, simp]
+@[simp]
 theorem SlashInvariantForm.toFun_eq_coe {f : SlashInvariantForm Γ k} : f.toFun = (f : ℍ → ℂ) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem SlashInvariantForm.coe_mk (f : ℍ → ℂ) (hf : ∀ γ ∈ Γ, f ∣[k] γ = f) : ⇑(mk f hf) = f := rfl
 
 @[ext]
@@ -117,11 +117,11 @@ instance instAdd : Add (SlashInvariantForm Γ k) :=
       slash_action_eq' := fun γ hγ ↦ by
         rw [SlashAction.add_slash, slash_action_eqn f γ hγ, slash_action_eqn g γ hγ] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_add (f g : SlashInvariantForm Γ k) : ⇑(f + g) = f + g :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem add_apply (f g : SlashInvariantForm Γ k) (z : ℍ) : (f + g) z = f z + g z :=
   rfl
 
@@ -129,7 +129,7 @@ instance instZero : Zero (SlashInvariantForm Γ k) :=
   ⟨{toFun := 0
     slash_action_eq' := fun _ _ ↦ SlashAction.zero_slash _ _}⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_zero : ⇑(0 : SlashInvariantForm Γ k) = (0 : ℍ → ℂ) :=
   rfl
 
@@ -145,11 +145,11 @@ instance instSMul : SMul α (SlashInvariantForm Γ k) where
       rw [← smul_one_smul ℂ]
       simp [-smul_assoc, smul_slash, slash_action_eqn _ _ hγ, σ, Subgroup.HasDetOne.det_eq hγ] }
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul (f : SlashInvariantForm Γ k) (n : α) : ⇑(n • f) = n • ⇑f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply (f : SlashInvariantForm Γ k) (n : α) (z : ℍ) : (n • f) z = n • f z :=
   rfl
 
@@ -167,11 +167,11 @@ instance instSMulℝ : SMul α (SlashInvariantForm Γ k) where
       rw [← smul_one_smul ℝ, ← smul_one_smul ℂ, smul_slash,
         Complex.real_smul, mul_one, σ_ofReal, slash_action_eqn _ _ hγ] }
 
-@[defeq, simp]
+@[simp]
 theorem coe_smulℝ (f : SlashInvariantForm Γ k) (n : α) : ⇑(n • f) = n • ⇑f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_applyℝ (f : SlashInvariantForm Γ k) (n : α) (z : ℍ) :
     (n • f) z = n • f z :=
   rfl
@@ -183,22 +183,22 @@ instance instNeg : Neg (SlashInvariantForm Γ k) :=
     { toFun := -f
       slash_action_eq' := fun γ hγ => by rw [SlashAction.neg_slash, slash_action_eqn f γ hγ] }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_neg (f : SlashInvariantForm Γ k) : ⇑(-f) = -f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem neg_apply (f : SlashInvariantForm Γ k) (z : ℍ) : (-f) z = -f z :=
   rfl
 
 instance instSub : Sub (SlashInvariantForm Γ k) :=
   ⟨fun f g => f + -g⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_sub (f g : SlashInvariantForm Γ k) : ⇑(f - g) = f - g :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sub_apply (f g : SlashInvariantForm Γ k) (z : ℍ) : (f - g) z = f z - g z :=
   rfl
 
@@ -242,7 +242,7 @@ def constℝ [Γ.HasDetPlusMinusOne] (x : ℝ) : SlashInvariantForm Γ 0 where
 instance [Γ.HasDetPlusMinusOne] : One (SlashInvariantForm Γ 0) where
   one := { constℝ 1 with toFun := 1 }
 
-@[defeq, simp]
+@[simp]
 theorem one_coe_eq_one [Γ.HasDetPlusMinusOne] : ((1 : SlashInvariantForm Γ 0) : ℍ → ℂ) = 1 :=
   rfl
 

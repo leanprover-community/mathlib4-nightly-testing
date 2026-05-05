@@ -73,7 +73,7 @@ instance : LawfulMonad PLift where
   pure_bind := @fun _ _ _ _ => rfl
   bind_assoc := @fun _ _ _ ⟨_⟩ _ _ => rfl
 
-@[defeq, simp]
+@[simp]
 theorem rec.constant {α : Sort u} {β : Type v} (b : β) :
     (@PLift.rec α (fun _ => β) fun _ => b) = fun _ => b := rfl
 
@@ -135,7 +135,7 @@ instance : LawfulMonad ULift where
   pure_bind := @fun _ _ _ _ => rfl
   bind_assoc := @fun _ _ _ ⟨_⟩ _ _ => rfl
 
-@[defeq, simp]
+@[simp]
 theorem rec.constant {α : Type u} {β : Sort v} (b : β) :
     (@ULift.rec α (fun _ => β) fun _ => b) = fun _ => b := rfl
 

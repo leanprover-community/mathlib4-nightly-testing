@@ -43,7 +43,7 @@ scoped instance [SMul G P] [IsLeftCancelSMul G P] [Semiring R] [AddCommMonoid V]
   smul f x p := ∑ gh ∈ Finset.SMulAntidiagonal p
     (Set.SMulAntidiagonal.finite_of_finite_fst f.support.finite_toSet x.support p), f gh.1 • x gh.2
 
-@[defeq, to_additive (dont_translate := R) smul_eq]
+@[to_additive (dont_translate := R) smul_eq]
 theorem smul_eq [SMul G P] [IsLeftCancelSMul G P] [Semiring R] [AddCommMonoid V] [SMulWithZero R V]
     (f : R[G]) (x : P → V) (p : P)
     (hp : ((f.support : Set G).smulAntidiagonal (Function.support x) p).Finite :=

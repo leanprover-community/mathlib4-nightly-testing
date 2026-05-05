@@ -199,7 +199,7 @@ instance instEquivLike : EquivLike (α ≃ᵐ β) α β where
   right_inv e := e.toEquiv.right_inv
   coe_injective' _ _ he _ := toEquiv_injective <| DFunLike.ext' he
 
-@[defeq, simp]
+@[simp]
 theorem coe_toEquiv (e : α ≃ᵐ β) : (e.toEquiv : α → β) = e :=
   rfl
 
@@ -207,7 +207,7 @@ theorem coe_toEquiv (e : α ≃ᵐ β) : (e.toEquiv : α → β) = e :=
 protected theorem measurable (e : α ≃ᵐ β) : Measurable (e : α → β) :=
   e.measurable_toFun
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (e : α ≃ β) (h1 : Measurable e) (h2 : Measurable e.symm) :
     ((⟨e, h1, h2⟩ : α ≃ᵐ β) : α → β) = e :=
   rfl

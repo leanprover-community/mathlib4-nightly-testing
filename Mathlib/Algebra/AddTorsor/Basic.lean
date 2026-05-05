@@ -121,27 +121,27 @@ instance instAddTorsor : AddTorsor (G × G') (P × P') where
   vsub_vadd' _ _ := Prod.ext (vsub_vadd _ _) (vsub_vadd _ _)
   vadd_vsub' _ _ := Prod.ext (vadd_vsub _ _) (vadd_vsub _ _)
 
-@[defeq, simp]
+@[simp]
 theorem fst_vadd (v : G × G') (p : P × P') : (v +ᵥ p).1 = v.1 +ᵥ p.1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem snd_vadd (v : G × G') (p : P × P') : (v +ᵥ p).2 = v.2 +ᵥ p.2 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_vadd_mk (v : G) (v' : G') (p : P) (p' : P') : (v, v') +ᵥ (p, p') = (v +ᵥ p, v' +ᵥ p') :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem fst_vsub (p₁ p₂ : P × P') : (p₁ -ᵥ p₂ : G × G').1 = p₁.1 -ᵥ p₂.1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem snd_vsub (p₁ p₂ : P × P') : (p₁ -ᵥ p₂ : G × G').2 = p₁.2 -ᵥ p₂.2 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_vsub_mk (p₁ p₂ : P) (p₁' p₂' : P') :
     ((p₁, p₁') -ᵥ (p₂, p₂') : G × G') = (p₁ -ᵥ p₂, p₁' -ᵥ p₂') :=
   rfl
@@ -163,11 +163,11 @@ instance instAddTorsor : AddTorsor (∀ i, fg i) (∀ i, fp i) where
   vsub_vadd' p₁ p₂ := funext fun i => vsub_vadd (p₁ i) (p₂ i)
   vadd_vsub' g p := funext fun i => vadd_vsub (g i) (p i)
 
-@[defeq, simp]
+@[simp]
 theorem vsub_apply (p q : ∀ i, fp i) (i : I) : (p -ᵥ q) i = p i -ᵥ q i :=
   rfl
 
-@[defeq, push ←]
+@[push ←]
 theorem vsub_def (p q : ∀ i, fp i) : p -ᵥ q = fun i => p i -ᵥ q i :=
   rfl
 

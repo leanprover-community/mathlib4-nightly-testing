@@ -335,11 +335,11 @@ theorem top_adj (v w : V) : (⊤ : SimpleGraph V).Adj v w ↔ v ≠ w :=
 theorem bot_adj (v w : V) : (⊥ : SimpleGraph V).Adj v w ↔ False :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem completeGraph_eq_top (V : Type u) : completeGraph V = ⊤ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem emptyGraph_eq_bot (V : Type u) : emptyGraph V = ⊥ :=
   rfl
 

@@ -287,33 +287,26 @@ instance : Sub (AdicCompletion I M) where
 instance instSMul [SMul S R] [SMul S M] [IsScalarTower S R M] : SMul S (AdicCompletion I M) where
   smul r x := ⟨r • x.val, by simp [x.property]⟩
 
-@[defeq, simp, norm_cast] lemma val_zero : (0 : AdicCompletion I M).val = 0 := rfl
+@[simp, norm_cast] lemma val_zero : (0 : AdicCompletion I M).val = 0 := rfl
 
-@[defeq]
 lemma val_zero_apply (n : ℕ) : (0 : AdicCompletion I M).val n = 0 := rfl
 
 variable {I M}
 
-@[defeq, simp, norm_cast] lemma val_add (f g : AdicCompletion I M) :
-    (f + g).val = f.val + g.val := rfl
-@[defeq, simp, norm_cast] lemma val_sub (f g : AdicCompletion I M) :
-    (f - g).val = f.val - g.val := rfl
-@[defeq, simp, norm_cast] lemma val_neg (f : AdicCompletion I M) : (-f).val = -f.val := rfl
+@[simp, norm_cast] lemma val_add (f g : AdicCompletion I M) : (f + g).val = f.val + g.val := rfl
+@[simp, norm_cast] lemma val_sub (f g : AdicCompletion I M) : (f - g).val = f.val - g.val := rfl
+@[simp, norm_cast] lemma val_neg (f : AdicCompletion I M) : (-f).val = -f.val := rfl
 
-@[defeq]
 lemma val_add_apply (f g : AdicCompletion I M) (n : ℕ) : (f + g).val n = f.val n + g.val n := rfl
-@[defeq]
 lemma val_sub_apply (f g : AdicCompletion I M) (n : ℕ) : (f - g).val n = f.val n - g.val n := rfl
-@[defeq]
 lemma val_neg_apply (f : AdicCompletion I M) (n : ℕ) : (-f).val n = -f.val n := rfl
 
 /- No `simp` attribute, since it causes `simp` unification timeouts when considering
 the `Module (AdicCompletion I R) (AdicCompletion I M)` instance (see `AdicCompletion/Algebra`). -/
-@[defeq, norm_cast]
+@[norm_cast]
 lemma val_smul [SMul S R] [SMul S M] [IsScalarTower S R M] (s : S) (f : AdicCompletion I M) :
     (s • f).val = s • f.val := rfl
 
-@[defeq]
 lemma val_smul_apply [SMul S R] [SMul S M] [IsScalarTower S R M] (s : S) (f : AdicCompletion I M)
     (n : ℕ) : (s • f).val n = s • f.val n := rfl
 
@@ -485,21 +478,21 @@ instance : Module R (AdicCauchySequence I M) :=
 instance : CoeFun (AdicCauchySequence I M) (fun _ ↦ ℕ → M) where
   coe f := f.val
 
-@[defeq, simp]
+@[simp]
 theorem zero_apply (n : ℕ) : (0 : AdicCauchySequence I M) n = 0 :=
   rfl
 
 variable {I M}
 
-@[defeq, simp]
+@[simp]
 theorem add_apply (n : ℕ) (f g : AdicCauchySequence I M) : (f + g) n = f n + g n :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sub_apply (n : ℕ) (f g : AdicCauchySequence I M) : (f - g) n = f n - g n :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply (n : ℕ) (r : R) (f : AdicCauchySequence I M) : (r • f) n = r • f n :=
   rfl
 

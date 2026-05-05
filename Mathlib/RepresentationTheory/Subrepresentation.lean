@@ -74,14 +74,14 @@ instance : Min (Subrepresentation ρ) where
 lemma coe_sup (ρ₁ ρ₂ : Subrepresentation ρ) : ↑(ρ₁ ⊔ ρ₂) = (ρ₁ : Set W) + (ρ₂ : Set W) :=
   Submodule.coe_sup ρ₁.toSubmodule ρ₂.toSubmodule
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 lemma coe_inf (ρ₁ ρ₂ : Subrepresentation ρ) : ↑(ρ₁ ⊓ ρ₂) = (ρ₁ ∩ ρ₂ : Set W) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma toSubmodule_sup (ρ₁ ρ₂ : Subrepresentation ρ) :
   (ρ₁ ⊔ ρ₂).toSubmodule = ρ₁.toSubmodule ⊔ ρ₂.toSubmodule := rfl
 
-@[defeq, simp]
+@[simp]
 lemma toSubmodule_inf (ρ₁ ρ₂ : Subrepresentation ρ) :
   (ρ₁ ⊓ ρ₂).toSubmodule = ρ₁.toSubmodule ⊓ ρ₂.toSubmodule := rfl
 

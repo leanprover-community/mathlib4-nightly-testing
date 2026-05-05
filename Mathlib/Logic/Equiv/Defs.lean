@@ -111,7 +111,7 @@ instance : EquivLike (α ≃ β) α β where
 lemma _root_.EquivLike.coe_coe {F} [EquivLike F α β] (e : F) :
     ((e : α ≃ β) : α → β) = e := rfl
 
-@[defeq, simp, grind =] theorem coe_fn_mk (f : α → β) (g l r) : (Equiv.mk f g l r : α → β) = f :=
+@[simp, grind =] theorem coe_fn_mk (f : α → β) (g l r) : (Equiv.mk f g l r : α → β) = f :=
   rfl
 
 /-- The map `(r ≃ s) → (r → s)` is injective. -/
@@ -171,7 +171,7 @@ def symmEquiv (α β : Sort*) : (α ≃ β) ≃ (β ≃ α) where
   toFun := .symm
   invFun := .symm
 
-@[defeq, simp, mfld_simps] theorem toFun_as_coe (e : α ≃ β) : e.toFun = e := rfl
+@[simp, mfld_simps] theorem toFun_as_coe (e : α ≃ β) : e.toFun = e := rfl
 
 @[simp, mfld_simps] theorem invFun_as_coe (e : α ≃ β) : e.invFun = e.symm := rfl
 
@@ -945,7 +945,6 @@ lemma lt_def [LT β] (a b : α) :
 protected abbrev max [Max β] : Max α where
   max a b := e.symm (max (e a) (e b))
 
-@[defeq]
 lemma max_def [Max β] (a b : α) :
     letI := e.max
     max a b = e.symm (max (e a) (e b)) := rfl
@@ -954,7 +953,6 @@ lemma max_def [Max β] (a b : α) :
 protected abbrev min [Min β] : Min α where
   min a b := e.symm (min (e a) (e b))
 
-@[defeq]
 lemma min_def [Min β] (a b : α) :
     letI := e.min
     min a b = e.symm (min (e a) (e b)) := rfl
@@ -963,7 +961,6 @@ lemma min_def [Min β] (a b : α) :
 protected abbrev ord [Ord β] : Ord α where
   compare a b := compare (e a) (e b)
 
-@[defeq]
 lemma ord_def [Ord β] (a b : α) :
     letI := e.ord
     compare a b = compare (e a) (e b) := rfl

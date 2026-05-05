@@ -317,10 +317,10 @@ instance [F.LaxMonoidal] : (F.mapAction G).LaxMonoidal where
   left_unitality _ := by ext; simp
   right_unitality _ := by ext; simp
 
-@[defeq, simp]
+@[simp]
 lemma mapAction_ε_hom [F.LaxMonoidal] : (ε (F.mapAction G)).hom = ε F := rfl
 
-@[defeq, simp]
+@[simp]
 lemma mapAction_μ_hom [F.LaxMonoidal] (X Y : Action V G) :
     (μ (F.mapAction G) X Y).hom = μ F X.V Y.V := rfl
 
@@ -343,10 +343,10 @@ instance [F.OplaxMonoidal] : (F.mapAction G).OplaxMonoidal where
   oplax_left_unitality _ := by ext; simp
   oplax_right_unitality _ := by ext; simp
 
-@[defeq, simp]
+@[simp]
 lemma mapAction_η_hom [F.OplaxMonoidal] : (η (F.mapAction G)).hom = η F := rfl
 
-@[defeq, simp]
+@[simp]
 lemma mapAction_δ_hom [F.OplaxMonoidal] (X Y : Action V G) :
     (δ (F.mapAction G) X Y).hom = δ F X.V Y.V := rfl
 

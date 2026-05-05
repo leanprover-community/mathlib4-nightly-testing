@@ -391,7 +391,6 @@ instance mul : Mul (FreeAbelianGroup α) :=
 
 variable {α}
 
-@[defeq]
 theorem mul_def (x y : FreeAbelianGroup α) :
     x * y = lift (fun x₂ ↦ lift (fun x₁ ↦ of (x₁ * x₂)) x) y :=
   rfl
@@ -421,11 +420,9 @@ variable [One α]
 instance one : One (FreeAbelianGroup α) :=
   ⟨of 1⟩
 
-@[defeq]
 theorem one_def : (1 : FreeAbelianGroup α) = of 1 :=
   rfl
 
-@[defeq]
 theorem of_one : (of 1 : FreeAbelianGroup α) = 1 :=
   rfl
 

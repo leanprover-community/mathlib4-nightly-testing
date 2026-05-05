@@ -110,7 +110,6 @@ theorem real_smul_eq_coe_mul (r : ℝ) (z : K) : r • z = (r : K) * z :=
 theorem real_smul_eq_coe_smul [AddCommGroup E] [Module K E] [Module ℝ E] [IsScalarTower ℝ K E]
     (r : ℝ) (x : E) : r • x = (r : K) • x := by rw [RCLike.ofReal_alg, smul_one_smul]
 
-@[defeq]
 theorem algebraMap_eq_ofReal : ⇑(algebraMap ℝ K) = ofReal :=
   rfl
 
@@ -991,11 +990,11 @@ local notation "imR" => @RCLike.im ℝ _
 local notation "IR" => @RCLike.I ℝ _
 local notation "normSqR" => @RCLike.normSq ℝ _
 
-@[defeq, simp, rclike_simps]
+@[simp, rclike_simps]
 theorem re_to_real {x : ℝ} : reR x = x :=
   rfl
 
-@[defeq, simp, rclike_simps]
+@[simp, rclike_simps]
 theorem im_to_real {x : ℝ} : imR x = 0 :=
   rfl
 
@@ -1003,7 +1002,7 @@ theorem im_to_real {x : ℝ} : imR x = 0 :=
 theorem conj_to_real {x : ℝ} : conj x = x :=
   rfl
 
-@[defeq, simp, rclike_simps]
+@[simp, rclike_simps]
 theorem I_to_real : IR = 0 :=
   rfl
 
@@ -1335,7 +1334,7 @@ theorem symm_smul_apply (e : V ≃ₗᵢ[𝕜] W) (α : unitary 𝕜) (x : W) :
 @[simp] theorem symm_units_smul (e : G ≃ₗᵢ[𝕜] W) (α : unitary 𝕜) :
     (α • e).symm = α⁻¹ • e.symm := by ext; simp [symm_smul_apply]
 
-@[defeq, simp] theorem toLinearEquiv_smul (e : V ≃ₗᵢ[𝕜] W) (α : unitary 𝕜) :
+@[simp] theorem toLinearEquiv_smul (e : V ≃ₗᵢ[𝕜] W) (α : unitary 𝕜) :
     (α • e).toLinearEquiv = Unitary.toUnits α • e.toLinearEquiv := rfl
 
 @[simp] theorem toContinuousLinearEquiv_smul (e : G ≃ₗᵢ[𝕜] W) (α : unitary 𝕜) :

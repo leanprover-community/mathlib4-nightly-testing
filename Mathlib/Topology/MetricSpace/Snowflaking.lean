@@ -274,7 +274,6 @@ variable [EDist X]
 instance : EDist (Snowflaking X α hα₀ hα₁) where
   edist x y := edist x.ofSnowflaking y.ofSnowflaking ^ α
 
-@[defeq]
 theorem edist_def (x y : Snowflaking X α hα₀ hα₁) :
     edist x y = edist x.ofSnowflaking y.ofSnowflaking ^ α :=
   rfl

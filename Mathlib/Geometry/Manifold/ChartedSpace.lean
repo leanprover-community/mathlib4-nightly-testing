@@ -291,7 +291,6 @@ def ChartedSpace.comp (H : Type*) [TopologicalSpace H] (H' : Type*) [Topological
   mem_chart_source p := by simp only [mfld_simps]
   chart_mem_atlas p := ⟨chartAt _ p, chart_mem_atlas _ p, chartAt _ _, chart_mem_atlas _ _, rfl⟩
 
-@[defeq]
 theorem chartAt_comp (H : Type*) [TopologicalSpace H] (H' : Type*) [TopologicalSpace H']
     {M : Type*} [TopologicalSpace M] [ChartedSpace H H'] [ChartedSpace H' M] (x : M) :
     (letI := ChartedSpace.comp H H' M; chartAt H x) = chartAt H' x ≫ₕ chartAt H (chartAt H' x x) :=
@@ -348,7 +347,6 @@ theorem chartedSpaceSelf_atlas {H : Type*} [TopologicalSpace H] {e : OpenPartial
   Iff.rfl
 
 /-- In the model space, `chartAt` is always the identity. -/
-@[defeq]
 theorem chartAt_self_eq {H : Type*} [TopologicalSpace H] {x : H} :
     chartAt H x = OpenPartialHomeomorph.refl H := rfl
 
@@ -368,7 +366,7 @@ def ChartedSpace.of_discreteTopology [TopologicalSpace M] [TopologicalSpace H]
   chart_mem_atlas x := by simp
 
 /-- A chart on the discrete space is the constant chart. -/
-@[defeq, simp, mfld_simps]
+@[simp, mfld_simps]
 lemma chartedSpace_of_discreteTopology_chartAt [TopologicalSpace M] [TopologicalSpace H]
     [DiscreteTopology M] [h : Unique H] {x : M} :
     haveI := ChartedSpace.of_discreteTopology (M := M) (H := H)
@@ -452,7 +450,7 @@ theorem ModelProd.ext {x y : ModelProd H H'} (h₁ : x.1 = y.1) (h₂ : x.2 = y.
 variable [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M] [TopologicalSpace H']
   [TopologicalSpace M'] [ChartedSpace H' M'] {x : M × M'}
 
-@[defeq, simp, mfld_simps]
+@[simp, mfld_simps]
 theorem prodChartedSpace_chartAt :
     chartAt (ModelProd H H') x = (chartAt H x.fst).prod (chartAt H' x.snd) :=
   rfl
@@ -477,7 +475,7 @@ instance piChartedSpace {ι : Type*} [Finite ι] (H : ι → Type*) [∀ i, Topo
   mem_chart_source f i _ := mem_chart_source (H i) (f i)
   chart_mem_atlas f := mem_image_of_mem _ fun i _ ↦ chart_mem_atlas (H i) (f i)
 
-@[defeq, simp, mfld_simps]
+@[simp, mfld_simps]
 theorem piChartedSpace_chartAt {ι : Type*} [Finite ι] (H : ι → Type*)
     [∀ i, TopologicalSpace (H i)] (M : ι → Type*) [∀ i, TopologicalSpace (M i)]
     [∀ i, ChartedSpace (H i) (M i)] (f : ∀ i, M i) :

@@ -52,7 +52,6 @@ instance compactOpen : TopologicalSpace C(X, Y) :=
   .generateFrom <| image2 (fun K U ↦ {f | MapsTo f K U}) {K | IsCompact K} {U | IsOpen U}
 
 /-- Definition of `ContinuousMap.compactOpen`. -/
-@[defeq]
 theorem compactOpen_eq : @compactOpen X Y _ _ =
     .generateFrom (image2 (fun K U ↦ {f | MapsTo f K U}) {K | IsCompact K} {t | IsOpen t}) :=
   rfl

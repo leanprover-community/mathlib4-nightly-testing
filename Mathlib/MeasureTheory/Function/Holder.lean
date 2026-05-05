@@ -180,7 +180,6 @@ functions when the exponents satisfy `ENNReal.HolderTriple p q r`. -/
 instance : HSMul (Lp 𝕜 p μ) (Lp E q μ) (Lp E r μ) where
   hSMul f g := (Lp.memLp g).smul (Lp.memLp f) |>.toLp (⇑f • ⇑g)
 
-@[defeq]
 lemma smul_def {f : Lp 𝕜 p μ} {g : Lp E q μ} :
     f • g = ((Lp.memLp g).smul (Lp.memLp f)).toLp (⇑f • ⇑g) :=
   rfl

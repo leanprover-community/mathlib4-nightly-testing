@@ -623,11 +623,11 @@ lemma coe_add (z₁ z₂ : Cocycle F G n) :
 lemma coe_neg (z : Cocycle F G n) :
     (↑(-z) : Cochain F G n) = -(z : Cochain F G n) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma coe_smul (z : Cocycle F G n) (x : R) :
     (↑(x • z) : Cochain F G n) = x • (z : Cochain F G n) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma coe_units_smul (z : Cocycle F G n) (x : Rˣ) :
     (↑(x • z) : Cochain F G n) = x • (z : Cochain F G n) := rfl
 

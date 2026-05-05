@@ -103,8 +103,8 @@ section Coes
 -- this must come after the `FunLike` instance
 initialize_simps_projections IncidenceAlgebra (toFun → apply)
 
-@[defeq, simp] lemma toFun_eq_coe (f : IncidenceAlgebra 𝕜 α) : f.toFun = f := rfl
-@[defeq, simp, norm_cast] lemma coe_mk (f : α → α → 𝕜) (h) : (mk f h : α → α → 𝕜) = f := rfl
+@[simp] lemma toFun_eq_coe (f : IncidenceAlgebra 𝕜 α) : f.toFun = f := rfl
+@[simp, norm_cast] lemma coe_mk (f : α → α → 𝕜) (h) : (mk f h : α → α → 𝕜) = f := rfl
 
 lemma coe_inj {f g : IncidenceAlgebra 𝕜 α} : (f : α → α → 𝕜) = g ↔ f = g :=
   DFunLike.coe_injective.eq_iff
@@ -116,7 +116,7 @@ lemma ext ⦃f g : IncidenceAlgebra 𝕜 α⦄ (h : ∀ a b, a ≤ b → f a b =
   · exact h _ _ hab
   · rw [apply_eq_zero_of_not_le hab, apply_eq_zero_of_not_le hab]
 
-@[defeq, simp] lemma mk_coe (f : IncidenceAlgebra 𝕜 α) (h) : mk f h = f := rfl
+@[simp] lemma mk_coe (f : IncidenceAlgebra 𝕜 α) (h) : mk f h = f := rfl
 
 end Coes
 
@@ -125,8 +125,7 @@ end Coes
 instance instZero : Zero (IncidenceAlgebra 𝕜 α) := ⟨⟨fun _ _ ↦ 0, fun _ _ _ ↦ rfl⟩⟩
 instance instInhabited : Inhabited (IncidenceAlgebra 𝕜 α) := ⟨0⟩
 
-@[defeq, simp, norm_cast] lemma coe_zero : ⇑(0 : IncidenceAlgebra 𝕜 α) = 0 := rfl
-@[defeq]
+@[simp, norm_cast] lemma coe_zero : ⇑(0 : IncidenceAlgebra 𝕜 α) = 0 := rfl
 lemma zero_apply (a b : α) : (0 : IncidenceAlgebra 𝕜 α) a b = 0 := rfl
 
 end Zero
@@ -137,8 +136,7 @@ variable [AddZeroClass 𝕜] [LE α]
 instance instAdd : Add (IncidenceAlgebra 𝕜 α) where
   add f g := ⟨f + g, fun a b h ↦ by simp_rw [Pi.add_apply, apply_eq_zero_of_not_le h, zero_add]⟩
 
-@[defeq, simp, norm_cast] lemma coe_add (f g : IncidenceAlgebra 𝕜 α) : ⇑(f + g) = f + g := rfl
-@[defeq]
+@[simp, norm_cast] lemma coe_add (f g : IncidenceAlgebra 𝕜 α) : ⇑(f + g) = f + g := rfl
 lemma add_apply (f g : IncidenceAlgebra 𝕜 α) (a b : α) : (f + g) a b = f a b + g a b := rfl
 
 end Add
@@ -151,10 +149,8 @@ instance instSmulZeroClassRight : SMulZeroClass M (IncidenceAlgebra 𝕜 α) whe
     ⟨c • ⇑f, fun a b hab ↦ by simp_rw [Pi.smul_apply, apply_eq_zero_of_not_le hab, smul_zero]⟩
   smul_zero c := by ext; exact smul_zero _
 
-@[defeq, simp, norm_cast] lemma coe_constSMul (c : M) (f : IncidenceAlgebra 𝕜 α) :
-    ⇑(c • f) = c • ⇑f := rfl
+@[simp, norm_cast] lemma coe_constSMul (c : M) (f : IncidenceAlgebra 𝕜 α) : ⇑(c • f) = c • ⇑f := rfl
 
-@[defeq]
 lemma constSMul_apply (c : M) (f : IncidenceAlgebra 𝕜 α) (a b : α) : (c • f) a b = c • f a b := rfl
 
 end Smul
@@ -174,11 +170,9 @@ instance instNeg : Neg (IncidenceAlgebra 𝕜 α) where
 instance instSub : Sub (IncidenceAlgebra 𝕜 α) where
   sub f g := ⟨f - g, fun a b h ↦ by simp_rw [Pi.sub_apply, apply_eq_zero_of_not_le h, sub_zero]⟩
 
-@[defeq, simp, norm_cast] lemma coe_neg (f : IncidenceAlgebra 𝕜 α) : ⇑(-f) = -f := rfl
-@[defeq, simp, norm_cast] lemma coe_sub (f g : IncidenceAlgebra 𝕜 α) : ⇑(f - g) = f - g := rfl
-@[defeq]
+@[simp, norm_cast] lemma coe_neg (f : IncidenceAlgebra 𝕜 α) : ⇑(-f) = -f := rfl
+@[simp, norm_cast] lemma coe_sub (f g : IncidenceAlgebra 𝕜 α) : ⇑(f - g) = f - g := rfl
 lemma neg_apply (f : IncidenceAlgebra 𝕜 α) (a b : α) : (-f) a b = -f a b := rfl
-@[defeq]
 lemma sub_apply (f g : IncidenceAlgebra 𝕜 α) (a b : α) : (f - g) a b = f a b - g a b := rfl
 
 instance instAddGroup : AddGroup (IncidenceAlgebra 𝕜 α) :=
@@ -198,8 +192,7 @@ where they are `1`. -/
 instance instOne : One (IncidenceAlgebra 𝕜 α) :=
   ⟨⟨fun a b ↦ if a = b then 1 else 0, fun _a _b h ↦ ite_eq_right_iff.2 fun H ↦ (h H.le).elim⟩⟩
 
-@[defeq, simp] lemma one_apply (a b : α) :
-    (1 : IncidenceAlgebra 𝕜 α) a b = if a = b then 1 else 0 := rfl
+@[simp] lemma one_apply (a b : α) : (1 : IncidenceAlgebra 𝕜 α) a b = if a = b then 1 else 0 := rfl
 
 end One
 
@@ -214,7 +207,7 @@ instance instMul : Mul (IncidenceAlgebra 𝕜 α) where
   mul f g :=
     ⟨fun a b ↦ ∑ x ∈ Icc a b, f a x * g x b, fun a b h ↦ by dsimp; rw [Icc_eq_empty h, sum_empty]⟩
 
-@[defeq, simp] lemma mul_apply (f g : IncidenceAlgebra 𝕜 α) (a b : α) :
+@[simp] lemma mul_apply (f g : IncidenceAlgebra 𝕜 α) (a b : α) :
     (f * g) a b = ∑ x ∈ Icc a b, f a x * g x b := rfl
 
 end Mul
@@ -258,7 +251,7 @@ instance instSMul : SMul (IncidenceAlgebra 𝕜 α) (IncidenceAlgebra 𝕝 α) :
   ⟨fun f g ↦
     ⟨fun a b ↦ ∑ x ∈ Icc a b, f a x • g x b, fun a b h ↦ by dsimp; rw [Icc_eq_empty h, sum_empty]⟩⟩
 
-@[defeq, simp]
+@[simp]
 lemma smul_apply (f : IncidenceAlgebra 𝕜 α) (g : IncidenceAlgebra 𝕝 α) (a b : α) :
     (f • g) a b = ∑ x ∈ Icc a b, f a x • g x b :=
   rfl

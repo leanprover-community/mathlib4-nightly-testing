@@ -172,23 +172,23 @@ instance : CompleteLattice (IdealSheafData X) where
   __ := (inferInstance : CompleteSemilatticeSup (IdealSheafData X))
   __ := IdealSheafData.gci.liftCompleteLattice
 
-@[defeq, simp]
+@[simp]
 lemma ideal_top : ideal (X := X) ⊤ = ⊤ := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ideal_bot : ideal (X := X) ⊥ = ⊥ := rfl
 
 @[simp]
 lemma ideal_sup {I J : IdealSheafData X} : (I ⊔ J).ideal = I.ideal ⊔ J.ideal := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ideal_sSup {I : Set (IdealSheafData X)} : (sSup I).ideal = sSup (ideal '' I) := rfl
 
 @[simp]
 lemma ideal_iSup {ι : Type*} {I : ι → IdealSheafData X} : (iSup I).ideal = ⨆ i, (I i).ideal := by
   rw [← sSup_range, ← sSup_range, ideal_sSup, ← Set.range_comp, Function.comp_def]
 
-@[defeq, simp]
+@[simp]
 lemma ideal_inf {I J : IdealSheafData X} : (I ⊓ J).ideal = I.ideal ⊓ J.ideal := rfl
 
 @[simp]
@@ -453,9 +453,9 @@ instance : IdemCommSemiring X.IdealSheafData where
 instance : IsOrderedRing X.IdealSheafData where
 
 /-! We follow `Ideal` and set the simp normal form to be `⊥` and `⊤` and `⊔`. -/
-@[defeq, simp] lemma zero_eq_bot : (0 : X.IdealSheafData) = ⊥ := rfl
-@[defeq, simp] lemma one_eq_top : (1 : X.IdealSheafData) = ⊤ := rfl
-@[defeq, simp] lemma add_eq_sup : I + J = I ⊔ J := rfl
+@[simp] lemma zero_eq_bot : (0 : X.IdealSheafData) = ⊥ := rfl
+@[simp] lemma one_eq_top : (1 : X.IdealSheafData) = ⊤ := rfl
+@[simp] lemma add_eq_sup : I + J = I ⊔ J := rfl
 
 end Semiring
 

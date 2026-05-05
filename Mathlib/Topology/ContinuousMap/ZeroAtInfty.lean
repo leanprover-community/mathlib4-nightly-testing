@@ -92,7 +92,7 @@ instance instCoeTC : CoeTC F C₀(α, β) :=
       continuous_toFun := map_continuous f
       zero_at_infty' := zero_at_infty f }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_toContinuousMap (f : C₀(α, β)) : (f.toContinuousMap : α → β) = f :=
   rfl
 
@@ -100,7 +100,7 @@ theorem coe_toContinuousMap (f : C₀(α, β)) : (f.toContinuousMap : α → β)
 theorem ext {f g : C₀(α, β)} (h : ∀ x, f x = g x) : f = g :=
   DFunLike.ext _ _ h
 
-@[defeq, simp]
+@[simp]
 lemma coe_mk {f : α → β} (hf : Continuous f) (hf' : Tendsto f (cocompact α) (𝓝 0)) :
     { toFun := f,
       continuous_toFun := hf,
@@ -398,7 +398,7 @@ noncomputable instance instMetricSpace {β : Type*} [MetricSpace β] [Zero β] :
     MetricSpace C₀(α, β) := fast_instance%
   MetricSpace.induced _ (toBCF_injective α β) inferInstance
 
-@[defeq, simp]
+@[simp]
 theorem dist_toBCF_eq_dist {f g : C₀(α, β)} : dist f.toBCF g.toBCF = dist f g :=
   rfl
 
@@ -459,7 +459,7 @@ noncomputable instance instNormedAddCommGroup [NormedAddCommGroup β] :
 
 variable [SeminormedAddCommGroup β] {𝕜 : Type*} [NormedField 𝕜] [NormedSpace 𝕜 β]
 
-@[defeq, simp]
+@[simp]
 theorem norm_toBCF_eq_norm {f : C₀(α, β)} : ‖f.toBCF‖ = ‖f‖ :=
   rfl
 
@@ -513,11 +513,10 @@ instance instStar : Star C₀(α, β) where
       zero_at_infty' := by
         simpa only [star_zero] using (continuous_star.tendsto (0 : β)).comp (zero_at_infty f) }
 
-@[defeq, simp]
+@[simp]
 theorem coe_star (f : C₀(α, β)) : ⇑(star f) = star (⇑f) :=
   rfl
 
-@[defeq]
 theorem star_apply (f : C₀(α, β)) (x : α) : (star f) x = star (f x) :=
   rfl
 

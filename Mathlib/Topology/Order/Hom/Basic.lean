@@ -100,9 +100,8 @@ instance : ContinuousOrderHomClass (α →Co β) α β where
   map_monotone f := f.monotone'
   map_continuous f := f.continuous_toFun
 
-@[defeq, simp] theorem coe_toOrderHom (f : α →Co β) : ⇑f.toOrderHom = f := rfl
+@[simp] theorem coe_toOrderHom (f : α →Co β) : ⇑f.toOrderHom = f := rfl
 
-@[defeq]
 theorem toFun_eq_coe {f : α →Co β} : f.toFun = (f : α → β) := rfl
 
 @[ext]

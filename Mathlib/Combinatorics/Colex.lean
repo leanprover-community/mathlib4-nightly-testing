@@ -149,7 +149,7 @@ instance instOrderBot : OrderBot (Colex (Finset α)) where
   bot := toColex ∅
   bot_le s a ha := by cases ha
 
-@[defeq, simp] lemma toColex_empty : toColex (∅ : Finset α) = ⊥ := rfl
+@[simp] lemma toColex_empty : toColex (∅ : Finset α) = ⊥ := rfl
 @[simp] lemma ofColex_bot : ofColex (⊥ : Colex (Finset α)) = ∅ := rfl
 
 /-- If `s ≤ t` in colex, and all elements in `t` are small, then all elements in `s` are small. -/
@@ -413,7 +413,7 @@ instance instBoundedOrder : BoundedOrder (Colex (Finset α)) where
   top := toColex univ
   le_top _x := toColex_le_toColex_of_subset <| subset_univ _
 
-@[defeq, simp] lemma toColex_univ : toColex (univ : Finset α) = ⊤ := rfl
+@[simp] lemma toColex_univ : toColex (univ : Finset α) = ⊤ := rfl
 @[simp] lemma ofColex_top : ofColex (⊤ : Colex (Finset α)) = univ := rfl
 
 end Fintype

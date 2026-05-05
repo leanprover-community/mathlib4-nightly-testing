@@ -114,11 +114,11 @@ variable {F}
 lemma hom_ext {A B : PointedGaloisObject F} {f g : A ⟶ B} (h : f.val = g.val) : f = g :=
   Hom.ext h
 
-@[defeq, simp]
+@[simp]
 lemma id_val (A : PointedGaloisObject F) : 𝟙 A = 𝟙 A.obj :=
   rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma comp_val {A B C : PointedGaloisObject F} (f : A ⟶ B) (g : B ⟶ C) :
     (f ≫ g).val = f.val ≫ g.val :=
   rfl

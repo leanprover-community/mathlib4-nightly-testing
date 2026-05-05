@@ -40,7 +40,6 @@ protected abbrev algebra (e : α ≃ β) [Semiring β] :
       show e.symm (r • e x) = e.symm (e (e.symm (algebraMap R β r)) * e x) by
         simp [Algebra.smul_def] }
 
-@[defeq]
 lemma algebraMap_def (e : α ≃ β) [Semiring β] [Algebra R β] (r : R) :
     letI := Equiv.semiring e
     letI := Equiv.algebra R e

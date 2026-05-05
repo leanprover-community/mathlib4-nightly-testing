@@ -110,11 +110,10 @@ theorem ext (H : ∀ x, f x = g x) : f = g :=
 
 variable (f g)
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe : f.toFun = f :=
   rfl
 
-@[defeq]
 theorem coe_mk (f) (h₁) (h₂) (h₃) : ⇑(⟨f, h₁, h₂, h₃⟩ : NormedAddGroupHom V₁ V₂) = f :=
   rfl
 
@@ -436,11 +435,11 @@ instance smul : SMul R (NormedAddGroupHom V₁ V₂) where
           gcongr
           exact hb x⟩ }
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul (r : R) (f : NormedAddGroupHom V₁ V₂) : ⇑(r • f) = r • ⇑f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply (r : R) (f : NormedAddGroupHom V₁ V₂) (v : V₁) : (r • f) v = r • f v :=
   rfl
 
@@ -468,11 +467,11 @@ instance nsmul : SMul ℕ (NormedAddGroupHom V₁ V₂) where
           rw [Pi.smul_apply, nsmul_eq_mul, mul_assoc]
           exact norm_nsmul_le.trans (by gcongr; apply hb)⟩ }
 
-@[defeq, simp]
+@[simp]
 theorem coe_nsmul (r : ℕ) (f : NormedAddGroupHom V₁ V₂) : ⇑(r • f) = r • ⇑f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem nsmul_apply (r : ℕ) (f : NormedAddGroupHom V₁ V₂) (v : V₁) : (r • f) v = r • f v :=
   rfl
 
@@ -486,11 +485,11 @@ instance zsmul : SMul ℤ (NormedAddGroupHom V₁ V₂) where
           rw [Pi.smul_apply, smul_eq_mul, mul_assoc]
           exact (norm_zsmul_le _ _).trans (by gcongr; apply hb)⟩ }
 
-@[defeq, simp]
+@[simp]
 theorem coe_zsmul (r : ℤ) (f : NormedAddGroupHom V₁ V₂) : ⇑(r • f) = r • ⇑f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem zsmul_apply (r : ℤ) (f : NormedAddGroupHom V₁ V₂) (v : V₁) : (r • f) v = r • f v :=
   rfl
 

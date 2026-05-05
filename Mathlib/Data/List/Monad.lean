@@ -24,7 +24,7 @@ instance instMonad : Monad List.{u} where
   bind l f := l.flatMap f
   map f l := l.map f
 
-@[defeq, simp] theorem pure_def (a : α) : pure a = [a] := rfl
+@[simp] theorem pure_def (a : α) : pure a = [a] := rfl
 
 instance instLawfulMonad : LawfulMonad List.{u} := LawfulMonad.mk'
   (id_map := map_id)

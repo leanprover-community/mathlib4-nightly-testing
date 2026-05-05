@@ -49,7 +49,7 @@ noncomputable instance [CommMonoid M] : CommGroup (IsUnit.submonoid M) :=
   { (inferInstance : Group (IsUnit.submonoid M)) with
     mul_comm := fun a b ↦ by convert mul_comm a b }
 
-@[defeq, to_additive]
+@[to_additive]
 theorem IsUnit.Submonoid.coe_inv [Monoid M] (x : IsUnit.submonoid M) :
     ↑x⁻¹ = (↑x.prop.unit⁻¹ : M) :=
   rfl

@@ -78,10 +78,9 @@ protected theorem Path.ext : ∀ {γ₁ γ₂ : Path x y}, (γ₁ : I → X) = �
 namespace Path
 
 /-- A path constructed from a continuous map `f` has the same underlying function. -/
-@[defeq, simp]
+@[simp]
 theorem coe_mk' (f : C(I, X)) (h₁ h₂) : ⇑(mk f h₁ h₂ : Path x y) = f := rfl
 
-@[defeq]
 theorem coe_mk_mk (f : I → X) (h₁) (h₂ : f 0 = x) (h₃ : f 1 = y) :
     ⇑(mk ⟨f, h₁⟩ h₂ h₃ : Path x y) = f :=
   rfl
@@ -107,7 +106,7 @@ def simps.apply : I → X :=
 
 initialize_simps_projections Path (toFun → simps.apply, -toContinuousMap)
 
-@[defeq, simp]
+@[simp]
 theorem coe_toContinuousMap : ⇑γ.toContinuousMap = γ :=
   rfl
 

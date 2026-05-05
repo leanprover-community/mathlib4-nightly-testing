@@ -212,7 +212,7 @@ instance toCoalgebra : Coalgebra R R where
 @[simp]
 theorem comul_apply (r : R) : comul r = 1 ⊗ₜ[R] r := rfl
 
-@[defeq, simp]
+@[simp]
 theorem counit_apply (r : R) : counit r = r := rfl
 
 instance : IsCocomm R R where comm_comp_comul := by ext; simp

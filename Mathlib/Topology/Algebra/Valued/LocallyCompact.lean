@@ -35,7 +35,7 @@ open scoped NormedField
 
 variable {K : Type*} [NontriviallyNormedField K] [IsUltrametricDist K]
 
-@[defeq, simp]
+@[simp]
 lemma NormedField.v_eq_valuation (x : K) : Valued.v x = NormedField.valuation x := rfl
 
 namespace Valued.integer

@@ -68,7 +68,7 @@ instance : LieModule R (Derivation R A A) A where
   smul_lie _ _ _ := rfl
   lie_smul _ _ _ := Derivation.map_smul_of_tower _ _ _
 
-@[defeq, simp]
+@[simp]
 lemma bracket_eq_fun (X : Derivation R A A) (a : A) : ⁅X, a⁆ = X a := rfl
 
 section CompatibleDerivations

@@ -83,7 +83,6 @@ theorem bddBelow_projectiveSemiNormAux (x : ⨂[𝕜] i, E i) :
 noncomputable instance : Norm (⨂[𝕜] i, E i) :=
   ⟨fun x ↦ iInf (fun (p : lifts x) ↦ projectiveSeminormAux p.val)⟩
 
-@[defeq]
 theorem norm_def (x : ⨂[𝕜] i, E i) :
     ‖x‖ = iInf (fun (p : lifts x) ↦ projectiveSeminormAux p.val) := rfl
 

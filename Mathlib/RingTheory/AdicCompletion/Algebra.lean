@@ -117,11 +117,11 @@ instance [Algebra S R] : Algebra S (AdicCompletion I R) where
 theorem algebraMap_apply [Algebra S R] (s : S) :
     algebraMap S (AdicCompletion I R) s = of I R (algebraMap S R s) := rfl
 
-@[defeq, simp]
+@[simp]
 theorem val_one (n : ℕ) : (1 : AdicCompletion I R).val n = 1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem val_mul (n : ℕ) (x y : AdicCompletion I R) : (x * y).val n = x.val n * y.val n :=
   rfl
 
@@ -229,11 +229,11 @@ instance : Algebra R (AdicCauchySequence I R) where
   commutes' r x := Subtype.ext <| Algebra.commutes' r x.val
   smul_def' r x := Subtype.ext <| Algebra.smul_def' r x.val
 
-@[defeq, simp]
+@[simp]
 theorem one_apply (n : ℕ) : (1 : AdicCauchySequence I R) n = 1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mul_apply (n : ℕ) (f g : AdicCauchySequence I R) : (f * g) n = f n * g n :=
   rfl
 

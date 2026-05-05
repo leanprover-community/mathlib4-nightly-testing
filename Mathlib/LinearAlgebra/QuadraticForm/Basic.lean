@@ -178,11 +178,11 @@ instance instFunLike : FunLike (QuadraticMap R M N) M N where
 variable (Q)
 
 /-- The `simp` normal form for a quadratic map is `DFunLike.coe`, not `toFun`. -/
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe : Q.toFun = ⇑Q :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (toFun : M → N) (toFun_smul exists_companion') :
     ⇑({toFun, toFun_smul, exists_companion'} : QuadraticMap R M N) = toFun := rfl
 
@@ -407,11 +407,11 @@ instance : SMul S (QuadraticMap R M N) :=
         letI := SMulCommClass.symm S R N
         ⟨a • B, by simp [h]⟩ }⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coeFn_smul (a : S) (Q : QuadraticMap R M N) : ⇑(a • Q) = a • ⇑Q :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply (a : S) (Q : QuadraticMap R M N) (x : M) : (a • Q) x = a • Q x :=
   rfl
 
@@ -428,11 +428,11 @@ instance : Zero (QuadraticMap R M N) :=
       toFun_smul := fun a _ => by simp only [smul_zero]
       exists_companion' := ⟨0, fun _ _ => by simp only [add_zero, LinearMap.zero_apply]⟩ }⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coeFn_zero : ⇑(0 : QuadraticMap R M N) = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem zero_apply (x : M) : (0 : QuadraticMap R M N) x = 0 :=
   rfl
 
@@ -449,11 +449,11 @@ instance : Add (QuadraticMap R M N) :=
         ⟨B + B', fun x y => by
           simp_rw [Pi.add_apply, h, h', LinearMap.add_apply, add_add_add_comm]⟩ }⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coeFn_add (Q Q' : QuadraticMap R M N) : ⇑(Q + Q') = Q + Q' :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem add_apply (Q Q' : QuadraticMap R M N) (x : M) : (Q + Q') x = Q x + Q' x :=
   rfl
 
@@ -522,11 +522,11 @@ instance : Neg (QuadraticMap R M N) :=
         let ⟨B, h⟩ := Q.exists_companion
         ⟨-B, fun x y => by simp_rw [Pi.neg_apply, h, LinearMap.neg_apply, neg_add]⟩ }⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coeFn_neg (Q : QuadraticMap R M N) : ⇑(-Q) = -Q :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem neg_apply (Q : QuadraticMap R M N) (x : M) : (-Q) x = -Q x :=
   rfl
 
@@ -871,7 +871,7 @@ instance [Invertible (2 : R)] : Invertible (2 : Module.End R M) where
 
 /-- If `2` is invertible in `R`, then applying the inverse of `2` in `End R M` to an element
 of `M` is the same as multiplying by the inverse of `2` in `R`. -/
-@[defeq, simp]
+@[simp]
 lemma half_moduleEnd_apply_eq_half_smul [Invertible (2 : R)] (x : M) :
     ⅟(2 : Module.End R M) x = ⅟(2 : R) • x :=
   rfl

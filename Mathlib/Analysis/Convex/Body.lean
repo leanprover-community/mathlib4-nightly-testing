@@ -82,7 +82,7 @@ protected theorem nonempty (K : ConvexBody V) : (K : Set V).Nonempty :=
 protected theorem ext {K L : ConvexBody V} (h : (K : Set V) = L) : K = L :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Set V) (h₁ h₂ h₃) : (mk s h₁ h₂ h₃ : Set V) = s :=
   rfl
 
@@ -98,7 +98,7 @@ section ContinuousAdd
 instance : Zero (ConvexBody V) where
   zero := ⟨0, convex_singleton 0, isCompact_singleton, Set.singleton_nonempty 0⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_zero : (↑(0 : ConvexBody V) : Set V) = 0 :=
   rfl
 
@@ -123,7 +123,7 @@ theorem coe_nsmul : ∀ (n : ℕ) (K : ConvexBody V), ↑(n • K) = n • (K : 
 noncomputable instance : AddMonoid (ConvexBody V) :=
   SetLike.coe_injective.addMonoid _ rfl (fun _ _ ↦ rfl) fun _ _ ↦ coe_nsmul _ _
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_add (K L : ConvexBody V) : (↑(K + L) : Set V) = (K : Set V) + L :=
   rfl
 
@@ -137,11 +137,11 @@ variable [ContinuousSMul ℝ V]
 instance : SMul ℝ (ConvexBody V) where
   smul c K := ⟨c • (K : Set V), K.convex.smul _, K.isCompact.smul _, K.nonempty.smul_set⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_smul (c : ℝ) (K : ConvexBody V) : (↑(c • K) : Set V) = c • (K : Set V) :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_smul' (c : ℝ≥0) (K : ConvexBody V) : (↑(c • K) : Set V) = c • (K : Set V) :=
   rfl
 
@@ -191,7 +191,7 @@ noncomputable instance : PseudoMetricSpace (ConvexBody V) where
   dist_comm _ _ := Metric.hausdorffDist_comm
   dist_triangle _ _ _ := Metric.hausdorffDist_triangle hausdorffEDist_ne_top
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem hausdorffDist_coe : Metric.hausdorffDist (K : Set V) L = dist K L :=
   rfl
 

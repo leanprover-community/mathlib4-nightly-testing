@@ -140,11 +140,11 @@ instance : SmallCategory (WalkingMulticospan J) where
   assoc := by
     rintro (_ | _) (_ | _) (_ | _) (_ | _) (_ | _ | _) (_ | _ | _) (_ | _ | _) <;> rfl
 
-@[defeq, simp]
+@[simp]
 lemma Hom.id_eq_id (X : WalkingMulticospan J) :
     Hom.id X = 𝟙 X := rfl
 
-@[defeq, simp]
+@[simp]
 lemma Hom.comp_eq_comp {X Y Z : WalkingMulticospan J}
     (f : X ⟶ Y) (g : Y ⟶ Z) : Hom.comp f g = f ≫ g := rfl
 
@@ -213,10 +213,10 @@ instance : SmallCategory (WalkingMultispan J) where
   assoc := by
     rintro (_ | _) (_ | _) (_ | _) (_ | _) (_ | _ | _) (_ | _ | _) (_ | _ | _) <;> rfl
 
-@[defeq, simp]
+@[simp]
 lemma Hom.id_eq_id (X : WalkingMultispan J) : Hom.id X = 𝟙 X := rfl
 
-@[defeq, simp]
+@[simp]
 lemma Hom.comp_eq_comp {X Y Z : WalkingMultispan J}
     (f : X ⟶ Y) (g : Y ⟶ Z) : Hom.comp f g = f ≫ g := rfl
 
@@ -1156,7 +1156,7 @@ theorem multicofork_ι_app_right (b) :
   rfl
 
 /-- `@[simp]`-normal form of `multicofork_ι_app_right`. -/
-@[defeq, simp]
+@[simp]
 theorem multicofork_ι_app_right' (b) :
     colimit.ι (MultispanIndex.multispan I) (WalkingMultispan.right b) = π I b :=
   rfl

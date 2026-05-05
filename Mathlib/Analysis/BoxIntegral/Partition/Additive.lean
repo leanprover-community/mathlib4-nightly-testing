@@ -69,7 +69,7 @@ instance : FunLike (ι →ᵇᵃ[I₀] M) (Box ι) M where
 
 initialize_simps_projections BoxIntegral.BoxAdditiveMap (toFun → apply)
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f h) : ⇑(mk f h : ι →ᵇᵃ[I₀] M) = f := rfl
 
 theorem coe_injective : Injective fun (f : ι →ᵇᵃ[I₀] M) x => f x :=

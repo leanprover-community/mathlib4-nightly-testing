@@ -211,7 +211,7 @@ theorem range_coe : range ofNNReal = {∞}ᶜ := (isCompl_range_some_none ℝ≥
 instance : NNRatCast ℝ≥0∞ where
   nnratCast r := ofNNReal r
 
-@[defeq, norm_cast]
+@[norm_cast]
 theorem coe_nnratCast (q : ℚ≥0) : ↑(q : ℝ≥0) = (q : ℝ≥0∞) := rfl
 
 /-- `toNNReal x` returns `x` if it is real, otherwise 0. -/
@@ -261,9 +261,9 @@ theorem ofNNReal_toNNReal (x : ℝ) : (Real.toNNReal x : ℝ≥0∞) = ENNReal.o
 
 @[simp] theorem ofReal_coe_nnreal : ENNReal.ofReal p = p := (coe_nnreal_eq p).symm
 
-@[defeq, simp, norm_cast] theorem coe_zero : ↑(0 : ℝ≥0) = (0 : ℝ≥0∞) := rfl
+@[simp, norm_cast] theorem coe_zero : ↑(0 : ℝ≥0) = (0 : ℝ≥0∞) := rfl
 
-@[defeq, simp, norm_cast] theorem coe_one : ↑(1 : ℝ≥0) = (1 : ℝ≥0∞) := rfl
+@[simp, norm_cast] theorem coe_one : ↑(1 : ℝ≥0) = (1 : ℝ≥0∞) := rfl
 
 @[simp] theorem toReal_nonneg {a : ℝ≥0∞} : 0 ≤ a.toReal := a.toNNReal.2
 
@@ -478,7 +478,6 @@ noncomputable def ofNNRealHom : ℝ≥0 →+* ℝ≥0∞ where
 
 section Order
 
-@[defeq]
 theorem bot_eq_zero : (⊥ : ℝ≥0∞) = 0 := rfl
 
 -- `coe_lt_top` moved up

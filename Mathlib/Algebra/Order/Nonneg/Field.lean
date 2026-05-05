@@ -64,11 +64,11 @@ variable [Semifield α] [LinearOrder α] [IsStrictOrderedRing α] {x y : α}
 instance inv : Inv { x : α // 0 ≤ x } :=
   ⟨fun x => ⟨x⁻¹, inv_nonneg.2 x.2⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 protected theorem coe_inv (a : { x : α // 0 ≤ x }) : ((a⁻¹ : { x : α // 0 ≤ x }) : α) = (a : α)⁻¹ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inv_mk (hx : 0 ≤ x) :
     (⟨x, hx⟩ : { x : α // 0 ≤ x })⁻¹ = ⟨x⁻¹, inv_nonneg.2 hx⟩ :=
   rfl
@@ -76,11 +76,11 @@ theorem inv_mk (hx : 0 ≤ x) :
 instance div : Div { x : α // 0 ≤ x } :=
   ⟨fun x y => ⟨x / y, div_nonneg x.2 y.2⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 protected theorem coe_div (a b : { x : α // 0 ≤ x }) : ((a / b : { x : α // 0 ≤ x }) : α) = a / b :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_div_mk (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (⟨x, hx⟩ : { x : α // 0 ≤ x }) / ⟨y, hy⟩ = ⟨x / y, div_nonneg hx hy⟩ :=
   rfl
@@ -88,12 +88,12 @@ theorem mk_div_mk (hx : 0 ≤ x) (hy : 0 ≤ y) :
 instance zpow : Pow { x : α // 0 ≤ x } ℤ :=
   ⟨fun a n => ⟨(a : α) ^ n, zpow_nonneg a.2 _⟩⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 protected theorem coe_zpow (a : { x : α // 0 ≤ x }) (n : ℤ) :
     ((a ^ n : { x : α // 0 ≤ x }) : α) = (a : α) ^ n :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_zpow (hx : 0 ≤ x) (n : ℤ) :
     (⟨x, hx⟩ : { x : α // 0 ≤ x }) ^ n = ⟨x ^ n, zpow_nonneg hx n⟩ :=
   rfl
@@ -102,12 +102,12 @@ instance instNNRatCast : NNRatCast {x : α // 0 ≤ x} := ⟨fun q ↦ ⟨q, q.c
 instance instNNRatSMul : SMul ℚ≥0 {x : α // 0 ≤ x} where
   smul q a := ⟨q • a, by rw [NNRat.smul_def]; exact mul_nonneg q.cast_nonneg a.2⟩
 
-@[defeq, simp, norm_cast] lemma coe_nnratCast (q : ℚ≥0) : (q : {x : α // 0 ≤ x}) = (q : α) := rfl
-@[defeq, simp] lemma mk_nnratCast (q : ℚ≥0) : (⟨q, q.cast_nonneg⟩ : {x : α // 0 ≤ x}) = q := rfl
+@[simp, norm_cast] lemma coe_nnratCast (q : ℚ≥0) : (q : {x : α // 0 ≤ x}) = (q : α) := rfl
+@[simp] lemma mk_nnratCast (q : ℚ≥0) : (⟨q, q.cast_nonneg⟩ : {x : α // 0 ≤ x}) = q := rfl
 
-@[defeq, simp, norm_cast] lemma coe_nnqsmul (q : ℚ≥0) (a : {x : α // 0 ≤ x}) :
+@[simp, norm_cast] lemma coe_nnqsmul (q : ℚ≥0) (a : {x : α // 0 ≤ x}) :
     ↑(q • a) = (q • a : α) := rfl
-@[defeq, simp] lemma mk_nnqsmul (q : ℚ≥0) (a : α) (ha : 0 ≤ a) :
+@[simp] lemma mk_nnqsmul (q : ℚ≥0) (a : α) (ha : 0 ≤ a) :
     (⟨q • a, by rw [NNRat.smul_def]; exact mul_nonneg q.cast_nonneg ha⟩ : {x : α // 0 ≤ x}) =
       q • a := rfl
 

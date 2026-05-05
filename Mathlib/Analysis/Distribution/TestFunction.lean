@@ -131,7 +131,7 @@ protected theorem tsupport_subset (f : 𝓓^{n}(Ω, F)) : tsupport f ⊆ Ω := t
 protected theorem continuous (f : 𝓓^{n}(Ω, F)) : Continuous f :=
   f.contDiff.continuous
 
-@[defeq, simp]
+@[simp]
 theorem toFun_eq_coe {f : 𝓓^{n}(Ω, F)} : f.toFun = (f : E → F) :=
   rfl
 
@@ -159,11 +159,11 @@ theorem coe_copy (f : 𝓓^{n}(Ω, F)) (f' : E → F) (h : f' = f) : ⇑(f.copy 
 theorem copy_eq (f : 𝓓^{n}(Ω, F)) (f' : E → F) (h : f' = f) : f.copy f' h = f :=
   DFunLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_toBoundedContinuousFunction (f : 𝓓^{n}(Ω, F)) :
     (f : BoundedContinuousFunction E F) = (f : E → F) := rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk {f : E → F} {contDiff : ContDiff ℝ n f} {hasCompactSupport : HasCompactSupport f}
     {tsupport_subset : tsupport f ⊆ Ω} :
     TestFunction.mk f contDiff hasCompactSupport tsupport_subset = f :=

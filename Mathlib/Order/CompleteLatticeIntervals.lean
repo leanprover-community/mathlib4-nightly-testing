@@ -48,7 +48,7 @@ noncomputable def subsetSupSet [Inhabited s] : SupSet s where
 attribute [local instance] subsetSupSet
 
 open Classical in
-@[defeq, simp]
+@[simp]
 theorem subset_sSup_def [Inhabited s] :
     @sSup s _ = fun t =>
       if ht : t.Nonempty ∧ BddAbove t ∧ sSup ((↑) '' t : Set α) ∈ s
@@ -88,7 +88,7 @@ noncomputable def subsetInfSet [Inhabited s] : InfSet s where
 attribute [local instance] subsetInfSet
 
 open Classical in
-@[defeq, simp]
+@[simp]
 theorem subset_sInf_def [Inhabited s] :
     @sInf s _ = fun t =>
       if ht : t.Nonempty ∧ BddBelow t ∧ sInf ((↑) '' t : Set α) ∈ s
@@ -237,14 +237,14 @@ instance instCompleteLattice : CompleteLattice (Iic a) where
 
 variable (S : Set <| Iic a) (f : ι → Iic a) (p : ι → Prop)
 
-@[defeq, simp] theorem coe_sSup : (↑(sSup S) : α) = sSup ((↑) '' S) := rfl
+@[simp] theorem coe_sSup : (↑(sSup S) : α) = sSup ((↑) '' S) := rfl
 
 @[simp] theorem coe_iSup : (↑(⨆ i, f i) : α) = ⨆ i, (f i : α) := by
   rw [iSup, coe_sSup]; congr; ext; simp
 
 theorem coe_biSup : (↑(⨆ i, ⨆ (_ : p i), f i) : α) = ⨆ i, ⨆ (_ : p i), (f i : α) := by simp
 
-@[defeq, simp] theorem coe_sInf : (↑(sInf S) : α) = a ⊓ sInf ((↑) '' S) := rfl
+@[simp] theorem coe_sInf : (↑(sInf S) : α) = a ⊓ sInf ((↑) '' S) := rfl
 
 @[simp] theorem coe_iInf : (↑(⨅ i, f i) : α) = a ⊓ ⨅ i, (f i : α) := by
   rw [iInf, coe_sInf]; congr; ext; simp

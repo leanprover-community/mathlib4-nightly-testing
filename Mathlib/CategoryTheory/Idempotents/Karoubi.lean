@@ -109,10 +109,10 @@ theorem hom_ext_iff {P Q : Karoubi C} {f g : P ⟶ Q} : f = g ↔ f.f = g.f := b
 theorem hom_ext {P Q : Karoubi C} (f g : P ⟶ Q) (h : f.f = g.f) : f = g := by
   simpa [hom_ext_iff] using h
 
-@[defeq, simp]
+@[simp]
 theorem comp_f {P Q R : Karoubi C} (f : P ⟶ Q) (g : Q ⟶ R) : (f ≫ g).f = f.f ≫ g.f := rfl
 
-@[defeq, simp]
+@[simp]
 theorem id_f {P : Karoubi C} : Hom.f (𝟙 P) = P.p := rfl
 
 /-- It is possible to coerce an object of `C` into an object of `Karoubi C`.
@@ -122,7 +122,7 @@ instance coe : CoeTC C (Karoubi C) :=
 
 theorem coe_X (X : C) : (X : Karoubi C).X = X := by simp
 
-@[defeq, simp]
+@[simp]
 theorem coe_p (X : C) : (X : Karoubi C).p = 𝟙 X := rfl
 
 @[simp]

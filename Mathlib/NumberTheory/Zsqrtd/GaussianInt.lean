@@ -200,7 +200,6 @@ theorem normSq_div_sub_div_lt_one (x y : ℤ[i]) :
 instance : Mod ℤ[i] :=
   ⟨fun x y => x - y * (x / y)⟩
 
-@[defeq]
 theorem mod_def (x y : ℤ[i]) : x % y = x - y * (x / y) :=
   rfl
 

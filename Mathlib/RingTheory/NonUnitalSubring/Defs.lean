@@ -174,7 +174,7 @@ theorem mem_mk {S : NonUnitalSubsemiring R} {x : R} (h) :
     x ∈ (⟨S, h⟩ : NonUnitalSubring R) ↔ x ∈ S :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_set_mk (S : NonUnitalSubsemiring R) (h) :
     ((⟨S, h⟩ : NonUnitalSubring R) : Set R) = S :=
   rfl
@@ -301,19 +301,19 @@ instance toNonUnitalRing {R : Type*} [NonUnitalRing R] (s : NonUnitalSubring R) 
 protected theorem zsmul_mem {x : R} (hx : x ∈ s) (n : ℤ) : n • x ∈ s :=
   zsmul_mem hx n
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_add (x y : s) : (↑(x + y) : R) = ↑x + ↑y :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_neg (x : s) : (↑(-x) : R) = -↑x :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_mul (x y : s) : (↑(x * y) : R) = ↑x * ↑y :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem val_zero : ((0 : s) : R) = 0 :=
   rfl
 
@@ -331,14 +331,14 @@ instance toNonUnitalCommRing {R} [NonUnitalCommRing R] (s : NonUnitalSubring R) 
 theorem mem_toSubsemigroup {s : NonUnitalSubring R} {x : R} : x ∈ s.toSubsemigroup ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toSubsemigroup (s : NonUnitalSubring R) : (s.toSubsemigroup : Set R) = s :=
   rfl
 
 theorem mem_toAddSubgroup {s : NonUnitalSubring R} {x : R} : x ∈ s.toAddSubgroup ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toAddSubgroup (s : NonUnitalSubring R) : (s.toAddSubgroup : Set R) = s :=
   rfl
 
@@ -347,7 +347,7 @@ theorem mem_toNonUnitalSubsemiring {s : NonUnitalSubring R} {x : R} :
     x ∈ s.toNonUnitalSubsemiring ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toNonUnitalSubsemiring (s : NonUnitalSubring R) :
     (s.toNonUnitalSubsemiring : Set R) = s :=
   rfl

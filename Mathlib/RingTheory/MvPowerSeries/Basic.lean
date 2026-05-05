@@ -204,7 +204,6 @@ theorem coeff_one [DecidableEq σ] : coeff n (1 : MvPowerSeries σ R) = if n = 0
 theorem coeff_zero_one : coeff (R := R) (0 : σ →₀ ℕ) 1 = 1 :=
   coeff_monomial_same 0 1
 
-@[defeq]
 theorem monomial_zero_one : monomial (R := R) (0 : σ →₀ ℕ) 1 = 1 :=
   rfl
 
@@ -992,7 +991,6 @@ theorem algebraMap_apply' (p : MvPolynomial σ R) :
     algebraMap (MvPolynomial σ R) (MvPowerSeries σ A) p = map (algebraMap R A) p :=
   rfl
 
-@[defeq]
 theorem algebraMap_apply'' :
     algebraMap (MvPowerSeries σ R) (MvPowerSeries σ A) f = map (algebraMap R A) f :=
   rfl

@@ -110,7 +110,7 @@ instance : CoalgEquivClass (A ≃ₗc[R] B) R A B where
 theorem toCoalgHom_inj {e₁ e₂ : A ≃ₗc[R] B} : (↑e₁ : A →ₗc[R] B) = e₂ ↔ e₁ = e₂ :=
   toCoalgHom_injective.eq_iff
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk {f h h₀ h₁ h₂ h₃ h₄ h₅} :
     (⟨⟨⟨⟨f, h⟩, h₀⟩, h₁, h₂⟩, h₃, h₄, h₅⟩ : A ≃ₗc[R] B) = f := rfl
 

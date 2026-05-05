@@ -79,7 +79,7 @@ instance instCoeTC [FunLike F α β] [BoundedContinuousMapClass F α β] : CoeTC
       continuous_toFun := map_continuous f
       map_bounded' := map_bounded f }⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_toContinuousMap (f : α →ᵇ β) : (f.toContinuousMap : α → β) = f := rfl
 
 /-- See Note [custom simps projection]. We need to specify this projection explicitly in this case,
@@ -98,7 +98,7 @@ protected theorem continuous (f : α →ᵇ β) : Continuous f :=
 theorem ext (h : ∀ x, f x = g x) : f = g :=
   DFunLike.ext _ _ h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (f : α → β) (h : _) (h' : _) :
     BoundedContinuousFunction.mk ⟨f, h⟩ h' = f :=
   rfl
@@ -137,7 +137,6 @@ def mkOfDiscrete [DiscreteTopology α] (f : α → β) (C : ℝ) (h : ∀ x y : 
 instance instDist : Dist (α →ᵇ β) :=
   ⟨fun f g => sInf { C | 0 ≤ C ∧ ∀ x : α, dist (f x) (g x) ≤ C }⟩
 
-@[defeq]
 theorem dist_eq : dist f g = sInf { C | 0 ≤ C ∧ ∀ x : α, dist (f x) (g x) ≤ C } := rfl
 
 theorem dist_set_exists : ∃ C, 0 ≤ C ∧ ∀ x : α, dist (f x) (g x) ≤ C := by
@@ -504,10 +503,10 @@ instance instMul [Mul R] [BoundedMul R] [ContinuousMul R] :
       continuous_toFun := f.continuous.mul g.continuous
       map_bounded' := mul_bounded_of_bounded_of_bounded (map_bounded f) (map_bounded g) }
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem coe_mul [Mul R] [BoundedMul R] [ContinuousMul R] (f g : α →ᵇ R) : ⇑(f * g) = f * g := rfl
 
-@[defeq, to_additive]
+@[to_additive]
 theorem mul_apply [Mul R] [BoundedMul R] [ContinuousMul R] (f g : α →ᵇ R) (x : α) :
     (f * g) x = f x * g x := rfl
 
@@ -526,11 +525,11 @@ instance instPow [Monoid R] [BoundedMul R] [ContinuousMul R] : Pow (α →ᵇ R)
         obtain ⟨C, hC⟩ := Metric.isBounded_iff.mp <| isBounded_pow (isBounded_range f) n
         exact ⟨C, fun x y ↦ hC (by simp) (by simp)⟩ }
 
-@[defeq, to_additive]
+@[to_additive]
 theorem coe_pow [Monoid R] [BoundedMul R] [ContinuousMul R] (n : ℕ) (f : α →ᵇ R) :
     ⇑(f ^ n) = (⇑f) ^ n := rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem pow_apply [Monoid R] [BoundedMul R] [ContinuousMul R] (n : ℕ) (f : α →ᵇ R) (x : α) :
     (f ^ n) x = f x ^ n := rfl
 
@@ -655,10 +654,9 @@ instance instSub : Sub (α →ᵇ R) where
     { toFun := fun x ↦ (f x - g x),
       map_bounded' := sub_bounded_of_bounded_of_bounded f.map_bounded' g.map_bounded' }
 
-@[defeq]
 theorem sub_apply {x : α} : (f - g) x = f x - g x := rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_sub : ⇑(f - g) = f - g := rfl
 
 end sub
@@ -713,10 +711,9 @@ instance instSMul : SMul 𝕜 (α →ᵇ β) where
           gcongr
           apply hb⟩ }
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul (c : 𝕜) (f : α →ᵇ β) : ⇑(c • f) = fun x => c • f x := rfl
 
-@[defeq]
 theorem smul_apply (c : 𝕜) (f : α →ᵇ β) (x : α) : (c • f) x = c • f x := rfl
 
 instance instIsScalarTower {𝕜' : Type*} [PseudoMetricSpace 𝕜'] [Zero 𝕜'] [SMul 𝕜' β]

@@ -58,14 +58,14 @@ def Simps.coe (s : Closeds α) : Set α := s
 
 initialize_simps_projections Closeds (carrier → coe, as_prefix coe)
 
-@[defeq, simp]
+@[simp]
 lemma carrier_eq_coe (s : Closeds α) : s.carrier = (s : Set α) := rfl
 
 @[ext]
 protected theorem ext {s t : Closeds α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Set α) (h) : (mk s h : Set α) = s :=
   rfl
 
@@ -123,11 +123,11 @@ instance : Inhabited (Closeds α) :=
 theorem coe_sup (s t : Closeds α) : (↑(s ⊔ t) : Set α) = ↑s ∪ ↑t := by
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_inf (s t : Closeds α) : (↑(s ⊓ t) : Set α) = ↑s ∩ ↑t :=
   rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_top : (↑(⊤ : Closeds α) : Set α) = univ :=
   rfl
 
@@ -135,7 +135,7 @@ theorem coe_top : (↑(⊤ : Closeds α) : Set α) = univ :=
 theorem coe_eq_univ {s : Closeds α} : (s : Set α) = univ ↔ s = ⊤ :=
   SetLike.coe_injective.eq_iff' rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_bot : (↑(⊥ : Closeds α) : Set α) = ∅ :=
   rfl
 
@@ -146,7 +146,7 @@ theorem coe_eq_empty {s : Closeds α} : (s : Set α) = ∅ ↔ s = ⊥ :=
 theorem coe_nonempty {s : Closeds α} : (s : Set α).Nonempty ↔ s ≠ ⊥ :=
   nonempty_iff_ne_empty.trans coe_eq_empty.not
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_sInf {S : Set (Closeds α)} : (↑(sInf S) : Set α) = ⋂ i ∈ S, ↑i :=
   rfl
 
@@ -198,7 +198,7 @@ instance [T1Space α] : Singleton α (Closeds α) where
 @[deprecated "Use `{x}` instead" (since := "2025-11-23")]
 abbrev singleton [T1Space α] (x : α) : Closeds α := {x}
 
-@[defeq, simp]
+@[simp]
 theorem mk_singleton [T1Space α] {x : α} :
     (⟨{x}, isClosed_singleton⟩ : Closeds α) = {x} :=
   rfl
@@ -220,7 +220,7 @@ def preimage (s : Closeds β) {f : α → β} (hf : Continuous f) : Closeds α :
 instance : SProd (Closeds α) (Closeds β) (Closeds (α × β)) where
   sprod s t := ⟨s ×ˢ t, s.isClosed.prod t.isClosed⟩
 
-@[defeq, simp]
+@[simp]
 theorem coe_prod (s : Closeds α) (t : Closeds β) :
     (s ×ˢ t : Closeds (α × β)) = (s : Set α) ×ˢ (t : Set β) :=
   rfl
@@ -346,7 +346,7 @@ initialize_simps_projections Clopens (carrier → coe, as_prefix coe)
 protected theorem ext {s t : Clopens α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Set α) (h) : (mk s h : Set α) = s :=
   rfl
 
@@ -360,13 +360,13 @@ instance : SDiff (Clopens α) := ⟨fun s t => ⟨s \ t, s.isClopen.diff t.isClo
 instance : HImp (Clopens α) where himp s t := ⟨s ⇨ t, s.isClopen.himp t.isClopen⟩
 instance : Compl (Clopens α) := ⟨fun s => ⟨sᶜ, s.isClopen.compl⟩⟩
 
-@[defeq, simp, norm_cast] lemma coe_sup (s t : Clopens α) : ↑(s ⊔ t) = (s ∪ t : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_inf (s t : Clopens α) : ↑(s ⊓ t) = (s ∩ t : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_top : (↑(⊤ : Clopens α) : Set α) = univ := rfl
-@[defeq, simp, norm_cast] lemma coe_bot : (↑(⊥ : Clopens α) : Set α) = ∅ := rfl
-@[defeq, simp, norm_cast] lemma coe_sdiff (s t : Clopens α) : ↑(s \ t) = (s \ t : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_himp (s t : Clopens α) : ↑(s ⇨ t) = (s ⇨ t : Set α) := rfl
-@[defeq, simp, norm_cast] lemma coe_compl (s : Clopens α) : (↑sᶜ : Set α) = (↑s)ᶜ := rfl
+@[simp, norm_cast] lemma coe_sup (s t : Clopens α) : ↑(s ⊔ t) = (s ∪ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_inf (s t : Clopens α) : ↑(s ⊓ t) = (s ∩ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_top : (↑(⊤ : Clopens α) : Set α) = univ := rfl
+@[simp, norm_cast] lemma coe_bot : (↑(⊥ : Clopens α) : Set α) = ∅ := rfl
+@[simp, norm_cast] lemma coe_sdiff (s t : Clopens α) : ↑(s \ t) = (s \ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_himp (s t : Clopens α) : ↑(s ⇨ t) = (s ⇨ t : Set α) := rfl
+@[simp, norm_cast] lemma coe_compl (s : Clopens α) : (↑sᶜ : Set α) = (↑s)ᶜ := rfl
 
 instance : BooleanAlgebra (Clopens α) := fast_instance%
   SetLike.coe_injective.booleanAlgebra _ .rfl .rfl coe_sup coe_inf coe_top coe_bot coe_compl
@@ -428,7 +428,7 @@ initialize_simps_projections IrreducibleCloseds (carrier → coe, as_prefix coe)
 protected theorem ext {s t : IrreducibleCloseds α} (h : (s : Set α) = t) : s = t :=
   SetLike.ext' h
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk (s : Set α) (h : IsIrreducible s) (h' : IsClosed s) : (mk s h h' : Set α) = s :=
   rfl
 
@@ -440,7 +440,7 @@ instance [T1Space α] : Singleton α (IrreducibleCloseds α) where
 @[deprecated "Use `{x}` instead" (since := "2025-11-23")]
 abbrev singleton [T1Space α] (x : α) : IrreducibleCloseds α := {x}
 
-@[defeq, simp]
+@[simp]
 theorem mk_singleton [T1Space α] {x : α} :
     (⟨{x}, isIrreducible_singleton, isClosed_singleton⟩ : IrreducibleCloseds α) = {x} :=
   rfl

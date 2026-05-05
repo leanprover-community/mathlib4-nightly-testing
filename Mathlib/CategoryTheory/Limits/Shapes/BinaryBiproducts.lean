@@ -434,17 +434,13 @@ section
 
 variable {X Y : C} [HasBinaryBiproduct X Y]
 
-@[defeq, simp] theorem BinaryBiproduct.bicone_fst :
-    (BinaryBiproduct.bicone X Y).fst = biprod.fst := rfl
+@[simp] theorem BinaryBiproduct.bicone_fst : (BinaryBiproduct.bicone X Y).fst = biprod.fst := rfl
 
-@[defeq, simp] theorem BinaryBiproduct.bicone_snd :
-    (BinaryBiproduct.bicone X Y).snd = biprod.snd := rfl
+@[simp] theorem BinaryBiproduct.bicone_snd : (BinaryBiproduct.bicone X Y).snd = biprod.snd := rfl
 
-@[defeq, simp] theorem BinaryBiproduct.bicone_inl :
-    (BinaryBiproduct.bicone X Y).inl = biprod.inl := rfl
+@[simp] theorem BinaryBiproduct.bicone_inl : (BinaryBiproduct.bicone X Y).inl = biprod.inl := rfl
 
-@[defeq, simp] theorem BinaryBiproduct.bicone_inr :
-    (BinaryBiproduct.bicone X Y).inr = biprod.inr := rfl
+@[simp] theorem BinaryBiproduct.bicone_inr : (BinaryBiproduct.bicone X Y).inr = biprod.inr := rfl
 
 end
 

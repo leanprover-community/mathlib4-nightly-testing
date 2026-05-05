@@ -118,7 +118,6 @@ instance : MulAction Gal(K/k) (InfinitePlace K) where
   one_smul := fun _ ↦ rfl
   mul_smul := fun _ _ _ ↦ rfl
 
-@[defeq]
 lemma smul_eq_comap : σ • w = w.comap σ.symm := rfl
 
 @[simp] lemma smul_apply (x) : (σ • w) x = w (σ.symm x) := rfl

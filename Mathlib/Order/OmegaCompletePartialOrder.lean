@@ -89,7 +89,7 @@ instance : OrderHomClass (Chain α) ℕ α where
 /-- See note [partially-applied ext lemmas]. -/
 @[ext] lemma ext ⦃f g : Chain α⦄ (h : ⇑f = ⇑g) : f = g := DFunLike.ext' h
 
-@[defeq, simp] lemma coe_toOrderHom (c : Chain α) : ⇑c.toOrderHom = c := rfl
+@[simp] lemma coe_toOrderHom (c : Chain α) : ⇑c.toOrderHom = c := rfl
 
 instance [Inhabited α] : Inhabited (Chain α) :=
   ⟨⟨default, fun _ _ _ => le_rfl⟩⟩
@@ -510,9 +510,9 @@ protected lemma ωScottContinuous (f : α →𝒄 β) : ωScottContinuous f :=
 -- Not a `simp` lemma because in many cases projection is simpler than a generic coercion
 theorem toOrderHom_eq_coe (f : α →𝒄 β) : f.1 = f := rfl
 
-@[defeq, simp] theorem coe_mk (f : α →o β) (hf) : ⇑(mk f hf) = f := rfl
+@[simp] theorem coe_mk (f : α →o β) (hf) : ⇑(mk f hf) = f := rfl
 
-@[defeq, simp] theorem coe_toOrderHom (f : α →𝒄 β) : ⇑f.1 = f := rfl
+@[simp] theorem coe_toOrderHom (f : α →𝒄 β) : ⇑f.1 = f := rfl
 
 /-- See Note [custom simps projection]. We specify this explicitly because we don't have a DFunLike
 instance.

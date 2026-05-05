@@ -29,7 +29,7 @@ variable [Bot α]
 noncomputable instance : Bot (Shrink.{u} α) where
   bot := equivShrink _ ⊥
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 lemma equivShrink_bot : equivShrink.{u} α ⊥ = ⊥ := rfl
 
 @[to_dual (attr := simp)]

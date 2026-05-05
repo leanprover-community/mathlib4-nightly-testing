@@ -62,7 +62,6 @@ instance : SMul S'ᵈᵐᵃ (M →ₛₗ[σ₁₂] M') where
       map_add' := fun x y ↦ by simp only [DomMulAct.smul_apply, f.map_add, smul_add]
       map_smul' := fun c x ↦ by simp_rw [DomMulAct.smul_apply, ← smul_comm, f.map_smulₛₗ] }
 
-@[defeq]
 theorem _root_.DomMulAct.smul_linearMap_apply (a : S'ᵈᵐᵃ) (f : M →ₛₗ[σ₁₂] M') (x : M) :
     (a • f) x = f (DomMulAct.mk.symm a • x) :=
   rfl
@@ -72,7 +71,6 @@ theorem _root_.DomMulAct.mk_smul_linearMap_apply (a : S') (f : M →ₛₗ[σ₁
     (DomMulAct.mk a • f) x = f (a • x) :=
   rfl
 
-@[defeq]
 theorem _root_.DomMulAct.coe_smul_linearMap (a : S'ᵈᵐᵃ) (f : M →ₛₗ[σ₁₂] M') :
     (a • f : M →ₛₗ[σ₁₂] M') = a • (f : M → M') :=
   rfl

@@ -144,7 +144,6 @@ instance instInnerProductSpace : InnerProductSpace 𝕜 (lp G 2) :=
       · simp only [coeFn_smul, Pi.smul_apply]
       · congr }
 
-@[defeq]
 theorem inner_eq_tsum (f g : lp G 2) : ⟪f, g⟫ = ∑' i, ⟪f i, g i⟫ :=
   rfl
 

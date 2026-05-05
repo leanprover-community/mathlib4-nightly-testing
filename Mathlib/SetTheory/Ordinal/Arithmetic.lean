@@ -220,7 +220,6 @@ theorem boundedLimitRec_limit {l} (lLim : IsSuccLimit l) {motive} (o H₁ H₂ H
 instance orderTopToTypeSucc (o : Ordinal) : OrderTop (succ o).ToType :=
   @OrderTop.mk _ _ (Top.mk _) le_enum_succ
 
-@[defeq]
 theorem enum_succ_eq_top {o : Ordinal} :
     enum (α := (succ o).ToType) (· < ·) ⟨o, type_toType _ ▸ lt_succ o⟩ = ⊤ :=
   rfl
@@ -899,7 +898,6 @@ instance antisymm : @Std.Antisymm Ordinal (· ∣ ·) :=
 instance mod : Mod Ordinal where
   mod a b := a - b * (a / b)
 
-@[defeq]
 theorem mod_def (a b : Ordinal) : a % b = a - b * (a / b) :=
   rfl
 

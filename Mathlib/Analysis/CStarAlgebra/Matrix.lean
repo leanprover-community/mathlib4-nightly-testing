@@ -182,11 +182,9 @@ def instL2OpNormedAddCommGroup : NormedAddCommGroup (Matrix m n 𝕜) where
 
 scoped[Matrix.Norms.L2Operator] attribute [instance] Matrix.instL2OpNormedAddCommGroup
 
-@[defeq]
 lemma l2_opNorm_def (A : Matrix m n 𝕜) :
     ‖A‖ = ‖(toEuclideanLin (𝕜 := 𝕜) (m := m) (n := n)).trans toContinuousLinearMap A‖ := rfl
 
-@[defeq]
 lemma l2_opNNNorm_def (A : Matrix m n 𝕜) :
     ‖A‖₊ = ‖(toEuclideanLin (𝕜 := 𝕜) (m := m) (n := n)).trans toContinuousLinearMap A‖₊ := rfl
 

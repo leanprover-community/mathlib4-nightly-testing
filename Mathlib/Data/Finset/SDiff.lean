@@ -50,7 +50,7 @@ variable [DecidableEq α] {s t u v : Finset α} {a b : α}
 instance instSDiff : SDiff (Finset α) :=
   ⟨fun s₁ s₂ => ⟨s₁.1 - s₂.1, nodup_of_le (Multiset.sub_le_self ..) s₁.2⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem sdiff_val (s₁ s₂ : Finset α) : (s₁ \ s₂).val = s₁.val - s₂.val :=
   rfl
 

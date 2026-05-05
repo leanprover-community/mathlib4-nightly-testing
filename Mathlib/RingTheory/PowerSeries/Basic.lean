@@ -930,7 +930,6 @@ variable (A)
 theorem algebraMap_apply' (p : R[X]) : algebraMap R[X] A⟦X⟧ p = map (algebraMap R A) p :=
   rfl
 
-@[defeq]
 theorem algebraMap_apply'' :
     algebraMap R⟦X⟧ A⟦X⟧ f = map (algebraMap R A) f :=
   rfl

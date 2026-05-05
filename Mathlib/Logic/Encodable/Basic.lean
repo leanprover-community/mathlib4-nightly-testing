@@ -110,7 +110,6 @@ def ofLeftInverse [Encodable α] (f : β → α) (finv : α → β) (linv : ∀ 
 def ofEquiv (α) [Encodable α] (e : β ≃ α) : Encodable β :=
   ofLeftInverse e e.symm e.left_inv
 
-@[defeq]
 theorem encode_ofEquiv {α β} [Encodable α] (e : β ≃ α) (b : β) :
     @encode _ (ofEquiv _ e) b = encode (e b) :=
   rfl
@@ -127,7 +126,7 @@ instance _root_.Nat.encodable : Encodable ℕ :=
 theorem encode_nat (n : ℕ) : encode n = n :=
   rfl
 
-@[defeq, simp 1100]
+@[simp 1100]
 theorem decode_nat (n : ℕ) : decode n = some n :=
   rfl
 
@@ -137,15 +136,15 @@ instance (priority := 100) _root_.IsEmpty.toEncodable [IsEmpty α] : Encodable �
 instance _root_.PUnit.encodable : Encodable PUnit :=
   ⟨fun _ => 0, fun n => Nat.casesOn n (some PUnit.unit) fun _ => none, fun _ => by simp⟩
 
-@[defeq, simp]
+@[simp]
 theorem encode_star : encode PUnit.unit = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem decode_unit_zero : decode 0 = some PUnit.unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem decode_unit_succ (n) : decode (succ n) = (none : Option PUnit) :=
   rfl
 
@@ -155,19 +154,19 @@ instance _root_.Option.encodable {α : Type*} [h : Encodable α] : Encodable (Op
     Nat.casesOn n (some none) fun m => (decode m).map some, fun o => by
     cases o <;> simp [encodek]⟩
 
-@[defeq, simp]
+@[simp]
 theorem encode_none [Encodable α] : encode (@none α) = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem encode_some [Encodable α] (a : α) : encode (some a) = succ (encode a) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem decode_option_zero [Encodable α] : (decode 0 : Option (Option α)) = some none :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem decode_option_succ [Encodable α] (n) :
     (decode (succ n) : Option (Option α)) = (decode n).map some :=
   rfl
@@ -258,7 +257,7 @@ theorem encode_inl (a : α) : @encode (α ⊕ β) _ (Sum.inl a) = 2 * (encode a)
 theorem encode_inr (b : β) : @encode (α ⊕ β) _ (Sum.inr b) = 2 * (encode b) + 1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem decode_sum_val (n : ℕ) : (decode n : Option (α ⊕ β)) = decodeSum n :=
   rfl
 

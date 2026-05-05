@@ -27,9 +27,7 @@ instance : Monoid (r →r r) where
   one_mul _ := rfl
   mul_one _ := rfl
 
-@[defeq]
 lemma one_def : (1 : r →r r) = .id r := rfl
-@[defeq]
 lemma mul_def (f g : r →r r) : (f * g) = f.comp g := rfl
 
 @[simp] lemma coe_one : ⇑(1 : r →r r) = id := rfl
@@ -49,9 +47,7 @@ instance : Monoid (r ↪r r) where
   one_mul _ := rfl
   mul_one _ := rfl
 
-@[defeq]
 lemma one_def : (1 : r ↪r r) = .refl r := rfl
-@[defeq]
 lemma mul_def (f g : r ↪r r) : (f * g) = g.trans f := rfl
 
 @[simp] lemma coe_one : ⇑(1 : r ↪r r) = id := rfl
@@ -73,9 +69,7 @@ instance : Group (r ≃r r) where
   mul_one _ := ext fun _ => rfl
   inv_mul_cancel f := ext f.symm_apply_apply
 
-@[defeq]
 lemma one_def : (1 : r ≃r r) = .refl r := rfl
-@[defeq]
 lemma mul_def (f g : r ≃r r) : (f * g) = g.trans f := rfl
 
 @[simp] lemma coe_one : ((1 : r ≃r r) : α → α) = id := rfl

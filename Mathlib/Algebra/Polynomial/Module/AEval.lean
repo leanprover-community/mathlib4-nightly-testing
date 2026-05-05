@@ -200,7 +200,6 @@ where `φ : M →ₗ[R] M`.
 -/
 abbrev AEval'.of : M ≃ₗ[R] AEval' φ := AEval.of R M φ
 
-@[defeq]
 lemma AEval'_def : AEval' φ = AEval R M φ := rfl
 
 lemma AEval'.X_smul_of (m : M) : (X : R[X]) • AEval'.of φ m = AEval'.of φ (φ m) :=

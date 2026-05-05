@@ -190,10 +190,10 @@ instance : Category (LaxMonoidalFunctor C D) where
   comp α β := ⟨α.1 ≫ β.1, by have := α.2; have := β.2; infer_instance⟩
   id _ := ⟨𝟙 _, inferInstance⟩
 
-@[defeq, simp]
+@[simp]
 lemma id_hom (F : LaxMonoidalFunctor C D) : Hom.hom (𝟙 F) = 𝟙 _ := rfl
 
-@[defeq, reassoc, simp]
+@[reassoc, simp]
 lemma comp_hom {F G H : LaxMonoidalFunctor C D} (α : F ⟶ G) (β : G ⟶ H) :
     (α ≫ β).hom = α.hom ≫ β.hom := rfl
 

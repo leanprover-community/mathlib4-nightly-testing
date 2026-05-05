@@ -157,7 +157,6 @@ variable [Zero ι] [GradedMonoid.GOne A] [∀ i, AddCommMonoid (A i)]
 
 instance : One (⨁ i, A i) where one := DirectSum.of A 0 GradedMonoid.GOne.one
 
-@[defeq]
 theorem one_def : 1 = DirectSum.of A 0 GradedMonoid.GOne.one := rfl
 
 end One
@@ -199,7 +198,6 @@ instance : NonUnitalNonAssocSemiring (⨁ i, A i) where
 
 variable {A}
 
-@[defeq]
 theorem mulHom_apply (a b : ⨁ i, A i) : mulHom A a b = a * b := rfl
 
 theorem mulHom_of_of {i j} (a : A i) (b : A j) :
@@ -367,7 +365,7 @@ section One
 
 variable [Zero ι] [GradedMonoid.GOne A] [∀ i, AddCommMonoid (A i)]
 
-@[defeq, simp]
+@[simp]
 theorem of_zero_one : of _ 0 (1 : A 0) = 1 :=
   rfl
 
@@ -412,7 +410,7 @@ instance (priority := 900) : NatCast (A 0) :=
 
 -- TODO: These could be replaced by the general lemmas for `AddMonoidHomClass` (`map_natCast'` and
 -- `map_ofNat'`) if those were marked `@[simp low]`.
-@[defeq, simp]
+@[simp]
 theorem of_natCast (n : ℕ) : of A 0 n = n :=
   rfl
 

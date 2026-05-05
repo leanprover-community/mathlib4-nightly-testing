@@ -164,7 +164,7 @@ instance (priority := 100) toFunLike : FunLike E α β where
   coe_injective' e g h :=
     coe_injective' e g h ((left_inv e).eq_rightInverse (h.symm ▸ right_inv g))
 
-@[defeq, simp] theorem coe_apply {e : E} {a : α} : coe e a = e a := rfl
+@[simp] theorem coe_apply {e : E} {a : α} : coe e a = e a := rfl
 
 theorem inv_apply_eq {e : E} {b : β} {a : α} : inv e b = a ↔ b = e a := by
   constructor <;> rintro ⟨_, rfl⟩

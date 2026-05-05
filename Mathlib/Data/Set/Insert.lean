@@ -276,7 +276,7 @@ theorem setOf_mem_list_eq_singleton_of_nodup {l : List α} (H : l.Nodup) {a : α
     simp
 
 -- while `simp` is capable of proving this, it is not capable of turning the LHS into the RHS.
-@[defeq, simp]
+@[simp]
 theorem default_coe_singleton (x : α) : (default : ({x} : Set α)) = ⟨x, rfl⟩ :=
   rfl
 

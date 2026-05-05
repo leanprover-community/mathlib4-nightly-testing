@@ -60,7 +60,6 @@ def smulOfRingMorphism : SMul R (X ⟶ Y) where
 
 variable {X Y}
 
-@[defeq]
 lemma smulOfRingMorphism_smul_eq (a : R) (f : X ⟶ Y) :
     letI := smulOfRingMorphism φ X Y
     a • f = (φ a).app X ≫ f := rfl

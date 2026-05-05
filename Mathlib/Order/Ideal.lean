@@ -119,11 +119,11 @@ instance : PartialOrder (Ideal P) := .ofSetLike (Ideal P) P
 theorem ext {s t : Ideal P} : (s : Set P) = t → s = t :=
   SetLike.ext'
 
-@[defeq, simp]
+@[simp]
 theorem carrier_eq_coe (s : Ideal P) : s.carrier = s :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_toLowerSet (s : Ideal P) : (s.toLowerSet : Set P) = s :=
   rfl
 
@@ -207,11 +207,11 @@ instance : OrderTop (Ideal P) where
   top := ⟨⊤, univ_nonempty, directedOn_univ⟩
   le_top _ _ _ := LowerSet.mem_top
 
-@[defeq, simp]
+@[simp]
 theorem top_toLowerSet : (⊤ : Ideal P).toLowerSet = ⊤ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_top : ((⊤ : Ideal P) : Set P) = univ :=
   rfl
 
@@ -311,7 +311,7 @@ instance : OrderBot (Ideal P) where
   bot := principal ⊥
   bot_le := by simp
 
-@[defeq, simp]
+@[simp]
 theorem principal_bot : principal (⊥ : P) = ⊥ :=
   rfl
 
@@ -402,11 +402,11 @@ instance : Lattice (Ideal P) where
   inf_le_right := fun _ _ ↦ inter_subset_right
   le_inf := fun _ _ _ ↦ subset_inter
 
-@[defeq, simp]
+@[simp]
 theorem coe_sup : ↑(s ⊔ t) = { x | ∃ a ∈ s, ∃ b ∈ t, x ≤ a ⊔ b } :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_inf : (↑(s ⊓ t) : Set P) = ↑s ∩ ↑t :=
   rfl
 

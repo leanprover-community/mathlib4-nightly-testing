@@ -39,7 +39,7 @@ noncomputable def rpow (x : ℝ≥0) (y : ℝ) : ℝ≥0 :=
 noncomputable instance : Pow ℝ≥0 ℝ :=
   ⟨rpow⟩
 
-@[defeq, simp]
+@[simp]
 theorem rpow_eq_pow (x : ℝ≥0) (y : ℝ) : rpow x y = x ^ y :=
   rfl
 
@@ -489,7 +489,7 @@ noncomputable def rpow : ℝ≥0∞ → ℝ → ℝ≥0∞
 noncomputable instance : Pow ℝ≥0∞ ℝ :=
   ⟨rpow⟩
 
-@[defeq, simp]
+@[simp]
 theorem rpow_eq_pow (x : ℝ≥0∞) (y : ℝ) : rpow x y = x ^ y :=
   rfl
 

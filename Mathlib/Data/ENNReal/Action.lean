@@ -33,7 +33,6 @@ noncomputable instance {M : Type*} [MulAction ℝ≥0∞ M] : SMul ℝ≥0 M :=
 noncomputable instance {M : Type*} [MulAction ℝ≥0∞ M] : MulAction ℝ≥0 M :=
   fast_instance% MulAction.compHom M ofNNRealHom.toMonoidHom
 
-@[defeq]
 theorem smul_def {M : Type*} [MulAction ℝ≥0∞ M] (c : ℝ≥0) (x : M) : c • x = (c : ℝ≥0∞) • x :=
   rfl
 

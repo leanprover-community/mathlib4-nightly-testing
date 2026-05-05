@@ -78,7 +78,7 @@ instance : SMul S (F.extendRight M) where
     rw [Algebra.smul_def]
     exact (F.extendRight M).mul_mem (algebraMap_mem F M s) x.prop
 
-@[defeq, simp]
+@[simp]
 theorem coe_smul (s : S) (x : F.extendRight M) :
     (s • x : F.extendRight M) = s • (x : M) := rfl
 

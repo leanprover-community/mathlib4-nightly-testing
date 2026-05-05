@@ -121,10 +121,9 @@ instance : PseudoEpimorphismClass (PseudoEpimorphism α β) α β where
   map_rel f _ _ h := f.monotone' h
   exists_map_eq_of_map_le := PseudoEpimorphism.exists_map_eq_of_map_le'
 
-@[defeq, simp]
+@[simp]
 theorem toOrderHom_eq_coe (f : PseudoEpimorphism α β) : ⇑f.toOrderHom = f := rfl
 
-@[defeq]
 theorem toFun_eq_coe {f : PseudoEpimorphism α β} : f.toFun = (f : α → β) := rfl
 
 @[ext]
@@ -228,11 +227,10 @@ instance : EsakiaHomClass (EsakiaHom α β) α β where
   map_continuous f := f.continuous_toFun
   exists_map_eq_of_map_le f := f.exists_map_eq_of_map_le'
 
-@[defeq, simp]
+@[simp]
 theorem toContinuousOrderHom_coe {f : EsakiaHom α β} :
     f.toContinuousOrderHom = (f : α → β) := rfl
 
-@[defeq]
 theorem toFun_eq_coe {f : EsakiaHom α β} : f.toFun = (f : α → β) := rfl
 
 @[ext]

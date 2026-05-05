@@ -179,7 +179,7 @@ theorem mem_carrier {s : Submonoid M} {x : M} : x ∈ s.carrier ↔ x ∈ s :=
 theorem mem_mk {s : Subsemigroup M} {x : M} (h_one) : x ∈ mk s h_one ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem coe_set_mk {s : Subsemigroup M} (h_one) : (mk s h_one : Set M) = s :=
   rfl
 
@@ -249,11 +249,11 @@ theorem mem_bot {x : M} : x ∈ (⊥ : Submonoid M) ↔ x = 1 :=
 theorem mem_top (x : M) : x ∈ (⊤ : Submonoid M) :=
   Set.mem_univ x
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_top : ((⊤ : Submonoid M) : Set M) = Set.univ :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_bot : ((⊥ : Submonoid M) : Set M) = {1} :=
   rfl
 
@@ -274,7 +274,7 @@ instance : Min (Submonoid M) :=
       one_mem' := ⟨S₁.one_mem, S₂.one_mem⟩
       mul_mem' := fun ⟨hx, hx'⟩ ⟨hy, hy'⟩ => ⟨S₁.mul_mem hx hy, S₂.mul_mem hx' hy'⟩ }⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_inf (p p' : Submonoid M) : ((p ⊓ p' : Submonoid M) : Set M) = (p : Set M) ∩ p' :=
   rfl
 
@@ -344,7 +344,7 @@ variable {A M₁ : Type*} [SetLike A M₁] [One M₁] [hA : OneMemClass A M₁] 
 instance one : One S' :=
   ⟨⟨1, OneMemClass.one_mem S'⟩⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_one : ((1 : S') : M₁) = 1 :=
   rfl
 
@@ -356,7 +356,7 @@ theorem coe_eq_one {x : S'} : (↑x : M₁) = 1 ↔ x = 1 :=
 
 variable (S')
 
-@[defeq, to_additive]
+@[to_additive]
 theorem one_def : (1 : S') = ⟨1, OneMemClass.one_mem S'⟩ :=
   rfl
 
@@ -371,12 +371,12 @@ namespace SubmonoidClass
 instance instPow {M} [Monoid M] {A : Type*} [SetLike A M] [SubmonoidClass A M] (S : A) : Pow S ℕ :=
   ⟨fun a n => ⟨a.1 ^ n, pow_mem a.2 n⟩⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_pow {M} [Monoid M] {A : Type*} [SetLike A M] [SubmonoidClass A M] {S : A} (x : S)
     (n : ℕ) : ↑(x ^ n) = (x : M) ^ n :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem mk_pow {M} [Monoid M] {A : Type*} [SetLike A M] [SubmonoidClass A M] {S : A} (x : M)
     (hx : x ∈ S) (n : ℕ) : (⟨x, hx⟩ : S) ^ n = ⟨x ^ n, pow_mem hx n⟩ :=
   rfl
@@ -441,27 +441,27 @@ instance mul : Mul S :=
 instance one : One S :=
   ⟨⟨_, S.one_mem⟩⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_mul (x y : S) : (↑(x * y) : M) = ↑x * ↑y :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_one : ((1 : S) : M) = 1 :=
   rfl
 
 @[to_additive (attr := simp)]
 lemma mk_eq_one {a : M} {ha} : (⟨a, ha⟩ : S) = 1 ↔ a = 1 := by simp [← SetLike.coe_eq_coe]
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem mk_mul_mk (x y : M) (hx : x ∈ S) (hy : y ∈ S) :
     (⟨x, hx⟩ : S) * ⟨y, hy⟩ = ⟨x * y, S.mul_mem hx hy⟩ :=
   rfl
 
-@[defeq, to_additive]
+@[to_additive]
 theorem mul_def (x y : S) : x * y = ⟨x * y, S.mul_mem x.2 y.2⟩ :=
   rfl
 
-@[defeq, to_additive]
+@[to_additive]
 theorem one_def : (1 : S) = ⟨1, S.one_mem⟩ :=
   rfl
 

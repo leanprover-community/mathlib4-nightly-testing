@@ -36,11 +36,11 @@ instance Prop.instBoundedOrder : BoundedOrder Prop where
   bot := False
   bot_le := @False.elim
 
-@[defeq, simp]
+@[simp]
 theorem Prop.bot_eq_false : (⊥ : Prop) = False :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem Prop.top_eq_true : (⊤ : Prop) = True :=
   rfl
 
@@ -51,11 +51,11 @@ noncomputable instance Prop.linearOrder : LinearOrder Prop := by
   classical
   exact Lattice.toLinearOrder Prop
 
-@[defeq, simp]
+@[simp]
 theorem sup_Prop_eq : (· ⊔ ·) = (· ∨ ·) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inf_Prop_eq : (· ⊓ ·) = (· ∧ ·) :=
   rfl
 

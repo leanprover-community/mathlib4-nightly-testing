@@ -114,7 +114,6 @@ instance [NumberField K] : Norm (InfiniteAdeleRing K) where
 
 variable {K}
 
-@[defeq]
 theorem norm_def [NumberField K] (x : InfiniteAdeleRing K) :
     ‖x‖ = ∏ v, ‖x v‖ ^ v.mult := rfl
 

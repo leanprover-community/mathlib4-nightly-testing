@@ -59,9 +59,8 @@ namespace Hom
 
 @[ext] lemma ext (f g : X ⟶ Y) (h : f.rel = g.rel) : f = g := by cases f; cases g; congr
 
-@[defeq, simp] protected lemma rel_id (X : RelCat.{u}) : rel (𝟙 X) = .id := rfl
-@[defeq, simp] protected lemma rel_comp (f : X ⟶ Y) (g : Y ⟶ Z) :
-    (f ≫ g).rel = f.rel.comp g.rel := rfl
+@[simp] protected lemma rel_id (X : RelCat.{u}) : rel (𝟙 X) = .id := rfl
+@[simp] protected lemma rel_comp (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).rel = f.rel.comp g.rel := rfl
 
 theorem rel_id_apply₂ (x y : X) : x ~[rel (𝟙 X)] y ↔ x = y := .rfl
 

@@ -105,7 +105,7 @@ initialize_simps_projections Units (as_prefix val, val_inv → null, inv → val
 initialize_simps_projections AddUnits
   (as_prefix val, val_neg → null, neg → val_neg, as_prefix val_neg)
 
-@[defeq, to_additive]
+@[to_additive]
 theorem val_mk (a : α) (b h₁ h₂) : ↑(Units.mk a b h₁ h₂) = a :=
   rfl
 
@@ -174,22 +174,22 @@ instance [Repr α] : Repr αˣ :=
 
 variable (a b : αˣ) {u : αˣ}
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem val_mul : (↑(a * b) : α) = a * b :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem val_one : ((1 : αˣ) : α) = 1 :=
   rfl
 
 @[to_additive (attr := simp, norm_cast)]
 theorem val_eq_one {a : αˣ} : (a : α) = 1 ↔ a = 1 := by rw [← Units.val_one, val_inj]
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem inv_mk (x y : α) (h₁ h₂) : (mk x y h₁ h₂)⁻¹ = mk y x h₂ h₁ :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem inv_eq_val_inv : a.inv = ((a⁻¹ : αˣ) : α) :=
   rfl
 
@@ -266,10 +266,10 @@ an additive commutative group. -/]
 instance instCommGroupUnits {α} [CommMonoid α] : CommGroup αˣ where
   mul_comm := fun _ _ => ext <| mul_comm _ _
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 lemma val_pow_eq_pow_val (n : ℕ) : ↑(a ^ n) = (a ^ n : α) := rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 lemma inv_pow_eq_pow_inv (n : ℕ) : ↑(a ^ n)⁻¹ = (a⁻¹ ^ n : α) := rfl
 
 end Monoid

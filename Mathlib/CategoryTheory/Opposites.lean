@@ -80,7 +80,7 @@ instance CategoryStruct.opposite : CategoryStruct.{v₁} Cᵒᵖ where
 theorem unop_id {X : Cᵒᵖ} : (𝟙 X).unop = 𝟙 (unop X) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem op_id_unop {X : Cᵒᵖ} : (𝟙 (unop X)).op = 𝟙 X :=
   rfl
 
@@ -88,7 +88,7 @@ theorem op_id_unop {X : Cᵒᵖ} : (𝟙 (unop X)).op = 𝟙 X :=
 theorem op_comp {X Y Z : C} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g).op = g.op ≫ f.op :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem op_id {X : C} : (𝟙 X).op = 𝟙 (op X) :=
   rfl
 
@@ -101,7 +101,7 @@ theorem unop_id_op {X : C} : (𝟙 (op X)).unop = 𝟙 X :=
   rfl
 
 -- This lemma is needed to prove `Category.opposite` below.
-@[defeq, to_dual self]
+@[to_dual self]
 theorem op_comp_unop {X Y Z : Cᵒᵖ} (f : X ⟶ Y) (g : Y ⟶ Z) : (g.unop ≫ f.unop).op = f ≫ g :=
   rfl
 

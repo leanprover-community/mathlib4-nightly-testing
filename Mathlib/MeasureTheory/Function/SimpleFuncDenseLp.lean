@@ -429,7 +429,7 @@ protected def smul : SMul 𝕜 (Lp.simpleFunc E p μ) :=
 
 attribute [local instance] simpleFunc.smul
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_smul (c : 𝕜) (f : Lp.simpleFunc E p μ) :
     ((c • f : Lp.simpleFunc E p μ) : Lp E p μ) = c • (f : Lp E p μ) :=
   rfl
@@ -471,7 +471,6 @@ section ToLp
 abbrev toLp (f : α →ₛ E) (hf : MemLp f p μ) : Lp.simpleFunc E p μ :=
   ⟨hf.toLp f, ⟨f, rfl⟩⟩
 
-@[defeq]
 theorem toLp_eq_toLp (f : α →ₛ E) (hf : MemLp f p μ) : (toLp f hf : Lp E p μ) = hf.toLp f :=
   rfl
 

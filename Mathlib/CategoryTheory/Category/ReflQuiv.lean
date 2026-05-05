@@ -48,9 +48,7 @@ instance category : LargeCategory.{max v u} ReflQuiv.{v, u} where
   id C := ReflPrefunctor.id C
   comp F G := ReflPrefunctor.comp F G
 
-@[defeq]
 theorem id_eq_id (X : ReflQuiv) : 𝟙 X = 𝟭rq X := rfl
-@[defeq]
 theorem comp_eq_comp {X Y Z : ReflQuiv} (F : X ⟶ Y) (G : Y ⟶ Z) : F ≫ G = F ⋙rq G := rfl
 
 @[simp]

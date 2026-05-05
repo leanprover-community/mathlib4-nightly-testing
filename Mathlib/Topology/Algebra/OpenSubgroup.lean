@@ -92,7 +92,7 @@ instance hasCoeOpens : CoeTC (OpenSubgroup G) (Opens G) := ⟨toOpens⟩
 theorem coe_toOpens : ((U : Opens G) : Set G) = U :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_toSubgroup : ((U : Subgroup G) : Set G) = U := rfl
 
 @[to_additive (attr := simp, norm_cast)]
@@ -123,11 +123,11 @@ variable {U}
 theorem mem_top (x : G) : x ∈ (⊤ : OpenSubgroup G) :=
   trivial
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_top : ((⊤ : OpenSubgroup G) : Set G) = Set.univ :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem toSubgroup_top : ((⊤ : OpenSubgroup G) : Subgroup G) = ⊤ :=
   rfl
 
@@ -174,11 +174,11 @@ end
 instance instInfOpenSubgroup : Min (OpenSubgroup G) :=
   ⟨fun U V ↦ ⟨U ⊓ V, U.isOpen.inter V.isOpen⟩⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_inf : (↑(U ⊓ V) : Set G) = (U : Set G) ∩ V :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem toSubgroup_inf : (↑(U ⊓ V) : Subgroup G) = ↑U ⊓ ↑V :=
   rfl
 
@@ -317,7 +317,7 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [SeparatelyContinuousMul G]
 instance : Max (OpenSubgroup G) :=
   ⟨fun U V ↦ ⟨U ⊔ V, Subgroup.isOpen_mono (le_sup_left : U.1 ≤ U.1 ⊔ V.1) U.isOpen⟩⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem toSubgroup_sup (U V : OpenSubgroup G) : (↑(U ⊔ V) : Subgroup G) = ↑U ⊔ ↑V := rfl
 
 @[to_additive]

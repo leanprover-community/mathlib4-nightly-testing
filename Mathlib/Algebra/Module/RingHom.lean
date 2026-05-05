@@ -70,7 +70,6 @@ See note [reducible non-instances]. -/
 abbrev RingHom.toModule [Semiring R] [Semiring S] (f : R →+* S) : Module R S :=
   Module.compHom S f
 
-@[defeq]
 lemma RingHom.toModule_smul [Semiring R] [Semiring S] (f : R →+* S) (x : R) (y : S) :
     letI := f.toModule
     x • y = f x * y :=

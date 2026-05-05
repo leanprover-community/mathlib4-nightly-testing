@@ -428,7 +428,7 @@ instance [SemilatticeSup Y] [Zero Y] : Max (locallyFinsuppWithin U Y) where
       by_contra! hCon
       simp_all }
 
-@[defeq, simp]
+@[simp]
 lemma max_apply [SemilatticeSup Y] [Zero Y] {D₁ D₂ : locallyFinsuppWithin U Y} {x : X} :
     max D₁ D₂ x = max (D₁ x) (D₂ x) := rfl
 
@@ -452,7 +452,7 @@ instance [SemilatticeInf Y] [Zero Y] : Min (locallyFinsuppWithin U Y) where
       by_contra! hCon
       simp_all }
 
-@[defeq, simp]
+@[simp]
 lemma min_apply [SemilatticeInf Y] [Zero Y] {D₁ D₂ : locallyFinsuppWithin U Y} {x : X} :
     min D₁ D₂ x = min (D₁ x) (D₂ x) := rfl
 

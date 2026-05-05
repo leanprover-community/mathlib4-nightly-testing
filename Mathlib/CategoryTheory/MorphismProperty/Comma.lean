@@ -168,14 +168,12 @@ structure Hom (X Y : P.Comma L R Q W) extends CommaMorphism X.toComma Y.toComma 
 abbrev Hom.hom {X Y : P.Comma L R Q W} (f : Comma.Hom X Y) : X.toComma ⟶ Y.toComma :=
   f.toCommaMorphism
 
-@[defeq, simp, nolint simpVarHead]
+@[simp, nolint simpVarHead]
 lemma Hom.hom_mk {X Y : P.Comma L R Q W} (f : CommaMorphism X.toComma Y.toComma) (hf) (hg) :
     Comma.Hom.hom ⟨f, hf, hg⟩ = f := rfl
 
-@[defeq]
 lemma Hom.hom_left {X Y : P.Comma L R Q W} (f : Comma.Hom X Y) : f.hom.left = f.left := rfl
 
-@[defeq]
 lemma Hom.hom_right {X Y : P.Comma L R Q W} (f : Comma.Hom X Y) : f.hom.right = f.right := rfl
 
 /-- See Note [custom simps projection] -/
@@ -211,7 +209,6 @@ instance : Category (P.Comma L R Q W) where
   id X := X.id
   comp f g := f.comp g
 
-@[defeq]
 lemma toCommaMorphism_eq_hom {X Y : P.Comma L R Q W} (f : X ⟶ Y) : f.toCommaMorphism = f.hom := rfl
 
 /-- Alternative `ext` lemma for `Comma.Hom`. -/

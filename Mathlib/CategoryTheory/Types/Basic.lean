@@ -62,11 +62,10 @@ instance instFunLikeFun {X Y : Type*} : FunLike (Fun X Y) X Y where
 
 initialize_simps_projections Fun (toFun → apply)
 
-@[defeq]
 lemma Fun.mk_apply {X Y : Type*} (f : X → Y) (x : X) : (Fun.mk f) x = f x :=
   rfl
 
-@[defeq, simp]
+@[simp]
 lemma Fun.coe_mk {X Y : Type*} (f : X → Y) : (Fun.mk f : X → Y) = f :=
   rfl
 
@@ -153,23 +152,23 @@ def Hom.Simps.hom (X Y : Type u) (f : X ⟶ Y) :=
 
 initialize_simps_projections Hom (hom' → hom)
 
-@[defeq, simp]
+@[simp]
 lemma Fun.toFun_apply {X Y : Type u} (f : Fun X Y) (x : X) : f.toFun x = f x :=
   rfl
 
 example (X : Type u) : CategoryTheory.ToType X = X := by with_reducible rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_eq {X Y : Type u} (f : X ⟶ Y) : ofHom f = f :=
   rfl
 
-@[defeq, simp high]
+@[simp high]
 lemma hom_ofHom {X Y : Type u} (f : X → Y) : Hom.hom (ofHom f) = Fun.mk f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_hom {X Y : Type u} (f : X ⟶ Y) : ofHom (Hom.hom f) = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_apply {X Y : Type u} (f : X → Y) (x : X) :
     (↾f) x = f x :=
   rfl

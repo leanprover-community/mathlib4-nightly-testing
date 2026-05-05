@@ -36,7 +36,6 @@ variable {α β γ : Sort*} {f : α → β}
   `Function.eval x : (∀ x, β x) → β x`. -/
 @[reducible, simp] def eval {β : α → Sort*} (x : α) (f : ∀ x, β x) : β x := f x
 
-@[defeq]
 theorem eval_apply {β : α → Sort*} (x : α) (f : ∀ x, β x) : eval x f = f x :=
   rfl
 
@@ -53,7 +52,6 @@ theorem const_inj [Nonempty α] {y₁ y₂ : β} : const α y₁ = const α y₂
 
 section onFun
 
-@[defeq]
 theorem onFun_apply (f : β → β → γ) (g : α → β) (a b : α) : onFun f g a b = f (g a) (g b) :=
   rfl
 
@@ -131,13 +129,9 @@ lemma funext_iff_of_subsingleton [Subsingleton α] {g : α → β} (x y : α) :
 
 section swap
 
-@[defeq]
 theorem swap_lt {α} [LT α] : swap (· < · : α → α → _) = (· > ·) := rfl
-@[defeq]
 theorem swap_le {α} [LE α] : swap (· ≤ · : α → α → _) = (· ≥ ·) := rfl
-@[defeq]
 theorem swap_gt {α} [LT α] : swap (· > · : α → α → _) = (· < ·) := rfl
-@[defeq]
 theorem swap_ge {α} [LE α] : swap (· ≥ · : α → α → _) = (· ≤ ·) := rfl
 
 variable (r : α → α → Prop)

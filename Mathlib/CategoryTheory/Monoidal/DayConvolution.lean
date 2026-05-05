@@ -1179,13 +1179,11 @@ abbrev mkMonoidalCategoryStruct : MonoidalCategoryStruct D where
     fullyFaithulι.preimageIso <|
       DayConvolutionUnit.rightUnitor (ι C V D |>.obj <| tensorUnit C V D) (ι C V D |>.obj x)
 
-@[defeq]
 lemma id_tensorHom (x : D) {y y' : D} (f : y ⟶ y') :
     letI := mkMonoidalCategoryStruct C V D
     (𝟙 x) ⊗ₘ f = x ◁ f :=
   rfl
 
-@[defeq]
 lemma tensorHom_id {x x' : D} (f : x ⟶ x') (y : D) :
     letI := mkMonoidalCategoryStruct C V D
     f ⊗ₘ (𝟙 y) = f ▷ y :=

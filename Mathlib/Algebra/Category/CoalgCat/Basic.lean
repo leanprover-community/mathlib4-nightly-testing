@@ -41,7 +41,7 @@ open Coalgebra
 instance : CoeSort (CoalgCat.{v} R) (Type v) :=
   ⟨(·.carrier)⟩
 
-@[defeq, simp] theorem moduleCat_of_toModuleCat (X : CoalgCat.{v} R) :
+@[simp] theorem moduleCat_of_toModuleCat (X : CoalgCat.{v} R) :
     ModuleCat.of R X.toModuleCat = X.toModuleCat :=
   rfl
 
@@ -52,11 +52,11 @@ abbrev of (X : Type v) [AddCommGroup X] [Module R X] [Coalgebra R X] :
   { ModuleCat.of R X with
     instCoalgebra := (inferInstance : Coalgebra R X) }
 
-@[defeq, simp]
+@[simp]
 lemma of_comul {X : Type v} [AddCommGroup X] [Module R X] [Coalgebra R X] :
     Coalgebra.comul (A := of R X) = Coalgebra.comul (R := R) (A := X) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma of_counit {X : Type v} [AddCommGroup X] [Module R X] [Coalgebra R X] :
     Coalgebra.counit (A := of R X) = Coalgebra.counit (R := R) (A := X) := rfl
 
@@ -95,11 +95,11 @@ lemma hom_ext {M N : CoalgCat.{v} R} (f g : M ⟶ N) (h : f.toCoalgHom = g.toCoa
     f = g :=
   Hom.ext h
 
-@[defeq, simp] theorem toCoalgHom_comp {M N U : CoalgCat.{v} R} (f : M ⟶ N) (g : N ⟶ U) :
+@[simp] theorem toCoalgHom_comp {M N U : CoalgCat.{v} R} (f : M ⟶ N) (g : N ⟶ U) :
     (f ≫ g).toCoalgHom = g.toCoalgHom.comp f.toCoalgHom :=
   rfl
 
-@[defeq, simp] theorem toCoalgHom_id {M : CoalgCat.{v} R} :
+@[simp] theorem toCoalgHom_id {M : CoalgCat.{v} R} :
     Hom.toCoalgHom (𝟙 M) = CoalgHom.id _ _ :=
   rfl
 
@@ -108,7 +108,7 @@ instance hasForgetToModule : HasForget₂ (CoalgCat R) (ModuleCat R) where
     { obj := fun M => ModuleCat.of R M
       map := fun f => ModuleCat.ofHom f.toCoalgHom.toLinearMap }
 
-@[defeq, simp]
+@[simp]
 theorem forget₂_obj (X : CoalgCat R) :
     (forget₂ (CoalgCat R) (ModuleCat R)).obj X = ModuleCat.of R X :=
   rfl

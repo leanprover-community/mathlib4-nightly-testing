@@ -191,7 +191,7 @@ variable {K}
 /-- The conjugate of a complex embedding as a complex embedding. -/
 abbrev conjugate (φ : K →+* ℂ) : K →+* ℂ := star φ
 
-@[defeq, simp]
+@[simp]
 theorem conjugate_comp (φ : K →+* ℂ) (σ : k →+* K) :
     (conjugate φ).comp σ = conjugate (φ.comp σ) :=
   rfl
@@ -201,7 +201,7 @@ theorem involutive_conjugate :
     Function.Involutive (conjugate : (K →+* ℂ) → (K →+* ℂ)) := by
   intro; simp
 
-@[defeq, simp]
+@[simp]
 theorem conjugate_coe_eq (φ : K →+* ℂ) (x : K) : (conjugate φ) x = conj (φ x) := rfl
 
 theorem place_conjugate (φ : K →+* ℂ) : place (conjugate φ) = place φ := by

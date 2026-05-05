@@ -84,7 +84,7 @@ section SMul
 variable {ι : Sort*} {κ : ι → Sort*} [SMul α β] {s s₁ s₂ : Set α} {t t₁ t₂ u : Set β} {a : α}
   {b : β}
 
-@[defeq, to_additive (attr := simp)] lemma image2_smul : image2 (· • ·) s t = s • t := rfl
+@[to_additive (attr := simp)] lemma image2_smul : image2 (· • ·) s t = s • t := rfl
 
 @[to_additive vadd_image_prod]
 lemma image_smul_prod : (fun x : α × β ↦ x.fst • x.snd) '' s ×ˢ t = s • t := image_prod _
@@ -150,7 +150,7 @@ end SMul
 section SMulSet
 variable {ι : Sort*} {κ : ι → Sort*} [SMul α β] {s t t₁ t₂ : Set β} {a : α} {b : β} {x y : β}
 
-@[defeq, to_additive] lemma image_smul : (fun x ↦ a • x) '' t = a • t := rfl
+@[to_additive] lemma image_smul : (fun x ↦ a • x) '' t = a • t := rfl
 
 scoped[Pointwise] attribute [simp] Set.image_smul Set.image_vadd
 
@@ -227,7 +227,7 @@ variable {ι : Sort*} {κ : ι → Sort*} [VSub α β] {s s₁ s₂ t t₁ t₂ 
 
 instance vsub : VSub (Set α) (Set β) where vsub := image2 (· -ᵥ ·)
 
-@[defeq, simp] lemma image2_vsub : image2 (· -ᵥ ·) s t = s -ᵥ t := rfl
+@[simp] lemma image2_vsub : image2 (· -ᵥ ·) s t = s -ᵥ t := rfl
 
 lemma image_vsub_prod : (fun x : β × β ↦ x.fst -ᵥ x.snd) '' s ×ˢ t = s -ᵥ t := image_prod _
 

@@ -77,10 +77,9 @@ instance : FunLike (α ≃. β) α (Option β) :=
       congr with y x
       simp only [hf, hg] }
 
-@[defeq, simp] theorem coe_mk (f₁ : α → Option β) (f₂ h) : (mk f₁ f₂ h : α → Option β) = f₁ :=
+@[simp] theorem coe_mk (f₁ : α → Option β) (f₂ h) : (mk f₁ f₂ h : α → Option β) = f₁ :=
   rfl
 
-@[defeq]
 theorem coe_mk_apply (f₁ : α → Option β) (f₂ : β → Option α) (h) (x : α) :
     (PEquiv.mk f₁ f₂ h : α → Option β) x = f₁ x :=
   rfl
@@ -261,7 +260,7 @@ instance instBotPEquiv : Bot (α ≃. β) :=
 instance : Inhabited (α ≃. β) :=
   ⟨⊥⟩
 
-@[defeq, simp]
+@[simp]
 theorem bot_apply (a : α) : (⊥ : α ≃. β) a = none :=
   rfl
 

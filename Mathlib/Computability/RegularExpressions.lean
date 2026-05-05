@@ -74,19 +74,19 @@ instance : Zero (RegularExpression α) :=
 instance : Pow (RegularExpression α) ℕ :=
   ⟨fun n r => npowRec r n⟩
 
-@[defeq, simp]
+@[simp]
 theorem zero_def : (zero : RegularExpression α) = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem one_def : (epsilon : RegularExpression α) = 1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem plus_def (P Q : RegularExpression α) : plus P Q = P + Q :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem comp_def (P Q : RegularExpression α) : comp P Q = P * Q :=
   rfl
 

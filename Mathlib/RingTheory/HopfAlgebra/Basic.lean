@@ -225,7 +225,7 @@ instance toHopfAlgebra : HopfAlgebra R R where
   mul_antipode_rTensor_comul := by ext; simp
   mul_antipode_lTensor_comul := by ext; simp
 
-@[defeq, simp]
+@[simp]
 theorem antipode_eq_id : antipode R (A := R) = .id := rfl
 
 end CommSemiring

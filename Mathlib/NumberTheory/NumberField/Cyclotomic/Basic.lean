@@ -185,7 +185,6 @@ abbrev toInteger {k : ℕ} [NeZero k] (hζ : IsPrimitiveRoot ζ k) : 𝓞 K :=
 
 end CharZero
 
-@[defeq]
 lemma coe_toInteger {k : ℕ} [NeZero k] (hζ : IsPrimitiveRoot ζ k) : hζ.toInteger.1 = ζ := rfl
 
 /-- `𝓞 K ⧸ Ideal.span {ζ - 1}` is finite. -/

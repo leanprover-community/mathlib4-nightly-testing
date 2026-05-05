@@ -98,7 +98,7 @@ lemma coe_id {X : FinBddDistLat} : (𝟙 X : X → X) = id := rfl
 @[simp]
 lemma coe_comp {X Y Z : FinBddDistLat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma forget_map {X Y : FinBddDistLat} (f : X ⟶ Y) :
     (forget FinBddDistLat).map f = (f : _ → _) := rfl
 
@@ -106,14 +106,14 @@ lemma forget_map {X Y : FinBddDistLat} (f : X ⟶ Y) :
 lemma ext {X Y : FinBddDistLat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
   ConcreteCategory.hom_ext _ _ w
 
-@[defeq, simp]
+@[simp]
 lemma hom_id {X : FinBddDistLat} : (𝟙 X : X ⟶ X).hom = BoundedLatticeHom.id _ := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (X : FinBddDistLat) (x : X) :
     (𝟙 X : X ⟶ X) x = x := by simp
 
-@[defeq, simp]
+@[simp]
 lemma hom_comp {X Y Z : FinBddDistLat} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -125,26 +125,25 @@ lemma comp_apply {X Y Z : FinBddDistLat} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) :
 lemma hom_ext {X Y : FinBddDistLat} {f g : X ⟶ Y} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[defeq, simp]
+@[simp]
 lemma hom_ofHom {X Y : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
     [BoundedOrder Y] [Fintype Y] (f : BoundedLatticeHom X Y) : (ofHom f).hom = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_hom {X Y : FinBddDistLat} (f : X ⟶ Y) :
     ofHom (Hom.hom f) = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_id {X : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] :
     ofHom (BoundedLatticeHom.id _) = 𝟙 (of X) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_comp {X Y Z : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
     [BoundedOrder Y] [Fintype Y] [DistribLattice Z] [BoundedOrder Z] [Fintype Z]
     (f : BoundedLatticeHom X Y) (g : BoundedLatticeHom Y Z) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[defeq]
 lemma ofHom_apply {X Y : Type u} [DistribLattice X] [BoundedOrder X] [Fintype X] [DistribLattice Y]
     [BoundedOrder Y] [Fintype Y]
     (f : BoundedLatticeHom X Y) (x : X) :

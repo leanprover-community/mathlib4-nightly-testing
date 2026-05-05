@@ -160,9 +160,9 @@ class GOne [Zero ι] where
 instance GOne.toOne [Zero ι] [GOne A] : One (GradedMonoid A) :=
   ⟨⟨_, GOne.one⟩⟩
 
-@[defeq, simp] theorem fst_one [Zero ι] [GOne A] : (1 : GradedMonoid A).fst = 0 := rfl
+@[simp] theorem fst_one [Zero ι] [GOne A] : (1 : GradedMonoid A).fst = 0 := rfl
 
-@[defeq, simp] theorem snd_one [Zero ι] [GOne A] : (1 : GradedMonoid A).snd = GOne.one := rfl
+@[simp] theorem snd_one [Zero ι] [GOne A] : (1 : GradedMonoid A).snd = GOne.one := rfl
 
 /-- A graded version of `Mul`. Multiplication combines grades additively, like
 `AddMonoidAlgebra`. -/
@@ -174,10 +174,10 @@ class GMul [Add ι] where
 instance GMul.toMul [Add ι] [GMul A] : Mul (GradedMonoid A) :=
   ⟨fun x y => ⟨_, GMul.mul x.snd y.snd⟩⟩
 
-@[defeq, simp] theorem fst_mul [Add ι] [GMul A] (x y : GradedMonoid A) :
+@[simp] theorem fst_mul [Add ι] [GMul A] (x y : GradedMonoid A) :
     (x * y).fst = x.fst + y.fst := rfl
 
-@[defeq, simp] theorem snd_mul [Add ι] [GMul A] (x y : GradedMonoid A) :
+@[simp] theorem snd_mul [Add ι] [GMul A] (x y : GradedMonoid A) :
     (x * y).snd = GMul.mul x.snd y.snd := rfl
 
 theorem mk_mul_mk [Add ι] [GMul A] {i j} (a : A i) (b : A j) :
@@ -307,7 +307,7 @@ variable {A}
 theorem mk_zero_smul {i} (a : A 0) (b : A i) : mk _ (a • b) = mk _ a * mk _ b :=
   Sigma.ext (zero_add _).symm <| eqRec_heq _ _
 
-@[defeq, scoped simp]
+@[scoped simp]
 theorem GradeZero.smul_eq_mul (a b : A 0) : a • b = a * b :=
   rfl
 
@@ -495,7 +495,7 @@ instance SetLike.gOne {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S)
     [SetLike.GradedOne A] : GradedMonoid.GOne fun i => A i where
   one := ⟨1, SetLike.one_mem_graded _⟩
 
-@[defeq, simp]
+@[simp]
 theorem SetLike.coe_gOne {S : Type*} [SetLike S R] [One R] [Zero ι] (A : ι → S)
     [SetLike.GradedOne A] : ↑(@GradedMonoid.GOne.one _ (fun i => A i) _ _) = (1 : R) :=
   rfl
@@ -513,7 +513,7 @@ instance SetLike.gMul {S : Type*} [SetLike S R] [Mul R] [Add ι] (A : ι → S)
     [SetLike.GradedMul A] : GradedMonoid.GMul fun i => A i where
   mul := fun a b => ⟨(a * b : R), SetLike.mul_mem_graded a.prop b.prop⟩
 
-@[defeq, simp]
+@[simp]
 theorem SetLike.coe_gMul {S : Type*} [SetLike S R] [Mul R] [Add ι] (A : ι → S)
     [SetLike.GradedMul A] {i j : ι} (x : A i) (y : A j) :
     ↑(@GradedMonoid.GMul.mul _ (fun i => A i) _ _ _ _ x y) = (x * y : R) :=
@@ -597,7 +597,7 @@ instance SetLike.gMonoid {S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι] (A 
   gnpow_zero' := fun _ => Sigma.subtype_ext (zero_nsmul _) (pow_zero _)
   gnpow_succ' := fun _ _ => Sigma.subtype_ext (succ_nsmul _ _) (pow_succ _ _)
 
-@[defeq, simp]
+@[simp]
 theorem SetLike.coe_gnpow {S : Type*} [SetLike S R] [Monoid R] [AddMonoid ι] (A : ι → S)
     [SetLike.GradedMonoid A] {i : ι} (x : A i) (n : ℕ) :
     ↑(@GradedMonoid.GMonoid.gnpow _ (fun i => A i) _ _ n _ x) = (x : R) ^ n :=

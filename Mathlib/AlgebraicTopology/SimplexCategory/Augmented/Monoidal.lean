@@ -132,12 +132,12 @@ instance : MonoidalCategoryStruct AugmentedSimplexCategory where
   whiskerLeft x _ _ f := tensorHom (𝟙 x) f
   whiskerRight f x := tensorHom f (𝟙 x)
 
-@[defeq, local simp]
+@[local simp]
 lemma id_tensorHom (x : AugmentedSimplexCategory) {y₁ y₂ : AugmentedSimplexCategory}
     (f : y₁ ⟶ y₂) : 𝟙 x ⊗ₘ f = x ◁ f :=
   rfl
 
-@[defeq, local simp]
+@[local simp]
 lemma tensorHom_id {x₁ x₂ : AugmentedSimplexCategory} (y : AugmentedSimplexCategory)
     (f : x₁ ⟶ x₂) : f ⊗ₘ 𝟙 y = f ▷ y :=
   rfl

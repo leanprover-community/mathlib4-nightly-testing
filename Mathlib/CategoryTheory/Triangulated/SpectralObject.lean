@@ -183,10 +183,10 @@ variable {X} {Y Z : SpectralObject C ι}
 lemma hom_ext {α β : X ⟶ Y} (h : α.hom = β.hom) : α = β := Hom.ext h
 
 variable (X) in
-@[defeq, simp]
+@[simp]
 lemma id_hom : Hom.hom (𝟙 X) = 𝟙 _ := rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma comp_hom (α : X ⟶ Y) (β : Y ⟶ Z) :
     (α ≫ β).hom = α.hom ≫ β.hom := rfl
 

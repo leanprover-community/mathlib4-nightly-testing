@@ -844,7 +844,6 @@ noncomputable def Subtype.measureSpace : MeasureSpace (Subtype p) where
 
 attribute [local instance] Subtype.measureSpace
 
-@[defeq]
 theorem Subtype.volume_def : (volume : Measure u) = volume.comap Subtype.val :=
   rfl
 
@@ -963,7 +962,6 @@ Note the instance is provided earlier as `Subtype.measureSpace`.
 -/
 attribute [local instance] Subtype.measureSpace
 
-@[defeq]
 theorem volume_set_coe_def (s : Set α) : (volume : Measure s) = comap ((↑) : s → α) volume :=
   rfl
 

@@ -234,7 +234,7 @@ section Bot
 instance instBot : Bot (WithZero α) :=
   ⟨none⟩
 
-@[defeq, simp← ]
+@[simp← ]
 lemma zero_eq_bot : (0 : WithZero α) = ⊥ := rfl
 
 end Bot
@@ -432,7 +432,6 @@ instance semilatticeSup [SemilatticeSup α] : SemilatticeSup (WithZero α) where
   le_sup_right x y := by cases x <;> cases y <;> simp
   sup_le x y z := by cases x <;> cases y <;> cases z <;> simp; simpa using sup_le
 
-@[defeq]
 theorem coe_sup [SemilatticeSup α] (a b : α) : ((a ⊔ b : α) : WithZero α) = (a : WithZero α) ⊔ b :=
   rfl
 

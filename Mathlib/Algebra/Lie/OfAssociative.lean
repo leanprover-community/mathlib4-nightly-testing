@@ -53,11 +53,10 @@ instance (priority := 100) ofAssociativeRing : LieRing A where
   leibniz_lie _ _ _ := by
     simp only [Ring.lie_def, mul_sub_left_distrib, mul_sub_right_distrib, mul_assoc]; abel
 
-@[defeq]
 theorem of_associative_ring_bracket (x y : A) : ⁅x, y⁆ = x * y - y * x :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem lie_apply {α : Type*} (f g : α → A) (a : α) : ⁅f, g⁆ a = ⁅f a, g a⁆ :=
   rfl
 
@@ -85,7 +84,6 @@ abbrev LieRingModule.ofAssociativeModule : LieRingModule A M where
 
 attribute [local instance] LieRingModule.ofAssociativeModule
 
-@[defeq]
 theorem lie_eq_smul (a : A) (m : M) : ⁅a, m⁆ = a • m :=
   rfl
 
@@ -123,13 +121,12 @@ instance Module.End.instLieRingModule : LieRingModule (Module.End R M) M :=
 instance Module.End.instLieModule : LieModule R (Module.End R M) M :=
   LieModule.ofAssociativeModule
 
-@[defeq, simp] lemma Module.End.lie_apply (f : Module.End R M) (m : M) : ⁅f, m⁆ = f m := rfl
+@[simp] lemma Module.End.lie_apply (f : Module.End R M) (m : M) : ⁅f, m⁆ = f m := rfl
 
 -- TODO: fix this
 /-- Unfortunately we now have two brackets which are not equal at reducible transparency, even
 though they are equal at default transparency. We can use this lemma on rare occasions when this
 matters. -/
-@[defeq]
 theorem Module.End.instLieRingModule_eq :
     LinearMap.instLieRingModule (L := Module.End R M) (M := M) (N := M) = lieRingSelfModule :=
   rfl

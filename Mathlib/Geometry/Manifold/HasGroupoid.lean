@@ -208,7 +208,7 @@ def singletonChartedSpace (h : e.source = Set.univ) : ChartedSpace H α where
   mem_chart_source _ := by rw [h]; apply mem_univ
   chart_mem_atlas _ := by tauto
 
-@[defeq, simp, mfld_simps]
+@[simp, mfld_simps]
 theorem singletonChartedSpace_chartAt_eq (h : e.source = Set.univ) {x : α} :
     @chartAt H _ α _ (e.singletonChartedSpace h) x = e :=
   rfl
@@ -275,7 +275,6 @@ protected instance instChartedSpace : ChartedSpace H s where
     simp only [mem_iUnion, mem_singleton_iff]
     use x
 
-@[defeq]
 lemma chartAt_eq {s : Opens M} {x : s} : chartAt H x = (chartAt H x.1).subtypeRestr ⟨x⟩ := rfl
 
 /-- If `s` is a non-empty open subset of `M`, every chart of `s` is the restriction

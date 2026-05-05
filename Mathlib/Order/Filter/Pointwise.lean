@@ -93,7 +93,7 @@ theorem mem_one : s ∈ (1 : Filter α) ↔ (1 : α) ∈ s :=
 theorem one_mem_one : (1 : Set α) ∈ (1 : Filter α) :=
   mem_pure.2 Set.one_mem_one
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem pure_one : pure 1 = (1 : Filter α) :=
   rfl
 
@@ -177,7 +177,7 @@ def instInv : Inv (Filter α) :=
 
 scoped[Pointwise] attribute [instance] instInv instNeg
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 protected theorem map_inv : f.map Inv.inv = f⁻¹ :=
   rfl
 
@@ -978,7 +978,7 @@ protected def instSMulFilter : SMul α (Filter β) :=
 
 scoped[Pointwise] attribute [instance] Filter.instSMulFilter Filter.instVAddFilter
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 protected theorem map_smul : map (fun b => a • b) f = a • f :=
   rfl
 

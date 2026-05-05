@@ -25,14 +25,12 @@ instance [SMulZeroClass M B] : SMulZeroClass M (ZeroHom A B) where
       map_zero' := by simp only [map_zero, smul_zero] }
   smul_zero _ := ext fun _ => smul_zero _
 
-@[defeq, norm_cast] theorem coe_smul [SMulZeroClass M B] (m : M) (f : ZeroHom A B) :
-    ⇑(m • f) = m • f :=
+@[norm_cast] theorem coe_smul [SMulZeroClass M B] (m : M) (f : ZeroHom A B) : ⇑(m • f) = m • f :=
   rfl
 
-@[defeq, simp] theorem smul_apply [SMulZeroClass M B] (m : M) (f : ZeroHom A B) (a : A) :
+@[simp] theorem smul_apply [SMulZeroClass M B] (m : M) (f : ZeroHom A B) (a : A) :
     (m • f) a = m • f a := rfl
 
-@[defeq]
 theorem smul_comp [SMulZeroClass M C] (m : M) (g : ZeroHom B C) (f : ZeroHom A B) :
     (m • g).comp f = m • g.comp f := rfl
 
@@ -72,14 +70,11 @@ instance [DistribSMul M B] : SMulZeroClass M (A →+ B) where
       map_add' _ _ := by simp only [map_add, smul_add] }
   smul_zero _ := ext fun _ => smul_zero _
 
-@[defeq, norm_cast] theorem coe_smul [DistribSMul M B] (m : M) (f : A →+ B) :
-    ⇑(m • f) = m • f := rfl
+@[norm_cast] theorem coe_smul [DistribSMul M B] (m : M) (f : A →+ B) : ⇑(m • f) = m • f := rfl
 
-@[defeq, simp] theorem smul_apply [DistribSMul M B] (m : M) (f : A →+ B) (a : A) :
-    (m • f) a = m • f a :=
+@[simp] theorem smul_apply [DistribSMul M B] (m : M) (f : A →+ B) (a : A) : (m • f) a = m • f a :=
   rfl
 
-@[defeq]
 theorem smul_comp [DistribSMul M C] (m : M) (g : B →+ C) (f : A →+ B) :
     (m • g).comp f = m • g.comp f := rfl
 

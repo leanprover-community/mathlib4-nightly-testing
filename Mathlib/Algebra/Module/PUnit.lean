@@ -25,7 +25,7 @@ variable {R S : Type*}
 instance smul : SMul R PUnit :=
   ⟨fun _ _ => unit⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem smul_eq {R : Type*} (y : PUnit) (r : R) : r • y = unit :=
   rfl
 
@@ -76,7 +76,7 @@ instance module [Semiring R] : Module R PUnit where
 instance : SMul PUnit R where smul _ x := x
 
 /-- The one-element type acts trivially on every element. -/
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 lemma smul_eq' (r : PUnit) (a : R) : r • a = a := rfl
 
 @[to_additive] instance [SMul R S] : SMulCommClass PUnit R S := ⟨by simp⟩

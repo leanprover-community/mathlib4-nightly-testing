@@ -292,11 +292,11 @@ variable {ι : Type*} {α' : ι → Type*}
 instance [∀ i, Bot (α' i)] : Bot (∀ i, α' i) :=
   ⟨fun _ => ⊥⟩
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem bot_apply [∀ i, Bot (α' i)] (i : ι) : (⊥ : ∀ i, α' i) i = ⊥ :=
   rfl
 
-@[defeq, to_dual (attr := push ←)]
+@[to_dual (attr := push ←)]
 theorem bot_def [∀ i, Bot (α' i)] : (⊥ : ∀ i, α' i) = fun _ => ⊥ :=
   rfl
 
@@ -416,8 +416,8 @@ variable (α β)
 instance instTop [Top α] [Top β] : Top (α × β) :=
   ⟨⟨⊤, ⊤⟩⟩
 
-@[defeq, to_dual (attr := simp)] lemma fst_top [Top α] [Top β] : (⊤ : α × β).fst = ⊤ := rfl
-@[defeq, to_dual (attr := simp)] lemma snd_top [Top α] [Top β] : (⊤ : α × β).snd = ⊤ := rfl
+@[to_dual (attr := simp)] lemma fst_top [Top α] [Top β] : (⊤ : α × β).fst = ⊤ := rfl
+@[to_dual (attr := simp)] lemma snd_top [Top α] [Top β] : (⊤ : α × β).snd = ⊤ := rfl
 
 @[to_dual]
 instance instOrderTop [LE α] [LE β] [OrderTop α] [OrderTop β] : OrderTop (α × β) where
@@ -436,8 +436,8 @@ namespace ULift
 @[to_dual]
 instance [Top α] : Top (ULift.{v} α) where top := up ⊤
 
-@[defeq, to_dual (attr := simp)] theorem up_top [Top α] : up (⊤ : α) = ⊤ := rfl
-@[defeq, to_dual (attr := simp)] theorem down_top [Top α] : down (⊤ : ULift α) = ⊤ := rfl
+@[to_dual (attr := simp)] theorem up_top [Top α] : up (⊤ : α) = ⊤ := rfl
+@[to_dual (attr := simp)] theorem down_top [Top α] : down (⊤ : ULift α) = ⊤ := rfl
 
 @[to_dual]
 instance [LE α] [OrderBot α] : OrderBot (ULift.{v} α) :=
@@ -470,11 +470,11 @@ instance Bool.instBoundedOrder : BoundedOrder Bool where
   bot := false
   bot_le := Bool.false_le
 
-@[defeq, simp]
+@[simp]
 theorem top_eq_true : ⊤ = true :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem bot_eq_false : ⊥ = false :=
   rfl
 

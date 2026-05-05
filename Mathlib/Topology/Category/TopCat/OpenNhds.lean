@@ -72,16 +72,15 @@ instance opensNhds.instFunLike : FunLike (U ⟶ V) U.1 V.1 where
   coe f := Set.inclusion f.le
   coe_injective' := by rintro ⟨⟨_⟩⟩ _ _; congr!
 
-@[defeq, simp] lemma apply_mk (f : U ⟶ V) (y : X) (hy) : f ⟨y, hy⟩ = ⟨y, f.le hy⟩ := rfl
+@[simp] lemma apply_mk (f : U ⟶ V) (y : X) (hy) : f ⟨y, hy⟩ = ⟨y, f.le hy⟩ := rfl
 
-@[defeq, simp] lemma val_apply (f : U ⟶ V) (y : U.1) : (f y : X) = y := rfl
+@[simp] lemma val_apply (f : U ⟶ V) (y : U.1) : (f y : X) = y := rfl
 
 @[simp, norm_cast] lemma coe_id (f : U ⟶ U) : ⇑f = id := rfl
 
-@[defeq]
 lemma id_apply (f : U ⟶ U) (y : U.1) : f y = y := rfl
 
-@[defeq, simp] lemma comp_apply (f : U ⟶ V) (g : V ⟶ W) (x : U.1) : (f ≫ g) x = g (f x) := rfl
+@[simp] lemma comp_apply (f : U ⟶ V) (g : V ⟶ W) (x : U.1) : (f ≫ g) x = g (f x) := rfl
 
 /-- The inclusion `U ⊓ V ⟶ U` as a morphism in the category of open sets. -/
 def infLELeft {x : X} (U V : OpenNhds x) : U ⊓ V ⟶ U :=

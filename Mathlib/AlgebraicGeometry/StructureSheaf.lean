@@ -190,15 +190,15 @@ instance (U : (Opens (PrimeSpectrum.Top R))ᵒᵖ) :
 local notation "Γ(" M ", " U ")" =>
   (Functor.obj (ObjectProperty.FullSubcategory.obj (structureSheafInType _ M))) (Opposite.op U)
 
-@[defeq, simp]
+@[simp]
 lemma structureSheafInType.add_apply {U : Opens (PrimeSpectrum.Top R)} (s t : Γ(M, U)) (x : U) :
   (s + t).1 x = s.1 x + t.1 x := rfl
 
-@[defeq, simp]
+@[simp]
 lemma structureSheafInType.mul_apply {U : Opens (PrimeSpectrum.Top R)} (s t : Γ(A, U)) (x : U) :
   (s * t).1 x = s.1 x * t.1 x := rfl
 
-@[defeq, simp]
+@[simp]
 lemma structureSheafInType.smul_apply {U : Opens (PrimeSpectrum.Top R)}
     (r : R) (s : Γ(M, U)) (x : U) :
   (r • s).1 x = r • s.1 x := rfl
@@ -910,7 +910,7 @@ theorem algebraMap_self_map (U V : (Opens (PrimeSpectrum.Top R))ᵒᵖ) (i : V �
 instance stalkAlgebra (p : PrimeSpectrum R) : Algebra R ((structureSheaf R).presheaf.stalk p) :=
   (toStalk R p).hom.toAlgebra
 
-@[defeq, simp]
+@[simp]
 theorem stalkAlgebra_map (p : PrimeSpectrum R) (r : R) :
     algebraMap R ((structureSheaf R).presheaf.stalk p) r = toStalk R p r :=
   rfl

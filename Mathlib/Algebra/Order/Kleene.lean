@@ -274,15 +274,14 @@ instance : KleeneAlgebra (α × β) where
   mul_kstar_le_self _ _ := And.imp mul_kstar_le_self mul_kstar_le_self
   kstar_mul_le_self _ _ := And.imp kstar_mul_le_self kstar_mul_le_self
 
-@[defeq]
 theorem kstar_def (a : α × β) : a∗ = (a.1∗, a.2∗) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem fst_kstar (a : α × β) : a∗.1 = a.1∗ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem snd_kstar (a : α × β) : a∗.2 = a.2∗ :=
   rfl
 
@@ -307,11 +306,11 @@ instance : KleeneAlgebra (∀ i, π i) where
   mul_kstar_le_self _ _ h _ := mul_kstar_le_self (h _)
   kstar_mul_le_self _ _ h _ := kstar_mul_le_self (h _)
 
-@[defeq, push ←]
+@[push ←]
 theorem kstar_def (a : ∀ i, π i) : a∗ = fun i ↦ (a i)∗ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem kstar_apply (a : ∀ i, π i) (i : ι) : a∗ i = (a i)∗ :=
   rfl
 

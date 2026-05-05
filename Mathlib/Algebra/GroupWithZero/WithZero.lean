@@ -51,7 +51,7 @@ variable [One α]
 instance one : One (WithZero α) where
   __ := ‹One α›
 
-@[defeq, simp, norm_cast] lemma coe_one : ((1 : α) : WithZero α) = 1 := rfl
+@[simp, norm_cast] lemma coe_one : ((1 : α) : WithZero α) = 1 := rfl
 
 @[simp]
 lemma recZeroCoe_one {M N : Type*} [One M] (f : M → N) (z : N) :
@@ -190,7 +190,7 @@ instance pow : Pow (WithZero α) ℕ where
     | none, _ + 1 => 0
     | some x, n => ↑(x ^ n)
 
-@[defeq, simp, norm_cast] lemma coe_pow (a : α) (n : ℕ) : (↑(a ^ n) : WithZero α) = a ^ n := rfl
+@[simp, norm_cast] lemma coe_pow (a : α) (n : ℕ) : (↑(a ^ n) : WithZero α) = a ^ n := rfl
 
 end Pow
 
@@ -240,7 +240,7 @@ instance : Pow (WithZero α) ℤ where
     | none, Int.negSucc _ => 0
     | some x, n => ↑(x ^ n)
 
-@[defeq, simp, norm_cast] lemma coe_zpow (a : α) (n : ℤ) : ↑(a ^ n) = (↑a : WithZero α) ^ n := rfl
+@[simp, norm_cast] lemma coe_zpow (a : α) (n : ℤ) : ↑(a ^ n) = (↑a : WithZero α) ^ n := rfl
 
 end ZPow
 

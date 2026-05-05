@@ -750,10 +750,10 @@ instance : (prod F G).LaxMonoidal where
   ε := ε F ×ₘ ε G
   μ X Y := μ F _ _ ×ₘ μ G _ _
 
-@[defeq, simp] lemma prod_ε_fst : (ε (prod F G)).1 = ε F := rfl
-@[defeq, simp] lemma prod_ε_snd : (ε (prod F G)).2 = ε G := rfl
-@[defeq, simp] lemma prod_μ_fst (X Y : C × E) : (μ (prod F G) X Y).1 = μ F _ _ := rfl
-@[defeq, simp] lemma prod_μ_snd (X Y : C × E) : (μ (prod F G) X Y).2 = μ G _ _ := rfl
+@[simp] lemma prod_ε_fst : (ε (prod F G)).1 = ε F := rfl
+@[simp] lemma prod_ε_snd : (ε (prod F G)).2 = ε G := rfl
+@[simp] lemma prod_μ_fst (X Y : C × E) : (μ (prod F G) X Y).1 = μ F _ _ := rfl
+@[simp] lemma prod_μ_snd (X Y : C × E) : (μ (prod F G) X Y).2 = μ G _ _ := rfl
 
 end
 
@@ -768,10 +768,10 @@ instance : (prod F G).OplaxMonoidal where
   η := η F ×ₘ η G
   δ X Y := δ F _ _ ×ₘ δ G _ _
 
-@[defeq, simp] lemma prod_η_fst : (η (prod F G)).1 = η F := rfl
-@[defeq, simp] lemma prod_η_snd : (η (prod F G)).2 = η G := rfl
-@[defeq, simp] lemma prod_δ_fst (X Y : C × E) : (δ (prod F G) X Y).1 = δ F _ _ := rfl
-@[defeq, simp] lemma prod_δ_snd (X Y : C × E) : (δ (prod F G) X Y).2 = δ G _ _ := rfl
+@[simp] lemma prod_η_fst : (η (prod F G)).1 = η F := rfl
+@[simp] lemma prod_η_snd : (η (prod F G)).2 = η G := rfl
+@[simp] lemma prod_δ_fst (X Y : C × E) : (δ (prod F G) X Y).1 = δ F _ _ := rfl
+@[simp] lemma prod_δ_snd (X Y : C × E) : (δ (prod F G) X Y).2 = δ G _ _ := rfl
 
 end
 

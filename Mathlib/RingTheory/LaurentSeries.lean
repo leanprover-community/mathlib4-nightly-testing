@@ -263,7 +263,7 @@ end Semiring
 
 instance [CommSemiring R] : Algebra R⟦X⟧ R⸨X⸩ := (HahnSeries.ofPowerSeries ℤ R).toAlgebra
 
-@[defeq, simp]
+@[simp]
 theorem coe_algebraMap [CommSemiring R] :
     ⇑(algebraMap R⟦X⟧ R⸨X⸩) = HahnSeries.ofPowerSeries ℤ R :=
   rfl
@@ -489,7 +489,6 @@ open IsDedekindDomain.HeightOneSpectrum PowerSeries RatFunc WithZero
 
 instance valued : Valued K⸨X⸩ ℤᵐ⁰ := Valued.mk' ((PowerSeries.idealX K).valuation _)
 
-@[defeq]
 lemma valuation_def : (Valued.v : Valuation K⸨X⸩ ℤᵐ⁰) = (PowerSeries.idealX K).valuation _ := rfl
 
 lemma valuation_coe_ratFunc (f : K⟮X⟯) :

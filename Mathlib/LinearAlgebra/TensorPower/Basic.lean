@@ -68,7 +68,6 @@ instance gOne : GradedMonoid.GOne fun i => ⨂[R]^i M where one := tprod R <| @F
 
 local notation "ₜ1" => @GradedMonoid.GOne.one ℕ (fun i => ⨂[R]^i M) _ _
 
-@[defeq]
 theorem gOne_def : ₜ1 = tprod R (@Fin.elim0 M) :=
   rfl
 
@@ -87,7 +86,6 @@ theorem gMul_def {i j} (a : ⨂[R]^i M) (b : (⨂[R]^j) M) :
     a ₜ* b = @mulEquiv R M _ _ _ i j (a ⊗ₜ b) :=
   rfl
 
-@[defeq]
 theorem gMul_eq_coe_linearMap {i j} (a : ⨂[R]^i M) (b : (⨂[R]^j) M) :
     a ₜ* b = ((TensorProduct.mk R _ _).compr₂ ↑(mulEquiv : _ ≃ₗ[R] (⨂[R]^(i + j)) M) :
       ⨂[R]^i M →ₗ[R] (⨂[R]^j) M →ₗ[R] (⨂[R]^(i + j)) M) a b :=

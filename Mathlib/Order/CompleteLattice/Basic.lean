@@ -839,11 +839,11 @@ noncomputable instance Prop.instCompleteLinearOrder : CompleteLinearOrder Prop w
   __ := Prop.linearOrder
   __ := BooleanAlgebra.toBiheytingAlgebra
 
-@[defeq, simp]
+@[simp]
 theorem sSup_Prop_eq {s : Set Prop} : sSup s = ∃ p ∈ s, p :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sInf_Prop_eq {s : Set Prop} : sInf s = ∀ p ∈ s, p :=
   rfl
 
@@ -860,7 +860,7 @@ theorem iInf_Prop_eq {p : ι → Prop} : ⨅ i, p i = ∀ i, p i :=
 instance Pi.supSet {α : Type*} {β : α → Type*} [∀ i, SupSet (β i)] : SupSet (∀ i, β i) :=
   ⟨fun s i => ⨆ f : s, (f : ∀ i, β i) i⟩
 
-@[defeq, to_dual (attr := simp)]
+@[to_dual (attr := simp)]
 theorem sSup_apply {α : Type*} {β : α → Type*} [∀ i, SupSet (β i)] {s : Set (∀ a, β a)} {a : α} :
     (sSup s) a = ⨆ f : s, (f : ∀ a, β a) a :=
   rfl
@@ -931,11 +931,11 @@ instance supSet [SupSet α] [SupSet β] : SupSet (α × β) :=
 
 variable {α β}
 
-@[defeq, to_dual]
+@[to_dual]
 theorem fst_sSup [SupSet α] [SupSet β] (s : Set (α × β)) : (sSup s).fst = sSup (Prod.fst '' s) :=
   rfl
 
-@[defeq, to_dual]
+@[to_dual]
 theorem snd_sSup [SupSet α] [SupSet β] (s : Set (α × β)) : (sSup s).snd = sSup (Prod.snd '' s) :=
   rfl
 

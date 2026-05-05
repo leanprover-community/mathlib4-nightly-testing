@@ -40,9 +40,9 @@ variable [SemilatticeSup β] [ContinuousSup β]
 
 instance sup : Max C(α, β) where max f g := { toFun := fun a ↦ f a ⊔ g a }
 
-@[defeq, simp, norm_cast] lemma coe_sup (f g : C(α, β)) : ⇑(f ⊔ g) = ⇑f ⊔ g := rfl
+@[simp, norm_cast] lemma coe_sup (f g : C(α, β)) : ⇑(f ⊔ g) = ⇑f ⊔ g := rfl
 
-@[defeq, simp] lemma sup_apply (f g : C(α, β)) (a : α) : (f ⊔ g) a = f a ⊔ g a := rfl
+@[simp] lemma sup_apply (f g : C(α, β)) (a : α) : (f ⊔ g) a = f a ⊔ g a := rfl
 
 instance semilatticeSup : SemilatticeSup C(α, β) := fast_instance%
   DFunLike.coe_injective.semilatticeSup _ .rfl .rfl fun _ _ ↦ rfl
@@ -62,9 +62,9 @@ variable [SemilatticeInf β] [ContinuousInf β]
 
 instance inf : Min C(α, β) where min f g := { toFun := fun a ↦ f a ⊓ g a }
 
-@[defeq, simp, norm_cast] lemma coe_inf (f g : C(α, β)) : ⇑(f ⊓ g) = ⇑f ⊓ g := rfl
+@[simp, norm_cast] lemma coe_inf (f g : C(α, β)) : ⇑(f ⊓ g) = ⇑f ⊓ g := rfl
 
-@[defeq, simp] lemma inf_apply (f g : C(α, β)) (a : α) : (f ⊓ g) a = f a ⊓ g a := rfl
+@[simp] lemma inf_apply (f g : C(α, β)) (a : α) : (f ⊓ g) a = f a ⊓ g a := rfl
 
 instance semilatticeInf : SemilatticeInf C(α, β) := fast_instance%
   DFunLike.coe_injective.semilatticeInf _ .rfl .rfl fun _ _ ↦ rfl

@@ -202,7 +202,7 @@ instance instTopTropical [Top R] : Top (Tropical R) :=
 theorem untrop_zero [Top R] : untrop (0 : Tropical R) = ⊤ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem trop_top [Top R] : trop (⊤ : R) = 0 :=
   rfl
 
@@ -243,7 +243,6 @@ theorem trop_min (x y : R) : trop (min x y) = trop x + trop y :=
 theorem trop_inf (x y : R) : trop (x ⊓ y) = trop x + trop y :=
   rfl
 
-@[defeq]
 theorem trop_add_def (x y : Tropical R) : x + y = trop (min (untrop x) (untrop y)) :=
   rfl
 
@@ -268,19 +267,17 @@ theorem untrop_sup (x y : Tropical R) : untrop (x ⊔ y) = untrop x ⊔ untrop y
 theorem untrop_max (x y : Tropical R) : untrop (max x y) = max (untrop x) (untrop y) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem min_eq_add : (min : Tropical R → Tropical R → Tropical R) = (· + ·) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inf_eq_add : ((· ⊓ ·) : Tropical R → Tropical R → Tropical R) = (· + ·) :=
   rfl
 
-@[defeq]
 theorem trop_max_def (x y : Tropical R) : max x y = trop (max (untrop x) (untrop y)) :=
   rfl
 
-@[defeq]
 theorem trop_sup_def (x y : Tropical R) : x ⊔ y = trop (untrop x ⊔ untrop y) :=
   rfl
 
@@ -337,14 +334,13 @@ theorem trop_add [Add R] (x y : R) : trop (x + y) = trop x * trop y :=
 theorem untrop_mul [Add R] (x y : Tropical R) : untrop (x * y) = untrop x + untrop y :=
   rfl
 
-@[defeq]
 theorem trop_mul_def [Add R] (x y : Tropical R) : x * y = trop (untrop x + untrop y) :=
   rfl
 
 instance instOneTropical [Zero R] : One (Tropical R) :=
   ⟨trop 0⟩
 
-@[defeq, simp]
+@[simp]
 theorem trop_zero [Zero R] : trop (0 : R) = 1 :=
   rfl
 

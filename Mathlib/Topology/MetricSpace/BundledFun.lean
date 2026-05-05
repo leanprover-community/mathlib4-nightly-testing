@@ -54,10 +54,9 @@ instance : FunLike (PseudoMetric X R) X (X → R) where
   coe := PseudoMetric.toFun
   coe_injective' _ := by aesop
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 lemma coe_mk (d : X → X → R) (refl symm triangle) : mk d refl symm triangle = d := rfl
 
-@[defeq]
 lemma mk_apply (d : X → X → R) (refl symm triangle) (x y : X) :
     mk d refl symm triangle x y = d x y :=
   rfl
@@ -85,10 +84,10 @@ instance [AddZeroClass R] [Preorder R] : Bot (PseudoMetric X R) where
   bot.symm' _ _ := rfl
   bot.triangle' _ _ _ := by simp
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 lemma coe_bot [AddZeroClass R] [Preorder R] : ⇑(⊥ : PseudoMetric X R) = 0 := rfl
 
-@[defeq, simp]
+@[simp]
 protected lemma bot_apply [AddZeroClass R] [Preorder R] (x y : X) :
     (⊥ : PseudoMetric X R) x y = 0 :=
   rfl
@@ -106,12 +105,12 @@ instance [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R] :
       apply add_le_add <;> simp
   }
 
-@[defeq, simp, push_cast]
+@[simp, push_cast]
 lemma coe_sup [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
     (d d' : PseudoMetric X R) :
     ((d ⊔ d' : PseudoMetric X R) : X → X → R) = (d : X → X → R) ⊔ d' := rfl
 
-@[defeq, simp]
+@[simp]
 protected lemma sup_apply [AddZeroClass R] [SemilatticeSup R] [AddLeftMono R] [AddRightMono R]
     (d d' : PseudoMetric X R) (x y : X) :
     (d ⊔ d') x y = d x y ⊔ d' x y :=

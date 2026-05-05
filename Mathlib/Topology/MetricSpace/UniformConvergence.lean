@@ -56,7 +56,6 @@ variable [PseudoEMetricSpace β]
 noncomputable instance : EDist (α →ᵤ β) where
   edist f g := ⨆ x, edist (toFun f x) (toFun g x)
 
-@[defeq]
 lemma edist_def (f g : α →ᵤ β) :
     edist f g = ⨆ x, edist (toFun f x) (toFun g x) :=
   rfl
@@ -146,7 +145,6 @@ noncomputable instance [BoundedSpace β] : PseudoMetricSpace (α →ᵤ β) :=
           Metric.edist_le_ediam_of_mem]
       exact ENNReal.eq_of_forall_le_nnreal_iff fun r ↦ by simp [edist_def, ciSup_le_iff this]
 
-@[defeq]
 lemma dist_def [BoundedSpace β] (f g : α →ᵤ β) :
     dist f g = ⨆ x, dist (toFun f x) (toFun g x) :=
   rfl
@@ -207,7 +205,6 @@ lemma continuous_of_forall_lipschitzWith {f : γ → α →ᵤ[𝔖] β} (K : Se
 noncomputable instance [Finite 𝔖] : EDist (α →ᵤ[𝔖] β) where
   edist f g := ⨆ x ∈ ⋃₀ 𝔖, edist (toFun 𝔖 f x) (toFun 𝔖 g x)
 
-@[defeq]
 lemma edist_def [Finite 𝔖] (f g : α →ᵤ[𝔖] β) :
     edist f g = ⨆ x ∈ ⋃₀ 𝔖, edist (toFun 𝔖 f x) (toFun 𝔖 g x) :=
   rfl

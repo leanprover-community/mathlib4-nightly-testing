@@ -28,11 +28,11 @@ variable {ι : Type*} {π : ι → Type*} [∀ i, IntCast (π i)]
 
 instance instIntCast : IntCast (∀ i, π i) where intCast n _ := n
 
-@[defeq, simp]
+@[simp]
 theorem intCast_apply (n : ℤ) (i : ι) : (n : ∀ i, π i) i = n :=
   rfl
 
-@[defeq, push ←]
+@[push ←]
 theorem intCast_def (n : ℤ) : (n : ∀ i, π i) = fun _ => ↑n :=
   rfl
 

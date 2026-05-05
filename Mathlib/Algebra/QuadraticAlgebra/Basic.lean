@@ -152,17 +152,17 @@ The conjugate of `x + y ω` is `x + y ω' = (x - a * y) - y ω`. -/
 instance : Star (QuadraticAlgebra R a b) where
   star z := ⟨z.re + b * z.im, -z.im⟩
 
-@[defeq, simp]
+@[simp]
 theorem star_mk (x y : R) :
     star (⟨x, y⟩ : QuadraticAlgebra R a b) = ⟨x + b * y, -y⟩ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem re_star (z : QuadraticAlgebra R a b) :
     (star z).re = z.re + b * z.im :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem im_star (z : QuadraticAlgebra R a b) :
     (star z).im = -z.im :=
   rfl

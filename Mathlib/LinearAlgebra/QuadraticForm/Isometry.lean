@@ -70,7 +70,7 @@ initialize_simps_projections Isometry (toFun → apply)
 theorem map_app (f : Q₁ →qᵢ Q₂) (m : M₁) : Q₂ (f m) = Q₁ m :=
   f.map_app' m
 
-@[defeq, simp]
+@[simp]
 theorem coe_toLinearMap (f : Q₁ →qᵢ Q₂) : ⇑f.toLinearMap = f :=
   rfl
 

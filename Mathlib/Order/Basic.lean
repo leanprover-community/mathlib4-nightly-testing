@@ -505,12 +505,12 @@ instance Prop.instCompl : Compl Prop :=
 instance Pi.instCompl [∀ i, Compl (π i)] : Compl (∀ i, π i) :=
   ⟨fun x i ↦ (x i)ᶜ⟩
 
-@[defeq, push ←]
+@[push ←]
 theorem Pi.compl_def [∀ i, Compl (π i)] (x : ∀ i, π i) :
     xᶜ = fun i ↦ (x i)ᶜ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem Pi.compl_apply [∀ i, Compl (π i)] (x : ∀ i, π i) (i : ι) :
     xᶜ i = (x i)ᶜ :=
   rfl
@@ -639,12 +639,12 @@ end Function
 instance Pi.sdiff [∀ i, SDiff (π i)] : SDiff (∀ i, π i) :=
   ⟨fun x y i ↦ x i \ y i⟩
 
-@[defeq, push ←]
+@[push ←]
 theorem Pi.sdiff_def [∀ i, SDiff (π i)] (x y : ∀ i, π i) :
     x \ y = fun i ↦ x i \ y i :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem Pi.sdiff_apply [∀ i, SDiff (π i)] (x y : ∀ i, π i) (i : ι) :
     (x \ y) i = x i \ y i :=
   rfl
@@ -1062,7 +1062,7 @@ variable (a b : PUnit)
 
 instance instLinearOrder : LinearOrder PUnit := .ofSubsingleton
 
-@[defeq, to_dual]
+@[to_dual]
 theorem max_eq : max a b = unit :=
   rfl
 
@@ -1085,7 +1085,7 @@ section «Prop»
 instance Prop.le : LE Prop :=
   ⟨(· → ·)⟩
 
-@[defeq, simp]
+@[simp]
 theorem le_Prop_eq : ((· ≤ ·) : Prop → Prop → Prop) = (· → ·) :=
   rfl
 

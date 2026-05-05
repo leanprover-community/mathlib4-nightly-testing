@@ -219,7 +219,7 @@ instance : OrderBot OrderType where
   bot := 0
   bot_le := OrderType.zero_le
 
-@[defeq, simp]
+@[simp]
 theorem bot_eq_zero : (⊥ : OrderType) = 0 :=
   rfl
 

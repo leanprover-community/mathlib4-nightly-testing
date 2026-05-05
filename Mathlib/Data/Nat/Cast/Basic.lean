@@ -62,7 +62,7 @@ variable (α) in
 def castRingHom : ℕ →+* α :=
   { castAddMonoidHom α with toFun := Nat.cast, map_one' := cast_one, map_mul' := cast_mul }
 
-@[defeq, simp, norm_cast] lemma coe_castRingHom : (castRingHom α : ℕ → α) = Nat.cast := rfl
+@[simp, norm_cast] lemma coe_castRingHom : (castRingHom α : ℕ → α) = Nat.cast := rfl
 
 lemma _root_.nsmul_eq_mul' (a : α) (n : ℕ) : n • a = a * n := by
   induction n with
@@ -167,11 +167,11 @@ theorem eq_natCast' {R} [NonAssocSemiring R] (f : ℕ →+* R) : f = Nat.castRin
 
 end RingHom
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem Nat.cast_id (n : ℕ) : n.cast = n :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem Nat.castRingHom_nat : Nat.castRingHom ℕ = RingHom.id ℕ :=
   rfl
 
@@ -190,11 +190,11 @@ variable [∀ a, NatCast (π a)]
 
 instance instNatCast : NatCast (∀ a, π a) where natCast n _ := n
 
-@[defeq, simp]
+@[simp]
 theorem natCast_apply (n : ℕ) (a : α) : (n : ∀ a, π a) a = n :=
   rfl
 
-@[defeq, push ←]
+@[push ←]
 theorem natCast_def (n : ℕ) : (n : ∀ a, π a) = fun _ ↦ ↑n :=
   rfl
 
@@ -207,10 +207,10 @@ section OfNat
 instance (priority := low) instOfNat (n : ℕ) [∀ i, OfNat (π i) n] : OfNat ((i : α) → π i) n where
   ofNat _ := OfNat.ofNat n
 
-@[defeq, simp]
+@[simp]
 theorem ofNat_apply (n : ℕ) [∀ i, OfNat (π i) n] (a : α) : (ofNat(n) : ∀ a, π a) a = ofNat(n) := rfl
 
-@[defeq, push ←]
+@[push ←]
 lemma ofNat_def (n : ℕ) [∀ i, OfNat (π i) n] : (OfNat.ofNat n : ∀ a, π a) = fun _ ↦ ofNat(n) := rfl
 
 end OfNat

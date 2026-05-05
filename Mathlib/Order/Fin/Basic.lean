@@ -49,13 +49,12 @@ variable {m n : ℕ}
 instance : Max (Fin n) where max x y := ⟨max x y, max_rec' (· < n) x.2 y.2⟩
 instance : Min (Fin n) where min x y := ⟨min x y, min_rec' (· < n) x.2 y.2⟩
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_max (a b : Fin n) : ↑(max a b) = (max a b : ℕ) := rfl
 
-@[defeq, simp, norm_cast]
+@[simp, norm_cast]
 theorem coe_min (a b : Fin n) : ↑(min a b) = (min a b : ℕ) := rfl
 
-@[defeq]
 theorem compare_eq_compare_val (a b : Fin n) : compare a b = compare a.val b.val := rfl
 
 instance instLinearOrder : LinearOrder (Fin n) :=
@@ -93,13 +92,11 @@ instance instCoheytingAlgebra [NeZero n] : CoheytingAlgebra (Fin n) := inferInst
 
 lemma top_eq_last (n : ℕ) : ⊤ = Fin.last n := rfl
 
-@[defeq]
 lemma bot_eq_zero (n : ℕ) [NeZero n] : ⊥ = (0 : Fin n) := rfl
 
-@[defeq, simp] theorem rev_bot [NeZero n] : rev (⊥ : Fin n) = ⊤ := rfl
+@[simp] theorem rev_bot [NeZero n] : rev (⊥ : Fin n) = ⊤ := rfl
 @[simp] theorem rev_top [NeZero n] : rev (⊤ : Fin n) = ⊥ := rev_rev _
 
-@[defeq]
 theorem rev_zero_eq_top (n : ℕ) [NeZero n] : rev (0 : Fin n) = ⊤ := rfl
 theorem rev_last_eq_bot (n : ℕ) : rev (last n) = ⊥ := by rw [rev_last, bot_eq_zero]
 

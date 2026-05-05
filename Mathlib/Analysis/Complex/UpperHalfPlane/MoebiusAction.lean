@@ -405,7 +405,7 @@ def SLOnGLPos : SMul SL(2, ℤ) GL(2, ℝ)⁺ :=
 
 attribute [local instance] SLOnGLPos
 
-@[defeq, deprecated "use GL(2, ℝ)" (since := "2026-04-29")]
+@[deprecated "use GL(2, ℝ)" (since := "2026-04-29")]
 theorem SLOnGLPos_smul_apply (s : SL(2, ℤ)) (g : GL(2, ℝ)⁺) (z : ℍ) :
     (s • g) • z = ((s : GL(2, ℝ)⁺) * g) • z :=
   rfl

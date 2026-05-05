@@ -183,7 +183,6 @@ theorem type_ne_zero_iff_nonempty [IsWellOrder α r] : type r ≠ 0 ↔ Nonempty
 theorem type_ne_zero_of_nonempty (r) [IsWellOrder α r] [h : Nonempty α] : type r ≠ 0 :=
   type_ne_zero_iff_nonempty.2 h
 
-@[defeq]
 theorem type_pEmpty : type (@emptyRelation PEmpty) = 0 :=
   rfl
 
@@ -199,11 +198,9 @@ theorem type_eq_one_iff_unique [IsWellOrder α r] : type r = 1 ↔ Nonempty (Uni
   ⟨fun h ↦ let ⟨s⟩ := type_eq.1 h; ⟨s.toEquiv.unique⟩,
     fun ⟨_⟩ ↦ type_eq_one_of_unique r⟩
 
-@[defeq]
 theorem type_pUnit : type (@emptyRelation PUnit) = 1 :=
   rfl
 
-@[defeq]
 theorem type_unit : type (@emptyRelation Unit) = 1 :=
   rfl
 
@@ -342,7 +339,7 @@ instance : OrderBot Ordinal where
   bot := 0
   bot_le o := inductionOn o fun _ r _ ↦ (InitialSeg.ofIsEmpty _ r).ordinal_type_le
 
-@[defeq, simp]
+@[simp]
 theorem bot_eq_zero : (⊥ : Ordinal) = 0 :=
   rfl
 
@@ -560,7 +557,7 @@ def toTypeOrderBot {o : Ordinal} (ho : o ≠ 0) : OrderBot o.ToType where
   bot_le := enum_zero_le' (bot_lt_iff_ne_bot.2 ho)
 
 set_option linter.deprecated false in
-@[defeq, deprecated "use `WellFoundedLT.toOrderBot` if you need an `OrderBot` instance"
+@[deprecated "use `WellFoundedLT.toOrderBot` if you need an `OrderBot` instance"
 (since := "2026-04-12")]
 theorem enum_zero_eq_bot {o : Ordinal} (ho : 0 < o) :
     enum (α := o.ToType) (· < ·) ⟨0, by rwa [type_toType]⟩ =
@@ -965,7 +962,7 @@ instance uniqueIioOne : Unique (Iio (1 : Ordinal)) where
   default := ⟨0, zero_lt_one' Ordinal⟩
   uniq a := Subtype.ext <| lt_one_iff.1 a.2
 
-@[defeq, simp]
+@[simp]
 theorem Iio_one_default_eq : (default : Iio (1 : Ordinal)) = ⟨0, zero_lt_one' Ordinal⟩ :=
   rfl
 

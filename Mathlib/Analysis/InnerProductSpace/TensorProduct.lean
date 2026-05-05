@@ -66,7 +66,6 @@ set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 instance instInner : Inner 𝕜 (E ⊗[𝕜] F) := ⟨fun x y => inner_ x y⟩
 
-@[defeq]
 private lemma inner_def (x y : E ⊗[𝕜] F) : inner 𝕜 x y = inner_ x y := rfl
 
 variable (𝕜) in

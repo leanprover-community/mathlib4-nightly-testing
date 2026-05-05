@@ -48,10 +48,10 @@ instance : Category (Point.{w} J) where
 lemma hom_ext {Φ₁ Φ₂ : Point.{w} J} {f g : Φ₁ ⟶ Φ₂} (h : f.hom = g.hom) : f = g :=
   Hom.ext h
 
-@[defeq, simp]
+@[simp]
 lemma id_hom (Φ : Point.{w} J) : Hom.hom (𝟙 Φ) = 𝟙 _ := rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 lemma comp_hom {Φ₁ Φ₂ Φ₃ : Point.{w} J} (f : Φ₁ ⟶ Φ₂) (g : Φ₂ ⟶ Φ₃) :
     (f ≫ g).hom = g.hom ≫ f.hom := rfl
 

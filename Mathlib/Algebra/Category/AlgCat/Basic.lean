@@ -53,7 +53,6 @@ typeclasses. This is the preferred way to construct a term of `AlgCat R`. -/
 abbrev of (X : Type v) [Ring X] [Algebra R X] : AlgCat.{v} R :=
   ⟨X⟩
 
-@[defeq]
 lemma coe_of (X : Type v) [Ring X] [Algebra R X] : (of R X : Type v) = X :=
   rfl
 
@@ -101,14 +100,14 @@ initialize_simps_projections Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[defeq, simp]
+@[simp]
 lemma hom_id {A : AlgCat.{v} R} : (𝟙 A : A ⟶ A).hom = AlgHom.id R A := rfl
 
 /- Provided for rewriting. -/
 lemma id_apply (A : AlgCat.{v} R) (a : A) :
     (𝟙 A : A ⟶ A) a = a := by simp
 
-@[defeq, simp]
+@[simp]
 lemma hom_comp {A B C : AlgCat.{v} R} (f : A ⟶ B) (g : B ⟶ C) :
     (f ≫ g).hom = g.hom.comp f.hom := rfl
 
@@ -120,24 +119,23 @@ lemma comp_apply {A B C : AlgCat.{v} R} (f : A ⟶ B) (g : B ⟶ C) (a : A) :
 lemma hom_ext {A B : AlgCat.{v} R} {f g : A ⟶ B} (hf : f.hom = g.hom) : f = g :=
   Hom.ext hf
 
-@[defeq, simp]
+@[simp]
 lemma hom_ofHom {R : Type u} [CommRing R] {X Y : Type v} [Ring X] [Algebra R X] [Ring Y]
     [Algebra R Y] (f : X →ₐ[R] Y) : (ofHom f).hom = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_hom {A B : AlgCat.{v} R} (f : A ⟶ B) :
     ofHom (Hom.hom f) = f := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_id {X : Type v} [Ring X] [Algebra R X] : ofHom (AlgHom.id R X) = 𝟙 (of R X) := rfl
 
-@[defeq, simp]
+@[simp]
 lemma ofHom_comp {X Y Z : Type v} [Ring X] [Ring Y] [Ring Z] [Algebra R X] [Algebra R Y]
     [Algebra R Z] (f : X →ₐ[R] Y) (g : Y →ₐ[R] Z) :
     ofHom (g.comp f) = ofHom f ≫ ofHom g :=
   rfl
 
-@[defeq]
 lemma ofHom_apply {R : Type u} [CommRing R] {X Y : Type v} [Ring X] [Algebra R X] [Ring Y]
     [Algebra R Y] (f : X →ₐ[R] Y) (x : X) : ofHom f x = f x := rfl
 
@@ -150,10 +148,9 @@ lemma hom_inv_apply {A B : AlgCat.{v} R} (e : A ≅ B) (x : B) : e.hom (e.inv x)
 instance : Inhabited (AlgCat R) :=
   ⟨of R R⟩
 
-@[defeq]
 lemma forget_obj {A : AlgCat.{v} R} : (forget (AlgCat.{v} R)).obj A = A := rfl
 
-@[defeq, deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-03")]
+@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-03")]
 lemma forget_map {A B : AlgCat.{v} R} (f : A ⟶ B) :
     (forget (AlgCat.{v} R)).map f = (f : _ → _) :=
   rfl
@@ -174,12 +171,12 @@ instance hasForgetToModule : HasForget₂ (AlgCat.{v} R) (ModuleCat.{v} R) where
     { obj := fun M => ModuleCat.of R M
       map := fun f => ModuleCat.ofHom f.hom.toLinearMap }
 
-@[defeq, simp]
+@[simp]
 lemma forget₂_module_obj (X : AlgCat.{v} R) :
     (forget₂ (AlgCat.{v} R) (ModuleCat.{v} R)).obj X = ModuleCat.of R X :=
   rfl
 
-@[defeq, simp]
+@[simp]
 lemma forget₂_module_map {X Y : AlgCat.{v} R} (f : X ⟶ Y) :
     (forget₂ (AlgCat.{v} R) (ModuleCat.{v} R)).map f = ModuleCat.ofHom f.hom.toLinearMap :=
   rfl

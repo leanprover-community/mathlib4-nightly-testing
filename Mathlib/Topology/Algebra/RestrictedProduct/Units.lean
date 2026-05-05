@@ -90,7 +90,7 @@ def unitsEquiv : Πʳ i, [R i, B i]_[𝓕]ˣ ≃* Πʳ i, [(R i)ˣ, (Submonoid.o
 @[simp] lemma unitsEquiv_apply (i : ι) (x : Πʳ i, [R i, B i]_[𝓕]ˣ) :
     (unitsEquiv R x i) = x.1 i := rfl
 
-@[defeq, simp] lemma coe_unitsEquiv_apply (x : Πʳ i, [R i, B i]_[𝓕]ˣ) (i : ι) :
+@[simp] lemma coe_unitsEquiv_apply (x : Πʳ i, [R i, B i]_[𝓕]ˣ) (i : ι) :
     (unitsEquiv R x).1 i = unitsEquiv R x i := rfl
 
 end RestrictedProduct

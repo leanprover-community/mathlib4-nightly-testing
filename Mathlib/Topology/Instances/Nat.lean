@@ -25,13 +25,11 @@ namespace Nat
 noncomputable instance : Dist ℕ :=
   ⟨fun x y => dist (x : ℝ) y⟩
 
-@[defeq]
 theorem dist_eq (x y : ℕ) : dist x y = |(x : ℝ) - y| := rfl
 
-@[defeq]
 theorem dist_coe_int (x y : ℕ) : dist (x : ℤ) (y : ℤ) = dist x y := rfl
 
-@[defeq, norm_cast, simp]
+@[norm_cast, simp]
 theorem dist_cast_real (x y : ℕ) : dist (x : ℝ) y = dist x y := rfl
 
 theorem pairwise_one_le_dist : Pairwise fun m n : ℕ => 1 ≤ dist m n := fun _ _ hne =>

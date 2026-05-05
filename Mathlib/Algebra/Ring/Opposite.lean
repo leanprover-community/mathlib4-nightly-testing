@@ -27,16 +27,16 @@ instance instDistrib [Distrib R] : Distrib Rᵐᵒᵖ where
 @[to_additive] instance instNatCast [NatCast R] : NatCast Rᵐᵒᵖ where natCast n := op n
 @[to_additive] instance instIntCast [IntCast R] : IntCast Rᵐᵒᵖ where intCast n := op n
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem op_natCast [NatCast R] (n : ℕ) : op (n : R) = n :=
   rfl
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem op_ofNat [NatCast R] (n : ℕ) [n.AtLeastTwo] :
     op (ofNat(n) : R) = ofNat(n) :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem op_intCast [IntCast R] (n : ℤ) : op (n : R) = n :=
   rfl
 

@@ -55,7 +55,6 @@ protected def one : One (AddSubmonoid R) := ⟨AddMonoidHom.mrange (Nat.castAddM
 
 scoped[Pointwise] attribute [instance] AddSubmonoid.one
 
-@[defeq]
 lemma one_eq_mrange : (1 : AddSubmonoid R) = AddMonoidHom.mrange (Nat.castAddMonoidHom R) := rfl
 
 lemma natCast_mem_one (n : ℕ) : (n : R) ∈ (1 : AddSubmonoid R) := ⟨_, rfl⟩

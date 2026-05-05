@@ -46,14 +46,13 @@ scoped instance matrixModule : Module (Matrix ι ι R) (ι → M) where
     simp [add_smul, Finset.sum_add_distrib]
   zero_smul v := funext fun i ↦ show ∑ _, _ = _ by simp
 
-@[defeq]
 lemma smul_def (N : Matrix ι ι R) (v : ι → M) :
     N • v = fun i ↦ ∑ j : ι, N i j • v j := rfl
 
 lemma smul_def' (N : Matrix ι ι R) (v : ι → M) : N • v = ∑ j : ι, fun i ↦ N i j • v j := by
   ext; simp [smul_def]
 
-@[defeq, simp]
+@[simp]
 lemma smul_apply (N : Matrix ι ι R) (v : ι → M) (i : ι) :
     (N • v) i = ∑ j : ι, N i j • v j := rfl
 

@@ -399,7 +399,6 @@ instance [Monoid M] : Inhabited (Associates M) :=
 theorem mk_eq_mk_iff_associated [Monoid M] {a b : M} : Associates.mk a = Associates.mk b ↔ a ~ᵤ b :=
   Iff.intro Quotient.exact Quot.sound
 
-@[defeq]
 theorem quotient_mk_eq_mk [Monoid M] (a : M) : ⟦a⟧ = Associates.mk a :=
   rfl
 
@@ -423,11 +422,10 @@ theorem mk_surjective [Monoid M] : Function.Surjective (@Associates.mk M _) :=
 instance [Monoid M] : One (Associates M) :=
   ⟨⟦1⟧⟩
 
-@[defeq, simp]
+@[simp]
 theorem mk_one [Monoid M] : Associates.mk (1 : M) = 1 :=
   rfl
 
-@[defeq]
 theorem one_eq_mk_one [Monoid M] : (1 : Associates M) = Associates.mk 1 :=
   rfl
 
@@ -438,7 +436,6 @@ theorem mk_eq_one [Monoid M] {a : M} : Associates.mk a = 1 ↔ IsUnit a := by
 instance [Monoid M] : Bot (Associates M) :=
   ⟨1⟩
 
-@[defeq]
 theorem bot_eq_one [Monoid M] : (⊥ : Associates M) = 1 :=
   rfl
 
@@ -494,7 +491,6 @@ theorem associated_map_mk {f : Associates M →* M} (hinv : Function.RightInvers
 theorem mk_pow (a : M) (n : ℕ) : Associates.mk (a ^ n) = Associates.mk a ^ n := by
   induction n <;> simp [*, pow_succ, Associates.mk_mul_mk.symm]
 
-@[defeq]
 theorem dvd_eq_le : ((· ∣ ·) : Associates M → Associates M → Prop) = (· ≤ ·) :=
   rfl
 
@@ -589,7 +585,7 @@ instance [Zero M] [Monoid M] : Zero (Associates M) :=
 instance [Zero M] [Monoid M] : Top (Associates M) :=
   ⟨0⟩
 
-@[defeq, simp] theorem mk_zero [Zero M] [Monoid M] : Associates.mk (0 : M) = 0 := rfl
+@[simp] theorem mk_zero [Zero M] [Monoid M] : Associates.mk (0 : M) = 0 := rfl
 
 section MonoidWithZero
 

@@ -155,7 +155,7 @@ theorem top_boxes : (⊤ : Prepartition I).boxes = {I} := rfl
 theorem notMem_bot : J ∉ (⊥ : Prepartition I) :=
   Finset.notMem_empty _
 
-@[defeq, simp]
+@[simp]
 theorem bot_boxes : (⊥ : Prepartition I).boxes = ∅ := rfl
 
 /-- An auxiliary lemma used to prove that the same point can't belong to more than
@@ -508,7 +508,6 @@ instance : SemilatticeInf (Prepartition I) :=
     inf_le_right := fun _ _ => (biUnion_le_iff _).2 fun _ _ => le_rfl
     le_inf := fun _ π₁ _ h₁ h₂ => π₁.le_biUnion_iff.2 ⟨h₁, fun _ _ => restrict_mono h₂⟩ }
 
-@[defeq]
 theorem inf_def (π₁ π₂ : Prepartition I) : π₁ ⊓ π₂ = π₁.biUnion fun J => π₂.restrict J := rfl
 
 @[simp]

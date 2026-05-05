@@ -242,7 +242,7 @@ instance instSMul : SMul 𝕜 𝓢(E, F) :=
             gcongr
             apply f.le_seminormAux }⟩
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply {f : 𝓢(E, F)} {c : 𝕜} {x : E} : (c • f) x = c • f x :=
   rfl
 
@@ -284,15 +284,14 @@ instance instZero : Zero 𝓢(E, F) :=
 instance instInhabited : Inhabited 𝓢(E, F) :=
   ⟨0⟩
 
-@[defeq]
 theorem coe_zero : DFunLike.coe (0 : 𝓢(E, F)) = (0 : E → F) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coeFn_zero : ⇑(0 : 𝓢(E, F)) = (0 : E → F) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem zero_apply {x : E} : (0 : 𝓢(E, F)) x = 0 :=
   rfl
 
@@ -311,7 +310,7 @@ instance instNeg : Neg 𝓢(E, F) :=
       intro x
       grw [f.decay_neg_aux k n x, f.le_seminormAux k n x]⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem neg_apply (f : 𝓢(E, F)) (x : E) : (-f) x = - (f x) := rfl
 
 end Neg
@@ -325,7 +324,7 @@ instance instAdd : Add 𝓢(E, F) :=
       intro x
       grw [decay_add_le_aux k n f g x, f.le_seminormAux k n x, g.le_seminormAux k n x]⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem add_apply {f g : 𝓢(E, F)} {x : E} : (f + g) x = f x + g x :=
   rfl
 
@@ -350,7 +349,7 @@ instance instSub : Sub 𝓢(E, F) :=
       rw [← decay_neg_aux k n g x]
       exact decay_add_le_aux k n f (-g) x⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem sub_apply {f g : 𝓢(E, F)} {x : E} : (f - g) x = f x - g x :=
   rfl
 

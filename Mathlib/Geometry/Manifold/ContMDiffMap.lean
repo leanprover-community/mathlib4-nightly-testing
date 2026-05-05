@@ -61,7 +61,7 @@ attribute [to_additive_ignore_args 21] ContMDiffMap ContMDiffMap.instFunLike
 
 variable {f g : C^n⟮I, M; I', M'⟯}
 
-@[defeq, simp]
+@[simp]
 theorem coeFn_mk (f : M → M') (hf : CMDiff n f) :
     DFunLike.coe (F := C^n⟮I, M; I', M'⟯) ⟨f, hf⟩ = f :=
   rfl

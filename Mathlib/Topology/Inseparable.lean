@@ -615,7 +615,7 @@ instance [TopologicalSpace α] [NontrivialTopology α] : Nontrivial (SeparationQ
 
 @[to_additive] instance [One X] : One (SeparationQuotient X) := ⟨mk 1⟩
 
-@[defeq, to_additive (attr := simp)] theorem mk_one [One X] : mk (1 : X) = 1 := rfl
+@[to_additive (attr := simp)] theorem mk_one [One X] : mk (1 : X) = 1 := rfl
 
 theorem preimage_image_mk_open (hs : IsOpen s) : mk ⁻¹' mk '' s = s := by
   refine Subset.antisymm ?_ (subset_preimage_image _ _)

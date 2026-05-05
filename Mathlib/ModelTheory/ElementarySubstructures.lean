@@ -99,7 +99,7 @@ instance instInhabited : Inhabited (L.ElementarySubstructure M) :=
 theorem mem_top (x : M) : x ∈ (⊤ : L.ElementarySubstructure M) :=
   Set.mem_univ x
 
-@[defeq, simp]
+@[simp]
 theorem coe_top : ((⊤ : L.ElementarySubstructure M) : Set M) = Set.univ :=
   rfl
 

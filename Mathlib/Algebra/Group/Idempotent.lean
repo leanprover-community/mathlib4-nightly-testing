@@ -73,7 +73,7 @@ lemma one : IsIdempotentElem (1 : M) := mul_one _
 
 instance : One {a : M // IsIdempotentElem a} where one := ⟨1, one⟩
 
-@[defeq, simp, norm_cast] lemma coe_one : ↑(1 : {a : M // IsIdempotentElem a}) = (1 : M) := rfl
+@[simp, norm_cast] lemma coe_one : ↑(1 : {a : M // IsIdempotentElem a}) = (1 : M) := rfl
 
 end MulOneClass
 

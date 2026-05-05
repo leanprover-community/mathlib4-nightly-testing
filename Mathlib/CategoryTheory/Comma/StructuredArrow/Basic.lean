@@ -95,7 +95,7 @@ theorem hom_eq_iff {X Y : StructuredArrow S T} (f g : X ⟶ Y) : f = g ↔ f.rig
 def mk (f : S ⟶ T.obj Y) : StructuredArrow S T :=
   ⟨⟨⟨⟩⟩, Y, f⟩
 
-@[defeq, simp]
+@[simp]
 theorem mk_left (f : S ⟶ T.obj Y) : (mk f).left = ⟨⟨⟩⟩ :=
   rfl
 
@@ -107,11 +107,11 @@ theorem mk_right (f : S ⟶ T.obj Y) : (mk f).right = Y :=
 theorem mk_hom_eq_self (f : S ⟶ T.obj Y) : (mk f).hom = f :=
   rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 theorem comp_right {X Y Z : StructuredArrow S T} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).right = f.right ≫ g.right := rfl
 
-@[defeq, simp]
+@[simp]
 theorem id_right (X : StructuredArrow S T) : (𝟙 X : X ⟶ X).right = 𝟙 X.right := rfl
 
 @[simp]
@@ -120,7 +120,7 @@ theorem eqToHom_right {X Y : StructuredArrow S T} (h : X = Y) :
   subst h
   simp only [eqToHom_refl, id_right]
 
-@[defeq, simp]
+@[simp]
 theorem left_eq_id {X Y : StructuredArrow S T} (f : X ⟶ Y) : f.left = 𝟙 X.left := rfl
 
 set_option backward.defeqAttrib.useBackward true in
@@ -506,7 +506,7 @@ def mk (f : S.obj Y ⟶ T) : CostructuredArrow S T :=
 theorem mk_left (f : S.obj Y ⟶ T) : (mk f).left = Y :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem mk_right (f : S.obj Y ⟶ T) : (mk f).right = ⟨⟨⟩⟩ :=
   rfl
 
@@ -514,11 +514,11 @@ theorem mk_right (f : S.obj Y ⟶ T) : (mk f).right = ⟨⟨⟩⟩ :=
 theorem mk_hom_eq_self (f : S.obj Y ⟶ T) : (mk f).hom = f :=
   rfl
 
-@[defeq, simp, reassoc]
+@[simp, reassoc]
 theorem comp_left {X Y Z : CostructuredArrow S T} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).left = f.left ≫ g.left := rfl
 
-@[defeq, simp]
+@[simp]
 theorem id_left (X : CostructuredArrow S T) : (𝟙 X : X ⟶ X).left = 𝟙 X.left := rfl
 
 @[simp]
@@ -527,7 +527,7 @@ theorem eqToHom_left {X Y : CostructuredArrow S T} (h : X = Y) :
   subst h
   simp only [eqToHom_refl, id_left]
 
-@[defeq, simp]
+@[simp]
 theorem right_eq_id {X Y : CostructuredArrow S T} (f : X ⟶ Y) : f.right = 𝟙 X.right := rfl
 
 set_option backward.defeqAttrib.useBackward true in

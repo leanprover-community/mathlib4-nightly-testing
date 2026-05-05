@@ -94,7 +94,7 @@ open Submodule
 
 section
 
-@[defeq, simp]
+@[simp]
 theorem mapQ_eq_factor (h : I ≤ J) (x : R ⧸ I) :
     mapQ I J LinearMap.id h x = factor h x := rfl
 

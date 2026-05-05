@@ -117,11 +117,11 @@ initialize_simps_projections RelHom (toFun → apply)
 protected theorem map_rel (f : r →r s) {a b} : r a b → s (f a) (f b) :=
   f.map_rel'
 
-@[defeq, simp]
+@[simp]
 theorem coe_fn_toFun (f : r →r s) : f.toFun = (f : α → β) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coeFn_mk (f : α → β) (h : ∀ {a b}, r a b → s (f a) (f b)) :
     RelHom.mk f @h = f :=
   rfl
@@ -224,11 +224,10 @@ initialize_simps_projections RelEmbedding (toFun → apply)
 instance : EmbeddingLike (r ↪r s) α β where
   injective' f := f.inj'
 
-@[defeq, simp]
+@[simp]
 theorem coe_toEmbedding {f : r ↪r s} : ((f : r ↪r s).toEmbedding : α → β) = f :=
   rfl
 
-@[defeq]
 theorem coe_toRelHom {f : r ↪r s} : ((f : r ↪r s).toRelHom : α → β) = f :=
   rfl
 
@@ -247,7 +246,7 @@ theorem inj (f : r ↪r s) {a b} : f a = f b ↔ a = b := f.injective.eq_iff
 theorem map_rel_iff (f : r ↪r s) {a b} : s (f a) (f b) ↔ r a b :=
   f.map_rel_iff'
 
-@[defeq, simp]
+@[simp]
 theorem coe_mk {f} {h} : ⇑(⟨f, h⟩ : r ↪r s) = f :=
   rfl
 
@@ -574,23 +573,21 @@ instance : EquivLike (r ≃r s) α β where
   right_inv f := f.right_inv
   coe_injective' _ _ hf _ := DFunLike.ext' hf
 
-@[defeq]
 theorem coe_toRelEmbedding (f : r ≃r s) : (f.toRelEmbedding : α → β) = f :=
   rfl
 
-@[defeq]
 theorem coe_toEmbedding (f : r ≃r s) : (f.toEmbedding : α → β) = f :=
   rfl
 
 theorem map_rel_iff (f : r ≃r s) {a b} : s (f a) (f b) ↔ r a b :=
   f.map_rel_iff'
 
-@[defeq, simp]
+@[simp]
 theorem coe_fn_mk (f : α ≃ β) (o : ∀ ⦃a b⦄, s (f a) (f b) ↔ r a b) :
     (RelIso.mk f @o : α → β) = f :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem coe_fn_toEquiv (f : r ≃r s) : (f.toEquiv : α → β) = f :=
   rfl
 
@@ -630,7 +627,7 @@ protected def trans (f₁ : r ≃r s) (f₂ : s ≃r t) : r ≃r t :=
 instance (r : α → α → Prop) : Inhabited (r ≃r r) :=
   ⟨RelIso.refl _⟩
 
-@[defeq, simp]
+@[simp]
 theorem default_def (r : α → α → Prop) : default = RelIso.refl r :=
   rfl
 

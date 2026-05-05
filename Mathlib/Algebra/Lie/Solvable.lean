@@ -71,7 +71,6 @@ theorem derivedSeriesOfIdeal_succ (k : ℕ) :
 abbrev derivedSeries (k : ℕ) : LieIdeal R L :=
   derivedSeriesOfIdeal R L k ⊤
 
-@[defeq]
 theorem derivedSeries_def (k : ℕ) : derivedSeries R L k = derivedSeriesOfIdeal R L k ⊤ :=
   rfl
 

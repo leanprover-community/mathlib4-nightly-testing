@@ -146,7 +146,7 @@ def FactorSetMem (s : FactorSet α) (p : Associates α) : Prop :=
 instance : Membership (Associates α) (FactorSet α) :=
   ⟨FactorSetMem⟩
 
-@[defeq, simp]
+@[simp]
 theorem factorSetMem_eq_mem (p : Associates α) (s : FactorSet α) : FactorSetMem s p = (p ∈ s) :=
   rfl
 

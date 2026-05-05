@@ -73,7 +73,7 @@ theorem id_apply (X : FintypeCat) (x : X) : (𝟙 X : X → X) x = x :=
 theorem comp_apply {X Y Z : FintypeCat} (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) : (f ≫ g) x = g (f x) :=
   rfl
 
-@[defeq, simp]
+@[simp]
 lemma hom_apply {X Y : FintypeCat} (f : X ⟶ Y) (x : X) :
     f.hom x = f x := rfl
 

@@ -125,7 +125,7 @@ theorem mem_carrier {s : Subsemigroup M} {x : M} : x ∈ s.carrier ↔ x ∈ s :
 theorem mem_mk {s : Set M} {x : M} (h_mul) : x ∈ mk s h_mul ↔ x ∈ s :=
   Iff.rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_set_mk (s : Set M) (h_mul) : (mk s h_mul : Set M) = s :=
   rfl
 
@@ -187,11 +187,11 @@ theorem notMem_bot {x : M} : x ∉ (⊥ : Subsemigroup M) :=
 theorem mem_top (x : M) : x ∈ (⊤ : Subsemigroup M) :=
   Set.mem_univ x
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_top : ((⊤ : Subsemigroup M) : Set M) = Set.univ :=
   rfl
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_bot : ((⊥ : Subsemigroup M) : Set M) = ∅ :=
   rfl
 
@@ -210,7 +210,7 @@ instance : Min (Subsemigroup M) :=
     { carrier := S₁ ∩ S₂
       mul_mem' := fun ⟨hx, hx'⟩ ⟨hy, hy'⟩ => ⟨S₁.mul_mem hx hy, S₂.mul_mem hx' hy'⟩ }⟩
 
-@[defeq, to_additive (attr := simp, norm_cast)]
+@[to_additive (attr := simp, norm_cast)]
 theorem coe_inf (p p' : Subsemigroup M) : ((p ⊓ p' : Subsemigroup M) : Set M) = (p : Set M) ∩ p' :=
   rfl
 
@@ -267,17 +267,17 @@ instance (priority := 900) mul : Mul S' :=
   ⟨fun a b => ⟨a.1 * b.1, mul_mem a.2 b.2⟩⟩
 
 -- lower priority so later simp lemmas are used first; to appease simp_nf
-@[defeq, to_additive (attr := simp low, norm_cast)]
+@[to_additive (attr := simp low, norm_cast)]
 theorem coe_mul (x y : S') : (↑(x * y) : M) = ↑x * ↑y :=
   rfl
 
 -- lower priority so later simp lemmas are used first; to appease simp_nf
-@[defeq, to_additive (attr := simp low)]
+@[to_additive (attr := simp low)]
 theorem mk_mul_mk (x y : M) (hx : x ∈ S') (hy : y ∈ S') :
     (⟨x, hx⟩ : S') * ⟨y, hy⟩ = ⟨x * y, mul_mem hx hy⟩ :=
   rfl
 
-@[defeq, to_additive]
+@[to_additive]
 theorem mul_def (x y : S') : x * y = ⟨x * y, mul_mem x.2 y.2⟩ :=
   rfl
 

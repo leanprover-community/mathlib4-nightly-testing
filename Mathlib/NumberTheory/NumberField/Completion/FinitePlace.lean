@@ -313,7 +313,6 @@ instance : NonnegHomClass (FinitePlace K) K ℝ where
 @[simp]
 theorem mk_apply (v : HeightOneSpectrum (𝓞 K)) (x : K) : mk v x = ‖embedding v x‖ := rfl
 
-@[defeq]
 lemma coe_apply (v : FinitePlace K) (x : K) : v x = v.val x := rfl
 
 instance : MulRingNormClass (FinitePlace K) K ℝ where

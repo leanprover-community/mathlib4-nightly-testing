@@ -280,7 +280,7 @@ abbrev kernel (f : X ⟶ Y) [HasKernel f] : C :=
 abbrev kernel.ι : kernel f ⟶ X :=
   equalizer.ι f 0
 
-@[defeq, simp]
+@[simp]
 theorem equalizer_as_kernel : equalizer.ι f 0 = kernel.ι f := rfl
 
 @[reassoc (attr := simp)]
@@ -792,7 +792,7 @@ abbrev cokernel : C :=
 abbrev cokernel.π : Y ⟶ cokernel f :=
   coequalizer.π f 0
 
-@[defeq, simp]
+@[simp]
 theorem coequalizer_as_cokernel : coequalizer.π f 0 = cokernel.π f :=
   rfl
 

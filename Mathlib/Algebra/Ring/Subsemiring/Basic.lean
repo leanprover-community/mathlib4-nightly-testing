@@ -893,7 +893,6 @@ variable [NonAssocSemiring R']
 instance smul [SMul R' α] (S : Subsemiring R') : SMul S α :=
   inferInstance
 
-@[defeq]
 theorem smul_def [SMul R' α] {S : Subsemiring R'} (g : S) (m : α) : g • m = (g : R') • m :=
   rfl
 

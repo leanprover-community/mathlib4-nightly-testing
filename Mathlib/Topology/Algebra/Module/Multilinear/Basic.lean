@@ -95,7 +95,7 @@ initialize_simps_projections ContinuousMultilinearMap (-toMultilinearMap,
 theorem coe_continuous : Continuous (f : (∀ i, M₁ i) → M₂) :=
   f.cont
 
-@[defeq, simp]
+@[simp]
 theorem coe_coe : (f.toMultilinearMap : (∀ i, M₁ i) → M₂) = f :=
   rfl
 
@@ -126,11 +126,11 @@ instance : Zero (ContinuousMultilinearMap R M₁ M₂) :=
 instance : Inhabited (ContinuousMultilinearMap R M₁ M₂) :=
   ⟨0⟩
 
-@[defeq, simp]
+@[simp]
 theorem zero_apply (m : ∀ i, M₁ i) : (0 : ContinuousMultilinearMap R M₁ M₂) m = 0 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toMultilinearMap_zero : (0 : ContinuousMultilinearMap R M₁ M₂).toMultilinearMap = 0 :=
   rfl
 
@@ -143,12 +143,12 @@ variable {R' R'' A : Type*} [Semiring A] [∀ i, Module A (M₁ i)]
 instance : SMul R' (ContinuousMultilinearMap A M₁ M₂) :=
   ⟨fun c f => { c • f.toMultilinearMap with cont := f.cont.const_smul c }⟩
 
-@[defeq, simp]
+@[simp]
 theorem smul_apply (f : ContinuousMultilinearMap A M₁ M₂) (c : R') (m : ∀ i, M₁ i) :
     (c • f) m = c • f m :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toMultilinearMap_smul (c : R') (f : ContinuousMultilinearMap A M₁ M₂) :
     (c • f).toMultilinearMap = c • f.toMultilinearMap :=
   rfl
@@ -183,11 +183,11 @@ variable [ContinuousAdd M₂]
 instance : Add (ContinuousMultilinearMap R M₁ M₂) :=
   ⟨fun f f' => ⟨f.toMultilinearMap + f'.toMultilinearMap, f.cont.add f'.cont⟩⟩
 
-@[defeq, simp]
+@[simp]
 theorem add_apply (m : ∀ i, M₁ i) : (f + f') m = f m + f' m :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem toMultilinearMap_add (f g : ContinuousMultilinearMap R M₁ M₂) :
     (f + g).toMultilinearMap = f.toMultilinearMap + g.toMultilinearMap :=
   rfl
@@ -485,14 +485,14 @@ variable [IsTopologicalAddGroup M₂]
 instance : Neg (ContinuousMultilinearMap R M₁ M₂) :=
   ⟨fun f => { -f.toMultilinearMap with cont := f.cont.neg }⟩
 
-@[defeq, simp]
+@[simp]
 theorem neg_apply (m : ∀ i, M₁ i) : (-f) m = -f m :=
   rfl
 
 instance : Sub (ContinuousMultilinearMap R M₁ M₂) :=
   ⟨fun f g => { f.toMultilinearMap - g.toMultilinearMap with cont := f.cont.sub g.cont }⟩
 
-@[defeq, simp]
+@[simp]
 theorem sub_apply (m : ∀ i, M₁ i) : (f - f') m = f m - f' m :=
   rfl
 

@@ -46,7 +46,7 @@ instance : SetLike (powersetCard α n) α := SetLike.instSubtype
 
 instance : PartialOrder (Set.powersetCard α n) := .ofSetLike (Set.powersetCard α n) α
 
-@[defeq, simp]
+@[simp]
 theorem coe_coe {s : powersetCard α n} :
     ((s : Finset α) : Set α) = s := rfl
 

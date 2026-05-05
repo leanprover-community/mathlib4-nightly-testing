@@ -35,7 +35,6 @@ protected def mul : Mul (AddSubgroup R) where
 
 scoped[Pointwise] attribute [instance] AddSubgroup.mul
 
-@[defeq]
 lemma mul_toAddSubmonoid (M N : AddSubgroup R) :
     (M * N).toAddSubmonoid = M.toAddSubmonoid * N.toAddSubmonoid := rfl
 

@@ -33,7 +33,7 @@ variable {R : Type u} {M : Type v} {N : Type w}
 instance smulLeft [SMul R M] : SMul (ULift R) M :=
   ⟨fun s x => s.down • x⟩
 
-@[defeq, to_additive (attr := simp)]
+@[to_additive (attr := simp)]
 theorem smul_def [SMul R M] (s : ULift R) (x : M) : s • x = s.down • x :=
   rfl
 

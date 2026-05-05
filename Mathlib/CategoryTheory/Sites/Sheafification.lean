@@ -102,7 +102,7 @@ noncomputable abbrev sheafify (P : Cᵒᵖ ⥤ D) : Cᵒᵖ ⥤ D :=
 noncomputable abbrev toSheafify (P : Cᵒᵖ ⥤ D) : P ⟶ sheafify J P :=
   sheafificationAdjunction J D |>.unit.app P
 
-@[defeq, simp]
+@[simp]
 theorem sheafificationAdjunction_unit_app (P : Cᵒᵖ ⥤ D) :
     (sheafificationAdjunction J D).unit.app P = toSheafify J P := rfl
 
@@ -141,7 +141,6 @@ theorem sheafification_map {P Q : Cᵒᵖ ⥤ D} (η : P ⟶ Q) :
 noncomputable abbrev toSheafification : 𝟭 _ ⟶ sheafification J D :=
   sheafificationAdjunction J D |>.unit
 
-@[defeq]
 theorem toSheafification_app (P : Cᵒᵖ ⥤ D) : (toSheafification J D).app P = toSheafify J P :=
   rfl
 

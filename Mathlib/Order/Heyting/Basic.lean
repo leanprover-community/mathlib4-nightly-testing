@@ -72,35 +72,35 @@ instance Prod.instCompl [Compl α] [Compl β] : Compl (α × β) :=
 
 end
 
-@[defeq, simp]
+@[simp]
 theorem fst_himp [HImp α] [HImp β] (a b : α × β) : (a ⇨ b).1 = a.1 ⇨ b.1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem snd_himp [HImp α] [HImp β] (a b : α × β) : (a ⇨ b).2 = a.2 ⇨ b.2 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem fst_hnot [HNot α] [HNot β] (a : α × β) : (￢a).1 = ￢a.1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem snd_hnot [HNot α] [HNot β] (a : α × β) : (￢a).2 = ￢a.2 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem fst_sdiff [SDiff α] [SDiff β] (a b : α × β) : (a \ b).1 = a.1 \ b.1 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem snd_sdiff [SDiff α] [SDiff β] (a b : α × β) : (a \ b).2 = a.2 \ b.2 :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem fst_compl [Compl α] [Compl β] (a : α × β) : aᶜ.1 = a.1ᶜ :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem snd_compl [Compl α] [Compl β] (a : α × β) : aᶜ.2 = a.2ᶜ :=
   rfl
 
@@ -114,19 +114,19 @@ instance [∀ i, HImp (π i)] : HImp (∀ i, π i) :=
 instance [∀ i, HNot (π i)] : HNot (∀ i, π i) :=
   ⟨fun a i => ￢a i⟩
 
-@[defeq, push ←]
+@[push ←]
 theorem himp_def [∀ i, HImp (π i)] (a b : ∀ i, π i) : a ⇨ b = fun i => a i ⇨ b i :=
   rfl
 
-@[defeq, push ←]
+@[push ←]
 theorem hnot_def [∀ i, HNot (π i)] (a : ∀ i, π i) : ￢a = fun i => ￢a i :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem himp_apply [∀ i, HImp (π i)] (a b : ∀ i, π i) (i : ι) : (a ⇨ b) i = a i ⇨ b i :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem hnot_apply [∀ i, HNot (π i)] (a : ∀ i, π i) (i : ι) : (￢a) i = ￢a i :=
   rfl
 
@@ -1136,35 +1136,35 @@ instance instBiheytingAlgebra : BiheytingAlgebra PUnit.{u + 1} :=
     top_sdiff := fun _ => rfl,
     sdiff_le_iff := fun _ _ _ => Iff.rfl }
 
-@[defeq, simp]
+@[simp]
 theorem top_eq : (⊤ : PUnit) = unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem bot_eq : (⊥ : PUnit) = unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sup_eq : a ⊔ b = unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem inf_eq : a ⊓ b = unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem compl_eq : aᶜ = unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem sdiff_eq : a \ b = unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem hnot_eq : ￢a = unit :=
   rfl
 
-@[defeq, simp]
+@[simp]
 theorem himp_eq : a ⇨ b = unit :=
   rfl
 

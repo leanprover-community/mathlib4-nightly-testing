@@ -264,7 +264,7 @@ noncomputable def ConvexSpace.ofConvex
       StdSimplex.join, Finsupp.sum_sum_index, Finsupp.sum_smul_index, mul_smul, Finsupp.smul_sum]
   single x := by simp [convexCombination_eq_sum, ← StdSimplex.mk_single, StdSimplex.map]
 
-@[defeq, simp]
+@[simp]
 lemma ConvexSpace.ofConvex.coe_convexCombination
       {R E : Type*} [LinearOrder R] [Field R] [IsStrictOrderedRing R]
       [AddCommGroup E] [Module R E] (S : Set E) (H : Convex R S) (f : StdSimplex R S) :

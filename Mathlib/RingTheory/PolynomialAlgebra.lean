@@ -208,7 +208,7 @@ This gives a diamond for `Algebra R[X] R[X][X]`, so this is not a global instanc
 
 attribute [local instance] Polynomial.algebra
 
-@[defeq, simp]
+@[simp]
 theorem Polynomial.algebraMap_def : algebraMap R[X] A[X] = mapRingHom (algebraMap R A) := rfl
 
 instance : IsScalarTower R S[X] A[X] :=
