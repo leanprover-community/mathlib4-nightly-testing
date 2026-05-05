@@ -237,6 +237,7 @@ instance (U : (Opens (PrimeSpectrum.Top R))ᵒᵖ) :
   .of_algebraMap_smul fun r m ↦ Subtype.ext <| funext fun x ↦
     IsScalarTower.algebraMap_smul (Localizations R x.1) r (m.1 x)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (R M) in
 /-- The structure sheaf of a module as a presheaf of modules on `Spec R`.
@@ -550,7 +551,6 @@ the stalk of `structureSheaf R` at `x`. -/
     CommRingCat.of R ⟶ (structurePresheafInCommRingCat R).stalk x :=
   CommRingCat.ofHom (algebraMap _ _) ≫ (structurePresheafInCommRingCat R).germ ⊤ x trivial
 
-set_option backward.isDefEq.respectTransparency false in
 @[elementwise, reassoc]
 public lemma algebraMap_germ
     (U : Opens (PrimeSpectrum.Top R)) (x : PrimeSpectrum.Top R) (hxU : x ∈ U) :
@@ -562,11 +562,11 @@ public lemma algebraMap_germ
 
 @[deprecated (since := "2026-02-10")] public alias toOpen_germ := algebraMap_germ
 
-@[expose] public
+public
 instance (x : PrimeSpectrum.Top R) : Algebra R ((structurePresheafInCommRingCat R).stalk x) :=
   (toStalk R x).hom.toAlgebra
 
-@[expose] public
+public
 instance (x : PrimeSpectrum.Top R) :
     Module R ↑(TopCat.Presheaf.stalk (moduleStructurePresheaf R M).presheaf x) :=
   .compHom _ (toStalk R x).hom
@@ -642,7 +642,6 @@ theorem toOpenₗ_germ (U : Opens (PrimeSpectrum.Top R)) (x : PrimeSpectrum.Top 
   rw [toStalkₗ', ← Presheaf.germ_res _ (homOfLE le_top) _ hx, ← Category.assoc]
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isUnit_toStalk (x : PrimeSpectrum.Top R) (f : R) (hf : x ∈ basicOpen f) :
     IsUnit (toStalk R x f) := by
   convert (isUnit_basicOpen f).map ((structurePresheafInCommRingCat R).germ _ x hf).hom
@@ -722,6 +721,7 @@ theorem toStalkₗ'_stalkToFiberRingHom (x : PrimeSpectrum.Top R) :
 
 open TopCat.Presheaf
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (R M) in
 /-- The ring isomorphism between the stalk of the structure sheaf of `R` at a point `p`
@@ -812,7 +812,6 @@ instance (x : PrimeSpectrum.Top R) : IsLocalizedModule x.asIdeal.primeCompl (toS
     Limits.colimit.isoColimitCocone_ι_hom (C := Ab) ..
   exact congr($this _)
 
-set_option backward.isDefEq.respectTransparency false in
 variable (R) in
 /-- The stalk of `Spec R` at `x` is isomorphic to the stalk of `R^~` at `x`. -/
 @[expose] public
@@ -977,6 +976,7 @@ def Localizations.comapFun (y : PrimeSpectrum.Top S) :
   { __ := g,
     map_smul' r x := by simpa [Localizations] using (IsScalarTower.algebraMap_smul ..).symm }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma Localizations.comapFun_mk (y : PrimeSpectrum.Top S)

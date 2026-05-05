@@ -48,6 +48,7 @@ Suppose `P` is a formally smooth `R` algebra that surjects onto `A` with kernel 
 
 @[expose] public section
 
+
 open scoped TensorProduct
 open Algebra.Extension KaehlerDifferential MvPolynomial
 
@@ -77,6 +78,7 @@ attribute [instance] FormallySmooth.projective_kaehlerDifferential
 @[deprecated (since := "2025-10-25")]
 alias FormallySmooth.iff_subsingleton_and_projective := Algebra.formallySmooth_iff
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (R A) in
 lemma FormallySmooth.comp_surjective [FormallySmooth R A] (I : Ideal B) (hI : I ^ 2 = ⊥) :
@@ -110,6 +112,7 @@ lemma FormallySmooth.comp_surjective [FormallySmooth R A] (I : Ideal B) (hI : I 
     simpa using (Function.surjInv_eq _ _).symm
   exact ⟨l.comp g, by rw [← AlgHom.comp_assoc, ← this, AlgHom.comp_assoc, hg, AlgHom.comp_id]⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance mvPolynomial (σ : Type*) : FormallySmooth R (MvPolynomial σ R) := by
   let P : Generators R (MvPolynomial σ R) σ :=
@@ -276,7 +279,6 @@ section iff_split
 
 variable [Algebra.FormallySmooth R P]
 
-set_option backward.isDefEq.respectTransparency false in
 lemma kerCotangentToTensor_injective_iff
     [Algebra P A] [IsScalarTower R P A] (hf : Function.Surjective (algebraMap P A)) :
     Function.Injective (kerCotangentToTensor R P A) ↔ Subsingleton (Algebra.H1Cotangent R A) :=
@@ -394,7 +396,7 @@ section Polynomial
 
 open scoped Polynomial in
 instance polynomial (R : Type*) [CommRing R] :
-  FormallySmooth R R[X] := .of_equiv (MvPolynomial.pUnitAlgEquiv.{_, 0} R)
+  FormallySmooth R R[X] := .of_equiv (MvPolynomial.uniqueAlgEquiv.{_, 0} R PUnit)
 
 instance : FormallySmooth R R := .of_equiv (MvPolynomial.isEmptyAlgEquiv R Empty)
 

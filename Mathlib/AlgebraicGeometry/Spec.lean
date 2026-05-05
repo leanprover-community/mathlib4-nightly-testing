@@ -103,6 +103,7 @@ def Spec.sheafedSpaceMap {R S : CommRingCat.{u}} (f : R ⟶ S) :
         comap f.hom (unop U) ((TopologicalSpace.Opens.map (Spec.topMap f)).obj (unop U)) fun _ => id
       naturality := fun {_ _} _ => by ext; rfl }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem Spec.sheafedSpaceMap_id {R : CommRingCat.{u}} :
@@ -213,6 +214,7 @@ theorem stalkMap_toStalk {R S : CommRingCat.{u}} (f : R ⟶ S) (p : PrimeSpectru
   erw [toOpen_comp_comap_assoc]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Under the isomorphisms `stalkIso`, the map `stalkMap (Spec.sheafedSpaceMap f) p` corresponds
 to the induced local ring homomorphism `Localization.localRingHom`.
@@ -313,9 +315,6 @@ theorem isIso_SpecMap_stakMap_localization (R : CommRingCat.{u}) (M : Submonoid 
     rwa [ConcreteCategory.isIso_iff_bijective] at this
   infer_instance
 
-@[deprecated (since := "2025-10-11")]
-alias Spec_map_localization_isIso := isIso_SpecMap_stakMap_localization
-
 namespace StructureSheaf
 
 variable {R S : CommRingCat.{u}} (f : R ⟶ S) (p : PrimeSpectrum R)
@@ -357,7 +356,6 @@ def toPushforwardStalkAlgHom :
   { (StructureSheaf.toPushforwardStalk (CommRingCat.ofHom (algebraMap R S)) p).hom with
     commutes' := fun _ => rfl }
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isLocalizedModule_toPushforwardStalkAlgHom_aux (y) :
     ∃ x : S × p.asIdeal.primeCompl, x.2 • y = toPushforwardStalkAlgHom R S p x.1 := by
   obtain ⟨U, hp, s, e⟩ := TopCat.Presheaf.germ_exist _ _ y

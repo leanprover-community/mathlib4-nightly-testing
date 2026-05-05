@@ -195,14 +195,12 @@ theorem types_ι_jointly_surjective (D : GlueData (Type v)) (x : D.glued) :
   delta CategoryTheory.GlueData.ι
   simp_rw [← Multicoequalizer.ι_sigmaπ D.diagram]
   rcases D.types_π_surjective x with ⟨x', rfl⟩
-  --have := colimit.isoColimitCocone (Types.coproductColimitCocone _)
-  rw [← show (colimit.isoColimitCocone (Types.coproductColimitCocone.{v, v} _)).inv _ = x' from
-      ConcreteCategory.congr_hom
-        (colimit.isoColimitCocone (Types.coproductColimitCocone _)).hom_inv_id x']
+  rw [← dsimp% ConcreteCategory.congr_hom
+    (colimit.isoColimitCocone (Types.coproductColimitCocone _)).hom_inv_id x']
   rcases (colimit.isoColimitCocone (Types.coproductColimitCocone _)).hom x' with ⟨i, y⟩
-  exact ⟨i, y, by
-    simp
-    rfl ⟩
+  refine ⟨i, y, ?_⟩
+  simp
+  rfl
 
 variable (F : C ⥤ C')
 
@@ -232,6 +230,7 @@ def mapGlueData : GlueData C' where
     simp only [Category.assoc, Iso.hom_inv_id_assoc, ← Functor.map_comp_assoc, D.cocycle,
       Iso.inv_hom_id, CategoryTheory.Functor.map_id, Category.id_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The diagram of the image of a `GlueData` under a functor `F` is naturally isomorphic to the
 original diagram of the `GlueData` via `F`.

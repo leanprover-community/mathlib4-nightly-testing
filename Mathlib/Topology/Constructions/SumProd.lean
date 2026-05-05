@@ -593,6 +593,12 @@ protected lemma Topology.IsOpenEmbedding.prodMap {f : X → Y} {g : Z → W} (hf
     (hg : IsOpenEmbedding g) : IsOpenEmbedding (Prod.map f g) :=
   .of_isEmbedding_isOpenMap (hf.1.prodMap hg.1) (hf.isOpenMap.prodMap hg.isOpenMap)
 
+protected lemma Topology.IsClosedEmbedding.prodMap {f : X → Y} {g : Z → W}
+    (hf : IsClosedEmbedding f) (hg : IsClosedEmbedding g) :
+    IsClosedEmbedding (Prod.map f g) :=
+  { hf.isEmbedding.prodMap hg.isEmbedding with
+    isClosed_range := range_prodMap ▸ hf.isClosed_range.prod hg.isClosed_range }
+
 lemma isEmbedding_graph {f : X → Y} (hf : Continuous f) : IsEmbedding fun x => (x, f x) :=
   .of_comp (continuous_id.prodMk hf) continuous_fst .id
 
@@ -618,6 +624,7 @@ namespace Homeomorph
 
 variable {X' Y' : Type*} [TopologicalSpace X'] [TopologicalSpace Y']
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Product of two homeomorphisms. -/
 def prodCongr (h₁ : X ≃ₜ X') (h₂ : Y ≃ₜ Y') : X × Y ≃ₜ X' × Y' where
   toEquiv := h₁.toEquiv.prodCongr h₂.toEquiv
@@ -835,6 +842,7 @@ namespace Homeomorph
 
 variable {X' Y' : Type*} [TopologicalSpace X'] [TopologicalSpace Y']
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Sum of two homeomorphisms. -/
 def sumCongr (h₁ : X ≃ₜ X') (h₂ : Y ≃ₜ Y') : X ⊕ Y ≃ₜ X' ⊕ Y' where
   toEquiv := h₁.toEquiv.sumCongr h₂.toEquiv
@@ -884,6 +892,7 @@ def sumAssoc : (X ⊕ Y) ⊕ Z ≃ₜ X ⊕ Y ⊕ Z where
 @[simp]
 lemma sumAssoc_toEquiv : (sumAssoc X Y Z).toEquiv = Equiv.sumAssoc X Y Z := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Four-way commutativity of the disjoint union. The name matches `add_add_add_comm`. -/
 def sumSumSumComm : (X ⊕ Y) ⊕ W ⊕ Z ≃ₜ (X ⊕ W) ⊕ Y ⊕ Z where
   toEquiv := Equiv.sumSumSumComm X Y W Z

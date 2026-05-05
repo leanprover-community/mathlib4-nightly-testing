@@ -22,6 +22,7 @@ In this file we define normal field extensions.
 
 @[expose] public section
 
+
 noncomputable section
 
 open Polynomial IsScalarTower
@@ -177,6 +178,14 @@ theorem AlgEquiv.restrictNormal_commutes [Normal F E] (x : E) :
     algebraMap E K₂ (χ.restrictNormal E x) = χ (algebraMap E K₁ x) :=
   χ.toAlgHom.restrictNormal_commutes E x
 
+theorem AlgEquiv.restrictNormal_apply (L : IntermediateField F K₁) [Normal F L] (σ : Gal(K₁/F))
+    (x : L) : restrictNormal σ L x = σ x :=
+  AlgEquiv.restrictNormal_commutes σ L x
+
+theorem AlgEquiv.restrictNormal_eq_one_iff (L : IntermediateField F K₁) [Normal F L]
+    (σ : Gal(K₁/F)) : restrictNormal σ L = 1 ↔ ∀ x ∈ L, σ x = x := by
+  simp [AlgEquiv.ext_iff, Subtype.ext_iff, AlgEquiv.restrictNormal_apply]
+
 theorem AlgEquiv.restrictNormal_trans [Normal F E] :
     (χ.trans ω).restrictNormal E = (χ.restrictNormal E).trans (ω.restrictNormal E) :=
   AlgEquiv.ext fun _ =>
@@ -213,6 +222,7 @@ end Restrict
 
 section lift
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The group homomorphism given by restricting an algebra isomorphism to itself
 is the identity map. -/
 @[simp]

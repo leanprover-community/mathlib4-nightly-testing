@@ -110,7 +110,6 @@ protected theorem weight_vector_multiplication (M₁ M₂ M₃ : Type*)
     abel
   rsuffices ⟨k, hk⟩ : ∃ k : ℕ, ((f₁ + f₂) ^ k) (m₁ ⊗ₜ m₂) = 0
   · use k
-    change (F ^ k) (g.toLinearMap (m₁ ⊗ₜ[R] m₂)) = 0
     rw [← LinearMap.comp_apply, Module.End.commute_pow_left_of_commute h_comm_square,
       LinearMap.comp_apply, hk, map_zero]
   -- Unpack the information we have about `m₁`, `m₂`.
@@ -278,7 +277,7 @@ def equivSetOf : Weight R L M ≃ {χ : L → R | genWeightSpace M χ ≠ ⊥} w
 lemma genWeightSpaceOf_ne_bot (χ : Weight R L M) (x : L) :
     genWeightSpaceOf M (χ x) x ≠ ⊥ := by
   have : ⨅ x, genWeightSpaceOf M (χ x) x ≠ ⊥ := χ.genWeightSpace_ne_bot
-  contrapose! this
+  contrapose this
   rw [eq_bot_iff]
   exact le_of_le_of_eq (iInf_le _ _) this
 
@@ -711,6 +710,16 @@ instance [IsTriangularizable R L M] : IsTriangularizable R (LieModule.toEnd R L 
   maxGenEigenspace_eq_top := by
     rintro ⟨-, x, rfl⟩
     exact IsTriangularizable.maxGenEigenspace_eq_top x
+
+omit [LieRing.IsNilpotent L] in
+lemma IsTriangularizable.exists_hasEigenvalue [Nontrivial M] [IsTriangularizable R L M] (x : L) :
+    ∃ φ, (toEnd R L M x).HasEigenvalue φ := by
+  suffices ∃ φ, (toEnd R L M x).maxGenEigenspace φ ≠ ⊥ by
+    obtain ⟨φ, hφ⟩ := this
+    exact ⟨φ, (Module.End.hasUnifEigenvalue_iff_hasUnifEigenvalue_one ENat.top_pos).mp hφ⟩
+  have := maxGenEigenspace_eq_top (R := R) (L := L) (M := M) x
+  contrapose! this
+  simp [this]
 
 @[simp]
 lemma iSup_genWeightSpaceOf_eq_top [IsTriangularizable R L M] (x : L) :

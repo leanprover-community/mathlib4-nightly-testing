@@ -52,13 +52,13 @@ def Cover.toPresieveOverProp {X : Q.Over ⊤ S} (𝒰 : Cover.{u} (precoverage P
     (h : ∀ j, Q (𝒰.X j ↘ S)) : Presieve X :=
   Presieve.ofArrows (fun i ↦ (𝒰.X i).asOverProp S (h i)) (fun i ↦ (𝒰.f i).asOverProp S)
 
-set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward true in
 lemma Cover.overEquiv_generate_toPresieveOver_eq_ofArrows {X : Over S}
     (𝒰 : Cover.{u} (precoverage P) X.left)
     [𝒰.Over S] : Sieve.overEquiv X (Sieve.generate 𝒰.toPresieveOver) =
       Sieve.ofArrows 𝒰.X 𝒰.f := by
   ext V f
-  simp only [Sieve.overEquiv_iff, Functor.const_obj_obj, Sieve.generate_apply]
+  simp only [Sieve.overEquiv_iff, Sieve.generate_apply]
   constructor
   · rintro ⟨U, h, g, ⟨k⟩, hcomp⟩
     exact ⟨𝒰.X k, h.left, 𝒰.f k, ⟨k⟩, congrArg CommaMorphism.left hcomp⟩
@@ -208,7 +208,7 @@ lemma smallGrothendieckTopologyOfLE_eq_toGrothendieck_smallPretopology (hPQ : P 
     S.smallGrothendieckTopologyOfLE hPQ = (S.smallPretopology P Q).toGrothendieck := by
   ext X R
   simp only [Pretopology.mem_toGrothendieck, Functor.mem_inducedTopology_sieves_iff,
-    MorphismProperty.Comma.forget_obj, mem_overGrothendieckTopology]
+    mem_overGrothendieckTopology]
   constructor
   · intro ⟨𝒰, h, le⟩
     have hj (j : 𝒰.I₀) : Q (𝒰.X j ↘ S) := by

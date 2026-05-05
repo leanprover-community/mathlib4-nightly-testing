@@ -109,6 +109,7 @@ lemma hom_hom_action_ρ (V : FDRep R G) (g : G) : (Action.ρ V g).hom.hom = (ρ 
 def isoToLinearEquiv {V W : FDRep R G} (i : V ≅ W) : V ≃ₗ[R] W :=
   FGModuleCat.isoToLinearEquiv ((Action.forget (FGModuleCat R) G).mapIso i)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Iso.conj_ρ {V W : FDRep R G} (i : V ≅ W) (g : G) :
     W.ρ g = (FDRep.isoToLinearEquiv i).conj (V.ρ g) := by
   rw [FDRep.isoToLinearEquiv, ← hom_hom_action_ρ V, ← FGModuleCat.Iso.conj_hom_eq_conj,
@@ -174,7 +175,7 @@ def forget₂HomLinearEquiv (X Y : FDRep R G) :
   map_smul' _ _ := rfl
   invFun f := Rep.ofHom ⟨((forget₂ (FGModuleCat R) (ModuleCat R)).map f.hom).hom, fun g ↦ by
     ext x
-    exact congr_fun ((forget (FGModuleCat R)).congr_map (f.comm g)) x⟩
+    exact ConcreteCategory.congr_hom ((forget (FGModuleCat R)).congr_map (f.comm g)) x⟩
 
 instance : (forget₂ (FDRep R G) (Rep R G)).Full := by
   dsimp [forget₂, HasForget₂.forget₂]

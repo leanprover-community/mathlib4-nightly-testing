@@ -207,7 +207,7 @@ section CommSemiring
 
 variable [CommSemiring R] [AddCommMonoid M] [Module R M] [AddCommMonoid M'] [Module R M']
 
-open Pointwise
+open scoped Pointwise
 
 variable {I : Ideal R} {N : Submodule R M}
 
@@ -231,7 +231,7 @@ theorem mem_of_span_eq_top_of_smul_pow_mem (M' : Submodule R M) (s : Set R) (hs 
   rintro ⟨_, r, hr, rfl⟩
   exact hf r
 
-open Pointwise in
+open scoped Pointwise in
 @[simp]
 theorem map_pointwise_smul (r : R) (N : Submodule R M) (f : M →ₗ[R] M') :
     (r • N).map f = r • N.map f := by
@@ -395,17 +395,7 @@ protected theorem pow_succ : I ^ (n + 1) = I * I ^ n := by
 
 end IsTwoSided
 
-@[simp]
-theorem mul_eq_bot [NoZeroDivisors R] : I * J = ⊥ ↔ I = ⊥ ∨ J = ⊥ :=
-  ⟨fun hij =>
-    or_iff_not_imp_left.mpr fun I_ne_bot =>
-      J.eq_bot_iff.mpr fun j hj =>
-        let ⟨i, hi, ne0⟩ := I.ne_bot_iff.mp I_ne_bot
-        Or.resolve_left (mul_eq_zero.mp ((I * J).eq_bot_iff.mp hij _ (mul_mem_mul hi hj))) ne0,
-    fun h => by obtain rfl | rfl := h; exacts [bot_mul _, mul_bot _]⟩
-
-instance [NoZeroDivisors R] : NoZeroDivisors (Ideal R) where
-  eq_zero_or_eq_zero_of_mul_eq_zero := mul_eq_bot.1
+theorem mul_eq_bot [NoZeroDivisors R] : I * J = ⊥ ↔ I = ⊥ ∨ J = ⊥ := Submodule.mul_eq_bot
 
 instance {S A : Type*} [Semiring S] [SMul R S] [AddCommMonoid A] [Module R A] [Module S A]
     [IsScalarTower R S A] [IsTorsionFree R A] {I : Submodule S A} : IsTorsionFree R I :=
@@ -1298,6 +1288,7 @@ noncomputable def finsuppTotal : (ι →₀ I) →ₗ[R] M :=
 
 variable {ι M v}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem finsuppTotal_apply (f : ι →₀ I) :
     finsuppTotal ι M I v f = f.sum fun i x => (x : R) • v i := by
   dsimp [finsuppTotal]
