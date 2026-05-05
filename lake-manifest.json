@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "895db80abf7f64db99b968f7b46e5a717f23e2df",
+   "rev": "df772852b3c62b45a74224f8a09f48bfec89b68d",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "zulip-split-channel",
