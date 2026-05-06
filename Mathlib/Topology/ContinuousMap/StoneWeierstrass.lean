@@ -250,12 +250,10 @@ theorem sublattice_closure_eq_top (L : Set C(X, ℝ)) (nA : L.Nonempty)
   -- so that simp lemmas about inequalities involving `Finset.inf'` can fire.
   rw [show ∀ a b ε : ℝ, dist a b < ε ↔ a < b + ε ∧ b - ε < a by
         intros; simp only [← Metric.mem_ball, Real.ball_eq_Ioo, Set.mem_Ioo, and_comm]]
-  fconstructor
-  · dsimp
-    simp only [k, Finset.inf'_lt_iff, ContinuousMap.inf'_apply]
+  constructor
+  · simp only [k, Finset.inf'_lt_iff, ContinuousMap.inf'_apply]
     exact Set.exists_set_mem_of_union_eq_top _ _ xs_w z
-  · dsimp
-    simp only [k, Finset.lt_inf'_iff, ContinuousMap.inf'_apply]
+  · simp only [k, Finset.lt_inf'_iff, ContinuousMap.inf'_apply]
     rintro x -
     apply lt_h
 
@@ -328,7 +326,7 @@ theorem exists_mem_subalgebra_near_continuous_of_isCompact_of_separatesPoints
   let restrict_on_K : C(X, ℝ) →⋆ₐ[ℝ] C(K, ℝ) :=
     ContinuousMap.compStarAlgHom' ℝ ℝ ⟨(Subtype.val), continuous_subtype_val⟩
   --consider the subalgebra AK of functions with domain K
-  let AK : Subalgebra ℝ C(K, ℝ) := Subalgebra.map (restrict_on_K) A
+  let AK : Subalgebra ℝ C(K, ℝ) := Subalgebra.map restrict_on_K A
   have hsep : AK.SeparatesPoints := by
     intro x y hxy
     obtain ⟨_, ⟨g, hg1, hg2⟩, hg_sep⟩ := hA (Subtype.coe_ne_coe.mpr hxy)
@@ -337,7 +335,7 @@ theorem exists_mem_subalgebra_near_continuous_of_isCompact_of_separatesPoints
     refine ⟨Subalgebra.mem_map.mpr ?_,
       by simpa only [compStarAlgHom'_apply, comp_apply, coe_mk, ne_eq, restrict_on_K, hg2]⟩
     use g, hg1
-    simp [AlgHom.coe_coe]
+    simp
   obtain ⟨⟨gK, hgKAK⟩, hgapprox⟩ :=
     @ContinuousMap.exists_mem_subalgebra_near_continuous_of_separatesPoints _ _
     (isCompact_iff_compactSpace.mp hK) AK hsep (K.restrict f)
