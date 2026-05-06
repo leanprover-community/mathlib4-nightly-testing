@@ -173,18 +173,17 @@ noncomputable def isLimit : IsLimit (cone f) where
     intro m
     by_cases h : m < n
     · simp only [Category.assoc, cone_π_app_comp_Pi_π_pos f _ _ h]
-      simp only [dite_eq_ite, limit.lift_π_assoc,
-        Discrete.functor_obj_eq_as, Fan.mk_π_app, Category.assoc, eqToHom_trans]
+      simp only [dite_eq_ite, limit.lift_π_assoc, Fan.mk_π_app, Category.assoc, eqToHom_trans]
       have hh : m + 1 ≤ n := by lia
       rw [← s.w (homOfLE hh).op]
-      simp only [homOfLE_leOfHom, Category.assoc]
+      simp only [Category.assoc]
       congr
       induction hh using Nat.leRec with
       | refl => simp
       | @le_succ_of_le n hh ih =>
         have : homOfLE (Nat.le_succ_of_le hh) = homOfLE hh ≫ homOfLE (Nat.le_succ n) := by simp
         rw [this, op_comp, Functor.map_comp]
-        simp only [Nat.succ_eq_add_one, homOfLE_leOfHom,
+        simp only [Nat.succ_eq_add_one,
           Functor.ofOpSequence_map_homOfLE_succ, Category.assoc]
         have h₁ : (if _ : m < m + 1 then M m else N m) = if _ : m < n then M m else N m := by
           rw [dif_pos (by lia), dif_pos (by lia)]
@@ -198,8 +197,7 @@ noncomputable def isLimit : IsLimit (cone f) where
         simp
     · simp only [Category.assoc]
       rw [cone_π_app_comp_Pi_π_neg f _ _ h]
-      simp only [dite_eq_ite, limit.lift_π_assoc,
-        Discrete.functor_obj_eq_as, Fan.mk_π_app, Category.assoc]
+      simp only [dite_eq_ite, limit.lift_π_assoc, Fan.mk_π_app, Category.assoc]
       slice_lhs 2 4 => simp only [← dite_eq_ite, ← functorMap_commSq f h]
       simp
   uniq s m h := by
