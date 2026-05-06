@@ -124,6 +124,8 @@ lemma mapComp'₀₂₃_hom_comp_mapComp'_hom_whiskerRight (hf : f₀₂ ≫ f�
   rw [F.mapComp'₀₁₃_hom_comp_whiskerLeft_mapComp'_hom_assoc _ _ _ _ _ f h₀₂ h₁₃ (by cat_disch)]
   simp
 
+-- See the adaptation note above `mapComp'₀₁₃_inv_comp_mapComp'₀₂₃_hom` (lean4#13557).
+set_option backward.defeqAttrib.useBackward true in
 @[to_app (attr := reassoc)]
 lemma mapComp'_inv_whiskerRight_mapComp'₀₂₃_inv (hf : f₀₂ ≫ f₂₃ = f) :
     (F.mapComp' f₀₁ f₁₂ f₀₂ h₀₂).inv ▷ F.map f₂₃ ≫ (F.mapComp' f₀₂ f₂₃ f).inv =
@@ -132,6 +134,8 @@ lemma mapComp'_inv_whiskerRight_mapComp'₀₂₃_inv (hf : f₀₂ ≫ f₂₃ 
   rw [whiskerLeft_mapComp'_inv_comp_mapComp'₀₁₃_inv _ _ _ _ _ _ f h₀₂ h₁₃,
     Iso.hom_inv_id_assoc]
 
+-- See the adaptation note above `mapComp'₀₁₃_inv_comp_mapComp'₀₂₃_hom` (lean4#13557).
+set_option backward.defeqAttrib.useBackward true in
 @[to_app (attr := reassoc)]
 lemma mapComp'₀₁₃_inv (hf : f₀₁ ≫ f₁₃ = f) :
     (F.mapComp' f₀₁ f₁₃ f).inv =
@@ -147,6 +151,8 @@ lemma mapComp'₀₁₃_hom (hf : f₀₁ ≫ f₁₃ = f) :
   rw [← cancel_epi (F.mapComp' f₀₁ f₁₃ f).inv, Iso.inv_hom_id]
   simp [mapComp'₀₁₃_inv _ _ _ _ _ _ f h₀₂ h₁₃ hf]
 
+-- See the adaptation note above `mapComp'₀₁₃_inv_comp_mapComp'₀₂₃_hom` (lean4#13557).
+set_option backward.defeqAttrib.useBackward true in
 @[to_app (attr := reassoc)]
 lemma mapComp'₀₂₃_hom (hf : f₀₂ ≫ f₂₃ = f) :
     (F.mapComp' f₀₂ f₂₃ f).hom =
