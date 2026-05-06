@@ -151,7 +151,7 @@ theorem exists_div_of_norm_eq_one (hg : ∀ x, x ∈ Subgroup.zpowers g) {x : L}
     with ⟨y, hy⟩
   use toMul <| toAdditive y
   have := Units.ext_iff.1 congr(toMul <| toAdditive $hy)
-  simp only [ sub_hom, hom_id,
+  simp only [sub_hom, hom_id,
     Representation.IntertwiningMap.sub_toLinearMap, Representation.IntertwiningMap.toLinearMap_id,
     LinearMap.sub_apply, Representation.IntertwiningMap.coe_toLinearMap, applyAsHom_apply,
       LinearMap.id_coe, id_eq,
