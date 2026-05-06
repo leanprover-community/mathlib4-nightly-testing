@@ -146,7 +146,6 @@ def ofDigits {α : Type*} [Semiring α] (b : α) : List ℕ → α
   | [] => 0
   | h :: t => h + b * ofDigits b t
 
-set_option backward.defeqAttrib.useBackward true in
 theorem ofDigits_eq_foldr {α : Type*} [Semiring α] (b : α) (L : List ℕ) :
     ofDigits b L = List.foldr (fun x y => ↑x + b * y) 0 L := by
   induction L with

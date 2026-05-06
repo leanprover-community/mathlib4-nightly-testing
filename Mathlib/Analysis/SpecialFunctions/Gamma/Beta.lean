@@ -462,7 +462,6 @@ will show that this tends to `Γ(s)` as `n → ∞`. -/
 noncomputable def GammaSeq (s : ℝ) (n : ℕ) :=
   (n : ℝ) ^ s * n ! / ∏ j ∈ Finset.range (n + 1), (s + j)
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Euler's limit formula for the real Gamma function. -/
 theorem GammaSeq_tendsto_Gamma (s : ℝ) : Tendsto (GammaSeq s) atTop (𝓝 <| Gamma s) := by
   suffices Tendsto ((↑) ∘ GammaSeq s : ℕ → ℂ) atTop (𝓝 <| Complex.Gamma s) by

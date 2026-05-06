@@ -374,49 +374,41 @@ theorem image_inv_Ioo : Inv.inv '' Ioo a b = Ioo (b⁻¹) (a⁻¹) := by simp
 ### Images under `x ↦ a / x`
 -/
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Ici : (fun x => a / x) '' Ici b = Iic (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
   simp [div_eq_mul_inv, this, mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Iic : (fun x => a / x) '' Iic b = Ici (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
   simp [div_eq_mul_inv, this, mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Ioi : (fun x => a / x) '' Ioi b = Iio (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
   simp [div_eq_mul_inv, this, mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Iio : (fun x => a / x) '' Iio b = Ioi (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
   simp [div_eq_mul_inv, this, mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Icc : (fun x => a / x) '' Icc b c = Icc (a / c) (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
   simp [div_eq_mul_inv, this, mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Ico : (fun x => a / x) '' Ico b c = Ioc (a / c) (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
   simp [div_eq_mul_inv, this, mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Ioc : (fun x => a / x) '' Ioc b c = Ico (a / c) (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
   simp [div_eq_mul_inv, this, mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_additive (attr := simp)]
 theorem image_const_div_Ioo : (fun x => a / x) '' Ioo b c = Ioo (a / c) (a / b) := by
   have := image_comp (fun x => a * x) fun x => x⁻¹; dsimp [Function.comp_def] at this
@@ -503,7 +495,6 @@ theorem image_const_add_uIcc : (fun x => a + x) '' [[b, c]] = [[a + b, a + c]] :
 
 theorem image_add_const_uIcc : (fun x => x + a) '' [[b, c]] = [[b + a, c + a]] := by simp
 
-set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem image_const_sub_uIcc : (fun x => a - x) '' [[b, c]] = [[a - b, a - c]] := by
   have := image_comp (fun x => a + x) fun x => -x; dsimp [Function.comp_def] at this

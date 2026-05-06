@@ -48,7 +48,6 @@ theorem take_one {α : Fin (n + 1) → Sort*} (v : (i : Fin (n + 1)) → α i) :
 theorem take_eq_init {α : Fin (n + 1) → Sort*} (v : (i : Fin (n + 1)) → α i) :
     take n n.le_succ v = init v := rfl
 
-set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem take_eq_self (v : (i : Fin n) → α i) : take n (le_refl n) v = v := by
   ext i

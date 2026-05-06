@@ -88,7 +88,6 @@ theorem mem_antidiagonalTuple {n : ℕ} {k : ℕ} {x : Fin k → ℕ} :
       @eq_comm _ _ (Prod.snd _), and_comm (a := Prod.snd _ = _),
       ← Prod.mk_inj (a₁ := Prod.fst _), exists_eq_right]
 
-set_option backward.defeqAttrib.useBackward true in
 /-- The antidiagonal of `n` does not contain duplicate entries. -/
 theorem nodup_antidiagonalTuple (k n : ℕ) : List.Nodup (antidiagonalTuple k n) := by
   induction k generalizing n with

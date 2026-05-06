@@ -327,7 +327,6 @@ protected def Faithful.div (F : C ⥤ E) (G : D ⥤ E) [G.Faithful] (obj : C →
       grind
     map_comp := by grind }
 
-set_option backward.defeqAttrib.useBackward true in
 -- This follows immediately from `Functor.hext` (`Functor.hext h_obj @h_map`),
 -- but importing `CategoryTheory.EqToHom` causes an import loop:
 -- CategoryTheory.EqToHom → CategoryTheory.Opposites →

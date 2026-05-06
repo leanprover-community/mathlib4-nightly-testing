@@ -122,7 +122,6 @@ def ext {c c' : Bicone F} (φ : c.pt ≅ c'.pt)
       wι := fun j => φ.comp_inv_eq.mpr (wι j).symm
       wπ := fun j => φ.inv_comp_eq.mpr (wπ j).symm }
 
-set_option backward.defeqAttrib.useBackward true in
 variable (F) in
 /-- A functor `G : C ⥤ D` sends bicones over `F` to bicones over `G.obj ∘ F` functorially. -/
 @[simps]
@@ -609,7 +608,6 @@ def biproduct.mapIso {f g : J → C} [HasBiproduct f] [HasBiproduct g] (p : ∀ 
   hom := biproduct.map fun b => (p b).hom
   inv := biproduct.map fun b => (p b).inv
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance biproduct.map_epi {f g : J → C} [HasBiproduct f] [HasBiproduct g] (p : ∀ j, f j ⟶ g j)
     [∀ j, Epi (p j)] : Epi (biproduct.map p) := by

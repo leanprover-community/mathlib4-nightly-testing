@@ -225,7 +225,6 @@ theorem iterate_derivative_at_1_ne_zero [CharZero R] (n ν : ℕ) (h : ν ≤ n)
 
 open Submodule
 
-set_option backward.defeqAttrib.useBackward true in
 theorem linearIndependent_aux (n k : ℕ) (h : k ≤ n + 1) :
     LinearIndependent ℚ fun ν : Fin k => bernsteinPolynomial ℚ n ν := by
   induction k with

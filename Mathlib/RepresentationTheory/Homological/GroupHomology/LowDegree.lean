@@ -954,7 +954,6 @@ lemma π_comp_H1Iso_hom :
       (shortComplexH1 A).moduleCatLeftHomologyData.π := by
   simp [H1Iso, isoCycles₁, π, HomologicalComplex.homologyπ, leftHomologyπ]
 
-set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp), elementwise (attr := simp)]
 lemma π_comp_H1Iso_inv :
     (shortComplexH1 A).moduleCatLeftHomologyData.π ≫ (H1Iso A).inv = H1π A :=

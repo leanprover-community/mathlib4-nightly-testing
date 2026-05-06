@@ -283,7 +283,6 @@ theorem biproduct.map_matrix {f : J → C} {g : J → C} {h : K → C} (m : ∀ 
 
 end HasFiniteBiproducts
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Reindex a categorical biproduct via an equivalence of the index types. -/
 @[simps]
@@ -924,7 +923,6 @@ lemma preservesBiproduct_of_preservesProduct {f : J → C} [PreservesLimit (Disc
             (isLimitOfPreserves F hb.isLimit)) <|
         Cone.ext (Iso.refl _) (by rintro ⟨⟩; simp)⟩
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- If the (product-like) biproduct comparison for `F` and `f` is a monomorphism, then `F`
 preserves the biproduct of `f`. For the converse, see `mapBiproduct`. -/

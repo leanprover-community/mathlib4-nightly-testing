@@ -41,7 +41,6 @@ instance [Precoherent C] [HasFiniteCoproducts C] : Preregular C where
     ext b
     simpa using hι b
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance [FinitaryPreExtensive C] [Preregular C] : Precoherent C where
   pullback {B₁ B₂} f α _ X₁ π₁ h := by

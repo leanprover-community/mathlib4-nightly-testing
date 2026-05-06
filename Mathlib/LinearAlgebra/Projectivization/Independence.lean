@@ -98,7 +98,6 @@ theorem dependent_iff_not_independent : Dependent f ↔ ¬Independent f := by
 theorem independent_iff_not_dependent : Independent f ↔ ¬Dependent f := by
   rw [dependent_iff_not_independent, Classical.not_not]
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Two points in a projective space are dependent if and only if they are equal. -/
 @[simp]
 theorem dependent_pair_iff_eq (u v : ℙ K V) : Dependent ![u, v] ↔ u = v := by

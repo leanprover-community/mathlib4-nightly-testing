@@ -130,7 +130,6 @@ variable [MonoidalClosed A]
 
 open MonoidalClosed.FunctorCategory
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma whiskerLeft {G₁ G₂ : Cᵒᵖ ⥤ A} {g : G₁ ⟶ G₂} (hg : J.W g) (F : Cᵒᵖ ⥤ A) :
     J.W (F ◁ g) := fun H h ↦ by

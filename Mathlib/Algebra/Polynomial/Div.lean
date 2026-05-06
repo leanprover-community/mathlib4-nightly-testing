@@ -144,7 +144,6 @@ infixl:70 " /ₘ " => divByMonic
 @[inherit_doc]
 infixl:70 " %ₘ " => modByMonic
 
-set_option backward.defeqAttrib.useBackward true in
 theorem degree_modByMonic_lt [Nontrivial R] :
     ∀ (p : R[X]) {q : R[X]} (_hq : Monic q), degree (p %ₘ q) < degree q
   | p, q, hq =>
@@ -208,7 +207,6 @@ theorem divByMonic_eq_of_not_monic (p : R[X]) (hq : ¬Monic q) : p /ₘ q = 0 :=
 theorem modByMonic_eq_of_not_monic (p : R[X]) (hq : ¬Monic q) : p %ₘ q = p :=
   dif_neg hq
 
-set_option backward.defeqAttrib.useBackward true in
 theorem modByMonic_eq_self_iff [Nontrivial R] (hq : Monic q) : p %ₘ q = p ↔ degree p < degree q :=
   ⟨fun h => h ▸ degree_modByMonic_lt _ hq, fun h => by
     classical
@@ -237,7 +235,6 @@ theorem natDegree_modByMonic_le_left : natDegree (p %ₘ q) ≤ natDegree p :=
 theorem X_dvd_sub_C : X ∣ p - C (p.coeff 0) := by
   simp [X_dvd_iff, coeff_C]
 
-set_option backward.defeqAttrib.useBackward true in
 theorem modByMonic_eq_sub_mul_div :
     ∀ p q : R[X], p %ₘ q = p - q * (p /ₘ q)
   | p, q =>
@@ -263,7 +260,6 @@ theorem modByMonic_eq_sub_mul_div :
 theorem modByMonic_add_div (p q : R[X]) : p %ₘ q + q * (p /ₘ q) = p :=
   eq_sub_iff_add_eq.1 (modByMonic_eq_sub_mul_div p q)
 
-set_option backward.defeqAttrib.useBackward true in
 theorem divByMonic_eq_zero_iff [Nontrivial R] (hq : Monic q) : p /ₘ q = 0 ↔ degree p < degree q :=
   ⟨fun h => by
     have := modByMonic_add_div p q

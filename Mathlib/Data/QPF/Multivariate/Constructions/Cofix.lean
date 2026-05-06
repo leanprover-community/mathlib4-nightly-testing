@@ -493,7 +493,6 @@ theorem corec_roll {α : TypeVec n} {X Y} {x₀ : X} (f : X → Y) (g : Y → F 
   refine liftR_map_last _ _ _ _ ?_
   intro a; refine ⟨a, rfl, rfl⟩
 
-set_option backward.defeqAttrib.useBackward true in
 theorem Cofix.dest_corec' {α : TypeVec.{u} n} {β : Type u}
     (g : β → F (α.append1 (Cofix F α ⊕ β))) (x : β) :
     Cofix.dest (Cofix.corec' g x) =

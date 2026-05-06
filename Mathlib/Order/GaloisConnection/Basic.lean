@@ -117,7 +117,6 @@ end CompleteLattice
 -- Constructing Galois connections
 section Constructions
 
-set_option backward.defeqAttrib.useBackward true in
 @[to_dual self]
 protected theorem compl [BooleanAlgebra α] [BooleanAlgebra β] {l : α → β} {u : β → α}
     (gc : GaloisConnection l u) :

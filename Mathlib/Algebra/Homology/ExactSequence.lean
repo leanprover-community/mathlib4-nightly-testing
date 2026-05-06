@@ -222,7 +222,6 @@ lemma isComplex₂_mk (S : ComposableArrows C 2) (w : S.map' 0 1 ≫ S.map' 1 2 
     S.IsComplex :=
   S.isComplex₂_iff.2 w
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma _root_.CategoryTheory.ShortComplex.isComplex_toComposableArrows (S : ShortComplex C) :
     S.toComposableArrows.IsComplex :=

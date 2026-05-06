@@ -130,7 +130,6 @@ theorem dist_smul_pair (x : α) (y₁ y₂ : β) : dist (x • y₁) (x • y₂
 theorem dist_pair_smul (x₁ x₂ : α) (y : β) : dist (x₁ • y) (x₂ • y) ≤ dist x₁ x₂ * dist y 0 :=
   IsBoundedSMul.dist_pair_smul' x₁ x₂ y
 
-set_option backward.defeqAttrib.useBackward true in
 theorem Bornology.IsBounded.uniformContinuousOn_smul {s : Set (α × β)} (hs : IsBounded s) :
     UniformContinuousOn (· • ·).uncurry s := by
   rcases hs.subset_ball_lt 0 0 with ⟨C, hC₀, hC⟩

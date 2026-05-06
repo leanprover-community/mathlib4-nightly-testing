@@ -171,7 +171,6 @@ theorem spineToSimplex_interval (f : Path X m) (j l : ℕ) (hjl : j + l ≤ m) :
   convert spine_map_subinterval X m h j l hjl <| sx.spineToSimplex m h f
   exact sx.spine_spineToSimplex_apply m h f |>.symm
 
-set_option backward.defeqAttrib.useBackward true in
 theorem spineToSimplex_edge (f : Path X m) (j l : ℕ) (hjl : j + l ≤ m) :
     X.map (tr (intervalEdge j l hjl)).op (sx.spineToSimplex m h f) =
       sx.spineToDiagonal l (by lia) (f.interval j l hjl) := by

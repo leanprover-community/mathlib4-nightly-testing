@@ -160,7 +160,6 @@ instance {I : Type u₁} {i j : Discrete I} (f : i ⟶ j) : IsIso f :=
 attribute [local aesop safe tactic (rule_sets := [CategoryTheory])]
   CategoryTheory.Discrete.discreteCases
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Any function `I → C` gives a functor `Discrete I ⥤ C`. -/
 def functor {I : Type u₁} (F : I → C) : Discrete I ⥤ C where
   obj := F ∘ Discrete.as

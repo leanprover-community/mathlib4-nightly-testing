@@ -79,7 +79,6 @@ abbrev map : Δ[c.dim + 1] ⟶ X :=
   yonedaEquiv.symm
     ((P.p c.s).val.cast (P.isUniquelyCodimOneFace c.s).dim_eq).simplex
 
-set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma range_map : Subcomplex.range c.map = (P.p c.s).val.subcomplex := by
   rw [range_eq_ofSimplex, Equiv.apply_symm_apply, S.ofSimplex_eq_subcomplex_mk,
@@ -323,7 +322,6 @@ of a simplicial set. -/
 noncomputable def m (j : ι) : f.sigmaHorn j ⟶ f.sigmaStdSimplex j :=
   Limits.Sigma.map (basicCell _ _)
 
-set_option backward.defeqAttrib.useBackward true in
 instance (j : ι) : Mono (f.m j) :=
   MorphismProperty.colimitsOfShape_le (W := .monomorphisms _) _
     (MorphismProperty.colimitsOfShape_colimMap _

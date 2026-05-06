@@ -40,7 +40,6 @@ namespace DoldKan
 
 variable {C : Type*} [Category* C] [Preadditive C]
 
-set_option backward.defeqAttrib.useBackward true in
 theorem HigherFacesVanish.comp_σ {Y : C} {X : SimplicialObject C} {n b q : ℕ} {φ : Y ⟶ X _⦋n + 1⦌}
     (v : HigherFacesVanish q φ) (hnbq : n + 1 = b + q) :
     HigherFacesVanish q

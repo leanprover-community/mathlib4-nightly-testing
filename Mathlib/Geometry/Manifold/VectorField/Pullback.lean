@@ -153,7 +153,6 @@ lemma mpullbackWithin_neg :
   ext x
   simp [mpullbackWithin_apply]
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma mpullbackWithin_id {V : Π (x : M), TangentSpace I x} (h : UniqueMDiffWithinAt I s x) :
     mpullbackWithin I I id V s x = V x := by
@@ -215,7 +214,6 @@ lemma mpullback_eq_pullback {f : E → E'} {V : E' → E'} :
     mpullback 𝓘(𝕜, E) 𝓘(𝕜, E') f V = pullback 𝕜 f V := by
   simp only [← mpullbackWithin_univ, ← pullbackWithin_univ, mpullbackWithin_eq_pullbackWithin]
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma mpullback_id {V : Π (x : M), TangentSpace I x} : mpullback I I id V = V := by
   ext x

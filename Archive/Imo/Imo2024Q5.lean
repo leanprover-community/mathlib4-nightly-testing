@@ -913,7 +913,6 @@ lemma path2OfEdge0_firstMonster_eq_none_of_path1OfEdge0_firstMonster_eq_some (hN
       simp only
       lia
 
-set_option backward.defeqAttrib.useBackward true in
 set_option linter.flexible false in
 lemma winningStrategy_play_one_eq_none_or_play_two_eq_none_of_edge_zero (hN : 2 ≤ N)
     {m : MonsterData N} (hc₁0 : m (row1 hN) = 0) :

@@ -171,7 +171,6 @@ abbrev Product (l : List ℕ) : Type :=
 lemma commProb_nil : commProb (Product []) = 1 := by
   simp [Product, commProb_pi]
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma commProb_cons (n : ℕ) (l : List ℕ) :
     commProb (Product (n :: l)) = commProb (DihedralGroup n) * commProb (Product l) := by

@@ -506,7 +506,6 @@ lemma mapWhiskerRight_comp {Fₗ : C ⥤ E} {Gₗ : C ⥤ E} {Hₗ : C ⥤ E}
     mapWhiskerRight (α ≫ β) H = mapWhiskerRight α H ≫ mapWhiskerRight β H := by
   cat_disch
 
-set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma mapWhiskerRight_id (Fₗ : C ⥤ E) (H : D ⥤ E') :
     mapWhiskerRight (𝟙 Fₗ) H = 𝟙 _ := by
@@ -528,7 +527,6 @@ lemma mapWhiskerLeft_comp {Fᵣ : D ⥤ E'} {Gᵣ : D ⥤ E'} {Hᵣ : D ⥤ E'}
     mapWhiskerLeft H (α ≫ β) = mapWhiskerLeft H α ≫ mapWhiskerLeft H β := by
   cat_disch
 
-set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma mapWhiskerLeft_id (H : C ⥤ E) (Fᵣ : D ⥤ E') :
     mapWhiskerLeft H (𝟙 Fᵣ) = 𝟙 _ := by

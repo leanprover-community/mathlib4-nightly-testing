@@ -297,7 +297,6 @@ end Hom
 
 section Infinitesimal
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Given an `R`-algebra extension `0 → I → P → S → 0` of `S`,
 the infinitesimal extension associated to it is `0 → I/I² → P/I² → S → 0`. -/
 noncomputable

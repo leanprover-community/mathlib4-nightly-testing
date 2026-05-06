@@ -189,7 +189,6 @@ nonrec def ExceptT.callCC {ε} [MonadCont m] {α β : Type _}
 instance {ε} [MonadCont m] : MonadCont (ExceptT ε m) where
   callCC := ExceptT.callCC
 
-set_option backward.defeqAttrib.useBackward true in
 instance {ε} [MonadCont m] [LawfulMonadCont m] : LawfulMonadCont (ExceptT ε m) where
   callCC_bind_right := by
     intros; simp only [callCC, ExceptT.callCC, ExceptT.run_bind, callCC_bind_right]; ext

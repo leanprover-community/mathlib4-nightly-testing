@@ -641,7 +641,6 @@ variable {V} {α : Type*} [AddRightCancelSemigroup α] [One α] [DecidableEq α]
 def of.d (X : α → V) (d : ∀ n, X (n + 1) ⟶ X n) (i : α) (j : α) : X i ⟶ X j :=
   if h : i = j + 1 then eqToHom (by rw [h]) ≫ d j else 0
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Construct an `α`-indexed chain complex from a dependently-typed differential.
 -/
 abbrev of (X : α → V) (d : ∀ n, X (n + 1) ⟶ X n) (sq : ∀ n, d (n + 1) ≫ d n = 0) :
@@ -901,7 +900,6 @@ variable {V} {α : Type*} [AddRightCancelSemigroup α] [One α] [DecidableEq α]
 def of.d (X : α → V) (d : ∀ n, X n ⟶ X (n + 1)) (i : α) (j : α) : X i ⟶ X j :=
   if h : i + 1 = j then d _ ≫ eqToHom (by rw [h]) else 0
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Construct an `α`-indexed cochain complex from a dependently-typed differential.
 -/
 abbrev of (X : α → V) (d : ∀ n, X n ⟶ X (n + 1)) (sq : ∀ n, d n ≫ d (n + 1) = 0) :

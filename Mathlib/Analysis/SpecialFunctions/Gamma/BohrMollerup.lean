@@ -241,7 +241,6 @@ theorem tendsto_logGammaSeq_of_le_one (hf_conv : ConvexOn ℝ (Ioi 0) f)
     filter_upwards [eventually_ne_atTop 0] with n hn using
       le_sub_iff_add_le'.mpr (ge_logGammaSeq hf_conv hf_feq hx hn)
 
-set_option backward.defeqAttrib.useBackward true in
 theorem tendsto_logGammaSeq (hf_conv : ConvexOn ℝ (Ioi 0) f)
     (hf_feq : ∀ {y : ℝ}, 0 < y → f (y + 1) = f y + log y) (hx : 0 < x) :
     Tendsto (logGammaSeq x) atTop (𝓝 <| f x - f 1) := by

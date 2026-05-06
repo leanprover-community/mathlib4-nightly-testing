@@ -32,7 +32,6 @@ open CategoryTheory Opposite Limits regularTopology ContinuousMap Topology
 variable {C : Type u} [Category.{v} C] (G : C ⥤ TopCat.{w})
   (X : Type w') [TopologicalSpace X]
 
-set_option backward.defeqAttrib.useBackward true in
 /--
 An auxiliary lemma to that allows us to use `IsQuotientMap.lift` in the proof of
 `equalizerCondition_yonedaPresheaf`.

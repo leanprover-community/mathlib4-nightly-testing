@@ -422,7 +422,6 @@ noncomputable def eTruncLTLTIsoLT :
   haveI := t.isIso_eTruncLTLTIsoLT a b hab
   asIso (t.eTruncLTLTToLT a b)
 
-set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma eTruncLTLTIsoLT_hom_inv_id_app (X : C) :
     (t.eTruncLT.obj b).map ((t.eTruncLTι a).app X) ≫

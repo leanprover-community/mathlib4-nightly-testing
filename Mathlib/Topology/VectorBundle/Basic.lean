@@ -828,7 +828,6 @@ theorem mk_coordChange (a : VectorPrebundle R F E) {e e' : Pretrivialization F (
     exact hb.2
   · exact a.coordChange_apply he he' hb v
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Natural identification of `VectorPrebundle` as a `FiberPrebundle`. -/
 def toFiberPrebundle (a : VectorPrebundle R F E) : FiberPrebundle F E :=
   { a with

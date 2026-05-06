@@ -467,7 +467,6 @@ def CorepresentableBy.equivOfIsoObj {F : C ⥤ Type w} {X Y : C} (e : Y ≅ X) :
   left_inv _ := by ext; simp
   right_inv _ := by ext; simp
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Representing `F` composed with universe lifting is the same as representing `F`. -/
 @[simps]
@@ -480,7 +479,6 @@ def representableByUliftFunctorEquiv {F : Cᵒᵖ ⥤ Type v} {X : C} :
     { homEquiv {Y} := R.homEquiv.trans Equiv.ulift.symm
       homEquiv_comp f g := by simp [R.homEquiv_comp] }
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Corepresenting `F` composed with universe lifting is the same as corepresenting `F`. -/
 @[simps]
@@ -832,7 +830,6 @@ theorem yonedaPairing_map (P Q : Cᵒᵖ × (Cᵒᵖ ⥤ Type v₁)) (α : P ⟶
     (yonedaPairing C).map α = ↾fun β ↦ yoneda.map α.1.unop ≫ β ≫ α.2 :=
   rfl
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The Yoneda lemma asserts that the Yoneda pairing
 `(X : Cᵒᵖ, F : Cᵒᵖ ⥤ Type) ↦ (yoneda.obj (unop X) ⟶ F)`
@@ -849,7 +846,6 @@ def yonedaLemma : yonedaPairing C ≅ yonedaEvaluation C :=
 
 variable {C}
 
-set_option backward.defeqAttrib.useBackward true in
 /- Porting note: this used to be two calls to `tidy` -/
 /-- The curried version of yoneda lemma when `C` is small. -/
 def curriedYonedaLemma {C : Type u₁} [SmallCategory C] :
@@ -860,7 +856,6 @@ def curriedYonedaLemma {C : Type u₁} [SmallCategory C] :
     ext a b
     simp [yonedaEquiv, ← NatTrans.naturality_apply])
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The curried version of the Yoneda lemma. -/
 def largeCurriedYonedaLemma {C : Type u₁} [Category.{v₁} C] :
@@ -883,7 +878,6 @@ def yonedaOpCompYonedaObj {C : Type u₁} [Category.{v₁} C] (P : Cᵒᵖ ⥤ T
     yoneda.op ⋙ yoneda.obj P ≅ P ⋙ uliftFunctor.{u₁} :=
   isoWhiskerRight largeCurriedYonedaLemma ((evaluation _ _).obj P)
 
-set_option backward.defeqAttrib.useBackward true in
 /-- The curried version of yoneda lemma when `C` is small. -/
 def curriedYonedaLemma' {C : Type u₁} [SmallCategory C] :
     yoneda ⋙ (whiskeringLeft Cᵒᵖ (Cᵒᵖ ⥤ Type u₁)ᵒᵖ (Type u₁)).obj yoneda.op
@@ -912,7 +906,6 @@ lemma isIso_iff_isIso_yoneda_map {X Y : C} (f : X ⟶ Y) :
   rw [isIso_iff_yoneda_map_bijective]
   exact forall_congr' fun _ ↦ (bijective_iff_isIso_ofHom _)
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Yoneda's lemma as a bijection `(uliftYoneda.{w}.obj X ⟶ F) ≃ F.obj (op X)`
 for any presheaf of type `F : Cᵒᵖ ⥤ Type (max w v₁)` for some
 auxiliary universe `w`. -/
@@ -928,7 +921,6 @@ def uliftYonedaEquiv {X : C} {F : Cᵒᵖ ⥤ Type (max w v₁)} :
 
 attribute [simp] uliftYonedaEquiv_symm_apply_app
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma uliftYonedaEquiv_naturality {X Y : Cᵒᵖ} {F : Cᵒᵖ ⥤ Type (max w v₁)}
     (f : uliftYoneda.{w}.obj (unop X) ⟶ F) (g : X ⟶ Y) :
@@ -955,7 +947,6 @@ lemma uliftYonedaEquiv_symm_comp
     uliftYonedaEquiv.symm x ≫ f = uliftYonedaEquiv.symm (f.app _ x) :=
   uliftYonedaEquiv.injective (by rw [uliftYonedaEquiv_comp]; simp)
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma uliftYonedaEquiv_uliftYoneda_map {X Y : C} (f : X ⟶ Y) :
@@ -972,7 +963,6 @@ lemma hom_ext_uliftYoneda {P Q : Cᵒᵖ ⥤ Type (max w v₁)} {f g : P ⟶ Q}
   simpa [-op_unop, uliftYonedaEquiv_comp] using
     congr_arg uliftYonedaEquiv.{w} (h _ (uliftYonedaEquiv.symm x))
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A variant of the curried version of the Yoneda lemma with a raise in the universe level. -/
 def uliftYonedaOpCompCoyoneda {C : Type u₁} [Category.{v₁} C] :
@@ -1072,7 +1062,6 @@ theorem coyonedaPairing_map (P Q : C × (C ⥤ Type v₁)) (α : P ⟶ Q) (β : 
     (coyonedaPairing C).map α β = coyoneda.map α.1.op ≫ β ≫ α.2 :=
   rfl
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The Coyoneda lemma asserts that the Coyoneda pairing
 `(X : C, F : C ⥤ Type) ↦ (coyoneda.obj X ⟶ F)`
@@ -1089,7 +1078,6 @@ def coyonedaLemma : coyonedaPairing C ≅ coyonedaEvaluation C :=
 
 variable {C}
 
-set_option backward.defeqAttrib.useBackward true in
 /- Porting note: this used to be two calls to `tidy` -/
 /-- The curried version of coyoneda lemma when `C` is small. -/
 def curriedCoyonedaLemma {C : Type u₁} [SmallCategory C] :
@@ -1099,7 +1087,6 @@ def curriedCoyonedaLemma {C : Type u₁} [SmallCategory C] :
     ext a b
     simp [coyonedaEquiv, ← NatTrans.naturality_apply])
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The curried version of the Coyoneda lemma. -/
 def largeCurriedCoyonedaLemma {C : Type u₁} [Category.{v₁} C] :
@@ -1124,7 +1111,6 @@ def coyonedaCompYonedaObj {C : Type u₁} [Category.{v₁} C] (P : C ⥤ Type v�
     coyoneda.rightOp ⋙ yoneda.obj P ≅ P ⋙ uliftFunctor.{u₁} :=
   isoWhiskerRight largeCurriedCoyonedaLemma ((evaluation _ _).obj P)
 
-set_option backward.defeqAttrib.useBackward true in
 /-- The curried version of coyoneda lemma when `C` is small. -/
 def curriedCoyonedaLemma' {C : Type u₁} [SmallCategory C] :
     yoneda ⋙ (whiskeringLeft C (C ⥤ Type u₁)ᵒᵖ (Type u₁)).obj coyoneda.rightOp
@@ -1153,7 +1139,6 @@ lemma isIso_iff_isIso_coyoneda_map {X Y : C} (f : X ⟶ Y) :
   rw [isIso_iff_coyoneda_map_bijective]
   exact forall_congr' fun _ ↦ bijective_iff_isIso_ofHom _
 
-set_option backward.defeqAttrib.useBackward true in
 /-- Coyoneda's lemma as a bijection `(uliftCoyoneda.{w}.obj X ⟶ F) ≃ F.obj (op X)`
 for any presheaf of type `F : Cᵒᵖ ⥤ Type (max w v₁)` for some
 auxiliary universe `w`. -/

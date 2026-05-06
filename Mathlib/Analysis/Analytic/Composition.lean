@@ -115,7 +115,6 @@ theorem applyComposition_ones (p : FormalMultilinearSeries 𝕜 E F) (n : ℕ) :
   refine congr_arg v ?_
   rw [Fin.ext_iff, Fin.val_castLE, Composition.ones_embedding, Fin.val_mk]
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem applyComposition_single (p : FormalMultilinearSeries 𝕜 E F) {n : ℕ} (hn : 0 < n)
     (v : Fin n → E) : p.applyComposition (Composition.single n hn) v = fun _j => p n v := by

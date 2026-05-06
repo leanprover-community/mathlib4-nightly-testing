@@ -94,7 +94,6 @@ section X_notMem
 
 variable (hXI : X ∉ I) [I.IsPrime]
 
-set_option backward.defeqAttrib.useBackward true in
 theorem eq_of_le_of_X_notMem_of_fg_of_isPrime {J : Ideal R⟦X⟧} (hJI : J ≤ I) (hXI : X ∉ I)
     (hJ : J.FG) (h' : I.map constantCoeff ≤ J.map constantCoeff) : I = J := by
   refine hJI.antisymm' ?_

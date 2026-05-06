@@ -393,7 +393,6 @@ lemma coprodMk_inr (x : Y) :
   refine (colimit.isoColimitCocone_ι_inv_assoc ⟨_, TopCat.binaryCofanIsColimit _ _⟩ _ _).trans ?_
   exact coprodComparison_inr Scheme.forgetToTop
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The open cover of the coproduct of two schemes. -/
 noncomputable
@@ -649,7 +648,6 @@ instance [Finite ι] (R : ι → CommRingCat.{u}) : IsIso (sigmaSpec R) := by
   rw [this]
   infer_instance
 
-set_option backward.defeqAttrib.useBackward true in
 instance [Finite σ] [∀ i, IsAffine (g i)] : IsAffine (∐ g) := by
   obtain ⟨ι, ⟨e⟩⟩ := Small.equiv_small.{u} (α := σ)
   have : Finite ι := e.finite_iff.mp ‹_›

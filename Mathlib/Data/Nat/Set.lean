@@ -33,7 +33,6 @@ variable {α : Type*}
 theorem range_of_succ (f : ℕ → α) : {f 0} ∪ range (f ∘ succ) = range f := by
   rw [← image_singleton, range_comp, ← image_union, zero_union_range_succ, image_univ]
 
-set_option backward.defeqAttrib.useBackward true in
 theorem range_rec {α : Type*} (x : α) (f : ℕ → α → α) :
     (Set.range fun n => Nat.rec x f n : Set α) =
       {x} ∪ Set.range fun n => Nat.rec (f 0 x) (f ∘ succ) n := by

@@ -150,7 +150,6 @@ theorem bodd_mul (m n : ℤ) : bodd (m * n) = (bodd m && bodd n) := by
              negSucc_mul_negSucc] <;>
   simp only [negSucc_eq, ← Int.natCast_succ, bodd_neg, bodd_coe, Nat.bodd_mul]
 
-set_option backward.defeqAttrib.useBackward true in
 theorem bodd_add_div2 : ∀ n, cond (bodd n) 1 0 + 2 * div2 n = n
   | (n : ℕ) => by
     rw [show (cond (bodd n) 1 0 : ℤ) = (cond (bodd n) 1 0 : ℕ) by cases bodd n <;> rfl]

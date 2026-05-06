@@ -38,7 +38,6 @@ instance SetRel.isTrans_entourageProd {s : SetRel X X} {t : SetRel Y Y} [s.IsTra
 @[deprecated (since := "2025-10-17")]
 alias IsTransitiveRel.entourageProd := SetRel.isTrans_entourageProd
 
-set_option backward.defeqAttrib.useBackward true in
 lemma IsUltraUniformity.comap {u : UniformSpace Y} (h : IsUltraUniformity Y) (f : X → Y) :
     @IsUltraUniformity _ (u.comap f) := by
   letI := u.comap f
@@ -47,7 +46,6 @@ lemma IsUltraUniformity.comap {u : UniformSpace Y} (h : IsUltraUniformity Y) (f 
     rintro _ ⟨_, _, _⟩
     infer_instance
 
-set_option backward.defeqAttrib.useBackward true in
 lemma IsUltraUniformity.inf {u u' : UniformSpace X} (h : @IsUltraUniformity _ u)
     (h' : @IsUltraUniformity _ u') :
     @IsUltraUniformity _ (u ⊓ u') := by

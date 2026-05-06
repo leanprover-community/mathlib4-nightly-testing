@@ -217,7 +217,6 @@ abbrev completeEquipartiteGraph (r t : ℕ) : SimpleGraph (Fin r × Fin t) :=
 lemma completeEquipartiteGraph_adj {v w} :
   (completeEquipartiteGraph r t).Adj v w ↔ v.1 ≠ w.1 := by rfl
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A `completeEquipartiteGraph` is isomorphic to a corresponding `completeMultipartiteGraph`.
 

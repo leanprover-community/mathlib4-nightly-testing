@@ -149,7 +149,6 @@ lemma dist_le_dist_of_le_pi (ha : a₂ ≤ a₁) (h₁ : a₁ ≤ b₁) (hb : b�
   (dist_mono_right_pi h₁ (h₁.trans hb) hb).trans <|
     dist_anti_left_pi (ha.trans <| h₁.trans hb) (h₁.trans hb) ha
 
-set_option backward.defeqAttrib.useBackward true in
 theorem IsUpperSet.exists_subset_ball (hs : IsUpperSet s) (hx : x ∈ closure s) (hδ : 0 < δ) :
     ∃ y, closedBall y (δ / 4) ⊆ closedBall x δ ∧ closedBall y (δ / 4) ⊆ interior s := by
   refine ⟨x + const _ (3 / 4 * δ), closedBall_subset_closedBall' ?_, ?_⟩
@@ -167,7 +166,6 @@ theorem IsUpperSet.exists_subset_ball (hs : IsUpperSet s) (hx : x ∈ closure s)
   rw [abs_sub_le_iff] at hxy hz
   linarith
 
-set_option backward.defeqAttrib.useBackward true in
 theorem IsLowerSet.exists_subset_ball (hs : IsLowerSet s) (hx : x ∈ closure s) (hδ : 0 < δ) :
     ∃ y, closedBall y (δ / 4) ⊆ closedBall x δ ∧ closedBall y (δ / 4) ⊆ interior s := by
   refine ⟨x - const _ (3 / 4 * δ), closedBall_subset_closedBall' ?_, ?_⟩

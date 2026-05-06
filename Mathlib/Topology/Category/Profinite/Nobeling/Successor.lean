@@ -391,7 +391,6 @@ theorem span_sum : Set.range (eval C) = Set.range (Sum.elim
     EquivLike.range_comp (e := sum_equiv C hsC ho)]
 
 
-set_option backward.defeqAttrib.useBackward true in
 theorem square_commutes : SumEval C ho ∘ Sum.inl =
     ModuleCat.ofHom (πs C o) ∘ eval (π C (ord I · < o)) := by
   ext l
@@ -607,7 +606,6 @@ theorem maxToGood_injective
   dsimp [MaxToGood] at h
   rw [max_eq_o_cons_tail C hsC ho m, max_eq_o_cons_tail C hsC ho n, h]
 
-set_option backward.defeqAttrib.useBackward true in
 include hC in
 theorem linearIndependent_comp_of_eval
     (h₁ : ⊤ ≤ Submodule.span ℤ (Set.range (eval (π C (ord I · < o))))) :

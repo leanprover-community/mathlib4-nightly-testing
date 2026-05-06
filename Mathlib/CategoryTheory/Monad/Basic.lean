@@ -146,7 +146,6 @@ instance : Category (Monad C) where
         { app := fun X => f.app X ≫ g.app X
           naturality := fun X Y h => by rw [assoc, f.1.naturality_assoc, g.1.naturality] } }
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : Category (Comonad C) where
   id M := { toNatTrans := 𝟙 (M : C ⥤ C) }
@@ -291,7 +290,6 @@ end Monad
 
 namespace Comonad
 
-set_option backward.defeqAttrib.useBackward true in
 /-- The identity comonad. -/
 @[simps!]
 def id : Comonad C where
@@ -310,7 +308,6 @@ variable {C}
 
 namespace Monad
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Transport a monad structure on a functor along an isomorphism of functors. -/
 def transport {F : C ⥤ C} (T : Monad C) (i : (T : C ⥤ C) ≅ F) : Monad C where

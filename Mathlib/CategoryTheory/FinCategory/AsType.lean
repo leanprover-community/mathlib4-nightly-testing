@@ -57,7 +57,6 @@ noncomputable def asTypeToObjAsType : AsType α ⥤ ObjAsType α where
   obj := id
   map {_ _} := (Fintype.equivFin _).symm
 
-set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The "identity" functor from `ObjAsType α` to `AsType α`. -/
 @[simps]

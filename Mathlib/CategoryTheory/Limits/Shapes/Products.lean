@@ -362,7 +362,6 @@ lemma Pi.map'_comp_π {f : α → C} {g : β → C} [HasProduct f] [HasProduct g
     (q : ∀ (b : β), f (p b) ⟶ g b) (b : β) : Pi.map' p q ≫ Pi.π g b = Pi.π f (p b) ≫ q b :=
   limit.lift_π _ _
 
-set_option backward.defeqAttrib.useBackward true in
 lemma Pi.map'_id_id {f : α → C} [HasProduct f] : Pi.map' id (fun a => 𝟙 (f a)) = 𝟙 (∏ᶜ f) := by
   ext; simp
 
@@ -371,7 +370,6 @@ lemma Pi.map'_id {f g : α → C} [HasProduct f] [HasProduct g] (p : ∀ b, f b 
     Pi.map' id p = Pi.map p :=
   rfl
 
-set_option backward.defeqAttrib.useBackward true in
 lemma Pi.map'_comp_map' {f : α → C} {g : β → C} {h : γ → C} [HasProduct f] [HasProduct g]
     [HasProduct h] (p : β → α) (p' : γ → β) (q : ∀ (b : β), f (p b) ⟶ g b)
     (q' : ∀ (c : γ), g (p' c) ⟶ h c) :
@@ -498,7 +496,6 @@ lemma Sigma.ι_comp_map' {f : α → C} {g : β → C} [HasCoproduct f] [HasCopr
     Sigma.ι f a ≫ Sigma.map' p q = q a ≫ Sigma.ι g (p a) :=
   colimit.ι_desc _ _
 
-set_option backward.defeqAttrib.useBackward true in
 lemma Sigma.map'_id_id {f : α → C} [HasCoproduct f] :
     Sigma.map' id (fun a => 𝟙 (f a)) = 𝟙 (∐ f) := by
   ext; simp
@@ -508,7 +505,6 @@ lemma Sigma.map'_id {f g : α → C} [HasCoproduct f] [HasCoproduct g] (p : ∀ 
     Sigma.map' id p = Sigma.map p :=
   rfl
 
-set_option backward.defeqAttrib.useBackward true in
 lemma Sigma.map'_comp_map' {f : α → C} {g : β → C} {h : γ → C} [HasCoproduct f] [HasCoproduct g]
     [HasCoproduct h] (p : α → β) (p' : β → γ) (q : ∀ (a : α), f a ⟶ g (p a))
     (q' : ∀ (b : β), g b ⟶ h (p' b)) :
@@ -899,7 +895,6 @@ theorem Pi.reindex_hom_π (b : β) : (Pi.reindex ε f).hom ≫ Pi.π f (ε b) = 
     Discrete.natIso_inv_app, Iso.refl_inv, Category.id_comp]
   exact limit.w (Discrete.functor (f ∘ ε)) (Discrete.eqToHom' (ε.symm_apply_apply b))
 
-set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 theorem Pi.reindex_inv_π (b : β) : (Pi.reindex ε f).inv ≫ Pi.π (f ∘ ε) b = Pi.π f (ε b) := by
   simp [Iso.inv_comp_eq]

@@ -251,7 +251,6 @@ theorem Fix.rec_unique {β : Type u} (g : F (append1 α β) → β) (h : Fix F �
   intro x hyp'
   rw [hyp, ← hyp', Fix.rec_eq]
 
-set_option backward.defeqAttrib.useBackward true in
 theorem Fix.mk_dest (x : Fix F α) : Fix.mk (Fix.dest x) = x := by
   change (Fix.mk ∘ Fix.dest) x = x
   apply Fix.ind_rec

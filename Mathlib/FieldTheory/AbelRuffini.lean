@@ -135,7 +135,6 @@ theorem gal_X_pow_sub_C_isSolvable_aux (n : ℕ) (a : F)
   rw [σ.mul_apply, τ.mul_apply, hc, map_mul, τ.commutes, hd, map_mul, σ.commutes, hc,
     mul_assoc, mul_assoc, mul_right_inj' hb', mul_comm]
 
-set_option backward.defeqAttrib.useBackward true in
 theorem splits_X_pow_sub_one_of_X_pow_sub_C {F : Type*} [Field F] {E : Type*} [Field E]
     (i : F →+* E) (n : ℕ) {a : F} (ha : a ≠ 0) (h : ((X ^ n - C a).map i).Splits) :
     ((X ^ n - 1 : F[X]).map i).Splits := by
