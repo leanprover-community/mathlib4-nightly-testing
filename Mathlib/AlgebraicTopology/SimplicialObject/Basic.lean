@@ -422,6 +422,12 @@ def point : Augmented C ⥤ C :=
   Comma.snd _ _
 
 set_option backward.defeqAttrib.useBackward true in
+@[reassoc]
+lemma w_app {X Y : Augmented C} (f : X ⟶ Y) (n : SimplexCategoryᵒᵖ) :
+    dsimp% f.left.app n ≫ Y.hom.app n = X.hom.app n ≫ f.right :=
+  congr_app f.w n
+
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor from augmented objects to arrows. -/
 @[simps]
@@ -793,6 +799,7 @@ def drop : Augmented C ⥤ CosimplicialObject C :=
 def point : Augmented C ⥤ C :=
   Comma.fst _ _
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma w_app {X Y : Augmented C} {η : X ⟶ Y} {n : SimplexCategory} :
     dsimp% η.left ≫ Y.hom.app n = X.hom.app n ≫ η.right.app n :=
