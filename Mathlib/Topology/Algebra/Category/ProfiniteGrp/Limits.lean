@@ -62,6 +62,7 @@ def toLimitFun (P : ProfiniteGrp.{u}) : P →* limit (diagram P) where
   map_one' := Subtype.val_inj.mp rfl
   map_mul' _ _ := Subtype.val_inj.mp rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma toLimitFun_continuous (P : ProfiniteGrp.{u}) : Continuous (toLimitFun P) := by
   apply continuous_induced_rng.mpr (continuous_pi _)

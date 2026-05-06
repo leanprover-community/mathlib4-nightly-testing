@@ -513,6 +513,7 @@ end Equiv
 
 section Piecewise
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given two closed sets covering a topological space, and locally constant maps on these two sets,
 then if these two locally constant maps agree on the intersection, we get a piecewise defined
 locally constant map on the whole space.

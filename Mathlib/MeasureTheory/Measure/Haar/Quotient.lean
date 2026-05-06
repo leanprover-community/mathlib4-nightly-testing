@@ -323,6 +323,7 @@ variable [Countable Γ] [MeasurableSpace (G ⧸ Γ)] [BorelSpace (G ⧸ Γ)]
 
 local notation "μ_𝓕" => Measure.map (@QuotientGroup.mk G _ Γ) (μ.restrict 𝓕)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The `essSup` of a function `g` on the quotient space `G ⧸ Γ` with respect to the pushforward
   of the restriction, `μ_𝓕`, of a right-invariant measure `μ` to a fundamental domain `𝓕`, is the
   same as the `essSup` of `g`'s lift to the universal cover `G` with respect to `μ`. -/

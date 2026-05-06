@@ -104,6 +104,7 @@ variable (x y : ℕ)
 private def P : ℕ × ℤ × ℤ → Prop
   | (r, s, t) => (r : ℤ) = x * s + y * t
 
+set_option backward.defeqAttrib.useBackward true in
 private theorem xgcdAux_P {r r'} :
     ∀ {s t s' t'}, P x y (r, s, t) → P x y (r', s', t') → P x y (xgcdAux r s t r' s' t') := by
   induction r, r' using gcd.induction with

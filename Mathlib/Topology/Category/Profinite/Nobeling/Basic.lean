@@ -119,6 +119,7 @@ theorem proj_prop_eq_self (hh : ∀ i x, x ∈ C → x i ≠ false → J i) : π
   · rwa [← h, proj_eq_self]; exact (hh · y hy)
   · rw [proj_eq_self]; exact (hh · x h)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem proj_comp_of_subset (h : ∀ i, J i → K i) : (Proj J ∘ Proj K) =
     (Proj J : (I → Bool) → (I → Bool)) := by
   ext x i; dsimp [Proj]; simp_all
@@ -396,6 +397,7 @@ theorem eval_eq (l : Products I) (x : C) :
     dsimp [LocallyConstant.evalMonoidHom, e]
     simp only [ite_eq_right_iff, one_ne_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem evalFacProp {l : Products I} (J : I → Prop)
     (h : ∀ a, a ∈ l.val → J a) [∀ j, Decidable (J j)] :
     l.eval (π C J) ∘ ProjRestrict C J = l.eval C := by

@@ -453,6 +453,7 @@ namespace QPF
 variable {F₂ : Type u → Type u} [q₂ : QPF F₂]
 variable {F₁ : Type u → Type u} [q₁ : QPF F₁]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- composition of qpfs gives another qpf -/
 @[implicit_reducible]
 def comp : QPF (Functor.Comp F₂ F₁) where

@@ -115,6 +115,7 @@ lemma sectionsMap_freeHomEquiv_symm_freeSection
   obtain ⟨f, rfl⟩ := (freeHomEquiv M).surjective f
   cat_disch
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma ιFree_freeMap (i : I) :
     ιFree (R := R) i ≫ freeMap f = ιFree (f i) := by

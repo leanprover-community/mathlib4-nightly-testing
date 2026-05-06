@@ -242,6 +242,7 @@ instance : IsEmpty (0 : Multiset α) := Fintype.card_eq_zero_iff.mp (by simp)
 
 instance : IsEmpty (∅ : Multiset α) := Fintype.card_eq_zero_iff.mp (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 `v ::ₘ m` is equivalent to `Option m` by mapping one `v` to `none` and everything else to `m`.
 -/

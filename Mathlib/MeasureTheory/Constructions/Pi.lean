@@ -156,6 +156,7 @@ instance sigmaFinite_tprod (l : List δ) (μ : ∀ i, Measure (X i)) [∀ i, Sig
   | nil => rw [tprod_nil]; infer_instance
   | cons i l ih => rw [tprod_cons]; exact @prod.instSigmaFinite _ _ _ _ _ _ _ ih
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem tprod_tprod (l : List δ) (μ : ∀ i, Measure (X i)) [∀ i, SigmaFinite (μ i)]
     (s : ∀ i, Set (X i)) :

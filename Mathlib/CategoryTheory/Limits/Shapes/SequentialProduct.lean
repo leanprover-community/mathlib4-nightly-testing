@@ -155,6 +155,7 @@ lemma cone_π_app_comp_Pi_π_neg (m n : ℕ) (h : ¬(n < m)) : (cone f).π.app �
     Pi.π _ n ≫ f n ≫ eqToHom (functorObj_eq_neg h).symm := by
   simp [cone_π_app, dif_neg h]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /--
 The cone over the tower

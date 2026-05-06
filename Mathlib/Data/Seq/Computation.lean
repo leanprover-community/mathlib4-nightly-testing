@@ -214,6 +214,7 @@ def rmap (f : β → γ) : α ⊕ β → α ⊕ γ
 
 attribute [simp] lmap rmap
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem corec_eq (f : β → α ⊕ β) (b : β) : destruct (corec f b) = rmap (corec f) (f b) := by
   dsimp [corec, destruct]

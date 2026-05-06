@@ -16,6 +16,7 @@ public section
 
 open Complex
 
+set_option backward.defeqAttrib.useBackward true in
 theorem Algebra.leftMulMatrix_complex (z : ℂ) :
     Algebra.leftMulMatrix Complex.basisOneI z = !![z.re, -z.im; z.im, z.re] := by
   ext i j

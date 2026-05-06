@@ -189,6 +189,7 @@ theorem resultant_zero_left : resultant 0 g m n = 0 ^ n * g.coeff 0 ^ m := by
 
 theorem resultant_zero_zero : resultant (0 : R[X]) 0 m n = 0 ^ (m + n) := by simp [pow_add]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- See `resultant_add_mul_right`. -/
 private lemma resultant_add_mul_monomial_right (hk : k + m ≤ n) (hf : f.natDegree ≤ m) :
     resultant f (g + f * monomial k r) m n = resultant f g m n := by

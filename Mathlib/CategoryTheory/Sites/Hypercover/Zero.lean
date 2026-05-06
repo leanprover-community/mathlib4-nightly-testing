@@ -270,6 +270,7 @@ structure Hom (E : PreZeroHypercover.{w} S) (F : PreZeroHypercover.{w'} S) where
 
 attribute [reassoc (attr := simp)] Hom.w₀
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The identity refinement of a pre-`0`-hypercover. -/
 @[simps]
 def Hom.id (E : PreZeroHypercover S) : Hom E E where
@@ -278,6 +279,7 @@ def Hom.id (E : PreZeroHypercover S) : Hom E E where
 
 variable {G : PreZeroHypercover S}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Composition of refinement morphisms of pre-`0`-hypercovers. -/
 @[simps]
 def Hom.comp (f : E.Hom F) (g : F.Hom G) : E.Hom G where
@@ -398,6 +400,7 @@ lemma sieve₀_map : (E.map F).sieve₀ = E.sieve₀.functorPushforward F := by
 
 end Functoriality
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Pullback symmetry isomorphism. -/
 @[simps]

@@ -233,6 +233,7 @@ theorem list_range : Primrec List.range :=
   (nat_rec' .id (const []) ((list_concat.comp snd fst).comp snd).to₂).of_eq fun n => by
     simp; induction n <;> simp [*, List.range_succ]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem list_flatten : Primrec (@List.flatten α) :=
   (list_foldr .id (const []) <| to₂ <| comp (@list_append α _) snd).of_eq fun l => by
     dsimp; induction l <;> simp [*]

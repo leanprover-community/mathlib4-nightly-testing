@@ -285,6 +285,7 @@ end
 
 variable {r s}
 
+set_option backward.defeqAttrib.useBackward true in
 /--
 If `a₀ -r→ a₁ -r→ ... -r→ aₙ` and `b₀ -r→ b₁ -r→ ... -r→ bₘ` are two strict series
 such that `r aₙ b₀`, then there is a chain of length `n + m + 1` given by
@@ -725,6 +726,7 @@ lemma smash_succ_castAdd {p q : RelSeries r} (h : p.last = q.head)
     (i : Fin p.length) : p.smash q h (i.castAdd q.length).succ = p i.succ :=
   smash_castLE h i.succ
 
+set_option backward.defeqAttrib.useBackward true in
 lemma smash_natAdd {p q : RelSeries r} (h : p.last = q.head) (i : Fin q.length) :
     smash p q h (i.natAdd p.length).castSucc = q i.castSucc := by
   dsimp only [smash, Fin.castSucc_natAdd]

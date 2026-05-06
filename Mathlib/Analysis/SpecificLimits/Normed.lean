@@ -792,6 +792,7 @@ variable {E : Type*} [Ring E] [PartialOrder E] [IsOrderedRing E]
   [TopologicalSpace E] [OrderClosedTopology E]
   {l : E} {f : ℕ → E}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating monotone series with an even number of terms provide
 upper bounds on the limit. -/
 theorem Monotone.tendsto_le_alternating_series
@@ -806,6 +807,7 @@ theorem Monotone.tendsto_le_alternating_series
     exact hfm (by lia)
   exact ha.le_of_tendsto (hfl.comp (tendsto_atTop_mono (fun n ↦ by dsimp; lia) tendsto_id)) _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating monotone series with an odd number of terms provide
 lower bounds on the limit. -/
 theorem Monotone.alternating_series_le_tendsto
@@ -821,6 +823,7 @@ theorem Monotone.alternating_series_le_tendsto
     exact hfm (by lia)
   exact hm.ge_of_tendsto (hfl.comp (tendsto_atTop_mono (fun n ↦ by dsimp; lia) tendsto_id)) _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating antitone series with an even number of terms provide
 lower bounds on the limit. -/
 theorem Antitone.alternating_series_le_tendsto
@@ -835,6 +838,7 @@ theorem Antitone.alternating_series_le_tendsto
     exact hfa (by lia)
   exact hm.ge_of_tendsto (hfl.comp (tendsto_atTop_mono (fun n ↦ by dsimp; lia) tendsto_id)) _
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Partial sums of an alternating antitone series with an odd number of terms provide
 upper bounds on the limit. -/
 theorem Antitone.tendsto_le_alternating_series

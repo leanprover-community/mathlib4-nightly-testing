@@ -74,6 +74,7 @@ attribute [reassoc (attr := simp)]
 
 attribute [reassoc] h_succ_comp_δ_castSucc_succ
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The constant homotopy from `f` to `f`. -/
 @[simps]
 def refl (f : X ⟶ Y) : Homotopy f f where

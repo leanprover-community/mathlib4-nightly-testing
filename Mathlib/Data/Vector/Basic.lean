@@ -548,6 +548,7 @@ theorem eraseIdx_insertIdx_self {v : Vector α n} {i : Fin (n + 1)} :
     eraseIdx i (insertIdx a i v) = v :=
   Subtype.ext (List.eraseIdx_insertIdx_self ..)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Erasing an element after inserting an element, at different indices. -/
 theorem eraseIdx_insertIdx' {v : Vector α (n + 1)} :

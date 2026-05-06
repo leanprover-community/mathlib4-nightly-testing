@@ -770,6 +770,7 @@ theorem getElem_splitWrtComposition (l : List α) (c : Composition n)
     (l.splitWrtComposition c)[i] = (l.take (c.sizeUpTo (i + 1))).drop (c.sizeUpTo i) :=
   getElem_splitWrtComposition' _ _ h
 
+set_option backward.defeqAttrib.useBackward true in
 theorem flatten_splitWrtCompositionAux {ns : List ℕ} :
     ∀ {l : List α}, ns.sum = l.length → (l.splitWrtCompositionAux ns).flatten = l := by
   induction ns with

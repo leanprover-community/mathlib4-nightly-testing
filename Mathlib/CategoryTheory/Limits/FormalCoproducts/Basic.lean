@@ -64,6 +64,7 @@ structure Hom (X Y : FormalCoproduct.{w} C) where
   /-- The map on each component. -/
   φ (i : X.I) : X.obj i ⟶ Y.obj (f i)
 
+set_option backward.defeqAttrib.useBackward true in
 -- this category identifies to the full subcategory of the category of
 -- presheaves of sets on `C` which are coproducts of representable presheaves
 @[simps!] instance category : Category (FormalCoproduct.{w} C) where

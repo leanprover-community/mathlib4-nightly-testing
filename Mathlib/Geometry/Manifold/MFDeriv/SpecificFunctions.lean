@@ -158,6 +158,7 @@ theorem mfderivWithin_id (hxs : UniqueMDiffWithinAt I s x) :
   rw [MDifferentiable.mfderivWithin mdifferentiableAt_id hxs]
   exact mfderiv_id
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp, mfld_simps]
 theorem tangentMap_id : tangentMap I I (id : M → M) = id := by ext1 ⟨x, v⟩; simp [tangentMap]
