@@ -831,14 +831,27 @@ partial def transformDeclRec (t : TranslateData) (cfg : Config) (rootSrc rootTgt
   addDeclarationRangesFromSyntax tgt (← getRef) cfg.ref
   if isProtected (← getEnv) src then
     modifyEnv (addProtected · tgt)
-  if defeqAttr.hasTag (← getEnv) src || backwardDefeqAttr.hasTag (← getEnv) src then
-    /- It can be that `src` holds reflexively but `tgt` doesn't, so we need to use `inferDefEqAttr`.
-    For example in `Ici_inter_Iic : Ici a ∩ Iic b = Icc a b := rfl`.
-    We also propagate `backward_defeq`: theorems auto-tagged because they are `:= rfl` and
-    used under `set_option backward.defeqAttrib.useBackward true` need their additive
-    counterparts to have the same tag, otherwise the `useBackward` escape hatch breaks
-    when proofs that worked on the multiplicative version are translated. -/
-    MetaM.run' <| inferDefEqAttr tgt
+  /- Transfer the `[defeq]` / `[backward_defeq]` tags from `src` to `tgt`, using the same
+  validators (`validateDefEqAttr` / `validateBackwardDefEqAttr`) that an explicit
+  `@[defeq]` / `@[backward_defeq]` would run. It can be that `src` holds reflexively but
+  `tgt` doesn't, e.g. `Ici_inter_Iic : Ici a ∩ Iic b = Icc a b := rfl` is `rfl` for the
+  order-theoretic intervals but the additive analog need not be. In that case we leave
+  the tag off and emit a `trace[translate_detail]` event. -/
+  if defeqAttr.hasTag (← getEnv) src then
+    try
+      validateDefEqAttr tgt
+      defeqAttr.setTag tgt
+      backwardDefeqAttr.setTag tgt
+    catch e =>
+      trace[translate_detail]
+        "could not transfer `[defeq]` from {src} to {tgt}: {e.toMessageData}"
+  else if backwardDefeqAttr.hasTag (← getEnv) src then
+    try
+      validateBackwardDefEqAttr tgt
+      backwardDefeqAttr.setTag tgt
+    catch e =>
+      trace[translate_detail]
+        "could not transfer `[backward_defeq]` from {src} to {tgt}: {e.toMessageData}"
   if let some matcherInfo ← getMatcherInfo? src then
     Match.addMatcherInfo tgt matcherInfo
   -- necessary so that e.g. match equations can be generated for `tgt`
