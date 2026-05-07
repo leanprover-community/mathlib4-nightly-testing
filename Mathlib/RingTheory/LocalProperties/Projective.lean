@@ -27,6 +27,7 @@ public import Mathlib.RingTheory.LocalProperties.Submodule
 
 -/
 
+
 public section
 
 universe uM
@@ -72,6 +73,13 @@ theorem Module.projective_of_isLocalizedModule {Rₛ Mₛ} [AddCommGroup Mₛ] [
     (S) (f : M →ₗ[R] Mₛ) [IsLocalization S Rₛ] [IsLocalizedModule S f] [Module.Projective R M] :
     Module.Projective Rₛ Mₛ :=
   Projective.of_equiv (IsLocalizedModule.isBaseChange S Rₛ f).equiv
+
+instance [Module.Projective R M] : Module.Projective (Localization S) (LocalizedModule S M) :=
+  Module.projective_of_isLocalizedModule S (LocalizedModule.mkLinearMap S M)
+
+instance {A : Type*} [CommRing A] [Algebra R A] [Module.Projective R A] :
+    Module.Projective (Localization S) (Localization (Algebra.algebraMapSubmonoid A S)) :=
+  Module.projective_of_isLocalizedModule S (IsScalarTower.toAlgHom R A _).toLinearMap
 
 theorem LinearMap.split_surjective_of_localization_maximal
     (f : M →ₗ[R] N) [Module.FinitePresentation R N]
@@ -151,6 +159,7 @@ variable
   (f : ∀ (P : Ideal R) [P.IsMaximal], M →ₗ[R] Mₚ P)
   [inst : ∀ (P : Ideal R) [P.IsMaximal], IsLocalizedModule P.primeCompl (f P)]
 
+set_option backward.defeqAttrib.useBackward true in
 attribute [local instance] RingHomInvPair.of_ringEquiv RingHomInvPair.of_ringEquiv_symm in
 include f in
 /--

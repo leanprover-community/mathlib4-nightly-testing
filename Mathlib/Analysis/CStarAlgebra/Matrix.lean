@@ -118,7 +118,6 @@ lemma toEuclideanCLM_toLp (A : Matrix n n 𝕜) (x : n → 𝕜) :
 lemma ofLp_toEuclideanCLM (A : Matrix n n 𝕜) (x : EuclideanSpace 𝕜 n) :
     ofLp (toEuclideanCLM (n := n) (𝕜 := 𝕜) A x) = A *ᵥ ofLp x := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 open scoped RealInnerProductSpace in
 lemma inner_toEuclideanCLM (A : Matrix n n ℝ) (x y : EuclideanSpace ℝ n) :
     ⟪x, toEuclideanCLM (𝕜 := ℝ) A y⟫ = x ⬝ᵥ A *ᵥ y := by
@@ -152,6 +151,7 @@ def l2OpNormedRingAux : NormedRing (Matrix n n 𝕜) :=
 open Bornology Filter
 open scoped Topology Uniformity
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The metric on `Matrix m n 𝕜` arising from the operator norm given by the identification with
 (continuous) linear maps of `EuclideanSpace`. -/
 @[instance_reducible]

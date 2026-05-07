@@ -97,7 +97,7 @@ theorem hasFDerivAt_integral_of_dominated_loc_of_lip' {F' : α → H →L[𝕜] 
       refine h_lipsch.mono fun a ha ↦ (ha x x_in).trans ?_
       rw [mul_comm ε]
       rw [mem_ball, dist_eq_norm] at x_in
-      exact mul_le_mul_of_nonneg_left x_in.le (b_nonneg _)
+      gcongr
     exact integrable_of_norm_sub_le (hF_meas x (hε x_in)) hF_int
       (bound_integrable.norm.const_mul ε) this
   have hF'_int : Integrable F' μ :=
@@ -127,15 +127,14 @@ theorem hasFDerivAt_integral_of_dominated_loc_of_lip' {F' : α → H →L[𝕜] 
       hF'_int.apply_continuousLinearMap _]
   rw [hasFDerivAt_iff_tendsto, tendsto_congr' this, ← tendsto_zero_iff_norm_tendsto_zero, ←
     show (∫ a : α, ‖x₀ - x₀‖⁻¹ • (F x₀ a - F x₀ a - (F' a) (x₀ - x₀)) ∂μ) = 0 by simp]
-  apply tendsto_integral_filter_of_dominated_convergence
+  apply tendsto_integral_filter_of_dominated_convergence (bound := fun a => b a + ‖F' a‖)
   · filter_upwards [h_ball] with _ x_in
     apply AEStronglyMeasurable.const_smul
     exact ((hF_meas _ (hε x_in)).sub (hF_meas _ (hε x₀_in))).sub
       (hF'_meas.apply_continuousLinearMap _)
   · refine mem_of_superset h_ball fun x hx ↦ ?_
     apply (h_diff.and h_lipsch).mono
-    on_goal 1 => rintro a ⟨-, ha_bound⟩
-    show ‖‖x - x₀‖⁻¹ • (F x a - F x₀ a - F' a (x - x₀))‖ ≤ b a + ‖F' a‖
+    rintro a ⟨-, ha_bound⟩
     replace ha_bound : ‖F x a - F x₀ a‖ ≤ b a * ‖x - x₀‖ := ha_bound x hx
     calc
       ‖‖x - x₀‖⁻¹ • (F x a - F x₀ a - F' a (x - x₀))‖ =

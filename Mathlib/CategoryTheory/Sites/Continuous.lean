@@ -64,16 +64,21 @@ namespace PreOneHypercover
 variable {X : C} (E : PreOneHypercover X) (F : C ⥤ D)
 
 /-- The image of a 1-pre-hypercover by a functor. -/
-@[simps]
+@[simps toPreZeroHypercover I₁ Y p₁ p₂]
 def map : PreOneHypercover (F.obj X) where
-  I₀ := E.I₀
-  X i := F.obj (E.X i)
-  f i := F.map (E.f i)
+  __ := E.toPreZeroHypercover.map F
   I₁ := E.I₁
   Y _ _ j := F.obj (E.Y j)
   p₁ _ _ j := F.map (E.p₁ j)
   p₂ _ _ j := F.map (E.p₂ j)
   w _ _ j := by simpa using F.congr_map (E.w j)
+
+@[simp]
+lemma map_id : E.map (𝟭 _) = E :=
+  rfl
+
+lemma map_comp {D' : Type*} [Category* D'] (G : D ⥤ D') : E.map (F ⋙ G) = (E.map F).map G :=
+  rfl
 
 /-- If `F : C ⥤ D`, `P : Dᵒᵖ ⥤ A` and `E` is a 1-pre-hypercover of an object of `X`,
 then `(E.map F).multifork P` is a limit iff `E.multifork (F.op ⋙ P)` is a limit. -/
@@ -144,6 +149,7 @@ private lemma W_map_of_adjunction_of_isContinuous_aux (F : C ⥤ D)
   rw [isSheaf_iff_isSheaf_of_type]
   exact IsContinuous.op_comp_isSheaf_of_types (F := F) ⟨U, hU⟩
 
+set_option backward.defeqAttrib.useBackward true in
 /-- `Functor.IsContinuous` is preserved under enlarging the universe if the starting
 universe is large enough. SGA 4 III 1.5. -/
 private lemma isSheaf_of_isContinuous_aux (F : C ⥤ D) [Functor.IsContinuous F J K]
@@ -313,6 +319,7 @@ def sheafPushforwardContinuousComp [IsContinuous G K L] :
     sheafPushforwardContinuous G A K L ⋙ sheafPushforwardContinuous F A J K ≅
     sheafPushforwardContinuous (F ⋙ G) A J L := Iso.refl _
 
+set_option backward.defeqAttrib.useBackward true in
 variable {F F'} in
 /-- The action of a natural transformation on pushforward functors of sheaves. -/
 @[simps]
@@ -320,6 +327,7 @@ def sheafPushforwardContinuousNatTrans [IsContinuous F' J K] :
     sheafPushforwardContinuous F' A J K ⟶ sheafPushforwardContinuous F A J K where
   app M := ⟨whiskerRight (NatTrans.op τ) _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 variable {F F'} in
 /-- The action of a natural isomorphism on pushforward functors of sheaves. -/
 @[simps]
@@ -352,6 +360,7 @@ def sheafPushforwardContinuousComp'
 
 end Functor
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `F ⊣ G` is an adjunction between continuous functors, the associated
 pushforwards on sheaves are adjoint. -/
 @[simps!]

@@ -47,7 +47,7 @@ universe u
 
 variable {C : Type*} [Category* C]
 
-namespace SimplicialObject
+namespace CategoryTheory.SimplicialObject
 
 namespace Splitting
 
@@ -195,7 +195,7 @@ def summand (A : IndexSet Δ) : C :=
   N A.1.unop.len
 
 /-- The cofan for `summand N Δ` induced by morphisms `N n ⟶ X _⦋n⦌` for all `n : ℕ`. -/
-def cofan' (Δ : SimplexCategoryᵒᵖ) : Cofan (summand N Δ) :=
+abbrev cofan' (Δ : SimplexCategoryᵒᵖ) : Cofan (summand N Δ) :=
   Cofan.mk (X.obj Δ) (fun A => φ A.1.unop.len ≫ X.map A.e.op)
 
 end Splitting
@@ -212,6 +212,8 @@ structure Splitting (X : SimplicialObject C) where
   /-- For each `Δ`, `X.obj Δ` identifies to the coproduct of the objects `N A.1.unop.len`
   for all `A : IndexSet Δ`. -/
   isColimit' : ∀ Δ : SimplexCategoryᵒᵖ, IsColimit (Splitting.cofan' N X ι Δ)
+
+initialize_simps_projections Splitting (-isColimit')
 
 namespace Splitting
 
@@ -269,6 +271,7 @@ theorem ι_desc {Z : C} (Δ : SimplexCategoryᵒᵖ) (F : ∀ A : IndexSet Δ, s
     (A : IndexSet Δ) : (s.cofan Δ).inj A ≫ s.desc Δ F = F A := by
   apply Cofan.IsColimit.fac
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A simplicial object that is isomorphic to a split simplicial object is split. -/
 @[simps]
 def ofIso (e : X ≅ Y) : Splitting Y where
@@ -277,6 +280,7 @@ def ofIso (e : X ≅ Y) : Splitting Y where
   isColimit' Δ := IsColimit.ofIsoColimit (s.isColimit Δ) (Cofan.ext (e.app Δ)
     (fun A => by simp [cofan, cofan']))
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 theorem cofan_inj_epi_naturality {Δ₁ Δ₂ : SimplexCategoryᵒᵖ} (A : IndexSet Δ₁) (p : Δ₁ ⟶ Δ₂)
     [Epi p.unop] : (s.cofan Δ₁).inj A ≫ X.map p = (s.cofan Δ₂).inj (A.epiComp p) := by
@@ -413,4 +417,4 @@ def natTransCofanInj {Δ : SimplexCategoryᵒᵖ} (A : Splitting.IndexSet Δ) :
 
 end Split
 
-end SimplicialObject
+end CategoryTheory.SimplicialObject

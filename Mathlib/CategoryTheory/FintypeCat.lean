@@ -58,7 +58,8 @@ abbrev incl : FintypeCat ⥤ Type* := ObjectProperty.ι _
 instance : incl.Full := ObjectProperty.full_ι _
 instance : incl.Faithful := ObjectProperty.faithful_ι _
 
-instance concreteCategoryFintype : ConcreteCategory FintypeCat (fun X Y ↦ X.obj ⟶ Y.obj) :=
+example : ConcreteCategory FintypeCat
+    (fun X Y ↦ TypeCat.Fun X.obj Y.obj) :=
   inferInstance
 
 /- Help typeclass inference infer fullness of forgetful functor. -/
@@ -90,18 +91,18 @@ lemma hom_ext {X Y : FintypeCat} (f g : X ⟶ Y) (h : ∀ x, f x = g x) : f = g 
 
 /-- Constructor for morphisms in `FintypeCat`. -/
 def homMk {X Y : FintypeCat} (f : X → Y) : X ⟶ Y where
-  hom := f
+  hom := ↾f
 
 @[simp]
 lemma homMk_apply {X Y : FintypeCat} (f : X → Y) (x : X) :
     homMk f x = f x := rfl
 
 @[simp]
-lemma id_hom (X : FintypeCat) : 𝟙 X.obj = id := rfl
+lemma id_hom (X : FintypeCat) : 𝟙 X.obj = ↾id := rfl
 
 @[simp, reassoc]
 lemma comp_hom {X Y Z : FintypeCat} (f : X ⟶ Y) (g : Y ⟶ Z) :
-    f.hom ≫ g.hom = g.hom ∘ f.hom := rfl
+    f.hom ≫ g.hom = ↾(g.hom ∘ f.hom) := rfl
 
 @[simp]
 lemma homMk_eq_id_iff {X : FintypeCat} (f : X → X) :
@@ -139,7 +140,8 @@ def equivEquivIso {A B : FintypeCat} : A ≃ B ≃ (A ≅ B) where
   right_inv := by cat_disch
 
 instance (X Y : FintypeCat) : Finite (X ⟶ Y) :=
-  Finite.of_equiv _ (show (X ⟶ Y) ≃ (X → Y) from InducedCategory.homEquiv).symm
+  Finite.of_equiv _ (show (X ⟶ Y) ≃ (X → Y) from
+    InducedCategory.homEquiv.trans TypeCat.homEquiv).symm
 
 instance (X Y : FintypeCat) : Finite (X ≅ Y) :=
   Finite.of_injective _ (fun _ _ h ↦ Iso.ext h)
@@ -207,10 +209,11 @@ def incl : Skeleton.{u} ⥤ FintypeCat.{u} where
   obj X := FintypeCat.of (ULift (Fin X.len))
   map f := homMk f
 
-instance : incl.Full where map_surjective f := ⟨f.hom, rfl⟩
+instance : incl.Full where map_surjective _ := ⟨_, rfl⟩
 
 instance : incl.Faithful where
-  map_injective h := InducedCategory.homEquiv.symm.injective h
+  map_injective h := by
+    simpa using TypeCat.homEquiv.symm.injective (InducedCategory.homEquiv.symm.injective h)
 
 instance : incl.EssSurj :=
   Functor.EssSurj.mk fun X =>
@@ -282,6 +285,7 @@ lemma uSwitch_map_uSwitch_map {X Y : FintypeCat.{u}} (f : X ⟶ Y) :
       f ≫ (equivEquivIso ((uSwitch.obj Y).uSwitchEquiv.trans
       Y.uSwitchEquiv)).inv := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] uSwitch_map_uSwitch_map in
 /-- `uSwitch.{u, v}` is an equivalence of categories with quasi-inverse `uSwitch.{v, u}`. -/

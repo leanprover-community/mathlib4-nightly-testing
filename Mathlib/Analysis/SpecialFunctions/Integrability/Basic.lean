@@ -113,7 +113,6 @@ theorem intervalIntegrable_cpow {r : ℂ} (h : 0 ≤ r.re ∨ (0 : ℝ) ∉ [[a,
     have : IntervalIntegrable (fun _ => 1 : ℝ → ℝ) μ 0 c := intervalIntegrable_const
     rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hc] at this ⊢
     refine IntegrableOn.congr_fun this (fun x hx => ?_) measurableSet_Ioc
-    dsimp only
     rw [Complex.norm_cpow_eq_rpow_re_of_pos hx.1, ← h', rpow_zero]
   · -- case `c < 0`: integrand is identically constant, *except* at `x = 0` if `r ≠ 0`.
     apply IntervalIntegrable.symm
@@ -161,7 +160,6 @@ theorem intervalIntegrable_cpow' {r : ℂ} (h : -1 < r.re) :
     have m := (this (-c) (by linarith)).const_mul (Complex.exp (π * Complex.I * r))
     rw [intervalIntegrable_iff, uIoc_of_le (by linarith : 0 ≤ -c)] at m ⊢
     refine m.congr_fun (fun x hx => ?_) measurableSet_Ioc
-    dsimp only
     have : -x ≤ 0 := by linarith [hx.1]
     rw [Complex.ofReal_cpow_of_nonpos this, mul_comm]
     simp
@@ -222,6 +220,7 @@ hypothesis on the interval, but assuming the measure is the volume.
 theorem intervalIntegrable_log (h : (0 : ℝ) ∉ [[a, b]]) : IntervalIntegrable log μ a b :=
   IntervalIntegrable.log continuousOn_id fun _ hx => ne_of_mem_of_not_mem hx h
 
+set_option linter.flexible false in -- TODO: fix non-terminal simp
 /--
 The real logarithm is interval integrable (with respect to the volume measure) on every interval.
 See `intervalIntegrable_log` for a version applying to any locally finite measure, but with an
@@ -243,7 +242,7 @@ theorem intervalIntegrable_log' : IntervalIntegrable log volume a b := by
       norm_num at *
       simpa using (hasDerivAt_id s).sub (hasDerivAt_mul_log hs.ne.symm)
     · intro s ⟨hs₁, hs₂⟩
-      norm_num at *
+      simp at *
       exact (log_nonpos_iff hs₁.le).mpr hs₂.le
   · -- Show integrability on [1…t] by continuity
     apply ContinuousOn.intervalIntegrable

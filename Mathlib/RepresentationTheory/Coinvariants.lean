@@ -61,6 +61,9 @@ instance : AddCommGroup (Coinvariants ρ) := inferInstanceAs <| AddCommGroup (_ 
 
 instance : Module k (Coinvariants ρ) := inferInstanceAs <| Module k (_ ⧸ _)
 
+instance [Module.Finite k V] : Module.Finite k (Coinvariants ρ) :=
+  inferInstanceAs <| Module.Finite k (V ⧸ Coinvariants.ker ρ)
+
 variable {ρ}
 
 lemma sub_mem_ker (g : G) (x : V) : ρ g x - x ∈ Coinvariants.ker ρ :=
@@ -379,6 +382,7 @@ variable (k G)
 instance : (coinvariantsFunctor k G).Additive where
 instance : (coinvariantsFunctor k G).Linear k where
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The adjunction between the functor sending a representation to its coinvariants and the functor
 equipping a module with the trivial representation. -/
@@ -394,6 +398,7 @@ theorem coinvariantsAdjunction_homEquiv_apply_hom {X : Rep.{w} k G} {Y : ModuleC
     ((coinvariantsMk k G).app X ≫ f).hom := by
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem coinvariantsAdjunction_homEquiv_symm_apply_hom {X : Rep.{w} k G} {Y : ModuleCat k}
@@ -486,6 +491,7 @@ noncomputable def finsuppToCoinvariantsTensorFree :
 
 variable {A α}
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma finsuppToCoinvariantsTensorFree_single (i : α) (x : A) :
@@ -496,11 +502,10 @@ lemma finsuppToCoinvariantsTensorFree_single (i : α) (x : A) :
 
 variable (A α)
 
-#adaptation_note /-- After https://github.com/leanprover/lean4/pull/12179
-the simpNF linter complains about `@[simps! symm_apply]`, but removing it seems to be harmless. -/
 /-- Given a `k`-linear `G`-representation `(A, ρ)` and a type `α`, this is the linear equivalence
 `(A ⊗ (α →₀ k[G]))_G ≃ₗ[k] (α →₀ A)` sending
 `⟦a ⊗ single x (single g r)⟧ ↦ single x (r • ρ(g⁻¹)(a)).` -/
+@[simps! symm_apply]
 noncomputable abbrev coinvariantsTensorFreeLEquiv :
     Coinvariants (A ⊗ free k G α).ρ ≃ₗ[k] (α →₀ A) :=
   LinearEquiv.ofLinear (coinvariantsTensorFreeToFinsupp A α) (finsuppToCoinvariantsTensorFree A α)

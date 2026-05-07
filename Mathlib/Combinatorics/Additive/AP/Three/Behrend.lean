@@ -144,6 +144,7 @@ theorem map_succ (a : Fin (n + 1) → ℕ) :
 theorem map_succ' (a : Fin (n + 1) → ℕ) : map d a = a 0 + map d (a ∘ Fin.succ) * d :=
   map_succ _
 
+set_option backward.defeqAttrib.useBackward true in
 theorem map_monotone (d : ℕ) : Monotone (map d : (Fin n → ℕ) → ℕ) := fun x y h => by
   dsimp; exact sum_le_sum fun i _ => Nat.mul_le_mul_right _ <| h i
 
@@ -249,9 +250,7 @@ theorem exists_large_sphere (n d : ℕ) :
   · simp
   obtain rfl | hd := d.eq_zero_or_pos
   · simp
-  refine (div_le_div_of_nonneg_left ?_ ?_ ?_).trans hk
-  · exact cast_nonneg _
-  · exact cast_add_one_pos _
+  refine (div_le_div_of_nonneg_left (by positivity) (by positivity) ?_).trans hk
   simp only [← le_sub_iff_add_le', cast_mul, ← mul_sub, cast_pow, cast_sub hd, sub_sq, one_pow,
     cast_one, mul_one, sub_add, sub_sub_self]
   apply one_le_mul_of_one_le_of_one_le

@@ -409,7 +409,7 @@ def CommRing.Pic (R : Type u) [CommSemiring R] : Type u :=
 
 open CommRing (Pic)
 
-noncomputable instance : CommGroup (Pic R) := (equivShrink _).symm.commGroup
+noncomputable instance : CommGroup (Pic R) := fast_instance% (equivShrink _).symm.commGroup
 
 variable (M N : Type*) [AddCommMonoid M] [Module R M] [AddCommMonoid N] [Module R N]
   [Module.Invertible R M] [Module.Invertible R N]
@@ -568,7 +568,6 @@ theorem mapRingHom_mapRingHom {M : Pic R} :
     mapRingHom g (mapRingHom f M) = mapRingHom (g.comp f) M :=
   congr($mapRingHom_comp_mapRingHom M)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem mapRingHom_id : mapRingHom (.id R) = .id _ := by
   rw [mapRingHom, mapAlgebra_self]
 
@@ -602,6 +601,7 @@ namespace Module.Invertible
 
 variable (R M : Type*) [CommRing R] [AddCommGroup M] [Module R M] [Module.Invertible R M]
 
+set_option backward.defeqAttrib.useBackward true in
 -- TODO: generalize to CommSemiring by generalizing `CommRing.Pic.instSubsingletonOfIsLocalRing`
 theorem tensorProductComm_eq_refl : TensorProduct.comm R M M = .refl .. := by
   let f (P : Ideal R) [P.IsMaximal] := LocalizedModule.mkLinearMap P.primeCompl M
@@ -771,6 +771,7 @@ instance : Flat R (submoduleAlgebra e) := .of_linearEquiv (submoduleAlgebraEquiv
 instance [Module.Invertible R M] : Module.Invertible R (submoduleAlgebra e) :=
   .congr (submoduleAlgebraEquiv e).symm
 
+set_option backward.defeqAttrib.useBackward true in
 /-- When a flat `R`-module `M` is embedded as a submodule of a faithful `R`-algebra `A`,
 the multiplication map induces an isomorphism `A ⊗[R] M ≃ₗ[A] A`. -/
 noncomputable def tensorSubmoduleAlgebraEquiv : A ⊗[R] submoduleAlgebra e ≃ₗ[A] A :=
@@ -848,7 +849,6 @@ the group of the invertible `R`-submodules in `A` modulo the principal submodule
   (QuotientGroup.congr _ _ (.refl _) ((Subgroup.map_id _).trans (ker_unitsToPic R A).symm)).trans <|
   (quotientKerEquivRange _).trans <| .subgroupCongr (range_unitsToPic R A)
 
-#adaptation_note /-- After nightly-2026-02-23 we need this to avoid timeouts. -/
 /-- The class group of a domain is isomorphic to the Picard group. -/
 @[simps!] noncomputable def ClassGroup.equivPic (R) [CommRing R] [IsDomain R] :
     ClassGroup R ≃* Pic R :=

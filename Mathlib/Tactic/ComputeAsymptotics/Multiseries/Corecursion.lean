@@ -63,6 +63,7 @@ Then `f` is friendly iff it is `1`-Lipschitz.
 
 @[expose] public section
 
+
 namespace Tactic.ComputeAsymptotics.Seq
 
 open Stream' Seq
@@ -73,11 +74,12 @@ variable {α β γ γ' : Type*}
 
 /-- Metric space structure on `Stream' α` considering `α` as a discrete metric space. -/
 noncomputable local instance : MetricSpace (Stream' α) :=
-  @PiNat.metricSpace (fun _ ↦ α) (fun _ ↦ ⊥) (fun _ ↦ discreteTopology_bot _)
+  letI := @PiNat.metricSpace (fun _ ↦ α) (fun _ ↦ ⊥) (fun _ ↦ discreteTopology_bot _)
+  inferInstanceAs <| MetricSpace (ℕ → α)
 
 /-- Metric space structure on `Seq α` considering `α` as a discrete metric space. -/
 noncomputable local instance : MetricSpace (Seq α) :=
-  Subtype.metricSpace
+  inferInstanceAs <| MetricSpace (Subtype _)
 
 local instance : CompleteSpace (Stream' α) :=
   @PiNat.completeSpace _ (fun _ ↦ ⊥) (fun _ ↦ discreteTopology_bot _)
@@ -118,6 +120,7 @@ theorem dist_eq_two_inv_pow {s t : Seq α} (h : s ≠ t) : ∃ n, dist s t = 2�
   simp
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.defeqAttrib.useBackward false in
 @[simp]
 theorem dist_cons_cons (x : α) (s t : Seq α) : dist (cons x s) (cons x t) = 2⁻¹ * dist s t := by
   by_cases! h : s = t
@@ -150,7 +153,7 @@ theorem dist_eq_one_of_head {s t : Seq α} (h : s.head ≠ t.head) : dist s t = 
     intro h'
     simpa [Stream'.cons]
   · rw [Subtype.coe_ne_coe]
-    contrapose! h
+    contrapose h
     simp [h]
 
 theorem dist_cons_cons_eq_one {x y : α} {s t : Seq α} (h : x ≠ y) :

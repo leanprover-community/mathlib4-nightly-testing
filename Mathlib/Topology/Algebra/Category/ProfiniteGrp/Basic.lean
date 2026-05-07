@@ -73,12 +73,12 @@ attribute [instance] ProfiniteGrp.group ProfiniteGrp.topologicalGroup
 
 /-- Construct a term of `ProfiniteGrp` from a type endowed with the structure of a
 compact and totally disconnected topological group.
-(The condition of being Hausdorff can be omitted here because totally disconnected implies that {1}
-is a closed set, thus implying Hausdorff in a topological group.) -/
+(The condition of being Hausdorff can be omitted here because totally disconnected implies that
+`{1}` is a closed set, thus implying Hausdorff in a topological group.) -/
 @[to_additive /-- Construct a term of `ProfiniteAddGrp` from a type endowed with the structure of a
 compact and totally disconnected topological additive group.
-(The condition of being Hausdorff can be omitted here because totally disconnected implies that {0}
-is a closed set, thus implying Hausdorff in a topological additive group.) -/]
+(The condition of being Hausdorff can be omitted here because totally disconnected implies that
+`{0}` is a closed set, thus implying Hausdorff in a topological additive group.) -/]
 abbrev ProfiniteGrp.of (G : Type u) [Group G] [TopologicalSpace G] [IsTopologicalGroup G]
     [CompactSpace G] [TotallyDisconnectedSpace G] : ProfiniteGrp.{u} where
   toProfinite := .of G
@@ -328,6 +328,7 @@ instance : Group (Profinite.limitCone (F ⋙ (forget₂ ProfiniteGrp Profinite))
 instance : IsTopologicalGroup (Profinite.limitCone (F ⋙ (forget₂ ProfiniteGrp Profinite))).pt :=
   inferInstanceAs (IsTopologicalGroup (limitConePtAux F))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 /-- The explicit limit cone in `ProfiniteGrp`. -/

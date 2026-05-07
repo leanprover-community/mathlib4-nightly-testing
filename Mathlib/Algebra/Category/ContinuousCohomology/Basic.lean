@@ -43,6 +43,8 @@ See `ContinuousCohomology.MultiInd.d`.
 - Show that short exact sequences induce long exact sequences in certain scenarios.
 -/
 
+set_option backward.defeqAttrib.useBackward true
+
 @[expose] public section
 
 open CategoryTheory Functor ContinuousMap
@@ -199,7 +201,6 @@ def kerHomogeneousCochainsZeroEquiv
   continuous_invFun := continuous_induced_rng.mpr
     (continuous_induced_rng.mpr ((ContinuousLinearMap.const R G).cont.comp continuous_subtype_val))
 
-#adaptation_note /-- After nightly-2026-02-23 we need this to avoid timeouts. -/
 set_option backward.isDefEq.respectTransparency false in
 open ShortComplex HomologyData in
 /-- `H⁰_cont(G, X) ≅ Xᴳ`. -/

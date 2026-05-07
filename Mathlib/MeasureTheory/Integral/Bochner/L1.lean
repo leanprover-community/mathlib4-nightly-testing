@@ -226,6 +226,7 @@ theorem integral_const {m : MeasurableSpace α} (μ : Measure α) (y : F) :
       integral_eq_sum_of_subset <| (filter_subset _ _).trans (range_const_subset _ _)
     _ = μ.real univ • y := by simp [Set.preimage]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem integral_piecewise_zero {m : MeasurableSpace α} (f : α →ₛ F) (μ : Measure α) {s : Set α}
     (hs : MeasurableSet s) : (piecewise s hs f 0).integral μ = f.integral (μ.restrict s) := by
@@ -456,7 +457,6 @@ local notation "Integral" => integralCLM α E μ
 
 open ContinuousLinearMap
 
-set_option backward.isDefEq.respectTransparency false in
 theorem norm_Integral_le_one : ‖Integral‖ ≤ 1 :=
   LinearMap.mkContinuous_norm_le _ zero_le_one fun f ↦ by
     simpa [one_mul] using norm_integral_le_norm f
