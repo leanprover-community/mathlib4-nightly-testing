@@ -483,6 +483,7 @@ def mkInductiveAux₁ :
 
 section
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An auxiliary construction for `mkInductive`.
 -/
 def mkInductiveAux₂ :
@@ -498,6 +499,7 @@ def mkInductiveAux₂ :
       ⟨0, zero ≫ (Q.xPrevIso rfl).inv, by simpa using comm_zero⟩ :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] theorem mkInductiveAux₂_add_one (n) :
     mkInductiveAux₂ e zero comm_zero one comm_one succ (n + 1) =
       letI I := mkInductiveAux₁ e zero one comm_one succ n
@@ -613,6 +615,7 @@ def mkCoinductiveAux₁ :
 
 section
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An auxiliary construction for `mkInductive`.
 -/
 def mkCoinductiveAux₂ :
@@ -627,6 +630,7 @@ def mkCoinductiveAux₂ :
       ⟨0, (P.xNextIso rfl).hom ≫ zero, by simpa using comm_zero⟩ :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] theorem mkCoinductiveAux₂_add_one (n) :
     mkCoinductiveAux₂ e zero comm_zero one comm_one succ (n + 1) =
       letI I := mkCoinductiveAux₁ e zero one comm_one succ n

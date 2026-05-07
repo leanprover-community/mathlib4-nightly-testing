@@ -443,6 +443,7 @@ protected theorem hasSum [CompleteSpace F] (p : FormalMultilinearSeries 𝕜 E F
     (hx : x ∈ Metric.eball (0 : E) p.radius) : HasSum (fun n : ℕ => p n fun _ => x) (p.sum x) :=
   (p.summable hx).hasSum
 
+set_option backward.simpa.using.reducibleClose false in
 theorem radius_le_radius_continuousLinearMap_comp (p : FormalMultilinearSeries 𝕜 E F)
     (f : F →L[𝕜] G) : p.radius ≤ (f.compFormalMultilinearSeries p).radius := by
   refine ENNReal.le_of_forall_nnreal_lt fun r hr => ?_

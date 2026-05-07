@@ -572,6 +572,7 @@ theorem range_cfc_eq_range_cfcHom [StarModule R A] {a : A} (ha : p a) :
 section Polynomial
 open Polynomial
 
+set_option backward.simpa.using.reducibleClose false in
 lemma cfc_eval_X (ha : p a := by cfc_tac) : cfc (X : R[X]).eval a = a := by
   simpa using cfc_id R a
 
@@ -822,6 +823,7 @@ lemma Units.continuousOn_zpow₀_spectrum [ContinuousMul R] (a : Aˣ) (n : ℤ) 
 
 end ContinuousOnInvSpectrum
 
+set_option backward.simpa.using.reducibleClose false in
 lemma cfcUnits_zpow (hf' : ∀ x ∈ spectrum R a, f x ≠ 0) (n : ℤ)
     (hf : ContinuousOn f (spectrum R a) := by cfc_cont_tac) (ha : p a := by cfc_tac) :
     (cfcUnits f a hf') ^ n =

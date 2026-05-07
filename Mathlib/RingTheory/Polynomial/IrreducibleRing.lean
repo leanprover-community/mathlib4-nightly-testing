@@ -33,6 +33,7 @@ open Polynomial
 
 noncomputable section
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A polynomial over an irreducible ring `R` is irreducible if it is monic and irreducible after
 mapping into an integral domain `S` (https://math.stackexchange.com/a/4843432/235999).
 A generalization to `Polynomial.Monic.irreducible_of_irreducible_map`. -/

@@ -73,6 +73,7 @@ theorem ae_finite_setOf_mem {s : ι → Set α} (h : ∑' i, μ (s i) ≠ ∞) :
   congr 1 with x
   simp [mem_limsup_iff_frequently_mem, Filter.Frequently]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A version of the **Borel-Cantelli lemma**: if `pᵢ` is a sequence of predicates such that
 `∑' i, μ {x | pᵢ x}` is finite, then the measure of `x` such that `pᵢ x` holds frequently as `i → ∞`
 (or equivalently, `pᵢ x` holds for infinitely many `i`) is equal to zero. -/

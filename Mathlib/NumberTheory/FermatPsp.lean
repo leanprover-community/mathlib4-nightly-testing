@@ -129,6 +129,7 @@ theorem fermatPsp_base_one {n : ℕ} (h₁ : 1 < n) (h₂ : ¬n.Prime) : FermatP
 -- pseudoprimes
 section HelperLemmas
 
+set_option backward.simpa.using.reducibleClose false in
 private theorem a_id_helper {a b : ℕ} (ha : 2 ≤ a) (hb : 2 < b) : b < (a ^ b - 1) / (a - 1) := by
   rw [← Nat.geomSum_eq ha]
   calc

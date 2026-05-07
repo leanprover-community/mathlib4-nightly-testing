@@ -143,6 +143,7 @@ lemma isAffineOpen_of_isAffineOpen_basicOpen (U) (s : Set Γ(X, U))
     rw [← (Scheme.Opens.ι _).isAffineOpen_iff_of_isOpenImmersion, Scheme.image_basicOpen]
     simpa [Scheme.Opens.toScheme_presheaf_obj] using hs₂ j hj
 
+set_option backward.simpa.using.reducibleClose false in
 instance : HasAffineProperty @IsAffineHom fun X _ _ _ ↦ IsAffine X where
   isLocal_affineProperty := by
     constructor

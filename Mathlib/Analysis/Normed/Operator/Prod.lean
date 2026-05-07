@@ -30,11 +30,13 @@ section FirstSecond
 
 variable (𝕜 E F)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The operator norm of the first projection `E × F → E` is at most 1. (It is 0 if `E` is zero, so
 the inequality cannot be improved without further assumptions.) -/
 lemma norm_fst_le : ‖fst 𝕜 E F‖ ≤ 1 :=
   opNorm_le_bound _ zero_le_one (fun ⟨e, f⟩ ↦ by simpa only [one_mul] using le_max_left ‖e‖ ‖f‖)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The operator norm of the second projection `E × F → F` is at most 1. (It is 0 if `F` is zero, so
 the inequality cannot be improved without further assumptions.) -/
 lemma norm_snd_le : ‖snd 𝕜 E F‖ ≤ 1 :=

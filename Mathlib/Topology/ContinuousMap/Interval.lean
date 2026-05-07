@@ -88,6 +88,7 @@ theorem concat_right (hb : f ⊤ = g ⊥) {t : Icc a c} (ht : b ≤ t) :
   nth_rewrite 2 [← concat_comp_IccInclusionRight hb]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 theorem tendsto_concat {ι : Type*} {p : Filter ι} {F : ι → C(Icc a b, E)} {G : ι → C(Icc b c, E)}
     (hfg : ∀ᶠ i in p, (F i) ⊤ = (G i) ⊥) (hfg' : f ⊤ = g ⊥)
     (hf : Tendsto F p (𝓝 f)) (hg : Tendsto G p (𝓝 g)) :

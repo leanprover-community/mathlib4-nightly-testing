@@ -25,6 +25,7 @@ namespace Finset
 variable [DistribLattice α] [BoundedOrder α] [DecidableEq ι]
 
 --TODO: Extract out the obvious isomorphism `(insert i s).pi t ≃ t i ×ˢ s.pi t` from this proof
+set_option backward.simpa.using.reducibleClose false in
 theorem inf_sup {κ : ι → Type*} (s : Finset ι) (t : ∀ i, Finset (κ i)) (f : ∀ i, κ i → α) :
     (s.inf fun i => (t i).sup (f i)) =
       (s.pi t).sup fun g => s.attach.inf fun i => f _ <| g _ i.2 := by

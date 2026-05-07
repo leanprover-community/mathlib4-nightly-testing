@@ -72,6 +72,7 @@ theorem summable_sigma_of_nonneg {α} {β : α → Type*} {f : (Σ x, β x) → 
   lift f to (Σ x, β x) → ℝ≥0 using hf
   simpa using mod_cast NNReal.summable_sigma
 
+set_option backward.simpa.using.reducibleClose false in
 lemma summable_partition {α β : Type*} {f : β → ℝ} (hf : 0 ≤ f) {s : α → Set β}
     (hs : ∀ i, ∃! j, i ∈ s j) : Summable f ↔
       (∀ j, Summable fun i : s j ↦ f i) ∧ Summable fun j ↦ ∑' i : s j, f i := by

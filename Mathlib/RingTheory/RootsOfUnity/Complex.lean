@@ -82,6 +82,7 @@ theorem isPrimitiveRoot_exp_rat_of_odd_num (q : ℚ) (h : Odd q.num) :
       ← Rat.mk_eq_divInt (nz := by simp)
         (c := Nat.Coprime.mul_right q.reduced h.natAbs.coprime_two_right)]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isPrimitiveRoot_exp (n : ℕ) (h0 : n ≠ 0) : IsPrimitiveRoot (exp (2 * π * I / n)) n := by
   simpa only [Nat.cast_one, one_div] using
     isPrimitiveRoot_exp_of_coprime 1 n h0 n.coprime_one_left

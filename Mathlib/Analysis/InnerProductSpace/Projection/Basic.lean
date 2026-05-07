@@ -323,6 +323,7 @@ theorem _root_.LinearIsometry.map_starProjection' {E E' : Type*} [NormedAddCommG
   have : (p.map f.toLinearMap).HasOrthogonalProjection := ‹_›
   f.map_starProjection p x
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Orthogonal projection onto the `Submodule.map` of a subspace. -/
 theorem starProjection_map_apply {E E' : Type*} [NormedAddCommGroup E]
     [NormedAddCommGroup E'] [InnerProductSpace 𝕜 E] [InnerProductSpace 𝕜 E'] (f : E ≃ₗᵢ[𝕜] E')

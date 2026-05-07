@@ -864,6 +864,7 @@ instance (J : Precoverage C) [Small.{w} J] {S : C} (E : ZeroHypercover.{w'} J S)
   use E'.I₀, ZeroHypercover.Small.restrictFun _ ∘ ZeroHypercover.Small.restrictFun _
   exact E'.mem₀
 
+set_option backward.simpa.using.reducibleClose false in
 instance {D : Type*} [Category* D] {F : C ⥤ D} (J : Precoverage D) [Small.{w} J] :
     Small.{w} (J.comap F) where
   zeroHypercoverSmall {X} E := by

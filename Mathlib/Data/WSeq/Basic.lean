@@ -618,6 +618,7 @@ theorem toList_cons (a : α) (s) : toList (cons a s) = (List.cons a <$> toList s
 theorem toList_nil : toList (nil : WSeq α) = Computation.pure [] :=
   destruct_eq_pure rfl
 
+set_option backward.simpa.using.reducibleClose false in
 theorem toList_ofList (l : List α) : l ∈ toList (ofList l) := by
   induction l with
   | nil => simp

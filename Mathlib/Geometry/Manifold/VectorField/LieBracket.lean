@@ -353,6 +353,7 @@ lemma mpullback_mfderivWithin_apply_smul {f : M → 𝕜}
 
 variable [CompleteSpace E]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /--
 Product rule for Lie brackets: given two vector fields `V` and `W` on `M` and a function
@@ -425,6 +426,7 @@ lemma mlieBracket_smul_left {f : M → 𝕜} (hf : MDiffAt f x)
   rw [← mlieBracketWithin_univ, ← mfderivWithin_univ]
   exact mlieBracketWithin_smul_left hf hV (uniqueMDiffWithinAt_univ I)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma mlieBracketWithin_const_smul_left
     (hV : MDiffAt[s] (T% V) x) (hs : UniqueMDiffWithinAt I s x) :
     mlieBracketWithin I (c • V) W s x = c • mlieBracketWithin I V W s x := by
@@ -436,6 +438,7 @@ lemma mlieBracket_const_smul_left (hV : MDiffAt (T% V) x) :
   simp only [← mlieBracketWithin_univ] at hV ⊢
   exact mlieBracketWithin_const_smul_left hV (uniqueMDiffWithinAt_univ _)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma mlieBracketWithin_const_smul_right
     (hW : MDiffAt[s] (T% W) x) (hs : UniqueMDiffWithinAt I s x) :
     mlieBracketWithin I V (c • W) s x = c • mlieBracketWithin I V W s x := by

@@ -52,6 +52,7 @@ namespace AffineSpace
 scoped[AlgebraicGeometry] notation "𝔸(" n "; " S ")" => AffineSpace n S
 
 variable {n} in
+set_option backward.simpa.using.reducibleClose false in
 lemma of_mvPolynomial_int_ext {R} {f g : ℤ[n] ⟶ R} (h : ∀ i, f (.X i) = g (.X i)) : f = g := by
   suffices f.hom.comp (MvPolynomial.mapEquiv _ ULift.ringEquiv.symm).toRingHom =
       g.hom.comp (MvPolynomial.mapEquiv _ ULift.ringEquiv.symm).toRingHom by

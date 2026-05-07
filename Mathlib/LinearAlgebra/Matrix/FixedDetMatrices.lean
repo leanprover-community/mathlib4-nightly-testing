@@ -135,6 +135,7 @@ private lemma A_d_ne_zero {A : Δ m} (ha : A.1 1 0 = 0) (hm : m ≠ 0) : A.1 1 1
 private lemma A_a_ne_zero {A : Δ m} (ha : A.1 1 0 = 0) (hm : m ≠ 0) : A.1 0 0 ≠ 0 :=
   left_ne_zero_of_mul (A_c_eq_zero ha ▸ hm)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An auxiliary result bounding the size of the entries of the representatives in `reps` -/
 lemma reps_entries_le_m' {A : Δ m} (h : A ∈ reps m) (i j : Fin 2) :
     A.1 i j ∈ Finset.Icc (-|m|) |m| := by

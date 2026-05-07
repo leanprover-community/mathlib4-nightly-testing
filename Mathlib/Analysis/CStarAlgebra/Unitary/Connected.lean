@@ -369,11 +369,13 @@ lemma Unitary.isPathConnected_ball (u : unitary A) (δ : ℝ) (hδ₀ : 0 < δ) 
 @[deprecated (since := "2025-10-29")] alias unitary.isPathConnected_ball :=
   Unitary.isPathConnected_ball
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The unitary group in a C⋆-algebra is locally path connected. -/
 instance Unitary.instLocPathConnectedSpace : LocPathConnectedSpace (unitary A) :=
   .of_bases (fun _ ↦ nhds_basis_uniformity <| uniformity_basis_dist_lt zero_lt_two) <| by
     simpa using isPathConnected_ball
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The path component of the identity in the unitary group of a C⋆-algebra is the set of
 unitaries that can be expressed as a product of exponential unitaries. -/
 lemma Unitary.mem_pathComponentOne_iff {u : unitary A} :

@@ -401,6 +401,7 @@ lemma PartialMap.exists_restrict_isOver [X.Over S] [Y.Over S] (f : X.PartialMap 
   obtain ⟨U, hU, hUl, hUr, e⟩ := PartialMap.toRationalMap_eq_iff.mp hf₂
   exact ⟨U, hU, hUr, by rw [IsOver, ← e]; infer_instance⟩
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma RationalMap.isOver_iff [X.Over S] [Y.Over S] {f : X ⤏ Y} :
     f.IsOver S ↔ f.compHom (Y ↘ S) = (X ↘ S).toRationalMap := by
@@ -465,6 +466,7 @@ lemma RationalMap.eq_of_fromFunctionField_eq [IsIntegral X] (f g : X.RationalMap
   refine PartialMap.toRationalMap_eq_iff.mpr ?_
   exact PartialMap.equiv_of_fromSpecStalkOfMem_eq _ _ _ _ H
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /--
 Given `S`-schemes `X` and `Y` such that `Y` is locally of finite type and `X` is integral,

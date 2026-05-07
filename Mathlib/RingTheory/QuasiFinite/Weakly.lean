@@ -78,6 +78,7 @@ instance (priority := low) [QuasiFiniteAt R q] : WeaklyQuasiFiniteAt R q := by
   rw [weaklyQuasiFiniteAt_iff]
   exact .of_surjective_algHom (Ideal.Quotient.mkₐ _ _) Ideal.Quotient.mk_surjective
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Use `Algebra.QuasiFinite.of_surjective_algHom` instead for `Algebra.QuasiFiniteAt R p`. -/
 lemma of_algHom_localization (p : Ideal S) [p.IsPrime] [WeaklyQuasiFiniteAt R p]
     (q : Ideal T) [q.IsPrime]

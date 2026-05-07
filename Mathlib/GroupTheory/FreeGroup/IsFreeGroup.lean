@@ -212,6 +212,7 @@ theorem lift_symm_apply (f : G →* H) (a : Generators G) : (lift.symm f) a = f 
 theorem ext_hom ⦃f g : G →* H⦄ (h : ∀ a : Generators G, f (of a) = g (of a)) : f = g :=
   lift.symm.injective (funext h)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The universal property of a free group: A function from the generators of `G` to another
 group extends in a unique way to a homomorphism from `G`.
 

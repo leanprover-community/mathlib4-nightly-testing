@@ -81,6 +81,7 @@ theorem SuperpolynomialDecay.add [ContinuousAdd β] (hf : SuperpolynomialDecay l
     (hg : SuperpolynomialDecay l k g) : SuperpolynomialDecay l k (f + g) := fun z => by
   simpa only [mul_add, add_zero, Pi.add_apply] using (hf z).add (hg z)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem SuperpolynomialDecay.mul [ContinuousMul β] (hf : SuperpolynomialDecay l k f)
     (hg : SuperpolynomialDecay l k g) : SuperpolynomialDecay l k (f * g) := fun z => by
   simpa only [mul_assoc, one_mul, mul_zero, pow_zero] using (hf z).mul (hg 0)
@@ -113,6 +114,7 @@ theorem SuperpolynomialDecay.mul_param_pow (hf : SuperpolynomialDecay l k f) (n 
     SuperpolynomialDecay l k (f * k ^ n) :=
   (hf.param_pow_mul n).congr fun _ => mul_comm _ _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem SuperpolynomialDecay.polynomial_mul [ContinuousAdd β] [ContinuousMul β]
     (hf : SuperpolynomialDecay l k f) (p : β[X]) :
     SuperpolynomialDecay l k fun x => (p.eval <| k x) * f x :=
@@ -212,6 +214,7 @@ theorem superpolynomialDecay_iff_abs_isBoundedUnder (hk : Tendsto k l atTop) :
   refine Eq.trans_le ?_ (mul_le_mul_of_nonneg_left hx <| abs_nonneg (k x)⁻¹)
   rw [← abs_mul, ← mul_assoc, pow_succ', ← mul_assoc, inv_mul_cancel₀ hk0, one_mul]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem superpolynomialDecay_iff_zpow_tendsto_zero (hk : Tendsto k l atTop) :
     SuperpolynomialDecay l k f ↔ ∀ z : ℤ, Tendsto (fun a : α => k a ^ z * f a) l (𝓝 0) := by
   refine ⟨fun h z => ?_, fun h n => by simpa only [zpow_natCast] using h (n : ℤ)⟩
@@ -237,6 +240,7 @@ theorem SuperpolynomialDecay.mul_param_zpow (hk : Tendsto k l atTop)
     (hf : SuperpolynomialDecay l k f) (z : ℤ) : SuperpolynomialDecay l k fun a => f a * k a ^ z :=
   (hf.param_zpow_mul hk z).congr fun _ => mul_comm _ _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem SuperpolynomialDecay.inv_param_mul (hk : Tendsto k l atTop)
     (hf : SuperpolynomialDecay l k f) : SuperpolynomialDecay l k (k⁻¹ * f) := by
   simpa using hf.param_zpow_mul hk (-1)
@@ -304,6 +308,7 @@ theorem superpolynomialDecay_iff_isBigO (hk : Tendsto k l atTop) :
     refine .of_bound' <| hk0.mono fun a ha0 => ?_
     simp [← zpow_add₀ ha0]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem superpolynomialDecay_iff_isLittleO (hk : Tendsto k l atTop) :
     SuperpolynomialDecay l k f ↔ ∀ z : ℤ, f =o[l] fun a : α => k a ^ z := by
   refine ⟨fun h z => ?_, fun h => (superpolynomialDecay_iff_isBigO f hk).2 fun z => (h z).isBigO⟩

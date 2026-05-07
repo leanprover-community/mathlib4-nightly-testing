@@ -348,6 +348,7 @@ variable
   {N : Type*} [TopologicalSpace N] [ChartedSpace H' N]
   {n : WithTop ℕ∞}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function `f` is differentiable at `x` with surjective `mfderiv I I' f x` and `x` is an
 interior point with respect to `I`, `f x` must be an interior point with respect to `I'`. -/
 lemma MDifferentiableAt.isInteriorPoint_of_surjective_mfderiv {f : M → N} {x : M}
@@ -396,11 +397,13 @@ lemma IsLocalDiffeomorphAt.isBoundaryPoint_iff (hn : n ≠ 0) {f : M → N} {x :
   simp [isBoundaryPoint_iff_not_isInteriorPoint, hf.isInteriorPoint_iff hn]
 
 
+set_option backward.simpa.using.reducibleClose false in
 lemma IsLocalDiffeomorphOn.preimage_interior_inter (hn : n ≠ 0) {f : M → N} {s : Set M}
     (hf : IsLocalDiffeomorphOn I I' n f s) : f ⁻¹' I'.interior N ∩ s = I.interior M ∩ s := by
   ext x
   simpa using fun hx ↦ ((hf ⟨x, hx⟩).isInteriorPoint_iff hn).symm
 
+set_option backward.simpa.using.reducibleClose false in
 lemma IsLocalDiffeomorphOn.preimage_boundary_inter (hn : n ≠ 0) {f : M → N} {s : Set M}
     (hf : IsLocalDiffeomorphOn I I' n f s) : f ⁻¹' I'.boundary N ∩ s = I.boundary M ∩ s := by
   ext x
@@ -452,6 +455,7 @@ section opens
 
 open TopologicalSpace
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For `u : Opens M`, `x : u` is an interior point iff `x.val : M` is. -/
 lemma isInteriorPoint_iff_isInteriorPoint_val {u : Opens M} {x : u} :
     I.IsInteriorPoint x ↔ I.IsInteriorPoint x.1 := by

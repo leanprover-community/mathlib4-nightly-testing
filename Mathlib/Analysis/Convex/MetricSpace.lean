@@ -246,6 +246,7 @@ lemma continuous_convexComboPair' [BoundedSpace X]
 
 section Convex
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A convex subset of a vector space is a convex space. -/
 -- TODO: this should generalize to arbitrary convex space once `Convex` is redefined.
 @[implicit_reducible]

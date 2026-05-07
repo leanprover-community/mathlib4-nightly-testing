@@ -262,6 +262,7 @@ lemma ι_isoColimit_inv (g : CostructuredArrow L Y) :
     colimit.ι _ g ≫ h.isoColimit.inv = E.hom.app g.left ≫ E.right.map g.hom :=
   IsColimit.comp_coconePointUniqueUpToIso_inv _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma ι_isoColimit_hom (g : CostructuredArrow L Y) :
@@ -443,6 +444,7 @@ lemma isoLimit_hom_π (g : StructuredArrow Y L) :
     h.isoLimit.hom ≫ limit.π _ g = E.left.map g.hom ≫ E.hom.app g.right :=
   IsLimit.conePointUniqueUpToIso_hom_comp _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma isoLimit_inv_π (g : StructuredArrow Y L) :
     h.isoLimit.inv ≫ E.left.map g.hom ≫ E.hom.app g.right =

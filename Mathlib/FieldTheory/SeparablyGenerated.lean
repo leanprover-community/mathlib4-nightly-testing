@@ -135,6 +135,7 @@ theorem isAlgebraic_of_mem_vars_of_forall_totalDegree_le (hFa : F.aeval a = 0) (
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hp H in
+set_option backward.simpa.using.reducibleClose false in
 theorem exists_mem_support_not_dvd_of_forall_totalDegree_le (hF0 : F ≠ 0) (hFa : F.aeval a = 0) :
     ∃ i, ∃ σ ∈ F.support, ¬ p ∣ σ i := by
   by_contra!
@@ -186,6 +187,7 @@ variable [ExpChar k p]
 
 include hp H
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 Suppose `k` has characteristic `p` and `a₁,...,aₙ` is a transcendence basis of `K/k`.
 Suppose furthermore that if `{ sᵢ } ⊆ K` is an arbitrary `k`-linearly independent set,

@@ -53,6 +53,7 @@ section Normed
 
 variable {E : Type*} [NormedAddCommGroup E]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A normed additive group is complete if any absolutely convergent series converges in the
 space. -/
 lemma NormedAddCommGroup.completeSpace_of_summable_imp_tendsto

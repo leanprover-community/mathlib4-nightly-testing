@@ -105,6 +105,7 @@ def obj (K : HomologicalComplex (Karoubi C) c) : Karoubi (HomologicalComplex C c
         simpa only [comp_f] using hom_eq_zero_iff.mp (K.d_comp_d i j k) }
   p := { f := fun n => (K.X n).p }
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The functor `HomologicalComplex (Karoubi C) c ⥤ Karoubi (HomologicalComplex C c)`,
 on morphisms -/

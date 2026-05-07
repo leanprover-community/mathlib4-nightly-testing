@@ -157,6 +157,7 @@ def borelLower : LieSubmodule R b.cartan L where
   __ := lieSpan R L <| range b.f
   lie_mem := b.symm.borelUpper.lie_mem
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma iSup_cartan_borelLower_borelUpper_eq_top_aux
     {y z : L} (hy : y ∈ lieSpan R L (range b.e)) (hz : z ∈ lieSpan R L (range b.f)) :
     ⁅y, z⁆ ∈ b.cartan.toLieSubmodule ⊔ b.borelLower ⊔ b.borelUpper := by
@@ -218,6 +219,7 @@ private lemma iSup_cartan_borelLower_borelUpper_eq_top_aux
       · rw [← lie_skew, neg_mem_iff]
         exact LieSubmodule.mem_sup_right <| LieSubalgebra.lie_mem _ hyu hv
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Lemma 4.5 from [Geck](Geck2017). -/
 lemma iSup_cartan_borelLower_borelUpper_eq_top :
     iSup ![b.cartan.toLieSubmodule, b.borelLower, b.borelUpper] = ⊤ := by
@@ -290,6 +292,7 @@ def baseSupp (i : ι) : Dual R b.cartan :=
   simp only [b₁, b₂, Basis.span_neg b.linInd]
   aesop
 
+set_option backward.simpa.using.reducibleClose false in
 lemma linearIndependent_baseSupp [IsDomain R] [CharZero R] :
     LinearIndependent R b.baseSupp := by
   classical
@@ -373,6 +376,7 @@ lemma borelUpper_le_biSup :
     convert mem_biSup_genWeightSpace_of hs hu hv
     rw [iSup_subtype', iSup_subtype', ← e.iSup_comp]; rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Lemma 4.4 from [Geck](Geck2017). -/
 lemma borelLower_le_biSup :
     b.borelLower ≤ ⨆ (n : ι → ℕ) (_ : n ≠ 0), rootSpace b.cartan (∑ i, n i • (-b.baseSupp) i) := by

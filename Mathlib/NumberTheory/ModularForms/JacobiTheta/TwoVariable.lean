@@ -290,6 +290,7 @@ lemma jacobiTheta₂'_undef (z : ℂ) {τ : ℂ} (hτ : im τ ≤ 0) : jacobiThe
 ## Derivatives and continuity
 -/
 
+set_option backward.simpa.using.reducibleClose false in
 lemma hasFDerivAt_jacobiTheta₂ (z : ℂ) {τ : ℂ} (hτ : 0 < im τ) :
     HasFDerivAt (fun p : ℂ × ℂ ↦ jacobiTheta₂ p.1 p.2) (jacobiTheta₂_fderiv z τ) (z, τ) := by
   obtain ⟨T, hT, hτ'⟩ := exists_between hτ
@@ -494,6 +495,7 @@ theorem jacobiTheta₂_functional_equation (z τ : ℂ) : jacobiTheta₂ z τ =
     congr 3
     ring
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The functional equation for the derivative of the Jacobi theta function, relating
 `jacobiTheta₂' z τ` to `jacobiTheta₂' (z / τ) (-1 / τ)`. This is the key lemma behind the proof of
 the functional equation for L-series of odd Dirichlet characters. -/

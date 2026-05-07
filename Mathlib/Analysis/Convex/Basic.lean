@@ -412,6 +412,7 @@ theorem Convex.smul (hs : Convex 𝕜 s) (c : 𝕜) : Convex 𝕜 (c • s) :=
 theorem Convex.smul_preimage (hs : Convex 𝕜 s) (c : 𝕜) : Convex 𝕜 ((fun z => c • z) ⁻¹' s) :=
   hs.linear_preimage (LinearMap.lsmul _ _ c)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Convex.affinity (hs : Convex 𝕜 s) (z : E) (c : 𝕜) :
     Convex 𝕜 ((fun x => z + c • x) '' s) := by
   simpa only [← image_smul, ← image_vadd, image_image] using (hs.smul c).vadd z
@@ -441,10 +442,12 @@ section AddCommGroup
 
 variable [AddCommGroup E] [AddCommGroup F] [Module 𝕜 E] [Module 𝕜 F] {s t : Set E}
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem convex_vadd (a : E) : Convex 𝕜 (a +ᵥ s) ↔ Convex 𝕜 s :=
   ⟨fun h ↦ by simpa using h.vadd (-a), fun h ↦ h.vadd _⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Affine subspaces are convex. -/
 theorem AffineSubspace.convex (Q : AffineSubspace 𝕜 E) : Convex 𝕜 (Q : Set E) :=
   fun x hx y hy a b _ _ hab ↦ by simpa [Convex.combo_eq_smul_sub_add hab] using Q.2 _ hy hx hx

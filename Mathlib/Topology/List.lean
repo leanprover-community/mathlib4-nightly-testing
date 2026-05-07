@@ -28,6 +28,7 @@ variable {α : Type*} {β : Type*} [TopologicalSpace α] [TopologicalSpace β]
 instance : TopologicalSpace (List α) :=
   TopologicalSpace.mkOfNhds (traverse nhds)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem nhds_list (as : List α) : 𝓝 as = traverse 𝓝 as := by
   refine nhds_mkOfNhds _ _ ?_ ?_
   · intro l

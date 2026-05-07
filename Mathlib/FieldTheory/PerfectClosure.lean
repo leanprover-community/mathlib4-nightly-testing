@@ -456,6 +456,7 @@ noncomputable def lift (L : Type v) [CommSemiring L] [CharP L p] [PerfectRing L 
 
 end Ring
 
+set_option backward.simpa.using.reducibleClose false in
 theorem eq_iff [CommRing K] [IsReduced K] (p : ℕ) [Fact p.Prime] [CharP K p] (x y : ℕ × K) :
     mk K p x = mk K p y ↔ (frobenius K p)^[y.1] x.2 = (frobenius K p)^[x.1] y.2 :=
   (mk_eq_iff K p x y).trans

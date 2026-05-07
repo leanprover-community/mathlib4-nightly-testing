@@ -164,6 +164,7 @@ theorem mem_nhdsGT_iff_exists_Ioc_subset [NoMaxOrder α] [DenselyOrdered α] {a 
     exact ⟨u, au, Subset.trans Ioo_subset_Ioc_self as⟩
 
 open List in
+set_option backward.simpa.using.reducibleClose false in
 /-- The following statements are equivalent:
 
 0. `s` is a neighborhood of `b` within `(-∞, b)`
@@ -196,6 +197,7 @@ theorem mem_nhdsLT_iff_exists_Ioo_subset [NoMinOrder α] {a : α} {s : Set α} :
   let ⟨_, h⟩ := exists_lt a
   mem_nhdsLT_iff_exists_Ioo_subset' h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A set is a neighborhood of `a` within `(-∞, a)` if and only if it contains an interval `[l, a)`
 with `l < a`. -/
 theorem mem_nhdsLT_iff_exists_Ico_subset [NoMinOrder α] [DenselyOrdered α] {a : α} {s : Set α} :
@@ -275,6 +277,7 @@ theorem mem_nhdsGE_iff_exists_Icc_subset [NoMaxOrder α] [DenselyOrdered α] {a 
   nhdsGE_basis_Icc.mem_iff
 
 open List in
+set_option backward.simpa.using.reducibleClose false in
 /-- The following statements are equivalent:
 
 0. `s` is a neighborhood of `b` within `(-∞, b]`

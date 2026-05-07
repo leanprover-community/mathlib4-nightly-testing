@@ -206,6 +206,7 @@ theorem integrable_toReal_condExpKernel {s : Set Ω} (hs : MeasurableSet s) :
 
 end Integrability
 
+set_option backward.simpa.using.reducibleClose false in
 lemma condExpKernel_ae_eq_condExp' {s : Set Ω} (hs : MeasurableSet s) :
     (fun ω ↦ (condExpKernel μ m ω).real s) =ᵐ[μ] μ⟦s | m ⊓ mΩ⟧ := by
   rcases isEmpty_or_nonempty Ω with h | h
@@ -240,6 +241,7 @@ lemma condDistrib_apply_ae_eq_condExpKernel_map {β γ : Type*} {mβ : Measurabl
     condExpKernel_ae_eq_condExp hY.comap_le (μ := μ) (hX hs)] with a ha₁ ha₂
   rw [← measureReal_eq_measureReal_iff, ha₁, ha₂]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem condExp_ae_eq_integral_condExpKernel' [NormedAddCommGroup F] {f : Ω → F}
     [NormedSpace ℝ F] [CompleteSpace F] (hf_int : Integrable f μ) :
     μ[f | m ⊓ mΩ] =ᵐ[μ] fun ω => ∫ y, f y ∂condExpKernel μ m ω := by

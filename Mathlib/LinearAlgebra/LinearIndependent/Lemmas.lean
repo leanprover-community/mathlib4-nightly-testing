@@ -193,6 +193,7 @@ universe v w
 
 variable (R)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- TODO : refactor to use `Maximal`. -/
 theorem exists_maximal_linearIndepOn' (v : ι → M) :
     ∃ s : Set ι, (LinearIndepOn R v s) ∧ ∀ t : Set ι, s ⊆ t → (LinearIndepOn R v t) → s = t := by

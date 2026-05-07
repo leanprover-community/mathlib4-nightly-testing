@@ -140,6 +140,7 @@ variable (α)
 noncomputable def genericPoint [QuasiSober α] [IrreducibleSpace α] : α :=
   (IrreducibleSpace.isIrreducible_univ α).genericPoint
 
+set_option backward.simpa.using.reducibleClose false in
 theorem genericPoint_spec [QuasiSober α] [IrreducibleSpace α] :
     IsGenericPoint (genericPoint α) univ := by
   simpa using (IrreducibleSpace.isIrreducible_univ α).isGenericPoint_genericPoint_closure
@@ -211,6 +212,7 @@ theorem Topology.IsOpenEmbedding.quasiSober {f : α → β} (hf : IsOpenEmbeddin
     exact fun hy => ⟨fun h => hT.closure_eq ▸ closure_mono inter_subset_left h,
       fun h => subset_closure ⟨h, hy⟩⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma TopologicalSpace.IsOpenCover.quasiSober_iff_forall {ι : Type*} {U : ι → Opens α}
     (hU : TopologicalSpace.IsOpenCover U) : QuasiSober α ↔ ∀ i, QuasiSober (U i) := by
   refine ⟨fun h i ↦ (U i).isOpenEmbedding'.quasiSober, fun hU' ↦ (quasiSober_iff _).mpr ?_⟩

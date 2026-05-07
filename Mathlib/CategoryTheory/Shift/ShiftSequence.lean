@@ -59,6 +59,7 @@ class ShiftSequence where
         isoWhiskerLeft _ (shiftIso n a a' ha') ≪≫ shiftIso m a' a'' ha''
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- The tautological shift sequence on a functor. -/
 @[implicit_reducible]
 noncomputable def ShiftSequence.tautological : ShiftSequence F M where

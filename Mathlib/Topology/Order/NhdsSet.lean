@@ -177,6 +177,7 @@ theorem hasBasis_nhdsSet_Iic_Iio (a : α) [h : Nonempty (Ioi a)] :
   rcases exists_Ico_subset_of_mem_nhds hs.1 (Set.nonempty_coe_sort.1 h) with ⟨b, hab, hbs⟩
   exact ⟨b, hab, Iio_subset_Iio_union_Ico.trans (union_subset hs.2 hbs)⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasBasis_nhdsSet_Iic_Iic (a : α) [NeBot (𝓝[>] a)] :
     HasBasis (𝓝ˢ (Iic a)) (a < ·) Iic := by
   have : Nonempty (Ioi a) :=

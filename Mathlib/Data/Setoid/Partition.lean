@@ -502,6 +502,7 @@ theorem piecewise_preimage (f : ι → α → β) (t : Set β) :
   · rw [← hi, ← (mem_iff_index_eq hs).mp ha.1] at ha
     simp_all [piecewise_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem range_piecewise (f : ι → α → β) : range (hs.piecewise f) = ⋃ i, f i '' s i := by
   refine ext fun x => ⟨?_, fun ⟨t, ⟨i, hi⟩, ht⟩ ↦ ?_⟩
   · rintro ⟨x, rfl⟩

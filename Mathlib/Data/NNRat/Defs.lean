@@ -79,6 +79,7 @@ instance instOrderBot : OrderBot ℚ≥0 where
 
 @[simp] lemma val_eq_cast (q : ℚ≥0) : q.1 = q := rfl
 
+set_option backward.simpa.using.reducibleClose false in
 instance instCharZero : CharZero ℚ≥0 where
   cast_injective a b hab := by simpa using congr_arg num hab
 

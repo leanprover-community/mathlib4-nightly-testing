@@ -45,6 +45,7 @@ lemma coeff_mem_pow_of_mem_adjoin_C_mul_X {R : Type*} [CommRing R]
     exact pow_add I j₁ j₂ ▸ Ideal.mul_mem_mul (hx _) (hy _)
 
 attribute [local instance] Polynomial.algebra in
+set_option backward.simpa.using.reducibleClose false in
 lemma exists_monic_aeval_eq_zero_forall_mem_pow_of_isIntegral
     {I : Ideal R} {x : S}
     (hx : IsIntegral (Algebra.adjoin R { C r * X | r ∈ I }) (C x * X)) :

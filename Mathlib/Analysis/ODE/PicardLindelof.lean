@@ -114,6 +114,7 @@ lemma picard_apply {x₀ : E} {t : ℝ} : picard f t₀ x₀ α t = x₀ + ∫ �
 
 lemma picard_apply₀ {x₀ : E} : picard f t₀ x₀ α t₀ = x₀ := by simp
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a $C^n$ time-dependent vector field `f` and a $C^n$ curve `α`, the composition `f t (α t)`
 is $C^n$ in `t`. -/
 lemma contDiffOn_comp {n : WithTop ℕ∞}
@@ -330,6 +331,7 @@ lemma dist_comp_iterate_next_le (hf : IsPicardLindelof f t₀ x₀ a r L K)
       gcongr
       rwa [← mul_pow]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A time-dependent bound on the distance between the `n`-th iterates of `next` on two curves -/
 lemma dist_iterate_next_apply_le (hf : IsPicardLindelof f t₀ x₀ a r L K)
     (hx : x ∈ closedBall x₀ r) (α β : FunSpace t₀ x₀ r L) (n : ℕ) (t : Icc tmin tmax) :

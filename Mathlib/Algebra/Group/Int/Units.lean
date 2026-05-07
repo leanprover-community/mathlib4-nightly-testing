@@ -33,6 +33,7 @@ lemma units_natAbs (u : ℤˣ) : natAbs u = 1 :=
 
 @[simp] lemma natAbs_of_isUnit (hu : IsUnit u) : natAbs u = 1 := units_natAbs hu.unit
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isUnit_eq_one_or (hu : IsUnit u) : u = 1 ∨ u = -1 := by
   simpa only [natAbs_of_isUnit hu] using natAbs_eq u
 

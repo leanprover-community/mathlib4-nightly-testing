@@ -376,6 +376,7 @@ theorem num_lt_succ_floor_mul_den (q : ℚ) : q.num < (⌊q⌋ + 1) * q.den := b
     rwa [lt_sub_iff_add_lt]
   exact mul_pos this (by exact mod_cast q.pos)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem fract_inv_num_lt_num_of_pos {q : ℚ} (q_pos : 0 < q) : (fract q⁻¹).num < q.num := by
   -- we know that the numerator must be positive
   have q_num_pos : 0 < q.num := Rat.num_pos.mpr q_pos

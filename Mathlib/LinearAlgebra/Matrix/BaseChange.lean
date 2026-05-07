@@ -30,6 +30,7 @@ variable {m n L : Type*} [Finite m] [Fintype n] [DecidableEq m] [Field L]
 
 include e hAB
 
+set_option backward.simpa.using.reducibleClose false in
 lemma mem_subfield_of_mul_eq_one_of_mem_subfield_right
     (h_mem : ∀ i j, A i j ∈ K) (i : n) (j : m) :
     B i j ∈ K := by

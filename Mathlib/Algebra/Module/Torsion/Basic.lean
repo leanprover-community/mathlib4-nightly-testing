@@ -338,6 +338,7 @@ theorem isTorsionBySet_singleton_iff : IsTorsionBySet R M {a} ↔ IsTorsionBy R 
   refine ⟨fun h x => @h _ ⟨_, Set.mem_singleton _⟩, fun h x => ?_⟩
   rintro ⟨b, rfl : b = a⟩; exact @h _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isTorsionBySet_iff_is_torsion_by_span :
     IsTorsionBySet R M s ↔ IsTorsionBySet R M (Ideal.span s) := by
   simpa only [isTorsionBySet_iff_subset_annihilator] using Ideal.span_le.symm

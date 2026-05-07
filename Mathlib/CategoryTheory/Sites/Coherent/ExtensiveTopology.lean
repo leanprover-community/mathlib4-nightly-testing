@@ -28,6 +28,7 @@ variable {C : Type*} [Category* C] [FinitaryPreExtensive C]
 
 namespace CategoryTheory
 
+set_option backward.simpa.using.reducibleClose false in
 lemma extensiveTopology.mem_sieves_iff_contains_colimit_cofan {X : C} (S : Sieve X) :
     S ∈ (extensiveTopology C) X ↔
       (∃ (α : Type) (_ : Finite α) (Y : α → C) (π : (a : α) → (Y a ⟶ X)),

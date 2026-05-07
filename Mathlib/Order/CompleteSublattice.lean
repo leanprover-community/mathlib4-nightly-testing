@@ -66,8 +66,10 @@ instance instSetLike : SetLike (CompleteSublattice α) α where
 
 instance : PartialOrder (CompleteSublattice α) := .ofSetLike (CompleteSublattice α) α
 
+set_option backward.simpa.using.reducibleClose false in
 theorem top_mem : ⊤ ∈ L := by simpa using L.sInfClosed' <| empty_subset _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem bot_mem : ⊥ ∈ L := by simpa using L.sSupClosed' <| empty_subset _
 
 instance instBot : Bot L where

@@ -86,6 +86,7 @@ set_option backward.isDefEq.respectTransparency false in
 /-- The image of `g : R[X₁, ..., Xₙ]` in `T`. -/
 abbrev gbar : D.T := D.g
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- `S` is the localization of `T` away from `S`. -/
 instance : IsLocalization.Away D.gbar S := by
@@ -127,6 +128,7 @@ lemma toAlgHom_fhom : D.fhom.toAlgHom = AlgHom.id R P.Ring := by
   ext : 1
   simp [fhom]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma ker_presLeft_le : D.presLeft.ker ≤ P.ker := by
@@ -168,6 +170,7 @@ lemma span_range_mk_kerGen : Submodule.span D.T
   dsimp only [presLeft, Presentation.naive_toGenerators]
   exact (Generators.ker_naive _ _).symm
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- The linear isomorphism `S ⊗[T] J/J² ≃ₗ[S] I/I²`. -/
 def tensorCotangentEquiv :
@@ -244,6 +247,7 @@ def basisRight : Module.Basis Unit S D.presRight.toExtension.Cotangent :=
 def basis [Nontrivial S] : Module.Basis (Unit ⊕ σ) S D.pres.toExtension.Cotangent :=
   (Module.Basis.prod D.basisRight D.basisLeft).map D.cotangentEquivProd.symm
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma basis_inl [Nontrivial S] :
     D.basis (.inl ()) =
@@ -328,6 +332,7 @@ public lemma exists_presentation_of_basis_cotangent [Algebra.FinitePresentation 
   convert b₀.span_eq
   exact hf _
 
+set_option backward.simpa.using.reducibleClose false in
 open PresentationOfFreeCotangent in
 /-- Let `S` be a finitely presented `R`-algebra and suppose `P : R[X] → S` generates `S` with
 kernel `I`. If `I/I²` is free, there exists an `R`-presentation `P'` of `S` extending `P` with

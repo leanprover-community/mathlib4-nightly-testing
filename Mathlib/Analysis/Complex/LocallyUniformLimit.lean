@@ -87,6 +87,7 @@ theorem norm_cderiv_sub_lt (hr : 0 < r) (hfg : ∀ w ∈ sphere z r, ‖f w - g 
     ‖cderiv r f z - cderiv r g z‖ < M / r :=
   cderiv_sub hr hf hg ▸ norm_cderiv_lt hr hfg (hf.sub hg)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.TendstoUniformlyOn.cderiv (hF : TendstoUniformlyOn F f φ (cthickening δ K))
     (hδ : 0 < δ) (hFn : ∀ᶠ n in φ, ContinuousOn (F n) (cthickening δ K)) :
     TendstoUniformlyOn (cderiv δ ∘ F) (cderiv δ f) φ K := by

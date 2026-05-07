@@ -98,6 +98,7 @@ lemma weylGroup.induction' [Nonempty ι] {pred : (g : Aut P) → g ∈ P.weylGro
     rw [sq, mul_eq_one_iff_inv_eq, Equiv.reflection_inv P i]
   simpa [sq, ← this] using mul _ _ _ _ (mem i) (mem i)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma range_weylGroup_weightHom :
     MonoidHom.range ((Equiv.weightHom P).restrict P.weylGroup) =
@@ -125,6 +126,7 @@ lemma range_weylGroup_weightHom :
     | mul w₁ w₂ hw₁ hw₂ h₁ h₂ =>
       simpa only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using Subgroup.mul_mem _ h₁ h₂
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma range_weylGroup_coweightHom :
     MonoidHom.range ((Equiv.coweightHom P).restrict P.weylGroup) =
@@ -155,6 +157,7 @@ lemma range_weylGroup_coweightHom :
 /-- The permutation representation of the Weyl group induced by `reflectionPerm`. -/
 abbrev weylGroupToPerm := (Equiv.indexHom P).restrict P.weylGroup
 
+set_option backward.simpa.using.reducibleClose false in
 lemma range_weylGroupToPerm :
     P.weylGroupToPerm.range = Subgroup.closure (range P.reflectionPerm) := by
   refine (Subgroup.closure_eq_of_le _ ?_ ?_).symm

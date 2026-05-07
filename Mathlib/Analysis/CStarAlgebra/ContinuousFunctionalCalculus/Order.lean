@@ -373,10 +373,12 @@ lemma le_inv_iff {a b : Aˣ} (ha : 0 ≤ (a : A)) (hb : 0 ≤ (↑b : A)) :
     a ≤ (↑b⁻¹ : A) ↔ b ≤ (↑a⁻¹ : A) := by
   simpa using CStarAlgebra.inv_le_inv_iff (inv_nonneg_of_nonneg a ha) hb
 
+set_option backward.simpa.using.reducibleClose false in
 lemma one_le_inv_iff_le_one {a : Aˣ} (ha : 0 ≤ (a : A)) :
     1 ≤ (↑a⁻¹ : A) ↔ a ≤ 1 := by
   simpa using CStarAlgebra.le_inv_iff (a := 1) (by simp) ha
 
+set_option backward.simpa.using.reducibleClose false in
 lemma inv_le_one_iff_one_le {a : Aˣ} (ha : 0 ≤ (a : A)) :
     (↑a⁻¹ : A) ≤ 1 ↔ 1 ≤ a := by
   simpa using CStarAlgebra.inv_le_iff ha (b := 1) (by simp)

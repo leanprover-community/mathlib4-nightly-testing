@@ -747,6 +747,7 @@ theorem upcrossingsBefore_eq_sum (hab : a < b) : upcrossingsBefore a b f N ω =
     smul_eq_mul, mul_one, smul_eq_mul, mul_zero, Nat.card_Ico, Nat.add_succ_sub_one,
     add_zero, add_zero]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem StronglyAdapted.measurable_upcrossingsBefore (hf : StronglyAdapted ℱ f) (hab : a < b) :
     Measurable (upcrossingsBefore a b f N) := by
   have : upcrossingsBefore a b f N = fun ω =>

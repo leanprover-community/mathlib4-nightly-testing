@@ -557,6 +557,7 @@ theorem currySum_apply (f : ContinuousMultilinearMap 𝕜 (fun _ : ι ⊕ ι' =>
     (m' : ι' → G) : f.currySum m m' = f (Sum.elim m m') :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A continuous multilinear map with variables indexed by `ι` taking values in the space of
 continuous multilinear maps with variables indexed by `ι'` defines a continuous multilinear map with
 variables indexed by `ι ⊕ ι'`. -/

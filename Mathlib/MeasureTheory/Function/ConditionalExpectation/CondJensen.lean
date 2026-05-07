@@ -96,6 +96,7 @@ lemma Convex.condExp_mem (hm : m ≤ mα) [SigmaFinite (μ.trim hm)]
   filter_upwards [h1, h2] with a ha hb
   simp_all
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Conditional Jensen's inequality for hereditarily Lindelof Spaces. -/
 private lemma ConvexOn.map_condExp_le_of_hereditarilyLindelofSpace [IsFiniteMeasure μ]
     [HereditarilyLindelofSpace E] (hm : m ≤ mα) (hφ_cvx : ConvexOn ℝ s φ)

@@ -290,6 +290,7 @@ def equivMatrix : TwoSidedIdeal R ≃ TwoSidedIdeal (Matrix n n R) where
   right_inv _ := ringCon_injective <| RingCon.matrix_ofMatrix _
   left_inv _ := ringCon_injective <| RingCon.ofMatrix_matrix _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem coe_equivMatrix_symm_apply (I : TwoSidedIdeal (Matrix n n R)) (i j : n) :
     equivMatrix.symm I = {N i j | N ∈ I} := by
   ext r
@@ -337,6 +338,7 @@ open Matrix
 
 variable {R : Type*} [Ring R] {n : Type*} [Fintype n] [DecidableEq n]
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma jacobson_matrix_le (I : TwoSidedIdeal R) :
     (I.matrix n).jacobson ≤ I.jacobson.matrix n := by
   -- Proof generalized from example 8 in

@@ -100,6 +100,7 @@ theorem d₁₀_single_inv (g : G) (a : A) :
     d₁₀ A (single g⁻¹ a) = -d₁₀ A (single g (A.ρ g a)) := by
   simp [d₁₀]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem range_d₁₀_eq_coinvariantsKer :
     LinearMap.range (d₁₀ A).hom = Coinvariants.ker A.ρ := by
   symm
@@ -636,6 +637,7 @@ def cyclesOfIsCycle₁ (x : G →₀ A) (hx : IsCycle₁ x) :
     cycles₁ (Rep.ofDistribMulAction k G A) :=
   ⟨x, (mem_cycles₁_iff (A := Rep.ofDistribMulAction k G A) x).2 hx⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isCycle₁_of_mem_cycles₁
     (x : G →₀ A) (hx : x ∈ cycles₁ (Rep.ofDistribMulAction k G A)) :
     IsCycle₁ x := by
@@ -1008,6 +1010,7 @@ lemma H1ToTensorOfIsTrivial_H1π_single (g : G) (a : A) :
   simp [π_comp_H1Iso_hom_apply, ← Submodule.Quotient.quotientAddGroupMk_eq_mk, Submodule.mkQ,
     AddSubgroup.subtype, cycles₁IsoOfIsTrivial]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- If a `G`-representation on `A` is trivial, this is the group isomorphism between
 `H₁(G, A) ≃+ Gᵃᵇ ⊗[ℤ] A` defined by `⟦single g a⟧ ↦ ⟦g⟧ ⊗ a`. -/

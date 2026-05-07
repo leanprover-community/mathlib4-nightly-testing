@@ -573,6 +573,7 @@ open Submodule IsCompl
 variable [IsSemisimpleModule R M]
 
 -- Statement and proof follow [Lorenz2008], Chapter 28, F20.
+set_option backward.simpa.using.reducibleClose false in
 theorem jacobson_density (f : End (End R M) M) (s : Finset M) :
     ∃ r : R, ∀ m ∈ s, f m = r • m :=
   let x := Finsupp.equivFunOnFinite.symm (·.1 : s → M)

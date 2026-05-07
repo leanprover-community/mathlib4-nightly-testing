@@ -688,6 +688,7 @@ def toRelOrderEmbedding : Set (Sym2 α) ↪o (α → α → Prop) :=
   .ofMapLEIff ToRel toRel_mono_iff
 
 variable (α) in
+set_option backward.simpa.using.reducibleClose false in
 /-- `fromRel`/`ToRel` induce an order isomorphism between symmetric relations and `Sym2` sets -/
 @[simps]
 def fromRelOrderIso : { r : α → α → Prop // Symmetric r } ≃o Set (Sym2 α) where

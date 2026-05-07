@@ -112,6 +112,7 @@ lemma CuspForm.rank_eq_zero_of_weight_lt_twelve (hk : k < 12) :
     Module.rank ℂ (CuspForm 𝒮ℒ k) = 0 :=
   CuspForm.discriminantEquiv.rank_eq.trans (levelOne_neg_weight_rank_zero (by lia))
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The space of weight 12 cusp forms for `𝒮ℒ` has rank 1. -/
 lemma CuspForm.rank_eq_one_of_weight_eq_twelve : Module.rank ℂ (CuspForm 𝒮ℒ 12) = 1 := by
   simpa [CuspForm.discriminantEquiv.rank_eq] using levelOne_weight_zero_rank_one

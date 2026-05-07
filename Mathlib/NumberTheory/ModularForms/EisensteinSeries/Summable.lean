@@ -100,6 +100,7 @@ lemma r_lower_bound_on_verticalStrip {A B : ℝ} (h : 0 < B) (hz : z ∈ vertica
   gcongr
   exacts [hz.1, hz.2]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma auxbound1 {c : ℝ} (d : ℝ) (hc : 1 ≤ c ^ 2) : r z ≤ ‖c * (z : ℂ) + d‖ := by
   rcases z with ⟨z, hz⟩
   have H1 : z.im ≤ √((c * z.re + d) ^ 2 + (c * z).im ^ 2) := by
@@ -247,6 +248,7 @@ lemma linear_left_summable {z : ℂ} (hz : z ≠ 0) (d : ℤ) {k : ℤ} (hk : 2 
   simp only [zpow_natCast, Int.cast_natCast, Real.rpow_natCast, ← inv_pow, ← abs_inv]
   apply (linear_inv_isBigO_left d hz).abs_right.pow
 
+set_option backward.simpa.using.reducibleClose false in
 lemma summable_linear_sub_mul_linear_add (z : ℂ) (c₁ c₂ : ℤ) :
     Summable fun n : ℤ ↦ ((c₁ * z - n) * (c₂ * z + n))⁻¹ := by
   apply summable_inv_of_isBigO_rpow_inv (a := 2) (by norm_cast)
@@ -282,6 +284,7 @@ lemma isLittleO_const_left_of_properSpace_of_discreteTopology
   simpa [isLittleO_const_left, Function.comp_def] using
     .inr <| tendsto_norm_comp_cofinite_atTop_of_isClosedEmbedding IsClosedEmbedding.id
 
+set_option backward.simpa.using.reducibleClose false in
 lemma vec_add_const_isTheta (a b : ℤ) :
     (fun (m : Fin 2 → ℤ) => ‖![m 0 + a, m 1 + b]‖⁻¹) =Θ[cofinite] (fun m => ‖m‖⁻¹) := by
   have (x : Fin 2 → ℤ) : ![x 0 + a, x 1 + b] = x + ![a, b] := List.ofFn_inj.mp rfl

@@ -136,6 +136,7 @@ lemma eqToHom_left {X Y : Arrow T} (h : X = Y) :
 lemma eqToHom_right {X Y : Arrow T} (h : X = Y) :
     (eqToHom h).right = eqToHom (by rw [h]) := by subst h; rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma mk_eq_mk_iff {X Y X' Y' : T} (f : X ⟶ Y) (f' : X' ⟶ Y') :
     Arrow.mk f = Arrow.mk f' ↔
       ∃ (hX : X = X') (hY : Y = Y'), f = eqToHom hX ≫ f' ≫ eqToHom hY.symm := by
@@ -308,6 +309,7 @@ lemma inv_hom_id_right (e : f ≅ g) : e.inv.right ≫ e.hom.right = 𝟙 _ := b
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a square from an arrow `i` to an isomorphism `p`, express the source part of `sq`
 in terms of the inverse of `p`. -/
 @[simp]

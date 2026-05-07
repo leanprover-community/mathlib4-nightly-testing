@@ -98,6 +98,7 @@ lemma exactAt_iff_of_quasiIsoAt (f : K ⟶ L) (i : ι)
   ⟨fun hK => (quasiIsoAt_iff_exactAt f i hK).1 inferInstance,
     fun hL => (quasiIsoAt_iff_exactAt' f i hL).1 inferInstance⟩
 
+set_option backward.simpa.using.reducibleClose false in
 instance (f : K ⟶ L) (i : ι) [K.HasHomology i] [L.HasHomology i] [hf : QuasiIsoAt f i] :
     IsIso (homologyMap f i) := by
   simpa only [quasiIsoAt_iff, ShortComplex.quasiIso_iff] using hf

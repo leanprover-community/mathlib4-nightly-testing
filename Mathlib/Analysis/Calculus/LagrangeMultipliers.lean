@@ -97,6 +97,7 @@ theorem IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt_1d {f : E → ℝ}
     have H₂ : f' x * Λ 1 + Λ₀ * φ' x = 0 := by simpa only [smul_eq_mul, H₁] using hfΛ x
     simpa [mul_comm] using H₂
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Lagrange multipliers theorem, 1d version. Let `f : ι → E → ℝ` be a finite family of functions.
 Suppose that `φ : E → ℝ` has a local extremum on the set `{x | ∀ i, f i x = f i x₀}` at `x₀`.
 Suppose that all functions `f i` as well as `φ` are strictly differentiable at `x₀`.
@@ -120,6 +121,7 @@ theorem IsLocalExtrOn.exists_multipliers_of_hasStrictFDerivAt {ι : Type*} [Fint
   · simpa only [Ne, Prod.ext_iff, LinearEquiv.map_eq_zero_iff, Prod.fst_zero] using h0
   · ext x; simpa [mul_comm] using hsum x
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Lagrange multipliers theorem. Let `f : ι → E → ℝ` be a finite family of functions.
 Suppose that `φ : E → ℝ` has a local extremum on the set `{x | ∀ i, f i x = f i x₀}` at `x₀`.
 Suppose that all functions `f i` as well as `φ` are strictly differentiable at `x₀`.

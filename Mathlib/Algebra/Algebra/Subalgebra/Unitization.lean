@@ -54,6 +54,7 @@ namespace Unitization
 variable {R A C : Type*} [CommSemiring R] [NonUnitalSemiring A]
 variable [Module R A] [SMulCommClass R A A] [IsScalarTower R A A] [Semiring C] [Algebra R C]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem lift_range_le {f : A →ₙₐ[R] C} {S : Subalgebra R C} :
     (lift f).range ≤ S ↔ NonUnitalAlgHom.range f ≤ S.toNonUnitalSubalgebra := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
@@ -203,6 +204,7 @@ variable {R A C : Type*} [CommSemiring R] [NonUnitalSemiring A] [StarRing R] [St
 variable [Module R A] [SMulCommClass R A A] [IsScalarTower R A A] [StarModule R A]
 variable [Semiring C] [StarRing C] [Algebra R C] [StarModule R C]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem starLift_range_le
     {f : A →⋆ₙₐ[R] C} {S : StarSubalgebra R C} :
     (starLift f).range ≤ S ↔ NonUnitalStarAlgHom.range f ≤ S.toNonUnitalStarSubalgebra := by

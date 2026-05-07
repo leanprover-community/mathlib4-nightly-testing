@@ -34,6 +34,7 @@ section NormedSpace
 
 variable [NormedAddCommGroup F] [NormedSpace 𝕜₂ F]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The family of seminorms that induce the topology of pointwise convergence, namely `‖A x‖` for
 all `x : E`. -/
 protected def seminorm (x : E) : Seminorm 𝕜₂ (E →SLₚₜ[σ] F) where

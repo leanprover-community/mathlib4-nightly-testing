@@ -127,6 +127,7 @@ protected theorem nhds_iInf (f : ι → Filter α) : 𝓝 (⨅ i, f i) = ⨅ i, 
   simp only [nhds_eq]
   apply lift'_iInf_of_map_univ <;> simp
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 protected theorem nhds_inf (l₁ l₂ : Filter α) : 𝓝 (l₁ ⊓ l₂) = 𝓝 l₁ ⊓ 𝓝 l₂ := by
   simpa only [iInf_bool_eq] using Filter.nhds_iInf fun b => cond b l₁ l₂

@@ -155,6 +155,7 @@ lemma iSup_subcomplex_eq_top :
     rintro ⟨d, s, hs⟩
     exact le_trans (by rfl) (le_iSup _ (N.mk _ hs)))
 
+set_option backward.simpa.using.reducibleClose false in
 lemma subcomplex_le_iff {A B : X.Subcomplex} :
     A ≤ B ↔ ∀ (s : X.N), s.subcomplex ≤ A → s.subcomplex ≤ B := by
   rw [Subcomplex.le_iff_contains_nonDegenerate]

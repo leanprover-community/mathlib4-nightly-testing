@@ -962,6 +962,7 @@ lemma norm_integralAgainstBilinLM_le {B : F₁ →L[𝕜] F₂ →L[𝕜] F₃} 
   · simp only [integralAgainstBilinLM, hφ, ↓reduceIte, LinearMap.coe_mk, AddHom.coe_mk, norm_zero]
     positivity
 
+set_option backward.simpa.using.reducibleClose false in
 -- TODO: semilinearize
 /-- Given a continuous `𝕜`-bilinear map `B : F₁ →L[𝕜] F₂ →L[𝕜] F₃`, a measure `μ` on `E`,
 and a function `φ : E → F₂` which is integrable on `K`, this is the *continuous* `𝕜`-linear map

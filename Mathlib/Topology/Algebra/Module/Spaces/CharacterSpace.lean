@@ -134,6 +134,7 @@ section Unital
 variable [CommRing 𝕜] [NoZeroDivisors 𝕜] [TopologicalSpace 𝕜] [ContinuousAdd 𝕜]
   [ContinuousConstSMul 𝕜 𝕜] [TopologicalSpace A] [Semiring A] [Algebra 𝕜 A]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- In a unital algebra, elements of the character space are algebra homomorphisms. -/
 instance instAlgHomClass : AlgHomClass (characterSpace 𝕜 A) 𝕜 A 𝕜 :=
   haveI map_one' : ∀ φ : characterSpace 𝕜 A, φ 1 = 1 := fun φ => by
@@ -185,6 +186,7 @@ variable [CommRing 𝕜] [NoZeroDivisors 𝕜] [TopologicalSpace 𝕜] [Continuo
 theorem apply_mem_spectrum [Nontrivial 𝕜] (φ : characterSpace 𝕜 A) (a : A) : φ a ∈ spectrum 𝕜 a :=
   AlgHom.apply_mem_spectrum φ a
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ext_ker {φ ψ : characterSpace 𝕜 A} (h : RingHom.ker φ = RingHom.ker ψ) : φ = ψ := by
   ext x
   have : x - algebraMap 𝕜 A (ψ x) ∈ RingHom.ker φ := by

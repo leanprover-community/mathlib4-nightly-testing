@@ -150,6 +150,7 @@ theorem prod_assoc_image {α β γ} {s : Set α} {t : Set β} {u : Set γ} :
     Equiv.prodAssoc α β γ '' (s ×ˢ t) ×ˢ u = s ×ˢ t ×ˢ u := by
   simpa only [Equiv.image_eq_preimage_symm] using prod_assoc_symm_preimage
 
+set_option backward.simpa.using.reducibleClose false in
 theorem prod_assoc_symm_image {α β γ} {s : Set α} {t : Set β} {u : Set γ} :
     (Equiv.prodAssoc α β γ).symm '' s ×ˢ t ×ˢ u = (s ×ˢ t) ×ˢ u := by
   simpa only [Equiv.image_eq_preimage_symm] using prod_assoc_preimage

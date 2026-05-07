@@ -169,11 +169,13 @@ lemma paths_le_inverseImage (W : MorphismProperty C) [W.IsMultiplicative] :
     W.paths ≤ W.inverseImage (pathComposition C) :=
   fun _ _ _ ↦ W.composePath_mem
 
+set_option backward.simpa.using.reducibleClose false in
 instance (W : MorphismProperty C) : IsMultiplicative (W.paths.strictMap (pathComposition C)) where
   id_mem X := W.paths.map_mem_strictMap (pathComposition C) _ (W.paths.id_mem X)
   comp_mem := fun _ _ ⟨hp⟩ ⟨hq⟩ ↦ by
     simpa using W.paths.map_mem_strictMap (pathComposition C) _ <| W.paths.comp_mem _ _ hp hq
 
+set_option backward.simpa.using.reducibleClose false in
 lemma multiplicativeClosure_eq_strictMap_paths (W : MorphismProperty C) :
     W.multiplicativeClosure = W.paths.strictMap (pathComposition C) := by
   refine le_antisymm ?_ fun _ _ _ ⟨h⟩ ↦ ?_

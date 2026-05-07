@@ -94,6 +94,7 @@ theorem UniformContinuous.const_smul [UniformContinuousConstSMul M X] {f : Y →
     (hf : UniformContinuous f) (c : M) : UniformContinuous (c • f) :=
   (uniformContinuous_const_smul c).comp hf
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma IsUniformInducing.uniformContinuousConstSMul [SMul M Y] [UniformContinuousConstSMul M Y]
     {f : X → Y} (hf : IsUniformInducing f) (hsmul : ∀ (c : M) x, f (c • x) = c • f x) :

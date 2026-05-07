@@ -431,6 +431,7 @@ theorem monomial_eq_monomial_iff {m n : ℕ} {a b : R} :
     monomial m a = monomial n b ↔ m = n ∧ a = b ∨ a = 0 ∧ b = 0 := by
   rw [← toFinsupp_inj, toFinsupp_monomial, toFinsupp_monomial, Finsupp.single_eq_single_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem support_add : (p + q).support ⊆ p.support ∪ q.support := by
   simpa [support] using Finsupp.support_add
 
@@ -705,6 +706,7 @@ theorem Nontrivial.of_polynomial_ne (h : p ≠ q) : Nontrivial R :=
 theorem forall_eq_iff_forall_eq : (∀ f g : R[X], f = g) ↔ ∀ a b : R, a = b := by
   simpa only [← subsingleton_iff] using subsingleton_iff_subsingleton
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ext_iff {p q : R[X]} : p = q ↔ ∀ n, coeff p n = coeff q n := by
   rcases p with ⟨f : ℕ →₀ R⟩
   rcases q with ⟨g : ℕ →₀ R⟩

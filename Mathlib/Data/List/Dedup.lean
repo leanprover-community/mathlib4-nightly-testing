@@ -34,9 +34,11 @@ variable {α β : Type*} [DecidableEq α]
 theorem dedup_nil : dedup [] = ([] : List α) :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 theorem dedup_cons_of_mem' {a : α} {l : List α} (h : a ∈ dedup l) : dedup (a :: l) = dedup l :=
   pwFilter_cons_of_neg <| by simpa only [forall_mem_ne, not_not] using h
 
+set_option backward.simpa.using.reducibleClose false in
 theorem dedup_cons_of_notMem' {a : α} {l : List α} (h : a ∉ dedup l) :
     dedup (a :: l) = a :: dedup l :=
   pwFilter_cons_of_pos <| by simpa only [forall_mem_ne] using h

@@ -59,6 +59,7 @@ theorem cauchySeq_prod_of_tendsto_cofinite_one {f : α → G} (hf : Tendsto f co
   intro i hi
   simpa using Finset.disjoint_left.mp ht hi
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Let `G` be a nonarchimedean abelian group, and let `f : ℕ → G` be a function
 such that the quotients `f (n + 1) / f n` tend to one. Then the function is a Cauchy sequence. -/
 @[to_additive /-- Let `G` be a nonarchimedean additive abelian group, and let `f : ℕ → G` be a

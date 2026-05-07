@@ -760,6 +760,7 @@ def trCfg : Cfg Γ Λ σ → Cfg Bool (Λ' Γ Λ σ) σ
 
 variable {enc}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem trTape'_move_left (L R : ListBlank Γ) :
     (Tape.move Dir.left)^[n] (trTape' enc0 L R) = trTape' enc0 L.tail (R.cons L.head) := by
   obtain ⟨a, L, rfl⟩ := L.exists_cons
@@ -837,6 +838,7 @@ theorem stepAux_read (f : Γ → Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (L R : Li
       rfl
 
 variable {enc0} in
+set_option backward.simpa.using.reducibleClose false in
 theorem tr_respects :
     Respects (step M) (step (tr enc dec M)) fun c₁ c₂ ↦ trCfg enc enc0 c₁ = c₂ :=
   fun_respects.2 fun ⟨l₁, v, T⟩ ↦ by

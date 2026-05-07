@@ -170,11 +170,13 @@ if `X₁` and `X₂` are objects in a concrete category `C`. -/
 noncomputable def prodEquiv : ToType (X₁ ⨯ X₂) ≃ ToType X₁ × ToType X₂ :=
   (PreservesLimitPair.iso (forget C) X₁ X₂ ≪≫ Types.binaryProductIso _ _).toEquiv
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma prodEquiv_apply_fst (x : ToType (X₁ ⨯ X₂)) :
     (prodEquiv X₁ X₂ x).fst = (Limits.prod.fst : X₁ ⨯ X₂ ⟶ X₁) x := by
   simpa using congr_hom (prodComparison_fst (forget C) X₁ X₂) x
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma prodEquiv_apply_snd (x : ToType (X₁ ⨯ X₂)) :
     (prodEquiv X₁ X₂ x).snd = (Limits.prod.snd : X₁ ⨯ X₂ ⟶ X₂) x := by

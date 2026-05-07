@@ -184,6 +184,7 @@ theorem list_rec {f : α → List β} {g : α → σ} {h : α → β × List β 
     dsimp [F]
     induction f a <;> simp [*]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem list_getElem? : Primrec₂ ((·[·]? : List α → ℕ → Option α)) :=
   let F (l : List α) (n : ℕ) :=
     l.foldl
@@ -361,6 +362,7 @@ theorem nat_omega_rec' (f : β → σ) {m : β → ℕ} {l : β → List β} {g 
         · exact (List.infix_flatMap_of_mem ha' l).subset
     simp [graph_eq_map_bindList (m b + 1) (Nat.le_refl _), bindList]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem nat_omega_rec (f : α → β → σ) {m : α → β → ℕ}
     {l : α → β → List β} {g : α → β × List σ → Option σ}
     (hm : Primrec₂ m) (hl : Primrec₂ l) (hg : Primrec₂ g)

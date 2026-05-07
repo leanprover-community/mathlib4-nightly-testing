@@ -248,6 +248,7 @@ lemma farFromTriangleFree_of_disjoint_triangles (tris : Finset (Finset α))
   exact tris_big.trans
     (Nat.cast_le.2 <| farFromTriangleFree_of_disjoint_triangles_aux htris pd hG hH)
 
+set_option backward.simpa.using.reducibleClose false in
 protected lemma EdgeDisjointTriangles.farFromTriangleFree (hG : G.EdgeDisjointTriangles)
     (tris_big : ε * (card α ^ 2 : ℕ) ≤ #(G.cliqueFinset 3)) :
     G.FarFromTriangleFree ε :=

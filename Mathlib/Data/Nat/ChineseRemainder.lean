@@ -152,6 +152,7 @@ def chineseRemainderOfMultiset {m : Multiset ι} :
           rintro _ rfl _ _ _; rfl
       by ext; exact this.trans <| chineseRemainderOfList_perm a s pp hs lco)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem chineseRemainderOfMultiset_lt_prod {m : Multiset ι}
     (nod : m.Nodup) (hs : ∀ i ∈ m, s i ≠ 0) (pp : Set.Pairwise {x | x ∈ m} (Coprime on s)) :
     chineseRemainderOfMultiset a s nod hs pp < (m.map s).prod := by

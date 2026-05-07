@@ -503,6 +503,7 @@ lemma hasFTaylorSeriesUpTo_fourierIntegral' {N : ℕ∞}
       (fun w n ↦ fourierIntegral 𝐞 μ L.toLinearMap₁₂ (fun v ↦ fourierPowSMulRight L f v n) w) :=
   hasFTaylorSeriesUpTo_fourierIntegral _ (fun n hn ↦ hf n (mod_cast hn)) h'f
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `‖v‖^n * ‖f v‖` is integrable for all `n ≤ N`, then the Fourier transform of `f` is `C^N`. -/
 theorem contDiff_fourierIntegral {N : ℕ∞}
     (hf : ∀ (n : ℕ), n ≤ N → Integrable (fun v ↦ ‖v‖ ^ n * ‖f v‖) μ) :
@@ -784,6 +785,7 @@ lemma pow_mul_norm_iteratedFDeriv_fourier_le
 @[deprecated (since := "2025-11-16")]
 alias pow_mul_norm_iteratedFDeriv_fourierIntegral_le := pow_mul_norm_iteratedFDeriv_fourier_le
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma hasDerivAt_fourier
     {f : ℝ → E} (hf : Integrable f) (hf' : Integrable (fun x : ℝ ↦ x • f x)) (w : ℝ) :
@@ -820,6 +822,7 @@ theorem deriv_fourier
 @[deprecated (since := "2025-11-16")]
 alias deriv_fourierIntegral := deriv_fourier
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- The Fourier integral of the Fréchet derivative of a function is obtained by multiplying the
 Fourier integral of the original function by `2πI x`. -/

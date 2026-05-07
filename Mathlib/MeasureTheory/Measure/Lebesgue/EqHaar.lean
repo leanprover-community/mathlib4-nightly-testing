@@ -135,6 +135,7 @@ namespace Measure
 
 open scoped Function -- required for scoped `on` notation
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a set is disjoint from its translates by infinitely many bounded vectors, then it has measure
 zero. This auxiliary lemma proves this assuming additionally that the set is bounded. -/
 theorem addHaar_eq_zero_of_disjoint_translates_aux {E : Type*} [NormedAddCommGroup E]
@@ -388,6 +389,7 @@ theorem addHaar_nnreal_smul (r : ℝ≥0) (s : Set E) :
 
 variable {μ} {s : Set E}
 
+set_option backward.simpa.using.reducibleClose false in
 -- Note: We might want to rename this once we acquire the lemma corresponding to
 -- `MeasurableSet.const_smul`
 theorem NullMeasurableSet.const_smul (hs : NullMeasurableSet s μ) (r : ℝ) :

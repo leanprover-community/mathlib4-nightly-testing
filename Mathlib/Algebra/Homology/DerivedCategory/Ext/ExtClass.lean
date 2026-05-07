@@ -128,6 +128,7 @@ lemma extClass_comp_assoc {Y : C} {n : ℕ} (γ : Ext S.X₂ Y n) {n' : ℕ} {h 
   rw [← Ext.comp_assoc (a₁₂ := 1) _ _ _ (by lia) (by lia) (by lia),
     extClass_comp, Ext.zero_comp]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma extClass_naturality {S₁ S₂ : ShortComplex C}
     (h₁ : S₁.ShortExact) (h₂ : S₂.ShortExact) (f : S₁ ⟶ S₂) :
     h₁.extClass.comp (Ext.mk₀ f.τ₁) (add_zero 1) =

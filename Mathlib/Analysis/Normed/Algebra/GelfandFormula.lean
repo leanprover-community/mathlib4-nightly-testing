@@ -50,6 +50,7 @@ section NonTriviallyNormedField
 
 variable [NontriviallyNormedField 𝕜] [NormedRing A] [NormedAlgebra 𝕜 A] [CompleteSpace A]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasDerivAt_resolvent_const_left {a : A} {k : 𝕜} (hk : k ∈ resolventSet 𝕜 a) :
     HasDerivAt (resolvent a) (-resolvent a k ^ 2) k := by
   have H₁ : HasFDerivAt Ring.inverse _ (algebraMap 𝕜 A k - a) :=
@@ -61,6 +62,7 @@ theorem hasDerivAt_resolvent_const_left {a : A} {k : 𝕜} (hk : k ∈ resolvent
 @[deprecated (since := "2026-03-26")]
 alias hasDerivAt_resolvent := hasDerivAt_resolvent_const_left
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasFDerivAt_resolvent {a : A} {k : 𝕜} (hk : k ∈ resolventSet 𝕜 a) :
     HasFDerivAt (resolvent · k)
       (((ContinuousLinearMap.mulLeftRight 𝕜 A) (resolvent a k)) (resolvent a k)) a := by
@@ -190,6 +192,7 @@ theorem algebraMap_eq_of_mem (hA : ∀ {a : A}, IsUnit a ↔ a ≠ 0) {a : A} {z
     (h : z ∈ spectrum ℂ a) : algebraMap ℂ A z = a := by
   rwa [mem_iff, hA, Classical.not_not, sub_eq_zero] at h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Gelfand-Mazur theorem**: For a complex Banach division algebra, the natural `algebraMap ℂ A`
 is an algebra isomorphism whose inverse is given by selecting the (unique) element of
 `spectrum ℂ a`. In addition, `algebraMap_isometry` guarantees this map is an isometry.

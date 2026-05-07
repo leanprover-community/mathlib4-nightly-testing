@@ -570,6 +570,7 @@ section MulOneClass
 
 variable [TopologicalSpace M] [MulOneClass M] [ContinuousMul M]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive exists_open_nhds_zero_half]
 theorem exists_open_nhds_one_split {s : Set M} (hs : s ∈ 𝓝 (1 : M)) :
     ∃ V : Set M, IsOpen V ∧ (1 : M) ∈ V ∧ ∀ v ∈ V, ∀ w ∈ V, v * w ∈ s := by
@@ -591,6 +592,7 @@ theorem exists_open_nhds_one_mul_subset {U : Set M} (hU : U ∈ 𝓝 (1 : M)) :
     ∃ V : Set M, IsOpen V ∧ (1 : M) ∈ V ∧ V * V ⊆ U := by
   simpa only [mul_subset_iff] using exists_open_nhds_one_split hU
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem Filter.HasBasis.mul_self {p : ι → Prop} {s : ι → Set M} (h : (𝓝 1).HasBasis p s) :
     (𝓝 1).HasBasis p fun i => s i * s i := by

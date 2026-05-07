@@ -60,6 +60,7 @@ lemma isSeparator {ι : Type w} {S : ι → A} (hS : ObjectProperty.IsSeparating
   (isSeparating J hS).isSeparator_coproduct
 
 variable (A) in
+set_option backward.simpa.using.reducibleClose false in
 instance hasSeparator [HasSeparator A] [Preadditive A] [HasCoproducts.{u} A] :
     HasSeparator (Sheaf J A) where
   hasSeparator := ⟨_, isSeparator J (S := fun (_ : Unit) ↦ separator A)

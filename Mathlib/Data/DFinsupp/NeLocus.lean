@@ -83,6 +83,7 @@ theorem subset_mapRange_neLocus [∀ a, DecidableEq (N a)] [∀ a, DecidableEq (
     (f.mapRange F F0).neLocus (g.mapRange F F0) ⊆ f.neLocus g := fun a ↦ by
   simpa only [mem_neLocus, mapRange_apply, not_imp_not] using congr_arg (F a)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem zipWith_neLocus_eq_left [∀ a, DecidableEq (N a)] [∀ a, DecidableEq (P a)]
     {F : ∀ a, M a → N a → P a} (F0 : ∀ a, F a 0 0 = 0) (f : Π₀ a, M a) (g₁ g₂ : Π₀ a, N a)
     (hF : ∀ a f, Function.Injective fun g ↦ F a f g) :
@@ -90,6 +91,7 @@ theorem zipWith_neLocus_eq_left [∀ a, DecidableEq (N a)] [∀ a, DecidableEq (
   ext a
   simpa only [mem_neLocus] using (hF a _).ne_iff
 
+set_option backward.simpa.using.reducibleClose false in
 theorem zipWith_neLocus_eq_right [∀ a, DecidableEq (M a)] [∀ a, DecidableEq (P a)]
     {F : ∀ a, M a → N a → P a} (F0 : ∀ a, F a 0 0 = 0) (f₁ f₂ : Π₀ a, M a) (g : Π₀ a, N a)
     (hF : ∀ a g, Function.Injective fun f ↦ F a f g) :
@@ -97,6 +99,7 @@ theorem zipWith_neLocus_eq_right [∀ a, DecidableEq (M a)] [∀ a, DecidableEq 
   ext a
   simpa only [mem_neLocus] using (hF a _).ne_iff
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mapRange_neLocus_eq [∀ a, DecidableEq (N a)] [∀ a, DecidableEq (M a)] (f g : Π₀ a, N a)
     {F : ∀ a, N a → M a} (F0 : ∀ a, F a 0 = 0) (hF : ∀ a, Function.Injective (F a)) :
     (f.mapRange F F0).neLocus (g.mapRange F F0) = f.neLocus g := by

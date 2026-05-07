@@ -418,6 +418,7 @@ theorem image.lift_mk_comp {C : Type u} [Category.{v} C] {X Y Z : C}
 -- (they then automatically commute with the `e`s)
 -- and show that an `imageOf f` gives an initial object there
 -- (uniqueness of the lift comes for free).
+set_option backward.simpa.using.reducibleClose false in
 instance image.lift_mono (F' : MonoFactorisation f) : Mono (image.lift F') := by
   refine @mono_of_mono _ _ _ _ _ _ F'.m ?_
   simpa using MonoFactorisation.m_mono _

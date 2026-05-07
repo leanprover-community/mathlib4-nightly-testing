@@ -304,6 +304,7 @@ lemma dirac_eq_dirac_iff_forall_mem_iff_mem {x y : α} :
       simp only [Measure.dirac_apply' _ A_mble, x_in_A, y_notin_A,
                  not_false_eq_true, indicator_of_notMem]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Dirac delta measures at two points are different if and only if there is a measurable set
 containing one of the points but not the other. -/
 lemma dirac_ne_dirac_iff_exists_measurableSet {x y : α} :

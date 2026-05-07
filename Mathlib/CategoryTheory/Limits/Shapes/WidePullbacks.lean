@@ -390,6 +390,7 @@ def π (s : WidePullbackCone f) (i : ι) : s.pt ⟶ Y i :=
 def base (s : WidePullbackCone f) : s.pt ⟶ X :=
   (Cone.π s).app none
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma condition (s : WidePullbackCone f) (i : ι) : s.π i ≫ f i = s.base := by

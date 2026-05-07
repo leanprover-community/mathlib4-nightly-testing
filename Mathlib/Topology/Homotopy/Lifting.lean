@@ -389,6 +389,7 @@ theorem monodromy_trans_apply {x y z : X}
 
 open CategoryTheory
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Monodromy of a covering map as a functor. Definition 2.1 in
 https://ncatlab.org/nlab/show/monodromy. -/
 @[simps] noncomputable def monodromyFunctor : FundamentalGroupoid X ⥤ Type _ where

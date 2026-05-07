@@ -177,6 +177,7 @@ theorem toPlus_mk {X : C} {P : Cᵒᵖ ⥤ D} (S : J.Cover X) (x : ToType (P.obj
     Meq.equiv_symm_eq_apply]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem toPlus_apply {X : C} {P : Cᵒᵖ ⥤ D} (S : J.Cover X) (x : Meq P S) (I : S.Arrow) :
@@ -385,6 +386,7 @@ theorem exists_of_sep (P : Cᵒᵖ ⥤ D)
 
 variable [(forget D).ReflectsIsomorphisms]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- If `P` is separated, then `P⁺` is a sheaf. -/
 theorem isSheaf_of_sep (P : Cᵒᵖ ⥤ D)

@@ -268,6 +268,7 @@ theorem apply_mk_symm (e : Pretrivialization F (π F E)) {b : B} (hb : b ∈ e.b
 
 end Zero
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The restriction of a pretrivialization to a subset of the base. -/
 @[simps toFun source target baseSet]
 noncomputable def restrictPreimage' (e : Pretrivialization F proj) (s : Set B)
@@ -827,6 +828,7 @@ noncomputable def restrictPreimage (e : Trivialization F proj) {s : Set B}
     ⟨⟨e.invFun ⟨z, f⟩, Set.mem_preimage.mpr <| (e.proj_symm_apply' hzb).symm ▸ hzs⟩⟩
   e.restrictPreimage' s
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Extend the total space of a trivialization from the preimage of a set to the whole space. -/
 @[simps! symm_apply source target baseSet]
 noncomputable def domExtend {s : Set B} (hps : IsOpen (proj ⁻¹' s))

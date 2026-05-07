@@ -67,6 +67,7 @@ only that there are finitely many objects.
 
 variable [Finite J]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- This follows the proof from

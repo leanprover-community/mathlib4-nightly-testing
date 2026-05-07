@@ -124,6 +124,7 @@ theorem norm_eq_zero_of_not_isUnit [NumberField K] {x : InfiniteAdeleRing K} (hx
   obtain ⟨v, hv⟩ := hx
   exact Finset.prod_eq_zero_iff.2 ⟨v, Finset.mem_univ v, by simpa [isUnit_iff_ne_zero] using hv⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The product formula for the infinite adele ring. This is the adelic version of
 `NumberField.InfinitePlace.prod_eq_abs_norm`. -/
 theorem coe_norm_eq_abs_norm [NumberField K] (x : K) :

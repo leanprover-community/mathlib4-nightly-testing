@@ -513,6 +513,7 @@ private theorem quotient_mk_comp_C_isIntegral_of_jacobson' [Nontrivial R] (hR : 
 
 variable [IsJacobsonRing R]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `R` is a Jacobson ring, and `P` is a maximal ideal of `R[X]`,
   then `R → R[X]/P` is an integral map. -/
 theorem quotient_mk_comp_C_isIntegral_of_isJacobsonRing :

@@ -330,6 +330,7 @@ lemma finitePresentation_universalFactorizationMap :
   letI := (universalFactorizationMap R n m k hn).toAlgebra
   (universalFactorizationMapPresentation R n m k hn).finitePresentation_of_isFinite
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma finite_universalFactorizationMap :
     (universalFactorizationMap R n m k hn).Finite := by

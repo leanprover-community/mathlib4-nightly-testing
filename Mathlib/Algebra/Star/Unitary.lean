@@ -280,6 +280,7 @@ section Map
 
 variable {R S T : Type*} [Monoid R] [StarMul R] [Monoid S] [StarMul S] [Monoid T] [StarMul T]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma map_mem {F : Type*} [FunLike F R S] [StarHomClass F R S] [MonoidHomClass F R S]
     (f : F) {r : R} (hr : r ∈ unitary R) : f r ∈ unitary S := by
   rw [mem_iff] at hr

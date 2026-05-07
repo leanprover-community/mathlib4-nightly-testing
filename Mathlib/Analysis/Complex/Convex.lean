@@ -24,6 +24,7 @@ open scoped ComplexOrder
 
 namespace Complex
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A version of `convexHull_prod` for `Set.reProdIm`. -/
 lemma convexHull_reProdIm (s t : Set ℝ) :
     convexHull ℝ (s ×ℂ t) = convexHull ℝ s ×ℂ convexHull ℝ t :=

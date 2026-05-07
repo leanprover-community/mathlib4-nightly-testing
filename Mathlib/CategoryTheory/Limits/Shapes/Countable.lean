@@ -154,6 +154,7 @@ noncomputable def sequentialFunctor : ℕ ⥤ J where
   obj n := sequentialFunctor_obj J n
   map h := homOfLE (sequentialFunctor_map J (leOfHom h))
 
+set_option backward.simpa.using.reducibleClose false in
 theorem sequentialFunctor_final_aux (j : J) : ∃ (n : ℕ), j ≤ sequentialFunctor_obj J n := by
   obtain ⟨m, h⟩ := (exists_surjective_nat _).choose_spec j
   refine ⟨m + 1, ?_⟩
@@ -205,6 +206,7 @@ noncomputable def sequentialFunctor : ℕᵒᵖ ⥤ J where
   obj n := sequentialFunctor_obj J (unop n)
   map h := homOfLE (sequentialFunctor_map J (leOfHom h.unop))
 
+set_option backward.simpa.using.reducibleClose false in
 theorem sequentialFunctor_initial_aux (j : J) : ∃ (n : ℕ), sequentialFunctor_obj J n ≤ j := by
   obtain ⟨m, h⟩ := (exists_surjective_nat _).choose_spec j
   refine ⟨m + 1, ?_⟩

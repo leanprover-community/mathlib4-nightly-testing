@@ -402,6 +402,7 @@ theorem setLIntegral_piecewise (a : α) (g : β → ℝ≥0∞) (t : Set β) :
 
 end Piecewise
 
+set_option backward.simpa.using.reducibleClose false in
 lemma exists_ae_eq_isMarkovKernel {μ : Measure α}
     (h : ∀ᵐ a ∂μ, IsProbabilityMeasure (κ a)) (h' : μ ≠ 0) :
     ∃ (η : Kernel α β), (κ =ᵐ[μ] η) ∧ IsMarkovKernel η := by

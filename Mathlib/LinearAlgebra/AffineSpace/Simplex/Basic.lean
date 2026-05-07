@@ -437,6 +437,7 @@ lemma setInterior_map (I : Set k) {n : ℕ} (s : Simplex k P n) {f : P →ᵃ[k]
       rw [s.map_points, Set.range_comp, ← AffineSubspace.map_span, AffineSubspace.mem_map]
       exact ⟨q, (Set.mem_of_mem_of_subset hq s.setInterior_subset_affineSpan), hqp⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma setInterior_restrict (I : Set k) {n : ℕ} (s : Simplex k P n) {S : AffineSubspace k P}
     (hS : affineSpan k (Set.range s.points) ≤ S) :
     letI := Nonempty.map (AffineSubspace.inclusion hS) inferInstance

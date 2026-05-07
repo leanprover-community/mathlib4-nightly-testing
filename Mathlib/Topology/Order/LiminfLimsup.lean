@@ -393,6 +393,7 @@ theorem limsup_eq_bot : f.limsup u = ⊥ ↔ u =ᶠ[f] ⊥ :=
 theorem liminf_eq_top : f.liminf u = ⊤ ↔ u =ᶠ[f] ⊤ :=
   limsup_eq_bot (α := αᵒᵈ)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Let `u : ι → α → β` be a sequence of antitone functions `α → β` indexed by `ι`. Suppose that for
 all `i : ι`, `u i` tends to `c` at infinity, and that furthermore the limsup of `i ↦ u i r` along
 the cofinite filter tends to the same `c` as `r` tends to infinity.
@@ -493,6 +494,7 @@ variable {F : Filter ι} [NeBot F]
   [ConditionallyCompleteLinearOrder R] [TopologicalSpace R] [OrderTopology R]
   [ConditionallyCompleteLinearOrder S] [TopologicalSpace S] [OrderTopology S]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An antitone function between (conditionally) complete linear ordered spaces sends a
 `Filter.limsSup` to the `Filter.liminf` of the image if the function is continuous at the `limsSup`
 (and the filter is bounded from above and frequently bounded from below). -/

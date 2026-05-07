@@ -108,6 +108,7 @@ theorem lipschitz_sub (hf : ApproximatesLinearOn f f' s c) :
     LipschitzWith c fun x : s => f x - f' x :=
   hf.lipschitzOnWith.to_restrict
 
+set_option backward.simpa.using.reducibleClose false in
 protected theorem lipschitz (hf : ApproximatesLinearOn f f' s c) :
     LipschitzWith (‖f'‖₊ + c) (s.restrict f) := by
   simpa only [restrict_apply, add_sub_cancel] using

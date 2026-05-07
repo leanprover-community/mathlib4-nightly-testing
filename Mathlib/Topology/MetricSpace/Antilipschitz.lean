@@ -124,6 +124,7 @@ theorem restrict (hf : AntilipschitzWith K f) (s : Set α) : AntilipschitzWith K
 theorem codRestrict (hf : AntilipschitzWith K f) {s : Set β} (hs : ∀ x, f x ∈ s) :
     AntilipschitzWith K (s.codRestrict f hs) := fun x y => hf x y
 
+set_option backward.simpa.using.reducibleClose false in
 theorem to_rightInvOn' {s : Set α} (hf : AntilipschitzWith K (s.restrict f)) {g : β → α}
     {t : Set β} (g_maps : MapsTo g t s) (g_inv : RightInvOn g f t) :
     LipschitzWith K (t.restrict g) := fun x y => by

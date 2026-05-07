@@ -98,6 +98,7 @@ theorem Eventually.eval_pi {i : ι} (hf : ∀ᶠ x : α i in f i, p i x) :
 theorem eventually_pi [Finite ι] (hf : ∀ i, ∀ᶠ x in f i, p i x) :
     ∀ᶠ x : ∀ i, α i in pi f, ∀ i, p i (x i) := eventually_all.2 fun _i => (hf _).eval_pi
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasBasis_pi {ι' : ι → Type*} {s : ∀ i, ι' i → Set (α i)} {p : ∀ i, ι' i → Prop}
     (h : ∀ i, (f i).HasBasis (p i) (s i)) :
     (pi f).HasBasis (fun If : Set ι × ∀ i, ι' i => If.1.Finite ∧ ∀ i ∈ If.1, p i (If.2 i))
@@ -284,6 +285,7 @@ theorem coprodᵢ_neBot_iff' :
 theorem coprodᵢ_neBot_iff [∀ i, Nonempty (α i)] : NeBot (Filter.coprodᵢ f) ↔ ∃ d, NeBot (f d) := by
   simp [coprodᵢ_neBot_iff', *]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem coprodᵢ_eq_bot_iff' : Filter.coprodᵢ f = ⊥ ↔ (∃ i, IsEmpty (α i)) ∨ f = ⊥ := by
   simpa only [not_neBot, not_and_or, funext_iff, not_forall, not_exists, not_nonempty_iff]
     using coprodᵢ_neBot_iff'.not

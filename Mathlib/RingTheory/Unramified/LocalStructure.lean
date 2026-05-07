@@ -79,6 +79,7 @@ lemma HasStandardEtaleSurjectionOn.isStandardEtale
 
 namespace Algebra.IsUnramifiedAt
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 private theorem exists_hasStandardEtaleSurjectionOn_of_exists_adjoin_singleton_eq_top_aux₁
     (P : Ideal R) [P.IsPrime] (x : S) (hx : R[x] = ⊤) :

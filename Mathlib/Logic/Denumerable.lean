@@ -233,6 +233,7 @@ def ofNat (s : Set ℕ) [DecidablePred (· ∈ s)] [Infinite s] : ℕ → s
   | 0 => ⊥
   | n + 1 => succ (ofNat s n)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ofNat_surjective : Surjective (ofNat s)
   | ⟨x, hx⟩ => by
     set t : List s :=

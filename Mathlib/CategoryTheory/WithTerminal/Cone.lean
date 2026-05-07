@@ -89,6 +89,7 @@ private def coneLift : Cone K ⥤ Cone (liftFromOver.obj K) where
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
+set_option backward.simpa.using.reducibleClose false in
 /-- This is the inverse of the previous construction: a cone of an extended functor
 `liftFromOver.obj K : WithTerminal J ⥤ C` consists of an object of `C`, together
 with morphisms. This same object is a cone of the original functor `K : J ⥤ Over X`. -/
@@ -203,6 +204,7 @@ private def coconeLift : Cocone K ⥤ Cocone (liftFromUnder.obj K) where
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
+set_option backward.simpa.using.reducibleClose false in
 /-- This is the inverse of the previous construction: a cocone of an extended functor
 `liftFromUnder.obj K : WithInitial J ⥤ C` consists of an object of `C`, together
 with morphisms. This same object is a cocone of the original functor `K : J ⥤ Under X`. -/

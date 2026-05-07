@@ -104,6 +104,7 @@ theorem eraseNone_map_some (s : Finset α) : eraseNone (s.map Embedding.some) = 
   ext
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem eraseNone_image_some [DecidableEq (Option α)] (s : Finset α) :
     eraseNone (s.image some) = s := by simpa only [map_eq_image] using eraseNone_map_some s

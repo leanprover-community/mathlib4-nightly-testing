@@ -106,9 +106,11 @@ theorem equivRealProd_apply_le (z : ℂ) : ‖equivRealProd z‖ ≤ ‖z‖ := 
 theorem equivRealProd_apply_le' (z : ℂ) : ‖equivRealProd z‖ ≤ 1 * ‖z‖ := by
   simpa using equivRealProd_apply_le z
 
+set_option backward.simpa.using.reducibleClose false in
 theorem lipschitz_equivRealProd : LipschitzWith 1 equivRealProd := by
   simpa using AddMonoidHomClass.lipschitz_of_bound equivRealProdLm 1 equivRealProd_apply_le'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem antilipschitz_equivRealProd : AntilipschitzWith (NNReal.sqrt 2) equivRealProd :=
   AddMonoidHomClass.antilipschitz_of_bound equivRealProdLm fun z ↦ by
     simpa only [Real.coe_sqrt, NNReal.coe_ofNat] using norm_le_sqrt_two_mul_max z
@@ -238,6 +240,7 @@ instance : ContinuousStar ℂ :=
 theorem continuous_conj : Continuous (conj : ℂ → ℂ) :=
   continuous_star
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The only continuous ring homomorphisms from `ℂ` to `ℂ` are the identity and the complex
 conjugation. -/
 theorem ringHom_eq_id_or_conj_of_continuous {f : ℂ →+* ℂ} (hf : Continuous f) :

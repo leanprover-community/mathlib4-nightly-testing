@@ -66,6 +66,7 @@ section tsum
 variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜] [NormSMulClass ℤ 𝕜]
 
 omit [NormSMulClass ℤ 𝕜] in
+set_option backward.simpa.using.reducibleClose false in
 lemma summable_norm_pow_mul_geometric_div_one_sub (k : ℕ) {r : 𝕜} (hr : ‖r‖ < 1) :
     Summable fun n : ℕ ↦ n ^ k * r ^ n / (1 - r ^ n) := by
   simp only [div_eq_mul_one_div (_ * _ ^ _)]
@@ -74,6 +75,7 @@ lemma summable_norm_pow_mul_geometric_div_one_sub (k : ℕ) {r : 𝕜} (hr : ‖
   simpa only [Nat.cofinite_eq_atTop] using
    tendsto_const_nhds.div ((tendsto_pow_atTop_nhds_zero_of_norm_lt_one hr).const_sub 1) (by simp)
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma summable_divisorsAntidiagonal_aux (k : ℕ) {r : 𝕜} (hr : ‖r‖ < 1) :
     Summable fun c : (n : ℕ+) × {x // x ∈ (n : ℕ).divisorsAntidiagonal} ↦
     (c.2.1.2) ^ k * (r ^ (c.2.1.1 * c.2.1.2)) := by
@@ -96,6 +98,7 @@ private lemma summable_divisorsAntidiagonal_aux (k : ℕ) {r : 𝕜} (hr : ‖r�
       gcongr
       simpa using Nat.card_divisors_le_self b
 
+set_option backward.simpa.using.reducibleClose false in
 theorem summable_prod_mul_pow (k : ℕ) {r : 𝕜} (hr : ‖r‖ < 1) :
     Summable fun c : (ℕ+ × ℕ+) ↦ c.2 ^ k * (r ^ (c.1 * c.2 : ℕ)) := by
   simpa [sigmaAntidiagonalEquivProd.summable_iff.symm] using summable_divisorsAntidiagonal_aux k hr

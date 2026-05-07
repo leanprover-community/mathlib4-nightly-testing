@@ -100,6 +100,7 @@ theorem commute_eps_right [Semiring R] (x : DualNumber R) : Commute x ε := (com
 
 variable {A : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For two `R`-algebra morphisms out of `A[ε]` to agree, it suffices for them to agree on the
 elements of `A` and the `A`-multiples of `ε`. -/
 @[ext 1100]

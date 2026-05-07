@@ -79,6 +79,7 @@ variable [P.IsMultiplicative] [P.RespectsIso]
 
 variable (P Q S)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- The pretopology on `Over S` induced by `P` where coverings are given by `P`-covers
 of `S`-schemes. -/

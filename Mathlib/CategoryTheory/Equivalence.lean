@@ -674,11 +674,13 @@ end Functor
 namespace Functor
 
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem fun_inv_map (F : C ⥤ D) [IsEquivalence F] (X Y : D) (f : X ⟶ Y) :
     F.map (F.inv.map f) = F.asEquivalence.counit.app X ≫ f ≫ F.asEquivalence.counitInv.app Y := by
   simpa using (NatIso.naturality_2 (α := F.asEquivalence.counitIso) (f := f)).symm
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem inv_fun_map (F : C ⥤ D) [IsEquivalence F] (X Y : C) (f : X ⟶ Y) :
     F.inv.map (F.map f) = F.asEquivalence.unitInv.app X ≫ f ≫ F.asEquivalence.unit.app Y := by

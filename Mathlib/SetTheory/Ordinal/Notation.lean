@@ -141,6 +141,7 @@ instance (priority := low) nat (n : ℕ) : OfNat ONote n where
 
 @[simp] theorem repr_one : repr 1 = (1 : ℕ) := repr_ofNat 1
 
+set_option backward.simpa.using.reducibleClose false in
 theorem omega0_le_oadd (e n a) : ω ^ repr e ≤ repr (oadd e n a) := by
   refine le_trans ?_ le_self_add
   simpa using (mul_le_mul_iff_right₀ <| opow_pos (repr e) omega0_pos).2 (Nat.cast_le.2 n.2)
@@ -543,6 +544,7 @@ instance mul_nf : ∀ (o₁ o₂) [NF o₁] [NF o₂], NF (o₁ * o₂)
   | 0, o, _, h₂ => by cases o <;> exact NF.zero
   | oadd _ _ _, _, ⟨⟨_, hb₁⟩⟩, ⟨⟨_, hb₂⟩⟩ => ⟨⟨_, oadd_mul_nfBelow hb₁ hb₂⟩⟩
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem repr_mul : ∀ (o₁ o₂) [NF o₁] [NF o₂], repr (o₁ * o₂) = repr o₁ * repr o₂
   | 0, o, _, h₂ => by cases o <;> exact (zero_mul _).symm

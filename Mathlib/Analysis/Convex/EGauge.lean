@@ -123,6 +123,7 @@ lemma egauge_le_of_smul_mem (h : c • x ∈ s) : egauge 𝕜 s x ≤ ‖c‖ₑ
   · simp
   · exact (egauge_le_of_smul_mem_of_ne h hc).trans ENNReal.coe_inv_le
 
+set_option backward.simpa.using.reducibleClose false in
 lemma mem_smul_of_egauge_lt (hs : Balanced 𝕜 s) (hc : egauge 𝕜 s x < ‖c‖ₑ) : x ∈ c • s :=
   let ⟨a, hxa, ha⟩ := egauge_lt_iff.1 hc
   hs.smul_mono (by simpa [enorm] using ha.le) hxa
@@ -237,6 +238,7 @@ section Pi
 variable {𝕜 : Type*} {ι : Type*} {E : ι → Type*}
 variable [NormedDivisionRing 𝕜] [∀ i, AddCommGroup (E i)] [∀ i, Module 𝕜 (E i)]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The extended gauge of a point `x` in an indexed product
 with respect to a product of finitely many balanced sets `U i`, `i ∈ I`,
 (and the whole spaces for the other indices)

@@ -589,10 +589,12 @@ theorem injOn_sin : InjOn sin (Icc (-(π / 2)) (π / 2)) :=
 theorem injOn_cos : InjOn cos (Icc 0 π) :=
   strictAntiOn_cos.injOn
 
+set_option backward.simpa.using.reducibleClose false in
 theorem surjOn_sin : SurjOn sin (Icc (-(π / 2)) (π / 2)) (Icc (-1) 1) := by
   simpa only [sin_neg, sin_pi_div_two] using
     intermediate_value_Icc (neg_le_self pi_div_two_pos.le) continuous_sin.continuousOn
 
+set_option backward.simpa.using.reducibleClose false in
 theorem surjOn_cos : SurjOn cos (Icc 0 π) (Icc (-1) 1) := by
   simpa only [cos_zero, cos_pi] using intermediate_value_Icc' pi_pos.le continuous_cos.continuousOn
 
@@ -926,6 +928,7 @@ theorem tan_inj_of_lt_of_lt_pi_div_two {x y : ℝ} (hx₁ : -(π / 2) < x) (hx�
     (hy₁ : -(π / 2) < y) (hy₂ : y < π / 2) (hxy : tan x = tan y) : x = y :=
   injOn_tan ⟨hx₁, hx₂⟩ ⟨hy₁, hy₂⟩ hxy
 
+set_option backward.simpa.using.reducibleClose false in
 theorem tan_periodic : Function.Periodic tan π := by
   simpa only [Function.Periodic, tan_eq_sin_div_cos] using sin_antiperiodic.div cos_antiperiodic
 
@@ -1155,6 +1158,7 @@ theorem cos_sub_pi_div_two (x : ℂ) : cos (x - π / 2) = sin x := by simp [sub_
 theorem cos_pi_div_two_sub (x : ℂ) : cos (π / 2 - x) = sin x := by
   rw [← cos_neg, neg_sub, cos_sub_pi_div_two]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem tan_periodic : Function.Periodic tan π := by
   simpa only [tan_eq_sin_div_cos] using sin_antiperiodic.div cos_antiperiodic
 

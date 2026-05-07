@@ -613,6 +613,7 @@ theorem ι_basicOpen_preimage (r : Γ(X, ⊤)) :
 
 set_option backward.isDefEq.respectTransparency false in
 include hU in
+set_option backward.simpa.using.reducibleClose false in
 theorem exists_basicOpen_le {V : X.Opens} (x : V) (h : ↑x ∈ U) :
     ∃ f : Γ(X, U), X.basicOpen f ≤ V ∧ ↑x ∈ X.basicOpen f := by
   have : IsAffine _ := hU
@@ -1136,6 +1137,7 @@ lemma Opens.toSpecΓ_preimage_zeroLocus {X : Scheme.{u}} (U : X.Opens) (s : Set 
 
 end Scheme
 
+set_option backward.simpa.using.reducibleClose false in
 lemma IsAffineOpen.fromSpec_preimage_zeroLocus {X : Scheme.{u}} {U : X.Opens}
     (hU : IsAffineOpen U) (s : Set Γ(X, U)) :
     hU.fromSpec ⁻¹' X.zeroLocus s = PrimeSpectrum.zeroLocus s := by

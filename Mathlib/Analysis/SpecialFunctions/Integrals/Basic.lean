@@ -168,6 +168,7 @@ theorem integral_zpow {n : ℤ} (h : 0 ≤ n ∨ n ≠ -1 ∧ (0 : ℝ) ∉ [[a,
   replace h : -1 < (n : ℝ) ∨ (n : ℝ) ≠ -1 ∧ (0 : ℝ) ∉ [[a, b]] := mod_cast h
   exact mod_cast integral_rpow h
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem integral_pow : ∫ x in a..b, x ^ n = (b ^ (n + 1) - a ^ (n + 1)) / (n + 1) := by
   simpa only [← Int.natCast_succ, zpow_natCast] using integral_zpow (Or.inl n.cast_nonneg)
@@ -238,6 +239,7 @@ theorem integral_exp : ∫ x in a..b, exp x = exp b - exp a := by
   · exact fun _ _ => differentiableAt_exp
   · exact continuousOn_exp
 
+set_option backward.simpa.using.reducibleClose false in
 theorem integral_exp_mul_complex {c : ℂ} (hc : c ≠ 0) :
     (∫ x in a..b, Complex.exp (c * x)) = (Complex.exp (c * b) - Complex.exp (c * a)) / c := by
   have D : ∀ x : ℝ, HasDerivAt (fun y : ℝ => Complex.exp (c * y) / c) (Complex.exp (c * x)) x := by
@@ -273,6 +275,7 @@ lemma integral_exp_mul_I_eq_sinc (r : ℝ) :
   norm_cast
   field
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Helper lemma for `integral_log`: case where `a = 0` and `b` is positive. -/
 lemma integral_log_from_zero_of_pos (ht : 0 < b) : ∫ s in 0..b, log s = b * log b - b := by
   -- Compute the integral by giving a primitive and considering it limit as x approaches 0 from the
@@ -420,6 +423,7 @@ open Nat
 
 /-! ### Integral of `sin x ^ n` -/
 
+set_option backward.simpa.using.reducibleClose false in
 theorem integral_sin_pow_aux :
     (∫ x in a..b, sin x ^ (n + 2)) =
       (sin a ^ (n + 1) * cos a - sin b ^ (n + 1) * cos b + (↑n + 1) * ∫ x in a..b, sin x ^ n) -
@@ -493,6 +497,7 @@ theorem integral_sin_pow_antitone : Antitone fun n : ℕ => ∫ x in 0..π, sin 
 /-! ### Integral of `cos x ^ n` -/
 
 
+set_option backward.simpa.using.reducibleClose false in
 theorem integral_cos_pow_aux :
     (∫ x in a..b, cos x ^ (n + 2)) =
       (cos b ^ (n + 1) * sin b - cos a ^ (n + 1) * sin a + (n + 1) * ∫ x in a..b, cos x ^ n) -

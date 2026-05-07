@@ -29,9 +29,11 @@ namespace Int
 
 /-! #### Units -/
 
+set_option backward.simpa.using.reducibleClose false in
 lemma units_eq_one_or (u : ℤˣ) : u = 1 ∨ u = -1 := by
   simpa only [Units.ext_iff] using isUnit_eq_one_or u.isUnit
 
+set_option backward.simpa.using.reducibleClose false in
 lemma units_ne_iff_eq_neg {u v : ℤˣ} : u ≠ v ↔ u = -v := by
   simpa only [Ne, Units.ext_iff] using isUnit_ne_iff_eq_neg u.isUnit v.isUnit
 

@@ -38,6 +38,7 @@ open Algebra
 variable {R S : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S]
 variable (S' : Subalgebra R S)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Suppose we are given `∑ i, lᵢ * sᵢ = 1` ∈ `S`, and `S'` a subalgebra of `S` that contains
 `lᵢ` and `sᵢ`. To check that an `x : S` falls in `S'`, we only need to show that
 `sᵢ ^ n • x ∈ S'` for some `n` for each `sᵢ`. -/

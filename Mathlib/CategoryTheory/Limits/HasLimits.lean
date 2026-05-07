@@ -573,6 +573,7 @@ noncomputable def coneOfAdj (F : J ⥤ C) : Cone F where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The cones defined by `coneOfAdj` are limit cones. -/
 @[simps]
 def isLimitConeOfAdj (F : J ⥤ C) :

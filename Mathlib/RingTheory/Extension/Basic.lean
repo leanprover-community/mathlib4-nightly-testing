@@ -359,6 +359,7 @@ lemma Cotangent.smul_eq_zero_of_mem (p : P.Ring) (hp : p ∈ P.ker) (m : P.ker.C
 
 attribute [local simp] RingHom.mem_ker
 
+set_option backward.simpa.using.reducibleClose false in
 noncomputable
 instance Cotangent.module : Module S P.Cotangent where
   smul := fun r s ↦ .of (P.σ r • s.val)

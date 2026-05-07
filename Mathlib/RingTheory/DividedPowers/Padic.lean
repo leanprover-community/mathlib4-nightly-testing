@@ -152,6 +152,7 @@ noncomputable def dividedPowers : DividedPowers (Ideal.span {(p : ℤ_[p])}) := 
 
 open Function
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma dividedPowers_eq (n : ℕ) (x : ℤ_[p]) :
     (dividedPowers p).dpow n x = open Classical in
       if hx : x ∈ Ideal.span {(p : ℤ_[p])} then ⟨dpow' p n x, dpow'_int p n hx⟩ else 0 := by

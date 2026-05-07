@@ -1187,6 +1187,7 @@ lemma closure_image_comap_zeroLocus (I : Ideal S) :
     apply isClosed_closure.stableUnderSpecialization ((le_iff_specializes
       (comap f ⟨p', hp'⟩) x).mp hq₂) (subset_closure (by exact ⟨_, hp'', rfl⟩))
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isIntegral_of_isClosedMap_comap_mapRingHom (h : IsClosedMap (comap (mapRingHom f))) :
     f.IsIntegral := by
   algebraize [f]

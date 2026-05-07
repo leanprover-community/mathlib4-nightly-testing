@@ -577,6 +577,7 @@ lemma norm_def {M : CStarMatrix m n A} : ‖M‖ = ‖toCLM M‖ := rfl
 
 lemma norm_def' {M : CStarMatrix n n A} : ‖M‖ = ‖toCLMNonUnitalAlgHom (A := A) M‖ := rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma normedSpaceCore : NormedSpace.Core ℂ (CStarMatrix m n A) where
   norm_nonneg M := (toCLM M).opNorm_nonneg
   norm_smul c M := by rw [norm_def, norm_def, map_smul, norm_smul _ (toCLM M)]

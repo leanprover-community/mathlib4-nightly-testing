@@ -51,6 +51,7 @@ namespace isColimitMapCocone
 
 include hc hF hK
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma surjective (x : c.pt.obj cX.pt) :

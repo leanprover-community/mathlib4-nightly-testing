@@ -200,6 +200,7 @@ theorem degree_sum_eq_of_disjoint (f : S → R[X]) (s : Finset S)
       · exact H.symm ▸ hy
     · rw [← IH, sup_eq_left.mpr H.le, degree_add_eq_left_of_degree_lt H]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem natDegree_sum_eq_of_disjoint (f : S → R[X]) (s : Finset S)
     (h : Set.Pairwise { i | i ∈ s ∧ f i ≠ 0 } (Ne on natDegree ∘ f)) :
     natDegree (s.sum f) = s.sup fun i => natDegree (f i) := by

@@ -57,6 +57,7 @@ theorem exists_linearIndependent_algEquiv_apply_of_finite [Finite L] :
 
 variable [FiniteDimensional K L]
 
+set_option backward.simpa.using.reducibleClose false in
 -- [ConradLinearChar] Theorem 3.6.
 theorem exists_linearIndependent_algEquiv_apply_of_infinite [Infinite K] :
     ∃ x : L, LinearIndependent K fun σ : Gal(L/K) ↦ σ x := by

@@ -272,6 +272,7 @@ def isoLocallyConstantOfIsColimit
     lanPresheafExt (isoFinYoneda F ≪≫ (locallyConstantIsoFinYoneda F).symm) ≪≫
       lanPresheafNatIso fun _ ↦ isColimitLocallyConstantPresheafDiagram _ _
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma isoLocallyConstantOfIsColimit_inv (X : Profinite.{u}ᵒᵖ ⥤ Type (u + 1))
@@ -563,6 +564,7 @@ def isoLocallyConstantOfIsColimit (hF : ∀ S : LightProfinite, IsColimit <|
     lanPresheafExt (isoFinYoneda F ≪≫ (locallyConstantIsoFinYoneda F).symm) ≪≫
       lanPresheafNatIso fun _ ↦ isColimitLocallyConstantPresheafDiagram _ _
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma isoLocallyConstantOfIsColimit_inv (X : LightProfinite.{u}ᵒᵖ ⥤ Type u)

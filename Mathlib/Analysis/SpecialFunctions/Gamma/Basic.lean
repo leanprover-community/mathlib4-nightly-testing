@@ -183,6 +183,7 @@ private theorem Gamma_integrand_deriv_integrable_B {s : ℂ} (hs : 0 < s.re) {Y 
     simp
   · exact measurableSet_Ioc
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The recurrence relation for the indefinite version of the `Γ` function. -/
 theorem partialGamma_add_one {s : ℂ} (hs : 0 < s.re) {X : ℝ} (hX : 0 ≤ X) :
     partialGamma (s + 1) X = s * partialGamma s X - (-X).exp * X ^ s := by
@@ -213,6 +214,7 @@ theorem partialGamma_add_one {s : ℂ} (hs : 0 < s.re) {X : ℝ} (hX : 0 ≤ X) 
   congr with x
   ring
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The recurrence relation for the `Γ` integral. -/
 theorem GammaIntegral_add_one {s : ℂ} (hs : 0 < s.re) :
     GammaIntegral (s + 1) = s * GammaIntegral s := by

@@ -229,6 +229,7 @@ def TransportEnrichment.ofOrdinaryEnrichedCategoryEquiv : TransportEnrichment F 
 open EnrichedCategory
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- If for a lax monoidal functor `F : V ⥤ W` the canonical function
 `(𝟙_ V ⟶ v) → (𝟙_ W ⟶ F.obj v)` is bijective, and `C` is an enriched ordinary category on `V`,
 then `F` induces the structure of a `W`-enriched ordinary category on `TransportEnrichment F C`,

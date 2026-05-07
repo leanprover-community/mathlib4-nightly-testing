@@ -151,6 +151,7 @@ theorem isSeparating_unop_iff (P : ObjectProperty Cᵒᵖ) :
     IsSeparating P.unop ↔ IsCoseparating P :=
   P.unop.isCoseparating_op_iff.symm
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isDetecting_op_iff : IsDetecting P.op ↔ IsCodetecting P := by
   refine ⟨fun hP X Y f hf => ?_, fun hP X Y f hf => ?_⟩
   · refine (isIso_op_iff _).1 (hP _ fun G hG h => ?_)
@@ -162,6 +163,7 @@ theorem isDetecting_op_iff : IsDetecting P.op ↔ IsCodetecting P := by
     refine ⟨t.unop, Quiver.Hom.op_inj ht, fun y hy => Quiver.Hom.op_inj (ht' _ ?_)⟩
     exact Quiver.Hom.unop_inj (by simpa only using hy)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isCodetecting_op_iff : IsCodetecting P.op ↔ IsDetecting P := by
   refine ⟨fun hP X Y f hf => ?_, fun hP X Y f hf => ?_⟩
   · refine (isIso_op_iff _).1 (hP _ fun G hG h => ?_)
@@ -544,10 +546,12 @@ def IsCodetector (G : C) : Prop :=
 
 section Equivalence
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsSeparator.of_equivalence {G : C} (h : IsSeparator G) (α : C ≌ D) :
     IsSeparator (α.functor.obj G) := by
   simpa using ObjectProperty.IsSeparating.of_equivalence h α
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsCoseparator.of_equivalence {G : C} (h : IsCoseparator G) (α : C ≌ D) :
     IsCoseparator (α.functor.obj G) := by
  simpa using ObjectProperty.IsCoseparating.of_equivalence h α
@@ -690,6 +694,7 @@ lemma isSeparator_of_isColimit_cofan {β : Type w} {f : β → C}
   obtain ⟨b⟩ := h
   classical simpa using c.inj b ≫= huv (hc.desc (Cofan.mk _ (Pi.single b g)))
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isSeparator_iff_of_isColimit_cofan {β : Type w} {f : β → C}
     {c : Cofan f} (hc : IsColimit c) :
     IsSeparator c.pt ↔ ObjectProperty.IsSeparating (.ofObj f) := by
@@ -728,6 +733,7 @@ theorem isSeparator_sigma_of_isSeparator {β : Type w} (f : β → C) [HasCoprod
     (hb : IsSeparator (f b)) : IsSeparator (∐ f) :=
   (isSeparator_sigma _).2 <| ObjectProperty.IsSeparating.of_le hb <| by simp
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma isCoseparator_of_isLimit_fan {β : Type w} {f : β → C}
     (hf : ObjectProperty.IsCoseparating (.ofObj f)) {c : Fan f} (hc : IsLimit c) :
@@ -737,6 +743,7 @@ lemma isCoseparator_of_isLimit_fan {β : Type w} {f : β → C}
   obtain ⟨b⟩ := h
   classical simpa using huv (hc.lift (Fan.mk _ (Pi.single b g))) =≫ c.proj b
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isCoseparator_iff_of_isLimit_fan {β : Type w} {f : β → C}
     {c : Fan f} (hc : IsLimit c) :
     IsCoseparator c.pt ↔ ObjectProperty.IsCoseparating (.ofObj f) := by

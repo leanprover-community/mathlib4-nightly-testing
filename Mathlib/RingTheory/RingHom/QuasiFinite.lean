@@ -70,6 +70,7 @@ lemma QuasiFinite.holdsForLocalizationAway : HoldsForLocalizationAway QuasiFinit
 
 attribute [local instance high] Algebra.TensorProduct.leftAlgebra Algebra.toModule
     IsScalarTower.right DivisionRing.instIsArtinianRing in
+set_option backward.simpa.using.reducibleClose false in
 lemma QuasiFinite.ofLocalizationSpanTarget : OfLocalizationSpanTarget QuasiFinite := by
   rw [RingHom.ofLocalizationSpanTarget_iff_finite]
   introv R hs H

@@ -171,6 +171,7 @@ theorem sSup_of_nat_affine_eq [HereditarilyLindelofSpace E] (hsc : IsClosed s)
       have : s = ∅ := by have := congrFun h𝓕'.2.1 x; simp_all
       grind
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A function `φ : E → ℝ` that is convex and lower-semicontinuous is the supremum of a family of
 of continuous affine linear functions. -/
 theorem univ_sSup_affine_eq (hφc : LowerSemicontinuous φ) (hφcv : ConvexOn ℝ univ φ) :

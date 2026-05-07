@@ -50,6 +50,7 @@ def tensorToSpan : A ⊗[R] p →ₗ[A] span A (p : Set M) :=
     p.tensorToSpan A (a ⊗ₜ x) = a • (x : M) :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma surjective_tensorToSpan : Surjective (p.tensorToSpan A) := by
   intro v
   obtain ⟨f, hf⟩ := (Finsupp.mem_span_iff_linearCombination _ _ _).mp v.property

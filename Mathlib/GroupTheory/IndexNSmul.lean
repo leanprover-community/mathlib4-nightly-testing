@@ -47,6 +47,7 @@ lemma index_range_nsmul [Free ℤ M] [Module.Finite ℤ M] (n : ℕ) :
         Nat.card_fun, Int.range_nsmulAddMonoidHom,
         Nat.card_congr (Int.quotientZMultiplesNatEquivZMod n).toEquiv]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The relative index in `S` of the image of the multiplication-by-`n` map
 on an additive subgroup `S` of an additive group such that `S` is free
 and finitely generated as a `ℤ`-module is `n ^ finrank ℤ S`. -/

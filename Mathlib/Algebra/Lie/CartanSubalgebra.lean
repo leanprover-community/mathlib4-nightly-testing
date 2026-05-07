@@ -110,6 +110,7 @@ instance (priority := 500) [Nontrivial L] (H : LieSubalgebra R L) [H.IsCartanSub
 
 end LieSubalgebra
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem LieIdeal.normalizer_eq_top {R : Type u} {L : Type v} [CommRing R] [LieRing L]
     [LieAlgebra R L] (I : LieIdeal R L) : (I : LieSubalgebra R L).normalizer = ⊤ := by

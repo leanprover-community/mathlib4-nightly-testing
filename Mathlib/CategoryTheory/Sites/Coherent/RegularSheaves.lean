@@ -93,6 +93,7 @@ def mapToEqualizer (P : Cᵒᵖ ⥤ Type*) {W X B : C} (f : X ⟶ B)
 
 @[deprecated (since := "2025-11-23")] alias MapToEqualizer := mapToEqualizer
 
+set_option backward.simpa.using.reducibleClose false in
 theorem EqualizerCondition.bijective_mapToEqualizer_pullback' {P : Cᵒᵖ ⥤ Type*}
     (hP : EqualizerCondition P) {X B : C} {π : X ⟶ B} [EffectiveEpi π]
     (c : PullbackCone π π) (hc : IsLimit c) :
@@ -115,6 +116,7 @@ theorem EqualizerCondition.bijective_mapToEqualizer_pullback {P : Cᵒᵖ ⥤ Ty
       (mapToEqualizer P π (pullback.fst π π) (pullback.snd π π) pullback.condition) :=
   bijective_mapToEqualizer_pullback' hP _ (pullback.isLimit _ _)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem EqualizerCondition.mk' (P : Cᵒᵖ ⥤ Type*)
     (hP : ∀ (X B : C) (π : X ⟶ B) [EffectiveEpi π] (c : PullbackCone π π) (_ : IsLimit c),
       Function.Bijective (mapToEqualizer P π c.fst c.snd c.condition)) :

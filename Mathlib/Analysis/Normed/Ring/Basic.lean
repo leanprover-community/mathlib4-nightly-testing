@@ -358,6 +358,7 @@ theorem List.norm_prod_le [NormOneClass α] : ∀ l : List α, ‖l.prod‖ ≤ 
 theorem List.nnnorm_prod_le [NormOneClass α] (l : List α) : ‖l.prod‖₊ ≤ (l.map nnnorm).prod :=
   l.norm_prod_le.trans_eq <| by simp [NNReal.coe_list_prod, List.map_map]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Finset.norm_prod_le' {α : Type*} [NormedCommRing α] (s : Finset ι) (hs : s.Nonempty)
     (f : ι → α) : ‖∏ i ∈ s, f i‖ ≤ ∏ i ∈ s, ‖f i‖ := by
   rcases s with ⟨⟨l⟩, hl⟩
@@ -368,6 +369,7 @@ theorem Finset.nnnorm_prod_le' {α : Type*} [NormedCommRing α] (s : Finset ι) 
     (f : ι → α) : ‖∏ i ∈ s, f i‖₊ ≤ ∏ i ∈ s, ‖f i‖₊ :=
   (s.norm_prod_le' hs f).trans_eq <| by simp [NNReal.coe_prod]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Finset.norm_prod_le {α : Type*} [NormedCommRing α] [NormOneClass α] (s : Finset ι)
     (f : ι → α) : ‖∏ i ∈ s, f i‖ ≤ ∏ i ∈ s, ‖f i‖ := by
   rcases s with ⟨⟨l⟩, hl⟩
@@ -470,6 +472,7 @@ lemma norm_commutator_units_sub_one_le (a b : αˣ) :
       gcongr <;> exact norm_mul_le ..
     _ = 2 * ‖a⁻¹.val‖ * ‖b⁻¹.val‖ * ‖a.val - 1‖ * ‖b.val - 1‖ := by ring
 
+set_option backward.simpa.using.reducibleClose false in
 lemma nnnorm_commutator_units_sub_one_le (a b : αˣ) :
     ‖(a * b * a⁻¹ * b⁻¹).val - 1‖₊ ≤ 2 * ‖a⁻¹.val‖₊ * ‖b⁻¹.val‖₊ * ‖a.val - 1‖₊ * ‖b.val - 1‖₊ := by
   simpa using norm_commutator_units_sub_one_le a b

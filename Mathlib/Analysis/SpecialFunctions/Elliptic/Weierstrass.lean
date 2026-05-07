@@ -217,6 +217,7 @@ def weierstrassPExcept (l₀ : ℂ) (z : ℂ) : ℂ :=
 @[inherit_doc weierstrassPExcept]
 scoped notation3 "℘[" L:max " - " l₀ "]" => weierstrassPExcept L l₀
 
+set_option backward.simpa.using.reducibleClose false in
 lemma hasSumLocallyUniformly_weierstrassPExcept (l₀ : ℂ) :
     HasSumLocallyUniformly
       (fun (l : L.lattice) (z : ℂ) ↦ if l.1 = l₀ then 0 else (1 / (z - l) ^ 2 - 1 / l ^ 2))
@@ -309,6 +310,7 @@ lemma weierstrassP_neg (z : ℂ) : ℘[L] (-z) = ℘[L] z := by
   simp
   ring
 
+set_option backward.simpa.using.reducibleClose false in
 lemma not_continuousAt_weierstrassP (x : ℂ) (hx : x ∈ L.lattice) : ¬ ContinuousAt ℘[L] x := by
   eta_expand
   simp_rw [← L.weierstrassPExcept_add ⟨x, hx⟩]
@@ -333,6 +335,7 @@ def derivWeierstrassPExcept (l₀ : ℂ) (z : ℂ) : ℂ :=
 @[inherit_doc derivWeierstrassPExcept]
 scoped notation3 "℘'[" L:max " - " l₀ "]" => derivWeierstrassPExcept L l₀
 
+set_option backward.simpa.using.reducibleClose false in
 lemma hasSumLocallyUniformly_derivWeierstrassPExcept (l₀ : ℂ) :
     HasSumLocallyUniformly (fun (l : L.lattice) (z : ℂ) ↦ if l.1 = l₀ then 0 else -2 / (z - l) ^ 3)
       ℘'[L - l₀] := by
@@ -644,6 +647,7 @@ lemma coeff_weierstrassPExceptSeries (l₀ x : ℂ) (i : ℕ) :
       simp [h₁, tsum_mul_left, sumInvPow, add_assoc,
         one_add_one_eq_two, ← zpow_natCast, -neg_add_rev]
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 In the power series expansion of `℘(z) = ∑ᵢ aᵢ (z - x)ⁱ` at some `x ∉ L`,
 each `aᵢ` can be written as a sum over `l ∈ L`, i.e.
@@ -828,6 +832,7 @@ lemma iteratedDeriv_derivWeierstrassPExcept_self (l : ℂ) {n : ℕ} :
   simp [div_eq_iff, Nat.factorial_ne_zero, Nat.factorial_succ] at this ⊢
   grind
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma deriv_derivWeierstrassPExcept_self (l : ℂ) :
     deriv ℘'[L - l] l = 6 * L.sumInvPow l 4 := by
@@ -1001,6 +1006,7 @@ private lemma iteratedDeriv_six_relation_mul_id_pow_six :
     show Nat.choose 6 4 = 15 by rfl, show Nat.choose 6 3 = 20 by rfl]
   ring
 
+set_option backward.simpa.using.reducibleClose false in
 attribute [local fun_prop] AnalyticAt.contDiffAt in
 private lemma analyticAt_relation_zero : AnalyticAt ℂ L.relation 0 := by
   refine .of_meromorphicOrderAt_pos (one_pos.trans_le ?_) (by simp [relation])

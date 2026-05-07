@@ -41,6 +41,7 @@ variable [G.IsDenseSubsite J K]
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include K in
+set_option backward.simpa.using.reducibleClose false in
 lemma isIso_ranCounit_app_of_isDenseSubsite (Y : Sheaf J A) (U X) :
     IsIso ((yoneda.map ((G.op.ranCounit.app Y.obj).app (op U))).app (op X)) := by
   rw [isIso_iff_bijective]
@@ -94,6 +95,7 @@ lemma isIso_ranCounit_app_of_isDenseSubsite (Y : Sheaf J A) (U X) :
         I.f (by simp [hl]))).isSeparatedFor.ext fun V iUV (hiUV : _ = _) ↦ ?_
       simp [← Functor.map_comp, ← op_comp, hiUV]
 
+set_option backward.simpa.using.reducibleClose false in
 instance (Y : Sheaf J A) : IsIso ((G.sheafAdjunctionCocontinuous A J K).counit.app Y) := by
   apply +allowSynthFailures ReflectsIsomorphisms.reflects (sheafToPresheaf J A)
   rw [NatTrans.isIso_iff_isIso_app]

@@ -57,6 +57,7 @@ open Filter Function Set Topology TopologicalSpace MeasureTheory BoundedContinuo
 
 variable {E : Type*} [MeasurableSpace E] [TopologicalSpace E] [T2Space E] [BorelSpace E]
 
+set_option backward.simpa.using.reducibleClose false in
 variable (E) in
 /-- In a compact space, the set of finite measures with mass at most `C` is compact. -/
 theorem isCompact_setOf_finiteMeasure_le_of_compactSpace [CompactSpace E] (C : ℝ≥0) :
@@ -470,6 +471,7 @@ lemma isCompact_setOf_finiteMeasure_mass_eq_compl_isCompact_le {u : ℕ → ℝ�
   apply IsCompact.inter_right (isCompact_setOf_finiteMeasure_mass_le_compl_isCompact_le C hu hK h)
   exact isClosed_eq (by fun_prop) (by fun_prop)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Prokhorov theorem**: Given a sequence of compact sets `Kₙ` and a sequence `uₙ` tending to
 zero, the probability measures giving mass at most `uₙ` to the complement of `Kₙ` form a
 compact set. -/

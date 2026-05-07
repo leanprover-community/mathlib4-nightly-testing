@@ -140,6 +140,7 @@ abbrev commRingTopologicalClosure {R A} [CommRing R] [StarRing R] [TopologicalSp
     CommRing s.topologicalClosure :=
   fast_instance% s.toSubalgebra.commRingTopologicalClosure hs
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Continuous `StarAlgHom`s from the topological closure of a `StarSubalgebra` whose
 compositions with the `StarSubalgebra.inclusion` map agree are, in fact, equal. -/
@@ -154,6 +155,7 @@ theorem _root_.StarAlgHom.ext_topologicalClosure [T2Space B] {S : StarSubalgebra
   rintro _ ⟨x, rfl⟩
   simpa only using DFunLike.congr_fun h x
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.StarAlgHomClass.ext_topologicalClosure [T2Space B] {F : Type*}
     {S : StarSubalgebra R A} [FunLike F S.topologicalClosure B]
     [AlgHomClass F R S.topologicalClosure B] [StarHomClass F S.topologicalClosure B] {φ ψ : F}
@@ -257,6 +259,7 @@ theorem induction_on {x y : A}
   | mul u v hu_mem hv_mem hu hv =>
     exact mul u (subset_closure hu_mem) v (subset_closure hv_mem) (hu hu_mem) (hv hv_mem)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem starAlgHomClass_ext [T2Space B] {F : Type*} {a : A}
     [FunLike F (elemental R a) B] [AlgHomClass F R _ B] [StarHomClass F _ B]
     {φ ψ : F} (hφ : Continuous φ)

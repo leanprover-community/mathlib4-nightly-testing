@@ -213,6 +213,7 @@ variable {s t u : Finset α} {f : α → β} {n : ℕ}
 theorem length_toList (s : Finset α) : s.toList.length = #s := by
   rw [toList, ← Multiset.coe_card, Multiset.coe_toList, card_def]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem card_image_le [DecidableEq β] : #(s.image f) ≤ #s := by
   simpa only [card_map] using (s.1.map f).toFinset_card_le
 
@@ -368,6 +369,7 @@ lemma card_bij' (i : ∀ a ∈ s, β) (j : ∀ a ∈ t, α) (hi : ∀ a ha, i a 
   rw [← left_inv a1 h1, ← left_inv a2 h2]
   simp only [eq]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a bijection from a finite set `s` to a finite set `t`, the cardinalities of `s` and `t`
 are equal.
 

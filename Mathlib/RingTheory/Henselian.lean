@@ -166,6 +166,7 @@ instance (R : Type*) [CommRing R] [hR : HenselianLocalRing R] :
     exact not_isUnit_zero
 
 -- see Note [lower instance priority]
+set_option backward.simpa.using.reducibleClose false in
 /-- A ring `R` that is `I`-adically complete is Henselian at `I`. -/
 instance (priority := 100) IsAdicComplete.henselianRing (R : Type*) [CommRing R] (I : Ideal R)
     [IsAdicComplete I R] : HenselianRing R I where

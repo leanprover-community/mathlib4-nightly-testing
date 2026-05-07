@@ -984,18 +984,23 @@ set_option backward.isDefEq.respectTransparency false in
 
 @[simp] theorem im_star : (star a).im = -a.im := QuaternionAlgebra.im_star a
 
+set_option backward.simpa.using.reducibleClose false in
 theorem self_add_star' : a + star a = ↑(2 * a.re) := by
   simpa using QuaternionAlgebra.self_add_star' a
 
+set_option backward.simpa.using.reducibleClose false in
 theorem self_add_star : a + star a = 2 * a.re := by
   simpa using QuaternionAlgebra.self_add_star a
 
+set_option backward.simpa.using.reducibleClose false in
 theorem star_add_self' : star a + a = ↑(2 * a.re) := by
   simpa using QuaternionAlgebra.star_add_self' a
 
+set_option backward.simpa.using.reducibleClose false in
 theorem star_add_self : star a + a = 2 * a.re := by
   simpa using QuaternionAlgebra.star_add_self a
 
+set_option backward.simpa.using.reducibleClose false in
 theorem star_eq_two_re_sub : star a = ↑(2 * a.re) - a := by
   simpa using QuaternionAlgebra.star_eq_two_re_sub a
 

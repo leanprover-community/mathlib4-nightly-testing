@@ -130,6 +130,7 @@ lemma ofFn_cons {n} (a : α) (f : Fin n → α) : ofFn (Fin.cons a f) = a :: ofF
   rw [ofFn_succ]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma find?_ofFn_eq_some {n} {f : Fin n → α} {p : α → Bool} {b : α} :
     (ofFn f).find? p = some b ↔ p b = true ∧ ∃ i, f i = b ∧ ∀ j < i, ¬(p (f j) = true) := by
   rw [find?_eq_some_iff_getElem]

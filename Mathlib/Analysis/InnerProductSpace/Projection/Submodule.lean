@@ -112,6 +112,7 @@ theorem orthogonal_eq_bot_iff [K.HasOrthogonalProjection] : Kᗮ = ⊥ ↔ K = �
 
 open Topology Finsupp RCLike Real Filter
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a monotone family `U` of complete submodules of `E` and a fixed `x : E`,
 the orthogonal projection of `x` on `U i` tends to the orthogonal projection of `x` on
 `(⨆ i, U i).topologicalClosure` along `atTop`. -/

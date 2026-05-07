@@ -94,6 +94,7 @@ section Quotient
 variable {A B : Type*} [CommRing A] [CommRing B] [Algebra A B]
 variable {G : Type*} [Group G] [MulSemiringAction G B] [SMulCommClass G A B]
 
+set_option backward.simpa.using.reducibleClose false in
 instance (H : Subgroup G) [H.Normal] :
     MulSemiringAction (G ⧸ H) (FixedPoints.subring B H) where
   smul := Quotient.lift (fun g x ↦ ⟨g • x, fun h ↦ by
@@ -424,6 +425,7 @@ variable {A B k : Type*} [CommRing A] [CommRing B] [Algebra A B]
   [IsDomain k] [FaithfulSMul (B ⧸ Q) k]
 
 include G in
+set_option backward.simpa.using.reducibleClose false in
 /--
 For any domain `k` containing `B ⧸ Q`,
 any endomorphism of `k` can be restricted to an endomorphism of `B ⧸ Q`.

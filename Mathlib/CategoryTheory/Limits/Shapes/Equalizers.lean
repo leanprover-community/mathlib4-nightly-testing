@@ -1018,6 +1018,7 @@ def liftPrecomp {s : Fork f g} (hs : IsLimit s) {c : PullbackCone s.ι h} (hc : 
     (hs.lift <| Fork.ofι (s'.ι ≫ h) (by simp [s'.condition])) s'.ι
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The pullback of an equalizer is an equalizer. -/
 def isLimitPrecompFork {s : Fork f g} (hs : IsLimit s) {c : PullbackCone s.ι h} (hc : IsLimit c) :
     IsLimit (precompFork h s c) :=

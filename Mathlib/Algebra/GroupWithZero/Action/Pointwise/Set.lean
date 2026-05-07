@@ -54,6 +54,7 @@ scoped[Pointwise] attribute [instance] Set.smulZeroClassSet
 
 lemma smul_zero_subset (s : Set α) : s • (0 : Set β) ⊆ 0 := by simp [subset_def, mem_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.smul_zero (hs : s.Nonempty) : s • (0 : Set β) = 0 :=
   s.smul_zero_subset.antisymm <| by simpa [mem_smul] using hs
 
@@ -71,6 +72,7 @@ because `0 * ∅ ≠ 0`.
 
 lemma zero_smul_subset (t : Set β) : (0 : Set α) • t ⊆ 0 := by simp [subset_def, mem_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.zero_smul (ht : t.Nonempty) : (0 : Set α) • t = 0 :=
   t.zero_smul_subset.antisymm <| by simpa [mem_smul] using ht
 

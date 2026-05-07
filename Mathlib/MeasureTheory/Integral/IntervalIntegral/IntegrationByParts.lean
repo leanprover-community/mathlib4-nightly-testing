@@ -531,6 +531,7 @@ theorem integral_comp_mul_deriv {f f' g : ℝ → ℝ} (h : ∀ x ∈ uIcc a b, 
     (∫ x in a..b, (g ∘ f) x * f' x) = ∫ x in f a..f b, g x :=
   integral_comp_mul_deriv' h h' hg.continuousOn
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Change of variables for monotone functions.
 If `f` is continuous on `[a, b]` and has a nonnegative derivative `f'` in `(a, b)`,
 then we can substitute `u = f x` to get `∫ x in a..b, (g ∘ f) x * f' x = ∫ u in f a..f b, g u`. -/
@@ -540,6 +541,7 @@ theorem integral_comp_mul_deriv_of_deriv_nonneg {f f' g : ℝ → ℝ} (hf : Con
     (∫ x in a..b, (g ∘ f) x * f' x) = ∫ u in f a..f b, g u := by
   simpa [mul_comm] using integral_deriv_smul_comp_of_deriv_nonneg hf hff' hf'
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Change of variables for monotone functions.
 If `f` is continuous on `[a, b]` and has a nonnegative derivative `f'` in `(a, b)`,
 then we can substitute `u = f x` to get `∫ x in a..b, (g ∘ f) x * f' x = ∫ u in f a..f b, g u`. -/
@@ -549,6 +551,7 @@ theorem integral_comp_mul_deriv_of_deriv_nonpos {f f' g : ℝ → ℝ} (hf : Con
     (∫ x in a..b, (g ∘ f) x * f' x) = ∫ u in f a..f b, g u := by
   simpa [mul_comm] using integral_deriv_smul_comp_of_deriv_nonpos hf hff' hf'
 
+set_option backward.simpa.using.reducibleClose false in
 lemma integrable_comp_mul_deriv_iff_of_deriv_nonneg {f f' g : ℝ → ℝ} (hf : ContinuousOn f [[a, b]])
     (hff' : ∀ x ∈ Ioo (min a b) (max a b), HasDerivAt f (f' x) x)
     (hf' : ∀ x ∈ Ioo (min a b) (max a b), 0 ≤ f' x) :
@@ -556,6 +559,7 @@ lemma integrable_comp_mul_deriv_iff_of_deriv_nonneg {f f' g : ℝ → ℝ} (hf :
       IntervalIntegrable g volume (f a) (f b) := by
   simpa [mul_comm] using integrable_deriv_smul_comp_iff_of_deriv_nonneg hf hff' hf'
 
+set_option backward.simpa.using.reducibleClose false in
 lemma integrable_comp_mul_deriv_iff_of_deriv_nonpos {f f' g : ℝ → ℝ} (hf : ContinuousOn f [[a, b]])
     (hff' : ∀ x ∈ Ioo (min a b) (max a b), HasDerivAt f (f' x) x)
     (hf' : ∀ x ∈ Ioo (min a b) (max a b), f' x ≤ 0) :

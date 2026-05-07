@@ -348,6 +348,7 @@ section Prod
 
 variable {f : Filter α}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem prod_def {f : Filter α} {g : Filter β} :
     f ×ˢ g = f.lift fun s => g.lift' fun t => s ×ˢ t := by
   simpa only [Filter.lift', Filter.lift, (f.basis_sets.prod g.basis_sets).eq_biInf,

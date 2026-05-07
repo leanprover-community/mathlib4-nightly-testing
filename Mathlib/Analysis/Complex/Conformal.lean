@@ -68,6 +68,7 @@ section ConformalIntoComplexNormed
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedSpace ℂ E]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isConformalMap_complex_linear {map : ℂ →L[ℂ] E} (nonzero : map ≠ 0) :
     IsConformalMap (map.restrictScalars ℝ) := by
   have minor₁ : ‖map 1‖ ≠ 0 := by

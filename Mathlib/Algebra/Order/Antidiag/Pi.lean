@@ -183,6 +183,7 @@ lemma piAntidiag_cons (hi : i ∉ s) (n : μ) :
     have := hg i
     aesop (add simp [sum_add_distrib])
 
+set_option backward.simpa.using.reducibleClose false in
 lemma piAntidiag_insert [DecidableEq (ι → μ)] (hi : i ∉ s) (n : μ) :
     piAntidiag (insert i s) n = (antidiagonal n).biUnion fun p : μ × μ ↦ (piAntidiag s p.snd).image
       (fun f j ↦ f j + if j = i then p.fst else 0) := by

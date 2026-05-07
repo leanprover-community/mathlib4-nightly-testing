@@ -348,6 +348,7 @@ We now give characterisations of `finrank K V = 1` and `finrank K V ≤ 1`.
 
 section finrank_eq_one
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Any `K`-algebra module that is 1-dimensional over `K` is simple. -/
 theorem is_simple_module_of_finrank_eq_one {A} [Semiring A] [Module A V] [SMul K A]
     [IsScalarTower K A V] (h : finrank K V = 1) : IsSimpleOrder (Submodule A V) := by

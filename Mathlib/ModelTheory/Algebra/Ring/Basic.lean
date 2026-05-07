@@ -236,6 +236,7 @@ def compatibleRingOfRing (R : Type*) [Add R] [Mul R] [Neg R] [One R] [Zero R] :
     funMap_zero := fun _ => rfl,
     funMap_one := fun _ => rfl }
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An isomorphism in the language of rings is a ring isomorphism -/
 def languageEquivEquivRingEquiv {R S : Type*}
     [NonAssocRing R] [NonAssocRing S]

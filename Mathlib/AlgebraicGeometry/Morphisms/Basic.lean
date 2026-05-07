@@ -621,6 +621,7 @@ private theorem pullback_fst_of_right (hP' : Q.IsStableUnderBaseChange)
   apply hP' (.of_hasPullback _ _)
   exact H
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem isStableUnderBaseChange (hP' : Q.IsStableUnderBaseChange) :
     P.IsStableUnderBaseChange :=

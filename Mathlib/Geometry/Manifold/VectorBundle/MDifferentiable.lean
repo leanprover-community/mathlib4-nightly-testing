@@ -456,6 +456,7 @@ lemma mdifferentiable_smul_const_section
     (hs : MDiff (T% s)) : MDiff (T% (a • s)) :=
   fun x₀ ↦ (hs x₀).smul_const_section
 
+set_option backward.simpa.using.reducibleClose false in
 lemma MDifferentiableWithinAt.sum_section {ι : Type*} {s : Finset ι} {t : ι → (x : B) → E x}
     (hs : ∀ i, MDiffAt[u] (T% (t i ·)) x₀) :
     MDiffAt[u] (T% (fun x ↦ ∑ i ∈ s, (t i x))) x₀ := by

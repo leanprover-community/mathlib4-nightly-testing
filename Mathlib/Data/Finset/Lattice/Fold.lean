@@ -493,6 +493,7 @@ theorem sup_of_mem {s : Finset β} (f : β → α) {b : β} (h : b ∈ s) :
     ∃ a : α, s.sup ((↑) ∘ f : β → WithBot α) = ↑a :=
   (WithBot.le_iff_forall.1 (le_sup (α := WithBot α) h) (f b) rfl).imp fun _ ↦ And.left
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given nonempty finset `s` then `s.sup' H f` is the supremum of its image under `f` in (possibly
 unbounded) join-semilattice `α`, where `H` is a proof of nonemptiness. If `α` has a bottom element
 you may instead use `Finset.sup` which does not require `s` nonempty. -/
@@ -562,6 +563,7 @@ theorem sup'_union [DecidableEq β] {s₁ s₂ : Finset β} (h₁ : s₁.Nonempt
     (s₁ ∪ s₂).sup' (h₁.mono subset_union_left) f = s₁.sup' h₁ f ⊔ s₂.sup' h₂ f :=
   eq_of_forall_ge_iff fun a => by simp [or_imp, forall_and]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_dual]
 protected theorem sup'_comm {t : Finset γ} (hs : s.Nonempty) (ht : t.Nonempty) (f : β → γ → α) :
     (s.sup' hs fun b => t.sup' ht (f b)) = t.sup' ht fun c => s.sup' hs fun b => f b c :=

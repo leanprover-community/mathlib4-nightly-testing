@@ -49,6 +49,7 @@ theorem contMDiff_coe : CMDiff n ((↑) : ℍ → ℂ) :=
 theorem mdifferentiable_coe : MDiff ((↑) : ℍ → ℂ) :=
   contMDiff_coe.mdifferentiable one_ne_zero
 
+set_option backward.simpa.using.reducibleClose false in
 lemma contMDiffAt_ofComplex {z : ℂ} (hz : 0 < z.im) : CMDiffAt n ofComplex z := by
   rw [contMDiffAt_iff]
   constructor
@@ -97,6 +98,7 @@ lemma contMDiff_denom_zpow (g : GL (Fin 2) ℝ) (k : ℤ) : CMDiff n (denom g ·
 lemma contMDiff_inv_denom (g : GL (Fin 2) ℝ) : CMDiff n (fun τ : ℍ ↦ (denom g τ)⁻¹) := by
   simpa using contMDiff_denom_zpow g (-1)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Each element of `GL(2, ℝ)⁺` defines a map of `C ^ n` manifolds `ℍ → ℍ`. -/
 lemma contMDiff_smul {g : GL (Fin 2) ℝ} (hg : 0 < g.det.val) : CMDiff n (fun τ : ℍ ↦ g • τ) := by
   intro τ
@@ -178,6 +180,7 @@ lemma deriv_smul_ne_zero {g : GL (Fin 2) ℝ} (hg : 0 < g.val.det) (τ : ℍ) :
   · exact_mod_cast hg.ne'
   · exact pow_ne_zero _ (denom_ne_zero g τ)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma analyticAt_smul {g : GL (Fin 2) ℝ} (hg : 0 < g.val.det) (τ : ℍ) :
     AnalyticAt ℂ (fun z ↦ ↑(g • ofComplex z) : ℂ → ℂ) τ := by
   refine DifferentiableOn.analyticAt (fun z hz ↦ ?_) (isOpen_upperHalfPlaneSet.mem_nhds τ.im_pos)

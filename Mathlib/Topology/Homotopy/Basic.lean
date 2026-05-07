@@ -604,6 +604,7 @@ theorem symm_trans (F : HomotopyRel f₀ f₁ S) (G : HomotopyRel f₁ f₂ S) :
     (F.trans G).symm = G.symm.trans F.symm :=
   HomotopyWith.ext <| Homotopy.congr_fun <| Homotopy.symm_trans _ _
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Casting a `HomotopyRel f₀ f₁ S` to a `HomotopyRel g₀ g₁ S` where `f₀ = g₀` and `f₁ = g₁`.
 -/
 @[simps!]

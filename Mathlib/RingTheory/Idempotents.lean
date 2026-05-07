@@ -60,6 +60,7 @@ lemma OrthogonalIdempotents.mul_eq [DecidableEq I] (he : OrthogonalIdempotents e
   · simp [*, (he.idem j).eq]
   · exact he.ortho ‹_›
 
+set_option backward.simpa.using.reducibleClose false in
 lemma OrthogonalIdempotents.iff_mul_eq [DecidableEq I] :
     OrthogonalIdempotents e ↔ ∀ i j, e i * e j = if i = j then e i else 0 :=
   ⟨mul_eq, fun H ↦ ⟨fun i ↦ by simpa using H i i, fun i j e ↦ by simpa [e] using H i j⟩⟩
@@ -103,6 +104,7 @@ lemma OrthogonalIdempotents.unique [Unique I] :
     OrthogonalIdempotents e ↔ IsIdempotentElem (e default) := by
   simp only [orthogonalIdempotents_iff, Unique.forall_iff, Subsingleton.pairwise, and_true]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma OrthogonalIdempotents.option (he : OrthogonalIdempotents e) [Fintype I] (x)
     (hx : IsIdempotentElem x) (hx₁ : x * ∑ i, e i = 0) (hx₂ : (∑ i, e i) * x = 0) :
     OrthogonalIdempotents (Option.elim · x e) where
@@ -558,6 +560,7 @@ instance [NonUnitalCommRing R] (idem : IsIdempotentElem e) : CommRing idem.Corne
 
 variable {I : Type*} [Fintype I] {e : I → R}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A complete orthogonal family of central idempotents in a semiring
 give rise to a direct product decomposition. -/
 def CompleteOrthogonalIdempotents.ringEquivOfIsMulCentral [Semiring R]

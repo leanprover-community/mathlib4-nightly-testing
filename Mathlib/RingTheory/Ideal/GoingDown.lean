@@ -131,6 +131,7 @@ lemma trans (T : Type*) [CommRing T] [Algebra R T] [Algebra S T] [IsScalarTower 
   · rwa [← iff_generalizingMap_primeSpectrumComap]
   · rwa [← iff_generalizingMap_primeSpectrumComap]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If for every prime of `S`, the map `Spec Sₚ → Spec Rₚ` is surjective,
 the algebra satisfies going down. -/
 lemma of_comap_localRingHom_surjective

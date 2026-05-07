@@ -33,6 +33,7 @@ variable (p : Submonoid R) [IsLocalization p S]
 variable (M : Type*) [AddCommMonoid M] [Module R M] [Module S M] [IsScalarTower R S M]
 
 include p in
+set_option backward.simpa.using.reducibleClose false in
 theorem IsLocalization.flat : Module.Flat R S := by
   refine Module.Flat.iff_lTensor_injectiveₛ.mpr fun P _ _ N ↦ ?_
   have h := ((range N.subtype).isLocalizedModule S p (TensorProduct.mk R S P 1)).isBaseChange _ S

@@ -412,6 +412,7 @@ theorem det_eq_sum_mul_adjugate_row (A : Matrix n n α) (i : n) :
   rw [det_succ_row A' (e i)]
   simp_rw [mul_assoc, mul_left_comm _ (A' _ _), ← adjugate_fin_succ_eq_det_submatrix]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem det_eq_sum_mul_adjugate_col (A : Matrix n n α) (j : n) :
     det A = ∑ i : n, A i j * adjugate A j i := by
   simpa only [det_transpose, ← adjugate_transpose] using det_eq_sum_mul_adjugate_row Aᵀ j

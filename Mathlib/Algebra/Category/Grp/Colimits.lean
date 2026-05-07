@@ -254,6 +254,7 @@ noncomputable def colimitCocone [DecidableEq J] [Small.{w} (Quot.{w} F)] : Cocon
         change Shrink.addEquiv.symm _ = _
         rw [Quot.map_ι] }
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem Quot.desc_colimitCocone [DecidableEq J] (F : J ⥤ AddCommGrpCat.{w}) [Small.{w} (Quot F)] :
     Quot.desc F (colimitCocone F) = (Shrink.addEquiv (α := Quot F)).symm.toAddMonoidHom := by

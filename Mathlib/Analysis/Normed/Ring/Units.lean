@@ -218,6 +218,7 @@ theorem eq_top_of_norm_lt_one (I : Ideal R) {x : R} (hxI : x ∈ I) (hx : ‖1 -
   I.eq_top_iff_one.mpr <| by
     simpa only [show u.inv * x = 1 by simp [u]] using I.mul_mem_left u.inv hxI
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The `Ideal.closure` of a proper ideal in a normed ring with summable
 geometric series is proper. -/
 theorem closure_ne_top (I : Ideal R) (hI : I ≠ ⊤) : I.closure ≠ ⊤ := by

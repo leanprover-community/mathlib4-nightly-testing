@@ -37,6 +37,7 @@ local postfix:100 "̂" => UniformSpace.Completion
 
 namespace Complex
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Cauchy's estimate for derivatives**:  If `f` is complex differentiable on an open disc of
 radius `R > 0`, is continuous on its closure, and its values on the boundary circle of this disc
 are bounded from above by `C`, then the norm of its `n`-th derivative at the center is at most
@@ -129,6 +130,7 @@ theorem exists_eq_const_of_bounded {f : E → F} (hf : Differentiable ℂ f)
     (hb : IsBounded (range f)) : ∃ c, f = const E c :=
   (hf.exists_const_forall_eq_of_bounded hb).imp fun _ => funext
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- A corollary of Liouville's theorem where the function tends to a finite value at infinity
 (i.e., along `Filter.cocompact`, which in proper spaces coincides with `Bornology.cobounded`). -/

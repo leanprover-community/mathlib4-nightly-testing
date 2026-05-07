@@ -57,6 +57,7 @@ variable {R}
 
 variable {F : Cᵒᵖ ⥤ Type u} {G : PresheafOfModules.{u} R}
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The morphism of presheaves of modules `freeObj F ⟶ G` corresponding to
 a morphism `F ⟶ G.presheaf ⋙ forget _` of presheaves of types. -/

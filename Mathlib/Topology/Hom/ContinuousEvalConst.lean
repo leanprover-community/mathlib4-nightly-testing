@@ -39,6 +39,7 @@ section ContinuousEvalConst
 variable {F α X Z : Type*} [FunLike F α X] [TopologicalSpace F] [TopologicalSpace X]
   [ContinuousEvalConst F α X] [TopologicalSpace Z] {f : Z → F} {s : Set Z} {z : Z}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a type `F'` of bundled morphisms admits a continuous projection
 to a type satisfying `ContinuousEvalConst`,
 then `F'` satisfies this predicate too.

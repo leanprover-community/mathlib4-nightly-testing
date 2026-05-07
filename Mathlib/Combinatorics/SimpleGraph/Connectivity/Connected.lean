@@ -615,6 +615,7 @@ lemma biUnion_supp_eq_supp {G G' : SimpleGraph V} (h : G ≤ G') (c' : Connected
   use c'.connectedComponentMk_supp_subset_supp h hv
   simp only [mem_supp_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma top_supp_eq_univ (c : ConnectedComponent (⊤ : SimpleGraph V)) :
     c.supp = (Set.univ : Set V) := by
   obtain ⟨w, rfl⟩ := c.exists_rep
@@ -700,6 +701,7 @@ theorem maximal_connected_induce_iff (s : Set V) :
 
 end ConnectedComponent
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given graph homomorphisms from each connected component of `G` to `H`, this is the graph
 homomorphism from `G` to `H`. -/
 @[simps]

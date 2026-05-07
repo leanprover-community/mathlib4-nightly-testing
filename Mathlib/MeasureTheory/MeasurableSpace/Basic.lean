@@ -57,6 +57,7 @@ section Functors
 
 variable {m m₁ m₂ : MeasurableSpace α} {m' : MeasurableSpace β} {f : α → β} {g : β → α}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The forward image of a measurable space under a function. `map f m` contains the sets
   `s : Set β` whose preimage under `f` is measurable. -/
 @[implicit_reducible]

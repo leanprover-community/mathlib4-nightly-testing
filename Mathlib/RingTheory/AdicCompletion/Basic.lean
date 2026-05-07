@@ -114,6 +114,7 @@ theorem IsHausdorff.StrictMono.funext {M : Type*} [IsHausdorff I N] {f g : M →
   apply SModEq.mono (Submodule.pow_smul_top_le I N ha.le_apply)
   exact h n m
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 A variant of `IsHausdorff.funext`, where the target is a ring instead of a module.
 -/
@@ -125,6 +126,7 @@ theorem IsHausdorff.funext' {R S : Type*} [CommRing S] (I : Ideal S) [IsHausdorf
   intro n
   simpa using h n r
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 A variant of `IsHausdorff.StrictMono.funext`, where the target is a ring instead of a module.
 -/

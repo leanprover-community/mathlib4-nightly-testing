@@ -111,6 +111,7 @@ lemma geom_sum_mul_add (x : R) (n : ℕ) : (∑ i ∈ range n, (x + 1) ^ i) * x 
   rw [one_pow, geom_sum₂_with_one] at this
   exact this
 
+set_option backward.simpa.using.reducibleClose false in
 protected lemma Commute.geom_sum₂_comm (n : ℕ) (h : Commute x y) :
     ∑ i ∈ range n, x ^ i * y ^ (n - 1 - i) = ∑ i ∈ range n, y ^ i * x ^ (n - 1 - i) := by
   cases n; · simp

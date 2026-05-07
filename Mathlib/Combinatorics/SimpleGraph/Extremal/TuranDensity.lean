@@ -43,6 +43,7 @@ namespace SimpleGraph
 
 variable {W : Type*}
 
+set_option backward.simpa.using.reducibleClose false in
 lemma antitoneOn_extremalNumber_div_choose_two (H : SimpleGraph W) :
     AntitoneOn (fun n ↦ (extremalNumber n H / n.choose 2 : ℝ)) (Set.Ici 2) := by
   apply antitoneOn_nat_Ici_of_succ_le
@@ -104,6 +105,7 @@ theorem tendsto_turanDensity (H : SimpleGraph W) :
     (antitoneOn_extremalNumber_div_choose_two H) (isGLB_turanDensity H).bddBelow
   rwa [turanDensity, h_tendsto.limUnder_eq]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `extremalNumber n H` is asymptotically equivalent to `turanDensity H * n.choose 2` as `n`
 approaches `∞`. -/
 theorem isEquivalent_extremalNumber {H : SimpleGraph W} (h : turanDensity H ≠ 0) :

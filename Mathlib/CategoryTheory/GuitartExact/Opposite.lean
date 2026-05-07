@@ -37,6 +37,7 @@ variable {X₃ : C₃ᵒᵖ} {X₂ : C₂ᵒᵖ} (g : B.op.obj X₃ ⟶ R.op.obj
 
 namespace structuredArrowRightwardsOpEquivalence
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Auxiliary definition for `structuredArrowRightwardsOpEquivalence`. -/
 @[simps!]
 def functor :

@@ -87,6 +87,7 @@ instance : Scheme.forgetToTop.{u}.IsContinuous zariskiTopology TopCat.grothendie
   · rw [MorphismProperty.comap_precoverage]
     exact MorphismProperty.precoverage_monotone fun X Y f hf ↦ f.isOpenEmbedding
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A Zariski-`1`-hypercover of a scheme where all components are affine. -/
 @[simps! toPreOneHypercover_toPreZeroHypercover]
 noncomputable

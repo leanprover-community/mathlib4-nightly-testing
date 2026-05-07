@@ -31,6 +31,7 @@ open scoped WithZero
 
 -- no earlier file imports the necessary requirements for the next three
 
+set_option backward.simpa.using.reducibleClose false in
 theorem exists_pow_lt₀ {G : Type*} [LinearOrderedCommGroupWithZero G] [MulArchimedean G]
     {a : G} (ha : a < 1) (b : Gˣ) : ∃ n : ℕ, a ^ n < b := by
   rcases eq_or_ne a 0 with rfl | ha'

@@ -191,6 +191,7 @@ protected lemma tendsto_measure_iUnion_accumulate {ι : Type*} [Preorder ι]
 `(μ : measure Ω) univ`. -/
 def mass (μ : FiniteMeasure Ω) : ℝ≥0 := μ univ
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] theorem apply_le_mass (μ : FiniteMeasure Ω) (s : Set Ω) : μ s ≤ μ.mass := by
   simpa using apply_mono μ (subset_univ s)
 
@@ -409,6 +410,7 @@ theorem testAgainstNN_mono (μ : FiniteMeasure Ω) {f g : Ω →ᵇ ℝ≥0} (f_
   gcongr
   apply f_le_g
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem testAgainstNN_zero (μ : FiniteMeasure Ω) : μ.testAgainstNN 0 = 0 := by
   simpa only [zero_mul] using μ.testAgainstNN_const 0
@@ -543,6 +545,7 @@ theorem tendsto_iff_forall_testAgainstNN_tendsto {γ : Type*} {F : Filter γ}
       ∀ f : Ω →ᵇ ℝ≥0, Tendsto (fun i ↦ (μs i).testAgainstNN f) F (𝓝 (μ.testAgainstNN f)) := by
   rw [FiniteMeasure.tendsto_iff_forall_toWeakDualBCNN_tendsto]; rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If the total masses of finite measures tend to zero, then the measures tend to
 zero. This formulation concerns the associated functionals on bounded continuous
 nonnegative test functions. See `MeasureTheory.FiniteMeasure.tendsto_zero_of_tendsto_zero_mass` for
@@ -699,6 +702,7 @@ condition that the integrals of all bounded continuous real-valued functions con
 
 variable {Ω : Type*} [MeasurableSpace Ω] [TopologicalSpace Ω] [OpensMeasurableSpace Ω]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem tendsto_of_forall_integral_tendsto {γ : Type*} {F : Filter γ} {μs : γ → FiniteMeasure Ω}
     {μ : FiniteMeasure Ω}
     (h : ∀ f : Ω →ᵇ ℝ,

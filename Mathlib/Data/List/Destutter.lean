@@ -237,6 +237,7 @@ theorem length_destutter_ne_le_length_destutter_cons [DecidableEq α] :
     (l.destutter (· ≠ ·)).length ≤ ((a :: l).destutter (· ≠ ·)).length :=
   length_destutter_le_length_destutter_cons
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `destutter` of relations like `≠`, whose negation is an equivalence relation,
 gives a list of maximal length over any chain.
 

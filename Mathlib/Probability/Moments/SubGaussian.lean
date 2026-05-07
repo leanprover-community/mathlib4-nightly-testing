@@ -690,6 +690,7 @@ protected lemma const_mul (h : HasSubgaussianMGF X c μ) (r : ℝ) :
   rw [HasSubgaussianMGF_iff_kernel] at h ⊢
   exact Kernel.HasSubgaussianMGF.const_mul h r
 
+set_option backward.simpa.using.reducibleClose false in
 lemma integrableExpSet_eq_univ (hX : HasSubgaussianMGF X c μ) :
     integrableExpSet X μ = Set.univ := by
   ext t

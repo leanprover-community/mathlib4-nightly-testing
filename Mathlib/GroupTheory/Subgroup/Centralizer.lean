@@ -115,6 +115,7 @@ theorem centralizer_closure (s : Set G) : centralizer (closure s) = centralizer 
   le_antisymm (centralizer_le subset_closure)
     (le_centralizer_iff.mp (closure_le_centralizer_centralizer s))
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem centralizer_eq_iInf (s : Set G) : centralizer s = ⨅ g ∈ s, centralizer {g} :=
   le_antisymm (le_iInf₂ fun g hg ↦ centralizer_le (Set.singleton_subset_iff.mpr hg)) fun x hx ↦ by

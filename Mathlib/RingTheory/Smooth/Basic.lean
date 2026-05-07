@@ -81,6 +81,7 @@ alias FormallySmooth.iff_subsingleton_and_projective := Algebra.formallySmooth_i
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (R A) in
+set_option backward.simpa.using.reducibleClose false in
 lemma FormallySmooth.comp_surjective [FormallySmooth R A] (I : Ideal B) (hI : I ^ 2 = ⊥) :
     Function.Surjective ((Ideal.Quotient.mkₐ R I).comp : (A →ₐ[R] B) → A →ₐ[R] B ⧸ I) := by
   intro f

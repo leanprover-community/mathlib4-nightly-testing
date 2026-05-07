@@ -794,6 +794,7 @@ lemma disjoint_ker_of_nondegenerate_restrict {B : M →ₗ[R] M →ₗ[R] M₁} 
   rw [mem_ker] at hx'
   simp [x', hx']
 
+set_option backward.simpa.using.reducibleClose false in
 lemma IsSymm.nondegenerate_restrict_of_isCompl_ker {B : M →ₗ[R] M →ₗ[R] R} (hB : B.IsSymm)
     {W : Submodule R M} (hW : IsCompl W (LinearMap.ker B)) :
     (B.domRestrict₁₂ W W).Nondegenerate := by

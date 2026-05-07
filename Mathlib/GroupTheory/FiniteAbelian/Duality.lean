@@ -41,6 +41,7 @@ lemma dvd_exponent {ι G : Type*} [Finite ι] [Monoid G] {n : ι → ℕ}
 
 variable (G M : Type*) [CommGroup G] [Finite G] [CommMonoid M]
 
+set_option backward.simpa.using.reducibleClose false in
 private
 lemma exists_apply_ne_one_aux
     (H : ∀ n : ℕ, n ∣ Monoid.exponent G → ∀ a : ZMod n, a ≠ 0 →

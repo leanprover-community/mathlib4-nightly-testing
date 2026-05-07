@@ -64,6 +64,7 @@ theorem divX_add : divX (p + q) = divX p + divX q :=
 @[simp]
 theorem divX_zero : divX (0 : R[X]) = 0 := leadingCoeff_eq_zero.mp rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem divX_one : divX (1 : R[X]) = 0 := by
   ext

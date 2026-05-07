@@ -25,6 +25,7 @@ open scoped Topology
 
 variable {a b : ℝ} {f f' : ℝ → ℝ}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Darboux's theorem**: if `a ≤ b` and `f' a < m < f' b`, then `f' c = m` for some
 `c ∈ (a, b)`. -/
 theorem exists_hasDerivWithinAt_eq_of_gt_of_lt (hab : a ≤ b)

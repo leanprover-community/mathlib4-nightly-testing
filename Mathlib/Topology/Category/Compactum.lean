@@ -404,6 +404,7 @@ noncomputable def ofTopologicalSpace (X : Type*) [TopologicalSpace X] [CompactSp
     rw [le_nhds_iff]
     exact c4
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Any continuous map between Compacta is a morphism of compacta. -/
 def homOfContinuous {X Y : Compactum} (f : X → Y) (cont : Continuous f) : X ⟶ Y :=
   { f := ↾f
@@ -428,6 +429,7 @@ namespace compactumToCompHaus
 instance full : compactumToCompHaus.{u}.Full where
   map_surjective f := ⟨Compactum.homOfContinuous f.1 f.hom.hom.2, rfl⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The functor `compactumToCompHaus` is faithful. -/
 instance faithful : compactumToCompHaus.Faithful where
   -- Porting note: this used to be obviously (though it consumed a bit of memory)

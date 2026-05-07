@@ -160,6 +160,7 @@ theorem differentiableOn_arccos : DifferentiableOn ℝ arccos {-1, 1}ᶜ :=
 theorem contDiffOn_arccos {n : ℕ∞ω} : ContDiffOn ℝ n arccos {-1, 1}ᶜ :=
   contDiffOn_const.sub contDiffOn_arcsin
 
+set_option backward.simpa.using.reducibleClose false in
 theorem contDiffAt_arccos_iff {x : ℝ} {n : ℕ∞ω} :
     ContDiffAt ℝ n arccos x ↔ n = 0 ∨ x ≠ -1 ∧ x ≠ 1 := by
   refine Iff.trans ⟨fun h => ?_, fun h => ?_⟩ contDiffAt_arcsin_iff <;>

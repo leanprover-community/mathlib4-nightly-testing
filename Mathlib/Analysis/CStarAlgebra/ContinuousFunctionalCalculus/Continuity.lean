@@ -173,6 +173,7 @@ lemma lipschitzOnWith_cfc_fun (a : A) :
 
 open UniformOnFun in
 open scoped ContinuousFunctionalCalculus in
+set_option backward.simpa.using.reducibleClose false in
 /-- The function `f ↦ cfc f a` is Lipschitz with constant 1 with respect to
 supremum metric (on `R →ᵤ[{s}] R`) on those functions which are continuous on a set `s` containing
 the spectrum. -/
@@ -195,6 +196,7 @@ variable {X 𝕜 A : Type*} {p : A → Prop} [RCLike 𝕜] [NormedRing A] [StarR
     [NormedAlgebra 𝕜 A] [IsometricContinuousFunctionalCalculus 𝕜 A p]
     [ContinuousStar A]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `cfcHomSuperset` is continuous in the variable `a : A` when `s : Set 𝕜` is compact and `a`
 varies over elements whose spectrum is contained in `s`, all of which satisfy the predicate `p`. -/
 theorem continuous_cfcHomSuperset_left
@@ -676,6 +678,7 @@ lemma lipschitzOnWith_cfcₙ_fun (a : A) :
 
 open UniformOnFun in
 open scoped ContinuousFunctionalCalculus in
+set_option backward.simpa.using.reducibleClose false in
 /-- The function `f ↦ cfcₙ f a` is Lipschitz with constant 1 with respect to
 supremum metric (on `R →ᵤ[{s}] R`) on those functions which are continuous on a set `s` containing
 the quasispectrum and map zero to itself. -/
@@ -699,6 +702,7 @@ variable {X 𝕜 A : Type*} {p : A → Prop} [RCLike 𝕜] [NonUnitalNormedRing 
     [NonUnitalIsometricContinuousFunctionalCalculus 𝕜 A p]
 
 open scoped NonUnitalContinuousFunctionalCalculus ContinuousMapZero in
+set_option backward.simpa.using.reducibleClose false in
 /-- `cfcₙHomSuperset` is continuous in the variable `a : A` when `s : Set 𝕜` is compact and `a`
 varies over elements whose spectrum is contained in `s`, all of which satisfy the predicate `p`. -/
 theorem continuous_cfcₙHomSuperset_left

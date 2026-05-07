@@ -262,6 +262,7 @@ theorem zeroLocus_singleton_zero : zeroLocus ({0} : Set R) = Set.univ :=
 theorem zeroLocus_empty : zeroLocus (∅ : Set R) = Set.univ :=
   (gc_set R).l_bot
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem vanishingIdeal_empty : vanishingIdeal (∅ : Set (PrimeSpectrum R)) = ⊤ := by
   simpa using (gc R).u_top

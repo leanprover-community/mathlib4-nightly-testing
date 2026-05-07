@@ -217,6 +217,7 @@ theorem diff_cylinder_same (s : Finset ι) (S T : Set (∀ i : s, α i)) :
     cylinder s S \ cylinder s T = cylinder s (S \ T) := by
   ext1 f; simp only [mem_diff, mem_cylinder]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem eq_of_cylinder_eq_of_subset [h_nonempty : Nonempty (∀ i, α i)] {I J : Finset ι}
     {S : Set (∀ i : I, α i)} {T : Set (∀ i : J, α i)} (h_eq : cylinder I S = cylinder J T)
     (hJI : J ⊆ I) :

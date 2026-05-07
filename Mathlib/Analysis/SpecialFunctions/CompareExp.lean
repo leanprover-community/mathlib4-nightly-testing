@@ -107,6 +107,7 @@ theorem isLittleO_im_pow_exp_re (hl : IsExpCmpFilter l) (n : ℕ) :
         (isLittleO_pow_pow_atTop_of_lt one_lt_two).comp_tendsto <|
           Real.tendsto_exp_atTop.comp hl.tendsto_re
 
+set_option backward.simpa.using.reducibleClose false in
 theorem abs_im_pow_eventuallyLE_exp_re (hl : IsExpCmpFilter l) (n : ℕ) :
     (fun z : ℂ => |z.im| ^ n) ≤ᶠ[l] fun z => Real.exp z.re := by
   simpa using (hl.isLittleO_im_pow_exp_re n).bound zero_lt_one

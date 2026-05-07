@@ -55,6 +55,7 @@ lemma eqToHom (W : MorphismProperty C) [W.ContainsIdentities] {x y : C} (h : x =
   rw [eqToHom_refl]
   exact id_mem x
 
+set_option backward.simpa.using.reducibleClose false in
 instance inverseImage {P : MorphismProperty D} [P.ContainsIdentities] (F : C ⥤ D) :
     (P.inverseImage F).ContainsIdentities where
   id_mem X := by simpa only [← F.map_id] using P.id_mem (F.obj X)
@@ -127,6 +128,7 @@ theorem respectsIso_of_isStableUnderComposition {P : MorphismProperty C}
   (fun _ _ hf => P.comp_mem _ _ (hP _ (isomorphisms.infer_property _)) hf)
     (fun _ _ hf => P.comp_mem _ _ hf (hP _ (isomorphisms.infer_property _)))
 
+set_option backward.simpa.using.reducibleClose false in
 instance IsStableUnderComposition.inverseImage {P : MorphismProperty D} [P.IsStableUnderComposition]
     (F : C ⥤ D) : (P.inverseImage F).IsStableUnderComposition where
   comp_mem f g hf hg := by simpa only [← F.map_comp] using P.comp_mem _ _ hf hg

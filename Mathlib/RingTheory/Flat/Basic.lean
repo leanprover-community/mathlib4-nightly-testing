@@ -230,6 +230,7 @@ instance of_projective [Projective R M] : Flat R M :=
 
 instance of_free [Free R M] : Flat R M := inferInstance
 
+set_option backward.simpa.using.reducibleClose false in
 instance {S} [CommSemiring S] [Algebra R S] [Module S M] [IsScalarTower R S M]
     [Flat S M] [Flat R N] : Flat S (M ⊗[R] N) :=
   iff_rTensor_injectiveₛ.mpr fun P _ _ I ↦ by

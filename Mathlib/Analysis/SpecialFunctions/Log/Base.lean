@@ -502,6 +502,7 @@ theorem logb_nat_eq_sum_factorization (n : ℕ) :
     logb b n = n.factorization.sum fun p t => t * logb b p := by
   simp only [logb, mul_div_assoc', log_nat_eq_sum_factorization n, Finsupp.sum, Finset.sum_div]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem tendsto_pow_logb_div_mul_add_atTop (a c : ℝ) (n : ℕ) (ha : a ≠ 0) :
     Tendsto (fun x => logb b x ^ n / (a * x + c)) atTop (𝓝 0) := by
   cases eq_or_ne (log b) 0 with
@@ -523,6 +524,7 @@ theorem isLittleO_const_logb_atTop {c : ℝ} (hb : b ≠ -1 ∧ b ≠ 0 ∧ b �
   intro hc
   exact tendsto_abs_logb_atTop hb
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isBigO_logb_log : logb b =O[⊤] log := by
   by_cases! h : b = -1 ∨ b = 0 ∨ b = 1
   · obtain rfl | rfl | rfl := h
@@ -593,6 +595,7 @@ namespace Real
 
 variable {b : ℝ}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem tendsto_logb_comp_add_sub_logb (y : ℝ) :
     Tendsto (fun x : ℝ => logb b (x + y) - logb b x) atTop (𝓝 0) := by
   simpa [sub_div] using (tendsto_log_comp_add_sub_log y).div_const (log b)

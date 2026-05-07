@@ -686,6 +686,7 @@ beyond the special case `Γ = ℤ`, that corresponds to Laurent Series: neverthe
 does not generalise, as it relies on the study of the `X`-adic valuation attached to the height-one
 prime `X`, and this is peculiar to the one-variable setting. In the future we should prove this
 result in full generality and deduce the case `Γ = ℤ` from that one. -/
+set_option backward.simpa.using.reducibleClose false in
 lemma Cauchy.exists_lb_eventual_support {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ) :
     ∃ N, ∀ᶠ f : K⸨X⸩ in ℱ, ∀ n < N, f.coeff n = (0 : K) := by
   let entourage : Set (K⸨X⸩ × K⸨X⸩) := {P : K⸨X⸩ × K⸨X⸩ | Valued.v.restrict (P.snd - P.fst) < 1}
@@ -748,6 +749,7 @@ theorem Cauchy.exists_lb_coeff_ne {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ) :
 
 /- Given a Cauchy filter `ℱ` in the Laurent Series and a bound `D`, for almost all series in the
 filter the coefficients below `D` coincide with `Cauchy.coeff hℱ`. -/
+set_option backward.simpa.using.reducibleClose false in
 theorem Cauchy.coeff_eventually_equal {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ) {D : ℤ} :
     ∀ᶠ f : K⸨X⸩ in ℱ, ∀ d, d < D → coeff hℱ d = f.coeff d := by
   -- `φ` sends `d` to the set of Laurent Series having `d`th coefficient equal to `ℱ.coeff`.

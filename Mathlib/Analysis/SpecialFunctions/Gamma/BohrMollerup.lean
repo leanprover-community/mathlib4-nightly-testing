@@ -412,6 +412,7 @@ theorem log_doublingGamma_eq :
     log_mul (mul_ne_zero h2 h3) h4, log_mul h2 h3, log_rpow two_pos, log_mul two_ne_zero h1]
   ring_nf
 
+set_option backward.simpa.using.reducibleClose false in
 theorem doublingGamma_log_convex_Ioi : ConvexOn ℝ (Ioi (0 : ℝ)) (log ∘ doublingGamma) := by
   refine (((ConvexOn.add ?_ ?_).add ?_).add_const _).congr log_doublingGamma_eq.symm
   · convert

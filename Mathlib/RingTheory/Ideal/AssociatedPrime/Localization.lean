@@ -36,6 +36,7 @@ open IsLocalRing LinearMap Submodule
 namespace Module.associatedPrimes
 
 include S f in
+set_option backward.simpa.using.reducibleClose false in
 @[stacks 0310 "(1)"]
 lemma mem_associatedPrimes_of_comap_mem_associatedPrimes_of_isLocalizedModule
     (p : Ideal R') (ass : p.comap (algebraMap R R') ∈ associatedPrimes R M) :
@@ -128,6 +129,7 @@ lemma preimage_comap_associatedPrimes_eq_associatedPrimes_of_isLocalizedModule
     ((isNoetherianRing_iff_ideal_fg R).mp ‹_› _)⟩
 
 variable (R M) in
+set_option backward.simpa.using.reducibleClose false in
 lemma minimalPrimes_annihilator_subset_associatedPrimes [IsNoetherianRing R] [Module.Finite R M] :
     (Module.annihilator R M).minimalPrimes ⊆ associatedPrimes R M := by
   intro p hp

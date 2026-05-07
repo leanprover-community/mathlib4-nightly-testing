@@ -75,6 +75,7 @@ def pullbackConeEquivBinaryFan : PullbackCone f g ≌ BinaryFan (Over.mk f) (.mk
     (by intros; ext; simp [BinaryFan.ext])
   functor_unitIso_comp c := by ext; simp [BinaryFan.ext]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- A binary fan in `Over X` is a limit if its corresponding pullback cone to `X` is a limit. -/
 -- `IsLimit.ofConeEquiv` isn't used here because the lift it defines is `𝟙 _ ≫ pullback.lift`.
@@ -94,6 +95,7 @@ def IsLimit.pullbackConeEquivBinaryFanFunctor {c : PullbackCone f g} (hc : IsLim
       · simpa using congr(($e₁).left)
       · simpa using congr(($e₂).left)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A pullback cone to `X` is a limit if its corresponding binary fan in `Over X` is a limit. -/
 -- This could also be `(IsLimit.ofConeEquiv pullbackConeEquivBinaryFan.symm).symm hc`, but possibly
@@ -136,6 +138,7 @@ def pushoutCoconeEquivBinaryCofan : PushoutCocone f g ≌ BinaryCofan (Under.mk 
     (by intros; ext; simp)
   functor_unitIso_comp c := by ext; simp
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- A binary cofan in `Under X` is a colimit if its corresponding pushout cocone from `X` is a
 colimit. -/
@@ -155,6 +158,7 @@ def IsColimit.pushoutCoconeEquivBinaryCofanFunctor {c : PushoutCocone f g} (hc :
     · simpa using congr(($e₁).right)
     · simpa using congr(($e₂).right)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A pushout cocone from `X` is a colimit if its corresponding binary cofan in `Under X` is a
 colimit. -/

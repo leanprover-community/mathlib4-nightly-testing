@@ -29,6 +29,7 @@ open Real Set MeasureTheory
 
 open scoped ENNReal Real Topology
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The polar coordinates are an open partial homeomorphism in `ℝ^2`, mapping `(r cos θ, r sin θ)`
 to `(r, θ)`. It is a homeomorphism between `ℝ^2 - (-∞, 0]` and `(0, +∞) × (-π, π)`. -/
 @[simps]

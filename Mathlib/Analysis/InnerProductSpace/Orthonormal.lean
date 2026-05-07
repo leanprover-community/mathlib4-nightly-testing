@@ -177,6 +177,7 @@ theorem Orthonormal.inner_left_right_finset {s : Finset ι} {v : ι → E} (hv :
   classical
   simp [orthonormal_iff_ite.mp hv]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An orthonormal set is linearly independent. -/
 theorem Orthonormal.linearIndependent {v : ι → E} (hv : Orthonormal 𝕜 v) :
     LinearIndependent 𝕜 v := by

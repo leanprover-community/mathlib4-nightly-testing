@@ -104,6 +104,7 @@ theorem isTopologicalBasis_of_subbasis_of_inter {r : Set (Set α)} (hsg : t = ge
     (hsi : ∀ ⦃s⦄, s ∈ r → ∀ ⦃t⦄, t ∈ r → s ∩ t ∈ r) : IsTopologicalBasis (insert univ r) :=
   isTopologicalBasis_of_subbasis_of_finiteInter (by simpa using hsg) (FiniteInter.mk₂ hsi)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsTopologicalBasis.of_hasBasis_nhds {s : Set (Set α)}
     (h_nhds : ∀ a, (𝓝 a).HasBasis (fun t ↦ t ∈ s ∧ a ∈ t) id) : IsTopologicalBasis s where
   exists_subset_inter t₁ ht₁ t₂ ht₂ x hx := by
@@ -524,6 +525,7 @@ theorem IsSeparable.univ_pi {ι : Type*} [Countable ι] {X : ι → Type*} {s : 
     intro i hi
     exact mem_closure_iff.1 (hc i <| hf _ trivial) _ (huo i hi).1 (huo i hi).2
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isSeparable_pi {ι : Type*} [Countable ι] {α : ι → Type*} {s : ∀ i, Set (α i)}
     [∀ i, TopologicalSpace (α i)] (h : ∀ i, IsSeparable (s i)) :
     IsSeparable {f : ∀ i, α i | ∀ i, f i ∈ s i} := by
@@ -597,6 +599,7 @@ theorem IsTopologicalBasis.iInf_induced {β : Type*} {ι : Type*} {X : ι → Ty
   · choose! U' hU' hUU' using hUT
     exact ⟨U', F, hU', hSU ▸ (.symm <| iInter₂_congr hUU')⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isTopologicalBasis_pi {ι : Type*} {X : ι → Type*} [∀ i, TopologicalSpace (X i)]
     {T : ∀ i, Set (Set (X i))} (cond : ∀ i, IsTopologicalBasis (T i)) :
     IsTopologicalBasis { S | ∃ (U : ∀ i, Set (X i)) (F : Finset ι),
@@ -901,6 +904,7 @@ theorem isOpen_biUnion_countable [SecondCountableTopology α] {ι : Type*} (I : 
   rcases isOpen_iUnion_countable (fun i : I ↦ s i) fun i ↦ H i i.2 with ⟨T, hTc, hU⟩
   exact ⟨T, hTc.image _, hU.trans <| iUnion_subtype ..⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isOpen_sUnion_countable [SecondCountableTopology α] (S : Set (Set α))
     (H : ∀ s ∈ S, IsOpen s) : ∃ T : Set (Set α), T.Countable ∧ T ⊆ S ∧ ⋃₀ T = ⋃₀ S := by
   simpa only [and_left_comm, sUnion_eq_biUnion] using isOpen_biUnion_countable S id H

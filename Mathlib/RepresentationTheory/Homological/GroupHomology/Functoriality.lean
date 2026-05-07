@@ -103,6 +103,7 @@ lemma chainsMap_id_comp {A B C : Rep k G} (φ : A ⟶ B) (ψ : B ⟶ C) :
 lemma chainsMap_zero : chainsMap f (0 : A ⟶ res f B) = 0 := by
   ext; simp [chainsMap_f, LinearMap.zero_apply (M₂ := B)]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma chainsMap_f_map_mono (hf : Function.Injective f) [Mono φ] (i : ℕ) :
     Mono ((chainsMap f φ).f i) := by
   simpa [ModuleCat.mono_iff_injective] using
@@ -113,6 +114,7 @@ instance chainsMap_id_f_map_mono {A B : Rep k G} (φ : A ⟶ B) [Mono φ] (i : �
     Mono ((chainsMap (MonoidHom.id G) φ).f i) :=
   chainsMap_f_map_mono (MonoidHom.id G) φ (fun _ _ h => h) _
 
+set_option backward.simpa.using.reducibleClose false in
 lemma chainsMap_f_map_epi (hf : Function.Surjective f) [Epi φ] (i : ℕ) :
     Epi ((chainsMap f φ).f i) := by
   simpa [ModuleCat.epi_iff_surjective] using
@@ -548,6 +550,7 @@ theorem comap_coinvariantsKer_pOpcycles_range_subtype_pOpcycles_eq_top :
     chains₁ToCoinvariantsKer, d₁₀, single_sum, mul_assoc, sub_add_eq_add_sub,
     sum_sum_index, add_smul, sub_sub_sub_eq, lsingle, singleAddHom] using add_comm _ _
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a `G`-representation `A` and a normal subgroup `S ≤ G`, the map
@@ -586,6 +589,7 @@ and `Y - ∑ aᵢ·sᵢ` is a cycle. -/
     ← mapDomain_mapRange, hY, Function.comp_def, (QuotientGroup.eq_one_iff <| Subtype.val _).2
     (Subtype.prop _)] using Submodule.finsuppSum_mem _ _ _ _ fun _ _ ↦ single_one_mem_boundaries₁ _
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a `G`-representation `A` and a normal subgroup `S ≤ G`, the degree 1

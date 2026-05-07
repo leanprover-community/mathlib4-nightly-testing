@@ -367,6 +367,7 @@ protected lemma _root_.MDifferentiableOn.mpullback_vectorField_preimage
   fun x₀ hx₀ ↦ MDifferentiableWithinAt.mpullback_vectorField_preimage
     (hV _ hx₀) (hf x₀) (hf' _ hx₀) hmn
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The pullback of a differentiable vector field by a `C^n` function with `2 ≤ n` is
 differentiable. Version at a point. -/
 protected lemma _root_.MDifferentiableAt.mpullback_vectorField

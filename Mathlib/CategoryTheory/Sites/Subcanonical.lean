@@ -102,6 +102,7 @@ lemma yonedaEquiv_symm_map {X Y : Cᵒᵖ} (f : X ⟶ Y) {F : Sheaf J (Type v)} 
   obtain ⟨u, rfl⟩ := J.yonedaEquiv.surjective t
   rw [yonedaEquiv_naturality', Equiv.symm_apply_apply, Equiv.symm_apply_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 Two morphisms of sheaves of types `P ⟶ Q` coincide if the precompositions with morphisms
 `yoneda.obj X ⟶ P` agree.
@@ -232,6 +233,7 @@ lemma uliftYonedaEquiv_symm_map {X Y : Cᵒᵖ} (f : X ⟶ Y) {F : Sheaf J (Type
 
 @[deprecated (since := "2025-11-10")] alias yonedaULiftEquiv_symm_map := uliftYonedaEquiv_symm_map
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Two morphisms of sheaves of types `P ⟶ Q` coincide if the precompositions
 with morphisms `uliftYoneda.obj X ⟶ P` agree. -/
 lemma hom_ext_uliftYoneda {P Q : Sheaf J (Type (max v v'))} {f g : P ⟶ Q}

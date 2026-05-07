@@ -84,6 +84,7 @@ lemma map_π_liftedConeElement (i : I) :
     (preservesLimitIso_inv_π A (F ⋙ π A) i) (liftedConeElement' F)
   simp [liftedConeElement, ← comp_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- (implementation) The constructed limit cone. -/
 @[simps]
 noncomputable def liftedCone : Cone F where

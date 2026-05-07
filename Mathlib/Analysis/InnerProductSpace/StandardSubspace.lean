@@ -99,6 +99,7 @@ noncomputable abbrev symplComp (S : ClosedSubmodule ℝ H) := (S.mulI)ᗮ
 lemma mem_iff (S : ClosedSubmodule ℝ H) {x : H} : x ∈ S ↔ x ∈ S.toSubmodule.carrier := by
   exact Eq.to_iff rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma mem_symplComp_iff {x : H} {S : ClosedSubmodule ℝ H} :
     x ∈ S.symplComp ↔ ∀ y ∈ S, ⟪y, x⟫.im = 0 := by
   simp only [mem_orthogonal, mem_mapEquiv_iff, scalarSMulCLE_symm_apply, Units.smul_def,

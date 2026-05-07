@@ -141,6 +141,7 @@ def functoriality (G : C ⥤ D) [Functor.PreservesZeroMorphisms G] :
 
 variable (G : C ⥤ D)
 
+set_option backward.simpa.using.reducibleClose false in
 instance functoriality_full [G.PreservesZeroMorphisms] [G.Full] [G.Faithful] :
     (functoriality F G).Full where
   map_surjective t :=

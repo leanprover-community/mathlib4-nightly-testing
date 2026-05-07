@@ -257,6 +257,7 @@ theorem nextCoeff_eq_zero_of_eraseLead_eq_zero (h : f.eraseLead = 0) : f.nextCoe
   by_contra h₂
   exact leadingCoeff_ne_zero.mp (leadingCoeff_eraseLead_eq_nextCoeff h₂ ▸ h₂) h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If we erase the leading coefficient of a `Polynomial.coeffList` like [+,0,...], and then
 multiply by a linear term, it's equivalent to erasing the first two coefficients of the product. -/
 lemma eraseLead_mul_eq_mul_eraseLead_of_nextCoeff_zero {R : Type*} [Ring R] [NoZeroDivisors R]

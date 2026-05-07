@@ -153,6 +153,7 @@ variable (f : F ⟶ F') (g : G ⟶ G') (x y : C)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in -- Needed in DayConvolution.lean
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma unit_app_map_app :
     (unit F G).app (x, y) ≫ (map f g).app (x ⊗ y : C) =

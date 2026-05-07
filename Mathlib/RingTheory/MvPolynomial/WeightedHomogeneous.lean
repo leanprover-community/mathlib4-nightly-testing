@@ -397,6 +397,7 @@ theorem weightedHomogeneousComponent_eq_zero [SemilatticeSup M] [OrderBot M]
   nth_rw 1 [← hd.2]
   exact lt_of_le_of_lt (le_weightedTotalDegree w hd.1) h
 
+set_option backward.simpa.using.reducibleClose false in
 theorem weightedHomogeneousComponent_finsupp :
     (fun m => weightedHomogeneousComponent w m φ).HasFiniteSupport := by
   apply ((fun d : σ →₀ ℕ => (weight w) d) '' (φ.support : Set (σ →₀ ℕ))).toFinite.subset

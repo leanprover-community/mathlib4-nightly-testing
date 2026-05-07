@@ -250,6 +250,7 @@ private def cauSeq_to_rat_cauSeq (f : CauSeq ℤ_[p] norm) : CauSeq ℚ_[p] fun 
 
 variable (p)
 
+set_option backward.simpa.using.reducibleClose false in
 instance complete : CauSeq.IsComplete ℤ_[p] norm :=
   ⟨fun f =>
     have hqn : ‖CauSeq.lim (cauSeq_to_rat_cauSeq f)‖ ≤ 1 :=

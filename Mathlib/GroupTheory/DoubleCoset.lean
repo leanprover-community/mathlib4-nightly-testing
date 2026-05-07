@@ -205,6 +205,7 @@ lemma right_bot_eq_right_quot (H : Subgroup G) :
   ext
   simp_rw [← rel_bot_eq_right_group_rel H]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma finite_quotient_iff_exists_finset_iUnion_eq_univ (H K : Subgroup G) :
     Finite (Quotient (H : Set G) K) ↔
     ∃ I : Finset (Quotient (H : Set G) K), ⋃ i ∈ I, quotToDoubleCoset H K i = .univ := by
@@ -220,6 +221,7 @@ lemma finite_quotient_iff_exists_finset_iUnion_eq_univ (H K : Subgroup G) :
     obtain ⟨_, ⟨i, _, rfl⟩, T, ⟨hi, rfl⟩, hT : g ∈ quotToDoubleCoset H K i⟩ := hI g
     simpa [← (mem_quotToDoubleCoset_iff _ _).mp hT] using hi
 
+set_option backward.simpa.using.reducibleClose false in
 lemma iUnion_image_mk_leftRel {H K : Subgroup G} :
     ⋃ q : Quotient H K, Quot.mk (leftRel K) '' doubleCoset (out q : G) H K = Set.univ := by
   have cover := iUnion_quotToDoubleCoset H K
@@ -231,6 +233,7 @@ lemma iUnion_image_mk_leftRel {H K : Subgroup G} :
     exact (Set.ne_univ_iff_exists_notMem _).mpr ⟨y, by simpa using cover⟩
   exact ⟨i, y, hi, hy⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma iUnion_image_mk_rightRel {H K : Subgroup G} :
     ⋃ q : Quotient H K, Quot.mk (rightRel H) '' doubleCoset (out q : G) H K = Set.univ := by
   have cover := iUnion_quotToDoubleCoset H K

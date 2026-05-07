@@ -125,6 +125,7 @@ variable [CStarRing A]
 
 include hp₁ in
 open Unitization NonUnitalStarAlgHom in
+set_option backward.simpa.using.reducibleClose false in
 theorem RCLike.nonUnitalContinuousFunctionalCalculus :
     NonUnitalContinuousFunctionalCalculus 𝕜 A p where
   predicate_zero := by

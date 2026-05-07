@@ -201,6 +201,7 @@ lemma condDistrib_comp_self (X : α → β) {f : β → Ω} (hf : Measurable f) 
   rw [Measure.compProd_deterministic, AEMeasurable.map_map_of_aemeasurable (by fun_prop) hX]
   simp [Function.comp_def]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma condDistrib_self (Y : α → Ω) : condDistrib Y Y μ =ᵐ[μ.map Y] Kernel.id := by
   simpa using condDistrib_comp_self Y measurable_id
 

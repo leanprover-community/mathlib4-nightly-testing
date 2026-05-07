@@ -235,6 +235,7 @@ theorem roots_list_prod (L : List R[X]) :
     rw [List.prod_cons, roots_mul (mul_ne_zero (Ne.symm H.1) <| List.prod_ne_zero H.2), ←
       Multiset.cons_coe, Multiset.cons_bind, ih H.2]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem roots_multiset_prod (m : Multiset R[X]) : (0 : R[X]) ∉ m → m.prod.roots = m.bind roots := by
   rcases m with ⟨L⟩
   simpa only [Multiset.prod_coe, quot_mk_to_coe''] using roots_list_prod L

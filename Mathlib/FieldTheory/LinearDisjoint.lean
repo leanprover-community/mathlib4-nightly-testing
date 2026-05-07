@@ -407,6 +407,7 @@ theorem rank_sup (H : A.LinearDisjoint B) :
     (linearDisjoint_iff'.1 H).rank_sup_of_free.ge.trans <|
       (Subalgebra.inclusion h).toLinearMap.rank_le_of_injective (Subalgebra.inclusion_injective h)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `A` and `B` are linearly disjoint over `F`, then the `Module.finrank` of
 `A ⊔ B` is equal to the product of that of `A` and `B`. -/
 theorem finrank_sup (H : A.LinearDisjoint B) : finrank F ↥(A ⊔ B) = finrank F A * finrank F B := by

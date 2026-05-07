@@ -68,6 +68,7 @@ lemma logTaylor_zero : logTaylor 0 = fun _ ↦ 0 := by
   simp only [logTaylor, Finset.range_zero,
     Finset.sum_empty]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma logTaylor_succ (n : ℕ) :
     logTaylor (n + 1) = logTaylor n + (fun z : ℂ ↦ (-1) ^ (n + 1) * z ^ n / n) := by
   funext

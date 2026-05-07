@@ -188,6 +188,7 @@ def prelaxfunctor : PrelaxFunctor Cat Cat where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The pseudofunctor from `Cat` to `Cat` defined with `WithTerminal`. -/
 @[simps]
 def pseudofunctor : Pseudofunctor Cat Cat where
@@ -601,6 +602,7 @@ def prelaxfunctor : PrelaxFunctor Cat Cat where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The pseudofunctor from `Cat` to `Cat` defined with `WithInitial`. -/
 @[simps]
 def pseudofunctor : Pseudofunctor Cat Cat where

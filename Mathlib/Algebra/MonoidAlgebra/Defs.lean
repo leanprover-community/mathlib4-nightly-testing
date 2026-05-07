@@ -581,6 +581,7 @@ def singleOneRingHom : R →+* R[M] where
   map_one' := rfl
   map_mul' := by simp
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If two ring homomorphisms from `R[M]` are equal on all `single m 1` and
 `single 1 r`, then they are equal. -/
 @[to_additive (dont_translate := R S)
@@ -834,6 +835,7 @@ def singleHom [AddZeroClass M] : R × Multiplicative M →* R[M] where
   map_one' := rfl
   map_mul' _a _b := (single_mul_single ..).symm
 
+set_option backward.simpa.using.reducibleClose false in
 theorem induction_on [AddMonoid M] {p : R[M] → Prop} (x : R[M])
     (hM : ∀ m, p (of R M <| .ofAdd m)) (hadd : ∀ x y : R[M], p x → p y → p (x + y))
     (hsmul : ∀ (r : R) (x), p x → p (r • x)) : p x :=

@@ -140,6 +140,7 @@ theorem exists_of_eq {x y : R} : algebraMap R S x = algebraMap R S y → ∃ c :
 variable (S)
 
 variable {M} in
+set_option backward.simpa.using.reducibleClose false in
 theorem smul_bijective (m : M) : Bijective fun s : S ↦ m • s := by
   simpa only [Submonoid.smul_def, Algebra.smul_def] using (map_units S m).smul_bijective
 

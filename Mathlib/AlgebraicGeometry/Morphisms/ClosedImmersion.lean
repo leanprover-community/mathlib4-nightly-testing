@@ -239,6 +239,7 @@ variable {X Y : Scheme.{u}} [IsAffine Y] {f : X ⟶ Y}
 
 open IsClosedImmersion LocallyRingedSpace
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f : X ⟶ Y` is a morphism of schemes with quasi-compact source and affine target,
 `f` induces an injection on global sections, then `f` is dominant. -/
 lemma isDominant_of_of_appTop_injective [CompactSpace X]

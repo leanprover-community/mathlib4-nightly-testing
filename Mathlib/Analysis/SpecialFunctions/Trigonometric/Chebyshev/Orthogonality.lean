@@ -59,6 +59,7 @@ theorem integral_measureT (f : ℝ → ℝ) :
   congr! 2 with x hx
   simp [NNReal.smul_def, mul_comm]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem intervalIntegrable_sqrt_one_sub_sq_inv :
     IntervalIntegrable (fun x ↦ √(1 - x ^ 2)⁻¹) volume (-1) 1 := by
   rw [intervalIntegrable_iff]

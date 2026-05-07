@@ -232,6 +232,7 @@ theorem commute_exp_left_of_commute
     simpa using LinearMap.congr_fun (Module.End.commute_pow_left_of_commute h i) m
   simp [exp_eq_sum hfM, exp_eq_sum hfN, this, map_rat_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem exp_mul_of_derivation (R B : Type*) [CommRing R] [NonUnitalNonAssocRing B]
     [Module R B] [SMulCommClass R B B] [IsScalarTower R B B] [Module ℚ B]
     (D : B →ₗ[R] B) (h_der : ∀ x y, D (x * y) = x * D y + (D x) * y)

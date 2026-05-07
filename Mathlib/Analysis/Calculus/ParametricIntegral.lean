@@ -255,6 +255,7 @@ section
 
 variable {F : 𝕜 → α → E} {x₀ : 𝕜} {s : Set 𝕜}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Derivative under integral of `x ↦ ∫ F x a` at a given point `x₀ : 𝕜`, `𝕜 = ℝ` or `𝕜 = ℂ`,
 assuming `F x₀` is integrable, `x ↦ F x a` is locally Lipschitz on a neighborhood of `x₀` for ae `a`
 (with a neighborhood independent of `a`) with integrable Lipschitz bound, and `F x` is

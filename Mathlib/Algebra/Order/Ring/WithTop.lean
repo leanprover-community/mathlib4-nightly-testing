@@ -278,6 +278,7 @@ protected lemma mul_lt_mul (ha : a₁ < a₂) (hb : b₁ < b₂) : a₁ * b₁ <
 
 variable [NoZeroDivisors α] [Nontrivial α] {a b : WithTop α}
 
+set_option backward.simpa.using.reducibleClose false in
 protected lemma pow_right_strictMono : ∀ {n : ℕ}, n ≠ 0 → StrictMono fun a : WithTop α ↦ a ^ n
   | 0, h => absurd rfl h
   | 1, _ => by simpa only [pow_one] using strictMono_id

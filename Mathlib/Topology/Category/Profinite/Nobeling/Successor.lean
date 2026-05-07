@@ -235,6 +235,7 @@ theorem C1_projOrd {x : I → Bool} (hx : x ∈ C1 C ho) : SwapTrue o (Proj (ord
 
 include hC in
 open scoped Classical in
+set_option backward.simpa.using.reducibleClose false in
 theorem CC_exact {f : LocallyConstant C ℤ} (hf : Linear_CC' C hsC ho f = 0) :
     ∃ y, πs C o y = f := by
   dsimp [Linear_CC', Linear_CC'₀, Linear_CC'₁] at hf

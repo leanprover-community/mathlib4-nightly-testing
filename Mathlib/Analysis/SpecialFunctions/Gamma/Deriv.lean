@@ -123,6 +123,7 @@ theorem not_continuousAt_Gamma_neg_nat (n : ℕ) : ¬ ContinuousAt Gamma (-n) :=
 theorem not_differentiableAt_Gamma_neg_nat (n : ℕ) : ¬ DifferentiableAt ℂ Gamma (-n) :=
   mt DifferentiableAt.continuousAt (not_continuousAt_Gamma_neg_nat n)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem deriv_Gamma_add_one (s : ℂ) (hs : s ≠ 0) :
     deriv Gamma (s + 1) = Gamma s + s * deriv Gamma s := by
   by_cases! h : ∃ m : ℕ, s = -m

@@ -56,6 +56,7 @@ such that `X` is closed in `U`.
 def Scheme.Hom.coborderRange (f : X ⟶ Y) [IsImmersion f] : Y.Opens :=
   ⟨coborder (Set.range f), f.isLocallyClosed_range.isOpen_coborder⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 The first part of the factorization of an immersion `f : X ⟶ Y` to a closed immersion
 `f.liftCoborder : X ⟶ f.coborderRange` and a dominant open immersion `f.coborderRange.ι`.
@@ -86,6 +87,7 @@ lemma liftCoborder_app [IsImmersion f] (U : f.coborderRange.toScheme.Opens) :
   simp [Scheme.Hom.app_eq f.liftCoborder (f.coborderRange.ι.preimage_image_eq U),
     ← Functor.map_comp_assoc, -Functor.map_comp, Subsingleton.elim _ (𝟙 _)]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 instance [IsImmersion f] : IsClosedImmersion f.liftCoborder := by
   have : IsPreimmersion (f.liftCoborder ≫ f.coborderRange.ι) := by

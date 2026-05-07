@@ -237,6 +237,7 @@ lemma toENat_injOn : InjOn toENat (Iic ℵ₀) := toENat_strictMonoOn.injOn
 
 lemma ofENat_toENat_le (a : Cardinal) : ↑(toENat a) ≤ a := enat_gc.l_u_le _
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma ofENat_toENat_eq_self {a : Cardinal} : toENat a = a ↔ a ≤ ℵ₀ := by
   rw [eq_comm, ← enat_gc.exists_eq_l]

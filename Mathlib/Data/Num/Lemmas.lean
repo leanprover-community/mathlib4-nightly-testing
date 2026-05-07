@@ -297,6 +297,7 @@ end Num
 
 namespace PosNum
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem of_to_nat' : ∀ n : PosNum, Num.ofNat' (n : ℕ) = Num.pos n
   | 1 => by

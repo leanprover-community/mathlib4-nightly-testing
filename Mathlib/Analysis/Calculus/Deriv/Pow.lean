@@ -31,6 +31,7 @@ section NormedRing
 variable [NontriviallyNormedField 𝕜] [NormedRing 𝔸]
 variable [NormedAlgebra 𝕜 𝔸] {f : 𝕜 → 𝔸} {f' : 𝔸} {x : 𝕜} {s : Set 𝕜}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasStrictDerivAt.fun_pow' (h : HasStrictDerivAt f f' x) (n : ℕ) :
     HasStrictDerivAt (fun x ↦ f x ^ n)
       (∑ i ∈ Finset.range n, f x ^ (n.pred - i) * f' * f x ^ i) x := by
@@ -41,6 +42,7 @@ theorem HasStrictDerivAt.pow' (h : HasStrictDerivAt f f' x) (n : ℕ) :
       (∑ i ∈ Finset.range n, f x ^ (n.pred - i) * f' * f x ^ i) x :=
   h.fun_pow' n
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasDerivWithinAt.fun_pow' (h : HasDerivWithinAt f f' s x) (n : ℕ) :
     HasDerivWithinAt (fun x ↦ f x ^ n)
       (∑ i ∈ Finset.range n, f x ^ (n.pred - i) * f' * f x ^ i) s x := by
@@ -50,6 +52,7 @@ theorem HasDerivWithinAt.pow' (h : HasDerivWithinAt f f' s x) (n : ℕ) :
     HasDerivWithinAt (f ^ n)
       (∑ i ∈ Finset.range n, f x ^ (n.pred - i) * f' * f x ^ i) s x := h.fun_pow' n
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasDerivAt.fun_pow' (h : HasDerivAt f f' x) (n : ℕ) :
     HasDerivAt (fun x ↦ f x ^ n)
       (∑ i ∈ Finset.range n, f x ^ (n.pred - i) * f' * f x ^ i) x := by
@@ -138,10 +141,12 @@ end NormedCommRing
 section NontriviallyNormedField
 variable [NontriviallyNormedField 𝕜] {x : 𝕜} {s : Set 𝕜} {c : 𝕜 → 𝕜}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasStrictDerivAt_pow (n : ℕ) (x : 𝕜) :
     HasStrictDerivAt (fun x : 𝕜 ↦ x ^ n) (n * x ^ (n - 1)) x := by
   simpa using (hasStrictDerivAt_id x).pow n
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasDerivWithinAt_pow (n : ℕ) (x : 𝕜) :
     HasDerivWithinAt (fun x : 𝕜 ↦ x ^ n) (n * x ^ (n - 1)) s x := by
   simpa using (hasDerivWithinAt_id x s).pow n

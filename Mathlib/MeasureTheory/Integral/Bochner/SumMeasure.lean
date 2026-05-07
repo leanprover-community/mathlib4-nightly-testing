@@ -113,6 +113,7 @@ section Integral
 
 variable [NormedSpace ℝ E]
 
+set_option backward.simpa.using.reducibleClose false in
 omit [Countable ι] in
 /-- If `f` is integrable with respect to `Measure.sum μ`, then the sequence
 `fun i ↦ ∫ x, f x ∂μ i` is summable and its sum is `∫ x, f x ∂Measure.sum μ`. -/

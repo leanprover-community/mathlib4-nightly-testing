@@ -208,6 +208,7 @@ theorem HasTemperateGrowth.sub (hf : f.HasTemperateGrowth) (hg : g.HasTemperateG
   convert hf.add hg.neg using 1
   grind
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem HasTemperateGrowth.sum {f : ι → E → F} {s : Finset ι}
     (hf : ∀ i ∈ s, (f i).HasTemperateGrowth) : (∑ i ∈ s, f i ·).HasTemperateGrowth := by
@@ -277,6 +278,7 @@ theorem HasTemperateGrowth.mul {f g : E → R} (hf : f.HasTemperateGrowth)
     (hg : g.HasTemperateGrowth) : (f * g).HasTemperateGrowth :=
   (ContinuousLinearMap.mul ℝ R).bilinear_hasTemperateGrowth hf hg
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_fun (attr := fun_prop)]
 theorem HasTemperateGrowth.pow {f : E → R} (hf : f.HasTemperateGrowth) (k : ℕ) :
     (f ^ k).HasTemperateGrowth := by

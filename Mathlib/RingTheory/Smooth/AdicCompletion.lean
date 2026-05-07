@@ -65,6 +65,7 @@ lemma factorₐ_comp_liftAdicCompletionAux (m : ℕ) :
     ext
     simp
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma factorₐ_comp_liftAdicCompletionAux_of_le {m n : ℕ} (hn : m ≤ n) :
     (Ideal.Quotient.factorₐ _ (Ideal.pow_le_pow_right hn)).comp (liftAdicCompletionAux I f n) =
@@ -98,6 +99,7 @@ public lemma exists_mkₐ_comp_eq_of_isAdicComplete {I : Ideal S} [IsAdicComplet
   ext x
   simpa using congr($hg x)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `A` is formally smooth over `R`, the projection from the adic completion of
 `S` at the kernel of `f : S →ₐ[R] A` has a section. -/
 public lemma exists_kerProj_comp_eq_id (f : S →ₐ[R] A) (hf : Function.Surjective f) :

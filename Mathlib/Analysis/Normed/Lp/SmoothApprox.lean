@@ -35,6 +35,7 @@ variable [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] [B
   [NormedSpace ℝ F]
   (μ : Measure E := by volume_tac) [IsFiniteMeasureOnCompacts μ]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.privateInPublic true in
 /-- For every continuous compactly supported function `f` there exists a smooth compactly supported
 function `g` such that `f - g` is arbitrary small in the `Lp`-norm for `p < ∞`. -/

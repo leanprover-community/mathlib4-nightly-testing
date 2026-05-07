@@ -1012,6 +1012,7 @@ theorem zero_lintegral : (0 : α →ₛ ℝ≥0∞).lintegral μ = 0 :=
 theorem lintegral_add {ν} (f : α →ₛ ℝ≥0∞) : f.lintegral (μ + ν) = f.lintegral μ + f.lintegral ν :=
   (lintegralₗ f).map_add μ ν
 
+set_option backward.simpa.using.reducibleClose false in
 theorem lintegral_smul {R : Type*} [SMul R ℝ≥0∞] [IsScalarTower R ℝ≥0∞ ℝ≥0∞]
     (f : α →ₛ ℝ≥0∞) (c : R) : f.lintegral (c • μ) = c • f.lintegral μ := by
   simpa only [smul_one_smul] using (lintegralₗ f).map_smul (c • 1) μ

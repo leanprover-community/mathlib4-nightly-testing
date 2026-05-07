@@ -333,6 +333,7 @@ noncomputable def sheafCoyonedaHom (α : G.op ⋙ ℱ ⟶ G.op ⋙ ℱ'.obj) :
     congr 1
     exact (appHom_restrict (homOver α (unop X)) hf'.some.map.op x).trans (by simp)
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 (Implementation). `sheafCoyonedaHom` but the order of the arguments of the functor are swapped.
 -/
@@ -346,6 +347,7 @@ noncomputable def sheafYonedaHom (α : G.op ⋙ ℱ ⟶ G.op ⋙ ℱ'.obj) :
     ext X x
     exact ConcreteCategory.congr_hom (((sheafCoyonedaHom α).app X).naturality i) x
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 Given a natural transformation `G ⋙ ℱ ⟶ G ⋙ ℱ'` between presheaves of arbitrary category,
 where `G` is locally-full and cover-dense, and `ℱ'` is a sheaf, we may obtain a natural

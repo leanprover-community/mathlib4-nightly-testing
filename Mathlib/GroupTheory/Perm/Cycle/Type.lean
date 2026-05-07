@@ -720,6 +720,7 @@ theorem IsThreeCycle.nodup_iff_mem_support {g : Perm α} {a : α} (hg3 : g.IsThr
   suffices g.support.card = 3 by grind
   exact hg3.card_support
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsThreeCycle.eq_swap_mul_swap_iff_mem_support
     {g : Perm α} {a : α} (hg3 : g.IsThreeCycle) :
     g = (swap a (g a)) * (swap (g a) (g (g a))) ↔ a ∈ g.support := by

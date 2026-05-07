@@ -74,6 +74,7 @@ theorem eq_span_insert_X_of_X_mem_of_span_eq (hXI : X ∈ I) (hSI : span S = I.m
     ⟨_, _, mem_map_of_mem _ hf, f.eq_shift_mul_X_add_const.symm⟩
 
 open Submodule in
+set_option backward.simpa.using.reducibleClose false in
 theorem spanFinrank_le_spanFinrank_map_constantCoeff_add_one_of_X_mem (hI : X ∈ I) :
     spanFinrank I ≤ spanFinrank (I.map constantCoeff) + 1 := by
   by_cases hfg : I.FG

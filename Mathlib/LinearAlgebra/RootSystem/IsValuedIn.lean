@@ -145,6 +145,7 @@ instance [P.IsCrystallographic] [Algebra ℚ R] : P.IsValuedIn ℚ :=
     P.pairingIn ℚ i j = P.pairingIn ℤ i j := by
   simp [← P.algebraMap_pairingIn' ℚ ℤ]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma coroot'_apply_apply_mem_of_mem_span [Module S M] [IsScalarTower S R M] [P.IsValuedIn S]
     {x : M} (hx : x ∈ span S (range P.root)) (i : ι) :
     P.coroot' i x ∈ range (algebraMap S R) := by

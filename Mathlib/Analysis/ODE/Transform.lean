@@ -52,6 +52,7 @@ lemma isIntegralCurveOn_comp_add {dt : ℝ} :
     simp only [comp_apply, neg_add_cancel_right]
   · simp only [neg_neg, vadd_neg_vadd]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isIntegralCurveOn_comp_sub {dt : ℝ} :
     IsIntegralCurveOn (γ ∘ (· - dt)) (v ∘ (· - dt)) (dt +ᵥ s) ↔ IsIntegralCurveOn γ v s := by
   simpa using isIntegralCurveOn_comp_add (dt := -dt)
@@ -71,6 +72,7 @@ lemma IsIntegralCurveAt.comp_add (hγ : IsIntegralCurveAt γ v t₀) (dt : ℝ) 
     IsIntegralCurveAt (γ ∘ (· + dt)) (v ∘ (· + dt)) (t₀ - dt) :=
   isIntegralCurveAt_comp_add.mpr hγ
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isIntegralCurveAt_comp_sub {dt : ℝ} :
    IsIntegralCurveAt (γ ∘ (· - dt)) (v ∘ (· - dt)) (t₀ + dt) ↔ IsIntegralCurveAt γ v t₀ := by
   simpa using isIntegralCurveAt_comp_add (dt := -dt)
@@ -90,6 +92,7 @@ lemma isIntegralCurve_comp_add {dt : ℝ} :
   convert isIntegralCurveOn_comp_add
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isIntegralCurve_comp_sub {dt : ℝ} :
     IsIntegralCurve (γ ∘ (· - dt)) (v ∘ (· - dt)) ↔ IsIntegralCurve γ v := by
   simpa using isIntegralCurve_comp_add (dt := -dt)

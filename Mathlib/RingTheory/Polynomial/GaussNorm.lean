@@ -119,6 +119,7 @@ theorem gaussNorm_coe_powerSeries (hc : 0 ≤ c) :
       rw [hi]
       exact le_ciSup (aux_bdd v p) i
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `v x = 0 → x = 0` for all `x : R` and `v` is nonnegative, then the Gauss norm is zero if and
 only if the polynomial is zero. -/
 @[simp]
@@ -135,6 +136,7 @@ theorem gaussNorm_nonneg (hc : 0 ≤ c) : 0 ≤ p.gaussNorm v c := by
   by_cases hp : p.support.Nonempty <;>
   simp_all [gaussNorm, sup'_nonneg_of_ne_zero, -Finset.le_sup'_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma le_gaussNorm (hc : 0 ≤ c) (i : ℕ) : v (p.coeff i) * c ^ i ≤ p.gaussNorm v c := by
   rw [← gaussNorm_coe_powerSeries _ _ hc, ← coeff_coe]
   apply PowerSeries.le_gaussNorm

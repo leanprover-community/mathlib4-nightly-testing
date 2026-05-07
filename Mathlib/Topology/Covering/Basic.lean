@@ -139,6 +139,7 @@ theorem of_preimage_eq_empty [IsEmpty I] {x : X} {U : Set X} (hUx : U ∈ 𝓝 x
   have := Set.isEmpty_coe_sort.mpr hfV
   ⟨inferInstance, _, hxV, hV, hfV ▸ isOpen_empty, .empty, isEmptyElim⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem restrictPreimage {x : X} (hxs : x ∈ s) (h : IsEvenlyCovered f x I) :
     IsEvenlyCovered (s.restrictPreimage f) ⟨x, hxs⟩ I :=
   have ⟨inst, U, hxU, hU, hfU, H, hH⟩ := h

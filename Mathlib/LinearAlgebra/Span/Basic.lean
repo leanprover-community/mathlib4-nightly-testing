@@ -100,6 +100,7 @@ section
 
 variable {N : Type*} [AddCommMonoid N] [Module R N]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma linearMap_eq_iff_of_eq_span {V : Submodule R M} (f g : V →ₗ[R] N)
     {S : Set M} (hV : V = span R S) :
     f = g ↔ ∀ (s : S), f ⟨s, by simpa only [hV] using subset_span (by simp)⟩ =
@@ -140,6 +141,7 @@ lemma linearMap_eq_zero_iff_of_span_eq_top (f : M →ₗ[R] N)
     f = 0 ↔ ∀ (s : S), f s = 0 :=
   linearMap_eq_iff_of_span_eq_top f 0 hM
 
+set_option backward.simpa.using.reducibleClose false in
 lemma linearMap_eq_zero_iff_of_eq_span {V : Submodule R M} (f : V →ₗ[R] N)
     {S : Set M} (hV : V = span R S) :
     f = 0 ↔ ∀ (s : S), f ⟨s, by simpa only [hV] using subset_span (by simp)⟩ = 0 :=
@@ -181,6 +183,7 @@ lemma injective_inclusionSpan :
   rw [Subtype.ext_iff] at hxy
   simpa using hxy
 
+set_option backward.simpa.using.reducibleClose false in
 lemma span_range_inclusionSpan :
     span S (range <| p.inclusionSpan S) = ⊤ := by
   have : (span S (p : Set M)).subtype '' range (inclusionSpan S p) = p := by

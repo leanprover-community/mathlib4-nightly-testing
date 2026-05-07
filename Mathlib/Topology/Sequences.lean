@@ -320,6 +320,7 @@ theorem IsSeqCompact.exists_tendsto (hs : IsSeqCompact s) {u : ℕ → X} (hu : 
     (huc : CauchySeq u) : ∃ x ∈ s, Tendsto u atTop (𝓝 x) :=
   hs.exists_tendsto_of_frequently_mem (Frequently.of_forall hu) huc
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A sequentially compact set in a uniform space is totally bounded. -/
 protected theorem IsSeqCompact.totallyBounded (h : IsSeqCompact s) : TotallyBounded s := by
   intro V V_in
@@ -335,6 +336,7 @@ protected theorem IsSeqCompact.totallyBounded (h : IsSeqCompact s) : TotallyBoun
 
 variable [IsCountablyGenerated (𝓤 X)]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A sequentially compact set in a uniform space with countably generated uniformity filter
 is complete. -/
 protected theorem IsSeqCompact.isComplete (hs : IsSeqCompact s) : IsComplete s := fun l hl hls => by

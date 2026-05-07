@@ -541,6 +541,7 @@ section PartialOrder
 variable [TopologicalSpace α] [PartialOrder α] [t : OrderClosedTopology α]
 
 -- see Note [lower instance priority]
+set_option backward.simpa.using.reducibleClose false in
 instance (priority := 90) OrderClosedTopology.to_t2Space : T2Space α :=
   t2_iff_isClosed_diagonal.2 <| by
     simpa only [diagonal, le_antisymm_iff] using
@@ -552,6 +553,7 @@ section LinearOrder
 
 variable [TopologicalSpace α] [LinearOrder α] [OrderClosedTopology α]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_dual self (reorder := f g, hf hg)]
 theorem isOpen_lt [TopologicalSpace β] {f g : β → α} (hf : Continuous f) (hg : Continuous g) :
     IsOpen { b | f b < g b } := by

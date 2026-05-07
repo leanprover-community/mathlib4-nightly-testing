@@ -59,6 +59,7 @@ theorem _root_.Set.Countable.measure_zero (h : s.Countable) (μ : Measure α) [N
   rw [← biUnion_of_singleton s, measure_biUnion_null_iff h]
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.Set.Countable.ae_notMem (h : s.Countable) (μ : Measure α) [NoAtoms μ] :
     ∀ᵐ x ∂μ, x ∉ s := by
   simpa only [ae_iff, Classical.not_not] using h.measure_zero μ

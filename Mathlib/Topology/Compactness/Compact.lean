@@ -244,6 +244,7 @@ theorem IsCompact.disjoint_nhdsSet_right {l : Filter X} (hs : IsCompact s) :
   simpa only [disjoint_comm] using hs.disjoint_nhdsSet_left
 
 -- TODO: reformulate using `Disjoint`
+set_option backward.simpa.using.reducibleClose false in
 /-- For every directed family of closed sets whose intersection avoids a compact set,
 there exists a single element of the family which itself avoids this compact set. -/
 theorem IsCompact.elim_directed_family_closed {ι : Type v} [Nonempty ι] (hs : IsCompact s)
@@ -409,6 +410,7 @@ theorem IsCompact.mem_prod_nhdsSet_of_forall {K : Set Y} {X} {l : Filter X} {s :
 
 -- TODO: Is there a way to prove directly the `inf` version and then deduce the `Prod` one ?
 -- That would seem a bit more natural.
+set_option backward.simpa.using.reducibleClose false in
 theorem IsCompact.nhdsSet_inf_eq_biSup {K : Set X} (hK : IsCompact K) (l : Filter X) :
     (𝓝ˢ K) ⊓ l = ⨆ x ∈ K, 𝓝 x ⊓ l := by
   have : ∀ f : Filter X, f ⊓ l = comap (fun x ↦ (x, x)) (f ×ˢ l) := fun f ↦ by

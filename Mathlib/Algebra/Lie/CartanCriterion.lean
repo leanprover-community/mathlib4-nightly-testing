@@ -69,6 +69,7 @@ lemma exists_polynomial_eval_sub_aux
 
 variable [AddCommGroup M] [LieRingModule L M]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An auxiliary lemma used to prove `LieModule.isNilpotent_derivedSeries_of_traceForm_eq_zero`
 which proves the same result except without the algebraically closed assumption. -/
 theorem isNilpotent_derivedSeries_of_traceForm_eq_zero_aux {K : Type*}

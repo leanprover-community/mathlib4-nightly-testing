@@ -563,6 +563,7 @@ lemma piecewise_apply_right {C₁ C₂ : Set X} (h₁ : IsClosed C₁) (h₂ : I
   · exact hfg x ⟨h, hx⟩
   · rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A variant of `LocallyConstant.piecewise` where the two closed sets cover a subset.
 
 TODO: Generalise this construction to `ContinuousMap`. -/

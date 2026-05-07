@@ -74,6 +74,7 @@ noncomputable def T : ℤ → R[X]
   | -((n : ℕ) + 1) => 2 * X * T (-n) - T (-n + 1)
   termination_by n => Int.natAbs n + Int.natAbs (n - 1)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Induction principle used for proving facts about Chebyshev polynomials. -/
 @[elab_as_elim]
 protected theorem induct (motive : ℤ → Prop)

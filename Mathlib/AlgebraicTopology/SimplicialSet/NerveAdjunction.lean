@@ -194,6 +194,7 @@ namespace HomotopyCategory
 
 variable {X : Truncated.{u} 2} {C D : Type u} [SmallCategory C] [SmallCategory D]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a `2`-truncated simplicial set `X` and a category `C`,
 this is the functor `X.HomotopyCategory ⥤ C` corresponding to
 a morphism `X ⟶ (truncation 2).obj (nerve C)`. -/

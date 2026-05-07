@@ -462,6 +462,7 @@ instance : Unique ℕ∞ˣ where
 
 section withTop_enat
 
+set_option backward.simpa.using.reducibleClose false in
 lemma add_one_natCast_le_withTop_of_lt {m : ℕ} {n : WithTop ℕ∞} (h : m < n) : (m + 1 : ℕ) ≤ n := by
   match n with
   | ⊤ => exact le_top

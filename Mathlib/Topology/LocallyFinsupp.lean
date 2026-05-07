@@ -542,6 +542,7 @@ theorem nsmul_negPart (n : ℕ) (f : locallyFinsuppWithin U Y) : (n • f)⁻ = 
   · simpa [max_eq_right_of_lt h] using nsmul_le_nsmul_right h.le n
   · simpa [not_lt.1 h] using nsmul_nonneg (not_lt.1 h) n
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 Every positive function with locally finite supports dominates a singleton indicator.
 -/

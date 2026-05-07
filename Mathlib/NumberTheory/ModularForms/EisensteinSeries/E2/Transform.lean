@@ -140,6 +140,7 @@ lemma G2_eq_tsum_G2Term (z : ℍ) : G2 z = ∑' m, ∑' n, G2Term z ![m, n] := b
   · exact summable_zero.congr
       fun b ↦ by simp [← tsum_symmetricIco_linear_sub_linear_add_one_eq_zero z b]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma G2_S_action_eq_tsum_G2Term (z : ℍ) : ((z : ℂ) ^ 2)⁻¹ * G2 (S • z) - -2 * π * I / z =
     ∑' n : ℤ, ∑' m : ℤ, G2Term z ![m, n] := by
   rw [← tsum_symmetricIco_tsum_sub_eq z, ← tsum_symmetricIco_tsum_eq_S_act z,

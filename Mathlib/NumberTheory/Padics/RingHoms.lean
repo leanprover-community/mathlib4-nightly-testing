@@ -725,6 +725,7 @@ theorem toZModPow_eq_iff_ext {R : Type*} [NonAssocSemiring R] {g g' : R →+* �
   · rintro rfl _
     rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isCauSeq_padicNorm_of_pow_dvd_sub
     (f : ℕ → ℤ) (p : ℕ) [Fact p.Prime] (hi : ∀ i, (p : ℤ) ^ i ∣ f (i + 1) - f i) :
     IsCauSeq (padicNorm p) (f ·) := by

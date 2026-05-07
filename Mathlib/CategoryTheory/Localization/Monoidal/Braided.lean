@@ -115,6 +115,7 @@ lemma map_hexagon_reverse (X Y Z : C) :
     rw [braidingNatIso_hom_app_naturality_μ_right, braidingNatIso_hom_app]
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 noncomputable instance : BraidedCategory (LocalizedMonoidal L W ε) := by
   refine .ofBifunctor (braidingNatIso L W ε) ?_ ?_
   · apply natTrans₃_ext (L') (L') (L') W W W

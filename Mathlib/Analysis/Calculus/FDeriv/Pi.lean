@@ -17,6 +17,7 @@ public section
 variable {𝕜 ι : Type*} [DecidableEq ι] [NontriviallyNormedField 𝕜]
 variable {E : ι → Type*} [∀ i, NormedAddCommGroup (E i)] [∀ i, NormedSpace 𝕜 (E i)]
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem hasFDerivAt_update (x : ∀ i, E i) {i : ι} (y : E i) :
     HasFDerivAt (Function.update x i) (.pi (Pi.single i (.id 𝕜 (E i)))) y := by

@@ -924,6 +924,7 @@ lemma mkOfObjOfMapSucc_map_succ (i : ℕ) (hi : i < n := by valid) :
     (mkOfObjOfMapSucc obj mapSucc).map' i (i + 1) = mapSucc ⟨i, hi⟩ :=
   ((mkOfObjOfMapSucc_exists obj mapSucc).choose_spec.choose_spec i hi).symm
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma mkOfObjOfMapSucc_arrow (i : ℕ) (hi : i < n := by valid) :
     (mkOfObjOfMapSucc obj mapSucc).arrow i = mk₁ (mapSucc ⟨i, hi⟩) :=

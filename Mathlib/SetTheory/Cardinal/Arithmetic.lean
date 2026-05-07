@@ -355,6 +355,7 @@ protected theorem eq_of_add_eq_add_right {a b c : Cardinal} (h : a + b = c + b) 
 
 end add
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Infinite types permit a relation where fewer elements than its cardinality
 are missed along all verticals and fewer elements than its cardinality are hit
 along all horizontals. -/
@@ -497,6 +498,7 @@ section mul_strictMono
 
 variable {n : ℕ} {a b : Cardinal}
 
+set_option backward.simpa.using.reducibleClose false in
 lemma natCast_mul_strictMono {n : ℕ} (hn : n ≠ 0) : StrictMono fun a : Cardinal ↦ n * a := by
   match n, hn with
   | 1, _ => simpa using strictMono_id
@@ -695,6 +697,7 @@ theorem mk_embedding_eq_arrow_of_lift_le (lle : lift.{u} #β' ≤ lift.{v} #α) 
 theorem mk_embedding_eq_arrow_of_le (le : #β ≤ #α) : #(β ↪ α) = #(β → α) :=
   mk_embedding_eq_arrow_of_lift_le (lift_le.mpr le)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mk_surjective_eq_arrow_of_lift_le (lle : lift.{u} #β' ≤ lift.{v} #α) :
     #{f : α → β' | Surjective f} = #(α → β') :=
   (mk_set_le _).antisymm <|

@@ -137,6 +137,7 @@ lemma LSeries_eq_zero_of_abscissaOfAbsConv_eq_top {f : ℕ → ℂ} (h : absciss
     h ▸ fun H ↦ (H.trans_lt <| EReal.coe_lt_top _).false
 
 open Filter Nat in
+set_option backward.simpa.using.reducibleClose false in
 /-- The `LSeries` of `f` is zero for large real arguments if and only if either `f n = 0`
 for all `n ≠ 0` or the L-series converges nowhere. -/
 lemma LSeries_eventually_eq_zero_iff' {f : ℕ → ℂ} :
@@ -172,6 +173,7 @@ lemma LSeries_eventually_eq_zero_iff' {f : ℕ → ℂ} :
     · simp [LSeries_congr (fun {n} ↦ H n) x, show (fun _ : ℕ ↦ (0 : ℂ)) = 0 from rfl]
 
 open Nat in
+set_option backward.simpa.using.reducibleClose false in
 /-- Assuming `f 0 = 0`, the `LSeries` of `f` is zero if and only if either `f = 0` or the
 L-series converges nowhere. -/
 lemma LSeries_eq_zero_iff {f : ℕ → ℂ} (hf : f 0 = 0) :

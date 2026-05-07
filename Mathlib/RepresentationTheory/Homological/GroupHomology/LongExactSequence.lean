@@ -104,6 +104,7 @@ theorem isIso_δ_of_isZero (n : ℕ) (hs : IsZero (groupHomology X.X₂ (n + 1))
     (h : IsZero (groupHomology X.X₂ n)) :
     IsIso (δ hX (n + 1) n rfl) := SnakeInput.isIso_δ _ hs h
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given an exact sequence of `G`-representations `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0`, this expresses an
 `n`-chain `x : Gⁿ →₀ X₁` such that `f ∘ x ∈ Bₙ(G, X₂)` as a cycle. Stated for readability of
@@ -116,6 +117,7 @@ noncomputable abbrev cyclesMkOfCompEqD {i j : ℕ} {y : (Fin i → G) →₀ X.X
     simpa using (map_chainsFunctor_shortExact hX).d_eq_zero_of_f_eq_d_apply i j y x
       (by simpa using hx) _
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem δ_apply {i j : ℕ} (hij : j + 1 = i)
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
@@ -131,6 +133,7 @@ theorem δ_apply {i j : ℕ} (hij : j + 1 = i)
       π X.X₁ j (cyclesMkOfCompEqD hX hx) := by
   exact (map_chainsFunctor_shortExact hX).δ_apply i j hij z hz y hy x (by simpa using hx) _ rfl
 
+set_option backward.simpa.using.reducibleClose false in
 theorem δ₀_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z` by a 1-cycle for `X₃` and `y` a 1-chain for `X₂` such that `g ∘ y = z`.
@@ -157,6 +160,7 @@ theorem mem_cycles₁_of_comp_eq_d₂₁
   have := congr($((mapShortComplexH1 (MonoidHom.id G) X.f).comm₂₃.symm) x)
   simp_all [shortComplexH1]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem δ₁_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z` by a 2-cycle for `X₃` and `y` a 2-chain for `X₂` such that `g ∘ y = z`.

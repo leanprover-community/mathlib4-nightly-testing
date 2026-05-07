@@ -207,6 +207,7 @@ theorem HasFPowerSeriesOnBall.fderiv_eq [CompleteSpace F] (h : HasFPowerSeriesOn
     fderiv 𝕜 f (x + y) = continuousMultilinearCurryFin1 𝕜 E F (p.changeOrigin y 1) :=
   (h.hasFDerivAt hy).fderiv
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function has a power series on a ball, then so does its derivative. -/
 protected theorem HasFPowerSeriesOnBall.fderiv [CompleteSpace F]
     (h : HasFPowerSeriesOnBall f p x r) :
@@ -221,6 +222,7 @@ protected theorem HasFPowerSeriesOnBall.fderiv [CompleteSpace F]
   rw [← h.fderiv_eq, add_sub_cancel]
   simpa only [edist_eq_enorm_sub, Metric.mem_eball] using hz
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function has a power series within a set on a ball, then so does its derivative. -/
 protected theorem HasFPowerSeriesWithinOnBall.fderivWithin [CompleteSpace F]
     (h : HasFPowerSeriesWithinOnBall f p s x r) (hu : UniqueDiffOn 𝕜 (insert x s)) :
@@ -303,6 +305,7 @@ lemma AnalyticWithinAt.exists_hasFTaylorSeriesUpToOn [CompleteSpace F]
     exact AnalyticOnNhd.hasFTaylorSeriesUpToOn _ (hv.mono Set.inter_subset_right)
   · exact (hv.iteratedFDeriv i).analyticOn.mono Set.inter_subset_right
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function has a power series `p` within a set of unique differentiability, inside a ball,
 and is differentiable at a point, then the derivative series of `p` is summable at a point, with
 sum the given differential. Note that this theorem does not require completeness of the space. -/
@@ -337,6 +340,7 @@ theorem HasFPowerSeriesWithinOnBall.hasSum_derivSeries_of_hasFDerivWithinAt
     LinearIsometryEquiv.coe_coe, Function.comp_apply, ContinuousMultilinearMap.sum_apply, map_sum]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function has a power series within a set on a ball, then so does its derivative. Version
 assuming that the function is analytic on `s`. For a version without this assumption but requiring
 that `F` is complete, see `HasFPowerSeriesWithinOnBall.fderivWithin_of_mem`. -/
@@ -493,6 +497,7 @@ theorem HasFiniteFPowerSeriesOnBall.fderiv_eq (h : HasFiniteFPowerSeriesOnBall f
     fderiv 𝕜 f (x + y) = continuousMultilinearCurryFin1 𝕜 E F (p.changeOrigin y 1) :=
   (h.hasFDerivAt hy).fderiv
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function has a finite power series on a ball, then so does its derivative. -/
 protected theorem HasFiniteFPowerSeriesOnBall.fderiv
     (h : HasFiniteFPowerSeriesOnBall f p x (n + 1) r) :

@@ -91,6 +91,7 @@ theorem Subfunctor.eq_sheafify (h : Presieve.IsSheaf J F) (hG : Presieve.IsSheaf
 
 @[deprecated (since := "2025-12-11")] alias Subpresheaf.eq_sheafify := Subfunctor.eq_sheafify
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 theorem Subfunctor.sheafify_isSheaf (hF : Presieve.IsSheaf J F) :
     Presieve.IsSheaf J (G.sheafify J).toFunctor := by

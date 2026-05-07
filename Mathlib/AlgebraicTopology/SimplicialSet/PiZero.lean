@@ -123,6 +123,7 @@ of `X.δ 0 : X _⦋1⦌ → X _⦋0⦌` and `X.δ 1`. -/
 abbrev coforkπ₀ : Cofork (X.δ (1 : Fin 2)) (X.δ 0) :=
   Cofork.ofπ (↾π₀.mk) (by ext s; exact π₀.sound (Edge.mk' s))
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `X` is a simplicial set, `£₀ X` is a coequalizer
 of `X.δ 0 : X _⦋1⦌ → X _⦋0⦌` and `X.δ 1`. -/
 def isColimitCoforkπ₀ : IsColimit X.coforkπ₀ :=

@@ -410,6 +410,7 @@ section
 
 variable {C : Type u₄} [Category.{v₄} C]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The functor `(F ⋙ L, R) ⥤ (L, R)` -/
 @[simps]
 def preLeft (F : C ⥤ A) (L : A ⥤ T) (R : B ⥤ T) : Comma (F ⋙ L) R ⥤ Comma L R where
@@ -579,6 +580,7 @@ to `fst L R`. -/
 def opFunctorCompSnd : (opFunctor L R).leftOp ⋙ snd _ _ ≅ (fst _ _).op :=
   Iso.refl _
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The canonical functor from `Comma L.op R.op` to `(Comma R L)ᵒᵖ`. -/
 @[simps]
 def unopFunctor : Comma L.op R.op ⥤ (Comma R L)ᵒᵖ where

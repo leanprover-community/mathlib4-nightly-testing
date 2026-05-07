@@ -445,6 +445,7 @@ theorem uniformly_extend_exists [CompleteSpace γ] (a : α) : ∃ c, Tendsto f (
   have : Cauchy (map f (comap e (𝓝 a))) := this.map h_f
   CompleteSpace.complete this
 
+set_option backward.simpa.using.reducibleClose false in
 theorem uniform_extend_subtype [CompleteSpace γ] {p : α → Prop} {e : α → β} {f : α → γ} {b : β}
     {s : Set α} (hf : UniformContinuous fun x : Subtype p => f x.val) (he : IsUniformEmbedding e)
     (hd : ∀ x : β, x ∈ closure (range e)) (hb : closure (e '' s) ∈ 𝓝 b) (hs : IsClosed s)

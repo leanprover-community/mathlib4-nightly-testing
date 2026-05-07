@@ -358,6 +358,7 @@ def piiUnionInter (π : ι → Set (Set α)) (S : Set ι) : Set (Set α) :=
   { s : Set α |
     ∃ (t : Finset ι) (_ : ↑t ⊆ S) (f : ι → Set α) (_ : ∀ x, x ∈ t → f x ∈ π x), s = ⋂ x ∈ t, f x }
 
+set_option backward.simpa.using.reducibleClose false in
 theorem piiUnionInter_singleton (π : ι → Set (Set α)) (i : ι) :
     piiUnionInter π {i} = π i ∪ {univ} := by
   ext1 s

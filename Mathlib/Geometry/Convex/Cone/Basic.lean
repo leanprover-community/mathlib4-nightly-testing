@@ -96,6 +96,7 @@ protected lemma add_mem ⦃x⦄ (hx : x ∈ C) ⦃y⦄ (hy : y ∈ C) : x + y �
 
 instance : AddMemClass (ConvexCone R M) M where add_mem ha hb := add_mem' _ ha hb
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Copy of a convex cone with a new `carrier` equal to the old one. Useful to fix definitional
 equalities. -/
 @[simps] protected def copy (C : ConvexCone R M) (s : Set M) (hs : s = C) : ConvexCone R M where

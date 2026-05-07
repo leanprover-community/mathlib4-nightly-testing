@@ -150,6 +150,7 @@ noncomputable def adicCompletion.padicEquiv (v : HeightOneSpectrum R) :
   __ := ((mapEquiv (withValEquiv v)).trans Padic.withValUniformEquiv).toHomeomorph
   commutes' := by simp
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The continuous `ℤ`-algebra isomorphism between `v.adicCompletionIntegers ℚ` and
 `ℤ_[primesEquiv v]`. -/
 noncomputable def adicCompletionIntegers.padicIntEquiv (v : HeightOneSpectrum R) :

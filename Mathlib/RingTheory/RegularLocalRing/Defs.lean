@@ -111,6 +111,7 @@ lemma IsRegularRing.of_ringEquiv {R' : Type*} [CommRing R'] (e : R ≃+* R') [Is
   exact IsRegularLocalRing.of_ringEquiv <| IsLocalization.ringEquivOfRingEquiv
     (Localization.AtPrime (p.comap e)) (Localization.AtPrime p) e (e.map_primeCompl_comap_eq p)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma IsRegularLocalRing.of_isRegularRing_of_isLocalRing [IsLocalRing R] [IsRegularRing R] :
     IsRegularLocalRing R := by
   let e : R ≃ₐ[R] (Localization.AtPrime (maximalIdeal R)) :=

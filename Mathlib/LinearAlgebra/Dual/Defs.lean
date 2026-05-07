@@ -262,6 +262,7 @@ lemma dualMap_dualMap_eq_iff_of_injective
     f.dualMap.dualMap = g.dualMap.dualMap ↔ f = g :=
   dualMap_dualMap_eq_iff_of_injective _ _ (bijective_dual_eval R M').injective
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The dual of a reflexive module is reflexive. -/
 instance Dual.instIsReflecive : IsReflexive R (Dual R M) :=
   ⟨by simpa only [← symm_dualMap_evalEquiv] using (evalEquiv R M).dualMap.symm.bijective⟩

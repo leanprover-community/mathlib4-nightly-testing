@@ -1027,6 +1027,7 @@ theorem fixed_point₂ {f : Code → ℕ →. ℕ} (hf : Partrec₂ f) : ∃ c :
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 /-- There are only countably many partial recursive partial functions `ℕ →. ℕ`. -/
 instance : Countable {f : ℕ →. ℕ // Partrec f} := by
   apply Function.Surjective.countable (f := fun c => ⟨eval c, eval_part.comp (.const c) .id⟩)

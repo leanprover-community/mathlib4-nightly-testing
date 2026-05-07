@@ -319,6 +319,7 @@ theorem coeIdeal_eq_zero {I : Ideal R} : (I : FractionalIdeal R⁰ K) = 0 ↔ I 
 theorem coeIdeal_ne_zero {I : Ideal R} : (I : FractionalIdeal R⁰ K) ≠ 0 ↔ I ≠ ⊥ :=
   coeIdeal_ne_zero' le_rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem coeIdeal_eq_one {I : Ideal R} : (I : FractionalIdeal R⁰ K) = 1 ↔ I = 1 := by
   simpa only [Ideal.one_eq_top] using coeIdeal_inj
@@ -363,6 +364,7 @@ theorem ne_zero_of_mul_eq_one (I J : FractionalIdeal R₁⁰ K) (h : I * J = 1) 
 
 variable [IsFractionRing R₁ K] [IsDomain R₁]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.IsFractional.div_of_nonzero {I J : Submodule R₁ K} :
     IsFractional R₁⁰ I → IsFractional R₁⁰ J → J ≠ 0 → IsFractional R₁⁰ (I / J)
   | ⟨aI, haI, hI⟩, ⟨aJ, haJ, hJ⟩, h => by

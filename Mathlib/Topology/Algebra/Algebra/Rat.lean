@@ -22,6 +22,7 @@ public section
 
 section DivisionRing
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The action induced by `DivisionRing.toRatAlgebra` is continuous. -/
 instance DivisionRing.continuousConstSMul_rat {A} [DivisionRing A] [TopologicalSpace A]
     [SeparatelyContinuousMul A] [CharZero A] : ContinuousConstSMul ℚ A :=

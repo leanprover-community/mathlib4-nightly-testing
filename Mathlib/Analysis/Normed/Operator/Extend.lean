@@ -191,6 +191,7 @@ def extendOfNorm : Eₗ →SL[σ₁₂] F := (f.compLeftInverse e).extend (Linea
 
 variable {f e}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem extendOfNorm_eq (h_dense : DenseRange e) (h_norm : ∃ C, ∀ x, ‖f x‖ ≤ C * ‖e x‖)
     (x : E) : f.extendOfNorm e (e x) = f x := by
   have := (f.compLeftInverse e).extend_eq (e := (LinearMap.range e).subtypeL)
@@ -206,6 +207,7 @@ theorem norm_extendOfNorm_apply_le (h_dense : DenseRange e) (C : ℝ)
     simpa only [← hxy, extendOfNorm_eq h_dense ⟨C, h_norm⟩ y] using h_norm y
   exact h_dense.induction h_mem (isClosed_le (by fun_prop) (by fun_prop)) x
 
+set_option backward.simpa.using.reducibleClose false in
 theorem extendOfNorm_unique (h_dense : DenseRange e) (C : ℝ) (h_norm : ∀ (x : E), ‖f x‖ ≤ C * ‖e x‖)
     (g : Eₗ →SL[σ₁₂] F) (H : g.toLinearMap.comp e = f) : extendOfNorm f e = g := by
   apply ContinuousLinearMap.extend_unique

@@ -156,6 +156,7 @@ theorem isMultiplyPreprimitive_ofStabilizer
       aesop
     exact IsPreprimitive.of_surjective ofFixingSubgroup_insert_map_bijective.surjective
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A pretransitive action is `n.succ-`preprimitive
 iff the action of stabilizers is `n`-preprimitive. -/
 @[to_additive /-- A pretransitive action is `n.succ-`preprimitive
@@ -268,6 +269,7 @@ theorem isMultiplyPreprimitive_of_le
 
 variable {M α}
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem IsMultiplyPreprimitive.of_bijective_map
     {N β : Type*} [Group N] [MulAction N β] {φ : M → N}
@@ -307,6 +309,7 @@ theorem IsMultiplyPreprimitive.of_bijective_map
         (by rw [← ht, ← hs', hf.injective.encard_image])
     exact IsPreprimitive.of_surjective (f := f') (φ := φ') hf'
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem isMultiplyPreprimitive_congr
     {N β : Type*} [Group N] [MulAction N β] {φ : M → N} (hφ : Function.Surjective φ)

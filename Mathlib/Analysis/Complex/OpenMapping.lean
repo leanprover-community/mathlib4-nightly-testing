@@ -77,6 +77,7 @@ theorem DiffContOnCl.ball_subset_image_closedBall (h : DiffContOnCl ℂ f (ball 
   have h10 : f z = f z₀ := (h9 (mem_ball_self hr)).symm
   exact not_eventually.mpr hz₀ (mem_of_superset (ball_mem_nhds z₀ hr) (h10 ▸ h9))
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A function `f : ℂ → ℂ` which is analytic at a point `z₀` is either constant in a neighborhood
 of `z₀`, or behaves locally like an open function (in the sense that the image of every neighborhood
 of `z₀` is a neighborhood of `f z₀`, as in `isOpenMap_iff_nhds_le`). For a function `f : E → ℂ`
@@ -112,6 +113,7 @@ theorem AnalyticAt.eventually_constant_or_nhds_le_map_nhds_aux (hf : AnalyticAt 
   exact (h6.ball_subset_image_closedBall hr (fun z hz => hfx hz) (not_eventually.mp h)).trans
     (by gcongr; exact inf_le_right)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The *open mapping theorem* for holomorphic functions, local version: is a function `g : E → ℂ`
 is analytic at a point `z₀`, then either it is constant in a neighborhood of `z₀`, or it maps every
 neighborhood of `z₀` to a neighborhood of `z₀`. For the particular case of a holomorphic function on

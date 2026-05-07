@@ -186,6 +186,7 @@ noncomputable def rTensorAlgEquiv :
     simp only [map_mul, rTensorAlgHom_apply_eq]
     rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma rTensorAlgEquiv_apply (x : (MvPolynomial σ S) ⊗[R] N) :
     rTensorAlgEquiv x = rTensorAlgHom x := by

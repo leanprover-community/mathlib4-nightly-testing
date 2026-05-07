@@ -294,6 +294,7 @@ lemma mk_snd (s : yoneda.obj X ⟶ A) (x : F.obj (op (CostructuredArrow.mk s))) 
     (mk s x).snd = F.map (eqToHom <| by rw [YonedaCollection.mk_fst]) x :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 @[ext (iff := false)]
 lemma ext {p q : YonedaCollection F X} (h : p.fst = q.fst)
@@ -445,6 +446,7 @@ lemma unitForward_naturality₂ {F : Cᵒᵖ ⥤ Type v} (η : F ⟶ A) (X Y : C
       F.map f.op (unitForward η Y p) := by
   simp [unitForward]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma app_unitForward {F : Cᵒᵖ ⥤ Type v} (η : F ⟶ A) (X : Cᵒᵖ)
     (p : YonedaCollection (restrictedYonedaObj η) X.unop) :

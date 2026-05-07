@@ -518,6 +518,7 @@ theorem strong_law_aux4 {c : ℝ} (c_one : 1 < c) :
   ext1 n
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 include hint hident hnonneg in
 /-- The truncated and non-truncated versions of `Xᵢ` have the same asymptotic behavior, as they
 almost surely coincide at all but finitely many steps. This follows from a probability computation
@@ -590,6 +591,7 @@ theorem strong_law_aux7 :
 
 end StrongLawNonneg
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Strong law of large numbers**, almost sure version: if `X n` is a sequence of independent
 identically distributed integrable real-valued random variables, then `∑ i ∈ range n, X i / n`
 converges almost surely to `𝔼[X 0]`. We give here the strong version, due to Etemadi, that only

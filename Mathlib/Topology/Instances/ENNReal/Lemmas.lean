@@ -916,6 +916,7 @@ end LimsupLiminf
 
 end ENNReal -- namespace
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Dense.lipschitzWith_extend {α β : Type*}
     [PseudoEMetricSpace α] [EMetricSpace β] [CompleteSpace β]
     {s : Set α} (hs : Dense s) {f : s → β} {K : ℝ≥0} (hf : LipschitzWith K f) :

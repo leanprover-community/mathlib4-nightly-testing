@@ -102,6 +102,7 @@ theorem isIso_δ_of_isZero (n : ℕ) (h : IsZero (groupCohomology X.X₂ n))
     (hs : IsZero (groupCohomology X.X₂ (n + 1))) :
     IsIso (δ hX n (n + 1) rfl) := SnakeInput.isIso_δ _ h hs
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Given an exact sequence of `G`-representations `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0`, this expresses an
 `n + 1`-cochain `x : Gⁿ⁺¹ → X₁` such that `f ∘ x ∈ Bⁿ⁺¹(G, X₂)` as a cocycle.
@@ -113,6 +114,7 @@ noncomputable abbrev cocyclesMkOfCompEqD {i j : ℕ} {y : (Fin i → G) → X.X�
     ((map_cochainsFunctor_shortExact hX).d_eq_zero_of_f_eq_d_apply i j y x
       (by simpa using hx) (j + 1))
 
+set_option backward.simpa.using.reducibleClose false in
 theorem δ_apply {i j : ℕ} (hij : i + 1 = j)
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z` be an `i`-cocycle for `X₃`
@@ -136,6 +138,7 @@ theorem mem_cocycles₁_of_comp_eq_d₀₁
   have := congr($((mapShortComplexH1 (MonoidHom.id G) X.f).comm₂₃.symm) x)
   simp_all [shortComplexH1, LinearMap.compLeft]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem δ₀_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z : X₃ᴳ` and `y : X₂` be such that `g(y) = z`.
@@ -163,6 +166,7 @@ theorem mem_cocycles₂_of_comp_eq_d₁₂
   have := congr($((mapShortComplexH2 (MonoidHom.id G) X.f).comm₂₃.symm) x)
   simp_all [shortComplexH2, LinearMap.compLeft]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem δ₁_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z` be a 1-cocycle for `X₃` and `y` be a 1-cochain for `X₂` such that `g ∘ y = z`.

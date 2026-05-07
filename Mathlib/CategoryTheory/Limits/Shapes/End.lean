@@ -80,6 +80,7 @@ namespace Wedge
 
 variable {F}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A variant of `CategoryTheory.Limits.Cone.ext` specialized to produce
 isomorphisms of wedges. -/
 @[simps!]
@@ -143,6 +144,7 @@ namespace Cowedge
 
 variable {F}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A variant of `CategoryTheory.Limits.Cocone.ext` specialized to produce
 isomorphisms of cowedges. -/
 @[simps!]

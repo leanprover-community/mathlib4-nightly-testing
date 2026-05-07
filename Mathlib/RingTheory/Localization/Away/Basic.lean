@@ -329,6 +329,7 @@ noncomputable def atUnit (x : R) (e : IsUnit x) [IsLocalization.Away x S] : R �
 noncomputable def atOne [IsLocalization.Away (1 : R) S] : R ≃ₐ[R] S :=
   @atUnit R _ S _ _ (1 : R) isUnit_one _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem away_of_isUnit_of_bijective {R : Type*} (S : Type*) [CommSemiring R] [CommSemiring S]
     [Algebra R S] {r : R} (hr : IsUnit r) (H : Function.Bijective (algebraMap R S)) :
     IsLocalization.Away r S :=

@@ -101,6 +101,7 @@ noncomputable def PrimeSpectrum.preimageEquivFiber (p : PrimeSpectrum R) :
         -Ideal.ResidueField.map_algebraMap]
 
 variable (R S) in
+set_option backward.simpa.using.reducibleClose false in
 /-- The `OrderIso` between the fiber of `PrimeSpectrum S → PrimeSpectrum R` at a prime
 ideal `p : PrimeSpectrum R` and the prime spectrum of `κ(p) ⊗[R] S`. -/
 @[simps!]

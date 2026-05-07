@@ -76,6 +76,7 @@ scoped[ProbabilityTheory] infix:arg "†" => ProbabilityTheory.posterior
 /-- The posterior is a Markov kernel. -/
 instance : IsMarkovKernel κ†μ := by rw [posterior]; infer_instance
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The main property of the posterior. -/
 lemma compProd_posterior_eq_map_swap : (κ ∘ₘ μ) ⊗ₘ κ†μ = (μ ⊗ₘ κ).map Prod.swap := by
   simpa using ((μ ⊗ₘ κ).map Prod.swap).disintegrate ((μ ⊗ₘ κ).map Prod.swap).condKernel

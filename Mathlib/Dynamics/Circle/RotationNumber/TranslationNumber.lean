@@ -297,6 +297,7 @@ theorem commute_nat_add (n : ℕ) : Function.Commute f (n + ·) := by
 theorem commute_add_nat (n : ℕ) : Function.Commute f (· + n) := by
   simp only [add_comm _ (n : ℝ), f.commute_nat_add n]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem commute_sub_nat (n : ℕ) : Function.Commute f (· - n) := by
   simpa only [sub_eq_add_neg] using
     (f.commute_add_nat n).inverses_right (Equiv.addRight _).right_inv (Equiv.addRight _).left_inv
@@ -308,6 +309,7 @@ theorem commute_add_int : ∀ n : ℤ, Function.Commute f (· + n)
 theorem commute_int_add (n : ℤ) : Function.Commute f (n + ·) := by
   simpa only [add_comm _ (n : ℝ)] using f.commute_add_int n
 
+set_option backward.simpa.using.reducibleClose false in
 theorem commute_sub_int (n : ℤ) : Function.Commute f (· - n) := by
   simpa only [sub_eq_add_neg] using
     (f.commute_add_int n).inverses_right (Equiv.addRight _).right_inv (Equiv.addRight _).left_inv

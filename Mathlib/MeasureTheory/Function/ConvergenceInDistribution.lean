@@ -133,6 +133,7 @@ end TendstoInDistribution
 
 variable [SeminormedAddCommGroup E] [SecondCountableTopology E] [BorelSpace E]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Let `X, Y` be two sequences of measurable functions such that `X n` converges in distribution
 to `Z`, and `Y n - X n` converges in probability to `0`.
@@ -261,6 +262,7 @@ lemma TendstoInMeasure.tendstoInDistribution [l.NeBot] [l.IsCountablyGenerated]
     TendstoInDistribution X l Z (fun _ ↦ μ') μ' :=
     h.tendstoInDistribution_of_aemeasurable hX (h.aemeasurable hX)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Slutsky's theorem**: if `X n` converges in distribution to `Z`, and `Y n` converges in
 probability to a constant `c`, then the pair `(X n, Y n)` converges in distribution to `(Z, c)`. -/
 theorem TendstoInDistribution.prodMk_of_tendstoInMeasure_const

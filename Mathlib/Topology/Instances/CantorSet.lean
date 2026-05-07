@@ -266,6 +266,7 @@ theorem cantorSequence_eq_self_sub_sum_cantorToTernary (x : ℝ) (n : ℕ) :
   | zero => simp [cantorSequence]
   | succ n ih => rw [cantorSequence_get_succ, ih, Finset.sum_range_succ]; ring
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ofDigits_cantorToTernary_sum_le {x : ℝ} (hx : x ∈ cantorSet) {n : ℕ} :
     ∑ i ∈ Finset.range n, ofDigitsTerm (cantorToTernary x) i ≤ x := by
   have h_mem := cantorSequence_mem_cantorSet hx n

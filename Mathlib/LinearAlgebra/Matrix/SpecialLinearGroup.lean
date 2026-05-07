@@ -250,6 +250,7 @@ theorem scalar_eq_coe_self_center
     scalar n ((A : Matrix n n R) i i) = A :=
   scalar_eq_self_of_mem_center A.property i
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The center of a special linear group of degree `n` is the subgroup of scalar matrices, for which
 the scalars are the `n`-th roots of unity. -/
 theorem mem_center_iff {A : SpecialLinearGroup n R} :
@@ -262,6 +263,7 @@ theorem mem_center_iff {A : SpecialLinearGroup n R} :
   · suffices ↑ₘ(B * A) = ↑ₘ(A * B) from Subtype.val_injective this
     simpa only [coe_mul, ← hr] using (scalar_commute (n := n) r (Commute.all r) B).symm
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An equivalence of groups, from the center of the special linear group to the roots of unity. -/
 @[simps]
 def center_equiv_rootsOfUnity' (i : n) :
@@ -444,6 +446,7 @@ lemma exists_SL2_row {a b : R} (hab : IsCoprime a b) (i : Fin 2) :
   · rw [Matrix.det_fin_two_of, ← h]
     ring
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A vector with coprime entries, right-multiplied by a matrix in `SL(2, R)`, has
 coprime entries. -/
 lemma vecMulSL {v : Fin 2 → R} (hab : IsCoprime (v 0) (v 1)) (A : SL(2, R)) :
@@ -452,6 +455,7 @@ lemma vecMulSL {v : Fin 2 → R} (hab : IsCoprime (v 0) (v 1)) (A : SL(2, R)) :
   have : v = g 0 := funext fun t ↦ by { fin_cases t <;> tauto }
   simpa only [this] using isCoprime_row (g * A) 0
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A vector with coprime entries, left-multiplied by a matrix in `SL(2, R)`, has
 coprime entries. -/
 lemma mulVecSL {v : Fin 2 → R} (hab : IsCoprime (v 0) (v 1)) (A : SL(2, R)) :

@@ -46,6 +46,7 @@ theorem congr {f₁ f₂ : G →* H} (h : f₁ = f₂) {φ : res f₁ A ⟶ B} {
   subst h
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a group homomorphism `f : G →* H` and a representation morphism `φ : Res(f)(A) ⟶ B`,
 this is the chain map sending `x : Hⁿ → A` to `(g : Gⁿ) ↦ φ (x (f ∘ g))`. -/
 @[simps! -isSimp f f_hom]
@@ -85,6 +86,7 @@ lemma cochainsMap_id_comp {A B C : Rep k G} (φ : A ⟶ B) (ψ : B ⟶ C) :
 @[simp]
 lemma cochainsMap_zero : cochainsMap (A := A) (B := B) f 0 = 0 := by rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma cochainsMap_f_map_mono (hf : Function.Surjective f) [Mono φ] (i : ℕ) :
     Mono ((cochainsMap f φ).f i) := by
   simpa [ModuleCat.mono_iff_injective] using
@@ -95,6 +97,7 @@ instance cochainsMap_id_f_map_mono {A B : Rep k G} (φ : A ⟶ B) [Mono φ] (i :
     Mono ((cochainsMap (MonoidHom.id G) φ).f i) :=
   cochainsMap_f_map_mono (MonoidHom.id G) φ (fun x => ⟨x, rfl⟩) i
 
+set_option backward.simpa.using.reducibleClose false in
 lemma cochainsMap_f_map_epi (hf : Function.Injective f) [Epi φ] (i : ℕ) :
     Epi ((cochainsMap f φ).f i) := by
   simpa [ModuleCat.epi_iff_surjective] using
@@ -349,6 +352,7 @@ noncomputable def H1InfRes :
   zero := by rw [← map_comp, Category.comp_id, congr (QuotientGroup.mk'_comp_subtype S)
     (fun f φ => map f φ 1), map₁_one]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The inflation map `H¹(G ⧸ S, A^S) ⟶ H¹(G, A)` is a monomorphism. -/

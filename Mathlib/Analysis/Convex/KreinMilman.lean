@@ -106,6 +106,7 @@ theorem closure_convexHull_extremePoints (hscomp : IsCompact s) (hAconv : Convex
   linarith [hlr _ (subset_closure <| subset_convexHull _ _ <|
     h.isExtreme.extremePoints_subset_extremePoints hy), hy.1.2 x hxA]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A continuous affine map is surjective from the extreme points of a compact set to the extreme
 points of the image of that set. This inclusion is in general strict. -/
 lemma surjOn_extremePoints_image (f : E →ᴬ[ℝ] F) (hs : IsCompact s) :

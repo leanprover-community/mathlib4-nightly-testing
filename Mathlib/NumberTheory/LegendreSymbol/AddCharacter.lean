@@ -76,6 +76,7 @@ theorem to_mulShift_inj_of_isPrimitive {ψ : AddChar R R'} (hψ : IsPrimitive ψ
   simp only [mulShift_mul, mulShift_zero, add_neg_cancel] at h
   simpa [← sub_eq_add_neg, sub_eq_zero] using (hψ · h)
 
+set_option backward.simpa.using.reducibleClose false in
 -- `AddCommGroup.equiv_direct_sum_zmod_of_fintype`
 -- gives the structure theorem for finite abelian groups.
 -- This could be used to show that the map above is a bijection.

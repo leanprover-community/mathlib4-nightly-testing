@@ -384,6 +384,7 @@ theorem isCycle_swap_mul_aux₁ {α : Type*} [DecidableEq α] :
     rw [add_comm, zpow_add, mul_apply, hi, zpow_one, mul_apply, apply_symm_apply,
       swap_apply_of_ne_of_ne (ne_and_ne_of_swap_mul_apply_ne_self hb).2 hfbx.symm]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isCycle_swap_mul_aux₂ {α : Type*} [DecidableEq α] :
     ∀ (n : ℤ) {b x : α} {f : Perm α}, (swap x (f x) * f) b ≠ b → (f ^ n) (f x) = b →
       ∃ i : ℤ, ((swap x (f x) * f) ^ i) (f x) = b
@@ -741,6 +742,7 @@ protected theorem IsCycleOn.subtypePerm (hf : f.IsCycleOn s) :
   exact fun x => ne_of_apply_ne ((↑) : s → α) (hf.apply_ne hs x.2)
 
 -- TODO: Theory of order of an element under an action
+set_option backward.simpa.using.reducibleClose false in
 theorem IsCycleOn.pow_apply_eq {s : Finset α} (hf : f.IsCycleOn s) (ha : a ∈ s) {n : ℕ} :
     (f ^ n) a = a ↔ #s ∣ n := by
   obtain rfl | hs := Finset.eq_singleton_or_nontrivial ha

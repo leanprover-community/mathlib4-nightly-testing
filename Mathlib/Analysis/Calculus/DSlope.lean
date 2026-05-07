@@ -46,6 +46,7 @@ theorem dslope_of_ne (f : 𝕜 → E) (h : b ≠ a) : dslope f a b = slope f a b
   classical
   exact update_of_ne h ..
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ContinuousLinearMap.dslope_comp {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F]
     (f : E →L[𝕜] F) (g : 𝕜 → E) (a b : 𝕜) (H : a = b → DifferentiableAt 𝕜 g a) :
     dslope (f ∘ g) a b = f (dslope g a b) := by

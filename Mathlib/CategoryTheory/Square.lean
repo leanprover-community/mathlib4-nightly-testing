@@ -348,6 +348,7 @@ variable {C}
 
 namespace Functor
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The functor `Square C ⥤ Square D` induced by a functor `C ⥤ D`. -/
 @[simps]
 def mapSquare (F : C ⥤ D) : Square C ⥤ Square D where

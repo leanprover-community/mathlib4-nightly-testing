@@ -352,6 +352,7 @@ noncomputable def PIsoUnopOpP' : S.P ≅ Opposite.unop S.op.P' := pullbackIsoUno
 /-- The duality isomorphism `S.P' ≅ Opposite.unop S.op.P`. -/
 noncomputable def P'IsoUnopOpP : S.P' ≅ Opposite.unop S.op.P := pushoutIsoUnopPullback _ _
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma op_δ : S.op.δ = S.δ.op := Quiver.Hom.unop_inj (by
   rw [Quiver.Hom.unop_op, ← cancel_mono (pushout.inr _ _ : _ ⟶ S.P'),

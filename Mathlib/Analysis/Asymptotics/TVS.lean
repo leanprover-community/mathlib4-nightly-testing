@@ -671,6 +671,7 @@ protected lemma IsLittleOTVS.smul_left (h : f =o[𝕜; l] g) (c : α → 𝕜) :
   · gcongr
   all_goals exact fun _ ↦ Filter.nonempty_of_mem ‹_›
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isLittleOTVS_one [ContinuousSMul 𝕜 E] : f =o[𝕜; l] (1 : α → 𝕜) ↔ Tendsto f l (𝓝 0) := by
   constructor
   · intro hf

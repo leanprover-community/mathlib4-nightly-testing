@@ -181,6 +181,7 @@ protected theorem summable_of_lp (f : lp G 2) :
   · norm_cast
   · norm_num
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A mutually orthogonal family of subspaces of `E` induce a linear isometry from `lp 2` of the
 subspaces into `E`. -/
 protected def linearIsometry (hV : OrthogonalFamily 𝕜 G V) : lp G 2 →ₗᵢ[𝕜] E where
@@ -531,6 +532,7 @@ protected theorem coe_mkOfOrthogonalEqBot (hsp : (span 𝕜 (Set.range v))ᗮ = 
     ⇑(HilbertBasis.mkOfOrthogonalEqBot hv hsp) = v :=
   HilbertBasis.coe_mk hv _
 
+set_option backward.simpa.using.reducibleClose false in
 -- Note : this should be `b.repr` composed with an identification of `lp (fun i : ι => 𝕜) p` with
 -- `PiLp p (fun i : ι => 𝕜)` (in this case with `p = 2`), but we don't have this yet (July 2022).
 /-- An orthonormal basis is a Hilbert basis. -/

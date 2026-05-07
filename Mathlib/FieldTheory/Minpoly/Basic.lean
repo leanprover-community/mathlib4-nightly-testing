@@ -188,6 +188,7 @@ theorem subsingleton [Subsingleton B] : minpoly A x = 1 := by
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The degree of a minimal polynomial, as a natural number, is positive. -/
 theorem natDegree_pos [Nontrivial B] (hx : IsIntegral A x) : 0 < natDegree (minpoly A x) := by
   rw [pos_iff_ne_zero]

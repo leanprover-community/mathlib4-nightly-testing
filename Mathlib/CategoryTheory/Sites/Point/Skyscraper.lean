@@ -145,6 +145,7 @@ end
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable {Φ} in
+set_option backward.simpa.using.reducibleClose false in
 private lemma isSheaf_skyscraperPresheaf_aux
     {M : A} {X : C} (R : Sieve X) (hR : R ∈ J X)
     (s : Cone (R.arrows.diagram.op ⋙ Φ.skyscraperPresheaf M)) :
@@ -178,6 +179,7 @@ private lemma isSheaf_skyscraperPresheaf_aux
   simpa [hz₁, hz₂, φ₁, φ₂] using
     (Cone.w s φ₂.op =≫ Pi.π _ z).trans (Cone.w s φ₁.op =≫ Pi.π _ z).symm
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma isSheaf_skyscraperPresheaf (M : A) :
     Presheaf.IsSheaf J (Φ.skyscraperPresheaf M) := by

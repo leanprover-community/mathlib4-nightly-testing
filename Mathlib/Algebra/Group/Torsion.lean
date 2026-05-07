@@ -66,6 +66,7 @@ end Monoid
 section Group
 variable [Group G] [IsMulTorsionFree G] {n : ℤ} {a b : G}
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive zsmul_right_injective]
 lemma zpow_left_injective : ∀ {n : ℤ}, n ≠ 0 → Injective fun a : G ↦ a ^ n
   | (n + 1 : ℕ), _ => by

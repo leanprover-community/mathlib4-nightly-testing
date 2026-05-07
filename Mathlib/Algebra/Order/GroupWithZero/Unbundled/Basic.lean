@@ -1365,6 +1365,7 @@ end MulPosMono
 section PosMulStrictMono
 variable [PosMulStrictMono G₀] [MulPosMono G₀]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma zpow_left_injOn₀ : ∀ {n : ℤ}, n ≠ 0 → {a | 0 ≤ a}.InjOn fun a : G₀ ↦ a ^ n
   | (n + 1 : ℕ), _ => by simpa using mod_cast (pow_left_strictMonoOn₀ n.succ_ne_zero).injOn
   | .negSucc n, _ => by

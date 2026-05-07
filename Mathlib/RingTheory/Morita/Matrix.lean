@@ -179,6 +179,7 @@ def MatrixModCat.counitIso (i : ι) :
     ext
     simp [toModuleCatFromModuleCatLinearEquiv]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- `ModuleCat.toMatrixModCat R ι` and `MatrixModCat.toModuleCat R i` together form
   an equivalence of categories. -/

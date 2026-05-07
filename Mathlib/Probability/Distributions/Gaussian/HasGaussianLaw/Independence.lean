@@ -219,6 +219,7 @@ section InnerProductSpace
 
 variable [∀ i, InnerProductSpace ℝ (E i)]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If $(X_i)_{i \in \iota}$ are jointly Gaussian and uncorrelated, then they are independent. -/
 lemma HasGaussianLaw.iIndepFun_of_covariance_inner
     {X : Π i, Ω → (E i)} (hX : HasGaussianLaw (fun ω i ↦ X i ω) P)
@@ -326,6 +327,7 @@ lemma HasGaussianLaw.indepFun_of_covariance_strongDual [NormedSpace ℝ E] [Norm
   · exact (hXY.fst.map _).integrable
   · exact (hXY.snd.map _).integrable
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If $(X, Y)$ is Gaussian, then $X$ and $Y$ are independent if they are uncorrelated. -/
 lemma HasGaussianLaw.indepFun_of_covariance_inner [InnerProductSpace ℝ E] [InnerProductSpace ℝ F]
     {X : Ω → E} {Y : Ω → F} (hXY : HasGaussianLaw (fun ω ↦ (X ω, Y ω)) P)

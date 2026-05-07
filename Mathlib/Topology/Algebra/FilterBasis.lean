@@ -184,6 +184,7 @@ theorem mem_nhds_one (B : GroupFilterBasis G) {U : Set G} (hU : U ∈ B) :
   exact ⟨U, hU, rfl.subset⟩
 
 -- See note [lower instance priority]
+set_option backward.simpa.using.reducibleClose false in
 /-- If a group is endowed with a topological structure coming from a group filter basis then, it's a
 topological group. -/
 @[to_additive /-- If an additive group is endowed with a topological structure coming from an
@@ -219,6 +220,7 @@ lemma t2Space_iff [t : TopologicalSpace G] (F : GroupFilterBasis G)
   rw [IsTopologicalGroup.t2Space_iff_one_closed, ← closure_eq_iff_isClosed,
     R0Space.closure_singleton, ← hG, F.nhds_one_eq, FilterBasis.ker_filter]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma t2Space_iff_sInter_subset [t : TopologicalSpace G] (F : GroupFilterBasis G)
     (hG : F.topology = t) : T2Space G ↔ ⋂₀ F.sets ⊆ {1} := by
@@ -259,6 +261,7 @@ It has the given basis as a basis of neighborhoods of zero. -/
 def topology : TopologicalSpace R :=
   B.toAddGroupFilterBasis.topology
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a ring is endowed with a topological structure coming from
 a ring filter basis then it's a topological ring. -/
 instance (priority := 100) isTopologicalRing {R : Type u} [Ring R] (B : RingFilterBasis R) :
@@ -380,6 +383,7 @@ theorem _root_.ContinuousSMul.of_basis_zero {ι : Type*} [IsTopologicalRing R] [
     rcases hsmul_left x₀ hi with ⟨j, hj, hji⟩
     exact mem_of_superset (h.mem_of_mem hj) hji
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a module is endowed with a topological structure coming from
 a module filter basis then it's a topological module. -/
 instance (priority := 100) continuousSMul [IsTopologicalRing R] :

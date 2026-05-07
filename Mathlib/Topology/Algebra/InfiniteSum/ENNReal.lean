@@ -521,6 +521,7 @@ theorem tsum_lt_tsum {f g : α → ℝ≥0∞} {i : α} (hfi : tsum f ≠ ∞) (
 
 end ENNReal
 
+set_option backward.simpa.using.reducibleClose false in
 theorem tsum_comp_le_tsum_of_inj {β : Type*} {f : α → ℝ} (hf : Summable f) (hn : ∀ a, 0 ≤ f a)
     {i : β → α} (hi : Function.Injective i) : tsum (f ∘ i) ≤ tsum f := by
   lift f to α → ℝ≥0 using hn

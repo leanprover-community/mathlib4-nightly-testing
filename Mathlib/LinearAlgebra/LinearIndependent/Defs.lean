@@ -198,6 +198,7 @@ theorem linearIndependent_subtype_iff {s : Set M} :
 theorem linearIndependent_comp_subtype_iff :
     LinearIndependent R (v ∘ Subtype.val : s → M) ↔ LinearIndepOn R v s := Iff.rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A subfamily of a linearly independent family (i.e., a composition with an injective map) is a
 linearly independent family. -/
 theorem LinearIndependent.comp (h : LinearIndependent R v) (f : ι' → ι) (hf : Injective f) :
@@ -290,6 +291,7 @@ lemma not_linearIndepOn_finset_iffₛ {s : Finset ι} :
       ∑ i ∈ s, f i • v i = ∑ i ∈ s, g i • v i ∧ ∃ i ∈ s, f i ≠ g i := by
   simpa using linearIndepOn_finset_iffₛ.not
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A family is linearly independent if and only if all of its finite subfamily is
 linearly independent. -/
 theorem linearIndependent_iff_finset_linearIndependent :
@@ -388,6 +390,7 @@ theorem linearIndepOn_id_range_iff {ι} {f : ι → M} (hf : Injective f) :
 
 alias ⟨LinearIndependent.of_linearIndepOn_id_range, _⟩ := linearIndepOn_id_range_iff
 
+set_option backward.simpa.using.reducibleClose false in
 theorem LinearIndependent.linearIndepOn_id (i : LinearIndependent R v) :
     LinearIndepOn R id (range v) := by
   simpa using i.comp _ (rangeSplitting_injective v)
@@ -876,6 +879,7 @@ theorem linearIndependent_iff_eq_zero_of_smul_mem_span :
         simp [hij]
       · simp [hl]⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Version of `LinearIndependent.of_subsingleton` that works for the zero ring. -/
 lemma LinearIndependent.of_subsingleton' [Subsingleton ι] (i : ι)
     (hi : ∀ r : R, r • v i = 0 → r = 0) : LinearIndependent R v := by

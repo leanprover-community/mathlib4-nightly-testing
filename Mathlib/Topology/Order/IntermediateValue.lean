@@ -196,6 +196,7 @@ In this section we prove the following results:
 -/
 
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a preconnected set contains endpoints of an interval, then it includes the whole interval. -/
 theorem IsPreconnected.Icc_subset {s : Set α} (hs : IsPreconnected s) {a b : α} (ha : a ∈ s)
     (hb : b ∈ s) : Icc a b ⊆ s := by

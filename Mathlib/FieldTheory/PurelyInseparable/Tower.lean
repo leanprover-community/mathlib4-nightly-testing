@@ -93,6 +93,7 @@ theorem LinearIndependent.map_of_isPurelyInseparable_of_isSeparable [IsPurelyIns
   exact congr($h i)
 
 variable {F K} in
+set_option backward.simpa.using.reducibleClose false in
 /-- If `K / E / F` is a field extension tower such that `E / F` is purely inseparable,
 if `S` is an intermediate field of `K / F` which is separable over `F`, then `S` and `E` are
 linearly disjoint over `F`. -/
@@ -202,6 +203,7 @@ theorem insepDegree_mul_insepDegree_of_isAlgebraic (K : Type v) [Field K] [Algeb
     insepDegree F E * insepDegree E K = insepDegree F K := by
   simpa only [Cardinal.lift_id] using lift_insepDegree_mul_lift_insepDegree_of_isAlgebraic F E K
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `K / E / F` is a field extension tower, such that `E / F` is algebraic, then their
 inseparable degrees, as natural numbers, satisfy the tower law: $[E:F]_i [K:E]_i = [K:F]_i$. -/
 @[stacks 09HK "Part 2, `finInsepDegree` variant"]

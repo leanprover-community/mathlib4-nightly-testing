@@ -1208,6 +1208,7 @@ theorem integrableOn_Ioi_comp_rpow_iff [NormedSpace ℝ E] (f : ℝ → E) {p : 
   refine integrableOn_congr_fun (fun x hx => ?_) measurableSet_Ioi
   simp_rw [abs_mul, abs_of_nonneg (rpow_nonneg (le_of_lt hx) _)]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The substitution `y = x ^ p` in integrals over `Ioi 0` preserves integrability (version
 without `|p|` factor) -/
 theorem integrableOn_Ioi_comp_rpow_iff' [NormedSpace ℝ E] (f : ℝ → E) {p : ℝ} (hp : p ≠ 0) :
@@ -1292,6 +1293,7 @@ section IntegrationByPartsAlgebra
 variable {A : Type*} [NormedRing A] [NormedAlgebra ℝ A]
   {a : ℝ} {a' b' : A} {u : ℝ → A} {v : ℝ → A} {u' : ℝ → A} {v' : ℝ → A}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For finite intervals, see: `intervalIntegral.integral_deriv_mul_eq_sub`. -/
 theorem integral_deriv_mul_eq_sub [CompleteSpace A]
     (hu : ∀ x ∈ tsupport v, HasDerivAt u (u' x) x)

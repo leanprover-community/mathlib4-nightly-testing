@@ -204,6 +204,7 @@ theorem cons_injective_of_injective {α} {x₀ : α} {x : Fin n → α} (hx₀ :
   intro i j
   cases i using Fin.cases <;> cases j using Fin.cases <;> aesop (add simp [hx.eq_iff])
 
+set_option backward.simpa.using.reducibleClose false in
 theorem cons_injective_iff {α} {x₀ : α} {x : Fin n → α} :
     Function.Injective (cons x₀ x : Fin n.succ → α) ↔ x₀ ∉ Set.range x ∧ Function.Injective x := by
   refine ⟨fun h ↦ ⟨?_, ?_⟩, fun h ↦ cons_injective_of_injective h.1 h.2⟩

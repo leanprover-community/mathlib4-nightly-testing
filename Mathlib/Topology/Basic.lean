@@ -183,6 +183,7 @@ theorem isClosed_iUnion_of_finite [Finite ι] {s : ι → Set X} (h : ∀ i, IsC
   simp only [← isOpen_compl_iff, compl_iUnion] at *
   exact isOpen_iInter_of_finite h
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isClosed_imp {p q : X → Prop} (hp : IsOpen { x | p x }) (hq : IsClosed { x | q x }) :
     IsClosed { x | p x → q x } := by
   simpa only [imp_iff_not_or] using hp.isClosed_compl.union hq

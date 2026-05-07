@@ -737,6 +737,7 @@ theorem Ioo_zero_top_eq_iUnion_Ico_zpow {y : ℝ≥0∞} (hy : 1 < y) (h'y : y �
     · apply lt_trans h'n _
       exact ENNReal.zpow_lt_top (zero_lt_one.trans hy).ne' h'y _
 
+set_option backward.simpa.using.reducibleClose false in
 @[gcongr]
 theorem zpow_le_of_le {x : ℝ≥0∞} (hx : 1 ≤ x) {a b : ℤ} (h : a ≤ b) : x ^ a ≤ x ^ b := by
   obtain a | a := a <;> obtain b | b := b

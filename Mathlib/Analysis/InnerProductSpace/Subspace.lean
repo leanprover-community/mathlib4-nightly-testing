@@ -250,6 +250,7 @@ local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 
 variable {ι : Type*} {G : ι → Type*}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An orthogonal family forms an independent family of subspaces; that is, any collection of
 elements each from a different subspace in the family is linearly independent. In particular, the
 pairwise intersections of elements of the family are 0. -/
@@ -270,6 +271,7 @@ theorem OrthogonalFamily.independent {V : ι → Submodule 𝕜 E}
         (hV.inner_right_dfinsupp v i (v i)).symm
     _ = 0 := by simp only [hv, inner_zero_right]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem DirectSum.IsInternal.collectedBasis_orthonormal [DecidableEq ι] {V : ι → Submodule 𝕜 E}
     (hV : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ)
     (hV_sum : DirectSum.IsInternal fun i => V i) {α : ι → Type*}

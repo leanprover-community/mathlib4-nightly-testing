@@ -84,6 +84,7 @@ namespace Nat
 
 open Int
 
+set_option backward.simpa.using.reducibleClose false in
 private theorem sum_four_squares_of_two_mul_sum_four_squares {m a b c d : ℤ}
     (h : a ^ 2 + b ^ 2 + c ^ 2 + d ^ 2 = 2 * m) :
     ∃ w x y z : ℤ, w ^ 2 + x ^ 2 + y ^ 2 + z ^ 2 = m := by

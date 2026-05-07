@@ -153,6 +153,7 @@ lemma ContMDiff.const_smul_section (hs : CMDiff n (T% s)) : CMDiff n (T% (a • 
 
 variable {ι : Type*} {t : ι → (x : M) → V x}
 
+set_option backward.simpa.using.reducibleClose false in
 lemma ContMDiffWithinAt.sum_section {s : Finset ι}
     (hs : ∀ i ∈ s, CMDiffAt[u] n (T% (t i ·)) x₀) :
     CMDiffAt[u] n (T% (fun x ↦ (∑ i ∈ s, (t i x)))) x₀ := by

@@ -276,6 +276,7 @@ lemma UpperHemicontinuous.isInducing_comp (hf : UpperHemicontinuous f)
 
 end Inducing
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Upper hemicontinuous functions always have closed domain.
 
 The more general fact is that if `f` is upper hemicontinuous at `x₀` within `s`, and if

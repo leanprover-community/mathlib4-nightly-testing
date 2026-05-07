@@ -266,6 +266,7 @@ theorem diagonalSuccIsoTensorTrivial_hom_hom_apply {n : â„•} (f : Fin (n + 1) â†
     <;> simp_all [diagonalSuccIsoTensorTrivial, types_tensorObj_def]
     <;> rfl
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]

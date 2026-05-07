@@ -580,6 +580,7 @@ section fitting_decomposition
 
 variable [IsNoetherian R M] [IsArtinian R M]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isCompl_genWeightSpaceOf_zero_posFittingCompOf (x : L) :
     IsCompl (genWeightSpaceOf M 0 x) (posFittingCompOf R M x) := by
   simpa only [isCompl_iff, codisjoint_iff, disjoint_iff, ← LieSubmodule.toSubmodule_inj,

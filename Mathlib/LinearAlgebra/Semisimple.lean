@@ -285,6 +285,7 @@ include comm hf hg
 
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] Submodule.Quotient.quot_mk_eq_mk in
+set_option backward.simpa.using.reducibleClose false in
 theorem IsSemisimple.of_mem_adjoin_pair {a : End K M} (ha : a ∈ K[f, g]) :
     a.IsSemisimple := by
   let R := K[X] ⧸ Ideal.span {minpoly K f}

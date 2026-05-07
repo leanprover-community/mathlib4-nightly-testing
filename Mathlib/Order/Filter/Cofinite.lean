@@ -201,6 +201,7 @@ lemma Set.Finite.cofinite_inf_principal_diff {s t : Set α} (ht : t.Finite) :
     cofinite ⊓ 𝓟 (s \ t) = cofinite ⊓ 𝓟 s := by
   rw [diff_eq, ← inf_principal, ← inf_assoc, inf_right_comm, ht.cofinite_inf_principal_compl]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For natural numbers the filters `Filter.cofinite` and `Filter.atTop` coincide. -/
 theorem Nat.cofinite_eq_atTop : @cofinite ℕ = atTop := by
   refine le_antisymm ?_ atTop_le_cofinite

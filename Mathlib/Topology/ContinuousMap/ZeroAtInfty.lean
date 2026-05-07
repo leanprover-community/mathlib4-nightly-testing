@@ -171,6 +171,7 @@ theorem coe_zero [Zero β] : ⇑(0 : C₀(α, β)) = 0 :=
 theorem zero_apply [Zero β] : (0 : C₀(α, β)) x = 0 :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 instance instMul [MulZeroClass β] [ContinuousMul β] : Mul C₀(α, β) :=
   ⟨fun f g =>
     ⟨f * g, by simpa only [mul_zero] using (zero_at_infty f).mul (zero_at_infty g)⟩⟩
@@ -189,6 +190,7 @@ instance instSemigroupWithZero [SemigroupWithZero β] [ContinuousMul β] :
     SemigroupWithZero C₀(α, β) := fast_instance%
   DFunLike.coe_injective.semigroupWithZero _ coe_zero coe_mul
 
+set_option backward.simpa.using.reducibleClose false in
 instance instAdd [AddZeroClass β] [ContinuousAdd β] : Add C₀(α, β) :=
   ⟨fun f g => ⟨f + g, by simpa only [add_zero] using (zero_at_infty f).add (zero_at_infty g)⟩⟩
 
@@ -202,6 +204,7 @@ theorem add_apply [AddZeroClass β] [ContinuousAdd β] (f g : C₀(α, β)) : (f
 instance instAddZeroClass [AddZeroClass β] [ContinuousAdd β] : AddZeroClass C₀(α, β) :=
   fast_instance% DFunLike.coe_injective.addZeroClass _ coe_zero coe_add
 
+set_option backward.simpa.using.reducibleClose false in
 instance instSMul [Zero β] {R : Type*} [Zero R] [SMulWithZero R β] [ContinuousConstSMul R β] :
     SMul R C₀(α, β) :=
   ⟨fun r f => ⟨r • f, by simpa [smul_zero] using (zero_at_infty f).const_smul r⟩⟩
@@ -231,6 +234,7 @@ section AddGroup
 
 variable [AddGroup β] [IsTopologicalAddGroup β] (f g : C₀(α, β))
 
+set_option backward.simpa.using.reducibleClose false in
 instance instNeg : Neg C₀(α, β) :=
   ⟨fun f => ⟨-f, by simpa only [neg_zero] using (zero_at_infty f).neg⟩⟩
 
@@ -241,6 +245,7 @@ theorem coe_neg : ⇑(-f) = -f :=
 theorem neg_apply : (-f) x = -f x :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 instance instSub : Sub C₀(α, β) :=
   ⟨fun f g => ⟨f - g, by simpa only [sub_zero] using (zero_at_infty f).sub (zero_at_infty g)⟩⟩
 
@@ -379,6 +384,7 @@ section
 
 variable (α) (β)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem toBCF_injective : Function.Injective (toBCF : C₀(α, β) → α →ᵇ β) := fun f g h => by
   ext x
   simpa only using DFunLike.congr_fun h x
@@ -404,6 +410,7 @@ theorem dist_toBCF_eq_dist {f g : C₀(α, β)} : dist f.toBCF g.toBCF = dist f 
 
 open BoundedContinuousFunction
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Convergence in the metric on `C₀(α, β)` is uniform convergence. -/
 theorem tendsto_iff_tendstoUniformly {ι : Type*} {F : ι → C₀(α, β)} {f : C₀(α, β)} {l : Filter ι} :
     Tendsto F l (𝓝 f) ↔ TendstoUniformly (fun i => F i) f l := by
@@ -506,6 +513,7 @@ counterparts on `α →ᵇ β`. Ultimately, when `β` is a C⋆-ring, then so is
 
 variable [TopologicalSpace β] [AddMonoid β] [StarAddMonoid β] [ContinuousStar β]
 
+set_option backward.simpa.using.reducibleClose false in
 instance instStar : Star C₀(α, β) where
   star f :=
     { toFun := fun x => star (f x)

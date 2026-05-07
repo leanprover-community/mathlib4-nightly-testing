@@ -152,6 +152,7 @@ theorem support_truncFinset_subset (p : MvPowerSeries σ R) : (truncFinset R s p
   intro; contrapose
   simpa using coeff_truncFinset_eq_zero p
 
+set_option backward.simpa.using.reducibleClose false in
 lemma totalDegree_truncFinset (p : MvPowerSeries σ R) :
     (truncFinset R s p).totalDegree ≤ s.sup degree := by
   simpa [MvPolynomial.totalDegree] using sup_mono (support_truncFinset_subset p)
@@ -178,6 +179,7 @@ and `a i < n i` for some `i`. -/
 def trunc (R : Type*) [CommSemiring R] (n : σ →₀ ℕ) :
     MvPowerSeries σ R →ₗ[R] MvPolynomial σ R := truncFinset R (Iio n)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem coeff_trunc (m n : σ →₀ ℕ) (φ : MvPowerSeries σ R) :
     (trunc R n φ).coeff m = if m < n then coeff m φ else 0 := by
   simpa using coeff_truncFinset (s := Iio n) (x := m) φ
@@ -214,6 +216,7 @@ by keeping only the monomials $c\prod_i X_i^{a_i}$ where `a i ≤ n i` for all `
 def trunc' (R : Type*) [CommSemiring R] (n : σ →₀ ℕ) :
     MvPowerSeries σ R →ₗ[R] MvPolynomial σ R := truncFinset R (Iic n)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Coefficients of the truncation of a multivariate power series. -/
 theorem coeff_trunc' (m n : σ →₀ ℕ) (φ : MvPowerSeries σ R) :
     (trunc' R n φ).coeff m = if m ≤ n then coeff m φ else 0 := by
@@ -257,6 +260,7 @@ theorem trunc'_map [CommSemiring S] (n : σ →₀ ℕ) (f : R →+* S) (p : MvP
 
 section
 
+set_option backward.simpa.using.reducibleClose false in
 theorem totalDegree_trunc' {n : σ →₀ ℕ} (φ : MvPowerSeries σ R) :
     (trunc' R n φ).totalDegree ≤ n.degree := by
   simpa [← sup_Iic_of_monotone degree_mono] using totalDegree_truncFinset φ

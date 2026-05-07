@@ -189,6 +189,7 @@ class IsUniformAddGroup (α : Type*) [UniformSpace α] [AddGroup α] : Prop wher
 
 attribute [to_additive] IsUniformGroup
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem IsUniformGroup.mk' {α} [UniformSpace α] [Group α]
     (h₁ : UniformContinuous fun p : α × α => p.1 * p.2) (h₂ : UniformContinuous fun p : α => p⁻¹) :
@@ -265,6 +266,7 @@ theorem UniformContinuous.div_const [UniformSpace β] {f : β → α} (hf : Unif
 theorem uniformContinuous_div_const (a : α) : UniformContinuous fun b : α => b / a :=
   uniformContinuous_id.div_const _
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem Filter.Tendsto.uniformity_mul {ι : Type*} {f g : ι → α × α} {l : Filter ι}
     (hf : Tendsto f l (𝓤 α)) (hg : Tendsto g l (𝓤 α)) :

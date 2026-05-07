@@ -201,6 +201,7 @@ theorem one_div_sub_sq_hasFPowerSeriesOnBall_zero {z : ℂ} (hz : z ≠ 0) :
       (.ofScalars ℂ fun n ↦ (z ^ (n + 2))⁻¹ * (n + 1)) 0 ‖z‖ₑ := by
   simpa [add_comm 1] using one_div_sub_pow_hasFPowerSeriesOnBall_zero 1 hz
 
+set_option backward.simpa.using.reducibleClose false in
 theorem one_div_one_sub_hasFPowerSeriesOnBall_zero :
     HasFPowerSeriesOnBall (fun x ↦ 1 / (1 - x : ℂ)) (.ofScalars (𝕜 := ℂ) ℂ 1) 0 1 := by
   simpa using one_div_sub_hasFPowerSeriesOnBall_zero (z := 1)
@@ -256,6 +257,7 @@ theorem one_add_rpow_hasFPowerSeriesAt_zero {a : ℝ} :
 @[deprecated (since := "2025-12-08")]
 alias _root_.one_add_rpow_hasFPowerSeriesAt_zero := one_add_rpow_hasFPowerSeriesAt_zero
 
+set_option backward.simpa.using.reducibleClose false in
 theorem one_div_one_sub_rpow_hasFPowerSeriesOnBall_zero (a : ℝ) :
     HasFPowerSeriesOnBall (fun x ↦ 1 / (1 - x) ^ a)
       (.ofScalars ℝ fun n ↦ Ring.choose (a + n - 1) n) 0 1 := by
@@ -298,6 +300,7 @@ theorem one_div_sub_sq_hasFPowerSeriesOnBall_zero {r : ℝ} (hr : r ≠ 0) :
       (.ofScalars ℝ fun n ↦ (r ^ (n + 2))⁻¹ * (n + 1)) 0 ‖r‖ₑ := by
   simpa [add_comm 1] using one_div_sub_pow_hasFPowerSeriesOnBall_zero 1 hr
 
+set_option backward.simpa.using.reducibleClose false in
 theorem one_div_one_sub_hasFPowerSeriesOnBall_zero :
     HasFPowerSeriesOnBall (fun x ↦ 1 / (1 - x)) (.ofScalars (𝕜 := ℝ) ℝ 1) 0 1 := by
   simpa using one_div_sub_hasFPowerSeriesOnBall_zero (r := 1)

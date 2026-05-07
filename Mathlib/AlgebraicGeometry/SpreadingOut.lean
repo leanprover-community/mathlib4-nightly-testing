@@ -98,6 +98,7 @@ instance (x : X) [X.IsGermInjectiveAt x] [IsOpenImmersion f] :
   simpa
 
 variable {f} in
+set_option backward.simpa.using.reducibleClose false in
 lemma isGermInjectiveAt_iff_of_isOpenImmersion {x : X} [IsOpenImmersion f] :
     Y.IsGermInjectiveAt (f x) ↔ X.IsGermInjectiveAt x := by
   refine ⟨fun H ↦ ?_, fun _ ↦ inferInstance⟩

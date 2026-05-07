@@ -224,6 +224,7 @@ theorem span_mFourierLp_closure_eq_top {p : ℝ≥0∞} [Fact (1 ≤ p)] (hp : p
     (ContinuousMap.toLp_denseRange ℂ volume ℂ hp).topologicalClosure_map_submodule
       span_mFourier_closure_eq_top
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The monomials `mFourierLp 2 n` are an orthonormal set in `L²`. -/
 theorem orthonormal_mFourier : Orthonormal ℂ (mFourierLp (d := d) 2) := by
   rw [orthonormal_iff_ite]
@@ -326,6 +327,7 @@ theorem hasSum_mFourier_series_of_summable (h : Summable (mFourierCoeff f)) :
   refine ContinuousMap.hasSum_of_hasSum_Lp (.of_norm ?_) sum_L2
   simpa only [norm_smul, mFourier_norm, mul_one] using h.norm
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If the sequence of Fourier coefficients of `f` is summable, then the Fourier series of `f`
 converges everywhere pointwise to `f`. -/
 theorem hasSum_mFourier_series_apply_of_summable (h : Summable (mFourierCoeff f))

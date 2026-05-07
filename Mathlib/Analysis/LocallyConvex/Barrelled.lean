@@ -116,6 +116,7 @@ variable {α ι κ 𝕜₁ 𝕜₂ E F : Type*} [NontriviallyNormedField 𝕜₁
     [NontriviallyNormedField 𝕜₂] {σ₁₂ : 𝕜₁ →+* 𝕜₂} [RingHomIsometric σ₁₂]
     [AddCommGroup E] [AddCommGroup F] [Module 𝕜₁ E] [Module 𝕜₂ F]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Any TVS over a `NontriviallyNormedField` that is also a Baire space is barrelled. In
 particular, this applies to Banach spaces and Fréchet spaces. -/
 instance BaireSpace.instBarrelledSpace [TopologicalSpace E] [IsTopologicalAddGroup E]

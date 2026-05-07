@@ -278,6 +278,7 @@ lemma ProperSMul.isCompact_setOf_inter_nonempty
   rw [← (MulAction.toPerm g).exists_congr_right]
   simp [and_comm]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `G` acts transitively on `X`, and the orbit map of a point in `X` is a proper map, then the
 action is proper. -/
 @[to_additive]

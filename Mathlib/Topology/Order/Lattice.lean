@@ -142,6 +142,7 @@ lemma finset_inf'_nhds_apply [SemilatticeInf L] [ContinuousInf L]
     Tendsto (fun a ↦ s.inf' hne (f · a)) l (𝓝 (s.inf' hne g)) :=
   finset_sup'_nhds_apply (L := Lᵒᵈ) hne hs
 
+set_option backward.simpa.using.reducibleClose false in
 lemma finset_sup_nhds [SemilatticeSup L] [OrderBot L] [ContinuousSup L]
     (hs : ∀ i ∈ s, Tendsto (f i) l (𝓝 (g i))) : Tendsto (s.sup f) l (𝓝 (s.sup g)) := by
   rcases s.eq_empty_or_nonempty with rfl | hne

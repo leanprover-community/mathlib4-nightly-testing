@@ -231,6 +231,7 @@ theorem eq_of_forall_apply_eq (μ ν : ProbabilityMeasure Ω)
 theorem mass_toFiniteMeasure (μ : ProbabilityMeasure Ω) : μ.toFiniteMeasure.mass = 1 :=
   μ.coeFn_univ
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma range_toFiniteMeasure :
     range toFiniteMeasure = {μ : FiniteMeasure Ω | μ.mass = 1} := by
   ext μ

@@ -604,6 +604,7 @@ lemma _root_.IsSl2Triple.h_eq_coroot {α : Weight K H L} (hα : α.IsNonZero)
     simpa [this] using h_eq
   rw [h_eq, smul_smul, mul_assoc, inv_mul_cancel₀ hef₀, mul_one, smul_assoc, coroot]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma finrank_rootSpace_eq_one (α : Weight K H L) (hα : α.IsNonZero) :
     finrank K (rootSpace H α) = 1 := by
   suffices ¬ 1 < finrank K (rootSpace H α) by

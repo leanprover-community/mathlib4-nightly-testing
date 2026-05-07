@@ -250,6 +250,7 @@ theorem ChartedSpace.locallyCompactSpace [LocallyCompactSpace H] : LocallyCompac
   rintro x s ⟨_, h₂, h₃⟩
   exact h₂.image_of_continuousOn ((chartAt H x).continuousOn_symm.mono h₃)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a topological space admits an atlas with locally connected charts, then the space itself is
 locally connected. -/
 theorem ChartedSpace.locallyConnectedSpace [LocallyConnectedSpace H] : LocallyConnectedSpace M := by

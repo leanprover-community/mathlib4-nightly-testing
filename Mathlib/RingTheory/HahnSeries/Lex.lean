@@ -280,6 +280,7 @@ noncomputable def finiteArchimedeanClassOrderHomLex :
 
 set_option backward.isDefEq.respectTransparency false in
 variable (Γ R) in
+set_option backward.simpa.using.reducibleClose false in
 /-- The inverse of `finiteArchimedeanClassOrderHomLex`. -/
 noncomputable def finiteArchimedeanClassOrderHomInvLex :
     Γ ×ₗ FiniteArchimedeanClass R →o FiniteArchimedeanClass (Lex R⟦Γ⟧) where

@@ -152,6 +152,7 @@ theorem supIndep_univ_fin_two (f : Fin 2 → α) :
   have : (0 : Fin 2) ≠ 1 := by simp
   supIndep_pair this
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem supIndep_attach : (s.attach.SupIndep fun a => f a) ↔ s.SupIndep f := by
   simpa [Finset.attach_map_val] using (supIndep_map (s := s.attach) (g := .subtype _)).symm
@@ -189,6 +190,7 @@ protected theorem SupIndep.sup [DecidableEq ι] {s : Finset ι'} {g : ι' → Fi
   rw [sup_eq_biUnion]
   exact hs.biUnion hg
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Bind operation for `SupIndep`. -/
 protected theorem SupIndep.sigma {β : ι → Type*} {s : Finset ι} {g : ∀ i, Finset (β i)}
     {f : Sigma β → α} (hs : s.SupIndep fun i => (g i).sup fun b => f ⟨i, b⟩)
@@ -199,6 +201,7 @@ protected theorem SupIndep.sigma {β : ι → Type*} {s : Finset ι} {g : ∀ i,
   · simpa using hs
   · simpa [Finset.supIndep_map] using hg
 
+set_option backward.simpa.using.reducibleClose false in
 protected theorem SupIndep.product {s : Finset ι} {t : Finset ι'} {f : ι × ι' → α}
     (hs : s.SupIndep fun i => t.sup fun i' => f (i, i'))
     (ht : t.SupIndep fun i' => s.sup fun i => f (i, i')) : (s ×ˢ t).SupIndep f := by

@@ -244,6 +244,7 @@ section IsTopologicalGroup
 
 variable [Group M] [IsTopologicalGroup M] [MulAction M X]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A group action of a topological group on a discrete space is continuous if and only if
 each stabilizer is an open subgroup. -/
 theorem continuousSMul_iff_stabilizer_isOpen [DiscreteTopology X] :

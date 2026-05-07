@@ -76,6 +76,7 @@ lemma arrowMk_iterationFunctor_map (i₁ i₂ : J) (h₁₂ : i₁ ≤ i₂)
 
 variable (J)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 instance : (Φ.iterationFunctor J).IsWellOrderContinuous where
   nonempty_isColimit i hi := ⟨by

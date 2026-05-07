@@ -387,6 +387,7 @@ constructive version is `quotientEquivProdOfLE'`. -/]
 noncomputable def quotientEquivProdOfLE (h_le : s ≤ t) : α ⧸ s ≃ (α ⧸ t) × t ⧸ s.subgroupOf t :=
   quotientEquivProdOfLE' h_le Quotient.out Quotient.out_eq'
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `s ≤ t`, then there is an embedding `s ⧸ H.subgroupOf s ↪ t ⧸ H.subgroupOf t`. -/
 @[to_additive
 /-- If `s ≤ t`, there is an embedding `s ⧸ H.addSubgroupOf s ↪ t ⧸ H.addSubgroupOf t`. -/]

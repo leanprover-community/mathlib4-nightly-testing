@@ -395,6 +395,7 @@ def Ω₀ : Subobject Ω := h.homEquiv (𝟙 Ω)
 @[deprecated (since := "2026-03-06")]
 alias _root.CategoryTheory.Classifier.SubobjectRepresentableBy.Ω₀ := Ω₀
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `h.homEquiv` acts like an "object comprehension" operator: it maps any characteristic map
 `f : X ⟶ Ω` to the associated subobject of `X`, obtained by pulling back `h.Ω₀` along `f`. -/
 lemma homEquiv_eq {X : C} (f : X ⟶ Ω) :
@@ -489,6 +490,7 @@ lemma isPullback {U X : C} (m : U ⟶ X) [Mono m] :
 alias _root.CategoryTheory.Classifier.SubobjectRepresentableBy.isPullback := isPullback
 
 variable {m}
+set_option backward.simpa.using.reducibleClose false in
 lemma uniq {χ' : X ⟶ Ω} {π : U ⟶ h.Ω₀}
     (sq : IsPullback m π χ' h.Ω₀.arrow) : χ' = h.χ m := by
   apply h.homEquiv.injective

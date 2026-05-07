@@ -115,6 +115,7 @@ lemma injective_type₁ : Function.Injective h.type₁ :=
 lemma injective_type₂ : Function.Injective h.type₂ :=
   fun s t hst ↦ h.injective_type₂' (by rwa [Subcomplex.N.ext_iff, SSet.N.ext_iff] at hst)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma type₁_ne_type₂ (s t : h.ι) : h.type₁ s ≠ h.type₂ t := by
   simpa only [ne_eq, N.ext_iff, SSet.N.ext_iff] using h.type₁_ne_type₂' s t
 

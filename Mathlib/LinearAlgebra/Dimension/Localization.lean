@@ -53,6 +53,7 @@ lemma IsLocalizedModule.lift_rank_eq :
     hs.of_isLocalizedModule_of_isRegular p f (le_nonZeroDivisors_iff_isRegular.mp hp)
       |>.cardinal_lift_le_rank]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma IsLocalizedModule.finrank_eq : finrank R N = finrank R M := by
   simpa using congr_arg toNat (lift_rank_eq p f hp)
 
@@ -134,6 +135,7 @@ theorem lift_rank_eq_of_le_nonZeroDivisors :
     AlgebraTensorModule.cancelBaseChange .. ≪≫ₗ (AlgebraTensorModule.cancelBaseChange ..).symm ≪≫ₗ
     AlgebraTensorModule.congr (.refl ..) ((isLocalizedModule_iff_isBaseChange p S f).mp ‹_›).equiv
 
+set_option backward.simpa.using.reducibleClose false in
 theorem finrank_eq_of_le_nonZeroDivisors : finrank T P = finrank R M := by
   simpa using congr_arg toNat (lift_rank_eq_of_le_nonZeroDivisors S f hp hpT bc)
 
@@ -175,6 +177,7 @@ theorem lift_rank_eq :
     lift_rank_eq_of_le_nonZeroDivisors FR (LocalizedModule.mkLinearMap R⁰ M) le_rfl
       (map_le_nonZeroDivisors_of_injective _ inj le_rfl) this, lift_lift]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem finrank_eq : finrank T P = finrank R M := by simpa using congr_arg toNat bc.lift_rank_eq
 
 omit bc

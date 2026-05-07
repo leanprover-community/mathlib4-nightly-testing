@@ -75,6 +75,7 @@ end List
 
 open List
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Equiv.Perm.map_finRange_perm {n : ℕ} (σ : Equiv.Perm (Fin n)) :
     map σ (finRange n) ~ finRange n := by
   rw [perm_ext_iff_of_nodup ((nodup_finRange n).map σ.injective) <| nodup_finRange n]

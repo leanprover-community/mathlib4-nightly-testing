@@ -54,6 +54,7 @@ variable {J : GrothendieckTopology C} [F.IsPrestack J]
   {α : ι' → ι} {p' : ∀ j, X' j ⟶ X (α j)} (w : ∀ j, p' j ≫ f (α j) = f' j)
   (hf' : Sieve.ofArrows _ f' ∈ J S)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hf' in
@@ -103,6 +104,7 @@ abbrev sieve (i : ι) : Sieve (Over.mk (𝟙 (X i))) :=
 
 include hf' in
 variable (f) in
+set_option backward.simpa.using.reducibleClose false in
 lemma sieve_mem (i : ι) : sieve f f' i ∈ J.over _ _ := by
   simpa only [J.mem_over_iff, Equiv.apply_symm_apply] using J.pullback_stable (f i) hf'
 

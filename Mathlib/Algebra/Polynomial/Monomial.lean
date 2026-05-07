@@ -51,6 +51,7 @@ theorem card_support_le_one_iff_monomial {f : R[X]} :
     apply Finset.card_le_card
     exact support_monomial' _ _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ringHom_ext {S} [Semiring S] {f g : R[X] →+* S} (h₁ : ∀ a, f (C a) = g (C a))
     (h₂ : f X = g X) : f = g := by
   set f' := f.comp (toFinsuppIso R).symm.toRingHom with hf'

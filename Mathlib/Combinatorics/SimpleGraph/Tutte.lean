@@ -141,6 +141,7 @@ theorem IsTutteViolator.empty (hodd : Odd (Nat.card V)) : G.IsTutteViolator ∅ 
   rw [IsTutteViolator, Set.ncard_empty]
   exact ((odd_ncard_oddComponents _).mpr <| by simpa using hodd).pos
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Proves the necessity part of Tutte's theorem -/
 lemma not_isTutteViolator_of_isPerfectMatching {M : Subgraph G} (hM : M.IsPerfectMatching)
     (u : Set V) :

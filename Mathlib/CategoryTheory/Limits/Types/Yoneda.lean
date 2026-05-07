@@ -29,6 +29,7 @@ section
 variable {J C : Type*} [Category* J] [Category* C]
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- Sections of `F ⋙ coyoneda.obj (op X)` identify to natural
 transformations `(const J).obj X ⟶ F`. -/
 @[simps]
@@ -58,6 +59,7 @@ def opCompYonedaSectionsEquiv (F : J ⥤ C) (X : C) :
   invFun τ := ⟨fun j => τ.app j.unop, fun {j j'} f => by simp [τ.naturality f.unop]⟩
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- Sections of `F ⋙ yoneda.obj X` identify to natural
 transformations `(const J).obj X ⟶ F`. -/
 @[simps]
@@ -79,6 +81,7 @@ variable {J : Type v} [SmallCategory J] {C : Type u} [Category.{v} C]
 set_option backward.defeqAttrib.useBackward true in
 attribute [local simp←] comp_apply in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- A cone on `F` with cone point `X` is the same as an element of `lim Hom(X, F·)`. -/
 @[simps]
 noncomputable def limitCompCoyonedaIsoCone (F : J ⥤ C) (X : C) :

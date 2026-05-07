@@ -174,6 +174,7 @@ theorem fac : W.Q ⋙ lift G hG = G :=
       dsimp [MorphismProperty.Q, Quot.liftOn, Quotient.functor]
       rw [composePath_toPath])
 
+set_option backward.simpa.using.reducibleClose false in
 theorem uniq (G₁ G₂ : W.Localization ⥤ D) (h : W.Q ⋙ G₁ = W.Q ⋙ G₂) : G₁ = G₂ := by
   suffices h' : Quotient.functor _ ⋙ G₁ = Quotient.functor _ ⋙ G₂ by
     refine Functor.ext ?_ ?_
@@ -208,6 +209,7 @@ instance : W.Q.EssSurj where
   mem_essImage Y := ⟨(objEquiv W).symm Y, ⟨Iso.refl _⟩⟩
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- A `MorphismProperty` in `W.Localization` is satisfied by all
 morphisms in the localized category if it contains the image of the
 morphisms in the original category, the inverses of the morphisms
@@ -271,6 +273,7 @@ theorem app_eq (X : C) : (app τ) (W.Q.obj X) = τ.app X := by
 
 end NatTransExtension
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `F₁` and `F₂` are functors `W.Localization ⥤ D`, a natural transformation `F₁ ⟶ F₂`
 can be obtained from a natural transformation `W.Q ⋙ F₁ ⟶ W.Q ⋙ F₂`. -/
 @[simps]

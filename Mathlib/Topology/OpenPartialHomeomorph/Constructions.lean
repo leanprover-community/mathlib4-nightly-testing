@@ -341,6 +341,7 @@ section lift_openEmbedding
 variable {X X' Z : Type*} [TopologicalSpace X] [TopologicalSpace X'] [TopologicalSpace Z]
   [Nonempty Z] {f : X → X'}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Extend an open partial homeomorphism `e : X → Z` to `X' → Z`, using an open embedding
 `ι : X → X'`. On `ι(X)`, the extension is specified by `e`; its value elsewhere is arbitrary
 (and uninteresting). -/

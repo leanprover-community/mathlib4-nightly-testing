@@ -784,6 +784,7 @@ theorem contDiffAt_ringInverse [HasSummableGeomSeries R] (x : Rˣ) :
 
 variable {𝕜' : Type*} [NormedField 𝕜'] [NormedAlgebra 𝕜 𝕜']
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem contDiffAt_inv {x : 𝕜'} (hx : x ≠ 0) {n} : ContDiffAt 𝕜 n Inv.inv x := by
   simpa only [Ring.inverse_eq_inv'] using contDiffAt_ringInverse 𝕜 (Units.mk0 x hx)

@@ -397,6 +397,7 @@ theorem HasFDerivAt.comp_hasDerivAt_of_eq
     HasDerivAt (l ∘ f) (l' f') x := by
   rw [hy] at hl; exact hl.comp_hasDerivAt x hf
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasStrictFDerivAt.comp_hasStrictDerivAt (hl : HasStrictFDerivAt l l' (f x))
     (hf : HasStrictDerivAt f f' x) : HasStrictDerivAt (l ∘ f) (l' f') x := by
   simpa using (hl.comp x hf.hasStrictFDerivAt).hasStrictDerivAt

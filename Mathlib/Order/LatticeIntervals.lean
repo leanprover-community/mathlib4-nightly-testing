@@ -154,6 +154,7 @@ protected lemma disjoint_iff [SemilatticeInf α] [OrderBot α] {x y : Iic a} :
     Disjoint x y ↔ Disjoint (x : α) (y : α) := by
   simp [_root_.disjoint_iff, Subtype.ext_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 protected lemma codisjoint_iff [SemilatticeSup α] {x y : Iic a} :
     Codisjoint x y ↔ ↑x ⊔ ↑y = a := by
   simpa only [_root_.codisjoint_iff] using Iic.eq_top_iff

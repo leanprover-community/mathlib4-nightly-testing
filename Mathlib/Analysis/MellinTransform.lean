@@ -45,6 +45,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℂ E]
 def MellinConvergent (f : ℝ → E) (s : ℂ) : Prop :=
   IntegrableOn (fun t : ℝ => (t : ℂ) ^ (s - 1) • f t) (Ioi 0)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem MellinConvergent.const_smul {f : ℝ → E} {s : ℂ} (hf : MellinConvergent f s) {𝕜 : Type*}
     [NormedAddCommGroup 𝕜] [SMulZeroClass 𝕜 E] [IsBoundedSMul 𝕜 E] [SMulCommClass ℂ 𝕜 E] (c : 𝕜) :
     MellinConvergent (fun t => c • f t) s := by
@@ -55,6 +56,7 @@ theorem MellinConvergent.cpow_smul {f : ℝ → E} {s a : ℂ} :
   refine integrableOn_congr_fun (fun t ht => ?_) measurableSet_Ioi
   simp_rw [← sub_add_eq_add_sub, cpow_add _ _ (ofReal_ne_zero.2 <| ne_of_gt ht), mul_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 nonrec theorem MellinConvergent.div_const {f : ℝ → ℂ} {s : ℂ} (hf : MellinConvergent f s) (a : ℂ) :
     MellinConvergent (fun t => f t / a) s := by
   simpa only [MellinConvergent, smul_eq_mul, ← mul_div_assoc] using hf.div_const a
@@ -160,11 +162,13 @@ shortens some arguments. -/
 def HasMellin (f : ℝ → E) (s : ℂ) (m : E) : Prop :=
   MellinConvergent f s ∧ mellin f s = m
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasMellin_add {f g : ℝ → E} {s : ℂ} (hf : MellinConvergent f s)
     (hg : MellinConvergent g s) : HasMellin (fun t => f t + g t) s (mellin f s + mellin g s) :=
   ⟨by simpa only [MellinConvergent, smul_add] using hf.add hg, by
     simpa only [mellin, smul_add] using integral_add hf hg⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasMellin_sub {f g : ℝ → E} {s : ℂ} (hf : MellinConvergent f s)
     (hg : MellinConvergent g s) : HasMellin (fun t => f t - g t) s (mellin f s - mellin g s) :=
   ⟨by simpa only [MellinConvergent, smul_sub] using hf.sub hg, by
@@ -314,6 +318,7 @@ theorem isBigO_rpow_zero_log_smul [NormedSpace ℝ E] {a b : ℝ} {f : ℝ → E
   congr 1
   abel
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Suppose `f` is locally integrable on `(0, ∞)`, is `O(x ^ (-a))` as `x → ∞`, and is
 `O(x ^ (-b))` as `x → 0`. Then its Mellin transform is differentiable on the domain `b < re s < a`,
 with derivative equal to the Mellin transform of `log • f`. -/
@@ -434,6 +439,7 @@ section MellinIoc
 ## Mellin transforms of functions on `Ioc 0 1`
 -/
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The Mellin transform of the indicator function of `Ioc 0 1`. -/
 theorem hasMellin_one_Ioc {s : ℂ} (hs : 0 < re s) :
     HasMellin (indicator (Ioc 0 1) (fun _ => 1 : ℝ → ℂ)) s (1 / s) := by

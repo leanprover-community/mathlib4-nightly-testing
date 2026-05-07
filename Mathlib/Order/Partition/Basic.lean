@@ -542,6 +542,7 @@ lemma exists_extend_partial (P : Partition u) (f₀ : t → α)
   · exact h_eq _ _ h.choose_spec |>.symm
   exact h ⟨a, rel_rfl_iff.mpr ha⟩ |>.elim
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For any set `t` containing no two distinct related elements, there is a representative function
 equal to the identity on `t`. -/
 lemma exists_extend_partial' (P : Partition u)

@@ -348,6 +348,7 @@ abbrev limitCone : Limits.Cone F where
       congr
       exact funext fun x => (x.2 f).symm }
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `ProfiniteGrp.limitCone` is a limit cone. -/
 @[to_additive /-- `ProfiniteAddGrp.limitCone` is a limit cone. -/]
 def limitConeIsLimit : Limits.IsLimit (limitCone F) where

@@ -95,6 +95,7 @@ end summable
 
 section integralrepresentation
 
+set_option backward.simpa.using.reducibleClose false in
 private theorem LSeries_eq_mul_integral_aux {f : ℕ → ℂ} (hf : f 0 = 0) {r : ℝ} (hr : 0 ≤ r) {s : ℂ}
     (hs : r < s.re) (hS : LSeriesSummable f s)
     (hO : (fun n ↦ ∑ k ∈ Icc 1 n, f k) =O[atTop] fun n ↦ (n : ℝ) ^ r) :
@@ -169,6 +170,7 @@ variable {f : ℕ → ℂ} {l : ℂ}
 
 section lemmas
 
+set_option backward.simpa.using.reducibleClose false in
 private theorem lemma₁ (hlim : Tendsto (fun n : ℕ ↦ (∑ k ∈ Icc 1 n, f k) / n) atTop (𝓝 l))
     {s : ℝ} (hs : 1 < s) :
     IntegrableOn (fun t : ℝ ↦ (∑ k ∈ Icc 1 ⌊t⌋₊, f k) * (t : ℂ) ^ (-(s : ℂ) - 1)) (Set.Ici 1) := by

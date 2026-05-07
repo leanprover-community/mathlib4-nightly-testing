@@ -240,6 +240,7 @@ lemma isIso_pushoutSection_of_isAffineOpen (hUS : IsAffineOpen US) (hUT : IsAffi
 
 set_option backward.isDefEq.respectTransparency false in
 open TensorProduct in
+set_option backward.simpa.using.reducibleClose false in
 lemma mono_pushoutSection_of_iSup_eq {ι : Type*} [Finite ι] (VX : ι → X.Opens) (hVU : iSup VX = UX)
     (hV : ∀ i, Mono (pushoutSection H hUST (show VX i ≤ _ by aesop) rfl))
     (hT : (f.appLE US UT hUST).hom.Flat) :

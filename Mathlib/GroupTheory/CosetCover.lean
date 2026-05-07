@@ -56,6 +56,7 @@ variable {G : Type*} [Group G]
 
 section leftCoset_cover_const
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem exists_leftTransversal_of_FiniteIndex
     {D H : Subgroup G} [D.FiniteIndex] (hD_le_H : D ≤ H) :
@@ -210,6 +211,7 @@ theorem exists_finiteIndex_of_leftCoset_cover : ∃ k ∈ s, (H k).FiniteIndex :
     exact ⟨i, hi, hfi⟩
 
 -- Auxiliary to `leftCoset_cover_filter_FiniteIndex` and `one_le_sum_inv_index_of_leftCoset_cover`.
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem leftCoset_cover_filter_FiniteIndex_aux
     [DecidablePred (FiniteIndex : Subgroup G → Prop)] :
@@ -363,6 +365,7 @@ section Submodule
 variable {R M ι : Type*} [Ring R] [AddCommGroup M] [Module R M]
     {p : ι → Submodule R M} {s : Finset ι}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Submodule.exists_finiteIndex_of_cover (hcovers : ⋃ i ∈ s, (p i : Set M) = Set.univ) :
     ∃ k ∈ s, (p k).toAddSubgroup.FiniteIndex :=
   have hcovers' : ⋃ i ∈ s, (0 : M) +ᵥ ((p i).toAddSubgroup : Set M) = Set.univ := by

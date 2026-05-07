@@ -56,6 +56,7 @@ lemma Algebra.IsInvariant.isIntegral_of_profinite
     ⟨x, fun g ↦ hN g.2⟩
   exact this.map (FixedPoints.subalgebra A B N.1.1).val
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- `G` acts transitively on the prime ideals of `B` above a given prime ideal of `A`. -/
 lemma Algebra.IsInvariant.exists_smul_of_under_eq_of_profinite
@@ -108,6 +109,7 @@ omit
   [TopologicalSpace B]
   [DiscreteTopology B]
   [ContinuousSMul G B] in
+set_option backward.simpa.using.reducibleClose false in
 lemma Ideal.Quotient.stabilizerHomSurjectiveAuxFunctor_aux
     (Q : Ideal B)
     {N N' : OpenNormalSubgroup G} (e : N ≤ N')

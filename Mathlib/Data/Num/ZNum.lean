@@ -274,6 +274,7 @@ namespace ZNum
 
 variable {α : Type*}
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp, norm_cast]
 theorem cast_add [AddGroupWithOne α] : ∀ m n, ((m + n : ZNum) : α) = m + n
   | 0, a => by cases a <;> exact (_root_.zero_add _).symm
@@ -322,6 +323,7 @@ theorem of_to_int' : ∀ n : ZNum, ZNum.ofInt' n = n
 theorem to_int_inj {m n : ZNum} : (m : ℤ) = n ↔ m = n :=
   ⟨fun h => Function.LeftInverse.injective of_to_int' h, congr_arg _⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem cmp_to_int : ∀ m n, (Ordering.casesOn (cmp m n) ((m : ℤ) < n) (m = n) ((n : ℤ) < m) : Prop)
   | 0, 0 => rfl
   | pos a, pos b => by simpa using PosNum.cmp_to_nat a b

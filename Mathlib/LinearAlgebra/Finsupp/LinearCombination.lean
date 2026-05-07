@@ -455,6 +455,7 @@ theorem LinearMap.map_finsupp_linearCombination (f : M →ₗ[R] N) {ι : Type*}
     (l : ι →₀ R) : f (linearCombination R g l) = linearCombination R (f ∘ g) l :=
   apply_linearCombination _ _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Submodule.mem_span_iff_exists_finset_subset {s : Set M} {x : M} :
     x ∈ span R s ↔
       ∃ (f : M → R) (t : Finset M), ↑t ⊆ s ∧ f.support ⊆ t ∧ ∑ a ∈ t, f a • a = x where

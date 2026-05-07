@@ -79,6 +79,7 @@ lemma ihom_map_val_app (A B P : LightCondMod.{u} R) (S : LightProfinite) (e : A 
   apply (coherentTopology LightProfinite.{u}).yonedaEquiv.injective
   simp [dsimp% GrothendieckTopology.yonedaEquiv_comp]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma ihomPoints_symm_comp (B P : LightCondMod.{u} R) (S S' : LightProfinite) (π : S ⟶ S')
     (f : P ⊗ (free R).obj S'.toCondensed ⟶ B) :

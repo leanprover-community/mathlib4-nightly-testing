@@ -220,6 +220,7 @@ theorem TensorProduct.eq_zero_of_fg_of_subtype_eq_zero (h : rTensor N P.subtype 
   simpa only [map_zero] using TensorProduct.eq_of_fg_of_subtype_eq hP h
 
 include hP hP' in
+set_option backward.simpa.using.reducibleClose false in
 theorem TensorProduct.eq_of_fg_of_subtype_eq'
     (h : rTensor N P.subtype t = rTensor N P'.subtype t') :
     ∃ (Q : Submodule R M) (hPQ : P ≤ Q) (hP'Q : P' ≤ Q), Q.FG ∧
@@ -309,6 +310,7 @@ theorem TensorProduct.Algebra.eq_of_fg_of_subtype_eq
   rw [← hu₁, ← hu'₁, h]
 
 include hA hA' in
+set_option backward.simpa.using.reducibleClose false in
 theorem TensorProduct.Algebra.eq_of_fg_of_subtype_eq' {t' : A' ⊗[R] N}
     (h : rTensor N A.val.toLinearMap t = rTensor N A'.val.toLinearMap t') :
     ∃ (B : Subalgebra R S) (hAB : A ≤ B) (hA'B : A' ≤ B), Subalgebra.FG B

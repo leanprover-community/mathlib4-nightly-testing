@@ -87,6 +87,7 @@ def beckCoalgebraFork : Fork (CofreeEqualizer.topMap X) (CofreeEqualizer.bottomM
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The fork constructed is a limit. This shows that any coalgebra is a (coreflexive) equalizer of
 cofree coalgebras.
 -/

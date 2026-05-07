@@ -118,6 +118,7 @@ variable [Semiring R] [Semiring R₂] [AddCommMonoid M] [Module R M] [AddCommMon
   [TopologicalSpace M] [TopologicalSpace M₂] {σ : R →+* R₂} {σ' : R₂ →+* R} [RingHomInvPair σ σ']
   [RingHomInvPair σ' σ] {L : SummationFilter ι}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Applying a continuous linear map commutes with taking an (infinite) sum. -/
 protected theorem ContinuousLinearMap.hasSum {f : ι → M} (φ : M →SL[σ] M₂) {x : M}
     (hf : HasSum f x L) : HasSum (fun b : ι ↦ φ (f b)) (φ x) L := by

@@ -307,6 +307,7 @@ variable [∀ j : J, Nonempty (F.obj j)] [∀ j : J, Finite (F.obj j)]
   (Fsur : ∀ ⦃i j : J⦄ (f : i ⟶ j), Function.Surjective (F.map f))
 include Fsur
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 theorem eval_section_surjective_of_surjective (i : J) :
     (fun s : F.sections => s.val i).Surjective := fun x => by

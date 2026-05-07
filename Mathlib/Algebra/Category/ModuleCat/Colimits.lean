@@ -171,6 +171,7 @@ def finsuppCocone : Cofan fun _ : ι ↦ ModuleCat.of R M :=
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The concrete coproduct cone is colimiting. -/
 noncomputable
 def finsuppCoconeIsColimit : IsColimit (finsuppCocone R M ι) where

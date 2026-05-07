@@ -51,6 +51,7 @@ theorem mersenne_le_mersenne {p q : ℕ} : mersenne p ≤ mersenne q ↔ p ≤ q
 
 @[simp] theorem mersenne_zero : mersenne 0 = 0 := rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma mersenne_odd : ∀ {p : ℕ}, Odd (mersenne p) ↔ p ≠ 0
   | 0 => by simp
   | p + 1 => by

@@ -205,6 +205,7 @@ that contain all sets of `v.setsAt x` of a sufficiently small diameter. This fil
 possible to express limiting behavior when sets in `v.setsAt x` shrink to `x`. -/
 def filterAt (x : X) : Filter (Set X) := (𝓝 x).smallSets ⊓ 𝓟 (v.setsAt x)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.Filter.HasBasis.vitaliFamily {ι : Sort*} {p : ι → Prop} {s : ι → Set X} {x : X}
     (h : (𝓝 x).HasBasis p s) : (v.filterAt x).HasBasis p (fun i ↦ {t ∈ v.setsAt x | t ⊆ s i}) := by
   simpa only [← Set.setOf_inter_eq_sep] using h.smallSets.inf_principal _

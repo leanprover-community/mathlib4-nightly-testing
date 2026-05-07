@@ -77,6 +77,7 @@ namespace HasLimits
 -- The next two definitions are used in the construction of `HasLimits SemiRingCat`.
 -- After that, the limits should be constructed using the generic limits API,
 -- e.g. `limit F`, `limit.cone F`, and `limit.isLimit F`.
+set_option backward.simpa.using.reducibleClose false in
 /-- Construction of a limit cone in `SemiRingCat`.
 (Internal use only; use the limits API.)
 -/
@@ -304,6 +305,7 @@ instance limitRing : Ring.{u} (Types.Small.limitCone.{v, u} (F ⋙ forget RingCa
   let _ : Ring (F ⋙ forget RingCat.{u}).sections := (sectionsSubring F).toRing
   inferInstanceAs <| Ring (Shrink _)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- We show that the forgetful functor `CommRingCat ⥤ RingCat` creates limits.
 
 All we need to do is notice that the limit point has a `Ring` instance available,
@@ -420,6 +422,7 @@ instance limitCommRing :
     (RingCat.sectionsSubring.{v, u} (F ⋙ forget₂ CommRingCat RingCat.{u}))
   inferInstanceAs <| CommRing (Shrink _)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- We show that the forgetful functor `CommRingCat ⥤ RingCat` creates limits.
 
 All we need to do is notice that the limit point has a `CommRing` instance available,

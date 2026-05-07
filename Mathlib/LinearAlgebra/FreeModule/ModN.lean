@@ -59,6 +59,7 @@ def mkQ : G →+ ModN G n := (LinearMap.range (LinearMap.lsmul ℤ G n)).mkQ
 
 variable [NeZero n]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a free module `G` over `ℤ`, construct the corresponding basis
 of `G / ⟨n⟩` over `ℤ / nℤ`. -/

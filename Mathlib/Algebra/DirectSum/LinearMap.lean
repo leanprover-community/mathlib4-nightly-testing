@@ -137,6 +137,7 @@ lemma mapsTo_biSup_of_mapsTo {ι : Type*} {N : ι → Submodule R M}
 
 end IsInternal
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The trace of an endomorphism of a direct sum is the sum of the traces on each component.
 
 Note that it is important the statement gives the user definitional control over `p` since the

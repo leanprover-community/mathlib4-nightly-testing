@@ -37,15 +37,18 @@ theorem zero_zeroAtFilter [Zero β] [TopologicalSpace β] (l : Filter α) :
     ZeroAtFilter l (0 : α → β) :=
   tendsto_const_nhds
 
+set_option backward.simpa.using.reducibleClose false in
 nonrec theorem ZeroAtFilter.add [TopologicalSpace β] [AddZeroClass β] [ContinuousAdd β]
     {l : Filter α} {f g : α → β} (hf : ZeroAtFilter l f) (hg : ZeroAtFilter l g) :
     ZeroAtFilter l (f + g) := by
   simpa using hf.add hg
 
+set_option backward.simpa.using.reducibleClose false in
 nonrec theorem ZeroAtFilter.neg [TopologicalSpace β] [SubtractionMonoid β] [ContinuousNeg β]
     {l : Filter α} {f : α → β} (hf : ZeroAtFilter l f) : ZeroAtFilter l (-f) := by
   simpa using hf.neg
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ZeroAtFilter.smul [TopologicalSpace β] [Zero β]
     [SMulZeroClass 𝕜 β] [ContinuousConstSMul 𝕜 β] {l : Filter α} {f : α → β} (c : 𝕜)
     (hf : ZeroAtFilter l f) : ZeroAtFilter l (c • f) := by simpa using hf.const_smul c
@@ -83,6 +86,7 @@ theorem const_boundedAtFilter [Norm β] (l : Filter α) (c : β) :
     BoundedAtFilter l (Function.const α c : α → β) :=
   Asymptotics.isBigO_const_const c one_ne_zero l
 
+set_option backward.simpa.using.reducibleClose false in
 -- TODO(https://github.com/leanprover-community/mathlib4/issues/19288): Remove all Comm in the next
 -- three lemmas. This would require modifying the corresponding general asymptotics lemma.
 nonrec theorem BoundedAtFilter.add [SeminormedAddCommGroup β] {l : Filter α} {f g : α → β}
@@ -104,11 +108,13 @@ nonrec theorem BoundedAtFilter.mul [SeminormedRing β] {l : Filter α} {f g : α
   convert Asymptotics.isBigO_refl (E := ℝ) _ l
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ZeroAtFilter.mul_boundedAtFilter [SeminormedRing β] {l : Filter α}
     {f g : α → β} (hf : ZeroAtFilter l f) (hg : BoundedAtFilter l g) : ZeroAtFilter l (f * g) := by
   rw [ZeroAtFilter, ← Asymptotics.isLittleO_one_iff (F := ℝ)] at hf ⊢
   simpa using hf.mul_isBigO hg
 
+set_option backward.simpa.using.reducibleClose false in
 theorem BoundedAtFilter.mul_zeroAtFilter [SeminormedRing β] {l : Filter α}
     {f g : α → β} (hf : BoundedAtFilter l f) (hg : ZeroAtFilter l g) : ZeroAtFilter l (f * g) := by
   rw [ZeroAtFilter, ← Asymptotics.isLittleO_one_iff (F := ℝ)] at hg ⊢
@@ -125,6 +131,7 @@ def boundedFilterSubmodule
   smul_mem' c _ hf := hf.smul c
 
 variable (𝕜) in
+set_option backward.simpa.using.reducibleClose false in
 /-- The subalgebra of functions that are bounded along a filter `l`. -/
 def boundedFilterSubalgebra
     [SeminormedCommRing 𝕜] [SeminormedRing β] [Algebra 𝕜 β] [IsBoundedSMul 𝕜 β] (l : Filter α) :

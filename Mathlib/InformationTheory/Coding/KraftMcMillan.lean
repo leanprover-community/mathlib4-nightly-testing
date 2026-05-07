@@ -92,6 +92,7 @@ private lemma concatFn_length_mem_Icc {S : Finset (List α)}
     exact (Finset.sum_le_sum (fun i _ => Finset.le_sup (w i).prop)).trans_eq (by simp)
 
 set_option linter.flexible false in -- TODO: fix non-terminal simp
+set_option backward.simpa.using.reducibleClose false in
 /-- Auxiliary bound for Kraft–McMillan.
 
 If `S` is a finite uniquely decodable code and `1 ≤ r`, then the `r`-th power of its Kraft sum
@@ -144,6 +145,7 @@ private lemma kraft_mcmillan_inequality_aux {S : Finset (List α)} [Fintype α] 
 
 open Filter
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Kraft-McMillan Inequality**: If `S` is a finite uniquely decodable code,
 then `Σ D^{-|w|} ≤ 1`. -/
 public theorem kraft_mcmillan_inequality {S : Finset (List α)} [Fintype α] [Nonempty α]

@@ -453,6 +453,7 @@ variable [TopologicalSpace α] [Group α] [IsTopologicalGroup α]
 variable [TopologicalSpace β] [Group β]
 variable [FunLike hom β α] [MonoidHomClass hom β α] {e : hom}
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem tendsto_div_comap_self (de : IsDenseInducing e) (x₀ : α) :
     Tendsto (fun t : β × β => t.2 / t.1) ((comap fun p : β × β => (e p.1, e p.2)) <| 𝓝 (x₀, x₀))
@@ -598,6 +599,7 @@ universe u
 
 open TopologicalSpace
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The quotient `G ⧸ N` of a complete first countable topological group `G` by a normal subgroup
 is itself complete. [N. Bourbaki, *General Topology*, IX.3.1 Proposition 4][bourbaki1966b]
 

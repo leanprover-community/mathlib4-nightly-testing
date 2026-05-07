@@ -44,6 +44,7 @@ noncomputable def separatingFamily (j : α × ι) : HomologicalComplex C c :=
 
 set_option backward.isDefEq.respectTransparency false in
 include hX in
+set_option backward.simpa.using.reducibleClose false in
 lemma isSeparating_separatingFamily :
     ObjectProperty.IsSeparating (.ofObj (separatingFamily c X)) := by
   intro K L f g h
@@ -59,6 +60,7 @@ end
 
 variable [HasCoproductsOfShape ι C] [Preadditive C] [HasZeroObject C]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isSeparator_coproduct_separatingFamily {X : C} (hX : IsSeparator X) :
     IsSeparator (∐ (fun i ↦ separatingFamily c (fun (_ : Unit) ↦ X) ⟨⟨⟩, i⟩)) := by
   let φ (i : ι) := separatingFamily c (fun (_ : Unit) ↦ X) ⟨⟨⟩, i⟩

@@ -57,6 +57,7 @@ variable [NormedAddCommGroup G] [BorelSpace G]
 
 variable [NormedSpace 𝕜 G] [SFinite μ] [IsAddLeftInvariant μ]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Compute the total derivative of `f ⋆ g` if `g` is `C^1` with compact support and `f` is locally
 integrable. To write down the total derivative as a convolution, we use
 `ContinuousLinearMap.precompR`. -/

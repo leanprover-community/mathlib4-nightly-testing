@@ -207,6 +207,7 @@ end
 
 namespace Abelian.Ext
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma mapExactFunctor_mk₀ [HasExt.{w} C] [HasExt.{w'} D] {X Y : C} (f : X ⟶ Y) :
     (mk₀ f).mapExactFunctor F = mk₀ (F.map f) := by

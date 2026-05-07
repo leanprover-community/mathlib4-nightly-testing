@@ -214,6 +214,7 @@ theorem algebraMap_gradedMul (r : R) (x : (⨁ i, 𝒜 i) ⊗[R] (⨁ i, ℬ i))
   rw [zero_mul, uzpow_zero, one_smul, smul_tmul']
   erw [one_mul, _root_.Algebra.smul_def]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem one_gradedMul (x : (⨁ i, 𝒜 i) ⊗[R] (⨁ i, ℬ i)) :
     gradedMul R 𝒜 ℬ 1 x = x := by
   -- Note: https://github.com/leanprover-community/mathlib4/pull/8386 had to specialize `map_one` to avoid timeouts.
@@ -231,6 +232,7 @@ theorem gradedMul_algebraMap (x : (⨁ i, 𝒜 i) ⊗[R] (⨁ i, ℬ i)) (r : R)
       mul_one, _root_.Algebra.smul_def, Algebra.commutes]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 theorem gradedMul_one (x : (⨁ i, 𝒜 i) ⊗[R] (⨁ i, ℬ i)) :
     gradedMul R 𝒜 ℬ x 1 = x := by
   -- Note: https://github.com/leanprover-community/mathlib4/pull/8386 had to specialize `map_one` to avoid timeouts.

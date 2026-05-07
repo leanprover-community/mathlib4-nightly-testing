@@ -64,6 +64,7 @@ variable (W : MorphismProperty C) {X : C}
   (P : StructuredArrow (W.Q.obj X) W.Q → Prop)
 
 open Construction in
+set_option backward.simpa.using.reducibleClose false in
 private lemma induction_structuredArrow'
     (hP₀ : P (StructuredArrow.mk (𝟙 (W.Q.obj X))))
     (hP₁ : ∀ ⦃Y₁ Y₂ : C⦄ (f : Y₁ ⟶ Y₂) (φ : W.Q.obj X ⟶ W.Q.obj Y₁),
@@ -122,6 +123,7 @@ section
 variable (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W] {Y : C}
   (P : CostructuredArrow L (L.obj Y) → Prop)
 
+set_option backward.simpa.using.reducibleClose false in
 @[elab_as_elim]
 lemma induction_costructuredArrow
     (hP₀ : P (CostructuredArrow.mk (𝟙 (L.obj Y))))

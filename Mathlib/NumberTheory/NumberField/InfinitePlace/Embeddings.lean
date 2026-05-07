@@ -292,6 +292,7 @@ lemma isConj_apply_apply (hσ : IsConj φ σ) (x : K) :
     σ (σ x) = x := by
   simp [← φ.injective.eq_iff, hσ.eq]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsConj.comp (hσ : IsConj φ σ) (ν : Gal(K/k)) :
     IsConj (φ.comp ν) (ν⁻¹ * σ * ν) := by
   ext

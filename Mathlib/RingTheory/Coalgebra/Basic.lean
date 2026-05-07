@@ -557,6 +557,7 @@ abbrev coalgebraStruct [AddCommMonoid B] [Module R B] [CoalgebraStruct R B] (e :
     counit := counit ∘ₗ (e.linearEquiv R).toLinearMap }
 
 variable (R) in
+set_option backward.simpa.using.reducibleClose false in
 /-- Transfer `Coalgebra` across an `Equiv`. -/
 abbrev coalgebra [AddCommMonoid B] [Module R B] [Coalgebra R B] (e : A ≃ B) :
     letI := e.addCommMonoid

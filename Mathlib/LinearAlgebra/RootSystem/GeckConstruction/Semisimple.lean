@@ -185,6 +185,7 @@ open LieModule Matrix
 
 local notation "H" => cartanSubalgebra' b
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma instIsIrreducible_aux₀ {U : LieSubmodule K H (b.support ⊕ ι → K)}
     (χ : H → K) (hχ : χ ≠ 0) (hχ' : genWeightSpace U χ ≠ ⊥) :
     ∃ i, v b i ∈ (genWeightSpace U χ).map U.incl := by
@@ -265,6 +266,7 @@ private lemma instIsIrreducible_aux₁ (U : LieSubmodule K H (b.support ⊕ ι �
   rw [← iSup_genWeightSpace_eq_top K H U, iSup_split_single _ 0, biSup_congr hU, this, sup_bot_eq]
 
 omit [P.IsRootSystem] in
+set_option backward.simpa.using.reducibleClose false in
 private lemma instIsIrreducible_aux₂ [P.IsReduced] [P.IsIrreducible]
     {U : LieSubmodule K (lieAlgebra b) (b.support ⊕ ι → K)} {i : ι} (hi : v b i ∈ U) :
     U = ⊤ := by

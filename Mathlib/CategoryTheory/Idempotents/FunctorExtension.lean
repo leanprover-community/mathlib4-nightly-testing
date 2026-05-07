@@ -43,6 +43,7 @@ theorem natTrans_eq {F G : Karoubi C ⥤ D} (φ : F ⟶ G) (P : Karoubi C) :
 
 namespace FunctorExtension₁
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The canonical extension of a functor `C ⥤ Karoubi D` to a functor
 `Karoubi C ⥤ Karoubi D` -/
 @[simps]
@@ -113,6 +114,7 @@ def functorExtension₁CompWhiskeringLeftToKaroubiIso :
       (fun {X Y} f => by simp))
     (by cat_disch)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The counit isomorphism of the equivalence `(C ⥤ Karoubi D) ≌ (Karoubi C ⥤ Karoubi D)`. -/

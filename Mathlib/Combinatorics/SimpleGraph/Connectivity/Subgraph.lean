@@ -330,6 +330,7 @@ theorem toSubgraph_le_iff {w : G.Walk u v} (hnil : ¬w.Nil) {G' : G.Subgraph} :
   have ⟨e, he, hv'e⟩ := hv'
   exact G'.mem_verts_of_mem_edge (hw he) hv'e
 
+set_option backward.simpa.using.reducibleClose false in
 lemma toSubgraph_bypass_le_toSubgraph {u v : V} {p : G.Walk u v} [DecidableEq V] :
     p.bypass.toSubgraph ≤ p.toSubgraph := by
   constructor

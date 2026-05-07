@@ -343,6 +343,7 @@ def pullbackConeOfLeftFst :
           ← Functor.map_comp, Category.assoc]
         rfl }
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem pullback_cone_of_left_condition : pullbackConeOfLeftFst f g ≫ f = Y.ofRestrict _ ≫ g := by

@@ -675,6 +675,7 @@ theorem HasFPowerSeriesOnBall.tendsto_partialSum_prod {y : E}
     Tendsto (fun (z : ℕ × E) ↦ p.partialSum z.1 z.2) (atTop ×ˢ 𝓝 y) (𝓝 (f (x + y))) :=
   (hf.hasFPowerSeriesWithinOnBall (s := univ)).tendsto_partialSum_prod hy (by simp)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function admits a power series expansion, then it is exponentially close to the partial
 sums of this power series on strict subdisks of the disk of convergence.
 
@@ -772,6 +773,7 @@ theorem HasFPowerSeriesAt.isBigO_sub_partialSum_pow
   rw [← hasFPowerSeriesWithinAt_univ] at hf
   simpa using hf.isBigO_sub_partialSum_pow n
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f` has formal power series `∑ n, pₙ` in a set, within a ball of radius `r`, then
 for `y, z` in any smaller ball, the norm of the difference `f y - f z - p 1 (fun _ ↦ y - z)` is
 bounded above by `C * (max ‖y - x‖ ‖z - x‖) * ‖y - z‖`. This lemma formulates this property

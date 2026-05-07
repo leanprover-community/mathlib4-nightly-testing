@@ -333,6 +333,7 @@ end LinearOrder
 section OrderedGroup
 variable {M : Type*} [AddCommGroup M] [LinearOrder M] [IsOrderedAddMonoid M]
 
+set_option backward.simpa.using.reducibleClose false in
 instance : IsStrictOrderedModule ℚ (DivisibleHull M) where
   smul_lt_smul_of_pos_left a ha b c h := by
     simp_rw [qsmul_of_nonneg ha.le]

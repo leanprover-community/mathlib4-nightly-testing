@@ -152,6 +152,7 @@ private theorem span.loop_eq_take_drop :
   | (a :: l), l₂ => by
     cases hp : p a <;> simp [hp, span.loop, span.loop_eq_take_drop, takeWhile, dropWhile]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem span_eq_takeWhile_dropWhile (l : List α) : span p l = (takeWhile p l, dropWhile p l) := by
   simpa using span.loop_eq_take_drop p l []

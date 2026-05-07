@@ -114,6 +114,7 @@ theorem Finset.exists_equiv_extend_of_card_eq [Fintype α] [DecidableEq β] {t :
             hfs.ne (subset_insert _ _ hi) (mem_insert_self _ _) <| ne_of_mem_of_not_mem hi has)
     · exact g'.injective.ne (ne_of_mem_of_not_mem hi has)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Any injection from a set `s` in a fintype `α` to a finset `t` of the same cardinality as `α`
 can be extended to a bijection between `α` and `t`. -/
 theorem Set.MapsTo.exists_equiv_extend_of_card_eq [Fintype α] {t : Finset β}

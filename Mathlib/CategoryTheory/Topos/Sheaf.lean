@@ -79,6 +79,7 @@ lemma Presheaf.comp_χ_eq (m : F ⟶ G) : m ≫ Presheaf.χ m =
   apply Sieve.ext
   simp [← NatTrans.naturality_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma Presheaf.isPullback_χ_truth (m : F ⟶ G) [Mono m] :

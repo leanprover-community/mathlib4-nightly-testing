@@ -54,6 +54,7 @@ theorem isClosed_polar (s : Set E) : IsClosed (StrongDual.polar 𝕜 s) := by
   refine isClosed_biInter fun z _ => ?_
   exact isClosed_Iic.preimage (ContinuousLinearMap.apply 𝕜 𝕜 z).continuous.norm
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem polar_closure (s : Set E) : StrongDual.polar 𝕜 (closure s) = StrongDual.polar 𝕜 s :=
   ((topDualPairing 𝕜 E).flip.polar_antitone subset_closure).antisymm <|
@@ -104,6 +105,7 @@ theorem closedBall_inv_subset_polar_closedBall {r : ℝ} :
     _ = r / r := inv_mul_eq_div _ _
     _ ≤ 1 := div_self_le_one r
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The `polar` of closed ball in a normed space `E` is the closed ball of the dual with inverse
 radius. -/
 theorem polar_closedBall {𝕜 E : Type*} [RCLike 𝕜] [NormedAddCommGroup E] [NormedSpace 𝕜 E] {r : ℝ}

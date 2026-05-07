@@ -186,6 +186,7 @@ lemma negMulLog_mul (x y : ℝ) : negMulLog (x * y) = y * negMulLog x + x * negM
 @[fun_prop] lemma continuous_negMulLog : Continuous negMulLog := by
   simpa only [negMulLog_eq_neg] using continuous_mul_log.neg
 
+set_option backward.simpa.using.reducibleClose false in
 lemma differentiableOn_negMulLog : DifferentiableOn ℝ negMulLog {0}ᶜ := by
   simpa only [negMulLog_eq_neg] using differentiableOn_mul_log.neg
 
@@ -221,6 +222,7 @@ lemma deriv2_negMulLog (x : ℝ) : deriv^[2] negMulLog x = -x⁻¹ := by
     Function.comp_apply] at h ⊢
   rw [h]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma strictConcaveOn_negMulLog : StrictConcaveOn ℝ (Set.Ici (0 : ℝ)) negMulLog := by
   simpa only [negMulLog_eq_neg] using strictConvexOn_mul_log.neg
 

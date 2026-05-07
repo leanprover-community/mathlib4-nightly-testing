@@ -540,6 +540,7 @@ lemma integrable_const_add_iff [IsFiniteMeasure μ] {f : α → β} {c : β} :
 theorem Integrable.sub {f g : α → β} (hf : Integrable f μ) (hg : Integrable g μ) :
     Integrable (f - g) μ := by simpa only [sub_eq_add_neg] using hf.add hg.neg
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem Integrable.sub' {f g : α → β} (hf : Integrable f μ) (hg : Integrable g μ) :
     Integrable (fun a ↦ f a - g a) μ := by simpa only [sub_eq_add_neg] using hf.add hg.neg
@@ -578,6 +579,7 @@ theorem Integrable.abs {β}
 
 -- TODO: generalise the following lemmas to enorm classes
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Hölder's inequality for integrable functions**: the scalar multiplication of an integrable
 vector-valued function by a scalar function with finite essential supremum is integrable. -/
 theorem Integrable.essSup_smul {R : Type*} [NormedRing R] [Module R β] [IsBoundedSMul R β]
@@ -593,6 +595,7 @@ theorem Integrable.essSup_smul {R : Type*} [NormedRing R] [Module R β] [IsBound
         (p := ∞) (q := 1)
     _ < ∞ := ENNReal.mul_lt_top hg'.lt_top hf.2
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Hölder's inequality for integrable functions: the scalar multiplication of an integrable
 scalar-valued function by a vector-value function with finite essential supremum is integrable. -/
 theorem Integrable.smul_essSup {𝕜 : Type*} [NormedRing 𝕜] [MulActionWithZero 𝕜 β]

@@ -340,6 +340,7 @@ theorem norm_iteratedFDeriv_prod_le [DecidableEq ι] [NormOneClass A'] {u : Fins
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If the derivatives within a set of `g` at `f x` are bounded by `C`, and the `i`-th derivative
 within a set of `f` at `x` is bounded by `D^i` for all `1 ≤ i ≤ n`, then the `n`-th derivative
 of `g ∘ f` is bounded by `n! * C * D^n`.

@@ -36,9 +36,11 @@ section NonUnitalNonAssocSemiring
 variable [NonUnitalNonAssocSemiring α] [TopologicalSpace α] [IsTopologicalSemiring α] {f : ι → α}
   {a₁ : α}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasSum.mul_left (a₂) (h : HasSum f a₁ L) : HasSum (fun i ↦ a₂ * f i) (a₂ * a₁) L := by
   simpa only using h.map (AddMonoidHom.mulLeft a₂) (continuous_const.mul continuous_id)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasSum.mul_right (a₂) (hf : HasSum f a₁ L) : HasSum (fun i ↦ f i * a₂) (a₁ * a₂) L := by
   simpa only using hf.map (AddMonoidHom.mulRight a₂) (continuous_id.mul continuous_const)
 
@@ -137,10 +139,12 @@ theorem Summable.const_div (h : Summable (fun x ↦ 1 / f x) L) (b : α) :
     Summable (fun i ↦ b / f i) L :=
   (h.hasSum.const_div b).summable
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasSum_const_div_iff (h : a₂ ≠ 0) :
     HasSum (fun i ↦ a₂ / f i) (a₂ * a₁) L ↔ HasSum (1 / f) a₁ L := by
   simpa only [div_eq_mul_inv, one_mul] using hasSum_mul_left_iff h
 
+set_option backward.simpa.using.reducibleClose false in
 theorem summable_const_div_iff (h : a ≠ 0) :
     (Summable (fun i ↦ a / f i) L) ↔ Summable (1 / f) L := by
   simpa only [div_eq_mul_inv, one_mul] using summable_mul_left_iff h

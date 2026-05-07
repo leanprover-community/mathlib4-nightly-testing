@@ -307,6 +307,7 @@ lemma ker_corootForm_eq_dualAnnihilator :
       (P.rootSpan R).dualAnnihilator.map (P.flip.toPerfPair.symm : Dual R M →ₗ[R] N) :=
   P.flip.ker_rootForm_eq_dualAnnihilator
 
+set_option backward.simpa.using.reducibleClose false in
 instance : P.IsBalanced where
     isPerfectCompl :=
   { isCompl_left := by

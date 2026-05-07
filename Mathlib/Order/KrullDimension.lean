@@ -234,6 +234,7 @@ The height of an element in a series is larger or equal to its index in the seri
 lemma index_le_height (p : LTSeries α) (i : Fin (p.length + 1)) : i ≤ height (p i) :=
   length_le_height_last (p := p.take i)
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 The coheight of an element in a series is larger or equal to its reverse index in the series.
 -/
@@ -254,6 +255,7 @@ lemma height_eq_index_of_length_eq_height_last {p : LTSeries α} (h : p.length =
   lia
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /--
 In a maximally long series, i.e one as long as the coheight of the first element, the coheight of
 each element is its reverse index in the series.
@@ -356,6 +358,7 @@ lemma height_orderIso (f : α ≃o β) (x : α) : height (f x) = height x := by
 lemma coheight_orderIso (f : α ≃o β) (x : α) : coheight (f x) = coheight x :=
   height_orderIso (α := αᵒᵈ) f.dual x
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma exists_eq_iSup_of_iSup_eq_coe {α : Type*} [Nonempty α] {f : α → ℕ∞} {n : ℕ}
     (h : (⨆ x, f x) = n) : ∃ x, f x = n := by
   obtain ⟨x, hx⟩ := ENat.sSup_mem_of_nonempty_of_lt_top (h ▸ ENat.coe_lt_top _)
@@ -772,6 +775,7 @@ lemma height_le_krullDim (a : α) : height a ≤ krullDim α := by
   simp only [WithBot.coe_le_coe]
   exact height_le fun p _ ↦ le_iSup_of_le p le_rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma coheight_le_krullDim (a : α) : coheight a ≤ krullDim α := by
   simpa using height_le_krullDim (α := αᵒᵈ) a
 
@@ -802,6 +806,7 @@ lemma krullDim_eq_iSup_height_of_nonempty [Nonempty α] : krullDim α = ↑(⨆ 
     apply iSup_le
     apply height_le_krullDim
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 The Krull dimension is the supremum of the elements' coheights.
 
@@ -1007,6 +1012,7 @@ lemma coheight_int (n : ℤ) : coheight n = ⊤ := coheight_of_noMaxOrder ..
 
 lemma krullDim_int : krullDim ℤ = ⊤ := krullDim_of_noMaxOrder ..
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma height_coe_withBot (x : α) : height (x : WithBot α) = height x + 1 := by
   apply le_antisymm
   · apply height_le

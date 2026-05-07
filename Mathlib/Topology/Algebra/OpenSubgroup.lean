@@ -241,6 +241,7 @@ namespace Subgroup
 
 variable {G : Type*} [Group G] [TopologicalSpace G]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem isOpen_of_mem_nhds [SeparatelyContinuousMul G] (H : Subgroup G) {g : G}
     (hg : (H : Set G) ∈ 𝓝 g) : IsOpen (H : Set G) := by

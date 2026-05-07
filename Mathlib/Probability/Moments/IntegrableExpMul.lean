@@ -550,6 +550,7 @@ open Complex
 
 variable {z : ℂ}
 
+set_option backward.simpa.using.reducibleClose false in
 lemma integrable_cexp_mul_of_re_mem_integrableExpSet (hX : AEMeasurable X μ)
     (hz : z.re ∈ integrableExpSet X μ) :
     Integrable (fun ω ↦ cexp (z * X ω)) μ := by

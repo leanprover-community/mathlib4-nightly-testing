@@ -159,6 +159,7 @@ theorem isUnit_to_map_iff (x : R) : IsUnit ((algebraMap R S) x) ↔ x ∈ I.prim
 
 -- Can't use typeclasses to infer the `IsLocalRing` instance, so use an `optParam` instead
 -- (since `IsLocalRing` is a `Prop`, there should be no unification issues.)
+set_option backward.simpa.using.reducibleClose false in
 theorem to_map_mem_maximal_iff (x : R) (h : IsLocalRing S := isLocalRing S I) :
     algebraMap R S x ∈ IsLocalRing.maximalIdeal S ↔ x ∈ I :=
   not_iff_not.mp <| by
@@ -177,6 +178,7 @@ theorem isUnit_mk'_iff (x : R) (y : I.primeCompl) : IsUnit (mk' S x y) ↔ x ∈
   ⟨fun h hx => mk'_mem_iff.mpr ((to_map_mem_maximal_iff S I x).mpr hx) h, fun h =>
     isUnit_iff_exists_inv.mpr ⟨mk' S ↑y ⟨x, h⟩, mk'_mul_mk'_eq_one ⟨x, h⟩ y⟩⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mk'_mem_maximal_iff (x : R) (y : I.primeCompl) (h : IsLocalRing S := isLocalRing S I) :
     mk' S x y ∈ IsLocalRing.maximalIdeal S ↔ x ∈ I :=
   not_iff_not.mp <| by

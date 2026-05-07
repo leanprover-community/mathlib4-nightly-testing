@@ -86,6 +86,7 @@ private lemma t1_comp_t1_neg (c : k) : (T1 f c).comp (T1 f (-c)) = AlgHom.id _ _
 private noncomputable abbrev T := AlgEquiv.ofAlgHom (T1 f 1) (T1 f (-1))
   (t1_comp_t1_neg f 1) (by simpa using t1_comp_t1_neg f (-1))
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma sum_r_mul_ne (vlt : ∀ i, v i < up) (wlt : ∀ i, w i < up) (ne : v ≠ w) :
     ∑ x : Fin (n + 1), r x * v x ≠ ∑ x : Fin (n + 1), r x * w x := by
   intro h

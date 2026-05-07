@@ -168,6 +168,7 @@ noncomputable instance instPartialOrder : PartialOrder (Filtration ι m) where
   le_trans _ _ _ h_fg h_gh i := (h_fg i).trans (h_gh i)
   le_antisymm _ _ h_fg h_gf := Filtration.ext <| funext fun i => (h_fg i).antisymm (h_gf i)
 
+set_option backward.simpa.using.reducibleClose false in
 noncomputable instance instCompleteLattice : CompleteLattice (Filtration ι m) where
   sup := (· ⊔ ·)
   le_sup_left _ _ _ := le_sup_left

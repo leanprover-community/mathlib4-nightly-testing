@@ -731,6 +731,7 @@ instance : Inhabited (A ≃⋆ₐ[R] A) :=
 theorem coe_refl : ⇑(refl : A ≃⋆ₐ[R] A) = id :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The inverse of a star algebra isomorphism is a star algebra isomorphism. -/
 @[symm]
 nonrec def symm (e : A ≃⋆ₐ[R] B) : B ≃⋆ₐ[R] A :=

@@ -117,6 +117,7 @@ theorem ContDiff.continuous_deriv_one (h : ContDiff 𝕜 1 f) : Continuous (deri
 theorem ContDiff.differentiable_deriv_two (h : ContDiff 𝕜 2 f) : Differentiable 𝕜 (deriv f) := by
   unfold deriv; fun_prop
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 protected lemma ContDiffAt.derivWithin {x : 𝕜} (H : ContDiffAt 𝕜 n f x) (hmn : m + 1 ≤ n) :
     ContDiffAt 𝕜 m (deriv f) x := by

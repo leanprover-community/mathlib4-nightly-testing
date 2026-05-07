@@ -65,6 +65,7 @@ lemma selfAdjoint.realPart_unitarySelfAddISMul (a : selfAdjoint A) (ha_norm : �
     ℜ (unitarySelfAddISMul a ha_norm : A) = a := by
   simp [IsSelfAdjoint.imaginaryPart (x := CFC.sqrt (1 - a ^ 2 : A)) (by cfc_tac)]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A stepping stone to `CStarAlgebra.exists_sum_four_unitary` that specifies the unitary
 elements precisely. The `let`s in the statement are intentional. -/
 lemma CStarAlgebra.norm_smul_two_inv_smul_add_four_unitary (x : A) (hx : x ≠ 0) :

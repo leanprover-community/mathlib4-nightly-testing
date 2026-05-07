@@ -771,6 +771,7 @@ theorem circumsphere_eq_of_cospherical {ps : Set P} {n : ℕ} [FiniteDimensional
   rcases exists_circumsphere_eq_of_cospherical hd hc with ⟨r, hr⟩
   rw [hr sx₁ hsx₁, hr sx₂ hsx₂]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Suppose all distances from `p₁` and `p₂` to the points of a
 simplex are equal, and that `p₁` and `p₂` lie in the affine span of
 `p` with the vertices of that simplex.  Then `p₁` and `p₂` are equal

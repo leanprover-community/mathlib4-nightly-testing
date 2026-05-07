@@ -29,6 +29,7 @@ theorem finitePresentation_stableUnderComposition : StableUnderComposition @Fini
   introv R hf hg
   exact hg.comp hf
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Being finitely-presented respects isomorphisms. -/
 theorem finitePresentation_respectsIso : RingHom.RespectsIso @RingHom.FinitePresentation :=
   finitePresentation_stableUnderComposition.respectsIso

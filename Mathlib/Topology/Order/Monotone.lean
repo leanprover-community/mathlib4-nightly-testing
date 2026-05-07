@@ -433,6 +433,7 @@ lemma MonotoneOn.tendsto_nhdsWithin_Ioo_right {α β : Type*} [LinearOrder α] [
     filter_upwards [Ioo_mem_nhdsGT xz] with w hw
     exact (Mf ⟨hw.1, hw.2.trans zy⟩ ⟨xz, zy⟩ hw.2.le).trans_lt zm
 
+set_option backward.simpa.using.reducibleClose false in
 lemma MonotoneOn.tendsto_nhdsLT {α β : Type*} [LinearOrder α] [TopologicalSpace α] [OrderTopology α]
     [ConditionallyCompleteLinearOrder β] [TopologicalSpace β] [OrderTopology β] {f : α → β} {x : α}
     (Mf : MonotoneOn f (Iio x)) (h_bdd : BddAbove (f '' Iio x)) :

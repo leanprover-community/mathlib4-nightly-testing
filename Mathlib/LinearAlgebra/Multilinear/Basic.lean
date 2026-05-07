@@ -262,6 +262,7 @@ section
 
 variable (R M₂ M₃)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Equivalence between linear maps `M₂ →ₗ[R] M₃` and one-multilinear maps. -/
 @[simps]
 def ofSubsingleton [Subsingleton ι] (i : ι) :

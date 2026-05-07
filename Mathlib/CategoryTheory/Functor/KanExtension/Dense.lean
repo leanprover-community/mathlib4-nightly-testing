@@ -94,6 +94,7 @@ lemma IsDense.comp_right_iff_of_isEquivalence (G : D ⥤ C') [G.IsEquivalence] :
     isoWhiskerLeft _ G.asEquivalence.unitIso.symm ≪≫ F.rightUnitor
   exact of_iso e
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 instance [F.IsDense] : (restrictedULiftYoneda.{w} F).Faithful where
   map_injective h :=

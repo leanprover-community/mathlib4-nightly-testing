@@ -202,6 +202,7 @@ lemma d_comp_desc_eq_zero_iff' ⦃W : C⦄ (f' : cocone.pt ⟶ K.X k)
 
 set_option backward.defeqAttrib.useBackward true in
 include hk hk' in
+set_option backward.simpa.using.reducibleClose false in
 lemma d_comp_desc_eq_zero_iff ⦃W : C⦄ (φ : W ⟶ cocone.pt) :
     φ ≫ hcocone.desc (CokernelCofork.ofπ (K.d j k) (K.d_comp_d i j k)) = 0 ↔
       φ ≫ ((isColimitCokernelCofork K e hj' hi hi' cocone hcocone).desc

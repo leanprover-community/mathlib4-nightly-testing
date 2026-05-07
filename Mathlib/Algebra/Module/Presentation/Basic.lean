@@ -265,6 +265,7 @@ lemma injective_fromQuotient_iff_ker_π_eq_span :
     obtain ⟨x, rfl⟩ := hx
     simp only [toQuotient_map_apply, Submodule.zero_mem]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma surjective_fromQuotient_iff_surjective_π :
     Function.Surjective solution.fromQuotient ↔ Function.Surjective solution.π := by
   simpa only [← fromQuotient_comp_toQuotient] using
@@ -439,6 +440,7 @@ lemma desc_var (h : IsPresentationCore.{w'} solution)
     h.desc s (solution.var g) = s.var g :=
   congr_var (h.postcomp_desc s) g
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The structure `IsPresentationCore` can be shrunk to a lower universe. -/
 def down (h : IsPresentationCore.{max w' w''} solution) :
     IsPresentationCore.{w''} solution where

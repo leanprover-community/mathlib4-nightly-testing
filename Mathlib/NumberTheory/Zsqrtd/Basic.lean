@@ -625,6 +625,7 @@ protected theorem le_total (a b : ℤ√d) : a ≤ b ∨ b ≤ a := by
   have t := (b - a).nonneg_total
   rwa [neg_sub] at t
 
+set_option backward.simpa.using.reducibleClose false in
 instance preorder : Preorder (ℤ√d) where
   le_refl a := show Nonneg (a - a) by simp only [sub_self]; trivial
   le_trans a b c hab hbc := by simpa [sub_add_sub_cancel'] using hab.add hbc
@@ -659,6 +660,7 @@ protected theorem add_le_add_left (a b : ℤ√d) (ab : a ≤ b) (c : ℤ√d) :
 
 
 
+set_option backward.simpa.using.reducibleClose false in
 theorem nonneg_smul {a : ℤ√d} {n : ℕ} (ha : Nonneg a) : Nonneg ((n : ℤ√d) * a) := by
   rw [← Int.cast_natCast n]
   exact

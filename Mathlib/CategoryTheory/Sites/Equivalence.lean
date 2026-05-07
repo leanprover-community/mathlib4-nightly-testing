@@ -52,6 +52,7 @@ variable (A : Type u₃) [Category.{v₃} A]
 
 namespace Equivalence
 
+set_option backward.simpa.using.reducibleClose false in
 instance (priority := 900) [G.IsEquivalence] : IsCoverDense G J where
   is_cover U := by
     let e := (asEquivalence G).symm

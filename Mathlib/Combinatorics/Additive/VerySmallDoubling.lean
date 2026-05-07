@@ -46,6 +46,7 @@ variable {G : Type*} [Group G] [DecidableEq G] {K : ℝ} {A B S : Finset G} {a b
 
 /-! ### Doubling exactly `1` -/
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 private lemma smul_stabilizer_of_no_doubling_aux (hA : #(A * A) ≤ #A) (ha : a ∈ A) :
     a •> (stabilizer G A : Set G) = A ∧ (stabilizer G A : Set G) <• a = A := by
@@ -374,6 +375,7 @@ private lemma card_mul_eq_mul_card_of_injOn_opSMul {H : Subgroup G} [Fintype H]
 
 set_option linter.flexible false in -- simp followed by positivity
 open goldenRatio in
+set_option backward.simpa.using.reducibleClose false in
 /-- If `A` has doubling `K` strictly less than `φ`, then `A * A⁻¹` is covered by
 at most a constant number of cosets of a finite subgroup of `G`. -/
 theorem doubling_lt_golden_ratio (hK₁ : 1 < K) (hKφ : K < φ)
@@ -682,6 +684,7 @@ private lemma IsFragment.nonempty (hK : K < 1) (hS : S.Nonempty) (hA : IsFragmen
 private lemma IsAtom.nonempty (hK : K < 1) (hS : S.Nonempty) (hA : IsAtom K S A) : A.Nonempty :=
   hA.isFragment.nonempty hK hS
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For `K < 1` and finite nonempty `S ⊆ G`, there exists a finite subgroup `H ≤ G` that is also
 an atom for `K` and `S`. -/
 private lemma exists_subgroup_isAtom (hK : K < 1) (hS : S.Nonempty) :

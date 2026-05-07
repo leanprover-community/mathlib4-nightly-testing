@@ -38,6 +38,7 @@ lemma monoidWithZeroHom_strictMono :
     StrictMono (orderMonoidWithZeroHom f) :=
   map'_strictMono (Subtype.strictMono_coe _)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma embedding_strictMono : StrictMono (embedding (f := f)) := by
   intro x y hxy
   rw [← monoidWithZeroHom_strictMono.lt_iff_lt] at hxy

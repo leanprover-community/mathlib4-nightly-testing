@@ -135,6 +135,7 @@ theorem iff :
     letI := (FinitePresentation.mvPolynomial_aux R _).quotient hfg
     exact equiv e
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An algebra is finitely presented if and only if it is a quotient of a polynomial ring whose
 variables are indexed by a fintype by a finitely generated ideal. -/
 theorem iff_quotient_mvPolynomial' :

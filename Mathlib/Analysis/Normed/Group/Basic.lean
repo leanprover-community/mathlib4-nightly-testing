@@ -442,6 +442,7 @@ lemma norm_pow_le_mul_norm : ∀ {n : ℕ}, ‖a ^ n‖ ≤ n * ‖a‖
   | 0 => by simp
   | n + 1 => by simpa [pow_succ, add_mul] using norm_mul_le_of_le' norm_pow_le_mul_norm le_rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive nnnorm_nsmul_le]
 lemma nnnorm_pow_le_mul_norm {n : ℕ} : ‖a ^ n‖₊ ≤ n * ‖a‖₊ := by
   simpa only [← NNReal.coe_le_coe, NNReal.coe_mul, NNReal.coe_natCast] using norm_pow_le_mul_norm

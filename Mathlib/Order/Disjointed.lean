@@ -272,6 +272,7 @@ end LinearOrder
 ### Functions on an arbitrary fintype
 -/
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For any finite family of elements `f : ι → α`, we can find a pairwise-disjoint family `g`
 bounded above by `f` and having the same supremum. This is non-canonical, depending on an arbitrary
 choice of ordering of `ι`. -/

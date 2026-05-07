@@ -211,6 +211,7 @@ theorem colimit_sound' {j j' : J} {x : F.obj j} {x' : F.obj j'} {j'' : J}
   rw [← colimit.w_apply _ f, ← colimit.w_apply _ f', w]
 
 variable {F} in
+set_option backward.simpa.using.reducibleClose false in
 theorem colimit_eq {j j' : J} {x : F.obj j} {x' : F.obj j'}
     (w : colimit.ι F j x = colimit.ι F j' x') :
       Relation.EqvGen F.ColimitTypeRel ⟨j, x⟩ ⟨j', x'⟩ := by

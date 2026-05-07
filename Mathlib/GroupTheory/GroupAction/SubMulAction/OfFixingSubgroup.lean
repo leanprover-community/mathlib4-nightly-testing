@@ -121,6 +121,7 @@ def ofFixingSubgroup_equivariantMap :
   toFun x := x
   map_smul' _ _ := rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem ofFixingSubgroup_equivariantMap_injective :
     Injective (ofFixingSubgroup_equivariantMap M s) := by
@@ -360,6 +361,7 @@ theorem map_ofFixingSubgroupUnion_def (x : SubMulAction.ofFixingSubgroup M (s âˆ
     ((SubMulAction.map_ofFixingSubgroupUnion M s t) x : Î±) = x :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem map_ofFixingSubgroupUnion_bijective :
     Bijective (map_ofFixingSubgroupUnion M s t) := by

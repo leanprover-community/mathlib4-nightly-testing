@@ -461,6 +461,7 @@ theorem IsEquiv.orderRingIso_symm_apply (h : v.IsEquiv w) (x : WithVal w) :
 
 open MonoidWithZeroHom MonoidWithZeroHom.ValueGroup₀
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem IsEquiv.uniformContinuous_equiv [hval : Valued R Γ₀'] (hv : Valued.v = w)
     (h : v.IsEquiv w) : UniformContinuous (WithVal.equiv v) := by
@@ -583,6 +584,7 @@ theorem restrict_exists_div_eq {K : Type*} [Field K] {Γ₀ : Type*}
 
 set_option backward.isDefEq.respectTransparency false in
 open UniformSpace.Completion in
+set_option backward.simpa.using.reducibleClose false in
 theorem IsEquiv.valuedCompletion_le_one_iff {K : Type*} [Field K] {v : Valuation K Γ₀}
     {w : Valuation K Γ₀'} (h : v.IsEquiv w) {x : v.Completion} :
     Valued.v x ≤ 1 ↔ Valued.v (mapEquiv h.uniformEquiv x) ≤ 1 := by

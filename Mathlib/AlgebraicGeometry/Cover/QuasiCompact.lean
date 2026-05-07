@@ -91,6 +91,7 @@ lemma of_hom {𝒱 : PreZeroHypercover.{w'} S} (f : 𝒱.Hom 𝒰) [QuasiCompact
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (𝒰) in
+set_option backward.simpa.using.reducibleClose false in
 @[stacks 022D "(3)"]
 instance [QuasiCompactCover 𝒰] {T : Scheme.{u}} (f : T ⟶ S) :
     QuasiCompactCover (𝒰.pullback₁ f) := by
@@ -122,6 +123,7 @@ instance [QuasiCompactCover 𝒰] {T : Scheme.{u}} (f : T ⟶ S) :
     QuasiCompactCover (𝒰.pullback₂ f) :=
   .of_hom (PreZeroHypercover.pullbackIso f 𝒰).hom
 
+set_option backward.simpa.using.reducibleClose false in
 @[stacks 022D "(2)"]
 instance {X : Scheme.{u}} (𝒰 : PreZeroHypercover.{w} X) [QuasiCompactCover 𝒰]
     (f : ∀ (x : 𝒰.I₀), PreZeroHypercover.{w} (𝒰.X x)) [∀ x, QuasiCompactCover (f x)] :

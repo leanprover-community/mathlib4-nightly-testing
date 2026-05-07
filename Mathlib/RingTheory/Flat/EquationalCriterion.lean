@@ -171,6 +171,7 @@ theorem iff_forall_isTrivialRelation : Flat R M ↔ ∀ {l : ℕ} {f : Fin l →
     ∑ i, f i • x i = 0 → IsTrivialRelation f x :=
   (tfae_equational_criterion R M).out 0 3
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Equational criterion for flatness**, forward direction.
 
 If $M$ is flat, then every relation $\sum_i f_i x_i = 0$ in $M$ is trivial. -/

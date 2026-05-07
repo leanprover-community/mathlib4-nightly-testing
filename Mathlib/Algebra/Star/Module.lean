@@ -218,6 +218,7 @@ theorem algebraMap_star_comm (r : R) : algebraMap R A (star r) = star (algebraMa
   simp only [Algebra.algebraMap_eq_smul_one, star_smul, star_one]
 
 variable (A) in
+set_option backward.simpa.using.reducibleClose false in
 protected lemma IsSelfAdjoint.algebraMap {r : R} (hr : IsSelfAdjoint r) :
     IsSelfAdjoint (algebraMap R A r) := by
   simpa using congr(algebraMap R A $(hr.star_eq))

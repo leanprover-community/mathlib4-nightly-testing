@@ -323,6 +323,7 @@ position, i.e. bounds for the term `|v - (GenContFract.of v).convs n|`.
 -/
 
 
+set_option backward.simpa.using.reducibleClose false in
 /-- This lemma follows from the finite correctness proof, the determinant equality, and
 by simplifying the difference. -/
 theorem sub_convs_eq {ifp : IntFractPair K}

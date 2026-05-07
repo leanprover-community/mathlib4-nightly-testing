@@ -93,6 +93,7 @@ variable (P : Cᵒᵖ ⥤ A) {X : C} (S : Sieve X) (R : Presieve X) (E : Aᵒᵖ
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a sieve `S` on `X : C`, a presheaf `P : Cᵒᵖ ⥤ A`, and an object `E` of `A`,
     the cones over the natural diagram `S.arrows.diagram.op ⋙ P` associated to `S` and `P`
     with cone point `E` are in 1-1 correspondence with `SieveCompatible` family of elements
@@ -473,6 +474,7 @@ def Sheaf.terminal {X : A} (hX : IsTerminal X) : Sheaf J A where
   property := Presheaf.isSheaf_of_isTerminal J hX
 
 variable (J) in
+set_option backward.simpa.using.reducibleClose false in
 /-- The constant sheaf of a terminal object is indeed terminal -/
 def Sheaf.isTerminalTerminal {X : A} (hX : IsTerminal X) : IsTerminal (Sheaf.terminal J hX) :=
   .ofUniqueHom (⟨(Functor.isTerminalConst _ hX).from ·.obj⟩)

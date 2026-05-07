@@ -22,6 +22,7 @@ open Filter Topology
 
 variable {X : Type*} [TopologicalSpace X]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem AccPt.map {β : Type*} [TopologicalSpace β] {F : Filter X} {x : X}
     (h : AccPt x F) {f : X → β} (hf1 : ContinuousAt f x) (hf2 : Function.Injective f) :
     AccPt (f x) (map f F) := by

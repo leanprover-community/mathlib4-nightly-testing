@@ -144,6 +144,7 @@ theorem isProperMap_eval [ProperSpace R] (p : R[X]) (h : 0 < degree p) : IsPrope
     rw [← Metric.cobounded_eq_cocompact, ← tendsto_norm_atTop_iff_cobounded]
     exact p.tendsto_norm_atTop h tendsto_norm_cobounded_atTop⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isClosedMap_eval [ProperSpace R] (p : R[X]) : IsClosedMap p.eval := by
   obtain h | h := le_or_gt p.degree 0
   · rw [degree_le_zero_iff.mp h]; simpa using isClosedMap_const

@@ -61,6 +61,7 @@ private lemma prod_multisetInfinitePlace_eq {M : Type*} [CommMonoid M] (f : Abso
     (fun v _ ↦ v.val) (fun _ _ ↦ Finset.mem_univ _) (fun v _ ↦ by simp [v.isInfinitePlace])
     (fun _ _ ↦ rfl) (fun _ _ ↦ rfl) fun w hw ↦ by rw [count_multisetInfinitePlace_eq_mult ⟨w, _⟩]
 
+set_option backward.simpa.using.reducibleClose false in
 noncomputable
 instance instAdmissibleAbsValues : AdmissibleAbsValues K where
   archAbsVal := multisetInfinitePlace K

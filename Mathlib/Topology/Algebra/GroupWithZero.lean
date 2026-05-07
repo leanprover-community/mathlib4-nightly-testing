@@ -165,6 +165,7 @@ open scoped Pointwise
 
 variable [GroupWithZero G₀] [TopologicalSpace G₀] [ContinuousInv₀ G₀] {x : G₀}
 
+set_option backward.simpa.using.reducibleClose false in
 lemma nhds_inv₀ (hx : x ≠ 0) : 𝓝 x⁻¹ = (𝓝 x)⁻¹ := by
   refine le_antisymm (inv_le_iff_le_inv.1 ?_) (tendsto_inv₀ hx)
   simpa only [inv_inv] using tendsto_inv₀ (inv_ne_zero hx)
@@ -187,6 +188,7 @@ section Div
 variable [GroupWithZero G₀] [TopologicalSpace G₀] [ContinuousInv₀ G₀] [ContinuousMul G₀]
   {f g : α → G₀}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Filter.Tendsto.div {l : Filter α} {a b : G₀} (hf : Tendsto f l (𝓝 a))
     (hg : Tendsto g l (𝓝 b)) (hy : b ≠ 0) : Tendsto (f / g) l (𝓝 (a / b)) := by
   simpa only [div_eq_mul_inv] using hf.mul (hg.inv₀ hy)
@@ -214,6 +216,7 @@ nonrec theorem ContinuousAt.div (hf : ContinuousAt f a) (hg : ContinuousAt g a) 
     ContinuousAt (f / g) a :=
   hf.div hg h₀
 
+set_option backward.simpa.using.reducibleClose false in
 @[continuity]
 theorem Continuous.div (hf : Continuous f) (hg : Continuous g) (h₀ : ∀ x, g x ≠ 0) :
     Continuous (f / g) := by simpa only [div_eq_mul_inv] using hf.mul (hg.inv₀ h₀)
@@ -221,6 +224,7 @@ theorem Continuous.div (hf : Continuous f) (hg : Continuous g) (h₀ : ∀ x, g 
 theorem continuousOn_div : ContinuousOn (fun p : G₀ × G₀ => p.1 / p.2) { p | p.2 ≠ 0 } :=
   continuousOn_fst.div continuousOn_snd fun _ => id
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem Continuous.div₀ (hf : Continuous f) (hg : Continuous g) (h₀ : ∀ x, g x ≠ 0) :
     Continuous (fun x => f x / g x) := by

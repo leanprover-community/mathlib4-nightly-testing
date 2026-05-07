@@ -89,10 +89,12 @@ theorem finite_of_card_ne_zero (h : Nat.card α ≠ 0) : Finite α := (card_ne_z
 theorem card_congr (f : α ≃ β) : Nat.card α = Nat.card β :=
   Cardinal.toNat_congr f
 
+set_option backward.simpa.using.reducibleClose false in
 lemma card_le_card_of_injective {α : Type u} {β : Type v} [Finite β] (f : α → β)
     (hf : Injective f) : Nat.card α ≤ Nat.card β := by
   simpa using toNat_le_toNat (lift_mk_le_lift_mk_of_injective hf) (by simp)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma card_le_card_of_surjective {α : Type u} {β : Type v} [Finite α] (f : α → β)
     (hf : Surjective f) : Nat.card β ≤ Nat.card α := by
   have : lift.{u} #β ≤ lift.{v} #α := mk_le_of_surjective (ULift.map_surjective.2 hf)

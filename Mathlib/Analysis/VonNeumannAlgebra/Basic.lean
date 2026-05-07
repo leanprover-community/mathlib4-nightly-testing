@@ -149,6 +149,7 @@ theorem IsIdempotentElem.mem_iff {e : H →L[ℂ] H} (h : IsIdempotentElem e)
   conv_rhs => simp [← h.commute_iff, Commute.symm_iff (a := e), commute_iff_eq, ← mem_commutant_iff]
 
 open VonNeumannAlgebra ContinuousLinearMap in
+set_option backward.simpa.using.reducibleClose false in
 /-- A star projection is an element in a von Neumann algebra if and only if
 its range is invariant under the commutant. -/
 theorem IsStarProjection.mem_iff {e : H →L[ℂ] H} (he : IsStarProjection e)

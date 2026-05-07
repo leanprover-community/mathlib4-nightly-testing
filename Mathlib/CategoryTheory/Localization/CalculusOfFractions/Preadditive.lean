@@ -195,6 +195,7 @@ lemma add'_comp (f₁ f₂ : L.obj X ⟶ L.obj Y) (g : L.obj Y ⟶ L.obj Z) :
   dsimp [LeftFraction₂.add]
   rw [add_comp]
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma comp_add' (f : L.obj X ⟶ L.obj Y) (g₁ g₂ : L.obj Y ⟶ L.obj Z) :
     f ≫ add' W g₁ g₂ = add' W (f ≫ g₁) (f ≫ g₂) := by

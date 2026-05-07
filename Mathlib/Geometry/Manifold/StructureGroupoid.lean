@@ -193,6 +193,7 @@ instance StructureGroupoid.partialOrder : PartialOrder (StructureGroupoid H) :=
 theorem StructureGroupoid.le_iff {G₁ G₂ : StructureGroupoid H} : G₁ ≤ G₂ ↔ ∀ e, e ∈ G₁ → e ∈ G₂ :=
   Iff.rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The trivial groupoid, containing only the identity (and maps with empty source, as this is
 necessary from the definition). -/
 def idGroupoid (H : Type*) [TopologicalSpace H] : StructureGroupoid H where

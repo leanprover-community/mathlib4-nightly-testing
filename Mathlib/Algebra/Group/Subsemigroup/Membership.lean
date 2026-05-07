@@ -75,6 +75,7 @@ theorem mem_iSup_of_directed {S : ι → Subsemigroup M} (hS : Directed (· ≤ 
     refine (hS i.down j.down).imp ?_
     simp
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive (attr := simp)]
 theorem mem_iSup_prop {p : Prop} {S : p → Subsemigroup M} {x : M} :
     x ∈ ⨆ (h : p), S h ↔ ∃ (h : p), x ∈ S h := by

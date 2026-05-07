@@ -184,6 +184,7 @@ alias injective_add_right_of_ne_top := add_right_injective_of_ne_top
 lemma sub_left_injective_of_ne_top (h : b ≠ ⊤) : Function.Injective fun x ↦ x - b := by
   simpa [sub_eq_add_neg] using add_left_injective_of_ne_top (-b) (by simpa)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma sub_right_injective_of_ne_top (h : b ≠ ⊤) : Function.Injective fun x ↦ b - x := by
   simpa [sub_eq_add_neg] using (add_right_injective_of_ne_top b h).comp neg_injective
 

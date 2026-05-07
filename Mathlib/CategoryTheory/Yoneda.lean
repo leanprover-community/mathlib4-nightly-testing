@@ -793,6 +793,7 @@ lemma yonedaEquiv_symm_map {X Y : Cᵒᵖ} (f : X ⟶ Y) {F : Cᵒᵖ ⥤ Type v
   obtain ⟨u, rfl⟩ := yonedaEquiv.surjective t
   rw [yonedaEquiv_naturality', Equiv.symm_apply_apply, Equiv.symm_apply_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Two morphisms of presheaves of types `P ⟶ Q` coincide if the precompositions
 with morphisms `yoneda.obj X ⟶ P` agree. -/
 lemma hom_ext_yoneda {P Q : Cᵒᵖ ⥤ Type v₁} {f g : P ⟶ Q}
@@ -862,6 +863,7 @@ def curriedYonedaLemma {C : Type u₁} [SmallCategory C] :
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The curried version of the Yoneda lemma. -/
 def largeCurriedYonedaLemma {C : Type u₁} [Category.{v₁} C] :
     yoneda.op ⋙ coyoneda ≅

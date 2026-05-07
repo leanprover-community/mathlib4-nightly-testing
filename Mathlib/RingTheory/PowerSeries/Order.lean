@@ -367,6 +367,7 @@ theorem order_zero_of_unit {f : R⟦X⟧} : IsUnit f → f.order = 0 := by
   rw [← add_eq_zero, ← hf, ← nonpos_iff_eq_zero, ← @order_one R _ _, ← hu]
   exact order_mul_ge _ _
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The order of the formal power series `X` is `1`. -/
 @[simp]
 theorem order_X : order (X : R⟦X⟧) = 1 := by

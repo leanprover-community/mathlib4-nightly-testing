@@ -64,10 +64,12 @@ open AbsoluteValue.Completion UniformSpace.Completion NumberField.ComplexEmbeddi
 
 variable {K : Type*} [Field K] (v : InfinitePlace K)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isometry_embedding : Isometry (v.embedding.comp (WithAbs.equiv v.1).toRingHom) :=
   AddMonoidHomClass.isometry_of_norm _ fun x ↦ by
     simpa using v.norm_embedding_eq (WithAbs.equiv v.1 x)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isometry_embedding_of_isReal (hv : v.IsReal) :
     Isometry ((v.embedding_of_isReal hv).comp (WithAbs.equiv v.1).toRingHom) :=
   AddMonoidHomClass.isometry_of_norm _ fun x ↦ by
@@ -245,6 +247,7 @@ theorem liesOver_extensionEmbedding [ContinuousSMul v.Completion w.Completion]
     · simp [WithAbs.algebraMap_left_apply, WithAbs.algebraMap_right_apply,
         ← ComplexEmbedding.LiesOver.over w.embedding v.embedding]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem liesOver_conjugate_extensionEmbedding [ContinuousSMul v.Completion w.Completion]
     [ComplexEmbedding.LiesOver (conjugate w.embedding) v.embedding] :
     ComplexEmbedding.LiesOver (conjugate (extensionEmbedding w)) (extensionEmbedding v) where

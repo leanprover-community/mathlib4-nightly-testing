@@ -303,6 +303,7 @@ theorem image_norm_le_of_norm_deriv_right_le_deriv_boundary {f' : ℝ → E}
   image_norm_le_of_norm_deriv_right_le_deriv_boundary' hf hf' ha
     (fun x _ => (hB x).continuousAt.continuousWithinAt) (fun x _ => (hB x).hasDerivWithinAt) bound
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A function on `[a, b]` with the norm of the right derivative bounded by `C`
 satisfies `‖f x - f a‖ ≤ C * (x - a)`. -/
 theorem norm_image_sub_le_of_norm_deriv_right_le_segment {f' : ℝ → E} {C : ℝ}
@@ -372,6 +373,7 @@ theorem constant_of_derivWithin_zero (hdiff : DifferentiableOn ℝ f (Icc a b))
 
 variable {f' g : ℝ → E}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If two continuous functions on `[a, b]` have the same right derivative and are equal at `a`,
   then they are equal everywhere on `[a, b]`. -/
 theorem eq_of_has_deriv_right_eq (derivf : ∀ x ∈ Ico a b, HasDerivWithinAt f (f' x) (Ici x) x)
@@ -581,6 +583,7 @@ theorem eqOn_of_fderivWithin_eq (hs : Convex ℝ s) (hf : DifferentiableOn 𝕜 
   refine hs.is_const_of_fderivWithin_eq_zero (hf.sub hg) (fun z hz => ?_) hx hy
   rw [fderivWithin_sub (hs' _ hz) (hf _ hz) (hg _ hz), sub_eq_zero, hf' hz]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f` has zero derivative on an open set, then `f` is locally constant on `s`. -/
 -- TODO: change the spelling once we have `IsLocallyConstantOn`.
 theorem _root_.IsOpen.isOpen_inter_preimage_of_fderiv_eq_zero
@@ -594,6 +597,7 @@ theorem _root_.IsOpen.isOpen_inter_preimage_of_fderiv_eq_zero
   · intro z hz
     simpa only [fderivWithin_of_isOpen Metric.isOpen_ball hz] using hf' (h hz)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.isLocallyConstant_of_fderiv_eq_zero (h₁ : Differentiable 𝕜 f)
     (h₂ : ∀ x, fderiv 𝕜 f x = 0) : IsLocallyConstant f := by
   simpa using isOpen_univ.isOpen_inter_preimage_of_fderiv_eq_zero h₁.differentiableOn fun _ _ ↦ h₂ _

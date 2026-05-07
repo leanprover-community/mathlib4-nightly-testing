@@ -49,6 +49,7 @@ lemma mem_iff {x : K} : x ∈ 𝒪[K] ↔ ‖x‖ ≤ 1 := by
 
 lemma norm_le_one (x : 𝒪[K]) : ‖x‖ ≤ 1 := mem_iff.mp x.prop
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma norm_coe_unit (u : 𝒪[K]ˣ) : ‖((u : 𝒪[K]) : K)‖ = 1 := by
   simpa [← NNReal.coe_inj] using
@@ -57,6 +58,7 @@ lemma norm_coe_unit (u : 𝒪[K]ˣ) : ‖((u : 𝒪[K]) : K)‖ = 1 := by
 lemma norm_unit (u : 𝒪[K]ˣ) : ‖(u : 𝒪[K])‖ = 1 := by
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isUnit_iff_norm_eq_one {u : 𝒪[K]} : IsUnit u ↔ ‖u‖ = 1 := by
   simpa [← NNReal.coe_inj] using
     (Valuation.integer.integers (NormedField.valuation (K := K))).isUnit_iff_valuation_eq_one
@@ -126,6 +128,7 @@ lemma finite_quotient_maximalIdeal_pow_of_finite_residueField [IsDiscreteValuati
 
 open scoped Valued
 
+set_option backward.simpa.using.reducibleClose false in
 lemma totallyBounded_iff_finite_residueField [(Valued.v : Valuation K Γ₀).RankOne]
     [IsDiscreteValuationRing 𝒪[K]] :
     TotallyBounded (Set.univ (α := 𝒪[K])) ↔ Finite 𝓀[K] := by

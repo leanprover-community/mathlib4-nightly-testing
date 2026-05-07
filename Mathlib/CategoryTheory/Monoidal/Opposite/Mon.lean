@@ -43,6 +43,7 @@ instance mopMonObj : MonObj (mop M) where
     simp
 
 variable {M} in
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is a morphism of monoid objects internal to `C`,
 then `f.mop` is a morphism of monoid objects internal to `Cᴹᵒᵖ`. -/
 instance mop_isMonHom {N : C} [MonObj N]
@@ -77,6 +78,7 @@ instance unmopMonObj : MonObj (unmop M) where
     simp
 
 variable {M} in
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is a morphism of monoid objects internal to `Cᴹᵒᵖ`,
 so is `f.unmop`. -/
 instance unmop_isMonHom {N : Cᴹᵒᵖ} [MonObj N]

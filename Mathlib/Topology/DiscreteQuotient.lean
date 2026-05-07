@@ -222,6 +222,7 @@ theorem ofLE_comp_proj (h : A ≤ B) : ofLE h ∘ A.proj = B.proj :=
 
 end OfLE
 
+set_option backward.simpa.using.reducibleClose false in
 /-- When `X` is a locally connected space, there is an `OrderBot` instance on
 `DiscreteQuotient X`. The bottom element is given by `connectedComponentSetoid X`
 -/
@@ -362,6 +363,7 @@ noncomputable def finsetClopens [CompactSpace X]
     (d : DiscreteQuotient X) : Finset (Clopens X) := have : Fintype d := Fintype.ofFinite _
   (Set.range (fun (x : d) ↦ ⟨_, d.isClopen_preimage {x}⟩) : Set (Clopens X)).toFinset
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A helper lemma to prove that `finsetClopens X` is injective, see `finsetClopens_inj`. -/
 lemma comp_finsetClopens [CompactSpace X] :
     (Set.image (fun (t : Clopens X) ↦ t.carrier) ∘ (↑)) ∘

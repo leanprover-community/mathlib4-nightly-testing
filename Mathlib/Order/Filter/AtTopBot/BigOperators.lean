@@ -22,6 +22,7 @@ open Filter Finset
 
 variable {α β M : Type*} [CommMonoid M]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Let `f` and `g` be two maps to the same commutative monoid. This lemma gives a sufficient
 condition for comparison of the filter `atTop.map (fun s ↦ ∏ b ∈ s, f b)` with
 `atTop.map (fun s ↦ ∏ b ∈ s, g b)`. This is useful to compare the set of limit points of

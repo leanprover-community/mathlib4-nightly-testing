@@ -570,6 +570,7 @@ theorem cylinder_longestPrefix_eq_of_longestPrefix_lt_firstDiff {x y : ∀ n, E 
   rw [l_eq, ← mem_cylinder_iff_eq]
   exact cylinder_anti y H.le (mem_cylinder_firstDiff x y)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a closed nonempty subset `s` of `Π (n : ℕ), E n`, there exists a Lipschitz retraction
 onto this set, i.e., a Lipschitz map with range equal to `s`, equal to the identity on `s`. -/
 theorem exists_lipschitz_retraction_of_isClosed {s : Set (∀ n, E n)} (hs : IsClosed s)
@@ -1012,6 +1013,7 @@ variable (X Y f) in
 /-- `X` equipped with the distance coming from `∀ i, Y i` embeds in `∀ i, Y i`. -/
 noncomputable def embed : PiNatEmbed X Y f → ∀ i, Y i := fun x i ↦ f i x.ofPiNat
 
+set_option backward.simpa.using.reducibleClose false in
 lemma embed_injective (separating_f : Pairwise fun x y ↦ ∃ i, f i x ≠ f i y) :
     Injective (embed X Y f) := by
   simpa [Pairwise, not_imp_comm (a := _ = _), funext_iff, Function.Injective] using separating_f

@@ -69,6 +69,7 @@ lemma Cotangent.surjective_map_ofComp :
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open Extension.Cotangent in
+set_option backward.simpa.using.reducibleClose false in
 /--
 Given representations `0 → I → R[X] → S → 0` and `0 → K → S[Y] → T → 0`,
 we may consider the induced representation `0 → J → R[X, Y] → T → 0`, and the sequence
@@ -416,6 +417,7 @@ lemma exact_map_δ :
   · ext x; rfl
   · exact Subtype.val_injective
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma δ_map (f : Hom Q' Q) (x) :
     δ Q P (Extension.H1Cotangent.map f.toExtensionHom x) = δ Q' P' x := by

@@ -69,6 +69,7 @@ def cokernelIsColimit : IsColimit (cokernelCocone f) :=
     apply (cancel_epi (ofHom f.hom.range.mkQ)).1
     exact h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Construct an `IsColimit` structure of cokernels given `Function.Exact`. -/
 noncomputable
 def isColimitCokernelCofork (f : M ⟶ N) (g : N ⟶ P) (H : Function.Exact f.hom g.hom)
@@ -134,6 +135,7 @@ theorem range_mkQ_cokernelIsoRangeQuotient_inv :
     ofHom (LinearMap.range f.hom).mkQ ≫ (cokernelIsoRangeQuotient f).inv = cokernel.π f :=
   colimit.isoColimitCocone_ι_inv ⟨_, cokernelIsColimit f⟩ WalkingParallelPair.one
 
+set_option backward.simpa.using.reducibleClose false in
 theorem cokernel_π_ext {M N : ModuleCat.{u} R} (f : M ⟶ N) {x y : N} (m : M) (w : x = y + f m) :
     cokernel.π f x = cokernel.π f y := by
   subst w

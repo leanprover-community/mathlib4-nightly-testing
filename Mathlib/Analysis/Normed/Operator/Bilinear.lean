@@ -258,6 +258,7 @@ theorem apply_apply (v : E) (f : E →L[𝕜] Fₗ) : apply 𝕜 Fₗ v f = f v 
 variable (σ₁₂ σ₂₃ E F G)
 
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Composition of continuous semilinear maps as a continuous semibilinear map. -/
 def compSL : (F →SL[σ₂₃] G) →L[𝕜₃] (E →SL[σ₁₂] F) →SL[σ₂₃] E →SL[σ₁₃] G :=
   LinearMap.mkContinuous₂

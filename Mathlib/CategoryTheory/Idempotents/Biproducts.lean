@@ -72,6 +72,7 @@ def bicone [HasFiniteBiproducts C] {J : Type} [Finite J] (F : J → Karoubi C) :
 
 end Biproducts
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 theorem karoubi_hasFiniteBiproducts [HasFiniteBiproducts C] : HasFiniteBiproducts (Karoubi C) :=
   { out := fun n =>

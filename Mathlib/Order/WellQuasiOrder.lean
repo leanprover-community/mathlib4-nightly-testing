@@ -82,6 +82,7 @@ theorem WellQuasiOrdered.prod [IsPreorder α r] (hr : WellQuasiOrdered r) (hs : 
   obtain ⟨m, n, h, hf⟩ := hs (Prod.snd ∘ f ∘ g)
   exact ⟨g m, g n, g.strictMono h, h₁ _ _ h.le, hf⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A version of **Dickson's lemma**: the Pi type `∀ i : ι, α i` is well-quasi-ordered when `ι` is
 finite and each `σ i` is well-quasi-ordered. See `Set.PartiallyWellOrderedOn.pi` for the finite
 product of well-quasi-ordered sets and `Pi.wellQuasiOrderedLE` when the relation is `≤`. -/

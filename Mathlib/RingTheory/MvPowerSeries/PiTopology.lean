@@ -239,6 +239,7 @@ theorem isTopologicallyNilpotent_iff_constantCoeff_isNilpotent
 
 variable [Semiring R]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- A multivariate power series is the sum (in the sense of summable families) of its monomials -/
 theorem hasSum_of_monomials_self (f : MvPowerSeries σ R) :
@@ -260,6 +261,7 @@ theorem hasSum_iff_hasSum_coeff {g : MvPowerSeries σ R} :
   simp_rw [HasSum, ← map_sum]
   apply tendsto_iff_coeff_tendsto
 
+set_option backward.simpa.using.reducibleClose false in
 theorem summable_iff_summable_coeff :
     Summable f ↔ ∀ d : σ →₀ ℕ, Summable (fun i ↦ coeff d (f i)) := by
   simp_rw [Summable, hasSum_iff_hasSum_coeff]

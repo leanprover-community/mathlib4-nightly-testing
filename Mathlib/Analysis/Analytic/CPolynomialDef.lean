@@ -449,6 +449,7 @@ theorem HasFiniteFPowerSeriesOnBall.changeOrigin (hf : HasFiniteFPowerSeriesOnBa
     rw [this]
     apply (p.changeOrigin y).hasSum_of_finite fun _ => p.changeOrigin_finite_of_finite hf.finite
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function admits a finite power series expansion `p` on an open ball `B (x, r)`, then
 it is continuously polynomial at every point of this ball. -/
 theorem HasFiniteFPowerSeriesOnBall.cpolynomialAt_of_mem

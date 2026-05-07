@@ -260,6 +260,7 @@ theorem iSup_partialSups_eq (f : ι → α) :
     ⨆ i, partialSups f i = ⨆ i, f i :=
   ciSup_partialSups_eq <| OrderTop.bddAbove _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem partialSups_eq_biSup (f : ι → α) (i : ι) :
     partialSups f i = ⨆ j ≤ i, f j := by
   simpa only [iSup_subtype] using partialSups_eq_ciSup_Iic f i

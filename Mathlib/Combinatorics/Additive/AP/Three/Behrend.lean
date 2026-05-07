@@ -478,6 +478,7 @@ theorem lower_bound_le_one (hN : 1 ≤ N) (hN' : N ≤ 4096) :
   · simp
   · exact lower_bound_le_one' hN hN'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem roth_lower_bound : (N : ℝ) * exp (-4 * √(log N)) ≤ rothNumberNat N := by
   obtain rfl | hN := Nat.eq_zero_or_pos N
   · simp

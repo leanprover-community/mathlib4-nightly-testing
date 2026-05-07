@@ -276,6 +276,7 @@ actually means that `Field.Emb F E` is infinite (see `Field.infinite_emb_of_tran
 theorem finSepDegree_eq_zero_of_transcendental [Algebra.Transcendental F E] :
     finSepDegree F E = 0 := Nat.card_eq_zero_of_infinite
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `K / E / F` is a field extension tower, such that `K / E` is algebraic, then their
 separable degrees satisfy the tower law
 $[E:F]_s [K:E]_s = [K:F]_s$. See also `Module.finrank_mul_finrank`. -/

@@ -73,6 +73,7 @@ theorem opNNNorm_eq_of_bounds {φ : E →SL[σ₁₂] F} (M : ℝ≥0) (h_above 
 theorem opNNNorm_le_iff {f : E →SL[σ₁₂] F} {C : ℝ≥0} : ‖f‖₊ ≤ C ↔ ∀ x, ‖f x‖₊ ≤ C * ‖x‖₊ :=
   opNorm_le_iff C.2
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isLeast_opNNNorm (f : E →SL[σ₁₂] F) : IsLeast {C : ℝ≥0 | ∀ x, ‖f x‖₊ ≤ C * ‖x‖₊} ‖f‖₊ := by
   simpa only [← opNNNorm_le_iff] using isLeast_Ici
 
@@ -150,6 +151,7 @@ theorem exists_lt_apply_of_lt_opNorm (f : E →SL[σ₁₂] F) {r : ℝ}
   · lift r to ℝ≥0 using not_lt.1 hr₀
     exact f.exists_lt_apply_of_lt_opNNNorm hr
 
+set_option backward.simpa.using.reducibleClose false in
 theorem sSup_unit_ball_eq_nnnorm (f : E →SL[σ₁₂] F) :
     sSup ((fun x => ‖f x‖₊) '' ball 0 1) = ‖f‖₊ := by
   refine csSup_eq_of_forall_le_of_forall_lt_exists_gt ((nonempty_ball.mpr zero_lt_one).image _) ?_
@@ -159,6 +161,7 @@ theorem sSup_unit_ball_eq_nnnorm (f : E →SL[σ₁₂] F) :
   · obtain ⟨x, hx, hxf⟩ := f.exists_lt_apply_of_lt_opNNNorm hub
     exact ⟨_, ⟨x, mem_ball_zero_iff.2 hx, rfl⟩, hxf⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem sSup_unit_ball_eq_norm (f : E →SL[σ₁₂] F) :
     sSup ((fun x => ‖f x‖) '' ball 0 1) = ‖f‖ := by
   simpa only [NNReal.coe_sSup, Set.image_image] using NNReal.coe_inj.2 f.sSup_unit_ball_eq_nnnorm
@@ -173,6 +176,7 @@ theorem sSup_unitClosedBall_eq_nnnorm (f : E →SL[σ₁₂] F) :
   gcongr
   exacts [⟨‖f‖₊, hbdd⟩, ball_subset_closedBall]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem sSup_unitClosedBall_eq_norm (f : E →SL[σ₁₂] F) :
     sSup ((fun x => ‖f x‖) '' closedBall 0 1) = ‖f‖ := by
   simpa only [NNReal.coe_sSup, Set.image_image] using
@@ -190,6 +194,7 @@ theorem exists_nnnorm_eq_one_lt_apply_of_lt_opNNNorm [NormedAlgebra ℝ 𝕜]
     r < 1⁻¹ * ‖f x‖₊ := by simpa
     _ < ‖x‖₊⁻¹ * ‖f x‖₊ := by gcongr; exact hr.pos
 
+set_option backward.simpa.using.reducibleClose false in
 /-- When the domain is a real normed space, `ContinuousLinearMap.sSup_unitClosedBall_eq_nnnorm` can
 be tightened to take the supremum over only the `Metric.sphere`. -/
 theorem sSup_sphere_eq_nnnorm [NormedAlgebra ℝ 𝕜] (f : E →SL[σ₁₂] F) :
@@ -204,6 +209,7 @@ theorem sSup_sphere_eq_nnnorm [NormedAlgebra ℝ 𝕜] (f : E →SL[σ₁₂] F)
   · obtain ⟨x, hx, hxf⟩ := f.exists_nnnorm_eq_one_lt_apply_of_lt_opNNNorm hub
     exact ⟨_, ⟨x, by simpa using congrArg NNReal.toReal hx, rfl⟩, hxf⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- When the domain is a real normed space, `ContinuousLinearMap.sSup_unitClosedBall_eq_norm` can be
 tightened to take the supremum over only the `Metric.sphere`. -/
 theorem sSup_sphere_eq_norm [NormedAlgebra ℝ 𝕜] (f : E →SL[σ₁₂] F) :

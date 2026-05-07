@@ -412,6 +412,7 @@ theorem deriv_sub_const_fun (c : F) : deriv (f · - c) = deriv f := by
   ext
   apply deriv_sub_const
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasDerivAtFilter.const_sub (c : F) (hf : HasDerivAtFilter f f' L) :
     HasDerivAtFilter (fun x ↦ c - f x) (-f') L := by
   simpa only [sub_eq_add_neg] using hf.neg.const_add c

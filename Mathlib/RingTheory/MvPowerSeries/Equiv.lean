@@ -132,6 +132,7 @@ theorem mk_truncTotal_toAdicCompletionInv {n : ℕ}
     convert f.prop h; simp
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The isomorphism from multivariate power series to the adic completion of
 multivariate polynomials with respect to the ideal spanned by all variables
 when the index is finite. -/

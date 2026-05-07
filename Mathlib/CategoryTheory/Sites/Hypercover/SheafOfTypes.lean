@@ -158,6 +158,7 @@ def IsStronglySheafFor.isLimitMultifork (h : E.IsStronglySheafFor F) :
   · exact ⟨h.amalgamate s.val fun i j k ↦ s.property ⟨(i, j), k⟩, by
       ext; exact map_amalgamate _ _ _ _⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma IsStronglySheafFor.isSheafFor_sieve_of_pullback (h₁ : E.IsStronglySheafFor F)
     (h₂ : ∀ ⦃Y : C⦄ (f : Y ⟶ X), Presieve.IsSeparatedFor F (E.sieve₀.pullback f).arrows)
     {S : Sieve X}

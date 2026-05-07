@@ -44,6 +44,7 @@ theorem surjOn_Ico_of_monotone_surjective (h_mono : Monotone f) (h_surj : Functi
   · rw [Ico_eq_empty (h_mono hab).not_gt]
     exact surjOn_empty f _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem surjOn_Ioc_of_monotone_surjective (h_mono : Monotone f) (h_surj : Function.Surjective f)
     (a b : α) : SurjOn f (Ioc a b) (Ioc (f a) (f b)) := by
   simpa using surjOn_Ico_of_monotone_surjective h_mono.dual h_surj (toDual b) (toDual a)

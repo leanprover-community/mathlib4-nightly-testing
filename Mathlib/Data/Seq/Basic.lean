@@ -709,10 +709,12 @@ theorem update_cons_succ (n : ℕ) : (cons hd tl).update (n + 1) f = cons hd (tl
 theorem set_cons_succ (n : ℕ) : (cons hd tl).set (n + 1) x = cons hd (tl.set n x) :=
   update_cons_succ _ _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem get?_set_of_not_terminatedAt {s : Seq α} {n : ℕ} (h_not_terminated : ¬ s.TerminatedAt n) :
     (s.set n x).get? n = x := by
   simpa [set, update, ← Option.ne_none_iff_exists'] using h_not_terminated
 
+set_option backward.simpa.using.reducibleClose false in
 theorem get?_set_of_terminatedAt {s : Seq α} {n : ℕ} (h_terminated : s.TerminatedAt n) :
     (s.set n x).get? n = .none := by
   simpa [set, get?_update] using h_terminated

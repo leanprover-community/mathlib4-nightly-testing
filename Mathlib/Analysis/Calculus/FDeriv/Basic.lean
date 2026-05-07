@@ -313,6 +313,7 @@ theorem DifferentiableWithinAt.of_subsingleton [T1Space E] (h : s.Subsingleton) 
     DifferentiableWithinAt 𝕜 f s x :=
   .of_finite h.finite
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 protected theorem HasStrictFDerivAt.hasFDerivAt (hf : HasStrictFDerivAt f f' x) :
     HasFDerivAt f f' x :=
@@ -604,6 +605,7 @@ theorem HasStrictFDerivAt.isBigOTVS_sub (hf : HasStrictFDerivAt f f' x) :
     (fun p : E × E => f p.1 - f p.2) =O[𝕜; 𝓝 (x, x)] fun p : E × E => p.1 - p.2 :=
   HasFDerivAtFilter.isBigOTVS_sub hf
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasFDerivWithinAt.isBigOTVS_sub (h : HasFDerivWithinAt f f' s x) :
     (f · - f x) =O[𝕜; 𝓝[s] x] (· - x) := by
   simpa using HasFDerivAtFilter.isBigOTVS_sub h
@@ -612,6 +614,7 @@ lemma DifferentiableWithinAt.isBigOTVS_sub (h : DifferentiableWithinAt 𝕜 f s 
     (f · - f x) =O[𝕜; 𝓝[s] x] (· - x) :=
   h.hasFDerivWithinAt.isBigOTVS_sub
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasFDerivAt.isBigOTVS_sub (h : HasFDerivAt f f' x) : (f · - f x) =O[𝕜; 𝓝 x] (· - x) := by
   simpa using HasFDerivAtFilter.isBigOTVS_sub h
 
@@ -626,6 +629,7 @@ section Continuous
 /-! ### Deducing continuity from differentiability -/
 variable [ContinuousAdd E] [ContinuousSMul 𝕜 E] [ContinuousAdd F] [ContinuousSMul 𝕜 F]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasFDerivAtFilter.tendsto_nhds {L : Filter E} (hL : L ≤ 𝓝 x)
     (h : HasFDerivAtFilter f f' (L ×ˢ pure x)) :
     Tendsto f L (𝓝 (f x)) := by
@@ -761,19 +765,23 @@ theorem HasFDerivAtFilter.isThetaTVS_sub (hf : HasFDerivAtFilter f f' L)
     (fun p ↦ f p.1 - f p.2) =Θ[𝕜; L] (fun p ↦ p.1 - p.2) :=
   hf.isEquivalent_sub hf' |>.isTheta.isThetaTVS.trans <| f'.isThetaTVS_comp hf'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasFDerivAt.isEquivalent_sub (hf : HasFDerivAt f f' x) (hf' : Topology.IsInducing f') :
     (f · - f x) ~[𝓝 x] (f' <| · - x) := by
   simpa using HasFDerivAtFilter.isEquivalent_sub hf hf'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasFDerivAt.isThetaTVS_sub (hf : HasFDerivAt f f' x) (hf' : Topology.IsInducing f') :
     (f · - f x) =Θ[𝕜; 𝓝 x] (· - x) := by
   simpa [IsThetaTVS] using HasFDerivAtFilter.isThetaTVS_sub hf hf'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasFDerivWithinAt.isEquivalent_sub (hf : HasFDerivWithinAt f f' s x)
     (hf' : Topology.IsInducing f') :
     (f · - f x) ~[𝓝[s] x] (f' <| · - x) := by
   simpa using HasFDerivAtFilter.isEquivalent_sub hf hf'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasFDerivWithinAt.isThetaTVS_sub (hf : HasFDerivWithinAt f f' s x)
     (hf' : Topology.IsInducing f') :
     (f · - f x) =Θ[𝕜; 𝓝[s] x] (· - x) := by

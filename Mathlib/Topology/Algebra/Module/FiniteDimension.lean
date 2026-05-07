@@ -619,6 +619,7 @@ variable (𝕜 : Type*) [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
   [ContinuousSMul 𝕜 E] [ContinuousSMul 𝕜 Eᵤ]
 
 open scoped Pointwise in
+set_option backward.simpa.using.reducibleClose false in
 /-- **Riesz's theorem**: a T2 topological vector space over a complete non-trivial normed field
 which admits a totally bounded neighborhood of `0` is finite-dimensional. -/
 theorem FiniteDimensional.of_totallyBounded_nhds_zero {U : Set Eᵤ} (hU_nhds : U ∈ 𝓝 (0 : Eᵤ))

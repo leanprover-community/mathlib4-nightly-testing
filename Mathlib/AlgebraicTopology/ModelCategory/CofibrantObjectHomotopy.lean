@@ -259,6 +259,7 @@ def HoCat.toHoCatCompToLocalizationIso : toHoCat ⋙ toLocalization L ≅ ι ⋙
 @[deprecated (since := "2026-01-31")]
 alias HoCat.toπCompToLocalizationIso := HoCat.toHoCatCompToLocalizationIso
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The natural isomorphism `HoCat.resolution ⋙ HoCat.toLocalization L ⟶ L` when
 `L : C ⥤ D` is a localization functor. -/
 noncomputable def HoCat.resolutionCompToLocalizationNatTrans :

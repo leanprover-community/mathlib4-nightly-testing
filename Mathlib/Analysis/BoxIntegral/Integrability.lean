@@ -168,6 +168,7 @@ namespace MeasureTheory
 
 namespace SimpleFunc
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A simple function is McShane integrable w.r.t. any locally finite measure. -/
 theorem hasBoxIntegral (f : SimpleFunc (ι → ℝ) E) (μ : Measure (ι → ℝ)) [IsLocallyFiniteMeasure μ]
     (I : Box ι) (l : IntegrationParams) (hl : l.bRiemann = false) :

@@ -418,6 +418,7 @@ theorem norm_le_of_forall_mem_frontier_norm_le {f : E → F} {U : Set E} (hU : I
     _ ≤ ‖f (e ζ)‖ := hζ (subset_closure h₀)
     _ ≤ C := hC _ (hde.continuous.frontier_preimage_subset _ hζU)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If two complex differentiable functions `f g : E → F` are equal on the boundary of a bounded set
 `U`, then they are equal on `closure U`. -/
 theorem eqOn_closure_of_eqOn_frontier {f g : E → F} {U : Set E} (hU : IsBounded U)

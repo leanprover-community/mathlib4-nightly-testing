@@ -58,6 +58,7 @@ lemma isIntegral_coeff_of_factors (p : S[X])
     isIntegral_one, isIntegral_zero, hpr x (H hx)]
 
 open scoped TensorProduct in
+set_option backward.simpa.using.reducibleClose false in
 @[stacks 00H6 "(1)"]
 lemma isIntegral_coeff_of_dvd (p : R[X]) (q : S[X]) (hp : p.Monic) (hq : q.Monic)
     (H : q ∣ p.map (algebraMap R S)) (i : ℕ) : IsIntegral R (q.coeff i) := by
@@ -190,6 +191,7 @@ end
 
 attribute [local instance] MvPolynomial.algebraMvPolynomial in
 attribute [-simp] AlgEquiv.symm_toRingEquiv in
+set_option backward.simpa.using.reducibleClose false in
 theorem MvPolynomial.isIntegral_iff_isIntegral_coeff.{w} {σ : Type w} {f : MvPolynomial σ S} :
     IsIntegral (MvPolynomial σ R) f ↔ ∀ n, IsIntegral R (f.coeff n) := by
   classical

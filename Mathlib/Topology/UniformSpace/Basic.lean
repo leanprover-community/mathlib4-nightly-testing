@@ -699,6 +699,7 @@ theorem uniformity_mulOpposite [UniformSpace α] :
     𝓤 αᵐᵒᵖ = comap (fun q : αᵐᵒᵖ × αᵐᵒᵖ => (q.1.unop, q.2.unop)) (𝓤 α) :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive (attr := simp)]
 theorem comap_uniformity_mulOpposite [UniformSpace α] :
     comap (fun p : α × α => (MulOpposite.op p.1, MulOpposite.op p.2)) (𝓤 αᵐᵒᵖ) = 𝓤 α := by

@@ -345,6 +345,7 @@ def gluedCover : Scheme.GlueData.{u} where
   cocycle x y z := glued_cover_cocycle 𝒰 x y z
   f_open _ := inferInstance
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The canonical morphism from the gluing of an open cover of `X` into `X`.
 This is an isomorphism, as witnessed by an `IsIso` instance. -/
 def fromGlued : 𝒰.gluedCover.glued ⟶ X := by

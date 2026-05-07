@@ -103,6 +103,7 @@ lemma norm_eq_of_mul_norm_lt_max {x y : S} (h : ‖x * y‖ < max ‖x‖ ‖y�
     ‖x‖ = ‖y‖ :=
   not_ne_iff.mp (h.ne ∘ norm_mul_eq_max_of_norm_ne_norm)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- All triangles are isosceles in an ultrametric normed group. -/
 @[to_additive /-- All triangles are isosceles in an ultrametric normed additive group. -/]
 lemma nnnorm_mul_eq_max_of_nnnorm_ne_nnnorm
@@ -121,6 +122,7 @@ lemma norm_div_eq_max_of_norm_div_ne_norm_div (x y z : S) (h : ‖x / y‖ ≠ �
     ‖x / z‖ = max ‖x / y‖ ‖y / z‖ := by
   simpa only [div_mul_div_cancel] using norm_mul_eq_max_of_norm_ne_norm h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- All triangles are isosceles in an ultrametric normed group. -/
 @[to_additive /-- All triangles are isosceles in an ultrametric normed additive group. -/]
 lemma nnnorm_div_eq_max_of_nnnorm_div_ne_nnnorm_div (x y z : S) (h : ‖x / y‖₊ ≠ ‖y / z‖₊) :
@@ -216,6 +218,7 @@ lemma _root_.Finset.Nonempty.norm_prod_le_sup'_norm {s : Finset ι} (hs : s.None
       · exact ⟨_, IH.choose_spec.left, (norm_mul_le_max _ _).trans <|
           ((max_eq_right h).le.trans IH.choose_spec.right)⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Nonarchimedean norm of a product is less than or equal to the largest norm of a term in the
 product. -/
 @[to_additive /-- Nonarchimedean norm of a sum is less than or equal to the largest norm of a term

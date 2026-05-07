@@ -43,6 +43,7 @@ theorem hasStrictDerivAt_sin (x : ℂ) : HasStrictDerivAt sin (cos x) x := by
 theorem hasDerivAt_sin (x : ℂ) : HasDerivAt sin (cos x) x :=
   (hasStrictDerivAt_sin x).hasDerivAt
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isEquivalent_sin : sin ~[𝓝 0] id := by simpa using (hasDerivAt_sin 0).isLittleO
 
 @[fun_prop]
@@ -315,6 +316,7 @@ theorem hasStrictDerivAt_sin (x : ℝ) : HasStrictDerivAt sin (cos x) x :=
 theorem hasDerivAt_sin (x : ℝ) : HasDerivAt sin (cos x) x :=
   (hasStrictDerivAt_sin x).hasDerivAt
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isEquivalent_sin : sin ~[𝓝 0] id := by simpa using (hasDerivAt_sin 0).isLittleO
 
 @[fun_prop]

@@ -378,6 +378,7 @@ end Finset
 
 namespace Multiset
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem finite_toSet (s : Multiset α) : { x | x ∈ s }.Finite := by
   classical simpa only [← Multiset.mem_toFinset] using s.toFinset.finite_toSet
@@ -937,6 +938,7 @@ lemma Finite.of_forall_not_lt_lt (h : ∀ ⦃x y z : α⦄, x < y → y < z → 
   refine @Finite.of_fintype α ⟨{x, y}, fun z => ?_⟩
   simpa [hne] using eq_or_eq_or_eq_of_forall_not_lt_lt h z x y
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a set `s` does not contain any triple of elements `x < y < z`, then `s` is finite. -/
 lemma Set.finite_of_forall_not_lt_lt (h : ∀ x ∈ s, ∀ y ∈ s, ∀ z ∈ s, x < y → y < z → False) :
     Set.Finite s :=

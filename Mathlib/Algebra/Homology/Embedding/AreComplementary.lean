@@ -226,6 +226,7 @@ lemma snd_inj {i₁ : ι₁} {i₂ i₂' : ι₂} (h : ac.Boundary i₁ i₂) (h
 
 variable (ac)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma exists₁ {i₁ : ι₁} (h : e₁.BoundaryLE i₁) :
     ∃ i₂, ac.Boundary i₁ i₂ := by
   obtain ⟨h₁, h₂⟩ := h
@@ -233,6 +234,7 @@ lemma exists₁ {i₁ : ι₁} (h : e₁.BoundaryLE i₁) :
     (fun i₁' hi₁' => h₂ i₁' (by simpa only [← hi₁'] using h₁))
   exact ⟨i₂, by simpa only [hi₂] using h₁⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma exists₂ {i₂ : ι₂} (h : e₂.BoundaryGE i₂) :
     ∃ i₁, ac.Boundary i₁ i₂ := by
   obtain ⟨h₁, h₂⟩ := h

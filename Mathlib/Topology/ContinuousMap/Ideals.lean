@@ -181,6 +181,7 @@ theorem exists_mul_le_one_eqOn_ge (f : C(X, ℝ≥0)) {c : ℝ≥0} (hc : 0 < c)
 
 variable [CompactSpace X] [T2Space X]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem idealOfSet_ofIdeal_eq_closure (I : Ideal C(X, 𝕜)) :
     idealOfSet 𝕜 (setOfIdeal I) = I.closure := by
@@ -293,6 +294,7 @@ theorem idealOfSet_ofIdeal_isClosed {I : Ideal C(X, 𝕜)} (hI : IsClosed (I : S
 
 variable (𝕜)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem setOfIdeal_ofSet_eq_interior (s : Set X) : setOfIdeal (idealOfSet 𝕜 s) = interior s := by
   refine

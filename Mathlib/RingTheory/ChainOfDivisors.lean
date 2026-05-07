@@ -43,6 +43,7 @@ assert_not_exists Field
 
 variable {M : Type*} [CommMonoidWithZero M] [IsCancelMulZero M]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Associates.isAtom_iff {p : Associates M} (h₁ : p ≠ 0) : IsAtom p ↔ Irreducible p :=
   ⟨fun hp =>
     ⟨by simpa only [Associates.isUnit_iff_eq_one] using hp.1, fun a b h =>

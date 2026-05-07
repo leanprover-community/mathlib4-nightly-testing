@@ -232,6 +232,7 @@ lemma toNonUnitalSubsemiring_inj {S₁ S₂ : Subsemiring R} :
 lemma one_mem_toNonUnitalSubsemiring (S : Subsemiring R) : (1 : R) ∈ S.toNonUnitalSubsemiring :=
   S.one_mem
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Construct a `Subsemiring R` from a set `s`, a submonoid `sm`, and an additive
 submonoid `sa` such that `x ∈ s ↔ x ∈ sm ↔ x ∈ sa`. -/
 @[simps coe]

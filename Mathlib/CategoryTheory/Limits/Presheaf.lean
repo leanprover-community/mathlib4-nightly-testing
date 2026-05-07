@@ -91,6 +91,7 @@ lemma map_comp_uliftYonedaEquiv_down (E : ℰ) {X Y : C} (f : X ⟶ Y)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- Auxiliary definition for `restrictedULiftYonedaHomEquiv`. -/
 def restrictedULiftYonedaHomEquiv' (P : Cᵒᵖ ⥤ Type max w v₁ v₂) (E : ℰ) :
     (CostructuredArrow.proj uliftYoneda.{max w v₂} P ⋙ A ⟶
@@ -542,6 +543,7 @@ lemma uliftYonedaEquiv_ι_presheafHom (P : Cᵒᵖ ⥤ Type max w v₁ v₂) {X 
   dsimp only [coconeApp]
   apply Equiv.apply_symm_apply
 
+set_option backward.simpa.using.reducibleClose false in
 lemma uliftYonedaEquiv_presheafHom_uliftYoneda_obj (X : C) :
     uliftYonedaEquiv.{max w v₂} (presheafHom.{w} φ (uliftYoneda.{max w v₂}.obj X)) =
       ((φ.app X).app (F.op.obj (Opposite.op X)) (ULift.up (𝟙 _))) := by

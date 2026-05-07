@@ -284,6 +284,7 @@ section
 
 variable {f' : M →ₗ[R] M}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.Module.End.pow_apply_mem_of_forall_mem {p : Submodule R M} (n : ℕ)
     (h : ∀ x ∈ p, f' x ∈ p) (x : M) (hx : x ∈ p) : (f' ^ n) x ∈ p := by
   induction n generalizing x with

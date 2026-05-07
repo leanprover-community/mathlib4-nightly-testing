@@ -269,9 +269,11 @@ theorem commute_monomial {a : R} {n} :
   · rw [coeff_mul_monomial, coeff_monomial_mul]
     split_ifs <;> [apply h; rfl]
 
+set_option backward.simpa.using.reducibleClose false in
 protected theorem one_mul : (1 : MvPowerSeries σ R) * φ = φ :=
   ext fun n => by simpa using coeff_add_monomial_mul 0 n φ 1
 
+set_option backward.simpa.using.reducibleClose false in
 protected theorem mul_one : φ * 1 = φ :=
   ext fun n => by simpa using coeff_add_mul_monomial n 0 φ 1
 
@@ -356,6 +358,7 @@ theorem C_injective : Function.Injective (C : R → MvPowerSeries σ R) := by
   intro a b h
   rw [← coeff_zero_C a, h, coeff_zero_C]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem C_surjective [IsEmpty σ] : Function.Surjective (C : R → MvPowerSeries σ R) :=
   fun p => ⟨p 0, by ext n; simpa [coeff_C, Subsingleton.eq_zero n] using coeff_apply _ _⟩
 
@@ -590,6 +593,7 @@ section Semiring
 
 variable [Semiring R]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem X_pow_dvd_iff {s : σ} {n : ℕ} {φ : MvPowerSeries σ R} :
     (X s : MvPowerSeries σ R) ^ n ∣ φ ↔ ∀ m : σ →₀ ℕ, m s < n → coeff m φ = 0 := by
   classical

@@ -38,6 +38,7 @@ section Center
 
 variable {R n : Type*} [Fintype n] [DecidableEq n] [CommRing R]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The center of `GL n R` consists of scalar matrices. -/
 lemma mem_center_iff_val_mem_range_scalar {g : GL n R} :
     g ∈ Subgroup.center (GL n R) ↔ g.val ∈ Set.range (Matrix.scalar n) := by

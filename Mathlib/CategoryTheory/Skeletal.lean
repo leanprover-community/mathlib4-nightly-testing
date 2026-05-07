@@ -140,6 +140,7 @@ set_option backward.defeqAttrib.useBackward true in
   counitIso := NatIso.ofComponents fromSkeletonToSkeletonIso
   functor_unitIso_comp _ := Iso.inv_hom_id _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem skeleton_skeletal : Skeletal (Skeleton C) := by
   rintro X Y ⟨h⟩
   have : X.out ≈ Y.out := ⟨(fromSkeleton C).mapIso h⟩

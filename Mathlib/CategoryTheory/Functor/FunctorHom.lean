@@ -43,6 +43,7 @@ structure HomObj (A : C ⥤ Type w) where
   naturality {c d : C} (f : c ⟶ d) (a : A.obj c) :
     F.map f ≫ app d (A.map f a) = app c a ≫ G.map f := by cat_disch
 
+set_option backward.simpa.using.reducibleClose false in
 /-- When `F`, `G`, and `A` are all functors `C ⥤ Type w`, then `HomObj F G A` is in
 bijection with `F ⊗ A ⟶ G`. -/
 @[simps]

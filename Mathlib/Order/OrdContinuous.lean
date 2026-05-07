@@ -50,6 +50,7 @@ section Preorder
 
 variable (α) [Preorder α] [Preorder β] [Preorder γ] {g : β → γ} {f : α → β}
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_dual]
 protected theorem id : LeftOrdContinuous (id : α → α) := fun s x h => by
   simpa only [image_id] using h
@@ -76,6 +77,7 @@ theorem mono (hf : LeftOrdContinuous f) : Monotone f := fun a₁ a₂ h =>
   have : IsGreatest {a₁, a₂} a₂ := ⟨Or.inr rfl, by simp [*]⟩
   (hf.map_isGreatest this).2 <| mem_image_of_mem _ (Or.inl rfl)
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_dual]
 theorem comp (hg : LeftOrdContinuous g) (hf : LeftOrdContinuous f) : LeftOrdContinuous (g ∘ f) :=
   fun s x h => by simpa only [image_image] using hg (hf h)

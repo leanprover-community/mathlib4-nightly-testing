@@ -50,6 +50,7 @@ section
 
 variable {E : Type*} [Category* E]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `L' : Quotient homRel ⥤ D` satisfies the strict universal property of the
 localization, then `Quotient.functor homRel ⋙ L'` also satisfies it. -/
 def strictUniversalPropertyFixedTarget (L' : Quotient homRel ⥤ D)

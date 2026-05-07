@@ -458,6 +458,7 @@ theorem ArzelaAscoli.compactSpace_of_isClosedEmbedding [TopologicalSpace ι] {�
   compactSpace_of_closed_inducing' 𝔖_compact F_clemb.isInducing F_clemb.isClosed_range
     F_eqcont F_pointwiseCompact
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A version of the **Arzela-Ascoli theorem**.
 
 Let `X, ι` be topological spaces, `𝔖` a covering of `X` by compact subsets, `α` a T2 uniform space,

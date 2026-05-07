@@ -111,6 +111,7 @@ section IsTopologicalRing
 
 variable [TopologicalSpace A] [IsSemitopologicalRing A]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a star `ℝ≥0`-algebra homomorphism `φ` from `C(X, ℝ≥0)` into an `ℝ`-algebra `A`, this is
 the unique extension of `φ` from `C(X, ℝ)` to `A` as a star `ℝ`-algebra homomorphism. -/
 @[simps]
@@ -258,6 +259,7 @@ lemma toNNReal_smul (r : ℝ≥0) (f : C(X, ℝ)₀) : (r • f).toNNReal = r �
 lemma toNNReal_neg_smul (r : ℝ≥0) (f : C(X, ℝ)₀) : (-(r • f)).toNNReal = r • (-f).toNNReal := by
   rw [NNReal.smul_def, ← smul_neg, ← NNReal.smul_def, toNNReal_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma toNNReal_mul_add_neg_mul_add_mul_neg_eq (f g : C(X, ℝ)₀) :
     ((f * g).toNNReal + (-f).toNNReal * g.toNNReal + f.toNNReal * (-g).toNNReal) =
     ((-(f * g)).toNNReal + f.toNNReal * g.toNNReal + (-f).toNNReal * (-g).toNNReal) := by
@@ -265,6 +267,7 @@ lemma toNNReal_mul_add_neg_mul_add_mul_neg_eq (f g : C(X, ℝ)₀) :
   simpa only [← toContinuousMapHom_apply, map_add, map_mul, map_neg, toContinuousMapHom_toNNReal]
     using (f : C(X, ℝ)).toNNReal_mul_add_neg_mul_add_mul_neg_eq g
 
+set_option backward.simpa.using.reducibleClose false in
 lemma toNNReal_add_add_neg_add_neg_eq (f g : C(X, ℝ)₀) :
     ((f + g).toNNReal + (-f).toNNReal + (-g).toNNReal) =
       ((-(f + g)).toNNReal + f.toNNReal + g.toNNReal) := by

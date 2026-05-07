@@ -283,6 +283,7 @@ theorem support_esymm [DecidableEq σ] [Nontrivial R] (n : ℕ) : (esymm σ R n)
   rw [support_esymm']
   exact biUnion_singleton
 
+set_option backward.simpa.using.reducibleClose false in
 theorem degrees_esymm [Nontrivial R] {n : ℕ} (hpos : 0 < n) (hn : n ≤ Fintype.card σ) :
     (esymm σ R n).degrees = (univ : Finset σ).val := by
   classical

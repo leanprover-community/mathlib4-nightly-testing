@@ -56,6 +56,7 @@ lemma Ideal.comap_fiberIsoOfBijectiveResidueField_symm
     PrimeSpectrum.primesOverOrderIsoFiber, PrimeSpectrum.preimageOrderIsoFiber,
     PrimeSpectrum.preimageEquivFiber]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma Ideal.comap_fiberIsoOfBijectiveResidueField_apply
     (H : Function.Bijective (Ideal.ResidueField.mapₐ p q (Algebra.ofId _ _) (q.over_def p)))
@@ -143,6 +144,7 @@ lemma Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance high] Algebra.TensorProduct.leftAlgebra IsScalarTower.right
   DivisionRing.instIsArtinianRing in
+set_option backward.simpa.using.reducibleClose false in
 /-- A variant of `Ideal.exists_not_mem_forall_mem_of_ne_of_liesOver` that also gives you
 control on the primes in the integral closure. -/
 lemma Algebra.exists_notMem_and_isIntegral_forall_mem_of_ne_of_liesOver
@@ -199,6 +201,7 @@ lemma Algebra.exists_notMem_and_isIntegral_forall_mem_of_ne_of_liesOver
     exact H (Ideal.mul_mem_left _ (s₂ ^ m) this)
   · rw [map_pow]; exact Ideal.notMem_of_isUnit _ (.pow _ (IsLocalization.Away.algebraMap_isUnit _))
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq_aux
     {R : Type u} {S : Type v} [CommRing R] [CommRing S] [Algebra R S] [Algebra.FiniteType R S]
     (p : Ideal R) [p.IsPrime] (q : Ideal S) [q.IsPrime] [q.LiesOver p] [Algebra.QuasiFiniteAt R q] :

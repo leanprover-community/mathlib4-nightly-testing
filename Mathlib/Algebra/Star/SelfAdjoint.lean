@@ -90,6 +90,7 @@ theorem star_mul_self [Mul R] [StarMul R] (x : R) : IsSelfAdjoint (star x * x) :
 theorem mul_star_self [Mul R] [StarMul R] (x : R) : IsSelfAdjoint (x * star x) := by
   simpa only [star_star] using star_mul_self (star x)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Self-adjoint elements commute if and only if their product is self-adjoint. -/
 lemma commute_iff {R : Type*} [Mul R] [StarMul R] {x y : R}
     (hx : IsSelfAdjoint x) (hy : IsSelfAdjoint y) : Commute x y ↔ IsSelfAdjoint (x * y) := by
@@ -626,6 +627,7 @@ protected instance IsStarNormal.val_inv [Monoid R] [StarMul R] {x : Rˣ} [IsStar
     IsStarNormal (↑x⁻¹ : R) where
   star_comm_self := by simpa [← Units.coe_star_inv, -Commute.units_val_iff] using star_comm_self
 
+set_option backward.simpa.using.reducibleClose false in
 protected instance IsStarNormal.map {F R S : Type*} [Mul R] [Star R] [Mul S] [Star S]
     [FunLike F R S] [MulHomClass F R S] [StarHomClass F R S] (f : F) (r : R) [hr : IsStarNormal r] :
     IsStarNormal (f r) where

@@ -844,6 +844,7 @@ lemma starMap_inl (φ : A →⋆ₙₐ[R] B) (r : R) :
     starMap φ (inl r) = algebraMap R (Unitization R B) r := by
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `φ : A →⋆ₙₐ[R] B` is injective, the lift `starMap φ : Unitization R A →⋆ₐ[R] Unitization R B`
 is also injective. -/
 lemma starMap_injective {φ : A →⋆ₙₐ[R] B} (hφ : Function.Injective φ) :

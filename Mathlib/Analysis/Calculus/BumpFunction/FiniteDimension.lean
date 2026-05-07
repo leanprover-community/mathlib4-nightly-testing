@@ -40,6 +40,7 @@ section
 
 variable [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a set `s` is a neighborhood of `x`, then there exists a smooth function `f` taking
 values in `[0, 1]`, supported in `s` and with `f x = 1`. -/
 theorem exists_contDiff_tsupport_subset {s : Set E} {x : E} {n : ℕ∞} (hs : s ∈ 𝓝 x) :
@@ -77,6 +78,7 @@ theorem exists_contDiff_tsupport_subset {s : Set E} {x : E} {n : ℕ∞} (hs : s
 @[deprecated (since := "2025-12-17")]
 alias exists_smooth_tsupport_subset := exists_contDiff_tsupport_subset
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given an open set `s` in a finite-dimensional real normed vector space, there exists a smooth
 function with values in `[0, 1]` whose support is exactly `s`. -/

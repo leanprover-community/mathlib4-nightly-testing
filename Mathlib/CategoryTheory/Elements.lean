@@ -237,6 +237,7 @@ theorem fromCostructuredArrow_obj_mk (F : Cᵒᵖ ⥤ Type v) {X : C} (f : yoned
   rfl
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- The equivalence `F.Elementsᵒᵖ ≅ (yoneda, F)` given by yoneda lemma. -/
 @[simps]
 def costructuredArrowYonedaEquivalence (F : Cᵒᵖ ⥤ Type v) :

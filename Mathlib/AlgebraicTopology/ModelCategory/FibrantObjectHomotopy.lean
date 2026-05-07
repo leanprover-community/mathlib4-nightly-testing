@@ -258,6 +258,7 @@ full subcategory of fibrant objects factors through the homotopy category
 of fibrant objects. -/
 def HoCat.toHoCatCompToLocalizationIso : toHoCat ⋙ toLocalization L ≅ ι ⋙ L := Iso.refl _
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The natural isomorphism `L ⟶ HoCat.resolution ⋙ HoCat.toLocalization L` when
 `L : C ⥤ D` is a localization functor. -/
 noncomputable def HoCat.resolutionCompToLocalizationNatTrans :

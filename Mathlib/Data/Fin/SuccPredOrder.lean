@@ -22,6 +22,7 @@ public section
 
 namespace Fin
 
+set_option backward.simpa.using.reducibleClose false in
 instance : ∀ {n : ℕ}, SuccOrder (Fin n)
   | 0 => by constructor <;> intro a <;> exact elim0 a
   | n + 1 =>
@@ -49,6 +50,7 @@ lemma orderSucc_castSucc {n : ℕ} (i : Fin n) :
     Order.succ i.castSucc = i.succ := by
   simp [orderSucc_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 instance : ∀ {n : ℕ}, PredOrder (Fin n)
   | 0 => by constructor <;> first | intro a; exact elim0 a
   | n + 1 =>

@@ -91,6 +91,7 @@ theorem norm_zero [Nontrivial S] [Module.Free R S] [Module.Finite R S] : norm R 
   nontriviality
   rw [norm_apply, coe_lmul_eq_mul, map_zero, LinearMap.det_zero' (Module.Free.chooseBasis R S)]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem norm_eq_zero_iff [IsDomain R] [IsDomain S] [Module.Free R S] [Module.Finite R S] {x : S} :
     norm R x = 0 ↔ x = 0 := by

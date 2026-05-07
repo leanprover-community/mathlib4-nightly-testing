@@ -364,6 +364,7 @@ lemma range_r_app_union_range_b_app (n : SimplexCategoryᵒᵖ) :
   congr($(sup_range_r_range_b i d).obj n)
 
 variable {i d} in
+set_option backward.simpa.using.reducibleClose false in
 lemma isPushout_aux {n : ℕ} (y : (sigmaStdSimplex i d) _⦋n⦌)
     (hy : y ∉ Set.range ((l i d).app (op ⦋n⦌))) :
     ∃ (c : Cell i d) (f : ⦋n⦌ ⟶ ⦋d⦌) (_ : Epi f),

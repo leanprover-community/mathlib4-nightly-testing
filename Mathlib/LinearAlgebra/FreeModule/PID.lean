@@ -324,6 +324,7 @@ noncomputable def Submodule.basisOfPidOfLESpan {ι : Type*} [Finite ι] {b : ι 
     Σ n : ℕ, Basis (Fin n) R N :=
   Submodule.basisOfPidOfLE le (Basis.span hb)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A finite type torsion free module over a PID admits a basis. -/
 noncomputable def Module.basisOfFiniteTypeTorsionFree [Fintype ι] {s : ι → M}
     (hs : span R (range s) = ⊤) [IsTorsionFree R M] : Σ n : ℕ, Basis (Fin n) R M := by

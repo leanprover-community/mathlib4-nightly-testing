@@ -215,6 +215,7 @@ instance : Inhabited (A ≃⋆* A) :=
 theorem coe_refl : ⇑(.refl A : A ≃⋆* A) = id :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The inverse of a star monoid isomorphism is a star monoid isomorphism. -/
 @[symm]
 nonrec def symm (e : A ≃⋆* B) : B ≃⋆* A :=

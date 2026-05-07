@@ -184,6 +184,7 @@ def lcRow0Extend {cd : Fin 2 → ℤ} (hcd : IsCoprime (cd 0) (cd 1)) :
       rw [neg_sq]
       exact hcd.sq_add_sq_ne_zero, LinearEquiv.refl ℝ (Fin 2 → ℝ)]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The map `lcRow0` is proper, that is, preimages of cocompact sets are finite in
 `[[* , *], [c, d]]`. -/
 theorem tendsto_lcRow0 {cd : Fin 2 → ℤ} (hcd : IsCoprime (cd 0) (cd 1)) :
@@ -273,6 +274,7 @@ section FundamentalDomain
 
 attribute [local simp] UpperHalfPlane.coe_specialLinearGroup_apply
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For `z : ℍ`, there is a `g : SL(2,ℤ)` maximizing `(g•z).im` -/
 theorem exists_max_im : ∃ g : SL(2, ℤ), ∀ g' : SL(2, ℤ), (g' • z).im ≤ (g • z).im := by
   classical
@@ -319,6 +321,7 @@ theorem re_T_smul : (T • z).re = z.re + 1 := by simpa using re_T_zpow_smul z 1
 
 theorem im_T_smul : (T • z).im = z.im := by simpa using im_T_zpow_smul z 1
 
+set_option backward.simpa.using.reducibleClose false in
 theorem re_T_inv_smul : (T⁻¹ • z).re = z.re - 1 := by simpa using re_T_zpow_smul z (-1)
 
 theorem im_T_inv_smul : (T⁻¹ • z).im = z.im := by simpa using im_T_zpow_smul z (-1)
@@ -881,6 +884,7 @@ private lemma mem_closure_of_one_lt_norm {x : ℍ} (hxnorm : 1 < ‖(x : ℂ)‖
     rw [ofComplex_apply_of_im_pos (by simpa using mul_pos ha x.coe_im_pos)]
 
 open scoped NNReal in
+set_option backward.simpa.using.reducibleClose false in
 /-- The points on the bottom "arc" of the fundamental domain are in the closure
 of the open fundamental domain. -/
 private lemma mem_closure_of_arc {x : ℍ} (hxnorm : ‖(x : ℂ)‖ = 1) (hxre : |x.re| ≤ 1 / 2) :

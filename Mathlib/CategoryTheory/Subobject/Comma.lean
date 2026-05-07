@@ -129,6 +129,7 @@ namespace CostructuredArrow
 
 variable {S : C ⥤ D} {T : D}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Every quotient of a costructured arrow can be projected to a quotient of the underlying
     object. -/
 def projectQuotient [HasFiniteColimits C] [PreservesFiniteColimits S] {A : CostructuredArrow S T} :

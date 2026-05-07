@@ -188,6 +188,7 @@ namespace SheafConditionPairwiseIntersections
 
 open CategoryTheory.Pairwise CategoryTheory.Pairwise.Hom
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Implementation of `SheafConditionPairwiseIntersections.coneEquiv`. -/

@@ -389,6 +389,7 @@ theorem Multipliable.compl_add {s : Set β} (hs : Multipliable (f ∘ (↑) : (s
     (hsc : Multipliable (f ∘ (↑) : s → α)) : Multipliable f :=
   (hs.hasProd.compl_mul hsc.hasProd).multipliable
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Version of `HasProd.update` for `CommMonoid` rather than `CommGroup`.
 Rather than showing that `f.update` has a specific product in terms of `HasProd`,
 it gives a relationship between the products of `f` and `f.update` given that both exist. -/

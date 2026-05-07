@@ -209,6 +209,7 @@ theorem condition : fst f g ≫ f = snd f g ≫ g :=
   Over.w (fst' f g)
 
 variable (f g) in
+set_option backward.simpa.using.reducibleClose false in
 @[ext]
 theorem hom_ext {W : C} {φ₁ φ₂ : W ⟶ pullbackObj f g} (h₁ : φ₁ ≫ fst _ _ = φ₂ ≫ fst _ _)
     (h₂ : φ₁ ≫ snd _ _ = φ₂ ≫ snd _ _) :
@@ -353,6 +354,7 @@ instance hasPullbacks [ChosenPullbacks C] : HasPullbacks C :=
 noncomputable def pullbackIsoOverPullback : ChosenPullbacksAlong.pullback g ≅ Over.pullback g :=
   (ChosenPullbacksAlong.mapPullbackAdj g).rightAdjointUniq (Over.mapPullbackAdj g)
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 theorem pullbackIsoOverPullback_hom_app_comp_fst (T : Over X) :
     ((pullbackIsoOverPullback g).hom.app T).left ≫ pullback.fst _ _ = fst _ _ := by

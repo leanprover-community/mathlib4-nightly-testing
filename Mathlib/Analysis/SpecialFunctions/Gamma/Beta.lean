@@ -578,6 +578,7 @@ namespace Real
 
 open Complex
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Gamma_mul_Gamma_add_half (s : ℝ) :
     Gamma s * Gamma (s + 1 / 2) = Gamma (2 * s) * (2 : ℝ) ^ (1 - 2 * s) * √π := by
   rw [← ofReal_inj]

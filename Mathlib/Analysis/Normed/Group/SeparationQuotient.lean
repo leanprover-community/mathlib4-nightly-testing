@@ -116,6 +116,7 @@ theorem liftNormedAddGroupHom_normNoninc {N : Type*} [SeminormedAddCommGroup N]
   exact le_trans (norm_liftNormedAddGroupHom_apply_le f hf x)
     (mul_le_of_le_one_left (norm_nonneg x) fb')
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The operator norm of the projection is `1` if there is an element whose norm is different from
 `0`. -/
 theorem norm_normedMk_eq_one [NontrivialTopology M] :

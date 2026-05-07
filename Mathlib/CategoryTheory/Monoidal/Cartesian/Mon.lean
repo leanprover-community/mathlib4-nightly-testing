@@ -246,6 +246,7 @@ end Functor
 section BraidedCategory
 variable [BraidedCategory C]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `M` is a commutative monoid object, then `Hom(X, M)` has a commutative monoid structure. -/
 @[to_additive
 /-- If `M` is a commutative additive monoid object, then `Hom(X, M)` has a commutative additive

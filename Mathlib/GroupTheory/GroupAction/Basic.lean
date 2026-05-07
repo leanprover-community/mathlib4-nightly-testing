@@ -151,6 +151,7 @@ instance (a : α) : IsPretransitive G (orbit G a) :=
 lemma orbitRel_subgroup_le (H : Subgroup G) : orbitRel H α ≤ orbitRel G α :=
   Setoid.le_def.2 mem_orbit_of_mem_orbit_subgroup
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma orbitRel_subgroupOf (H K : Subgroup G) :
     orbitRel (H.subgroupOf K) α = orbitRel (H ⊓ K : Subgroup G) α := by

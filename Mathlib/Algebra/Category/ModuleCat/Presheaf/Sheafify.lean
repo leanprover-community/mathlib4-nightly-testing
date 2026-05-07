@@ -326,6 +326,7 @@ noncomputable def sheafify : SheafOfModules.{v} R where
   val := letI := Sheafify.module α φ; ofPresheaf A.obj (Sheafify.map_smul _ _)
   isSheaf := A.property
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The canonical morphism from a presheaf of modules to its associated sheaf. -/
 noncomputable def toSheafify : M₀ ⟶ (restrictScalars α).obj (sheafify α φ).val :=
   homMk φ (fun X r₀ m₀ ↦ by
@@ -386,6 +387,7 @@ variable {M₀' : PresheafOfModules.{v} R₀} {A' : Sheaf J AddCommGrpCat.{v}}
   [Presheaf.IsLocallyInjective J φ'] [Presheaf.IsLocallySurjective J φ']
   (τ₀ : M₀ ⟶ M₀') (τ : A ⟶ A')
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The morphism of sheaves of modules `sheafify α φ ⟶ sheafify α φ'`

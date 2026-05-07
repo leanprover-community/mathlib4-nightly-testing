@@ -390,6 +390,7 @@ section ToList
 theorem prod_map_toList (s : Finset ι) (f : ι → M) : (s.toList.map f).prod = s.prod f := by
   rw [Finset.prod, ← Multiset.prod_coe, ← Multiset.map_coe, Finset.coe_toList]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive (attr := simp, grind =)]
 theorem prod_toList {M : Type*} [CommMonoid M] (s : Finset M) :
     s.toList.prod = ∏ x ∈ s, x := by
@@ -464,6 +465,7 @@ theorem prod_bij' (i : ∀ a ∈ s, κ) (j : ∀ a ∈ t, ι) (hi : ∀ a ha, i 
   rw [← left_inv a1 h1, ← left_inv a2 h2]
   simp only [eq]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Reorder a product.
 
 The difference with `Finset.prod_nbij'` is that the bijection is specified as a surjective

@@ -348,6 +348,7 @@ variable (E) (μ)
 
 namespace BoundedContinuousFunction
 
+set_option backward.simpa.using.reducibleClose false in
 theorem toLp_denseRange [μ.WeaklyRegular] [IsFiniteMeasure μ] (hp : p ≠ ∞) :
     DenseRange (toLp p μ 𝕜 : (α →ᵇ E) →L[𝕜] Lp E p μ) := by
   simpa only [← range_toLp p μ (𝕜 := 𝕜)]

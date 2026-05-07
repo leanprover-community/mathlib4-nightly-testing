@@ -60,6 +60,7 @@ open scoped Pointwise
 open FiniteGaloisIntermediateField AlgEquiv
 --Note: The `adjoin`s below are `FiniteGaloisIntermediateField.adjoin`
 
+set_option backward.simpa.using.reducibleClose false in
 lemma fixingSubgroup_isClosed (L : IntermediateField k K) [IsGalois k K] :
     IsClosed (L.fixingSubgroup : Set Gal(K/k)) where
   isOpen_compl := isOpen_iff_mem_nhds.mpr fun σ h => by
@@ -142,6 +143,7 @@ lemma restrict_fixedField (H : Subgroup Gal(K/k)) (L : IntermediateField k K) [N
     exact (AlgEquiv.restrictNormal_commutes σ L ⟨x, xL⟩).symm
 
 open IntermediateField in
+set_option backward.simpa.using.reducibleClose false in
 lemma fixingSubgroup_fixedField (H : ClosedSubgroup Gal(K/k)) [IsGalois k K] :
     (IntermediateField.fixedField H).fixingSubgroup = H.1 := by
   apply le_antisymm _ ((IntermediateField.le_iff_le H.toSubgroup

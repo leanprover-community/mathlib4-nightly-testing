@@ -360,6 +360,7 @@ lemma LinearOrder.strong_induction_of_finite
     (h : ∀ (j : α) (_ : ∀ (k : α), k < j → motive k), motive j) (i : α) :
     motive i := WellFoundedLT.induction _ h
 
+set_option backward.simpa.using.reducibleClose false in
 lemma OrderEmbedding.range_eq_iff
     {α β : Type*} [LinearOrder α] [PartialOrder β] [Finite α]
     {f g : α ↪o β} :

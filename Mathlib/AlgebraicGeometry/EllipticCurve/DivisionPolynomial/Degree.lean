@@ -286,6 +286,7 @@ lemma coeff_preΨ (n : ℤ) : (W.preΨ n).coeff ((n.natAbs ^ 2 - if Even n then 
       push_cast [even_two_mul, Int.not_even_two_mul_add_one, Int.neg_ediv_of_dvd ⟨n, rfl⟩] at * <;>
       rw [ih]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma coeff_preΨ_ne_zero {n : ℤ} (h : (n : R) ≠ 0) :
     (W.preΨ n).coeff ((n.natAbs ^ 2 - if Even n then 4 else 1) / 2) ≠ 0 := by
   induction n using Int.negInduction with
@@ -299,6 +300,7 @@ lemma natDegree_preΨ {n : ℤ} (h : (n : R) ≠ 0) :
     (W.preΨ n).natDegree = (n.natAbs ^ 2 - if Even n then 4 else 1) / 2 :=
   natDegree_eq_of_le_of_coeff_ne_zero (W.natDegree_preΨ_le n) <| W.coeff_preΨ_ne_zero h
 
+set_option backward.simpa.using.reducibleClose false in
 lemma natDegree_preΨ_pos {n : ℤ} (hn : 2 < n.natAbs) (h : (n : R) ≠ 0) :
     0 < (W.preΨ n).natDegree := by
   induction n using Int.negInduction with

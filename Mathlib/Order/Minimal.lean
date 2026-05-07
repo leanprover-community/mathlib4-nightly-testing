@@ -215,6 +215,7 @@ theorem MinimalFor.maximal_of_strictAntiOn (hg : StrictAntiOn g (setOf P)) (h : 
 section WellFoundedLT
 variable [WellFoundedLT α]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_dual]
 lemma exists_minimalFor_of_wellFoundedLT (P : ι → Prop) (f : ι → α) (hP : ∃ i, P i) :
     ∃ i, MinimalFor P f i := by
@@ -517,6 +518,7 @@ theorem image_setOf_minimal (f : α ≃o β) (P : α → Prop) :
   convert _root_.image_monotone_setOf_minimal (f := f) (by simp [f.le_iff_le])
   aesop
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_dual]
 theorem map_minimal_mem (f : s ≃o t) (hx : Minimal (· ∈ s) x) :
     Minimal (· ∈ t) (f ⟨x, hx.prop⟩) := by

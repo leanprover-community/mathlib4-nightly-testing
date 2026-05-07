@@ -97,6 +97,7 @@ namespace leftRegular
 
 open Finsupp IsCyclic Representation
 
+set_option backward.simpa.using.reducibleClose false in
 lemma range_norm_eq_ker_applyAsHom_sub (hg : ∀ x, x ∈ Subgroup.zpowers g) :
     LinearMap.range (leftRegular k G).norm.hom.toLinearMap =
       LinearMap.ker (applyAsHom (leftRegular k G) g - 𝟙 _).hom.toLinearMap :=
@@ -200,6 +201,7 @@ noncomputable def resolution.π (g : G) :
     ⟨leftRegularHom _ 1, (leftRegularHomEquiv _).injective <| by
     simp [homEquiv, sub_hom, applyAsHom]⟩
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma resolution_quasiIso (g : G) (hg : ∀ x, x ∈ Subgroup.zpowers g) :

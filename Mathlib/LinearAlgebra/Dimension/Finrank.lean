@@ -96,6 +96,7 @@ theorem lt_rank_of_lt_finrank {n : ℕ} (h : n < finrank R M) : ↑n < Module.ra
 theorem one_lt_rank_of_one_lt_finrank (h : 1 < finrank R M) : 1 < Module.rank R M := by
   simpa using lt_rank_of_lt_finrank h
 
+set_option backward.simpa.using.reducibleClose false in
 theorem finrank_le_finrank_of_rank_le_rank
     (h : lift.{w} (Module.rank R M) ≤ Cardinal.lift.{v} (Module.rank R N))
     (h' : Module.rank R N < ℵ₀) : finrank R M ≤ finrank R N := by
@@ -142,6 +143,7 @@ theorem finrank_top : finrank R (⊤ : Submodule R M) = finrank R M := by
 
 namespace Algebra
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `S₀ / R₀` and `S₁ / R₁` are algebras, `i : R₀ ≃+* R₁` and `j : S₀ ≃+* S₁` are
 ring isomorphisms, such that `R₀ → R₁ → S₁` and `R₀ → S₀ → S₁` commute,
 then the `finrank` of `S₀ / R₀` is equal to the finrank of `S₁ / R₁`. -/

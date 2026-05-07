@@ -349,6 +349,7 @@ protected theorem add_sub_cancel_left (ha : a ≠ ∞) : a + b - a = b := by
 protected theorem add_sub_cancel_right (hb : b ≠ ∞) : a + b - b = a := by
   simp [hb]
 
+set_option backward.simpa.using.reducibleClose false in
 protected theorem sub_add_eq_add_sub (hab : b ≤ a) (b_ne_top : b ≠ ∞) :
     a - b + c = a + c - b := by
   by_cases c_top : c = ∞
@@ -522,6 +523,7 @@ theorem toNNReal_iInf (hf : ∀ i, f i ≠ ∞) : (iInf f).toNNReal = ⨅ i, (f 
   · lift f to ι → ℝ≥0 using hf
     simp_rw [← coe_iInf, toNNReal_coe]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem toNNReal_sInf (s : Set ℝ≥0∞) (hs : ∀ r ∈ s, r ≠ ∞) :
     (sInf s).toNNReal = sInf (ENNReal.toNNReal '' s) := by
   have hf : ∀ i, ((↑) : s → ℝ≥0∞) i ≠ ∞ := fun ⟨r, rs⟩ => hs r rs
@@ -621,6 +623,7 @@ theorem toNNReal_iSup (hf : ∀ i, f i ≠ ∞) : (iSup f).toNNReal = ⨆ i, (f 
   · rw [← coe_iSup h, toNNReal_coe]
   · rw [NNReal.iSup_of_not_bddAbove h, iSup_coe_eq_top.2 h, toNNReal_top]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem toNNReal_sSup (s : Set ℝ≥0∞) (hs : ∀ r ∈ s, r ≠ ∞) :
     (sSup s).toNNReal = sSup (ENNReal.toNNReal '' s) := by
   have hf : ∀ i, ((↑) : s → ℝ≥0∞) i ≠ ∞ := fun ⟨r, rs⟩ => hs r rs

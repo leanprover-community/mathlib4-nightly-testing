@@ -63,6 +63,7 @@ namespace PreOneHypercover
 
 variable {X : C} (E : PreOneHypercover X) (F : C ⥤ D)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The image of a 1-pre-hypercover by a functor. -/
 @[simps toPreZeroHypercover I₁ Y p₁ p₂]
 def map : PreOneHypercover (F.obj X) where

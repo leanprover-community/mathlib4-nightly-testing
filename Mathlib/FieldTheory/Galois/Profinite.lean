@@ -295,6 +295,7 @@ lemma krullTopology_mem_nhds_one_iff_of_isGalois [IsGalois k K] (A : Set Gal(K/k
   exact ⟨fun ⟨L, _, hL, hsub⟩ ↦ ⟨{ toIntermediateField := L, isGalois := ⟨⟩ }, hsub⟩,
     fun ⟨L, hL⟩ ↦ ⟨L, inferInstance, inferInstance, hL⟩⟩
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma isOpen_mulEquivToLimit_image_fixingSubgroup [IsGalois k K]
     (L : FiniteGaloisIntermediateField k K) : IsOpen (mulEquivToLimit k K '' L.fixingSubgroup) := by

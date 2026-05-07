@@ -118,6 +118,7 @@ theorem coe_toRealLinearIsometryEquivOfMapZero_symm (f : E ≃ᵢ F) (h0 : f 0 =
     ⇑(f.toRealLinearIsometryEquivOfMapZero h0).symm = f.symm :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **Mazur-Ulam Theorem**: if `f` is an isometric bijection between two normed vector spaces
 over `ℝ`, then `x ↦ f x - f 0` is a linear isometry equivalence. -/
 def toRealLinearIsometryEquiv (f : E ≃ᵢ F) : E ≃ₗᵢ[ℝ] F :=

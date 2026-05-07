@@ -180,6 +180,7 @@ def toPerm : (X ≃ᵈ X) →* Equiv.Perm X where
 theorem coe_pow (e : X ≃ᵈ X) (n : ℕ) : ⇑(e ^ n) = e^[n] := by
   rw [← coe_toEquiv, ← toPerm_apply, map_pow, Equiv.Perm.coe_pow]; rfl
 
+set_option backward.simpa.using.reducibleClose false in
 -- TODO: Once `IsometryEquiv` follows the `*EquivClass` pattern, replace this with an instance
 -- of `DilationEquivClass` assuming `IsometryEquivClass`.
 /-- Every isometry equivalence is a dilation equivalence of ratio `1`. -/

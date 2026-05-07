@@ -775,10 +775,12 @@ variable [NormedField E] [CharZero E] [NormedSpace K E]
 include K
 
 variable (K) in
+set_option backward.simpa.using.reducibleClose false in
 lemma norm_nnqsmul (q : ℚ≥0) (x : E) : ‖q • x‖ = q • ‖x‖ := by
   simpa [NNRat.cast_smul_eq_nnqsmul] using norm_smul (q : K) x
 
 variable (K) in
+set_option backward.simpa.using.reducibleClose false in
 lemma nnnorm_nnqsmul (q : ℚ≥0) (x : E) : ‖q • x‖₊ = q • ‖x‖₊ := by
   simpa [NNRat.cast_smul_eq_nnqsmul] using nnnorm_smul (q : K) x
 

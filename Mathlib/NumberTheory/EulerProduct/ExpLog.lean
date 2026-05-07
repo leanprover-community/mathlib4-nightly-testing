@@ -22,6 +22,7 @@ public section
 
 open Complex
 
+set_option backward.simpa.using.reducibleClose false in
 open Topology in
 /-- If `f : α → ℂ` is summable, then so is `n ↦ log (1 - f n)`. -/
 lemma Summable.clog_one_sub {α : Type*} {f : α → ℂ} (hsum : Summable f) :

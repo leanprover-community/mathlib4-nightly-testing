@@ -79,6 +79,7 @@ variable [CommMonoid α] [TopologicalSpace α] [ContinuousMul α]
 
 section Sum
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma HasProd.sum {α β M : Type*} [CommMonoid M] [TopologicalSpace M] [ContinuousMul M]
     {f : α ⊕ β → M} {a b : M}
@@ -341,6 +342,7 @@ section ContinuousStar
 variable [AddCommMonoid α] [TopologicalSpace α] [StarAddMonoid α] [ContinuousStar α] {f : β → α}
   {a : α}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasSum.star (h : HasSum f a L) : HasSum (fun b ↦ star (f b)) (star a) L := by
   simpa only using h.map (starAddEquiv : α ≃+ α) continuous_star
 

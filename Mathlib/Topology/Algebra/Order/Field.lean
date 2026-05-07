@@ -80,6 +80,7 @@ theorem Filter.Tendsto.inv_tendsto_atTop (h : Tendsto f l atTop) : Tendsto f⁻�
 theorem Filter.Tendsto.inv_tendsto_nhdsGT_zero (h : Tendsto f l (𝓝[>] 0)) : Tendsto f⁻¹ l atTop :=
   tendsto_inv_nhdsGT_zero.comp h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The function `x^(-n)` tends to `0` at `+∞` for any positive natural `n`.
 A version for positive real powers exists as `tendsto_rpow_neg_atTop`. -/
 theorem tendsto_pow_neg_atTop {n : ℕ} (hn : n ≠ 0) :

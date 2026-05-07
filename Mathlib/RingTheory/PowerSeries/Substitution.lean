@@ -174,6 +174,7 @@ theorem coe_substAlgHom (ha : HasSubst a) :
   MvPowerSeries.coe_substAlgHom ha.const
 
 attribute [local instance] DiscreteTopology.instContinuousSMul in
+set_option backward.simpa.using.reducibleClose false in
 /-- Rewrite `PowerSeries.substAlgHom` as `PowerSeries.aeval`.
 
 Its use is discouraged because it introduces a topology and might lead

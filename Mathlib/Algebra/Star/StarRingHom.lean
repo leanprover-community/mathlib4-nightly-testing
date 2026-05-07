@@ -336,6 +336,7 @@ instance : Inhabited (A ≃⋆+* A) :=
 theorem coe_refl : ⇑(refl : A ≃⋆+* A) = id :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The inverse of a star ring isomorphism is a star ring isomorphism. -/
 @[symm]
 nonrec def symm (e : A ≃⋆+* B) : B ≃⋆+* A :=

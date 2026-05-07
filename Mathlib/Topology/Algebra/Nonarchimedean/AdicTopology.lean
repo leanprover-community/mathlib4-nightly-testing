@@ -57,6 +57,7 @@ open Topology Pointwise
 
 namespace Ideal
 
+set_option backward.simpa.using.reducibleClose false in
 theorem adic_basis (I : Ideal R) : SubmodulesRingBasis fun n : ℕ => (I ^ n • ⊤ : Ideal R) :=
   { inter := by
       suffices ∀ i j : ℕ, ∃ k, I ^ k ≤ I ^ i ∧ I ^ k ≤ I ^ j by

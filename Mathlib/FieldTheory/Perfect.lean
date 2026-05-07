@@ -54,6 +54,7 @@ variable (M : Type*) (p q : ℕ) [CommMonoid M] [PerfectRing M p] [PerfectRing M
 
 namespace PerfectRing
 
+set_option backward.simpa.using.reducibleClose false in
 instance one : PerfectRing M 1 :=
   ⟨by simpa using bijective_id⟩
 

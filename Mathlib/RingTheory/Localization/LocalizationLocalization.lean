@@ -190,6 +190,7 @@ instance {R : Type*} [CommRing R] [IsDomain R] (p : Ideal R) [p.IsPrime] :
   localization_isScalarTower_of_submonoid_le (Localization.AtPrime p) (FractionRing R)
     p.primeCompl (nonZeroDivisors R) p.primeCompl_le_nonZeroDivisors
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `M ≤ N` are submonoids of `R`, then `N⁻¹S` is also the localization of `M⁻¹S` at `N`. -/
 theorem isLocalization_of_submonoid_le (M N : Submonoid R) (h : M ≤ N) [IsLocalization M S]
     [IsLocalization N T] [Algebra S T] [IsScalarTower R S T] :

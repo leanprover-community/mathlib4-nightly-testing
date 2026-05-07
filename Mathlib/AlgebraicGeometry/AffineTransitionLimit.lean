@@ -149,6 +149,7 @@ lemma exists_mem_of_isClosed_of_nonempty
 
 set_option backward.defeqAttrib.useBackward true in
 include hc in
+set_option backward.simpa.using.reducibleClose false in
 /--
 A variant of `exists_mem_of_isClosed_of_nonempty` where the closed sets are only defined
 for the objects over a given `j : I`.
@@ -402,6 +403,7 @@ variable [∀ i, CompactSpace (D.obj i)] [LocallyOfFiniteType f] [IsCofiltered I
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hc in
+set_option backward.simpa.using.reducibleClose false in
 /-- Subsumed by `Scheme.exists_hom_hom_comp_eq_comp_of_locallyOfFiniteType`. -/
 private nonrec lemma Scheme.exists_hom_hom_comp_eq_comp_of_isAffine_of_locallyOfFiniteType
     [IsAffine S] [IsAffine X] [∀ i, IsAffine (D.obj i)] [IsAffine c.pt]
@@ -524,6 +526,7 @@ def g : D.obj A.i' ⟶ pullback f f :=
 
 set_option backward.isDefEq.respectTransparency false in
 omit [LocallyOfFiniteType f] in
+set_option backward.simpa.using.reducibleClose false in
 lemma range_g_subset :
     Set.range A.g ⊆ Scheme.Pullback.diagonalCoverDiagonalRange f A.𝒰S A.𝒰X := by
   simpa [ExistsHomHomCompEqCompAux.hii', g] using A.exists_index.choose_spec.choose_spec
@@ -563,6 +566,7 @@ def hc' (j : A.𝒰D.I₀) : IsLimit (A.c' j) :=
 
 variable [∀ i, IsAffineHom (A.c.π.app i)]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma exists_eq (j : A.𝒰D.I₀) : ∃ (k : I) (hki' : k ⟶ A.i'),
@@ -1100,6 +1104,7 @@ section LocallyOfFinitePresentation
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hc in
+set_option backward.simpa.using.reducibleClose false in
 /-- See `Scheme.exists_π_app_comp_eq_of_locallyOfFinitePresentation` for the general case. -/
 private nonrec lemma Scheme.exists_π_app_comp_eq_of_locallyOfFinitePresentation_of_isAffine
     [IsCofiltered I] [LocallyOfFinitePresentation f]
@@ -1164,6 +1169,7 @@ set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open TopologicalSpace in
 include hc in
+set_option backward.simpa.using.reducibleClose false in
 /--
 Given a cofiltered diagram of qcqs schemes `Dᵢ` over `S` with affine transition maps.
 If `X` is locally of finite presentation over `S`, then any `S`-morphism `lim Dᵢ ⟶ X` factors

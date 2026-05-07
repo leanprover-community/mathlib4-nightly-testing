@@ -80,6 +80,7 @@ lemma gaussNorm_eq_zero_iff (vZero : v 0 = 0) (vNonneg : ∀ a, v a ≥ 0)
     grind
   _ ≤ _ := le_gaussNorm v c f hbd n
 
+set_option backward.simpa.using.reducibleClose false in
 lemma gaussNorm_add_le_max (f g : MvPowerSeries σ R) (hc : 0 ≤ c)
     (vNonneg : ∀ a, v a ≥ 0) (hv : ∀ x y, v (x + y) ≤ max (v x) (v y))
     (hbfd : HasGaussNorm v c f) (hbgd : HasGaussNorm v c g) :

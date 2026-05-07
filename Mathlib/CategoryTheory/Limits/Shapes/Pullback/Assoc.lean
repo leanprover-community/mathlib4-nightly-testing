@@ -110,6 +110,7 @@ def pullbackPullbackLeftIsPullback [HasPullback (g₂ ≫ f₃) f₄] : IsLimit 
   apply leftSquareIsPullback _ rfl (pullbackIsPullback f₃ f₄)
   simpa [PullbackCone.pasteHoriz] using PullbackCone.mkSelfIsLimit (pullbackIsPullback _ f₄)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `(X₁ ×[Y₁] X₂) ×[Y₂] X₃` is the pullback `X₁ ×[Y₁] (X₂ ×[Y₂] X₃)`. -/
 def pullbackAssocIsPullback [HasPullback (g₂ ≫ f₃) f₄] :
     IsLimit
@@ -129,6 +130,7 @@ def pullbackPullbackRightIsPullback [HasPullback f₁ (g₃ ≫ f₂)] :
   apply topSquareIsPullback _ rfl (pullbackIsPullback f₁ f₂)
   simpa [PullbackCone.pasteVert] using PullbackCone.mkSelfIsLimit (pullbackIsPullback _ _)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `X₁ ×[Y₁] (X₂ ×[Y₂] X₃)` is the pullback `(X₁ ×[Y₁] X₂) ×[Y₂] X₃`. -/
 def pullbackAssocSymmIsPullback [HasPullback f₁ (g₃ ≫ f₂)] :
     IsLimit
@@ -283,6 +285,7 @@ def pushoutPushoutLeftIsPushout [HasPushout (g₃ ≫ f₂) g₄] :
   simpa [PushoutCocone.pasteVert] using
     PushoutCocone.mkSelfIsColimit (pushoutIsPushout (g₃ ≫ f₂) g₄)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `(X₁ ⨿[Z₁] X₂) ⨿[Z₂] X₃` is the pushout `X₁ ⨿[Z₁] (X₂ ⨿[Z₂] X₃)`. -/
 def pushoutAssocIsPushout [HasPushout (g₃ ≫ f₂) g₄] :
     IsColimit
@@ -302,6 +305,7 @@ def pushoutPushoutRightIsPushout [HasPushout g₁ (g₂ ≫ f₃)] :
   apply rightSquareIsPushout _ rfl (pushoutIsPushout _ _)
   simpa [PushoutCocone.pasteHoriz] using PushoutCocone.mkSelfIsColimit (pushoutIsPushout _ _)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `X₁ ⨿[Z₁] (X₂ ⨿[Z₂] X₃)` is the pushout `(X₁ ⨿[Z₁] X₂) ⨿[Z₂] X₃`. -/
 def pushoutAssocSymmIsPushout [HasPushout g₁ (g₂ ≫ f₃)] :
     IsColimit

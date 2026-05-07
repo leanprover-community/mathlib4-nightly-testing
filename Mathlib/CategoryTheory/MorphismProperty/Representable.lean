@@ -184,6 +184,7 @@ lemma isPullback_of_map {X Y Z : C} {f : X ⟶ Z} (hf : F.relativelyRepresentabl
 
 variable {g}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Two morphisms `a b : c ⟶ hf.pullback g` are equal if
 * Their compositions (in `C`) with `hf.snd g : hf.pullback  ⟶ X` are equal.
 * The compositions of `F.map a` and `F.map b` with `hf.fst g` are equal. -/
@@ -213,10 +214,12 @@ case when the cone point is in the image of `F.obj`. -/
 noncomputable def lift [Full F] : c ⟶ hf.pullback g :=
   F.preimage <| PullbackCone.IsLimit.lift (hf.isPullback g).isLimit _ _ hi
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma lift_fst [Full F] : F.map (hf.lift i h hi) ≫ hf.fst g = i := by
   simpa [lift] using PullbackCone.IsLimit.lift_fst _ _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma lift_snd [Full F] [Faithful F] : hf.lift i h hi ≫ hf.snd g = h :=
   F.map_injective <| by simpa [lift] using PullbackCone.IsLimit.lift_snd _ _ _ _

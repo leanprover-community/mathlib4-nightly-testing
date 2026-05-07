@@ -274,6 +274,7 @@ end SpecificInstances
 
 section EquivInt
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A linearly-ordered additive abelian group is cyclic iff it is isomorphic to `ℤ` as an ordered
 additive monoid. -/
 lemma LinearOrderedAddCommGroup.isAddCyclic_iff_nonempty_equiv_int {A : Type*}

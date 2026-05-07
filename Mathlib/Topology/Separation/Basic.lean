@@ -929,6 +929,7 @@ theorem isClosed_setOf_specializes : IsClosed { p : X × X | p.1 ⤳ p.2 } := by
 theorem isClosed_setOf_inseparable : IsClosed { p : X × X | Inseparable p.1 p.2 } := by
   simp only [← specializes_iff_inseparable, isClosed_setOf_specializes]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- In an R₁ space, a point belongs to the closure of a compact set `K`
 if and only if it is topologically inseparable from some point of `K`. -/
 theorem IsCompact.mem_closure_iff_exists_inseparable {K : Set X} (hK : IsCompact K) :

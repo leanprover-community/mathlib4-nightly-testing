@@ -125,6 +125,7 @@ theorem ParacompactSpace.of_hasBasis {ι : X → Sort*} {p : ∀ x, ι x → Pro
     · rcases hts b with ⟨x, hx⟩
       exact ⟨_, hx.trans (hsub _)⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Topology.IsClosedEmbedding.paracompactSpace [ParacompactSpace Y] {e : X → Y}
     (he : IsClosedEmbedding e) : ParacompactSpace X where
   locallyFinite_refinement α s ho hu := by

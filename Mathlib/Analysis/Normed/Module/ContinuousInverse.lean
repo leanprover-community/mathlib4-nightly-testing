@@ -245,6 +245,7 @@ variable {R E F : Type*} [NontriviallyNormedField R]
   [NormedAddCommGroup E] [NormedSpace R E] [CompleteSpace E]
   [NormedAddCommGroup F] [NormedSpace R F] [CompleteSpace F]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A continuous linear map between Banach spaces has a continuous left inverse if it is injective,
 has closed range and its range has a closed complement. -/
 lemma of_injective_of_isClosed_range_of_closedComplement_range {f : E →L[R] F}

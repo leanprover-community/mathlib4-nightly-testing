@@ -231,6 +231,7 @@ theorem linearly_dependent_of_isLocalExtrOn (hT : IsSelfAdjoint T) {x₀ : F}
   simpa only [two_smul, smul_add, add_smul, add_zero] using h₂
 
 open scoped InnerProductSpace in
+set_option backward.simpa.using.reducibleClose false in
 theorem eq_smul_self_of_isLocalExtrOn_real (hT : IsSelfAdjoint T) {x₀ : F}
     (hextr : IsLocalExtrOn T.reApplyInnerSelf (sphere (0 : F) ‖x₀‖) x₀) :
     T x₀ = T.rayleighQuotient x₀ • x₀ := by

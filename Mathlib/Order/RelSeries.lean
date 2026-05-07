@@ -711,6 +711,7 @@ def smash (p q : RelSeries r) (connect : p.last = q.head) : RelSeries r where
       · apply Fin.addCases_left
     simpa only [Fin.castSucc_natAdd, Fin.succ_natAdd, Fin.addCases_right] using q.step i
 
+set_option backward.simpa.using.reducibleClose false in
 lemma smash_castLE {p q : RelSeries r} (h : p.last = q.head) (i : Fin (p.length + 1)) :
     p.smash q h (i.castLE (by simp)) = p i := by
   refine i.lastCases ?_ fun _ ↦ by dsimp only [smash]; apply Fin.addCases_left
@@ -735,6 +736,7 @@ lemma smash_succ_natAdd {p q : RelSeries r} (h : p.last = q.head) (i : Fin q.len
   dsimp only [smash, Fin.succ_natAdd]
   apply Fin.addCases_right
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma head_smash {p q : RelSeries r} (h : p.last = q.head) :
     (smash p q h).head = p.head := by
   obtain ⟨_ | _, _⟩ := p
@@ -972,6 +974,7 @@ def range (n : ℕ) : LTSeries ℕ where
 @[simp] lemma last_range (n : ℕ) : (range n).last = n := rfl
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- Any `LTSeries` can be refined to a `CovBy`-`RelSeries`
 in a bidirectionally well-founded order. -/
 theorem exists_relSeries_covBy
@@ -1058,6 +1061,7 @@ lemma apply_add_index_le_apply_add_index_int (p : LTSeries ℤ) (i j : Fin (p.le
 lemma head_add_length_le_nat (p : LTSeries ℕ) : p.head + p.length ≤ p.last :=
   LTSeries.apply_add_index_le_apply_add_index_nat _ _ (Fin.last _) (Fin.zero_le _)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- In ℤ, the head and tail of an `LTSeries` differ at least by the length of the series -/
 lemma head_add_length_le_int (p : LTSeries ℤ) : p.head + p.length ≤ p.last := by
   simpa using LTSeries.apply_add_index_le_apply_add_index_int _ _ (Fin.last _) (Fin.zero_le _)

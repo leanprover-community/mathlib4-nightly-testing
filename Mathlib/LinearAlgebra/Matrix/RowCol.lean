@@ -326,11 +326,13 @@ theorem updateRow_comm [DecidableEq m] (A : Matrix m n α) {i i' : m} (h : i ≠
     (A.updateRow i x).updateRow i' y = (A.updateRow i' y).updateRow i x :=
   Function.update_comm h _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem updateCol_idem [DecidableEq n] (A : Matrix m n α) (j : n) (x y : m → α) :
     (A.updateCol j x).updateCol j y = A.updateCol j y := by
   simpa only [updateRow_transpose] using congr_arg transpose <| updateRow_idem Aᵀ j x y
 
+set_option backward.simpa.using.reducibleClose false in
 theorem updateCol_comm [DecidableEq n] (A : Matrix m n α) {j j' : n} (h : j ≠ j') (x y : m → α) :
     (A.updateCol j x).updateCol j' y = (A.updateCol j' y).updateCol j x := by
   simpa only [updateRow_transpose] using congr_arg transpose <| updateRow_comm Aᵀ h x y
@@ -349,6 +351,7 @@ theorem submatrix_updateRow_equiv [DecidableEq l] [DecidableEq m] (A : Matrix m 
     (A.updateRow i r).submatrix e f = updateRow (A.submatrix e f) (e.symm i) fun i => r (f i) :=
   Eq.trans (by simp_rw [Equiv.apply_symm_apply]) (updateRow_submatrix_equiv A _ _ e f).symm
 
+set_option backward.simpa.using.reducibleClose false in
 theorem updateCol_submatrix_equiv [DecidableEq o] [DecidableEq n] (A : Matrix m n α) (j : o)
     (c : l → α) (e : l ≃ m) (f : o ≃ n) : updateCol (A.submatrix e f) j c =
     (A.updateCol (f j) fun i => c (e.symm i)).submatrix e f := by

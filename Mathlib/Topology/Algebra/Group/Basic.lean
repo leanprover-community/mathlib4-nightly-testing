@@ -867,6 +867,7 @@ lemma IsTopologicalGroup.isInducing_iff_nhds_one
   congr 1
   ext; simp
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma IsTopologicalGroup.isOpenMap_iff_nhds_one
     {H : Type*} [Monoid H] [TopologicalSpace H] [ContinuousConstSMul H H]
@@ -965,6 +966,7 @@ theorem IsTopologicalGroup.of_nhds_one {G : Type u} [Group G] [TopologicalSpace 
   rw [← hconj x₀]
   simpa [Function.comp_def] using hleft _
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem IsTopologicalGroup.of_comm_of_nhds_one {G : Type u} [CommGroup G] [TopologicalSpace G]
     (hmul : Tendsto (uncurry ((· * ·) : G → G → G)) (𝓝 1 ×ˢ 𝓝 1) (𝓝 1))

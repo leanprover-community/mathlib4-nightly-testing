@@ -62,6 +62,7 @@ lemma multicofork_π_eq_inr : (multicofork h h' s).π (J.snd default) = s.inr :=
 end isPushout
 
 include h h' in
+set_option backward.simpa.using.reducibleClose false in
 /-- A multicoequalizer for `I : MultispanIndex J C` is also
 a pushout when `J` is essentially `.ofLinearOrder ι` where
 `ι` contains exactly two elements. -/

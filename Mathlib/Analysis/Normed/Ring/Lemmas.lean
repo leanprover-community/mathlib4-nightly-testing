@@ -75,6 +75,7 @@ lemma RingHomIsometric.inv {𝕜₁ 𝕜₂ : Type*} [SeminormedRing 𝕜₁] [S
     RingHomIsometric σ' :=
   ⟨fun {x} ↦ by rw [← RingHomIsometric.norm_map (σ := σ), RingHomInvPair.comp_apply_eq₂]⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma tendsto_pow_cobounded_cobounded
     [NormOneClass α] [NormMulClass α] {m : ℕ} (hm : m ≠ 0) :
     Tendsto (· ^ m) (cobounded α) (cobounded α) := by

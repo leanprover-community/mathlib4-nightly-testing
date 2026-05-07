@@ -55,6 +55,7 @@ theorem isOpen_iff : IsOpen s ↔ ∀ o ∈ s, IsSuccLimit o → ∃ a < o, Set.
   SuccOrder.isOpen_iff
 
 open List Set in
+set_option backward.simpa.using.reducibleClose false in
 theorem mem_closure_tfae (a : Ordinal.{u}) (s : Set Ordinal) :
     TFAE [a ∈ closure s,
       a ∈ closure (s ∩ Iic a),

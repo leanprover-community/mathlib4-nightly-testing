@@ -203,6 +203,7 @@ theorem eLpNorm_le_eLpNorm_mul_eLpNorm_top (p : ℝ≥0∞) {f : α → E} (hf :
     _ = c * eLpNorm f p μ * eLpNorm g ∞ μ := by
       simp only [mul_assoc]; rw [mul_comm (eLpNorm _ _ _)]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem eLpNorm'_le_eLpNorm'_mul_eLpNorm' {p q r : ℝ} (hf : AEStronglyMeasurable f μ)
     (hg : AEStronglyMeasurable g μ) (b : E → F → G) (c : ℝ≥0)
     (h : ∀ᵐ x ∂μ, ‖b (f x) (g x)‖₊ ≤ c * ‖f x‖₊ * ‖g x‖₊) (hro_lt : 0 < r) (hrp : r < p)
@@ -280,16 +281,19 @@ variable {𝕜 α E F : Type*} {m : MeasurableSpace α} {μ : Measure α} [Norme
   [NormedAddCommGroup E] [MulActionWithZero 𝕜 E] [IsBoundedSMul 𝕜 E]
   [NormedAddCommGroup F] [MulActionWithZero 𝕜 F] [IsBoundedSMul 𝕜 F] {f : α → E}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem eLpNorm_smul_le_eLpNorm_top_mul_eLpNorm (p : ℝ≥0∞) (hf : AEStronglyMeasurable f μ)
     (φ : α → 𝕜) : eLpNorm (φ • f) p μ ≤ eLpNorm φ ∞ μ * eLpNorm f p μ := by
   simpa using (eLpNorm_le_eLpNorm_top_mul_eLpNorm p φ hf (· • ·) 1
     (.of_forall fun _ => by simpa using nnnorm_smul_le _ _) :)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem eLpNorm_smul_le_eLpNorm_mul_eLpNorm_top (p : ℝ≥0∞) (f : α → E) {φ : α → 𝕜}
     (hφ : AEStronglyMeasurable φ μ) : eLpNorm (φ • f) p μ ≤ eLpNorm φ p μ * eLpNorm f ∞ μ := by
   simpa using (eLpNorm_le_eLpNorm_mul_eLpNorm_top p hφ f (· • ·) 1
     (.of_forall fun _ => by simpa using nnnorm_smul_le _ _) :)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem eLpNorm'_smul_le_mul_eLpNorm' {p q r : ℝ} {f : α → E} (hf : AEStronglyMeasurable f μ)
     {φ : α → 𝕜} (hφ : AEStronglyMeasurable φ μ) (hp0_lt : 0 < p) (hpq : p < q)
     (hpqr : 1 / p = 1 / q + 1 / r) : eLpNorm' (φ • f) p μ ≤ eLpNorm' φ q μ * eLpNorm' f r μ := by
@@ -297,6 +301,7 @@ theorem eLpNorm'_smul_le_mul_eLpNorm' {p q r : ℝ} {f : α → E} (hf : AEStron
     (.of_forall fun _ => by simpa using nnnorm_smul_le _ _)
     hp0_lt hpq hpqr
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Hölder's inequality, as an inequality on the `ℒp` seminorm of a scalar product `φ • f`. -/
 theorem eLpNorm_smul_le_mul_eLpNorm {p q r : ℝ≥0∞} {f : α → E} (hf : AEStronglyMeasurable f μ)
     {φ : α → 𝕜} (hφ : AEStronglyMeasurable φ μ) [hpqr : HolderTriple p q r] :

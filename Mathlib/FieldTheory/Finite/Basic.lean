@@ -310,6 +310,7 @@ theorem sum_pow_units [DecidableEq K] (i : ℕ) :
         rw [← forall_pow_eq_one_iff, DFunLike.ext_iff]
         apply forall_congr'; intro x; simp [φ, Units.ext_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The sum of `x ^ i` as `x` ranges over a finite field of cardinality `q`
 is equal to `0` if `i < q - 1`. -/
 theorem sum_pow_lt_card_sub_one (i : ℕ) (h : i < q - 1) : ∑ x : K, x ^ i = 0 := by
@@ -393,6 +394,7 @@ theorem orderOf_frobeniusAlgHom : orderOf (frobeniusAlgHom K L) = Module.finrank
       (Nat.pow_lt_pow_right Fintype.one_lt_card lt).trans_eq Module.card_eq_pow_finrank.symm)
     simp [Nat.one_le_pow _ _ Fintype.card_pos]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem orderOf_frobeniusAlgEquivOfAlgebraic :
     orderOf (frobeniusAlgEquivOfAlgebraic K L) = Module.finrank K L := by
   simpa [orderOf_eq_iff Module.finrank_pos, DFunLike.ext_iff] using orderOf_frobeniusAlgHom K L
@@ -404,6 +406,7 @@ theorem bijective_frobeniusAlgHom_pow :
   (Subtype.val_injective.comp e.injective).bijective_of_nat_card_le
     ((card_algHom_le_finrank K L L).trans_eq <| by simp)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem bijective_frobeniusAlgEquivOfAlgebraic_pow :
     Function.Bijective fun n : Fin (Module.finrank K L) ↦ frobeniusAlgEquivOfAlgebraic K L ^ n.1 :=
   ((Algebra.IsAlgebraic.algEquivEquivAlgHom K L).bijective.of_comp_iff' _).mp <| by
@@ -417,6 +420,7 @@ instance (K L) [Finite L] [Field K] [Field L] [Algebra K L] : IsCyclic Gal(L/K) 
       fun f ↦ have ⟨n, hn⟩ := (bijective_frobeniusAlgEquivOfAlgebraic_pow K L).2 f; ⟨n, hn⟩⟩
 
 open Polynomial in
+set_option backward.simpa.using.reducibleClose false in
 theorem minpoly_frobeniusAlgHom :
     minpoly K (frobeniusAlgHom K L).toLinearMap = X ^ Module.finrank K L - 1 :=
   minpoly.eq_of_linearIndependent _ _ (leadingCoeff_X_pow_sub_one Module.finrank_pos)
@@ -528,6 +532,7 @@ theorem Nat.sq_add_sq_zmodEq (p : ℕ) [Fact p.Prime] (x : ℤ) :
   rw [sq_abs, sq_abs, ← ZMod.intCast_eq_intCast_iff]
   exact mod_cast hx
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `p` is a prime natural number and `x` is a natural number, then there exist natural numbers
 `a ≤ p / 2` and `b ≤ p / 2` such that `a ^ 2 + b ^ 2 ≡ x [MOD p]`. This is a version of
 `ZMod.sq_add_sq` with estimates on `a` and `b`. -/

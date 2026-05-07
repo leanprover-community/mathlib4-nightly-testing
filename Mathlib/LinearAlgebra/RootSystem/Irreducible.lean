@@ -264,6 +264,7 @@ Note that this actually holds for `RootPairing` provided we:
 * replace the assumption `q ≠ ⊥` with `¬ Disjoint P.rootSpan q`,
 * replace the conclusion `q = ⊤` with `P.rootSpan ≤ q`.
 -/
+set_option backward.simpa.using.reducibleClose false in
 lemma eq_top_of_mem_invtSubmodule_of_forall_eq_univ
     {K : Type*} [Field K] [NeZero (2 : K)] [Module K M] [Module K N]
     (P : RootPairing ι K M N) [P.IsRootSystem]

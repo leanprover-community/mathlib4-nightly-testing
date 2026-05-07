@@ -144,6 +144,7 @@ theorem edist_eq_iSup : edist f g = ⨆ (x : α), edist (f x) (g x) := by
   simp [← isometryEquivBoundedOfCompact α β |>.edist_eq f g,
     BoundedContinuousFunction.edist_eq_iSup]
 
+set_option backward.simpa.using.reducibleClose false in
 instance {R} [Zero R] [Zero β] [PseudoMetricSpace R] [SMul R β] [IsBoundedSMul R β] :
     IsBoundedSMul R C(α, β) where
   dist_smul_pair' r f g := by
@@ -350,6 +351,7 @@ variable {R : Type*} [NonUnitalSeminormedRing R] [IsCancelMulZero R]
 
 open BoundedContinuousFunction
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If the product of continuous functions on a compact space is zero, then the norm of their sum
 is the maximum of their norms. -/
 lemma norm_add_eq_max {f g : C(α, R)} (h : f * g = 0) :
@@ -446,6 +448,7 @@ open TopologicalSpace
 variable {X : Type*} [TopologicalSpace X] [LocallyCompactSpace X]
 variable {E : Type*} [NormedAddCommGroup E] [CompleteSpace E]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem summable_of_locally_summable_norm {ι : Type*} {F : ι → C(X, E)}
     (hF : ∀ K : Compacts X, Summable fun i => ‖(F i).restrict K‖) : Summable F := by
   classical

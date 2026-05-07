@@ -256,6 +256,7 @@ def germToPullbackStalk (f : X ⟶ Y) (F : Y.Presheaf C) (U : Opens X) (x : X) (
 
 set_option backward.defeqAttrib.useBackward true in
 variable {C} in
+set_option backward.simpa.using.reducibleClose false in
 @[ext]
 lemma pullback_obj_obj_ext {Z : C} {f : X ⟶ Y} {F : Y.Presheaf C} (U : (Opens X)ᵒᵖ)
     {φ ψ : ((pullback C f).obj F).obj U ⟶ Z}
@@ -269,6 +270,7 @@ lemma pullback_obj_obj_ext {Z : C} {f : X ⟶ Y} {F : Y.Presheaf C} (U : (Opens 
   simpa [pullbackPushforwardAdjunction, Functor.lanAdjunction_unit]
     using h V (leOfHom b)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma pullbackPushforwardAdjunction_unit_pullback_map_germToPullbackStalk
@@ -464,6 +466,7 @@ lemma germ_exist_of_isBasis (F : X.Presheaf C) (x : X) (t : ToType (F.stalk x)) 
   obtain ⟨_, ⟨V, hV, rfl⟩, hxV, hVU⟩ := hB.exists_subset_of_mem_open hxU U.2
   exact ⟨V, hxV, hV, F.map (homOfLE hVU).op s, by rw [← ConcreteCategory.comp_apply, F.germ_res']⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma germ_eq_of_isBasis (F : X.Presheaf C) {U V : Opens X} (x : X) (mU : x ∈ U) (mV : x ∈ V)
     {s : ToType (F.obj (op U))} {t : ToType (F.obj (op V))}
     (h : F.germ U x mU s = F.germ V x mV t) :

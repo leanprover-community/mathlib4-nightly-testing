@@ -438,6 +438,7 @@ variable {s : Multiset α}
 theorem Nodup.filter (p : α → Prop) [DecidablePred p] {s} : Nodup s → Nodup (filter p s) :=
   Quot.induction_on s fun _ => List.Nodup.filter (p ·)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Nodup.erase_eq_filter [DecidableEq α] (a : α) {s} :
     Nodup s → s.erase a = Multiset.filter (· ≠ a) s :=
   Quot.induction_on s fun _ d =>

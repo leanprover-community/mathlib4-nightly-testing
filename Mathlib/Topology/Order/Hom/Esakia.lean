@@ -130,6 +130,7 @@ theorem toFun_eq_coe {f : PseudoEpimorphism α β} : f.toFun = (f : α → β) :
 theorem ext {f g : PseudoEpimorphism α β} (h : ∀ a, f a = g a) : f = g :=
   DFunLike.ext f g h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Copy of a `PseudoEpimorphism` with a new `toFun` equal to the old one. Useful to fix
 definitional equalities. -/
 protected def copy (f : PseudoEpimorphism α β) (f' : α → β) (h : f' = f) : PseudoEpimorphism α β :=
@@ -237,6 +238,7 @@ theorem toFun_eq_coe {f : EsakiaHom α β} : f.toFun = (f : α → β) := rfl
 theorem ext {f g : EsakiaHom α β} (h : ∀ a, f a = g a) : f = g :=
   DFunLike.ext f g h
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Copy of an `EsakiaHom` with a new `toFun` equal to the old one. Useful to fix definitional
 equalities. -/
 protected def copy (f : EsakiaHom α β) (f' : α → β) (h : f' = f) : EsakiaHom α β :=

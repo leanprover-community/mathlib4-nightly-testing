@@ -585,6 +585,7 @@ theorem measurableSet_uIoc [ClosedIicTopology α] : MeasurableSet (uIoc a b) :=
 
 variable [SecondCountableTopology α] [OrderClosedTopology α]
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem Measurable.max {f g : δ → α} (hf : Measurable f) (hg : Measurable g) :
     Measurable fun a => max (f a) (g a) := by
@@ -596,6 +597,7 @@ nonrec theorem AEMeasurable.max {f g : δ → α} {μ : Measure δ} (hf : AEMeas
   ⟨fun a => max (hf.mk f a) (hg.mk g a), hf.measurable_mk.max hg.measurable_mk,
     EventuallyEq.comp₂ hf.ae_eq_mk _ hg.ae_eq_mk⟩
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem Measurable.min {f g : δ → α} (hf : Measurable f) (hg : Measurable g) :
     Measurable fun a => min (f a) (g a) := by
@@ -972,6 +974,7 @@ theorem Measurable.biSup {ι} (s : Set ι) {f : ι → δ → α} (hs : s.Counta
     apply Measurable.sup _ measurable_const
     exact .iSup (fun (i : s) ↦ hf i i.2)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem AEMeasurable.biSup {ι} {μ : Measure δ} (s : Set ι) {f : ι → δ → α} (hs : s.Countable)
     (hf : ∀ i ∈ s, AEMeasurable (f i) μ) : AEMeasurable (fun b => ⨆ i ∈ s, f i b) μ := by
   classical

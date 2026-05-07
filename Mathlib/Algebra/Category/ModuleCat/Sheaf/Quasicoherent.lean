@@ -68,6 +68,7 @@ variable {C : Type u₁} [Category.{v₁} C] {J : GrothendieckTopology C} {R : S
   [HasSheafify J AddCommGrpCat] [J.WEqualsLocallyBijective AddCommGrpCat]
   [J.HasSheafCompose (forget₂ RingCat AddCommGrpCat)] {ι σ : Type u}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given two morphisms of sheaves of `R`-modules `f : free ι ⟶ free σ` and `g : free σ ⟶ M`
 satisfying `H : f ≫ g = 0` and `IsColimit (CokernelCofork.ofπ g H)`, we obtain
 generators of `Presentation M`. -/

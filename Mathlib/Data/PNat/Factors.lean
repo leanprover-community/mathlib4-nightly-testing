@@ -116,6 +116,7 @@ theorem coePNat_nat (v : PrimeMultiset) : ((v : Multiset ℕ+) : Multiset ℕ) =
 def prod (v : PrimeMultiset) : ℕ+ :=
   (v : Multiset PNat).prod
 
+set_option backward.simpa.using.reducibleClose false in
 theorem coe_prod (v : PrimeMultiset) : (v.prod : ℕ) = (v : Multiset ℕ).prod := by
   have h : (v.prod : ℕ) = ((v.map (↑) : Multiset ℕ+).map (↑)).prod :=
     PNat.coeMonoidHom.map_multiset_prod v.toPNatMultiset

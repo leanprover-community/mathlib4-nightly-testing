@@ -93,6 +93,7 @@ namespace HasLimits
 -- The next two definitions are used in the construction of `HasLimits (ModuleCat R)`.
 -- After that, the limits should be constructed using the generic limits API,
 -- e.g. `limit F`, `limit.cone F`, and `limit.isLimit F`.
+set_option backward.simpa.using.reducibleClose false in
 /-- Construction of a limit cone in `ModuleCat R`.
 (Internal use only; use the limits API.)
 -/
@@ -183,6 +184,7 @@ instance forget_preservesLimits : PreservesLimits (forget (ModuleCat.{w} R)) :=
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 instance forget₂AddCommGroup_reflectsLimit :
     ReflectsLimit F (forget₂ (ModuleCat.{w} R) AddCommGrpCat) where
   reflects {c} hc := ⟨by

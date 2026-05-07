@@ -652,6 +652,7 @@ def principalUnitGroup : Subgroup Kˣ where
     rwa [add_sub_cancel, ← Valuation.map_mul, sub_mul, Units.inv_mul, ← neg_sub, one_mul,
       Valuation.map_neg]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem principal_units_le_units : A.principalUnitGroup ≤ A.unitGroup := fun a h => by
   simpa only [add_sub_cancel] using A.valuation.map_one_add_of_lt h
 

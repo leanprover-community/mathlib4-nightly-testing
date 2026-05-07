@@ -206,6 +206,7 @@ theorem omega_ne_zero : ω ≠ 0 :=
 theorem abs_omega : |ω| = ω :=
   abs_of_pos omega_pos
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem archimedeanClassMk_omega_neg : mk ω < 0 :=
   fun n ↦ by simpa using coe_lt_omega n
@@ -340,11 +341,13 @@ theorem lt_of_tendsto_atBot {x : ℝ*} (r : ℝ) (hx : x.Tendsto atBot) : x < r 
   rw [tendsto_ofSeq] at hx
   exact ofSeq_lt_ofSeq.2 <| hx.eventually_mem (Iio_mem_atBot r)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem archimedeanClassMk_neg_of_tendsto_atTop {x : ℝ*} (hx : x.Tendsto atTop) : mk x < 0 := by
   have : 0 < x := lt_of_tendsto_atTop 0 hx
   intro n
   simpa [abs_of_pos this] using lt_of_tendsto_atTop n hx
 
+set_option backward.simpa.using.reducibleClose false in
 theorem archimedeanClassMk_neg_of_tendsto_atBot {x : ℝ*} (hx : x.Tendsto atBot) : mk x < 0 := by
   have : x < 0 := lt_of_tendsto_atBot 0 hx
   intro n
@@ -425,6 +428,7 @@ theorem infinitesimal_iff {x : ℝ*} : Infinitesimal x ↔ 0 < mk x := by
 def InfinitePos (x : ℝ*) :=
   ∀ r : ℝ, ↑r < x
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.deprecated false in
 @[deprecated "`InfinitePos` is deprecated" (since := "2026-01-05")]
 theorem infinitePos_iff {x : ℝ*} : InfinitePos x ↔ 0 < x ∧ mk x < 0 := by
@@ -440,6 +444,7 @@ theorem infinitePos_iff {x : ℝ*} : InfinitePos x ↔ 0 < x ∧ mk x < 0 := by
 def InfiniteNeg (x : ℝ*) :=
   ∀ r : ℝ, x < r
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.deprecated false in
 @[deprecated "`InfiniteNeg` is deprecated" (since := "2026-01-05")]
 theorem infiniteNeg_iff {x : ℝ*} : InfiniteNeg x ↔ x < 0 ∧ mk x < 0 := by
@@ -955,11 +960,13 @@ set_option linter.deprecated false in
 theorem infinitesimal_real_iff {r : ℝ} : Infinitesimal r ↔ r = 0 :=
   isSt_real_iff_eq
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.deprecated false in
 @[deprecated "`Infinitesimal` is deprecated" (since := "2026-01-05")]
 nonrec theorem Infinitesimal.add {x y : ℝ*} (hx : Infinitesimal x) (hy : Infinitesimal y) :
     Infinitesimal (x + y) := by simpa only [add_zero] using hx.add hy
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.deprecated false in
 @[deprecated "`Infinitesimal` is deprecated" (since := "2026-01-05")]
 nonrec theorem Infinitesimal.neg {x : ℝ*} (hx : Infinitesimal x) : Infinitesimal (-x) := by
@@ -970,6 +977,7 @@ set_option linter.deprecated false in
 theorem infinitesimal_neg {x : ℝ*} : Infinitesimal (-x) ↔ Infinitesimal x :=
   ⟨fun h => neg_neg x ▸ h.neg, Infinitesimal.neg⟩
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.deprecated false in
 @[deprecated "`Infinitesimal` is deprecated" (since := "2026-01-05")]
 nonrec theorem Infinitesimal.mul {x y : ℝ*} (hx : Infinitesimal x) (hy : Infinitesimal y) :
@@ -992,6 +1000,7 @@ theorem not_real_of_infinitesimal_ne_zero (x : ℝ*) : Infinitesimal x → x ≠
   fun hi hx r hr =>
   hx <| hr.trans <| coe_eq_zero.2 <| IsSt.unique (hr.symm ▸ isSt_refl_real r : IsSt x r) hi
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.deprecated false in
 @[deprecated "`Infinitesimal` is deprecated" (since := "2026-01-05")]
 theorem IsSt.infinitesimal_sub {x : ℝ*} {r : ℝ} (hxr : IsSt x r) : Infinitesimal (x - ↑r) := by

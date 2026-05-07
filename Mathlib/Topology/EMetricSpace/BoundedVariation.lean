@@ -170,6 +170,7 @@ theorem _root_.BoundedVariationOn.locallyBoundedVariationOn {f : α → E} {s : 
 theorem congr {f g : α → E} {s : Set α} (h : EqOn f g s) : eVariationOn f s = eVariationOn g s := by
   grind [eVariationOn]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem edist_le (f : α → E) {s : Set α} {x y : α} (hx : x ∈ s) (hy : y ∈ s) :
     edist (f x) (f y) ≤ eVariationOn f s := by
   wlog hxy : y ≤ x generalizing x y
@@ -220,6 +221,7 @@ theorem lowerSemicontinuous_aux {ι : Type*} {F : ι → α → E} {p : Filter �
     exact fun i _ => Tendsto.edist (Ffs (u i.succ) (us i.succ)) (Ffs (u i) (us i))
   exact (this.eventually_const_lt hlt).mono fun i h => h.trans_le (sum_le um us)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The map `(eVariationOn · s)` is lower semicontinuous for pointwise convergence *on `s`*.
 Pointwise convergence on `s` is encoded here as uniform convergence on the family consisting of the
 singletons of elements of `s`.

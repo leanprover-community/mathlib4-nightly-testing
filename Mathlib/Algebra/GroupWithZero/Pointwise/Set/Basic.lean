@@ -38,9 +38,11 @@ variable [MulZeroClass α] {s : Set α}
 lemma mul_zero_subset (s : Set α) : s * 0 ⊆ 0 := by simp [subset_def, mem_mul]
 lemma zero_mul_subset (s : Set α) : 0 * s ⊆ 0 := by simp [subset_def, mem_mul]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.mul_zero (hs : s.Nonempty) : s * 0 = 0 :=
   s.mul_zero_subset.antisymm <| by simpa [mem_mul] using hs
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.zero_mul (hs : s.Nonempty) : 0 * s = 0 :=
   s.zero_mul_subset.antisymm <| by simpa [mem_mul] using hs
 
@@ -52,9 +54,11 @@ variable [GroupWithZero α] {s : Set α}
 lemma div_zero_subset (s : Set α) : s / 0 ⊆ 0 := by simp [subset_def, mem_div]
 lemma zero_div_subset (s : Set α) : 0 / s ⊆ 0 := by simp [subset_def, mem_div]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.div_zero (hs : s.Nonempty) : s / 0 = 0 :=
   s.div_zero_subset.antisymm <| by simpa [mem_div] using hs
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.zero_div (hs : s.Nonempty) : 0 / s = 0 :=
   s.zero_div_subset.antisymm <| by simpa [mem_div] using hs
 

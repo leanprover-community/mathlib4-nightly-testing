@@ -514,6 +514,7 @@ end iIndepFun
 section Mul
 variable {β : Type*} {m : MeasurableSpace β} [Mul β] [MeasurableMul₂ β] {f : ι → Ω → β}
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma iIndepFun.indepFun_mul_left (hf_indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, Measurable (f i)) (i j k : ι) (hik : i ≠ k) (hjk : j ≠ k) :
@@ -522,6 +523,7 @@ lemma iIndepFun.indepFun_mul_left (hf_indep : iIndepFun f κ μ)
     hf_indep.indepFun_prodMk hf_meas i j k hik hjk
   simpa using this.comp (measurable_fst.mul measurable_snd) measurable_id
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma iIndepFun.indepFun_mul_left₀ (hf_indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, AEMeasurable (f i) (κ ∘ₘ μ)) (i j k : ι) (hik : i ≠ k) (hjk : j ≠ k) :
@@ -563,6 +565,7 @@ end Mul
 section Div
 variable {β : Type*} {m : MeasurableSpace β} [Div β] [MeasurableDiv₂ β] {f : ι → Ω → β}
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma iIndepFun.indepFun_div_left (hf_indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, Measurable (f i)) (i j k : ι) (hik : i ≠ k) (hjk : j ≠ k) :
@@ -571,6 +574,7 @@ lemma iIndepFun.indepFun_div_left (hf_indep : iIndepFun f κ μ)
     hf_indep.indepFun_prodMk hf_meas i j k hik hjk
   simpa using this.comp (measurable_fst.div measurable_snd) measurable_id
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma iIndepFun.indepFun_div_left₀ (hf_indep : iIndepFun f κ μ)
     (hf_meas : ∀ i, AEMeasurable (f i) (κ ∘ₘ μ)) (i j k : ι) (hik : i ≠ k) (hjk : j ≠ k) :

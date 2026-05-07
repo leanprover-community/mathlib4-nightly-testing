@@ -226,6 +226,7 @@ lemma eq_prod_of_integral_prod_mul_boundedContinuousFunction {μ : Measure (Π i
     ξ = μ.prod ν :=
   ext_of_integral_prod_mul_boundedContinuousFunction fun f g ↦ by rw [h, ← integral_prod_mul]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma ext_of_integral_mul_prod_boundedContinuousFunction {μ ν : Measure (Z × (Π j, Y j))}
     [IsFiniteMeasure μ] [IsFiniteMeasure ν]
     (h : ∀ (f : Z →ᵇ ℝ) (g : (j : κ) → Y j →ᵇ ℝ),
@@ -245,6 +246,7 @@ lemma eq_prod_of_integral_mul_prod_boundedContinuousFunction {μ : Measure Z}
     ξ = μ.prod ν :=
   ext_of_integral_mul_prod_boundedContinuousFunction fun f g ↦ by rw [h, ← integral_prod_mul]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.flexible false in -- simp followed by fun_prop
 /-- A finite measure `μ` over `X × Y` is determined by the values `∫ p, f p.1 * g p.2 ∂μ`,
 for `f : X → ℝ` and `g : Y → ℝ` any bounded continuous functions. -/

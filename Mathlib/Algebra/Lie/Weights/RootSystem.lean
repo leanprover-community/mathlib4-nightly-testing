@@ -103,6 +103,7 @@ lemma apply_coroot_eq_cast' :
   simp only [Int.cast_sub, Int.cast_natCast, Int.cast_mul, Int.cast_ofNat, eq_sub_iff_add_eq',
     this, mul_comm (2 : K)]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma rootSpace_neg_nsmul_add_chainTop_of_le {n : ℕ} (hn : n ≤ chainLength α β) :
     rootSpace H (-(n • α) + chainTop α β) ≠ ⊥ := by
   by_cases hα : α.IsZero
@@ -257,6 +258,7 @@ lemma chainLength_of_eq_zsmul_add (β' : Weight K H L) (n : ℤ) (hβ' : (β' : 
       chainBotCoeff_of_eq_zsmul_add α β hα β' n hβ', sub_eq_add_neg, add_add_add_comm,
       neg_add_cancel, add_zero]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma chainTopCoeff_zero_right [Nontrivial L] (hα : α.IsNonZero) :
     chainTopCoeff α (0 : Weight K H L) = 1 := by
   symm

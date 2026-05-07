@@ -37,6 +37,7 @@ open ProbabilityTheory
 variable {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   {m₁ m₂ m : MeasurableSpace Ω} {μ : Measure Ω} {f : Ω → E}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `m₁, m₂` are independent σ-algebras and `f` is `m₁`-measurable, then `𝔼[f | m₂] = 𝔼[f]`
 almost everywhere. -/
 theorem condExp_indep_eq (hle₁ : m₁ ≤ m) (hle₂ : m₂ ≤ m) [SigmaFinite (μ.trim hle₂)]

@@ -589,6 +589,7 @@ lemma eq_bot_iff_forall_le [NoBotOrder α] : x = ⊥ ↔ ∀ b : α, x ≤ b := 
   rintro rfl
   exact not_isBot y fun z => coe_le_coe.1 (h z)
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_dual forall_le_coe_iff_le]
 lemma forall_coe_le_iff_le [NoBotOrder α] : (∀ a : α, a ≤ x → a ≤ y) ↔ x ≤ y := by
   obtain _ | a := x

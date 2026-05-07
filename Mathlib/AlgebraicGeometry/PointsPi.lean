@@ -72,6 +72,7 @@ lemma eq_bot_of_comp_quotientMk_eq_sigmaSpec (I : Ideal (Π i, R i))
   simpa [← Category.assoc, Ideal.Quotient.eq_zero_iff_mem.mpr hx] using
     congr((Spec.preimage (Sigma.ι (Spec <| R ·) i ≫ $hf)).hom x).symm
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `V` is a locally closed subscheme of `Spec (Π Rᵢ)` containing `∐ Spec Rᵢ`, then
 `V = Spec (Π Rᵢ)`. -/
 lemma isIso_of_comp_eq_sigmaSpec {V : Scheme}
@@ -100,6 +101,7 @@ noncomputable
 def pointsPi : (Spec (.of <| Π i, R i) ⟶ X) → Π i, Spec (R i) ⟶ X :=
   fun f i ↦ Spec.map (CommRingCat.ofHom (Pi.evalRingHom (R ·) i)) ≫ f
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma pointsPi_injective [QuasiSeparatedSpace X] : Function.Injective (pointsPi R X) := by
   rintro f g e

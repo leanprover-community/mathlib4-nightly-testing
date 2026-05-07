@@ -235,6 +235,7 @@ private lemma glueDataT_fst (U V : X.affineOpens) :
   rw [Scheme.Hom.liftQuotient_comp_assoc, Category.assoc, Category.assoc, Iso.hom_inv_id,
     Category.comp_id]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- (Implementation) `t'` in the glue data for `𝒪ₓ/I`. -/
 noncomputable
 def glueDataT'Aux (U V W U₀ : X.affineOpens) (hU₀ : U.1 ⊓ W ≤ U₀) :

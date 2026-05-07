@@ -39,6 +39,7 @@ lemma num_neg (g : GL (Fin 2) ℝ) (z : ℂ) : num (-g) z = -(num g z) := by
 lemma denom_neg (g : GL (Fin 2) ℝ) (z : ℂ) : denom (-g) z = -(denom g z) := by
   simp [denom]; ring
 
+set_option backward.simpa.using.reducibleClose false in
 theorem linear_ne_zero_of_im {cd : Fin 2 → ℝ} {z : ℂ} (hz : z.im ≠ 0) (h : cd ≠ 0) :
     (cd 0 : ℂ) * z + cd 1 ≠ 0 := by
   contrapose h
@@ -138,6 +139,7 @@ lemma σ_mul_comm (g h : GL (Fin 2) ℝ) (z : ℂ) : σ g (σ h z) = σ h (σ g 
 /-- Fractional linear transformation, also known as the Moebius transformation -/
 def smulAux' (g : GL (Fin 2) ℝ) (z : ℂ) : ℂ := σ g (num g z / denom g z)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma smulAux'_im (g : GL (Fin 2) ℝ) (z : ℂ) :
     (smulAux' g z).im = |g.det.val| * z.im / Complex.normSq (denom g z) := by
   simp only [smulAux', σ]
@@ -162,6 +164,7 @@ lemma denom_cocycle' (g h : GL (Fin 2) ℝ) (z : ℍ) :
     Complex.ofReal_mul, num]
   ring
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mul_smul' (g h : GL (Fin 2) ℝ) (z : ℍ) :
     smulAux (g * h) z = smulAux g (smulAux h z) := by
   ext : 1
@@ -281,6 +284,7 @@ theorem exists_SL2_smul_eq_of_apply_zero_one_eq_zero (g : SL(2, ℝ)) (hc : g 1 
   suffices ↑a * z * a + b * a = b * a + a * a * z by simpa [specialLinearGroup_apply, add_mul]
   ring
 
+set_option backward.simpa.using.reducibleClose false in
 theorem exists_SL2_smul_eq_of_apply_zero_one_ne_zero (g : SL(2, ℝ)) (hc : g 1 0 ≠ 0) :
     ∃ (u : { x : ℝ // 0 < x }) (v w : ℝ),
       (g • · : ℍ → ℍ) =

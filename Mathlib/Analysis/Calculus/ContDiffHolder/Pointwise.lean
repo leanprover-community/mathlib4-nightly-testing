@@ -115,6 +115,7 @@ theorem of_order_le (hf : ContDiffPointwiseHolderAt k α f a) (hl : l ≤ k) :
     ContDiffPointwiseHolderAt l α f a :=
   hf.of_toLex_le <| Prod.Lex.toLex_mono ⟨hl, le_rfl⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function is $C^{k+α}$ on a neighborhood of a point `a`,
 i.e., it is $C^k$ on this neighborhood and $D^k f$ is Hölder continuous on it,
 then the function is $C^{k+(α)}$ at `a`. -/

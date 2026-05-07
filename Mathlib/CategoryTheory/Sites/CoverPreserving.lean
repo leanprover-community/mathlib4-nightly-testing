@@ -58,6 +58,7 @@ if for all covering sieves `R` in `C`, `R.functorPushforward G` is a covering si
 structure CoverPreserving (G : C ⥤ D) : Prop where
   cover_preserve : ∀ {U : C} {S : Sieve U} (_ : S ∈ J U), S.functorPushforward G ∈ K (G.obj U)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The identity functor on a site is cover-preserving. -/
 theorem idCoverPreserving : CoverPreserving J J (𝟭 _) :=
   ⟨fun hS => by simpa using hS⟩
@@ -141,6 +142,7 @@ theorem compatiblePreservingOfFlat {C : Type u₁} [Category.{v₁} C] {D : Type
   injection c'.π.naturality WalkingCospan.Hom.inr with _ e₂
   exact hx (c'.π.app left).right (c'.π.app right).right hg₁ hg₂ (e₁.symm.trans e₂)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 theorem compatiblePreservingOfDownwardsClosed (F : C ⥤ D) [F.Full] [F.Faithful]
     (hF : ∀ {c : C} {d : D} (_ : d ⟶ F.obj c), Σ c', F.obj c' ≅ d) : CompatiblePreserving K F := by
@@ -155,6 +157,7 @@ theorem compatiblePreservingOfDownwardsClosed (F : C ⥤ D) [F.Full] [F.Faithful
 
 variable {F J K}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `F` is cover-preserving and compatible-preserving, then `F` is a continuous functor. -/
 @[stacks 00WW "This is basically this Stacks entry."]
 lemma Functor.isContinuous_of_coverPreserving (hF₁ : CompatiblePreserving.{max u₁ v₁ u₂ v₂} K F)

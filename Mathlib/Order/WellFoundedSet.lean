@@ -383,6 +383,7 @@ protected theorem PartiallyWellOrderedOn.prod {t : Set β} (hs : PartiallyWellOr
   obtain ⟨m, n, hlt, hle⟩ := ht.exists_lt fun n => (hf _).2
   exact ⟨g₁ m, g₁ n, g₁.strictMono hlt, h₁ _ _ hlt.le, hle⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A version of **Dickson's lemma** on finite product of well-quasi-ordered sets. See
 `WellQuasiOrdered.pi` when the type `α i` is well-quasi-ordered. -/
 protected theorem PartiallyWellOrderedOn.pi {α : ι → Type*} [Finite ι] {r : ∀ i, α i → α i → Prop}
@@ -442,6 +443,7 @@ theorem isPWO_iff_exists_monotone_subseq :
     s.IsPWO ↔ ∀ f : ℕ → α, (∀ n, f n ∈ s) → ∃ g : ℕ ↪o ℕ, Monotone (f ∘ g) :=
   partiallyWellOrderedOn_iff_exists_monotone_subseq
 
+set_option backward.simpa.using.reducibleClose false in
 protected theorem IsPWO.isWF (h : s.IsPWO) : s.IsWF := by
   simpa only [← lt_iff_le_not_ge] using h.wellFoundedOn
 
@@ -622,11 +624,13 @@ theorem isPWO_sup [Preorder α] (s : Finset ι) {f : ι → Set α} :
     (s.sup f).IsPWO ↔ ∀ i ∈ s, (f i).IsPWO :=
   s.partiallyWellOrderedOn_sup
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem wellFoundedOn_bUnion [IsStrictOrder α r] (s : Finset ι) {f : ι → Set α} :
     (⋃ i ∈ s, f i).WellFoundedOn r ↔ ∀ i ∈ s, (f i).WellFoundedOn r := by
   simpa only [Finset.sup_eq_iSup] using s.wellFoundedOn_sup
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem partiallyWellOrderedOn_bUnion (s : Finset ι) {f : ι → Set α} :
     (⋃ i ∈ s, f i).PartiallyWellOrderedOn r ↔ ∀ i ∈ s, (f i).PartiallyWellOrderedOn r := by
@@ -863,6 +867,7 @@ theorem partiallyWellOrderedOn_sublistForall₂ (r : α → α → Prop) [IsPreo
       rw [← List.cons_head!_tail (hnil (g (m - g 0))), ← List.cons_head!_tail (hnil (g n'))]
       exact List.SublistForall₂.cons (hg _ _ (le_of_lt mn)) hmn
 
+set_option backward.simpa.using.reducibleClose false in
 theorem subsetProdLex [PartialOrder α] [Preorder β] {s : Set (α ×ₗ β)}
     (hα : ((fun (x : α ×ₗ β) => (ofLex x).1) '' s).IsPWO)
     (hβ : ∀ a, {y | toLex (a, y) ∈ s}.IsPWO) : s.IsPWO := by

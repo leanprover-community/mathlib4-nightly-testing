@@ -65,6 +65,7 @@ protected theorem MeasurePreserving.conservative [IsFiniteMeasure μ] (h : Measu
 
 namespace Conservative
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The identity map is conservative w.r.t. any measure. -/
 protected theorem id (μ : Measure α) : Conservative id μ :=
   { toQuasiMeasurePreserving := QuasiMeasurePreserving.id μ
@@ -100,6 +101,7 @@ theorem exists_mem_iterate_mem (hf : Conservative f μ)
   rcases hf.exists_mem_iterate_mem' htm (by rwa [measure_congr hts]) with ⟨x, hxt, m, hm₀, hmt⟩
   exact ⟨x, hsub hxt, m, hm₀, hsub hmt⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is a conservative map and `s` is a measurable set of nonzero measure, then
 for infinitely many values of `m` a positive measure of points `x ∈ s` returns back to `s`
 after `m` iterations of `f`. -/

@@ -147,6 +147,7 @@ lemma exists_bound_of_subgroup_invariant_of_isArithmetic_of_isBigO
   exists_bound_of_subgroup_invariant_of_isBigO hf_cont ht hf_infinity (Γ := Γ.comap (mapGL ℝ))
     (hf_inv ·)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A function on `ℍ` which is invariant under `SL(2, ℤ)`, and bounded at `∞`, is uniformly
 bounded. -/
 lemma exists_bound_of_invariant
@@ -156,6 +157,7 @@ lemma exists_bound_of_invariant
   simpa using exists_bound_of_invariant_of_isBigO hf_cont le_rfl
     (by simpa only [Real.rpow_zero] using hf_infinity) hf_inv
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A function on `ℍ` which is invariant under an arithmetic subgroup and bounded at all cusps,
 is uniformly bounded. -/
 lemma exists_bound_of_subgroup_invariant {f : ℍ → E} (hf_cont : Continuous f)
@@ -182,6 +184,7 @@ lemma ModularFormClass.exists_petersson_le {k : ℤ} (hk : 0 ≤ k) (Γ : Subgro
     using (bdd_at_infty_slash f g).norm_left.mul (bdd_at_infty_slash f' g).norm_left
       |>.mul (isBigO_refl ..)
 
+set_option backward.simpa.using.reducibleClose false in
 open ConjAct Pointwise in
 /-- If `f` is a cusp form and `f'` a modular form, then `petersson k f f'` is bounded. -/
 lemma CuspFormClass.petersson_bounded_left

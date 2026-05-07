@@ -997,6 +997,7 @@ lemma mul_monomial_mem_coeffsIn : p * monomial i 1 ∈ coeffsIn σ M ↔ p ∈ c
 lemma monomial_mul_mem_coeffsIn : monomial i 1 * p ∈ coeffsIn σ M ↔ p ∈ coeffsIn σ M := by
   simp [mul_comm]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma mul_X_mem_coeffsIn : p * X s ∈ coeffsIn σ M ↔ p ∈ coeffsIn σ M := by
   simpa [-mul_monomial_mem_coeffsIn] using mul_monomial_mem_coeffsIn (i := .single s 1)

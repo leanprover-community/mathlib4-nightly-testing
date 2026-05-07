@@ -530,6 +530,7 @@ theorem add_choose_eq [Ring R] [BinomialRing R] {r s : R} (k : ℕ) (h : Commute
     mul_assoc _ (x.2.factorial : R), ← nsmul_eq_mul x.2.factorial]
   simp [mul_assoc, descPochhammer_eq_factorial_smul_choose]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma map_choose {R S F : Type*} [Ring R] [Ring S] [BinomialRing R] [BinomialRing S]
     [FunLike F R S] [RingHomClass F R S] (f : F) (a : R) (n : ℕ) :
     f (Ring.choose a n) = Ring.choose (f a) n := by

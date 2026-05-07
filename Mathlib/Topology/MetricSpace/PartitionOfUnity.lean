@@ -83,6 +83,7 @@ theorem exists_forall_closedEBall_subset_aux₂ (y : X) :
     ordConnected_iInter fun i => ordConnected_iInter fun (_ : y ∈ K i) =>
       ordConnected_setOf_closedEBall_subset y (U i)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Let `X` be an extended metric space. Let `K : ι → Set X` be a locally finite family of closed
 sets, let `U : ι → Set X` be a family of open sets such that `K i ⊆ U i` for all `i`. Then there
 exists a positive continuous function `δ : C(X, ℝ)` such that for any `i` and `x ∈ K i`,
@@ -95,6 +96,7 @@ theorem exists_continuous_real_forall_closedEBall_subset (hK : ∀ i, IsClosed (
     exists_continuous_forall_mem_convex_of_local_const exists_forall_closedEBall_subset_aux₂
       (exists_forall_closedEBall_subset_aux₁ hK hU hKU hfin)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Let `X` be an extended metric space. Let `K : ι → Set X` be a locally finite family of closed
 sets, let `U : ι → Set X` be a family of open sets such that `K i ⊆ U i` for all `i`. Then there
 exists a positive continuous function `δ : C(X, ℝ≥0)` such that for any `i` and `x ∈ K i`,

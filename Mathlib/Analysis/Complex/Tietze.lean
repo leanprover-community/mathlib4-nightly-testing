@@ -106,6 +106,7 @@ variable {E : Type w} [NormedAddCommGroup E] [NormedSpace 𝕜 E] [FiniteDimensi
 namespace BoundedContinuousFunction
 
 include 𝕜 hs in
+set_option backward.simpa.using.reducibleClose false in
 /-- **Tietze extension theorem** for real-valued bounded continuous maps, a version with a closed
 embedding and bundled composition. If `e : C(X, Y)` is a closed embedding of a topological space
 into a normal topological space and `f : X →ᵇ ℝ` is a bounded continuous function, then there exists

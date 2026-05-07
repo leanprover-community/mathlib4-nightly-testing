@@ -344,6 +344,7 @@ noncomputable def relativeCellComplexιObjFObjSuccIso (j : κ.ord.ToType) :
   (Arrow.rightFunc ⋙ Arrow.leftFunc).mapIso
     (iterationFunctorMapSuccAppArrowIso I κ f j)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma ιFunctorObj_eq (j : κ.ord.ToType) :
     letI := hasColimitsOfShape_discrete I κ

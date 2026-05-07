@@ -123,6 +123,7 @@ theorem vandermonde_transpose_mul_vandermonde (v : Fin n → R) (i j) :
     ((vandermonde v)ᵀ * vandermonde v) i j = ∑ k : Fin n, v k ^ (i + j : ℕ) := by
   simp only [vandermonde_apply, Matrix.mul_apply, Matrix.transpose_apply, pow_add]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem rectVandermonde_apply_zero_right {α : Type*} {v w : α → R} {i : α} (hw : w i = 0) :
     rectVandermonde v w (n + 1) i = Pi.single (Fin.last n) ((v i) ^ n) := by
   ext j
@@ -136,6 +137,7 @@ theorem projVandermonde_apply_of_ne_zero
     projVandermonde v w i j = (v i) ^ j.1 * (w i) ^ n / (w i) ^ j.1 := by
   rw [projVandermonde_apply, eq_div_iff (by simp [hw]), mul_assoc, ← pow_add, rev_add_cast]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem projVandermonde_apply_zero_right {v w : Fin (n + 1) → R} {i : Fin (n + 1)} (hw : w i = 0) :
     projVandermonde v w i = Pi.single (Fin.last n) ((v i) ^ n) := by
   ext j

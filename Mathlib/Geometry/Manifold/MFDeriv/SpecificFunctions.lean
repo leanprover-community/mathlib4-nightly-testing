@@ -714,6 +714,7 @@ theorem hasMFDerivWithinAt_inl :
   exact (hasFDerivWithinAt_id (extChartAt I q q) _).congr_of_eventuallyEq this
     (by simp [writtenInExtChartAt, extChartAt])
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasMFDerivAt_inl :
     HasMFDerivAt% (@Sum.inl M M') q (ContinuousLinearMap.id 𝕜 (TangentSpace I p)) := by
   simpa [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inl (s := Set.univ)
@@ -727,6 +728,7 @@ theorem hasMFDerivWithinAt_inr {t : Set M'} :
   exact (hasFDerivWithinAt_id (extChartAt I q' q') _).congr_of_eventuallyEq this
     (by simp [writtenInExtChartAt, extChartAt])
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasMFDerivAt_inr :
     HasMFDerivAt% (@Sum.inr M M') q' (ContinuousLinearMap.id 𝕜 (TangentSpace I p)) := by
   simpa [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inr (t := Set.univ)
@@ -793,6 +795,7 @@ theorem mfderiv_add (hf : MDiffAt f z) (hg : MDiffAt g z) :
 section sum
 variable {ι : Type} {t : Finset ι} {f : ι → M → E'} {f' : ι → TangentSpace I z →L[𝕜] E'}
 
+set_option backward.simpa.using.reducibleClose false in
 lemma HasMFDerivWithinAt.sum (hf : ∀ i ∈ t, HasMFDerivAt[s] (f i) z (f' i)) :
     HasMFDerivAt[s] (∑ i ∈ t, f i) z (∑ i ∈ t, f' i) := by
   classical
@@ -888,6 +891,7 @@ open scoped RightActions
 variable {z : M} {F' : Type*} [NormedRing F'] [NormedAlgebra 𝕜 F'] {p q : M → F'}
   {p' q' : TangentSpace I z →L[𝕜] F'}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasMFDerivWithinAt.mul' (hp : HasMFDerivWithinAt I 𝓘(𝕜, F') p s z p')
     (hq : HasMFDerivWithinAt I 𝓘(𝕜, F') q s z q') :
     HasMFDerivWithinAt I 𝓘(𝕜, F') (p * q) s z (p z • q' + p' <• q z : E →L[𝕜] F') :=
@@ -915,6 +919,7 @@ theorem MDifferentiable.mul (hp : MDifferentiable I 𝓘(𝕜, F') p)
     (hq : MDifferentiable I 𝓘(𝕜, F') q) : MDifferentiable I 𝓘(𝕜, F') (p * q) :=
   fun x ↦ (hp x).mul (hq x)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem MDifferentiableWithinAt.pow (hp : MDifferentiableWithinAt I 𝓘(𝕜, F') p s z)
     (n : ℕ) : MDifferentiableWithinAt I 𝓘(𝕜, F') (p ^ n) s z := by
   induction n with
@@ -952,6 +957,7 @@ theorem HasMFDerivAt.mul (hp : HasMFDerivAt I 𝓘(𝕜, F') p z p')
 section prod
 variable {ι : Type} {t : Finset ι} {f : ι → M → F'} {f' : ι → TangentSpace I z →L[𝕜] F'}
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma HasMFDerivWithinAt.prod [DecidableEq ι]
     (hf : ∀ i ∈ t, HasMFDerivWithinAt I 𝓘(𝕜, F') (f i) s z (f' i)) :

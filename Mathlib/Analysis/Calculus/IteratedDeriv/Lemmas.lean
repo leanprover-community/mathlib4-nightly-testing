@@ -69,6 +69,7 @@ theorem iteratedDerivWithin_add
     ContinuousMultilinearMap.add_apply]
 
 include h hx in
+set_option backward.simpa.using.reducibleClose false in
 theorem iteratedDerivWithin_fun_add
     (hf : ContDiffWithinAt 𝕜 n f s x) (hg : ContDiffWithinAt 𝕜 n g s x) :
     iteratedDerivWithin n (fun z ↦ f z + g z) s x =
@@ -313,10 +314,12 @@ theorem iteratedDeriv_const_add (hn : 0 < n) (c : F) :
     iteratedDeriv n (fun z => c + f z) x = iteratedDeriv n f x := by
   simpa only [← iteratedDerivWithin_univ] using iteratedDerivWithin_const_add hn c
 
+set_option backward.simpa.using.reducibleClose false in
 theorem iteratedDeriv_const_sub (hn : 0 < n) (c : F) :
     iteratedDeriv n (fun z => c - f z) x = iteratedDeriv n (-f) x := by
   simpa only [← iteratedDerivWithin_univ] using iteratedDerivWithin_const_sub hn c
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma iteratedDeriv_fun_neg (n : ℕ) (f : 𝕜 → F) (a : 𝕜) :
     iteratedDeriv n (fun x ↦ -(f x)) a = -(iteratedDeriv n f a) := by

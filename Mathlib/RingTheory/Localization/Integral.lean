@@ -272,6 +272,7 @@ theorem IsIntegral.exists_multiple_integral_of_isLocalization [Algebra Rₘ S] [
     exact one_mem _
   · rwa [Polynomial.monic_scaleRoots_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `t` is `R`-integral in `S[M⁻¹]` where `M` is a submonoid of `R`,
 then `m • t` is integral in `S` for some `m ∈ M`. -/
 lemma IsLocalization.exists_isIntegral_smul_of_isIntegral_map
@@ -437,6 +438,7 @@ section
 variable {Rf Sf : Type*} [CommRing Rf] [CommRing Sf] [Algebra R Rf] [Algebra S Sf]
     [Algebra Rf Sf] [Algebra R Sf] [IsScalarTower R S Sf] [IsScalarTower R Rf Sf]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Taking integral closure commutes with localizations. -/
 -- We take in an arbitrary `Algebra (integralClosure R S) (integralClosure Rf Sf)` instance
 -- so that it applies more easily.

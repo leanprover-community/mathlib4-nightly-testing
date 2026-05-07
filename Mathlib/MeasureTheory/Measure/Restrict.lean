@@ -184,6 +184,7 @@ theorem restrict_add {_m0 : MeasurableSpace α} (μ ν : Measure α) (s : Set α
 theorem restrict_zero {_m0 : MeasurableSpace α} (s : Set α) : (0 : Measure α).restrict s = 0 :=
   (restrictₗ s).map_zero
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem restrict_smul {_m0 : MeasurableSpace α} {R : Type*} [SMul R ℝ≥0∞]
     [IsScalarTower R ℝ≥0∞ ℝ≥0∞] (c : R) (μ : Measure α) (s : Set α) :
@@ -774,6 +775,7 @@ lemma nullMeasurableSet_restrict (hs : NullMeasurableSet s μ) {t : Set α} :
       h.mono_ac absolutelyContinuous_restrict
     simpa using A.union B
 
+set_option backward.simpa.using.reducibleClose false in
 lemma nullMeasurableSet_restrict_of_subset {t : Set α} (ht : t ⊆ s) :
     NullMeasurableSet t (μ.restrict s) ↔ NullMeasurableSet t μ := by
   refine ⟨fun h ↦ ?_, fun h ↦ h.mono_ac absolutelyContinuous_restrict⟩

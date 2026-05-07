@@ -533,6 +533,7 @@ theorem Filter.HasBasis.filter_totallyBounded_iff {ι} {p : ι → Prop} {U : ι
   H.forall_iff fun _ _ _ h =>
     h.imp fun _ ht => ⟨ht.1, f.mem_of_superset ht.2 <| by gcongr⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem totallyBounded_of_forall_isSymm {s : Set α}
     (h : ∀ V ∈ 𝓤 α, SetRel.IsSymm V → ∃ t : Set α, Set.Finite t ∧ s ⊆ ⋃ y ∈ t, ball y V) :
     TotallyBounded s :=

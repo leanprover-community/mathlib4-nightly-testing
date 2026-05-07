@@ -65,6 +65,7 @@ open Nat.Partrec (Code)
 
 open Nat.Partrec.Code
 
+set_option backward.simpa.using.reducibleClose false in
 theorem merge' {f g : α →. σ} (hf : Partrec f) (hg : Partrec g) :
     ∃ k : α →. σ,
       Partrec k ∧ ∀ a, (∀ x ∈ k a, x ∈ f a ∨ x ∈ g a) ∧ ((k a).Dom ↔ (f a).Dom ∨ (g a).Dom) := by

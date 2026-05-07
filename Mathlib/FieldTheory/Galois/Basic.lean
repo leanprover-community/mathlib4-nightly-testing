@@ -103,6 +103,7 @@ theorem IntermediateField.AdjoinSimple.card_aut_eq_finrank [FiniteDimensional F 
   rw [← IntermediateField.card_algHom_adjoin_integral F hα h_sep h_splits]
   exact Nat.card_congr (algEquivEquivAlgHom F F⟮α⟯)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Let $E / F$ be a finite extension of fields. If $E$ is Galois over $F$, then
 $|\text{Aut}(E/F)| = [E : F]$. -/
 @[stacks 09I1 "'only if' part"]

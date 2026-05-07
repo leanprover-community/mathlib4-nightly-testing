@@ -350,6 +350,7 @@ theorem isCoprime_iff_gcd {I J : Ideal A} : IsCoprime I J ↔ gcd I J = 1 := by
 
 open UniqueFactorizationMonoid
 
+set_option backward.simpa.using.reducibleClose false in
 theorem factors_span_eq {p : K[X]} : factors (span {p}) = (factors p).map (fun q ↦ span {q}) := by
   rcases eq_or_ne p 0 with rfl | hp; · simpa [Set.singleton_zero] using normalizedFactors_zero
   have : ∀ q ∈ (factors p).map (fun q ↦ span {q}), Prime q := fun q hq ↦ by
@@ -681,6 +682,7 @@ alias _root_.idealFactorsFunOfQuotHom_comp := idealFactorsFunOfQuotHom_comp
 
 variable [IsDedekindDomain R] (f : R ⧸ I ≃+* A ⧸ J)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The bijection between ideals of `R` dividing `I` and the ideals of `A` dividing `J` induced by
   an isomorphism `f : R/I ≅ A/J`. -/
 def idealFactorsEquivOfQuotEquiv : { p : Ideal R | p ∣ I } ≃o { p : Ideal A | p ∣ J } := by

@@ -246,6 +246,7 @@ theorem M.bisim {α : TypeVec n} (R : P.M α → P.M α → Prop)
   | child x a f h' i c p IH =>
     exact IH _ _ (h'' _)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem M.bisim₀ {α : TypeVec n} (R : P.M α → P.M α → Prop) (h₀ : Equivalence R)
     (h : ∀ x y, R x y → (id ::: Quot.mk R) <$$> M.dest _ x = (id ::: Quot.mk R) <$$> M.dest _ y)
     (x y) (r : R x y) : x = y := by

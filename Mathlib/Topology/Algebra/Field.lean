@@ -173,6 +173,7 @@ open Set
 variable {α 𝕜 : Type*} {f g : α → 𝕜} {S : Set α} [TopologicalSpace α] [TopologicalSpace 𝕜]
   [T1Space 𝕜]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is a function `α → 𝕜` which is continuous on a preconnected set `S`, and
 `f ^ 2 = 1` on `S`, then either `f = 1` on `S`, or `f = -1` on `S`. -/
 theorem IsPreconnected.eq_one_or_eq_neg_one_of_sq_eq [Ring 𝕜] [NoZeroDivisors 𝕜]

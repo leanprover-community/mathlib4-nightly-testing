@@ -87,6 +87,7 @@ def moduleCatMkOfKerLERange {X₁ X₂ X₃ : ModuleCat.{v} R} (f : X₁ ⟶ X�
     (hfg : LinearMap.range f.hom ≤ LinearMap.ker g.hom) : ShortComplex (ModuleCat.{v} R) :=
   ShortComplex.mk f g (by aesop)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Exact.moduleCat_of_range_eq_ker {X₁ X₂ X₃ : ModuleCat.{v} R}
     (f : X₁ ⟶ X₂) (g : X₂ ⟶ X₃) (hfg : LinearMap.range f.hom = LinearMap.ker g.hom) :
     (moduleCatMkOfKerLERange f g (by rw [hfg])).Exact := by

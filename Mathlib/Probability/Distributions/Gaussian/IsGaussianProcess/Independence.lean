@@ -87,6 +87,7 @@ lemma iIndepFun_of_covariance_strongDual [NormedSpace ℝ E]
   · exact fun k ↦ ((hX.hasGaussianLaw_eval ⟨i, k⟩).map _).memLp_two
   · exact fun k ↦ ((hX.hasGaussianLaw_eval ⟨j, k⟩).map _).memLp_two
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Assume that the processes $((X^t_s)_{s \in S_t})_{t \in T}$ are jointly Gaussian. Then they are
 independent if for all $t_1, t_2 \in T$ with $t_1 \ne t_2$ and
 $s_1 \in S_{t_1}$, $s_2 \in S_{t_2}$, $X^{t_1}_{s_1}$ and $X^{t_2}_{s_2}$ are uncorrelated. -/
@@ -142,6 +143,7 @@ lemma indepFun_of_covariance_strongDual [NormedSpace ℝ E]
   · exact fun s ↦ ((hXY.hasGaussianLaw_eval (.inl s)).map _).memLp_two
   · exact fun t ↦ ((hXY.hasGaussianLaw_eval (.inr t)).map _).memLp_two
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Two Gaussian processes $(X_s)_{s \in S}$ and $(Y_t)_{t \in T}$ that are jointly Gaussian
 are independent if for all $s \in S$ and $t \in T$, $X_s$ and $Y_t$ are uncorrelated. -/
 lemma indepFun_of_covariance_inner [InnerProductSpace ℝ E]

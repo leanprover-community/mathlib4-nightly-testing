@@ -28,6 +28,7 @@ section
 variable {R S : Type*} [CommRing R] [CommRing S] [Algebra R S]
     {T : Type*} [CommRing T] [Algebra R T]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Module.FaithfullyFlat.injective_of_tensorProduct [Module.FaithfullyFlat R S]
     (H : Function.Injective (algebraMap S (S ⊗[R] T))) :
     Function.Injective (algebraMap R T) := by
@@ -37,6 +38,7 @@ lemma Module.FaithfullyFlat.injective_of_tensorProduct [Module.FaithfullyFlat R 
   apply (Module.FaithfullyFlat.lTensor_injective_iff_injective R S (Algebra.linearMap R T)).mp
   simpa [this] using H
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Module.FaithfullyFlat.surjective_of_tensorProduct [Module.FaithfullyFlat R S]
     (H : Function.Surjective (algebraMap S (S ⊗[R] T))) :
     Function.Surjective (algebraMap R T) := by

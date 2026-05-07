@@ -391,6 +391,7 @@ instance [Q.IsClosedUnderLimitsOfShape Jᵒᵖ] :
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 instance [P.IsClosedUnderColimitsOfShape WalkingParallelPair] :
     P.IsStableUnderRetracts where

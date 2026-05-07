@@ -186,6 +186,7 @@ theorem Monad.left_comparison (h : L ⊣ R) : L ⋙ Monad.comparison h = h.toMon
 instance [R.Faithful] (h : L ⊣ R) : (Monad.comparison h).Faithful where
   map_injective {_ _} _ _ w := R.map_injective (congr_arg Monad.Algebra.Hom.f w :)
 
+set_option backward.simpa.using.reducibleClose false in
 instance (T : Monad C) : (Monad.comparison T.adj).Full where
   map_surjective {_ _} f := ⟨⟨f.f, by simpa using f.h⟩, rfl⟩
 
@@ -236,6 +237,7 @@ instance Comonad.comparison_faithful_of_faithful [L.Faithful] (h : L ⊣ R) :
     (Comonad.comparison h).Faithful where
   map_injective {_ _} _ _ w := L.map_injective (congr_arg Comonad.Coalgebra.Hom.f w :)
 
+set_option backward.simpa.using.reducibleClose false in
 instance (G : Comonad C) : (Comonad.comparison G.adj).Full where
   map_surjective f := ⟨⟨f.f, by simpa using f.h⟩, rfl⟩
 

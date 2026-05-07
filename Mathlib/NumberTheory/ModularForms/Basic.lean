@@ -36,6 +36,7 @@ section ModularForm
 
 open ModularForm
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The weight `k` slash action of `GL(2, ℝ)⁺` preserves holomorphic functions. This is private,
 since it is a step towards the proof of `MDifferentiable.slash` which is more general. -/
 private lemma MDifferentiable.slash_of_pos {f : ℍ → ℂ} (hf : MDiff f)
@@ -48,6 +49,7 @@ private lemma slash_J (f : ℍ → ℂ) (k : ℤ) :
     f ∣[k] J = fun τ : ℍ ↦ conj (f <| ofComplex <| -(conj ↑τ)) := by
   simp [slash_def, J_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The weight `k` slash action of the negative-determinant matrix `J` preserves holomorphic
 functions. -/
 private lemma MDifferentiable.slashJ {f : ℍ → ℂ} (hf : MDiff f) (k : ℤ) :
@@ -286,6 +288,7 @@ theorem IsGLPos.smul_apply (f : ModularForm Γ k) (n : α) (z : ℍ) : (n • f)
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 instance instNeg : Neg (ModularForm Γ k) :=
   ⟨fun f =>
     { toSlashInvariantForm := -f.1
@@ -330,6 +333,7 @@ instance [Γ.HasDetOne] : Module ℂ (ModularForm Γ k) :=
 instance : Inhabited (ModularForm Γ k) :=
   ⟨0⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The modular form of weight `k_1 + k_2` given by the product of two modular forms of weights
 `k_1` and `k_2`. -/
 @[simps! -fullyApplied coe]
@@ -342,6 +346,7 @@ def mul {k_1 k_2 : ℤ} [Γ.HasDetPlusMinusOne] (f : ModularForm Γ k_1) (g : Mo
 
 @[deprecated (since := "2025-12-06")] alias mul_coe := coe_mul
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The constant function with value `x : ℂ` as a modular form of weight 0 and any level. -/
 @[simps! -fullyApplied] def const (x : ℂ) [Γ.HasDetOne] : ModularForm Γ 0 where
   toSlashInvariantForm := .const x
@@ -354,6 +359,7 @@ def mul {k_1 k_2 : ℤ} [Γ.HasDetPlusMinusOne] (f : ModularForm Γ k_1) (g : Mo
 @[simp]
 lemma const_apply [Γ.HasDetOne] (x : ℂ) (τ : ℍ) : (const x : ModularForm Γ 0) τ = x := rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The constant function with value `x : ℂ` as a modular form of weight 0 and any level. -/
 @[simps! -fullyApplied coe] def constℝ (x : ℝ) [Γ.HasDetPlusMinusOne] : ModularForm Γ 0 where
   toSlashInvariantForm := .constℝ x
@@ -417,6 +423,7 @@ theorem coe_add (f g : CuspForm Γ k) : ⇑(f + g) = f + g :=
 theorem add_apply (f g : CuspForm Γ k) (z : ℍ) : (f + g) z = f z + g z :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 instance instZero : Zero (CuspForm Γ k) :=
   ⟨ { toSlashInvariantForm := 0
       holo' := fun _ => mdifferentiableAt_const
@@ -480,6 +487,7 @@ theorem IsGLPos.smul_apply (f : CuspForm Γ k) (n : α) {z : ℍ} : (n • f) z 
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 instance instNeg : Neg (CuspForm Γ k) :=
   ⟨fun f =>
     { toSlashInvariantForm := -f.1
@@ -529,6 +537,7 @@ instance (priority := 99) [FunLike F ℍ ℂ] [CuspFormClass F Γ k] : ModularFo
   holo := CuspFormClass.holo
   bdd_at_cusps f _ hc g hg := (CuspFormClass.zero_at_cusps f hc g hg).boundedAtFilter
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Multiplying a `CuspForm` by a `ModularForm` gives a `CuspForm` (the cusp condition is
 preserved since a function tending to zero times a bounded function tends to zero). -/
 @[simps! -fullyApplied coe]
@@ -610,6 +619,7 @@ inferInstance
 
 open Filter SlashInvariantForm
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given `ModularForm`'s `F i` of weight `k i` for `i : ι`, define the form which as a
 function is a product of those indexed by `s : Finset ι` with weight `m = ∑ i ∈ s, k i`. -/
 @[simps! -fullyApplied]

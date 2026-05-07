@@ -452,6 +452,7 @@ theorem comp_add_left_iff {c : ℝ} (h : ‖f (min a b)‖ₑ ≠ ⊤ := by fini
   rw [IntervalIntegrable.comp_add_right_iff (by grind)]
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 theorem comp_sub_right (hf : IntervalIntegrable f volume a b) (c : ℝ)
     (h : ‖f (min a b)‖ₑ ≠ ∞ := by finiteness) :
     IntervalIntegrable (fun x ↦ f (x - c)) volume (a + c) (b + c) := by
@@ -777,6 +778,7 @@ nonrec theorem integral_finsetSum {ι} {s : Finset ι} {f : ι → ℝ → E}
 nonrec theorem integral_neg : ∫ x in a..b, -f x ∂μ = -∫ x in a..b, f x ∂μ := by
   simp only [intervalIntegral, integral_neg]; abel
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem integral_sub (hf : IntervalIntegrable f μ a b) (hg : IntervalIntegrable g μ a b) :
     ∫ x in a..b, f x - g x ∂μ = (∫ x in a..b, f x ∂μ) - ∫ x in a..b, g x ∂μ := by
@@ -913,6 +915,7 @@ theorem smul_integral_comp_mul_left (c) :
     (c • ∫ x in a..b, f (c * x)) = ∫ x in c * a..c * b, f x := by
   by_cases hc : c = 0 <;> simp [hc, integral_comp_mul_left]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem integral_comp_div (hc : c ≠ 0) :
     (∫ x in a..b, f (x / c)) = c • ∫ x in a / c..b / c, f x := by
@@ -1317,6 +1320,7 @@ theorem integral_lt_integral_of_ae_le_of_measure_setOf_lt_ne_zero (hab : a ≤ b
     exact fun x hx => (sub_pos.2 hx.out).ne'
   exacts [hle.mono fun x => sub_nonneg.2, hgi.1.sub hfi.1]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f` and `g` are continuous on `[a, b]`, `a < b`, `f x ≤ g x` on this interval, and
 `f c < g c` at some point `c ∈ [a, b]`, then `∫ x in a..b, f x < ∫ x in a..b, g x`. -/
 theorem integral_lt_integral_of_continuousOn_of_le_of_exists_lt {f g : ℝ → ℝ} {a b : ℝ}

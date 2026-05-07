@@ -490,6 +490,7 @@ instance measurableSMul₂_of_mul (M : Type*) [Mul M] [MeasurableSpace M] [Measu
     MeasurableSMul₂ M M :=
   ⟨measurable_mul⟩
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 instance Submonoid.instMeasurableConstSMul {M α} [MeasurableSpace α] [Monoid M] [MulAction M α]
     [MeasurableConstSMul M α] (s : Submonoid M) : MeasurableConstSMul s α where
@@ -732,6 +733,7 @@ instance MulOpposite.instMeasurableMul₂ {M : Type*} [Mul M] [MeasurableSpace M
   ⟨measurable_mul_op.comp
       ((measurable_mul_unop.comp measurable_snd).mul (measurable_mul_unop.comp measurable_fst))⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a scalar is central, then its right action is measurable when its left action is. -/
 @[to_additive]
 nonrec instance MeasurableSMul.op {M α} [MeasurableSpace M] [MeasurableSpace α] [SMul M α]

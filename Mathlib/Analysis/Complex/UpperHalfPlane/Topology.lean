@@ -71,6 +71,7 @@ instance : ContractibleSpace ℍ := by
 
 instance : LocPathConnectedSpace ℍ := isOpenEmbedding_coe.locPathConnectedSpace
 
+set_option backward.simpa.using.reducibleClose false in
 instance : NoncompactSpace ℍ where
   noncompact_univ h := by
     have : IsCompact (Complex.im ⁻¹' Ioi 0) := by

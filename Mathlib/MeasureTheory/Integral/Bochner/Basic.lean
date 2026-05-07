@@ -287,6 +287,7 @@ theorem integral_smul [Module 𝕜 G] [NormSMulClass 𝕜 G] [SMulCommClass ℝ 
     exact setToFun_smul (dominatedFinMeasAdditive_weightedSMul μ) weightedSMul_smul c f
   · simp [integral, hG]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Integrable.integral_smul {R : Type*} [NormedRing R] [Module R G] [IsBoundedSMul R G]
     [SMulCommClass ℝ R G] (c : R)
     {f : α → G} (hf : Integrable f μ) :
@@ -697,6 +698,7 @@ lemma integral_convexOn_of_integrand_ae {β : Type*} [AddCommMonoid β]
                   all_goals fun_prop (disch := aesop)
             _ = p • ∫ x, f x a ∂μ + q • ∫ x, f x b ∂μ := by simp [integral_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma integral_concaveOn_of_integrand_ae {β : Type*} [AddCommMonoid β]
     [Module ℝ β] {f : α → β → E} {s : Set β} (hs : Convex ℝ s)
     (hf_conc : ∀ᵐ x ∂μ, ConcaveOn ℝ s (f x)) (hf_int : ∀ a ∈ s, Integrable (f · a) μ) :

@@ -79,70 +79,87 @@ theorem frontier_preimage_re (s : Set ℝ) : frontier (re ⁻¹' s) = re ⁻¹' 
 theorem frontier_preimage_im (s : Set ℝ) : frontier (im ⁻¹' s) = im ⁻¹' frontier s :=
   (isOpenMap_im.preimage_frontier_eq_frontier_preimage continuous_im _).symm
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem interior_setOf_re_le (a : ℝ) : interior { z : ℂ | z.re ≤ a } = { z | z.re < a } := by
   simpa only [interior_Iic] using interior_preimage_re (Iic a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem interior_setOf_im_le (a : ℝ) : interior { z : ℂ | z.im ≤ a } = { z | z.im < a } := by
   simpa only [interior_Iic] using interior_preimage_im (Iic a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem interior_setOf_le_re (a : ℝ) : interior { z : ℂ | a ≤ z.re } = { z | a < z.re } := by
   simpa only [interior_Ici] using interior_preimage_re (Ici a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem interior_setOf_le_im (a : ℝ) : interior { z : ℂ | a ≤ z.im } = { z | a < z.im } := by
   simpa only [interior_Ici] using interior_preimage_im (Ici a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem closure_setOf_re_lt (a : ℝ) : closure { z : ℂ | z.re < a } = { z | z.re ≤ a } := by
   simpa only [closure_Iio] using closure_preimage_re (Iio a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem closure_setOf_im_lt (a : ℝ) : closure { z : ℂ | z.im < a } = { z | z.im ≤ a } := by
   simpa only [closure_Iio] using closure_preimage_im (Iio a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem closure_setOf_lt_re (a : ℝ) : closure { z : ℂ | a < z.re } = { z | a ≤ z.re } := by
   simpa only [closure_Ioi] using closure_preimage_re (Ioi a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem closure_setOf_lt_im (a : ℝ) : closure { z : ℂ | a < z.im } = { z | a ≤ z.im } := by
   simpa only [closure_Ioi] using closure_preimage_im (Ioi a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_re_le (a : ℝ) : frontier { z : ℂ | z.re ≤ a } = { z | z.re = a } := by
   simpa only [frontier_Iic] using frontier_preimage_re (Iic a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_im_le (a : ℝ) : frontier { z : ℂ | z.im ≤ a } = { z | z.im = a } := by
   simpa only [frontier_Iic] using frontier_preimage_im (Iic a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_le_re (a : ℝ) : frontier { z : ℂ | a ≤ z.re } = { z | z.re = a } := by
   simpa only [frontier_Ici] using frontier_preimage_re (Ici a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_le_im (a : ℝ) : frontier { z : ℂ | a ≤ z.im } = { z | z.im = a } := by
   simpa only [frontier_Ici] using frontier_preimage_im (Ici a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_re_lt (a : ℝ) : frontier { z : ℂ | z.re < a } = { z | z.re = a } := by
   simpa only [frontier_Iio] using frontier_preimage_re (Iio a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_im_lt (a : ℝ) : frontier { z : ℂ | z.im < a } = { z | z.im = a } := by
   simpa only [frontier_Iio] using frontier_preimage_im (Iio a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_lt_re (a : ℝ) : frontier { z : ℂ | a < z.re } = { z | z.re = a } := by
   simpa only [frontier_Ioi] using frontier_preimage_re (Ioi a)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem frontier_setOf_lt_im (a : ℝ) : frontier { z : ℂ | a < z.im } = { z | z.im = a } := by
   simpa only [frontier_Ioi] using frontier_preimage_im (Ioi a)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem closure_reProdIm (s t : Set ℝ) : closure (s ×ℂ t) = closure s ×ℂ closure t := by
   simpa only [← preimage_eq_preimage equivRealProdCLM.symm.toHomeomorph.surjective,
     equivRealProdCLM.symm.toHomeomorph.preimage_closure] using @closure_prod_eq _ _ _ _ s t
@@ -150,15 +167,18 @@ theorem closure_reProdIm (s t : Set ℝ) : closure (s ×ℂ t) = closure s ×ℂ
 theorem interior_reProdIm (s t : Set ℝ) : interior (s ×ℂ t) = interior s ×ℂ interior t := by
   rw [reProdIm, reProdIm, interior_inter, interior_preimage_re, interior_preimage_im]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem frontier_reProdIm (s t : Set ℝ) :
     frontier (s ×ℂ t) = closure s ×ℂ frontier t ∪ frontier s ×ℂ closure t := by
   simpa only [← preimage_eq_preimage equivRealProdCLM.symm.toHomeomorph.surjective,
     equivRealProdCLM.symm.toHomeomorph.preimage_frontier] using frontier_prod_eq s t
 
+set_option backward.simpa.using.reducibleClose false in
 theorem frontier_setOf_le_re_and_le_im (a b : ℝ) :
     frontier { z | a ≤ re z ∧ b ≤ im z } = { z | a ≤ re z ∧ im z = b ∨ re z = a ∧ b ≤ im z } := by
   simpa only [closure_Ici, frontier_Ici] using frontier_reProdIm (Ici a) (Ici b)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem frontier_setOf_le_re_and_im_le (a b : ℝ) :
     frontier { z | a ≤ re z ∧ im z ≤ b } = { z | a ≤ re z ∧ im z = b ∨ re z = a ∧ im z ≤ b } := by
   simpa only [closure_Ici, closure_Iic, frontier_Ici, frontier_Iic] using

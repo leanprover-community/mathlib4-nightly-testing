@@ -589,6 +589,7 @@ def MeasureTheory.Measure.finiteSpanningSetsInOpen [TopologicalSpace α] [SigmaC
 
 open TopologicalSpace
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A locally finite measure on a second countable topological space admits a finite spanning
 sequence of open sets. -/
 noncomputable irreducible_def MeasureTheory.Measure.finiteSpanningSetsInOpen' [TopologicalSpace α]

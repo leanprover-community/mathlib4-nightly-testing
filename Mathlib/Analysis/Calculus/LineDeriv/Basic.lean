@@ -494,6 +494,7 @@ section SMul
 
 variable {E : Type*} [AddCommGroup E] [Module 𝕜 E] {f : E → F} {s : Set E} {x v : E} {f' : F}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem HasLineDerivWithinAt.smul (h : HasLineDerivWithinAt 𝕜 f f' s x v) (c : 𝕜) :
     HasLineDerivWithinAt 𝕜 f (c • f') s x (c • v) := by
   simp only [HasLineDerivWithinAt] at h ⊢

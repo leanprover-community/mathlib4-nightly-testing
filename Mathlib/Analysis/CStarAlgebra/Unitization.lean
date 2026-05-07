@@ -31,6 +31,7 @@ namespace ContinuousLinearMap
 variable [NontriviallyNormedField 𝕜] [NonUnitalNormedRing E] [StarRing E] [NormedStarGroup E]
 variable [NormedSpace 𝕜 E] [IsScalarTower 𝕜 E E] [SMulCommClass 𝕜 E E] [RegularNormedAlgebra 𝕜 E]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma opNorm_mul_flip_apply (a : E) : ‖(mul 𝕜 E).flip a‖ = ‖a‖ := by
   refine le_antisymm
     (opNorm_le_bound _ (norm_nonneg _) fun b => by simpa only [mul_comm] using norm_mul_le b a) ?_
@@ -56,6 +57,7 @@ variable [DenselyNormedField 𝕜] [NonUnitalNormedRing E] [StarRing E] [CStarRi
 variable [NormedSpace 𝕜 E] [IsScalarTower 𝕜 E E] [SMulCommClass 𝕜 E E]
 variable (E)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A C⋆-algebra over a densely normed field is a regular normed algebra. -/
 instance CStarRing.instRegularNormedAlgebra : RegularNormedAlgebra 𝕜 E where
   isometry_mul' := AddMonoidHomClass.isometry_of_norm (mul 𝕜 E) fun a => NNReal.eq_iff.mp <|
@@ -82,6 +84,7 @@ section CStarProperty
 variable [StarRing 𝕜] [StarModule 𝕜 E]
 variable {E}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- This is the key lemma used to establish the instance `Unitization.instCStarRing`
 (i.e., proving that the norm on `Unitization 𝕜 E` satisfies the C⋆-property). We split this one
 out so that declaring the `CStarRing` instance doesn't time out. -/

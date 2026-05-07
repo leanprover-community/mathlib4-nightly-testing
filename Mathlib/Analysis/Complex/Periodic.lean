@@ -147,6 +147,7 @@ section HoloOnC
 
 variable {h : ℝ} {f : ℂ → ℂ}
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 Key technical lemma: the function `cuspFunction h f` is differentiable at the images of
 differentiability points of `f` (even if `invQParam` is not differentiable there).
@@ -199,6 +200,7 @@ theorem cuspFunction_zero_of_zero_at_inf (hh : 0 < h) (h_zer : ZeroAtFilter I∞
     cuspFunction h f 0 = 0 := by
   simpa only [cuspFunction, update_self] using (h_zer.comp (invQParam_tendsto hh)).limUnder_eq
 
+set_option backward.simpa.using.reducibleClose false in
 theorem differentiableAt_cuspFunction_zero (hh : 0 < h) (hf : Periodic f h)
     (h_hol : ∀ᶠ z in I∞, DifferentiableAt ℂ f z) (h_bd : BoundedAtFilter I∞ f) :
     DifferentiableAt ℂ (cuspFunction h f) 0 := by
@@ -254,6 +256,7 @@ end HoloAtInfC
 
 section arithmetic
 
+set_option backward.simpa.using.reducibleClose false in
 lemma cuspFunction_smul {h} {f : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction h f) 0) (a : ℂ) :
     cuspFunction h (a • f) = a • cuspFunction h f := by
   simp only [cuspFunction] at *
@@ -266,6 +269,7 @@ lemma cuspFunction_neg {h} {f : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction
     cuspFunction h (-f) = -cuspFunction h f := by
   simpa using cuspFunction_smul hfcts (-1)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma cuspFunction_add {h} {f g : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction h f) 0)
     (hgcts : ContinuousAt (cuspFunction h g) 0) :
     cuspFunction h (f + g) = cuspFunction h f + cuspFunction h g := by

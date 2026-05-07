@@ -104,6 +104,7 @@ theorem lie_top_eq_of_span_sup_eq_top (N : LieSubmodule R L M) :
   · rcases hz with (⟨m, hm, rfl⟩ | ⟨y, -, m, hm, rfl⟩)
     exacts [⟨x, m, hm, rfl⟩, ⟨y, m, hm, rfl⟩]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem lcs_le_lcs_of_is_nilpotent_span_sup_eq_top {n i j : ℕ}
     (hxn : toEnd R L M x ^ n = 0) (hIM : lowerCentralSeries R L M i ≤ I.lcs M j) :
     lowerCentralSeries R L M (i + n) ≤ I.lcs M (j + 1) := by

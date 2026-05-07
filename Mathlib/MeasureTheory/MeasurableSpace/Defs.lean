@@ -287,6 +287,7 @@ end MeasurableSingletonClass
 
 namespace MeasurableSpace
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Copy of a `MeasurableSpace` with a new `MeasurableSet` equal to the old one. Useful to fix
 definitional equalities. -/
 @[implicit_reducible]

@@ -279,6 +279,7 @@ lemma div {f g : 𝕜 → 𝕜'} (hf : MeromorphicAt f x) (hg : MeromorphicAt g 
     MeromorphicAt (f / g) x :=
   (div_eq_mul_inv f g).symm ▸ (hf.mul hg.inv)
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_fun (attr := fun_prop)]
 lemma pow {f : 𝕜 → 𝕜'} (hf : MeromorphicAt f x) (n : ℕ) : MeromorphicAt (f ^ n) x := by
   induction n with
@@ -606,6 +607,7 @@ theorem eventually_codiscreteWithin_analyticAt
   intro x hx
   simp [hx]
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 The singular set of a meromorphic function is countable.
 -/

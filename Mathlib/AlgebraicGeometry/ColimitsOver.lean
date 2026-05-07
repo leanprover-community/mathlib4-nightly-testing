@@ -116,6 +116,7 @@ noncomputable def functor : 𝒰.I₀ ⥤ Scheme where
 
 variable [∀ {i j} (hij : i ⟶ j), PreservesColimitsOfShape J (Over.pullback P ⊤ (𝒰.trans hij))]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma isPullback {i j : 𝒰.I₀} (hij : i ⟶ j) :

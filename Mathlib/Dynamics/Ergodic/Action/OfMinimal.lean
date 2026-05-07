@@ -118,6 +118,7 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [ContinuousInv G]
   [MulAction G X] [ContinuousSMul G X]
   {μ : Measure X} [IsFiniteMeasure μ] [μ.InnerRegular] [ErgodicSMul G X μ] {s : Set X}
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem aeconst_of_dense_aestabilizer_smul (hsm : NullMeasurableSet s μ)
     (hd : Dense (MulAction.aestabilizer G μ s : Set G)) : EventuallyConst s (ae μ) :=

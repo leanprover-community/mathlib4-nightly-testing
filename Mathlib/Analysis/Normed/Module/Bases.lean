@@ -163,6 +163,7 @@ theorem proj_apply_basis_mem (A : Finset β) (i : β) :
     b.proj A (b i) = if i ∈ A then b i else 0 := by
   simp [b.ortho, Pi.single_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The projections `b.proj A x` converge to `x` along the summation filter. -/
 theorem tendsto_proj (x : X) : Tendsto (fun A ↦ b.proj A x) L.filter (𝓝 x) := by
   simpa using b.expansion x

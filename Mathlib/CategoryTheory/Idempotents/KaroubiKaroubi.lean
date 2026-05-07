@@ -38,6 +38,7 @@ lemma idem_f (P : Karoubi (Karoubi C)) : P.p.f ≫ P.p.f = P.p.f := by
 lemma p_comm_f {P Q : Karoubi (Karoubi C)} (f : P ⟶ Q) : P.p.f ≫ f.f.f = f.f.f ≫ Q.p.f := by
   simpa only [hom_ext_iff, comp_f] using p_comm f
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The canonical functor `Karoubi (Karoubi C) ⥤ Karoubi C` -/
 @[simps]
 def inverse : Karoubi (Karoubi C) ⥤ Karoubi C where

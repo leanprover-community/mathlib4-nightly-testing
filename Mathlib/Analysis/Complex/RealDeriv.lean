@@ -40,6 +40,7 @@ theorem HasStrictDerivAt.real_of_complex (h : HasStrictDerivAt e e' z) :
   have C : HasStrictFDerivAt re reCLM (e (ofRealCLM z)) := reCLM.hasStrictFDerivAt
   simpa using (C.comp z (B.comp z A)).hasStrictDerivAt
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a complex function `e` is differentiable at a real point, then the function `ℝ → ℝ` given by
 the real part of `e` is also differentiable at this point, with a derivative equal to the real part
 of the complex derivative. -/
@@ -92,11 +93,13 @@ theorem HasDerivWithinAt.complexToReal_fderiv {f : ℂ → ℂ} {s : Set ℂ} {f
     (h : HasDerivWithinAt f f' s x) : HasFDerivWithinAt f (f' • (1 : ℂ →L[ℝ] ℂ)) s x := by
   simpa only [Complex.restrictScalars_toSpanSingleton] using h.hasFDerivWithinAt.restrictScalars ℝ
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a complex function `e` is differentiable at a real point, then its restriction to `ℝ` is
 differentiable there as a function `ℝ → ℂ`, with the same derivative. -/
 theorem HasDerivAt.comp_ofReal (hf : HasDerivAt e e' ↑z) : HasDerivAt (fun y : ℝ => e ↑y) e' z := by
   simpa only [ofRealCLM_apply, ofReal_one, mul_one] using hf.comp z ofRealCLM.hasDerivAt
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a function `f : ℝ → ℝ` is differentiable at a (real) point `x`, then it is also
 differentiable as a function `ℝ → ℂ`. -/
 theorem HasDerivAt.ofReal_comp {f : ℝ → ℝ} {u : ℝ} (hf : HasDerivAt f u z) :

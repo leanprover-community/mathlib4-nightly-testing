@@ -84,6 +84,7 @@ lemma isSeparator {ι : Type w} {S : ι → A} (hS : ObjectProperty.IsSeparating
   (isSeparating C hS).isSeparator_coproduct
 
 variable (A) in
+set_option backward.simpa.using.reducibleClose false in
 instance hasSeparator [HasSeparator A] [HasZeroMorphisms A] [HasCoproducts.{u} A] :
     HasSeparator (Cᵒᵖ ⥤ A) where
   hasSeparator := ⟨_, isSeparator C (S := fun (_ : Unit) ↦ separator A)

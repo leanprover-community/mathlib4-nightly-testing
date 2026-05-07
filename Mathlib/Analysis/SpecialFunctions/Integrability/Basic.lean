@@ -220,6 +220,7 @@ hypothesis on the interval, but assuming the measure is the volume.
 theorem intervalIntegrable_log (h : (0 : ℝ) ∉ [[a, b]]) : IntervalIntegrable log μ a b :=
   IntervalIntegrable.log continuousOn_id fun _ hx => ne_of_mem_of_not_mem hx h
 
+set_option backward.simpa.using.reducibleClose false in
 set_option linter.flexible false in -- TODO: fix non-terminal simp
 /--
 The real logarithm is interval integrable (with respect to the volume measure) on every interval.

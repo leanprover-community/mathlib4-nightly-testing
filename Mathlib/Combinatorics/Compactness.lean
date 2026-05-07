@@ -54,6 +54,7 @@ public section
 
 variable {α : Type*} {β : α → Type*} [∀ a, Finite (β a)]
 
+set_option backward.simpa.using.reducibleClose false in
 /--
 Given a (dependent) function `g s : (a : α) → β a` for each finset `s` of `α`, provided that
 each `β a` is finite, we can find another function `χ : (a : α) → β a` such that on every `s`,

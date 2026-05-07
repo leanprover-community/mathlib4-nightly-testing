@@ -147,6 +147,7 @@ theorem ext (h : ∀ s, MeasurableSet s → μ₁ s = μ₂ s) : μ₁ = μ₂ :
 theorem ext_iff' : μ₁ = μ₂ ↔ ∀ s, μ₁ s = μ₂ s :=
   ⟨by rintro rfl s; rfl, fun h ↦ Measure.ext (fun s _ ↦ h s)⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem outerMeasure_le_iff {m : OuterMeasure α} : m ≤ μ.1 ↔ ∀ s, MeasurableSet s → m s ≤ μ s := by
   simpa only [μ.trimmed] using OuterMeasure.le_trim_iff (m₂ := μ.1)
 
@@ -198,11 +199,13 @@ theorem measure_le_measure_union_left : μ s ≤ μ (s ∪ t) := μ.mono subset_
 @[simp, mono]
 theorem measure_le_measure_union_right : μ t ≤ μ (s ∪ t) := μ.mono subset_union_right
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For every set there exists a measurable superset of the same measure. -/
 theorem exists_measurable_superset (μ : Measure α) (s : Set α) :
     ∃ t, s ⊆ t ∧ MeasurableSet t ∧ μ t = μ s := by
   simpa only [← measure_eq_trim] using μ.toOuterMeasure.exists_measurable_superset_eq_trim s
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For every set `s` and a countable collection of measures `μ i` there exists a measurable
 superset `t ⊇ s` such that each measure `μ i` takes the same value on `s` and `t`. -/
 theorem exists_measurable_superset_forall_eq [Countable ι] (μ : ι → Measure α) (s : Set α) :
@@ -210,6 +213,7 @@ theorem exists_measurable_superset_forall_eq [Countable ι] (μ : ι → Measure
   simpa only [← measure_eq_trim] using
     OuterMeasure.exists_measurable_superset_forall_eq_trim (fun i => (μ i).toOuterMeasure) s
 
+set_option backward.simpa.using.reducibleClose false in
 theorem exists_measurable_superset₂ (μ ν : Measure α) (s : Set α) :
     ∃ t, s ⊆ t ∧ MeasurableSet t ∧ μ t = μ s ∧ ν t = ν s := by
   simpa only [Bool.forall_bool.trans and_comm] using

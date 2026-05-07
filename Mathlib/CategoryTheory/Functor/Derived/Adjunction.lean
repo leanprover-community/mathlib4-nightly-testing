@@ -99,6 +99,7 @@ noncomputable def derivedη : 𝟭 D₁ ⟶ G' ⋙ F' :=
     (L₁.rightUnitor.hom ≫ L₁.leftUnitor.inv ≫ whiskerRight adj.unit L₁ ≫
       (Functor.associator _ _ _).hom ≫ whiskerLeft G β ≫ (Functor.associator _ _ _).inv)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma derivedη_fac_app (X₁ : C₁) :
@@ -121,6 +122,7 @@ noncomputable def derivedε : F' ⋙ G' ⟶ 𝟭 D₂ :=
     ((Functor.associator _ _ _).hom ≫ whiskerLeft F α ≫ (Functor.associator _ _ _).inv ≫
         whiskerRight adj.counit _ ≫ L₂.leftUnitor.hom ≫ L₂.rightUnitor.inv)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma derivedε_fac_app (X₂ : C₂) :

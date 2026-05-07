@@ -160,6 +160,7 @@ noncomputable def partialFunEquivPointed : PartialFun.{u} ≌ Pointed where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- Forgetting that maps are total and making them total again by adding a point is the same as just
 adding a point. -/
 @[simps!]

@@ -91,6 +91,7 @@ lemma continuousGeneratedBy_dom_prod_iff [∀ i j, IsGeneratedBy X (X i × X j)]
 
 variable [∀ i, LocallyCompactSpace (X i)] [∀ i j, IsGeneratedBy X (X i × X j)]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The bijection between the type of `X`-continuous maps `Y × Z → T` and the type of
 `X`-continuous maps `Z → ContinuousMapGeneratedBy X Y T`. -/
 def curryEquiv :

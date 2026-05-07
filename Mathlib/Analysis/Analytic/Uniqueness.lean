@@ -43,6 +43,7 @@ section Uniqueness
 
 open ContinuousMultilinearMap
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Asymptotics.IsBigO.continuousMultilinearMap_apply_eq_zero {n : ℕ} {p : E [×n]→L[𝕜] F}
     (h : (fun y => p fun _ => y) =O[𝓝 0] fun y => ‖y‖ ^ (n + 1)) (y : E) : (p fun _ => y) = 0 := by
   obtain ⟨c, c_pos, hc⟩ := h.exists_pos
@@ -197,6 +198,7 @@ theorem eqOn_zero_of_preconnected_of_eventuallyEq_zero_aux [CompleteSpace F] {f 
     exact this.apply_eq_zero n _
   exact HasSum.unique A B
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The *identity principle* for analytic functions: If an analytic function vanishes in a whole
 neighborhood of a point `z₀`, then it is uniformly zero along a connected set. For a one-dimensional
 version assuming only that the function vanishes at some points arbitrarily close to `z₀`, see
@@ -216,6 +218,7 @@ theorem eqOn_zero_of_preconnected_of_eventuallyEq_zero {f : E → F} {U : Set E}
   have : e (f z) = e 0 := by simpa only using A hz
   exact UniformSpace.Completion.coe_injective F this
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The *identity principle* for analytic functions: If two analytic functions coincide in a whole
 neighborhood of a point `z₀`, then they coincide globally along a connected set.
 For a one-dimensional version assuming only that the functions coincide at some points

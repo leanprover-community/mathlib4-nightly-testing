@@ -39,6 +39,7 @@ variable (G : Type*) {α : Type*} [Group G] [MulAction G α]
 
 namespace MulAction
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A.e. stabilizer of a set under a group action. -/
 @[to_additive (attr := simps) /-- A.e. stabilizer of a set under an additive group action. -/]
 def aestabilizer (s : Set α) : Subgroup G where

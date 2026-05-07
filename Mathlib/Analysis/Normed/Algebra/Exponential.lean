@@ -548,6 +548,7 @@ lemma _root_.SemiconjBy.exp_right {x a b : 𝔸} (h : SemiconjBy x a b) :
   apply SemiconjBy.tsum_right x (expSeries_summable' _) (expSeries_summable' _)
   exact fun _ ↦ h.pow_right _ |>.smul_right _
 
+set_option backward.simpa.using.reducibleClose false in
 lemma _root_.SemiconjBy.exp_neg_mul_mul_exp_eq_self {x a b : 𝔸} (h : SemiconjBy x a b) :
     exp (-b) * x * exp a = x := by
   let := invertibleExp b

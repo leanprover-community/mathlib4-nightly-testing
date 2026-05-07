@@ -67,6 +67,7 @@ lemma support_eq_limsInf (L : SummationFilter β) :
     ⟨fun hL b hb x hx ↦ hL x <| hb.mp <| .of_forall fun c hc ↦ hc hx,
       fun hL x hx ↦ singleton_subset_iff.mp <| hL _ <| by simpa using hx⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma support_eq_univ_iff {L : SummationFilter β} :
     L.support = univ ↔ L.filter ≤ atTop := by
   simp only [support, Set.eq_univ_iff_forall, Set.mem_setOf]
@@ -216,6 +217,7 @@ finite: this corresponds to limits of finite sums over larger and larger interva
 @[simps] def conditional : SummationFilter β where
   filter := (atBot ×ˢ atTop).map (fun p ↦ Finset.Icc p.1 p.2)
 
+set_option backward.simpa.using.reducibleClose false in
 instance : (conditional β).LeAtTop := ⟨support_eq_univ_iff.mp <| by
   simpa [eq_univ_iff_forall, support, -eventually_and]
     using fun x ↦ prod_mem_prod (eventually_le_atBot x) (eventually_ge_atTop x)⟩

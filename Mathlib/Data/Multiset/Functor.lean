@@ -38,6 +38,7 @@ open LawfulTraversable CommApplicative
 variable {F : Type u → Type u} [Applicative F] [CommApplicative F]
 variable {α' β' : Type u} (f : α' → F β')
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Map each element of a `Multiset` to an action, evaluate these actions in order,
 and collect the results.
 -/

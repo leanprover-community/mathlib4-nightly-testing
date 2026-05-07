@@ -350,6 +350,7 @@ theorem isMultiplyPretransitive_of_nontrivial {K : Type*} [Group K] [MulAction K
 
 variable [Fintype α] [DecidableEq α]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isPretransitive_of_isCycle_mem {g : Perm α}
     (hgc : g.IsCycle) (hg : g ∈ G) :
     IsPretransitive (fixingSubgroup G (g.support : Set α)ᶜ)

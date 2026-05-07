@@ -93,6 +93,7 @@ end NormalTower
 
 namespace IntermediateField
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A compositum of normal extensions is normal. -/
 instance normal_iSup {ι : Type*} (t : ι → IntermediateField F K) [h : ∀ i, Normal F (t i)] :
     Normal F (⨆ i, t i : IntermediateField F K) := by

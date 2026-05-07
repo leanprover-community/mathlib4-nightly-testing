@@ -99,6 +99,7 @@ private abbrev P {X Y : C} (f g : X ⟶ Y) [Mono (prod.lift (𝟙 X) f)] [Mono (
   pullback (prod.lift (𝟙 X) f) (prod.lift (𝟙 X) g)
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The equalizer of `f` and `g` exists. -/
 lemma hasLimit_parallelPair {X Y : C} (f g : X ⟶ Y) : HasLimit (parallelPair f g) :=
   have huv : (pullback.fst _ _ : P f g ⟶ X) = pullback.snd _ _ :=
@@ -259,6 +260,7 @@ private abbrev Q {X Y : C} (f g : X ⟶ Y) [Epi (coprod.desc (𝟙 Y) f)] [Epi (
   pushout (coprod.desc (𝟙 Y) f) (coprod.desc (𝟙 Y) g)
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- The coequalizer of `f` and `g` exists. -/
 lemma hasColimit_parallelPair {X Y : C} (f g : X ⟶ Y) : HasColimit (parallelPair f g) :=
   have huv : (pushout.inl _ _ : Y ⟶ Q f g) = pushout.inr _ _ :=

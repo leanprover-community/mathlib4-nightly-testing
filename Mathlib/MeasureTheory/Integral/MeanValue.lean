@@ -31,6 +31,7 @@ open MeasureTheory
 variable {α : Type*} [TopologicalSpace α] [MeasurableSpace α]
   {s : Set α} {f g : α → ℝ} {μ : Measure α}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- **First mean value theorem for set integrals (a.e. nonnegativity).**
 Let `s` be a connected measurable set. If `f` is continuous on `s`, `g` is integrable on `s`,
 `f * g` is integrable on `s`, and `g` is nonnegative a.e. on `s` w.r.t. `μ.restrict s`, then

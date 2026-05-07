@@ -41,6 +41,7 @@ protected theorem AddCircle.measurable_mk' {a : ℝ} :
     Measurable (β := AddCircle a) ((↑) : ℝ → AddCircle a) :=
   Continuous.measurable <| AddCircle.continuous_mk' a
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isAddFundamentalDomain_Ioc {T : ℝ} (hT : 0 < T) (t : ℝ)
     (μ : Measure ℝ := by volume_tac) :
     IsAddFundamentalDomain (AddSubgroup.zmultiples T) (Ioc t (t + T)) μ := by
@@ -50,6 +51,7 @@ theorem isAddFundamentalDomain_Ioc {T : ℝ} (hT : 0 < T) (t : ℝ)
   refine this.existsUnique_iff.2 ?_
   simpa only [add_comm x] using existsUnique_add_zsmul_mem_Ioc hT x t
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isAddFundamentalDomain_Ioc' {T : ℝ} (hT : 0 < T) (t : ℝ) (μ : Measure ℝ := by volume_tac) :
     IsAddFundamentalDomain (AddSubgroup.op <| .zmultiples T) (Ioc t (t + T)) μ := by
   refine IsAddFundamentalDomain.mk' nullMeasurableSet_Ioc fun x => ?_

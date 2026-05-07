@@ -107,6 +107,7 @@ lemma minpolyDiv_ne_zero [Nontrivial S] : minpolyDiv R x ≠ 0 := by
   rw [e, zero_mul] at this
   exact ((minpoly.monic hx).map (algebraMap R S)).ne_zero this.symm
 
+set_option backward.simpa.using.reducibleClose false in
 lemma minpolyDiv_monic : Monic (minpolyDiv R x) := by
   nontriviality S
   have := congr_arg leadingCoeff (minpolyDiv_spec R x)

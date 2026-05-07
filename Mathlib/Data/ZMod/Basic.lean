@@ -664,6 +664,7 @@ theorem val_add_of_le {n : ℕ} [NeZero n] {a b : ZMod n} (h : n ≤ a.val + b.v
   rw [val_add_val_of_le h]
   exact eq_tsub_of_add_eq rfl
 
+set_option backward.simpa.using.reducibleClose false in
 theorem val_add_le {n : ℕ} (a b : ZMod n) : (a + b).val ≤ a.val + b.val := by
   cases n
   · simpa [ZMod.val] using Int.natAbs_add_le _ _
@@ -1224,6 +1225,7 @@ lemma ZModModule.two_le_char [NeZero n] [Nontrivial G] : 2 ≤ n := by
   have := char_ne_one n G
   lia
 
+set_option backward.simpa.using.reducibleClose false in
 lemma ZModModule.periodicPts_add_left [NeZero n] (x : G) : periodicPts (x + ·) = .univ :=
   Set.eq_univ_of_forall fun y ↦ ⟨n, NeZero.pos n, by
     simpa [char_nsmul_eq_zero, IsPeriodicPt] using isFixedPt_id _⟩

@@ -87,6 +87,7 @@ lemma injOn_iInf_maxGenEigenspace :
   contrapose! hχ₂
   simpa [hχ₁₂] using disjoint_iInf_maxGenEigenspace f hχ₂
 
+set_option backward.simpa.using.reducibleClose false in
 lemma independent_iInf_maxGenEigenspace_of_forall_mapsTo
     (h : ∀ i j φ, MapsTo (f i) ((f j).maxGenEigenspace φ) ((f j).maxGenEigenspace φ)) :
     iSupIndep fun χ : ι → R ↦ ⨅ i, (f i).maxGenEigenspace (χ i) := by

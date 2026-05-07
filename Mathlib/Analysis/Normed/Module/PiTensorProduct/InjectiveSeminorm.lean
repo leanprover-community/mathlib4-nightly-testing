@@ -92,6 +92,7 @@ namespace PiTensorProduct
 section seminorm
 
 variable (F) in
+set_option backward.simpa.using.reducibleClose false in
 /-- The linear map from `⨂[𝕜] i, Eᵢ` to `ContinuousMultilinearMap 𝕜 E F →L[𝕜] F` sending
 `x` in `⨂[𝕜] i, Eᵢ` to the map `f ↦ f.lift x`. -/
 @[simps!]

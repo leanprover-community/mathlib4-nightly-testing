@@ -343,6 +343,7 @@ theorem nhds_eq_comap (h : X ≃ₜ Y) (x : X) : 𝓝 x = comap h (𝓝 (h x)) :
 theorem comap_nhds_eq (h : X ≃ₜ Y) (y : Y) : comap h (𝓝 y) = 𝓝 (h.symm y) := by
   rw [h.nhds_eq_comap, h.apply_symm_apply]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isClosed_setOf_iff {p : X → Prop} {q : Y → Prop} (f : X ≃ₜ Y) (hs : IsClopen {x | p x})
     (ht : IsClopen {y | q y}) : IsClosed { x : X | p x ↔ q (f x) } := by
   simpa [iff_def] using (isClosed_imp hs.2 (f.isClosed_preimage.2 ht.1)).inter

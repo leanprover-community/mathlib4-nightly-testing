@@ -71,6 +71,7 @@ theorem cast_zero : ((0 : ℤ) : R) = 0 :=
 theorem cast_natCast (n : ℕ) : ((n : ℤ) : R) = n :=
   AddGroupWithOne.intCast_ofNat _
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp, norm_cast]
 theorem cast_ofNat (n : ℕ) [n.AtLeastTwo] :
     ((ofNat(n) : ℤ) : R) = ofNat(n) := by

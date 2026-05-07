@@ -34,6 +34,7 @@ theorem ofDigits_eq_sum_mapIdx_aux (b : ℕ) (l : List ℕ) :
     by simp [this]
   congr; ext; ring
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ofDigits_eq_sum_mapIdx (b : ℕ) (L : List ℕ) :
     ofDigits b L = (L.mapIdx fun i a => a * b ^ i).sum := by
   rw [List.mapIdx_eq_zipIdx_map, List.zipIdx_eq_zip_range', List.map_zip_eq_zipWith,

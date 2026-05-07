@@ -55,6 +55,7 @@ lemma isBigO_exp_neg_mul_of_le {c d : ℝ} (hcd : c ≤ d) :
 private lemma exp_lt_aux {t : ℝ} (ht : 0 < t) : rexp (-π * t) < 1 := by
   simpa only [exp_lt_one_iff, neg_mul, neg_lt_zero] using mul_pos pi_pos ht
 
+set_option backward.simpa.using.reducibleClose false in
 private lemma isBigO_one_aux :
     IsBigO atTop (fun t : ℝ ↦ (1 - rexp (-π * t))⁻¹) (fun _ ↦ (1 : ℝ)) := by
   refine ((Tendsto.const_sub _ ?_).inv₀ (by simp)).isBigO_one ℝ (c := ((1 - 0)⁻¹ : ℝ))
@@ -129,6 +130,7 @@ lemma F_nat_zero_zero_sub_le {t : ℝ} (ht : 0 < t) :
     simp_rw [F_nat, f_nat, Nat.cast_add, Nat.cast_one, add_zero]
   · rw [one_pow, mul_one]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isBigO_atTop_F_nat_zero_sub {a : ℝ} (ha : 0 ≤ a) : ∃ p, 0 < p ∧
     (fun t ↦ F_nat 0 a t - (if a = 0 then 1 else 0)) =O[atTop] fun t ↦ exp (-p * t) := by
   split_ifs with h
@@ -176,6 +178,7 @@ lemma F_nat_one_le {a : ℝ} (ha : 0 ≤ a) {t : ℝ} (ht : 0 < t) :
     rw [← Real.exp_nat_mul, mul_assoc _ (exp _), ← Real.exp_add]
     ring_nf
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isBigO_atTop_F_nat_one {a : ℝ} (ha : 0 ≤ a) : ∃ p, 0 < p ∧
     F_nat 1 a =O[atTop] fun t ↦ exp (-p * t) := by
   suffices ∃ p, 0 < p ∧ (fun t ↦ rexp (-π * (a ^ 2 + 1) * t) / (1 - rexp (-π * t)) ^ 2

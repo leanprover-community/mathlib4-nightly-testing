@@ -278,6 +278,7 @@ theorem periodizedBernoulli.continuous {k : ℕ} (hk : k ≠ 1) : Continuous (pe
     (mod_cast (bernoulliFun_endpoints_eq_of_ne_one hk).symm)
     (Polynomial.continuous _).continuousOn
 
+set_option backward.simpa.using.reducibleClose false in
 theorem fourierCoeff_bernoulli_eq {k : ℕ} (hk : k ≠ 0) (n : ℤ) :
     fourierCoeff ((↑) ∘ periodizedBernoulli k : 𝕌 → ℂ) n = -k ! / (2 * π * I * n) ^ k := by
   have : ((↑) ∘ periodizedBernoulli k : 𝕌 → ℂ) = AddCircle.liftIco 1 0 ((↑) ∘ bernoulliFun k) := by

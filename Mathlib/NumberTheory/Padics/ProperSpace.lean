@@ -60,6 +60,7 @@ end PadicInt
 
 namespace Padic
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The field of p-adic numbers `ℚ_[p]` is a proper metric space. -/
 instance : ProperSpace ℚ_[p] := by
   suffices LocallyCompactSpace ℚ_[p] from .of_nontriviallyNormedField_of_weaklyLocallyCompactSpace _

@@ -258,6 +258,7 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {n : ℕ∞ω}
   {E' : Type*} [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] {I' : ModelWithCorners 𝕜 E' H'}
   {G' : Type*} [Monoid G'] [TopologicalSpace G'] [ChartedSpace H' G'] [ContMDiffMul I' n G']
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem contMDiff_pow : ∀ i : ℕ, CMDiff n fun a : G ↦ a ^ i
   | 0 => by simp only [pow_zero, contMDiff_const]
@@ -503,6 +504,7 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {n : ℕ∞ω}
 
 variable {f : M → G} {s : Set M} {x : M} (c : G)
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem ContMDiffWithinAt.div_const (hf : CMDiffAt[s] n f x) :
     CMDiffAt[s] n (fun x ↦ f x / c) x := by

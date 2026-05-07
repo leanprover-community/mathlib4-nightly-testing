@@ -271,6 +271,7 @@ noncomputable def sectionsMk (val₀ : F.obj (op ⊥)) : F.sections where
   val j := (default : d.Extension val₀ j.unop).val
   property := fun f ↦ by apply Extension.compatibility
 
+set_option backward.simpa.using.reducibleClose false in
 lemma sectionsMk_val_op_bot (val₀ : F.obj (op ⊥)) :
     (d.sectionsMk val₀).val (op ⊥) = val₀ := by
   simpa using (default : d.Extension val₀ ⊥).map_zero

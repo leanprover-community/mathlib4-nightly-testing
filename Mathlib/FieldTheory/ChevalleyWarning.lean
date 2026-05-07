@@ -181,6 +181,7 @@ theorem char_dvd_card_solutions {f : MvPolynomial σ K} (h : f.totalDegree < Fin
   convert char_dvd_card_solutions_of_sum_lt p this
   aesop
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The **Chevalley–Warning theorem**, binary version.
 Let `f₁`, `f₂` be two multivariate polynomials in finitely many variables (`X s`, `s : σ`) over a
 finite field of characteristic `p`.

@@ -152,6 +152,7 @@ theorem support_map_subset [Zero S] (x : R⟦Γ⟧) (f : ZeroHom R S) :
     (x.map f).support ⊆ x.support :=
   Function.support_comp_subset (ZeroHomClass.map_zero f) _
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Change a `HahnSeries` with coefficients in a `HahnSeries` to a `HahnSeries` on a Lex product. -/
 def ofIterate [PartialOrder Γ'] (x : R⟦Γ'⟧⟦Γ⟧) : R⟦Γ ×ₗ Γ'⟧ where
   coeff := fun g => coeff (coeff x g.1) g.2

@@ -390,6 +390,7 @@ lemma fderivWithin_extChartAt_comp_extChartAt_symm_range :
   rw [eq_nhd.fderivWithin_eq (by simp)]
   exact fderivWithin_id <| I.uniqueDiffOn.uniqueDiffWithinAt (mem_range_self _)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The manifold derivative of `extChartAt` at the basepoint is the identity. -/
 lemma mfderiv_extChartAt_self :
     mfderiv I 𝓘(𝕜, E) (extChartAt I x) x = ContinuousLinearMap.id 𝕜 _ := by
@@ -398,6 +399,7 @@ lemma mfderiv_extChartAt_self :
   ext v
   simpa using (tangentBundleCore I M).coordChange_self (achart H x) x (mem_chart_source H x) v
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 -- TODO: should there be a version for `extChartAt`?
 /-- The manifold derivative within `range I` of `(extChartAt I x).symm` at the chart point is

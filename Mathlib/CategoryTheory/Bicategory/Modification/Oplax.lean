@@ -299,6 +299,7 @@ instance hasCoeToOplax :
     Coe (Modification η θ) (OplaxTrans.Modification η.toOplax θ.toOplax) :=
   ⟨toOplax⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The modification between strong transformations of oplax functors associated to a modification
 between the underlying oplax transformations. -/
 @[simps]

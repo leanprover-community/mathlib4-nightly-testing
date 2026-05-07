@@ -171,6 +171,7 @@ theorem _root_.Algebra.IsAlgebraic.exists_integral_multiples [NoZeroDivisors R]
   classical rw [← Finset.prod_erase_mul _ _ h, mul_smul]
   exact (int _).smul _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem of_smul_isIntegral {y : R} (hy : ¬ IsNilpotent y)
     (h : IsIntegral R (y • z)) : IsAlgebraic R z := by
   have ⟨p, monic, eval0⟩ := h
@@ -523,6 +524,7 @@ theorem lift_rank_of_isFractionRing :
   rw [IsLocalization.rank_eq R' R⁰ le_rfl,
     IsLocalizedModule.lift_rank_eq R⁰ (IsScalarTower.toAlgHom R S S').toLinearMap le_rfl]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem finrank_of_isFractionRing : Module.finrank R' S' = Module.finrank R S := by
   simpa using congr_arg Cardinal.toNat (lift_rank_of_isFractionRing ..)
 

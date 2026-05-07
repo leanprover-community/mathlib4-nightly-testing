@@ -96,6 +96,7 @@ def refl (f : X ⟶ Y) : Homotopy f f where
   h_comp_σ_castSucc_of_le i j hij := by simp [Y.σ_comp_σ hij]
   h_comp_σ_succ_of_lt i j hji := by simp [Y.σ_comp_σ hji]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Postcompose a simplicial homotopy with a functor `F : C ⥤ D`. -/
 @[simps]
 def whiskerRight (H : Homotopy f g) {D : Type u'} [Category.{v'} D] (F : C ⥤ D) :

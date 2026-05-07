@@ -70,6 +70,7 @@ noncomputable def eigenvectorBasis : OrthonormalBasis n 𝕜 (EuclideanSpace �
   ((isSymmetric_toEuclideanLin_iff.mpr hA).eigenvectorBasis finrank_euclideanSpace).reindex
     (Fintype.equivOfCardEq (Fintype.card_fin _))
 
+set_option backward.simpa.using.reducibleClose false in
 lemma mulVec_eigenvectorBasis (j : n) :
     A *ᵥ ⇑(hA.eigenvectorBasis j) = (hA.eigenvalues j) • ⇑(hA.eigenvectorBasis j) := by
   simpa only [eigenvectorBasis, OrthonormalBasis.reindex_apply, toLpLin_apply,

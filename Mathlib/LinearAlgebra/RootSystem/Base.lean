@@ -376,6 +376,7 @@ def height (i : ι) : ℤ :=
   ∑ j ∈ b.support, (b.exists_root_eq_sum_int i).choose j
 
 variable {b} in
+set_option backward.simpa.using.reducibleClose false in
 lemma height_eq_sum {i : ι} {f : ι → ℤ} (heq : P.root i = ∑ j ∈ b.support, f j • P.root j) :
     b.height i = ∑ j ∈ b.support, f j := by
   suffices ∀ j ∈ b.support, (b.exists_root_eq_sum_int i).choose j = f j from

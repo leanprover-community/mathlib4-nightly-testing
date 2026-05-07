@@ -29,6 +29,7 @@ open Filter
 
 namespace Complex
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasStrictFDerivAt_cpow {p : ℂ × ℂ} (hp : p.1 ∈ slitPlane) :
     HasStrictFDerivAt (fun x : ℂ × ℂ => x.1 ^ x.2)
       ((p.2 * p.1 ^ (p.2 - 1)) • ContinuousLinearMap.fst ℂ ℂ ℂ +
@@ -48,6 +49,7 @@ theorem hasStrictFDerivAt_cpow' {x y : ℂ} (hp : x ∈ slitPlane) :
         (x ^ y * log x) • ContinuousLinearMap.snd ℂ ℂ ℂ) (x, y) :=
   @hasStrictFDerivAt_cpow (x, y) hp
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hasStrictDerivAt_const_cpow {x y : ℂ} (h : x ≠ 0 ∨ y ≠ 0) :
     HasStrictDerivAt (fun y => x ^ y) (x ^ y * log x) y := by
   rcases em (x = 0) with (rfl | hx)
@@ -195,6 +197,7 @@ theorem HasStrictDerivAt.const_cpow (hf : HasStrictDerivAt f f' x) (h : c ≠ 0 
     HasStrictDerivAt (fun x => c ^ f x) (c ^ f x * Complex.log c * f') x :=
   (hasStrictDerivAt_const_cpow h).comp x hf
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Complex.hasStrictDerivAt_cpow_const (h : x ∈ slitPlane) :
     HasStrictDerivAt (fun z : ℂ => z ^ c) (c * x ^ (c - 1)) x := by
   simpa only [mul_zero, add_zero, mul_one] using
@@ -424,6 +427,7 @@ lemma differentiableOn_rpow_const (p : ℝ) :
     DifferentiableOn ℝ (fun x => (x : ℝ) ^ p) {0}ᶜ :=
   fun _ hx => (Real.differentiableAt_rpow_const_of_ne p hx).differentiableWithinAt
 
+set_option backward.simpa.using.reducibleClose false in
 /-- This lemma says that `fun x => a ^ x` is strictly differentiable for `a < 0`. Note that these
 values of `a` are outside of the "official" domain of `a ^ x`, and we may redefine `a ^ x`
 for negative `a` if some other definition will be more convenient. -/

@@ -213,6 +213,7 @@ lemma isLocallyInjective_of_isLocallyInjective_of_isLocallySurjective_fac
   subst fac
   exact isLocallyInjective_of_isLocallyInjective_of_isLocallySurjective J f₁ f₂
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isLocallySurjective_of_isLocallySurjective_of_isLocallyInjective
     {F₁ F₂ F₃ : Cᵒᵖ ⥤ A} (f₁ : F₁ ⟶ F₂) (f₂ : F₂ ⟶ F₃)
     [IsLocallySurjective J (f₁ ≫ f₂)] [IsLocallyInjective J f₂] :
@@ -287,6 +288,7 @@ section
 
 open GrothendieckTopology.Plus
 
+set_option backward.simpa.using.reducibleClose false in
 instance isLocallySurjective_toPlus (P : Cᵒᵖ ⥤ Type (max u v)) :
     IsLocallySurjective J (J.toPlus P) where
   imageSieve_mem x := by

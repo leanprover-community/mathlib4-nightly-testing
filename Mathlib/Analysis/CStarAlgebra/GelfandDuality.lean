@@ -140,6 +140,7 @@ theorem gelfandTransform_map_star (a : A) :
 
 variable (A)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The Gelfand transform is an isometry when the algebra is a C⋆-algebra over `ℂ`. -/
 theorem gelfandTransform_isometry : Isometry (gelfandTransform ℂ A) := by
   refine AddMonoidHomClass.isometry_of_norm (gelfandTransform ℂ A) fun a => ?_

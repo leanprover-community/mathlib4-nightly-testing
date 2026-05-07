@@ -675,6 +675,7 @@ lemma homOf_ofHom_eq_self (φ : F ⟶ G) : homOf (ofHom φ) = φ := by cat_disch
 @[simp]
 lemma ofHom_homOf_eq_self (z : Cocycle F G 0) : ofHom (homOf z) = z := by cat_disch
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma cochain_ofHom_homOf_eq_coe (z : Cocycle F G 0) :
     Cochain.ofHom (homOf z) = (z : Cochain F G 0) := by

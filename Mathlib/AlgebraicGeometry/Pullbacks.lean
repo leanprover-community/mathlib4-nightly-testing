@@ -238,6 +238,7 @@ theorem p_comm : p1 𝒰 f g ≫ f = p2 𝒰 f g ≫ g := by
 
 variable (s : PullbackCone f g)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- (Implementation)
 The canonical map `(s.X ×[X] Uᵢ) ×[s.X] (s.X ×[X] Uⱼ) ⟶ (Uᵢ ×[Z] Y) ×[X] Uⱼ`

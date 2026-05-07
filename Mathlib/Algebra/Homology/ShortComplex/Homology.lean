@@ -693,6 +693,7 @@ lemma leftRightHomologyComparison'_fac (h₁ : S.LeftHomologyData) (h₂ : S.Rig
 
 variable (S)
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc]
 lemma leftRightHomologyComparison_fac [S.HasHomology] :
     S.leftRightHomologyComparison = S.leftHomologyIso.hom ≫ S.rightHomologyIso.inv := by
@@ -754,6 +755,7 @@ lemma LeftHomologyData.leftHomologyIso_inv_naturality
   dsimp [homologyIso, ShortComplex.leftHomologyIso, homologyMap, homologyMap', leftHomologyIso]
   simp only [← leftHomologyMap'_comp, id_comp, comp_id]
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc]
 lemma leftHomologyIso_hom_naturality :
     S₁.leftHomologyIso.hom ≫ homologyMap φ =
@@ -761,6 +763,7 @@ lemma leftHomologyIso_hom_naturality :
   simpa only [LeftHomologyData.homologyIso_leftHomologyData, Iso.symm_inv] using
     LeftHomologyData.leftHomologyIso_inv_naturality φ S₁.leftHomologyData S₂.leftHomologyData
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc]
 lemma leftHomologyIso_inv_naturality :
     S₁.leftHomologyIso.inv ≫ leftHomologyMap φ =
@@ -789,6 +792,7 @@ lemma RightHomologyData.rightHomologyIso_inv_naturality
   simp only [← cancel_mono h₂.homologyIso.hom, assoc, Iso.inv_hom_id_assoc, comp_id,
     ← RightHomologyData.rightHomologyIso_hom_naturality φ h₁ h₂, Iso.inv_hom_id]
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc]
 lemma rightHomologyIso_hom_naturality :
     S₁.rightHomologyIso.hom ≫ homologyMap φ =
@@ -796,6 +800,7 @@ lemma rightHomologyIso_hom_naturality :
   simpa only [RightHomologyData.homologyIso_rightHomologyData, Iso.symm_inv] using
     RightHomologyData.rightHomologyIso_inv_naturality φ S₁.rightHomologyData S₂.rightHomologyData
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc]
 lemma rightHomologyIso_inv_naturality :
     S₁.rightHomologyIso.inv ≫ rightHomologyMap φ =

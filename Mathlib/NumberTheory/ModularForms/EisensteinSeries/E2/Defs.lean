@@ -36,6 +36,7 @@ lemma e2Summand_summable (m : ℤ) (z : ℍ) : Summable (fun n ↦ eisSummand 2 
   apply (linear_right_summable z m (k := 2) (by grind)).congr
   simp [eisSummand]
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma e2Summand_zero_eq_two_riemannZeta_two (z : ℍ) : e2Summand 0 z = 2 * riemannZeta 2 := by
   simpa [e2Summand, eisSummand] using

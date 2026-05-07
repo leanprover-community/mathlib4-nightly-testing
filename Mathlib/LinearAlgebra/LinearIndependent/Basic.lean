@@ -169,6 +169,7 @@ theorem LinearIndepOn.congr {w : ι → M} (hli : LinearIndepOn R v s) (h : EqOn
     LinearIndepOn R w s :=
   (linearIndepOn_congr h).1 hli
 
+set_option backward.simpa.using.reducibleClose false in
 theorem LinearIndependent.group_smul {G : Type*} [hG : Group G] [MulAction G R]
     [SMul G M] [IsScalarTower G R M] [SMulCommClass G R M] {v : ι → M}
     (hv : LinearIndependent R v) (w : ι → G) : LinearIndependent R (w • v) := by
@@ -189,6 +190,7 @@ theorem LinearIndependent.group_smul_iff {G : Type*} [hG : Group G] [MulAction G
 
 -- This lemma cannot be proved with `LinearIndependent.group_smul` since the action of
 -- `Rˣ` on `R` is not commutative.
+set_option backward.simpa.using.reducibleClose false in
 theorem LinearIndependent.units_smul {v : ι → M} (hv : LinearIndependent R v) (w : ι → Rˣ) :
     LinearIndependent R (w • v) := by
   rw [linearIndependent_iff''ₛ] at hv ⊢

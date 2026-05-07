@@ -316,6 +316,7 @@ section Inequalities
 
 variable [IsFiniteMeasure μ] [IsFiniteMeasure ν]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma integral_llr_add_mul_log_nonneg (hμν : μ ≪ ν) (h_int : Integrable (llr μ ν) μ) :
     0 ≤ ∫ x, llr μ ν x ∂μ + μ.real univ * log (ν.real univ) + 1 - μ.real univ := by
   by_cases hμ : μ = 0

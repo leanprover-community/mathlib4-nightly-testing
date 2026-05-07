@@ -323,6 +323,7 @@ lemma _root_.NumberField.ComplexEmbedding.IsConj.isUnramified_mk_iff
     ← not_isReal_iff_isComplex, comap_mk, isReal_mk_iff, isReal_mk_iff, eq_true h.isReal_comp,
     and_true]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isUnramified_mk_iff_forall_isConj [IsGalois k K] {φ : K →+* ℂ} :
     IsUnramified k (mk φ) ↔ ∀ σ : Gal(K/k), ComplexEmbedding.IsConj φ σ → σ = 1 := by
   refine ⟨fun H σ hσ ↦ hσ.isUnramified_mk_iff.mp H,
@@ -600,6 +601,7 @@ instance {φ : K →+* ℂ} {ψ : L →+* ℂ} [ComplexEmbedding.LiesOver ψ φ]
     AbsoluteValue.LiesOver (mk ψ).1 (mk φ).1 where
   comp_eq := by simp [← LiesOver.over ψ φ, ← coe_mk_comp]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem comap_eq : w.comap (algebraMap K L) = v := by
   ext
   simpa only [coe_apply] using AbsoluteValue.ext_iff.1 (LiesOver.comp_eq w.1 v.1) _

@@ -47,6 +47,7 @@ lemma strictConcaveOn_rpow {p : ℝ} (hp₀ : 0 < p) (hp₁ : p < 1) :
   simp only [← h₂]
   exact (f.strictConcaveOn_symm h₁).2 mx my hxy ha hb hab
 
+set_option backward.simpa.using.reducibleClose false in
 lemma concaveOn_rpow {p : ℝ} (hp₀ : 0 ≤ p) (hp₁ : p ≤ 1) :
     ConcaveOn ℝ≥0 univ fun x : ℝ≥0 ↦ x ^ p := by
   rcases eq_or_lt_of_le hp₀ with (rfl | hp₀)
@@ -79,6 +80,7 @@ lemma strictConcaveOn_rpow {p : ℝ} (hp₀ : 0 < p) (hp₁ : p < 1) :
   exact_mod_cast (NNReal.strictConcaveOn_rpow hp₀ hp₁).2 (Set.mem_univ x') (Set.mem_univ y')
     hxy' (mod_cast ha) (mod_cast hb) hab'
 
+set_option backward.simpa.using.reducibleClose false in
 lemma concaveOn_rpow {p : ℝ} (hp₀ : 0 ≤ p) (hp₁ : p ≤ 1) :
     ConcaveOn ℝ (Set.Ici 0) fun x : ℝ ↦ x ^ p := by
   rcases eq_or_lt_of_le hp₀ with (rfl | hp₀)

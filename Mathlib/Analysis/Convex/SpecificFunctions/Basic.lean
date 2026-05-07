@@ -204,6 +204,7 @@ theorem strictConvexOn_rpow {p : ℝ} (hp : 1 < p) : StrictConvexOn ℝ (Ici 0) 
     · rw [sub_ne_zero]
       exact ((one_lt_div hy).mpr hyz).ne'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem convexOn_rpow {p : ℝ} (hp : 1 ≤ p) : ConvexOn ℝ (Ici 0) fun x : ℝ ↦ x ^ p := by
   rcases eq_or_lt_of_le hp with (rfl | hp)
   · simpa using convexOn_id (convex_Ici _)

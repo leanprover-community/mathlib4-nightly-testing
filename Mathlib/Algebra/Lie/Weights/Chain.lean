@@ -137,6 +137,7 @@ open LieAlgebra
 
 variable {H : LieSubalgebra R L} (α χ : H → R) (p q : ℤ)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma lie_mem_genWeightSpaceChain_of_genWeightSpace_eq_bot_right [LieRing.IsNilpotent H]
     (hq : genWeightSpace M (q • α + χ) = ⊥)
     {x : L} (hx : x ∈ rootSpace H α)

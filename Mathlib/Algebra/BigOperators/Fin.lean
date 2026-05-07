@@ -688,6 +688,7 @@ def finSigmaFinEquiv {m : ℕ} {n : Fin m → ℕ} : (i : Fin m) × Fin (n i) �
       _ ≃ _ := finSumFinEquiv
       _ ≃ _ := finCongr (Fin.sum_univ_castSucc n).symm
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem finSigmaFinEquiv_apply {m : ℕ} {n : Fin m → ℕ} (k : (i : Fin m) × Fin (n i)) :
     (finSigmaFinEquiv k : ℕ) = ∑ i : Fin k.1, n (Fin.castLE k.1.2.le i) + k.2 := by

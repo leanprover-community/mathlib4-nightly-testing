@@ -144,9 +144,11 @@ theorem IsEquivalent.tendsto_nhds_iff {c : β} (huv : u ~[l] v) :
     Tendsto u l (𝓝 c) ↔ Tendsto v l (𝓝 c) :=
   ⟨huv.tendsto_nhds, huv.symm.tendsto_nhds⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsEquivalent.add_isLittleO (huv : u ~[l] v) (hwv : w =o[l] v) : u + w ~[l] v := by
   simpa only [IsEquivalent, add_sub_right_comm] using huv.add hwv
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsEquivalent.sub_isLittleO (huv : u ~[l] v) (hwv : w =o[l] v) : u - w ~[l] v := by
   simpa only [sub_eq_add_neg] using huv.add_isLittleO hwv.neg_left
 

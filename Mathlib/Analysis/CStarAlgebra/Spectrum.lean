@@ -151,6 +151,7 @@ theorem IsStarNormal.spectralRadius_eq_nnnorm (a : A) [IsStarNormal a] :
 
 variable [StarModule ℂ A]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Any element of the spectrum of a selfadjoint is real. -/
 theorem IsSelfAdjoint.mem_spectrum_eq_re {a : A} (ha : IsSelfAdjoint a) {z : ℂ}
     (hz : z ∈ spectrum ℂ a) : z = z.re := by
@@ -266,6 +267,7 @@ lemma nnnorm_apply_le (φ : F) (a : A) : ‖φ a‖₊ ≤ ‖a‖₊ := by
 lemma norm_apply_le (φ : F) (a : A) : ‖φ a‖ ≤ ‖a‖ := by
   exact_mod_cast nnnorm_apply_le φ a
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Non-unital star algebra homomorphisms between C⋆-algebras are continuous linear maps.
 See note [lower instance priority] -/
 lemma instContinuousLinearMapClassComplex : ContinuousLinearMapClass F ℂ A B :=
@@ -282,6 +284,7 @@ namespace StarAlgEquiv
 variable {F A B : Type*} [NonUnitalCStarAlgebra A] [NonUnitalCStarAlgebra B] [EquivLike F A B]
 variable [NonUnitalAlgEquivClass F ℂ A B] [StarHomClass F A B]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma nnnorm_map (φ : F) (a : A) : ‖φ a‖₊ = ‖a‖₊ :=
   le_antisymm (NonUnitalStarAlgHom.nnnorm_apply_le φ a) <| by
     simpa using NonUnitalStarAlgHom.nnnorm_apply_le (symm (φ : A ≃⋆ₐ[ℂ] B)) ((φ : A ≃⋆ₐ[ℂ] B) a)

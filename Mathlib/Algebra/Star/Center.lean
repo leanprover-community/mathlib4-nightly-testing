@@ -15,6 +15,7 @@ public section
 
 variable {R : Type*} [Mul R] [StarMul R] {a : R} {s : Set R}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Set.star_mem_center (ha : a ∈ Set.center R) : star a ∈ Set.center R where
   comm := by simpa only [star_mul, star_star] using fun g =>
     congr_arg star ((mem_center_iff.1 ha).comm <| star g).symm

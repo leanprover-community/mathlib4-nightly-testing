@@ -134,6 +134,7 @@ end Submodule
 
 open Module Submodule
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An element `φ` of the orthogonal group of `F` can be factored as a product of reflections, and
 specifically at most as many reflections as the dimension of the complement of the fixed subspace
 of `φ`. -/

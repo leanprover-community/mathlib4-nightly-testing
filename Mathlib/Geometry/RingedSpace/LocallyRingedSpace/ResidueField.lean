@@ -131,6 +131,7 @@ lemma evaluation_naturality {V : Opens Y} (x : (Opens.map f.base).obj V) :
   rw [LocallyRingedSpace.stalkMap_germ_apply]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma evaluation_naturality_apply {V : Opens Y} (x : (Opens.map f.base).obj V)
     (a : Y.presheaf.obj (op V)) :
     residueFieldMap f x.val (Y.evaluation ⟨f.base x, x.property⟩ a) =

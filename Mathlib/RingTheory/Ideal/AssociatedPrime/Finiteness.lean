@@ -183,6 +183,7 @@ instance [IsFractionRing A A] : Finite (MaximalSpectrum A) :=
 
 variable {A}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An ideal consisting of zero divisors in a commutative Noetherian ring is annihilated by
 some nonzero element. This is not true in general for finitely generated modules in commutative
 rings, see https://math.stackexchange.com/q/1189814 and http://dx.doi.org/10.2140/pjm.1979.83.375

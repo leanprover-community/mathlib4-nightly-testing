@@ -722,6 +722,7 @@ theorem toMeromorphicNFOn_eq_toMeromorphicNFAt (hf : MeromorphicOn f U)
   apply Filter.EventuallyEq.eq_of_nhds (g := toMeromorphicNFAt f x)
   simp [(toMeromorphicNFOn_eq_toMeromorphicNFAt_on_nhds hf hx).trans]
 
+set_option backward.simpa.using.reducibleClose false in
 variable (f U) in
 /--
 After conversion to normal form on `U`, the function has normal form.

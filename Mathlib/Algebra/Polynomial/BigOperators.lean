@@ -58,6 +58,7 @@ theorem natDegree_multiset_sum_le (l : Multiset S[X]) :
     natDegree l.sum ≤ (l.map natDegree).foldr max 0 :=
   Quotient.inductionOn l (by simpa using natDegree_list_sum_le)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem natDegree_sum_le (f : ι → S[X]) :
     natDegree (∑ i ∈ s, f i) ≤ s.fold max 0 (natDegree ∘ f) := by
   simpa using natDegree_multiset_sum_le (s.val.map f)
@@ -142,6 +143,7 @@ where the degree of the zero polynomial is ⊥.
 theorem degree_multiset_prod_le : t.prod.degree ≤ (t.map Polynomial.degree).sum :=
   Quotient.inductionOn t (by simpa using degree_list_prod_le)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem degree_prod_le : (∏ i ∈ s, f i).degree ≤ ∑ i ∈ s, (f i).degree := by
   simpa only [Multiset.map_map] using degree_multiset_prod_le (s.1.map f)
 

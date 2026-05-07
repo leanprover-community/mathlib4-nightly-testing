@@ -168,6 +168,7 @@ def mkOfLeComp {n} (i j k : Fin (n + 1)) (h₁ : i ≤ j) (h₂ : j ≤ k) :
       | 0, 2, _ => Fin.le_trans h₁ h₂
   }
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The "inert" morphism associated to a subinterval `j ≤ i ≤ j + l` of `Fin (n + 1)`. -/
 def subinterval {n} (j l : ℕ) (hjl : j + l ≤ n) :
     ⦋l⦌ ⟶ ⦋n⦌ :=
@@ -243,6 +244,7 @@ theorem δ_comp_δ {n} {i j : Fin (n + 2)} (H : i ≤ j) :
   rcases k with ⟨k, _⟩
   split_ifs <;> · simp at * <;> lia
 
+set_option backward.simpa.using.reducibleClose false in
 theorem δ_comp_δ' {n} {i : Fin (n + 2)} {j : Fin (n + 3)} (H : i.castSucc < j) :
     δ i ≫ δ j =
       δ (j.pred fun (hj : j = 0) => by simp [hj, Fin.not_lt_zero] at H) ≫
@@ -655,6 +657,7 @@ lemma len_eq_of_isIso {x y : SimplexCategory} (f : x ⟶ y) [IsIso f] : x.len = 
 lemma eq_of_isIso {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) [IsIso f] : n = m :=
   len_eq_of_isIso f
 
+set_option backward.simpa.using.reducibleClose false in
 instance {n : ℕ} {i : Fin (n + 1)} : Epi (σ i) := by
   simpa only [epi_iff_surjective] using Fin.predAbove_surjective i
 
@@ -708,6 +711,7 @@ instance : Balanced SimplexCategory where
     rw [isIso_iff_of_epi]
     exact le_antisymm (len_le_of_mono f) (len_le_of_epi f)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An isomorphism in `SimplexCategory` induces an `OrderIso`. -/
 @[simp]
 def orderIsoOfIso {x y : SimplexCategory} (e : x ≅ y) : Fin (x.len + 1) ≃o Fin (y.len + 1) :=

@@ -148,6 +148,7 @@ theorem mem_toSubmodule (S : NonUnitalSubalgebra R A) {x} : x ∈ S.toSubmodule 
 theorem coe_toSubmodule (S : NonUnitalSubalgebra R A) : (↑S.toSubmodule : Set A) = S :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Copy of a non-unital subalgebra with a new `carrier` equal to the old one.
 Useful to fix definitional equalities. -/
 protected def copy (S : NonUnitalSubalgebra R A) (s : Set A) (hs : s = ↑S) :
@@ -1168,6 +1169,7 @@ lemma adjoin_le_centralizer_centralizer (s : Set A) :
     adjoin R s ≤ centralizer R (centralizer R s) :=
   adjoin_le Set.subset_centralizer_centralizer
 
+set_option backward.simpa.using.reducibleClose false in
 lemma commute_of_mem_adjoin_of_forall_mem_commute {a b : A} {s : Set A}
     (hb : b ∈ adjoin R s) (h : ∀ b ∈ s, Commute a b) :
     Commute a b := by

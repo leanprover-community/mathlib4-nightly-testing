@@ -143,6 +143,7 @@ theorem localized'_iSup {ι : Type*} (g : ι → Submodule R M) :
     (⨆ i, g i).localized' S p f = ⨆ i, (g i).localized' S p f := by
   exact GaloisConnection.l_iSup (localized'gi S p f).gc
 
+set_option backward.simpa.using.reducibleClose false in
 theorem localized₀_iSup {ι : Type*} (g : ι → Submodule R M) :
     (⨆ i, g i).localized₀ p f = ⨆ i, (g i).localized₀ p f := by
   let : Module (Localization p) N := IsLocalizedModule.module p f
@@ -281,6 +282,7 @@ lemma Submodule.toLocalizedQuotient'_mk (x : M) :
     M'.toLocalizedQuotient' S p f (Submodule.Quotient.mk x) = Submodule.Quotient.mk (f x) := rfl
 
 open Submodule Submodule.Quotient IsLocalization in
+set_option backward.simpa.using.reducibleClose false in
 instance IsLocalizedModule.toLocalizedQuotient' (M' : Submodule R M) :
     IsLocalizedModule p (M'.toLocalizedQuotient' S p f) where
   map_units x := by

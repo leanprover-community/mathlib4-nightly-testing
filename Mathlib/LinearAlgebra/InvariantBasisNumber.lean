@@ -210,6 +210,7 @@ instance (priority := 100) invariantBasisNumber_of_rankCondition [RankCondition 
   eq_of_fin_equiv e := le_antisymm (le_of_fin_surjective R e.symm.toLinearMap e.symm.surjective)
     (le_of_fin_surjective R e.toLinearMap e.surjective)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A semiring `R` satisfies the strong rank condition, iff we cannot embed `R^(ℕ)` in some `Rⁿ`. -/
 theorem strongRankCondition_iff_forall_not_injective :
     StrongRankCondition R ↔ ∀ n (f : (ℕ →₀ R) →ₗ[R] Fin n → R), ¬ Injective f := by

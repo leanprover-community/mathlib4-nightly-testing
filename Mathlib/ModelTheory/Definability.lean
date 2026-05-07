@@ -511,6 +511,7 @@ theorem _root_.FirstOrder.Language.definableFun_const {A : Set M} {a : M}
 
 variable {L}
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The preimage of a definable set under a definable map is definable. -/
 lemma _root_.Set.Definable.preimage_map
     {α β : Type*} [Finite β] {F : (α → M) → (β → M)} (hF : A.DefinableMap L F)
@@ -527,6 +528,7 @@ lemma _root_.Set.Definable.preimage_map
   ext v
   simp [← funext_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem DefinableFun.comp [Finite α] {g : (β → M) → α → M}
     (hg : A.DefinableMap L g) (hf : A.DefinableFun L f) :

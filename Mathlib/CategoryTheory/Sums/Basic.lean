@@ -206,6 +206,7 @@ variable {F G : A ⊕ B ⥤ C}
   (e₁ : Sum.inl_ A B ⋙ F ≅ Sum.inl_ A B ⋙ G)
   (e₂ : Sum.inr_ A B ⋙ F ≅ Sum.inr_ A B ⋙ G)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A functor out of a sum is uniquely characterized by its precompositions with `inl_` and `inr_`.
 -/
 def sumIsoExt : F ≅ G :=

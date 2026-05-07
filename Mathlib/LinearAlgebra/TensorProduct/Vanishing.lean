@@ -84,6 +84,7 @@ abbrev VanishesTrivially : Prop :=
 
 variable {R}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem VanishesTrivially.of_fintype {κ} [Fintype κ] (a : ι → κ → R) (y : κ → N)
     (hay : ∀ i, n i = ∑ j, a i j • y j) (ham : ∀ j, ∑ i, a i j • m i = 0) :
     VanishesTrivially R m n :=

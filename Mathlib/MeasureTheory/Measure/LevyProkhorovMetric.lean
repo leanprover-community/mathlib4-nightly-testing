@@ -677,6 +677,7 @@ lemma continuous_ofMeasure_probabilityMeasure :
 @[deprecated (since := "2025-10-28")]
 alias continuous_equiv_symm_probabilityMeasure := continuous_ofMeasure_probabilityMeasure
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The topology of the Lévy-Prokhorov metric on probability measures on a separable space
 coincides with the topology of convergence in distribution. -/
 theorem eq_convergenceInDistribution :

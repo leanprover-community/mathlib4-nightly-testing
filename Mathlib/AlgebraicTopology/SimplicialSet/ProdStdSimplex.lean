@@ -137,6 +137,7 @@ instance : (Δ[p] ⊗ Δ[q] : SSet.{u}).HasDimensionLE (p + q) where
 instance : (Δ[p] ⊗ Δ[q] : SSet.{u}).Finite :=
   finite_of_hasDimensionLT _ (p + q + 1) inferInstance
 
+set_option backward.simpa.using.reducibleClose false in
 lemma le_orderHomOfSimplex {n : ℕ} (x : (Δ[p] ⊗ Δ[q] : SSet.{u}).nonDegenerate n) {m : ℕ}
     (hm : p + q = m) (i : Fin (n + 1)) : i.1 ≤ orderHomOfSimplex x.1 hm i := by
   induction i using Fin.induction with
@@ -156,6 +157,7 @@ lemma nonDegenerate_max_dim_iff {n : ℕ} (z : (Δ[p] ⊗ Δ[q] : SSet.{u}) _⦋
     change ((objEquiv z a).1 : ℕ) + (objEquiv z a).2 = (objEquiv z b).1 + (objEquiv z b).2
     simp only [hab]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma nonDegenerate_ext₁ {n : ℕ} {z₁ z₂ : (Δ[p] ⊗ Δ[q] : SSet.{u}).nonDegenerate n}
     (h : z₁.1.1 = z₂.1.1) (hn : p + q = n := by lia) :
     z₁ = z₂ := by

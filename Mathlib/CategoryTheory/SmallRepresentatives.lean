@@ -123,6 +123,7 @@ noncomputable def equivalence : h.smallCategoryOfSet.obj ≌ C :=
   h.functor.asEquivalence
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- Given `h : CoreSmallCategoryOfSet Ω C`, the equivalence of categories
 `h.smallCategoryOfSet.obj ≌ C` is actually an isomorphism: it induces
 a bijection on the type of arrows. -/

@@ -189,6 +189,7 @@ theorem extend_unique [T2Space γ] {f : α → γ} {g : β → γ} (di : IsDense
     (hf : ∀ x, g (i x) = f x) (hg : Continuous g) : di.extend f = g :=
   funext fun _ => extend_unique_at di (Eventually.of_forall hf) hg.continuousAt
 
+set_option backward.simpa.using.reducibleClose false in
 theorem continuousAt_extend [T3Space γ] {b : β} {f : α → γ} (di : IsDenseInducing i)
     (hf : ∀ᶠ x in 𝓝 b, ∃ c, Tendsto f (comap i <| 𝓝 x) (𝓝 c)) : ContinuousAt (di.extend f) b := by
   set φ := di.extend f
@@ -215,6 +216,7 @@ theorem continuous_extend [T3Space γ] {f : α → γ} (di : IsDenseInducing i)
     (hf : ∀ b, ∃ c, Tendsto f (comap i (𝓝 b)) (𝓝 c)) : Continuous (di.extend f) :=
   continuous_iff_continuousAt.mpr fun _ => di.continuousAt_extend <| univ_mem' hf
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mk' (i : α → β) (c : Continuous i) (dense : ∀ x, x ∈ closure (range i))
     (H : ∀ (a : α), ∀ s ∈ 𝓝 a, ∃ t ∈ 𝓝 (i a), ∀ b, i b ∈ t → b ∈ s) : IsDenseInducing i where
   toIsInducing := isInducing_iff_nhds.2 fun a =>

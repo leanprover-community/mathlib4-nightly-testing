@@ -906,6 +906,7 @@ protected noncomputable def taylorComp
     FormalMultilinearSeries 𝕜 E G :=
   fun n ↦ ∑ c : OrderedFinpartition n, q.compAlongOrderedFinpartition p c
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An upper estimate (in terms of `Asymptotics.IsBigO`)
 on the difference between two compositions of Taylor series.
 

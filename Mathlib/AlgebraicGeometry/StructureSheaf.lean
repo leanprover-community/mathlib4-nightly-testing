@@ -424,6 +424,7 @@ theorem toBasicOpenₗ_mk (s : R) (f : M) (g : Submonoid.powers s) :
   dsimp [toOpenₗ]
   exact const_eq_const_of_smul_eq_smul (H := by simp) ..
 
+set_option backward.simpa.using.reducibleClose false in
 theorem toBasicOpenₗ_injective (f : R) : Function.Injective (toBasicOpenₗ R M f) := by
   intro s t h_eq
   induction s using LocalizedModule.induction_on with | h a b =>
@@ -955,6 +956,7 @@ end StructureSheaf
 variable {S : Type u} [CommRing S] {N : Type u} [AddCommGroup N] [Module S N]
   {σ : R →+* S} (f : M →ₛₗ[σ] N)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- The map `M_{f y} ⟶ N_{y}` used to build maps between structure sheaves. -/
 def Localizations.comapFun (y : PrimeSpectrum.Top S) :
@@ -1174,6 +1176,7 @@ theorem toOpen_comp_comap (f : R →+* S) (U : Opens (PrimeSpectrum.Top R)) :
     rw [comap_apply]
     exact Localization.localRingHom_to_map _ _ _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 lemma comap_basicOpen (f : R →+* S) (x : R) :
     comap f (PrimeSpectrum.basicOpen x) (PrimeSpectrum.basicOpen (f x))
         (PrimeSpectrum.comap_basicOpen f x).le =

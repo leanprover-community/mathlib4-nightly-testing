@@ -264,6 +264,7 @@ theorem zeta_sub_one_prime_of_ne_two [IsCyclotomicExtension {p ^ (k + 1)} ℚ K]
   simp only [algebraMap_int_eq, map_natCast]
   exact hζ.norm_sub_one_of_prime_ne_two (Polynomial.cyclotomic.irreducible_rat (NeZero.pos _)) hodd
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `ζ - 1` is prime if `ζ` is a primitive `2 ^ (k + 1)`-th root of unity.
   See `zeta_sub_one_prime` for a general statement. -/
 theorem zeta_sub_one_prime_of_two_pow [IsCyclotomicExtension {2 ^ (k + 1)} ℚ K]
@@ -304,6 +305,7 @@ theorem zeta_sub_one_prime' [h : IsCyclotomicExtension {p} ℚ K] (hζ : IsPrimi
   convert zeta_sub_one_prime (k := 0) (by simpa only [zero_add, pow_one])
   simpa only [zero_add, pow_one]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem subOneIntegralPowerBasisOfPrimePow_gen_prime [IsCyclotomicExtension {p ^ (k + 1)} ℚ K]
     (hζ : IsPrimitiveRoot ζ (p ^ (k + 1))) :
     Prime hζ.subOneIntegralPowerBasisOfPrimePow.gen := by
@@ -652,6 +654,7 @@ theorem discr_prime [IsCyclotomicExtension {p} ℚ K] :
 
 variable (n) [hn : NeZero n]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 open Algebra IntermediateField Nat in
 /--

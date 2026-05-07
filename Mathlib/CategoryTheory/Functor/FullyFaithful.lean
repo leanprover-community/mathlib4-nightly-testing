@@ -363,6 +363,7 @@ lemma Full.of_comp_faithful_iso {F : C ⥤ D} {G : D ⥤ E} {H : C ⥤ E} [Full 
   have := Full.of_iso h.symm
   exact Full.of_comp_faithful F G
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a natural isomorphism between `F ⋙ H` and `G ⋙ H` for a fully faithful functor `H`, we
 can 'cancel' it to give a natural iso between `F` and `G`.
 -/

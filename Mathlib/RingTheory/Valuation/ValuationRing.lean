@@ -78,6 +78,7 @@ def ValueGroup : Type v := Quotient (MulAction.orbitRel Aˣ K)
 
 instance : Inhabited (ValueGroup A K) := ⟨Quotient.mk'' 0⟩
 
+set_option backward.simpa.using.reducibleClose false in
 instance : LE (ValueGroup A K) :=
   LE.mk fun x y =>
     Quotient.liftOn₂' x y (fun a b => ∃ c : A, c • b = a)

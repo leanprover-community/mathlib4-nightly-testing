@@ -254,6 +254,7 @@ lemma over_forget_coverPreserving (X : C) :
     CoverPreserving (J.over X) J (Over.forget X) where
   cover_preserve hS := hS
 
+set_option backward.simpa.using.reducibleClose false in
 lemma over_forget_compatiblePreserving (X : C) :
     CompatiblePreserving J (Over.forget X) where
   compatible {_ Z _ _ hx Y₁ Y₂ W f₁ f₂ g₁ g₂ hg₁ hg₂ h} := by
@@ -275,6 +276,7 @@ abbrev overPullback (A : Type u') [Category.{v'} A] (X : C) :
     Sheaf J A ⥤ Sheaf (J.over X) A :=
   (Over.forget X).sheafPushforwardContinuous _ _ _
 
+set_option backward.simpa.using.reducibleClose false in
 lemma over_map_coverPreserving {X Y : C} (f : X ⟶ Y) :
     CoverPreserving (J.over X) (J.over Y) (Over.map f) where
   cover_preserve {U S} hS := by
@@ -283,6 +285,7 @@ lemma over_map_coverPreserving {X Y : C} (f : X ⟶ Y) :
     apply overEquiv_symm_mem_over
     simpa [mem_over_iff] using hS
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma over_map_compatiblePreserving {X Y : C} (f : X ⟶ Y) :

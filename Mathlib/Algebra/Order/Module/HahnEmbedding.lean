@@ -155,6 +155,7 @@ def baseDomain := ⨆ c, u.stratum c
 abbrev stratum' (c : FiniteArchimedeanClass M) : Submodule K (baseDomain u) :=
   (u.stratum c).comap u.baseDomain.subtype
 
+set_option backward.simpa.using.reducibleClose false in
 theorem iSupIndep_stratum' : iSupIndep u.stratum' := by
   apply (iSupIndep_map_orderIso_iff (Submodule.mapIic u.baseDomain)).mp
   apply iSupIndep.of_coe_Iic_comp
@@ -162,6 +163,7 @@ theorem iSupIndep_stratum' : iSupIndep u.stratum' := by
   ext1 c
   simpa using le_iSup _ _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isInternal_stratum' : DirectSum.IsInternal u.stratum' := by
   apply DirectSum.isInternal_submodule_of_iSupIndep_of_iSup_eq_top u.iSupIndep_stratum'
   apply Submodule.map_injective_of_injective u.baseDomain.subtype_injective
@@ -197,6 +199,7 @@ noncomputable
 def hahnCoeff : seed.baseDomain →ₗ[K] (⨁ _ : FiniteArchimedeanClass M, R) :=
   (DirectSum.lmap seed.coeff') ∘ₗ (DirectSum.decomposeLinearEquiv _).toLinearMap
 
+set_option backward.simpa.using.reducibleClose false in
 theorem hahnCoeff_apply {x : seed.baseDomain} {f : Π₀ c, seed.stratum c}
     (h : x.val = f.sum fun c ↦ (seed.stratum c).subtype) (c : FiniteArchimedeanClass M) :
     seed.hahnCoeff x c = seed.coeff c (f c) := by
@@ -230,12 +233,14 @@ def baseEmbedding : M →ₗ.[K] Lex R⟦FiniteArchimedeanClass M⟧ where
 set_option backward.isDefEq.respectTransparency false in
 theorem domain_baseEmbedding : seed.baseEmbedding.domain = seed.baseDomain := rfl
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem coeff_baseEmbedding {x : seed.baseEmbedding.domain} {f : Π₀ c, seed.stratum c}
     (h : x.val = f.sum fun c ↦ (seed.stratum c).subtype) (c : FiniteArchimedeanClass M) :
     (ofLex ((baseEmbedding seed) x)).coeff c = seed.coeff c (f c) := by
   simpa [baseEmbedding] using seed.hahnCoeff_apply h c
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem mem_domain_baseEmbedding {x : M} {c : FiniteArchimedeanClass M} (h : x ∈ seed.stratum c) :
     x ∈ seed.baseEmbedding.domain := by
@@ -267,6 +272,7 @@ structure IsPartial (f : M →ₗ.[K] Lex R⟦FiniteArchimedeanClass M⟧) : Pro
 
 namespace Seed
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem baseEmbedding_pos {x : seed.baseEmbedding.domain} (hx : 0 < x) :
     0 < seed.baseEmbedding x := by
@@ -484,6 +490,7 @@ theorem orderTop_eq_finiteArchimedeanClassMk [IsOrderedAddMonoid R] [Archimedean
   simp [orderTop_eq_archimedeanClassMk]
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- For `x` within a ball of Archimedean class `c`, `f.val x`'coefficient at `d` vanishes
 for `d ≤ c`. -/
 theorem coeff_eq_zero_of_mem [IsOrderedAddMonoid R] [Archimedean R]
@@ -618,6 +625,7 @@ theorem eval_smul [IsOrderedAddMonoid R] [Archimedean R] (k : K) (x : M) :
   simp [f.evalCoeff_eq_zero h, f.evalCoeff_eq_zero h']
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- If `f.eval x = f.val y`, then for any `z` in the domain, `x - z` can't be closer than `x - y`
 in terms of Archimedean classes. -/
 theorem archimedeanClassMk_le_of_eval_eq [IsOrderedAddMonoid R] [Archimedean R] {x : M}
@@ -714,6 +722,7 @@ theorem exists_sub_mem_ball [IsOrderedAddMonoid R] [Archimedean R] {x : M} (hx :
   exact f.eval_ne h _
 
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- For `x` not in `f`'s domain, `f.eval x` is consistent with `f`'s monotonicity. -/
 theorem eval_lt [IsOrderedAddMonoid R] [Archimedean R] {x : M} (hx : x ∉ f.val.domain)
     (y : f.val.domain) (h : x < y.val) : f.eval x < f.val y := by
@@ -777,6 +786,7 @@ def extendFun [IsOrderedAddMonoid R] [Archimedean R] {x : M} (hx : x ∉ f.val.d
     M →ₗ.[K] Lex R⟦FiniteArchimedeanClass M⟧ :=
   .supSpanSingleton f.val x (eval f x) hx
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem extendFun_strictMono [IsOrderedAddMonoid R] [Archimedean R] {x : M}
     (hx : x ∉ f.val.domain) : StrictMono (f.extendFun hx) := by
@@ -884,6 +894,7 @@ noncomputable
 def extend [IsOrderedAddMonoid R] [Archimedean R] {x : M} (hx : x ∉ f.val.domain) :
     Partial seed := ⟨f.extendFun hx, f.isPartial_extendFun hx⟩
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem lt_extend [IsOrderedAddMonoid R] [Archimedean R] {x : M} (hx : x ∉ f.val.domain) :
     f < f.extend hx := by

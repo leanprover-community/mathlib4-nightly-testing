@@ -407,15 +407,18 @@ theorem const_limZero {x : β} : LimZero (const x) ↔ x = 0 :=
         le_of_lt <| hi _ le_rfl,
     fun e => e.symm ▸ zero_limZero⟩
 
+set_option backward.simpa.using.reducibleClose false in
 instance equiv : Setoid (CauSeq β abv) :=
   ⟨fun f g => LimZero (f - g),
     ⟨fun f => by simp [zero_limZero],
     fun f ε hε => by simpa using neg_limZero f ε hε,
     fun fg gh => by simpa using add_limZero fg gh⟩⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem add_equiv_add {f1 f2 g1 g2 : CauSeq β abv} (hf : f1 ≈ f2) (hg : g1 ≈ g2) :
     f1 + g1 ≈ f2 + g2 := by simpa only [← add_sub_add_comm] using add_limZero hf hg
 
+set_option backward.simpa.using.reducibleClose false in
 theorem neg_equiv_neg {f g : CauSeq β abv} (hf : f ≈ g) : -f ≈ -g := by
   simpa only [neg_sub'] using neg_limZero hf
 
@@ -489,6 +492,7 @@ theorem mul_not_equiv_zero {f g : CauSeq _ abv} (hf : ¬f ≈ 0) (hg : ¬g ≈ 0
 theorem const_equiv {x y : β} : const x ≈ const y ↔ x = y :=
   show LimZero _ ↔ _ by rw [← const_sub, const_limZero, sub_eq_zero]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mul_equiv_mul {f1 f2 g1 g2 : CauSeq β abv} (hf : f1 ≈ f2) (hg : g1 ≈ g2) :
     f1 * g1 ≈ f2 * g2 := by
   simpa only [mul_sub, sub_mul, sub_add_sub_cancel]

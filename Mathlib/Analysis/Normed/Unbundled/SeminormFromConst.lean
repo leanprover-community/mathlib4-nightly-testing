@@ -128,6 +128,7 @@ theorem seminormFromConst_one : seminormFromConst' c f 1 = 1 := by
   exact ⟨1, seminormFromConst_seq_one hc hpm⟩
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
+set_option backward.simpa.using.reducibleClose false in
 /-- The function `seminormFromConst` is a `RingSeminorm` on `R`. -/
 def seminormFromConst : RingSeminorm R where
   toFun     := seminormFromConst' c f

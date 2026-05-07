@@ -267,6 +267,7 @@ open scoped Pointwise
 
 variable {R M : Type*} [CommRing R] [AddCommGroup M] [Module R M] [IsNoetherian R M]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma _root_.InfIrred.isPrimary {N : Submodule R M} (h : InfIrred N) : N.IsPrimary := by
   rw [Submodule.IsPrimary]
   refine ⟨h.ne_top, fun {a b} hab ↦ ?_⟩

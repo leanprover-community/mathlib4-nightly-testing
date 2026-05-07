@@ -150,18 +150,22 @@ lemma nnnorm_cfc_lt_iff (f : 𝕜 → 𝕜) (a : A) {c : ℝ≥0} (hc : 0 < c)
 
 namespace IsometricContinuousFunctionalCalculus
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isGreatest_norm_spectrum [Nontrivial A] (a : A) (ha : p a := by cfc_tac) :
     IsGreatest ((‖·‖) '' spectrum 𝕜 a) ‖a‖ := by
   simpa only [cfc_id 𝕜 a] using IsGreatest.norm_cfc (id : 𝕜 → 𝕜) a
 
+set_option backward.simpa.using.reducibleClose false in
 lemma norm_spectrum_le (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σ 𝕜 a) (ha : p a := by cfc_tac) :
     ‖x‖ ≤ ‖a‖ := by
   simpa only [cfc_id 𝕜 a] using norm_apply_le_norm_cfc (id : 𝕜 → 𝕜) a hx
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isGreatest_nnnorm_spectrum [Nontrivial A] (a : A) (ha : p a := by cfc_tac) :
     IsGreatest ((‖·‖₊) '' spectrum 𝕜 a) ‖a‖₊ := by
   simpa only [cfc_id 𝕜 a] using IsGreatest.nnnorm_cfc (id : 𝕜 → 𝕜) a
 
+set_option backward.simpa.using.reducibleClose false in
 lemma nnnorm_spectrum_le (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σ 𝕜 a) (ha : p a := by cfc_tac) :
     ‖x‖₊ ≤ ‖a‖₊ := by
   simpa only [cfc_id 𝕜 a] using nnnorm_apply_le_nnnorm_cfc (id : 𝕜 → 𝕜) a hx
@@ -336,18 +340,22 @@ lemma nnnorm_cfcₙ_lt_iff (f : 𝕜 → 𝕜) (a : A) (c : ℝ≥0)
 
 namespace NonUnitalIsometricContinuousFunctionalCalculus
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isGreatest_norm_quasispectrum (a : A) (ha : p a := by cfc_tac) :
     IsGreatest ((‖·‖) '' σₙ 𝕜 a) ‖a‖ := by
   simpa only [cfcₙ_id 𝕜 a] using IsGreatest.norm_cfcₙ (id : 𝕜 → 𝕜) a
 
+set_option backward.simpa.using.reducibleClose false in
 lemma norm_quasispectrum_le (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σₙ 𝕜 a) (ha : p a := by cfc_tac) :
     ‖x‖ ≤ ‖a‖ := by
   simpa only [cfcₙ_id 𝕜 a] using norm_apply_le_norm_cfcₙ (id : 𝕜 → 𝕜) a hx
 
+set_option backward.simpa.using.reducibleClose false in
 lemma isGreatest_nnnorm_quasispectrum (a : A) (ha : p a := by cfc_tac) :
     IsGreatest ((‖·‖₊) '' σₙ 𝕜 a) ‖a‖₊ := by
   simpa only [cfcₙ_id 𝕜 a] using IsGreatest.nnnorm_cfcₙ (id : 𝕜 → 𝕜) a
 
+set_option backward.simpa.using.reducibleClose false in
 lemma nnnorm_quasispectrum_le (a : A) ⦃x : 𝕜⦄ (hx : x ∈ σₙ 𝕜 a) (ha : p a := by cfc_tac) :
     ‖x‖₊ ≤ ‖a‖₊ := by
   simpa only [cfcₙ_id 𝕜 a] using nnnorm_apply_le_nnnorm_cfcₙ (id : 𝕜 → 𝕜) a hx
@@ -371,6 +379,7 @@ variable [MetricSpace A] [NonUnitalIsometricContinuousFunctionalCalculus S A q]
 variable [CompleteSpace R] [ContinuousMapZero.UniqueHom R A]
 
 open scoped NonUnitalContinuousFunctionalCalculus in
+set_option backward.simpa.using.reducibleClose false in
 protected theorem isometric_cfc (f : C(S, R)) (halg : Isometry (algebraMap R S)) (h0 : p 0)
     (h : ∀ a, p a ↔ q a ∧ QuasispectrumRestricts a f) :
     NonUnitalIsometricContinuousFunctionalCalculus R A p where

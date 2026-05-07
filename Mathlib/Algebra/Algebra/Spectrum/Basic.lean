@@ -257,6 +257,7 @@ theorem star_mem_resolventSet_iff {r : R} {a : A} :
     simpa only [mem_resolventSet_iff, Algebra.algebraMap_eq_smul_one, star_sub, star_smul,
       star_star, star_one] using IsUnit.star h
 
+set_option backward.simpa.using.reducibleClose false in
 protected theorem map_star (a : A) : σ (star a) = star (σ a) := by
   ext
   simpa only [Set.mem_star, mem_iff, not_iff_not] using star_mem_resolventSet_iff.symm
@@ -388,6 +389,7 @@ local notation "σ" => spectrum R
 
 local notation "↑ₐ" => algebraMap R A
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mem_resolventSet_apply (φ : F) {a : A} {r : R} (h : r ∈ resolventSet R a) :
     r ∈ resolventSet R ((φ : A → B) a) := by
   simpa only [map_sub, AlgHomClass.commutes] using h.map φ

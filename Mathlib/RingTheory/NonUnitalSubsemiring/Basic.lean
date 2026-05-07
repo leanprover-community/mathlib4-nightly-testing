@@ -156,6 +156,7 @@ theorem srange_eq_map : srange f = (⊤ : NonUnitalSubsemiring R).map f := by
 theorem mem_srange_self (f : F) (x : R) : f x ∈ srange f :=
   mem_srange.mpr ⟨x, rfl⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem map_srange (g : S →ₙ+* T) (f : R →ₙ+* S) : map g (srange f) = srange (g.comp f) := by
   simpa only [srange_eq_map] using (⊤ : NonUnitalSubsemiring R).map_map g f
 

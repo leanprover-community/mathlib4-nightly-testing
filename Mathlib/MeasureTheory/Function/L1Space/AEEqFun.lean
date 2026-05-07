@@ -88,6 +88,7 @@ section IsBoundedSMul
 
 variable {𝕜 : Type*} [NormedRing 𝕜] [Module 𝕜 β] [IsBoundedSMul 𝕜 β]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Integrable.smul {c : 𝕜} {f : α →ₘ[μ] β} : Integrable f → Integrable (c • f) :=
   induction_on f fun _f hfm hfi => (integrable_mk _).2 <|
     by simpa using ((integrable_mk hfm).1 hfi).smul c

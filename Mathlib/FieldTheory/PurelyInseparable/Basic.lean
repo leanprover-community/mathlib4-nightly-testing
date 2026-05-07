@@ -188,6 +188,7 @@ theorem separableClosure.eq_bot_of_isPurelyInseparable
     separableClosure F E = ⊥ :=
   bot_unique fun x h ↦ IsPurelyInseparable.inseparable F x (mem_separableClosure_iff.1 h)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `E / F` is an algebraic extension, then the separable closure of `F` in `E` is
 equal to `F` if and only if `E / F` is purely inseparable. -/
 theorem separableClosure.eq_bot_iff
@@ -346,6 +347,7 @@ lemma IsPurelyInseparable.finrank_eq_pow
 variable (E)
 
 variable {F E} in
+set_option backward.simpa.using.reducibleClose false in
 /-- If an extension has finite separable degree one, then it is purely inseparable. -/
 theorem isPurelyInseparable_of_finSepDegree_eq_one
     (hdeg : finSepDegree F E = 1) : IsPurelyInseparable F E := by

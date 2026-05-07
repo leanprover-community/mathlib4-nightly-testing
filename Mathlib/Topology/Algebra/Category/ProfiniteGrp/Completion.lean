@@ -163,6 +163,7 @@ lemma lift_eta (f : G ⟶ GrpCat.of P) : eta G ≫ (forget₂ _ _).map (lift f) 
   simp only [Category.assoc, Iso.inv_hom_id]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 lemma lift_unique (f g : completion G ⟶ P)
     (h : eta G ≫ (forget₂ _ _).map f = eta G ≫ (forget₂ _ _).map g) : f = g := by
   ext x

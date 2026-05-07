@@ -239,6 +239,7 @@ variable [PseudoEMetricSpace α] [PseudoEMetricSpace β] [PseudoEMetricSpace γ]
 variable [FunLike F α β] [DilationClass F α β]
 variable (f : F)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Every isometry is a dilation of ratio `1`. -/
 @[simps]
 def _root_.Isometry.toDilation (f : α → β) (hf : Isometry f) : α →ᵈ β where

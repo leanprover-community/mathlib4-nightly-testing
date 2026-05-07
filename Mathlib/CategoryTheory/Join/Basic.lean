@@ -212,6 +212,7 @@ variable {C D} {E : Type u₃} [Category.{v₃} E] {E' : Type u₄} [Category.{v
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
+set_option backward.simpa.using.reducibleClose false in
 /-- A pair of functors `F : C ⥤ E, G : D ⥤ E` as well as a natural transformation
 `α : (Prod.fst C D) ⋙ F ⟶ (Prod.snd C D) ⋙ G` defines a functor out of `C ⋆ D`.
 This is the main entry point to define functors out of a join of categories. -/
@@ -284,6 +285,7 @@ lemma mkFunctor_map_edge (c : C) (d : D) :
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Construct a natural transformation between functors out of a join from
 the data of natural transformations between each side that are compatible with the
 action on edge maps. -/

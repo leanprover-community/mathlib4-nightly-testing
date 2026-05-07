@@ -115,6 +115,7 @@ lemma hasMap_X : P.HasMap P.X :=
 
 set_option backward.isDefEq.respectTransparency false in
 variable {P} in
+set_option backward.simpa.using.reducibleClose false in
 @[ext]
 lemma hom_ext {f g : P.Ring →ₐ[R] S} (H : f P.X = g P.X) : f = g := by
   have H : (f.comp (Ideal.Quotient.mkₐ R _)).comp CAlgHom =
@@ -196,6 +197,7 @@ to not abuse the defeq between the two. -/
 def equivPolynomialQuotient :
     P.Ring ≃ₐ[R] R[X][Y] ⧸ Ideal.span {C P.f, Y * C P.g - 1} := .refl ..
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `R[X][Y]/⟨f, Yg-1⟩ ≃ (R[X]/f)[1/g]` -/
 def equivAwayAdjoinRoot :
     P.Ring ≃ₐ[R] Localization.Away (AdjoinRoot.mk P.f P.g) := by

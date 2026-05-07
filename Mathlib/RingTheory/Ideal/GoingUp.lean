@@ -62,6 +62,7 @@ theorem exists_coeff_ne_zero_mem_comap_of_non_zero_divisor_root_mem {r : S}
     · simp [hi]
     · simpa [hi] using mem
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Let `P` be an ideal in `R[x]`.  The map
 `R[x]/P → (R / (P ∩ R))[x] / (P / (P ∩ R))`
 is injective.

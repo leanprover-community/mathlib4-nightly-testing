@@ -302,6 +302,7 @@ theorem degree_divByMonic_le (p q : R[X]) : degree (p /ₘ q) ≤ degree p :=
         simp [dif_pos hq, h, degree_zero, bot_le]
     else (divByMonic_eq_of_not_monic p hq).symm ▸ bot_le
 
+set_option backward.simpa.using.reducibleClose false in
 theorem degree_divByMonic_lt (p q : R[X]) (hp0 : p ≠ 0)
     (h0q : 0 < degree q) : degree (p /ₘ q) < degree p :=
   letI := Classical.decEq R

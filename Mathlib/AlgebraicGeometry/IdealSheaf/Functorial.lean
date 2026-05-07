@@ -203,6 +203,7 @@ lemma ideal_comap_of_isOpenImmersion
     (IsPullback.of_hasPullback f I.subschemeι) U).trans ?_
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `J ≤ I.map f`, then `f` restricts to a map `I ⟶ J` between the closed subschemes. -/
 def subschemeMap (I : X.IdealSheafData) (J : Y.IdealSheafData)
     (f : X ⟶ Y) (H : J ≤ I.map f) : I.subscheme ⟶ J.subscheme :=

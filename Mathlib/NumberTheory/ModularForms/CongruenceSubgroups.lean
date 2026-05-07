@@ -241,6 +241,7 @@ theorem conj_cong_is_cong (g : ConjAct SL(2, ℤ)) (Γ : Subgroup SL(2, ℤ))
   rw [← Gamma_cong_eq_self N g, Subgroup.pointwise_smul_le_pointwise_smul_iff]
   exact HN
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- For any `g ∈ GL(2, ℚ)` and `M ≠ 0`, there exists `N` such that `g x g⁻¹ ∈ Γ(M)` for all
 `x ∈ Γ(N)`. -/
@@ -294,6 +295,7 @@ theorem exists_Gamma_le_conj (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
     add_apply, map_apply, coe_one, add_eq_left, Matrix.smul_apply, nsmul_eq_mul, Int.cast_mul,
     Int.cast_natCast, ZMod.natCast_self M, zero_mul]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- For any `g ∈ GL(2, ℚ)` and `M ≠ 0`, there exists `N` such that `g Γ(N) g⁻¹ ≤ Γ(M)`. -/
 theorem exists_Gamma_le_conj' (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
     ∃ N ≠ 0, (toConjAct <| g.map (Rat.castHom ℝ)) • (Gamma N).map (mapGL ℝ)
@@ -309,6 +311,7 @@ theorem exists_Gamma_le_conj' (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
     congr_arg (GeneralLinearGroup.map (Rat.castHom ℝ)) hz'
 
 open Subgroup in
+set_option backward.simpa.using.reducibleClose false in
 /-- If `Γ` has finite index in `SL(2, ℤ)`, then so does `g⁻¹ Γ g ∩ SL(2, ℤ)` for any
 `g ∈ GL(2, ℚ)`. -/
 lemma finiteIndex_conjGL (g : GL (Fin 2) ℚ) : (conjGL ⊤ (g.map <| Rat.castHom ℝ)).FiniteIndex := by

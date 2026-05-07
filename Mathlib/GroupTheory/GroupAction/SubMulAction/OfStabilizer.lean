@@ -202,6 +202,7 @@ theorem ofStabilizer.snoc_last {n : ℕ} (x : Fin n ↪ ofStabilizer G a) :
   simp [snoc]
 
 variable (G) in
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma exists_smul_of_last_eq [IsPretransitive G α] {n : ℕ} (a : α) (x : Fin n.succ ↪ α) :
     ∃ (g : G) (y : Fin n ↪ ofStabilizer G a), g • x = ofStabilizer.snoc y := by

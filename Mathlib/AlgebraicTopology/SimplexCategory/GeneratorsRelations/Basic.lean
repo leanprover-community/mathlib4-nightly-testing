@@ -128,6 +128,7 @@ lemma multiplicativeClosure_isGenerator_eq_top : generators.multiplicativeClosur
     · exact generators.multiplicativeClosure.comp_mem _ _ h <| .of _ <| .δ _
     · exact generators.multiplicativeClosure.comp_mem _ _ h <| .of _ <| .σ _
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An unrolled version of the induction principle obtained in the previous lemma. -/
 @[elab_as_elim, cases_eliminator, induction_eliminator]
 lemma hom_induction (P : MorphismProperty SimplexCategoryGenRel)
@@ -153,6 +154,7 @@ lemma hom_induction (P : MorphismProperty SimplexCategoryGenRel)
     · simpa using (comp_δ f i hrec)
     · simpa using (comp_σ f i hrec)
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An induction principle for reasoning about morphisms in SimplexCategoryGenRel, where we compose
 with generators on the right. -/
 lemma hom_induction' (P : MorphismProperty SimplexCategoryGenRel)

@@ -130,16 +130,19 @@ theorem top_prod_top : (⊤ : Subgroup G).prod (⊤ : Subgroup N) = ⊤ :=
 theorem bot_prod_bot : (⊥ : Subgroup G).prod (⊥ : Subgroup N) = ⊥ :=
   SetLike.coe_injective <| by simp [coe_prod]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive le_prod_iff]
 theorem le_prod_iff {H : Subgroup G} {K : Subgroup N} {J : Subgroup (G × N)} :
     J ≤ H.prod K ↔ map (MonoidHom.fst G N) J ≤ H ∧ map (MonoidHom.snd G N) J ≤ K := by
   simpa only [← Subgroup.toSubmonoid_le] using Submonoid.le_prod_iff
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive prod_le_iff]
 theorem prod_le_iff {H : Subgroup G} {K : Subgroup N} {J : Subgroup (G × N)} :
     H.prod K ≤ J ↔ map (MonoidHom.inl G N) H ≤ J ∧ map (MonoidHom.inr G N) K ≤ J := by
   simpa only [← Subgroup.toSubmonoid_le] using Submonoid.prod_le_iff
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive (attr := simp) prod_eq_bot_iff]
 theorem prod_eq_bot_iff {H : Subgroup G} {K : Subgroup N} : H.prod K = ⊥ ↔ H = ⊥ ∧ K = ⊥ := by
   simpa only [← Subgroup.toSubmonoid_inj] using Submonoid.prod_eq_bot_iff

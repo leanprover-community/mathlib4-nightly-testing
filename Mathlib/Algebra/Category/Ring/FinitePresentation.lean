@@ -72,6 +72,7 @@ lemma RingHom.EssFiniteType.exists_comp_map_eq_of_isColimit (hf : f.hom.EssFinit
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hc in
+set_option backward.simpa.using.reducibleClose false in
 /--
 Given a filtered diagram `F` of rings over `R`, `S` a finitely presented `R`-algebra,
 and a ring hom `g : S ⟶ colimit F` over `R`.

@@ -458,6 +458,7 @@ universe u
 
 variable {R S : Type u} [CommRing R] [CommRing S] [Algebra R S]
 
+set_option backward.simpa.using.reducibleClose false in
 -- Subsumed by `ZariskisMainProperty.of_finiteType`.
 private lemma ZariskisMainProperty.of_adjoin_eq_top
     (p : Ideal S) [p.IsPrime] [Algebra.WeaklyQuasiFiniteAt R p]

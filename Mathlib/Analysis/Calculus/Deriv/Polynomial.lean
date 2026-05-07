@@ -49,6 +49,7 @@ namespace Polynomial
 variable {R : Type*} [CommSemiring R] [Algebra R 𝕜]
 variable (p : 𝕜[X]) (q : R[X])
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The derivative (in the analysis sense) of a polynomial `p` is given by `p.derivative`. -/
 protected theorem hasStrictDerivAt (x : 𝕜) :
     HasStrictDerivAt (fun x => p.eval x) (p.derivative.eval x) x := by

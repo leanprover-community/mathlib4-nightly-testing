@@ -248,6 +248,7 @@ theorem isVonNBounded_iff_smul_tendsto_zero {ε : ι → 𝕜} {l : Filter ι} [
 
 end sequence
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a set is von Neumann bounded with respect to a smaller field,
 then it is also von Neumann bounded with respect to a larger field.
 See also `Bornology.IsVonNBounded.restrict_scalars` below. -/

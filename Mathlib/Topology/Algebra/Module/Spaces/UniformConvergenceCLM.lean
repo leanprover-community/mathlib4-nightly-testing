@@ -303,6 +303,7 @@ theorem isVonNBounded_image2_apply {R : Type*} [SeminormedRing R]
   exact smul_mem_smul_set (hg hx)
 
 variable {σ F} in
+set_option backward.simpa.using.reducibleClose false in
 /-- A set `S` of continuous linear maps with topology of uniform convergence on sets `s ∈ 𝔖`
 is von Neumann bounded iff for any `s ∈ 𝔖`,
 the set `{f x | (f ∈ S) (x ∈ s)}` is von Neumann bounded. -/

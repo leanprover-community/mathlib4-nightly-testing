@@ -65,6 +65,7 @@ lemma mk_subtype_le_of_countable_eventually_mem_aux {α ι : Type u} {a : Cardin
       _ ≤ ℵ₀ * a := by grw [mk_le_aleph0]
       _ = a := aleph0_mul_eq ha
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If a set `t` is eventually covered by a countable family of sets, all with cardinality at
 most `a`, then the cardinality of `t` is also bounded by `a`. -/
 lemma mk_subtype_le_of_countable_eventually_mem {α : Type u} {ι : Type v} {a : Cardinal}

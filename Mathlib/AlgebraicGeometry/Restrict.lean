@@ -588,6 +588,7 @@ theorem image_morphismRestrict_preimage {X Y : Scheme.{u}} (f : X ⟶ Y) (U : Y.
 
 set_option backward.isDefEq.respectTransparency false in
 open Scheme in
+set_option backward.simpa.using.reducibleClose false in
 theorem morphismRestrict_app {X Y : Scheme.{u}} (f : X ⟶ Y) (U : Y.Opens) (V : U.toScheme.Opens) :
     (f ∣_ U).app V = f.app (U.ι ''ᵁ V) ≫
         X.presheaf.map (eqToHom (image_morphismRestrict_preimage f U V)).op := by

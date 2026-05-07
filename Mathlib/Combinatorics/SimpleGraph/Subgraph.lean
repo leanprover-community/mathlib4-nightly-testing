@@ -470,6 +470,7 @@ instance : BoundedOrder (Subgraph G) where
   le_top x := ⟨Set.subset_univ _, fun _ _ => x.adj_sub⟩
   bot_le _ := ⟨Set.empty_subset _, fun _ _ => False.elim⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Note that subgraphs do not form a Boolean algebra, because of `verts`. -/
 @[implicit_reducible]
 def completelyDistribLatticeMinimalAxioms : CompletelyDistribLattice.MinimalAxioms G.Subgraph where

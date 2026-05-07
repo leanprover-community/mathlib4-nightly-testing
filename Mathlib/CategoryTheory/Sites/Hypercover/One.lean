@@ -690,12 +690,14 @@ lemma hom_inv_s₀_apply (i : E.I₀) : e.inv.s₀ (e.hom.s₀ i) = i :=
 lemma inv_hom_s₀_apply (i : F.I₀) : e.hom.s₀ (e.inv.s₀ i) = i :=
   congr($(e.inv_hom_id).s₀ i)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma hom_inv_s₁_apply {i j : E.I₀} (k : E.I₁ i j) :
     e.inv.s₁ (e.hom.s₁ k) = E.congrIndexOneOfEq (by simp) (by simp) k := by
   obtain ⟨hs₀, hh₀, hs₁, hh₁⟩ := PreOneHypercover.Hom.ext'_iff.mp e.hom_inv_id
   simpa using hs₁ i j k
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma inv_hom_s₁_apply {i j : F.I₀} (k : F.I₁ i j) :
     e.hom.s₁ (e.inv.s₁ k) = F.congrIndexOneOfEq (by simp) (by simp) k := by
@@ -915,6 +917,7 @@ section
 variable {E F}
 variable (c : Multifork (E.multicospanIndex F.obj))
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Auxiliary definition of `isLimitMultifork`. -/
 noncomputable def multiforkLift : c.pt ⟶ F.obj.obj (Opposite.op S) :=
   F.property.amalgamateOfArrows _ E.mem₀ c.ι (fun W i₁ i₂ p₁ p₂ w => by
@@ -971,6 +974,7 @@ def trivial (S : C) : OneHypercover.{w} J S where
 
 instance (S : C) : Nonempty (J.OneHypercover S) := ⟨trivial J S⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Intersection of two `1`-hypercovers. -/
 @[simps toPreOneHypercover]
 noncomputable

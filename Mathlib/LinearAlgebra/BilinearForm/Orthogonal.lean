@@ -156,6 +156,7 @@ lemma orthogonal_top_eq_ker (hB : B.IsRefl) :
     B.orthogonal ⊤ = LinearMap.ker B := by
   ext; simp [LinearMap.BilinForm.IsOrtho, LinearMap.ext_iff, hB.eq_iff]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma orthogonal_top_eq_bot (hB : B.Nondegenerate) :
     B.orthogonal ⊤ = ⊥ :=
   (Submodule.eq_bot_iff _).mpr fun x hx ↦ hB.2 x (by simpa using hx)
@@ -339,6 +340,7 @@ lemma eq_top_of_restrict_nondegenerate_of_orthogonal_eq_bot
   have := (B.isCompl_orthogonal_of_restrict_nondegenerate b₁ b₂).sup_eq_top
   rwa [b₃, sup_bot_eq] at this
 
+set_option backward.simpa.using.reducibleClose false in
 lemma orthogonal_eq_bot_iff
     (b₁ : B.IsRefl) (b₂ : (B.restrict W).Nondegenerate) (b₃ : B.Nondegenerate) :
     B.orthogonal W = ⊥ ↔ W = ⊤ := by

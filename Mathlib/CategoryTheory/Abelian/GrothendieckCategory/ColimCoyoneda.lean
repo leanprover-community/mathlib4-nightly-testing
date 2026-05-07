@@ -90,6 +90,7 @@ lemma hf (j : Under j₀) :
 set_option backward.defeqAttrib.useBackward true in
 variable {y} in
 include hc hy in
+set_option backward.simpa.using.reducibleClose false in
 lemma epi_f [IsFiltered J] : Epi (f y) := by
   exact (colim.exact_mapShortComplex
     ((ShortComplex.mk _ _ (kernel.condition (g y))).exact_of_f_is_kernel
@@ -120,6 +121,7 @@ include hXκ hc
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open injectivity₀ in
+set_option backward.simpa.using.reducibleClose false in
 lemma injectivity₀ {j₀ : J} (y : X ⟶ Y.obj j₀) (hy : y ≫ c.ι.app j₀ = 0) :
     ∃ (j : J) (φ : j₀ ⟶ j), y ≫ Y.map φ = 0 := by
   have := isFiltered_of_isCardinalFiltered J κ

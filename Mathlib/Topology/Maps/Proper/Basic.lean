@@ -158,6 +158,7 @@ lemma isProperMap_of_comp_of_t2 [T2Space Y] (hf : Continuous f) (hg : Continuous
   rcases hgf.2 ((hg.tendsto y).comp h) with ⟨x, -, hx⟩
   exact ⟨x, hx⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A binary product of proper maps is proper. -/
 lemma IsProperMap.prodMap {g : Z → W} (hf : IsProperMap f) (hg : IsProperMap g) :
     IsProperMap (Prod.map f g) := by
@@ -182,6 +183,7 @@ lemma IsProperMap.prodMap {g : Z → W} (hf : IsProperMap f) (hg : IsProperMap g
     rw [nhds_prod_eq, le_prod]
     exact ⟨hx, hz⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Any product of proper maps is proper. -/
 lemma IsProperMap.pi_map {X Y : ι → Type*} [∀ i, TopologicalSpace (X i)]
     [∀ i, TopologicalSpace (Y i)] {f : (i : ι) → X i → Y i} (h : ∀ i, IsProperMap (f i)) :

@@ -102,6 +102,7 @@ lemma subcomplex_not_le_image_horn : ¬ c.s.val.subcomplex ≤ c.horn.image c.ma
   rw [← ofSimplex_le_iff, subcomplex_le_horn_iff, ← stdSimplex.face_singleton_compl] at h₁
   tauto
 
+set_option backward.simpa.using.reducibleClose false in
 lemma image_horn_lt_subcomplex : c.horn.image c.map < (P.p c.s).val.subcomplex := by
   rw [lt_iff_le_and_ne]
   exact ⟨by simpa using image_le_range c.horn c.map,
@@ -475,6 +476,7 @@ lemma w (j : ι) :
   ext c : 1
   simp [← cancel_mono (Subcomplex.ι _)]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma isPullback (j : ι) :
     IsPullback (f.t j) (f.m j) (homOfLE (f.filtration_monotone (Order.le_succ j))) (f.b j) where

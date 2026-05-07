@@ -115,6 +115,7 @@ lemma schnirelmannDensity_le_of_subset {B : Set ℕ} [DecidablePred (· ∈ B)] 
     schnirelmannDensity A ≤ schnirelmannDensity B :=
   ciInf_mono ⟨0, fun _ ⟨_, hx⟩ ↦ hx ▸ by positivity⟩ fun _ ↦ by gcongr
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The Schnirelmann density of `A` is `1` if and only if `A` contains all the positive naturals. -/
 lemma schnirelmannDensity_eq_one_iff : schnirelmannDensity A = 1 ↔ {0}ᶜ ⊆ A := by
   rw [le_antisymm_iff, and_iff_right schnirelmannDensity_le_one]

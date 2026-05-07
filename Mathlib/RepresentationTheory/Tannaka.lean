@@ -164,6 +164,7 @@ lemma sumSMulInv_single_id [Fintype G] [DecidableEq G] {X : FDRep k G} (v : X) :
     ∑ s : G, (single 1 1 : G → k) s • (X.ρ s⁻¹) v = v := by
   simp
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- For `v : X` and `G` a finite group, the representation morphism from the right
 regular representation `rightFDRep` to `X` sending `single 1 1` to `v`. -/

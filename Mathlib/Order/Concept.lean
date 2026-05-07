@@ -513,6 +513,7 @@ theorem ofObjects_le_iff : ofObjects r s ≤ c ↔ s ⊆ c.extent := by
   exact ⟨((subset_lowerPolar_upperPolar r s).trans ·),
     (isExtent_extent c).lowerPolar_upperPolar_subset⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem le_ofObjects_of_extent_subset (h : c.extent ⊆ s) : c ≤ ofObjects r s := by
   simpa using (lowerPolar_anti r).comp (upperPolar_anti r) h
 

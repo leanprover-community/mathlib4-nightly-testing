@@ -197,6 +197,7 @@ theorem tendsto_pow_atTop_nhds_zero_of_lt_one {𝕜 : Type*}
       have := (one_lt_inv₀ hr).2 h₂ |> tendsto_pow_atTop_atTop_of_one_lt
       (tendsto_inv_atTop_zero.comp this).congr fun n ↦ by simp)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp] theorem tendsto_pow_atTop_nhds_zero_iff {𝕜 : Type*}
     [Field 𝕜] [LinearOrder 𝕜] [IsStrictOrderedRing 𝕜] [Archimedean 𝕜]
     [TopologicalSpace 𝕜] [OrderTopology 𝕜] {r : 𝕜} :
@@ -354,6 +355,7 @@ theorem sum_geometric_two_le (n : ℕ) : (∑ i ∈ range n, (1 / (2 : ℝ)) ^ i
 theorem tsum_geometric_inv_two : (∑' n : ℕ, (2 : ℝ)⁻¹ ^ n) = 2 :=
   (inv_eq_one_div (2 : ℝ)).symm ▸ tsum_geometric_two
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The sum of `2⁻¹ ^ i` for `n ≤ i` equals `2 * 2⁻¹ ^ n`. -/
 theorem tsum_geometric_inv_two_ge (n : ℕ) :
     (∑' i, ite (n ≤ i) ((2 : ℝ)⁻¹ ^ i) 0) = 2 * 2⁻¹ ^ n := by

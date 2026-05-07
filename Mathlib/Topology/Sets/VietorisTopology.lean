@@ -77,6 +77,7 @@ theorem isClopen_singleton_empty : IsClopen {(∅ : Set α)} := by
   rw [← powerset_empty]
   exact ⟨isClosed_empty.powerset_vietoris, isOpen_empty.powerset_vietoris⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The Vietoris topology has a basis consisting of sets of the form
 `{s | s ⊆ U₁ ∪ … ∪ Uₙ, s ∩ U₁ ≠ ∅, …, s ∩ Uₙ ≠ ∅}`, where `U₁, …, Uₙ` are open sets. -/
 theorem isTopologicalBasis :
@@ -274,6 +275,7 @@ private theorem isCompact_aux {K : Set α} (hK : IsCompact K)
       obtain ⟨x, hxu, hxU⟩ := hUu
       cases hxu.2 <| mem_sUnion_of_mem hxU ⟨hU, hUS⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem _root_.IsCompact.powerset_vietoris {K : Set α} (hK : IsCompact K) :
     IsCompact K.powerset := by
   simpa using isCompact_aux hK (s := ∅)

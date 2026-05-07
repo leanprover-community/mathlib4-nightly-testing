@@ -369,6 +369,7 @@ theorem zero_of_num_eq_bot [IsDomain R] [Module.IsTorsionFree R P] (hS : 0 ∉ S
   have h_eq : I.den • (I : Submodule R P) = ⊥ := by rw [den_mul_self_eq_num, hI, Submodule.map_bot]
   exact (Submodule.eq_bot_iff _).mp h_eq (den I • x) ⟨x, hx, rfl⟩
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem num_zero_eq (h_inj : Function.Injective (algebraMap R P)) :
     num (0 : FractionalIdeal S P) = 0 := by
@@ -569,9 +570,11 @@ theorem coeIdeal_mul (I J : Ideal R) : (↑(I * J) : FractionalIdeal S P) = I * 
   simp only [mul_def]
   exact coeToSubmodule_injective (coeSubmodule_mul _ _ _)
 
+set_option backward.simpa.using.reducibleClose false in
 instance : MulLeftMono (FractionalIdeal S P) where
   elim I J J' h := by simpa only [mul_def] using mul_le.mpr fun x hx y hy => mul_mem_mul hx (h hy)
 
+set_option backward.simpa.using.reducibleClose false in
 instance : MulRightMono (FractionalIdeal S P) where
   elim I J J' h := by simpa only [mul_def] using mul_le.mpr fun x hx y hy => mul_mem_mul (h hx) hy
 

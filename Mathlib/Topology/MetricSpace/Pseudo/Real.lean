@@ -21,9 +21,11 @@ namespace Real
 
 variable {ι : Type*}
 
+set_option backward.simpa.using.reducibleClose false in
 lemma dist_left_le_of_mem_uIcc {x y z : ℝ} (h : y ∈ uIcc x z) : dist x y ≤ dist x z := by
   simpa only [dist_comm x] using abs_sub_left_of_mem_uIcc h
 
+set_option backward.simpa.using.reducibleClose false in
 lemma dist_right_le_of_mem_uIcc {x y z : ℝ} (h : y ∈ uIcc x z) : dist y z ≤ dist x z := by
   simpa only [dist_comm _ z] using abs_sub_right_of_mem_uIcc h
 

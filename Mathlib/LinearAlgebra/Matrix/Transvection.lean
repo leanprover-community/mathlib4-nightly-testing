@@ -217,6 +217,7 @@ theorem prod_mul_reverse_inv_prod (L : List (TransvectionStruct n R)) :
       by simpa [Matrix.mul_assoc]
     simp_rw [IH, Matrix.mul_one, t.mul_inv]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- `M` is a scalar matrix if it commutes with every nontrivial transvection (elementary matrix). -/
 theorem _root_.Matrix.mem_range_scalar_of_commute_transvectionStruct {M : Matrix n n R}
     (hM : ∀ t : TransvectionStruct n R, Commute t.toMatrix M) :
@@ -447,6 +448,7 @@ theorem mul_listTransvecRow_last_col (i : Fin r ⊕ Unit) :
   rw [← List.take_length (l := listTransvecRow M), A]
   simpa using mul_listTransvecRow_last_col_take M i le_rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Multiplying by all the matrices in `listTransvecRow M` kills all the coefficients in the
 last row but the last one. -/
 theorem mul_listTransvecRow_last_row (hM : M (inr unit) (inr unit) ≠ 0) (i : Fin r) :

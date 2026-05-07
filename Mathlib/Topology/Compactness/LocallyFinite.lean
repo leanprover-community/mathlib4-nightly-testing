@@ -37,6 +37,7 @@ theorem finite_nonempty_of_compact [CompactSpace X] {f : ι → Set X}
     (hf : LocallyFinite f) : { i | (f i).Nonempty }.Finite := by
   simpa only [inter_univ] using hf.finite_nonempty_inter_compact isCompact_univ
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `X` is a compact space, then a locally finite family of nonempty sets of `X` can have only
 finitely many elements, `Set.Finite` version. -/
 theorem finite_of_compact [CompactSpace X] {f : ι → Set X}

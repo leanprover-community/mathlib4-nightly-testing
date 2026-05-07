@@ -211,10 +211,12 @@ namespace Fintype
 
 variable [Fintype α] [Fintype β] {r : α → β → Prop}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem card_le_card_of_leftTotal_unique (h₁ : LeftTotal r) (h₂ : LeftUnique r) :
     Fintype.card α ≤ Fintype.card β :=
   card_le_card_of_forall_subsingleton r (by simpa using h₁) fun _ _ _ ha₁ _ ha₂ ↦ h₂ ha₁.2 ha₂.2
 
+set_option backward.simpa.using.reducibleClose false in
 theorem card_le_card_of_rightTotal_unique (h₁ : RightTotal r) (h₂ : RightUnique r) :
     Fintype.card β ≤ Fintype.card α :=
   card_le_card_of_forall_subsingleton' r (by simpa using h₁) fun _ _ _ ha₁ _ ha₂ ↦ h₂ ha₁.2 ha₂.2

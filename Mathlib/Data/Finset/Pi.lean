@@ -76,6 +76,7 @@ theorem Pi.cons_ne {s : Finset α} {a a' : α} {b : δ a} {f : ∀ a, a ∈ s �
     (ha : a ≠ a') : Pi.cons s a b f a' h = f a' ((mem_insert.1 h).resolve_left ha.symm) :=
   Multiset.Pi.cons_ne _ (Ne.symm ha)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Pi.cons_injective {a : α} {b : δ a} {s : Finset α} (hs : a ∉ s) :
     Function.Injective (Pi.cons s a b) := fun e₁ e₂ eq =>
   @Multiset.Pi.cons_injective α _ δ a b s.1 hs _ _ <|

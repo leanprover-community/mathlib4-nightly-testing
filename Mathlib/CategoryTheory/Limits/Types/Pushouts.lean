@@ -269,6 +269,7 @@ lemma eq_or_eq_of_isPushout (h : IsPushout t l r b)
   · exact Or.inl ⟨x, rfl⟩
   · exact Or.inr ⟨x, rfl⟩
 
+set_option backward.simpa.using.reducibleClose false in
 lemma eq_or_eq_of_isPushout' (h : IsPushout t l r b)
     (x₄ : X₄) : (∃ x₂, r x₂ = x₄) ∨ ∃ x₃, b x₃ = x₄ ∧ x₃ ∉ Set.range l := by
   obtain h₁ | ⟨x₃, hx₃⟩ := eq_or_eq_of_isPushout h x₄

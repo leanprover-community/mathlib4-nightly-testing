@@ -34,6 +34,7 @@ theorem mapClusterPt_atTop_zpow_iff_pow [DivInvMonoid G] [TopologicalSpace G] {x
 
 variable [Group G] [TopologicalSpace G] [CompactSpace G] [IsTopologicalGroup G]
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem mapClusterPt_self_zpow_atTop_pow (x : G) (m : ℤ) :
     MapClusterPt (x ^ m) atTop (x ^ · : ℕ → G) := by

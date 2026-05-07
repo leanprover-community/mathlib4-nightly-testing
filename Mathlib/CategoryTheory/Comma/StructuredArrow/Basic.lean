@@ -272,6 +272,7 @@ instance proj_reflectsIsomorphisms : (proj S T).ReflectsIsomorphisms where
 open CategoryTheory.Limits
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- The identity structured arrow is initial. -/
 noncomputable def mkIdInitial [T.Full] [T.Faithful] : IsInitial (mk (𝟙 (T.obj Y))) where
   desc c := homMk (T.preimage c.pt.hom)
@@ -671,6 +672,7 @@ instance proj_reflectsIsomorphisms : (proj S T).ReflectsIsomorphisms where
 open CategoryTheory.Limits
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- The identity costructured arrow is terminal. -/
 noncomputable def mkIdTerminal [S.Full] [S.Faithful] : IsTerminal (mk (𝟙 (S.obj Y))) where
   lift c := homMk (S.preimage c.pt.hom)

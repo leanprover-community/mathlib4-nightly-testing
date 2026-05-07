@@ -165,14 +165,17 @@ theorem matrix_vecEmpty_coeff {R} (i j) :
 variable [Fact p.Prime]
 variable (x y : WittVector p R)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.privateInPublic true in
 private theorem ghostFun_zero : ghostFun (0 : 𝕎 R) = 0 := by
   ghost_fun_tac 0, ![]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.privateInPublic true in
 private theorem ghostFun_one : ghostFun (1 : 𝕎 R) = 1 := by
   ghost_fun_tac 1, ![]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.privateInPublic true in
 private theorem ghostFun_add : ghostFun (x + y) = ghostFun x + ghostFun y := by
   ghost_fun_tac X 0 + X 1, ![x.coeff, y.coeff]
@@ -181,13 +184,16 @@ private theorem ghostFun_natCast (i : ℕ) : ghostFun (i : 𝕎 R) = i :=
   show ghostFun i.unaryCast = _ by
     induction i <;> simp [*, Nat.unaryCast, ghostFun_zero, ghostFun_one, ghostFun_add]
 
+set_option backward.simpa.using.reducibleClose false in
 private theorem ghostFun_sub : ghostFun (x - y) = ghostFun x - ghostFun y := by
   ghost_fun_tac X 0 - X 1, ![x.coeff, y.coeff]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.privateInPublic true in
 private theorem ghostFun_mul : ghostFun (x * y) = ghostFun x * ghostFun y := by
   ghost_fun_tac X 0 * X 1, ![x.coeff, y.coeff]
 
+set_option backward.simpa.using.reducibleClose false in
 private theorem ghostFun_neg : ghostFun (-x) = -ghostFun x := by ghost_fun_tac -X 0, ![x.coeff]
 
 private theorem ghostFun_intCast (i : ℤ) : ghostFun (i : 𝕎 R) = i :=
@@ -200,6 +206,7 @@ private lemma ghostFun_nsmul (m : ℕ) (x : WittVector p R) : ghostFun (m • x)
 private lemma ghostFun_zsmul (m : ℤ) (x : WittVector p R) : ghostFun (m • x) = m • ghostFun x := by
   ghost_fun_tac m • (X 0), ![x.coeff]
 
+set_option backward.simpa.using.reducibleClose false in
 private theorem ghostFun_pow (m : ℕ) : ghostFun (x ^ m) = ghostFun x ^ m := by
   ghost_fun_tac X 0 ^ m, ![x.coeff]
 

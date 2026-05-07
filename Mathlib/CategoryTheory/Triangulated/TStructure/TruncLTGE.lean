@@ -351,6 +351,7 @@ noncomputable def natTransTruncGEOfLE (a b : ℤ) (h : a ≤ b) :
     t.truncGE a ⟶ t.truncGE b :=
   Functor.whiskerRight (TruncAux.triangleFunctorNatTransOfLE t a b h) Triangle.π₃
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma natTransTruncLTOfLE_ι_app (a b : ℤ) (h : a ≤ b) (X : C) :
@@ -363,6 +364,7 @@ lemma natTransTruncLTOfLE_ι (a b : ℤ) (h : a ≤ b) :
     t.natTransTruncLTOfLE a b h ≫ t.truncLTι b = t.truncLTι a := by
   cat_disch
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma π_natTransTruncGEOfLE_app (a b : ℤ) (h : a ≤ b) (X : C) :

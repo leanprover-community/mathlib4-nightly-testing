@@ -185,6 +185,7 @@ noncomputable def snakeInput : ShortComplex.SnakeInput C where
 is the connecting homomorphism `kernel g ⟶ cokernel f`. -/
 noncomputable def δ : kernel g ⟶ cokernel f := (snakeInput f g).δ
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma δ_fac : δ f g = - kernel.ι g ≫ cokernel.π f := by
   simpa using (snakeInput f g).δ_eq (𝟙 _) (kernel.ι g ≫ biprod.inr) (-kernel.ι g)

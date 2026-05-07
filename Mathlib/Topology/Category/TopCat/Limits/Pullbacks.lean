@@ -52,6 +52,7 @@ def pullbackCone (f : X ⟶ Z) (g : Y ⟶ Z) : PullbackCone f g :=
       simpa)
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.simpa.using.reducibleClose false in
 /-- The constructed cone is a limit. -/
 def pullbackConeIsLimit (f : X ⟶ Z) (g : Y ⟶ Z) : IsLimit (pullbackCone f g) :=
   PullbackCone.isLimitAux' _

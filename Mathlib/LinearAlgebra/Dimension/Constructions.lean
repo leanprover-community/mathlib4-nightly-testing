@@ -86,6 +86,7 @@ theorem LinearIndepOn.quotient_iff_union {s t : Set ι} {f : ι → M} (hs : Lin
     LinearIndepOn R (mkQ (span R (f '' s)) ∘ f) t ↔ LinearIndepOn R f (s ∪ t) := by
   rw [linearIndepOn_union_iff_quotient hst, and_iff_right hs]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem rank_quotient_add_rank_le [Nontrivial R] (M' : Submodule R M) :
     Module.rank R (M ⧸ M') + Module.rank R M' ≤ Module.rank R M := by
   conv_lhs => simp only [Module.rank_def]

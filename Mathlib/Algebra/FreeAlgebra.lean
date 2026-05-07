@@ -250,6 +250,7 @@ instance instAddCommMonoid : AddCommMonoid (FreeAlgebra R X) where
     congr 1
     exact Quot.sound Rel.add_scalar
 
+set_option backward.simpa.using.reducibleClose false in
 instance : Semiring (FreeAlgebra R X) where
   __ := instMonoidWithZero R X
   __ := instAddCommMonoid R X

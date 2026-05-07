@@ -33,6 +33,7 @@ variable [CommGroup α] [TopologicalSpace α] [IsTopologicalGroup α]
 variable {f g : β → α} {a a₁ a₂ : α}
 
 -- `by simpa using` speeds up elaboration. Why?
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem HasProd.inv (h : HasProd f a L) : HasProd (fun b ↦ (f b)⁻¹) a⁻¹ L := by
   simpa only using h.map (MonoidHom.id α)⁻¹ continuous_inv
@@ -84,6 +85,7 @@ theorem Multipliable.update [L.LeAtTop] (hf : Multipliable f L) (b : β) [Decida
     Multipliable (update f b a) L :=
   (hf.hasProd.update b a).multipliable
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem HasProd.hasProd_compl_iff {s : Set β} (hf : HasProd (f ∘ (↑) : s → α) a₁) :
     HasProd (f ∘ (↑) : ↑sᶜ → α) a₂ ↔ HasProd f (a₁ * a₂) := by
@@ -383,6 +385,7 @@ theorem Multipliable.hasFiniteMulSupport_of_discreteTopology
   Summable.finite_support_of_discreteTopology :=
     Summable.hasFiniteSupport_of_discreteTopology
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem Multipliable.countable_mulSupport [FirstCountableTopology G] [T1Space G]
     (hf : Multipliable f) : f.mulSupport.Countable := by

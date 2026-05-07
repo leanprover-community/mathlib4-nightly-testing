@@ -331,6 +331,7 @@ instance : IsLieAbelian (cartanSubalgebra' b) := by
   suffices ⁅x', y'⁆ = 0 by simpa [x', y', Subtype.ext_iff] using this
   simp [trivial_lie_zero]
 
+set_option backward.simpa.using.reducibleClose false in
 instance : LieModule.IsTriangularizable R (cartanSubalgebra' b) (b.support ⊕ ι → R) := by
   refine ⟨fun ⟨⟨x, hx'⟩, hx⟩ ↦ ?_⟩
   obtain ⟨d, rfl⟩ : ∃ d : b.support ⊕ ι → R, Matrix.diagonal d = x :=

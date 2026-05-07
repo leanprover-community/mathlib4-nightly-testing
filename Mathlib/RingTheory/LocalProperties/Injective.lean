@@ -59,6 +59,7 @@ theorem Module.injective_of_isLocalizedModule [Small.{v} R] [IsNoetherianRing R]
 
 end
 
+set_option backward.simpa.using.reducibleClose false in
 theorem Module.injective_of_localization_maximal [Small.{v} R] [IsNoetherianRing R]
     (H : ∀ (I : Ideal R) (_ : I.IsMaximal),
       Module.Injective (Localization.AtPrime I) (LocalizedModule I.primeCompl M)) :

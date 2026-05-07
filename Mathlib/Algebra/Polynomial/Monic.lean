@@ -360,6 +360,7 @@ lemma Monic.irreducible_iff_lt_natDegree_lt {p : R[X]} (hp : p.Monic) (hp1 : p �
   · rintro h f g - hg rfl hdg
     exact h g hg hdg (dvd_mul_left g f)
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Monic.not_irreducible_iff_exists_add_mul_eq_coeff (hm : p.Monic) (hnd : p.natDegree = 2) :
     ¬Irreducible p ↔ ∃ c₁ c₂, p.coeff 0 = c₁ * c₂ ∧ p.coeff 1 = c₁ + c₂ := by
   cases subsingleton_or_nontrivial R
@@ -447,6 +448,7 @@ theorem not_isUnit_X_pow_sub_one (R : Type*) [Ring R] [Nontrivial R] (n : ℕ) :
   apply hn
   rw [← @natDegree_one R, ← (monic_X_pow_sub_C _ hn).eq_one_of_isUnit h, natDegree_X_pow_sub_C]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Monic.comp_X_sub_C {p : R[X]} (hp : p.Monic) (r : R) : (p.comp (X - C r)).Monic := by
   simpa using hp.comp_X_add_C (-r)
 

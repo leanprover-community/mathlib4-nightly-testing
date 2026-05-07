@@ -244,6 +244,7 @@ theorem of_exponent_ge {p q : ℝ≥0∞} {f : ∀ i, E i} (hfq : Memℓp f q) (
       contrapose! hi
       exact Real.rpow_le_rpow_of_exponent_ge' (norm_nonneg _) hi.le hq.le hpq'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem add {f g : ∀ i, E i} (hf : Memℓp f p) (hg : Memℓp g p) : Memℓp (f + g) p := by
   rcases p.trichotomy with (rfl | rfl | hp)
   · apply memℓp_zero
@@ -486,6 +487,7 @@ theorem norm_zero : ‖(0 : lp E p)‖ = 0 := by
     have hp' : 1 / p.toReal ≠ 0 := one_div_ne_zero hp.ne'
     simpa [Real.zero_rpow hp.ne'] using Real.zero_rpow hp'
 
+set_option backward.simpa.using.reducibleClose false in
 theorem norm_eq_zero_iff {f : lp E p} : ‖f‖ = 0 ↔ f = 0 := by
   refine ⟨fun h => ?_, by rintro rfl; exact norm_zero⟩
   rcases p.trichotomy with (rfl | rfl | hp)

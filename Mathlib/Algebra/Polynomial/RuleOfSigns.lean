@@ -205,6 +205,7 @@ lemma signVariations_eraseLead_mul_X_sub_C (hη : 0 < η) (hP₀ : 0 < leadingCo
   rw [leadingCoeff, nextCoeff_of_natDegree_pos (hd ▸ d.succ_pos), hd, Nat.add_sub_cancel]
   abel
 
+set_option backward.simpa.using.reducibleClose false in
 /-- This lemma is really a specialization of `succ_signVariations_le_sub_mul` to monomials. -/
 lemma succ_signVariations_X_sub_C_mul_monomial {d c} (hc : c ≠ 0) (hη : 0 < η) :
     (monomial d c).signVariations + 1 ≤ ((X - C η) * monomial d c).signVariations := by

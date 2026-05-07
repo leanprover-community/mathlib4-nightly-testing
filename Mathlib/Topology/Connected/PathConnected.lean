@@ -359,6 +359,7 @@ theorem pathComponentIn_mono {G : Set X} (h : F ⊆ G) :
 
 /-! ### Path component of the identity in a group -/
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The path component of the identity in a topological monoid, as a submonoid. -/
 @[to_additive (attr := simps) /-- The path component of the identity in an additive topological
 monoid, as an additive submonoid. -/]
@@ -368,6 +369,7 @@ def Submonoid.pathComponentOne (M : Type*) [Monoid M] [TopologicalSpace M] [Cont
   mul_mem' {m₁ m₂} hm₁ hm₂ := by simpa using hm₁.mul hm₂
   one_mem' := mem_pathComponent_self 1
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The path component of the identity in a topological group, as a subgroup. -/
 @[to_additive (attr := simps!) /-- The path component of the identity in an additive topological
 group, as an additive subgroup. -/]

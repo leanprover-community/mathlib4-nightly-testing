@@ -111,6 +111,7 @@ We state lemmas ensuring that a differentiable function can be approximated, on 
 measurable pieces, by linear maps (with a prescribed precision depending on the linear map).
 -/
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Assume that a function `f` has a derivative at every point of a set `s`. Then one may cover `s`
 with countably many closed sets `t n` on which `f` is well approximated by linear maps `A n`. -/
 theorem exists_closed_cover_approximatesLinearOn_of_hasFDerivWithinAt [SecondCountableTopology F]

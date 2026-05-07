@@ -303,6 +303,7 @@ section cyclic
 
 namespace IsCyclic
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The isomorphism from the group of group homomorphisms from a finite cyclic group `G` of order
 `n` into another group `G'` to the group of `n`th roots of unity in `G'` determined by a generator
 `g` of `G`. It sends `φ : G →* G'` to `φ g`. -/

@@ -61,6 +61,7 @@ section Field
 variable {K V : Type*} [Field K] [PerfectField K] [AddCommGroup V] [Module K V]
 variable [FiniteDimensional K V]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The adjoint of a semisimple element is semisimple. -/
 theorem LieAlgebra.ad_isSemisimple_of_isSemisimple {a : Module.End K V} (ha : a.IsSemisimple) :
     (LieAlgebra.ad K (Module.End K V) a).IsSemisimple := by

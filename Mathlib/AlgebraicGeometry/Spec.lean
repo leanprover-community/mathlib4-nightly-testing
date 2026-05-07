@@ -161,6 +161,7 @@ theorem Spec.toPresheafedSpace_map_op (R S : CommRingCat.{u}) (f : R ⟶ S) :
     Spec.toPresheafedSpace.map f.op = (Spec.sheafedSpaceMap f).hom :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem Spec.basicOpen_hom_ext {X : RingedSpace.{u}} {R : CommRingCat.{u}}
     {α β : X ⟶ Spec.sheafedSpaceObj R} (w : α.hom.base = β.hom.base)

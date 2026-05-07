@@ -166,6 +166,7 @@ def ring_lmap_equiv_selfₗ : (𝕜 →L[𝕜] E) ≃ₗ[𝕜] E where
   left_inv := fun f ↦ by ext; simp only [smulRight_apply, coe_id', _root_.id, one_smul]
   right_inv := fun m ↦ by simp only [smulRight_apply, id_apply, one_smul]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `M` is a normed space over `𝕜`, then the space of maps `𝕜 →L[𝕜] M` is linearly isometrically
 equivalent to `M`. -/
 def ring_lmap_equiv_self : (𝕜 →L[𝕜] E) ≃ₗᵢ[𝕜] E where
@@ -186,6 +187,7 @@ section SMulLinear
 variable (𝕜) (R : Type*) [SeminormedRing R]
 variable [NormedAlgebra 𝕜 R] [Module R E] [IsBoundedSMul R E] [IsScalarTower 𝕜 R E]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Scalar multiplication as a continuous bilinear map. -/
 def lsmul : R →L[𝕜] E →L[𝕜] E :=
   ((Algebra.lsmul 𝕜 𝕜 E).toLinearMap : R →ₗ[𝕜] E →ₗ[𝕜] E).mkContinuous₂ 1 fun c x => by

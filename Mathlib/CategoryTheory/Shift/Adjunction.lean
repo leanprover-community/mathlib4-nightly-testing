@@ -409,6 +409,7 @@ noncomputable def rightAdjointCommShift [F.CommShift A] : G.CommShift A where
     exact CommShift.compatibilityUnit_isoAdd adj _ _ _ _
       (compatibilityUnit_iso adj a) (compatibilityUnit_iso adj b)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma commShift_of_leftAdjoint [F.CommShift A] :
     letI := adj.rightAdjointCommShift A
@@ -498,6 +499,7 @@ noncomputable def leftAdjointCommShift [G.CommShift A] : F.CommShift A where
     exact CommShift.compatibilityUnit_isoAdd adj _ _ _ _
       (compatibilityUnit_iso adj a) (compatibilityUnit_iso adj b)
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma commShift_of_rightAdjoint [G.CommShift A] :
     letI := adj.leftAdjointCommShift A

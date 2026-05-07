@@ -314,6 +314,7 @@ end Subcomplex
 
 namespace stdSimplex
 
+set_option backward.simpa.using.reducibleClose false in
 lemma obj₀Equiv_symm_mem_face_iff
     {n : ℕ} (S : Finset (Fin (n + 1))) (i : Fin (n + 1)) :
     (obj₀Equiv.symm i) ∈ (face.{u} S).obj (op (.mk 0)) ↔ i ∈ S :=
@@ -325,6 +326,7 @@ lemma face_le_face_iff {n : ℕ} (S₁ S₂ : Finset (Fin (n + 1))) :
   simp only [← obj₀Equiv_symm_mem_face_iff.{u}] at hi ⊢
   exact h _ hi
 
+set_option backward.simpa.using.reducibleClose false in
 lemma face_eq_ofSimplex {n : ℕ} (S : Finset (Fin (n + 1))) (m : ℕ) (e : Fin (m + 1) ≃o S) :
     face.{u} S =
       Subcomplex.ofSimplex (X := Δ[n])
@@ -429,6 +431,7 @@ lemma objEquiv_symm_mem_nonDegenerate_iff_mono {n d : ℕ} (f : ⦋d⦌ ⟶ ⦋n
     (objEquiv.{u} (m := (op ⦋d⦌))).symm f ∈ Δ[n].nonDegenerate d ↔ Mono f := by
   simp [mem_nonDegenerate_iff_mono]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Nondegenerate `d`-dimensional simplices of the standard simplex `Δ[n]`
 identify to order embeddings `Fin (d + 1) ↪o Fin (n + 1)`. -/
 @[simps! apply_apply symm_apply_coe]

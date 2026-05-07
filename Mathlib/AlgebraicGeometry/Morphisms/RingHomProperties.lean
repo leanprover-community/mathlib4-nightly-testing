@@ -555,6 +555,7 @@ lemma isStableUnderBaseChange (hP : RingHom.IsStableUnderBaseChange Q) :
   exact hP.pullback_fst_appTop _ (isLocal_ringHomProperty P).respectsIso _ _ H
 
 include Q in
+set_option backward.simpa.using.reducibleClose false in
 private lemma respects_isOpenImmersion_aux
     (hQ : RingHom.StableUnderCompositionWithLocalizationAwaySource Q)
     {X Y : Scheme.{u}} [IsAffine Y] {U : Y.Opens}

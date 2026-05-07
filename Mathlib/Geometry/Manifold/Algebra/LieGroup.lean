@@ -304,18 +304,22 @@ variable {𝕜 : Type*} [NontriviallyNormedField 𝕜] {n : WithTop ℕ∞}
   {I' : ModelWithCorners 𝕜 E' H'} {M : Type*} [TopologicalSpace M] [ChartedSpace H' M]
   {f g : M → G} {s : Set M} {a : M}
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ContMDiffWithinAt.div₀
     (hf : CMDiffAt[s] n f a) (hg : CMDiffAt[s] n g a) (h₀ : g a ≠ 0) : CMDiffAt[s] n (f / g) a := by
   simpa [div_eq_mul_inv] using hf.mul (hg.inv₀ h₀)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ContMDiffOn.div₀ (hf : CMDiff[s] n f) (hg : CMDiff[s] n g)
     (h₀ : ∀ x ∈ s, g x ≠ 0) : CMDiff[s] n (f / g) := by
   simpa [div_eq_mul_inv] using hf.mul (hg.inv₀ h₀)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ContMDiffAt.div₀ (hf : CMDiffAt n f a) (hg : CMDiffAt n g a)
     (h₀ : g a ≠ 0) : CMDiffAt n (f / g) a := by
   simpa [div_eq_mul_inv] using hf.mul (hg.inv₀ h₀)
 
+set_option backward.simpa.using.reducibleClose false in
 theorem ContMDiff.div₀ (hf : CMDiff n f) (hg : CMDiff n g) (h₀ : ∀ x, g x ≠ 0) :
     CMDiff n (f / g) := by simpa only [div_eq_mul_inv] using hf.mul (hg.inv₀ h₀)
 

@@ -75,6 +75,7 @@ lemma Ideal.Quotient.eq_factor_of_eq_factor_succ {I : ℕ → Ideal R} [∀ n, (
     {m n : ℕ} (g : m ≤ n) : x m = factor (hI g) (x n) :=
   Submodule.eq_factor_of_eq_factor_succ hI x h g
 
+set_option backward.simpa.using.reducibleClose false in
 lemma Ideal.map_mk_comap_factor [J.IsTwoSided] [K.IsTwoSided] (hIJ : J ≤ I) (hJK : K ≤ J) :
     (I.map (mk J)).comap (factor hJK) = I.map (mk K) := by
   ext x
@@ -162,6 +163,7 @@ lemma Ideal.map_mk_comap_factorPow {a b : ℕ} (apos : 0 < a) (le : a ≤ b) :
   exact pow_le_self (Nat.ne_zero_of_lt apos)
 
 variable {I} in
+set_option backward.simpa.using.reducibleClose false in
 lemma factorPowSucc.isUnit_of_isUnit_image {n : ℕ} (npos : n > 0) {a : R ⧸ I ^ (n + 1)}
     (h : IsUnit (factorPow I n.le_succ a)) : IsUnit a := by
   rcases isUnit_iff_exists.mp h with ⟨b, hb, _⟩

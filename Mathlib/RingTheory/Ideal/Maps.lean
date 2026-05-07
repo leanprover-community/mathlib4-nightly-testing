@@ -541,9 +541,11 @@ theorem map_eq_top_of_bijective : I.map f = ⊤ ↔ I = ⊤ := by
 theorem comap_map_of_bijective : (I.map f).comap f = I :=
   le_antisymm ((comap_le_iff_le_map f hf).mpr fun _ ↦ id) le_comap_map
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isMaximal_map_iff_of_bijective : IsMaximal (map f I) ↔ IsMaximal I := by
   simpa only [isMaximal_def] using (relIsoOfBijective _ hf).symm.isCoatom_iff _
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isMaximal_comap_iff_of_bijective : IsMaximal (comap f K) ↔ IsMaximal K := by
   simpa only [isMaximal_def] using (relIsoOfBijective _ hf).isCoatom_iff _
 

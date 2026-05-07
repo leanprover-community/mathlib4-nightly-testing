@@ -44,6 +44,7 @@ theorem sum_Ico_by_parts (hmn : m < n) :
   simp_rw [this, sum_neg_distrib, sum_range_succ, smul_add]
   abel
 
+set_option backward.simpa.using.reducibleClose false in
 theorem sum_Ioc_by_parts (hmn : m < n) :
     ∑ i ∈ Ioc m n, f i • g i =
       f n • G (n + 1) - f (m + 1) • G (m + 1)

@@ -165,6 +165,7 @@ open Equiv.Perm
 instance normal : (alternatingGroup α).Normal :=
   sign.normal_ker
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isConj_of {σ τ : alternatingGroup α} (hc : IsConj (σ : Perm α) (τ : Perm α))
     (hσ : (σ : Perm α).support.card + 2 ≤ Fintype.card α) : IsConj σ τ := by
   obtain ⟨σ, hσ⟩ := σ
@@ -310,6 +311,7 @@ namespace alternatingGroup
 
 open Equiv.Perm
 
+set_option backward.simpa.using.reducibleClose false in
 theorem eq_bot_of_card_le_two (h2 : Nat.card α ≤ 2) : alternatingGroup α = ⊥ := by
   nontriviality α
   suffices hα' : Nat.card α = 2 by

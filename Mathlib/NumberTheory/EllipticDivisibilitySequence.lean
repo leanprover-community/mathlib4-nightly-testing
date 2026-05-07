@@ -450,6 +450,7 @@ lemma complEDS_one : complEDS b c d k 1 = 1 := by
 lemma complEDS_neg (n : ℤ) : complEDS b c d k (-n) = -complEDS b c d k n := by
   simp [complEDS]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma complEDS_even (m : ℤ) :
     complEDS b c d k (2 * m) = complEDS b c d k m * complEDS₂ b c d (m * k) := by
   induction m using Int.negInduction with
@@ -460,6 +461,7 @@ lemma complEDS_even (m : ℤ) :
     simpa only [complEDS_ofNat] using complEDS'_even ..
   | neg ih => simp_rw [mul_neg, complEDS_neg, ih, neg_mul, complEDS₂_neg]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma complEDS_odd (m : ℤ) : complEDS b c d k (2 * m + 1) =
     complEDS b c d k m ^ 2 * normEDS b c d ((m + 1) * k + 1) * normEDS b c d ((m + 1) * k - 1) -
       complEDS b c d k (m + 1) ^ 2 * normEDS b c d (m * k + 1) * normEDS b c d (m * k - 1) := by

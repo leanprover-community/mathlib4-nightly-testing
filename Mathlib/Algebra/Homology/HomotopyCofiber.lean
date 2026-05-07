@@ -144,6 +144,7 @@ noncomputable def d (i j : ι) : X φ i ⟶ X φ j :=
   else
     0
 
+set_option backward.simpa.using.reducibleClose false in
 lemma ext_to_X (i j : ι) (hij : c.Rel i j) {A : C} {f g : A ⟶ X φ i}
     (h₁ : f ≫ fstX φ i j hij = g ≫ fstX φ i j hij) (h₂ : f ≫ sndX φ i = g ≫ sndX φ i) :
     f = g := by

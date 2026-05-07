@@ -37,6 +37,7 @@ namespace DoldKan
 
 variable {C : Type*} [Category* C] [Preadditive C]
 
+set_option backward.simpa.using.reducibleClose false in
 theorem PInfty_comp_map_mono_eq_zero (X : SimplicialObject C) {n : ℕ} {Δ' : SimplexCategory}
     (i : Δ' ⟶ ⦋n⦌) [hi : Mono i] (h₁ : Δ'.len ≠ n) (h₂ : ¬Isδ₀ i) :
     PInfty.f n ≫ X.map i.op = 0 := by

@@ -121,6 +121,7 @@ open Polynomial
 
 namespace NormedAlgebra
 
+set_option backward.simpa.using.reducibleClose false in
 open Filter Topology Set in
 /- The key step: show that the norm of a suitable function is constant if the norm takes
 a positive minimum and condition `H` below is satisfied. -/

@@ -330,6 +330,7 @@ lemma pairSet_subset : pairSet J a c ⊆ J ×ˢ J := by
     exact (Finset.filter_subset _ _).trans (finset_logSizeBallSeq_subset_logSizeBallSeq_init _ _)
   simp [pairSetSeq, hJ]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma card_pairSetSeq_le_logSizeRadius_mul (hJ : J.Nonempty) (i : ℕ) (ha : 1 < a) :
     ↑(#(pairSetSeq J a c i)) ≤ (if (logSizeBallSeq J hJ a c i).finset.Nonempty then 1 else 0)
     * a ^ (logSizeBallSeq J hJ a c i).radius := by
@@ -343,6 +344,7 @@ lemma card_pairSetSeq_le_logSizeRadius_mul (hJ : J.Nonempty) (i : ℕ) (ha : 1 <
         using card_le_logSizeRadius_le_pow_logSizeRadius ha
     simp [pairSetSeq, logSizeBallStruct.ball, h, hJ]
 
+set_option backward.simpa.using.reducibleClose false in
 lemma logSizeRadius_le_card_smallBall (hJ : J.Nonempty) (i : ℕ) (ha : 1 < a) :
     (if (logSizeBallSeq J hJ a c i).finset.Nonempty then 1 else 0) *
     a ^ ((logSizeBallSeq J hJ a c i).radius - 1) ≤ #((logSizeBallSeq J hJ a c i).smallBall c) := by

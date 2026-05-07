@@ -31,6 +31,7 @@ namespace GaussianInt
 
 open PrincipalIdealRing
 
+set_option backward.simpa.using.reducibleClose false in
 theorem mod_four_eq_three_of_nat_prime_of_prime (p : ℕ) [hp : Fact p.Prime]
     (hpi : Prime (p : ℤ[i])) : p % 4 = 3 :=
   hp.1.eq_two_or_odd.elim

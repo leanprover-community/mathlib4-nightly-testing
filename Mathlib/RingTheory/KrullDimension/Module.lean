@@ -85,6 +85,7 @@ end Module
 
 open Ideal IsLocalRing
 
+set_option backward.simpa.using.reducibleClose false in
 lemma support_of_supportDim_eq_zero [IsLocalRing R]
     (dim : Module.supportDim R N = 0) :
     Module.support R N = PrimeSpectrum.zeroLocus (maximalIdeal R) := by

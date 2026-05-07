@@ -251,6 +251,7 @@ theorem quasiCompact_iff_compactSpace (f : X ⟶ Y) [QuasiSeparatedSpace Y] [Com
     QuasiCompact f ↔ CompactSpace X :=
   ⟨fun _ ↦ QuasiCompact.compactSpace_of_compactSpace f, fun _ ↦ inferInstance⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem exists_eq_pow_mul_of_isAffineOpen (X : Scheme) (U : X.Opens) (hU : IsAffineOpen U)
     (f : Γ(X, U)) (x : Γ(X, X.basicOpen f)) :
     ∃ (n : ℕ) (y : Γ(X, U)), y |_ X.basicOpen f = (f |_ X.basicOpen f) ^ n * x := by
@@ -386,6 +387,7 @@ theorem exists_eq_pow_mul_of_isCompact_of_isQuasiSeparated (X : Scheme.{u}) (U :
       simp only [pow_add, map_pow, map_mul, hy₂, ← CommRingCat.comp_apply, ← mul_assoc,
         ← Functor.map_comp, ← op_comp, homOfLE_comp]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- If `U` is qcqs, then `Γ(X, D(f)) ≃ Γ(X, U)_f` for every `f : Γ(X, U)`.
 This is known as the **Qcqs lemma** in [R. Vakil, *The rising sea*][RisingSea]. -/
 theorem isLocalization_basicOpen_of_qcqs {X : Scheme} {U : X.Opens} (hU : IsCompact U.1)

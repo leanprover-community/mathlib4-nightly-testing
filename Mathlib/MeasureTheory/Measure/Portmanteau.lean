@@ -508,6 +508,7 @@ lemma lintegral_le_liminf_lintegral_of_forall_isOpen_measure_le_liminf_measure
     exact lintegral_liminf_le (fun n ↦ Antitone.measurable (fun s t hst ↦
             measure_mono (fun ω hω ↦ lt_of_le_of_lt hst hω)))
 
+set_option backward.simpa.using.reducibleClose false in
 lemma integral_le_liminf_integral_of_forall_isOpen_measure_le_liminf_measure
     {μ : Measure Ω} {μs : ℕ → Measure Ω} [∀ i, IsProbabilityMeasure (μs i)]
     {f : Ω →ᵇ ℝ} (f_nn : 0 ≤ f)
@@ -651,6 +652,7 @@ end Closed
 
 section Lipschitz
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Weak convergence of probability measures is equivalent to the property that the integrals of
 every bounded Lipschitz function converge to the integral of the function against
 the limit measure. -/

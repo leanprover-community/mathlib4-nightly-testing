@@ -45,6 +45,7 @@ end DifferentiableOn
 
 namespace Differentiable
 
+set_option backward.simpa.using.reducibleClose false in
 /-- An entire function whose iterated derivatives at `c` are all nonnegative real has nonnegative
 real values on `c + ℝ≥0`. -/
 theorem nonneg_of_iteratedDeriv_nonneg {f : ℂ → ℂ} (hf : Differentiable ℂ f) {c : ℂ}

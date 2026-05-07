@@ -548,6 +548,7 @@ theorem Finite.exists_bijOn_of_encard_eq [Nonempty β] (hs : s.Finite) (h : s.en
   rw [(hs.image f).eq_of_subset_of_encard_le (image_subset_iff.mpr hf)
     (h.symm.trans hinj.encard_image.symm).le]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A version of the pigeonhole principle for `Set`s rather than `Finset`s.
 
 See also `Finset.exists_ne_map_eq_of_card_lt_of_maps_to` and

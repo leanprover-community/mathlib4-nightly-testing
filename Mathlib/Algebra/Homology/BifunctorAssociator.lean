@@ -588,6 +588,7 @@ section
 variable (i₁ : ι₁) (i₂ : ι₂) (i₃ : ι₃) (j j' : ι₄)
     (h : ComplexShape.r c₁ c₂ c₃ c₁₂ c₄ (i₁, i₂, i₃) = j)
 
+set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma ι_D₁ :
     ι F G₂₃ K₁ K₂ K₃ c₁₂ c₂₃ c₄ i₁ i₂ i₃ j h ≫ D₁ F G₂₃ K₁ K₂ K₃ c₂₃ c₄ j j' =

@@ -381,6 +381,7 @@ section Star
 
 variable [StarRing 𝕜] [StarRing A] [StarModule 𝕜 A] [NormedStarGroup A]
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The star operation on `a : 𝓜(𝕜, A)` is given by
 `(star a).toProd = (star ∘ a.snd ∘ star, star ∘ a.fst ∘ star)`. -/
 instance instStar : Star 𝓜(𝕜, A) where
@@ -485,6 +486,7 @@ that `𝓜(𝕜, A)` is also a C⋆-algebra. Moreover, in this case, for `a : �
 `‖a‖ = ‖a.fst‖ = ‖a.snd‖`. -/
 
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The normed group structure is inherited as the pullback under the ring monomorphism
 `DoubleCentralizer.toProdMulOppositeHom : 𝓜(𝕜, A) →+* (A →L[𝕜] A) × (A →L[𝕜] A)ᵐᵒᵖ`. -/
 noncomputable instance : NormedRing 𝓜(𝕜, A) :=

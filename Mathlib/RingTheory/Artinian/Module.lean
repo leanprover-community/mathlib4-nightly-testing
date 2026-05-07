@@ -173,6 +173,7 @@ theorem surjective_of_injective_endomorphism (f : M →ₗ[R] M) (s : Injective 
 theorem bijective_of_injective_endomorphism (f : M →ₗ[R] M) (s : Injective f) : Bijective f :=
   ⟨s, surjective_of_injective_endomorphism f s⟩
 
+set_option backward.simpa.using.reducibleClose false in
 /-- A sequence `f` of submodules of an Artinian module,
 with the supremum `f (n+1)` and the infimum of `f 0`, ..., `f n` being ⊤,
 is eventually ⊤. -/

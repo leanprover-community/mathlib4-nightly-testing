@@ -54,6 +54,7 @@ lemma mulSingle_eq_one_iff : mulSingle i x = 1 ↔ x = 1 := by
 lemma mulSingle_ne_one_iff : mulSingle i x ≠ 1 ↔ x ≠ 1 :=
   mulSingle_eq_one_iff.ne
 
+set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma apply_mulSingle (f' : ∀ i, M i → N i) (hf' : ∀ i, f' i 1 = 1) (i : ι) (x : M i) (j : ι) :
     f' j (mulSingle i x j) = mulSingle i (f' i x) j := by

@@ -111,6 +111,7 @@ def counitAppCont : FrameHom L (Opens <| PT L) where
   map_top' := by simp
   map_sSup' S := by ext; simp
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The forgetful functor `topToLocale` is left adjoint to the functor `pt`. -/
 def adjunctionTopToLocalePT : topToLocale ⊣ pt where
   unit := { app := fun X ↦ TopCat.ofHom ⟨localePointOfSpacePoint X, continuous_def.2 <|

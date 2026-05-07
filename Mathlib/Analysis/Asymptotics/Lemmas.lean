@@ -895,6 +895,7 @@ end IsBigORev
 
 end ContinuousOn
 
+set_option backward.simpa.using.reducibleClose false in
 /-- The (scalar) product of a sequence that tends to zero with a bounded one also tends to zero. -/
 lemma NormedField.tendsto_zero_smul_of_tendsto_zero_of_bounded {ι 𝕜 E : Type*}
     [NormedDivisionRing 𝕜] [SeminormedAddCommGroup E] [Module 𝕜 E] [IsBoundedSMul 𝕜 E]

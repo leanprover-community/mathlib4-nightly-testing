@@ -113,6 +113,7 @@ theorem isPrincipalIdealRing_of_isPrincipal_of_norm_le
   obtain ⟨I, rfl, hI⟩ := exists_ideal_in_class_of_norm_le C
   simpa [← ClassGroup.mk0_eq_one_iff] using h hI
 
+set_option backward.simpa.using.reducibleClose false in
 theorem isPrincipalIdealRing_of_isPrincipal_of_norm_le_of_isPrime
     (h : ∀ ⦃I : (Ideal (𝓞 K))⁰⦄, (I : Ideal (𝓞 K)).IsPrime →
       absNorm (I : Ideal (𝓞 K)) ≤ M K → Submodule.IsPrincipal (I : Ideal (𝓞 K))) :

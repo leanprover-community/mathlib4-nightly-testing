@@ -422,6 +422,7 @@ variable {R σ : Type*} [CommRing R] [IsDomain R] {F G : MvPolynomial σ R} {n :
 
 open Cardinal Polynomial
 
+set_option backward.simpa.using.reducibleClose false in
 private
 lemma exists_eval_ne_zero_of_totalDegree_le_card_aux {N : ℕ} {F : MvPolynomial (Fin N) R} {n : ℕ}
     (hF : F.IsHomogeneous n) (hF₀ : F ≠ 0) (hnR : n ≤ #R) :

@@ -27,6 +27,7 @@ variable {X : Type*} {m : MeasurableSpace X} {μ ν : Measure X} {f : X → X}
 
 namespace Ergodic
 
+set_option backward.simpa.using.reducibleClose false in
 /-- Given a constant `c ≠ ∞`, an extreme point of the set of measures that are invariant under `f`
 and have total mass `c` is an ergodic measure. -/
 theorem of_mem_extremePoints_measure_univ_eq {c : ℝ≥0∞} (hc : c ≠ ∞)

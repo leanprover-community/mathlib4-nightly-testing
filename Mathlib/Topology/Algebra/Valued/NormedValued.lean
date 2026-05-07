@@ -62,6 +62,7 @@ instance : RankLeOne (valuation (K := K)) where
   hom' := embedding
   strictMono' := embedding_strictMono
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- The valued field structure on a nonarchimedean normed field `K`, determined by the norm. -/
 @[instance_reducible]
@@ -241,21 +242,25 @@ theorem norm_lt_iff : ‖x‖ < ‖x'‖ ↔ val.v x < val.v x' := by
   rw [← v.restrict_lt_iff, ← (Valuation.RankOne.strictMono val.v).lt_iff_lt]
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem norm_le_one_iff : ‖x‖ ≤ 1 ↔ val.v x ≤ 1 := by
   rw [← map_one val.v, ← v.restrict_le_iff]
   simpa only [map_one] using (Valuation.RankOne.strictMono val.v).le_iff_le (b := 1)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem norm_lt_one_iff : ‖x‖ < 1 ↔ val.v x < 1 := by
   rw [← map_one val.v, ← v.restrict_lt_iff]
   simpa only [map_one] using (Valuation.RankOne.strictMono val.v).lt_iff_lt (b := 1)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem one_le_norm_iff : 1 ≤ ‖x‖ ↔ 1 ≤ val.v x := by
   rw [← map_one val.v, ← v.restrict_le_iff]
   simpa only [map_one] using (Valuation.RankOne.strictMono val.v).le_iff_le (a := 1)
 
+set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem one_lt_norm_iff : 1 < ‖x‖ ↔ 1 < val.v x := by
   rw [← map_one val.v, ← v.restrict_lt_iff]

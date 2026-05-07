@@ -158,6 +158,7 @@ theorem eval_app (S₁ S₂ : Sheaf typesGrothendieckTopology (Type u)) (f : S�
     eval S₂.1 α (f.hom.app (op α) s) x = f.hom.app (op PUnit) (eval S₁.1 α s x) :=
   (ConcreteCategory.congr_hom (f.hom.naturality (↾fun _ => x).op) s).symm
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `yoneda'` induces an equivalence of categories between `Type u` and

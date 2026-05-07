@@ -146,6 +146,7 @@ theorem IsVanKampenColimit.precompose_isIso_iff {F G : J ⥤ C} (α : F ⟶ G) [
     (Cocone.ext (Iso.refl _) (by simp)),
     IsVanKampenColimit.precompose_isIso α⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsUniversalColimit.of_mapCocone (G : C ⥤ D) {F : J ⥤ C} {c : Cocone F}
     [PreservesLimitsOfShape WalkingCospan G] [ReflectsColimitsOfShape J G]
     (hc : IsUniversalColimit (G.mapCocone c)) : IsUniversalColimit c :=
@@ -154,6 +155,7 @@ theorem IsUniversalColimit.of_mapCocone (G : C ⥤ D) {F : J ⥤ C} {c : Cocone 
     (by ext j; simpa using G.congr_map (NatTrans.congr_app h j))
     (hα.whiskerRight G) (fun j ↦ (H j).map G)).some⟩
 
+set_option backward.simpa.using.reducibleClose false in
 theorem IsVanKampenColimit.of_mapCocone (G : C ⥤ D) {F : J ⥤ C} {c : Cocone F}
     [∀ (i j : J) (X : C) (f : X ⟶ F.obj j) (g : i ⟶ j), PreservesLimit (cospan f (F.map g)) G]
     [∀ (i : J) (X : C) (f : X ⟶ c.pt), PreservesLimit (cospan f (c.ι.app i)) G]
@@ -548,6 +550,7 @@ end BinaryCoproduct
 
 section FiniteCoproducts
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem isUniversalColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
@@ -608,6 +611,7 @@ theorem isUniversalColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
   · simp only [Fin.cases_zero]
   · simp only [Fin.cases_succ]
 
+set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem isVanKampenColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
@@ -790,6 +794,7 @@ lemma IsUniversalColimit.nonempty_isColimit_of_isPullback_left
 
 set_option backward.isDefEq.respectTransparency false in
 include hau hP in
+set_option backward.simpa.using.reducibleClose false in
 /-- Pullbacks distribute over universal coproducts on the left: This is the isomorphism
 `∐ (B ×[S] Xᵢ) ≅ B ×[S] (∐ Xᵢ)`. -/
 lemma IsUniversalColimit.isPullback_of_isColimit_left {d : Cofan P} (hd : IsColimit d)
@@ -854,6 +859,7 @@ lemma IsUniversalColimit.nonempty_isColimit_of_isPullback_right
 
 set_option backward.isDefEq.respectTransparency false in
 include hau hP in
+set_option backward.simpa.using.reducibleClose false in
 /-- Pullbacks distribute over universal coproducts on the right: This is the isomorphism
 `∐ (Xᵢ ×[S] B) ≅ (∐ Xᵢ) ×[S] B`. -/
 lemma IsUniversalColimit.isPullback_of_isColimit_right {d : Cofan P} (hd : IsColimit d)
@@ -928,6 +934,7 @@ lemma IsUniversalColimit.nonempty_isColimit_prod_of_isPullback
 
 set_option backward.isDefEq.respectTransparency false in
 include hau hbu in
+set_option backward.simpa.using.reducibleClose false in
 lemma IsUniversalColimit.isPullback_prod_of_isColimit [HasPullback u v]
     {P : ι × ι' → C} {q₁ : ∀ i j, P (i, j) ⟶ X i} {q₂ : ∀ i j, P (i, j) ⟶ Y j}
     (hP : ∀ i j, IsPullback (q₁ i j) (q₂ i j) (f i) (g j)) (d : Cofan P) (hd : IsColimit d)
