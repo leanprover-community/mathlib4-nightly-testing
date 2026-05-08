@@ -192,7 +192,7 @@ lemma OpenCover.pullbackCoverAffineRefinementObjIso_inv_pullbackHom
       (𝒰.X i.1).affineCover.pullbackHom (𝒰.pullbackHom f i.1) i.2 := by
   simp only [Cover.pullbackHom, pullbackCoverAffineRefinementObjIso, Iso.trans_inv, asIso_inv,
     Iso.symm_inv, Category.assoc, pullbackSymmetry_inv_comp_snd, IsIso.inv_comp_eq, limit.lift_π,
-      PullbackCone.mk_π_app, Category.comp_id]
+    PullbackCone.mk_π_app, Category.comp_id]
   convert pullbackSymmetry_inv_comp_fst ((𝒰.X i.1).affineCover.f i.2) (pullback.fst _ _)
   exact pullbackRightPullbackFstIso_hom_fst _ _ _
 
