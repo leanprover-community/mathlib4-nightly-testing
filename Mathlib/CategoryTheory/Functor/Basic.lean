@@ -53,6 +53,8 @@ structure Functor (C : Type u₁) [Category.{v₁} C] (D : Type u₂) [Category.
 -- For example, `C × D ⥤ E` should parse as `(C × D) ⥤ E` not `C × (D ⥤ E)`.
 scoped[CategoryTheory] infixr:26 " ⥤ " => Functor -- type as \func
 
+attribute [reducible_proj] Functor.obj
+
 attribute [simp] Functor.map_id Functor.map_comp
 attribute [grind =] Functor.map_id
 attribute [grind _=_] Functor.map_comp
