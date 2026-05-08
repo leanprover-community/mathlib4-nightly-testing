@@ -72,6 +72,7 @@ Torsion, submodule, module, quotient
 
 @[expose] public section
 
+
 open Module
 
 namespace Ideal
@@ -110,6 +111,18 @@ theorem torsionOf_eq_bot_iff_of_noZeroSMulDivisors [IsDomain R] [Module.IsTorsio
     exact bot_ne_top.symm h
   · rw [mem_torsionOf_iff, smul_eq_zero] at hr
     tauto
+
+@[simp]
+theorem annihilator_span_singleton_eq_torsionOf
+    {R M : Type*} [CommSemiring R] [AddCommMonoid M] [Module R M] (x : M) :
+    (R ∙ x).annihilator = torsionOf R M x := by
+  simpa [torsionOf] using Submodule.annihilator_span_singleton x
+
+/-- The annihilator of a module is the intersection of the torsion ideals of its elements. -/
+theorem _root_.Module.annihilator_eq_iInf_torsionOf :
+    Module.annihilator R M = ⨅ x : M, torsionOf R M x := by
+  ext r
+  simp [Module.mem_annihilator]
 
 /-- See also `iSupIndep.linearIndependent` which provides the same conclusion
 but requires the stronger hypothesis `Module.IsTorsionFree R M`. -/
@@ -447,6 +460,7 @@ theorem sup_torsionBySet_ideal_eq_torsionBySet_inf (P Q : Ideal R) {hc : P ⊔ Q
     simpa [Finset.top_eq_univ, Fin.univ_succ, Fin.isValue, coe_iInf, this] using heq
   · simp_all [Set.pairwise_pair, Fin.univ_succ, map, sup_comm]
 
+set_option backward.defeqAttrib.useBackward true in
 theorem supIndep_torsionBySet_ideal (hp : (S : Set ι).Pairwise fun i j => p i ⊔ p j = ⊤) :
     S.SupIndep fun i => torsionBySet R M <| p i :=
   fun T hT i hi hiT => by
@@ -645,7 +659,7 @@ namespace Module
 
 variable (M) [CommRing R] [AddCommGroup M] [Module R M] (s : Set R) (r : R)
 
-open Pointwise
+open scoped Pointwise
 
 lemma isTorsionBy_quotient_element_smul :
     IsTorsionBy R (M ⧸ r • (⊤ : Submodule R M)) r :=

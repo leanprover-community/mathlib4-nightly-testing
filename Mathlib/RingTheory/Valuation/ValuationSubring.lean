@@ -27,6 +27,7 @@ The order structure on `ValuationSubring K`.
 @[expose] public section
 
 
+
 universe u
 
 noncomputable section
@@ -269,7 +270,7 @@ def mapOfLE (R S : ValuationSubring K) (h : R ≤ S) : R.ValueGroup →*₀ S.Va
   map_one' := rfl
   map_mul' := by rintro ⟨⟩ ⟨⟩; rfl
 
-@[mono]
+@[gcongr, mono]
 theorem monotone_mapOfLE (R S : ValuationSubring K) (h : R ≤ S) : Monotone (R.mapOfLE S h) := by
   rintro ⟨⟩ ⟨⟩ ⟨a, ha⟩; exact ⟨R.inclusion S h a, ha⟩
 
@@ -378,6 +379,7 @@ def primeSpectrumEquiv : PrimeSpectrum A ≃ {S // A ≤ S} where
   left_inv P := by ext1; simp
   right_inv S := by ext1; simp
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An ordered variant of `primeSpectrumEquiv`. -/
 @[simps!]
 def primeSpectrumOrderEquiv : (PrimeSpectrum A)ᵒᵈ ≃o {S // A ≤ S} :=

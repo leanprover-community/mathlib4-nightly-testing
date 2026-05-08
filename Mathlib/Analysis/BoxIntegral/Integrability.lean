@@ -34,6 +34,7 @@ open MeasureTheory Metric Set Finset Filter BoxIntegral
 
 namespace BoxIntegral
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The indicator function of a measurable set is McShane integrable with respect to any
 locally-finite measure. -/
 theorem hasIntegralIndicatorConst (l : IntegrationParams) (hl : l.bRiemann = false)
@@ -191,6 +192,7 @@ end SimpleFunc
 
 open TopologicalSpace
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `f : ℝⁿ → E` is Bochner integrable w.r.t. a locally finite measure `μ` on a rectangular box
 `I`, then it is McShane integrable on `I` with the same integral. -/
 theorem IntegrableOn.hasBoxIntegral [CompleteSpace E] {f : (ι → ℝ) → E} {μ : Measure (ι → ℝ)}
@@ -328,14 +330,13 @@ theorem AEContinuous.hasBoxIntegral [CompleteSpace E] {f : (ι → ℝ) → E} (
     repeat rw [μ.restrict_apply hs]
     apply le_of_le_of_eq <| μ.mono s.inter_subset_left
     refine measure_eq_measure_of_null_diff s.inter_subset_left ?_ |>.symm
-    rw [diff_self_inter, Set.diff_eq]
-    refine (le_antisymm (zero_le (μ (s ∩ vᶜ))) ?_).symm
-    exact le_trans (μ.mono s.inter_subset_right) (nonpos_iff_eq_zero.2 hc)
+    rw [diff_self_inter, Set.diff_eq, ← nonpos_iff_eq_zero]
+    grw [s.inter_subset_right]
+    exact hc.le
   · have : IsFiniteMeasure (μ.restrict (Box.Icc I)) :=
       { measure_univ_lt_top := by simp [I.isCompact_Icc.measure_lt_top (μ := μ)] }
     have : IsFiniteMeasure (μ.restrict I) :=
-      isFiniteMeasure_of_le (μ.restrict (Box.Icc I))
-                            (μ.restrict_mono Box.coe_subset_Icc (le_refl μ))
+      isFiniteMeasure_of_le _ (μ.restrict_mono Box.coe_subset_Icc le_rfl)
     obtain ⟨C, hC⟩ := hb
     refine .of_bounded (C := C) (Filter.eventually_iff_exists_mem.2 ?_)
     use I, self_mem_ae_restrict I.measurableSet_coe, fun y hy ↦ hC y (I.coe_subset_Icc hy)

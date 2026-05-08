@@ -193,7 +193,7 @@ theorem le_iff_derivFamily [Small.{u} ι] (H : ∀ i, IsNormal (f i)) {a} :
       intro h₁
       refine ⟨0, le_antisymm ?_ h₁⟩
       rw [derivFamily_zero]
-      exact nfpFamily_le_fp (fun i => (H i).monotone) (zero_le _) ha
+      exact nfpFamily_le_fp (fun i => (H i).monotone) zero_le ha
     | succ o IH =>
       intro h₁
       rcases le_or_gt a (derivFamily f o) with h | h
@@ -428,15 +428,15 @@ theorem nfp_add_zero (a) : nfp (a + ·) 0 = a * ω := by
 theorem nfp_add_eq_mul_omega0 {a b} (hba : b ≤ a * ω) : nfp (a + ·) b = a * ω := by
   apply le_antisymm (nfp_le_fp (isNormal_add_right a).monotone hba _)
   · rw [← nfp_add_zero]
-    exact nfp_monotone (isNormal_add_right a).monotone (zero_le b)
-  · dsimp; rw [← mul_one_add, one_add_omega0]
+    exact nfp_monotone (isNormal_add_right a).monotone zero_le
+  · rw [← mul_one_add, one_add_omega0]
 
 theorem add_eq_right_iff_mul_omega0_le {a b : Ordinal} : a + b = b ↔ a * ω ≤ b := by
   refine ⟨fun h => ?_, fun h => ?_⟩
   · rw [← nfp_add_zero a, ← deriv_zero_right]
     obtain ⟨c, hc⟩ := (mem_range_deriv (isNormal_add_right a)).2 h
     rw [← hc]
-    exact (isNormal_deriv _).monotone (zero_le _)
+    exact (isNormal_deriv _).monotone zero_le
   · have := Ordinal.add_sub_cancel_of_le h
     nth_rw 1 [← this]
     rwa [← add_assoc, ← mul_one_add, one_add_omega0]
@@ -482,7 +482,7 @@ theorem eq_zero_or_opow_omega0_le_of_mul_eq_right {a b : Ordinal} (hab : a * b =
     b = 0 ∨ a ^ ω ≤ b := by
   rcases eq_zero_or_pos a with ha | ha
   · rw [ha, zero_opow omega0_ne_zero]
-    exact Or.inr (zero_le b)
+    exact .inr zero_le
   rw [or_iff_not_imp_left]
   intro hb
   rw [← nfp_mul_one ha]
@@ -515,7 +515,7 @@ theorem nfp_mul_opow_omega0_add {a c : Ordinal} (b) (ha : 0 < a) (hc : 0 < c)
   · apply nfp_le_fp (isNormal_mul_right ha).monotone
     · rw [mul_succ]
       gcongr
-    · dsimp only; rw [← mul_assoc, ← opow_one_add, one_add_omega0]
+    · rw [← mul_assoc, ← opow_one_add, one_add_omega0]
   · obtain ⟨d, hd⟩ :=
       mul_eq_right_iff_opow_omega0_dvd.1 (nfp_fp (isNormal_mul_right ha) (a ^ ω * b + c))
     rw [hd]

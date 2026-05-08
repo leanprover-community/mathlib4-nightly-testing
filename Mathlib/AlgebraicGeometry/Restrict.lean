@@ -316,6 +316,7 @@ def Scheme.Opens.iSupOpenCover {J : Type*} {X : Scheme} (U : J → X.Opens) :
     apply Subtype.ext
     simp
 
+set_option backward.defeqAttrib.useBackward true in
 variable (X) in
 /-- The functor taking open subsets of `X` to open subschemes of `X`. -/
 @[simps! obj_left obj_hom map_left]
@@ -329,6 +330,7 @@ def Scheme.restrictFunctor : X.Opens ⥤ Over X where
     ext1
     exact (X.homOfLE_homOfLE i.le j.le).symm
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor that restricts to open subschemes and then takes global section is
 isomorphic to the structure sheaf. -/
@@ -529,13 +531,8 @@ theorem morphismRestrict_ι {X Y : Scheme.{u}} (f : X ⟶ Y) (U : Y.Opens) :
 
 theorem isPullback_morphismRestrict {X Y : Scheme.{u}} (f : X ⟶ Y) (U : Y.Opens) :
     IsPullback (f ∣_ U) (f ⁻¹ᵁ U).ι U.ι f := by
-  delta morphismRestrict
-  rw [← Category.id_comp f]
-  refine
-    (IsPullback.of_horiz_isIso ⟨?_⟩).paste_horiz
-      (IsPullback.of_hasPullback f (Y.ofRestrict U.isOpenEmbedding)).flip
-  erw [pullbackRestrictIsoRestrict_inv_fst]
-  rw [Category.comp_id]
+  apply IsOpenImmersion.isPullback <;>
+  simp
 
 lemma isPullback_opens_inf_le {X : Scheme} {U V W : X.Opens} (hU : U ≤ W) (hV : V ≤ W) :
     IsPullback (X.homOfLE inf_le_left) (X.homOfLE inf_le_right) (X.homOfLE hU) (X.homOfLE hV) := by
@@ -617,6 +614,7 @@ theorem morphismRestrict_appLE {X Y : Scheme.{u}} (f : X ⟶ Y) (U : Y.Opens) (V
   rw [Scheme.Hom.appLE, morphismRestrict_app', Scheme.Opens.toScheme_presheaf_map,
     Scheme.Hom.appLE_map]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Restricting a morphism onto the image of an open immersion is isomorphic to the base change
 along the immersion. -/
@@ -661,16 +659,7 @@ def morphismRestrictRestrictBasicOpen {X Y : Scheme.{u}} (f : X ⟶ Y) (U : Y.Op
           U.toScheme.basicOpen (Y.presheaf.map (eqToHom U.isOpenEmbedding_obj_top).op r)) ≅
       Arrow.mk (f ∣_ Y.basicOpen r) := by
   refine morphismRestrictRestrict _ _ _ ≪≫ morphismRestrictEq _ ?_
-  have e := Scheme.preimage_basicOpen U.ι r
-  rw [Scheme.Opens.ι_app] at e
-  rw [← U.toScheme.basicOpen_res_eq _ (eqToHom U.inclusion'_map_eq_top).op]
-  erw [← elementwise_of% Y.presheaf.map_comp]
-  rw [eqToHom_op, eqToHom_op, eqToHom_map, eqToHom_trans]
-  erw [← e]
-  ext1
-  dsimp [Opens.map_coe]
-  rw [Set.image_preimage_eq_inter_range, Set.inter_eq_left, Scheme.Opens.range_ι]
-  exact Y.basicOpen_le r
+  simp [Scheme.Opens.ι_image_basicOpen]
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The stalk map of a restriction of a morphism is isomorphic to the stalk map of the original map.
@@ -758,6 +747,7 @@ lemma resLE_appLE {U : Y.Opens} {V : X.Opens} (e : V ≤ f ⁻¹ᵁ U)
 lemma coe_resLE_apply (x : V) : (f.resLE U V e x).1 = f x := by
   simp [resLE, morphismRestrict_base]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The stalk map of `f.resLE U V` at `x : V` is the stalk map of `f` at `x`. -/
 def resLEStalkMap (x : V) :
@@ -777,7 +767,7 @@ set_option backward.isDefEq.respectTransparency false in
 noncomputable def arrowResLEAppIso (f : X ⟶ Y) (U : Y.Opens) (V : X.Opens) (e : V ≤ f ⁻¹ᵁ U) :
     Arrow.mk ((f.resLE U V e).appTop) ≅ Arrow.mk (f.appLE U V e) :=
   Arrow.isoMk U.topIso V.topIso <| by
-  simp only [Arrow.mk_left, Arrow.mk_right, Scheme.Opens.topIso_hom,
+  simp only [ Scheme.Opens.topIso_hom,
     eqToHom_op, Arrow.mk_hom, Scheme.Hom.map_appLE]
   rw [Scheme.Hom.appTop, ← Scheme.Hom.appLE_eq_app, Scheme.Hom.resLE_appLE, Scheme.Hom.appLE_map]
 
@@ -802,6 +792,7 @@ lemma Scheme.Hom.isPullback_resLE
 
 end MorphismRestrict
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The restriction of an open cover to an open subset. -/
 @[simps! I₀ X f]

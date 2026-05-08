@@ -23,6 +23,7 @@ bounds for its q-expansion coefficients. The main results are
 * `CuspFormClass.qExpansion_isBigO`: **Hecke's bound** for a a cusp form of weight `k` (for
   an arithmetic subgroup `Γ`): the `n`-th q-expansion coefficient is `O(n ^ (k / 2))`.
 -/
+
 public section
 
 open Filter Topology Asymptotics Matrix.SpecialLinearGroup Matrix.GeneralLinearGroup
@@ -247,7 +248,6 @@ local notation "𝕢" => Function.Periodic.qParam
 
 open Complex ModularFormClass
 
-set_option backward.isDefEq.respectTransparency false in
 /-- General result on bounding q-expansion coefficients using a bound on the norm of the function.
 This will get used twice over, once for cusp forms (with `e = k / 2`) and once for modular forms
 (with `e = k`). -/

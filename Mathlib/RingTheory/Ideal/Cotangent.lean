@@ -263,7 +263,6 @@ lemma lift_surjective_iff (f : I →ₗ[R] M) (hf : ∀ (x y : I), f (x * y) = 0
 end Lift
 
 /-- A linear isomorphism between cotangent spaces induced by an equality of ideals. -/
-@[expose]
 def equivOfEq (I J : Ideal R) (hIJ : I = J) :
     I.Cotangent ≃ₗ[R] J.Cotangent where
   __ := Cotangent.lift (J.toCotangent ∘ₗ LinearEquiv.ofEq I J hIJ) <| fun x y ↦ by
@@ -332,7 +331,7 @@ lemma CotangentSpace.span_image_eq_top_iff [IsNoetherianRing R] {s : Set (maxima
       Submodule.span R s = ⊤ := by
   rw [← map_eq_top_iff, ← (Submodule.restrictScalars_injective R ..).eq_iff,
     Submodule.restrictScalars_span]
-  · simp only [Ideal.toCotangent_apply, Submodule.restrictScalars_top, Submodule.map_span]
+  · simp
   · exact Ideal.Quotient.mk_surjective
 
 open Module
