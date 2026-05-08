@@ -159,6 +159,7 @@ lemma changeOriginSeriesTerm_changeOriginIndexEquiv_symm (n t) :
     simp +unfoldPartialApp [Finset.piecewise]
   simp_rw [changeOriginSeriesTerm_apply, eq_comm]; apply this
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem changeOriginSeries_summable_aux₁ {r r' : ℝ≥0} (hr : (r + r' : ℝ≥0∞) < p.radius) :
     Summable fun s : Σ k l : ℕ, { s : Finset (Fin (k + l)) // s.card = l } =>
@@ -256,7 +257,6 @@ theorem hasFPowerSeriesOnBall_changeOrigin (k : ℕ) (hr : 0 < p.radius) :
 /-- Summing the series `p.changeOrigin x` at a point `y` gives back `p (x + y)`. -/
 theorem changeOrigin_eval (h : (‖x‖₊ + ‖y‖₊ : ℝ≥0∞) < p.radius) :
     (p.changeOrigin x).sum y = p.sum (x + y) := by
-  have radius_pos : 0 < p.radius := lt_of_le_of_lt (zero_le _) h
   have x_mem_ball : x ∈ Metric.eball (0 : E) p.radius :=
     mem_eball_zero_iff.2 ((le_add_right le_rfl).trans_lt h)
   have y_mem_ball : y ∈ Metric.eball (0 : E) (p.changeOrigin x).radius := by
@@ -276,7 +276,7 @@ theorem changeOrigin_eval (h : (‖x‖₊ + ‖y‖₊ : ℝ≥0∞) < p.radius
     refine HasSum.sigma_of_hasSum ((p.changeOrigin x).summable y_mem_ball).hasSum (fun k => ?_) hsf
     · dsimp +instances only [f]
       refine ContinuousMultilinearMap.hasSum_eval ?_ _
-      have := (p.hasFPowerSeriesOnBall_changeOrigin k radius_pos).hasSum x_mem_ball
+      have := (p.hasFPowerSeriesOnBall_changeOrigin k h.pos).hasSum x_mem_ball
       rw [zero_add] at this
       refine HasSum.sigma_of_hasSum this (fun l => ?_) ?_
       · simp only [changeOriginSeries, ContinuousMultilinearMap.sum_apply]

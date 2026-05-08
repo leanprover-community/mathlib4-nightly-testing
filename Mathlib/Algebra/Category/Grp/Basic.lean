@@ -114,10 +114,10 @@ initialize_simps_projections AddGrpCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_id {X : GrpCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_comp {X Y Z : GrpCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[deprecated (since := "2026-02-10")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
@@ -331,10 +331,10 @@ initialize_simps_projections AddCommGrpCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_id {X : CommGrpCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_comp {X Y Z : CommGrpCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[deprecated (since := "2026-02-10")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
@@ -544,8 +544,8 @@ end CategoryTheory.Iso
 in `GrpCat` -/
 @[to_additive]
 def mulEquivIsoGroupIso {X Y : GrpCat.{u}} : (X ≃* Y) ≅ (X ≅ Y) where
-  hom := TypeCat.ofHom (fun e ↦ e.toGrpIso)
-  inv := TypeCat.ofHom (fun i ↦ i.groupIsoToMulEquiv)
+  hom := ↾fun e ↦ e.toGrpIso
+  inv := ↾fun i ↦ i.groupIsoToMulEquiv
 
 /-- Additive equivalences between `AddGroup`s are the same
 as (isomorphic to) isomorphisms in `AddGrpCat`. -/
@@ -555,8 +555,8 @@ add_decl_doc addEquivIsoAddGroupIso
 in `CommGrpCat`. -/
 @[to_additive]
 def mulEquivIsoCommGroupIso {X Y : CommGrpCat.{u}} : (X ≃* Y) ≅ (X ≅ Y) where
-  hom := TypeCat.ofHom (fun e ↦ e.toCommGrpIso)
-  inv := TypeCat.ofHom (fun i ↦ i.commGroupIsoToMulEquiv)
+  hom := ↾fun e ↦ e.toCommGrpIso
+  inv := ↾fun i ↦ i.commGroupIsoToMulEquiv
 
 /-- Additive equivalences between `AddCommGroup`s are
 the same as (isomorphic to) isomorphisms in `AddCommGrpCat`. -/

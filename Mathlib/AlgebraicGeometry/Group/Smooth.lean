@@ -7,7 +7,7 @@ module
 
 public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
 public import Mathlib.AlgebraicGeometry.Morphisms.Smooth
-public import Mathlib.CategoryTheory.Monoidal.Grp_
+public import Mathlib.CategoryTheory.Monoidal.Grp
 
 /-!
 # Smoothness of group schemes
@@ -18,7 +18,7 @@ public import Mathlib.CategoryTheory.Monoidal.Grp_
   of finite type, then `G` is smooth over `k`.
 -/
 
-@[expose] public section
+public section
 
 open CategoryTheory
 
@@ -29,6 +29,7 @@ universe u
 variable {K : Type u} [Field K] [IsAlgClosed K] {G : Scheme} (f : G ⟶ Spec (.of K))
     [LocallyOfFinitePresentation f] [IsReduced G] [GrpObj (Over.mk f)]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open MonObj MonoidalCategory CartesianMonoidalCategory in
 /--

@@ -162,6 +162,7 @@ def induce (G : SimpleGraph V) (s : Set V) : Copy (G.induce s) G := (Embedding.i
 /-- The copy of `⊥` in any simple graph that can embed its vertices. -/
 protected def bot (f : α ↪ β) : Copy (⊥ : SimpleGraph α) B := ⟨⟨f, False.elim⟩, f.injective⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The isomorphism from a subgraph of `A` to its map under a copy `f : Copy A B`. -/
 noncomputable def isoSubgraphMap (f : Copy A B) (A' : A.Subgraph) :
@@ -444,6 +445,9 @@ lemma isIndContained_iff_exists_iso_subgraph :
 
 alias ⟨IsIndContained.exists_iso_subgraph, IsIndContained.of_exists_iso_subgraph⟩ :=
   isIndContained_iff_exists_iso_subgraph
+
+theorem isIndContained_iff_exists_iso_induce : G ⊴ H ↔ ∃ s, Nonempty (G ≃g H.induce s) :=
+  ⟨fun ⟨f⟩ ↦ ⟨Set.range f, ⟨f.isoInduceRange⟩⟩, fun ⟨s, ⟨f⟩⟩ ↦ ⟨.comp (.induce s) f⟩⟩
 
 @[simp] lemma top_isIndContained_iff_top_isContained :
     (⊤ : SimpleGraph V) ⊴ H ↔ (⊤ : SimpleGraph V) ⊑ H :=

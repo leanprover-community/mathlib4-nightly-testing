@@ -627,6 +627,7 @@ theorem nhds_one_symm' : map Inv.inv (𝓝 (1 : G)) = 𝓝 (1 : G) :=
 theorem inv_mem_nhds_one {S : Set G} (hS : S ∈ (𝓝 1 : Filter G)) : S⁻¹ ∈ 𝓝 (1 : G) := by
   rwa [← nhds_one_symm'] at hS
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The map `(x, y) ↦ (x, x * y)` as a homeomorphism. This is a shear mapping. -/
 @[to_additive /-- The map `(x, y) ↦ (x, x + y)` as a homeomorphism. This is a shear mapping. -/]
 protected def Homeomorph.shearMulRight : G × G ≃ₜ G × G :=
@@ -901,7 +902,7 @@ lemma MonoidHom.isOpenQuotientMap_of_isQuotientMap {A : Type*} [Group A]
       -- as `U * k⁻¹` is open because `x ↦ x * k` is continuous.
       -- Remark: here is where we use that we have groups not monoids (you cannot avoid
       -- using both `k` and `k⁻¹` at this point).
-      suffices ⇑φ ⁻¹' (⇑φ '' U) = ⋃ k ∈ ker (φ : A →* B), (fun x ↦ x * k) ⁻¹' U by
+      suffices ⇑φ ⁻¹' ⇑φ '' U = ⋃ k ∈ ker (φ : A →* B), (fun x ↦ x * k) ⁻¹' U by
         exact this ▸ isOpen_biUnion (fun k _ ↦ Continuous.isOpen_preimage (by fun_prop) _ hU)
       ext x
       -- But this is an elementary calculation.
