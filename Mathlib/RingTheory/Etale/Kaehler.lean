@@ -23,6 +23,7 @@ public import Mathlib.RingTheory.Flat.Localization
 
 @[expose] public section
 
+
 universe u
 
 variable (R S T : Type*) [CommRing R] [CommRing S] [CommRing T]
@@ -90,6 +91,7 @@ Suppose we have a morphism of extensions of `R`-algebras
 -/
 variable {P : Extension.{u} R S} {Q : Extension.{u} R T} (f : P.Hom Q)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `P → Q` is formally étale, then `T ⊗ₛ (S ⊗ₚ Ω[P/R]) ≃ T ⊗_Q Ω[Q/R]`. -/
 noncomputable
 def tensorCotangentSpaceOfFormallyEtale
@@ -228,6 +230,7 @@ def tensorCotangent [alg : Algebra P.Ring Q.Ring] (halg : algebraMap P.Ring Q.Ri
         simp only [LinearMap.liftBaseChange_tmul, map_smul]
         simp [Hom.mapKer, tensorCotangentInvFun_smul_mk] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `J ≃ Q ⊗ₚ I`, `S → T` is flat and `P → Q` is formally étale, then `T ⊗ H¹(L_P) ≃ H¹(L_Q)`. -/
 noncomputable
 def tensorH1CotangentOfFormallyEtale [alg : Algebra P.Ring Q.Ring]
@@ -271,7 +274,6 @@ end Extension
 
 variable {S}
 
-set_option backward.inferInstanceAs.wrap.data false in
 set_option backward.isDefEq.respectTransparency false in
 /-- let `p` be a submonoid of an `R`-algebra `S`. Then `Sₚ ⊗ H¹(L_{S/R}) ≃ H¹(L_{Sₚ/R})`. -/
 noncomputable
@@ -346,7 +348,7 @@ lemma tensorH1CotangentOfIsLocalization_toLinearMap
   ext x : 3
   simp only [AlgebraTensorModule.curry_apply, curry_apply, LinearMap.coe_restrictScalars,
     LinearEquiv.coe_coe, LinearMap.liftBaseChange_tmul, one_smul]
-  simp only [tensorH1CotangentOfIsLocalization, Generators.toExtension_Ring,
+  simp only [tensorH1CotangentOfIsLocalization,
     Extension.tensorH1CotangentOfFormallyEtale,
     LinearEquiv.ofBijective_apply, LinearMap.liftBaseChange_tmul, one_smul,
     Extension.equivH1CotangentOfFormallySmooth, LinearEquiv.trans_apply]

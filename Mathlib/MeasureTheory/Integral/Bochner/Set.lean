@@ -206,7 +206,7 @@ theorem integral_biUnion_eq_sum_powerset {ι : Type*} {t : Finset ι} {s : ι �
         (fun a ↦ (-1 : ℝ) ^ (#x + 1) • f a) a ∂μ := by
     apply Finset.sum_congr rfl (fun x hx ↦ ?_)
     rw [← integral_indicator (A x hx)]
-  rw [this, ← integral_finset_sum]; swap
+  rw [this, ← integral_finsetSum]; swap
   · intro u hu
     rw [integrable_indicator_iff (A u hu)]
     apply Integrable.smul
@@ -493,14 +493,12 @@ theorem integral_norm_eq_pos_sub_neg {f : X → ℝ} (hfi : Integrable f μ) :
     _ = ∫ x in {x | 0 ≤ f x}, f x ∂μ + ∫ x in {x | 0 ≤ f x}ᶜ, ‖f x‖ ∂μ := by
       congr 1
       refine setIntegral_congr_fun₀ h_meas fun x hx => ?_
-      dsimp only
       rw [Real.norm_eq_abs, abs_eq_self.mpr _]
       exact hx
     _ = ∫ x in {x | 0 ≤ f x}, f x ∂μ - ∫ x in {x | 0 ≤ f x}ᶜ, f x ∂μ := by
       congr 1
       rw [← integral_neg]
       refine setIntegral_congr_fun₀ h_meas.compl fun x hx => ?_
-      dsimp only
       rw [Real.norm_eq_abs, abs_eq_neg_self.mpr _]
       rw [Set.mem_compl_iff, Set.notMem_setOf_iff] at hx
       linarith
@@ -1034,6 +1032,7 @@ theorem measure_le_lintegral_thickenedIndicatorAux (μ : Measure X) {E : Set X}
   · apply lintegral_mono
     apply indicator_le_thickenedIndicatorAux
 
+set_option backward.defeqAttrib.useBackward true in
 theorem measure_le_lintegral_thickenedIndicator (μ : Measure X) {E : Set X}
     (E_mble : MeasurableSet E) {δ : ℝ} (δ_pos : 0 < δ) :
     μ E ≤ ∫⁻ x, (thickenedIndicator δ_pos E x : ℝ≥0∞) ∂μ := by
@@ -1166,8 +1165,7 @@ lemma continuousOn_integral_bilinear_of_locally_integrable_of_compact_support
       · exact (hg.norm.const_mul _).mul_const _
       · filter_upwards with y
         by_cases hy : y ∈ k
-        · dsimp only
-          specialize hv p hp y hy
+        · specialize hv p hp y hy
           calc
           ‖L (g y) (f p y) - L (g y) (f q y)‖
             = ‖L (g y) (f p y - f q y)‖ := by simp only [map_sub]

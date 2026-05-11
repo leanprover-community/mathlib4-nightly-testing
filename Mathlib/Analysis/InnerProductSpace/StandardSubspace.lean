@@ -51,7 +51,6 @@ section ScalarSMulCLE
 
 variable (H : Type*) [NormedAddCommGroup H] [InnerProductSpace ℂ H]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- the scalar product by a non-zero complex number as a continuous real-linear equivalence. -/
 noncomputable def scalarSMulCLE (c : ℂˣ) : H ≃L[ℝ] H := ContinuousLinearEquiv.smulLeft c
 
@@ -67,7 +66,6 @@ namespace ClosedSubmodule
 
 variable {H : Type*} [NormedAddCommGroup H] [ipc : InnerProductSpace ℂ H]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- `H` as a real Hilbert space. This instance is declared inside `ClosedSubmodule` namespace. If
 one needs this structure (for example when considering standard subspaces), one should just `open
 ClosedSubmodule` and not declare another instance. -/
@@ -83,7 +81,7 @@ noncomputable scoped instance : InnerProductSpace ℝ H where
 lemma inner_real_eq_re_inner (x y : H) : inner ℝ x y = ⟪x, y⟫.re := rfl
 
 /-- The imaginary unit as an invertible element. -/
-@[simps]
+@[simps val]
 def _root_.Complex.UnitI : ℂˣ where
   val := I
   inv := -I

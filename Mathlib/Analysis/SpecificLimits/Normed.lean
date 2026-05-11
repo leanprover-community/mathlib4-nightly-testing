@@ -497,7 +497,7 @@ theorem summable_pow_mul_geometric_of_norm_lt_one (k : ℕ) {r : R} (hr : ‖r�
       have : n + 1 + k - 1 = n + k := by lia
       simp [P, ascPochhammer_nat_eq_descFactorial, this]
     conv_lhs => rw [A, mP.as_sum, dP]
-    simp [eval_finset_sum]
+    simp [eval_finsetSum]
   have : Summable (fun n ↦ (n + k).descFactorial k * r ^ n
       - ∑ i ∈ range k, a i * n ^ (i : ℕ) * r ^ n) := by
     apply (summable_descFactorial_mul_geometric_of_norm_lt_one k hr).sub
@@ -620,7 +620,7 @@ lemma exists_norm_le_of_cauchySeq (h : CauchySeq fun n ↦ ∑ k ∈ range n, f 
     ∃ C, ∀ n, ‖f n‖ ≤ C := by
   obtain ⟨b, ⟨_, key, _⟩⟩ := cauchySeq_iff_le_tendsto_0.mp h
   refine ⟨b 0, fun n ↦ ?_⟩
-  simpa only [dist_partial_sum'] using key n (n + 1) 0 (_root_.zero_le _) (_root_.zero_le _)
+  simpa only [dist_partial_sum'] using key n (n + 1) 0 zero_le zero_le
 
 end SummableLeGeometric
 
@@ -942,7 +942,6 @@ lemma tendsto_smul_congr_of_tendsto_left_cobounded_of_isBoundedUnder
     (hbdd : IsBoundedUnder (· ≤ ·) l fun x ↦ ‖f₁ x - f₂ x‖) :
     Tendsto (fun x ↦ f₂ x • g x) l (𝓝 t) := by
   apply hmul.congr_dist
-  dsimp
   simp_rw [dist_eq_norm, ← sub_smul, norm_smul]
   apply isBoundedUnder_le_mul_tendsto_zero
   · change IsBoundedUnder _ _ fun _ ↦ _

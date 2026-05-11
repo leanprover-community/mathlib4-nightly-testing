@@ -272,7 +272,7 @@ def limit.homIso (F : J ⥤ C) [HasLimit F] (W : C) :
 
 @[simp]
 theorem limit.homIso_hom (F : J ⥤ C) [HasLimit F] {W : C} :
-    (limit.homIso F W).hom = TypeCat.ofHom (fun f ↦ (const J).map f.down ≫ (limit.cone F).π) :=
+    (limit.homIso F W).hom = ↾fun f ↦ (const J).map f.down ≫ (limit.cone F).π :=
   (limit.isLimit F).homIso_hom
 
 /-- The isomorphism (in `Type`) between
@@ -343,6 +343,7 @@ def HasLimit.isoOfEquivalence {F : J ⥤ C} [HasLimit F] {G : K ⥤ C} [HasLimit
     (w : e.functor ⋙ G ≅ F) : limit F ≅ limit G :=
   IsLimit.conePointsIsoOfEquivalence (limit.isLimit F) (limit.isLimit G) e w
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem HasLimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C} [HasLimit G]
@@ -352,6 +353,7 @@ theorem HasLimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C
   simp only [HasLimit.isoOfEquivalence, IsLimit.conePointsIsoOfEquivalence_hom]
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem HasLimit.isoOfEquivalence_inv_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C} [HasLimit G]
@@ -487,6 +489,12 @@ def lim : (J ⥤ C) ⥤ C where
     apply Limits.limit.hom_ext; intro j
     simp [assoc]
 
+set_option backward.isDefEq.respectTransparency false in
+/-- The natural transformation induced by `limit.π`. -/
+@[simps]
+def lim.π (j : J) : lim ⟶ (evaluation J C).obj j where
+  app F := limit.π F j
+
 end
 
 variable {G : J ⥤ C} (α : F ⟶ G)
@@ -516,6 +524,7 @@ theorem limit.map_post {D : Type u'} [Category.{v'} D] [HasLimitsOfShape J D] (H
   ext
   simp only [whiskerRight_app, limMap_π, assoc, limit.post_π_assoc, limit.post_π, ← H.map_comp]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism between
 morphisms from `W` to the cone point of the limit cone for `F`
 and cones over `F` with cone point `W`
@@ -525,6 +534,7 @@ def limYoneda :
     lim ⋙ yoneda ⋙ (whiskeringRight _ _ _).obj uliftFunctor.{u₁} ≅ CategoryTheory.cones J C :=
   NatIso.ofComponents fun F => NatIso.ofComponents fun W => limit.homIso F (unop W)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The constant functor and limit functor are adjoint to each other -/
 def constLimAdj : (const J : C ⥤ J ⥤ C) ⊣ lim := Adjunction.mk' {
@@ -567,6 +577,7 @@ noncomputable def coneOfAdj (F : J ⥤ C) : Cone F where
   pt := L.obj F
   π := adj.counit.app F
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The cones defined by `coneOfAdj` are limit cones. -/
 @[simps]
@@ -833,7 +844,7 @@ def colimit.homIso (F : J ⥤ C) [HasColimit F] (W : C) :
 @[simp]
 theorem colimit.homIso_hom (F : J ⥤ C) [HasColimit F] {W : C} :
     (colimit.homIso F W).hom =
-      TypeCat.ofHom (fun f ↦ (colimit.cocone F).ι ≫ (const J).map f.down) :=
+      ↾fun f ↦ (colimit.cocone F).ι ≫ (const J).map f.down :=
   (colimit.isColimit F).homIso_hom
 
 /-- The isomorphism (in `Type`) between
@@ -905,6 +916,7 @@ def HasColimit.isoOfEquivalence {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasC
     (w : e.functor ⋙ G ≅ F) : colimit F ≅ colimit G :=
   IsColimit.coconePointsIsoOfEquivalence (colimit.isColimit F) (colimit.isColimit G) e w
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem HasColimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasColimit G]
@@ -913,6 +925,7 @@ theorem HasColimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasColimit F] {G : K �
       F.map (e.unit.app j) ≫ w.inv.app _ ≫ colimit.ι G _ := by
   simp [HasColimit.isoOfEquivalence]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem HasColimit.isoOfEquivalence_inv_π {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasColimit G]
@@ -1062,6 +1075,12 @@ def colim : (J ⥤ C) ⥤ C where
   obj F := colimit F
   map α := colimMap α
 
+set_option backward.isDefEq.respectTransparency false in
+/-- The natural transformation induced by `colimit.ι`. -/
+@[simps]
+def colim.ι (j : J) : (evaluation J C).obj j ⟶ colim where
+  app F := colimit.ι F j
+
 end
 
 variable {G : J ⥤ C} (α : F ⟶ G)
@@ -1092,6 +1111,7 @@ theorem colimit.pre_map' [HasColimitsOfShape K C] (F : J ⥤ C) {E₁ E₂ : K �
   ext1
   simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem colimit.pre_id (F : J ⥤ C) :
     colimit.pre F (𝟭 _) = colim.map (Functor.leftUnitor F).hom := by cat_disch
@@ -1108,6 +1128,7 @@ theorem colimit.map_post {D : Type u'} [Category.{v'} D] [HasColimitsOfShape J D
   rw [← assoc, colimit.ι_map, assoc, colimit.ι_post]
   rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism between
 morphisms from the cone point of the colimit cocone for `F` to `W`
 and cocones over `F` with cone point `W`
@@ -1117,6 +1138,7 @@ def colimCoyoneda : colim.op ⋙ coyoneda ⋙ (whiskeringRight _ _ _).obj uliftF
     ≅ CategoryTheory.cocones J C :=
   NatIso.ofComponents fun F => NatIso.ofComponents fun W => colimit.homIso (unop F) W
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The colimit functor and constant functor are adjoint to each other
 -/
@@ -1189,6 +1211,7 @@ end Colimit
 
 section Opposite
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `t : Cone F` is a limit cone, then `t.op : Cocone F.op` is a colimit cocone.
 -/
 def IsLimit.op {t : Cone F} (P : IsLimit t) : IsColimit t.op where
@@ -1203,6 +1226,7 @@ def IsLimit.op {t : Cone F} (P : IsLimit t) : IsColimit t.op where
       rw [← w]
       rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `t : Cocone F` is a colimit cocone, then `t.op : Cone F.op` is a limit cone.
 -/
 def IsColimit.op {t : Cocone F} (P : IsColimit t) : IsLimit t.op where
@@ -1217,6 +1241,7 @@ def IsColimit.op {t : Cocone F} (P : IsColimit t) : IsLimit t.op where
       rw [← w]
       rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `t : Cone F.op` is a limit cone, then `t.unop : Cocone F` is a colimit cocone.
 -/
 def IsLimit.unop {t : Cone F.op} (P : IsLimit t) : IsColimit t.unop where
@@ -1231,6 +1256,7 @@ def IsLimit.unop {t : Cone F.op} (P : IsLimit t) : IsColimit t.unop where
       rw [← w]
       rfl
 
+set_option backward.defeqAttrib.useBackward true in
 /-- If `t : Cocone F.op` is a colimit cocone, then `t.unop : Cone F` is a limit cone.
 -/
 def IsColimit.unop {t : Cocone F.op} (P : IsColimit t) : IsLimit t.unop where

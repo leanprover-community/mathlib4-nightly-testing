@@ -24,11 +24,9 @@ when `C` is a preadditive category with finite coproducts, and get an isomorphis
 @[expose] public section
 
 
-open CategoryTheory CategoryTheory.Limits CategoryTheory.Category CategoryTheory.Preadditive
-  CategoryTheory.Idempotents Opposite AlgebraicTopology AlgebraicTopology.DoldKan
-  Simplicial DoldKan
+namespace CategoryTheory.SimplicialObject
 
-namespace SimplicialObject
+open AlgebraicTopology Limits Category Preadditive Idempotents Opposite DoldKan Simplicial
 
 namespace Splitting
 
@@ -70,6 +68,7 @@ theorem decomposition_id (Δ : SimplexCategoryᵒᵖ) :
     rw [s.cofan_inj_πSummand_eq_zero_assoc _ _ h₂, zero_comp]
   · simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 theorem σ_comp_πSummand_id_eq_zero {n : ℕ} (i : Fin (n + 1)) :
@@ -180,6 +179,7 @@ noncomputable def nondegComplex : ChainComplex C ℕ where
       simp only [assoc, ιSummand_comp_d_comp_πSummand_eq_zero _ _ _ _ hA, comp_zero]
     rw [eq, comp_zero]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The chain complex `s.nondegComplex` attached to a splitting of a simplicial object `X`
 becomes isomorphic to the normalized Moore complex `N₁.obj X` defined as a formal direct
@@ -230,6 +230,7 @@ namespace Split
 
 variable {C : Type*} [Category* C] [Preadditive C] [HasFiniteCoproducts C]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor which sends a split simplicial object in a preadditive category to
 the chain complex which consists of nondegenerate simplices. -/
@@ -257,6 +258,7 @@ noncomputable def nondegComplexFunctor : Split C ⥤ ChainComplex C ℕ where
         · rw [S₁.s.cofan_inj_πSummand_eq_zero_assoc _ _ (Ne.symm h),
             S₂.s.cofan_inj_πSummand_eq_zero _ _ (Ne.symm h), zero_comp, comp_zero] }
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The natural isomorphism (in `Karoubi (ChainComplex C ℕ)`) between the chain complex
 of nondegenerate simplices of a split simplicial object and the normalized Moore complex
@@ -273,4 +275,4 @@ noncomputable def toKaroubiNondegComplexFunctorIsoN₁ :
 
 end Split
 
-end SimplicialObject
+end CategoryTheory.SimplicialObject

@@ -27,7 +27,7 @@ public import Mathlib.RingTheory.LocalProperties.Exactness
 
 universe u v
 
-@[expose] public section
+public section
 
 variable {R : Type u} [CommRing R] {M : Type v} [AddCommGroup M] [Module R M] (S : Submonoid R)
 
@@ -111,6 +111,7 @@ variable
   (f : ∀ (P : Ideal R) [P.IsMaximal], M →ₗ[R] Mₚ P)
   [inst : ∀ (P : Ideal R) [P.IsMaximal], IsLocalizedModule P.primeCompl (f P)]
 
+set_option backward.defeqAttrib.useBackward true in
 attribute [local instance] RingHomInvPair.of_ringEquiv in
 include f in
 /--
