@@ -333,7 +333,6 @@ noncomputable def sheafCoyonedaHom (α : G.op ⋙ ℱ ⟶ G.op ⋙ ℱ'.obj) :
     congr 1
     exact (appHom_restrict (homOver α (unop X)) hf'.some.map.op x).trans (by simp)
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 (Implementation). `sheafCoyonedaHom` but the order of the arguments of the functor are swapped.
 -/
@@ -342,12 +341,11 @@ noncomputable def sheafYonedaHom (α : G.op ⋙ ℱ ⟶ G.op ⋙ ℱ'.obj) :
   app U :=
     let α := (sheafCoyonedaHom α)
     { app := fun X => (α.app X).app U
-      naturality := fun X Y f => by simpa using congr_app (α.naturality f) U }
+      naturality := fun X Y f => by simpa! using congr_app (α.naturality f) U }
   naturality U V i := by
     ext X x
     exact ConcreteCategory.congr_hom (((sheafCoyonedaHom α).app X).naturality i) x
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 Given a natural transformation `G ⋙ ℱ ⟶ G ⋙ ℱ'` between presheaves of arbitrary category,
 where `G` is locally-full and cover-dense, and `ℱ'` is a sheaf, we may obtain a natural
@@ -356,7 +354,7 @@ transformation between presheaves.
 noncomputable def sheafHom (α : G.op ⋙ ℱ ⟶ G.op ⋙ ℱ'.obj) : ℱ ⟶ ℱ'.obj :=
   let α' := sheafYonedaHom α
   { app := fun X => yoneda.preimage (α'.app X)
-    naturality := fun X Y f => yoneda.map_injective (by simpa using α'.naturality f) }
+    naturality := fun X Y f => yoneda.map_injective (by simpa! using α'.naturality f) }
 
 /--
 Given a natural isomorphism `G ⋙ ℱ ≅ G ⋙ ℱ'` between presheaves of arbitrary category,

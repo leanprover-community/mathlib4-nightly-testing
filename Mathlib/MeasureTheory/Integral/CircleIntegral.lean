@@ -95,10 +95,9 @@ theorem range_circleMap (c : ℂ) (R : ℝ) : range (circleMap c R) = sphere c |
 theorem image_circleMap_Ioc (c : ℂ) (R : ℝ) : circleMap c R '' Ioc 0 (2 * π) = sphere c |R| := by
   rw [← range_circleMap, ← (periodic_circleMap c R).image_Ioc Real.two_pi_pos 0, zero_add]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem hasDerivAt_circleMap (c : ℂ) (R : ℝ) (θ : ℝ) :
     HasDerivAt (circleMap c R) (circleMap 0 R θ * I) θ := by
-  simpa only [mul_assoc, one_mul, ofRealCLM_apply, circleMap, ofReal_one, zero_add]
+  simpa! only [mul_assoc, one_mul, ofRealCLM_apply, circleMap, ofReal_one, zero_add]
     using (((ofRealCLM.hasDerivAt (x := θ)).mul_const I).cexp.const_mul (R : ℂ)).const_add c
 
 theorem differentiable_circleMap (c : ℂ) (R : ℝ) : Differentiable ℝ (circleMap c R) := fun θ =>
@@ -260,7 +259,6 @@ theorem circleIntegrable_congr {c : ℂ} {R : ℝ} {f₁ f₂ : ℂ → E}
 
 @[deprecated (since := "2026-04-26")] alias crcleIntegrable_congr := circleIntegrable_congr
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 Circle integrability is invariant when taking negative radius.
 -/
@@ -270,7 +268,7 @@ Circle integrability is invariant when taking negative radius.
   rw [intervalIntegrable_congr (f := fun θ ↦ f (circleMap c (-R) θ))
     (g := fun θ ↦ (f ∘ (circleMap c R)) (θ + π)) (fun _ _ ↦ by simp [circleMap_neg_radius]),
     IntervalIntegrable.comp_add_right_iff (c := π), add_comm (2 * π) π]
-  simpa using ((periodic_circleMap c R).comp f).intervalIntegrable_iff (t₂ := 0)
+  simpa! using ((periodic_circleMap c R).comp f).intervalIntegrable_iff (t₂ := 0)
 
 /-- Circle integrability is invariant when functions change along discrete sets. -/
 theorem CircleIntegrable.congr_codiscreteWithin {c : ℂ} {R : ℝ} {f₁ f₂ : ℂ → E}

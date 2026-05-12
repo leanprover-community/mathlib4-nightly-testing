@@ -82,12 +82,11 @@ theorem image_right_subset_upperBounds {f : α → β} (hf : Monotone f)
   rintro _ ⟨x, hx, rfl⟩ _ ⟨y, hy, rfl⟩
   exact hf <| rel_extent_intent hy hx
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Convert an element into its Dedekind cut (`Iic a`, `Ici a`). This map is order-preserving,
 though it is injective only on partial orders. -/
 def principal (a : α) : DedekindCut α :=
   (Concept.ofObject _ a).copy (Iic a) (Ici a)
-    (by ext; simpa [mem_lowerPolar_iff] using forall_ge_iff_le.symm)
+    (by ext; simpa! [mem_lowerPolar_iff] using forall_ge_iff_le.symm)
     (by ext; simp)
 
 @[simp] theorem left_principal (a : α) : (principal a).left = Iic a := rfl

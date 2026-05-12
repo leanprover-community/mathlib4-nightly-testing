@@ -33,10 +33,9 @@ variable [CommGroup α] [TopologicalSpace α] [IsTopologicalGroup α]
 variable {f g : β → α} {a a₁ a₂ : α}
 
 -- `by simpa using` speeds up elaboration. Why?
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem HasProd.inv (h : HasProd f a L) : HasProd (fun b ↦ (f b)⁻¹) a⁻¹ L := by
-  simpa only using h.map (MonoidHom.id α)⁻¹ continuous_inv
+  simpa! only using h.map (MonoidHom.id α)⁻¹ continuous_inv
 
 @[to_additive]
 theorem Multipliable.inv (hf : Multipliable f L) : Multipliable (fun b ↦ (f b)⁻¹) L :=
@@ -85,14 +84,13 @@ theorem Multipliable.update [L.LeAtTop] (hf : Multipliable f L) (b : β) [Decida
     Multipliable (update f b a) L :=
   (hf.hasProd.update b a).multipliable
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem HasProd.hasProd_compl_iff {s : Set β} (hf : HasProd (f ∘ (↑) : s → α) a₁) :
     HasProd (f ∘ (↑) : ↑sᶜ → α) a₂ ↔ HasProd f (a₁ * a₂) := by
   refine ⟨fun h ↦ hf.mul_compl h, fun h ↦ ?_⟩
   rw [hasProd_subtype_iff_mulIndicator] at hf ⊢
   rw [Set.mulIndicator_compl]
-  simpa only [div_eq_mul_inv, mul_inv_cancel_comm] using h.div hf
+  simpa! only [div_eq_mul_inv, mul_inv_cancel_comm] using h.div hf
 
 @[to_additive]
 theorem HasProd.hasProd_iff_compl {s : Set β} (hf : HasProd (f ∘ (↑) : s → α) a₁) :
@@ -385,11 +383,10 @@ theorem Multipliable.hasFiniteMulSupport_of_discreteTopology
   Summable.finite_support_of_discreteTopology :=
     Summable.hasFiniteSupport_of_discreteTopology
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem Multipliable.countable_mulSupport [FirstCountableTopology G] [T1Space G]
     (hf : Multipliable f) : f.mulSupport.Countable := by
-  simpa only [ker_nhds] using hf.tendsto_cofinite_one.countable_compl_preimage_ker
+  simpa! only [ker_nhds] using hf.tendsto_cofinite_one.countable_compl_preimage_ker
 
 @[to_additive]
 theorem multipliable_const_iff [Infinite β] [T2Space G] (a : G) :

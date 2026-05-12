@@ -246,7 +246,6 @@ lemma continuous_convexComboPair' [BoundedSpace X]
 
 section Convex
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A convex subset of a vector space is a convex space. -/
 -- TODO: this should generalize to arbitrary convex space once `Convex` is redefined.
 @[implicit_reducible]
@@ -257,7 +256,7 @@ noncomputable def ConvexSpace.ofConvex
   convexCombination f :=
     letI : ConvexSpace R E := inferInstance
     ⟨convexCombination (f.map (↑)), by
-    simpa [convexCombination_eq_sum, StdSimplex.map, Finsupp.sum_mapDomain_index, add_smul] using
+    simpa! [convexCombination_eq_sum, StdSimplex.map, Finsupp.sum_mapDomain_index, add_smul] using
       H.sum_mem (fun _ _ ↦ f.nonneg _) f.total fun i _ ↦ i.2⟩
   assoc f := by
     simp [convexCombination_eq_sum, StdSimplex.map, Finsupp.sum_mapDomain_index, add_smul,

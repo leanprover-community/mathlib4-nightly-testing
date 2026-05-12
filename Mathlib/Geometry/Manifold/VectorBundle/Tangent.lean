@@ -284,11 +284,10 @@ theorem symmL_trivializationAt_eq_core {b₀ b : M} (hb : b ∈ (chartAt H b₀)
 
 /-! The lemmas below have high priority because `simp` simplifies the LHS to `.id _ _`;
 we prefer `1` as the simp-normal form. -/
-set_option backward.simpa.using.reducibleClose false in
 @[simp high, mfld_simps]
 theorem coordChange_model_space (b b' x : F) :
     (tangentBundleCore 𝓘(𝕜, F) F).coordChange (achart F b) (achart F b') x = 1 := by
-  simpa only [tangentBundleCore_coordChange, mfld_simps] using
+  simpa! only [tangentBundleCore_coordChange, mfld_simps] using
     fderivWithin_id uniqueDiffWithinAt_univ
 
 @[simp high, mfld_simps]

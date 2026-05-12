@@ -115,11 +115,10 @@ lemma hasMap_X : P.HasMap P.X :=
 
 set_option backward.isDefEq.respectTransparency false in
 variable {P} in
-set_option backward.simpa.using.reducibleClose false in
 @[ext]
 lemma hom_ext {f g : P.Ring →ₐ[R] S} (H : f P.X = g P.X) : f = g := by
   have H : (f.comp (Ideal.Quotient.mkₐ R _)).comp CAlgHom =
-    (g.comp (Ideal.Quotient.mkₐ R _)).comp CAlgHom := Polynomial.algHom_ext (by simpa)
+    (g.comp (Ideal.Quotient.mkₐ R _)).comp CAlgHom := Polynomial.algHom_ext (by simpa!)
   have H' : aeval (R := R) P.X = (Ideal.Quotient.mkₐ _ _).comp Polynomial.CAlgHom := by
     ext; simp [StandardEtalePair.Ring, StandardEtalePair.X]
   refine Ideal.Quotient.algHom_ext _ (Polynomial.algHom_ext' H ?_)
@@ -128,7 +127,7 @@ lemma hom_ext {f g : P.Ring →ₐ[R] S} (H : f P.X = g P.X) : f = g := by
     Units.mul_eq_one_iff_inv_eq.mp P.aeval_X_g_mul_mk_X, ← Units.coe_map_inv, ← Units.coe_map_inv]
   congr 2
   ext
-  simpa [H'] using congr($H _)
+  simpa! [H'] using congr($H _)
 
 @[simp]
 lemma lift_X_left : P.lift P.X P.hasMap_X = .id _ _ :=
@@ -197,7 +196,6 @@ to not abuse the defeq between the two. -/
 def equivPolynomialQuotient :
     P.Ring ≃ₐ[R] R[X][Y] ⧸ Ideal.span {C P.f, Y * C P.g - 1} := .refl ..
 
-set_option backward.simpa.using.reducibleClose false in
 /-- `R[X][Y]/⟨f, Yg-1⟩ ≃ (R[X]/f)[1/g]` -/
 def equivAwayAdjoinRoot :
     P.Ring ≃ₐ[R] Localization.Away (AdjoinRoot.mk P.f P.g) := by
@@ -208,7 +206,7 @@ def equivAwayAdjoinRoot :
   · rw [aeval_algebraMap_apply, AdjoinRoot.aeval_eq]
     exact IsLocalization.Away.algebraMap_isUnit ..
   · change Submonoid.powers _ ≤ (IsUnit.submonoid _).comap _
-    simpa [Submonoid.powers_le, IsUnit.mem_submonoid_iff] using P.hasMap_X.2
+    simpa! [Submonoid.powers_le, IsUnit.mem_submonoid_iff] using P.hasMap_X.2
   · ext; simp [Algebra.algHom]
   · ext; simp
 

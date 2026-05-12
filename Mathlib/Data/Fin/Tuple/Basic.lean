@@ -204,14 +204,13 @@ theorem cons_injective_of_injective {α} {x₀ : α} {x : Fin n → α} (hx₀ :
   intro i j
   cases i using Fin.cases <;> cases j using Fin.cases <;> aesop (add simp [hx.eq_iff])
 
-set_option backward.simpa.using.reducibleClose false in
 theorem cons_injective_iff {α} {x₀ : α} {x : Fin n → α} :
     Function.Injective (cons x₀ x : Fin n.succ → α) ↔ x₀ ∉ Set.range x ∧ Function.Injective x := by
   refine ⟨fun h ↦ ⟨?_, ?_⟩, fun h ↦ cons_injective_of_injective h.1 h.2⟩
   · rintro ⟨i, hi⟩
     replace h := @h i.succ 0
     simp [hi] at h
-  · simpa [Function.comp] using h.comp (Fin.succ_injective _)
+  · simpa! [Function.comp] using h.comp (Fin.succ_injective _)
 
 theorem exists_cons {α : Fin (n + 1) → Type*} (q : ∀ i, α i) :
     ∃ (x₀ : α 0) (x : ∀ i : Fin n, α i.succ), q = cons x₀ x :=

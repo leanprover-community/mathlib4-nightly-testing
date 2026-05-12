@@ -100,7 +100,6 @@ theorem rank_finsetSum_le {η} (s : Finset η) (f : η → V →ₗ[K] V') :
 
 @[deprecated (since := "2026-04-08")] alias rank_finset_sum_le := rank_finsetSum_le
 
-set_option backward.simpa.using.reducibleClose false in
 theorem le_rank_iff_exists_linearIndependent {c : Cardinal} {f : V →ₗ[K] V'} :
     c ≤ rank f ↔ ∃ s : Set V,
     Cardinal.lift.{v'} #s = Cardinal.lift.{v} c ∧ LinearIndepOn K f s := by
@@ -113,7 +112,7 @@ theorem le_rank_iff_exists_linearIndependent {c : Cardinal} {f : V →ₗ[K] V'}
       intro x
       convert congr_arg Subtype.val (fg x)
     replace si : LinearIndepOn K (fun x => f (g x)) s := by
-      simpa only [fg] using si.map' _ (ker_subtype _)
+      simpa! only [fg] using si.map' _ (ker_subtype _)
     exact si.image_of_comp
   · rintro ⟨s, hsc, si⟩
     have : LinearIndepOn K f.rangeRestrict s :=

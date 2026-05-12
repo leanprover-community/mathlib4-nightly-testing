@@ -573,13 +573,12 @@ theorem Algebra.IsIntegral.tower_top [Algebra R S] [Algebra R T] [Algebra S T] [
     rw [← IsScalarTower.algebraMap_eq R S T]
     exact h.isIntegral
 
-set_option backward.simpa.using.reducibleClose false in
 theorem RingHom.IsIntegral.quotient {I : Ideal S} (hf : f.IsIntegral) :
     (Ideal.quotientMap I f le_rfl).IsIntegral := by
   rintro ⟨x⟩
   obtain ⟨p, p_monic, hpx⟩ := hf x
   refine ⟨p.map (Ideal.Quotient.mk _), p_monic.map _, ?_⟩
-  simpa only [hom_eval₂, eval₂_map] using congr_arg (Ideal.Quotient.mk I) hpx
+  simpa! only [hom_eval₂, eval₂_map] using congr_arg (Ideal.Quotient.mk I) hpx
 
 instance {I : Ideal A} [Algebra.IsIntegral R A] : Algebra.IsIntegral R (A ⧸ I) :=
   Algebra.IsIntegral.trans A

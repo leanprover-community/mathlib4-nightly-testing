@@ -587,28 +587,25 @@ theorem IsSymmetric.adjoint_eq {A : E →ₗ[𝕜] E} (hA : A.IsSymmetric) :
 theorem adjoint_id : (LinearMap.id (R := 𝕜) (M := E)).adjoint = LinearMap.id := by
   simp
 
-set_option backward.simpa.using.reducibleClose false in
 /-- 7.6(b) from [axler2024].
 See `ContinuousLinearMap.orthogonal_ker` for the infinite-dimensional version. -/
 lemma orthogonal_ker (A : E →ₗ[𝕜] F) : A.kerᗮ = A.adjoint.range := by
   haveI := FiniteDimensional.complete 𝕜 E
   haveI := FiniteDimensional.complete 𝕜 F
-  simpa using A.toContinuousLinearMap.orthogonal_ker
+  simpa! using A.toContinuousLinearMap.orthogonal_ker
 
-set_option backward.simpa.using.reducibleClose false in
 /-- 7.6(a) from [axler2024].
 See `ContinuousLinearMap.orthogonal_range` for the infinite-dimensional version. -/
 lemma orthogonal_range (A : E →ₗ[𝕜] F) : A.rangeᗮ = A.adjoint.ker := by
   haveI := FiniteDimensional.complete 𝕜 E
   haveI := FiniteDimensional.complete 𝕜 F
-  simpa using A.toContinuousLinearMap.orthogonal_range
+  simpa! using A.toContinuousLinearMap.orthogonal_range
 
-set_option backward.simpa.using.reducibleClose false in
 /-- 7.64(b) in [axler2024] -/
 lemma ker_adjoint_comp_self (A : E →ₗ[𝕜] F) : (A.adjoint ∘ₗ A).ker = A.ker := by
   haveI := FiniteDimensional.complete 𝕜 E
   haveI := FiniteDimensional.complete 𝕜 F
-  simpa using A.toContinuousLinearMap.ker_adjoint_comp_self
+  simpa! using A.toContinuousLinearMap.ker_adjoint_comp_self
 
 lemma ker_self_comp_adjoint (A : E →ₗ[𝕜] F) : (A ∘ₗ A.adjoint).ker = A.adjoint.ker := by
   simpa using A.adjoint.ker_adjoint_comp_self

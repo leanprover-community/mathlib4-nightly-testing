@@ -39,7 +39,6 @@ lemma exists_ltSeries_support_isMaximal_last_of_ltSeries_support (q : LTSeries (
     simpa
   · use q
 
-set_option backward.simpa.using.reducibleClose false in
 theorem supportDim_le_supportDim_quotSMulTop_succ_of_mem_jacobson {x : R}
     (h : x ∈ (annihilator R M).jacobson) : supportDim R M ≤ supportDim R (QuotSMulTop x M) + 1 := by
   nontriviality M
@@ -66,8 +65,8 @@ theorem supportDim_le_supportDim_quotSMulTop_succ_of_mem_jacobson {x : R}
       intro ⟨i, hi⟩
       have hi : i + 1 < q.length + 1 :=
         Nat.succ_lt_succ (hi.trans_eq ((Nat.sub_add_cancel (Nat.pos_of_ne_zero hp0)).trans hq))
-      exact ⟨q ⟨i + 1, hi⟩, by simpa using
-        ⟨mem_support_mono (by simpa [h0] using q.monotone (Fin.zero_le _)) p.head.2, q.monotone
+      exact ⟨q ⟨i + 1, hi⟩, by simpa! using
+        ⟨mem_support_mono (by simpa! [h0] using q.monotone (Fin.zero_le _)) p.head.2, q.monotone
           ((Fin.natCast_eq_mk (Nat.lt_of_add_left_lt hi)).trans_le (Nat.le_add_left 1 i)) hxq⟩⟩
     step := by exact fun _ ↦ q.strictMono (by simp)
   }

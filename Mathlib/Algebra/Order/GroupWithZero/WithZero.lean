@@ -32,19 +32,17 @@ theory. These instances enable lemmas such as `mul_pos` to fire on `ℤᵐ⁰`.
 assert_not_exists Ring
 
 -- this makes `mul_lt_mul_iff_right₀`, `mul_pos` etc. work on `ℤᵐ⁰`
-set_option backward.simpa.using.reducibleClose false in
 instance {α : Type*} [Mul α] [Preorder α] [MulLeftStrictMono α] :
     PosMulStrictMono (WithZero α) where
   mul_lt_mul_of_pos_left
-  | (x : α), hx, 0, (b : α), _ => by simpa only [mul_zero] using WithZero.zero_lt_coe _
+  | (x : α), hx, 0, (b : α), _ => by simpa! only [mul_zero] using WithZero.zero_lt_coe _
   | (x : α), hx, (a : α), (b : α), h => by norm_cast at h ⊢; gcongr
 
 open Function in
-set_option backward.simpa.using.reducibleClose false in
 instance {α : Type*} [Mul α] [Preorder α] [MulRightStrictMono α] :
     MulPosStrictMono (WithZero α) where
   mul_lt_mul_of_pos_right
-  | (x : α), hx, 0, (b : α), _ => by simpa only [mul_zero] using WithZero.zero_lt_coe _
+  | (x : α), hx, 0, (b : α), _ => by simpa! only [mul_zero] using WithZero.zero_lt_coe _
   | (x : α), hx, (a : α), (b : α), h => by norm_cast at h ⊢; gcongr
 
 instance {α : Type*} [Mul α] [Preorder α] [MulLeftMono α] :

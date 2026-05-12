@@ -189,13 +189,12 @@ theorem extend_unique [T2Space γ] {f : α → γ} {g : β → γ} (di : IsDense
     (hf : ∀ x, g (i x) = f x) (hg : Continuous g) : di.extend f = g :=
   funext fun _ => extend_unique_at di (Eventually.of_forall hf) hg.continuousAt
 
-set_option backward.simpa.using.reducibleClose false in
 theorem continuousAt_extend [T3Space γ] {b : β} {f : α → γ} (di : IsDenseInducing i)
     (hf : ∀ᶠ x in 𝓝 b, ∃ c, Tendsto f (comap i <| 𝓝 x) (𝓝 c)) : ContinuousAt (di.extend f) b := by
   set φ := di.extend f
   haveI := di.comap_nhds_neBot
   suffices ∀ V' ∈ 𝓝 (φ b), IsClosed V' → φ ⁻¹' V' ∈ 𝓝 b by
-    simpa [ContinuousAt, (closed_nhds_basis (φ b)).tendsto_right_iff]
+    simpa! [ContinuousAt, (closed_nhds_basis (φ b)).tendsto_right_iff]
   intro V' V'_in V'_closed
   set V₁ := { x | Tendsto f (comap i <| 𝓝 x) (𝓝 <| φ x) }
   have V₁_in : V₁ ∈ 𝓝 b := by
@@ -203,7 +202,7 @@ theorem continuousAt_extend [T3Space γ] {b : β} {f : α → γ} (di : IsDenseI
     rintro x ⟨c, hc⟩
     rwa [← di.extend_eq_of_tendsto hc] at hc
   obtain ⟨V₂, V₂_in, V₂_op, hV₂⟩ : ∃ V₂ ∈ 𝓝 b, IsOpen V₂ ∧ ∀ x ∈ i ⁻¹' V₂, f x ∈ V' := by
-    simpa [and_assoc] using
+    simpa! [and_assoc] using
       ((nhds_basis_opens' b).comap i).tendsto_left_iff.mp (mem_of_mem_nhds V₁_in : b ∈ V₁) V' V'_in
   suffices ∀ x ∈ V₁ ∩ V₂, φ x ∈ V' by filter_upwards [inter_mem V₁_in V₂_in] using this
   rintro x ⟨x_in₁, x_in₂⟩
@@ -216,11 +215,10 @@ theorem continuous_extend [T3Space γ] {f : α → γ} (di : IsDenseInducing i)
     (hf : ∀ b, ∃ c, Tendsto f (comap i (𝓝 b)) (𝓝 c)) : Continuous (di.extend f) :=
   continuous_iff_continuousAt.mpr fun _ => di.continuousAt_extend <| univ_mem' hf
 
-set_option backward.simpa.using.reducibleClose false in
 theorem mk' (i : α → β) (c : Continuous i) (dense : ∀ x, x ∈ closure (range i))
     (H : ∀ (a : α), ∀ s ∈ 𝓝 a, ∃ t ∈ 𝓝 (i a), ∀ b, i b ∈ t → b ∈ s) : IsDenseInducing i where
   toIsInducing := isInducing_iff_nhds.2 fun a =>
-      le_antisymm (c.tendsto _).le_comap (by simpa [Filter.le_def] using H a)
+      le_antisymm (c.tendsto _).le_comap (by simpa! [Filter.le_def] using H a)
   dense := dense
 
 end IsDenseInducing

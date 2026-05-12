@@ -78,12 +78,11 @@ theorem _root_.MulAction.aeconst_of_aestabilizer_eq_top
 
 end Group
 
-set_option backward.simpa.using.reducibleClose false in
 theorem _root_.ErgodicSMul.of_aestabilizer [Group G] [MulAction G α] [SMulInvariantMeasure G α μ]
     (h : ∀ s, MeasurableSet s → aestabilizer G μ s = ⊤ → EventuallyConst s (ae μ)) :
     ErgodicSMul G α μ :=
   ⟨fun hm hs ↦ h _ hm <| (Subgroup.eq_top_iff' _).2 fun g ↦ by
-    simpa only [preimage_smul_inv] using hs g⁻¹⟩
+    simpa! only [preimage_smul_inv] using hs g⁻¹⟩
 
 theorem ergodicSMul_iterateMulAct {f : α → α} (hf : Measurable f) :
     ErgodicSMul (IterateMulAct f) α μ ↔ Ergodic f μ := by

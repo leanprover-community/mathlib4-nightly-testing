@@ -613,15 +613,14 @@ theorem ι_basicOpen_preimage (r : Γ(X, ⊤)) :
 
 set_option backward.isDefEq.respectTransparency false in
 include hU in
-set_option backward.simpa.using.reducibleClose false in
 theorem exists_basicOpen_le {V : X.Opens} (x : V) (h : ↑x ∈ U) :
     ∃ f : Γ(X, U), X.basicOpen f ≤ V ∧ ↑x ∈ X.basicOpen f := by
   have : IsAffine _ := hU
   obtain ⟨_, ⟨_, ⟨r, rfl⟩, rfl⟩, h₁, h₂ : _ ≤ U.ι ⁻¹ᵁ V⟩ :=
     (isBasis_basicOpen U).exists_subset_of_mem_open (x.2 : (⟨x, h⟩ : U) ∈ _) (U.ι ⁻¹ᵁ V).isOpen
-  replace h₁ : x.1 ∈ X.basicOpen r := by simpa [U.mem_basicOpen_toScheme] using h₁
+  replace h₁ : x.1 ∈ X.basicOpen r := by simpa! [U.mem_basicOpen_toScheme] using h₁
   replace h₂ : X.basicOpen r ≤ V := by
-    simpa [Scheme.image_basicOpen] using (U.ι.image_mono h₂).trans (U.ι.image_preimage_le _)
+    simpa! [Scheme.image_basicOpen] using (U.ι.image_mono h₂).trans (U.ι.image_preimage_le _)
   exact ⟨U.topIso.hom.hom r, by simp [Scheme.Opens.toScheme_presheaf_obj, h₁, h₂]⟩
 
 noncomputable
@@ -1137,13 +1136,12 @@ lemma Opens.toSpecΓ_preimage_zeroLocus {X : Scheme.{u}} (U : X.Opens) (s : Set 
 
 end Scheme
 
-set_option backward.simpa.using.reducibleClose false in
 lemma IsAffineOpen.fromSpec_preimage_zeroLocus {X : Scheme.{u}} {U : X.Opens}
     (hU : IsAffineOpen U) (s : Set Γ(X, U)) :
     hU.fromSpec ⁻¹' X.zeroLocus s = PrimeSpectrum.zeroLocus s := by
   ext x
   suffices (∀ f ∈ s, ¬f ∉ x.asIdeal) ↔ s ⊆ x.asIdeal by
-    simpa [← hU.fromSpec_image_basicOpen, -not_not] using this
+    simpa! [← hU.fromSpec_image_basicOpen, -not_not] using this
   simp_rw [not_not]
   rfl
 

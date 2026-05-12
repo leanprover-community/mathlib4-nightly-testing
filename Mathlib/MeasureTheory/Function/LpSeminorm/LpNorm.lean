@@ -63,16 +63,14 @@ lemma lpNorm_one_eq_integral_norm (hf : AEStronglyMeasurable f μ) :
 @[simp] lemma lpNorm_exponent_zero (f : α → E) : lpNorm f 0 μ = 0 := by simp [lpNorm]
 @[simp] lemma lpNorm_measure_zero (f : α → E) : lpNorm f p (0 : Measure α) = 0 := by simp [lpNorm]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma ae_le_lpNorm_exponent_top (hf : MemLp f ∞ μ) : ∀ᵐ x ∂μ, ‖f x‖ ≤ lpNorm f ∞ μ := by
-  simpa only [← toReal_eLpNorm hf.aestronglyMeasurable, ← ENNReal.ofReal_le_iff_le_toReal hf.2.ne,
+  simpa! only [← toReal_eLpNorm hf.aestronglyMeasurable, ← ENNReal.ofReal_le_iff_le_toReal hf.2.ne,
     ofReal_norm] using ae_le_eLpNormEssSup
 
-set_option backward.simpa.using.reducibleClose false in
 lemma lpNorm_exponent_top_eq_essSup (hf : MemLp f ∞ μ) : lpNorm f ∞ μ = essSup (‖f ·‖) μ := by
   simp only [← toReal_eLpNorm hf.aestronglyMeasurable, eLpNorm_exponent_top, eLpNormEssSup]
   refine ENNReal.toReal_essSup (by simp) ⟨lpNorm f ∞ μ, ?_⟩
-  simpa [-toReal_enorm, lpNorm] using ae_le_lpNorm_exponent_top hf
+  simpa! [-toReal_enorm, lpNorm] using ae_le_lpNorm_exponent_top hf
 
 @[simp]
 lemma lpNorm_zero (p : ℝ≥0∞) (μ : Measure α) : lpNorm (0 : α → E) p μ = 0 := by simp [lpNorm]

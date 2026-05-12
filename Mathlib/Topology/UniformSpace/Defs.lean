@@ -162,11 +162,10 @@ theorem mem_compRel {α : Type u} {r₁ r₂ : SetRel α α} {x y : α} :
     (x, y) ∈ r₁ ○ r₂ ↔ ∃ z, (x, z) ∈ r₁ ∧ (z, y) ∈ r₂ :=
   Iff.rfl
 
-set_option backward.simpa.using.reducibleClose false in
 set_option linter.deprecated false in
 @[deprecated SetRel.inv_id (since := "2025-10-17")]
 theorem swap_idRel : Prod.swap '' idRel = @idRel α :=
-  Set.ext fun ⟨a, b⟩ => by simpa [image_swap_eq_preimage_swap] using eq_comm
+  Set.ext fun ⟨a, b⟩ => by simpa! [image_swap_eq_preimage_swap] using eq_comm
 
 set_option linter.deprecated false in
 @[deprecated Monotone.relComp (since := "2025-10-17")]

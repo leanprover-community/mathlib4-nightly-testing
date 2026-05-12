@@ -54,7 +54,6 @@ public section
 
 variable {α : Type*} {β : α → Type*} [∀ a, Finite (β a)]
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 Given a (dependent) function `g s : (a : α) → β a` for each finset `s` of `α`, provided that
 each `β a` is finite, we can find another function `χ : (a : α) → β a` such that on every `s`,
@@ -77,7 +76,7 @@ theorem Finset.rado_selection (g : Finset α → (a : α) → β a) :
     simp only [Set.mem_iInter, Set.mem_setOf_eq, e]
     intro i hi
     exact ⟨_, subset_biUnion_of_mem id hi, by simp⟩
-  simpa using CompactSpace.iInter_nonempty he' he''
+  simpa! using CompactSpace.iInter_nonempty he' he''
 
 /--
 Given a (dependent) function `g s : (a : s) → β a` for each finset `s` of `α`, provided that

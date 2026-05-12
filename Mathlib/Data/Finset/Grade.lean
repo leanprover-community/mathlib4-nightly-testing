@@ -115,9 +115,8 @@ omit [DecidableEq α] in
 lemma _root_.CovBy.exists_finset_insert (h : s ⋖ t) : ∃ a ∉ s, insert a s = t := by
   simpa using h.exists_finset_cons
 
-set_option backward.simpa.using.reducibleClose false in
 lemma _root_.CovBy.exists_finset_erase (h : s ⋖ t) : ∃ a ∈ t, t.erase a = s := by
-  simpa only [← coe_inj, coe_erase] using h.finset_coe.exists_set_sdiff_singleton
+  simpa! only [← coe_inj, coe_erase] using h.finset_coe.exists_set_sdiff_singleton
 
 lemma covBy_iff_exists_insert : s ⋖ t ↔ ∃ a ∉ s, insert a s = t := by
   simp only [← coe_covBy_coe, Set.covBy_iff_exists_insert, ← coe_inj, coe_insert, mem_coe]

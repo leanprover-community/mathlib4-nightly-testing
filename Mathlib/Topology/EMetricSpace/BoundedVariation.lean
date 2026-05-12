@@ -170,7 +170,6 @@ theorem _root_.BoundedVariationOn.locallyBoundedVariationOn {f : α → E} {s : 
 theorem congr {f g : α → E} {s : Set α} (h : EqOn f g s) : eVariationOn f s = eVariationOn g s := by
   grind [eVariationOn]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem edist_le (f : α → E) {s : Set α} {x y : α} (hx : x ∈ s) (hy : y ∈ s) :
     edist (f x) (f y) ≤ eVariationOn f s := by
   wlog hxy : y ≤ x generalizing x y
@@ -183,7 +182,7 @@ theorem edist_le (f : α → E) {s : Set α} {x y : α} (hx : x ∈ s) (hy : y �
   have us : ∀ i, u i ∈ s := fun
   | 0 => hy
   | (_ + 1) => hx
-  simpa only [Finset.sum_range_one] using sum_le (n := 1) hu us
+  simpa! only [Finset.sum_range_one] using sum_le (n := 1) hu us
 
 theorem eq_zero_iff (f : α → E) {s : Set α} :
     eVariationOn f s = 0 ↔ ∀ x ∈ s, ∀ y ∈ s, edist (f x) (f y) = 0 := by
@@ -221,7 +220,6 @@ theorem lowerSemicontinuous_aux {ι : Type*} {F : ι → α → E} {p : Filter �
     exact fun i _ => Tendsto.edist (Ffs (u i.succ) (us i.succ)) (Ffs (u i) (us i))
   exact (this.eventually_const_lt hlt).mono fun i h => h.trans_le (sum_le um us)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The map `(eVariationOn · s)` is lower semicontinuous for pointwise convergence *on `s`*.
 Pointwise convergence on `s` is encoded here as uniform convergence on the family consisting of the
 singletons of elements of `s`.
@@ -229,7 +227,7 @@ singletons of elements of `s`.
 protected theorem lowerSemicontinuous (s : Set α) :
     LowerSemicontinuous fun f : α →ᵤ[s.image singleton] E => eVariationOn f s := fun f ↦ by
   apply @lowerSemicontinuous_aux _ _ _ _ (UniformOnFun α E (s.image singleton)) id (𝓝 f) f s _
-  simpa only [UniformOnFun.tendsto_iff_tendstoUniformlyOn, mem_image, forall_exists_index, and_imp,
+  simpa! only [UniformOnFun.tendsto_iff_tendstoUniformlyOn, mem_image, forall_exists_index, and_imp,
     forall_apply_eq_imp_iff₂, tendstoUniformlyOn_singleton_iff_tendsto] using @tendsto_id _ (𝓝 f)
 
 /-- The map `(eVariationOn · s)` is lower semicontinuous for uniform convergence on `s`. -/

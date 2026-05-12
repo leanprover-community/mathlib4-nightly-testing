@@ -49,7 +49,6 @@ lemma exists_epiModSerre_comp_eq_zero_iff {X Y : C} (f : X ⟶ Y) :
       epiModSerre_zero_iff] at this
   · exact ⟨_, kernel.ι f, P.prop_of_iso (Abelian.coimageIsoImage f).symm hf, by simp⟩
 
-set_option backward.simpa.using.reducibleClose false in
 lemma exists_isoModSerre_comp_eq_zero_iff {X Y : C} (f : X ⟶ Y) :
     (∃ (X' : C) (s : X' ⟶ X) (_ : P.isoModSerre s), s ≫ f = 0) ↔
       P (Abelian.image f) := by
@@ -58,7 +57,7 @@ lemma exists_isoModSerre_comp_eq_zero_iff {X Y : C} (f : X ⟶ Y) :
     rw [← exists_epiModSerre_comp_eq_zero_iff P]
     exact ⟨Y', s, hs.2, eq⟩
   · refine ⟨_, kernel.ι f, ?_, by simp⟩
-    simpa only [isoModSerre_iff_of_mono] using
+    simpa! only [isoModSerre_iff_of_mono] using
       P.prop_of_iso (Abelian.coimageIsoImage f).symm hf
 
 lemma exists_comp_monoModSerre_eq_zero_iff {X Y : C} (f : X ⟶ Y) :
@@ -155,7 +154,6 @@ lemma map_comp_eq_zero_iff_of_epi_mono {X Z Y : C} (f : X ⟶ Z) (g : Z ⟶ Y)
   have := strongEpi_of_epi f
   exact P.prop_iff_of_iso (Abelian.imageIsoImage _ ≪≫ (image.isoStrongEpiMono f g rfl).symm)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma mono_map_tfae {X Y : C} (f : X ⟶ Y) :
     List.TFAE [Mono (L.map f),
       P.monoModSerre f,
@@ -165,13 +163,13 @@ lemma mono_map_tfae {X Y : C} (f : X ⟶ Y) :
     have hf : L.map (kernel.ι f) = 0 := by
       rw [← cancel_mono (L.map f), zero_comp, ← L.map_comp,
         kernel.condition, L.map_zero]
-    simpa [hf] using map_comp_eq_zero_iff_of_epi_mono L P (𝟙 _) (kernel.ι f)
+    simpa! [hf] using map_comp_eq_zero_iff_of_epi_mono L P (𝟙 _) (kernel.ι f)
   tfae_have 2 → 3 := fun hf ↦ by
     intro Z z hz
     rw [← L.map_comp] at hz
     rw [map_eq_zero_iff L P, ← exists_comp_monoModSerre_eq_zero_iff P] at hz ⊢
     obtain ⟨W, s, hs, eq⟩ := hz
-    exact ⟨W, f ≫ s, MorphismProperty.comp_mem _ _ _ hf hs, by simpa using eq⟩
+    exact ⟨W, f ≫ s, MorphismProperty.comp_mem _ _ _ hf hs, by simpa! using eq⟩
   tfae_have 3 → 1 := fun hf ↦ by
     rw [Preadditive.mono_iff_cancel_zero]
     intro W z hz
@@ -190,7 +188,6 @@ lemma mono_map_iff {X Y : C} (f : X ⟶ Y) :
     Mono (L.map f) ↔ P.monoModSerre f :=
   (mono_map_tfae L P f).out 0 1
 
-set_option backward.simpa.using.reducibleClose false in
 lemma epi_map_tfae {X Y : C} (f : X ⟶ Y) :
     List.TFAE [Epi (L.map f),
       P.epiModSerre f,
@@ -200,13 +197,13 @@ lemma epi_map_tfae {X Y : C} (f : X ⟶ Y) :
     have hf : L.map (cokernel.π f) = 0 := by
       rw [← cancel_epi (L.map f), comp_zero, ← L.map_comp,
         cokernel.condition, L.map_zero]
-    simpa [hf] using map_comp_eq_zero_iff_of_epi_mono L P (cokernel.π f) (𝟙 _)
+    simpa! [hf] using map_comp_eq_zero_iff_of_epi_mono L P (cokernel.π f) (𝟙 _)
   tfae_have 2 → 3 := fun hf ↦ by
     intro Z z hz
     rw [← L.map_comp] at hz
     rw [map_eq_zero_iff L P, ← exists_epiModSerre_comp_eq_zero_iff P] at hz ⊢
     obtain ⟨W, s, hs, eq⟩ := hz
-    refine ⟨_, s ≫ f, MorphismProperty.comp_mem _ _ _ hs hf, by simpa⟩
+    refine ⟨_, s ≫ f, MorphismProperty.comp_mem _ _ _ hs hf, by simpa!⟩
   tfae_have 3 → 1 := fun hf ↦ by
     rw [Preadditive.epi_iff_cancel_zero]
     intro W z hz

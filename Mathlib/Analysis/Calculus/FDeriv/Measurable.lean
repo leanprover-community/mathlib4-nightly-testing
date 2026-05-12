@@ -541,7 +541,6 @@ theorem differentiable_set_subset_D :
     · refine hR _ ⟨pow_pos (by norm_num) _, lt_of_le_of_lt ?_ hn⟩
       exact pow_le_pow_of_le_one (by norm_num) (by norm_num) (by assumption)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Harder inclusion: at a point in `D f K`, the function `f` has a derivative, in `K`. -/
 theorem D_subset_differentiable_set {K : Set F} (hK : IsComplete K) :
     D f K ⊆ { x | DifferentiableWithinAt ℝ f (Ici x) x ∧ derivWithin f (Ici x) x ∈ K } := by
@@ -658,7 +657,7 @@ theorem D_subset_differentiable_set {K : Set F} (hK : IsComplete K) :
           · simp only [one_div, inv_pow, left_mem_Icc, le_add_iff_nonneg_right]
             positivity
           · simp only [pow_add, tsub_le_iff_left] at h'k
-            simpa only [hy.1, mem_Icc, true_and, one_div, pow_one] using h'k
+            simpa! only [hy.1, mem_Icc, true_and, one_div, pow_one] using h'k
         _ = 4 * (1 / 2) ^ e * (1 / 2) ^ (m + 2) := by ring
         _ ≤ 4 * (1 / 2) ^ e * (y - x) := by gcongr
         _ = 4 * (1 / 2) ^ e * ‖y - x‖ := by rw [Real.norm_of_nonneg yzero.le]

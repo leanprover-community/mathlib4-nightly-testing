@@ -357,11 +357,10 @@ theorem norm_integral_le_of_norm_le {g : ℝⁿ → ℝ} (hle : ∀ x ∈ Box.Ic
   · rw [integral, dif_neg hfi, norm_zero]
     exact integral_nonneg (fun x hx => (norm_nonneg _).trans (hle x hx)) μ
 
-set_option backward.simpa.using.reducibleClose false in
 theorem norm_integral_le_of_le_const {c : ℝ}
     (hc : ∀ x ∈ Box.Icc I, ‖f x‖ ≤ c) (μ : Measure ℝⁿ) [IsLocallyFiniteMeasure μ] :
     ‖(integral I l f μ.toBoxAdditive.toSMul : E)‖ ≤ μ.real I * c := by
-  simpa only [integral_const] using norm_integral_le_of_norm_le hc μ (integrable_const c)
+  simpa! only [integral_const] using norm_integral_le_of_norm_le hc μ (integrable_const c)
 
 /-!
 ### Henstock-Sacks inequality and integrability on subboxes

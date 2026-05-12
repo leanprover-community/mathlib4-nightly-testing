@@ -22,7 +22,6 @@ public section
 
 open Complex
 
-set_option backward.simpa.using.reducibleClose false in
 open Topology in
 /-- If `f : α → ℂ` is summable, then so is `n ↦ log (1 - f n)`. -/
 lemma Summable.clog_one_sub {α : Type*} {f : α → ℂ} (hsum : Summable f) :
@@ -31,7 +30,7 @@ lemma Summable.clog_one_sub {α : Type*} {f : α → ℂ} (hsum : Summable f) :
     have : 1 - 0 ∈ slitPlane := (sub_zero (1 : ℂ)).symm ▸ one_mem_slitPlane
     fun_prop (disch := assumption)
   have : (fun z ↦ log (1 - z)) =O[𝓝 0] id := by
-    simpa only [sub_zero, log_one] using hg.isBigO_sub
+    simpa! only [sub_zero, log_one] using hg.isBigO_sub
   exact this.comp_summable hsum
 
 namespace EulerProduct

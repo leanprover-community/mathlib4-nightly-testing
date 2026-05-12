@@ -87,19 +87,17 @@ theorem leadingCoeff_linear (ha : a ≠ 0) : leadingCoeff (C a * X + C b) = a :=
   rw [add_comm, leadingCoeff_add_of_degree_lt (degree_C_lt_degree_C_mul_X ha),
     leadingCoeff_C_mul_X]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem degree_quadratic_le : degree (C a * X ^ 2 + C b * X + C c) ≤ 2 := by
-  simpa only [add_assoc] using
+  simpa! only [add_assoc] using
     degree_add_le_of_degree_le (degree_C_mul_X_pow_le 2 a)
       (le_trans degree_linear_le <| WithBot.coe_le_coe.mpr one_le_two)
 
 theorem degree_quadratic_lt : degree (C a * X ^ 2 + C b * X + C c) < 3 :=
   degree_quadratic_le.trans_lt <| WithBot.coe_lt_coe.mpr <| lt_add_one 2
 
-set_option backward.simpa.using.reducibleClose false in
 theorem degree_linear_lt_degree_C_mul_X_sq (ha : a ≠ 0) :
     degree (C b * X + C c) < degree (C a * X ^ 2) := by
-  simpa only [degree_C_mul_X_pow 2 ha] using degree_linear_lt
+  simpa! only [degree_C_mul_X_pow 2 ha] using degree_linear_lt
 
 @[simp]
 theorem degree_quadratic (ha : a ≠ 0) : degree (C a * X ^ 2 + C b * X + C c) = 2 := by
@@ -118,19 +116,17 @@ theorem leadingCoeff_quadratic (ha : a ≠ 0) : leadingCoeff (C a * X ^ 2 + C b 
   rw [add_assoc, add_comm, leadingCoeff_add_of_degree_lt <| degree_linear_lt_degree_C_mul_X_sq ha,
     leadingCoeff_C_mul_X_pow]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem degree_cubic_le : degree (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d) ≤ 3 := by
-  simpa only [add_assoc] using
+  simpa! only [add_assoc] using
     degree_add_le_of_degree_le (degree_C_mul_X_pow_le 3 a)
       (le_trans degree_quadratic_le <| WithBot.coe_le_coe.mpr <| Nat.le_succ 2)
 
 theorem degree_cubic_lt : degree (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d) < 4 :=
   degree_cubic_le.trans_lt <| WithBot.coe_lt_coe.mpr <| lt_add_one 3
 
-set_option backward.simpa.using.reducibleClose false in
 theorem degree_quadratic_lt_degree_C_mul_X_cb (ha : a ≠ 0) :
     degree (C b * X ^ 2 + C c * X + C d) < degree (C a * X ^ 3) := by
-  simpa only [degree_C_mul_X_pow 3 ha] using degree_quadratic_lt
+  simpa! only [degree_C_mul_X_pow 3 ha] using degree_quadratic_lt
 
 @[simp]
 theorem degree_cubic (ha : a ≠ 0) : degree (C a * X ^ 3 + C b * X ^ 2 + C c * X + C d) = 3 := by

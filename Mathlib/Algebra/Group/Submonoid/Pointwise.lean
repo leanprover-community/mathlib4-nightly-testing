@@ -212,7 +212,6 @@ section Monoid
 variable [Monoid α] [MulDistribMulAction α M]
 
 -- todo: add `to_additive`?
-set_option backward.simpa.using.reducibleClose false in
 /-- The action on a submonoid corresponding to applying the action to every element.
 
 This is available as an instance in the `Pointwise` locale. -/

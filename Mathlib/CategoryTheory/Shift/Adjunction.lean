@@ -409,7 +409,6 @@ noncomputable def rightAdjointCommShift [F.CommShift A] : G.CommShift A where
     exact CommShift.compatibilityUnit_isoAdd adj _ _ _ _
       (compatibilityUnit_iso adj a) (compatibilityUnit_iso adj b)
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma commShift_of_leftAdjoint [F.CommShift A] :
     letI := adj.rightAdjointCommShift A
@@ -418,7 +417,7 @@ lemma commShift_of_leftAdjoint [F.CommShift A] :
   refine CommShift.mk' _ _ ⟨fun a ↦ ?_⟩
   ext X
   dsimp
-  simpa only [Functor.commShiftIso_id_hom_app, Functor.comp_obj, Functor.id_obj, id_comp,
+  simpa! only [Functor.commShiftIso_id_hom_app, Functor.comp_obj, Functor.id_obj, id_comp,
     Functor.commShiftIso_comp_hom_app] using RightAdjointCommShift.compatibilityUnit_iso adj a X
 
 namespace LeftAdjointCommShift
@@ -499,7 +498,6 @@ noncomputable def leftAdjointCommShift [G.CommShift A] : F.CommShift A where
     exact CommShift.compatibilityUnit_isoAdd adj _ _ _ _
       (compatibilityUnit_iso adj a) (compatibilityUnit_iso adj b)
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 lemma commShift_of_rightAdjoint [G.CommShift A] :
     letI := adj.leftAdjointCommShift A
@@ -508,7 +506,7 @@ lemma commShift_of_rightAdjoint [G.CommShift A] :
   refine CommShift.mk' _ _ ⟨fun a ↦ ?_⟩
   ext X
   dsimp
-  simpa only [Functor.commShiftIso_id_hom_app, Functor.comp_obj, Functor.id_obj, id_comp,
+  simpa! only [Functor.commShiftIso_id_hom_app, Functor.comp_obj, Functor.id_obj, id_comp,
     Functor.commShiftIso_comp_hom_app] using LeftAdjointCommShift.compatibilityUnit_iso adj a X
 
 end Adjunction

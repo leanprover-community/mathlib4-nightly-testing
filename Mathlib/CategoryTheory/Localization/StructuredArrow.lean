@@ -64,7 +64,6 @@ variable (W : MorphismProperty C) {X : C}
   (P : StructuredArrow (W.Q.obj X) W.Q → Prop)
 
 open Construction in
-set_option backward.simpa.using.reducibleClose false in
 private lemma induction_structuredArrow'
     (hP₀ : P (StructuredArrow.mk (𝟙 (W.Q.obj X))))
     (hP₁ : ∀ ⦃Y₁ Y₂ : C⦄ (f : Y₁ ⟶ Y₂) (φ : W.Q.obj X ⟶ W.Q.obj Y₁),
@@ -84,7 +83,7 @@ private lemma induction_structuredArrow'
   | cons f g hf =>
       obtain (g | ⟨w, hw⟩) := g
       · exact hP₁ g _ hf
-      · simpa only [← Construction.wInv_eq_isoOfHom_inv w hw] using hP₂ w hw _ hf
+      · simpa! only [← Construction.wInv_eq_isoOfHom_inv w hw] using hP₂ w hw _ hf
 
 end
 
@@ -123,7 +122,6 @@ section
 variable (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W] {Y : C}
   (P : CostructuredArrow L (L.obj Y) → Prop)
 
-set_option backward.simpa.using.reducibleClose false in
 @[elab_as_elim]
 lemma induction_costructuredArrow
     (hP₀ : P (CostructuredArrow.mk (𝟙 (L.obj Y))))
@@ -137,7 +135,7 @@ lemma induction_costructuredArrow
   induction g' using induction_structuredArrow L.op W.op with
   | hP₀ => exact hP₀
   | hP₁ f φ hφ => exact hP₁ f.unop φ.unop hφ
-  | hP₂ w hw φ hφ => simpa [isoOfHom_op_inv L W w hw] using hP₂ w.unop hw φ.unop hφ
+  | hP₂ w hw φ hφ => simpa! [isoOfHom_op_inv L W w hw] using hP₂ w.unop hw φ.unop hφ
 
 end
 

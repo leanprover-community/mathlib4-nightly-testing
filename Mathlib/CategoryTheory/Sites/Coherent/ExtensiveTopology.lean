@@ -28,7 +28,6 @@ variable {C : Type*} [Category* C] [FinitaryPreExtensive C]
 
 namespace CategoryTheory
 
-set_option backward.simpa.using.reducibleClose false in
 lemma extensiveTopology.mem_sieves_iff_contains_colimit_cofan {X : C} (S : Sieve X) :
     S ∈ (extensiveTopology C) X ↔
       (∃ (α : Type) (_ : Finite α) (Y : α → C) (π : (a : α) → (Y a ⟶ X)),
@@ -39,7 +38,7 @@ lemma extensiveTopology.mem_sieves_iff_contains_colimit_cofan {X : C} (S : Sieve
     | of X S hS =>
       obtain ⟨α, _, Y, π, h, h'⟩ := hS
       refine ⟨α, inferInstance, Y, π, ?_, fun a ↦ ?_⟩
-      · have : IsIso (Sigma.desc (Cofan.mk X π).inj) := by simpa using h'
+      · have : IsIso (Sigma.desc (Cofan.mk X π).inj) := by simpa! using h'
         exact ⟨Cofan.isColimitOfIsIsoSigmaDesc (Cofan.mk X π)⟩
       · obtain ⟨rfl, _⟩ := h
         exact ⟨Y a, 𝟙 Y a, π a, Presieve.ofArrows.mk a, by simp⟩

@@ -59,13 +59,12 @@ theorem sym2_cons (a : α) (s : Finset α) (ha : a ∉ s) :
       simp [Finset.disjoint_left, ha]) :=
   val_injective <| Multiset.sym2_cons _ _
 
-set_option backward.simpa.using.reducibleClose false in
 theorem sym2_insert [DecidableEq α] (a : α) (s : Finset α) :
     (insert a s).sym2 = ((insert a s).image fun b => s(a, b)) ∪ s.sym2 := by
   obtain ha | ha := Decidable.em (a ∈ s)
   · simp only [insert_eq_of_mem ha, right_eq_union, image_subset_iff]
     simp_all
-  · simpa [map_eq_image] using sym2_cons a s ha
+  · simpa! [map_eq_image] using sym2_cons a s ha
 
 theorem sym2_map (f : α ↪ β) (s : Finset α) : (s.map f).sym2 = s.sym2.map (.sym2Map f) :=
   val_injective <| s.val.sym2_map _

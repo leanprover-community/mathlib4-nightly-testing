@@ -38,7 +38,6 @@ open LawfulTraversable CommApplicative
 variable {F : Type u → Type u} [Applicative F] [CommApplicative F]
 variable {α' β' : Type u} (f : α' → F β')
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Map each element of a `Multiset` to an action, evaluate these actions in order,
 and collect the results.
 -/
@@ -52,7 +51,7 @@ def traverse : Multiset α' → F (Multiset β') := by
       Multiset.cons <$> f x <*> ofList <$> Traversable.traverse f l₁ =
         Multiset.cons <$> f x <*> ofList <$> Traversable.traverse f l₂ := by
       rw [h]
-    simpa [functor_norm] using this
+    simpa! [functor_norm] using this
   | swap x y l =>
     have :
       (fun a b (l : List β') ↦ (↑(a :: b :: l) : Multiset β')) <$> f y <*> f x =
@@ -60,7 +59,7 @@ def traverse : Multiset α' → F (Multiset β') := by
       rw [CommApplicative.commutative_map]
       congr 2
       funext a b l
-      simpa [flip] using Perm.swap a b l
+      simpa! [flip] using Perm.swap a b l
     simp [Function.comp_def, this, functor_norm]
   | trans => simp [*]
 

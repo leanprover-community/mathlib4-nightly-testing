@@ -549,9 +549,8 @@ theorem idealOrderIsoENat_symm_apply_coe_of_irreducible (n : ℕ) {ϖ : R} (hϖ 
     (idealOrderIsoENat R).symm n = Ideal.span {ϖ ^ n} := by
   rw [idealOrderIsoENat_symm_apply_coe, hϖ.maximalIdeal_eq, span_singleton_pow]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem coheight_pow_maximalIdeal (n : ℕ) : Order.coheight (maximalIdeal R ^ n) = n := by
-  simpa only [Order.coheight_toDual, Order.height_enat] using
+  simpa! only [Order.coheight_toDual, Order.height_enat] using
     Order.coheight_orderIso (idealOrderIsoENat R).symm (.toDual n)
 
 theorem length_quotient_pow_maximalIdeal (n : ℕ) :

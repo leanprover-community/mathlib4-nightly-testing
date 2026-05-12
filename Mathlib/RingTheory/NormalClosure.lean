@@ -116,13 +116,12 @@ variable [PerfectField (FractionRing R)]
 local instance : Algebra.IsSeparable L E :=
   Algebra.isSeparable_tower_top_of_isSeparable K L E
 
-set_option backward.simpa.using.reducibleClose false in
 instance : IsGalois K (FractionRing T) := by
   refine IsGalois.of_equiv_equiv (F := K) («E» := E)
     (f := (FractionRing.algEquiv R K).symm.toRingEquiv)
     (g := (FractionRing.algEquiv T E).symm.toRingEquiv) ?_
   ext
-  simpa using IsFractionRing.algEquiv_commutes (FractionRing.algEquiv R K).symm
+  simpa! using IsFractionRing.algEquiv_commutes (FractionRing.algEquiv R K).symm
     (FractionRing.algEquiv T E).symm _
 
 variable [IsDedekindDomain S]

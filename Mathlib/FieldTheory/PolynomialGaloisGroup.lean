@@ -227,13 +227,12 @@ theorem restrictDvd_def [Decidable (q = 0)] (hpq : p ∣ q) :
   unfold restrictDvd
   congr
 
-set_option backward.simpa.using.reducibleClose false in
 theorem restrictDvd_surjective (hpq : p ∣ q) (hq : q ≠ 0) :
     Function.Surjective (restrictDvd hpq) := by
   classical
   haveI := Fact.mk <|
     (SplittingField.splits q).of_dvd (map_ne_zero hq) ((map_dvd_map' _).mpr hpq)
-  simpa only [restrictDvd_def, dif_neg hq] using restrict_surjective _ _
+  simpa! only [restrictDvd_def, dif_neg hq] using restrict_surjective _ _
 
 variable (p q)
 
@@ -334,12 +333,11 @@ def restrictComp (hq : q.natDegree ≠ 0) : (p.comp q).Gal →* p.Gal :=
     ⟨splits_in_splittingField_of_comp p q hq⟩
   @restrict F _ p _ _ _ h
 
-set_option backward.simpa.using.reducibleClose false in
 theorem restrictComp_surjective (hq : q.natDegree ≠ 0) :
     Function.Surjective (restrictComp p q hq) := by
   haveI : Fact (Splits (p.map (algebraMap F (SplittingField (comp p q))))) :=
     ⟨splits_in_splittingField_of_comp p q hq⟩
-  simpa only [restrictComp] using restrict_surjective _ _
+  simpa! only [restrictComp] using restrict_surjective _ _
 
 variable {p q}
 

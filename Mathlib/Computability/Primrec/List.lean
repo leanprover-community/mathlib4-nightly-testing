@@ -184,7 +184,6 @@ theorem list_rec {f : α → List β} {g : α → σ} {h : α → β × List β 
     dsimp [F]
     induction f a <;> simp [*]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem list_getElem? : Primrec₂ ((·[·]? : List α → ℕ → Option α)) :=
   let F (l : List α) (n : ℕ) :=
     l.foldl
@@ -208,7 +207,7 @@ theorem list_getElem? : Primrec₂ ((·[·]? : List α → ℕ → Option α)) :
       · dsimp [F]
         clear IH
         induction l <;> simp_all
-      · simpa using IH ..
+      · simpa! using IH ..
 
 theorem list_getD (d : α) : Primrec₂ fun l n => List.getD l n d := by
   simp only [List.getD_eq_getElem?_getD]
@@ -362,7 +361,6 @@ theorem nat_omega_rec' (f : β → σ) {m : β → ℕ} {l : β → List β} {g 
         · exact (List.infix_flatMap_of_mem ha' l).subset
     simp [graph_eq_map_bindList (m b + 1) (Nat.le_refl _), bindList]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem nat_omega_rec (f : α → β → σ) {m : α → β → ℕ}
     {l : α → β → List β} {g : α → β × List σ → Option σ}
     (hm : Primrec₂ m) (hl : Primrec₂ l) (hg : Primrec₂ g)
@@ -373,7 +371,7 @@ theorem nat_omega_rec (f : α → β → σ) {m : α → β → ℕ}
       (Primrec₂.uncurry.mpr hm)
       (list_map (hl.comp fst snd) (Primrec₂.pair.comp₂ (fst.comp₂ .left) .right))
       (hg.comp₂ (fst.comp₂ .left) (Primrec₂.pair.comp₂ (snd.comp₂ .left) .right))
-      (by simpa using Ord) (by simpa [Function.comp] using H)
+      (by simpa! using Ord) (by simpa! [Function.comp] using H)
 
 /-- `List.drop` is primitive recursive. -/
 theorem list_drop : Primrec₂ (List.drop : ℕ → List α → List α) :=

@@ -576,10 +576,9 @@ lemma ωScottContinuous.bind {β γ} {f : α → Part β} {g : α → β → Par
   ωScottContinuous.of_monotone_map_ωSup
     ⟨hf.monotone.partBind hg.monotone, fun c ↦ by rw [hf.map_ωSup, hg.map_ωSup, ← ωSup_bind]; rfl⟩
 
-set_option backward.simpa.using.reducibleClose false in
 lemma ωScottContinuous.map {β γ} {f : β → γ} {g : α → Part β} (hg : ωScottContinuous g) :
     ωScottContinuous fun x ↦ f <$> g x := by
-  simpa only [map_eq_bind_pure_comp] using ωScottContinuous.bind hg ωScottContinuous.const
+  simpa! only [map_eq_bind_pure_comp] using ωScottContinuous.bind hg ωScottContinuous.const
 
 lemma ωScottContinuous.seq {β γ} {f : α → Part (β → γ)} {g : α → Part β} (hf : ωScottContinuous f)
     (hg : ωScottContinuous g) : ωScottContinuous fun x ↦ f x <*> g x := by

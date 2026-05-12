@@ -690,19 +690,17 @@ lemma hom_inv_s₀_apply (i : E.I₀) : e.inv.s₀ (e.hom.s₀ i) = i :=
 lemma inv_hom_s₀_apply (i : F.I₀) : e.hom.s₀ (e.inv.s₀ i) = i :=
   congr($(e.inv_hom_id).s₀ i)
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma hom_inv_s₁_apply {i j : E.I₀} (k : E.I₁ i j) :
     e.inv.s₁ (e.hom.s₁ k) = E.congrIndexOneOfEq (by simp) (by simp) k := by
   obtain ⟨hs₀, hh₀, hs₁, hh₁⟩ := PreOneHypercover.Hom.ext'_iff.mp e.hom_inv_id
-  simpa using hs₁ i j k
+  simpa! using hs₁ i j k
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma inv_hom_s₁_apply {i j : F.I₀} (k : F.I₁ i j) :
     e.hom.s₁ (e.inv.s₁ k) = F.congrIndexOneOfEq (by simp) (by simp) k := by
   obtain ⟨hs₀, hh₀, hs₁, hh₁⟩ := PreOneHypercover.Hom.ext'_iff.mp e.inv_hom_id
-  simpa using hs₁ i j k
+  simpa! using hs₁ i j k
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
@@ -917,7 +915,6 @@ section
 variable {E F}
 variable (c : Multifork (E.multicospanIndex F.obj))
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Auxiliary definition of `isLimitMultifork`. -/
 noncomputable def multiforkLift : c.pt ⟶ F.obj.obj (Opposite.op S) :=
   F.property.amalgamateOfArrows _ E.mem₀ c.ι (fun W i₁ i₂ p₁ p₂ w => by
@@ -926,7 +923,7 @@ noncomputable def multiforkLift : c.pt ⟶ F.obj.obj (Opposite.op S) :=
     dsimp
     simp only [assoc, ← Functor.map_comp, ← op_comp, fac₁, fac₂]
     simp only [op_comp, Functor.map_comp]
-    simpa using c.condition ⟨⟨i₁, i₂⟩, j⟩ =≫ F.obj.map h.op)
+    simpa! using c.condition ⟨⟨i₁, i₂⟩, j⟩ =≫ F.obj.map h.op)
 
 @[reassoc]
 lemma multiforkLift_map (i₀ : E.I₀) : multiforkLift c ≫ F.obj.map (E.f i₀).op = c.ι i₀ := by
@@ -974,7 +971,6 @@ def trivial (S : C) : OneHypercover.{w} J S where
 
 instance (S : C) : Nonempty (J.OneHypercover S) := ⟨trivial J S⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Intersection of two `1`-hypercovers. -/
 @[simps toPreOneHypercover]
 noncomputable
@@ -986,9 +982,9 @@ def inter [HasPullbacks C] (E F : J.OneHypercover S)
   mem₀ := (E.toZeroHypercover.inter F.toZeroHypercover).mem₀
   mem₁ i₁ i₂ W p₁ p₂ h := by
     rw [PreOneHypercover.sieve₁_inter h]
-    refine J.bind_covering (E.mem₁ _ _ _ _ (by simpa using h)) fun _ _ _ ↦ ?_
+    refine J.bind_covering (E.mem₁ _ _ _ _ (by simpa! using h)) fun _ _ _ ↦ ?_
     exact J.pullback_stable _
-      (F.mem₁ _ _ _ _ (by simpa [Category.assoc, ← pullback.condition]))
+      (F.mem₁ _ _ _ _ (by simpa! [Category.assoc, ← pullback.condition]))
 
 end
 

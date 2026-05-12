@@ -86,7 +86,6 @@ theorem compProd_of_not_isSFiniteKernel_right (κ : Kernel α β) (η : Kernel (
     κ ⊗ₖ η = 0 := by
   simp [compProd, h]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem compProd_apply (hs : MeasurableSet s) (κ : Kernel α β) [IsSFiniteKernel κ]
     (η : Kernel (α × β) γ) [IsSFiniteKernel η] (a : α) :
     (κ ⊗ₖ η) a s = ∫⁻ b, η (a, b) (Prod.mk b ⁻¹' s) ∂κ a := by
@@ -111,7 +110,7 @@ theorem compProd_apply (hs : MeasurableSet s) (κ : Kernel α β) [IsSFiniteKern
   have h_int x : ∫⁻ y, swap γ β (x, y) s ∂Measure.dirac b = (Prod.mk b ⁻¹' s).indicator 1 x := by
     rw [lintegral_dirac']
     · simp [swap_apply' _ hs, Set.indicator_apply]
-    · simpa [swap_apply' _ hs, Prod.swap_prod_mk] using
+    · simpa! [swap_apply' _ hs, Prod.swap_prod_mk] using
         measurable_const.indicator (measurable_prodMk_right hs)
   simp_rw [h_int]
   rw [lintegral_indicator_one]

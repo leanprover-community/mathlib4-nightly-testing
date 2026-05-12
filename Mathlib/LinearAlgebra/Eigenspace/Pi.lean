@@ -87,7 +87,6 @@ lemma injOn_iInf_maxGenEigenspace :
   contrapose! hχ₂
   simpa [hχ₁₂] using disjoint_iInf_maxGenEigenspace f hχ₂
 
-set_option backward.simpa.using.reducibleClose false in
 lemma independent_iInf_maxGenEigenspace_of_forall_mapsTo
     (h : ∀ i j φ, MapsTo (f i) ((f j).maxGenEigenspace φ) ((f j).maxGenEigenspace φ)) :
     iSupIndep fun χ : ι → R ↦ ⨅ i, (f i).maxGenEigenspace (χ i) := by
@@ -100,7 +99,7 @@ lemma independent_iInf_maxGenEigenspace_of_forall_mapsTo
   suffices ∀ χ (s : Finset (ι → R)) (_ : χ ∉ s),
       Disjoint (⨅ i, (f i).maxGenEigenspace (χ i))
         (s.sup fun (χ : ι → R) ↦ ⨅ i, (f i).maxGenEigenspace (χ i)) by
-    simpa only [iSupIndep_iff_supIndep,
+    simpa! only [iSupIndep_iff_supIndep,
       Finset.supIndep_iff_disjoint_erase] using fun s χ _ ↦ this _ _ (s.notMem_erase χ)
   intro χ₁ s
   induction s using Finset.induction_on with
@@ -120,7 +119,7 @@ lemma independent_iInf_maxGenEigenspace_of_forall_mapsTo
       ((f l - algebraMap R (Module.End R M) (χ₂ l)) ^ k) (y + z) ∈
       (⨅ i, (f i).maxGenEigenspace (χ₁ i)) ⊓
         Finset.sup s fun χ ↦ ⨅ i, (f i).maxGenEigenspace (χ i) by
-    simpa [ih.eq_bot, Submodule.mem_bot] using this
+    simpa! [ih.eq_bot, Submodule.mem_bot] using this
   intro l
   let g : Module.End R M := f l - algebraMap R (Module.End R M) (χ₂ l)
   obtain ⟨k, hk : (g ^ k) y = 0⟩ := (mem_iInf_maxGenEigenspace_iff _ _ _).mp hy l

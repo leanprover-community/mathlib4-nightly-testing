@@ -65,19 +65,18 @@ lemma selfAdjoint.realPart_unitarySelfAddISMul (a : selfAdjoint A) (ha_norm : �
     ℜ (unitarySelfAddISMul a ha_norm : A) = a := by
   simp [IsSelfAdjoint.imaginaryPart (x := CFC.sqrt (1 - a ^ 2 : A)) (by cfc_tac)]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A stepping stone to `CStarAlgebra.exists_sum_four_unitary` that specifies the unitary
 elements precisely. The `let`s in the statement are intentional. -/
 lemma CStarAlgebra.norm_smul_two_inv_smul_add_four_unitary (x : A) (hx : x ≠ 0) :
     let u₁ : unitary A := selfAdjoint.unitarySelfAddISMul (ℜ (‖x‖⁻¹ • x))
-      (by simpa [norm_smul, inv_mul_le_one₀ (norm_pos_iff.2 hx)] using realPart.norm_le x)
+      (by simpa! [norm_smul, inv_mul_le_one₀ (norm_pos_iff.2 hx)] using realPart.norm_le x)
     let u₂ : unitary A := selfAdjoint.unitarySelfAddISMul (ℑ (‖x‖⁻¹ • x))
-      (by simpa [norm_smul, inv_mul_le_one₀ (norm_pos_iff.2 hx)] using imaginaryPart.norm_le x)
+      (by simpa! [norm_smul, inv_mul_le_one₀ (norm_pos_iff.2 hx)] using imaginaryPart.norm_le x)
     x = ‖x‖ • (2⁻¹ : ℝ) • (u₁ + star u₁ + I • (u₂ + star u₂) : A) := by
   intro u₁ u₂
   rw [smul_add, smul_comm _ I, Unitary.coe_star, Unitary.coe_star,
     ← realPart_apply_coe (u₁ : A), ← realPart_apply_coe (u₂ : A)]
-  simpa only [u₁, u₂, selfAdjoint.realPart_unitarySelfAddISMul, realPart_add_I_smul_imaginaryPart]
+  simpa! only [u₁, u₂, selfAdjoint.realPart_unitarySelfAddISMul, realPart_add_I_smul_imaginaryPart]
     using Eq.symm <| NormedSpace.norm_smul_normalize x
 
 end Ordered

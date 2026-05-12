@@ -272,7 +272,6 @@ theorem IsIntegral.exists_multiple_integral_of_isLocalization [Algebra Rₘ S] [
     exact one_mem _
   · rwa [Polynomial.monic_scaleRoots_iff]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `t` is `R`-integral in `S[M⁻¹]` where `M` is a submonoid of `R`,
 then `m • t` is integral in `S` for some `m ∈ M`. -/
 lemma IsLocalization.exists_isIntegral_smul_of_isIntegral_map
@@ -285,8 +284,8 @@ lemma IsLocalization.exists_isIntegral_smul_of_isIntegral_map
     IsLocalization.map_eq_zero_iff (Algebra.algebraMapSubmonoid S M), Algebra.algebraMapSubmonoid,
     Subtype.exists, Submonoid.mem_map, exists_prop, exists_exists_and_eq_and] at hp
   obtain ⟨m, hm, e⟩ := hp
-  exact ⟨m, hm, by simpa [Algebra.smul_def, leadingCoeff_mul_monic hpm] using
-    RingHom.isIntegralElem_leadingCoeff_mul (algebraMap R S) (C m * p) x (by simpa)⟩
+  exact ⟨m, hm, by simpa! [Algebra.smul_def, leadingCoeff_mul_monic hpm] using
+    RingHom.isIntegralElem_leadingCoeff_mul (algebraMap R S) (C m * p) x (by simpa!)⟩
 
 /-- If `t` is `R`-integral in `S[1/r]` where `r : S` is integral over `R`,
 then `r ^ n • t` is integral in `S` for some `n`. -/
@@ -438,7 +437,6 @@ section
 variable {Rf Sf : Type*} [CommRing Rf] [CommRing Sf] [Algebra R Rf] [Algebra S Sf]
     [Algebra Rf Sf] [Algebra R Sf] [IsScalarTower R S Sf] [IsScalarTower R Rf Sf]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Taking integral closure commutes with localizations. -/
 -- We take in an arbitrary `Algebra (integralClosure R S) (integralClosure Rf Sf)` instance
 -- so that it applies more easily.
@@ -469,11 +467,11 @@ protected lemma IsLocalization.integralClosure
   · rintro ⟨a, ha⟩ ⟨b, hb⟩ e
     have := congr(algebraMap _ Sf $e)
     have : algebraMap S Sf a = algebraMap S Sf b := by
-      simpa only [← IsScalarTower.algebraMap_apply] using this
+      simpa! only [← IsScalarTower.algebraMap_apply] using this
     obtain ⟨⟨_, m, hm, rfl⟩, h⟩ :=
       (IsLocalization.eq_iff_exists (Algebra.algebraMapSubmonoid S M) _).mp this
     refine ⟨⟨_, m, hm, rfl⟩, FaithfulSMul.algebraMap_injective (integralClosure R S) S ?_⟩
-    simpa only [← IsScalarTower.algebraMap_apply]
+    simpa! only [← IsScalarTower.algebraMap_apply]
 
 -- We take in an arbitrary `Algebra (integralClosure R S) (integralClosure Rf Sf)` instance
 -- so that it applies more easily.

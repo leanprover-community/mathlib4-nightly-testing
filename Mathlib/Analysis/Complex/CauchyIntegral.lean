@@ -177,7 +177,6 @@ section rectangle
 ## Functions on rectangles
 -/
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Suppose that a function `f : ℂ → E` is continuous on a closed rectangle with opposite corners at
 `z w : ℂ`, is *real* differentiable at all but countably many points of the corresponding open
 rectangle, and $\frac{\partial f}{\partial \bar z}$ is integrable on this rectangle. Then the
@@ -221,7 +220,7 @@ theorem integral_boundary_rect_of_hasFDerivAt_real_off_countable (f : ℂ → E)
     (htc.const_smul _).neg htc (fun p hp => ((htd p hp).const_smul I).neg) htd ?_).symm
   rw [← (volume_preserving_equiv_real_prod.symm _).integrableOn_comp_preimage
     (MeasurableEquiv.measurableEmbedding _)] at Hi
-  simpa only [hF'] using Hi.neg
+  simpa! only [hF'] using Hi.neg
 
 /-- Suppose that a function `f : ℂ → E` is continuous on a closed rectangle with opposite corners at
 `z w : ℂ`, is *real* differentiable on the corresponding open rectangle, and

@@ -125,15 +125,13 @@ lemma basis_apply (n : Fin 2) :
   rw [CoordinateRing.basis, Or.by_cases, dif_neg <| not_subsingleton R, Basis.reindex_apply,
     PowerBasis.basis_eq_pow, finCongr_symm_apply, Fin.val_cast]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma basis_zero : CoordinateRing.basis W' 0 = 1 := by
-  simpa only [basis_apply] using pow_zero _
+  simpa! only [basis_apply] using pow_zero _
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma basis_one : CoordinateRing.basis W' 1 = mk W' Y := by
-  simpa only [basis_apply] using pow_one _
+  simpa! only [basis_apply] using pow_one _
 
 lemma coe_basis : (CoordinateRing.basis W' : Fin 2 → W'.CoordinateRing) = ![1, mk W' Y] := by
   ext n
@@ -776,7 +774,6 @@ variable [Algebra R S] [Algebra R F] [Algebra S F] [IsScalarTower R S F] [Algebr
   [IsScalarTower R S K] [Algebra R L] [Algebra S L] [IsScalarTower R S L] (f : F →ₐ[S] K)
   (g : K →ₐ[S] L)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The group homomorphism on nonsingular points induced by an algebra homomorphism `f : F →ₐ[S] K`,
 where `W` is defined over a subring of a ring `S`, and `F` and `K` are field extensions of `S`. -/
 noncomputable def map : (W'⁄F).Point →+ (W'⁄K).Point where
@@ -790,7 +787,7 @@ noncomputable def map : (W'⁄F).Point →+ (W'⁄K).Point where
     by_cases hxy : x₁ = x₂ ∧ y₁ = (W'⁄F).negY x₂ y₂
     · rw [add_of_Y_eq hxy.left hxy.right,
         add_of_Y_eq (congr_arg _ hxy.left) <| by rw [hxy.right, baseChange_negY]]
-    · simpa only [add_some hxy, ← baseChange_addX, ← baseChange_addY, ← baseChange_slope] using
+    · simpa! only [add_some hxy, ← baseChange_addX, ← baseChange_addY, ← baseChange_slope] using
         (add_some fun h ↦ hxy ⟨f.injective h.1, f.injective (W'.baseChange_negY f .. ▸ h).2⟩).symm
 
 lemma map_zero : map f (0 : (W'⁄F).Point) = 0 :=

@@ -153,12 +153,11 @@ theorem isEmbedding_postcomp (g : C(Y, Z)) (hg : IsEmbedding g) :
     IsEmbedding (g.comp : C(X, Y) → C(X, Z)) :=
   ⟨isInducing_postcomp g hg.1, postcomp_injective g hg.2⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /-- `C(·, Z)` is a functor. -/
 @[continuity, fun_prop]
 theorem continuous_precomp (f : C(X, Y)) : Continuous (fun g => g.comp f : C(Y, Z) → C(X, Z)) :=
   continuous_compactOpen.2 fun K hK U hU ↦ by
-    simpa only [mapsTo_image_iff] using isOpen_setOf_mapsTo (hK.image f.2) hU
+    simpa! only [mapsTo_image_iff] using isOpen_setOf_mapsTo (hK.image f.2) hU
 
 variable (Z) in
 /-- Precomposition by a continuous map is itself a continuous map between spaces of continuous maps.
@@ -243,10 +242,9 @@ instance [LocallyCompactPair X Y] : ContinuousEval C(X, Y) X Y where
     rcases exists_mem_nhds_isCompact_mapsTo f.continuous (hU.mem_nhds hx) with ⟨K, hxK, hK, hKU⟩
     filter_upwards [prod_mem_nhds (eventually_mapsTo hK hU hKU) hxK] using fun _ h ↦ h.1 h.2
 
-set_option backward.simpa.using.reducibleClose false in
 instance : ContinuousEvalConst C(X, Y) X Y where
   continuous_eval_const x :=
-    continuous_def.2 fun U hU ↦ by simpa using isOpen_setOf_mapsTo isCompact_singleton hU
+    continuous_def.2 fun U hU ↦ by simpa! using isOpen_setOf_mapsTo isCompact_singleton hU
 
 lemma isClosed_setOf_mapsTo {t : Set Y} (ht : IsClosed t) (s : Set X) :
     IsClosed {f : C(X, Y) | MapsTo f s t} :=

@@ -239,14 +239,13 @@ theorem isTopologicallyNilpotent_iff_constantCoeff_isNilpotent
 
 variable [Semiring R]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- A multivariate power series is the sum (in the sense of summable families) of its monomials -/
 theorem hasSum_of_monomials_self (f : MvPowerSeries σ R) :
     HasSum (fun d : σ →₀ ℕ => monomial d (coeff d f)) f := by
   rw [Pi.hasSum]
   intro d
-  simpa using hasSum_single d (fun d' h ↦ coeff_monomial_ne h.symm _)
+  simpa! using hasSum_single d (fun d' h ↦ coeff_monomial_ne h.symm _)
 
 /-- If the coefficient space is T2, then the multivariate power series is `tsum` of its monomials -/
 theorem as_tsum [T2Space R] (f : MvPowerSeries σ R) :
@@ -261,7 +260,6 @@ theorem hasSum_iff_hasSum_coeff {g : MvPowerSeries σ R} :
   simp_rw [HasSum, ← map_sum]
   apply tendsto_iff_coeff_tendsto
 
-set_option backward.simpa.using.reducibleClose false in
 theorem summable_iff_summable_coeff :
     Summable f ↔ ∀ d : σ →₀ ℕ, Summable (fun i ↦ coeff d (f i)) := by
   simp_rw [Summable, hasSum_iff_hasSum_coeff]
@@ -270,7 +268,7 @@ theorem summable_iff_summable_coeff :
     exact ⟨coeff n a, h n⟩
   · intro h
     choose a h using h
-    exact ⟨a, by simpa using h⟩
+    exact ⟨a, by simpa! using h⟩
 
 variable [LinearOrder ι] [LocallyFiniteOrderBot ι]
 

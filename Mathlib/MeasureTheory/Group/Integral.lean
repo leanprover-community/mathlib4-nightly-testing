@@ -42,14 +42,13 @@ theorem integral_inv_eq_self (f : G → E) (μ : Measure G) [IsInvInvariant μ] 
   have h : MeasurableEmbedding fun x : G => x⁻¹ := (MeasurableEquiv.inv G).measurableEmbedding
   rw [← h.integral_map, map_inv_eq_self]
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem IntegrableOn.comp_inv [IsInvInvariant μ] {f : G → F} {s : Set G} (hf : IntegrableOn f s μ) :
     IntegrableOn (fun x => f x⁻¹) s⁻¹ μ := by
   apply (integrable_map_equiv (MeasurableEquiv.inv G) f).mp
   have : s⁻¹ = MeasurableEquiv.inv G ⁻¹' s := by simp
   rw [this, ← MeasurableEquiv.restrict_map]
-  simpa using hf
+  simpa! using hf
 
 end MeasurableInv
 

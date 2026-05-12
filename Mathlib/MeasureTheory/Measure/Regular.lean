@@ -272,11 +272,10 @@ protected theorem comap {α β} [MeasurableSpace α] {mβ : MeasurableSpace β}
   · rw [← hf.injective.preimage_image U]; exact preimage_mono hKU
   · rwa [hf.comap_apply, image_preimage_eq_iff.mpr hKrange]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem smul (H : InnerRegularWRT μ p q) (c : ℝ≥0∞) : InnerRegularWRT (c • μ) p q := by
   intro U hU r hr
   rw [smul_apply, H.measure_eq_iSup hU, smul_eq_mul] at hr
-  simpa only [ENNReal.mul_iSup, lt_iSup_iff, exists_prop] using hr
+  simpa! only [ENNReal.mul_iSup, lt_iSup_iff, exists_prop] using hr
 
 theorem trans {q' : Set α → Prop} (H : InnerRegularWRT μ p q) (H' : InnerRegularWRT μ q q') :
     InnerRegularWRT μ p q' := by
@@ -414,7 +413,6 @@ protected theorem comap [BorelSpace α] {mβ : MeasurableSpace β} [TopologicalS
     (μ : Measure β) [OuterRegular μ] (f : α ≃ₜ β) : (μ.comap f).OuterRegular :=
   OuterRegular.comap' μ f.continuous f.measurableEmbedding
 
-set_option backward.simpa.using.reducibleClose false in
 protected theorem smul (μ : Measure α) [OuterRegular μ] {x : ℝ≥0∞} (hx : x ≠ ∞) :
     (x • μ).OuterRegular := by
   rcases eq_or_ne x 0 with (rfl | h0)
@@ -422,7 +420,7 @@ protected theorem smul (μ : Measure α) [OuterRegular μ] {x : ℝ≥0∞} (hx 
     exact OuterRegular.zero
   · refine ⟨fun A _ r hr => ?_⟩
     rw [smul_apply, A.measure_eq_iInf_isOpen, smul_eq_mul] at hr
-    simpa only [ENNReal.mul_iInf_of_ne h0 hx, gt_iff_lt, iInf_lt_iff, exists_prop] using hr
+    simpa! only [ENNReal.mul_iInf_of_ne h0 hx, gt_iff_lt, iInf_lt_iff, exists_prop] using hr
 
 instance smul_nnreal (μ : Measure α) [OuterRegular μ] (c : ℝ≥0) :
     OuterRegular (c • μ) :=

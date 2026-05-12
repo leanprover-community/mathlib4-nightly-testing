@@ -29,7 +29,6 @@ open Real Set MeasureTheory
 
 open scoped ENNReal Real Topology
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The polar coordinates are an open partial homeomorphism in `ℝ^2`, mapping `(r cos θ, r sin θ)`
 to `(r, θ)`. It is a homeomorphism between `ℝ^2 - (-∞, 0]` and `(0, +∞) × (-π, π)`. -/
 @[simps]
@@ -42,10 +41,10 @@ def polarCoord : OpenPartialHomeomorph (ℝ × ℝ) (ℝ × ℝ) where
     rintro ⟨r, θ⟩ ⟨hr, hθ⟩
     dsimp at hr hθ
     rcases eq_or_ne θ 0 with (rfl | h'θ)
-    · simpa using hr
+    · simpa! using hr
     · right
       simp at hr
-      simpa only [ne_of_gt hr, Ne, mem_setOf_eq, mul_eq_zero, false_or,
+      simpa! only [ne_of_gt hr, Ne, mem_setOf_eq, mul_eq_zero, false_or,
         sin_eq_zero_iff_of_lt_of_lt hθ.1 hθ.2] using h'θ
   map_source' := by
     rintro ⟨x, y⟩ hxy
@@ -82,7 +81,7 @@ def polarCoord : OpenPartialHomeomorph (ℝ × ℝ) (ℝ × ℝ) where
     refine .prodMk (by fun_prop) ?_
     have A : MapsTo Complex.equivRealProd.symm ({q : ℝ × ℝ | 0 < q.1} ∪ {q : ℝ × ℝ | q.2 ≠ 0})
         Complex.slitPlane := by
-      rintro ⟨x, y⟩ hxy; simpa only using hxy
+      rintro ⟨x, y⟩ hxy; simpa! only using hxy
     refine ContinuousOn.comp (f := Complex.equivRealProd.symm)
       (g := Complex.arg) (fun z hz => ?_) ?_ A
     · exact (Complex.continuousAt_arg hz).continuousWithinAt

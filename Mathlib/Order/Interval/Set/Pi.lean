@@ -108,19 +108,18 @@ section PiPartialOrder
 variable [DecidableEq ι] [∀ i, PartialOrder (α i)]
 
 -- Porting note: Dot notation on `Function.update` broke
-set_option backward.simpa.using.reducibleClose false in
 theorem image_update_Icc (f : ∀ i, α i) (i : ι) (a b : α i) :
     update f i '' Icc a b = Icc (update f i a) (update f i b) := by
   ext x
   rw [← Set.pi_univ_Icc]
   refine ⟨?_, fun h => ⟨x i, ?_, ?_⟩⟩
   · rintro ⟨c, hc, rfl⟩
-    simpa [update_le_update_iff]
-  · simpa only [Function.update_self] using h i (mem_univ i)
+    simpa! [update_le_update_iff]
+  · simpa! only [Function.update_self] using h i (mem_univ i)
   · ext j
     obtain rfl | hij := eq_or_ne i j
     · exact Function.update_self ..
-    · simpa only [Function.update_of_ne hij.symm, le_antisymm_iff] using h j (mem_univ j)
+    · simpa! only [Function.update_of_ne hij.symm, le_antisymm_iff] using h j (mem_univ j)
 
 theorem image_update_Ico (f : ∀ i, α i) (i : ι) (a b : α i) :
     update f i '' Ico a b = Ico (update f i a) (update f i b) := by

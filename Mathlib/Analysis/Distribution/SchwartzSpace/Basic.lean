@@ -260,19 +260,17 @@ private theorem seminormAux_smul_le (k n : ℕ) (c : 𝕜) (f : 𝓢(E, F)) :
   gcongr
   exact f.le_seminormAux k n x
 
-set_option backward.simpa.using.reducibleClose false in
 instance instNSMul : SMul ℕ 𝓢(E, F) :=
   ⟨fun c f =>
     { toFun := c • (f : E → F)
       smooth' := (f.smooth _).const_smul c
-      decay' := by simpa [← Nat.cast_smul_eq_nsmul ℝ] using ((c : ℝ) • f).decay' }⟩
+      decay' := by simpa! [← Nat.cast_smul_eq_nsmul ℝ] using ((c : ℝ) • f).decay' }⟩
 
-set_option backward.simpa.using.reducibleClose false in
 instance instZSMul : SMul ℤ 𝓢(E, F) :=
   ⟨fun c f =>
     { toFun := c • (f : E → F)
       smooth' := (f.smooth _).const_smul c
-      decay' := by simpa [← Int.cast_smul_eq_zsmul ℝ] using ((c : ℝ) • f).decay' }⟩
+      decay' := by simpa! [← Int.cast_smul_eq_zsmul ℝ] using ((c : ℝ) • f).decay' }⟩
 
 end SMul
 
@@ -1259,7 +1257,6 @@ open scoped NNReal ENNReal
 variable [NormedAddCommGroup D] [MeasurableSpace D] [MeasurableSpace E] [OpensMeasurableSpace E]
   [NormedField 𝕜] [NormedSpace 𝕜 F] [SMulCommClass ℝ 𝕜 F]
 
-set_option backward.simpa.using.reducibleClose false in
 variable (𝕜 F) in
 /-- The `L^p` norm of a Schwartz function is controlled by a finite family of Schwartz seminorms.
 

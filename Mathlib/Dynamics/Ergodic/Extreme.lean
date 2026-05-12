@@ -27,7 +27,6 @@ variable {X : Type*} {m : MeasurableSpace X} {μ ν : Measure X} {f : X → X}
 
 namespace Ergodic
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a constant `c ≠ ∞`, an extreme point of the set of measures that are invariant under `f`
 and have total mass `c` is an ergodic measure. -/
 theorem of_mem_extremePoints_measure_univ_eq {c : ℝ≥0∞} (hc : c ≠ ∞)
@@ -50,7 +49,7 @@ theorem of_mem_extremePoints_measure_univ_eq {c : ℝ≥0∞} (hc : c ≠ ∞)
     intro s hsm hfs
     by_contra H
     obtain ⟨hs, hs'⟩ : μ s ≠ 0 ∧ μ sᶜ ≠ 0 := by
-      simpa [eventuallyConst_set, ae_iff, and_comm] using H
+      simpa! [eventuallyConst_set, ae_iff, and_comm] using H
     have hcond : c • μ[|s] = μ := by
       apply h.2 (this hsm hfs hs) (this hsm.compl (by rw [preimage_compl, hfs]) hs')
       refine ⟨μ s / c, μ sᶜ / c, ENNReal.div_pos hs hc, ENNReal.div_pos hs' hc, ?_, ?_⟩

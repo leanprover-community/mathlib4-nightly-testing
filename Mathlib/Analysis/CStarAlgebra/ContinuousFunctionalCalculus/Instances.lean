@@ -125,7 +125,6 @@ variable [CStarRing A]
 
 include hp₁ in
 open Unitization NonUnitalStarAlgHom in
-set_option backward.simpa.using.reducibleClose false in
 theorem RCLike.nonUnitalContinuousFunctionalCalculus :
     NonUnitalContinuousFunctionalCalculus 𝕜 A p where
   predicate_zero := by
@@ -144,7 +143,7 @@ theorem RCLike.nonUnitalContinuousFunctionalCalculus :
       simp only [coe_comp, NonUnitalStarAlgHom.coe_coe, Function.comp_def,
         inrRangeEquiv_symm_apply, coe_codRestrict, ψ]
       fun_prop
-    case injective => simpa [ψ] using
+    case injective => simpa! [ψ] using
       (inrRangeEquiv 𝕜 A).symm.injective.comp (cfcₙAux_injective hp₁ a ha).codRestrict
     case map_id => exact inr_injective (R := 𝕜) <| coe_ψ _ ▸ cfcₙAux_id hp₁ a ha
     case map_spec =>

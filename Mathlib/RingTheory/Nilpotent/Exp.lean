@@ -232,7 +232,6 @@ theorem commute_exp_left_of_commute
     simpa using LinearMap.congr_fun (Module.End.commute_pow_left_of_commute h i) m
   simp [exp_eq_sum hfM, exp_eq_sum hfN, this, map_rat_smul]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem exp_mul_of_derivation (R B : Type*) [CommRing R] [NonUnitalNonAssocRing B]
     [Module R B] [SMulCommClass R B B] [IsScalarTower R B B] [Module ℚ B]
     (D : B →ₗ[R] B) (h_der : ∀ x y, D (x * y) = x * D y + (D x) * y)
@@ -245,7 +244,7 @@ theorem exp_mul_of_derivation (R B : Type*) [CommRing R] [NonUnitalNonAssocRing 
   have h_comm : Commute DL DR := by ext; simp [DL, DR]
   set m : B ⊗[R] B →ₗ[R] B := LinearMap.mul' R B with hm
   have h₁ : exp D (x * y) = m (exp (DL + DR) (x ⊗ₜ[R] y)) := by
-    suffices exp D ∘ₗ m = m ∘ₗ exp (DL + DR) by simpa using LinearMap.congr_fun this (x ⊗ₜ[R] y)
+    suffices exp D ∘ₗ m = m ∘ₗ exp (DL + DR) by simpa! using LinearMap.congr_fun this (x ⊗ₜ[R] y)
     apply commute_exp_left_of_commute (h_comm.isNilpotent_add h_nilL h_nilR) h_nil
     ext
     simp [DL, DR, hm, h_der]

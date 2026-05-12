@@ -241,13 +241,12 @@ lemma linearizeTrivial_def (X : Type w) (g : G) :
   rfl
 
 variable (k G) in
-set_option backward.simpa.using.reducibleClose false in
 /-- This a type-changing equivalence (which requires a non-trivial proof that
   `LinearEquiv.refl _ _` is `G`-equivariant) to avoid abusing defeq. -/
 def linearizeTrivialIso (X : Type w) : (linearize k G (Action.trivial _ X)).Equiv
     (trivial k G (X →₀ k)) :=
   .mk (LinearEquiv.refl _ _) fun g ↦ by
-    simpa using linearizeTrivial_def (k := k) X g
+    simpa! using linearizeTrivial_def (k := k) X g
 
 open CategoryTheory
 lemma linearizeTrivialIso_apply {X : Type w} (f : (Action.trivial _ X).V →₀ k) :

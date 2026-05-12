@@ -48,7 +48,6 @@ def simpleFunc_piecewise [Finite ι] (hs : IndexedPartition s)
   finite_range' := (finite_iUnion (fun i => (f i).finite_range)).subset
     (hs.range_piecewise_subset _)
 
-set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem stronglyMeasurable_piecewise [Countable ι] (hs : IndexedPartition s)
     (hm : ∀ i, MeasurableSet (s i)) [TopologicalSpace β] (hf : ∀ i, StronglyMeasurable (f i)) :
@@ -67,7 +66,7 @@ theorem stronglyMeasurable_piecewise [Countable ι] (hs : IndexedPartition s)
     refine ⟨e b, ?_⟩
     by_cases hb : b < n
     · have : ∃ m < n, e b = e m := ⟨b, ⟨hb, rfl⟩⟩
-      simpa only [this, Fin.ext_iff] using e.injective this.choose_spec.2.symm
+      simpa! only [this, Fin.ext_iff] using e.injective this.choose_spec.2.symm
     · simp [hb]
       grind
   have G (n : ℕ) := hs.coarserPartition (g n) (sg n)
@@ -81,7 +80,7 @@ theorem stronglyMeasurable_piecewise [Countable ι] (hs : IndexedPartition s)
     have : y = (⟨y, by lia⟩ : Fin (b + 1)).1 := rfl
     rw [← hy, EmbeddingLike.apply_eq_iff_eq, this, ← Fin.ext_iff, ← (G b).mem_iff_index_eq]
     have : ∃ m < b, hs.index x = e m := ⟨y, ⟨by lia, hy.symm⟩⟩
-    simpa [g, hs.mem_iff_index_eq, this] using e.injective (hy.trans this.choose_spec.2).symm
+    simpa! [g, hs.mem_iff_index_eq, this] using e.injective (hy.trans this.choose_spec.2).symm
   have : ∀ᶠ n in atTop, (hf (hs.index x)).approx n x = (hf (e ((G n).index x))).approx n x := by
     filter_upwards [this] with n hn using by rw [hn]
   exact (Filter.tendsto_congr' this).mp (by simp [StronglyMeasurable.tendsto_approx])

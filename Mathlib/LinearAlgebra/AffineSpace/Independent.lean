@@ -783,7 +783,6 @@ theorem exists_affineIndependent (s : Set P) :
 
 variable {V}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Two different points are affinely independent. -/
 theorem affineIndependent_of_ne {p₁ p₂ : P} (h : p₁ ≠ p₂) : AffineIndependent k ![p₁, p₂] := by
   rw [affineIndependent_iff_linearIndependent_vsub k ![p₁, p₂] 0]
@@ -797,7 +796,7 @@ theorem affineIndependent_of_ne {p₁ p₂ : P} (h : p₁ ≠ p₂) : AffineInde
   haveI : Unique { x // x ≠ (0 : Fin 2) } := ⟨⟨i₁⟩, he'⟩
   refine .of_subsingleton default ?_
   rw [he' default]
-  simpa using h.symm
+  simpa! using h.symm
 
 variable {k}
 

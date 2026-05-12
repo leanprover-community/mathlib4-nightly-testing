@@ -702,12 +702,11 @@ theorem rank_sup_of_free [Module.Free R A] [Module.Free R B] :
   rw [← rank_tensorProduct', H.mulMap.toLinearEquiv.rank_eq]
 
 include H in
-set_option backward.simpa.using.reducibleClose false in
 /-- In a commutative ring, if subalgebras `A` and `B` are linearly disjoint and they are
 free modules, then the rank of `A ⊔ B` is equal to the product of the rank of `A` and `B`. -/
 theorem finrank_sup_of_free [Module.Free R A] [Module.Free R B] :
     Module.finrank R ↥(A ⊔ B) = Module.finrank R A * Module.finrank R B := by
-  simpa only [map_mul] using congr(Cardinal.toNat $(H.rank_sup_of_free))
+  simpa! only [map_mul] using congr(Cardinal.toNat $(H.rank_sup_of_free))
 
 /-- In a commutative ring, if `A` and `B` are subalgebras which are free modules of finite rank,
 such that rank of `A ⊔ B` is equal to the product of the rank of `A` and `B`,

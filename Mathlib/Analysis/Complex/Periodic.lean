@@ -147,7 +147,6 @@ section HoloOnC
 
 variable {h : ℝ} {f : ℂ → ℂ}
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 Key technical lemma: the function `cuspFunction h f` is differentiable at the images of
 differentiability points of `f` (even if `invQParam` is not differentiable there).
@@ -157,7 +156,7 @@ theorem differentiableAt_cuspFunction (hh : h ≠ 0) (hf : Periodic f h)
     DifferentiableAt ℂ (cuspFunction h f) (𝕢 h z) := by
   let q := 𝕢 h z
   have qdiff : HasStrictDerivAt (𝕢 h) (q * (2 * π * I / h)) z := by
-    simpa only [id_eq, mul_one] using (((hasStrictDerivAt_id z).const_mul _).div_const _).cexp
+    simpa! only [id_eq, mul_one] using (((hasStrictDerivAt_id z).const_mul _).div_const _).cexp
   -- Now show that the q-map has a differentiable local inverse at z, say L : ℂ → ℂ with L q = z.
   have diff_ne : q * (2 * π * I / h) ≠ 0 :=
     mul_ne_zero (exp_ne_zero _) (div_ne_zero two_pi_I_ne_zero <| mod_cast hh)
@@ -200,7 +199,6 @@ theorem cuspFunction_zero_of_zero_at_inf (hh : 0 < h) (h_zer : ZeroAtFilter I∞
     cuspFunction h f 0 = 0 := by
   simpa only [cuspFunction, update_self] using (h_zer.comp (invQParam_tendsto hh)).limUnder_eq
 
-set_option backward.simpa.using.reducibleClose false in
 theorem differentiableAt_cuspFunction_zero (hh : 0 < h) (hf : Periodic f h)
     (h_hol : ∀ᶠ z in I∞, DifferentiableAt ℂ f z) (h_bd : BoundedAtFilter I∞ f) :
     DifferentiableAt ℂ (cuspFunction h f) 0 := by
@@ -214,7 +212,7 @@ theorem differentiableAt_cuspFunction_zero (hh : 0 < h) (hf : Periodic f h)
     use c
     simp only [mem_upperBounds, Set.mem_image, Set.mem_diff, forall_exists_index, and_imp]
     intro y q hq hq2 hy
-    simpa only [← hy, norm_one, mul_one] using (hS1 q hq hq2).2
+    simpa! only [← hy, norm_one, mul_one] using (hS1 q hq hq2).2
   have := differentiableOn_update_limUnder_of_bddAbove (IsOpen.mem_nhds hS2 hS3) h_diff hF_bd
   rw [← cuspFunction_zero_eq_limUnder_nhds_ne, update_eq_self] at this
   exact this.differentiableAt (IsOpen.mem_nhds hS2 hS3)
@@ -256,20 +254,18 @@ end HoloAtInfC
 
 section arithmetic
 
-set_option backward.simpa.using.reducibleClose false in
 lemma cuspFunction_smul {h} {f : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction h f) 0) (a : ℂ) :
     cuspFunction h (a • f) = a • cuspFunction h f := by
   simp only [cuspFunction] at *
   ext y
   obtain rfl | hy := eq_or_ne y 0
-  · simpa using (Tendsto.const_mul _ (by simpa using hfcts)).limUnder_eq
+  · simpa! using (Tendsto.const_mul _ (by simpa! using hfcts)).limUnder_eq
   · simp [hy]
 
 lemma cuspFunction_neg {h} {f : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction h f) 0) :
     cuspFunction h (-f) = -cuspFunction h f := by
   simpa using cuspFunction_smul hfcts (-1)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma cuspFunction_add {h} {f g : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction h f) 0)
     (hgcts : ContinuousAt (cuspFunction h g) 0) :
     cuspFunction h (f + g) = cuspFunction h f + cuspFunction h g := by
@@ -277,7 +273,7 @@ lemma cuspFunction_add {h} {f g : ℂ → ℂ} (hfcts : ContinuousAt (cuspFuncti
   ext y
   obtain hy | rfl := ne_or_eq y 0
   · simp [hy]
-  · simpa using (tendsto_nhds_limUnder ⟨_, tendsto_nhds_zero hfcts⟩).add
+  · simpa! using (tendsto_nhds_limUnder ⟨_, tendsto_nhds_zero hfcts⟩).add
       (tendsto_nhds_limUnder ⟨_, tendsto_nhds_zero hgcts⟩) |>.limUnder_eq
 
 lemma cuspFunction_sub {h} {f g : ℂ → ℂ} (hfcts : ContinuousAt (cuspFunction h f) 0)

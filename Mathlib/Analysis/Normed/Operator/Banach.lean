@@ -623,11 +623,10 @@ lemma _root_.AntilipschitzWith.completeSpace_range_clm {f : E →SL[σ] F} {c : 
 variable [RingHomInvPair σ' σ] [RingHomIsometric σ] [RingHomIsometric σ']
 
 open Function
-set_option backward.simpa.using.reducibleClose false in
 lemma bijective_iff_dense_range_and_antilipschitz (f : E →SL[σ] F) :
     Bijective f ↔ f.range.topologicalClosure = ⊤ ∧ ∃ c, AntilipschitzWith c f := by
   refine ⟨fun h ↦ ⟨?eq_top, ?anti⟩, fun ⟨hd, c, hf⟩ ↦ ⟨hf.injective, ?surj⟩⟩
-  case eq_top => simpa [SetLike.ext'_iff] using h.2.denseRange.closure_eq
+  case eq_top => simpa! [SetLike.ext'_iff] using h.2.denseRange.closure_eq
   case anti =>
     refine ⟨_, ContinuousLinearEquiv.ofBijective f ?_ ?_ |>.antilipschitz⟩ <;>
     simp only [LinearMap.range_eq_top, LinearMap.ker_eq_bot, f.coe_coe, h.1, h.2]

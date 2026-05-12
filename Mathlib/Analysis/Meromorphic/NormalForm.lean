@@ -722,7 +722,6 @@ theorem toMeromorphicNFOn_eq_toMeromorphicNFAt (hf : MeromorphicOn f U)
   apply Filter.EventuallyEq.eq_of_nhds (g := toMeromorphicNFAt f x)
   simp [(toMeromorphicNFOn_eq_toMeromorphicNFAt_on_nhds hf hx).trans]
 
-set_option backward.simpa.using.reducibleClose false in
 variable (f U) in
 /--
 After conversion to normal form on `U`, the function has normal form.
@@ -733,7 +732,7 @@ theorem meromorphicNFOn_toMeromorphicNFOn :
   · intro z hz
     rw [meromorphicNFAt_congr (toMeromorphicNFOn_eq_toMeromorphicNFAt_on_nhds hf hz)]
     exact meromorphicNFAt_toMeromorphicNFAt
-  · simpa [hf] using analyticOnNhd_const.meromorphicNFOn
+  · simpa! [hf] using analyticOnNhd_const.meromorphicNFOn
 
 /--
 If `f` has normal form on `U`, then `f` equals `toMeromorphicNFOn f U`.

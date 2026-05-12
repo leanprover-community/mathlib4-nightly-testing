@@ -67,7 +67,6 @@ theorem IsLindelof.compl_mem_sets_of_nhdsWithin (hs : IsLindelof s) {f : Filter 
   rw [← disjoint_principal_right, disjoint_right_comm, (basis_sets _).disjoint_iff_left]
   exact hf x hx
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `p : Set X → Prop` is stable under restriction and union, and each point `x`
   of a Lindelöf set `s` has a neighborhood `t` within `s` such that `p t`, then `p s` holds. -/
 @[elab_as_elim]
@@ -76,7 +75,7 @@ theorem IsLindelof.induction_on (hs : IsLindelof s) {p : Set X → Prop}
     (hcountable_union : ∀ (S : Set (Set X)), S.Countable → (∀ s ∈ S, p s) → p (⋃₀ S))
     (hnhds : ∀ x ∈ s, ∃ t ∈ 𝓝[s] x, p t) : p s := by
   let f : Filter X := ofCountableUnion {t | p t} hcountable_union (fun t ht _ hsub ↦ hmono hsub ht)
-  have : sᶜ ∈ f := hs.compl_mem_sets_of_nhdsWithin (by simpa [f] using hnhds)
+  have : sᶜ ∈ f := hs.compl_mem_sets_of_nhdsWithin (by simpa! [f] using hnhds)
   rwa [← compl_compl s]
 
 /-- The intersection of a Lindelöf set and a closed set is a Lindelöf set. -/

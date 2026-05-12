@@ -67,10 +67,9 @@ variable [Preorder α] {n : ℕ} {f : Fin (n + 1) → α} {a : α}
 @[simp] lemma strictMono_vecCons : StrictMono (vecCons a f) ↔ a < f 0 ∧ StrictMono f :=
   liftFun_vecCons (· < ·)
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma monotone_vecCons : Monotone (vecCons a f) ↔ a ≤ f 0 ∧ Monotone f := by
-  simpa only [monotone_iff_forall_lt] using @liftFun_vecCons α n (· ≤ ·) _ f a
+  simpa! only [monotone_iff_forall_lt] using @liftFun_vecCons α n (· ≤ ·) _ f a
 
 @[simp] lemma monotone_vecEmpty : Monotone ![a]
   | ⟨0, _⟩, ⟨0, _⟩, _ => le_refl _

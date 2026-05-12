@@ -499,7 +499,6 @@ lemma image_mem_irreducibleComponents_of_isPreirreducible_fiber
     rw [← Set.image_preimage_eq Z hf₄]
     exact Set.image_mono this⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `f : X → Y` is continuous, open, and has irreducible fibers, then it induces an
 bijection between irreducible components -/
 @[stacks 037A]
@@ -518,7 +517,7 @@ def irreducibleComponentsEquivOfIsPreirreducibleFiber :
   left_inv _ := Subtype.ext <| Set.image_preimage_eq _ hf₄
   map_rel_iff' {W Z} := by
     refine ⟨fun H ↦ ?_, Set.preimage_mono⟩
-    simpa only [Equiv.coe_fn_mk, Set.image_preimage_eq _ hf₄] using Set.image_mono (f := f) H
+    simpa! only [Equiv.coe_fn_mk, Set.image_preimage_eq _ hf₄] using Set.image_mono (f := f) H
 
 end
 

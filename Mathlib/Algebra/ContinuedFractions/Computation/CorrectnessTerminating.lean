@@ -190,7 +190,6 @@ theorem compExactValue_correctness_of_stream_eq_some :
 
 open GenContFract (of_terminatedAt_n_iff_succ_nth_intFractPair_stream_eq_none)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The convergent of `GenContFract.of v` at step `n - 1` is exactly `v` if the
 `IntFractPair.stream` of the corresponding continued fraction terminated at step `n`. -/
 theorem of_correctness_of_nth_stream_eq_none (nth_stream_eq_none : IntFractPair.stream v n = none) :
@@ -215,7 +214,7 @@ theorem of_correctness_of_nth_stream_eq_none (nth_stream_eq_none : IntFractPair.
           convs_stable_of_terminated n'.le_succ this
         rw [this]
         exact IH nth_stream_eq_none
-    · simpa [nth_stream_fr_eq_zero, compExactValue] using
+    · simpa! [nth_stream_fr_eq_zero, compExactValue] using
         compExactValue_correctness_of_stream_eq_some nth_stream_eq
 
 /-- If `GenContFract.of v` terminated at step `n`, then the `n`th convergent is exactly `v`. -/

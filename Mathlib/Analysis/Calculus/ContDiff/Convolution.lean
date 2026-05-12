@@ -57,7 +57,6 @@ variable [NormedAddCommGroup G] [BorelSpace G]
 
 variable [NormedSpace 𝕜 G] [SFinite μ] [IsAddLeftInvariant μ]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Compute the total derivative of `f ⋆ g` if `g` is `C^1` with compact support and `f` is locally
 integrable. To write down the total derivative as a convolution, we use
 `ContinuousLinearMap.precompR`. -/
@@ -77,7 +76,7 @@ theorem _root_.HasCompactSupport.hasFDerivAt_convolution_right (hcg : HasCompact
     hf.aestronglyMeasurable.convolution_integrand_snd L'
       (hg.continuous_fderiv one_ne_zero).aestronglyMeasurable
   have h3 : ∀ x t, HasFDerivAt (fun x => g (x - t)) (fderiv 𝕜 g (x - t)) x := fun x t ↦ by
-    simpa using
+    simpa! using
       (hg.differentiable one_ne_zero).differentiableAt.hasFDerivAt.comp x
         ((hasFDerivAt_id x).sub (hasFDerivAt_const t x))
   let K' := -tsupport (fderiv 𝕜 g) + closedBall x₀ 1

@@ -67,14 +67,13 @@ lemma support_eq_limsInf (L : SummationFilter β) :
     ⟨fun hL b hb x hx ↦ hL x <| hb.mp <| .of_forall fun c hc ↦ hc hx,
       fun hL x hx ↦ singleton_subset_iff.mp <| hL _ <| by simpa using hx⟩
 
-set_option backward.simpa.using.reducibleClose false in
 lemma support_eq_univ_iff {L : SummationFilter β} :
     L.support = univ ↔ L.filter ≤ atTop := by
   simp only [support, Set.eq_univ_iff_forall, Set.mem_setOf]
   refine ⟨fun h s hs ↦ ?_, fun h b ↦ .filter_mono h ?_⟩
   · obtain ⟨t, ht⟩ := mem_atTop_sets.mp hs
     have := (Filter.biInter_finset_mem t).mpr fun b hb ↦ h b
-    exact Filter.mem_of_superset this fun r hr ↦ ht r (by simpa using hr)
+    exact Filter.mem_of_superset this fun r hr ↦ ht r (by simpa! using hr)
   · filter_upwards [eventually_ge_atTop {b}] using by simp
 
 @[simp] lemma support_eq_univ (L : SummationFilter β) [L.LeAtTop] : L.support = univ :=
@@ -217,9 +216,8 @@ finite: this corresponds to limits of finite sums over larger and larger interva
 @[simps] def conditional : SummationFilter β where
   filter := (atBot ×ˢ atTop).map (fun p ↦ Finset.Icc p.1 p.2)
 
-set_option backward.simpa.using.reducibleClose false in
 instance : (conditional β).LeAtTop := ⟨support_eq_univ_iff.mp <| by
-  simpa [eq_univ_iff_forall, support, -eventually_and]
+  simpa! [eq_univ_iff_forall, support, -eventually_and]
     using fun x ↦ prod_mem_prod (eventually_le_atBot x) (eventually_ge_atTop x)⟩
 
 set_option linter.flexible false in -- simp followed by infer_instance

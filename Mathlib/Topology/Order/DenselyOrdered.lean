@@ -159,9 +159,8 @@ theorem Ioc_subset_closure_interior (a b : α) : Ioc a b ⊆ closure (interior (
       _ ⊆ closure (interior (Ioc a b)) :=
         closure_mono (interior_maximal Ioo_subset_Ioc_self isOpen_Ioo)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Ico_subset_closure_interior (a b : α) : Ico a b ⊆ closure (interior (Ico a b)) := by
-  simpa only [Ioc_toDual] using
+  simpa! only [Ioc_toDual] using
     Ioc_subset_closure_interior (OrderDual.toDual b) (OrderDual.toDual a)
 
 @[simp]

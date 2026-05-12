@@ -128,12 +128,11 @@ theorem seminormFromConst_one : seminormFromConst' c f 1 = 1 := by
   exact ⟨1, seminormFromConst_seq_one hc hpm⟩
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
-set_option backward.simpa.using.reducibleClose false in
 /-- The function `seminormFromConst` is a `RingSeminorm` on `R`. -/
 def seminormFromConst : RingSeminorm R where
   toFun     := seminormFromConst' c f
   map_zero' := tendsto_nhds_unique (tendsto_seminormFromConst_seq_atTop hf1 hc hpm 0)
-    (by simpa [seminormFromConst_seq_zero c (map_zero _)] using tendsto_const_nhds)
+    (by simpa! [seminormFromConst_seq_zero c (map_zero _)] using tendsto_const_nhds)
   add_le' x y := by
     apply le_of_tendsto_of_tendsto' (tendsto_seminormFromConst_seq_atTop hf1 hc hpm (x + y)) <|
       (tendsto_seminormFromConst_seq_atTop hf1 hc hpm x).add

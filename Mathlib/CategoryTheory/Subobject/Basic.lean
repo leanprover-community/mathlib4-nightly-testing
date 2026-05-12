@@ -758,7 +758,6 @@ def existsIsoImage (f : X ⟶ Y) (x : Subobject X) :
     ((«exists» f).obj x : C) ≅ Limits.image (x.arrow ≫ f) :=
   (MonoOver.forget Y ⋙ Over.forget Y).mapIso <| (existsCompRepresentativeIso f).app x
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a subobject `x`, the `ImageFactorisation` of `x.arrow ≫ f` through `(exists f).obj x`. -/
 @[simps! F_I F_m]
 def imageFactorisation (f : X ⟶ Y) (x : Subobject X) :
@@ -768,7 +767,7 @@ def imageFactorisation (f : X ⟶ Y) (x : Subobject X) :
       (Image.imageFactorisation (x.arrow ≫ f))
       (existsIsoImage f x).symm
   ImageFactorisation.copy this ((«exists» f).obj x).arrow this.F.e (by
-    simpa [this, -Over.w] using (Over.w ((existsCompRepresentativeIso f).app x).hom.hom).symm)
+    simpa! [this, -Over.w] using (Over.w ((existsCompRepresentativeIso f).app x).hom.hom).symm)
 
 end Exists
 

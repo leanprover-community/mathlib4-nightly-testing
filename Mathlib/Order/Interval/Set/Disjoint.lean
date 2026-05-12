@@ -119,11 +119,10 @@ variable [LinearOrder α] {a₁ a₂ b₁ b₂ : α}
 theorem Ico_disjoint_Ico : Disjoint (Ico a₁ a₂) (Ico b₁ b₂) ↔ min a₂ b₂ ≤ max a₁ b₁ := by
   simp_rw [Set.disjoint_iff_inter_eq_empty, Ico_inter_Ico, Ico_eq_empty_iff, not_lt]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem Ioc_disjoint_Ioc : Disjoint (Ioc a₁ a₂) (Ioc b₁ b₂) ↔ min a₂ b₂ ≤ max a₁ b₁ := by
   have h : _ ↔ min (toDual a₁) (toDual b₁) ≤ max (toDual a₂) (toDual b₂) := Ico_disjoint_Ico
-  simpa only [Ico_toDual] using h
+  simpa! only [Ico_toDual] using h
 
 @[simp]
 theorem Ioo_disjoint_Ioo [DenselyOrdered α] :

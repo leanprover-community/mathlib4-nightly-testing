@@ -604,14 +604,13 @@ theorem symm_trans (F : HomotopyRel f₀ f₁ S) (G : HomotopyRel f₁ f₂ S) :
     (F.trans G).symm = G.symm.trans F.symm :=
   HomotopyWith.ext <| Homotopy.congr_fun <| Homotopy.symm_trans _ _
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Casting a `HomotopyRel f₀ f₁ S` to a `HomotopyRel g₀ g₁ S` where `f₀ = g₀` and `f₁ = g₁`.
 -/
 @[simps!]
 def cast {f₀ f₁ g₀ g₁ : C(X, Y)} (F : HomotopyRel f₀ f₁ S) (h₀ : f₀ = g₀) (h₁ : f₁ = g₁) :
     HomotopyRel g₀ g₁ S where
   toHomotopy := Homotopy.cast F.toHomotopy h₀ h₁
-  prop' t x hx := by simpa only [← h₀, ← h₁] using F.prop t x hx
+  prop' t x hx := by simpa! only [← h₀, ← h₁] using F.prop t x hx
 
 /-- Post-compose a homotopy relative to a set by a continuous function. -/
 @[simps!] def compContinuousMap {f₀ f₁ : C(X, Y)} (F : f₀.HomotopyRel f₁ S) (g : C(Y, Z)) :

@@ -436,7 +436,6 @@ lemma natTrailingDegree_eq_zero_of_constantCoeff_ne_zero (h : constantCoeff p �
 
 namespace Monic
 
-set_option backward.simpa.using.reducibleClose false in
 lemma eq_X_pow_iff_natDegree_le_natTrailingDegree (h₁ : p.Monic) :
     p = X ^ p.natDegree ↔ p.natDegree ≤ p.natTrailingDegree := by
   refine ⟨fun h => ?_, fun h => ?_⟩
@@ -446,7 +445,7 @@ lemma eq_X_pow_iff_natDegree_le_natTrailingDegree (h₁ : p.Monic) :
     rw [coeff_X_pow]
     obtain hn | rfl | hn := lt_trichotomy n p.natDegree
     · rw [if_neg hn.ne, coeff_eq_zero_of_lt_natTrailingDegree (hn.trans_le h)]
-    · simpa only [if_pos rfl] using h₁.leadingCoeff
+    · simpa! only [if_pos rfl] using h₁.leadingCoeff
     · rw [if_neg hn.ne', coeff_eq_zero_of_natDegree_lt hn]
 
 lemma eq_X_pow_iff_natTrailingDegree_eq_natDegree (h₁ : p.Monic) :

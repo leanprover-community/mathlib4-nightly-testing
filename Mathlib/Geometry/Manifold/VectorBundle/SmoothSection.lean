@@ -153,14 +153,13 @@ lemma ContMDiff.const_smul_section (hs : CMDiff n (T% s)) : CMDiff n (T% (a • 
 
 variable {ι : Type*} {t : ι → (x : M) → V x}
 
-set_option backward.simpa.using.reducibleClose false in
 lemma ContMDiffWithinAt.sum_section {s : Finset ι}
     (hs : ∀ i ∈ s, CMDiffAt[u] n (T% (t i ·)) x₀) :
     CMDiffAt[u] n (T% (fun x ↦ (∑ i ∈ s, (t i x)))) x₀ := by
   classical
   induction s using Finset.induction_on with
   | empty =>
-    simpa only [Finset.sum_empty] using contMDiffWithinAt_zeroSection ..
+    simpa! only [Finset.sum_empty] using contMDiffWithinAt_zeroSection ..
   | insert i s hi h =>
     simp only [Finset.sum_insert hi]
     apply (hs _ (s.mem_insert_self i)).add_section

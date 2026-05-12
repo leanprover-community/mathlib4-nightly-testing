@@ -296,7 +296,6 @@ variable (f : R →+* S) [∀ r, IsLocalization.Away r.val (Rᵣ r)]
     [∀ r, IsLocalization.Away (f r.val) (Sᵣ r)]
 include hs
 
-set_option backward.simpa.using.reducibleClose false in
 lemma injective_of_isLocalization_of_span_eq_top
     (h : ∀ r : s, Function.Injective (IsLocalization.Away.map (Rᵣ r) (Sᵣ r) f r.1)) :
     Function.Injective f := by
@@ -309,9 +308,8 @@ lemma injective_of_isLocalization_of_span_eq_top
     .of_algebraMap_eq <| by simp [RingHom.algebraMap_toAlgebra]
   apply injective_of_isLocalized_span s hs Rᵣ (fun r : s ↦ Algebra.linearMap _ _) _
     (fun r : s ↦ ((IsScalarTower.toAlgHom R S (Sᵣ r)).toLinearMap)) (Algebra.linearMap R S)
-  simpa [IsLocalization.map_linearMap_eq_toLinearMap_mapₐ] using h
+  simpa! [IsLocalization.map_linearMap_eq_toLinearMap_mapₐ] using h
 
-set_option backward.simpa.using.reducibleClose false in
 lemma surjective_of_isLocalization_of_span_eq_top
     (h : ∀ r : s, Function.Surjective (IsLocalization.Away.map (Rᵣ r) (Sᵣ r) f r.1)) :
     Function.Surjective f := by
@@ -324,7 +322,7 @@ lemma surjective_of_isLocalization_of_span_eq_top
     .of_algebraMap_eq <| by simp [RingHom.algebraMap_toAlgebra]
   apply surjective_of_isLocalized_span s hs Rᵣ (fun r : s ↦ Algebra.linearMap _ _) _
     (fun r : s ↦ ((IsScalarTower.toAlgHom R S (Sᵣ r)).toLinearMap)) (Algebra.linearMap R S)
-  simpa [IsLocalization.map_linearMap_eq_toLinearMap_mapₐ] using h
+  simpa! [IsLocalization.map_linearMap_eq_toLinearMap_mapₐ] using h
 
 lemma bijective_of_isLocalization_of_span_eq_top
     (h : ∀ r : s, Function.Bijective (IsLocalization.Away.map (Rᵣ r) (Sᵣ r) f r.1)) :

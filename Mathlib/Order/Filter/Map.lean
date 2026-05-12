@@ -319,10 +319,9 @@ nonrec theorem _root_.Function.RightInverse.filter_comap {f : α → β} {g : β
     (hfg : RightInverse g f) : LeftInverse (comap g) (comap f) :=
   hfg.filter_comap
 
-set_option backward.simpa.using.reducibleClose false in
 theorem _root_.Set.LeftInvOn.filter_map_Iic {f : α → β} {g : β → α} (hfg : LeftInvOn g f s) :
     LeftInvOn (map g) (map f) (Iic <| 𝓟 s) := fun F (hF : F ≤ 𝓟 s) ↦ by
-  have : (g ∘ f) =ᶠ[𝓟 s] id := by simpa only [eventuallyEq_principal] using hfg
+  have : (g ∘ f) =ᶠ[𝓟 s] id := by simpa! only [eventuallyEq_principal] using hfg
   rw [map_map, map_congr (this.filter_mono hF), map_id]
 
 nonrec theorem _root_.Set.RightInvOn.filter_map_Iic {f : α → β} {g : β → α}

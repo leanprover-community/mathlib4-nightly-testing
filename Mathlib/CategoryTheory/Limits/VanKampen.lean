@@ -146,16 +146,14 @@ theorem IsVanKampenColimit.precompose_isIso_iff {F G : J ⥤ C} (α : F ⟶ G) [
     (Cocone.ext (Iso.refl _) (by simp)),
     IsVanKampenColimit.precompose_isIso α⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsUniversalColimit.of_mapCocone (G : C ⥤ D) {F : J ⥤ C} {c : Cocone F}
     [PreservesLimitsOfShape WalkingCospan G] [ReflectsColimitsOfShape J G]
     (hc : IsUniversalColimit (G.mapCocone c)) : IsUniversalColimit c :=
   fun F' c' α f h hα H ↦
     ⟨isColimitOfReflects _ (hc (G.mapCocone c') (whiskerRight α G) (G.map f)
-    (by ext j; simpa using G.congr_map (NatTrans.congr_app h j))
+    (by ext j; simpa! using G.congr_map (NatTrans.congr_app h j))
     (hα.whiskerRight G) (fun j ↦ (H j).map G)).some⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsVanKampenColimit.of_mapCocone (G : C ⥤ D) {F : J ⥤ C} {c : Cocone F}
     [∀ (i j : J) (X : C) (f : X ⟶ F.obj j) (g : i ⟶ j), PreservesLimit (cospan f (F.map g)) G]
     [∀ (i : J) (X : C) (f : X ⟶ c.pt), PreservesLimit (cospan f (c.ι.app i)) G]
@@ -165,7 +163,7 @@ theorem IsVanKampenColimit.of_mapCocone (G : C ⥤ D) {F : J ⥤ C} {c : Cocone 
     (H : IsVanKampenColimit (G.mapCocone c)) : IsVanKampenColimit c := by
   intro F' c' α f h hα
   refine (Iff.trans ?_ (H (G.mapCocone c') (whiskerRight α G) (G.map f)
-      (by ext j; simpa using G.congr_map (NatTrans.congr_app h j))
+      (by ext j; simpa! using G.congr_map (NatTrans.congr_app h j))
       (hα.whiskerRight G))).trans (forall_congr' fun j => ?_)
   · exact ⟨fun h => ⟨isColimitOfPreserves G h.some⟩, fun h => ⟨isColimitOfReflects G h.some⟩⟩
   · exact IsPullback.map_iff G (NatTrans.congr_app h.symm j)
@@ -550,7 +548,6 @@ end BinaryCoproduct
 
 section FiniteCoproducts
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem isUniversalColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
@@ -569,7 +566,7 @@ theorem isUniversalColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
     (Cofan.mk (pullback c₂.inr i) fun j ↦ pullback.lift (α.app _ ≫ c₁.inj _) (c.ι.app _) ?_)
     (Discrete.natTrans fun i ↦ α.app _) (pullback.fst _ _) ?_ (.of_discrete _) ?_
   rotate_left
-  · simpa only [Functor.const_obj_obj, pair_obj_right, Discrete.functor_obj, Category.assoc,
+  · simpa! only [Functor.const_obj_obj, pair_obj_right, Discrete.functor_obj, Category.assoc,
       extendCofan_pt, Functor.const_obj_obj, NatTrans.comp_app, extendCofan_ι_app,
       Fin.cases_succ, Functor.const_map_app] using congr_app e ⟨j.succ⟩
   · ext j
@@ -589,8 +586,8 @@ theorem isUniversalColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
     (.of_discrete _) ?_
   rotate_left
   · ext ⟨⟨⟩⟩
-    · simpa [mapPair] using congr_app e ⟨0⟩
-    · simpa using pullback.condition
+    · simpa! [mapPair] using congr_app e ⟨0⟩
+    · simpa! using pullback.condition
   · rintro ⟨⟨⟩⟩
     · simp only [pair_obj_right, Functor.const_obj_obj, pair_obj_left, BinaryCofan.mk_pt,
         BinaryCofan.ι_app_left, BinaryCofan.mk_inl, mapPair_left]
@@ -611,7 +608,6 @@ theorem isUniversalColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
   · simp only [Fin.cases_zero]
   · simp only [Fin.cases_succ]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem isVanKampenColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
@@ -628,13 +624,13 @@ theorem isVanKampenColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
     (mapPair (α.app _) (Sigma.desc fun b ↦ α.app _ ≫ c₁.inj _)) i ?_ (.of_discrete _)).mp ⟨?_⟩
   rotate_left
   · ext ⟨⟨⟩⟩
-    · simpa only [pair_obj_left, Functor.const_obj_obj, pair_obj_right, Discrete.functor_obj,
+    · simpa! only [pair_obj_left, Functor.const_obj_obj, pair_obj_right, Discrete.functor_obj,
         NatTrans.comp_app, mapPair_left, BinaryCofan.ι_app_left, BinaryCofan.mk_pt,
         BinaryCofan.mk_inl, Functor.const_map_app, extendCofan_pt,
         extendCofan_ι_app, Fin.cases_zero] using congr_app e ⟨0⟩
     · dsimp
       ext j
-      simpa only [colimit.ι_desc_assoc, Discrete.functor_obj, Cofan.mk_pt, Cofan.mk_ι_app,
+      simpa! only [colimit.ι_desc_assoc, Discrete.functor_obj, Cofan.mk_pt, Cofan.mk_ι_app,
         Category.assoc, extendCofan_pt, Functor.const_obj_obj, NatTrans.comp_app, extendCofan_ι_app,
         Fin.cases_succ, Functor.const_map_app] using congr_app e ⟨j.succ⟩
   · let F' : Fin (n + 1) → C := F.obj ∘ Discrete.mk
@@ -679,7 +675,7 @@ theorem isVanKampenColimit_extendCofan {n : ℕ} (f : Fin (n + 1) → C)
       dsimp
       rw [colimit.ι_desc]
       rfl
-    simpa [Functor.const_obj_obj, Discrete.functor_obj, extendCofan_pt, extendCofan_ι_app,
+    simpa! [Functor.const_obj_obj, Discrete.functor_obj, extendCofan_pt, extendCofan_ι_app,
       Fin.cases_succ, BinaryCofan.mk_pt, colimit.cocone_x, Cofan.mk_pt, Cofan.mk_ι_app,
       BinaryCofan.ι_app_right, BinaryCofan.mk_inr, colimit.ι_desc,
       Discrete.natTrans_app] using t₁'.paste_horiz (t₂' ⟨WalkingPair.right⟩)
@@ -794,7 +790,6 @@ lemma IsUniversalColimit.nonempty_isColimit_of_isPullback_left
 
 set_option backward.isDefEq.respectTransparency false in
 include hau hP in
-set_option backward.simpa.using.reducibleClose false in
 /-- Pullbacks distribute over universal coproducts on the left: This is the isomorphism
 `∐ (B ×[S] Xᵢ) ≅ B ×[S] (∐ Xᵢ)`. -/
 lemma IsUniversalColimit.isPullback_of_isColimit_left {d : Cofan P} (hd : IsColimit d)
@@ -810,9 +805,9 @@ lemma IsUniversalColimit.isPullback_of_isColimit_left {d : Cofan P} (hd : IsColi
       ?_ (Iso.refl _) (Iso.refl _) (Iso.refl _) ?_ ?_ (by simp) (by simp)
   · exact hc.coconePointUniqueUpToIso hd
   · refine Cofan.IsColimit.hom_ext hc _ _ fun i ↦ ?_
-    simpa [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_fst _ _ _
+    simpa! [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_fst _ _ _
   · refine Cofan.IsColimit.hom_ext hc _ _ fun i ↦ ?_
-    simpa [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_snd _ _ _
+    simpa! [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_snd _ _ _
 
 end
 
@@ -859,7 +854,6 @@ lemma IsUniversalColimit.nonempty_isColimit_of_isPullback_right
 
 set_option backward.isDefEq.respectTransparency false in
 include hau hP in
-set_option backward.simpa.using.reducibleClose false in
 /-- Pullbacks distribute over universal coproducts on the right: This is the isomorphism
 `∐ (Xᵢ ×[S] B) ≅ (∐ Xᵢ) ×[S] B`. -/
 lemma IsUniversalColimit.isPullback_of_isColimit_right {d : Cofan P} (hd : IsColimit d)
@@ -875,9 +869,9 @@ lemma IsUniversalColimit.isPullback_of_isColimit_right {d : Cofan P} (hd : IsCol
       ?_ (Iso.refl _) (Iso.refl _) (Iso.refl _) ?_ ?_ (by simp) (by simp)
   · exact hc.coconePointUniqueUpToIso hd
   · refine Cofan.IsColimit.hom_ext hc _ _ fun i ↦ ?_
-    simpa [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_fst _ _ _
+    simpa! [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_fst _ _ _
   · refine Cofan.IsColimit.hom_ext hc _ _ fun i ↦ ?_
-    simpa [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_snd _ _ _
+    simpa! [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_snd _ _ _
 
 end
 
@@ -934,7 +928,6 @@ lemma IsUniversalColimit.nonempty_isColimit_prod_of_isPullback
 
 set_option backward.isDefEq.respectTransparency false in
 include hau hbu in
-set_option backward.simpa.using.reducibleClose false in
 lemma IsUniversalColimit.isPullback_prod_of_isColimit [HasPullback u v]
     {P : ι × ι' → C} {q₁ : ∀ i j, P (i, j) ⟶ X i} {q₂ : ∀ i j, P (i, j) ⟶ Y j}
     (hP : ∀ i j, IsPullback (q₁ i j) (q₂ i j) (f i) (g j)) (d : Cofan P) (hd : IsColimit d)
@@ -952,9 +945,9 @@ lemma IsUniversalColimit.isPullback_prod_of_isColimit [HasPullback u v]
       ?_ (Iso.refl _) (Iso.refl _) (Iso.refl _) ?_ ?_ (by simp) (by simp)
   · exact hc.coconePointUniqueUpToIso hd
   · refine Cofan.IsColimit.hom_ext hc _ _ fun i ↦ ?_
-    simpa [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_fst _ _ _
+    simpa! [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_fst _ _ _
   · refine Cofan.IsColimit.hom_ext hc _ _ fun i ↦ ?_
-    simpa [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_snd _ _ _
+    simpa! [Cofan.inj, Cofan.IsColimit.desc] using pullback.lift_snd _ _ _
 
 end CoproductsPullback
 

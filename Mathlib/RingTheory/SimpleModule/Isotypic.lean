@@ -334,9 +334,8 @@ see `isFullyInvariant_iff_sSup_isotypicComponents`. -/
 def Submodule.IsFullyInvariant (N : Submodule R M) : Prop :=
   ∀ f : Module.End R M, N ≤ N.comap f
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isFullyInvariant_iff_isTwoSided {I : Ideal R} : I.IsFullyInvariant ↔ I.IsTwoSided := by
-  simpa only [Submodule.IsFullyInvariant, ← MulOpposite.opEquiv.trans (RingEquiv.moduleEndSelf R
+  simpa! only [Submodule.IsFullyInvariant, ← MulOpposite.opEquiv.trans (RingEquiv.moduleEndSelf R
     |>.toEquiv) |>.forall_congr_right, SetLike.le_def, I.isTwoSided_iff] using forall_comm
 
 variable (R M) in

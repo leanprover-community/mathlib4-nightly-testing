@@ -31,7 +31,6 @@ open MeasureTheory
 variable {α : Type*} [TopologicalSpace α] [MeasurableSpace α]
   {s : Set α} {f g : α → ℝ} {μ : Measure α}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **First mean value theorem for set integrals (a.e. nonnegativity).**
 Let `s` be a connected measurable set. If `f` is continuous on `s`, `g` is integrable on `s`,
 `f * g` is integrable on `s`, and `g` is nonnegative a.e. on `s` w.r.t. `μ.restrict s`, then
@@ -50,7 +49,7 @@ theorem exists_eq_const_mul_setIntegral_of_ae_nonneg
   have h_toReal_ae : (fun x ↦ (ρ x).toReal) =ᵐ[μ.restrict s] g := by
     apply hg0.mono
     intro x hx
-    simpa [ρ]
+    simpa! [ρ]
   have heq : ∫ x in s, f x * g x ∂μ = ∫ x in s, f x ∂ν := by
     calc
       _ = ∫ x in s, (ρ x).toReal * f x ∂μ := by
@@ -79,10 +78,10 @@ theorem exists_eq_const_mul_setIntegral_of_ae_nonneg
             apply hg1.mono
             intro x hx
             simp [hx]
-          simpa using integral_congr_ae heq_ae
+          simpa! using integral_congr_ae heq_ae
         rw [← heq, heq_zero]
       _ = _ := by simp [hν0, hg1]
-  · have hν0' : (ν s).toReal ≠ 0 := by simpa using hν0
+  · have hν0' : (ν s).toReal ≠ 0 := by simpa! using hν0
     have hνfin : ν s ≠ ⊤ := by intro this; apply hν0'; simp [this]
     have hν0'' : ν s ≠ 0 := by intro this; apply hν0'; simp [this]
     have hint : IntegrableOn f s ν := by
@@ -97,7 +96,7 @@ theorem exists_eq_const_mul_setIntegral_of_ae_nonneg
       have hνrs : ν.restrict s = (μ.restrict s).withDensity ρ := by
         ext t ht
         simp [ht, ν, hs_meas]
-      simpa [IntegrableOn, hνrs] using h_Int
+      simpa! [IntegrableOn, hνrs] using h_Int
     obtain ⟨c, hc, h_ave⟩ := exists_eq_setAverage hs_conn hf hint hνfin hν0''
     refine ⟨c, hc, ?_⟩
     calc

@@ -146,7 +146,6 @@ instance (priority := low) UniversallyOpen.of_flat [Flat f] [LocallyOfFinitePres
     UniversallyOpen f :=
   ⟨universally_mk' _ _ fun _ _ ↦ isOpenMap_of_generalizingMap _ (Flat.generalizingMap _)⟩
 
-set_option backward.simpa.using.reducibleClose false in
 nonrec instance (priority := low) [IsIntegral Y] [Subsingleton Y] :
     UniversallyOpen f := by
   wlog hX : ∃ S, X = Spec S generalizing X
@@ -163,7 +162,7 @@ nonrec instance (priority := low) [IsIntegral Y] [Subsingleton Y] :
   · refine (IsZariskiLocalAtTarget.iff_of_openCover T.affineCover).mpr fun i ↦ ?_
     refine (MorphismProperty.cancel_left_of_respectsIso _
       ((pullbackRightPullbackFstIso ..).inv ≫ (pullbackSymmetry ..).hom) _).mp ?_
-    simpa [Scheme.Cover.pullbackHom] using this _ _ ⟨_, rfl⟩
+    simpa! [Scheme.Cover.pullbackHom] using this _ _ ⟨_, rfl⟩
   obtain ⟨R, rfl⟩ := hT
   obtain ⟨ψ, rfl⟩ := Spec.map_surjective g
   algebraize [φ.hom, ψ.hom]

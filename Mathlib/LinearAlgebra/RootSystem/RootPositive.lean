@@ -169,9 +169,8 @@ lemma isSymm_posForm :
 def rootLength (i : ι) : S :=
   B.posForm (P.rootSpanMem S i) (P.rootSpanMem S i)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma rootLength_pos (i : ι) : 0 < B.rootLength i := by
-  simpa using B.zero_lt_posForm_apply_root i
+  simpa! using B.zero_lt_posForm_apply_root i
 
 @[simp]
 lemma rootLength_reflectionPerm_self (i : ι) :
@@ -182,10 +181,9 @@ lemma rootLength_reflectionPerm_self (i : ι) :
     algebraMap S R (B.rootLength i) = B.form (P.root i) (P.root i) := by
   simp [rootLength]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma pairingIn_mul_eq_pairingIn_mul_swap :
     P.pairingIn S j i * B.rootLength i = P.pairingIn S i j * B.rootLength j := by
-  simpa only [← (algebraMap_injective S R).eq_iff, algebraMap_pairingIn, map_mul,
+  simpa! only [← (algebraMap_injective S R).eq_iff, algebraMap_pairingIn, map_mul,
     B.algebraMap_rootLength] using B.toInvariantForm.pairing_mul_eq_pairing_mul_swap i j
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised

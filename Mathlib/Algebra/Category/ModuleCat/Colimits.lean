@@ -171,7 +171,6 @@ def finsuppCocone : Cofan fun _ : ι ↦ ModuleCat.of R M :=
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /-- The concrete coproduct cone is colimiting. -/
 noncomputable
 def finsuppCoconeIsColimit : IsColimit (finsuppCocone R M ι) where
@@ -179,7 +178,7 @@ def finsuppCoconeIsColimit : IsColimit (finsuppCocone R M ι) where
   fac := by aesop (add simp finsuppCocone)
   uniq s f h := by
     ext : 1
-    exact Finsupp.lhom_ext' fun i ↦ LinearMap.ext fun x ↦ by simpa using congr($(h ⟨i⟩) (x : M))
+    exact Finsupp.lhom_ext' fun i ↦ LinearMap.ext fun x ↦ by simpa! using congr($(h ⟨i⟩) (x : M))
 
 end
 

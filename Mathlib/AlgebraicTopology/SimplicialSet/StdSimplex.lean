@@ -314,11 +314,10 @@ end Subcomplex
 
 namespace stdSimplex
 
-set_option backward.simpa.using.reducibleClose false in
 lemma obj₀Equiv_symm_mem_face_iff
     {n : ℕ} (S : Finset (Fin (n + 1))) (i : Fin (n + 1)) :
     (obj₀Equiv.symm i) ∈ (face.{u} S).obj (op (.mk 0)) ↔ i ∈ S :=
-  ⟨fun h ↦ by simpa using h, by aesop⟩
+  ⟨fun h ↦ by simpa! using h, by aesop⟩
 
 lemma face_le_face_iff {n : ℕ} (S₁ S₂ : Finset (Fin (n + 1))) :
     face.{u} S₁ ≤ face S₂ ↔ S₁ ≤ S₂ := by
@@ -326,7 +325,6 @@ lemma face_le_face_iff {n : ℕ} (S₁ S₂ : Finset (Fin (n + 1))) :
   simp only [← obj₀Equiv_symm_mem_face_iff.{u}] at hi ⊢
   exact h _ hi
 
-set_option backward.simpa.using.reducibleClose false in
 lemma face_eq_ofSimplex {n : ℕ} (S : Finset (Fin (n + 1))) (m : ℕ) (e : Fin (m + 1) ≃o S) :
     face.{u} S =
       Subcomplex.ofSimplex (X := Δ[n])
@@ -342,7 +340,7 @@ lemma face_eq_ofSimplex {n : ℕ} (S : Finset (Fin (n + 1))) (m : ℕ) (e : Fin 
     refine ⟨Quiver.Hom.op
       (SimplexCategory.Hom.mk ((e.symm.toOrderEmbedding.toOrderHom.comp φ))), ?_⟩
     ext j : 1
-    simpa only [Subtype.ext_iff] using e.apply_symm_apply ⟨_, hx j⟩
+    simpa! only [Subtype.ext_iff] using e.apply_symm_apply ⟨_, hx j⟩
   · simp
 
 set_option backward.defeqAttrib.useBackward true in
@@ -431,7 +429,6 @@ lemma objEquiv_symm_mem_nonDegenerate_iff_mono {n d : ℕ} (f : ⦋d⦌ ⟶ ⦋n
     (objEquiv.{u} (m := (op ⦋d⦌))).symm f ∈ Δ[n].nonDegenerate d ↔ Mono f := by
   simp [mem_nonDegenerate_iff_mono]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Nondegenerate `d`-dimensional simplices of the standard simplex `Δ[n]`
 identify to order embeddings `Fin (d + 1) ↪o Fin (n + 1)`. -/
 @[simps! apply_apply symm_apply_coe]
@@ -439,7 +436,7 @@ def nonDegenerateEquiv {n d : ℕ} :
     (Δ[n] : SSet.{u}).nonDegenerate d ≃ (Fin (d + 1) ↪o Fin (n + 1)) where
   toFun s := OrderEmbedding.ofStrictMono _ ((mem_nonDegenerate_iff_strictMono _).1 s.2)
   invFun s := ⟨objEquiv.symm (.mk s.toOrderHom), by
-    simpa [mem_nonDegenerate_iff_strictMono] using s.strictMono⟩
+    simpa! [mem_nonDegenerate_iff_strictMono] using s.strictMono⟩
   left_inv _ := by aesop
 
 instance (n : ℕ) : (Δ[n] : SSet.{u}).HasDimensionLE n where

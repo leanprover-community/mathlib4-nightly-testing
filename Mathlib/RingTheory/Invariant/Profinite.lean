@@ -56,7 +56,6 @@ lemma Algebra.IsInvariant.isIntegral_of_profinite
     ⟨x, fun g ↦ hN g.2⟩
   exact this.map (FixedPoints.subalgebra A B N.1.1).val
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- `G` acts transitively on the prime ideals of `B` above a given prime ideal of `A`. -/
 lemma Algebra.IsInvariant.exists_smul_of_under_eq_of_profinite
@@ -70,7 +69,7 @@ lemma Algebra.IsInvariant.exists_smul_of_under_eq_of_profinite
       have h : B' N'.1.1 ≤ B' N.1.1 := fun x hx n ↦ hx ⟨_, f.le n.2⟩
       obtain ⟨x, hx⟩ := x
       obtain ⟨x, rfl⟩ := QuotientGroup.mk_surjective x
-      simpa only [Ideal.comap_comap, Ideal.pointwise_smul_eq_comap, ← Ideal.comap_coe
+      simpa! only [Ideal.comap_comap, Ideal.pointwise_smul_eq_comap, ← Ideal.comap_coe
         (F := RingEquiv _ _)] using congr(Ideal.comap (Subalgebra.inclusion h).toRingHom $hx)⟩
     map_id N := by ext ⟨⟨x⟩, hx⟩; rfl
     map_comp f g := by ext ⟨⟨x⟩, hx⟩; rfl }
@@ -109,7 +108,6 @@ omit
   [TopologicalSpace B]
   [DiscreteTopology B]
   [ContinuousSMul G B] in
-set_option backward.simpa.using.reducibleClose false in
 lemma Ideal.Quotient.stabilizerHomSurjectiveAuxFunctor_aux
     (Q : Ideal B)
     {N N' : OpenNormalSubgroup G} (e : N ≤ N')
@@ -122,7 +120,7 @@ lemma Ideal.Quotient.stabilizerHomSurjectiveAuxFunctor_aux
     fun x hx n ↦ hx ⟨_, e n.2⟩
   obtain ⟨x, rfl⟩ := QuotientGroup.mk_surjective x
   replace hx := congr(Ideal.comap (Subalgebra.inclusion h) $hx)
-  simpa only [Ideal.pointwise_smul_eq_comap,
+  simpa! only [Ideal.pointwise_smul_eq_comap,
     ← Ideal.comap_coe (F := RingEquiv _ _), Ideal.comap_comap] using hx
 
 /-- (Implementation)

@@ -254,10 +254,9 @@ instance : InfSet (Subfield K) :=
 theorem coe_sInf (S : Set (Subfield K)) : ((sInf S : Subfield K) : Set K) = ⋂ s ∈ S, ↑s :=
   show ((sInf (Subfield.toSubring '' S) : Subring K) : Set K) = ⋂ s ∈ S, ↑s by simp
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem mem_sInf {S : Set (Subfield K)} {x : K} : x ∈ sInf S ↔ ∀ p ∈ S, x ∈ p := by
-  simpa only [Set.mem_iInter] using Set.ext_iff.1 (coe_sInf S) x
+  simpa! only [Set.mem_iInter] using Set.ext_iff.1 (coe_sInf S) x
 
 @[simp, norm_cast]
 theorem coe_iInf {ι : Sort*} {S : ι → Subfield K} : (↑(⨅ i, S i) : Set K) = ⋂ i, S i := by

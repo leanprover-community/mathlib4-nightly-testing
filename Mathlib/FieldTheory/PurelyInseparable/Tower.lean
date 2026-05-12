@@ -93,7 +93,6 @@ theorem LinearIndependent.map_of_isPurelyInseparable_of_isSeparable [IsPurelyIns
   exact congr($h i)
 
 variable {F K} in
-set_option backward.simpa.using.reducibleClose false in
 /-- If `K / E / F` is a field extension tower such that `E / F` is purely inseparable,
 if `S` is an intermediate field of `K / F` which is separable over `F`, then `S` and `E` are
 linearly disjoint over `F`. -/
@@ -104,7 +103,7 @@ theorem IntermediateField.linearDisjoint_of_isPurelyInseparable_of_isSeparable
   .of_basis_left b <| b.linearIndependent.map' S.val.toLinearMap
     (LinearMap.ker_eq_bot_of_injective S.val.injective)
     |>.map_of_isPurelyInseparable_of_isSeparable E fun i ↦ by
-      simpa only [IsSeparable, minpoly_eq] using Algebra.IsSeparable.isSeparable F (b i)
+      simpa! only [IsSeparable, minpoly_eq] using Algebra.IsSeparable.isSeparable F (b i)
 
 namespace Field
 
@@ -203,13 +202,12 @@ theorem insepDegree_mul_insepDegree_of_isAlgebraic (K : Type v) [Field K] [Algeb
     insepDegree F E * insepDegree E K = insepDegree F K := by
   simpa only [Cardinal.lift_id] using lift_insepDegree_mul_lift_insepDegree_of_isAlgebraic F E K
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `K / E / F` is a field extension tower, such that `E / F` is algebraic, then their
 inseparable degrees, as natural numbers, satisfy the tower law: $[E:F]_i [K:E]_i = [K:F]_i$. -/
 @[stacks 09HK "Part 2, `finInsepDegree` variant"]
 theorem finInsepDegree_mul_finInsepDegree_of_isAlgebraic [Algebra.IsAlgebraic F E] :
     finInsepDegree F E * finInsepDegree E K = finInsepDegree F K := by
-  simpa only [map_mul, Cardinal.toNat_lift] using
+  simpa! only [map_mul, Cardinal.toNat_lift] using
     congr(Cardinal.toNat $(lift_insepDegree_mul_lift_insepDegree_of_isAlgebraic F E K))
 
 end Field

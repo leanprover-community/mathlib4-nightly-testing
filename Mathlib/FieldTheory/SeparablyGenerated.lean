@@ -135,7 +135,6 @@ theorem isAlgebraic_of_mem_vars_of_forall_totalDegree_le (hFa : F.aeval a = 0) (
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 include hp H in
-set_option backward.simpa.using.reducibleClose false in
 theorem exists_mem_support_not_dvd_of_forall_totalDegree_le (hF0 : F ≠ 0) (hFa : F.aeval a = 0) :
     ∃ i, ∃ σ ∈ F.support, ¬ p ∣ σ i := by
   by_contra!
@@ -147,11 +146,11 @@ theorem exists_mem_support_not_dvd_of_forall_totalDegree_le (hF0 : F ≠ 0) (hFa
   classical
   replace H (ι : Type u_3) (_ : Fintype ι) (v : ι → K) (hv : LinearIndependent k v) :
       LinearIndependent k (v · ^ p) := by
-    simpa only [Finset.coe_image, Finset.coe_univ, Set.image_univ, linearIndepOn_range_iff
-      hv.injective] using H (Finset.univ.image v) (by simpa using hv.linearIndepOn_id)
+    simpa! only [Finset.coe_image, Finset.coe_univ, Set.image_univ, linearIndepOn_range_iff
+      hv.injective] using H (Finset.univ.image v) (by simpa! using hv.linearIndepOn_id)
   have := mt (H F.support inferInstance (fun s ↦ aeval a (monomial (σ' s) (1 : k)))) (by
     simp_rw [← map_pow, monomial_pow, ← hσ'', one_pow, not_linearIndependent_iff]
-    refine ⟨.univ, (F.coeff ·), ?_, by simpa [MvPolynomial.eq_zero_iff] using hF0⟩
+    refine ⟨.univ, (F.coeff ·), ?_, by simpa! [MvPolynomial.eq_zero_iff] using hF0⟩
     simp only [← map_smul, ← map_sum, Finset.univ_eq_attach, smul_eq_mul, mul_one]
     rw [F.support.sum_attach (fun i ↦ monomial i (F.coeff i)), support_sum_monomial_coeff, hFa])
   simp only [LinearIndependent, injective_iff_map_eq_zero, not_forall] at this
@@ -187,7 +186,6 @@ variable [ExpChar k p]
 
 include hp H
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 Suppose `k` has characteristic `p` and `a₁,...,aₙ` is a transcendence basis of `K/k`.
 Suppose furthermore that if `{ sᵢ } ⊆ K` is an arbitrary `k`-linearly independent set,

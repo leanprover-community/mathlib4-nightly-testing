@@ -350,9 +350,8 @@ theorem isCoprime_iff_gcd {I J : Ideal A} : IsCoprime I J ↔ gcd I J = 1 := by
 
 open UniqueFactorizationMonoid
 
-set_option backward.simpa.using.reducibleClose false in
 theorem factors_span_eq {p : K[X]} : factors (span {p}) = (factors p).map (fun q ↦ span {q}) := by
-  rcases eq_or_ne p 0 with rfl | hp; · simpa [Set.singleton_zero] using normalizedFactors_zero
+  rcases eq_or_ne p 0 with rfl | hp; · simpa! [Set.singleton_zero] using normalizedFactors_zero
   have : ∀ q ∈ (factors p).map (fun q ↦ span {q}), Prime q := fun q hq ↦ by
     obtain ⟨r, hr, rfl⟩ := Multiset.mem_map.mp hq
     exact prime_span_singleton_iff.mpr <| prime_of_factor r hr
@@ -682,7 +681,6 @@ alias _root_.idealFactorsFunOfQuotHom_comp := idealFactorsFunOfQuotHom_comp
 
 variable [IsDedekindDomain R] (f : R ⧸ I ≃+* A ⧸ J)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The bijection between ideals of `R` dividing `I` and the ideals of `A` dividing `J` induced by
   an isomorphism `f : R/I ≅ A/J`. -/
 def idealFactorsEquivOfQuotEquiv : { p : Ideal R | p ∣ I } ≃o { p : Ideal A | p ∣ J } := by
@@ -690,8 +688,8 @@ def idealFactorsEquivOfQuotEquiv : { p : Ideal R | p ∣ I } ≃o { p : Ideal A 
   have fsym_surj : Function.Surjective (f.symm : A ⧸ J →+* R ⧸ I) := f.symm.surjective
   refine OrderIso.ofHomInv (idealFactorsFunOfQuotHom f_surj) (idealFactorsFunOfQuotHom fsym_surj)
     ?_ ?_
-  · simpa using idealFactorsFunOfQuotHom_comp fsym_surj f_surj
-  · simpa using idealFactorsFunOfQuotHom_comp f_surj fsym_surj
+  · simpa! using idealFactorsFunOfQuotHom_comp fsym_surj f_surj
+  · simpa! using idealFactorsFunOfQuotHom_comp f_surj fsym_surj
 
 @[deprecated (since := "2026-04-16")]
 alias _root_.idealFactorsEquivOfQuotEquiv := idealFactorsEquivOfQuotEquiv

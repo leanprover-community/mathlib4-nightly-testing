@@ -262,7 +262,6 @@ section
 
 variable (R M₂ M₃)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Equivalence between linear maps `M₂ →ₗ[R] M₃` and one-multilinear maps. -/
 @[simps]
 def ofSubsingleton [Subsingleton ι] (i : ι) :
@@ -274,9 +273,9 @@ def ofSubsingleton [Subsingleton ι] (i : ι) :
   invFun f :=
     { toFun := fun x ↦ f fun _ ↦ x
       map_add' := fun x y ↦ by
-        simpa [update_eq_const_of_subsingleton] using f.map_update_add 0 i x y
+        simpa! [update_eq_const_of_subsingleton] using f.map_update_add 0 i x y
       map_smul' := fun c x ↦ by
-        simpa [update_eq_const_of_subsingleton] using f.map_update_smul 0 i c x }
+        simpa! [update_eq_const_of_subsingleton] using f.map_update_smul 0 i c x }
   right_inv f := by ext x; refine congr_arg f ?_; exact (eq_const_of_subsingleton _ _).symm
 
 variable (M₁) {M₂}

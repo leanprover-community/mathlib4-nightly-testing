@@ -169,7 +169,6 @@ theorem exists_idempotent_ultrafilter_le_FP {M} [Semigroup M] (a : Stream' M) :
     apply hn
     simpa only [Stream'.drop_drop, add_comm] using hm'
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive exists_FS_of_large]
 theorem exists_FP_of_large {M} [Semigroup M] (U : Ultrafilter M) (U_idem : U * U = U) (s₀ : Set M)
     (sU : s₀ ∈ U) : ∃ a, FP a ⊆ s₀ := by
@@ -204,7 +203,7 @@ theorem exists_FP_of_large {M} [Semigroup M] (U : Ultrafilter M) (U_idem : U * U
   | cons' b n h ih =>
     rintro p rfl
     have := Set.inter_subset_right (ih (succ p) ?_)
-    · simpa only using this
+    · simpa! only using this
     rw [Stream'.corec_eq, Stream'.tail_cons]
 
 /-- The strong form of **Hindman's theorem**: in any finite cover of an FP-set, one the parts

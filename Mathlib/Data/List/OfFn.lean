@@ -130,15 +130,14 @@ lemma ofFn_cons {n} (a : α) (f : Fin n → α) : ofFn (Fin.cons a f) = a :: ofF
   rw [ofFn_succ]
   rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma find?_ofFn_eq_some {n} {f : Fin n → α} {p : α → Bool} {b : α} :
     (ofFn f).find? p = some b ↔ p b = true ∧ ∃ i, f i = b ∧ ∀ j < i, ¬(p (f j) = true) := by
   rw [find?_eq_some_iff_getElem]
   exact ⟨fun ⟨hpb, i, hi, hfb, h⟩ ↦
-      ⟨hpb, ⟨⟨i, length_ofFn (f := f) ▸ hi⟩, by simpa using hfb, fun j hj ↦ by simpa using h j hj⟩⟩,
+      ⟨hpb, ⟨⟨i, length_ofFn (f := f) ▸ hi⟩, by simpa! using hfb, fun j hj ↦ by simpa! using h j hj⟩⟩,
     fun ⟨hpb, i, hfb, h⟩ ↦
-      ⟨hpb, ⟨i, (length_ofFn (f := f)).symm ▸ i.isLt, by simpa using hfb,
-        fun j hj ↦ by simpa using h ⟨j, by lia⟩ (by simpa using hj)⟩⟩⟩
+      ⟨hpb, ⟨i, (length_ofFn (f := f)).symm ▸ i.isLt, by simpa! using hfb,
+        fun j hj ↦ by simpa! using h ⟨j, by lia⟩ (by simpa! using hj)⟩⟩⟩
 
 lemma find?_ofFn_eq_some_of_injective {n} {f : Fin n → α} {p : α → Bool} {i : Fin n}
     (h : Function.Injective f) :

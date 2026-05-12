@@ -269,13 +269,11 @@ theorem commute_monomial {a : R} {n} :
   · rw [coeff_mul_monomial, coeff_monomial_mul]
     split_ifs <;> [apply h; rfl]
 
-set_option backward.simpa.using.reducibleClose false in
 protected theorem one_mul : (1 : MvPowerSeries σ R) * φ = φ :=
-  ext fun n => by simpa using coeff_add_monomial_mul 0 n φ 1
+  ext fun n => by simpa! using coeff_add_monomial_mul 0 n φ 1
 
-set_option backward.simpa.using.reducibleClose false in
 protected theorem mul_one : φ * 1 = φ :=
-  ext fun n => by simpa using coeff_add_mul_monomial n 0 φ 1
+  ext fun n => by simpa! using coeff_add_mul_monomial n 0 φ 1
 
 protected theorem mul_add (φ₁ φ₂ φ₃ : MvPowerSeries σ R) : φ₁ * (φ₂ + φ₃) = φ₁ * φ₂ + φ₁ * φ₃ :=
   ext fun n => by
@@ -358,9 +356,8 @@ theorem C_injective : Function.Injective (C : R → MvPowerSeries σ R) := by
   intro a b h
   rw [← coeff_zero_C a, h, coeff_zero_C]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem C_surjective [IsEmpty σ] : Function.Surjective (C : R → MvPowerSeries σ R) :=
-  fun p => ⟨p 0, by ext n; simpa [coeff_C, Subsingleton.eq_zero n] using coeff_apply _ _⟩
+  fun p => ⟨p 0, by ext n; simpa! [coeff_C, Subsingleton.eq_zero n] using coeff_apply _ _⟩
 
 @[simp] theorem C_inj (r s : R) : (C r : MvPowerSeries σ R) = C s ↔ r = s := (C_injective).eq_iff
 
@@ -593,7 +590,6 @@ section Semiring
 
 variable [Semiring R]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem X_pow_dvd_iff {s : σ} {n : ℕ} {φ : MvPowerSeries σ R} :
     (X s : MvPowerSeries σ R) ^ n ∣ φ ↔ ∀ m : σ →₀ ℕ, m s < n → coeff m φ = 0 := by
   classical
@@ -614,7 +610,7 @@ theorem X_pow_dvd_iff {s : σ} {n : ℕ} {φ : MvPowerSeries σ R} :
     by_cases H : m - single s n + single s n = m
     · rw [coeff_mul, Finset.sum_eq_single (single s n, m - single s n)]
       · rw [coeff_X_pow, if_pos rfl, one_mul]
-        simpa using congr_arg (fun m : σ →₀ ℕ => coeff m φ) H.symm
+        simpa! using congr_arg (fun m : σ →₀ ℕ => coeff m φ) H.symm
       · rintro ⟨i, j⟩ hij hne
         rw [mem_antidiagonal] at hij
         rw [coeff_X_pow]
@@ -645,7 +641,7 @@ theorem X_pow_dvd_iff {s : σ} {n : ℕ} {φ : MvPowerSeries σ R} :
         ext t
         by_cases hst : s = t
         · subst t
-          simpa using tsub_add_cancel_of_le H
+          simpa! using tsub_add_cancel_of_le H
         · simp [hst]
 
 theorem X_dvd_iff {s : σ} {φ : MvPowerSeries σ R} :

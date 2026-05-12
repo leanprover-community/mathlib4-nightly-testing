@@ -328,13 +328,12 @@ lemma opensRange_relativeGluingData_map (F : X.AffineZariskiSiteᵒᵖ ⥤ CommR
 @[deprecated (since := "2026-02-01")]
 alias PreservesLocalization.opensRange_map := opensRange_relativeGluingData_map
 
-set_option backward.simpa.using.reducibleClose false in
 @[deprecated Cover.RelativeGluingData.toBase_preimage_eq_opensRange_ι (since := "2026-02-01")]
 lemma PreservesLocalization.colimitDesc_preimage (F : X.AffineZariskiSiteᵒᵖ ⥤ CommRingCat)
     (α : (AffineZariskiSite.toOpensFunctor X).op ⋙ X.presheaf ⟶ F)
     (H : α.Coequifibered) (U : X.AffineZariskiSite) :
     (relativeGluingData H).toBase ⁻¹ᵁ U.1 = ((relativeGluingData H).cover.f U).opensRange := by
-  simpa using (relativeGluingData H).toBase_preimage_eq_opensRange_ι U
+  simpa! using (relativeGluingData H).toBase_preimage_eq_opensRange_ι U
 
 @[deprecated (since := "2026-02-01")]
 alias _root_.AlgebraicGeometry.Scheme.preservesLocalization_toOpensFunctor :=

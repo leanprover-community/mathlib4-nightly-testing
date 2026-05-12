@@ -350,7 +350,6 @@ theorem isMultiplyPretransitive_of_nontrivial {K : Type*} [Group K] [MulAction K
 
 variable [Fintype α] [DecidableEq α]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isPretransitive_of_isCycle_mem {g : Perm α}
     (hgc : g.IsCycle) (hg : g ∈ G) :
     IsPretransitive (fixingSubgroup G (g.support : Set α)ᶜ)
@@ -374,7 +373,7 @@ theorem isPretransitive_of_isCycle_mem {g : Perm α}
   have hg' : (⟨g, hg⟩ : ↥G) ∈ fixingSubgroup G ((↑g.support : Set α)ᶜ) := by
     simp_rw [mem_fixingSubgroup_iff G]
     intro y hy
-    simpa only [Set.mem_compl_iff, Finset.mem_coe, notMem_support] using hy
+    simpa! only [Set.mem_compl_iff, Finset.mem_coe, notMem_support] using hy
   let g' : fixingSubgroup (↥G) ((↑g.support : Set α)ᶜ) := ⟨(⟨g, hg⟩ : ↥G), hg'⟩
   obtain ⟨i, hi⟩ := hgc ((hs x).mpr hx)
   exact ⟨g' ^ i, hi.symm⟩

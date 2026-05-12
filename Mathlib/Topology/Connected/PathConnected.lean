@@ -359,24 +359,22 @@ theorem pathComponentIn_mono {G : Set X} (h : F ⊆ G) :
 
 /-! ### Path component of the identity in a group -/
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The path component of the identity in a topological monoid, as a submonoid. -/
 @[to_additive (attr := simps) /-- The path component of the identity in an additive topological
 monoid, as an additive submonoid. -/]
 def Submonoid.pathComponentOne (M : Type*) [Monoid M] [TopologicalSpace M] [ContinuousMul M] :
     Submonoid M where
   carrier := pathComponent (1 : M)
-  mul_mem' {m₁ m₂} hm₁ hm₂ := by simpa using hm₁.mul hm₂
+  mul_mem' {m₁ m₂} hm₁ hm₂ := by simpa! using hm₁.mul hm₂
   one_mem' := mem_pathComponent_self 1
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The path component of the identity in a topological group, as a subgroup. -/
 @[to_additive (attr := simps!) /-- The path component of the identity in an additive topological
 group, as an additive subgroup. -/]
 def Subgroup.pathComponentOne (G : Type*) [Group G] [TopologicalSpace G] [IsTopologicalGroup G] :
     Subgroup G where
   toSubmonoid := .pathComponentOne G
-  inv_mem' {g} hg := by simpa using hg.inv
+  inv_mem' {g} hg := by simpa! using hg.inv
 
 /-- The path component of the identity in a topological group is normal. -/
 @[to_additive]

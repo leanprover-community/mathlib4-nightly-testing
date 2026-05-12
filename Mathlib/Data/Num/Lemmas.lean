@@ -297,16 +297,15 @@ end Num
 
 namespace PosNum
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem of_to_nat' : ∀ n : PosNum, Num.ofNat' (n : ℕ) = Num.pos n
   | 1 => by
       simp only [cast_one, Num.ofNat'_one]
       norm_cast
   | bit0 p => by
-      simpa only [Nat.bit_false, cond_false, two_mul, of_to_nat' p] using Num.ofNat'_bit false p
+      simpa! only [Nat.bit_false, cond_false, two_mul, of_to_nat' p] using Num.ofNat'_bit false p
   | bit1 p => by
-      simpa only [Nat.bit_true, cond_true, two_mul, of_to_nat' p] using Num.ofNat'_bit true p
+      simpa! only [Nat.bit_true, cond_true, two_mul, of_to_nat' p] using Num.ofNat'_bit true p
 
 end PosNum
 

@@ -493,7 +493,6 @@ theorem sup_of_mem {s : Finset β} (f : β → α) {b : β} (h : b ∈ s) :
     ∃ a : α, s.sup ((↑) ∘ f : β → WithBot α) = ↑a :=
   (WithBot.le_iff_forall.1 (le_sup (α := WithBot α) h) (f b) rfl).imp fun _ ↦ And.left
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given nonempty finset `s` then `s.sup' H f` is the supremum of its image under `f` in (possibly
 unbounded) join-semilattice `α`, where `H` is a proof of nonemptiness. If `α` has a bottom element
 you may instead use `Finset.sup` which does not require `s` nonempty. -/
@@ -502,7 +501,7 @@ you may instead use `Finset.sup` which does not require `s` nonempty. -/
 unbounded) meet-semilattice `α`, where `H` is a proof of nonemptiness. If `α` has a top element you
 may instead use `Finset.inf` which does not require `s` nonempty. -/]
 def sup' (s : Finset β) (H : s.Nonempty) (f : β → α) : α :=
-  WithBot.unbot (s.sup ((↑) ∘ f)) (by simpa using H)
+  WithBot.unbot (s.sup ((↑) ∘ f)) (by simpa! using H)
 
 variable {s : Finset β} (H : s.Nonempty) (f : β → α)
 

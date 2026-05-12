@@ -100,7 +100,6 @@ theorem commute_eps_right [Semiring R] (x : DualNumber R) : Commute x ε := (com
 
 variable {A : Type*} [CommSemiring R] [Semiring A] [Semiring B] [Algebra R A] [Algebra R B]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- For two `R`-algebra morphisms out of `A[ε]` to agree, it suffices for them to agree on the
 elements of `A` and the `A`-multiples of `ε`. -/
 @[ext 1100]
@@ -112,7 +111,7 @@ nonrec theorem algHom_ext' ⦃f g : A[ε] →ₐ[R] B⦄
   algHom_ext' hinl (by
     ext a
     change f (inr a) = g (inr a)
-    simpa only [inr_eq_smul_eps] using DFunLike.congr_fun hinr a)
+    simpa! only [inr_eq_smul_eps] using DFunLike.congr_fun hinr a)
 
 set_option backward.defeqAttrib.useBackward true in
 /-- For two `R`-algebra morphisms out of `R[ε]` to agree, it suffices for them to agree on `ε`. -/

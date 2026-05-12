@@ -52,7 +52,6 @@ variable (A : Type u₃) [Category.{v₃} A]
 
 namespace Equivalence
 
-set_option backward.simpa.using.reducibleClose false in
 instance (priority := 900) [G.IsEquivalence] : IsCoverDense G J where
   is_cover U := by
     let e := (asEquivalence G).symm
@@ -62,7 +61,7 @@ instance (priority := 900) [G.IsEquivalence] : IsCoverDense G J where
     let g : e.inverse.obj _ ⟶ U := (e.unitInv.app Y) ≫ f
     have : (Sieve.coverByImage e.inverse U).arrows g := Presieve.in_coverByImage _ g
     replace := Sieve.downward_closed _ this (e.unit.app Y)
-    simpa [g] using this
+    simpa! [g] using this
 
 set_option backward.isDefEq.respectTransparency false in
 instance : e.functor.IsDenseSubsite J (e.inverse.inducedTopology J) := by

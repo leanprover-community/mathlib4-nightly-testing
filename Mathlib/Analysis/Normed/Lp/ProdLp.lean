@@ -810,10 +810,9 @@ theorem prod_nnnorm_eq_of_L2 (x : WithLp 2 (α × β)) :
     push_cast
     exact prod_norm_eq_of_L2 x
 
-set_option backward.simpa.using.reducibleClose false in
 theorem prod_norm_sq_eq_of_L2 (x : WithLp 2 (α × β)) : ‖x‖ ^ 2 = ‖x.fst‖ ^ 2 + ‖x.snd‖ ^ 2 := by
   suffices ‖x‖₊ ^ 2 = ‖x.fst‖₊ ^ 2 + ‖x.snd‖₊ ^ 2 by
-    simpa only [NNReal.coe_sum] using congr_arg ((↑) : ℝ≥0 → ℝ) this
+    simpa! only [NNReal.coe_sum] using congr_arg ((↑) : ℝ≥0 → ℝ) this
   rw [prod_nnnorm_eq_of_L2, NNReal.sq_sqrt]
 
 theorem prod_dist_eq_of_L2 (x y : WithLp 2 (α × β)) :

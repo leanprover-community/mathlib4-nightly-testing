@@ -860,12 +860,11 @@ instance ContinuousFunctionalCalculus.toNonUnital [ContinuousFunctionalCalculus 
       fun _ ↦ cfcHom_predicate ha _⟩
 
 open scoped NonUnitalContinuousFunctionalCalculus in
-set_option backward.simpa.using.reducibleClose false in
 lemma cfcₙHom_eq_cfcₙHom_of_cfcHom [ContinuousFunctionalCalculus R A p]
     [ContinuousMapZero.UniqueHom R A] {a : A} (ha : p a) :
     cfcₙHom ha = cfcₙHom_of_cfcHom R ha :=
   cfcₙHom_eq_of_continuous_of_map_id ha _ (continuous_cfcₙHom_of_cfcHom ha) <| by
-    simpa only [cfcₙHom_id ha] using cfcHom_id ha
+    simpa! only [cfcₙHom_id ha] using cfcHom_id ha
 
 /-- When `cfc` is applied to a function that maps zero to zero, it is equivalent to using
 `cfcₙ`. -/

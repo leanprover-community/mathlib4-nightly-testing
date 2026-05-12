@@ -135,7 +135,6 @@ lemma map_f' : (h.map F).f' = F.map h.f' := by
 end LeftHomologyData
 
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a left homology map data `ψ : LeftHomologyMapData φ h₁ h₂` such that
 both left homology data `h₁` and `h₂` are preserved by a functor `F`, this is
 the induced left homology map data for the morphism `F.mapShortComplex.map φ`. -/
@@ -146,9 +145,9 @@ noncomputable def LeftHomologyMapData.map {φ : S₁ ⟶ S₂} {h₁ : S₁.Left
     LeftHomologyMapData (F.mapShortComplex.map φ) (h₁.map F) (h₂.map F) where
   φK := F.map ψ.φK
   φH := F.map ψ.φH
-  commi := by simpa only [F.map_comp] using F.congr_map ψ.commi
-  commf' := by simpa only [LeftHomologyData.map_f', F.map_comp] using F.congr_map ψ.commf'
-  commπ := by simpa only [F.map_comp] using F.congr_map ψ.commπ
+  commi := by simpa! only [F.map_comp] using F.congr_map ψ.commi
+  commf' := by simpa! only [LeftHomologyData.map_f', F.map_comp] using F.congr_map ψ.commf'
+  commπ := by simpa! only [F.map_comp] using F.congr_map ψ.commπ
 
 namespace RightHomologyData
 
@@ -221,7 +220,6 @@ lemma map_g' : (h.map F).g' = F.map h.g' := by
 end RightHomologyData
 
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a right homology map data `ψ : RightHomologyMapData φ h₁ h₂` such that
 both right homology data `h₁` and `h₂` are preserved by a functor `F`, this is
 the induced right homology map data for the morphism `F.mapShortComplex.map φ`. -/
@@ -232,11 +230,10 @@ noncomputable def RightHomologyMapData.map {φ : S₁ ⟶ S₂} {h₁ : S₁.Rig
     RightHomologyMapData (F.mapShortComplex.map φ) (h₁.map F) (h₂.map F) where
   φQ := F.map ψ.φQ
   φH := F.map ψ.φH
-  commp := by simpa only [F.map_comp] using F.congr_map ψ.commp
-  commg' := by simpa only [RightHomologyData.map_g', F.map_comp] using F.congr_map ψ.commg'
-  commι := by simpa only [F.map_comp] using F.congr_map ψ.commι
+  commp := by simpa! only [F.map_comp] using F.congr_map ψ.commp
+  commg' := by simpa! only [RightHomologyData.map_g', F.map_comp] using F.congr_map ψ.commg'
+  commι := by simpa! only [F.map_comp] using F.congr_map ψ.commι
 
-set_option backward.simpa.using.reducibleClose false in
 /-- When a homology data `h` of a short complex `S` is such that both `h.left` and
 `h.right` are preserved by a functor `F`, this is the induced homology data
 `h.map F` for the short complex `S.map F`. -/
@@ -247,7 +244,7 @@ noncomputable def HomologyData.map (h : S.HomologyData) (F : C ⥤ D) [F.Preserv
   left := h.left.map F
   right := h.right.map F
   iso := F.mapIso h.iso
-  comm := by simpa only [F.map_comp] using F.congr_map h.comm
+  comm := by simpa! only [F.map_comp] using F.congr_map h.comm
 
 /-- Given a homology map data `ψ : HomologyMapData φ h₁ h₂` such that
 `h₁.left`, `h₁.right`, `h₂.left` and `h₂.right` are all preserved by a functor `F`, this is

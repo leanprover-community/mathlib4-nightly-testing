@@ -156,7 +156,6 @@ theorem isMultiplyPreprimitive_ofStabilizer
       aesop
     exact IsPreprimitive.of_surjective ofFixingSubgroup_insert_map_bijective.surjective
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A pretransitive action is `n.succ-`preprimitive
 iff the action of stabilizers is `n`-preprimitive. -/
 @[to_additive /-- A pretransitive action is `n.succ-`preprimitive
@@ -193,8 +192,8 @@ theorem isMultiplyPreprimitive_succ_iff_ofStabilizer
               ⟨⟨x, hxa⟩, by simp only [t, Set.mem_preimage]; exact hxs, rfl⟩
         · rw [Set.mem_insert_iff]
           rintro (⟨rfl⟩ | ⟨y, hy, rfl⟩)
-          · simpa [s', ← hg]
-          · simpa only using hy
+          · simpa! [s', ← hg]
+          · simpa! only using hy
       rw [hst, isPreprimitive_fixingSubgroup_insert_iff]
       apply IsMultiplyPreprimitive.isPreprimitive_ofFixingSubgroup _ n
       apply ENat.add_left_injective_of_ne_top ENat.one_ne_top
@@ -269,7 +268,6 @@ theorem isMultiplyPreprimitive_of_le
 
 variable {M α}
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem IsMultiplyPreprimitive.of_bijective_map
     {N β : Type*} [Group N] [MulAction N β] {φ : M → N}
@@ -299,7 +297,7 @@ theorem IsMultiplyPreprimitive.of_bijective_map
       rintro ⟨y, hy⟩
       obtain ⟨x, hx⟩ := hf.right y
       use ⟨x, ?_⟩
-      · simpa only [f', ← Subtype.coe_inj] using hx
+      · simpa! only [f', ← Subtype.coe_inj] using hx
       · intro h
         apply hy
         rw [← hs']
@@ -309,7 +307,6 @@ theorem IsMultiplyPreprimitive.of_bijective_map
         (by rw [← ht, ← hs', hf.injective.encard_image])
     exact IsPreprimitive.of_surjective (f := f') (φ := φ') hf'
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem isMultiplyPreprimitive_congr
     {N β : Type*} [Group N] [MulAction N β] {φ : M → N} (hφ : Function.Surjective φ)
@@ -329,7 +326,7 @@ theorem isMultiplyPreprimitive_congr
         obtain ⟨x, hx, rfl⟩ := this
         rwa [← map_smulₛₗ, hg]
       obtain ⟨x, rfl⟩ := hf.surjective y
-      simpa only [Set.mem_image, t, eq_comm] using hy⟩
+      simpa! only [Set.mem_image, t, eq_comm] using hy⟩
     let g : ofFixingSubgroup M s →ₑ[ψ] ofFixingSubgroup N t := {
       toFun x := ⟨f x.val, by
         simp only [mem_ofFixingSubgroup_iff, Set.mem_image, hf.injective.eq_iff, exists_eq_right, t]
@@ -350,8 +347,8 @@ theorem isMultiplyPreprimitive_congr
     · constructor
       · rintro ⟨x, hx⟩ ⟨y, hy⟩ h
         suffices f x = f y by
-          simpa [← Subtype.coe_inj, hf.injective.eq_iff] using this
-        simpa only [g, ← Subtype.coe_inj] using h
+          simpa! [← Subtype.coe_inj, hf.injective.eq_iff] using this
+        simpa! only [g, ← Subtype.coe_inj] using h
       · rintro ⟨x, hx⟩
         obtain ⟨y, rfl⟩ := hf.surjective x
         suffices y ∈ ofFixingSubgroup M s by

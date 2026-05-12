@@ -404,7 +404,6 @@ noncomputable def ofTopologicalSpace (X : Type*) [TopologicalSpace X] [CompactSp
     rw [le_nhds_iff]
     exact c4
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Any continuous map between Compacta is a morphism of compacta. -/
 def homOfContinuous {X Y : Compactum} (f : X → Y) (cont : Continuous f) : X ⟶ Y :=
   { f := ↾f
@@ -412,7 +411,7 @@ def homOfContinuous {X Y : Compactum} (f : X → Y) (cont : Continuous f) : X �
       rw [continuous_iff_ultrafilter] at cont
       ext (F : Ultrafilter X)
       specialize cont (X.str F) F (le_nhds_of_str_eq F (X.str F) rfl)
-      simpa using str_eq_of_le_nhds (Ultrafilter.map f F) _ cont }
+      simpa! using str_eq_of_le_nhds (Ultrafilter.map f F) _ cont }
 
 end Compactum
 
@@ -429,7 +428,6 @@ namespace compactumToCompHaus
 instance full : compactumToCompHaus.{u}.Full where
   map_surjective f := ⟨Compactum.homOfContinuous f.1 f.hom.hom.2, rfl⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The functor `compactumToCompHaus` is faithful. -/
 instance faithful : compactumToCompHaus.Faithful where
   -- Porting note: this used to be obviously (though it consumed a bit of memory)
@@ -438,7 +436,7 @@ instance faithful : compactumToCompHaus.Faithful where
     -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11041): `ext` gets confused by coercion using forget.
     apply Monad.Algebra.Hom.ext
     ext
-    simpa using ConcreteCategory.congr_hom h _
+    simpa! using ConcreteCategory.congr_hom h _
 
 /-- This definition is used to prove essential surjectivity of `compactumToCompHaus`. -/
 noncomputable def isoOfTopologicalSpace {D : CompHaus} :

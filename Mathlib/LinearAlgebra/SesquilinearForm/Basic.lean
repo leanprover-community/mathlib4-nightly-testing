@@ -794,7 +794,6 @@ lemma disjoint_ker_of_nondegenerate_restrict {B : M →ₗ[R] M →ₗ[R] M₁} 
   rw [mem_ker] at hx'
   simp [x', hx']
 
-set_option backward.simpa.using.reducibleClose false in
 lemma IsSymm.nondegenerate_restrict_of_isCompl_ker {B : M →ₗ[R] M →ₗ[R] R} (hB : B.IsSymm)
     {W : Submodule R M} (hW : IsCompl W (LinearMap.ker B)) :
     (B.domRestrict₁₂ W W).Nondegenerate := by
@@ -802,15 +801,15 @@ lemma IsSymm.nondegenerate_restrict_of_isCompl_ker {B : M →ₗ[R] M →ₗ[R] 
   rw [LinearMap.IsRefl.nondegenerate_iff_separatingLeft hB']
   intro ⟨x, hx⟩ hx'
   simp only [Submodule.mk_eq_zero]
-  replace hx' : ∀ y ∈ W, B x y = 0 := by simpa [Subtype.forall] using hx'
+  replace hx' : ∀ y ∈ W, B x y = 0 := by simpa! [Subtype.forall] using hx'
   replace hx' : x ∈ W ⊓ ker B := by
     refine ⟨hx, ?_⟩
     ext y
     obtain ⟨u, hu, v, hv, rfl⟩ : ∃ u ∈ W, ∃ v ∈ ker B, u + v = y := by
       rw [← Submodule.mem_sup, hW.sup_eq_top]; exact Submodule.mem_top
-    suffices B x u = 0 by rw [mem_ker] at hv; simpa [← hB.eq v, hv]
+    suffices B x u = 0 by rw [mem_ker] at hv; simpa! [← hB.eq v, hv]
     exact hx' u hu
-  simpa [hW.inf_eq_bot] using hx'
+  simpa! [hW.inf_eq_bot] using hx'
 
 /-- The restriction of a reflexive bilinear map `B` onto a submodule `W` is
 nondegenerate if `W` has trivial intersection with its orthogonal complement,

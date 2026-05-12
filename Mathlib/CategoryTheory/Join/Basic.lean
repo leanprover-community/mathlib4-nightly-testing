@@ -212,7 +212,6 @@ variable {C D} {E : Type u₃} [Category.{v₃} E] {E' : Type u₄} [Category.{v
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /-- A pair of functors `F : C ⥤ E, G : D ⥤ E` as well as a natural transformation
 `α : (Prod.fst C D) ⋙ F ⟶ (Prod.snd C D) ⋙ G` defines a functor out of `C ⋆ D`.
 This is the main entry point to define functors out of a join of categories. -/
@@ -237,9 +236,9 @@ def mkFunctor (F : C ⥤ E) (G : D ⥤ E) (α : Prod.fst C D ⋙ F ⟶ Prod.snd 
   map_comp {x y z} f g := by
     cases f <;> cases g
     · simp [← Functor.map_comp]
-    · case left.edge f d => simpa using (α.naturality <| (Prod.sectL _ d).map f).symm
+    · case left.edge f d => simpa! using (α.naturality <| (Prod.sectL _ d).map f).symm
     · simp [← Functor.map_comp]
-    · case edge.right c _ _ f => simpa using α.naturality <| (Prod.sectR c _).map f
+    · case edge.right c _ _ f => simpa! using α.naturality <| (Prod.sectR c _).map f
 
 section
 
@@ -285,7 +284,6 @@ lemma mkFunctor_map_edge (c : C) (d : D) :
 
 end
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Construct a natural transformation between functors out of a join from
 the data of natural transformations between each side that are compatible with the
 action on edge maps. -/
@@ -299,8 +297,8 @@ def mkNatTrans {F : C ⋆ D ⥤ E} {F' : C ⋆ D ⥤ E}
     | right x => αᵣ.app x
   naturality {x y} f := by
     cases f with
-    | @left x y f => simpa using αₗ.naturality f
-    | @right x y f => simpa using αᵣ.naturality f
+    | @left x y f => simpa! using αₗ.naturality f
+    | @right x y f => simpa! using αᵣ.naturality f
     | @edge c d => exact funext_iff.mp (NatTrans.ext_iff.mp h) (c, d)
 
 section

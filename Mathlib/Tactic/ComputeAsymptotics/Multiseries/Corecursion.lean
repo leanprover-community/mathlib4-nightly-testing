@@ -296,22 +296,20 @@ noncomputable def gcorec (F : β → Option (α × γ × β)) (op : γ → Seq �
     [FriendlyOperationClass op] :
   β → Seq α := (FriendlyOperation.exists_fixed_point F op).choose
 
-set_option backward.simpa.using.reducibleClose false in
 theorem gcorec_nil {F : β → Option (α × γ × β)} {op : γ → Seq α → Seq α}
     [FriendlyOperationClass op] {b : β}
     (h : F b = none) :
     gcorec F op b = nil := by
   have := (FriendlyOperation.exists_fixed_point F op).choose_spec b
-  simpa [h] using this
+  simpa! [h] using this
 
-set_option backward.simpa.using.reducibleClose false in
 theorem gcorec_some {F : β → Option (α × γ × β)} {op : γ → Seq α → Seq α}
     [FriendlyOperationClass op] {b : β}
     {a : α} {c : γ} {b' : β}
     (h : F b = some (a, c, b')) :
     gcorec F op b = Seq.cons a (op c (gcorec F op b')) := by
   have := (FriendlyOperation.exists_fixed_point F op).choose_spec b
-  simpa [h] using this
+  simpa! [h] using this
 
 /-- The operation `cons hd ·` is friendly. -/
 theorem FriendlyOperation.cons (hd : α) : FriendlyOperation (cons hd) := by

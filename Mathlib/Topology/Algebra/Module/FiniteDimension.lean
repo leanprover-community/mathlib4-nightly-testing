@@ -619,7 +619,6 @@ variable (𝕜 : Type*) [NontriviallyNormedField 𝕜] [CompleteSpace 𝕜]
   [ContinuousSMul 𝕜 E] [ContinuousSMul 𝕜 Eᵤ]
 
 open scoped Pointwise in
-set_option backward.simpa.using.reducibleClose false in
 /-- **Riesz's theorem**: a T2 topological vector space over a complete non-trivial normed field
 which admits a totally bounded neighborhood of `0` is finite-dimensional. -/
 theorem FiniteDimensional.of_totallyBounded_nhds_zero {U : Set Eᵤ} (hU_nhds : U ∈ 𝓝 (0 : Eᵤ))
@@ -635,7 +634,7 @@ theorem FiniteDimensional.of_totallyBounded_nhds_zero {U : Set Eᵤ} (hU_nhds : 
     exact ⟨f, Submodule.subset_span hf, y, hy, rfl⟩
   have h_ind (n : ℕ) : U ⊆ M + c ^ n • U := by
     induction n with
-    | zero => simpa using fun x hx ↦ ⟨0, M.zero_mem, x, hx, zero_add x⟩
+    | zero => simpa! using fun x hx ↦ ⟨0, M.zero_mem, x, hx, zero_add x⟩
     | succ n ih =>
       calc
         U ⊆ M + c ^ n • U := ih
@@ -655,7 +654,7 @@ theorem FiniteDimensional.of_totallyBounded_nhds_zero {U : Set Eᵤ} (hU_nhds : 
       intro W hW
       exact (tendsto_smallSets_iff.mp h_small W hW).mono fun n hn ↦ hn (hu n)
     have hm_tendsto : Tendsto m atTop (𝓝 x) := by
-      simpa [show m = fun n ↦ x - u n by grind] using tendsto_const_nhds.sub hu_tendsto
+      simpa! [show m = fun n ↦ x - u n by grind] using tendsto_const_nhds.sub hu_tendsto
     exact M.closed_of_finiteDimensional.mem_of_tendsto hm_tendsto (Eventually.of_forall hm)
   have hM_top : M = ⊤ := absorbent_nhds_zero (𝕜 := 𝕜) hU_nhds |>.mono hU_sub_M |>.submodule_eq_top
   exact FiniteDimensional.of_surjective M.subtype fun x ↦ ⟨⟨x, by simp [hM_top]⟩, rfl⟩

@@ -351,12 +351,11 @@ noncomputable def natTransTruncGEOfLE (a b : ℤ) (h : a ≤ b) :
     t.truncGE a ⟶ t.truncGE b :=
   Functor.whiskerRight (TruncAux.triangleFunctorNatTransOfLE t a b h) Triangle.π₃
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma natTransTruncLTOfLE_ι_app (a b : ℤ) (h : a ≤ b) (X : C) :
     (t.natTransTruncLTOfLE a b h).app X ≫ (t.truncLTι b).app X = (t.truncLTι a).app X := by
-  simpa using ((TruncAux.triangleFunctorNatTransOfLE t a b h).app X).comm₁.symm
+  simpa! using ((TruncAux.triangleFunctorNatTransOfLE t a b h).app X).comm₁.symm
 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
@@ -364,12 +363,11 @@ lemma natTransTruncLTOfLE_ι (a b : ℤ) (h : a ≤ b) :
     t.natTransTruncLTOfLE a b h ≫ t.truncLTι b = t.truncLTι a := by
   cat_disch
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma π_natTransTruncGEOfLE_app (a b : ℤ) (h : a ≤ b) (X : C) :
     (t.truncGEπ a).app X ≫ (t.natTransTruncGEOfLE a b h).app X = (t.truncGEπ b).app X := by
-  simpa only [TruncAux.triangleFunctor_obj, TruncAux.triangle_obj₂,
+  simpa! only [TruncAux.triangleFunctor_obj, TruncAux.triangle_obj₂,
     TruncAux.triangleFunctorNatTransOfLE_app_hom₂, Category.id_comp] using
     ((TruncAux.triangleFunctorNatTransOfLE t a b h).app X).comm₂
 

@@ -105,9 +105,8 @@ theorem le_of_nth_le_nth_of_lt_card (hf : (setOf p).Finite) {m n : ℕ} (h : nth
 theorem nth_injOn (hf : (setOf p).Finite) : (Set.Iio #hf.toFinset).InjOn (nth p) :=
   (nth_strictMonoOn hf).injOn
 
-set_option backward.simpa.using.reducibleClose false in
 theorem range_nth_of_finite (hf : (setOf p).Finite) : Set.range (nth p) = insert 0 (setOf p) := by
-  simpa only [← List.getD_eq_getElem?_getD, ← nth_eq_getD_sort hf, mem_sort,
+  simpa! only [← List.getD_eq_getElem?_getD, ← nth_eq_getD_sort hf, mem_sort,
     Set.Finite.mem_toFinset] using Set.range_list_getD (hf.toFinset.sort (· ≤ ·)) 0
 
 @[simp]

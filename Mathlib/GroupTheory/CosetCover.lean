@@ -56,7 +56,6 @@ variable {G : Type*} [Group G]
 
 section leftCoset_cover_const
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem exists_leftTransversal_of_FiniteIndex
     {D H : Subgroup G} [D.FiniteIndex] (hD_le_H : D ≤ H) :
@@ -67,7 +66,7 @@ theorem exists_leftTransversal_of_FiniteIndex
   have hf : t.Finite := ht.1.finite_left_iff.mpr inferInstance
   refine ⟨hf.toFinset, hf.coe_toFinset.symm ▸ ht.1, ?_⟩
   ext x
-  suffices (∃ y ∈ t, ∃ d ∈ D, y * d = x) ↔ x ∈ H by simpa using this
+  suffices (∃ y ∈ t, ∃ d ∈ D, y * d = x) ↔ x ∈ H by simpa! using this
   constructor
   · rintro ⟨⟨y, hy⟩, -, d, h, rfl⟩
     exact H.mul_mem hy (hD_le_H h)
@@ -211,7 +210,6 @@ theorem exists_finiteIndex_of_leftCoset_cover : ∃ k ∈ s, (H k).FiniteIndex :
     exact ⟨i, hi, hfi⟩
 
 -- Auxiliary to `leftCoset_cover_filter_FiniteIndex` and `one_le_sum_inv_index_of_leftCoset_cover`.
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem leftCoset_cover_filter_FiniteIndex_aux
     [DecidablePred (FiniteIndex : Subgroup G → Prop)] :
@@ -269,9 +267,9 @@ theorem leftCoset_cover_filter_FiniteIndex_aux
     by_cases hfi : (H i).FiniteIndex
     · rw [← relIndex_mul_index (hD_le i.2 hfi), Nat.cast_mul, mul_comm,
         mul_inv_cancel_right₀ (Nat.cast_ne_zero.mpr hfi.index_ne_zero)]
-      simpa [K, hfi] using (ht i.1 i.2 hfi).1.card_left
+      simpa! [K, hfi] using (ht i.1 i.2 hfi).1.card_left
     · rw [of_not_not (FiniteIndex.mk.mt hfi), Nat.cast_zero, inv_zero, zero_mul]
-      simpa [K, hfi] using hHD i hfi
+      simpa! [K, hfi] using hHD i hfi
   refine ⟨?_, ?_, ?_⟩
   · rw [← hcovers', Set.iUnion_sigma, Set.iUnion_subtype]
     refine Set.iUnion_congr fun i => ?_
@@ -297,8 +295,8 @@ theorem leftCoset_cover_filter_FiniteIndex_aux
       suffices ∃ r : H i, r ∈ t i hi.1 hi.2 ∧ x ∈ (g i * r) • (D : Set G) by
         have ⟨r, hr, hxr⟩ := this
         refine ⟨⟨⟨i, hi.1⟩, ⟨r, dif_pos hi.2 ▸ hr⟩⟩, rfl, ?_⟩
-        simpa [K, f, if_pos hi.2] using hxr
-      simpa [Set.mem_smul_set_iff_inv_smul_mem, smul_eq_mul, mul_assoc] using hi' hx
+        simpa! [K, f, if_pos hi.2] using hxr
+      simpa! [Set.mem_smul_set_iff_inv_smul_mem, smul_eq_mul, mul_assoc] using hi' hx
     have ⟨k₁, hik₁, hk₁, hxk₁⟩ := hk' i hi hi'
     have ⟨k₂, hjk₂, hk₂, hxk₂⟩ := hk' j hj hj'
     rw [← Set.singleton_subset_iff, ← Set.le_iff_subset] at hxk₁ hxk₂ ⊢
@@ -365,11 +363,10 @@ section Submodule
 variable {R M ι : Type*} [Ring R] [AddCommGroup M] [Module R M]
     {p : ι → Submodule R M} {s : Finset ι}
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Submodule.exists_finiteIndex_of_cover (hcovers : ⋃ i ∈ s, (p i : Set M) = Set.univ) :
     ∃ k ∈ s, (p k).toAddSubgroup.FiniteIndex :=
   have hcovers' : ⋃ i ∈ s, (0 : M) +ᵥ ((p i).toAddSubgroup : Set M) = Set.univ := by
-    simpa only [zero_vadd] using hcovers
+    simpa! only [zero_vadd] using hcovers
   AddSubgroup.exists_finiteIndex_of_leftCoset_cover hcovers'
 
 end Submodule

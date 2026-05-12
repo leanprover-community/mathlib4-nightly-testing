@@ -278,7 +278,6 @@ lemma ProperSMul.isCompact_setOf_inter_nonempty
   rw [← (MulAction.toPerm g).exists_congr_right]
   simp [and_comm]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `G` acts transitively on `X`, and the orbit map of a point in `X` is a proper map, then the
 action is proper. -/
 @[to_additive]
@@ -289,7 +288,7 @@ lemma MulAction.properSMul_of_proper_orbitMap
   let f : G × G → G × X := Prod.map id (fun g ↦ g • x)
   have hfsurj : f.Surjective := Function.surjective_id.prodMap (surjective_smul G x)
   refine isProperMap_of_comp_of_surj (by fun_prop) (by fun_prop) ?_ hfsurj
-  simpa [Function.comp_def, Prod.map_apply, mul_smul]
+  simpa! [Function.comp_def, Prod.map_apply, mul_smul]
     using (hx.prodMap hx).comp (ProperSMul.isProperMap_smul_pair (G := G))
 
 end

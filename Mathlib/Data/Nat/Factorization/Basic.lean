@@ -127,13 +127,12 @@ theorem ordCompl_mul (a b p : ℕ) : ordCompl[p] (a * b) = ordCompl[p] a * ordCo
 
 /-! ### Factorization and divisibility -/
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A crude upper bound on `n.factorization p` -/
 theorem factorization_lt {n : ℕ} (p : ℕ) (hn : n ≠ 0) : n.factorization p < n := by
   by_cases pp : p.Prime
   · exact (Nat.pow_lt_pow_iff_right pp.one_lt).1 <| (ordProj_le p hn).trans_lt <|
       Nat.lt_pow_self pp.one_lt
-  · simpa only [factorization_eq_zero_of_not_prime n pp] using hn.bot_lt
+  · simpa! only [factorization_eq_zero_of_not_prime n pp] using hn.bot_lt
 
 /-- An upper bound on `n.factorization p` -/
 theorem factorization_le_of_le_pow {n p b : ℕ} (hb : n ≤ p ^ b) : n.factorization p ≤ b := by

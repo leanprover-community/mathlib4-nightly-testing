@@ -615,12 +615,11 @@ lemma biUnion_supp_eq_supp {G G' : SimpleGraph V} (h : G ≤ G') (c' : Connected
   use c'.connectedComponentMk_supp_subset_supp h hv
   simp only [mem_supp_iff]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma top_supp_eq_univ (c : ConnectedComponent (⊤ : SimpleGraph V)) :
     c.supp = (Set.univ : Set V) := by
   obtain ⟨w, rfl⟩ := c.exists_rep
   ext v
-  simpa [-ConnectedComponent.eq] using ConnectedComponent.sound (G := ⊤)
+  simpa! [-ConnectedComponent.eq] using ConnectedComponent.sound (G := ⊤)
 
 lemma reachable_of_mem_supp {G : SimpleGraph V} (C : G.ConnectedComponent) {u v : V}
     (hu : u ∈ C.supp) (hv : v ∈ C.supp) : G.Reachable u v := by
@@ -701,7 +700,6 @@ theorem maximal_connected_induce_iff (s : Set V) :
 
 end ConnectedComponent
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given graph homomorphisms from each connected component of `G` to `H`, this is the graph
 homomorphism from `G` to `H`. -/
 @[simps]
@@ -710,7 +708,7 @@ def homOfConnectedComponents (G : SimpleGraph V) {H : SimpleGraph V'}
   toFun := fun x ↦ (C (G.connectedComponentMk x)) ⟨x, ConnectedComponent.connectedComponentMk_mem⟩
   map_rel' := fun hab ↦ by
     have h : (G.connectedComponentMk _).toSimpleGraph.Adj ⟨_, rfl⟩
-        ⟨_, ((G.connectedComponentMk _).mem_supp_congr_adj hab).1 rfl⟩ := by simpa using hab
+        ⟨_, ((G.connectedComponentMk _).mem_supp_congr_adj hab).1 rfl⟩ := by simpa! using hab
     convert (C (G.connectedComponentMk _)).map_rel h using 3 <;>
       rw [ConnectedComponent.connectedComponentMk_eq_of_adj hab]
 

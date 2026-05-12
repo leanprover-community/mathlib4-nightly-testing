@@ -129,14 +129,13 @@ theorem fermatPsp_base_one {n : ℕ} (h₁ : 1 < n) (h₂ : ¬n.Prime) : FermatP
 -- pseudoprimes
 section HelperLemmas
 
-set_option backward.simpa.using.reducibleClose false in
 private theorem a_id_helper {a b : ℕ} (ha : 2 ≤ a) (hb : 2 < b) : b < (a ^ b - 1) / (a - 1) := by
   rw [← Nat.geomSum_eq ha]
   calc
     b = ∑ _ ∈ Finset.range b, (1 : ℕ) := by simp
     _ < _ := by
       refine Finset.sum_lt_sum (fun i hi => Nat.one_le_pow _ _ (by lia)) ?_
-      exact ⟨1, Finset.mem_range.mpr (by lia), by simpa using ha⟩
+      exact ⟨1, Finset.mem_range.mpr (by lia), by simpa! using ha⟩
 
 private theorem b_id_helper {a b : ℕ} (ha : 2 ≤ a) (hb : 2 < b) : 2 ≤ (a ^ b + 1) / (a + 1) := by
   rw [Nat.le_div_iff_mul_le (Nat.zero_lt_succ _)]

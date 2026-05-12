@@ -88,10 +88,9 @@ section Degrees
 theorem degrees_neg (p : MvPolynomial σ R) : (-p).degrees = p.degrees := by
   rw [degrees, support_neg]; rfl
 
-set_option backward.simpa.using.reducibleClose false in
 theorem degrees_sub_le [DecidableEq σ] {p q : MvPolynomial σ R} :
     (p - q).degrees ≤ p.degrees ∪ q.degrees := by
-  simpa [degrees_def] using AddMonoidAlgebra.supDegree_sub_le
+  simpa! [degrees_def] using AddMonoidAlgebra.supDegree_sub_le
 
 end Degrees
 

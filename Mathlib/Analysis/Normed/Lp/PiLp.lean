@@ -782,11 +782,10 @@ theorem nnnorm_eq_of_L2 (x : PiLp 2 β) :
     push_cast
     exact norm_eq_of_L2 x
 
-set_option backward.simpa.using.reducibleClose false in
 theorem norm_sq_eq_of_L2 (β : ι → Type*) [∀ i, SeminormedAddCommGroup (β i)] (x : PiLp 2 β) :
     ‖x‖ ^ 2 = ∑ i : ι, ‖x i‖ ^ 2 := by
   suffices ‖x‖₊ ^ 2 = ∑ i : ι, ‖x i‖₊ ^ 2 by
-    simpa only [NNReal.coe_sum] using congr_arg ((↑) : ℝ≥0 → ℝ) this
+    simpa! only [NNReal.coe_sum] using congr_arg ((↑) : ℝ≥0 → ℝ) this
   rw [nnnorm_eq_of_L2, NNReal.sq_sqrt]
 
 theorem dist_eq_of_L2 (x y : PiLp 2 β) :

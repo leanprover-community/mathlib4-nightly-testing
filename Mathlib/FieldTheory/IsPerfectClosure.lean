@@ -254,7 +254,6 @@ variable [CommRing K] [CommRing L] [CommRing M] [CommRing N]
 
 namespace IsPRadical
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `i : K →+* L` is `p`-radical, then for any ring `M` of exponential characteristic `p` whose
 `p`-nilradical is zero, the map `(L →+* M) → (K →+* M)` induced by `i` is injective. -/
 theorem injective_comp_of_pNilradical_eq_bot [IsPRadical i p] (h : pNilradical M p = ⊥) :
@@ -262,7 +261,7 @@ theorem injective_comp_of_pNilradical_eq_bot [IsPRadical i p] (h : pNilradical M
   ext x
   obtain ⟨n, y, hx⟩ := IsPRadical.pow_mem i p x
   apply_fun _ using pow_expChar_pow_inj_of_pNilradical_eq_bot M p h n
-  simpa only [← map_pow, ← hx] using congr($(heq) y)
+  simpa! only [← map_pow, ← hx] using congr($(heq) y)
 
 variable (M)
 

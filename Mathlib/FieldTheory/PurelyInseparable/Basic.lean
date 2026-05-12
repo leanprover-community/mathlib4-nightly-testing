@@ -188,14 +188,13 @@ theorem separableClosure.eq_bot_of_isPurelyInseparable
     separableClosure F E = ⊥ :=
   bot_unique fun x h ↦ IsPurelyInseparable.inseparable F x (mem_separableClosure_iff.1 h)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `E / F` is an algebraic extension, then the separable closure of `F` in `E` is
 equal to `F` if and only if `E / F` is purely inseparable. -/
 theorem separableClosure.eq_bot_iff
     {F : Type u} {E : Type v} [Field F] [Field E] [Algebra F E] [Algebra.IsAlgebraic F E] :
     separableClosure F E = ⊥ ↔ IsPurelyInseparable F E :=
   ⟨fun h ↦ isPurelyInseparable_iff.2 fun x ↦ ⟨Algebra.IsIntegral.isIntegral x, fun hs ↦ by
-    simpa only [h] using mem_separableClosure_iff.2 hs⟩, fun _ ↦ eq_bot_of_isPurelyInseparable F E⟩
+    simpa! only [h] using mem_separableClosure_iff.2 hs⟩, fun _ ↦ eq_bot_of_isPurelyInseparable F E⟩
 
 instance isPurelyInseparable_self : IsPurelyInseparable F F :=
   ⟨inferInstance, fun x _ ↦ ⟨x, rfl⟩⟩
@@ -347,7 +346,6 @@ lemma IsPurelyInseparable.finrank_eq_pow
 variable (E)
 
 variable {F E} in
-set_option backward.simpa.using.reducibleClose false in
 /-- If an extension has finite separable degree one, then it is purely inseparable. -/
 theorem isPurelyInseparable_of_finSepDegree_eq_one
     (hdeg : finSepDegree F E = 1) : IsPurelyInseparable F E := by
@@ -358,7 +356,7 @@ theorem isPurelyInseparable_of_finSepDegree_eq_one
     rw [hdeg, mul_eq_one, (finSepDegree_adjoin_simple_eq_finrank_iff F E x
         (Algebra.IsAlgebraic.isAlgebraic x)).2 hsep,
       IntermediateField.finrank_eq_one_iff] at this
-    simpa only [this.1] using mem_adjoin_simple_self F x
+    simpa! only [this.1] using mem_adjoin_simple_self F x
   · rw [← Algebra.transcendental_iff_not_isAlgebraic] at H
     simp [finSepDegree_eq_zero_of_transcendental F E] at hdeg
 

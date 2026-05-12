@@ -929,7 +929,6 @@ theorem isClosed_setOf_specializes : IsClosed { p : X × X | p.1 ⤳ p.2 } := by
 theorem isClosed_setOf_inseparable : IsClosed { p : X × X | Inseparable p.1 p.2 } := by
   simp only [← specializes_iff_inseparable, isClosed_setOf_specializes]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- In an R₁ space, a point belongs to the closure of a compact set `K`
 if and only if it is topologically inseparable from some point of `K`. -/
 theorem IsCompact.mem_closure_iff_exists_inseparable {K : Set X} (hK : IsCompact K) :
@@ -939,7 +938,7 @@ theorem IsCompact.mem_closure_iff_exists_inseparable {K : Set X} (hK : IsCompact
   contrapose! hy
   have : Disjoint (𝓝 y) (𝓝ˢ K) := hK.disjoint_nhdsSet_right.2 fun x hx ↦
     (disjoint_nhds_nhds_iff_not_inseparable.2 (hy x hx)).symm
-  simpa only [disjoint_iff, notMem_closure_iff_nhdsWithin_eq_bot]
+  simpa! only [disjoint_iff, notMem_closure_iff_nhdsWithin_eq_bot]
     using this.mono_right principal_le_nhdsSet
 
 theorem IsCompact.closure_eq_biUnion_inseparable {K : Set X} (hK : IsCompact K) :

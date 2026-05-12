@@ -488,11 +488,10 @@ lemma ofDual_preimage_latticeClosure (s : Set α) :
   ext
   simp [latticeClosure, (Equiv.Set.congr toDual).surjective.forall, Equiv.image_eq_preimage_symm]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma image_latticeClosure' (s : Set α) (f : α → β)
     (map_sup : ∀ a b, f (a ⊔ b) = f a ⊓ f b) (map_inf : ∀ a b, f (a ⊓ b) = f a ⊔ f b) :
     f '' latticeClosure s = latticeClosure (f '' s) := by
-  simpa only [Set.image_comp, Equiv.image_symm_eq_preimage, ← ofDual_preimage_latticeClosure]
+  simpa! only [Set.image_comp, Equiv.image_symm_eq_preimage, ← ofDual_preimage_latticeClosure]
     using image_latticeClosure s (ofDual.symm ∘ f) map_sup map_inf
 
 end Lattice

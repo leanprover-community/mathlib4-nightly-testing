@@ -45,15 +45,14 @@ end Over
 
 section OverProp
 
-set_option backward.simpa.using.reducibleClose false in
 instance {S : Scheme.{u}} {U X Y : P.Over ⊤ S} (f : U ⟶ X) (g : U ⟶ Y)
     [IsOpenImmersion f.left] [IsOpenImmersion g.left] (i : WalkingPair) :
     Mono ((span f g ⋙ MorphismProperty.Over.forget P ⊤ S ⋙ Over.forget S ⋙ Scheme.forget).map
       (WidePushoutShape.Hom.init i)) := by
   rw [mono_iff_injective]
   cases i
-  · simpa using f.left.isOpenEmbedding.injective
-  · simpa using g.left.isOpenEmbedding.injective
+  · simpa! using f.left.isOpenEmbedding.injective
+  · simpa! using g.left.isOpenEmbedding.injective
 
 instance {S : Scheme.{u}} {U X Y : P.Over ⊤ S} (f : U ⟶ X) (g : U ⟶ Y)
     [IsOpenImmersion f.left] [IsOpenImmersion g.left]
@@ -80,7 +79,6 @@ local instance {i j} (f : i ⟶ j) :
       ((F ⋙ MorphismProperty.Over.forget P ⊤ S) ⋙ Over.forget S).map f :=
   inferInstanceAs <| IsOpenImmersion (F.map f).left
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 noncomputable instance : CreatesColimit F (MorphismProperty.Over.forget P ⊤ S) := by
   have : HasColimit (F ⋙ MorphismProperty.Over.forget P ⊤ S) :=
@@ -95,7 +93,7 @@ noncomputable instance : CreatesColimit F (MorphismProperty.Over.forget P ⊤ S)
     (Scheme.IsLocallyDirected.openCover _).pushforwardIso e.inv
   rw [IsZariskiLocalAtSource.iff_of_openCover (P := P) 𝒰]
   intro i
-  simpa [𝒰, e] using (F.obj i).prop
+  simpa! [𝒰, e] using (F.obj i).prop
 
 instance : HasColimit F := hasColimit_of_created _ (MorphismProperty.Over.forget P ⊤ S)
 

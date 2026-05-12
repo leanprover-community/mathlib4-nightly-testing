@@ -73,7 +73,6 @@ lemma Triplewise.map (h : ∀ {a b c}, p a b c → p' (f a) (f b) (f c)) (hl : l
     (l.map f).Triplewise p' :=
   triplewise_map.2 (hl.imp h)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma triplewise_iff_getElem : l.Triplewise p ↔ ∀ i j k (hij : i < j) (hjk : j < k)
     (hk : k < l.length), p l[i] l[j] l[k] := by
   induction l with
@@ -83,8 +82,8 @@ lemma triplewise_iff_getElem : l.Triplewise p ↔ ∀ i j k (hij : i < j) (hjk :
     refine ⟨fun ⟨hh, ht⟩ i j k hij hjk hk ↦ ?_,
             fun h ↦ ⟨fun i j hi hj hij ↦ ?_, fun i j k hij hjk hk ↦ ?_⟩⟩
     · grind
-    · simpa using h 0 (i + 1) (j + 1) (by lia) (by lia) (by lia)
-    · simpa using h (i + 1) (j + 1) (k + 1) (by lia) (by lia) (by lia)
+    · simpa! using h 0 (i + 1) (j + 1) (by lia) (by lia) (by lia)
+    · simpa! using h (i + 1) (j + 1) (k + 1) (by lia) (by lia) (by lia)
 
 lemma triplewise_append : (l₁ ++ l₂).Triplewise p ↔ l₁.Triplewise p ∧ l₂.Triplewise p ∧
     (∀ a ∈ l₁, l₂.Pairwise (p a)) ∧ ∀ a ∈ l₂, l₁.Pairwise fun x y ↦ p x y a := by

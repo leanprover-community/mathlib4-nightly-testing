@@ -202,7 +202,6 @@ theorem ofStabilizer.snoc_last {n : ℕ} (x : Fin n ↪ ofStabilizer G a) :
   simp [snoc]
 
 variable (G) in
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma exists_smul_of_last_eq [IsPretransitive G α] {n : ℕ} (a : α) (x : Fin n.succ ↪ α) :
     ∃ (g : G) (y : Fin n ↪ ofStabilizer G a), g • x = ofStabilizer.snoc y := by
@@ -216,9 +215,9 @@ lemma exists_smul_of_last_eq [IsPretransitive G α] {n : ℕ} (a : α) (x : Fin 
   use g, (Fin.Embedding.init (g • x)).codRestrict (ofStabilizer G a) H
   ext i
   rcases Fin.eq_castSucc_or_eq_last i with ⟨i, rfl⟩ | ⟨rfl⟩
-  · simpa [ofStabilizer.snoc] using
+  · simpa! [ofStabilizer.snoc] using
       Subtype.ext_iff.mp <| Function.Embedding.codRestrict_apply _ _ H i
-  · simpa only [smul_apply, ofStabilizer.snoc, Fin.Embedding.snoc_last]
+  · simpa! only [smul_apply, ofStabilizer.snoc, Fin.Embedding.snoc_last]
 
 end SubMulAction
 

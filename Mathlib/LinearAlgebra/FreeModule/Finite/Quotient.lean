@@ -102,13 +102,12 @@ theorem finiteQuotientOfFreeOfRankEq [Module.Free ℤ M] [Module.Finite ℤ M]
     ⟨Int.natAbs_ne_zero.mpr (smithNormalFormCoeffs_ne_zero b h i)⟩
   exact Finite.of_equiv (Π i, ZMod (a i).natAbs) e.symm
 
-set_option backward.simpa.using.reducibleClose false in
 theorem finiteQuotient_iff [Module.Free ℤ M] [Module.Finite ℤ M] (N : Submodule ℤ M) :
     Finite (M ⧸ N) ↔ Module.finrank ℤ N = Module.finrank ℤ M := by
   refine ⟨fun h ↦ le_antisymm (finrank_le N) <|
     ((LinearMap.lsmul ℤ M (Nat.card (M ⧸ N))).codRestrict N
       fun x ↦ ?_).finrank_le_finrank_of_injective ?_, fun h ↦ finiteQuotientOfFreeOfRankEq N h⟩
-  · simpa using AddSubgroup.nsmul_index_mem N.toAddSubgroup x
+  · simpa! using AddSubgroup.nsmul_index_mem N.toAddSubgroup x
   · refine (LinearMap.lsmul_injective ?_).codRestrict _
     exact Int.ofNat_ne_zero.mpr <| Nat.card_ne_zero.mpr
       ⟨Set.nonempty_iff_univ_nonempty.mpr Set.univ_nonempty, h⟩

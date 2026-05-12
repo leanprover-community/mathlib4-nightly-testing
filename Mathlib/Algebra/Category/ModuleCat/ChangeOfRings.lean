@@ -87,12 +87,11 @@ def restrictScalars {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →
   obj := RestrictScalars.obj' f
   map := RestrictScalars.map' f
 
-set_option backward.simpa.using.reducibleClose false in
 instance {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) :
     (restrictScalars.{v} f).Faithful where
   map_injective h := by
     ext x
-    simpa only using DFunLike.congr_fun (ModuleCat.hom_ext_iff.mp h) x
+    simpa! only using DFunLike.congr_fun (ModuleCat.hom_ext_iff.mp h) x
 
 instance {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) :
     (restrictScalars.{v} f).PreservesMonomorphisms where

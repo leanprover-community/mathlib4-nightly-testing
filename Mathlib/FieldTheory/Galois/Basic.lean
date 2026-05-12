@@ -103,7 +103,6 @@ theorem IntermediateField.AdjoinSimple.card_aut_eq_finrank [FiniteDimensional F 
   rw [← IntermediateField.card_algHom_adjoin_integral F hα h_sep h_splits]
   exact Nat.card_congr (algEquivEquivAlgHom F F⟮α⟯)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Let $E / F$ be a finite extension of fields. If $E$ is Galois over $F$, then
 $|\text{Aut}(E/F)| = [E : F]$. -/
 @[stacks 09I1 "'only if' part"]
@@ -120,7 +119,7 @@ theorem card_aut_eq_finrank [FiniteDimensional F E] [IsGalois F E] :
   have h_sep : IsSeparable F α := IsGalois.separable F α
   have h_splits : ((minpoly F α).map (algebraMap F E)).Splits := IsGalois.splits F α
   replace h_splits : ((minpoly F α).map (algebraMap F F⟮α⟯)).Splits := by
-    simpa [Polynomial.map_map] using h_splits.map iso.symm.toRingHom
+    simpa! [Polynomial.map_map] using h_splits.map iso.symm.toRingHom
   rw [← LinearEquiv.finrank_eq iso.toLinearEquiv]
   rw [← IntermediateField.AdjoinSimple.card_aut_eq_finrank F E H h_sep h_splits]
   apply Nat.card_congr

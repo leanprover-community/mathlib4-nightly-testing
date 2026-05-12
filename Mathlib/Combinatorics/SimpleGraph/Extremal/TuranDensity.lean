@@ -43,7 +43,6 @@ namespace SimpleGraph
 
 variable {W : Type*}
 
-set_option backward.simpa.using.reducibleClose false in
 lemma antitoneOn_extremalNumber_div_choose_two (H : SimpleGraph W) :
     AntitoneOn (fun n ↦ (extremalNumber n H / n.choose 2 : ℝ)) (Set.Ici 2) := by
   apply antitoneOn_nat_Ici_of_succ_le
@@ -71,7 +70,7 @@ lemma antitoneOn_extremalNumber_div_choose_two (H : SimpleGraph W) :
       Nat.cast_id, Nat.reduceSubDiff, le_refl]
   -- counting `v`
   · intro v hv
-    simpa [edgeFinset_deleteIncidenceSet_eq_filter]
+    simpa! [edgeFinset_deleteIncidenceSet_eq_filter]
       using card_edgeFinset_deleteIncidenceSet_le_extremalNumber h v
 
 /-- The **Turán density** of a simple graph `H` is the limit of `extremalNumber n H / n.choose 2`
@@ -105,7 +104,6 @@ theorem tendsto_turanDensity (H : SimpleGraph W) :
     (antitoneOn_extremalNumber_div_choose_two H) (isGLB_turanDensity H).bddBelow
   rwa [turanDensity, h_tendsto.limUnder_eq]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- `extremalNumber n H` is asymptotically equivalent to `turanDensity H * n.choose 2` as `n`
 approaches `∞`. -/
 theorem isEquivalent_extremalNumber {H : SimpleGraph W} (h : turanDensity H ≠ 0) :
@@ -116,8 +114,8 @@ theorem isEquivalent_extremalNumber {H : SimpleGraph W} (h : turanDensity H ≠ 
   have hz : ∀ᶠ (x : ℕ) in atTop, turanDensity H * x.choose 2 ≠ 0 := by
     rw [eventually_atTop]
     refine ⟨2, fun n hn ↦ ?_⟩
-    simpa [h, Nat.choose_eq_zero_iff]
-  simpa [isEquivalent_iff_tendsto_one hz] using hπ
+    simpa! [h, Nat.choose_eq_zero_iff]
+  simpa! [isEquivalent_iff_tendsto_one hz] using hπ
 
 /-- Simple graphs on `n` vertices having at least `(turanDensity H + o(1)) * n ^ 2` edges contain
 `H`, for sufficiently large `n`. -/

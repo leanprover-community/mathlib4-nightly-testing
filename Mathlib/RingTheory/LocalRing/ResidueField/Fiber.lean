@@ -101,7 +101,6 @@ noncomputable def PrimeSpectrum.preimageEquivFiber (p : PrimeSpectrum R) :
         -Ideal.ResidueField.map_algebraMap]
 
 variable (R S) in
-set_option backward.simpa.using.reducibleClose false in
 /-- The `OrderIso` between the fiber of `PrimeSpectrum S → PrimeSpectrum R` at a prime
 ideal `p : PrimeSpectrum R` and the prime spectrum of `κ(p) ⊗[R] S`. -/
 @[simps!]
@@ -112,14 +111,14 @@ noncomputable def PrimeSpectrum.preimageOrderIsoFiber (p : PrimeSpectrum R) :
     constructor
     · obtain ⟨q₁, rfl⟩ := (preimageEquivFiber R S p).symm.surjective q₁
       obtain ⟨q₂, rfl⟩ := (preimageEquivFiber R S p).symm.surjective q₂
-      simpa using Ideal.comap_mono
+      simpa! using Ideal.comap_mono
     · intro H x hx
       obtain ⟨r, hr, s, e⟩ := Ideal.Fiber.exists_smul_eq_one_tmul _ x
       rw [← Ideal.IsPrime.mul_mem_left_iff (x := algebraMap _ _ r), ← Algebra.smul_def, e] at hx ⊢
-      · replace hx : s ∈ q₁.1.asIdeal := by simpa using hx
-        simpa using H hx
-      · rw [← q₂.2] at hr; simpa [IsScalarTower.algebraMap_apply R S q₂.1.asIdeal.ResidueField]
-      · rw [← q₁.2] at hr; simpa [IsScalarTower.algebraMap_apply R S q₁.1.asIdeal.ResidueField]
+      · replace hx : s ∈ q₁.1.asIdeal := by simpa! using hx
+        simpa! using H hx
+      · rw [← q₂.2] at hr; simpa! [IsScalarTower.algebraMap_apply R S q₂.1.asIdeal.ResidueField]
+      · rw [← q₁.2] at hr; simpa! [IsScalarTower.algebraMap_apply R S q₁.1.asIdeal.ResidueField]
 
 @[deprecated (since := "2025-12-07")]
 alias PrimeSpectrum.preimageOrderIsoTensorResidueField := PrimeSpectrum.preimageOrderIsoFiber

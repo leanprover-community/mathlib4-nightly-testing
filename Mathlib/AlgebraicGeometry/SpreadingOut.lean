@@ -98,7 +98,6 @@ instance (x : X) [X.IsGermInjectiveAt x] [IsOpenImmersion f] :
   simpa
 
 variable {f} in
-set_option backward.simpa.using.reducibleClose false in
 lemma isGermInjectiveAt_iff_of_isOpenImmersion {x : X} [IsOpenImmersion f] :
     Y.IsGermInjectiveAt (f x) ↔ X.IsGermInjectiveAt x := by
   refine ⟨fun H ↦ ?_, fun _ ↦ inferInstance⟩
@@ -113,7 +112,7 @@ lemma isGermInjectiveAt_iff_of_isOpenImmersion {x : X} [IsOpenImmersion f] :
     (f.stalkMap y)).mpr H
   replace H := ((MorphismProperty.injective CommRingCat).cancel_left_of_respectsIso
     (f.appIso V).inv _).mpr H
-  simpa using H
+  simpa! using H
 
 /--
 The class of schemes such that for each `x : X`,

@@ -241,7 +241,6 @@ namespace Subgroup
 
 variable {G : Type*} [Group G] [TopologicalSpace G]
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem isOpen_of_mem_nhds [SeparatelyContinuousMul G] (H : Subgroup G) {g : G}
     (hg : (H : Set G) ∈ 𝓝 g) : IsOpen (H : Set G) := by
@@ -249,7 +248,7 @@ theorem isOpen_of_mem_nhds [SeparatelyContinuousMul G] (H : Subgroup G) {g : G}
   have hg' : g ∈ H := SetLike.mem_coe.1 (mem_of_mem_nhds hg)
   have : Filter.Tendsto (fun y ↦ y * (x⁻¹ * g)) (𝓝 x) (𝓝 g) :=
     (continuous_id.mul_const _).tendsto' _ _ (mul_inv_cancel_left _ _)
-  simpa only [SetLike.mem_coe, Filter.mem_map',
+  simpa! only [SetLike.mem_coe, Filter.mem_map',
     H.mul_mem_cancel_right (H.mul_mem (H.inv_mem hx) hg')] using this hg
 
 @[to_additive]

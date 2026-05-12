@@ -112,23 +112,20 @@ theorem fderiv_smul (hc : DifferentiableAt 𝕜 c x) (hf : DifferentiableAt 𝕜
     fderiv 𝕜 (c • f) x = c x • fderiv 𝕜 f x + (fderiv 𝕜 c x).smulRight (f x) :=
   (hc.hasFDerivAt.smul hf.hasFDerivAt).fderiv
 
-set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem HasStrictFDerivAt.smul_const (hc : HasStrictFDerivAt c c' x) (f : F) :
     HasStrictFDerivAt (fun y => c y • f) (c'.smulRight f) x := by
-  simpa only [smul_zero, zero_add] using hc.smul (hasStrictFDerivAt_const f x)
+  simpa! only [smul_zero, zero_add] using hc.smul (hasStrictFDerivAt_const f x)
 
-set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem HasFDerivWithinAt.smul_const (hc : HasFDerivWithinAt c c' s x) (f : F) :
     HasFDerivWithinAt (fun y => c y • f) (c'.smulRight f) s x := by
-  simpa only [smul_zero, zero_add] using hc.smul (hasFDerivWithinAt_const f x s)
+  simpa! only [smul_zero, zero_add] using hc.smul (hasFDerivWithinAt_const f x s)
 
-set_option backward.simpa.using.reducibleClose false in
 @[fun_prop]
 theorem HasFDerivAt.smul_const (hc : HasFDerivAt c c' x) (f : F) :
     HasFDerivAt (fun y => c y • f) (c'.smulRight f) x := by
-  simpa only [smul_zero, zero_add] using hc.smul (hasFDerivAt_const f x)
+  simpa! only [smul_zero, zero_add] using hc.smul (hasFDerivAt_const f x)
 
 @[fun_prop]
 theorem DifferentiableWithinAt.smul_const (hc : DifferentiableWithinAt 𝕜 c s x) (f : F) :
@@ -655,7 +652,6 @@ variable {R : Type*} [NormedRing R] [HasSummableGeomSeries R] [NormedAlgebra �
 
 open NormedRing ContinuousLinearMap Ring
 
-set_option backward.simpa.using.reducibleClose false in
 /-- At an invertible element `x` of a normed algebra `R`, the Fréchet derivative of the inversion
 operation is the linear map `fun t ↦ - x⁻¹ * t * x⁻¹`.
 

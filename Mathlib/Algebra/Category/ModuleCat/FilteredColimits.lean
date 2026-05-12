@@ -149,7 +149,6 @@ def coconeMorphism (j : J) : F.obj j ⟶ colimit F :=
       (F ⋙ forget₂ (ModuleCat R) AddCommGrpCat.{max v u})).ι.app j).hom with
     map_smul' := by solve_by_elim }
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The cocone over the proposed colimit module. -/
 def colimitCocone : Cocone F where
   pt := colimit F
@@ -157,7 +156,7 @@ def colimitCocone : Cocone F where
     { app := coconeMorphism F
       naturality _ _ f := by
         ext
-        simpa using (Types.TypeMax.colimitCocone
+        simpa! using (Types.TypeMax.colimitCocone
           (F ⋙ forget (ModuleCat R))).ι.naturality_apply f _ }
 
 set_option backward.isDefEq.respectTransparency false in

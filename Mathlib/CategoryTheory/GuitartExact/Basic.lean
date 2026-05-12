@@ -278,7 +278,6 @@ instance (priority := 100) guitartExact_of_isEquivalence_of_isIso
   dsimp only [structuredArrowDownwards]
   infer_instance
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 instance guitartExact_id (F : C₁ ⥤ C₂) :
     GuitartExact (TwoSquare.mk (𝟭 C₁) F F (𝟭 C₂) (𝟙 F)) := by
@@ -288,7 +287,7 @@ instance guitartExact_id (F : C₁ ⥤ C₂) :
   let X₀ : Z := StructuredArrow.mk (Y := CostructuredArrow.mk g) (CostructuredArrow.homMk (𝟙 _))
   have φ : ∀ (X : Z), X₀ ⟶ X := fun X =>
     StructuredArrow.homMk (CostructuredArrow.homMk X.hom.left
-      (by simpa using CostructuredArrow.w X.hom))
+      (by simpa! using CostructuredArrow.w X.hom))
   have : Nonempty Z := ⟨X₀⟩
   apply zigzag_isConnected
   intro X Y

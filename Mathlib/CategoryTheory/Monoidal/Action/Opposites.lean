@@ -64,7 +64,6 @@ def leftActionOfMonoidalOppositeRightAction [MonoidalRightAction Cᴹᵒᵖ D] :
         MonoidalRightAction.actionHom_associator
           (mop c₃) (mop c₂) (mop c₁) d |>.symm
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Define a left action of `Cᴹᵒᵖ` on `D` from a right action of `C` on `D` via
 the formula `mop c ⊙ₗ d = d ⊙ᵣ c`. -/
 @[instance_reducible, simps -isSimp]
@@ -84,7 +83,7 @@ def monoidalOppositeLeftAction [MonoidalRightAction C D] :
   rightUnitor_actionHom c d :=
     MonoidalRightAction.actionHom_leftUnitor _ _
   associator_actionHom c₁ c₂ c₃ d := by
-    simpa only [mop_tensorObj, mop_hom_associator,
+    simpa! only [mop_tensorObj, mop_hom_associator,
       MonoidalRightAction.actionHomRight_inv_hom_assoc] using
       (d ⊴ᵣ (α_ (unmop c₃) (unmop c₂) (unmop c₁)).inv) ≫=
         MonoidalRightAction.actionHom_associator
@@ -279,7 +278,6 @@ def rightActionOfMonoidalOppositeLeftAction [MonoidalLeftAction Cᴹᵒᵖ D] :
         MonoidalLeftAction.associator_actionHom
           (mop c₃) (mop c₂) (mop c₁) d |>.symm
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Define a right action of `Cᴹᵒᵖ` on `D` from a left action of `C` on `D` via
 the formula `d ⊙ᵣ mop c = c ⊙ₗ d`. -/
 @[instance_reducible, simps -isSimp]
@@ -297,7 +295,7 @@ def monoidalOppositeRightAction [MonoidalLeftAction C D] :
   actionUnitIso_hom_naturality _ :=
     MonoidalLeftAction.actionUnitIso_hom_naturality _
   actionHom_associator c₁ c₂ c₃ d := by
-    simpa only [mop_tensorObj, mop_hom_associator,
+    simpa! only [mop_tensorObj, mop_hom_associator,
       MonoidalLeftAction.inv_hom_actionHomLeft_assoc] using
       (α_ (unmop c₃) (unmop c₂) (unmop c₁)).inv ⊵ₗ d ≫=
         MonoidalLeftAction.associator_actionHom

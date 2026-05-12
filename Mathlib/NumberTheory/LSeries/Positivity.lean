@@ -33,7 +33,6 @@ open Complex
 
 namespace LSeries
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If all values of a `ℂ`-valued arithmetic function are nonnegative reals and `x` is a
 real number in the domain of absolute convergence, then the `n`th iterated derivative
 of the associated L-series is nonnegative real when `n` is even and nonpositive real
@@ -49,7 +48,7 @@ lemma iteratedDeriv_alternating {a : ℕ → ℂ} (hn : 0 ≤ a) {x : ℝ}
   · exact le_rfl
   · refine mul_nonneg ?_ <| (inv_natCast_cpow_ofReal_pos (by assumption) x).le
     induction n with
-    | zero => simpa only [Function.iterate_zero, id_eq] using hn k
+    | zero => simpa! only [Function.iterate_zero, id_eq] using hn k
     | succ n IH =>
         rw [Function.iterate_succ_apply']
         refine mul_nonneg ?_ IH

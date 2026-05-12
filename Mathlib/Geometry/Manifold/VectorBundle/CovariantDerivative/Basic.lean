@@ -207,12 +207,11 @@ lemma zero [VectorBundle 𝕜 F V] (hcov : IsCovariantDerivativeOn F cov s)
   simpa using (hcov.add (mdifferentiableAt_zeroSection ..)
     (mdifferentiableAt_zeroSection ..) : cov (0 + 0) x = _)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem smul_const (hcov : IsCovariantDerivativeOn F cov s)
     {σ : Π x : M, V x} {x} (a : 𝕜)
     (hσ : MDiffAt (T% σ) x) (hx : x ∈ s := by trivial) :
     cov (a • σ) x = a • cov σ x := by
-  simpa [extDerivFun] using hcov.leibniz (g := fun _ ↦ a) hσ mdifferentiableAt_const
+  simpa! [extDerivFun] using hcov.leibniz (g := fun _ ↦ a) hσ mdifferentiableAt_const
 
 end computational_properties
 

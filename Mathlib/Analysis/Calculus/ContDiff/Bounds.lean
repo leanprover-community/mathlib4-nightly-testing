@@ -340,7 +340,6 @@ theorem norm_iteratedFDeriv_prod_le [DecidableEq ι] [NormOneClass A'] {u : Fins
 
 end
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If the derivatives within a set of `g` at `f x` are bounded by `C`, and the `i`-th derivative
 within a set of `f` at `x` is bounded by `D^i` for all `1 ≤ i ≤ n`, then the `n`-th derivative
 of `g ∘ f` is bounded by `n! * C * D^n`.
@@ -362,14 +361,14 @@ theorem norm_iteratedFDerivWithin_comp_le_aux {Fu Gu : Type u} [NormedAddCommGro
     on `D^n (g ' ∘ f ⬝ f')`. -/
   induction n using Nat.case_strong_induction_on generalizing Gu with
   | hz =>
-    simpa [norm_iteratedFDerivWithin_zero, Nat.factorial_zero, algebraMap.coe_one, one_mul,
+    simpa! [norm_iteratedFDerivWithin_zero, Nat.factorial_zero, algebraMap.coe_one, one_mul,
       pow_zero, mul_one, comp_apply] using hC 0 le_rfl
   | hi n IH =>
   have M : (n : ℕ∞ω) < n.succ := Nat.cast_lt.2 n.lt_succ_self
   have Cnonneg : 0 ≤ C := (norm_nonneg _).trans (hC 0 bot_le)
   have Dnonneg : 0 ≤ D := by
     have : 1 ≤ n + 1 := by simp only [le_add_iff_nonneg_left, zero_le']
-    simpa only [pow_one] using (norm_nonneg _).trans (hD 1 le_rfl this)
+    simpa! only [pow_one] using (norm_nonneg _).trans (hD 1 le_rfl this)
   -- use the inductive assumption to bound the derivatives of `g' ∘ f`.
   have I : ∀ i ∈ Finset.range (n + 1),
       ‖iteratedFDerivWithin 𝕜 i (fderivWithin 𝕜 g t ∘ f) s x‖ ≤ i ! * C * D ^ i := by
@@ -393,7 +392,7 @@ theorem norm_iteratedFDerivWithin_comp_le_aux {Fu Gu : Type u} [NormedAddCommGro
     intro i
     have : ‖iteratedFDerivWithin 𝕜 (n - i + 1) f s x‖ ≤ D ^ (n - i + 1) :=
       hD (n - i + 1) (by simp) (Nat.succ_le_succ tsub_le_self)
-    simpa [iteratedFDerivWithin_succ_eq_comp_right hs hx]
+    simpa! [iteratedFDerivWithin_succ_eq_comp_right hs hx]
   -- Now put these together: first, notice that we have to bound `D^n (g' ∘ f ⬝ f')`.
   calc
     ‖iteratedFDerivWithin 𝕜 (n + 1) (g ∘ f) s x‖ =
@@ -438,7 +437,7 @@ theorem norm_iteratedFDerivWithin_comp_le_aux {Fu Gu : Type u} [NormedAddCommGro
     _ ≤ ∑ i ∈ Finset.range (n + 1), (n ! : ℝ) * 1 * C * D ^ (n + 1) * 1 := by
       gcongr with i
       apply inv_le_one_of_one_le₀
-      simpa only [Nat.one_le_cast] using (n - i).factorial_pos
+      simpa! only [Nat.one_le_cast] using (n - i).factorial_pos
     _ = (n + 1)! * C * D ^ (n + 1) := by
       simp only [mul_assoc, mul_one, Finset.sum_const, Finset.card_range, nsmul_eq_mul,
         Nat.factorial_succ, Nat.cast_mul]

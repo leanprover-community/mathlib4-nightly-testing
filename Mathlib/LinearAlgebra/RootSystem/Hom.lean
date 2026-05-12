@@ -674,10 +674,9 @@ instance : DistribMulAction P.Aut M where
 
 @[simp] lemma reflection_smul (i : ι) (x : M) : Equiv.reflection P i • x = P.reflection i x := rfl
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma root_indexEquiv_eq_smul (i : ι) (g : P.Aut) :
     P.root (g.indexEquiv i) = g • P.root i := by
-  simpa using (congr_fun g.root_weightMap i).symm
+  simpa! using (congr_fun g.root_weightMap i).symm
 
 open MulOpposite in
 instance : DistribMulAction P.Autᵐᵒᵖ N where

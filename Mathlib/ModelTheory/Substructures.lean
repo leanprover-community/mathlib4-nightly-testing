@@ -182,7 +182,6 @@ theorem coe_inf (p p' : L.Substructure M) :
 theorem mem_inf {p p' : L.Substructure M} {x : M} : x ∈ p ⊓ p' ↔ x ∈ p ∧ x ∈ p' :=
   Iff.rfl
 
-set_option backward.simpa.using.reducibleClose false in
 instance instInfSet : InfSet (L.Substructure M) :=
   ⟨fun s =>
     { carrier := ⋂ t ∈ s, (t : Set M)
@@ -191,7 +190,7 @@ instance instInfSet : InfSet (L.Substructure M) :=
           (by
             rintro _ ⟨t, rfl⟩
             by_cases h : t ∈ s
-            · simpa [h] using t.fun_mem f
+            · simpa! [h] using t.fun_mem f
             · simp [h]) }⟩
 
 @[simp, norm_cast]

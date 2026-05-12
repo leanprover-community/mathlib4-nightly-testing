@@ -153,10 +153,9 @@ theorem sup_toSubfield (S T : IntermediateField F E) :
 theorem coe_sInf (S : Set (IntermediateField F E)) : (↑(sInf S) : Set E) = ⋂ s ∈ S, ↑s :=
   show sInf ((fun (x : IntermediateField F E) => (x : Set E)) '' S) = ⋂ s ∈ S, ↑s by simp
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp, grind =]
 theorem mem_sInf {S : Set (IntermediateField F E)} {x : E} : x ∈ sInf S ↔ ∀ p ∈ S, x ∈ p := by
-  simpa only [Set.mem_iInter] using Set.ext_iff.1 (coe_sInf S) x
+  simpa! only [Set.mem_iInter] using Set.ext_iff.1 (coe_sInf S) x
 
 @[simp]
 theorem sInf_toSubalgebra (S : Set (IntermediateField F E)) :

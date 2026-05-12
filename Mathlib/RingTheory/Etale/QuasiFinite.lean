@@ -56,14 +56,13 @@ lemma Ideal.comap_fiberIsoOfBijectiveResidueField_symm
     PrimeSpectrum.primesOverOrderIsoFiber, PrimeSpectrum.preimageOrderIsoFiber,
     PrimeSpectrum.preimageEquivFiber]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma Ideal.comap_fiberIsoOfBijectiveResidueField_apply
     (H : Function.Bijective (Ideal.ResidueField.mapₐ p q (Algebra.ofId _ _) (q.over_def p)))
     (Q : q.primesOver (R' ⊗[R] S)) :
     (Ideal.fiberIsoOfBijectiveResidueField H Q).1 =
       Q.1.comap Algebra.TensorProduct.includeRight := by
-  simpa using (Ideal.comap_fiberIsoOfBijectiveResidueField_symm H
+  simpa! using (Ideal.comap_fiberIsoOfBijectiveResidueField_symm H
     (Ideal.fiberIsoOfBijectiveResidueField H Q)).symm
 
 lemma Ideal.eq_of_comap_eq_comap_of_bijective_residueFieldMap
@@ -144,7 +143,6 @@ lemma Localization.exists_finite_awayMapₐ_of_surjective_awayMapₐ
 set_option backward.isDefEq.respectTransparency false in
 attribute [local instance high] Algebra.TensorProduct.leftAlgebra IsScalarTower.right
   DivisionRing.instIsArtinianRing in
-set_option backward.simpa.using.reducibleClose false in
 /-- A variant of `Ideal.exists_not_mem_forall_mem_of_ne_of_liesOver` that also gives you
 control on the primes in the integral closure. -/
 lemma Algebra.exists_notMem_and_isIntegral_forall_mem_of_ne_of_liesOver
@@ -160,7 +158,7 @@ lemma Algebra.exists_notMem_and_isIntegral_forall_mem_of_ne_of_liesOver
   obtain ⟨s₃, hs₃⟩ := hs₂.2 (algebraMap _ _ s₁)
   obtain ⟨s₃, ⟨_, n, rfl⟩, rfl⟩ := IsLocalization.exists_mk'_eq (.powers s₂) s₃
   obtain ⟨m, hm⟩ : ∃ m, ↑s₂ ^ m * ↑s₃ = ↑s₂ ^ m * (s₁ * ↑s₂ ^ n) := by
-    simpa [IsLocalization.Away.map, IsLocalization.map_mk', IsLocalization.mk'_eq_iff_eq_mul,
+    simpa! [IsLocalization.Away.map, IsLocalization.map_mk', IsLocalization.mk'_eq_iff_eq_mul,
       ← map_mul, ← map_pow, IsLocalization.eq_iff_exists (.powers s₂.1),
       Submonoid.mem_powers_iff] using hs₃
   wlog hm0 : 0 < m generalizing m
@@ -190,18 +188,17 @@ lemma Algebra.exists_notMem_and_isIntegral_forall_mem_of_ne_of_liesOver
       (IsScalarTower.toAlgHom _ _ _)).restrictScalars R)).LiesOver _))
   have : e.symm (algebraMap S (Localization.Away
       ((integralClosure R S).val.toRingHom s₂)) s₁) ∈ q's := by
-    simpa using this
+    simpa! using this
   rw [← hs₃, ← Ideal.IsPrime.mul_mem_left_iff (x := algebraMap _ _ (s₂ ^ n))] at this
   · dsimp [Localization.awayMap, IsLocalization.Away.map] at this
     rw [IsLocalization.map_mk', ← e.symm.commutes, ← map_mul,
       IsScalarTower.algebraMap_eq _ S _] at this
     replace this : e.symm ((algebraMap _ (Localization.Away s₂.1)) s₃) ∈ q's := by
-      simpa [-map_mul, -map_pow, -AlgEquiv.commutes] using this
-    replace this : s₃ ∈ q' := by simpa [← Ideal.mem_comap, ← q's.over_def q'] using this
+      simpa! [-map_mul, -map_pow, -AlgEquiv.commutes] using this
+    replace this : s₃ ∈ q' := by simpa! [← Ideal.mem_comap, ← q's.over_def q'] using this
     exact H (Ideal.mul_mem_left _ (s₂ ^ m) this)
   · rw [map_pow]; exact Ideal.notMem_of_isUnit _ (.pow _ (IsLocalization.Away.algebraMap_isUnit _))
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq_aux
     {R : Type u} {S : Type v} [CommRing R] [CommRing S] [Algebra R S] [Algebra.FiniteType R S]
     (p : Ideal R) [p.IsPrime] (q : Ideal S) [q.IsPrime] [q.LiesOver p] [Algebra.QuasiFiniteAt R q] :
@@ -225,11 +222,11 @@ lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq_aux
     obtain ⟨q, hq, hq'⟩ := exists_eq_pow_rootMultiplicity_mul_and_not_dvd
       ((minpoly R s).map (algebraMap R p.ResidueField)) ((minpoly.monic hRs).map _).ne_zero 0
     have hqm : q.Monic := by
-      simpa [((minpoly.monic hRs).map _).leadingCoeff] using congr(leadingCoeff $hq).symm
+      simpa! [((minpoly.monic hRs).map _).leadingCoeff] using congr(leadingCoeff $hq).symm
     set m' := rootMultiplicity 0 ((minpoly R s).map (algebraMap R p.ResidueField))
     refine ⟨m', f, q, monic_X.mul (minpoly.monic hRs), hqm, ?_,
       by simp [f, hq, pow_succ', mul_assoc], by simp [f]⟩
-    simpa [IsCoprime.pow_left_iff,
+    simpa! [IsCoprime.pow_left_iff,
       (prime_X (R := p.ResidueField)).irreducible.coprime_iff_not_dvd] using hq'
   obtain ⟨R', _, _, _, P, _, _, a', b', hP, ha'm, hb'm, hfab', ⟨c, d, hcd⟩, ha', hb'⟩ :=
     Algebra.exists_etale_bijective_residueFieldMap_and_map_eq_mul_and_isCoprime p f
@@ -260,8 +257,8 @@ lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq_aux
     Ideal.comap_fiberIsoOfBijectiveResidueField_symm ..
   have hs'P' : s' ∉ P'.1 := mt (fun h ↦ hP'q.le h) hsq
   have ha'P' : aeval s' a' ∉ P'.1 := by
-    simpa using show IsScalarTower.toAlgHom R' _ P'.1.ResidueField (aeval s' a') ≠ 0 by
-      rw [← aeval_algHom_apply, ← aeval_map_algebraMap P.ResidueField, ← ha']; simpa
+    simpa! using show IsScalarTower.toAlgHom R' _ P'.1.ResidueField (aeval s' a') ≠ 0 by
+      rw [← aeval_algHom_apply, ← aeval_map_algebraMap P.ResidueField, ← ha']; simpa!
   have hb'P' : aeval s' b' ∈ P'.1 := by
     rw [← Ideal.IsPrime.mul_mem_left_iff ha'P', ← map_mul, ← hfab']
     simp [hs'f]

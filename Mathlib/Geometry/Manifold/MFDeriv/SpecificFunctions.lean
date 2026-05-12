@@ -714,10 +714,9 @@ theorem hasMFDerivWithinAt_inl :
   exact (hasFDerivWithinAt_id (extChartAt I q q) _).congr_of_eventuallyEq this
     (by simp [writtenInExtChartAt, extChartAt])
 
-set_option backward.simpa.using.reducibleClose false in
 theorem hasMFDerivAt_inl :
     HasMFDerivAt% (@Sum.inl M M') q (ContinuousLinearMap.id 𝕜 (TangentSpace I p)) := by
-  simpa [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inl (s := Set.univ)
+  simpa! [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inl (s := Set.univ)
 
 theorem hasMFDerivWithinAt_inr {t : Set M'} :
     HasMFDerivAt[t] (@Sum.inr M M') q' (ContinuousLinearMap.id 𝕜 (TangentSpace I q')) := by
@@ -728,10 +727,9 @@ theorem hasMFDerivWithinAt_inr {t : Set M'} :
   exact (hasFDerivWithinAt_id (extChartAt I q' q') _).congr_of_eventuallyEq this
     (by simp [writtenInExtChartAt, extChartAt])
 
-set_option backward.simpa.using.reducibleClose false in
 theorem hasMFDerivAt_inr :
     HasMFDerivAt% (@Sum.inr M M') q' (ContinuousLinearMap.id 𝕜 (TangentSpace I p)) := by
-  simpa [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inr (t := Set.univ)
+  simpa! [HasMFDerivAt, hasMFDerivWithinAt_univ] using hasMFDerivWithinAt_inr (t := Set.univ)
 
 theorem mfderivWithin_sumInl (hU : UniqueMDiffWithinAt I s q) :
     mfderiv[s] (@Sum.inl M M') q = ContinuousLinearMap.id 𝕜 (TangentSpace I p) :=
@@ -795,12 +793,11 @@ theorem mfderiv_add (hf : MDiffAt f z) (hg : MDiffAt g z) :
 section sum
 variable {ι : Type} {t : Finset ι} {f : ι → M → E'} {f' : ι → TangentSpace I z →L[𝕜] E'}
 
-set_option backward.simpa.using.reducibleClose false in
 lemma HasMFDerivWithinAt.sum (hf : ∀ i ∈ t, HasMFDerivAt[s] (f i) z (f' i)) :
     HasMFDerivAt[s] (∑ i ∈ t, f i) z (∑ i ∈ t, f' i) := by
   classical
   induction t using Finset.induction_on with
-  | empty => simpa using hasMFDerivWithinAt_const ..
+  | empty => simpa! using hasMFDerivWithinAt_const ..
   | insert i s hi IH => grind [HasMFDerivWithinAt.add]
 
 lemma HasMFDerivAt.sum (hf : ∀ i ∈ t, HasMFDerivAt% (f i) z (f' i)) :
@@ -891,11 +888,10 @@ open scoped RightActions
 variable {z : M} {F' : Type*} [NormedRing F'] [NormedAlgebra 𝕜 F'] {p q : M → F'}
   {p' q' : TangentSpace I z →L[𝕜] F'}
 
-set_option backward.simpa.using.reducibleClose false in
 theorem HasMFDerivWithinAt.mul' (hp : HasMFDerivWithinAt I 𝓘(𝕜, F') p s z p')
     (hq : HasMFDerivWithinAt I 𝓘(𝕜, F') q s z q') :
     HasMFDerivWithinAt I 𝓘(𝕜, F') (p * q) s z (p z • q' + p' <• q z : E →L[𝕜] F') :=
-  ⟨hp.1.mul hq.1, by simpa only [mfld_simps] using hp.2.mul' hq.2⟩
+  ⟨hp.1.mul hq.1, by simpa! only [mfld_simps] using hp.2.mul' hq.2⟩
 
 theorem HasMFDerivAt.mul' (hp : HasMFDerivAt I 𝓘(𝕜, F') p z p')
     (hq : HasMFDerivAt I 𝓘(𝕜, F') q z q') :
@@ -919,12 +915,11 @@ theorem MDifferentiable.mul (hp : MDifferentiable I 𝓘(𝕜, F') p)
     (hq : MDifferentiable I 𝓘(𝕜, F') q) : MDifferentiable I 𝓘(𝕜, F') (p * q) :=
   fun x ↦ (hp x).mul (hq x)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem MDifferentiableWithinAt.pow (hp : MDifferentiableWithinAt I 𝓘(𝕜, F') p s z)
     (n : ℕ) : MDifferentiableWithinAt I 𝓘(𝕜, F') (p ^ n) s z := by
   induction n with
-  | zero => simpa [pow_zero] using mdifferentiableWithinAt_const
-  | succ n hn => simpa [pow_succ] using hn.mul hp
+  | zero => simpa! [pow_zero] using mdifferentiableWithinAt_const
+  | succ n hn => simpa! [pow_succ] using hn.mul hp
 
 theorem MDifferentiableAt.pow (hp : MDifferentiableAt I 𝓘(𝕜, F') p z) (n : ℕ) :
     MDifferentiableAt I 𝓘(𝕜, F') (p ^ n) z :=
@@ -957,7 +952,6 @@ theorem HasMFDerivAt.mul (hp : HasMFDerivAt I 𝓘(𝕜, F') p z p')
 section prod
 variable {ι : Type} {t : Finset ι} {f : ι → M → F'} {f' : ι → TangentSpace I z →L[𝕜] F'}
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma HasMFDerivWithinAt.prod [DecidableEq ι]
     (hf : ∀ i ∈ t, HasMFDerivWithinAt I 𝓘(𝕜, F') (f i) s z (f' i)) :
@@ -965,7 +959,7 @@ lemma HasMFDerivWithinAt.prod [DecidableEq ι]
       (∑ i ∈ t, (∏ j ∈ t.erase i, f j z) • (f' i)) := by
   classical
   induction t using Finset.induction_on with
-  | empty => simpa using hasMFDerivWithinAt_const ..
+  | empty => simpa! using hasMFDerivWithinAt_const ..
   | insert i t hi IH =>
     rw [t.sum_insert hi, t.erase_insert hi, t.prod_insert hi, add_comm]
     rw [t.forall_mem_insert] at hf

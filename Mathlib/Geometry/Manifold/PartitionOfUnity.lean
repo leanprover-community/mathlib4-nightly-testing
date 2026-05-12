@@ -455,13 +455,12 @@ theorem toSmoothPartitionOfUnity_eq_mul_prod (i : ι) (x : M) (t : Finset ι)
     fs.toSmoothPartitionOfUnity i x = fs i x * ∏ j ∈ t with WellOrderingRel j i, (1 - fs j x) :=
   fs.toBumpCovering.toPartitionOfUnity_eq_mul_prod i x t ht
 
-set_option backward.simpa.using.reducibleClose false in
 open Classical in
 theorem exists_finset_toSmoothPartitionOfUnity_eventuallyEq (i : ι) (x : M) :
     ∃ t : Finset ι,
       fs.toSmoothPartitionOfUnity i =ᶠ[𝓝 x]
         fs i * ∏ j ∈ t with WellOrderingRel j i, ((1 : M → ℝ) - fs j) := by
-  simpa using fs.toBumpCovering.exists_finset_toPartitionOfUnity_eventuallyEq i x
+  simpa! using fs.toBumpCovering.exists_finset_toPartitionOfUnity_eventuallyEq i x
 
 theorem toSmoothPartitionOfUnity_zero_of_zero {i : ι} {x : M} (h : fs i x = 0) :
     fs.toSmoothPartitionOfUnity i x = 0 :=
@@ -686,7 +685,6 @@ theorem exists_contMDiffMap_forall_mem_convex_of_local_const (ht : ∀ x, Convex
 alias exists_smooth_forall_mem_convex_of_local_const :=
   exists_contMDiffMap_forall_mem_convex_of_local_const
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Let `M` be a smooth σ-compact manifold with extended distance. Let `K : ι → Set M` be a locally
 finite family of closed sets, let `U : ι → Set M` be a family of open sets such that `K i ⊆ U i` for
 all `i`. Then there exists a positive smooth function `δ : M → ℝ≥0` such that for any `i` and
@@ -698,7 +696,7 @@ theorem Metric.exists_contMDiffMap_forall_closedEBall_subset
     (hfin : LocallyFinite K) :
     ∃ δ : C^n⟮I, M; 𝓘(ℝ, ℝ), ℝ⟯,
       (∀ x, 0 < δ x) ∧ ∀ i, ∀ x ∈ K i, Metric.closedEBall x (ENNReal.ofReal (δ x)) ⊆ U i := by
-  simpa only [mem_inter_iff, forall_and, mem_preimage, mem_iInter, @forall_comm ι M]
+  simpa! only [mem_inter_iff, forall_and, mem_preimage, mem_iInter, @forall_comm ι M]
     using exists_contMDiffMap_forall_mem_convex_of_local_const I
       Metric.exists_forall_closedEBall_subset_aux₂
       (Metric.exists_forall_closedEBall_subset_aux₁ hK hU hKU hfin)
@@ -744,7 +742,6 @@ lemma IsOpen.exists_contMDiff_support_eq_aux {s : Set H} (hs : IsOpen s) :
 @[deprecated (since := "2025-12-17")]
 alias IsOpen.exists_msmooth_support_eq_aux := IsOpen.exists_contMDiff_support_eq_aux
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given an open set in a finite-dimensional real manifold, there exists a nonnegative smooth
 function with support equal to `s`. -/
 theorem IsOpen.exists_contMDiff_support_eq {s : Set M} (hs : IsOpen s) :
@@ -774,7 +771,7 @@ theorem IsOpen.exists_contMDiff_support_eq {s : Set M} (hs : IsOpen s) :
       apply (f.locallyFinite.point_finite x).subset
       apply compl_subset_compl.2
       rintro c (hc : f c x = 0)
-      simpa only [mul_eq_zero] using Or.inl hc
+      simpa! only [mul_eq_zero] using Or.inl hc
     · apply finsum_eq_zero_of_forall_eq_zero
       intro c
       by_cases Hx : x ∈ tsupport (f c)

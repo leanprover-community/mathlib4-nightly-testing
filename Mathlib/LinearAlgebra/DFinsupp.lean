@@ -257,11 +257,10 @@ theorem mapRange.linearMap_comp (f : ∀ i, β₁ i →ₗ[R] β₂ i) (f₂ : �
   LinearMap.ext <| mapRange_comp (fun i x => f i x) (fun i x => f₂ i x)
     (fun i => (f i).map_zero) (fun i => (f₂ i).map_zero) (by simp)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem sum_mapRange_index.linearMap [DecidableEq ι] {f : ∀ i, β₁ i →ₗ[R] β₂ i}
     {h : ∀ i, β₂ i →ₗ[R] N} {l : Π₀ i, β₁ i} :
     DFinsupp.lsum ℕ h (mapRange.linearMap f l) = DFinsupp.lsum ℕ (fun i => (h i).comp (f i)) l := by
-  classical simpa [DFinsupp.sumAddHom_apply] using sum_mapRange_index fun i => by simp
+  classical simpa! [DFinsupp.sumAddHom_apply] using sum_mapRange_index fun i => by simp
 
 lemma ker_mapRangeLinearMap (f : ∀ i, β₁ i →ₗ[R] β₂ i) :
     LinearMap.ker (mapRange.linearMap f) =
@@ -491,7 +490,6 @@ theorem iSupIndep_iff_forall_dfinsupp (p : ι → Submodule R N) :
 
 /- If `DFinsupp.lsum` applied with `Submodule.subtype` is injective then the submodules are
 iSupIndep. -/
-set_option backward.simpa.using.reducibleClose false in
 theorem iSupIndep_of_dfinsupp_lsum_injective (p : ι → Submodule R N)
     (h : Function.Injective (lsum ℕ fun i => (p i).subtype)) :
     iSupIndep p := by
@@ -499,9 +497,9 @@ theorem iSupIndep_of_dfinsupp_lsum_injective (p : ι → Submodule R N)
   intro i x v hv
   replace hv : lsum ℕ (fun i => (p i).subtype) (erase i v) =
       lsum ℕ (fun i => (p i).subtype) (single i x) := by
-    simpa only [lsum_single] using hv
+    simpa! only [lsum_single] using hv
   have := DFunLike.ext_iff.mp (h hv) i
-  simpa [eq_comm] using this
+  simpa! [eq_comm] using this
 
 /- If `DFinsupp.sumAddHom` applied with `AddSubmonoid.subtype` is injective then the additive
 submonoids are independent. -/

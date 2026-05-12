@@ -125,11 +125,10 @@ theorem adjustToOrientation_apply_eq_or_eq_neg (i : ι) :
   simpa [← e.toBasis_adjustToOrientation] using
     e.toBasis.adjustToOrientation_apply_eq_or_eq_neg x i
 
-set_option backward.simpa.using.reducibleClose false in
 theorem det_adjustToOrientation :
     (e.adjustToOrientation x).toBasis.det = e.toBasis.det ∨
       (e.adjustToOrientation x).toBasis.det = -e.toBasis.det := by
-  simpa using e.toBasis.det_adjustToOrientation x
+  simpa! using e.toBasis.det_adjustToOrientation x
 
 theorem abs_det_adjustToOrientation (v : ι → E) :
     |(e.adjustToOrientation x).toBasis.det v| = |e.toBasis.det v| := by

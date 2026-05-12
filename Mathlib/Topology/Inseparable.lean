@@ -364,19 +364,17 @@ lemma SpecializingMap.stableUnderSpecialization_image (hf : SpecializingMap f)
 
 alias StableUnderSpecialization.image := SpecializingMap.stableUnderSpecialization_image
 
-set_option backward.simpa.using.reducibleClose false in
 lemma specializingMap_iff_stableUnderSpecialization_image_singleton :
     SpecializingMap f ↔ ∀ x, StableUnderSpecialization (f '' closure {x}) := by
-  simpa only [closure_singleton_eq_Iic] using Relation.fibration_iff_isLowerSet_image_Iic
+  simpa! only [closure_singleton_eq_Iic] using Relation.fibration_iff_isLowerSet_image_Iic
 
 lemma specializingMap_iff_stableUnderSpecialization_image :
     SpecializingMap f ↔ ∀ s, StableUnderSpecialization s → StableUnderSpecialization (f '' s) :=
   Relation.fibration_iff_isLowerSet_image
 
-set_option backward.simpa.using.reducibleClose false in
 lemma specializingMap_iff_closure_singleton (hf : Continuous f) :
     SpecializingMap f ↔ ∀ x, f '' closure {x} = closure {f x} := by
-  simpa only [closure_singleton_eq_Iic] using
+  simpa! only [closure_singleton_eq_Iic] using
     Relation.fibration_iff_image_Iic hf.specialization_monotone
 
 lemma specializingMap_iff_isClosed_image_closure_singleton (hf : Continuous f) :

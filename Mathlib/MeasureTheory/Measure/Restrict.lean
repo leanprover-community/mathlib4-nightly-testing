@@ -184,12 +184,11 @@ theorem restrict_add {_m0 : MeasurableSpace α} (μ ν : Measure α) (s : Set α
 theorem restrict_zero {_m0 : MeasurableSpace α} (s : Set α) : (0 : Measure α).restrict s = 0 :=
   (restrictₗ s).map_zero
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem restrict_smul {_m0 : MeasurableSpace α} {R : Type*} [SMul R ℝ≥0∞]
     [IsScalarTower R ℝ≥0∞ ℝ≥0∞] (c : R) (μ : Measure α) (s : Set α) :
     (c • μ).restrict s = c • μ.restrict s := by
-  simpa only [smul_one_smul] using (restrictₗ s).map_smul (c • 1) μ
+  simpa! only [smul_one_smul] using (restrictₗ s).map_smul (c • 1) μ
 
 theorem restrict_restrict₀ (hs : NullMeasurableSet s (μ.restrict t)) :
     (μ.restrict t).restrict s = μ.restrict (s ∩ t) :=
@@ -775,7 +774,6 @@ lemma nullMeasurableSet_restrict (hs : NullMeasurableSet s μ) {t : Set α} :
       h.mono_ac absolutelyContinuous_restrict
     simpa using A.union B
 
-set_option backward.simpa.using.reducibleClose false in
 lemma nullMeasurableSet_restrict_of_subset {t : Set α} (ht : t ⊆ s) :
     NullMeasurableSet t (μ.restrict s) ↔ NullMeasurableSet t μ := by
   refine ⟨fun h ↦ ?_, fun h ↦ h.mono_ac absolutelyContinuous_restrict⟩
@@ -783,7 +781,7 @@ lemma nullMeasurableSet_restrict_of_subset {t : Set α} (ht : t ⊆ s) :
     h.exists_measurable_subset_ae_eq
   have : ∀ᵐ x ∂μ, x ∈ s → (x ∈ t' ↔ x ∈ t) := by
     apply ae_imp_of_ae_restrict
-    filter_upwards [t't] with x hx using by simpa using hx
+    filter_upwards [t't] with x hx using by simpa! using hx
   have : t' =ᵐ[μ] t := by
     filter_upwards [this] with x hx
     change (x ∈ t') = (x ∈ t)

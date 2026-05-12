@@ -384,13 +384,12 @@ section nontrivial
 
 variable {n : ℕ} [NeZero n] {χ : DirichletCharacter ℂ n}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The negative logarithmic derivative of the L-function of a nontrivial Dirichlet character
 is continuous away from the zeros of the L-function. -/
 lemma continuousOn_neg_logDeriv_LFunction_of_nontriv (hχ : χ ≠ 1) :
     ContinuousOn (fun s ↦ -deriv (LFunction χ) s / LFunction χ s) {s | LFunction χ s ≠ 0} := by
   have h := differentiable_LFunction hχ
-  simpa [neg_div] using ((h.contDiff.continuous_deriv le_rfl).continuousOn.div
+  simpa! [neg_div] using ((h.contDiff.continuous_deriv le_rfl).continuousOn.div
     h.continuous.continuousOn fun _ hw ↦ hw).neg
 
 end nontrivial

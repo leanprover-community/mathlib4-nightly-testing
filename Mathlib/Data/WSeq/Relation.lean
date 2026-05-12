@@ -230,16 +230,13 @@ theorem liftRel_think_left (R : α → β → Prop) (s t) : LiftRel R (think s) 
 theorem liftRel_think_right (R : α → β → Prop) (s t) : LiftRel R s (think t) ↔ LiftRel R s t := by
   rw [liftRel_destruct_iff, liftRel_destruct_iff]; simp
 
-set_option backward.simpa.using.reducibleClose false in
 theorem cons_congr {s t : WSeq α} (a : α) (h : s ~ʷ t) : cons a s ~ʷ cons a t := by
-  unfold Equiv; simpa using h
+  unfold Equiv; simpa! using h
 
-set_option backward.simpa.using.reducibleClose false in
-theorem think_equiv (s : WSeq α) : think s ~ʷ s := by unfold Equiv; simpa using Equiv.refl _
+theorem think_equiv (s : WSeq α) : think s ~ʷ s := by unfold Equiv; simpa! using Equiv.refl _
 
-set_option backward.simpa.using.reducibleClose false in
 theorem think_congr {s t : WSeq α} (h : s ~ʷ t) : think s ~ʷ think t := by
-  unfold Equiv; simpa using h
+  unfold Equiv; simpa! using h
 
 theorem head_congr : ∀ {s t : WSeq α}, s ~ʷ t → head s ~ head t := by
   suffices ∀ {s t : WSeq α}, s ~ʷ t → ∀ {o}, o ∈ head s → o ∈ head t from fun s t h o =>

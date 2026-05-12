@@ -152,7 +152,6 @@ noncomputable def dividedPowers : DividedPowers (Ideal.span {(p : ℤ_[p])}) := 
 
 open Function
 
-set_option backward.simpa.using.reducibleClose false in
 private lemma dividedPowers_eq (n : ℕ) (x : ℤ_[p]) :
     (dividedPowers p).dpow n x = open Classical in
       if hx : x ∈ Ideal.span {(p : ℤ_[p])} then ⟨dpow' p n x, dpow'_int p n hx⟩ else 0 := by
@@ -163,7 +162,7 @@ private lemma dividedPowers_eq (n : ℕ) (x : ℤ_[p]) :
     have heq : Coe.ringHom ⟨dpow' p n x, dpow'_int p n hx⟩ =
         inverse (n ! : ℚ_[p]) * Coe.ringHom x ^ n := by
       simp [dpow', inverse_eq_inv', Coe.ringHom_apply]
-    simpa only [← hinj.eq_iff, (Exists.choose_spec (_ : ∃ a, ∃ _, Coe.ringHom a = _)).2,
+    simpa! only [← hinj.eq_iff, (Exists.choose_spec (_ : ∃ a, ∃ _, Coe.ringHom a = _)).2,
       RatAlgebra.dpow_apply, Submodule.mem_top] using heq.symm
   · rfl
 

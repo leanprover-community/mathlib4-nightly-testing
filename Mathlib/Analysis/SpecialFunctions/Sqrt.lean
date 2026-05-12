@@ -44,7 +44,6 @@ noncomputable def sqPartialHomeomorph : OpenPartialHomeomorph ℝ ℝ where
   continuousOn_toFun := (continuous_pow 2).continuousOn
   continuousOn_invFun := continuousOn_id.sqrt
 
-set_option backward.simpa.using.reducibleClose false in
 theorem deriv_sqrt_aux {x : ℝ} (hx : x ≠ 0) :
     HasStrictDerivAt (√·) (1 / (2 * √x)) x ∧ ∀ n, ContDiffAt ℝ n (√·) x := by
   rcases hx.lt_or_gt with hx | hx
@@ -55,7 +54,7 @@ theorem deriv_sqrt_aux {x : ℝ} (hx : x ≠ 0) :
         contDiffAt_const.congr_of_eventuallyEq this⟩
   · have : ↑2 * √x ^ (2 - 1) ≠ 0 := by simp [(sqrt_pos.2 hx).ne', @two_ne_zero ℝ]
     constructor
-    · simpa using sqPartialHomeomorph.hasStrictDerivAt_symm hx this (hasStrictDerivAt_pow 2 _)
+    · simpa! using sqPartialHomeomorph.hasStrictDerivAt_symm hx this (hasStrictDerivAt_pow 2 _)
     · exact fun n => sqPartialHomeomorph.contDiffAt_symm_deriv this hx (hasDerivAt_pow 2 (√x))
         (contDiffAt_id.pow 2)
 
@@ -77,21 +76,18 @@ section deriv
 
 variable {f : ℝ → ℝ} {s : Set ℝ} {f' x : ℝ}
 
-set_option backward.simpa.using.reducibleClose false in
 theorem HasDerivWithinAt.sqrt (hf : HasDerivWithinAt f f' s x) (hx : f x ≠ 0) :
     HasDerivWithinAt (fun y => √(f y)) (f' / (2 * √(f x))) s x := by
-  simpa only [(· ∘ ·), div_eq_inv_mul, mul_one] using
+  simpa! only [(· ∘ ·), div_eq_inv_mul, mul_one] using
     (hasDerivAt_sqrt hx).comp_hasDerivWithinAt x hf
 
-set_option backward.simpa.using.reducibleClose false in
 theorem HasDerivAt.sqrt (hf : HasDerivAt f f' x) (hx : f x ≠ 0) :
     HasDerivAt (fun y => √(f y)) (f' / (2 * √(f x))) x := by
-  simpa only [(· ∘ ·), div_eq_inv_mul, mul_one] using (hasDerivAt_sqrt hx).comp x hf
+  simpa! only [(· ∘ ·), div_eq_inv_mul, mul_one] using (hasDerivAt_sqrt hx).comp x hf
 
-set_option backward.simpa.using.reducibleClose false in
 theorem HasStrictDerivAt.sqrt (hf : HasStrictDerivAt f f' x) (hx : f x ≠ 0) :
     HasStrictDerivAt (fun t => √(f t)) (f' / (2 * √(f x))) x := by
-  simpa only [(· ∘ ·), div_eq_inv_mul, mul_one] using (hasStrictDerivAt_sqrt hx).comp x hf
+  simpa! only [(· ∘ ·), div_eq_inv_mul, mul_one] using (hasStrictDerivAt_sqrt hx).comp x hf
 
 theorem derivWithin_sqrt (hf : DifferentiableWithinAt ℝ f s x) (hx : f x ≠ 0)
     (hxs : UniqueDiffWithinAt ℝ s x) :

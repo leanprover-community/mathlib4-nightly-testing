@@ -132,7 +132,6 @@ theorem mk_truncTotal_toAdicCompletionInv {n : ℕ}
     convert f.prop h; simp
   simp
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The isomorphism from multivariate power series to the adic completion of
 multivariate polynomials with respect to the ideal spanned by all variables
 when the index is finite. -/
@@ -143,7 +142,7 @@ def toAdicCompletionAlgEquiv (σ R : Type*) [Finite σ] [CommRing R] :
   invFun := toAdicCompletionInv σ R
   left_inv _ := by
     ext; simp [coeff_toAdicCompletionInv, coeff_toAdicCompletion_val_apply_out]
-  right_inv _ := by ext; simpa using mk_truncTotal_toAdicCompletionInv
+  right_inv _ := by ext; simpa! using mk_truncTotal_toAdicCompletionInv
 
 @[simp]
 lemma toAdicCompletionAlgEquiv_apply (p : MvPowerSeries σ R) :

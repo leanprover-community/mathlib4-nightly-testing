@@ -272,7 +272,6 @@ def isoLocallyConstantOfIsColimit
     lanPresheafExt (isoFinYoneda F ≪≫ (locallyConstantIsoFinYoneda F).symm) ≪≫
       lanPresheafNatIso fun _ ↦ isColimitLocallyConstantPresheafDiagram _ _
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma isoLocallyConstantOfIsColimit_inv (X : Profinite.{u}ᵒᵖ ⥤ Type (u + 1))
@@ -288,7 +287,7 @@ lemma isoLocallyConstantOfIsColimit_inv (X : Profinite.{u}ᵒᵖ ⥤ Type (u + 1
   intro ⟨Y, _, g⟩
   suffices _ ≫ (isoFinYonedaComponents _ _).inv ≫ X.map g =
     (locallyConstantPresheaf _).map g ≫ counitAppApp (Opposite.unop S) X by
-      simpa [locallyConstantIsoFinYoneda, isoFinYoneda, counitApp]
+      simpa! [locallyConstantIsoFinYoneda, isoFinYoneda, counitApp]
   erw [(counitApp.{u, u + 1} X).naturality]
   simp only [← Category.assoc, op_obj, functorToPresheaves_obj_obj]
   congr
@@ -309,7 +308,7 @@ lemma isoLocallyConstantOfIsColimit_inv (X : Profinite.{u}ᵒᵖ ⥤ Type (u + 1
   rw [show (Profinite.of PUnit.{u + 1}).const y ≫
     IsTerminal.from _ (fiber.{u, u + 1} f x) = 𝟙 _ from rfl]
   simp only [op_comp, Functor.map_comp_apply, op_id, Functor.map_id_apply]
-  simpa [← dsimp% isoFinYonedaComponents_inv_comp X _ (sigmaIncl.{u, u + 1} f x),
+  simpa! [← dsimp% isoFinYonedaComponents_inv_comp X _ (sigmaIncl.{u, u + 1} f x),
     ← isoFinYonedaComponents_hom_apply, -isoFinYonedaComponents_hom] using x.map_eq_image f y
 
 end Condensed
@@ -564,7 +563,6 @@ def isoLocallyConstantOfIsColimit (hF : ∀ S : LightProfinite, IsColimit <|
     lanPresheafExt (isoFinYoneda F ≪≫ (locallyConstantIsoFinYoneda F).symm) ≪≫
       lanPresheafNatIso fun _ ↦ isColimitLocallyConstantPresheafDiagram _ _
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma isoLocallyConstantOfIsColimit_inv (X : LightProfinite.{u}ᵒᵖ ⥤ Type u)
@@ -580,7 +578,7 @@ lemma isoLocallyConstantOfIsColimit_inv (X : LightProfinite.{u}ᵒᵖ ⥤ Type u
   intro ⟨Y, _, g⟩
   suffices _ ≫ (isoFinYonedaComponents _ _).inv ≫ X.map g =
     (locallyConstantPresheaf _).map g ≫ counitAppApp (Opposite.unop S) X by
-      simpa [locallyConstantIsoFinYoneda, isoFinYoneda, counitApp]
+      simpa! [locallyConstantIsoFinYoneda, isoFinYoneda, counitApp]
   erw [(counitApp.{u, u} X).naturality]
   simp only [← Category.assoc, op_obj, functorToPresheaves_obj_obj]
   congr
@@ -598,7 +596,7 @@ lemma isoLocallyConstantOfIsColimit_inv (X : LightProfinite.{u}ᵒᵖ ⥤ Type u
     TypeCat.Fun.coe_mk, ← map_comp_apply, ← op_comp]
   rw [show (LightProfinite.of PUnit.{u + 1}).const y ≫
     IsTerminal.from _ (fiber.{u, u} f x) = 𝟙 _ from rfl]
-  simpa [← dsimp% isoFinYonedaComponents_inv_comp X _ (sigmaIncl.{u, u} f x),
+  simpa! [← dsimp% isoFinYonedaComponents_inv_comp X _ (sigmaIncl.{u, u} f x),
     ← isoFinYonedaComponents_hom_apply, -isoFinYonedaComponents_hom] using x.map_eq_image f y
 
 end LightCondensed

@@ -116,7 +116,6 @@ private lemma norm_herglotzLogIntegrand_circleMap_le {w ρ : ℂ} {R r₀ r : �
       _ ≤ |log (2 * R)| + |log √(r₀ / R)| + |log ‖circleMap 0 R θ - ρ‖| := by
         gcongr <;> positivity
 
-set_option backward.simpa.using.reducibleClose false in
 -- Auxiliary lemma for `circleAverage_re_herglotzRieszKernel_mul_log`. Dominated convergence
 -- theorem: circle average can be computed by a sequence of circle averages integrating over circles
 -- in the interior
@@ -140,9 +139,9 @@ private theorem herglotzLogIntegrand_circleAverage_tendsto {ρ w : ℂ} {R : ℝ
       refine Classical.or_iff_not_imp_right.mpr fun h ↦ ?_
       apply norm_herglotzLogIntegrand_circleMap_le hR hρ (by positivity) (by linarith) hn
         (hr_lt n).le
-      simpa using h
+      simpa! using h
     apply measure_mono_null (t := {θ | ‖circleMap 0 R θ - ρ‖ = 0}) (by grind)
-    simpa [sub_eq_zero] using
+    simpa! [sub_eq_zero] using
       (countable_singleton ρ).preimage_circleMap 0 (hR.ne') |>.measure_zero _
   · -- IntervalIntegrable bound volume 0 (2 * π)
     apply (IntervalIntegrable.add (by simp) (by continuity)).add ?_ |>.const_mul
@@ -297,7 +296,6 @@ lemma countingFunction_finsum_eq_finsum_add {c : ℂ} {R : ℝ} {D : ℂ → ℤ
 ## Jensen's Formula
 -/
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 **Jensen's Formula**: If `f : ℂ → ℂ` is meromorphic on the closed ball with center `c` and radius
 `R`, then the `circleAverage (log ‖f ·‖) c R` equals `log ‖meromorphicTrailingCoeffAt f c‖` plus a

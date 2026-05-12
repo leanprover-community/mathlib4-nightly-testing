@@ -347,13 +347,11 @@ lemma le_prod_iff {M : Sublattice β} {N : Sublattice (α × β)} :
     N ≤ L.prod M ↔ N ≤ comap LatticeHom.fst L ∧ N ≤ comap LatticeHom.snd M := by
   simp [SetLike.le_def, forall_and]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma prod_eq_bot {M : Sublattice β} : L.prod M = ⊥ ↔ L = ⊥ ∨ M = ⊥ := by
-  simpa only [← coe_inj] using Set.prod_eq_empty_iff
+  simpa! only [← coe_inj] using Set.prod_eq_empty_iff
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma prod_eq_top [Nonempty α] [Nonempty β] {M : Sublattice β} :
-    L.prod M = ⊤ ↔ L = ⊤ ∧ M = ⊤ := by simpa only [← coe_inj] using Set.prod_eq_univ
+    L.prod M = ⊤ ↔ L = ⊤ ∧ M = ⊤ := by simpa! only [← coe_inj] using Set.prod_eq_univ
 
 /-- The product of sublattices is isomorphic to their product as lattices. -/
 @[simps! toEquiv apply symm_apply]
@@ -383,9 +381,8 @@ attribute [norm_cast] coe_pi
 @[simp] lemma pi_top (s : Set κ) : (pi s fun _ ↦ ⊤ : Sublattice (∀ i, π i)) = ⊤ :=
   ext fun a ↦ by simp [mem_pi]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma pi_bot {s : Set κ} (hs : s.Nonempty) : (pi s fun _ ↦ ⊥ : Sublattice (∀ i, π i)) = ⊥ :=
-  ext fun a ↦ by simpa [mem_pi] using hs
+  ext fun a ↦ by simpa! [mem_pi] using hs
 
 lemma pi_univ_bot [Nonempty κ] : (pi univ fun _ ↦ ⊥ : Sublattice (∀ i, π i)) = ⊥ := by simp
 

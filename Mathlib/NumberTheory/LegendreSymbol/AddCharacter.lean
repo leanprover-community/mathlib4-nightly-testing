@@ -76,7 +76,6 @@ theorem to_mulShift_inj_of_isPrimitive {ψ : AddChar R R'} (hψ : IsPrimitive ψ
   simp only [mulShift_mul, mulShift_zero, add_neg_cancel] at h
   simpa [← sub_eq_add_neg, sub_eq_zero] using (hψ · h)
 
-set_option backward.simpa.using.reducibleClose false in
 -- `AddCommGroup.equiv_direct_sum_zmod_of_fintype`
 -- gives the structure theorem for finite abelian groups.
 -- This could be used to show that the map above is a bijection.
@@ -84,7 +83,7 @@ set_option backward.simpa.using.reducibleClose false in
 /-- When `R` is a field `F`, then a nontrivial additive character is primitive -/
 theorem IsPrimitive.of_ne_one {F : Type u} [Field F] {ψ : AddChar F R'} (hψ : ψ ≠ 1) :
     IsPrimitive ψ :=
-  fun a ha h ↦ hψ <| by simpa [mulShift_mulShift, ha] using congr_arg (mulShift · a⁻¹) h
+  fun a ha h ↦ hψ <| by simpa! [mulShift_mulShift, ha] using congr_arg (mulShift · a⁻¹) h
 
 /-- If `r` is not a unit, then `e.mulShift r` is not primitive. -/
 lemma not_isPrimitive_mulShift [Finite R] (e : AddChar R R') {r : R}

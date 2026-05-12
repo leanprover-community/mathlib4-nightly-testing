@@ -290,14 +290,13 @@ lemma exists_awayMap_bijective_of_localRingHom_bijective
   simp [Away.invSelf, Localization.mk_eq_mk', awayMap, IsLocalization.Away.map,
     IsLocalization.map_mk', ← Algebra.smul_def, IsLocalization.smul_mk', ← IsLocalization.mk'_pow]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma exists_awayMap_bijective_of_residueField_surjective
     [Module.Finite R S] [FaithfulSMul R S] [q.LiesOver p] [Algebra.IsUnramifiedAt R q]
     [Algebra (Localization.AtPrime p) (Localization.AtPrime q)]
     [Localization.AtPrime.IsLiesOverAlgebra p q]
     (H : Function.Surjective (algebraMap p.ResidueField q.ResidueField)) :
     ∃ r ∉ p, ∀ r', r ∣ r' → Function.Bijective (awayMap (algebraMap R S) r') :=
-  exists_awayMap_bijective_of_localRingHom_bijective hq (by simpa using Submodule.fg_bot)
+  exists_awayMap_bijective_of_localRingHom_bijective hq (by simpa! using Submodule.fg_bot)
     ⟨localRingHom_injective_of_primesOver_eq_singleton hq,
       localRingHom_surjective_of_primesOver_eq_singleton hq H⟩
 

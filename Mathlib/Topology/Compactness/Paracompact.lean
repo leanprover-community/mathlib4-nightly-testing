@@ -125,18 +125,17 @@ theorem ParacompactSpace.of_hasBasis {ι : X → Sort*} {p : ∀ x, ι x → Pro
     · rcases hts b with ⟨x, hx⟩
       exact ⟨_, hx.trans (hsub _)⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Topology.IsClosedEmbedding.paracompactSpace [ParacompactSpace Y] {e : X → Y}
     (he : IsClosedEmbedding e) : ParacompactSpace X where
   locallyFinite_refinement α s ho hu := by
     choose U hUo hU using fun a ↦ he.isOpen_iff.1 (ho a)
     simp only [← hU] at hu ⊢
     have heU : range e ⊆ ⋃ i, U i := by
-      simpa only [range_subset_iff, mem_iUnion, iUnion_eq_univ_iff] using hu
+      simpa! only [range_subset_iff, mem_iUnion, iUnion_eq_univ_iff] using hu
     rcases precise_refinement_set he.isClosed_range U hUo heU with ⟨V, hVo, heV, hVf, hVU⟩
     refine ⟨α, fun a ↦ e ⁻¹' (V a), fun a ↦ (hVo a).preimage he.continuous, ?_,
       hVf.preimage_continuous he.continuous, fun a ↦ ⟨a, preimage_mono (hVU a)⟩⟩
-    simpa only [range_subset_iff, mem_iUnion, iUnion_eq_univ_iff] using heV
+    simpa! only [range_subset_iff, mem_iUnion, iUnion_eq_univ_iff] using heV
 
 theorem Homeomorph.paracompactSpace_iff (e : X ≃ₜ Y) : ParacompactSpace X ↔ ParacompactSpace Y :=
   ⟨fun _ ↦ e.symm.isClosedEmbedding.paracompactSpace, fun _ ↦ e.isClosedEmbedding.paracompactSpace⟩

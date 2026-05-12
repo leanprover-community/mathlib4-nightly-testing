@@ -841,13 +841,11 @@ theorem isBigO_fst_prod : f' =O[l] fun x => (f' x, g' x) :=
 theorem isBigO_snd_prod : g' =O[l] fun x => (f' x, g' x) :=
   isBigOWith_snd_prod.isBigO
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isBigO_fst_prod' {f' : α → E' × F'} : (fun x => (f' x).1) =O[l] f' := by
-  simpa [IsBigO_def, IsBigOWith_def] using isBigO_fst_prod (E' := E') (F' := F')
+  simpa! [IsBigO_def, IsBigOWith_def] using isBigO_fst_prod (E' := E') (F' := F')
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isBigO_snd_prod' {f' : α → E' × F'} : (fun x => (f' x).2) =O[l] f' := by
-  simpa [IsBigO_def, IsBigOWith_def] using isBigO_snd_prod (E' := E') (F' := F')
+  simpa! [IsBigO_def, IsBigOWith_def] using isBigO_snd_prod (E' := E') (F' := F')
 
 section
 
@@ -1383,7 +1381,6 @@ theorem IsLittleO.of_pow [NormOneClass S] {f : α → S} {g : α → R} {n : ℕ
 
 /-! ### Inverse -/
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsBigOWith.inv_rev {f : α → 𝕜} {g : α → 𝕜'} (h : IsBigOWith c l f g)
     (h₀ : ∀ᶠ x in l, f x = 0 → g x = 0) : IsBigOWith c l (fun x => (g x)⁻¹) fun x => (f x)⁻¹ := by
   refine IsBigOWith.of_bound (h.bound.mp (h₀.mono fun x h₀ hle => ?_))
@@ -1391,7 +1388,7 @@ theorem IsBigOWith.inv_rev {f : α → 𝕜} {g : α → 𝕜'} (h : IsBigOWith 
   · simp only [hx, h₀ hx, inv_zero, norm_zero, mul_zero, le_rfl]
   · have hc : 0 < c := pos_of_mul_pos_left ((norm_pos_iff.2 hx).trans_le hle) (norm_nonneg _)
     replace hle := inv_anti₀ (norm_pos_iff.2 hx) hle
-    simpa only [norm_inv, mul_inv, ← div_eq_inv_mul, div_le_iff₀ hc] using hle
+    simpa! only [norm_inv, mul_inv, ← div_eq_inv_mul, div_le_iff₀ hc] using hle
 
 theorem IsBigO.inv_rev {f : α → 𝕜} {g : α → 𝕜'} (h : f =O[l] g)
     (h₀ : ∀ᶠ x in l, f x = 0 → g x = 0) : (fun x => (g x)⁻¹) =O[l] fun x => (f x)⁻¹ :=

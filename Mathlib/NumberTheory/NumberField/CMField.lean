@@ -492,12 +492,11 @@ noncomputable def equivMaximalRealSubfield :
 theorem equivMaximalRealSubfield_apply (x : F) :
     equivMaximalRealSubfield F K x = algebraMap F K x := rfl
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem algebraMap_equivMaximalRealSubfield_symm_apply (x : maximalRealSubfield K) :
     algebraMap F K ((CMExtension.equivMaximalRealSubfield F K).symm x) =
       algebraMap (maximalRealSubfield K) K x := by
-  simpa using (equivMaximalRealSubfield_apply F K ((equivMaximalRealSubfield F K).symm x)).symm
+  simpa! using (equivMaximalRealSubfield_apply F K ((equivMaximalRealSubfield F K).symm x)).symm
 
 end CMExtension
 

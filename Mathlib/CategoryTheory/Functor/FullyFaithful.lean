@@ -363,14 +363,13 @@ lemma Full.of_comp_faithful_iso {F : C ⥤ D} {G : D ⥤ E} {H : C ⥤ E} [Full 
   have := Full.of_iso h.symm
   exact Full.of_comp_faithful F G
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a natural isomorphism between `F ⋙ H` and `G ⋙ H` for a fully faithful functor `H`, we
 can 'cancel' it to give a natural iso between `F` and `G`.
 -/
 noncomputable def fullyFaithfulCancelRight {F G : C ⥤ D} (H : D ⥤ E) [Full H] [H.Faithful]
     (comp_iso : F ⋙ H ≅ G ⋙ H) : F ≅ G :=
   NatIso.ofComponents (fun X => H.preimageIso (comp_iso.app X)) fun f =>
-    H.map_injective (by simpa using comp_iso.hom.naturality f)
+    H.map_injective (by simpa! using comp_iso.hom.naturality f)
 
 @[simp]
 theorem fullyFaithfulCancelRight_hom_app {F G : C ⥤ D} {H : D ⥤ E} [Full H] [H.Faithful]

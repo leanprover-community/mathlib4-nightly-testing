@@ -133,7 +133,6 @@ theorem DirichletCharacter.LSeries_eulerProduct {N : ℕ} (χ : DirichletCharact
 
 open LSeries
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A variant of the Euler product for Dirichlet L-series. -/
 theorem DirichletCharacter.LSeries_eulerProduct_exp_log {N : ℕ} (χ : DirichletCharacter ℂ N)
     {s : ℂ} (hs : 1 < s.re) :
@@ -144,7 +143,7 @@ theorem DirichletCharacter.LSeries_eulerProduct_exp_log {N : ℕ} (χ : Dirichle
     · simp only [term_zero, map_zero]
     · simp only [ne_eq, hn, not_false_eq_true, term_of_ne_zero, div_eq_mul_inv,
         dirichletSummandHom, cpow_neg, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk, f]
-  simpa only [LSeries, h]
+  simpa! only [LSeries, h]
     using exp_tsum_primes_log_eq_tsum (f := f) <| summable_dirichletSummand χ hs
 
 open DirichletCharacter

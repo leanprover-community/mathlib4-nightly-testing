@@ -29,7 +29,6 @@ open Filter
 
 namespace Complex
 
-set_option backward.simpa.using.reducibleClose false in
 theorem hasStrictFDerivAt_cpow {p : ℂ × ℂ} (hp : p.1 ∈ slitPlane) :
     HasStrictFDerivAt (fun x : ℂ × ℂ => x.1 ^ x.2)
       ((p.2 * p.1 ^ (p.2 - 1)) • ContinuousLinearMap.fst ℂ ℂ ℂ +
@@ -40,7 +39,7 @@ theorem hasStrictFDerivAt_cpow {p : ℂ × ℂ} (hp : p.1 ∈ slitPlane) :
       cpow_def_of_ne_zero hp _
   rw [cpow_sub _ _ A, cpow_one, mul_div_left_comm, mul_smul, mul_smul]
   refine HasStrictFDerivAt.congr_of_eventuallyEq ?_ this.symm
-  simpa only [cpow_def_of_ne_zero A, div_eq_mul_inv, mul_smul, add_comm, smul_add] using
+  simpa! only [cpow_def_of_ne_zero A, div_eq_mul_inv, mul_smul, add_comm, smul_add] using
     ((hasStrictFDerivAt_fst.clog hp).mul hasStrictFDerivAt_snd).cexp
 
 theorem hasStrictFDerivAt_cpow' {x y : ℂ} (hp : x ∈ slitPlane) :
@@ -49,7 +48,6 @@ theorem hasStrictFDerivAt_cpow' {x y : ℂ} (hp : x ∈ slitPlane) :
         (x ^ y * log x) • ContinuousLinearMap.snd ℂ ℂ ℂ) (x, y) :=
   @hasStrictFDerivAt_cpow (x, y) hp
 
-set_option backward.simpa.using.reducibleClose false in
 theorem hasStrictDerivAt_const_cpow {x y : ℂ} (h : x ≠ 0 ∨ y ≠ 0) :
     HasStrictDerivAt (fun y => x ^ y) (x ^ y * log x) y := by
   rcases em (x = 0) with (rfl | hx)
@@ -57,7 +55,7 @@ theorem hasStrictDerivAt_const_cpow {x y : ℂ} (h : x ≠ 0 ∨ y ≠ 0) :
     rw [log_zero, mul_zero]
     refine (hasStrictDerivAt_const y 0).congr_of_eventuallyEq ?_
     exact (isOpen_ne.eventually_mem h).mono fun y hy => (zero_cpow hy).symm
-  · simpa only [cpow_def_of_ne_zero hx, mul_one] using
+  · simpa! only [cpow_def_of_ne_zero hx, mul_one] using
       ((hasStrictDerivAt_id y).const_mul (log x)).cexp
 
 theorem hasFDerivAt_cpow {p : ℂ × ℂ} (hp : p.1 ∈ slitPlane) :
@@ -197,10 +195,9 @@ theorem HasStrictDerivAt.const_cpow (hf : HasStrictDerivAt f f' x) (h : c ≠ 0 
     HasStrictDerivAt (fun x => c ^ f x) (c ^ f x * Complex.log c * f') x :=
   (hasStrictDerivAt_const_cpow h).comp x hf
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Complex.hasStrictDerivAt_cpow_const (h : x ∈ slitPlane) :
     HasStrictDerivAt (fun z : ℂ => z ^ c) (c * x ^ (c - 1)) x := by
-  simpa only [mul_zero, add_zero, mul_one] using
+  simpa! only [mul_zero, add_zero, mul_one] using
     (hasStrictDerivAt_id x).cpow (hasStrictDerivAt_const x c) h
 
 theorem HasStrictDerivAt.cpow_const (hf : HasStrictDerivAt f f' x)
@@ -427,13 +424,12 @@ lemma differentiableOn_rpow_const (p : ℝ) :
     DifferentiableOn ℝ (fun x => (x : ℝ) ^ p) {0}ᶜ :=
   fun _ hx => (Real.differentiableAt_rpow_const_of_ne p hx).differentiableWithinAt
 
-set_option backward.simpa.using.reducibleClose false in
 /-- This lemma says that `fun x => a ^ x` is strictly differentiable for `a < 0`. Note that these
 values of `a` are outside of the "official" domain of `a ^ x`, and we may redefine `a ^ x`
 for negative `a` if some other definition will be more convenient. -/
 theorem hasStrictDerivAt_const_rpow_of_neg {a x : ℝ} (ha : a < 0) :
     HasStrictDerivAt (fun x => a ^ x) (a ^ x * log a - exp (log a * x) * sin (x * π) * π) x := by
-  simpa using (hasStrictFDerivAt_rpow_of_neg (a, x) ha).comp_hasStrictDerivAt x
+  simpa! using (hasStrictFDerivAt_rpow_of_neg (a, x) ha).comp_hasStrictDerivAt x
     ((hasStrictDerivAt_const _ _).prodMk (hasStrictDerivAt_id _))
 
 end Real

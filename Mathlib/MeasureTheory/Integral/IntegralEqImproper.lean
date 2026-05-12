@@ -1208,12 +1208,11 @@ theorem integrableOn_Ioi_comp_rpow_iff [NormedSpace ℝ E] (f : ℝ → E) {p : 
   refine integrableOn_congr_fun (fun x hx => ?_) measurableSet_Ioi
   simp_rw [abs_mul, abs_of_nonneg (rpow_nonneg (le_of_lt hx) _)]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The substitution `y = x ^ p` in integrals over `Ioi 0` preserves integrability (version
 without `|p|` factor) -/
 theorem integrableOn_Ioi_comp_rpow_iff' [NormedSpace ℝ E] (f : ℝ → E) {p : ℝ} (hp : p ≠ 0) :
     IntegrableOn (fun x => x ^ (p - 1) • f (x ^ p)) (Ioi 0) ↔ IntegrableOn f (Ioi 0) := by
-  simpa only [← integrableOn_Ioi_comp_rpow_iff f hp, mul_smul] using
+  simpa! only [← integrableOn_Ioi_comp_rpow_iff f hp, mul_smul] using
     (integrable_smul_iff (abs_pos.mpr hp).ne' _).symm
 
 theorem integrableOn_Ioi_comp_mul_left_iff (f : ℝ → E) (c : ℝ) {a : ℝ} (ha : 0 < a) :
@@ -1293,7 +1292,6 @@ section IntegrationByPartsAlgebra
 variable {A : Type*} [NormedRing A] [NormedAlgebra ℝ A]
   {a : ℝ} {a' b' : A} {u : ℝ → A} {v : ℝ → A} {u' : ℝ → A} {v' : ℝ → A}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- For finite intervals, see: `intervalIntegral.integral_deriv_mul_eq_sub`. -/
 theorem integral_deriv_mul_eq_sub [CompleteSpace A]
     (hu : ∀ x ∈ tsupport v, HasDerivAt u (u' x) x)
@@ -1302,7 +1300,7 @@ theorem integral_deriv_mul_eq_sub [CompleteSpace A]
     (h_bot : Tendsto (u * v) atBot (𝓝 a')) (h_top : Tendsto (u * v) atTop (𝓝 b')) :
     ∫ (x : ℝ), u' x * v x + u x * v' x = b' - a' := by
   refine integral_of_hasDerivAt_of_tendsto (fun x ↦ ?_) huv h_bot h_top
-  simpa [add_comm] using (ContinuousLinearMap.mul ℝ A).hasDerivAt_of_bilinear (hu x) (hv x)
+  simpa! [add_comm] using (ContinuousLinearMap.mul ℝ A).hasDerivAt_of_bilinear (hu x) (hv x)
 
 /-- **Integration by parts on (-∞, ∞).**
 For finite intervals, see: `intervalIntegral.integral_mul_deriv_eq_deriv_mul`. -/

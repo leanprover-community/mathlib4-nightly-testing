@@ -56,7 +56,6 @@ theorem app_p_comm : P.p.app X ≫ f.f.app X = f.f.app X ≫ Q.p.app X :=
 
 variable (J C)
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 instance functor_category_isIdempotentComplete [IsIdempotentComplete C] :
     IsIdempotentComplete (J ⥤ C) := by
@@ -75,7 +74,7 @@ instance functor_category_isIdempotentComplete [IsIdempotentComplete C] :
       naturality := fun _ _ _ => by rw [equalizer.lift_ι] }
   let e : F ⟶ Y :=
     { app := fun j =>
-        equalizer.lift (p.app j) (by simpa only [comp_id] using (congr_app hp j).symm)
+        equalizer.lift (p.app j) (by simpa! only [comp_id] using (congr_app hp j).symm)
       naturality := fun j j' φ => equalizer.hom_ext (by simp [Y]) }
   use Y, i, e
   constructor

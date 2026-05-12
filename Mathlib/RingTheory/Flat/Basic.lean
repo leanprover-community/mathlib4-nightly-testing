@@ -230,14 +230,13 @@ instance of_projective [Projective R M] : Flat R M :=
 
 instance of_free [Free R M] : Flat R M := inferInstance
 
-set_option backward.simpa.using.reducibleClose false in
 instance {S} [CommSemiring S] [Algebra R S] [Module S M] [IsScalarTower R S M]
     [Flat S M] [Flat R N] : Flat S (M ⊗[R] N) :=
   iff_rTensor_injectiveₛ.mpr fun P _ _ I ↦ by
     letI := RestrictScalars.moduleOrig R S P
     change Submodule S (RestrictScalars R S P) at I
     change Function.Injective (rTensor _ I.subtype)
-    simpa [AlgebraTensorModule.rTensor_tensor] using
+    simpa! [AlgebraTensorModule.rTensor_tensor] using
       rTensor_preserves_injective_linearMap (.restrictScalars R <| I.subtype.rTensor M)
       (rTensor_preserves_injective_linearMap _ I.injective_subtype)
 

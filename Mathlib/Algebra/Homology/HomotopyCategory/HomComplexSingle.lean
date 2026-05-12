@@ -320,7 +320,6 @@ lemma toSingleMk_precomp
   ext : 1
   exact (Cochain.toSingleEquiv h).injective (by simp [Cochain.toSingleMk_precomp])
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma toSingleMk_surjective {q n : ℤ} (α : Cocycle K ((singleFunctor C q).obj X) n)
     (p : ℤ) (h : p + n = q) (p' : ℤ) (hp' : p' + 1 = p) :
@@ -330,7 +329,7 @@ lemma toSingleMk_surjective {q n : ℤ} (α : Cocycle K ((singleFunctor C q).obj
   rw [coe_units_smul, δ_units_smul, ← hf, Cochain.δ_toSingleMk _ _ _ p' (by lia),
     smul_smul, Int.units_mul_self, one_smul] at hα
   refine ⟨f, ?_, ?_⟩
-  · simpa [← cancel_mono (HomologicalComplex.singleObjXSelf (.up ℤ) q X).inv] using
+  · simpa! [← cancel_mono (HomologicalComplex.singleObjXSelf (.up ℤ) q X).inv] using
     Cochain.congr_v hα p' q (by lia)
   · ext : 1; assumption
 

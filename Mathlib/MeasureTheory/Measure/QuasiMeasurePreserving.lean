@@ -185,13 +185,12 @@ theorem exists_preimage_eq_of_preimage_ae {f : α → α} (h : QuasiMeasurePrese
 
 open scoped Pointwise
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem smul_ae_eq_of_ae_eq {G α : Type*} [Group G] [MulAction G α] {_ : MeasurableSpace α}
     {s t : Set α} {μ : Measure α} (g : G)
     (h_qmp : QuasiMeasurePreserving (g⁻¹ • · : α → α) μ μ)
     (h_ae_eq : s =ᵐ[μ] t) : (g • s : Set α) =ᵐ[μ] (g • t : Set α) := by
-  simpa only [← preimage_smul_inv] using h_qmp.ae_eq h_ae_eq
+  simpa! only [← preimage_smul_inv] using h_qmp.ae_eq h_ae_eq
 
 end QuasiMeasurePreserving
 

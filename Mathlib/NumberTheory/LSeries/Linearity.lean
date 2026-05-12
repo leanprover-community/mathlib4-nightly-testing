@@ -31,11 +31,10 @@ lemma LSeries.term_add_apply (f g : ℕ → ℂ) (s : ℂ) (n : ℕ) :
     term (f + g) s n = term f s n + term g s n := by
   simp [term_add]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma LSeriesHasSum.add {f g : ℕ → ℂ} {s a b : ℂ} (hf : LSeriesHasSum f s a)
     (hg : LSeriesHasSum g s b) :
     LSeriesHasSum (f + g) s (a + b) := by
-  simpa [LSeriesHasSum, term_add] using HasSum.add hf hg
+  simpa! [LSeriesHasSum, term_add] using HasSum.add hf hg
 
 lemma LSeriesSummable.add {f g : ℕ → ℂ} {s : ℂ} (hf : LSeriesSummable f s)
     (hg : LSeriesSummable g s) :
@@ -58,15 +57,13 @@ lemma LSeries.term_neg (f : ℕ → ℂ) (s : ℂ) : term (-f) s = -term f s := 
 lemma LSeries.term_neg_apply (f : ℕ → ℂ) (s : ℂ) (n : ℕ) : term (-f) s n = -term f s n := by
   simp [term_neg]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma LSeriesHasSum.neg {f : ℕ → ℂ} {s a : ℂ} (hf : LSeriesHasSum f s a) :
     LSeriesHasSum (-f) s (-a) := by
-  simpa [LSeriesHasSum, term_neg] using HasSum.neg hf
+  simpa! [LSeriesHasSum, term_neg] using HasSum.neg hf
 
-set_option backward.simpa.using.reducibleClose false in
 lemma LSeriesSummable.neg {f : ℕ → ℂ} {s : ℂ} (hf : LSeriesSummable f s) :
     LSeriesSummable (-f) s := by
-  simpa [LSeriesSummable, term_neg] using Summable.neg hf
+  simpa! [LSeriesSummable, term_neg] using Summable.neg hf
 
 @[simp]
 lemma LSeriesSummable.neg_iff {f : ℕ → ℂ} {s : ℂ} :
@@ -88,11 +85,10 @@ lemma LSeries.term_sub_apply (f g : ℕ → ℂ) (s : ℂ) (n : ℕ) :
     term (f - g) s n = term f s n - term g s n := by
   rw [term_sub, Pi.sub_apply]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma LSeriesHasSum.sub {f g : ℕ → ℂ} {s a b : ℂ} (hf : LSeriesHasSum f s a)
     (hg : LSeriesHasSum g s b) :
     LSeriesHasSum (f - g) s (a - b) := by
-  simpa [LSeriesHasSum, term_sub] using HasSum.sub hf hg
+  simpa! [LSeriesHasSum, term_sub] using HasSum.sub hf hg
 
 lemma LSeriesSummable.sub {f g : ℕ → ℂ} {s : ℂ} (hf : LSeriesSummable f s)
     (hg : LSeriesSummable g s) :
@@ -116,15 +112,13 @@ lemma LSeries.term_smul_apply (f : ℕ → ℂ) (c s : ℂ) (n : ℕ) :
     term (c • f) s n = c * term f s n := by
   simp [term_smul]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma LSeriesHasSum.smul {f : ℕ → ℂ} (c : ℂ) {s a : ℂ} (hf : LSeriesHasSum f s a) :
     LSeriesHasSum (c • f) s (c * a) := by
-  simpa [LSeriesHasSum, term_smul] using hf.const_smul c
+  simpa! [LSeriesHasSum, term_smul] using hf.const_smul c
 
-set_option backward.simpa.using.reducibleClose false in
 lemma LSeriesSummable.smul {f : ℕ → ℂ} (c : ℂ) {s : ℂ} (hf : LSeriesSummable f s) :
     LSeriesSummable (c • f) s := by
-  simpa [LSeriesSummable, term_smul] using hf.const_smul c
+  simpa! [LSeriesSummable, term_smul] using hf.const_smul c
 
 lemma LSeriesSummable.of_smul {f : ℕ → ℂ} {c s : ℂ} (hc : c ≠ 0) (hf : LSeriesSummable (c • f) s) :
     LSeriesSummable f s := by

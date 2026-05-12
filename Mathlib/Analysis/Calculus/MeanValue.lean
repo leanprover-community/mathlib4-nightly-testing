@@ -303,7 +303,6 @@ theorem image_norm_le_of_norm_deriv_right_le_deriv_boundary {f' : ℝ → E}
   image_norm_le_of_norm_deriv_right_le_deriv_boundary' hf hf' ha
     (fun x _ => (hB x).continuousAt.continuousWithinAt) (fun x _ => (hB x).hasDerivWithinAt) bound
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A function on `[a, b]` with the norm of the right derivative bounded by `C`
 satisfies `‖f x - f a‖ ≤ C * (x - a)`. -/
 theorem norm_image_sub_le_of_norm_deriv_right_le_segment {f' : ℝ → E} {C : ℝ}
@@ -317,7 +316,7 @@ theorem norm_image_sub_le_of_norm_deriv_right_le_segment {f' : ℝ → E} {C : �
   let B x := C * (x - a)
   have hB : ∀ x, HasDerivAt B C x := by
     intro x
-    simpa using (hasDerivAt_const x C).mul ((hasDerivAt_id x).sub (hasDerivAt_const x a))
+    simpa! using (hasDerivAt_const x C).mul ((hasDerivAt_id x).sub (hasDerivAt_const x a))
   convert image_norm_le_of_norm_deriv_right_le_deriv_boundary hg hg' _ hB bound
   simp only [g, B]; rw [sub_self, norm_zero, sub_self, mul_zero]
 
@@ -373,7 +372,6 @@ theorem constant_of_derivWithin_zero (hdiff : DifferentiableOn ℝ f (Icc a b))
 
 variable {f' g : ℝ → E}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If two continuous functions on `[a, b]` have the same right derivative and are equal at `a`,
   then they are equal everywhere on `[a, b]`. -/
 theorem eq_of_has_deriv_right_eq (derivf : ∀ x ∈ Ico a b, HasDerivWithinAt f (f' x) (Ici x) x)
@@ -381,7 +379,7 @@ theorem eq_of_has_deriv_right_eq (derivf : ∀ x ∈ Ico a b, HasDerivWithinAt f
     (gcont : ContinuousOn g (Icc a b)) (hi : f a = g a) : ∀ y ∈ Icc a b, f y = g y := by
   simp only [← @sub_eq_zero _ _ (f _)] at hi ⊢
   exact hi ▸ constant_of_has_deriv_right_zero (fcont.sub gcont) fun y hy => by
-    simpa only [sub_self] using (derivf y hy).sub (derivg y hy)
+    simpa! only [sub_self] using (derivf y hy).sub (derivg y hy)
 
 /-- If two differentiable functions on `[a, b]` have the same derivative within `[a, b]` everywhere
   on `[a, b)` and are equal at `a`, then they are equal everywhere on `[a, b]`. -/
@@ -583,7 +581,6 @@ theorem eqOn_of_fderivWithin_eq (hs : Convex ℝ s) (hf : DifferentiableOn 𝕜 
   refine hs.is_const_of_fderivWithin_eq_zero (hf.sub hg) (fun z hz => ?_) hx hy
   rw [fderivWithin_sub (hs' _ hz) (hf _ hz) (hg _ hz), sub_eq_zero, hf' hz]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `f` has zero derivative on an open set, then `f` is locally constant on `s`. -/
 -- TODO: change the spelling once we have `IsLocallyConstantOn`.
 theorem _root_.IsOpen.isOpen_inter_preimage_of_fderiv_eq_zero
@@ -593,14 +590,13 @@ theorem _root_.IsOpen.isOpen_inter_preimage_of_fderiv_eq_zero
   obtain ⟨r, hr, h⟩ := Metric.isOpen_iff.mp hs y hy
   refine ⟨r, hr, Set.subset_inter h fun x hx ↦ ?_⟩
   have := (convex_ball y r).is_const_of_fderivWithin_eq_zero (hf.mono h) ?_ hx (mem_ball_self hr)
-  · simpa [this]
+  · simpa! [this]
   · intro z hz
-    simpa only [fderivWithin_of_isOpen Metric.isOpen_ball hz] using hf' (h hz)
+    simpa! only [fderivWithin_of_isOpen Metric.isOpen_ball hz] using hf' (h hz)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem _root_.isLocallyConstant_of_fderiv_eq_zero (h₁ : Differentiable 𝕜 f)
     (h₂ : ∀ x, fderiv 𝕜 f x = 0) : IsLocallyConstant f := by
-  simpa using isOpen_univ.isOpen_inter_preimage_of_fderiv_eq_zero h₁.differentiableOn fun _ _ ↦ h₂ _
+  simpa! using isOpen_univ.isOpen_inter_preimage_of_fderiv_eq_zero h₁.differentiableOn fun _ _ ↦ h₂ _
 
 /-- If `f` has zero derivative on a connected open set, then `f` is constant on `s`. -/
 theorem _root_.IsOpen.exists_is_const_of_fderiv_eq_zero

@@ -379,15 +379,13 @@ When `iInf f < a`, there is an element `i` such that `f i < a`.
 theorem exists_lt_of_ciInf_lt [Nonempty ι] {f : ι → α} (h : iInf f < a) : ∃ i, f i < a :=
   exists_lt_of_lt_ciSup (α := αᵒᵈ) h
 
-set_option backward.simpa.using.reducibleClose false in
 theorem lt_ciSup_iff [Nonempty ι] {f : ι → α} (hb : BddAbove (range f)) :
     a < iSup f ↔ ∃ i, a < f i := by
-  simpa only [mem_range, exists_exists_eq_and] using lt_csSup_iff hb (range_nonempty _)
+  simpa! only [mem_range, exists_exists_eq_and] using lt_csSup_iff hb (range_nonempty _)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem ciInf_lt_iff [Nonempty ι] {f : ι → α} (hb : BddBelow (range f)) :
     iInf f < a ↔ ∃ i, f i < a := by
-  simpa only [mem_range, exists_exists_eq_and] using csInf_lt_iff hb (range_nonempty _)
+  simpa! only [mem_range, exists_exists_eq_and] using csInf_lt_iff hb (range_nonempty _)
 
 theorem cbiSup_of_not_bddAbove {p : ι → Prop} {f : ∀ i, p i → α}
     (h : ¬BddAbove (range fun i : Subtype p ↦ f i i.prop)) :

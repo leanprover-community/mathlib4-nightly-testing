@@ -181,7 +181,6 @@ variable {G H : Type u} [Group G] [Group H] (φ : G →* H) (A : Rep k G) (B : R
 
 open Representation
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a group hom `φ : G →* H`, `A : Rep k G` and `B : Rep k H`, this is the `k`-linear map
@@ -193,7 +192,7 @@ noncomputable def coinvariantsTensorIndHom :
   ModuleCat.ofHom <| Coinvariants.lift _ (TensorProduct.lift <| Coinvariants.lift _
     (TensorProduct.lift <| Finsupp.lift _ _ _ <| fun g ↦
       (coinvariantsTensorMk A (res φ B)).compl₂ (B.ρ g))
-      fun g ↦ by ext; simpa [coinvariantsTensorMk, Coinvariants.mk_eq_iff]
+      fun g ↦ by ext; simpa! [coinvariantsTensorMk, Coinvariants.mk_eq_iff]
         using Coinvariants.sub_mem_ker _ _) fun _ ↦ by
     simp only [MonoidalCategory.curriedTensor_obj_obj, tensor_V, tensor_ρ, res_obj_ρ,
       Functor.postcompose₂_obj_obj_obj_obj, coinvariantsFunctor_obj_carrier,

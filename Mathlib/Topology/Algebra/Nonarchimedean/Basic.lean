@@ -123,11 +123,10 @@ theorem left_mul_subset (U : OpenAddSubgroup R) (r : R) :
     ∃ V : OpenAddSubgroup R, r • (V : Set R) ⊆ U :=
   ⟨U.comap (AddMonoidHom.mulLeft r) (continuous_const_mul r), (U : Set R).image_preimage_subset _⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /-- An open subgroup of a nonarchimedean ring contains the square of another one. -/
 theorem mul_subset (U : OpenAddSubgroup R) : ∃ V : OpenAddSubgroup R, (V : Set R) * V ⊆ U := by
   let ⟨V, H⟩ := prod_self_subset <| (U.isOpen.preimage continuous_mul).mem_nhds <| by
-    simpa only [Set.mem_preimage, Prod.snd_zero, mul_zero] using U.zero_mem
+    simpa! only [Set.mem_preimage, Prod.snd_zero, mul_zero] using U.zero_mem
   use V
   rintro v ⟨a, ha, b, hb, hv⟩
   have hy := H (Set.mk_mem_prod ha hb)

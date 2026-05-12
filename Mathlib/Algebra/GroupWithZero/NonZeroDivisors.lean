@@ -53,10 +53,9 @@ def nonZeroDivisorsLeft : Submonoid M₀ where
 @[simp]
 lemma mem_nonZeroDivisorsLeft_iff : x ∈ nonZeroDivisorsLeft M₀ ↔ ∀ y, x * y = 0 → y = 0 := .rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma notMem_nonZeroDivisorsLeft_iff :
     x ∉ nonZeroDivisorsLeft M₀ ↔ {y | x * y = 0 ∧ y ≠ 0}.Nonempty := by
-  simpa [mem_nonZeroDivisorsLeft_iff] using Set.nonempty_def.symm
+  simpa! [mem_nonZeroDivisorsLeft_iff] using Set.nonempty_def.symm
 
 /-- The collection of elements of a `MonoidWithZero` that are not right zero divisors form a
 `Submonoid`. -/
@@ -68,10 +67,9 @@ def nonZeroDivisorsRight : Submonoid M₀ where
 @[simp]
 lemma mem_nonZeroDivisorsRight_iff : x ∈ nonZeroDivisorsRight M₀ ↔ ∀ y, y * x = 0 → y = 0 := .rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma notMem_nonZeroDivisorsRight_iff :
     x ∉ nonZeroDivisorsRight M₀ ↔ {y | y * x = 0 ∧ y ≠ 0}.Nonempty := by
-  simpa [mem_nonZeroDivisorsRight_iff] using Set.nonempty_def.symm
+  simpa! [mem_nonZeroDivisorsRight_iff] using Set.nonempty_def.symm
 
 lemma nonZeroDivisorsLeft_eq_right (M₀ : Type*) [CommMonoidWithZero M₀] :
     nonZeroDivisorsLeft M₀ = nonZeroDivisorsRight M₀ := by

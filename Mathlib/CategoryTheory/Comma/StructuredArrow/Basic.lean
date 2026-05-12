@@ -272,7 +272,6 @@ instance proj_reflectsIsomorphisms : (proj S T).ReflectsIsomorphisms where
 open CategoryTheory.Limits
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.simpa.using.reducibleClose false in
 /-- The identity structured arrow is initial. -/
 noncomputable def mkIdInitial [T.Full] [T.Faithful] : IsInitial (mk (𝟙 (T.obj Y))) where
   desc c := homMk (T.preimage c.pt.hom)
@@ -280,7 +279,7 @@ noncomputable def mkIdInitial [T.Full] [T.Faithful] : IsInitial (mk (𝟙 (T.obj
     apply CommaMorphism.ext
     · simp
     · apply T.map_injective
-      simpa only [homMk_right, T.map_preimage, ← w m] using (Category.id_comp _).symm
+      simpa! only [homMk_right, T.map_preimage, ← w m] using (Category.id_comp _).symm
 
 variable {A : Type u₃} [Category.{v₃} A] {B : Type u₄} [Category.{v₄} B]
 
@@ -672,7 +671,6 @@ instance proj_reflectsIsomorphisms : (proj S T).ReflectsIsomorphisms where
 open CategoryTheory.Limits
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.simpa.using.reducibleClose false in
 /-- The identity costructured arrow is terminal. -/
 noncomputable def mkIdTerminal [S.Full] [S.Faithful] : IsTerminal (mk (𝟙 (S.obj Y))) where
   lift c := homMk (S.preimage c.pt.hom)
@@ -680,7 +678,7 @@ noncomputable def mkIdTerminal [S.Full] [S.Faithful] : IsTerminal (mk (𝟙 (S.o
     rintro c m -
     ext
     apply S.map_injective
-    simpa only [homMk_left, S.map_preimage, ← w m] using (Category.comp_id _).symm
+    simpa! only [homMk_left, S.map_preimage, ← w m] using (Category.comp_id _).symm
 
 variable {A : Type u₃} [Category.{v₃} A] {B : Type u₄} [Category.{v₄} B]
 

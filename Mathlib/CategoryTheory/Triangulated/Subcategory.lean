@@ -516,11 +516,10 @@ lemma trW_iff_of_distinguished
   · intro h
     exact ⟨_, _, _, hT, h⟩
 
-set_option backward.simpa.using.reducibleClose false in
 lemma trW_iff_of_distinguished' [P.IsStableUnderShift ℤ]
     [P.IsClosedUnderIsomorphisms] (T : Triangle C) (hT : T ∈ distTriang C) :
     P.trW T.mor₂ ↔ P T.obj₁ := by
-  simpa [P.prop_shift_iff_of_isStableUnderShift]
+  simpa! [P.prop_shift_iff_of_isStableUnderShift]
     using P.trW_iff_of_distinguished _ (rot_of_distTriang _ hT)
 
 section

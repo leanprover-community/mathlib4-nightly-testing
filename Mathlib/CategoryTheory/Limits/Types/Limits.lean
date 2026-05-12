@@ -117,7 +117,6 @@ lemma limitCone_pt_ext {x y : (limitCone F).pt}
   simp_all
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.simpa.using.reducibleClose false in
 /-- (internal implementation) the fact that the proposed limit cone is the limit -/
 @[simps]
 noncomputable def limitConeIsLimit : IsLimit (limitCone.{v, u} F) where
@@ -126,7 +125,7 @@ noncomputable def limitConeIsLimit : IsLimit (limitCone.{v, u} F) where
       property := fun f => congr_hom (Cone.w s f) _ }
   uniq := fun _ _ w => by
     ext x j
-    simpa using congr_hom (w j) x
+    simpa! using congr_hom (w j) x
 
 end
 

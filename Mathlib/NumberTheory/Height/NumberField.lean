@@ -61,12 +61,11 @@ private lemma prod_multisetInfinitePlace_eq {M : Type*} [CommMonoid M] (f : Abso
     (fun v _ ↦ v.val) (fun _ _ ↦ Finset.mem_univ _) (fun v _ ↦ by simp [v.isInfinitePlace])
     (fun _ _ ↦ rfl) (fun _ _ ↦ rfl) fun w hw ↦ by rw [count_multisetInfinitePlace_eq_mult ⟨w, _⟩]
 
-set_option backward.simpa.using.reducibleClose false in
 noncomputable
 instance instAdmissibleAbsValues : AdmissibleAbsValues K where
   archAbsVal := multisetInfinitePlace K
   nonarchAbsVal := {v | IsFinitePlace v}
-  isNonarchimedean v hv := FinitePlace.add_le ⟨v, by simpa using hv⟩
+  isNonarchimedean v hv := FinitePlace.add_le ⟨v, by simpa! using hv⟩
   hasFiniteMulSupport := FinitePlace.hasFiniteMulSupport
   product_formula {x} hx := private prod_multisetInfinitePlace_eq (· x) ▸ prod_abs_eq_one hx
 

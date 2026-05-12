@@ -224,10 +224,9 @@ section Ring
 
 variable [Ring R]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp, aesop safe apply]
 theorem Splits.X_sub_C (a : R) : Splits (X - C a) := by
-  simpa using Splits.X_add_C (-a)
+  simpa! using Splits.X_add_C (-a)
 
 @[aesop safe apply]
 protected theorem Splits.neg {f : R[X]} (hf : Splits f) : Splits (-f) := by

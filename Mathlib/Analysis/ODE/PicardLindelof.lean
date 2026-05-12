@@ -114,14 +114,13 @@ lemma picard_apply {x₀ : E} {t : ℝ} : picard f t₀ x₀ α t = x₀ + ∫ �
 
 lemma picard_apply₀ {x₀ : E} : picard f t₀ x₀ α t₀ = x₀ := by simp
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a $C^n$ time-dependent vector field `f` and a $C^n$ curve `α`, the composition `f t (α t)`
 is $C^n$ in `t`. -/
 lemma contDiffOn_comp {n : WithTop ℕ∞}
     (hf : ContDiffOn ℝ n (uncurry f) (s ×ˢ u))
     (hα : ContDiffOn ℝ n α s) (hmem : ∀ t ∈ s, α t ∈ u) :
     ContDiffOn ℝ n (fun t ↦ f t (α t)) s := by
-  simpa only [← uncurry_apply_pair f] using hf.comp (by fun_prop) (by tauto)
+  simpa! only [← uncurry_apply_pair f] using hf.comp (by fun_prop) (by tauto)
 
 /-- Given a continuous time-dependent vector field `f` and a continuous curve `α`, the composition
 `f t (α t)` is continuous in `t`. -/
@@ -331,14 +330,13 @@ lemma dist_comp_iterate_next_le (hf : IsPicardLindelof f t₀ x₀ a r L K)
       gcongr
       rwa [← mul_pow]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A time-dependent bound on the distance between the `n`-th iterates of `next` on two curves -/
 lemma dist_iterate_next_apply_le (hf : IsPicardLindelof f t₀ x₀ a r L K)
     (hx : x ∈ closedBall x₀ r) (α β : FunSpace t₀ x₀ r L) (n : ℕ) (t : Icc tmin tmax) :
     dist ((next hf hx)^[n] α t) ((next hf hx)^[n] β t) ≤
       (K * |t.1 - t₀.1|) ^ n / n ! * dist α β := by
   induction n generalizing t with
-  | zero => simpa using
+  | zero => simpa! using
       ContinuousMap.dist_apply_le_dist (f := toContinuousMap α) (g := toContinuousMap β) _
   | succ n hn =>
     rw [iterate_succ_apply', iterate_succ_apply', dist_eq_norm, next_apply,

@@ -43,17 +43,16 @@ structure HomObj (A : C ⥤ Type w) where
   naturality {c d : C} (f : c ⟶ d) (a : A.obj c) :
     F.map f ≫ app d (A.map f a) = app c a ≫ G.map f := by cat_disch
 
-set_option backward.simpa.using.reducibleClose false in
 /-- When `F`, `G`, and `A` are all functors `C ⥤ Type w`, then `HomObj F G A` is in
 bijection with `F ⊗ A ⟶ G`. -/
 @[simps]
 def homObjEquiv (F G A : C ⥤ Type w) : (HomObj F G A) ≃ (F ⊗ A ⟶ G) where
   toFun a := ⟨fun X ↦ ↾fun ⟨x, y⟩ ↦ a.app X y x, fun X Y f ↦ by
     ext ⟨x, y⟩
-    simpa using ConcreteCategory.congr_hom (a.naturality f y) x⟩
+    simpa! using ConcreteCategory.congr_hom (a.naturality f y) x⟩
   invFun a := ⟨fun X y ↦ ↾fun x ↦ a.app X (x, y), fun φ y ↦ by
     ext x
-    simpa using (a.naturality_apply φ) (x, y)⟩
+    simpa! using (a.naturality_apply φ) (x, y)⟩
   left_inv _ := by aesop
   right_inv _ := by aesop
 

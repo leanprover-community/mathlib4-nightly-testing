@@ -98,7 +98,6 @@ public lemma exists_mkₐ_comp_eq_of_isAdicComplete {I : Ideal S} [IsAdicComplet
   ext x
   simpa using congr($hg x)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `A` is formally smooth over `R`, the projection from the adic completion of
 `S` at the kernel of `f : S →ₐ[R] A` has a section. -/
 public lemma exists_kerProj_comp_eq_id (f : S →ₐ[R] A) (hf : Function.Surjective f) :
@@ -108,7 +107,7 @@ public lemma exists_kerProj_comp_eq_id (f : S →ₐ[R] A) (hf : Function.Surjec
     (Ideal.quotientKerAlgEquivOfSurjective hf).symm.toAlgHom
   use g
   ext x
-  simpa using congr(Ideal.quotientKerAlgEquivOfSurjective hf ($hg x))
+  simpa! using congr(Ideal.quotientKerAlgEquivOfSurjective hf ($hg x))
 
 end FormallySmooth
 

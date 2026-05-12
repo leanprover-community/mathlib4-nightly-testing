@@ -37,7 +37,6 @@ noncomputable section
 variable {C : Type u₁} [Category.{v₁} C] {V : Type u₂} [Category.{v₂} V]
   [MonoidalCategory C] [MonoidalCategory V] [MonoidalClosed V]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given `F : C ⥤ V`, this is the functor
 `G ↦ c c₁ c₂ ↦ ihom (F c₁) (G.obj (c₂ ⊗ c))`.
 The internal hom functor for Day convolution `[F, -]` is naturally isomorphic
@@ -58,7 +57,7 @@ def dayConvolutionInternalHomDiagramFunctor (F : C ⥤ V) :
       naturality {c c'} f := by
         ext j k
         dsimp
-        simpa [-NatTrans.naturality] using
+        simpa! [-NatTrans.naturality] using
           congr_arg (ihom <| F.obj <| unop j).map (η.naturality <| k ◁ f) }
 
 /-- `DayConvolutionInternalHom F G H` asserts that `H` is the value at `G` of

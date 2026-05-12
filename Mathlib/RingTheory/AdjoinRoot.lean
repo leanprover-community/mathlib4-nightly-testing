@@ -172,14 +172,13 @@ abbrev ofAlgHom : R →ₐ[S] AdjoinRoot p := Algebra.algHom S R <| AdjoinRoot p
 
 variable {p}
 
-set_option backward.simpa.using.reducibleClose false in
 @[ext high] -- This should have higher precedence than `RingHom.ext`.
 lemma ringHom_ext {f g : AdjoinRoot p →+* T} (hAlg : f.comp (of p) = g.comp (of p))
     (hRoot : f (root p) = g (root p)) : f = g := by
   apply Ideal.Quotient.ringHom_ext
   ext x
-  · simpa using congr($(hAlg) x)
-  · simpa
+  · simpa! using congr($(hAlg) x)
+  · simpa!
 
 @[ext high] -- This should have higher precedence than `AlgHom.ext`.
 lemma algHom_ext' {f g : AdjoinRoot p →ₐ[S] T}
@@ -416,15 +415,13 @@ def mapAlgHom (f : S →ₐ[R] T) (p : S[X]) (q : T[X]) (h : q ∣ p.map f) :
 @[simp] lemma coe_mapAlgHom (f : S →ₐ[R] T) (p : S[X]) (q : T[X]) (h) :
     ⇑(mapAlgHom f p q h) = map f p q h := rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma mapAlgHom_comp_mapAlghom (f : S →ₐ[R] T) (g : T →ₐ[R] U) (p : S[X]) (q : T[X]) (r : U[X])
     (hf hg) :
     (mapAlgHom g q r hg).comp (mapAlgHom f p q hf) =
       mapAlgHom (g.comp f) p r
-        (hg.trans <| by simpa [Polynomial.map_map] using Polynomial.map_dvd g.toRingHom hf) := by
+        (hg.trans <| by simpa! [Polynomial.map_map] using Polynomial.map_dvd g.toRingHom hf) := by
   aesop
 
-set_option backward.simpa.using.reducibleClose false in
 /-- `AdjoinRoot.map` as an `AlgEquiv`. -/
 def mapAlgEquiv (f : S ≃ₐ[R] T) (p : S[X]) (q : T[X]) (h : Associated (p.map f) q) :
     AdjoinRoot p ≃ₐ[R] AdjoinRoot q :=
@@ -434,19 +431,18 @@ def mapAlgEquiv (f : S ≃ₐ[R] T) (p : S[X]) (q : T[X]) (h : Associated (p.map
       -- FIXME: Coercion hell. See https://github.com/leanprover-community/mathlib4/issues/31365.
       have : (RingHomClass.toRingHom f.toRingEquiv.symm).comp (RingHomClass.toRingHom f) =
         .id S := by ext; exact f.symm_apply_apply _
-      simpa [Polynomial.map_map, this] using map_dvd f.symm.toRingHom h.dvd)
+      simpa! [Polynomial.map_map, this] using map_dvd f.symm.toRingHom h.dvd)
     (by ext <;> simp) (by ext <;> simp)
 
 @[simp] lemma coe_mapAlgEquiv (f : S ≃ₐ[R] T) (p : S[X]) (q : T[X]) (h) :
     ⇑(mapAlgEquiv f p q h) = map f p q h.symm.dvd := rfl
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma symm_mapAlgEquiv (f : S ≃ₐ[R] T) (p : S[X]) (q : T[X]) (h) :
     (mapAlgEquiv f p q h).symm = mapAlgEquiv f.symm q p (by
       -- FIXME: Coercion hell. See https://github.com/leanprover-community/mathlib4/issues/31365.
       have : (RingHomClass.toRingHom f.toRingEquiv.symm).comp (RingHomClass.toRingHom f) =
         .id S := by ext; exact f.symm_apply_apply _
-      simpa [Polynomial.map_map, this] using associated_map_map f.symm.toRingHom h.symm) := rfl
+      simpa! [Polynomial.map_map, this] using associated_map_map f.symm.toRingHom h.symm) := rfl
 
 variable (R) in
 /-- The canonical algebraic homomorphism from `AdjoinRoot f` to `AdjoinRoot g`, where

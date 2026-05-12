@@ -376,7 +376,6 @@ def height (i : ι) : ℤ :=
   ∑ j ∈ b.support, (b.exists_root_eq_sum_int i).choose j
 
 variable {b} in
-set_option backward.simpa.using.reducibleClose false in
 lemma height_eq_sum {i : ι} {f : ι → ℤ} (heq : P.root i = ∑ j ∈ b.support, f j • P.root j) :
     b.height i = ∑ j ∈ b.support, f j := by
   suffices ∀ j ∈ b.support, (b.exists_root_eq_sum_int i).choose j = f j from
@@ -387,8 +386,8 @@ lemma height_eq_sum {i : ι} {f : ι → ℤ} (heq : P.root i = ∑ j ∈ b.supp
     b.support.sum_subtype (p := (· ∈ b.support)) (by simp) (F := inferInstance)] at heq
   have aux (j : b.support) := Fintype.linearIndependent_iffₛ.mp
       (b.linearIndepOn_root.restrict_scalars' ℤ) ((b.exists_root_eq_sum_int i).choose ∘ (↑))
-      (f ∘ (↑)) (by simpa) j
-  simpa using aux ⟨j, hj⟩
+      (f ∘ (↑)) (by simpa!) j
+  simpa! using aux ⟨j, hj⟩
 
 lemma height_ne_zero (i : ι) :
     b.height i ≠ 0 := by

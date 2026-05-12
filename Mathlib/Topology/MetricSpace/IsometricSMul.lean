@@ -58,11 +58,10 @@ instance (priority := 100) IsIsometricSMul.to_continuousConstSMul [PseudoEMetric
     [IsIsometricSMul M X] : ContinuousConstSMul M X :=
   ⟨fun c => (isometry_smul X c).continuous⟩
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 instance (priority := 100) IsIsometricSMul.opposite_of_comm [PseudoEMetricSpace X] [SMul M X]
     [SMul Mᵐᵒᵖ X] [IsCentralScalar M X] [IsIsometricSMul M X] : IsIsometricSMul Mᵐᵒᵖ X :=
-  ⟨fun c x y => by simpa only [← op_smul_eq_smul] using isometry_smul X c.unop x y⟩
+  ⟨fun c x y => by simpa! only [← op_smul_eq_smul] using isometry_smul X c.unop x y⟩
 
 variable {M G X}
 
@@ -447,20 +446,17 @@ instance Prod.isIsometricSMul'' {N} [Mul M] [PseudoEMetricSpace M] [IsIsometricS
 instance Units.isIsometricSMul [Monoid M] : IsIsometricSMul Mˣ X :=
   ⟨fun c => isometry_smul X (c : M)⟩
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 instance : IsIsometricSMul M Xᵐᵒᵖ :=
-  ⟨fun c x y => by simpa only using edist_smul_left c x.unop y.unop⟩
+  ⟨fun c x y => by simpa! only using edist_smul_left c x.unop y.unop⟩
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 instance ULift.isIsometricSMul : IsIsometricSMul (ULift M) X :=
-  ⟨fun c => by simpa only using isometry_smul X c.down⟩
+  ⟨fun c => by simpa! only using isometry_smul X c.down⟩
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 instance ULift.isIsometricSMul' : IsIsometricSMul M (ULift X) :=
-  ⟨fun c x y => by simpa only using edist_smul_left c x.1 y.1⟩
+  ⟨fun c x y => by simpa! only using edist_smul_left c x.1 y.1⟩
 
 @[to_additive]
 instance {ι} {X : ι → Type*} [Fintype ι] [∀ i, SMul M (X i)] [∀ i, PseudoEMetricSpace (X i)]

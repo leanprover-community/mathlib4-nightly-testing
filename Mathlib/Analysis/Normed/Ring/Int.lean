@@ -40,10 +40,9 @@ theorem nnnorm_natCast (n : ℕ) : ‖(n : ℤ)‖₊ = n :=
 theorem toNat_add_toNat_neg_eq_nnnorm (n : ℤ) : ↑n.toNat + ↑(-n).toNat = ‖n‖₊ := by
   rw [← Nat.cast_add, toNat_add_toNat_neg_eq_natAbs, NNReal.natCast_natAbs]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem toNat_add_toNat_neg_eq_norm (n : ℤ) : ↑n.toNat + ↑(-n).toNat = ‖n‖ := by
-  simpa only [NNReal.coe_natCast, NNReal.coe_add] using
+  simpa! only [NNReal.coe_natCast, NNReal.coe_add] using
     congrArg NNReal.toReal (toNat_add_toNat_neg_eq_nnnorm n)
 
 end Int

@@ -340,14 +340,13 @@ theorem HasFPowerSeriesOnBall.changeOrigin (hf : HasFPowerSeriesOnBall f p x r)
   rw [← hasFPowerSeriesWithinOnBall_univ] at hf ⊢
   exact hf.changeOrigin h (by simp)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If a function admits a power series expansion `p` on an open ball `B (x, r)`, then
 it is analytic at every point of this ball. -/
 theorem HasFPowerSeriesWithinOnBall.analyticWithinAt_of_mem
     (hf : HasFPowerSeriesWithinOnBall f p s x r)
     (h : y ∈ insert x s ∩ Metric.eball x r) : AnalyticWithinAt 𝕜 f s y := by
-  have : (‖y - x‖₊ : ℝ≥0∞) < r := by simpa [edist_eq_enorm_sub] using h.2
-  have := hf.changeOrigin this (by simpa using h.1)
+  have : (‖y - x‖₊ : ℝ≥0∞) < r := by simpa! [edist_eq_enorm_sub] using h.2
+  have := hf.changeOrigin this (by simpa! using h.1)
   rw [add_sub_cancel] at this
   exact this.analyticWithinAt
 

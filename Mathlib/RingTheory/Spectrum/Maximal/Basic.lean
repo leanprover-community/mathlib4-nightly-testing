@@ -44,9 +44,8 @@ instance [Nontrivial R] : Nonempty <| MaximalSpectrum R :=
 def toPrimeSpectrum (x : MaximalSpectrum R) : PrimeSpectrum R :=
   ⟨x.asIdeal, x.isMaximal.isPrime⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem toPrimeSpectrum_injective : (@toPrimeSpectrum R _).Injective := fun ⟨_, _⟩ ⟨_, _⟩ h => by
-  simpa only [MaximalSpectrum.mk.injEq] using PrimeSpectrum.ext_iff.mp h
+  simpa! only [MaximalSpectrum.mk.injEq] using PrimeSpectrum.ext_iff.mp h
 
 theorem isCoprime_of_ne {I J : MaximalSpectrum R} (h : I ≠ J) : IsCoprime I.1 J.1 :=
   Ideal.isCoprime_iff_sup_eq.mpr <| I.2.coprime_of_ne J.2 <| mt MaximalSpectrum.ext h

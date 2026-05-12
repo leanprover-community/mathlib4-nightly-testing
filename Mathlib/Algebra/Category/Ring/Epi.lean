@@ -23,7 +23,6 @@ open CategoryTheory TensorProduct
 
 universe u
 
-set_option backward.simpa.using.reducibleClose false in
 lemma CommRingCat.epi_iff_epi {R S : Type u} [CommRing R] [CommRing S] [Algebra R S] :
     Epi (CommRingCat.ofHom (algebraMap R S)) ↔ Algebra.IsEpi R S := by
   simp_rw [Algebra.isEpi_iff_forall_one_tmul_eq, eq_comm]
@@ -39,7 +38,7 @@ lemma CommRingCat.epi_iff_epi {R S : Type u} [CommRing R] [CommRing S] [Algebra 
     let f' : S →ₐ[R] T := ⟨f.hom, RingHom.congr_fun (congrArg Hom.hom e)⟩
     let g' : S →ₐ[R] T := ⟨g.hom, fun _ ↦ rfl⟩
     ext s
-    simpa using congr(Algebra.TensorProduct.lift f' g' (fun _ _ ↦ .all _ _) $(H s))
+    simpa! using congr(Algebra.TensorProduct.lift f' g' (fun _ _ ↦ .all _ _) $(H s))
 
 @[deprecated (since := "2026-01-13")]
 alias CommRingCat.epi_iff_tmul_eq_tmul := CommRingCat.epi_iff_epi

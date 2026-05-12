@@ -116,7 +116,6 @@ variable {α ι κ 𝕜₁ 𝕜₂ E F : Type*} [NontriviallyNormedField 𝕜₁
     [NontriviallyNormedField 𝕜₂] {σ₁₂ : 𝕜₁ →+* 𝕜₂} [RingHomIsometric σ₁₂]
     [AddCommGroup E] [AddCommGroup F] [Module 𝕜₁ E] [Module 𝕜₂ F]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Any TVS over a `NontriviallyNormedField` that is also a Baire space is barrelled. In
 particular, this applies to Banach spaces and Fréchet spaces. -/
 instance BaireSpace.instBarrelledSpace [TopologicalSpace E] [IsTopologicalAddGroup E]
@@ -128,7 +127,7 @@ instance BaireSpace.instBarrelledSpace [TopologicalSpace E] [IsTopologicalAddGro
     -- Consider the family of all `p`-closed-balls with integer radius.
     -- By lower semicontinuity, each of these closed balls is indeed closed...
     have h₁ : ∀ n : ℕ, IsClosed (p.closedBall (0 : E) n) := fun n ↦ by
-      simpa [p.closedBall_zero_eq] using hp.isClosed_preimage n
+      simpa! [p.closedBall_zero_eq] using hp.isClosed_preimage n
     -- ... and clearly they cover the whole space.
     have h₂ : (⋃ n : ℕ, p.closedBall (0 : E) n) = univ :=
       eq_univ_of_forall fun x ↦ mem_iUnion.mpr (exists_nat_ge <| p (x - 0))

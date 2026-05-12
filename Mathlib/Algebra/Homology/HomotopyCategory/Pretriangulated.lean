@@ -296,13 +296,12 @@ noncomputable def rotateHomotopyEquivComm₂Homotopy :
           Int.negOnePow_zero, inl_v_snd_v, inr_f_snd_v, zero_add, and_self,
           inr_f_triangle_mor₃_f_assoc, inr_f_fst_v_assoc, inr_f_snd_v_assoc, neg_add_cancel]⟩
 
-set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma rotateHomotopyEquiv_comm₂ :
     (HomotopyCategory.quotient _ _).map (triangle φ).mor₃ ≫
       (HomotopyCategory.quotient _ _).map (rotateHomotopyEquiv φ).hom =
       (HomotopyCategory.quotient _ _).map (inr (inr φ)) := by
-  simpa only [Functor.map_comp]
+  simpa! only [Functor.map_comp]
     using HomotopyCategory.eq_of_homotopy _ _ (rotateHomotopyEquivComm₂Homotopy φ)
 
 set_option backward.isDefEq.respectTransparency false in

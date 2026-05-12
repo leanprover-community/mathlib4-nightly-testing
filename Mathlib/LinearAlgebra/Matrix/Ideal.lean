@@ -290,13 +290,12 @@ def equivMatrix : TwoSidedIdeal R ≃ TwoSidedIdeal (Matrix n n R) where
   right_inv _ := ringCon_injective <| RingCon.matrix_ofMatrix _
   left_inv _ := ringCon_injective <| RingCon.ofMatrix_matrix _
 
-set_option backward.simpa.using.reducibleClose false in
 theorem coe_equivMatrix_symm_apply (I : TwoSidedIdeal (Matrix n n R)) (i j : n) :
     equivMatrix.symm I = {N i j | N ∈ I} := by
   ext r
   constructor
   · intro h
-    exact ⟨single i j r, by simpa using h i j, by simp⟩
+    exact ⟨single i j r, by simpa! using h i j, by simp⟩
   · rintro ⟨n, hn, rfl⟩
     rw [SetLike.mem_coe, mem_iff, equivMatrix_symm_apply_ringCon,
       RingCon.coe_ofMatrix_eq_relationMap i j]
@@ -338,7 +337,6 @@ open Matrix
 
 variable {R : Type*} [Ring R] {n : Type*} [Fintype n] [DecidableEq n]
 
-set_option backward.simpa.using.reducibleClose false in
 private lemma jacobson_matrix_le (I : TwoSidedIdeal R) :
     (I.matrix n).jacobson ≤ I.jacobson.matrix n := by
   -- Proof generalized from example 8 in
@@ -352,7 +350,7 @@ private lemma jacobson_matrix_le (I : TwoSidedIdeal R) :
   specialize Mmem (y • single p p 1)
   have ⟨N, NxMI⟩ := Mmem
   use N p p
-  simpa [mul_apply, single, ite_and] using NxMI p p
+  simpa! [mul_apply, single, ite_and] using NxMI p p
 
 /-- For any two-sided ideal $I ≤ R$, we have $J(Mₙ(I)) = Mₙ(J(I))$. -/
 theorem jacobson_matrix (I : TwoSidedIdeal R) :

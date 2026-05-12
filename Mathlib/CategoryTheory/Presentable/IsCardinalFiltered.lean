@@ -233,7 +233,6 @@ instance isCardinalFiltered_prod (J₁ : Type u) (J₂ : Type u')
           · simpa using c₁.w f
           · simpa using c₂.w f }⟩
 
-set_option backward.simpa.using.reducibleClose false in
 instance isCardinalFiltered_pi {ι : Type u'} (J : ι → Type u) [∀ i, Category.{v} (J i)]
     (κ : Cardinal.{w}) [Fact κ.IsRegular] [∀ i, IsCardinalFiltered (J i) κ] :
     IsCardinalFiltered (∀ i, J i) κ where
@@ -244,7 +243,7 @@ instance isCardinalFiltered_pi {ι : Type u'} (J : ι → Type u) [∀ i, Catego
         ι.app X i := (c i).ι.app X
         ι.naturality {X Y} f := by
           ext i
-          simpa using (c i).ι.naturality f }⟩
+          simpa! using (c i).ι.naturality f }⟩
 
 section
 

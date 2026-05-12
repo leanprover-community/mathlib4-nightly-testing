@@ -438,10 +438,9 @@ theorem iterate_mem_periodicOrbit (hx : x ∈ periodicPts f) (n : ℕ) :
     f^[n] x ∈ periodicOrbit f x := by
   simp [hx]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem exists_iterate_apply_eq_of_mem_periodicPts (hx : x ∈ periodicPts f) : ∃ n, f^[n] x = x := by
-  simpa only [← mem_periodicOrbit_iff hx] using iterate_mem_periodicOrbit hx 0
+  simpa! only [← mem_periodicOrbit_iff hx] using iterate_mem_periodicOrbit hx 0
 
 theorem self_mem_periodicOrbit (hx : x ∈ periodicPts f) : x ∈ periodicOrbit f x := by
   simp [hx]

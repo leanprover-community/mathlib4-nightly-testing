@@ -65,11 +65,10 @@ instance [Algebra T R] [Algebra.IsSeparable T R] :
 /- Note that `AbsoluteValue.tendsto_div_one_add_pow_nhds_one` would follow from the below
 result if `WithAbs v` had a topology for general value rings `S`. Currently `WithAbs v` only has
 a topology when `S = ℝ`. -/
-set_option backward.simpa.using.reducibleClose false in
 theorem tendsto_one_div_one_add_pow_nhds_one {v : AbsoluteValue R ℝ} {a : R} (ha : v a < 1) :
     Filter.atTop.Tendsto (fun n ↦ (equiv v).symm (1 / (1 + a ^ n))) (𝓝 1) := by
-  simpa using inv_one (G := WithAbs v) ▸ (tendsto_inv_iff₀ one_ne_zero).2
-    (tendsto_iff_norm_sub_tendsto_zero.2 <| by simpa using ha)
+  simpa! using inv_one (G := WithAbs v) ▸ (tendsto_inv_iff₀ one_ne_zero).2
+    (tendsto_iff_norm_sub_tendsto_zero.2 <| by simpa! using ha)
 
 end Field
 

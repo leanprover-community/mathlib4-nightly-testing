@@ -355,9 +355,8 @@ theorem cos_sub_cos : cos x - cos y = -2 * sin ((x + y) / 2) * sin ((x - y) / 2)
   rw [s1, s2]
   ring
 
-set_option backward.simpa.using.reducibleClose false in
 theorem sin_add_sin : sin x + sin y = 2 * sin ((x + y) / 2) * cos ((x - y) / 2) := by
-  simpa using sin_sub_sin x (-y)
+  simpa! using sin_sub_sin x (-y)
 
 theorem cos_add_cos : cos x + cos y = 2 * cos ((x + y) / 2) * cos ((x - y) / 2) := by
   calc

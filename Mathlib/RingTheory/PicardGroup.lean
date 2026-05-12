@@ -133,7 +133,6 @@ of `R`-modules. -/
   right_inv _ := rTensorInv_injective P Q e (by rw [LinearMap.toFun_eq_coe, rTensorInv_leftInverse])
 
 open LinearMap in
-set_option backward.simpa.using.reducibleClose false in
 /-- If there is an `R`-isomorphism between `M ⊗[R] N` and `R`,
 the induced map `M → Nᵛ` is an isomorphism. -/
 theorem bijective_curry : Function.Bijective (curry e.toLinearMap) := by
@@ -141,7 +140,7 @@ theorem bijective_curry : Function.Bijective (curry e.toLinearMap) := by
       rTensorHom N ∘ₗ (ringLmapEquivSelf R R M).symm.toLinearMap := by
     rw [← LinearEquiv.toLinearMap_symm_comp_eq]; ext
     simp [LinearEquiv.congrLeft, LinearEquiv.congrRight, LinearEquiv.arrowCongrAddEquiv]
-  simpa [this] using (rTensorEquiv R M <| TensorProduct.comm R N M ≪≫ₗ e).bijective
+  simpa! [this] using (rTensorEquiv R M <| TensorProduct.comm R N M ≪≫ₗ e).bijective
 
 /-- Given `M ⊗[R] N ≃ₗ[R] R`, this is the induced isomorphism `M ≃ₗ[R] Nᵛ`. -/
 noncomputable def linearEquivDual : M ≃ₗ[R] Dual R N := .ofBijective _ (bijective_curry e)
@@ -772,7 +771,6 @@ instance : Flat R (submoduleAlgebra e) := .of_linearEquiv (submoduleAlgebraEquiv
 instance [Module.Invertible R M] : Module.Invertible R (submoduleAlgebra e) :=
   .congr (submoduleAlgebraEquiv e).symm
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- When a flat `R`-module `M` is embedded as a submodule of a faithful `R`-algebra `A`,
 the multiplication map induces an isomorphism `A ⊗[R] M ≃ₗ[A] A`. -/
@@ -783,7 +781,7 @@ noncomputable def tensorSubmoduleAlgebraEquiv : A ⊗[R] submoduleAlgebra e ≃�
     refine x.induction_on (by simp) ?_ (by simp +contextual)
     intro a x
     obtain ⟨m, rfl⟩ := (submoduleAlgebraEquiv e).symm.surjective x
-    suffices a * toAlgebra e m = e (a ⊗ₜ[R] m) by simpa using this
+    suffices a * toAlgebra e m = e (a ⊗ₜ[R] m) by simpa! using this
     dsimp [toAlgebra]
     rw [map_one, ← smul_eq_mul, ← map_smul, smul_tmul', smul_eq_mul, mul_one]
 

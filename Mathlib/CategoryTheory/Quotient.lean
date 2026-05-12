@@ -179,12 +179,11 @@ noncomputable section
 
 variable {G : Type*} [Groupoid G] (r : HomRel G)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Inverse of a map in the quotient category of a groupoid. -/
 protected def inv {X Y : Quotient r} (f : X ⟶ Y) : Y ⟶ X :=
   Quot.liftOn f (fun f' => Quot.mk _ (Groupoid.inv f')) (fun _ _ con => by
     obtain ⟨_, _, a, f, g, b, hfg⟩ := con
-    simpa using (Quot.sound (HomRel.CompClosure.intro _ _
+    simpa! using (Quot.sound (HomRel.CompClosure.intro _ _
       (inv b ≫ inv g) _ _ (inv f ≫ inv a) hfg)).symm)
 
 @[simp]
@@ -223,10 +222,9 @@ protected theorem induction {P : ∀ {a b : Quotient r}, (a ⟶ b) → Prop}
   rintro ⟨x⟩ ⟨y⟩ ⟨f⟩
   exact h f
 
-set_option backward.simpa.using.reducibleClose false in
 protected theorem sound {a b : C} {f₁ f₂ : a ⟶ b} (h : r f₁ f₂) :
     (functor r).map f₁ = (functor r).map f₂ := by
-  simpa using Quot.sound (HomRel.CompClosure.intro _ _ (𝟙 a) f₁ f₂ (𝟙 b) h)
+  simpa! using Quot.sound (HomRel.CompClosure.intro _ _ (𝟙 a) f₁ f₂ (𝟙 b) h)
 
 set_option backward.isDefEq.respectTransparency false in
 theorem functor_map_eq_iff [h : Congruence r] {X Y : C} (f f' : X ⟶ Y) :

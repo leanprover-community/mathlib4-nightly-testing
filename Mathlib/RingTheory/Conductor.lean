@@ -39,9 +39,8 @@ variable {R} {x : S}
 theorem conductor_eq_of_eq {y : S} (h : (R<x> : Set S) = R<y>) : conductor R x = conductor R y :=
   Ideal.ext fun _ => forall_congr' fun _ => Set.ext_iff.mp h _
 
-set_option backward.simpa.using.reducibleClose false in
 theorem conductor_subset_adjoin : (conductor R x : Set S) ⊆ R<x> := fun y hy => by
-  simpa only [mul_one] using hy 1
+  simpa! only [mul_one] using hy 1
 
 theorem mem_conductor_iff {y : S} : y ∈ conductor R x ↔ ∀ b : S, y * b ∈ R<x> :=
   ⟨fun h => h, fun h => h⟩

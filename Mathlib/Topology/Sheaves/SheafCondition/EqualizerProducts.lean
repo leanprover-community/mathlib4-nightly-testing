@@ -188,7 +188,6 @@ namespace SheafConditionPairwiseIntersections
 
 open CategoryTheory.Pairwise CategoryTheory.Pairwise.Hom
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Implementation of `SheafConditionPairwiseIntersections.coneEquiv`. -/
@@ -208,12 +207,12 @@ def coneEquivFunctorObj (c : Cone ((diagram U).op ⋙ F)) :
         · dsimp
           ext ij
           rcases ij with ⟨i, j⟩
-          simpa [SheafConditionEqualizerProducts.leftRes]
+          simpa! [SheafConditionEqualizerProducts.leftRes]
             using c.π.naturality (Quiver.Hom.op (Hom.left i j))
         · dsimp
           ext ij
           rcases ij with ⟨i, j⟩
-          simpa [SheafConditionEqualizerProducts.rightRes]
+          simpa! [SheafConditionEqualizerProducts.rightRes]
             using c.π.naturality (Quiver.Hom.op (Hom.right i j))
         · dsimp
           ext

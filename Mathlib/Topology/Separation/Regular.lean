@@ -187,11 +187,10 @@ theorem hasBasis_nhds_closure (x : X) : (𝓝 x).HasBasis (fun s => s ∈ 𝓝 x
 theorem hasBasis_opens_closure (x : X) : (𝓝 x).HasBasis (fun s => x ∈ s ∧ IsOpen s) closure :=
   (nhds_basis_opens x).nhds_closure
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsCompact.exists_isOpen_closure_subset {K U : Set X} (hK : IsCompact K) (hU : U ∈ 𝓝ˢ K) :
     ∃ V, IsOpen V ∧ K ⊆ V ∧ closure V ⊆ U := by
   have hd : Disjoint (𝓝ˢ K) (𝓝ˢ Uᶜ) := by
-    simpa [hK.disjoint_nhdsSet_left, disjoint_nhds_nhdsSet,
+    simpa! [hK.disjoint_nhdsSet_left, disjoint_nhds_nhdsSet,
       ← subset_interior_iff_mem_nhdsSet] using hU
   rcases ((hasBasis_nhdsSet _).disjoint_iff (hasBasis_nhdsSet _)).1 hd
     with ⟨V, ⟨hVo, hKV⟩, W, ⟨hW, hUW⟩, hVW⟩

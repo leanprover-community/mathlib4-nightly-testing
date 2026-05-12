@@ -186,13 +186,12 @@ noncomputable def rTensorAlgEquiv :
     simp only [map_mul, rTensorAlgHom_apply_eq]
     rfl
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma rTensorAlgEquiv_apply (x : (MvPolynomial σ S) ⊗[R] N) :
     rTensorAlgEquiv x = rTensorAlgHom x := by
   rw [← AlgHom.coe_coe, ← AlgEquiv.toAlgHom_eq_coe]
   congr 1
-  ext _ d <;> simpa [rTensorAlgEquiv] using rTensor_apply_tmul_apply _ _ d
+  ext _ d <;> simpa! [rTensorAlgEquiv] using rTensor_apply_tmul_apply _ _ d
 
 /-- The tensor product of the polynomial algebra by an algebra
   is algebraically equivalent to a polynomial algebra with

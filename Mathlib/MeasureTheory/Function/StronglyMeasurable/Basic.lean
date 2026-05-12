@@ -937,10 +937,9 @@ lemma measurableSet_le (hf : StronglyMeasurable[m] f) (hg : StronglyMeasurable[m
   borelize (E × E)
   exact (hf.prodMk hg).measurable isClosed_le_prod.measurableSet
 
-set_option backward.simpa.using.reducibleClose false in
 lemma measurableSet_lt (hf : StronglyMeasurable[m] f) (hg : StronglyMeasurable[m] g) :
     MeasurableSet[m] {a | f a < g a} := by
-  simpa only [lt_iff_le_not_ge] using (hf.measurableSet_le hg).inter (hg.measurableSet_le hf).compl
+  simpa! only [lt_iff_le_not_ge] using (hf.measurableSet_le hg).inter (hg.measurableSet_le hf).compl
 
 lemma ae_le_trim_of_stronglyMeasurable (hm : m ≤ m₀) (hf : StronglyMeasurable[m] f)
     (hg : StronglyMeasurable[m] g) (hfg : f ≤ᵐ[μ] g) : f ≤ᵐ[μ.trim hm] g := by

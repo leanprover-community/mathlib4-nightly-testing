@@ -97,7 +97,6 @@ namespace leftRegular
 
 open Finsupp IsCyclic Representation
 
-set_option backward.simpa.using.reducibleClose false in
 lemma range_norm_eq_ker_applyAsHom_sub (hg : ∀ x, x ∈ Subgroup.zpowers g) :
     LinearMap.range (leftRegular k G).norm.hom.toLinearMap =
       LinearMap.ker (applyAsHom (leftRegular k G) g - 𝟙 _).hom.toLinearMap :=
@@ -105,7 +104,7 @@ lemma range_norm_eq_ker_applyAsHom_sub (hg : ∀ x, x ∈ Subgroup.zpowers g) :
     fun x hx => ⟨single 1 (x g), by
     ext
     have := apply_eq_of_leftRegular_eq_of_generator (k := k) g hg x
-      (by simpa [sub_hom, sub_eq_zero] using hx)
+      (by simpa! [sub_hom, sub_eq_zero] using hx)
     simp [norm, Representation.norm, this]⟩
 
 omit [Fintype G] in variable [Finite G] in
@@ -201,7 +200,6 @@ noncomputable def resolution.π (g : G) :
     ⟨leftRegularHom _ 1, (leftRegularHomEquiv _).injective <| by
     simp [homEquiv, sub_hom, applyAsHom]⟩
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma resolution_quasiIso (g : G) (hg : ∀ x, x ∈ Subgroup.zpowers g) :
@@ -213,7 +211,7 @@ lemma resolution_quasiIso (g : G) (hg : ∀ x, x ∈ Subgroup.zpowers g) :
       rw [ChainComplex.quasiIsoAt₀_iff, ShortComplex.quasiIso_iff_of_zeros' _ rfl rfl rfl]
       constructor
       · apply (forget₂ _ (ModuleCat k)).reflects_exact_of_faithful
-        simpa [ShortComplex.moduleCat_exact_iff_range_eq_ker,
+        simpa! [ShortComplex.moduleCat_exact_iff_range_eq_ker,
           HomologicalComplex.alternatingConst, ChainComplex.toSingle₀Equiv] using
           leftRegular.range_applyAsHom_sub_eq_ker_linearCombination k g hg
       · rw [Rep.epi_iff_surjective]
@@ -226,10 +224,10 @@ lemma resolution_quasiIso (g : G) (hg : ∀ x, x ∈ Subgroup.zpowers g) :
       apply (forget₂ _ (ModuleCat k)).reflects_exact_of_faithful
       rw [ShortComplex.moduleCat_exact_iff_range_eq_ker]
       by_cases hm : Odd (m + 1)
-      · simpa [if_pos (Nat.even_add_one.2 (Nat.not_even_iff_odd.2 hm)),
+      · simpa! [if_pos (Nat.even_add_one.2 (Nat.not_even_iff_odd.2 hm)),
           if_neg (Nat.not_even_iff_odd.2 hm)]
           using leftRegular.range_norm_eq_ker_applyAsHom_sub k g hg
-      · simpa [ShortComplex.moduleCat_exact_iff_range_eq_ker, if_pos (Nat.not_odd_iff_even.1 hm),
+      · simpa! [ShortComplex.moduleCat_exact_iff_range_eq_ker, if_pos (Nat.not_odd_iff_even.1 hm),
           if_neg (Nat.not_even_iff_odd.2 <| Nat.odd_add_one.2 hm)]
         using leftRegular.range_applyAsHom_sub_eq_ker_norm k g hg
 

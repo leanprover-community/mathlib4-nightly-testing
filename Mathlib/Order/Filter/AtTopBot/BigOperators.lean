@@ -22,7 +22,6 @@ open Filter Finset
 
 variable {α β M : Type*} [CommMonoid M]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Let `f` and `g` be two maps to the same commutative monoid. This lemma gives a sufficient
 condition for comparison of the filter `atTop.map (fun s ↦ ∏ b ∈ s, f b)` with
 `atTop.map (fun s ↦ ∏ b ∈ s, g b)`. This is useful to compare the set of limit points of
@@ -40,7 +39,7 @@ theorem Filter.map_atTop_finsetProd_le_of_prod_eq {f : α → M} {g : β → M}
     refine ((atTop_basis.map _).le_basis_iff (atTop_basis.map _)).2 fun b _ => ?_
     let ⟨v, hv⟩ := h_eq b
     refine ⟨v, trivial, ?_⟩
-    simpa [Finset.image_subset_iff] using hv
+    simpa! [Finset.image_subset_iff] using hv
 
 @[deprecated (since := "2026-04-08")]
 alias Filter.map_atTop_finset_sum_le_of_sum_eq := Filter.map_atTop_finsetSum_le_of_sum_eq

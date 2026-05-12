@@ -151,10 +151,9 @@ theorem isInt_dvd_true : {a b : ℤ} → {a' b' c : ℤ} →
     IsInt a a' → IsInt b b' → Int.mul a' c = b' → a ∣ b
   | _, _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, rfl => ⟨_, rfl⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isInt_dvd_false : {a b : ℤ} → {a' b' : ℤ} →
     IsInt a a' → IsInt b b' → Int.emod b' a' != 0 → ¬a ∣ b
-  | _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, e => mt Int.emod_eq_zero_of_dvd (by simpa using e)
+  | _, _, _, _, ⟨rfl⟩, ⟨rfl⟩, e => mt Int.emod_eq_zero_of_dvd (by simpa! using e)
 
 attribute [local instance] monadLiftOptionMetaM in
 /-- The `norm_num` extension which identifies expressions of the form `(a : ℤ) ∣ b`,

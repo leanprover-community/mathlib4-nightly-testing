@@ -240,7 +240,6 @@ lemma isIso_pushoutSection_of_isAffineOpen (hUS : IsAffineOpen US) (hUT : IsAffi
 
 set_option backward.isDefEq.respectTransparency false in
 open TensorProduct in
-set_option backward.simpa.using.reducibleClose false in
 lemma mono_pushoutSection_of_iSup_eq {ι : Type*} [Finite ι] (VX : ι → X.Opens) (hVU : iSup VX = UX)
     (hV : ∀ i, Mono (pushoutSection H hUST (show VX i ≤ _ by aesop) rfl))
     (hT : (f.appLE US UT hUST).hom.Flat) :
@@ -299,7 +298,7 @@ lemma mono_pushoutSection_of_iSup_eq {ι : Type*} [Finite ι] (VX : ι → X.Ope
       (Algebra.TensorProduct.map (AlgHom.id Γ(T, UT) Γ(T, UT)) ψ).toRingHom by
     refine .of_comp (f := ψY) ?_
     convert (hφ.comp hψ').comp e.commRingCatIsoToRingEquiv.injective
-    ext1 x; simpa using congr($this (e.hom x))
+    ext1 x; simpa! using congr($this (e.hom x))
   ext1
   · have H₁ : e.inv.hom.comp Algebra.TensorProduct.includeLeftRingHom =
         (pushout.inr (C := CommRingCat) _ _).hom :=

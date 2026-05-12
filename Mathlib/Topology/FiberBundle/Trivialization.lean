@@ -268,19 +268,18 @@ theorem apply_mk_symm (e : Pretrivialization F (π F E)) {b : B} (hb : b ∈ e.b
 
 end Zero
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The restriction of a pretrivialization to a subset of the base. -/
 @[simps toFun source target baseSet]
 noncomputable def restrictPreimage' (e : Pretrivialization F proj) (s : Set B)
     [Nonempty (s → F → proj ⁻¹' s)] : Pretrivialization F (s.restrictPreimage proj) where
   toFun z := (⟨proj z, z.2⟩, (e z).2)
   invFun x := by classical exact if h : (x.1.1, x.2) ∈ e.target then ⟨e.invFun (x.1, x.2), by
-      simpa only [mem_preimage, ← e.proj_toFun _ (e.map_target' h), e.right_inv' h] using x.1.2⟩
+      simpa! only [mem_preimage, ← e.proj_toFun _ (e.map_target' h), e.right_inv' h] using x.1.2⟩
     else Classical.arbitrary (s → F → _) x.1 x.2
   source := Subtype.val ⁻¹' e.source
   target := (Prod.map Subtype.val id) ⁻¹' e.target
   map_source' z hz := by
-    simpa only [Prod.map_apply, ← e.proj_toFun _ hz] using e.map_source' hz
+    simpa! only [Prod.map_apply, ← e.proj_toFun _ hz] using e.map_source' hz
   map_target' x hx := by
     simp only [mem_preimage, (Prod.map_apply), id_eq] at hx
     rw [dif_pos hx]; exact e.map_target' hx
@@ -828,7 +827,6 @@ noncomputable def restrictPreimage (e : Trivialization F proj) {s : Set B}
     ⟨⟨e.invFun ⟨z, f⟩, Set.mem_preimage.mpr <| (e.proj_symm_apply' hzb).symm ▸ hzs⟩⟩
   e.restrictPreimage' s
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Extend the total space of a trivialization from the preimage of a set to the whole space. -/
 @[simps! symm_apply source target baseSet]
 noncomputable def domExtend {s : Set B} (hps : IsOpen (proj ⁻¹' s))
@@ -839,7 +837,7 @@ noncomputable def domExtend {s : Set B} (hps : IsOpen (proj ⁻¹' s))
   continuousOn_toFun := Topology.IsInducing.subtypeVal.continuousOn_image_iff.mpr <| by
     convert e.continuousOn_toFun
     ext1 ⟨x, (hx : proj x ∈ s)⟩
-    simpa [Pretrivialization.domExtend] using dif_pos hx
+    simpa! [Pretrivialization.domExtend] using dif_pos hx
   continuousOn_invFun := continuous_subtype_val.comp_continuousOn <| by
     convert e.continuousOn_invFun
 

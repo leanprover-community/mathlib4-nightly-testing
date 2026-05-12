@@ -73,7 +73,6 @@ variable [Algebra R A] [Algebra R B]
 variable [IsScalarTower R A M] [IsScalarTower R B M]
 variable [SMulCommClass A B M]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A constructor for a subbimodule which demands closure under the two sets of scalars
 individually, rather than jointly via their tensor product.
 

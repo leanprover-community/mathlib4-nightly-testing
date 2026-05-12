@@ -234,12 +234,11 @@ The height of an element in a series is larger or equal to its index in the seri
 lemma index_le_height (p : LTSeries α) (i : Fin (p.length + 1)) : i ≤ height (p i) :=
   length_le_height_last (p := p.take i)
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 The coheight of an element in a series is larger or equal to its reverse index in the series.
 -/
 lemma rev_index_le_coheight (p : LTSeries α) (i : Fin (p.length + 1)) : i.rev ≤ coheight (p i) := by
-  simpa using index_le_height (α := αᵒᵈ) p.reverse i.rev
+  simpa! using index_le_height (α := αᵒᵈ) p.reverse i.rev
 
 /--
 In a maximally long series, i.e one as long as the height of the last element, the height of each
@@ -255,14 +254,13 @@ lemma height_eq_index_of_length_eq_height_last {p : LTSeries α} (h : p.length =
   lia
 
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /--
 In a maximally long series, i.e one as long as the coheight of the first element, the coheight of
 each element is its reverse index in the series.
 -/
 lemma coheight_eq_index_of_length_eq_head_coheight {p : LTSeries α} (h : p.length = coheight p.head)
     (i : Fin (p.length + 1)) : coheight (p i) = i.rev := by
-  simpa using height_eq_index_of_length_eq_height_last (α := αᵒᵈ) (p := p.reverse) (by simpa) i.rev
+  simpa! using height_eq_index_of_length_eq_height_last (α := αᵒᵈ) (p := p.reverse) (by simpa!) i.rev
 
 @[gcongr]
 lemma height_mono : Monotone (α := α) height :=
@@ -358,12 +356,11 @@ lemma height_orderIso (f : α ≃o β) (x : α) : height (f x) = height x := by
 lemma coheight_orderIso (f : α ≃o β) (x : α) : coheight (f x) = coheight x :=
   height_orderIso (α := αᵒᵈ) f.dual x
 
-set_option backward.simpa.using.reducibleClose false in
 private lemma exists_eq_iSup_of_iSup_eq_coe {α : Type*} [Nonempty α] {f : α → ℕ∞} {n : ℕ}
     (h : (⨆ x, f x) = n) : ∃ x, f x = n := by
   obtain ⟨x, hx⟩ := ENat.sSup_mem_of_nonempty_of_lt_top (h ▸ ENat.coe_lt_top _)
   use x
-  simpa [hx] using h
+  simpa! [hx] using h
 
 /-- There exists a series ending in an element for any length up to the element’s height. -/
 lemma exists_series_of_le_height (a : α) {n : ℕ} (h : n ≤ height a) :
@@ -775,9 +772,8 @@ lemma height_le_krullDim (a : α) : height a ≤ krullDim α := by
   simp only [WithBot.coe_le_coe]
   exact height_le fun p _ ↦ le_iSup_of_le p le_rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma coheight_le_krullDim (a : α) : coheight a ≤ krullDim α := by
-  simpa using height_le_krullDim (α := αᵒᵈ) a
+  simpa! using height_le_krullDim (α := αᵒᵈ) a
 
 @[simp]
 lemma _root_.LTSeries.height_last_longestOf [FiniteDimensionalOrder α] :
@@ -806,7 +802,6 @@ lemma krullDim_eq_iSup_height_of_nonempty [Nonempty α] : krullDim α = ↑(⨆ 
     apply iSup_le
     apply height_le_krullDim
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 The Krull dimension is the supremum of the elements' coheights.
 
@@ -1012,7 +1007,6 @@ lemma coheight_int (n : ℤ) : coheight n = ⊤ := coheight_of_noMaxOrder ..
 
 lemma krullDim_int : krullDim ℤ = ⊤ := krullDim_of_noMaxOrder ..
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma height_coe_withBot (x : α) : height (x : WithBot α) = height x + 1 := by
   apply le_antisymm
   · apply height_le
@@ -1026,13 +1020,13 @@ set_option backward.simpa.using.reducibleClose false in
         apply ne_bot_of_gt (b := p.head)
         apply p.strictMono
         exact compare_gt_iff_gt.mp rfl)
-      step := fun i => by simpa [WithBot.unbot_lt_iff] using p.step ⟨i + 1, by lia⟩ }
+      step := fun i => by simpa! [WithBot.unbot_lt_iff] using p.step ⟨i + 1, by lia⟩ }
     have hlast' : p'.last = x := by
       simp only [p', RelSeries.last, WithBot.unbot_eq_iff, ← hlast, Fin.last]
       congr
       lia
     suffices p'.length ≤ height p'.last by
-      simpa [p', hlast'] using this
+      simpa! [p', hlast'] using this
     apply length_le_height_last
   · rw [height_add_const]
     apply iSup₂_le

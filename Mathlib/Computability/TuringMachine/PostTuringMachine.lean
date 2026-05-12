@@ -760,7 +760,6 @@ def trCfg : Cfg Γ Λ σ → Cfg Bool (Λ' Γ Λ σ) σ
 
 variable {enc}
 
-set_option backward.simpa.using.reducibleClose false in
 theorem trTape'_move_left (L R : ListBlank Γ) :
     (Tape.move Dir.left)^[n] (trTape' enc0 L R) = trTape' enc0 L.tail (R.cons L.head) := by
   obtain ⟨a, L, rfl⟩ := L.exists_cons
@@ -769,7 +768,7 @@ theorem trTape'_move_left (L R : ListBlank Γ) :
       (Tape.move Dir.left)^[l₁.length]
       (Tape.mk' (ListBlank.append l₁ L') (ListBlank.append l₂ R')) =
       Tape.mk' L' (ListBlank.append (List.Vector.toList (enc a)) R') by
-    simpa only [List.length_reverse, Vector.toList_length] using this (List.reverse_reverse _).symm
+    simpa! only [List.length_reverse, Vector.toList_length] using this (List.reverse_reverse _).symm
   intro _ _ l₁ l₂ e
   induction l₁ generalizing l₂ with
   | nil => cases e; rfl
@@ -838,7 +837,6 @@ theorem stepAux_read (f : Γ → Stmt Bool (Λ' Γ Λ σ) σ) (v : σ) (L R : Li
       rfl
 
 variable {enc0} in
-set_option backward.simpa.using.reducibleClose false in
 theorem tr_respects :
     Respects (step M) (step (tr enc dec M)) fun c₁ c₂ ↦ trCfg enc enc0 c₁ = c₂ :=
   fun_respects.2 fun ⟨l₁, v, T⟩ ↦ by
@@ -865,7 +863,7 @@ theorem tr_respects :
       obtain ⟨a, R, rfl⟩ := R.exists_cons
       rw [tr, Tape.mk'_head, stepAux_write, ListBlank.head_cons, stepAux_move,
         trTape'_move_left enc0]
-      simpa using IH ..
+      simpa! using IH ..
     | load a q IH =>
       simp only [trNormal, stepAux_read dec enc0 encdec]
       apply IH

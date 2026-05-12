@@ -292,7 +292,6 @@ def εToSingle₀ :
     standardComplex k G ⟶ (ChainComplex.single₀ _).obj (Rep.trivial k G k) :=
   ((standardComplex k G).toSingle₀Equiv _).symm ⟨ε k G, d_comp_ε k G⟩
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 theorem εToSingle₀_comp_eq :
     ((forget₂ _ (ModuleCat.{u} k)).mapHomologicalComplex _).map (εToSingle₀ k G) ≫
@@ -300,7 +299,7 @@ theorem εToSingle₀_comp_eq :
       (forget₂ToModuleCatHomotopyEquiv k G).hom := by
   dsimp
   ext1
-  simpa using (forget₂ToModuleCatHomotopyEquiv_f_0_eq k G).symm
+  simpa! using (forget₂ToModuleCatHomotopyEquiv_f_0_eq k G).symm
 
 set_option backward.isDefEq.respectTransparency false in
 theorem quasiIso_forget₂_εToSingle₀ :

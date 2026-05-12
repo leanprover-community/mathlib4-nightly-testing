@@ -217,7 +217,6 @@ def weierstrassPExcept (l₀ : ℂ) (z : ℂ) : ℂ :=
 @[inherit_doc weierstrassPExcept]
 scoped notation3 "℘[" L:max " - " l₀ "]" => weierstrassPExcept L l₀
 
-set_option backward.simpa.using.reducibleClose false in
 lemma hasSumLocallyUniformly_weierstrassPExcept (l₀ : ℂ) :
     HasSumLocallyUniformly
       (fun (l : L.lattice) (z : ℂ) ↦ if l.1 = l₀ then 0 else (1 / (z - l) ^ 2 - 1 / l ^ 2))
@@ -227,7 +226,7 @@ lemma hasSumLocallyUniformly_weierstrassPExcept (l₀ : ℂ) :
     Filter.eventually_atTop.mpr ⟨2 * r, ?_⟩
   rintro _ h s hs l rfl
   split_ifs
-  · simpa using show 0 ≤ 10 * r * (‖↑l‖ ^ 3)⁻¹ by positivity
+  · simpa! using show 0 ≤ 10 * r * (‖↑l‖ ^ 3)⁻¹ by positivity
   · exact weierstrassP_bound r hr s hs l h
 
 lemma hasSum_weierstrassPExcept (l₀ : ℂ) (z : ℂ) :
@@ -310,13 +309,12 @@ lemma weierstrassP_neg (z : ℂ) : ℘[L] (-z) = ℘[L] z := by
   simp
   ring
 
-set_option backward.simpa.using.reducibleClose false in
 lemma not_continuousAt_weierstrassP (x : ℂ) (hx : x ∈ L.lattice) : ¬ ContinuousAt ℘[L] x := by
   eta_expand
   simp_rw [← L.weierstrassPExcept_add ⟨x, hx⟩]
   intro H
   apply (NormedField.continuousAt_zpow (n := -2) (x := (0 : ℂ))).not.mpr (by simp)
-  simpa [Function.comp_def] using
+  simpa! [Function.comp_def] using
     (((H.sub ((L.differentiableOn_weierstrassPExcept x).differentiableAt
       (L.compl_lattice_diff_singleton_mem_nhds x)).continuousAt).add
       (continuous_const (y := 1 / x ^ 2)).continuousAt).comp_of_eq
@@ -335,7 +333,6 @@ def derivWeierstrassPExcept (l₀ : ℂ) (z : ℂ) : ℂ :=
 @[inherit_doc derivWeierstrassPExcept]
 scoped notation3 "℘'[" L:max " - " l₀ "]" => derivWeierstrassPExcept L l₀
 
-set_option backward.simpa.using.reducibleClose false in
 lemma hasSumLocallyUniformly_derivWeierstrassPExcept (l₀ : ℂ) :
     HasSumLocallyUniformly (fun (l : L.lattice) (z : ℂ) ↦ if l.1 = l₀ then 0 else -2 / (z - l) ^ 3)
       ℘'[L - l₀] := by
@@ -344,7 +341,7 @@ lemma hasSumLocallyUniformly_derivWeierstrassPExcept (l₀ : ℂ) :
     Filter.eventually_atTop.mpr ⟨2 * r, ?_⟩
   rintro _ h s hs l rfl
   split_ifs
-  · simpa using show 0 ≤ ‖↑l‖ ^ 3 by positivity
+  · simpa! using show 0 ≤ ‖↑l‖ ^ 3 by positivity
   have : s ≠ ↑l := by rintro rfl; exfalso; linarith
   have : l ≠ 0 := by rintro rfl; simp_all; linarith
   simp only [Complex.norm_div, norm_neg, Complex.norm_ofNat, norm_pow]
@@ -355,8 +352,8 @@ lemma hasSumLocallyUniformly_derivWeierstrassPExcept (l₀ : ℂ) :
     refine le_trans ?_ (mul_le_mul le_rfl (norm_sub_norm_le _ _) (by linarith) (by linarith))
     norm_cast at *
     linarith
-  · exact pow_pos (by simpa [sub_eq_zero]) _
-  · exact Real.rpow_pos_of_pos (by simpa) _
+  · exact pow_pos (by simpa! [sub_eq_zero]) _
+  · exact Real.rpow_pos_of_pos (by simpa!) _
 
 lemma hasSum_derivWeierstrassPExcept (l₀ : ℂ) (z : ℂ) :
     HasSum (fun l : L.lattice ↦ if l.1 = l₀ then 0 else -2 / (z - l) ^ 3) (℘'[L - l₀] z) :=
@@ -647,7 +644,6 @@ lemma coeff_weierstrassPExceptSeries (l₀ x : ℂ) (i : ℕ) :
       simp [h₁, tsum_mul_left, sumInvPow, add_assoc,
         one_add_one_eq_two, ← zpow_natCast, -neg_add_rev]
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 In the power series expansion of `℘(z) = ∑ᵢ aᵢ (z - x)ⁱ` at some `x ∉ L`,
 each `aᵢ` can be written as a sum over `l ∈ L`, i.e.
@@ -832,11 +828,10 @@ lemma iteratedDeriv_derivWeierstrassPExcept_self (l : ℂ) {n : ℕ} :
   simp [div_eq_iff, Nat.factorial_ne_zero, Nat.factorial_succ] at this ⊢
   grind
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma deriv_derivWeierstrassPExcept_self (l : ℂ) :
     deriv ℘'[L - l] l = 6 * L.sumInvPow l 4 := by
-  simpa using L.iteratedDeriv_derivWeierstrassPExcept_self l (n := 1)
+  simpa! using L.iteratedDeriv_derivWeierstrassPExcept_self l (n := 1)
 
 lemma analyticOnNhd_derivWeierstrassP : AnalyticOnNhd ℂ ℘'[L] L.latticeᶜ :=
   L.differentiableOn_derivWeierstrassP.analyticOnNhd L.isClosed_lattice.isOpen_compl
@@ -1006,7 +1001,6 @@ private lemma iteratedDeriv_six_relation_mul_id_pow_six :
     show Nat.choose 6 4 = 15 by rfl, show Nat.choose 6 3 = 20 by rfl]
   ring
 
-set_option backward.simpa.using.reducibleClose false in
 attribute [local fun_prop] AnalyticAt.contDiffAt in
 private lemma analyticAt_relation_zero : AnalyticAt ℂ L.relation 0 := by
   refine .of_meromorphicOrderAt_pos (one_pos.trans_le ?_) (by simp [relation])
@@ -1014,12 +1008,12 @@ private lemma analyticAt_relation_zero : AnalyticAt ℂ L.relation 0 := by
     rw [meromorphicOrderAt_mul (by fun_prop) (by fun_prop),
       meromorphicOrderAt_pow (by fun_prop)] at this
     rw [← WithTop.add_le_add_iff_right (z := 6) (by simp)]
-    simpa [-add_le_add_iff_left_of_ne_top] using this
+    simpa! [-add_le_add_iff_left_of_ne_top] using this
   rw [AnalyticAt.meromorphicOrderAt_eq (by fun_prop)]
   refine ENat.monotone_map_iff.mpr Nat.mono_cast
     ((natCast_le_analyticOrderAt_iff_iteratedDeriv_eq_zero (by fun_prop)).mpr fun i hi₁ ↦ ?_)
   by_cases hi₂ : Odd i
-  · simpa [← CharZero.eq_neg_self_iff, hi₂, (show Even 6 by decide).neg_pow] using
+  · simpa! [← CharZero.eq_neg_self_iff, hi₂, (show Even 6 by decide).neg_pow] using
       (iteratedDeriv_comp_neg i (L.relation * id ^ 6) 0 :)
   by_cases hi₃ : i = 0
   · simp [hi₃]

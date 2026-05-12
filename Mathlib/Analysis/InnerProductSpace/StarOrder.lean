@@ -53,7 +53,6 @@ instance : NonnegSpectrumClass ℝ (H →L[𝕜] H) where
   quasispectrum_nonneg_of_nonneg f hf :=
     QuasispectrumRestricts.nnreal_iff.mp <| sub_zero f ▸ hf.spectrumRestricts
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Because this takes `ContinuousFunctionalCalculus ℝ (H →L[𝕜] H) IsSelfAdjoint` as an argument,
 and for the moment we only have this for `𝕜 := ℂ`, this is not registered as an instance. -/
 lemma instStarOrderedRingRCLike
@@ -72,7 +71,7 @@ lemma instStarOrderedRingRCLike
       induction hp using AddSubmonoid.closure_induction with
       | mem _ hf =>
         obtain ⟨f, rfl⟩ := hf
-        simpa using ContinuousLinearMap.IsPositive.adjoint_conj isPositive_one f
+        simpa! using ContinuousLinearMap.IsPositive.adjoint_conj isPositive_one f
       | zero => exact isPositive_zero
       | add f g _ _ hf hg => exact hf.add hg
 

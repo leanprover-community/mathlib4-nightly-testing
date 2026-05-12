@@ -220,9 +220,8 @@ def denest (hn : p.IsNested) : DyckWord where
     lia
 
 variable (p) in
-set_option backward.simpa.using.reducibleClose false in
 lemma nest_denest (hn) : (p.denest hn).nest = p := by
-  simpa [DyckWord.ext_iff] using p.cons_tail_dropLast_concat hn.1
+  simpa! [DyckWord.ext_iff] using p.cons_tail_dropLast_concat hn.1
 
 variable (p) in
 lemma denest_nest : p.nest.denest .nest = p := by
@@ -280,12 +279,11 @@ lemma firstReturn_lt_length : p.firstReturn < p.toList.length := by
     p.count_U_eq_count_D]⟩
 
 include h in
-set_option backward.simpa.using.reducibleClose false in
 lemma count_take_firstReturn_add_one :
     (p.toList.take (p.firstReturn + 1)).count U = (p.toList.take (p.firstReturn + 1)).count D := by
   have := findIdx_getElem
     (w := (length_range (n := p.toList.length)).symm ▸ firstReturn_lt_length h)
-  simpa using this
+  simpa! using this
 
 lemma count_D_lt_count_U_of_lt_firstReturn {i : ℕ} (hi : i < p.firstReturn) :
     (p.toList.take (i + 1)).count D < (p.toList.take (i + 1)).count U := by

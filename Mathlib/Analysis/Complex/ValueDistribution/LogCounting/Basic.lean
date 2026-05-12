@@ -419,14 +419,13 @@ counting function for the poles.
     logCounting (f + fun _ ↦ a₀) ⊤ = logCounting f ⊤ := by
   apply logCounting_add_analyticOn hf analyticOn_const
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 Special case of `logCounting_add_analyticOn`: Subtracting a constant does not change the logarithmic
 counting function for the poles.
 -/
 @[simp] theorem logCounting_sub_const (hf : Meromorphic f) :
     logCounting (f - fun _ ↦ a₀) ⊤ = logCounting f ⊤ := by
-  simpa [sub_eq_add_neg] using logCounting_add_const hf
+  simpa! [sub_eq_add_neg] using logCounting_add_const hf
 
 /-!
 ## Behaviour under Arithmetic Operations

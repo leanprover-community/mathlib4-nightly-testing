@@ -61,14 +61,13 @@ theorem integral_exp_neg_Ioi (c : ℝ) : (∫ x : ℝ in Ioi c, exp (-x)) = exp 
 theorem integral_exp_neg_Ioi_zero : (∫ x : ℝ in Ioi 0, exp (-x)) = 1 := by
   simpa only [neg_zero, exp_zero] using integral_exp_neg_Ioi 0
 
-set_option backward.simpa.using.reducibleClose false in
 theorem integrableOn_exp_mul_complex_Ioi {a : ℂ} (ha : a.re < 0) (c : ℝ) :
     IntegrableOn (fun x : ℝ => Complex.exp (a * x)) (Ioi c) := by
   refine (integrable_norm_iff ?_).mp ?_
   · apply Continuous.aestronglyMeasurable
     fun_prop
-  · simpa [Complex.norm_exp] using
-      (integrableOn_Ioi_comp_mul_left_iff (fun x => exp (-x)) c (a := -a.re) (by simpa)).mpr <|
+  · simpa! [Complex.norm_exp] using
+      (integrableOn_Ioi_comp_mul_left_iff (fun x => exp (-x)) c (a := -a.re) (by simpa!)).mpr <|
         integrableOn_exp_neg_Ioi _
 
 theorem integrableOn_exp_mul_complex_Iic {a : ℂ} (ha : 0 < a.re) (c : ℝ) :
@@ -76,17 +75,15 @@ theorem integrableOn_exp_mul_complex_Iic {a : ℂ} (ha : 0 < a.re) (c : ℝ) :
   simpa using Iff.mpr integrableOn_Iic_iff_integrableOn_Iio
     (integrableOn_exp_mul_complex_Ioi (a := -a) (by simpa) (-c)).comp_neg_Iio
 
-set_option backward.simpa.using.reducibleClose false in
 theorem integrableOn_exp_mul_Ioi {a : ℝ} (ha : a < 0) (c : ℝ) :
     IntegrableOn (fun x : ℝ => Real.exp (a * x)) (Ioi c) := by
-  have := Integrable.norm <| integrableOn_exp_mul_complex_Ioi (a := a) (by simpa using ha) c
-  simpa [Complex.norm_exp] using this
+  have := Integrable.norm <| integrableOn_exp_mul_complex_Ioi (a := a) (by simpa! using ha) c
+  simpa! [Complex.norm_exp] using this
 
-set_option backward.simpa.using.reducibleClose false in
 theorem integrableOn_exp_mul_Iic {a : ℝ} (ha : 0 < a) (c : ℝ) :
     IntegrableOn (fun x : ℝ => Real.exp (a * x)) (Iic c) := by
-  have := Integrable.norm <| integrableOn_exp_mul_complex_Iic (a := a) (by simpa using ha) c
-  simpa [Complex.norm_exp] using this
+  have := Integrable.norm <| integrableOn_exp_mul_complex_Iic (a := a) (by simpa! using ha) c
+  simpa! [Complex.norm_exp] using this
 
 theorem integral_exp_mul_complex_Ioi {a : ℂ} (ha : a.re < 0) (c : ℝ) :
     ∫ x : ℝ in Set.Ioi c, Complex.exp (a * x) = - Complex.exp (a * c) / a := by

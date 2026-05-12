@@ -49,16 +49,15 @@ theorem contMDiff_coe : CMDiff n ((↑) : ℍ → ℂ) :=
 theorem mdifferentiable_coe : MDiff ((↑) : ℍ → ℂ) :=
   contMDiff_coe.mdifferentiable one_ne_zero
 
-set_option backward.simpa.using.reducibleClose false in
 lemma contMDiffAt_ofComplex {z : ℂ} (hz : 0 < z.im) : CMDiffAt n ofComplex z := by
   rw [contMDiffAt_iff]
   constructor
   · -- continuity at z
     rw [ContinuousAt, nhds_induced, tendsto_comap_iff]
     refine Tendsto.congr' (eventuallyEq_coe_comp_ofComplex hz).symm ?_
-    simpa [ofComplex_apply_of_im_pos hz] using tendsto_id
+    simpa! [ofComplex_apply_of_im_pos hz] using tendsto_id
   · -- smoothness in local chart
-    simpa using contDiffAt_id.congr_of_eventuallyEq (eventuallyEq_coe_comp_ofComplex hz)
+    simpa! using contDiffAt_id.congr_of_eventuallyEq (eventuallyEq_coe_comp_ofComplex hz)
 
 lemma mdifferentiableAt_ofComplex {z : ℂ} (hz : 0 < z.im) : MDiffAt ofComplex z :=
   (contMDiffAt_ofComplex hz).mdifferentiableAt one_ne_zero
@@ -98,12 +97,11 @@ lemma contMDiff_denom_zpow (g : GL (Fin 2) ℝ) (k : ℤ) : CMDiff n (denom g ·
 lemma contMDiff_inv_denom (g : GL (Fin 2) ℝ) : CMDiff n (fun τ : ℍ ↦ (denom g τ)⁻¹) := by
   simpa using contMDiff_denom_zpow g (-1)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Each element of `GL(2, ℝ)⁺` defines a map of `C ^ n` manifolds `ℍ → ℍ`. -/
 lemma contMDiff_smul {g : GL (Fin 2) ℝ} (hg : 0 < g.det.val) : CMDiff n (fun τ : ℍ ↦ g • τ) := by
   intro τ
   refine contMDiffAt_iff_target.mpr ⟨(continuous_const_smul g).continuousAt, ?_⟩
-  simpa [glPos_smul_def hg] using (contMDiff_num g τ).mul (contMDiff_inv_denom g τ)
+  simpa! [glPos_smul_def hg] using (contMDiff_num g τ).mul (contMDiff_inv_denom g τ)
 
 lemma mdifferentiable_num (g : GL (Fin 2) ℝ) : MDiff (fun τ : ℍ ↦ num g τ) :=
   (contMDiff_num g).mdifferentiable one_ne_zero
@@ -180,12 +178,11 @@ lemma deriv_smul_ne_zero {g : GL (Fin 2) ℝ} (hg : 0 < g.val.det) (τ : ℍ) :
   · exact_mod_cast hg.ne'
   · exact pow_ne_zero _ (denom_ne_zero g τ)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma analyticAt_smul {g : GL (Fin 2) ℝ} (hg : 0 < g.val.det) (τ : ℍ) :
     AnalyticAt ℂ (fun z ↦ ↑(g • ofComplex z) : ℂ → ℂ) τ := by
   refine DifferentiableOn.analyticAt (fun z hz ↦ ?_) (isOpen_upperHalfPlaneSet.mem_nhds τ.im_pos)
   apply DifferentiableAt.differentiableWithinAt
-  simpa [mdifferentiableAt_iff] using
+  simpa! [mdifferentiableAt_iff] using
     (mdifferentiable_coe.comp <| (mdifferentiable_smul hg)).mdifferentiableAt (x := ⟨z, hz⟩)
 
 lemma meromorphicOrderAt_comp_smul {f : ℍ → ℂ} {τ : ℍ} {g : GL (Fin 2) ℝ} (hg : 0 < g.val.det) :

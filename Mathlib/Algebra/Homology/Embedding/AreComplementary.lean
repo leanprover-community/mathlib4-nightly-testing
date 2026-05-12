@@ -226,21 +226,19 @@ lemma snd_inj {i₁ : ι₁} {i₂ i₂' : ι₂} (h : ac.Boundary i₁ i₂) (h
 
 variable (ac)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma exists₁ {i₁ : ι₁} (h : e₁.BoundaryLE i₁) :
     ∃ i₂, ac.Boundary i₁ i₂ := by
   obtain ⟨h₁, h₂⟩ := h
   obtain ⟨i₂, hi₂⟩ := ac.exists_i₂ (c.next (e₁.f i₁))
-    (fun i₁' hi₁' => h₂ i₁' (by simpa only [← hi₁'] using h₁))
-  exact ⟨i₂, by simpa only [hi₂] using h₁⟩
+    (fun i₁' hi₁' => h₂ i₁' (by simpa! only [← hi₁'] using h₁))
+  exact ⟨i₂, by simpa! only [hi₂] using h₁⟩
 
-set_option backward.simpa.using.reducibleClose false in
 lemma exists₂ {i₂ : ι₂} (h : e₂.BoundaryGE i₂) :
     ∃ i₁, ac.Boundary i₁ i₂ := by
   obtain ⟨h₁, h₂⟩ := h
   obtain ⟨i₁, hi₁⟩ := ac.exists_i₁ (c.prev (e₂.f i₂))
-    (fun i₂' hi₂' => h₂ i₂' (by simpa only [← hi₂'] using h₁))
-  exact ⟨i₁, by simpa only [hi₁] using h₁⟩
+    (fun i₂' hi₂' => h₂ i₂' (by simpa! only [← hi₂'] using h₁))
+  exact ⟨i₁, by simpa! only [hi₁] using h₁⟩
 
 /-- If `ac : AreComplementary e₁ e₂` (with `e₁ : ComplexShape.Embedding c₁ c` and
 `e₂ : ComplexShape.Embedding c₂ c`), and `i₁` belongs to `e₁.BoundaryLE`,

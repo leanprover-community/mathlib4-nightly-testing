@@ -642,10 +642,9 @@ theorem IsIdempotentElem.range_eq_ker_one_sub {E : Type*} [AddCommGroup E] [Modu
   range_eq_ker hp
 
 open LinearMap in
-set_option backward.simpa.using.reducibleClose false in
 theorem IsIdempotentElem.ker_eq_range {E : Type*} [AddCommGroup E] [Module S E]
     {p : E →ₗ[S] E} (hp : IsIdempotentElem p) : LinearMap.ker p = LinearMap.range (id - p) := by
-  simpa using hp.one_sub.range_eq_ker_one_sub.symm
+  simpa! using hp.one_sub.range_eq_ker_one_sub.symm
 
 theorem IsIdempotentElem.ker_eq_range_one_sub {E : Type*} [AddCommGroup E] [Module S E]
     {p : E →ₗ[S] E} (hp : IsIdempotentElem p) : LinearMap.ker p = LinearMap.range (1 - p) :=

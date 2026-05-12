@@ -119,7 +119,6 @@ theorem gaussNorm_coe_powerSeries (hc : 0 ≤ c) :
       rw [hi]
       exact le_ciSup (aux_bdd v p) i
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `v x = 0 → x = 0` for all `x : R` and `v` is nonnegative, then the Gauss norm is zero if and
 only if the polynomial is zero. -/
 @[simp]
@@ -127,7 +126,7 @@ theorem gaussNorm_eq_zero_iff (h_eq_zero : ∀ x : R, v x = 0 → x = 0) (hc : 0
     p.gaussNorm v c = 0 ↔ p = 0 := by
   rw [← gaussNorm_coe_powerSeries _ _ (le_of_lt hc)]
   convert PowerSeries.gaussNorm_eq_zero_iff v c p (by grind) (by simp) h_eq_zero hc
-    (by simpa [PowerSeries.HasGaussNorm] using aux_bdd v p)
+    (by simpa! [PowerSeries.HasGaussNorm] using aux_bdd v p)
   exact Iff.symm coe_eq_zero_iff
 
 omit [ZeroHomClass F R ℝ] in
@@ -136,11 +135,10 @@ theorem gaussNorm_nonneg (hc : 0 ≤ c) : 0 ≤ p.gaussNorm v c := by
   by_cases hp : p.support.Nonempty <;>
   simp_all [gaussNorm, sup'_nonneg_of_ne_zero, -Finset.le_sup'_iff]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma le_gaussNorm (hc : 0 ≤ c) (i : ℕ) : v (p.coeff i) * c ^ i ≤ p.gaussNorm v c := by
   rw [← gaussNorm_coe_powerSeries _ _ hc, ← coeff_coe]
   apply PowerSeries.le_gaussNorm
-  simpa [PowerSeries.HasGaussNorm] using aux_bdd v p
+  simpa! [PowerSeries.HasGaussNorm] using aux_bdd v p
 
 @[simp]
 lemma gaussNorm_zero_right : p.gaussNorm v 0 = v (p.coeff 0) := by

@@ -43,17 +43,16 @@ instance mopMonObj : MonObj (mop M) where
     simp
 
 variable {M} in
-set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is a morphism of monoid objects internal to `C`,
 then `f.mop` is a morphism of monoid objects internal to `Cᴹᵒᵖ`. -/
 instance mop_isMonHom {N : C} [MonObj N]
     (f : M ⟶ N) [IsMonHom f] : IsMonHom f.mop where
   mul_hom := by
     apply mopEquiv C |>.fullyFaithfulInverse.map_injective
-    simpa [-IsMonHom.mul_hom] using IsMonHom.mul_hom f
+    simpa! [-IsMonHom.mul_hom] using IsMonHom.mul_hom f
   one_hom := by
     apply mopEquiv C |>.fullyFaithfulInverse.map_injective
-    simpa [-IsMonHom.one_hom] using IsMonHom.one_hom f
+    simpa! [-IsMonHom.one_hom] using IsMonHom.one_hom f
 
 end mop
 
@@ -78,17 +77,16 @@ instance unmopMonObj : MonObj (unmop M) where
     simp
 
 variable {M} in
-set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is a morphism of monoid objects internal to `Cᴹᵒᵖ`,
 so is `f.unmop`. -/
 instance unmop_isMonHom {N : Cᴹᵒᵖ} [MonObj N]
     (f : M ⟶ N) [IsMonHom f] : IsMonHom f.unmop where
   mul_hom := by
     apply mopEquiv C |>.fullyFaithfulFunctor.map_injective
-    simpa [-IsMonHom.mul_hom] using IsMonHom.mul_hom f
+    simpa! [-IsMonHom.mul_hom] using IsMonHom.mul_hom f
   one_hom := by
     apply mopEquiv C |>.fullyFaithfulFunctor.map_injective
-    simpa [-IsMonHom.one_hom] using IsMonHom.one_hom f
+    simpa! [-IsMonHom.one_hom] using IsMonHom.one_hom f
 
 end unmop
 

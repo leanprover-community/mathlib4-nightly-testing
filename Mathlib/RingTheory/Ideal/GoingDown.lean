@@ -131,7 +131,6 @@ lemma trans (T : Type*) [CommRing T] [Algebra R T] [Algebra S T] [IsScalarTower 
   · rwa [← iff_generalizingMap_primeSpectrumComap]
   · rwa [← iff_generalizingMap_primeSpectrumComap]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If for every prime of `S`, the map `Spec Sₚ → Spec Rₚ` is surjective,
 the algebra satisfies going down. -/
 lemma of_comap_localRingHom_surjective
@@ -146,7 +145,7 @@ lemma of_comap_localRingHom_surjective
     refine ⟨Pl.under S, ?_, Ideal.IsPrime.under S Pl, ⟨?_⟩⟩
     · exact (IsLocalization.AtPrime.orderIsoOfPrime _ Q ⟨Pl, inferInstance⟩).2.2
     · let := Localization.AtPrime.algebraOfLiesOver (Q.under R) Q
-      replace hl : Pl.under _ = pl := by simpa [PrimeSpectrum.ext_iff] using hl
+      replace hl : Pl.under _ = pl := by simpa! [PrimeSpectrum.ext_iff] using hl
       rw [Ideal.under_under, ← Ideal.under_under (B := (Localization.AtPrime <| Q.under R)) Pl, hl,
         Ideal.under_map_of_isLocalizationAtPrime (Q.under R) hlt.le]
 

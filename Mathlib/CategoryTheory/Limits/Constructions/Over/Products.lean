@@ -75,7 +75,6 @@ def pullbackConeEquivBinaryFan : PullbackCone f g ≌ BinaryFan (Over.mk f) (.mk
     (by intros; ext; simp [BinaryFan.ext])
   functor_unitIso_comp c := by ext; simp [BinaryFan.ext]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- A binary fan in `Over X` is a limit if its corresponding pullback cone to `X` is a limit. -/
 -- `IsLimit.ofConeEquiv` isn't used here because the lift it defines is `𝟙 _ ≫ pullback.lift`.
@@ -87,15 +86,14 @@ def IsLimit.pullbackConeEquivBinaryFanFunctor {c : PullbackCone f g} (hc : IsLim
     -- TODO: Drop `BinaryFan.IsLimit.lift'`. Instead provide the lemmas it bundles separately.
     -- TODO: Define `abbrev BinaryFan.IsLimit (c : BinaryFan X Y) := IsLimit c` for dot notation?
     (fun s ↦ Over.homMk (hc.lift <| pullbackConeEquivBinaryFan.inverse.obj s) <| by
-      simpa using s.fst.w)
+      simpa! using s.fst.w)
     (fun s ↦ Over.OverMorphism.ext (hc.fac _ _)) (fun s ↦ Over.OverMorphism.ext (hc.fac _ _))
     fun s m e₁ e₂ ↦ by
       ext1
       apply PullbackCone.IsLimit.hom_ext hc
-      · simpa using congr(($e₁).left)
-      · simpa using congr(($e₂).left)
+      · simpa! using congr(($e₁).left)
+      · simpa! using congr(($e₂).left)
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A pullback cone to `X` is a limit if its corresponding binary fan in `Over X` is a limit. -/
 -- This could also be `(IsLimit.ofConeEquiv pullbackConeEquivBinaryFan.symm).symm hc`, but possibly
@@ -105,13 +103,13 @@ def IsLimit.pullbackConeEquivBinaryFanInverse {c : BinaryFan (Over.mk f) (.mk g)
   PullbackCone.IsLimit.mk
     (c.fst.w.trans c.snd.w.symm)
     (fun s ↦ (hc.lift <| pullbackConeEquivBinaryFan.functor.obj s).left)
-    (fun s ↦ by simpa only using congr($(hc.fac _ _).left))
-    (fun s ↦ by simpa only using congr($(hc.fac _ _).left))
+    (fun s ↦ by simpa! only using congr($(hc.fac _ _).left))
+    (fun s ↦ by simpa! only using congr($(hc.fac _ _).left))
     <| fun s m hm₁ hm₂ ↦ by
       change PullbackCone f g at s
       have := hc.uniq (pullbackConeEquivBinaryFan.functor.obj s) (Over.homMk m <| by
         simp [← hm₁, dsimp% c.fst.w])
-        (by rintro (_ | _) <;> ext <;> simpa)
+        (by rintro (_ | _) <;> ext <;> simpa!)
       exact congr(($this).left)
 
 end Over
@@ -138,7 +136,6 @@ def pushoutCoconeEquivBinaryCofan : PushoutCocone f g ≌ BinaryCofan (Under.mk 
     (by intros; ext; simp)
   functor_unitIso_comp c := by ext; simp
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- A binary cofan in `Under X` is a colimit if its corresponding pushout cocone from `X` is a
 colimit. -/
@@ -150,15 +147,14 @@ def IsColimit.pushoutCoconeEquivBinaryCofanFunctor {c : PushoutCocone f g} (hc :
   BinaryCofan.isColimitMk
     (fun s ↦ Under.homMk
       (hc.desc (PushoutCocone.mk s.inl.right s.inr.right (s.inl.w.trans s.inr.w.symm))) <| by
-        simpa using s.inl.w)
+        simpa! using s.inl.w)
     (fun s ↦ Under.UnderMorphism.ext (hc.fac _ _)) (fun s ↦ Under.UnderMorphism.ext (hc.fac _ _))
       fun s m e₁ e₂ ↦ by
     ext1
     refine PushoutCocone.IsColimit.hom_ext hc ?_ ?_
-    · simpa using congr(($e₁).right)
-    · simpa using congr(($e₂).right)
+    · simpa! using congr(($e₁).right)
+    · simpa! using congr(($e₂).right)
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A pushout cocone from `X` is a colimit if its corresponding binary cofan in `Under X` is a
 colimit. -/
@@ -169,13 +165,13 @@ def IsColimit.pushoutCoconeEquivBinaryCofanInverse {c : BinaryCofan (Under.mk f)
   PushoutCocone.IsColimit.mk
     (c.inl.w.trans c.inr.w.symm)
     (fun s ↦ (hc.desc <| pushoutCoconeEquivBinaryCofan.functor.obj s).right)
-    (fun s ↦ by simpa only using congr($(hc.fac _ _).right))
-    (fun s ↦ by simpa only using congr($(hc.fac _ _).right))
+    (fun s ↦ by simpa! only using congr($(hc.fac _ _).right))
+    (fun s ↦ by simpa! only using congr($(hc.fac _ _).right))
     <| fun s m hm₁ hm₂ ↦ by
       change PushoutCocone f g at s
       have := hc.uniq (pushoutCoconeEquivBinaryCofan.functor.obj s) (Under.homMk m <| by
         simp [← hm₁, dsimp% c.inl.w_assoc])
-        (by rintro (_ | _) <;> ext <;> simpa)
+        (by rintro (_ | _) <;> ext <;> simpa!)
       exact congr(($this).right)
 
 end Under

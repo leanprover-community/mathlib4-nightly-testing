@@ -305,7 +305,6 @@ lemma projectiveDimension_eq_bot_iff (X : C) :
   rw [← hasProjectiveDimensionLT_zero_iff_isZero, ← projectiveDimension_lt_iff,
     Nat.cast_zero, ← WithBot.lt_coe_bot, bot_eq_zero', WithBot.coe_zero]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma projectiveDimension_ne_top_iff (X : C) :
     projectiveDimension X ≠ ⊤ ↔ ∃ n, HasProjectiveDimensionLE X n := by
   generalize hd : projectiveDimension X = d
@@ -323,7 +322,7 @@ lemma projectiveDimension_ne_top_iff (X : C) :
       exact ENat.coe_ne_top _ ((WithBot.coe_eq_coe).1 hn)
     | coe d =>
       simp only [ne_eq, WithBot.coe_eq_top, ENat.coe_ne_top, not_false_eq_true, true_iff]
-      exact ⟨d, by simpa only [← projectiveDimension_le_iff] using hd.le⟩
+      exact ⟨d, by simpa! only [← projectiveDimension_le_iff] using hd.le⟩
 
 lemma projectiveDimension_eq_zero_iff (X : C) :
     projectiveDimension X = 0 ↔ Projective X ∧ ¬ Limits.IsZero X := by

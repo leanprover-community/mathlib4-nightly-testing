@@ -140,14 +140,13 @@ Differences of harmonic functions are harmonic.
 theorem HarmonicOnNhd.sub (h₁ : HarmonicOnNhd f₁ s) (h₂ : HarmonicOnNhd f₂ s) :
     HarmonicOnNhd (f₁ - f₂) s := fun x hx ↦ (h₁ x hx).sub (h₂ x hx)
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 The negative of a harmonic function is harmonic.
 -/
 theorem HarmonicAt.neg (h : HarmonicAt f x) :
     HarmonicAt (-f) x := by
   constructor
-  · simpa using h.1.neg
+  · simpa! using h.1.neg
   · filter_upwards [h.2] with x hx
     simp_all [laplacian_neg]
 

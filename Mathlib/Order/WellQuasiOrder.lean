@@ -82,7 +82,6 @@ theorem WellQuasiOrdered.prod [IsPreorder α r] (hr : WellQuasiOrdered r) (hs : 
   obtain ⟨m, n, h, hf⟩ := hs (Prod.snd ∘ f ∘ g)
   exact ⟨g m, g n, g.strictMono h, h₁ _ _ h.le, hf⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A version of **Dickson's lemma**: the Pi type `∀ i : ι, α i` is well-quasi-ordered when `ι` is
 finite and each `σ i` is well-quasi-ordered. See `Set.PartiallyWellOrderedOn.pi` for the finite
 product of well-quasi-ordered sets and `Pi.wellQuasiOrderedLE` when the relation is `≤`. -/
@@ -97,7 +96,7 @@ theorem WellQuasiOrdered.pi {ι : Type*} {α : ι → Type*} [Finite ι] {r : �
     ∃ g : ℕ ↪o ℕ, ∀ ⦃a b : ℕ⦄, a ≤ b → ∀ i, i ∈ s → r i ((f ∘ g) a i) ((f ∘ g) b i) by
     rw [wellQuasiOrdered_iff_exists_monotone_subseq]
     intro f
-    simpa only [Finset.mem_univ, true_imp_iff] using this Finset.univ f
+    simpa! only [Finset.mem_univ, true_imp_iff] using this Finset.univ f
   refine Finset.cons_induction ?_ ?_
   · intro f
     exists RelEmbedding.refl (· ≤ ·)

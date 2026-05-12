@@ -34,13 +34,12 @@ instance : CoeSort (Under R) (Type u) where
 
 instance (A : Under R) : Algebra R A := RingHom.toAlgebra A.hom.hom
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Turn a morphism in `Under R` into an algebra homomorphism. -/
 def toAlgHom {A B : Under R} (f : A ⟶ B) : A →ₐ[R] B where
   __ := f.right.hom
   commutes' a := by
     have : (A.hom ≫ f.right) a = B.hom a := by simp
-    simpa only [Functor.const_obj_obj, Functor.id_obj, CommRingCat.comp_apply] using this
+    simpa! only [Functor.const_obj_obj, Functor.id_obj, CommRingCat.comp_apply] using this
 
 @[simp]
 lemma toAlgHom_id (A : Under R) : toAlgHom (𝟙 A) = AlgHom.id R A := rfl

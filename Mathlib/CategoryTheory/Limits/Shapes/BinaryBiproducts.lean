@@ -141,14 +141,13 @@ def functoriality : BinaryBicone P Q ⥤ BinaryBicone (F.obj P) (F.obj Q) where
       winl := by simp [-BinaryBiconeMorphism.winl, ← f.winl]
       winr := by simp [-BinaryBiconeMorphism.winr, ← f.winr] }
 
-set_option backward.simpa.using.reducibleClose false in
 instance functoriality_full [F.Full] [F.Faithful] : (functoriality P Q F).Full where
   map_surjective t :=
    ⟨{ hom := F.preimage t.hom
-      winl := F.map_injective (by simpa using t.winl)
-      winr := F.map_injective (by simpa using t.winr)
-      wfst := F.map_injective (by simpa using t.wfst)
-      wsnd := F.map_injective (by simpa using t.wsnd) }, by cat_disch⟩
+      winl := F.map_injective (by simpa! using t.winl)
+      winr := F.map_injective (by simpa! using t.winr)
+      wfst := F.map_injective (by simpa! using t.wfst)
+      wsnd := F.map_injective (by simpa! using t.wsnd) }, by cat_disch⟩
 
 instance functoriality_faithful [F.Faithful] : (functoriality P Q F).Faithful where
   map_injective {_X} {_Y} f g h :=

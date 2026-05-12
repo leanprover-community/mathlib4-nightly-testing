@@ -102,12 +102,11 @@ theorem mem_convexHull_erase [DecidableEq E] {t : Finset E} (h : ¬AffineIndepen
 
 variable {s : Set E} {x : E}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a point `x` in the convex hull of a set `s`, this is a finite subset of `s` of minimum
 cardinality, whose convex hull contains `x`. -/
 noncomputable def minCardFinsetOfMemConvexHull (hx : x ∈ convexHull 𝕜 s) : Finset E :=
   Function.argminOn Finset.card { t | ↑t ⊆ s ∧ x ∈ convexHull 𝕜 (t : Set E) } <| by
-    simpa only [convexHull_eq_union_convexHull_finite_subsets s, exists_prop, mem_iUnion] using hx
+    simpa! only [convexHull_eq_union_convexHull_finite_subsets s, exists_prop, mem_iUnion] using hx
 
 variable (hx : x ∈ convexHull 𝕜 s)
 

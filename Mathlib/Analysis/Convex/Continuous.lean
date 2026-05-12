@@ -110,7 +110,6 @@ lemma ConcaveOn.isBoundedUnder_abs (hf : ConcaveOn ℝ C f) {x₀ : E} (hC : C �
     (𝓝 x₀).IsBoundedUnder (· ≤ ·) |f| ↔ (𝓝 x₀).IsBoundedUnder (· ≥ ·) f := by
   simpa [Pi.neg_def, Pi.abs_def] using hf.neg.isBoundedUnder_abs hC
 
-set_option backward.simpa.using.reducibleClose false in
 lemma ConvexOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : ConvexOn ℝ C f) : TFAE [
     LocallyLipschitzOn C f,
     ContinuousOn f C,
@@ -124,13 +123,13 @@ lemma ConvexOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : Convex
     exact fun h ↦ ⟨x₀, hx₀, h.continuousAt <| hC.mem_nhds hx₀⟩
   tfae_have 3 → 4
   | ⟨x₀, hx₀, h⟩ =>
-    ⟨x₀, hx₀, f x₀ + 1, by simpa using h.eventually (eventually_le_nhds (by simp))⟩
+    ⟨x₀, hx₀, f x₀ + 1, by simpa! using h.eventually (eventually_le_nhds (by simp))⟩
   tfae_have 4 → 5
   | ⟨x₀, hx₀, r, hr⟩, x, hx => by
     have : ∀ᶠ δ in 𝓝 (0 : ℝ), (1 - δ)⁻¹ • x - (δ / (1 - δ)) • x₀ ∈ C := by
       have h : ContinuousAt (fun δ : ℝ ↦ (1 - δ)⁻¹ • x - (δ / (1 - δ)) • x₀) 0 := by
         fun_prop (disch := norm_num)
-      exact h (by simpa using hC.mem_nhds hx)
+      exact h (by simpa! using hC.mem_nhds hx)
     obtain ⟨δ, hδ₀, hy, hδ₁⟩ := (this.and <| eventually_lt_nhds zero_lt_one).exists_gt
     set y := (1 - δ)⁻¹ • x - (δ / (1 - δ)) • x₀
     refine ⟨max r (f y), ?_⟩
@@ -143,7 +142,7 @@ lemma ConvexOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : Convex
     let w := δ⁻¹ • (z - y) + y
     have hwyz : δ • w + (1 - δ) • y = z := by simp [w, hδ₀.ne', sub_smul]
     have hw : dist w x₀ < ε := by
-      simpa [w, ← hx₀', dist_smul₀, abs_of_nonneg, hδ₀.le, inv_mul_lt_iff₀', hδ₀]
+      simpa! [w, ← hx₀', dist_smul₀, abs_of_nonneg, hδ₀.le, inv_mul_lt_iff₀', hδ₀]
     calc
       f z ≤ max (f w) (f y) :=
         hf.le_max_of_mem_segment (hr hw).2 hy ⟨_, _, hδ₀.le, sub_nonneg.2 hδ₁.le, by simp, hwyz⟩
@@ -155,8 +154,8 @@ lemma ConvexOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : Convex
     obtain ⟨ε, hε, hεD⟩ := Metric.mem_nhds_iff.1 <| Filter.inter_mem (hC.mem_nhds hx) hr
     simp only [preimage_setOf_eq, Pi.abs_apply, subset_inter_iff, hC.nhdsWithin_eq hx] at hεD ⊢
     obtain ⟨K, hK⟩ := exists_lipschitzOnWith_of_isBounded (hf.subset hεD.1 (convex_ball ..))
-      (half_lt_self hε) <| isBounded_iff_forall_norm_le.2 ⟨r, by simpa using hεD.2⟩
-    exact ⟨K, _, ball_mem_nhds _ (by simpa), hK⟩
+      (half_lt_self hε) <| isBounded_iff_forall_norm_le.2 ⟨r, by simpa! using hεD.2⟩
+    exact ⟨K, _, ball_mem_nhds _ (by simpa!), hK⟩
   tfae_finish
 
 lemma ConcaveOn.continuousOn_tfae (hC : IsOpen C) (hC' : C.Nonempty) (hf : ConcaveOn ℝ C f) : TFAE [

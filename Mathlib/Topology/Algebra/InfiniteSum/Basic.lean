@@ -389,7 +389,6 @@ theorem Multipliable.compl_add {s : Set β} (hs : Multipliable (f ∘ (↑) : (s
     (hsc : Multipliable (f ∘ (↑) : s → α)) : Multipliable f :=
   (hs.hasProd.compl_mul hsc.hasProd).multipliable
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Version of `HasProd.update` for `CommMonoid` rather than `CommGroup`.
 Rather than showing that `f.update` has a specific product in terms of `HasProd`,
 it gives a relationship between the products of `f` and `f.update` given that both exist. -/
@@ -403,7 +402,7 @@ theorem HasProd.update' [L.LeAtTop] [L.NeBot] {α : Type*} [TopologicalSpace α]
   have : ∀ b', f b' * ite (b' = b) x 1 = update f b x b' * ite (b' = b) (f b) 1 := by
     intro b'
     split_ifs with hb'
-    · simpa only [Function.update_apply, hb', eq_self_iff_true] using mul_comm (f b) x
+    · simpa! only [Function.update_apply, hb', eq_self_iff_true] using mul_comm (f b) x
     · simp only [Function.update_apply, hb', if_false]
   have h := hf.mul (hasProd_ite_eq b x L)
   simp_rw [this] at h

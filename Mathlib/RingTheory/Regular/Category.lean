@@ -51,8 +51,7 @@ instance smulShortComplex_g_epi (r : R) : Epi (smulShortComplex M r).g := by
 end ModuleCat
 
 variable {M} in
-set_option backward.simpa.using.reducibleClose false in
 lemma IsSMulRegular.smulShortComplex_shortExact {r : R} (reg : IsSMulRegular M r) :
     (ModuleCat.smulShortComplex M r).ShortExact where
   exact := ModuleCat.smulShortComplex_exact M r
-  mono_f := by simpa [ModuleCat.smulShortComplex, ModuleCat.mono_iff_injective] using reg
+  mono_f := by simpa! [ModuleCat.smulShortComplex, ModuleCat.mono_iff_injective] using reg

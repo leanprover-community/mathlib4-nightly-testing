@@ -86,10 +86,9 @@ private lemma aux_G2_tendsto : Tendsto
   apply (summable_prod_mul_pow 1 (norm_exp_two_pi_I_lt_one z)).prod.congr
   simp [← exp_nsmul]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma hasSum_e2Summand_symmetricIcc : HasSum (e2Summand · z)
     (2 * riemannZeta 2 - 8 * π ^ 2 * ∑' n : ℕ+, σ 1 n * 𝕢 z ^ (n : ℕ)) (symmetricIcc ℤ) := by
-  simpa [HasSum, -symmetricIcc_filter, symmetricIcc_eq_map_Icc_nat, Function.comp_def,
+  simpa! [HasSum, -symmetricIcc_filter, symmetricIcc_eq_map_Icc_nat, Function.comp_def,
     G2_partial_sum_eq] using (aux_G2_tendsto z).const_add _
 
 lemma summable_e2Summand_symmetricIcc : Summable (e2Summand · z) (symmetricIcc ℤ) :=
@@ -107,19 +106,17 @@ lemma E2_eq_tsum_cexp : E2 z = 1 - 24 * ∑' n : ℕ+, σ 1 n * 𝕢 z ^ (n : �
 lemma tendsto_e2Summand_atTop_nhds_zero : Tendsto (e2Summand · z) atTop (𝓝 0) :=
   (summable_e2Summand_symmetricIcc z).tendsto_zero_of_even_summable_symmetricIcc (e2Summand_even _)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma hasSum_e2Summand_symmetricIco : HasSum (e2Summand · z)
     (2 * riemannZeta 2 - 8 * π ^ 2 * ∑' n : ℕ+, σ 1 n * 𝕢 z ^ (n : ℕ)) (symmetricIco ℤ) := by
   apply (hasSum_e2Summand_symmetricIcc z).hasSum_symmetricIco_of_hasSum_symmetricIcc
-  simpa using (tendsto_e2Summand_atTop_nhds_zero z).neg.comp tendsto_natCast_atTop_atTop
+  simpa! using (tendsto_e2Summand_atTop_nhds_zero z).neg.comp tendsto_natCast_atTop_atTop
 
 lemma summable_e2Summand_symmetricIco : Summable (e2Summand · z) (symmetricIco ℤ) :=
   (hasSum_e2Summand_symmetricIco z).summable
 
-set_option backward.simpa.using.reducibleClose false in
 lemma G2_eq_tsum_symmetricIco : G2 z = ∑'[symmetricIco ℤ] m, e2Summand m z := by
   rw [G2, tsum_symmetricIcc_eq_tsum_symmetricIco (summable_e2Summand_symmetricIcc z)]
-  simpa using (tendsto_e2Summand_atTop_nhds_zero z).neg.comp tendsto_natCast_atTop_atTop
+  simpa! using (tendsto_e2Summand_atTop_nhds_zero z).neg.comp tendsto_natCast_atTop_atTop
 
 section Auxiliary
 
@@ -160,7 +157,6 @@ private lemma aux_sum_Ico_S_identity (N : ℕ) :
   rw [← tsum_mul_left, ← tsum_comp_neg]
   apply tsum_congr (by grind [zpow_two, ne_zero z])
 
-set_option backward.simpa.using.reducibleClose false in
 lemma tendsto_double_sum_S_act :
     Tendsto (fun N : ℕ ↦ (∑' (n : ℤ), ∑ m ∈ Ico (-N : ℤ) N, (1 / ((n : ℂ) * z + m) ^ 2))) atTop
     (𝓝 ((z.1 ^ 2)⁻¹ * G2 (S • z))) := by
@@ -168,9 +164,8 @@ lemma tendsto_double_sum_S_act :
   have := ((summable_e2Summand_symmetricIco (S • z)).mul_left (z.1 ^ 2)⁻¹).hasSum
   simp only [HasSum, symmetricIco, tendsto_map'_iff, modular_S_smul, ← Nat.map_cast_int_atTop] at *
   apply this.congr (fun N ↦ ?_)
-  simpa [e2Summand, eisSummand, ← mul_sum] using aux_sum_Ico_S_identity z N
+  simpa! [e2Summand, eisSummand, ← mul_sum] using aux_sum_Ico_S_identity z N
 
-set_option backward.simpa.using.reducibleClose false in
 lemma tsum_symmetricIco_tsum_eq_S_act :
     ∑'[symmetricIco ℤ] n : ℤ, ∑' m : ℤ, 1 / ((m : ℂ) * z + n) ^ 2 =
     ((z : ℂ) ^ 2)⁻¹ * G2 (S • z) := by
@@ -178,7 +173,7 @@ lemma tsum_symmetricIco_tsum_eq_S_act :
   rw [hasSum_symmetricIco_int_iff]
   apply (tendsto_double_sum_S_act z).congr (fun x ↦ ?_)
   rw [Summable.tsum_finsetSum]
-  exact fun i hi ↦ by simpa using linear_left_summable (ne_zero z) i le_rfl
+  exact fun i hi ↦ by simpa! using linear_left_summable (ne_zero z) i le_rfl
 
 private lemma telescope_aux (z : ℂ) (m : ℤ) (b : ℕ) :
     ∑ n ∈ Ico (-b : ℤ) b, (1 / ((m : ℂ) * z + n) - 1 / (m * z + n + 1)) =
@@ -192,7 +187,6 @@ lemma tsum_symmetricIco_linear_sub_linear_add_one_eq_zero (m : ℤ) :
   simp_rw [hasSum_symmetricIco_int_iff, telescope_aux z m]
   simpa using (tendsto_zero_inv_linear_sub z m).sub (tendsto_zero_inv_linear z m)
 
-set_option backward.simpa.using.reducibleClose false in
 /- We split the sum over `ℤ` into a sum over `ℕ+` but of four terms.-/
 private lemma aux_tsum_identity_1 (d : ℕ+) :
     ∑' (m : ℤ), (1 / ((m : ℂ) * z - d) - 1 / (m * z + d)) = -(2 / d) +
@@ -209,7 +203,7 @@ private lemma aux_tsum_identity_1 (d : ℕ+) :
     · apply (summable_pnat_iff_summable_nat.mpr ((summable_int_iff_summable_nat_and_neg.mp
         (summable_left_one_div_linear_sub_one_div_linear z (-d) d)).2)).congr
       grind [Int.cast_neg, Int.cast_natCast, neg_mul, one_div]
-  · simpa using summable_left_one_div_linear_sub_one_div_linear z (-d) d
+  · simpa! using summable_left_one_div_linear_sub_one_div_linear z (-d) d
 
 /- The sum of four terms can now be combined into a sum where `z` has changed for `-1 / z`.-/
 private lemma aux_tsum_identity_2 (d : ℕ+) :
@@ -248,7 +242,6 @@ private lemma aux_tendsto_tsum : Tendsto (fun n : ℕ ↦ 2 / z *
   refine aux_tendsto_tsum_cexp_pnat z |>.const_mul _ |>.const_sub _ |>.add (.const_mul _ ?_)
   exact PNat.tendsto_comp_val_iff.mpr tendsto_inv_atTop_nhds_zero_nat
 
-set_option backward.simpa.using.reducibleClose false in
 /- This shows that the limit of the conditional sum over larger intervals tends
 to `-2 * π * I / z`. We will then show, in `tsum_tsum_symmetricIco_sub_eq` that if we swap the
 order of the sum it tends to `0` instead. -/
@@ -264,9 +257,9 @@ lemma tendsto_tsum_one_div_linear_sub_succ_eq :
   simp only [telescope_aux, aux_tsum_identity_1] at this
   rw [funext this, show -2 * π * I / z = 0 + -2 * π * I / z by ring]
   apply Tendsto.add
-  · simpa [← PNat.tendsto_comp_val_iff] using
+  · simpa! [← PNat.tendsto_comp_val_iff] using
       (tendsto_inv_atTop_nhds_zero_nat (𝕜 := ℂ)).const_mul (-2)
-  · simpa only [aux_tsum_identity_2, ← PNat.tendsto_comp_val_iff] using aux_tendsto_tsum z
+  · simpa! only [aux_tsum_identity_2, ← PNat.tendsto_comp_val_iff] using aux_tendsto_tsum z
 
 /- These are the two key lemmas, which show that swapping the order of summation gives
 results differing by the term `-2 * π * I / z`. -/

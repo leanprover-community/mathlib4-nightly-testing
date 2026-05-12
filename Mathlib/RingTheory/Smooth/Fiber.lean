@@ -188,7 +188,6 @@ lemma FormallySmooth.of_formallySmooth_residueField_tensor (M : Submonoid P)
 
 end IsLocalRing
 
-set_option backward.simpa.using.reducibleClose false in
 -- It is not hard to generalize the proof to get the full generality of the stacks tag.
 -- The hard part is figuring out the right way to state the result. Hence we refrain from this
 -- generalization until we have an application.
@@ -204,7 +203,7 @@ lemma IsSmoothAt.of_formallySmooth_fiber
   let f : Sp →ₐ[S] Sq := IsLocalization.liftAlgHom (M := algebraMapSubmonoid S p.primeCompl)
         (f := Algebra.ofId _ _) (by
       rintro ⟨_, x, hx, rfl⟩
-      simpa using IsLocalization.map_units (M := q.primeCompl) Sq ⟨algebraMap _ _ x,
+      simpa! using IsLocalization.map_units (M := q.primeCompl) Sq ⟨algebraMap _ _ x,
         by simp_all [q.over_def p]⟩)
   algebraize [f.toRingHom]
   have : IsScalarTower R Sp Sq := .to₁₃₄ _ S _ _

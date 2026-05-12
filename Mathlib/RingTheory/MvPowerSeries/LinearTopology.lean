@@ -111,7 +111,6 @@ variable [TopologicalSpace R]
 -- We endow MvPowerSeries σ R with the product topology.
 open WithPiTopology
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- If the ring `R` is endowed with a linear topology, then the sets `↑basis σ R (J, d)`,
 for `J : TwoSidedIdeal R` which are neighborhoods of `0 : R` and `d : σ →₀ ℕ`,
@@ -129,7 +128,7 @@ lemma hasBasis_nhds_zero [IsLinearTopology R R] [IsLinearTopology Rᵐᵒᵖ R] 
     convert hf _ <| Finset.le_sup (hD.mem_toFinset.mpr hd)
   · intro ⟨I, d⟩ hI
     refine ⟨⟨Iic d, I⟩, ⟨finite_Iic d, hI⟩, ?_⟩
-    simpa [basis, coeff_apply, Iic, Set.pi] using subset_rfl
+    simpa! [basis, coeff_apply, Iic, Set.pi] using subset_rfl
 
 /-- The topology on `MvPowerSeries` is a left linear topology
   when the ring of coefficients has a linear topology. -/
@@ -158,7 +157,6 @@ theorem isTopologicallyNilpotent_of_constantCoeff
   intro n hn
   simpa only [map_pow] using coeff_eq_zero_of_constantCoeff_nilpotent (hN N le_rfl) hn
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Assuming the base ring has a linear topology, the powers of a `MvPowerSeries` converge to 0
 iff its constant coefficient is topologically nilpotent.
 

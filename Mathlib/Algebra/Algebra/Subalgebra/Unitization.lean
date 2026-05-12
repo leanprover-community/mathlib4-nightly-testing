@@ -54,7 +54,6 @@ namespace Unitization
 variable {R A C : Type*} [CommSemiring R] [NonUnitalSemiring A]
 variable [Module R A] [SMulCommClass R A A] [IsScalarTower R A A] [Semiring C] [Algebra R C]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem lift_range_le {f : A →ₙₐ[R] C} {S : Subalgebra R C} :
     (lift f).range ≤ S ↔ NonUnitalAlgHom.range f ≤ S.toNonUnitalSubalgebra := by
   refine ⟨fun h ↦ ?_, fun h ↦ ?_⟩
@@ -62,7 +61,7 @@ theorem lift_range_le {f : A →ₙₐ[R] C} {S : Subalgebra R C} :
     exact @h (f x) ⟨x, by simp⟩
   · rintro - ⟨x, rfl⟩
     induction x with
-    | _ r a => simpa using add_mem (algebraMap_mem S r) (h ⟨a, rfl⟩)
+    | _ r a => simpa! using add_mem (algebraMap_mem S r) (h ⟨a, rfl⟩)
 
 theorem lift_range (f : A →ₙₐ[R] C) :
     (lift f).range = Algebra.adjoin R (NonUnitalAlgHom.range f : Set C) :=
@@ -204,7 +203,6 @@ variable {R A C : Type*} [CommSemiring R] [NonUnitalSemiring A] [StarRing R] [St
 variable [Module R A] [SMulCommClass R A A] [IsScalarTower R A A] [StarModule R A]
 variable [Semiring C] [StarRing C] [Algebra R C] [StarModule R C]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem starLift_range_le
     {f : A →⋆ₙₐ[R] C} {S : StarSubalgebra R C} :
     (starLift f).range ≤ S ↔ NonUnitalStarAlgHom.range f ≤ S.toNonUnitalStarSubalgebra := by
@@ -213,7 +211,7 @@ theorem starLift_range_le
     exact @h (f x) ⟨x, by simp⟩
   · rintro - ⟨x, rfl⟩
     induction x with
-    | _ r a => simpa using add_mem (algebraMap_mem S r) (h ⟨a, rfl⟩)
+    | _ r a => simpa! using add_mem (algebraMap_mem S r) (h ⟨a, rfl⟩)
 
 theorem starLift_range (f : A →⋆ₙₐ[R] C) :
     (starLift f).range = StarAlgebra.adjoin R (NonUnitalStarAlgHom.range f : Set C) :=

@@ -207,7 +207,6 @@ end
 
 namespace Abelian.Ext
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma mapExactFunctor_mk₀ [HasExt.{w} C] [HasExt.{w'} D] {X Y : C} (f : X ⟶ Y) :
     (mk₀ f).mapExactFunctor F = mk₀ (F.map f) := by
@@ -216,7 +215,7 @@ lemma mapExactFunctor_mk₀ [HasExt.{w} C] [HasExt.{w'} D] {X Y : C} (f : X ⟶ 
     ((F.mapCochainComplexSingleFunctor 0).app X) ((F.mapCochainComplexSingleFunctor 0).app Y)
     (0 : ℤ) rfl]
   congr
-  simpa only [Functor.mapHomologicalComplexUpToQuasiIsoLocalizerMorphism_functor,
+  simpa! only [Functor.mapHomologicalComplexUpToQuasiIsoLocalizerMorphism_functor,
     Functor.mapCochainComplexSingleFunctor, Iso.app_inv, Iso.app_hom] using NatIso.naturality_1 _ f
 
 lemma mapExactFunctor₀ [HasExt.{w} C] [HasExt.{w'} D] (X Y : C) :

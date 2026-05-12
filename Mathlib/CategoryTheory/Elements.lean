@@ -237,7 +237,6 @@ theorem fromCostructuredArrow_obj_mk (F : Cᵒᵖ ⥤ Type v) {X : C} (f : yoned
   rfl
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.simpa.using.reducibleClose false in
 /-- The equivalence `F.Elementsᵒᵖ ≅ (yoneda, F)` given by yoneda lemma. -/
 @[simps]
 def costructuredArrowYonedaEquivalence (F : Cᵒᵖ ⥤ Type v) :
@@ -251,7 +250,7 @@ def costructuredArrowYonedaEquivalence (F : Cᵒᵖ ⥤ Type v) :
         exact Quiver.Hom.unop_inj (by ext; simp))
   counitIso := NatIso.ofComponents (fun X ↦ CostructuredArrow.isoMk (Iso.refl _) (by
     dsimp
-    simpa only [Functor.map_id, Category.id_comp] using
+    simpa! only [Functor.map_id, Category.id_comp] using
       (yonedaEquiv.symm_apply_apply X.hom).symm))
 
 set_option backward.defeqAttrib.useBackward true in

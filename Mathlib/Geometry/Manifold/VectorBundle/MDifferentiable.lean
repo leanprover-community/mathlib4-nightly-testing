@@ -456,15 +456,14 @@ lemma mdifferentiable_smul_const_section
     (hs : MDiff (T% s)) : MDiff (T% (a • s)) :=
   fun x₀ ↦ (hs x₀).smul_const_section
 
-set_option backward.simpa.using.reducibleClose false in
 lemma MDifferentiableWithinAt.sum_section {ι : Type*} {s : Finset ι} {t : ι → (x : B) → E x}
     (hs : ∀ i, MDiffAt[u] (T% (t i ·)) x₀) :
     MDiffAt[u] (T% (fun x ↦ ∑ i ∈ s, (t i x))) x₀ := by
   classical
   induction s using Finset.induction_on with
-  | empty => simpa using (contMDiffWithinAt_zeroSection 𝕜 E).mdifferentiableWithinAt one_ne_zero
+  | empty => simpa! using (contMDiffWithinAt_zeroSection 𝕜 E).mdifferentiableWithinAt one_ne_zero
   | insert i s hi h =>
-    simpa [Finset.sum_insert hi] using mdifferentiableWithinAt_add_section (hs i) h
+    simpa! [Finset.sum_insert hi] using mdifferentiableWithinAt_add_section (hs i) h
 
 lemma MDifferentiableAt.sum_section {ι : Type*} {s : Finset ι} {t : ι → (x : B) → E x} {x₀ : B}
     (hs : ∀ i, MDiffAt (T% (t i ·)) x₀) :

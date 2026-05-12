@@ -113,7 +113,6 @@ theorem isPrincipalIdealRing_of_isPrincipal_of_norm_le
   obtain ⟨I, rfl, hI⟩ := exists_ideal_in_class_of_norm_le C
   simpa [← ClassGroup.mk0_eq_one_iff] using h hI
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isPrincipalIdealRing_of_isPrincipal_of_norm_le_of_isPrime
     (h : ∀ ⦃I : (Ideal (𝓞 K))⁰⦄, (I : Ideal (𝓞 K)).IsPrime →
       absNorm (I : Ideal (𝓞 K)) ≤ M K → Submodule.IsPrincipal (I : Ideal (𝓞 K))) :
@@ -123,7 +122,7 @@ theorem isPrincipalIdealRing_of_isPrincipal_of_norm_le_of_isPrime
     ← Ideal.prod_normalizedFactors_eq_self (nonZeroDivisors.coe_ne_zero I)]
   refine Submonoid.multiset_prod_mem _ _ (fun J hJ ↦ mem_isPrincipalSubmonoid_iff.mp ?_)
   by_cases hJ0 : J = 0
-  · simpa [hJ0] using bot_isPrincipal
+  · simpa! [hJ0] using bot_isPrincipal
   rw [← Subtype.coe_mk J (mem_nonZeroDivisors_of_ne_zero hJ0)]
   refine h (((mem_normalizedFactors_iff (nonZeroDivisors.coe_ne_zero I)).mp hJ).1) ?_
   exact (cast_le.mpr <| le_of_dvd (absNorm_pos_of_nonZeroDivisors I) <|

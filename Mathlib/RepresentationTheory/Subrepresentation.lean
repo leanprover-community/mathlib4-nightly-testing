@@ -115,7 +115,6 @@ def asSubmodule (σ : Subrepresentation ρ) : Submodule A[G] ρ.asModule where
 @[simp]
 lemma mem_asSubmodule_iff {σ : Subrepresentation ρ} {v : W} : v ∈ asSubmodule σ ↔ v ∈ σ := by rfl
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A subrepresentation of `ofModule M` can be thought of as an `A[G]` submodule of `M`.
 -/
 def asSubmodule' (σ : Subrepresentation (Representation.ofModule (k := A) (G := G) M)) :
@@ -128,13 +127,12 @@ def asSubmodule' (σ : Subrepresentation (Representation.ofModule (k := A) (G :=
     | single g a =>
       rw [← mul_one a, ← smul_eq_mul, ← MonoidAlgebra.smul_single, Algebra.smul_def, mul_smul]
       exact σ.toSubmodule.smul_mem' ((algebraMap A A) a) <| by
-        simpa [Representation.ofModule, RestrictScalars.lsmul] using σ.apply_mem_toSubmodule g hm
+        simpa! [Representation.ofModule, RestrictScalars.lsmul] using σ.apply_mem_toSubmodule g hm
 
 @[simp]
 lemma mem_asSubmodule'_iff {σ : Subrepresentation (Representation.ofModule (k := A) (G := G) M)}
     {m : M} : m ∈ asSubmodule' σ ↔ m ∈ σ := by rfl
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A submodule of an `A[G]`-module `M` can be thought of as a subrepresentation of `ofModule M`.
 -/
 def ofSubmodule (N : Submodule A[G] M) :
@@ -142,19 +140,18 @@ def ofSubmodule (N : Submodule A[G] M) :
   toSubmodule := { N with
     smul_mem' a m hm := N.smul_mem' (algebraMap A A[G] a) hm }
   apply_mem_toSubmodule g v hv := by
-    simpa [Representation.ofModule, RestrictScalars.lsmul] using
+    simpa! [Representation.ofModule, RestrictScalars.lsmul] using
       Submodule.smul_of_tower_mem N (MonoidAlgebra.single g 1) hv
 
 @[simp]
 lemma mem_ofSubmodule_iff {N : Submodule A[G] M} {m : M} : m ∈ ofSubmodule N ↔ m ∈ N := by rfl
 
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /-- An `A[G]`-submodule of `ρ.asModule` can be thought of as a subrepresentation of `ρ`.
 -/
 def ofSubmodule' (N : Submodule A[G] ρ.asModule) : Subrepresentation ρ where
   toSubmodule := { N with
-    smul_mem' a w hw := by simpa using (N.smul_mem (algebraMap A A[G] a) hw) }
+    smul_mem' a w hw := by simpa! using (N.smul_mem (algebraMap A A[G] a) hw) }
   apply_mem_toSubmodule g w hw := by
     letI _ : Module A[G] W := ρ.instModuleMonoidAlgebraAsModule
     have h : (MonoidAlgebra.single g (1 : A)) • w ∈ N :=

@@ -164,11 +164,10 @@ theorem formPerm_eq_self_of_notMem (s : Cycle α) (h : Nodup s) (x : α) (hx : x
   induction s using Quot.inductionOn
   simpa using List.formPerm_apply_of_notMem hx
 
-set_option backward.simpa.using.reducibleClose false in
 theorem formPerm_apply_mem_eq_next (s : Cycle α) (h : Nodup s) (x : α) (hx : x ∈ s) :
     formPerm s h x = next s h x hx := by
   induction s using Quot.inductionOn
-  simpa using List.formPerm_apply_mem_eq_next h _ (by simp_all)
+  simpa! using List.formPerm_apply_mem_eq_next h _ (by simp_all)
 
 nonrec theorem formPerm_reverse (s : Cycle α) (h : Nodup s) :
     formPerm s.reverse (nodup_reverse_iff.mpr h) = (formPerm s h)⁻¹ := by

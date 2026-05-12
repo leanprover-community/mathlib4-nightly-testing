@@ -493,7 +493,6 @@ theorem exists_lift_of_le_one {x : K} (H : ((maximalIdeal A).valuation K) x ≤ 
     rw [mem_nonZeroDivisors_iff_ne_zero]
     exact hπ.ne_zero
 
-set_option backward.simpa.using.reducibleClose false in
 lemma mker_valuation_eq_isUnitSubmonoid :
     MonoidHom.mker ((IsDiscreteValuationRing.maximalIdeal A).valuation K) =
     (IsUnit.submonoid A).map (algebraMap A K) := by
@@ -506,7 +505,7 @@ lemma mker_valuation_eq_isUnitSubmonoid :
       not_not] at h
     use b, h
   · obtain ⟨x, h, rfl⟩ := h
-    simpa [IsDiscreteValuationRing.maximalIdeal] using h
+    simpa! [IsDiscreteValuationRing.maximalIdeal] using h
 
 theorem associated_of_valuation_eq (x y : K)
     (h : ((maximalIdeal A).valuation K) x =

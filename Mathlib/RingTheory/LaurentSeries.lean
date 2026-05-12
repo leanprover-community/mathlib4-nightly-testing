@@ -686,7 +686,6 @@ beyond the special case `Γ = ℤ`, that corresponds to Laurent Series: neverthe
 does not generalise, as it relies on the study of the `X`-adic valuation attached to the height-one
 prime `X`, and this is peculiar to the one-variable setting. In the future we should prove this
 result in full generality and deduce the case `Γ = ℤ` from that one. -/
-set_option backward.simpa.using.reducibleClose false in
 lemma Cauchy.exists_lb_eventual_support {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ) :
     ∃ N, ∀ᶠ f : K⸨X⸩ in ℱ, ∀ n < N, f.coeff n = (0 : K) := by
   let entourage : Set (K⸨X⸩ × K⸨X⸩) := {P : K⸨X⸩ × K⸨X⸩ | Valued.v.restrict (P.snd - P.fst) < 1}
@@ -712,7 +711,7 @@ lemma Cauchy.exists_lb_eventual_support {ℱ : Filter K⸨X⸩} (hℱ : Cauchy �
   intro g hg
   have h_prod : (f, g) ∈ S ×ˢ T := by simp [hf.1, hg.2]
   refine hN g (le_of_lt ?_)
-  simpa [Valuation.restrict_def, ← Valuation.restrict_lt_one_iff] using H h_prod
+  simpa! [Valuation.restrict_def, ← Valuation.restrict_lt_one_iff] using H h_prod
 
 /- The support of `Cauchy.coeff` has a lower bound. -/
 theorem Cauchy.exists_lb_support {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ) :
@@ -749,7 +748,6 @@ theorem Cauchy.exists_lb_coeff_ne {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ) :
 
 /- Given a Cauchy filter `ℱ` in the Laurent Series and a bound `D`, for almost all series in the
 filter the coefficients below `D` coincide with `Cauchy.coeff hℱ`. -/
-set_option backward.simpa.using.reducibleClose false in
 theorem Cauchy.coeff_eventually_equal {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ) {D : ℤ} :
     ∀ᶠ f : K⸨X⸩ in ℱ, ∀ d, d < D → coeff hℱ d = f.coeff d := by
   -- `φ` sends `d` to the set of Laurent Series having `d`th coefficient equal to `ℱ.coeff`.
@@ -757,7 +755,7 @@ theorem Cauchy.coeff_eventually_equal {ℱ : Filter K⸨X⸩} (hℱ : Cauchy ℱ
   have intersec₁ :
     (⋂ n ∈ Set.Iio D, φ n) ⊆ {x : K⸨X⸩ | ∀ d : ℤ, d < D → coeff hℱ d = x.coeff d} := by
     intro _ hf
-    simpa only [Set.mem_iInter] using hf
+    simpa! only [Set.mem_iInter] using hf
   -- The goal is now to show that the intersection of all `φ d` (for `d < D`) is in `ℱ`.
   let ℓ := (exists_lb_coeff_ne hℱ).choose
   let N := max ℓ D

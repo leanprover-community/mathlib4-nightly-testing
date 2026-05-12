@@ -37,7 +37,6 @@ open ProbabilityTheory
 variable {Ω E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E]
   {m₁ m₂ m : MeasurableSpace Ω} {μ : Measure Ω} {f : Ω → E}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `m₁, m₂` are independent σ-algebras and `f` is `m₁`-measurable, then `𝔼[f | m₂] = 𝔼[f]`
 almost everywhere. -/
 theorem condExp_indep_eq (hle₁ : m₁ ≤ m) (hle₂ : m₂ ≤ m) [SigmaFinite (μ.trim hle₂)]
@@ -62,9 +61,9 @@ theorem condExp_indep_eq (hle₁ : m₁ ≤ m) (hle₂ : m₂ ≤ m) [SigmaFinit
     rw [integral_add' huint hvint, smul_add, hu_eq, hv_eq,
       integral_add' huint.integrableOn hvint.integrableOn]
   · have h_integral : Continuous fun f : lpMeas E ℝ m₁ 1 μ => ∫ x, (f : Ω → E) x ∂μ := by
-      simpa using continuous_integral.comp (ContinuousLinearMap.continuous (Submodule.subtypeL _))
+      simpa! using continuous_integral.comp (ContinuousLinearMap.continuous (Submodule.subtypeL _))
     have h_setIntegral : Continuous fun f : lpMeas E ℝ m₁ 1 μ => ∫ x in s, (f : Ω → E) x ∂μ := by
-      simpa using (continuous_setIntegral s).comp
+      simpa! using (continuous_setIntegral s).comp
         (ContinuousLinearMap.continuous (Submodule.subtypeL _))
     exact isClosed_eq (Continuous.const_smul h_integral _) h_setIntegral
   · intro u v huv _ hueq

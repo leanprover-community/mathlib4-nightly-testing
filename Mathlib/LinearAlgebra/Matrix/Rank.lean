@@ -91,10 +91,9 @@ lemma eRank_toNat_eq_finrank (A : Matrix m n R) :
     A.eRank.toNat = Module.finrank R (span R (range A.col)) :=
   toNat_toENat ..
 
-set_option backward.simpa.using.reducibleClose false in
 lemma eRank_submatrix_le (A : Matrix m n R) (r : m₀ → m) (c : n₀ → n) :
     (A.submatrix r c).eRank ≤ A.eRank := by
-  simpa using OrderHom.mono (β := ℕ∞) Cardinal.toENat <| lift_cRank_submatrix_le A r c
+  simpa! using OrderHom.mono (β := ℕ∞) Cardinal.toENat <| lift_cRank_submatrix_le A r c
 
 lemma eRank_le_card_width [StrongRankCondition R] (A : Matrix m n R) : A.eRank ≤ ENat.card n := by
   wlog hfin : Finite n
@@ -248,11 +247,10 @@ theorem rank_reindex [Fintype n₀] (em : m ≃ m₀) (en : n ≃ n₀) (A : Mat
   rw [rank, rank, mulVecLin_reindex, LinearMap.range_comp, LinearMap.range_comp,
     LinearEquiv.range, Submodule.map_top, LinearEquiv.finrank_map_eq]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem rank_submatrix [Fintype n₀] (A : Matrix m n R) (em : m₀ ≃ m) (en : n₀ ≃ n) :
     rank (A.submatrix em en) = rank A := by
-  simpa only [reindex_apply] using rank_reindex em.symm en.symm A
+  simpa! only [reindex_apply] using rank_reindex em.symm en.symm A
 
 @[simp]
 theorem lift_cRank_submatrix {n : Type un} (A : Matrix m n R) (em : m₀ ≃ m) (en : n₀ ≃ n) :
@@ -275,11 +273,10 @@ theorem cRank_reindex {m₀ : Type um} {n : Type un} (A : Matrix m n R) (em : m 
     cRank (A.reindex em en) = cRank A :=
   cRank_submatrix ..
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem eRank_submatrix {n : Type un} (A : Matrix m n R) (em : m₀ ≃ m) (en : n₀ ≃ n) :
     eRank (A.submatrix em en) = eRank A := by
-  simpa [-lift_cRank_submatrix] using congr_arg Cardinal.toENat <| A.lift_cRank_submatrix em en
+  simpa! [-lift_cRank_submatrix] using congr_arg Cardinal.toENat <| A.lift_cRank_submatrix em en
 
 theorem eRank_reindex {m₀ : Type um} {n : Type un} (A : Matrix m n R) (em : m ≃ m₀) (en : n ≃ n₀) :
     eRank (A.reindex em en) = eRank A :=

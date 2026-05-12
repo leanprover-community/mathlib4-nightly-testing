@@ -352,13 +352,12 @@ theorem IsSymmetricProjection.sub_of_range_le_range {p q : E →ₗ[𝕜] E}
     fun y => ?_) hqp, hq.isSymmetric.sub hp.isSymmetric⟩
   simp_rw [Module.End.mul_apply, ← hp.isSymmetric _, ← hq.isSymmetric _, ← comp_apply, hqp]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsSymmetric.isSymmetric_smul_iff {f : E →ₗ[𝕜] E} (hf : f.IsSymmetric) (hf' : f ≠ 0)
     {α : 𝕜} : (α • f).IsSymmetric ↔ IsSelfAdjoint α := by
   refine ⟨fun h ↦ ?_, hf.smul⟩
   simp only [ne_eq, LinearMap.ext_iff, zero_apply, ext_iff_inner_left 𝕜 (E := E),
     inner_zero_right] at hf'
-  simpa [IsSymmetric, inner_smul_left, inner_smul_right, hf _ _, forall_or_left,
+  simpa! [IsSymmetric, inner_smul_left, inner_smul_right, hf _ _, forall_or_left,
     (forall_comm.eq ▸ hf')] using h
 
 end LinearMap

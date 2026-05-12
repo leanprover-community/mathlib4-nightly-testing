@@ -88,7 +88,6 @@ theorem concat_right (hb : f ⊤ = g ⊥) {t : Icc a c} (ht : b ≤ t) :
   nth_rewrite 2 [← concat_comp_IccInclusionRight hb]
   rfl
 
-set_option backward.simpa.using.reducibleClose false in
 theorem tendsto_concat {ι : Type*} {p : Filter ι} {F : ι → C(Icc a b, E)} {G : ι → C(Icc b c, E)}
     (hfg : ∀ᶠ i in p, (F i) ⊤ = (G i) ⊥) (hfg' : f ⊤ = g ⊥)
     (hf : Tendsto F p (𝓝 f)) (hg : Tendsto G p (𝓝 g)) :
@@ -106,12 +105,12 @@ theorem tendsto_concat {ι : Type*} {p : Filter ι} {F : ι → C(Icc a b, E)} {
     rw [← concat_comp_IccInclusionLeft hfg']
     apply hfgU.comp
     rintro x ⟨y, ⟨⟨z, hz⟩, ⟨h1, (h2 : z ≤ b)⟩, rfl⟩, rfl⟩
-    simpa [projIccCM, projIcc, h2, hz.1] using h1
+    simpa! [projIccCM, projIcc, h2, hz.1] using h1
   have hgU : MapsTo g K₂ U := by
     rw [← concat_comp_IccInclusionRight hfg']
     apply hfgU.comp
     rintro x ⟨y, ⟨⟨z, hz⟩, ⟨h1, (h2 : b ≤ z)⟩, rfl⟩, rfl⟩
-    simpa [projIccCM, projIcc, h2, hz.2] using h1
+    simpa! [projIccCM, projIcc, h2, hz.2] using h1
   filter_upwards [hf K₁ hK₁ U hU hfU, hg K₂ hK₂ U hU hgU, hfg] with i hf hg hfg x hx
   by_cases! hxb : x ≤ b
   · rw [concat_left hfg hxb]

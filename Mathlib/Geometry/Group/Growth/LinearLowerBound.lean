@@ -23,12 +23,11 @@ open scoped Pointwise
 namespace Finset
 variable {G : Type*} [Group G] [DecidableEq G] {X : Finset G} {n : ℕ}
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma pow_ssubset_pow_succ_of_pow_ne_closure (hX₁ : (1 : G) ∈ X) (hX : X.Nontrivial)
     (hXclosure : (X ^ n : Set G) ≠ closure (X : Set G)) : X ^ n ⊂ X ^ (n + 1) := by
   obtain rfl | hn := eq_or_ne n 0
-  · simpa [ssubset_iff_subset_not_subset, hX₁, -Finset.subset_singleton_iff]
+  · simpa! [ssubset_iff_subset_not_subset, hX₁, -Finset.subset_singleton_iff]
       using hX.not_subset_singleton
   refine (pow_subset_pow_right hX₁ <| n.le_add_right _).ssubset_of_ne ?_
   contrapose hXclosure with hXn
@@ -49,16 +48,16 @@ lemma pow_ssubset_pow_succ_of_pow_ne_closure (hX₁ : (1 : G) ∈ X) (hX : X.Non
   { carrier := X
     mul_mem' := fun {x y} hx hy ↦ by
       norm_cast at *
-      simpa [← hXn, ← sq] using mul_mem_mul hx hy
+      simpa! [← hXn, ← sq] using mul_mem_mul hx hy
     one_mem' := hX₁
     inv_mem' := fun {x} hx ↦ by
       norm_cast at *
       have : x • X ⊆ X := by
-        simpa [← hXn, add_assoc, ← sq] using smul_finset_subset_mul (t := X) hx
+        simpa! [← hXn, add_assoc, ← sq] using smul_finset_subset_mul (t := X) hx
       have : x • X = X := eq_of_subset_of_card_le this (card_smul_finset ..).ge
       rw [← eq_inv_smul_iff] at this
       rw [this]
-      simpa [mem_inv_smul_finset_iff] }
+      simpa! [mem_inv_smul_finset_iff] }
   exact subset_closure.antisymm <| (closure_le Xgp).2 subset_rfl
 
 @[to_additive]

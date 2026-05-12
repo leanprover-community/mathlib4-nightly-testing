@@ -80,7 +80,6 @@ lemma isDynNetIn_singleton (T : X → X) (U : SetRel X X) (n : ℕ) (h : x ∈ F
     IsDynNetIn T F U n {x} :=
   ⟨singleton_subset_iff.2 h, pairwise_singleton x _⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given an entourage `U` and a time `n`, a dynamical net has a smaller cardinality than
   a dynamical cover. This lemma is the first of two key results to compare two versions of
   topological entropy: with cover and with nets, the second being `coverMincard_le_netMaxcard`. -/
@@ -88,7 +87,7 @@ lemma IsDynNetIn.card_le_card_of_isDynCoverOf {s t : Finset X}
     (hs : IsDynNetIn T F U n s) (ht : IsDynCoverOf T F U n t) :
     s.card ≤ t.card := by
   have (x : X) (x_s : x ∈ s) : ∃ z ∈ t, z ∈ ball x (dynEntourage T U n) := by
-    simpa using ht (hs.1 x_s)
+    simpa! using ht (hs.1 x_s)
   choose! F s_t using this
   apply Finset.card_le_card_of_injOn F fun x x_s ↦ (s_t x x_s).1
   exact fun x x_s y y_s Fx_Fy ↦

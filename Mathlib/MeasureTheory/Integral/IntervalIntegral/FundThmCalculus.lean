@@ -484,7 +484,6 @@ In this section we prove several lemmas that can be interpreted as strict differ
 -/
 
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Fundamental theorem of calculus-1**, local version.
 
 If `f` has a finite limit `c` almost surely at `l'`, where `(l, l')` is an
@@ -519,7 +518,6 @@ theorem integral_sub_integral_sub_linear_isLittleO_of_tendsto_ae
     using measure_integral_sub_integral_sub_linear_isLittleO_of_tendsto_ae hab hmeas_a hmeas_b
       ha_lim hb_lim hua hva hub hvb
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Fundamental theorem of calculus-1**, strict differentiability at filter in both endpoints.
 
 If `f` is a measurable function integrable on `a..b`, `(lb, lb')` is an `intervalIntegral.FTCFilter`
@@ -534,7 +532,6 @@ theorem integral_sub_integral_sub_linear_isLittleO_of_tendsto_ae_right
   simpa only [integral_const, smul_eq_mul, mul_one] using
     measure_integral_sub_integral_sub_linear_isLittleO_of_tendsto_ae_right hab hmeas hf hu hv
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Fundamental theorem of calculus-1**, strict differentiability at filter in both endpoints.
 
 If `f` is a measurable function integrable on `a..b`, `(la, la')` is an `intervalIntegral.FTCFilter`

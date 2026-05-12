@@ -294,7 +294,6 @@ theorem norm_root_le_spectralValue {f : AlgebraNorm K L} (hf_pm : IsPowMul f)
 
 open Multiset
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is a nonarchimedean, power-multiplicative `K`-algebra norm on `L`, then the spectral
 value of a polynomial `p : K[X]` that decomposes into linear factors in `L` is equal to the
 maximum of the norms of the roots. See [S. Bosch, U. Güntzer, R. Remmert, *Non-Archimedean Analysis*
@@ -355,7 +354,7 @@ theorem max_norm_root_eq_spectralValue [DecidableEq L] {f : AlgebraNorm K L} (hf
           obtain ⟨_, hzt, hzr⟩ := mem_map.mp hr
           exact hzr ▸ hy_max _ (hts _ hzt)
         have : (map g t).prod ≤ g y ^ (p.natDegree - m) := h_card ▸ prod_le_pow_card _ _ hx_le
-        simpa [g, ← NNReal.coe_le_coe, NNReal.coe_pow, NNReal.coe_mk, NNReal.coe_multiset_prod,
+        simpa! [g, ← NNReal.coe_le_coe, NNReal.coe_pow, NNReal.coe_mk, NNReal.coe_multiset_prod,
           map_map, Function.comp_apply, NNReal.coe_mk] using this
       have h_bdd : BddAbove (Set.range fun x : L ↦ ite (x ∈ s) (f x) 0) := by
         use f y
@@ -704,7 +703,6 @@ universe u v
 variable {K : Type u} [NontriviallyNormedField K] {L : Type v} [Field L] [Algebra K L]
   [Algebra.IsAlgebraic K L] [hu : IsUltrametricDist K]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `K` is a field complete with respect to a nontrivial nonarchimedean multiplicative norm and
   `L/K` is an algebraic extension, then any power-multiplicative `K`-algebra norm on `L` coincides
   with the spectral norm. -/
@@ -728,7 +726,7 @@ theorem spectralNorm_unique [CompleteSpace K] {f : AlgebraNorm K L} (hf_pm : IsP
         simp only [← spectralAlgNorm_def]
         exact map_mul_le_mul _ _ _
       eq_zero_of_map_eq_zero' a ha := by
-        simpa [id_eq, eq_mpr_eq_cast, cast_eq, LinearMap.coe_mk, ← spectralAlgNorm_def,
+        simpa! [id_eq, eq_mpr_eq_cast, cast_eq, LinearMap.coe_mk, ← spectralAlgNorm_def,
           map_eq_zero_iff_eq_zero, ZeroMemClass.coe_eq_zero] using ha }
   let n1 : NormedRing E := RingNorm.toNormedRing hs_norm
   let N1 : NormedSpace K E :=
@@ -749,7 +747,7 @@ theorem spectralNorm_unique [CompleteSpace K] {f : AlgebraNorm K L} (hf_pm : IsP
       neg' y := by simp [(algebraMap K⟮x⟯ L).map_neg y]
       mul_le' a b := map_mul_le_mul _ _ _
       eq_zero_of_map_eq_zero' a ha := by
-        simpa [map_eq_zero_iff_eq_zero, map_eq_zero] using ha }
+        simpa! [map_eq_zero_iff_eq_zero, map_eq_zero] using ha }
   let n2 : NormedRing K⟮x⟯ := RingNorm.toNormedRing hf_norm
   let N2 : NormedSpace K K⟮x⟯ :=
     { one_smul e := by simp [one_smul]

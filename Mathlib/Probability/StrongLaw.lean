@@ -518,7 +518,6 @@ theorem strong_law_aux4 {c : ℝ} (c_one : 1 < c) :
   ext1 n
   simp
 
-set_option backward.simpa.using.reducibleClose false in
 include hint hident hnonneg in
 /-- The truncated and non-truncated versions of `Xᵢ` have the same asymptotic behavior, as they
 almost surely coincide at all but finitely many steps. This follows from a probability computation
@@ -539,7 +538,7 @@ theorem strong_law_aux5 :
     · exact (sub_self _).symm
     · have : -(n : ℝ) < X n ω := by
         apply lt_of_lt_of_le _ (hnonneg n ω)
-        simpa only [Right.neg_neg_iff, Nat.cast_pos] using npos
+        simpa! only [Right.neg_neg_iff, Nat.cast_pos] using npos
       simp only [this, true_and, not_le] at h
       exact (hn h).elim
   filter_upwards [B] with ω hω
@@ -591,7 +590,6 @@ theorem strong_law_aux7 :
 
 end StrongLawNonneg
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Strong law of large numbers**, almost sure version: if `X n` is a sequence of independent
 identically distributed integrable real-valued random variables, then `∑ i ∈ range n, X i / n`
 converges almost surely to `𝔼[X 0]`. We give here the strong version, due to Etemadi, that only
@@ -610,7 +608,7 @@ theorem strong_law_ae_real {Ω : Type*} {m : MeasurableSpace Ω} {μ : Measure �
       intro i
       exact (hident i).symm.ae_snd (p := fun x ↦ x = 0) measurableSet_eq h
     filter_upwards [I] with ω hω
-    simpa [hω] using (integral_eq_zero_of_ae h).symm
+    simpa! [hω] using (integral_eq_zero_of_ae h).symm
   have : IsProbabilityMeasure μ :=
     hint.isProbabilityMeasure_of_indepFun (X 0) (X 1) h (hindep zero_ne_one)
   -- then consider separately the positive and the negative part, and apply the result

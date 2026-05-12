@@ -348,7 +348,6 @@ abbrev limitCone : Limits.Cone F where
       congr
       exact funext fun x => (x.2 f).symm }
 
-set_option backward.simpa.using.reducibleClose false in
 /-- `ProfiniteGrp.limitCone` is a limit cone. -/
 @[to_additive /-- `ProfiniteAddGrp.limitCone` is a limit cone. -/]
 def limitConeIsLimit : Limits.IsLimit (limitCone F) where
@@ -361,7 +360,7 @@ def limitConeIsLimit : Limits.IsLimit (limitCone F) where
       map_mul' := fun _ _ ↦ Subtype.ext (funext fun j ↦ map_mul (cone.π.app j).hom _ _) }
   uniq cone m h := by
     apply (forget₂ ProfiniteGrp Profinite).map_injective
-    simpa using (Profinite.limitConeIsLimit (F ⋙ (forget₂ ProfiniteGrp Profinite))).uniq
+    simpa! using (Profinite.limitConeIsLimit (F ⋙ (forget₂ ProfiniteGrp Profinite))).uniq
       ((forget₂ ProfiniteGrp Profinite).mapCone cone) ((forget₂ ProfiniteGrp Profinite).map m)
       (fun j ↦ congrArg (forget₂ ProfiniteGrp Profinite).map (h j))
 

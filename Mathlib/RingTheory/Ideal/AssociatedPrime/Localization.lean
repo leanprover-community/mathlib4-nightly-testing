@@ -36,7 +36,6 @@ open IsLocalRing LinearMap Submodule
 namespace Module.associatedPrimes
 
 include S f in
-set_option backward.simpa.using.reducibleClose false in
 @[stacks 0310 "(1)"]
 lemma mem_associatedPrimes_of_comap_mem_associatedPrimes_of_isLocalizedModule
     (p : Ideal R') (ass : p.comap (algebraMap R R') ∈ associatedPrimes R M) :
@@ -63,10 +62,10 @@ lemma mem_associatedPrimes_of_comap_mem_associatedPrimes_of_isLocalizedModule
       apply Ideal.IsTwoSided.mul_mem_of_left
       rw [IsLocalization.mk'_one, ← Ideal.mem_comap, hx]
       rcases eq_zero_or_pos n with rfl | hn
-      · exact Ideal.IsTwoSided.mul_mem_of_left _ ⟨1, by simpa using ht⟩
+      · exact Ideal.IsTwoSided.mul_mem_of_left _ ⟨1, by simpa! using ht⟩
       · use n
         rw [mem_colon_singleton, mul_pow, mul_smul, ← mem_colon_singleton]
-        exact Ideal.pow_mem_of_mem _ (by simpa using ht) n hn
+        exact Ideal.pow_mem_of_mem _ (by simpa! using ht) n hn
 
 lemma mem_associatedPrimes_atPrime_of_mem_associatedPrimes
     {p : Ideal R} [p.IsPrime] (ass : p ∈ associatedPrimes R M) :
@@ -129,14 +128,13 @@ lemma preimage_comap_associatedPrimes_eq_associatedPrimes_of_isLocalizedModule
     ((isNoetherianRing_iff_ideal_fg R).mp ‹_› _)⟩
 
 variable (R M) in
-set_option backward.simpa.using.reducibleClose false in
 lemma minimalPrimes_annihilator_subset_associatedPrimes [IsNoetherianRing R] [Module.Finite R M] :
     (Module.annihilator R M).minimalPrimes ⊆ associatedPrimes R M := by
   intro p hp
   have prime := hp.1.1
   let Rₚ := Localization.AtPrime p
   have : Nontrivial (LocalizedModule p.primeCompl M) := by
-    simpa [← Module.mem_support_iff (p := ⟨p, prime⟩), Module.support_eq_zeroLocus] using hp.1.2
+    simpa! [← Module.mem_support_iff (p := ⟨p, prime⟩), Module.support_eq_zeroLocus] using hp.1.2
   rcases associatedPrimes.nonempty Rₚ (LocalizedModule p.primeCompl M) with ⟨q, hq⟩
   have q_prime : q.IsPrime := IsAssociatedPrime.isPrime hq
   simp only [← preimage_comap_associatedPrimes_eq_associatedPrimes_of_isLocalizedModule p.primeCompl
@@ -145,8 +143,8 @@ lemma minimalPrimes_annihilator_subset_associatedPrimes [IsNoetherianRing R] [Mo
     le_of_eq_of_le Submodule.annihilator_top.symm (IsAssociatedPrime.annihilator_le hq)
   have le : Ideal.comap (algebraMap R Rₚ) q ≤ p := by
     have := (IsLocalization.disjoint_comap_iff p.primeCompl Rₚ q).mpr q_prime.ne_top
-    simpa only [Ideal.primeCompl, Submonoid.coe_set_mk, Subsemigroup.coe_set_mk,
+    simpa! only [Ideal.primeCompl, Submonoid.coe_set_mk, Subsemigroup.coe_set_mk,
       Set.disjoint_compl_left_iff_subset] using this
-  simpa [Minimal.eq_of_le hp.out ⟨IsAssociatedPrime.isPrime hq, ann_le⟩ le] using hq
+  simpa! [Minimal.eq_of_le hp.out ⟨IsAssociatedPrime.isPrime hq, ann_le⟩ le] using hq
 
 end Module.associatedPrimes

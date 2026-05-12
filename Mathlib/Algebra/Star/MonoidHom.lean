@@ -215,13 +215,12 @@ instance : Inhabited (A ≃⋆* A) :=
 theorem coe_refl : ⇑(.refl A : A ≃⋆* A) = id :=
   rfl
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The inverse of a star monoid isomorphism is a star monoid isomorphism. -/
 @[symm]
 nonrec def symm (e : A ≃⋆* B) : B ≃⋆* A :=
   { e.symm with
     map_star' := fun b => by
-      simpa only [EquivLike.apply_inv_apply, EquivLike.inv_apply_apply] using
+      simpa! only [EquivLike.apply_inv_apply, EquivLike.inv_apply_apply] using
         congr_arg (EquivLike.inv e) (map_star e (EquivLike.inv e b)).symm }
 
 /-- See Note [custom simps projection] -/

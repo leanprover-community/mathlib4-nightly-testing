@@ -410,7 +410,6 @@ section
 
 variable {C : Type u₄} [Category.{v₄} C]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The functor `(F ⋙ L, R) ⥤ (L, R)` -/
 @[simps]
 def preLeft (F : C ⥤ A) (L : A ⥤ T) (R : B ⥤ T) : Comma (F ⋙ L) R ⥤ Comma L R where
@@ -421,7 +420,7 @@ def preLeft (F : C ⥤ A) (L : A ⥤ T) (R : B ⥤ T) : Comma (F ⋙ L) R ⥤ Co
   map f :=
     { left := F.map f.left
       right := f.right
-      w := by simpa using f.w }
+      w := by simpa! using f.w }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- `Comma.preLeft` is a particular case of `Comma.map`,
@@ -580,12 +579,11 @@ to `fst L R`. -/
 def opFunctorCompSnd : (opFunctor L R).leftOp ⋙ snd _ _ ≅ (fst _ _).op :=
   Iso.refl _
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The canonical functor from `Comma L.op R.op` to `(Comma R L)ᵒᵖ`. -/
 @[simps]
 def unopFunctor : Comma L.op R.op ⥤ (Comma R L)ᵒᵖ where
   obj X := ⟨X.right.unop, X.left.unop, X.hom.unop⟩
-  map f := ⟨f.right.unop, f.left.unop, Quiver.Hom.op_inj (by simpa using f.w.symm)⟩
+  map f := ⟨f.right.unop, f.left.unop, Quiver.Hom.op_inj (by simpa! using f.w.symm)⟩
 
 /-- Composing `unopFunctor L R` with `(fst L R).op` is isomorphic to `snd L.op R.op`. -/
 @[simps!]

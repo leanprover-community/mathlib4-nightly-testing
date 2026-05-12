@@ -265,10 +265,9 @@ lemma injective_fromQuotient_iff_ker_π_eq_span :
     obtain ⟨x, rfl⟩ := hx
     simp only [toQuotient_map_apply, Submodule.zero_mem]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma surjective_fromQuotient_iff_surjective_π :
     Function.Surjective solution.fromQuotient ↔ Function.Surjective solution.π := by
-  simpa only [← fromQuotient_comp_toQuotient] using
+  simpa! only [← fromQuotient_comp_toQuotient] using
     (Function.Surjective.of_comp_iff (f := solution.fromQuotient)
       relations.surjective_toQuotient).symm
 
@@ -440,21 +439,20 @@ lemma desc_var (h : IsPresentationCore.{w'} solution)
     h.desc s (solution.var g) = s.var g :=
   congr_var (h.postcomp_desc s) g
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The structure `IsPresentationCore` can be shrunk to a lower universe. -/
 def down (h : IsPresentationCore.{max w' w''} solution) :
     IsPresentationCore.{w''} solution where
   desc s := ULift.moduleEquiv.toLinearMap.comp
     (h.desc (s.postcomp ULift.moduleEquiv.symm.toLinearMap))
   postcomp_desc s := by
-    simpa using congr_postcomp
+    simpa! using congr_postcomp
       (h.postcomp_desc (s.postcomp ULift.moduleEquiv.symm.toLinearMap))
         ULift.moduleEquiv.toLinearMap
   postcomp_injective {N _ _ f f'} h' := by
     ext x
     have := congr_postcomp h' ULift.moduleEquiv.{_, _, w'}.symm.toLinearMap
     simp only [← postcomp_comp] at this
-    simpa using DFunLike.congr_fun (h.postcomp_injective this) x
+    simpa! using DFunLike.congr_fun (h.postcomp_injective this) x
 
 lemma isPresentation {solution : relations.Solution M}
     (h : IsPresentationCore.{max u v w₀} solution) :

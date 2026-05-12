@@ -110,13 +110,12 @@ instance : RatCast (FiniteElement K) where
 
 @[simp] theorem mk_ratCast (q : ℚ) : FiniteElement.mk (q : K) (mk_ratCast_nonneg q) = q := rfl
 
-set_option backward.simpa.using.reducibleClose false in
 @[no_expose]
 instance : FloorRing (FiniteElement K) :=
   .ofBounded _ fun x ↦ by
     obtain ⟨n, hn⟩ := x.2
     refine ⟨n, (le_abs_self x).trans ?_⟩
-    simpa using hn
+    simpa! using hn
 
 end FiniteElement
 

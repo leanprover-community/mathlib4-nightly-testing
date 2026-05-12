@@ -57,7 +57,6 @@ open Filter Function Set Topology TopologicalSpace MeasureTheory BoundedContinuo
 
 variable {E : Type*} [MeasurableSpace E] [TopologicalSpace E] [T2Space E] [BorelSpace E]
 
-set_option backward.simpa.using.reducibleClose false in
 variable (E) in
 /-- In a compact space, the set of finite measures with mass at most `C` is compact. -/
 theorem isCompact_setOf_finiteMeasure_le_of_compactSpace [CompactSpace E] (C : ℝ≥0) :
@@ -132,7 +131,7 @@ theorem isCompact_setOf_finiteMeasure_le_of_compactSpace [CompactSpace E] (C : �
     apply this.trans
     gcongr
     apply le_of_tendsto (hΛ o)
-    filter_upwards [hf] with μ hμ using by simpa [o] using hμ
+    filter_upwards [hf] with μ hμ using by simpa! [o] using hμ
   let μlim' : FiniteMeasure E := ⟨μlim, ⟨μlim_le.trans_lt (by simp)⟩⟩
   refine ⟨μlim', ?_, ?_⟩
   · simp only [mem_setOf_eq, FiniteMeasure.mk_apply, μlim', FiniteMeasure.mass]
@@ -471,7 +470,6 @@ lemma isCompact_setOf_finiteMeasure_mass_eq_compl_isCompact_le {u : ℕ → ℝ�
   apply IsCompact.inter_right (isCompact_setOf_finiteMeasure_mass_le_compl_isCompact_le C hu hK h)
   exact isClosed_eq (by fun_prop) (by fun_prop)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Prokhorov theorem**: Given a sequence of compact sets `Kₙ` and a sequence `uₙ` tending to
 zero, the probability measures giving mass at most `uₙ` to the complement of `Kₙ` form a
 compact set. -/
@@ -486,11 +484,11 @@ lemma isCompact_setOf_probabilityMeasure_mass_eq_compl_isCompact_le {u : ℕ →
     simp only [mem_image, mem_setOf_eq]
     refine ⟨?_, ?_⟩
     · rintro ⟨ν, hν, rfl⟩
-      simpa using hν
+      simpa! using hν
     · rintro ⟨hμ, h'μ⟩
-      let ν : ProbabilityMeasure E := ⟨μ, isProbabilityMeasure_iff_real.2 (by simpa using hμ)⟩
+      let ν : ProbabilityMeasure E := ⟨μ, isProbabilityMeasure_iff_real.2 (by simpa! using hμ)⟩
       have : ν.toFiniteMeasure = μ := by ext; rfl
-      exact ⟨ν, by simpa [← this] using h'μ , this⟩
+      exact ⟨ν, by simpa! [← this] using h'μ , this⟩
   rw [this]
   exact isCompact_setOf_finiteMeasure_mass_eq_compl_isCompact_le 1 hu hK h
 

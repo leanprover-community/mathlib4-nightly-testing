@@ -147,25 +147,23 @@ lemma exists_bound_of_subgroup_invariant_of_isArithmetic_of_isBigO
   exists_bound_of_subgroup_invariant_of_isBigO hf_cont ht hf_infinity (Γ := Γ.comap (mapGL ℝ))
     (hf_inv ·)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A function on `ℍ` which is invariant under `SL(2, ℤ)`, and bounded at `∞`, is uniformly
 bounded. -/
 lemma exists_bound_of_invariant
     {f : ℍ → E} (hf_cont : Continuous f) (hf_infinity : IsBoundedAtImInfty f)
     (hf_inv : ∀ (g : SL(2, ℤ)) τ, f (g • τ) = f τ) :
     ∃ C, ∀ τ, ‖f τ‖ ≤ C := by
-  simpa using exists_bound_of_invariant_of_isBigO hf_cont le_rfl
-    (by simpa only [Real.rpow_zero] using hf_infinity) hf_inv
+  simpa! using exists_bound_of_invariant_of_isBigO hf_cont le_rfl
+    (by simpa! only [Real.rpow_zero] using hf_infinity) hf_inv
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A function on `ℍ` which is invariant under an arithmetic subgroup and bounded at all cusps,
 is uniformly bounded. -/
 lemma exists_bound_of_subgroup_invariant {f : ℍ → E} (hf_cont : Continuous f)
     (hf_infinity : ∀ (g : SL(2, ℤ)), IsBoundedAtImInfty fun τ ↦ f (g • τ))
     {Γ : Subgroup (GL (Fin 2) ℝ)} [Γ.IsArithmetic] (hf_inv : ∀ g ∈ Γ, ∀ τ, f (g • τ) = f τ) :
     ∃ C, ∀ τ, ‖f τ‖ ≤ C := by
-  simpa using exists_bound_of_subgroup_invariant_of_isArithmetic_of_isBigO hf_cont le_rfl
-    (by simpa only [Real.rpow_zero] using hf_infinity) hf_inv
+  simpa! using exists_bound_of_subgroup_invariant_of_isArithmetic_of_isBigO hf_cont le_rfl
+    (by simpa! only [Real.rpow_zero] using hf_infinity) hf_inv
 
 end ModularGroup
 
@@ -184,7 +182,6 @@ lemma ModularFormClass.exists_petersson_le {k : ℤ} (hk : 0 ≤ k) (Γ : Subgro
     using (bdd_at_infty_slash f g).norm_left.mul (bdd_at_infty_slash f' g).norm_left
       |>.mul (isBigO_refl ..)
 
-set_option backward.simpa.using.reducibleClose false in
 open ConjAct Pointwise in
 /-- If `f` is a cusp form and `f'` a modular form, then `petersson k f f'` is bounded. -/
 lemma CuspFormClass.petersson_bounded_left
@@ -198,7 +195,7 @@ lemma CuspFormClass.petersson_bounded_left
   rw [IsZeroAtImInfty, ZeroAtFilter, ← tendsto_zero_iff_norm_tendsto_zero]
   simp_rw [← UpperHalfPlane.petersson_slash_SL]
   have : ((toConjAct (g : GL (Fin 2) ℝ)⁻¹) • Γ).IsArithmetic := by
-    simpa [(show Rat.castHom ℝ = algebraMap ℚ ℝ by rfl), map_inv, map_mapGL]
+    simpa! [(show Rat.castHom ℝ = algebraMap ℚ ℝ by rfl), map_inv, map_mapGL]
       using Subgroup.IsArithmetic.conj Γ (mapGL ℚ g)⁻¹
   exact (zero_at_infty <| CuspForm.translate f g).petersson_isZeroAtImInfty_left k _
     (ModularForm.translate f' g)

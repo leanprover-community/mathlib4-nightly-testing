@@ -272,7 +272,6 @@ end LinearOrder
 ### Functions on an arbitrary fintype
 -/
 
-set_option backward.simpa.using.reducibleClose false in
 /-- For any finite family of elements `f : ι → α`, we can find a pairwise-disjoint family `g`
 bounded above by `f` and having the same supremum. This is non-canonical, depending on an arbitrary
 choice of ordering of `ι`. -/
@@ -286,8 +285,8 @@ lemma Fintype.exists_disjointed_le {ι : Type*} [Fintype ι] (f : ι → α) :
   have hf' : f = f' ∘ R := by ext; simp only [Function.comp_apply, Equiv.symm_apply_apply, f']
   refine ⟨disjointed f' ∘ R, ?_, ?_, ?_⟩
   · intro n
-    simpa only [hf'] using disjointed_le f' (R n)
-  · simpa only [← sup_image, image_univ_equiv, hf'] using sup_disjointed f'
+    simpa! only [hf'] using disjointed_le f' (R n)
+  · simpa! only [← sup_image, image_univ_equiv, hf'] using sup_disjointed f'
   · exact fun i j hij ↦ disjoint_disjointed f' (R.injective.ne hij)
 
 end GeneralizedBooleanAlgebra

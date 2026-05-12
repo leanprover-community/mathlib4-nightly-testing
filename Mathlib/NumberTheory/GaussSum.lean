@@ -278,7 +278,6 @@ in this way, the result is reduced to `card_pow_char_pow`.
 
 open ZMod
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- For every finite field `F` of odd characteristic, we have `2^(#F/2) = χ₈ #F` in `F`. -/
 theorem FiniteField.two_pow_card {F : Type*} [Fintype F] [Field F] (hF : ringChar F ≠ 2) :
@@ -340,6 +339,6 @@ theorem FiniteField.two_pow_card {F : Type*} [Fintype F] [Field F] (hF : ringCha
   · rw [(by norm_num : (8 : F) = 2 ^ 2 * 2), mul_pow,
       (FiniteField.isSquare_iff hF <| hp2 2).mp ⟨2, pow_two 2⟩, one_mul]
   apply (algebraMap F FF).injective
-  simpa only [map_pow, map_ofNat, map_intCast, Nat.cast_ofNat] using h
+  simpa! only [map_pow, map_ofNat, map_intCast, Nat.cast_ofNat] using h
 
 end GaussSumTwo

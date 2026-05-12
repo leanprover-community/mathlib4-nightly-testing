@@ -106,7 +106,6 @@ theorem closure_convexHull_extremePoints (hscomp : IsCompact s) (hAconv : Convex
   linarith [hlr _ (subset_closure <| subset_convexHull _ _ <|
     h.isExtreme.extremePoints_subset_extremePoints hy), hy.1.2 x hxA]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A continuous affine map is surjective from the extreme points of a compact set to the extreme
 points of the image of that set. This inclusion is in general strict. -/
 lemma surjOn_extremePoints_image (f : E →ᴬ[ℝ] F) (hs : IsCompact s) :
@@ -115,12 +114,12 @@ lemma surjOn_extremePoints_image (f : E →ᴬ[ℝ] F) (hs : IsCompact s) :
   -- The fiber of `w` is nonempty and compact
   have ht : IsCompact {x ∈ s | f x = w} :=
     hs.inter_right <| isClosed_singleton.preimage f.continuous
-  have ht₀ : {x ∈ s | f x = w}.Nonempty := by simpa using extremePoints_subset hw
+  have ht₀ : {x ∈ s | f x = w}.Nonempty := by simpa! using extremePoints_subset hw
   -- Hence by the Krein-Milman lemma it has an extreme point `x`
   obtain ⟨x, ⟨hx, rfl⟩, hyt⟩ := ht.extremePoints_nonempty ht₀
   -- `f x = w` and `x` is an extreme point of `s`, so we're done
   refine mem_image_of_mem _ ⟨hx, fun y hy z hz hxyz ↦ ?_⟩
-  have := by simpa using image_openSegment _ f.toAffineMap y z
+  have := by simpa! using image_openSegment _ f.toAffineMap y z
   rw [mem_extremePoints] at hw
   have := hw.2 _ (mem_image_of_mem _ hy) _ (mem_image_of_mem _ hz) <| by
     rw [← this]; exact mem_image_of_mem _ hxyz

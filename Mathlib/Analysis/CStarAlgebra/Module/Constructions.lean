@@ -178,10 +178,9 @@ private lemma antilipschitzWith_two_equiv_prod_aux : AntilipschitzWith 2 (equiv 
     · exact norm_fst_le x
     · exact norm_snd_le x
 
-set_option backward.simpa.using.reducibleClose false in
 private lemma lipschitzWith_one_equiv_prod_aux : LipschitzWith 1 (equiv A (E × F)) :=
   AddMonoidHomClass.lipschitz_of_bound_nnnorm (linearEquiv ℂ A (E × F)) 1 <| by
-    simpa using norm_equiv_le_norm_prod
+    simpa! using norm_equiv_le_norm_prod
 
 private lemma uniformity_prod_eq_aux :
     𝓤[(inferInstance : UniformSpace (E × F)).comap <| equiv _ _] = 𝓤 C⋆ᵐᵒᵈ(A, E × F) :=
@@ -307,10 +306,9 @@ private lemma antilipschitzWith_card_equiv_pi_aux :
       _ ≤ ∑ _, ‖⇑x‖ := Finset.sum_le_sum fun _ _ ↦ norm_le_pi_norm ..
       _ ≤ Fintype.card ι * ‖⇑x‖ := by simp
 
-set_option backward.simpa.using.reducibleClose false in
 private lemma lipschitzWith_one_equiv_pi_aux : LipschitzWith 1 (equiv A (Π i, E i)) :=
   AddMonoidHomClass.lipschitz_of_bound_nnnorm (linearEquiv ℂ A (Π i, E i)) 1 <| by
-    simpa using norm_equiv_le_norm_pi
+    simpa! using norm_equiv_le_norm_pi
 
 private lemma uniformity_pi_eq_aux :
     𝓤[(inferInstance : UniformSpace (Π i, E i)).comap <| equiv A _] = 𝓤 C⋆ᵐᵒᵈ(A, Π i, E i) :=

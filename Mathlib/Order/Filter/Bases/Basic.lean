@@ -293,9 +293,8 @@ theorem HasBasis.to_subset (hl : l.HasBasis p s) {t : ι → Set α} (h : ∀ i,
     (ht : ∀ i, p i → t i ∈ l) : l.HasBasis p t :=
   hl.to_hasBasis' (fun i hi => ⟨i, hi, h i hi⟩) ht
 
-set_option backward.simpa.using.reducibleClose false in
 theorem HasBasis.eventually_iff (hl : l.HasBasis p s) {q : α → Prop} :
-    (∀ᶠ x in l, q x) ↔ ∃ i, p i ∧ ∀ ⦃x⦄, x ∈ s i → q x := by simpa using hl.mem_iff
+    (∀ᶠ x in l, q x) ↔ ∃ i, p i ∧ ∀ ⦃x⦄, x ∈ s i → q x := by simpa! using hl.mem_iff
 
 theorem HasBasis.frequently_iff (hl : l.HasBasis p s) {q : α → Prop} :
     (∃ᶠ x in l, q x) ↔ ∀ i, p i → ∃ x ∈ s i, q x := by
@@ -364,10 +363,9 @@ theorem HasBasis.restrict_subset (h : l.HasBasis p s) {V : Set α} (hV : V ∈ l
   h.restrict fun _i hi => (h.mem_iff.1 (inter_mem hV (h.mem_of_mem hi))).imp fun _j hj =>
     ⟨hj.1, subset_inter_iff.1 hj.2⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem HasBasis.hasBasis_self_subset {p : Set α → Prop} (h : l.HasBasis (fun s => s ∈ l ∧ p s) id)
     {V : Set α} (hV : V ∈ l) : l.HasBasis (fun s => s ∈ l ∧ p s ∧ s ⊆ V) id := by
-  simpa only [and_assoc] using h.restrict_subset hV
+  simpa! only [and_assoc] using h.restrict_subset hV
 
 theorem HasBasis.ge_iff (hl' : l'.HasBasis p' s') : l ≤ l' ↔ ∀ i', p' i' → s' i' ∈ l :=
   ⟨fun h _i' hi' => h <| hl'.mem_of_mem hi', fun h _s hs =>
@@ -575,11 +573,10 @@ theorem HasBasis.eq_biInf (h : l.HasBasis p s) : l = ⨅ (i) (_ : p i), 𝓟 (s 
 theorem HasBasis.eq_iInf (h : l.HasBasis (fun _ => True) s) : l = ⨅ i, 𝓟 (s i) := by
   simpa only [iInf_true] using h.eq_biInf
 
-set_option backward.simpa.using.reducibleClose false in
 theorem hasBasis_iInf_principal {s : ι → Set α} (h : Directed (· ≥ ·) s) [Nonempty ι] :
     (⨅ i, 𝓟 (s i)).HasBasis (fun _ => True) s :=
   ⟨fun t => by
-    simpa only [true_and] using mem_iInf_of_directed (h.mono_comp _ monotone_principal.dual) t⟩
+    simpa! only [true_and] using mem_iInf_of_directed (h.mono_comp _ monotone_principal.dual) t⟩
 
 theorem hasBasis_biInf_principal {s : β → Set α} {S : Set β} (h : DirectedOn (s ⁻¹'o (· ≥ ·)) S)
     (ne : S.Nonempty) : (⨅ i ∈ S, 𝓟 (s i)).HasBasis (fun i => i ∈ S) s :=

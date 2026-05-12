@@ -177,14 +177,13 @@ def isoPointwiseLeftKanExtension (F G : C ⊛⥤ V) :
     (F ⊗ G).functor (η F G) _
     ((tensor C).pointwiseLeftKanExtensionUnit (F.functor ⊠ G.functor))
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma η_comp_isoPointwiseLeftKanExtension_hom (F G : C ⊛⥤ V) (x y : C) :
     (η F G).app (x, y) ≫ (isoPointwiseLeftKanExtension F G).hom.app (x ⊗ y) =
     Limits.colimit.ι
       (CostructuredArrow.proj (tensor C) (x ⊗ y) ⋙ F.functor ⊠ G.functor)
       (.mk (Y := (x, y)) <| 𝟙 (x ⊗ y)) := by
-  simpa [η, isoPointwiseLeftKanExtension] using
+  simpa! [η, isoPointwiseLeftKanExtension] using
     Functor.descOfIsLeftKanExtension_fac_app
       (F ⊗ G).functor (η F G) _
       ((tensor C).pointwiseLeftKanExtensionUnit (F.functor ⊠ G.functor)) (x, y)

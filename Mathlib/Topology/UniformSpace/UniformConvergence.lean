@@ -255,7 +255,6 @@ theorem UniformContinuous.comp_tendstoUniformly [UniformSpace γ] {g : β → γ
     (hg : UniformContinuous g) (h : TendstoUniformly F f p) :
     TendstoUniformly (fun i => g ∘ F i) (g ∘ f) p := fun _u hu => h _ (hg hu)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem TendstoUniformlyOnFilter.prodMap {ι' α' β' : Type*} [UniformSpace β'] {F' : ι' → α' → β'}
     {f' : α' → β'} {q : Filter ι'} {q' : Filter α'} (h : TendstoUniformlyOnFilter F f p p')
     (h' : TendstoUniformlyOnFilter F' f' q q') :
@@ -263,7 +262,7 @@ theorem TendstoUniformlyOnFilter.prodMap {ι' α' β' : Type*} [UniformSpace β'
       (p' ×ˢ q') := by
   rw [tendstoUniformlyOnFilter_iff_tendsto] at h h' ⊢
   rw [uniformity_prod_eq_comap_prod, tendsto_comap_iff, ← map_swap4_prod, tendsto_map'_iff]
-  simpa using h.prodMap h'
+  simpa! using h.prodMap h'
 
 theorem TendstoUniformlyOn.prodMap {ι' α' β' : Type*} [UniformSpace β'] {F' : ι' → α' → β'}
     {f' : α' → β'} {p' : Filter ι'} {s' : Set α'} (h : TendstoUniformlyOn F f p s)
@@ -327,13 +326,12 @@ theorem tendstoUniformlyOn_singleton_iff_tendsto :
   simp_rw [tendstoUniformlyOn_iff_tendsto, Uniform.tendsto_nhds_right, tendsto_def]
   exact forall₂_congr fun u _ => by simp [preimage]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If a sequence `g` converges to some `b`, then the sequence of constant functions
 `fun n ↦ fun a ↦ g n` converges to the constant function `fun a ↦ b` on any set `s` -/
 theorem Filter.Tendsto.tendstoUniformlyOnFilter_const {g : ι → β} {b : β} (hg : Tendsto g p (𝓝 b))
     (p' : Filter α) :
     TendstoUniformlyOnFilter (fun n : ι => fun _ : α => g n) (fun _ : α => b) p p' := by
-  simpa only [nhds_eq_comap_uniformity, tendsto_comap_iff] using hg.comp (tendsto_fst (g := p'))
+  simpa! only [nhds_eq_comap_uniformity, tendsto_comap_iff] using hg.comp (tendsto_fst (g := p'))
 
 /-- If a sequence `g` converges to some `b`, then the sequence of constant functions
 `fun n ↦ fun a ↦ g n` converges to the constant function `fun a ↦ b` on any set `s` -/

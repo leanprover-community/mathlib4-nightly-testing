@@ -456,7 +456,6 @@ lemma unop_whiskerLeft {F G : Cᵒᵖ ⥤ Dᵒᵖ} {E : Type*} [Category* E] {H 
       (Functor.unopComp _ _).inv := by
   cat_disch
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a natural transformation `α : F.op ⟶ G.op`,
 we can take the "unopposite" of each component obtaining a natural transformation `G ⟶ F`.
 -/
@@ -464,20 +463,19 @@ we can take the "unopposite" of each component obtaining a natural transformatio
 protected def removeOp (α : F.op ⟶ G.op) : G ⟶ F where
   app X := (α.app (op X)).unop
   naturality X Y f :=
-    Quiver.Hom.op_inj <| by simpa only [Functor.op_map] using (α.naturality f.op).symm
+    Quiver.Hom.op_inj <| by simpa! only [Functor.op_map] using (α.naturality f.op).symm
 
 @[simp]
 theorem removeOp_id (F : C ⥤ D) : NatTrans.removeOp (𝟙 F.op) = 𝟙 F :=
   rfl
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a natural transformation `α : F.unop ⟶ G.unop`, we can take the opposite of each
 component obtaining a natural transformation `G ⟶ F`. -/
 @[simps, to_dual self]
 protected def removeUnop {F G : Cᵒᵖ ⥤ Dᵒᵖ} (α : F.unop ⟶ G.unop) : G ⟶ F where
   app X := (α.app (unop X)).op
   naturality X Y f :=
-    Quiver.Hom.unop_inj <| by simpa only [Functor.unop_map] using (α.naturality f.unop).symm
+    Quiver.Hom.unop_inj <| by simpa! only [Functor.unop_map] using (α.naturality f.unop).symm
 
 @[simp]
 theorem removeUnop_id (F : Cᵒᵖ ⥤ Dᵒᵖ) : NatTrans.removeUnop (𝟙 F.unop) = 𝟙 F :=
@@ -514,7 +512,6 @@ lemma leftOpWhiskerRight {E : Type*} [Category* E] {H : E ⥤ C} (α : F ⟶ G) 
       (Functor.leftOpComp H F).inv := by
   cat_disch
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a natural transformation `α : F.leftOp ⟶ G.leftOp`, for `F G : C ⥤ Dᵒᵖ`,
 taking `op` of each component gives a natural transformation `G ⟶ F`.
 -/
@@ -522,7 +519,7 @@ taking `op` of each component gives a natural transformation `G ⟶ F`.
 protected def removeLeftOp (α : F.leftOp ⟶ G.leftOp) : G ⟶ F where
   app X := (α.app (op X)).op
   naturality X Y f :=
-    Quiver.Hom.unop_inj <| by simpa only [Functor.leftOp_map] using (α.naturality f.op).symm
+    Quiver.Hom.unop_inj <| by simpa! only [Functor.leftOp_map] using (α.naturality f.op).symm
 
 @[simp]
 theorem removeLeftOp_id : NatTrans.removeLeftOp (𝟙 F.leftOp) = 𝟙 F :=
@@ -559,7 +556,6 @@ lemma rightOpWhiskerRight {E : Type*} [Category* E] {H : D ⥤ E} (α : F ⟶ G)
       (Functor.rightOpComp F H).inv := by
   cat_disch
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a natural transformation `α : F.rightOp ⟶ G.rightOp`, for `F G : Cᵒᵖ ⥤ D`,
 taking `unop` of each component gives a natural transformation `G ⟶ F`.
 -/
@@ -567,7 +563,7 @@ taking `unop` of each component gives a natural transformation `G ⟶ F`.
 protected def removeRightOp (α : F.rightOp ⟶ G.rightOp) : G ⟶ F where
   app X := (α.app X.unop).unop
   naturality X Y f :=
-    Quiver.Hom.op_inj <| by simpa only [Functor.rightOp_map] using (α.naturality f.unop).symm
+    Quiver.Hom.op_inj <| by simpa! only [Functor.rightOp_map] using (α.naturality f.unop).symm
 
 @[simp]
 theorem removeRightOp_id : NatTrans.removeRightOp (𝟙 F.rightOp) = 𝟙 F :=

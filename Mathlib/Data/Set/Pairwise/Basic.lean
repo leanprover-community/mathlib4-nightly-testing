@@ -59,16 +59,15 @@ theorem pairwise_disjoint_mono [PartialOrder α] [OrderBot α] (hs : Pairwise (D
     (h : g ≤ f) : Pairwise (Disjoint on g) :=
   hs.mono fun i j hij => Disjoint.mono (h i) (h j) hij
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Pairwise.disjoint_extend_bot [PartialOrder γ] [OrderBot γ]
     {e : α → β} {f : α → γ} (hf : Pairwise (Disjoint on f)) (he : FactorsThrough f e) :
     Pairwise (Disjoint on extend e f ⊥) := by
   intro b₁ b₂ hne
   rcases em (∃ a₁, e a₁ = b₁) with ⟨a₁, rfl⟩ | hb₁
   · rcases em (∃ a₂, e a₂ = b₂) with ⟨a₂, rfl⟩ | hb₂
-    · simpa only [onFun, he.extend_apply] using hf (ne_of_apply_ne e hne)
-    · simpa only [onFun, extend_apply' _ _ _ hb₂] using disjoint_bot_right
-  · simpa only [onFun, extend_apply' _ _ _ hb₁] using disjoint_bot_left
+    · simpa! only [onFun, he.extend_apply] using hf (ne_of_apply_ne e hne)
+    · simpa! only [onFun, extend_apply' _ _ _ hb₂] using disjoint_bot_right
+  · simpa! only [onFun, extend_apply' _ _ _ hb₁] using disjoint_bot_left
 
 namespace Set
 

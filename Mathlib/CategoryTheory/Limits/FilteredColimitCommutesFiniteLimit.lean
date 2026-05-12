@@ -67,7 +67,6 @@ only that there are finitely many objects.
 
 variable [Finite J]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- This follows the proof from
@@ -91,7 +90,7 @@ theorem colimitLimitToLimitColimit_injective :
           ((limit.π ((curry.obj (swap K J ⋙ F)).obj kx) j) x) =
         (colimit.ι ((curry.obj F).obj j) ky)
           ((limit.π ((curry.obj (swap K J ⋙ F)).obj ky) j) y) := by
-      simpa [-comp_obj] using ConcreteCategory.congr_arg (limit.π (curry.obj F ⋙ colim) j) h
+      simpa! [-comp_obj] using ConcreteCategory.congr_arg (limit.π (curry.obj F ⋙ colim) j) h
     -- and they are equations in a filtered colimit,
     -- so for each `j` we have some place `k j` to the right of both `kx` and `ky`
     simp only [colimit_eq_iff] at h
@@ -142,7 +141,7 @@ theorem colimitLimitToLimitColimit_injective :
     -- Now it's just a calculation using `W` and `w`.
     simp only [Functor.comp_map]
     rw [← W _ _ (fH j), ← W _ _ (gH j)]
-    simpa [-curry_obj_obj_obj] using congrArg _ (w j)
+    simpa! [-curry_obj_obj_obj] using congrArg _ (w j)
 
 end
 

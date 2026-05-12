@@ -805,7 +805,6 @@ Combinatorial viewpoints on compositions, seen as finite subsets of `Fin (n+1)` 
 -/
 
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Bijection between compositions of `n` and subsets of `{0, ..., n-2}`, defined by
 considering the restriction of the subset to `{1, ..., n-1}` and shifting to the left by one. -/
 def compositionAsSetEquiv (n : ℕ) : CompositionAsSet n ≃ Finset (Fin (n - 1)) where
@@ -832,9 +831,9 @@ def compositionAsSetEquiv (n : ℕ) : CompositionAsSet n ≃ Finset (Fin (n - 1)
       rintro i_mem ⟨j, rfl⟩ i_ne_last
       rcases Nat.exists_add_one_eq.mpr j.pos with ⟨n, rfl⟩
       obtain ⟨k, rfl⟩ : ∃ k : Fin n, k.castSucc = j := by
-        simpa [Fin.exists_castSucc_eq] using i_ne_last
+        simpa! [Fin.exists_castSucc_eq] using i_ne_last
       use k
-      simpa using i_mem
+      simpa! using i_mem
   right_inv := by
     intro s
     ext i

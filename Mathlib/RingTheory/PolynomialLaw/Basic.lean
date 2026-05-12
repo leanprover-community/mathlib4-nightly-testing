@@ -86,7 +86,6 @@ structure PolynomialLaw (R : Type u) [CommSemiring R]
 /-- `M →ₚₗ[R] N` is the type of `R`-polynomial laws from `M` to `N`. -/
 notation:25 M " →ₚₗ[" R:25 "] " N:0 => PolynomialLaw R M N
 
-set_option backward.simpa.using.reducibleClose false in
 @[local simp]
 theorem PolynomialLaw.isCompat_apply'
     {R : Type u} [CommSemiring R] {M : Type*} [AddCommMonoid M] [Module R M]
@@ -94,7 +93,7 @@ theorem PolynomialLaw.isCompat_apply'
     {S : Type u} [CommSemiring S] [Algebra R S] {S' : Type u} [CommSemiring S'] [Algebra R S']
     (φ : S →ₐ[R] S') (x : S ⊗[R] M) :
     (φ.toLinearMap.rTensor N) ((f.toFun' S) x) = (f.toFun' S') (φ.toLinearMap.rTensor M x) := by
-  simpa only using congr_fun (f.isCompat' φ) x
+  simpa! only using congr_fun (f.isCompat' φ) x
 
 attribute [local simp] PolynomialLaw.isCompat_apply'
 

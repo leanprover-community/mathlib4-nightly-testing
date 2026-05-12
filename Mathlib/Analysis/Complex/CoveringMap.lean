@@ -83,7 +83,6 @@ theorem isCoveringMap_zpow (n : ℤ) (hn : (n : 𝕜) ≠ 0) :
     · simp [Homeomorph.inv₀]
     · simpa using hn
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isCoveringMapOn_zpow (n : ℤ) (hn : (n : 𝕜) ≠ 0) :
     IsCoveringMapOn (fun x : 𝕜 ↦ x ^ n) {0}ᶜ := by
   have (x : 𝕜) : x ^ n = 0 ↔ x = 0 := zpow_eq_zero_iff (by aesop)
@@ -91,7 +90,7 @@ theorem isCoveringMapOn_zpow (n : ℤ) (hn : (n : 𝕜) ≠ 0) :
   · convert isClosed_singleton (x := (0 : 𝕜)).isOpen_compl using 1
     ext; simp [this]
   · convert (isCoveringMap_zpow n hn).comp_homeomorph (.setCongr _) using 1
-    ext; simpa using (this _).not
+    ext; simpa! using (this _).not
 
 attribute [-instance] Units.mulAction'
 

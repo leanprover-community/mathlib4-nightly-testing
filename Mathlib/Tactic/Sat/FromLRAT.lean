@@ -162,7 +162,6 @@ def Valuation.mk : List Prop → Valuation
   | _::as, n + 1 => mk as n
 termination_by structural ps => ps
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The fundamental relationship between `mk` and `implies`:
 `(mk ps).implies p ps 0` is equivalent to `p`. -/
 theorem Valuation.mk_implies {p} {as ps} (as₁) : as = List.reverseAux as₁ ps →
@@ -176,7 +175,7 @@ theorem Valuation.mk_implies {p} {as ps} (as₁) : as = List.reverseAux as₁ ps
       ∀ bs, mk (as₁.reverseAux bs) n' ↔ mk bs n from this 0 _ rfl (a::as)
     induction as₁ with
     | nil => simp
-    | cons b as₁ ih => simpa using fun n bs ↦ ih (n + 1) _ (Nat.succ_add ..) _
+    | cons b as₁ ih => simpa! using fun n bs ↦ ih (n + 1) _ (Nat.succ_add ..) _
 
 /-- Asserts that `¬⟦f⟧_v` implies `p`. -/
 structure Fmla.reify (v : Valuation) (f : Fmla) (p : Prop) : Prop where

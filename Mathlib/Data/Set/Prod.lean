@@ -956,10 +956,9 @@ lemma image_fst_graphOn (f : α → β) (s : Set α) : Prod.fst '' graphOn f s =
 
 lemma fst_injOn_graph : (s.graphOn f).InjOn Prod.fst := by aesop (add simp InjOn)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma graphOn_comp (s : Set α) (f : α → β) (g : β → γ) :
     s.graphOn (g ∘ f) = (fun x ↦ (x.1, g x.2)) '' s.graphOn f := by
-  simpa using image_comp (fun x ↦ (x.1, g x.2)) (fun x ↦ (x, f x)) _
+  simpa! using image_comp (fun x ↦ (x.1, g x.2)) (fun x ↦ (x, f x)) _
 
 lemma graphOn_univ_eq_range : univ.graphOn f = range fun x ↦ (x, f x) := image_univ
 

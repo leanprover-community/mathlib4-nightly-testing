@@ -573,7 +573,6 @@ noncomputable def coneOfAdj (F : J ⥤ C) : Cone F where
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /-- The cones defined by `coneOfAdj` are limit cones. -/
 @[simps]
 def isLimitConeOfAdj (F : J ⥤ C) :
@@ -584,7 +583,7 @@ def isLimitConeOfAdj (F : J ⥤ C) :
     have eq' := NatTrans.congr_app (adj.left_triangle_components s.pt) j
     dsimp at eq eq' ⊢
     rw [adj.homEquiv_unit, assoc, eq, reassoc_of% eq']
-  uniq s m hm := (adj.homEquiv _ _).symm.injective (by ext j; simpa using hm j)
+  uniq s m hm := (adj.homEquiv _ _).symm.injective (by ext j; simpa! using hm j)
 
 end Adjunction
 

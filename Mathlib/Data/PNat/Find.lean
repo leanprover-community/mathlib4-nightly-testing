@@ -28,7 +28,6 @@ instance decidablePredExistsNat : DecidablePred fun n' : ℕ => ∃ (n : ℕ+) (
     Subtype.exists.trans <| by
       simp_rw [mk_coe, @exists_comm (_ < _) (_ = _), exists_prop, exists_eq_left']
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The `PNat` version of `Nat.findX` -/
 protected def findX : { n // p n ∧ ∀ m : ℕ+, m < n → ¬p m } := by
   have : ∃ (n' : ℕ) (n : ℕ+) (_ : n' = n), p n := Exists.elim h fun n hn => ⟨n, n, rfl, hn⟩
@@ -38,7 +37,7 @@ protected def findX : { n // p n ∧ ∀ m : ℕ+, m < n → ¬p m } := by
     rw [hn']
     exact n'.prop
   · obtain ⟨n', hn', pn'⟩ := n.prop.1
-    simpa [hn', Subtype.coe_eta] using pn'
+    simpa! [hn', Subtype.coe_eta] using pn'
   · exact n.prop.2 m hm ⟨m, rfl, pm⟩
 
 /-- If `p` is a (decidable) predicate on `ℕ+` and `hp : ∃ (n : ℕ+), p n` is a proof that

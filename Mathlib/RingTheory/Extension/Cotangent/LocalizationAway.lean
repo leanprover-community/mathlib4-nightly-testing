@@ -117,7 +117,6 @@ lemma sq_ker_comp_le_ker_compLocalizationAwayAlgHom :
       intro x hx y hy
       simp [hsple hx]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /--
 Let `R → S → T` be algebras such that `T` is the localization of `S` away from one
@@ -148,10 +147,10 @@ lemma liftBaseChange_injective_of_isLocalizationAway :
     simp only [Submonoid.smul_def]
     rw [show g = algebraMap P.Ring S (P.σ g) by simp, ← map_pow, algebraMap_smul, ← map_smul,
       Extension.Cotangent.mk_eq_zero_iff]
-    simpa using hm
+    simpa! using hm
   rw [← compLocalizationAwayAlgHom_toAlgHom_toComp (T := T)]
   apply sq_ker_comp_le_ker_compLocalizationAwayAlgHom
-  simpa only [LinearEquiv.coe_coe, LinearMap.ringLmapEquivSelf_symm_apply,
+  simpa! only [LinearEquiv.coe_coe, LinearMap.ringLmapEquivSelf_symm_apply,
     mk_apply, lift.tmul, LinearMap.coe_restrictScalars, LinearMap.coe_smulRight,
     Module.End.one_apply, LinearMap.smul_apply, one_smul, Algebra.Extension.Cotangent.map_mk,
     Extension.Cotangent.mk_eq_zero_iff] using hx

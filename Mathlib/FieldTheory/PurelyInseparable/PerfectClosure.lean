@@ -379,7 +379,6 @@ def Module.Basis.mapPowExpCharPowOfIsSeparable [Algebra.IsSeparable F E] (b : Ba
   .mk (b.linearIndependent.map_pow_expChar_pow_of_isSeparable q n)
     (Field.span_map_pow_expChar_pow_eq_top_of_isSeparable q n b.span_eq).ge
 
-set_option backward.simpa.using.reducibleClose false in
 /-- For an extension `E / F` of exponential characteristic `q` and a separable element `a : E`, the
 minimal polynomial of `a ^ q ^ n` equals the minimal polynomial of `a` mapped via `(⬝ ^ q ^ n)`. -/
 theorem minpoly.iterateFrobenius_of_isSeparable [ExpChar E q] (n : ℕ) {a : E}
@@ -393,7 +392,7 @@ theorem minpoly.iterateFrobenius_of_isSeparable [ExpChar E q] (n : ℕ) {a : E}
     (minpoly.monic hai |>.map _)
     (minpoly.dvd F (a ^ q ^ n) ?haeval)
     ?hdeg
-  · simpa using Eq.symm <|
+  · simpa! using Eq.symm <|
       (minpoly F a).map_aeval_eq_aeval_map (RingHom.iterateFrobenius_comm _ q n) a
   · rw [(minpoly F a).natDegree_map_eq_of_injective (iterateFrobenius F q n).injective,
       ← IntermediateField.adjoin.finrank hai,

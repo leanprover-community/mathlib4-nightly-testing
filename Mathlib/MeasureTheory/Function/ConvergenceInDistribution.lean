@@ -133,7 +133,6 @@ end TendstoInDistribution
 
 variable [SeminormedAddCommGroup E] [SecondCountableTopology E] [BorelSpace E]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Let `X, Y` be two sequences of measurable functions such that `X n` converges in distribution
 to `Z`, and `Y n - X n` converges in probability to `0`.
@@ -164,7 +163,7 @@ lemma tendstoInDistribution_of_tendstoInMeasure_sub {X : ι → Ω'' → E}
     simp only [← hF_lip, integral_const, smul_eq_mul]
     have h_prob n : IsProbabilityMeasure (μ''.map (Y n)) := Measure.isProbabilityMeasure_map (hY n)
     have : IsProbabilityMeasure (μ'.map Z) := Measure.isProbabilityMeasure_map hZ
-    simpa using tendsto_const_nhds
+    simpa! using tendsto_const_nhds
   -- now `F` is `L`-Lipschitz with `L > 0`
   simp_rw [Metric.tendsto_nhds, Real.dist_eq]
   suffices ∀ ε > 0, ∀ᶠ n in l, |∫ ω, F ω ∂(μ''.map (Y n)) - ∫ ω, F ω ∂(μ'.map Z)| < L * ε by
@@ -234,7 +233,7 @@ lemma tendstoInDistribution_of_tendstoInMeasure_sub {X : ι → Ω'' → E}
         + |∫ ω, F ω ∂(μ''.map (X n)) - ∫ ω, F ω ∂(μ'.map Z)|) l (𝓝 (L * ε / 2)) := by
     suffices Tendsto (fun n ↦ L * (ε / 2) + M * μ''.real {ω | ε / 2 ≤ ‖Y n ω - X n ω‖}
         + |∫ ω, F ω ∂(μ''.map (X n)) - ∫ ω, F ω ∂(μ'.map Z)|) l (𝓝 (L * ε / 2 + M * 0 + 0)) by
-      simpa
+      simpa!
     refine (Tendsto.add ?_ (Tendsto.const_mul _ ?_)).add ?_
     · rw [mul_div_assoc]
       exact tendsto_const_nhds
@@ -242,7 +241,7 @@ lemma tendstoInDistribution_of_tendstoInMeasure_sub {X : ι → Ω'' → E}
       exact hXY (ε / 2) (by positivity)
     · replace hXZ := hXZ.tendsto
       simp_rw [tendsto_iff_forall_lipschitz_integral_tendsto] at hXZ
-      simpa [tendsto_iff_dist_tendsto_zero] using hXZ F ⟨M, hF_bounded⟩ ⟨L, hF_lip⟩
+      simpa! [tendsto_iff_dist_tendsto_zero] using hXZ F ⟨M, hF_bounded⟩ ⟨L, hF_lip⟩
   have h_lt : L * ε / 2 < L * ε := half_lt_self (by positivity)
   filter_upwards [h_tendsto.eventually_lt_const h_lt] with n hn using (h_le n).trans_lt hn
 
@@ -262,7 +261,6 @@ lemma TendstoInMeasure.tendstoInDistribution [l.NeBot] [l.IsCountablyGenerated]
     TendstoInDistribution X l Z (fun _ ↦ μ') μ' :=
     h.tendstoInDistribution_of_aemeasurable hX (h.aemeasurable hX)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Slutsky's theorem**: if `X n` converges in distribution to `Z`, and `Y n` converges in
 probability to a constant `c`, then the pair `(X n, Y n)` converges in distribution to `(Z, c)`. -/
 theorem TendstoInDistribution.prodMk_of_tendstoInMeasure_const
@@ -292,11 +290,11 @@ theorem TendstoInDistribution.prodMk_of_tendstoInMeasure_const
         ∫ ω, F ω ∂μ''.map (fun ω ↦ (f ω, c)) = ∫ ω, F (ω, c) ∂(μ''.map f) := by
       rw [integral_map (by fun_prop) (by fun_prop), integral_map (by fun_prop) (by fun_prop)]
     simp_rw [ProbabilityMeasure.coe_mk, h_eq' (X _) (hX _), h_eq Z hZ]
-    simpa using hXZ Fc
+    simpa! using hXZ Fc
   · suffices TendstoInMeasure μ'' (fun n ω ↦ ((0 : E), Y n ω - c)) l 0 by
       convert this with n ω
       simp
-    simpa [tendstoInMeasure_iff_norm] using hY
+    simpa! [tendstoInMeasure_iff_norm] using hY
 
 /-- **Slutsky's theorem** for a continuous function: if `X n` converges in distribution to `Z`,
  `Y n` converges in probability to a constant `c`, and `g` is a continuous function, then

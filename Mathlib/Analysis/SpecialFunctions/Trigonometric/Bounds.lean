@@ -159,11 +159,10 @@ theorem sin_gt_sub_cube {x : ℝ} (h : 0 < x) (h' : x ≤ 1) : x - x ^ 3 / 4 < s
   apply pow_le_pow_of_le_one h.le h'
   simp
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The derivative of `tan x - x` is `1/(cos x)^2 - 1` away from the zeroes of cos. -/
 theorem deriv_tan_sub_id (x : ℝ) (h : cos x ≠ 0) :
     deriv (fun y : ℝ => tan y - y) x = 1 / cos x ^ 2 - 1 :=
-  HasDerivAt.deriv <| by simpa using (hasDerivAt_tan h).add (hasDerivAt_id x).neg
+  HasDerivAt.deriv <| by simpa! using (hasDerivAt_tan h).add (hasDerivAt_id x).neg
 
 /-- For all `0 < x < π/2` we have `x < tan x`.
 
@@ -234,21 +233,17 @@ theorem cos_le_one_div_sqrt_sq_add_one {x : ℝ} (hx1 : -(3 * π / 2) ≤ x) (hx
   · simp
   · exact (cos_lt_one_div_sqrt_sq_add_one hx1 hx2 hx3).le
 
-set_option backward.simpa.using.reducibleClose false in
 theorem lipschitzWith_sin : LipschitzWith 1 sin :=
-  lipschitzWith_of_nnnorm_deriv_le differentiable_sin <| by simpa using abs_cos_le_one
+  lipschitzWith_of_nnnorm_deriv_le differentiable_sin <| by simpa! using abs_cos_le_one
 
-set_option backward.simpa.using.reducibleClose false in
 theorem lipschitzWith_cos : LipschitzWith 1 cos :=
-  lipschitzWith_of_nnnorm_deriv_le differentiable_cos <| by simpa using abs_sin_le_one
+  lipschitzWith_of_nnnorm_deriv_le differentiable_cos <| by simpa! using abs_sin_le_one
 
-set_option backward.simpa.using.reducibleClose false in
 theorem abs_sin_sub_sin_le (x y : ℝ) : |sin x - sin y| ≤ |x - y| := by
-  simpa [edist_dist] using lipschitzWith_sin x y
+  simpa! [edist_dist] using lipschitzWith_sin x y
 
-set_option backward.simpa.using.reducibleClose false in
 theorem abs_cos_sub_cos_le (x y : ℝ) : |cos x - cos y| ≤ |x - y| := by
-  simpa [edist_dist] using lipschitzWith_cos x y
+  simpa! [edist_dist] using lipschitzWith_cos x y
 
 theorem norm_exp_I_mul_ofReal_sub_one_le {x : ℝ} : ‖.exp (.I * x) - (1 : ℂ)‖ ≤ ‖x‖ := by
   rw [Complex.norm_exp_I_mul_ofReal_sub_one]

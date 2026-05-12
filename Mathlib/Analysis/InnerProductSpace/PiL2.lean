@@ -142,10 +142,9 @@ theorem EuclideanSpace.nnnorm_eq {𝕜 : Type*} [RCLike 𝕜] {n : Type*} [Finty
     (x : EuclideanSpace 𝕜 n) : ‖x‖₊ = NNReal.sqrt (∑ i, ‖x i‖₊ ^ 2) :=
   PiLp.nnnorm_eq_of_L2 x
 
-set_option backward.simpa.using.reducibleClose false in
 theorem EuclideanSpace.norm_eq {𝕜 : Type*} [RCLike 𝕜] {n : Type*} [Fintype n]
     (x : EuclideanSpace 𝕜 n) : ‖x‖ = √(∑ i, ‖x i‖ ^ 2) := by
-  simpa only [Real.coe_sqrt, NNReal.coe_sum] using congr_arg ((↑) : ℝ≥0 → ℝ) x.nnnorm_eq
+  simpa! only [Real.coe_sqrt, NNReal.coe_sum] using congr_arg ((↑) : ℝ≥0 → ℝ) x.nnnorm_eq
 
 theorem EuclideanSpace.norm_sq_eq {𝕜 : Type*} [RCLike 𝕜] {n : Type*} [Fintype n]
     (x : EuclideanSpace 𝕜 n) : ‖x‖ ^ 2 = ∑ i, ‖x i‖ ^ 2 :=
@@ -977,12 +976,11 @@ theorem OrthonormalBasis.toMatrix_orthonormalBasis_mem_orthogonal :
     a.toBasis.toMatrix b ∈ Matrix.orthogonalGroup ι ℝ :=
   a.toMatrix_orthonormalBasis_mem_unitary b
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The determinant of the change-of-basis matrix between two orthonormal bases `a`, `b` is ±1. -/
 theorem OrthonormalBasis.det_to_matrix_orthonormalBasis_real :
     a.toBasis.det b = 1 ∨ a.toBasis.det b = -1 := by
   rw [← sq_eq_one_iff]
-  simpa [unitary, sq] using Matrix.det_of_mem_unitary (a.toMatrix_orthonormalBasis_mem_unitary b)
+  simpa! [unitary, sq] using Matrix.det_of_mem_unitary (a.toMatrix_orthonormalBasis_mem_unitary b)
 
 end Real
 
@@ -1016,7 +1014,6 @@ theorem DirectSum.IsInternal.collectedOrthonormalBasis_mem [DecidableEq ι]
 
 variable [FiniteDimensional 𝕜 E]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- In a finite-dimensional `InnerProductSpace`, any orthonormal subset can be extended to an
 orthonormal basis. -/
 theorem Orthonormal.exists_orthonormalBasis_extension (hv : Orthonormal 𝕜 ((↑) : v → E)) :
@@ -1026,10 +1023,10 @@ theorem Orthonormal.exists_orthonormalBasis_extension (hv : Orthonormal 𝕜 ((�
   have hu₀_finite : u₀.Finite := hu₀.linearIndependent.setFinite
   let u : Finset E := hu₀_finite.toFinset
   let fu : ↥u ≃ ↥u₀ := hu₀_finite.subtypeEquivToFinset.symm
-  have hu : Orthonormal 𝕜 ((↑) : u → E) := by simpa using hu₀.comp _ fu.injective
+  have hu : Orthonormal 𝕜 ((↑) : u → E) := by simpa! using hu₀.comp _ fu.injective
   refine ⟨u, OrthonormalBasis.mkOfOrthogonalEqBot hu ?_, ?_, ?_⟩
-  · simpa [u] using hu₀_max
-  · simpa [u] using hu₀s
+  · simpa! [u] using hu₀_max
+  · simpa! [u] using hu₀s
   · simp
 
 theorem Orthonormal.exists_orthonormalBasis_extension_of_card_eq {ι : Type*} [Fintype ι]
@@ -1106,13 +1103,12 @@ irreducible_def DirectSum.IsInternal.subordinateOrthonormalBasisIndex (a : Fin n
     (hV' : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ) : ι :=
   ((hV.sigmaOrthonormalBasisIndexEquiv hn hV').symm a).1
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The basis constructed in `DirectSum.IsInternal.subordinateOrthonormalBasis` is subordinate to
 the `OrthogonalFamily` in question. -/
 theorem DirectSum.IsInternal.subordinateOrthonormalBasis_subordinate (a : Fin n)
     (hV' : OrthogonalFamily 𝕜 (fun i => V i) fun i => (V i).subtypeₗᵢ) :
     hV.subordinateOrthonormalBasis hn hV' a ∈ V (hV.subordinateOrthonormalBasisIndex hn a hV') := by
-  simpa only [DirectSum.IsInternal.subordinateOrthonormalBasis, OrthonormalBasis.coe_reindex,
+  simpa! only [DirectSum.IsInternal.subordinateOrthonormalBasis, OrthonormalBasis.coe_reindex,
     DirectSum.IsInternal.subordinateOrthonormalBasisIndex] using
     hV.collectedOrthonormalBasis_mem hV' (fun i => stdOrthonormalBasis 𝕜 (V i))
       ((hV.sigmaOrthonormalBasisIndexEquiv hn hV').symm a)

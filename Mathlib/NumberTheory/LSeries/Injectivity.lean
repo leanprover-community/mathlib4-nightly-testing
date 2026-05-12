@@ -137,13 +137,12 @@ lemma LSeries_eq_zero_of_abscissaOfAbsConv_eq_top {f : ℕ → ℂ} (h : absciss
     h ▸ fun H ↦ (H.trans_lt <| EReal.coe_lt_top _).false
 
 open Filter Nat in
-set_option backward.simpa.using.reducibleClose false in
 /-- The `LSeries` of `f` is zero for large real arguments if and only if either `f n = 0`
 for all `n ≠ 0` or the L-series converges nowhere. -/
 lemma LSeries_eventually_eq_zero_iff' {f : ℕ → ℂ} :
     (fun x : ℝ ↦ LSeries f x) =ᶠ[atTop] 0 ↔ (∀ n ≠ 0, f n = 0) ∨ abscissaOfAbsConv f = ⊤ := by
   by_cases h : abscissaOfAbsConv f = ⊤
-  · simpa [h] using
+  · simpa! [h] using
       Eventually.of_forall <| by simp [LSeries_eq_zero_of_abscissaOfAbsConv_eq_top h]
   · simp only [ne_eq, h, or_false]
     refine ⟨fun H ↦ ?_, fun H ↦ Eventually.of_forall fun x ↦ ?_⟩
@@ -168,18 +167,17 @@ lemma LSeries_eventually_eq_zero_iff' {f : ℕ → ℂ} :
       cases n with
       | zero => exact Tendsto.congr' (H' 0).symm <| by simp [hF₀]
       | succ n =>
-          simpa using LSeries.tendsto_cpow_mul_atTop (fun m hm ↦ ih m <| lt_succ_of_le hm) <|
+          simpa! using LSeries.tendsto_cpow_mul_atTop (fun m hm ↦ ih m <| lt_succ_of_le hm) <|
             Ne.lt_top ha
     · simp [LSeries_congr (fun {n} ↦ H n) x, show (fun _ : ℕ ↦ (0 : ℂ)) = 0 from rfl]
 
 open Nat in
-set_option backward.simpa.using.reducibleClose false in
 /-- Assuming `f 0 = 0`, the `LSeries` of `f` is zero if and only if either `f = 0` or the
 L-series converges nowhere. -/
 lemma LSeries_eq_zero_iff {f : ℕ → ℂ} (hf : f 0 = 0) :
     LSeries f = 0 ↔ f = 0 ∨ abscissaOfAbsConv f = ⊤ := by
   by_cases h : abscissaOfAbsConv f = ⊤
-  · simpa [h] using LSeries_eq_zero_of_abscissaOfAbsConv_eq_top h
+  · simpa! [h] using LSeries_eq_zero_of_abscissaOfAbsConv_eq_top h
   · simp only [h, or_false]
     refine ⟨fun H ↦ ?_, fun H ↦ H ▸ LSeries_zero⟩
     convert (LSeries_eventually_eq_zero_iff'.mp ?_).resolve_right h
@@ -187,7 +185,7 @@ lemma LSeries_eq_zero_iff {f : ℕ → ℂ} (hf : f 0 = 0) :
       ext (- | m)
       · simp [hf]
       · simp [H']
-    · simpa only [H] using Filter.EventuallyEq.rfl
+    · simpa! only [H] using Filter.EventuallyEq.rfl
 
 open Filter in
 /-- If the `LSeries` of `f` and of `g` converge somewhere and agree on large real arguments,

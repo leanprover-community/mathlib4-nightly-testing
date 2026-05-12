@@ -195,7 +195,6 @@ lemma denselyOrdered_units_iff [Nontrivial αˣ] : DenselyOrdered αˣ ↔ Dense
 
 end LinearOrderedCommGroupWithZero
 
-set_option backward.simpa.using.reducibleClose false in
 instance instLinearOrderedCommMonoidWithZeroMultiplicativeOrderDual
     [LinearOrderedAddCommMonoidWithTop α] :
     LinearOrderedCommMonoidWithZero (Multiplicative αᵒᵈ) where
@@ -204,8 +203,8 @@ instance instLinearOrderedCommMonoidWithZeroMultiplicativeOrderDual
   mul_zero := @add_top _ (_)
   zero_le _ := (le_top : _ ≤ ⊤)
   mul_lt_mul_of_pos_left := by
-    simpa [← ofAdd_add, ← toDual_add]
-      using fun a ha b c hbc ↦ add_right_strictMono_of_ne_top (by simpa using ha.ne') hbc
+    simpa! [← ofAdd_add, ← toDual_add]
+      using fun a ha b c hbc ↦ add_right_strictMono_of_ne_top (by simpa! using ha.ne') hbc
 
 @[deprecated "Use simp" (since := "2025-11-17")]
 theorem ofAdd_toDual_eq_zero_iff [LinearOrderedAddCommMonoidWithTop α]

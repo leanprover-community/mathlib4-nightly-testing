@@ -283,7 +283,6 @@ theorem support_esymm [DecidableEq σ] [Nontrivial R] (n : ℕ) : (esymm σ R n)
   rw [support_esymm']
   exact biUnion_singleton
 
-set_option backward.simpa.using.reducibleClose false in
 theorem degrees_esymm [Nontrivial R] {n : ℕ} (hpos : 0 < n) (hn : n ≤ Fintype.card σ) :
     (esymm σ R n).degrees = (univ : Finset σ).val := by
   classical
@@ -297,7 +296,7 @@ theorem degrees_esymm [Nontrivial R] {n : ℕ} (hpos : 0 < n) (hn : n ≤ Fintyp
       refine comp_sup_eq_sup_comp _ ?_ ?_ <;> simp
     rw [← this]
     obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero hpos.ne'
-    simpa using powersetCard_sup _ _ (Nat.lt_of_succ_le hn)
+    simpa! using powersetCard_sup _ _ (Nat.lt_of_succ_le hn)
 
 end ElementarySymmetric
 

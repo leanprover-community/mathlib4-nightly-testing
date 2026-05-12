@@ -303,7 +303,6 @@ section cyclic
 
 namespace IsCyclic
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The isomorphism from the group of group homomorphisms from a finite cyclic group `G` of order
 `n` into another group `G'` to the group of `n`th roots of unity in `G'` determined by a generator
 `g` of `G`. It sends `φ : G →* G'` to `φ g`. -/
@@ -315,7 +314,7 @@ def monoidHomMulEquivRootsOfUnityOfGenerator {G : Type*} [CommGroup G] {g : G}
     simp only [mem_rootsOfUnity, Units.ext_iff, Units.val_pow_eq_pow_val, IsUnit.unit_spec,
       ← map_pow, pow_card_eq_one', map_one, Units.val_one]⟩
   invFun ζ := monoidHomOfForallMemZpowers hg (g' := (ζ.val : G')) <| by
-    simpa only [orderOf_eq_card_of_forall_mem_zpowers hg, orderOf_dvd_iff_pow_eq_one,
+    simpa! only [orderOf_eq_card_of_forall_mem_zpowers hg, orderOf_dvd_iff_pow_eq_one,
       ← Units.val_pow_eq_pow_val, Units.val_eq_one] using ζ.prop
   left_inv φ := (MonoidHom.eq_iff_eq_on_generator hg _ φ).mpr <| by
     simp only [IsUnit.unit_spec, monoidHomOfForallMemZpowers_apply_gen]

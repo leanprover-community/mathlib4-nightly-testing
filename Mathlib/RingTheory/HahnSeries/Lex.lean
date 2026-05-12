@@ -280,23 +280,22 @@ noncomputable def finiteArchimedeanClassOrderHomLex :
 
 set_option backward.isDefEq.respectTransparency false in
 variable (Γ R) in
-set_option backward.simpa.using.reducibleClose false in
 /-- The inverse of `finiteArchimedeanClassOrderHomLex`. -/
 noncomputable def finiteArchimedeanClassOrderHomInvLex :
     Γ ×ₗ FiniteArchimedeanClass R →o FiniteArchimedeanClass (Lex R⟦Γ⟧) where
   toFun x := (ofLex x).2.liftOrderHom
     (fun a ↦ FiniteArchimedeanClass.mk (toLex (single (ofLex x).1 a.val)) (by
-      simpa using a.prop))
+      simpa! using a.prop))
     fun ⟨a, ha⟩ ⟨b, hb⟩ h ↦ by
       rw [FiniteArchimedeanClass.mk_le_mk, archimedeanClassMk_le_archimedeanClassMk_iff]
-      simpa [ha, hb] using h
+      simpa! [ha, hb] using h
   monotone' a b := a.rec fun (ao, ac) ↦ b.rec fun (bo, bc) h ↦ by
     obtain h | ⟨rfl, hle⟩ := Prod.Lex.le_iff.mp h
     · induction ac using FiniteArchimedeanClass.ind with | mk a ha
       induction bc using FiniteArchimedeanClass.ind with | mk b hb
       simp only [ne_eq, ofLex_toLex, FiniteArchimedeanClass.liftOrderHom_mk]
       rw [FiniteArchimedeanClass.mk_le_mk, archimedeanClassMk_le_archimedeanClassMk_iff]
-      exact .inl (by simpa [ha, hb] using h)
+      exact .inl (by simpa! [ha, hb] using h)
     · exact OrderHom.monotone _ hle
 
 set_option backward.isDefEq.respectTransparency false in

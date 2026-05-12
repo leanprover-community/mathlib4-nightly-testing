@@ -103,10 +103,9 @@ lemma chainsMap_id_comp {A B C : Rep k G} (φ : A ⟶ B) (ψ : B ⟶ C) :
 lemma chainsMap_zero : chainsMap f (0 : A ⟶ res f B) = 0 := by
   ext; simp [chainsMap_f, LinearMap.zero_apply (M₂ := B)]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma chainsMap_f_map_mono (hf : Function.Injective f) [Mono φ] (i : ℕ) :
     Mono ((chainsMap f φ).f i) := by
-  simpa [ModuleCat.mono_iff_injective] using
+  simpa! [ModuleCat.mono_iff_injective] using
     (mapRange_injective φ.hom (map_zero _) <| (Rep.mono_iff_injective φ).1
     inferInstance).comp (mapDomain_injective hf.comp_left)
 
@@ -114,10 +113,9 @@ instance chainsMap_id_f_map_mono {A B : Rep k G} (φ : A ⟶ B) [Mono φ] (i : �
     Mono ((chainsMap (MonoidHom.id G) φ).f i) :=
   chainsMap_f_map_mono (MonoidHom.id G) φ (fun _ _ h => h) _
 
-set_option backward.simpa.using.reducibleClose false in
 lemma chainsMap_f_map_epi (hf : Function.Surjective f) [Epi φ] (i : ℕ) :
     Epi ((chainsMap f φ).f i) := by
-  simpa [ModuleCat.epi_iff_surjective] using
+  simpa! [ModuleCat.epi_iff_surjective] using
     (mapRange_surjective φ.hom (map_zero _) ((Rep.epi_iff_surjective φ).1 inferInstance)).comp
     (mapDomain_surjective hf.comp_left)
 
@@ -550,7 +548,6 @@ theorem comap_coinvariantsKer_pOpcycles_range_subtype_pOpcycles_eq_top :
     chains₁ToCoinvariantsKer, d₁₀, single_sum, mul_assoc, sub_add_eq_add_sub,
     sum_sum_index, add_smul, sub_sub_sub_eq, lsingle, singleAddHom] using add_comm _ _
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a `G`-representation `A` and a normal subgroup `S ≤ G`, the map
@@ -577,7 +574,7 @@ and `Y - ∑ aᵢ·sᵢ` is a cycle. -/
   rcases chains₁ToCoinvariantsKer_surjective
     (res S.subtype A) ⟨d₁₀ A Y, this⟩ with ⟨(Z : S →₀ A), hZ⟩
   have H : d₁₀ A (Y - mapDomain S.subtype Z) = 0 := by
-    simpa [map_sub, sub_eq_zero, chains₁ToCoinvariantsKer, - LinearMap.sub_apply, d₁₀,
+    simpa! [map_sub, sub_eq_zero, chains₁ToCoinvariantsKer, - LinearMap.sub_apply, d₁₀,
       sum_mapDomain_index_inj] using Subtype.ext_iff.1 hZ.symm
   use H1π A ⟨Y - mapDomain S.subtype Z, H⟩
   simp only [H1CoresCoinf_X₃, H1CoresCoinf_X₂, H1CoresCoinf_g,
@@ -585,11 +582,10 @@ and `Y - ∑ aᵢ·sᵢ` is a cycle. -/
 /- Moreover, the image of `Y - ∑ aᵢ·sᵢ` in `Z₁(G ⧸ S, A_S)` is `x - ∑ aᵢ·1`, and hence differs from
 `x` by a boundary, since `aᵢ·1 = d(aᵢ·(1, 1))`. -/
   refine (H1π_eq_iff _ _).2 ?_
-  simpa [← hy, mapCycles₁_hom, map_sub, Rep.hom_id (res _ _), ← mapDomain_comp,
+  simpa! [← hy, mapCycles₁_hom, map_sub, Rep.hom_id (res _ _), ← mapDomain_comp,
     ← mapDomain_mapRange, hY, Function.comp_def, (QuotientGroup.eq_one_iff <| Subtype.val _).2
     (Subtype.prop _)] using Submodule.finsuppSum_mem _ _ _ _ fun _ _ ↦ single_one_mem_boundaries₁ _
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given a `G`-representation `A` and a normal subgroup `S ≤ G`, the degree 1
@@ -612,7 +608,7 @@ equals `Z₁(π, π)(x) : Z₁(G ⧸ S, A_S)`. -/
   rcases @(ShortComplex.moduleCat_exact_iff_ker_sub_range _).1
     (H1CoresCoinfOfTrivial_exact (toCoinvariants A S) S)
     (H1π _ <| mapCycles₁ (MonoidHom.id G) (Rep.toCoinvariantsMkQ A S) x) (by
-    simpa only [H1CoresCoinfOfTrivial_X₂, H1CoresCoinfOfTrivial_X₃, H1CoresCoinfOfTrivial_g,
+    simpa! only [H1CoresCoinfOfTrivial_X₂, H1CoresCoinfOfTrivial_X₃, H1CoresCoinfOfTrivial_g,
       Iso.refl_inv, LinearMap.mem_ker, H1π_comp_map_apply (QuotientGroup.mk' S),
       ← mapCycles₁_comp_apply (x := x)] using hx) with ⟨z, hz⟩
   induction z using H1_induction_on with | @h z =>

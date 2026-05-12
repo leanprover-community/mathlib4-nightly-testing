@@ -51,11 +51,10 @@ theorem mersenne_le_mersenne {p q : ℕ} : mersenne p ≤ mersenne q ↔ p ≤ q
 
 @[simp] theorem mersenne_zero : mersenne 0 = 0 := rfl
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp] lemma mersenne_odd : ∀ {p : ℕ}, Odd (mersenne p) ↔ p ≠ 0
   | 0 => by simp
   | p + 1 => by
-    simpa using Nat.Even.sub_odd (one_le_pow₀ one_le_two)
+    simpa! using Nat.Even.sub_odd (one_le_pow₀ one_le_two)
       (even_two.pow_of_ne_zero p.succ_ne_zero) odd_one
 
 @[simp] theorem mersenne_pos {p : ℕ} : 0 < mersenne p ↔ 0 < p := mersenne_lt_mersenne (p := 0)

@@ -63,11 +63,10 @@ theorem ConcaveOn.le_map_centerMass (hf : ConcaveOn 𝕜 s f) (h₀ : ∀ i ∈ 
     t.centerMass w (f ∘ p) ≤ f (t.centerMass w p) :=
   ConvexOn.map_centerMass_le (β := βᵒᵈ) hf h₀ h₁ hmem
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Convex **Jensen's inequality**, `Finset.sum` version. -/
 theorem ConvexOn.map_sum_le (hf : ConvexOn 𝕜 s f) (h₀ : ∀ i ∈ t, 0 ≤ w i) (h₁ : ∑ i ∈ t, w i = 1)
     (hmem : ∀ i ∈ t, p i ∈ s) : f (∑ i ∈ t, w i • p i) ≤ ∑ i ∈ t, w i • f (p i) := by
-  simpa only [centerMass, h₁, inv_one, one_smul] using
+  simpa! only [centerMass, h₁, inv_one, one_smul] using
     hf.map_centerMass_le h₀ (h₁.symm ▸ zero_lt_one) hmem
 
 /-- Concave **Jensen's inequality**, `Finset.sum` version. -/
@@ -76,7 +75,6 @@ theorem ConcaveOn.le_map_sum (hf : ConcaveOn 𝕜 s f) (h₀ : ∀ i ∈ t, 0 �
     (∑ i ∈ t, w i • f (p i)) ≤ f (∑ i ∈ t, w i • p i) :=
   ConvexOn.map_sum_le (β := βᵒᵈ) hf h₀ h₁ hmem
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Convex **Jensen's inequality** where an element plays a distinguished role. -/
 lemma ConvexOn.map_add_sum_le (hf : ConvexOn 𝕜 s f) (h₀ : ∀ i ∈ t, 0 ≤ w i)
     (h₁ : v + ∑ i ∈ t, w i = 1) (hmem : ∀ i ∈ t, p i ∈ s) (hv : 0 ≤ v) (hq : q ∈ s) :
@@ -84,9 +82,9 @@ lemma ConvexOn.map_add_sum_le (hf : ConvexOn 𝕜 s f) (h₀ : ∀ i ∈ t, 0 �
   let W j := Option.elim j v w
   let P j := Option.elim j q p
   have : f (∑ j ∈ insertNone t, W j • P j) ≤ ∑ j ∈ insertNone t, W j • f (P j) :=
-    hf.map_sum_le (forall_mem_insertNone.2 ⟨hv, h₀⟩) (by simpa using h₁)
+    hf.map_sum_le (forall_mem_insertNone.2 ⟨hv, h₀⟩) (by simpa! using h₁)
       (forall_mem_insertNone.2 ⟨hq, hmem⟩)
-  simpa using this
+  simpa! using this
 
 /-- Concave **Jensen's inequality** where an element plays a distinguished role. -/
 lemma ConcaveOn.map_add_sum_le (hf : ConcaveOn 𝕜 s f) (h₀ : ∀ i ∈ t, 0 ≤ w i)

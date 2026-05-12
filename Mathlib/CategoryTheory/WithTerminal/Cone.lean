@@ -89,7 +89,6 @@ private def coneLift : Cone K ⥤ Cone (liftFromOver.obj K) where
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-set_option backward.simpa.using.reducibleClose false in
 /-- This is the inverse of the previous construction: a cone of an extended functor
 `liftFromOver.obj K : WithTerminal J ⥤ C` consists of an object of `C`, together
 with morphisms. This same object is a cone of the original functor `K : J ⥤ Over X`. -/
@@ -98,7 +97,7 @@ private def coneBack : Cone (liftFromOver.obj K) ⥤ Cone K where
   obj t := {
     pt := .mk (t.π.app star)
     π.app a := Over.homMk (t.π.app (of a)) (t.w (homFrom a))
-    π.naturality _ _ f := by ext; simpa using (t.w (incl.map f)).symm }
+    π.naturality _ _ f := by ext; simpa! using (t.w (incl.map f)).symm }
   map {t₁ t₂ f} :=
     { hom := Over.homMk f.hom (by simp [dsimp% f.w star] )
       w j := by ext; simp [dsimp% f.w (of j)] }
@@ -204,7 +203,6 @@ private def coconeLift : Cocone K ⥤ Cocone (liftFromUnder.obj K) where
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
-set_option backward.simpa.using.reducibleClose false in
 /-- This is the inverse of the previous construction: a cocone of an extended functor
 `liftFromUnder.obj K : WithInitial J ⥤ C` consists of an object of `C`, together
 with morphisms. This same object is a cocone of the original functor `K : J ⥤ Under X`. -/
@@ -213,7 +211,7 @@ private def coconeBack : Cocone (liftFromUnder.obj K) ⥤ Cocone K where
   obj t := {
     pt := .mk (t.ι.app star)
     ι.app a := Under.homMk (t.ι.app (of a)) (t.w (homTo a))
-    ι.naturality _ _ f := by ext; simpa using t.ι.naturality (incl.map f) }
+    ι.naturality _ _ f := by ext; simpa! using t.ι.naturality (incl.map f) }
   map {t₁ t₂ f} :=
     { hom := Under.homMk f.hom (f.w .star)
       w j := by ext; simp [dsimp% f.w (of j)] }

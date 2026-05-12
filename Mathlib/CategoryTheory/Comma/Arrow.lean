@@ -136,14 +136,13 @@ lemma eqToHom_left {X Y : Arrow T} (h : X = Y) :
 lemma eqToHom_right {X Y : Arrow T} (h : X = Y) :
     (eqToHom h).right = eqToHom (by rw [h]) := by subst h; rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma mk_eq_mk_iff {X Y X' Y' : T} (f : X ⟶ Y) (f' : X' ⟶ Y') :
     Arrow.mk f = Arrow.mk f' ↔
       ∃ (hX : X = X') (hY : Y = Y'), f = eqToHom hX ≫ f' ≫ eqToHom hY.symm := by
   constructor
   · intro h
     refine ⟨congr_arg Arrow.left h, congr_arg Arrow.right h, ?_⟩
-    simpa [eqToHom_left, eqToHom_right] using iso_w (eqToIso h.symm)
+    simpa! [eqToHom_left, eqToHom_right] using iso_w (eqToIso h.symm)
   · rintro ⟨rfl, rfl, h⟩
     simp only [eqToHom_refl, Category.comp_id, Category.id_comp] at h
     rw [h]
@@ -309,13 +308,12 @@ lemma inv_hom_id_right (e : f ≅ g) : e.inv.right ≫ e.hom.right = 𝟙 _ := b
 
 end
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Given a square from an arrow `i` to an isomorphism `p`, express the source part of `sq`
 in terms of the inverse of `p`. -/
 @[simp]
 theorem square_to_iso_invert (i : Arrow T) {X Y : T} (p : X ≅ Y) (sq : i ⟶ Arrow.mk p.hom) :
     i.hom ≫ sq.right ≫ p.inv = sq.left := by
-  simpa only [mk_right, Category.assoc] using (Iso.comp_inv_eq p).mpr (Arrow.w_mk_right sq).symm
+  simpa! only [mk_right, Category.assoc] using (Iso.comp_inv_eq p).mpr (Arrow.w_mk_right sq).symm
 
 /-- Given a square from an isomorphism `i` to an arrow `p`, express the target part of `sq`
 in terms of the inverse of `i`. -/

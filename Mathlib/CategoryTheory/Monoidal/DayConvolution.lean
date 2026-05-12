@@ -153,12 +153,11 @@ variable (f : F ⟶ F') (g : G ⟶ G') (x y : C)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in -- Needed in DayConvolution.lean
-set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma unit_app_map_app :
     (unit F G).app (x, y) ≫ (map f g).app (x ⊗ y : C) =
     (f.app x ⊗ₘ g.app y) ≫ (unit F' G').app (x, y) := by
-  simpa [tensorHom_def] using
+  simpa! [tensorHom_def] using
     (Functor.descOfIsLeftKanExtension_fac_app (F ⊛ G) (unit F G) (F' ⊛ G') <|
       (externalProductBifunctor C C V).map (f ×ₘ g) ≫ unit F' G') (x, y)
 

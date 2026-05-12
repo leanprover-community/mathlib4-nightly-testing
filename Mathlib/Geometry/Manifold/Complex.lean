@@ -51,7 +51,6 @@ variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℂ E H} [I.Boun
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
   [IsManifold I 1 M]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Maximum modulus principle**: if `f : M → F` is complex differentiable in a neighborhood of `c`
 and the norm `‖f z‖` has a local maximum at `c`, then `‖f z‖` is locally constant in a neighborhood
 of `c`. This is a manifold version of `Complex.norm_eventually_eq_of_isLocalMax`. -/
@@ -76,7 +75,7 @@ theorem Complex.norm_eventually_eq_of_mdifferentiableAt_of_isLocalMax {f : M →
     exact hy₂.2
   convert norm_eventually_eq_of_isLocalMax hd _
   · exact congr_arg f (extChartAt_to_inv _).symm
-  · simpa only [e, IsLocalMax, IsMaxFilter, ← H₂, (· ∘ ·), extChartAt_to_inv] using hc
+  · simpa! only [e, IsLocalMax, IsMaxFilter, ← H₂, (· ∘ ·), extChartAt_to_inv] using hc
 
 /-!
 ### Functions holomorphic on a set

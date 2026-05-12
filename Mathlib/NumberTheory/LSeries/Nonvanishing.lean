@@ -101,13 +101,12 @@ lemma zetaMul_prime_pow_nonneg {χ : DirichletCharacter ℂ N} (hχ : χ ^ 2 = 1
     split_ifs
     exacts [le_rfl, zero_le_one]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- `zetaMul χ` takes nonnegative real values when `χ` is a quadratic character. -/
 lemma zetaMul_nonneg {χ : DirichletCharacter ℂ N} (hχ : χ ^ 2 = 1) (n : ℕ) :
     0 ≤ zetaMul χ n := by
   rcases eq_or_ne n 0 with rfl | hn
   · simp only [ArithmeticFunction.map_zero, le_refl]
-  · simpa only [χ.isMultiplicative_zetaMul.multiplicative_factorization _ hn] using
+  · simpa! only [χ.isMultiplicative_zetaMul.multiplicative_factorization _ hn] using
       Finset.prod_nonneg
         fun p hp ↦ zetaMul_prime_pow_nonneg hχ (Nat.prime_of_mem_primeFactors hp) _
 

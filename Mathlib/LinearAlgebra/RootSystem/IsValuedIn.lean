@@ -145,7 +145,6 @@ instance [P.IsCrystallographic] [Algebra ℚ R] : P.IsValuedIn ℚ :=
     P.pairingIn ℚ i j = P.pairingIn ℤ i j := by
   simp [← P.algebraMap_pairingIn' ℚ ℤ]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma coroot'_apply_apply_mem_of_mem_span [Module S M] [IsScalarTower S R M] [P.IsValuedIn S]
     {x : M} (hx : x ∈ span S (range P.root)) (i : ι) :
     P.coroot' i x ∈ range (algebraMap S R) := by
@@ -153,10 +152,10 @@ lemma coroot'_apply_apply_mem_of_mem_span [Module S M] [IsScalarTower S R M] [P.
   induction hx using Submodule.span_induction with
   | mem x hx =>
     obtain ⟨k, rfl⟩ := hx
-    simpa using RootPairing.exists_value k i
+    simpa! using RootPairing.exists_value k i
   | zero => simp
-  | add x y _ _ hx hy => simpa only [map_add] using add_mem hx hy
-  | smul t x _ hx => simpa only [LinearMap.map_smul_of_tower] using Submodule.smul_mem _ t hx
+  | add x y _ _ hx hy => simpa! only [map_add] using add_mem hx hy
+  | smul t x _ hx => simpa! only [LinearMap.map_smul_of_tower] using Submodule.smul_mem _ t hx
 
 lemma root'_apply_apply_mem_of_mem_span [Module S N] [IsScalarTower S R N] [P.IsValuedIn S]
     {x : N} (hx : x ∈ span S (range P.coroot)) (i : ι) :

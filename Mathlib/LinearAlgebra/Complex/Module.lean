@@ -501,10 +501,9 @@ theorem ker_imaginaryPart : imaginaryPart.ker = selfAdjoint.submodule ℝ A := b
   simp [selfAdjoint.submodule, selfAdjoint.mem_iff, imaginaryPart, Subtype.ext_iff]
   grind
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma imaginaryPart_eq_zero_iff {x : A} : ℑ x = 0 ↔ IsSelfAdjoint x := by
-  simpa [-ker_imaginaryPart] using SetLike.ext_iff.mp ker_imaginaryPart x
+  simpa! [-ker_imaginaryPart] using SetLike.ext_iff.mp ker_imaginaryPart x
 
 open Submodule
 

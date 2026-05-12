@@ -169,10 +169,9 @@ theorem hasSum_sum_range_mul_of_summable_norm' {f g : ℕ → R}
 
 end Nat
 
-set_option backward.simpa.using.reducibleClose false in
 lemma summable_of_absolute_convergence_real {f : ℕ → ℝ} :
     (∃ r, Tendsto (fun n ↦ ∑ i ∈ range n, |f i|) atTop (𝓝 r)) → Summable f
   | ⟨r, hr⟩ => by
     refine .of_norm ⟨r, (hasSum_iff_tendsto_nat_of_nonneg ?_ _).2 ?_⟩
     · exact fun i ↦ norm_nonneg _
-    · simpa only using hr
+    · simpa! only using hr

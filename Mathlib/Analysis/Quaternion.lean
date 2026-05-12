@@ -191,10 +191,9 @@ theorem continuous_imJ : Continuous fun q : ℍ => q.imJ :=
 theorem continuous_imK : Continuous fun q : ℍ => q.imK :=
   (PiLp.continuous_apply 2 _ 3).comp linearIsometryEquivTuple.continuous
 
-set_option backward.simpa.using.reducibleClose false in
 @[continuity]
 theorem continuous_im : Continuous fun q : ℍ => q.im := by
-  simpa only [← sub_re_self] using continuous_id.sub (continuous_coe.comp continuous_re)
+  simpa! only [← sub_re_self] using continuous_id.sub (continuous_coe.comp continuous_re)
 
 instance : CompleteSpace ℍ :=
   haveI : IsUniformEmbedding linearIsometryEquivTuple.toLinearEquiv.toEquiv.symm :=
@@ -205,18 +204,16 @@ section infinite_sum
 
 variable {α : Type*} {L : SummationFilter α}
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp, norm_cast]
 theorem hasSum_coe {f : α → ℝ} {r : ℝ} : HasSum (fun a => (f a : ℍ)) (↑r : ℍ) L ↔ HasSum f r L :=
   ⟨fun h => by
-    simpa only using
+    simpa! only using
     h.map (show ℍ →ₗ[ℝ] ℝ from QuaternionAlgebra.reₗ _ _ _) continuous_re,
-    fun h => by simpa only using h.map (algebraMap ℝ ℍ) (continuous_algebraMap _ _)⟩
+    fun h => by simpa! only using h.map (algebraMap ℝ ℍ) (continuous_algebraMap _ _)⟩
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp, norm_cast]
 theorem summable_coe {f : α → ℝ} : (Summable (fun a => (f a : ℍ)) L) ↔ Summable f L := by
-  simpa only using
+  simpa! only using
     Summable.map_iff_of_leftInverse (algebraMap ℝ ℍ) (show ℍ →ₗ[ℝ] ℝ from
       QuaternionAlgebra.reₗ _ _ _)
       (continuous_algebraMap _ _) continuous_re re_coe

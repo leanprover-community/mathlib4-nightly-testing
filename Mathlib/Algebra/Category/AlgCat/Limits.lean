@@ -92,7 +92,6 @@ namespace HasLimits
 -- The next two definitions are used in the construction of `HasLimits (AlgCat R)`.
 -- After that, the limits should be constructed using the generic limits API,
 -- e.g. `limit F`, `limit.cone F`, and `limit.isLimit F`.
-set_option backward.simpa.using.reducibleClose false in
 /-- Construction of a limit cone in `AlgCat R`.
 (Internal use only; use the limits API.)
 -/
@@ -102,7 +101,7 @@ def limitCone : Cone F where
     { app := fun j ↦ ofHom <| limitπAlgHom F j
       naturality := fun _ _ f => by
         ext
-        simpa using (Types.Small.limitCone (F ⋙ forget _)).π.naturality_apply f _ }
+        simpa! using (Types.Small.limitCone (F ⋙ forget _)).π.naturality_apply f _ }
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Witness that the limit cone in `AlgCat R` is a limit cone.

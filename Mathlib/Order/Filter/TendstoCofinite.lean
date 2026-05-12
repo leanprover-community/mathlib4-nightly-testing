@@ -68,11 +68,10 @@ lemma tendstoCofinite_of_finite [Finite α] : TendstoCofinite f :=
 
 namespace TendstoCofinite
 
-set_option backward.simpa.using.reducibleClose false in
 @[instance]
 lemma comp [TendstoCofinite g] [TendstoCofinite f] : TendstoCofinite (g ∘ f) :=
   (tendstoCofinite_iff_finite_preimage_singleton _).mpr (fun r ↦ by
-    simpa using TendstoCofinite.finite_preimage f (TendstoCofinite.finite_preimage g (by simp)))
+    simpa! using TendstoCofinite.finite_preimage f (TendstoCofinite.finite_preimage g (by simp)))
 
 @[instance]
 lemma id : TendstoCofinite (id : α → α) := by simp [tendstoCofinite_iff_finite_preimage_singleton]

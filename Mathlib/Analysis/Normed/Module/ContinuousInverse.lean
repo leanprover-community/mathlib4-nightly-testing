@@ -245,7 +245,6 @@ variable {R E F : Type*} [NontriviallyNormedField R]
   [NormedAddCommGroup E] [NormedSpace R E] [CompleteSpace E]
   [NormedAddCommGroup F] [NormedSpace R F] [CompleteSpace F]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A continuous linear map between Banach spaces has a continuous left inverse if it is injective,
 has closed range and its range has a closed complement. -/
 lemma of_injective_of_isClosed_range_of_closedComplement_range {f : E →L[R] F}
@@ -256,7 +255,7 @@ lemma of_injective_of_isClosed_range_of_closedComplement_range {f : E →L[R] F}
   -- We compose the continuous inverse of `f : E → range f` with the projection `p : F → range f`.
   obtain ⟨p, hp⟩ := hf''
   refine ⟨(f.leftInverse_of_injective_of_isClosed_range hf hf').comp p, fun x ↦ ?_⟩
-  simpa [hp ⟨f x, by simp⟩] using f.rangeRestrict.leftInverse_apply_of_inj this x
+  simpa! [hp ⟨f x, by simp⟩] using f.rangeRestrict.leftInverse_apply_of_inj this x
 
 end
 

@@ -677,14 +677,13 @@ lemma continuous_ofMeasure_probabilityMeasure :
 @[deprecated (since := "2025-10-28")]
 alias continuous_equiv_symm_probabilityMeasure := continuous_ofMeasure_probabilityMeasure
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The topology of the Lévy-Prokhorov metric on probability measures on a separable space
 coincides with the topology of convergence in distribution. -/
 theorem eq_convergenceInDistribution :
     (inferInstance : TopologicalSpace (ProbabilityMeasure Ω))
       = TopologicalSpace.coinduced LevyProkhorov.toMeasure inferInstance :=
   le_convergenceInDistribution.antisymm' fun s hs ↦ by
-    simpa using hs.preimage continuous_ofMeasure_probabilityMeasure
+    simpa! using hs.preimage continuous_ofMeasure_probabilityMeasure
 
 @[deprecated (since := "2025-10-28")]
 alias _root_.MeasureTheory.levyProkhorov_eq_convergenceInDistribution :=

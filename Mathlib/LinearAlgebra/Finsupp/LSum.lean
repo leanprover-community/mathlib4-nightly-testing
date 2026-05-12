@@ -176,7 +176,6 @@ theorem llift_symm_apply (f : (X →₀ R) →ₗ[R] M) (x : X) :
 
 end
 
-set_option backward.simpa.using.reducibleClose false in
 /-- An equivalence of domains induces a linear equivalence of finitely supported functions.
 
 This is `Finsupp.domCongr` as a `LinearEquiv`.

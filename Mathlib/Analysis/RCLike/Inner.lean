@@ -162,9 +162,8 @@ end Function
 section Real
 variable {w f g : ι → ℝ}
 
-set_option backward.simpa.using.reducibleClose false in
 lemma abs_wInner_le (hw : 0 ≤ w) : |⟪f, g⟫_[ℝ, w]| ≤ ⟪|f|, |g|⟫_[ℝ, w] := by
-  simpa using norm_wInner_le (𝕜 := ℝ) hw
+  simpa! using norm_wInner_le (𝕜 := ℝ) hw
 
 end Real
 end RCLike

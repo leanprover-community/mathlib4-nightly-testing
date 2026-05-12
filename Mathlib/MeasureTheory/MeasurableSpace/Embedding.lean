@@ -103,12 +103,11 @@ theorem measurable_rangeSplitting (hf : MeasurableEmbedding f) :
     ← (subtype_coe hf.measurableSet_range).measurableSet_image, ← image_comp,
     coe_comp_rangeFactorization, hf.measurableSet_image]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem measurable_extend (hf : MeasurableEmbedding f) {g : α → γ} {g' : β → γ} (hg : Measurable g)
     (hg' : Measurable g') : Measurable (extend f g g') := by
   refine measurable_of_restrict_of_restrict_compl hf.measurableSet_range ?_ ?_
   · rw [restrict_extend_range]
-    simpa only [rangeSplitting] using hg.comp hf.measurable_rangeSplitting
+    simpa! only [rangeSplitting] using hg.comp hf.measurable_rangeSplitting
   · rw [restrict_extend_compl_range]
     exact hg'.comp measurable_subtype_coe
 
@@ -554,7 +553,6 @@ def piFinTwo (α : Fin 2 → Type*) [∀ i, MeasurableSpace (α i)] : (∀ i, α
 def finTwoArrow : (Fin 2 → α) ≃ᵐ α × α :=
   piFinTwo fun _ => α
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Measurable equivalence between `Π j : Fin (n + 1), α j` and
 `α i × Π j : Fin n, α (Fin.succAbove i j)`.
 

@@ -546,12 +546,11 @@ theorem x_mul_y_le_y_mul_x {a₁ : Solution₁ d} (h : IsFundamental a₁) {a : 
   rw [sub_nonneg, sq_le_sq, abs_of_pos hay, abs_of_pos h.2.1]
   exact h.y_le_y hax hay
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If we multiply a positive solution with the inverse of a fundamental solution,
 the `y`-coordinate remains nonnegative. -/
 theorem mul_inv_y_nonneg {a₁ : Solution₁ d} (h : IsFundamental a₁) {a : Solution₁ d} (hax : 1 < a.x)
     (hay : 0 < a.y) : 0 ≤ (a * a₁⁻¹).y := by
-  simpa only [y_inv, mul_neg, y_mul, le_neg_add_iff_add_le, add_zero] using
+  simpa! only [y_inv, mul_neg, y_mul, le_neg_add_iff_add_le, add_zero] using
     h.x_mul_y_le_y_mul_x hax hay
 
 /-- If we multiply a positive solution with the inverse of a fundamental solution,

@@ -916,7 +916,6 @@ end LimsupLiminf
 
 end ENNReal -- namespace
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Dense.lipschitzWith_extend {α β : Type*}
     [PseudoEMetricSpace α] [EMetricSpace β] [CompleteSpace β]
     {s : Set α} (hs : Dense s) {f : s → β} {K : ℝ≥0} (hf : LipschitzWith K f) :
@@ -932,4 +931,4 @@ lemma Dense.lipschitzWith_extend {α β : Type*}
     have Ay : hs.extend f y = f ⟨y, hy⟩ := hs.extend_eq hf.continuous ⟨y, hy⟩
     simp only [Set.mem_setOf_eq, Ax, Ay]
     exact hf ⟨x, hx⟩ ⟨y, hy⟩
-  simpa only [Dense, IsClosed.closure_eq, Set.mem_setOf_eq, Prod.forall] using this
+  simpa! only [Dense, IsClosed.closure_eq, Set.mem_setOf_eq, Prod.forall] using this

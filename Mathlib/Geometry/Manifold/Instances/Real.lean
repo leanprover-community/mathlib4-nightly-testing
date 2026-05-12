@@ -420,7 +420,6 @@ lemma Icc_isInteriorPoint_interior {p : Set.Icc x y} (hp : x < p.val ∧ p.val <
     interior_range_modelWithCornersEuclideanHalfSpace]
   exact IccLeftChart_extend_interior_pos hp
 
-set_option backward.simpa.using.reducibleClose false in
 lemma boundary_Icc : (𝓡∂ 1).boundary (Icc x y) = {⊥, ⊤} := by
   ext p
   rcases Set.eq_endpoints_or_mem_Ioo_of_mem_Icc p.2 with (hp | hp | hp)
@@ -431,7 +430,7 @@ lemma boundary_Icc : (𝓡∂ 1).boundary (Icc x y) = {⊥, ⊤} := by
     rw [this]
     apply iff_of_true Icc_isBoundaryPoint_top (mem_insert_of_mem ⊥ rfl)
   · apply iff_of_false
-    · simpa [← mem_compl_iff, ModelWithCorners.compl_boundary] using
+    · simpa! [← mem_compl_iff, ModelWithCorners.compl_boundary] using
         Icc_isInteriorPoint_interior hp
     · rintro (rfl | rfl) <;> simp at hp
 

@@ -50,7 +50,6 @@ section
 
 variable {E : Type*} [Category* E]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `L' : Quotient homRel ⥤ D` satisfies the strict universal property of the
 localization, then `Quotient.functor homRel ⋙ L'` also satisfies it. -/
 def strictUniversalPropertyFixedTarget (L' : Quotient homRel ⥤ D)
@@ -62,7 +61,7 @@ def strictUniversalPropertyFixedTarget (L' : Quotient homRel ⥤ D)
     univ.lift (CategoryTheory.Quotient.lift _ F
         (fun _ _ f g hfg ↦ (h hfg).map_eq_of_isInvertedBy _ hF)) (by
       rintro K L ⟨f⟩ hf
-      exact hF _ (by simpa [hW] using hf))
+      exact hF _ (by simpa! [hW] using hf))
   fac F hF := by rw [Functor.assoc, univ.fac, Quotient.lift_spec]
   uniq F₁ F₂ h := univ.uniq _ _ (Quotient.lift_unique' _ _ _ h)
 

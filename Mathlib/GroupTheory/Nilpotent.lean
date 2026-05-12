@@ -512,7 +512,6 @@ instance (priority := 100) _root_.Group.isNilpotent_of_subsingleton [Subsingleto
     IsNilpotent G :=
   nilpotent_iff_lowerCentralSeries.2 ⟨0, Subsingleton.elim ⊤ ⊥⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem upperCentralSeries.map {H : Type*} [Group H] {f : G →* H} (h : Function.Surjective f)
     (n : ℕ) : Subgroup.map f (upperCentralSeries G n) ≤ upperCentralSeries H n := by
   induction n with
@@ -520,7 +519,7 @@ theorem upperCentralSeries.map {H : Type*} [Group H] {f : G →* H} (h : Functio
   | succ d hd =>
     rintro _ ⟨x, hx : x ∈ upperCentralSeries G d.succ, rfl⟩ y'
     rcases h y' with ⟨y, rfl⟩
-    simpa using hd (mem_map_of_mem f (hx y))
+    simpa! using hd (mem_map_of_mem f (hx y))
 
 theorem lowerCentralSeries.map {H : Type*} [Group H] (f : G →* H) (n : ℕ) :
     Subgroup.map f (lowerCentralSeries G n) ≤ lowerCentralSeries H n := by

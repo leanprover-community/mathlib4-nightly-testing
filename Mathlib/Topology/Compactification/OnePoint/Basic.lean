@@ -291,11 +291,10 @@ theorem nhdsWithin_coe (s : Set (OnePoint X)) (x : X) : 𝓝[s] ↑x = map (↑)
 theorem comap_coe_nhds (x : X) : comap ((↑) : X → OnePoint X) (𝓝 x) = 𝓝 x :=
   (isOpenEmbedding_coe.isInducing.nhds_eq_comap x).symm
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `x` is not an isolated point of `X`, then `x : OnePoint X` is not an isolated point
 of `OnePoint X`. -/
 instance nhdsNE_coe_neBot (x : X) [h : NeBot (𝓝[≠] x)] : NeBot (𝓝[≠] (x : OnePoint X)) := by
-  simpa [nhdsWithin_coe, preimage, coe_eq_coe] using h.map some
+  simpa! [nhdsWithin_coe, preimage, coe_eq_coe] using h.map some
 
 theorem nhdsNE_infty_eq : 𝓝[≠] (∞ : OnePoint X) = map (↑) (coclosedCompact X) := by
   refine (nhdsWithin_basis_open ∞ _).ext (hasBasis_coclosedCompact.map _) ?_ ?_
@@ -544,7 +543,6 @@ instance [PreconnectedSpace X] [NoncompactSpace X] : ConnectedSpace (OnePoint X)
   toPreconnectedSpace := isDenseEmbedding_coe.isDenseInducing.preconnectedSpace
   toNonempty := inferInstance
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `X` is an infinite type with discrete topology (e.g., `ℕ`), then the identity map from
 `CofiniteTopology (OnePoint X)` to `OnePoint X` is not continuous. -/
 theorem not_continuous_cofiniteTopology_of_symm [Infinite X] [DiscreteTopology X] :
@@ -552,7 +550,7 @@ theorem not_continuous_cofiniteTopology_of_symm [Infinite X] [DiscreteTopology X
   inhabit X
   simp only [continuous_iff_continuousAt, ContinuousAt, not_forall]
   use CofiniteTopology.of ↑(default : X)
-  simpa [nhds_coe_eq, nhds_discrete, CofiniteTopology.nhds_eq] using
+  simpa! [nhds_coe_eq, nhds_discrete, CofiniteTopology.nhds_eq] using
     (finite_singleton ((default : X) : OnePoint X)).infinite_compl
 
 instance (X : Type*) [TopologicalSpace X] [DiscreteTopology X] :

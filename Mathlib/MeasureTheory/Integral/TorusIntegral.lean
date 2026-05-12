@@ -159,10 +159,9 @@ theorem torusIntegral_add (hf : TorusIntegrable f c R) (hg : TorusIntegrable g c
   simpa only [torusIntegral, smul_add, Pi.add_apply] using
     integral_add hf.function_integrable hg.function_integrable
 
-set_option backward.simpa.using.reducibleClose false in
 theorem torusIntegral_sub (hf : TorusIntegrable f c R) (hg : TorusIntegrable g c R) :
     (∯ x in T(c, R), f x - g x) = (∯ x in T(c, R), f x) - ∯ x in T(c, R), g x := by
-  simpa only [sub_eq_add_neg, ← torusIntegral_neg] using torusIntegral_add hf hg.neg
+  simpa! only [sub_eq_add_neg, ← torusIntegral_neg] using torusIntegral_add hf hg.neg
 
 theorem torusIntegral_smul {𝕜 : Type*} [RCLike 𝕜] [NormedSpace 𝕜 E] [SMulCommClass 𝕜 ℂ E] (a : 𝕜)
     (f : ℂⁿ → E) (c : ℂⁿ) (R : ℝⁿ) : (∯ x in T(c, R), a • f x) = a • ∯ x in T(c, R), f x := by

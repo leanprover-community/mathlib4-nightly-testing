@@ -34,7 +34,6 @@ namespace Metric
 
 variable {α : Type*} [PseudoEMetricSpace α]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem mem_hausdorffEntourage_of_hausdorffEDist_lt {s t : Set α} {δ : ℝ≥0∞}
     (h : hausdorffEDist s t < δ) : (s, t) ∈ hausdorffEntourage {p | edist p.1 p.2 < δ} := by
   rw [hausdorffEDist, max_lt_iff] at h
@@ -43,7 +42,7 @@ theorem mem_hausdorffEntourage_of_hausdorffEDist_lt {s t : Set α} {δ : ℝ≥0
   have {s t : Set α} (h : ⨆ x ∈ s, infEDist x t < δ) :
       s ⊆ SetRel.preimage {p | edist p.1 p.2 < δ} t := by
     intro x hx
-    simpa only [infEDist, iInf_lt_iff, exists_prop] using (le_iSup₂ x hx).trans_lt h
+    simpa! only [infEDist, iInf_lt_iff, exists_prop] using (le_iSup₂ x hx).trans_lt h
   exact ⟨this h.1, this h.2⟩
 
 theorem hausdorffEDist_le_of_mem_hausdorffEntourage {s t : Set α} {δ : ℝ≥0∞}

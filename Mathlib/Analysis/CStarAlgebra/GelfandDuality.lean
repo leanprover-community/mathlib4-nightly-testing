@@ -140,7 +140,6 @@ theorem gelfandTransform_map_star (a : A) :
 
 variable (A)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The Gelfand transform is an isometry when the algebra is a C⋆-algebra over `ℂ`. -/
 theorem gelfandTransform_isometry : Isometry (gelfandTransform ℂ A) := by
   refine AddMonoidHomClass.isometry_of_norm (gelfandTransform ℂ A) fun a => ?_
@@ -153,7 +152,7 @@ theorem gelfandTransform_isometry : Isometry (gelfandTransform ℂ A) := by
   rw [map_mul, (IsSelfAdjoint.star_mul_self a).spectralRadius_eq_nnnorm, gelfandTransform_map_star,
     (IsSelfAdjoint.star_mul_self (gelfandTransform ℂ A a)).spectralRadius_eq_nnnorm] at this
   simp only [ENNReal.coe_inj, CStarRing.nnnorm_star_mul_self, ← sq] at this
-  simpa only [Function.comp_apply, NNReal.sqrt_sq] using
+  simpa! only [Function.comp_apply, NNReal.sqrt_sq] using
     congr_arg (((↑) : ℝ≥0 → ℝ) ∘ ⇑NNReal.sqrt) this
 
 set_option backward.defeqAttrib.useBackward true in

@@ -287,16 +287,15 @@ end MeasurableSingletonClass
 
 namespace MeasurableSpace
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Copy of a `MeasurableSpace` with a new `MeasurableSet` equal to the old one. Useful to fix
 definitional equalities. -/
 @[implicit_reducible]
 protected def copy (m : MeasurableSpace α) (p : Set α → Prop) (h : ∀ s, p s ↔ MeasurableSet[m] s) :
     MeasurableSpace α where
   MeasurableSet' := p
-  measurableSet_empty := by simpa only [h] using m.measurableSet_empty
-  measurableSet_compl := by simpa only [h] using m.measurableSet_compl
-  measurableSet_iUnion := by simpa only [h] using m.measurableSet_iUnion
+  measurableSet_empty := by simpa! only [h] using m.measurableSet_empty
+  measurableSet_compl := by simpa! only [h] using m.measurableSet_compl
+  measurableSet_iUnion := by simpa! only [h] using m.measurableSet_iUnion
 
 lemma measurableSet_copy {m : MeasurableSpace α} {p : Set α → Prop}
     (h : ∀ s, p s ↔ MeasurableSet[m] s) {s} : MeasurableSet[.copy m p h] s ↔ p s :=

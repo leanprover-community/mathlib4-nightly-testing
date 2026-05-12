@@ -134,10 +134,9 @@ theorem isMinOn_univ_iff : IsMinOn f univ a ↔ ∀ x, f a ≤ f x :=
 theorem isMaxOn_univ_iff : IsMaxOn f univ a ↔ ∀ x, f x ≤ f a :=
   univ_subset_iff.trans eq_univ_iff_forall
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsMinOn.bddBelow (h : IsMinOn f s a) :
     BddBelow (f '' s) :=
-  ⟨f a, by simpa [mem_lowerBounds] using h⟩
+  ⟨f a, by simpa! [mem_lowerBounds] using h⟩
 
 theorem IsMinOn.isGLB (ha : a ∈ s) (hfsa : IsMinOn f s a) :
     IsGLB {f x | x ∈ s} (f a) := by
@@ -150,10 +149,9 @@ theorem IsMaxOn.isLUB (ha : a ∈ s) (hfsa : IsMaxOn f s a) :
     IsLUB {f x | x ∈ s} (f a) :=
   IsMinOn.isGLB (α := αᵒᵈ) (β := βᵒᵈ) ha hfsa
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsMaxOn.bddAbove (h : IsMaxOn f s a) :
     BddAbove (f '' s) :=
-  ⟨f a, by simpa [mem_upperBounds] using h⟩
+  ⟨f a, by simpa! [mem_upperBounds] using h⟩
 
 theorem IsMinFilter.tendsto_principal_Ici (h : IsMinFilter f l a) : Tendsto f l (𝓟 <| Ici (f a)) :=
   tendsto_principal.2 h
@@ -376,10 +374,9 @@ theorem IsExtrOn.on_preimage (g : δ → α) {b : δ} (hf : IsExtrOn f s (g b)) 
     IsExtrOn (f ∘ g) (g ⁻¹' s) b :=
   hf.elim (fun hf => (hf.on_preimage g).isExtr) fun hf => (hf.on_preimage g).isExtr
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsMinOn.comp_mapsTo {t : Set δ} {g : δ → α} {b : δ} (hf : IsMinOn f s a) (hg : MapsTo g t s)
     (ha : g b = a) : IsMinOn (f ∘ g) t b := fun y hy => by
-  simpa only [ha, (· ∘ ·)] using hf (hg hy)
+  simpa! only [ha, (· ∘ ·)] using hf (hg hy)
 
 theorem IsMaxOn.comp_mapsTo {t : Set δ} {g : δ → α} {b : δ} (hf : IsMaxOn f s a) (hg : MapsTo g t s)
     (ha : g b = a) : IsMaxOn (f ∘ g) t b :=

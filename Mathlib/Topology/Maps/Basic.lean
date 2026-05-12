@@ -432,10 +432,9 @@ lemma preimage_closure_image (h₁ : IsOpenMap f) (h₂ : Function.Injective f)
     (h₃ : Continuous f) (s : Set X) (hs' : IsClosed s) : f ⁻¹' closure (f '' s) = s := by
   rw [h₁.preimage_closure_eq_closure_preimage h₃, Set.preimage_image_eq _ h₂, hs'.closure_eq]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem preimage_frontier_subset_frontier_preimage (hf : IsOpenMap f) {s : Set Y} :
     f ⁻¹' frontier s ⊆ frontier (f ⁻¹' s) := by
-  simpa only [frontier_eq_closure_inter_closure, preimage_inter] using
+  simpa! only [frontier_eq_closure_inter_closure, preimage_inter] using
     inter_subset_inter hf.preimage_closure_subset_closure_preimage
       hf.preimage_closure_subset_closure_preimage
 

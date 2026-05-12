@@ -193,11 +193,10 @@ theorem add (hf : AbsolutelyContinuousOnInterval f a b)
     gcongr
     exact dist_add_add_le _ _ _ _
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_fun]
 theorem neg (hf : AbsolutelyContinuousOnInterval f a b) :
     AbsolutelyContinuousOnInterval (-f) a b := by
-  apply squeeze_zero (fun t ↦ ?_) (fun t ↦ ?_) (by simpa using hf)
+  apply squeeze_zero (fun t ↦ ?_) (fun t ↦ ?_) (by simpa! using hf)
   · exact Finset.sum_nonneg (fun i hi ↦ by positivity)
   · simp
 

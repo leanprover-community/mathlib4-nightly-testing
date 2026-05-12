@@ -77,7 +77,6 @@ theorem exists_eq_interval_average_of_measure
     (hf.mono uIoc_subset_uIcc) (hf.integrableOn_of_subset_isCompact
     isCompact_uIcc measurableSet_uIoc uIoc_subset_uIcc hμfin) hμfin hμ0
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `f : ℝ → ℝ` is continuous on `uIcc a b`, the interval has finite and nonzero `μ`-measure,
 and `μ` has no atoms, then `∃ c ∈ uIoo a b, f c = ⨍ x in Ι a b, f x ∂μ`. -/
 theorem exists_eq_interval_average_of_noAtoms
@@ -88,7 +87,7 @@ theorem exists_eq_interval_average_of_noAtoms
   have h : a ≠ b := by intro hab; simp [hab] at hμ0
   let s := uIoo a b
   have hs' : s ⊆ Ι a b := by intro x hx; rcases hx with ⟨h1, h2⟩; grind
-  have hs_ev : s =ᵐ[μ] Ι a b := by simpa using Ioo_ae_eq_Ioc
+  have hs_ev : s =ᵐ[μ] Ι a b := by simpa! using Ioo_ae_eq_Ioc
   have hμ0' : μ s ≠ 0 := by
     have hμ : μ s = μ (Ι a b) := by rw [measure_congr hs_ev]
     rwa [hμ]

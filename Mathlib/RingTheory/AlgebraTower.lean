@@ -97,14 +97,13 @@ variable {R S A}
 variable [Semiring R] [Semiring S] [AddCommMonoid A]
 variable [Module R S] [Module S A] [Module R A] [IsScalarTower R S A]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem linearIndependent_smul {ι : Type*} {b : ι → S} {ι' : Type*} {c : ι' → A}
     (hb : LinearIndependent R b) (hc : LinearIndependent S c) :
     LinearIndependent R fun p : ι × ι' ↦ b p.1 • c p.2 := by
   classical
   rw [← linearIndependent_equiv' (.prodComm ..) (g := fun p : ι' × ι ↦ b p.2 • c p.1) rfl,
     LinearIndependent, linearCombination_smul]
-  simpa using Function.Injective.comp hc
+  simpa! using Function.Injective.comp hc
     ((mapRange_injective _ (map_zero _) hb).comp <| Equiv.injective _)
 
 variable (R)

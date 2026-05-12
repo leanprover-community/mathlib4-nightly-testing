@@ -50,13 +50,11 @@ end map
 section seq
 variable {β γ : Type _} {f : α → Part (β → γ)} {g : α → Part β}
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Monotone.partSeq (hf : Monotone f) (hg : Monotone g) : Monotone fun x ↦ f x <*> g x := by
-  simpa only [seq_eq_bind_map] using hf.partBind <| Monotone.of_apply₂ fun _ ↦ hg.partMap
+  simpa! only [seq_eq_bind_map] using hf.partBind <| Monotone.of_apply₂ fun _ ↦ hg.partMap
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Antitone.partSeq (hf : Antitone f) (hg : Antitone g) : Antitone fun x ↦ f x <*> g x := by
-  simpa only [seq_eq_bind_map] using hf.partBind <| Antitone.of_apply₂ fun _ ↦ hg.partMap
+  simpa! only [seq_eq_bind_map] using hf.partBind <| Antitone.of_apply₂ fun _ ↦ hg.partMap
 
 end seq
 

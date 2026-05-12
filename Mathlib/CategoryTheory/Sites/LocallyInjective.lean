@@ -103,7 +103,6 @@ lemma isLocallyInjective_forget_iff :
   · intro
     infer_instance
 
-set_option backward.simpa.using.reducibleClose false in
 lemma isLocallyInjective_iff_equalizerSieve_mem_imp :
     IsLocallyInjective J φ ↔ ∀ ⦃X : Cᵒᵖ⦄ (x y : ToType (F₁.obj X)),
       equalizerSieve (φ.app _ x) (φ.app _ y) ∈ J X.unop → equalizerSieve x y ∈ J X.unop := by
@@ -114,7 +113,7 @@ lemma isLocallyInjective_iff_equalizerSieve_mem_imp :
       equalizerSieve (F₁.map f.op x) ((F₁.map f.op y))
     refine J.superset_covering ?_ (J.transitive h (Sieve.bind S.1 T) ?_)
     · rintro Y f ⟨Z, a, g, hg, ha, rfl⟩
-      simpa using ha
+      simpa! using ha
     · intro Y f hf
       refine J.superset_covering (Sieve.le_pullback_bind S.1 T _ hf)
         (equalizerSieve_mem J φ _ _ ?_)

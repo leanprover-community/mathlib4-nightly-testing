@@ -428,11 +428,10 @@ end NormedAddCommGroup
 section NormedRing
 variable {R : Type*} [NormedRing R] [NormedSpace ℝ R] [CompleteSpace R]
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 lemma condExp_ofNat (n : ℕ) [n.AtLeastTwo] (f : α → R) :
     μ[ofNat(n) * f | m] =ᵐ[μ] ofNat(n) * μ[f | m] := by
-  simpa [Nat.cast_smul_eq_nsmul] using condExp_smul (μ := μ) (m := m) (n : ℝ) f
+  simpa! [Nat.cast_smul_eq_nsmul] using condExp_smul (μ := μ) (m := m) (n : ℝ) f
 
 end NormedRing
 

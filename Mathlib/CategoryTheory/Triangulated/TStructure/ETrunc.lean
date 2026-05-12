@@ -366,19 +366,17 @@ noncomputable def eTruncGEIsoGEGE :
   haveI := t.isIso_eTruncGEIsoGEGE a b hab
   asIso (t.eTruncGEToGEGE a b)
 
-set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma eTruncGEIsoGEGE_hom_inv_id_app (X : C) :
     (t.eTruncGE.obj b).map ((t.eTruncGEπ a).app X) ≫ (t.eTruncGEIsoGEGE a b hab).inv.app X =
       𝟙 _ := by
-  simpa using (t.eTruncGEIsoGEGE a b hab).hom_inv_id_app X
+  simpa! using (t.eTruncGEIsoGEGE a b hab).hom_inv_id_app X
 
-set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma eTruncGEIsoGEGE_inv_hom_id_app (X : C) :
     (t.eTruncGEIsoGEGE a b hab).inv.app X ≫ (t.eTruncGE.obj b).map ((t.eTruncGEπ a).app X) =
       𝟙 _ := by
-  simpa using (t.eTruncGEIsoGEGE a b hab).inv_hom_id_app X
+  simpa! using (t.eTruncGEIsoGEGE a b hab).inv_hom_id_app X
 
 end
 

@@ -158,11 +158,10 @@ lemma toEquiv_withValUniformEquiv_eq_toEquiv_withValRingEquiv :
       (withValRingEquiv (p := p) :) := rfl
 
 open UniformSpace.Completion in
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem withValUniformEquiv_cast_apply (x : WithVal (Rat.padicValuation p)) :
     Padic.withValUniformEquiv (p := p) x = WithVal.equiv (Rat.padicValuation p) x := by
-  simpa [Equiv.toUniformEquivOfIsUniformInducing] using
+  simpa! [Equiv.toUniformEquivOfIsUniformInducing] using
     extension_coe (Padic.isUniformInducing_cast_withVal (p := p)).uniformContinuous _
 
 open PadicInt in

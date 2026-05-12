@@ -107,13 +107,12 @@ lemma minpolyDiv_ne_zero [Nontrivial S] : minpolyDiv R x ≠ 0 := by
   rw [e, zero_mul] at this
   exact ((minpoly.monic hx).map (algebraMap R S)).ne_zero this.symm
 
-set_option backward.simpa.using.reducibleClose false in
 lemma minpolyDiv_monic : Monic (minpolyDiv R x) := by
   nontriviality S
   have := congr_arg leadingCoeff (minpolyDiv_spec R x)
   rw [leadingCoeff_mul', ((minpoly.monic hx).map (algebraMap R S)).leadingCoeff] at this
-  · simpa using this
-  · simpa using minpolyDiv_ne_zero hx
+  · simpa! using this
+  · simpa! using minpolyDiv_ne_zero hx
 
 lemma natDegree_minpolyDiv_succ [Nontrivial S] :
     natDegree (minpolyDiv R x) + 1 = natDegree (minpoly R x) := by

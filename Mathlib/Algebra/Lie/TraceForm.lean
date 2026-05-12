@@ -313,11 +313,10 @@ lemma lowerCentralSeries_one_inf_center_le_ker_traceForm [Module.Free R M] [Modu
       (genWeightSpaceOf (A ⊗[R] M) μ ((1 : A) ⊗ₜ[R] x)) (le_refl 1) hz
   · exact commute_toEnd_of_mem_center_right (A ⊗[R] M) hzc (1 ⊗ₜ x)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A nilpotent Lie algebra with a representation whose trace form is non-singular is Abelian. -/
 lemma isLieAbelian_of_ker_traceForm_eq_bot [Module.Free R M] [Module.Finite R M]
     (h : LinearMap.ker (traceForm R L M) = ⊥) : IsLieAbelian L := by
-  simpa only [← disjoint_lowerCentralSeries_maxTrivSubmodule_iff R L L, disjoint_iff_inf_le,
+  simpa! only [← disjoint_lowerCentralSeries_maxTrivSubmodule_iff R L L, disjoint_iff_inf_le,
     LieIdeal.toLieSubalgebra_toSubmodule, LieSubmodule.toSubmodule_eq_bot, h]
     using lowerCentralSeries_one_inf_center_le_ker_traceForm R L M
 

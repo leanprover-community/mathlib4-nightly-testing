@@ -1081,15 +1081,13 @@ instance (priority := low) [DecidableLT α] [LocallyFiniteOrder α] :
     simp only [Finset.mem_subtype, Finset.mem_Ioo, Subtype.coe_lt_coe, and_iff_left_iff_imp]
     exact fun _ => b.property
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_dual]
 instance [LocallyFiniteOrderBot α] : Finite { x : α // x ≤ y } := by
-  simpa only [coe_Iic] using (Finset.Iic y).finite_toSet
+  simpa! only [coe_Iic] using (Finset.Iic y).finite_toSet
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_dual]
 instance [LocallyFiniteOrderBot α] : Finite { x : α // x < y } := by
-  simpa only [coe_Iio] using (Finset.Iio y).finite_toSet
+  simpa! only [coe_Iio] using (Finset.Iio y).finite_toSet
 
 namespace Set
 variable {α : Type*} [Preorder α]

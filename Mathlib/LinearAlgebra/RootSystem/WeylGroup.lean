@@ -98,7 +98,6 @@ lemma weylGroup.induction' [Nonempty ι] {pred : (g : Aut P) → g ∈ P.weylGro
     rw [sq, mul_eq_one_iff_inv_eq, Equiv.reflection_inv P i]
   simpa [sq, ← this] using mul _ _ _ _ (mem i) (mem i)
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma range_weylGroup_weightHom :
     MonoidHom.range ((Equiv.weightHom P).restrict P.weylGroup) =
@@ -117,16 +116,15 @@ lemma range_weylGroup_weightHom :
     | mem w' hw' =>
       obtain ⟨i, rfl⟩ := hw'
       simp only [MonoidHom.restrict_apply, Equiv.weightHom_apply, Equiv.reflection_weightEquiv]
-      simpa only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
+      simpa! only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
     | inv_mem w' hw' =>
       obtain ⟨i, rfl⟩ := hw'
       simp only [Equiv.reflection_inv, MonoidHom.restrict_apply, Equiv.weightHom_apply,
         Equiv.reflection_weightEquiv]
-      simpa only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
+      simpa! only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
     | mul w₁ w₂ hw₁ hw₂ h₁ h₂ =>
-      simpa only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using Subgroup.mul_mem _ h₁ h₂
+      simpa! only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using Subgroup.mul_mem _ h₁ h₂
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma range_weylGroup_coweightHom :
     MonoidHom.range ((Equiv.coweightHom P).restrict P.weylGroup) =
@@ -145,19 +143,18 @@ lemma range_weylGroup_coweightHom :
     | mem w' hw' =>
       obtain ⟨i, rfl⟩ := hw'
       simp only [MonoidHom.restrict_apply, Equiv.coweightHom_apply, Equiv.reflection_coweightEquiv]
-      simpa only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
+      simpa! only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
     | inv_mem w' hw' =>
       obtain ⟨i, rfl⟩ := hw'
       simp only [Equiv.reflection_inv, MonoidHom.restrict_apply, Equiv.coweightHom_apply,
         Equiv.reflection_coweightEquiv]
-      simpa only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
+      simpa! only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
     | mul w₁ w₂ hw₁ hw₂ h₁ h₂ =>
-      simpa only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using Subgroup.mul_mem _ h₁ h₂
+      simpa! only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using Subgroup.mul_mem _ h₁ h₂
 
 /-- The permutation representation of the Weyl group induced by `reflectionPerm`. -/
 abbrev weylGroupToPerm := (Equiv.indexHom P).restrict P.weylGroup
 
-set_option backward.simpa.using.reducibleClose false in
 lemma range_weylGroupToPerm :
     P.weylGroupToPerm.range = Subgroup.closure (range P.reflectionPerm) := by
   refine (Subgroup.closure_eq_of_le _ ?_ ?_).symm
@@ -174,14 +171,14 @@ lemma range_weylGroupToPerm :
     | mem w' hw' =>
       obtain ⟨i, rfl⟩ := hw'
       simp only [MonoidHom.restrict_apply, Equiv.indexHom_apply, Equiv.reflection_indexEquiv]
-      simpa only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
+      simpa! only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
     | inv_mem w' hw' =>
       obtain ⟨i, rfl⟩ := hw'
       simp only [Equiv.reflection_inv, MonoidHom.restrict_apply, Equiv.indexHom_apply,
         Equiv.reflection_indexEquiv]
-      simpa only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
+      simpa! only [reflection_mem_weylGroup] using Subgroup.subset_closure (mem_range_self i)
     | mul w₁ w₂ hw₁ hw₂ h₁ h₂ =>
-      simpa only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using Subgroup.mul_mem _ h₁ h₂
+      simpa! only [← Submonoid.mk_mul_mk _ w₁ w₂ hw₁ hw₂, map_mul] using Subgroup.mul_mem _ h₁ h₂
 
 /-- The natural representation of the Weyl group on the root space. -/
 def weylGroupRootRep : Representation R P.weylGroup M :=

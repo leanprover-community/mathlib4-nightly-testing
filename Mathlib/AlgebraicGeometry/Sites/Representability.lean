@@ -107,14 +107,13 @@ noncomputable def yonedaGluedToSheaf :
         Equiv.symm_apply_apply, ← Functor.map_comp_assoc,
         Functor.relativelyRepresentable.symmetry_fst, ((hf i).rep.isPullback' (f j)).w]))
 
-set_option backward.simpa.using.reducibleClose false in
 @[reassoc (attr := simp)]
 lemma yoneda_toGlued_yonedaGluedToSheaf (i : ι) :
     yoneda.map (toGlued hf i) ≫ (yonedaGluedToSheaf hf).hom = f i := by
   apply yonedaEquiv.injective
   rw [yonedaGluedToSheaf, yonedaEquiv_apply, yonedaEquiv_apply,
     NatTrans.comp_app_apply, yoneda_map_app]
-  simpa using GlueData.sheafValGluedMk_val _ _ _ _
+  simpa! using GlueData.sheafValGluedMk_val _ _ _ _
 
 set_option backward.defeqAttrib.useBackward true in
 @[simp]

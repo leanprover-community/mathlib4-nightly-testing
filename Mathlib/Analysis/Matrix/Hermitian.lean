@@ -39,7 +39,6 @@ lemma IsHermitian.coe_re_apply_self (h : A.IsHermitian) (i : n) : (re (A i i) : 
 lemma IsHermitian.coe_re_diag (h : A.IsHermitian) : (fun i => (re (A.diag i) : 𝕜)) = A.diag :=
   funext h.coe_re_apply_self
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A matrix is Hermitian iff the corresponding linear map with an orthonormal basis is
 symmetric. -/
 @[simp]
@@ -49,7 +48,7 @@ lemma isSymmetric_toLin_iff [Fintype n] [DecidableEq n] {E : Type*}
   have : FiniteDimensional 𝕜 E := b.toBasis.finiteDimensional_of_finite
   simp_rw [LinearMap.IsSymmetric, ← LinearMap.adjoint_inner_left, ← toLin_conjTranspose]
   refine ⟨fun h ↦ ?_, fun h _ _ ↦ by rw [h.eq]⟩
-  simpa using (LinearMap.ext fun x ↦ ext_inner_right _ (h x)).symm
+  simpa! using (LinearMap.ext fun x ↦ ext_inner_right _ (h x)).symm
 
 /-- A matrix is Hermitian iff the corresponding linear map on the Euclidean space is
 symmetric. -/
@@ -63,11 +62,10 @@ lemma isSymmetric_toEuclideanLin_iff [Fintype n] [DecidableEq n] :
 lemma isHermitian_iff_isSymmetric [Fintype n] [DecidableEq n] :
     IsHermitian A ↔ A.toEuclideanLin.IsSymmetric := isSymmetric_toEuclideanLin_iff.symm
 
-set_option backward.simpa.using.reducibleClose false in
 lemma IsHermitian.im_star_dotProduct_mulVec_self [Fintype n] (hA : A.IsHermitian) (x : n → 𝕜) :
      RCLike.im (star x ⬝ᵥ A *ᵥ x) = 0 := by
   classical
-  simpa [dotProduct_comm] using (isSymmetric_toEuclideanLin_iff.mpr hA).im_inner_self_apply _
+  simpa! [dotProduct_comm] using (isSymmetric_toEuclideanLin_iff.mpr hA).im_inner_self_apply _
 
 end Matrix
 

@@ -78,7 +78,6 @@ instance (priority := low) [QuasiFiniteAt R q] : WeaklyQuasiFiniteAt R q := by
   rw [weaklyQuasiFiniteAt_iff]
   exact .of_surjective_algHom (Ideal.Quotient.mkₐ _ _) Ideal.Quotient.mk_surjective
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Use `Algebra.QuasiFinite.of_surjective_algHom` instead for `Algebra.QuasiFiniteAt R p`. -/
 lemma of_algHom_localization (p : Ideal S) [p.IsPrime] [WeaklyQuasiFiniteAt R p]
     (q : Ideal T) [q.IsPrime]
@@ -95,10 +94,10 @@ lemma of_algHom_localization (p : Ideal S) [p.IsPrime] [WeaklyQuasiFiniteAt R p]
     have : IsLocalHom f.toRingHom := .of_surjective _ hf
     have := this.1 (algebraMap _ _ x) (by
       suffices IsUnit (IsLocalization.mk' (M := q.primeCompl) (Localization.AtPrime q)
-        (algebraMap _ _ x) 1) by simpa [IsLocalization.mk'_one] using this
-      simpa [IsLocalization.AtPrime.isUnit_mk'_iff])
+        (algebraMap _ _ x) 1) by simpa! [IsLocalization.mk'_one] using this
+      simpa! [IsLocalization.AtPrime.isUnit_mk'_iff])
     exact (IsLocalization.AtPrime.isUnit_mk'_iff (Localization.AtPrime p) p
-      (algebraMap _ _ x) 1).mp (by simpa [IsLocalization.mk'_one]) hx
+      (algebraMap _ _ x) 1).mp (by simpa! [IsLocalization.mk'_one]) hx
   exact .of_surjective_algHom (S := Localization.AtPrime p ⧸
     (p.under R).map (algebraMap R (Localization.AtPrime p))) (Ideal.quotientMapₐ _ f H)
     (Ideal.quotientMap_surjective (H := H) hf)

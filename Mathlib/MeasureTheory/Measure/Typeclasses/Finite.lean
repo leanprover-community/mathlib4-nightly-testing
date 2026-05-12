@@ -589,7 +589,6 @@ def MeasureTheory.Measure.finiteSpanningSetsInOpen [TopologicalSpace α] [SigmaC
 
 open TopologicalSpace
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A locally finite measure on a second countable topological space admits a finite spanning
 sequence of open sets. -/
 noncomputable irreducible_def MeasureTheory.Measure.finiteSpanningSetsInOpen' [TopologicalSpace α]
@@ -610,7 +609,7 @@ noncomputable irreducible_def MeasureTheory.Measure.finiteSpanningSetsInOpen' [T
   have T_ne : T.Nonempty := by
     by_contra h'T
     rw [not_nonempty_iff_eq_empty.1 h'T, sUnion_empty] at hT
-    simpa only [← hT] using mem_univ (default : α)
+    simpa! only [← hT] using mem_univ (default : α)
   obtain ⟨f, hf⟩ : ∃ f : ℕ → Set α, T = range f := T_count.exists_eq_range T_ne
   have fS : ∀ n, f n ∈ S := by
     intro n
@@ -625,8 +624,8 @@ noncomputable irreducible_def MeasureTheory.Measure.finiteSpanningSetsInOpen' [T
   refine eq_univ_of_forall fun x => ?_
   obtain ⟨t, tT, xt⟩ : ∃ t : Set α, t ∈ range f ∧ x ∈ t := by
     have : x ∈ ⋃₀ T := by simp only [hT, mem_univ]
-    simpa only [mem_sUnion, exists_prop, ← hf]
-  obtain ⟨n, rfl⟩ : ∃ n : ℕ, f n = t := by simpa only using tT
+    simpa! only [mem_sUnion, exists_prop, ← hf]
+  obtain ⟨n, rfl⟩ : ∃ n : ℕ, f n = t := by simpa! only using tT
   exact mem_iUnion_of_mem _ xt
 
 section MeasureIxx

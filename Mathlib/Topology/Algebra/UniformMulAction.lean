@@ -94,13 +94,12 @@ theorem UniformContinuous.const_smul [UniformContinuousConstSMul M X] {f : Y →
     (hf : UniformContinuous f) (c : M) : UniformContinuous (c • f) :=
   (uniformContinuous_const_smul c).comp hf
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma IsUniformInducing.uniformContinuousConstSMul [SMul M Y] [UniformContinuousConstSMul M Y]
     {f : X → Y} (hf : IsUniformInducing f) (hsmul : ∀ (c : M) x, f (c • x) = c • f x) :
     UniformContinuousConstSMul M X where
   uniformContinuous_const_smul c := by
-    simpa only [hf.uniformContinuous_iff, Function.comp_def, hsmul]
+    simpa! only [hf.uniformContinuous_iff, Function.comp_def, hsmul]
       using hf.uniformContinuous.const_smul c
 
 /-- If a scalar action is central, then its right action is uniform continuous when its left action

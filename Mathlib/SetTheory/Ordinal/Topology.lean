@@ -55,7 +55,6 @@ theorem isOpen_iff : IsOpen s ↔ ∀ o ∈ s, IsSuccLimit o → ∃ a < o, Set.
   SuccOrder.isOpen_iff
 
 open List Set in
-set_option backward.simpa.using.reducibleClose false in
 theorem mem_closure_tfae (a : Ordinal.{u}) (s : Set Ordinal) :
     TFAE [a ∈ closure s,
       a ∈ closure (s ∩ Iic a),
@@ -63,7 +62,7 @@ theorem mem_closure_tfae (a : Ordinal.{u}) (s : Set Ordinal) :
       ∃ t, t ⊆ s ∧ t.Nonempty ∧ BddAbove t ∧ sSup t = a,
       ∃ (ι : Type u), Nonempty ι ∧ ∃ f : ι → Ordinal, (∀ i, f i ∈ s) ∧ ⨆ i, f i = a] := by
   tfae_have 1 → 2 := by
-    simpa only [mem_closure_iff_nhdsWithin_neBot, inter_comm s, nhdsWithin_inter',
+    simpa! only [mem_closure_iff_nhdsWithin_neBot, inter_comm s, nhdsWithin_inter',
       SuccOrder.nhdsLE_eq_nhds] using id
   tfae_have 2 → 3
   | h => by
@@ -79,7 +78,7 @@ theorem mem_closure_tfae (a : Ordinal.{u}) (s : Set Ordinal) :
     refine ⟨Shrink t, ?_, Subtype.val ∘ (equivShrink _).symm, ?_, ?_⟩
     · have := ht₀.to_subtype
       exact (equivShrink _).symm.nonempty
-    · simpa [← (equivShrink t).forall_congr_left (p := (·.1 ∈ s))]
+    · simpa! [← (equivShrink t).forall_congr_left (p := (·.1 ∈ s))]
     · simp [(equivShrink t).symm.iSup_comp, ← sSup_eq_iSup']
   tfae_have 5 → 1 := by
     rintro ⟨ι, hne, f, hfs, rfl⟩

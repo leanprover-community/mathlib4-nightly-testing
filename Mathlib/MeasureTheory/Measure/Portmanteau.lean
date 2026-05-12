@@ -508,7 +508,6 @@ lemma lintegral_le_liminf_lintegral_of_forall_isOpen_measure_le_liminf_measure
     exact lintegral_liminf_le (fun n ↦ Antitone.measurable (fun s t hst ↦
             measure_mono (fun ω hω ↦ lt_of_le_of_lt hst hω)))
 
-set_option backward.simpa.using.reducibleClose false in
 lemma integral_le_liminf_integral_of_forall_isOpen_measure_le_liminf_measure
     {μ : Measure Ω} {μs : ℕ → Measure Ω} [∀ i, IsProbabilityMeasure (μs i)]
     {f : Ω →ᵇ ℝ} (f_nn : 0 ≤ f)
@@ -523,7 +522,7 @@ lemma integral_le_liminf_integral_of_forall_isOpen_measure_le_liminf_measure
                         f.continuous.measurable.aestronglyMeasurable]
     let g := BoundedContinuousFunction.comp _ Real.lipschitzWith_toNNReal f
     have bound : ∀ i, ∫⁻ x, ENNReal.ofReal (f x) ∂(μs i) ≤ nndist 0 g := fun i ↦ by
-      simpa only [coe_nnreal_ennreal_nndist, measure_univ, mul_one, ge_iff_le] using
+      simpa! only [coe_nnreal_ennreal_nndist, measure_univ, mul_one, ge_iff_le] using
             BoundedContinuousFunction.lintegral_le_edist_mul (μ := μs i) g
     apply ENNReal.liminf_toReal_eq ENNReal.coe_ne_top (Eventually.of_forall bound)
   · apply ne_of_lt
@@ -652,7 +651,6 @@ end Closed
 
 section Lipschitz
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Weak convergence of probability measures is equivalent to the property that the integrals of
 every bounded Lipschitz function converge to the integral of the function against
 the limit measure. -/
@@ -671,7 +669,7 @@ theorem tendsto_iff_forall_lipschitz_integral_tendsto {γ Ω : Type*} {mΩ : Mea
     { toFun := f
       continuous_toFun := hf_lip.choose_spec.continuous
       map_bounded' := hf_bounded }
-    simpa using h f'
+    simpa! using h f'
   -- To prove the other direction, we prove convergence of the measure of closed sets.
   -- We approximate the indicator function of a closed set by bounded Lipschitz functions.
   rcases F.eq_or_neBot with rfl | hne
@@ -700,7 +698,7 @@ theorem tendsto_iff_forall_lipschitz_integral_tendsto {γ Ω : Type*} {mΩ : Mea
     · exact (integrable_indicator_iff hs.measurableSet).mpr (integrable_const _).integrableOn
     · have h : _ ≤ fs M :=
         indicator_le_thickenedIndicator (δ := (1 : ℝ) / (M + 1)) (by positivity) s
-      simpa using h
+      simpa! using h
   apply (Filter.limsup_le_of_le ?_ ev_near).trans
   · apply (add_le_add (hM M rfl.le).le (le_refl (ε / 2))).trans_eq
     ring

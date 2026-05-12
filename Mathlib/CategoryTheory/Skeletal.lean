@@ -140,11 +140,10 @@ set_option backward.defeqAttrib.useBackward true in
   counitIso := NatIso.ofComponents fromSkeletonToSkeletonIso
   functor_unitIso_comp _ := Iso.inv_hom_id _
 
-set_option backward.simpa.using.reducibleClose false in
 theorem skeleton_skeletal : Skeletal (Skeleton C) := by
   rintro X Y ⟨h⟩
   have : X.out ≈ Y.out := ⟨(fromSkeleton C).mapIso h⟩
-  simpa using Quotient.sound this
+  simpa! using Quotient.sound this
 
 /-- The `skeleton` of `C` given by choice is a skeleton of `C`. -/
 lemma skeleton_isSkeleton : IsSkeletonOf C (Skeleton C) (fromSkeleton C) where

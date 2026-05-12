@@ -24,13 +24,12 @@ open scoped ComplexOrder
 
 namespace Complex
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A version of `convexHull_prod` for `Set.reProdIm`. -/
 lemma convexHull_reProdIm (s t : Set ℝ) :
     convexHull ℝ (s ×ℂ t) = convexHull ℝ s ×ℂ convexHull ℝ t :=
   calc
     convexHull ℝ (equivRealProdLm ⁻¹' (s ×ˢ t)) = equivRealProdLm ⁻¹' convexHull ℝ (s ×ˢ t) := by
-      simpa only [← LinearEquiv.image_symm_eq_preimage]
+      simpa! only [← LinearEquiv.image_symm_eq_preimage]
         using ((equivRealProdLm.symm.toLinearMap).image_convexHull (s ×ˢ t)).symm
     _ = convexHull ℝ s ×ℂ convexHull ℝ t := by rw [convexHull_prod]; rfl
 

@@ -155,7 +155,6 @@ lemma iSup_subcomplex_eq_top :
     rintro ⟨d, s, hs⟩
     exact le_trans (by rfl) (le_iSup _ (N.mk _ hs)))
 
-set_option backward.simpa.using.reducibleClose false in
 lemma subcomplex_le_iff {A B : X.Subcomplex} :
     A ≤ B ↔ ∀ (s : X.N), s.subcomplex ≤ A → s.subcomplex ≤ B := by
   rw [Subcomplex.le_iff_contains_nonDegenerate]
@@ -165,7 +164,7 @@ lemma subcomplex_le_iff {A B : X.Subcomplex} :
       intro hx
       simp only [Subfunctor.ofSection_le_iff, mk_simplex] at hx ⊢
       exact h _ _ hx
-  · simpa using h (N.mk _ x.prop) (by simpa)
+  · simpa! using h (N.mk _ x.prop) (by simpa!)
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

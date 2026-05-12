@@ -168,7 +168,6 @@ theorem rank_le_index_mul_rank [hG : Group.FG G] [FiniteIndex H] :
 variable (G)
 
 open scoped IsMulCommutative in
-set_option backward.simpa.using.reducibleClose false in
 /-- If `G` has `n` commutators `[g₁, g₂]`, then `|G'| ∣ [G : Z(G)] ^ ([G : Z(G)] * n + 1)`,
 where `G'` denotes the commutator of `G`. -/
 theorem card_commutator_dvd_index_center_pow [Finite (commutatorSet G)] :
@@ -199,7 +198,7 @@ theorem card_commutator_dvd_index_center_pow [Finite (commutatorSet G)] :
   -- `Z(G)` is abelian, so `g ∈ Z(G) ∩ G' ≤ G' ≤ ker (transfer : G → Z(G))`
   have := Abelianization.commutator_subset_ker (MonoidHom.transferCenterPow G) g.1.2
   -- `transfer g` is defeq to `g ^ [G : Z(G)]`, so we are done
-  simpa only [MonoidHom.mem_ker, Subtype.ext_iff] using this
+  simpa! only [MonoidHom.mem_ker, Subtype.ext_iff] using this
 
 /-- A bound for the size of the commutator subgroup in terms of the number of commutators. -/
 def cardCommutatorBound (n : ℕ) :=

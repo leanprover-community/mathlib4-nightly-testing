@@ -56,14 +56,13 @@ such that `X` is closed in `U`.
 def Scheme.Hom.coborderRange (f : X ⟶ Y) [IsImmersion f] : Y.Opens :=
   ⟨coborder (Set.range f), f.isLocallyClosed_range.isOpen_coborder⟩
 
-set_option backward.simpa.using.reducibleClose false in
 /--
 The first part of the factorization of an immersion `f : X ⟶ Y` to a closed immersion
 `f.liftCoborder : X ⟶ f.coborderRange` and a dominant open immersion `f.coborderRange.ι`.
 -/
 noncomputable
 def Scheme.Hom.liftCoborder (f : X ⟶ Y) [IsImmersion f] : X ⟶ f.coborderRange :=
-  IsOpenImmersion.lift f.coborderRange.ι f (by simpa using subset_coborder)
+  IsOpenImmersion.lift f.coborderRange.ι f (by simpa! using subset_coborder)
 
 /--
 Any (locally-closed) immersion can be factored into
@@ -87,7 +86,6 @@ lemma liftCoborder_app [IsImmersion f] (U : f.coborderRange.toScheme.Opens) :
   simp [Scheme.Hom.app_eq f.liftCoborder (f.coborderRange.ι.preimage_image_eq U),
     ← Functor.map_comp_assoc, -Functor.map_comp, Subsingleton.elim _ (𝟙 _)]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 instance [IsImmersion f] : IsClosedImmersion f.liftCoborder := by
   have : IsPreimmersion (f.liftCoborder ≫ f.coborderRange.ι) := by
@@ -97,7 +95,7 @@ instance [IsImmersion f] : IsClosedImmersion f.liftCoborder := by
   convert isClosed_preimage_val_coborder
   apply Set.image_injective.mpr f.coborderRange.ι.isEmbedding.injective
   rw [← Set.range_comp, ← TopCat.coe_comp, ← Scheme.Hom.comp_base, f.liftCoborder_ι]
-  exact (Set.image_preimage_eq_of_subset (by simpa using subset_coborder)).symm
+  exact (Set.image_preimage_eq_of_subset (by simpa! using subset_coborder)).symm
 
 instance [IsImmersion f] : IsDominant f.coborderRange.ι := by
   rw [isDominant_iff, DenseRange, Scheme.Opens.range_ι]

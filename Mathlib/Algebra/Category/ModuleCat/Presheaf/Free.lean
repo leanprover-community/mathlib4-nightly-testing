@@ -57,7 +57,6 @@ variable {R}
 
 variable {F : Cᵒᵖ ⥤ Type u} {G : PresheafOfModules.{u} R}
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The morphism of presheaves of modules `freeObj F ⟶ G` corresponding to
 a morphism `F ⟶ G.presheaf ⋙ forget _` of presheaves of types. -/
@@ -67,7 +66,7 @@ noncomputable def freeObjDesc (φ : F ⟶ G.presheaf ⋙ forget _) : freeObj F �
   naturality {X Y} f := by
     dsimp
     ext x
-    simpa using NatTrans.naturality_apply φ f x
+    simpa! using NatTrans.naturality_apply φ f x
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

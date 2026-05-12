@@ -168,13 +168,12 @@ def mkOfLeComp {n} (i j k : Fin (n + 1)) (h₁ : i ≤ j) (h₂ : j ≤ k) :
       | 0, 2, _ => Fin.le_trans h₁ h₂
   }
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The "inert" morphism associated to a subinterval `j ≤ i ≤ j + l` of `Fin (n + 1)`. -/
 def subinterval {n} (j l : ℕ) (hjl : j + l ≤ n) :
     ⦋l⦌ ⟶ ⦋n⦌ :=
   SimplexCategory.mkHom {
     toFun := fun i => ⟨i.1 + j, (by lia)⟩
-    monotone' := fun i i' hii' => by simpa only [Fin.mk_le_mk, add_le_add_iff_right] using hii'
+    monotone' := fun i i' hii' => by simpa! only [Fin.mk_le_mk, add_le_add_iff_right] using hii'
   }
 
 lemma const_subinterval_eq {n} (j l : ℕ) (hjl : j + l ≤ n) (i : Fin (l + 1)) :
@@ -244,14 +243,13 @@ theorem δ_comp_δ {n} {i j : Fin (n + 2)} (H : i ≤ j) :
   rcases k with ⟨k, _⟩
   split_ifs <;> · simp at * <;> lia
 
-set_option backward.simpa.using.reducibleClose false in
 theorem δ_comp_δ' {n} {i : Fin (n + 2)} {j : Fin (n + 3)} (H : i.castSucc < j) :
     δ i ≫ δ j =
       δ (j.pred fun (hj : j = 0) => by simp [hj, Fin.not_lt_zero] at H) ≫
         δ (Fin.castSucc i) := by
   rw [← δ_comp_δ]
   · rw [Fin.succ_pred]
-  · simpa only [Fin.le_iff_val_le_val, ← Nat.lt_succ_iff, Nat.succ_eq_add_one, ← Fin.val_succ,
+  · simpa! only [Fin.le_iff_val_le_val, ← Nat.lt_succ_iff, Nat.succ_eq_add_one, ← Fin.val_succ,
       j.succ_pred, Fin.lt_def] using H
 
 theorem δ_comp_δ'' {n} {i : Fin (n + 3)} {j : Fin (n + 2)} (H : i ≤ Fin.castSucc j) :
@@ -657,9 +655,8 @@ lemma len_eq_of_isIso {x y : SimplexCategory} (f : x ⟶ y) [IsIso f] : x.len = 
 lemma eq_of_isIso {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) [IsIso f] : n = m :=
   len_eq_of_isIso f
 
-set_option backward.simpa.using.reducibleClose false in
 instance {n : ℕ} {i : Fin (n + 1)} : Epi (σ i) := by
-  simpa only [epi_iff_surjective] using Fin.predAbove_surjective i
+  simpa! only [epi_iff_surjective] using Fin.predAbove_surjective i
 
 instance : (forget SimplexCategory).ReflectsIsomorphisms :=
   ⟨fun f hf =>
@@ -711,7 +708,6 @@ instance : Balanced SimplexCategory where
     rw [isIso_iff_of_epi]
     exact le_antisymm (len_le_of_mono f) (len_le_of_epi f)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- An isomorphism in `SimplexCategory` induces an `OrderIso`. -/
 @[simp]
 def orderIsoOfIso {x y : SimplexCategory} (e : x ≅ y) : Fin (x.len + 1) ≃o Fin (y.len + 1) :=
@@ -719,9 +715,9 @@ def orderIsoOfIso {x y : SimplexCategory} (e : x ≅ y) : Fin (x.len + 1) ≃o F
     { toFun := e.hom.toOrderHom
       invFun := e.inv.toOrderHom
       left_inv := fun i => by
-        simpa only using congr_arg (fun φ => (Hom.toOrderHom φ) i) e.hom_inv_id
+        simpa! only using congr_arg (fun φ => (Hom.toOrderHom φ) i) e.hom_inv_id
       right_inv := fun i => by
-        simpa only using congr_arg (fun φ => (Hom.toOrderHom φ) i) e.inv_hom_id }
+        simpa! only using congr_arg (fun φ => (Hom.toOrderHom φ) i) e.inv_hom_id }
     e.hom.toOrderHom.monotone e.inv.toOrderHom.monotone
 
 theorem iso_eq_iso_refl {x : SimplexCategory} (e : x ≅ x) : e = Iso.refl x := by

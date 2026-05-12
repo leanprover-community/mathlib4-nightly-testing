@@ -197,11 +197,10 @@ theorem tendsto_sub_const_cobounded (x : R) :
     Tendsto (· - x) (cobounded R) (cobounded R) := by
   simpa only [sub_eq_add_neg] using tendsto_add_const_cobounded (-x)
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem tendsto_const_sub_cobounded (x : R) :
     Tendsto (x - ·) (cobounded R) (cobounded R) := by
-  simpa only [sub_eq_add_neg] using (tendsto_const_add_cobounded x).comp tendsto_neg_cobounded
+  simpa! only [sub_eq_add_neg] using (tendsto_const_add_cobounded x).comp tendsto_neg_cobounded
 
 end SeminormedAddCommGroup
 

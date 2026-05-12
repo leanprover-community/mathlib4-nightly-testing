@@ -182,7 +182,6 @@ theorem finrank (hirr : Irreducible (cyclotomic n K)) : finrank K L = n.totient 
     (zeta_spec n K L).minpoly_eq_cyclotomic_of_irreducible hirr, natDegree_cyclotomic]
 
 variable {L} in
-set_option backward.simpa.using.reducibleClose false in
 /-- If `L` contains both a primitive `p`-th root of unity and `q`-th root of unity, and
 `Irreducible (cyclotomic (lcm p q) K)` (in particular for `K = ℚ`), then the `finrank K L` is at
 least `(lcm p q).totient`. -/
@@ -200,7 +199,7 @@ theorem _root_.IsPrimitiveRoot.lcm_totient_le_finrank [FiniteDimensional K L] {p
   haveI := IsPrimitiveRoot.adjoin_isCyclotomicExtension K this
   convert Submodule.finrank_le (Subalgebra.toSubmodule (adjoin K {z}))
   rw [show Nat.lcm p q = (k : ℕ) from rfl] at hirr
-  simpa using (IsCyclotomicExtension.finrank (Algebra.adjoin K {z}) hirr).symm
+  simpa! using (IsCyclotomicExtension.finrank (Algebra.adjoin K {z}) hirr).symm
 
 end IsCyclotomicExtension
 

@@ -266,7 +266,6 @@ theorem diagonalSuccIsoTensorTrivial_hom_hom_apply {n : ℕ} (f : Fin (n + 1) �
     <;> simp_all [diagonalSuccIsoTensorTrivial, types_tensorObj_def]
     <;> rfl
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
@@ -283,7 +282,7 @@ theorem diagonalSuccIsoTensorTrivial_inv_hom_apply {n : ℕ} (g : G) (f : Fin n 
     induction x using Fin.cases with
     | zero => simp; rfl
     | succ i =>
-      simpa [diagonalSuccIsoTensorTrivial, types_tensorObj_def, mul_assoc, Fin.partialProd_succ',
+      simpa! [diagonalSuccIsoTensorTrivial, types_tensorObj_def, mul_assoc, Fin.partialProd_succ',
         ofMulAction_V] using congrFun (hn (g * f 0) (Fin.tail f)) i
 
 end

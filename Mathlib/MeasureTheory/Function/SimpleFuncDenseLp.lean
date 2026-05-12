@@ -75,18 +75,16 @@ theorem nnnorm_approxOn_le [OpensMeasurableSpace E] {f : β → E} (hf : Measura
   simp only [edist_nndist, nndist_eq_nnnorm] at this
   exact mod_cast this
 
-set_option backward.simpa.using.reducibleClose false in
 theorem norm_approxOn_y₀_le [OpensMeasurableSpace E] {f : β → E} (hf : Measurable f) {s : Set E}
     {y₀ : E} (h₀ : y₀ ∈ s) [SeparableSpace s] (x : β) (n : ℕ) :
     ‖approxOn f hf s y₀ h₀ n x - y₀‖ ≤ ‖f x - y₀‖ + ‖f x - y₀‖ := by
-  simpa [enorm, edist_eq_enorm_sub, ← ENNReal.coe_add, norm_sub_rev]
+  simpa! [enorm, edist_eq_enorm_sub, ← ENNReal.coe_add, norm_sub_rev]
     using edist_approxOn_y0_le hf h₀ x n
 
-set_option backward.simpa.using.reducibleClose false in
 theorem norm_approxOn_zero_le [OpensMeasurableSpace E] {f : β → E} (hf : Measurable f) {s : Set E}
     (h₀ : (0 : E) ∈ s) [SeparableSpace s] (x : β) (n : ℕ) :
     ‖approxOn f hf s 0 h₀ n x‖ ≤ ‖f x‖ + ‖f x‖ := by
-  simpa [enorm, edist_eq_enorm_sub, ← ENNReal.coe_add, norm_sub_rev]
+  simpa! [enorm, edist_eq_enorm_sub, ← ENNReal.coe_add, norm_sub_rev]
     using edist_approxOn_y0_le hf h₀ x n
 
 theorem tendsto_approxOn_Lp_eLpNorm [OpensMeasurableSpace E] {f : β → E} (hf : Measurable f)
@@ -210,14 +208,13 @@ section Integrable
 variable [MeasurableSpace β]
 variable [MeasurableSpace E] [NormedAddCommGroup E]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem tendsto_approxOn_L1_enorm [OpensMeasurableSpace E] {f : β → E} (hf : Measurable f)
     {s : Set E} {y₀ : E} (h₀ : y₀ ∈ s) [SeparableSpace s] {μ : Measure β}
     (hμ : ∀ᵐ x ∂μ, f x ∈ closure s) (hi : HasFiniteIntegral (fun x => f x - y₀) μ) :
     Tendsto (fun n => ∫⁻ x, ‖approxOn f hf s y₀ h₀ n x - f x‖ₑ ∂μ) atTop (𝓝 0) := by
-  simpa [eLpNorm_one_eq_lintegral_enorm] using
+  simpa! [eLpNorm_one_eq_lintegral_enorm] using
     tendsto_approxOn_Lp_eLpNorm hf h₀ one_ne_top hμ
-      (by simpa [eLpNorm_one_eq_lintegral_enorm] using hi)
+      (by simpa! [eLpNorm_one_eq_lintegral_enorm] using hi)
 
 theorem integrable_approxOn [BorelSpace E] {f : β → E} {μ : Measure β} (fmeas : Measurable f)
     (hf : Integrable f μ) {s : Set E} {y₀ : E} (h₀ : y₀ ∈ s) [SeparableSpace s]
@@ -685,9 +682,8 @@ protected theorem denseRange (hp_ne_top : p ≠ ∞) :
     DenseRange ((↑) : Lp.simpleFunc E p μ → Lp E p μ) :=
   (simpleFunc.isDenseInducing hp_ne_top).dense
 
-set_option backward.simpa.using.reducibleClose false in
 protected theorem dense (hp_ne_top : p ≠ ∞) : Dense (Lp.simpleFunc E p μ : Set (Lp E p μ)) := by
-  simpa only [denseRange_subtype_val] using simpleFunc.denseRange (E := E) (μ := μ) hp_ne_top
+  simpa! only [denseRange_subtype_val] using simpleFunc.denseRange (E := E) (μ := μ) hp_ne_top
 
 variable [NormedRing 𝕜] [Module 𝕜 E] [IsBoundedSMul 𝕜 E]
 variable (α E 𝕜)
@@ -719,16 +715,15 @@ variable [PartialOrder G]
 theorem coeFn_nonneg (f : Lp.simpleFunc G p μ) : (0 : α → G) ≤ᵐ[μ] f ↔ 0 ≤ f := by
   rw [← Subtype.coe_le_coe, Lp.coeFn_nonneg, AddSubmonoid.coe_zero]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem exists_simpleFunc_nonneg_ae_eq {f : Lp.simpleFunc G p μ} (hf : 0 ≤ f) :
     ∃ f' : α →ₛ G, 0 ≤ f' ∧ f =ᵐ[μ] f' := by
   rcases f with ⟨⟨f, hp⟩, g, (rfl : _ = f)⟩
   change 0 ≤ᵐ[μ] g at hf
   classical
   refine ⟨g.map ({x : G | 0 ≤ x}.piecewise id 0), fun x ↦ ?_, (AEEqFun.coeFn_mk _ _).trans ?_⟩
-  · simpa using Set.indicator_apply_nonneg id
+  · simpa! using Set.indicator_apply_nonneg id
   · filter_upwards [hf] with x (hx : 0 ≤ g x)
-    simpa using Set.indicator_of_mem hx id |>.symm
+    simpa! using Set.indicator_of_mem hx id |>.symm
 
 variable (p μ G)
 

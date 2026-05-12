@@ -171,7 +171,6 @@ theorem sSup_of_nat_affine_eq [HereditarilyLindelofSpace E] (hsc : IsClosed s)
       have : s = ∅ := by have := congrFun h𝓕'.2.1 x; simp_all
       grind
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A function `φ : E → ℝ` that is convex and lower-semicontinuous is the supremum of a family of
 of continuous affine linear functions. -/
 theorem univ_sSup_affine_eq (hφc : LowerSemicontinuous φ) (hφcv : ConvexOn ℝ univ φ) :
@@ -186,10 +185,10 @@ theorem univ_sSup_affine_eq (hφc : LowerSemicontinuous φ) (hφcv : ConvexOn �
     ext f
     refine ⟨fun ⟨hp, l, c, hlc⟩ => ⟨f ∘ Subtype.val, ⟨fun x => hp (Subtype.val x), ⟨l, c, ?_⟩⟩, ?_⟩,
       fun ⟨a, ⟨⟨h, ⟨l, c, hlc⟩⟩, hb⟩⟩ => ⟨fun x => ?_, ⟨l, c, ?_⟩⟩⟩
-    · ext x; simpa using congrFun hlc x
+    · ext x; simpa! using congrFun hlc x
     · ext; simp
-    · simpa using hb ▸ h ⟨x, trivial⟩
-    · subst hlc; simpa using hb.symm
+    · simpa! using hb ▸ h ⟨x, trivial⟩
+    · subst hlc; simpa! using hb.symm
   _ = sSup 𝓕 ∘ (Equiv.Set.univ E).symm := by ext x; rw [sSup_image', sSup_eq_iSup']; simp
   _ = φ ∘ Subtype.val ∘ (Equiv.Set.univ E).symm :=
     congrArg (fun g => g ∘ (Equiv.Set.univ E).symm) this

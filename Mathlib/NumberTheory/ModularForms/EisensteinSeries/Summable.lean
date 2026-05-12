@@ -100,13 +100,12 @@ lemma r_lower_bound_on_verticalStrip {A B : ℝ} (h : 0 < B) (hz : z ∈ vertica
   gcongr
   exacts [hz.1, hz.2]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma auxbound1 {c : ℝ} (d : ℝ) (hc : 1 ≤ c ^ 2) : r z ≤ ‖c * (z : ℂ) + d‖ := by
   rcases z with ⟨z, hz⟩
   have H1 : z.im ≤ √((c * z.re + d) ^ 2 + (c * z).im ^ 2) := by
     rw [Real.le_sqrt' hz, im_ofReal_mul, mul_pow]
     exact (le_mul_of_one_le_left (sq_nonneg _) hc).trans <| le_add_of_nonneg_left (sq_nonneg _)
-  simpa only [r, norm_def, normSq_apply, add_re, re_ofReal_mul, coe_re, ← pow_two, add_im, mul_im,
+  simpa! only [r, norm_def, normSq_apply, add_re, re_ofReal_mul, coe_re, ← pow_two, add_im, mul_im,
     coe_im, ofReal_im, zero_mul, add_zero, min_le_iff] using Or.inl H1
 
 lemma auxbound2 (c : ℝ) {d : ℝ} (hd : 1 ≤ d ^ 2) : r z ≤ ‖c * (z : ℂ) + d‖ := by
@@ -248,11 +247,10 @@ lemma linear_left_summable {z : ℂ} (hz : z ≠ 0) (d : ℤ) {k : ℤ} (hk : 2 
   simp only [zpow_natCast, Int.cast_natCast, Real.rpow_natCast, ← inv_pow, ← abs_inv]
   apply (linear_inv_isBigO_left d hz).abs_right.pow
 
-set_option backward.simpa.using.reducibleClose false in
 lemma summable_linear_sub_mul_linear_add (z : ℂ) (c₁ c₂ : ℤ) :
     Summable fun n : ℤ ↦ ((c₁ * z - n) * (c₂ * z + n))⁻¹ := by
   apply summable_inv_of_isBigO_rpow_inv (a := 2) (by norm_cast)
-  simpa [pow_two] using (linear_inv_isBigO_right c₂ z).mul
+  simpa! [pow_two] using (linear_inv_isBigO_right c₂ z).mul
       (linear_inv_isBigO_right c₁ z).comp_neg_int
 
 lemma summable_linear_right_add_one_mul_linear_right (z : ℂ) (c₁ c₂ : ℤ) :
@@ -284,11 +282,10 @@ lemma isLittleO_const_left_of_properSpace_of_discreteTopology
   simpa [isLittleO_const_left, Function.comp_def] using
     .inr <| tendsto_norm_comp_cofinite_atTop_of_isClosedEmbedding IsClosedEmbedding.id
 
-set_option backward.simpa.using.reducibleClose false in
 lemma vec_add_const_isTheta (a b : ℤ) :
     (fun (m : Fin 2 → ℤ) => ‖![m 0 + a, m 1 + b]‖⁻¹) =Θ[cofinite] (fun m => ‖m‖⁻¹) := by
   have (x : Fin 2 → ℤ) : ![x 0 + a, x 1 + b] = x + ![a, b] := List.ofFn_inj.mp rfl
-  simpa only [isTheta_inv, isTheta_norm_left, this] using (IsTheta.add_isLittleO
+  simpa! only [isTheta_inv, isTheta_norm_left, this] using (IsTheta.add_isLittleO
   (by rw [← isTheta_norm_left]) (isLittleO_const_left_of_properSpace_of_discreteTopology ![a, b]))
 
 lemma isBigO_linear_add_const_vec (z : ℍ) (a b : ℤ) :

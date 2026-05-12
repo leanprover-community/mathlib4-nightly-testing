@@ -352,7 +352,6 @@ so that it is definitionally equal to the one coming from the topologies on `E` 
 protected noncomputable def seminorm : Seminorm 𝕜₂ (E →SL[σ₁₂] F) :=
   .ofSMulLE norm opNorm_zero opNorm_add_le opNorm_smul_le
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.privateInPublic true in
 private lemma uniformity_eq_seminorm :
     𝓤 (E →SL[σ₁₂] F) = ⨅ r > 0, 𝓟 {f | ‖-f.1 + f.2‖ < r} := by
@@ -366,7 +365,7 @@ private lemma uniformity_eq_seminorm :
     refine ⟨‖c‖, ContinuousLinearMap.hasBasis_nhds_zero.mem_iff.2
       ⟨(closedBall 0 1, closedBall 0 1), ?_⟩⟩
     suffices ∀ f : E →SL[σ₁₂] F, (∀ x, ‖x‖ ≤ 1 → ‖f x‖ ≤ 1) → ‖f‖ ≤ ‖c‖ by
-      simpa [NormedSpace.isVonNBounded_closedBall, closedBall_mem_nhds, subset_def] using this
+      simpa! [NormedSpace.isVonNBounded_closedBall, closedBall_mem_nhds, subset_def] using this
     intro f hf
     refine opNorm_le_of_shell (f := f) one_pos (norm_nonneg c) hc fun x hcx hx ↦ ?_
     exact (hf x hx.le).trans ((div_le_iff₀' <| one_pos.trans hc).1 hcx)

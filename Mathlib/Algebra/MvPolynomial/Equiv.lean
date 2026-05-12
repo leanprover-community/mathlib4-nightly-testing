@@ -452,7 +452,6 @@ lemma optionEquivLeft_symm_C_C (x : R) :
 lemma optionEquivLeft_symm_X :
     (optionEquivLeft R S₁).symm .X = .X .none := by simp [optionEquivLeft]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The coefficient of `n.some` in the `n none`-th coefficient of `optionEquivLeft R S₁ f`
 equals the coefficient of `n` in `f` -/
 theorem optionEquivLeft_coeff_some_coeff_none
@@ -471,7 +470,7 @@ theorem optionEquivLeft_coeff_some_coeff_none
       intro hj_none hj_some
       apply False.elim (hj _)
       simp only [Finsupp.ext_iff, Option.forall, hj_none, true_and]
-      simpa only [Finsupp.ext_iff] using hj_some
+      simpa! only [Finsupp.ext_iff] using hj_some
   | add p q hp hq => simp only [map_add, Polynomial.coeff_add, coeff_add, hp, hq]
 
 theorem optionEquivLeft_elim_eval (s : S₁ → R) (y : R) (f : MvPolynomial (Option S₁) R) :
@@ -498,7 +497,6 @@ theorem mem_support_coeff_optionEquivLeft {f : MvPolynomial (Option σ) R} {i : 
     m ∈ ((optionEquivLeft R σ f).coeff i).support ↔ m.optionElim i ∈ f.support := by
   simp [← optionEquivLeft_coeff_some_coeff_none]
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma support_optionEquivLeft (p : MvPolynomial (Option σ) R) :
     (optionEquivLeft R σ p).support = Finset.image (fun m => m none) p.support := by
@@ -508,7 +506,7 @@ lemma support_optionEquivLeft (p : MvPolynomial (Option σ) R) :
   · rintro ⟨m, hm⟩
     refine ⟨optionElim i m, ?_, optionElim_apply_none _ _⟩
     rw [← mem_support_coeff_optionEquivLeft]
-    simpa using hm
+    simpa! using hm
   · rintro ⟨m, h, rfl⟩
     refine ⟨some m, ?_⟩
     rwa [← coeff, zero_apply, ← mem_support_iff, mem_support_coeff_optionEquivLeft, optionElim_some]
@@ -632,7 +630,6 @@ theorem finSuccEquiv_X_zero : finSuccEquiv R n (X 0) = Polynomial.X := by simp [
 theorem finSuccEquiv_X_succ {j : Fin n} : finSuccEquiv R n (X j.succ) = Polynomial.C (X j) := by
   simp [finSuccEquiv_apply]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The coefficient of `m` in the `i`-th coefficient of `finSuccEquiv R n f` equals the
     coefficient of `Finsupp.cons i m` in `f`. -/
 theorem finSuccEquiv_coeff_coeff (m : Fin n →₀ ℕ) (f : MvPolynomial (Fin (n + 1)) R) (i : ℕ) :
@@ -645,7 +642,7 @@ theorem finSuccEquiv_coeff_coeff (m : Fin n →₀ ℕ) (f : MvPolynomial (Fin (
       Fin.cases_succ, ← map_prod, ← map_pow, Function.comp_apply]
     rw [← mul_boole, mul_comm (Polynomial.X ^ j 0), Polynomial.coeff_C_mul_X_pow]; congr 1
     obtain rfl | hjmi := eq_or_ne j (m.cons i)
-    · simpa only [cons_zero, cons_succ, if_pos rfl, monomial_eq, C_1, one_mul,
+    · simpa! only [cons_zero, cons_succ, if_pos rfl, monomial_eq, C_1, one_mul,
         Finsupp.prod_pow] using coeff_monomial m m (1 : R)
     · simp only [hjmi, if_false]
       obtain hij | rfl := ne_or_eq i (j 0)
@@ -655,7 +652,7 @@ theorem finSuccEquiv_coeff_coeff (m : Fin n →₀ ℕ) (f : MvPolynomial (Fin (
         rintro rfl
         rw [cons_tail] at hjmi
         contradiction
-      simpa only [monomial_eq, C_1, one_mul, Finsupp.prod_pow, tail_apply, if_neg hmj.symm] using
+      simpa! only [monomial_eq, C_1, one_mul, Finsupp.prod_pow, tail_apply, if_neg hmj.symm] using
         coeff_monomial m j.tail (1 : R)
 
 theorem eval_eq_eval_mv_eval' (s : Fin n → R) (y : R) (f : MvPolynomial (Fin (n + 1)) R) :
@@ -714,7 +711,6 @@ lemma totalDegree_coeff_finSuccEquiv_add_le (f : MvPolynomial (Fin (n + 1)) R) (
   · rw [← mem_support_coeff_finSuccEquiv]
     exact hσ1
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem support_finSuccEquiv (f : MvPolynomial (Fin (n + 1)) R) :
     (finSuccEquiv R n f).support = Finset.image (fun m : Fin (n + 1) →₀ ℕ => m 0) f.support := by
@@ -724,7 +720,7 @@ theorem support_finSuccEquiv (f : MvPolynomial (Fin (n + 1)) R) :
   · rintro ⟨m, hm⟩
     refine ⟨cons i m, ?_, cons_zero _ _⟩
     rw [← mem_support_coeff_finSuccEquiv]
-    simpa using hm
+    simpa! using hm
   · rintro ⟨m, h, rfl⟩
     refine ⟨tail m, ?_⟩
     rwa [← coeff, zero_apply, ← mem_support_iff, mem_support_coeff_finSuccEquiv, cons_tail]

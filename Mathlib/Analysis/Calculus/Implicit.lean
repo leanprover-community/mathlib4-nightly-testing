@@ -411,12 +411,11 @@ theorem eq_implicitFunctionOfComplemented (hf : HasStrictFDerivAt f f' a) (hf' :
       (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker x).snd = x :=
   (implicitFunctionDataOfComplemented f f' hf hf' hker).implicitFunction_apply_image
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem implicitFunctionOfComplemented_apply_image (hf : HasStrictFDerivAt f f' a)
     (hf' : f'.range = ⊤) (hker : f'.ker.ClosedComplemented) :
     hf.implicitFunctionOfComplemented f f' hf' hker (f a) 0 = a := by
-  simpa only [implicitToOpenPartialHomeomorphOfComplemented_self] using
+  simpa! only [implicitToOpenPartialHomeomorphOfComplemented_self] using
       (hf.implicitToOpenPartialHomeomorphOfComplemented f f' hf' hker).left_inv
       (hf.mem_implicitToOpenPartialHomeomorphOfComplemented_source hf' hker)
 

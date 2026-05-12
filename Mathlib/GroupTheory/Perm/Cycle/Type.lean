@@ -720,7 +720,6 @@ theorem IsThreeCycle.nodup_iff_mem_support {g : Perm α} {a : α} (hg3 : g.IsThr
   suffices g.support.card = 3 by grind
   exact hg3.card_support
 
-set_option backward.simpa.using.reducibleClose false in
 theorem IsThreeCycle.eq_swap_mul_swap_iff_mem_support
     {g : Perm α} {a : α} (hg3 : g.IsThreeCycle) :
     g = (swap a (g a)) * (swap (g a) (g (g a))) ↔ a ∈ g.support := by
@@ -729,7 +728,7 @@ theorem IsThreeCycle.eq_swap_mul_swap_iff_mem_support
     rw [mem_support]
     intro hx
     apply hg3.isCycle.ne_one
-    simpa [hx] using hg
+    simpa! [hx] using hg
   intro ha
   have ha' := hg3.support_eq_iff_mem_support.mpr ha
   have ha'' := hg3.nodup_iff_mem_support.mpr ha
@@ -742,11 +741,11 @@ theorem IsThreeCycle.eq_swap_mul_swap_iff_mem_support
       simp
     · rw [swap_apply_left, swap_apply_of_ne_of_ne (by grind) (by grind)]
     · simp only [swap_apply_right]
-      suffices (g ^ 3) a = a by simpa
+      suffices (g ^ 3) a = a by simpa!
       simp [← hg3.orderOf]
   · rw [swap_apply_of_ne_of_ne (x := x) (by grind) (by grind)]
     rw [swap_apply_of_ne_of_ne (x := x) (by grind) (by grind)]
-    simpa [notMem_support] using h
+    simpa! [notMem_support] using h
 
 open Subgroup
 

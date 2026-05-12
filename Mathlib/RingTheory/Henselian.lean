@@ -166,7 +166,6 @@ instance (R : Type*) [CommRing R] [hR : HenselianLocalRing R] :
     exact not_isUnit_zero
 
 -- see Note [lower instance priority]
-set_option backward.simpa.using.reducibleClose false in
 /-- A ring `R` that is `I`-adically complete is Henselian at `I`. -/
 instance (priority := 100) IsAdicComplete.henselianRing (R : Type*) [CommRing R] (I : Ideal R)
     [IsAdicComplete I R] : HenselianRing R I where
@@ -206,7 +205,7 @@ instance (priority := 100) IsAdicComplete.henselianRing (R : Type*) [CommRing R]
       have hfcI : ∀ n, f.eval (c n) ∈ I ^ (n + 1) := by
         intro n
         induction n with
-        | zero => simpa only [Nat.rec_zero, zero_add, pow_one] using h₁
+        | zero => simpa! only [Nat.rec_zero, zero_add, pow_one] using h₁
         | succ n ih => ?_
         rw [← taylor_eval_sub (c n), hc, sub_eq_add_neg, sub_eq_add_neg,
           add_neg_cancel_comm]

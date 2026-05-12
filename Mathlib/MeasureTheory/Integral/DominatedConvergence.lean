@@ -640,7 +640,6 @@ open intervalIntegral
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] {μ : Measure ℝ} {f : ℝ → E}
 
-set_option backward.simpa.using.reducibleClose false in
 theorem continuousWithinAt_Ici_primitive_Ioi {a₀ : ℝ} (hf : IntegrableOn f (Ioi a₀) μ) :
     ContinuousWithinAt (fun b ↦ ∫ x in Ioi b, f x ∂μ) (Ici a₀) a₀ := by
   simp_rw [← integral_indicator measurableSet_Ioi]
@@ -652,7 +651,7 @@ theorem continuousWithinAt_Ici_primitive_Ioi {a₀ : ℝ} (hf : IntegrableOn f (
     refine ae_of_all _ fun x ↦ ?_
     rw [norm_indicator_eq_indicator_norm]
     apply indicator_le_indicator_of_subset (Ioi_subset_Ioi (by grind)) (fun a ↦ norm_nonneg (f a))
-  · simpa [integrable_indicator_iff measurableSet_Ioi] using hf.norm
+  · simpa! [integrable_indicator_iff measurableSet_Ioi] using hf.norm
   · refine ae_of_all _ fun x ↦ ?_
     simp only [indicator_apply, mem_Ioi]
     by_cases hx : a₀ < x <;> apply tendsto_const_nhds.congr'
@@ -676,7 +675,6 @@ theorem continuousOn_Ici_primitive_Ioi [NoAtoms μ] {a₀ : ℝ} (hf : Integrabl
     exact (continuousWithinAt_const.sub h_cwa).congr h_split (h_split a (right_mem_Icc.2 ha))
   · simpa [ha] using (hf.mono_set (Ioi_subset_Ioi ha)).continuousWithinAt_Ici_primitive_Ioi
 
-set_option backward.simpa.using.reducibleClose false in
 theorem continuousWithinAt_Iic_primitive_Iio {a₀ : ℝ} (hf : IntegrableOn f (Iio a₀) μ) :
     ContinuousWithinAt (fun b ↦ ∫ x in Iio b, f x ∂μ) (Iic a₀) a₀ := by
   simp_rw [← integral_indicator measurableSet_Iio]
@@ -688,7 +686,7 @@ theorem continuousWithinAt_Iic_primitive_Iio {a₀ : ℝ} (hf : IntegrableOn f (
     refine ae_of_all _ fun x ↦ ?_
     rw [norm_indicator_eq_indicator_norm]
     apply indicator_le_indicator_of_subset (Iio_subset_Iio (by grind)) (fun a ↦ norm_nonneg (f a))
-  · simpa [integrable_indicator_iff measurableSet_Iio] using hf.norm
+  · simpa! [integrable_indicator_iff measurableSet_Iio] using hf.norm
   · refine ae_of_all _ fun x ↦ ?_
     simp only [indicator_apply, mem_Iio]
     by_cases hx : x < a₀ <;> apply tendsto_const_nhds.congr'

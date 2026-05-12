@@ -266,19 +266,17 @@ section PartialOrder
 
 variable [PartialOrder α] {a b : α}
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem Set.Ici.isAtom_iff {b : Set.Ici a} : IsAtom b ↔ a ⋖ b := by
   rw [← bot_covBy_iff]
   refine (Set.OrdConnected.apply_covBy_apply_iff (OrderEmbedding.subtype fun c => a ≤ c) ?_).symm
-  simpa only [OrderEmbedding.coe_subtype, Subtype.range_coe_subtype] using Set.ordConnected_Ici
+  simpa! only [OrderEmbedding.coe_subtype, Subtype.range_coe_subtype] using Set.ordConnected_Ici
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem Set.Iic.isCoatom_iff {a : Set.Iic b} : IsCoatom a ↔ ↑a ⋖ b := by
   rw [← covBy_top_iff]
   refine (Set.OrdConnected.apply_covBy_apply_iff (OrderEmbedding.subtype fun c => c ≤ b) ?_).symm
-  simpa only [OrderEmbedding.coe_subtype, Subtype.range_coe_subtype] using Set.ordConnected_Iic
+  simpa! only [OrderEmbedding.coe_subtype, Subtype.range_coe_subtype] using Set.ordConnected_Iic
 
 theorem covBy_iff_atom_Ici (h : a ≤ b) : a ⋖ b ↔ IsAtom (⟨b, h⟩ : Set.Ici a) := by simp
 
@@ -456,14 +454,13 @@ instance IsStronglyCoatomic.toIsCoatomic (α : Type*) [PartialOrder α] [OrderTo
     [IsStronglyCoatomic α] : IsCoatomic α :=
   isAtomic_dual_iff_isCoatomic.1 <| IsStronglyAtomic.isAtomic (α := αᵒᵈ)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Set.OrdConnected.isStronglyAtomic [IsStronglyAtomic α] {s : Set α}
     (h : Set.OrdConnected s) : IsStronglyAtomic s where
   exists_covBy_le_of_lt := by
     rintro ⟨c, hc⟩ ⟨d, hd⟩ hcd
     obtain ⟨x, hcx, hxd⟩ := (Subtype.mk_lt_mk.1 hcd).exists_covby_le
     exact ⟨⟨x, h.out' hc hd ⟨hcx.le, hxd⟩⟩,
-      ⟨by simpa using hcx.lt, fun y hy hy' ↦ hcx.2 (by simpa using hy) (by simpa using hy')⟩, hxd⟩
+      ⟨by simpa! using hcx.lt, fun y hy hy' ↦ hcx.2 (by simpa! using hy) (by simpa! using hy')⟩, hxd⟩
 
 theorem Set.OrdConnected.isStronglyCoatomic [IsStronglyCoatomic α] {s : Set α}
     (h : Set.OrdConnected s) : IsStronglyCoatomic s :=

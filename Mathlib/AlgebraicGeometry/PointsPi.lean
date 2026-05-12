@@ -72,7 +72,6 @@ lemma eq_bot_of_comp_quotientMk_eq_sigmaSpec (I : Ideal (Π i, R i))
   simpa [← Category.assoc, Ideal.Quotient.eq_zero_iff_mem.mpr hx] using
     congr((Spec.preimage (Sigma.ι (Spec <| R ·) i ≫ $hf)).hom x).symm
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `V` is a locally closed subscheme of `Spec (Π Rᵢ)` containing `∐ Spec Rᵢ`, then
 `V = Spec (Π Rᵢ)`. -/
 lemma isIso_of_comp_eq_sigmaSpec {V : Scheme}
@@ -81,7 +80,7 @@ lemma isIso_of_comp_eq_sigmaSpec {V : Scheme}
     (hU' : f ≫ g = sigmaSpec R) : IsIso g := by
   have : g.coborderRange = ⊤ := by
     apply eq_top_of_sigmaSpec_subset_of_isCompact (hVU := subset_coborder)
-    · simpa only [← hU'] using Set.range_comp_subset_range f g
+    · simpa! only [← hU'] using Set.range_comp_subset_range f g
     · exact isCompact_range g.continuous
   have : IsClosedImmersion g := by
     have : IsIso g.coborderRange.ι := by rw [this, ← Scheme.topIso_hom]; infer_instance
@@ -101,12 +100,11 @@ noncomputable
 def pointsPi : (Spec (.of <| Π i, R i) ⟶ X) → Π i, Spec (R i) ⟶ X :=
   fun f i ↦ Spec.map (CommRingCat.ofHom (Pi.evalRingHom (R ·) i)) ≫ f
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma pointsPi_injective [QuasiSeparatedSpace X] : Function.Injective (pointsPi R X) := by
   rintro f g e
   have := isIso_of_comp_eq_sigmaSpec R (V := equalizer f g)
-    (equalizer.lift (sigmaSpec R) (by ext1 i; simpa using congr_fun e i))
+    (equalizer.lift (sigmaSpec R) (by ext1 i; simpa! using congr_fun e i))
     (equalizer.ι f g) (by simp)
   rw [← cancel_epi (equalizer.ι f g), equalizer.condition]
 

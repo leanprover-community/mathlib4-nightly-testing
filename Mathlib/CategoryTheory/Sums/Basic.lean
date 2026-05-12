@@ -206,7 +206,6 @@ variable {F G : A ⊕ B ⥤ C}
   (e₁ : Sum.inl_ A B ⋙ F ≅ Sum.inl_ A B ⋙ G)
   (e₂ : Sum.inr_ A B ⋙ F ≅ Sum.inr_ A B ⋙ G)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- A functor out of a sum is uniquely characterized by its precompositions with `inl_` and `inr_`.
 -/
 def sumIsoExt : F ≅ G :=
@@ -216,8 +215,8 @@ def sumIsoExt : F ≅ G :=
     | inr x => e₂.app x)
     (fun {x y} f ↦ by
       cases f
-      · simpa using e₁.hom.naturality _
-      · simpa using e₂.hom.naturality _)
+      · simpa! using e₁.hom.naturality _
+      · simpa! using e₂.hom.naturality _)
 
 @[simp]
 lemma sumIsoExt_hom_app_inl (a : A) : (sumIsoExt e₁ e₂).hom.app (inl a) = e₁.hom.app a := rfl

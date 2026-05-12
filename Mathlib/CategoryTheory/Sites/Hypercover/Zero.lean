@@ -864,12 +864,11 @@ instance (J : Precoverage C) [Small.{w} J] {S : C} (E : ZeroHypercover.{w'} J S)
   use E'.I₀, ZeroHypercover.Small.restrictFun _ ∘ ZeroHypercover.Small.restrictFun _
   exact E'.mem₀
 
-set_option backward.simpa.using.reducibleClose false in
 instance {D : Type*} [Category* D] {F : C ⥤ D} (J : Precoverage D) [Small.{w} J] :
     Small.{w} (J.comap F) where
   zeroHypercoverSmall {X} E := by
     refine ⟨(E.map F le_rfl).restrictIndexOfSmall.I₀, ZeroHypercover.Small.restrictFun _, ?_⟩
-    simpa using (E.map F le_rfl).restrictIndexOfSmall.mem₀
+    simpa! using (E.map F le_rfl).restrictIndexOfSmall.mem₀
 
 lemma Small.inf {J K : Precoverage C} [Small.{w} J]
     (of_le : ∀ ⦃X : C⦄ ⦃R S : Presieve X⦄, R ≤ S → S ∈ K X → R ∈ K X) :

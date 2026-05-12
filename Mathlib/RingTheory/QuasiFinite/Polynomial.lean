@@ -63,7 +63,6 @@ lemma map_under_lt_comap_of_quasiFiniteAt
     (P.under R).map C < P.comap (f : R[X] →+* S) :=
   map_under_lt_comap_of_weaklyQuasiFiniteAt f P
 
-set_option backward.simpa.using.reducibleClose false in
 lemma not_ker_le_map_C_of_surjective_of_weaklyQuasiFiniteAt
     (f : R[X] →ₐ[R] S) (hf : Function.Surjective f)
     (P : Ideal S) [P.IsPrime] [Algebra.WeaklyQuasiFiniteAt R P] :
@@ -74,7 +73,7 @@ lemma not_ker_le_map_C_of_surjective_of_weaklyQuasiFiniteAt
   have H' : (RingHom.ker f).map (mapRingHom (algebraMap R p.ResidueField)) = ⊥ := by
     rw [← le_bot_iff, Ideal.map_le_iff_le_comap]
     intro x hx
-    simpa [Polynomial.ext_iff, Ideal.mem_map_C_iff] using H hx
+    simpa! [Polynomial.ext_iff, Ideal.mem_map_C_iff] using H hx
   let g' : p.ResidueField[X] ≃ₐ[p.ResidueField] p.Fiber S :=
     .trans ((AlgEquiv.quotientBot _ _).symm.trans (Ideal.quotientEquivAlgOfEq _ H'.symm))
       (Polynomial.fiberEquivQuotient f hf _).symm

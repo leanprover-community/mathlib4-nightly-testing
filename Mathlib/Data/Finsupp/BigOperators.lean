@@ -46,11 +46,10 @@ theorem List.support_sum_subset [AddZeroClass M] (l : List (ι →₀ M)) :
     simp only [List.sum_cons]
     exact Finsupp.support_add.trans (Finset.union_subset_union Finset.Subset.rfl IH)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Multiset.support_sum_subset [AddCommMonoid M] (s : Multiset (ι →₀ M)) :
     s.sum.support ⊆ (s.map Finsupp.support).sup := by
   induction s using Quot.inductionOn
-  simpa only [Multiset.quot_mk_to_coe'', Multiset.sum_coe, Multiset.map_coe, Multiset.sup_coe,
+  simpa! only [Multiset.quot_mk_to_coe'', Multiset.sum_coe, Multiset.map_coe, Multiset.sup_coe,
     List.foldr_map] using List.support_sum_subset _
 
 theorem Finset.support_sum_subset [AddCommMonoid M] (s : Finset (ι →₀ M)) :
@@ -66,11 +65,10 @@ theorem List.mem_foldr_sup_support_iff [Zero M] {l : List (ι →₀ M)} {x : ι
     simp only [foldr, Finset.mem_union, Finsupp.mem_support_iff, ne_eq, IH,
       mem_cons, exists_eq_or_imp]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Multiset.mem_sup_map_support_iff [Zero M] {s : Multiset (ι →₀ M)} {x : ι} :
     x ∈ (s.map Finsupp.support).sup ↔ ∃ f ∈ s, x ∈ f.support :=
   Quot.inductionOn s fun _ ↦ by
-    simpa only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.sup_coe, List.foldr_map]
+    simpa! only [Multiset.quot_mk_to_coe'', Multiset.map_coe, Multiset.sup_coe, List.foldr_map]
     using List.mem_foldr_sup_support_iff
 
 theorem Finset.mem_sup_support_iff [Zero M] {s : Finset (ι →₀ M)} {x : ι} :

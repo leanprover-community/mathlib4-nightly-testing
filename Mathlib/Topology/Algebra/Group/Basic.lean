@@ -867,7 +867,6 @@ lemma IsTopologicalGroup.isInducing_iff_nhds_one
   congr 1
   ext; simp
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma IsTopologicalGroup.isOpenMap_iff_nhds_one
     {H : Type*} [Monoid H] [TopologicalSpace H] [ContinuousConstSMul H H]
@@ -875,7 +874,7 @@ lemma IsTopologicalGroup.isOpenMap_iff_nhds_one
     IsOpenMap f ↔ 𝓝 1 ≤ .map f (𝓝 1) := by
   refine ⟨fun H ↦ map_one f ▸ H.nhds_le 1, fun h ↦ IsOpenMap.of_nhds_le fun x ↦ ?_⟩
   have : Filter.map (f x * ·) (𝓝 1) = 𝓝 (f x) := by
-    simpa [-Homeomorph.map_nhds_eq, Units.smul_def] using
+    simpa! [-Homeomorph.map_nhds_eq, Units.smul_def] using
       (Homeomorph.smul ((toUnits x).map (MonoidHomClass.toMonoidHom f))).map_nhds_eq (1 : H)
   rw [← map_mul_left_nhds_one x, Filter.map_map, Function.comp_def, ← this]
   refine (Filter.map_mono h).trans ?_
@@ -966,13 +965,12 @@ theorem IsTopologicalGroup.of_nhds_one {G : Type u} [Group G] [TopologicalSpace 
   rw [← hconj x₀]
   simpa [Function.comp_def] using hleft _
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 theorem IsTopologicalGroup.of_comm_of_nhds_one {G : Type u} [CommGroup G] [TopologicalSpace G]
     (hmul : Tendsto (uncurry ((· * ·) : G → G → G)) (𝓝 1 ×ˢ 𝓝 1) (𝓝 1))
     (hinv : Tendsto (fun x : G => x⁻¹) (𝓝 1) (𝓝 1))
     (hleft : ∀ x₀ : G, 𝓝 x₀ = map (x₀ * ·) (𝓝 1)) : IsTopologicalGroup G :=
-  IsTopologicalGroup.of_nhds_one hmul hinv hleft (by simpa using tendsto_id)
+  IsTopologicalGroup.of_nhds_one hmul hinv hleft (by simpa! using tendsto_id)
 
 variable (G) in
 /-- Any first countable topological group has an antitone neighborhood basis `u : ℕ → Set G` for

@@ -135,10 +135,9 @@ theorem OrdConnected.dual {s : Set α} (hs : OrdConnected s) :
 theorem dual_ordConnected {s : Set α} [OrdConnected s] : OrdConnected (ofDual ⁻¹' s) :=
   .dual ‹OrdConnected s›
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem ordConnected_dual {s : Set α} : OrdConnected (OrderDual.ofDual ⁻¹' s) ↔ OrdConnected s :=
-  ⟨fun h => by simpa only [ordConnected_def] using h.dual, fun h => h.dual⟩
+  ⟨fun h => by simpa! only [ordConnected_def] using h.dual, fun h => h.dual⟩
 
 @[deprecated (since := "2025-10-28")] alias dual_ordConnected_iff := ordConnected_dual
 

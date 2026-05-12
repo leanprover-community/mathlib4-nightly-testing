@@ -323,7 +323,6 @@ position, i.e. bounds for the term `|v - (GenContFract.of v).convs n|`.
 -/
 
 
-set_option backward.simpa.using.reducibleClose false in
 /-- This lemma follows from the finite correctness proof, the determinant equality, and
 by simplifying the difference. -/
 theorem sub_convs_eq {ifp : IntFractPair K}
@@ -340,9 +339,9 @@ theorem sub_convs_eq {ifp : IntFractPair K}
     v = GenContFract.compExactValue pred_conts conts ifp.fr :=
     compExactValue_correctness_of_stream_eq_some stream_nth_eq
   obtain (ifp_fr_eq_zero | ifp_fr_ne_zero) := eq_or_ne ifp.fr 0
-  · suffices v - g.convs n = 0 by simpa [ifp_fr_eq_zero]
+  · suffices v - g.convs n = 0 by simpa! [ifp_fr_eq_zero]
     replace g_finite_correctness : v = g.convs n := by
-      simpa [GenContFract.compExactValue, ifp_fr_eq_zero] using g_finite_correctness
+      simpa! [GenContFract.compExactValue, ifp_fr_eq_zero] using g_finite_correctness
     exact sub_eq_zero.2 g_finite_correctness
   · -- more shorthand notation
     let A := conts.a
@@ -350,10 +349,10 @@ theorem sub_convs_eq {ifp : IntFractPair K}
     let pA := pred_conts.a
     let pB := pred_conts.b
     -- first, let's simplify the goal as `ifp.fr ≠ 0`
-    suffices v - A / B = (-1) ^ n / (B * (ifp.fr⁻¹ * B + pB)) by simpa [ifp_fr_ne_zero]
+    suffices v - A / B = (-1) ^ n / (B * (ifp.fr⁻¹ * B + pB)) by simpa! [ifp_fr_ne_zero]
     -- now we can unfold `g.compExactValue` to derive the following equality for `v`
     replace g_finite_correctness : v = (pA + ifp.fr⁻¹ * A) / (pB + ifp.fr⁻¹ * B) := by
-      simpa [GenContFract.compExactValue, ifp_fr_ne_zero, nextConts, nextNum, nextDen, add_comm]
+      simpa! [GenContFract.compExactValue, ifp_fr_ne_zero, nextConts, nextNum, nextDen, add_comm]
         using g_finite_correctness
     -- let's rewrite this equality for `v` in our goal
     suffices

@@ -260,7 +260,6 @@ theorem integrableOn_image_iff_integrableOn_deriv_smul_of_monotoneOn (hs : Measu
     ContinuousLinearMap.one_apply, smul_eq_mul, one_mul, F']
   rw [abs_of_nonneg (deriv_c x hx)]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Change of variable formula for differentiable functions: if a real function `f` is
 monotone and differentiable on a measurable set `s`, then the Bochner integral of a function
 `g : ℝ → F` on `f '' s` coincides with the integral of `(f' x) • g ∘ f` on `s` . -/
@@ -269,7 +268,7 @@ theorem integral_image_eq_integral_deriv_smul_of_monotoneOn (hs : MeasurableSet 
     ∫ x in f '' s, g x = ∫ x in s, f' x • g (f x) := by
   by_cases H : IntegrableOn g (f '' s); swap
   · rw [integral_undef H, integral_undef]
-    simpa [integrableOn_image_iff_integrableOn_deriv_smul_of_monotoneOn hs hf' hf] using H
+    simpa! [integrableOn_image_iff_integrableOn_deriv_smul_of_monotoneOn hs hf' hf] using H
   have H' : IntegrableOn (fun x ↦ (f' x) • g (f x)) s :=
     (integrableOn_image_iff_integrableOn_deriv_smul_of_monotoneOn hs hf' hf g).1 H
   rcases exists_decomposition_of_monotoneOn_hasDerivWithinAt hs hf hf' with

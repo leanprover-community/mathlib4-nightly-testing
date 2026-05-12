@@ -255,7 +255,6 @@ section
 
 variable {F : 𝕜 → α → E} {x₀ : 𝕜} {s : Set 𝕜}
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Derivative under integral of `x ↦ ∫ F x a` at a given point `x₀ : 𝕜`, `𝕜 = ℝ` or `𝕜 = ℂ`,
 assuming `F x₀` is integrable, `x ↦ F x a` is locally Lipschitz on a neighborhood of `x₀` for ae `a`
 (with a neighborhood independent of `a`) with integrable Lipschitz bound, and `F x` is
@@ -275,12 +274,12 @@ theorem hasDerivAt_integral_of_dominated_loc_of_lip {F' : α → E} (hs : s ∈ 
     hs hF_meas hF_int hm h_lipsch bound_integrable h_diff
   replace hF'_int : Integrable F' μ := by
     rw [← integrable_norm_iff hm] at hF'_int
-    simpa [L, (· ∘ ·), integrable_norm_iff hF'_meas] using hF'_int
+    simpa! [L, (· ∘ ·), integrable_norm_iff hF'_meas] using hF'_int
   refine ⟨hF'_int, ?_⟩
   by_cases hE : CompleteSpace E; swap
-  · simpa [integral, hE] using hasDerivAt_const x₀ 0
+  · simpa! [integral, hE] using hasDerivAt_const x₀ 0
   simp_rw [hasDerivAt_iff_hasFDerivAt] at h_diff ⊢
-  simpa only [(· ∘ ·), ContinuousLinearMap.integral_comp_comm _ hF'_int] using key
+  simpa! only [(· ∘ ·), ContinuousLinearMap.integral_comp_comm _ hF'_int] using key
 
 /-- Derivative under integral of `x ↦ ∫ F x a` at a given point `x₀ : ℝ`, assuming
 `F x₀` is integrable, `x ↦ F x a` is differentiable on an interval around `x₀` for ae `a`

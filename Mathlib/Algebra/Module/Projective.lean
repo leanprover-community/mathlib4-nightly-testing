@@ -175,7 +175,6 @@ theorem Projective.of_split [Module.Projective R M]
   rw [LinearMap.comp_apply, ← LinearMap.comp_apply, hg,
     ← LinearMap.comp_apply, H, LinearMap.id_apply]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Projective.of_equiv {R S} [Semiring R] [Semiring S] {M N}
     [AddCommMonoid M] [AddCommMonoid N] [Module R M] [Module S N]
     {σ : R →+* S} {σ' : S →+* R} [RingHomInvPair σ σ'] [RingHomInvPair σ' σ]
@@ -189,7 +188,7 @@ theorem Projective.of_equiv {R S} [Semiring R] [Semiring S] {M N}
     map_smul' := fun r v ↦ by ext i; simp [e₁, e₂.symm.map_smulₛₗ] }
   refine ⟨⟨g, fun x ↦ ?_⟩⟩
   replace hf := congr(e₂ $(hf (e₂.symm x)))
-  simpa [linearCombination_apply, sum_mapRange_index, g, map_finsuppSum, e₂.map_smulₛₗ] using hf
+  simpa! [linearCombination_apply, sum_mapRange_index, g, map_finsuppSum, e₂.map_smulₛₗ] using hf
 
 theorem Projective.of_equiv' [Module.Projective R M]
     (e : M ≃ₗ[R] P) : Module.Projective R P :=

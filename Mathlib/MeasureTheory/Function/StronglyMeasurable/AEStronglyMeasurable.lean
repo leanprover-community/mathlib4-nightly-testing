@@ -669,7 +669,6 @@ theorem _root_.exists_stronglyMeasurable_limit_of_tendsto_ae [PseudoMetrizableSp
   filter_upwards [hg, Hg.ae_eq_mk] with x hx h'x
   rwa [h'x] at hx
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `f` is almost everywhere strongly measurable and its range is almost everywhere contained
 in a nonempty measurable set `s`, then there is a strongly measurable representative `g` of `f`
 whose range is contained in `s`. -/
@@ -684,11 +683,11 @@ lemma exists_stronglyMeasurable_range_subset {α β : Type*}
   case meas => exact hf'.piecewise (hf'.measurable hs) stronglyMeasurable_const
   case subset =>
     rw [← Set.range_subset_iff]
-    simpa [Set.range_piecewise] using fun _ _ ↦ h_nonempty.some_mem
+    simpa! [Set.range_piecewise] using fun _ _ ↦ h_nonempty.some_mem
   case ae_eq =>
     apply hff'.trans
     filter_upwards [h_mem, hff'] with x hx hx'
-    exact Eq.symm <| (f' ⁻¹' s).piecewise_eq_of_mem f' _ (by simpa [hx'] using hx)
+    exact Eq.symm <| (f' ⁻¹' s).piecewise_eq_of_mem f' _ (by simpa! [hx'] using hx)
 
 theorem piecewise {s : Set α} [DecidablePred (· ∈ s)]
     (hs : MeasurableSet s) (hf : AEStronglyMeasurable f (μ.restrict s))

@@ -150,9 +150,8 @@ lemma linearIndepOn_isGroupLikeElem : LinearIndepOn R id {a : A | IsGroupLikeEle
   -- We are now done, since `d • a = ∑ x ∈ s, c x • x = 0`
   simp_all [ha.ne_zero, eq_comm]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Group-like elements over a domain are linearly independent. -/
 lemma linearIndep_groupLikeVal : LinearIndependent R (GroupLike.val (R := R) (A := A)) := by
-  simpa using (linearIndependent_equiv GroupLike.valEquiv).2 linearIndepOn_isGroupLikeElem
+  simpa! using (linearIndependent_equiv GroupLike.valEquiv).2 linearIndepOn_isGroupLikeElem
 
 end CommRing

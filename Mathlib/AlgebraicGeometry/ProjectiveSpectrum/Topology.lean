@@ -133,12 +133,11 @@ theorem gc_set :
   have ideal_gc : GaloisConnection Ideal.span _ := (Submodule.gi A _).gc
   simpa [zeroLocus_span, Function.comp_def] using GaloisConnection.compose ideal_gc (gc_ideal 𝒜)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem gc_homogeneousIdeal :
     @GaloisConnection (HomogeneousIdeal 𝒜) (Set (ProjectiveSpectrum 𝒜))ᵒᵈ _ _
       (fun I => zeroLocus 𝒜 I) fun t => vanishingIdeal t :=
   fun I t => by
-  simpa [show I.toIdeal ≤ (vanishingIdeal t).toIdeal ↔ I ≤ vanishingIdeal t from Iff.rfl] using
+  simpa! [show I.toIdeal ≤ (vanishingIdeal t).toIdeal ↔ I ≤ vanishingIdeal t from Iff.rfl] using
     subset_zeroLocus_iff_le_vanishingIdeal t I.toIdeal
 
 theorem subset_zeroLocus_iff_subset_vanishingIdeal (t : Set (ProjectiveSpectrum 𝒜)) (s : Set A) :
@@ -186,10 +185,9 @@ theorem zeroLocus_singleton_zero : zeroLocus 𝒜 ({0} : Set A) = Set.univ :=
 theorem zeroLocus_empty : zeroLocus 𝒜 (∅ : Set A) = Set.univ :=
   (gc_set 𝒜).l_bot
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp]
 theorem vanishingIdeal_univ : vanishingIdeal (∅ : Set (ProjectiveSpectrum 𝒜)) = ⊤ := by
-  simpa using (gc_ideal _).u_top
+  simpa! using (gc_ideal _).u_top
 
 theorem zeroLocus_empty_of_one_mem {s : Set A} (h : (1 : A) ∈ s) : zeroLocus 𝒜 s = ∅ :=
   Set.eq_empty_iff_forall_notMem.mpr fun x hx =>

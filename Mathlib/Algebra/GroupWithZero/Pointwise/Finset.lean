@@ -51,13 +51,11 @@ variable [DecidableEq α] [MulZeroClass α] {s : Finset α}
 lemma mul_zero_subset (s : Finset α) : s * 0 ⊆ 0 := by simp [subset_iff, mem_mul]
 lemma zero_mul_subset (s : Finset α) : 0 * s ⊆ 0 := by simp [subset_iff, mem_mul]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.mul_zero (hs : s.Nonempty) : s * 0 = 0 :=
-  s.mul_zero_subset.antisymm <| by simpa [mem_mul] using hs
+  s.mul_zero_subset.antisymm <| by simpa! [mem_mul] using hs
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.zero_mul (hs : s.Nonempty) : 0 * s = 0 :=
-  s.zero_mul_subset.antisymm <| by simpa [mem_mul] using hs
+  s.zero_mul_subset.antisymm <| by simpa! [mem_mul] using hs
 
 end MulZeroClass
 
@@ -68,13 +66,11 @@ lemma div_zero_subset (s : Finset α) : s / 0 ⊆ 0 := by simp [subset_iff, mem_
 
 lemma zero_div_subset (s : Finset α) : 0 / s ⊆ 0 := by simp [subset_iff, mem_div]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.div_zero (hs : s.Nonempty) : s / 0 = 0 :=
-  s.div_zero_subset.antisymm <| by simpa [mem_div] using hs
+  s.div_zero_subset.antisymm <| by simpa! [mem_div] using hs
 
-set_option backward.simpa.using.reducibleClose false in
 lemma Nonempty.zero_div (hs : s.Nonempty) : 0 / s = 0 :=
-  s.zero_div_subset.antisymm <| by simpa [mem_div] using hs
+  s.zero_div_subset.antisymm <| by simpa! [mem_div] using hs
 
 @[simp] protected lemma inv_zero : (0 : Finset α)⁻¹ = 0 := by ext; simp
 

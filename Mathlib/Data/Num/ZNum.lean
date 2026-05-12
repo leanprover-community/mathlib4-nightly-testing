@@ -274,13 +274,12 @@ namespace ZNum
 
 variable {α : Type*}
 
-set_option backward.simpa.using.reducibleClose false in
 @[simp, norm_cast]
 theorem cast_add [AddGroupWithOne α] : ∀ m n, ((m + n : ZNum) : α) = m + n
   | 0, a => by cases a <;> exact (_root_.zero_add _).symm
   | b, 0 => by cases b <;> exact (_root_.add_zero _).symm
   | pos _, pos _ => PosNum.cast_add _ _
-  | pos a, neg b => by simpa only [sub_eq_add_neg] using PosNum.cast_sub' (α := α) _ _
+  | pos a, neg b => by simpa! only [sub_eq_add_neg] using PosNum.cast_sub' (α := α) _ _
   | neg a, pos b =>
     have : (↑b + -↑a : α) = -↑a + ↑b := by
       rw [← PosNum.cast_to_int a, ← PosNum.cast_to_int b, ← Int.cast_neg, ← Int.cast_add (-a)]
@@ -323,10 +322,9 @@ theorem of_to_int' : ∀ n : ZNum, ZNum.ofInt' n = n
 theorem to_int_inj {m n : ZNum} : (m : ℤ) = n ↔ m = n :=
   ⟨fun h => Function.LeftInverse.injective of_to_int' h, congr_arg _⟩
 
-set_option backward.simpa.using.reducibleClose false in
 theorem cmp_to_int : ∀ m n, (Ordering.casesOn (cmp m n) ((m : ℤ) < n) (m = n) ((n : ℤ) < m) : Prop)
   | 0, 0 => rfl
-  | pos a, pos b => by simpa using PosNum.cmp_to_nat a b
+  | pos a, pos b => by simpa! using PosNum.cmp_to_nat a b
   | neg a, neg b => by
     have := PosNum.cmp_to_nat b a; revert this; dsimp [cmp]
     cases PosNum.cmp b a <;> [simp; simp +contextual; simp]

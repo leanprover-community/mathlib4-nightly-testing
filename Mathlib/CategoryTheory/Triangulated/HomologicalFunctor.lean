@@ -127,7 +127,6 @@ instance : F.homologicalKernel.IsTriangulated where
 
 end
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.defeqAttrib.useBackward true in
 noncomputable instance (priority := 100) [F.IsHomological] :
     PreservesLimitsOfShape (Discrete WalkingPair) F := by
@@ -141,7 +140,7 @@ noncomputable instance (priority := 100) [F.IsHomological] :
     let S := (ShortComplex.mk _ _ (biprod.inl_snd (X := X₁) (Y := X₂))).map F
     have : Mono S.f := by dsimp [S]; infer_instance
     have ex : S.Exact := F.map_distinguished_exact _ (binaryBiproductTriangle_distinguished X₁ X₂)
-    obtain ⟨g, rfl⟩ := ex.lift' f (by simpa using hf =≫ biprod.snd)
+    obtain ⟨g, rfl⟩ := ex.lift' f (by simpa! using hf =≫ biprod.snd)
     dsimp [S] at hf ⊢
     replace hf := hf =≫ biprod.fst
     simp only [assoc, biprodComparison_fst, zero_comp, ← F.map_comp, biprod.inl_fst,

@@ -38,7 +38,6 @@ open Algebra
 variable {R S : Type*} [CommSemiring R] [CommSemiring S] [Algebra R S]
 variable (S' : Subalgebra R S)
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Suppose we are given `∑ i, lᵢ * sᵢ = 1` ∈ `S`, and `S'` a subalgebra of `S` that contains
 `lᵢ` and `sᵢ`. To check that an `x : S` falls in `S'`, we only need to show that
 `sᵢ ^ n • x ∈ S'` for some `n` for each `sᵢ`. -/
@@ -55,7 +54,7 @@ theorem mem_of_finsetSum_eq_one_of_pow_smul_mem
   have e' : ∑ i ∈ ι', l' i * s' i = 1 := by
     ext
     change S'.subtype (∑ i ∈ ι', l' i * s' i) = 1
-    simpa only [map_sum, map_mul] using e
+    simpa! only [map_sum, map_mul] using e
   have : Ideal.span (s' '' ι') = ⊤ := by
     rw [Ideal.eq_top_iff_one, ← e']
     apply sum_mem

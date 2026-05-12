@@ -241,7 +241,6 @@ theorem conj_cong_is_cong (g : ConjAct SL(2, ℤ)) (Γ : Subgroup SL(2, ℤ))
   rw [← Gamma_cong_eq_self N g, Subgroup.pointwise_smul_le_pointwise_smul_iff]
   exact HN
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- For any `g ∈ GL(2, ℚ)` and `M ≠ 0`, there exists `N` such that `g x g⁻¹ ∈ Γ(M)` for all
 `x ∈ Γ(N)`. -/
@@ -261,7 +260,7 @@ theorem exists_Gamma_le_conj (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
   obtain ⟨k, hk⟩ : ∃ k, y = 1 + (a₁ * a₂ * M) • k := by
     replace hy' : y.map (Int.cast : ℤ → ZMod (a₁ * a₂ * M)) = 1 := by
       rw [CongruenceSubgroup.Gamma_mem', Subtype.ext_iff] at hy'
-      simpa using hy'
+      simpa! using hy'
     use Matrix.of fun i j ↦ (y - 1) i j / (a₁ * a₂ * M)
     rw [← sub_eq_iff_eq_add']
     ext i j
@@ -269,7 +268,7 @@ theorem exists_Gamma_le_conj (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
     refine (Int.mul_ediv_cancel_of_dvd ?_).symm
     rw [← Matrix.map_one Int.cast (by simp) (by simp), ← sub_eq_zero,
       ← Matrix.map_sub _ (by simp)] at hy'
-    simpa only [Matrix.zero_apply, Matrix.map_apply, ZMod.intCast_zmod_eq_zero_iff_dvd,
+    simpa! only [Matrix.zero_apply, Matrix.map_apply, ZMod.intCast_zmod_eq_zero_iff_dvd,
       Nat.cast_mul] using congr_fun₂ hy' i j
   -- use this `k` to cook up a new integer matrix, which we will show comes from `SL(2, ℤ)`
   let z := 1 + M • (A₁.num * k * A₂.num)
@@ -287,7 +286,7 @@ theorem exists_Gamma_le_conj (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
     have := congr_arg Matrix.det hz_coe
     simp_rw [Matrix.det_mul, ← Int.cast_det] at this
     rwa [mul_right_comm, ← Matrix.det_mul, hA₁₂, Matrix.det_one, one_mul, hy, Int.cast_inj] at this
-  refine ⟨⟨z, hz_det⟩, ?_, by simpa only [Subtype.ext_iff, Subgroup.coe_mul, Units.ext_iff,
+  refine ⟨⟨z, hz_det⟩, ?_, by simpa! only [Subtype.ext_iff, Subgroup.coe_mul, Units.ext_iff,
     Units.val_mul] using hz_coe⟩
   rw [SetLike.mem_coe, CongruenceSubgroup.Gamma_mem', Subtype.ext_iff]
   ext i j
@@ -295,7 +294,6 @@ theorem exists_Gamma_le_conj (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
     add_apply, map_apply, coe_one, add_eq_left, Matrix.smul_apply, nsmul_eq_mul, Int.cast_mul,
     Int.cast_natCast, ZMod.natCast_self M, zero_mul]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- For any `g ∈ GL(2, ℚ)` and `M ≠ 0`, there exists `N` such that `g Γ(N) g⁻¹ ≤ Γ(M)`. -/
 theorem exists_Gamma_le_conj' (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
     ∃ N ≠ 0, (toConjAct <| g.map (Rat.castHom ℝ)) • (Gamma N).map (mapGL ℝ)
@@ -307,11 +305,10 @@ theorem exists_Gamma_le_conj' (g : GL (Fin 2) ℚ) (M : ℕ) [NeZero M] :
   obtain ⟨x, hx, rfl⟩ := hy
   obtain ⟨z, hz, hz'⟩ := h x hx
   use z, hz
-  simpa only [Subtype.ext_iff, Units.ext_iff, map_mul] using
+  simpa! only [Subtype.ext_iff, Units.ext_iff, map_mul] using
     congr_arg (GeneralLinearGroup.map (Rat.castHom ℝ)) hz'
 
 open Subgroup in
-set_option backward.simpa.using.reducibleClose false in
 /-- If `Γ` has finite index in `SL(2, ℤ)`, then so does `g⁻¹ Γ g ∩ SL(2, ℤ)` for any
 `g ∈ GL(2, ℚ)`. -/
 lemma finiteIndex_conjGL (g : GL (Fin 2) ℚ) : (conjGL ⊤ (g.map <| Rat.castHom ℝ)).FiniteIndex := by
@@ -323,9 +320,9 @@ lemma finiteIndex_conjGL (g : GL (Fin 2) ℚ) : (conjGL ⊤ (g.map <| Rat.castHo
   rw [Gamma_one_top, ← MonoidHom.range_eq_map] at hN'
   suffices Γ(N) ≤ (t • 𝒮ℒ ⊓ 𝒮ℒ).comap (mapGL ℝ) by
     haveI _ : NeZero N := ⟨hN⟩
-    simpa only [index_comap] using (finiteIndex_of_le this).index_ne_zero
+    simpa! only [index_comap] using (finiteIndex_of_le this).index_ne_zero
   intro k hk
-  simpa [mem_pointwise_smul_iff_inv_smul_mem] using
+  simpa! [mem_pointwise_smul_iff_inv_smul_mem] using
     hN' <| smul_mem_pointwise_smul _ _ _ ⟨k, hk, rfl⟩
 
 /-- Conjugates of `SL(2, ℤ)` by `GL(2, ℚ)` are arithmetic subgroups. -/

@@ -433,7 +433,6 @@ lemma MonotoneOn.tendsto_nhdsWithin_Ioo_right {α β : Type*} [LinearOrder α] [
     filter_upwards [Ioo_mem_nhdsGT xz] with w hw
     exact (Mf ⟨hw.1, hw.2.trans zy⟩ ⟨xz, zy⟩ hw.2.le).trans_lt zm
 
-set_option backward.simpa.using.reducibleClose false in
 lemma MonotoneOn.tendsto_nhdsLT {α β : Type*} [LinearOrder α] [TopologicalSpace α] [OrderTopology α]
     [ConditionallyCompleteLinearOrder β] [TopologicalSpace β] [OrderTopology β] {f : α → β} {x : α}
     (Mf : MonotoneOn f (Iio x)) (h_bdd : BddAbove (f '' Iio x)) :
@@ -441,7 +440,7 @@ lemma MonotoneOn.tendsto_nhdsLT {α β : Type*} [LinearOrder α] [TopologicalSpa
   rcases eq_empty_or_nonempty (Iio x) with (h | h); · simp [h]
   refine tendsto_order.2 ⟨fun l hl => ?_, fun m hm => ?_⟩
   · obtain ⟨z, zx, lz⟩ : ∃ a : α, a < x ∧ l < f a := by
-      simpa only [mem_image, exists_prop, exists_exists_and_eq_and] using
+      simpa! only [mem_image, exists_prop, exists_exists_and_eq_and] using
         exists_lt_of_lt_csSup (h.image _) hl
     filter_upwards [Ioo_mem_nhdsLT zx] with y hy using lz.trans_le (Mf zx hy.2 hy.1.le)
   · refine mem_of_superset self_mem_nhdsWithin fun y hy => lt_of_le_of_lt ?_ hm

@@ -114,10 +114,9 @@ theorem algebraicIndependent_image {ι} {s : Set ι} {f : ι → A} (hf : Set.In
     (AlgebraicIndependent R fun x : s => f x) ↔ AlgebraicIndependent R fun x : f '' s => (x : A) :=
   algebraicIndependent_equiv' (Equiv.Set.imageOfInjOn _ _ hf) rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma AlgebraicIndepOn.mono {s t : Set ι} (H : AlgebraicIndepOn R x t) (hst : s ⊆ t) :
     AlgebraicIndepOn R x s := by
-  simpa [Function.comp] using H.comp (Set.inclusion hst) (Set.inclusion_injective hst)
+  simpa! [Function.comp] using H.comp (Set.inclusion hst) (Set.inclusion_injective hst)
 
 @[simp]
 lemma AlgebraicIndepOn.univ : AlgebraicIndepOn R x .univ ↔ AlgebraicIndependent R x :=

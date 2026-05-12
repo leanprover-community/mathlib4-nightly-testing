@@ -725,7 +725,6 @@ theorem toZModPow_eq_iff_ext {R : Type*} [NonAssocSemiring R] {g g' : R →+* �
   · rintro rfl _
     rfl
 
-set_option backward.simpa.using.reducibleClose false in
 lemma isCauSeq_padicNorm_of_pow_dvd_sub
     (f : ℕ → ℤ) (p : ℕ) [Fact p.Prime] (hi : ∀ i, (p : ℤ) ^ i ∣ f (i + 1) - f i) :
     IsCauSeq (padicNorm p) (f ·) := by
@@ -739,7 +738,7 @@ lemma isCauSeq_padicNorm_of_pow_dvd_sub
   | zero => simp
   | succ n IH =>
     have : (↑(p ^ k) : ℤ) ∣ ↑p ^ (k + n) := ⟨p ^ n, by simp [pow_add]⟩
-    simpa using (this.trans (hi _)).add IH
+    simpa! using (this.trans (hi _)).add IH
 
 lemma toZModPow_ofIntSeq_of_pow_dvd_sub
     (f : ℕ → ℤ) (p : ℕ) [Fact p.Prime] (hi : ∀ i, (p : ℤ) ^ i ∣ f (i + 1) - f i) (n : ℕ) :

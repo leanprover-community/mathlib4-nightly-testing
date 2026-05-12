@@ -352,7 +352,6 @@ noncomputable def PIsoUnopOpP' : S.P ≅ Opposite.unop S.op.P' := pullbackIsoUno
 /-- The duality isomorphism `S.P' ≅ Opposite.unop S.op.P`. -/
 noncomputable def P'IsoUnopOpP : S.P' ≅ Opposite.unop S.op.P := pushoutIsoUnopPullback _ _
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 lemma op_δ : S.op.δ = S.δ.op := Quiver.Hom.unop_inj (by
   rw [Quiver.Hom.unop_op, ← cancel_mono (pushout.inr _ _ : _ ⟶ S.P'),
@@ -362,7 +361,7 @@ lemma op_δ : S.op.δ = S.δ.op := Quiver.Hom.unop_inj (by
     pushoutIsoUnopPullback_inr_hom, pullbackIsoUnopPushout_inv_snd_assoc,
     pushoutIsoUnopPullback_inl_hom, pullbackIsoUnopPushout_inv_fst_assoc]
   apply Quiver.Hom.op_inj
-  simpa only [op_comp, Quiver.Hom.op_unop, assoc] using S.op.snd_δ_inr)
+  simpa! only [op_comp, Quiver.Hom.op_unop, assoc] using S.op.snd_δ_inr)
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The duality isomorphism `S.L₂'.op ≅ S.op.L₁'`. -/

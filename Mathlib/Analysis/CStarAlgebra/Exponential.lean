@@ -52,11 +52,10 @@ lemma selfAdjoint.continuous_expUnitary : Continuous (expUnitary : selfAdjoint A
   let +nondep : NormedAlgebra ℚ A := NormedAlgebra.restrictScalars ℚ ℂ A
   fun_prop
 
-set_option backward.simpa.using.reducibleClose false in
 theorem Commute.expUnitary_add {a b : selfAdjoint A} (h : Commute (a : A) (b : A)) :
     expUnitary (a + b) = expUnitary a * expUnitary b := by
   let +nondep : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
-  simpa only [Subtype.ext_iff, expUnitary_coe, AddSubgroup.coe_add, smul_add] using
+  simpa! only [Subtype.ext_iff, expUnitary_coe, AddSubgroup.coe_add, smul_add] using
     exp_add_of_commute ((h.smul_left I).smul_right I)
 
 theorem Commute.expUnitary {a b : selfAdjoint A} (h : Commute (a : A) (b : A)) :

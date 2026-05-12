@@ -174,11 +174,10 @@ theorem colimit_mul_mk_eq (x y : Σ j, F.obj j) (k : J) (f : x.1 ⟶ k) (g : y.1
   dsimp
   simp_rw [map_mul, ← ConcreteCategory.comp_apply, ← F.map_comp, h₁, h₂]
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma colimit_mul_mk_eq' {j : J} (x y : F.obj j) :
     M.mk.{v, u} F ⟨j, x⟩ * M.mk.{v, u} F ⟨j, y⟩ = M.mk.{v, u} F ⟨j, x * y⟩ := by
-  simpa using colimit_mul_mk_eq F ⟨j, x⟩ ⟨j, y⟩ j (𝟙 _) (𝟙 _)
+  simpa! using colimit_mul_mk_eq F ⟨j, x⟩ ⟨j, y⟩ j (𝟙 _) (𝟙 _)
 
 @[to_additive]
 noncomputable instance colimitMulOneClass : MulOneClass (M.{v, u} F) :=

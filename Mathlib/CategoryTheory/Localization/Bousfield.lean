@@ -79,20 +79,18 @@ lemma isoClosure_isLocal : P.isoClosure.isLocal = P.isLocal := by
       obtain ⟨a, h⟩ := (hf _ hZ').2 (g ≫ e.hom)
       exact ⟨a ≫ e.inv, by simp only [reassoc_of% h, e.hom_inv_id, comp_id]⟩
 
-set_option backward.simpa.using.reducibleClose false in
 instance : P.isLocal.IsMultiplicative where
-  id_mem X Z _ := by simpa [id_comp] using Function.bijective_id
+  id_mem X Z _ := by simpa! [id_comp] using Function.bijective_id
   comp_mem f g hf hg Z hZ := by
-    simpa using Function.Bijective.comp (hf Z hZ) (hg Z hZ)
+    simpa! using Function.Bijective.comp (hf Z hZ) (hg Z hZ)
 
-set_option backward.simpa.using.reducibleClose false in
 instance : P.isLocal.HasTwoOutOfThreeProperty where
   of_postcomp f g hg hfg Z hZ := by
     rw [← Function.Bijective.of_comp_iff _ (hg Z hZ)]
-    simpa using hfg Z hZ
+    simpa! using hfg Z hZ
   of_precomp f g hf hfg Z hZ := by
     rw [← Function.Bijective.of_comp_iff' (hf Z hZ)]
-    simpa using hfg Z hZ
+    simpa! using hfg Z hZ
 
 lemma isLocal_of_isIso {X Y : C} (f : X ⟶ Y) [IsIso f] : P.isLocal f := fun Z _ => by
   constructor
@@ -161,9 +159,8 @@ lemma isoClosure_isColocal : P.isoClosure.isColocal = P.isColocal := by
       obtain ⟨a, h⟩ := (hg _ hX').2 (e.inv ≫ f)
       exact ⟨e.hom ≫ a, by simp [h]⟩
 
-set_option backward.simpa.using.reducibleClose false in
 instance : P.isColocal.IsMultiplicative where
-  id_mem _ _ _ := by simpa [id_comp] using Function.bijective_id
+  id_mem _ _ _ := by simpa! [id_comp] using Function.bijective_id
   comp_mem f g hf hg X hX := by
     convert Function.Bijective.comp (hg X hX) (hf X hX)
     cat_disch

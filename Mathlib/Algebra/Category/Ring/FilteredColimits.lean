@@ -113,7 +113,6 @@ instance colimitSemiring : Semiring.{max v u} <| R.{v, u} F :=
 def colimit : SemiRingCat.{max v u} :=
   SemiRingCat.of <| R.{v, u} F
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The cocone over the proposed colimit semiring. -/
 def colimitCocone : Cocone F where
   pt := colimit.{v, u} F
@@ -125,7 +124,7 @@ def colimitCocone : Cocone F where
               (F ⋙ forget₂ SemiRingCat.{max v u} AddCommMonCat)).ι.app j).hom with }
       naturality _ _ f := by
         ext
-        simpa using (Types.TypeMax.colimitCocone (F ⋙ forget SemiRingCat)).ι.naturality_apply f _ }
+        simpa! using (Types.TypeMax.colimitCocone (F ⋙ forget SemiRingCat)).ι.naturality_apply f _ }
 
 namespace colimitCoconeIsColimit
 
@@ -216,7 +215,6 @@ instance colimitCommSemiring : CommSemiring.{max v u} <| R.{v, u} F :=
 def colimit : CommSemiRingCat.{max v u} :=
   CommSemiRingCat.of <| R.{v, u} F
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The cocone over the proposed colimit commutative semiring. -/
 def colimitCocone : Cocone F where
   pt := colimit.{v, u} F
@@ -225,7 +223,7 @@ def colimitCocone : Cocone F where
           (F ⋙ forget₂ CommSemiRingCat SemiRingCat.{max v u})).ι.app X).hom
       naturality _ _ f := by
         ext
-        simpa using (Types.TypeMax.colimitCocone
+        simpa! using (Types.TypeMax.colimitCocone
           (F ⋙ forget CommSemiRingCat)).ι.naturality_apply f _ }
 
 /-- The proposed colimit cocone is a colimit in `CommSemiRingCat`. -/
@@ -275,7 +273,6 @@ instance colimitRing : Ring.{max v u} <| R.{v, u} F :=
 def colimit : RingCat.{max v u} :=
   RingCat.of <| R.{v, u} F
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The cocone over the proposed colimit ring. -/
 def colimitCocone : Cocone F where
   pt := colimit.{v, u} F
@@ -284,7 +281,7 @@ def colimitCocone : Cocone F where
           (F ⋙ forget₂ RingCat SemiRingCat.{max v u})).ι.app X).hom
       naturality _ _ f := by
         ext
-        simpa using (Types.TypeMax.colimitCocone (F ⋙ forget RingCat)).ι.naturality_apply f _ }
+        simpa! using (Types.TypeMax.colimitCocone (F ⋙ forget RingCat)).ι.naturality_apply f _ }
 
 /-- The proposed colimit cocone is a colimit in `Ring`. -/
 def colimitCoconeIsColimit : IsColimit <| colimitCocone.{v, u} F :=
@@ -339,7 +336,6 @@ instance colimitCommRing : CommRing.{max v u} <| R.{v, u} F :=
 def colimit : CommRingCat.{max v u} :=
   CommRingCat.of <| R.{v, u} F
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The cocone over the proposed colimit commutative ring. -/
 def colimitCocone : Cocone F where
   pt := colimit.{v, u} F
@@ -348,7 +344,7 @@ def colimitCocone : Cocone F where
           (F ⋙ forget₂ CommRingCat RingCat.{max v u})).ι.app X).hom
       naturality _ _ f := by
         ext
-        simpa using (Types.TypeMax.colimitCocone (F ⋙ forget CommRingCat)).ι.naturality_apply f _ }
+        simpa! using (Types.TypeMax.colimitCocone (F ⋙ forget CommRingCat)).ι.naturality_apply f _ }
 
 /-- The proposed colimit cocone is a colimit in `CommRingCat`. -/
 def colimitCoconeIsColimit : IsColimit <| colimitCocone.{v, u} F :=

@@ -115,12 +115,11 @@ variable (F E) in
 lemma fg_top [Algebra.EssFiniteType F E] : (⊤ : IntermediateField F E).FG := by
   rwa [fg_top_iff]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma essFiniteType_iff {K : IntermediateField F E} :
     Algebra.EssFiniteType F K ↔ K.FG := by
   suffices (∃ s : Finset E, (s : Set E) ⊆ K ∧ adjoin F ↑s = K) ↔
       ∃ t : Finset E, adjoin F ↑t = K by
-    simpa [IntermediateField.FG, (Equiv.finsetSubtypeComm _).exists_congr_left,
+    simpa! [IntermediateField.FG, (Equiv.finsetSubtypeComm _).exists_congr_left,
       ← (IntermediateField.map_injective K.val).eq_iff, ← IntermediateField.fg_top_iff,
       adjoin_map, ← Set.range_comp, Function.comp_def, ← AlgHom.fieldRange_eq_map] using this
   exact ⟨fun ⟨s, _, hs⟩ ↦ ⟨s, hs⟩, fun ⟨s, hs⟩ ↦ ⟨s, hs ▸ subset_adjoin _ _, hs⟩⟩

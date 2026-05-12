@@ -93,7 +93,6 @@ namespace HasLimits
 -- The next two definitions are used in the construction of `HasLimits (ModuleCat R)`.
 -- After that, the limits should be constructed using the generic limits API,
 -- e.g. `limit F`, `limit.cone F`, and `limit.isLimit F`.
-set_option backward.simpa.using.reducibleClose false in
 /-- Construction of a limit cone in `ModuleCat R`.
 (Internal use only; use the limits API.)
 -/
@@ -103,7 +102,7 @@ def limitCone : Cone F where
     { app j := ofHom (limitπLinearMap F j)
       naturality _ _ f := by
         ext
-        simpa using (Types.Small.limitCone (F ⋙ forget _)).π.naturality_apply f _ }
+        simpa! using (Types.Small.limitCone (F ⋙ forget _)).π.naturality_apply f _ }
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -184,13 +183,12 @@ instance forget_preservesLimits : PreservesLimits (forget (ModuleCat.{w} R)) :=
 
 end
 
-set_option backward.simpa.using.reducibleClose false in
 instance forget₂AddCommGroup_reflectsLimit :
     ReflectsLimit F (forget₂ (ModuleCat.{w} R) AddCommGrpCat) where
   reflects {c} hc := ⟨by
     have : HasLimit (F ⋙ forget₂ (ModuleCat R) AddCommGrpCat) := ⟨_, hc⟩
     have : Small.{w} (Functor.sections (F ⋙ forget (ModuleCat R))) := by
-      simpa only [AddCommGrpCat.hasLimit_iff_small_sections] using this
+      simpa! only [AddCommGrpCat.hasLimit_iff_small_sections] using this
     have := reflectsLimit_of_reflectsIsomorphisms F (forget₂ (ModuleCat R) AddCommGrpCat)
     exact isLimitOfReflects _ hc⟩
 

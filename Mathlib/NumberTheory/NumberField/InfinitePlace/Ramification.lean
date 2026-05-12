@@ -323,7 +323,6 @@ lemma _root_.NumberField.ComplexEmbedding.IsConj.isUnramified_mk_iff
     ← not_isReal_iff_isComplex, comap_mk, isReal_mk_iff, isReal_mk_iff, eq_true h.isReal_comp,
     and_true]
 
-set_option backward.simpa.using.reducibleClose false in
 lemma isUnramified_mk_iff_forall_isConj [IsGalois k K] {φ : K →+* ℂ} :
     IsUnramified k (mk φ) ↔ ∀ σ : Gal(K/k), ComplexEmbedding.IsConj φ σ → σ = 1 := by
   refine ⟨fun H σ hσ ↦ hσ.isUnramified_mk_iff.mp H,
@@ -335,7 +334,7 @@ lemma isUnramified_mk_iff_forall_isConj [IsGalois k K] {φ : K →+* ℂ} :
   letI := (φ.comp (algebraMap k K)).toAlgebra
   letI := φ.toAlgebra
   have : IsScalarTower k K ℂ := IsScalarTower.of_algebraMap_eq' rfl
-  let φ' : K →ₐ[k] ℂ := { star φ with commutes' := fun r ↦ by simpa using RingHom.congr_fun hφ.2 r }
+  let φ' : K →ₐ[k] ℂ := { star φ with commutes' := fun r ↦ by simpa! using RingHom.congr_fun hφ.2 r }
   have : ComplexEmbedding.IsConj φ (AlgHom.restrictNormal' φ' K) :=
     (RingHom.ext <| AlgHom.restrictNormal_commutes φ' K).symm
   exact hφ.1 (H _ this ▸ this)
@@ -601,10 +600,9 @@ instance {φ : K →+* ℂ} {ψ : L →+* ℂ} [ComplexEmbedding.LiesOver ψ φ]
     AbsoluteValue.LiesOver (mk ψ).1 (mk φ).1 where
   comp_eq := by simp [← LiesOver.over ψ φ, ← coe_mk_comp]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem comap_eq : w.comap (algebraMap K L) = v := by
   ext
-  simpa only [coe_apply] using AbsoluteValue.ext_iff.1 (LiesOver.comp_eq w.1 v.1) _
+  simpa! only [coe_apply] using AbsoluteValue.ext_iff.1 (LiesOver.comp_eq w.1 v.1) _
 
 theorem mk_embedding_comp : InfinitePlace.mk (w.embedding.comp (algebraMap K L)) = v := by
   rw [← comap_mk, w.mk_embedding, comap_eq w v]

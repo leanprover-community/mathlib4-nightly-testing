@@ -246,13 +246,12 @@ end Functor
 section BraidedCategory
 variable [BraidedCategory C]
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `M` is a commutative monoid object, then `Hom(X, M)` has a commutative monoid structure. -/
 @[to_additive
 /-- If `M` is a commutative additive monoid object, then `Hom(X, M)` has a commutative additive
 monoid structure. -/]
 abbrev Hom.commMonoid [IsCommMonObj M] : CommMonoid (X ⟶ M) where
-  mul_comm f g := by simpa [-IsCommMonObj.mul_comm] using lift g f ≫= IsCommMonObj.mul_comm M
+  mul_comm f g := by simpa! [-IsCommMonObj.mul_comm] using lift g f ≫= IsCommMonObj.mul_comm M
 
 namespace Mon.Hom
 variable {M N : Mon C} [IsCommMonObj N.X]

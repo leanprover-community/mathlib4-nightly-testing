@@ -480,12 +480,11 @@ theorem haarContent_apply (K₀ : PositiveCompacts G) (K : Compacts G) :
 theorem haarContent_self {K₀ : PositiveCompacts G} : haarContent K₀ K₀.toCompacts = 1 := by
   simp_rw [← ENNReal.coe_one, haarContent_apply, ENNReal.coe_inj, chaar_self]; rfl
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The variant of `is_left_invariant_chaar` for `haarContent` -/
 @[to_additive /-- The variant of `is_left_invariant_addCHaar` for `addHaarContent` -/]
 theorem is_left_invariant_haarContent {K₀ : PositiveCompacts G} (g : G) (K : Compacts G) :
     haarContent K₀ (K.map _ <| continuous_const_mul g) = haarContent K₀ K := by
-  simpa only [ENNReal.coe_inj, ← NNReal.coe_inj, haarContent_apply] using
+  simpa! only [ENNReal.coe_inj, ← NNReal.coe_inj, haarContent_apply] using
     is_left_invariant_chaar g K
 
 @[to_additive]

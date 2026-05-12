@@ -448,12 +448,11 @@ noncomputable def corepresentableBy :
 
 variable (W κ)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma isRightAdjoint_ι :
     W.isLocal.ι.IsRightAdjoint := by
   rw [Functor.isRightAdjoint_iff_leftAdjointObjIsDefined_eq_top]
   ext Z
-  simpa using (corepresentableBy Z hW).isCorepresentable
+  simpa! using (corepresentableBy Z hW).isCorepresentable
 
 end OrthogonalReflection
 

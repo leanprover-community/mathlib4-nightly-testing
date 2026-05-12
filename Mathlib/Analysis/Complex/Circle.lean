@@ -242,10 +242,9 @@ theorem probChar_apply (x : ℝ) : probChar x = Complex.exp (x * Complex.I) := r
 @[continuity, fun_prop]
 theorem continuous_probChar : Continuous probChar := map_continuous Circle.exp
 
-set_option backward.simpa.using.reducibleClose false in
 theorem probChar_ne_one : probChar ≠ 1 := by
   rw [DFunLike.ne_iff]
   use Real.pi
-  simpa only [probChar_apply'] using Circle.exp_pi_ne_one
+  simpa! only [probChar_apply'] using Circle.exp_pi_ne_one
 
 end Real

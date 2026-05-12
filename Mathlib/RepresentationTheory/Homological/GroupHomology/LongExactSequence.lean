@@ -104,7 +104,6 @@ theorem isIso_δ_of_isZero (n : ℕ) (hs : IsZero (groupHomology X.X₂ (n + 1))
     (h : IsZero (groupHomology X.X₂ n)) :
     IsIso (δ hX (n + 1) n rfl) := SnakeInput.isIso_δ _ hs h
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Given an exact sequence of `G`-representations `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0`, this expresses an
 `n`-chain `x : Gⁿ →₀ X₁` such that `f ∘ x ∈ Bₙ(G, X₂)` as a cycle. Stated for readability of
@@ -114,10 +113,9 @@ noncomputable abbrev cyclesMkOfCompEqD {i j : ℕ} {y : (Fin i → G) →₀ X.X
     (hx : mapRange.linearMap X.f.hom.toLinearMap x = (inhomogeneousChains X.X₂).d i j y) :
     cycles X.X₁ j :=
   cyclesMk j _ rfl x <| by
-    simpa using (map_chainsFunctor_shortExact hX).d_eq_zero_of_f_eq_d_apply i j y x
-      (by simpa using hx) _
+    simpa! using (map_chainsFunctor_shortExact hX).d_eq_zero_of_f_eq_d_apply i j y x
+      (by simpa! using hx) _
 
-set_option backward.simpa.using.reducibleClose false in
 set_option backward.isDefEq.respectTransparency false in
 theorem δ_apply {i j : ℕ} (hij : j + 1 = i)
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
@@ -129,11 +127,10 @@ theorem δ_apply {i j : ℕ} (hij : j + 1 = i)
     (x : (Fin j → G) →₀ X.X₁)
     -- Then `x` is an `j`-cycle and `δ z = x` in `Hⱼ(X₁)`.
     (hx : mapRange.linearMap X.f.hom.toLinearMap x = (inhomogeneousChains X.X₂).d i j y) :
-    δ hX i j hij (π X.X₃ i <| cyclesMk i j (by simp [← hij]) z (by simpa using hz)) =
+    δ hX i j hij (π X.X₃ i <| cyclesMk i j (by simp [← hij]) z (by simpa! using hz)) =
       π X.X₁ j (cyclesMkOfCompEqD hX hx) := by
-  exact (map_chainsFunctor_shortExact hX).δ_apply i j hij z hz y hy x (by simpa using hx) _ rfl
+  exact (map_chainsFunctor_shortExact hX).δ_apply i j hij z hz y hy x (by simpa! using hx) _ rfl
 
-set_option backward.simpa.using.reducibleClose false in
 theorem δ₀_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z` by a 1-cycle for `X₃` and `y` a 1-chain for `X₂` such that `g ∘ y = z`.
@@ -142,7 +139,7 @@ theorem δ₀_apply
     (x : X.X₁) (hx : X.f.hom x = d₁₀ X.X₂ y) :
     -- Then `δ z = x` in `H₀(X₁)`.
     δ hX 1 0 rfl (H1π X.X₃ z) = H0π X.X₁ x := by
-  simpa only [H1π, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply, H0π,
+  simpa! only [H1π, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply, H0π,
     ← cyclesMk₀_eq X.X₁, ← cyclesMk₁_eq X.X₃]
   using δ_apply hX (i := 1) (j := 0) rfl ((chainsIso₁ X.X₃).inv z.1) (by
     rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, eq_d₁₀_comp_inv]; simp)
@@ -160,7 +157,6 @@ theorem mem_cycles₁_of_comp_eq_d₂₁
   have := congr($((mapShortComplexH1 (MonoidHom.id G) X.f).comm₂₃.symm) x)
   simp_all [shortComplexH1]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem δ₁_apply
     -- Let `0 ⟶ X₁ ⟶f X₂ ⟶g X₃ ⟶ 0` be a short exact sequence of `G`-representations.
     -- Let `z` by a 2-cycle for `X₃` and `y` a 2-chain for `X₂` such that `g ∘ y = z`.
@@ -169,7 +165,7 @@ theorem δ₁_apply
     (x : G →₀ X.X₁) (hx : mapRange.linearMap X.f.hom.toLinearMap x = d₂₁ X.X₂ y) :
     -- Then `x` is a 1-cycle and `δ z = x` in `H₁(X₁)`.
     δ hX 2 1 rfl (H2π X.X₃ z) = H1π X.X₁ ⟨x, mem_cycles₁_of_comp_eq_d₂₁ hX hx⟩ := by
-  simpa only [H2π, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply, H1π,
+  simpa! only [H2π, ModuleCat.hom_comp, LinearMap.coe_comp, Function.comp_apply, H1π,
     ← cyclesMk₂_eq X.X₃, ← cyclesMk₁_eq X.X₁]
   using δ_apply hX (i := 2) (j := 1) rfl ((chainsIso₂ X.X₃).inv z.1) (by
     rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, eq_d₂₁_comp_inv]; simp)

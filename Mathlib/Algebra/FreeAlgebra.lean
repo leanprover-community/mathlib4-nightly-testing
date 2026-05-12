@@ -250,14 +250,13 @@ instance instAddCommMonoid : AddCommMonoid (FreeAlgebra R X) where
     congr 1
     exact Quot.sound Rel.add_scalar
 
-set_option backward.simpa.using.reducibleClose false in
 instance : Semiring (FreeAlgebra R X) where
   __ := instMonoidWithZero R X
   __ := instAddCommMonoid R X
   __ := instDistrib R X
   natCast n := Quot.mk _ (n : R)
   natCast_zero := by simp; rfl
-  natCast_succ n := by simpa using Quot.sound Rel.add_scalar
+  natCast_succ n := by simpa! using Quot.sound Rel.add_scalar
 
 instance : Inhabited (FreeAlgebra R X) :=
   ⟨0⟩

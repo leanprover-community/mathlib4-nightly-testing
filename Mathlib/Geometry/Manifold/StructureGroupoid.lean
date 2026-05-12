@@ -193,14 +193,13 @@ instance StructureGroupoid.partialOrder : PartialOrder (StructureGroupoid H) :=
 theorem StructureGroupoid.le_iff {G₁ G₂ : StructureGroupoid H} : G₁ ≤ G₂ ↔ ∀ e, e ∈ G₁ → e ∈ G₂ :=
   Iff.rfl
 
-set_option backward.simpa.using.reducibleClose false in
 /-- The trivial groupoid, containing only the identity (and maps with empty source, as this is
 necessary from the definition). -/
 def idGroupoid (H : Type*) [TopologicalSpace H] : StructureGroupoid H where
   members := {OpenPartialHomeomorph.refl H} ∪ { e : OpenPartialHomeomorph H H | e.source = ∅ }
   trans' e e' he he' := by
     rcases he with he | he
-    · simpa only [mem_singleton_iff.1 he, refl_trans]
+    · simpa! only [mem_singleton_iff.1 he, refl_trans]
     · have : (e ≫ₕ e').source ⊆ e.source := sep_subset _ _
       rw [he] at this
       have : e ≫ₕ e' ∈ { e : OpenPartialHomeomorph H H | e.source = ∅ } := eq_bot_iff.2 this
@@ -209,7 +208,7 @@ def idGroupoid (H : Type*) [TopologicalSpace H] : StructureGroupoid H where
     rcases (mem_union _ _ _).1 he with E | E
     · simp [mem_singleton_iff.mp E]
     · right
-      simpa only [e.toPartialEquiv.image_source_eq_target.symm, mfld_simps] using E
+      simpa! only [e.toPartialEquiv.image_source_eq_target.symm, mfld_simps] using E
   id_mem' := mem_union_left _ rfl
   locality' e he := by
     rcases e.source.eq_empty_or_nonempty with h | h
@@ -223,7 +222,7 @@ def idGroupoid (H : Type*) [TopologicalSpace H] : StructureGroupoid H where
         exact ⟨hx, xs⟩
       rcases hs with hs | hs
       · replace hs : OpenPartialHomeomorph.restr e s = OpenPartialHomeomorph.refl H := by
-          simpa only using hs
+          simpa! only using hs
         have : (e.restr s).source = univ := by
           rw [hs]
           simp
@@ -232,7 +231,7 @@ def idGroupoid (H : Type*) [TopologicalSpace H] : StructureGroupoid H where
           rw [← this]
           exact inter_subset_right
         have : s = univ := by rwa [open_s.interior_eq, univ_subset_iff] at this
-        simpa only [this, restr_univ] using hs
+        simpa! only [this, restr_univ] using hs
       · exfalso
         rw [mem_setOf_eq] at hs
         rwa [hs] at x's

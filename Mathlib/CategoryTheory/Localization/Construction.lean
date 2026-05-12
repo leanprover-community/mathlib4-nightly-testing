@@ -174,7 +174,6 @@ theorem fac : W.Q ⋙ lift G hG = G :=
       dsimp [MorphismProperty.Q, Quot.liftOn, Quotient.functor]
       rw [composePath_toPath])
 
-set_option backward.simpa.using.reducibleClose false in
 theorem uniq (G₁ G₂ : W.Localization ⥤ D) (h : W.Q ⋙ G₁ = W.Q ⋙ G₂) : G₁ = G₂ := by
   suffices h' : Quotient.functor _ ⋙ G₁ = Quotient.functor _ ⋙ G₂ by
     refine Functor.ext ?_ ?_
@@ -187,7 +186,7 @@ theorem uniq (G₁ G₂ : W.Localization ⥤ D) (h : W.Q ⋙ G₁ = W.Q ⋙ G₂
     cases X
     apply Functor.congr_obj h
   · rintro ⟨X⟩ ⟨Y⟩ (f | ⟨w, hw⟩)
-    · simpa only using Functor.congr_hom h f
+    · simpa! only using Functor.congr_hom h f
     · have hw : W.Q.map w = (wIso w hw).hom := rfl
       have hw' := Functor.congr_hom h w
       simp only [Functor.comp_map, hw] at hw'
@@ -209,7 +208,6 @@ instance : W.Q.EssSurj where
   mem_essImage Y := ⟨(objEquiv W).symm Y, ⟨Iso.refl _⟩⟩
 
 set_option backward.isDefEq.respectTransparency false in
-set_option backward.simpa.using.reducibleClose false in
 /-- A `MorphismProperty` in `W.Localization` is satisfied by all
 morphisms in the localized category if it contains the image of the
 morphisms in the original category, the inverses of the morphisms
@@ -229,10 +227,10 @@ theorem morphismProperty_eq_top (P : MorphismProperty W.Localization)
     suffices ∀ (X₁ X₂ : Paths (LocQuiver W)) (f : X₁ ⟶ X₂), P (G.map f) by
       rcases X with ⟨⟨X⟩⟩
       rcases Y with ⟨⟨Y⟩⟩
-      simpa only [Functor.map_preimage] using this _ _ (G.preimage f)
+      simpa! only [Functor.map_preimage] using this _ _ (G.preimage f)
     intro X₁ X₂ p
     induction p with
-    | nil => simpa only [Functor.map_id] using hP₁ (𝟙 X₁.obj)
+    | nil => simpa! only [Functor.map_id] using hP₁ (𝟙 X₁.obj)
     | @cons X₂ X₃ p g hp =>
       let p' : X₁ ⟶ X₂ := p
       rw [show p'.cons g = p' ≫ Quiver.Hom.toPath g by rfl, G.map_comp]
@@ -273,7 +271,6 @@ theorem app_eq (X : C) : (app τ) (W.Q.obj X) = τ.app X := by
 
 end NatTransExtension
 
-set_option backward.simpa.using.reducibleClose false in
 /-- If `F₁` and `F₂` are functors `W.Localization ⥤ D`, a natural transformation `F₁ ⟶ F₂`
 can be obtained from a natural transformation `W.Q ⋙ F₁ ⟶ W.Q ⋙ F₂`. -/
 @[simps]
@@ -282,13 +279,13 @@ def natTransExtension {F₁ F₂ : W.Localization ⥤ D} (τ : W.Q ⋙ F₁ ⟶ 
   naturality := by
     suffices MorphismProperty.naturalityProperty (NatTransExtension.app τ) = ⊤ by
       intro X Y f
-      simpa only [← this] using MorphismProperty.top_apply f
+      simpa! only [← this] using MorphismProperty.top_apply f
     refine morphismProperty_eq_top'
       (MorphismProperty.naturalityProperty (NatTransExtension.app τ))
       ?_ (MorphismProperty.naturalityProperty.stableUnderInverse _)
     intro X Y f
     dsimp
-    simpa only [NatTransExtension.app_eq] using τ.naturality f
+    simpa! only [NatTransExtension.app_eq] using τ.naturality f
 
 @[simp]
 theorem whiskerLeft_natTransExtension {F G : W.Localization ⥤ D} (τ : W.Q ⋙ F ⟶ W.Q ⋙ G) :

@@ -1023,10 +1023,9 @@ theorem contDiffAt_succ_iff_hasFDerivAt {n : ℕ} :
     refine ⟨u, H, by simp, f', fun x hxu ↦ ?_, h_cont_diff.contDiffWithinAt⟩
     exact (h_fderiv x hxu).hasFDerivWithinAt
 
-set_option backward.simpa.using.reducibleClose false in
 protected theorem ContDiffAt.eventually (h : ContDiffAt 𝕜 n f x) (h' : n ≠ ∞) :
     ∀ᶠ y in 𝓝 x, ContDiffAt 𝕜 n f y := by
-  simpa [nhdsWithin_univ] using ContDiffWithinAt.eventually h h'
+  simpa! [nhdsWithin_univ] using ContDiffWithinAt.eventually h h'
 
 theorem iteratedFDerivWithin_eq_iteratedFDeriv {n : ℕ}
     (hs : UniqueDiffOn 𝕜 s) (h : ContDiffAt 𝕜 n f x) (hx : x ∈ s) :

@@ -141,7 +141,6 @@ theorem IsTutteViolator.empty (hodd : Odd (Nat.card V)) : G.IsTutteViolator ∅ 
   rw [IsTutteViolator, Set.ncard_empty]
   exact ((odd_ncard_oddComponents _).mpr <| by simpa using hodd).pos
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Proves the necessity part of Tutte's theorem -/
 lemma not_isTutteViolator_of_isPerfectMatching {M : Subgraph G} (hM : M.IsPerfectMatching)
     (u : Set V) :
@@ -150,7 +149,7 @@ lemma not_isTutteViolator_of_isPerfectMatching {M : Subgraph G} (hM : M.IsPerfec
   have hfinj : f.Injective := fun c d hcd ↦ by
     replace hcd : g c = g d := Subtype.val_injective <| hM.1.eq_of_adj_right (hgf c) (hcd ▸ hgf d)
     exact Subtype.val_injective <| ConnectedComponent.eq_of_common_vertex (hg c) (hcd ▸ hg d)
-  simpa [IsTutteViolator] using
+  simpa! [IsTutteViolator] using
     Nat.card_le_card_of_injective (fun c ↦ ⟨f c, hf c⟩) (fun c d ↦ by simp [hfinj.eq_iff])
 
 open scoped symmDiff

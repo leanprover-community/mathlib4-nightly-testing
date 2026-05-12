@@ -262,7 +262,6 @@ theorem ClassGroup.equiv_mk0 [IsDedekindDomain R] (I : (Ideal R)⁰) :
   congr 1
   simp [← Units.val_inj]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem ClassGroup.mk0_eq_mk0_iff_exists_fraction_ring [IsDedekindDomain R] {I J : (Ideal R)⁰} :
     ClassGroup.mk0 I =
       ClassGroup.mk0 J ↔ ∃ (x : _) (_ : x ≠ (0 : K)), spanSingleton R⁰ x * I = J := by
@@ -273,10 +272,10 @@ theorem ClassGroup.mk0_eq_mk0_iff_exists_fraction_ring [IsDedekindDomain R] {I J
   · rintro ⟨X, ⟨x, hX⟩, hx⟩
     refine ⟨x, ?_, ?_⟩
     · rintro rfl; simp [X.ne_zero.symm] at hX
-    simpa only [hX, mul_comm] using hx
+    simpa! only [hX, mul_comm] using hx
   · rintro ⟨x, hx, eq_J⟩
     refine ⟨Units.mk0 _ (spanSingleton_ne_zero_iff.mpr hx), ⟨x, rfl⟩, ?_⟩
-    simpa only [mul_comm] using eq_J
+    simpa! only [mul_comm] using eq_J
 
 variable {K}
 

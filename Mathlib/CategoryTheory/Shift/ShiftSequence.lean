@@ -59,7 +59,6 @@ class ShiftSequence where
         isoWhiskerLeft _ (shiftIso n a a' ha') ≪≫ shiftIso m a' a'' ha''
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.simpa.using.reducibleClose false in
 /-- The tautological shift sequence on a functor. -/
 @[implicit_reducible]
 noncomputable def ShiftSequence.tautological : ShiftSequence F M where
@@ -75,7 +74,7 @@ noncomputable def ShiftSequence.tautological : ShiftSequence F M where
     dsimp
     simp only [id_comp, ← Functor.map_comp]
     congr
-    simpa only [← cancel_epi ((shiftFunctor C a).map ((shiftFunctorAdd C m n).hom.app X)),
+    simpa! only [← cancel_epi ((shiftFunctor C a).map ((shiftFunctorAdd C m n).hom.app X)),
       shiftFunctorAdd'_eq_shiftFunctorAdd, ← Functor.map_comp_assoc, Iso.hom_inv_id_app,
       Functor.map_id, id_comp] using shiftFunctorAdd'_assoc_inv_app m n a (m + n) a' a'' rfl ha'
         (by rw [← ha'', ← ha', add_assoc]) X

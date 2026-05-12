@@ -78,7 +78,6 @@ def ValueGroup : Type v := Quotient (MulAction.orbitRel Aˣ K)
 
 instance : Inhabited (ValueGroup A K) := ⟨Quotient.mk'' 0⟩
 
-set_option backward.simpa.using.reducibleClose false in
 instance : LE (ValueGroup A K) :=
   LE.mk fun x y =>
     Quotient.liftOn₂' x y (fun a b => ∃ c : A, c • b = a)
@@ -87,7 +86,7 @@ instance : LE (ValueGroup A K) :=
         constructor
         · rintro ⟨e, he⟩; use (c⁻¹ : Aˣ) * e * d
           apply_fun fun t => c⁻¹ • t at he
-          simpa [mul_smul] using he
+          simpa! [mul_smul] using he
         · rintro ⟨e, he⟩; dsimp
           use c * e * (d⁻¹ : Aˣ)
           simp_rw [Units.smul_def, ← he, mul_smul]

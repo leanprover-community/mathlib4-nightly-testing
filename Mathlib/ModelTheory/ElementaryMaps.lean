@@ -194,7 +194,6 @@ theorem comp_assoc (f : M ↪ₑ[L] N) (g : N ↪ₑ[L] P) (h : P ↪ₑ[L] Q) :
     (h.comp g).comp f = h.comp (g.comp f) :=
   rfl
 
-set_option backward.simpa.using.reducibleClose false in
 /-- Lifts an elementary embedding to the expanded language with constants -/
 def liftWithConstants (f : M ↪ₑ[L] N) (A : Set M) :
     M ↪ₑ[L[[A]]] (f.toEmbedding.withConstants A) := by
@@ -205,7 +204,7 @@ def liftWithConstants (f : M ↪ₑ[L] N) (A : Set M) :
       ↑A ⊕ Fin n → f.toEmbedding.withConstants A) =
     f ∘ Sum.elim (fun a ↦ ↑(L.con a)) x :=
     (Sum.comp_elim _ _ _).symm
-  simpa only [Formula.Realize, ← BoundedFormula.realize_constantsVarsEquiv, h] using
+  simpa! only [Formula.Realize, ← BoundedFormula.realize_constantsVarsEquiv, h] using
     f.map_formula
       (BoundedFormula.constantsVarsEquiv φ)
       (Sum.elim (fun a ↦ ↑(L.con a)) x)

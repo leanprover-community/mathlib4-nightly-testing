@@ -22,7 +22,6 @@ open Filter Topology
 
 variable {X : Type*} [TopologicalSpace X]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem AccPt.map {β : Type*} [TopologicalSpace β] {F : Filter X} {x : X}
     (h : AccPt x F) {f : X → β} (hf1 : ContinuousAt f x) (hf2 : Function.Injective f) :
     AccPt (f x) (map f F) := by
@@ -30,7 +29,7 @@ theorem AccPt.map {β : Type*} [TopologicalSpace β] {F : Filter X} {x : X}
   rw [Filter.map_inf hf2]
   gcongr
   apply tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hf1.continuousWithinAt
-  simpa [hf2.eq_iff] using eventually_mem_nhdsWithin
+  simpa! [hf2.eq_iff] using eventually_mem_nhdsWithin
 
 /--
 The derived set of a set is the set of all accumulation points of it.

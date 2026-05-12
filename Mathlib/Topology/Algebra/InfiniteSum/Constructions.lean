@@ -79,7 +79,6 @@ variable [CommMonoid α] [TopologicalSpace α] [ContinuousMul α]
 
 section Sum
 
-set_option backward.simpa.using.reducibleClose false in
 @[to_additive]
 lemma HasProd.sum {α β M : Type*} [CommMonoid M] [TopologicalSpace M] [ContinuousMul M]
     {f : α ⊕ β → M} {a b : M}
@@ -89,7 +88,7 @@ lemma HasProd.sum {α β M : Type*} [CommMonoid M] [TopologicalSpace M] [Continu
     convert (tendsto_mul.comp (nhds_prod_eq (x := a) (y := b) ▸ Tendsto.prodMap h₁ h₂))
     ext s
     simp
-  simpa [Tendsto, ← Filter.map_map] using this
+  simpa! [Tendsto, ← Filter.map_map] using this
 
 @[to_additive /-- For the statement that `tsum` commutes with `Finset.sum`,
   see `Summable.tsum_finsetSum`. -/]
@@ -342,9 +341,8 @@ section ContinuousStar
 variable [AddCommMonoid α] [TopologicalSpace α] [StarAddMonoid α] [ContinuousStar α] {f : β → α}
   {a : α}
 
-set_option backward.simpa.using.reducibleClose false in
 theorem HasSum.star (h : HasSum f a L) : HasSum (fun b ↦ star (f b)) (star a) L := by
-  simpa only using h.map (starAddEquiv : α ≃+ α) continuous_star
+  simpa! only using h.map (starAddEquiv : α ≃+ α) continuous_star
 
 theorem Summable.star (hf : Summable f L) : Summable (fun b ↦ star (f b)) L :=
   hf.hasSum.star.summable

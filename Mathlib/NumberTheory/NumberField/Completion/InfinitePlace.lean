@@ -64,16 +64,14 @@ open AbsoluteValue.Completion UniformSpace.Completion NumberField.ComplexEmbeddi
 
 variable {K : Type*} [Field K] (v : InfinitePlace K)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isometry_embedding : Isometry (v.embedding.comp (WithAbs.equiv v.1).toRingHom) :=
   AddMonoidHomClass.isometry_of_norm _ fun x ↦ by
-    simpa using v.norm_embedding_eq (WithAbs.equiv v.1 x)
+    simpa! using v.norm_embedding_eq (WithAbs.equiv v.1 x)
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isometry_embedding_of_isReal (hv : v.IsReal) :
     Isometry ((v.embedding_of_isReal hv).comp (WithAbs.equiv v.1).toRingHom) :=
   AddMonoidHomClass.isometry_of_norm _ fun x ↦ by
-    simpa using v.norm_embedding_of_isReal hv (WithAbs.equiv v.1 x)
+    simpa! using v.norm_embedding_of_isReal hv (WithAbs.equiv v.1 x)
 
 /-- The completion of a number field at an infinite place. -/
 abbrev Completion := v.1.Completion
@@ -247,14 +245,13 @@ theorem liesOver_extensionEmbedding [ContinuousSMul v.Completion w.Completion]
     · simp [WithAbs.algebraMap_left_apply, WithAbs.algebraMap_right_apply,
         ← ComplexEmbedding.LiesOver.over w.embedding v.embedding]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem liesOver_conjugate_extensionEmbedding [ContinuousSMul v.Completion w.Completion]
     [ComplexEmbedding.LiesOver (conjugate w.embedding) v.embedding] :
     ComplexEmbedding.LiesOver (conjugate (extensionEmbedding w)) (extensionEmbedding v) where
   over := by
     ext x
     induction x using induction_on
-    · simpa using isClosed_eq (.comp (by fun_prop)
+    · simpa! using isClosed_eq (.comp (by fun_prop)
         (continuous_extension.comp <| continuous_algebraMap v.Completion w.Completion))
         continuous_extension
     · simp [WithAbs.algebraMap_left_apply, WithAbs.algebraMap_right_apply,

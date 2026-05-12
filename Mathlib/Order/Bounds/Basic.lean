@@ -537,16 +537,14 @@ section
 
 variable [SemilatticeInf γ] [DenselyOrdered γ]
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isLUB_Ioo {a b : γ} (hab : a < b) : IsLUB (Ioo a b) b := by
-  simpa only [Ioo_toDual] using isGLB_Ioo hab.dual
+  simpa! only [Ioo_toDual] using isGLB_Ioo hab.dual
 
 theorem upperBounds_Ioo {a b : γ} (hab : a < b) : upperBounds (Ioo a b) = Ici b :=
   (isLUB_Ioo hab).upperBounds_eq
 
-set_option backward.simpa.using.reducibleClose false in
 theorem isLUB_Ico {a b : γ} (hab : a < b) : IsLUB (Ico a b) b := by
-  simpa only [Ioc_toDual] using isGLB_Ioc hab.dual
+  simpa! only [Ioc_toDual] using isGLB_Ioc hab.dual
 
 theorem upperBounds_Ico {a b : γ} (hab : a < b) : upperBounds (Ico a b) = Ici b :=
   (isLUB_Ico hab).upperBounds_eq

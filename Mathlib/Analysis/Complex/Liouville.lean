@@ -37,7 +37,6 @@ local postfix:100 "̂" => UniformSpace.Completion
 
 namespace Complex
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Cauchy's estimate for derivatives**:  If `f` is complex differentiable on an open disc of
 radius `R > 0`, is continuous on its closure, and its values on the boundary circle of this disc
 are bounded from above by `C`, then the norm of its `n`-th derivative at the center is at most
@@ -47,7 +46,7 @@ theorem norm_iteratedDeriv_le_of_forall_mem_sphere_norm_le [CompleteSpace F] {c 
     (hC : ∀ z ∈ sphere c R, ‖f z‖ ≤ C) :
     ‖iteratedDeriv n f c‖ ≤ n.factorial * C / R ^ n := by
   have hp (z) (hz : z ∈ sphere c R) : ‖(z - c)⁻¹ ^ (n + 1) • f z‖ ≤ C / (R ^ n * R) := by
-    simpa [norm_smul, norm_pow, norm_inv, ← div_eq_inv_mul, mem_sphere_iff_norm.1 hz] using
+    simpa! [norm_smul, norm_pow, norm_inv, ← div_eq_inv_mul, mem_sphere_iff_norm.1 hz] using
       (div_le_div_iff_of_pos_right (mul_pos (pow_pos hR n) hR)).2 (hC z hz)
   have hq : iteratedDeriv n f c = n.factorial • (2 * π * I)⁻¹ •
     ∮ z in C(c, R), (z - c)⁻¹ ^ (n + 1) • f z := by
@@ -130,7 +129,6 @@ theorem exists_eq_const_of_bounded {f : E → F} (hf : Differentiable ℂ f)
     (hb : IsBounded (range f)) : ∃ c, f = const E c :=
   (hf.exists_const_forall_eq_of_bounded hb).imp fun _ => funext
 
-set_option backward.simpa.using.reducibleClose false in
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- A corollary of Liouville's theorem where the function tends to a finite value at infinity
 (i.e., along `Filter.cocompact`, which in proper spaces coincides with `Bornology.cobounded`). -/
@@ -140,12 +138,12 @@ theorem eq_const_of_tendsto_cocompact [Nontrivial E] {f : E → F} (hf : Differe
     obtain ⟨s, hs, hs_bdd⟩ := Metric.exists_isBounded_image_of_tendsto hb
     obtain ⟨t, ht, hts⟩ := mem_cocompact.mp hs
     apply ht.image hf.continuous |>.isBounded.union hs_bdd |>.subset
-    simpa [Set.image_union, Set.image_univ] using Set.image_mono <| calc
+    simpa! [Set.image_union, Set.image_univ] using Set.image_mono <| calc
       Set.univ = t ∪ tᶜ := t.union_compl_self.symm
       _        ⊆ t ∪ s  := by gcongr
   obtain ⟨c', hc'⟩ := hf.exists_eq_const_of_bounded h_bdd
   convert hc'
-  exact tendsto_nhds_unique hb (by simpa [hc'] using tendsto_const_nhds)
+  exact tendsto_nhds_unique hb (by simpa! [hc'] using tendsto_const_nhds)
 
 /-- A corollary of Liouville's theorem where the function tends to a finite value at infinity
 (i.e., along `Filter.cocompact`, which in proper spaces coincides with `Bornology.cobounded`). -/

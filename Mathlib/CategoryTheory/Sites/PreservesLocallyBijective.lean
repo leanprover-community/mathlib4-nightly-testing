@@ -63,7 +63,6 @@ lemma isLocallySurjective_whisker [H.IsCocontinuous J K] [IsLocallySurjective K 
     IsLocallySurjective J (whiskerLeft H.op f) where
   imageSieve_mem a := H.cover_lift J K (imageSieve_mem K f a)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma isLocallySurjective_of_whisker (hH : CoverPreserving J K H)
     [H.IsCoverDense K] [IsLocallySurjective J (whiskerLeft H.op f)] : IsLocallySurjective K f where
   imageSieve_mem {X} a := by
@@ -76,7 +75,7 @@ lemma isLocallySurjective_of_whisker (hH : CoverPreserving J K H)
     refine K.superset_covering (Sieve.functorPushforward_monotone H _ ?_) hh
     intro W q ⟨x, h⟩
     simp only [Sieve.functorPullback_apply, Presieve.functorPullback_mem, Sieve.pullback_apply]
-    exact ⟨x, by simpa using h⟩
+    exact ⟨x, by simpa! using h⟩
 
 lemma isLocallySurjective_whisker_iff (hH : CoverPreserving J K H) [H.IsCocontinuous J K]
     [H.IsCoverDense K] : IsLocallySurjective J (whiskerLeft H.op f) ↔ IsLocallySurjective K f :=

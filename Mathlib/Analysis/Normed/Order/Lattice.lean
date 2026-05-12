@@ -165,9 +165,8 @@ theorem lipschitzWith_sup_right (z : α) : LipschitzWith 1 fun x => x ⊔ z :=
 lemma lipschitzWith_posPart : LipschitzWith 1 (posPart : α → α) :=
   lipschitzWith_sup_right 0
 
-set_option backward.simpa.using.reducibleClose false in
 lemma lipschitzWith_negPart : LipschitzWith 1 (negPart : α → α) := by
-  simpa [Function.comp] using lipschitzWith_posPart.comp LipschitzWith.id.neg
+  simpa! [Function.comp] using lipschitzWith_posPart.comp LipschitzWith.id.neg
 
 @[fun_prop]
 lemma continuous_posPart : Continuous (posPart : α → α) := lipschitzWith_posPart.continuous

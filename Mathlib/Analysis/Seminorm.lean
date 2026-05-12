@@ -1174,13 +1174,11 @@ theorem continuous_of_le [TopologicalSpace E] [IsTopologicalAddGroup E]
   rw [ball_zero_eq]
   exact isOpen_lt hq continuous_const
 
-set_option backward.simpa.using.reducibleClose false in
 lemma ball_mem_nhds [TopologicalSpace E] {p : Seminorm 𝕝 E} (hp : Continuous p) {r : ℝ}
     (hr : 0 < r) : p.ball 0 r ∈ (𝓝 0 : Filter E) := by
   have this : Tendsto p (𝓝 0) (𝓝 0) := map_zero p ▸ hp.tendsto 0
-  simpa only [p.ball_zero_eq] using this (Iio_mem_nhds hr)
+  simpa! only [p.ball_zero_eq] using this (Iio_mem_nhds hr)
 
-set_option backward.simpa.using.reducibleClose false in
 lemma uniformSpace_eq_of_hasBasis
     {ι} [UniformSpace E] [IsUniformAddGroup E] [ContinuousConstSMul 𝕜 E]
     {p' : ι → Prop} {s : ι → Set E} (p : Seminorm 𝕜 E) (hb : (𝓝 0 : Filter E).HasBasis p' s)
@@ -1195,7 +1193,7 @@ lemma uniformSpace_eq_of_hasBasis
     exact p.continuous' hr
   · rw [(@NormedAddGroup.nhds_zero_basis_norm_lt E
       p.toAddGroupSeminorm.toSeminormedAddGroup).le_basis_iff hb]
-    simpa only [subset_def, mem_ball_zero] using h₂
+    simpa! only [subset_def, mem_ball_zero] using h₂
 
 lemma uniformity_eq_of_hasBasis
     {ι} [UniformSpace E] [IsUniformAddGroup E] [ContinuousConstSMul 𝕜 E]

@@ -105,13 +105,11 @@ lemma UniformConcaveOn.neg (hf : UniformConcaveOn s φ f) : UniformConvexOn s φ
   simpa [add_comm, -neg_le_neg_iff, ← le_sub_iff_add_le', sub_eq_add_neg, neg_add]
     using hf.2 hx hy ha hb hab
 
-set_option backward.simpa.using.reducibleClose false in
 lemma UniformConvexOn.sub (hf : UniformConvexOn s φ f) (hg : UniformConcaveOn s ψ g) :
-    UniformConvexOn s (φ + ψ) (f - g) := by simpa using hf.add hg.neg
+    UniformConvexOn s (φ + ψ) (f - g) := by simpa! using hf.add hg.neg
 
-set_option backward.simpa.using.reducibleClose false in
 lemma UniformConcaveOn.sub (hf : UniformConcaveOn s φ f) (hg : UniformConvexOn s ψ g) :
-    UniformConcaveOn s (φ + ψ) (f - g) := by simpa using hf.add hg.neg
+    UniformConcaveOn s (φ + ψ) (f - g) := by simpa! using hf.add hg.neg
 
 /-- A function `f` from a real normed space is `m`-strongly convex if it is uniformly convex with
 modulus `φ(r) = m / 2 * r ^ 2`.
@@ -161,12 +159,11 @@ private lemma aux_sub (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : a + b = 1) :
   obtain rfl := eq_sub_of_add_eq hab
   ring_nf
 
-set_option backward.simpa.using.reducibleClose false in
 private lemma aux_add (ha : 0 ≤ a) (hb : 0 ≤ b) (hab : a + b = 1) :
     a * (f x + m / (2 : ℝ) * ‖x‖ ^ 2) + b * (f y + m / (2 : ℝ) * ‖y‖ ^ 2) -
       m / (2 : ℝ) * ‖a • x + b • y‖ ^ 2
       = a * f x + b * f y + m / (2 : ℝ) * a * b * ‖x - y‖ ^ 2 := by
-  simpa [neg_div] using aux_sub (E := E) (m := -m) ha hb hab
+  simpa! [neg_div] using aux_sub (E := E) (m := -m) ha hb hab
 
 lemma strongConvexOn_iff_convex :
     StrongConvexOn s m f ↔ ConvexOn ℝ s fun x ↦ f x - m / (2 : ℝ) * ‖x‖ ^ 2 := by

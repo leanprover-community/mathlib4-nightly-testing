@@ -292,10 +292,9 @@ theorem countable_univ_pi {π : α → Type*} [Finite α] {s : ∀ a, Set (π a)
     (hs : ∀ a, (s a).Countable) : (pi univ s).Countable :=
   have := fun a ↦ (hs a).to_subtype; .of_equiv _ (Equiv.Set.univPi s).symm
 
-set_option backward.simpa.using.reducibleClose false in
 theorem countable_pi {π : α → Type*} [Finite α] {s : ∀ a, Set (π a)} (hs : ∀ a, (s a).Countable) :
     { f : ∀ a, π a | ∀ a, f a ∈ s a }.Countable := by
-  simpa only [← mem_univ_pi] using countable_univ_pi hs
+  simpa! only [← mem_univ_pi] using countable_univ_pi hs
 
 protected theorem Countable.prod {s : Set α} {t : Set β} (hs : s.Countable) (ht : t.Countable) :
     Set.Countable (s ×ˢ t) :=

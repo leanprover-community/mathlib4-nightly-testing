@@ -60,7 +60,6 @@ open scoped Pointwise
 open FiniteGaloisIntermediateField AlgEquiv
 --Note: The `adjoin`s below are `FiniteGaloisIntermediateField.adjoin`
 
-set_option backward.simpa.using.reducibleClose false in
 lemma fixingSubgroup_isClosed (L : IntermediateField k K) [IsGalois k K] :
     IsClosed (L.fixingSubgroup : Set Gal(K/k)) where
   isOpen_compl := isOpen_iff_mem_nhds.mpr fun σ h => by
@@ -77,7 +76,7 @@ lemma fixingSubgroup_isClosed (L : IntermediateField k K) [IsGalois k K] :
       simp only [yL, smul_eq_mul, AlgEquiv.smul_def, AlgEquiv.mul_apply, ne_eq, true_and]
       have : g y = y := (mem_fixingSubgroup_iff Gal(K/k)).mp hg y <|
         adjoin_simple_le_iff.mp le_rfl
-      simpa only [this, ne_eq, AlgEquiv.smul_def] using ne
+      simpa! only [this, ne_eq, AlgEquiv.smul_def] using ne
     · simp only [(IntermediateField.fixingSubgroup_isOpen (adjoin k {y}).1).smul σ, true_and]
       use 1
       simp only [SetLike.mem_coe, smul_eq_mul, mul_one, and_true, Subgroup.one_mem]
@@ -143,7 +142,6 @@ lemma restrict_fixedField (H : Subgroup Gal(K/k)) (L : IntermediateField k K) [N
     exact (AlgEquiv.restrictNormal_commutes σ L ⟨x, xL⟩).symm
 
 open IntermediateField in
-set_option backward.simpa.using.reducibleClose false in
 lemma fixingSubgroup_fixedField (H : ClosedSubgroup Gal(K/k)) [IsGalois k K] :
     (IntermediateField.fixedField H).fixingSubgroup = H.1 := by
   apply le_antisymm _ ((IntermediateField.le_iff_le H.toSubgroup
@@ -190,7 +188,7 @@ lemma fixingSubgroup_fixedField (H : ClosedSubgroup Gal(K/k)) [IsGalois k K] :
   absurd compl
   apply Set.not_subset.mpr
   use h
-  simpa only [this, Set.mem_compl_iff, Subsemigroup.mem_carrier, Submonoid.mem_toSubsemigroup,
+  simpa! only [this, Set.mem_compl_iff, Subsemigroup.mem_carrier, Submonoid.mem_toSubsemigroup,
     Subgroup.mem_toSubmonoid, not_not, true_and] using mem
 
 /-- The Galois correspondence from intermediate fields to closed subgroups. -/

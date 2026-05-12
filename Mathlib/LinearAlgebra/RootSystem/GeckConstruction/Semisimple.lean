@@ -185,17 +185,16 @@ open LieModule Matrix
 
 local notation "H" => cartanSubalgebra' b
 
-set_option backward.simpa.using.reducibleClose false in
 private lemma instIsIrreducible_aux₀ {U : LieSubmodule K H (b.support ⊕ ι → K)}
     (χ : H → K) (hχ : χ ≠ 0) (hχ' : genWeightSpace U χ ≠ ⊥) :
     ∃ i, v b i ∈ (genWeightSpace U χ).map U.incl := by
   suffices ∀ {w : b.support ⊕ ι → K} (hw₀ : w ≠ 0) (hw : w ∈ genWeightSpace (b.support ⊕ ι → K) χ),
       ∃ (i : ι) (t : K), t • w = v b i by
     obtain ⟨w, hw, hw₀⟩ : ∃ w ∈ genWeightSpace U χ, w ≠ 0 := by
-      simpa only [ne_eq, LieSubmodule.eq_bot_iff, not_forall, exists_prop] using hχ'
+      simpa! only [ne_eq, LieSubmodule.eq_bot_iff, not_forall, exists_prop] using hχ'
     replace hw : U.incl w ∈ genWeightSpace (b.support ⊕ ι → K) χ :=
-      map_genWeightSpace_le (f := U.incl) <| by simpa
-    obtain ⟨i, t, hi : t • w = v b i⟩ := this (by simpa) hw
+      map_genWeightSpace_le (f := U.incl) <| by simpa!
+    obtain ⟨i, t, hi : t • w = v b i⟩ := this (by simpa!) hw
     use i
     rw [map_genWeightSpace_eq_of_injective U.injective_incl, LieSubmodule.range_incl, ← hi,
       LieSubmodule.mem_inf]
@@ -207,7 +206,7 @@ private lemma instIsIrreducible_aux₀ {U : LieSubmodule K H (b.support ⊕ ι �
         ∃ k, diagonal ((d - χ x • 1) ^ k) *ᵥ w = 0 := by
     set μ := χ x
     obtain ⟨⟨x, hx⟩, hx'⟩ := x
-    replace hdx : x = diagonal d := by simpa using hdx
+    replace hdx : x = diagonal d := by simpa! using hdx
     have this (d : b.support ⊕ ι → K) (μ : K) :
         (diagonal d).toLin' - μ • 1 = (diagonal (d - μ • 1)).toLin' := by
       aesop (add simp Pi.single_apply)
@@ -217,7 +216,7 @@ private lemma instIsIrreducible_aux₀ {U : LieSubmodule K H (b.support ⊕ ι �
       replace hw₀ : genWeightSpace (b.support ⊕ ι → K) χ ≠ ⊥ := by
         contrapose hw₀; rw [LieSubmodule.eq_bot_iff] at hw₀; exact hw₀ _ hw
       let χ' : H →ₗ[K] K := (Weight.mk χ hw₀).toLinear
-      replace hχ : χ' ≠ 0 := by contrapose hχ; ext x; simpa using LinearMap.congr_fun hχ x
+      replace hχ : χ' ≠ 0 := by contrapose hχ; ext x; simpa! using LinearMap.congr_fun hχ x
       contrapose! hχ
       apply LinearMap.ext_on (span_range_h'_eq_top b)
       rintro - ⟨l, rfl⟩
@@ -228,7 +227,7 @@ private lemma instIsIrreducible_aux₀ {U : LieSubmodule K H (b.support ⊕ ι �
     replace hw := genWeightSpace_le_genWeightSpaceOf (b.support ⊕ ι → K) (h' l) χ hw
     rw [aux (Sum.elim 0 (P.pairingIn ℤ · l)) (h' l) (h_eq_diagonal l)] at hw
     obtain ⟨k, hk⟩ := hw
-    simpa [mulVec_eq_sum, diagonal_apply, hl] using congr_fun hk (Sum.inl i)
+    simpa! [mulVec_eq_sum, diagonal_apply, hl] using congr_fun hk (Sum.inl i)
   refine ⟨i, (w (Sum.inr i))⁻¹, ?_⟩
   suffices ∃ d : ι → K, (∀ i, d i ≠ 0) ∧ Pairwise ((· ≠ ·) on d) ∧
       diagonal (Sum.elim 0 d) ∈ cartanSubalgebra b by
@@ -238,14 +237,14 @@ private lemma instIsIrreducible_aux₀ {U : LieSubmodule K H (b.support ⊕ ι �
     rw [aux (Sum.elim 0 d) x rfl] at hw
     obtain ⟨k, hk⟩ := hw
     obtain ⟨hχx, hk₀⟩ : d i = χ x ∧ k ≠ 0 := by
-      simpa [hi, mulVec_eq_sum, diagonal_apply, sub_eq_zero] using congr_fun hk (Sum.inr i)
+      simpa! [hi, mulVec_eq_sum, diagonal_apply, sub_eq_zero] using congr_fun hk (Sum.inr i)
     ext (j | j)
     · have : χ x ≠ 0 := hχx ▸ hd₀ i
-      simpa [hi, mulVec_eq_sum, diagonal_apply, hk₀, this] using congr_fun hk (Sum.inl j)
+      simpa! [hi, mulVec_eq_sum, diagonal_apply, hk₀, this] using congr_fun hk (Sum.inl j)
     · rcases eq_or_ne i j with rfl | hij
       · simp [hi]
       · suffices d j ≠ χ x by
-          simpa [mulVec_eq_sum, diagonal_apply, sub_eq_zero, this, hij, hi] using
+          simpa! [mulVec_eq_sum, diagonal_apply, sub_eq_zero, this, hij, hi] using
             congr_fun hk (Sum.inr j)
         rw [← hχx]
         exact hd₁ <| by simp [hij.symm]
@@ -266,7 +265,6 @@ private lemma instIsIrreducible_aux₁ (U : LieSubmodule K H (b.support ⊕ ι �
   rw [← iSup_genWeightSpace_eq_top K H U, iSup_split_single _ 0, biSup_congr hU, this, sup_bot_eq]
 
 omit [P.IsRootSystem] in
-set_option backward.simpa.using.reducibleClose false in
 private lemma instIsIrreducible_aux₂ [P.IsReduced] [P.IsIrreducible]
     {U : LieSubmodule K (lieAlgebra b) (b.support ⊕ ι → K)} {i : ι} (hi : v b i ∈ U) :
     U = ⊤ := by
@@ -278,9 +276,9 @@ private lemma instIsIrreducible_aux₂ [P.IsReduced] [P.IsIrreducible]
     revert U
     apply b.induction_add i
     · intro i h U hi
-      replace hi : v b i ∈ ωConjLieSubmodule U := by simpa [hωv]
+      replace hi : v b i ∈ ωConjLieSubmodule U := by simpa! [hωv]
       obtain ⟨j, hj⟩ := h hi
-      exact ⟨j, by simpa [hωu] using hj⟩
+      exact ⟨j, by simpa! [hωu] using hj⟩
     · intro j hj U hj'
       let f' : lieAlgebra b := ⟨f ⟨j, hj⟩, f_mem_lieAlgebra _⟩
       have : ⁅f', v b j⁆ = u ⟨j, hj⟩ := f_lie_v_same ⟨j, hj⟩
@@ -298,7 +296,7 @@ private lemma instIsIrreducible_aux₂ [P.IsReduced] [P.IsIrreducible]
       exact h₂ <| (U.smul_mem_iff (by norm_cast)).mp this
   have aux (k : b.support) : u k ∈ U := by
     refine b.induction_on_cartanMatrix (fun k : b.support ↦ u k ∈ U) hj (fun l l' hl₁ hl₂ ↦ ?_)
-    suffices (↑|b.cartanMatrix l' l| : K) • u l' ∈ U from (U.smul_mem_iff (by simpa)).mp this
+    suffices (↑|b.cartanMatrix l' l| : K) • u l' ∈ U from (U.smul_mem_iff (by simpa!)).mp this
     rw [Int.cast_smul_eq_zsmul, ← lie_e_lie_f_apply l' l]
     let e' : lieAlgebra b := ⟨e l', e_mem_lieAlgebra l'⟩
     let f' : lieAlgebra b := ⟨f l', f_mem_lieAlgebra l'⟩
@@ -314,11 +312,11 @@ private lemma instIsIrreducible_aux₂ [P.IsReduced] [P.IsIrreducible]
   revert U
   apply b.induction_add j
   · intro j h U hU
-    suffices v b j ∈ ωConjLieSubmodule U by simpa [hωv] using this
+    suffices v b j ∈ ωConjLieSubmodule U by simpa! [hωv] using this
     exact h fun k ↦ by simp [hωu, hU]
   · intro k hk U aux
     have : ⁅e ⟨k, hk⟩, u ⟨k, hk⟩⁆ = (2 : K) • v b k := by
-      simpa [-lie_apply] using e_lie_u ⟨k, hk⟩ ⟨k, hk⟩
+      simpa! [-lie_apply] using e_lie_u ⟨k, hk⟩ ⟨k, hk⟩
     let e' : lieAlgebra b := ⟨e ⟨k, hk⟩, e_mem_lieAlgebra ⟨k, hk⟩⟩
     change ⁅e', u ⟨k, hk⟩⁆ = _ at this
     replace aux := U.lie_mem (x := e') <| aux ⟨k, hk⟩

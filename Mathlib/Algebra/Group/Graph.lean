@@ -172,7 +172,6 @@ lemma mem_graph {f : G →* H} {x : G × H} : x ∈ f.graph ↔ f x.1 = x.2 := .
 @[to_additive graph_eq_range_prod]
 lemma graph_eq_range_prod (f : G →* H) : f.graph = range ((id _).prod f) := by aesop
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Vertical line test** for group homomorphisms.
 
 Let `f : G → H × I` be a homomorphism to a product of groups. Assume that `f` is surjective on the
@@ -188,7 +187,6 @@ lemma exists_range_eq_graph {f : G →* H × I} (hf₁ : Surjective (Prod.fst �
     ∃ f' : H →* I, range f = f'.graph := by
   simpa [SetLike.ext_iff] using exists_mrange_eq_mgraph hf₁ hf
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Line test** for group isomorphisms.
 
 Let `f : G → H × I` be a homomorphism to a product of groups. Assume that `f` is surjective on both
@@ -208,7 +206,6 @@ lemma exists_mulEquiv_range_eq_graph {f : G →* H × I} (hf₁ : Surjective (Pr
 
 end MonoidHom
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Vertical line test** for group homomorphisms.
 
 Let `G ≤ H × I` be a subgroup of a product of monoids. Assume that `G` maps bijectively to the
@@ -222,7 +219,6 @@ lemma Subgroup.exists_eq_graph {G : Subgroup (H × I)} (hG₁ : Bijective (Prod.
     ∃ f : H →* I, G = f.graph := by
   simpa [SetLike.ext_iff] using Submonoid.exists_eq_mgraph hG₁
 
-set_option backward.simpa.using.reducibleClose false in
 /-- **Goursat's lemma** for monoid isomorphisms.
 
 Let `G ≤ H × I` be a submonoid of a product of monoids. Assume that the natural maps from `G` to
