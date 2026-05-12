@@ -6,8 +6,9 @@ open Lake DSL
 ## Mathlib dependencies on upstream projects
 -/
 
-require "leanprover-community" / "batteries" @ git "lean-pr-testing-13637"
-require "leanprover-community" / "Qq" @ git "nightly-testing"
+require batteries from git "file:///Users/paul/code/batteries" @ "lean-pr-testing-13283"
+require Qq from git "file:///Users/paul/code/quote4" @ "paul/draft/lean-pr-testing-13283"
+
 require "leanprover-community" / "aesop" @ git "nightly-testing"
 require "leanprover-community" / "proofwidgets" @ git "v0.0.98"
   with NameMap.empty.insert `errorOnBuild
