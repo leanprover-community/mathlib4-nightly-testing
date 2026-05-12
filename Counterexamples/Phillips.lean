@@ -224,6 +224,7 @@ def restrict (f : BoundedAdditiveMeasure α) (t : Set α) : BoundedAdditiveMeasu
 theorem restrict_apply (f : BoundedAdditiveMeasure α) (s t : Set α) : f.restrict s t = f (s ∩ t) :=
   rfl
 
+set_option backward.simpa.using.reducibleClose false in
 /-- There is a maximal countable set of positive measure, in the sense that any countable set
 not intersecting it has nonpositive measure. Auxiliary lemma to prove `exists_discrete_support`. -/
 theorem exists_discrete_support_nonpos (f : BoundedAdditiveMeasure α) :
@@ -456,6 +457,7 @@ along horizontals). Such a set cannot be measurable as it would contradict Fubin
 We need the continuum hypothesis to construct it.
 -/
 
+set_option backward.simpa.using.reducibleClose false in
 -- TODO: deprecate in favor of `Cardinal.exists_rel_mk_fibers_lt`
 theorem sierpinski_pathological_family (Hcont : #ℝ = ℵ₁) :
     ∃ f : ℝ → Set ℝ, (∀ x, (univ \ f x).Countable) ∧ ∀ y, {x : ℝ | y ∈ f x}.Countable := by
