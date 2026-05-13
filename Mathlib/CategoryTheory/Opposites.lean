@@ -23,7 +23,6 @@ Unfortunately, because we do not have a definitional equality `op (op X) = X`,
 there are quite a few variations that are needed in practice.
 -/
 
-
 @[expose] public section
 
 universe v₁ v₂ u₁ u₂
@@ -310,6 +309,12 @@ set_option backward.defeqAttrib.useBackward true in
 /-- The opposite of a fully faithful functor is fully faithful. -/
 protected def FullyFaithful.op {F : C ⥤ D} (hF : F.FullyFaithful) : F.op.FullyFaithful where
   preimage {X Y} f := .op <| hF.preimage f.unop
+
+set_option backward.defeqAttrib.useBackward true in
+/-- A functor is fully faithful when its opposite is fully faithful. -/
+protected def FullyFaithful.unop {F : Cᵒᵖ ⥤ Dᵒᵖ} (hF : F.FullyFaithful) :
+    F.unop.FullyFaithful where
+  preimage {X Y} f := (hF.preimage f.op).unop
 
 /-- If F is faithful then the `rightOp` of F is also faithful. -/
 instance rightOp_faithful {F : Cᵒᵖ ⥤ D} [Faithful F] : Faithful F.rightOp where
