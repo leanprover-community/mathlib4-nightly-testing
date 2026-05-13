@@ -83,7 +83,7 @@ def mkAllCLI (args : Parsed) : IO UInt32 := do
           "\n" ++
           "set_option linter.style.longLine false\n" ++
           "set_option linter.directoryDependency false\n" ++
-          "set_option linter.deprecated_module false\n"
+          "set_option linter.deprecated.module false\n"
         else
           "\n")
     if !fileExists then
