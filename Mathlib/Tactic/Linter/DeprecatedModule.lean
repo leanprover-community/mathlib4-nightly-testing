@@ -5,7 +5,7 @@ Authors: Damiano Testa
 -/
 module
 
-import Batteries.Linter.DeprecatedModule
+public import Batteries.Linter.DeprecatedModule
 
 /-
 The linter ignores `Batteries.Linter.DeprecatedModule` so we need to add a
