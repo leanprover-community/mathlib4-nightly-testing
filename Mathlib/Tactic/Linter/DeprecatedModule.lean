@@ -6,6 +6,7 @@ Authors: Damiano Testa
 module
 
 public import Batteries.Linter.DeprecatedModule
+public import Mathlib.Init
 
 /-
 The linter ignores `Batteries.Linter.DeprecatedModule` so we need to add a
