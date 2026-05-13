@@ -80,7 +80,10 @@ def mkAllCLI (args : Parsed) : IO UInt32 := do
     let fileContent := (if useModule then "module  -- shake: keep-all\n\n" else "") ++
       ("\n".intercalate (allFiles.map ((if useModule then "public " else "") ++ "import " ++ ·)).toList) ++
       (if d == "Mathlib" then
-          "\n\nset_option linter.style.longLine false\nset_option linter.deprecated_module false\n"
+          "\n" ++
+          "set_option linter.style.longLine false\n" ++
+          "set_option linter.directoryDependency false\n" ++
+          "set_option linter.deprecated_module false\n"
         else
           "\n")
     if !fileExists then
