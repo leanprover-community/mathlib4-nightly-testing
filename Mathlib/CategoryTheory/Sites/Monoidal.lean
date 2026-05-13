@@ -45,6 +45,8 @@ namespace Presheaf
 
 variable [MonoidalClosed A]
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Relation between `functorEnrichedHom` and `presheafHom`. -/
 noncomputable def functorEnrichedHomCoyonedaObjEquiv (M : A) (F G : Cᵒᵖ ⥤ A)
     [HasFunctorEnrichedHom A F G] (X : C) :
@@ -84,6 +86,8 @@ noncomputable def functorEnrichedHomCoyonedaObjEquiv (M : A) (F G : Cᵒᵖ ⥤ 
     simp only [uncurry_curry, end_.lift_π]
     rfl
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 lemma functorEnrichedHomCoyonedaObjEquiv_naturality
     {M : A} {F G : Cᵒᵖ ⥤ A} {X Y : C} (f : X ⟶ Y)
     [HasFunctorEnrichedHom A F G]
@@ -126,6 +130,7 @@ variable [MonoidalClosed A]
 
 open MonoidalClosed.FunctorCategory
 
+set_option backward.isDefEq.respectTransparency false in
 lemma whiskerLeft {G₁ G₂ : Cᵒᵖ ⥤ A} {g : G₁ ⟶ G₂} (hg : J.W g) (F : Cᵒᵖ ⥤ A) :
     J.W (F ◁ g) := fun H h ↦ by
   have := hg _ (Presheaf.isSheaf_functorEnrichedHom F H h)
@@ -138,6 +143,7 @@ lemma whiskerLeft {G₁ G₂ : Cᵒᵖ ⥤ A} {g : G₁ ⟶ G₂} (hg : J.W g) (
   dsimp
   rw [curry_natural_left]
 
+set_option backward.defeqAttrib.useBackward true in
 lemma whiskerRight [BraidedCategory A]
     {F₁ F₂ : Cᵒᵖ ⥤ A} {f : F₁ ⟶ F₂} (hf : J.W f) (G : Cᵒᵖ ⥤ A) :
     J.W (f ▷ G) :=
@@ -158,6 +164,7 @@ variable (J A)
 /-- The monoidal category structure on `Sheaf J A` that is obtained
 by localization of the monoidal category structure on the category
 of presheaves. -/
+@[instance_reducible]
 noncomputable def monoidalCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J A] :
     MonoidalCategory (Sheaf J A) :=
   inferInstanceAs (MonoidalCategory
@@ -167,6 +174,7 @@ attribute [local instance] monoidalCategory
 
 /-- The monoidal category structure on `Sheaf J A` obtained in `Sheaf.monoidalCategory` is
 braided when `A` is braided. -/
+@[implicit_reducible]
 noncomputable def braidedCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J A]
     [BraidedCategory A] : BraidedCategory (Sheaf J A) :=
   inferInstanceAs (BraidedCategory
@@ -174,6 +182,7 @@ noncomputable def braidedCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J
 
 /-- The monoidal category structure on `Sheaf J A` obtained in `Sheaf.monoidalCategory` is
 symmetric when `A` is symmetric. -/
+@[implicit_reducible]
 noncomputable def symmetricCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J A]
     [SymmetricCategory A] :
     SymmetricCategory (Sheaf J A) :=

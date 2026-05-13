@@ -16,6 +16,8 @@ is Guitart exact.
 
 -/
 
+set_option backward.defeqAttrib.useBackward true
+
 @[expose] public section
 
 namespace CategoryTheory
@@ -41,6 +43,7 @@ def whiskerVertical (α : L ⟶ L') (β : R' ⟶ R) :
 
 namespace GuitartExact
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A 2-square stays Guitart exact if we replace the left and right functors
 by isomorphic functors. See also `whiskerVertical_iff`. -/
 lemma whiskerVertical [w.GuitartExact] (α : L ≅ L') (β : R ≅ R') :
@@ -104,6 +107,7 @@ def vComp' {L₁₂ : C₁ ⥤ C₃} {R₁₂ : D₁ ⥤ D₃} (eL : L₁ ⋙ L�
 
 namespace GuitartExact
 
+set_option backward.isDefEq.respectTransparency false in
 instance vComp [hw : w.GuitartExact] [hw' : w'.GuitartExact] :
     (w ≫ᵥ w').GuitartExact := by
   simp only [TwoSquare.guitartExact_iff_initial]
@@ -117,6 +121,7 @@ instance vComp' [GuitartExact w] [GuitartExact w'] {L₁₂ : C₁ ⥤ C₃}
   dsimp only [TwoSquare.vComp']
   infer_instance
 
+set_option backward.isDefEq.respectTransparency false in
 lemma vComp_iff_of_equivalences (eL : C₂ ≌ C₃) (eR : D₂ ≌ D₃)
     (w' : H₂ ⋙ eR.functor ≅ eL.functor ⋙ H₃) :
     (w ≫ᵥ w'.hom).GuitartExact ↔ w.GuitartExact := by

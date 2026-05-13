@@ -134,12 +134,15 @@ theorem cast_le_cast (eq : n = m) {a b : Fin n} : a.cast eq ≤ b.cast eq ↔ a 
   Iff.rfl
 
 /-- The 'identity' equivalence between `Fin m` and `Fin n` when `m = n`. -/
-@[simps]
+@[simps apply]
 def _root_.finCongr (eq : n = m) : Fin n ≃ Fin m where
   toFun := Fin.cast eq
   invFun := Fin.cast eq.symm
   left_inv := leftInverse_cast eq
   right_inv := rightInverse_cast eq
+
+theorem _root_.finCongr_symm_apply (eq : n = m) (a : Fin m) :
+    (finCongr eq).symm a = a.cast eq.symm := rfl
 
 @[simp] lemma _root_.finCongr_apply_mk (h : m = n) (k : ℕ) (hk : k < m) :
     finCongr h ⟨k, hk⟩ = ⟨k, h ▸ hk⟩ := rfl
@@ -177,7 +180,8 @@ theorem le_of_castSucc_lt_of_succ_lt {a b : Fin (n + 1)} {i : Fin n}
   simp [Fin.lt_def, -val_fin_lt] at *; lia
 
 theorem castSucc_lt_or_lt_succ (p : Fin (n + 1)) (i : Fin n) : castSucc i < p ∨ p < i.succ := by
-  simpa [Fin.lt_def, -val_fin_lt] using by lia
+  simp [Fin.lt_def, -val_fin_lt]
+  lia
 
 theorem succ_le_or_le_castSucc (p : Fin (n + 1)) (i : Fin n) : succ i ≤ p ∨ p ≤ i.castSucc := by
   rw [le_castSucc_iff, ← castSucc_lt_iff_succ_le]

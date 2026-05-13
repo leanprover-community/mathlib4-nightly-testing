@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Field.Equiv
 public import Mathlib.Algebra.Polynomial.Div
 public import Mathlib.Algebra.Polynomial.Eval.SMul
-public import Mathlib.GroupTheory.GroupAction.Ring
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
 public import Mathlib.RingTheory.Polynomial.Basic
 public import Mathlib.RingTheory.Polynomial.Ideal
@@ -228,14 +227,12 @@ lemma quotientEquivQuotientMvPolynomial_rightInverse (I : Ideal R) :
   apply induction_on f
   · intro r
     obtain ⟨r, rfl⟩ := Ideal.Quotient.mk_surjective r
-    rw [eval₂_C, Ideal.Quotient.lift_mk, RingHom.comp_apply, Ideal.Quotient.lift_mk, eval₂Hom_C,
-      RingHom.comp_apply]
+    simp
   · intro p q hp hq
     simp only [map_add, MvPolynomial.eval₂_add]
       at hp hq ⊢
     rw [hp, hq]
   · intro p i hp
-    simp only at hp
     simp only [hp, coe_eval₂Hom, Ideal.Quotient.lift_mk, eval₂_mul, map_mul, eval₂_X]
 
 /-- Split off from `quotientEquivQuotientMvPolynomial` for speed. -/

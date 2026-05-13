@@ -36,6 +36,8 @@ variable {α : Type u} {β : Type v} {γ : Type w}
 
 open Function
 
+open scoped commutatorElement
+
 namespace MulAction
 
 variable [Group α]
@@ -66,7 +68,7 @@ instance left_quotientAction : QuotientAction α H :=
   ⟨fun _ _ _ _ => by rwa [smul_eq_mul, smul_eq_mul, mul_inv_rev, mul_assoc, inv_mul_cancel_left]⟩
 
 @[to_additive]
-instance right_quotientAction : QuotientAction (normalizer H).op H :=
+instance right_quotientAction : QuotientAction (normalizer H : Subgroup α).op H :=
   ⟨fun b c _ _ => by
     rwa [smul_def, smul_def, smul_eq_mul_unop, smul_eq_mul_unop, mul_inv_rev, ← mul_assoc,
       mem_normalizer_iff'.mp b.prop, mul_assoc, mul_inv_cancel_left]⟩
@@ -92,10 +94,12 @@ theorem Quotient.smul_mk [QuotientAction β H] (b : β) (a : α) :
     (b • QuotientGroup.mk a : α ⧸ H) = QuotientGroup.mk (b • a) :=
   rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 theorem Quotient.smul_coe [QuotientAction β H] (b : β) (a : α) :
     b • (a : α ⧸ H) = (↑(b • a) : α ⧸ H) :=
   rfl
+
+attribute [simp] Quotient.smul_coe
 
 @[to_additive (attr := simp)]
 theorem Quotient.mk_smul_out [QuotientAction β H] (b : β) (q : α ⧸ H) :

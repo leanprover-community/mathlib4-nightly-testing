@@ -236,6 +236,9 @@ theorem map_liftQ [RingHomSurjective τ₁₂] (f : M →ₛₗ[τ₁₂] M₂) 
 theorem ker_liftQ (f : M →ₛₗ[τ₁₂] M₂) (h) : ker (p.liftQ f h) = (ker f).map (mkQ p) :=
   comap_liftQ _ _ _ _
 
+lemma ker_mapQ (f : M →ₛₗ[τ₁₂] M₂) (h) : ker (p.mapQ q f h) = (comap f q).map p.mkQ := by
+  simp [Submodule.mapQ, Submodule.ker_liftQ, LinearMap.ker_comp]
+
 theorem range_liftQ [RingHomSurjective τ₁₂] (f : M →ₛₗ[τ₁₂] M₂) (h) :
     range (p.liftQ f h) = range f := by simpa only [range_eq_map] using map_liftQ _ _ _ _
 
@@ -323,7 +326,7 @@ theorem span_preimage_eq [RingHomSurjective τ₁₂] {f : M →ₛₗ[τ₁₂]
 
 /-- If `P` is a submodule of `M` and `Q` a submodule of `N`,
 and `f : M ≃ₗ N` maps `P` to `Q`, then `M ⧸ P` is equivalent to `N ⧸ Q`. -/
-@[simps]
+@[simps apply]
 def Quotient.equiv {N : Type*} [AddCommGroup N] [Module R N] (P : Submodule R M)
     (Q : Submodule R N) (f : M ≃ₗ[R] N) (hf : P.map (f : M →ₗ[R] N) = Q) : (M ⧸ P) ≃ₗ[R] N ⧸ Q :=
   { P.mapQ Q (f : M →ₗ[R] N) fun _ hx => hf ▸ Submodule.mem_map_of_mem hx with

@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Analysis.Calculus.ContDiff.RCLike
 public import Mathlib.MeasureTheory.Measure.Hausdorff
+import Mathlib.Analysis.Convex.Intrinsic
 
 /-!
 # Hausdorff dimension
@@ -168,8 +169,8 @@ theorem dimH_mono {s t : Set X} (h : s ⊆ t) : dimH s ≤ dimH t := by
 
 theorem dimH_subsingleton {s : Set X} (h : s.Subsingleton) : dimH s = 0 := by
   borelize X
-  apply le_antisymm _ (zero_le _)
-  refine dimH_le_of_hausdorffMeasure_ne_top ?_
+  rw [← nonpos_iff_eq_zero]
+  apply dimH_le_of_hausdorffMeasure_ne_top
   exact ((hausdorffMeasure_le_one_of_subsingleton h le_rfl).trans_lt ENNReal.one_lt_top).ne
 
 alias Set.Subsingleton.dimH_zero := dimH_subsingleton
@@ -333,6 +334,7 @@ theorem dimH_range_le_of_locally_holder_on [SecondCountableTopology X] {r : ℝ�
 -/
 
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `f : X → Y` is Lipschitz continuous on `s`, then `dimH (f '' s) ≤ dimH s`. -/
 theorem LipschitzOnWith.dimH_image_le (h : LipschitzOnWith K f s) : dimH (f '' s) ≤ dimH s := by
   simpa using h.holderOnWith.dimH_image_le zero_lt_one
@@ -350,6 +352,7 @@ theorem dimH_range_le (h : LipschitzWith K f) : dimH (range f) ≤ dimH (univ : 
 
 end LipschitzWith
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `s` is a set in an extended metric space `X` with second countable topology and `f : X → Y`
 is Lipschitz in a neighborhood within `s` of every point `x ∈ s`, then the Hausdorff dimension of
 the image `f '' s` is at most the Hausdorff dimension of `s`. -/
@@ -380,7 +383,7 @@ theorem dimH_preimage_le (hf : AntilipschitzWith K f) (s : Set Y) : dimH (f ⁻�
 
 theorem le_dimH_image (hf : AntilipschitzWith K f) (s : Set X) : dimH s ≤ dimH (f '' s) :=
   calc
-    dimH s ≤ dimH (f ⁻¹' (f '' s)) := dimH_mono (subset_preimage_image _ _)
+    dimH s ≤ dimH (f ⁻¹' f '' s) := dimH_mono (subset_preimage_image _ _)
     _ ≤ dimH (f '' s) := hf.dimH_preimage_le _
 
 end AntilipschitzWith
@@ -472,6 +475,19 @@ theorem dimH_of_nonempty_interior {s : Set E} (h : (interior s).Nonempty) : dimH
   let ⟨_, hx⟩ := h
   dimH_of_mem_nhds (mem_interior_iff_mem_nhds.1 hx)
 
+/-- The Hausdorff dimension of a nonempty convex set equals the dimension of its affine span. -/
+theorem Convex.dimH_eq_finrank_vectorSpan {s : Set E} (hcvx : Convex ℝ s) (hne : s.Nonempty) :
+    dimH s = finrank ℝ (vectorSpan ℝ s) := by
+  have := hne.to_subtype
+  let φ := AffineIsometryEquiv.constVSub ℝ
+    (⟨hne.some, subset_affineSpan ℝ s hne.some_mem⟩ : affineSpan ℝ s)
+  have hs_eq : s = (↑) '' ((↑) ⁻¹' s : Set (affineSpan ℝ s)) :=
+    (image_preimage_eq_of_subset <| (subset_affineSpan ℝ s).trans Subtype.range_coe.superset).symm
+  rw [hs_eq, isometry_subtype_coe.dimH_image, ← φ.isometry.dimH_image,
+      Real.dimH_of_nonempty_interior, direction_affineSpan ℝ s, ← hs_eq]
+  simp_rw [← AffineIsometryEquiv.coe_toHomeomorph, ← φ.toHomeomorph.image_interior, image_nonempty]
+  simpa [intrinsicInterior] using (intrinsicInterior_nonempty hcvx).mpr hne
+
 variable (E)
 
 theorem dimH_univ_eq_finrank : dimH (univ : Set E) = finrank ℝ E :=
@@ -497,6 +513,13 @@ lemma hausdorffMeasure_of_finrank_lt [MeasurableSpace E] [BorelSpace E] {d : ℝ
   apply hausdorffMeasure_of_dimH_lt
   rw [dimH_univ_eq_finrank]
   exact mod_cast hd
+
+/-- The Hausdorff dimension of a non-degenerate segment in a real normed space is 1. -/
+theorem dimH_segment {x y : E} (h : x ≠ y) :
+    dimH (segment ℝ x y) = 1 := by
+  rw [Convex.dimH_eq_finrank_vectorSpan (convex_segment x y) ⟨x, left_mem_segment ℝ x y⟩,
+      vectorSpan_segment]
+  simp [finrank_span_singleton (sub_ne_zero.mpr h.symm)]
 
 end Real
 

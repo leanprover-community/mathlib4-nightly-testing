@@ -67,7 +67,7 @@ variable [AddCommMonoid N] [Module R N]
   linearly equivalent to a Finsupp of a tensor product -/
 noncomputable def rTensor :
     MvPolynomial σ S ⊗[R] N ≃ₗ[S] (σ →₀ ℕ) →₀ (S ⊗[R] N) :=
-  TensorProduct.finsuppLeft' _ _ _ _ _
+  TensorProduct.finsuppLeft _ _ _ _ _
 
 lemma rTensor_apply_tmul (p : MvPolynomial σ S) (n : N) :
     rTensor (p ⊗ₜ[R] n) = p.sum (fun i m ↦ Finsupp.single i (m ⊗ₜ[R] n)) :=
@@ -144,7 +144,7 @@ lemma coeff_rTensorAlgHom_tmul
   rw [AlgHom.coe_comp, IsScalarTower.coe_toAlgHom', Function.comp_apply,
     Algebra.TensorProduct.includeRight_apply]
   rw [algebraMap_eq, mul_comm, coeff_C_mul]
-  simp [mapAlgHom, coeff_map]
+  simp [coeff_map]
 
 section DecidableEq
 variable [DecidableEq σ]
@@ -160,8 +160,6 @@ lemma rTensorAlgHom_toLinearMap :
       MvPolynomial σ S ⊗[R] N →ₐ[S] MvPolynomial σ (S ⊗[R] N)).toLinearMap =
       rTensor.toLinearMap := by
   ext d n e
-  dsimp only [AlgebraTensorModule.curry_apply, TensorProduct.curry_apply,
-    LinearMap.coe_restrictScalars, AlgHom.toLinearMap_apply]
   simp only [coe_comp, Function.comp_apply, AlgebraTensorModule.curry_apply, curry_apply,
     LinearMap.coe_restrictScalars, AlgHom.toLinearMap_apply]
   rw [coeff_rTensorAlgHom_tmul]
@@ -173,6 +171,7 @@ lemma rTensorAlgHom_apply_eq (p : MvPolynomial σ S ⊗[R] N) :
   rw [← AlgHom.toLinearMap_apply, rTensorAlgHom_toLinearMap]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The tensor product of a polynomial algebra by an algebra
   is algebraically equivalent to a polynomial algebra -/
 noncomputable def rTensorAlgEquiv :
@@ -221,7 +220,6 @@ noncomputable def algebraTensorAlgEquiv :
 lemma algebraTensorAlgEquiv_tmul (a : A) (p : MvPolynomial σ R) :
     algebraTensorAlgEquiv R A (a ⊗ₜ p) = a • MvPolynomial.map (algebraMap R A) p := by
   simp [algebraTensorAlgEquiv, Algebra.smul_def]
-  rfl
 
 @[simp]
 lemma algebraTensorAlgEquiv_symm_X (s : σ) :

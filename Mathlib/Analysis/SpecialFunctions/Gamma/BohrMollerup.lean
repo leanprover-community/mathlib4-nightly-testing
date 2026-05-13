@@ -87,14 +87,12 @@ theorem Gamma_mul_add_mul_le_rpow_Gamma_mul_rpow_Gamma {s t a b : ℝ} (hs : 0 <
       ENNReal.div_self A B, memLp_one_iff_integrable]
     · apply Integrable.congr (GammaIntegral_convergent hu)
       refine eventuallyEq_of_mem (self_mem_ae_restrict measurableSet_Ioi) fun x hx => ?_
-      dsimp only
       rw [fpow hc u hx]
       congr 1
       exact (norm_of_nonneg (posf _ _ x hx)).symm
     · refine ContinuousOn.aestronglyMeasurable ?_ measurableSet_Ioi
-      refine (Continuous.continuousOn ?_).mul (continuousOn_of_forall_continuousAt fun x hx => ?_)
-      · exact continuous_exp.comp (continuous_const.mul continuous_id')
-      · exact continuousAt_rpow_const _ _ (Or.inl (mem_Ioi.mp hx).ne')
+      refine .mul (by fun_prop) (continuousOn_of_forall_continuousAt fun x hx ↦ ?_)
+      exact continuousAt_rpow_const _ _ (Or.inl (mem_Ioi.mp hx).ne')
   -- now apply Hölder:
   rw [Gamma_eq_integral hs, Gamma_eq_integral ht, Gamma_eq_integral hst]
   convert
@@ -102,7 +100,6 @@ theorem Gamma_mul_add_mul_le_rpow_Gamma_mul_rpow_Gamma {s t a b : ℝ} (hs : 0 <
       (f_mem_Lp hb ht) using
     1
   · refine setIntegral_congr_fun measurableSet_Ioi fun x hx => ?_
-    dsimp only
     have A : exp (-x) = exp (-a * x) * exp (-b * x) := by
       rw [← exp_add, ← add_mul, ← neg_add, hab, neg_one_mul]
     have B : x ^ (a * s + b * t - 1) = x ^ (a * (s - 1)) * x ^ (b * (t - 1)) := by
@@ -117,7 +114,7 @@ theorem convexOn_log_Gamma : ConvexOn ℝ (Ioi 0) (log ∘ Gamma) := by
   have : b = 1 - a := by linarith
   subst this
   simp_rw [Function.comp_apply, smul_eq_mul]
-  simp only [mem_Ioi] at hx hy
+  push _ ∈ _ at hx hy
   rw [← log_rpow, ← log_rpow, ← log_mul]
   · gcongr
     exact Gamma_mul_add_mul_le_rpow_Gamma_mul_rpow_Gamma hx hy ha hb hab
@@ -418,20 +415,20 @@ theorem log_doublingGamma_eq :
 theorem doublingGamma_log_convex_Ioi : ConvexOn ℝ (Ioi (0 : ℝ)) (log ∘ doublingGamma) := by
   refine (((ConvexOn.add ?_ ?_).add ?_).add_const _).congr log_doublingGamma_eq.symm
   · convert
-      convexOn_log_Gamma.comp_affineMap (DistribMulAction.toLinearMap ℝ ℝ (1 / 2 : ℝ)).toAffineMap
+      convexOn_log_Gamma.comp_affineMap (DistribSMul.toLinearMap ℝ ℝ (1 / 2 : ℝ)).toAffineMap
       using 1
-    · simpa only [zero_div] using (preimage_const_mul_Ioi (0 : ℝ) one_half_pos).symm
+    · simpa only [zero_div] using (preimage_const_mul_Ioi₀ (0 : ℝ) one_half_pos).symm
     · ext1 x
-      simp only [LinearMap.coe_toAffineMap, Function.comp_apply, DistribMulAction.toLinearMap_apply]
+      simp only [LinearMap.coe_toAffineMap, Function.comp_apply, DistribSMul.toLinearMap_apply]
       rw [smul_eq_mul, mul_comm, mul_one_div]
   · refine ConvexOn.subset ?_ (Ioi_subset_Ioi <| neg_one_lt_zero.le) (convex_Ioi _)
     convert
       convexOn_log_Gamma.comp_affineMap
-        ((DistribMulAction.toLinearMap ℝ ℝ (1 / 2 : ℝ)).toAffineMap +
+        ((DistribSMul.toLinearMap ℝ ℝ (1 / 2 : ℝ)).toAffineMap +
           AffineMap.const ℝ ℝ (1 / 2 : ℝ)) using 1
     · change Ioi (-1 : ℝ) = ((fun x : ℝ => x + 1 / 2) ∘ fun x : ℝ => (1 / 2 : ℝ) * x) ⁻¹' Ioi 0
       rw [preimage_comp, preimage_add_const_Ioi, zero_sub,
-        preimage_const_mul_Ioi (_ : ℝ) one_half_pos, neg_div, div_self (@one_half_pos ℝ _).ne']
+        preimage_const_mul_Ioi₀ (_ : ℝ) one_half_pos, neg_div, div_self (@one_half_pos ℝ _).ne']
     · ext1 x
       change log (Gamma (x / 2 + 1 / 2)) = log (Gamma ((1 / 2 : ℝ) • x + 1 / 2))
       rw [smul_eq_mul, mul_comm, mul_one_div]

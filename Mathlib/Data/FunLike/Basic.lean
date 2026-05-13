@@ -5,10 +5,12 @@ Authors: Anne Baanen
 -/
 module
 
+public meta import Lean.Meta.CoeAttr
 public import Mathlib.Logic.Function.Basic
 public import Mathlib.Logic.Unique
 public import Mathlib.Util.CompileInductive
 public import Mathlib.Tactic.Simps.NotationClass
+public import Mathlib.Tactic.SplitIfs
 
 /-!
 # Typeclass for a type `F` with an injective map to `A → B`
@@ -37,6 +39,7 @@ instance : FunLike (MyHom A B) A B where
 
 /-- Copy of a `MyHom` with a new `toFun` equal to the old one. Useful to fix definitional
 equalities. -/
+
 protected def copy (f : MyHom A B) (f' : A → B) (h : f' = ⇑f) : MyHom A B where
   toFun := f'
   map_op' := h.symm ▸ f.map_op'

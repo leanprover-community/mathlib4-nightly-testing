@@ -8,7 +8,7 @@ module
 public import Mathlib.Algebra.Group.PUnit
 public import Mathlib.Algebra.Group.TypeTags.Hom
 public import Mathlib.Algebra.Group.ULift
-public import Mathlib.CategoryTheory.Elementwise
+public import Mathlib.CategoryTheory.ConcreteCategory.Forget
 public import Mathlib.CategoryTheory.Functor.ReflectsIso.Basic
 
 /-!
@@ -116,15 +116,15 @@ initialize_simps_projections AddMonCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_id {X : MonCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_comp {X Y Z : MonCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[to_additive (attr := simp)]
 lemma forget_map {X Y : MonCat} (f : X ⟶ Y) :
-    (forget MonCat).map f = f := rfl
+    (forget MonCat).map f = (f : _ → _) := rfl
 
 @[to_additive (attr := ext)]
 lemma ext {X Y : MonCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
@@ -303,16 +303,13 @@ initialize_simps_projections AddCommMonCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_id {X : CommMonCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive (attr := simp)]
+@[to_additive]
 lemma coe_comp {X Y Z : CommMonCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[to_additive (attr := simp)]
-lemma forget_map {X Y : CommMonCat} (f : X ⟶ Y) :
-    (forget CommMonCat).map f = (f : X → Y) :=
-  rfl
+@[deprecated (since := "2026-02-15")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
 
 @[to_additive (attr := ext)]
 lemma ext {X Y : CommMonCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
@@ -471,9 +468,9 @@ end CategoryTheory.Iso
 in `MonCat` -/
 @[to_additive addEquivIsoAddMonCatIso]
 def mulEquivIsoMonCatIso {X Y : Type u} [Monoid X] [Monoid Y] :
-    X ≃* Y ≅ MonCat.of X ≅ MonCat.of Y where
-  hom e := e.toMonCatIso
-  inv i := i.monCatIsoToMulEquiv
+    (X ≃* Y) ≅ (MonCat.of X ≅ MonCat.of Y) where
+  hom := ↾fun e ↦ e.toMonCatIso
+  inv := ↾fun i ↦ i.monCatIsoToMulEquiv
 
 /-- additive equivalences between `AddMonoid`s are the same
 as (isomorphic to) isomorphisms in `AddMonCat` -/
@@ -483,9 +480,9 @@ add_decl_doc addEquivIsoAddMonCatIso
 in `CommMonCat` -/
 @[to_additive addEquivIsoAddCommMonCatIso]
 def mulEquivIsoCommMonCatIso {X Y : Type u} [CommMonoid X] [CommMonoid Y] :
-    X ≃* Y ≅ CommMonCat.of X ≅ CommMonCat.of Y where
-  hom e := e.toCommMonCatIso
-  inv i := i.commMonCatIsoToMulEquiv
+    (X ≃* Y) ≅ (CommMonCat.of X ≅ CommMonCat.of Y) where
+  hom := ↾fun e ↦ e.toCommMonCatIso
+  inv := ↾fun i ↦ i.commMonCatIsoToMulEquiv
 
 /-- additive equivalences between `AddCommMonoid`s are
 the same as (isomorphic to) isomorphisms in `AddCommMonCat` -/
@@ -505,9 +502,7 @@ instance CommMonCat.forget_reflects_isos : (forget CommMonCat.{u}).ReflectsIsomo
     let e : X ≃* Y := { f.hom, i.toEquiv with }
     exact e.toCommMonCatIso.isIso_hom
 
-/-- Ensure that `forget₂ CommMonCat MonCat` automatically reflects isomorphisms.
-We could have used `CategoryTheory.HasForget.ReflectsIso` alternatively.
--/
+/-- Ensure that `forget₂ CommMonCat MonCat` automatically reflects isomorphisms. -/
 @[to_additive]
 instance CommMonCat.forget₂_full : (forget₂ CommMonCat MonCat).Full where
   map_surjective f := ⟨ofHom f.hom, rfl⟩

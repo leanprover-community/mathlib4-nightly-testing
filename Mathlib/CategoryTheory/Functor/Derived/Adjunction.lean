@@ -27,7 +27,7 @@ that `F' ⋙ G'` is the right derived functor of `F ⋙ L₁ ⋙ G'`).
 ## References
 
 * [Georges Maltsiniotis, *Le théorème de Quillen, d'adjonction des
-foncteurs dérivés, revisité*][Maltsiniotis2007]
+  foncteurs dérivés, revisité*][Maltsiniotis2007]
 
 -/
 
@@ -46,6 +46,8 @@ namespace Adjunction
 
 open Functor
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `Adjunction.derived`. -/
 @[simps]
 def derived' [G'.IsLeftDerivedFunctor α W₁] [F'.IsRightDerivedFunctor β W₂]
@@ -57,7 +59,7 @@ def derived' [G'.IsLeftDerivedFunctor α W₁] [F'.IsRightDerivedFunctor β W₂
   unit := η
   counit := ε
   left_triangle_components := by
-    suffices G'.leftUnitor.inv ≫ whiskerRight η G' ≫ (Functor.associator _ _ _ ).hom ≫
+    suffices G'.leftUnitor.inv ≫ whiskerRight η G' ≫ (Functor.associator _ _ _).hom ≫
         whiskerLeft G' ε ≫ G'.rightUnitor.hom = 𝟙 _ from
       fun Y₁ ↦ by simpa using congr_app this Y₁
     apply G'.leftDerived_ext α W₁
@@ -97,6 +99,7 @@ noncomputable def derivedη : 𝟭 D₁ ⟶ G' ⋙ F' :=
     (L₁.rightUnitor.hom ≫ L₁.leftUnitor.inv ≫ whiskerRight adj.unit L₁ ≫
       (Functor.associator _ _ _).hom ≫ whiskerLeft G β ≫ (Functor.associator _ _ _).inv)
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma derivedη_fac_app (X₁ : C₁) :
     (adj.derivedη W₁ α β).app (L₁.obj X₁) ≫ F'.map (α.app X₁) =
@@ -118,6 +121,7 @@ noncomputable def derivedε : F' ⋙ G' ⟶ 𝟭 D₂ :=
     ((Functor.associator _ _ _).hom ≫ whiskerLeft F α ≫ (Functor.associator _ _ _).inv ≫
         whiskerRight adj.counit _ ≫ L₂.leftUnitor.hom ≫ L₂.rightUnitor.inv)
 
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma derivedε_fac_app (X₂ : C₂) :
     G'.map (β.app X₂) ≫ (adj.derivedε W₂ α β).app (L₂.obj X₂) =
@@ -129,6 +133,7 @@ lemma derivedε_fac_app (X₂ : C₂) :
 
 end
 
+set_option backward.isDefEq.respectTransparency false in
 /-- An adjunction between functors induces an adjunction between the
 corresponding left/right derived functors, when these derived
 functors are *absolute*, i.e. they remain derived functors

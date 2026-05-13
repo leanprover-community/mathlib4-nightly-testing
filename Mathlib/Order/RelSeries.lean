@@ -23,6 +23,7 @@ If `r` is a relation on `α` then a relation series of length `n` is a series
 
 -/
 
+
 @[expose] public section
 
 open scoped SetRel
@@ -103,15 +104,12 @@ lemma length_toList (x : RelSeries r) : x.toList.length = x.length + 1 :=
   List.length_ofFn
 
 @[simp]
-lemma toList_singleton (x : α) : (singleton r x).toList = [x] :=
-  by simp [toList, singleton]
+lemma toList_singleton (x : α) : (singleton r x).toList = [x] := by simp [toList, singleton]
 
 lemma isChain_toList (x : RelSeries r) : x.toList.IsChain (· ~[r] ·) := by
   simp_rw [List.isChain_iff_getElem, length_toList, add_lt_add_iff_right]
   intro i h
   convert x.step ⟨i, by simpa [toList] using h⟩ <;> apply List.get_ofFn
-
-@[deprecated (since := "2025-09-24")] alias toList_chain' := isChain_toList
 
 lemma toList_ne_nil (x : RelSeries r) : x.toList ≠ [] := fun m =>
   List.eq_nil_iff_forall_not_mem.mp m (x 0) <| List.mem_ofFn.mpr ⟨_, rfl⟩
@@ -122,8 +120,6 @@ def fromListIsChain (x : List α) (x_ne_nil : x ≠ []) (hx : x.IsChain (· ~[r]
   length := x.length - 1
   toFun i := x[Fin.cast (Nat.succ_pred_eq_of_pos <| List.length_pos_iff.mpr x_ne_nil) i]
   step i := List.isChain_iff_getElem.mp hx i _
-
-@[deprecated (since := "2025-09-24")] alias fromListChain' := fromListIsChain
 
 /-- Relation series of `r` and nonempty list of `α` satisfying `r`-chain condition bijectively
 corresponds to each other. -/
@@ -281,9 +277,6 @@ lemma head_fromListIsChain (l : List α) (l_ne_nil : l ≠ []) (hl : l.IsChain (
     (fromListIsChain l l_ne_nil hl).head = l.head l_ne_nil := by
   simp [← apply_zero, List.getElem_zero_eq_head]
 
-@[deprecated (since := "2025-09-24")] alias toList_fromListChain' := toList_fromListIsChain
-@[deprecated (since := "2025-09-24")] alias head_fromListChain' := head_fromListIsChain
-
 @[simp]
 lemma getLast_toList (p : RelSeries r) : p.toList.getLast (by simp [toList]) = p.last := by
   grind [length_toList, last, Fin.last, toList_getElem]
@@ -326,6 +319,7 @@ def append (p q : RelSeries r) (connect : p.last ~[r] q.head) : RelSeries r wher
         Nat.add_assoc _ 1, add_comm 1, Nat.sub_add_cancel]
       exact hi
 
+set_option backward.defeqAttrib.useBackward true in
 lemma append_apply_left (p q : RelSeries r) (connect : p.last ~[r] q.head)
     (i : Fin (p.length + 1)) :
     p.append q connect
@@ -335,6 +329,7 @@ lemma append_apply_left (p q : RelSeries r) (connect : p.last ~[r] q.head)
   simp only [Function.comp_apply]
   convert Fin.append_left _ _ _
 
+set_option backward.defeqAttrib.useBackward true in
 lemma append_apply_right (p q : RelSeries r) (connect : p.last ~[r] q.head)
     (i : Fin (q.length + 1)) :
     p.append q connect
@@ -346,6 +341,7 @@ lemma append_apply_right (p q : RelSeries r) (connect : p.last ~[r] q.head)
     (p.append q connect).head = p.head :=
   append_apply_left p q connect 0
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma last_append (p q : RelSeries r) (connect : p.last ~[r] q.head) :
     (p.append q connect).last = q.last := by
   delta last
@@ -361,6 +357,7 @@ lemma append_assoc (p q w : RelSeries r) (hpq : p.last ~[r] q.head) (hqw : q.las
     lia
   · simp [append, Fin.append_assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma toList_append (p q : RelSeries r) (connect : p.last ~[r] q.head) :
     (p.append q connect).toList = p.toList ++ q.toList := by
@@ -463,12 +460,16 @@ def reverse (p : RelSeries r) : RelSeries r.inv where
 @[simp] lemma reverse_apply (p : RelSeries r) (i : Fin (p.length + 1)) :
     p.reverse i = p i.rev := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma last_reverse (p : RelSeries r) : p.reverse.last = p.head := by
   simp [RelSeries.last, RelSeries.head]
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma head_reverse (p : RelSeries r) : p.reverse.head = p.last := by
   simp [RelSeries.last, RelSeries.head]
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp] lemma reverse_reverse {r : SetRel α α} (p : RelSeries r) : p.reverse.reverse = p := by
   ext <;> simp
 
@@ -510,8 +511,6 @@ lemma fromListIsChain_cons (l : List α) (l_ne_nil : l ≠ [])
   apply toList_injective
   simp
 
-@[deprecated (since := "2025-09-24")] alias fromListChain'_cons := fromListIsChain_cons
-
 lemma append_cons {p q : RelSeries r} {x : α} (hx : x ~[r] p.head) (hq : p.last ~[r] q.head) :
     (p.cons x hx).append q (by simpa) = (p.append q hq).cons x (by simpa) := by
   simp only [cons]
@@ -548,8 +547,7 @@ lemma snoc_cast_castSucc (s : RelSeries r) (a : α) (h : s.last ~[r] a) (i : Fin
 
 lemma mem_snoc {p : RelSeries r} {newLast : α} {rel : p.last ~[r] newLast} {x : α} :
     x ∈ p.snoc newLast rel ↔ x ∈ p ∨ x = newLast := by
-  simp only [snoc, append, singleton_length, Nat.add_zero, Nat.reduceAdd, Fin.cast_refl,
-    Function.comp_id, mem_def, Set.mem_range]
+  simp only [snoc, append, mem_def, Set.mem_range]
   constructor
   · rintro ⟨i, rfl⟩
     exact Fin.lastCases (Or.inr <| Fin.append_right _ _ 0) (fun i => Or.inl ⟨⟨i.1, i.2⟩,
@@ -585,6 +583,7 @@ def tail (p : RelSeries r) (len_pos : p.length ≠ 0) : RelSeries r where
   simp only [tail_length, Fin.val_succ, Fin.val_cast, Fin.val_last]
   exact Nat.succ_pred_eq_of_pos (by simpa [Nat.pos_iff_ne_zero] using len_pos)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma toList_tail {p : RelSeries r} (hp : p.length ≠ 0) : (p.tail hp).toList = p.toList.tail := by
   refine List.ext_getElem ?_ fun i h1 h2 ↦ ?_
@@ -788,7 +787,7 @@ variable {r} in
 lemma SetRel.not_finiteDimensional_iff [Nonempty α] :
     ¬ r.FiniteDimensional ↔ r.InfiniteDimensional := by
   rw [finiteDimensional_iff, infiniteDimensional_iff]
-  push_neg
+  push Not
   constructor
   · intro H n
     induction n with
@@ -819,9 +818,6 @@ variable {r} in
 lemma SetRel.finiteDimensional_inv : FiniteDimensional r.inv ↔ FiniteDimensional r :=
   ⟨fun _ ↦ .inv r.inv, fun _ ↦ .inv _⟩
 
-@[deprecated (since := "2025-07-06")]
-alias SetRel.finiteDimensional_swap_iff := SetRel.finiteDimensional_inv
-
 instance SetRel.InfiniteDimensional.inv [InfiniteDimensional r] : InfiniteDimensional r.inv :=
   ⟨fun n ↦ ⟨.reverse (.withLength r n), RelSeries.length_withLength r n⟩⟩
 
@@ -830,9 +826,6 @@ variable {r} in
 lemma SetRel.infiniteDimensional_inv : InfiniteDimensional r.inv ↔ InfiniteDimensional r :=
   ⟨fun _ ↦ .inv r.inv, fun _ ↦ .inv _⟩
 
-@[deprecated (since := "2025-07-06")]
-alias SetRel.infiniteDimensional_swap_iff := SetRel.infiniteDimensional_inv
-
 lemma SetRel.IsWellFounded.inv_of_finiteDimensional [r.FiniteDimensional] :
     r.inv.IsWellFounded := by
   rw [IsWellFounded, wellFounded_iff_isEmpty_descending_chain]
@@ -840,15 +833,8 @@ lemma SetRel.IsWellFounded.inv_of_finiteDimensional [r.FiniteDimensional] :
   let s := RelSeries.mk (r := r) ((RelSeries.longestOf r).length + 1) (f ·) (hf ·)
   exact (RelSeries.longestOf r).length.lt_succ_self.not_ge s.length_le_length_longestOf
 
-@[deprecated (since := "2025-07-06")]
-alias Rel.wellFounded_swap_of_finiteDimensional :=
-  SetRel.IsWellFounded.inv_of_finiteDimensional
-
 lemma SetRel.IsWellFounded.of_finiteDimensional [r.FiniteDimensional] : r.IsWellFounded :=
   .inv_of_finiteDimensional r.inv
-
-@[deprecated (since := "2025-07-06")]
-alias SetRel.wellFounded_of_finiteDimensional := SetRel.IsWellFounded.of_finiteDimensional
 
 /-- A type is finite dimensional if its `LTSeries` has bounded length. -/
 abbrev FiniteDimensionalOrder (γ : Type*) [Preorder γ] :=
@@ -925,6 +911,7 @@ def mk (length : ℕ) (toFun : Fin (length + 1) → α) (strictMono : StrictMono
   toFun := toFun
   step i := strictMono <| lt_add_one i.1
 
+set_option backward.defeqAttrib.useBackward true in
 /-- An injection from the type of strictly monotone functions with limited length to `LTSeries`. -/
 def injStrictMono (n : ℕ) :
     {f : (l : Fin n) × (Fin (l + 1) → α) // StrictMono f.2} ↪ LTSeries α where
@@ -984,6 +971,7 @@ def range (n : ℕ) : LTSeries ℕ where
 
 @[simp] lemma last_range (n : ℕ) : (range n).last = n := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Any `LTSeries` can be refined to a `CovBy`-`RelSeries`
 in a bidirectionally well-founded order. -/
 theorem exists_relSeries_covBy
@@ -1045,7 +1033,7 @@ lemma apply_add_index_le_apply_add_index_nat (p : LTSeries ℕ) (i j : Fin (p.le
   | succ j _hij ih =>
     specialize ih (Nat.lt_of_succ_lt hj)
     have step : p ⟨j, _⟩ < p ⟨j + 1, _⟩ := p.step ⟨j, by lia⟩
-    norm_cast at *; lia
+    lia
 
 /--
 In ℤ, two entries in an `LTSeries` differ by at least the difference of their indices.
@@ -1064,7 +1052,7 @@ lemma apply_add_index_le_apply_add_index_int (p : LTSeries ℤ) (i j : Fin (p.le
   | succ j _hij ih =>
     specialize ih (Nat.lt_of_succ_lt hj)
     have step : p ⟨j, _⟩ < p ⟨j + 1, _⟩:= p.step ⟨j, by lia⟩
-    norm_cast at *; lia
+    lia
 
 /-- In ℕ, the head and tail of an `LTSeries` differ at least by the length of the series -/
 lemma head_add_length_le_nat (p : LTSeries ℕ) : p.head + p.length ≤ p.last :=

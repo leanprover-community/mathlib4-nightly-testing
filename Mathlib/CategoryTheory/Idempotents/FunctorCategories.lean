@@ -56,6 +56,7 @@ theorem app_p_comm : P.p.app X ≫ f.f.app X = f.f.app X ≫ Q.p.app X :=
 
 variable (J C)
 
+set_option backward.isDefEq.respectTransparency false in
 instance functor_category_isIdempotentComplete [IsIdempotentComplete C] :
     IsIdempotentComplete (J ⥤ C) := by
   refine ⟨fun F p hp => ?_⟩
@@ -100,6 +101,7 @@ def obj (P : Karoubi (J ⥤ C)) : J ⥤ Karoubi C where
         rw [NatTrans.comp_app] at h
         rw [reassoc_of% h, reassoc_of% h] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Tautological action on maps of the functor `Karoubi (J ⥤ C) ⥤ (J ⥤ Karoubi C)`. -/
 @[simps]
 def map {P Q : Karoubi (J ⥤ C)} (f : P ⟶ Q) : obj P ⟶ obj Q where
@@ -113,6 +115,8 @@ def karoubiFunctorCategoryEmbedding : Karoubi (J ⥤ C) ⥤ J ⥤ Karoubi C wher
   obj := KaroubiFunctorCategoryEmbedding.obj
   map := KaroubiFunctorCategoryEmbedding.map
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 instance : (karoubiFunctorCategoryEmbedding J C).Full where
   map_surjective {P Q} f :=
     ⟨{f :=
@@ -134,6 +138,7 @@ instance : (karoubiFunctorCategoryEmbedding J C).Faithful where
     ext j
     exact hom_ext_iff.mp (congr_app h j)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The composition of `(J ⥤ C) ⥤ Karoubi (J ⥤ C)` and `Karoubi (J ⥤ C) ⥤ (J ⥤ Karoubi C)`
 equals the functor `(J ⥤ C) ⥤ (J ⥤ Karoubi C)` given by the composition with
 `toKaroubi C : C ⥤ Karoubi C`. -/

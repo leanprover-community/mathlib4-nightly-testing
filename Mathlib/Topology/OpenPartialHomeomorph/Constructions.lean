@@ -137,7 +137,7 @@ variable {ι : Type*} [Finite ι] {X Y : ι → Type*} [∀ i, TopologicalSpace 
   [∀ i, TopologicalSpace (Y i)] (ei : ∀ i, OpenPartialHomeomorph (X i) (Y i))
 
 /-- The product of a finite family of `OpenPartialHomeomorph`s. -/
-@[simps! toPartialEquiv apply symm_apply source target]
+@[simps! toPartialEquiv apply symm_apply]
 def pi : OpenPartialHomeomorph (∀ i, X i) (∀ i, Y i) where
   toPartialEquiv := PartialEquiv.pi fun i => (ei i).toPartialEquiv
   open_source := isOpen_set_pi finite_univ fun i _ => (ei i).open_source
@@ -326,10 +326,7 @@ theorem subtypeRestr_symm_eqOn_of_le {U V : Opens X} (hU : Nonempty U) (hV : Non
     rw [Opens.openPartialHomeomorphSubtypeCoe_target] at hy ⊢
     exact hUV hy.2
   refine (V.openPartialHomeomorphSubtypeCoe hV).injOn ?_ trivial ?_
-  · rw [← OpenPartialHomeomorph.symm_target]
-    apply OpenPartialHomeomorph.map_source
-    rw [OpenPartialHomeomorph.symm_source]
-    exact hyV
+  · simp
   · rw [(V.openPartialHomeomorphSubtypeCoe hV).right_inv hyV]
     change _ = U.openPartialHomeomorphSubtypeCoe hU _
     rw [(U.openPartialHomeomorphSubtypeCoe hU).right_inv hy.2]

@@ -59,6 +59,22 @@ noncomputable def topOrderOrNoTopOrder (α : Type*) [LE α] : OrderTop α ⊕' N
   · letI : Top α := ⟨Classical.choose H⟩
     exact PSum.inl ⟨Classical.choose_spec H⟩
 
+section ite
+
+variable [Top α] {p : Prop} [Decidable p]
+
+@[to_dual (attr := aesop (rule_sets := [finiteness]) unsafe 70% apply)]
+theorem dite_ne_top {a : p → α} {b : ¬p → α} (ha : ∀ h, a h ≠ ⊤) (hb : ∀ h, b h ≠ ⊤) :
+    (if h : p then a h else b h) ≠ ⊤ := by
+  split <;> solve_by_elim
+
+@[to_dual (attr := aesop (rule_sets := [finiteness]) unsafe 70% apply)]
+theorem ite_ne_top {a b : α} (ha : p → a ≠ ⊤) (hb : ¬p → b ≠ ⊤) :
+    (if p then a else b) ≠ ⊤ :=
+  dite_ne_top ha hb
+
+end ite
+
 section LE
 
 variable [LE α] [OrderTop α] {a : α}
@@ -95,6 +111,10 @@ theorem isMax_top : IsMax (⊤ : α) :=
 theorem not_top_lt : ¬⊤ < a :=
   isMax_top.not_lt
 
+@[to_dual (attr := simp) not_covBy_bot]
+theorem not_top_covBy : ¬⊤ ⋖ a :=
+  fun h ↦ not_top_lt h.1
+
 @[to_dual ne_bot_of_gt]
 theorem ne_top_of_lt (h : a < b) : a ≠ ⊤ :=
   (h.trans_le le_top).ne
@@ -105,6 +125,15 @@ theorem ne_top_of_lt (h : a < b) : a ≠ ⊤ :=
   lt_of_lt_of_le h le_top
 
 @[to_dual bot_lt] alias LT.lt.lt_top := lt_top_of_lt
+
+@[to_dual bot_lt_iff_not_le_bot]
+theorem lt_top_iff_not_top_le : a < ⊤ ↔ ¬ ⊤ ≤ a := by
+  simp [lt_iff_le_not_ge]
+
+@[to_dual not_isMin_iff_bot_lt]
+theorem not_isMax_iff_lt_top : ¬ IsMax a ↔ a < ⊤ := by
+  rw [not_isMax_iff]
+  exact ⟨fun ⟨b, hb⟩ ↦ hb.trans_le le_top, fun h ↦ ⟨⊤, h⟩⟩
 
 attribute [aesop (rule_sets := [finiteness]) unsafe 20%] ne_top_of_lt
 -- would have been better to implement this as a "safe" "forward" rule, why doesn't this work?
@@ -190,7 +219,7 @@ theorem not_isMin_top : ¬IsMin (⊤ : α) := fun h =>
 
 end OrderTop
 
--- `to_dual` cannot yet reorder arguments of arguments
+@[to_dual (reorder := H (x y))]
 theorem OrderTop.ext_top {α} {hA : PartialOrder α} (A : OrderTop α) {hB : PartialOrder α}
     (B : OrderTop α) (H : ∀ x y : α, (haveI := hA; x ≤ y) ↔ x ≤ y) :
     (@Top.top α (@OrderTop.toTop α hA.toLE A)) = (@Top.top α (@OrderTop.toTop α hB.toLE B)) := by
@@ -198,25 +227,17 @@ theorem OrderTop.ext_top {α} {hA : PartialOrder α} (A : OrderTop α) {hB : Par
   apply top_unique
   exact @le_top _ _ A _
 
-theorem OrderBot.ext_bot {α} {hA : PartialOrder α} (A : OrderBot α) {hB : PartialOrder α}
-    (B : OrderBot α) (H : ∀ x y : α, (haveI := hA; x ≤ y) ↔ x ≤ y) :
-    (@Bot.bot α (@OrderBot.toBot α hA.toLE A)) = (@Bot.bot α (@OrderBot.toBot α hB.toLE B)) := by
-  cases PartialOrder.ext H
-  apply bot_unique
-  exact @bot_le _ _ A _
-
 namespace OrderDual
 
 variable (α)
 
 @[to_dual]
-instance instTop [Bot α] : Top αᵒᵈ :=
-  ⟨(⊥ : α)⟩
+instance [h : Bot α] : Top αᵒᵈ :=
+  ⟨h.bot⟩
 
 @[to_dual]
-instance instOrderTop [LE α] [OrderBot α] : OrderTop αᵒᵈ where
-  __ := inferInstanceAs (Top αᵒᵈ)
-  le_top := @bot_le α _ _
+instance [LE α] [h : OrderBot α] : OrderTop αᵒᵈ where
+  le_top := h.bot_le
 
 @[to_dual (attr := simp)] lemma ofDual_top [Bot α] : ofDual ⊤ = (⊥ : α) := rfl
 @[to_dual (attr := simp)] lemma toDual_top [Top α] : toDual (⊤ : α) = ⊥ := rfl
@@ -248,8 +269,6 @@ attribute [to_dual self (reorder := 3 4)] BoundedOrder.mk
 attribute [to_dual existing] BoundedOrder.toOrderTop
 
 instance OrderDual.instBoundedOrder (α : Type u) [LE α] [BoundedOrder α] : BoundedOrder αᵒᵈ where
-  __ := inferInstanceAs (OrderTop αᵒᵈ)
-  __ := inferInstanceAs (OrderBot αᵒᵈ)
 
 section PartialOrder
 variable [PartialOrder α]
@@ -291,8 +310,8 @@ instance instOrderBot [∀ i, LE (α' i)] [∀ i, OrderBot (α' i)] : OrderBot (
 
 instance instBoundedOrder [∀ i, LE (α' i)] [∀ i, BoundedOrder (α' i)] :
     BoundedOrder (∀ i, α' i) where
-  __ := inferInstanceAs (OrderTop (∀ i, α' i))
-  __ := inferInstanceAs (OrderBot (∀ i, α' i))
+  __ := (inferInstance : OrderTop (∀ i, α' i))
+  __ := (inferInstance : OrderBot (∀ i, α' i))
 
 end Pi
 
@@ -324,9 +343,9 @@ end Subsingleton
 
 section lift
 
--- `to_dual` cannot yet reorder arguments of arguments
 -- See note [reducible non-instances]
 /-- Pullback an `OrderTop`. -/
+@[to_dual (reorder := map_le (a b)) /-- Pullback an `OrderBot`. -/]
 abbrev OrderTop.lift [LE α] [Top α] [LE β] [OrderTop β] (f : α → β)
     (map_le : ∀ a b, f a ≤ f b → a ≤ b) (map_top : f ⊤ = ⊤) : OrderTop α :=
   ⟨fun a =>
@@ -335,16 +354,8 @@ abbrev OrderTop.lift [LE α] [Top α] [LE β] [OrderTop β] (f : α → β)
       exact le_top _⟩
 
 -- See note [reducible non-instances]
-/-- Pullback an `OrderBot`. -/
-abbrev OrderBot.lift [LE α] [Bot α] [LE β] [OrderBot β] (f : α → β)
-    (map_le : ∀ a b, f a ≤ f b → a ≤ b) (map_bot : f ⊥ = ⊥) : OrderBot α :=
-  ⟨fun a =>
-    map_le _ _ <| by
-      rw [map_bot]
-      exact bot_le _⟩
-
--- See note [reducible non-instances]
 /-- Pullback a `BoundedOrder`. -/
+@[to_dual self (reorder := 4 5, map_le (a b), map_top map_bot)]
 abbrev BoundedOrder.lift [LE α] [Top α] [Bot α] [LE β] [BoundedOrder β] (f : α → β)
     (map_le : ∀ a b, f a ≤ f b → a ≤ b) (map_top : f ⊤ = ⊤) (map_bot : f ⊥ = ⊥) :
     BoundedOrder α where
@@ -410,13 +421,13 @@ instance instTop [Top α] [Top β] : Top (α × β) :=
 
 @[to_dual]
 instance instOrderTop [LE α] [LE β] [OrderTop α] [OrderTop β] : OrderTop (α × β) where
-  __ := inferInstanceAs (Top (α × β))
+  __ := (inferInstance : Top (α × β))
   le_top _ := ⟨le_top, le_top⟩
 
 instance instBoundedOrder [LE α] [LE β] [BoundedOrder α] [BoundedOrder β] :
     BoundedOrder (α × β) where
-  __ := inferInstanceAs (OrderTop (α × β))
-  __ := inferInstanceAs (OrderBot (α × β))
+  __ := (inferInstance : OrderTop (α × β))
+  __ := (inferInstance : OrderBot (α × β))
 
 end Prod
 
@@ -428,13 +439,9 @@ instance [Top α] : Top (ULift.{v} α) where top := up ⊤
 @[to_dual (attr := simp)] theorem up_top [Top α] : up (⊤ : α) = ⊤ := rfl
 @[to_dual (attr := simp)] theorem down_top [Top α] : down (⊤ : ULift α) = ⊤ := rfl
 
--- `to_dual` cannot yet reorder arguments of arguments
+@[to_dual]
 instance [LE α] [OrderBot α] : OrderBot (ULift.{v} α) :=
   OrderBot.lift ULift.down (fun _ _ => down_le.mp) down_bot
-
-@[to_dual existing]
-instance [LE α] [OrderTop α] : OrderTop (ULift.{v} α) :=
-  OrderTop.lift ULift.down (fun _ _ => down_le.mp) down_top
 
 instance [LE α] [BoundedOrder α] : BoundedOrder (ULift.{v} α) where
 

@@ -74,6 +74,8 @@ lemma d_eq {i j : Option ι} {a b : ι} (hi : i = some a) (hj : j = some b) :
   subst hi hj
   simp [XIso, X, d]
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma XOpIso_hom_d_op (i j : Option ι) :
     (XOpIso K i).hom ≫ (d K j i).op =
@@ -95,6 +97,7 @@ noncomputable def mapX : ∀ (i : Option ι), X K i ⟶ X L i
   | some i => φ.f i
   | none => 0
 
+set_option backward.defeqAttrib.useBackward true in
 lemma mapX_some {i : Option ι} {a : ι} (hi : i = some a) :
     mapX φ i = (XIso K hi).hom ≫ φ.f a ≫ (XIso L hi).inv := by
   subst hi
@@ -174,6 +177,7 @@ lemma extend_d_to_eq_zero (i' j' : ι') (j : ι) (hj : e.f j = j') (hj' : ¬ c.R
 
 variable {K L M}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given an embedding `e : c.Embedding c'` of complexes shapes, this is the
 morphism `K.extend e ⟶ L.extend e` induced by a morphism `K ⟶ L` in
 `HomologicalComplex C c`. -/
@@ -204,6 +208,7 @@ lemma extendMap_f {i : ι} {i' : ι'} (h : e.f i = i') :
   rw [extend.mapX_some φ (e.r_eq_some h)]
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 lemma extendMap_f_eq_zero (i' : ι') (hi' : ∀ i, e.f i ≠ i') :
     (extendMap φ e).f i' = 0 := by
   dsimp [extendMap]
@@ -244,6 +249,8 @@ noncomputable def extendOpIso : K.op.extend e.op ≅ (K.extend e).op :=
   Hom.isoOfComponents (fun _ ↦ extend.XOpIso _ _) (fun _ _ _ ↦
     extend.XOpIso_hom_d_op _ _ _)
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma extend_op_d (i' j' : ι') :
     (K.op.extend e.op).d i' j' =
@@ -338,6 +345,7 @@ instance [HasZeroMorphisms C] : (e.extendFunctor C).PreservesZeroMorphisms where
 
 instance [Preadditive C] : (e.extendFunctor C).Additive where
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The extension functor attached to an embedding of complex shapes is fully faithful. -/
 noncomputable def fullyFaithfulExtendFunctor [HasZeroMorphisms C] :
     (e.extendFunctor C).FullyFaithful where

@@ -5,7 +5,7 @@ Authors: Yury Kudryashov, Frédéric Dupuis, Heather Macbeth
 -/
 module
 
-public import Mathlib.Algebra.Star.Basic
+public import Mathlib.Algebra.Star.Basic  -- shake: keep (used in `notation` only)
 public import Mathlib.Analysis.Normed.Group.Constructions
 public import Mathlib.Analysis.Normed.Group.Submodule
 public import Mathlib.Analysis.Normed.Group.Uniform
@@ -994,7 +994,7 @@ theorem symm_neg : (neg R : E ≃ₗᵢ[R] E).symm = neg R :=
 variable (R E E₂)
 
 /-- The natural equivalence `E × E₂ ≃ E₂ × E` is a linear isometry. -/
-@[simps!]
+@[simps! apply]
 def prodComm [Module R E₂] : E × E₂ ≃ₗᵢ[R] E₂ × E :=
   ⟨LinearEquiv.prodComm R E E₂, by intro; simp [norm, sup_comm]⟩
 

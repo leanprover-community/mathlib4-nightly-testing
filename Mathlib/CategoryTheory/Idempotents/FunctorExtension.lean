@@ -51,9 +51,10 @@ def obj (F : C ⥤ Karoubi D) : Karoubi C ⥤ Karoubi D where
     ⟨(F.obj P.X).X, (F.map P.p).f, by simpa only [F.map_comp, hom_ext_iff] using F.congr_map P.idem⟩
   map f := ⟨(F.map f.f).f, by simpa only [F.map_comp, hom_ext_iff] using F.congr_map f.comm⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Extension of a natural transformation `φ` between functors
-`C ⥤ karoubi D` to a natural transformation between the
-extension of these functors to `karoubi C ⥤ karoubi D` -/
+`C ⥤ Karoubi D` to a natural transformation between the
+extension of these functors to `Karoubi C ⥤ Karoubi D` -/
 @[simps]
 def map {F G : C ⥤ Karoubi D} (φ : F ⟶ G) : obj F ⟶ obj G where
   app P :=
@@ -79,6 +80,7 @@ end FunctorExtension₁
 
 variable (C D E)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The canonical functor `(C ⥤ Karoubi D) ⥤ (Karoubi C ⥤ Karoubi D)` -/
 @[simps]
 def functorExtension₁ : (C ⥤ Karoubi D) ⥤ Karoubi C ⥤ Karoubi D where
@@ -97,8 +99,9 @@ def functorExtension₁ : (C ⥤ Karoubi D) ⥤ Karoubi C ⥤ Karoubi D where
     slice_rhs 1 2 => rw [h']
     simp only [assoc]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The natural isomorphism expressing that functors `Karoubi C ⥤ Karoubi D` obtained
-using `functorExtension₁` actually extends the original functors `C ⥤ Karoubi D`. -/
+using `functorExtension₁` actually extend the original functors `C ⥤ Karoubi D`. -/
 @[simps!]
 def functorExtension₁CompWhiskeringLeftToKaroubiIso :
     functorExtension₁ C D ⋙ (whiskeringLeft C (Karoubi C) (Karoubi D)).obj (toKaroubi C) ≅ 𝟭 _ :=
@@ -110,6 +113,8 @@ def functorExtension₁CompWhiskeringLeftToKaroubiIso :
       (fun {X Y} f => by simp))
     (by cat_disch)
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 /-- The counit isomorphism of the equivalence `(C ⥤ Karoubi D) ≌ (Karoubi C ⥤ Karoubi D)`. -/
 def KaroubiUniversal₁.counitIso :
     (whiskeringLeft C (Karoubi C) (Karoubi D)).obj (toKaroubi C) ⋙ functorExtension₁ C D ≅ 𝟭 _ :=
@@ -149,6 +154,7 @@ def KaroubiUniversal₁.counitIso :
 
 attribute [simps!] KaroubiUniversal₁.counitIso
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence of categories `(C ⥤ Karoubi D) ≌ (Karoubi C ⥤ Karoubi D)`. -/
 @[simps]
 def karoubiUniversal₁ : C ⥤ Karoubi D ≌ Karoubi C ⥤ Karoubi D where
@@ -173,8 +179,9 @@ def functorExtension₁Comp (F : C ⥤ Karoubi D) (G : D ⥤ Karoubi E) :
 def functorExtension₂ : (C ⥤ D) ⥤ Karoubi C ⥤ Karoubi D :=
   (whiskeringRight C D (Karoubi D)).obj (toKaroubi D) ⋙ functorExtension₁ C D
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The natural isomorphism expressing that functors `Karoubi C ⥤ Karoubi D` obtained
-using `functorExtension₂` actually extends the original functors `C ⥤ D`. -/
+using `functorExtension₂` actually extend the original functors `C ⥤ D`. -/
 @[simps!]
 def functorExtension₂CompWhiskeringLeftToKaroubiIso :
     functorExtension₂ C D ⋙ (whiskeringLeft C (Karoubi C) (Karoubi D)).obj (toKaroubi C) ≅
@@ -235,6 +242,7 @@ instance : ((whiskeringLeft C (Karoubi C) D).obj (toKaroubi C)).IsEquivalence :=
 
 variable {C D}
 
+set_option backward.defeqAttrib.useBackward true in
 theorem whiskeringLeft_obj_preimage_app {F G : Karoubi C ⥤ D}
     (τ : toKaroubi _ ⋙ F ⟶ toKaroubi _ ⋙ G) (P : Karoubi C) :
     (((whiskeringLeft _ _ _).obj (toKaroubi _)).preimage τ).app P =
@@ -247,6 +255,8 @@ theorem whiskeringLeft_obj_preimage_app {F G : Karoubi C ⥤ D}
 
 end IsIdempotentComplete
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 variable {C D} in
 /-- The precomposition of functors with `toKaroubi C` is fully faithful. -/
 def whiskeringLeftObjToKaroubiFullyFaithful :

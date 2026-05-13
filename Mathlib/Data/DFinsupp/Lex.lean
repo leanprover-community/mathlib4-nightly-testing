@@ -145,11 +145,11 @@ private def lt_trichotomy_rec {P : Lex (Π₀ i, α i) → Lex (Π₀ i, α i) �
     · exact h_gt ⟨wit, fun j hj ↦
         notMem_neLocus.mp (Finset.notMem_of_lt_min hj <| by rwa [neLocus_comm]), hwit⟩
 
-instance Lex.isTotal_le : IsTotal (Lex (Π₀ i, α i)) (· ≤ ·) where
+instance Lex.total_le : @Std.Total (Lex (Π₀ i, α i)) (· ≤ ·) where
   total := lt_trichotomy_rec (fun h ↦ Or.inl h.le) (fun h ↦ Or.inl h.le) fun h ↦ Or.inr h.le
 
-instance Colex.isTotal_le : IsTotal (Colex (Π₀ i, α i)) (· ≤ ·) :=
-  Lex.isTotal_le (ι := ιᵒᵈ)
+instance Colex.total_le : @Std.Total (Colex (Π₀ i, α i)) (· ≤ ·) :=
+  Lex.total_le (ι := ιᵒᵈ)
 
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
@@ -202,11 +202,6 @@ theorem toLex_monotone : Monotone (@toLex (Π₀ i, α i)) := by
 theorem toColex_monotone : Monotone (@toColex (Π₀ i, α i)) :=
   toLex_monotone (ι := ιᵒᵈ)
 
-@[deprecated Lex.lt_iff (since := "2025-10-12")]
-theorem lt_of_forall_lt_of_lt (a b : Lex (Π₀ i, α i)) (i : ι) :
-    (∀ j < i, ofLex a j = ofLex b j) → ofLex a i < ofLex b i → a < b :=
-  fun h1 h2 ↦ ⟨i, h1, h2⟩
-
 end Zero
 
 section Covariants
@@ -222,12 +217,14 @@ section Left
 
 variable [∀ i, AddLeftStrictMono (α i)]
 
+set_option backward.defeqAttrib.useBackward true in
 instance Lex.addLeftStrictMono : AddLeftStrictMono (Lex (Π₀ i, α i)) :=
   ⟨fun _ _ _ ⟨a, lta, ha⟩ ↦ ⟨a, fun j ja ↦ congr_arg _ (lta j ja), by dsimp; gcongr⟩⟩
 
 instance Colex.addLeftStrictMono : AddLeftStrictMono (Colex (Π₀ i, α i)) :=
   Lex.addLeftStrictMono (ι := ιᵒᵈ)
 
+set_option backward.isDefEq.respectTransparency false in
 instance Lex.addLeftMono : AddLeftMono (Lex (Π₀ i, α i)) :=
   addLeftMono_of_addLeftStrictMono _
 
@@ -240,6 +237,7 @@ section Right
 
 variable [∀ i, AddRightStrictMono (α i)]
 
+set_option backward.defeqAttrib.useBackward true in
 instance Lex.addRightStrictMono : AddRightStrictMono (Lex (Π₀ i, α i)) :=
   ⟨fun f _ _ ⟨a, lta, ha⟩ ↦
     ⟨a, fun j ja ↦ congr_arg (· + ofLex f j) (lta j ja), by dsimp; gcongr⟩⟩
@@ -247,6 +245,7 @@ instance Lex.addRightStrictMono : AddRightStrictMono (Lex (Π₀ i, α i)) :=
 instance Colex.addRightStrictMono : AddRightStrictMono (Colex (Π₀ i, α i)) :=
   Lex.addRightStrictMono (ι := ιᵒᵈ)
 
+set_option backward.isDefEq.respectTransparency false in
 instance Lex.addRightMono : AddRightMono (Lex (Π₀ i, α i)) :=
   addRightMono_of_addRightStrictMono _
 

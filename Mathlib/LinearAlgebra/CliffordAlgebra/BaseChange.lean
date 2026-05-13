@@ -34,6 +34,7 @@ We show the additional results:
 
 @[expose] public section
 
+
 variable {R A V : Type*}
 variable [CommRing R] [CommRing A] [AddCommGroup V]
 variable [Algebra R A] [Module R V]
@@ -45,6 +46,7 @@ namespace CliffordAlgebra
 
 variable (A)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary construction: note this is really just a heterobasic `CliffordAlgebra.map`. -/
 def ofBaseChangeAux (Q : QuadraticForm R V) :
     CliffordAlgebra Q →ₐ[R] CliffordAlgebra (Q.baseChange A) :=
@@ -58,6 +60,7 @@ def ofBaseChangeAux (Q : QuadraticForm R V) :
     ofBaseChangeAux A Q (ι Q v) = ι (Q.baseChange A) (1 ⊗ₜ v) :=
   CliffordAlgebra.lift_ι_apply _ _ v
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Convert from the base-changed clifford algebra to the clifford algebra over a base-changed
 module. -/
 def ofBaseChange (Q : QuadraticForm R V) :
@@ -76,6 +79,7 @@ def ofBaseChange (Q : QuadraticForm R V) :
   change algebraMap _ _ z * ofBaseChangeAux A Q 1 = _
   rw [map_one, mul_one]
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Convert from the clifford algebra over a base-changed module to the base-changed clifford
 algebra. -/
 def toBaseChange (Q : QuadraticForm R V) :
@@ -163,6 +167,7 @@ theorem toBaseChange_comp_ofBaseChange (Q : QuadraticForm R V) :
     toBaseChange A Q (ofBaseChange A Q x) = x :=
   AlgHom.congr_fun (toBaseChange_comp_ofBaseChange A Q :) x
 
+set_option backward.isDefEq.respectTransparency false in
 theorem ofBaseChange_comp_toBaseChange (Q : QuadraticForm R V) :
     (ofBaseChange A Q).comp (toBaseChange A Q) = AlgHom.id _ _ := by
   ext x
@@ -176,7 +181,7 @@ theorem ofBaseChange_comp_toBaseChange (Q : QuadraticForm R V) :
   AlgHom.congr_fun (ofBaseChange_comp_toBaseChange A Q :) x
 
 /-- Base-changing the vector space of a clifford algebra is isomorphic as an A-algebra to
-base-changing the clifford algebra itself; <|Cℓ(A ⊗_R V, Q_A) ≅ A ⊗_R Cℓ(V, Q)<|.
+base-changing the clifford algebra itself; $<|Cℓ(A ⊗_R V, Q_A) ≅ A ⊗_R Cℓ(V, Q)<|$.
 
 This is `CliffordAlgebra.toBaseChange` and `CliffordAlgebra.ofBaseChange` as an equivalence. -/
 @[simps!]

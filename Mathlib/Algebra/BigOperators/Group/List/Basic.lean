@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Divisibility.Basic
 public import Mathlib.Algebra.Group.Hom.Defs
 public import Mathlib.Algebra.BigOperators.Group.List.Defs
-public import Mathlib.Order.RelClasses
 public import Mathlib.Data.List.TakeDrop
 public import Mathlib.Data.List.Forall2
 public import Mathlib.Data.List.Perm.Basic
@@ -16,6 +15,7 @@ public import Mathlib.Algebra.Group.Basic
 public import Mathlib.Algebra.Group.Commute.Defs
 public import Mathlib.Algebra.Group.Nat.Defs
 public import Mathlib.Algebra.Group.Int.Defs
+public import Mathlib.Order.Basic
 
 /-!
 # Sums and products from lists
@@ -244,8 +244,8 @@ lemma prod_map_erase [DecidableEq α] (f : α → M) {a} :
 
 @[to_additive] lemma Perm.prod_eq (h : Perm l₁ l₂) : prod l₁ = prod l₂ := h.foldr_op_eq
 
-@[to_additive (attr := simp)]
-lemma prod_reverse (l : List M) : prod l.reverse = prod l := (reverse_perm l).prod_eq
+set_option linter.existingAttributeWarning false in
+attribute [to_additive existing] prod_reverse
 
 @[to_additive]
 lemma prod_mul_prod_eq_prod_zipWith_mul_prod_drop :
@@ -255,7 +255,7 @@ lemma prod_mul_prod_eq_prod_zipWith_mul_prod_drop :
   | [], ys => by simp
   | xs, [] => by simp
   | x :: xs, y :: ys => by
-    simp only [drop, length, zipWith_cons_cons, prod_cons]
+    simp only [zipWith_cons_cons, prod_cons]
     conv =>
       lhs; rw [mul_assoc]; right; rw [mul_comm, mul_assoc]; right
       rw [mul_comm, prod_mul_prod_eq_prod_zipWith_mul_prod_drop xs ys]
