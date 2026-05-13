@@ -7,7 +7,7 @@ module -- shake: keep-all
 
 public import Mathlib.Algebra.Group.Action.Faithful
 public import Mathlib.Algebra.GroupWithZero.NeZero
-public import Mathlib.Tactic.Linter.DeprecatedModule
+public import Batteries.Linter.DeprecatedModule
 
 /-!
 # Faithful actions involving groups with zero

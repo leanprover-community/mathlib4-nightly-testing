@@ -21,6 +21,9 @@ public import Batteries.Tactic.GeneralizeProofs
 -- Import Batteries code actions
 public import Batteries.CodeAction
 
+-- Import Batteries linters
+public import Batteries.Linter.DeprecatedModule
+
 -- Import syntax for leansearch
 public import LeanSearchClient
 

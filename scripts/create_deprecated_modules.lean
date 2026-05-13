@@ -5,7 +5,7 @@ Authors: Damiano Testa
 -/
 
 --import Mathlib.Init
-import Mathlib.Tactic.Linter.DeprecatedModule
+import Batteries.Linter.DeprecatedModule
 import Std.Time.Zoned
 import Lean.Meta.Tactic.TryThis
 -- a comment here to test `keepTrailing
@@ -382,7 +382,7 @@ Authors: Damiano Testa
 -/
 
 --import Mathlib.Init
-import Mathlib.Tactic.Linter.DeprecatedModule
+import Batteries.Linter.DeprecatedModule
 import Std.Time.Zoned
 import Lean.Meta.Tactic.TryThis
 -/
@@ -400,7 +400,7 @@ Authors: Damiano Testa
 -/
 
 --import Mathlib.Init
-import Mathlib.Tactic.Linter.DeprecatedModule
+import Batteries.Linter.DeprecatedModule
 import Std.Time.Zoned
 import Lean.Meta.Tactic.TryThis
 -- a comment here to test `keepTrailing

@@ -1,6 +1,6 @@
 module
 
-public import Mathlib.Tactic.Linter.DeprecatedModule
+public import Batteries.Linter.DeprecatedModule
 public import Mathlib.Tactic.Linter.DocPrime
 public import Mathlib.Tactic.Linter.DocString
 

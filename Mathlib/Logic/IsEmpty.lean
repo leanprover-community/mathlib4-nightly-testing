@@ -7,6 +7,6 @@ module
 
 public import Mathlib.Logic.Function.Basic
 public import Mathlib.Logic.Relator
-public import Mathlib.Tactic.Linter.DeprecatedModule
+public import Batteries.Linter.DeprecatedModule
 
 deprecated_module "import Mathlib.Logic.IsEmpty.Basic instead" (since := "2026-02-11")

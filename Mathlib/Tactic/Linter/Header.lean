@@ -8,6 +8,7 @@ module
 public meta import Lean.Elab.Command
 public meta import Lean.Elab.ParseImportsFast
 public meta import Init
+public meta import Batteries.Linter.DeprecatedModule
 public import Lean.Parser.Module
 public import Mathlib.Tactic.Linter.DirectoryDependency
 
@@ -421,6 +422,7 @@ def headerLinter : Linter where run := withSetOptionIn fun stx ↦ do
     Linter.logLint linter.directoryDependency stx msgs.trimAsciiStart.copy
   let some afterImports := firstNonImport? upToStx | return
   if afterImports.isOfKind ``Lean.Parser.Command.eoi then return
+  if afterImports.isOfKind ``Batteries.Linter.deprecated_modules then return
   let copyright := match upToStx.getHeadInfo with
     | .original lead .. => lead.toString
     | _ => ""

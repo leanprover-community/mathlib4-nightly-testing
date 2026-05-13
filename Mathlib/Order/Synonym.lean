@@ -7,7 +7,7 @@ module
 
 public import Mathlib.Logic.Equiv.Defs
 public import Mathlib.Order.Basic
-public import Mathlib.Tactic.Linter.DeprecatedModule
+public import Batteries.Linter.DeprecatedModule
 
 /-!
 # Type synonyms

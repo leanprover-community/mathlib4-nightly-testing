@@ -79,8 +79,10 @@ def mkAllCLI (args : Parsed) : IO UInt32 := do
       allFiles := #["Std", "Batteries"] ++ allFiles
     let fileContent := (if useModule then "module  -- shake: keep-all\n\n" else "") ++
       ("\n".intercalate (allFiles.map ((if useModule then "public " else "") ++ "import " ++ ·)).toList) ++
-      (if d == "Mathlib" then "\n\nset_option linter.style.longLine false" else "") ++
-      "\n"
+      (if d == "Mathlib" then
+          "\n\nset_option linter.style.longLine false\nset_option linter.deprecated_modules false\n"
+        else
+          "\n")
     if !fileExists then
       if check then
         IO.println s!"File '{fileName}' does not exist"
