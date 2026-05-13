@@ -72,6 +72,9 @@ lemma bitwise_of_ne_zero {n m : Nat} (hn : n ≠ 0) (hm : m ≠ 0) :
     simp only [mod_two_of_bodd]; cases bodd x <;> rfl
   simp [hn, hm, mod_two_iff_bod, bit, two_mul]
 
+set_option allowUnsafeReducibility true in
+attribute [implicit_reducible] Nat.shiftRight
+
 theorem binaryRec_of_ne_zero {C : Nat → Sort*} (z : C 0) (f : ∀ b n, C n → C (bit b n)) {n}
     (h : n ≠ 0) :
     binaryRec z f n = n.bit_bodd_div2 ▸ f n.bodd n.div2 (binaryRec z f n.div2) := by

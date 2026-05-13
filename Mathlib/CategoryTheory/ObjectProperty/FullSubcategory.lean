@@ -157,7 +157,7 @@ variable {D : Type u'} [Category.{v'} D] (P Q : ObjectProperty D)
 
 /-- A functor which maps objects to objects satisfying a certain property induces a lift through
     the full subcategory of objects satisfying that property. -/
-@[simps]
+@[simps, implicit_reducible]
 def lift : C ⥤ FullSubcategory P where
   obj X := ⟨F.obj X, hF X⟩
   map f := homMk (F.map f)

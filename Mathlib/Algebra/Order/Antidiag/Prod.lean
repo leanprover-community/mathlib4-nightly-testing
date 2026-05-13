@@ -165,6 +165,10 @@ theorem filter_fst_eq_antidiagonal (n m : A) [DecidablePred (· = m)] [Decidable
   · rintro ⟨h, rfl⟩
     exact add_tsub_cancel_of_le h
 
+-- TODO: upstream
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible] Prod.swap
+
 theorem filter_snd_eq_antidiagonal (n m : A) [DecidablePred (· = m)] [Decidable (m ≤ n)] :
     {x ∈ antidiagonal n | x.snd = m} = if m ≤ n then {(n - m, m)} else ∅ := by
   rw [← map_swap_antidiagonal, filter_map]
