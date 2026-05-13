@@ -35,7 +35,6 @@ variable {ι : Type*} (b : Basis ι ℤ L)
 
 namespace ZLattice
 
-set_option backward.isDefEq.respectTransparency false in
 lemma exists_forall_abs_repr_le_norm :
     ∃ (ε : ℝ), 0 < ε ∧ ∀ (x : L), ∀ i, ε * |b.repr x i| ≤ ‖x‖ := by
   wlog H : IsZLattice ℝ L
@@ -193,7 +192,6 @@ lemma exists_finsetSum_norm_rpow_le_tsum :
         Int.norm_eq_abs, ← Int.cast_abs, ← Int.le_floor] at this
       simpa only [Int.ofNat_toNat, Fintype.mem_piFinset, Finset.mem_Icc, ← abs_le, hr'']
     refine (Finset.sum_le_sum_of_subset_of_nonneg hn (by intros; positivity)).trans ?_
-    dsimp
     simp only [Submodule.norm_coe]
     convert sum_piFinset_Icc_rpow_le b rfl n r hr with x
     simp [e, Finsupp.linearCombination]
@@ -203,7 +201,7 @@ lemma exists_finsetSum_norm_rpow_le_tsum :
     exact mul_le_of_le_one_left (mul_nonneg (by positivity) (by positivity)) hA'
   · refine ⟨A⁻¹ * B, mul_pos (inv_pos.mpr hA) hB, fun r hr s ↦ (H r hr s).trans ?_⟩
     rw [Real.mul_rpow (inv_pos.mpr hA).le hB.le, mul_assoc, mul_assoc]
-    refine mul_le_mul_of_nonneg_right ?_ (mul_nonneg (by positivity) (by positivity))
+    gcongr
     rw [← Real.rpow_neg_one, ← Real.rpow_mul hA.le]
     refine Real.self_le_rpow_of_one_le (not_le.mp hA').le ?_
     simp only [neg_mul, one_mul, le_neg (b := r)]

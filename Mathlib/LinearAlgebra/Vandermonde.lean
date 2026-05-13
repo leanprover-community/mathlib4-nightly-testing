@@ -200,7 +200,6 @@ private theorem det_projVandermonde_of_field (v w : Fin n → K) :
   simp only [of_apply, projVandermonde_apply_of_ne_zero h0, val_succ, val_castSucc, cons_succ, W, r]
   ring
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The formula for the determinant of a projective Vandermonde matrix. -/
 theorem det_projVandermonde (v w : Fin n → R) : (projVandermonde v w).det =
     ∏ i : Fin n, ∏ j ∈ Finset.Ioi i, (v j * w i - v i * w j) := by
@@ -268,7 +267,7 @@ theorem eval_matrixOfPolynomials_eq_vandermonde_mul_matrixOfPolynomials (v : Fin
     Matrix.of (fun i j => ((p j).eval (v i))) =
     (Matrix.vandermonde v) * (Matrix.of (fun (i j : Fin n) => (p j).coeff i)) := by
   ext i j
-  simp_rw [Matrix.mul_apply, eval, Matrix.of_apply, eval₂]
+  simp_rw [Matrix.mul_apply, eval, Matrix.of_apply, eval₂_eq_sum]
   simp only [Matrix.vandermonde]
   have : (p j).support ⊆ range n := supp_subset_range <| Nat.lt_of_le_of_lt (h_deg j) <| Fin.prop j
   rw [sum_eq_of_subset _ (fun j => zero_mul ((v i) ^ j)) this, ← Fin.sum_univ_eq_sum_range]

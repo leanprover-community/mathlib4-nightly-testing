@@ -129,6 +129,7 @@ variable (C)
   map_id _ := by aesop
   map_comp _ _ := InducedCategory.hom_ext (by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence between the skeleton and the category itself. -/
 @[simps] noncomputable def skeletonEquivalence : Skeleton C ≌ C where
   functor := fromSkeleton C
@@ -181,12 +182,13 @@ lemma mapSkeleton_obj_toSkeleton (X : C) :
     F.mapSkeleton.obj (toSkeleton X) = toSkeleton (F.obj X) :=
   congr_toSkeleton_of_iso <| F.mapIso <| fromSkeletonToSkeletonIso X
 
-instance [F.Full] : F.mapSkeleton.Full := by unfold mapSkeleton; infer_instance
+instance [F.Full] : F.mapSkeleton.Full := inferInstanceAs <| (_ ⋙ _).Full
 
-instance [F.Faithful] : F.mapSkeleton.Faithful := by unfold mapSkeleton; infer_instance
+instance [F.Faithful] : F.mapSkeleton.Faithful := inferInstanceAs <| (_ ⋙ _).Faithful
 
-instance [F.EssSurj] : F.mapSkeleton.EssSurj := by unfold mapSkeleton; infer_instance
+instance [F.EssSurj] : F.mapSkeleton.EssSurj := inferInstanceAs <| (_ ⋙ _).EssSurj
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A natural isomorphism between `X ↦ ⟦X⟧ ↦ ⟦FX⟧` and `X ↦ FX ↦ ⟦FX⟧`. On the level of
 categories, these are `C ⥤ Skeleton C ⥤ Skeleton D` and `C ⥤ D ⥤ Skeleton D`. So this says that
@@ -201,7 +203,7 @@ lemma mapSkeleton_injective [F.Full] [F.Faithful] : Function.Injective F.mapSkel
   fun _ _ h ↦ skeleton_skeletal C ⟨F.mapSkeleton.preimageIso <| eqToIso h⟩
 
 lemma mapSkeleton_surjective [F.EssSurj] : Function.Surjective F.mapSkeleton.obj :=
-  fun Y ↦ let ⟨X, h⟩ := EssSurj.mem_essImage Y; ⟨X, skeleton_skeletal D h⟩
+  fun Y ↦ let ⟨X, h⟩ := EssSurj.mem_essImage F.mapSkeleton Y; ⟨X, skeleton_skeletal D h⟩
 
 end Functor
 

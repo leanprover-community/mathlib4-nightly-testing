@@ -180,8 +180,7 @@ theorem map_on_summand₀ {Δ Δ' : SimplexCategoryᵒᵖ} (A : Splitting.IndexS
     Sigma.ι (summand K Δ) A ≫ map K θ =
       Termwise.mapMono K i ≫ Sigma.ι (summand K Δ') (Splitting.IndexSet.mk e) := by
   simp only [map, colimit.ι_desc, Cofan.mk_ι_app]
-  have h := SimplexCategory.image_eq fac
-  subst h
+  obtain rfl := SimplexCategory.image_eq fac
   congr
   · exact SimplexCategory.image_ι_eq fac
   · dsimp only [SimplicialObject.Splitting.IndexSet.pull]
@@ -220,6 +219,7 @@ def obj (K : ChainComplex C ℕ) : SimplicialObject C where
       Obj.Termwise.mapMono_comp_assoc, Obj.map_on_summand₀ K A fac]
     rfl)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- By construction, the simplicial `Γ₀.obj K` is equipped with a splitting. -/
 def splitting (K : ChainComplex C ℕ) : SimplicialObject.Splitting (Γ₀.obj K) where
@@ -234,6 +234,7 @@ def splitting (K : ChainComplex C ℕ) : SimplicialObject.Splitting (Γ₀.obj K
       rw [id_comp]
       rfl))
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 theorem Obj.map_on_summand {Δ Δ' : SimplexCategoryᵒᵖ} (A : Splitting.IndexSet Δ) (θ : Δ ⟶ Δ')
@@ -295,6 +296,7 @@ end Γ₀
 
 variable [HasFiniteCoproducts C]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor `Γ₀' : ChainComplex C ℕ ⥤ SimplicialObject.Split C`
 that induces `Γ₀ : ChainComplex C ℕ ⥤ SimplicialObject C`, which

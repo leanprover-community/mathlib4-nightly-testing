@@ -190,6 +190,7 @@ noncomputable
 def Linear_CC' : LocallyConstant C ℤ →ₗ[ℤ] LocallyConstant (C' C ho) ℤ :=
   Linear_CC'₁ C hsC ho - Linear_CC'₀ C ho
 
+set_option backward.defeqAttrib.useBackward true in
 theorem CC_comp_zero : ∀ y, (Linear_CC' C hsC ho) ((πs C o) y) = 0 := by
   intro y
   ext x
@@ -303,7 +304,6 @@ theorem union_succ : GoodProducts C = GoodProducts (π C (ord I · < o)) ∪ Max
       apply h
       have h' := Products.prop_of_isGood_of_contained C _ h hsC
       simp only [Order.lt_succ_iff] at h'
-      simp only at hh
       have hh' : ∀ a ∈ l.val, ord I a < o := by
         intro a ha
         refine (h' a ha).lt_of_ne ?_
@@ -473,8 +473,8 @@ theorem Products.max_eq_eval [Inhabited I] (l : Products I) (hl : l.val ≠ [])
   · rw [if_pos (swapTrue_eq_true _ _), if_neg]
     · rfl
     · simp [mem_C'_eq_false C ho x x.prop]
-  · push_neg at h₂; obtain ⟨i, hi⟩ := h₂; exfalso; rw [hi' i hi.1] at hi; exact hi.2 (h₁ i hi.1)
-  · push_neg at h₁; obtain ⟨i, hi⟩ := h₁; exfalso; rw [← hi' i hi.1] at hi; exact hi.2 (h₃ i hi.1)
+  · push Not at h₂; obtain ⟨i, hi⟩ := h₂; exfalso; rw [hi' i hi.1] at hi; exact hi.2 (h₁ i hi.1)
+  · push Not at h₁; obtain ⟨i, hi⟩ := h₁; exfalso; rw [← hi' i hi.1] at hi; exact hi.2 (h₃ i hi.1)
 
 namespace GoodProducts
 

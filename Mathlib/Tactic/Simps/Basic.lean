@@ -881,6 +881,8 @@ structure Config where
   attrs : Array Attribute := #[]
   /-- simplify the right-hand side of generated simp-lemmas using `dsimp, simp`. -/
   simpRhs := false
+  /-- simplify the left-hand side of the generated lemmas using `dsimp`. -/
+  dsimpLhs := false
   /-- TransparencyMode used to reduce the type in order to detect whether it is a structure. -/
   typeMd := TransparencyMode.instances
   /-- TransparencyMode used to reduce the right-hand side in order to detect whether it is a
@@ -964,7 +966,14 @@ variable (ref : Syntax) (univs : List Name)
 /-- Add a lemma with `nm` stating that `lhs = rhs`. `type` is the type of both `lhs` and `rhs`,
 `args` is the list of local constants occurring, and `univs` is the list of universe variables. -/
 def addProjection (declName : Name) (type lhs rhs : Expr) (args : Array Expr)
-    (cfg : Config) : MetaM Unit := do
+    (cfg : Config) : MetaM Unit :=
+  -- Enable `backward.defeqAttrib.useBackward` so the dsimp/simp normalization
+  -- below still uses `@[backward_defeq]`-only theorems (which would have been
+  -- `@[defeq]` under the pre-stricter-inference rules). Without this, rfl-shaped
+  -- projections end up with compound (non-rfl) proofs, which prevents
+  -- `inferDefEqAttr` from tagging them, which cascades through downstream
+  -- `@[simps!]` invocations.
+  withOptions (fun opts => backward.defeqAttrib.useBackward.set opts true) do
   trace[simps.debug] "Planning to add the equality{indentD m!"{lhs} = ({rhs} : {type})"}"
   let env ← getEnv
   -- simplify `rhs` if `cfg.simpRhs` is true
@@ -984,6 +993,11 @@ def addProjection (declName : Name) (type lhs rhs : Expr) (args : Array Expr)
       trace[simps.debug] "`simp` failed to simplify rhs"
     rhs := result.expr
     prf := result.proof?.getD prf
+  -- dsimplify `lhs` if `cfg.dsimpLhs` is true
+  let mut lhs := lhs
+  if cfg.dsimpLhs then
+    let ctx ← mkSimpContext
+    (lhs, _) ← dsimp lhs ctx
   let eqAp := mkApp3 (mkConst `Eq [lvl]) type lhs rhs
   let declType ← mkForallFVars args eqAp
   let declValue ← mkLambdaFVars args prf

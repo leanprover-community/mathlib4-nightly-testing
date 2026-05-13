@@ -362,7 +362,6 @@ theorem color_lt {i : Ordinal.{u}} (hi : i < p.lastStep) {N : ℕ}
     have : k ∈ A := by
       simpa only [true_and, mem_univ, Classical.not_not, mem_diff] using
         Nat.notMem_of_lt_sInf hk
-    simp only [] at this
     simpa only [A, exists_prop, mem_iUnion, mem_singleton_iff, mem_closedBall, Subtype.exists,
       Subtype.coe_mk]
   choose! g hg using this
@@ -1041,8 +1040,7 @@ protected def vitaliFamily (μ : Measure α) [SFinite μ] : VitaliFamily μ wher
       obtain ⟨r, rpos, rfl⟩ : ∃ r : ℝ, 0 < r ∧ closedBall x r = t := by simpa using fsubset x xs tf
       rcases le_total r (δ / 2) with (H | H)
       · exact ⟨r, ⟨rpos, tf⟩, ⟨rpos, H.trans_lt (half_lt_self δpos)⟩⟩
-      · have : closedBall x r = closedBall x (δ / 2) :=
-          Subset.antisymm ht (closedBall_subset_closedBall H)
+      · have : closedBall x r = closedBall x (δ / 2) := Subset.antisymm ht (by gcongr)
         rw [this] at tf
         exact ⟨δ / 2, ⟨half_pos δpos, tf⟩, ⟨half_pos δpos, half_lt_self δpos⟩⟩
     obtain ⟨t, r, _, ts, tg, μt, tdisj⟩ :

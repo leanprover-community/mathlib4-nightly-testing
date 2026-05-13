@@ -139,6 +139,7 @@ theorem braiding_inv_naturality {X X' Y Y' : C} (f : X ⟶ Y) (g : X' ⟶ Y') :
     (f ⊗ₘ g) ≫ (β_ Y' Y).inv = (β_ X' X).inv ≫ (g ⊗ₘ f) :=
   CommSq.w <| .vert_inv <| .mk <| braiding_naturality g f
 
+set_option backward.defeqAttrib.useBackward true in
 /-- In a braided monoidal category, the functors `tensorLeft X` and
 `tensorRight X` are isomorphic. -/
 @[simps]
@@ -147,6 +148,7 @@ def tensorLeftIsoTensorRight (X : C) :
   hom := { app Y := (β_ X Y).hom }
   inv := { app Y := (β_ X Y).inv }
 
+set_option backward.defeqAttrib.useBackward true in
 variable (C) in
 /-- The braiding isomorphism as a natural isomorphism of bifunctors `C ⥤ C ⥤ C`. -/
 @[simps!]
@@ -391,6 +393,7 @@ attribute [reassoc] braided
 
 instance id : (𝟭 C).LaxBraided where
 
+set_option backward.defeqAttrib.useBackward true in
 instance (F : C ⥤ D) (G : D ⥤ E) [F.LaxBraided] [G.LaxBraided] :
     (F ⋙ G).LaxBraided where
   braided X Y := by
@@ -696,6 +699,7 @@ theorem tensor_associativity (X₁ X₂ Y₁ Y₂ Z₁ Z₂ : C) :
         X₁ ◁ Y₁ ◁ (β_ X₂ Z₁).hom ▷ Y₂ ▷ Z₂ ⊗≫ 𝟙 _ := by monoidal
     _ = _ := by rw [← whisker_exchange]; monoidal
 
+set_option backward.defeqAttrib.useBackward true in
 instance tensorMonoidal : (tensor C).Monoidal :=
     Functor.CoreMonoidal.toMonoidal
       { εIso := (λ_ (𝟙_ C)).symm
@@ -723,9 +727,7 @@ theorem leftUnitor_monoidal (X₁ X₂ : C) :
       (α_ (𝟙_ C) X₁ (𝟙_ C ⊗ X₂)).hom ≫
         (𝟙_ C ◁ (α_ X₁ (𝟙_ C) X₂).inv) ≫ (λ_ ((X₁ ⊗ 𝟙_ C) ⊗ X₂)).hom ≫ ((ρ_ X₁).hom ▷ X₂) := by
     monoidal
-  rw [this]; clear this
-  rw [← braiding_leftUnitor]
-  monoidal
+  simp [this]
 
 @[reassoc]
 theorem rightUnitor_monoidal (X₁ X₂ : C) :
@@ -781,6 +783,14 @@ end Tensor
 
 end MonoidalCategory
 
+@[reassoc]
+theorem SymmetricCategory.tensorμ_braid_swap
+    {C : Type*} [Category* C] [MonoidalCategory C] [SymmetricCategory C]
+    (X Y : C) :
+    tensorμ X X Y Y ≫ (β_ (X ⊗ Y) (X ⊗ Y)).hom =
+      ((β_ X X).hom ⊗ₘ (β_ Y Y).hom) ≫ tensorμ X X Y Y := by
+  simp [tensorμ, SymmetricCategory.braiding_swap_eq_inv_braiding Y X, tensorHom_def]
+
 instance : BraidedCategory Cᵒᵖ where
   braiding X Y := (β_ Y.unop X.unop).op
   braiding_naturality_right X {_ _} f := Quiver.Hom.unop_inj <| by simp
@@ -823,6 +833,7 @@ lemma unmop_inv_braiding (X Y : Cᴹᵒᵖ) : (β_ X Y).inv.unmop = (β_ (unmop 
 
 end MonoidalOppositeLemmas
 
+set_option backward.defeqAttrib.useBackward true in
 instance : (mopFunctor C).Monoidal :=
   Functor.CoreMonoidal.toMonoidal
     { εIso := Iso.refl _
@@ -834,6 +845,7 @@ instance : (mopFunctor C).Monoidal :=
 @[simp] lemma mopFunctor_μ (X Y : C) : μ (mopFunctor C) X Y = (β_ (mop X) (mop Y)).hom := rfl
 @[simp] lemma mopFunctor_δ (X Y : C) : δ (mopFunctor C) X Y = (β_ (mop X) (mop Y)).inv := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 instance : (unmopFunctor C).Monoidal :=
   Functor.CoreMonoidal.toMonoidal
     { εIso := Iso.refl _

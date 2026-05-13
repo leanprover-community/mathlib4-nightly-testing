@@ -11,7 +11,7 @@ public import Mathlib.Algebra.Module.Pi
 public import Mathlib.Algebra.Ring.NegOnePow
 public import Mathlib.CategoryTheory.Linear.LinearFunctor
 
-/-! The cochain complex of homomorphisms between cochain complexes
+/-! # The cochain complex of homomorphisms between cochain complexes
 
 If `F` and `G` are cochain complexes (indexed by `ℤ`) in a preadditive category,
 there is a cochain complex of abelian groups whose `0`-cocycles identify to
@@ -66,15 +66,10 @@ variable (F G)
 of a family of morphisms `F.X p ⟶ G.X q` whenever `p + n = q`, i.e. for all
 triplets in `HomComplex.Triplet n`. -/
 def Cochain := ∀ (T : Triplet n), F.X T.p ⟶ G.X T.q
+deriving AddCommGroup
 
-instance : AddCommGroup (Cochain F G n) := by
-  dsimp only [Cochain]
-  infer_instance
-
-set_option backward.isDefEq.respectTransparency false in
-instance : Module R (Cochain F G n) := by
-  dsimp only [Cochain]
-  infer_instance
+instance : Module R (Cochain F G n) :=
+  inferInstanceAs <| Module R (∀ _, _)
 
 namespace Cochain
 
@@ -549,6 +544,7 @@ lemma δ_ofHomotopy {φ₁ φ₂ : F ⟶ G} (h : Homotopy φ₁ φ₂) :
   simp only [Cochain.mk_v, one_smul, Int.negOnePow_zero, Cochain.sub_v, Cochain.ofHom_v, eq]
   abel
 
+set_option backward.defeqAttrib.useBackward true in
 lemma δ_neg_one_cochain (z : Cochain F G (-1)) :
     δ (-1) 0 z = Cochain.ofHom (Homotopy.nullHomotopicMap'
       (fun i j hij => z.v i j (by dsimp at hij; rw [← hij, add_neg_cancel_right]))) := by
@@ -713,6 +709,7 @@ def toCochainAddMonoidHom : Cocycle K L n →+ Cochain K L n where
   map_zero' := by simp
   map_add' := by simp
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (L n) in
 /-- `Cocycle K L n` is the kernel of the differential on `HomComplex K L`. -/
@@ -727,14 +724,13 @@ def isKernel (hm : n + 1 = m) :
         map_zero' := by
           #adaptation_note /-- Prior to https://github.com/leanprover/lean4/pull/12244
           this was just `cat_disch`. -/
-          simp +instances only [HomComplex_X, Functor.const_obj_obj, parallelPair_obj_zero,
-            map_zero]
-          cat_disch
-        map_add' := by
+          simp +instances only [HomComplex_X, map_zero]
+          rfl
+        map_add' _ _ := by
           #adaptation_note /-- Prior to https://github.com/leanprover/lean4/pull/12244
           this was just `cat_disch`. -/
-          simp +instances only [HomComplex_X, Functor.const_obj_obj, parallelPair_obj_zero, map_add]
-          cat_disch })
+          simp +instances only [HomComplex_X, map_add]
+          rfl })
     (by cat_disch) (fun s l hl ↦ by ext : 3; simp [← hl])
 
 end Cocycle
@@ -782,6 +778,7 @@ def Cocycle.postcomp {n : ℤ} (z : Cocycle F G n) (f : G ⟶ K) : Cocycle F K n
 
 namespace Cochain
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Given two morphisms of complexes `φ₁ φ₂ : F ⟶ G`, the datum of a homotopy between `φ₁` and
 `φ₂` is equivalent to the datum of a `1`-cochain `z` such that `δ (-1) 0 z` is the difference
 of the zero cochains associated to `φ₂` and `φ₁`. -/
@@ -828,6 +825,7 @@ def single {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) :
       then (K.XIsoOfEq h.1).inv ≫ f ≫ (L.XIsoOfEq h.2).hom
       else 0)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma single_v {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (hpq : p + n = q) :
     (single f n).v p q hpq = f := by

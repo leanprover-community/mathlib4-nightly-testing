@@ -10,6 +10,7 @@ public meta import Lean.Elab.ParseImportsFast
 public meta import Lean.Linter.Basic
 public meta import Lean.Elab.AssertExists
 public import Lean.Message
+
 -- This file is imported by the Header linter, hence has no mathlib imports.
 
 /-! # The `directoryDependency` linter
@@ -242,6 +243,7 @@ def allowedImportDirs : NamePrefixRel := .ofArray #[
   (`Mathlib.Logic.Fin.Rotate, `Mathlib.Algebra.Group.Fin.Basic),
   (`Mathlib.Logic, `Mathlib.Algebra.Notation),
   (`Mathlib.Logic, `Mathlib.Algebra.NeZero),
+  (`Mathlib.Logic, `Mathlib.Algebra.Order),
   (`Mathlib.Logic, `Mathlib.Data),
   -- TODO: this next dependency should be made more fine-grained.
   (`Mathlib.Logic, `Mathlib.Order),
@@ -501,7 +503,6 @@ def forbiddenImportDirs : NamePrefixRel := .ofArray #[
   (`Mathlib.ModelTheory, `Mathlib.RepresentationTheory),
   (`Mathlib.ModelTheory, `Mathlib.Testing),
   (`Mathlib.ModelTheory, `Mathlib.Topology),
-  (`Mathlib.NumberTheory, `Mathlib.AlgebraicGeometry),
   (`Mathlib.NumberTheory, `Mathlib.AlgebraicTopology),
   (`Mathlib.NumberTheory, `Mathlib.Computability),
   (`Mathlib.NumberTheory, `Mathlib.Condensed),
@@ -597,6 +598,7 @@ def overrideAllowedImportDirs : NamePrefixRel := .ofArray #[
   (`Mathlib.Algebra.Lie, `Mathlib.RepresentationTheory),
   (`Mathlib.Algebra.Module.ZLattice, `Mathlib.Analysis),
   (`Mathlib.Algebra.Notation, `Mathlib.Algebra.Notation),
+  (`Mathlib.AlgebraicGeometry.EllipticCurve, `Mathlib.Probability), -- For L-functions
   (`Mathlib.AlgebraicGeometry.Sites, `Mathlib.AlgebraicTopology), -- Homotopical methods for sheaf cohomology
   (`Mathlib.AlgebraicGeometry.Sites, `Mathlib.NumberTheory), -- For arithmetic applications
   (`Mathlib.Deprecated, `Mathlib.Deprecated),
@@ -612,6 +614,7 @@ def overrideAllowedImportDirs : NamePrefixRel := .ofArray #[
   (`Mathlib.Computability.AkraBazzi, `Mathlib.MeasureTheory), -- Akra-Bazzi uses calculus
   (`Mathlib.Analysis.Convex.SimplicialComplex.Basic, `Mathlib.AlgebraicTopology),
   (`Mathlib.Analysis.Convex.SimplicialComplex.AffineIndependentUnion, `Mathlib.AlgebraicTopology),
+  (`Mathlib.Probability.Kernel.Category, `Mathlib.CategoryTheory), -- For the category of s-finite/Markov kernels
 ]
 
 end DirectoryDependency
@@ -620,7 +623,7 @@ open DirectoryDependency
 
 /-- Check if one of the imports `imports` to `mainModule` is forbidden by `forbiddenImportDirs`;
 if so, return an error describing how the import transitively arises. -/
-private def checkBlocklist (env : Environment) (mainModule : Name) (imports : Array Name) : Option MessageData := Id.run do
+def checkBlocklist (env : Environment) (mainModule : Name) (imports : Array Name) : Option MessageData := Id.run do
   match forbiddenImportDirs.findAny mainModule imports with
   | some (n₁, n₂) => do
     if let some imported := n₂.prefixToName imports then
@@ -656,7 +659,7 @@ public def directoryDependencyCheck (mainModule : Name) : CommandElabM (Array Me
     -- `ImportGraph`, `ProofWidgets` or `LeanSearchClient` (as these are imported in Tactic.Common).
     -- We also allow transitive imports of Mathlib.Init, as well as Mathlib.Init itself.
     let initImports := (← findImports ("Mathlib" / "Init.lean")).append
-      #[`Mathlib.Init, `Mathlib.Tactic.DeclarationNames, `Mathlib.Tactic.Linter.DeprecatedModule]
+      #[`Mathlib.Init, `Mathlib.Tactic.DeclarationNames]
     let exclude := [
       `Init, `Std, `Lean,
       `Aesop, `Qq, `Plausible, `ImportGraph, `ProofWidgets, `LeanSearchClient

@@ -80,7 +80,7 @@ are composable. -/
 def δ : X.ω₁.obj (mk₁ g) ⟶ (X.ω₁.obj (mk₁ f))⟦(1 : ℤ)⟧ :=
   X.δ'.app (mk₂ f g)
 
-/-- The distinguished triangle attached to a spectral object `E : SpectralObjet C ι`
+/-- The distinguished triangle attached to a spectral object `E : SpectralObject C ι`
 and composable morphisms `f : i ⟶ j` and `g : j ⟶ k` in `ι`. -/
 @[simps!]
 def triangle : Triangle C :=
@@ -96,6 +96,7 @@ section
 
 variable {ι' : Type*} [Category ι'] (F : ι' ⥤ ι)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] Precomp.map Precomp.obj δ in
 /-- The precomposition of a spectral object with a functor. -/
@@ -199,6 +200,7 @@ namespace Functor
 
 variable {C}
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The functor between categories of spectral objects that is induced by
 a triangulated functor. -/
 def mapTriangulatedSpectralObject (F : C ⥤ D) [F.CommShift ℤ] [F.IsTriangulated]

@@ -44,7 +44,15 @@ theorem eval_T_real_mem_Icc (n : ℤ) {x : ℝ} (hx : x ∈ Set.Icc (-1) 1) :
   grind [T_real_cos, cos_mem_Icc]
 
 theorem abs_eval_T_real_le_one (n : ℤ) {x : ℝ} (hx : |x| ≤ 1) :
-    |(T ℝ n).eval x| ≤ 1 := by grind [eval_T_real_mem_Icc]
+    |(T ℝ n).eval x| ≤ 1 := by
+  #adaptation_note /-- Before nightly-2026-04-07, this was just
+  `grind [eval_T_real_mem_Icc]`. `grind`'s e-matching now keeps the
+  `Polynomial.eval` produced by the lemma (which uses `instCommSemiring.toSemiring`)
+  and the `Polynomial.eval` propagated by abs unfolding (which uses `Real.semiring`)
+  as distinct atoms, even though they are `rfl`-equal, so the contradiction is
+  never found. -/
+  have h := eval_T_real_mem_Icc n (Set.mem_Icc.mpr (abs_le.mp hx))
+  exact abs_le.mpr (Set.mem_Icc.mp h)
 
 theorem one_le_eval_T_real (n : ℤ) {x : ℝ} (hx : 1 ≤ x) : 1 ≤ (T ℝ n).eval x := by
   rw [← cosh_arcosh hx]
@@ -333,7 +341,7 @@ theorem abs_iterate_derivative_T_real_le (n : ℤ) (k : ℕ) {x : ℝ} (hx : |x|
   replace hfderiv : ∑ p ∈ f.support, f p • p = derivative^[k] (T ℝ n) := by rw [← hfderiv]; rfl
   have hf (y : ℝ) :
       ∑ p ∈ f.support, f p • p.eval y = (derivative^[k] (T ℝ n)).eval y := by
-    rw [← hfderiv, Polynomial.eval_finset_sum]
+    rw [← hfderiv, Polynomial.eval_finsetSum]
     simp_rw [Polynomial.eval_smul]
   rw [← hf x, ← hf 1]
   grw [Finset.abs_sum_le_sum_abs]

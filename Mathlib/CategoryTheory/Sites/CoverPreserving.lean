@@ -35,7 +35,7 @@ Then, a cover-preserving and compatible-preserving functor is continuous.
 
 -/
 
-@[expose] public section
+public section
 
 
 universe w v₁ v₂ v₃ u₁ u₂ u₃
@@ -111,6 +111,7 @@ end
 
 open Limits.WalkingCospan
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem compatiblePreservingOfFlat {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
     (K : GrothendieckTopology D) (G : C ⥤ D) [RepresentablyFlat G] : CompatiblePreserving K G := by
@@ -140,13 +141,14 @@ theorem compatiblePreservingOfFlat {C : Type u₁} [Category.{v₁} C] {D : Type
   injection c'.π.naturality WalkingCospan.Hom.inr with _ e₂
   exact hx (c'.π.app left).right (c'.π.app right).right hg₁ hg₂ (e₁.symm.trans e₂)
 
+set_option backward.defeqAttrib.useBackward true in
 theorem compatiblePreservingOfDownwardsClosed (F : C ⥤ D) [F.Full] [F.Faithful]
     (hF : ∀ {c : C} {d : D} (_ : d ⟶ F.obj c), Σ c', F.obj c' ≅ d) : CompatiblePreserving K F := by
   constructor
   introv hx he
   obtain ⟨X', e⟩ := hF f₁
   apply (ℱ.1.mapIso e.op).toEquiv.injective
-  simp only [Iso.op_hom, Iso.toEquiv_fun, ℱ.1.mapIso_hom, ← FunctorToTypes.map_comp_apply]
+  simp only [Iso.op_hom, Iso.toEquiv_fun, ℱ.1.mapIso_hom, ← Functor.map_comp_apply]
   simpa using
     hx (F.preimage <| e.hom ≫ f₁) (F.preimage <| e.hom ≫ f₂) hg₁ hg₂
       (F.map_injective <| by simpa using he)
@@ -166,10 +168,6 @@ lemma Functor.isContinuous_of_coverPreserving (hF₁ : CompatiblePreserving.{max
     · intro y₁ y₂ hy₁ hy₂
       apply (((isSheaf_iff_isSheaf_of_type _ _).1 G.2).isSeparated _ (hF₂.cover_preserve hS)).ext
       rintro Y _ ⟨Z, g, h, hg, rfl⟩
-      dsimp
-      simp only [Functor.map_comp, types_comp_apply]
-      have H := (hy₁ g hg).trans (hy₂ g hg).symm
-      dsimp at H
-      rw [H]
+      simpa using congrArg _ ((hy₁ g hg).trans (hy₂ g hg).symm)
 
 end CategoryTheory

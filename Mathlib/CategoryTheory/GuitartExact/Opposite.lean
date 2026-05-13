@@ -93,6 +93,7 @@ instance [w.GuitartExact] : w.op.GuitartExact := by
     isConnected_iff_of_equivalence (w.structuredArrowRightwardsOpEquivalence g)]
   infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma guitartExact_op_iff : w.op.GuitartExact ↔ w.GuitartExact := by
   constructor
@@ -109,6 +110,11 @@ instance guitartExact_id' (F : C₁ ⥤ C₂) :
     GuitartExact (TwoSquare.mk F (𝟭 C₁) (𝟭 C₂) F (𝟙 F)) := by
   rw [← guitartExact_op_iff]
   apply guitartExact_id
+
+instance guitartExact_of_isEquivalence_of_isIso'
+    [T.IsEquivalence] [B.IsEquivalence] [IsIso w.natTrans] : GuitartExact w := by
+  rw [← guitartExact_op_iff]
+  infer_instance
 
 end TwoSquare
 

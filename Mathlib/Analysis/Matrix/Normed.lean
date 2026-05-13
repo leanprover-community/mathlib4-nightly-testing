@@ -154,7 +154,6 @@ theorem nnnorm_replicateRow (v : n → α) : ‖replicateRow ι v‖₊ = ‖v�
 theorem norm_replicateRow (v : n → α) : ‖replicateRow ι v‖ = ‖v‖ :=
   congr_arg ((↑) : ℝ≥0 → ℝ) <| nnnorm_replicateRow v
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem nnnorm_diagonal [DecidableEq n] (v : n → α) : ‖diagonal v‖₊ = ‖v‖₊ := by
   simp_rw [nnnorm_def, Pi.nnnorm_def]
@@ -162,8 +161,7 @@ theorem nnnorm_diagonal [DecidableEq n] (v : n → α) : ‖diagonal v‖₊ = �
   refine le_antisymm (Finset.sup_le fun j hj => ?_) ?_
   · obtain rfl | hij := eq_or_ne i j
     · rw [diagonal_apply_eq]
-    · rw [diagonal_apply_ne _ hij, nnnorm_zero]
-      exact zero_le _
+    · simp [hij]
   · refine Eq.trans_le ?_ (Finset.le_sup (Finset.mem_univ i))
     rw [diagonal_apply_eq]
 
@@ -309,6 +307,7 @@ theorem linfty_opNNNorm_replicateRow (v : n → α) : ‖replicateRow ι v‖₊
 theorem linfty_opNorm_replicateRow (v : n → α) : ‖replicateRow ι v‖ = ∑ i, ‖v i‖ :=
   (congr_arg ((↑) : ℝ≥0 → ℝ) <| linfty_opNNNorm_replicateRow v).trans <| by simp [NNReal.coe_sum]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem linfty_opNNNorm_diagonal [DecidableEq m] (v : m → α) : ‖diagonal v‖₊ = ‖v‖₊ := by
   rw [linfty_opNNNorm_def, Pi.nnnorm_def]
@@ -327,7 +326,6 @@ section NonUnitalSeminormedRing
 
 variable [NonUnitalSeminormedRing α]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem linfty_opNNNorm_mul (A : Matrix l m α) (B : Matrix m n α) : ‖A * B‖₊ ≤ ‖A‖₊ * ‖B‖₊ := by
   simp_rw [linfty_opNNNorm_def, Matrix.mul_apply]
   calc
@@ -434,7 +432,6 @@ For a matrix over a field, the norm defined in this section agrees with the oper
 section
 variable [NontriviallyNormedField α] [NormedAlgebra ℝ α]
 
-set_option backward.isDefEq.respectTransparency false in
 lemma linfty_opNNNorm_eq_opNNNorm (A : Matrix m n α) :
     ‖A‖₊ = ‖ContinuousLinearMap.mk (Matrix.mulVecLin A)‖₊ := by
   rw [ContinuousLinearMap.opNNNorm_eq_of_bounds _ (linfty_opNNNorm_mulVec _) fun N hN => ?_]
@@ -605,6 +602,7 @@ lemma frobenius_norm_replicateCol (v : n → α) : ‖replicateCol ι v‖ = ‖
 lemma frobenius_nnnorm_replicateCol (v : n → α) : ‖replicateCol ι v‖₊ = ‖toLp 2 v‖₊ :=
   Subtype.ext <| frobenius_norm_replicateCol v
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma frobenius_nnnorm_diagonal [DecidableEq n] (v : n → α) : ‖diagonal v‖₊ = ‖toLp 2 v‖₊ := by
   simp_rw [frobenius_nnnorm_def, ← Finset.sum_product', Finset.univ_product_univ,

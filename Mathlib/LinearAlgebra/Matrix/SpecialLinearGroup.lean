@@ -5,6 +5,7 @@ Authors: Anne Baanen, Wen Yang
 -/
 module
 
+public import Mathlib.Data.Fintype.Parity
 public import Mathlib.LinearAlgebra.Matrix.Adjugate
 public import Mathlib.LinearAlgebra.Matrix.ToLin
 public import Mathlib.LinearAlgebra.Matrix.Transvection
@@ -76,6 +77,9 @@ scoped[MatrixGroups] notation "SL(" n ", " R ")" => Matrix.SpecialLinearGroup (F
 namespace SpecialLinearGroup
 
 variable {n : Type u} [DecidableEq n] [Fintype n] {R : Type v} [CommRing R]
+
+/-- If `R` and `n` have decidable equality then so does `SL(n, R)`. -/
+instance [DecidableEq R] : DecidableEq (SpecialLinearGroup n R) := Subtype.instDecidableEq
 
 instance hasCoeToMatrix : Coe (SpecialLinearGroup n R) (Matrix n n R) :=
   ⟨fun A => A.val⟩
@@ -320,7 +324,6 @@ section cast
 instance : Coe (SpecialLinearGroup n ℤ) (SpecialLinearGroup n R) :=
   ⟨fun x => map (Int.castRingHom R) x⟩
 
-@[simp]
 theorem coe_matrix_coe (g : SpecialLinearGroup n ℤ) :
     ↑(g : SpecialLinearGroup n R) = (↑g : Matrix n n ℤ).map (Int.castRingHom R) :=
   map_apply_coe (Int.castRingHom R) g
@@ -342,10 +345,9 @@ section Neg
 
 variable [Fact (Even (Fintype.card n))]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Formal operation of negation on special linear group on even cardinality `n` given by negating
 each element. -/
-instance instNeg [Fact (Even (Fintype.card n))] : Neg (SpecialLinearGroup n R) :=
+instance instNeg : Neg (SpecialLinearGroup n R) :=
   ⟨fun g => ⟨-g, by
     simpa [(@Fact.out <| Even <| Fintype.card n).neg_one_pow, g.det_coe]
       using det_smul (↑ₘg) (-1)⟩⟩
@@ -479,6 +481,8 @@ def T : SL(2, ℤ) :=
 
 theorem coe_S : ↑S = !![0, -1; 1, 0] :=
   rfl
+
+lemma S_inv : S⁻¹ = -S := by decide
 
 theorem coe_T : ↑T = (!![1, 1; 0, 1] : Matrix _ _ ℤ) :=
   rfl

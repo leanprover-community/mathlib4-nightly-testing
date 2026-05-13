@@ -146,7 +146,6 @@ def homEquiv : (P.Ring →ₐ[R] S) ≃ { x : S // P.HasMap x } where
   left_inv f := P.hom_ext (by simp)
   right_inv x := by simp
 
-set_option backward.isDefEq.respectTransparency false in
 lemma existsUnique_hasMap_of_hasMap_quotient_of_sq_eq_bot
     (I : Ideal S) (hI : I ^ 2 = ⊥) (x : S) (hx : P.HasMap (Ideal.Quotient.mk I x)) :
     ∃! ε, ε ∈ I ∧ P.HasMap (x + ε) := by
@@ -211,7 +210,6 @@ def equivAwayAdjoinRoot :
   · ext; simp [Algebra.algHom]
   · ext; simp
 
-set_option backward.isDefEq.respectTransparency false in
 /-- `R[X][Y]/⟨f, Yg-1⟩ ≃ R[X][1/g]/f` -/
 def equivAwayQuotient :
     P.Ring ≃ₐ[R] Localization.Away P.g ⧸ Ideal.span {algebraMap _ (Localization.Away P.g) P.f} := by
@@ -287,7 +285,7 @@ lemma StandardEtalePresentation.equivRing_x : P.equivRing P.x = P.X :=
   (P.equivRing.symm_apply_eq.mp P.equivRing_symm_X).symm
 
 /-- The `Algebra.Presentation` associated to a standard etale presentation. -/
-@[simps!]
+@[simps! relation val]
 def StandardEtalePresentation.toPresentation : Algebra.Presentation R S (Fin 2) (Fin 2) where
   __ := Algebra.Generators.ofAlgHom ((P.lift _ P.hasMap).comp
       (P.equivMvPolynomialQuotient.symm.toAlgHom.comp (Ideal.Quotient.mkₐ _ _)))

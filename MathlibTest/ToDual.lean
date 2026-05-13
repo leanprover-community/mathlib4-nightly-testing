@@ -32,8 +32,8 @@ structure Lattice (α : Type) extends SemilatticeInf α, SemilatticeSup α
 attribute [to_dual existing] Lattice.toSemilatticeInf
 
 -- we can reorder arguments of arguments in `SemilatticeInf.mk`
-@[to_dual]
-instance [Min α] (le_inf : ∀ a b c : α, a ≤ b → a ≤ c → a ≤ b ⊓ c) : SemilatticeInf α where
+@[to_dual, reducible]
+def le_inf_test [Min α] (le_inf : ∀ a b c : α, a ≤ b → a ≤ c → a ≤ b ⊓ c) : SemilatticeInf α where
   le_inf
 
 -- we can reorder arguments of arguments of arguments in `SemilatticeInf.casesOn`
@@ -382,3 +382,58 @@ info: eq_of_max_of_min {α : Type} [PartialOrder α] (a b : α) (hmin : ∀ (x :
 -/
 #guard_msgs in
 #check eq_of_max_of_min
+
+-- Test that the heuristic applies even when proofs are beta expanded
+@[to_dual (dont_translate := β) le_of_lt_and_le_of_lt']
+theorem le_of_lt_and_le_of_lt {β} [Preorder β] (a b : α) (c d : β) : (a < b → a ≤ b) ∧ (c < d → c ≤ d) :=
+  ⟨le_of_lt, (fun γ [Preorder γ] (c d : γ) ↦ @le_of_lt γ _ c d) β c d⟩
+
+-- Test the reordering of universes
+@[to_dual (reorder := α β γ) universeTest1']
+def universeTest1.{u,v,w} (α : Type u) (β : Type v) (γ : Type w) := α × β × γ
+
+/-- info: universeTest1'.{w, u, v} (γ : Type w) (α : Type u) (β : Type v) : Type (max u w v) -/
+#guard_msgs in
+#check universeTest1'
+
+@[to_dual (reorder := u₁ u₂) universeTest2']
+def universeTest2.{u,v} (u₁ : PUnit.{u}) (u₂ : PUnit.{v}) := PProd.mk u₁ u₂
+
+/-- info: universeTest2'.{v, u} (u₂ : PUnit) (u₁ : PUnit) : PUnit ×' PUnit -/
+#guard_msgs in
+#check universeTest2'
+
+@[to_dual (reorder := u₁ u₂) universeTest3']
+def universeTest3.{u,u',v,v'} (u₁ : PProd PUnit.{u} PUnit.{u'}) (u₂ : PProd PUnit.{v} PUnit.{v'}) :=
+  PProd.mk u₁ u₂
+
+/--
+info: universeTest3'.{v, v', u, u'} (u₂ : PUnit ×' PUnit) (u₁ : PUnit ×' PUnit) : (PUnit ×' PUnit) ×' PUnit ×' PUnit
+-/
+#guard_msgs in
+#check universeTest3'
+
+class Category.{v,u} (c : Type u) where
+  bla : Type v
+
+@[to_dual self (reorder := A B, 2 4)]
+structure Comma {A : Type u} [Category.{v} A] {B : Type u'} [Category.{v'} B] where
+
+open Mathlib.Tactic Translate ToDual
+
+/-- info: "leftMono" -/
+#guard_msgs in
+#eval return GuessName.guessName (data.guessNameExt.getState (← getEnv)) "leftMono"
+
+to_dual_name_hint LeftMono FooBar
+
+/-- info: "fooBar" -/
+#guard_msgs in
+#eval return GuessName.guessName (data.guessNameExt.getState (← getEnv)) "leftMono"
+
+to_dual_name_hint Left Right
+to_dual_name_hint Epi Mono
+
+/-- info: "right_epi" -/
+#guard_msgs in
+#eval return GuessName.guessName (data.guessNameExt.getState (← getEnv)) "left_mono"

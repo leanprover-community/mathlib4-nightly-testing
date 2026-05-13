@@ -70,6 +70,7 @@ namespace RingHom
 
 variable (P : ∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem IsStableUnderBaseChange.pullback_fst_appTop
     (hP : IsStableUnderBaseChange P) (hP' : RespectsIso P)
@@ -98,7 +99,6 @@ section affineLocally
 
 variable (P : ∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- For `P` a property of ring homomorphisms, `sourceAffineLocally P` holds for `f : X ⟶ Y`
 whenever `P` holds for the restriction of `f` on every affine open subset of `X`. -/
 def sourceAffineLocally : AffineTargetMorphismProperty := fun X _ f _ =>
@@ -110,7 +110,6 @@ Also see `affineLocally_iff_affineOpens_le`. -/
 abbrev affineLocally : MorphismProperty Scheme.{u} :=
   targetAffineLocally (sourceAffineLocally P)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem sourceAffineLocally_respectsIso (h₁ : RingHom.RespectsIso P) :
     (sourceAffineLocally P).toProperty.RespectsIso := by
   apply AffineTargetMorphismProperty.respectsIso_mk
@@ -190,7 +189,6 @@ open RingHom
 
 variable {X Y : Scheme.{u}} {f : X ⟶ Y}
 
-set_option backward.isDefEq.respectTransparency false in
 /-- If `P` holds for `f` over affine opens `U₂` of `Y` and `V₂` of `X` and `U₁` (resp. `V₁`) are
 open affine neighborhoods of `x` (resp. `f.base x`), then `P` also holds for `f`
 over some basic open of `U₁` (resp. `V₁`). -/
@@ -253,7 +251,7 @@ and for `f : Spec B ⟶ Spec A`, it is equivalent to the ring hom property `Q`.
 To make the proofs easier, we state it instead as
 1. `Q` is local (See `RingHom.PropertyIsLocal`)
 2. `P f` if and only if `Q` holds for every `Γ(Y, U) ⟶ Γ(X, V)` for all affine `U`, `V`.
-See `HasRingHomProperty.iff_appLE`.
+  See `HasRingHomProperty.iff_appLE`.
 -/
 class HasRingHomProperty (P : MorphismProperty Scheme.{u})
     (Q : outParam (∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop)) : Prop where
@@ -316,6 +314,7 @@ variable {P f}
 lemma iff_appLE : P f ↔ ∀ (U : Y.affineOpens) (V : X.affineOpens) (e), Q (f.appLE U V e).hom := by
   rw [eq_affineLocally P, affineLocally_iff_affineOpens_le]
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 theorem of_source_openCover [IsAffine Y]
     (𝒰 : X.OpenCover) [∀ i, IsAffine (𝒰.X i)] (H : ∀ i, Q ((𝒰.f i ≫ f).appTop.hom)) :
@@ -349,6 +348,7 @@ theorem iff_of_source_openCover [IsAffine Y] (𝒰 : X.OpenCover) [∀ i, IsAffi
     P f ↔ ∀ i, Q ((𝒰.f i ≫ f).appTop).hom :=
   ⟨fun H i ↦ appTop P _ (comp_of_isOpenImmersion P (𝒰.f i) f H), of_source_openCover 𝒰⟩
 
+set_option backward.defeqAttrib.useBackward true in
 theorem iff_of_isAffine [IsAffine X] [IsAffine Y] :
     P f ↔ Q (f.appTop).hom := by
   rw [iff_of_source_openCover (P := P) (Scheme.coverOfIsIso.{u} (𝟙 _))]
@@ -369,12 +369,12 @@ theorem of_iSup_eq_top [IsAffine Y] {ι : Type*}
   refine of_source_openCover (X.openCoverOfIsOpenCover _ hU) fun i ↦ ?_
   simpa [Scheme.Hom.app_eq_appLE] using (f.appLE_congr _ rfl (by simp) (fun f => Q f.hom)).mp (H i)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem iff_of_iSup_eq_top [IsAffine Y] {ι : Type*}
     (U : ι → X.affineOpens) (hU : ⨆ i, (U i : Opens X) = ⊤) :
     P f ↔ ∀ i, Q (f.appLE ⊤ (U i).1 le_top).hom :=
   ⟨fun H _ ↦ appLE P f H ⟨_, isAffineOpen_top _⟩ _ le_top, of_iSup_eq_top U hU⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 instance : IsZariskiLocalAtSource P := by
   apply HasAffineProperty.isZariskiLocalAtSource
@@ -411,7 +411,7 @@ lemma isLocal_ringHomProperty_of_isZariskiLocalAtSource_of_isZariskiLocalAtTarge
     apply IsZariskiLocalAtSource.of_openCover (Scheme.affineOpenCoverOfSpanRangeEqTop
       (fun i : s ↦ (i : S)) (by simpa)).openCover
     intro i
-    simp only [CommRingCat.coe_of, Scheme.AffineOpenCover.openCover_X, ← Spec.map_comp,
+    simp only [CommRingCat.coe_of, ← Spec.map_comp,
       Scheme.AffineOpenCover.openCover_f, Scheme.affineOpenCoverOfSpanRangeEqTop_f]
     exact H i
   · intro R S _ _ f s hs H
@@ -452,9 +452,6 @@ lemma of_isZariskiLocalAtSource_of_isZariskiLocalAtTarget [IsZariskiLocalAtTarge
     obtain ⟨φ, rfl⟩ : ∃ φ, Spec.map φ = f := ⟨_, Spec.map_preimage _⟩
     rw [HasRingHomProperty.Spec_iff (P := Q)]
     rfl
-
-@[deprecated (since := "2025-10-07")]
-alias of_isLocalAtSource_of_isLocalAtTarget := of_isZariskiLocalAtSource_of_isZariskiLocalAtTarget
 
 lemma inf {P P' : MorphismProperty Scheme.{u}}
     {Q Q' : ∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop}
@@ -551,8 +548,8 @@ lemma isStableUnderBaseChange (hP : RingHom.IsStableUnderBaseChange Q) :
   · rw [IsZariskiLocalAtSource.iff_of_openCover (P := P)
       (Scheme.Pullback.openCoverOfRight Y.affineCover f g)]
     intro i
-    simp only [Scheme.Pullback.openCoverOfRight_X, Scheme.Pullback.openCoverOfRight_f,
-      limit.lift_π, PullbackCone.mk_pt, PullbackCone.mk_π_app, Category.comp_id]
+    simp only [Scheme.Pullback.openCoverOfRight_f, limit.lift_π, PullbackCone.mk_π_app,
+      Category.comp_id]
     apply this _ (comp_of_isOpenImmersion _ _ _ H) inferInstance
   rw [iff_of_isAffine (P := P)] at H ⊢
   exact hP.pullback_fst_appTop _ (isLocal_ringHomProperty P).respectsIso _ _ H

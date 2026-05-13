@@ -22,6 +22,7 @@ The maps are
 - `Algebra.H1Cotangent.δ`
 - `KaehlerDifferential.mapBaseChange`
 - `KaehlerDifferential.map`
+
 and the exactness lemmas are
 - `Algebra.H1Cotangent.exact_map_δ`
 - `Algebra.H1Cotangent.exact_δ_mapBaseChange`
@@ -64,6 +65,7 @@ lemma Cotangent.surjective_map_ofComp :
   obtain ⟨x, hx', rfl⟩ := this
   exact ⟨.mk ⟨x, hx'⟩, Extension.Cotangent.map_mk _ _⟩
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 open Extension.Cotangent in
 /--
@@ -132,7 +134,7 @@ section instanceProblem
 
 -- Note: these instances are needed to prevent instance search timeouts.
 attribute [local instance 999999] Zero.toOfNat0 SemilinearMapClass.distribMulActionSemiHomClass
-  SemilinearEquivClass.instSemilinearMapClass TensorProduct.addZeroClass AddZero.toZero
+  SemilinearEquivClass.instSemilinearMapClass instAddZeroClassTensorProduct AddZero.toZero
 
 lemma CotangentSpace.compEquiv_symm_inr :
     (compEquiv Q P).symm.toLinearMap ∘ₗ
@@ -207,7 +209,6 @@ lemma CotangentSpace.exact :
 
 namespace H1Cotangent
 
-set_option backward.isDefEq.respectTransparency false in
 variable (R) in
 /--
 Given `0 → I → S[Y] → T → 0`, this is an auxiliary map from `S[Y]` to `T ⊗[S] Ω[S⁄R]` whose
@@ -350,6 +351,7 @@ def δ :
     (Cotangent.surjective_map_ofComp Q P)
     (CotangentSpace.map_toComp_injective Q P)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 lemma exact_δ_map :
     Function.Exact (δ Q P) (mapBaseChange R S T) := by

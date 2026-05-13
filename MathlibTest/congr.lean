@@ -1,3 +1,4 @@
+module
 import Mathlib.Tactic.CongrExclamation
 import Mathlib.Algebra.BigOperators.Ring.List
 import Mathlib.Algebra.Group.Basic
@@ -331,7 +332,6 @@ example (inst1 : BEq α) [LawfulBEq α] (inst2 : BEq α) [LawfulBEq α] (xs : Li
 
 /--
 error: unsolved goals
-case h.e'_2
 α : Type
 inst1 : BEq α
 inst✝¹ : LawfulBEq α

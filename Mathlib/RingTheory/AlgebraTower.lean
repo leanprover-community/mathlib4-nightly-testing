@@ -53,7 +53,7 @@ when coerced to any `R`-algebra. -/
 @[implicit_reducible]
 def invertibleAlgebraCoeNat (n : ℕ) [inv : Invertible (n : R)] : Invertible (n : A) :=
   haveI : Invertible (algebraMap ℕ R n) := inv
-  Invertible.algebraTower ℕ R A n
+  fast_instance% Invertible.algebraTower ℕ R A n
 
 end Semiring
 end IsScalarTower
@@ -67,7 +67,7 @@ variable (b : Basis ι R M) (h : Function.Bijective (algebraMap R A))
 
 /-- If `R` and `A` have a bijective `algebraMap R A` and act identically on `M`,
 then a basis for `M` as `R`-module is also a basis for `M` as `R'`-module. -/
-@[simps! repr_apply_apply]
+@[simps! -isSimp repr_apply_apply]
 noncomputable def algebraMapCoeffs : Basis ι A M :=
   b.mapCoeffs (RingEquiv.ofBijective _ h) fun c x => by simp
 
