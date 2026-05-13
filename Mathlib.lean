@@ -8055,3 +8055,4 @@ public import Mathlib.Util.WhatsNew
 public import Mathlib.Util.WithWeakNamespace
 
 set_option linter.style.longLine false
+set_option linter.deprecated_modules false
