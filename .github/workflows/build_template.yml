@@ -35,6 +35,9 @@ env:
   # are valid by-products of the Mathlib build. Build artifacts fetched from Lake's cache do
   # not necessarily satisfy this property.
   LAKE_NO_CACHE: true
+  # Direct Lake to store its artifact cache in `.lake`.
+  # Prevents Lake from using a directory it may not have permissions to under landrun.
+  LAKE_CACHE_DIR: .lake/cache
 
 jobs:
   build:
@@ -53,7 +56,7 @@ jobs:
       test-outcome: ${{ steps.test.outcome }}
     defaults: # On Hoskinson runners, landrun is already installed.
       run: # note that .pr-branch/.lake must be created in a step below before we use this
-        shell: landrun --rox /usr --ro /etc/timezone --rw /dev --rox /home/lean/.elan --rox /home/lean/actions-runner/_work --rox /home/lean/.cache/mathlib/ --rw pr-branch/.lake/ --env PATH --env HOME --env GITHUB_OUTPUT --env CI -- bash -euxo pipefail {0}
+        shell: landrun --rox /usr --ro /etc/timezone --rw /dev --rox /home/lean/.elan --rox /home/lean/actions-runner/_work --rox /home/lean/.cache/mathlib/ --rw pr-branch/.lake/ --env PATH --env HOME --env GITHUB_OUTPUT --env CI --env LAKE_CACHE_DIR -- bash -euxo pipefail {0}
     steps:
       - name: job info
         env:
@@ -438,6 +441,22 @@ jobs:
           cd pr-branch
           lake env ../tools-branch/.lake/build/bin/cache --staging-dir="../cache-staging" stage Counterexamples.lean
 
+      - name: prepare Lake staging directory
+        if: ${{ always() && (steps.build.outcome == 'success' || steps.build.outcome == 'failure' || steps.build.outcome == 'cancelled') }}
+        shell: bash
+        run: |
+          # Clean the staging directory first, though it should be empty at this point, to be safe
+          rm -rf lake-cache-staging
+          mkdir -p lake-cache-staging
+
+      - name: stage Lake cache files
+        if: ${{ always() && (steps.build.outcome == 'success' || steps.build.outcome == 'failure' || steps.build.outcome == 'cancelled') }}
+        shell: landrun --rox /usr --ro /etc/timezone --rw /dev --rox /home/lean/.elan --rox /home/lean/actions-runner/_work --rw pr-branch/.lake/ --rw lake-cache-staging/ --env PATH --env HOME --env GITHUB_OUTPUT --env CI --env LAKE_CACHE_DIR -- bash -euxo pipefail {0}
+        run: |
+          cd pr-branch
+          lake build --no-build Mathlib Archive Counterexamples -o .lake/outputs.jsonl
+          lake cache stage .lake/outputs.jsonl ../lake-cache-staging
+
       - name: check cache staging contents
         id: cache_staging_check
         if: ${{ always() && (steps.build.outcome == 'success' || steps.build.outcome == 'failure' || steps.build.outcome == 'cancelled') }}
@@ -455,6 +474,13 @@ jobs:
         with:
           name: cache-staging
           path: cache-staging/
+
+      - name: upload Lake cache staging artifact
+        if: ${{ always() && (steps.build.outcome == 'success' || steps.build.outcome == 'failure' || steps.build.outcome == 'cancelled') }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
+        with:
+          name: lake-cache-staging
+          path: lake-cache-staging/
 
       - name: Check if building Archive or Counterexamples failed
         if: steps.archive.outcome == 'failure' || steps.counterexamples.outcome == 'failure'
@@ -678,6 +704,93 @@ jobs:
         run: |
           echo "Uploading cache to Azure..."
           MATHLIB_CACHE_USE_CLOUDFLARE=0 lake env "$CACHE_BIN" put-staged --staging-dir="cache-staging" --repo=${{ github.event.pull_request.head.repo.full_name || github.repository }}
+
+  upload_lake_cache:
+    name: Upload to Lake cache
+    needs: [build]
+    runs-on: ubuntu-latest # These steps run on a GitHub runner; no landrun sandboxing is needed.
+    permissions:
+      contents: read
+      id-token: write
+    # We only upload the cache if the build started (whether succeeding, failing, or cancelled)
+    # but not if any earlier step failed or was cancelled.
+    # See discussion at https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/Some.20files.20not.20found.20in.20the.20cache/near/407183836
+    if: ${{ needs.build.outputs.build-outcome == 'success' || needs.build.outputs.build-outcome == 'failure' || needs.build.outputs.build-outcome == 'cancelled' }}
+    steps:
+      - name: Checkout tools branch
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ inputs.tools_branch_ref != '' && inputs.tools_branch_ref || (github.repository == 'leanprover-community/mathlib4-nightly-testing' && 'nightly-testing-green' || 'master') }}
+          fetch-depth: 1
+
+      - name: Configure Lean
+        uses: leanprover/lean-action@c544e89643240c6b398f14a431bcdc6309e36b3e # v1.4.0
+        with:
+          auto-config: false # Don't run `lake build`, `lake test`, or `lake lint` automatically.
+          use-github-cache: false
+          use-mathlib-cache: false # This can be re-enabled once we are confident in the cache again.
+          reinstall-transient-toolchain: true
+
+      - name: Download Lake cache staging artifact
+        uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+        with:
+          name: lake-cache-staging
+          path: lake-cache-staging
+
+      - name: Upload staged Lake cache to Cloudflare
+        shell: bash
+        run: |
+          # Trim trailing whitespace from secrets to prevent issues with accidentally added spaces
+          export LAKE_CACHE_KEY="${LAKE_CACHE_KEY_RAW%"${LAKE_CACHE_KEY_RAW##*[![:space:]]}"}"
+
+          echo "Uploading cache to Cloudflare..."
+          lake cache put-staged lake-cache-staging \
+            --rev=${{ github.event.pull_request.head.sha || github.sha }} \
+            --repo=${{ github.event.pull_request.head.repo.full_name || github.repository }}
+        env:
+          LAKE_CACHE_KEY_RAW: ${{ secrets.LAKE_CACHE_KEY }}
+          LAKE_CACHE_ARTIFACT_ENDPOINT: ${{ vars.LAKE_CACHE_ENDPOINT }}/a1
+          LAKE_CACHE_REVISION_ENDPOINT: ${{ vars.LAKE_CACHE_ENDPOINT }}/r1
+
+  verify_lake_cache:
+    name: Verify Lake Cache
+    needs: [build, upload_lake_cache]
+    if: ${{ always() && needs.build.result == 'success' && (needs.upload_lake_cache.result == 'success' || needs.upload_lake_cache.result == 'skipped') }}
+    runs-on: ubuntu-latest # Note these steps run on disposable GitHub runners, so no landrun sandboxing is needed.
+    steps:
+
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          ref: ${{ inputs.pr_branch_ref }}
+
+      - name: Configure Lean
+        uses: leanprover/lean-action@c544e89643240c6b398f14a431bcdc6309e36b3e # v1.4.0
+        with:
+          auto-config: false # Don't run `lake build`, `lake test`, or `lake lint` automatically.
+          use-github-cache: false
+          use-mathlib-cache: false # This can be re-enabled once we are confident in the cache again.
+          reinstall-transient-toolchain: true
+
+      # `lake cache` is currently not transitive, so we need to build dependencies
+      - name: build Mathlib dependencies
+        run: |
+          lake build batteries Qq aesop proofwidgets importGraph LeanSearchClient plausible
+
+      - name: get Lake cache for Mathlib
+        run: |
+          lake cache get --repo=${{ github.event.pull_request.head.repo.full_name || github.repository }}
+
+      - name: verify that everything was available in the Lake cache
+        run: |
+          echo "::group::{verify Mathlib cache}"
+          lake build --no-build --rehash -v Mathlib
+          echo "::endgroup::"
+          echo "::group::{verify Archive cache}"
+          lake build --no-build --rehash -v Archive
+          echo "::endgroup::"
+          echo "::group::{verify Counterexamples cache}"
+          lake build --no-build --rehash -v Counterexamples
+          echo "::endgroup::"
 
   post_steps:
     name: Post-Build Step
