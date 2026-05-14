@@ -422,7 +422,7 @@ def headerLinter : Linter where run := withSetOptionIn fun stx ↦ do
     Linter.logLint linter.directoryDependency stx msgs.trimAsciiStart.copy
   let some afterImports := firstNonImport? upToStx | return
   if afterImports.isOfKind ``Lean.Parser.Command.eoi then return
-  if afterImports.isOfKind ``Batteries.Linter.deprecated_modules then return
+  if afterImports.isOfKind ``Batteries.Linter.deprecatedModule then return
   let copyright := match upToStx.getHeadInfo with
     | .original lead .. => lead.toString
     | _ => ""
