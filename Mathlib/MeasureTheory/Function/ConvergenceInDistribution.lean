@@ -75,6 +75,7 @@ lemma tendstoInDistribution_const [OpensMeasurableSpace E] (hZ : AEMeasurable Z 
   forall_aemeasurable := fun _ ↦ by fun_prop
   tendsto := tendsto_const_nhds
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma tendstoInDistribution_of_identDistrib [OpensMeasurableSpace E] (i : ι)
     (hX : ∀ j, IdentDistrib (X i) (X j) (μ i) (μ j)) (hZ : IdentDistrib (X i) Z (μ i) μ') :
     TendstoInDistribution X l Z μ μ' where
@@ -84,6 +85,7 @@ lemma tendstoInDistribution_of_identDistrib [OpensMeasurableSpace E] (i : ι)
     convert tendsto_const_nhds with j
     exact (hX j).map_eq.symm.trans hZ.map_eq
 
+set_option backward.isDefEq.respectTransparency.types false in
 protected lemma TendstoInDistribution.congr [OpensMeasurableSpace E] {T : Ω' → E}
     (hXY : ∀ i, X i =ᵐ[μ i] Y i) (hZT : Z =ᵐ[μ'] T) (h : TendstoInDistribution X l Z μ μ') :
     TendstoInDistribution Y l T μ μ' where
@@ -113,6 +115,7 @@ lemma tendstoInDistribution_unique [HasOuterApproxClosed E] [BorelSpace E]
   rw [Subtype.ext_iff] at h_eq
   simpa using h_eq
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- **Continuous mapping theorem**: if `X n` tends to `Z` in distribution and `g` is continuous,
 then `g ∘ X n` tends to `g ∘ Z` in distribution. -/
 theorem TendstoInDistribution.continuous_comp {F : Type*} [OpensMeasurableSpace E]
@@ -261,6 +264,7 @@ lemma TendstoInMeasure.tendstoInDistribution [l.NeBot] [l.IsCountablyGenerated]
     TendstoInDistribution X l Z (fun _ ↦ μ') μ' :=
     h.tendstoInDistribution_of_aemeasurable hX (h.aemeasurable hX)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- **Slutsky's theorem**: if `X n` converges in distribution to `Z`, and `Y n` converges in
 probability to a constant `c`, then the pair `(X n, Y n)` converges in distribution to `(Z, c)`. -/
 theorem TendstoInDistribution.prodMk_of_tendstoInMeasure_const

@@ -294,6 +294,7 @@ theorem norm_root_le_spectralValue {f : AlgebraNorm K L} (hf_pm : IsPowMul f)
 
 open Multiset
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `f` is a nonarchimedean, power-multiplicative `K`-algebra norm on `L`, then the spectral
 value of a polynomial `p : K[X]` that decomposes into linear factors in `L` is equal to the
 maximum of the norms of the roots. See [S. Bosch, U. Güntzer, R. Remmert, *Non-Archimedean Analysis*
@@ -703,6 +704,11 @@ universe u v
 variable {K : Type u} [NontriviallyNormedField K] {L : Type v} [Field L] [Algebra K L]
   [Algebra.IsAlgebraic K L] [hu : IsUltrametricDist K]
 
+set_option allowUnsafeReducibility true
+
+-- `E` and `K⟮x⟯` are distinguished by `id`, which has been made `instance_reducible` in core.
+-- TODO: Make `id` only `implicit_reducible` in Core.
+attribute [local implicit_reducible] id in
 /-- If `K` is a field complete with respect to a nontrivial nonarchimedean multiplicative norm and
   `L/K` is an algebraic extension, then any power-multiplicative `K`-algebra norm on `L` coincides
   with the spectral norm. -/

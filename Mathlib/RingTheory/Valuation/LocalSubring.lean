@@ -91,6 +91,7 @@ lemma ValuationSubring.isMax_toLocalSubring (R : ValuationSubring K) :
   have : x' = x := by simpa [Subtype.ext_iff, inv_mul_eq_iff_eq_mul₀ hx0] using hx'
   exact h' (this ▸ x'.2)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[stacks 00IB]
 lemma LocalSubring.exists_valuationRing_of_isMax {R : LocalSubring K} (hR : IsMax R) :
     ∃ R' : ValuationSubring K, R'.toLocalSubring = R := by
@@ -105,7 +106,8 @@ lemma LocalSubring.exists_valuationRing_of_isMax {R : LocalSubring K} (hR : IsMa
   have ⟨p, hp, hpx⟩ := exists_aeval_invOf_eq_zero_of_idealMap_adjoin_sup_span_eq_top x _
     (maximalIdeal.isMaximal R.toSubring).ne_top
     (top_unique <| (map_maximalIdeal_eq_top_of_isMax hR this).ge.trans le_self_add)
-  have H : IsUnit p.leadingCoeff := of_not_not fun h ↦ by simpa using sub_mem h hp
+  have H : IsUnit p.leadingCoeff := of_not_not fun h ↦ by
+    simpa using sub_mem (x := p.leadingCoeff) (H := maximalIdeal ↥R.toSubring) h hp
   exact ⟨.C H.unit⁻¹.1 * p, by simp [Polynomial.Monic], by simpa using .inr hpx⟩
 
 /-- A local subring is maximal with respect to the domination order
@@ -171,6 +173,7 @@ open Polynomial Algebra in
   exact ⟨V, fun r hr ↦ hV.1 (B.algebraMap_mem ⟨r, hr⟩),
     (V.inv_mem_nonunits_iff.mp <| hV.2 ⟨_, Ideal.subset_span rfl, rfl⟩).resolve_left hx0⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 open Polynomial Algebra in
 @[stacks 090P "part (2)"] lemma LocalSubring.exists_le_valuationSubring_of_isIntegrallyClosedIn
     {x : K} {R : LocalSubring K} (hxR : x ∉ R.toSubring) [IsIntegrallyClosedIn R.toSubring K] :
@@ -183,7 +186,8 @@ open Polynomial Algebra in
   have : (maximalIdeal R.toSubring).map (algebraMap _ B) + .span {xinv} ≠ ⊤ := fun eq ↦ hxR <|
     have ⟨p, hp, hpx⟩ := exists_aeval_invOf_eq_zero_of_idealMap_adjoin_sup_span_eq_top _ _
       (maximalIdeal.isMaximal R.toSubring).ne_top eq
-    have H : IsUnit p.leadingCoeff := of_not_not fun h ↦ by simpa using sub_mem h hp
+    have H : IsUnit p.leadingCoeff := of_not_not fun h ↦ by
+      simpa using sub_mem (x := p.leadingCoeff) (H := maximalIdeal ↥R.toSubring) h hp
     (Subring.isIntegrallyClosedIn_iff).mp ‹_›
       ⟨.C H.unit⁻¹.1 * p, by simp [Polynomial.Monic], by simpa using .inr hpx⟩
   have ⟨V, hV⟩ := Ideal.image_subset_nonunits_valuationSubring (A := B.toSubring) _ this
@@ -223,6 +227,7 @@ lemma iInf_valuationSubring_superset {s : Set K} :
   rw [Subring.integralClosure_subring_le_iff]
   exact Subring.closure_le.symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma bijective_rangeRestrict_comp_of_valuationRing [IsDomain R] [ValuationRing R]
     [IsLocalRing S] [Algebra R K] [IsFractionRing R K]
     (f : R →+* S) (g : S →+* K) (h : g.comp f = algebraMap R K) [IsLocalHom f] :
