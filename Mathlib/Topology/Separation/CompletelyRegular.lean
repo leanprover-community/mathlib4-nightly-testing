@@ -199,7 +199,7 @@ theorem CompletelyRegularSpace.of_isTopologicalBasis_clopens
     (h : TopologicalSpace.IsTopologicalBasis {s : Set X | IsClopen s}) :
     CompletelyRegularSpace X where
   completely_regular x K hK hx := by
-    obtain ⟨s, hs, hx, hsK⟩ := h.exists_subset_of_mem_open hx hK.isOpen_compl
+    obtain ⟨s, hs, hx, hsK⟩ := h.exists_subset_of_mem_open (u := Kᶜ) hx hK.isOpen_compl
     refine ⟨sᶜ.indicator 1, ?_, by simpa, fun x hx ↦ indicator_of_mem ?_ _⟩
     · exact hs.compl.continuous_indicator continuous_const
     · exact (mem_compl_iff s x).mpr fun hs ↦ hsK hs hx

@@ -97,6 +97,7 @@ def constComp (X : C) (F : C ⥤ D) : (const J).obj X ⋙ F ≅ (const J).obj (F
 instance [Nonempty J] : Faithful (const J : C ⥤ J ⥤ C) where
   map_injective e := NatTrans.congr_app e (Classical.arbitrary J)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The canonical isomorphism
 `F ⋙ Functor.const J ≅ Functor.const F ⋙ (whiskeringRight J _ _).obj L`. -/
@@ -107,6 +108,7 @@ def compConstIso (F : C ⥤ D) :
     (fun X => NatIso.ofComponents (fun _ => Iso.refl _) (by simp))
     (by cat_disch)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The canonical isomorphism
 `const D ⋙ (whiskeringLeft J _ _).obj F ≅ const J` -/

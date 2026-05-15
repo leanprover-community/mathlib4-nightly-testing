@@ -160,6 +160,7 @@ instance : PartialOrder (M ≃ₚ[L] N) where
   le_trans := le_trans
   le_antisymm := private le_antisymm
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[gcongr] lemma symm_le_symm {f g : M ≃ₚ[L] N} (hfg : f ≤ g) : f.symm ≤ g.symm := by
   rw [le_iff]
   refine ⟨cod_le_cod hfg, dom_le_dom hfg, ?_⟩

@@ -197,7 +197,6 @@ noncomputable
 def hahnCoeff : seed.baseDomain →ₗ[K] (⨁ _ : FiniteArchimedeanClass M, R) :=
   (DirectSum.lmap seed.coeff') ∘ₗ (DirectSum.decomposeLinearEquiv _).toLinearMap
 
-set_option backward.isDefEq.respectTransparency false in
 theorem hahnCoeff_apply {x : seed.baseDomain} {f : Π₀ c, seed.stratum c}
     (h : x.val = f.sum fun c ↦ (seed.stratum c).subtype) (c : FiniteArchimedeanClass M) :
     seed.hahnCoeff x c = seed.coeff c (f c) := by
@@ -209,9 +208,14 @@ theorem hahnCoeff_apply {x : seed.baseDomain} {f : Π₀ c, seed.stratum c}
     simpa using le_iSup _ _
   let f' : ⨁ c, seed.stratum' c :=
     f.mapRange (fun c x ↦ (⟨⟨x.val, hxm x⟩, by simp⟩ : seed.stratum' c)) (by simp)
-  have hf : f c = (seed.baseDomain.subtype.submoduleComap (seed.stratum c)) (f' c) := by
+  have hf :
+      f c = (seed.baseDomain.subtype.submoduleComap (seed.stratum c)) (f' c) := by
+    set_option backward.isDefEq.respectTransparency false in
     apply Subtype.ext
-    simp [f']
+    -- TODO: This should finish with `simp [f']`
+    simp only [DFinsupp.mapRange, DFinsupp.toFun_eq_coe, LinearMap.submoduleComap_apply_coe,
+      Submodule.subtype_apply, f']
+    simp only [DFunLike.coe, instDFunLikeDirectSum._aux_1]
   have hx : x = (decompose seed.stratum').symm f' := by
     change x = f'.coeAddMonoidHom _
     apply Submodule.subtype_injective

@@ -202,9 +202,19 @@ theorem equiv_block_det (M : Matrix m m R) {p q : m → Prop} [DecidablePred p] 
     (e : ∀ x, q x ↔ p x) : (toSquareBlockProp M p).det = (toSquareBlockProp M q).det := by
   convert Matrix.det_reindex_self (Equiv.subtypeEquivRight e) (toSquareBlockProp M q)
 
+set_option allowUnsafeReducibility true
+--attribute [semireducible] id
+
+-- Diamond: `Fintype.subtypeEq` vs. `Subtype.fintype`
+-- TODO: Which is the right instance here?
+-- Since we made `id` instance-reducible, `Fintype.subtypeEq` is selected and
+-- `det_of_upperTriangular` fails as a consequence.
+-- Possible alternative: Make `id` `implicit_reducible` in Core.
+attribute [-instance] Fintype.subtypeEq in
 -- Removed `@[simp]` attribute,
 -- as the LHS simplifies already to `M.toSquareBlock id i ⟨i, ⋯⟩ ⟨i, ⋯⟩`
-theorem det_toSquareBlock_id (M : Matrix m m R) (i : m) : (M.toSquareBlock id i).det = M i i :=
+theorem det_toSquareBlock_id (M : Matrix m m R) (i : m) :
+    (M.toSquareBlock id i).det = M i i :=
   letI : Unique { a // id a = i } := ⟨⟨⟨i, rfl⟩⟩, fun j => Subtype.ext j.property⟩
   (det_unique _).trans rfl
 

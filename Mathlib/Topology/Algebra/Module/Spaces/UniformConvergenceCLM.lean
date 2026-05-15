@@ -524,6 +524,7 @@ variable (𝕜 : Type*) [NormedField 𝕜] {E ι : Type*} (F : ι → Type*)
   [∀ i, AddCommGroup (F i)] [∀ i, Module 𝕜 (F i)] [∀ i, TopologicalSpace (F i)]
   [∀ i, IsTopologicalAddGroup (F i)] [∀ i, ContinuousConstSMul 𝕜 (F i)]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `ContinuousLinearMap.pi`, upgraded to a continuous linear equivalence between
 `Π i, E →Lᵤ[𝕜, 𝔖] F i` and `E →Lᵤ[𝕜, 𝔖] Π i, F i`. -/
 def UniformConvergenceCLM.piEquivL (𝔖 : Set (Set E)) :

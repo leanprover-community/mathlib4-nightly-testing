@@ -20,14 +20,8 @@ namespace Set
 
 variable {α : Type*} [Preorder α] {i j : α}
 
-<<<<<<< HEAD
-/-- `Iic j` is an initial segment. -/
-||||||| parent of 26c9aba8d30 (set_option)
-/-- `Set.Iic j` is an initial segment. -/
-=======
 set_option backward.isDefEq.respectTransparency false in
-/-- `Set.Iic j` is an initial segment. -/
->>>>>>> 26c9aba8d30 (set_option)
+/-- `Iic j` is an initial segment. -/
 @[simps]
 def initialSegIic (j : α) : Iic j ≤i α where
   toFun j := j

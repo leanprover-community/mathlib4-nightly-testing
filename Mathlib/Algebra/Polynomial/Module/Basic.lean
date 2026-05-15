@@ -42,10 +42,6 @@ for the full discussion.
 def PolynomialModule (R M : Type*) [CommRing R] [AddCommGroup M] [Module R M] := ℕ →₀ M
 deriving Inhabited, FunLike, AddCommGroup
 
-set_option backward.isDefEq.respectTransparency false in
-set_option backward.inferInstanceAs.wrap.data false in
-deriving instance CoeFun for PolynomialModule
-
 variable (R : Type*) {M : Type*} [CommRing R] [AddCommGroup M] [Module R M] (I : Ideal R)
 variable {S : Type*} [CommSemiring S] [Algebra S R] [Module S M] [IsScalarTower S R M]
 
@@ -65,6 +61,7 @@ theorem add_apply (g₁ g₂ : PolynomialModule R M) (a : ℕ) : (g₁ + g₂) a
 so that it has the desired type signature. -/
 def single (i : ℕ) : M →+ PolynomialModule R M :=
   Finsupp.singleAddHom i
+
 
 theorem single_apply (i : ℕ) (m : M) (n : ℕ) : single R i m n = ite (i = n) m 0 :=
   Finsupp.single_apply
@@ -140,6 +137,8 @@ theorem monomial_smul_apply (i : ℕ) (r : R) (g : PolynomialModule R M) (n : �
     rw [monomial_smul_single, single_apply, single_apply, smul_ite, smul_zero, ← ite_and]
     grind
 
+-- TODO: we only want to have one `smul_single_apply_new`
+
 @[simp]
 theorem smul_single_apply (i : ℕ) (f : R[X]) (m : M) (n : ℕ) :
     (f • single R i m) n = ite (i ≤ n) (f.coeff (n - i) • m) 0 := by
@@ -176,8 +175,12 @@ def equivPolynomialSelf : PolynomialModule R R ≃ₗ[R[X]] R[X] :=
       | add _ _ hp hq => rw [smul_add, map_add, map_add, mul_add, hp, hq]
       | single n a =>
         ext i
-        simp_rw [toFinsuppIso_symm_apply, coeff_ofFinsupp, coeff_mul, smul_single_apply,
-          smul_eq_mul, coeff_ofFinsupp, single_apply, mul_ite, mul_zero]
+        -- TODO: The following 5 lines should be one `simp_rw` statement
+        simp_rw [toFinsuppIso_symm_apply, coeff_ofFinsupp, coeff_mul]
+        rw [smul_single_apply]
+        simp_rw [smul_eq_mul, coeff_ofFinsupp]
+        conv => enter [2, 2, ext]; rw [single_apply]
+        simp_rw [mul_ite, mul_zero]
         split_ifs with hn
         · rw [Finset.sum_eq_single (i - n, n)]
           · simp only [ite_true]
@@ -247,6 +250,7 @@ theorem map_smul (f : M →ₗ[R] M') (p : R[X]) (q : PolynomialModule R M) :
     | monomial => rw [monomial_smul_single, map_single, Polynomial.map_monomial, map_single,
         monomial_smul_single, f.map_smul, algebraMap_smul]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Evaluate a polynomial `p : PolynomialModule R M` at `r : R`. -/
 @[simps! -isSimp]
 def eval (r : R) : PolynomialModule R M →ₗ[R] M where

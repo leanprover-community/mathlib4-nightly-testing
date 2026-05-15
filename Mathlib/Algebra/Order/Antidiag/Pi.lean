@@ -58,6 +58,7 @@ In this section, we define the antidiagonals in `Fin d → μ` by recursion on `
 computationally efficient, although probably not as efficient as `Finset.Nat.antidiagonalTuple`.
 -/
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary construction for `finAntidiagonal` that bundles a proof of lawfulness
 (`mem_finAntidiagonal`), as this is needed to invoke `disjiUnion`. Using `Finset.disjiUnion` makes
 this computationally much more efficient than using `Finset.biUnion`. -/

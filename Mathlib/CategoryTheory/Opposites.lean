@@ -298,6 +298,7 @@ protected def rightOp (F : Cᵒᵖ ⥤ D) : C ⥤ Dᵒᵖ where
 lemma rightOp_map_unop {F : Cᵒᵖ ⥤ D} {X Y} (f : X ⟶ Y) :
     (F.rightOp.map f).unop = F.map f.op := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance {F : C ⥤ D} [Full F] : Full F.op where
   map_surjective f := ⟨(F.preimage f.unop).op, by simp⟩
@@ -324,10 +325,12 @@ instance rightOp_faithful {F : Cᵒᵖ ⥤ D} [Faithful F] : Faithful F.rightOp 
 instance leftOp_faithful {F : C ⥤ Dᵒᵖ} [Faithful F] : Faithful F.leftOp where
   map_injective h := Quiver.Hom.unop_inj (map_injective F (Quiver.Hom.unop_inj h))
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance rightOp_full {F : Cᵒᵖ ⥤ D} [Full F] : Full F.rightOp where
   map_surjective f := ⟨(F.preimage f.unop).unop, by simp⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance leftOp_full {F : C ⥤ Dᵒᵖ} [Full F] : Full F.leftOp where
   map_surjective f := ⟨(F.preimage f.op).op, by simp⟩
@@ -857,6 +860,7 @@ namespace Functor
 variable (C)
 variable (D : Type u₂) [Category.{v₂} D]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence of functor categories induced by `op` and `unop`.
 -/

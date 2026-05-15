@@ -946,6 +946,7 @@ theorem _root_.IsFractional.mapEquiv {I : Submodule R K} (hI : IsFractional R⁰
   rw [Algebra.smul_def, ← ringEquivOfRingEquiv_algebraMap f (K := K) (L := L) r,
     ← map_mul, ← Algebra.smul_def, ← hr', ringEquivOfRingEquiv_algebraMap]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The equiv `FractionalIdeal R⁰ K ≃+* FractionalIdeal S⁰ L`
   induced by a ring isomorphism `f : R ≃+* S`. -/
 @[simps -isSimp]
@@ -974,15 +975,18 @@ noncomputable def ringEquivOfRingEquiv :
       convert Submodule.map_id _
       ext; simp [semilinearEquivOfRingEquiv, IsLocalization.map_map]}
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ringEquivOfRingEquiv_apply (f : R ≃+* S) (I : FractionalIdeal (nonZeroDivisors R) K) :
     ringEquivOfRingEquiv K L f I =
       ⟨Submodule.map (semilinearEquivOfRingEquiv _ _ f).toLinearMap I.val,
         IsFractional.mapEquiv K L f I.prop⟩ := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ringEquivOfRingEquiv_apply_val (f : R ≃+* S) (I : FractionalIdeal R⁰ K) :
     (ringEquivOfRingEquiv K L f I).val =
       I.val.map (semilinearEquivOfRingEquiv _ _ f).toLinearMap  := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ringEquivOfRingEquiv_trans {T : Type*} [CommRing T] [IsDomain T] (M : Type*) [CommRing M]
     [Algebra T M] [IsFractionRing T M] (f : R ≃+* S) (g : S ≃+* T) :
     ringEquivOfRingEquiv K M (f.trans g) =
@@ -1000,6 +1004,7 @@ lemma ringEquivOfRingEquiv_trans_apply {T : Type*} [CommRing T] [IsDomain T] (M 
       ringEquivOfRingEquiv L M g (ringEquivOfRingEquiv K L f I) := by
   simp [ringEquivOfRingEquiv_trans K L M]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ringEquivOfRingEquiv_refl :
     ringEquivOfRingEquiv K K (RingEquiv.refl R) = RingEquiv.refl (FractionalIdeal R⁰ K) := by
   ext I x
@@ -1007,6 +1012,7 @@ lemma ringEquivOfRingEquiv_refl :
     val_eq_coe, RingEquiv.refl_apply, ← mem_coe]
   simp [semilinearEquivOfRingEquiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ringEquivOfRingEquiv_spanSingleton (x : K) :
     FractionalIdeal.ringEquivOfRingEquiv K L f (spanSingleton R⁰ x) =
       spanSingleton S⁰ (IsFractionRing.ringEquivOfRingEquiv (L := L) f x) := by
@@ -1025,6 +1031,7 @@ lemma ringEquivOfRingEquiv_spanSingleton (x : K) :
     simp only [Algebra.smul_def, semilinearEquivOfRingEquiv_apply, map_mul, map_eq, RingHom.coe_coe,
       IsFractionRing.ringEquivOfRingEquiv_apply, RingEquiv.apply_symm_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ringEquivOfRingEquiv_symm_eq :
     (FractionalIdeal.ringEquivOfRingEquiv K L f).symm =
       FractionalIdeal.ringEquivOfRingEquiv L K f.symm := by
