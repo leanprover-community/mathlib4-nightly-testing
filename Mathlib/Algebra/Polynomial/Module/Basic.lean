@@ -137,8 +137,6 @@ theorem monomial_smul_apply (i : ℕ) (r : R) (g : PolynomialModule R M) (n : �
     rw [monomial_smul_single, single_apply, single_apply, smul_ite, smul_zero, ← ite_and]
     grind
 
--- TODO: we only want to have one `smul_single_apply_new`
-
 @[simp]
 theorem smul_single_apply (i : ℕ) (f : R[X]) (m : M) (n : ℕ) :
     (f • single R i m) n = ite (i ≤ n) (f.coeff (n - i) • m) 0 := by

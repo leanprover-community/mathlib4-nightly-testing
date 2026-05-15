@@ -323,7 +323,9 @@ noncomputable abbrev OrthogonalFamily.decomposition
       exact map_zero _
   right_inv x := by
     dsimp only
-    simp_rw [hV.projection_directSum_coeAddHom, DFinsupp.equivFunOnFintype_symm_coe]
+    -- TODO: Merge `simp_rw` and `rw`
+    simp_rw [hV.projection_directSum_coeAddHom]
+    rw [DFinsupp.equivFunOnFintype_symm_coe]
 
 end OrthogonalFamily
 

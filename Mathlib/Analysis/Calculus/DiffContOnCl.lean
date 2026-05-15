@@ -116,7 +116,9 @@ theorem smul_const {𝕜' : Type*} [NontriviallyNormedField 𝕜'] [NormedAlgebr
 
 theorem inv {f : E → 𝕜} (hf : DiffContOnCl 𝕜 f s) (h₀ : ∀ x ∈ closure s, f x ≠ 0) :
     DiffContOnCl 𝕜 f⁻¹ s :=
-  ⟨(differentiableOn_inv.comp hf.1 fun _ hx => h₀ _ (subset_closure hx) :), hf.2.inv₀ h₀⟩
+  -- TODO: Why can't we inline this?
+  have (x : E) (hx : x ∈ s) : f x ∈ @setOf 𝕜 fun x ↦ x ≠ 0 := h₀ x (subset_closure hx)
+  ⟨(differentiableOn_inv.comp hf.1 fun x hx => this x hx :), hf.2.inv₀ h₀⟩
 
 end DiffContOnCl
 

@@ -95,7 +95,12 @@ theorem IsHomogeneous.subsemiringClosure {s : Set A}
     refine sum_mem fun j _ ↦ ?_
     rw [DFinsupp.sum_apply, DFinsupp.sum, AddSubmonoidClass.coe_finsetSum]
     refine sum_mem fun k _ ↦ ?_
-    obtain rfl | h := eq_or_ne i (j + k) <;> simp [of_eq_of_ne, mul_mem, *]
+    obtain rfl | h := eq_or_ne i (j + k)
+    -- TODO: should be closed by `<;> simp [of_eq_of_ne, mul_mem, *]`
+    · rw [of_eq_same]
+      simp only [coe_gMul, mul_mem, h₁, h₂]
+    · rw [of_eq_of_ne _ _ _ (by simp only [ne_eq, not_false_eq_true, h])]
+      simp only [ZeroMemClass.coe_zero, zero_mem]
 
 theorem IsHomogeneous.subsemiringClosure_of_isHomogeneousElem {s : Set A}
     (h : ∀ x ∈ s, IsHomogeneousElem 𝒜 x) :

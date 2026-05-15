@@ -463,7 +463,8 @@ theorem le_weightedOrder_subst (ha : HasSubst a) (f : MvPowerSeries σ R) :
   by_cases hfx : f.coeff x = 0
   · simp [hfx]
   rw [coeff_eq_zero_of_lt_weightedOrder w, smul_zero]
-  refine hd.trans_le (((biInf_le _ hfx).trans ?_).trans (le_weightedOrder_prod ..))
+  refine hd.trans_le (((biInf_le ⇑(Finsupp.weight (weightedOrder w ∘ a))
+    (s := fun d => (coeff d) f = 0 → False) hfx).trans ?_).trans (le_weightedOrder_prod ..))
   simp only [Finsupp.weight_apply, Finsupp.sum, Function.comp_apply]
   exact Finset.sum_le_sum fun i hi ↦ .trans (by simp) (le_weightedOrder_pow ..)
 
@@ -475,6 +476,7 @@ theorem le_weightedOrder_subst_of_forall_ne_zero
   refine fun i hi ↦ (weightedOrder_le _ hi).trans ?_
   simp [Finsupp.weight_apply, Finsupp.sum, (ne_zero_iff_weightedOrder_finite _).mp (ha0 _)]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem le_order_subst (ha : HasSubst a) (f : MvPowerSeries σ R) :
     (⨅ i, (a i).order) * f.order ≤ (f.subst a).order := by
   refine .trans ?_ (MvPowerSeries.le_weightedOrder_subst _ ha _)
@@ -498,6 +500,7 @@ variable {R : Type*} [CommSemiring R]
 -- To match the `PowerSeries.rescale` API which holds for `CommSemiring`,
 -- we redo it by hand.
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The ring homomorphism taking a multivariate power series `f(X)` to `f(aX)`. -/
 noncomputable def rescale (a : σ → R) : MvPowerSeries σ R →+* MvPowerSeries σ R where
   toFun f := fun n ↦ (n.prod fun s m ↦ a s ^ m) * f.coeff n
@@ -537,11 +540,13 @@ noncomputable def rescale (a : σ → R) : MvPowerSeries σ R →+* MvPowerSerie
       simp [pow_add]
     all_goals {simp}
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem coeff_rescale (f : MvPowerSeries σ R) (a : σ → R) (n : σ →₀ ℕ) :
     coeff n (rescale a f) = (n.prod fun s m ↦ a s ^ m) * f.coeff n := by
   simp [rescale, coeff_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem rescale_zero :
     (rescale 0 : MvPowerSeries σ R →+* MvPowerSeries σ R) = C.comp constantCoeff := by
@@ -576,6 +581,7 @@ theorem rescale_mul (a b : σ → R) : rescale (a * b) = (rescale b).comp (resca
   ext
   simp [← rescale_rescale]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Rescaling a homogeneous power series -/
 lemma rescale_homogeneous_eq_smul {n : ℕ} {r : R} {f : MvPowerSeries σ R}
     (hf : ∀ d ∈ f.support, d.degree = n) :

@@ -44,17 +44,28 @@ variable [LieRing L] [LieAlgebra R L]
 variable [∀ i, AddCommGroup (M i)] [∀ i, Module R (M i)]
 variable [∀ i, LieRingModule L (M i)] [∀ i, LieModule R L (M i)]
 
+-- Underlying problem: `DirectSum` is semireducible
+set_option backward.isDefEq.respectTransparency false in
 instance : LieRingModule L (⨁ i, M i) where
   bracket x m := m.mapRange (fun _ m' => ⁅x, m'⁆) fun _ => lie_zero x
   add_lie x y m := by
     ext
-    simp only [mapRange_apply, add_apply, add_lie]
+    -- TODO: This should be closed by `simp only [mapRange_apply, add_apply, add_lie]`
+    rw [mapRange_apply]
+    simp only [add_apply, add_lie]
+    rw [mapRange_apply, mapRange_apply]
   lie_add x m n := by
     ext
-    simp only [mapRange_apply, add_apply, lie_add]
+    -- TODO: This should be closed by `simp only [mapRange_apply, add_apply, lie_add]`
+    rw [mapRange_apply]
+    simp only [add_apply]
+    rw [mapRange_apply, mapRange_apply, add_apply, lie_add]
   leibniz_lie x y m := by
     ext
-    simp only [mapRange_apply, lie_lie, add_apply, sub_add_cancel]
+    -- TODO: should be closed by `simp only [mapRange_apply, lie_lie, add_apply, sub_add_cancel]`
+    rw [mapRange_apply]
+    simp only [mapRange_apply, lie_lie, add_apply]
+    rw [mapRange_apply, mapRange_apply, mapRange_apply, sub_add_cancel]
 
 @[simp]
 theorem lie_module_bracket_apply (x : L) (m : ⨁ i, M i) (i : ι) : ⁅x, m⁆ i = ⁅x, m i⁆ :=
@@ -70,6 +81,7 @@ instance : LieModule R L (⨁ i, M i) where
 
 variable (R ι L M)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The inclusion of each component into a direct sum as a morphism of Lie modules. -/
 def lieModuleOf [DecidableEq ι] (j : ι) : M j →ₗ⁅R,L⁆ ⨁ i, M i :=
   { lof R ι M j with
@@ -83,13 +95,18 @@ def lieModuleOf [DecidableEq ι] (j : ι) : M j →ₗ⁅R,L⁆ ⨁ i, M i :=
         -- The coercion in the goal is `DFunLike.coe (β := fun x ↦ Π₀ (i : ι), M i)`
         -- but the lemma is expecting `DFunLike.coe (β := fun x ↦ ⨁ (i : ι), M i)`
         erw [AddHom.coe_mk]
-        simp [h] }
+        -- TODO: should be closed by `simp [h]`
+        rw [single_apply, single_apply]
+        simp only [h, ↓reduceDIte, lie_zero] }
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The projection map onto one component, as a morphism of Lie modules. -/
 def lieModuleComponent (j : ι) : (⨁ i, M i) →ₗ⁅R,L⁆ M j :=
   { component R ι M j with
-    map_lie' := fun {x m} => by simp [component, lapply] }
+    map_lie' := fun {x m} => by
+      -- TODO: should be closed by `simp [component, lapply]`
+      simp only [component, lapply, AddHom.toFun_eq_coe, AddHom.coe_mk]
+      rw [lie_module_bracket_apply] }
 
 end Modules
 
@@ -101,21 +118,28 @@ section Algebras
 variable (L : ι → Type w)
 variable [∀ i, LieRing (L i)] [∀ i, LieAlgebra R (L i)]
 
+set_option backward.isDefEq.respectTransparency false in
 instance lieRing : LieRing (⨁ i, L i) :=
   { (inferInstance : AddCommGroup _) with
     bracket := zipWith (fun _ => fun x y => ⁅x, y⁆) fun _ => lie_zero 0
     add_lie := fun x y z => by
       ext
-      simp only [zipWith_apply, add_apply, add_lie]
+      -- TODO: should be solved by `simp only [zipWith_apply, add_apply, add_lie]`
+      rw [zipWith_apply]
+      simp only [add_apply]
+      rw [zipWith_apply, zipWith_apply, add_apply, add_lie]
     lie_add := fun x y z => by
       ext
-      simp only [zipWith_apply, add_apply, lie_add]
+      -- TODO: should be solved by `simp only [zipWith_apply, add_apply, lie_add]`
+      rw [zipWith_apply, add_apply, add_apply, zipWith_apply, zipWith_apply, lie_add]
     lie_self := fun x => by
       ext
-      simp only [zipWith_apply, lie_self, zero_apply]
+      -- TODO: should be solved by `simp only [zipWith_apply, lie_self, zero_apply]`
+      rw [zipWith_apply, lie_self, zero_apply]
     leibniz_lie := fun x y z => by
       ext
-      simp only [zipWith_apply, add_apply]
+      -- TODO: instead of `rw`, `simp only [zipWith_apply, add_apply]` should work here
+      rw [zipWith_apply, zipWith_apply, add_apply]
       apply leibniz_lie }
 
 @[simp]
@@ -162,7 +186,10 @@ set_option backward.isDefEq.respectTransparency false in
 def lieAlgebraComponent (j : ι) : (⨁ i, L i) →ₗ⁅R⁆ L j :=
   { component R ι L j with
     toFun := component R ι L j
-    map_lie' := fun {x y} => by simp [component, lapply] }
+    map_lie' := fun {x y} => by
+      -- TODO: should be closed by `simp [component, lapply]`
+      simp only [component, lapply, LinearMap.coe_mk, AddHom.coe_mk]
+      rw [bracket_apply] }
 
 -- Note(kmill): `ext` cannot generate an iff theorem here since `x` and `y` do not determine `R`.
 @[ext (iff := false)]
