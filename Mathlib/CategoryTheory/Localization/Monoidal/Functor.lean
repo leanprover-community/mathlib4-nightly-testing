@@ -55,6 +55,7 @@ noncomputable def curriedTensorPreIsoPost : curriedTensorPre F ≅ curriedTensor
   lift₂NatIso L L W W (curriedTensorPre G) (curriedTensorPost G) _ _
     (Functor.curriedTensorPreIsoPost G)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma curriedTensorPreIsoPost_hom_app_app (X₁ X₂ : C) :

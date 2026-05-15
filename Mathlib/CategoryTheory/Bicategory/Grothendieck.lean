@@ -355,8 +355,8 @@ def map (α : F ⟶ G) : ∫ᶜ F ⥤ ∫ᶜ G where
         eqToHom_refl, comp_id]
       slice_lhs 2 4 => simp [← Cat.Hom.toNatIso_inv, Cat.Hom.comp_toFunctor,
         ← Cat.Hom.toNatIso_hom, ← map_comp, Iso.inv_hom_id_app, comp_obj, map_id, comp_id]
-      simp only [assoc, ← reassoc_of% Cat.Hom.comp_map,
-        (α.naturality f.base.op.toLoc).hom.toNatTrans.naturality_assoc]
+      simp only [assoc, ← reassoc_of% Cat.Hom.comp_map, id_comp,
+        Cat.Hom.comp_toFunctor, Functor.comp_obj, NatTrans.naturality_assoc]
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]
@@ -376,7 +376,13 @@ def mapIdIso : map (𝟙 F) ≅ 𝟭 (∫ᶜ F) :=
   NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch))
 
 lemma map_id_eq : map (𝟙 F) = 𝟭 (∫ᶜ F) :=
-  Functor.ext_of_iso (mapIdIso F) (fun x ↦ by simp [map]) (fun x ↦ by simp [mapIdIso])
+  Functor.ext_of_iso (mapIdIso F) (fun x ↦ by
+    simp only [id_obj]; simp only [map,
+    categoryStruct_id_app, categoryStruct_id_naturality_hom, Strict.rightUnitor_eqToIso,
+    eqToIso.hom, Strict.leftUnitor_eqToIso, eqToIso.inv, eqToHom_trans, Cat.Hom₂.eqToHom_toNatTrans,
+    eqToHom_app]
+    set_option trace.Meta.Tactic.simp true in
+    simp [Cat.Hom.id_toFunctor, id_obj]) (fun x ↦ by simp [mapIdIso])
 
 end
 

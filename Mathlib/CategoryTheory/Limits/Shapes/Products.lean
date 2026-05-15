@@ -228,6 +228,7 @@ set_option backward.defeqAttrib.useBackward true in
 def productIsProduct (f : β → C) [HasProduct f] : IsLimit (Fan.mk _ (Pi.π f)) :=
   IsLimit.ofIsoLimit (limit.isLimit (Discrete.functor f)) (Cone.ext (Iso.refl _))
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The cofan constructed of the inclusions from the coproduct is colimiting. -/
 def coproductIsCoproduct (f : β → C) [HasCoproduct f] : IsColimit (Cofan.mk _ (Sigma.ι f)) :=
@@ -307,6 +308,7 @@ lemma Cofan.nonempty_isColimit_iff_isIso_sigmaDesc {f : β → C} [HasCoproduct 
 @[deprecated (since := "2026-01-21")]
 alias Cofan.isColimit_iff_isIso_sigmaDesc := Cofan.nonempty_isColimit_iff_isIso_sigmaDesc
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A coproduct of coproducts is a coproduct -/
 def Cofan.isColimitTrans {X : α → C} (c : Cofan X) (hc : IsColimit c)
@@ -345,6 +347,7 @@ lemma Pi.map_comp_map {f g h : α → C} [HasProduct f] [HasProduct g] [HasProdu
     Pi.map q ≫ Pi.map q' = Pi.map (fun a => q a ≫ q' a) := by
   ext; simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance Pi.map_mono {f g : β → C} [HasProduct f] [HasProduct g] (p : ∀ b, f b ⟶ g b)
     [∀ i, Mono (p i)] : Mono <| Pi.map p :=
@@ -478,6 +481,7 @@ lemma Sigma.map_comp_map {f g h : α → C} [HasCoproduct f] [HasCoproduct g] [H
     Sigma.map q ≫ Sigma.map q' = Sigma.map (fun a => q a ≫ q' a) := by
   ext; simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance Sigma.map_epi {f g : β → C} [HasCoproduct f] [HasCoproduct g] (p : ∀ b, f b ⟶ g b)
     [∀ i, Epi (p i)] : Epi <| Sigma.map p :=
@@ -696,6 +700,7 @@ theorem sigmaComparison_map_desc [HasCoproduct f] [HasCoproduct fun b => G.obj (
   ext j
   simp only [ι_comp_sigmaComparison_assoc, ← G.map_comp, colimit.ι_desc, Cofan.mk_ι_app]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- `F.mapCone c` being limiting is the same as the induced fan being limiting. -/
 def Fan.isLimitMapConeEquiv (F : C ⥤ D) {ι : Type*} (X : ι → C) (c : Fan X) :
@@ -703,6 +708,7 @@ def Fan.isLimitMapConeEquiv (F : C ⥤ D) {ι : Type*} (X : ι → C) (c : Fan X
   (IsLimit.postcomposeHomEquiv Discrete.natIsoFunctor (F.mapCone c)).symm.trans <|
     IsLimit.equivIsoLimit (Cone.ext (Iso.refl _))
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- `F.mapCocone c` being colimiting is the same as the induced cofan being colimiting. -/
 def Cofan.isColimitMapCoconeEquiv (F : C ⥤ D) {ι : Type*} (X : ι → C) (c : Cofan X) :
@@ -797,6 +803,7 @@ def sigmaConstAdj [Limits.HasCoproducts.{v} C] (X : C) :
 
 section Unique
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The limit cone for the product over an index type with exactly one term. -/
 @[simps]
@@ -825,6 +832,7 @@ instance (priority := 100) hasProduct_unique [Nonempty β] [Subsingleton β] (f 
 def productUniqueIso [Unique β] (f : β → C) : ∏ᶜ f ≅ f default :=
   IsLimit.conePointUniqueUpToIso (limit.isLimit _) (limitConeOfUnique f).isLimit
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Any isomorphism is the projection from a single object product. -/
 def Fan.isLimitMkOfUnique {X Y : C} (e : X ≅ Y) (J : Type*) [Unique J] :
@@ -834,6 +842,7 @@ def Fan.isLimitMkOfUnique {X Y : C} (e : X ≅ Y) (J : Type*) [Unique J] :
     simp
   · simpa [← cancel_mono e.hom] using hm default
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The colimit cocone for the coproduct over an index type with exactly one term. -/
 @[simps]
@@ -862,6 +871,7 @@ instance (priority := 100) hasCoproduct_unique [Nonempty β] [Subsingleton β] (
 def coproductUniqueIso [Unique β] (f : β → C) : ∐ f ≅ f default :=
   IsColimit.coconePointUniqueUpToIso (colimit.isColimit _) (colimitCoconeOfUnique f).isColimit
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Any isomorphism is the projection from a single object product. -/
 def Cofan.isColimitMkOfUnique {X Y : C} (e : X ≅ Y) (J : Type*) [Unique J] :
@@ -966,6 +976,7 @@ section Fubini
 
 variable {ι ι' : Type*} {X : ι → ι' → C}
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A product over products is a product indexed by a product. -/
 def Fan.IsLimit.prod (c : ∀ i : ι, Fan (fun j : ι' ↦ X i j)) (hc : ∀ i : ι, IsLimit (c i))
@@ -977,6 +988,7 @@ def Fan.IsLimit.prod (c : ∀ i : ι, Fan (fun j : ι' ↦ X i j)) (hc : ∀ i :
   · refine Fan.IsLimit.hom_ext hc' _ _ fun i ↦ ?_
     exact Fan.IsLimit.hom_ext (hc i) _ _ fun j ↦ (by simpa using hm (i, j))
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A coproduct over coproducts is a coproduct indexed by a product. -/
 def Cofan.IsColimit.prod (c : ∀ i : ι, Cofan (fun j : ι' ↦ X i j)) (hc : ∀ i : ι, IsColimit (c i))
@@ -1012,6 +1024,7 @@ def piEquivalenceFunctorDiscreteCompLim [HasProductsOfShape α C] :
     (piEquivalenceFunctorDiscrete α C).functor ⋙ lim ≅ Pi.functor _ :=
   NatIso.ofComponents fun _ ↦ Iso.refl _
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma piEquivalenceFunctorDiscreteCompLim_comp_functorπ [HasProductsOfShape α C] (a : α) :
@@ -1054,6 +1067,7 @@ def piEquivalenceFunctorDiscreteCompColim [HasCoproductsOfShape α C] :
     (piEquivalenceFunctorDiscrete α C).functor ⋙ colim ≅ Sigma.functor _ :=
   NatIso.ofComponents fun _ ↦ Iso.refl _
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma piEquivalenceFunctorDiscreteCompColim_comp_functorι [HasCoproductsOfShape α C] (a : α) :

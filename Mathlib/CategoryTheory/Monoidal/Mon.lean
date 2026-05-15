@@ -910,6 +910,7 @@ set_option backward.defeqAttrib.useBackward true in
 def mapMonNatTrans (f : F ⟶ F') [NatTrans.IsMonoidal f] : F.mapMon ⟶ F'.mapMon where
   app X := .mk' (f.app _)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Natural isomorphisms between functors lift to monoid objects. -/
 @[to_additive (attr := simps!)
@@ -1077,6 +1078,7 @@ end Adjunction
 
 namespace Equivalence
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- An equivalence of categories lifts to an equivalence of their monoid objects. -/
 @[to_additive (attr := simps)
@@ -1186,6 +1188,7 @@ open EquivLaxMonoidalFunctorPUnit
 
 attribute [local simp] eqToIso_map
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /--
 Monoid objects in `C` are "just" lax monoidal functors from the trivial monoidal category to `C`.

@@ -524,6 +524,7 @@ theorem limit.map_post {D : Type u'} [Category.{v'} D] [HasLimitsOfShape J D] (H
   ext
   simp only [whiskerRight_app, limMap_π, assoc, limit.post_π_assoc, limit.post_π, ← H.map_comp]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism between
 morphisms from `W` to the cone point of the limit cone for `F`
@@ -703,6 +704,7 @@ def colimit.cocone (F : J ⥤ C) [HasColimit F] : Cocone F :=
   (getColimitCocone F).cocone
 
 /-- An arbitrary choice of colimit object of a functor. -/
+@[implicit_reducible]
 def colimit (F : J ⥤ C) [HasColimit F] :=
   (colimit.cocone F).pt
 
@@ -1128,6 +1130,7 @@ theorem colimit.map_post {D : Type u'} [Category.{v'} D] [HasColimitsOfShape J D
   rw [← assoc, colimit.ι_map, assoc, colimit.ι_post]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism between
 morphisms from the cone point of the colimit cocone for `F` to `W`
@@ -1211,6 +1214,7 @@ end Colimit
 
 section Opposite
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If `t : Cone F` is a limit cone, then `t.op : Cocone F.op` is a colimit cocone.
 -/
@@ -1226,6 +1230,7 @@ def IsLimit.op {t : Cone F} (P : IsLimit t) : IsColimit t.op where
       rw [← w]
       rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If `t : Cocone F` is a colimit cocone, then `t.op : Cone F.op` is a limit cone.
 -/

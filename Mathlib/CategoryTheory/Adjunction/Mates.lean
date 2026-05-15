@@ -300,6 +300,7 @@ theorem conjugateEquiv_counit_symm (α : R₁ ⟶ R₂) (d : D) :
     conv_lhs => rw [← (conjugateEquiv adj₁ adj₂).right_inv α]
     exact (conjugateEquiv_counit adj₁ adj₂ ((conjugateEquiv adj₁ adj₂).symm α) d)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A component of a transposed form of the conjugation definition. -/
 theorem unit_conjugateEquiv (α : L₂ ⟶ L₁) (c : C) :
@@ -348,6 +349,7 @@ variable [Category.{v₁} C] [Category.{v₂} D]
 variable {L₁ L₂ L₃ : C ⥤ D} {R₁ R₂ R₃ : D ⥤ C}
 variable (adj₁ : L₁ ⊣ R₁) (adj₂ : L₂ ⊣ R₂) (adj₃ : L₃ ⊣ R₃)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 theorem conjugateEquiv_comp (α : L₂ ⟶ L₁) (β : L₃ ⟶ L₂) :
@@ -448,6 +450,7 @@ variable {F₁ : A ⥤ C} {U₁ : C ⥤ A} {F₂ : B ⥤ D} {U₂ : D ⥤ B}
 variable {L₁ : A ⥤ B} {R₁ : B ⥤ A} {L₂ : C ⥤ D} {R₂ : D ⥤ C}
 variable (adj₁ : L₁ ⊣ R₁) (adj₂ : L₂ ⊣ R₂) (adj₃ : F₁ ⊣ U₁) (adj₄ : F₂ ⊣ U₂)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- When all four functors in a square are left adjoints, the mates operation can be iterated:
 
@@ -469,6 +472,7 @@ theorem iterated_mateEquiv_conjugateEquiv (α : TwoSquare F₁ L₁ L₂ F₂) :
   ext d
   simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 theorem iterated_mateEquiv_conjugateEquiv_symm (α : TwoSquare U₂ R₂ R₁ U₁) :
     (mateEquiv adj₁ adj₂).symm ((mateEquiv adj₄ adj₃).symm α) =
@@ -481,6 +485,7 @@ end IteratedmateEquiv
 
 variable {G : A ⥤ C} {H : B ⥤ D}
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The mates equivalence commutes with this composition, essentially by `mateEquiv_vcomp`. -/
 theorem mateEquiv_conjugateEquiv_vcomp {L₁ : A ⥤ B} {R₁ : B ⥤ A} {L₂ : C ⥤ D} {R₂ : D ⥤ C}
@@ -499,6 +504,7 @@ theorem mateEquiv_conjugateEquiv_vcomp {L₁ : A ⥤ B} {R₁ : B ⥤ A} {L₂ :
     comp_id] at vcompb
   simpa [mateEquiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The mates equivalence commutes with this composition, essentially by `mateEquiv_vcomp`. -/
 theorem conjugateEquiv_mateEquiv_vcomp {L₁ : A ⥤ B} {R₁ : B ⥤ A} {L₂ : A ⥤ B} {R₂ : B ⥤ A}

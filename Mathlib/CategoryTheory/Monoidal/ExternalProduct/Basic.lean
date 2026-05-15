@@ -56,6 +56,7 @@ open scoped ExternalProduct
 
 variable (J₁ J₂ C)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- When both diagrams have the same source category, composing the external product with
 the diagonal gives the pointwise functor tensor product.
@@ -69,6 +70,7 @@ def externalProductCompDiagIso :
     (fun _ ↦ NatIso.ofComponents (fun _ ↦ Iso.refl _) (by simp [tensorHom_def]))
     (fun _ ↦ by ext; simp [tensorHom_def])
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- When `C` is braided, there is an isomorphism `Prod.swap _ _ ⋙ F₁ ⊠ F₂ ≅ F₂ ⊠ F₁`, natural
 in both `F₁` and `F₂`.
@@ -82,6 +84,7 @@ def externalProductSwap [BraidedCategory C] :
     (fun _ ↦ NatIso.ofComponents (fun _ ↦ β_ _ _) (by simp [whisker_exchange]))
     (fun _ ↦ by ext; simp [whisker_exchange])
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A version of `externalProductSwap` phrased in terms of the curried functors. -/
 @[simps!]

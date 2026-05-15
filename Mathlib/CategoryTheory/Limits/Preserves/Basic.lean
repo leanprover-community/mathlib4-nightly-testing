@@ -233,6 +233,7 @@ lemma preservesLimits_of_natIso {F G : C ⥤ D} (h : F ≅ G) [PreservesLimitsOf
     PreservesLimitsOfSize.{w, w'} G where
   preservesLimitsOfShape := preservesLimitsOfShape_of_natIso h
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Transfer preservation of limits along an equivalence in the shape. -/
 lemma preservesLimitsOfShape_of_equiv {J' : Type w₂} [Category.{w₂'} J'] (e : J ≌ J') (F : C ⥤ D)
@@ -294,6 +295,7 @@ lemma preservesColimits_of_natIso {F G : C ⥤ D} (h : F ≅ G) [PreservesColimi
     PreservesColimitsOfSize.{w, w'} G where
   preservesColimitsOfShape {_J} _𝒥₁ := preservesColimitsOfShape_of_natIso h
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Transfer preservation of colimits along an equivalence in the shape. -/
 lemma preservesColimitsOfShape_of_equiv {J' : Type w₂} [Category.{w₂'} J'] (e : J ≌ J') (F : C ⥤ D)
@@ -736,6 +738,7 @@ end
 
 variable (F : C ⥤ D)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A fully faithful functor reflects limits. -/
 instance fullyFaithful_reflectsLimits [F.Full] [F.Faithful] : ReflectsLimitsOfSize.{w, w'} F where
   reflectsLimitsOfShape {J} 𝒥₁ :=
@@ -747,6 +750,7 @@ instance fullyFaithful_reflectsLimits [F.Full] [F.Faithful] : ReflectsLimitsOfSi
               intro s m
               rw [Functor.map_preimage]
               apply t.uniq_cone_morphism⟩ } }
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A fully faithful functor reflects colimits. -/
 instance fullyFaithful_reflectsColimits [F.Full] [F.Faithful] :
     ReflectsColimitsOfSize.{w, w'} F where

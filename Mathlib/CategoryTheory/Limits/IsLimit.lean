@@ -70,6 +70,7 @@ instance subsingleton {t : Cone F} : Subsingleton (IsLimit t) :=
 
 /-- Given a natural transformation `α : F ⟶ G`, we give a morphism from the cone point
 of any cone over `F` to the cone point of a limit cone over `G`. -/
+@[implicit_reducible]
 def map {F G : J ⥤ C} (s : Cone F) {t : Cone G} (P : IsLimit t) (α : F ⟶ G) : s.pt ⟶ t.pt :=
   P.lift ((Cone.postcompose α).obj s)
 
@@ -141,11 +142,13 @@ theorem conePointUniqueUpToIso_inv_comp {s t : Cone F} (P : IsLimit s) (Q : IsLi
     (conePointUniqueUpToIso P Q).inv ≫ s.π.app j = t.π.app j :=
   (uniqueUpToIso P Q).inv.w _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem lift_comp_conePointUniqueUpToIso_hom {r s t : Cone F} (P : IsLimit s) (Q : IsLimit t) :
     P.lift r ≫ (conePointUniqueUpToIso P Q).hom = Q.lift r :=
   Q.uniq _ _ (by simp)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem lift_comp_conePointUniqueUpToIso_inv {r s t : Cone F} (P : IsLimit s) (Q : IsLimit t) :
     Q.lift r ≫ (conePointUniqueUpToIso P Q).inv = P.lift r :=
@@ -190,11 +193,13 @@ def ofPointIso {r t : Cone F} (P : IsLimit r) [i : IsIso (P.lift t)] : IsLimit t
 
 variable {t : Cone F}
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 theorem hom_lift (h : IsLimit t) {W : C} (m : W ⟶ t.pt) :
     m = h.lift { pt := W, π := { app := fun b => m ≫ t.π.app b } } :=
   h.uniq { pt := W, π := { app := fun b => m ≫ t.π.app b } } m fun _ => rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Two morphisms into a limit are equal if their compositions with
   each cone morphism are equal. -/
 theorem hom_ext (h : IsLimit t) {W : C} {f f' : W ⟶ t.pt}
@@ -202,6 +207,7 @@ theorem hom_ext (h : IsLimit t) {W : C} {f f' : W ⟶ t.pt}
     f = f' := by
   rw [h.hom_lift f, h.hom_lift f']; congr; exact funext w
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma nonempty_isLimit_iff_isIso_lift {s t : Cone F} (hs : IsLimit s) :
     Nonempty (IsLimit t) ↔ IsIso (hs.lift t) :=
   ⟨fun ⟨ht⟩ ↦ ⟨ht.lift s, ht.hom_ext (by simp), hs.hom_ext (by simp)⟩, fun h ↦ ⟨hs.ofPointIso⟩⟩
@@ -261,7 +267,6 @@ def equivOfNatIsoOfIso {F G : J ⥤ C} (α : F ≅ G) (c : Cone F) (d : Cone G)
     (w : (Cone.postcompose α.hom).obj c ≅ d) : IsLimit c ≃ IsLimit d :=
   (postcomposeHomEquiv α _).symm.trans (equivIsoLimit w)
 
-set_option backward.defeqAttrib.useBackward true in
 /-- The cone points of two limit cones for naturally isomorphic functors
 are themselves isomorphic.
 -/
@@ -283,14 +288,12 @@ theorem conePointsIsoOfNatIso_inv_comp {F G : J ⥤ C} {s : Cone F} {t : Cone G}
     (Q : IsLimit t) (w : F ≅ G) (j : J) :
     (conePointsIsoOfNatIso P Q w).inv ≫ s.π.app j = t.π.app j ≫ w.inv.app j := by simp
 
-set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 theorem lift_comp_conePointsIsoOfNatIso_hom {F G : J ⥤ C} {r s : Cone F} {t : Cone G}
     (P : IsLimit s) (Q : IsLimit t) (w : F ≅ G) :
     P.lift r ≫ (conePointsIsoOfNatIso P Q w).hom = Q.map r w.hom :=
   Q.hom_ext (by simp)
 
-set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 theorem lift_comp_conePointsIsoOfNatIso_inv {F G : J ⥤ C} {r s : Cone G} {t : Cone F}
     (P : IsLimit t) (Q : IsLimit s) (w : F ≅ G) :
@@ -504,6 +507,7 @@ section
 
 open OfNatIso
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `F.cones` is representable, then the cone corresponding to the identity morphism on
 the representing object is a limit cone.
 -/
@@ -1013,6 +1017,7 @@ section
 
 open OfNatIso
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `F.cocones` is corepresentable, then the cocone corresponding to the identity morphism on
 the representing object is a colimit cocone.
 -/

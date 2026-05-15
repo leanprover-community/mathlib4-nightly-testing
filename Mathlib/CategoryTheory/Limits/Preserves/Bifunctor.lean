@@ -239,6 +239,7 @@ instance of_preservesColimits_in_each_variable
     ⟨IsColimit.ofCoconeUncurry P <| IsColimit.precomposeHomEquiv E₀ _ <|
       IsColimit.ofIsoColimit (isColimitOfPreserves _ hc₁) E₁.symm⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 theorem of_preservesColimit₂_flip : PreservesColimit₂ K₂ K₁ G.flip where
   nonempty_isColimit_mapCocone₂ {c₁} hc₁ {c₂} hc₂ := by
@@ -338,6 +339,7 @@ lemma isoLimitUncurryWhiskeringLeft₂_hom_comp_map_π (j : J₁ × J₂) :
 
 end
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If a bifunctor preserves separately limits of `K₁` in the first variable and limits
 of `K₂` in the second variable, then it preserves colimit of the pair of cones `K₁, K₂`. -/
@@ -370,6 +372,7 @@ instance of_preservesLimits_in_each_variable
     ⟨IsLimit.ofConeOfConeUncurry P <| IsLimit.postcomposeHomEquiv E₀ _ <|
       IsLimit.ofIsoLimit (isLimitOfPreserves _ hc₁) E₁.symm⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 theorem of_preservesLimit₂_flip : PreservesLimit₂ K₂ K₁ G.flip where
   nonempty_isLimit_mapCone₂ {c₁} hc₁ {c₂} hc₂ := by

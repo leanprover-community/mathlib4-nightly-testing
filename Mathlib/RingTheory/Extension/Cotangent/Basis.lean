@@ -161,6 +161,7 @@ lemma tensorCotangentInv_apply (i : σ) :
     D.tensorCotangentInv (b i) = 1 ⊗ₜ Extension.Cotangent.mk (D.kerGen i) :=
   Module.Basis.constr_basis _ _ _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma span_range_mk_kerGen : Submodule.span D.T
     (Set.range fun i ↦ Extension.Cotangent.mk (D.kerGen i)) = ⊤ := by
@@ -240,6 +241,7 @@ set_option backward.isDefEq.respectTransparency false in
 def basisRight : Module.Basis Unit S D.presRight.toExtension.Cotangent :=
   Generators.basisCotangentAway S D.gbar
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The basis on the cotangent space of the constructed presentation. -/
 def basis [Nontrivial S] : Module.Basis (Unit ⊕ σ) S D.pres.toExtension.Cotangent :=
   (Module.Basis.prod D.basisRight D.basisLeft).map D.cotangentEquivProd.symm
@@ -250,6 +252,7 @@ lemma basis_inl [Nontrivial S] :
       D.cotangentEquivProd.symm (Generators.cMulXSubOneCotangent S D.gbar, 0) := by
   simpa [basis] using Generators.basisCotangentAway_apply _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma basis_inr [Nontrivial S] (i : σ) :
     D.basis (.inr i) = D.cotangentEquivProd.symm (0, D.basisLeft i) := by
   simp [basis]
