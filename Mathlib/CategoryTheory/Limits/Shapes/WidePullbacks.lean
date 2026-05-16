@@ -37,12 +37,14 @@ namespace CategoryTheory.Limits
 variable (J : Type w)
 
 /-- A wide pullback shape for any type `J` can be written simply as `Option J`. -/
+@[implicit_reducible]
 def WidePullbackShape := Option J
 
 instance : Inhabited (WidePullbackShape J) where
   default := none
 
 /-- A wide pushout shape for any type `J` can be written simply as `Option J`. -/
+@[implicit_reducible]
 def WidePushoutShape := Option J
 
 instance : Inhabited (WidePushoutShape J) where

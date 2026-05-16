@@ -218,6 +218,7 @@ namespace Small
 
 variable {J : Type v} (F : J → Type u) [Small.{u} J]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /--
 A variant of `productLimitCone` using a `Small` hypothesis rather than a function to `Type`.

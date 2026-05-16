@@ -115,6 +115,7 @@ def comp {X Y Z : Grothendieck F} (f : Hom X Y) (g : Hom Y Z) : Hom X Z where
 
 attribute [local simp] eqToHom_map
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance : Category (Grothendieck F) where
   Hom X Y := Grothendieck.Hom X Y
@@ -193,6 +194,7 @@ If `F : C ⥤ Cat` is a functor and `t : c ⟶ d` is a morphism in `C`, then `tr
 def toTransport (x : Grothendieck F) {c : C} (t : x.base ⟶ c) : x ⟶ x.transport t :=
   ⟨t, 𝟙 _⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /--
 Construct an isomorphism in a Grothendieck construction from isomorphisms in its base and fiber.
@@ -234,6 +236,7 @@ section
 
 variable {G : C ⥤ Cat}
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The Grothendieck construction is functorial: a natural transformation `α : F ⟶ G` induces
 a functor `Grothendieck.map : Grothendieck F ⥤ Grothendieck G`.
@@ -538,6 +541,7 @@ section FunctorFrom
 
 variable {E : Type*} [Category* E]
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (F) in
 /-- The inclusion of a fiber `F.obj c` of a functor `F : C ⥤ Cat` into its Grothendieck
 construction. -/

@@ -404,8 +404,9 @@ theorem evalFacProp {l : Products I} (J : I → Prop)
     (h : ∀ a, a ∈ l.val → J a) [∀ j, Decidable (J j)] :
     l.eval (π C J) ∘ ProjRestrict C J = l.eval C := by
   ext x
-  dsimp [ProjRestrict]
+  dsimp only [ProjRestrict, Function.comp_apply]
   rw [Products.eval_eq, Products.eval_eq]
+  simp +contextual [h, Proj]
 
 theorem evalFacProps {l : Products I} (J K : I → Prop)
     (h : ∀ a, a ∈ l.val → J a) [∀ j, Decidable (J j)] [∀ j, Decidable (K j)]

@@ -58,13 +58,13 @@ abbrev Cofan (f : β → C) :=
   Cocone (Discrete.functor f)
 
 /-- A fan over `f : β → C` consists of a collection of maps from an object `P` to every `f b`. -/
-@[simps! pt π_app]
+@[simps! pt π_app, implicit_reducible]
 def Fan.mk {f : β → C} (P : C) (p : ∀ b, P ⟶ f b) : Fan f where
   pt := P
   π := Discrete.natTrans (fun X => p X.as)
 
 /-- A cofan over `f : β → C` consists of a collection of maps from every `f b` to an object `P`. -/
-@[simps! pt ι_app]
+@[simps! pt ι_app, implicit_reducible]
 def Cofan.mk {f : β → C} (P : C) (p : ∀ b, f b ⟶ P) : Cofan f where
   pt := P
   ι := Discrete.natTrans (fun X => p X.as)
