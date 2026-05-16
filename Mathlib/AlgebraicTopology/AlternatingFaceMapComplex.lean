@@ -261,6 +261,7 @@ end AlternatingFaceMapComplex
 
 variable {A : Type*} [Category* A] [Abelian A]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The inclusion map of the Moore complex in the alternating face map complex -/
 def inclusionOfMooreComplexMap (X : SimplicialObject A) :
     (normalizedMooreComplex A).obj X ⟶ (alternatingFaceMapComplex A).obj X :=
@@ -290,6 +291,7 @@ theorem inclusionOfMooreComplexMap_f (X : SimplicialObject A) (n : ℕ) :
 variable (A)
 
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The inclusion map of the Moore complex in the alternating face map complex,
 as a natural transformation -/
 @[simps]
