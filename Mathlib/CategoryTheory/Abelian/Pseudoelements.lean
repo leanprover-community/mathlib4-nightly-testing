@@ -276,7 +276,6 @@ theorem pseudo_injective_of_mono {P Q : C} (f : P ⟶ Q) [Mono f] : Function.Inj
   have : (⟦(a.hom ≫ f : Over Q)⟧ : Quotient (setoid Q)) = ⟦↑(a'.hom ≫ f)⟧ := by convert ha
   have ⟨R, p, q, ep, Eq, comm⟩ := Quotient.exact this
   exact ⟨R, p, q, ep, Eq, (cancel_mono f).1 <| by
-    simp only [Category.assoc]
     exact comm⟩
 
 /-- A morphism that is injective on pseudoelements only maps the zero element to zero. -/
