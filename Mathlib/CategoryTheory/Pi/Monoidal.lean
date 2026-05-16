@@ -197,6 +197,7 @@ instance opLaxMonoidalPi' {D : Type*} [Category* D] [MonoidalCategory D]
   oplax_left_unitality X := by ext; simp
   oplax_right_unitality X := by ext; simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps!]
 instance monoidalPi' {D : Type*} [Category* D] [MonoidalCategory D]
@@ -266,6 +267,7 @@ instance {D : Type*} [Category* D] [MonoidalCategory D]
   unit := by ext i; simpa using NatTrans.IsMonoidal.unit (τ := τ i)
   tensor X Y := by ext i; simpa using NatTrans.IsMonoidal.tensor _ _ (τ := τ i)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
     [∀ i, MonoidalCategory (D i)]

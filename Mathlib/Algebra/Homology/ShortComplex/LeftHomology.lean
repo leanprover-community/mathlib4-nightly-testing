@@ -395,6 +395,7 @@ def ofIsLimitKernelFork (φ : S₁ ⟶ S₂)
 
 variable (S)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- When both maps `S.f` and `S.g` of a short complex `S` are zero, this is the left homology map
 data (for the identity of `S`) which relates the left homology data `ofZeros` and
 `ofIsColimitCokernelCofork`. -/

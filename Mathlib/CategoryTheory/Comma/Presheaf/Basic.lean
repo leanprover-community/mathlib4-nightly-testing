@@ -602,6 +602,7 @@ end OverPresheafAux
 
 open OverPresheafAux
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 If `A : Cᵒᵖ ⥤ Type v` is a presheaf, then we have an equivalence between presheaves lying over
 `A` and the category of presheaves on `CostructuredArrow yoneda A`. There is a quasicommutative

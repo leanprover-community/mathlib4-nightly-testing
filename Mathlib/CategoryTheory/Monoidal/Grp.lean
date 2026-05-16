@@ -542,6 +542,7 @@ instance instMonoidalCategory : MonoidalCategory (Grp C) where
   tensorHom_def := by intros; ext; simp [tensorHom_def]
   triangle _ _ := by ext; exact triangle _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[to_additive]
 instance instCartesianMonoidalCategory : CartesianMonoidalCategory (Grp C) where
@@ -573,6 +574,7 @@ instance : (forget₂Mon C).Monoidal where
   «η» := 𝟙 _
   δ G H := 𝟙 _
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 attribute [local simp] MonObj.tensorObj.mul_def mul_eq_mul comp_mul in
 @[to_additive]

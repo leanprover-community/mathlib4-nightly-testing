@@ -63,6 +63,7 @@ abbrev compTwoSquare (w : TwoSquare T L R B) : L.LeftExtension (T ⋙ F) :=
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `w : TwoSquare T L R B` is a Guitart exact square, and `E` is a left extension
 of `F` along `R`, then `E` is a pointwise left Kan extension of `F` along `R` at
 `B.obj X₃` iff `E.compTwoSquare w` is a pointwise left Kan extension

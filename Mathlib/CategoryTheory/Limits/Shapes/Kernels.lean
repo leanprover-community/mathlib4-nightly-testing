@@ -534,6 +534,7 @@ section Transport
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Transport an `IsKernel` across isomorphisms. -/
 def IsKernel.ofIso {X' Y' : C} {f' : X' ⟶ Y'} {s : KernelFork f} (hs : IsLimit s)
     (s' : KernelFork f') (eX : X ≅ X') (eY : Y ≅ Y') (e : s.pt ≅ s'.pt)

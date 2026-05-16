@@ -771,6 +771,7 @@ def multiforkEquivPiForkOfIsLimit :
 
 variable [HasProduct I.left] [HasProduct I.right]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The category of multiforks is equivalent to the category of forks over `∏ᶜ I.left ⇉ ∏ᶜ I.right`.
 It then follows from `CategoryTheory.IsLimit.ofPreservesConeTerminal` (or `reflects`) that it
 preserves and reflects limit cones.
@@ -806,6 +807,7 @@ def multiforkOfParallelHomsEquivFork (J : MulticospanShape) [Unique J.L] [Unique
       Category.comp_id, sndPiMapOfIsLimit_proj]
     simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma multiforkOfParallelHomsEquivFork_functor_obj_ι (J : MulticospanShape) [Unique J.L]
     [Unique J.R] {X Y : C} (f g : X ⟶ Y) (c : Multifork (ofParallelHoms J f g)) :
@@ -1039,6 +1041,7 @@ noncomputable def multicoforkEquivSigmaCoforkOfIsColimit :
 
 variable [HasCoproduct I.left] [HasCoproduct I.right]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The category of multicoforks is equivalent to the category of coforks over `∐ I.left ⇉ ∐ I.right`.
 It then follows from `CategoryTheory.IsColimit.ofPreservesCoconeInitial` (or `reflects`) that
@@ -1120,6 +1123,7 @@ variable [HasProduct I.left] [HasProduct I.right]
 instance : HasEqualizer I.fstPiMap I.sndPiMap :=
   ⟨⟨⟨_, IsLimit.ofPreservesConeTerminal I.multiforkEquivPiFork.functor (limit.isLimit _)⟩⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The multiequalizer is isomorphic to the equalizer of `∏ᶜ I.left ⇉ ∏ᶜ I.right`. -/
 def isoEqualizer : multiequalizer I ≅ equalizer I.fstPiMap I.sndPiMap :=
   limit.isoLimitCone
@@ -1200,6 +1204,7 @@ instance : HasCoequalizer I.fstSigmaMap I.sndSigmaMap :=
       IsColimit.ofPreservesCoconeInitial
         I.multicoforkEquivSigmaCofork.functor (colimit.isColimit _)⟩⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The multicoequalizer is isomorphic to the coequalizer of `∐ I.left ⇉ ∐ I.right`. -/
 def isoCoequalizer : multicoequalizer I ≅ coequalizer I.fstSigmaMap I.sndSigmaMap :=
   colimit.isoColimitCocone

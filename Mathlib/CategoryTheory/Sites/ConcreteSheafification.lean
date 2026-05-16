@@ -117,6 +117,7 @@ theorem equiv_apply {X : C} {P : Cᵒᵖ ⥤ D} {S : J.Cover X} [HasMultiequaliz
     equiv P S x I = Multiequalizer.ι (S.index P) I x :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem equiv_symm_eq_apply {X : C} {P : Cᵒᵖ ⥤ D} {S : J.Cover X} [HasMultiequalizer (S.index P)]
     (x : Meq P S) (I : S.Arrow) :
     -- We can hint `ConcreteCategory.hom (Y := P.obj (op I.Y))` below to put it into `simp`-normal
@@ -203,6 +204,7 @@ theorem toPlus_eq_mk {X : C} {P : Cᵒᵖ ⥤ D} (x : ToType (P.obj (op X))) :
 
 variable [∀ X : C, PreservesColimitsOfShape (J.Cover X)ᵒᵖ (forget D)]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem exists_rep {X : C} {P : Cᵒᵖ ⥤ D} (x : ToType ((J.plusObj P).obj (op X))) :
     ∃ (S : J.Cover X) (y : Meq P S), x = mk y := by
   obtain ⟨S, y, h⟩ := Concrete.colimit_exists_rep (J.diagram P X) x
@@ -239,6 +241,7 @@ theorem eq_mk_iff_exists {X : C} {P : Cᵒᵖ ⥤ D} {S T : J.Cover X} (x : Meq 
       erw [Meq.equiv_symm_eq_apply]
       cases i; rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `P⁺` is always separated. -/
 theorem sep {X : C} (P : Cᵒᵖ ⥤ D) (S : J.Cover X) (x y : ToType ((J.plusObj P).obj (op X)))
     (h : ∀ I : S.Arrow, (J.plusObj P).map I.f.op x = (J.plusObj P).map I.f.op y) : x = y := by

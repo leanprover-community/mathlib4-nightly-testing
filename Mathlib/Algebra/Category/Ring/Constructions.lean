@@ -357,6 +357,7 @@ def equalizerForkIsLimit : IsLimit (equalizerFork f g) := by
     ext x
     exact Subtype.ext <| RingHom.congr_fun (congrArg Hom.hom hm) x
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance : IsLocalHom (equalizerFork f g).ι.hom := by
   constructor
   rintro ⟨a, h₁ : _ = _⟩ (⟨⟨x, y, h₃, h₄⟩, rfl : x = _⟩ : IsUnit a)
@@ -367,6 +368,7 @@ instance : IsLocalHom (equalizerFork f g).ι.hom := by
   rw [isUnit_iff_exists_inv]
   exact ⟨⟨y, this⟩, Subtype.ext h₃⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[instance]
 theorem equalizer_ι_isLocalHom (F : WalkingParallelPair ⥤ CommRingCat.{u}) :
     IsLocalHom (limit.π F WalkingParallelPair.zero).hom := by

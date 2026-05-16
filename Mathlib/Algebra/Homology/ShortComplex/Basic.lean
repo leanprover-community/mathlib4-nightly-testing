@@ -317,6 +317,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- The canonical isomorphism `S.unop.op ≅ S` for a short complex `S` in `Cᵒᵖ` -/
 abbrev unopOp (S : ShortComplex Cᵒᵖ) : S.unop.op ≅ S := (opEquiv C).counitIso.app S
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The canonical isomorphism `S.op.unop ≅ S` for a short complex `S` -/
 abbrev opUnop (S : ShortComplex C) : S.op.unop ≅ S :=
   Iso.unop ((opEquiv C).unitIso.app (Opposite.op S))

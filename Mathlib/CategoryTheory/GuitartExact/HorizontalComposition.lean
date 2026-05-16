@@ -139,6 +139,7 @@ lemma hComp'_iff_of_essSurj
     (w.hComp' w' eT eB).GuitartExact ↔ w'.GuitartExact :=
   ⟨fun _ ↦ of_hComp' w w' eT eB, fun _ ↦ inferInstance⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma hComp_iff_of_equivalences (eT : C₂ ≌ C₃) (eB : D₂ ≌ D₃)
     (w' : eT.functor ⋙ V₃ ≅ V₂ ⋙ eB.functor) :
@@ -149,6 +150,7 @@ lemma hComp_iff_of_equivalences (eT : C₂ ≌ C₃) (eB : D₂ ≌ D₃)
     ← vComp_iff_of_equivalences _ _ _ w'', this]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma hComp'_iff_of_equivalences (E : C₂ ≌ C₃) (E' : D₂ ≌ D₃)
     (w' : E.functor ⋙ V₃ ≅ V₂ ⋙ E'.functor)
     {T₁₂ : C₁ ⥤ C₃} {B₁₂ : D₁ ⥤ D₃} (eT : T₁ ⋙ E.functor ≅ T₁₂)

@@ -347,6 +347,7 @@ noncomputable def liftHomotopyRel [PreconnectedSpace A]
       exact (congr_fun (cov.liftHomotopy_lifts F f₀' _) (1, a)).trans (F.apply_one a)
     prop' := rel }
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Two continuous maps from a preconnected space to the total space of a covering map
   are homotopic relative to a set `S` if and only if their compositions with the covering map
   are homotopic relative to `S`, assuming that they agree at a point in `S`. -/
@@ -355,6 +356,7 @@ theorem homotopicRel_iff_comp [PreconnectedSpace A] {f₀ f₁ : C(A, E)} {S : S
       (ContinuousMap.comp ⟨p, cov.continuous⟩ f₀).HomotopicRel (.comp ⟨p, cov.continuous⟩ f₁) S :=
   ⟨fun ⟨F⟩ ↦ ⟨F.compContinuousMap _⟩, fun ⟨F⟩ ↦ ⟨cov.liftHomotopyRel F he rfl rfl⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Lifting two paths that are homotopic relative to `{0,1}`
   starting from the same point also ends up in the same point. -/
 theorem liftPath_apply_one_eq_of_homotopicRel {γ₀ γ₁ : C(I, X)}

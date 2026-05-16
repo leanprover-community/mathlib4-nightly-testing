@@ -462,6 +462,7 @@ def whiskeringObj (D : Type*) [Category* D] (F : C ⥤ D) : Augmented C ⥤ Augm
       right := F.map η.right
       w := by ext; simp [← Functor.map_comp, w_app] }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Functor composition induces a functor on augmented simplicial objects. -/
 @[simps]
@@ -510,6 +511,7 @@ def augment (X : SimplicialObject C) (X₀ : C) (f : X _⦋0⦌ ⟶ X₀)
         simpa only [← X.map_comp, ← Category.assoc, Category.comp_id, ← op_comp] using w _ _ _ }
 
 -- Not `@[simp]` since `simp` can prove this.
+set_option backward.isDefEq.respectTransparency.types false in
 theorem augment_hom_zero (X : SimplicialObject C) (X₀ : C) (f : X _⦋0⦌ ⟶ X₀) (w) :
     (X.augment X₀ f w).hom.app (op ⦋0⦌) = f := by simp
 
@@ -582,6 +584,7 @@ def σ {n} (i : Fin (n + 1)) : X ^⦋n + 1⦌ ⟶ X ^⦋n⦌ :=
 def eqToIso {n m : ℕ} (h : n = m) : X ^⦋n⦌ ≅ X ^⦋m⦌ :=
   X.mapIso (CategoryTheory.eqToIso (by rw [h]))
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem eqToIso_refl {n : ℕ} (h : n = n) : X.eqToIso h = Iso.refl _ := by
   simp [eqToIso]
@@ -832,6 +835,7 @@ def whiskeringObj (D : Type*) [Category* D] (F : C ⥤ D) : Augmented C ⥤ Augm
         rw [Category.id_comp, Category.id_comp, ← F.map_comp, ← F.map_comp]
         simp [w_app, map_comp] }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Functor composition induces a functor on augmented cosimplicial objects. -/
 @[simps]
@@ -880,6 +884,7 @@ def augment (X : CosimplicialObject C) (X₀ : C) (f : X₀ ⟶ X.obj ⦋0⦌)
         rw [Category.id_comp, Category.assoc, ← X.map_comp, w] }
 
 -- Not `@[simp]` since `simp` can prove this.
+set_option backward.isDefEq.respectTransparency.types false in
 theorem augment_hom_zero (X : CosimplicialObject C) (X₀ : C) (f : X₀ ⟶ X.obj ⦋0⦌) (w) :
     (X.augment X₀ f w).hom.app ⦋0⦌ = f := by simp
 
@@ -925,6 +930,7 @@ def CosimplicialObject.Augmented.leftOp (X : CosimplicialObject.Augmented Cᵒ�
   right := X.left.unop
   hom := NatTrans.leftOp X.hom
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Converting an augmented simplicial object to an augmented cosimplicial
 object and back is isomorphic to the given object. -/
@@ -933,6 +939,7 @@ def SimplicialObject.Augmented.rightOpLeftOpIso (X : SimplicialObject.Augmented 
     X.rightOp.leftOp ≅ X :=
   Comma.isoMk X.left.rightOpLeftOpIso (CategoryTheory.eqToIso <| by simp)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Converting an augmented cosimplicial object to an augmented simplicial
 object and back is isomorphic to the given object. -/
@@ -943,6 +950,7 @@ def CosimplicialObject.Augmented.leftOpRightOpIso (X : CosimplicialObject.Augmen
 
 variable (C)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A functorial version of `SimplicialObject.Augmented.rightOp`. -/
 @[simps]
@@ -959,6 +967,7 @@ def simplicialToCosimplicialAugmented :
         congr 1
         exact (congr_app f.unop.w (op x)).symm }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A functorial version of `Cosimplicial_object.Augmented.leftOp`. -/
 @[simps]
@@ -976,6 +985,7 @@ def cosimplicialToSimplicialAugmented :
           congr 1
           exact (congr_app f.w (unop x)).symm }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The contravariant categorical equivalence between augmented simplicial
 objects and augmented cosimplicial objects in the opposite category. -/

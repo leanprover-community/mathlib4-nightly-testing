@@ -167,6 +167,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma toEndHom_apply [N.Normal] (g h : G) : (toEndHom N g).hom ⟦h⟧ = ⟦h * g⁻¹⟧ := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable {N} in
 lemma toEndHom_trivial_of_mem [N.Normal] {n : G} (hn : n ∈ N) : toEndHom N n = 𝟙 (G ⧸ₐ N) := by
   apply Action.hom_ext

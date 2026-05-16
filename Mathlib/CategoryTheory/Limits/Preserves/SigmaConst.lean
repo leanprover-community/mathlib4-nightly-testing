@@ -67,7 +67,7 @@ variable {α β : Type*} (f : α → β)
 open Classical in
 /-- A colimit cokernel cofork for the map
 `∐ fun (_ : α) ↦ R ⟶ ∐ fun (_ : β) ↦ R` induced by a map `f : α → β`. -/
-@[simps! pt]
+@[simps! pt, implicit_reducible]
 noncomputable def sigmaConstCokernelCofork :
     CokernelCofork
       (Sigma.map' (f := fun (_ : α) ↦ R) (g := fun (_ : β) ↦ R) f (fun _ ↦ 𝟙 R)) :=

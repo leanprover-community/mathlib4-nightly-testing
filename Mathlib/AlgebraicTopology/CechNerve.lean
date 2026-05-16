@@ -114,6 +114,7 @@ def augmentedCechNerve : Arrow C ⥤ SimplicialObject.Augmented C where
   obj f := f.augmentedCechNerve
   map F := Arrow.mapAugmentedCechNerve F
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A helper function used in defining the Čech adjunction. -/
 @[simps]
@@ -254,6 +255,7 @@ def augmentedCechConerve : Arrow C ⥤ CosimplicialObject.Augmented C where
   obj f := f.augmentedCechConerve
   map F := Arrow.mapAugmentedCechConerve F
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A helper function used in defining the Čech conerve adjunction. -/
 @[simps!]
@@ -405,6 +407,7 @@ lemma wideCospan.limitIsoPi_inv_comp_pi [Finite ι] (X : C) (j : ι) :
     (wideCospan.limitIsoPi ι X).inv ≫ WidePullback.π _ j = Pi.π _ j :=
   IsLimit.conePointUniqueUpToIso_inv_comp _ _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma wideCospan.limitIsoPi_hom_comp_pi [Finite ι] (X : C) (j : ι) :
     (wideCospan.limitIsoPi ι X).hom ≫ Pi.π _ j = WidePullback.π _ j := by

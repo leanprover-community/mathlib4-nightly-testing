@@ -395,7 +395,7 @@ theorem Cofork.app_zero_eq_comp_π_right (s : Cofork f g) : s.ι.app zero = g �
 set_option backward.defeqAttrib.useBackward true in
 /-- A fork on `f g : X ⟶ Y` is determined by the morphism `ι : P ⟶ X` satisfying `ι ≫ f = ι ≫ g`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def Fork.ofι {P : C} (ι : P ⟶ X) (w : ι ≫ f = ι ≫ g) : Fork f g where
   pt := P
   π :=
@@ -409,7 +409,7 @@ def Fork.ofι {P : C} (ι : P ⟶ X) (w : ι ≫ f = ι ≫ g) : Fork f g where
 set_option backward.defeqAttrib.useBackward true in
 /-- A cofork on `f g : X ⟶ Y` is determined by the morphism `π : Y ⟶ P` satisfying
 `f ≫ π = g ≫ π`. -/
-@[simps]
+@[simps, implicit_reducible]
 def Cofork.ofπ {P : C} (π : Y ⟶ P) (w : f ≫ π = g ≫ π) : Cofork f g where
   pt := P
   ι :=
@@ -942,6 +942,7 @@ def isLimitIdFork (h : f = g) : IsLimit (idFork h) :=
     convert h
     exact (Category.comp_id _).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Every equalizer of `(f, g)`, where `f = g`, is an isomorphism. -/
 theorem isIso_limit_cone_parallelPair_of_eq (h₀ : f = g) {c : Fork f g} (h : IsLimit c) :
     IsIso c.ι :=
@@ -1162,6 +1163,7 @@ def isColimitIdCofork (h : f = g) : IsColimit (idCofork h) :=
     convert h
     exact (Category.id_comp _).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Every coequalizer of `(f, g)`, where `f = g`, is an isomorphism. -/
 theorem isIso_colimit_cocone_parallelPair_of_eq (h₀ : f = g) {c : Cofork f g} (h : IsColimit c) :
     IsIso c.π :=

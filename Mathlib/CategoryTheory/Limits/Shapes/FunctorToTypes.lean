@@ -85,6 +85,7 @@ def binaryProductLimit : IsLimit (binaryProductCone F G) where
     simp only [← h ⟨WalkingPair.right⟩, ← h ⟨WalkingPair.left⟩]
     congr
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `prod F G` is a binary product for `F` and `G`. -/
 def binaryProductLimitCone : Limits.LimitCone (pair F G) :=
   ⟨_, binaryProductLimit F G⟩
