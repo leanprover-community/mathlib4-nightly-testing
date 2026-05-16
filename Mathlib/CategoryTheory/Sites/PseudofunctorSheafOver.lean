@@ -30,10 +30,10 @@ namespace GrothendieckTopology
 variable {C : Type u} [Category.{v} C] (J : GrothendieckTopology C)
   (A : Type u') [Category.{v'} A]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given a Grothendieck topology `J` on a category `C` and a category `A`,
 this is the pseudofunctor which sends `X : C` to the categories of
 sheaves on `Over X` with values in `A`. -/
-set_option backward.isDefEq.respectTransparency.types false in
 @[simps!]
 def pseudofunctorOver : Pseudofunctor (LocallyDiscrete Cᵒᵖ) Cat :=
   LocallyDiscrete.mkPseudofunctor
