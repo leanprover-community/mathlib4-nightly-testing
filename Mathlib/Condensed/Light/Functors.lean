@@ -51,6 +51,7 @@ instance : lightProfiniteToLightCondSet.Faithful :=
 /--
 The functor from `LightProfinite` to `LightCondSet` factors through `TopCat`.
 -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simps!]
 noncomputable def lightProfiniteToLightCondSetIsoTopCatToLightCondSet :
     lightProfiniteToLightCondSet.{u} ≅ LightProfinite.toTopCat.{u} ⋙ topCatToLightCondSet.{u} :=
