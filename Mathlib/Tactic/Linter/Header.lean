@@ -421,8 +421,9 @@ def headerLinter : Linter where run := withSetOptionIn fun stx ↦ do
       msgs := msgs ++ "\n\n" ++ (← msg.toString)
     Linter.logLint linter.directoryDependency stx msgs.trimAsciiStart.copy
   let some afterImports := firstNonImport? upToStx | return
-  -- Imports-only and deprecated modules are excluded
+  -- Exempt import-only modules
   if afterImports.isOfKind ``Lean.Parser.Command.eoi then return
+  -- Exempt deprecated modules
   if afterImports.isOfKind ``Batteries.Linter.deprecatedModule then return
   let copyright := match upToStx.getHeadInfo with
     | .original lead .. => lead.toString
