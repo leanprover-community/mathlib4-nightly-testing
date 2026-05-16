@@ -361,6 +361,7 @@ lemma ext (h : ∀ (k₁ k₂ : K) (h₁₂ : k₁ ≤ k₂) (h₂ : k₂ ≤ x)
 
 end subsingleton
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 open subsingleton in
 instance subsingleton : Subsingleton (Φ.Iteration j) where

@@ -40,6 +40,7 @@ def whiskerHorizontal (α : T' ⟶ T) (β : B ⟶ B') :
 
 namespace GuitartExact
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A 2-square stays Guitart exact if we replace the top and bottom functors
 by isomorphic functors. See also `whiskerHorizontal_iff`. -/
@@ -86,6 +87,7 @@ def hComp' {T₁₂ : C₁ ⥤ C₃} {B₁₂ : D₁ ⥤ D₃} (eT : T₁ ⋙ T�
 
 namespace GuitartExact
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance hComp [w.GuitartExact] [w'.GuitartExact] :
     (w ≫ₕ w').GuitartExact := by
@@ -100,6 +102,7 @@ instance hComp' {T₁₂ : C₁ ⥤ C₃} {B₁₂ : D₁ ⥤ D₃} (eT : T₁ �
   dsimp only [TwoSquare.hComp']
   infer_instance
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The canonical isomorphism between
 `w.costructuredArrowRightwards Y₁ ⋙ w'.costructuredArrowRightwards (B₁.obj Y₁)` and

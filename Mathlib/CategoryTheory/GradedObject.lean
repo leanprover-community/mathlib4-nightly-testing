@@ -79,6 +79,7 @@ section
 
 variable {β : Type*} (X Y : GradedObject β C)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Constructor for isomorphisms in `GradedObject` -/
 @[simps]
 def isoMk (e : ∀ i, X i ≅ Y i) : X ≅ Y where

@@ -143,6 +143,7 @@ noncomputable def isoLimittoFiniteQuotientFunctor (P : ProfiniteGrp.{u}) :
     P ≅ (limit <| diagram P) :=
   ContinuousMulEquiv.toProfiniteGrpIso (continuousMulEquivLimittoFiniteQuotientFunctor P)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The projection from `P` to the quotient by an open normal subgroup. -/
 def proj {P : ProfiniteGrp.{u}} (U : OpenNormalSubgroup P) : P ⟶ (diagram P).obj U :=
   ProfiniteGrp.ofHom (Y := (diagram P).obj U) {
