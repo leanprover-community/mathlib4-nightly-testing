@@ -323,6 +323,7 @@ lemma eq_liftHomotopy_iff' (H' : C(I × A, E)) :
 
 variable {f₀ f₁ : C(A, X)} {S : Set A} (F : f₀.HomotopyRel f₁ S)
 
+set_option backward.isDefEq.respectTransparency.types false in
 open ContinuousMap in
 /-- The lift to a covering space of a homotopy between two continuous maps relative to a set
 given compatible lifts of the continuous maps. -/

@@ -94,6 +94,7 @@ def IsLimit.pullbackConeEquivBinaryFanFunctor {c : PullbackCone f g} (hc : IsLim
       · simpa using congr(($e₁).left)
       · simpa using congr(($e₂).left)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A pullback cone to `X` is a limit if its corresponding binary fan in `Over X` is a limit. -/
 -- This could also be `(IsLimit.ofConeEquiv pullbackConeEquivBinaryFan.symm).symm hc`, but possibly
@@ -295,6 +296,7 @@ def conesEquivFunctor (B : C) {J : Type w} (F : Discrete J ⥤ Over B) :
 -- attribute [local aesop safe cases (rule_sets := [CategoryTheory])] WidePullbackShape
 -- If this worked we could avoid the `rintro` in `conesEquivUnitIso`.
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- (Impl) A preliminary definition to avoid timeouts. -/
 @[simps!]
@@ -306,6 +308,7 @@ def conesEquivUnitIso (B : C) (F : Discrete J ⥤ Over B) :
       inv := 𝟙 _ }
     (by rintro (j | j) <;> cat_disch)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 -- TODO: Can we add `:= by aesop` to the second arguments of `NatIso.ofComponents` and
 --       `Cone.ext`?
@@ -317,6 +320,7 @@ def conesEquivCounitIso (B : C) (F : Discrete J ⥤ Over B) :
     { hom := Over.homMk (𝟙 _)
       inv := Over.homMk (𝟙 _) }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- (Impl) Establish an equivalence between the category of cones for `F` and for the "grown" `F`.
 -/
@@ -357,6 +361,7 @@ theorem over_finiteProducts_of_finiteWidePullbacks [HasFiniteWidePullbacks C] {B
 
 end ConstructProducts
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Construct terminal object in the over category. This isn't an instance as it's not typically the
 way we want to define terminal objects.

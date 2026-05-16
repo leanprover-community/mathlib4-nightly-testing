@@ -176,6 +176,7 @@ def corepresentableBy :
   homEquiv := Functor.homEquivOfIsLeftKanExtension _ (unit F G) _
   homEquiv_comp := by aesop
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Use the fact that `(F ⊛ G).obj c` is a colimit to characterize morphisms out of it at a
 point. -/
