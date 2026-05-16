@@ -336,6 +336,7 @@ lemma ProjectiveResolution.fromLeftDerivedZero_eq
   erw [← NatTrans.naturality_assoc]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance (F : C ⥤ D) [F.Additive] (X : C) [Projective X] :
     IsIso (F.fromLeftDerivedZero.app X) := by
   rw [(ProjectiveResolution.self X).fromLeftDerivedZero_eq F]
@@ -345,6 +346,7 @@ section
 
 variable (F : C ⥤ D) [F.Additive] [PreservesFiniteColimits F]
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance {X : C} (P : ProjectiveResolution X) :
     IsIso (P.fromLeftDerivedZero' F) := by
   dsimp [ProjectiveResolution.fromLeftDerivedZero']
