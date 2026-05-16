@@ -157,6 +157,7 @@ def normalizedMooreComplex : SimplicialObject C ⥤ ChainComplex C ℕ where
   obj := obj
   map f := map f
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 -- Not `@[simp]` as `simp` can prove this.
 theorem normalizedMooreComplex_objD (X : SimplicialObject C) (n : ℕ) :

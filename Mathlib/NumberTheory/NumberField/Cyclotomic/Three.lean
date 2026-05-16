@@ -90,10 +90,10 @@ lemma eta_sq : (η ^ 2 : 𝓞 K) = -η - 1 := by
   rw [← neg_add', ← add_eq_zero_iff_eq_neg, ← add_assoc]
   ext; simpa using hζ.isRoot_cyclotomic (by decide)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If a unit `u` is congruent to an integer modulo `λ ^ 2`, then `u = 1` or `u = -1`.
 
 This is a special case of the so-called *Kummer's lemma*. -/
-set_option backward.isDefEq.respectTransparency.types false in
 theorem eq_one_or_neg_one_of_unit_of_congruent
     [NumberField K] [IsCyclotomicExtension {3} ℚ K] (hcong : ∃ n : ℤ, λ ^ 2 ∣ (u - n : 𝓞 K)) :
     u = 1 ∨ u = -1 := by
