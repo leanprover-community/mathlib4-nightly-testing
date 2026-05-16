@@ -13,6 +13,8 @@ public import Mathlib.Tactic.ApplyFun
 public import Mathlib.Tactic.CategoryTheory.Elementwise
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
+set_option linter.tacticCheckInstances true
+
 /-!
 # Subobjects
 
@@ -99,6 +101,7 @@ with morphisms becoming inequalities, and isomorphisms becoming equations.
 
 /-- The category of subobjects of `X : C`, defined as isomorphism classes of monomorphisms into `X`.
 -/
+@[implicit_reducible]
 def Subobject (X : C) :=
   ThinSkeleton (MonoOver X)
 
@@ -116,6 +119,18 @@ def mk {X A : C} (f : A ⟶ X) [Mono f] : Subobject X :=
 section
 
 attribute [local ext] CategoryTheory.Comma
+
+set_option allowUnsafeReducibility true
+attribute [implicit_reducible] ThinSkeleton
+  InducedCategory
+  Quiver.Hom
+  ObjectProperty.FullSubcategory.category._aux_1
+  instPartialOrderSubobject._aux_3
+  instPartialOrderSubobject._aux_1
+  Quotient.map
+  LE.le
+  Quot.map
+  ThinSkeleton.map
 
 protected theorem ind {X : C} (p : Subobject X → Prop)
     (h : ∀ ⦃A : C⦄ (f : A ⟶ X) [Mono f], p (Subobject.mk f)) (P : Subobject X) : p P := by
@@ -489,6 +504,7 @@ namespace Subobject
 
 /-- Any functor `MonoOver X ⥤ MonoOver Y` descends to a functor
 `Subobject X ⥤ Subobject Y`, because `MonoOver Y` is thin. -/
+@[implicit_reducible]
 def lower {Y : D} (F : MonoOver X ⥤ MonoOver Y) : Subobject X ⥤ Subobject Y :=
   ThinSkeleton.map F
 
@@ -532,11 +548,14 @@ def lowerEquivalence {A : C} {B : D} (e : MonoOver A ≌ MonoOver B) : Subobject
     apply eqToIso
     convert ThinSkeleton.map_iso_eq e.unitIso
     · exact ThinSkeleton.map_id_eq.symm
+    · simp [lower, ThinSkeleton.map_comp_eq]
+      set_option trace.Meta.isDefEq true in
+      with_reducible_and_instances rfl
   counitIso := by
     apply eqToIso
     convert ThinSkeleton.map_iso_eq e.counitIso
     · exact (ThinSkeleton.map_comp_eq _ _).symm
-
+#exit
 section Limits
 
 variable {J : Type u₃} [Category.{v₃} J]

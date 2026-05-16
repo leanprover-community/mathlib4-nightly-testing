@@ -31,6 +31,7 @@ variable {Q : ∀ {R S : Type u} [CommRing R] [CommRing S], (R →+* S) → Prop
 
 open MorphismProperty
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma RingHom.HasFiniteProducts.isClosedUnderLimitsOfShape (hQi : RespectsIso Q)
     (hQp : HasFiniteProducts Q) (R : CommRingCat.{u}) :
     (toMorphismProperty Q).underObj (X := R).IsClosedUnderFiniteProducts := by
@@ -44,6 +45,7 @@ lemma RingHom.HasFiniteProducts.isClosedUnderLimitsOfShape (hQi : RespectsIso Q)
   rw [underObj_iff, ← Under.w e.inv, (toMorphismProperty Q).cancel_right_of_respectsIso]
   exact hQp _ fun i ↦ hpres _
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma RingHom.HasEqualizers.isClosedUnderLimitsOfShape (hQi : RespectsIso Q)
     (hQe : HasEqualizers Q) (R : CommRingCat.{u}) :
     (toMorphismProperty Q).underObj (X := R).IsClosedUnderLimitsOfShape WalkingParallelPair := by

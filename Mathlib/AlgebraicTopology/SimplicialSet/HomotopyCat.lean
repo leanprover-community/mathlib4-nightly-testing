@@ -71,6 +71,7 @@ lemma id_edge {S : SSet.Truncated 2} (x : OneTruncation₂ S) :
     Truncated.Edge.edge (𝟙rq x) = S.map (σ₂ 0).op x := by
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The prefunctor on refl quivers `OneTruncation₂` induced by a morphism
 of `2`-truncated simplicial sets. -/
 @[simps]
@@ -306,6 +307,7 @@ lemma congr_arrowMk_homMk {x₀ x₁ : V _⦋0⦌₂} (e : Edge x₀ x₁)
   obtain rfl : e = e' := by aesop
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma homMk_id (x : V _⦋0⦌₂) :
     homMk (.id x) = 𝟙 (mk x) := by
@@ -376,6 +378,7 @@ variable (obj : V _⦋0⦌₂ → D) (map : ∀ {x y : V _⦋0⦌₂}, Edge x y 
     {e₀₁ : Edge x₀ x₁} {e₁₂ : Edge x₁ x₂} {e₀₂ : Edge x₀ x₂}
     (_ : Edge.CompStruct e₀₁ e₁₂ e₀₂), map e₀₁ ≫ map e₁₂ = map e₀₂)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Constructor for functors from the homotopy category. -/
 def lift : V.HomotopyCategory ⥤ D :=
   CategoryTheory.Quotient.lift _
@@ -384,9 +387,11 @@ def lift : V.HomotopyCategory ⥤ D :=
       simp only [Functor.map_comp]
       convert map_comp h <;> apply Cat.FreeRefl.lift'_map)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma lift_obj_mk (x : V _⦋0⦌₂) : (lift obj map map_id map_comp).obj (mk x) = obj x := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma lift_map_homMk {x y : V _⦋0⦌₂} (e : Edge x y) :
     (lift obj map map_id map_comp).map (homMk e) = map e :=
@@ -402,6 +407,7 @@ variable (φ : ∀ (x : V _⦋0⦌₂), F.obj (mk x) ⟶ G.obj (mk x))
   (hφ : ∀ ⦃x y : V _⦋0⦌₂⦄ (e : Edge x y),
     F.map (homMk e) ≫ φ y = φ x ≫ G.map (homMk e) := by cat_disch)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 /-- Constructor for natural transformations between functors from `V.HomotopyCategory`. -/
@@ -412,6 +418,7 @@ def mkNatTrans : F ⟶ G where
       morphismProperty_eq_top (fun e ↦ hφ e)
     exact this.symm.le f (by simp)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 @[simp]
@@ -426,18 +433,21 @@ variable (iso : ∀ (x : V _⦋0⦌₂), F.obj (mk x) ≅ G.obj (mk x))
   (hiso : ∀ ⦃x y : V _⦋0⦌₂⦄ (e : Edge x y), F.map (homMk e) ≫ (iso y).hom =
     (iso x).hom ≫ G.map (homMk e) := by cat_disch)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 /-- Constructor for natural isomorphisms between functors from `V.HomotopyCategory`. -/
 def mkNatIso : F ≅ G :=
   NatIso.ofComponents (fun _ ↦ iso _) (fun f ↦ (mkNatTrans _ hiso).naturality f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 @[simp]
 lemma mkNatIso_hom_app_mk (v : V _⦋0⦌₂) :
     (mkNatIso iso hiso).hom.app (mk v) = (iso v).hom := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.privateInPublic true in
 set_option backward.privateInPublic.warn false in
 @[simp]
@@ -446,6 +456,7 @@ lemma mkNatIso_inv_app_mk (v : V _⦋0⦌₂) :
 
 end
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma functor_ext {F G : V.HomotopyCategory ⥤ D}
     (h₁ : ∀ (x : V _⦋0⦌₂), F.obj (mk x) = G.obj (mk x))
     (h₂ : ∀ ⦃x y : V _⦋0⦌₂⦄ (e : Edge x y),
@@ -464,6 +475,7 @@ instance (X : Truncated.{u} 2) [Subsingleton (X _⦋0⦌₂)] :
     obtain rfl := Subsingleton.elim x y
     rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance subsingleton_hom (X : Truncated.{u} 2) [Unique (X _⦋0⦌₂)] [Subsingleton (X _⦋1⦌₂)]
     (x y : X.HomotopyCategory) :
     Subsingleton (x ⟶ y) :=
@@ -509,6 +521,7 @@ lemma mapHomotopyCategory_homMk {x y : V _⦋0⦌₂} (e : Edge x y) :
 
 end
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The functor that takes a 2-truncated simplicial set to its homotopy category. -/
 def hoFunctor₂ : SSet.Truncated.{u} 2 ⥤ Cat.{u, u} where
   obj V := Cat.of V.HomotopyCategory
@@ -560,6 +573,7 @@ instance (x y : OneTruncation₂ ((truncation 2).obj Δ[0])) : Unique (x ⟶ y) 
 instance : Unique ((truncation.{u} 2).obj Δ[0]).HomotopyCategory :=
   inferInstanceAs (Unique <| CategoryTheory.Quotient _)
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance : IsDiscrete ((truncation.{u} 2).obj Δ[0]).HomotopyCategory where
   subsingleton x y :=
     inferInstanceAs (Subsingleton ((_ : CategoryTheory.Quotient _) ⟶ _))
