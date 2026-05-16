@@ -1001,6 +1001,7 @@ def trivial (S : C) : OneHypercover.{w} J S where
 
 instance (S : C) : Nonempty (J.OneHypercover S) := ⟨trivial J S⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Intersection of two `1`-hypercovers. -/
 @[simps toPreOneHypercover]
 noncomputable
@@ -1026,6 +1027,7 @@ variable {S : C} {E : OneHypercover.{w} J S} {F : OneHypercover.{w'} J S}
 abbrev Hom (E : OneHypercover.{w} J S) (F : OneHypercover.{w'} J S) :=
   E.toPreOneHypercover.Hom F.toPreOneHypercover
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps! id_s₀ id_s₁ id_h₀ id_h₁ comp_s₀ comp_s₁ comp_h₀ comp_h₁]
 instance : Category (J.OneHypercover S) where
@@ -1033,6 +1035,7 @@ instance : Category (J.OneHypercover S) where
   id E := PreOneHypercover.Hom.id E.toPreOneHypercover
   comp f g := f.comp g
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- An isomorphism of `1`-hypercovers is an isomorphism of pre-`1`-hypercovers. -/
 @[simps]
 def isoMk {E F : J.OneHypercover S} (f : E.toPreOneHypercover ≅ F.toPreOneHypercover) :
@@ -1077,6 +1080,7 @@ lemma preOneHypercover_sieve₁ (f₁ f₂ : S.Arrow) {W : C} (p₁ : W ⟶ f₁
   simp only [Sieve.top_apply, iff_true]
   exact ⟨{ w := w, .. }, f, rfl, rfl⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The tautological 1-hypercover induced by `S : J.Cover X`. Its index type `I₀`
 is given by `S.Arrow` (i.e. all the morphisms in the sieve `S`), while `I₁` is given
 by all possible pullback cones. -/
@@ -1115,6 +1119,7 @@ instance {S : C} (E : PreZeroHypercover S) [E.HasPullbacks] :
   dsimp
   infer_instance
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma sieve₁'_toPreOneHypercover_eq_top {S : C} (E : PreZeroHypercover S) [E.HasPullbacks]

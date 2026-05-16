@@ -193,6 +193,7 @@ lemma ofPresheaf_presheaf : (ofPresheaf M map_smul).presheaf = M := rfl
 
 end
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The morphism of presheaves of modules `M₁ ⟶ M₂` given by a morphism
 of abelian presheaves `M₁.presheaf ⟶ M₂.presheaf`
 which satisfy a suitable linearity condition. -/
@@ -318,6 +319,7 @@ lemma sections_ext {M : PresheafOfModules.{v} R} (s t : M.sections)
     (h : ∀ (X : Cᵒᵖ), s.val X = t.val X) : s = t :=
   Subtype.ext (by ext; apply h)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The map `M.sections → N.sections` induced by a morphisms `M ⟶ N` of presheaves of modules. -/
 @[simps!]
 def sectionsMap {M N : PresheafOfModules.{v} R} (f : M ⟶ N) (s : M.sections) : N.sections :=
@@ -406,6 +408,7 @@ The functor is implemented as, on object level `M ↦ (c ↦ M(c))` where the `R
 on `M(c)` is given by restriction of scalars along the unique morphism `R(c) ⟶ R(X)`; and on
 morphism level `(f : M ⟶ N) ↦ (c ↦ f(c))`.
 -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simps]
 noncomputable def forgetToPresheafModuleCatObj
     (X : Cᵒᵖ) (hX : Limits.IsInitial X) (M : PresheafOfModules.{v} R) :
@@ -445,6 +448,7 @@ The functor is implemented as, on object level `M ↦ (c ↦ M(c))` where the `R
 on `M(c)` is given by restriction of scalars along the unique morphism `R(c) ⟶ R(X)`; and on
 morphism level `(f : M ⟶ N) ↦ (c ↦ f(c))`.
 -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simps]
 noncomputable def forgetToPresheafModuleCat (X : Cᵒᵖ) (hX : Limits.IsInitial X) :
     PresheafOfModules.{v} R ⥤ Cᵒᵖ ⥤ ModuleCat (R.obj X) where
