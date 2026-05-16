@@ -242,6 +242,7 @@ instance : (functor hG A₀ J).IsWellOrderContinuous where
     simp only [Subobject.mk_arrow]
     exact transfiniteIterate_limit (largerSubobject hG) A₀ m hm⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable {J} in
 /-- For any `j`, the map `(functor hG A₀ J).map (homOfLE bot_le : ⊥ ⟶ j)`
@@ -280,11 +281,6 @@ noncomputable def transfiniteCompositionOfShapeOfEqTop
   let t := transfiniteIterate (largerSubobject hG) j (Subobject.mk f)
   have := (Subobject.isIso_arrow_iff_eq_top t).2 hj
   apply (transfiniteCompositionOfShapeMapFromBot hG (Subobject.mk f) j).ofArrowIso
-  refine Arrow.isoMk ((Subobject.isoOfEq _ _ (transfiniteIterate_bot _ _) ≪≫
-    Subobject.underlyingIso f)) (asIso t.arrow) ?_
-  dsimp [MonoOver.forget]
-  rw [assoc, Subobject.underlyingIso_hom_comp_eq_mk, Subobject.ofLE_arrow,
-    Subobject.ofLE_arrow]
 
 variable (f)
 

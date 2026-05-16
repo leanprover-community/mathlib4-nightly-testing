@@ -506,6 +506,7 @@ instance full_sheafPushforwardContinuous [G.IsContinuous J K] :
     Full (G.sheafPushforwardContinuous A J K) where
   map_surjective α := ⟨⟨sheafHom α.hom⟩, Sheaf.hom_ext <| sheafHom_restrict_eq α.hom⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance faithful_sheafPushforwardContinuous [G.IsContinuous J K] :
     Faithful (G.sheafPushforwardContinuous A J K) where
@@ -706,6 +707,7 @@ noncomputable def sheafifyHomEquivOfIsEquivalence
   ((G.sheafPushforwardContinuous A J K).asEquivalence.symm.toAdjunction.homEquiv _ _).trans
     (((sheafificationAdjunction J A).homEquiv _ _).trans IsCoverDense.restrictHomEquivHom)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma sheafifyHomEquivOfIsEquivalence_naturality_left
     {P₁ P₂ : Dᵒᵖ ⥤ A} (f : P₁ ⟶ P₂) {Q : Sheaf K A}
@@ -728,6 +730,7 @@ lemma sheafifyHomEquivOfIsEquivalence_naturality_left
     apply adj₁.homEquiv_naturality_left
   · apply adj₂.homEquiv_naturality_left
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma sheafifyHomEquivOfIsEquivalence_naturality_right
     {P : Dᵒᵖ ⥤ A} {Q₁ Q₂ : Sheaf K A}
