@@ -78,7 +78,7 @@ set_option backward.defeqAttrib.useBackward true in
 `(whiskeringLeft.obj F).obj G` is `F ⋙ G`, and
 `(whiskeringLeft.obj F).map α` is `whiskerLeft F α`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def whiskeringLeft : (C ⥤ D) ⥤ (D ⥤ E) ⥤ C ⥤ E where
   obj F :=
     { obj := fun G => F ⋙ G

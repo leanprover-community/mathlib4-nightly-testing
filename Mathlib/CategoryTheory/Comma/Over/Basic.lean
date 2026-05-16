@@ -239,11 +239,13 @@ better computational properties, when used, for instance, in
 developing the theory of Beck-Chevalley transformations.
 -/
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The natural isomorphism arising from `mapForget_eq`. -/
 @[simps!]
 def mapId (Y : T) : map (𝟙 Y) ≅ 𝟭 _ :=
   NatIso.ofComponents (fun _ ↦ isoMk (Iso.refl _))
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Mapping by the identity morphism is just the identity functor. -/
 theorem mapId_eq (Y : T) : map (𝟙 Y) = 𝟭 _ :=
@@ -258,6 +260,7 @@ theorem mapForget_eq {X Y : T} (f : X ⟶ Y) :
 def mapForget {X Y : T} (f : X ⟶ Y) :
     (map f) ⋙ (forget Y) ≅ (forget X) := eqToIso (mapForget_eq f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The natural isomorphism arising from `mapComp_eq`. -/
 @[simps!]
@@ -265,6 +268,7 @@ def mapComp {X Y Z : T} (f : X ⟶ Y) (g : Y ⟶ Z) :
     map (f ≫ g) ≅ map f ⋙ map g :=
   NatIso.ofComponents (fun _ ↦ isoMk (Iso.refl _))
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Mapping by the composite morphism `f ≫ g` is the same as mapping by `f` then by `g`. -/
 theorem mapComp_eq {X Y Z : T} (f : X ⟶ Y) (g : Y ⟶ Z) :
@@ -273,12 +277,14 @@ theorem mapComp_eq {X Y Z : T} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (fun _ ↦ by simp [map, Comma.mapRight])
     (fun _ ↦ by ext; simp [eqToHom_left])
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `f = g`, then `map f` is naturally isomorphic to `map g`. -/
 @[simps!]
 def mapCongr {X Y : T} (f g : X ⟶ Y) (h : f = g) :
     map f ≅ map g :=
   NatIso.ofComponents (fun _ ↦ isoMk (Iso.refl _))
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma mapCongr_rfl {X Y : T} (f : X ⟶ Y) :
     mapCongr f f rfl = Iso.refl _ := rfl
@@ -369,6 +375,7 @@ theorem iteratedSliceBackward_forget (f : Over X) :
     iteratedSliceBackward f ⋙ Over.forget f = Over.map f.hom :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Given f : Y ⟶ X, we have an equivalence between (T/X)/f and T/Y -/
 @[simps]
@@ -394,6 +401,7 @@ def iteratedSliceForwardNaturalityIso {g : Over X} (p : f ⟶ g) :
     iteratedSliceForward f ⋙ Over.map p.left ≅ Over.map p ⋙ iteratedSliceForward g :=
   Iso.refl _
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The natural isomorphism relating the functor `Over.map p` to the functor `Over.map p.left`,
 mediated by the underlying functor of the iterated slice equivalence.
@@ -424,6 +432,7 @@ lemma post_forget_eq_forget_comp (F : T ⥤ D) (X : T) :
     post F ⋙ forget (F.obj X) = forget X ⋙ F :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- `post (F ⋙ G)` is isomorphic (actually equal) to `post F ⋙ post G`. -/
 @[simps!]
@@ -434,6 +443,7 @@ def postComp {E : Type*} [Category* E] (F : T ⥤ D) (G : D ⥤ E) :
     dsimp only [Iso.refl_hom, Over.comp_left, Over.id_left]
     simp)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A natural transformation `F ⟶ G` induces a natural transformation on
 `Over X` up to `Over.map`. -/
@@ -441,6 +451,7 @@ set_option backward.defeqAttrib.useBackward true in
 def postMap {F G : T ⥤ D} (e : F ⟶ G) : post F ⋙ map (e.app X) ⟶ post G where
   app Y := Over.homMk (e.app Y.left)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If `F` and `G` are naturally isomorphic, then `Over.post F` and `Over.post G` are also naturally
 isomorphic up to `Over.map` -/
@@ -470,12 +481,14 @@ instance [F.Full] [F.EssSurj] : (Over.post (X := X) F).EssSurj where
 
 instance [F.IsEquivalence] : (Over.post (X := X) F).IsEquivalence where
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If `F` is fully faithful, then so is `Over.post F`. -/
 def _root_.CategoryTheory.Functor.FullyFaithful.over (h : F.FullyFaithful) :
     (post (X := X) F).FullyFaithful where
   preimage {A B} f := Over.homMk (h.preimage f.left) <| h.map_injective (by simpa using Over.w f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If `G` is a right adjoint, then so is `post G : Over Y ⥤ Over (G Y)`.
 
@@ -497,6 +510,7 @@ instance isRightAdjoint_post {Y : D} {G : D ⥤ T} [G.IsRightAdjoint] :
     (post (X := Y) G).IsRightAdjoint :=
   let ⟨F, ⟨a⟩⟩ := ‹G.IsRightAdjoint›; ⟨_, ⟨postAdjunctionRight a⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- An equivalence of categories induces an equivalence on over categories. -/
 @[simps]
@@ -515,6 +529,7 @@ def iteratedSliceForwardIsoPost (f : Over X) :
 
 open Limits
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable {X} in
 /-- If `X : T` is terminal, then the over category of `X` is equivalent to `T`. -/
@@ -534,6 +549,7 @@ protected def lift {J : Type*} [Category* J] (D : J ⥤ T) {X : T} (s : D ⟶ (F
   obj j := mk (s.app j)
   map f := homMk (D.map f) (by simpa using s.naturality f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The induced cone on `Over X` on the lifted functor. -/
 @[simps]
@@ -543,6 +559,7 @@ def liftCone {J : Type*} [Category* J] (D : J ⥤ T) {X : T} (s : D ⟶ (Functor
   pt := mk p
   π.app j := homMk (c.π.app j)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The lifted cone on `Over X` is a limit cone if the original cone was limiting
 and `J` is nonempty. -/

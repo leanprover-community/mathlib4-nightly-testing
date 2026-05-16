@@ -331,6 +331,7 @@ def coconesIso {J : Type u} [Category.{v} J] {K : J ⥤ C} :
     { hom := ↾(coconesIsoComponentHom adj Y)
       inv := ↾(coconesIsoComponentInv adj Y) }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 -- Note: this is natural in K, but we do not yet have the tools to formulate that.
 /-- When `F ⊣ G`,

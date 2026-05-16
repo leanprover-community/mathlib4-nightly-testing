@@ -820,7 +820,7 @@ theorem rightAssocTensor_map {X Y} (f : X ⟶ Y) :
   rfl
 
 /-- The tensor product bifunctor `C ⥤ C ⥤ C` of a monoidal category. -/
-@[simps]
+@[simps, implicit_reducible]
 def curriedTensor : C ⥤ C ⥤ C where
   obj X :=
     { obj := fun Y => X ⊗ Y

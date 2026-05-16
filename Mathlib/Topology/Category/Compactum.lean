@@ -109,6 +109,7 @@ def adj : free ⊣ forget :=
 instance : CoeSort Compactum Type* :=
   ⟨fun X => X.A⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance {X Y : Compactum} : FunLike (X ⟶ Y) X Y where
   coe f := f.f
   coe_injective' _ _ h := (Monad.forget_faithful β).map_injective (by aesop)
@@ -133,6 +134,7 @@ def join (X : Compactum) : Ultrafilter (Ultrafilter X) → Ultrafilter X :=
 def incl (X : Compactum) : X → Ultrafilter X :=
   (β).η.app _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem str_incl (X : Compactum) (x : X) : X.str (X.incl x) = x := by
   change ((β).η.app _ ≫ X.a) _ = _
@@ -146,6 +148,7 @@ theorem str_hom_commute (X Y : Compactum) (f : X ⟶ Y) (xs : Ultrafilter X) :
   rw [← f.h]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem join_distrib (X : Compactum) (uux : Ultrafilter (Ultrafilter X)) :
     X.str (X.join uux) = X.str (map X.str uux) := by
@@ -374,6 +377,7 @@ theorem continuous_of_hom {X Y : Compactum} (f : X ⟶ Y) : Continuous f := by
   rw [← str_hom_commute, str_eq_of_le_nhds _ x _]
   apply h
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given any compact Hausdorff space, we construct a Compactum. -/
 noncomputable def ofTopologicalSpace (X : Type*) [TopologicalSpace X] [CompactSpace X]
     [T2Space X] : Compactum where
@@ -438,6 +442,7 @@ instance faithful : compactumToCompHaus.Faithful where
     ext
     simpa using ConcreteCategory.congr_hom h _
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- This definition is used to prove essential surjectivity of `compactumToCompHaus`. -/
 noncomputable def isoOfTopologicalSpace {D : CompHaus} :
     compactumToCompHaus.obj (Compactum.ofTopologicalSpace D) ≅ D where

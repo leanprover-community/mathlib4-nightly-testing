@@ -29,6 +29,7 @@ namespace CategoryTheory
 
 /-- Endomorphisms of an object in a category. Arguments order in multiplication agrees with
 `Function.comp`, not with `CategoryTheory.CategoryStruct.comp`. -/
+@[implicit_reducible]
 def End {C : Type u} [CategoryStruct.{v} C] (X : C) := X ⟶ X
 
 namespace End
