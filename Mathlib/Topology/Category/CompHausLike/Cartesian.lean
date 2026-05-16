@@ -79,11 +79,11 @@ type-theoretic sums.
 def coproductCocone : BinaryCofan X Y := BinaryCofan.mk (P := CompHausLike.of P (X ⊕ Y))
   (ofHom _ { toFun := Sum.inl }) (ofHom _ { toFun := Sum.inr })
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 When the predicate `P` is preserved under taking type-theoretic sums, that sum is a
 category-theoretic coproduct in `CompHausLike P`.
 -/
-set_option backward.isDefEq.respectTransparency.types false in
 def coproductIsColimit : IsColimit (coproductCocone X Y) := by
   refine BinaryCofan.isColimitMk (fun s ↦ ofHom _ { toFun := Sum.elim s.inl s.inr })
     (by rfl_cat) (by rfl_cat) fun _ _ h₁ h₂ ↦ ?_

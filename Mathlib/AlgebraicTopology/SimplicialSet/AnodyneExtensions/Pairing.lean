@@ -165,6 +165,7 @@ lemma ofIso_p (x : P.II) :
   change e'.symm (P.p ⟨e' (e'.symm x), _⟩) = e'.symm (P.p x)
   simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma ofIso_ancestralRel_iff (x y : P.II) :
     (P.ofIso e hA).AncestralRel

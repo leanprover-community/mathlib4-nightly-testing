@@ -159,6 +159,7 @@ theorem mem_rat_span_latticeBasis [NumberField K] (x : K) :
   rw [← latticeBasis_apply]
   exact Set.mem_range_self i
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem integralBasis_repr_apply [NumberField K] (x : K) (i : Free.ChooseBasisIndex ℤ (𝓞 K)) :
     (latticeBasis K).repr (canonicalEmbedding K x) i = (integralBasis K).repr x i := by
   rw [← Basis.restrictScalars_repr_apply ℚ _ ⟨_, mem_rat_span_latticeBasis K x⟩, eq_ratCast,
@@ -239,6 +240,7 @@ instance : NoAtoms (volume : Measure (mixedSpace K)) := by
       pi_noAtoms ⟨w, not_isReal_iff_isComplex.mp hw⟩
     exact prod.instNoAtoms_snd
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable {K} in
 open Classical in
 /-- The set of points in the mixedSpace that are equal to `0` at a fixed (real) place has
@@ -693,6 +695,7 @@ theorem mem_rat_span_latticeBasis (x : K) :
   rw [← latticeBasis_apply]
   exact Set.mem_range_self i
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem latticeBasis_repr_apply (x : K) (i : ChooseBasisIndex ℤ (𝓞 K)) :
     (latticeBasis K).repr (mixedEmbedding K x) i = (integralBasis K).repr x i := by
   rw [← Basis.restrictScalars_repr_apply ℚ _ ⟨_, mem_rat_span_latticeBasis K x⟩, eq_ratCast,
@@ -1100,6 +1103,7 @@ abbrev realSpace := InfinitePlace K → ℝ
 
 variable {K}
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The set of points in the `realSpace` that are equal to `0` at a fixed place has volume zero. -/
 theorem realSpace.volume_eq_zero [NumberField K] (w : InfinitePlace K) :
     volume ({x : realSpace K | x w = 0}) = 0 := by

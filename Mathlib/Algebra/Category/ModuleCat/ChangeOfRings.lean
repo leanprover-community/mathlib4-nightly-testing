@@ -460,6 +460,7 @@ instance mulAction : MulAction S <| (restrictScalars f).obj (of _ S) →ₗ[R] M
     one_smul := fun g => LinearMap.ext fun s : S => by simp
     mul_smul := fun (s t : S) g => LinearMap.ext fun x : S => by simp [mul_assoc] }
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance distribMulAction : DistribMulAction S <| (restrictScalars f).obj (of _ S) →ₗ[R] M :=
   { CoextendScalars.mulAction f _ with
     smul_add := fun s g h => LinearMap.ext fun _ : S => by simp
@@ -488,6 +489,7 @@ def obj' : ModuleCat S :=
 
 /-- If `M, M'` are `R`-modules, then any `R`-linear map `g : M ⟶ M'` induces an `S`-linear map
 `(S →ₗ[R] M) ⟶ (S →ₗ[R] M')` defined by `h ↦ g ∘ h` -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simps!]
 def map' {M M' : ModuleCat R} (g : M ⟶ M') : obj' f M ⟶ obj' f M' :=
   ofHom
@@ -1048,6 +1050,7 @@ lemma extendScalars_id_comp :
   erw [extendScalarsId_hom_app_one_tmul]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma extendScalars_comp_id :
     (extendScalarsComp f₁₂ (RingHom.id R₂)).hom ≫ Functor.whiskerLeft _ (extendScalarsId R₂).hom ≫

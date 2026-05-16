@@ -261,6 +261,7 @@ theorem decompId (P : Karoubi C) : 𝟙 P = decompId_i P ≫ decompId_p P := by
   ext
   simp only [comp_f, id_f, P.idem, decompId_i, decompId_p]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem decomp_p (P : Karoubi C) : (toKaroubi C).map P.p = decompId_p P ≫ decompId_i P := by
   ext
   simp only [comp_f, decompId_p_f, decompId_i_f, P.idem, toKaroubi_map_f]

@@ -485,6 +485,7 @@ variable [BraidedCategory V]
 
 open BraidedCategory
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A presheaf isomorphic to the Yoneda embedding of
 the `V`-object of natural transformations from `F` to `G`.
@@ -527,6 +528,7 @@ def enrichedFunctorTypeEquivFunctor {C : Type u₁} [𝒞 : EnrichedCategory (Ty
       map_id := fun X => by ext ⟨⟩; exact F.map_id X
       map_comp := fun X Y Z => by ext ⟨f, g⟩; exact F.map_comp f g }
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- We verify that the presheaf representing natural transformations
 between `Type v`-enriched functors is actually represented by
 the usual type of natural transformations!

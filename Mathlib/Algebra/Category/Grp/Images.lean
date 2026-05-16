@@ -56,6 +56,7 @@ attribute [local simp] image.fac
 variable {f}
 
 /-- the universal property for the image factorisation -/
+set_option backward.isDefEq.respectTransparency.types false in
 noncomputable def image.lift (F' : MonoFactorisation f) : image f ⟶ F'.I :=
   ofHom
   { toFun := (fun x => F'.e (Classical.indefiniteDescription _ x.2).1 : image f → F'.I)
@@ -77,6 +78,7 @@ noncomputable def image.lift (F' : MonoFactorisation f) : image f ⟶ F'.I :=
       rw [(Classical.indefiniteDescription (fun z => f z = _) _).2]
       rfl }
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem image.lift_fac (F' : MonoFactorisation f) : image.lift F' ≫ F'.m = image.ι f := by
   ext x
   change (F'.e ≫ F'.m) _ = _

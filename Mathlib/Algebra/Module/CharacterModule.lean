@@ -47,6 +47,7 @@ def CharacterModule : Type uA := A →+ AddCircle (1 : ℚ)
 
 namespace CharacterModule
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance : FunLike (CharacterModule A) A (AddCircle (1 : ℚ)) where
   coe c := c.toFun
   coe_injective' _ _ _ := by simp_all
@@ -116,6 +117,7 @@ open TensorProduct
 /--
 Any linear map `L : A → B⋆` induces a character in `(A ⊗ B)⋆` by `a ⊗ b ↦ L a b`.
 -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simps] noncomputable def uncurry :
     (A →ₗ[R] CharacterModule B) →ₗ[R] CharacterModule (A ⊗[R] B) where
   toFun c := TensorProduct.liftAddHom c.toAddMonoidHom fun r a b ↦ congr($(c.map_smul r a) b)
@@ -139,6 +141,7 @@ Any character `c` in `(A ⊗ B)⋆` induces a linear map `A → B⋆` by `a ↦ 
 /--
 Linear maps into a character module are exactly characters of the tensor product.
 -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simps!] noncomputable def homEquiv :
     (A →ₗ[R] CharacterModule B) ≃ₗ[R] CharacterModule (A ⊗[R] B) :=
   .ofLinear uncurry curry (by ext _ z; refine z.induction_on ?_ ?_ ?_ <;> aesop) (by aesop)
