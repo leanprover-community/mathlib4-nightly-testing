@@ -119,6 +119,7 @@ variable (F : V ⥤ W) [F.LaxMonoidal]
 
 open Functor.LaxMonoidal
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance : EnrichedCategory W (TransportEnrichment F C) where
   Hom := fun X Y : C => F.obj (X ⟶[V] Y)
   id := fun X : C => ε F ≫ F.map (eId V X)
@@ -142,10 +143,12 @@ instance : EnrichedCategory W (TransportEnrichment F C) where
       F.map_comp, MonoidalCategory.whiskerLeft_comp, Category.assoc,
       Functor.LaxMonoidal.μ_natural_right_assoc]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma TransportEnrichment.eId_eq (X : TransportEnrichment F C) :
     eId W X = ε F ≫ F.map (eId (C := C) V X) :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma TransportEnrichment.eComp_eq (X Y Z : TransportEnrichment F C) :
     eComp W X Y Z = μ F _ _ ≫ F.map (eComp V _ _ _) :=
   rfl
@@ -226,6 +229,7 @@ theorem ForgetEnrichment.of_to (X : ForgetEnrichment W C) :
     ForgetEnrichment.of W (ForgetEnrichment.to W X) = X :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance categoryForgetEnrichment : Category (ForgetEnrichment W C) :=
   enrichedCategoryTypeEquivCategory C (inferInstanceAs (EnrichedCategory (Type w)
       (TransportEnrichment (coyoneda.obj (op (𝟙_ W))) C)))
@@ -256,23 +260,27 @@ theorem ForgetEnrichment.homOf_homTo {X Y : ForgetEnrichment W C} (f : X ⟶ Y) 
     ForgetEnrichment.homOf W (ForgetEnrichment.homTo W f) = f :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The identity in the "underlying" category of an enriched category. -/
 @[simp]
 theorem ForgetEnrichment.homTo_id (X : ForgetEnrichment W C) :
     ForgetEnrichment.homTo W (𝟙 X) = eId W (ForgetEnrichment.to W X : C) :=
   Category.id_comp _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem ForgetEnrichment.homOf_eId (X : C) :
     ForgetEnrichment.homOf W (eId W X) = 𝟙 (of W X : C) :=
   (homTo_id W (ForgetEnrichment.of W X)).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Composition in the "underlying" category of an enriched category. -/
 @[simp]
 theorem ForgetEnrichment.homTo_comp {X Y Z : ForgetEnrichment W C} (f : X ⟶ Y) (g : Y ⟶ Z) :
     homTo W (f ≫ g) = ((λ_ (𝟙_ W)).inv ≫ (homTo W f ⊗ₘ homTo W g)) ≫ eComp W _ _ _ :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem ForgetEnrichment.homOf_comp {X Y Z : C} (f : 𝟙_ W ⟶ (X ⟶[W] Y)) (g : 𝟙_ W ⟶ (Y ⟶[W] Z)) :
     homOf W ((λ_ _).inv ≫ (f ⊗ₘ g) ≫ eComp W ..) = homOf W f ≫ homOf W g := by
@@ -349,7 +357,6 @@ def forget (F : EnrichedFunctor W C D) :
     ForgetEnrichment.homOf W
       (ForgetEnrichment.homTo W f ≫ F.map (ForgetEnrichment.to W _) (ForgetEnrichment.to W _))
   map_comp f g := by
-    dsimp
     apply_fun ForgetEnrichment.homTo W
     · simp only [Iso.cancel_iso_inv_left, Category.assoc, ← tensorHom_comp_tensorHom,
         ForgetEnrichment.homTo_homOf, EnrichedFunctor.map_comp, ForgetEnrichment.homTo_comp]

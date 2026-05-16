@@ -176,6 +176,7 @@ instance (i : I) : (Pi.eval C i).Monoidal where
 set_option backward.defeqAttrib.useBackward true in
 instance [∀ i, BraidedCategory (C i)] (i : I) : (Pi.eval C i).Braided where
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance laxMonoidalPi' {D : Type*} [Category* D] [MonoidalCategory D] (F : ∀ i : I, D ⥤ C i)
@@ -184,6 +185,7 @@ instance laxMonoidalPi' {D : Type*} [Category* D] [MonoidalCategory D] (F : ∀ 
   ε := fun i ↦ Functor.LaxMonoidal.ε (F i)
   μ X Y := fun i ↦ Functor.LaxMonoidal.μ (F i) X Y
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance opLaxMonoidalPi' {D : Type*} [Category* D] [MonoidalCategory D]
@@ -212,6 +214,7 @@ instance [∀ i, BraidedCategory (C i)]
     (F : ∀ i : I, D ⥤ C i) [∀ i, (F i).Braided] :
     (Functor.pi' F).Braided where
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance laxMonoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
@@ -221,6 +224,7 @@ instance laxMonoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
   ε := fun i ↦ Functor.LaxMonoidal.ε (F i)
   μ X Y := fun i ↦ Functor.LaxMonoidal.μ (F i) (X i) (Y i)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps]
 instance opLaxMonoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
@@ -232,6 +236,7 @@ instance opLaxMonoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
   oplax_left_unitality X := by ext; simp
   oplax_right_unitality X := by ext; simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simps!]
 instance monoidalPi {D : I → Type u₂} [∀ i, Category.{v₂} (D i)]
