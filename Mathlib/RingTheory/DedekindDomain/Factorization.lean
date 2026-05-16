@@ -214,6 +214,7 @@ theorem finprod_heightOneSpectrum_factorization {I : Ideal R} (hI : I ≠ 0) :
     ⟨J, Ideal.isPrime_of_prime (irreducible_iff_prime.mp hv), Irreducible.ne_zero hv⟩ I hI
 
 /-- The ideal `I` equals the inf `⨅_v v^(val_v(I))`. -/
+set_option backward.isDefEq.respectTransparency.types false in
 theorem iInf_maxPowDividing_eq {I : Ideal R} (h0 : I ≠ 0) :
     ⨅ i : HeightOneSpectrum R, i.maxPowDividing I = I := by
   nth_rw 2 [← Ideal.finprod_heightOneSpectrum_factorization h0]
@@ -529,6 +530,7 @@ theorem count_finsuppProd (exps : HeightOneSpectrum R →₀ ℤ) :
   · exact fun v hv ↦ zpow_ne_zero _ (coeIdeal_ne_zero.mpr v.ne_bot)
 
 /-- If `exps` is finitely supported, then `val_v(∏_w w^{exps w}) = exps v`. -/
+set_option backward.isDefEq.respectTransparency.types false in
 theorem count_finprod (exps : HeightOneSpectrum R → ℤ)
     (h_exps : ∀ᶠ v : HeightOneSpectrum R in Filter.cofinite, exps v = 0) :
     count K v (∏ᶠ v : HeightOneSpectrum R,

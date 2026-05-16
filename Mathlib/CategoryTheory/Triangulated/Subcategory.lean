@@ -632,6 +632,7 @@ instance [IsTriangulated C] [P.IsTriangulated] : P.trW.HasRightCalculusOfFractio
       dsimp at eq
       rw [← sub_eq_zero, ← comp_sub, hq, reassoc_of% eq, zero_comp]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance [IsTriangulated C] [P.IsTriangulated] : P.trW.IsCompatibleWithTriangulation := ⟨by
   rintro T₁ T₃ mem₁ mem₃ a b ⟨Z₅, g₅, h₅, mem₅, mem₅'⟩ ⟨Z₄, g₄, h₄, mem₄, mem₄'⟩ comm

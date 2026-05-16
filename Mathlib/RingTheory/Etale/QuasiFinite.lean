@@ -44,6 +44,7 @@ def Ideal.fiberIsoOfBijectiveResidueField
   (PrimeSpectrum.primesOverOrderIsoFiber ..).trans <|
     (PrimeSpectrum.comapEquiv e.toRingEquiv).trans (PrimeSpectrum.primesOverOrderIsoFiber ..).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma Ideal.comap_fiberIsoOfBijectiveResidueField_symm
     (H : Function.Bijective (Ideal.ResidueField.mapₐ p q (Algebra.ofId _ _) (q.over_def p)))
     (Q : p.primesOver S) :
