@@ -40,6 +40,7 @@ variable {C ι : Type*} [Category* C] [Abelian C] {c : ComplexShape ι}
 
 namespace HomologySequence
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The morphism `snakeInput hS₁ i j hij ⟶ snakeInput hS₂ i j hij` induced by
 a morphism `φ : S₁ ⟶ S₂` of short complexes of homological complexes, that
@@ -52,6 +53,7 @@ noncomputable def mapSnakeInput (i j : ι) (hij : c.Rel i j) :
   f₂ := (cyclesFunctor C c j).mapShortComplex.map φ
   f₃ := (homologyFunctor C c j).mapShortComplex.map φ
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma δ_naturality (i j : ι) (hij : c.Rel i j) :
     hS₁.δ i j hij ≫ HomologicalComplex.homologyMap φ.τ₁ _ =

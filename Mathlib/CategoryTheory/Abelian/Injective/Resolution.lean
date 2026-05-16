@@ -98,6 +98,7 @@ def desc {Y Z : C} (f : Z ⟶ Y) (I : InjectiveResolution Y) (J : InjectiveResol
     fun n ⟨g, g', w⟩ => ⟨(descFSucc I J n g g' w.symm).1, (descFSucc I J n g g' w.symm).2.symm⟩
 
 /-- The resolution maps intertwine the descent of a morphism and that morphism. -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem desc_commutes {Y Z : C} (f : Z ⟶ Y) (I : InjectiveResolution Y)
     (J : InjectiveResolution Z) : J.ι ≫ desc f I J = (CochainComplex.single₀ C).map f ≫ I.ι := by
@@ -296,15 +297,18 @@ variable [Abelian C] [EnoughInjectives C] (Z : C)
 -- The construction of the injective resolution `of` would be very, very slow
 -- if it were not broken into separate definitions and lemmas
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `InjectiveResolution.of`. -/
 def ofCocomplex : CochainComplex C ℕ :=
   CochainComplex.mk' (Injective.under Z) (Injective.syzygies (Injective.ι Z))
     (Injective.d (Injective.ι Z)) fun f => ⟨_, Injective.d f, by simp⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ofCocomplex_d_0_1 :
     (ofCocomplex Z).d 0 1 = d (Injective.ι Z) := by
   simp [ofCocomplex]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ofCocomplex_exactAt_succ (n : ℕ) :
     (ofCocomplex Z).ExactAt (n + 1) := by
   rw [HomologicalComplex.exactAt_iff' _ n (n + 1) (n + 1 + 1) (by simp) (by simp)]
@@ -316,6 +320,7 @@ lemma ofCocomplex_exactAt_succ (n : ℕ) :
   | n + 1 => apply exact_f_d ((CochainComplex.mkAux _ _ _
       (d (Injective.ι Z)) (d (d (Injective.ι Z))) _ _ (n + 1)).f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance (n : ℕ) : Injective ((ofCocomplex Z).X n) := by
   obtain (_ | _ | _ | n) := n <;> apply Injective.injective_under
 
