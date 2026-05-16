@@ -400,6 +400,7 @@ noncomputable def forgetToPresheafModuleCatObjMap {Y Z : Cᵒᵖ} (f : Y ⟶ Z) 
 lemma forgetToPresheafModuleCatObjMap_apply {Y Z : Cᵒᵖ} (f : Y ⟶ Z) (m : M.obj Y) :
     (forgetToPresheafModuleCatObjMap X hX M f).hom m = M.map f m := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 Implementation of the functor `PresheafOfModules R ⥤ Cᵒᵖ ⥤ ModuleCat (R.obj X)`
 when `X` is initial.
@@ -408,7 +409,6 @@ The functor is implemented as, on object level `M ↦ (c ↦ M(c))` where the `R
 on `M(c)` is given by restriction of scalars along the unique morphism `R(c) ⟶ R(X)`; and on
 morphism level `(f : M ⟶ N) ↦ (c ↦ f(c))`.
 -/
-set_option backward.isDefEq.respectTransparency.types false in
 @[simps]
 noncomputable def forgetToPresheafModuleCatObj
     (X : Cᵒᵖ) (hX : Limits.IsInitial X) (M : PresheafOfModules.{v} R) :
@@ -440,6 +440,7 @@ noncomputable def forgetToPresheafModuleCatMap
     ext x
     exact naturality_apply f g x
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The forgetful functor from presheaves of modules over a presheaf of rings `R` to presheaves of
 `R(X)`-modules where `X` is an initial object.
@@ -448,7 +449,6 @@ The functor is implemented as, on object level `M ↦ (c ↦ M(c))` where the `R
 on `M(c)` is given by restriction of scalars along the unique morphism `R(c) ⟶ R(X)`; and on
 morphism level `(f : M ⟶ N) ↦ (c ↦ f(c))`.
 -/
-set_option backward.isDefEq.respectTransparency.types false in
 @[simps]
 noncomputable def forgetToPresheafModuleCat (X : Cᵒᵖ) (hX : Limits.IsInitial X) :
     PresheafOfModules.{v} R ⥤ Cᵒᵖ ⥤ ModuleCat (R.obj X) where

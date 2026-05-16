@@ -480,6 +480,7 @@ section Action
 
 variable (k G)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Every object in `Rep k G` naturally correspond to an object in `Action`. -/
 @[simps]
 def RepToAction : Rep.{w} k G ⥤ Action (ModuleCat.{w} k) G where
@@ -1003,6 +1004,7 @@ representation morphisms `Hom(k[G], A)` and `A`. -/
 abbrev leftRegularHomEquiv (A : Rep k G) : (leftRegular k G ⟶ A) ≃ₗ[k] A :=
   homLinearEquiv _ _ ≪≫ₗ Representation.leftRegularMapEquiv A.ρ
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem leftRegularHomEquiv_symm_single {A : Rep k G} (x : A) (g : G) :
     ((leftRegularHomEquiv A).symm x).hom (.single g 1) = A.ρ g x := by
   simp [homEquiv]

@@ -174,12 +174,14 @@ and which on `Subobject A` will induce a `SemilatticeSup`. -/
 def sup {A : C} : MonoOver A ⥤ MonoOver A ⥤ MonoOver A :=
   Functor.curryObj ((forget A).prod (forget A) ⋙ Functor.uncurry.obj Over.coprod ⋙ image)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A morphism version of `le_sup_left`. -/
 def leSupLeft {A : C} (f g : MonoOver A) : f ⟶ (sup.obj f).obj g := by
   refine homMk (coprod.inl ≫ factorThruImage _) ?_
   erw [Category.assoc, image.fac, coprod.inl_desc]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A morphism version of `le_sup_right`. -/
 def leSupRight {A : C} (f g : MonoOver A) : g ⟶ (sup.obj f).obj g := by
   refine homMk (coprod.inr ≫ factorThruImage _) ?_
@@ -218,10 +220,12 @@ instance {X : C} : Inhabited (Subobject X) :=
 theorem top_eq_id (B : C) : (⊤ : Subobject B) = Subobject.mk (𝟙 B) :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem underlyingIso_top_hom {B : C} : (underlyingIso (𝟙 B)).hom = (⊤ : Subobject B).arrow := by
   convert underlyingIso_hom_comp_eq_mk (𝟙 B)
   simp only [comp_id]
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance top_arrow_isIso {B : C} : IsIso (⊤ : Subobject B).arrow := by
   rw [← underlyingIso_top_hom]
   infer_instance
@@ -727,6 +731,7 @@ end ZeroObject
 
 section SubobjectSubobject
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The subobject lattice of a subobject `Y` is order isomorphic to the interval `Set.Iic Y`. -/
 def subobjectOrderIso {X : C} (Y : Subobject X) : Subobject (Y : C) ≃o Set.Iic Y where
   toFun Z :=

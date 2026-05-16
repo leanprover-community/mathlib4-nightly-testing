@@ -64,6 +64,7 @@ section SubfieldValued
 
 variable [P.IsValuedIn K]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Restriction of scalars for a root pairing taking values in a subfield.
 
 See also `RootPairing.restrictScalars`. -/

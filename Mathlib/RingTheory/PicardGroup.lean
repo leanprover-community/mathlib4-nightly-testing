@@ -427,6 +427,7 @@ noncomputable instance : CoeSort (Pic R) (Type u) := ⟨AsModule⟩
 noncomputable instance (R) [CommRing R] (M : Pic R) : AddCommGroup M :=
   Module.addCommMonoidToAddCommGroup R
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.privateInPublic true in
 private noncomputable def equivShrinkLinearEquiv (M : (Skeleton <| SemimoduleCat.{u} R)ˣ) :
     (id <| equivShrink _ M : Pic R) ≃ₗ[R] M :=
@@ -601,6 +602,7 @@ namespace Module.Invertible
 
 variable (R M : Type*) [CommRing R] [AddCommGroup M] [Module R M] [Module.Invertible R M]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 -- TODO: generalize to CommSemiring by generalizing `CommRing.Pic.instSubsingletonOfIsLocalRing`
 theorem tensorProductComm_eq_refl : TensorProduct.comm R M M = .refl .. := by
