@@ -221,7 +221,7 @@ variable (C : Type u₁) [Category.{v₁} C] (D : Type u₂) [Category.{v₂} D]
 `(evaluation.obj X).obj F = F.obj X`,
 which is functorial in both `X` and `F`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def evaluation : C ⥤ (C ⥤ D) ⥤ D where
   obj X :=
     { obj := fun F => F.obj X

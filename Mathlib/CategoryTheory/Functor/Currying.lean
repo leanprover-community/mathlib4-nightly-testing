@@ -34,7 +34,7 @@ variable {B : Type u₁} [Category.{v₁} B] {C : Type u₂} [Category.{v₂} C]
 
 /-- The uncurrying functor, taking a functor `C ⥤ (D ⥤ E)` and producing a functor `(C × D) ⥤ E`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def uncurry : (C ⥤ D ⥤ E) ⥤ C × D ⥤ E where
   obj F :=
     { obj := fun X => (F.obj X.1).obj X.2

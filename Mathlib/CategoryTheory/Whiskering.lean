@@ -95,7 +95,7 @@ set_option backward.defeqAttrib.useBackward true in
 `(whiskeringRight.obj H).obj F` is `F ⋙ H`, and
 `(whiskeringRight.obj H).map α` is `whiskerRight α H`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def whiskeringRight : (D ⥤ E) ⥤ (C ⥤ D) ⥤ C ⥤ E where
   obj H :=
     { obj := fun F => F ⋙ H
@@ -399,7 +399,7 @@ variable {C₁ C₂ C₃ D₁ D₂ D₃ : Type*} [Category* C₁] [Category* C�
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The obvious functor `(C₁ ⥤ D₁) ⥤ (C₂ ⥤ D₂) ⥤ (D₁ ⥤ D₂ ⥤ E) ⥤ (C₁ ⥤ C₂ ⥤ E)`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def whiskeringLeft₂ :
     (C₁ ⥤ D₁) ⥤ (C₂ ⥤ D₂) ⥤ (D₁ ⥤ D₂ ⥤ E) ⥤ (C₁ ⥤ C₂ ⥤ E) where
   obj F₁ :=
@@ -474,14 +474,14 @@ variable {E}
 
 /-- The "postcomposition" with a functor `E ⥤ E'` gives a functor
 `(E ⥤ E') ⥤ (C₁ ⥤ C₂ ⥤ E) ⥤ C₁ ⥤ C₂ ⥤ E'`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def postcompose₂ {E' : Type*} [Category* E'] :
     (E ⥤ E') ⥤ (C₁ ⥤ C₂ ⥤ E) ⥤ C₁ ⥤ C₂ ⥤ E' :=
   whiskeringRight C₂ _ _ ⋙ whiskeringRight C₁ _ _
 
 /-- The "postcomposition" with a functor `E ⥤ E'` gives a functor
 `(E ⥤ E') ⥤ (C₁ ⥤ C₂ ⥤ C₃ ⥤ E) ⥤ C₁ ⥤ C₂ ⥤ C₃ ⥤ E'`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def postcompose₃ {E' : Type*} [Category* E'] :
     (E ⥤ E') ⥤ (C₁ ⥤ C₂ ⥤ C₃ ⥤ E) ⥤ C₁ ⥤ C₂ ⥤ C₃ ⥤ E' :=
   whiskeringRight C₃ _ _ ⋙ whiskeringRight C₂ _ _ ⋙ whiskeringRight C₁ _ _

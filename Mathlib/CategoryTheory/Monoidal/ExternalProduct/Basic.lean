@@ -28,13 +28,13 @@ variable (J₁ : Type u₁) (J₂ : Type u₂) (C : Type u₃)
 
 /-- The (curried version of the) external product bifunctor: given diagrams
 `K₁ : J₁ ⥤ C` and `K₂ : J₂ ⥤ C`, this is the bifunctor `j₁ ↦ j₂ ↦ K₁ j₁ ⊗ K₂ j₂`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def externalProductBifunctorCurried : (J₁ ⥤ C) ⥤ (J₂ ⥤ C) ⥤ J₁ ⥤ J₂ ⥤ C :=
   (Functor.postcompose₂.obj <| (evaluation _ _).obj <| curriedTensor C).obj <| whiskeringLeft₂ C
 
 /-- The external product bifunctor: given diagrams
 `K₁ : J₁ ⥤ C` and `K₂ : J₂ ⥤ C`, this is the bifunctor `(j₁, j₂) ↦ K₁ j₁ ⊗ K₂ j₂`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def externalProductBifunctor : ((J₁ ⥤ C) × (J₂ ⥤ C)) ⥤ J₁ × J₂ ⥤ C :=
   uncurry.obj <| (Functor.postcompose₂.obj <| uncurry).obj <|
     externalProductBifunctorCurried J₁ J₂ C

@@ -38,6 +38,7 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 variable {X Y Z : C} (f : Y ⟶ X)
 
 /-- A predicate on arrows with codomain `X`. -/
+@[implicit_reducible]
 def Presieve (X : C) :=
   ∀ ⦃Y⦄, (Y ⟶ X) → Prop
 deriving CompleteLattice, Inhabited
@@ -1279,6 +1280,7 @@ theorem uliftNatTransOfLe_comm {S T : Sieve X} (h : S ≤ T) :
     uliftNatTransOfLe.{w} h ≫ uliftFunctorInclusion.{w} _ = uliftFunctorInclusion.{w} _ :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The presheaf induced by a sieve is a subobject of the yoneda embedding. -/
 instance uliftFunctorInclusion_is_mono (S : Sieve X) :
@@ -1356,6 +1358,7 @@ lemma shrinkFunctorUliftFunctorIso_inv_ι [LocallySmall.{w} C] [LocallySmall.{ma
       shrinkYonedaUliftFunctorIso.{w, w'}.inv.app X :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable (S) in
 /-- Shrinking does nothing for the same universe level. -/
