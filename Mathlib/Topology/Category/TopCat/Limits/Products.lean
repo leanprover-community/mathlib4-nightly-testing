@@ -189,6 +189,7 @@ theorem prod_topology {X Y : TopCat.{u}} :
   simp [induced_compose]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem range_prod_map {W X Y Z : TopCat.{u}} (f : W ⟶ Y) (g : X ⟶ Z) :
     Set.range (Limits.prod.map f g) =
       (Limits.prod.fst : Y ⨯ Z ⟶ _) ⁻¹' Set.range f ∩

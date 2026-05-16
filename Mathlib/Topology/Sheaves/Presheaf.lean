@@ -130,6 +130,7 @@ abbrev restrictOpen {F : X.Presheaf C}
 /-- restriction of a section to open subset -/
 scoped[AlgebraicGeometry] infixl:80 " |_ " => TopCat.Presheaf.restrictOpen
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem restrict_restrict
     {F : X.Presheaf C} {U V W : Opens X} (e₁ : U ≤ V) (e₂ : V ≤ W) (x : ToType (F.obj (op W))) :
     x |_ V |_ U = x |_ U := by
@@ -137,12 +138,14 @@ theorem restrict_restrict
   rw [← ConcreteCategory.comp_apply, ← Functor.map_comp]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem map_restrict
     {F G : X.Presheaf C} (e : F ⟶ G) {U V : Opens X} (h : U ≤ V) (x : ToType (F.obj (op V))) :
     e.app _ (x |_ U) = e.app _ x |_ U := by
   delta restrictOpen restrict
   rw [← ConcreteCategory.comp_apply, NatTrans.naturality, ConcreteCategory.comp_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma restrict_self {F : X.Presheaf C} {U : Opens X} (x : ToType (F.obj (op U))) :
     x |_ U = x := by
@@ -216,6 +219,7 @@ def pushforwardEq {X Y : TopCat.{w}} {f g : X ⟶ Y} (h : f = g) (ℱ : X.Preshe
 theorem pushforward_eq' {X Y : TopCat.{w}} {f g : X ⟶ Y} (h : f = g) (ℱ : X.Presheaf C) :
     f _* ℱ = g _* ℱ := by rw [h]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem pushforwardEq_hom_app {X Y : TopCat.{w}} {f g : X ⟶ Y}
@@ -241,6 +245,7 @@ def toPushforwardOfIso {X Y : TopCat.{w}} (H : X ≅ Y) {ℱ : X.Presheaf C} {�
     (α : H.hom _* ℱ ⟶ 𝒢) : ℱ ⟶ H.inv _* 𝒢 :=
   (presheafEquivOfIso _ H).toAdjunction.homEquiv ℱ 𝒢 α
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem toPushforwardOfIso_app {X Y : TopCat.{w}} (H₁ : X ≅ Y) {ℱ : X.Presheaf C} {𝒢 : Y.Presheaf C}
@@ -257,6 +262,7 @@ def pushforwardToOfIso {X Y : TopCat.{w}} (H₁ : X ≅ Y) {ℱ : Y.Presheaf C} 
     (H₂ : ℱ ⟶ H₁.hom _* 𝒢) : H₁.inv _* ℱ ⟶ 𝒢 :=
   ((presheafEquivOfIso _ H₁.symm).toAdjunction.homEquiv ℱ 𝒢).symm H₂
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 theorem pushforwardToOfIso_app {X Y : TopCat.{w}} (H₁ : X ≅ Y) {ℱ : Y.Presheaf C} {𝒢 : X.Presheaf C}
