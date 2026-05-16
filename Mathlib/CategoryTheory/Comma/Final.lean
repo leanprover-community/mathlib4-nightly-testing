@@ -76,6 +76,7 @@ variable {B : Type u₂} [Category.{v₂} B]
 variable {T : Type u₃} [Category.{v₃} T]
 variable (L : A ⥤ T) (R : B ⥤ T)
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance final_fst [R.Final] : (fst L R).Final := by
   let sA : A ≌ AsSmall.{max u₁ u₂ u₃ v₁ v₂ v₃} A := AsSmall.equiv
   let sB : B ≌ AsSmall.{max u₁ u₂ u₃ v₁ v₂ v₃} B := AsSmall.equiv
@@ -88,7 +89,6 @@ instance final_fst [R.Final] : (fst L R).Final := by
       (isoWhiskerRight sB.unitIso (R ⋙ sT.functor)).hom
   have : Final (fst L' R') := final_fst_small _ _
   apply final_of_natIso (F := (fC ⋙ fst L' R' ⋙ sA.inverse))
-  exact (Functor.associator _ _ _).symm.trans (Iso.compInverseIso (mapFst _ _))
 
 instance initial_snd [L.Initial] : (snd L R).Initial := by
   have : ((opFunctor L R).leftOp ⋙ fst R.op L.op).Final :=
@@ -176,6 +176,7 @@ lemma isCofiltered_of_initial [IsCofiltered A] [IsCofiltered B] [L.Initial] :
     IsCofiltered (Comma L R) :=
   IsCofiltered.of_equivalence (Comma.opEquiv _ _).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 attribute [local instance] final_of_isFiltered_of_pUnit in
 /-- Let `A` and `B` be filtered categories, `R : B ⥤ T` be final and `R : A ⥤ T`. Then, the
