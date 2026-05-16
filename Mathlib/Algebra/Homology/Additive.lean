@@ -122,6 +122,7 @@ instance Functor.map_homogical_complex_additive (F : V ⥤ W) [F.Additive] (c : 
 
 variable (W₁)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The functor on homological complexes induced by the identity functor is
 isomorphic to the identity functor. -/
@@ -188,6 +189,7 @@ def NatIso.mapHomologicalComplex {F G : W₁ ⥤ W₂} [F.PreservesZeroMorphisms
   inv_hom_id := by simp only [← NatTrans.mapHomologicalComplex_comp, α.inv_hom_id,
     NatTrans.mapHomologicalComplex_id]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- An equivalence of categories induces an equivalences between the respective categories
 of homological complex.
@@ -209,6 +211,7 @@ namespace ChainComplex
 
 variable {α : Type*} [AddRightCancelSemigroup α] [One α] [DecidableEq α]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 theorem map_chain_complex_of (F : W₁ ⥤ W₂) [F.PreservesZeroMorphisms] (X : α → W₁)
     (d : ∀ n, X (n + 1) ⟶ X n) (sq : ∀ n, d (n + 1) ≫ d n = 0) :
