@@ -487,9 +487,9 @@ This is an implementation detail: use `(coextendScalars f).obj` instead.
 def obj' : ModuleCat S :=
   of _ ((restrictScalars f).obj (of _ S) →ₗ[R] M)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `M, M'` are `R`-modules, then any `R`-linear map `g : M ⟶ M'` induces an `S`-linear map
 `(S →ₗ[R] M) ⟶ (S →ₗ[R] M')` defined by `h ↦ g ∘ h` -/
-set_option backward.isDefEq.respectTransparency.types false in
 @[simps!]
 def map' {M M' : ModuleCat R} (g : M ⟶ M') : obj' f M ⟶ obj' f M' :=
   ofHom

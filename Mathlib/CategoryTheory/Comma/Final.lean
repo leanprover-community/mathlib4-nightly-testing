@@ -89,6 +89,8 @@ instance final_fst [R.Final] : (fst L R).Final := by
       (isoWhiskerRight sB.unitIso (R ⋙ sT.functor)).hom
   have : Final (fst L' R') := final_fst_small _ _
   apply final_of_natIso (F := (fC ⋙ fst L' R' ⋙ sA.inverse))
+  exact (Functor.associator _ _ _).symm.trans (Iso.compInverseIso (mapFst _ _))
+
 
 instance initial_snd [L.Initial] : (snd L R).Initial := by
   have : ((opFunctor L R).leftOp ⋙ fst R.op L.op).Final :=

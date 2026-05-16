@@ -444,7 +444,7 @@ variable (F)
 set_option backward.isDefEq.respectTransparency false in
 /-- Applying a functor `G : D ⥤ C` to the base of the Grothendieck construction induces a functor
 `Grothendieck (G ⋙ F) ⥤ Grothendieck F`. -/
-@[simps]
+@[simps, implicit_reducible]
 def pre (G : D ⥤ C) : Grothendieck (G ⋙ F) ⥤ Grothendieck F where
   obj X := ⟨G.obj X.base, X.fiber⟩
   map f := ⟨G.map f.base, f.fiber⟩

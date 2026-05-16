@@ -141,7 +141,7 @@ variable (C) in
 functor is `(shiftFunctor C n).op`. In most cases, it is not necessary to unfold the
 definitions of the unit and counit isomorphisms: the compatibilities they satisfy
 are stated as separate lemmas. -/
-@[simps functor inverse]
+@[simps functor inverse, implicit_reducible]
 def opShiftFunctorEquivalence (n : ℤ) : Cᵒᵖ ≌ Cᵒᵖ where
   functor := shiftFunctor Cᵒᵖ n
   inverse := (shiftFunctor C n).op

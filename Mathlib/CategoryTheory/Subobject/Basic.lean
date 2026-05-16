@@ -13,8 +13,6 @@ public import Mathlib.Tactic.ApplyFun
 public import Mathlib.Tactic.CategoryTheory.Elementwise
 public import Mathlib.CategoryTheory.Limits.Shapes.Pullback.IsPullback.Basic
 
-set_option linter.tacticCheckInstances true
-
 /-!
 # Subobjects
 
@@ -548,14 +546,14 @@ def lowerEquivalence {A : C} {B : D} (e : MonoOver A ≌ MonoOver B) : Subobject
     apply eqToIso
     convert ThinSkeleton.map_iso_eq e.unitIso
     · exact ThinSkeleton.map_id_eq.symm
-    · simp [lower, ThinSkeleton.map_comp_eq]
-      set_option trace.Meta.isDefEq true in
-      with_reducible_and_instances rfl
+    · -- TODO: `simp; rfl` is a code smell; why do we even need this second case?
+      simp [lower, ThinSkeleton.map_comp_eq]; rfl
   counitIso := by
     apply eqToIso
     convert ThinSkeleton.map_iso_eq e.counitIso
     · exact (ThinSkeleton.map_comp_eq _ _).symm
-#exit
+    · simp [ThinSkeleton.map_id_eq]; rfl
+
 section Limits
 
 variable {J : Type u₃} [Category.{v₃} J]

@@ -140,6 +140,7 @@ instance : (karoubiFunctorCategoryEmbedding J C).Faithful where
     ext j
     exact hom_ext_iff.mp (congr_app h j)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The composition of `(J ⥤ C) ⥤ Karoubi (J ⥤ C)` and `Karoubi (J ⥤ C) ⥤ (J ⥤ Karoubi C)`
 equals the functor `(J ⥤ C) ⥤ (J ⥤ Karoubi C)` given by the composition with
