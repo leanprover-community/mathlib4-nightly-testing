@@ -128,8 +128,8 @@ lemma apply_of_pow_eq_one [IsDomain S] {ζ : S} {m : ℕ} (hζ : ζ ^ m = 1) (hk
   rw [one_mul, ← pow_add, tsub_add_cancel_of_le (by linarith), pow_add, hζ.1, mul_one] at h₂
   rw [h₂, e]
 
-/-- A Frobenius element at `Q` restricts to an automorphism of `S_Q`. -/
 set_option backward.isDefEq.respectTransparency.types false in
+/-- A Frobenius element at `Q` restricts to an automorphism of `S_Q`. -/
 noncomputable
 def localize [Q.IsPrime] : Localization.AtPrime Q →ₐ[R] Localization.AtPrime Q where
   toRingHom := Localization.localRingHom _ _ φ H.comap_eq.symm

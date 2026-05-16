@@ -211,12 +211,12 @@ open IsLocalization AtPrime
 variable [IsDomain R] [IsDedekindDomain S] [IsTorsionFree R S] [Algebra R Sₚ] [IsScalarTower R S Sₚ]
   [IsScalarTower R Rₚ Sₚ]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 For `R ⊆ S` an extension of Dedekind domains and `p` a prime ideal of `R`, the bijection
 between the primes of `S` over `p` and the primes over the maximal ideal of `Rₚ` in `Sₚ` where
 `Rₚ` and `Sₚ` are resp. the localizations of `R` and `S` at the complement of `p`.
 -/
-set_option backward.isDefEq.respectTransparency.types false in
 noncomputable def primesOverEquivPrimesOver (hp : p ≠ ⊥) :
     p.primesOver S ≃o (maximalIdeal Rₚ).primesOver Sₚ where
   toFun P := ⟨map (algebraMap S Sₚ) P.1, isPrime_map_of_liesOver S p Sₚ P.1,
