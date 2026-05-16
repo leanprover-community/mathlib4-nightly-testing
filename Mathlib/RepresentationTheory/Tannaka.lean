@@ -62,6 +62,7 @@ def equivApp (g : G) (X : FDRep k G) : X.V ≅ X.V where
     ext x
     simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (k G) in
 /-- The group homomorphism `G →* Aut (forget k G)` shown to be an isomorphism. -/
 @[simps]
@@ -213,6 +214,7 @@ lemma toRightFDRepComp_in_rightRegular [IsDomain k] (η : Aut (forget k G)) :
       congr($hs (leftRegular t⁻¹ (single u 1)))
     _ = _ := by by_cases u = t * s <;> simp_all [single_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma equivHom_surjective [IsDomain k] : Function.Surjective (equivHom k G) := by
   intro η
   obtain ⟨s, h⟩ := toRightFDRepComp_in_rightRegular η

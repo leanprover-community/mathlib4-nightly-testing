@@ -204,6 +204,7 @@ variable {V}
 lemma single₀_obj_zero (A : V) :
     ((single₀ V).obj A).X 0 = A := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma single₀_map_f_zero {A B : V} (f : A ⟶ B) :
@@ -238,6 +239,7 @@ lemma toSingle₀Equiv_symm_apply_f_zero {C : ChainComplex V ℕ} {X : V}
     ((toSingle₀Equiv C X).symm ⟨f, hf⟩).f 0 = f := by
   simp [toSingle₀Equiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Morphisms from a single object chain complex with `X` concentrated in degree 0
 to an `ℕ`-indexed chain complex `C` are the same as morphisms `f : X → C.X 0`.
 -/
@@ -274,6 +276,7 @@ variable {V}
 lemma single₀_obj_zero (A : V) :
     ((single₀ V).obj A).X 0 = A := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma single₀_map_f_zero {A B : V} (f : A ⟶ B) :
@@ -306,6 +309,7 @@ lemma fromSingle₀Equiv_symm_apply_f_zero {C : CochainComplex V ℕ} {X : V}
     ((fromSingle₀Equiv C X).symm ⟨f, hf⟩).f 0 = f := by
   simp [fromSingle₀Equiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Morphisms to a single object cochain complex with `X` concentrated in degree 0
 to an `ℕ`-indexed cochain complex `C` are the same as morphisms `f : C.X 0 ⟶ X`.
 -/
