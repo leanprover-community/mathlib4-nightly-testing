@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "02707607bc9b2cfca340d9fe18239ba4f0f3e074",
+   "rev": "94c4dbd98cc46bb16b48cdf36dc5acb3e248ca69",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "Jovan-Inhabited-Thunk",
