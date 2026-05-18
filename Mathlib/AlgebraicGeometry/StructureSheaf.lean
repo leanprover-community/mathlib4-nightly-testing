@@ -47,6 +47,8 @@ boundaries.
 
 -/
 
+set_option linter.tacticCheckInstances true
+
 
 universe u
 
@@ -72,10 +74,12 @@ namespace StructureSheaf
 
 variable {P : PrimeSpectrum.Top R}
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (M P) in
 /-- The type family over `PrimeSpectrum R` consisting of the localization over each point. -/
 abbrev Localizations : Type u := LocalizedModule P.asIdeal.primeCompl M
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The predicate saying that a dependent function on an open `U` is realised as a fixed fraction
 `r / s` in each of the stalks (which are localizations at various prime ideals).
 -/
