@@ -511,10 +511,10 @@ previous assumptions. -/
 
 end OfTrivial
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The short complex `H₁(S, A) ⟶ H₁(G, A) ⟶ H₁(G ⧸ S, A_S)`. The first map is the
 "corestriction" map induced by the inclusion `ι : S →* G` and the identity on `Res(ι)(A)`, and the
 second map is the "coinflation" map induced by the quotient maps `G →* G ⧸ S` and `A →ₗ A_S`. -/
-set_option backward.isDefEq.respectTransparency.types false in
 @[simps X₁ X₂ X₃ f g]
 noncomputable def H1CoresCoinf :
     ShortComplex (ModuleCat k) where
