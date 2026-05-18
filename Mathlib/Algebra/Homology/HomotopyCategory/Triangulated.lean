@@ -151,6 +151,7 @@ lemma mappingConeCompHomotopyEquiv_hom_inv_id :
       (mappingConeCompHomotopyEquiv f g).inv = 𝟙 _ := by
   simp [mappingConeCompHomotopyEquiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma mappingConeCompHomotopyEquiv_comm₁ :
