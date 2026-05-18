@@ -653,7 +653,7 @@ lemma presheafMap_comp {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
 be a family. Let `G₀` be a sheaf on `C₀`. This is a presheaf on `C` which
 extends `G₀` (see `OneHypercoverDenseData.essSurj.compPresheafIso`) and it is a sheaf
 (see `OneHypercoverDenseData.essSurj.isSheaf`). -/
-@[simps]
+@[simps, implicit_reducible]
 noncomputable def presheaf : Cᵒᵖ ⥤ A where
   obj X := presheafObj data G₀ X.unop
   map f := presheafMap data G₀ f.unop

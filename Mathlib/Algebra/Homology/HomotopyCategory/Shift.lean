@@ -182,6 +182,7 @@ lemma XIsoOfEq_shift (K : CochainComplex C ℤ) (n : ℤ) {p q : ℤ} (hpq : p =
 
 variable (C)
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma shiftFunctorAdd'_eq (a b c : ℤ) (h : a + b = c) :
     CategoryTheory.shiftFunctorAdd' (CochainComplex C ℤ) a b c h =
       shiftFunctorAdd' C a b c h := by

@@ -261,7 +261,7 @@ lemma D₁_D₂ (i₁₂ i₁₂' i₁₂'' : I₁₂) :
     K.D₁ c₁₂ i₁₂ i₁₂' ≫ K.D₂ c₁₂ i₁₂' i₁₂'' = - K.D₂ c₁₂ i₁₂ i₁₂' ≫ K.D₁ c₁₂ i₁₂' i₁₂'' := by simp
 
 /-- The total complex of a bicomplex. -/
-@[simps -isSimp d]
+@[simps -isSimp d, implicit_reducible]
 noncomputable def total : HomologicalComplex C c₁₂ where
   X := K.toGradedObject.mapObj (ComplexShape.π c₁ c₂ c₁₂)
   d i₁₂ i₁₂' := K.D₁ c₁₂ i₁₂ i₁₂' + K.D₂ c₁₂ i₁₂ i₁₂'

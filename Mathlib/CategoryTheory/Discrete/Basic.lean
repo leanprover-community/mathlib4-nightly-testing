@@ -160,6 +160,7 @@ attribute [local aesop safe tactic (rule_sets := [CategoryTheory])]
   CategoryTheory.Discrete.discreteCases
 
 /-- Any function `I → C` gives a functor `Discrete I ⥤ C`. -/
+@[implicit_reducible]
 def functor {I : Type u₁} (F : I → C) : Discrete I ⥤ C where
   obj := F ∘ Discrete.as
   map {X Y} f := by

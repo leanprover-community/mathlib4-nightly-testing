@@ -155,13 +155,13 @@ end
 variable (L) (R)
 
 /-- The functor sending an object `X` in the comma category to `X.left`. -/
-@[simps]
+@[simps, implicit_reducible]
 def fst : Comma L R ⥤ A where
   obj X := X.left
   map f := f.left
 
 /-- The functor sending an object `X` in the comma category to `X.right`. -/
-@[simps]
+@[simps, implicit_reducible]
 def snd : Comma L R ⥤ B where
   obj X := X.right
   map f := f.right

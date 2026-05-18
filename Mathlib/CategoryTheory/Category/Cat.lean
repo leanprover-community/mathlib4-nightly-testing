@@ -34,7 +34,7 @@ open Bicategory Functor
 
 -- intended to be used with explicit universe parameters
 /-- Category of categories. -/
-@[nolint checkUnivs]
+@[nolint checkUnivs, implicit_reducible]
 def Cat :=
   Bundled Category.{v, u}
 
@@ -73,7 +73,7 @@ instance : Quiver (Cat.{v, u}) where
   Hom C D := Hom C D
 
 /-- The 1-morphism in `Cat` corresponding to a functor. -/
-@[simps]
+@[simps, implicit_reducible]
 def _root_.CategoryTheory.Functor.toCatHom {C D : Type u} [Category.{v} C] [Category.{v} D]
     (F : C ⥤ D) : Cat.of C ⟶ Cat.of D where
   toFunctor := F

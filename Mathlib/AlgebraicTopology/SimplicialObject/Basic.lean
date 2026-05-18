@@ -395,6 +395,7 @@ abbrev const : C ⥤ SimplicialObject C :=
   CategoryTheory.Functor.const _
 
 /-- The category of augmented simplicial objects, defined as a comma category. -/
+@[implicit_reducible]
 def Augmented :=
   Comma (𝟭 (SimplicialObject C)) (const C)
 
@@ -412,12 +413,12 @@ lemma hom_ext {X Y : Augmented C} (f g : X ⟶ Y) (h₁ : f.left = g.left) (h₂
   Comma.hom_ext _ _ h₁ h₂
 
 /-- Drop the augmentation. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def drop : Augmented C ⥤ SimplicialObject C :=
   Comma.fst _ _
 
 /-- The point of the augmentation. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def point : Augmented C ⥤ C :=
   Comma.snd _ _
 
