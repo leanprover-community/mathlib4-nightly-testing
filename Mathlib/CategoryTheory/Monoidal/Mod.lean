@@ -39,7 +39,7 @@ map `vadd : M ⊙ₗ X ⟶ X` that satisfies zero-additivity and associativity w
 See `AddAction` for the non-categorical version. -/
 class AddModObj (X : D) where
   /-- The action map -/
-  vadd : M ⊙ₗ X ⟶ X
+  protected vadd : M ⊙ₗ X ⟶ X
   /-- The zero acts trivially. -/
   zero_vadd (X) : ζ ⊵ₗ X ≫ vadd = (λₗ X).hom := by cat_disch
   /-- The action map is compatible with addition. -/
@@ -58,7 +58,7 @@ See `MulAction` for the non-categorical version. -/
 @[to_additive]
 class ModObj (X : D) where
   /-- The action map -/
-  smul : M ⊙ₗ X ⟶ X
+  protected smul : M ⊙ₗ X ⟶ X
   /-- The identity acts trivially. -/
   one_smul (X) : η ⊵ₗ X ≫ smul = (λₗ X).hom := by cat_disch
   /-- The action map is compatible with multiplication. -/
@@ -87,6 +87,9 @@ end ModObj
 variable {M}
 
 namespace ModObj
+
+@[to_additive]
+abbrev smul (M : C) [MonObj M] [ModObj X] : M ⊙ₗ X ⟶ X := smul
 
 @[to_additive]
 theorem assoc_flip (X : D) [ModObj M X] : M ⊴ₗ γ ≫ γ =
