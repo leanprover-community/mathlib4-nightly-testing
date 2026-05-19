@@ -3,7 +3,9 @@ Copyright (c) 2021 Chris Birkbeck. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Chris Birkbeck
 -/
-import Mathlib.GroupTheory.Index
+module
+
+public import Mathlib.GroupTheory.Index
 
 /-!
 # Commensurability for subgroups
@@ -26,49 +28,63 @@ commensurable with `H`.
 We define the commensurator of a subgroup `H` of `G` by first defining it as a subgroup of
 `(conjAct G)`, which we call `commensurator'` and then taking the pre-image under
 the map `G → (conjAct G)` to obtain our commensurator as a subgroup of `G`.
+
+We define `Commensurable` both for additive and multiplicative groups (in the `AddSubgroup` and
+`Subgroup` namespaces respectively); but `Commensurator` is not additivized, since it is not an
+interesting concept for abelian groups, and it would be unusual to write a non-abelian group
+additively.
 -/
 
+@[expose] public section
+
+open scoped Pointwise
 
 variable {G : Type*} [Group G]
 
-/-- Two subgroups `H K` of `G` are commensurable if `H ⊓ K` has finite index in both `H` and `K` -/
-def Commensurable (H K : Subgroup G) : Prop :=
+/-- Equivalence of `K / (H ⊓ K)` with `gKg⁻¹/ (gHg⁻¹ ⊓ gKg⁻¹)` -/
+def Subgroup.quotConjEquiv (H K : Subgroup G) (g : ConjAct G) :
+    K ⧸ H.subgroupOf K ≃ (g • K : Subgroup G) ⧸ (g • H).subgroupOf (g • K) :=
+  Quotient.congr (K.equivSMul g).toEquiv fun a b ↦ by
+    dsimp
+    rw [← Quotient.eq'', ← Quotient.eq'', QuotientGroup.eq, QuotientGroup.eq,
+      mem_subgroupOf, mem_subgroupOf, ← map_inv, ← map_mul, equivSMul_apply_coe]
+    exact smul_mem_pointwise_smul_iff.symm
+
+/-- Two subgroups `H K` of `G` are commensurable if `H ⊓ K` has finite index in both `H` and `K`. -/
+@[to_additive /-- Two subgroups `H K` of `G` are commensurable if `H ⊓ K` has finite index in both
+`H` and `K`. -/]
+def Subgroup.Commensurable (H K : Subgroup G) : Prop :=
   H.relIndex K ≠ 0 ∧ K.relIndex H ≠ 0
 
-namespace Commensurable
+namespace Subgroup.Commensurable
 
-open Pointwise
-
-@[refl]
+@[to_additive (attr := refl)]
 protected theorem refl (H : Subgroup G) : Commensurable H H := by simp [Commensurable]
 
+@[to_additive]
 theorem comm {H K : Subgroup G} : Commensurable H K ↔ Commensurable K H := and_comm
 
-@[symm]
+@[to_additive (attr := symm)]
 theorem symm {H K : Subgroup G} : Commensurable H K → Commensurable K H := And.symm
 
-@[trans]
+@[to_additive (attr := trans)]
 theorem trans {H K L : Subgroup G} (hhk : Commensurable H K) (hkl : Commensurable K L) :
     Commensurable H L :=
   ⟨Subgroup.relIndex_ne_zero_trans hhk.1 hkl.1, Subgroup.relIndex_ne_zero_trans hkl.2 hhk.2⟩
 
+@[to_additive]
 theorem equivalence : Equivalence (@Commensurable G _) :=
   ⟨Commensurable.refl, fun h => Commensurable.symm h, fun h₁ h₂ => Commensurable.trans h₁ h₂⟩
 
-/-- Equivalence of `K/H ⊓ K` with `gKg⁻¹/gHg⁻¹ ⊓ gKg⁻¹` -/
-def quotConjEquiv (H K : Subgroup G) (g : ConjAct G) :
-    K ⧸ H.subgroupOf K ≃ (g • K : Subgroup G) ⧸ (g • H).subgroupOf (g • K) :=
-  Quotient.congr (K.equivSMul g).toEquiv fun a b => by
-    dsimp
-    rw [← Quotient.eq'', ← Quotient.eq'', QuotientGroup.eq, QuotientGroup.eq,
-      Subgroup.mem_subgroupOf, Subgroup.mem_subgroupOf, ← map_inv, ← map_mul,
-      Subgroup.equivSMul_apply_coe]
-    exact Subgroup.smul_mem_pointwise_smul_iff.symm
-
 theorem commensurable_conj {H K : Subgroup G} (g : ConjAct G) :
     Commensurable H K ↔ Commensurable (g • H) (g • K) :=
-  and_congr (not_iff_not.mpr (Eq.congr_left (Cardinal.toNat_congr (quotConjEquiv H K g))))
-    (not_iff_not.mpr (Eq.congr_left (Cardinal.toNat_congr (quotConjEquiv K H g))))
+  and_congr (not_iff_not.mpr (Eq.congr_left (Nat.card_congr (quotConjEquiv H K g))))
+    (not_iff_not.mpr (Eq.congr_left (Nat.card_congr (quotConjEquiv K H g))))
+
+/-- Alias for the forward direction of `commensurable_conj` to allow dot-notation -/
+theorem conj {H K : Subgroup G} (h : Commensurable H K) (g : ConjAct G) :
+    Commensurable (g • H) (g • K) :=
+  (commensurable_conj g).mp h
 
 theorem commensurable_inv (H : Subgroup G) (g : ConjAct G) :
     Commensurable (g • H) H ↔ Commensurable H (g⁻¹ • H) := by rw [commensurable_conj, inv_smul_smul]
@@ -101,4 +117,4 @@ theorem eq {H K : Subgroup G} (hk : Commensurable H K) : commensurator H = comme
     let hx := (commensurable_conj x).1 hk
     ⟨fun h => hx.symm.trans (h.trans hk), fun h => hx.trans (h.trans hk.symm)⟩
 
-end Commensurable
+end Subgroup.Commensurable

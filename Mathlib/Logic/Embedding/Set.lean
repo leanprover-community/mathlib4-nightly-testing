@@ -3,16 +3,20 @@ Copyright (c) 2017 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl, Mario Carneiro
 -/
-import Mathlib.Data.Set.Notation
-import Mathlib.Order.SetNotation
-import Mathlib.Logic.Embedding.Basic
-import Mathlib.Logic.Pairwise
-import Mathlib.Data.Set.Image
+module
+
+public import Mathlib.Data.Set.Notation
+public import Mathlib.Order.SetNotation
+public import Mathlib.Logic.Embedding.Basic
+public import Mathlib.Logic.Pairwise
+public import Mathlib.Data.Set.Image
 
 /-!
 # Interactions between embeddings and sets.
 
 -/
+
+@[expose] public section
 
 assert_not_exists WithTop
 
@@ -86,7 +90,7 @@ subtypes `{x // p x} ⊕ {x // q x}` such that `¬ p x` is sent to the right, wh
 `Disjoint p q`.
 
 See also `Equiv.sumCompl`, for when `IsCompl p q`. -/
-@[simps apply]
+@[simps (attr := grind =) apply]
 def subtypeOrEquiv (p q : α → Prop) [DecidablePred p] (h : Disjoint p q) :
     { x // p x ∨ q x } ≃ { x // p x } ⊕ { x // q x } where
   toFun := subtypeOrLeftEmbedding p q
@@ -104,8 +108,6 @@ def subtypeOrEquiv (p q : α → Prop) [DecidablePred p] (h : Disjoint p q) :
       · suffices ¬p x by simpa
         intro hp
         simpa using h.le_bot x ⟨hp, x.prop⟩
-
-attribute [grind =] subtypeOrEquiv_apply
 
 @[simp, grind =]
 theorem subtypeOrEquiv_symm_inl (p q : α → Prop) [DecidablePred p] (h : Disjoint p q)
@@ -137,11 +139,11 @@ variable {α ι : Type*} {s t r : Set α}
     (Function.Embedding.sumSet h : s ⊕ t → α) = Sum.elim (↑) (↑) := rfl
 
 @[simp] theorem Function.Embedding.sumSet_preimage_inl (h : Disjoint s t) :
-    .inl ⁻¹' (Function.Embedding.sumSet h ⁻¹' r) = r ∩ s := by
+    .inl ⁻¹' Function.Embedding.sumSet h ⁻¹' r = r ∩ s := by
   simp [Set.ext_iff]
 
 @[simp] theorem Function.Embedding.sumSet_preimage_inr (h : Disjoint s t) :
-    .inr ⁻¹' (Function.Embedding.sumSet h ⁻¹' r) = r ∩ t := by
+    .inr ⁻¹' Function.Embedding.sumSet h ⁻¹' r = r ∩ t := by
   simp [Set.ext_iff]
 
 @[simp] theorem Function.Embedding.sumSet_range {s t : Set α} (h : Disjoint s t) :
@@ -160,12 +162,13 @@ the natural injection from the sigma-type `(i : ι) × ↑(s i)` to `α`. -/
     obtain rfl : i = j := h.eq (not_disjoint_iff.2 ⟨_, hx, hx'⟩)
     rfl
 
+set_option warning.simp.otherHead false in
 @[norm_cast] lemma Function.Embedding.coe_sigmaSet {s : ι → Set α} (h) :
     (Function.Embedding.sigmaSet h : ((i : ι) × s i) → α) = fun x ↦ x.2.1 := rfl
 
 @[simp] theorem Function.Embedding.sigmaSet_preimage {s : ι → Set α}
     (h : Pairwise (Disjoint on s)) (i : ι) (r : Set α) :
-    Sigma.mk i ⁻¹' (Function.Embedding.sigmaSet h ⁻¹' r) = r ∩ s i := by
+    Sigma.mk i ⁻¹' Function.Embedding.sigmaSet h ⁻¹' r = r ∩ s i := by
   simp [Set.ext_iff]
 
 @[simp] theorem Function.Embedding.sigmaSet_range {s : ι → Set α}

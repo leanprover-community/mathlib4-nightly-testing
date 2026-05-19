@@ -3,10 +3,11 @@ Copyright (c) 2018 Mario Carneiro. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro
 -/
+module
 
-import Mathlib.Algebra.Module.LinearMap.End
-import Mathlib.Algebra.Module.Submodule.Defs
-import Mathlib.Algebra.BigOperators.Group.Finset.Defs
+public import Mathlib.Algebra.Module.LinearMap.End
+public import Mathlib.Algebra.Module.Submodule.Defs
+public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 
 /-!
 
@@ -27,6 +28,8 @@ In this file we define a number of linear maps involving submodules of a module.
 
 submodule, subspace, linear map
 -/
+
+@[expose] public section
 
 open Function Set
 
@@ -97,7 +100,7 @@ theorem coe_subtype : (Submodule.subtype p : p → M) = Subtype.val :=
 theorem injective_subtype : Injective p.subtype :=
   Subtype.coe_injective
 
-/-- Note the `AddSubmonoid` version of this lemma is called `AddSubmonoid.coe_finset_sum`. -/
+/-- Note the `AddSubmonoid` version of this lemma is called `AddSubmonoid.coe_finsetSum`. -/
 theorem coe_sum (x : ι → p) (s : Finset ι) : ↑(∑ i ∈ s, x i) = ∑ i ∈ s, (x i : M) :=
   map_sum p.subtype _ _
 
@@ -107,7 +110,7 @@ variable {α β : Type*}
 
 /-- The action by a submodule is the action by the underlying module. -/
 instance [AddAction M α] : AddAction p α :=
-  AddAction.compHom _ p.subtype.toAddMonoidHom
+  AddSubmonoid.instAddActionSubtypeMem p
 
 end AddAction
 
@@ -144,6 +147,9 @@ theorem domRestrict_apply (f : M →ₛₗ[σ₁₂] M₂) (p : Submodule R M) (
     f.domRestrict p x = f x :=
   rfl
 
+lemma coe_domRestrict (f : M →ₛₗ[σ₁₂] M₂) (p : Submodule R M) :
+    ⇑(f.domRestrict p) = Set.restrict p f := rfl
+
 /-- A linear map `f : M₂ → M` whose values lie in a submodule `p ⊆ M` can be restricted to a
 linear map M₂ → p.
 
@@ -168,10 +174,16 @@ theorem subtype_comp_codRestrict (p : Submodule R₂ M₂) (h : ∀ b, f b ∈ p
     p.subtype.comp (codRestrict p f h) = f :=
   ext fun _ => rfl
 
+@[simp]
+theorem domRestrict_comp_codRestrict (g : M₂ →ₛₗ[σ₂₃] M₃) (f : M →ₛₗ[σ₁₂] M₂) (p : Submodule R₂ M₂)
+    (h : ∀ c, f c ∈ p) :
+    g.domRestrict p ∘ₛₗ f.codRestrict p h = g ∘ₛₗ f :=
+  rfl
+
 section
 
 variable {M₂' : Type*} [AddCommMonoid M₂'] [Module R₂ M₂']
-(p : M₂' →ₗ[R₂] M₂) (hp : Injective p) (h : ∀ c, f c ∈ range p)
+  (p : M₂' →ₗ[R₂] M₂) (hp : Injective p) (h : ∀ c, f c ∈ range p)
 
 /-- A linear map `f : M → M₂` whose values lie in the image of an injective linear map
 `p : M₂' → M₂` admits a unique lift to a linear map `M → M₂'`. -/
@@ -179,7 +191,7 @@ noncomputable def codLift :
     M →ₛₗ[σ₁₂] M₂' where
   toFun c := (h c).choose
   map_add' b c := by apply hp; simp_rw [map_add, (h _).choose_spec, ← map_add, (h _).choose_spec]
-  map_smul' r c := by apply hp; simp_rw [map_smul, (h _).choose_spec, LinearMap.map_smulₛₗ]
+  map_smul' r c := by apply hp; simp_rw [map_smul, (h _).choose_spec, map_smulₛₗ]
 
 @[simp] theorem codLift_apply (x : M) :
     (f.codLift p hp h x) = (h x).choose :=
@@ -255,13 +267,16 @@ theorem sum_apply (t : Finset ι) (f : ι → M →ₛₗ[σ₁₂] M₂) (b : M
   _root_.map_sum ((AddMonoidHom.eval b).comp toAddMonoidHom') f _
 
 @[simp, norm_cast]
-theorem coeFn_sum {ι : Type*} (t : Finset ι) (f : ι → M →ₛₗ[σ₁₂] M₂) :
+theorem coe_sum {ι : Type*} (t : Finset ι) (f : ι → M →ₛₗ[σ₁₂] M₂) :
     ⇑(∑ i ∈ t, f i) = ∑ i ∈ t, (f i : M → M₂) :=
   _root_.map_sum
     (show AddMonoidHom (M →ₛₗ[σ₁₂] M₂) (M → M₂)
       from { toFun := DFunLike.coe,
              map_zero' := rfl
              map_add' := fun _ _ => rfl }) _ _
+
+@[deprecated (since := "2025-11-24")]
+alias coeFn_sum := coe_sum
 
 theorem _root_.Module.End.submodule_pow_eq_zero_of_pow_eq_zero {N : Submodule R M}
     {g : Module.End R N} {G : Module.End R M} (h : G.comp N.subtype = N.subtype.comp g) {k : ℕ}

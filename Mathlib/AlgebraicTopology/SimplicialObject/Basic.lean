@@ -3,13 +3,15 @@ Copyright (c) 2021 Kim Morrison. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johan Commelin, Kim Morrison, Adam Topaz
 -/
-import Mathlib.AlgebraicTopology.SimplexCategory.Basic
-import Mathlib.CategoryTheory.Adjunction.Reflective
-import Mathlib.CategoryTheory.Comma.Arrow
-import Mathlib.CategoryTheory.Functor.KanExtension.Adjunction
-import Mathlib.CategoryTheory.Limits.FunctorCategory.Basic
-import Mathlib.CategoryTheory.Opposites
-import Mathlib.Util.Superscript
+module
+
+public import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+public import Mathlib.CategoryTheory.Adjunction.Reflective
+public import Mathlib.CategoryTheory.Comma.Arrow
+public import Mathlib.CategoryTheory.Functor.KanExtension.Adjunction
+public import Mathlib.CategoryTheory.Limits.FunctorCategory.Basic
+public import Mathlib.CategoryTheory.Opposites
+public import Mathlib.Util.Superscript
 
 /-!
 # Simplicial objects in a category.
@@ -31,6 +33,8 @@ The following notations can be enabled via
 - `X ^⦋m⦌ₙ` denotes the `m`-th term of an `n`-truncated cosimplicial object `X`.
 -/
 
+@[expose] public section
+
 open Opposite
 
 open CategoryTheory
@@ -45,13 +49,8 @@ variable (C : Type u) [Category.{v} C]
 
 /-- The category of simplicial objects valued in a category `C`.
 This is the category of contravariant functors from `SimplexCategory` to `C`. -/
-def SimplicialObject :=
+abbrev SimplicialObject :=
   SimplexCategoryᵒᵖ ⥤ C
-
-@[simps!]
-instance : Category (SimplicialObject C) := by
-  dsimp only [SimplicialObject]
-  infer_instance
 
 namespace SimplicialObject
 
@@ -92,9 +91,13 @@ variable (X : SimplicialObject C)
 def δ {n} (i : Fin (n + 2)) : X _⦋n + 1⦌ ⟶ X _⦋n⦌ :=
   X.map (SimplexCategory.δ i).op
 
+lemma δ_def {n} (i : Fin (n + 2)) : X.δ i = X.map (SimplexCategory.δ i).op := rfl
+
 /-- Degeneracy maps for a simplicial object. -/
 def σ {n} (i : Fin (n + 1)) : X _⦋n⦌ ⟶ X _⦋n + 1⦌ :=
   X.map (SimplexCategory.σ i).op
+
+lemma σ_def {n} (i : Fin (n + 1)) : X.σ i = X.map (SimplexCategory.σ i).op := rfl
 
 /-- The diagonal of a simplex is the long edge of the simplex. -/
 def diagonal {n : ℕ} : X _⦋n⦌ ⟶ X _⦋1⦌ := X.map ((SimplexCategory.diag n).op)
@@ -208,43 +211,39 @@ theorem σ_naturality {X' X : SimplicialObject C} (f : X ⟶ X') {n : ℕ} (i : 
 
 variable (C)
 
+section
+
+variable {D : Type*} [Category* D]
+
+variable (D) in
 /-- Functor composition induces a functor on simplicial objects. -/
 @[simps!]
-def whiskering (D : Type*) [Category D] : (C ⥤ D) ⥤ SimplicialObject C ⥤ SimplicialObject D :=
+def whiskering : (C ⥤ D) ⥤ SimplicialObject C ⥤ SimplicialObject D :=
   whiskeringRight _ _ _
 
-/-- Truncated simplicial objects. -/
-def Truncated (n : ℕ) :=
-  (SimplexCategory.Truncated n)ᵒᵖ ⥤ C
+set_option backward.defeqAttrib.useBackward true in
+@[simp]
+lemma whiskering_obj_obj_δ (F : C ⥤ D) (X : SimplicialObject C) {n : ℕ} (i : Fin (n + 2)) :
+    dsimp% (((whiskering C D).obj F).obj X).δ i = F.map (X.δ i) := rfl
 
-instance {n : ℕ} : Category (Truncated C n) := by
-  dsimp [Truncated]
-  infer_instance
+set_option backward.defeqAttrib.useBackward true in
+@[simp]
+lemma whiskering_obj_obj_σ (F : C ⥤ D) (X : SimplicialObject C) {n : ℕ} (i : Fin (n + 1)) :
+    dsimp% (((whiskering C D).obj F).obj X).σ i = F.map (X.σ i) := rfl
+
+end
+
+/-- Truncated simplicial objects. -/
+abbrev Truncated (n : ℕ) := (SimplexCategory.Truncated n)ᵒᵖ ⥤ C
 
 variable {C}
 
 namespace Truncated
 
-instance {n} {J : Type v} [SmallCategory J] [HasLimitsOfShape J C] :
-    HasLimitsOfShape J (SimplicialObject.Truncated C n) := by
-  dsimp [Truncated]
-  infer_instance
-
-instance {n} [HasLimits C] : HasLimits (SimplicialObject.Truncated C n) :=
-  ⟨inferInstance⟩
-
-instance {n} {J : Type v} [SmallCategory J] [HasColimitsOfShape J C] :
-    HasColimitsOfShape J (SimplicialObject.Truncated C n) := by
-  dsimp [Truncated]
-  infer_instance
-
-instance {n} [HasColimits C] : HasColimits (SimplicialObject.Truncated C n) :=
-  ⟨inferInstance⟩
-
 variable (C) in
 /-- Functor composition induces a functor on truncated simplicial objects. -/
 @[simps!]
-def whiskering {n} (D : Type*) [Category D] : (C ⥤ D) ⥤ Truncated C n ⥤ Truncated D n :=
+def whiskering {n} (D : Type*) [Category* D] : (C ⥤ D) ⥤ Truncated C n ⥤ Truncated D n :=
   whiskeringRight _ _ _
 
 open Mathlib.Tactic (subscriptTerm) in
@@ -256,8 +255,9 @@ scoped syntax:max (name := mkNotation)
 open scoped SimplexCategory.Truncated in
 scoped macro_rules
   | `($X:term _⦋$m:term⦌$n:subscript) =>
+    -- try `decide` before `get_elem_tactic` because it is faster for goals with literals.
     `(($X : CategoryTheory.SimplicialObject.Truncated _ $n).obj
-      (Opposite.op ⟨SimplexCategory.mk $m, by first | get_elem_tactic |
+      (Opposite.op ⟨SimplexCategory.mk $m, by first | decide | get_elem_tactic |
       fail "Failed to prove truncation property. Try writing `X _⦋m, by ...⦌ₙ`."⟩))
   | `($X:term _⦋$m:term, $p:term⦌$n:subscript) =>
     `(($X : CategoryTheory.SimplicialObject.Truncated _ $n).obj
@@ -266,7 +266,7 @@ scoped macro_rules
 variable (C) in
 /-- Further truncation of truncated simplicial objects. -/
 @[simps!]
-def trunc (n m : ℕ) (h : m ≤ n := by omega) : Truncated C n ⥤ Truncated C m :=
+def trunc (n m : ℕ) (h : m ≤ n := by lia) : Truncated C n ⥤ Truncated C m :=
   (whiskeringLeft _ _ _).obj (SimplexCategory.Truncated.incl m n).op
 
 end Truncated
@@ -330,11 +330,15 @@ noncomputable def skAdj : Truncated.sk (C := C) n ⊣ truncation n :=
 noncomputable def coskAdj : truncation (C := C) n ⊣ Truncated.cosk n :=
   ranAdjunction _ _
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 instance : ((sk n).obj X).IsLeftKanExtension ((skAdj n).unit.app _) := by
   dsimp [sk, skAdj]
   rw [lanAdjunction_unit]
   infer_instance
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 instance : ((cosk n).obj X).IsRightKanExtension ((coskAdj n).counit.app _) := by
   dsimp [cosk, coskAdj]
   rw [ranAdjunction_counit]
@@ -395,9 +399,8 @@ def Augmented :=
   Comma (𝟭 (SimplicialObject C)) (const C)
 
 @[simps!]
-instance : Category (Augmented C) := by
-  dsimp only [Augmented]
-  infer_instance
+instance : Category (Augmented C) :=
+  inferInstanceAs <| Category (Comma _ _)
 
 variable {C}
 
@@ -418,6 +421,12 @@ def drop : Augmented C ⥤ SimplicialObject C :=
 def point : Augmented C ⥤ C :=
   Comma.snd _ _
 
+@[reassoc]
+lemma w_app {X Y : Augmented C} (f : X ⟶ Y) (n : SimplexCategoryᵒᵖ) :
+    dsimp% f.left.app n ≫ Y.hom.app n = X.hom.app n ≫ f.right :=
+  congr_app f.w n
+
+set_option backward.isDefEq.respectTransparency false in
 /-- The functor from augmented objects to arrows. -/
 @[simps]
 def toArrow : Augmented C ⥤ Arrow C where
@@ -428,24 +437,22 @@ def toArrow : Augmented C ⥤ Arrow C where
   map η :=
     { left := (drop.map η).app _
       right := point.map η
-      w := by
-        dsimp
-        rw [← NatTrans.comp_app]
-        erw [η.w]
-        rfl }
+      w := by simp [w_app] }
 
 /-- The compatibility of a morphism with the augmentation, on 0-simplices -/
 @[reassoc]
 theorem w₀ {X Y : Augmented C} (f : X ⟶ Y) :
-    (Augmented.drop.map f).app (op ⦋0⦌) ≫ Y.hom.app (op ⦋0⦌) =
-      X.hom.app (op ⦋0⦌) ≫ Augmented.point.map f := by
-  convert congr_app f.w (op ⦋0⦌)
+    dsimp% (Augmented.drop.map f).app (op ⦋0⦌) ≫ Y.hom.app (op ⦋0⦌) =
+      X.hom.app (op ⦋0⦌) ≫ Augmented.point.map f :=
+  congr_app f.w (op ⦋0⦌)
 
 variable (C)
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Functor composition induces a functor on augmented simplicial objects. -/
 @[simp]
-def whiskeringObj (D : Type*) [Category D] (F : C ⥤ D) : Augmented C ⥤ Augmented D where
+def whiskeringObj (D : Type*) [Category* D] (F : C ⥤ D) : Augmented C ⥤ Augmented D where
   obj X :=
     { left := ((whiskering _ _).obj F).obj (drop.obj X)
       right := F.obj (point.obj X)
@@ -453,13 +460,9 @@ def whiskeringObj (D : Type*) [Category D] (F : C ⥤ D) : Augmented C ⥤ Augme
   map η :=
     { left := whiskerRight η.left _
       right := F.map η.right
-      w := by
-        ext
-        dsimp [whiskerRight]
-        simp only [Category.comp_id, ← F.map_comp, ← NatTrans.comp_app]
-        erw [η.w]
-        rfl }
+      w := by ext; simp [← Functor.map_comp, w_app] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Functor composition induces a functor on augmented simplicial objects. -/
 @[simps]
 def whiskering (D : Type u') [Category.{v'} D] : (C ⥤ D) ⥤ Augmented C ⥤ Augmented D where
@@ -489,6 +492,7 @@ def const : C ⥤ Augmented C where
 
 end Augmented
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Augment a simplicial object with an object. -/
 @[simps]
 def augment (X : SimplicialObject C) (X₀ : C) (f : X _⦋0⦌ ⟶ X₀)
@@ -509,6 +513,16 @@ def augment (X : SimplicialObject C) (X₀ : C) (f : X _⦋0⦌ ⟶ X₀)
 theorem augment_hom_zero (X : SimplicialObject C) (X₀ : C) (f : X _⦋0⦌ ⟶ X₀) (w) :
     (X.augment X₀ f w).hom.app (op ⦋0⦌) = f := by simp
 
+set_option backward.defeqAttrib.useBackward true in
+/-- The augmented simplicial object that is deduced from a simplicial object and
+a terminal object. -/
+@[simps!]
+def augmentOfIsTerminal (X : SimplicialObject C) {T : C} (hT : IsTerminal T) :
+    Augmented C where
+  left := X
+  right := T
+  hom := { app _ := hT.from _ }
+
 end SimplicialObject
 
 /-- Cosimplicial objects. -/
@@ -527,6 +541,7 @@ scoped[Simplicial]
   notation3:1000 X " ^⦋" n "⦌" =>
     (X : CategoryTheory.CosimplicialObject _).obj (SimplexCategory.mk n)
 
+set_option backward.isDefEq.respectTransparency false in
 instance {J : Type v} [SmallCategory J] [HasLimitsOfShape J C] :
     HasLimitsOfShape J (CosimplicialObject C) := by
   dsimp [CosimplicialObject]
@@ -535,6 +550,7 @@ instance {J : Type v} [SmallCategory J] [HasLimitsOfShape J C] :
 instance [HasLimits C] : HasLimits (CosimplicialObject C) :=
   ⟨inferInstance⟩
 
+set_option backward.isDefEq.respectTransparency false in
 instance {J : Type v} [SmallCategory J] [HasColimitsOfShape J C] :
     HasColimitsOfShape J (CosimplicialObject C) := by
   dsimp [CosimplicialObject]
@@ -673,21 +689,19 @@ variable (C)
 
 /-- Functor composition induces a functor on cosimplicial objects. -/
 @[simps!]
-def whiskering (D : Type*) [Category D] : (C ⥤ D) ⥤ CosimplicialObject C ⥤ CosimplicialObject D :=
+def whiskering (D : Type*) [Category* D] : (C ⥤ D) ⥤ CosimplicialObject C ⥤ CosimplicialObject D :=
   whiskeringRight _ _ _
 
 /-- Truncated cosimplicial objects. -/
 def Truncated (n : ℕ) :=
   SimplexCategory.Truncated n ⥤ C
-
-instance {n : ℕ} : Category (Truncated C n) := by
-  dsimp [Truncated]
-  infer_instance
+deriving Category
 
 variable {C}
 
 namespace Truncated
 
+set_option backward.isDefEq.respectTransparency false in
 instance {n} {J : Type v} [SmallCategory J] [HasLimitsOfShape J C] :
     HasLimitsOfShape J (CosimplicialObject.Truncated C n) := by
   dsimp [Truncated]
@@ -696,6 +710,7 @@ instance {n} {J : Type v} [SmallCategory J] [HasLimitsOfShape J C] :
 instance {n} [HasLimits C] : HasLimits (CosimplicialObject.Truncated C n) :=
   ⟨inferInstance⟩
 
+set_option backward.isDefEq.respectTransparency false in
 instance {n} {J : Type v} [SmallCategory J] [HasColimitsOfShape J C] :
     HasColimitsOfShape J (CosimplicialObject.Truncated C n) := by
   dsimp [Truncated]
@@ -707,7 +722,7 @@ instance {n} [HasColimits C] : HasColimits (CosimplicialObject.Truncated C n) :=
 variable (C) in
 /-- Functor composition induces a functor on truncated cosimplicial objects. -/
 @[simps!]
-def whiskering {n} (D : Type*) [Category D] : (C ⥤ D) ⥤ Truncated C n ⥤ Truncated D n :=
+def whiskering {n} (D : Type*) [Category* D] : (C ⥤ D) ⥤ Truncated C n ⥤ Truncated D n :=
   whiskeringRight _ _ _
 
 open Mathlib.Tactic (subscriptTerm) in
@@ -728,7 +743,7 @@ scoped macro_rules
 
 variable (C) in
 /-- Further truncation of truncated cosimplicial objects. -/
-def trunc (n m : ℕ) (h : m ≤ n := by omega) : Truncated C n ⥤ Truncated C m :=
+def trunc (n m : ℕ) (h : m ≤ n := by lia) : Truncated C n ⥤ Truncated C m :=
   (whiskeringLeft _ _ _).obj <| SimplexCategory.Truncated.incl m n
 
 end Truncated
@@ -757,9 +772,8 @@ def Augmented :=
   Comma (const C) (𝟭 (CosimplicialObject C))
 
 @[simps!]
-instance : Category (Augmented C) := by
-  dsimp only [Augmented]
-  infer_instance
+instance : Category (Augmented C) :=
+  inferInstanceAs <| Category (Comma _ _)
 
 variable {C}
 
@@ -780,6 +794,12 @@ def drop : Augmented C ⥤ CosimplicialObject C :=
 def point : Augmented C ⥤ C :=
   Comma.fst _ _
 
+@[reassoc]
+lemma w_app {X Y : Augmented C} {η : X ⟶ Y} {n : SimplexCategory} :
+    dsimp% η.left ≫ Y.hom.app n = X.hom.app n ≫ η.right.app n :=
+  NatTrans.congr_app η.w n
+
+set_option backward.isDefEq.respectTransparency false in
 /-- The functor from augmented objects to arrows. -/
 @[simps!]
 def toArrow : Augmented C ⥤ Arrow C where
@@ -790,17 +810,15 @@ def toArrow : Augmented C ⥤ Arrow C where
   map η :=
     { left := point.map η
       right := (drop.map η).app _
-      w := by
-        dsimp
-        rw [← NatTrans.comp_app]
-        erw [← η.w]
-        rfl }
+      w := by simp [w_app]}
 
 variable (C)
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 /-- Functor composition induces a functor on augmented cosimplicial objects. -/
 @[simp]
-def whiskeringObj (D : Type*) [Category D] (F : C ⥤ D) : Augmented C ⥤ Augmented D where
+def whiskeringObj (D : Type*) [Category* D] (F : C ⥤ D) : Augmented C ⥤ Augmented D where
   obj X :=
     { left := F.obj (point.obj X)
       right := ((whiskering _ _).obj F).obj (drop.obj X)
@@ -811,10 +829,10 @@ def whiskeringObj (D : Type*) [Category D] (F : C ⥤ D) : Augmented C ⥤ Augme
       w := by
         ext
         dsimp
-        rw [Category.id_comp, Category.id_comp, ← F.map_comp, ← F.map_comp, ← NatTrans.comp_app]
-        erw [← η.w]
-        rfl }
+        rw [Category.id_comp, Category.id_comp, ← F.map_comp, ← F.map_comp]
+        simp [w_app, map_comp] }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Functor composition induces a functor on augmented cosimplicial objects. -/
 @[simps]
 def whiskering (D : Type u') [Category.{v'} D] : (C ⥤ D) ⥤ Augmented C ⥤ Augmented D where
@@ -846,6 +864,7 @@ end Augmented
 
 open Simplicial
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Augment a cosimplicial object with an object. -/
 @[simps]
 def augment (X : CosimplicialObject C) (X₀ : C) (f : X₀ ⟶ X.obj ⦋0⦌)
@@ -863,6 +882,16 @@ def augment (X : CosimplicialObject C) (X₀ : C) (f : X₀ ⟶ X.obj ⦋0⦌)
 -- Not `@[simp]` since `simp` can prove this.
 theorem augment_hom_zero (X : CosimplicialObject C) (X₀ : C) (f : X₀ ⟶ X.obj ⦋0⦌) (w) :
     (X.augment X₀ f w).hom.app ⦋0⦌ = f := by simp
+
+set_option backward.defeqAttrib.useBackward true in
+/-- The coaugmented cosimplicial object that is deduced from a cosimplicial object and
+an initial object. -/
+@[simps!]
+def augmentOfIsInitial (X : CosimplicialObject C) {T : C} (hT : IsInitial T) :
+    Augmented C where
+  right := X
+  left := T
+  hom := { app _ := hT.to _ }
 
 end CosimplicialObject
 
@@ -896,6 +925,7 @@ def CosimplicialObject.Augmented.leftOp (X : CosimplicialObject.Augmented Cᵒ�
   right := X.left.unop
   hom := NatTrans.leftOp X.hom
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Converting an augmented simplicial object to an augmented cosimplicial
 object and back is isomorphic to the given object. -/
 @[simps!]
@@ -903,6 +933,7 @@ def SimplicialObject.Augmented.rightOpLeftOpIso (X : SimplicialObject.Augmented 
     X.rightOp.leftOp ≅ X :=
   Comma.isoMk X.left.rightOpLeftOpIso (CategoryTheory.eqToIso <| by simp)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- Converting an augmented cosimplicial object to an augmented simplicial
 object and back is isomorphic to the given object. -/
 @[simps!]
@@ -912,6 +943,7 @@ def CosimplicialObject.Augmented.leftOpRightOpIso (X : CosimplicialObject.Augmen
 
 variable (C)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A functorial version of `SimplicialObject.Augmented.rightOp`. -/
 @[simps]
 def simplicialToCosimplicialAugmented :
@@ -927,6 +959,7 @@ def simplicialToCosimplicialAugmented :
         congr 1
         exact (congr_app f.unop.w (op x)).symm }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- A functorial version of `Cosimplicial_object.Augmented.leftOp`. -/
 @[simps]
 def cosimplicialToSimplicialAugmented :
@@ -943,6 +976,7 @@ def cosimplicialToSimplicialAugmented :
           congr 1
           exact (congr_app f.w (unop x)).symm }
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The contravariant categorical equivalence between augmented simplicial
 objects and augmented cosimplicial objects in the opposite category. -/
 @[simps! functor inverse]

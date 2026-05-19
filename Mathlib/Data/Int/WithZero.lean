@@ -3,7 +3,9 @@ Copyright (c) 2024 María Inés de Frutos-Fernández, Filippo A. E. Nuccio. All 
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: María Inés de Frutos-Fernández, Filippo A. E. Nuccio
 -/
-import Mathlib.Data.NNReal.Defs
+module
+
+public import Mathlib.Data.NNReal.Defs
 
 /-!
 # WithZero
@@ -26,6 +28,8 @@ the morphism `WithZeroMultInt.toNNReal`.
 WithZero, multiplicative, nnreal
 -/
 
+@[expose] public section
+
 assert_not_exists Finset
 
 noncomputable section
@@ -41,32 +45,26 @@ namespace WithZeroMulInt
 def toNNReal {e : ℝ≥0} (he : e ≠ 0) : ℤᵐ⁰ →*₀ ℝ≥0 where
   toFun := fun x ↦ if hx : x = 0 then 0 else e ^ (WithZero.unzero hx).toAdd
   map_zero' := rfl
-  map_one' := by
-    simp only [dif_neg one_ne_zero]
-    erw [toAdd_one, zpow_zero]
+  map_one' := by rw [dif_neg one_ne_zero, unzero_coe (x := 1), toAdd_one, zpow_zero]
   map_mul' x y := by
     by_cases hxy : x * y = 0
-    · rcases zero_eq_mul.mp (Eq.symm hxy) with hx | hy
-      --either x = 0 or y = 0
-      · rw [dif_pos hxy, dif_pos hx, MulZeroClass.zero_mul]
-      · rw [dif_pos hxy, dif_pos hy, MulZeroClass.mul_zero]
+    · rcases mul_eq_zero.mp hxy with hx | hy
+      -- either x = 0 or y = 0
+      · rw [dif_pos hxy, dif_pos hx, zero_mul]
+      · rw [dif_pos hxy, dif_pos hy, mul_zero]
     · obtain ⟨hx, hy⟩ := mul_ne_zero_iff.mp hxy
-      --  x Equiv≠ 0 and y ≠ 0
+      -- x ≠ 0 and y ≠ 0
       rw [dif_neg hxy, dif_neg hx, dif_neg hy, ← zpow_add' (Or.inl he), ← toAdd_mul]
       congr
       rw [← WithZero.coe_inj, WithZero.coe_mul, coe_unzero hx, coe_unzero hy, coe_unzero hxy]
 
 theorem toNNReal_pos_apply {e : ℝ≥0} (he : e ≠ 0) {x : ℤᵐ⁰} (hx : x = 0) :
     toNNReal he x = 0 := by
-  simp only [toNNReal, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk]
-  split_ifs; rfl
+  simp [toNNReal, hx]
 
 theorem toNNReal_neg_apply {e : ℝ≥0} (he : e ≠ 0) {x : ℤᵐ⁰} (hx : x ≠ 0) :
     toNNReal he x = e ^ (WithZero.unzero hx).toAdd := by
-  simp only [toNNReal, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk]
-  split_ifs
-  · tauto
-  · rfl
+  simp [toNNReal, hx]
 
 /-- `toNNReal` sends nonzero elements to nonzero elements. -/
 theorem toNNReal_ne_zero {e : ℝ≥0} {m : ℤᵐ⁰} (he : e ≠ 0) (hm : m ≠ 0) : toNNReal he m ≠ 0 := by
@@ -94,7 +92,7 @@ theorem toNNReal_eq_one_iff {e : ℝ≥0} (m : ℤᵐ⁰) (he0 : e ≠ 0) (he1 :
   by_cases hm : m = 0
   · simp only [hm, map_zero, zero_ne_one]
   · refine ⟨fun h1 ↦ ?_, fun h1 ↦ h1 ▸ map_one _⟩
-    rw [toNNReal_neg_apply he0 hm, zpow_eq_one_iff_right₀ (zero_le e) he1, toAdd_eq_zero] at h1
+    rw [toNNReal_neg_apply he0 hm, zpow_eq_one_iff_right₀ _root_.zero_le he1, toAdd_eq_zero] at h1
     rw [← WithZero.coe_unzero hm, h1, coe_one]
 
 theorem toNNReal_lt_one_iff {e : ℝ≥0} {m : ℤᵐ⁰} (he : 1 < e) :

@@ -3,8 +3,11 @@ Copyright (c) 2023 Michael Stoll. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Michael Stoll, Ralf Stephan
 -/
-import Mathlib.Data.Nat.Factorization.Defs
-import Mathlib.Data.Nat.Squarefree
+module
+
+public import Mathlib.Data.Nat.Factorization.Defs
+public import Mathlib.Data.Nat.Squarefree
+public import Mathlib.NumberTheory.PrimeCounting
 
 /-!
 # Smooth numbers
@@ -17,8 +20,6 @@ We then define the set `Nat.smoothNumbers n` consisting of the positive natural 
 whose prime factors are strictly less than `n`. This is the special case `s = Finset.range n`
 of the set of `s`-factored numbers.
 
-We also define the finite set `Nat.primesBelow n` to be the set of prime numbers less than `n`.
-
 The main definition `Nat.equivProdNatSmoothNumbers` establishes the bijection between
 `ℕ × (smoothNumbers p)` and `smoothNumbers (p+1)` given by sending `(e, n)` to `p^e * n`.
 Here `p` is a prime number. It is obtained from the more general bijection between
@@ -30,34 +31,10 @@ and we provide some API, in particular bounds for their cardinalities; see
 `Nat.smoothNumbersUpTo_card_le` and `Nat.roughNumbersUpTo_card_le`.
 -/
 
+@[expose] public section
+
 open scoped Finset
 namespace Nat
-
-/-- `primesBelow n` is the set of primes less than `n` as a `Finset`. -/
-def primesBelow (n : ℕ) : Finset ℕ := {p ∈ Finset.range n | p.Prime}
-
-@[simp]
-lemma primesBelow_zero : primesBelow 0 = ∅ := by
-  rw [primesBelow, Finset.range_zero, Finset.filter_empty]
-
-lemma mem_primesBelow {k n : ℕ} :
-    n ∈ primesBelow k ↔ n < k ∧ n.Prime := by simp [primesBelow]
-
-lemma prime_of_mem_primesBelow {p n : ℕ} (h : p ∈ n.primesBelow) : p.Prime :=
-  (Finset.mem_filter.mp h).2
-
-lemma lt_of_mem_primesBelow {p n : ℕ} (h : p ∈ n.primesBelow) : p < n :=
-  Finset.mem_range.mp <| Finset.mem_of_mem_filter p h
-
-lemma primesBelow_succ (n : ℕ) :
-    primesBelow (n + 1) = if n.Prime then insert n (primesBelow n) else primesBelow n := by
-  rw [primesBelow, primesBelow, Finset.range_add_one, Finset.filter_insert]
-
-lemma notMem_primesBelow (n : ℕ) : n ∉ primesBelow n :=
-  fun hn ↦ (lt_of_mem_primesBelow hn).false
-
-@[deprecated (since := "2025-05-23")] alias not_mem_primesBelow := notMem_primesBelow
-
 
 /-!
 ### `s`-factored numbers
@@ -289,9 +266,6 @@ lemma smoothNumbers_eq_factoredNumbers_primesBelow (n : ℕ) :
   simp_rw [mem_factoredNumbers'] at hm ⊢
   exact fun p hp hp' ↦ mem_primesBelow.mpr ⟨Finset.mem_range.mp <| hm p hp hp', hp⟩
 
-@[deprecated (since := "2025-07-08")]
-alias smmoothNumbers_eq_factoredNumbers_primesBelow := smoothNumbers_eq_factoredNumbers_primesBelow
-
 /-- Membership in `Nat.smoothNumbers n` is decidable. -/
 instance (n : ℕ) : DecidablePred (· ∈ smoothNumbers n) :=
   inferInstanceAs <| DecidablePred fun x ↦ x ∈ {m | m ≠ 0 ∧ ∀ p ∈ primeFactorsList m, p < n}
@@ -379,7 +353,7 @@ lemma pow_mul_mem_smoothNumbers {p n : ℕ} (hp : p ≠ 0) (e : ℕ) (hn : n ∈
   refine ⟨mul_ne_zero hp' hn.1, fun q hq ↦ ?_⟩
   rcases (mem_primeFactorsList_mul hp' hn.1).mp hq with H | H
   · rw [mem_primeFactorsList hp'] at H
-    exact lt_succ.mpr <| le_of_dvd hp.bot_lt <| H.1.dvd_of_dvd_pow H.2
+    exact Nat.lt_succ_of_le <| le_of_dvd hp.bot_lt <| H.1.dvd_of_dvd_pow H.2
   · exact (hn.2 q H).trans <| lt_succ_self p
 
 /-- If `p` is a prime and `n` is `p`-smooth, then `p` and `n` are coprime. -/
@@ -428,7 +402,7 @@ def smoothNumbersUpTo (N k : ℕ) : Finset ℕ :=
 
 lemma mem_smoothNumbersUpTo {N k n : ℕ} :
     n ∈ smoothNumbersUpTo N k ↔ n ≤ N ∧ n ∈ smoothNumbers k := by
-  simp [smoothNumbersUpTo, lt_succ]
+  simp [smoothNumbersUpTo]
 
 /-- The positive non-`k`-smooth (so "`k`-rough") numbers up to and including `N` as a `Finset` -/
 def roughNumbersUpTo (N k : ℕ) : Finset ℕ :=
@@ -446,7 +420,7 @@ lemma smoothNumbersUpTo_card_add_roughNumbersUpTo_card (N k : ℕ) :
       simp only [ne_eq, H, not_false_eq_true, true_and, or_not]
     rwa [Finset.filter_congr (s := Finset.range (succ N)) fun n _ ↦ hn' n]
   rw [Finset.filter_ne', Finset.card_erase_of_mem <| Finset.mem_range_succ_iff.mpr <| zero_le N]
-  simp only [Finset.card_range, succ_sub_succ_eq_sub, tsub_zero]
+  simp only [Finset.card_range, succ_sub_succ_eq_sub, Nat.sub_zero]
 
 /-- A `k`-smooth number can be written as a square times a product of distinct primes `< k`. -/
 lemma eq_prod_primes_mul_sq_of_mem_smoothNumbers {n k : ℕ} (h : n ∈ smoothNumbers k) :
@@ -477,11 +451,12 @@ lemma smoothNumbersUpTo_subset_image (N k : ℕ) :
   · have := hm ▸ ne_zero_of_mem_smoothNumbers hn₂
     simp only [ne_eq, _root_.mul_eq_zero, sq_eq_zero_iff, not_or] at this
     exact this.1
-  · rw [lt_succ, le_sqrt']
+  · rw [Nat.lt_succ_iff, le_sqrt']
     refine LE.le.trans ?_ (hm ▸ hn₁)
     nth_rw 1 [← mul_one (m ^ 2)]
-    exact mul_le_mul_left' (Finset.one_le_prod' fun p hp ↦
-      (prime_of_mem_primesBelow <| Finset.mem_powerset.mp hs hp).one_lt.le) _
+    gcongr
+    exact Finset.one_le_prod' fun p hp ↦
+      (prime_of_mem_primesBelow <| Finset.mem_powerset.mp hs hp).one_le
 
 /-- The cardinality of the set of `k`-smooth numbers `≤ N` is bounded by `2^π(k-1) * √N`. -/
 lemma smoothNumbersUpTo_card_le (N k : ℕ) :
@@ -489,7 +464,7 @@ lemma smoothNumbersUpTo_card_le (N k : ℕ) :
   convert (Finset.card_le_card <| smoothNumbersUpTo_subset_image N k).trans <|
     Finset.card_image_le
   simp only [Finset.card_product, Finset.card_powerset, Finset.mem_range, zero_lt_succ,
-    Finset.card_erase_of_mem, Finset.card_range, succ_sub_succ_eq_sub, tsub_zero]
+    Finset.card_erase_of_mem, Finset.card_range, succ_sub_succ_eq_sub, Nat.sub_zero]
 
 /-- The set of `k`-rough numbers `≤ N` can be written as the union of the sets of multiples `≤ N`
 of primes `k ≤ p ≤ N`. -/
@@ -504,9 +479,7 @@ lemma roughNumbersUpTo_eq_biUnion (N k) :
     show ∀ P Q : Prop, P ∧ (P → Q) ↔ P ∧ Q by tauto]
   simp_rw [← exists_and_left, ← not_lt]
   refine exists_congr fun p ↦ ?_
-  have H₁ : m ≠ 0 → p ∣ m → m < N + 1 → p < N + 1 :=
-    fun h₁ h₂ h₃ ↦ (le_of_dvd (Nat.pos_of_ne_zero h₁) h₂).trans_lt h₃
-  have H₂ : m ≠ 0 → p ∣ m → ¬ m < p :=
+  have H : m ≠ 0 → p ∣ m → ¬ m < p :=
     fun h₁ h₂ ↦ not_lt.mpr <| le_of_dvd (Nat.pos_of_ne_zero h₁) h₂
   grind
 

@@ -3,12 +3,14 @@ Copyright (c) 2023 David Loeffler. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: David Loeffler
 -/
-import Mathlib.Analysis.Convolution
-import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
-import Mathlib.Analysis.SpecialFunctions.Trigonometric.EulerSineProd
-import Mathlib.Analysis.SpecialFunctions.Gamma.BohrMollerup
-import Mathlib.Analysis.Analytic.IsolatedZeros
-import Mathlib.Analysis.Complex.CauchyIntegral
+module
+
+public import Mathlib.Analysis.Convolution
+public import Mathlib.Analysis.SpecialFunctions.Complex.LogBounds
+public import Mathlib.Analysis.SpecialFunctions.Trigonometric.EulerSineProd
+public import Mathlib.Analysis.SpecialFunctions.Gamma.BohrMollerup
+public import Mathlib.Analysis.Analytic.IsolatedZeros
+public import Mathlib.Analysis.Complex.CauchyIntegral
 
 /-!
 # The Beta function, and further properties of the Gamma function
@@ -36,6 +38,8 @@ refined properties of the Gamma function using these relations.
 * `Real.Gamma_ne_zero`, `Real.GammaSeq_tendsto_Gamma`,
   `Real.Gamma_mul_Gamma_one_sub`, `Real.Gamma_mul_Gamma_add_half`: real versions of the above.
 -/
+
+@[expose] public section
 
 
 noncomputable section
@@ -66,11 +70,9 @@ theorem betaIntegral_convergent_left {u : ℂ} (hu : 0 < re u) (v : ℂ) :
   · apply continuousOn_of_forall_continuousAt
     intro x hx
     rw [uIcc_of_le (by positivity : (0 : ℝ) ≤ 1 / 2)] at hx
-    apply ContinuousAt.cpow
-    · exact (continuous_const.sub continuous_ofReal).continuousAt
-    · exact continuousAt_const
-    · norm_cast
-      exact ofReal_mem_slitPlane.2 <| by linarith only [hx.2]
+    apply ContinuousAt.cpow (by fun_prop) (by fun_prop)
+    norm_cast
+    exact ofReal_mem_slitPlane.2 <| by linarith only [hx.2]
 
 /-- The Beta integral is convergent for all `u, v` of positive real part. -/
 theorem betaIntegral_convergent {u v : ℂ} (hu : 0 < re u) (hv : 0 < re v) :
@@ -83,7 +85,7 @@ theorem betaIntegral_convergent {u v : ℂ} (hu : 0 < re u) (hv : 0 < re v) :
     conv_lhs => rw [mul_comm]
     congr 2 <;> · push_cast; ring
   · norm_num
-  · norm_num
+  · simp
 
 theorem betaIntegral_symm (u v : ℂ) : betaIntegral v u = betaIntegral u v := by
   simpa [betaIntegral, ← intervalIntegral.integral_symm, add_comm, mul_comm, sub_eq_add_neg]
@@ -150,8 +152,7 @@ theorem betaIntegral_recurrence {u v : ℂ} (hu : 0 < re u) (hv : 0 < re v) :
         (continuousOn_of_forall_continuousAt fun x hx => ?_)
     · refine (continuousAt_cpow_const_of_re_pos (Or.inl ?_) hu).comp continuous_ofReal.continuousAt
       rw [ofReal_re]; exact hx.1
-    · refine (continuousAt_cpow_const_of_re_pos (Or.inl ?_) hv).comp
-        (continuous_const.sub continuous_ofReal).continuousAt
+    · refine (continuousAt_cpow_const_of_re_pos (Or.inl ?_) hv).comp (by fun_prop)
       rw [sub_re, one_re, ofReal_re, sub_nonneg]
       exact hx.2
   have hder : ∀ x : ℝ, x ∈ Ioo (0 : ℝ) 1 →
@@ -322,7 +323,7 @@ theorem approx_Gamma_integral_tendsto_Gamma_integral {s : ℂ} (hs : 0 < re s) :
     rcases lt_or_ge (n : ℝ) x with (hxn | hxn)
     · rw [indicator_of_notMem (notMem_Ioc_of_gt hxn), norm_zero,
         mul_nonneg_iff_right_nonneg_of_pos (exp_pos _)]
-      exact rpow_nonneg (le_of_lt hx) _
+      positivity
     · rw [indicator_of_mem (mem_Ioc.mpr ⟨mem_Ioi.mp hx, hxn⟩), norm_mul, Complex.norm_of_nonneg
           (pow_nonneg (sub_nonneg.mpr <| div_le_one_of_le₀ hxn <| by positivity) _),
           norm_cpow_eq_rpow_re_of_pos hx, sub_re, one_re]
@@ -331,31 +332,30 @@ theorem approx_Gamma_integral_tendsto_Gamma_integral {s : ℂ} (hs : 0 < re s) :
 
 /-- Euler's limit formula for the complex Gamma function. -/
 theorem GammaSeq_tendsto_Gamma (s : ℂ) : Tendsto (GammaSeq s) atTop (𝓝 <| Gamma s) := by
-  suffices ∀ m : ℕ, -↑m < re s → Tendsto (GammaSeq s) atTop (𝓝 <| GammaAux m s) by
-    rw [Gamma]
-    apply this
-    rw [neg_lt]
-    rcases lt_or_ge 0 (re s) with (hs | hs)
-    · exact (neg_neg_of_pos hs).trans_le (Nat.cast_nonneg _)
-    · refine (Nat.lt_floor_add_one _).trans_le ?_
-      rw [sub_eq_neg_add, Nat.floor_add_one (neg_nonneg.mpr hs), Nat.cast_add_one]
+  suffices ∀ m : ℕ, ⌊1 - s.re⌋₊ = m → Tendsto (GammaSeq s) atTop (𝓝 <| Gamma s) by tauto
   intro m
   induction m generalizing s with intro hs
   | zero => -- Base case: `0 < re s`, so Gamma is given by the integral formula
-    rw [Nat.cast_zero, neg_zero] at hs
-    rw [← Gamma_eq_GammaAux]
-    · refine Tendsto.congr' ?_ (approx_Gamma_integral_tendsto_Gamma_integral hs)
-      refine (eventually_ne_atTop 0).mp (Eventually.of_forall fun n hn => ?_)
-      exact (GammaSeq_eq_approx_Gamma_integral hs hn).symm
-    · rwa [Nat.cast_zero, neg_lt_zero]
+    rw [Nat.floor_eq_zero, sub_lt_self_iff] at hs
+    apply (approx_Gamma_integral_tendsto_Gamma_integral hs).congr'
+    filter_upwards [eventually_ne_atTop 0] with n hn using
+      (GammaSeq_eq_approx_Gamma_integral hs hn).symm
   | succ m IH => -- Induction step: use recurrence formulae in `s` for Gamma and GammaSeq
-    rw [Nat.cast_succ, neg_add, ← sub_eq_add_neg, sub_lt_iff_lt_add, ← one_re, ← add_re] at hs
-    rw [GammaAux]
-    have := @Tendsto.congr' _ _ _ ?_ _ _
-      ((eventually_ne_atTop 0).mp (Eventually.of_forall fun n hn => ?_)) ((IH _ hs).div_const s)
-    pick_goal 3; · exact GammaSeq_add_one_left s hn -- doesn't work if inlined?
-    conv at this => arg 1; intro n; rw [mul_comm]
-    rwa [← mul_one (GammaAux m (s + 1) / s), tendsto_mul_iff_of_ne_zero _ (one_ne_zero' ℂ)] at this
+    -- Silly case `s = 0`: both sides are zero
+    rcases eq_or_ne s 0 with rfl | hsne
+    · unfold GammaSeq
+      simp [Finset.prod_range_succ']
+    specialize IH (s + 1) ?_
+    · rw [Nat.floor_eq_iff' (by lia)] at hs
+      have : s.re ≤ -m := by grind
+      rw [Nat.floor_eq_iff <| by simpa using (show s.re ≤ 0 by grind)]
+      grind [add_re, one_re]
+    rw [Gamma_add_one _ hsne] at IH
+    have := (IH.div_const s).congr' <| by
+      filter_upwards [eventually_ne_atTop 0] with n using GammaSeq_add_one_left s
+    simp only [mul_comm _ (s.GammaSeq _)] at this
+    rwa [mul_div_cancel_left₀ _ hsne, ← mul_one (Gamma s),
+      tendsto_mul_iff_of_ne_zero _ (one_ne_zero' ℂ)] at this
     simp_rw [add_assoc]
     exact tendsto_natCast_div_add_atTop (1 + s)
 
@@ -385,7 +385,7 @@ theorem GammaSeq_mul (z : ℂ) {n : ℕ} (hn : n ≠ 0) :
     intro j
     push_cast
     have : (j : ℂ) + 1 ≠ 0 := by rw [← Nat.cast_succ, Nat.cast_ne_zero]; exact Nat.succ_ne_zero j
-    field_simp; ring
+    field
   simp_rw [this]
   rw [Finset.prod_mul_distrib, ← Nat.cast_prod, Finset.prod_pow,
     Finset.prod_range_add_one_eq_factorial, Nat.cast_pow,
@@ -405,7 +405,7 @@ theorem Gamma_mul_Gamma_one_sub (z : ℂ) : Gamma z * Gamma (1 - z) = π / sin (
       neg_eq_iff_eq_neg] at hk
     rw [hk]
     cases k
-    · rw [Int.ofNat_eq_coe, Int.cast_natCast, Complex.Gamma_neg_nat_eq_zero, zero_mul]
+    · rw [Int.ofNat_eq_natCast, Int.cast_natCast, Complex.Gamma_neg_nat_eq_zero, zero_mul]
     · rw [Int.cast_negSucc, neg_neg, Nat.cast_add, Nat.cast_one, add_comm, sub_add_cancel_left,
         Complex.Gamma_neg_nat_eq_zero, mul_zero]
   refine tendsto_nhds_unique ((GammaSeq_tendsto_Gamma z).mul (GammaSeq_tendsto_Gamma <| 1 - z)) ?_
@@ -429,7 +429,7 @@ theorem Gamma_ne_zero {s : ℂ} (hs : ∀ m : ℕ, s ≠ -m) : Gamma s ≠ 0 := 
     rw [this, Gamma_ofReal, ofReal_ne_zero]
     refine Real.Gamma_ne_zero fun n => ?_
     specialize hs n
-    contrapose! hs
+    contrapose hs
     rwa [this, ← ofReal_natCast, ← ofReal_neg, ofReal_inj]
   · have : sin (↑π * s) ≠ 0 := by
       rw [Complex.sin_ne_zero_iff]
@@ -517,6 +517,11 @@ theorem differentiable_one_div_Gamma : Differentiable ℂ fun s : ℂ => (Gamma 
     specialize ihn (s + 1) (by rwa [add_re, one_re, neg_add', sub_lt_iff_lt_add, ← Nat.cast_succ])
     exact differentiableAt_id.mul (ihn.comp s (f := fun s => s + 1) <|
       differentiableAt_id.add_const (1 : ℂ))
+
+lemma betaIntegral_eq_Gamma_mul_div (u v : ℂ) (hu : 0 < u.re) (hv : 0 < v.re) :
+    betaIntegral u v = Gamma u * Gamma v / Gamma (u + v) := by
+  rw [Gamma_mul_Gamma_eq_betaIntegral hu hv,
+      mul_div_cancel_left₀ _ (Gamma_ne_zero_of_re_pos (add_pos hu hv))]
 
 end Complex
 
