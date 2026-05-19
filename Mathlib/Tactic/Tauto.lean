@@ -3,15 +3,20 @@ Copyright (c) 2018 Simon Hudon. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Simon Hudon, David Renshaw
 -/
-import Mathlib.Tactic.CasesM
-import Mathlib.Tactic.Core
-import Mathlib.Lean.Elab.Tactic.Basic
-import Mathlib.Logic.Basic
-import Qq
+module
+
+public meta import Lean.Elab.Tactic.Classical
+public import Mathlib.Logic.Basic  -- shake: keep (dependency of tactic output)
+public meta import Qq
+public meta import Mathlib.Lean.Meta
+public import Mathlib.Tactic.CasesM
+public import Mathlib.Tactic.Core
 
 /-!
 The `tauto` tactic.
 -/
+
+public meta section
 
 namespace Mathlib.Tactic.Tauto
 
@@ -46,36 +51,36 @@ def distribNotOnceAt (hypFVar : Expr) (g : MVarId) : MetaM AssertAfterResult := 
     replace q(Eq.to_iff $h')
   | ~q(¬ (($a : Prop) ∧ $b)) => do
     let h' : Q(¬($a ∧ $b)) := h.toExpr
-    let _inst ← synthInstanceQ (q(Decidable $b) : Q(Type))
-    replace q(Decidable.not_and_iff_or_not_not'.mp $h')
+    let _inst ← synthInstanceQ q(Decidable $b)
+    replace q(Decidable.not_and_iff_not_or_not'.mp $h')
   | ~q(¬ (($a : Prop) ∨ $b)) => do
     let h' : Q(¬($a ∨ $b)) := h.toExpr
     replace q(not_or.mp $h')
   | ~q(¬ (($a : Prop) ≠ $b)) => do
     let h' : Q(¬($a ≠ $b)) := h.toExpr
-    let _inst ← synthInstanceQ (q(Decidable ($a = $b)) : Q(Type))
+    let _inst ← synthInstanceQ q(Decidable ($a = $b))
     replace q(Decidable.of_not_not $h')
   | ~q(¬¬ ($a : Prop)) => do
     let h' : Q(¬¬$a) := h.toExpr
-    let _inst ← synthInstanceQ (q(Decidable $a) : Q(Type))
+    let _inst ← synthInstanceQ q(Decidable $a)
     replace q(Decidable.of_not_not $h')
   | ~q(¬ ((($a : Prop)) → $b)) => do
     let h' : Q(¬($a → $b)) := h.toExpr
-    let _inst ← synthInstanceQ (q(Decidable $a) : Q(Type))
+    let _inst ← synthInstanceQ q(Decidable $a)
     replace q(Decidable.not_imp_iff_and_not.mp $h')
   | ~q(¬ (($a : Prop) ↔ $b)) => do
     let h' : Q(¬($a ↔ $b)) := h.toExpr
-    let _inst ← synthInstanceQ (q(Decidable $b) : Q(Type))
+    let _inst ← synthInstanceQ q(Decidable $b)
     replace q(Decidable.not_iff.mp $h')
   | ~q(($a : Prop) ↔ $b) => do
     let h' : Q($a ↔ $b) := h.toExpr
-    let _inst ← synthInstanceQ (q(Decidable $b) : Q(Type))
+    let _inst ← synthInstanceQ q(Decidable $b)
     replace q(Decidable.iff_iff_and_or_not_and_not.mp $h')
   | ~q((((($a : Prop)) → False) : Prop)) =>
     throwError "distribNot found nothing to work on with negation"
   | ~q((((($a : Prop)) → $b) : Prop)) => do
     let h' : Q($a → $b) := h.toExpr
-    let _inst ← synthInstanceQ (q(Decidable $a) : Q(Type))
+    let _inst ← synthInstanceQ q(Decidable $a)
     replace q(Decidable.not_or_of_imp $h')
   | _ => throwError "distribNot found nothing to work on"
 
@@ -196,18 +201,21 @@ def finishingConstructorMatcher (e : Q(Prop)) : MetaM Bool :=
   | _ => pure false
 
 /-- Implementation of the `tauto` tactic. -/
-def tautology : TacticM Unit := focusAndDoneWithScope "tauto" do
+def tautology : TacticM Unit := focus do
   classical do
+    let g ← getMainGoal
     tautoCore
     allGoals (iterateUntilFailure
       (evalTactic (← `(tactic| rfl)) <|>
       evalTactic (← `(tactic| solve_by_elim)) <|>
       liftMetaTactic (constructorMatching · finishingConstructorMatcher)))
+    unless (← getUnsolvedGoals).isEmpty do
+      throwTacticEx `tauto g
 
 /--
 `tauto` breaks down assumptions of the form `_ ∧ _`, `_ ∨ _`, `_ ↔ _` and `∃ _, _`
 and splits a goal of the form `_ ∧ _`, `_ ↔ _` or `∃ _, _` until it can be discharged
-using `reflexivity` or `solve_by_elim`.
+using `rfl` or `solve_by_elim`.
 This is a finishing tactic: it either closes the goal or raises an error.
 
 The Lean 3 version of this tactic by default attempted to avoid classical reasoning
@@ -221,3 +229,23 @@ elab_rules : tactic | `(tactic| tauto $cfg:optConfig) => do
   tautology
 
 end Mathlib.Tactic.Tauto
+
+open Mathlib.TacticAnalysis
+
+/-- Report places where `tauto` can be replaced by `grind`. -/
+register_option linter.tacticAnalysis.tautoToGrind : Bool := {
+  defValue := false
+}
+@[tacticAnalysis linter.tacticAnalysis.tautoToGrind,
+  inherit_doc linter.tacticAnalysis.tautoToGrind]
+def tautoToGrind :=
+  terminalReplacement "tauto" "grind" ``Mathlib.Tactic.Tauto.tauto (fun _ _ _ => `(tactic| grind))
+    (reportSuccess := true) (reportFailure := false)
+
+/-- Debug `grind` by identifying places where it does not yet supersede `tauto`. -/
+register_option linter.tacticAnalysis.regressions.tautoToGrind : Bool := {
+  defValue := false
+}
+@[tacticAnalysis linter.tacticAnalysis.regressions.tautoToGrind,
+  inherit_doc linter.tacticAnalysis.regressions.tautoToGrind]
+def tautoToGrindRegressions := grindReplacementWith "tauto" `Mathlib.Tactic.Tauto.tauto

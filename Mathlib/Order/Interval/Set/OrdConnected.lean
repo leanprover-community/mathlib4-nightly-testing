@@ -3,9 +3,11 @@ Copyright (c) 2020 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov
 -/
-import Mathlib.Order.Interval.Set.OrderEmbedding
-import Mathlib.Order.Antichain
-import Mathlib.Order.SetNotation
+module
+
+public import Mathlib.Order.Interval.Set.OrderEmbedding
+public import Mathlib.Order.Antichain
+public import Mathlib.Order.SetNotation
 
 /-!
 # Order-connected sets
@@ -18,6 +20,8 @@ the `OrderTopology`, then this condition is equivalent to `IsPreconnected s`. If
 In this file we prove that intersection of a family of `OrdConnected` sets is `OrdConnected` and
 that all standard intervals are `OrdConnected`.
 -/
+
+@[expose] public section
 
 open scoped Interval
 open Set
@@ -127,6 +131,11 @@ theorem OrdConnected.dual {s : Set α} (hs : OrdConnected s) :
     OrdConnected (OrderDual.ofDual ⁻¹' s) :=
   ⟨fun _ hx _ hy _ hz => hs.out hy hx ⟨hz.2, hz.1⟩⟩
 
+@[instance]
+theorem dual_ordConnected {s : Set α} [OrdConnected s] : OrdConnected (ofDual ⁻¹' s) :=
+  .dual ‹OrdConnected s›
+
+@[simp]
 theorem ordConnected_dual {s : Set α} : OrdConnected (OrderDual.ofDual ⁻¹' s) ↔ OrdConnected s :=
   ⟨fun h => by simpa only [ordConnected_def] using h.dual, fun h => h.dual⟩
 
@@ -154,36 +163,24 @@ instance ordConnected_pi' {ι : Type*} {α : ι → Type*} [∀ i, Preorder (α 
     {t : ∀ i, Set (α i)} [h : ∀ i, OrdConnected (t i)] : OrdConnected (s.pi t) :=
   ordConnected_pi fun i _ => h i
 
-@[instance]
-theorem ordConnected_Ici {a : α} : OrdConnected (Ici a) :=
+@[to_dual]
+instance ordConnected_Ici {a : α} : OrdConnected (Ici a) :=
   ⟨fun _ hx _ _ _ hz => le_trans hx hz.1⟩
 
-@[instance]
-theorem ordConnected_Iic {a : α} : OrdConnected (Iic a) :=
-  ⟨fun _ _ _ hy _ hz => le_trans hz.2 hy⟩
-
-@[instance]
-theorem ordConnected_Ioi {a : α} : OrdConnected (Ioi a) :=
+@[to_dual]
+instance ordConnected_Ioi {a : α} : OrdConnected (Ioi a) :=
   ⟨fun _ hx _ _ _ hz => lt_of_lt_of_le hx hz.1⟩
 
-@[instance]
-theorem ordConnected_Iio {a : α} : OrdConnected (Iio a) :=
-  ⟨fun _ _ _ hy _ hz => lt_of_le_of_lt hz.2 hy⟩
-
-@[instance]
-theorem ordConnected_Icc {a b : α} : OrdConnected (Icc a b) :=
+@[to_dual self]
+instance ordConnected_Icc {a b : α} : OrdConnected (Icc a b) :=
   ordConnected_Ici.inter ordConnected_Iic
 
-@[instance]
-theorem ordConnected_Ico {a b : α} : OrdConnected (Ico a b) :=
+@[to_dual]
+instance ordConnected_Ico {a b : α} : OrdConnected (Ico a b) :=
   ordConnected_Ici.inter ordConnected_Iio
 
-@[instance]
-theorem ordConnected_Ioc {a b : α} : OrdConnected (Ioc a b) :=
-  ordConnected_Ioi.inter ordConnected_Iic
-
-@[instance]
-theorem ordConnected_Ioo {a b : α} : OrdConnected (Ioo a b) :=
+@[to_dual self]
+instance ordConnected_Ioo {a b : α} : OrdConnected (Ioo a b) :=
   ordConnected_Ioi.inter ordConnected_Iio
 
 @[instance]
@@ -215,7 +212,7 @@ theorem ordConnected_preimage {F : Type*} [FunLike F α β] [OrderHomClass F α 
 @[instance]
 theorem ordConnected_image {E : Type*} [EquivLike E α β] [OrderIsoClass E α β] (e : E) {s : Set α}
     [hs : OrdConnected s] : OrdConnected (e '' s) := by
-  erw [(e : α ≃o β).image_eq_preimage]
+  erw [(e : α ≃o β).image_eq_preimage_symm]
   apply ordConnected_preimage (e : α ≃o β).symm
 
 @[instance]
@@ -224,14 +221,30 @@ theorem ordConnected_range {E : Type*} [EquivLike E α β] [OrderIsoClass E α �
   simp_rw [← image_univ]
   exact ordConnected_image (e : α ≃o β)
 
-@[simp]
-theorem dual_ordConnected_iff {s : Set α} : OrdConnected (ofDual ⁻¹' s) ↔ OrdConnected s := by
-  simp_rw [ordConnected_def, toDual.surjective.forall, dual_Icc, Subtype.forall']
-  exact forall_swap
+/-- The preimage of an `OrdConnected` set under a map which is monotone on a set `t`,
+when intersected with `t`, is `OrdConnected`. More precisely, it is the intersection with `t`
+of an `OrdConnected` set. -/
+theorem OrdConnected.preimage_monotoneOn {f : β → α} {t : Set β} {s : Set α}
+    (hs : OrdConnected s) (hf : MonotoneOn f t) :
+    ∃ u, OrdConnected u ∧ t ∩ f ⁻¹' s = t ∩ u := by
+  let u := {x | (∃ y ∈ t, y ≤ x ∧ f y ∈ s) ∧ (∃ z ∈ t, x ≤ z ∧ f z ∈ s)}
+  refine ⟨u, ⟨?_⟩, Subset.antisymm ?_ ?_⟩
+  · rintro x ⟨⟨y, yt, yx, ys⟩, -⟩ x' ⟨-, ⟨z, zt, x'z, zs⟩⟩ a ha
+    exact ⟨⟨y, yt, yx.trans ha.1, ys⟩, ⟨z, zt, ha.2.trans x'z, zs⟩⟩
+  · rintro x ⟨xt, xs⟩
+    exact ⟨xt, ⟨x, xt, le_rfl, xs⟩, ⟨x, xt, le_rfl, xs⟩⟩
+  · rintro x ⟨xt, ⟨y, yt, yx, ys⟩, ⟨z, zt, xz, zs⟩⟩
+    refine ⟨xt, ?_⟩
+    apply hs.out ys zs
+    exact ⟨hf yt xt yx, hf xt zt xz⟩
 
-@[instance]
-theorem dual_ordConnected {s : Set α} [OrdConnected s] : OrdConnected (ofDual ⁻¹' s) :=
-  dual_ordConnected_iff.2 ‹_›
+/-- The preimage of an `OrdConnected` set under a map which is antitone on a set `t`,
+when intersected with `t`, is `OrdConnected`. More precisely, it is the intersection with `t`
+of an `OrdConnected` set. -/
+theorem OrdConnected.preimage_antitoneOn {f : β → α} {t : Set β} {s : Set α}
+    (hs : OrdConnected s) (hf : AntitoneOn f t) :
+    ∃ u, OrdConnected u ∧ t ∩ f ⁻¹' s = t ∩ u :=
+  (OrdConnected.preimage_monotoneOn hs.dual hf.dual_right :)
 
 end Preorder
 
@@ -262,6 +275,8 @@ lemma not_ordConnected_inter_Icc_iff (hx : x ∈ s) (hy : y ∈ s) :
 end PartialOrder
 
 section LinearOrder
+
+open scoped Interval
 
 variable {α : Type*} [LinearOrder α] {s : Set α} {x : α}
 
@@ -299,6 +314,21 @@ theorem ordConnected_iff_uIcc_subset_left (hx : x ∈ s) :
 theorem ordConnected_iff_uIcc_subset_right (hx : x ∈ s) :
     OrdConnected s ↔ ∀ ⦃y⦄, y ∈ s → [[y, x]] ⊆ s := by
   simp_rw [ordConnected_iff_uIcc_subset_left hx, uIcc_comm]
+
+@[simp]
+theorem image_subtype_val_uIcc [OrdConnected s] (a b : s) :
+    Subtype.val '' [[a, b]] = [[a.1, b.1]] := by
+  simp [uIcc, (Subtype.mono_coe (· ∈ s)).map_inf, (Subtype.mono_coe (· ∈ s)).map_sup]
+
+@[simp]
+theorem image_subtype_val_uIoc [OrdConnected s] (a b : s) :
+    Subtype.val '' uIoc a b = uIoc a.1 b.1 := by
+  simp [uIoc, (Subtype.mono_coe (· ∈ s)).map_inf, (Subtype.mono_coe (· ∈ s)).map_sup]
+
+@[simp]
+theorem image_subtype_val_uIoo [OrdConnected s] (a b : s) :
+    Subtype.val '' uIoo a b = uIoo a.1 b.1 := by
+  simp [uIoo, (Subtype.mono_coe (· ∈ s)).map_inf, (Subtype.mono_coe (· ∈ s)).map_sup]
 
 end LinearOrder
 
