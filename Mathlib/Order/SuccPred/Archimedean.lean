@@ -26,19 +26,19 @@ open Order Function
 `succ` -/
 class IsSuccArchimedean (α : Type*) [Preorder α] [SuccOrder α] : Prop where
   /-- If `a ≤ b` then one can get to `a` from `b` by iterating `succ` -/
-  exists_succ_iterate_of_le {a b : α} (h : a ≤ b) : ∃ n, succ^[n] a = b
+  protected exists_succ_iterate_of_le {a b : α} (h : a ≤ b) : ∃ n, succ^[n] a = b
 
 /-- A `PredOrder` is pred-archimedean if one can go from any two comparable elements by iterating
 `pred` -/
 @[to_dual existing]
 class IsPredArchimedean (α : Type*) [Preorder α] [PredOrder α] : Prop where
   /-- If `a ≤ b` then one can get to `b` from `a` by iterating `pred` -/
-  exists_pred_iterate_of_le {a b : α} (h : a ≤ b) : ∃ n, pred^[n] b = a
+  protected exists_pred_iterate_of_le {a b : α} (h : a ≤ b) : ∃ n, pred^[n] b = a
 
 export IsSuccArchimedean (exists_succ_iterate_of_le)
 export IsPredArchimedean (exists_pred_iterate_of_le)
 
-attribute [to_dual existing] exists_succ_iterate_of_le
+attribute [to_dual existing] IsSuccArchimedean.exists_succ_iterate_of_le
 
 section Preorder
 
@@ -46,15 +46,19 @@ variable [Preorder α]
 
 -- `to_dual` cannot yet reorder arguments of arguments
 instance [SuccOrder α] [IsSuccArchimedean α] : IsPredArchimedean αᵒᵈ :=
-  ⟨fun {a b} h => by convert exists_succ_iterate_of_le h.ofDual⟩
+  ⟨fun {a b} h => by convert IsSuccArchimedean.exists_succ_iterate_of_le h.ofDual⟩
 
 @[to_dual existing]
 instance [PredOrder α] [IsPredArchimedean α] : IsSuccArchimedean αᵒᵈ :=
-  ⟨fun {a b} h => by convert exists_pred_iterate_of_le h.ofDual⟩
+  ⟨fun {a b} h => by convert IsPredArchimedean.exists_pred_iterate_of_le h.ofDual⟩
 
 section SuccOrder
 
 variable [SuccOrder α] [IsSuccArchimedean α] {a b : α}
+
+@[to_dual]
+theorem exists_succ_iterate_of_le (h : a ≤ b) : ∃ n, succ^[n] a = b :=
+  IsSuccArchimedean.exists_succ_iterate_of_le h
 
 @[to_dual]
 theorem LE.le.exists_succ_iterate (h : a ≤ b) : ∃ n, succ^[n] a = b :=

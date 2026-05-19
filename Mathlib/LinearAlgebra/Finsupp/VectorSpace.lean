@@ -216,7 +216,7 @@ end Algebra
 namespace FreeAbelianGroup
 
 instance {σ : Type*} : Module.Free ℤ (FreeAbelianGroup σ) where
-  exists_basis := ⟨σ, ⟨(FreeAbelianGroup.equivFinsupp _).toIntLinearEquiv⟩⟩
+  exists_basis' := ⟨σ, ⟨(FreeAbelianGroup.equivFinsupp _).toIntLinearEquiv⟩⟩
 
 end FreeAbelianGroup
 

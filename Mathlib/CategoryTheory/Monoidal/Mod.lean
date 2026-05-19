@@ -39,7 +39,7 @@ map `vadd : M ⊙ₗ X ⟶ X` that satisfies zero-additivity and associativity w
 See `AddAction` for the non-categorical version. -/
 class AddModObj (X : D) where
   /-- The action map -/
-  vadd : M ⊙ₗ X ⟶ X
+  protected vadd : M ⊙ₗ X ⟶ X
   /-- The zero acts trivially. -/
   zero_vadd (X) : ζ ⊵ₗ X ≫ vadd = (λₗ X).hom := by cat_disch
   /-- The action map is compatible with addition. -/
@@ -58,7 +58,7 @@ See `MulAction` for the non-categorical version. -/
 @[to_additive]
 class ModObj (X : D) where
   /-- The action map -/
-  smul : M ⊙ₗ X ⟶ X
+  protected smul : M ⊙ₗ X ⟶ X
   /-- The identity acts trivially. -/
   one_smul (X) : η ⊵ₗ X ≫ smul = (λₗ X).hom := by cat_disch
   /-- The action map is compatible with multiplication. -/
@@ -66,21 +66,25 @@ class ModObj (X : D) where
 
 attribute [to_additive existing (attr := reassoc (attr := simp))] ModObj.mul_smul ModObj.one_smul
 
+/-- The action map -/
+@[to_additive /-- The action map -/]
+protected abbrev ModObj.smul' {M : C} [MonObj M] {X : D} [ModObj M X] : M ⊙ₗ X ⟶ X := ModObj.smul
+
 namespace AddModObj
 
-@[inherit_doc] scoped[CategoryTheory.AddMonObj] notation "δ" => AddModObj.vadd
-@[inherit_doc] scoped[CategoryTheory.AddMonObj] notation "δ[" Y "]" => AddModObj.vadd (X := Y)
+@[inherit_doc] scoped[CategoryTheory.AddMonObj] notation "δ" => AddModObj.vadd'
+@[inherit_doc] scoped[CategoryTheory.AddMonObj] notation "δ[" Y "]" => AddModObj.vadd' (X := Y)
 @[inherit_doc] scoped[CategoryTheory.AddMonObj] notation "δ[" N "," Y "]" =>
-  AddModObj.vadd (M := N) (X := Y)
+  AddModObj.vadd' (M := N) (X := Y)
 
 end AddModObj
 
 namespace ModObj
 
-@[inherit_doc] scoped[CategoryTheory.MonObj] notation "γ" => ModObj.smul
-@[inherit_doc] scoped[CategoryTheory.MonObj] notation "γ[" Y "]" => ModObj.smul (X := Y)
+@[inherit_doc] scoped[CategoryTheory.MonObj] notation "γ" => ModObj.smul'
+@[inherit_doc] scoped[CategoryTheory.MonObj] notation "γ[" Y "]" => ModObj.smul' (X := Y)
 @[inherit_doc] scoped[CategoryTheory.MonObj] notation "γ[" N "," Y "]" =>
-  ModObj.smul (M := N) (X := Y)
+  ModObj.smul' (M := N) (X := Y)
 
 end ModObj
 
@@ -111,7 +115,7 @@ instance (X : D) : ModObj (𝟙_ C) X where
   smul := (λₗ _).hom
 
 @[to_additive (attr := ext)]
-theorem ext {X : C} (h₁ h₂ : ModObj M X) (H : h₁.smul = h₂.smul) :
+theorem ext {X : C} (h₁ h₂ : ModObj M X) (H : h₁.smul' = h₂.smul') :
     h₁ = h₂ := by
   cases h₁
   cases h₂
