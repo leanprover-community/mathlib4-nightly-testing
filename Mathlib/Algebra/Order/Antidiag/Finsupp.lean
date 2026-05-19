@@ -4,8 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Antoine Chambert-Loir, María Inés de Frutos-Fernández, Eric Wieser, Bhavik Mehta,
   Yaël Dillies
 -/
-import Mathlib.Algebra.Order.Antidiag.Pi
-import Mathlib.Data.Finsupp.Basic
+module
+
+public import Mathlib.Algebra.BigOperators.Finsupp.Basic
+public import Mathlib.Algebra.Order.Antidiag.Pi
 
 /-!
 # Antidiagonal of finitely supported functions as finsets
@@ -25,6 +27,10 @@ We define it using `Finset.piAntidiag s n`, the corresponding antidiagonal in `�
   contained in `s` and such that the sum of its values equals `n : μ`.
 
 -/
+
+@[expose] public section
+
+assert_not_exists Field
 
 open Finsupp Function
 
@@ -50,11 +56,11 @@ lemma mem_finsuppAntidiag' :
   rw [sum_of_support_subset (N := μ) f hf (fun _ x ↦ x) fun _ _ ↦ rfl]
 
 @[simp] lemma finsuppAntidiag_empty_zero : finsuppAntidiag (∅ : Finset ι) (0 : μ) = {0} := by
-  ext f; simp [finsuppAntidiag, ← DFunLike.coe_fn_eq (g := f), eq_comm]
+  ext f; simp
 
 @[simp] lemma finsuppAntidiag_empty_of_ne_zero (hn : n ≠ 0) :
     finsuppAntidiag (∅ : Finset ι) n = ∅ :=
-  eq_empty_of_forall_notMem (by simp [@eq_comm _ 0, hn.symm])
+  eq_empty_of_forall_notMem (by simp [hn.symm])
 
 lemma finsuppAntidiag_empty (n : μ) :
     finsuppAntidiag (∅ : Finset ι) n = if n = 0 then {0} else ∅ := by split_ifs with hn <;> simp [*]
@@ -89,7 +95,7 @@ theorem finsuppAntidiag_insert {a : ι} {s : Finset ι}
         (finsuppAntidiag s p.snd).attach.map
         ⟨fun f => Finsupp.update f.val a p.fst,
         (fun ⟨f, hf⟩ ⟨g, hg⟩ hfg => Subtype.ext <| by
-          simp only [mem_val, mem_finsuppAntidiag] at hf hg
+          simp only [mem_finsuppAntidiag] at hf hg
           simp only [DFunLike.ext_iff] at hfg ⊢
           intro x
           obtain rfl | hx := eq_or_ne x a
@@ -101,6 +107,14 @@ theorem finsuppAntidiag_insert {a : ι} {s : Finset ι}
   rw [mem_finsuppAntidiag_insert h, mem_biUnion]
   simp_rw [mem_map, mem_attach, true_and, Subtype.exists, Embedding.coeFn_mk, exists_prop, and_comm,
     eq_comm]
+
+@[gcongr]
+theorem finsuppAntidiag_mono {s t : Finset ι} (h : s ⊆ t) (n : μ) :
+    finsuppAntidiag s n ⊆ finsuppAntidiag t n := by
+  intro a
+  simp_rw [mem_finsuppAntidiag']
+  rintro ⟨hsum, hmem⟩
+  exact ⟨hsum, hmem.trans h⟩
 
 variable [AddCommMonoid μ'] [HasAntidiagonal μ'] [DecidableEq μ']
 
@@ -139,7 +153,7 @@ variable [DecidableEq ι] [DecidableEq μ] [AddCommMonoid μ] [PartialOrder μ]
   [CanonicallyOrderedAdd μ] [HasAntidiagonal μ]
 
 @[simp] lemma finsuppAntidiag_zero (s : Finset ι) : finsuppAntidiag s (0 : μ) = {0} := by
-  ext f; simp [finsuppAntidiag, ← DFunLike.coe_fn_eq (g := f), -mem_piAntidiag, eq_comm]
+  ext f; simp [finsuppAntidiag, ← DFunLike.coe_fn_eq (g := f), eq_comm]
 
 end CanonicallyOrderedAddCommMonoid
 end Finset
