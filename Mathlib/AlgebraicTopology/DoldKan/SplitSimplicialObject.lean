@@ -226,6 +226,7 @@ noncomputable def toKaroubiNondegComplexIsoN₁ :
     simp only [πSummand_comp_cofan_inj_id_comp_PInfty_eq_PInfty, Karoubi.comp_f,
       HomologicalComplex.comp_f, N₁_obj_p, Karoubi.id_f]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma toKaroubiNondegComplexIsoN₁_hom_f_PInfty :
