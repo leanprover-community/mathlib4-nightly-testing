@@ -265,7 +265,7 @@ set_option backward.defeqAttrib.useBackward true in
 lemma PInfty_toNondegComplex : PInfty ≫ s.toNondegComplex = s.toNondegComplex :=
   (toKaroubi _).map_injective (by simp [toNondegComplex])
 
-set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma fromNondegComplex_toNondegComplex :
