@@ -815,6 +815,7 @@ lemma image_zeroLocus {U : X.Opens} (s : Set Γ(X, U)) :
   · simp only [Set.mem_inter_iff, hx, and_false, iff_false]
     exact fun H ↦ hx (Set.image_subset_range _ _ H)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If
 ```
   P --fst--> X
@@ -828,7 +829,6 @@ lemma image_zeroLocus {U : X.Opens} (s : Set Γ(X, U)) :
 is a pullback square and `g` is an open immersion, then the stalk map induced by `snd` at `p`
 is isomorphic to the stalk map of `f` at `fst p`.
 -/
-set_option backward.isDefEq.respectTransparency.types false in
 noncomputable def stalkMapIsoOfIsPullback {P X Y Z : Scheme.{u}}
     {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z} (h : IsPullback fst snd f g)
     [IsOpenImmersion g] (p : P) (x : X := fst p) (hx : fst p = x := by cat_disch) :
