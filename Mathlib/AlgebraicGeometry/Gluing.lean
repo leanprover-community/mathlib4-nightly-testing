@@ -625,6 +625,7 @@ def tAux (i j : J) : (V F i j).toScheme ⟶ F.obj j :=
       dsimp [Scheme.Opens.iSupOpenCover]
       apply fst_inv_eq_snd_inv F
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma homOfLE_tAux (i j : J) {k : J} (fi : k ⟶ i) (fj : k ⟶ j) :
     (F.obj i).homOfLE (le_iSup_of_le ⟨k, fi, fj⟩ le_rfl) ≫
