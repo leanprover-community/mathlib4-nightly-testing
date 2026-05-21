@@ -186,16 +186,19 @@ lemma isIso_app (V : Y.Opens) (hV : V ≤ f.opensRange) : IsIso (f.app V) := by
   rw [show V = f ''ᵁ f ⁻¹ᵁ V from Opens.ext (Set.image_preimage_eq_of_subset hV).symm]
   infer_instance
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The isomorphism `Γ(Y, f(U)) ≅ Γ(X, U)` induced by an open immersion `f : X ⟶ Y`. -/
 def appIso (U) : Γ(Y, f ''ᵁ U) ≅ Γ(X, U) :=
   (asIso <| LocallyRingedSpace.IsOpenImmersion.invApp f.toLRSHom U).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem appIso_inv_naturality {U V : X.Opens} (i : op U ⟶ op V) :
     X.presheaf.map i ≫ (f.appIso V).inv =
       (f.appIso U).inv ≫ Y.presheaf.map (f.opensFunctor.op.map i) :=
   PresheafedSpace.IsOpenImmersion.inv_naturality _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem appIso_hom (U) :
     (f.appIso U).hom = f.app (f ''ᵁ U) ≫ X.presheaf.map
       (eqToHom (preimage_image_eq f U).symm).op :=
@@ -206,12 +209,14 @@ theorem appIso_hom' (U) :
     (f.appIso U).hom = f.appLE (f ''ᵁ U) U (preimage_image_eq f U).ge :=
   f.appIso_hom U
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem app_appIso_inv (U) :
     f.app U ≫ (f.appIso (f ⁻¹ᵁ U)).inv =
       Y.presheaf.map (homOfLE (Set.image_preimage_subset f U.1)).op :=
   PresheafedSpace.IsOpenImmersion.app_invApp _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A variant of `app_invApp` that gives an `eqToHom` instead of `homOfLE`. -/
 @[reassoc]
 theorem app_invApp' (U) (hU : U ≤ f.opensRange) :
@@ -225,6 +230,7 @@ theorem appIso_inv_app (U) :
     (f.appIso U).inv ≫ f.app (f ''ᵁ U) = X.presheaf.map (eqToHom (preimage_image_eq f U)).op :=
   (PresheafedSpace.IsOpenImmersion.invApp_app _ _).trans (by rw [eqToHom_op])
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp), elementwise nosimp]
 lemma appLE_appIso_inv {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpenImmersion f] {U : Y.Opens}
@@ -257,6 +263,7 @@ lemma id_appIso (U : X.Opens) :
     (𝟙 X :).appIso U = X.presheaf.mapIso (eqToIso (by simp)).op := by
   ext; simp [appIso_hom]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma comp_appIso {X Y Z : Scheme.{u}} (f : X ⟶ Y) (g : Y ⟶ Z) [IsOpenImmersion f]
     [IsOpenImmersion g] (U : X.Opens) :
@@ -401,6 +408,7 @@ lemma Scheme.ofRestrict_appLE (V W e) :
   dsimp [Hom.appLE]
   exact (X.presheaf.map_comp _ _).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma Scheme.ofRestrict_appIso (U) :
     (X.ofRestrict h).appIso U = Iso.refl _ := by
@@ -434,6 +442,7 @@ theorem of_isIso_stalkMap {X Y : Scheme.{u}} (f : X ⟶ Y) (hf : IsOpenEmbedding
   have (x : X) : IsIso (f.toShHom.hom.stalkMap x) := inferInstanceAs (IsIso (f.stalkMap x))
   SheafedSpace.IsOpenImmersion.of_stalk_iso f.toShHom hf
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance {X Y : Scheme.{u}} (f : X ⟶ Y) [IsOpenImmersion f] (x : X) :
     IsIso (f.stalkMap x) :=
   inferInstanceAs <| IsIso (f.toLRSHom.stalkMap x)
@@ -513,6 +522,7 @@ instance hasLimit_cospan_forget_of_right' :
     HasLimit (cospan ((cospan g f ⋙ forget).map Hom.inl) ((cospan g f ⋙ forget).map Hom.inr)) :=
   show HasLimit (cospan ((forget).map g) ((forget).map f)) from inferInstance
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance forgetCreatesPullbackOfLeft : CreatesLimit (cospan f g) forget :=
   createsLimitOfFullyFaithfulOfIso
@@ -548,6 +558,7 @@ instance : IsOpenImmersion (pullback.fst g f) := by
   rw [← pullbackSymmetry_hom_comp_snd]
   infer_instance
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance [IsOpenImmersion g] :
     IsOpenImmersion (limit.π (cospan f g) WalkingCospan.one) := by
   rw [← limit.w (cospan f g) WalkingCospan.Hom.inl]
@@ -817,6 +828,7 @@ lemma image_zeroLocus {U : X.Opens} (s : Set Γ(X, U)) :
 is a pullback square and `g` is an open immersion, then the stalk map induced by `snd` at `p`
 is isomorphic to the stalk map of `f` at `fst p`.
 -/
+set_option backward.isDefEq.respectTransparency.types false in
 noncomputable def stalkMapIsoOfIsPullback {P X Y Z : Scheme.{u}}
     {fst : P ⟶ X} {snd : P ⟶ Y} {f : X ⟶ Z} {g : Y ⟶ Z} (h : IsPullback fst snd f g)
     [IsOpenImmersion g] (p : P) (x : X := fst p) (hx : fst p = x := by cat_disch) :
