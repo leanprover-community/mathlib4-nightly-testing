@@ -398,6 +398,7 @@ theorem isLocalizedModule_toPushforwardStalkAlgHom_aux (y) :
   rw [← map_pow (algebraMap R S)] at hsn
   congr 1
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance isLocalizedModule_toPushforwardStalkAlgHom :
     IsLocalizedModule p.asIdeal.primeCompl (toPushforwardStalkAlgHom R S p).toLinearMap := by
   apply IsLocalizedModule.mkOfAlgebra
