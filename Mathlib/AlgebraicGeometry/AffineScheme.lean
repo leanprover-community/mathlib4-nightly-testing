@@ -36,8 +36,6 @@ We also define predicates about affine schemes and affine open sets.
 
 -/
 
-set_option backward.isDefEq.respectTransparency.types false
-
 @[expose] public section
 
 -- Explicit universe annotations were used in this file to improve performance https://github.com/leanprover-community/mathlib4/issues/12737
@@ -382,6 +380,7 @@ namespace IsAffineOpen
 
 variable {X Y : Scheme.{u}} {U : X.Opens} (hU : IsAffineOpen U) (f : Γ(X, U))
 
+set_option backward.isDefEq.respectTransparency.types false in
 attribute [-simp] eqToHom_op in
 /-- The isomorphism `U ≅ Spec Γ(X, U)` for an affine `U`. -/
 @[simps! -isSimp inv]
