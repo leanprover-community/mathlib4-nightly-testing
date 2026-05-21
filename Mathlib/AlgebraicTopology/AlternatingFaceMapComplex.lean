@@ -120,6 +120,7 @@ theorem d_squared (n : ℕ) : objD X (n + 1) ≫ objD X n = 0 := by
 
 
 /-- The alternating face map complex, on objects -/
+@[implicit_reducible]
 def obj : ChainComplex C ℕ :=
   ChainComplex.of (fun n => X _⦋n⦌) (objD X) (d_squared X)
 
@@ -155,6 +156,7 @@ end AlternatingFaceMapComplex
 variable (C : Type*) [Category* C] [Preadditive C]
 
 /-- The alternating face map complex, as a functor -/
+@[implicit_reducible]
 def alternatingFaceMapComplex : SimplicialObject C ⥤ ChainComplex C ℕ where
   obj := AlternatingFaceMapComplex.obj
   map f := AlternatingFaceMapComplex.map f

@@ -313,6 +313,7 @@ def Γ₀' : ChainComplex C ℕ ⥤ SimplicialObject.Split C where
         simp only [← Splitting.cofan_inj_id, (Γ₀.splitting K).ι_desc]
         rfl }
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The functor `Γ₀ : ChainComplex C ℕ ⥤ SimplicialObject C`, which is
 the inverse functor of the Dold-Kan equivalence when `C` is an abelian
 category, or more generally a pseudoabelian category. -/
@@ -320,6 +321,7 @@ category, or more generally a pseudoabelian category. -/
 def Γ₀ : ChainComplex C ℕ ⥤ SimplicialObject C :=
   Γ₀' ⋙ Split.forget _
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The extension of `Γ₀ : ChainComplex C ℕ ⥤ SimplicialObject C`
 on the idempotent completions. It shall be an equivalence of categories
 for any additive category `C`. -/
@@ -327,6 +329,7 @@ for any additive category `C`. -/
 def Γ₂ : Karoubi (ChainComplex C ℕ) ⥤ Karoubi (SimplicialObject C) :=
   (CategoryTheory.Idempotents.functorExtension₂ _ _).obj Γ₀
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem HigherFacesVanish.on_Γ₀_summand_id (K : ChainComplex C ℕ) (n : ℕ) :
     @HigherFacesVanish C _ _ (Γ₀.obj K) _ n (n + 1)
       (((Γ₀.splitting K).cofan _).inj (Splitting.IndexSet.id (op ⦋n + 1⦌))) := by
