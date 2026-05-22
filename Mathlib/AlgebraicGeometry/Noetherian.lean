@@ -163,6 +163,7 @@ instance {U : X.OpenCover} (i) [IsLocallyNoetherian X] : IsLocallyNoetherian (U.
 
 /-- If `𝒰` is an open cover of a scheme `X`, then `X` is locally Noetherian if and only if
 `𝒰.X i` are all locally Noetherian. -/
+set_option backward.isDefEq.respectTransparency.types false in
 theorem isLocallyNoetherian_iff_openCover (𝒰 : Scheme.OpenCover X) :
     IsLocallyNoetherian X ↔ ∀ (i : 𝒰.I₀), IsLocallyNoetherian (𝒰.X i) := by
   refine ⟨fun _ ↦ inferInstance, ?_⟩
@@ -215,6 +216,7 @@ instance (priority := 100) {Z : Scheme} [IsLocallyNoetherian X]
   · exact Set.inter_subset_right
 
 /-- A locally Noetherian scheme is quasi-separated. -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[stacks 01OY]
 instance (priority := 100) IsLocallyNoetherian.quasiSeparatedSpace [IsLocallyNoetherian X] :
     QuasiSeparatedSpace X := by
@@ -313,6 +315,7 @@ theorem isNoetherian_iff_of_finite_affine_openCover {𝒰 : Scheme.OpenCover.{v,
     · exact Scheme.OpenCover.compactSpace 𝒰
 
 /-- A Noetherian scheme has a Noetherian underlying topological space. -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[stacks 01OZ]
 instance (priority := 100) IsNoetherian.noetherianSpace [IsNoetherian X] :
     NoetherianSpace X := by
