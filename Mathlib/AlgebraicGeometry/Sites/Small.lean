@@ -216,6 +216,7 @@ lemma smallGrothendieckTopologyOfLE_eq_toGrothendieck_smallPretopology (hPQ : P 
       rw [← comp_over (𝒰.f j)]
       exact Q.comp_mem _ _ (hPQ _ <| 𝒰.map_prop _) X.prop
     refine ⟨𝒰.toPresieveOverProp hj, ?_, ?_⟩
+    · use 𝒰, h, hj
     · rintro - - ⟨i⟩
       let fi : (𝒰.X i).asOverProp S (hj i) ⟶ X := (𝒰.f i).asOverProp S
       have : R.functorPushforward _ ((MorphismProperty.Over.forget Q ⊤ S).map fi) := le _ _ ⟨i⟩

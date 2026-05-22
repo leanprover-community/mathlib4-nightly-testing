@@ -322,6 +322,11 @@ theorem isAffineHom_diagonal_iff {f : X ⟶ Y} :
         IsAffineOpen V₁ → IsAffineOpen V₂ → IsAffineOpen (V₁ ⊓ V₂) := by
   refine congr($(HasAffineProperty.eq_targetAffineLocally
     (.diagonal @IsAffineHom)) f).to_iff.trans ?_
+  simp only [targetAffineLocally, diagonal_isAffine_iff_forall_isAffineOpen_inf,
+    (IsOpenImmersion.opensEquiv (f ⁻¹ᵁ _).ι).forall_congr_left, Scheme.affineOpens,
+    Subtype.forall, Set.mem_setOf_eq, Scheme.Opens.opensRange_ι, ← Scheme.Hom.preimage_inf,
+    IsOpenImmersion.opensEquiv_symm_apply, Scheme.Hom.image_preimage_eq_opensRange_inf,
+    ← Scheme.Hom.isAffineOpen_iff_of_isOpenImmersion (Scheme.Opens.ι _)]
   congr! with U hU V₁ hV₁ V₂ hV₂
   rw [inf_eq_right.mpr hV₁, inf_eq_right.mpr hV₂, inf_eq_right.mpr (inf_le_left.trans hV₁)]
 
