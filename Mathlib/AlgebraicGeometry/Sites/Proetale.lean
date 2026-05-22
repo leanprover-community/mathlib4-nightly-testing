@@ -141,6 +141,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 instance : RepresentablyFlat (ProEt.forget S) :=
   flat_of_preservesFiniteLimits _
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance : (ProEt.forget S).LocallyCoverDense (proetaleTopology.over S) := by
   apply MorphismProperty.locallyCoverDense_forget_of_le
   exact proetalePrecoverage_le_precoverage_weaklyEtale
