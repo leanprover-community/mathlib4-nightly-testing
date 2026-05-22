@@ -92,6 +92,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 instance (f : X ⟶ Z) (g : Y ⟶ Z) [IsFinite f] : IsFinite (Limits.pullback.snd f g) :=
   MorphismProperty.pullback_snd _ _ inferInstance
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance (f : X ⟶ Y) (V : Y.Opens) [IsFinite f] : IsFinite (f ∣_ V) :=
   IsZariskiLocalAtTarget.restrict ‹_› V
 
