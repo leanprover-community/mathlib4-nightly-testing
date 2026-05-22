@@ -282,6 +282,7 @@ def Spec.residueFieldIso :
   (IsLocalRing.ResidueField.mapEquiv
     (Spec.stalkIso R x).commRingCatIsoToRingEquiv).toCommRingCatIso
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma Spec.algebraMap_residueFieldIso_inv :
     CommRingCat.ofHom (algebraMap R _) ≫ (residueFieldIso R x).inv =
