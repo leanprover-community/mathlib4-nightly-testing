@@ -496,6 +496,7 @@ lemma fromOfGlobalSections_preimage_basicOpen {r : A} {n : ℕ} (hn : 0 < n) (hr
       ← Scheme.Hom.comp_apply, fromOfGlobalSections]
     simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma fromOfGlobalSections_morphismRestrict {r : A} {n : ℕ} (hn : 0 < n) (hr : r ∈ 𝒜 n) :
     (fromOfGlobalSections 𝒜 f hf) ∣_ (basicOpen 𝒜 r) =
       (Scheme.isoOfEq _ (fromOfGlobalSections_preimage_basicOpen _ _ _ hn hr)).hom ≫
