@@ -47,6 +47,7 @@ def Cover.toPresieveOver {X : Over S} (𝒰 : Cover.{u} (precoverage P) X.left) 
     Presieve X :=
   Presieve.ofArrows (fun i ↦ (𝒰.X i).asOver S) (fun i ↦ (𝒰.f i).asOver S)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The presieve defined by a `P`-cover of `S`-schemes with `Q`. -/
 def Cover.toPresieveOverProp {X : Q.Over ⊤ S} (𝒰 : Cover.{u} (precoverage P) X.left) [𝒰.Over S]
     (h : ∀ j, Q (𝒰.X j ↘ S)) : Presieve X :=
@@ -215,7 +216,6 @@ lemma smallGrothendieckTopologyOfLE_eq_toGrothendieck_smallPretopology (hPQ : P 
       rw [← comp_over (𝒰.f j)]
       exact Q.comp_mem _ _ (hPQ _ <| 𝒰.map_prop _) X.prop
     refine ⟨𝒰.toPresieveOverProp hj, ?_, ?_⟩
-    · use 𝒰, h, hj
     · rintro - - ⟨i⟩
       let fi : (𝒰.X i).asOverProp S (hj i) ⟶ X := (𝒰.f i).asOverProp S
       have : R.functorPushforward _ ((MorphismProperty.Over.forget Q ⊤ S).map fi) := le _ _ ⟨i⟩
@@ -226,12 +226,14 @@ lemma smallGrothendieckTopologyOfLE_eq_toGrothendieck_smallPretopology (hPQ : P 
     rintro - - ⟨i⟩
     exact ⟨(𝒰.X i).asOverProp S (p i), (𝒰.f i).asOverProp S, 𝟙 _, le _ _ ⟨i⟩, rfl⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma smallGrothendieckTopology_eq_toGrothendieck_smallPretopology [P.HasOfPostcompProperty P] :
     S.smallGrothendieckTopology P = (S.smallPretopology P P).toGrothendieck :=
   S.smallGrothendieckTopologyOfLE_eq_toGrothendieck_smallPretopology le_rfl
 
 variable {P Q}
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma mem_toGrothendieck_smallPretopology (X : Q.Over ⊤ S) (R : Sieve X) :
     R ∈ (S.smallPretopology P Q).toGrothendieck X ↔
       ∀ x : X.left, ∃ (Y : Q.Over ⊤ S) (f : Y ⟶ X) (y : Y.left),
@@ -260,6 +262,7 @@ lemma mem_toGrothendieck_smallPretopology (X : Q.Over ⊤ S) (R : Sieve X) :
     · rintro - - ⟨i⟩
       exact hf i
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma mem_smallGrothendieckTopology [P.HasOfPostcompProperty P] (X : P.Over ⊤ S) (R : Sieve X) :
     R ∈ S.smallGrothendieckTopology P X ↔
       ∃ (𝒰 : Cover.{u} (precoverage P) X.left) (_ : 𝒰.Over S) (h : ∀ j, P (𝒰.X j ↘ S)),
