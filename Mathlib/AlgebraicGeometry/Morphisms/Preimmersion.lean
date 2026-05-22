@@ -101,6 +101,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 open Limits MorphismProperty in
 instance : IsStableUnderBaseChange @IsPreimmersion := by
   refine .mk' fun X Y Z f g _ _ ↦ ?_
+  have := pullback_fst (P := @SurjectiveOnStalks) f g inferInstance
   constructor
   let L (x : (pullback f g :)) : { x : X × Y | f x.1 = g x.2 } :=
     ⟨⟨pullback.fst f g x, pullback.snd f g x⟩,
