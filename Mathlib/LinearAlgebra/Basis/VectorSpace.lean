@@ -426,7 +426,7 @@ theorem exists_basis_of_pairing_eq_zero
   · apply b.ext
     intro i
     rw [Basis.coord_apply, Basis.repr_self]
-    simp only [b, Basis.mk_apply]
+    simp only [b]
     rcases i with ⟨x, rfl | ⟨x, hx, rfl⟩⟩
     · simp [hw]
     · suffices x ≠ w by simp [this]

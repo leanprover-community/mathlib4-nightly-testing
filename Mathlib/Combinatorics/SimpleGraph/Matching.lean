@@ -72,7 +72,7 @@ noncomputable def IsMatching.toEdge (h : M.IsMatching) (v : M.verts) : M.edgeSet
 
 theorem IsMatching.toEdge_eq_of_adj (h : M.IsMatching) (hv : v ∈ M.verts) (hvw : M.Adj v w) :
     h.toEdge ⟨v, hv⟩ = ⟨s(v, w), hvw⟩ := by
-  simp only [IsMatching.toEdge, Subtype.mk_eq_mk]
+  simp only [IsMatching.toEdge]
   congr
   exact ((h (M.edge_vert hvw)).choose_spec.2 w hvw).symm
 

@@ -395,7 +395,7 @@ noncomputable def autMulEquivAutGalois : Aut F ≃* (AutGalois F)ᵐᵒᵖ where
       MulEquiv.symm_apply_apply]
     exact Aut.ext rfl
   right_inv t := by
-    simp only [MonoidHom.coe_comp, MonoidHom.coe_coe, Function.comp_apply, Aut.toEnd_apply]
+    simp only [MonoidHom.coe_comp, MonoidHom.coe_coe]
     exact (MulEquiv.eq_symm_apply (endMulEquivAutGalois F)).mp rfl
   map_mul' := by simp [map_mul]
 

@@ -297,7 +297,7 @@ abbrev r : (skeletonOfMono i d : SSet) ⟶ skeletonOfMono i (d + 1) :=
 @[reassoc]
 lemma w : t i d ≫ r i d = l i d ≫ b i d := by
   ext c : 1
-  simp [← cancel_mono (Subcomplex.ι _), Sigma.ι_desc_assoc]
+  simp [← cancel_mono (Subcomplex.ι _)]
 
 namespace Cell
 
@@ -307,7 +307,7 @@ variable {i d}
 lemma ι_t_ι_eq_ι_l_b_ι (c : Cell i d) :
     c.ιSigmaBoundary ≫ t i d ≫ Subcomplex.ι _ = ∂Δ[d].ι ≫
       c.ιSigmaStdSimplex ≫ b i d ≫ Subcomplex.ι _ := by
-  simp [Sigma.ι_desc_assoc]
+  simp
 
 @[reassoc]
 lemma ι_l (c : Cell i d) : c.ιSigmaBoundary ≫ l i d = ∂Δ[d].ι ≫ c.ιSigmaStdSimplex := by
@@ -315,7 +315,7 @@ lemma ι_l (c : Cell i d) : c.ιSigmaBoundary ≫ l i d = ∂Δ[d].ι ≫ c.ιSi
 
 @[reassoc (attr := simp)]
 lemma ι_b_ι (c : Cell i d) : c.ιSigmaStdSimplex ≫ b i d ≫ Subcomplex.ι _ = c.map := by
-  simp [Sigma.ι_desc_assoc]
+  simp
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in

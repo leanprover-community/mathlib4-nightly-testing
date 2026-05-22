@@ -381,7 +381,7 @@ noncomputable def t (j : ι) : f.sigmaHorn j ⟶ f.filtration j :=
 variable {f} in
 @[reassoc (attr := simp)]
 lemma Cell.ι_t {j : ι} (c : f.Cell j) : c.ιSigmaHorn ≫ f.t j = c.mapHorn := by
-  simp [t, Sigma.ι_desc]
+  simp [t]
 
 variable {f} in
 @[reassoc (attr := simp), elementwise (attr := simp)]
@@ -461,7 +461,7 @@ noncomputable def b (j : ι) : f.sigmaStdSimplex j ⟶ f.filtration (Order.succ 
 variable {f} in
 @[reassoc (attr := simp)]
 lemma Cell.ι_b {j : ι} (c : f.Cell j) : c.ιSigmaStdSimplex ≫ f.b j = c.mapToSucc := by
-  simp [b, Sigma.ι_desc]
+  simp [b]
 
 variable {f} in
 @[reassoc (attr := simp), elementwise (attr := simp)]

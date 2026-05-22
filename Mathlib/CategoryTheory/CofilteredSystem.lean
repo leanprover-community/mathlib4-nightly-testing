@@ -94,7 +94,7 @@ theorem nonempty_sections_of_finite_cofiltered_system {J : Type u} [Category.{w}
   use fun j => (u ⟨j⟩).down
   intro j j' f
   have h := @hu (⟨j⟩ : J') (⟨j'⟩ : J') (ULift.up f)
-  simp only [F', down, AsSmall.down, Functor.comp_map, uliftFunctor_map] at h
+  simp only [F', down, AsSmall.down] at h
   simp_rw [← h]
   rfl
 

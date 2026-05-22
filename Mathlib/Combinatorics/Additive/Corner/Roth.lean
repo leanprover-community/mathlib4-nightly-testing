@@ -37,7 +37,7 @@ private def triangleIndices (A : Finset (G × G)) : Finset (G × G × G) :=
 
 @[simp]
 private lemma mk_mem_triangleIndices : (a, b, c) ∈ triangleIndices A ↔ (a, b) ∈ A ∧ c = a + b := by
-  simp only [triangleIndices, Prod.ext_iff, mem_map, Embedding.coeFn_mk, Prod.exists,
+  simp only [triangleIndices, Prod.ext_iff, mem_map, Prod.exists,
     eq_comm]
   refine ⟨?_, fun h ↦ ⟨_, _, h.1, rfl, rfl, h.2⟩⟩
   rintro ⟨_, _, h₁, rfl, rfl, h₂⟩

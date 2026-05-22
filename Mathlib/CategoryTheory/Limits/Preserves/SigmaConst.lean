@@ -74,7 +74,7 @@ noncomputable def sigmaConstCokernelCofork :
   CokernelCofork.ofπ (Z := ∐ fun (_ : ((Set.range f)ᶜ : Set _)) ↦ R)
     (Sigma.desc (fun b ↦
       if hb : b ∈ (Set.range f)ᶜ then Sigma.ι (fun _ ↦ R) ⟨b, hb⟩ else 0))
-    (by ext; simp [Sigma.ι_desc])
+    (by ext; simp)
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
