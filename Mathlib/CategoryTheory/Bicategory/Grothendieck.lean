@@ -376,13 +376,7 @@ def mapIdIso : map (𝟙 F) ≅ 𝟭 (∫ᶜ F) :=
   NatIso.ofComponents (fun _ ↦ eqToIso (by cat_disch))
 
 lemma map_id_eq : map (𝟙 F) = 𝟭 (∫ᶜ F) :=
-  Functor.ext_of_iso (mapIdIso F) (fun x ↦ by
-    simp only [id_obj]; simp only [map,
-    categoryStruct_id_app, categoryStruct_id_naturality_hom, Strict.rightUnitor_eqToIso,
-    eqToIso.hom, Strict.leftUnitor_eqToIso, eqToIso.inv, eqToHom_trans, Cat.Hom₂.eqToHom_toNatTrans,
-    eqToHom_app]
-    set_option trace.Meta.Tactic.simp true in
-    simp [Cat.Hom.id_toFunctor, id_obj]) (fun x ↦ by simp [mapIdIso])
+  Functor.ext_of_iso (mapIdIso F) (fun x ↦ by simp [map]) (fun x ↦ by simp [mapIdIso])
 
 end
 

@@ -547,7 +547,7 @@ For the converse direction see `CategoryTheory.WithTerminal.commaFromOver`. -/
 protected def lift {J : Type*} [Category* J] (D : J ⥤ T) {X : T} (s : D ⟶ (Functor.const J).obj X) :
     J ⥤ Over X where
   obj j := mk (s.app j)
-  map f := homMk (D.map f) (by simpa using s.naturality f)
+  map f := homMk (D.map f) (by simp)
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in

@@ -480,7 +480,7 @@ abbrev Hom.left : X.left ⟶ Y.left := CommaMorphism.left f
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 theorem w (f : X ⟶ Y) : S.map f.left ≫ Y.hom = X.hom := by
-  simpa using CommaMorphism.w f
+  simp
 
 @[reassoc]
 theorem Hom.w (f : X ⟶ Y) : S.map f.left ≫ Y.hom = X.hom := CostructuredArrow.w f
