@@ -118,18 +118,6 @@ section
 
 attribute [local ext] CategoryTheory.Comma
 
-set_option allowUnsafeReducibility true
-attribute [implicit_reducible] ThinSkeleton
-  InducedCategory
-  Quiver.Hom
-  ObjectProperty.FullSubcategory.category._aux_1
-  instPartialOrderSubobject._aux_3
-  instPartialOrderSubobject._aux_1
-  Quotient.map
-  LE.le
-  Quot.map
-  ThinSkeleton.map
-
 protected theorem ind {X : C} (p : Subobject X → Prop)
     (h : ∀ ⦃A : C⦄ (f : A ⟶ X) [Mono f], p (Subobject.mk f)) (P : Subobject X) : p P := by
   induction P using Quotient.inductionOn' with | _ a
@@ -546,7 +534,7 @@ def lowerEquivalence {A : C} {B : D} (e : MonoOver A ≌ MonoOver B) : Subobject
     apply eqToIso
     convert ThinSkeleton.map_iso_eq e.unitIso
     · exact ThinSkeleton.map_id_eq.symm
-    · -- TODO: `simp; rfl` is a code smell; why do we even need this second case?
+    · -- TODO: `simp; rfl` is a code smell
       simp [lower, ThinSkeleton.map_comp_eq]; rfl
   counitIso := by
     apply eqToIso

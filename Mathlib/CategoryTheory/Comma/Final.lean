@@ -91,7 +91,6 @@ instance final_fst [R.Final] : (fst L R).Final := by
   apply final_of_natIso (F := (fC ⋙ fst L' R' ⋙ sA.inverse))
   exact (Functor.associator _ _ _).symm.trans (Iso.compInverseIso (mapFst _ _))
 
-
 instance initial_snd [L.Initial] : (snd L R).Initial := by
   have : ((opFunctor L R).leftOp ⋙ fst R.op L.op).Final :=
     final_equivalence_comp (opEquiv L R).functor.leftOp (fst R.op L.op)

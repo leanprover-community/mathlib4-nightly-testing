@@ -163,10 +163,8 @@ lemma Algebra.exists_notMem_and_isIntegral_forall_mem_of_ne_of_liesOver
   wlog hm0 : 0 < m generalizing m
   · refine this (m + 1) (by grind) (by simp)
   have hs₃q : s₃.1 ∉ q := fun h ↦ (show ↑s₂ ^ m * (s₁ * ↑s₂ ^ n) ∉ q from q.primeCompl.mul_mem
-    (pow_mem (S := q.primeCompl) hs₂q _) (mul_mem hs₁q (pow_mem (S := q.primeCompl) hs₂q _)))
-    (hm ▸ Ideal.mul_mem_left _ _ h)
-  refine ⟨s₂.1 ^ m * s₃.1, q.primeCompl.mul_mem (pow_mem (S := q.primeCompl) hs₂q _) hs₃q,
-    (s₂ ^ m * s₃).2,
+     (pow_mem hs₂q _) (mul_mem hs₁q (pow_mem hs₂q _))) (hm ▸ Ideal.mul_mem_left _ _ h)
+  refine ⟨↑s₂ ^ m * ↑s₃, q.primeCompl.mul_mem (pow_mem hs₂q _) hs₃q, (s₂ ^ m * s₃).2,
     fun q' _ hq'q _ ↦ hm ▸ Ideal.mul_mem_left _ _ (Ideal.mul_mem_right _ _ (hs₁ q' ‹_› hq'q ‹_›)),
     fun q' _ hq'q _ ↦ ?_⟩
   let : Algebra (integralClosure R S) (Localization.Away s₂.1) := OreLocalization.instAlgebra

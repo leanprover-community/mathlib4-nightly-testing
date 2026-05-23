@@ -169,8 +169,7 @@ def forget₂HomLinearEquiv (X Y : FDRep R G) :
       (forget₂ (FDRep R G) (Rep R G)).obj Y) ≃ₗ[R] X ⟶ Y where
   toFun f := ⟨InducedCategory.homMk (ModuleCat.ofHom <| f.hom.toLinearMap), fun g ↦ by
     ext1
-    simp only [FGModuleCat.obj_carrier, ObjectProperty.FullSubcategory.comp_hom,
-      InducedCategory.homMk_hom, ModuleCat.hom_comp, hom_hom_action_ρ]
+    simp only [FGModuleCat.obj_carrier]
     exact f.hom.2 g⟩
   map_add' _ _ := rfl
   map_smul' _ _ := rfl

@@ -202,9 +202,6 @@ theorem equiv_block_det (M : Matrix m m R) {p q : m → Prop} [DecidablePred p] 
     (e : ∀ x, q x ↔ p x) : (toSquareBlockProp M p).det = (toSquareBlockProp M q).det := by
   convert Matrix.det_reindex_self (Equiv.subtypeEquivRight e) (toSquareBlockProp M q)
 
-set_option allowUnsafeReducibility true
---attribute [semireducible] id
-
 -- Diamond: `Fintype.subtypeEq` vs. `Subtype.fintype`
 -- TODO: Which is the right instance here?
 -- Since we made `id` instance-reducible, `Fintype.subtypeEq` is selected and

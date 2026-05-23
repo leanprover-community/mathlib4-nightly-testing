@@ -50,6 +50,7 @@ def forget := LaxMonoidalFunctor.of (forget₂ (FDRep k G) (FGModuleCat k))
 
 @[simp] lemma forget_map (X Y : FDRep k G) (f : X ⟶ Y) : (forget k G).map f = f.hom := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Definition of `equivHom g : Aut (forget k G)` by its components. -/
 @[simps]
 def equivApp (g : G) (X : FDRep k G) : X.V ≅ X.V where

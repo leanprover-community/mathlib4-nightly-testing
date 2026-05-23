@@ -149,6 +149,7 @@ def FreeRefl := Quotient (C := Paths V) (FreeReflRel V)
 namespace FreeRefl
 
 variable {V}
+
 set_option backward.isDefEq.respectTransparency.types false in
 instance : Category (FreeRefl V) :=
   inferInstanceAs (Category (Quotient _))

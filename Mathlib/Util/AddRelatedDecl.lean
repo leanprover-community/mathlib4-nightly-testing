@@ -29,11 +29,10 @@ def elabOptAttrArg : TSyntax ``optAttrArg → TermElabM (Array Attribute)
   | _ => pure #[]
 
 /-- Re-implementation of the inner loop of `Lean.Linter.tacticCheckInstances` for use on
-declarations synthesised by Mathlib attributes (`@[simps]`, `@[reassoc]`, `@[elementwise]`, ...).
+declarations synthesized by Mathlib attributes (`@[simps]`, `@[reassoc]`, `@[elementwise]`, ...).
 Returns the list of semireducible non-instance definitions that `Meta.check declType .default`
 had to unfold but `Meta.check declType .implicit` would not, or `none` if `declType` already
-passes the `.implicit` check (or fails at `.default`, a more fundamental issue handled
-elsewhere). -/
+passes the `.implicit` check. -/
 private def checkImplicitTransparency (declType : Expr) : MetaM (Option (List Name)) := do
   let origDiag := (← get).diag
   let result : Option (List Name) ← withOptions (diagnostics.set · true) do
@@ -58,9 +57,9 @@ private def checkImplicitTransparency (declType : Expr) : MetaM (Option (List Na
 
 /-- Extension of `linter.tacticCheckInstances` to lemmas produced by Mathlib attributes such as
 `@[simps]`, `@[reassoc]`, and `@[elementwise]`. Call sites pass the syntax of the user's
-attribute (`ref`), the name of the freshly generated lemma (`declName`), and the lemma's type
+attribute (`ref`), the name of the generated lemma (`declName`), and the lemma's type
 (`declType`); a warning is emitted at `ref` if `declType` is type-correct at `.default` but
-not at `.implicit`, listing the semireducible non-instance definitions that would need to be
+not at `.implicit`, listing the semireducible definitions that would need to be
 marked `@[implicit_reducible]` to fix the mismatch.
 
 The check is gated by the existing core option `linter.tacticCheckInstances` and is silent
@@ -70,7 +69,7 @@ def warnIfImplicitIllTyped (ref : Syntax) (declName : Name) (declType : Expr) : 
   -- `linter.tacticCheckInstances` is declared outside any `public section` of Lean Core, so we
   -- cannot reference its option object directly. Construct an `Lean.Option Bool` whose `name`
   -- matches the key under which `register_builtin_option` registers it: the short identifier
-  -- as written in the macro (see `Lean/Data/Options.lean:228`), *not* the fully qualified
+  -- as written in the macro (see `Lean/Data/Options.lean:228`), not the fully qualified
   -- declName. The reconstructed option is used both to gate the check and to tag the warning.
   let lintOpt : Lean.Option Bool :=
     { name := `linter.tacticCheckInstances, defValue := false }
