@@ -62,7 +62,6 @@ so that it has the desired type signature. -/
 def single (i : ℕ) : M →+ PolynomialModule R M :=
   Finsupp.singleAddHom i
 
-
 theorem single_apply (i : ℕ) (m : M) (n : ℕ) : single R i m n = ite (i = n) m 0 :=
   Finsupp.single_apply
 

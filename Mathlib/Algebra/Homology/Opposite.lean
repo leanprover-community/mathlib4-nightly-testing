@@ -211,7 +211,7 @@ def unopCounitIso : unopInverse V c ⋙ unopFunctor V c ≅ 𝟭 (HomologicalCom
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Given a category of complexes with objects in `Vᵒᵖ`, there is a natural equivalence between its
-opposite category and a category of complexes with objects in `Vᵒᵖ`. -/
+opposite category and a category of complexes with objects in `V`. -/
 @[simps]
 def unopEquivalence : (HomologicalComplex Vᵒᵖ c)ᵒᵖ ≌ HomologicalComplex V c.symm where
   functor := unopFunctor V c

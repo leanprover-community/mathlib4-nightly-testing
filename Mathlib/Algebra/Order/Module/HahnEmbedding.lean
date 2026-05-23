@@ -208,8 +208,7 @@ theorem hahnCoeff_apply {x : seed.baseDomain} {f : Π₀ c, seed.stratum c}
     simpa using le_iSup _ _
   let f' : ⨁ c, seed.stratum' c :=
     f.mapRange (fun c x ↦ (⟨⟨x.val, hxm x⟩, by simp⟩ : seed.stratum' c)) (by simp)
-  have hf :
-      f c = (seed.baseDomain.subtype.submoduleComap (seed.stratum c)) (f' c) := by
+  have hf : f c = (seed.baseDomain.subtype.submoduleComap (seed.stratum c)) (f' c) := by
     set_option backward.isDefEq.respectTransparency false in
     apply Subtype.ext
     -- TODO: This should finish with `simp [f']`
