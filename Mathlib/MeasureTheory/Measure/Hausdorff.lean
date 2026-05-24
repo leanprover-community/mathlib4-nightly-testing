@@ -1076,6 +1076,8 @@ section RealAffine
 variable [NormedAddCommGroup E] [NormedSpace ℝ E] [MeasurableSpace P]
 variable [MetricSpace P] [NormedAddTorsor E P] [BorelSpace P]
 
+set_option backward.isDefEq.respectTransparency.types false in
+
 /-- Mapping a set of reals along a line segment scales the measure by the length of a segment.
 
 This is an auxiliary result used to prove `hausdorffMeasure_affineSegment`. -/

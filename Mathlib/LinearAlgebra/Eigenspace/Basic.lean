@@ -740,6 +740,7 @@ theorem eigenvectors_linearIndependent [IsDomain R] [IsTorsionFree R M]
     (h_eigenvec : ∀ μ : μs, f.HasEigenvector μ (xs μ)) : LinearIndependent R xs :=
   f.eigenvectors_linearIndependent' (fun μ : μs ↦ μ) Subtype.coe_injective _ h_eigenvec
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `f` maps a subspace `p` into itself, then the generalized eigenspace of the restriction
 of `f` to `p` is the part of the generalized eigenspace of `f` that lies in `p`. -/
 theorem genEigenspace_restrict (f : End R M) (p : Submodule R M) (k : ℕ∞) (μ : R)

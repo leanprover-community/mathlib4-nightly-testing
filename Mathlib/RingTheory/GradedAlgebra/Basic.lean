@@ -308,11 +308,13 @@ variable {a b : A} {n i : ι}
 
 namespace DirectSum
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem coe_decompose_mul_of_left_mem_of_not_le (a_mem : a ∈ 𝒜 i) (h : ¬i ≤ n) :
     (decompose 𝒜 (a * b) n : A) = 0 := by
   lift a to 𝒜 i using a_mem
   rwa [decompose_mul, decompose_coe, coe_of_mul_apply_of_not_le]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem coe_decompose_mul_of_right_mem_of_not_le (b_mem : b ∈ 𝒜 i) (h : ¬i ≤ n) :
     (decompose 𝒜 (a * b) n : A) = 0 := by
   lift b to 𝒜 i using b_mem
@@ -350,6 +352,7 @@ variable {R : Type*} [CommSemiring R] {A : Type*} [Semiring A] [Algebra R A]
 variable {ι : Type*} [DecidableEq ι] [AddMonoid ι]
 variable {M : ι → Submodule R A} [SetLike.GradedMonoid M]
 
+set_option backward.isDefEq.respectTransparency.types false in
 -- The following lines were given on Zulip by Adam Topaz
 /-- The canonical isomorphism of an internal direct sum with the ambient algebra -/
 noncomputable def coeAlgEquiv (hM : DirectSum.IsInternal M) :

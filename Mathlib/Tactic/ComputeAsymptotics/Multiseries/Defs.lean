@@ -522,6 +522,7 @@ theorem cons {basis_hd basis_tl} {exp : ℝ} {coef : MultiseriesExpansion basis_
     · exact Seq.Pairwise_cons_nil
     · exact h_tl_tl.cons_cons_of_trans (by simpa [lt_iff_lt] using h_comp)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `cons (exp, coef) tl` is `Sorted`, then `coef` and `tl` are `Sorted`, and the
 leading exponent of `tl` is less than `exp`. -/
 theorem elim_cons {basis_hd basis_tl} {exp : ℝ} {coef : MultiseriesExpansion basis_tl}

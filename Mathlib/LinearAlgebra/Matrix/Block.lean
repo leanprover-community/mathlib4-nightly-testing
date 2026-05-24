@@ -277,6 +277,7 @@ theorem BlockTriangular.det_fintype [DecidableEq α] [Fintype α] [LinearOrder �
   have : IsEmpty { i // b i = a } := ⟨fun i => ha <| mem_image.2 ⟨i, mem_univ _, i.2⟩⟩
   exact det_isEmpty
 
+set_option backward.isDefEq.respectTransparency true in
 theorem det_of_upperTriangular [LinearOrder m] (h : M.BlockTriangular id) :
     M.det = ∏ i : m, M i i := by
   haveI : DecidableEq R := Classical.decEq _

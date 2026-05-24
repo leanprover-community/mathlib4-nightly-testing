@@ -374,6 +374,7 @@ lemma lintegral_closedBall_diff_exp_logRatio_mul_sq_le [IsProbabilityMeasure μ]
     simp only [Nat.cast_pow, Nat.cast_ofNat, ENNReal.toReal_div]
     ring
 
+set_option backward.isDefEq.respectTransparency.types false in
 open Metric in
 lemma lintegral_exp_mul_sq_norm_le_mul [IsProbabilityMeasure μ]
     (h_rot : (μ.prod μ).map (ContinuousLinearMap.rotation (-(π / 4))) = μ.prod μ)

@@ -70,6 +70,7 @@ instance : LieModule R L (⨁ i, M i) where
 
 variable (R ι L M)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The inclusion of each component into a direct sum as a morphism of Lie modules. -/
 def lieModuleOf [DecidableEq ι] (j : ι) : M j →ₗ⁅R,L⁆ ⨁ i, M i :=
   { lof R ι M j with
