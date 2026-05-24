@@ -408,6 +408,7 @@ lemma map_comp (g₁ : (i : ι) → G i →+ G' i) (g₂ : (i : ι) → G' i →
       DirectLimit G f →+ DirectLimit G'' f'') := by
   ext; simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 Consider direct limits `lim G` and `lim G'` with direct system `f` and `f'` respectively, any
 family of equivalences `eᵢ : Gᵢ ≅ G'ᵢ` such that `e ∘ f = f' ∘ e` induces an equivalence

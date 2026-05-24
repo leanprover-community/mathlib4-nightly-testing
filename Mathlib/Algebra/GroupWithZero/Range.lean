@@ -223,7 +223,7 @@ variable [MonoidWithZero A] [CommGroupWithZero B] [MonoidWithZeroHomClass F A B]
 theorem mem_valueGroup_iff_of_comm {y : Bˣ} :
     y ∈ valueGroup f ↔ ∃ a, f a ≠ 0 ∧ ∃ x, f a * y = f x := by
   refine ⟨fun hy ↦ ?_, fun ⟨a, ha, x, hy⟩ ↦ ?_⟩
-  · simp only [valueGroup, valueMonoid, Submonoid.coe_set_mk, Subsemigroup.coe_set_mk] at hy
+  · simp only [valueGroup, valueMonoid] at hy
     induction hy using Subgroup.closure_induction with
     | mem _ h =>
       obtain ⟨a, ha⟩ := h

@@ -247,6 +247,7 @@ theorem map_smul (f : M →ₗ[R] M') (p : R[X]) (q : PolynomialModule R M) :
     | monomial => rw [monomial_smul_single, map_single, Polynomial.map_monomial, map_single,
         monomial_smul_single, f.map_smul, algebraMap_smul]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Evaluate a polynomial `p : PolynomialModule R M` at `r : R`. -/
 @[simps! -isSimp]
 def eval (r : R) : PolynomialModule R M →ₗ[R] M where
