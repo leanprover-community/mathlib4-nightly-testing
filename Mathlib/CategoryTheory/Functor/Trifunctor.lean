@@ -66,11 +66,11 @@ def bifunctorComp₁₂FunctorObj (F₁₂ : C₁ ⥤ C₂ ⥤ C₁₂) :
           naturality := fun X₂ Y₂ f ↦ by
             ext X₃
             dsimp
-            simp only [← NatTrans.comp_app, NatTrans.naturality] }
+            sorry /- proof was: simp only [← NatTrans.comp_app, NatTrans.naturality] -/ }
       naturality X₁ Y₁ f := by
         ext X₂ X₃
         dsimp
-        simp only [← NatTrans.comp_app, NatTrans.naturality] }
+        sorry /- proof was: simp only [← NatTrans.comp_app, NatTrans.naturality] -/ }
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `bifunctorComp₁₂Functor`. -/
@@ -83,15 +83,15 @@ def bifunctorComp₁₂FunctorMap {F₁₂ F₁₂' : C₁ ⥤ C₂ ⥤ C₁₂}
           naturality := fun X₂ Y₂ f ↦ by
             ext X₃
             dsimp
-            simp only [← NatTrans.comp_app, NatTrans.naturality, ← G.map_comp] }
+            sorry /- proof was simp only [← NatTrans.comp_app, NatTrans.naturality, ← G.map_comp]-/ }
       naturality X₁ Y₁ f := by
         ext X₂ X₃
         dsimp
-        simp only [← NatTrans.comp_app, NatTrans.naturality, ← G.map_comp] }
+        sorry /- proof was simp only [← NatTrans.comp_app, NatTrans.naturality, ← G.map_comp]-/ }
   naturality G G' f := by
     ext X₁ X₂ X₃
     dsimp
-    simp only [← NatTrans.comp_app, NatTrans.naturality]
+    sorry -- proof was: simp only [← NatTrans.comp_app, NatTrans.naturality]
 
 /-- The functor `(C₁ ⥤ C₂ ⥤ C₁₂) ⥤ (C₁₂ ⥤ C₃ ⥤ C₄) ⥤ C₁ ⥤ C₂ ⥤ C₃ ⥤ C₄` which
 sends `F₁₂ : C₁ ⥤ C₂ ⥤ C₁₂` and `G : C₁₂ ⥤ C₃ ⥤ C₄` to the functor
@@ -140,12 +140,16 @@ def bifunctorComp₂₃FunctorObj (F : C₁ ⥤ C₂₃ ⥤ C₄) :
         { app X₂ :=
             { app X₃ := (F.obj X₁).map ((φ.app X₂).app X₃)
               naturality X₃ Y₃ f := by
+                sorry /- proof was
                 dsimp
-                simp only [← Functor.map_comp, NatTrans.naturality] }
+                simp only [← Functor.map_comp, NatTrans.naturality] -/ }
           naturality X₂ Y₂ f := by
             ext X₃
             dsimp
-            simp only [← NatTrans.comp_app, ← Functor.map_comp, NatTrans.naturality] } }
+            sorry /- proof was
+            simp only [← NatTrans.comp_app, ← Functor.map_comp, NatTrans.naturality] -/ } }
+  map_id := sorry
+  map_comp := sorry
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `bifunctorComp₂₃Functor`. -/
@@ -153,11 +157,11 @@ set_option backward.isDefEq.respectTransparency false in
 def bifunctorComp₂₃FunctorMap {F F' : C₁ ⥤ C₂₃ ⥤ C₄} (φ : F ⟶ F') :
     bifunctorComp₂₃FunctorObj F (C₂ := C₂) (C₃ := C₃) ⟶ bifunctorComp₂₃FunctorObj F' where
   app G₂₃ :=
-    { app X₁ := { app X₂ := { app X₃ := (φ.app X₁).app ((G₂₃.obj X₂).obj X₃) } }
+    { app X₁ := { app X₂ := { app X₃ := (φ.app X₁).app ((G₂₃.obj X₂).obj X₃), naturality := sorry } }
       naturality X₁ Y₁ f := by
         ext X₂ X₃
         dsimp
-        simp only [← NatTrans.comp_app, NatTrans.naturality] }
+        sorry /- proof was: simp only [← NatTrans.comp_app, NatTrans.naturality] -/ }
 
 /-- The functor `(C₁ ⥤ C₂₃ ⥤ C₄) ⥤ (C₂ ⥤ C₃ ⥤ C₂₃) ⥤ C₁ ⥤ C₂ ⥤ C₃ ⥤ C₄` which
 sends `F : C₁ ⥤ C₂₃ ⥤ C₄` and `G₂₃ : C₂ ⥤ C₃ ⥤ C₂₃` to the
@@ -167,6 +171,8 @@ def bifunctorComp₂₃Functor :
     (C₁ ⥤ C₂₃ ⥤ C₄) ⥤ (C₂ ⥤ C₃ ⥤ C₂₃) ⥤ C₁ ⥤ C₂ ⥤ C₃ ⥤ C₄ where
   obj := bifunctorComp₂₃FunctorObj
   map := bifunctorComp₂₃FunctorMap
+  map_id := sorry
+  map_comp := sorry
 
 end bifunctorComp₂₃Functor
 

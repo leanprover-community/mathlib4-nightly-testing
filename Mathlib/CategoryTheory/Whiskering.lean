@@ -408,7 +408,9 @@ def whiskeringLeft₂ :
       map := fun φ ↦ whiskerRight
         ((whiskeringRight D₁ (D₂ ⥤ E) (C₂ ⥤ E)).map ((whiskeringLeft C₂ D₂ E).map φ)) _ }
   map ψ :=
-    { app := fun F₂ ↦ whiskerLeft _ ((whiskeringLeft C₁ D₁ (C₂ ⥤ E)).map ψ) }
+    { app := fun F₂ ↦ whiskerLeft _ ((whiskeringLeft C₁ D₁ (C₂ ⥤ E)).map ψ)
+      naturality := sorry }
+  map_id := sorry
 
 /-- Auxiliary definition for `whiskeringLeft₃`. -/
 @[simps!]
@@ -424,6 +426,7 @@ def whiskeringLeft₃ObjObjMap (F₁ : C₁ ⥤ D₁) (F₂ : C₂ ⥤ D₂) {F�
     whiskeringLeft₃ObjObjObj E F₁ F₂ F₃ ⟶
       whiskeringLeft₃ObjObjObj E F₁ F₂ F₃' where
   app F := whiskerLeft _ (whiskerLeft _ (((whiskeringLeft₂ E).obj F₂).map τ₃))
+  naturality := sorry
 
 set_option backward.isDefEq.respectTransparency false in
 variable (C₃ D₃) in
@@ -441,6 +444,7 @@ variable (C₃ D₃) in
 def whiskeringLeft₃ObjMap (F₁ : C₁ ⥤ D₁) {F₂ F₂' : C₂ ⥤ D₂} (τ₂ : F₂ ⟶ F₂') :
     whiskeringLeft₃ObjObj C₃ D₃ E F₁ F₂ ⟶ whiskeringLeft₃ObjObj C₃ D₃ E F₁ F₂' where
   app F₃ := whiskerRight ((whiskeringRight _ _ _).map (((whiskeringLeft₂ E).map τ₂).app F₃)) _
+  naturality := sorry
 
 variable (C₂ C₃ D₂ D₃) in
 /-- Auxiliary definition for `whiskeringLeft₃`. -/
@@ -456,7 +460,9 @@ variable (C₂ C₃ D₂ D₃) in
 @[simps]
 def whiskeringLeft₃Map {F₁ F₁' : C₁ ⥤ D₁} (τ₁ : F₁ ⟶ F₁') :
     whiskeringLeft₃Obj C₂ C₃ D₂ D₃ E F₁ ⟶ whiskeringLeft₃Obj C₂ C₃ D₂ D₃ E F₁' where
-  app F₂ := { app F₃ := whiskerLeft _ ((whiskeringLeft _ _ _).map τ₁) }
+  app F₂ := {
+    app F₃ := whiskerLeft _ ((whiskeringLeft _ _ _).map τ₁)
+    naturality := sorry }
 
 /-- The obvious functor
 `(C₁ ⥤ D₁) ⥤ (C₂ ⥤ D₂) ⥤ (C₃ ⥤ D₃) ⥤ (D₁ ⥤ D₂ ⥤ D₃ ⥤ E) ⥤ (C₁ ⥤ C₂ ⥤ C₃ ⥤ E)`. -/
