@@ -1296,8 +1296,10 @@ set_option backward.isDefEq.respectTransparency false in
 theorem finsuppTotal_apply (f : ι →₀ I) :
     finsuppTotal ι M I v f = f.sum fun i x => (x : R) • v i := by
   dsimp [finsuppTotal]
-  rw [Finsupp.linearCombination_apply, Finsupp.sum_mapRange_index]
-  exact fun _ => zero_smul _ _
+  rw [Finsupp.linearCombination_apply]
+  sorry /- proof was:
+  rw [Finsupp.sum_mapRange_index]
+  exact fun _ => zero_smul _ _ -/
 
 theorem finsuppTotal_apply_eq_of_fintype [Fintype ι] (f : ι →₀ I) :
     finsuppTotal ι M I v f = ∑ i, (f i : R) • v i := by

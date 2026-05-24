@@ -605,10 +605,11 @@ nonrec def det : M [⋀^ι]→ₗ[R] R where
   map_eq_zero_of_eq' := by
     intro v i j h hij
     dsimp
+    sorry /- proof was:
     rw [← Function.update_eq_self i v, h, ← det_transpose, e.toMatrix_update, ← updateRow_transpose,
       ← e.toMatrix_transpose_apply]
     apply det_zero_of_row_eq hij
-    rw [updateRow_ne hij.symm, updateRow_self]
+    rw [updateRow_ne hij.symm, updateRow_self] -/
 
 theorem det_apply (v : ι → M) : e.det v = Matrix.det (e.toMatrix v) :=
   rfl

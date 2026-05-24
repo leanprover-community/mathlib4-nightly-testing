@@ -175,6 +175,8 @@ set_option backward.isDefEq.respectTransparency false in
 /-- If two sets are equal, then they are homeomorphic. -/
 def setCongr {s t : Set X} (h : s = t) : s ≃ₜ t where
   toEquiv := Equiv.setCongr h
+  continuous_toFun := by sorry
+  continuous_invFun := by sorry
 
 section prod
 

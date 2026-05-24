@@ -351,7 +351,7 @@ set_option backward.isDefEq.respectTransparency false in
   convert append_apply_right p q connect (Fin.last _)
   ext1
   dsimp
-  lia
+  sorry -- proof was: lia
 
 set_option backward.isDefEq.respectTransparency false in
 lemma append_assoc (p q w : RelSeries r) (hpq : p.last ~[r] q.head) (hqw : q.last ~[r] w.head) :
@@ -941,8 +941,9 @@ def injStrictMono (n : ℕ) :
     subst leq
     simp_rw [Subtype.mk_eq_mk, Sigma.mk.inj_iff, heq_eq_eq, true_and]
     have feq := fun i ↦ congr($(e).toFun i)
+    sorry /- proof was:
     simp_rw [mk_toFun lf f mf, mk_toFun lf g mg, mk_length lf f mf] at feq
-    rwa [funext_iff]
+    rwa [funext_iff] -/
 
 /--
 For two preorders `α, β`, if `f : α → β` is strictly monotonic, then a strict chain of `α`

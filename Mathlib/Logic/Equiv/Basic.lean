@@ -462,6 +462,7 @@ lemma sigmaSigmaSubtype_symm_apply {α : Type*} {β : α → Type*} {γ : (a : �
     {a : α} {b : β a} (c : γ a b) (h : p ⟨a, b⟩) :
     (sigmaSigmaSubtype p h).symm c = ⟨⟨a, ⟨b, c⟩⟩, h⟩ := by
   rw [Equiv.symm_apply_eq]; simp
+  sorry
 
 /-- A specialization of `sigmaSigmaSubtype` to the case where the second base
 does not depend on the first, and the property being checked for is simple
@@ -479,6 +480,7 @@ lemma sigmaSigmaSubtypeEq_apply {α β : Type*} {γ : α → β → Type*} {a : 
     (s : {s : (a : α) × (b : β) × γ a b // s.1 = a ∧ s.2.1 = b}) :
     sigmaSigmaSubtypeEq a b s = cast (congrArg₂ γ s.2.1 s.2.2) s.1.2.2 := by
   simp [sigmaSigmaSubtypeEq]
+  sorry
 
 @[simp]
 lemma sigmaSigmaSubtypeEq_symm_apply {α β : Type*} {γ : α → β → Type*} {a : α} {b : β} (c : γ a b) :

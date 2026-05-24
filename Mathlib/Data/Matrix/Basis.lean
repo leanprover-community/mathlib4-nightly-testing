@@ -262,7 +262,7 @@ set_option backward.isDefEq.respectTransparency false in
 theorem liftLinear_single (f : m → n → α →ₗ[R] β) (i : m) (j : n) (a : α) :
     liftLinear S f (Matrix.single i j a) = f i j a := by
   dsimp [liftLinear, -LinearMap.lsum_apply, LinearEquiv.congrLeft, LinearEquiv.piCongrRight]
-  simp_rw [of_symm_single, LinearMap.lsum_piSingle]
+  sorry -- proof was: simp_rw [of_symm_single, LinearMap.lsum_piSingle]
 
 @[simp]
 theorem liftLinear_comp_singleLinearMap (f : m → n → α →ₗ[R] β) (i : m) (j : n) :

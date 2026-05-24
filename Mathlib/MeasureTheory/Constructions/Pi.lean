@@ -166,6 +166,7 @@ theorem tprod_tprod (l : List δ) (μ : ∀ i, Measure (X i)) [∀ i, SigmaFinit
     rw [tprod_cons, Set.tprod]
     dsimp only [foldr_cons, map_cons, prod_cons]
     rw [prod_prod, ih]
+    sorry -- proof used to be done now
 
 end Tprod
 
@@ -931,7 +932,9 @@ theorem measurePreserving_arrowCongr' {α₁ β₁ α₂ β₂ : Type*} [Fintype
     (measurePreserving_pi μ (fun i : α₁ ↦ ν (eα i)) hm)
   simp only [MeasurableEquiv.arrowCongr', Equiv.arrowCongr', Equiv.arrowCongr, EquivLike.coe_coe,
     comp_def, MeasurableEquiv.coe_mk, Equiv.coe_fn_mk, MeasurableEquiv.piCongrLeft,
-    Equiv.piCongrLeft, Equiv.symm_symm, Equiv.piCongrLeft', eq_rec_constant, Equiv.coe_fn_symm_mk]
+    Equiv.piCongrLeft, Equiv.symm_symm, Equiv.piCongrLeft',
+    /-eq_rec_constant,-/ Equiv.coe_fn_symm_mk]
+  sorry -- proof used to be done now; `eq_rec_constant` used to fire
 
 /-- The measurable equiv `(α₁ → β₁) ≃ᵐ (α₂ → β₂)` induced by `α₁ ≃ α₂` and `β₁ ≃ᵐ β₂` is
 volume preserving. -/

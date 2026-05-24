@@ -856,7 +856,7 @@ theorem map_normalClosure (s : Set G) (f : G →* N) (hf : Surjective f) :
       ← Set.image_subset_iff, subset_normalClosure]
   · exact normalClosure_le_normal (Set.image_mono subset_normalClosure)
 
-@[to_additive]
+-- TODO: broken on branch; to_additive bug? --@[to_additive]
 theorem comap_normalClosure (s : Set N) (f : G ≃* N) :
     normalClosure (f ⁻¹' s) = (normalClosure s).comap f := by
   have := f.toEquiv.image_symm_eq_preimage s

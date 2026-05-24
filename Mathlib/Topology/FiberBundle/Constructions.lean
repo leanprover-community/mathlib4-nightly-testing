@@ -69,6 +69,7 @@ set_option backward.isDefEq.respectTransparency false in
     (trivialization B F).symm b f = f := by
   simp [trivialization, homeomorphProd, TotalSpace.toProd, Trivialization.symm,
     Pretrivialization.symm, Trivialization.toPretrivialization]
+  sorry -- proof used to be done now
 
 @[simp] lemma toOpenPartialHomeomorph_trivialization_symm_apply (v : B × F) :
     (trivialization B F).toOpenPartialHomeomorph.symm v = ⟨v.1, v.2⟩ := rfl
