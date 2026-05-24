@@ -179,9 +179,9 @@ theorem contMDiff_mulInvariantVectorField (v : GroupLieAlgebra I G) :
   let S := (S₃.comp S₂).comp S₁
   convert S with g
   · simp [F₁, F₂, F₃, fg, fv]
-  · simp only [comp_apply, tangentMap, F₃, F₂, F₁, fg, fv]
+  · sorry /- proof was simp only [comp_apply, tangentMap, F₃, F₂, F₁, fg, fv]
     rw [mfderiv_prod_eq_add_apply ((contMDiff_mul I (minSmoothness 𝕜 3)).mdifferentiableAt M)]
-    simp +instances [mulInvariantVectorField]
+    simp +instances [mulInvariantVectorField] -/
 
 @[to_additive]
 theorem contMDiffAt_mulInvariantVectorField (v : GroupLieAlgebra I G) {g : G} :

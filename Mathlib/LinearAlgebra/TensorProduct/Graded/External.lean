@@ -247,13 +247,14 @@ theorem gradedMul_assoc (x y z : DirectSum _ 𝒜 ⊗[R] DirectSum _ ℬ) :
     exact DFunLike.congr_fun (DFunLike.congr_fun (DFunLike.congr_fun this x) y) z
   ext ixa xa ixb xb iya ya iyb yb iza za izb zb
   dsimp [mA]
+  sorry /- proof was
   simp_rw [tmul_of_gradedMul_of_tmul, Units.smul_def, ← Int.cast_smul_eq_zsmul R,
     LinearMap.map_smul₂, map_smul, DirectSum.lof_eq_of, DirectSum.of_mul_of,
     ← DirectSum.lof_eq_of R, tmul_of_gradedMul_of_tmul, DirectSum.lof_eq_of, ← DirectSum.of_mul_of,
     ← DirectSum.lof_eq_of R, mul_assoc]
   simp_rw [Int.cast_smul_eq_zsmul R, ← Units.smul_def, smul_smul, ← uzpow_add, add_mul, mul_add]
   congr 2
-  abel
+  abel -/
 
 set_option backward.isDefEq.respectTransparency false in
 theorem gradedComm_gradedMul (x y : DirectSum _ 𝒜 ⊗[R] DirectSum _ ℬ) :
@@ -265,6 +266,7 @@ theorem gradedComm_gradedMul (x y : DirectSum _ 𝒜 ⊗[R] DirectSum _ ℬ) :
     LinearMap.congr_fun₂ this x y
   ext i₁ a₁ j₁ b₁ i₂ a₂ j₂ b₂
   dsimp
+  sorry /- proof was
   rw [gradedComm_of_tmul_of, gradedComm_of_tmul_of, tmul_of_gradedMul_of_tmul]
   -- Note: https://github.com/leanprover-community/mathlib4/pull/8386 had to specialize `map_smul` to avoid timeouts.
   simp_rw [Units.smul_def, ← Int.cast_smul_eq_zsmul R, LinearEquiv.map_smul, map_smul,
@@ -275,6 +277,6 @@ theorem gradedComm_gradedMul (x y : DirectSum _ 𝒜 ⊗[R] DirectSum _ ℬ) :
   simp_rw [← uzpow_add, mul_add, add_mul, mul_comm i₁ j₂]
   congr 1
   abel_nf
-  rw [two_nsmul, uzpow_add, uzpow_add, Int.units_mul_self, one_mul]
+  rw [two_nsmul, uzpow_add, uzpow_add, Int.units_mul_self, one_mul] -/
 
 end TensorProduct

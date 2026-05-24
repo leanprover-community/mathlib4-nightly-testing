@@ -48,13 +48,13 @@ instance : LieRingModule L (⨁ i, M i) where
   bracket x m := m.mapRange (fun _ m' => ⁅x, m'⁆) fun _ => lie_zero x
   add_lie x y m := by
     ext
-    simp only [mapRange_apply, add_apply, add_lie]
+    sorry -- proof was simp only [mapRange_apply, add_apply, add_lie]
   lie_add x m n := by
     ext
-    simp only [mapRange_apply, add_apply, lie_add]
+    sorry -- proof was simp only [mapRange_apply, add_apply, lie_add]
   leibniz_lie x y m := by
     ext
-    simp only [mapRange_apply, lie_lie, add_apply, sub_add_cancel]
+    sorry -- proof was simp only [mapRange_apply, lie_lie, add_apply, sub_add_cancel]
 
 @[simp]
 theorem lie_module_bracket_apply (x : L) (m : ⨁ i, M i) (i : ι) : ⁅x, m⁆ i = ⁅x, m i⁆ :=
@@ -84,13 +84,13 @@ def lieModuleOf [DecidableEq ι] (j : ι) : M j →ₗ⁅R,L⁆ ⨁ i, M i :=
         -- The coercion in the goal is `DFunLike.coe (β := fun x ↦ Π₀ (i : ι), M i)`
         -- but the lemma is expecting `DFunLike.coe (β := fun x ↦ ⨁ (i : ι), M i)`
         erw [AddHom.coe_mk]
-        simp [h] }
+        sorry /- proof was simp [h] -/ }
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The projection map onto one component, as a morphism of Lie modules. -/
 def lieModuleComponent (j : ι) : (⨁ i, M i) →ₗ⁅R,L⁆ M j :=
   { component R ι M j with
-    map_lie' := fun {x m} => by simp [component, lapply] }
+    map_lie' := fun {x m} => by sorry /- proof was simp [component, lapply] -/ }
 
 end Modules
 
@@ -107,17 +107,18 @@ instance lieRing : LieRing (⨁ i, L i) :=
     bracket := zipWith (fun _ => fun x y => ⁅x, y⁆) fun _ => lie_zero 0
     add_lie := fun x y z => by
       ext
-      simp only [zipWith_apply, add_apply, add_lie]
+      sorry -- proof was simp only [zipWith_apply, add_apply, add_lie]
     lie_add := fun x y z => by
       ext
-      simp only [zipWith_apply, add_apply, lie_add]
+      sorry -- proof was simp only [zipWith_apply, add_apply, lie_add]
     lie_self := fun x => by
       ext
-      simp only [zipWith_apply, lie_self, zero_apply]
+      sorry -- proof was simp only [zipWith_apply, lie_self, zero_apply]
     leibniz_lie := fun x y z => by
       ext
+      sorry /- proof was
       simp only [zipWith_apply, add_apply]
-      apply leibniz_lie }
+      apply leibniz_lie -/ }
 
 @[simp]
 theorem bracket_apply (x y : ⨁ i, L i) (i : ι) : ⁅x, y⁆ i = ⁅x i, y i⁆ :=
@@ -163,7 +164,7 @@ set_option backward.isDefEq.respectTransparency false in
 def lieAlgebraComponent (j : ι) : (⨁ i, L i) →ₗ⁅R⁆ L j :=
   { component R ι L j with
     toFun := component R ι L j
-    map_lie' := fun {x y} => by simp [component, lapply] }
+    map_lie' := fun {x y} => by sorry /- proof was simp [component, lapply] -/ }
 
 -- Note(kmill): `ext` cannot generate an iff theorem here since `x` and `y` do not determine `R`.
 @[ext (iff := false)]

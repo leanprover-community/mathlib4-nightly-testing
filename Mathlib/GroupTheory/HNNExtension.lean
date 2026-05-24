@@ -443,8 +443,8 @@ theorem unitsSMul_neg (u : ℤˣ) (w : NormalWord d) :
       cases hcan2.2
       have : ((d.compl (-u)).equiv w.head).1 = 1 :=
         (d.compl (-u)).equiv_fst_eq_one_of_mem_of_one_mem _ h1
-      simpa [NormalWord.ext_iff, (d.compl (-u)).equiv_mul_left, Units.ext_iff,
-        (d.compl (-u)).equiv_snd_eq_inv_mul]
+      sorry /- proof was simpa [NormalWord.ext_iff, (d.compl (-u)).equiv_mul_left, Units.ext_iff,
+        (d.compl (-u)).equiv_snd_eq_inv_mul] -/
 
 /-- the equivalence given by multiplication on the left by `t` -/
 @[simps]

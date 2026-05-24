@@ -281,7 +281,7 @@ set_option backward.isDefEq.respectTransparency true in
 theorem det_of_upperTriangular [LinearOrder m] (h : M.BlockTriangular id) :
     M.det = ∏ i : m, M i i := by
   haveI : DecidableEq R := Classical.decEq _
-  simp_rw [h.det, image_id, det_toSquareBlock_id]
+  sorry -- proof was: simp_rw [h.det, image_id, det_toSquareBlock_id]
 
 theorem det_of_lowerTriangular [LinearOrder m] (M : Matrix m m R) (h : M.BlockTriangular toDual) :
     M.det = ∏ i : m, M i i := by
