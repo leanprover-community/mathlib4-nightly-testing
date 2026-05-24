@@ -1061,6 +1061,7 @@ section Field
 variable {z : M} {F' : Type*} [NormedField F'] [NormedAlgebra 𝕜 F'] {p q : M → F'}
   {p' q' : TangentSpace I z →L[𝕜] F'}
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma HasMFDerivWithinAt.inv (hp : HasMFDerivWithinAt I 𝓘(𝕜, F') p s z p') (hp_ne : p z ≠ 0) :
     HasMFDerivWithinAt I 𝓘(𝕜, F') (p⁻¹) s z (-(p z ^ 2)⁻¹ • p' : E →L[𝕜] F') := by
   convert hp.inv' hp_ne
@@ -1072,6 +1073,7 @@ lemma HasMFDerivAt.inv (hp : HasMFDerivAt I 𝓘(𝕜, F') p z p') (hp_ne : p z 
     HasMFDerivAt I 𝓘(𝕜, F') (p⁻¹) z (-(p z ^ 2)⁻¹ • p' : E →L[𝕜] F') :=
   hasMFDerivWithinAt_univ.mp <| hp.hasMFDerivWithinAt.inv hp_ne
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma HasMFDerivWithinAt.div (hp : HasMFDerivWithinAt I 𝓘(𝕜, F') p s z p')
     (hq : HasMFDerivWithinAt I 𝓘(𝕜, F') q s z q') (hq_ne : q z ≠ 0) :
     HasMFDerivWithinAt I 𝓘(𝕜, F') (p / q) s z

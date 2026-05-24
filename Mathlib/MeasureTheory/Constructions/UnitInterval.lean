@@ -49,6 +49,7 @@ instance : NoAtoms (volume : Measure I) where
 @[fun_prop]
 theorem measurable_symm : Measurable σ := continuous_symm.measurable
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `unitInterval.symm` bundled as a measurable equivalence. -/
 @[simps apply]
 def symmMeasurableEquiv : I ≃ᵐ I where
