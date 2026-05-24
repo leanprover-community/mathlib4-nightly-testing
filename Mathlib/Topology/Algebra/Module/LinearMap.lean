@@ -1274,12 +1274,6 @@ theorem toLinearMap_mkQL : (S.mkQL : M →ₗ[R] M ⧸ S) = S.mkQ := rfl
 @[simp]
 theorem coe_mkQL : ⇑S.mkQL = S.mkQ := rfl
 
-set_option backward.isDefEq.respectTransparency false in
-@[simp]
-theorem closedComplemented_top : ClosedComplemented (⊤ : Submodule R M) :=
-  ⟨(ContinuousLinearMap.id R M).codRestrict ⊤ fun _x => trivial,
-    fun x => Subtype.ext_iff.2 <| by simp⟩
-
 end Submodule
 
 namespace ContinuousLinearMap
