@@ -266,6 +266,7 @@ instance Partition.partialOrder : PartialOrder (Partitions α) where
     rw [Partitions.ext_iff, ← classes_mkClasses x.toSet x.isPartition,
       ← classes_mkClasses y.toSet y.isPartition, h]
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (α) in
 /-- The order-preserving bijection between equivalence relations on a type `α`, and
 partitions of `α` into subsets. -/
