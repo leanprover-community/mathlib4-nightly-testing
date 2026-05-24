@@ -591,7 +591,7 @@ def tail (p : RelSeries r) (len_pos : p.length ≠ 0) : RelSeries r where
   change p _ = p _
   congr
   ext
-  simp only [tail_length, Fin.val_succ, Fin.val_cast, Fin.val_last]
+  simp only [Fin.val_succ, Fin.val_last]
   exact Nat.succ_pred_eq_of_pos (by simpa [Nat.pos_iff_ne_zero] using len_pos)
 
 set_option backward.isDefEq.respectTransparency false in

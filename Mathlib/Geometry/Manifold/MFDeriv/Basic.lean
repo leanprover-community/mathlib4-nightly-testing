@@ -645,7 +645,7 @@ theorem HasMFDerivWithinAt.hasMFDerivAt (h : HasMFDerivWithinAt I I' f s x f') (
 theorem MDifferentiableWithinAt.hasMFDerivWithinAt (h : MDifferentiableWithinAt I I' f s x) :
     HasMFDerivWithinAt I I' f s x (mfderivWithin I I' f s x) := by
   refine ⟨h.1, ?_⟩
-  simp only [mfderivWithin, h, if_pos, mfld_simps]
+  simp only [mfderivWithin, h, mfld_simps]
   exact DifferentiableWithinAt.hasFDerivWithinAt h.2
 
 theorem mdifferentiableWithinAt_iff_exists_hasMFDerivWithinAt :
@@ -677,7 +677,7 @@ protected theorem MDifferentiableWithinAt.mfderivWithin (h : MDifferentiableWith
 theorem MDifferentiableAt.hasMFDerivAt (h : MDifferentiableAt I I' f x) :
     HasMFDerivAt I I' f x (mfderiv I I' f x) := by
   refine ⟨h.continuousAt, ?_⟩
-  simp only [mfderiv, h, if_pos, mfld_simps]
+  simp only [mfderiv, h, mfld_simps]
   exact DifferentiableWithinAt.hasFDerivWithinAt h.differentiableWithinAt_writtenInExtChartAt
 
 set_option backward.isDefEq.respectTransparency false in

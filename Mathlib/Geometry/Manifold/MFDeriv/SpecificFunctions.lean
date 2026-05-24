@@ -557,7 +557,7 @@ theorem mfderiv_prod_left {x₀ : M} {y₀ : M'} :
 
 theorem tangentMap_prod_left {p : TangentBundle I M} {y₀ : M'} :
     tangentMap I (I.prod I') (fun x ↦ (x, y₀)) p = ⟨(p.1, y₀), (p.2, 0)⟩ := by
-  simp only [tangentMap, mfderiv_prod_left, TotalSpace.mk_inj]
+  simp only [tangentMap, mfderiv_prod_left]
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
@@ -569,7 +569,7 @@ theorem mfderiv_prod_right {x₀ : M} {y₀ : M'} :
 
 theorem tangentMap_prod_right {p : TangentBundle I' M'} {x₀ : M} :
     tangentMap I' (I.prod I') (fun y ↦ (x₀, y)) p = ⟨(x₀, p.1), (0, p.2)⟩ := by
-  simp only [tangentMap, mfderiv_prod_right, TotalSpace.mk_inj]
+  simp only [tangentMap, mfderiv_prod_right]
   rfl
 
 /-- The total derivative of a function in two variables is the sum of the partial derivatives.
@@ -603,13 +603,13 @@ theorem mfderiv_prod_eq_add_comp {f : M × M' → M''} {p : M × M'} (hf : MDiff
   congr
   · have : (fun z : M × M' ↦ f (z.1, p.2)) = (fun z : M ↦ f (z, p.2)) ∘ Prod.fst := rfl
     rw [this, mfderiv_comp (I' := I)]
-    · simp only [mfderiv_fst, id_eq]
+    · simp only [mfderiv_fst]
       rfl
     · exact hf.comp _ (mdifferentiableAt_id.prodMk mdifferentiableAt_const)
     · exact mdifferentiableAt_fst
   · have : (fun z : M × M' ↦ f (p.1, z.2)) = (fun z : M' ↦ f (p.1, z)) ∘ Prod.snd := rfl
     rw [this, mfderiv_comp (I' := I')]
-    · simp only [mfderiv_snd, id_eq]
+    · simp only [mfderiv_snd]
       rfl
     · exact hf.comp _ (mdifferentiableAt_const.prodMk mdifferentiableAt_id)
     · exact mdifferentiableAt_snd
