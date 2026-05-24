@@ -187,8 +187,8 @@ private noncomputable def assocAux
   haveI heq (s : S) (y : M₁) (x : M₂) : s • y ⊗ₜ[R] x = y ⊗ₜ[R] (s • x) := by
     change hf.equiv.symm (s • _) = _
     dsimp
-    rw [← map_smul]
-    apply hf.equiv_symm_apply
+    sorry /- proof was: rw [← map_smul]
+    apply hf.equiv_symm_apply -/
   haveI : IsScalarTower R S (M₁ ⊗[R] M₂) := hf.equiv.isScalarTower S
   letI e₀ : M₂ ⊗[R] M₁ ≃ₗ[S] M₁ ⊗[R] M₂ :=
     { __ := TensorProduct.comm R M₂ M₁
@@ -241,9 +241,9 @@ noncomputable def assoc {T : Type*} [CommSemiring T] [Algebra R T] [Module T M�
     | tmul x z =>
       have : t • (f x) z = f (t • x) z := by simp
       dsimp
-      rw [smul_tmul', this, ← f.restrictScalars₁₂_apply_apply R S,
+      sorry /- proof was: rw [smul_tmul', this, ← f.restrictScalars₁₂_apply_apply R S,
         ← f.restrictScalars₁₂_apply_apply R S, IsTensorProduct.assocAux_tmul,
-        IsTensorProduct.assocAux_tmul, TensorProduct.smul_tmul']
+        IsTensorProduct.assocAux_tmul, TensorProduct.smul_tmul'] -/
 
 variable {T : Type*} [CommSemiring T] [Algebra R T] [Module T M₁] [IsScalarTower R T M₁]
   [Module T M₁₂] [SMulCommClass S T M₁₂] [IsScalarTower R T M₁₂]

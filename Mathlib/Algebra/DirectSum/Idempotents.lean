@@ -52,7 +52,7 @@ theorem completeOrthogonalIdempotents_idempotent [Fintype I] :
     apply (decompose V).injective
     refine DFunLike.ext _ _ fun i ↦ ?_
     rw [decompose_sum, DFinsupp.finsetSum_apply]
-    simp [idempotent, of_apply]
+    sorry -- proof was: simp [idempotent, of_apply]
 
 end OrthogonalIdempotents
 

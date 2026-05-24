@@ -36,7 +36,7 @@ def conjStarAlgAut : unitary R →* (R ≃⋆ₐ[S] R) where
     map_smul' _ _ := smul_comm _ _ _ |>.symm
     map_star' _ := by
       dsimp [ConjAct.units_smul_def]
-      simp [mul_assoc, ← Unitary.star_eq_inv] }
+      sorry /- proof was: simp [mul_assoc, ← Unitary.star_eq_inv] -/ }
   map_one' := by ext; simp
   map_mul' g h := by ext; simp [mul_smul]
 

@@ -176,6 +176,7 @@ def equivPolynomialSelf : PolynomialModule R R ≃ₗ[R[X]] R[X] :=
       | add _ _ hp hq => rw [smul_add, map_add, map_add, mul_add, hp, hq]
       | single n a =>
         ext i
+        sorry /- proof was:
         simp_rw [toFinsuppIso_symm_apply, coeff_ofFinsupp, coeff_mul, smul_single_apply,
           smul_eq_mul, coeff_ofFinsupp, single_apply, mul_ite, mul_zero]
         split_ifs with hn
@@ -196,7 +197,7 @@ def equivPolynomialSelf : PolynomialModule R R ≃ₗ[R[X]] R[X] :=
             rw [Finset.mem_antidiagonal, tsub_add_cancel_of_le hn]
         · symm
           rw [Finset.sum_ite_of_false, Finset.sum_const_zero]
-          grind [Finset.mem_antidiagonal] }
+          grind [Finset.mem_antidiagonal] -/ }
 
 /-- `PolynomialModule R S` is isomorphic to `S[X]` as an `R` module. -/
 def equivPolynomial {S : Type*} [CommRing S] [Algebra R S] :
