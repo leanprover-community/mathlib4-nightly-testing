@@ -121,7 +121,7 @@ theorem tail {n f} (hf : @Partrec' n f) : @Partrec' n.succ fun v => f v.tail :=
 set_option backward.isDefEq.respectTransparency false in
 protected theorem bind {n f g} (hf : @Partrec' n f) (hg : @Partrec' (n + 1) g) :
     @Partrec' n fun v => (f v).bind fun a => g (a ::ᵥ v) :=
-  (@comp n (n + 1) g (Fin.cases f (fun i v => some (v.get i))) hg <|
+  (@comp n (n + 1) g (Fin.cases f (fun i v => Part.some (v.get i))) hg <|
       Fin.cases (by simpa using hf) (fun i => by simpa using prim (Nat.Primrec'.get i))).of_eq
     fun v => by simp [mOfFn, Part.bind_assoc, pure]
 
