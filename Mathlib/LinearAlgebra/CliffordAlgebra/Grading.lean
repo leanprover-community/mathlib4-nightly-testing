@@ -43,6 +43,7 @@ theorem range_ι_le_evenOdd_one : LinearMap.range (ι Q) ≤ evenOdd Q 1 := by
 theorem ι_mem_evenOdd_one (m : M) : ι Q m ∈ evenOdd Q 1 :=
   range_ι_le_evenOdd_one Q <| LinearMap.mem_range_self _ m
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem ι_mul_ι_mem_evenOdd_zero (m₁ m₂ : M) : ι Q m₁ * ι Q m₂ ∈ evenOdd Q 0 :=
   Submodule.mem_iSup_of_mem ⟨2, rfl⟩
     (by

@@ -330,6 +330,7 @@ theorem prod_cons {i} (g : G i) (w : NormalWord d) (hmw : w.fstIdx ≠ some i)
 
 variable [DecidableEq ι] [∀ i, DecidableEq (G i)]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a word in `CoprodI`, if every letter is in the transversal and when
 we multiply by an element of the base group it still has this property,
 then the element of the base group we multiplied by was one. -/

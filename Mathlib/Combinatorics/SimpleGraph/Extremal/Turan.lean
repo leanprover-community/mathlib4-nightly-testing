@@ -247,6 +247,7 @@ theorem card_parts [DecidableEq V] : #h.finpartition.parts = min (card V) r := b
   convert G.card_edgeFinset_sup_edge _ hn
   rwa [h.not_adj_iff_part_eq]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- **Turán's theorem**, forward direction.
 
 Any `r + 1`-cliquefree Turán-maximal graph on `n` vertices is isomorphic to `turanGraph n r`. -/

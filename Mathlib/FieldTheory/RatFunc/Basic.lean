@@ -363,6 +363,7 @@ theorem map_injective [MonoidHomClass F R[X] S[X]] (φ : F) (hφ : R[X]⁰ ≤ S
     Localization.mk_eq_mk_iff, Localization.r_iff_exists, mul_cancel_left_coe_nonZeroDivisors,
     exists_const, ← map_mul, hf.eq_iff] using h
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Lift a ring homomorphism that maps polynomials `φ : R[X] →+* S[X]`
 to a `R⟮X⟯ →+* S⟮X⟯`,
 on the condition that `φ` maps non-zero-divisors to non-zero-divisors,
@@ -432,6 +433,7 @@ theorem liftMonoidWithZeroHom_injective [Nontrivial R] (φ : R[X] →*₀ G₀) 
   · rwa [← map_mul, ← map_mul, hφ.eq_iff, mul_comm, mul_comm a'.fst] at this
   all_goals exact map_ne_zero_of_mem_nonZeroDivisors _ hφ (SetLike.coe_mem _)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Lift an injective ring homomorphism `R[X] →+* L` to a `R⟮X⟯ →+* L`
 by mapping both the numerator and denominator and quotienting them. -/
 def liftRingHom (φ : R[X] →+* L) (hφ : R[X]⁰ ≤ L⁰.comap φ) : R⟮X⟯ →+* L :=
@@ -723,6 +725,7 @@ theorem mk_eq_mk' (f : Polynomial K) {g : Polynomial K} (hg : g ≠ 0) :
       ⟨g, mem_nonZeroDivisors_iff_ne_zero.2 hg⟩ := by
   simp only [mk_eq_div, IsFractionRing.mk'_eq_div]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem ofFractionRing_eq :
     (ofFractionRing : FractionRing K[X] → K⟮X⟯) = IsLocalization.algEquiv K[X]⁰ _ _ :=
@@ -731,6 +734,7 @@ theorem ofFractionRing_eq :
       simp only [Localization.mk_eq_mk'_apply, ofFractionRing_mk', IsLocalization.algEquiv_apply,
         IsLocalization.map_mk', RingHom.id_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem toFractionRing_eq :
     (toFractionRing : K⟮X⟯ → FractionRing K[X]) = IsLocalization.algEquiv K[X]⁰ _ _ :=
@@ -739,6 +743,7 @@ theorem toFractionRing_eq :
       simp only [Localization.mk_eq_mk'_apply, ofFractionRing_mk', IsLocalization.algEquiv_apply,
         IsLocalization.map_mk', RingHom.id_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem toFractionRingRingEquiv_symm_eq :
     (toFractionRingRingEquiv K).symm = (IsLocalization.algEquiv K[X]⁰ _ _).toRingEquiv := by

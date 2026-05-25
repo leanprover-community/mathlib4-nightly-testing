@@ -110,8 +110,7 @@ theorem comp_attachBound_mem_closure (A : Subalgebra ℝ C(X, ℝ)) (f : A)
       _ ?_ frequently_mem_polynomials
   -- but need to show that those pullbacks are actually in `A`.
   rintro _ ⟨g, ⟨-, rfl⟩⟩
-  simp only [SetLike.mem_coe, AlgHom.coe_toRingHom, compRightContinuousMap_apply,
-    Polynomial.toContinuousMapOnAlgHom_apply]
+  simp only [SetLike.mem_coe, AlgHom.coe_toRingHom, Polynomial.toContinuousMapOnAlgHom_apply]
   apply polynomial_comp_attachBound_mem
 
 theorem abs_mem_subalgebra_closure (A : Subalgebra ℝ C(X, ℝ)) (f : A) :

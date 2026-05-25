@@ -97,6 +97,7 @@ theorem IsHomogeneous.subsemiringClosure {s : Set A}
     refine sum_mem fun k _ ↦ ?_
     obtain rfl | h := eq_or_ne i (j + k) <;> sorry -- proof was simp [of_eq_of_ne, mul_mem, *]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem IsHomogeneous.subsemiringClosure_of_isHomogeneousElem {s : Set A}
     (h : ∀ x ∈ s, IsHomogeneousElem 𝒜 x) :
     IsHomogeneous 𝒜 (Subsemiring.closure s) := by

@@ -66,6 +66,7 @@ theorem ext {σ τ : p.Gal} (h : ∀ x ∈ p.rootSet p.SplittingField, σ x = τ
         ((SetLike.ext_iff.mp ?_ x).mpr Algebra.mem_top)
   rwa [eq_top_iff, ← SplittingField.adjoin_rootSet, Algebra.adjoin_le_iff]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `p` splits in `F` then the `p.gal` is trivial. -/
 @[implicit_reducible]
 def uniqueGalOfSplits (h : p.Splits) : Unique p.Gal where

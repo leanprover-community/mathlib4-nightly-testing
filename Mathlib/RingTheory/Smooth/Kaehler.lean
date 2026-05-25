@@ -113,6 +113,7 @@ def retractionOfSectionOfKerSqZero : S ⊗[P] Ω[P⁄R] →ₗ[P] RingHom.ker (a
     (IsScalarTower.toAlgHom R P S) hf' g hg).liftKaehlerDifferential
   (f.liftBaseChange S).restrictScalars P
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma retractionOfSectionOfKerSqZero_tmul_D (s : S) (t : P) :
     retractionOfSectionOfKerSqZero g hf' hg (s ⊗ₜ .D _ _ t) =

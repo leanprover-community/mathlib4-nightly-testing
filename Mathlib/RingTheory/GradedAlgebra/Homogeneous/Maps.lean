@@ -29,6 +29,7 @@ variable {A B C σ τ ω ι F G : Type*}
   [GradedRing 𝒜] [GradedRing ℬ] [GradedRing 𝒞]
   (f : 𝒜 →+*ᵍ ℬ) (g : ℬ →+*ᵍ 𝒞)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Map a homogeneous ideal along a graded ring homomorphism. The underlying ideal is
 (definitionally) equal to `Ideal.map`. -/
 def map (I : HomogeneousIdeal 𝒜) : HomogeneousIdeal ℬ where

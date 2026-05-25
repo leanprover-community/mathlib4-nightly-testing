@@ -379,6 +379,7 @@ lemma δ_eq (x : Q.toExtension.H1Cotangent) (y)
   apply SnakeLemma.δ_eq
   exacts [hy, hz]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma δ_eq_δAux (x : Q.ker) (hx) :
     δ Q P ⟨.mk x, hx⟩ = δAux R Q x.1 := by
   let y := Extension.Cotangent.mk (P := (Q.comp P).toExtension) (Q.kerCompPreimage P x)
@@ -402,6 +403,7 @@ lemma δ_eq_δAux (x : Q.ker) (hx) :
       ((Q.comp P).toExtension.cotangentComplex y)
     rw [CotangentSpace.fst_compEquiv, Extension.CotangentSpace.map_cotangentComplex, hy, hx]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma δ_eq_δ : δ Q P = δ Q P' := by
   ext ⟨x, hx⟩
   obtain ⟨x, rfl⟩ := Extension.Cotangent.mk_surjective x

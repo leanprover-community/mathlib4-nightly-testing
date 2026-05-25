@@ -57,6 +57,7 @@ def Iso.sumAssoc : (G ⊕g H) ⊕g I ≃g G ⊕g (H ⊕g I) where
   toEquiv := .sumAssoc ..
   map_rel_iff' := by rintro ((u | u) | u) ((v | v) | v) <;> simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The embedding of `G` into `G ⊕g H`. -/
 @[simps]
 def Embedding.sumInl : G ↪g G ⊕g H where
@@ -64,6 +65,7 @@ def Embedding.sumInl : G ↪g G ⊕g H where
   inj' u v := by simp
   map_rel_iff' := by simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The embedding of `H` into `G ⊕g H`. -/
 @[simps]
 def Embedding.sumInr : H ↪g G ⊕g H where

@@ -124,6 +124,7 @@ lemma mapEquivMonic_symm_map_algebraMap
       (IsScalarTower.toAlgHom R S T).comp ((mapEquivMonic R S n).symm p) := by
   rw [← mapEquivMonic_symm_map, IsScalarTower.coe_toAlgHom]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- In light of the fact that `MonicDegreeEq · n` is representable by `R[X₁,...,Xₙ]`,
 this is the map `R[X₁,...,Xₘ₊ₖ] → R[X₁,...,Xₘ] ⊗ R[X₁,...,Xₖ]` corresponding to the multiplication
@@ -149,6 +150,7 @@ lemma universalFactorizationMap_freeMonic :
   simp [universalFactorizationMap]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma universalFactorizationMap_comp_map :
     (universalFactorizationMap S n m k hn).toRingHom.comp (map (algebraMap R S)) =
@@ -183,6 +185,7 @@ def universalFactorizationMapLiftEquiv (p : MonicDegreeEq S n) :
   left_inv f := by ext <;> simp
   right_inv q := by ext <;> simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma ker_eval₂Hom_universalFactorizationMap :
     RingHom.ker (eval₂Hom (S₁ := MvPolynomial (Fin m) R ⊗[R] MvPolynomial (Fin k) R)
       (universalFactorizationMap R n m k hn) (Sum.elim (.X · ⊗ₜ 1) (1 ⊗ₜ .X ·))) =
@@ -285,6 +288,7 @@ lemma pderiv_inr_universalFactorizationMap_X (i j) :
       simp [show b ≠ i by lia]
     · simp [h]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma universalFactorizationMapPresentation_jacobiMatrix :
     letI := (universalFactorizationMap R n m k hn).toAlgebra
     (universalFactorizationMapPresentation R n m k hn).jacobiMatrix =
@@ -509,6 +513,7 @@ def UniversalFactorizationRing.presentation :
   letI := ((MvPolynomial.mapEquivMonic R _ n).symm p).toAlgebra
   (MvPolynomial.universalFactorizationMapPresentation R n m k hn).baseChange _
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma UniversalFactorizationRing.jacobian_resentation :
     (presentation m k hn p).jacobian =
       (-1) ^ n * (factor₁ m k hn p).1.resultant (factor₂ m k hn p).1 := by
@@ -622,6 +627,7 @@ def UniversalCoprimeFactorizationRing.homEquiv :
     ext
     simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma UniversalCoprimeFactorizationRing.homEquiv_comp_fst {T : Type*} [CommRing T] [Algebra R T]
     (f : 𝓡' →ₐ[R] S) (g : S →ₐ[R] T) :
     (homEquiv T m k hn p (g.comp f)).1.1 = (homEquiv S m k hn p f).1.1.map g := by
@@ -629,6 +635,7 @@ lemma UniversalCoprimeFactorizationRing.homEquiv_comp_fst {T : Type*} [CommRing 
   simp [homEquiv, UniversalFactorizationRing.homEquiv, Polynomial.map_map]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma UniversalCoprimeFactorizationRing.homEquiv_comp_snd {T : Type*} [CommRing T] [Algebra R T]
     (f : 𝓡' →ₐ[R] S) (g : S →ₐ[R] T) :
     (homEquiv T m k hn p (g.comp f)).1.2 = (homEquiv S m k hn p f).1.2.map g := by
@@ -636,6 +643,7 @@ lemma UniversalCoprimeFactorizationRing.homEquiv_comp_snd {T : Type*} [CommRing 
   simp [homEquiv, UniversalFactorizationRing.homEquiv, Polynomial.map_map]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If a monic polynomial `p : R[X]` factors into a product of coprime monic polynomials `p = f * g`
 in the residue field `κ(P)` of some `P : Spec R`,
 then there exists `Q : Spec R_univ` in the universal coprime factorization ring lying over `P`,

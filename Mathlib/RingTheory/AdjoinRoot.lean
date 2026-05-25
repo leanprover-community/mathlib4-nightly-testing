@@ -332,6 +332,7 @@ theorem aeval_algHom_eq_zero (ϕ : AdjoinRoot f →ₐ[R] S) : aeval (ϕ (root f
   rw [aeval_def, ← h, ← map_zero ϕ.toRingHom, ← eval₂_root f, hom_eval₂]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem liftAlgHom_eq_algHom (ϕ : AdjoinRoot f →ₐ[R] S) :
     liftAlgHom f (Algebra.ofId R S) (ϕ (root f)) (aeval_algHom_eq_zero f ϕ) = ϕ := by
@@ -422,6 +423,7 @@ lemma mapAlgHom_comp_mapAlghom (f : S →ₐ[R] T) (g : T →ₐ[R] U) (p : S[X]
         (hg.trans <| by simpa [Polynomial.map_map] using Polynomial.map_dvd g.toRingHom hf) := by
   aesop
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `AdjoinRoot.map` as an `AlgEquiv`. -/
 def mapAlgEquiv (f : S ≃ₐ[R] T) (p : S[X]) (q : T[X]) (h : Associated (p.map f) q) :
     AdjoinRoot p ≃ₐ[R] AdjoinRoot q :=
@@ -618,6 +620,7 @@ theorem powerBasisAux'_repr_apply_to_fun (hg : g.Monic) (f : AdjoinRoot g) (i : 
     (powerBasisAux' hg).repr f i = (modByMonicHom hg f).coeff ↑i :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The power basis `1, root g, ..., root g ^ (d - 1)` for `AdjoinRoot g`,
 where `g` is a monic polynomial of degree `d`. -/
 @[simps]
@@ -657,6 +660,7 @@ variable [Field K] {f : K[X]}
 theorem isIntegral_root (hf : f ≠ 0) : IsIntegral K (root f) :=
   (isAlgebraic_root hf).isIntegral
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem minpoly_root (hf : f ≠ 0) : minpoly K (root f) = f * C f.leadingCoeff⁻¹ := by
   have f'_monic : Monic _ := monic_mul_leadingCoeff_inv hf
   refine (minpoly.unique K _ f'_monic ?_ ?_).symm
@@ -763,6 +767,7 @@ section Equiv'
 variable [CommRing R] [CommRing S] [Algebra R S]
 variable (g : R[X]) (pb : PowerBasis R S)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `S` is an extension of `R` with power basis `pb` and `g` is a monic polynomial over `R`
 such that `pb.gen` has a minimal polynomial `g`, then `S` is isomorphic to `AdjoinRoot g`.
 
@@ -822,6 +827,7 @@ open Ideal DoubleQuot Polynomial
 
 variable [CommRing R] (I : Ideal R) (f : R[X])
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The natural isomorphism `R[α]/(I[α]) ≅ R[α]/((I[x] ⊔ (f)) / (f))` for `α` a root of
 `f : R[X]` and `I : Ideal R`.
 
@@ -1011,6 +1017,7 @@ theorem quotientEquivQuotientMinpolyMap_apply_mk (pb : PowerBasis R S) (I : Idea
     quotientEquiv_mk, AlgEquiv.coe_ringEquiv', AdjoinRoot.equiv'_symm_apply, PowerBasis.lift_aeval,
     AdjoinRoot.aeval_eq, AdjoinRoot.quotEquivQuotMap_apply_mk]
 
+set_option backward.isDefEq.respectTransparency.types false in
 -- This lemma should have the simp tag but this causes a lint issue.
 theorem quotientEquivQuotientMinpolyMap_symm_apply_mk (pb : PowerBasis R S) (I : Ideal R)
     (g : R[X]) :

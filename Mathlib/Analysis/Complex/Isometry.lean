@@ -43,6 +43,7 @@ open ComplexConjugate
 
 local notation "|" x "|" => Complex.abs x
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- An element of the unit circle defines a `LinearIsometryEquiv` from `ℂ` to itself, by
 rotation. -/
 def rotation : Circle →* ℂ ≃ₗᵢ[ℝ] ℂ where

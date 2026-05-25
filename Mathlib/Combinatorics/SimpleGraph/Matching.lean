@@ -72,7 +72,7 @@ noncomputable def IsMatching.toEdge (h : M.IsMatching) (v : M.verts) : M.edgeSet
 
 theorem IsMatching.toEdge_eq_of_adj (h : M.IsMatching) (hv : v ∈ M.verts) (hvw : M.Adj v w) :
     h.toEdge ⟨v, hv⟩ = ⟨s(v, w), hvw⟩ := by
-  simp only [IsMatching.toEdge, Subtype.mk_eq_mk]
+  simp only [IsMatching.toEdge]
   congr
   exact ((h (M.edge_vert hvw)).choose_spec.2 w hvw).symm
 
@@ -80,6 +80,7 @@ theorem IsMatching.toEdge.surjective (h : M.IsMatching) : Surjective h.toEdge :=
   rintro ⟨⟨x, y⟩, he⟩
   exact ⟨⟨x, M.edge_vert he⟩, h.toEdge_eq_of_adj _ he⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem IsMatching.toEdge_eq_toEdge_of_adj (h : M.IsMatching)
     (hv : v ∈ M.verts) (hw : w ∈ M.verts) (ha : M.Adj v w) :
     h.toEdge ⟨v, hv⟩ = h.toEdge ⟨w, hw⟩ := by

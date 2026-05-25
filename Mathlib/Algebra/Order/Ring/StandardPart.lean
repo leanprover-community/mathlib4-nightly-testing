@@ -119,6 +119,7 @@ instance : FloorRing (FiniteElement K) :=
 
 end FiniteElement
 
+set_option backward.isDefEq.respectTransparency false in
 variable (K) in
 /-- The residue field of `FiniteElement`. This quotient inherits an order from `K`,
 which makes it into a linearly ordered Archimedean field. -/
@@ -128,6 +129,7 @@ deriving Field
 
 namespace FiniteResidueField
 
+set_option backward.isDefEq.respectTransparency false in
 instance ordConnected_preimage_mk' : ∀ x, Set.OrdConnected <| Quotient.mk
     (Submodule.quotientRel (IsLocalRing.maximalIdeal (FiniteElement K))) ⁻¹' {x} := by
   refine fun x ↦ ⟨?_⟩
@@ -137,12 +139,14 @@ instance ordConnected_preimage_mk' : ∀ x, Set.OrdConnected <| Quotient.mk
     IsLocalRing.mem_maximalIdeal, mem_nonunits_iff, FiniteElement.not_isUnit_iff_mk_pos] at hy ⊢
   apply hy.trans_le (mk_antitoneOn _ _ _) <;> simpa
 
+set_option backward.isDefEq.respectTransparency false in
 instance : LinearOrder (FiniteResidueField K) :=
   haveI := Classical.decRel fun x y : FiniteElement K ↦
     letI := Submodule.quotientRel (IsLocalRing.maximalIdeal (FiniteElement K))
     x ≈ y
   inferInstanceAs <| LinearOrder (Quotient _)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The quotient map from finite elements on the field to the associated residue field. -/
 def mk : FiniteElement K →+*o FiniteResidueField K where
   monotone' _ _ h := Quotient.mk_monotone h

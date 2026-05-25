@@ -45,6 +45,7 @@ variable [CommRing A]
 variable [AddCommMonoid ι] [LinearOrder ι] [IsOrderedCancelAddMonoid ι]
 variable [SetLike σ A] [AddSubmonoidClass σ A] {𝒜 : ι → σ} [GradedRing 𝒜]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem Ideal.IsHomogeneous.isPrime_of_homogeneous_mem_or_mem {I : Ideal A} (hI : I.IsHomogeneous 𝒜)
     (I_ne_top : I ≠ ⊤)
     (homogeneous_mem_or_mem :

@@ -638,6 +638,7 @@ lemma cfcₙ_mono {f g : R → R} {a : A} (h : ∀ x ∈ σₙ R a, f x ≤ g x)
     exact cfcₙHom_mono ha fun x ↦ h x.1 x.2
   · simp only [cfcₙ_apply_of_not_predicate _ ha, le_rfl]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma cfcₙ_nonneg_iff [NonnegSpectrumClass R A] (f : R → R) (a : A)
     (hf : ContinuousOn f (σₙ R a) := by cfc_cont_tac)
     (h0 : f 0 = 0 := by cfc_zero_tac) (ha : p a := by cfc_tac) :

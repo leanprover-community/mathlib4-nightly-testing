@@ -47,6 +47,7 @@ noncomputable def adjoin.powerBasisAux {x : S} (hx : IsIntegral K x) :
     ext
     exact aeval_algebraMap_apply S (⟨x, _⟩ : K[x]) _
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The power basis `1, x, ..., x ^ (d - 1)` for `K[x]`,
 where `d` is the degree of the minimal polynomial of `x`. See `Algebra.adjoin.powerBasis'` for
 a version over a more general base ring. -/

@@ -131,6 +131,7 @@ lemma equivProjectivization_smul {g : GL (Fin 2) K} (x : OnePoint K) :
     equivProjectivization K (g • x) = g • equivProjectivization K x := by
   rw [Equiv.smul_def, Equiv.apply_symm_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma smul_infty_def {g : GL (Fin 2) K} :
     g • ∞ = (equivProjectivization K).symm (.mk K ![g 0 0, g 1 0] (fun h ↦ by
       simpa [det_fin_two, show g 0 0 = 0 from congr_fun h 0, show g 1 0 = 0 from congr_fun h 1]

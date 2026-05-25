@@ -377,6 +377,7 @@ theorem strictMono_valueGroupEquiv : StrictMono (valueGroupEquiv v) :=
 theorem strictMono_valueGroupEquiv_symm : StrictMono (valueGroupEquiv v).symm :=
   fun _ _ _ ↦ by simpa
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The order-preserving, multiplicative equivalence between the `ValueGroup₀` of the valuation
 on `WithVal v` and the valuation `v`. -/
 @[simps!]
@@ -569,6 +570,7 @@ theorem exists_div_eq_of_surjective {K : Type*} [Field K] {Γ₀ : Type*}
   obtain ⟨r, hr⟩ := hv γ
   exact ⟨r, 1, by simp [hr]⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem restrict_exists_div_eq {K : Type*} [Field K] {Γ₀ : Type*}
     [LinearOrderedCommGroupWithZero Γ₀] (v : Valuation K Γ₀)
     (γ : (MonoidWithZeroHom.ValueGroup₀ v)ˣ) :

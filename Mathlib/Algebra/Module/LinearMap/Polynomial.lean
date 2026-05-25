@@ -92,6 +92,7 @@ lemma toMvPolynomial_map (f : R →+* S) (M : Matrix m n R) (i : m) :
     (M.map f).toMvPolynomial i = MvPolynomial.map f (M.toMvPolynomial i) := by
   simp only [toMvPolynomial, map_apply, map_sum, map_monomial]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma toMvPolynomial_isHomogeneous (M : Matrix m n R) (i : m) :
     (M.toMvPolynomial i).IsHomogeneous 1 := by
   apply MvPolynomial.IsHomogeneous.sum
@@ -128,6 +129,7 @@ lemma toMvPolynomial_add (M N : Matrix m n R) :
   ext i : 1
   simp only [toMvPolynomial, add_apply, map_add, Finset.sum_add_distrib, Pi.add_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma toMvPolynomial_mul (M : Matrix m n R) (N : Matrix n o R) (i : m) :
     (M * N).toMvPolynomial i = bind₁ N.toMvPolynomial (M.toMvPolynomial i) := by
   simp only [toMvPolynomial, mul_apply, map_sum, Finset.sum_comm (γ := o), bind₁, aeval,
@@ -304,6 +306,7 @@ lemma polyCharpolyAux_coeff_eval [Module.Finite R M] [Module.Free R M] (x : L) (
   nontriviality R
   rw [← polyCharpolyAux_map_eq_charpoly φ b bₘ x, Polynomial.coeff_map]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma polyCharpolyAux_map_eval [Module.Finite R M] [Module.Free R M]
     (x : ι → R) :
     (polyCharpolyAux φ b bₘ).map (MvPolynomial.eval x) =

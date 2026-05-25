@@ -27,6 +27,7 @@ variable {A : Type*} [PartialOrder A] [Ring A] [StarRing A] [TopologicalSpace A]
   [StarOrderedRing A] [Algebra ℝ A] [ContinuousFunctionalCalculus ℝ A IsSelfAdjoint]
   [NonnegSpectrumClass ℝ A] [SeparatelyContinuousMul A]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Conjugation by the square root of an element, i.e. `sqrt c * a * sqrt c`. -/
 @[expose]
 noncomputable def conjSqrt (c : A) : A →L[ℝ] A where
