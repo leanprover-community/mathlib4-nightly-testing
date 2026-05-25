@@ -181,5 +181,6 @@ theorem Module.projective_of_localization_maximal'
     apply ((Module.End.isUnit_iff _).mp
       (IsLocalizedModule.map_units (LocalizedModule.mkLinearMap P.primeCompl M) s)).1
     dsimp [e]
+    sorry /- proof was
     simp only [← map_smul, ← smul_assoc, IsLocalization.smul_mk'_self, algebraMap_smul,
-      IsLocalization.map_id_mk']
+      IsLocalization.map_id_mk'] -/

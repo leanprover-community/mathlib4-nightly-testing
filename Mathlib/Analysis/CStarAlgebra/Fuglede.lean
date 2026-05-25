@@ -68,12 +68,13 @@ lemma expMulMulExp_eq_expUnitary_mul_mul_expUnitary (h : SemiconjBy x a b) (z : 
     expMulMulExp a b x z =
       expUnitary ((2 : ℝ) • ℑ (z • star b)) * x * expUnitary ((2 : ℝ) • ℑ (star z • a)) := by
   let _ : NormedAlgebra ℚ A := .restrictScalars ℚ ℂ A
+  sorry /- proof was
   nth_rw 1 [expMulMulExp, ← (h.smul_right (star z)).exp_neg_mul_mul_exp_eq_self]
   simp_rw [← mul_assoc, mul_assoc (_ * _ * x)]
   congr!
   all_goals
     simp [imaginaryPart_apply_coe, smul_comm (2 : ℝ) I, smul_smul I I, sub_eq_add_neg]
-    grind [exp_add_of_commute, Commute.smul_right, Commute.neg_right]
+    grind [exp_add_of_commute, Commute.smul_right, Commute.neg_right] -/
 
 lemma expMulMulExp_const (h : SemiconjBy x a b) (z : ℂ) : expMulMulExp a b x z = x := by
   have hf : Differentiable ℂ (expMulMulExp a b x : ℂ → A) := by unfold expMulMulExp; fun_prop

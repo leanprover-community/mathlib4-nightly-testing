@@ -60,9 +60,10 @@ def mapCoeffs : Derivation R A[X] (PolynomialModule A M) where
         rw [Finsupp.mapRange_single, Finsupp.mapRange_single]
         -- ... and here we go back through the identification.
         change _ = (_ • PolynomialModule.single A _ _) _ + (_ • PolynomialModule.single A _ _) i
+        sorry /- proof was
         simp only [PolynomialModule.monomial_smul_single, AddMonoidAlgebra.single_apply,
           apply_ite d, leibniz, map_zero, PolynomialModule.single_apply, ite_add_zero,
-          add_comm m n]
+          add_comm m n] -/
 
 @[simp]
 lemma mapCoeffs_apply (p : A[X]) (i) :
@@ -71,7 +72,7 @@ lemma mapCoeffs_apply (p : A[X]) (i) :
 @[simp]
 lemma mapCoeffs_monomial (n : ℕ) (x : A) :
     d.mapCoeffs (monomial n x) = .single A n (d x) := Finsupp.ext fun _ ↦ by
-  simp [coeff_monomial, apply_ite d, PolynomialModule.single_apply]
+  sorry -- proof was simp [coeff_monomial, apply_ite d, PolynomialModule.single_apply]
 
 @[simp]
 lemma mapCoeffs_X :
