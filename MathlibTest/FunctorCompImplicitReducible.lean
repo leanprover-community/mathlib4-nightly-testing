@@ -37,9 +37,12 @@ instance [hF : SGMonoidal F] [hG : SGMonoidal G] : SGMonoidal (F ⋙ G) where
 
 variable [hF : SGMonoidal F] [hG : SGMonoidal G] [hH : SGMonoidal H]
 
-/-! ### Variant 1: no extra attribute on `Functor.comp`
+/-! ### Variant 1: `[semireducible]` on `Functor.comp`
 
 TC search distinguishes the two instances; `rfl` rightfully fails. -/
+
+set_option allowUnsafeReducibility true in
+attribute [semireducible] Functor.comp
 
 set_option pp.mvars.anonymous false in
 /--
@@ -57,10 +60,13 @@ example :
 
 /-! ### Variant 2: `[implicit_reducible]` on `Functor.comp` (narrower tier)
 
+This is the attribute `Functor.comp` actually gets.
+
 Still safe: the narrower tier does not feed into TC-search defeq, so the two
 instances remain distinct. -/
 
 section ImplicitReducible
+set_option allowUnsafeReducibility true in
 attribute [local implicit_reducible] Functor.comp
 
 set_option pp.mvars.anonymous false in
@@ -87,6 +93,7 @@ even though the two instances are mathematically distinct. This pins the
 `[instance_reducible]` even narrower, this test would notice. -/
 
 section InstanceReducible
+set_option allowUnsafeReducibility true in
 attribute [local instance_reducible] Functor.comp
 
 example :

@@ -150,7 +150,7 @@ lemma MonsterData.mk_mem_monsterCells_iff_of_le {m : MonsterData N} {r : Fin (N 
   simp only [monsterCells, Set.mem_range, Prod.mk.injEq]
   refine ⟨?_, ?_⟩
   · rintro ⟨r', rfl, rfl⟩
-    simp only [Subtype.coe_eta]
+    simp only
   · rintro rfl
     exact ⟨⟨r, hr1, hrN⟩, rfl, rfl⟩
 
