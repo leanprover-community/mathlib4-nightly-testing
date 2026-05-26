@@ -104,6 +104,7 @@ def functor : ℕ → Action (TopModuleCat R) G ⥤ Action (TopModuleCat R) G
   | n + 1 => functor n ⋙ I R G
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
+set_option backward.isDefEq.respectTransparency.instances false in
 /-- The differential map in `MultiInd.complex`. -/
 def d : ∀ n : ℕ, functor R G n ⟶ functor R G (n + 1)
   | 0     => const R G
@@ -111,6 +112,7 @@ def d : ∀ n : ℕ, functor R G n ⟶ functor R G (n + 1)
 
 lemma d_zero : d R G 0 = const R G := rfl
 
+set_option backward.isDefEq.respectTransparency.instances false in
 lemma d_succ (n : ℕ) :
     d R G (n + 1) = whiskerLeft (functor R G (n + 1)) (const R G) -
       (by exact whiskerRight (d R G n) (I R G)) := rfl

@@ -355,6 +355,8 @@ lemma d_single (x : Gⁿ⁺¹) :
         single (Fin.contractNth j (· * ·) x) (single (1 : G) ((-1 : k) ^ ((j : ℕ) + 1))) := by
   simp [d, ← Representation.IntertwiningMap.toLinearMap_apply]
 
+set_option backward.isDefEq.respectTransparency.instances false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 -- the reason the following two horrible lemmas exist is again because `Action` has bad DefEq and
 -- we should be able to remove them as soon as we get rid of the use of `Action` in this file.
 open scoped MonoidalCategory in
@@ -367,6 +369,8 @@ private lemma _root_.Representation.μ_apply_single_single_leftRegular (m : ℕ)
   Representation.LinearizeMonoidal.μ_apply_single_single
     (X := Action.leftRegular G) (Y := Action.trivial G (Fin m → G)) g f r s
 
+set_option backward.isDefEq.respectTransparency.instances false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 open scoped MonoidalCategory in
 @[simp]
 private lemma _root_.Representation.linearizeMap_single_diagonal (m : ℕ) (g : G) (f : Fin m → G)

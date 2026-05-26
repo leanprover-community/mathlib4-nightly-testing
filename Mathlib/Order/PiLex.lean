@@ -122,6 +122,7 @@ instance Lex.isStrictOrder [LinearOrder ι] [∀ a, PartialOrder (β a)] :
       ⟨N₂, fun j hj => (lt_N₁ _ (hj.trans H)).trans (lt_N₂ _ hj), (lt_N₁ _ H).symm ▸ b_lt_c⟩]
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 instance Colex.isStrictOrder [LinearOrder ι] [∀ a, PartialOrder (β a)] :
     IsStrictOrder (Colex (∀ i, β i)) (· < ·) :=
   Lex.isStrictOrder (ι := ιᵒᵈ)
@@ -139,6 +140,7 @@ noncomputable instance Lex.linearOrder [LinearOrder ι] [WellFoundedLT ι]
     { trichotomous := (trichotomous_lex _ _ IsWellFounded.wf).1 } (Classical.decRel _)
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 /-- `Colex (∀ i, α i)` is a linear order if the original order has well-founded `>`. -/
 noncomputable instance Colex.linearOrder [LinearOrder ι] [WellFoundedGT ι]
     [∀ a, LinearOrder (β a)] : LinearOrder (Colex (∀ i, β i)) :=
@@ -217,29 +219,35 @@ section Colex
 variable [WellFoundedGT ι]
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 theorem toColex_monotone : Monotone (@toColex (∀ i, β i)) :=
   toLex_monotone (ι := ιᵒᵈ)
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 theorem toColex_strictMono : StrictMono (@toColex (∀ i, β i)) :=
   toLex_strictMono (ι := ιᵒᵈ)
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 @[simp]
 theorem lt_toColex_update_self_iff : toColex x < toColex (update x i a) ↔ x i < a :=
   lt_toLex_update_self_iff (ι := ιᵒᵈ)
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 @[simp]
 theorem toColex_update_lt_self_iff : toColex (update x i a) < toColex x ↔ a < x i :=
   toLex_update_lt_self_iff (ι := ιᵒᵈ)
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 @[simp]
 theorem le_toColex_update_self_iff : toColex x ≤ toColex (update x i a) ↔ x i ≤ a :=
   le_toLex_update_self_iff (ι := ιᵒᵈ)
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 @[simp]
 theorem toColex_update_le_self_iff : toColex (update x i a) ≤ toColex x ↔ a ≤ x i :=
   toLex_update_le_self_iff (ι := ιᵒᵈ)
@@ -329,6 +337,7 @@ theorem Lex.noMaxOrder' [Preorder ι] [∀ i, LT (β i)] (i : ι) [NoMaxOrder (�
       (Function.update_of_ne hj.ne b a).symm, by rwa [Function.update_self i b]⟩⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.isDefEq.respectTransparency.outParams false in
 theorem Colex.noMaxOrder' [Preorder ι] [∀ i, LT (β i)] (i : ι) [NoMaxOrder (β i)] :
     NoMaxOrder (Colex (∀ i, β i)) :=
   Lex.noMaxOrder' (ι := ιᵒᵈ) i

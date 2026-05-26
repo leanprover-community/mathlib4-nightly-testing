@@ -584,11 +584,13 @@ theorem mdifferentiableAt_of_isInvertible_mfderiv
     (hf : (mfderiv I I' f x).IsInvertible) : MDifferentiableAt I I' f x :=
   mdifferentiableAt_of_mfderiv_injective hf.injective
 
+set_option backward.isDefEq.respectTransparency.instances false in
 theorem HasMFDerivWithinAt.mono (h : HasMFDerivWithinAt I I' f t x f') (hst : s ⊆ t) :
     HasMFDerivWithinAt I I' f s x f' :=
   ⟨ContinuousWithinAt.mono h.1 hst,
     HasFDerivWithinAt.mono h.2 (inter_subset_inter (preimage_mono hst) (Subset.refl _))⟩
 
+set_option backward.isDefEq.respectTransparency.instances false in
 theorem HasMFDerivAt.hasMFDerivWithinAt (h : HasMFDerivAt I I' f x f') :
     HasMFDerivWithinAt I I' f s x f' :=
   ⟨ContinuousAt.continuousWithinAt h.1, HasFDerivWithinAt.mono h.2 inter_subset_right⟩
@@ -626,6 +628,7 @@ theorem hasMFDerivWithinAt_inter (h : t ∈ 𝓝 x) :
     continuousWithinAt_inter h]
   exact extChartAt_preimage_mem_nhds h
 
+set_option backward.isDefEq.respectTransparency.instances false in
 theorem HasMFDerivWithinAt.union (hs : HasMFDerivWithinAt I I' f s x f')
     (ht : HasMFDerivWithinAt I I' f t x f') : HasMFDerivWithinAt I I' f (s ∪ t) x f' := by
   constructor
@@ -901,6 +904,7 @@ theorem preimage_extChartAt_eventuallyEq_compl_singleton (y : M) (h : s =ᶠ[�
 
 /-! ### Congruence lemmas for derivatives on manifolds -/
 
+set_option backward.isDefEq.respectTransparency.instances false in
 /-- If two sets coincide locally, except maybe at a point, then it is equivalent to have a manifold
 derivative within one or the other. -/
 theorem hasMFDerivWithinAt_congr_set' (y : M) (h : s =ᶠ[𝓝[{y}ᶜ] x] t) :
@@ -963,6 +967,7 @@ theorem HasMFDerivWithinAt.congr_mfderiv (h : HasMFDerivWithinAt I I' f s x f') 
     HasMFDerivWithinAt I I' f s x f₁' :=
   h' ▸ h
 
+set_option backward.isDefEq.respectTransparency.instances false in
 theorem HasMFDerivWithinAt.congr_of_eventuallyEq (h : HasMFDerivWithinAt I I' f s x f')
     (h₁ : f₁ =ᶠ[𝓝[s] x] f) (hx : f₁ x = f x) : HasMFDerivWithinAt I I' f₁ s x f' := by
   refine ⟨ContinuousWithinAt.congr_of_eventuallyEq h.1 h₁ hx, ?_⟩
