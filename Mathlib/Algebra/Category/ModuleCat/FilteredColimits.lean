@@ -150,6 +150,7 @@ def coconeMorphism (j : J) : F.obj j ⟶ colimit F :=
     map_smul' := by solve_by_elim }
 
 /-- The cocone over the proposed colimit module. -/
+@[implicit_reducible]
 def colimitCocone : Cocone F where
   pt := colimit F
   ι :=

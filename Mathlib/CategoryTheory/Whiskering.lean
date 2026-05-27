@@ -72,6 +72,10 @@ lemma hcomp_id {G H : C ⥤ D} (α : G ⟶ H) (F : D ⥤ E) : α ◫ 𝟙 F = wh
 
 variable (C D E)
 
+set_option linter.tacticCheckInstances true
+set_option allowUnsafeReducibility true
+attribute [implicit_reducible] id
+
 set_option backward.defeqAttrib.useBackward true in
 /-- Left-composition gives a functor `(C ⥤ D) ⥤ ((D ⥤ E) ⥤ (C ⥤ E))`.
 
@@ -88,6 +92,8 @@ def whiskeringLeft : (C ⥤ D) ⥤ (D ⥤ E) ⥤ C ⥤ E where
         { app := fun c => H.map (τ.app c)
           naturality := fun X Y f => by dsimp; rw [← H.map_comp, ← H.map_comp, ← τ.naturality] }
       naturality := fun X Y f => by ext; dsimp; rw [f.naturality] }
+
+attribute [defeq, simp] whiskeringLeft_obj_obj
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Right-composition gives a functor `(D ⥤ E) ⥤ ((C ⥤ D) ⥤ (C ⥤ E))`.

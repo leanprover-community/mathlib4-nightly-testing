@@ -52,7 +52,7 @@ variable [∀ n : ℕ, HasWidePullback.{0} f.right (fun _ : Fin (n + 1) => f.lef
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The Čech nerve associated to an arrow. -/
-@[simps]
+@[simps, implicit_reducible]
 def cechNerve : SimplicialObject C where
   obj n := widePullback.{0} f.right (fun _ : Fin (n.unop.len + 1) => f.left) fun _ => f.hom
   map g := WidePullback.lift (WidePullback.base _)
@@ -346,6 +346,7 @@ namespace CechNerveTerminalFrom
 variable [HasTerminal C] (ι : Type w)
 
 /-- The diagram `Option ι ⥤ C` sending `none` to the terminal object and `some j` to `X`. -/
+@[implicit_reducible]
 def wideCospan (X : C) : WidePullbackShape ι ⥤ C :=
   WidePullbackShape.wideCospan (terminal C) (fun _ : ι => X) fun _ => terminal.from X
 

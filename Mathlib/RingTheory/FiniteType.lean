@@ -131,6 +131,8 @@ theorem iff_quotient_freeAlgebra :
   · rintro ⟨s, f, hsur⟩
     exact .of_surjective f hsur
 
+-- TODO: `respectTransparency.types false` is necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency false in
 /-- A commutative algebra is finitely generated if and only if it is a quotient
 of a polynomial ring whose variables are indexed by a finset. -/
 theorem iff_quotient_mvPolynomial :

@@ -364,6 +364,8 @@ theorem valueGroup_eq : valueGroup (instValued v).v = valueGroup v := by
   simp [valueGroup, valueMonoid, ← (WithVal.ofVal_surjective v).range_comp]
   rfl
 
+-- TODO: `respectTransparency.types false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The multiplicative equivalence between the `valueGroup` of the valuation on `WithVal v`
 and the valuation `v`. -/
 @[simps! apply symm_apply]

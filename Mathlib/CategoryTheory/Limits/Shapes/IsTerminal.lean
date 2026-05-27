@@ -38,7 +38,7 @@ namespace CategoryTheory.Limits
 variable {C : Type u₁} [Category.{v₁} C]
 
 /-- Construct a cone for the empty diagram given an object. -/
-@[simps]
+@[simps, implicit_reducible]
 def asEmptyCone (X : C) : Cone (Functor.empty.{0} C) :=
   { pt := X
     π :=

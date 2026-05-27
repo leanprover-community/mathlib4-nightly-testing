@@ -131,7 +131,7 @@ variable {P' : ObjectProperty C}
 
 /-- If `P` and `P'` are properties of objects such that `P ≤ P'`, there is
 an induced functor `P.FullSubcategory ⥤ P'.FullSubcategory`. -/
-@[simps]
+@[simps, implicit_reducible]
 def ιOfLE (h : P ≤ P') : P.FullSubcategory ⥤ P'.FullSubcategory where
   obj X := ⟨X.1, h _ X.2⟩
   map f := homMk f.hom

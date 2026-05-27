@@ -35,7 +35,7 @@ variable {D : Type u₂} [Category.{v₂} D]
 
 /-- The over category has as objects arrows in `T` with codomain `X` and as morphisms commutative
 triangles. -/
-@[stacks 001G]
+@[stacks 001G, implicit_reducible]
 def Over (X : T) :=
   CostructuredArrow (𝟭 T) X
 
@@ -95,7 +95,7 @@ theorem comp_left (a b c : Over X) (f : a ⟶ b) (g : b ⟶ c) : (f ≫ g).left 
   rfl
 
 /-- To give an object in the over category, it suffices to give a morphism with codomain `X`. -/
-@[simps! left hom]
+@[simps! left hom, implicit_reducible]
 def mk {X Y : T} (f : Y ⟶ X) : Over X :=
   CostructuredArrow.mk f
 
@@ -195,7 +195,7 @@ def forgetCocone (X : T) : Limits.Cocone (forget X) :=
     ι := { app := Comma.hom } }
 
 /-- A morphism `f : X ⟶ Y` induces a functor `Over X ⥤ Over Y` in the obvious way. -/
-@[stacks 001G]
+@[stacks 001G, implicit_reducible]
 def map {Y : T} (f : X ⟶ Y) : Over X ⥤ Over Y :=
   Comma.mapRight _ <| Discrete.natTrans fun _ => f
 

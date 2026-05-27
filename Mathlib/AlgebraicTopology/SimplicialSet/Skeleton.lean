@@ -313,7 +313,14 @@ lemma ι_t_ι_eq_ι_l_b_ι (c : Cell i d) :
 lemma ι_l (c : Cell i d) : c.ιSigmaBoundary ≫ l i d = ∂Δ[d].ι ≫ c.ιSigmaStdSimplex := by
   simp
 
-@[reassoc (attr := simp)]
+/-
+Now that `Cofan.mk` and `Discrete.functor` are implicit-reducible and
+`backward.isDefEq.implicitBump` is enabled, the simp lemma `colimit.ι_desc_assoc` is applicable.
+Previously, we had to use `by simp [Sigma.ι_desc_assoc]`, now `by simp` suffices.
+The `simp` annotation on this lemma was removed because it would be redundant now, triggering the
+`simpNF` linter.
+-/
+@[reassoc]
 lemma ι_b_ι (c : Cell i d) : c.ιSigmaStdSimplex ≫ b i d ≫ Subcomplex.ι _ = c.map := by
   simp
 

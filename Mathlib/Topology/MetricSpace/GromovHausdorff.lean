@@ -97,6 +97,8 @@ instance : Inhabited GHSpace :=
 def GHSpace.Rep (p : GHSpace) : Type :=
   (Quotient.out p : NonemptyCompacts ℓ_infty_ℝ)
 
+-- TODO: `respectTransparency false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency false in
 theorem eq_toGHSpace_iff {X : Type u} [MetricSpace X] [CompactSpace X] [Nonempty X]
     {p : NonemptyCompacts ℓ_infty_ℝ} :
     ⟦p⟧ = toGHSpace X ↔ ∃ Ψ : X → ℓ_infty_ℝ, Isometry Ψ ∧ range Ψ = p := by

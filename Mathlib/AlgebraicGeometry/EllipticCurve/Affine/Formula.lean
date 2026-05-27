@@ -56,7 +56,7 @@ coordinates will be defined in `Mathlib/AlgebraicGeometry/EllipticCurve/Affine/P
 
 elliptic curve, affine, negation, doubling, addition, group law
 -/
-
+set_option linter.tacticCheckInstances true
 @[expose] public section
 
 open Polynomial
@@ -109,7 +109,11 @@ variable (W') in
 `W`.
 
 This depends on `W`, and has argument order: `x`, `y`. -/
-@[simp]
+-- Without this `implicit_reducible` attribute, `simpNF` gives a linter error on `slope_of_Y_eq`
+-- because of a nonconfluence: `negY` can be unfolded on the LHS, which prevents discharging the
+-- side condition of `slope_of_Y_eq` -- except if `negY` is implicit-reducible.
+-- So this attribute improves the confluence of `simp`.
+@[simp, implicit_reducible]
 def negY (x y : R) : R :=
   -y - W'.a₁ * x - W'.a₃
 

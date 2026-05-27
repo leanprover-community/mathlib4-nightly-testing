@@ -252,7 +252,7 @@ instance ThinSkeleton.preorder : Preorder (ThinSkeleton C) where
   le_trans a b c := Quotient.inductionOn₃ a b c fun _ _ _ => Nonempty.map2 (· ≫ ·)
 
 /-- The functor from a category to its thin skeleton. -/
-@[simps]
+@[simps, implicit_reducible]
 def toThinSkeleton : C ⥤ ThinSkeleton C where
   obj := ThinSkeleton.mk
   map f := homOfLE (Nonempty.intro f)

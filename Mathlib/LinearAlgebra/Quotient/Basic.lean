@@ -263,6 +263,8 @@ please refer to the dedicated version `Submodule.factorPow`. -/
 abbrev factor (H : p ≤ p') : M ⧸ p →ₗ[R] M ⧸ p' :=
   mapQ _ _ LinearMap.id H
 
+-- TODO: produces `simpNF` linter error without making `Set.Mem` implicit-reducible (as it is now),
+-- but doing so causes other issues (search for `Set.Mem` todos)
 @[simp]
 theorem factor_mk (H : p ≤ p') (x : M) : factor H (mkQ p x) = mkQ p' x :=
   rfl

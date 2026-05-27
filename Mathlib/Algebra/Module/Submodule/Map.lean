@@ -168,6 +168,7 @@ theorem map_equivMapOfInjective_symm_apply (f : M →ₛₗ[σ₁₂] M₂) (i :
     i.eq_iff, LinearEquiv.apply_symm_apply]
 
 /-- The pullback of a submodule `p ⊆ M₂` along `f : M → M₂` -/
+@[implicit_reducible]
 def comap (f : M →ₛₗ[σ₁₂] M₂) (p : Submodule R₂ M₂) : Submodule R M :=
   { p.toAddSubmonoid.comap f with
     carrier := f ⁻¹' p

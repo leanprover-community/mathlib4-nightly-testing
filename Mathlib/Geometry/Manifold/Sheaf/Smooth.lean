@@ -291,6 +291,7 @@ def smoothPresheafCommRing : TopCat.Presheaf CommRingCat.{u} (TopCat.of M) :=
 
 /-- The sheaf of smooth functions from `M` to `R`, for `R` a smooth commutative ring, as a sheaf of
 commutative rings. -/
+@[implicit_reducible]
 def smoothSheafCommRing : TopCat.Sheaf CommRingCat.{u} (TopCat.of M) where
   obj := smoothPresheafCommRing IM I M R
   property := by

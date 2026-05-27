@@ -163,6 +163,8 @@ instance : Module.FinitePresentation R R := Module.finitePresentation_of_project
 instance : Module.FinitePresentation R (ι →₀ R) := Module.finitePresentation_of_projective _ _
 instance : Module.FinitePresentation R (ι → R) := Module.finitePresentation_of_projective _ _
 
+-- TODO: `respectTransparency false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency false in
 lemma Module.finitePresentation_of_surjective [h : Module.FinitePresentation R M] (l : M →ₗ[R] N)
     (hl : Function.Surjective l) (hl' : (LinearMap.ker l).FG) :
     Module.FinitePresentation R N := by
@@ -181,6 +183,8 @@ lemma Module.finitePresentation_of_surjective [h : Module.FinitePresentation R M
     ← Finset.coe_image]
   exact Submodule.FG.sup ⟨_, rfl⟩ hs'
 
+-- TODO: `respectTransparency false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency false in
 lemma Module.FinitePresentation.fg_ker [Module.Finite R M]
     [h : Module.FinitePresentation R N] (l : M →ₗ[R] N) (hl : Function.Surjective l) :
     (LinearMap.ker l).FG := by
@@ -210,6 +214,8 @@ lemma Module.FinitePresentation.fg_ker_iff [Module.FinitePresentation R M]
     Submodule.FG (LinearMap.ker l) ↔ Module.FinitePresentation R N :=
   ⟨finitePresentation_of_surjective l hl, fun _ ↦ fg_ker l hl⟩
 
+-- TODO: `respectTransparency false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency false in
 lemma Module.finitePresentation_of_ker [Module.FinitePresentation R N]
     (l : M →ₗ[R] N) (hl : Function.Surjective l) [Module.FinitePresentation R (LinearMap.ker l)] :
     Module.FinitePresentation R M := by
@@ -358,6 +364,8 @@ instance (S : Submonoid R) [Module.FinitePresentation R M] :
   FinitePresentation.of_isBaseChange (LocalizedModule.mkLinearMap S M)
     ((isLocalizedModule_iff_isBaseChange S _ _).mp inferInstance)
 
+-- TODO: `respectTransparency false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency false in
 lemma Module.FinitePresentation.exists_lift_of_isLocalizedModule
     [h : Module.FinitePresentation R M] (g : M →ₗ[R] N') :
     ∃ (h : M →ₗ[R] N) (s : S), f ∘ₗ h = s • g := by

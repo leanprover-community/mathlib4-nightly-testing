@@ -51,6 +51,8 @@ instance instIsMulCommutative_iSup [Preorder ι] [IsDirectedOrder ι]
 
 variable (K)
 
+-- TODO: `respectTransparency.types false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Define an algebra homomorphism on a directed supremum of subalgebras by defining
 it on each subalgebra, and proving that it agrees on the intersection of subalgebras. -/
 noncomputable def iSupLift (dir : Directed (· ≤ ·) K) (f : ∀ i, K i →ₐ[R] B)

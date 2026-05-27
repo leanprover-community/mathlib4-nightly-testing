@@ -32,6 +32,8 @@ universe u
 
 variable (A : Type u) [AddCommGroup A]
 
+-- TODO: `respectTransparency.types false` necessary since `Set.Mem` was made implicit-reducible
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Module.Baer.of_divisible [DivisibleBy A ℤ] : Module.Baer ℤ A := fun I g ↦ by
   rcases IsPrincipalIdealRing.principal I with ⟨m, rfl⟩
   obtain rfl | h0 := eq_or_ne m 0

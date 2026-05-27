@@ -998,6 +998,8 @@ instance instIsMulCommutative_iSup {ι : Type*} [Nonempty ι] [Preorder ι] [IsD
     IsMulCommutative (⨆ i, S i : NonUnitalSubalgebra R A) :=
   isMulCommutative_iSup S.monotone.directed_le
 
+-- TODO: fails since `Set.Mem` is implicit-reducible
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Define an algebra homomorphism on a directed supremum of non-unital subalgebras by defining
 it on each non-unital subalgebra, and proving that it agrees on the intersection of
 non-unital subalgebras. -/

@@ -202,7 +202,7 @@ def functorComp {I : Type u₁} {J : Type u₁'} (f : J → C) (g : I → J) :
 a natural transformation is just a collection of maps,
 as the naturality squares are trivial.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def natTrans {I : Type u₁} {F G : Discrete I ⥤ C} (f : ∀ i : Discrete I, F.obj i ⟶ G.obj i) :
     F ⟶ G where
   app := f

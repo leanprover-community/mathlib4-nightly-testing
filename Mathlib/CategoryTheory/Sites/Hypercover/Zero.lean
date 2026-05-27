@@ -237,7 +237,7 @@ set_option backward.isDefEq.respectTransparency.types false in
   simp [add, presieve₀_reindex, presieve₀_sum]
 
 /-- The single object pre-`0`-hypercover obtained from taking the coproduct of the components. -/
-@[simps I₀ X, simps -isSimp f]
+@[simps I₀ X, simps -isSimp f, implicit_reducible]
 def sigmaOfIsColimit (E : PreZeroHypercover.{w} S) {c : Cofan E.X} (hc : IsColimit c) :
     PreZeroHypercover.{w} S where
   I₀ := PUnit

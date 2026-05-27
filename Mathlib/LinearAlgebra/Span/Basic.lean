@@ -172,8 +172,14 @@ variable [Semiring S] [SMul R S] [Module S M] [IsScalarTower R S M] (p : Submodu
 @[simps] def inclusionSpan :
     p →ₗ[R] span S (p : Set M) where
   toFun x := ⟨x, subset_span x.property⟩
-  map_add' x y := by simp
-  map_smul' t x := by simp
+  map_add' x y := by
+    -- TODO: This could be replaced with `simp` if `backward.isDefEq.respectTransparency false`
+    -- Underlying problem: `Set.Mem` being `implicit_reducible` makes unification get stuck on a
+    -- metavariable
+    simp only [coe_add, AddMemClass.mk_add_mk (A := Submodule S M)]
+  map_smul' t x := by
+    -- TODO: same problem
+    simp only [SetLike.val_smul, RingHom.id_apply, SetLike.mk_smul_of_tower_mk (S := Submodule S M)]
 
 lemma injective_inclusionSpan :
     Injective (p.inclusionSpan S) := by

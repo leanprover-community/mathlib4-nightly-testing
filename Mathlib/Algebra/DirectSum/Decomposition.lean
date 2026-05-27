@@ -146,17 +146,16 @@ theorem degree_eq_of_mem_mem {x : M} {i j : ι} (hxi : x ∈ ℳ i) (hxj : x ∈
     i = j := by
   contrapose! hx; rw [← decompose_of_mem_same ℳ hxj, decompose_of_mem_ne ℳ hxi hx]
 
---set_option backward.isDefEq.respectTransparency.types false in
 /-- If `M` is graded by `ι` with degree `i` component `ℳ i`, then it is isomorphic as
 an additive monoid to a direct sum of components. -/
 @[simps!]
 def decomposeAddEquiv : M ≃+ ⨁ i, ℳ i :=
   AddEquiv.symm { (decompose ℳ).symm with
     -- TODO:
-    -- `simps!` won't apply `AddEquiv.symm_mk` without this `cast rfl` because `decompose` and
+    -- `simps!` won't apply `AddEquiv.symm_mk` without this `id` because `decompose` and
     -- `Equiv.symm` are not implicit-reducible, so the type of the proof doesn't match the expected
     -- type up to implicit reducibility.
-    map_add' := cast rfl <| map_add (DirectSum.coeAddMonoidHom ℳ) }
+    map_add' := id <| map_add (DirectSum.coeAddMonoidHom ℳ) }
 
 @[simp]
 theorem decompose_zero : decompose ℳ (0 : M) = 0 :=

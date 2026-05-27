@@ -59,7 +59,7 @@ set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- In a category with pullbacks, a morphism `f : X ⟶ Y` induces a functor `Over Y ⥤ Over X`,
 by pulling back a morphism along `f`. -/
-@[simps! +simpRhs obj_left obj_hom map_left]
+@[simps! +simpRhs obj_left obj_hom map_left, implicit_reducible]
 def pullback {X Y : C} (f : X ⟶ Y) [HasPullbacksAlong f] :
     Over Y ⥤ Over X where
   obj g := Over.mk (pullback.snd g.hom f)

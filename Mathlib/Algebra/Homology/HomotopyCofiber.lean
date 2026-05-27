@@ -229,7 +229,7 @@ end homotopyCofiber
 
 /-- The homotopy cofiber of a morphism of homological complexes,
 also known as the mapping cone. -/
-@[simps]
+@[simps, implicit_reducible]
 noncomputable def homotopyCofiber : HomologicalComplex C c where
   X i := homotopyCofiber.X φ i
   d i j := homotopyCofiber.d φ i j

@@ -254,7 +254,7 @@ variable {L' : A' ⥤ T'} {R' : B' ⥤ T'}
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor `Comma L R ⥤ Comma L' R'` induced by three functors `F₁`, `F₂`, `F`
 and two natural transformations `F₁ ⋙ L' ⟶ L ⋙ F` and `R ⋙ F ⟶ F₂ ⋙ R'`. -/
-@[simps]
+@[simps, implicit_reducible]
 def map : Comma L R ⥤ Comma L' R' where
   obj X :=
     { left := F₁.obj X.left
@@ -333,7 +333,7 @@ def mapSnd : map α β ⋙ snd L' R' ≅ snd L R ⋙ F₂ :=
 end
 
 /-- A natural transformation `L₁ ⟶ L₂` induces a functor `Comma L₂ R ⥤ Comma L₁ R`. -/
-@[simps]
+@[simps, implicit_reducible]
 def mapLeft (l : L₁ ⟶ L₂) : Comma L₂ R ⥤ Comma L₁ R where
   obj X :=
     { left := X.left
@@ -372,7 +372,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A natural isomorphism `L₁ ≅ L₂` induces an equivalence of categories
 `Comma L₁ R ≌ Comma L₂ R`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def mapLeftIso (i : L₁ ≅ L₂) : Comma L₁ R ≌ Comma L₂ R where
   functor := mapLeft _ i.inv
   inverse := mapLeft _ i.hom
@@ -380,7 +380,7 @@ def mapLeftIso (i : L₁ ≅ L₂) : Comma L₁ R ≌ Comma L₂ R where
   counitIso := (mapLeftComp _ _ _).symm ≪≫ mapLeftEq _ _ _ i.inv_hom_id ≪≫ mapLeftId _ _
 
 /-- A natural transformation `R₁ ⟶ R₂` induces a functor `Comma L R₁ ⥤ Comma L R₂`. -/
-@[simps]
+@[simps, implicit_reducible]
 def mapRight (r : R₁ ⟶ R₂) : Comma L R₁ ⥤ Comma L R₂ where
   obj X :=
     { left := X.left
@@ -419,7 +419,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A natural isomorphism `R₁ ≅ R₂` induces an equivalence of categories
 `Comma L R₁ ≌ Comma L R₂`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def mapRightIso (i : R₁ ≅ R₂) : Comma L R₁ ≌ Comma L R₂ where
   functor := mapRight _ i.hom
   inverse := mapRight _ i.inv
@@ -433,7 +433,7 @@ section
 variable {C : Type u₄} [Category.{v₄} C]
 
 /-- The functor `(F ⋙ L, R) ⥤ (L, R)` -/
-@[simps]
+@[simps, implicit_reducible]
 def preLeft (F : C ⥤ A) (L : A ⥤ T) (R : B ⥤ T) : Comma (F ⋙ L) R ⥤ Comma L R where
   obj X :=
     { left := F.obj X.left
@@ -467,7 +467,7 @@ instance isEquivalence_preLeft (F : C ⥤ A) (L : A ⥤ T) (R : B ⥤ T) [F.IsEq
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The functor `(L, F ⋙ R) ⥤ (L, R)` -/
-@[simps]
+@[simps, implicit_reducible]
 def preRight (L : A ⥤ T) (F : C ⥤ B) (R : B ⥤ T) : Comma L (F ⋙ R) ⥤ Comma L R where
   obj X :=
     { left := X.left

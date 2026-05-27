@@ -230,6 +230,9 @@ instance top_arrow_isIso {B : C} : IsIso (⊤ : Subobject B).arrow := by
   rw [← underlyingIso_top_hom]
   infer_instance
 
+set_option allowUnsafeReducibility true
+attribute [implicit_reducible] Quotient.mk' -- TODO: move to Init.Core
+
 @[reassoc (attr := simp)]
 theorem underlyingIso_inv_top_arrow {B : C} :
     (underlyingIso _).inv ≫ (⊤ : Subobject B).arrow = 𝟙 B :=
