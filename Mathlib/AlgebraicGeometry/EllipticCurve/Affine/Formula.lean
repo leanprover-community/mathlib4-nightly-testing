@@ -56,7 +56,7 @@ coordinates will be defined in `Mathlib/AlgebraicGeometry/EllipticCurve/Affine/P
 
 elliptic curve, affine, negation, doubling, addition, group law
 -/
-set_option linter.tacticCheckInstances true
+
 @[expose] public section
 
 open Polynomial
