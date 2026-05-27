@@ -72,10 +72,6 @@ lemma hcomp_id {G H : C ⥤ D} (α : G ⟶ H) (F : D ⥤ E) : α ◫ 𝟙 F = wh
 
 variable (C D E)
 
-set_option linter.tacticCheckInstances true
-set_option allowUnsafeReducibility true
-attribute [implicit_reducible] id
-
 set_option backward.defeqAttrib.useBackward true in
 /-- Left-composition gives a functor `(C ⥤ D) ⥤ ((D ⥤ E) ⥤ (C ⥤ E))`.
 
