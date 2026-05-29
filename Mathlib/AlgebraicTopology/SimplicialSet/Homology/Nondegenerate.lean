@@ -124,7 +124,6 @@ lemma ιNormalizedChainComplex_fromNormalizedChainComplex_f (x : X _⦋n⦌) :
       X.ιChainComplex x ≫ (PInfty).f n := by
   dsimp [ιNormalizedChainComplex]
   rw [Category.assoc, toNormalizedChainComplex_f_fromNormalizedChainComplex_f]
-  rfl
 
 set_option backward.isDefEq.respectTransparency false in
 lemma ιNormalizedChainComplex_eq_zero (x : X _⦋n⦌) (hx : x ∈ X.degenerate n) :
