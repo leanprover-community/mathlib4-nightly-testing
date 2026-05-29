@@ -293,12 +293,14 @@ theorem functor_map_id (F : Discrete J ⥤ C) {j : Discrete J} (f : j ⟶ j) :
 
 end Discrete
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma Discrete.forall {α : Type*} {p : Discrete α → Prop} :
     (∀ (a : Discrete α), p a) ↔ ∀ (a' : α), p ⟨a'⟩ := by
   rw [iff_iff_eq, discreteEquiv.forall_congr_left]
-  simp [discreteEquiv]
+  simp only [discreteEquiv, Equiv.symm_mk, Equiv.coe_fn_mk]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma Discrete.exists {α : Type*} {p : Discrete α → Prop} :
     (∃ (a : Discrete α), p a) ↔ ∃ (a' : α), p ⟨a'⟩ := by

@@ -332,6 +332,7 @@ lemma StandardEtalePresentation.toSubmersivePresentation_jacobian :
     P.toSubmersivePresentation.jacobian = aeval P.x P.f.derivative * aeval P.x P.g := by
   simp [StandardEtalePresentation.toSubmersivePresentation]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma StandardEtalePresentation.exists_mul_aeval_x_g_pow_eq_aeval_x (x : S) :
     ∃ p : R[X], ∃ n, x * P.g.aeval P.x ^ n = p.aeval P.x := by
   obtain ⟨x, rfl⟩ := (P.equivRing.trans P.P.equivAwayAdjoinRoot).symm.surjective x

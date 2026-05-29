@@ -1260,24 +1260,9 @@ theorem ord_eq_omega0 {a : Cardinal} : a.ord = ω ↔ a = ℵ₀ :=
 def ord.orderEmbedding : Cardinal ↪o Ordinal :=
   OrderEmbedding.ofStrictMono _ fun _ _ ↦ Cardinal.ord_lt_ord.2
 
-set_option linter.deprecated false in
-<<<<<<< HEAD
-/-- If a cardinal `c` is nonzero, then `c.ord.ToType` has a least element. -/
-@[instance_reducible, deprecated WellFoundedLT.toOrderBot (since := "2025-04-12")]
-noncomputable def toTypeOrderBot {c : Cardinal} (hc : c ≠ 0) :
-    OrderBot c.ord.ToType :=
-  Ordinal.toTypeOrderBot (fun h ↦ hc (ord_injective (by simpa using h)))
-||||||| 79d7f185699
-/-- If a cardinal `c` is nonzero, then `c.ord.ToType` has a least element. -/
-@[implicit_reducible, deprecated WellFoundedLT.toOrderBot (since := "2025-04-12")]
-noncomputable def toTypeOrderBot {c : Cardinal} (hc : c ≠ 0) :
-    OrderBot c.ord.ToType :=
-  Ordinal.toTypeOrderBot (fun h ↦ hc (ord_injective (by simpa using h)))
-=======
 @[deprecated ord (since := "2026-02-27")]
 theorem ord.orderEmbedding_coe : (ord.orderEmbedding : Cardinal → Ordinal) = ord :=
   rfl
->>>>>>> refs/tags/nightly-testing-2026-05-28
 
 end Cardinal
 

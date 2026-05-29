@@ -6,7 +6,7 @@ open Lake DSL
 ## Mathlib dependencies on upstream projects
 -/
 
-require batteries from git "https://github.com/leanprover-community/batteries" @ "lean-pr-testing-13342"
+require batteries from git "https://github.com/datokrat/batteries" @ "lean-pr-testing-13342-nwm"
 require Qq from git "https://github.com/datokrat/quote4" @ "lean-pr-testing-13342"
 
 require "leanprover-community" / "aesop" @ git "nightly-testing"

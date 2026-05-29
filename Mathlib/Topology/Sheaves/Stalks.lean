@@ -479,14 +479,8 @@ variable {B : Set (Opens X)} (hB : Opens.IsBasis B)
 
 include hB
 
-<<<<<<< HEAD
 set_option backward.isDefEq.respectTransparency.types false in
-lemma germ_exist_of_isBasis (F : X.Presheaf C) (x : X) (t : ToType (F.stalk x)) :
-||||||| 79d7f185699
-lemma germ_exist_of_isBasis (F : X.Presheaf C) (x : X) (t : ToType (F.stalk x)) :
-=======
 lemma exists_mem_germ_eq_of_isBasis (F : X.Presheaf C) (x : X) (t : ToType (F.stalk x)) :
->>>>>>> refs/tags/nightly-testing-2026-05-28
     ∃ (U : Opens X) (m : x ∈ U) (_ : U ∈ B) (s : ToType (F.obj (op U))), F.germ _ x m s = t := by
   obtain ⟨U, hxU, s, rfl⟩ := F.exists_germ_eq t
   obtain ⟨_, ⟨V, hV, rfl⟩, hxV, hVU⟩ := hB.exists_subset_of_mem_open hxU U.2

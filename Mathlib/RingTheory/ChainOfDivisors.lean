@@ -244,13 +244,10 @@ variable [UniqueFactorizationMonoid N] [UniqueFactorizationMonoid M]
 
 open DivisorChain
 
-<<<<<<< HEAD
-set_option backward.isDefEq.respectTransparency false in
-||||||| 79d7f185699
-=======
+
 set_option linter.overlappingInstances false
 
->>>>>>> refs/tags/nightly-testing-2026-05-28
+set_option backward.isDefEq.respectTransparency false in
 theorem pow_image_of_prime_by_factor_orderIso_dvd
     {m p : Associates M} {n : Associates N} (hn : n ≠ 0) (hp : p ∈ normalizedFactors m)
     (d : Set.Iic m ≃o Set.Iic n) {s : ℕ} (hs' : p ^ s ≤ m) :

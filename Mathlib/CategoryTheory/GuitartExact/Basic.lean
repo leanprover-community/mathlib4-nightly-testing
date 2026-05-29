@@ -123,6 +123,7 @@ abbrev CostructuredArrowDownwards.mk (comm : R.map a ≫ w.app X₁ ≫ B.map b 
 
 variable {w g}
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma StructuredArrowRightwards.mk_surjective
     (f : w.StructuredArrowRightwards g) :
     ∃ (X₁ : C₁) (a : X₂ ⟶ T.obj X₁) (b : L.obj X₁ ⟶ X₃)

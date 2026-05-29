@@ -556,6 +556,7 @@ theorem decompLinearEquiv_symm_apply (p : W × (V →L[R] W)) (x : V) :
     (decompLinearEquiv R S V W).symm p x = p.2 x + p.1 :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem decompLinearEquiv_symm_contLinear (p : W × (V →L[R] W)) :
     ((decompLinearEquiv R S V W).symm p).contLinear = p.2 := by

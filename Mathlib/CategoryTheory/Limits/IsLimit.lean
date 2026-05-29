@@ -378,6 +378,7 @@ def homEquiv (h : IsLimit t) {W : C} : (W ⟶ t.pt) ≃ ((Functor.const J).obj W
   left_inv f := h.hom_ext (by simp)
   right_inv π := by cat_disch
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma homEquiv_symm_π_app (h : IsLimit t) {W : C}
     (f : (const J).obj W ⟶ F) (j : J) :

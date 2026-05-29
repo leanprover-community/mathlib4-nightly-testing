@@ -267,6 +267,7 @@ theorem Scheme.homOfLE_apply {U V : X.Opens} (e : U ≤ V) (x : U) :
     (X.homOfLE e x).1 = x := by
   rw [Scheme.homOfLE_apply']
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Scheme.ι_image_homOfLE_eq_ι_image_inf {U V : X.Opens} (e : U ≤ V) (W : Opens V) :
     U.ι ''ᵁ X.homOfLE e ⁻¹ᵁ W = V.ι ''ᵁ W ⊓ U := by
   ext x
@@ -278,19 +279,7 @@ theorem Scheme.ι_image_homOfLE_eq_ι_image_inf {U V : X.Opens} (e : U ≤ V) (W
 
 theorem Scheme.ι_image_homOfLE_le_ι_image {U V : X.Opens} (e : U ≤ V) (W : Opens V) :
     U.ι ''ᵁ X.homOfLE e ⁻¹ᵁ W ≤ V.ι ''ᵁ W := by
-<<<<<<< HEAD
-  simp only [homOfLE_base, homOfLE_leOfHom, ← SetLike.coe_subset_coe, Hom.coe_image,
-    Set.image_subset_iff]
-  rintro _ h
-  exact ⟨_, h, rfl⟩
-||||||| 79d7f185699
-  simp only [homOfLE_base, homOfLE_leOfHom, ← SetLike.coe_subset_coe, Hom.coe_image, Opens.ι_apply,
-    Opens.map_coe, Set.image_subset_iff]
-  rintro _ h
-  exact ⟨_, h, rfl⟩
-=======
   simp [Scheme.ι_image_homOfLE_eq_ι_image_inf]
->>>>>>> refs/tags/nightly-testing-2026-05-28
 
 set_option backward.isDefEq.respectTransparency false in
 @[simp]

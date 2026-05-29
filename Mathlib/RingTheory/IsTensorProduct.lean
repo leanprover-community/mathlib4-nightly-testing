@@ -209,6 +209,7 @@ private lemma assocAux_symm_tmul (x₁ : M₁) (x₂ : M₂) (x₃ : M₃) :
     (IsTensorProduct.assocAux f hf g hg).symm (x₁ ⊗ₜ g x₂ x₃) = f x₁ x₂ ⊗ₜ x₃ := by
   simp [IsTensorProduct.assocAux]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 private lemma assocAux_tmul (x₁ : M₁) (x₂ : M₂) (x₃ : M₃) :
     IsTensorProduct.assocAux f hf g hg (f x₁ x₂ ⊗ₜ x₃) = x₁ ⊗ₜ g x₂ x₃ := by

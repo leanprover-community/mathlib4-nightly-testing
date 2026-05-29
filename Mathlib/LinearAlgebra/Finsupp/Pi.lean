@@ -63,22 +63,10 @@ theorem LinearEquiv.finsuppUnique_apply (α : Type*) [Unique α] (f : α →₀ 
     LinearEquiv.finsuppUnique R M α f = f default :=
   rfl
 
-<<<<<<< HEAD
-variable {α}
-
-set_option backward.isDefEq.respectTransparency false in
-@[simp]
-theorem LinearEquiv.finsuppUnique_symm_apply (m : M) :
-||||||| 79d7f185699
-variable {α}
-
-@[simp]
-theorem LinearEquiv.finsuppUnique_symm_apply (m : M) :
-=======
+set_option backward.isDefEq.respectTransparency.types false in
 set_option linter.deprecated false in
 @[deprecated uniqueLinearEquiv_symm_apply (since := "2026-05-06")]
 theorem LinearEquiv.finsuppUnique_symm_apply (α : Type*) [Unique α] (m : M) :
->>>>>>> refs/tags/nightly-testing-2026-05-28
     (LinearEquiv.finsuppUnique R M α).symm m = Finsupp.single default m := by
   ext; simp [LinearEquiv.finsuppUnique, Equiv.funUnique, single, Pi.single,
     equivFunOnFinite, Function.update]

@@ -1214,12 +1214,6 @@ namespace QuadraticForm
 
 section Rn
 
-<<<<<<< HEAD
-set_option backward.isDefEq.respectTransparency false in
-theorem QuadraticMap.toMatrix'_smul (a : R) (Q : QuadraticMap R (n → R) R) :
-||||||| 79d7f185699
-theorem QuadraticMap.toMatrix'_smul (a : R) (Q : QuadraticMap R (n → R) R) :
-=======
 /-- A matrix representation of a quadratic form `Q : QuadraticForm R (n → R)`.
   See also `QuadraticForm.toMatrix` which gives the matrix in a given basis of a quadratic form on
   an abstract vector space. -/
@@ -1227,7 +1221,6 @@ def toMatrix' (Q : QuadraticForm R (n → R)) : Matrix n n R :=
   LinearMap.toMatrix₂' R Q.associated
 
 theorem toMatrix'_smul (a : R) (Q : QuadraticForm R (n → R)) :
->>>>>>> refs/tags/nightly-testing-2026-05-28
     (a • Q).toMatrix' = a • Q.toMatrix' := by
   simp [toMatrix']
 

@@ -89,6 +89,7 @@ section
 
 variable {E} {W : C} {i₁ i₂ : E.I₀} (p₁ : W ⟶ E.X i₁) (p₂ : W ⟶ E.X i₂)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma functorPushforward_sieve₁_map_le :
     Sieve.functorPushforward F (E.sieve₁ p₁ p₂) ≤ (E.map F).sieve₁ (F.map p₁) (F.map p₂) := by

@@ -142,6 +142,7 @@ notation3 "∫ᵛ "(...)", "r:60:(scoped f => f)" ∂•"μ:70 => integral μ r 
 
 variable {f g : X → E} {μ ν : VectorMeasure X F} {B C : E →L[ℝ] F →L[ℝ] G}
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem transpose_zero_vectorMeasure (B : E →L[ℝ] F →L[ℝ] G) :
     (0 : VectorMeasure X F).transpose B = 0 := by
@@ -153,11 +154,13 @@ theorem transpose_zero_cbm (μ : VectorMeasure X F) :
   ext
   simp [transpose]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem transpose_add_vectorMeasure (μ ν : VectorMeasure X F) (B : E →L[ℝ] F →L[ℝ] G) :
     (μ + ν).transpose B = μ.transpose B + ν.transpose B := by
   simp [transpose]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem transpose_add_cbm (μ : VectorMeasure X F) (B C : E →L[ℝ] F →L[ℝ] G) :
     μ.transpose (B + C) = μ.transpose B + μ.transpose C := by
@@ -181,24 +184,28 @@ theorem transpose_finsetSum_cbm (μ : VectorMeasure X F) (B : ι → E →L[ℝ]
   | empty => simp
   | insert i s his ih => simp [Finset.sum_insert, his, ih]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem transpose_neg_vectorMeasure (μ : VectorMeasure X F) (B : E →L[ℝ] F →L[ℝ] G) :
     (-μ).transpose B = - (μ.transpose B) := by
   ext
   simp [transpose]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem transpose_neg_cbm (μ : VectorMeasure X F) (B : E →L[ℝ] F →L[ℝ] G) :
     μ.transpose (-B) = - (μ.transpose B) := by
   ext
   simp [transpose]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem transpose_sub_vectorMeasure (μ ν : VectorMeasure X F) (B : E →L[ℝ] F →L[ℝ] G) :
     (μ - ν).transpose B = μ.transpose B - ν.transpose B := by
   ext
   simp [transpose]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem transpose_sub_cbm (μ : VectorMeasure X F) (B C : E →L[ℝ] F →L[ℝ] G) :
     μ.transpose (B - C) = μ.transpose B - μ.transpose C := by
@@ -207,6 +214,7 @@ theorem transpose_sub_cbm (μ : VectorMeasure X F) (B C : E →L[ℝ] F →L[ℝ
 
 section Function
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem integral_undef (h : ¬ μ.Integrable f B) :
     ∫ᵛ x, f x ∂[B; μ] = 0 := by
   by_cases hG : CompleteSpace G
@@ -324,6 +332,7 @@ theorem integral_finsetSum_vectorMeasure {μ : ι → VectorMeasure X F}
     · simp_all
   · simp [integral, hG]
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (f μ B) in
 @[integral_simps]
 theorem integral_neg_vectorMeasure :
@@ -379,6 +388,7 @@ theorem integral_finsetSum_cbm {B : ι → E →L[ℝ] F →L[ℝ] G}
     · simp_all
   · simp [integral, hG]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[integral_simps]
 theorem integral_neg_cbm :
     ∫ᵛ x, f x ∂[-B; μ] = -∫ᵛ x, f x ∂[B; μ] := by

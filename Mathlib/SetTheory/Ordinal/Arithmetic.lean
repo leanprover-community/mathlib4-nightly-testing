@@ -194,6 +194,7 @@ def boundedLimitRecOn {l : Ordinal} (lLim : IsSuccLimit l) {motive : Iio l → S
     exact succ ⟨o, ho'⟩ (IH ho')
   | limit o ho' IH => exact limit _ ho' fun a ha ↦ IH a.1 ha (ha.trans (c := l) ho)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option linter.deprecated false in
 @[deprecated limitRecOn_zero (since := "2025-12-26")]
 theorem boundedLimitRec_zero {l} (lLim : IsSuccLimit l) {motive} (H₁ H₂ H₃) :
@@ -202,6 +203,7 @@ theorem boundedLimitRec_zero {l} (lLim : IsSuccLimit l) {motive} (H₁ H₂ H₃
   dsimp
   rw [limitRecOn_zero]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option linter.deprecated false in
 @[deprecated limitRecOn_succ (since := "2025-12-26")]
 theorem boundedLimitRec_succ {l} (lLim : IsSuccLimit l) {motive} (o H₁ H₂ H₃) :
@@ -212,6 +214,7 @@ theorem boundedLimitRec_succ {l} (lLim : IsSuccLimit l) {motive} (o H₁ H₂ H�
   rw [limitRecOn_succ]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option linter.deprecated false in
 @[deprecated limitRecOn_limit (since := "2025-12-26")]
 theorem boundedLimitRec_limit {l} (lLim : IsSuccLimit l) {motive} (o H₁ H₂ H₃ oLim) :

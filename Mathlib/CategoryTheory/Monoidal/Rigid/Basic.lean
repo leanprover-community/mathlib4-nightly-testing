@@ -403,6 +403,7 @@ theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerLeft {Y Y' Z : C} [Exac
       rw [whisker_exchange]; monoidal
     _ = _ := by rw [coevaluation_evaluation'']; monoidal
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerRight {X Y : C} [HasRightDual X]
     [HasRightDual Y] (f : X ⟶ Y) :
@@ -410,6 +411,7 @@ theorem tensorLeftHomEquiv_symm_coevaluation_comp_whiskerRight {X Y : C} [HasRig
   dsimp [tensorLeftHomEquiv, rightAdjointMate]
   simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem tensorRightHomEquiv_symm_coevaluation_comp_whiskerLeft {X Y : C} [HasLeftDual X]
     [HasLeftDual Y] (f : X ⟶ Y) :

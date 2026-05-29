@@ -66,16 +66,8 @@ end Monoid
 open Monoid
 
 /-- Torsion monoids are really groups. -/
-<<<<<<< HEAD
-@[to_additive (attr := instance_reducible)
-  /-- Torsion additive monoids are really additive groups -/]
-||||||| 79d7f185699
-@[to_additive (attr := implicit_reducible)
-  /-- Torsion additive monoids are really additive groups -/]
-=======
 @[to_additive (attr := implicit_reducible)
 /-- Torsion additive monoids are really additive groups -/]
->>>>>>> refs/tags/nightly-testing-2026-05-28
 noncomputable def IsTorsion.group [Monoid G] (tG : IsTorsion G) : Group G :=
   { ‹Monoid G› with
     inv g := g ^ (orderOf g - 1)

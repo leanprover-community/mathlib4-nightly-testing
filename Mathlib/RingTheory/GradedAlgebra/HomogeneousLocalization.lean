@@ -847,19 +847,8 @@ lemma val_awayMap (a) : (awayMap 𝒜 hg hx a).val = Localization.awayLift (alge
 lemma awayMap_fromZeroRingHom (a) :
     awayMap 𝒜 hg hx (fromZeroRingHom 𝒜 _ a) = fromZeroRingHom 𝒜 _ a := by
   ext
-<<<<<<< HEAD
-  simp only [fromZeroRingHom,
-    val_awayMap]
-  convert IsLocalization.lift_eq _ _
-||||||| 79d7f185699
-  simp only [fromZeroRingHom, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk,
-    val_awayMap, val_mk]
-  convert IsLocalization.lift_eq _ _
-=======
-  simp only [fromZeroRingHom, RingHom.coe_mk, MonoidHom.coe_mk, OneHom.coe_mk,
-    val_awayMap, val_mk]
+  simp only [fromZeroRingHom, val_awayMap]
   convert! IsLocalization.lift_eq _ _
->>>>>>> refs/tags/nightly-testing-2026-05-28
 
 lemma val_awayMap_mk (n a i hi) : (awayMap 𝒜 hg hx (mk ⟨n, a, ⟨f ^ i, hi⟩, ⟨i, rfl⟩⟩)).val =
     Localization.mk (a * g ^ i) ⟨x ^ i, (Submonoid.mem_powers_iff _ _).mpr ⟨i, rfl⟩⟩ := by

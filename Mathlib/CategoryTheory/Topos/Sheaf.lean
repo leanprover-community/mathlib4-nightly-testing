@@ -189,6 +189,7 @@ def χ (m : F ⟶ G) [Mono m] : G ⟶ Sheaf.Ω J where
       ((isSheaf_iff_isSheaf_of_type _ _).mp F.property)
       ((isSheaf_iff_isSheaf_of_type _ _).mp G.property).isSeparated _)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma isPullback_χ_truth (m : F ⟶ G) [Mono m] :
     IsPullback m ((isTerminalTerminal J _).from F) (Sheaf.χ m) (Sheaf.truth J) := by

@@ -70,40 +70,16 @@ def IsMatching (M : Subgraph G) : Prop := ∀ ⦃v⦄, v ∈ M.verts → ∃! w,
 noncomputable def IsMatching.toEdge (h : M.IsMatching) (v : M.verts) : M.edgeSet :=
   ⟨s(v, (h v.property).choose), (h v.property).choose_spec.1⟩
 
-<<<<<<< HEAD
-theorem IsMatching.toEdge_eq_of_adj (h : M.IsMatching) (hv : v ∈ M.verts) (hvw : M.Adj v w) :
-    h.toEdge ⟨v, hv⟩ = ⟨s(v, w), hvw⟩ := by
-  simp only [IsMatching.toEdge]
-  congr
-  exact ((h (M.edge_vert hvw)).choose_spec.2 w hvw).symm
-||||||| 79d7f185699
-theorem IsMatching.toEdge_eq_of_adj (h : M.IsMatching) (hv : v ∈ M.verts) (hvw : M.Adj v w) :
-    h.toEdge ⟨v, hv⟩ = ⟨s(v, w), hvw⟩ := by
-  simp only [IsMatching.toEdge, Subtype.mk_eq_mk]
-  congr
-  exact ((h (M.edge_vert hvw)).choose_spec.2 w hvw).symm
-=======
+set_option backward.isDefEq.respectTransparency.types false in
 theorem IsMatching.toEdge_eq_of_adj (h : M.IsMatching) (hvw : M.Adj v w) :
     h.toEdge ⟨v, hvw.fst_mem⟩ = ⟨s(v, w), hvw⟩ := by
   rw [IsMatching.toEdge, Subtype.mk_eq_mk, ← h hvw.fst_mem |>.choose_spec.right w hvw]
->>>>>>> refs/tags/nightly-testing-2026-05-28
 
 theorem IsMatching.toEdge.surjective (h : M.IsMatching) : Surjective h.toEdge := by
   rintro ⟨⟨x, y⟩, he⟩
   exact ⟨⟨x, M.edge_vert he⟩, h.toEdge_eq_of_adj he⟩
 
-<<<<<<< HEAD
 set_option backward.isDefEq.respectTransparency.types false in
-theorem IsMatching.toEdge_eq_toEdge_of_adj (h : M.IsMatching)
-    (hv : v ∈ M.verts) (hw : w ∈ M.verts) (ha : M.Adj v w) :
-    h.toEdge ⟨v, hv⟩ = h.toEdge ⟨w, hw⟩ := by
-  rw [h.toEdge_eq_of_adj hv ha, h.toEdge_eq_of_adj hw (M.symm ha), Subtype.mk_eq_mk, Sym2.eq_swap]
-||||||| 79d7f185699
-theorem IsMatching.toEdge_eq_toEdge_of_adj (h : M.IsMatching)
-    (hv : v ∈ M.verts) (hw : w ∈ M.verts) (ha : M.Adj v w) :
-    h.toEdge ⟨v, hv⟩ = h.toEdge ⟨w, hw⟩ := by
-  rw [h.toEdge_eq_of_adj hv ha, h.toEdge_eq_of_adj hw (M.symm ha), Subtype.mk_eq_mk, Sym2.eq_swap]
-=======
 theorem IsMatching.toEdge_eq_toEdge_of_adj (h : M.IsMatching) (ha : M.Adj v w) :
     h.toEdge ⟨v, ha.fst_mem⟩ = h.toEdge ⟨w, ha.snd_mem⟩ := by
   rw [h.toEdge_eq_of_adj ha, h.toEdge_eq_of_adj ha.symm, Subtype.mk_eq_mk, Sym2.eq_swap]
@@ -112,6 +88,7 @@ theorem IsMatching.mem_coe_toEdge (h : M.IsMatching) {v : V} (hv : v ∈ M.verts
     v ∈ (h.toEdge ⟨v, hv⟩ : Sym2 V) :=
   ⟨h hv |>.choose, rfl⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem IsMatching.toEdge_preimage_singleton (h : M.IsMatching) (huv : M.Adj u v) :
     h.toEdge ⁻¹' {⟨s(u, v), huv⟩} = {⟨u, huv.fst_mem⟩, ⟨v, huv.snd_mem⟩} := by
   refine Set.ext fun w ↦ ⟨fun hw ↦ ?_, fun hw ↦ ?_⟩
@@ -119,7 +96,6 @@ theorem IsMatching.toEdge_preimage_singleton (h : M.IsMatching) (huv : M.Adj u v
   · rcases hw with rfl | rfl
     · simp [h.toEdge_eq_of_adj huv]
     · simp [h.toEdge_eq_of_adj huv.symm]
->>>>>>> refs/tags/nightly-testing-2026-05-28
 
 lemma IsMatching.map_ofLE (h : M.IsMatching) (hGG' : G ≤ G') :
     (M.map (Hom.ofLE hGG')).IsMatching := by

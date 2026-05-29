@@ -281,6 +281,7 @@ theorem comp_eq : (f ≫ ofHom g) = f ≫ ofHom h := by
     use a
   rw [this]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem g_ne_h (x : B) (hx : x ∉ f.hom.range) : g ≠ h := by
   intro r
   apply fromCoset_ne_of_nin_range _ hx

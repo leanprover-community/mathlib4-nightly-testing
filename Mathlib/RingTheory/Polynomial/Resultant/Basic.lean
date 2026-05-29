@@ -932,15 +932,7 @@ discriminant. -/
 noncomputable def discr (f : R[X]) : R :=
   f.sylvesterDeriv.det * (-1) ^ (f.natDegree * (f.natDegree - 1) / 2)
 
-<<<<<<< HEAD
-@[deprecated (since := "2025-10-20")] alias disc := discr
-
 set_option backward.isDefEq.respectTransparency.types false in
-||||||| 79d7f185699
-@[deprecated (since := "2025-10-20")] alias disc := discr
-
-=======
->>>>>>> refs/tags/nightly-testing-2026-05-28
 /-- The discriminant of a constant polynomial is `1`. -/
 @[simp] lemma discr_C (r : R) : discr (C r) = 1 := by
   let e : Fin ((C r).natDegree - 1 + (C r).natDegree) ≃ Fin 0 := finCongr (by simp)

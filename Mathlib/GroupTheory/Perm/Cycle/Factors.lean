@@ -628,6 +628,7 @@ theorem mem_support_iff_mem_support_of_mem_cycleFactorsFinset {g : Equiv.Perm α
   · rintro ⟨c, hc, hx⟩
     exact mem_cycleFactorsFinset_support_le hc hx
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem cycleFactorsFinset_eq_empty_iff {f : Perm α} : cycleFactorsFinset f = ∅ ↔ f = 1 := by
   simpa [cycleFactorsFinset_eq_finset] using eq_comm
 

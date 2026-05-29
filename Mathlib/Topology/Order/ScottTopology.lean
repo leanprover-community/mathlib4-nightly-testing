@@ -73,19 +73,11 @@ namespace Topology
 /-- The Scott-Hausdorff topology.
 
 A set `u` is open in the Scott-Hausdorff topology iff when the least upper bound of a directed set
-<<<<<<< HEAD
-`d` lies in `u` then there is a tail of `d` which is a subset of `u`. -/
-@[instance_reducible]
-||||||| 79d7f185699
-`d` lies in `u` then there is a tail of `d` which is a subset of `u`. -/
-@[implicit_reducible]
-=======
 `d` lies in `u` then there is a tail of `d` which is a subset of `u`.
 
 For mild conditions on `D`, this is equivalent to saying that open sets are `DirSupInaccOn D`,
 and closed sets are `DirSupClosedOn D`. -/
 @[implicit_reducible]
->>>>>>> refs/tags/nightly-testing-2026-05-28
 def scottHausdorff (α : Type*) (D : Set (Set α)) [Preorder α] : TopologicalSpace α where
   IsOpen u := ∀ ⦃d : Set α⦄, d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d → ∀ ⦃a : α⦄, IsLUB d a →
     a ∈ u → ∃ b ∈ d, Ici b ∩ d ⊆ u

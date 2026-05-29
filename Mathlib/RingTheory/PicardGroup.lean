@@ -115,6 +115,7 @@ noncomputable def rTensorInv : (P ⊗[R] M →ₗ[R] Q ⊗[R] M) →ₗ[R] (P �
   ((rightCancelEquiv Q e).congrRight ≪≫ₗ (rightCancelEquiv P e).congrLeft _ R) ∘ₗ
     LinearMap.rTensorHom N
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem rTensorInv_leftInverse : Function.LeftInverse (rTensorInv P Q e) (.rTensorHom M) :=
   fun _ ↦ by
     simp_rw [rTensorInv, LinearEquiv.coe_trans, LinearMap.comp_apply, LinearEquiv.coe_toLinearMap]
@@ -132,6 +133,7 @@ of `R`-modules. -/
   left_inv := rTensorInv_leftInverse P Q e
   right_inv _ := rTensorInv_injective P Q e (by rw [LinearMap.toFun_eq_coe, rTensorInv_leftInverse])
 
+set_option backward.isDefEq.respectTransparency.types false in
 open LinearMap in
 /-- If there is an `R`-isomorphism between `M ⊗[R] N` and `R`,
 the induced map `M → Nᵛ` is an isomorphism. -/

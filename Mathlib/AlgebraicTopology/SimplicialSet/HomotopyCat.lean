@@ -123,6 +123,7 @@ def ofNerve₂ (C : Type u) [Category.{u} C] :
   ReflQuiv.isoOfEquiv.{u, u} OneTruncation₂.nerveEquiv
     (fun _ _ ↦ OneTruncation₂.nerveHomEquiv) nerveHomEquiv_id
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma nerve_hom_ext {X : (SSet.Truncated 2)} {C : Type u} [Category.{u} C]
     {F G : X ⟶ ((truncation 2).obj (nerve C))}
     (h : OneTruncation₂.map F = OneTruncation₂.map G) : F = G :=

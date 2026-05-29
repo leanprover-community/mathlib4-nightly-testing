@@ -88,6 +88,7 @@ lemma Hom.sum_sum_comp_sumAssoc (f : G →g G') (g : H →g H') (h : I →g I') 
     comp (sum f (sum g h)) Iso.sumAssoc.toHom = comp Iso.sumAssoc.toHom (sum (sum f g) h) := by
   ext ((v | w) | u) <;> simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given embeddings `f : G ↪g G'` and `g : H ↪g H'`, returns an embedding from `G ⊕g H` to
 `G' ⊕g H'` that applies `f` to the left component and `g` to the right component. -/
 @[simps]

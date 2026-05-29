@@ -442,6 +442,7 @@ def sigmaSubtype {α : Type*} {β : α → Type*} (a : α) :
 section
 attribute [local simp] Trans.trans sigmaAssoc subtypeSigmaEquiv uniqueSigma eqRec_eq_cast
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A subtype of a dependent triple which pins down both bases is equivalent to the
 respective fiber. -/
 @[simps! +simpRhs apply]
@@ -815,6 +816,7 @@ LHS would have type `P a` while the RHS would have type `P (e.symm (e a))`. For 
 we have to explicitly substitute along `e.symm (e a) = a` in the statement of this lemma. -/
 add_decl_doc Equiv.piCongrLeft'_symm_apply
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- This lemma is impractical to state in the dependent case. -/
 @[simp]
 theorem piCongrLeft'_symm (P : Sort*) (e : α ≃ β) :

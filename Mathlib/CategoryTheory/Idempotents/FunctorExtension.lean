@@ -44,12 +44,7 @@ theorem natTrans_eq {F G : Karoubi C ⥤ D} (φ : F ⟶ G) (P : Karoubi C) :
 
 namespace FunctorExtension₁
 
-<<<<<<< HEAD
-set_option backward.isDefEq.respectTransparency.types false in
-||||||| 79d7f185699
-=======
 set_option linter.style.longLine false in
->>>>>>> refs/tags/nightly-testing-2026-05-28
 /-- The canonical extension of a functor `C ⥤ Karoubi D` to a functor
 `Karoubi C ⥤ Karoubi D` -/
 @[simps]

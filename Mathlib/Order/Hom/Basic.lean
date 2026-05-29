@@ -900,15 +900,11 @@ theorem self_trans_symm (e : α ≃o β) : e.trans e.symm = OrderIso.refl α :=
 theorem symm_trans_self (e : α ≃o β) : e.symm.trans e = OrderIso.refl β :=
   RelIso.symm_trans_self e
 
-<<<<<<< HEAD
-set_option backward.isDefEq.respectTransparency false in
-||||||| 79d7f185699
-=======
 theorem trans_assoc (f : α ≃o β) (g : β ≃o γ) (h : γ ≃o δ) :
     (f.trans g).trans h = f.trans (g.trans h) :=
   rfl
 
->>>>>>> refs/tags/nightly-testing-2026-05-28
+set_option backward.isDefEq.respectTransparency false in
 /-- An order isomorphism between the domains and codomains of two prosets of
 order homomorphisms gives an order isomorphism between the two function prosets. -/
 @[simps apply symm_apply]

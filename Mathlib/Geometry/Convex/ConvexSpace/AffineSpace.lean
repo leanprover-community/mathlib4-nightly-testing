@@ -118,14 +118,6 @@ theorem sConvexComb_eq_affineCombination (s : StdSimplex R P) :
 @[deprecated (since := "2026-05-15")]
 alias convexCombination_eq_affineCombination := sConvexComb_eq_affineCombination
 
-<<<<<<< HEAD:Mathlib/LinearAlgebra/ConvexSpace/AffineSpace.lean
-set_option backward.isDefEq.respectTransparency false in
-/-- `convexComboPair` in an affine space is the affine line map. -/
-public theorem convexComboPair_eq_lineMap (s t : R) (hs : 0 ≤ s) (ht : 0 ≤ t)
-||||||| 79d7f185699:Mathlib/LinearAlgebra/ConvexSpace/AffineSpace.lean
-/-- `convexComboPair` in an affine space is the affine line map. -/
-public theorem convexComboPair_eq_lineMap (s t : R) (hs : 0 ≤ s) (ht : 0 ≤ t)
-=======
 theorem iConvexComb_eq_affineCombination (s : StdSimplex R I) (f : I → P) :
     s.iConvexComb f = s.weights.support.affineCombination R f s.weights := by
   let p : P := Nonempty.some inferInstance
@@ -138,9 +130,9 @@ theorem iConvexComb_eq_affineCombination (s : StdSimplex R I) (f : I → P) :
     s.weights.sum fun x r ↦ r • (f x -ᵥ p) by simpa
   simp [Finsupp.sum_mapDomain_index, add_smul]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `convexCombPair` in an affine space is the affine line map. -/
 theorem convexCombPair_eq_lineMap (s t : R) (hs : 0 ≤ s) (ht : 0 ≤ t)
->>>>>>> refs/tags/nightly-testing-2026-05-28:Mathlib/Geometry/Convex/ConvexSpace/AffineSpace.lean
     (h : s + t = 1) (x y : P) :
     convexCombPair s t hs ht h x y = AffineMap.lineMap y x s := by
   simp only [convexCombPair, AddTorsor.sConvexComb_eq_affineCombination, StdSimplex.duple,
