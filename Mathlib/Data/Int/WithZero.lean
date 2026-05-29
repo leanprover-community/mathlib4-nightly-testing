@@ -78,16 +78,13 @@ theorem toNNReal_pos {e : ℝ≥0} {m : ℤᵐ⁰} (he : e ≠ 0) (hm : m ≠ 0)
 set_option backward.isDefEq.respectTransparency false in
 /-- The map `toNNReal` is strictly monotone whenever `1 < e`. -/
 theorem toNNReal_strictMono {e : ℝ≥0} (he : 1 < e) :
-    StrictMono (toNNReal (ne_zero_of_lt he)) := by
-  intro x y hxy
-  simp only [toNNReal, MonoidWithZeroHom.coe_mk, ZeroHom.coe_mk]
-  split_ifs with hx hy hy
-  · simp only [hy, not_lt_zero'] at hxy
-  · exact zpow_pos he.bot_lt _
-  · simp only [hy, not_lt_zero'] at hxy
-  · rw [zpow_lt_zpow_iff_right₀ he, Multiplicative.toAdd_lt, ← coe_lt_coe, coe_unzero hx,
-      WithZero.coe_unzero hy]
-    exact hxy
+    StrictMono (toNNReal he.ne_zero) := by
+  intro x y
+  cases y
+  · simp
+  cases x
+  · simpa using! zpow_pos he.pos _
+  · simp [toNNReal, he]
 
 theorem toNNReal_eq_one_iff {e : ℝ≥0} (m : ℤᵐ⁰) (he0 : e ≠ 0) (he1 : e ≠ 1) :
     toNNReal he0 m = 1 ↔ m = 1 := by

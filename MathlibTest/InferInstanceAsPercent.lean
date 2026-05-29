@@ -34,8 +34,16 @@ instance myNatInv_fixed : MyInv MyNat :=
 
 -- The binder type is `MyNat`:
 /--
+<<<<<<< HEAD
 info: @[instance_reducible] def myNatInv_fixed : MyInv MyNat :=
 { myInv := fun (a : MyNat) => a + 1 }
+||||||| 79d7f185699
+info: @[implicit_reducible] def myNatInv_fixed : MyInv MyNat :=
+{ myInv := fun (a : MyNat) => a + 1 }
+=======
+info: @[implicit_reducible] def myNatInv_fixed : MyInv MyNat :=
+{ myInv := fun (a : MyNat) => (Nat.add a 0).succ }
+>>>>>>> refs/tags/nightly-testing-2026-05-28
 -/
 #guard_msgs in
 #print myNatInv_fixed

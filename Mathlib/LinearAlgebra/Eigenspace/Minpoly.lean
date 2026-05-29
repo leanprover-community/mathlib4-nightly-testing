@@ -100,7 +100,7 @@ variable (f)
 set_option backward.isDefEq.respectTransparency.types false in
 lemma finite_hasEigenvalue : Set.Finite f.HasEigenvalue := by
   have h : minpoly R f ≠ 0 := minpoly.ne_zero (Algebra.IsIntegral.isIntegral (R := R) f)
-  convert (minpoly R f).rootSet_finite R
+  convert! (minpoly R f).rootSet_finite R
   ext μ
   change f.HasEigenvalue μ ↔ _
   rw [hasEigenvalue_iff_isRoot, mem_rootSet_of_ne h, IsRoot, coe_aeval_eq_eval]
@@ -142,7 +142,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 theorem Module.End.finite_spectrum {K : Type v} {V : Type w} [Field K] [AddCommGroup V]
     [Module K V] [FiniteDimensional K V] (f : Module.End K V) :
     Set.Finite (spectrum K f) := by
-  convert f.finite_hasEigenvalue
+  convert! f.finite_hasEigenvalue
   ext f x
   exact Module.End.hasEigenvalue_iff_mem_spectrum.symm
 

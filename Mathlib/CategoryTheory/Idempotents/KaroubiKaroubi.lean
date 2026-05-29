@@ -44,8 +44,8 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- The canonical functor `Karoubi (Karoubi C) ⥤ Karoubi C` -/
 @[simps]
 def inverse : Karoubi (Karoubi C) ⥤ Karoubi C where
-  obj P := ⟨P.X.X, P.p.f, by simpa only [hom_ext_iff] using P.idem⟩
-  map f := ⟨f.f.f, by simpa only [hom_ext_iff] using f.comm⟩
+  obj P := ⟨P.X.X, P.p.f, by simpa only [hom_ext_iff] using! P.idem⟩
+  map f := ⟨f.f.f, by simpa only [hom_ext_iff] using! f.comm⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
 instance [Preadditive C] : Functor.Additive (inverse C) where

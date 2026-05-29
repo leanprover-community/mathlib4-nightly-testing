@@ -188,7 +188,7 @@ noncomputable def δ : kernel g ⟶ cokernel f := (snakeInput f g).δ
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma δ_fac : δ f g = - kernel.ι g ≫ cokernel.π f := by
-  simpa using (snakeInput f g).δ_eq (𝟙 _) (kernel.ι g ≫ biprod.inr) (-kernel.ι g)
+  simpa using! (snakeInput f g).δ_eq (𝟙 _) (kernel.ι g ≫ biprod.inr) (-kernel.ι g)
     (by simp) (by aesop)
 
 end kernelCokernelCompSequence

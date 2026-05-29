@@ -166,7 +166,7 @@ theorem mem_adjoint_domain_of_exists (y : F) (h : ∃ w : E, ∀ x : T.domain, �
   obtain ⟨w, hw⟩ := h
   rw [T.mem_adjoint_domain_iff]
   have : Continuous ((innerSL 𝕜 w).comp T.domain.subtypeL) := by fun_prop
-  convert this using 1
+  convert! this using 1
   exact funext fun x => (hw x).symm
 
 set_option backward.isDefEq.respectTransparency false in

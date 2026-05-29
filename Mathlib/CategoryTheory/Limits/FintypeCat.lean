@@ -85,7 +85,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma productEquiv_apply {ι : Type*} [Finite ι] (X : ι → FintypeCat.{u})
     (x : (∏ᶜ X : FintypeCat)) (i : ι) : productEquiv X x i = Pi.π X i x := by
-  simpa [productEquiv, equivEquivIso, equivIsoIso, Iso.toEquiv] using
+  simpa [productEquiv, equivEquivIso, equivIsoIso, Iso.toEquiv] using!
     piComparison_comp_π_apply FintypeCat.incl X i x
 
 @[simp]

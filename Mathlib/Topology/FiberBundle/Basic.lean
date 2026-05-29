@@ -277,7 +277,7 @@ set_option backward.isDefEq.respectTransparency false in
 This is useful to transfer topological properties of the model fiber. -/
 noncomputable def homeomorphAt (b : B) : E b ≃ₜ F :=
   ((totalSpaceMk_isEmbedding F E b).toHomeomorph.trans <|
-    Homeomorph.ofEqSubtypes <| TotalSpace.range_mk b).trans <|
+    Homeomorph.setCongr <| TotalSpace.range_mk b).trans <|
     (trivializationAt F E b).preimageSingletonHomeomorph <| mem_baseSet_trivializationAt' b
 
 lemma t0Space [T0Space F] (b : B) : T0Space (E b) :=
@@ -599,7 +599,7 @@ def localTriv (i : ι) : Trivialization F Z.proj where
       rw [PartialEquiv.EqOnSource.source_inter_preimage_eq (Z.localTrivAsPartialEquiv_trans i j)]
       exact (continuousOn_open_iff (Z.trivChange i j).open_source).1
         (Z.trivChange i j).continuousOn _ s_open
-    convert this using 1
+    convert! this using 1
     dsimp [f, PartialEquiv.trans_source]
     rw [← preimage_comp, inter_assoc]
   toPartialEquiv := Z.localTrivAsPartialEquiv i

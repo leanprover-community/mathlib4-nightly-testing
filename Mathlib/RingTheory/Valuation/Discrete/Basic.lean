@@ -507,7 +507,7 @@ lemma mker_valuation_eq_isUnitSubmonoid :
       not_not] at h
     use b, h
   · obtain ⟨x, h, rfl⟩ := h
-    simpa [IsDiscreteValuationRing.maximalIdeal] using h
+    simpa [IsDiscreteValuationRing.maximalIdeal] using! h
 
 set_option backward.isDefEq.respectTransparency.types false in
 theorem associated_of_valuation_eq (x y : K)

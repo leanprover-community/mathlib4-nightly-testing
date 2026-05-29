@@ -187,8 +187,9 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 theorem desc_op_comp_opCoproductIsoProduct_hom [HasCoproduct Z] {X : C} (π : (a : α) → Z a ⟶ X) :
     (Sigma.desc π).op ≫ (opCoproductIsoProduct Z).hom = Pi.lift (fun a ↦ (π a).op) := by
-  convert desc_op_comp_opCoproductIsoProduct'_hom (coproductIsCoproduct Z)
-    (productIsProduct (op <| Z ·)) (Cofan.mk _ π)
+  convert!
+    desc_op_comp_opCoproductIsoProduct'_hom (coproductIsCoproduct Z) (productIsProduct (op <| Z ·))
+      (Cofan.mk _ π)
   · simp [Sigma.desc, coproductIsCoproduct]
   · simp [productIsProduct]
 
@@ -287,8 +288,9 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 theorem opProductIsoCoproduct_inv_comp_lift [HasProduct Z] {X : C} (π : (a : α) → X ⟶ Z a) :
     (opProductIsoCoproduct Z).inv ≫ (Pi.lift π).op = Sigma.desc (fun a ↦ (π a).op) := by
-  convert opProductIsoCoproduct'_inv_comp_lift (productIsProduct Z)
-    (coproductIsCoproduct (op <| Z ·)) (Fan.mk _ π)
+  convert!
+    opProductIsoCoproduct'_inv_comp_lift (productIsProduct Z) (coproductIsCoproduct (op <| Z ·))
+      (Fan.mk _ π)
   · simp [Pi.lift, productIsProduct]
   · simp [coproductIsCoproduct]
 
@@ -301,7 +303,7 @@ variable {A B : C} [HasBinaryProduct A B]
 instance : HasBinaryCoproduct (op A) (op B) := by
   have : HasProduct fun x ↦ (WalkingPair.casesOn x A B : C) := ‹_›
   change HasCoproduct _
-  convert (inferInstance : HasCoproduct fun x ↦ op (WalkingPair.casesOn x A B : C)) with x
+  convert! (inferInstance : HasCoproduct fun x ↦ op (WalkingPair.casesOn x A B : C)) with x
   cases x <;> rfl
 
 set_option backward.isDefEq.respectTransparency false in

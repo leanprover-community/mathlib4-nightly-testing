@@ -114,7 +114,7 @@ lemma yoneda_toGlued_yonedaGluedToSheaf (i : ι) :
   apply yonedaEquiv.injective
   rw [yonedaGluedToSheaf, yonedaEquiv_apply, yonedaEquiv_apply,
     NatTrans.comp_app_apply, yoneda_map_app]
-  simpa using GlueData.sheafValGluedMk_val _ _ _ _
+  simpa using! GlueData.sheafValGluedMk_val _ _ _ _
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in

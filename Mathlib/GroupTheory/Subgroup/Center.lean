@@ -70,6 +70,7 @@ instance centerCharacteristic : (center G).Characteristic := by
   rw [← ϕ.injective.eq_iff, map_mul, map_mul]
   exact (hg.comm (ϕ h)).symm
 
+@[to_additive]
 theorem _root_.CommGroup.center_eq_top {G : Type*} [CommGroup G] : center G = ⊤ := by
   rw [eq_top_iff']
   intro x
@@ -85,8 +86,17 @@ theorem center_eq_top_iff : center G = ⊤ ↔ IsMulCommutative G := by
 theorem center_eq_top [hG : IsMulCommutative G] : center G = ⊤ :=
     center_eq_top_iff.mpr hG
 
+<<<<<<< HEAD
 /-- A group is commutative if the center is the whole group -/
 @[instance_reducible]
+||||||| 79d7f185699
+/-- A group is commutative if the center is the whole group -/
+@[implicit_reducible]
+=======
+/-- A group is commutative if the center is the whole group. -/
+@[to_additive /-- An additive group is commutative if the center is the whole group. -/,
+  implicit_reducible]
+>>>>>>> refs/tags/nightly-testing-2026-05-28
 def _root_.Group.commGroupOfCenterEqTop (h : center G = ⊤) : CommGroup G :=
   { ‹Group G› with
     mul_comm := by

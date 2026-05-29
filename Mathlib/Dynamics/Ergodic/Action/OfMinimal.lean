@@ -122,7 +122,7 @@ variable {G : Type*} [Group G] [TopologicalSpace G] [ContinuousInv G]
 theorem aeconst_of_dense_aestabilizer_smul (hsm : NullMeasurableSet s μ)
     (hd : Dense (MulAction.aestabilizer G μ s : Set G)) : EventuallyConst s (ae μ) :=
   aeconst_of_dense_setOf_preimage_smul_ae hsm <| (hd.preimage (isOpenMap_inv _)).mono fun g hg ↦ by
-    simpa only [preimage_smul] using hg
+    simpa only [preimage_smul] using! hg
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- If a monoid `M` continuously acts on an R₁ topological space `X`,

@@ -43,7 +43,7 @@ set_option backward.isDefEq.respectTransparency false in
 lemma eventually_exists_mem_iff {is : Set β} {P : β → α → Prop} (his : is.Finite) :
     (∀ᶠ i in f, ∃ a ∈ is, P a i) ↔ ∃ a ∈ is, ∀ᶠ i in f, P a i := by
   simp only [Filter.Eventually, Ultrafilter.mem_coe]
-  convert f.finite_biUnion_mem_iff his (s := P) with i
+  convert! f.finite_biUnion_mem_iff his (s := P) with i
   aesop
 
 lemma eventually_exists_iff [Finite β] {P : β → α → Prop} :

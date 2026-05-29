@@ -318,7 +318,7 @@ theorem Fix.ind (p : Fix F → Prop) (h : ∀ x : F (Fix F), Liftp p x → p (Fi
   apply h
   rw [liftp_iff]
   refine ⟨_, _, rfl, ?_⟩
-  convert ih
+  convert! ih
 
 end QPF
 
@@ -365,7 +365,6 @@ def Cofix.dest : Cofix F → F (Cofix F) :=
   Quot.lift (fun x => Quot.mk Mcongr <$> abs (PFunctor.M.dest x))
     (by
       rintro x y ⟨r, pr, rxy⟩
-      dsimp
       have : ∀ x y, r x y → Mcongr x y := by
         intro x y h
         exact ⟨r, pr, h⟩

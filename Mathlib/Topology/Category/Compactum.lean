@@ -415,7 +415,7 @@ def homOfContinuous {X Y : Compactum} (f : X â†’ Y) (cont : Continuous f) : X âŸ
       rw [continuous_iff_ultrafilter] at cont
       ext (F : Ultrafilter X)
       specialize cont (X.str F) F (le_nhds_of_str_eq F (X.str F) rfl)
-      simpa using str_eq_of_le_nhds (Ultrafilter.map f F) _ cont }
+      simpa using! str_eq_of_le_nhds (Ultrafilter.map f F) _ cont }
 
 end Compactum
 
@@ -440,7 +440,7 @@ instance faithful : compactumToCompHaus.Faithful where
     -- Porting note (https://github.com/leanprover-community/mathlib4/issues/11041): `ext` gets confused by coercion using forget.
     apply Monad.Algebra.Hom.ext
     ext
-    simpa using ConcreteCategory.congr_hom h _
+    simpa using! ConcreteCategory.congr_hom h _
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- This definition is used to prove essential surjectivity of `compactumToCompHaus`. -/

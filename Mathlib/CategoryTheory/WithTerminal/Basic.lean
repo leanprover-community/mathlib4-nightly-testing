@@ -237,7 +237,7 @@ def pseudofunctor : Pseudofunctor Cat Cat where
     intros
     ext X
     cases X
-    · simpa using (refl _)
+    · simpa using! (refl _)
     · rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -677,7 +677,7 @@ def pseudofunctor : Pseudofunctor Cat Cat where
     intros
     ext X
     cases X
-    · simpa using (refl _)
+    · simpa using! (refl _)
     · rfl
 
 set_option backward.isDefEq.respectTransparency.types false in

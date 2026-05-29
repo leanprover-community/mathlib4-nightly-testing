@@ -488,11 +488,11 @@ set_option backward.isDefEq.respectTransparency.types false in
 -/
 def mkInductiveAux₂ :
     ∀ n, Σ' (f : P.xNext n ⟶ Q.X n) (f' : P.X n ⟶ Q.xPrev n), e.f n = P.dFrom n ≫ f + f' ≫ Q.dTo n
-  | 0 => ⟨0, zero ≫ (Q.xPrevIso rfl).inv, by simpa using comm_zero⟩
+  | 0 => ⟨0, zero ≫ (Q.xPrevIso rfl).inv, by simpa using! comm_zero⟩
   | n + 1 =>
     let I := mkInductiveAux₁ e zero --comm_zero
       one comm_one succ n
-    ⟨(P.xNextIso rfl).hom ≫ I.1, I.2.1 ≫ (Q.xPrevIso rfl).inv, by simpa using I.2.2⟩
+    ⟨(P.xNextIso rfl).hom ≫ I.1, I.2.1 ≫ (Q.xPrevIso rfl).inv, by simpa using! I.2.2⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp] theorem mkInductiveAux₂_zero :
@@ -504,7 +504,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 @[simp] theorem mkInductiveAux₂_add_one (n) :
     mkInductiveAux₂ e zero comm_zero one comm_one succ (n + 1) =
       letI I := mkInductiveAux₁ e zero one comm_one succ n
-      ⟨(P.xNextIso rfl).hom ≫ I.1, I.2.1 ≫ (Q.xPrevIso rfl).inv, by simpa using I.2.2⟩ :=
+      ⟨(P.xNextIso rfl).hom ≫ I.1, I.2.1 ≫ (Q.xPrevIso rfl).inv, by simpa using! I.2.2⟩ :=
   rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -623,10 +623,10 @@ set_option backward.isDefEq.respectTransparency.types false in
 -/
 def mkCoinductiveAux₂ :
     ∀ n, Σ' (f : P.X n ⟶ Q.xPrev n) (f' : P.xNext n ⟶ Q.X n), e.f n = f ≫ Q.dTo n + P.dFrom n ≫ f'
-  | 0 => ⟨0, (P.xNextIso rfl).hom ≫ zero, by simpa using comm_zero⟩
+  | 0 => ⟨0, (P.xNextIso rfl).hom ≫ zero, by simpa using! comm_zero⟩
   | n + 1 =>
     let I := mkCoinductiveAux₁ e zero one comm_one succ n
-    ⟨I.1 ≫ (Q.xPrevIso rfl).inv, (P.xNextIso rfl).hom ≫ I.2.1, by simpa using I.2.2⟩
+    ⟨I.1 ≫ (Q.xPrevIso rfl).inv, (P.xNextIso rfl).hom ≫ I.2.1, by simpa using! I.2.2⟩
 
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp] theorem mkCoinductiveAux₂_zero :
@@ -638,7 +638,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 @[simp] theorem mkCoinductiveAux₂_add_one (n) :
     mkCoinductiveAux₂ e zero comm_zero one comm_one succ (n + 1) =
       letI I := mkCoinductiveAux₁ e zero one comm_one succ n
-      ⟨I.1 ≫ (Q.xPrevIso rfl).inv, (P.xNextIso rfl).hom ≫ I.2.1, by simpa using I.2.2⟩ :=
+      ⟨I.1 ≫ (Q.xPrevIso rfl).inv, (P.xNextIso rfl).hom ≫ I.2.1, by simpa using! I.2.2⟩ :=
   rfl
 
 set_option backward.isDefEq.respectTransparency.types false in

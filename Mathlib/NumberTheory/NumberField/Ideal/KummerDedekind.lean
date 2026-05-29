@@ -181,7 +181,7 @@ theorem primesOverSpanEquivMonicFactorsMod_symm_apply (hp : ¬ p ∣ exponent θ
         inferInstance (by simp [NeZero.ne p]) (not_dvd_exponent_iff.mp hp).eq_top θ.isIntegral).symm
         ⟨Q.map (Int.quotientSpanNatEquivZMod p).symm, by
           rw [← primesOverSpanEquivMonicFactorsModAux_symm_apply]
-          exact ((primesOverSpanEquivMonicFactorsModAux _).symm ⟨Q, hQ⟩).coe_prop⟩ := rfl
+          exact ((primesOverSpanEquivMonicFactorsModAux _).symm ⟨Q, hQ⟩).prop⟩ := rfl
 
 set_option backward.isDefEq.respectTransparency.types false in
 /--

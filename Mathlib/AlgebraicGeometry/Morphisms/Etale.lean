@@ -159,6 +159,8 @@ deriving Category, HasPullbacks
 
 variable (X : Scheme.{u})
 
+instance (Y : X.Etale) : Etale Y.hom := Y.prop
+
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The forgetful functor from schemes étale over `X` to schemes over `X`. -/
 def Etale.forget : X.Etale ⥤ Over X :=

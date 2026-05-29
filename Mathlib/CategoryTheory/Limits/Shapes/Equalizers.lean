@@ -939,7 +939,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- The identity on `X` is an equalizer of `(f, g)`, if `f = g`. -/
 def isLimitIdFork (h : f = g) : IsLimit (idFork h) :=
   Fork.IsLimit.mk _ (fun s => Fork.ι s) (fun _ => Category.comp_id _) fun s m h => by
-    convert h
+    convert! h
     exact (Category.comp_id _).symm
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -1037,7 +1037,7 @@ def isLimitPrecompFork {s : Fork f g} (hs : IsLimit s) {c : PullbackCone s.ι h}
         apply Fork.equalizer_ext
         simp only [Fork.ι_ofι, precompFork] at h
         simp [c.condition, reassoc_of% h]
-      · simpa [liftPrecomp] using h)
+      · simpa [liftPrecomp] using! h)
 
 lemma hasEqualizer_precomp_of_equalizer {s : Fork f g} (hs : IsLimit s)
     {c : PullbackCone s.ι h} (hc : IsLimit c) :
@@ -1160,7 +1160,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- The identity on `Y` is a coequalizer of `(f, g)`, where `f = g`. -/
 def isColimitIdCofork (h : f = g) : IsColimit (idCofork h) :=
   Cofork.IsColimit.mk _ (fun s => Cofork.π s) (fun _ => Category.id_comp _) fun s m h => by
-    convert h
+    convert! h
     exact (Category.id_comp _).symm
 
 set_option backward.isDefEq.respectTransparency.types false in
