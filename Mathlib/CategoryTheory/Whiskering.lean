@@ -89,6 +89,7 @@ def whiskeringLeft : (C ⥤ D) ⥤ (D ⥤ E) ⥤ C ⥤ E where
           naturality := fun X Y f => by dsimp; rw [← H.map_comp, ← H.map_comp, ← τ.naturality] }
       naturality := fun X Y f => by ext; dsimp; rw [f.naturality] }
 
+-- TODO: Is there something to learn from the necessity to do this? Should it be done automatically?
 attribute [defeq, simp] whiskeringLeft_obj_obj
 
 set_option backward.defeqAttrib.useBackward true in

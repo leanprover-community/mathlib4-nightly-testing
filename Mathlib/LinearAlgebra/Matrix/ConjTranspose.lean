@@ -31,6 +31,7 @@ variable {R : Type*} {S : Type*} {α : Type v} {β : Type w} {γ : Type*}
 
 namespace Matrix
 
+
 /-- The conjugate transpose of a matrix defined in term of `star`. -/
 def conjTranspose [Star α] (M : Matrix m n α) : Matrix n m α :=
   M.transpose.map star
