@@ -159,8 +159,8 @@ theorem Cone.w {F : J ⥤ C} (c : Cone F) {j j' : J} (f : j ⟶ j') :
 
 attribute [simp] Cone.w Cone.w_assoc -- `Cocone.w` and `Cocone.w_assoc` are redundant
 
-set_option backward.isDefEq.respectTransparency.types false in
-attribute [elementwise] Cocone.w Cone.w
+-- set_option backward.isDefEq.respectTransparency.types false in
+-- attribute [elementwise] Cocone.w Cone.w
 
 end
 

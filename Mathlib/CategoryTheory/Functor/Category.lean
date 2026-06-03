@@ -149,7 +149,7 @@ end NatTrans
 namespace Functor
 
 /-- Flip the arguments of a bifunctor. See also `Currying.lean`. -/
-@[simps (attr := grind =) obj_obj obj_map]
+@[simps (attr := grind =) obj_obj obj_map, implicit_reducible]
 protected def flip (F : C ⥤ D ⥤ E) : D ⥤ C ⥤ E where
   obj k :=
     { obj := fun j => (F.obj j).obj k,

@@ -18,6 +18,8 @@ public section
 
 open CategoryTheory CategoryTheory.Limits
 
+set_option backward.isDefEq.respectTransparency.types false in
+
 attribute [elementwise] limit.lift_π limit.w
   colimit.ι_desc colimit.w kernel.lift_ι cokernel.π_desc kernel.condition cokernel.condition
 

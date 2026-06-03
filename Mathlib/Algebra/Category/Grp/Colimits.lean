@@ -19,6 +19,8 @@ quotients of finitely supported functions.
 
 -/
 
+set_option linter.tacticCheckInstances true
+
 @[expose] public section
 
 universe u' w u v
@@ -301,6 +303,15 @@ namespace AddCommGrpCat
 
 open QuotientAddGroup
 
+set_option allowUnsafeReducibility true
+attribute [implicit_reducible] QuotientGroup.lift QuotientGroup.con Con.lift
+  con_mono CommGrpCat.ofHom QuotientAddGroup.mk MonoidHom.range colimit.cocone
+
+def bla {α : _} (a : α) (h : a = a) := a
+
+#print AddMonoidHom.instFunLike
+
+-- set_option backward.isDefEq.respectTransparency false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The categorical cokernel of a morphism in `AddCommGrpCat`
 agrees with the usual group-theoretical quotient.
@@ -309,7 +320,10 @@ noncomputable def cokernelIsoQuotient {G H : AddCommGrpCat.{u}} (f : G ⟶ H) :
     cokernel f ≅ AddCommGrpCat.of (H ⧸ AddMonoidHom.range f.hom) where
   hom := cokernel.desc f (ofHom (mk' _)) <| by
         ext x
+        simp only [hom_comp, ConcreteCategory.hom_ofHom, AddMonoidHom.coe_comp, coe_mk',
+          Function.comp_apply, hom_zero, AddMonoidHom.zero_apply]
         simp
+        simp only [eq_zero_iff, AddMonoidHom.mem_range, exists_apply_eq_apply]
   inv := ofHom <|
     QuotientAddGroup.lift _ (cokernel.π f).hom <| by
       rintro _ ⟨x, rfl⟩
@@ -320,8 +334,28 @@ noncomputable def cokernelIsoQuotient {G H : AddCommGrpCat.{u}} (f : G ⟶ H) :
     rfl
   inv_hom_id := by
     ext x
-    dsimp only [hom_comp, hom_ofHom, hom_zero, AddMonoidHom.coe_comp, coe_mk',
-      Function.comp_apply, AddMonoidHom.zero_apply, id_eq, lift_mk, hom_id, AddMonoidHom.coe_id]
-    exact QuotientAddGroup.induction_on (α := H) x <| cokernel.π_desc_apply f _ _
+    rw [AddMonoidHom.coe_comp, AddMonoidHom.coe_comp]
+    rw [hom_comp, hom_ofHom, coe_mk', Function.comp_apply, Function.comp_apply,
+      AddMonoidHom.coe_comp, Function.comp_apply]
+    set_option backward.isDefEq.respectTransparency false in
+    -- set_option trace.Meta.isDefEq true in
+    -- set_option trace.Meta.isDefEq.printTransparency true in
+    -- rw [lift_mk]
+    dsimp only [hom_comp, hom_ofHom, AddMonoidHom.coe_comp, coe_mk',
+      Function.comp_apply, lift_mk]
+    set_option backward.isDefEq.respectTransparency true in
+    trace_state
+    -- set_option trace.Meta.isDefEq true in
+    -- set_option trace.Meta.whnf true in
+    exact QuotientAddGroup.induction_on (α := H) x  <|
+      (cokernel.π_desc_apply f (ofHom (mk' (Hom.hom f).range)) (cokernelIsoQuotient._proof_1 f))
+
+/-
+
+    dsimp only [AddMonoidHom.coe_comp, coe_mk', Function.comp_apply]
+    set_option trace.Meta.isDefEq true in
+    exact QuotientAddGroup.induction_on (α := H) x
+      <| cokernel.π_desc_apply f _ _
+-/
 
 end AddCommGrpCat
