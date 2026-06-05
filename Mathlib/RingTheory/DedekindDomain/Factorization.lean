@@ -66,6 +66,18 @@ variable {R : Type*} [CommRing R] {K : Type*} [Field K] [Algebra R K] [IsFractio
 
 variable [IsDedekindDomain R] (v : HeightOneSpectrum R)
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Algebra.lsmul
+  DistribSMul.toLinearMap
+  Filter.Eventually
+  Filter.cofinite
+  Filter.comk
+  HasFiniteMulSupport
+  Set
+  Set.Finite
+  coeToSubmodule
+
 open scoped Classical in
 /-- Given a maximal ideal `v` and an ideal `I` of `R`, `maxPowDividing` returns the maximal
   power of `v` dividing `I`. -/

@@ -37,6 +37,11 @@ The solutions is to use a typeclass, and that is exactly what we do in this file
 
 variable {α β : Type*}
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Additive
+  OrderDual
+
 /-- A linearly ordered commutative monoid with a zero element. -/
 class LinearOrderedCommMonoidWithZero (α : Type*) extends CommMonoidWithZero α, LinearOrder α,
     PosMulStrictMono α, OrderBot α, IsBotZeroClass α where

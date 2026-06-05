@@ -46,6 +46,50 @@ attribute [local instance] Opposite.small
 
 namespace AlgebraicGeometry
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  BinaryCofan.mk
+  Cocone.functoriality
+  Cocone.precompose
+  CommRingCat.piFan
+  CommRingCat.prodFan
+  ContinuousMap.comp
+  Discrete.rec
+  Fan.op
+  Functor.mapCocone
+  LocallyRingedSpace.comp
+  LocallyRingedSpace.forgetToSheafedSpace
+  LocallyRingedSpace.forgetToTop
+  MorphismProperty
+  Option.rec
+  PresheafedSpace.comp
+  Scheme.Cover.copy
+  Scheme.IsLocallyDirected.openCover
+  Scheme.Spec
+  Scheme.empty
+  Scheme.forget
+  Scheme.forgetToLocallyRingedSpace
+  Scheme.forgetToTop
+  Set
+  SheafedSpace.forget
+  Spec
+  Spec.locallyRingedSpaceObj
+  Spec.sheafedSpaceObj
+  Spec.topObj
+  Sum.elim
+  Sum.rec
+  TopCat.binaryCofan
+  WalkingPair.rec
+  WidePushoutShape.wideSpan
+  colimit.cocone
+  colimit.desc
+  colimit.isColimit
+  colimit.ι
+  getColimitCocone
+  getLimitCone
+  limit.cone
+  pair
+
 /-- `Spec ℤ` is the terminal object in the category of schemes. -/
 noncomputable def specZIsTerminal : IsTerminal (Spec <| .of ℤ) :=
   @IsTerminal.isTerminalObj _ _ _ _ Scheme.Spec _ inferInstance
@@ -75,7 +119,7 @@ instance {X : Scheme} : Subsingleton (X.Over (⊤_ Scheme)) :=
 section Initial
 
 /-- The map from the empty scheme. -/
-@[simps]
+@[local implicit_reducible, simps]
 def Scheme.emptyTo (X : Scheme.{u}) : ∅ ⟶ X :=
   ⟨{  base := TopCat.ofHom ⟨fun x => PEmpty.elim x, by fun_prop⟩
       c := { app := fun _ => CommRingCat.punitIsTerminal.from _ } }, fun x => PEmpty.elim x⟩
@@ -237,7 +281,7 @@ instance : MonoCoprod Scheme.{u} :=
   .mk' fun X Y ↦ ⟨.mk coprod.inl coprod.inr, coprodIsCoprod X Y, inferInstanceAs <| Mono coprod.inl⟩
 
 /-- The cover of `∐ X` by the `Xᵢ`. -/
-@[simps!]
+@[local implicit_reducible, simps!]
 noncomputable def sigmaOpenCover [Small.{u} σ] : (∐ g).OpenCover :=
   (Scheme.IsLocallyDirected.openCover (Discrete.functor g)).copy σ g (Sigma.ι _)
   (discreteEquiv.symm) (fun _ ↦ Iso.refl _) (fun _ ↦ rfl)
@@ -509,6 +553,7 @@ variable (R S : Type u) [CommRing R] [CommRing S]
 
 /-- The map `Spec R ⨿ Spec S ⟶ Spec (R × S)`.
 This is an isomorphism as witnessed by an `IsIso` instance provided below. -/
+@[local implicit_reducible]
 noncomputable
 def coprodSpec : Spec (.of R) ⨿ Spec (.of S) ⟶ Spec (.of <| R × S) :=
   coprod.desc (Spec.map (CommRingCat.ofHom <| RingHom.fst _ _))

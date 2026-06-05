@@ -32,13 +32,55 @@ namespace AlgebraicGeometry.Scheme
 
 variable {X Y Z T : Scheme.{u}}
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Bundled.of
+  Cat.of
+  Classical.choose
+  Classical.indefiniteDescription
+  Functor.leftAdjoint
+  Functor.sheafPushforwardContinuous
+  Hom.opensFunctor
+  InducedCategory
+  InducedCategory.homMk
+  IsOpenMap.functor
+  IsOpenMap.functorMap
+  LocallyDiscrete.mkPseudofunctor
+  ModuleCat.RestrictScalars.obj'
+  ModuleCat.restrictScalars
+  ObjectProperty.FullSubcategory.category._aux_1
+  ObjectProperty.ι
+  Opens.map
+  PresheafOfModules.pushforward₀
+  PresheafOfModules.pushforward₀Obj
+  PresheafOfModules.restrictScalars
+  PresheafOfModules.restrictScalarsObj
+  Quiver.Hom.op
+  Quiver.Hom.unop
+  Set
+  Set.image
+  SheafOfModules.forget
+  SheafedSpace.sheaf
+  TopCat.Presheaf.stalk
+  TopCat.Presheaf.stalkFunctor
+  TopCat.Sheaf
+  TopCat.instCategorySheaf._aux_1
+  colim
+  colimit.cocone
+  getColimitCocone
+  inducedFunctor
+  pseudofunctorOfIsLocallyDiscrete
+  sheafCompose
+
 variable (X) in
 /-- The category of sheaves of modules over a scheme. -/
+@[local implicit_reducible]
 def Modules := SheafOfModules.{u} X.ringCatSheaf
 
 namespace Modules
 
 /-- Morphisms between `𝒪ₓ`-modules. Use `Hom.app` to act on sections. -/
+@[local implicit_reducible]
 def Hom (M N : X.Modules) : Type u := SheafOfModules.Hom M N
 
 instance : Category X.Modules where
@@ -56,6 +98,7 @@ variable (X) in
 /-- The forgetful functor from `𝒪ₓ`-modules to presheaves of modules.
 This is mostly useful to transport results from (pre)sheaves of modules to `𝒪ₓ`-modules and
 usually shouldn't be used directly when working with actual `𝒪ₓ`-modules. -/
+@[local implicit_reducible]
 def toPresheafOfModules : X.Modules ⥤ X.PresheafOfModules := SheafOfModules.forget _
 
 /-- The forgetful functor from `𝒪ₓ`-modules to presheaves of modules is fully faithful. -/
@@ -69,6 +112,7 @@ instance : (toPresheafOfModules X).IsRightAdjoint :=
 
 variable (X) in
 /-- The forgetful functor from `𝒪ₓ`-modules to presheaves of abelian groups. -/
+@[local implicit_reducible, local implicit_reducible]
 noncomputable def toPresheaf : X.Modules ⥤ TopCat.Presheaf Ab X :=
   toPresheafOfModules X ⋙ PresheafOfModules.toPresheaf _
 
@@ -84,6 +128,7 @@ variable {M N K : X.Modules} {φ : M ⟶ N} {U V : X.Opens}
 section Presheaf
 
 /-- The underlying abelian presheaf of an `𝒪ₓ`-module. -/
+@[local implicit_reducible, local implicit_reducible]
 noncomputable def presheaf (M : X.Modules) : TopCat.Presheaf Ab X := M.1.presheaf
 
 /-- Notation for sections of a presheaf of module. -/
@@ -148,6 +193,7 @@ noncomputable section Functorial
 variable (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ T)
 
 /-- The pushforward functor for categories of sheaves of modules over schemes. -/
+@[local implicit_reducible, local implicit_reducible, local implicit_reducible]
 def pushforward : X.Modules ⥤ Y.Modules :=
   SheafOfModules.pushforward f.toRingCatSheafHom
 
@@ -165,6 +211,7 @@ lemma pushforward_map_app (φ : M ⟶ N) (U : Y.Opens) :
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The pullback functor for categories of sheaves of modules over schemes. -/
+@[local implicit_reducible, local implicit_reducible]
 def pullback : Y.Modules ⥤ X.Modules :=
   SheafOfModules.pullback f.toRingCatSheafHom
 
@@ -309,7 +356,7 @@ a scheme `X` to the category `X.Modules` of sheaves of modules over `X`.
 these categories.) -/
 @[simps! obj_obj map_l map_r map_adj
   mapId_hom_τl mapId_hom_τr mapId_inv_τl mapId_inv_τr
-  mapComp_hom_τl mapComp_hom_τr mapComp_inv_τl mapComp_inv_τr]
+  mapComp_hom_τl mapComp_hom_τr mapComp_inv_τl mapComp_inv_τr, local implicit_reducible]
 def pseudofunctor :
     Pseudofunctor (LocallyDiscrete Scheme.{u}ᵒᵖ) (Adj Cat) :=
   LocallyDiscrete.mkPseudofunctor
@@ -330,6 +377,7 @@ set_option backward.defeqAttrib.useBackward true in
 /-- Restriction of an `𝒪ₓ`-module along an open immersion.
 This is isomorphic to the pullback functor (see `restrictFunctorIsoPullback`)
 but has better defeqs. -/
+@[local implicit_reducible]
 def restrictFunctor : Y.Modules ⥤ X.Modules :=
   letI α : X.presheaf ⟶ f.opensFunctor.op ⋙ Y.presheaf := { app U := (f.appIso U.unop).inv }
   SheafOfModules.pushforward (F := f.opensFunctor)

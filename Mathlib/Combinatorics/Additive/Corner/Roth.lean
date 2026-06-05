@@ -31,6 +31,11 @@ variable {G : Type*} [AddCommGroup G] {A : Finset (G × G)} {a b c : G} {n : ℕ
 
 namespace Corners
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Injective
+  Prod.rec
+
 /-- The triangle indices for the proof of the corners theorem construction. -/
 private def triangleIndices (A : Finset (G × G)) : Finset (G × G × G) :=
   A.map ⟨fun (a, b) ↦ (a, b, a + b), by rintro ⟨x₁, x₂⟩ ⟨y₁, y₂⟩ ⟨⟩; rfl⟩

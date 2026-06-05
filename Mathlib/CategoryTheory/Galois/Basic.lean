@@ -62,6 +62,43 @@ The only difference between `[PreGaloisCategory C] (F : C ⥤ FintypeCat) [Fiber
 `[GaloisCategory C]` is that the former fixes one fiber functor `F`.
 -/
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Aut
+  Cone.functoriality
+  Cone.postcompose
+  Cone.postcomposeEquivalence
+  Discrete.rec
+  Eq.mpr
+  Eq.rec
+  Equivalence.symm
+  InducedCategory
+  NatIso.ofComponents
+  NatTrans.vcomp
+  ObjectProperty.FullSubcategory.category._aux_1
+  ObjectProperty.ι
+  Option.rec
+  PullbackCone.mk
+  TypeCat.Fun.comp
+  WalkingPair.rec
+  WalkingParallelPair.rec
+  WalkingParallelPairHom.rec
+  WidePullbackShape.Hom.rec
+  WidePullbackShape.wideCospan
+  diagramIsoCospan
+  diagramIsoPair
+  diagramIsoParallelPair
+  eqToHom
+  eqToIso
+  getLimitCone
+  inducedFunctor
+  limit.cone
+  mapCone
+  mapPairIso
+  pair
+  parallelPair
+  parallelPair.parallelPairHom
+
 /-- Definition of a (Pre)Galois category. Lenstra, Def 3.1, (G1)-(G3) -/
 class PreGaloisCategory (C : Type u₁) [Category.{u₂, u₁} C] : Prop where
   /-- `C` has a terminal object (G1). -/

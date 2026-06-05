@@ -11,6 +11,23 @@ public import Mathlib.CategoryTheory.Products.Basic
 The associator functor `((C × D) × E) ⥤ (C × (D × E))` and its inverse form an equivalence.
 -/
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  CategoryTheory.Equivalence.congrRight
+  CategoryTheory.Equivalence.prod
+  CategoryTheory.Equivalence.refl
+  CategoryTheory.Equivalence.symm
+  CategoryTheory.Equivalence.trans
+  CategoryTheory.Functor.prod'
+  CategoryTheory.Functor.whiskerRight
+  CategoryTheory.NatTrans.prod'
+  CategoryTheory.Prod.braiding
+  CategoryTheory.Prod.fst
+  CategoryTheory.Prod.snd
+  CategoryTheory.Prod.swap
+  CategoryTheory.functorProdToProdFunctor
+  CategoryTheory.prodFunctorToFunctorProd
+
 @[expose] public section
 
 universe v₁ v₂ v₃ v₄ u₁ u₂ u₃ u₄
@@ -26,14 +43,14 @@ variable (C : Type u₁) [Category.{v₁} C] (D : Type u₂) [Category.{v₂} D]
 
 /-- The associator functor `(C × D) × E ⥤ C × (D × E)`.
 -/
-@[simps]
+@[local implicit_reducible, simps]
 def associator : (C × D) × E ⥤ C × D × E where
   obj X := (X.1.1, (X.1.2, X.2))
   map := @fun _ _ f => f.1.1 ×ₘ (f.1.2 ×ₘ f.2)
 
 /-- The inverse associator functor `C × (D × E) ⥤ (C × D) × E `.
 -/
-@[simps]
+@[local implicit_reducible, simps]
 def inverseAssociator : C × D × E ⥤ (C × D) × E where
   obj X := ((X.1, X.2.1), X.2.2)
   map := @fun _ _ f => (f.1 ×ₘ f.2.1) ×ₘ f.2.2
@@ -41,7 +58,7 @@ def inverseAssociator : C × D × E ⥤ (C × D) × E where
 set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence of categories expressing associativity of products of categories.
 -/
-@[simps]
+@[local implicit_reducible, simps]
 def associativity : (C × D) × E ≌ C × D × E where
   functor := associator C D E
   inverse := inverseAssociator C D E
@@ -78,7 +95,7 @@ def functorProdToProdFunctorAssociator :
 
 /-- The equivalence swapping the second and third categories in `(A × C) × (D × E)`. This follows
 the definition of `MonoidalCategory.tensorμ`. -/
-@[simps!]
+@[local implicit_reducible, simps!]
 def prodμ : (A × C) × (D × E) ≌ (A × D) × (C × E) :=
   (associativity ..).trans <|
     (Equivalence.refl.prod (associativity ..).symm).trans <|

@@ -48,7 +48,12 @@ infinite places. See `NumberField.InfinitePlace` for the definition of an infini
 `NumberField.InfinitePlace.Completion` for the associated completion.
 -/
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  InfinitePlace
+
 /-- The infinite adele ring of a number field. -/
+@[local implicit_reducible]
 def InfiniteAdeleRing (K : Type*) [Field K] := (v : InfinitePlace K) → v.Completion
 deriving CommRing, Inhabited, TopologicalSpace, IsTopologicalRing, Algebra K
 

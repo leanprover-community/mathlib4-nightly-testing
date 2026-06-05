@@ -65,6 +65,18 @@ variable {ι R M N : Type*} [CommRing R]
   [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
   {P : RootPairing ι R M N} [P.IsCrystallographic] {b : P.Base}
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  LieSubalgebra.comap
+  LieSubalgebra.incl
+  Matrix
+  Set
+  Submodule.subtype
+  cartanSubalgebra'
+  iInf
+  iInter
+  span
+
 /-- Part of an `sl₂` triple used in Geck's construction of a Lie algebra from a root system. -/
 def h (i : b.support) :
     Matrix (b.support ⊕ ι) (b.support ⊕ ι) R :=
@@ -177,6 +189,7 @@ def lieAlgebra [Fintype ι] [DecidableEq ι] :
 /-- A distinguished subalgebra corresponding to a Cartan subalgebra of the Geck construction.
 
 See also `RootPairing.GeckConstruction.cartanSubalgebra'`. -/
+@[local implicit_reducible]
 def cartanSubalgebra [Fintype ι] [DecidableEq ι] :
     LieSubalgebra R (Matrix (b.support ⊕ ι) (b.support ⊕ ι) R) where
   __ := Submodule.span R (range h)

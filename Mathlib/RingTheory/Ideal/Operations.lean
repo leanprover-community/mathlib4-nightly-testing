@@ -30,6 +30,11 @@ open scoped Pointwise
 
 namespace Submodule
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Set
+  Set.range
+
 lemma coe_span_smul {R' M' : Type*} [CommSemiring R'] [AddCommMonoid M'] [Module R' M']
     (s : Set R') (N : Submodule R' M') :
     (Ideal.span s : Set R') • N = s • N :=

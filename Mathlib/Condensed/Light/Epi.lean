@@ -34,6 +34,11 @@ variable [∀ X Y, FunLike (FA X Y) (CA X) (CA Y)] [ConcreteCategory.{w} A FA]
 
 variable {X Y : LightCondensed.{u} A} (f : X ⟶ Y)
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  InducedCategory
+  ObjectProperty.FullSubcategory.category._aux_1
+
 lemma isLocallySurjective_iff_locallySurjective_on_lightProfinite : IsLocallySurjective f ↔
     ∀ (S : LightProfinite) (y : ToType (Y.obj.obj ⟨S⟩)),
       (∃ (S' : LightProfinite) (φ : S' ⟶ S) (_ : Function.Surjective φ)

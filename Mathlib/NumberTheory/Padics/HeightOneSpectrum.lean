@@ -55,6 +55,48 @@ equivalent. It is best to do this after `Valued` has been refactored, or at leas
 
 open IsDedekindDomain UniformSpace.Completion NumberField PadicInt
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Classical.choose
+  Classical.indefiniteDescription
+  HeightOneSpectrum.intValuation
+  HeightOneSpectrum.valuation
+  IsEquiv.uniformEquiv
+  IsUnit.liftRight
+  MonoidHom.mk'
+  MonoidHom.restrict
+  MonoidHomClass.toMonoidHom
+  MonoidWithZeroHom.ValueGroup₀.embedding
+  MonoidWithZeroHom.comp
+  MonoidWithZeroHom.valueGroup
+  MonoidWithZeroHom.valueMonoid
+  MonoidWithZeroHomClass.toMonoidWithZeroHom
+  MulEquiv.symm
+  MulHomClass.toMulHom
+  Nat.Primes
+  PadicInt
+  RingEquiv.symm
+  RingHomClass.toRingHom
+  Set
+  Subgroup.closure
+  Subgroup.subtype
+  Submonoid.LocalizationMap.lift
+  Submonoid.LocalizationMap.sec
+  Submonoid.copy
+  SubmonoidClass.subtype
+  UniformEquiv.symm
+  Units.liftRight
+  Units.map
+  WithVal.congr
+  WithVal.equiv
+  WithVal.valuation
+  WithZero.coeMonoidHom
+  WithZero.lift'
+  WithZero.map'
+  WithZero.withZeroUnitsEquiv
+  comap
+  extendToLocalization
+
 local instance (p : Nat.Primes) : Fact p.1.Prime := ⟨p.2⟩
 
 variable (R : Type*) [CommRing R] [Algebra R ℚ]
@@ -139,6 +181,7 @@ open Valuation
 `HeightOneSpectrum.valuation ℚ v` and the RHS has uniformity from
 `Rat.padicValuation (natGenerator v)`, for a height-one prime ideal
 `v : HeightOneSpectrum R`. -/
+@[local implicit_reducible]
 noncomputable def withValEquiv (v : HeightOneSpectrum R) :
     WithVal (v.valuation ℚ) ≃ᵤ WithVal (padicValuation (primesEquiv v)) :=
   (valuation_equiv_padicValuation v).uniformEquiv

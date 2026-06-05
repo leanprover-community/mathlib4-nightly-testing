@@ -35,6 +35,7 @@ variable {f : Numbering X} {s t : Finset X}
 
 /-- `IsPrefix f s` means that the elements of `s` precede the elements of `sᶜ`
 in the numbering `f`. -/
+@[local implicit_reducible]
 def IsPrefix (f : Numbering X) (s : Finset X) := ∀ x, x ∈ s ↔ f x < #s
 
 lemma IsPrefix.subset_of_card_le_card (hs : IsPrefix f s) (ht : IsPrefix f t) (hst : #s ≤ #t) :

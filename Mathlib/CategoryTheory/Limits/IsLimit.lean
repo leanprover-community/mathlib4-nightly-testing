@@ -49,6 +49,32 @@ variable {J : Type u₁} [Category.{v₁} J] {K : Type u₂} [Category.{v₂} K]
 variable {C : Type u₃} [Category.{v₃} C]
 variable {F : J ⥤ C}
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Cocone.equivalenceOfReindexing
+  Cocone.extend
+  Cocone.functoriality
+  Cocone.precompose
+  Cocone.precomposeEquivalence
+  Cocone.whisker
+  Cocone.whiskering
+  Cocone.whiskeringEquivalence
+  Cone.equivalenceOfReindexing
+  Cone.extend
+  Cone.functoriality
+  Cone.postcompose
+  Cone.postcomposeEquivalence
+  Cone.whisker
+  Cone.whiskering
+  Cone.whiskeringEquivalence
+  Equivalence.symm
+  Equivalence.trans
+  Functor.cocones
+  Functor.cones
+  mapCocone
+  mapCone
+  uliftFunctor
+
 /-- A cone `t` on `F` is a limit cone if each cone on `F` admits a unique
 cone morphism to `t`. -/
 @[stacks 002E]
@@ -461,6 +487,7 @@ variable {X : C} (h : F.cones.RepresentableBy X)
 
 /-- If `F.cones` is represented by `X`, each morphism `f : Y ⟶ X` gives a cone with cone point
 `Y`. -/
+@[local implicit_reducible]
 def coneOfHom {Y : C} (f : Y ⟶ X) : Cone F where
   pt := Y
   π := h.homEquiv f
@@ -484,6 +511,7 @@ theorem homOfCone_coneOfHom {Y : C} (f : Y ⟶ X) : homOfCone h (coneOfHom h f) 
 
 /-- If `F.cones` is represented by `X`, the cone corresponding to the identity morphism on `X`
 will be a limit cone. -/
+@[local implicit_reducible]
 def limitCone : Cone F :=
   coneOfHom h (𝟙 X)
 
@@ -971,6 +999,7 @@ variable {X : C} (h : F.cocones.CorepresentableBy X)
 
 /-- If `F.cocones` is corepresented by `X`, each morphism `f : X ⟶ Y` gives a cocone with cone
 point `Y`. -/
+@[local implicit_reducible]
 def coconeOfHom {Y : C} (f : X ⟶ Y) : Cocone F where
   pt := Y
   ι := h.homEquiv f
@@ -994,6 +1023,7 @@ theorem homOfCocone_coconeOfHom {Y : C} (f : X ⟶ Y) : homOfCocone h (coconeOfH
 
 /-- If `F.cocones` is corepresented by `X`, the cocone corresponding to the identity morphism on `X`
 will be a colimit cocone. -/
+@[local implicit_reducible]
 def colimitCocone : Cocone F :=
   coconeOfHom h (𝟙 X)
 

@@ -48,6 +48,12 @@ noncomputable section
 
 namespace LieAlgebra
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Matrix
+  Set
+  symm
+
 /-- A basis for a semisimple Lie algebra distinguishes a natural Cartan subalgebra and a base
 for the associated root system. -/
 @[ext]

@@ -40,8 +40,13 @@ variable (M' M'' : Submodule R M)
 
 namespace Submodule
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Set
+
 /-- Let `N` be a localization of an `R`-module `M` at `p`.
 This is the localization of an `R`-submodule of `M` viewed as an `R`-submodule of `N`. -/
+@[local implicit_reducible]
 def localized₀ : Submodule R N where
   carrier := { x | ∃ m ∈ M', ∃ s : p, IsLocalizedModule.mk' f m s = x }
   add_mem' := fun {x y} ⟨m, hm, s, hx⟩ ⟨n, hn, t, hy⟩ ↦ ⟨t • m + s • n, add_mem (M'.smul_mem t hm)
@@ -72,6 +77,7 @@ lemma restrictScalars_localized' :
     (localized' S p f M').restrictScalars R = localized₀ p f M' :=
   rfl
 
+@[local implicit_reducible]
 theorem localized'_eq_span : localized' S p f M' = span S (f '' M') := by
   refine le_antisymm ?_ (span_le.mpr <| by rintro _ ⟨m, hm, rfl⟩; exact ⟨m, hm, 1, by simp⟩)
   rintro _ ⟨m, hm, s, rfl⟩

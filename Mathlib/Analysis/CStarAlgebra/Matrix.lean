@@ -45,6 +45,10 @@ section EntrywiseSupNorm
 
 variable [RCLike 𝕜] [Fintype n] [DecidableEq n]
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Matrix
+
 theorem entry_norm_bound_of_unitary {U : Matrix n n 𝕜} (hU : U ∈ Matrix.unitaryGroup n 𝕜)
     (i j : n) : ‖U i j‖ ≤ 1 := by
   -- The norm squared of an entry is at most the L2 norm of its row.

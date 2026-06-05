@@ -47,6 +47,17 @@ variable [Algebra R S] [Algebra R A] [Algebra S A] [IsScalarTower R S A]
 
 open AlgebraicIndependent
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Set
+  Set.Subset
+  Set.diff
+  Set.insert
+  Subsemiring.closure
+  Subsemiring.mk'
+  adjoin
+  range
+
 variable {R} in
 theorem exists_isTranscendenceBasis_superset {s : Set A}
     (hs : AlgebraicIndepOn R id s) :

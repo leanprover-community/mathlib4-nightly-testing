@@ -58,6 +58,10 @@ open scoped NNReal Topology
 
 namespace Real
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Set
+
 /-- Integrand for representing `x ↦ x ^ p` for `p ∈ (0,1)` -/
 noncomputable def rpowIntegrand₀₁ (p t x : ℝ) : ℝ := t ^ p * (t⁻¹ - (t + x)⁻¹)
 

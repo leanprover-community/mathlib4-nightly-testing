@@ -26,6 +26,14 @@ open Functor
 variable (J₁ : Type u₁) (J₂ : Type u₂) (C : Type u₃)
     [Category.{v₁} J₁] [Category.{v₂} J₂] [Category.{v₃} C] [MonoidalCategory C]
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Functor.prod'
+  Monoidal.FunctorCategory.tensorObj
+  Prod.swap
+  diag
+  flipFunctor
+
 /-- The (curried version of the) external product bifunctor: given diagrams
 `K₁ : J₁ ⥤ C` and `K₂ : J₂ ⥤ C`, this is the bifunctor `j₁ ↦ j₂ ↦ K₁ j₁ ⊗ K₂ j₂`. -/
 @[simps!, implicit_reducible]

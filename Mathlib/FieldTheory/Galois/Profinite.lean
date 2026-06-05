@@ -61,8 +61,15 @@ variable {k K : Type*} [Field k] [Field K] [Algebra k K]
 
 section Profinite
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  FiniteGrp.of
+  Set
+  ofFiniteGrp
+
 /-- The (finite) Galois group `Gal(L / k)` associated to a
 `L : FiniteGaloisIntermediateField k K` `L`. -/
+@[local implicit_reducible]
 def FiniteGaloisIntermediateField.finGaloisGroup (L : FiniteGaloisIntermediateField k K) :
     FiniteGrp :=
   letI := AlgEquiv.fintype k L
@@ -105,6 +112,7 @@ end finGaloisGroupMap
 variable (k K) in
 /-- The functor from `FiniteGaloisIntermediateField` (ordered by reverse inclusion) to `FiniteGrp`,
 mapping each `FiniteGaloisIntermediateField` `L` to `Gal (L/k)` -/
+@[local implicit_reducible]
 noncomputable def finGaloisGroupFunctor : (FiniteGaloisIntermediateField k K)ᵒᵖ ⥤ FiniteGrp where
   obj L := L.unop.finGaloisGroup
   map := finGaloisGroupMap

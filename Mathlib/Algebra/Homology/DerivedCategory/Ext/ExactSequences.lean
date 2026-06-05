@@ -37,6 +37,29 @@ namespace Ext
 
 section CovariantSequence
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  DerivedCategory
+  Ext
+  Functor.shift
+  HomologicalComplexUpToQuasiIso.Qh
+  Localization.SmallHom
+  Localization.SmallShiftedHom
+  MorphismProperty.Localization
+  MorphismProperty.Localization'
+  MorphismProperty.Q
+  MorphismProperty.Q'
+  Qh
+  Quotient.functor
+  Quotient.lift
+  ShortComplex.ShortExact.singleTriangle
+  SingleFunctors.postcomp
+  Triangle.mk
+  instCategoryDerivedCategory._aux_5
+  preadditiveCoyoneda
+  preadditiveCoyonedaObj
+  singleFunctors
+
 lemma hom_comp_singleFunctor_map_shift [HasDerivedCategory.{w'} C]
     {X Y Z : C} {n : ℕ} (x : Ext X Y n) (f : Y ⟶ Z) :
     x.hom ≫ ((DerivedCategory.singleFunctor C 0).map f)⟦(n : ℤ)⟧' =

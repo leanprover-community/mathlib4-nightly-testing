@@ -31,6 +31,31 @@ We construct the universal ring of the following functors on `R-Alg`:
 
 -/
 
+set_option allowUnsafeReducibility true
+attribute [implicit_reducible]
+  Equiv.trans
+  MulEquiv.trans
+  RingEquiv.trans
+  Finsupp.sum
+  MvPolynomial.aeval
+  MvPolynomial.map
+  Multiset.foldr
+  AlgEquiv.trans
+  AddCon.Quotient
+  AddMonoidAlgebra.coeff
+  Multiset.map
+  MvPolynomial.tensorEquivSum
+  MvPolynomial.eval₂
+  Quotient
+  RingHomClass.toRingHom
+  MonoidHomClass.toMonoidHom
+  MvPolynomial.eval₂Hom
+  AddMonoidAlgebra.mapRingHom
+  Finset.sum
+  Multiset.sum
+  MulHomClass.toMulHom
+  TensorProduct
+
 @[expose] public section
 
 open scoped Polynomial TensorProduct
@@ -89,6 +114,7 @@ open Polynomial
 
 /-- `MonicDegreeEq · n` is representable by `R[X₁,...,Xₙ]`,
 with the universal element being `freeMonic`. -/
+@[local implicit_reducible]
 def mapEquivMonic : (MvPolynomial (Fin n) R →ₐ[R] S) ≃ MonicDegreeEq S n where
   toFun f := .map (.freeMonic _ _) f.toRingHom
   invFun p := aeval (p.1.coeff ·)
@@ -129,6 +155,7 @@ set_option backward.defeqAttrib.useBackward true in
 /-- In light of the fact that `MonicDegreeEq · n` is representable by `R[X₁,...,Xₙ]`,
 this is the map `R[X₁,...,Xₘ₊ₖ] → R[X₁,...,Xₘ] ⊗ R[X₁,...,Xₖ]` corresponding to the multiplication
 `MonicDegreeEq · m × MonicDegreeEq · k → MonicDegreeEq · (m + k)`. -/
+@[local implicit_reducible]
 def universalFactorizationMap (hn : n = m + k) :
     MvPolynomial (Fin n) R →ₐ[R] MvPolynomial (Fin m) R ⊗[R] MvPolynomial (Fin k) R :=
   (mapEquivMonic R _ n).symm

@@ -41,6 +41,10 @@ variable {ι R M N : Type*} [Finite ι] [CommRing R] [IsDomain R] [CharZero R]
 
 attribute [local simp] Ring.lie_def Matrix.mul_apply Matrix.one_apply Matrix.diagonal_apply
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Matrix
+
 /-- Lemma 3.3 (a) from [Geck](Geck2017). -/
 lemma lie_h_e :
     ⁅h j, e i⁆ = b.cartanMatrix i j • e i := by

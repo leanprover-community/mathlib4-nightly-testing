@@ -19,6 +19,11 @@ open Function Set
 
 variable {ι : Sort*} {α β γ : Type*}
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  InfClosed
+  SupClosed
+
 variable (α) in
 /-- A Boolean subalgebra of a Boolean algebra is a set containing the bottom and top elements, and
 closed under suprema, infima and complements. -/

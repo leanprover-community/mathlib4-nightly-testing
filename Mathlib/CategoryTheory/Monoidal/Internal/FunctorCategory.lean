@@ -46,8 +46,16 @@ namespace MonFunctorCategoryEquivalence
 
 variable {C D}
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  FunctorCategory.tensorHom
+  FunctorCategory.tensorObj
+  Mon.comp
+  Mon.forget
+  NatTrans.vcomp
+
 /-- A monoid object in a functor category sends any object to a monoid object. -/
-@[simps]
+@[local implicit_reducible, simps]
 def functorObjObj (A : C ⥤ D) [MonObj A] (X : C) : Mon D where
   X := A.obj X
   mon :=
@@ -60,7 +68,7 @@ def functorObjObj (A : C ⥤ D) [MonObj A] (X : C) : Mon D where
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- A monoid object in a functor category induces a functor to the category of monoid objects. -/
-@[simps]
+@[local implicit_reducible, simps]
 def functorObj (A : C ⥤ D) [MonObj A] : C ⥤ Mon D where
   obj := functorObjObj A
   map f :=
@@ -76,7 +84,7 @@ set_option backward.defeqAttrib.useBackward true in
 /-- Functor translating a monoid object in a functor category
 to a functor into the category of monoid objects.
 -/
-@[simps]
+@[local implicit_reducible, simps]
 def functor : Mon (C ⥤ D) ⥤ C ⥤ Mon D where
   obj A := functorObj A.X
   map f :=
@@ -89,7 +97,7 @@ def functor : Mon (C ⥤ D) ⥤ C ⥤ Mon D where
 set_option backward.defeqAttrib.useBackward true in
 /-- A functor to the category of monoid objects can be translated as a monoid object
 in the functor category. -/
-@[simps]
+@[local implicit_reducible, simps]
 def inverseObj (F : C ⥤ Mon D) : Mon (C ⥤ D) where
   X := F ⋙ Mon.forget D
   mon :=
@@ -100,7 +108,7 @@ set_option backward.defeqAttrib.useBackward true in
 /-- Functor translating a functor into the category of monoid objects
 to a monoid object in the functor category
 -/
-@[simps]
+@[local implicit_reducible, simps]
 def inverse : (C ⥤ Mon D) ⥤ Mon (C ⥤ D) where
   obj := inverseObj
   map α := .mk'

@@ -63,6 +63,10 @@ a Coxeter matrix and the standard geometric representation of a Coxeter group.
 
 @[expose] public section
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Matrix
+
 /-- A *Coxeter matrix* is a symmetric matrix of natural numbers whose diagonal entries are equal to
 1 and whose off-diagonal entries are not equal to 1. -/
 @[ext]

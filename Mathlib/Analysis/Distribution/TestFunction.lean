@@ -62,6 +62,14 @@ variable {𝕜 𝕂 : Type*} [NontriviallyNormedField 𝕜]
   {F' : Type*} [NormedAddCommGroup F'] [NormedSpace ℝ F'] [NormedSpace 𝕜 F']
   {n n₁ n₂ k : ℕ∞}
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Option.map₂
+  Option.rec
+  Set.Subset
+  WithTop.map₂
+  WithTop.some
+
 variable (Ω F n) in
 /-- The type of bundled `n`-times continuously differentiable maps with compact support -/
 structure TestFunction : Type _ where

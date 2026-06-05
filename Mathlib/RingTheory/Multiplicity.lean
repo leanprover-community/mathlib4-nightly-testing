@@ -35,6 +35,10 @@ variable {α β : Type*}
 
 open Nat
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  ENat
+
 /-- `FiniteMultiplicity a b` indicates that the multiplicity of `a` in `b` is finite. -/
 abbrev FiniteMultiplicity [Monoid α] (a b : α) : Prop :=
   ∃ n : ℕ, ¬a ^ (n + 1) ∣ b

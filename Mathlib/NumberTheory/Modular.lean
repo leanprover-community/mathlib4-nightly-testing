@@ -82,6 +82,11 @@ variable {g : SL(2, ℤ)} (z : ℍ)
 
 section BottomRow
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Matrix
+  SpecialLinearGroup
+
 /-- The two numbers `c`, `d` in the "bottom row" of `g=[[*,*],[c,d]]` in `SL(2, ℤ)` are coprime. -/
 theorem bottom_row_coprime {R : Type*} [CommRing R] (g : SL(2, R)) :
     IsCoprime ((↑g : Matrix (Fin 2) (Fin 2) R) 1 0) ((↑g : Matrix (Fin 2) (Fin 2) R) 1 1) :=

@@ -33,6 +33,16 @@ open Polynomial TensorProduct
 
 variable {R S B : Type*} [CommRing R] [CommRing S] [Algebra R S] [CommRing B] [Algebra R B]
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  IsIntegral
+  RingHom.IsIntegralElem
+  Set
+  Set.range
+  Submonoid.copy
+  Submonoid.powers
+  integralClosure
+
 variable (R S) in
 /-- The comparison map from `S ⊗[R] integralClosure R B` to `integralClosure S (S ⊗[R] B)`.
 This is injective when `S` is `R`-flat, and (TODO) bijective when `S` is `R`-smooth. -/

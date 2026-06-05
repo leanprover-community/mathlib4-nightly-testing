@@ -35,6 +35,15 @@ namespace CategoryTheory.Limits
 
 variable (J : Type w)
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Eq.rec
+  Functor.leftOp
+  colimit.cocone
+  getColimitCocone
+  getLimitCone
+  limit.cone
+
 /-- A wide pullback shape for any type `J` can be written simply as `Option J`. -/
 @[implicit_reducible]
 def WidePullbackShape := Option J
@@ -109,7 +118,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 /-- Construct a functor out of the wide pullback shape given a J-indexed collection of arrows to a
 fixed object.
 -/
-@[simps]
+@[local implicit_reducible, local implicit_reducible, simps]
 def wideCospan (B : C) (objs : J → C) (arrows : ∀ j : J, objs j ⟶ B) : WidePullbackShape J ⥤ C where
   obj j := Option.casesOn j B objs
   map f := by
@@ -127,7 +136,7 @@ def diagramIsoWideCospan (F : WidePullbackShape J ⥤ C) :
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Construct a cone over a wide cospan. -/
-@[simps]
+@[local implicit_reducible, local implicit_reducible, simps]
 def mkCone {F : WidePullbackShape J ⥤ C} {X : C} (f : X ⟶ F.obj none) (π : ∀ j, X ⟶ F.obj (some j))
     (w : ∀ j, π j ≫ F.map (Hom.term j) = f) : Cone F :=
   { pt := X
@@ -141,6 +150,7 @@ def mkCone {F : WidePullbackShape J ⥤ C} {X : C} (f : X ⟶ F.obj none) (π : 
 
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Wide pullback diagrams of equivalent index types are equivalent. -/
+@[local implicit_reducible]
 def equivalenceOfEquiv (J' : Type w') (h : J ≃ J') :
     WidePullbackShape J ≌ WidePullbackShape J' where
   functor := wideCospan none (fun j => some (h j)) fun j => Hom.term (h j)
@@ -238,7 +248,7 @@ variable {C : Type u} [Category.{v} C]
 /-- Construct a functor out of the wide pushout shape given a J-indexed collection of arrows from a
 fixed object.
 -/
-@[simps]
+@[local implicit_reducible, local implicit_reducible, simps]
 def wideSpan (B : C) (objs : J → C) (arrows : ∀ j : J, B ⟶ objs j) : WidePushoutShape J ⥤ C where
   obj j := Option.casesOn j B objs
   map f := by
@@ -261,7 +271,7 @@ def diagramIsoWideSpan (F : WidePushoutShape J ⥤ C) :
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Construct a cocone over a wide span. -/
-@[simps]
+@[local implicit_reducible, local implicit_reducible, simps]
 def mkCocone {F : WidePushoutShape J ⥤ C} {X : C} (f : F.obj none ⟶ X) (ι : ∀ j, F.obj (some j) ⟶ X)
     (w : ∀ j, F.map (Hom.init j) ≫ ι j = f) : Cocone F :=
   { pt := X
@@ -581,7 +591,7 @@ def widePullbackShapeOpMap :
   | _, _, WidePullbackShape.Hom.term _ => Quiver.Hom.op (WidePushoutShape.Hom.init _)
 
 /-- The obvious functor `WidePullbackShape J ⥤ (WidePushoutShape J)ᵒᵖ` -/
-@[simps]
+@[local implicit_reducible, simps]
 def widePullbackShapeOp : WidePullbackShape J ⥤ (WidePushoutShape J)ᵒᵖ where
   obj X := op X
   map {X₁} {X₂} := widePullbackShapeOpMap J X₁ X₂
@@ -595,18 +605,18 @@ def widePushoutShapeOpMap :
   | _, _, WidePushoutShape.Hom.init _ => Quiver.Hom.op (WidePullbackShape.Hom.term _)
 
 /-- The obvious functor `WidePushoutShape J ⥤ (WidePullbackShape J)ᵒᵖ` -/
-@[simps]
+@[local implicit_reducible, simps]
 def widePushoutShapeOp : WidePushoutShape J ⥤ (WidePullbackShape J)ᵒᵖ where
   obj X := op X
   map := fun {X} {Y} => widePushoutShapeOpMap J X Y
 
 /-- The obvious functor `(WidePullbackShape J)ᵒᵖ ⥤ WidePushoutShape J` -/
-@[simps!]
+@[local implicit_reducible, simps!]
 def widePullbackShapeUnop : (WidePullbackShape J)ᵒᵖ ⥤ WidePushoutShape J :=
   (widePullbackShapeOp J).leftOp
 
 /-- The obvious functor `(WidePushoutShape J)ᵒᵖ ⥤ WidePullbackShape J` -/
-@[simps!]
+@[local implicit_reducible, simps!]
 def widePushoutShapeUnop : (WidePushoutShape J)ᵒᵖ ⥤ WidePullbackShape J :=
   (widePushoutShapeOp J).leftOp
 
@@ -631,7 +641,7 @@ def widePullbackShapeUnopOp : widePullbackShapeOp J ⋙ widePushoutShapeUnop J �
   NatIso.ofComponents fun _ => Iso.refl _
 
 /-- The duality equivalence `(WidePushoutShape J)ᵒᵖ ≌ WidePullbackShape J` -/
-@[simps]
+@[local implicit_reducible, simps]
 def widePushoutShapeOpEquiv : (WidePushoutShape J)ᵒᵖ ≌ WidePullbackShape J where
   functor := widePushoutShapeUnop J
   inverse := widePullbackShapeOp J
@@ -639,7 +649,7 @@ def widePushoutShapeOpEquiv : (WidePushoutShape J)ᵒᵖ ≌ WidePullbackShape J
   counitIso := widePullbackShapeUnopOp J
 
 /-- The duality equivalence `(WidePullbackShape J)ᵒᵖ ≌ WidePushoutShape J` -/
-@[simps]
+@[local implicit_reducible, simps]
 def widePullbackShapeOpEquiv : (WidePullbackShape J)ᵒᵖ ≌ WidePushoutShape J where
   functor := widePullbackShapeUnop J
   inverse := widePushoutShapeOp J

@@ -40,6 +40,10 @@ variable [Module.Finite ℤ 𝒪]
 
 open nonZeroDivisors IntermediateField Module
 
+set_option allowUnsafeReducibility true
+attribute [local implicit_reducible]
+  Matrix
+
 lemma absNorm_differentIdeal : (differentIdeal ℤ 𝒪).absNorm = (discr K).natAbs := by
   refine (differentIdeal ℤ 𝒪).toAddSubgroup.relIndex_top_right.symm.trans ?_
   rw [← Submodule.comap_map_eq_of_injective (f := Algebra.linearMap 𝒪 K)
