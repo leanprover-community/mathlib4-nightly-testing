@@ -61,7 +61,6 @@ attribute [local implicit_reducible]
   Classical.indefiniteDescription
   HeightOneSpectrum.intValuation
   HeightOneSpectrum.valuation
-  IsEquiv.uniformEquiv
   IsUnit.liftRight
   MonoidHom.mk'
   MonoidHom.restrict
@@ -94,8 +93,6 @@ attribute [local implicit_reducible]
   WithZero.lift'
   WithZero.map'
   WithZero.withZeroUnitsEquiv
-  comap
-  extendToLocalization
 
 local instance (p : Nat.Primes) : Fact p.1.Prime := ⟨p.2⟩
 

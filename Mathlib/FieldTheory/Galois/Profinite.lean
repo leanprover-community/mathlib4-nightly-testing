@@ -65,7 +65,6 @@ set_option allowUnsafeReducibility true
 attribute [local implicit_reducible]
   FiniteGrp.of
   Set
-  ofFiniteGrp
 
 /-- The (finite) Galois group `Gal(L / k)` associated to a
 `L : FiniteGaloisIntermediateField k K` `L`. -/

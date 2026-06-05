@@ -76,7 +76,6 @@ attribute [local implicit_reducible]
   HasFiniteMulSupport
   Set
   Set.Finite
-  coeToSubmodule
 
 open scoped Classical in
 /-- Given a maximal ideal `v` and an ideal `I` of `R`, `maxPowDividing` returns the maximal

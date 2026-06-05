@@ -72,7 +72,6 @@ attribute [local implicit_reducible]
   Matrix
   Set
   Submodule.subtype
-  cartanSubalgebra'
   iInf
   iInter
   span
