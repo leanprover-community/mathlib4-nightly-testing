@@ -154,6 +154,16 @@ lemma μ_comp_assoc : ((linearizeMap (α_ X Y Z).hom).comp
     TensorProduct.assoc_tmul, LinearMap.lTensor_tmul, toLinearMap_apply]
   -- after fixing the defeq problems in `Action` and in the monoidal category structure of `types`
   -- this line should close the goal so this is left as an indicator.
+  -- TODO: The previously used
+  -- `with_reducible dsimp% linearizeMap_single (α_ X Y Z).hom ((x, y), z) (1 : k)`
+  -- does not work anymore because it relied on a transparency bump for implicit outParam arguments.
+  -- This bump was not done pre-`respectTransparency true`.
+  -- Arguably, using `with_reducible` when we rely on things being bumped might not be the right
+  -- approach here?
+  -- with_reducible
+  --   have := linearizeMap_single (α_ X Y Z).hom ((x, y), z) (1 : k)
+  --   dsimp only [Action.tensorObj_V, types_tensorObj_def] at this
+  --   convert! this <;> simp
   with_reducible convert! dsimp% linearizeMap_single (α_ X Y Z).hom ((x, y), z) (1 : k)
   all_goals with_reducible simp
 

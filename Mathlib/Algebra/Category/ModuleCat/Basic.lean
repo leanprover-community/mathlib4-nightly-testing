@@ -524,6 +524,19 @@ def smulNatTrans : R →+* End (forget₂ (ModuleCat R) AddCommGrpCat) where
     { app := fun M => M.smul r
       naturality := fun _ _ _ => smul_naturality _ r }
   map_one' := by cat_disch
+  /-
+  (by
+    #adaptation_note /-- Prior to https://github.com/leanprover/lean4/pull/12244
+    this was just `cat_disch`. -/
+    simp only [End.one_def,forget₂_obj, map_one]
+    set_option trace.Meta.isDefEq true in
+    set_option trace.Meta.isDefEq.printTransparency true in
+    set_option trace.Meta.Tactic.simp true in
+    set_option trace.Meta.synthInstance true in
+    simp only [map_one]
+    simp only [forget₂_obj]
+    rfl_cat)
+  -/
   map_zero' := by cat_disch
   map_mul' _ _ := by cat_disch
   map_add' _ _ := by cat_disch

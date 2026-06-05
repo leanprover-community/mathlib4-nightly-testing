@@ -73,6 +73,10 @@ lemma le_variation (μ : VectorMeasure X V) {s : Set X} (hs : MeasurableSet s) {
       simp only [sup_set_eq_biUnion, id_eq]
       exact hs.diff <| .biUnion (Finset.countable_toSet _) (by simp)
 
+section
+set_option allowUnsafeReducibility true -- TODO!
+attribute [local semireducible] LE.le
+-- set_option backward.isDefEq.respectTransparency false
 theorem enorm_measure_le_variation (μ : VectorMeasure X V) (E : Set X) :
     ‖μ E‖ₑ ≤ variation μ E := by
   by_cases hE : MeasurableSet E
@@ -83,6 +87,7 @@ theorem enorm_measure_le_variation (μ : VectorMeasure X V) (E : Set X) :
   calc
     ‖μ E‖ₑ = ∑ p ∈ (Finpartition.indiscrete hE').parts, ‖μ p‖ₑ := by simp
     _ ≤ preVariationFun (‖μ ·‖ₑ) E := by apply preVariation.sum_le
+end
 
 @[simp]
 lemma variation_zero : (0 : VectorMeasure X V).variation = 0 := by

@@ -159,8 +159,18 @@ theorem Cone.w {F : J ⥤ C} (c : Cone F) {j j' : J} (f : j ⟶ j') :
 
 attribute [simp] Cone.w Cone.w_assoc -- `Cocone.w` and `Cocone.w_assoc` are redundant
 
--- set_option backward.isDefEq.respectTransparency.types false in
--- attribute [elementwise] Cocone.w Cone.w
+set_option backward.isDefEq.respectTransparency.types false in
+attribute [elementwise] Cone.w
+
+-- TODO: Is there a less manual way to state this even though `simp` can derive it?
+theorem Cocone.w_apply.{uF, w} {J : Type u₁} [Category.{v₁, u₁} J] {C : Type u₃}
+  [Category.{v₃, u₃} C] {F : J ⥤ C} (c : Cocone F) {j j' : J} (f : j' ⟶ j) {F' : C → C → Type uF}
+  {carrier : C → Type w}
+  {instFunLike : (X Y : C) → FunLike (F' X Y) (carrier X) (carrier Y)}
+  [inst : ConcreteCategory C F'] (x : carrier (F.obj j')) :
+  (ConcreteCategory.hom (c.ι.app j)) ((ConcreteCategory.hom (F.map f)) x) =
+    (ConcreteCategory.hom (c.ι.app j')) x := by
+  simp
 
 end
 
