@@ -78,7 +78,7 @@ protected theorem lawfulFunctor' [F : Functor t']
   have : F = Equiv.functor eqv := by
     cases F
     dsimp [Equiv.functor]
-    congr <;> ext <;> dsimp only <;> [rw [← h₀]; rw [← h₁]] <;> rfl
+    congr <;> ext <;> [rw [← h₀]; rw [← h₁]] <;> rfl
   subst this
   exact Equiv.lawfulFunctor eqv
 
@@ -102,7 +102,6 @@ theorem traverse_def (f : α → m β) (x : t' α) :
   rfl
 
 /-- The function `Equiv.traverse` transfers a traversable functor
-@[implicit_reducible]
 instance across the equivalences `eqv`. -/
 @[implicit_reducible]
 protected def traversable : Traversable t' where

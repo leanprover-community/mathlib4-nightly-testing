@@ -127,7 +127,7 @@ where
     assertUnreachable
       "findEq: some side of equality must be `a`, and the other must not depend on `a`"
   | ~q($L ∧ $R) =>
-    match (generalizing := false) path with
+    match path with
     | [] => assertUnreachable "findEq: P is conjunction but path is empty"
     | .left :: tl =>
       let (fvars, lctx, P', a') ← go a q($L) tl
@@ -189,7 +189,7 @@ example {α β : Type} (f : β → α) {p : α → Prop} :
   refine Exists.intro (f b) ?_
   -- then we traverse `newBody` and goal simultaneously
   refine And.intro ?_ ?_
-  -- at branches outside the path `h` must concide with goal
+  -- at branches outside the path `h` must coincide with goal
   · replace h := h.left
     exact h
   -- inside path we substitute variables from `fvars` into existential quantifiers.
@@ -212,7 +212,7 @@ where
     MetaM Q($goal) := do
   match goal with
   | ~q(@Exists $β $pb) =>
-    match (generalizing := false) exs with
+    match exs with
     | [] => assertUnreachable "mkAfterToBefore: goal is `Exists` but `exs` is empty"
     | ⟨v, γ, c⟩ :: exsTail =>
     let _ : u_1 =QL v := ⟨⟩
@@ -222,7 +222,7 @@ where
   | ~q(And $L $R) =>
     let ~q($L' ∧ $R') := P
       | assertUnreachable "mkAfterToBefore: goal is `And` but `P` is not `And`"
-    match (generalizing := false) path with
+    match path with
     | [] => assertUnreachable "mkAfterToBefore: goal is `And` but `exs` is empty"
     | .left :: tl =>
       let _ : $R =Q $R' := ⟨⟩
@@ -250,7 +250,7 @@ partial def withExistsElimAlongPathImp {u : Level} {α : Q(Sort u)}
     MetaM Q($goal) := do
   match P with
   | ~q(@Exists $β $pb) =>
-    match (generalizing := false) exs with
+    match exs with
     | [] => assertUnreachable "withExistsElimAlongPathImp: `P` is `Exists` but `exs` is empty"
     | ⟨v, γ, b⟩ :: exsTail =>
     let _ : u_1 =QL v := ⟨⟩
@@ -261,7 +261,7 @@ partial def withExistsElimAlongPathImp {u : Level} {α : Q(Sort u)}
       let pf2 : Q(∀ b, $pb b → $goal) ← mkLambdaFVars #[b, hb] pf1
       return q(Exists.elim $h $pf2)
   | ~q(And $L' $R') =>
-      match (generalizing := false) path with
+      match path with
       | [] => assertUnreachable "withExistsElimAlongPathImp: `P` is `And` but `path` is empty"
       | .left :: tl =>
         withExistsElimAlongPathImp q(And.left $h) exs tl hs act
@@ -341,7 +341,7 @@ example {α β : Type} (f : β → α) {p : α → Prop} :
   have h' := ha
   refine Exists.intro b ?_
   refine And.intro ?_ ?_
-  -- outside the path goal must concide with `h_eq ▸ h'`
+  -- outside the path goal must coincide with `h_eq ▸ h'`
   · replace h' := h'.left
     exact Eq.mp (congrArg (fun t ↦ p t) h_eq) h'
   -- inside the path:
@@ -372,12 +372,12 @@ where
     MetaM Q($goal) := do
   match P with
   | ~q(@Exists $β $pb) =>
-    match (generalizing := false) exs with
+    match exs with
     | [] => assertUnreachable "mkBeforeToAfter: `P` is `Exists` but `exs` is empty"
     | ⟨v, γ, b⟩ :: exsTail =>
     let _ : u_1 =QL v := ⟨⟩
     let _ : $γ =Q $β := ⟨⟩
-    match (generalizing := false) hs with
+    match hs with
     | [] => assertUnreachable "mkBeforeToAfter: `P` is `Exists` but `hs` is empty"
     | ⟨H, hb⟩ :: hsTail =>
     let _ : $H =Q $pb $b := ⟨⟩
@@ -386,7 +386,7 @@ where
   | ~q(And $L $R) =>
     let ~q($L' ∧ $R') := goal
       | assertUnreachable "mkBeforeToAfter: `P` is `And` but `goal` is not `And`"
-    match (generalizing := false) path with
+    match path with
     | [] => assertUnreachable "mkBeforeToAfter: `P` is `And` but `path` is empty"
     | .left :: tl =>
       let pa : Q($α → Prop) ← mkLambdaFVars #[a] R
