@@ -25,7 +25,8 @@ Also see `AlgebraicGeometry/AffineSpace` for the affine space over arbitrary sch
 - `Polynomial.exists_image_comap_of_monic`:
   If `g : R[X]` is monic, the image of `Z(g) ∩ D(f) : Spec R[X]` in `Spec R` is compact open.
 - `Polynomial.isOpenMap_comap_C`: The structure map `Spec R[X] → Spec R` is an open map.
-- `MvPolynomial.isOpenMap_comap_C`: The structure map `Spec R[X̲] → Spec R` is an open map.
+- `MvPolynomial.isOpenMap_comap_C`:
+  The structure map `Spec (MvPolynomial σ R) → Spec R` is an open map.
 
 -/
 
@@ -122,7 +123,6 @@ lemma mem_image_comap_basicOpen (f : A) (x) :
     ← mem_image_comap_zeroLocus_sdiff f ∅ x, zeroLocus_empty, ← Set.compl_eq_univ_diff,
     basicOpen_eq_zeroLocus_compl]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Let `A` be an `R`-algebra. If `A ⧸ I` is finite free over `R`,
 then the image of `Z(I) ∩ D(f) ⊆ Spec S` in `Spec R` is compact open. -/
 lemma exists_image_comap_of_finite_of_free (f : A) (s : Set A)
@@ -140,7 +140,6 @@ end PrimeSpectrum
 
 namespace Polynomial
 
-set_option backward.isDefEq.respectTransparency false in
 lemma mem_image_comap_C_basicOpen (f : R[X]) (x : PrimeSpectrum R) :
     x ∈ comap C '' basicOpen f ↔ ∃ i, f.coeff i ∉ x.asIdeal := by
   trans f.map (algebraMap R x.asIdeal.ResidueField) ≠ 0
@@ -211,7 +210,7 @@ lemma mem_image_comap_C_basicOpen (f : MvPolynomial σ R) (x : PrimeSpectrum R) 
     ext
     · simp [scalarRTensorAlgEquiv, e, coeff_map,
         Algebra.smul_def, apply_ite (f := algebraMap _ _)]
-    · simp [e, scalarRTensorAlgEquiv, coeff_map, coeff_X']
+    · simp [e, scalarRTensorAlgEquiv, coeff_map, coeff_X]
   · simp [MvPolynomial.ext_iff, coeff_map]
 
 lemma image_comap_C_basicOpen (f : MvPolynomial σ R) :
