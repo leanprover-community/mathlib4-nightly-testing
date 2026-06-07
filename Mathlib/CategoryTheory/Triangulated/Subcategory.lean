@@ -91,7 +91,6 @@ lemma ext_of_isTriangulatedClosed₃'
   IsTriangulatedClosed₃.ext₃' T hT h₁ h₂
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 protected lemma distinguished_cocone_triangle [P.IsTriangulatedClosed₃]
     {X Y : C} (a : X ⟶ Y) (hX : P X) (hY : P Y) :
     ∃ (Z : C) (_ : P Z) (b : Y ⟶ Z) (c : Z ⟶ X⟦(1 : ℤ)⟧), Triangle.mk a b c ∈ distTriang _ := by
@@ -101,7 +100,6 @@ protected lemma distinguished_cocone_triangle [P.IsTriangulatedClosed₃]
     (Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _) e.symm )⟩
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 protected lemma distinguished_cocone_triangle₁ [P.IsTriangulatedClosed₁]
     {Y Z : C} (b : Y ⟶ Z) (hY : P Y) (hZ : P Z) :
     ∃ (X : C) (_ : P X) (a : X ⟶ Y) (c : Z ⟶ X⟦(1 : ℤ)⟧), Triangle.mk a b c ∈ distTriang _ := by
@@ -111,7 +109,6 @@ protected lemma distinguished_cocone_triangle₁ [P.IsTriangulatedClosed₁]
     (Triangle.isoMk _ _ e.symm (Iso.refl _) (Iso.refl _))⟩
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 protected lemma distinguished_cocone_triangle₂ [P.IsTriangulatedClosed₂]
     {X Z : C} (c : Z ⟶ X⟦(1 : ℤ)⟧) (hX : P X) (hZ : P Z) :
     ∃ (Y : C) (_ : P Y) (a : X ⟶ Y) (b : Y ⟶ Z), Triangle.mk a b c ∈ distTriang _ := by
@@ -154,6 +151,13 @@ lemma IsTriangulatedClosed₃.mk' [P.IsClosedUnderIsomorphisms]
     (hP : ∀ (T : Triangle C) (_ : T ∈ distTriang C)
       (_ : P T.obj₁) (_ : P T.obj₂), P T.obj₃) : P.IsTriangulatedClosed₃ where
   ext₃' := by simpa only [isoClosure_eq_self] using hP
+
+lemma IsTriangulatedClosed₂.of_isTriangulatedClosed₃
+    [P.IsTriangulatedClosed₃] [P.IsStableUnderShift ℤ] :
+    P.IsTriangulatedClosed₂ where
+  ext₂' _ hT h₁ h₃ :=
+    P.ext_of_isTriangulatedClosed₃' _ (inv_rot_of_distTriang _ hT)
+      (P.le_shift _ _ h₃) h₁
 
 variable (P)
 
@@ -563,7 +567,7 @@ lemma trW_iff_of_distinguished' [P.IsStableUnderShift ℤ]
     [P.IsClosedUnderIsomorphisms] (T : Triangle C) (hT : T ∈ distTriang C) :
     P.trW T.mor₂ ↔ P T.obj₁ := by
   simpa [P.prop_shift_iff_of_isStableUnderShift]
-    using P.trW_iff_of_distinguished _ (rot_of_distTriang _ hT)
+    using! P.trW_iff_of_distinguished _ (rot_of_distTriang _ hT)
 
 section
 

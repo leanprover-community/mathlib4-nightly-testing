@@ -127,7 +127,7 @@ lemma CStarAlgebra.directedOn_nonneg_ball :
       · have (x) (hx : x ∈ σₙ ℝ≥0 a) : 1 - x ≠ 0 := by
           refine tsub_pos_of_lt ?_ |>.ne'
           exact lt_of_le_of_lt (le_nnnorm_of_mem_quasispectrum hx) ha₂
-        fun_prop (disch := assumption)
+        fun_prop
     _ ≤ cfcₙ f (cfcₙ g a + cfcₙ g b) := by
       have hab' : cfcₙ g a ≤ cfcₙ g a + cfcₙ g b := le_add_of_nonneg_right cfcₙ_nonneg_of_predicate
       exact CFC.monotoneOn_one_sub_one_add_inv cfcₙ_nonneg_of_predicate
@@ -157,6 +157,12 @@ lemma eventually_isSelfAdjoint {l : Filter A} (hl : l.IsIncreasingApproximateUni
 lemma eventually_star_eq {l : Filter A} (hl : l.IsIncreasingApproximateUnit) :
     ∀ᶠ x in l, star x = x :=
   hl.eventually_isSelfAdjoint.mp <| .of_forall fun _ ↦ IsSelfAdjoint.star_eq
+
+lemma pure_one (A : Type*) [CStarAlgebra A] [PartialOrder A] [StarOrderedRing A] :
+    (pure 1 : Filter A).IsIncreasingApproximateUnit where
+  toIsApproximateUnit := .pure_one A
+  eventually_nonneg := by simp
+  eventually_norm := by nontriviality A; simp
 
 end Filter.IsIncreasingApproximateUnit
 
