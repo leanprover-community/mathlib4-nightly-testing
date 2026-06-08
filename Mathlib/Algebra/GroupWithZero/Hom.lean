@@ -3,8 +3,10 @@ Copyright (c) 2020 Patrick Massot. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eric Wieser
 -/
-import Mathlib.Algebra.Group.Hom.Basic
-import Mathlib.Algebra.GroupWithZero.Basic
+module
+
+public import Mathlib.Algebra.Group.Hom.Basic
+public import Mathlib.Algebra.GroupWithZero.Basic
 
 /-!
 # Monoid with zero and group with zero homomorphisms
@@ -30,6 +32,8 @@ can be inferred from the type it is faster to use this method than to use type c
 
 monoid homomorphism
 -/
+
+@[expose] public section
 
 assert_not_exists DenselyOrdered Ring
 
@@ -73,15 +77,9 @@ structure MonoidWithZeroHom (α β : Type*) [MulZeroOneClass α] [MulZeroOneClas
 infixr:25 " →*₀ " => MonoidWithZeroHom
 
 /-- Turn an element of a type `F` satisfying `MonoidWithZeroHomClass F α β` into an actual
-`MonoidWithZeroHom`. This is declared as the default coercion from `F` to `α →*₀ β`. -/
-@[coe]
-def MonoidWithZeroHomClass.toMonoidWithZeroHom [FunLike F α β] [MonoidWithZeroHomClass F α β]
+`MonoidWithZeroHom`. -/
+def MonoidWithZeroHom.ofClass [FunLike F α β] [MonoidWithZeroHomClass F α β]
     (f : F) : α →*₀ β := { (f : α →* β), (f : ZeroHom α β) with }
-
-/-- Any type satisfying `MonoidWithZeroHomClass` can be cast into `MonoidWithZeroHom` via
-`MonoidWithZeroHomClass.toMonoidWithZeroHom`. -/
-instance [FunLike F α β] [MonoidWithZeroHomClass F α β] : CoeTC F (α →*₀ β) :=
-  ⟨MonoidWithZeroHomClass.toMonoidWithZeroHom⟩
 
 namespace MonoidWithZeroHom
 
@@ -101,7 +99,8 @@ instance [Subsingleton α] : Subsingleton (α →*₀ β) := .of_oneHomClass
 
 variable [FunLike F α β]
 
-@[simp] lemma coe_coe [MonoidWithZeroHomClass F α β] (f : F) : ((f : α →*₀ β) : α → β) = f := rfl
+@[simp] lemma coe_ofClass [MonoidWithZeroHomClass F α β] (f : F) :
+    (MonoidWithZeroHom.ofClass f : α → β) = f := rfl
 
 -- Completely uninteresting lemmas about coercion to function, that all homs need
 section Coes
@@ -213,7 +212,8 @@ instance {β} [CommMonoidWithZero β] : Mul (α →*₀ β) where
     { (f * g : α →* β) with
       map_zero' := by dsimp; rw [map_zero, zero_mul] }
 
-/-- The trivial homomorphism between monoids with zero, sending everything to 1 other than 0. -/
+/-- The trivial homomorphism between monoids with zero, sending 0 to 0 and all other elements to 1.
+-/
 protected instance one (M₀ N₀ : Type*) [MulZeroOneClass M₀] [MulZeroOneClass N₀]
     [DecidablePred fun x : M₀ ↦ x = 0] [Nontrivial M₀] [NoZeroDivisors M₀] :
     One (M₀ →*₀ N₀) where

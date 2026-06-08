@@ -3,13 +3,13 @@ Copyright (c) 2021 Oliver Nash. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Oliver Nash, Eric Wieser
 -/
-import Mathlib.Topology.Algebra.InfiniteSum.Basic
-import Mathlib.Topology.Algebra.Group.Pointwise
-import Mathlib.Topology.Algebra.Ring.Basic
-import Mathlib.Topology.Algebra.Star
-import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
-import Mathlib.LinearAlgebra.Matrix.GeneralLinearGroup.Defs
-import Mathlib.LinearAlgebra.Matrix.Trace
+module
+
+public import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.Topology.Algebra.InfiniteSum.Basic
+public import Mathlib.Topology.Algebra.Ring.Basic
+public import Mathlib.Topology.Algebra.Star
 
 /-!
 # Topological properties of matrices
@@ -37,21 +37,24 @@ This file is a place to collect topological results about matrices.
   * `Matrix.blockDiagonal'_tsum`: non-uniform block diagonal commutes with infinite sums
 -/
 
+public section
+
+assert_not_exists Matrix.GeneralLinearGroup Matrix.SpecialLinearGroup -- guard against import creep
 
 open Matrix
 
 variable {X α l m n p S R : Type*} {m' n' : l → Type*}
 
 instance [TopologicalSpace R] : TopologicalSpace (Matrix m n R) :=
-  Pi.topologicalSpace
+  inferInstanceAs <| TopologicalSpace (m → n → R)
 
 instance [TopologicalSpace R] [T2Space R] : T2Space (Matrix m n R) :=
-  Pi.t2Space
+  inferInstanceAs <| T2Space (m → n → R)
 
 /-- The topology on finite matrices over a discrete space is discrete. -/
 instance [TopologicalSpace R] [Finite m] [Finite n] [DiscreteTopology R] :
     DiscreteTopology (Matrix m n R) :=
-  Pi.discreteTopology
+  inferInstanceAs <| DiscreteTopology (m → n → R)
 
 section Set
 
@@ -100,6 +103,13 @@ theorem Continuous.matrix_elem {A : X → Matrix m n R} (hA : Continuous A) (i :
     Continuous fun x => A x i j :=
   (continuous_apply_apply i j).comp hA
 
+lemma continuous_matrixOf [TopologicalSpace α] {f : α → m → n → R} :
+    Continuous (fun x ↦ Matrix.of (f x)) ↔ Continuous f := by
+  rfl
+
+@[fun_prop]
+alias ⟨_, Continuous.matrixOf⟩ := continuous_matrixOf
+
 @[continuity, fun_prop]
 theorem Continuous.matrix_map [TopologicalSpace S] {A : X → Matrix m n S} {f : S → R}
     (hA : Continuous A) (hf : Continuous f) : Continuous fun x => (A x).map f :=
@@ -123,14 +133,10 @@ theorem Continuous.matrix_replicateCol {ι : Type*} {A : X → n → R} (hA : Co
     Continuous fun x => replicateCol ι (A x) :=
   continuous_matrix fun i _ => (continuous_apply i).comp hA
 
-@[deprecated (since := "2025-03-15")] alias Continuous.matrix_col := Continuous.matrix_replicateCol
-
 @[continuity, fun_prop]
 theorem Continuous.matrix_replicateRow {ι : Type*} {A : X → n → R} (hA : Continuous A) :
     Continuous fun x => replicateRow ι (A x) :=
   continuous_matrix fun _ _ => (continuous_apply _).comp hA
-
-@[deprecated (since := "2025-03-15")] alias Continuous.matrix_row := Continuous.matrix_replicateRow
 
 @[continuity, fun_prop]
 theorem Continuous.matrix_diagonal [Zero R] [DecidableEq n] {A : X → n → R} (hA : Continuous A) :
@@ -144,16 +150,13 @@ protected theorem Continuous.dotProduct [Fintype n] [Mul R] [AddCommMonoid R] [C
   dsimp only [dotProduct]
   fun_prop
 
-@[deprecated (since := "2025-05-09")]
-alias Continuous.matrix_dotProduct := Continuous.dotProduct
-
 /-- For square matrices the usual `continuous_mul` can be used. -/
 @[continuity, fun_prop]
 theorem Continuous.matrix_mul [Fintype n] [Mul R] [AddCommMonoid R] [ContinuousAdd R]
     [ContinuousMul R] {A : X → Matrix m n R} {B : X → Matrix n p R} (hA : Continuous A)
     (hB : Continuous B) : Continuous fun x => A x * B x :=
   continuous_matrix fun _ _ =>
-    continuous_finset_sum _ fun _ _ => (hA.matrix_elem _ _).mul (hB.matrix_elem _ _)
+    continuous_finsetSum _ fun _ _ => (hA.matrix_elem _ _).mul (hB.matrix_elem _ _)
 
 instance [Fintype n] [Mul R] [AddCommMonoid R] [ContinuousAdd R] [ContinuousMul R] :
     ContinuousMul (Matrix n n R) :=
@@ -204,14 +207,14 @@ theorem continuous_matrix_diag : Continuous (Matrix.diag : Matrix n n R → n �
 @[continuity, fun_prop]
 theorem Continuous.matrix_trace [Fintype n] [AddCommMonoid R] [ContinuousAdd R]
     {A : X → Matrix n n R} (hA : Continuous A) : Continuous fun x => trace (A x) :=
-  continuous_finset_sum _ fun _ _ => hA.matrix_elem _ _
+  continuous_finsetSum _ fun _ _ => hA.matrix_elem _ _
 
 @[continuity, fun_prop]
 theorem Continuous.matrix_det [Fintype n] [DecidableEq n] [CommRing R] [IsTopologicalRing R]
     {A : X → Matrix n n R} (hA : Continuous A) : Continuous fun x => (A x).det := by
   simp_rw [Matrix.det_apply]
-  refine continuous_finset_sum _ fun l _ => Continuous.const_smul ?_ _
-  exact continuous_finset_prod _ fun l _ => hA.matrix_elem _ _
+  refine continuous_finsetSum _ fun l _ => Continuous.const_smul ?_ _
+  exact continuous_finsetProd _ fun l _ => hA.matrix_elem _ _
 
 @[continuity, fun_prop]
 theorem Continuous.matrix_updateCol [DecidableEq n] (i : n) {A : X → Matrix m n R}
@@ -266,7 +269,7 @@ lemma IsOpenEmbedding.matrix_map [Finite m] [Finite n] (hf : IsOpenEmbedding f) 
 
 end Topology
 
--- lemmas about functions in `Data/Matrix/Block.lean`
+-- lemmas about functions in `Mathlib/Data/Matrix/Block.lean`
 section BlockMatrices
 
 @[continuity, fun_prop]
@@ -305,6 +308,12 @@ theorem Continuous.matrix_blockDiag'
     Continuous fun x => blockDiag' (A x) :=
   continuous_pi fun _i => continuous_matrix fun _j _k => hA.matrix_elem _ _
 
+theorem isClosed_setOf_blockTriangular {α : Type*} {b : m → α} [LinearOrder α] [Zero R]
+    [T2Space R] : IsClosed {M : Matrix m m R | M.BlockTriangular b} := by
+  simp only [BlockTriangular, Set.setOf_forall]
+  refine isClosed_iInter fun i => isClosed_iInter fun j => isClosed_iInter fun _ => ?_
+  exact isClosed_eq (continuous_id.matrix_elem i j) continuous_const
+
 end BlockMatrices
 
 end Continuity
@@ -314,234 +323,134 @@ end Continuity
 
 section tsum
 
-variable [AddCommMonoid R] [TopologicalSpace R]
+variable [AddCommMonoid R] [TopologicalSpace R] {L : SummationFilter X}
 
-theorem HasSum.matrix_transpose {f : X → Matrix m n R} {a : Matrix m n R} (hf : HasSum f a) :
-    HasSum (fun x => (f x)ᵀ) aᵀ :=
+theorem HasSum.matrix_transpose {f : X → Matrix m n R} {a : Matrix m n R} (hf : HasSum f a L) :
+    HasSum (fun x => (f x)ᵀ) aᵀ L :=
   (hf.map (Matrix.transposeAddEquiv m n R) continuous_id.matrix_transpose :)
 
-theorem Summable.matrix_transpose {f : X → Matrix m n R} (hf : Summable f) :
-    Summable fun x => (f x)ᵀ :=
+theorem Summable.matrix_transpose {f : X → Matrix m n R} (hf : Summable f L) :
+    Summable (fun x => (f x)ᵀ) L :=
   hf.hasSum.matrix_transpose.summable
 
 @[simp]
 theorem summable_matrix_transpose {f : X → Matrix m n R} :
-    (Summable fun x => (f x)ᵀ) ↔ Summable f :=
+    (Summable (fun x => (f x)ᵀ) L) ↔ Summable f L :=
   Summable.map_iff_of_equiv (Matrix.transposeAddEquiv m n R)
     continuous_id.matrix_transpose continuous_id.matrix_transpose
 
-theorem Matrix.transpose_tsum [T2Space R] {f : X → Matrix m n R} : (∑' x, f x)ᵀ = ∑' x, (f x)ᵀ := by
-  by_cases hf : Summable f
-  · exact hf.hasSum.matrix_transpose.tsum_eq.symm
-  · have hft := summable_matrix_transpose.not.mpr hf
-    rw [tsum_eq_zero_of_not_summable hf, tsum_eq_zero_of_not_summable hft, transpose_zero]
+theorem Matrix.transpose_tsum [T2Space R] {f : X → Matrix m n R} :
+    (∑'[L] x, f x)ᵀ = ∑'[L] x, (f x)ᵀ :=
+  Function.LeftInverse.map_tsum f (g := transposeAddEquiv m n R) continuous_id.matrix_transpose
+    continuous_id.matrix_transpose transpose_transpose
 
 theorem HasSum.matrix_conjTranspose [StarAddMonoid R] [ContinuousStar R] {f : X → Matrix m n R}
-    {a : Matrix m n R} (hf : HasSum f a) : HasSum (fun x => (f x)ᴴ) aᴴ :=
+    {a : Matrix m n R} (hf : HasSum f a L) : HasSum (fun x => (f x)ᴴ) aᴴ L :=
   (hf.map (Matrix.conjTransposeAddEquiv m n R) continuous_id.matrix_conjTranspose :)
 
 theorem Summable.matrix_conjTranspose [StarAddMonoid R] [ContinuousStar R] {f : X → Matrix m n R}
-    (hf : Summable f) : Summable fun x => (f x)ᴴ :=
+    (hf : Summable f L) : Summable (fun x => (f x)ᴴ) L :=
   hf.hasSum.matrix_conjTranspose.summable
 
 @[simp]
 theorem summable_matrix_conjTranspose [StarAddMonoid R] [ContinuousStar R] {f : X → Matrix m n R} :
-    (Summable fun x => (f x)ᴴ) ↔ Summable f :=
+    (Summable (fun x => (f x)ᴴ) L) ↔ Summable f L :=
   Summable.map_iff_of_equiv (Matrix.conjTransposeAddEquiv m n R)
     continuous_id.matrix_conjTranspose continuous_id.matrix_conjTranspose
 
 theorem Matrix.conjTranspose_tsum [StarAddMonoid R] [ContinuousStar R] [T2Space R]
-    {f : X → Matrix m n R} : (∑' x, f x)ᴴ = ∑' x, (f x)ᴴ := by
-  by_cases hf : Summable f
-  · exact hf.hasSum.matrix_conjTranspose.tsum_eq.symm
-  · have hft := summable_matrix_conjTranspose.not.mpr hf
-    rw [tsum_eq_zero_of_not_summable hf, tsum_eq_zero_of_not_summable hft, conjTranspose_zero]
+    {f : X → Matrix m n R} : (∑'[L] x, f x)ᴴ = ∑'[L] x, (f x)ᴴ :=
+  Function.LeftInverse.map_tsum f (g := conjTransposeAddEquiv m n R)
+    continuous_id.matrix_conjTranspose continuous_id.matrix_conjTranspose
+    conjTranspose_conjTranspose
 
-theorem HasSum.matrix_diagonal [DecidableEq n] {f : X → n → R} {a : n → R} (hf : HasSum f a) :
-    HasSum (fun x => diagonal (f x)) (diagonal a) :=
+theorem HasSum.matrix_diagonal [DecidableEq n] {f : X → n → R} {a : n → R} (hf : HasSum f a L) :
+    HasSum (fun x => diagonal (f x)) (diagonal a) L :=
   hf.map (diagonalAddMonoidHom n R) continuous_id.matrix_diagonal
 
-theorem Summable.matrix_diagonal [DecidableEq n] {f : X → n → R} (hf : Summable f) :
-    Summable fun x => diagonal (f x) :=
+theorem Summable.matrix_diagonal [DecidableEq n] {f : X → n → R} (hf : Summable f L) :
+    Summable (fun x => diagonal (f x)) L :=
   hf.hasSum.matrix_diagonal.summable
 
 @[simp]
 theorem summable_matrix_diagonal [DecidableEq n] {f : X → n → R} :
-    (Summable fun x => diagonal (f x)) ↔ Summable f :=
+    (Summable (fun x => diagonal (f x)) L) ↔ Summable f L :=
   Summable.map_iff_of_leftInverse (Matrix.diagonalAddMonoidHom n R) (Matrix.diagAddMonoidHom n R)
     continuous_id.matrix_diagonal continuous_matrix_diag fun A => diag_diagonal A
 
 theorem Matrix.diagonal_tsum [DecidableEq n] [T2Space R] {f : X → n → R} :
-    diagonal (∑' x, f x) = ∑' x, diagonal (f x) := by
-  by_cases hf : Summable f
-  · exact hf.hasSum.matrix_diagonal.tsum_eq.symm
-  · have hft := summable_matrix_diagonal.not.mpr hf
-    rw [tsum_eq_zero_of_not_summable hf, tsum_eq_zero_of_not_summable hft]
-    exact diagonal_zero
+    diagonal (∑'[L] x, f x) = ∑'[L] x, diagonal (f x) :=
+  Function.LeftInverse.map_tsum f (g := diagonalAddMonoidHom n R)
+    continuous_id.matrix_diagonal continuous_matrix_diag diag_diagonal
 
-theorem HasSum.matrix_diag {f : X → Matrix n n R} {a : Matrix n n R} (hf : HasSum f a) :
-    HasSum (fun x => diag (f x)) (diag a) :=
+theorem HasSum.matrix_diag {f : X → Matrix n n R} {a : Matrix n n R} (hf : HasSum f a L) :
+    HasSum (fun x => diag (f x)) (diag a) L :=
   hf.map (diagAddMonoidHom n R) continuous_matrix_diag
 
-theorem Summable.matrix_diag {f : X → Matrix n n R} (hf : Summable f) :
-    Summable fun x => diag (f x) :=
+theorem Summable.matrix_diag {f : X → Matrix n n R} (hf : Summable f L) :
+    Summable (fun x => diag (f x)) L :=
   hf.hasSum.matrix_diag.summable
 
 section BlockMatrices
 
 theorem HasSum.matrix_blockDiagonal [DecidableEq p] {f : X → p → Matrix m n R}
-    {a : p → Matrix m n R} (hf : HasSum f a) :
-    HasSum (fun x => blockDiagonal (f x)) (blockDiagonal a) :=
+    {a : p → Matrix m n R} (hf : HasSum f a L) :
+    HasSum (fun x => blockDiagonal (f x)) (blockDiagonal a) L :=
   hf.map (blockDiagonalAddMonoidHom m n p R) continuous_id.matrix_blockDiagonal
 
-theorem Summable.matrix_blockDiagonal [DecidableEq p] {f : X → p → Matrix m n R} (hf : Summable f) :
-    Summable fun x => blockDiagonal (f x) :=
+theorem Summable.matrix_blockDiagonal [DecidableEq p] {f : X → p → Matrix m n R}
+    (hf : Summable f L) : Summable (fun x => blockDiagonal (f x)) L :=
   hf.hasSum.matrix_blockDiagonal.summable
 
 theorem summable_matrix_blockDiagonal [DecidableEq p] {f : X → p → Matrix m n R} :
-    (Summable fun x => blockDiagonal (f x)) ↔ Summable f :=
+    (Summable (fun x => blockDiagonal (f x)) L) ↔ Summable f L :=
   Summable.map_iff_of_leftInverse (blockDiagonalAddMonoidHom m n p R)
     (blockDiagAddMonoidHom m n p R) continuous_id.matrix_blockDiagonal
     continuous_id.matrix_blockDiag fun A => blockDiag_blockDiagonal A
 
 theorem Matrix.blockDiagonal_tsum [DecidableEq p] [T2Space R] {f : X → p → Matrix m n R} :
-    blockDiagonal (∑' x, f x) = ∑' x, blockDiagonal (f x) := by
-  by_cases hf : Summable f
-  · exact hf.hasSum.matrix_blockDiagonal.tsum_eq.symm
-  · have hft := summable_matrix_blockDiagonal.not.mpr hf
-    rw [tsum_eq_zero_of_not_summable hf, tsum_eq_zero_of_not_summable hft]
-    exact blockDiagonal_zero
+    blockDiagonal (∑'[L] x, f x) = ∑'[L] x, blockDiagonal (f x) :=
+  Function.LeftInverse.map_tsum (g := blockDiagonalAddMonoidHom m n p R) f
+    continuous_id.matrix_blockDiagonal continuous_id.matrix_blockDiag blockDiag_blockDiagonal
 
 theorem HasSum.matrix_blockDiag {f : X → Matrix (m × p) (n × p) R} {a : Matrix (m × p) (n × p) R}
-    (hf : HasSum f a) : HasSum (fun x => blockDiag (f x)) (blockDiag a) :=
+    (hf : HasSum f a L) : HasSum (fun x => blockDiag (f x)) (blockDiag a) L :=
   (hf.map (blockDiagAddMonoidHom m n p R) <| Continuous.matrix_blockDiag continuous_id :)
 
-theorem Summable.matrix_blockDiag {f : X → Matrix (m × p) (n × p) R} (hf : Summable f) :
-    Summable fun x => blockDiag (f x) :=
+theorem Summable.matrix_blockDiag {f : X → Matrix (m × p) (n × p) R} (hf : Summable f L) :
+    Summable (fun x => blockDiag (f x)) L :=
   hf.hasSum.matrix_blockDiag.summable
 
 theorem HasSum.matrix_blockDiagonal' [DecidableEq l] {f : X → ∀ i, Matrix (m' i) (n' i) R}
-    {a : ∀ i, Matrix (m' i) (n' i) R} (hf : HasSum f a) :
-    HasSum (fun x => blockDiagonal' (f x)) (blockDiagonal' a) :=
+    {a : ∀ i, Matrix (m' i) (n' i) R} (hf : HasSum f a L) :
+    HasSum (fun x => blockDiagonal' (f x)) (blockDiagonal' a) L :=
   hf.map (blockDiagonal'AddMonoidHom m' n' R) continuous_id.matrix_blockDiagonal'
 
 theorem Summable.matrix_blockDiagonal' [DecidableEq l] {f : X → ∀ i, Matrix (m' i) (n' i) R}
-    (hf : Summable f) : Summable fun x => blockDiagonal' (f x) :=
+    (hf : Summable f L) : Summable (fun x => blockDiagonal' (f x)) L :=
   hf.hasSum.matrix_blockDiagonal'.summable
 
 theorem summable_matrix_blockDiagonal' [DecidableEq l] {f : X → ∀ i, Matrix (m' i) (n' i) R} :
-    (Summable fun x => blockDiagonal' (f x)) ↔ Summable f :=
+    (Summable (fun x => blockDiagonal' (f x)) L) ↔ Summable f L :=
   Summable.map_iff_of_leftInverse (blockDiagonal'AddMonoidHom m' n' R)
     (blockDiag'AddMonoidHom m' n' R) continuous_id.matrix_blockDiagonal'
     continuous_id.matrix_blockDiag' fun A => blockDiag'_blockDiagonal' A
 
 theorem Matrix.blockDiagonal'_tsum [DecidableEq l] [T2Space R]
     {f : X → ∀ i, Matrix (m' i) (n' i) R} :
-    blockDiagonal' (∑' x, f x) = ∑' x, blockDiagonal' (f x) := by
-  by_cases hf : Summable f
-  · exact hf.hasSum.matrix_blockDiagonal'.tsum_eq.symm
-  · have hft := summable_matrix_blockDiagonal'.not.mpr hf
-    rw [tsum_eq_zero_of_not_summable hf, tsum_eq_zero_of_not_summable hft]
-    exact blockDiagonal'_zero
+    blockDiagonal' (∑'[L] x, f x) = ∑'[L] x, blockDiagonal' (f x) :=
+  Function.LeftInverse.map_tsum (g := blockDiagonal'AddMonoidHom m' n' R) f
+    continuous_id.matrix_blockDiagonal' continuous_id.matrix_blockDiag' blockDiag'_blockDiagonal'
 
 theorem HasSum.matrix_blockDiag' {f : X → Matrix (Σ i, m' i) (Σ i, n' i) R}
-    {a : Matrix (Σ i, m' i) (Σ i, n' i) R} (hf : HasSum f a) :
-    HasSum (fun x => blockDiag' (f x)) (blockDiag' a) :=
+    {a : Matrix (Σ i, m' i) (Σ i, n' i) R} (hf : HasSum f a L) :
+    HasSum (fun x => blockDiag' (f x)) (blockDiag' a) L :=
   hf.map (blockDiag'AddMonoidHom m' n' R) continuous_id.matrix_blockDiag'
 
-theorem Summable.matrix_blockDiag' {f : X → Matrix (Σ i, m' i) (Σ i, n' i) R} (hf : Summable f) :
-    Summable fun x => blockDiag' (f x) :=
+theorem Summable.matrix_blockDiag' {f : X → Matrix (Σ i, m' i) (Σ i, n' i) R} (hf : Summable f L) :
+    Summable (fun x => blockDiag' (f x)) L :=
   hf.hasSum.matrix_blockDiag'.summable
 
 end BlockMatrices
 
 end tsum
-
-/-! ### Lemmas about matrix groups -/
-
-section MatrixGroups
-
-variable [Fintype n] [DecidableEq n]
-  [CommRing R] [TopologicalSpace R] [IsTopologicalRing R]
-
-namespace Matrix.GeneralLinearGroup
-
-/-- The determinant is continuous as a map from the general linear group to the units. -/
-@[continuity, fun_prop] protected lemma continuous_det :
-    Continuous (det : GL n R → Rˣ) := by
-  simp_rw [Units.continuous_iff, ← map_inv]
-  constructor <;> fun_prop
-
-end Matrix.GeneralLinearGroup
-
-namespace Matrix.SpecialLinearGroup
-
-local notation "SL" => SpecialLinearGroup
-
-omit [IsTopologicalRing R] in
-instance : TopologicalSpace (SpecialLinearGroup n R) :=
-  instTopologicalSpaceSubtype
-
-/-- If `R` is a commutative ring with the discrete topology, then `SL(n, R)` has the discrete
-topology. -/
-instance [DiscreteTopology R] : DiscreteTopology (SL n R) :=
-  instDiscreteTopologySubtype
-
-/-- The special linear group over a topological ring is a topological group. -/
-instance topologicalGroup : IsTopologicalGroup (SL n R) where
-  continuous_inv := by simpa [continuous_induced_rng] using continuous_induced_dom.matrix_adjugate
-  continuous_mul := by simpa only [continuous_induced_rng] using
-    (continuous_induced_dom.comp continuous_fst).mul (continuous_induced_dom.comp continuous_snd)
-
-section toGL -- results on the map from `SL` to `GL`
-
-/-- The natural map from `SL n A` to `GL n A` is continuous. -/
-lemma continuous_toGL : Continuous (toGL : SL n R → GL n R) := by
-  simp_rw [Units.continuous_iff, ← map_inv]
-  constructor <;> fun_prop
-
-/-- The natural map from `SL n A` to `GL n A` is inducing, i.e. the topology on
-`SL n A` is the pullback of the topology from `GL n A`. -/
-lemma isInducing_toGL : Topology.IsInducing (toGL : SL n R → GL n R) :=
-  .of_comp continuous_toGL Units.continuous_val (Topology.IsInducing.induced _)
-
-/-- The natural map from `SL n A` in `GL n A` is an embedding, i.e. it is an injection and
-the topology on `SL n A` coincides with the subspace topology from `GL n A`. -/
-lemma isEmbedding_toGL : Topology.IsEmbedding (toGL : SL n R → GL n R) :=
-  ⟨isInducing_toGL, toGL_injective⟩
-
-theorem range_toGL {A : Type*} [CommRing A] :
-    Set.range (toGL : SL n A → GL n A) = GeneralLinearGroup.det ⁻¹' {1} := by
-  ext x
-  simpa [Units.ext_iff] using ⟨fun ⟨y, hy⟩ ↦ by simp [← hy], fun hx ↦ ⟨⟨x, hx⟩, rfl⟩⟩
-
-/-- The natural inclusion of `SL n A` in `GL n A` is a closed embedding. -/
-lemma isClosedEmbedding_toGL [T0Space R] : Topology.IsClosedEmbedding (toGL : SL n R → GL n R) :=
-  ⟨isEmbedding_toGL, by simpa [range_toGL] using isClosed_singleton.preimage <| by fun_prop⟩
-
-end toGL
-
-section mapGL
-
-variable {n : Type*} [Fintype n] [DecidableEq n]
-  {A B : Type*} [CommRing A] [CommRing B] [Algebra A B]
-  [TopologicalSpace A] [TopologicalSpace B] [IsTopologicalRing B]
-
-lemma isInducing_mapGL (h : Topology.IsInducing (algebraMap A B)) :
-    Topology.IsInducing (mapGL B : SL n A → GL n B) := by
-  -- TODO: add `IsInducing.units_map` and deduce `IsInducing.generalLinearGroup_map`
-  refine isInducing_toGL.comp ?_
-  refine .of_comp ?_ continuous_induced_dom (h.matrix_map.comp (Topology.IsInducing.induced _))
-  rw [continuous_induced_rng]
-  exact continuous_subtype_val.matrix_map h.continuous
-
-lemma isEmbedding_mapGL (h : Topology.IsEmbedding (algebraMap A B)) :
-    Topology.IsEmbedding (mapGL B : SL n A → GL n B) :=
-  haveI : FaithfulSMul A B := (faithfulSMul_iff_algebraMap_injective _ _).mpr h.2
-  ⟨isInducing_mapGL h.isInducing, mapGL_injective⟩
-
-end mapGL
-
-end Matrix.SpecialLinearGroup
-
-end MatrixGroups

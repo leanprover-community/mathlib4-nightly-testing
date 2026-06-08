@@ -3,16 +3,18 @@ Copyright (c) 2024 Andrew Yang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Andrew Yang
 -/
-import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Scheme
-import Mathlib.AlgebraicGeometry.AffineScheme
-import Mathlib.AlgebraicGeometry.Gluing
+module
+
+public import Mathlib.AlgebraicGeometry.ProjectiveSpectrum.Scheme
+public import Mathlib.AlgebraicGeometry.AffineScheme
+public import Mathlib.AlgebraicGeometry.Gluing
 
 /-!
 
 # Basic properties of the scheme `Proj A`
 
-The scheme `Proj 𝒜` for a graded algebra `𝒜` is constructed in
-`AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean`.
+The scheme `Proj 𝒜` for a graded ring `𝒜` is constructed in
+`Mathlib/AlgebraicGeometry/ProjectiveSpectrum/Scheme.lean`.
 In this file we provide basic properties of the scheme.
 
 ## Main results
@@ -31,16 +33,18 @@ In this file we provide basic properties of the scheme.
 
 -/
 
+@[expose] public section
+
 namespace AlgebraicGeometry.Proj
 
 open HomogeneousLocalization CategoryTheory
 
 universe u
 
-variable {R : Type*} {A : Type u}
-variable [CommRing R] [CommRing A] [Algebra R A]
-variable (𝒜 : ℕ → Submodule R A)
-variable [GradedAlgebra 𝒜]
+variable {σ : Type*} {A : Type u}
+variable [CommRing A] [SetLike σ A] [AddSubgroupClass σ A]
+variable (𝒜 : ℕ → σ)
+variable [GradedRing 𝒜]
 
 section basicOpen
 
@@ -69,13 +73,13 @@ theorem basicOpen_mono (hfg : f ∣ g) : basicOpen 𝒜 g ≤ basicOpen 𝒜 f :
   (hfg.choose_spec ▸ basicOpen_mul 𝒜 f _).trans_le inf_le_left
 
 theorem basicOpen_eq_iSup_proj (f : A) :
-    basicOpen 𝒜 f = ⨆ i : ℕ, basicOpen 𝒜 (GradedAlgebra.proj 𝒜 i f) :=
+    basicOpen 𝒜 f = ⨆ i : ℕ, basicOpen 𝒜 (GradedRing.proj 𝒜 i f) :=
   ProjectiveSpectrum.basicOpen_eq_union_of_projection ..
 
 theorem isBasis_basicOpen :
     TopologicalSpace.Opens.IsBasis (Set.range (basicOpen 𝒜)) := by
   delta TopologicalSpace.Opens.IsBasis
-  convert ProjectiveSpectrum.isTopologicalBasis_basic_opens 𝒜
+  convert! ProjectiveSpectrum.isTopologicalBasis_basic_opens 𝒜
   exact (Set.range_comp _ _).symm
 
 /-- If `{ xᵢ }` spans the irrelevant ideal of `A`, then `D₊(xᵢ)` covers `Proj A`. -/
@@ -113,15 +117,16 @@ lemma iSup_basicOpen_eq_top' {ι : Type*} (f : ι → A)
     · rw [DirectSum.decompose_of_mem_ne 𝒜 hn hn', sub_zero]
       exact Ideal.subset_span ⟨_, rfl⟩
   | algebraMap r =>
-    convert zero_mem (Ideal.span _)
+    convert! zero_mem (Ideal.span _)
     rw [sub_eq_zero]
     exact (DirectSum.decompose_of_mem_same 𝒜 r.2).symm
   | add x y hx hy _ _ =>
     rw [map_add, add_sub_add_comm]
     exact add_mem ‹_› ‹_›
   | mul x y hx hy hx' hy' =>
-    convert add_mem (Ideal.mul_mem_left _ x hy')
-      (Ideal.mul_mem_right (GradedRing.projZeroRingHom 𝒜 y) _ hx') using 1
+    convert!
+      add_mem (Ideal.mul_mem_left _ x hy')
+        (Ideal.mul_mem_right (GradedRing.projZeroRingHom 𝒜 y) _ hx') using 1
     rw [map_mul]
     ring
 
@@ -133,21 +138,17 @@ def awayToSection : CommRingCat.of (Away 𝒜 f) ⟶ Γ(Proj 𝒜, basicOpen �
 /-- The canonical map `Proj A |_ D₊(f) ⟶ Spec (A_f)₀`.
 This is an isomorphism when `f` is homogeneous of positive degree. See `basicOpenIsoSpec` below. -/
 noncomputable
-def basicOpenToSpec : (basicOpen 𝒜 f).toScheme ⟶ Spec(Away 𝒜 f) :=
+def basicOpenToSpec : (basicOpen 𝒜 f).toScheme ⟶ Spec (.of <| Away 𝒜 f) :=
   (basicOpen 𝒜 f).toSpecΓ ≫ Spec.map (awayToSection 𝒜 f)
 
 lemma basicOpenToSpec_app_top :
     (basicOpenToSpec 𝒜 f).app ⊤ = (Scheme.ΓSpecIso _).hom ≫ awayToSection 𝒜 f ≫
       (basicOpen 𝒜 f).topIso.inv := by
-  rw [basicOpenToSpec]
-  simp only [Scheme.comp_coeBase, TopologicalSpace.Opens.map_comp_obj,
-    TopologicalSpace.Opens.map_top, Scheme.comp_app, Scheme.Opens.topIso_inv, eqToHom_op]
-  erw [Scheme.comp_app]
-  simp
+  simp [basicOpenToSpec, Scheme.Opens.toSpecΓ_appTop]
 
 /-- The structure map `Proj A ⟶ Spec A₀`. -/
 noncomputable
-def toSpecZero : Proj 𝒜 ⟶ Spec(𝒜 0) :=
+def toSpecZero : Proj 𝒜 ⟶ Spec (.of <| 𝒜 0) :=
   (Scheme.topIso _).inv ≫ (Scheme.isoOfEq _ (basicOpen_one _)).inv ≫
     basicOpenToSpec 𝒜 1 ≫ Spec.map (CommRingCat.ofHom (fromZeroRingHom 𝒜 _))
 
@@ -157,16 +158,17 @@ variable {m} (f_deg : f ∈ 𝒜 m) (hm : 0 < m)
 when `f` is homogeneous of positive degree. -/
 @[simps! -isSimp hom]
 noncomputable
-def basicOpenIsoSpec : (basicOpen 𝒜 f).toScheme ≅ Spec(Away 𝒜 f) :=
+def basicOpenIsoSpec : (basicOpen 𝒜 f).toScheme ≅ Spec (.of <| Away 𝒜 f) :=
   have : IsIso (basicOpenToSpec 𝒜 f) := by
     apply (isIso_iff_of_reflects_iso _ Scheme.forgetToLocallyRingedSpace).mp ?_
-    convert ProjectiveSpectrum.Proj.isIso_toSpec 𝒜 f f_deg hm using 1
+    convert! ProjectiveSpectrum.Proj.isIso_toSpec 𝒜 f f_deg hm using 1
     refine Eq.trans ?_ (ΓSpec.locallyRingedSpaceAdjunction.homEquiv_apply _ _ _).symm
     dsimp [basicOpenToSpec, Scheme.Opens.toSpecΓ]
-    simp only [eqToHom_op, Category.assoc, ← Spec.map_comp]
+    simp only [Category.assoc, ← Spec.map_comp]
     rfl
   asIso (basicOpenToSpec 𝒜 f)
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The canonical isomorphism `(A_f)₀ ≅ Γ(Proj A, D₊(f))`
 when `f` is homogeneous of positive degree. -/
 @[simps! -isSimp hom]
@@ -181,7 +183,7 @@ def basicOpenIsoAway : CommRingCat.of (Away 𝒜 f) ≅ Γ(Proj 𝒜, basicOpen 
 
 /-- The open immersion `Spec (A_f)₀ ⟶ Proj A`. -/
 noncomputable
-def awayι : Spec(Away 𝒜 f) ⟶ Proj 𝒜 :=
+def awayι : Spec (.of <| Away 𝒜 f) ⟶ Proj 𝒜 :=
   (basicOpenIsoSpec 𝒜 f f_deg hm).inv ≫ (Proj.basicOpen 𝒜 f).ι
 
 @[reassoc]
@@ -209,8 +211,8 @@ lemma awayι_toSpecZero : awayι 𝒜 f f_deg hm ≫ toSpecZero 𝒜 =
       Scheme.homOfLE _ (le_top.trans_eq e.symm) := by
     simp only [← Category.assoc, Iso.comp_inv_eq]
     simp only [Scheme.topIso_hom, Category.assoc, Scheme.isoOfEq_hom_ι, Scheme.homOfLE_ι]
-  rw [reassoc_of% this, ← Scheme.Opens.toSpecΓ_SpecMap_map_assoc, basicOpenToSpec, Category.assoc,
-    ← Spec.map_comp, ← Spec.map_comp, ← Spec.map_comp]
+  rw [reassoc_of% this, ← Scheme.Opens.toSpecΓ_SpecMap_presheaf_map_assoc, basicOpenToSpec,
+    Category.assoc, ← Spec.map_comp, ← Spec.map_comp, ← Spec.map_comp]
   rfl
 
 variable {f}
@@ -231,7 +233,7 @@ lemma awayMap_awayToSection :
   refine Localization.mk_eq_mk_iff.mpr ?_
   rw [Localization.r_iff_exists]
   use 1
-  simp only [OneMemClass.coe_one, RingHom.id_apply, one_mul, hx]
+  simp [hx]
   ring
 
 @[reassoc]
@@ -239,7 +241,7 @@ lemma basicOpenToSpec_SpecMap_awayMap :
     basicOpenToSpec 𝒜 x ≫ Spec.map (CommRingCat.ofHom (awayMap 𝒜 g_deg hx)) =
       (Proj 𝒜).homOfLE (basicOpen_mono _ _ _ ⟨_, hx⟩) ≫ basicOpenToSpec 𝒜 f := by
   rw [basicOpenToSpec, Category.assoc, ← Spec.map_comp, awayMap_awayToSection,
-    Spec.map_comp, Scheme.Opens.toSpecΓ_SpecMap_map_assoc]
+    Spec.map_comp, Scheme.Opens.toSpecΓ_SpecMap_presheaf_map_assoc]
   rfl
 
 @[reassoc]
@@ -252,7 +254,7 @@ lemma SpecMap_awayMap_awayι :
 /-- The isomorphism `D₊(f) ×[Proj 𝒜] D₊(g) ≅ D₊(fg)`. -/
 noncomputable
 def pullbackAwayιIso :
-    Limits.pullback (awayι 𝒜 f f_deg hm) (awayι 𝒜 g g_deg hm') ≅ Spec(Away 𝒜 x) :=
+    Limits.pullback (awayι 𝒜 f f_deg hm) (awayι 𝒜 g g_deg hm') ≅ Spec (.of <| Away 𝒜 x) :=
     IsOpenImmersion.isoOfRangeEq (Limits.pullback.fst _ _ ≫ awayι 𝒜 f f_deg hm)
       (awayι 𝒜 x (hx ▸ SetLike.mul_mem_graded f_deg g_deg) (hm.trans_le (m.le_add_right m'))) <| by
   rw [IsOpenImmersion.range_pullback_to_base_of_left]
@@ -300,14 +302,14 @@ lemma awayι_preimage_basicOpen :
     awayι 𝒜 f f_deg hm ⁻¹ᵁ basicOpen 𝒜 g =
       PrimeSpectrum.basicOpen (Away.isLocalizationElem f_deg g_deg) := by
   ext1
-  trans Set.range (Spec.map (CommRingCat.ofHom (awayMap 𝒜 g_deg rfl))).base
+  trans Set.range (Spec.map (CommRingCat.ofHom (awayMap 𝒜 g_deg rfl)))
   · rw [← pullbackAwayιIso_inv_fst 𝒜 f_deg hm g_deg hm' rfl]
-    simp only [TopologicalSpace.Opens.map_coe, Scheme.comp_coeBase,
+    simp only [TopologicalSpace.Opens.map_coe, Scheme.Hom.comp_base,
       TopCat.hom_comp, ContinuousMap.coe_comp, Set.range_comp]
     rw [Set.range_eq_univ.mpr (by exact
       (pullbackAwayιIso 𝒜 f_deg hm g_deg hm' rfl).inv.homeomorph.surjective),
       ← opensRange_awayι _ _ g_deg hm']
-    simp [IsOpenImmersion.range_pullback_fst_of_right]
+    simp [IsOpenImmersion.range_pullbackFst]
   · letI := (awayMap (f := f) 𝒜 g_deg rfl).toAlgebra
     letI := HomogeneousLocalization.Away.isLocalization_mul f_deg g_deg rfl hm.ne'
     exact PrimeSpectrum.localization_away_comap_range _ _
@@ -316,7 +318,7 @@ open TopologicalSpace.Opens in
 /-- Given a family of homogeneous elements `f` of positive degree that spans the irrelevant ideal,
 `Spec (A_f)₀ ⟶ Proj A` forms an affine open cover of `Proj A`. -/
 noncomputable
-def openCoverOfISupEqTop {ι : Type*} (f : ι → A) {m : ι → ℕ}
+def affineOpenCoverOfIrrelevantLESpan {ι : Type*} (f : ι → A) {m : ι → ℕ}
     (f_deg : ∀ i, f i ∈ 𝒜 (m i)) (hm : ∀ i, 0 < m i)
     (hf : (HomogeneousIdeal.irrelevant 𝒜).toIdeal ≤ Ideal.span (Set.range f)) :
     (Proj 𝒜).AffineOpenCover where
@@ -330,16 +332,16 @@ def openCoverOfISupEqTop {ι : Type*} (f : ι → A) {m : ι → ℕ}
     exact (mem_iSup.mp ((iSup_basicOpen_eq_top 𝒜 f hf).ge (Set.mem_univ x))).choose_spec
 
 /-- `Proj A` is covered by `Spec (A_f)₀` for all homogeneous elements of positive degree. -/
-noncomputable
+@[simps! f] noncomputable
 def affineOpenCover : (Proj 𝒜).AffineOpenCover :=
-  openCoverOfISupEqTop 𝒜 (ι := Σ i : PNat, 𝒜 i) (m := fun i ↦ i.1) (fun i ↦ i.2) (fun i ↦ i.2.2)
-    (fun i ↦ i.1.2) <| by
+  affineOpenCoverOfIrrelevantLESpan 𝒜
+    (ι := Σ i : PNat, 𝒜 i) (m := fun i ↦ i.1) (fun i ↦ i.2) (fun i ↦ i.2.2) (fun i ↦ i.1.2) <| by
   classical
   intro z hz
   rw [← DirectSum.sum_support_decompose 𝒜 z]
   refine Ideal.sum_mem _ fun c hc ↦ if hc0 : c = 0 then ?_ else
     Ideal.subset_span ⟨⟨⟨c, Nat.pos_iff_ne_zero.mpr hc0⟩, _⟩, rfl⟩
-  convert Ideal.zero_mem _
+  convert! Ideal.zero_mem _
   subst hc0
   exact hz
 
@@ -408,7 +410,7 @@ variable (f : A →+* Γ(X, ⊤)) (hf : (HomogeneousIdeal.irrelevant 𝒜).toIde
 irrelevant ideal under `f` generates the whole ring, the set of `D(f(r))` for homogeneous `r`
 of positive degree forms an open cover on `X`. -/
 def openCoverOfMapIrrelevantEqTop : X.OpenCover :=
-  X.openCoverOfISupEqTop (fun ir : Σ' i r, 0 < i ∧ r ∈ 𝒜 i ↦
+  X.openCoverOfIsOpenCover (fun ir : Σ' i r, 0 < i ∧ r ∈ 𝒜 i ↦
     X.basicOpen (f ir.2.1)) (by
     classical
     have H : Ideal.span (Set.range fun x : Σ' i r, 0 < i ∧ r ∈ 𝒜 i ↦ x.2.1) =
@@ -421,7 +423,7 @@ def openCoverOfMapIrrelevantEqTop : X.OpenCover :=
       · intro x hx
         rw [← DirectSum.sum_support_decompose 𝒜 x]
         refine Ideal.sum_mem _ fun c hc ↦ ?_
-        have : c ≠ 0 := by contrapose! hc; simpa [hc] using hx
+        have : c ≠ 0 := by contrapose hc; simpa [hc] using hx
         exact Ideal.subset_span ⟨⟨c, _, this.bot_lt, by simp⟩, rfl⟩
     ext1
     apply compl_injective
@@ -431,9 +433,7 @@ def openCoverOfMapIrrelevantEqTop : X.OpenCover :=
     rw [← Scheme.zeroLocus_span, Set.range_comp', ← Ideal.map_span, H, hf]
     simp)
 
-@[deprecated (since := "2025-08-22")] noncomputable alias openCoverOfMapIrreleventEqTop :=
-  openCoverOfMapIrrelevantEqTop
-
+set_option backward.defeqAttrib.useBackward true in
 /-- Given a graded ring `A` and a map `f : A →+* Γ(X, ⊤)` such that the image of the
 irrelevant ideal under `f` generates the whole ring, we can construct a map `X ⟶ Proj 𝒜`. -/
 def fromOfGlobalSections : X ⟶ Proj 𝒜 := by
@@ -451,24 +451,27 @@ def fromOfGlobalSections : X ⟶ Proj 𝒜 := by
   · simpa [e, openCoverOfMapIrrelevantEqTop, Scheme.isoOfEq_inv] using
       (homOfLE_toBasicOpenOfGlobalSections_ι _ _ (mul_comm _ _) (add_comm _ _) x.2.2.2).symm
 
+set_option backward.isDefEq.respectTransparency false in
 lemma fromOfGlobalSections_preimage_basicOpen {r : A} {n : ℕ} (hn : 0 < n) (hr : r ∈ 𝒜 n) :
     fromOfGlobalSections 𝒜 f hf ⁻¹ᵁ basicOpen 𝒜 r = X.basicOpen (f r) := by
   apply le_antisymm
   · intro x hx
     obtain ⟨i, x, rfl⟩ := (openCoverOfMapIrrelevantEqTop 𝒜 f hf).exists_eq x
+    rw [← SetLike.mem_coe] at hx -- TODO : mem version of TopologicalSpace.Opens.map_coe
     simp only [TopologicalSpace.Opens.map_coe, Set.mem_preimage, SetLike.mem_coe,
-      ← Scheme.comp_base_apply, fromOfGlobalSections, Scheme.Cover.ι_glueMorphisms] at hx
-    simp only [openCoverOfMapIrrelevantEqTop, Scheme.openCoverOfISupEqTop_X,
+      ← Scheme.Hom.comp_apply, fromOfGlobalSections, Scheme.Cover.ι_glueMorphisms] at hx
+    simp only [openCoverOfMapIrrelevantEqTop,
       toBasicOpenOfGlobalSections, Scheme.isoOfEq_inv, Category.assoc, basicOpenIsoSpec_inv_ι] at hx
-    simp only [Scheme.comp_coeBase, Scheme.homOfLE_base, homOfLE_leOfHom, TopCat.hom_comp,
+    simp only [Scheme.Hom.comp_base, Scheme.homOfLE_base, homOfLE_leOfHom, TopCat.hom_comp,
       ContinuousMap.comp_assoc, ContinuousMap.comp_apply, morphismRestrict_base,
       TopologicalSpace.Opens.carrier_eq_coe] at hx
     rw [← SetLike.mem_coe, ← Set.mem_preimage, ← TopologicalSpace.Opens.map_coe,
       Proj.awayι_preimage_basicOpen (𝒜 := 𝒜) i.2.2.2 i.2.2.1 hr hn,
       ← Set.mem_preimage, ← TopologicalSpace.Opens.map_coe, ← Function.Injective.mem_set_image
       (Spec.map (CommRingCat.ofHom (algebraMap Γ(X, ⊤) _))).isOpenEmbedding.injective,
-      ← Scheme.comp_base_apply, basicOpenIsoSpecAway, IsOpenImmersion.isoOfRangeEq_hom_fac] at hx
-    rw [← Scheme.toSpecΓ_preimage_basicOpen, TopologicalSpace.Opens.map_coe, Set.mem_preimage]
+      ← Scheme.Hom.comp_apply, basicOpenIsoSpecAway, IsOpenImmersion.isoOfRangeEq_hom_fac] at hx
+    rw [← SetLike.mem_coe, ← Scheme.toSpecΓ_preimage_basicOpen, TopologicalSpace.Opens.map_coe,
+        Set.mem_preimage]
     refine Set.mem_of_subset_of_mem (Set.image_subset_iff.mpr ?_) hx
     change PrimeSpectrum.basicOpen _ ≤ PrimeSpectrum.basicOpen _
     simp only [CommRingCat.ofHom_comp, CommRingCat.hom_comp, CommRingCat.hom_ofHom,
@@ -480,8 +483,9 @@ lemma fromOfGlobalSections_preimage_basicOpen {r : A} {n : ℕ} (hn : 0 < n) (hr
     let I : (openCoverOfMapIrrelevantEqTop 𝒜 f hf).I₀ := ⟨n, r, hn, hr⟩
     obtain ⟨x, rfl⟩ : x ∈ ((openCoverOfMapIrrelevantEqTop 𝒜 f hf).f I).opensRange := by
       simpa [openCoverOfMapIrrelevantEqTop] using hx
-    simp only [TopologicalSpace.Opens.map_coe, Set.mem_preimage, SetLike.mem_coe,
-      ← Scheme.comp_base_apply, fromOfGlobalSections, Scheme.Cover.ι_glueMorphisms]
+    rw [← SetLike.mem_coe] -- TODO : mem version of TopologicalSpace.Opens.map_coe
+    simp only [TopologicalSpace.Opens.map_coe, Set.mem_preimage,
+      ← Scheme.Hom.comp_apply, fromOfGlobalSections]
     simp
 
 lemma fromOfGlobalSections_morphismRestrict {r : A} {n : ℕ} (hn : 0 < n) (hr : r ∈ 𝒜 n) :
@@ -501,6 +505,7 @@ lemma fromOfGlobalSections_resLE {r : A} {n : ℕ} (hn : 0 < n) (hr : r ∈ 𝒜
     ← Scheme.Hom.resLE_eq_morphismRestrict]
   simp [Scheme.isoOfEq_inv]
 
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma fromOfGlobalSections_toSpecZero
     (f : A →+* Γ(X, ⊤)) (hf : (HomogeneousIdeal.irrelevant 𝒜).toIdeal.map f = ⊤) :
@@ -510,8 +515,8 @@ lemma fromOfGlobalSections_toSpecZero
   simp only [fromOfGlobalSections, toBasicOpenOfGlobalSections, CommRingCat.ofHom_comp,
     Category.assoc, Scheme.Cover.ι_glueMorphisms_assoc, basicOpenIsoSpec_inv_ι_assoc,
     awayι_toSpecZero, Iso.inv_comp_eq]
-  simp only [openCoverOfMapIrrelevantEqTop, Scheme.openCoverOfISupEqTop_X,
-    Scheme.openCoverOfISupEqTop_f, Scheme.isoOfEq_hom_ι_assoc, ← morphismRestrict_ι_assoc]
+  simp only [openCoverOfMapIrrelevantEqTop,
+    Scheme.openCoverOfIsOpenCover_f, Scheme.isoOfEq_hom_ι_assoc, ← morphismRestrict_ι_assoc]
   congr 1
   simp only [basicOpenIsoSpecAway, ← CommRingCat.ofHom_comp, ← Spec.map_comp, ← Iso.eq_inv_comp,
     IsOpenImmersion.isoOfRangeEq_inv_fac_assoc, ← HomogeneousLocalization.algebraMap_eq]
