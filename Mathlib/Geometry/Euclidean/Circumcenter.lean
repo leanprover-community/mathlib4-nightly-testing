@@ -172,7 +172,7 @@ theorem _root_.AffineIndependent.existsUnique_dist_eq {ι : Type*} [hne : Nonemp
         simp [Classical.em]
       rw [hr, ← affineSpan_insert_affineSpan]
       refine existsUnique_dist_eq_of_insert (Set.range_nonempty _) (subset_affineSpan ℝ _) ?_ hm
-      convert! ha.notMem_affineSpan_diff i Set.univ
+      convert! ha.notMem_affineSpan_sdiff i Set.univ
       change (Set.range fun i2 : { x | x ≠ i } => p i2) = _
       rw [← Set.image_eq_range]
       congr 1 with j
@@ -812,7 +812,7 @@ theorem eq_or_eq_reflection_of_dist_eq {n : ℕ} {s : Simplex ℝ P n} {p p₁ p
     rw [hp₁, hp₂, ← hp]
     simp only [true_or, smul_zero, vsub_self]
   · have hz : ⟪p -ᵥ orthogonalProjection span_s p, p -ᵥ orthogonalProjection span_s p⟫ ≠ 0 := by
-      simpa only [Ne, vsub_eq_zero_iff_eq, inner_self_eq_zero] using hp
+      simpa only [Ne, vsub_eq_zero_iff_eq, inner_self_eq_zero] using! hp
     rw [mul_left_inj' hz, mul_self_eq_mul_self_iff] at hd₁
     rw [hp₁, hp₂]
     rcases hd₁ with hd₁ | hd₁

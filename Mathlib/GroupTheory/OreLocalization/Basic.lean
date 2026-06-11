@@ -410,6 +410,16 @@ instance : Monoid R[S⁻¹] where
   npow := OreLocalization.npow
 
 @[to_additive]
+theorem oreDiv_pow (r : R) (s : S) (n : ℕ) (h : Commute r (s : R)) :
+    (r /ₒ s) ^ n = (r ^ n) /ₒ (s ^ n) := by
+  induction n with
+  | zero =>
+    rw [pow_zero, pow_zero, pow_zero, OreLocalization.one_def]
+  | succ n ih =>
+    rw [pow_succ', pow_succ', pow_succ, ih, oreDiv_mul_char (r' := r) (s' := s ^ n)]
+    exact h.pow_right _ |>.symm
+
+@[to_additive]
 instance instMulActionOreLocalization : MulAction R[S⁻¹] X[S⁻¹] where
   one_smul := OreLocalization.one_smul
   mul_smul := OreLocalization.mul_smul
@@ -546,7 +556,8 @@ protected def hsmul (c : R) :
     rw [← mul_one (oreDenom (c • 1) s), ← oreDiv_smul_oreDiv, ← mul_one (oreDenom (c • 1) _),
       ← oreDiv_smul_oreDiv, ← OreLocalization.expand])
 
-/- Warning: This gives a diamond on `SMul R[S⁻¹] M[S⁻¹][S⁻¹]`, but we will almost never localize
+set_option linter.overlappingInstances false in
+/-- Warning: This gives a diamond on `SMul R[S⁻¹] M[S⁻¹][S⁻¹]`, but we will almost never localize
 at the same monoid twice. -/
 /- Although the definition does not require `IsScalarTower R M X`,
 it does not make sense without it. -/
