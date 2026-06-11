@@ -327,7 +327,7 @@ lemma coeff_truncTotal_pow (h : x.degree < n) :
   induction m using Nat.caseStrongRecOn generalizing x with
   | zero => grind [coeff_one, MvPolynomial.coeff_one]
   | ind k ih =>
-    simp_rw [Nat.succ_eq_add_one, pow_add, pow_one, MvPolynomial.coeff_mul, coeff_mul]
+    simp_rw [pow_add, pow_one, MvPolynomial.coeff_mul, coeff_mul]
     congr! 2 with _ _
     · exact ih _ k.le_refl (by grind [mem_antidiagonal])
     · exact coeff_truncTotal _ (by grind [mem_antidiagonal])
