@@ -6,9 +6,6 @@ Authors: Kim Morrison
 module
 
 public import Mathlib.CategoryTheory.Functor.Hom
-public import Mathlib.CategoryTheory.Products.Basic
-public import Mathlib.Data.ULift
-public import Mathlib.Logic.Function.ULift
 
 /-!
 # The Yoneda embedding
@@ -31,7 +28,6 @@ Yoneda lemma is also expressed as a natural isomorphism
 set_option backward.defeqAttrib.useBackward true
 
 @[expose] public section
-
 
 namespace CategoryTheory
 
@@ -800,7 +796,7 @@ lemma hom_ext_yoneda {P Q : Cᵒᵖ ⥤ Type v₁} {f g : P ⟶ Q}
     f = g := by
   ext X x
   simpa only [yonedaEquiv_comp, Equiv.apply_symm_apply]
-    using congr_arg (yonedaEquiv) (h _ (yonedaEquiv.symm x))
+    using! congr_arg (yonedaEquiv) (h _ (yonedaEquiv.symm x))
 
 variable (C)
 
@@ -861,7 +857,6 @@ def curriedYonedaLemma {C : Type u₁} [SmallCategory C] :
     simp [yonedaEquiv, ← NatTrans.naturality_apply])
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- The curried version of the Yoneda lemma. -/
 def largeCurriedYonedaLemma {C : Type u₁} [Category.{v₁} C] :
     yoneda.op ⋙ coyoneda ≅
@@ -876,7 +871,7 @@ def largeCurriedYonedaLemma {C : Type u₁} [Category.{v₁} C] :
     (by
       intro Y Z f
       ext F g
-      simpa [← ULift.down_inj] using (yonedaEquiv_naturality _ _).symm)
+      simpa [← ULift.down_inj] using! (yonedaEquiv_naturality _ _).symm)
 
 /-- Version of the Yoneda lemma where the presheaf is fixed but the argument varies. -/
 def yonedaOpCompYonedaObj {C : Type u₁} [Category.{v₁} C] (P : Cᵒᵖ ⥤ Type v₁) :

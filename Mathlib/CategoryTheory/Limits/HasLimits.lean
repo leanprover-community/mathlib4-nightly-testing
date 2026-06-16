@@ -6,10 +6,8 @@ Authors: Reid Barton, Mario Carneiro, Kim Morrison, Floris van Doorn
 module
 
 public import Mathlib.CategoryTheory.Limits.IsLimit
-public import Mathlib.CategoryTheory.Category.ULift
 public import Mathlib.CategoryTheory.EssentiallySmall
 public import Mathlib.CategoryTheory.Functor.EpiMono
-public import Mathlib.Logic.Equiv.Basic
 
 /-!
 # Existence of limits and colimits
@@ -345,7 +343,7 @@ def HasLimit.isoOfEquivalence {F : J ⥤ C} [HasLimit F] {G : K ⥤ C} [HasLimit
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
+@[reassoc (attr := simp)]
 theorem HasLimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C} [HasLimit G]
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (k : K) :
     (HasLimit.isoOfEquivalence e w).hom ≫ limit.π G k =
@@ -355,7 +353,7 @@ theorem HasLimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
+@[reassoc (attr := simp)]
 theorem HasLimit.isoOfEquivalence_inv_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C} [HasLimit G]
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (j : J) :
     (HasLimit.isoOfEquivalence e w).inv ≫ limit.π F j =
@@ -489,6 +487,12 @@ def lim : (J ⥤ C) ⥤ C where
     apply Limits.limit.hom_ext; intro j
     simp [assoc]
 
+set_option backward.isDefEq.respectTransparency false in
+/-- The natural transformation induced by `limit.π`. -/
+@[simps]
+def lim.π (j : J) : lim ⟶ (evaluation J C).obj j where
+  app F := limit.π F j
+
 end
 
 variable {G : J ⥤ C} (α : F ⟶ G)
@@ -583,7 +587,7 @@ def isLimitConeOfAdj (F : J ⥤ C) :
     have eq' := NatTrans.congr_app (adj.left_triangle_components s.pt) j
     dsimp at eq eq' ⊢
     rw [adj.homEquiv_unit, assoc, eq, reassoc_of% eq']
-  uniq s m hm := (adj.homEquiv _ _).symm.injective (by ext j; simpa using hm j)
+  uniq s m hm := (adj.homEquiv _ _).symm.injective (by ext j; simpa using! hm j)
 
 end Adjunction
 
@@ -912,8 +916,8 @@ def HasColimit.isoOfEquivalence {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasC
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
-theorem HasColimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasColimit G]
+@[reassoc (attr := simp)]
+theorem HasColimit.ι_isoOfEquivalence_hom {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasColimit G]
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (j : J) :
     colimit.ι F j ≫ (HasColimit.isoOfEquivalence e w).hom =
       F.map (e.unit.app j) ≫ w.inv.app _ ≫ colimit.ι G _ := by
@@ -921,12 +925,18 @@ theorem HasColimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasColimit F] {G : K �
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-@[simp]
-theorem HasColimit.isoOfEquivalence_inv_π {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasColimit G]
+@[reassoc (attr := simp)]
+theorem HasColimit.ι_isoOfEquivalence_inv {F : J ⥤ C} [HasColimit F] {G : K ⥤ C} [HasColimit G]
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (k : K) :
     colimit.ι G k ≫ (HasColimit.isoOfEquivalence e w).inv =
       G.map (e.counitInv.app k) ≫ w.hom.app (e.inverse.obj k) ≫ colimit.ι F (e.inverse.obj k) := by
   simp [HasColimit.isoOfEquivalence, IsColimit.coconePointsIsoOfEquivalence_inv]
+
+@[deprecated (since := "2026-05-25")]
+alias HasColimit.isoOfEquivalence_hom_π := HasColimit.ι_isoOfEquivalence_hom
+
+@[deprecated (since := "2026-05-25")]
+alias HasColimit.isoOfEquivalence_inv_π := HasColimit.ι_isoOfEquivalence_inv
 
 section Pre
 
@@ -1068,6 +1078,12 @@ section
 def colim : (J ⥤ C) ⥤ C where
   obj F := colimit F
   map α := colimMap α
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The natural transformation induced by `colimit.ι`. -/
+@[simps]
+def colim.ι (j : J) : (evaluation J C).obj j ⟶ colim where
+  app F := colimit.ι F j
 
 end
 

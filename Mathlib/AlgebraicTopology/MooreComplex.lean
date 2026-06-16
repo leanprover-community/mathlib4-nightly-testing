@@ -120,11 +120,12 @@ def obj (X : SimplicialObject C) : ChainComplex C ℕ :=
 
 variable {X} {Y : SimplicialObject C} (f : X ⟶ Y)
 
+set_option backward.defeqAttrib.useBackward true in
 /-- The normalized Moore complex functor, on morphisms.
 -/
 @[simps!]
 def map (f : X ⟶ Y) : obj X ⟶ obj Y :=
-  ChainComplex.ofHom _ _ (d_squared X) _ _ (d_squared Y)
+  ChainComplex.ofHom
     (fun n => factorThru _ (arrow _ ≫ f.app (op ⦋n⦌)) (by
       cases n <;> dsimp
       · apply top_factors
@@ -133,8 +134,7 @@ def map (f : X ⟶ Y) : obj X ⟶ obj Y :=
           ← factorThru_arrow _ _ (finset_inf_arrow_factors Finset.univ _ i (by simp)),
           Category.assoc]
         rw [← SimplicialObject.δ_def, kernelSubobject_arrow_comp_assoc, zero_comp, comp_zero]))
-    fun n => by
-    cases n <;> dsimp [objD, objX] <;> cat_disch
+    fun n => by cases n <;> dsimp [objD, objX, ChainComplex.of.d] <;> cat_disch
 
 end NormalizedMooreComplex
 

@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Monoidal.Category
 public import Mathlib.CategoryTheory.Adjunction.FullyFaithful
-public import Mathlib.CategoryTheory.Products.Basic
 
 /-!
 # (Lax) monoidal functors
@@ -16,6 +15,7 @@ A lax monoidal functor `F` between monoidal categories `C` and `D`
 is a functor between the underlying categories equipped with morphisms
 * `ε : 𝟙_ D ⟶ F.obj (𝟙_ C)` (called the unit morphism)
 * `μ X Y : (F.obj X) ⊗ (F.obj Y) ⟶ F.obj (X ⊗ Y)` (called the tensorator, or strength).
+
 satisfying various axioms. This is implemented as a typeclass `F.LaxMonoidal`.
 
 Similarly, we define the typeclass `F.OplaxMonoidal`. For these oplax monoidal functors,
@@ -1079,7 +1079,6 @@ instance :
 end OplaxMonoidal
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] leftAdjointOplaxMonoidal_η leftAdjointOplaxMonoidal_δ
   rightAdjointLaxMonoidal_ε rightAdjointLaxMonoidal_μ in
 /-- If `F ⊣ G` is an adjunction, the `G` is lax monoidal iff `F` is oplax monoidal.

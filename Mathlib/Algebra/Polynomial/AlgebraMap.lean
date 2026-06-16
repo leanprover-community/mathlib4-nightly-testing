@@ -62,7 +62,7 @@ instance algebraOfAlgebra : Algebra R A[X] where
     toFinsupp_injective <| by
       dsimp only [RingHom.toFun_eq_coe, RingHom.comp_apply]
       simp_rw [toFinsupp_mul, toFinsupp_C]
-      convert Algebra.commutes' r p.toFinsupp
+      convert! Algebra.commutes' r p.toFinsupp
   algebraMap := C.comp (algebraMap R A)
 
 @[simp]
@@ -319,6 +319,9 @@ theorem aeval_comp {A : Type*} [Semiring A] [Algebra R A] (x : A) :
     aeval x (p.comp q) = aeval (aeval x q) p :=
   eval₂_comp' x p q
 
+@[gcongr]
+theorem aeval_dvd (h : p ∣ q) : p.aeval x ∣ q.aeval x := _root_.map_dvd (aeval x) h
+
 section IsScalarTower
 
 variable {A : Type*} (B C : Type*) [CommSemiring A] [CommSemiring B] [Semiring C]
@@ -505,10 +508,8 @@ theorem aeval_eq_aeval_map [Semiring S] [CommSemiring T] [Algebra R S]
     (p : R[X]) (a : S) : aeval a p = aeval a (p.map φ) :=
   map_aeval_eq_aeval_map (by rwa [RingHom.id_comp]) p a
 
-theorem aeval_eq_zero_of_dvd_aeval_eq_zero [CommSemiring S] [CommSemiring T] [Algebra S T]
-    {p q : S[X]} (h₁ : p ∣ q) {a : T} (h₂ : aeval a p = 0) : aeval a q = 0 := by
-  rw [← eval_map_algebraMap] at h₂ ⊢
-  exact eval_eq_zero_of_dvd_of_eval_eq_zero (Polynomial.map_dvd (algebraMap S T) h₁) h₂
+theorem aeval_eq_zero_of_dvd_aeval_eq_zero {x : B} (h₁ : p ∣ q) (h₂ : aeval x p = 0) :
+    aeval x q = 0 := zero_dvd_iff.mp (h₂ ▸ aeval_dvd _ h₁)
 
 section Semiring
 
@@ -614,7 +615,7 @@ theorem dvd_term_of_dvd_eval_of_dvd_terms {z p : S} {f : S[X]} (i : ℕ) (dvd_ev
     apply Finset.dvd_sum
     intro j hj
     exact dvd_terms j (Finset.ne_of_mem_erase hj)
-  · convert dvd_zero p
+  · convert! dvd_zero p
     rw [notMem_support_iff] at hi
     simp [hi]
 
@@ -631,28 +632,12 @@ section Ring
 variable [Ring R]
 
 /-- The evaluation map is not generally multiplicative when the coefficient ring is noncommutative,
-but nevertheless any polynomial of the form `p * (X - monomial 0 r)` is sent to zero
-when evaluated at `r`.
+but nevertheless any polynomial of the form `p * (X - C r)` is sent to zero when evaluated at `r`.
 
 This is the key step in our proof of the Cayley-Hamilton theorem.
 -/
 theorem eval_mul_X_sub_C {p : R[X]} (r : R) : (p * (X - C r)).eval r = 0 := by
-  simp only [eval, eval₂_eq_sum, RingHom.id_apply]
-  have bound :=
-    calc
-      (p * (X - C r)).natDegree ≤ p.natDegree + (X - C r).natDegree := natDegree_mul_le
-      _ ≤ p.natDegree + 1 := by grw [natDegree_X_sub_C_le]
-      _ < p.natDegree + 2 := lt_add_one _
-  rw [sum_over_range' _ _ (p.natDegree + 2) bound]
-  swap
-  · simp
-  rw [sum_range_succ']
-  conv_lhs =>
-    congr
-    arg 2
-    simp [coeff_mul_X_sub_C, sub_mul, mul_assoc, ← pow_succ']
-  rw [sum_range_sub']
-  simp
+  rw [mul_sub, eval_sub, eval_mul_X, eval_mul_C_of_commute] <;> simp
 
 theorem not_isUnit_X_sub_C [Nontrivial R] (r : R) : ¬IsUnit (X - C r) :=
   fun ⟨⟨_, g, _hfg, hgf⟩, rfl⟩ => zero_ne_one' R <| by rw [← eval_mul_X_sub_C, hgf, eval_one]
@@ -676,7 +661,7 @@ theorem aeval_endomorphism {M : Type*} [AddCommGroup M] [Module R M] (f : M →�
   exact map_sum (LinearMap.applyₗ v) _ _
 
 lemma X_sub_C_pow_dvd_iff {n : ℕ} : (X - C t) ^ n ∣ p ↔ X ^ n ∣ p.comp (X + C t) := by
-  convert (map_dvd_iff <| algEquivAevalXAddC t).symm using 2
+  convert! (map_dvd_iff <| algEquivAevalXAddC t).symm using 2
   simp [C_eq_algebraMap]
 
 lemma comp_X_add_C_eq_zero_iff : p.comp (X + C t) = 0 ↔ p = 0 :=
@@ -686,17 +671,17 @@ lemma comp_X_add_C_ne_zero_iff : p.comp (X + C t) ≠ 0 ↔ p ≠ 0 := comp_X_ad
 
 lemma dvd_comp_C_mul_X_add_C_iff (p q : R[X]) (a b : R) [Invertible a] :
     p ∣ q.comp (C a * X + C b) ↔ p.comp (C ⅟a * (X - C b)) ∣ q := by
-  convert map_dvd_iff <| algEquivCMulXAddC a b using 2
+  convert! map_dvd_iff <| algEquivCMulXAddC a b using 2
   simp [← comp_eq_aeval, comp_assoc, ← mul_assoc, ← C_mul]
 
 lemma dvd_comp_X_sub_C_iff (p q : R[X]) (a : R) :
     p ∣ q.comp (X - C a) ↔ p.comp (X + C a) ∣ q := by
   let _ := invertibleOne (α := R)
-  simpa using dvd_comp_C_mul_X_add_C_iff p q 1 (-a)
+  simpa using! dvd_comp_C_mul_X_add_C_iff p q 1 (-a)
 
 lemma dvd_comp_X_add_C_iff (p q : R[X]) (a : R) :
     p ∣ q.comp (X + C a) ↔ p.comp (X - C a) ∣ q := by
-  simpa using dvd_comp_X_sub_C_iff p q (-a)
+  simpa using! dvd_comp_X_sub_C_iff p q (-a)
 
 lemma dvd_comp_neg_X_iff (p q : R[X]) : p ∣ q.comp (-X) ↔ p.comp (-X) ∣ q := by
   let _ := invertibleOne (α := R)

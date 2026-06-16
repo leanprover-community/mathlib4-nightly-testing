@@ -5,10 +5,7 @@ Authors: Stephen Morgan, Kim Morrison, Floris van Doorn
 -/
 module
 
-public import Mathlib.CategoryTheory.Functor.Const
-public import Mathlib.CategoryTheory.Discrete.Basic
 public import Mathlib.CategoryTheory.Yoneda
-public import Mathlib.CategoryTheory.Functor.ReflectsIso.Basic
 
 /-!
 # Cones and cocones
@@ -38,8 +35,6 @@ For more results about the category of cones, see `cone_category.lean`.
 set_option backward.defeqAttrib.useBackward true
 
 @[expose] public section
-
-
 
 -- morphism levels before object levels. See note [category theory universes].
 universe v₁ v₂ v₃ v₄ v₅ u₁ u₂ u₃ u₄ u₅
@@ -263,7 +258,7 @@ instance Cone.category : Category (Cone F) where
   comp f g := { hom := f.hom ≫ g.hom }
   id B := { hom := 𝟙 B.pt }
 
-/- We do not want `simps` automatically generate the lemma for simplifying the
+/-- We do not want `simps` automatically generate the lemma for simplifying the
 hom field of a category. So we need to write the `ext` lemma in terms of the
 categorical morphism, rather than the underlying structure. -/
 @[to_dual (attr := ext)

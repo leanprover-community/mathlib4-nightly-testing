@@ -82,7 +82,6 @@ lemma Presieve.EffectiveEpimorphic.isSheafFor_of_isRepresentable {X : C} {R : Pr
   exact hR _
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 set_option backward.proofsInPublic true in
 /--
 Implementation: This is a construction which will be used in the proof that
@@ -198,7 +197,6 @@ lemma Sieve.generateFamily_eq {B : C} {α : Type*} (X : α → C) (π : (a : α)
     exact ⟨_, g, π a, ⟨a⟩, rfl⟩
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 set_option backward.proofsInPublic true in
 /--
 Implementation: This is a construction which will be used in the proof that
@@ -212,7 +210,6 @@ def isColimitOfEffectiveEpiFamilyStruct {B : C} {α : Type*}
   letI F : D ⥤ _ := (Sieve.generateFamily X π).arrows.diagram
   { desc := fun S => H.desc (fun a => S.ι.app ⟨Over.mk (π a), ⟨a,𝟙 _, by simp⟩⟩) <| by
       intro Z a₁ a₂ g₁ g₂ h
-      dsimp
       let A₁ : D := ⟨Over.mk (π a₁), a₁, 𝟙 _, by simp⟩
       let A₂ : D := ⟨Over.mk (π a₂), a₂, 𝟙 _, by simp⟩
       let Z' : D := ⟨Over.mk (g₁ ≫ π a₁), a₁, g₁, rfl⟩

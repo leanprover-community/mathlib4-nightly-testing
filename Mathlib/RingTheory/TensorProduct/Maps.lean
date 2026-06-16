@@ -30,7 +30,6 @@ This file provides results about maps between tensor products of `R`-algebras.
 
 -/
 
-
 @[expose] public section
 
 assert_not_exists Equiv.Perm.cycleType
@@ -411,8 +410,11 @@ lemma commRight_tmul (s : S) (a : A) : commRight R S A (s ⊗ₜ a) = a ⊗ₜ s
 variable {S A} in
 attribute [local instance] Algebra.TensorProduct.rightAlgebra in
 @[simp]
-lemma Algebra.TensorProduct.commRight_symm_tmul (s : S) (a : A) :
+lemma commRight_symm_tmul (s : S) (a : A) :
     (commRight R S A).symm (a ⊗ₜ[R] s) = s ⊗ₜ a := rfl
+
+@[deprecated (since := "2026-05-24")]
+alias Algebra.TensorProduct.commRight_symm_tmul := commRight_symm_tmul
 
 end
 

@@ -72,7 +72,7 @@ lemma DerivedCategory.map_triangleOfSESδ [HasDerivedCategory.{t} C] [HasDerived
     descShortComplex_triangleOfSESδ_assoc]
   dsimp
   rw [← Functor.map_comp_assoc, ← CochainComplex.mappingCone.map_δ, Functor.map_comp_assoc,
-    ← reassoc_of% dsimp% F.mapDerivedCategoryFactors_hom_naturality]
+    ← Category.assoc, ← F.mapDerivedCategoryFactors_hom_naturality_assoc]
   simp [← Q.map_comp_assoc, NatTrans.shift_app,
     Functor.commShiftIso_comp_hom_app, Functor.commShiftIso_comp_inv_app]
 
@@ -216,7 +216,7 @@ lemma mapExactFunctor_mk₀ [HasExt.{w} C] [HasExt.{w'} D] {X Y : C} (f : X ⟶ 
     (0 : ℤ) rfl]
   congr
   simpa only [Functor.mapHomologicalComplexUpToQuasiIsoLocalizerMorphism_functor,
-    Functor.mapCochainComplexSingleFunctor, Iso.app_inv, Iso.app_hom] using NatIso.naturality_1 _ f
+    Functor.mapCochainComplexSingleFunctor, Iso.app_inv, Iso.app_hom] using! NatIso.naturality_1 _ f
 
 lemma mapExactFunctor₀ [HasExt.{w} C] [HasExt.{w'} D] (X Y : C) :
     Ext.mapExactFunctor F (X := X) (Y := Y) = Ext.homEquiv₀.symm ∘ F.map ∘ Ext.homEquiv₀ := by

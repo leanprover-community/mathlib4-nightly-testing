@@ -52,7 +52,7 @@ attribute [instance] topologicalSpace isTopologicalAddGroup continuousSMul
 /-- Make an object in `TopModuleCat R` from an unbundled topological module. -/
 abbrev of (M : Type v) [AddCommGroup M] [Module R M] [TopologicalSpace M] [ContinuousAdd M]
     [ContinuousSMul R M] : TopModuleCat R :=
-  have : ContinuousNeg M := ⟨by convert continuous_const_smul (-1 : R) (T := M); ext; simp⟩
+  have : ContinuousNeg M := ⟨by convert! continuous_const_smul (-1 : R) (T := M); ext; simp⟩
   have : IsTopologicalAddGroup M := ⟨⟩
   ⟨.of R M⟩
 
@@ -143,7 +143,7 @@ section
 variable {M₁ M₂ : TopModuleCat R}
 
 @[simp] lemma hom_zero : (0 : M₁ ⟶ M₂).hom = 0 := rfl
-@[simp] lemma hom_zero_apply (m : M₁) : (0 : M₁ ⟶ M₂).hom m = 0 := rfl
+lemma hom_zero_apply (m : M₁) : (0 : M₁ ⟶ M₂).hom m = 0 := rfl
 @[simp] lemma hom_add (φ₁ φ₂ : M₁ ⟶ M₂) : (φ₁ + φ₂).hom = φ₁.hom + φ₂.hom := rfl
 @[simp] lemma hom_neg (φ : M₁ ⟶ M₂) : (-φ).hom = -φ.hom := rfl
 @[simp] lemma hom_sub (φ₁ φ₂ : M₁ ⟶ M₂) : (φ₁ - φ₂).hom = φ₁.hom - φ₂.hom := rfl
@@ -448,7 +448,7 @@ def freeAdj : free.{max v u} R ⊣ forget₂ (TopModuleCat.{max v u} R) TopCat.{
       refine sInf_le ⟨continuousSMul_induced (Finsupp.lift _ R X id),
         continuousAdd_induced (Finsupp.lift _ R X id), ?_⟩
       rw [coinduced_le_iff_le_induced, induced_compose]
-      convert induced_id.symm.le
+      convert! induced_id.symm.le
       ext
       simp [coe_freeObj]⟩,
     naturality {X Y} f := by
@@ -470,5 +470,16 @@ instance : (forget₂ (TopModuleCat.{max v u} R) TopCat).IsRightAdjoint := ⟨_,
 instance : (free.{max v u} R).IsLeftAdjoint := ⟨_, ⟨freeAdj R⟩⟩
 
 end Adjunction
+
+variable {R} in
+/-- The ring isomorphism between the endomorphisms of an object `M` in `TopModuleCat R` and the
+continuous `R`-linear endomorphisms of `M`. -/
+@[simps]
+def endRingEquiv (M : TopModuleCat R) :
+    End M ≃+* (M →L[R] M) where
+  toFun := TopModuleCat.Hom.hom
+  invFun := TopModuleCat.ofHom
+  map_mul' _ _ := rfl
+  map_add' _ _ := rfl
 
 end TopModuleCat

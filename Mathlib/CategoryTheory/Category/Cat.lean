@@ -7,7 +7,6 @@ module
 
 public import Mathlib.CategoryTheory.Bicategory.Strict.Basic
 public import Mathlib.CategoryTheory.ConcreteCategory.Bundled
-public import Mathlib.CategoryTheory.Discrete.Basic
 public import Mathlib.CategoryTheory.Types.Basic
 
 /-!
@@ -25,8 +24,6 @@ its carrier type.
 
 @[expose] public section
 
-
-
 universe v u
 
 namespace CategoryTheory
@@ -34,6 +31,7 @@ namespace CategoryTheory
 open Bicategory Functor
 
 -- intended to be used with explicit universe parameters
+set_option linter.checkUnivs false in
 /-- Category of categories. -/
 @[nolint checkUnivs]
 def Cat :=

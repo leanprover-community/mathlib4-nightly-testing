@@ -226,7 +226,7 @@ abbrev HomSubtype (X Y : DifferentialObject S C) :=
 instance (X Y : DifferentialObject S C) :
     FunLike (HomSubtype S C X Y) (CC X.obj) (CC Y.obj) where
   coe f := f.1
-  coe_injective' _ _ h := Subtype.ext (DFunLike.coe_injective h)
+  coe_injective _ _ h := Subtype.ext (DFunLike.coe_injective h)
 
 instance concreteCategoryOfDifferentialObjects :
     ConcreteCategory (DifferentialObject S C) (HomSubtype S C) where
@@ -315,16 +315,16 @@ instance : HasShift (DifferentialObject S C) S :=
       add := shiftFunctorAdd C
       assoc_hom_app := fun m₁ m₂ m₃ X => by
         ext1
-        convert shiftFunctorAdd_assoc_hom_app m₁ m₂ m₃ X.obj
+        convert! shiftFunctorAdd_assoc_hom_app m₁ m₂ m₃ X.obj
         dsimp [shiftFunctorAdd']
         simp
       zero_add_hom_app := fun n X => by
         ext1
-        convert shiftFunctorAdd_zero_add_hom_app n X.obj
+        convert! shiftFunctorAdd_zero_add_hom_app n X.obj
         simp
       add_zero_hom_app := fun n X => by
         ext1
-        convert shiftFunctorAdd_add_zero_hom_app n X.obj
+        convert! shiftFunctorAdd_add_zero_hom_app n X.obj
         simp }
 
 end
