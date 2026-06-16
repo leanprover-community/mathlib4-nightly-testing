@@ -51,12 +51,6 @@ def allNamesByModule (p : Name → Bool) : CoreM (Std.HashMap Name (Array Name))
     else
       return names
 
-/-- Decapitalize the last component of a name. -/
-def Lean.Name.decapitalize (n : Name) : Name :=
-  n.modifyBase fun
-    | .str p s => .str p s.decapitalize
-    | n       => n
-
 /--
 Determines if the pretty-printed version of the given name would parse as an
 `ident` with an underlying name (via `getId`) equal to the original name.
