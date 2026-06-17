@@ -75,27 +75,15 @@ theorem IsChain.iff_mem_mem_tail {l : List α} :
     IsChain R l ↔ IsChain (fun x y => x ∈ l ∧ y ∈ l.tail ∧ R x y) l :=
   IsChain.iff_of_mem_tail_imp <| by grind
 
-theorem isChain_pair {x y} : IsChain R [x, y] ↔ R x y := by
-  simp only [IsChain.singleton, isChain_cons_cons, and_true]
-
 theorem isChain_isInfix : ∀ l : List α, IsChain (fun x y => [x, y] <:+: l) l
   | [] => .nil
   | [_] => .singleton _
   | a :: b :: l => .cons_cons ⟨[], l, by simp⟩
     ((isChain_isInfix (b :: l)).imp fun _ _ h => h.trans ⟨[a], [], by simp⟩)
 
-theorem isChain_split {c : α} {l₁ l₂ : List α} :
-    IsChain R (l₁ ++ c :: l₂) ↔ IsChain R (l₁ ++ [c]) ∧ IsChain R (c :: l₂) := by
-  induction l₁ using twoStepInduction generalizing l₂ with grind
-
 theorem isChain_cons_split {c : α} {l₁ l₂ : List α} :
     IsChain R (a :: (l₁ ++ c :: l₂)) ↔ IsChain R (a :: (l₁ ++ [c])) ∧ IsChain R (c :: l₂) := by
   simp_rw [← cons_append, isChain_split (l₂ := l₂)]
-
-@[simp]
-theorem isChain_append_cons_cons {b c : α} {l₁ l₂ : List α} :
-    IsChain R (l₁ ++ b :: c :: l₂) ↔ IsChain R (l₁ ++ [b]) ∧ R b c ∧ IsChain R (c :: l₂) := by
-  rw [isChain_split, isChain_cons_cons]
 
 @[simp]
 theorem isChain_cons_append_cons_cons {a b c : α} {l₁ l₂ : List α} :
@@ -270,14 +258,6 @@ theorem isChain_cons_iff_get {R} {a : α} {l : List α} : IsChain R (a :: l) ↔
 
 theorem exists_not_getElem_of_not_isChain (h : ¬List.IsChain R l) :
     ∃ n : ℕ, ∃ h : n + 1 < l.length, ¬R l[n] l[n + 1] := by simp_all [isChain_iff_getElem]
-
-theorem isChain_reverse {l : List α} : l.reverse.IsChain R ↔ l.IsChain (fun a b => R b a) := by
-  induction l using twoStepInduction with
-  | nil => grind
-  | singleton a => grind
-  | cons_cons a b l IH IH2 =>
-    rw [isChain_cons_cons, reverse_cons, reverse_cons, append_assoc, cons_append, nil_append,
-      isChain_split, ← reverse_cons, IH2, and_comm, isChain_pair]
 
 /-- If `l₁ l₂` and `l₃` are lists and `l₁ ++ l₂` and `l₂ ++ l₃` both satisfy
   `IsChain R`, then so does `l₁ ++ l₂ ++ l₃` provided `l₂ ≠ []` -/
