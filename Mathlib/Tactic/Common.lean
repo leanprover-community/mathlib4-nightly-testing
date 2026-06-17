@@ -72,7 +72,6 @@ public import Mathlib.Tactic.Inhabit
 public import Mathlib.Tactic.IrreducibleDef
 public import Mathlib.Tactic.Lift
 public import Mathlib.Tactic.Linter
-public import Mathlib.Tactic.MkIffOfInductiveProp
 -- NormNum imports `Algebra.Order.Invertible`, `Data.Int.Basic`, `Data.Nat.Cast.Commute`
 -- import Mathlib.Tactic.NormNum.Basic
 public import Mathlib.Tactic.NthRewrite

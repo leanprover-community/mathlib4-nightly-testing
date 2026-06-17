@@ -5,8 +5,8 @@ Authors: Mario Carneiro, Yury Kudryashov
 -/
 module
 
+public import Batteries.Tactic.MkIff
 public import Mathlib.Logic.Function.Basic
-public import Mathlib.Tactic.MkIffOfInductiveProp
 
 /-!
 # Additional lemmas about sum types

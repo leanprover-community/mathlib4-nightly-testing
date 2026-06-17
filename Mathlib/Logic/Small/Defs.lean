@@ -5,8 +5,8 @@ Authors: Kim Morrison
 -/
 module
 
+public import Batteries.Tactic.MkIff
 public import Mathlib.Logic.Equiv.Defs
-public import Mathlib.Tactic.MkIffOfInductiveProp
 public import Mathlib.Tactic.PPWithUniv
 
 /-!

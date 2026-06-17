@@ -5,13 +5,13 @@ Authors: Johannes Hölzl
 -/
 module
 
-public import Mathlib.Logic.Relator
-public import Mathlib.Tactic.Use
-public import Mathlib.Tactic.MkIffOfInductiveProp
-public import Mathlib.Tactic.SimpRw
-public import Mathlib.Order.Defs.Unbundled
 public import Batteries.Logic
+public import Batteries.Tactic.MkIff
 public import Batteries.Tactic.Trans
+public import Mathlib.Logic.Relator
+public import Mathlib.Order.Defs.Unbundled
+public import Mathlib.Tactic.Use
+public import Mathlib.Tactic.SimpRw
 
 /-!
 # Relation closures
