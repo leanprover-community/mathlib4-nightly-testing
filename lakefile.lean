@@ -131,6 +131,12 @@ lean_exe «nightly-testing-checklist» where
 lean_exe mathlib_test_executable where
   root := `MathlibTest.MathlibTestExecutable
 
+/-- `lake exe printDecls Mathlib.My.Module` imports the given (already built) module and
+prints the name and pretty-printed type of every declaration it adds to the environment. -/
+lean_exe printDecls where
+  root := `PrintDecls
+  supportInterpreter := true
+
 /-!
 ## Other configuration
 -/
