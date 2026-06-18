@@ -60,8 +60,7 @@ lemma triangleOfSESδ_naturality {S₁ S₂ : ShortComplex (CochainComplex C ℤ
   rw [← Functor.comp_map, ← (Q.commShiftIso (1 : ℤ)).hom.naturality, ← Category.assoc,
     ← Category.assoc, ← Category.assoc, ← Category.assoc, ← Iso.app_hom,
     Iso.cancel_iso_hom_right, ← Q.map_comp]
-  simp only [ Functor.comp_map,
-    ← CochainComplex.mappingCone.descShortComplex_naturality f,
+  simp only [Functor.comp_map, ← CochainComplex.mappingCone.descShortComplex_naturality f,
     Functor.map_comp, Category.assoc, IsIso.hom_inv_id, Category.comp_id]
   rw [← Q.map_comp, ← Q.map_comp]
   congr 1
@@ -101,7 +100,6 @@ variable {S₁ S₂ : ShortComplex (CochainComplex C ℤ)} (h₁ : S₁.ShortExa
   (f : S₁ ⟶ S₂)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /--
 The morphism `triangleOfSES h₁ ⟶ triangleOfSES h₂` that is induced by a morphism of short
 exact sequences of cochain complexes.

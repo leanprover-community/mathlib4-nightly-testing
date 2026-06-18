@@ -27,7 +27,7 @@ variable (A B : Type*) [MyClass A] [MyClass B]
 
 instance : FunLike (MyEmbedding A B) A B where
   coe := MyEmbedding.toFun
-  coe_injective' := fun f g h ↦ by cases f; cases g; congr
+  coe_injective := fun f g h ↦ by cases f; cases g; congr
 
 -- This instance is optional if you follow the "Embedding class" design below:
 instance : EmbeddingLike (MyEmbedding A B) A B where
@@ -37,7 +37,6 @@ instance : EmbeddingLike (MyEmbedding A B) A B where
 
 /-- Copy of a `MyEmbedding` with a new `toFun` equal to the old one. Useful to fix definitional
 equalities. -/
-
 protected def copy (f : MyEmbedding A B) (f' : A → B) (h : f' = ⇑f) : MyEmbedding A B :=
   { toFun := f'
     injective' := h.symm ▸ f.injective'
@@ -105,7 +104,7 @@ variable {A B : Type*} [CoolClass A] [CoolClass B]
 
 instance : FunLike (CoolerEmbedding A B) A B where
   coe f := f.toFun
-  coe_injective' f g h := by cases f; cases g; congr; apply DFunLike.coe_injective; congr
+  coe_injective f g h := by cases f; cases g; congr; apply DFunLike.coe_injective; congr
 
 instance : CoolerEmbeddingClass (CoolerEmbedding A B) A B where
   injective' f := f.injective'

@@ -28,7 +28,6 @@ underlying `F` and `G` such that `α.app a` lifts `𝟙 S` whenever `𝒳.p.obj 
 
 @[expose] public section
 
-
 universe v₅ u₅ v₄ u₄ v₃ u₃ v₂ u₂ v₁ u₁
 
 namespace CategoryTheory
@@ -37,6 +36,7 @@ open Functor Category NatTrans IsHomLift
 
 variable {𝒮 : Type u₁} [Category.{v₁} 𝒮]
 
+set_option linter.checkUnivs false in
 /-- A based category over `𝒮` is a category `𝒳` together with a functor `p : 𝒳 ⥤ 𝒮`. -/
 @[nolint checkUnivs]
 structure BasedCategory (𝒮 : Type u₁) [Category.{v₁} 𝒮] where

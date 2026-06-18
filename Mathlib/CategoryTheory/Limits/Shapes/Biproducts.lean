@@ -98,8 +98,8 @@ instance Bicone.category : Category (Bicone F) where
   comp f g := { hom := f.hom ≫ g.hom }
   id B := { hom := 𝟙 B.pt }
 
-/- We do not want `simps` automatically generate the lemma for simplifying the `Hom` field of
--- a category. So we need to write the `ext` lemma in terms of the categorical morphism, rather than
+/-! We do not want `simps` automatically generate the lemma for simplifying the `Hom` field of
+a category. So we need to write the `ext` lemma in terms of the categorical morphism, rather than
 the underlying structure. -/
 @[ext]
 theorem BiconeMorphism.ext {c c' : Bicone F} (f g : c ⟶ c') (w : f.hom = g.hom) : f = g := by
@@ -145,8 +145,8 @@ instance functoriality_full [G.PreservesZeroMorphisms] [G.Full] [G.Faithful] :
     (functoriality F G).Full where
   map_surjective t :=
    ⟨{ hom := G.preimage t.hom
-      wι := fun j => G.map_injective (by simpa using t.wι j)
-      wπ := fun j => G.map_injective (by simpa using t.wπ j) }, by cat_disch⟩
+      wι := fun j => G.map_injective (by simpa using! t.wι j)
+      wπ := fun j => G.map_injective (by simpa using! t.wπ j) }, by cat_disch⟩
 
 instance functoriality_faithful [G.PreservesZeroMorphisms] [G.Faithful] :
     (functoriality F G).Faithful where
@@ -451,7 +451,7 @@ This means you may not be able to `simp` using this lemma unless you `open scope
 @[reassoc]
 theorem biproduct.ι_π [DecidableEq J] (f : J → C) [HasBiproduct f] (j j' : J) :
     biproduct.ι f j ≫ biproduct.π f j' = if h : j = j' then eqToHom (congr_arg f h) else 0 := by
-  convert (biproduct.bicone f).ι_π j j'
+  convert! (biproduct.bicone f).ι_π j j'
 
 @[reassoc] -- Not `simp` because `simp` can prove this
 theorem biproduct.ι_π_self (f : J → C) [HasBiproduct f] (j : J) :
@@ -566,7 +566,6 @@ theorem biproduct.map_eq_map' {f g : J → C} [HasBiproduct f] [HasBiproduct g] 
     biproduct.map p = biproduct.map' p := by
   classical
   ext
-  dsimp
   simp only [Discrete.natTrans_app, Limits.IsColimit.ι_map_assoc, Limits.IsLimit.map_π,
     ← Bicone.toCone_π_app_mk, ← Bicone.toCocone_ι_app_mk]
   dsimp
@@ -711,9 +710,9 @@ instance {ι} (f : ι → Type*) (g : (i : ι) → (f i) → C)
               simp [biproduct.ι_π_ne _ h]
             · simp [biproduct.ι_π_ne_assoc _ w] }
       isBilimit :=
-      { isLimit := mkFanLimit _
+      { isLimit := Fan.IsLimit.mk _
           (fun s => biproduct.lift fun b => biproduct.lift fun c => s.proj ⟨b, c⟩)
-        isColimit := mkCofanColimit _
+        isColimit := Cofan.IsColimit.mk _
           (fun s => biproduct.desc fun b => biproduct.desc fun c => s.inj ⟨b, c⟩) } }
 
 /-- An iterated biproduct is a biproduct over a sigma type. -/
@@ -747,7 +746,7 @@ theorem biproduct.fromSubtype_π [DecidablePred p] (j : J) :
     biproduct.fromSubtype f p ≫ biproduct.π f j =
       if h : p j then biproduct.π (Subtype.restrict p f) ⟨j, h⟩ else 0 := by
   classical
-  ext i; dsimp
+  ext i
   rw [biproduct.fromSubtype, biproduct.ι_desc_assoc, biproduct.ι_π]
   by_cases h : p j
   · rw [dif_pos h, biproduct.ι_π]

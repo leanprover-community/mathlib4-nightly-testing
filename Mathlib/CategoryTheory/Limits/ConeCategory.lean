@@ -112,7 +112,6 @@ def Cone.mapConeToUnder {F : J ⥤ C} (c : Cone F) : (Under.forget c.pt).mapCone
   Iso.refl _
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- Given a diagram of `StructuredArrow X F`s, we may obtain a cone with cone point `X`. -/
 @[simps!]
 def Cone.fromStructuredArrow (F : C ⥤ D) {X : D} (G : J ⥤ StructuredArrow X F) :
@@ -147,7 +146,7 @@ def Cone.fromCostructuredArrow (F : J ⥤ C) : CostructuredArrow (const J) F ⥤
   map f :=
     { hom := f.left
       w := fun j => by
-        convert congr_fun (congr_arg NatTrans.app f.w) j
+        convert! congr_fun (congr_arg NatTrans.app f.w) j
         simp }
 
 set_option backward.defeqAttrib.useBackward true in

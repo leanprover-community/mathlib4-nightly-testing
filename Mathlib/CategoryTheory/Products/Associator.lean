@@ -13,8 +13,6 @@ The associator functor `((C × D) × E) ⥤ (C × (D × E))` and its inverse for
 
 @[expose] public section
 
-
-
 universe v₁ v₂ v₃ v₄ u₁ u₂ u₃ u₄
 
 open CategoryTheory
@@ -77,5 +75,14 @@ def functorProdToProdFunctorAssociator :
         functorProdToProdFunctor A (C × D) E ⋙ (functorProdToProdFunctor A C D).prod (𝟭 _) ⋙
           (associativity _ _ _).functor :=
   Iso.refl _
+
+/-- The equivalence swapping the second and third categories in `(A × C) × (D × E)`. This follows
+the definition of `MonoidalCategory.tensorμ`. -/
+@[simps!]
+def prodμ : (A × C) × (D × E) ≌ (A × D) × (C × E) :=
+  (associativity ..).trans <|
+    (Equivalence.refl.prod (associativity ..).symm).trans <|
+      (Equivalence.refl.prod <| (Prod.braiding C D).prod (Equivalence.refl)).trans <|
+        (Equivalence.refl.prod (associativity ..)).trans <| (associativity ..).symm
 
 end CategoryTheory.prod

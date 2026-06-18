@@ -59,7 +59,6 @@ instance unit_mono_of_L_faithful [L.Faithful] (X : C) : Mono (h.unit.app X) wher
     L.map_injective <| (h.homEquiv Y (L.obj X)).injective <| by simpa using hfg
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- If the left adjoint is full, then each component of the unit is a split epimorphism. -/
 noncomputable def unitSplitEpiOfLFull [L.Full] (X : C) : SplitEpi (h.unit.app X) where
   section_ := L.preimage (h.counit.app (L.obj X))
@@ -79,10 +78,9 @@ instance unit_isIso_of_L_fully_faithful [L.Full] [L.Faithful] : IsIso (Adjunctio
 /-- If the right adjoint is faithful, then each component of the counit is an epimorphism. -/
 instance counit_epi_of_R_faithful [R.Faithful] (X : D) : Epi (h.counit.app X) where
   left_cancellation {Y} f g hfg :=
-    R.map_injective <| (h.homEquiv (R.obj X) Y).symm.injective <| by simpa using hfg
+    R.map_injective <| (h.homEquiv (R.obj X) Y).symm.injective <| by simpa using! hfg
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- If the right adjoint is full, then each component of the counit is a split monomorphism. -/
 noncomputable def counitSplitMonoOfRFull [R.Full] (X : D) : SplitMono (h.counit.app X) where
   retraction := R.preimage (h.unit.app (R.obj X))
@@ -139,7 +137,7 @@ lemma full_L_of_isSplitEpi_unit_app [∀ X, IsSplitEpi (h.unit.app X)] : L.Full 
     use ((h.homEquiv X (L.obj Y)) f ≫ section_ (h.unit.app Y))
     suffices L.map (section_ (h.unit.app Y)) = h.counit.app (L.obj Y) by simp [this]
     rw [← comp_id (L.map (section_ (h.unit.app Y)))]
-    simp only [ Functor.id_obj, ← h.left_triangle_components Y,
+    simp only [Functor.id_obj, ← h.left_triangle_components Y,
       ← assoc, ← Functor.map_comp, IsSplitEpi.id, Functor.map_id, id_comp]
 
 set_option backward.isDefEq.respectTransparency false in
@@ -170,23 +168,21 @@ set_option backward.isDefEq.respectTransparency false in
 noncomputable def fullyFaithfulROfIsIsoCounit [IsIso h.counit] : R.FullyFaithful where
   preimage {X Y} f := inv (h.counit.app X) ≫ (h.homEquiv (R.obj X) Y).symm f
 
-set_option backward.isDefEq.respectTransparency false in
 instance whiskerLeft_counit_iso_of_L_fully_faithful [L.Full] [L.Faithful] :
     IsIso (whiskerLeft L h.counit) := by
-  have := h.left_triangle
-  rw [← IsIso.eq_inv_comp] at this
+  have := ((Functor.associator ..).inv ≫ whiskerRight (inv h.unit) L) ≫= h.left_triangle
+  simp only [assoc, ← whiskerRight_comp_assoc, IsIso.inv_hom_id, whiskerRight_id', id_comp,
+    Iso.inv_hom_id_assoc] at this
   rw [this]
   infer_instance
 
-set_option backward.isDefEq.respectTransparency false in
 instance whiskerRight_counit_iso_of_L_fully_faithful [L.Full] [L.Faithful] :
     IsIso (whiskerRight h.counit R) := by
   have := h.right_triangle
-  rw [← IsIso.eq_inv_comp] at this
+  rw [← IsIso.eq_inv_comp, Iso.inv_comp_eq] at this
   rw [this]
   infer_instance
 
-set_option backward.isDefEq.respectTransparency false in
 instance whiskerLeft_unit_iso_of_R_fully_faithful [R.Full] [R.Faithful] :
     IsIso (whiskerLeft R h.unit) := by
   have := h.right_triangle
@@ -194,7 +190,6 @@ instance whiskerLeft_unit_iso_of_R_fully_faithful [R.Full] [R.Faithful] :
   rw [this]
   infer_instance
 
-set_option backward.isDefEq.respectTransparency false in
 instance whiskerRight_unit_iso_of_R_fully_faithful [R.Full] [R.Faithful] :
     IsIso (whiskerRight h.unit L) := by
   have := h.left_triangle
@@ -285,8 +280,10 @@ theorem isIso_map_unit_of_isLeftAdjoint_comp {E : Type*} [Category* E]
   let FF := FullyFaithful.ofFullyFaithful R
   apply isIso_of_coyoneda_map_bijective
   intro Y
-  convert ((adj2.homEquiv (R.obj (L.obj X)) Y).trans <| FF.homEquiv.symm.trans <|
-    (h.homEquiv X (S.obj Y)).trans (adj2.homEquiv X Y).symm).bijective using 1
+  convert!
+    ((adj2.homEquiv (R.obj (L.obj X)) Y).trans <|
+        FF.homEquiv.symm.trans <|
+          (h.homEquiv X (S.obj Y)).trans (adj2.homEquiv X Y).symm).bijective using 1
   ext x
   have := adj2.counit_naturality x
   simp_all [Adjunction.homEquiv]

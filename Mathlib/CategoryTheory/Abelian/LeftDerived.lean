@@ -5,7 +5,6 @@ Authors: Kim Morrison, Riccardo Brasca, Adam Topaz, Jujian Zhang, Joël Riou
 -/
 module
 
-public import Mathlib.Algebra.Homology.Additive
 public import Mathlib.CategoryTheory.Abelian.Projective.Resolution
 
 /-!
@@ -266,7 +265,6 @@ noncomputable def fromLeftDerivedZero' {X : C}
     dsimp
     rw [← F.map_comp, complex_d_comp_π_f_zero, F.map_zero])
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma pOpcycles_comp_fromLeftDerivedZero' {C} [Category* C] [Abelian C] {X : C}
     (P : ProjectiveResolution X) (F : C ⥤ D) [F.Additive] :

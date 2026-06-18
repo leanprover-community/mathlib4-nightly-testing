@@ -162,7 +162,7 @@ theorem dimH_eq_iInf (s : Set X) : dimH s = ⨅ (d : ℝ≥0) (_ : μH[d] s = 0)
 
 end Measurable
 
-@[mono]
+@[gcongr, mono]
 theorem dimH_mono {s t : Set X} (h : s ⊆ t) : dimH s ≤ dimH t := by
   borelize X
   exact dimH_le fun d hd => le_dimH_of_hausdorffMeasure_eq_top <| top_unique <| hd ▸ measure_mono h
@@ -334,7 +334,6 @@ theorem dimH_range_le_of_locally_holder_on [SecondCountableTopology X] {r : ℝ�
 -/
 
 
-set_option backward.isDefEq.respectTransparency false in
 /-- If `f : X → Y` is Lipschitz continuous on `s`, then `dimH (f '' s) ≤ dimH s`. -/
 theorem LipschitzOnWith.dimH_image_le (h : LipschitzOnWith K f s) : dimH (f '' s) ≤ dimH s := by
   simpa using h.holderOnWith.dimH_image_le zero_lt_one
@@ -352,7 +351,6 @@ theorem dimH_range_le (h : LipschitzWith K f) : dimH (range f) ≤ dimH (univ : 
 
 end LipschitzWith
 
-set_option backward.isDefEq.respectTransparency false in
 /-- If `s` is a set in an extended metric space `X` with second countable topology and `f : X → Y`
 is Lipschitz in a neighborhood within `s` of every point `x ∈ s`, then the Hausdorff dimension of
 the image `f '' s` is at most the Hausdorff dimension of `s`. -/
@@ -528,7 +526,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensi
 
 theorem dense_compl_of_dimH_lt_finrank {s : Set E} (hs : dimH s < finrank ℝ E) : Dense sᶜ := by
   refine fun x => mem_closure_iff_nhds.2 fun t ht => nonempty_iff_ne_empty.2 fun he => hs.not_ge ?_
-  rw [← diff_eq, diff_eq_empty] at he
+  rw [← sdiff_eq, sdiff_eq_empty] at he
   rw [← Real.dimH_of_mem_nhds ht]
   exact dimH_mono he
 
@@ -578,8 +576,11 @@ theorem ContDiff.dense_compl_range_of_finrank_lt_finrank [FiniteDimensional ℝ 
 The Hausdorff dimension of the orthogonal projection of a set `s` onto a subspace `K`
 is less than or equal to the Hausdorff dimension of `s`.
 -/
-theorem dimH_orthogonalProjection_le {𝕜 E : Type*} [RCLike 𝕜]
+theorem dimH_orthogonalProjectionOnto_le {𝕜 E : Type*} [RCLike 𝕜]
     [NormedAddCommGroup E] [InnerProductSpace 𝕜 E]
     (K : Submodule 𝕜 E) [K.HasOrthogonalProjection] (s : Set E) :
-    dimH (K.orthogonalProjection '' s) ≤ dimH s :=
-  K.lipschitzWith_orthogonalProjection.dimH_image_le s
+    dimH (K.orthogonalProjectionOnto '' s) ≤ dimH s :=
+  K.lipschitzWith_orthogonalProjectionOnto.dimH_image_le s
+
+@[deprecated (since := "2026-05-05")] alias dimH_orthogonalProjection_le :=
+  dimH_orthogonalProjectionOnto_le

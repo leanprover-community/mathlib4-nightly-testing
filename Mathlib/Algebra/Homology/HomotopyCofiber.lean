@@ -79,6 +79,16 @@ noncomputable def XIso (i : ι) (hi : ¬ c.Rel i (c.next i)) :
     X φ i ≅ G.X i :=
   eqToIso (dif_neg hi)
 
+lemma isZero_X (i : ι) (hG : IsZero (G.X i))
+    (hF : ∀ (j : ι), c.Rel i j → IsZero (F.X j)) :
+    IsZero (X φ i) := by
+  by_cases h : c.Rel i (c.next i)
+  · haveI := HasHomotopyCofiber.hasBinaryBiproduct φ _ _ h
+    refine IsZero.of_iso ?_ (XIsoBiprod φ _ _ h)
+    simp only [biprod_isZero_iff]
+    exact ⟨hF _ h, hG⟩
+  · exact hG.of_iso (XIso φ i h)
+
 /-- The second projection `(homotopyCofiber φ).X i ⟶ G.X i`. -/
 noncomputable def sndX (i : ι) : X φ i ⟶ G.X i :=
   if hi : c.Rel i (c.next i)
@@ -150,9 +160,9 @@ lemma ext_to_X (i j : ι) (hij : c.Rel i j) {A : C} {f g : A ⟶ X φ i}
   haveI := HasHomotopyCofiber.hasBinaryBiproduct φ _ _ hij
   rw [← cancel_mono (XIsoBiprod φ i j hij).hom]
   apply biprod.hom_ext
-  · simpa using h₁
+  · simpa using! h₁
   · obtain rfl := c.next_eq' hij
-    simpa [sndX, dif_pos hij] using h₂
+    simpa [sndX, dif_pos hij] using! h₂
 
 lemma ext_to_X' (i : ι) (hi : ¬ c.Rel i (c.next i)) {A : C} {f g : A ⟶ X φ i}
     (h : f ≫ sndX φ i = g ≫ sndX φ i) : f = g := by
@@ -226,8 +236,7 @@ noncomputable def homotopyCofiber : HomologicalComplex C c where
   shape i j hij := homotopyCofiber.shape φ i j hij
   d_comp_d' i j k hij hjk := by
     apply homotopyCofiber.ext_from_X φ j i hij
-    · dsimp
-      simp only [comp_zero, homotopyCofiber.inlX_d_assoc φ i j k hij hjk,
+    · simp only [comp_zero, homotopyCofiber.inlX_d_assoc φ i j k hij hjk,
         add_comp, assoc, homotopyCofiber.inrX_d, Hom.comm_assoc, neg_comp]
       by_cases hk : c.Rel k (c.next k)
       · simp [homotopyCofiber.inlX_d φ j k _ hjk hk]
@@ -363,7 +372,6 @@ lemma descSigma_ext_iff {φ : F ⟶ G} {K : HomologicalComplex C c}
     · exact h _ _ hij
     · simp only [Homotopy.zero _ _ _ hij]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Morphisms `homotopyCofiber φ ⟶ K` are uniquely determined by
 a morphism `α : G ⟶ K` and a homotopy from `φ ≫ α` to `0`. -/
 noncomputable def descEquiv (K : HomologicalComplex C c) (hc : ∀ j, ∃ i, c.Rel i j) :
@@ -382,7 +390,13 @@ section
 
 variable (K)
 variable [∀ i, HasBinaryBiproduct (K.X i) (K.X i)]
-  [HasHomotopyCofiber (biprod.lift (𝟙 K) (-𝟙 K))]
+
+/-- Given a homological complex `K`, this is the property that the morphism
+`K ⟶ K ⊞ K` induced by `𝟙 K` and `-𝟙 K` has a cofiber, which allows
+to define `K.cylinder` as this cofiber. -/
+abbrev HasCylinder : Prop := HasHomotopyCofiber (biprod.lift (𝟙 K) (-𝟙 K))
+
+variable [K.HasCylinder]
 
 /-- The cylinder object of a homological complex `K` is the homotopy cofiber
 of the morphism  `biprod.lift (𝟙 K) (-𝟙 K) : K ⟶ K ⊞ K`. -/
@@ -502,8 +516,7 @@ lemma inrX_nullHomotopy_f (j : ι) :
     rw [← cancel_epi (biprodXIso K K j).inv]
     ext
     · simp [ι₀]
-    · dsimp
-      simp only [inr_biprodXIso_inv_assoc, biprod_inr_snd_f_assoc, comp_sub,
+    · simp only [inr_biprodXIso_inv_assoc, biprod_inr_snd_f_assoc, comp_sub,
         biprod_inr_desc_f_assoc, id_f, id_comp, ι₀, comp_f, this,
         sub_f_apply, sub_comp, homotopyCofiber.inr_f]
   · simp only [not_exists] at hj
@@ -531,6 +544,7 @@ noncomputable def πCompι₀Homotopy : Homotopy (π K ≫ ι₀ K) (𝟙 K.cyli
       (πCompι₀Homotopy.nullHomotopy K))
 
 /-- The homotopy equivalence between `K.cylinder` and `K`. -/
+@[simps]
 noncomputable def homotopyEquiv : HomotopyEquiv K.cylinder K where
   hom := π K
   inv := ι₀ K

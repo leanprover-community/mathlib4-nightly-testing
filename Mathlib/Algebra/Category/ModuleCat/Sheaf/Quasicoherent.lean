@@ -5,9 +5,9 @@ Authors: Joël Riou
 -/
 module
 
-public import Mathlib.Algebra.Category.ModuleCat.Sheaf.Generators
 public import Mathlib.Algebra.Category.ModuleCat.Sheaf.Abelian
-public import Mathlib.CategoryTheory.Comma.Over.Pullback
+public import Mathlib.Algebra.Category.ModuleCat.Sheaf.Generators
+public import Mathlib.CategoryTheory.Sites.CoversTop.Over
 
 /-!
 # Quasicoherent sheaves
@@ -77,7 +77,7 @@ def generatorsOfIsCokernelFree {M : SheafOfModules.{u} R}
     (H' : IsColimit (CokernelCofork.ofπ g H)) : M.GeneratingSections where
   I := σ
   s := M.freeHomEquiv g
-  epi := by simpa using epi_of_isColimit_cofork H'
+  epi := by simpa using! epi_of_isColimit_cofork H'
 
 @[simp]
 theorem generatorsOfIsCokernelFree_π {M : SheafOfModules.{u} R}
@@ -164,13 +164,12 @@ def Presentation.mapRelations : free P.relations.I (R := S) ⟶ free P.generator
 /-- Let `F` be a functor from sheaf of `R`-module to sheaf of `S`-module, if `F` preserves
 colimits and `F.obj (unit R) ≅ unit S`, given a `P : Presentation M`, then we will obtain
 generators of `Presentation (F.obj M)`. -/
-def Presentation.mapGenerators : free P.generators.I ⟶ F.obj M :=
-  (mapFreeIso F P.generators.I η).hom ≫ F.map (P.generators.π)
+abbrev Presentation.mapGenerators : free P.generators.I ⟶ F.obj M := P.generators.mapFreeHom F η
 
 @[reassoc (attr := simp)]
 theorem Presentation.mapRelations_mapGenerators :
     P.mapRelations F η ≫ P.mapGenerators F η = 0 := by
-  simp only [mapRelations, mapGenerators, Category.assoc, Iso.inv_hom_id_assoc,
+  simp only [mapRelations, GeneratingSections.mapFreeHom, Category.assoc, Iso.inv_hom_id_assoc,
     ← Functor.map_comp, kernel.condition, Functor.map_zero, comp_zero]
 
 set_option backward.defeqAttrib.useBackward true in
@@ -185,7 +184,7 @@ def Presentation.map : Presentation (F.obj M) :=
       (parallelPairIsoMk (mapFreeIso F _ η).symm (mapFreeIso F _ η).symm
         (by simp [Presentation.mapRelations]) (by simp)) _ _ ?_ (isColimitOfPreserves F P.isColimit)
     exact (Cocone.ext (Iso.refl _) <| by rintro (_ | _)
-      <;> simp [Presentation.mapRelations, Presentation.mapGenerators, ← Functor.map_comp])
+      <;> simp [Presentation.mapRelations, GeneratingSections.mapFreeHom, ← Functor.map_comp])
 
 theorem Presentation.map_π_eq :
     (P.map F η).generators.π = (mapFreeIso F _ η).hom ≫ F.map (P.generators.π) :=
@@ -283,13 +282,6 @@ instance (M : SheafOfModules.{u} R) [M.IsFinitePresentation] :
     obtain ⟨σ, _⟩ := IsFinitePresentation.exists_quasicoherentData M
     exact ⟨σ.localGeneratorsData, inferInstance⟩
 
-/-- A choice of local presentations when `M` is a sheaf of modules of finite presentation. -/
-@[deprecated "Use the lemma `IsFinitePresentation.exists_quasicoherentData` instead."
-  (since := "2025-10-28")]
-noncomputable def quasicoherentDataOfIsFinitePresentation
-    (M : SheafOfModules.{u} R) [M.IsFinitePresentation] : M.QuasicoherentData :=
-  (IsFinitePresentation.exists_quasicoherentData M).choose
-
 end
 
 noncomputable section
@@ -314,7 +306,7 @@ def Presentation.quasicoherentData {M : SheafOfModules.{u} R} (P : Presentation 
   coversTop x := GrothendieckTopology.covering_of_eq_top J <| by
     rw [Sieve.ext_iff]
     intro _ f
-    simpa [Sieve.top_apply, iff_true] using ⟨x, Nonempty.intro f⟩
+    simp [Sieve.top_apply]
   presentation x := P.map (pushforward (𝟙 (R.over x))) (by rfl)
 
 /-- If a sheaf of `R`-modules `M` has a presentation, then `M` is quasi-coherent. -/
@@ -365,11 +357,9 @@ noncomputable def QuasicoherentData.bind {R : Sheaf J RingCat.{u}}
     (M : SheafOfModules.{u} R) {I : Type u}
     (X : I → C) (hX : J.CoversTop X) (D : Π i, QuasicoherentData (M.over (X i))) :
     M.QuasicoherentData where
-  I := Σ i, (D i).I
+  I := (i : I) × (D i).I
   X ij := ((D ij.1).X ij.2).left
-  coversTop Y := J.transitive (hX Y) _ fun Z f ⟨i, ⟨g⟩⟩ ↦
-      J.superset_covering ((Sieve.functorPushforward_ofObjects_le _ _ _).trans
-      (Sieve.ofObjects_mono fun i' ↦ by aesop)) ((D i).coversTop (.mk g))
+  coversTop := hX.over (fun i ↦ (D i).coversTop)
   presentation i :=
     letI e := pushforwardPushforwardEquivalence (Over.iteratedSliceEquiv ((D i.1).X i.2))
       (S := (R.over _).over _) (R := R.over _) (𝟙 _) (𝟙 _)

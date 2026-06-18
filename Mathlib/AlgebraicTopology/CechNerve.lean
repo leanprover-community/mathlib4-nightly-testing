@@ -286,8 +286,7 @@ def equivalenceRightToLeft (F : Arrow C) (X : CosimplicialObject.Augmented C)
         intro x y f
         dsimp
         ext
-        · dsimp
-          simp only [WidePushout.ι_desc_assoc, WidePushout.ι_desc]
+        · simp only [WidePushout.ι_desc_assoc, WidePushout.ι_desc]
           rw [Category.assoc, ← X.right.map_comp]
           rfl
         · simp [← NatTrans.naturality] }
@@ -321,7 +320,7 @@ def cechConerveEquiv (F : Arrow C) (X : CosimplicialObject.Augmented C) :
       rw [WidePushout.ι_desc]
       nth_rw 2 [← Category.comp_id A.right]
       congr 1
-      convert X.right.map_id _
+      convert! X.right.map_id _
       ext ⟨a, ha⟩
       simp
 

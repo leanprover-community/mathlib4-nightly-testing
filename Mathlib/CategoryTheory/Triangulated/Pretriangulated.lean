@@ -196,8 +196,8 @@ lemma complete_distinguished_triangle_morphism₁ (T₁ T₂ : Triangle C)
   · apply (shiftFunctor C (1 : ℤ)).map_injective
     dsimp at ha₂
     rw [neg_comp, comp_neg, neg_inj] at ha₂
-    simpa only [Functor.map_comp, Functor.map_preimage] using ha₂
-  · simpa only [Functor.map_preimage] using ha₁
+    simpa only [Functor.map_comp, Functor.map_preimage] using! ha₂
+  · simpa only [Functor.map_preimage] using! ha₁
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
@@ -349,7 +349,6 @@ lemma isZero₁_iff : IsZero T.obj₁ ↔ (T.mor₁ = 0 ∧ T.mor₃ = 0) := by
 
 lemma isZero₃_iff : IsZero T.obj₃ ↔ (T.mor₂ = 0 ∧ T.mor₃ = 0) := by
   refine (isZero₂_iff _ (rot_of_distTriang _ hT)).trans ?_
-  dsimp
   tauto
 
 lemma isZero₁_of_isZero₂₃ (h₂ : IsZero T.obj₂) (h₃ : IsZero T.obj₃) : IsZero T.obj₁ := by
@@ -742,7 +741,7 @@ def isoTriangleOfIso₁₃ (T₁ T₂ : Triangle C) (hT₁ : T₁ ∈ distTriang
   have h₄ := (shiftFunctorCompIsoId C (-1 : ℤ) 1 (by simp)).inv.naturality e₃.hom
   dsimp at h₁ h₂ h₃ h₄
   refine Triangle.isoMk _ _ e₁ (Triangle.π₃.mapIso e) e₃ ?_ ?_ comm
-  · convert e.hom.comm₂ using 2
+  · convert! e.hom.comm₂ using 2
   · simp [← cancel_mono ((shiftFunctorCompIsoId C (-1) 1 (neg_add_cancel 1)).inv.app T₂.obj₃),
       ← h₃, assoc, h₁, h₄]
 

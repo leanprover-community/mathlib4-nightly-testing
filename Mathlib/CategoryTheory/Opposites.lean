@@ -23,7 +23,6 @@ Unfortunately, because we do not have a definitional equality `op (op X) = X`,
 there are quite a few variations that are needed in practice.
 -/
 
-
 @[expose] public section
 
 universe v₁ v₂ u₁ u₂
@@ -311,6 +310,12 @@ set_option backward.defeqAttrib.useBackward true in
 protected def FullyFaithful.op {F : C ⥤ D} (hF : F.FullyFaithful) : F.op.FullyFaithful where
   preimage {X Y} f := .op <| hF.preimage f.unop
 
+set_option backward.defeqAttrib.useBackward true in
+/-- A functor is fully faithful when its opposite is fully faithful. -/
+protected def FullyFaithful.unop {F : Cᵒᵖ ⥤ Dᵒᵖ} (hF : F.FullyFaithful) :
+    F.unop.FullyFaithful where
+  preimage {X Y} f := (hF.preimage f.op).unop
+
 /-- If F is faithful then the `rightOp` of F is also faithful. -/
 instance rightOp_faithful {F : Cᵒᵖ ⥤ D} [Faithful F] : Faithful F.rightOp where
   map_injective h := Quiver.Hom.op_inj (map_injective F (Quiver.Hom.op_inj h))
@@ -463,7 +468,7 @@ we can take the "unopposite" of each component obtaining a natural transformatio
 protected def removeOp (α : F.op ⟶ G.op) : G ⟶ F where
   app X := (α.app (op X)).unop
   naturality X Y f :=
-    Quiver.Hom.op_inj <| by simpa only [Functor.op_map] using (α.naturality f.op).symm
+    Quiver.Hom.op_inj <| by simpa only [Functor.op_map] using! (α.naturality f.op).symm
 
 @[simp]
 theorem removeOp_id (F : C ⥤ D) : NatTrans.removeOp (𝟙 F.op) = 𝟙 F :=
@@ -475,7 +480,7 @@ component obtaining a natural transformation `G ⟶ F`. -/
 protected def removeUnop {F G : Cᵒᵖ ⥤ Dᵒᵖ} (α : F.unop ⟶ G.unop) : G ⟶ F where
   app X := (α.app (unop X)).op
   naturality X Y f :=
-    Quiver.Hom.unop_inj <| by simpa only [Functor.unop_map] using (α.naturality f.unop).symm
+    Quiver.Hom.unop_inj <| by simpa only [Functor.unop_map] using! (α.naturality f.unop).symm
 
 @[simp]
 theorem removeUnop_id (F : Cᵒᵖ ⥤ Dᵒᵖ) : NatTrans.removeUnop (𝟙 F.unop) = 𝟙 F :=
@@ -519,7 +524,7 @@ taking `op` of each component gives a natural transformation `G ⟶ F`.
 protected def removeLeftOp (α : F.leftOp ⟶ G.leftOp) : G ⟶ F where
   app X := (α.app (op X)).op
   naturality X Y f :=
-    Quiver.Hom.unop_inj <| by simpa only [Functor.leftOp_map] using (α.naturality f.op).symm
+    Quiver.Hom.unop_inj <| by simpa only [Functor.leftOp_map] using! (α.naturality f.op).symm
 
 @[simp]
 theorem removeLeftOp_id : NatTrans.removeLeftOp (𝟙 F.leftOp) = 𝟙 F :=
@@ -563,7 +568,7 @@ taking `unop` of each component gives a natural transformation `G ⟶ F`.
 protected def removeRightOp (α : F.rightOp ⟶ G.rightOp) : G ⟶ F where
   app X := (α.app X.unop).unop
   naturality X Y f :=
-    Quiver.Hom.op_inj <| by simpa only [Functor.rightOp_map] using (α.naturality f.unop).symm
+    Quiver.Hom.op_inj <| by simpa only [Functor.rightOp_map] using! (α.naturality f.unop).symm
 
 @[simp]
 theorem removeRightOp_id : NatTrans.removeRightOp (𝟙 F.rightOp) = 𝟙 F :=
@@ -769,6 +774,21 @@ lemma unop_associator {E E' : Type*} [Category* E] [Category* E']
   cat_disch
 
 end NatIso
+
+section
+
+variable {D : Type*} [Category* D] {F G : C ⥤ D}
+
+instance (α : F ⟶ G) [IsIso α] :
+    IsIso (NatTrans.op α) :=
+  (NatIso.op (asIso α)).isIso_hom
+
+@[push]
+lemma inv_op (α : F ⟶ G) [IsIso α] :
+    inv (NatTrans.op α) = NatTrans.op (inv α) :=
+  IsIso.inv_eq_of_hom_inv_id (by simp [← NatTrans.op_comp])
+
+end
 
 namespace Equivalence
 

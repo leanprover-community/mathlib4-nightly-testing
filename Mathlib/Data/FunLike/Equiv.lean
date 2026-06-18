@@ -34,7 +34,6 @@ instance instEquivLike : EquivLike (MyIso A B) A B where
 
 /-- Copy of a `MyIso` with a new `toFun` equal to the old one. Useful to fix definitional
 equalities. -/
-
 protected def copy (f : MyIso A B) (f' : A → B) (f_inv : B → A)
     (h₁ : f' = f) (h₂ : f_inv = f.invFun) : MyIso A B where
   toFun := f'
@@ -161,7 +160,7 @@ theorem inv_injective : Function.Injective (EquivLike.inv : E → β → α) := 
 
 instance (priority := 100) toFunLike : FunLike E α β where
   coe := (coe : E → α → β)
-  coe_injective' e g h :=
+  coe_injective e g h :=
     coe_injective' e g h ((left_inv e).eq_rightInverse (h.symm ▸ right_inv g))
 
 @[simp] theorem coe_apply {e : E} {a : α} : coe e a = e a := rfl

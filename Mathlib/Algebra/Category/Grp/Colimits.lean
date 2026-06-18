@@ -143,13 +143,12 @@ def quotUliftToQuot [DecidableEq J] : Quot (F ⋙ uliftFunctor.{u'}) →+ Quot F
   obtain ⟨j, j', u, a, rfl⟩ := hx
   simp
 
-set_option backward.isDefEq.respectTransparency false in
 lemma quotUliftToQuot_ι [DecidableEq J] (j : J) (x : (F ⋙ uliftFunctor.{u'}).obj j) :
     quotUliftToQuot F (Quot.ι _ j x) = Quot.ι F j x.down := by
   dsimp [quotUliftToQuot, Quot.ι]
   conv_lhs => erw [AddMonoidHom.comp_apply (QuotientAddGroup.mk' (Relations (F ⋙ uliftFunctor)))
     (DFinsupp.singleAddHom _ j), QuotientAddGroup.lift_mk']
-  simp only [ DFinsupp.singleAddHom_apply,
+  simp only [DFinsupp.singleAddHom_apply,
     DFinsupp.sumAddHom_single, AddMonoidHom.coe_comp, Function.comp_apply]
   rfl
 
@@ -259,7 +258,7 @@ theorem Quot.desc_colimitCocone [DecidableEq J] (F : J ⥤ AddCommGrpCat.{w}) [S
     Quot.desc F (colimitCocone F) = (Shrink.addEquiv (α := Quot F)).symm.toAddMonoidHom := by
   refine Quot.addMonoidHom_ext F (fun j x ↦ ?_)
   simpa only [colimitCocone_pt, AddEquiv.toAddMonoidHom_eq_coe, AddMonoidHom.coe_coe]
-    using Quot.ι_desc F (colimitCocone F) j x
+    using! Quot.ι_desc F (colimitCocone F) j x
 
 /-- (internal implementation) The fact that the candidate colimit cocone constructed in
 `colimitCocone` is the colimit.

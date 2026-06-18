@@ -119,9 +119,7 @@ instance isThin {X : C} : Quiver.IsThin (MonoOver X) := fun f g =>
     intro h₁ h₂
     apply InducedCategory.hom_ext
     apply Over.OverMorphism.ext
-    rw [← cancel_mono g.arrow]
-    erw [Over.w h₁.hom]
-    erw [Over.w h₂.hom]⟩
+    rw [← cancel_mono g.arrow, Over.w h₁.hom, Over.w h₂.hom]⟩
 
 @[reassoc]
 theorem w {f g : MonoOver X} (k : f ⟶ g) : k.hom.left ≫ g.arrow = f.arrow :=
@@ -463,7 +461,6 @@ def imageForgetAdj : image ⊣ forget X :=
     { homEquiv := fun f g =>
         { toFun := fun k => by
             apply Over.homMk (factorThruImage f.hom ≫ k.hom.left) _
-            change (factorThruImage f.hom ≫ k.hom.left) ≫ _ = f.hom
             rw [assoc, Over.w k.hom]
             apply image.fac
           invFun k :=

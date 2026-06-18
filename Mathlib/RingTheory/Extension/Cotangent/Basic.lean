@@ -39,7 +39,6 @@ apply them to infinitesimal smooth (or versal) extensions later.
 
 @[expose] public section
 
-
 open KaehlerDifferential Module MvPolynomial TensorProduct
 
 namespace Algebra
@@ -68,6 +67,12 @@ def cotangentComplex : P.Cotangent →ₗ[S] P.CotangentSpace :=
 @[simp]
 lemma cotangentComplex_mk (x) : P.cotangentComplex (.mk x) = 1 ⊗ₜ .D _ _ x :=
   rfl
+
+lemma Cotangent.mk_C_mem_ker_cotangentComplex {σ : Type*} (G : Generators R S σ)
+    {r : R} (hr : C r ∈ G.ker) :
+    Extension.Cotangent.mk ⟨C r, hr⟩ ∈ G.toExtension.cotangentComplex.ker := by
+  have : D R G.toExtension.Ring (C r) = 0 := Derivation.map_algebraMap ..
+  simp [this]
 
 section baseChange
 
@@ -224,7 +229,7 @@ lemma Hom.sub_aux (f g : Hom P P') (x y) :
         Function.comp_apply,
         ker, RingHom.mem_ker, map_sub, algebraMap_toRingHom,
         algebraMap_σ, sub_self, toAlgHom_apply]
-  convert this using 1
+  convert! this using 1
   simp only [map_mul]
   ring
 
@@ -435,6 +440,11 @@ def H1Cotangent.equiv {P₁ P₂ : Extension R S} (f₁ : P₁.Hom P₂) (f₂ :
     show (map f₁ ∘ₗ map f₂) x = LinearMap.id (R := S) x by
     rw [← Extension.H1Cotangent.map_id, eq_comm, map_eq _ (f₁.comp f₂),
       Extension.H1Cotangent.map_comp]; rfl
+
+omit [IsScalarTower R S S'] in
+lemma Cotangent.map_comp_h1Cotangentι (f : P.Hom P') :
+    Cotangent.map f ∘ₗ P.h1Cotangentι =
+      P'.h1Cotangentι.restrictScalars S ∘ₗ H1Cotangent.map f := rfl
 
 end Extension
 

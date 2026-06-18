@@ -48,8 +48,6 @@ comma, slice, coslice, over, under, arrow
 
 @[expose] public section
 
-
-
 namespace CategoryTheory
 
 open Category
@@ -66,6 +64,7 @@ variable {T' : Type u₆} [Category.{v₆} T']
 
 /-- The objects of the comma category are triples of an object `left : A`, an object
 `right : B` and a morphism `hom : L.obj left ⟶ R.obj right`. -/
+@[to_dual self (reorder := A B, 2 4, L R), wikidata Q1780005]
 structure Comma (L : A ⥤ T) (R : B ⥤ T) : Type max u₁ u₂ v₃ where
   /-- The left subobject -/
   left : A
@@ -73,6 +72,11 @@ structure Comma (L : A ⥤ T) (R : B ⥤ T) : Type max u₁ u₂ v₃ where
   right : B
   /-- A morphism from `L.obj left` to `R.obj right` -/
   hom : L.obj left ⟶ R.obj right
+
+set_option linter.translateOverwrite false
+
+attribute [to_dual existing right] Comma.left
+attribute [to_dual self] Comma.mk
 
 -- Satisfying the inhabited linter
 instance Comma.inhabited [Inhabited T] : Inhabited (Comma (𝟭 T) (𝟭 T)) where
@@ -86,13 +90,29 @@ variable {L : A ⥤ T} {R : B ⥤ T}
 /-- A morphism between two objects in the comma category is a commutative square connecting the
 morphisms coming from the two objects using morphisms in the image of the functors `L` and `R`.
 -/
-@[ext]
+@[ext, to_dual self (reorder := A B, 2 4, L R, X Y)]
 structure CommaMorphism (X Y : Comma L R) where
   /-- Morphism on left objects -/
   left : X.left ⟶ Y.left
   /-- Morphism on right objects -/
   right : X.right ⟶ Y.right
   w : L.map left ≫ Y.hom = X.hom ≫ R.map right := by cat_disch
+
+attribute [to_dual existing right] CommaMorphism.left
+
+@[to_dual existing w]
+theorem CommaMorphism.w' {X Y : Comma R L} (self : CommaMorphism Y X) :
+    Y.hom ≫ L.map self.right = R.map self.left ≫ X.hom :=
+  self.w.symm
+
+/-- `CommaMorphism.mk'` is the dual of `CommaMorphism.mk`, which we need for `to_dual`.
+Please avoid using this directly. -/
+@[to_dual existing mk]
+abbrev CommaMorphism.mk' {X Y : Comma R L}
+    (right : Y.right ⟶ X.right) (left : Y.left ⟶ X.left)
+    (w : Y.hom ≫ L.map right = R.map left ≫ X.hom) :
+    CommaMorphism Y X where
+  left; right; w := w.symm
 
 -- Satisfying the inhabited linter
 instance CommaMorphism.inhabited [Inhabited (Comma L R)] :
@@ -101,6 +121,7 @@ instance CommaMorphism.inhabited [Inhabited (Comma L R)] :
 
 attribute [reassoc (attr := simp)] CommaMorphism.w
 
+@[to_dual self]
 instance commaCategory : Category (Comma L R) where
   Hom X Y := CommaMorphism X Y
   id X :=
@@ -116,24 +137,16 @@ section
 
 variable {X Y Z : Comma L R} {f : X ⟶ Y} {g : Y ⟶ Z}
 
-@[ext]
+@[ext, to_dual self (reorder := A B, 2 4, L R, X Y, h₁ h₂)]
 lemma hom_ext (f g : X ⟶ Y) (h₁ : f.left = g.left) (h₂ : f.right = g.right) : f = g :=
   CommaMorphism.ext h₁ h₂
 
-@[simp]
+@[to_dual (attr := simp) id_right]
 theorem id_left : (𝟙 X : CommaMorphism X X).left = 𝟙 X.left :=
   rfl
 
-@[simp]
-theorem id_right : (𝟙 X : CommaMorphism X X).right = 𝟙 X.right :=
-  rfl
-
-@[simp]
+@[to_dual (attr := simp) comp_right]
 theorem comp_left : (f ≫ g).left = f.left ≫ g.left :=
-  rfl
-
-@[simp]
-theorem comp_right : (f ≫ g).right = f.right ≫ g.right :=
   rfl
 
 end
@@ -269,10 +282,14 @@ instance full_map [F.Faithful] [F₁.Full] [F₂.Full] [IsIso α] [IsIso β] : (
       right := F₂.preimage φ.right
       w := F.map_injective (by
         rw [← cancel_mono (β.app _), ← cancel_epi (α.app _), F.map_comp, F.map_comp, assoc, assoc]
-        erw [← α.naturality_assoc, β.naturality]
-        dsimp
-        rw [F₁.map_preimage, F₂.map_preimage]
-        simpa using φ.w) }, by cat_disch⟩
+        calc
+        _ = (F₁ ⋙ L').map (F₁.preimage φ.left) ≫ α.app Y.left ≫ F.map Y.hom ≫ β.app Y.right := by
+          rw [← Functor.comp_map, ← α.naturality_assoc]
+        _ = α.app X.left ≫ F.map X.hom ≫ β.app X.right ≫ (F₂ ⋙ R').map (F₂.preimage φ.right) := by
+          simp only [Functor.comp_map, Functor.map_preimage, ← map_obj_hom α β Y, φ.w,
+            map_obj_hom α β X, assoc]
+        _ = _ := by rw [← Functor.comp_map, β.naturality] )},
+      by cat_disch⟩
 
 set_option backward.defeqAttrib.useBackward true in
 instance essSurj_map [F₁.EssSurj] [F₂.EssSurj] [F.Full] [IsIso α] [IsIso β] :
@@ -420,7 +437,7 @@ def preLeft (F : C ⥤ A) (L : A ⥤ T) (R : B ⥤ T) : Comma (F ⋙ L) R ⥤ Co
   map f :=
     { left := F.map f.left
       right := f.right
-      w := by simpa using f.w }
+      w := by simpa using! f.w }
 
 set_option backward.defeqAttrib.useBackward true in
 /-- `Comma.preLeft` is a particular case of `Comma.map`,
@@ -583,7 +600,7 @@ def opFunctorCompSnd : (opFunctor L R).leftOp ⋙ snd _ _ ≅ (fst _ _).op :=
 @[simps]
 def unopFunctor : Comma L.op R.op ⥤ (Comma R L)ᵒᵖ where
   obj X := ⟨X.right.unop, X.left.unop, X.hom.unop⟩
-  map f := ⟨f.right.unop, f.left.unop, Quiver.Hom.op_inj (by simpa using f.w.symm)⟩
+  map f := ⟨f.right.unop, f.left.unop, Quiver.Hom.op_inj (by simpa using! f.w.symm)⟩
 
 /-- Composing `unopFunctor L R` with `(fst L R).op` is isomorphic to `snd L.op R.op`. -/
 @[simps!]
