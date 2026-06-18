@@ -5,6 +5,7 @@ Authors: Mario Carneiro, Johannes Hölzl
 -/
 module
 
+public import Batteries.Tactic.MkIff
 public import Mathlib.Data.List.Basic
 public import Mathlib.Logic.Relator
 
