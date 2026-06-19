@@ -286,6 +286,7 @@ theorem mem_adjoin_map_integralClosure_of_isStandardEtale [Algebra.IsStandardEta
   have 𝓟 := Classical.ofNonempty (α := StandardEtalePresentation R S)
   -- Since `a` is integral over `S = (R[X]/f)[1/g]`, `gⁿ • a` is `R`-integral for `n` large enough.
   obtain ⟨n, hx⟩ : ∃ n, ∀ m, IsIntegral R ((aeval 𝓟.x 𝓟.g) ^ (n + m) • a) := by
+    set_option backward.isDefEq.projField false in
     let e := 𝓟.equivRing.trans 𝓟.equivAwayAdjoinRoot
     algebraize [(e.symm.toAlgHom.comp (IsScalarTower.toAlgHom R (AdjoinRoot 𝓟.f) _)).toRingHom]
     have := IsLocalization.isLocalization_of_algEquiv (R := AdjoinRoot 𝓟.f) (.powers (.mk _ 𝓟.g))

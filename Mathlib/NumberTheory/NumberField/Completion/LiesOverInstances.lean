@@ -32,6 +32,7 @@ noncomputable scoped instance : Algebra v.Completion w.Completion :=
 
 scoped instance : IsScalarTower K v.Completion w.Completion :=
   .of_algebraMap_eq fun x ↦ by
+    set_option backward.isDefEq.projField false in
     simp_rw [RingHom.algebraMap_toAlgebra, UniformSpace.Completion.algebraMap_def,
       Isometry.mapRingHom_coe]
     simp [WithAbs.algebraMap_left_apply, WithAbs.algebraMap_right_apply]

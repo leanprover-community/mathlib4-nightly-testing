@@ -34,6 +34,7 @@ instance [Algebra.IsSeparable (A ⧸ p) (B ⧸ q)] :
     (.ofBijective _ p.bijective_algebraMap_quotient_residueField)
     (.ofBijective _ q.bijective_algebraMap_quotient_residueField) ?_
   ext x
+  set_option backward.isDefEq.projField false in
   simp [RingHom.algebraMap_toAlgebra, ← IsScalarTower.algebraMap_apply]
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -49,6 +50,7 @@ instance [Algebra.IsSeparable p.ResidueField q.ResidueField] :
   apply (RingEquiv.ofBijective _ q.bijective_algebraMap_quotient_residueField).injective
   simp only [RingHom.coe_comp, RingHom.coe_coe, Function.comp_apply, RingEquiv.symm_apply_apply,
     RingEquiv.apply_symm_apply]
+  set_option backward.isDefEq.projField false in
   simp [RingHom.algebraMap_toAlgebra, ← IsScalarTower.algebraMap_apply]
 
 variable {p q} in
@@ -77,6 +79,7 @@ instance [Algebra.IsIntegral A B] :
   haveI : IsScalarTower (A ⧸ p) p.ResidueField q.ResidueField := by
     refine .of_algebraMap_eq fun x ↦ ?_
     obtain ⟨x, rfl⟩ := Ideal.Quotient.mk_surjective x
+    set_option backward.isDefEq.projField false in
     simp [RingHom.algebraMap_toAlgebra, ← IsScalarTower.algebraMap_apply]
   refine .extendScalars (Ideal.injective_algebraMap_quotient_residueField p)
 

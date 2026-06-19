@@ -120,10 +120,10 @@ theorem spanIntNorm_localization (I : Ideal S) (M : Submonoid R) (hM : M ≤ R�
         (FaithfulSMul.algebraMap_injective _ _)))
   algebraize [f, g, (algebraMap K L).comp f]
   have : IsScalarTower R Rₘ K := IsScalarTower.of_algebraMap_eq'
-    (by rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, RingHomCompTriple.comp_eq])
+    (by set_option backward.isDefEq.projField false in rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, RingHomCompTriple.comp_eq])
   let _ := IsFractionRing.isFractionRing_of_isDomain_of_isLocalization M Rₘ K
   have : IsScalarTower S Sₘ L := IsScalarTower.of_algebraMap_eq'
-    (by rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, RingHomCompTriple.comp_eq])
+    (by set_option backward.isDefEq.projField false in rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, RingHomCompTriple.comp_eq])
   have : IsScalarTower Rₘ Sₘ L := by
     apply IsScalarTower.of_algebraMap_eq'
     apply IsLocalization.ringHom_ext M

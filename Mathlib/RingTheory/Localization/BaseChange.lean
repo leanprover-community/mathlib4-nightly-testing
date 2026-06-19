@@ -376,7 +376,8 @@ lemma IsLocalization.tensorProduct_tensorProduct_right (M : Submonoid A)
   have : IsScalarTower A (S ⊗[R] A) (S ⊗[R] B) := .of_algebraMap_eq' H.symm
   have : IsScalarTower R A (S ⊗[R] B) :=
     .of_algebraMap_eq' <| by
-      rw [Algebra.compHom_algebraMap_eq, RingHom.comp_assoc, ← IsScalarTower.algebraMap_eq,
+      conv => rhs; rw [Algebra.compHom_algebraMap_eq]
+      rw [RingHom.comp_assoc, ← IsScalarTower.algebraMap_eq,
         IsScalarTower.algebraMap_eq R B]
   have : IsScalarTower R (S ⊗[R] A) (S ⊗[R] B) := .to₁₃₄ _ A _ _
   have : IsScalarTower A B (S ⊗[R] B) := .of_algebraMap_eq' rfl

@@ -197,6 +197,7 @@ lemma exists_isIntegral_leadingCoeff_pow_smul_sub_of_isIntegralElem_of_mul_mem_r
   let S' := Localization.Away (algebraMap R S a)
   letI : Algebra R' S' := (Localization.awayMap (algebraMap R S) a).toAlgebra
   have : IsScalarTower R R' S' := .of_algebraMap_eq (by
+    set_option backward.isDefEq.projField false in
     simp +zetaDelta [RingHom.algebraMap_toAlgebra, IsLocalization.Away.map, ← algebraMap_apply R S])
   have ha : IsUnit (algebraMap R R' a) := IsLocalization.Away.algebraMap_isUnit a
   have H : (aeval ((algebraMap S S') (φ X))).toRingHom.comp (mapRingHom (algebraMap R R')) =

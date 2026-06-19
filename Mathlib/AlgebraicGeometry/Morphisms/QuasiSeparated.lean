@@ -458,7 +458,8 @@ instance isIso_ΓSpec_adjunction_unit_app_basicOpen
   · refine isLocalization_basicOpen_of_qcqs ?_ ?_ _
     · exact isCompact_univ
     · exact isQuasiSeparated_univ
-  · simp [RingHom.algebraMap_toAlgebra, ← CommRingCat.hom_comp, RingHom.algebraMap_toAlgebra,
+  · set_option backward.isDefEq.projField false in
+    simp [RingHom.algebraMap_toAlgebra, ← CommRingCat.hom_comp, RingHom.algebraMap_toAlgebra,
       ← Functor.map_comp]
 
 end AlgebraicGeometry
