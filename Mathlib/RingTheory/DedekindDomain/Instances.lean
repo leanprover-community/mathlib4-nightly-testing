@@ -132,10 +132,10 @@ example : instAlgebraLocalizationAtPrime P = instAlgebraAtPrimeFractionRing (S :
 
 instance : IsScalarTower Rₚ K L :=
   of_algebraMap_eq' (ringHom_ext P.primeCompl
-    (RingHom.ext fun x ↦ by simp [RingHom.algebraMap_toAlgebra]))
+    (RingHom.ext fun x ↦ by set_option backward.isDefEq.projField false in simp [RingHom.algebraMap_toAlgebra]))
 
 instance : IsScalarTower R Rₚ K :=
-  of_algebraMap_eq' (RingHom.ext fun x ↦ by simp [RingHom.algebraMap_toAlgebra])
+  of_algebraMap_eq' (RingHom.ext fun x ↦ by set_option backward.isDefEq.projField false in simp [RingHom.algebraMap_toAlgebra])
 
 instance : IsScalarTower Rₚ Sₚ L := by
   refine IsScalarTower.of_algebraMap_eq' <| IsLocalization.ringHom_ext P.primeCompl ?_
@@ -182,7 +182,7 @@ attribute [local instance] Localization.AtPrime.algebra_localization_localizatio
 
 instance : IsScalarTower S Sₚ Tₚ :=
   IsScalarTower.of_algebraMap_eq' <|
-    by rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, ← IsScalarTower.algebraMap_eq]
+    by set_option backward.isDefEq.projField false in rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, ← IsScalarTower.algebraMap_eq]
 
 instance : IsScalarTower R Sₚ Tₚ :=
   IsScalarTower.of_algebraMap_eq' <|

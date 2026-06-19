@@ -382,7 +382,7 @@ lemma isIntegrallyClosed_of_isLocalization [IsIntegrallyClosed R] [IsDomain R] (
   let g : S →+* K := IsLocalization.map _ (T := R⁰) (RingHom.id R) hM
   letI := g.toAlgebra
   have : IsScalarTower R S K := IsScalarTower.of_algebraMap_eq'
-    (by rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, RingHomCompTriple.comp_eq])
+    (by set_option backward.isDefEq.projField false in rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, RingHomCompTriple.comp_eq])
   have := IsFractionRing.isFractionRing_of_isDomain_of_isLocalization M S K
   refine (isIntegrallyClosed_iff_isIntegralClosure (K := K)).mpr
     ⟨IsFractionRing.injective _ _, fun {x} ↦ ⟨?_, fun e ↦ e.choose_spec ▸ isIntegral_algebraMap⟩⟩

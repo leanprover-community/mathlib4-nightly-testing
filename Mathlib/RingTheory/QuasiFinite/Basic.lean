@@ -321,7 +321,7 @@ lemma of_isIntegral_of_finiteType [Algebra.IsIntegral R S] [Algebra.FiniteType R
   let : MulAction A (Localization.Away sA) := Algebra.toModule.toDistribMulAction.toMulAction
   have : IsScalarTower R A (Localization.Away sA) := OreLocalization.instIsScalarTower
   have : IsScalarTower A (Localization.Away sA) T :=
-    .of_algebraMap_eq (by simp [f, RingHom.algebraMap_toAlgebra, A])
+    .of_algebraMap_eq (by set_option backward.isDefEq.projField false in simp [f, RingHom.algebraMap_toAlgebra, A])
   have : IsScalarTower R (Localization.Away sA) T := .to₁₃₄ R A (Localization.Away sA) T
   have : Algebra.IsIntegral (Localization.Away sA) T := by
     refine ⟨fun x ↦ ?_⟩

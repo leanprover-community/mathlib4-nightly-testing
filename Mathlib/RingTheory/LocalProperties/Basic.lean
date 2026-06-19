@@ -229,6 +229,7 @@ lemma RingHom.OfLocalizationSpan.mk (hP : RingHom.RespectsIso P)
         (algebraMap (Localization.Away r) (Localization.Away (algebraMap R S r))) := by
     apply IsLocalization.ringHom_ext (Submonoid.powers r)
     ext
+    set_option backward.isDefEq.projField false in
     simp [RingHom.algebraMap_toAlgebra, Localization.awayMap, IsLocalization.Away.map,
       Algebra.TensorProduct.tmul_one_eq_one_tmul, RingHom.algebraMap_toAlgebra]
   rw [this]

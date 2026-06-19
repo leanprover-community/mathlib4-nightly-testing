@@ -1039,6 +1039,7 @@ theorem coe_X_compare :
   rfl
 
 theorem algebraMap_apply (a : K) : algebraMap K K⸨X⸩ a = HahnSeries.C a := by
+  set_option backward.isDefEq.projField false in
   simp [RingHom.algebraMap_toAlgebra]
 
 instance : Algebra K (RatFuncAdicCompl K) :=
@@ -1047,7 +1048,7 @@ instance : Algebra K (RatFuncAdicCompl K) :=
 /-- The algebra equivalence between `K⸨X⸩` and the `X`-adic completion of `RatFunc X` -/
 def LaurentSeriesAlgEquiv : K⸨X⸩ ≃ₐ[K] RatFuncAdicCompl K :=
   AlgEquiv.ofRingEquiv (f := LaurentSeriesRingEquiv K)
-    (fun a ↦ by simp [RingHom.algebraMap_toAlgebra])
+    (fun a ↦ by set_option backward.isDefEq.projField false in simp [RingHom.algebraMap_toAlgebra])
 
 open Filter WithZero
 

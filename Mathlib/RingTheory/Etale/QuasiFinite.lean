@@ -346,6 +346,7 @@ lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq_aux₂
     Algebra.TensorProduct.map (Algebra.ofId _ _) (.id _ _)
   algebraize [φ.toRingHom]
   have : IsLocalization.Away (f ⊗ₜ 1 : R' ⊗[R] S) (Localization.Away f ⊗[R] S) := by
+    set_option backward.isDefEq.projField false in
     have : .powers (f ⊗ₜ[R] 1) = Algebra.algebraMapSubmonoid (R' ⊗[R] S) (.powers f) := by simp
     rw [IsLocalization.Away, this]
     refine IsLocalization.tensorProduct_tensorProduct _ _ _ _ ?_
@@ -401,6 +402,7 @@ lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq
   let := φ.toAlgebra
   let := IsScalarTower.of_algebraMap_eq' φ.comp_algebraMap.symm
   have : IsLocalization.Away (R := R' ⊗[R] S) (f ⊗ₜ 1) (Localization.Away f ⊗[R] S) := by
+    set_option backward.isDefEq.projField false in
     have : .powers (f ⊗ₜ[R] 1) = Algebra.algebraMapSubmonoid (R' ⊗[R] S) (.powers f) := by simp
     rw [IsLocalization.Away, this]
     refine IsLocalization.tensorProduct_tensorProduct _ _ _ _ ?_
@@ -420,7 +422,8 @@ lemma Algebra.exists_etale_isIdempotentElem_forall_liesOver_eq
   refine ⟨Localization.Away f, inferInstance, inferInstance, inferInstance, Pf, inferInstance,
     .trans _ P _, Algebra.TensorProduct.map (Algebra.ofId _ _) (.id _ _) e,
     he.map _, P'f, ‹_›, ‹_›, ?_, ?_, ?_, hf, ?_⟩
-  · rw [← hP'q, P'f.over_def P', Ideal.under, Ideal.comap_comap]
+  · set_option backward.isDefEq.projField false in
+    rw [← hP'q, P'f.over_def P', Ideal.under, Ideal.comap_comap]
     congr
     ext; simp [RingHom.algebraMap_toAlgebra, φ]
   · change e ∉ P'f.under _

@@ -260,11 +260,13 @@ lemma locally_stableUnderCompositionWithLocalizationAwayTarget
     have : (algebraMap (Localization.Away a) (Localization.Away (algebraMap S T a))).comp
         (algebraMap S (Localization.Away a)) =
         (algebraMap T (Localization.Away (algebraMap S T a))).comp (algebraMap S T) := by
+      set_option backward.isDefEq.projField false in
       simp [algebraMap_toAlgebra, IsLocalization.Away.map]
     rw [← comp_assoc, ← this, comp_assoc]
     haveI : IsScalarTower S (Localization.Away a) (Localization.Away ((algebraMap S T) a)) := by
       apply IsScalarTower.of_algebraMap_eq
       intro x
+      set_option backward.isDefEq.projField false in
       simp [algebraMap_toAlgebra, IsLocalization.Away.map, ← IsScalarTower.algebraMap_apply]
     haveI : IsLocalization.Away (algebraMap S (Localization.Away a) t)
         (Localization.Away (algebraMap S T a)) :=

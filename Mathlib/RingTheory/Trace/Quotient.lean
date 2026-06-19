@@ -95,7 +95,7 @@ lemma Algebra.trace_quotient_eq_of_isDedekindDomain (x) [IsDedekindDomain R] [Is
   let Sₚ := Localization (Algebra.algebraMapSubmonoid S p.primeCompl)
   letI : Algebra Rₚ Sₚ := localizationAlgebra p.primeCompl S
   haveI : IsScalarTower R Rₚ Sₚ := IsScalarTower.of_algebraMap_eq'
-    (by rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, ← IsScalarTower.algebraMap_eq])
+    (by set_option backward.isDefEq.projField false in rw [RingHom.algebraMap_toAlgebra, IsLocalization.map_comp, ← IsScalarTower.algebraMap_eq])
   haveI : IsLocalization (Submonoid.map (algebraMap R S) (Ideal.primeCompl p)) Sₚ :=
     inferInstanceAs (IsLocalization (Algebra.algebraMapSubmonoid S p.primeCompl) Sₚ)
   have e : Algebra.algebraMapSubmonoid S p.primeCompl ≤ S⁰ :=
