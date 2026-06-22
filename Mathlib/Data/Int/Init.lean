@@ -9,6 +9,7 @@ public import Batteries.Logic
 public import Mathlib.Data.Int.Notation
 public import Mathlib.Data.Nat.Notation
 public import Mathlib.Tactic.DepRewrite
+import Batteries.Tactic.Alias
 
 /-!
 # Basic operations on the integers

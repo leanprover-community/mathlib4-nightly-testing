@@ -9,6 +9,7 @@ public import Batteries.Data.Nat.Lemmas
 public import Batteries.Util.LibraryNote
 public import Mathlib.Data.Int.Notation
 public import Mathlib.Data.Nat.Notation
+import Batteries.Tactic.Alias
 
 /-!
 # Basic operations on the natural numbers
