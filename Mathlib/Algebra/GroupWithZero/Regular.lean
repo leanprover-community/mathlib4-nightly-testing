@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Algebra.GroupWithZero.Defs
 public import Mathlib.Tactic.Push
+import Batteries.Tactic.Alias
 
 /-!
 # Results about `IsRegular` and `0`

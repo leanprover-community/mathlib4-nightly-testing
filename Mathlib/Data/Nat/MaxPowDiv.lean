@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Logic.Basic
 import Mathlib.Data.Nat.Notation
+import Batteries.Tactic.Alias
 
 /-!
 # The maximal power of one natural number dividing another

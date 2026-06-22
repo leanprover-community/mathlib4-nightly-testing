@@ -9,6 +9,7 @@ public import Mathlib.Logic.Basic
 public import Mathlib.Tactic.Convert
 public import Mathlib.Tactic.SplitIfs
 public import Mathlib.Tactic.Tauto
+import Batteries.Tactic.Alias
 
 /-!
 # More basic logic properties

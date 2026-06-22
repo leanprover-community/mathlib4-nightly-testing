@@ -8,6 +8,7 @@ module
 
 public import Mathlib.Data.List.Defs
 public import Mathlib.Logic.Basic
+import Batteries.Tactic.Alias
 
 /-! # getD and getI
 
