@@ -390,7 +390,7 @@ lemma val_posSubmonoid_ne_zero (x : posSubmonoid R) : (x : R) ≠ 0 := by
 
 variable (R) in
 /-- The setoid used to construct `ValueGroupWithZero R`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def valueSetoid : Setoid (R × posSubmonoid R) where
   r := fun (x, s) (y, t) => x * t ≤ᵥ y * s ∧ y * s ≤ᵥ x * t
   iseqv := {
@@ -755,7 +755,7 @@ lemma ValueGroupWithZero.mk_eq_div (r : R) (s : posSubmonoid R) :
   simp [valuation, mk_eq_mk]
 
 /-- Construct a valuative relation on a ring using a valuation. -/
-@[implicit_reducible]
+@[instance_reducible]
 def ofValuation
     {S Γ : Type*} [Ring S]
     [LinearOrderedCommGroupWithZero Γ]
@@ -1333,7 +1333,7 @@ lemma leftInverse_embedding_orderMonoidIso : Function.LeftInverse embedding
   embedding_orderMonoidIso_valuation_eq
 
 /-- The isomorphism between `ValueGroupWithZero R` and `ValueGroup₀ (valuation R)`. -/
-@[deprecated "use ValueGroupWithZero.embed (valuation R) instead" (since := "2026-03-17")]
+@[deprecated "use ValueGroupWithZero.orderMonoidIso instead" (since := "2026-03-17")]
 def valueGroupWithZero_equiv_valueGroup₀ := orderMonoidIso (valuation R)
 
 end ValueGroupWithZero
