@@ -249,7 +249,7 @@ theorem mem_sSup {Us : Set (Opens α)} {x : α} : x ∈ sSup Us ↔ ∃ u ∈ Us
   simp_rw [sSup_eq_iSup, mem_iSup, exists_prop]
 
 /-- Open sets in a topological space form a frame. -/
-@[implicit_reducible]
+@[instance_reducible]
 def frameMinimalAxioms : Frame.MinimalAxioms (Opens α) where
   inf_sSup_le_iSup_inf a s :=
     (ext <| by simp only [coe_inf, coe_iSup, coe_sSup, Set.inter_iUnion₂]).le
@@ -411,6 +411,7 @@ def comap (f : C(α, β)) : FrameHom (Opens β) (Opens α) where
 theorem comap_id : comap (ContinuousMap.id α) = FrameHom.id _ :=
   FrameHom.ext fun _ => ext rfl
 
+@[gcongr]
 theorem comap_mono (f : C(α, β)) {s t : Opens β} (h : s ≤ t) : comap f s ≤ comap f t :=
   OrderHomClass.mono (comap f) h
 

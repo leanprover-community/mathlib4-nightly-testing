@@ -271,7 +271,8 @@ theorem norm_root_le_spectralValue {f : AlgebraNorm K L} (hf_pm : IsPowMul f)
       set g := fun i : ℕ ↦ p.coeff i • x ^ i
       obtain ⟨m, hm_in, hm⟩ : ∃ (m : ℕ) (_ : 0 < p.natDegree → m < p.natDegree),
           f ((Finset.range p.natDegree).sum g) ≤ f (g m) := by
-        obtain ⟨m, hm, h⟩ := IsNonarchimedean.finset_image_add hf_na g (Finset.range p.natDegree)
+        obtain ⟨m, hm, h⟩ := IsNonarchimedean.finset_image_add (map_zero _) (apply_nonneg _) hf_na g
+          (Finset.range p.natDegree)
         rw [Finset.nonempty_range_iff, ← zero_lt_iff, Finset.mem_range] at hm
         exact ⟨m, hm, h⟩
       exact lt_of_le_of_lt hm (hn' m (hm_in h_deg))
@@ -846,7 +847,7 @@ namespace spectralNorm
 variable (K L)
 
 /-- `L` with the spectral norm is a `NormedField`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def normedField : NormedField L :=
   { (inferInstance : Field L) with
     norm x := (spectralNorm K L x : ℝ)
@@ -865,7 +866,7 @@ def normedField : NormedField L :=
     edist_dist x y := by rw [ENNReal.ofReal_eq_coe_nnreal] }
 
 /-- `L` with the spectral norm is a `NontriviallyNormedField`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def nontriviallyNormedField : NontriviallyNormedField L where
   __ := spectralNorm.normedField K L
   non_trivial :=
@@ -873,25 +874,25 @@ def nontriviallyNormedField : NontriviallyNormedField L where
     ⟨algebraMap K L x, hx.trans_eq <| (spectralNorm_extends _).symm⟩
 
 /-- `L` with the spectral norm is a `SeminormedRing`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def seminormedRing : SeminormedRing L := by
   letI : NormedField L := normedField K L
   infer_instance
 
 /-- `L` with the spectral norm is a `NormedAddCommGroup`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def normedAddCommGroup : NormedAddCommGroup L := by
   haveI : NormedField L := normedField K L
   infer_instance
 
 /-- `L` with the spectral norm is a `SeminormedAddCommGroup`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def seminormedAddCommGroup : SeminormedAddCommGroup L := by
   have : NormedField L := normedField K L
   infer_instance
 
 /-- `L` with the spectral norm is a `NormedSpace` over `K`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def normedSpace : @NormedSpace K L _ (seminormedAddCommGroup K L) :=
   letI _ := seminormedAddCommGroup K L
   { (inferInstance : Module K L) with
@@ -900,7 +901,7 @@ def normedSpace : @NormedSpace K L _ (seminormedAddCommGroup K L) :=
       exact le_of_eq (map_smul_eq_mul _ _ _) }
 
 /-- `L` with the spectral norm is a `NormedAlgebra` over `K`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def normedAlgebra :
     @NormedAlgebra K L _ (seminormedRing K L) :=
   letI _ := normedField K L
@@ -908,7 +909,7 @@ def normedAlgebra :
 
 /-- `L` with the spectral norm is a `NormedAlgebra` over any intermediate `E`
 that is a normed algebra over `K`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def normedAlgebra' (E L : Type*) [Field L] [Algebra K L] [Algebra.IsAlgebraic K L] [NormedField E]
     [NormedAlgebra K E] [Algebra E L] [IsScalarTower K E L] :
     @NormedAlgebra E L _ (seminormedRing K L) :=
@@ -923,11 +924,11 @@ def normedAlgebra' (E L : Type*) [Field L] [Algebra K L] [Algebra.IsAlgebraic K 
       exact Or.inl <| (spectralNorm.eq_of_tower _).symm }
 
 /-- The metric space structure on `L` induced by the spectral norm. -/
-@[implicit_reducible]
+@[instance_reducible]
 def metricSpace : MetricSpace L := (normedField K L).toMetricSpace
 
 /-- The uniform space structure on `L` induced by the spectral norm. -/
-@[implicit_reducible]
+@[instance_reducible]
 def uniformSpace : UniformSpace L := (metricSpace K L).toUniformSpace
 
 /-- If `L/K` is finite dimensional, then `L` is a complete space with respect to topology induced

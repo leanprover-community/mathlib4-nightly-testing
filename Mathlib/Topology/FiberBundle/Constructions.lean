@@ -263,7 +263,7 @@ instance [∀ x : B, TopologicalSpace (E x)] : ∀ x : B', TopologicalSpace ((f 
 
 variable [TopologicalSpace B'] [TopologicalSpace (TotalSpace F E)]
 
--- adding `@[implicit_reducible]` causes downstream breakage
+-- adding `@[instance_reducible]` causes downstream breakage
 set_option warn.classDefReducibility false in
 /-- Definition of `Pullback.TotalSpace.topologicalSpace`, which we make irreducible. -/
 irreducible_def pullbackTopology : TopologicalSpace (TotalSpace F (f *ᵖ E)) :=
@@ -308,7 +308,7 @@ variable [∀ _b, Zero (E _b)] {K : Type U} [FunLike K B' B] [ContinuousMapClass
 noncomputable def Bundle.Trivialization.pullback (e : Trivialization F (π F E)) (f : K) :
     Trivialization F (π F ((f : B' → B) *ᵖ E)) where
   toFun z := (z.proj, (e (Pullback.lift f z)).2)
-  invFun y := @TotalSpace.mk _ F (f *ᵖ E) y.1 (e.symm (f y.1) y.2)
+  invFun y := TotalSpace.mk' F y.1 (e.symm (f y.1) y.2)
   source := Pullback.lift f ⁻¹' e.source
   baseSet := f ⁻¹' e.baseSet
   target := (f ⁻¹' e.baseSet) ×ˢ univ
