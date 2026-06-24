@@ -34,7 +34,6 @@ from the file `Mathlib/RingTheory/Extension/Cotangent/Basic.lean`.
 
 @[expose] public section
 
-
 open Module
 
 universe w' t w u v
@@ -67,7 +66,6 @@ bijections on the middle and on the right. Then, the exactness of the first
 sequence shall follow from the exactness of the second which is
 `Algebra.Extension.exact_cotangentComplex_toKaehler`. -/
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Same as `comm₂₃` below, but here we have not yet constructed `differentialsSolution`. -/
 lemma comm₂₃' : pres.toExtension.toKaehler.comp pres.cotangentSpaceBasis.repr.symm.toLinearMap =
     Finsupp.linearCombination S (fun g ↦ D _ _ (pres.val g)) := by
@@ -143,7 +141,7 @@ noncomputable def differentialsSolution :
     pres.differentialsRelations.Solution Ω[S⁄R] where
   var g := D _ _ (pres.val g)
   linearCombination_var_relation r := by
-    simp only [ LinearMap.coe_comp, LinearEquiv.coe_coe,
+    simp only [LinearMap.coe_comp, LinearEquiv.coe_coe,
       Function.comp_apply, ← comm₂₃', ← comm₁₂_single]
     apply DFunLike.congr_fun (Function.Exact.linearMap_comp_eq_zero
       (pres.toExtension.exact_cotangentComplex_toKaehler))

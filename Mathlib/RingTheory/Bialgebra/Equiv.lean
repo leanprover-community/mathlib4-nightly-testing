@@ -124,7 +124,7 @@ instance : EquivLike (A ≃ₐc[R] B) A B where
 
 instance : FunLike (A ≃ₐc[R] B) A B where
   coe := DFunLike.coe
-  coe_injective' := DFunLike.coe_injective
+  coe_injective := DFunLike.coe_injective
 
 instance : BialgEquivClass (A ≃ₐc[R] B) R A B where
   map_add := (·.map_add')
@@ -181,6 +181,7 @@ theorem coe_toAlgEquiv : ⇑(e : A ≃ₐ[R] B) = e :=
 theorem toCoalgEquiv_toCoalgHom : ((e : A ≃ₐc[R] B) : A →ₗc[R] B) = (e : A →ₐc[R] B) :=
   rfl
 
+@[deprecated "Now a syntactic equality" (since := "2026-04-30"), nolint synTaut]
 theorem toBialgHom_toAlgHom : ((e : A →ₐc[R] B) : A →ₐ[R] B) = e := rfl
 
 section

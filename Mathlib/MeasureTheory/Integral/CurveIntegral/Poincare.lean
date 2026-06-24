@@ -13,6 +13,8 @@ public import Mathlib.MeasureTheory.Integral.CurveIntegral.Basic
 public import Mathlib.MeasureTheory.Integral.DivergenceTheorem
 public import Mathlib.Topology.Homotopy.Affine
 
+import Mathlib.Analysis.Calculus.AddTorsor.AffineMap
+
 /-!
 # Poincaré lemma for 1-forms
 
@@ -310,7 +312,7 @@ theorem curveIntegral_segment_add_eq_of_hasFDerivWithinAt_symmetric (hs : Convex
     simp [φ, ha, hb, hc, hs.lineMap_mem]
   have := φ.curveIntegral_add_curveIntegral_eq_of_hasFDerivWithinAt (t := range φ) (ω := ω)
     (dω := dω) ?_ ?_ ?_ ?_ ?_
-  · convert this using 2
+  · convert! this using 2
     · dsimp [φ]
       rw [← Path.cast_segment (lineMap_apply_one a b) (lineMap_apply_one a c), curveIntegral_cast]
     · dsimp [φ]
@@ -330,10 +332,7 @@ theorem curveIntegral_segment_add_eq_of_hasFDerivWithinAt_symmetric (hs : Convex
       lift x to I using hx
       lift y to I using hy
       simp [φ]
-    refine .congr ?_ this
-    -- TODO: add `ContDiff.lineMap` etc
-    simp only [AffineMap.lineMap_apply_module]
-    fun_prop
+    exact .congr (by fun_prop) this
 
 variable [CompleteSpace F]
 

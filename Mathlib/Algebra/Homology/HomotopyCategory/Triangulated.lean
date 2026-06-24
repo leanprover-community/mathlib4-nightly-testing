@@ -132,7 +132,6 @@ noncomputable def homotopyInvHomId : Homotopy (inv f g ≫ hom f g) (𝟙 _) :=
 
 end MappingConeCompHomotopyEquiv
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Given two composable morphisms `f` and `g` in the category of cochain complexes,
 this is the homotopy equivalence `mappingConeCompHomotopyEquiv f g`
 between `mappingCone g` and the mapping cone of
@@ -144,7 +143,6 @@ noncomputable def mappingConeCompHomotopyEquiv : HomotopyEquiv (mappingCone g)
   homotopyHomInvId := Homotopy.ofEq (by simp)
   homotopyInvHomId := MappingConeCompHomotopyEquiv.homotopyInvHomId f g
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma mappingConeCompHomotopyEquiv_hom_inv_id :
     (mappingConeCompHomotopyEquiv f g).hom ≫
@@ -165,7 +163,7 @@ lemma mappingConeCompHomotopyEquiv_comm₂ :
       (triangle (mappingConeCompTriangle f g).mor₁).mor₃ =
       (mappingConeCompTriangle f g).mor₃ := by
   ext n
-  simp [ mappingConeCompHomotopyEquiv, MappingConeCompHomotopyEquiv.hom,
+  simp [mappingConeCompHomotopyEquiv, MappingConeCompHomotopyEquiv.hom,
     lift_f _ _ _ _ _ (n + 1) rfl, ext_from_iff _ (n + 1) _ rfl]
 
 set_option backward.defeqAttrib.useBackward true in

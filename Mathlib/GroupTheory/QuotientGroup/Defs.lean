@@ -124,9 +124,9 @@ theorem eq_one_iff {N : Subgroup G} [N.Normal] (x : G) : (x : G ⧸ N) = 1 ↔ x
 @[to_additive (attr := simp)]
 lemma mk'_comp_subtype : (mk' N).comp N.subtype = 1 := by ext; simp
 
-/- Note: `range_mk'` is a lemma about the primed constructor `QuotientGroup.mk'`, not a
-  modified version of some `range_mk`. -/
 set_option linter.docPrime false in
+/-- Note: `range_mk'` is a lemma about the primed constructor `QuotientGroup.mk'`, not a
+  modified version of some `range_mk`. -/
 @[to_additive (attr := simp)]
 theorem range_mk' : (QuotientGroup.mk' N).range = ⊤ :=
   MonoidHom.range_eq_top.mpr (mk'_surjective N)
@@ -252,7 +252,7 @@ def lift (φ : G →* M) (HN : N ≤ φ.ker) : Q →* M :=
 theorem lift_mk {φ : G →* M} (HN : N ≤ φ.ker) (g : G) : lift N φ HN (g : Q) = φ g :=
   rfl
 
-@[to_additive]
+@[to_additive (attr := simp)]
 theorem lift_mk' {φ : G →* M} (HN : N ≤ φ.ker) (g : G) : lift N φ HN (mk g : Q) = φ g :=
   rfl
 -- TODO: replace `mk` with `mk'`)
@@ -292,7 +292,7 @@ noncomputable def liftEquiv {φ : G →* H} (hφ : Function.Surjective φ)
 theorem liftEquiv_coe {φ : G →* H} (hφ : Function.Surjective φ) (HN : N = φ.ker) (g : G) :
     liftEquiv N hφ HN (g : Q) = φ g := rfl
 
-@[to_additive]
+@[to_additive (attr := simp)]
 theorem liftEquiv_mk {φ : G →* H} (hφ : Function.Surjective φ) (HN : N = φ.ker) (g : G) :
     liftEquiv N hφ HN (mk g : Q) = φ g := rfl
 

@@ -81,6 +81,7 @@ class CreatesLimitsOfShape (J : Type w) [Category.{w'} J] (F : C ⥤ D) where
   CreatesLimit : ∀ {K : J ⥤ C}, CreatesLimit K F := by infer_instance
 
 -- This should be used with explicit universe variables.
+set_option linter.checkUnivs false in
 /-- `F` creates limits if it creates limits of shape `J` for any `J`. -/
 -- After https://github.com/leanprover/lean4/pull/12286 and
 -- https://github.com/leanprover/lean4/pull/12423, the shape universes in
@@ -114,6 +115,7 @@ class CreatesColimitsOfShape (J : Type w) [Category.{w'} J] (F : C ⥤ D) where
   CreatesColimit : ∀ {K : J ⥤ C}, CreatesColimit K F := by infer_instance
 
 -- This should be used with explicit universe variables.
+set_option linter.checkUnivs false in
 /-- `F` creates colimits if it creates colimits of shape `J` for any small `J`. -/
 @[univ_out_params, nolint checkUnivs, pp_with_univ]
 class CreatesColimitsOfSize (F : C ⥤ D) where
@@ -154,7 +156,7 @@ lemma liftedLimitMapsToOriginal_hom_π
     {K : J ⥤ C} {F : C ⥤ D} [CreatesLimit K F] {c : Cone (K ⋙ F)} (t : IsLimit c) (j : J) :
       (liftedLimitMapsToOriginal t).hom.hom ≫ c.π.app j = F.map ((liftLimit t).π.app j) := by
   rw [← liftedLimitMapsToOriginal_inv_map_π (t := t)]
-  simp only [ ← Category.assoc, ← Cone.category_comp_hom,
+  simp only [← Category.assoc, ← Cone.category_comp_hom,
     Iso.hom_inv_id, Cone.category_id_hom, Category.id_comp]
 
 /-- The lifted cone is a limit. -/

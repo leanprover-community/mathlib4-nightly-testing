@@ -114,10 +114,10 @@ initialize_simps_projections AddGrpCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive]
+@[to_additive (attr := simp)]
 lemma coe_id {X : GrpCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive]
+@[to_additive (attr := simp)]
 lemma coe_comp {X Y Z : GrpCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[deprecated (since := "2026-02-10")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
@@ -331,10 +331,10 @@ initialize_simps_projections AddCommGrpCat.Hom (hom' → hom)
 The results below duplicate the `ConcreteCategory` simp lemmas, but we can keep them for `dsimp`.
 -/
 
-@[to_additive]
+@[to_additive (attr := simp)]
 lemma coe_id {X : CommGrpCat} : (𝟙 X : X → X) = id := rfl
 
-@[to_additive]
+@[to_additive (attr := simp)]
 lemma coe_comp {X Y Z : CommGrpCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
 @[deprecated (since := "2026-02-10")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
@@ -600,19 +600,24 @@ instance CommGrpCat.forget_reflects_isos : (forget CommGrpCat.{u}).ReflectsIsomo
 -- note: in the following definitions, there is a problem with `@[to_additive]`
 -- as the `Category` instance is not found on the additive variant
 -- this variant is then renamed with an `Aux` suffix
-
+set_option linter.checkUnivs false in
 /-- An alias for `GrpCat.{max u v}`, to deal around unification issues. -/
 @[to_additive (attr := nolint checkUnivs) GrpMaxAux
   /-- An alias for `AddGrpCat.{max u v}`, to deal around unification issues. -/]
 abbrev GrpMax.{u1, u2} := GrpCat.{max u1 u2}
+
+set_option linter.checkUnivs false in
 /-- An alias for `AddGrpCat.{max u v}`, to deal around unification issues. -/
 @[nolint checkUnivs]
 abbrev AddGrpMax.{u1, u2} := AddGrpCat.{max u1 u2}
 
+set_option linter.checkUnivs false in
 /-- An alias for `CommGrpCat.{max u v}`, to deal around unification issues. -/
 @[to_additive (attr := nolint checkUnivs) AddCommGrpMaxAux
   /-- An alias for `AddCommGrpCat.{max u v}`, to deal around unification issues. -/]
 abbrev CommGrpMax.{u1, u2} := CommGrpCat.{max u1 u2}
+
+set_option linter.checkUnivs false in
 /-- An alias for `AddCommGrpCat.{max u v}`, to deal around unification issues. -/
 @[nolint checkUnivs]
 abbrev AddCommGrpMax.{u1, u2} := AddCommGrpCat.{max u1 u2}

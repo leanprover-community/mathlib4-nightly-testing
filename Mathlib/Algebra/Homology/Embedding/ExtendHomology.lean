@@ -207,7 +207,7 @@ lemma d_comp_desc_eq_zero_iff ⦃W : C⦄ (φ : W ⟶ cocone.pt) :
       φ ≫ ((isColimitCokernelCofork K e hj' hi hi' cocone hcocone).desc
       (CokernelCofork.ofπ ((K.extend e).d j' k') (d_comp_d _ _ _ _))) = 0 :=
   d_comp_desc_eq_zero_iff' K e hj' hk hk' cocone hcocone _ (hcocone.fac _ _) _ (by
-    simpa using (isColimitCokernelCofork K e hj' hi hi' cocone hcocone).fac _
+    simpa using! (isColimitCokernelCofork K e hj' hi hi' cocone hcocone).fac _
       WalkingParallelPair.one) _
 
 set_option backward.isDefEq.respectTransparency false in
@@ -431,6 +431,7 @@ lemma quasiIsoAt_extendMap_iff :
 
 end
 
+variable {K L} in
 lemma quasiIso_extendMap_iff [∀ j, K.HasHomology j] [∀ j, L.HasHomology j] :
     QuasiIso (extendMap φ e) ↔ QuasiIso φ := by
   simp only [quasiIso_iff, ← fun j ↦ quasiIsoAt_extendMap_iff φ e (j := j) (hj' := rfl)]

@@ -58,7 +58,7 @@ def Total.Hom.comp {k l m : Total P} (f : k.Hom l) (g : l.Hom m) : k.Hom m where
   base := f.base ≫ g.base
   hom := f.hom ≫ g.hom
   w := by
-    simp only [ Functor.map_comp, Category.assoc]
+    simp only [Functor.map_comp, Category.assoc]
     rw [f.w_assoc, g.w]
 
 set_option backward.defeqAttrib.useBackward true in
@@ -79,7 +79,6 @@ section Small
 variable {J : Type w} {I : J → Type w} [SmallCategory J] [∀ j, SmallCategory (I j)]
   {D : J ⥤ C} {P : ∀ j, ColimitPresentation (I j) (D.obj j)}
 
-set_option backward.isDefEq.respectTransparency false in
 lemma Total.exists_hom_of_hom {j j' : J} (i : I j) (u : j ⟶ j')
     [IsFiltered (I j')] [IsFinitelyPresentable.{w} ((P j).diag.obj i)] :
     ∃ (i' : I j') (f : Total.mk P j i ⟶ Total.mk P j' i'), f.base = u := by

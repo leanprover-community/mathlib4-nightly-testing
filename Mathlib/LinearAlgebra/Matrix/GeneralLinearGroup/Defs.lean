@@ -88,6 +88,14 @@ theorem det_scalar (u : Rˣ) : det (scalar n u) = u ^ Fintype.card n := by
   ext
   simp
 
+lemma det_surjective [Nonempty n] : Function.Surjective (det : GL n R → Rˣ) := fun r ↦ by
+  obtain ⟨i⟩ := ‹Nonempty n›
+  refine ⟨⟨diagonal fun j ↦ if j = i then r else 1, diagonal fun j ↦ if j = i then r⁻¹.1 else 1,
+    ?_, ?_⟩, by simp [det]⟩
+  <;> simp only [diagonal_mul_diagonal, mul_ite, ite_mul, Units.mul_inv, one_mul, mul_one,
+      diagonal_eq_one]
+  <;> funext j <;> split_ifs <;> simp
+
 /-- The groups `GL n R` (notation for `Matrix.GeneralLinearGroup n R`) and
 `LinearMap.GeneralLinearGroup R (n → R)` are multiplicatively equivalent -/
 def toLin : GL n R ≃* LinearMap.GeneralLinearGroup R (n → R) :=
@@ -248,7 +256,7 @@ instance hasCoeToGeneralLinearGroup : Coe (SpecialLinearGroup n R) (GL n R) :=
 
 lemma toGL_injective :
     Function.Injective (toGL : SpecialLinearGroup n R → GL n R) := fun g g' ↦ by
-  simpa [toGL] using fun h _ ↦ Subtype.ext h
+  simpa [toGL] using! fun h _ ↦ Subtype.ext h
 
 @[simp]
 lemma toGL_inj (g g' : SpecialLinearGroup n R) :

@@ -264,11 +264,11 @@ theorem colimit_cocone_comp_aux (s : Cocone (F ⋙ G)) (j : C) :
   · intro j₁ j₂ k₁ k₂ f w h
     rw [← w]
     rw [← s.w f] at h
-    simpa using h
+    simpa using! h
   · intro j₁ j₂ k₁ k₂ f w h
     rw [← w] at h
     rw [← s.w f]
-    simpa using h
+    simpa using! h
   · exact s.w (𝟙 _)
 
 variable (F G)
@@ -335,9 +335,8 @@ instance (priority := 100) compCreatesColimit {B : Type u₄} [Category.{v₄} B
 
 set_option backward.defeqAttrib.useBackward true in
 instance colimit_pre_isIso [HasColimit G] : IsIso (colimit.pre G F) := by
-  rw [colimit.pre_eq (colimitCoconeComp F (getColimitCocone G)) (getColimitCocone G)]
-  erw [IsColimit.desc_self]
-  dsimp
+  simp only [colimit.pre_eq (colimitCoconeComp F (getColimitCocone G)) (getColimitCocone G),
+    colimitCoconeComp_cocone, IsColimit.desc_self]
   infer_instance
 
 section
@@ -350,7 +349,6 @@ variable (G)
 def colimitIso [HasColimit G] : colimit (F ⋙ G) ≅ colimit G :=
   asIso (colimit.pre G F)
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 theorem ι_colimitIso_hom [HasColimit G] (X : C) :
     colimit.ι (F ⋙ G) X ≫ (colimitIso F G).hom = colimit.ι G (F.obj X) := by
@@ -466,13 +464,8 @@ theorem zigzag_of_eqvGen_colimitTypeRel {F : C ⥤ D} {d : D} {f₁ f₂ : Σ X,
     left; fconstructor
     exact StructuredArrow.homMk f
   | refl => fconstructor
-  | symm x y _ ih =>
-    apply zigzag_symmetric
-    exact ih
-  | trans x y z _ _ ih₁ ih₂ =>
-    apply Relation.ReflTransGen.trans
-    · exact ih₁
-    · exact ih₂
+  | symm x y _ ih => exact ih.symm
+  | trans x y z _ _ ih₁ ih₂ => exact ih₁.trans ih₂
 
 end Final
 
@@ -572,11 +565,11 @@ def induction {d : D} (Z : ∀ (X : C) (_ : F.obj X ⟶ d), Sort*)
       (CostructuredArrow.mk k₀) z
   · intro j₁ j₂ f a
     fapply h₁ _ _ _ _ f.left _ a
-    convert f.w
+    convert! f.w
     simp
   · intro j₁ j₂ f a
     fapply h₂ _ _ _ _ f.left _ a
-    convert f.w
+    convert! f.w
     simp
 
 variable {F G}
@@ -702,8 +695,8 @@ instance (priority := 100) compCreatesLimit {B : Type u₄} [Category.{v₄} B] 
 set_option backward.defeqAttrib.useBackward true in
 instance limit_pre_isIso [HasLimit G] : IsIso (limit.pre G F) := by
   rw [limit.pre_eq (limitConeComp F (getLimitCone G)) (getLimitCone G)]
-  erw [IsLimit.lift_self]
-  dsimp
+  simp only [limitConeComp_cone, Cone.whisker_pt, limitConeComp_isLimit, IsLimit.lift_self,
+    Category.id_comp, isIso_comp_left_iff]
   infer_instance
 
 section
@@ -1144,7 +1137,7 @@ private lemma Grothendieck.final_map_small {C : Type u₁} [SmallCategory C] {F 
   intro H
   let i := (colimitFiberwiseColimitIso _).symm ≪≫
     HasColimit.isoOfNatIso (fiberwiseColimitMapCompEquivalence α H) ≪≫ colimitFiberwiseColimitIso _
-  convert Iso.isIso_hom i
+  convert! Iso.isIso_hom i
   apply colimit.hom_ext
   intro X
   simp [i, fiberwiseColimitMapCompEquivalence]
