@@ -78,11 +78,12 @@ alias ⟨_, mersenne_pos_of_pos⟩ := mersenne_pos
 
 /-- Extension for the `positivity` tactic: `mersenne`. -/
 @[positivity mersenne _]
-meta def evalMersenne : PositivityExt where eval {u α} _zα _pα e := do
+meta def evalMersenne : PositivityExt where eval {u α} _zα pα? e :=
+  match pα? with | none => pure .none | some _ => do
   match u, α, e with
   | 0, ~q(ℕ), ~q(mersenne $a) =>
-    let ra ← core q(inferInstance) q(inferInstance) a
     assertInstancesCommute
+    let ra ← core q(inferInstance) (some q(inferInstance)) a
     match ra with
     | .positive pa => pure (.positive q(mersenne_pos_of_pos $pa))
     | _ => pure (.nonnegative q(Nat.zero_le (mersenne $a)))
@@ -509,9 +510,9 @@ theorem ω_pow_formula (p' : ℕ) (h : lucasLehmerResidue (p' + 2) = 0) :
   have : 1 ≤ 2 ^ (p' + 2) := Nat.one_le_pow _ _ (by decide)
   exact mod_cast h
 
-set_option backward.isDefEq.respectTransparency false in
 -- TODO: fix non-terminal simp (acting on two goals with different simp sets)
 set_option linter.flexible false in
+set_option backward.isDefEq.respectTransparency false in
 /-- `q` is the minimum factor of `mersenne p`, so `M p = 0` in `X q`. -/
 theorem mersenne_coe_X (p : ℕ) : (mersenne p : X (q p)) = 0 := by
   ext <;> simp [mersenne, q, ZMod.natCast_eq_zero_iff, -pow_pos]

@@ -5,10 +5,10 @@ Authors: Johannes Hölzl, Martin Zinkevich, Rémy Degenne
 -/
 module
 
-public import Mathlib.Data.Set.Dissipate
 public import Mathlib.Logic.Encodable.Lattice
 public import Mathlib.MeasureTheory.MeasurableSpace.Defs
 public import Mathlib.Order.Disjointed
+public import Mathlib.Order.SetDissipate
 
 /-!
 # Induction principles for measurable sets, related to π-systems and λ-systems.
@@ -610,7 +610,7 @@ instance : Inhabited (DynkinSystem α) :=
   ⟨generate univ⟩
 
 /-- If a Dynkin system is closed under binary intersection, then it forms a `σ`-algebra. -/
-@[implicit_reducible]
+@[instance_reducible]
 def toMeasurableSpace (h_inter : ∀ s₁ s₂, d.Has s₁ → d.Has s₂ → d.Has (s₁ ∩ s₂)) :
     MeasurableSpace α where
   MeasurableSet' := d.Has

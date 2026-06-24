@@ -28,7 +28,7 @@ variable (D : J ⥤ P.Comma L R ⊤ ⊤)
 
 /-- If `P` is closed under limits of shape `J` in `Comma L R`, then when `D` has
 a limit in `Comma L R`, the forgetful functor creates this limit. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def forgetCreatesLimitOfClosed
     [(P.commaObj L R).IsClosedUnderLimitsOfShape J]
     [HasLimit (D ⋙ forget L R P ⊤ ⊤)] :
@@ -40,7 +40,7 @@ noncomputable def forgetCreatesLimitOfClosed
 
 /-- If `Comma L R` has limits of shape `J` and `Comma L R` is closed under limits of shape
 `J`, then `forget L R P ⊤ ⊤` creates limits of shape `J`. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def forgetCreatesLimitsOfShapeOfClosed [HasLimitsOfShape J (Comma L R)]
     [ObjectProperty.IsClosedUnderLimitsOfShape (P.commaObj L R) J] :
     CreatesLimitsOfShape J (forget L R P ⊤ ⊤) where
@@ -60,7 +60,7 @@ instance hasLimitsOfShape_of_closedUnderLimitsOfShape [HasLimitsOfShape J (Comma
 
 /-- If `P` is closed under colimits of shape `J` in `Comma L R`, then when `D` has
 a colimit in `Comma L R`, the forgetful functor creates this colimit. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def forgetCreatesColimitOfClosed
     [(P.commaObj L R).IsClosedUnderColimitsOfShape J]
     [HasColimit (D ⋙ forget L R P ⊤ ⊤)] :
@@ -72,7 +72,7 @@ noncomputable def forgetCreatesColimitOfClosed
 variable (J) in
 /-- If `Comma L R` has colimits of shape `J` and `Comma L R` is closed under colimits of shape
 `J`, then `forget L R P ⊤ ⊤` creates colimits of shape `J`. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def forgetCreatesColimitsOfShapeOfClosed [HasColimitsOfShape J (Comma L R)]
     [(P.commaObj L R).IsClosedUnderColimitsOfShape J] :
     CreatesColimitsOfShape J (forget L R P ⊤ ⊤) where
@@ -121,7 +121,7 @@ lemma CostructuredArrow.isClosedUnderColimitsOfShape {J : Type*} [Category* J]
       isColimitOfPreserves _ d.isColimit
     have heq : Y.hom = hd.desc { pt := X, ι := { app j := (d.diag.obj j).hom } } := by
       refine hd.hom_ext fun j ↦ ?_
-      simp only [Functor.const_obj_obj, IsColimit.fac]
+      simp only [IsColimit.fac]
       simp
     rw [P.costructuredArrowObj_iff, heq, ← hd.coconePointUniqueUpToIso_hom_desc (hc _),
       P.cancel_left_of_respectsIso]
@@ -296,8 +296,11 @@ instance (priority := 900) hasPullbacks [HasPullbacks T] [P.IsStableUnderComposi
     [P.IsStableUnderBaseChange] [P.HasOfPostcompProperty P] : HasPullbacks (P.Over ⊤ X) :=
   CostructuredArrow.hasPullbacks _ _
 
-variable [HasPullbacks T] [P.IsStableUnderComposition] [P.ContainsIdentities]
+variable [HasPullbacks T] [P.IsMultiplicative]
   [P.IsStableUnderBaseChange] [P.HasOfPostcompProperty P]
+
+instance hasFiniteLimits : HasFiniteLimits (P.Over ⊤ X) :=
+  hasFiniteLimits_of_hasTerminal_and_pullbacks
 
 noncomputable instance : CreatesFiniteLimits (Over.forget P ⊤ X) :=
   createsFiniteLimitsOfCreatesTerminalAndPullbacks _

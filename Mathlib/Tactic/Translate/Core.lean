@@ -861,9 +861,11 @@ partial def transformDeclRec (t : TranslateData) (cfg : Config) (rootSrc rootTgt
 def copyInstanceAttribute (src tgt : Name) : CoreM Unit := do
   if let some prio ← getInstancePriority? src then
     let attr_kind := (← getInstanceAttrKind? src).getD .global
-    -- Copy implicit_reducible status before adding instance attribute
-    if (← getReducibilityStatus src) matches .implicitReducible then
-      setReducibilityStatus tgt .implicitReducible
+    -- Copy `instance_reducible` / `instance_reducible` status before adding instance attribute
+    match (← getReducibilityStatus src) with
+    | .implicitReducible => setReducibilityStatus tgt .implicitReducible
+    | .instanceReducible => setReducibilityStatus tgt .instanceReducible
+    | _ => pure ()
     trace[translate_detail] "Making {tgt} an instance with priority {prio}."
     addInstance tgt attr_kind prio |>.run'
 
@@ -917,7 +919,7 @@ def targetName (t : TranslateData) (cfg : Config) (src : Name) : CoreM Name := d
     return src
   if cfg.none then
     if cfg.target != .anonymous then
-      logWarning m!"`{t.attrName} private` ignores the provided name {cfg.target}"
+      logWarning m!"`{t.attrName} none` ignores the provided name {cfg.target}"
     return ← withDeclNameForAuxNaming src do
       mkAuxDeclName <| .mkSimple ("_" ++ t.attrName.toString)
   -- When re-tagging an existing translation, simply return that existing translation.
@@ -1149,8 +1151,8 @@ partial def applyAttributes (t : TranslateData) (cfg : Config) (src tgt : Name) 
     (relevantArg : RelevantArg) : TermElabM (Array Name) := do
   -- we only copy the `instance` attribute, since it is nice to directly tag `instance` declarations
   copyInstanceAttribute src tgt
-  -- Warn users if the original declaration has an attributee
-  if !cfg.self && !cfg.none && linter.existingAttributeWarning.get (← getOptions) then
+  -- Warn users if the original declaration has an attribute
+  if !cfg.existing && !cfg.none && linter.existingAttributeWarning.get (← getOptions) then
     let appliedAttrs ← getAllSimpAttrs src
     if appliedAttrs.size > 0 then
       let appliedAttrs := ", ".intercalate (appliedAttrs.toList.map toString)

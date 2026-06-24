@@ -7,6 +7,7 @@ module
 
 public import Mathlib.LinearAlgebra.PerfectPairing.Basic
 public import Mathlib.LinearAlgebra.Reflection
+public import Mathlib.Tactic.CrossRefAttribute
 
 /-!
 # Root data and root systems
@@ -113,6 +114,7 @@ variable {ι R M N}
 variable (P : RootPairing ι R M N) (i j : ι)
 
 /-- A root system is a root pairing for which the roots and coroots span their ambient modules. -/
+@[wikidata Q534131]
 class IsRootSystem : Prop where
   span_root_eq_top : span R (range P.root) = ⊤
   span_coroot_eq_top : span R (range P.coroot) = ⊤
@@ -400,7 +402,7 @@ lemma pairing_reflectionPerm_self_right (i j : ι) :
 
 /-- The indexing set of a root pairing carries an involutive negation, corresponding to the negation
 of a root / coroot. -/
-@[simps, implicit_reducible] def indexNeg : InvolutiveNeg ι where
+@[simps, instance_reducible] def indexNeg : InvolutiveNeg ι where
   neg i := P.reflectionPerm i i
   neg_neg i := by
     apply P.root.injective

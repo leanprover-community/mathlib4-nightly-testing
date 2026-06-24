@@ -87,6 +87,17 @@ def restrictScalars {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →
   obj := RestrictScalars.obj' f
   map := RestrictScalars.map' f
 
+@[simp]
+lemma smul_restrictScalars {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) (r : R)
+    (M : ModuleCat S) :
+    dsimp% ((ModuleCat.restrictScalars f).obj M).smul r = M.smul (f r) :=
+  rfl
+
+lemma forget₂_map_restrictScalars {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S)
+    {M N : ModuleCat S} (g : M ⟶ N) :
+    (forget₂ _ Ab).map ((ModuleCat.restrictScalars f).map g) = (forget₂ _ Ab).map g :=
+  rfl
+
 instance {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) :
     (restrictScalars.{v} f).Faithful where
   map_injective h := by
@@ -976,7 +987,6 @@ noncomputable def extendScalarsComp :
     (extendRestrictScalarsAdj (f₂₃.comp f₁₂))).symm (restrictScalarsComp f₁₂ f₂₃).symm
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 lemma homEquiv_extendScalarsComp (M : ModuleCat R₁) :
     (extendRestrictScalarsAdj (f₂₃.comp f₁₂)).homEquiv _ _
       ((extendScalarsComp f₁₂ f₂₃).hom.app M) =
@@ -984,8 +994,8 @@ lemma homEquiv_extendScalarsComp (M : ModuleCat R₁) :
         (restrictScalars f₁₂).map ((extendRestrictScalarsAdj f₂₃).unit.app _) ≫
         (restrictScalarsComp f₁₂ f₂₃).inv.app _ := by
   dsimp [extendScalarsComp, conjugateIsoEquiv, conjugateEquiv]
-  simp only [Category.assoc, Category.id_comp, Category.comp_id,
-    Adjunction.comp_unit_app, Adjunction.homEquiv_unit,
+  simp only [Functor.id_obj, Functor.comp_obj, Category.assoc, Category.id_comp,
+    Category.comp_id, Adjunction.comp_unit_app, Adjunction.homEquiv_unit,
     Functor.map_comp, Adjunction.unit_naturality_assoc,
     Adjunction.right_triangle_components]
   rfl
