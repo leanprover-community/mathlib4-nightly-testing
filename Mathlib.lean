@@ -573,6 +573,7 @@ public import Mathlib.Algebra.Homology.ComplexShape
 public import Mathlib.Algebra.Homology.ComplexShapeSigns
 public import Mathlib.Algebra.Homology.ConcreteCategory
 public import Mathlib.Algebra.Homology.DerivedCategory.Basic
+public import Mathlib.Algebra.Homology.DerivedCategory.DerivabilityStructureInjectives
 public import Mathlib.Algebra.Homology.DerivedCategory.ExactFunctor
 public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Basic
 public import Mathlib.Algebra.Homology.DerivedCategory.Ext.EnoughInjectives
@@ -590,6 +591,7 @@ public import Mathlib.Algebra.Homology.DerivedCategory.KInjective
 public import Mathlib.Algebra.Homology.DerivedCategory.KProjective
 public import Mathlib.Algebra.Homology.DerivedCategory.Linear
 public import Mathlib.Algebra.Homology.DerivedCategory.Plus
+public import Mathlib.Algebra.Homology.DerivedCategory.RightDerivedFunctorPlus
 public import Mathlib.Algebra.Homology.DerivedCategory.ShortExact
 public import Mathlib.Algebra.Homology.DerivedCategory.SingleTriangle
 public import Mathlib.Algebra.Homology.DerivedCategory.SmallShiftedHom
@@ -1348,6 +1350,7 @@ public import Mathlib.AlgebraicGeometry.AffineTransitionLimit
 public import Mathlib.AlgebraicGeometry.AlgClosed.Basic
 public import Mathlib.AlgebraicGeometry.AlgebraicCycle.Basic
 public import Mathlib.AlgebraicGeometry.Artinian
+public import Mathlib.AlgebraicGeometry.Birational.Birational
 public import Mathlib.AlgebraicGeometry.Birational.Dominant
 public import Mathlib.AlgebraicGeometry.Birational.RationalMap
 public import Mathlib.AlgebraicGeometry.ColimitsOver
@@ -2179,6 +2182,7 @@ public import Mathlib.Analysis.Normed.Group.Tannery
 public import Mathlib.Analysis.Normed.Group.Ultra
 public import Mathlib.Analysis.Normed.Group.Uniform
 public import Mathlib.Analysis.Normed.Group.ZeroAtInfty
+public import Mathlib.Analysis.Normed.Lp.Finsupp
 public import Mathlib.Analysis.Normed.Lp.LpEquiv
 public import Mathlib.Analysis.Normed.Lp.Matrix
 public import Mathlib.Analysis.Normed.Lp.MeasurableSpace
@@ -3238,6 +3242,7 @@ public import Mathlib.CategoryTheory.Preadditive.FunctorCategory
 public import Mathlib.CategoryTheory.Preadditive.HomOrthogonal
 public import Mathlib.CategoryTheory.Preadditive.Indization
 public import Mathlib.CategoryTheory.Preadditive.Injective.Basic
+public import Mathlib.CategoryTheory.Preadditive.Injective.InjectiveObject
 public import Mathlib.CategoryTheory.Preadditive.Injective.LiftingProperties
 public import Mathlib.CategoryTheory.Preadditive.Injective.Preserves
 public import Mathlib.CategoryTheory.Preadditive.Injective.Resolution
@@ -6662,6 +6667,7 @@ public import Mathlib.RingTheory.Ideal.Quotient.Index
 public import Mathlib.RingTheory.Ideal.Quotient.Nilpotent
 public import Mathlib.RingTheory.Ideal.Quotient.Noetherian
 public import Mathlib.RingTheory.Ideal.Quotient.Operations
+public import Mathlib.RingTheory.Ideal.Quotient.Over
 public import Mathlib.RingTheory.Ideal.Quotient.PowTransition
 public import Mathlib.RingTheory.Ideal.Span
 public import Mathlib.RingTheory.IdealFilter.Basic
@@ -7605,6 +7611,7 @@ public import Mathlib.Topology.Algebra.Module.Determinant
 public import Mathlib.Topology.Algebra.Module.Equiv
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Mathlib.Topology.Algebra.Module.FiniteDimensionBilinear
+public import Mathlib.Topology.Algebra.Module.IsWeak
 public import Mathlib.Topology.Algebra.Module.LinearMap
 public import Mathlib.Topology.Algebra.Module.LinearMapPiProd
 public import Mathlib.Topology.Algebra.Module.LinearPMap
