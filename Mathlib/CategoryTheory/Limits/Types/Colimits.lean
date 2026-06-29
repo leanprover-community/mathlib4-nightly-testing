@@ -215,7 +215,7 @@ theorem colimit_eq {j j' : J} {x : F.obj j} {x' : F.obj j'}
     (w : colimit.ι F j x = colimit.ι F j' x') :
       Relation.EqvGen F.ColimitTypeRel ⟨j, x⟩ ⟨j', x'⟩ := by
   apply Quot.eq.1
-  simpa using congr_arg (colimitEquivColimitType F) w
+  simpa using! congr_arg (colimitEquivColimitType F) w
 
 set_option backward.defeqAttrib.useBackward true in
 theorem jointly_surjective_of_isColimit {F : J ⥤ Type u} {t : Cocone F} (h : IsColimit t)
@@ -227,7 +227,7 @@ theorem jointly_surjective_of_isColimit {F : J ⥤ Type u} {t : Cocone F} (h : I
     (↾fun y ↦ ULift.up (y ≠ x)))
   · refine h.hom_ext fun j ↦ ?_
     ext y
-    simp only [Functor.const_obj_obj, TypeCat.Fun.toFun_apply, comp_apply, hom_ofHom,
+    simp only [TypeCat.Fun.toFun_apply, comp_apply, hom_ofHom,
       TypeCat.Fun.coe_mk, ne_eq, true_iff]
     exact hx j y
   · intro he

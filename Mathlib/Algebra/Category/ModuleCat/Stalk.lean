@@ -36,7 +36,6 @@ variable {C : Type*} [SmallCategory C] [IsFiltered C] (R : C ⥤ RingCat) (M : C
     [∀ i, Module (R.obj i) (M.obj i)]
     (H : ∀ {i j} (f : i ⟶ j) r m, M.map f (r • m) = R.map f r • M.map f m)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- (Implementation). The scalar multiplication function on `ColimitType`. -/
 protected noncomputable
 def colimit.smul (r : (R ⋙ forget _).ColimitType) (m : (M ⋙ forget _).ColimitType) :
@@ -61,8 +60,7 @@ def colimit.smul (r : (R ⋙ forget _).ColimitType) (m : (M ⋙ forget _).Colimi
 #adaptation_note /-- As of nightly-2026-02-10, we need to increase the maxHeartbeats limits here. -/
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
-set_option maxHeartbeats 700000 in --
-set_option synthInstance.maxHeartbeats 40000 in
+set_option synthInstance.maxHeartbeats 40000 in --
 /-- (Implementation). The module structure on `AddCommGrpCat.FilteredColimits.colimit`. -/
 noncomputable abbrev filteredColimitsModule : Module (RingCat.FilteredColimits.colimit R)
     (AddCommGrpCat.FilteredColimits.colimit M) where

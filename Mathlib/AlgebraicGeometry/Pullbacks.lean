@@ -43,7 +43,7 @@ variable {X Y Z : Scheme.{u}} (𝒰 : OpenCover.{u} X) (f : X ⟶ Z) (g : Y ⟶ 
 variable [∀ i, HasPullback (𝒰.f i ≫ f) g]
 
 /-- The intersection of `Uᵢ ×[Z] Y` and `Uⱼ ×[Z] Y` is given by (Uᵢ ×[Z] Y) ×[X] Uⱼ -/
-@[implicit_reducible]
+@[instance_reducible]
 def v (i j : 𝒰.I₀) : Scheme :=
   pullback ((pullback.fst (𝒰.f i ≫ f) g) ≫ 𝒰.f i) (𝒰.f j)
 
@@ -250,7 +250,7 @@ def gluedLiftPullbackMap (i j : 𝒰.I₀) :
   refine pullback.map _ _ _ _ ?_ (𝟙 _) (𝟙 _) ?_ ?_
   · exact (pullbackSymmetry _ _).hom ≫
       pullback.map _ _ _ _ (𝟙 _) s.snd f (Category.id_comp _).symm s.condition
-  · simpa using pullback.condition
+  · simpa using! pullback.condition
   · simp only [Category.comp_id, Category.id_comp]
 
 set_option backward.defeqAttrib.useBackward true in

@@ -217,7 +217,6 @@ instance {j₁ j₂ : κ.ord.ToType} (φ : j₁ ⟶ j₂) (f : Arrow C) :
     IsIso (((iterationFunctor I κ).map φ).app f).right :=
   inferInstanceAs (IsIso ((transfiniteCompositionOfShapeιIterationAppRight I κ f).F.map φ))
 
-set_option backward.isDefEq.respectTransparency false in
 /-- For any `f : Arrow C`, the object `((iteration I κ).obj f).right`
 identifies to `f.right`. -/
 @[simps! hom]
@@ -351,7 +350,7 @@ lemma ιFunctorObj_eq (j : κ.ord.ToType) :
     ιFunctorObj I.homFamily (((iterationFunctor I κ).obj j).obj (Arrow.mk f)).hom =
       (relativeCellComplexιObj I κ f).F.map (homOfLE (Order.le_succ j)) ≫
         (relativeCellComplexιObjFObjSuccIso I κ f j).hom := by
-  simpa using Arrow.leftFunc.congr_map (iterationFunctorMapSuccAppArrowIso I κ f j).hom.w
+  simpa using! Arrow.leftFunc.congr_map (iterationFunctorMapSuccAppArrowIso I κ f j).hom.w
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

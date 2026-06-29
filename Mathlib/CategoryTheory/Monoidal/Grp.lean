@@ -57,7 +57,6 @@ namespace GrpObj
 
 attribute [reassoc (attr := simp)] left_inv right_inv
 attribute [reassoc (attr := simp)] AddGrpObj.left_neg AddGrpObj.right_neg
-set_option linter.existingAttributeWarning false in
 attribute [to_additive existing] left_inv left_inv_assoc right_inv right_inv_assoc
 
 @[to_additive]
@@ -345,7 +344,7 @@ lemma ext {X : C} (h₁ h₂ : GrpObj X) (H : h₁.toMonObj = h₂.toMonObj) : h
 
 -- Note: `Invertible` has no additive variant
 /-- A monoid object with invertible homs is a group object. -/
-@[implicit_reducible]
+@[instance_reducible]
 def ofInvertible (G : C) [MonObj G] (h : ∀ X (f : X ⟶ G), Invertible f) : GrpObj G where
   inv := Yoneda.fullyFaithful.preimage
     ⟨fun X ↦ ↾fun f ↦ (h X.unop f).invOf, fun X Y f ↦ by

@@ -235,9 +235,9 @@ def mkFunctor (F : C ⥤ E) (G : D ⥤ E) (α : Prod.fst C D ⋙ F ⟶ Prod.snd 
   map_comp {x y z} f g := by
     cases f <;> cases g
     · simp [← Functor.map_comp]
-    · case left.edge f d => simpa using (α.naturality <| (Prod.sectL _ d).map f).symm
+    · case left.edge f d => simpa using! (α.naturality <| (Prod.sectL _ d).map f).symm
     · simp [← Functor.map_comp]
-    · case edge.right c _ _ f => simpa using α.naturality <| (Prod.sectR c _).map f
+    · case edge.right c _ _ f => simpa using! α.naturality <| (Prod.sectR c _).map f
 
 section
 
@@ -296,8 +296,8 @@ def mkNatTrans {F : C ⋆ D ⥤ E} {F' : C ⋆ D ⥤ E}
     | right x => αᵣ.app x
   naturality {x y} f := by
     cases f with
-    | @left x y f => simpa using αₗ.naturality f
-    | @right x y f => simpa using αᵣ.naturality f
+    | @left x y f => simpa using! αₗ.naturality f
+    | @right x y f => simpa using! αᵣ.naturality f
     | @edge c d => exact funext_iff.mp (NatTrans.ext_iff.mp h) (c, d)
 
 section
@@ -348,7 +348,6 @@ lemma eq_mkNatTrans {F F' : C ⋆ D ⥤ E} (α : F ⟶ F') :
 
 section
 
-set_option backward.isDefEq.respectTransparency false in
 /-- `mkNatTrans` respects vertical composition. -/
 lemma mkNatTransComp
     {F F' F'' : C ⋆ D ⥤ E}

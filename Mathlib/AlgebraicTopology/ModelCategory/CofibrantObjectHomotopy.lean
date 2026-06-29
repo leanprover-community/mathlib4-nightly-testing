@@ -56,6 +56,7 @@ abbrev HoCat := Quotient (CofibrantObject.homRel C)
 
 /-- The quotient functor from the category of cofibrant objects to its
 homotopy category. -/
+@[implicit_reducible]
 def toHoCat : CofibrantObject C ⥤ HoCat C := Quotient.functor _
 
 lemma toHoCat_obj_surjective : Function.Surjective (toHoCat (C := C)).obj :=
@@ -265,7 +266,7 @@ noncomputable def HoCat.resolutionCompToLocalizationNatTrans :
     HoCat.resolution ⋙ HoCat.toLocalization L ⟶ L where
   app X := L.map (pResolutionObj X)
   naturality _ _ f := by
-    simpa only [Functor.map_comp] using L.congr_map (HoCat.resolutionMap_fac f)
+    simpa only [Functor.map_comp] using! L.congr_map (HoCat.resolutionMap_fac f)
 
 set_option backward.isDefEq.respectTransparency false in
 instance : IsIso (HoCat.resolutionCompToLocalizationNatTrans L) := by

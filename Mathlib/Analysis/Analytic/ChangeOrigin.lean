@@ -279,7 +279,7 @@ theorem changeOrigin_eval (h : (‖x‖₊ + ‖y‖₊ : ℝ≥0∞) < p.radius
       have := (p.hasFPowerSeriesOnBall_changeOrigin k h.pos).hasSum x_mem_ball
       rw [zero_add] at this
       refine HasSum.sigma_of_hasSum this (fun l => ?_) ?_
-      · simp only [changeOriginSeries, ContinuousMultilinearMap.sum_apply]
+      · simp only [changeOriginSeries, sum_apply]
         apply hasSum_fintype
       · refine .of_nnnorm_bounded
           (p.changeOriginSeries_summable_aux₂ (mem_eball_zero_iff.1 x_mem_ball) k)
@@ -345,8 +345,8 @@ it is analytic at every point of this ball. -/
 theorem HasFPowerSeriesWithinOnBall.analyticWithinAt_of_mem
     (hf : HasFPowerSeriesWithinOnBall f p s x r)
     (h : y ∈ insert x s ∩ Metric.eball x r) : AnalyticWithinAt 𝕜 f s y := by
-  have : (‖y - x‖₊ : ℝ≥0∞) < r := by simpa [edist_eq_enorm_sub] using h.2
-  have := hf.changeOrigin this (by simpa using h.1)
+  have : (‖y - x‖₊ : ℝ≥0∞) < r := by simpa [edist_eq_enorm_sub] using! h.2
+  have := hf.changeOrigin this (by simpa using! h.1)
   rw [add_sub_cancel] at this
   exact this.analyticWithinAt
 

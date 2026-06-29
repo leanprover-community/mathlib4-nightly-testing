@@ -80,17 +80,17 @@ lemma isoClosure_isLocal : P.isoClosure.isLocal = P.isLocal := by
       exact ⟨a ≫ e.inv, by simp only [reassoc_of% h, e.hom_inv_id, comp_id]⟩
 
 instance : P.isLocal.IsMultiplicative where
-  id_mem X Z _ := by simpa [id_comp] using Function.bijective_id
+  id_mem X Z _ := by simpa [id_comp] using! Function.bijective_id
   comp_mem f g hf hg Z hZ := by
-    simpa using Function.Bijective.comp (hf Z hZ) (hg Z hZ)
+    simpa using! Function.Bijective.comp (hf Z hZ) (hg Z hZ)
 
 instance : P.isLocal.HasTwoOutOfThreeProperty where
   of_postcomp f g hg hfg Z hZ := by
     rw [← Function.Bijective.of_comp_iff _ (hg Z hZ)]
-    simpa using hfg Z hZ
+    simpa using! hfg Z hZ
   of_precomp f g hf hfg Z hZ := by
     rw [← Function.Bijective.of_comp_iff' (hf Z hZ)]
-    simpa using hfg Z hZ
+    simpa using! hfg Z hZ
 
 lemma isLocal_of_isIso {X Y : C} (f : X ⟶ Y) [IsIso f] : P.isLocal f := fun Z _ => by
   constructor
@@ -160,7 +160,7 @@ lemma isoClosure_isColocal : P.isoClosure.isColocal = P.isColocal := by
       exact ⟨e.hom ≫ a, by simp [h]⟩
 
 instance : P.isColocal.IsMultiplicative where
-  id_mem _ _ _ := by simpa [id_comp] using Function.bijective_id
+  id_mem _ _ _ := by simpa [id_comp] using! Function.bijective_id
   comp_mem f g hf hg X hX := by
     convert! Function.Bijective.comp (hg X hX) (hf X hX)
     cat_disch
@@ -221,7 +221,6 @@ lemma isLocal_adj_unit_app (X : D) : isLocal (· ∈ Set.range F.obj) (adj.unit.
   dsimp [Adjunction.homEquiv]
   aesop
 
-set_option backward.isDefEq.respectTransparency false in
 lemma isLocal_iff_isIso_map {X Y : D} (f : X ⟶ Y) :
     isLocal (· ∈ Set.range F.obj) f ↔ IsIso (G.map f) := by
   have := adj.unit.naturality f
@@ -256,7 +255,6 @@ lemma isColocal_adj_counit_app (X : C) : isColocal (· ∈ Set.range G.obj) (adj
   dsimp [Adjunction.homEquiv]
   cat_disch
 
-set_option backward.isDefEq.respectTransparency false in
 lemma isColocal_iff_isIso_map {X Y : C} (f : X ⟶ Y) :
     isColocal (· ∈ Set.range G.obj) f ↔ IsIso (F.map f) := by
   have := adj.counit.naturality f

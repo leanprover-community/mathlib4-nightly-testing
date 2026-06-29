@@ -176,7 +176,7 @@ end Mon
 
 variable (X) in
 /-- If `X` represents a presheaf of monoids, then `X` is a monoid object. -/
-@[to_additive (attr := simps, implicit_reducible)
+@[to_additive (attr := simps, instance_reducible)
 /-- If `X` represents a presheaf of additive monoids, then `X` is an additive monoid object. -/]
 def MonObj.ofRepresentableBy (F : Cᵒᵖ ⥤ MonCat.{w}) (α : (F ⋙ forget _).RepresentableBy X) :
     MonObj X where
@@ -274,7 +274,7 @@ variable [BraidedCategory C]
 /-- If `M` is a commutative additive monoid object, then `Hom(X, M)` has a commutative additive
 monoid structure. -/]
 abbrev Hom.commMonoid [IsCommMonObj M] : CommMonoid (X ⟶ M) where
-  mul_comm f g := by simpa [-IsCommMonObj.mul_comm] using lift g f ≫= IsCommMonObj.mul_comm M
+  mul_comm f g := by simpa [-IsCommMonObj.mul_comm] using! lift g f ≫= IsCommMonObj.mul_comm M
 
 namespace Mon.Hom
 variable {M N : Mon C} [IsCommMonObj N.X]

@@ -328,7 +328,7 @@ def Cofan.isColimitTrans {X : α → C} (c : Cofan X) (hc : IsColimit c)
   · intro t m h
     refine hc.hom_ext fun ⟨a⟩ ↦ (hs a).hom_ext fun ⟨b⟩ ↦ ?_
     erw [hc.fac, (hs a).fac]
-    simpa using h ⟨a, b⟩
+    simpa using! h ⟨a, b⟩
 
 /-- Construct a morphism between categorical products (indexed by the same type)
 from a family of morphisms between the factors.
@@ -926,7 +926,7 @@ set_option backward.isDefEq.respectTransparency false in
 theorem Sigma.ι_reindex_hom (b : β) :
     Sigma.ι (f ∘ ε) b ≫ (Sigma.reindex ε f).hom = Sigma.ι f (ε b) := by
   dsimp [Sigma.reindex]
-  simp only [HasColimit.isoOfEquivalence_hom_π, Functor.id_obj, Discrete.functor_obj,
+  simp only [HasColimit.ι_isoOfEquivalence_hom, Functor.id_obj, Discrete.functor_obj,
     Function.comp_apply, Discrete.equivalence_functor, Discrete.equivalence_inverse,
     Functor.comp_obj, Discrete.natIso_inv_app, Iso.refl_inv, Category.id_comp]
   have h := colimit.w (Discrete.functor f) (Discrete.eqToHom' (ε.apply_symm_apply (ε b)))
@@ -966,6 +966,27 @@ instance [HasColimit F] [HasCoproduct F.obj] : Epi (Sigma.desc (colimit.ι F)) w
     simpa using Sigma.ι _ j ≫= h
 
 end
+
+section Thin
+
+variable [Quiver.IsThin C] {J : Type*} [Category* J] {K : J ⥤ C}
+
+/-- If `K : J ⥤ C` is a diagram with `C` thin, a cone for `K` is limiting
+if and only if the cone point is the product of the components. -/
+def isLimitEquivFanOfIsThin (c : Cone K) : IsLimit c ≃ IsLimit (Fan.mk c.pt c.π.app) where
+  toFun hc := Fan.IsLimit.mk _ (fun s ↦ hc.lift { pt := s.pt, π.app j := s.proj j })
+    (by subsingleton) (by subsingleton)
+  invFun h := { lift s := Fan.IsLimit.lift h s.π.app }
+
+/-- If `K : J ⥤ C` is a diagram with `C` thin, a cone for `K` is limiting
+if and only if the cone point is the product of the components. -/
+def isColimitEquivCofanOfIsThin (c : Cocone K) :
+    IsColimit c ≃ IsColimit (Cofan.mk c.pt c.ι.app) where
+  toFun hc := Cofan.IsColimit.mk _ (fun s ↦ hc.desc { pt := s.pt, ι.app j := s.inj j })
+    (by subsingleton) (by subsingleton)
+  invFun h := { desc s := Cofan.IsColimit.desc h s.ι.app }
+
+end Thin
 
 section Fubini
 

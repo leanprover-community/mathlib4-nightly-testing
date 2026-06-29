@@ -67,7 +67,7 @@ lemma RingHom.HasEqualizers.isClosedUnderLimitsOfShape (hQi : RespectsIso Q)
 
 /-- If `Q` is stable under finite products, the inclusion from the subcategory of `Under R` defined
 by `Q` creates finite products. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def RingHom.HasFiniteProducts.createsFiniteProductsForget
     (hQi : RespectsIso Q) (hQp : HasFiniteProducts Q) (R : CommRingCat.{u}) :
     CreatesFiniteProducts (MorphismProperty.Under.forget (toMorphismProperty Q) ⊤ R) := by
@@ -97,7 +97,7 @@ lemma RingHom.HasFiniteProducts.preservesFiniteProducts_pushout (hQi : RingHom.R
 
 /-- If `Q` is stable under equalizers, the inclusion from the subcategory of `Under R` defined
 by `Q` creates equalizers. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def RingHom.HasEqualizers.createsLimitsWalkingParallelPair (hQi : RespectsIso Q)
     (hQe : HasEqualizers Q) (R : CommRingCat.{u}) :
     CreatesLimitsOfShape WalkingParallelPair
@@ -116,7 +116,7 @@ namespace CommRingCat
 
 /-- If `Q` is stable under finite products and equalizers, the inclusion from the subcategory of
 `Under R` defined by `Q` creates finite limits. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def Under.createsFiniteLimitsForget (hQi : RingHom.RespectsIso Q)
     (hQp : RingHom.HasFiniteProducts Q) (hQe : RingHom.HasEqualizers Q) (R : CommRingCat.{u}) :
     CreatesFiniteLimits (Under.forget (RingHom.toMorphismProperty Q) ⊤ R) :=
@@ -150,7 +150,7 @@ lemma CommRingCat.preservesLimit_parallelPair_tensorProd_iff_tensorEqualizer_bij
     (AlgHom.equalizer (toAlgHom f) (toAlgHom g)).val.toUnder
   let h' := (R.tensorProd S).map ι
   have w' : h' ≫ (tensorProd R S).map f = h' ≫ (tensorProd R S).map g := by
-    simpa using congr((R.tensorProd S).map $(CommRingCat.Under.equalizer_comp f g))
+    simpa using! congr((R.tensorProd S).map $(CommRingCat.Under.equalizer_comp f g))
   let e : IsLimit ((R.tensorProd S).mapCone c) ≃ IsLimit (Fork.ofι h' w') :=
     isLimitMapConeForkEquiv (tensorProd R S) (Under.equalizer_comp f g)
   rw [preservesLimit_iff_isLimit_mapCone hc, e.nonempty_congr,

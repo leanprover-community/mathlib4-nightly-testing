@@ -102,7 +102,7 @@ variable [ConcreteCategory.{w} C FC]
 
 /-- If `forget C` preserves terminals and `X` is terminal, then `ToType X` is a
 singleton. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def uniqueOfTerminalOfPreserves [PreservesLimit (Functor.empty.{0} C) (forget C)]
     (X : C) (h : IsTerminal X) : Unique (ToType X) :=
   Types.isTerminalEquivUnique (ToType X) <| IsTerminal.isTerminalObj (forget C) X h
@@ -173,12 +173,12 @@ noncomputable def prodEquiv : ToType (X₁ ⨯ X₂) ≃ ToType X₁ × ToType X
 @[simp]
 lemma prodEquiv_apply_fst (x : ToType (X₁ ⨯ X₂)) :
     (prodEquiv X₁ X₂ x).fst = (Limits.prod.fst : X₁ ⨯ X₂ ⟶ X₁) x := by
-  simpa using congr_hom (prodComparison_fst (forget C) X₁ X₂) x
+  simpa using! congr_hom (prodComparison_fst (forget C) X₁ X₂) x
 
 @[simp]
 lemma prodEquiv_apply_snd (x : ToType (X₁ ⨯ X₂)) :
     (prodEquiv X₁ X₂ x).snd = (Limits.prod.snd : X₁ ⨯ X₂ ⟶ X₂) x := by
-  simpa using congr_hom (prodComparison_snd (forget C) X₁ X₂) x
+  simpa using! congr_hom (prodComparison_snd (forget C) X₁ X₂) x
 
 @[simp]
 lemma prodEquiv_symm_apply_fst (x : ToType X₁ × ToType X₂) :
@@ -280,7 +280,6 @@ theorem multiequalizer_ext {J : MulticospanShape.{w, w'}}
     simp [h]
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- An auxiliary equivalence to be used in `multiequalizerEquiv` below. -/
 def multiequalizerEquivAux {J : MulticospanShape.{w, w'}} (I : MulticospanIndex J C) :
     (I.multicospan ⋙ forget C).sections ≃

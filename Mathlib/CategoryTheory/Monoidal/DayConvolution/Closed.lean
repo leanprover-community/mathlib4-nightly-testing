@@ -57,7 +57,7 @@ def dayConvolutionInternalHomDiagramFunctor (F : C ⥤ V) :
       naturality {c c'} f := by
         ext j k
         dsimp
-        simpa [-NatTrans.naturality] using
+        simpa [-NatTrans.naturality] using!
           congr_arg (ihom <| F.obj <| unop j).map (η.naturality <| k ◁ f) }
 
 /-- `DayConvolutionInternalHom F G H` asserts that `H` is the value at `G` of
@@ -148,7 +148,6 @@ section ev
 variable [DayConvolution F H] (ℌ : DayConvolutionInternalHom F G H)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- Given `ℌ : DayConvolutionInternalHom F H`, if we think of `H.obj G`
 as the internal hom `[F, G]`, then this is the transformation
 corresponding to the component at `G` of the "evaluation" natural morphism

@@ -46,7 +46,7 @@ matrix (like powers) into graph-theoretic properties of its quiver (like the exi
 
 ## Implementation notes
 
-Throughout we work over a `LinearOrderedRing R`. Some results require stronger assumptions,
+Throughout we work over a linearly ordered ring `R`. Some results require stronger assumptions,
 like `PosMulStrictMono R` or `Nontrivial R`. Some statements expand matrix powers and thus require
 `[DecidableEq n]` to reason about finite sums.
 
@@ -73,7 +73,7 @@ variable {n R : Type*} [Ring R] [LinearOrder R]
 
 /-- The directed graph (quiver) associated with a matrix `A`,
 with an edge `i ⟶ j` iff `0 < A i j`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def toQuiver (A : Matrix n n R) : Quiver n :=
   ⟨fun i j => PLift (0 < A i j)⟩
 

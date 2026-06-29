@@ -403,7 +403,7 @@ theorem weightedHomogeneousComponent_finsupp :
   intro m hm
   by_contra hm'
   apply hm (weightedHomogeneousComponent_eq_zero' m φ _)
-  simpa only [Set.mem_image, not_exists, not_and] using hm'
+  simpa only [Set.mem_image, not_exists, not_and] using! hm'
 
 variable (w)
 
@@ -523,8 +523,8 @@ section OrderedAddCommMonoid
 variable [AddCommMonoid M] [PartialOrder M]
   {w : σ → M} (φ : MvPolynomial σ R)
 
-/-- If `M` is a canonically `OrderedAddCommMonoid`, then the `weightedHomogeneousComponent`
-  of weighted degree `0` of a polynomial is its constant coefficient. -/
+/-- If `M` is canonically ordered, then the `weightedHomogeneousComponent` of weighted degree `0`
+of a polynomial is its constant coefficient. -/
 @[simp]
 theorem weightedHomogeneousComponent_zero [CanonicallyOrderedAdd M] [IsAddTorsionFree M]
     (hw : ∀ i : σ, w i ≠ 0) :
@@ -628,7 +628,7 @@ theorem decompose'_apply [DecidableEq M] (φ : MvPolynomial σ R) (m : M) :
 
 /-- Given a weight `w`, the decomposition of `MvPolynomial σ R` into weighted homogeneous
 submodules -/
-@[implicit_reducible]
+@[instance_reducible]
 def weightedDecomposition [DecidableEq M] :
     DirectSum.Decomposition (weightedHomogeneousSubmodule R w) where
   decompose' := decompose' R w
@@ -654,7 +654,7 @@ def weightedDecomposition [DecidableEq M] :
 
 set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- Given a weight, `MvPolynomial` as a graded algebra -/
-@[implicit_reducible]
+@[instance_reducible]
 def weightedGradedAlgebra [DecidableEq M] :
     GradedAlgebra (weightedHomogeneousSubmodule R w) where
   toDecomposition := weightedDecomposition R w

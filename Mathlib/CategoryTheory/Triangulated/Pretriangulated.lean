@@ -170,7 +170,6 @@ lemma distinguished_cocone_triangle₁ {Y Z : C} (g : Y ⟶ Z) :
   exact ⟨_, _, _, inv_rot_of_distTriang _ mem⟩
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- Any morphism `Z ⟶ X⟦1⟧` is part of a distinguished triangle `X ⟶ Y ⟶ Z ⟶ X⟦1⟧` -/
 lemma distinguished_cocone_triangle₂ {Z X : C} (h : Z ⟶ X⟦(1 : ℤ)⟧) :
     ∃ (Y : C) (f : X ⟶ Y) (g : Y ⟶ Z), Triangle.mk f g h ∈ distTriang C := by
@@ -196,8 +195,8 @@ lemma complete_distinguished_triangle_morphism₁ (T₁ T₂ : Triangle C)
   · apply (shiftFunctor C (1 : ℤ)).map_injective
     dsimp at ha₂
     rw [neg_comp, comp_neg, neg_inj] at ha₂
-    simpa only [Functor.map_comp, Functor.map_preimage] using ha₂
-  · simpa only [Functor.map_preimage] using ha₁
+    simpa only [Functor.map_comp, Functor.map_preimage] using! ha₂
+  · simpa only [Functor.map_preimage] using! ha₁
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

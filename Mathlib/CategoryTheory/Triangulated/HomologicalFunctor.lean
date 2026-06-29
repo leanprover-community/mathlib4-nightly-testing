@@ -140,7 +140,7 @@ noncomputable instance (priority := 100) [F.IsHomological] :
     let S := (ShortComplex.mk _ _ (biprod.inl_snd (X := X₁) (Y := X₂))).map F
     have : Mono S.f := by dsimp [S]; infer_instance
     have ex : S.Exact := F.map_distinguished_exact _ (binaryBiproductTriangle_distinguished X₁ X₂)
-    obtain ⟨g, rfl⟩ := ex.lift' f (by simpa using hf =≫ biprod.snd)
+    obtain ⟨g, rfl⟩ := ex.lift' f (by simpa using! hf =≫ biprod.snd)
     dsimp [S] at hf ⊢
     replace hf := hf =≫ biprod.fst
     simp only [assoc, biprodComparison_fst, zero_comp, ← F.map_comp, biprod.inl_fst,
@@ -213,7 +213,6 @@ lemma homologySequence_comp :
 attribute [local simp] smul_smul
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 lemma homologySequence_exact₂ :
     (ShortComplex.mk _ _ (F.homologySequence_comp T hT n₀)).Exact := by
   refine ShortComplex.exact_of_iso ?_ (F.map_distinguished_exact _

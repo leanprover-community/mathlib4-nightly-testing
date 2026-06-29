@@ -47,7 +47,7 @@ theorem eq_of_mem_eqv_class {c : Set (Set α)} (H : ∀ a, ∃! b ∈ c, a ∈ b
   (H x).unique ⟨hc, hb⟩ ⟨hc', hb'⟩
 
 /-- Makes an equivalence relation from a set of sets partitioning α. -/
-@[implicit_reducible]
+@[instance_reducible]
 def mkClasses (c : Set (Set α)) (H : ∀ a, ∃! b ∈ c, a ∈ b) : Setoid α where
   r x y := ∀ s ∈ c, x ∈ s → y ∈ s
   iseqv.refl := fun _ _ _ hx => hx
@@ -143,7 +143,7 @@ theorem eqv_classes_of_disjoint_union {c : Set (Set α)} (hu : Set.sUnion c = @S
   ExistsUnique.intro b ⟨hc, ha⟩ fun _ hc' => H.elim_set hc'.1 hc _ hc'.2 ha
 
 /-- Makes an equivalence relation from a set of disjoints sets covering α. -/
-@[implicit_reducible]
+@[instance_reducible]
 def setoidOfDisjointUnion {c : Set (Set α)} (hu : Set.sUnion c = @Set.univ α)
     (H : c.PairwiseDisjoint id) : Setoid α :=
   Setoid.mkClasses c <| eqv_classes_of_disjoint_union hu H
@@ -510,7 +510,7 @@ theorem range_piecewise (f : ι → α → β) : range (hs.piecewise f) = ⋃ i,
     obtain ⟨a, ha1, ha2⟩ := ht
     refine ⟨a, ?_⟩
     simp only [hs.mem_iff_index_eq] at ha1
-    simpa [hs.mem_iff_index_eq, ← ha1] using ha2
+    simpa [hs.mem_iff_index_eq, ← ha1] using! ha2
 
 theorem range_piecewise_subset (f : ι → α → β) : range (hs.piecewise f) ⊆ ⋃ i, range (f i) :=
   fun x ⟨y, hy⟩ => by simpa [IndexedPartition.piecewise_apply] using ⟨hs.index y, y, hy⟩

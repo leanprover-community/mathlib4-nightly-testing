@@ -174,7 +174,7 @@ lemma ideal_le_ker_glueDataObjι (U V : X.affineOpens) :
   simp only [Scheme.Hom.comp_app, Scheme.Opens.ι_app, Scheme.homOfLE_app, ← Functor.map_comp_assoc,
     Scheme.Hom.app_eq _ H, Scheme.Opens.toScheme_presheaf_map, ← Functor.map_comp, Category.assoc]
   simp only [CommRingCat.hom_comp, RingHom.comp_apply]
-  convert! RingHom.map_zero _ using 2
+  convert RingHom.map_zero _
   rw [← RingHom.mem_ker, ker_glueDataObjι_appTop, ← Ideal.mem_comap, Ideal.comap_comap,
     ← CommRingCat.hom_comp]
   simp only [homOfLE_leOfHom, Scheme.Hom.comp_base,
@@ -252,7 +252,7 @@ def glueDataT'Aux (U V W U₀ : X.affineOpens) (hU₀ : U.1 ⊓ W ≤ U₀) :
         exact (Set.range_comp_subset_range _ _).trans (by simp)
       · rw [pullback.condition_assoc, pullback.condition_assoc, X.homOfLE_ι,
           ← Category.assoc, Scheme.Hom.comp_base, TopCat.coe_comp]
-        exact (Set.range_comp_subset_range _ _).trans (by simpa using hU₀))) (by
+        exact (Set.range_comp_subset_range _ _).trans (by simpa using! hU₀))) (by
       rw [← cancel_mono (Scheme.Opens.ι _)]
       simp [pullback.condition_assoc])
 
@@ -703,7 +703,7 @@ def Hom.toImage : X ⟶ f.image :=
 @[reassoc (attr := simp)]
 lemma Hom.toImage_imageι :
     f.toImage ≫ f.imageι = f := by
-  convert! f.toImageAux_spec using 2
+  convert f.toImageAux_spec
   exact Scheme.Hom.copyBase_eq _ _ _
 
 instance [QuasiCompact f] : IsDominant f.toImage where
@@ -754,7 +754,6 @@ lemma Hom.stalkFunctor_toImage_injective [QuasiCompact f] (x) :
   exact f.toImage_app_injective ⟨U, hU⟩
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 open IdealSheafData in
 /-- The adjunction between `Y.IdealSheafData` and `(Over Y)ᵒᵖ` given by taking kernels. -/
 @[simps]

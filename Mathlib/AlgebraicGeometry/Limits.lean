@@ -442,7 +442,7 @@ lemma isPullback_inl_inl_coprodMap {X Y X' Y' : Scheme.{u}}
     · simp only [coprodMk_inr, ← Scheme.Hom.comp_apply, coprod.inr_map] at hxy
       cases Set.disjoint_iff_forall_ne.mp (isCompl_range_inl_inr _ _).1 ⟨y, rfl⟩ ⟨_, rfl⟩ hxy
   · rintro _ ⟨x, rfl⟩
-    exact ⟨f x, by simp [← Scheme.Hom.comp_apply, - Scheme.Hom.comp_base]⟩
+    exact ⟨f x, by simp [← Scheme.Hom.comp_apply, -Scheme.Hom.comp_base]⟩
 
 set_option backward.isDefEq.respectTransparency false in
 lemma isPullback_inr_inr_coprodMap {X Y X' Y' : Scheme.{u}}
@@ -621,7 +621,7 @@ instance (i) (R : ι → Type _) [∀ i, CommRing (R i)] :
     · intro x y
       constructor
       · intro e; ext j; by_cases h : j = i <;> aesop
-      · intro e; simpa using congr_fun e i
+      · intro e; simpa using! congr_fun e i
     · exact Function.surjective_eval _
   exact IsOpenImmersion.of_isLocalization (Function.update 0 i 1)
 
@@ -664,7 +664,7 @@ private lemma IsAffineOpen.iSup_of_disjoint_aux [Finite ι] {U : ι → X.Opens}
     (hU : ∀ i, IsAffineOpen (U i)) (hU' : Pairwise (Disjoint on U)) :
     IsAffineOpen (iSup U) := by
   have := isOpenImmersion_sigmaDesc _ (fun i ↦ (U i).ι)
-    (fun i j e ↦ by convert! hU' e using 0; simp [← Opens.coe_disjoint])
+    (fun i j e ↦ by convert hU' e; simp [← Opens.coe_disjoint])
   convert! isAffineOpen_opensRange (Sigma.desc fun i ↦ (U i).ι)
   · ext
     simp [(sigmaMk _).symm.exists_congr_left, ← Scheme.Hom.comp_apply, Scheme.Opens.exists_toScheme]
@@ -709,8 +709,8 @@ instance {U X Y : Scheme} (f : U ⟶ X) (g : U ⟶ Y) [IsOpenImmersion f] [IsOpe
     (i : WalkingPair) : Mono ((span f g ⋙ Scheme.forget).map (WidePushoutShape.Hom.init i)) := by
   rw [mono_iff_injective]
   cases i
-  · simpa using f.isOpenEmbedding.injective
-  · simpa using g.isOpenEmbedding.injective
+  · simpa using! f.isOpenEmbedding.injective
+  · simpa using! g.isOpenEmbedding.injective
 
 instance {U X Y : Scheme} (f : U ⟶ X) (g : U ⟶ Y) [IsOpenImmersion f] [IsOpenImmersion g]
     {i j : WalkingSpan} (t : i ⟶ j) : IsOpenImmersion ((span f g).map t) := by

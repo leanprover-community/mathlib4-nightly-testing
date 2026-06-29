@@ -64,7 +64,7 @@ inductive GenerateOpen (g : Set (Set α)) : Set α → Prop
   | sUnion : ∀ S : Set (Set α), (∀ s ∈ S, GenerateOpen g s) → GenerateOpen g (⋃₀ S)
 
 /-- The smallest topological space containing the collection `g` of basic sets -/
-@[implicit_reducible]
+@[instance_reducible]
 def generateFrom (g : Set (Set α)) : TopologicalSpace α where
   IsOpen := GenerateOpen g
   isOpen_univ := GenerateOpen.univ
@@ -95,7 +95,7 @@ lemma tendsto_nhds_generateFrom_iff {β : Type*} {m : α → β} {f : Filter α}
     tendsto_principal]; rfl
 
 /-- Construct a topology on α given the filter of neighborhoods of each point of α. -/
-@[implicit_reducible]
+@[instance_reducible]
 protected def mkOfNhds (n : α → Filter α) : TopologicalSpace α where
   IsOpen s := ∀ a ∈ s, s ∈ n a
   isOpen_univ _ _ := univ_mem
@@ -157,7 +157,7 @@ theorem le_generateFrom_iff_subset_isOpen {g : Set (Set α)} {t : TopologicalSpa
 
 /-- If `s` equals the collection of open sets in the topology it generates, then `s` defines a
 topology. -/
-@[implicit_reducible]
+@[instance_reducible]
 protected def mkOfClosure (s : Set (Set α)) (hs : { u | GenerateOpen s u } = s) :
     TopologicalSpace α where
   IsOpen u := u ∈ s
@@ -292,6 +292,7 @@ theorem closure_indiscrete [IndiscreteTopology α] {s : Set α} (h : s.Nonempty)
     closure s = Set.univ := Dense.closure_eq (dense_indiscrete h)
 
 /-- Every function to the indiscrete topology is continuous -/
+@[fun_prop]
 theorem continuous_of_indiscreteTopology {β} [TopologicalSpace β] [IndiscreteTopology β]
     {f : α → β} : Continuous f where
   isOpen_preimage := by simp [IndiscreteTopology.isOpen_iff]
@@ -576,7 +577,10 @@ instance : DiscreteTopology ℤ := ⟨rfl⟩
 instance {n} : TopologicalSpace (Fin n) := ⊥
 instance {n} : DiscreteTopology (Fin n) := ⟨rfl⟩
 
-instance : DiscreteTopology (WithTopology α ⊥) where
+/-- A copy of a type equipped with the discrete topology. -/
+abbrev WithDiscreteTopology (α : Type*) := WithTopology α ⊥
+
+instance : DiscreteTopology (WithDiscreteTopology α) where
   eq_bot := coinduced_bot
 
 instance : IndiscreteTopology (WithTopology α ⊤) where
@@ -643,7 +647,7 @@ lemma generateFrom_insert_empty {α : Type*} {s : Set (Set α)} :
 
 /-- This construction is left adjoint to the operation sending a topology on `α`
   to its neighborhood filter at a fixed point `a : α`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def nhdsAdjoint (a : α) (f : Filter α) : TopologicalSpace α where
   IsOpen s := a ∈ s → s ∈ f
   isOpen_univ _ := univ_mem

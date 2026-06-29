@@ -321,7 +321,6 @@ lemma isIso_eTruncLT_obj_map_truncLTπ_app (a b : EInt) (h : a ≤ b) (X : C) :
 instance (a : EInt) (X : C) : IsIso ((t.eTruncLT.obj a).map ((t.eTruncLTι a).app X)) :=
   isIso_eTruncLT_obj_map_truncLTπ_app t a a (by rfl) X
 
-set_option backward.isDefEq.respectTransparency false in
 instance (a : EInt) (X : C) : IsIso ((t.eTruncLTι a).app ((t.eTruncLT.obj a).obj X)) := by
   rw [← eTruncLT_obj_map_eTruncLTι_app]
   infer_instance
@@ -370,13 +369,13 @@ noncomputable def eTruncGEIsoGEGE :
 lemma eTruncGEIsoGEGE_hom_inv_id_app (X : C) :
     (t.eTruncGE.obj b).map ((t.eTruncGEπ a).app X) ≫ (t.eTruncGEIsoGEGE a b hab).inv.app X =
       𝟙 _ := by
-  simpa using (t.eTruncGEIsoGEGE a b hab).hom_inv_id_app X
+  simpa using! (t.eTruncGEIsoGEGE a b hab).hom_inv_id_app X
 
 @[reassoc (attr := simp)]
 lemma eTruncGEIsoGEGE_inv_hom_id_app (X : C) :
     (t.eTruncGEIsoGEGE a b hab).inv.app X ≫ (t.eTruncGE.obj b).map ((t.eTruncGEπ a).app X) =
       𝟙 _ := by
-  simpa using (t.eTruncGEIsoGEGE a b hab).inv_hom_id_app X
+  simpa using! (t.eTruncGEIsoGEGE a b hab).inv_hom_id_app X
 
 end
 
@@ -419,7 +418,6 @@ lemma eTruncLTLTIsoLT_inv_hom_id_app (X : C) :
     (t.eTruncLT.obj b).map ((t.eTruncLTι a).app X) = 𝟙 _ := by
   simpa using (t.eTruncLTLTIsoLT a b hab).inv_hom_id_app X
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma eTruncLTLTIsoLT_inv_hom_id_app_eTruncLT_obj (X : C) :
     (t.eTruncLTLTIsoLT a b hab).inv.app ((t.eTruncLT.obj a).obj X) ≫
@@ -516,7 +514,6 @@ lemma eTruncLTGEIsoGELT_hom_app_fac (a b : EInt) (X : C) :
     (t.eTruncLTι b).app ((t.eTruncGE.obj a).obj ((t.eTruncLT.obj b).obj X)) := by
   simp [eTruncLTGEIsoGELT]
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma eTruncLTGEIsoGELT_hom_app_fac' (a b : EInt) (X : C) :
     (t.eTruncLTGEIsoGELT a b).hom.app X ≫ (t.eTruncGE.obj a).map ((t.eTruncLTι b).app X) =
