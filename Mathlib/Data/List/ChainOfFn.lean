@@ -13,6 +13,7 @@ public import Mathlib.Util.CompileInductive
 
 /-!
 # Lemmas about `IsChain` and `ofFn`
+
 This file provides lemmas involving both `List.IsChain` and `List.ofFn`.
 -/
 
