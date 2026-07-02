@@ -26,7 +26,7 @@ to have their own instances. In order to keep allowing different instances
 for these two "identical" functors, we must not make `Functor.comp`
 more reducible: in particular, if `Functor.comp` had the attribute
 `instance_reducible`, an instance for `(F ⋙ G) ⋙ H` would be found
-when there is an instance for `(F ⋙ (G ⋙ H)` (which would be bad).
+when there is an instance for `F ⋙ (G ⋙ H)` (which would be bad).
 
 -/
 
