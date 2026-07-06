@@ -7,6 +7,7 @@ module
 
 public import Mathlib.Logic.IsEmpty.Basic
 public import Mathlib.Order.OrderDual
+public import Mathlib.Tactic.CrossRefAttribute
 public import Mathlib.Tactic.MkIffOfInductiveProp
 
 /-!
@@ -266,6 +267,7 @@ theorem wellFoundedGT_dual_iff (α : Type*) [LT α] : WellFoundedGT αᵒᵈ ↔
   ⟨fun h => ⟨h.wf⟩, fun h => ⟨h.wf⟩⟩
 
 /-- A well order is a well-founded linear order. -/
+@[wikidata Q659746]
 class IsWellOrder (α : Type u) (r : α → α → Prop) : Prop
     extends IsWellFounded α r, Std.Trichotomous r
 
@@ -310,7 +312,7 @@ theorem fix_eq {motive : α → Sort*} (ind : ∀ x : α, (∀ y : α, y < x →
   IsWellFounded.fix_eq _ ind
 
 /-- Derive a `WellFoundedRelation` instance from a `WellFoundedLT` instance. -/
-@[to_dual (attr := implicit_reducible)
+@[to_dual (attr := instance_reducible)
   /-- Derive a `WellFoundedRelation` instance from a `WellFoundedGT` instance. -/]
 def toWellFoundedRelation : WellFoundedRelation α :=
   IsWellFounded.toWellFoundedRelation (· < ·)
@@ -319,7 +321,7 @@ end WellFoundedLT
 
 open Classical in
 /-- Construct a decidable linear order from a well-founded linear order. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def IsWellOrder.linearOrder (r : α → α → Prop) [IsWellOrder α r] : LinearOrder α :=
   linearOrderOfSTO r
 
@@ -659,7 +661,6 @@ but after translation `instReflLe` becomes `instReflGe : Std.Refl (· ≥ ·)`. 
 theorem Std.ge_refl {α : Type*} [LE α] [inst : @Std.Refl α (· ≥ ·)] (a : α) : a ≤ a :=
   @Std.Refl.refl α (· ≥ ·) inst a
 
-set_option linter.existingAttributeWarning false in
 attribute [to_dual existing Std.ge_refl] Std.le_refl
 
 @[to_dual instIsTransGe]

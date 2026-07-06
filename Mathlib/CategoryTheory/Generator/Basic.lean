@@ -105,7 +105,6 @@ section Equivalence
 
 variable {P}
 
-set_option backward.isDefEq.respectTransparency false in
 lemma IsSeparating.of_equivalence
     (h : IsSeparating P) {D : Type*} [Category* D] (α : C ≌ D) :
     IsSeparating (P.strictMap α.functor) := fun X Y f g H =>
@@ -550,7 +549,7 @@ theorem IsSeparator.of_equivalence {G : C} (h : IsSeparator G) (α : C ≌ D) :
 
 theorem IsCoseparator.of_equivalence {G : C} (h : IsCoseparator G) (α : C ≌ D) :
     IsCoseparator (α.functor.obj G) := by
- simpa using! ObjectProperty.IsCoseparating.of_equivalence h α
+  simpa using! ObjectProperty.IsCoseparating.of_equivalence h α
 
 end Equivalence
 

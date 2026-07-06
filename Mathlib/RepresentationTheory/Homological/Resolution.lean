@@ -54,10 +54,10 @@ computing group (co)homology.
 
 ## Main definitions
 
- * `groupCohomology.resolution.ofMulActionBasis`
- * `classifyingSpaceUniversalCover`
- * `Rep.standardComplex.forget₂ToModuleCatHomotopyEquiv`
- * `Rep.standardResolution`
+* `groupCohomology.resolution.ofMulActionBasis`
+* `classifyingSpaceUniversalCover`
+* `Rep.standardComplex.forget₂ToModuleCatHomotopyEquiv`
+* `Rep.standardResolution`
 
 TODO: There's bad DefEq abuses in `Action` and the way we do `Rep.standardComplex` should be
   unified with continuous cohomology, therefore we should remove the use of `Action` in `Rep` which
@@ -301,7 +301,6 @@ theorem εToSingle₀_comp_eq :
   ext1
   simpa using! (forget₂ToModuleCatHomotopyEquiv_f_0_eq k G).symm
 
-set_option backward.isDefEq.respectTransparency false in
 theorem quasiIso_forget₂_εToSingle₀ :
     QuasiIso (((forget₂ _ (ModuleCat.{u} k)).mapHomologicalComplex _).map (εToSingle₀ k G)) := by
   have h : QuasiIso (forget₂ToModuleCatHomotopyEquiv k G).hom := inferInstance

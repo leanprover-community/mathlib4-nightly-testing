@@ -122,7 +122,7 @@ protected theorem measurableSet_eq_of_countable_range (hτ : IsStoppingTime f τ
   have : {ω | τ ω = i} = {ω | τ ω ≤ i} \ ⋃ (j ∈ Set.range τ) (_ : j < i), {ω | τ ω ≤ j} := by
     ext1 a
     simp only [Set.mem_setOf_eq, Set.mem_range, Set.iUnion_exists, Set.iUnion_iUnion_eq',
-      Set.mem_diff, Set.mem_iUnion, exists_prop, not_exists, not_and]
+      Set.mem_sdiff, Set.mem_iUnion, exists_prop, not_exists, not_and]
     constructor <;> intro h
     · simp only [h, lt_iff_le_not_ge, le_refl, and_imp, imp_self, imp_true_iff, and_self_iff]
     · exact h.1.eq_or_lt.resolve_right fun h_lt => h.2 a h_lt le_rfl
@@ -440,7 +440,7 @@ section Preorder
 variable [Preorder ι] {f : Filtration ι m} {τ π : Ω → WithTop ι}
 
 /-- The associated σ-algebra with a stopping time. -/
-@[implicit_reducible]
+@[instance_reducible]
 protected def measurableSpace (hτ : IsStoppingTime f τ) : MeasurableSpace Ω where
   MeasurableSet' s := MeasurableSet s ∧ ∀ i : ι, MeasurableSet[f i] (s ∩ {ω | τ ω ≤ i})
   measurableSet_empty := by simp
@@ -588,7 +588,7 @@ protected theorem measurableSet_lt' [TopologicalSpace ι] [OrderTopology ι]
     MeasurableSet[hτ.measurableSpace] {ω | τ ω < i} := by
   have : {ω | τ ω < i} = {ω | τ ω ≤ i} \ {ω | τ ω = i} := by
     ext1 ω
-    simp only [lt_iff_le_and_ne, Set.mem_setOf_eq, Set.mem_diff]
+    simp only [lt_iff_le_and_ne, Set.mem_setOf_eq, Set.mem_sdiff]
   rw [this]
   exact (hτ.measurableSet_le' i).diff (hτ.measurableSet_eq' i)
 
@@ -627,7 +627,7 @@ protected theorem measurableSet_lt_of_countable_range' (hτ : IsStoppingTime f �
     MeasurableSet[hτ.measurableSpace] {ω | τ ω < i} := by
   have : {ω | τ ω < i} = {ω | τ ω ≤ i} \ {ω | τ ω = i} := by
     ext1 ω
-    simp only [lt_iff_le_and_ne, Set.mem_setOf_eq, Set.mem_diff]
+    simp only [lt_iff_le_and_ne, Set.mem_setOf_eq, Set.mem_sdiff]
   rw [this]
   exact (hτ.measurableSet_le' i).diff (hτ.measurableSet_eq_of_countable_range' h_countable i)
 
@@ -780,15 +780,39 @@ section LinearOrder
 
 /-! ## Stopped value and stopped process -/
 
-variable [Nonempty ι]
+variable [Nonempty ι] {u v : ι → Ω → β} {τ σ : Ω → WithTop ι}
 
 /-- Given a map `u : ι → Ω → E`, its stopped value with respect to the stopping
 time `τ` is the map `x ↦ u (τ ω) ω`. -/
 noncomputable
 def stoppedValue (u : ι → Ω → β) (τ : Ω → WithTop ι) : Ω → β := fun ω => u (τ ω).untopA ω
 
-theorem stoppedValue_const (u : ι → Ω → β) (i : ι) : (stoppedValue u fun _ => i) = u i :=
-  rfl
+@[simp]
+theorem stoppedValue_const (u : ι → Ω → β) (i : ι) : (stoppedValue u fun _ => i) = u i := rfl
+
+@[simp] lemma stoppedValue_comp {γ : Type*} (f : β → γ) :
+    stoppedValue (fun t ω ↦ f (u t ω)) τ = fun ω ↦ f (stoppedValue u τ ω) := rfl
+
+lemma stoppedValue_norm [SeminormedAddCommGroup β] :
+    stoppedValue (fun t ω ↦ ‖u t ω‖) τ = fun ω ↦ ‖stoppedValue u τ ω‖ := rfl
+
+@[to_additive (attr := simp)]
+lemma stoppedValue_inv [Inv β] : stoppedValue (u⁻¹) τ = (stoppedValue u τ)⁻¹ := rfl
+
+@[to_additive (attr := simp)]
+lemma stoppedValue_mul [Mul β] :
+    stoppedValue (u * v) τ = stoppedValue u τ * stoppedValue v τ := rfl
+
+@[to_additive (attr := simp)]
+lemma stoppedValue_div [Div β] :
+    stoppedValue (u / v) τ = stoppedValue u τ / stoppedValue v τ := rfl
+
+@[simp] lemma stoppedValue_const_smul {𝕜 : Type*} [SMul 𝕜 β] (c : 𝕜) :
+    stoppedValue (c • u) τ = c • stoppedValue u τ := rfl
+
+@[simp] lemma stoppedValue_const_bot [Bot ι] :
+    stoppedValue u (fun _ ↦ ⊥) = u ⊥ := by
+  ext; simp [stoppedValue, ← WithTop.coe_bot]
 
 variable [LinearOrder ι]
 
@@ -800,13 +824,41 @@ noncomputable
 def stoppedProcess (u : ι → Ω → β) (τ : Ω → WithTop ι) : ι → Ω → β :=
   fun i ω => u (min (i : WithTop ι) (τ ω)).untopA ω
 
-variable {u : ι → Ω → β} {τ σ : Ω → WithTop ι}
-
 theorem stoppedProcess_eq_stoppedValue :
     stoppedProcess u τ = fun i : ι => stoppedValue u fun ω => min i (τ ω) := rfl
 
 theorem stoppedProcess_eq_stoppedValue_apply (i : ι) (ω : Ω) :
     stoppedProcess u τ i ω = stoppedValue u (fun ω ↦ min i (τ ω)) ω := rfl
+
+@[simp] lemma stoppedProcess_const {u₀ : Ω → β} :
+    stoppedProcess (fun _ ↦ u₀) τ = fun _ ↦ u₀ := rfl
+
+@[simp] lemma stoppedProcess_comp {γ : Type*} (f : β → γ) :
+    stoppedProcess (fun t ω ↦ f (u t ω)) τ = fun i ω ↦ f (stoppedProcess u τ i ω) := rfl
+
+lemma stoppedProcess_norm [SeminormedAddCommGroup β] :
+    stoppedProcess (fun t ω ↦ ‖u t ω‖) τ = fun i ω ↦ ‖stoppedProcess u τ i ω‖ := rfl
+
+@[to_additive (attr := simp)]
+lemma stoppedProcess_inv [Inv β] : stoppedProcess (u⁻¹) τ = (stoppedProcess u τ)⁻¹ := rfl
+
+@[to_additive (attr := simp)]
+lemma stoppedProcess_mul [Mul β] :
+    stoppedProcess (u * v) τ = stoppedProcess u τ * stoppedProcess v τ := rfl
+
+@[to_additive (attr := simp)]
+lemma stoppedProcess_div [Div β] :
+    stoppedProcess (u / v) τ = stoppedProcess u τ / stoppedProcess v τ := rfl
+
+@[simp] lemma stoppedProcess_const_smul {𝕜 : Type*} [SMul 𝕜 β] (c : 𝕜) :
+    stoppedProcess (c • u) τ = c • stoppedProcess u τ := rfl
+
+@[simp] lemma stoppedProcess_const_bot [OrderBot ι] :
+    stoppedProcess u (fun _ ↦ ⊥) = fun _ ↦ u ⊥ := by
+  ext; simp [stoppedProcess, ← WithTop.coe_bot]
+
+@[simp] lemma stoppedProcess_const_top : stoppedProcess u (fun _ ↦ ⊤) = u := by
+  ext; simp [stoppedProcess]
 
 theorem stoppedValue_stoppedProcess :
     stoppedValue (stoppedProcess u τ) σ =

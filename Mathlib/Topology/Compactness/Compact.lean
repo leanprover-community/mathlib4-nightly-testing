@@ -6,7 +6,7 @@ Authors: Johannes Hölzl, Mario Carneiro, Yury Kudryashov
 module
 
 public import Mathlib.Order.Filter.Tendsto
-public import Mathlib.Data.Set.Accumulate
+public import Mathlib.Order.SetAccumulate
 public import Mathlib.Topology.Bornology.Basic
 public import Mathlib.Topology.ContinuousOn
 public import Mathlib.Topology.Ultrafilter
@@ -671,7 +671,7 @@ variable (X) in
 /-- Sets that are contained in a compact set form a bornology. Its `cobounded` filter is
 `Filter.cocompact`. See also `Bornology.relativelyCompact` the bornology of sets with compact
 closure. -/
-@[implicit_reducible]
+@[instance_reducible]
 def inCompact : Bornology X where
   cobounded := Filter.cocompact X
   le_cofinite := Filter.cocompact_le_cofinite
@@ -960,6 +960,12 @@ theorem disjoint_map_cocompact {g : X → Y} {f : Filter X} (hg : Continuous g)
 
 theorem isCompact_range [CompactSpace X] {f : X → Y} (hf : Continuous f) : IsCompact (range f) := by
   rw [← image_univ]; exact isCompact_univ.image hf
+
+lemma Function.Surjective.compactSpace {f : X → Y} (hf : Continuous f) [CompactSpace X]
+    (hf' : f.Surjective) : CompactSpace Y where
+  isCompact_univ := by
+    rw [← hf'.range_eq]
+    exact isCompact_range hf
 
 theorem isCompact_diagonal [CompactSpace X] : IsCompact (diagonal X) :=
   @range_diag X ▸ isCompact_range (continuous_id.prodMk continuous_id)

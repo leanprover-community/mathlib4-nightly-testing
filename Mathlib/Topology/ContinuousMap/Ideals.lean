@@ -254,8 +254,8 @@ theorem idealOfSet_ofIdeal_eq_closure (I : Ideal C(X, 𝕜)) :
         ext y
         simp
       · rcases hx with (hx | hx)
-        · simpa only [zero_add] using! add_lt_add_of_lt_of_le (hgt₁ x hx) zero_le'
-        · simpa only [zero_add] using! add_lt_add_of_le_of_lt zero_le' (hgt₂ x hx)
+        · simpa using add_lt_add_of_lt_of_le (hgt₁ x hx) zero_le
+        · simpa using add_lt_add_of_le_of_lt zero_le (hgt₂ x hx)
     · intro x hx
       replace hx := htI.subset_compl_right hx
       rw [compl_compl, mem_setOfIdeal] at hx
@@ -264,11 +264,11 @@ theorem idealOfSet_ofIdeal_eq_closure (I : Ideal C(X, 𝕜)) :
       refine
         ⟨{y : X | g y ≠ 0} ∩ t,
           mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr ⟨_, this, Set.Subset.rfl⟩,
-          ⟨⟨fun x => ‖g x‖₊ ^ 2, (map_continuous g).nnnorm.pow 2⟩, ?_, fun x hx =>
+          ⟨⟨fun x => ‖g x‖₊ ^ 2, (map_continuous g).nnnorm.fun_pow 2⟩, ?_, fun x hx =>
             pow_pos (norm_pos_iff.mpr hx.1) 2⟩⟩
       convert! I.mul_mem_left (star g) hI
       ext
-      simp only [comp_apply, ContinuousMap.coe_coe, coe_mk, algebraMapCLM_apply, map_pow,
+      simp only [comp_apply, coe_mk, algebraMapCLM_apply, map_pow,
         mul_apply, star_apply, star_def]
       simp only [RCLike.conj_mul]
       rfl

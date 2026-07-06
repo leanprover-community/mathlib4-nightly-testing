@@ -41,8 +41,7 @@ if `M` has a trivial group of units. -/
 theorem factors_eq_normalizedFactors {M : Type*} [CommMonoidWithZero M]
     [UniqueFactorizationMonoid M] [Subsingleton Mˣ] (x : M) : factors x = normalizedFactors x := by
   unfold normalizedFactors
-  convert! (Multiset.map_id (factors x)).symm
-  ext p
+  convert (Multiset.map_id (factors x)).symm with p
   exact normalize_eq p
 
 theorem prod_normalizedFactors {a : α} (ane0 : a ≠ 0) :
@@ -373,7 +372,7 @@ variable [CommMonoidWithZero α] [UniqueFactorizationMonoid α]
 
 open scoped Classical in
 /-- Noncomputably defines a `normalizationMonoid` structure on a `UniqueFactorizationMonoid`. -/
-@[implicit_reducible]
+@[instance_reducible]
 protected noncomputable def normalizationMonoid : NormalizationMonoid α :=
   normalizationMonoidOfMonoidHomRightInverse
     { toFun := fun a : Associates α =>

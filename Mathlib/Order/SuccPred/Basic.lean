@@ -83,7 +83,7 @@ section Preorder
 variable [Preorder α]
 
 /-- A constructor for `SuccOrder α` usable when `α` has no maximal element. -/
-@[to_dual (attr := implicit_reducible)
+@[to_dual (attr := instance_reducible)
 /-- A constructor for `PredOrder α` usable when `α` has no minimal element. -/]
 def SuccOrder.ofSuccLeIff (succ : α → α) (hsucc_le_iff : ∀ {a b}, succ a ≤ b ↔ a < b) :
     SuccOrder α where
@@ -99,7 +99,7 @@ section LinearOrder
 variable [LinearOrder α]
 
 /-- A constructor for `SuccOrder α` for `α` a linear order. -/
-@[to_dual (attr := simps, implicit_reducible)
+@[to_dual (attr := simps, instance_reducible)
 /-- A constructor for `PredOrder α` for `α` a linear order. -/]
 def SuccOrder.ofCore (succ : α → α) (hn : ∀ {a}, ¬IsMax a → ∀ b, a < b ↔ succ a ≤ b)
     (hm : ∀ a, IsMax a → succ a = a) : SuccOrder α where
@@ -112,7 +112,7 @@ variable (α)
 
 open Classical in
 /-- A well-order is a `SuccOrder`. -/
-@[to_dual (attr := implicit_reducible)
+@[to_dual (attr := instance_reducible)
 /-- A linear order with well-founded greater-than relation is a `PredOrder`. -/]
 noncomputable def SuccOrder.ofLinearWellFoundedLT [WellFoundedLT α] : SuccOrder α :=
   ofCore (fun a ↦ if h : (Ioi a).Nonempty then wellFounded_lt.min _ h else a)
@@ -232,9 +232,11 @@ theorem isMax_iterate_succ_of_eq_of_ne {n m : ℕ} (h_eq : succ^[n] a = succ^[m]
   · rw [h_eq]
     exact isMax_iterate_succ_of_eq_of_lt h_eq.symm (lt_of_le_of_ne h h_ne.symm)
 
-@[to_dual]
-theorem Iic_subset_Iio_succ_of_not_isMax (ha : ¬IsMax a) : Iic a ⊆ Iio (succ a) :=
-  fun _ => (lt_succ_of_le_of_not_isMax · ha)
+@[to_dual (attr := deprecated "use `gcongr`/`grw` and `lt_succ_of_not_isMax"
+  (since := "2026-06-06"))]
+theorem Iic_subset_Iio_succ_of_not_isMax (ha : ¬IsMax a) : Iic a ⊆ Iio (succ a) := by
+  gcongr
+  exact lt_succ_of_not_isMax ha
 
 @[to_dual]
 theorem Ici_succ_of_not_isMax (ha : ¬IsMax a) : Ici (succ a) = Ioi a :=
@@ -242,15 +244,13 @@ theorem Ici_succ_of_not_isMax (ha : ¬IsMax a) : Ici (succ a) = Ioi a :=
 
 @[to_dual Icc_subset_Ioc_pred_left_of_not_isMin]
 theorem Icc_subset_Ico_succ_right_of_not_isMax (hb : ¬IsMax b) : Icc a b ⊆ Ico a (succ b) := by
-  rw [← Ici_inter_Iio, ← Ici_inter_Iic]
   gcongr
-  exact Iic_subset_Iio_succ_of_not_isMax hb
+  exact lt_succ_of_not_isMax hb
 
 @[to_dual Ico_subset_Ioo_pred_left_of_not_isMin]
 theorem Ioc_subset_Ioo_succ_right_of_not_isMax (hb : ¬IsMax b) : Ioc a b ⊆ Ioo a (succ b) := by
-  rw [← Ioi_inter_Iio, ← Ioi_inter_Iic]
   gcongr
-  exact Iic_subset_Iio_succ_of_not_isMax hb
+  exact lt_succ_of_not_isMax hb
 
 @[to_dual Icc_pred_right_of_not_isMin]
 theorem Icc_succ_left_of_not_isMax (ha : ¬IsMax a) : Icc (succ a) b = Ioc a b := by

@@ -158,7 +158,7 @@ lemma inf_iSup₂_eq {f : ∀ i, κ i → α} (a : α) : (a ⊓ ⨆ i, ⨆ j, f 
   simp only [inf_iSup_eq]
 
 /-- The `Order.Frame.MinimalAxioms` element corresponding to a frame. -/
-@[implicit_reducible]
+@[instance_reducible]
 def of [Frame α] : MinimalAxioms α where
   __ := ‹Frame α›
   inf_sSup_le_iSup_inf a s := _root_.inf_sSup_eq.le
@@ -198,7 +198,7 @@ lemma sup_iInf₂_eq {f : ∀ i, κ i → α} (a : α) : (a ⊔ ⨅ i, ⨅ j, f 
   simp only [sup_iInf_eq]
 
 /-- The `Order.Coframe.MinimalAxioms` element corresponding to a frame. -/
-@[implicit_reducible]
+@[instance_reducible]
 def of [Coframe α] : MinimalAxioms α where
   __ := ‹Coframe α›
   iInf_sup_le_sup_sInf a s := _root_.sup_sInf_eq.ge
@@ -224,7 +224,7 @@ variable (minAx : MinimalAxioms α)
 
 /-- The `CompleteDistribLattice.MinimalAxioms` element corresponding to a complete distrib lattice.
 -/
-@[implicit_reducible]
+@[instance_reducible]
 def of [CompleteDistribLattice α] : MinimalAxioms α where
   __ := ‹CompleteDistribLattice α›
   inf_sSup_le_iSup_inf a s := inf_sSup_eq.le
@@ -309,7 +309,7 @@ abbrev toCompleteDistribLattice : CompleteDistribLattice.MinimalAxioms α where
       _ = _ := by simp [sInf_eq_iInf', iInf_unique, iSup_bool_eq]
 
 /-- The `CompletelyDistribLattice.MinimalAxioms` element corresponding to a frame. -/
-@[implicit_reducible]
+@[instance_reducible]
 def of [CompletelyDistribLattice α] : MinimalAxioms α := { ‹CompletelyDistribLattice α› with }
 
 end MinimalAxioms
@@ -520,6 +520,7 @@ theorem iSup_sdiff_eq {f : ι → α} : (⨆ x, f x) \ a = ⨆ x, f x \ a :=
 theorem sdiff_iSup_eq {f : ι → α} : a \ ⨅ x, f x = ⨆ x, a \ f x :=
   eq_of_forall_ge_iff fun _ => by simp [iInf_sup_eq]
 
+@[to_dual existing]
 theorem iInf_sup_iInf {ι ι' : Type*} {f : ι → α} {g : ι' → α} :
     ((⨅ i, f i) ⊔ ⨅ i, g i) = ⨅ i : ι × ι', f i.1 ⊔ g i.2 :=
   @iSup_inf_iSup αᵒᵈ _ _ _ _ _

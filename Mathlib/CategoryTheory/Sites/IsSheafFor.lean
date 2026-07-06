@@ -5,6 +5,7 @@ Authors: Bhavik Mehta
 -/
 module
 
+public import Mathlib.CategoryTheory.Limits.FunctorCategory.EpiMono
 public import Mathlib.CategoryTheory.Sites.Sieves
 
 /-!
@@ -227,6 +228,13 @@ theorem restrict_extend {x : FamilyOfElements P R} (t : x.Compatible) :
   funext Y f hf
   exact extend_agrees t hf
 
+lemma FamilyOfElements.Compatible.of_mono (f : P ⟶ Q) [Mono f] {x : R.FamilyOfElements P}
+    (hx : (x.map f).Compatible) :
+    x.Compatible := by
+  intro Y Z W g₁ g₂ f₁ f₂ hf₁ hf₂ heq
+  refine injective_of_mono (f.app _) ?_
+  simpa using hx _ _ hf₁ hf₂ heq
+
 /--
 If the arrow set for a family of elements is actually a sieve (i.e. it is downward closed) then the
 consistency condition can be simplified.
@@ -407,6 +415,13 @@ lemma FamilyOfElements.isAmalgamation_singleton_iff {X Y : C} (f : X ⟶ Y)
   rintro H Y g ⟨rfl⟩
   exact H
 
+lemma FamilyOfElements.IsAmalgamation.of_mono (f : P ⟶ Q) [Mono f] {x : R.FamilyOfElements P}
+    {t : P.obj (.op X)} (ht : (x.map f).IsAmalgamation (f.app _ t)) :
+    x.IsAmalgamation t := by
+  intro Y u hu
+  refine injective_of_mono (f.app _) ?_
+  simpa using ht _ hu
+
 /-- A presheaf is separated for a presieve if there is at most one amalgamation. -/
 def IsSeparatedFor (P : Cᵒᵖ ⥤ Type w) (R : Presieve X) : Prop :=
   ∀ (x : FamilyOfElements P R) (t₁ t₂), x.IsAmalgamation t₁ → x.IsAmalgamation t₂ → t₁ = t₂
@@ -542,7 +557,7 @@ theorem isSheafFor_iff_yonedaSheafCondition {P : Cᵒᵖ ⥤ Type v₁} :
   dsimp [functor]
   simp only [Subtype.forall, shrinkYonedaObjObjEquiv.forall_congr_left, Equiv.apply_symm_apply]
   congr!
-  simp [Equiv.subtypeEquiv]
+  simp
 
 /--
 If `P` is a sheaf for the sieve `S` on `X`, a natural transformation from `S` (viewed as a functor)
@@ -729,6 +744,11 @@ theorem isSeparatedFor_iso {P' : Cᵒᵖ ⥤ Type w} (i : P ≅ P') (hP : IsSepa
     IsSeparatedFor P' R := by
   intro x t₁ t₂ ht₁ ht₂
   simpa using congrArg (i.hom.app _) <| hP (x.map i.inv) _ _ (ht₁.map i.inv) (ht₂.map i.inv)
+
+lemma IsSeparatedFor.of_mono (f : P ⟶ Q) [Mono f] (h : R.IsSeparatedFor Q) :
+    R.IsSeparatedFor P := by
+  intro x t₁ t₂ ht₁ ht₂
+  exact injective_of_mono _ <|  h (x.map f) _ _ (ht₁.map f) (ht₂.map f)
 
 /-- If a presieve `R` on `X` has a subsieve `S` such that:
 
@@ -1042,10 +1062,10 @@ theorem isSheafFor_trans (P : Cᵒᵖ ⥤ Type*) (R S : Sieve X)
   apply Presieve.isSheafFor_subsieve_aux P this
   · apply isSheafFor_bind _ _ _ hR hS
     intro Y f hf Z g
-    rw [← pullback_comp]
+    rw [← Sieve.pullback_comp]
     apply (hS (R.downward_closed hf _)).isSeparatedFor
   · intro Y f hf
-    have : Sieve.pullback f (Sieve.bind R fun T (k : T ⟶ X) (_ : R k) => pullback k S) =
+    have : Sieve.pullback f (Sieve.bind R fun T (k : T ⟶ X) (_ : R k) => Sieve.pullback k S) =
         R.pullback f := by
       ext Z g
       constructor

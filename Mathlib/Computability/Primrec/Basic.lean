@@ -140,7 +140,7 @@ instance (priority := 10) ofDenumerable (α) [Denumerable α] : Primcodable α :
   ⟨Nat.Primrec.succ.of_eq <| by simp⟩
 
 /-- Builds a `Primcodable` instance from an equivalence to a `Primcodable` type. -/
-@[implicit_reducible]
+@[instance_reducible]
 def ofEquiv (α) {β} [Primcodable α] (e : β ≃ α) : Primcodable β :=
   { __ := Encodable.ofEquiv α e
     prim := (Primcodable.prim α).of_eq fun n => by
@@ -573,7 +573,6 @@ theorem option_getD : Primrec₂ (@Option.getD α) :=
 theorem option_getD_default [Inhabited α] : Primrec (fun o : Option α => o.getD default) :=
   option_getD.comp .id (const default)
 
-set_option linter.deprecated false in
 @[deprecated option_getD_default (since := "2026-01-05")]
 theorem option_iget [Inhabited α] : Primrec (@Option.iget α _) :=
   option_getD_default
@@ -811,7 +810,7 @@ variable {α : Type*} [Primcodable α]
 open Primrec
 
 /-- A subtype of a primitive recursive predicate is `Primcodable`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def subtype {p : α → Prop} [DecidablePred p] (hp : PrimrecPred p) : Primcodable (Subtype p) :=
   ⟨have : Primrec fun n => (@decode α _ n).bind fun a => Option.guard p a :=
     option_bind .decode (option_guard (hp.comp snd).primrecRel snd)

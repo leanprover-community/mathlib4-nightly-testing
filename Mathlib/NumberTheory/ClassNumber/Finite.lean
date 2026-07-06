@@ -9,12 +9,13 @@ public import Mathlib.Analysis.SpecialFunctions.Pow.Real
 public import Mathlib.LinearAlgebra.FreeModule.PID
 public import Mathlib.LinearAlgebra.Matrix.AbsoluteValue
 public import Mathlib.NumberTheory.ClassNumber.AdmissibleAbsoluteValue
-public import Mathlib.RingTheory.ClassGroup
+public import Mathlib.RingTheory.ClassGroup.Basic
 public import Mathlib.RingTheory.DedekindDomain.IntegralClosure
 public import Mathlib.RingTheory.Norm.Basic
 
 /-!
 # Class numbers of global fields
+
 In this file, we use the notion of "admissible absolute value" to prove
 finiteness of the class group for number fields and function fields.
 
@@ -325,7 +326,7 @@ algebraic extension `L` is finite if there is an admissible absolute value.
 See also `ClassGroup.fintypeOfAdmissibleOfFinite` where `L` is a finite
 extension of `K = Frac(R)`, supplying most of the required assumptions automatically.
 -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def fintypeOfAdmissibleOfAlgebraic [IsDedekindDomain S]
     [Algebra.IsAlgebraic R S] : Fintype (ClassGroup S) :=
   @Fintype.ofSurjective _ _ _
@@ -347,7 +348,7 @@ absolute value.
 See also `ClassGroup.fintypeOfAdmissibleOfAlgebraic` where `L` is an
 algebraic extension of `R`, that includes some extra assumptions.
 -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def fintypeOfAdmissibleOfFinite [IsIntegralClosure S R L] :
     Fintype (ClassGroup S) := by
   letI := Classical.decEq L

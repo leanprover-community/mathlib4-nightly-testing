@@ -115,7 +115,7 @@ theorem mem_span_pow {x y : S} {d : ℕ} (hd : d ≠ 0) :
   · rintro ⟨f, h, hy⟩
     refine ⟨f, ?_, hy⟩
     by_cases hf : f = 0
-    · simp only [hf, natDegree_zero, degree_zero] at h ⊢
+    · simp only [hf, natDegree_zero, Polynomial.degree_zero] at h ⊢
       first | exact lt_of_le_of_ne (Nat.zero_le d) hd.symm | exact WithBot.bot_lt_coe d
     simpa [degree_eq_natDegree hf] using h
 
@@ -333,7 +333,7 @@ noncomputable def liftEquiv' [IsDomain B] (pb : PowerBasis A S) :
 
 /-- There are finitely many algebra homomorphisms `S →ₐ[A] B` if `S` is of the form `A[x]`
 and `B` is an integral domain. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def AlgHom.fintype [IsDomain B] (pb : PowerBasis A S) : Fintype (S →ₐ[A] B) :=
   letI := Classical.decEq B
   Fintype.ofEquiv _ pb.liftEquiv'.symm

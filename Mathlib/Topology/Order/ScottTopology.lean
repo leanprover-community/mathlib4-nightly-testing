@@ -77,7 +77,7 @@ A set `u` is open in the Scott-Hausdorff topology iff when the least upper bound
 
 For mild conditions on `D`, this is equivalent to saying that open sets are `DirSupInaccOn D`,
 and closed sets are `DirSupClosedOn D`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def scottHausdorff (α : Type*) (D : Set (Set α)) [Preorder α] : TopologicalSpace α where
   IsOpen u := ∀ ⦃d : Set α⦄, d ∈ D → d.Nonempty → DirectedOn (· ≤ ·) d → ∀ ⦃a : α⦄, IsLUB d a →
     a ∈ u → ∃ b ∈ d, Ici b ∩ d ⊆ u
@@ -101,8 +101,7 @@ and closed sets are `DirSupClosedOn D`. -/
 class IsScottHausdorff (α) (D : Set (Set α)) [Preorder α] [TopologicalSpace α] : Prop where
   topology_eq_scottHausdorff : ‹TopologicalSpace α› = scottHausdorff α D
 
-instance (α) (D : Set (Set α)) [Preorder α] [TopologicalSpace α] :
-    @IsScottHausdorff α D _ (scottHausdorff α D) :=
+instance (α) (D : Set (Set α)) [Preorder α] : @IsScottHausdorff α D _ (scottHausdorff α D) :=
   @IsScottHausdorff.mk _ _ _ (scottHausdorff α D) rfl
 
 namespace IsScottHausdorff
@@ -162,7 +161,7 @@ section Preorder
 /-- The Scott topology.
 
 It is defined as the join of the topology of upper sets and the Scott-Hausdorff topology. -/
-@[implicit_reducible]
+@[instance_reducible]
 def scott (α : Type*) (D : Set (Set α)) [Preorder α] : TopologicalSpace α :=
   upperSet α ⊔ scottHausdorff α D
 
@@ -306,7 +305,7 @@ lemma scott_eq_upper_of_completeLinearOrder : scott α univ = upper α := by
   letI := scott α univ
   rw [@isOpen_iff_Iic_compl_or_univ _ _ (scott α univ) ({ topology_eq_scott := rfl }) U]
 
-/- The upper topology on a complete linear order is the Scott topology -/
+/-- The upper topology on a complete linear order is the Scott topology -/
 instance [TopologicalSpace α] [IsUpper α] : IsScott α univ where
   topology_eq_scott := by
     rw [scott_eq_upper_of_completeLinearOrder]

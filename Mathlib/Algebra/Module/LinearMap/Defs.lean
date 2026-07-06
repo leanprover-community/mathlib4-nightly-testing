@@ -196,11 +196,11 @@ variable {σ : R →+* S}
 
 instance instFunLike : FunLike (M →ₛₗ[σ] M₃) M M₃ where
   coe f := f.toFun
-  coe_injective' f g h := by
+  coe_injective f g h := by
     cases f
     cases g
     congr
-    apply DFunLike.coe_injective'
+    apply DFunLike.coe_injective
     exact h
 
 instance semilinearMapClass : SemilinearMapClass (M →ₛₗ[σ] M₃) σ M M₃ where
@@ -264,7 +264,7 @@ theorem toLinearMap_injective {F : Type*} [FunLike F M M₃] [SemilinearMapClass
   exact DFunLike.congr_fun h m
 
 /-- Identity map as a `LinearMap` -/
-@[implicit_reducible]
+@[instance_reducible]
 def id : M →ₗ[R] M :=
   { DistribMulActionHom.id R with toFun x := x }
 
@@ -482,7 +482,7 @@ variable {module_M₁ : Module R₁ M₁} {module_M₂ : Module R₂ M₂} {modu
 variable {σ₁₂ : R₁ →+* R₂} {σ₂₃ : R₂ →+* R₃} {σ₁₃ : R₁ →+* R₃}
 
 /-- Composition of two linear maps is a linear map -/
-@[implicit_reducible]
+@[instance_reducible]
 def comp [RingHomCompTriple σ₁₂ σ₂₃ σ₁₃] (f : M₂ →ₛₗ[σ₂₃] M₃) (g : M₁ →ₛₗ[σ₁₂] M₂) :
     M₁ →ₛₗ[σ₁₃] M₃ where
   toFun x := f (g x)

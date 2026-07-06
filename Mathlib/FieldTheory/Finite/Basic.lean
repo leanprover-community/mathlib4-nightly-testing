@@ -569,11 +569,6 @@ theorem Nat.ModEq.pow_totient {x n : ℕ} (h : Nat.Coprime x n) : x ^ φ n ≡ 1
   simpa only [Nat.succ_eq_add_one, Nat.cast_pow, Units.val_one, Nat.cast_one,
     coe_unitOfCoprime, Units.val_pow_eq_pow_val]
 
-/-- For each `n ≥ 0`, the unit group of `ZMod n` is finite. -/
-instance instFiniteZModUnits : (n : ℕ) → Finite (ZMod n)ˣ
-| 0 => Finite.of_fintype ℤˣ
-| _ + 1 => inferInstance
-
 open FiniteField
 
 namespace ZMod
@@ -733,7 +728,7 @@ theorem Subfield.card_bot : Nat.card (⊥ : Subfield F) = p := by
     ← Nat.card_eq_of_bijective _ (RingHom.rangeRestrictField_bijective _), Nat.card_zmod]
 
 /-- The prime subfield is finite. -/
-@[implicit_reducible]
+@[instance_reducible]
 def Subfield.fintypeBot : Fintype (⊥ : Subfield F) :=
   Fintype.subtype (univ.map ⟨_, (ZMod.castHom (m := p) dvd_rfl F).injective⟩)
     fun _ ↦ by simp_rw [Finset.mem_map, mem_univ, true_and, ← fieldRange_castHom_eq_bot p]; rfl

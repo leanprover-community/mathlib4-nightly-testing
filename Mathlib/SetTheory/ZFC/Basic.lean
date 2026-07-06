@@ -147,7 +147,7 @@ namespace Classical
 open PSet ZFSet
 
 /-- All functions are classically definable. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def allZFSetDefinable {n} (F : (Fin n → ZFSet.{u}) → ZFSet.{u}) : Definable n F where
   out xs := (F (mk <| xs ·)).out
 
@@ -177,7 +177,7 @@ private lemma ext_aux : (∀ z : ZFSet.{u}, z ∈ x.toSet ↔ z ∈ y.toSet) →
 
 instance : SetLike ZFSet.{u} ZFSet.{u} where
   coe := toSet
-  coe_injective' x y hxy := by apply ext_aux; intro z; exact congr(z ∈ $hxy)
+  coe_injective x y hxy := by apply ext_aux; intro z; exact congr(z ∈ $hxy)
 
 /-- The membership relation for ZFC sets is inherited from the membership relation for pre-sets. -/
 @[deprecated "use `∈` notation" (since := "2026-03-16")]

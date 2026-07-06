@@ -83,10 +83,8 @@ def id : ∀ X : WithTerminal C, Hom X X
   | of _ => 𝟙 _
   | star => PUnit.unit
 
-#adaptation_note /-- As of nightly-2026-04-29, the simpNF linter is failing here.
-Assistance investigating this would be appreciated. -/
 /-- Composition of morphisms for `WithTerminal C`. -/
-@[simp, nolint simpNF]
+@[simp]
 def comp : ∀ {X Y Z : WithTerminal C}, Hom X Y → Hom Y Z → Hom X Z
   | of _X, of _Y, of _Z => fun f g => f ≫ g
   | of _X, _, star => fun _f _g => PUnit.unit
@@ -692,7 +690,6 @@ theorem liftStar_lift_map {D : Type*} [Category* D] {Z : D} (F : C ⥤ D) (M : �
       M x ≫ (inclLift F M hM).hom.app x := by
   simp [incl]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The uniqueness of `lift`. -/
 @[simp]
 def liftUnique {D : Type*} [Category* D] {Z : D} (F : C ⥤ D) (M : ∀ x : C, Z ⟶ F.obj x)
