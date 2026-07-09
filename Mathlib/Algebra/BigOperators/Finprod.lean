@@ -97,13 +97,13 @@ section
 /- Note: we use classical logic only for these definitions, to ensure that we do not write lemmas
 with `Classical.dec` in their statement. -/
 
-open Classical in
+open scoped Classical in
 /-- Sum of `f x` as `x` ranges over the elements of the support of `f`, if it's finite. Zero
 otherwise. -/
 noncomputable irreducible_def finsum (lemma := finsum_def') [AddCommMonoid M] (f : α → M) : M :=
   if h : HasFiniteSupport (f ∘ PLift.down) then ∑ i ∈ h.toFinset, f i.down else 0
 
-open Classical in
+open scoped Classical in
 /-- Product of `f x` as `x` ranges over the elements of the multiplicative support of `f`, if it's
 finite. One otherwise. -/
 @[to_additive existing]
@@ -444,6 +444,14 @@ theorem finprod_ne_zero {M₀ : Type*} [CommMonoidWithZero M₀] [Nontrivial M�
     ∏ᶠ i, f i ≠ 0 := by
   by_cases h₂ : Set.Finite f.mulSupport
   · grind [finprod_eq_prod f h₂, Finset.prod_ne_zero_iff]
+  · simp [finprod_of_infinite_mulSupport h₂]
+
+theorem finprod_apply_ne_zero {ι : Type*} {N₀ M₀ : Type*} [CommMonoidWithZero M₀] [Nontrivial M₀]
+    [NoZeroDivisors M₀] {n : N₀} {f : ι → N₀ → M₀} (h : ∀ i, f i n ≠ 0) :
+    (∏ᶠ i, f i) n ≠ 0 := by
+  by_cases h₂ : f.mulSupport.Finite
+  · rw [finprod_eq_prod f h₂]
+    grind [Finset.prod_apply, Finset.prod_ne_zero_iff]
   · simp [finprod_of_infinite_mulSupport h₂]
 
 @[to_additive]
@@ -1229,7 +1237,6 @@ theorem finsum_mem_mul' {R : Type*} [NonUnitalNonAssocSemiring R] {s : Set α} (
     (hs : s.Finite) : (∑ᶠ a ∈ s, f a) * r = ∑ᶠ a ∈ s, f a * r :=
   (AddMonoidHom.mulRight r).map_finsum_mem f hs
 
-open Classical in
 /--
 If `R` has no zero divisors, then multiplication commutes with finsums. See `mul_finsum'` for a
 statement assuming finiteness of support.
@@ -1237,6 +1244,7 @@ statement assuming finiteness of support.
 theorem mul_finsum {R : Type*} [NonUnitalNonAssocSemiring R] [NoZeroDivisors R] (f : α → R)
     (r : R) :
     (r * ∑ᶠ a : α, f a) = ∑ᶠ a : α, r * f a := by
+  classical
   by_cases hr : r = 0
   · simp_all
   by_cases h : f.support.Finite
@@ -1255,7 +1263,6 @@ theorem mul_finsum_mem {R : Type*} [NonUnitalNonAssocSemiring R] [NoZeroDivisors
   ext a
   by_cases h : a ∈ s <;> simp_all
 
-open Classical in
 /--
 If `R` has no zero divisors, then multiplication commutes with finsums. See `finsum_mul'` for a
 statement assuming finiteness of support.
@@ -1263,6 +1270,7 @@ statement assuming finiteness of support.
 theorem finsum_mul {R : Type*} [NonUnitalNonAssocSemiring R] [NoZeroDivisors R] (f : α → R)
     (r : R) :
     (∑ᶠ a : α, f a) * r = ∑ᶠ a : α, f a * r := by
+  classical
   by_cases hr : r = 0
   · simp_all
   by_cases h : f.support.Finite
