@@ -114,6 +114,9 @@ lemma hom_ext_yoneda {P Q : Sheaf J (Type v)} {f g : P ⟶ Q}
   simpa only [yonedaEquiv_comp, Equiv.apply_symm_apply]
     using! congr_arg (J.yonedaEquiv) (h _ (J.yonedaEquiv.symm x))
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The Yoneda lemma for sheaves. -/
 @[simps! +dsimpLhs hom_app_app_hom_apply_down inv_app_app]
 def yonedaOpCompCoyoneda :
@@ -215,6 +218,9 @@ lemma hom_ext_uliftYoneda {P Q : Sheaf J (Type (max v v'))} {f g : P ⟶ Q}
   simpa only [uliftYonedaEquiv_comp, Equiv.apply_symm_apply]
     using! congr_arg (J.uliftYonedaEquiv) (h _ (J.uliftYonedaEquiv.symm x))
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A variant of the Yoneda lemma for sheaves with a raise in the universe level. -/
 @[simps! +dsimpLhs -isSimp]
 def uliftYonedaOpCompCoyoneda :

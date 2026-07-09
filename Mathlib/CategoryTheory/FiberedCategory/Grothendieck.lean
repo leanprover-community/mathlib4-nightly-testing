@@ -95,6 +95,9 @@ def ι : F.obj ⟨op S⟩ ⥤ ∫ᶜ F where
     · simp [← (F.mapId ⟨op S⟩).inv.toNatTrans.naturality_assoc ψ, F.whiskerRight_mapId_inv_app,
         Strict.leftUnitor_eqToIso, ← Cat.Hom₂.comp_app]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The natural isomorphism encoding `comp_const`. -/
 @[simps!]
 def compIso : (ι F S) ⋙ forget F ≅ (const (F.obj ⟨op S⟩)).obj S :=

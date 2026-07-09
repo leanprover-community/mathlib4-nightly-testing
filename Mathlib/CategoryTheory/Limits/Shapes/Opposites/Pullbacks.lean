@@ -149,6 +149,9 @@ end PushoutCocone
 
 namespace PullbackCone
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The obvious map `PullbackCone f g → PushoutCocone f.unop g.unop` -/
 @[simps!]
 def unop {X Y Z : Cᵒᵖ} {f : X ⟶ Z} {g : Y ⟶ Z} (c : PullbackCone f g) :

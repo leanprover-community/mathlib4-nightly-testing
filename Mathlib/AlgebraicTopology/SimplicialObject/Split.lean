@@ -180,6 +180,9 @@ of `θ.unop ≫ A.e`. -/
 def pull : IndexSet Δ' :=
   mk (factorThruImage (θ.unop ≫ A.e))
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 theorem fac_pull : (A.pull θ).e ≫ image.ι (θ.unop ≫ A.e) = θ.unop ≫ A.e :=
   image.fac _

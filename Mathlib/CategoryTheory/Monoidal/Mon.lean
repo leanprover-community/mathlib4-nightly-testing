@@ -1146,6 +1146,9 @@ def unitIso :
   NatIso.ofComponents
     (fun F ↦ LaxMonoidalFunctor.isoOfComponents (fun _ ↦ F.mapIso (eqToIso (by ext))))
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `counitIso`. -/
 @[to_additive (attr := simps!) /-- Auxiliary definition for `counitIso`. -/]
 def counitIsoAux (F : Mon C) :

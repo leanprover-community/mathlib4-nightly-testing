@@ -65,6 +65,9 @@ noncomputable def skyscraperPresheafHomEquiv :
   left_inv f := by cat_disch
   right_inv g := by cat_disch
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma toPresheafFiber_skyscraperPresheafHomEquiv_symm
     (g : P ⟶ Φ.skyscraperPresheaf M) (X : C) (x : Φ.fiber.obj X) :

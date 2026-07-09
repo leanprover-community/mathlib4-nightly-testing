@@ -175,6 +175,9 @@ theorem naturality_apply [G.IsLocallyFull K] {X Y : C} (i : G.obj X ⟶ G.obj Y)
   refine IsLocallyFull.ext G _ i fun V iVX iVY e ↦ ?_
   simp only [← Functor.map_comp_apply, ← op_comp, ← e, this]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 theorem naturality [G.IsLocallyFull K] {X Y : C} (i : G.obj X ⟶ G.obj Y) :
     α.app _ ≫ ℱ'.1.map i.op = ℱ.map i.op ≫ α.app _ := by ext; exact naturality_apply α i _

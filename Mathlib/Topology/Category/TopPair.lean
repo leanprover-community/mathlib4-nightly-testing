@@ -131,6 +131,9 @@ structure Homotopy (f g : X ⟶ Y) where
   /-- The proof that the homotopies fit into a commutative square with the maps of the pairs. -/
   w : X.map ▷ _ ≫ fst.h = snd.h ≫ Y.map := by cat_disch
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 attribute [reassoc, elementwise] Homotopy.w
 attribute [local simp] Homotopy.w Homotopy.w_apply
 

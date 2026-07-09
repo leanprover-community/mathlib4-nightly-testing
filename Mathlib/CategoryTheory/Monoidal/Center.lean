@@ -153,6 +153,9 @@ def tensorObj (X Y : Center C) : Center C :=
             rw [HalfBraiding.naturality]; monoidal
           _ = _ := by rw [HalfBraiding.naturality]; monoidal }⟩
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 theorem whiskerLeft_comm (X : Center C) {Y₁ Y₂ : Center C} (f : Y₁ ⟶ Y₂) (U : C) :

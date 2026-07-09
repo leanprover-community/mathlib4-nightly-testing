@@ -580,6 +580,9 @@ variable (r r' : ℤ) (hrr' : r + 1 = r') (hr : r₀ ≤ r)
   (n₀ n₁ n₂ : ℤ) (hn₁' : n₁ = data.deg pq')
 
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 unseal spectralSequence in
 /-- The homology data for the short complexes given by the differentials
 of a spectral sequence attached to a spectral object in an abelian category. -/

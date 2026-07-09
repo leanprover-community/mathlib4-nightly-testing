@@ -232,6 +232,9 @@ variable (C)
 
 section Iso
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A homeomorphism of spaces gives an equivalence of categories of presheaves. -/
 @[simps!]
 def presheafEquivOfIso {X Y : TopCat.{w}} (H : X ≅ Y) : X.Presheaf C ≌ Y.Presheaf C :=

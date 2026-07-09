@@ -418,6 +418,9 @@ theorem map_evalRingHom_pi {I : Π i, Ideal (R i)} (i : ι) :
   rintro ⟨r, hr, rfl⟩
   exact hr i
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Ideals in a finite direct product semiring `Πᵢ Rᵢ` are identified with tuples of ideals
 in the individual semirings, in an order-preserving way.
 

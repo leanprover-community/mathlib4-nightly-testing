@@ -684,6 +684,9 @@ def withValEquiv (R : Type*) [CommRing R] [Algebra R K] [IsIntegralClosure R ℤ
 
 end NumberField.RingOfIntegers
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 open scoped NumberField in
 /-- The ring of integers of `WithVal v`, when `v` is a valuation on `ℚ`, is
 equivalent to `ℤ`. -/

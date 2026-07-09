@@ -149,6 +149,9 @@ def coreHomEquivToOverSections : CoreHomEquiv (toOver I) (sections I) where
     · simp [← curry_natural_right]
     · simp
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The adjunction between the toOver functor and the sections functor. -/
 @[simps! unit_app counit_app]
 def toOverSectionsAdj : toOver I ⊣ sections I :=

@@ -583,6 +583,9 @@ def sigmaPreimageEquiv {α β} (f : α → β) : (Σ b, f ⁻¹' {b}) ≃ α :=
   sigmaFiberEquiv f
 
 -- See also `Equiv.ofFiberEquiv`.
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A family of equivalences between preimages of points gives an equivalence between domains. -/
 @[simps!]
 def ofPreimageEquiv {α β γ} {f : α → γ} {g : β → γ} (e : ∀ c, f ⁻¹' {c} ≃ g ⁻¹' {c}) : α ≃ β :=

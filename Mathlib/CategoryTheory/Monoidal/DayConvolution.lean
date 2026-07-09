@@ -112,6 +112,9 @@ section unit
 
 variable {x x' y y' : C}
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 lemma unit_naturality (f : x ⟶ x') (g : y ⟶ y') :
@@ -128,6 +131,9 @@ lemma whiskerRight_comp_unit_app (f : x ⟶ x') :
     (unit F G).app (x, y) ≫ (F ⊛ G).map (f ▷ y) := by
   simpa [tensorHom_def] using (unit F G).naturality (f ×ₘ 𝟙 _)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable (x) in
 @[reassoc (attr := simp)]
@@ -238,6 +244,9 @@ def corepresentableBy₂' :
       Functor.homEquivOfIsLeftKanExtension _ (extensionUnitLeft (F ⊛ G) (unit F G) H) _
   homEquiv_comp := by aesop
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The isomorphism of functors between
 `((F ⊠ G) ⊠ H ⟶ (tensor C).prod (𝟭 C) ⋙ tensor C ⋙ -)` and
@@ -492,6 +501,9 @@ def corepresentableByRight [DayConvolution F U] :
       Functor.homEquivOfIsLeftKanExtension _ (extensionUnitRight U (φ U) F) _
   homEquiv_comp := by aesop
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The isomorphism of corepresentable functors that defines the left unitor for
 Day convolution. -/
 @[simps! +dsimpLhs]
@@ -520,6 +532,9 @@ def leftUnitorCorepresentingIso :
       isoWhiskerRight ((whiskeringLeft _ _ _).mapIso <| NatIso.ofComponents fun _ ↦ λ_ _) _
     _ ≅ _ := coyoneda.mapIso <| Iso.op <| NatIso.ofComponents fun _ ↦ (λ_ _).symm
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The isomorphism of corepresentable functors that defines the right unitor for
 Day convolution. -/
 @[simps! +dsimpLhs]

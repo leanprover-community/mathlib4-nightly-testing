@@ -738,6 +738,9 @@ end cyclesIso₀
 
 section isoCycles₁
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The short complex `(G² →₀ A) --d₂₁--> (G →₀ A) --d₁₀--> A` is isomorphic to the 1st
 short complex associated to the complex of inhomogeneous chains of `A`. -/
 @[simps! hom inv]
@@ -787,6 +790,9 @@ end isoCycles₁
 
 section isoCycles₂
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The short complex `(G³ →₀ A) --d₃₂--> (G² →₀ A) --d₂₁--> (G →₀ A)` is isomorphic to the 2nd
 short complex associated to the complex of inhomogeneous chains of `A`. -/
 @[simps! hom inv]

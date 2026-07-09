@@ -361,11 +361,17 @@ attribute [to_dual existing IsColimit.coconePointsIsoOfNatIso_inv] conePointsIso
 set_option linter.translateOverwrite false in
 attribute [to_dual existing IsColimit.coconePointsIsoOfNatIso_hom] conePointsIsoOfNatIso_inv
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual (attr := reassoc) comp_coconePointsIsoOfNatIso_inv]
 theorem conePointsIsoOfNatIso_hom_comp {F G : J ⥤ C} {s : Cone F} {t : Cone G} (P : IsLimit s)
     (Q : IsLimit t) (w : F ≅ G) (j : J) :
     (conePointsIsoOfNatIso P Q w).hom ≫ t.π.app j = s.π.app j ≫ w.hom.app j := by simp
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual (attr := reassoc) comp_coconePointsIsoOfNatIso_hom]
 theorem conePointsIsoOfNatIso_inv_comp {F G : J ⥤ C} {s : Cone F} {t : Cone G} (P : IsLimit s)
     (Q : IsLimit t) (w : F ≅ G) (j : J) :

@@ -559,6 +559,9 @@ the stalk of `structureSheaf R` at `x`. -/
     CommRingCat.of R ⟶ (structurePresheafInCommRingCat R).stalk x :=
   CommRingCat.ofHom (algebraMap _ _) ≫ (structurePresheafInCommRingCat R).germ ⊤ x trivial
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[elementwise, reassoc]
 public lemma algebraMap_germ
     (U : Opens (PrimeSpectrum.Top R)) (x : PrimeSpectrum.Top R) (hxU : x ∈ U) :

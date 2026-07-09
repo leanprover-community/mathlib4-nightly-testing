@@ -176,11 +176,17 @@ functoriality of the intermediate objects of the factorizations
 for `φ : Arrow.mk f ⟶ Arrow.mk g`. -/
 def mapZ : (data.factorizationData f).Z ⟶ (data.factorizationData g).Z := data.Z.map φ
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma i_mapZ :
     (data.factorizationData f).i ≫ data.mapZ φ = φ.left ≫ (data.factorizationData g).i :=
   (data.i.naturality φ).symm
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma mapZ_p :
     data.mapZ φ ≫ (data.factorizationData g).p = (data.factorizationData f).p ≫ φ.right :=

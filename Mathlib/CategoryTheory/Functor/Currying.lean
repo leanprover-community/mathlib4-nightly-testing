@@ -160,6 +160,9 @@ def uncurryObjFlip (F : C ⥤ D ⥤ E) : uncurry.obj F.flip ≅ Prod.swap _ _ �
 
 variable (B C D E)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A version of `CategoryTheory.whiskeringRight` for bifunctors, obtained by uncurrying,
 applying `whiskeringRight` and currying back
 -/

@@ -684,6 +684,9 @@ noncomputable def hom : (presheaf data G₀).obj (op (F.obj X₀)) ⟶ G₀.obj.
 
 variable {X₀}
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma hom_map {W₀ : C₀} (a : W₀ ⟶ X₀) {i : (data (F.obj X₀)).I₀}
     (p : F.obj W₀ ⟶ F.obj ((data (F.obj X₀)).X i))

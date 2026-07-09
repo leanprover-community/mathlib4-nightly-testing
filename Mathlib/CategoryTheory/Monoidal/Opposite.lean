@@ -360,6 +360,9 @@ set_option linter.style.whitespace false in -- manual alignment is not recognise
 /-- The (identity) equivalence between `Cᴹᵒᵖ` and `C`. -/
 @[simps!] def MonoidalOpposite.unmopEquiv : Cᴹᵒᵖ ≌ C := (mopEquiv C).symm
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The equivalence between `C` and its monoidal opposite's monoidal opposite. -/
 @[simps!] def MonoidalOpposite.mopMopEquivalence : Cᴹᵒᵖᴹᵒᵖ ≌ C :=
   .trans (MonoidalOpposite.unmopEquiv Cᴹᵒᵖ) (MonoidalOpposite.unmopEquiv C)

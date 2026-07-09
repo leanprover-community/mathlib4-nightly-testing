@@ -247,6 +247,9 @@ def mapOfIsLimit (kf : KernelFork f) {kf' : KernelFork f'} (hf' : IsLimit kf')
     (φ : Arrow.mk f ⟶ Arrow.mk f') : kf.pt ⟶ kf'.pt :=
   hf'.lift (KernelFork.ofι (kf.ι ≫ φ.left) (by simp))
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma mapOfIsLimit_ι (kf : KernelFork f) {kf' : KernelFork f'} (hf' : IsLimit kf')
     (φ : Arrow.mk f ⟶ Arrow.mk f') :
@@ -756,6 +759,9 @@ def mapOfIsColimit {cc : CokernelCofork f} (hf : IsColimit cc) (cc' : CokernelCo
   hf.desc (CokernelCofork.ofπ (φ.right ≫ cc'.π) (by
     erw [← Arrow.w_assoc φ, condition, comp_zero]))
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma π_mapOfIsColimit {cc : CokernelCofork f} (hf : IsColimit cc) (cc' : CokernelCofork f')
     (φ : Arrow.mk f ⟶ Arrow.mk f') :

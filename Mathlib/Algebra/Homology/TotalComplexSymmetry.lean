@@ -117,12 +117,18 @@ noncomputable def totalFlipIso : K.flip.total c ≅ K.total c :=
       totalFlipIsoX_hom_D₂, Preadditive.add_comp]
     rw [add_comm])
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma totalFlipIso_hom_f_D₁ (j j' : J) :
     (K.totalFlipIso c).hom.f j ≫ K.D₁ c j j' =
       K.flip.D₂ c j j' ≫ (K.totalFlipIso c).hom.f j' := by
   apply totalFlipIsoX_hom_D₁
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma totalFlipIso_hom_f_D₂ (j j' : J) :
     (K.totalFlipIso c).hom.f j ≫ K.D₂ c j j' =

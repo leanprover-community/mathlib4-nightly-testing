@@ -437,6 +437,9 @@ noncomputable def localAlgHom' (f : S →ₐ[R] P) (h : J = K.comap f) :
     Localization.AtPrime J →ₐ[Localization.AtPrime I] Localization.AtPrime K :=
   (localAlgHom J K f h).extendScalarsOfIsLocalization (Localization.AtPrime I) I.primeCompl
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Isomorphic algebras have isomorphic localizations.
 
 See `localAlgEquiv` for a variant where the base ring is not localized. -/

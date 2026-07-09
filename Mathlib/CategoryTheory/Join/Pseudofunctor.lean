@@ -137,6 +137,9 @@ lemma mapWhiskerRight_rightUnitor_hom (F : A ⥤ B) :
 
 end
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The pseudofunctor sending `D` to `C ⋆ D`. -/
 @[simps!]
 def pseudofunctorRight (C : Type u₁) [Category.{v₁} C] :
@@ -152,6 +155,9 @@ def pseudofunctorRight (C : Type u₁) [Category.{v₁} C] :
   map₂_left_unitor := by intros; exact congr($(mapWhiskerLeft_leftUnitor_hom C _).toCatHom₂)
   map₂_right_unitor := by intros; exact congr($(mapWhiskerLeft_rightUnitor_hom C _).toCatHom₂)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The pseudofunctor sending `C` to `C ⋆ D`. -/
 @[simps!]
 def pseudofunctorLeft (D : Type u₂) [Category.{v₂} D] :

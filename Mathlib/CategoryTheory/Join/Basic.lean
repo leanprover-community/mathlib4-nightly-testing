@@ -488,6 +488,9 @@ variable {E : Type u₃} [Category.{v₃} E]
 
 variable {C D}
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A natural transformation `Fₗ ⟶ Gₗ` induces a natural transformation
   `mapPair Fₗ H ⟶ mapPair Gₗ H` for every `H : D ⥤ E'`. -/
 @[simps!]
@@ -511,6 +514,9 @@ lemma mapWhiskerRight_id (Fₗ : C ⥤ E) (H : D ⥤ E') :
     mapWhiskerRight (𝟙 Fₗ) H = 𝟙 _ := by
   cat_disch
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A natural transformation `Fᵣ ⟶ Gᵣ` induces a natural transformation
   `mapPair H Fᵣ ⟶ mapPair H Gᵣ` for every `H : C ⥤ E`. -/
 @[simps!]
@@ -543,6 +549,9 @@ lemma mapWhisker_exchange (Fₗ : C ⥤ E) (Gₗ : C ⥤ E) (Fᵣ : D ⥤ E') (G
   ext
   cat_disch
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A natural isomorphism `Fᵣ ≅ Gᵣ` induces a natural isomorphism
   `mapPair H Fᵣ ≅ mapPair H Gᵣ` for every `H : C ⥤ E`. -/
 @[simps!]
@@ -552,6 +561,9 @@ def mapIsoWhiskerLeft (H : C ⥤ E) {Fᵣ : D ⥤ E'} {Gᵣ : D ⥤ E'} (α : F�
     (mapPairLeft H Fᵣ ≪≫ isoWhiskerRight (Iso.refl H) (inclLeft _ _) ≪≫ (mapPairLeft H Gᵣ).symm)
     (mapPairRight H Fᵣ ≪≫ isoWhiskerRight α (inclRight E E') ≪≫ (mapPairRight H Gᵣ).symm)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A natural isomorphism `Fᵣ ≅ Gᵣ` induces a natural isomorphism
   `mapPair Fₗ H ≅ mapPair Gₗ H` for every `H : C ⥤ E`. -/
 @[simps!]

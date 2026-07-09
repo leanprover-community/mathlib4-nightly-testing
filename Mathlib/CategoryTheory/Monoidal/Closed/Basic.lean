@@ -110,6 +110,9 @@ theorem ev_naturality {X Y : C} (f : X ⟶ Y) :
     A ◁ (ihom A).map f ≫ (ev A).app Y = (ev A).app X ≫ f :=
   (ev A).naturality f
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem coev_naturality {X Y : C} (f : X ⟶ Y) :
     f ≫ (coev A).app Y = (coev A).app X ≫ (ihom A).map (A ◁ f) :=

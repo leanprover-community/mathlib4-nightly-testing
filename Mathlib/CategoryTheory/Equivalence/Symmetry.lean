@@ -75,6 +75,9 @@ def symmEquiv : (C ≌ D) ≌ (D ≌ C)ᵒᵖ where
   functor_unitIso_comp X := by
     simp [symm, symmEquivInverse]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The `inverse` functor that sends a functor to its inverse. -/
 @[simps!]
 def inverseFunctor : (C ≌ D) ⥤ (D ⥤ C)ᵒᵖ :=

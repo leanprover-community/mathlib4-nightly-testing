@@ -169,6 +169,9 @@ The bottom left map in the associativity hexagon.
 def firstMap₃ (F : C ⥤ D) : curriedTensorPostPost F ⟶ curriedTensorPostPost' F :=
   (postcompose₃.obj _).map (curriedAssociatorNatIso _).hom
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The composition of the left maps in the associativity hexagon.
 -/
@@ -200,6 +203,9 @@ def secondMap₃ {F : C ⥤ D} (μ : curriedTensorPre F ⟶ curriedTensorPost F)
     curriedTensorPrePost F ⟶ curriedTensorPostPost' F :=
   (bifunctorComp₂₃Functor.map μ).app _
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The composition of the right maps in the associativity hexagon.
 -/
@@ -356,6 +362,9 @@ The bottom left map in the oplax associativity hexagon.
 def firstMap₃ (F : C ⥤ D) : curriedTensorPrePre F ⟶ curriedTensorPrePre' F :=
   ((((whiskeringLeft₃ D).obj F).obj F).obj F).map (curriedAssociatorNatIso D).hom
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The composition of the three left maps in the oplax associativity hexagon.
 -/
@@ -387,6 +396,9 @@ def secondMap₃ {F : C ⥤ D} (δ : curriedTensorPost F ⟶ curriedTensorPre F)
     curriedTensorPrePost F ⟶ curriedTensorPrePre' F :=
   (bifunctorComp₂₃Functor.obj (curriedTensorInsertFunctor₁ F)).map δ
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The composition of the three right maps in the oplax associativity hexagon.
 -/

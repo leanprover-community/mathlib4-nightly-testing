@@ -583,6 +583,9 @@ abbrev intCyclicAddEquiv [AddGroup G] [IsAddCyclic G] : ℤ ≃+ G :=
 
 end Infinite
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 variable (G) in
 /-- The automorphism group of a cyclic group is isomorphic to the multiplicative group of ZMod. -/
 @[simps!]

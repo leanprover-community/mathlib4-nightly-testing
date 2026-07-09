@@ -211,6 +211,9 @@ def isoMk {X Y : Grothendieck F} (e₁ : X.base ≅ Y.base)
     have := Functor.congr_hom congr($((F.mapIso e₁).inv_hom_id).toFunctor) e₂.inv
     simp_all)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 If `F : C ⥤ Cat` and `x : Grothendieck F`, then every `C`-isomorphism `α : x.base ≅ c` induces
 an isomorphism between `x` and its transport along `α`

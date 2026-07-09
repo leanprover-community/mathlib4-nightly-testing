@@ -994,6 +994,9 @@ lemma mkOfObjOfMapSucc_arrow (i : ℕ) (hi : i < n := by valid) :
 
 end mkOfObjOfMapSucc
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 suppress_compilation in
 variable (C n) in
 /-- The equivalence `(ComposableArrows C n)ᵒᵖ ≌ ComposableArrows Cᵒᵖ n` obtained

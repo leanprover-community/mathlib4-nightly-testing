@@ -296,6 +296,9 @@ theorem Spec_Γ_naturality {R S : CommRingCat.{u}} (f : R ⟶ S) :
   erw [comap_apply]
   apply Localization.localRingHom_to_map
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The counit (`SpecΓIdentity.inv.op`) of the adjunction `Γ ⊣ Spec` is an isomorphism. -/
 @[simps! hom_app inv_app]
 def LocallyRingedSpace.SpecΓIdentity : Spec.toLocallyRingedSpace.rightOp ⋙ Γ ≅ 𝟭 _ :=

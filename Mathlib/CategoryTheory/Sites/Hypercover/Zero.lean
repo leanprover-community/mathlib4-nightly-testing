@@ -176,6 +176,9 @@ def reindex (E : PreZeroHypercover.{w} T) {ι : Type w'} (e : ι ≃ E.I₀) :
 lemma presieve₀_reindex {ι : Type w'} (e : ι ≃ E.I₀) : (E.reindex e).presieve₀ = E.presieve₀ := by
   simp [reindex]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Pairwise intersection of two pre-`0`-hypercovers. -/
 @[simps!]
 noncomputable

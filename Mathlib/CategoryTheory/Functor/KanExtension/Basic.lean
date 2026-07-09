@@ -530,6 +530,9 @@ include iso₁ in
 lemma hasRightExtension_iff_of_iso₁ : HasRightKanExtension L F ↔ HasRightKanExtension L' F :=
   (rightExtensionEquivalenceOfIso₁ iso₁ F).hasTerminal_iff
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The equivalence `LeftExtension L F ≌ LeftExtension L' F` induced by
 a natural isomorphism `L ≅ L'`. -/
 @[simps!]

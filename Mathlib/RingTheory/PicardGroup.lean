@@ -841,6 +841,9 @@ theorem Submodule.mulExact_unitsToPic_mapAlgebra :
     Function.MulExact (unitsToPic R A) (mapAlgebra R A) :=
   MonoidHom.mulExact_iff.mpr (range_unitsToPic R A).symm
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 open QuotientGroup in
 /-- If `A` is a faithful `R`-algebra, the relative Picard group Pic(A/R) is isomorphic to
 the group of the invertible `R`-submodules in `A` modulo the principal submodules. -/
@@ -849,6 +852,9 @@ the group of the invertible `R`-submodules in `A` modulo the principal submodule
   (QuotientGroup.congr _ _ (.refl _) ((Subgroup.map_id _).trans (ker_unitsToPic R A).symm)).trans <|
   (quotientKerEquivRange _).trans <| .subgroupCongr (range_unitsToPic R A)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The class group of a domain is isomorphic to the Picard group. -/
 @[simps!] noncomputable def ClassGroup.equivPic (R) [CommRing R] [IsDomain R] :
     ClassGroup R ≃* Pic R :=

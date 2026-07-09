@@ -420,6 +420,9 @@ def drop : Augmented C ⥤ SimplicialObject C :=
 def point : Augmented C ⥤ C :=
   Comma.snd _ _
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma w_app {X Y : Augmented C} (f : X ⟶ Y) (n : SimplexCategoryᵒᵖ) :
     dsimp% f.left.app n ≫ Y.hom.app n = X.hom.app n ≫ f.right :=
@@ -438,6 +441,9 @@ def toArrow : Augmented C ⥤ Arrow C where
       right := point.map η
       w := by simp [w_app] }
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The compatibility of a morphism with the augmentation, on 0-simplices -/
 @[reassoc]
 theorem w₀ {X Y : Augmented C} (f : X ⟶ Y) :
@@ -795,6 +801,9 @@ def drop : Augmented C ⥤ CosimplicialObject C :=
 def point : Augmented C ⥤ C :=
   Comma.fst _ _
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma w_app {X Y : Augmented C} {η : X ⟶ Y} {n : SimplexCategory} :
     dsimp% η.left ≫ Y.hom.app n = X.hom.app n ≫ η.right.app n :=

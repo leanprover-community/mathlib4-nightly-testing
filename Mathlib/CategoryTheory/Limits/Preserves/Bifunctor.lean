@@ -184,6 +184,9 @@ noncomputable def isoColimitUncurryWhiskeringLeft₂ :
   isoObjCoconePointsOfIsColimit G
     (colimit.isColimit _) (colimit.isColimit _) (colimit.isColimit _) |>.symm
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Characterize the forward direction of the isomorphism
 `PreservesColimit₂.isoColimitUncurryWhiskeringLeft₂` w.r.t. the canonical maps to the colimit. -/
 @[reassoc (attr := simp)]
@@ -316,6 +319,9 @@ noncomputable def isoLimitUncurryWhiskeringLeft₂ :
   isoObjConePointsOfIsLimit G
     (limit.isLimit _) (limit.isLimit _) (limit.isLimit _) |>.symm
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Characterize the inverse direction of the isomorphism
 `PreservesLimit₂.isoLimitUncurryWhiskeringLeft₂` w.r.t. the canonical maps to the limit. -/
 @[reassoc (attr := simp)]

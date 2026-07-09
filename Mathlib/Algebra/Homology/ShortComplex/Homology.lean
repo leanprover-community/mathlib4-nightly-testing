@@ -178,6 +178,9 @@ noncomputable def ofEpiOfIsIsoOfMono' (φ : S₁ ⟶ S₂) (h : HomologyData S�
   right := RightHomologyData.ofEpiOfIsIsoOfMono' φ h.right
   iso := h.iso
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `e : S₁ ≅ S₂` is an isomorphism of short complexes and `h₁ : HomologyData S₁`,
 this is the homology data for `S₂` deduced from the isomorphism. -/
 @[simps!]

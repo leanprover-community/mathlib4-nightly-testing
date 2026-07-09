@@ -292,6 +292,9 @@ noncomputable def bifibrantResolutionMap {X₁ X₂ : CofibrantObject C} (f : X�
     bifibrantResolutionObj X₁ ⟶ bifibrantResolutionObj X₂ :=
   (exists_bifibrant_map f).choose
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma bifibrantResolutionMap_fac {X₁ X₂ : CofibrantObject C} (f : X₁ ⟶ X₂) :
     iBifibrantResolutionObj X₁ ≫ homMk (bifibrantResolutionMap f).hom =
@@ -307,6 +310,9 @@ instance {X₁ X₂ : CofibrantObject C} (f : X₁ ⟶ X₂) [WeakEquivalence f]
     bifibrantResolutionMap_fac, weakEquivalence_precomp_iff]
   infer_instance
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma bifibrantResolutionMap_fac' {X₁ X₂ : CofibrantObject C} (f : X₁ ⟶ X₂) :
     toHoCat.map X₁.iBifibrantResolutionObj ≫

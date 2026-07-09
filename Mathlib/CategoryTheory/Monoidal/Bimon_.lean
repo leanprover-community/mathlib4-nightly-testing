@@ -198,6 +198,9 @@ theorem ofMonComon_toMonComon_obj_comul (M : Mon (Comon C)) :
     Δ[((ofMonComon C ⋙ toMonComon C).obj M).X.X] = Δ[M.X.X] ≫ 𝟙 _ :=
   rfl
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `equivMonComonCounitIsoApp`. -/
 @[simps!]
 def equivMonComonCounitIsoAppXAux (M : Mon (Comon C)) :
@@ -207,6 +210,9 @@ def equivMonComonCounitIsoAppXAux (M : Mon (Comon C)) :
 set_option backward.isDefEq.respectTransparency false in
 instance (M : Mon (Comon C)) : IsComonHom (equivMonComonCounitIsoAppXAux M).hom where
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `equivMonComonCounitIsoApp`. -/
 @[simps!]
 def equivMonComonCounitIsoAppX (M : Mon (Comon C)) :

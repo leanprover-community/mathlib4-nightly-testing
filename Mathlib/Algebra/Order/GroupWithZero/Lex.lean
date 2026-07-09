@@ -79,6 +79,9 @@ variable (α β : Type*) [LinearOrderedCommGroupWithZero α] [LinearOrderedCommG
 
 open MonoidWithZeroHom
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given linearly ordered groups with zero M, N, the natural inclusion ordered homomorphism from
 M to `WithZero (Mˣ ×ₗ Nˣ)`, which is the linearly ordered group with zero that can be identified
 as their product. -/
@@ -87,6 +90,9 @@ nonrec def inl : α →*₀o WithZero (αˣ ×ₗ βˣ) where
   __ := (WithZero.map' (toLexMulEquiv ..).toMonoidHom).comp (inl α β)
   monotone' := by simpa using (WithZero.map'_mono (Prod.Lex.toLex_mono)).comp inl_mono
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given linearly ordered groups with zero M, N, the natural inclusion ordered homomorphism from
 N to `WithZero (Mˣ ×ₗ Nˣ)`, which is the linearly ordered group with zero that can be identified
 as their product. -/

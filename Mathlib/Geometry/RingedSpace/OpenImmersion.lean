@@ -797,6 +797,9 @@ variable {X Y : SheafedSpace C} (f : X ⟶ Y) [H : IsOpenImmersion f]
 abbrev opensFunctor : Opens X ⥤ Opens Y :=
   H.base_open.functor
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- An open immersion `f : X ⟶ Y` induces an isomorphism `X ≅ Y|_{f(X)}`. -/
 @[simps! hom_hom_c_app]
 noncomputable def isoRestrict : X ≅ Y.restrict H.base_open :=
@@ -817,6 +820,9 @@ noncomputable def invApp (U : Opens X) :
     X.presheaf.obj (op U) ⟶ Y.presheaf.obj (op (opensFunctor f |>.obj U)) :=
   PresheafedSpace.IsOpenImmersion.invApp f.hom U
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem inv_naturality {U V : (Opens X)ᵒᵖ} (i : U ⟶ V) :
     X.presheaf.map i ≫ H.invApp _ (unop V) =
@@ -1231,6 +1237,9 @@ noncomputable def invApp (U : Opens X) :
     X.presheaf.obj (op U) ⟶ Y.presheaf.obj (op (opensFunctor f |>.obj U)) :=
   PresheafedSpace.IsOpenImmersion.invApp f.1 U
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 theorem inv_naturality {U V : (Opens X)ᵒᵖ} (i : U ⟶ V) :
     X.presheaf.map i ≫ H.invApp _ (unop V) =

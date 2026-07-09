@@ -105,6 +105,9 @@ def functorEquivInverseCompWhiskeringLeftInrIso :
     Prod.snd (A ⥤ B) (A' ⥤ B) :=
   NatIso.ofComponents (fun _ ↦ Functor.inrCompSum' _ _)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A consequence of `functorEquiv`: we can construct a natural transformation of functors
 `A ⊕ A' ⥤ B` from the data of natural transformations of their whiskering with `inl_` and `inr_`. -/
 @[simps!]

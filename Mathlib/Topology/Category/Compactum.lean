@@ -141,6 +141,9 @@ theorem str_incl (X : Compactum) (x : X) : X.str (X.incl x) = x := by
   rw [Monad.Algebra.unit]
   rfl
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem str_hom_commute (X Y : Compactum) (f : X ⟶ Y) (xs : Ultrafilter X) :
     f (X.str xs) = Y.str (map f xs) := by
@@ -368,6 +371,9 @@ theorem cl_eq_closure {X : Compactum} (A : Set X) : cl A = closure A := by
   · rintro ⟨F, h1, h2⟩
     exact ⟨F, h1, str_eq_of_le_nhds _ _ h2⟩
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Any morphism of compacta is continuous. -/
 theorem continuous_of_hom {X Y : Compactum} (f : X ⟶ Y) : Continuous f := by
   rw [continuous_iff_ultrafilter]

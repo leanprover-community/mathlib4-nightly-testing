@@ -380,25 +380,36 @@ section
 variable {K L : HomologicalComplex V c} (φ : K ⟶ L) (i : ι)
   [K.HasHomology i] [L.HasHomology i]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma homologyOp_hom_naturality :
     homologyMap ((opFunctor _ _).map φ.op) _ ≫ (K.homologyOp i).hom =
       (L.homologyOp i).hom ≫ (homologyMap φ i).op :=
   ShortComplex.homologyOpIso_hom_naturality ((shortComplexFunctor V c i).map φ)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma opcyclesOpIso_hom_naturality :
     opcyclesMap ((opFunctor _ _).map φ.op) _ ≫ (K.opcyclesOpIso i).hom =
       (L.opcyclesOpIso i).hom ≫ (cyclesMap φ i).op :=
   ShortComplex.opcyclesOpIso_hom_naturality ((shortComplexFunctor V c i).map φ)
 
-set_option backward.isDefEq.respectTransparency false in -- This is needed in Algebra/Homology/Embedding/TruncLE.lean
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma opcyclesOpIso_inv_naturality :
     (cyclesMap φ i).op ≫ (K.opcyclesOpIso i).inv =
       (L.opcyclesOpIso i).inv ≫ opcyclesMap ((opFunctor _ _).map φ.op) _ :=
   ShortComplex.opcyclesOpIso_inv_naturality ((shortComplexFunctor V c i).map φ)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma cyclesOpIso_hom_naturality :
     cyclesMap ((opFunctor _ _).map φ.op) _ ≫ (K.cyclesOpIso i).hom =

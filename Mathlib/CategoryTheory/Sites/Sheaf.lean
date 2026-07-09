@@ -349,6 +349,9 @@ variable {J A}
 abbrev Sheaf.homEquiv {X Y : Sheaf J A} : (X ⟶ Y) ≃ (X.obj ⟶ Y.obj) :=
   (fullyFaithfulSheafToPresheaf J A).homEquiv
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `Sheaf.homEquiv` as a natural isomorphism. -/
 @[simps! +dsimpLhs]
 def sheafToPresheafCompYonedaCompWhiskeringLeftSheafToPresheaf :
@@ -363,6 +366,9 @@ lemma sheafToPresheafCompYonedaCompWhiskeringLeftSheafToPresheaf_app_app {X Y : 
       Sheaf.homEquiv.symm.toIso :=
   rfl
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `Sheaf.homEquiv` as a natural isomorphism, using coyoneda. -/
 @[simps! +dsimpLhs]
 def sheafToPresheafCompCoyonedaCompWhiskeringLeftSheafToPresheaf :

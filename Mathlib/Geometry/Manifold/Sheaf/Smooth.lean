@@ -126,6 +126,9 @@ def smoothSheaf.evalAt (x : TopCat.of M) (U : OpenNhds x)
     (i : (smoothSheaf IM I M N).presheaf.obj (Opposite.op U.val)) : N :=
   i.1 ⟨x, U.2⟩
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp, reassoc, elementwise] lemma smoothSheaf.ι_evalHom (x : TopCat.of M) (U) :
     colimit.ι ((OpenNhds.inclusion x).op ⋙ (smoothSheaf IM I M N).obj) U ≫
     smoothSheaf.evalHom IM I N x =
@@ -354,6 +357,9 @@ given by evaluating sections at `x`. -/
 def smoothSheafCommRing.eval (x : M) : (smoothSheafCommRing IM I M R).presheaf.stalk x →+* R :=
   (smoothSheafCommRing.evalHom IM I M R x).hom
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp, reassoc, elementwise] lemma smoothSheafCommRing.ι_evalHom (x : TopCat.of M) (U) :
     colimit.ι ((OpenNhds.inclusion x).op ⋙ _) U ≫ smoothSheafCommRing.evalHom IM I M R x =
     smoothSheafCommRing.evalAt _ _ _ _ _ _ :=

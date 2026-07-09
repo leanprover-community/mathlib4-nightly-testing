@@ -175,6 +175,9 @@ set_option backward.isDefEq.respectTransparency false in
 theorem mapRingHom_id : mapRingHom (.id α) continuous_id = .id (Completion α) := by
   simp [RingHom.ext_iff, mapRingHom_apply]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A ring isomorphism `α ≃+* β` between uniform rings, uniformly continuous in both directions,
 lifts to a ring isomorphism between corresponding uniform space completions. -/
 @[simps!]

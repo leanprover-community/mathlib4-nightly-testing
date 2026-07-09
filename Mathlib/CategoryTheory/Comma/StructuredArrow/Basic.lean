@@ -261,6 +261,9 @@ theorem map_comp {f : S ⟶ S'} {f' : S' ⟶ S''} {h : StructuredArrow S'' T} :
   rw [eq_mk h]
   simp
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- An isomorphism `S ≅ S'` induces an equivalence `StructuredArrow S T ≌ StructuredArrow S' T`. -/
 @[simps!]
 def mapIso (i : S ≅ S') : StructuredArrow S T ≌ StructuredArrow S' T :=
@@ -736,6 +739,9 @@ theorem map_comp {f : T ⟶ T'} {f' : T' ⟶ T''} {h : CostructuredArrow S T} :
   rw [eq_mk h]
   simp
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- An isomorphism `T ≅ T'` induces an equivalence
 `CostructuredArrow S T ≌ CostructuredArrow S T'`. -/
 @[simps!]

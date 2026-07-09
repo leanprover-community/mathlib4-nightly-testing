@@ -131,12 +131,18 @@ lemma right_triangle_components (X : C₂.obj) :
     𝟙 (α.r.toFunctor.obj X) :=
   (Adjunction.ofCat α.adj).right_triangle_components _
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma unit_naturality {X Y : C₁.obj} (f : X ⟶ Y) :
     α.adj.unit.toNatTrans.app X ≫ α.r.toFunctor.map (α.l.toFunctor.map f) =
     f ≫ α.adj.unit.toNatTrans.app Y :=
   (Adjunction.ofCat α.adj).unit_naturality f
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma counit_naturality {X Y : C₂.obj} (f : X ⟶ Y) :
     α.l.toFunctor.map (α.r.toFunctor.map f) ≫ α.adj.counit.toNatTrans.app Y =

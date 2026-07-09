@@ -127,6 +127,9 @@ def rightAdjointComparison
     apply equalizer.hom_ext
     simp [Adjunction.homEquiv_unit]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Provided we have the appropriate equalizers, we have an adjunction to the comparison functor.
 -/
 @[simps! counit]

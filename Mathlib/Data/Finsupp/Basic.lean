@@ -1212,6 +1212,9 @@ theorem subtypeDomain_not_piecewise (f : Subtype P →₀ M) (g : {a // ¬ P a} 
     subtypeDomain (¬P ·) (f.piecewise g) = g :=
   Finsupp.ext fun a => dif_neg a.prop
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Extend the domain of a `Finsupp` by using `0` where `P x` does not hold. -/
 @[simps! (attr := grind =) support apply]
 def extendDomain (f : Subtype P →₀ M) : α →₀ M := piecewise f 0

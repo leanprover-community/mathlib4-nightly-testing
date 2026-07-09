@@ -30,6 +30,9 @@ namespace CategoryTheory.Functor
 variable {D : Type u} {C : Type*} [Groupoid.{v} D] [Category* C]
   [MonoidalCategory C] [MonoidalClosed C]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `CategoryTheory.Functor.closed`.
 The internal hom functor `F ⟶[C] -` -/
 @[simps!]

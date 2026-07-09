@@ -703,6 +703,9 @@ lemma toSpec_preimage_basicOpen {f}
   convert! (ProjIsoSpecTopComponent.ToSpec.preimage_basicOpen f t)
   exact funext fun _ => toSpec_base_apply_eq _ _
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma toOpen_toSpec_val_c_app (f) (U) :
     (Scheme.ΓSpecIso _).inv ≫ (Spec A⁰_ f).presheaf.map (homOfLE le_top).op ≫

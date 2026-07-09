@@ -125,6 +125,9 @@ lemma coneEquiv_functor_obj_π_app_star : (coneEquiv.functor.obj t).π.app star 
 lemma coneEquiv_functor_obj_π_app_of (Y : J) :
     (coneEquiv.functor.obj t).π.app (of Y) = (t.π.app Y).left := rfl
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A cone `t` of `K : J ⥤ Over X` is a limit if and only if the corresponding cone
 `coneLift t` of `liftFromOver.obj K : WithTerminal K ⥤ C` is a limit. -/
 @[simps!]
@@ -240,6 +243,9 @@ lemma coconeEquiv_functor_obj_ι_app_star : (coconeEquiv.functor.obj t).ι.app s
 lemma coconeEquiv_functor_obj_ι_app_of (Y : J) :
     (coconeEquiv.functor.obj t).ι.app (of Y) = (t.ι.app Y).right := rfl
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A cocone `t` of `K : J ⥤ Under X` is a colimit if and only if the corresponding cocone
 `coconeLift t` of `liftFromUnder.obj K : WithInitial K ⥤ C` is a colimit. -/
 @[simps!]
