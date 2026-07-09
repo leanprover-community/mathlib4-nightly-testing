@@ -137,6 +137,7 @@ def limit.cone (F : J ⥤ C) [HasLimit F] : Cone F :=
   (getLimitCone F).cone
 
 /-- An arbitrary choice of limit object of a functor. -/
+@[implicit_reducible]
 def limit (F : J ⥤ C) [HasLimit F] :=
   (limit.cone F).pt
 
@@ -698,6 +699,7 @@ def colimit.cocone (F : J ⥤ C) [HasColimit F] : Cocone F :=
   (getColimitCocone F).cocone
 
 /-- An arbitrary choice of colimit object of a functor. -/
+@[implicit_reducible]
 def colimit (F : J ⥤ C) [HasColimit F] :=
   (colimit.cocone F).pt
 

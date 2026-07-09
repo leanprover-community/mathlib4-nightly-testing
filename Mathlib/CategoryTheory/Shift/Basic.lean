@@ -159,6 +159,7 @@ section
 variable [HasShift C A]
 
 /-- The monoidal functor from `A` to `C ⥤ C` given a `HasShift` instance. -/
+@[implicit_reducible]
 def shiftMonoidalFunctor : Discrete A ⥤ C ⥤ C :=
   HasShift.shift
 
@@ -169,6 +170,7 @@ variable {A}
 open Functor.Monoidal
 
 /-- The shift autoequivalence, moving objects and morphisms 'up'. -/
+@[implicit_reducible]
 def shiftFunctor (i : A) : C ⥤ C :=
   (shiftMonoidalFunctor C A).obj ⟨i⟩
 

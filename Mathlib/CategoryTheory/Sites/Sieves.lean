@@ -38,6 +38,7 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 variable {X Y Z : C} (f : Y ⟶ X)
 
 /-- A predicate on arrows with codomain `X`. -/
+@[implicit_reducible]
 def Presieve (X : C) :=
   ∀ ⦃Y⦄, (Y ⟶ X) → Prop
 deriving CompleteLattice, Inhabited

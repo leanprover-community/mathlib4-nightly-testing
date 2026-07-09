@@ -140,6 +140,7 @@ instance : Coe (M ≃ₛₗ[σ] M₂) (M →ₛₗ[σ] M₂) :=
 
 -- This exists for compatibility, previously `≃ₗ[R]` extended `≃` instead of `≃+`.
 /-- The equivalence of types underlying a linear equivalence. -/
+@[implicit_reducible]
 def toEquiv (e : M ≃ₛₗ[σ] M₂) : M ≃ M₂ := e.toAddEquiv.toEquiv
 
 theorem toEquiv_injective :

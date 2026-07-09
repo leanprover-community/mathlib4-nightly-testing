@@ -37,10 +37,12 @@ and morphisms `C`-morphisms `Y ⟶ Y'` making the obvious triangle commute.
 -/
 -- We explicitly come from `PUnit.{1}` here to obtain the correct universe for morphisms of
 -- structured arrows.
+@[implicit_reducible]
 def StructuredArrow (S : D) (T : C ⥤ D) :=
   Comma (Functor.fromPUnit.{0} S) T
 
 /-- The type of morphisms in the category `StructuredArrow`. -/
+@[implicit_reducible]
 protected def StructuredArrow.Hom {S : D} {T : C ⥤ D}
     (f g : StructuredArrow S T) : Type v₁ :=
   CommaMorphism f g
@@ -92,6 +94,7 @@ theorem hom_eq_iff {X Y : StructuredArrow S T} (f g : X ⟶ Y) : f = g ↔ f.rig
   ⟨fun h ↦ by rw [h], hom_ext _ _⟩
 
 /-- Construct a structured arrow from a morphism. -/
+@[implicit_reducible]
 def mk (f : S ⟶ T.obj Y) : StructuredArrow S T :=
   ⟨⟨⟨⟩⟩, Y, f⟩
 
@@ -510,6 +513,7 @@ and morphisms `C`-morphisms `Y ⟶ Y'` making the obvious triangle commute.
 -/
 -- We explicitly come from `PUnit.{1}` here to obtain the correct universe for morphisms of
 -- costructured arrows.
+@[implicit_reducible]
 def CostructuredArrow (S : C ⥤ D) (T : D) :=
   Comma S (Functor.fromPUnit.{0} T)
 
@@ -567,6 +571,7 @@ theorem hom_eq_iff {X Y : CostructuredArrow S T} (f g : X ⟶ Y) : f = g ↔ f.l
   ⟨fun h ↦ by rw [h], hom_ext _ _⟩
 
 /-- Construct a costructured arrow from a morphism. -/
+@[implicit_reducible]
 def mk (f : S.obj Y ⟶ T) : CostructuredArrow S T :=
   ⟨Y, ⟨⟨⟩⟩, f⟩
 

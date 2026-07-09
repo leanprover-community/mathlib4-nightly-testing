@@ -393,6 +393,7 @@ abbrev const : C ⥤ SimplicialObject C :=
   CategoryTheory.Functor.const _
 
 /-- The category of augmented simplicial objects, defined as a comma category. -/
+@[implicit_reducible]
 def Augmented :=
   Comma (𝟭 (SimplicialObject C)) (const C)
 

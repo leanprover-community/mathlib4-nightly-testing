@@ -99,6 +99,7 @@ with morphisms becoming inequalities, and isomorphisms becoming equations.
 
 /-- The category of subobjects of `X : C`, defined as isomorphism classes of monomorphisms into `X`.
 -/
+@[implicit_reducible]
 def Subobject (X : C) :=
   ThinSkeleton (MonoOver X)
 
@@ -110,6 +111,7 @@ namespace Subobject
 lemma skeletal (X : C) : Skeletal (Subobject X) := ThinSkeleton.skeletal
 
 /-- Convenience constructor for a subobject. -/
+@[implicit_reducible]
 def mk {X A : C} (f : A ⟶ X) [Mono f] : Subobject X :=
   (toThinSkeleton _).obj (MonoOver.mk f)
 
@@ -489,6 +491,7 @@ namespace Subobject
 
 /-- Any functor `MonoOver X ⥤ MonoOver Y` descends to a functor
 `Subobject X ⥤ Subobject Y`, because `MonoOver Y` is thin. -/
+@[implicit_reducible]
 def lower {Y : D} (F : MonoOver X ⥤ MonoOver Y) : Subobject X ⥤ Subobject Y :=
   ThinSkeleton.map F
 

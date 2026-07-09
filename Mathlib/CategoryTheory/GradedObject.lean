@@ -40,6 +40,7 @@ open Category Limits
 universe w v u
 
 /-- A type synonym for `β → C`, used for `β`-graded objects in a category `C`. -/
+@[implicit_reducible]
 def GradedObject (β : Type w) (C : Type u) : Type max w u :=
   β → C
 

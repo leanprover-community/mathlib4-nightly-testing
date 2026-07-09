@@ -346,6 +346,7 @@ namespace CechNerveTerminalFrom
 variable [HasTerminal C] (ι : Type w)
 
 /-- The diagram `Option ι ⥤ C` sending `none` to the terminal object and `some j` to `X`. -/
+@[implicit_reducible]
 def wideCospan (X : C) : WidePullbackShape ι ⥤ C :=
   WidePullbackShape.wideCospan (terminal C) (fun _ : ι => X) fun _ => terminal.from X
 

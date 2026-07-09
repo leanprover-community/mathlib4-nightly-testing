@@ -57,6 +57,7 @@ abbrev toRingedSpace : RingedSpace :=
   X.toSheafedSpace
 
 /-- The underlying topological space of a locally ringed space. -/
+@[implicit_reducible]
 def toTopCat : TopCat :=
   X.1.carrier
 

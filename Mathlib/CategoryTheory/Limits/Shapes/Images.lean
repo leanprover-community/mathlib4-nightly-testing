@@ -353,6 +353,7 @@ def Image.isImage : IsImage (Image.monoFactorisation f) :=
   (Image.imageFactorisation f).isImage
 
 /-- The categorical image of a morphism. -/
+@[implicit_reducible]
 def image : C :=
   (Image.monoFactorisation f).I
 

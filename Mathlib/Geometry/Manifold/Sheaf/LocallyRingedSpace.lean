@@ -131,6 +131,7 @@ instance smoothSheafCommRing.instLocalRing_stalk (x : M) :
 variable (M)
 
 /-- A smooth manifold can be considered as a locally ringed space. -/
+@[implicit_reducible]
 def ChartedSpace.locallyRingedSpace : LocallyRingedSpace where
   carrier := TopCat.of M
   presheaf := smoothPresheafCommRing IM 𝓘(𝕜) M 𝕜

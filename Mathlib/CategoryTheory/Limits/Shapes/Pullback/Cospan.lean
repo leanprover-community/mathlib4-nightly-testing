@@ -170,11 +170,13 @@ def WalkingSpan.ext {F : WalkingSpan ⥤ C} {s t : Cocone F} (i : s.pt ≅ t.pt)
   · exact w₂
 
 /-- `cospan f g` is the functor from the walking cospan hitting `f` and `g`. -/
+@[implicit_reducible]
 def cospan {X Y Z : C} (f : X ⟶ Z) (g : Y ⟶ Z) : WalkingCospan ⥤ C :=
   WidePullbackShape.wideCospan Z (fun j => WalkingPair.casesOn j X Y) fun j =>
     WalkingPair.casesOn j f g
 
 /-- `span f g` is the functor from the walking span hitting `f` and `g`. -/
+@[implicit_reducible]
 def span {X Y Z : C} (f : X ⟶ Y) (g : X ⟶ Z) : WalkingSpan ⥤ C :=
   WidePushoutShape.wideSpan X (fun j => WalkingPair.casesOn j Y Z) fun j =>
     WalkingPair.casesOn j f g

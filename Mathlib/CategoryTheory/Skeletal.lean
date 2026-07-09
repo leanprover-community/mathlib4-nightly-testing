@@ -226,6 +226,7 @@ variable (C D)
 preorder with nice definitional properties, but is only really appropriate for thin categories.
 If your original category is not thin, you probably want to be using `Skeleton` instead of this.
 -/
+@[implicit_reducible]
 def ThinSkeleton : Type u₁ :=
   Quotient (isIsomorphicSetoid C)
 
