@@ -102,6 +102,7 @@ variable {M X Y : C} [MonObj M]
 @[inherit_doc] scoped notation "η" => MonObj.one
 @[inherit_doc] scoped notation "η[" M "]" => MonObj.one (X := M)
 
+set_option linter.translateOverwrite false in
 attribute [to_additive existing (attr := reassoc (attr := simp))] one_mul mul_one mul_assoc
 
 /-- Transfer `MonObj` along an isomorphism. -/
@@ -213,6 +214,7 @@ class IsMonHom (f : M ⟶ N) : Prop where
   one_hom (f) : η ≫ f = η := by cat_disch
   mul_hom (f) : μ ≫ f = (f ⊗ₘ f) ≫ μ := by cat_disch
 
+set_option linter.translateOverwrite false in
 attribute [to_additive existing (attr := reassoc (attr := simp))] IsMonHom.one_hom IsMonHom.mul_hom
 
 @[to_additive]
@@ -521,7 +523,7 @@ structure Hom (M N : Mon C) where
   hom : M.X ⟶ N.X
   [isMonHom_hom : IsMonHom hom]
 
-attribute [to_additive existing (attr := instance)] Hom.isMonHom_hom
+attribute [instance] Hom.isMonHom_hom
 
 /-- Construct a morphism `M ⟶ N` of `Mon C` from a map `f : M ⟶ N` and
 compatibilities with the unit and the multiplication. -/
@@ -906,6 +908,7 @@ set_option backward.defeqAttrib.useBackward true in
 def mapMonNatTrans (f : F ⟶ F') [NatTrans.IsMonoidal f] : F.mapMon ⟶ F'.mapMon where
   app X := .mk' (f.app _)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Natural isomorphisms between functors lift to monoid objects. -/
 @[to_additive (attr := simps!)
@@ -1073,6 +1076,7 @@ end Adjunction
 
 namespace Equivalence
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- An equivalence of categories lifts to an equivalence of their monoid objects. -/
 @[to_additive (attr := simps)
@@ -1144,6 +1148,9 @@ def unitIso :
   NatIso.ofComponents
     (fun F ↦ LaxMonoidalFunctor.isoOfComponents (fun _ ↦ F.mapIso (eqToIso (by ext))))
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Auxiliary definition for `counitIso`. -/
 @[to_additive (attr := simps!) /-- Auxiliary definition for `counitIso`. -/]
 def counitIsoAux (F : Mon C) :
@@ -1182,6 +1189,7 @@ open EquivLaxMonoidalFunctorPUnit
 
 attribute [local simp] eqToIso_map
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /--
 Monoid objects in `C` are "just" lax monoidal functors from the trivial monoidal category to `C`.
