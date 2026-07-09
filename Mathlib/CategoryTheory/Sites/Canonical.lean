@@ -164,7 +164,7 @@ variable (J : GrothendieckTopology C)
 If `J` is subcanonical, we obtain a "Yoneda" functor from the defining site
 into the sheaf category.
 -/
-@[simps! obj_obj map_hom]
+@[simps! obj_obj map_hom, implicit_reducible]
 def yoneda [J.Subcanonical] : C ⥤ Sheaf J (Type v) :=
   ObjectProperty.lift _ CategoryTheory.yoneda <| fun X ↦ by
     rw [isSheaf_iff_isSheaf_of_type]

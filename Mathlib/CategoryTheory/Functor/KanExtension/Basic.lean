@@ -319,7 +319,7 @@ variable {L : C ⥤ D} {L' : C ⥤ D'} (G : D ⥤ D')
 
 /-- The functor `LeftExtension L' F ⥤ LeftExtension L F`
 induced by a natural transformation `L' ⟶ L ⋙ G'`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def LeftExtension.postcomp₁ (f : L' ⟶ L ⋙ G) (F : C ⥤ H) :
     LeftExtension L' F ⥤ LeftExtension L F :=
   StructuredArrow.map₂ (F := (whiskeringLeft D D' H).obj G) (G := 𝟭 _) (𝟙 _)
@@ -327,7 +327,7 @@ def LeftExtension.postcomp₁ (f : L' ⟶ L ⋙ G) (F : C ⥤ H) :
 
 /-- The functor `RightExtension L' F ⥤ RightExtension L F`
 induced by a natural transformation `L ⋙ G ⟶ L'`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def RightExtension.postcomp₁ (f : L ⋙ G ⟶ L') (F : C ⥤ H) :
     RightExtension L' F ⥤ RightExtension L F :=
   CostructuredArrow.map₂ (F := (whiskeringLeft D D' H).obj G) (G := 𝟭 _)
@@ -409,7 +409,7 @@ set_option backward.defeqAttrib.useBackward true in
 /-- Given a left extension `E` of `F : C ⥤ H` along `L : C ⥤ D` and a functor `G : H ⥤ D'`,
 `E.postcompose₂ G` is the extension of `F ⋙ G` along `L` obtained by whiskering by `G`
 on the right. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def LeftExtension.postcompose₂ : LeftExtension L F ⥤ LeftExtension L (F ⋙ G) :=
   StructuredArrow.map₂
     (F := (whiskeringRight _ _ _).obj G)
@@ -420,7 +420,7 @@ set_option backward.defeqAttrib.useBackward true in
 /-- Given a right extension `E` of `F : C ⥤ H` along `L : C ⥤ D` and a functor `G : H ⥤ D'`,
 `E.postcompose₂ G` is the extension of `F ⋙ G` along `L` obtained by whiskering by `G`
 on the right. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def RightExtension.postcompose₂ : RightExtension L F ⥤ RightExtension L (F ⋙ G) :=
   CostructuredArrow.map₂
     (F := (whiskeringRight _ _ _).obj G)
@@ -455,13 +455,13 @@ variable (L : C ⥤ D) (F : C ⥤ H) (F' : D ⥤ H) (G : C' ⥤ C)
 
 /-- The functor `LeftExtension L F ⥤ LeftExtension (G ⋙ L) (G ⋙ F)`
 obtained by precomposition. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def LeftExtension.precomp : LeftExtension L F ⥤ LeftExtension (G ⋙ L) (G ⋙ F) :=
   StructuredArrow.map₂ (F := 𝟭 _) (G := (whiskeringLeft C' C H).obj G) (𝟙 _) (𝟙 _)
 
 /-- The functor `RightExtension L F ⥤ RightExtension (G ⋙ L) (G ⋙ F)`
 obtained by precomposition. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def RightExtension.precomp : RightExtension L F ⥤ RightExtension (G ⋙ L) (G ⋙ F) :=
   CostructuredArrow.map₂ (F := 𝟭 _) (G := (whiskeringLeft C' C H).obj G) (𝟙 _) (𝟙 _)
 
@@ -523,6 +523,7 @@ variable {L L' : C ⥤ D} (iso₁ : L ≅ L') (F : C ⥤ H)
 
 /-- The equivalence `RightExtension L F ≌ RightExtension L' F` induced by
 a natural isomorphism `L ≅ L'`. -/
+-- TODO: Should this be `@[simps!]` too?
 def rightExtensionEquivalenceOfIso₁ : RightExtension L F ≌ RightExtension L' F :=
   CostructuredArrow.mapNatIso ((whiskeringLeft C D H).mapIso iso₁)
 
@@ -535,7 +536,7 @@ lemma hasRightExtension_iff_of_iso₁ : HasRightKanExtension L F ↔ HasRightKan
 set_option backward.isDefEq.respectTransparency.types false in
 /-- The equivalence `LeftExtension L F ≌ LeftExtension L' F` induced by
 a natural isomorphism `L ≅ L'`. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def leftExtensionEquivalenceOfIso₁ : LeftExtension L F ≌ LeftExtension L' F :=
   StructuredArrow.mapNatIso ((whiskeringLeft C D H).mapIso iso₁)
 
@@ -818,7 +819,7 @@ variable (F' : D ⥤ H) {L : C ⥤ D} {F : C ⥤ H} (α : L ⋙ F' ⟶ F) [F'.Is
 
 /-- Construct a cone for a right Kan extension `F' : D ⥤ H` of `F : C ⥤ H` along a functor
 `L : C ⥤ D` given a cone for `F`. -/
-@[simps]
+@[simps, implicit_reducible]
 noncomputable def coneOfIsRightKanExtension (c : Cone F) : Cone F' where
   pt := c.pt
   π := F'.liftOfIsRightKanExtension α _ c.π

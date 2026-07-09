@@ -41,7 +41,7 @@ variable {C : Type u₁} [Category.{v₁} C]
 /-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
 set_option backward.isDefEq.respectTransparency.types false in
 /-- Construct a cone for the empty diagram given an object. -/
-@[simps]
+@[simps, implicit_reducible]
 def asEmptyCone (X : C) : Cone (Functor.empty.{0} C) :=
   { pt := X
     π :=

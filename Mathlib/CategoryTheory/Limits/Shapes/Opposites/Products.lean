@@ -99,7 +99,7 @@ instance : HasProduct (op <| Z ·) := hasLimit_of_iso
     Discrete.functor (op <| Z ·))
 
 /-- A `Cofan` gives a `Fan` in the opposite category. -/
-@[simp]
+@[simp, implicit_reducible]
 def Cofan.op (c : Cofan Z) : Fan (op <| Z ·) := Fan.mk _ (fun a ↦ (c.inj a).op)
 
 set_option backward.isDefEq.respectTransparency.types false in
@@ -191,7 +191,7 @@ theorem desc_op_comp_opCoproductIsoProduct_hom [HasCoproduct Z] {X : C} (π : (a
     desc_op_comp_opCoproductIsoProduct'_hom (coproductIsCoproduct Z) (productIsProduct (op <| Z ·))
       (Cofan.mk _ π)
   · simp [Sigma.desc, coproductIsCoproduct]
-  · simp [Pi.lift, productIsProduct]
+  · simp [productIsProduct]
 
 end OppositeCoproducts
 
@@ -292,7 +292,7 @@ theorem opProductIsoCoproduct_inv_comp_lift [HasProduct Z] {X : C} (π : (a : α
     opProductIsoCoproduct'_inv_comp_lift (productIsProduct Z) (coproductIsCoproduct (op <| Z ·))
       (Fan.mk _ π)
   · simp [Pi.lift, productIsProduct]
-  · simp [Sigma.desc, coproductIsCoproduct]
+  · simp [coproductIsCoproduct]
 
 end OppositeProducts
 

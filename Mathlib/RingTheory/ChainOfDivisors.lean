@@ -244,6 +244,7 @@ variable [UniqueFactorizationMonoid N] [UniqueFactorizationMonoid M]
 
 open DivisorChain
 
+
 set_option linter.overlappingInstances false
 
 set_option backward.isDefEq.respectTransparency false in

@@ -52,7 +52,7 @@ noncomputable def constFunctor : ModuleCat cR.pt ⥤ PresheafOfModules.{w} R whe
     { obj X := (ModuleCat.restrictScalars (cR.ι.app X).hom).obj M
       map {X Y} f :=
         (ModuleCat.restrictScalarsComp' _ _ _
-          (by ext; dsimp; rw [← Cocone.w cR f]; dsimp; rfl)).hom.app _ }
+          (by ext; dsimp; rw [← Cocone.w cR f]; dsimp)).hom.app _ }
   map φ := { app X := (ModuleCat.restrictScalars (cR.ι.app X).hom).map φ }
 
 section

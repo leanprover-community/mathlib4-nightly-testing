@@ -568,7 +568,6 @@ theorem monodromy_toPermFiber {x y : X} {γ : Path.Homotopic.Quotient x y} {e : 
     · simp [g', p', hp.map_smul]
     · simp [g', p', hp.map_smul]
     · grind
-    · grind
 
 theorem commute_monodromyPerm_toPermFiber {x : X} {γ : FundamentalGroup X x} :
     Commute (hp.isCoveringMap.monodromyPerm x γ) (hp.toPermFiber x g) := by

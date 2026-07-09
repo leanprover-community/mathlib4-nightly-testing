@@ -67,7 +67,7 @@ instance (f : J → I) : (j : J) → Category ((C ∘ f) j) :=
 
 /-- Pull back an `I`-indexed family of objects to a `J`-indexed family, along a function `J → I`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def comap (h : J → I) : (∀ i, C i) ⥤ (∀ j, C (h j)) where
   obj f i := f (h i)
   map α i := α (h i)

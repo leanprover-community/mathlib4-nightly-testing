@@ -411,12 +411,12 @@ lemma hom_ext {X Y : Augmented C} (f g : X ⟶ Y) (h₁ : f.left = g.left) (h₂
   Comma.hom_ext _ _ h₁ h₂
 
 /-- Drop the augmentation. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def drop : Augmented C ⥤ SimplicialObject C :=
   Comma.fst _ _
 
 /-- The point of the augmentation. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def point : Augmented C ⥤ C :=
   Comma.snd _ _
 

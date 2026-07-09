@@ -44,6 +44,15 @@ def mapCompLeft (F : A ⥤ B) (G : B ⥤ C) :
     mapPair (F ⋙ G) (𝟭 D) ≅ mapPair F (𝟭 D) ⋙ mapPair G (𝟭 D) :=
   mapIsoWhiskerLeft _ (Functor.leftUnitor _).symm ≪≫ mapPairComp F (𝟭 D) G (𝟭 D)
 
+#adaptation_note
+/--
+`mapIsoWhiskerRight`'s `simps` theorems were formulated in simp normal form under
+`respectTransparency.types true`. We use `respectTransparency.types false` here because these
+lemmas fail to match without this annotation.
+Suggested way forward: Decide what the correct signatures of the `mapIsoWhiskerRight` lemmas
+are, then update this proof accordingly.
+-/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable (A) in
 @[reassoc]
@@ -53,6 +62,15 @@ lemma mapWhiskerLeft_whiskerLeft (F : B ⥤ C) {G H : C ⥤ D} (η : G ⟶ H) :
       (mapCompRight A F H).inv := by
   apply natTrans_ext <;> ext <;> simp [mapCompRight]
 
+#adaptation_note
+/--
+`mapIsoWhiskerLeft`'s `simps` theorems were formulated in simp normal form under
+`respectTransparency.types true`. We use `respectTransparency.types false` here because these
+lemmas fail to match without this annotation.
+Suggested way forward: Decide what the correct signatures of the `mapIsoWhiskerLeft` lemmas
+are, then update this proof accordingly.
+-/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable (D) in
 @[reassoc]

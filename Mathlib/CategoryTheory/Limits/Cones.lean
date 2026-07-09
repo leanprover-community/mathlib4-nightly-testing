@@ -152,10 +152,26 @@ instance inhabitedCone (F : Discrete PUnit ⥤ C) : Inhabited (Cone F) :=
 
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-@[to_dual (attr := reassoc (attr := simp), elementwise)]
+@[to_dual (attr := reassoc), elementwise]
 theorem Cone.w {F : J ⥤ C} (c : Cone F) {j j' : J} (f : j ⟶ j') :
     dsimp% c.π.app j ≫ F.map f = c.π.app j' := by
   simpa using (c.π.naturality f).symm
+
+attribute [simp] Cone.w Cone.w_assoc -- `Cocone.w` and `Cocone.w_assoc` are redundant
+
+#adaptation_note
+/--
+This lemma can be derived by `simp`, so `[elementwise]` does errors out.
+For symmetry reasons, it seems good to have the dual of `Cone.w_apply`, though,
+so we provide it by hand now.
+-/
+theorem Cocone.w_apply.{uF, w} {F : J ⥤ C} (c : Cocone F) {j j' : J} (f : j' ⟶ j)
+    {F' : C → C → Type uF} {carrier : C → Type w}
+    {instFunLike : (X Y : C) → FunLike (F' X Y) (carrier X) (carrier Y)}
+    [inst : ConcreteCategory C F'] (x : carrier (F.obj j')) :
+    (ConcreteCategory.hom (c.ι.app j)) ((ConcreteCategory.hom (F.map f)) x) =
+      (ConcreteCategory.hom (c.ι.app j')) x := by
+  simp
 
 end
 
@@ -259,9 +275,7 @@ instance Cone.category : Category (Cone F) where
   comp f g := { hom := f.hom ≫ g.hom }
   id B := { hom := 𝟙 B.pt }
 
-/-- We do not want `simps` automatically generate the lemma for simplifying the
-hom field of a category. So we need to write the `ext` lemma in terms of the
-categorical morphism, rather than the underlying structure. -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual (attr := ext)
 /- We do not want `simps` automatically generate the lemma for simplifying the
 hom field of a category. So we need to write the `ext` lemma in terms of the

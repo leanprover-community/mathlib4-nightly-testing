@@ -135,7 +135,7 @@ end Karoubi
 
 /-- The obvious fully faithful functor `toKaroubi` sends an object `X : C` to the obvious
 formal direct factor of `X` given by `𝟙 X`. -/
-@[simps]
+@[simps, implicit_reducible]
 def toKaroubi : C ⥤ Karoubi C where
   obj X := ⟨X, 𝟙 X, by rw [comp_id]⟩
   map f := ⟨f, by simp only [comp_id, id_comp]⟩

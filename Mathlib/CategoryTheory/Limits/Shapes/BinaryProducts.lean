@@ -289,7 +289,7 @@ attribute [local aesop safe cases (rule_sets := [CategoryTheory])] Eq
 
 set_option backward.defeqAttrib.useBackward true in
 /-- A binary fan with vertex `P` consists of the two projections `π₁ : P ⟶ X` and `π₂ : P ⟶ Y`. -/
-@[simps pt]
+@[simps pt, implicit_reducible]
 def BinaryFan.mk {P : C} (π₁ : P ⟶ X) (π₂ : P ⟶ Y) : BinaryFan X Y where
   pt := P
   π := { app := fun | { as := j } => match j with | left => π₁ | right => π₂ }

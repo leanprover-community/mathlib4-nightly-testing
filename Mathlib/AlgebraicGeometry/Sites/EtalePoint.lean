@@ -122,7 +122,6 @@ lemma pointSmallEtaleFiberObjToPreimage_surjective (X : S.Etale) :
     (X.hom.fiberToSpecResidueField _) (Spec.map a) y (by subsingleton)
   refine ⟨Over.homMk (l ≫ X.hom.fiberι t) ?_, rfl⟩
   simp [X.hom.fiber_fac, reassoc_of% hl]
-  rfl
 
 set_option backward.isDefEq.respectTransparency false in
 lemma isConservative_pointSmallEtale

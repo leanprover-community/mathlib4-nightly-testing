@@ -156,7 +156,7 @@ end
 variable (L) (R)
 
 /-- The functor sending an object `X` in the comma category to `X.left`. -/
-@[to_dual (reorder := L R) (attr := simps)
+@[to_dual (reorder := L R) (attr := simps, implicit_reducible)
 /-- The functor sending an object `X` in the comma category to `X.right`. -/]
 def fst : Comma L R ⥤ A where
   obj X := X.left
@@ -240,7 +240,8 @@ variable {L' : A' ⥤ T'} {R' : B' ⥤ T'}
 
 /-- The functor `Comma L R ⥤ Comma L' R'` induced by three functors `F₁`, `F₂`, `F`
 and two natural transformations `F₁ ⋙ L' ⟶ L ⋙ F` and `R ⋙ F ⟶ F₂ ⋙ R'`. -/
-@[simps, to_dual self (reorder := A B, 2 4, A' B', 8 10, L R, L' R', F₁ F₂, α β)]
+@[simps, implicit_reducible,
+  to_dual self (reorder := A B, 2 4, A' B', 8 10, L R, L' R', F₁ F₂, α β)]
 def map : Comma L R ⥤ Comma L' R' where
   obj X :=
     { left := F₁.obj X.left
@@ -327,7 +328,7 @@ def mapFst : map α β ⋙ fst L' R' ≅ fst L R ⋙ F₁ :=
 end
 
 /-- A natural transformation `L₁ ⟶ L₂` induces a functor `Comma L₂ R ⥤ Comma L₁ R`. -/
-@[to_dual (attr := simps)
+@[to_dual (attr := simps, implicit_reducible)
 /-- A natural transformation `R₁ ⟶ R₂` induces a functor `Comma L R₁ ⥤ Comma L R₂`. -/]
 def mapLeft (l : L₁ ⟶ L₂) : Comma L₂ R ⥤ Comma L₁ R where
   obj X :=
@@ -379,7 +380,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A natural isomorphism `L₁ ≅ L₂` induces an equivalence of categories
 `Comma L₁ R ≌ Comma L₂ R`. -/
-@[to_dual (attr := simps!)
+@[to_dual (attr := simps!, implicit_reducible)
 /-- A natural isomorphism `R₁ ≅ R₂` induces an equivalence of categories
 `Comma L R₁ ≌ Comma L R₂`. -/]
 def mapLeftIso (i : L₁ ≅ L₂) : Comma L₁ R ≌ Comma L₂ R where
@@ -395,7 +396,8 @@ section
 variable {C : Type u₄} [Category.{v₄} C]
 
 /-- The functor `(F ⋙ L, R) ⥤ (L, R)` -/
-@[to_dual (attr := simps) (reorder := F L R) /-- The functor `(L, F ⋙ R) ⥤ (L, R)` -/]
+@[to_dual (attr := simps,
+  implicit_reducible) (reorder := F L R) /-- The functor `(L, F ⋙ R) ⥤ (L, R)` -/]
 def preLeft (F : C ⥤ A) (L : A ⥤ T) (R : B ⥤ T) : Comma (F ⋙ L) R ⥤ Comma L R where
   obj X :=
     { left := F.obj X.left

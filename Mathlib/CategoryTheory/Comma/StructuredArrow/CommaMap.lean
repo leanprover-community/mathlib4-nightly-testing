@@ -33,7 +33,7 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The functor establishing the equivalence `StructuredArrow.commaMapEquivalence`. -/
-@[simps]
+@[simps, implicit_reducible]
 def commaMapEquivalenceFunctor [IsIso β] (X : Comma L' R') :
     StructuredArrow X (Comma.map α β) ⥤ Comma (map₂ (𝟙 _) α) (map₂ X.hom (inv β)) where
   obj Y := ⟨mk Y.hom.left, mk Y.hom.right,

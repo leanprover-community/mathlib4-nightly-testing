@@ -786,7 +786,7 @@ variable (C)
 attribute [local simp] whisker_exchange
 
 /-- The tensor product expressed as a functor. -/
-@[simps]
+@[simps, implicit_reducible]
 def tensor : C × C ⥤ C where
   obj X := X.1 ⊗ X.2
   map {X Y : C × C} (f : X ⟶ Y) := f.1 ⊗ₘ f.2
@@ -820,7 +820,7 @@ theorem rightAssocTensor_map {X Y} (f : X ⟶ Y) :
   rfl
 
 /-- The tensor product bifunctor `C ⥤ C ⥤ C` of a monoidal category. -/
-@[simps]
+@[simps, implicit_reducible]
 def curriedTensor : C ⥤ C ⥤ C where
   obj X :=
     { obj := fun Y => X ⊗ Y

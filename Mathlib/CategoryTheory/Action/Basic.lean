@@ -111,6 +111,9 @@ set_option backward.isDefEq.respectTransparency.types false in
 @[simps]
 def comp {M N K : Action V G} (p : Action.Hom M N) (q : Action.Hom N K) : Action.Hom M K where
   hom := p.hom ≫ q.hom
+  comm := by
+    intro g
+    simp_all only [comm_assoc, comm, Category.assoc]
 
 end Hom
 

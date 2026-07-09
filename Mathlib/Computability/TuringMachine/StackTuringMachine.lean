@@ -582,7 +582,7 @@ theorem tr_respects_aux₂ [DecidableEq K] {k : K} {q : TM1.Stmt (Γ' K Γ) (Λ'
   | pop f =>
     rcases e : S k with - | ⟨hd, tl⟩
     · simp only [Tape.mk'_head, ListBlank.head_cons, Tape.move_left_mk', List.length,
-        Tape.write_mk', List.head?, iterate_zero_apply, List.tail_nil]
+        List.head?, iterate_zero_apply, List.tail_nil]
       rw [← e, Function.update_eq_self]
       exact ⟨L, hL, by rw [addBottom_head_fst, cond]⟩
     · refine

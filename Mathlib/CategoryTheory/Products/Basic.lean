@@ -232,7 +232,7 @@ variable (C : Type u₁) [Category.{v₁} C] (D : Type u₂) [Category.{v₂} D]
 `(evaluation.obj X).obj F = F.obj X`,
 which is functorial in both `X` and `F`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def evaluation : C ⥤ (C ⥤ D) ⥤ D where
   obj X :=
     { obj := fun F => F.obj X
@@ -264,7 +264,7 @@ variable {A : Type u₁} [Category.{v₁} A] {B : Type u₂} [Category.{v₂} B]
 namespace Functor
 
 /-- The Cartesian product of two functors. -/
-@[simps]
+@[simps, implicit_reducible]
 def prod (F : A ⥤ B) (G : C ⥤ D) : A × C ⥤ B × D where
   obj X := (F.obj X.1, G.obj X.2)
   map f := F.map f.1 ×ₘ G.map f.2

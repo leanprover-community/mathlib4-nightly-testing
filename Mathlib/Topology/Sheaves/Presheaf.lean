@@ -157,7 +157,7 @@ open CategoryTheory.Limits
 variable (C)
 
 /-- The pushforward functor. -/
-@[simps!]
+@[simps!, implicit_reducible]
 def pushforward {X Y : TopCat.{w}} (f : X ⟶ Y) : X.Presheaf C ⥤ Y.Presheaf C :=
   (whiskeringLeft _ _ _).obj (Opens.map f).op
 

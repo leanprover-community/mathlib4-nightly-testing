@@ -83,7 +83,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 private lemma lambda_sq : λ ^ 2 = -3 * η := by
   ext
   calc (λ ^ 2 : K) = η ^ 2 + η + 1 - 3 * η := by
-        simp only [RingOfIntegers.map_mk, IsUnit.unit_spec]; ring
+        simp only [IsUnit.unit_spec]; ring
   _ = 0 - 3 * η := by simpa using hζ.isRoot_cyclotomic (by decide)
   _ = -3 * η := by ring
 

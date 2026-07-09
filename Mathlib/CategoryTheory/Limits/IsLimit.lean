@@ -87,14 +87,15 @@ instance subsingleton {t : Cone F} : Subsingleton (IsLimit t) :=
 
 /-- Given a natural transformation `α : F ⟶ G`, we give a morphism from the cone point
 of any cone over `F` to the cone point of a limit cone over `G`. -/
-@[to_dual (reorder := s P t)
+@[implicit_reducible, to_dual (reorder := s P t)
 /-- Given a natural transformation `α : F ⟶ G`, we give a morphism from the cocone point
 of a colimit cocone over `F` to the cocone point of any cocone over `G`. -/]
 def map {F G : J ⥤ C} (s : Cone F) {t : Cone G} (P : IsLimit t) (α : F ⟶ G) : s.pt ⟶ t.pt :=
   P.lift ((Cone.postcompose α).obj s)
 
--- The `set_option` is needed to make reassoc generate the right theorem
-set_option backward.isDefEq.respectTransparency false in
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual (attr := reassoc (attr := simp)) (reorder := c hd d) ι_map]
 theorem map_π {F G : J ⥤ C} (c : Cone F) {d : Cone G} (hd : IsLimit d) (α : F ⟶ G) (j : J) :
     hd.map c α ≫ d.π.app j = c.π.app j ≫ α.app j :=

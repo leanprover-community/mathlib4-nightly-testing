@@ -826,7 +826,7 @@ lemma uniformContinuous_ofFun_toFun (𝔗 : Set (Set α)) (h : ∀ s ∈ 𝔖, �
   intro s hs
   obtain ⟨T, hT𝔗, hT, hsT⟩ := h s hs
   refine ⟨T, hT, hT𝔗, fun f hf ↦ ?_⟩
-  simp only [UniformOnFun.gen, Set.mem_iInter, Set.mem_setOf_eq, Function.comp_apply] at hf ⊢
+  simp only [UniformOnFun.gen, Set.mem_iInter, Set.mem_setOf_eq] at hf ⊢
   intro x hx
   obtain ⟨t, ht, hxt⟩ := Set.mem_sUnion.mp <| hsT hx
   exact hf t ht x hxt

@@ -72,7 +72,7 @@ theorem comp_left {X Y Z : Arrow T} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).left = f.left ≫ g.left := rfl
 
 /-- An object in the arrow category is simply a morphism in `T`. -/
-@[simps, to_dual self]
+@[simps, to_dual self, implicit_reducible]
 def mk {X Y : T} (f : X ⟶ Y) : Arrow T where
   left := X
   right := Y
@@ -327,7 +327,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 in terms of the inverse of `i`. -/
 theorem square_from_iso_invert {X Y : T} (i : X ≅ Y) (p : Arrow T) (sq : Arrow.mk i.hom ⟶ p) :
     i.inv ≫ sq.left ≫ p.hom = sq.right := by
-  simp [Arrow.w_mk_left]
+  simp
 
 variable {C : Type u} [Category.{v} C]
 

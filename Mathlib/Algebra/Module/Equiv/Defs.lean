@@ -244,7 +244,7 @@ theorem refl_apply [Module R M] (x : M) : refl R M x = x :=
   rfl
 
 /-- Linear equivalences are symmetric. -/
-@[symm]
+@[symm, implicit_reducible]
 def symm (e : M ≃ₛₗ[σ] M₂) : M₂ ≃ₛₗ[σ'] M :=
   { e.toLinearMap.inverse e.invFun e.left_inv e.right_inv,
     e.toEquiv.symm with
@@ -542,8 +542,7 @@ theorem coe_symm_mk [Module R M] [Module R M₂]
 @[simp]
 theorem coe_symm_mk' [Module R M] [Module R M₂]
     {f inv_fun left_inv right_inv} :
-    ⇑(⟨f, inv_fun, left_inv, right_inv⟩ : M ≃ₗ[R] M₂).symm = inv_fun :=
-  rfl
+    ⇑(⟨f, inv_fun, left_inv, right_inv⟩ : M ≃ₗ[R] M₂).symm = inv_fun := rfl
 
 protected theorem bijective : Function.Bijective e :=
   e.toEquiv.bijective

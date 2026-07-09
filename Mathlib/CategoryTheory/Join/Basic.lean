@@ -540,6 +540,15 @@ lemma mapWhiskerLeft_id (H : C ⥤ E) (Fᵣ : D ⥤ E') :
     mapWhiskerLeft H (𝟙 Fᵣ) = 𝟙 _ := by
   cat_disch
 
+#adaptation_note
+/--
+The statement of `mapWhiskerLeft_app` and `mapWhiskerRight_app` was determined using `simp` with
+`respectTransparency.types false`. In order to apply these, we need a matching normal form.
+We achieve this using `respectTransparency.types false` on this lemma, too.
+Probable fix: Figure out what the intended statement of `mapWhiskerLeft_app` and
+`mapWhiskerRight_app` is, and only then fix this lemma.
+-/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- One can exchange `mapWhiskerLeft` and `mapWhiskerRight`. -/
 lemma mapWhisker_exchange (Fₗ : C ⥤ E) (Gₗ : C ⥤ E) (Fᵣ : D ⥤ E') (Gᵣ : D ⥤ E')
@@ -576,6 +585,15 @@ def mapIsoWhiskerRight {Fₗ : C ⥤ E} {Gₗ : C ⥤ E} (α : Fₗ ≅ Gₗ) (H
 lemma mapIsoWhiskerRight_hom {Fₗ : C ⥤ E} {Gₗ : C ⥤ E} (α : Fₗ ≅ Gₗ) (H : D ⥤ E') :
     (mapIsoWhiskerRight α H).hom = mapWhiskerRight α.hom H := rfl
 
+#adaptation_note
+/--
+The statement of `mapWhiskerLeft_app` and `mapWhiskerRight_app` was determined using `simp` with
+`respectTransparency.types false`. In order to apply these, we need a matching normal form.
+We achieve this using `respectTransparency.types false` on this lemma, too.
+Probable fix: Figure out what the intended statement of `mapWhiskerLeft_app` and
+`mapWhiskerRight_app` is, and only then fix this lemma.
+-/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma mapIsoWhiskerRight_inv {Fₗ : C ⥤ E} {Gₗ : C ⥤ E} (α : Fₗ ≅ Gₗ) (H : D ⥤ E') :
     (mapIsoWhiskerRight α H).inv = mapWhiskerRight α.inv H := by
@@ -585,6 +603,15 @@ lemma mapIsoWhiskerRight_inv {Fₗ : C ⥤ E} {Gₗ : C ⥤ E} (α : Fₗ ≅ G�
 lemma mapIsoWhiskerLeft_hom (H : C ⥤ E) {Fᵣ : D ⥤ E'} {Gᵣ : D ⥤ E'} (α : Fᵣ ≅ Gᵣ) :
     (mapIsoWhiskerLeft H α).hom = mapWhiskerLeft H α.hom := rfl
 
+#adaptation_note
+/--
+The statement of `mapWhiskerLeft_app` and `mapWhiskerRight_app` was determined using `simp` with
+`respectTransparency.types false`. In order to apply these, we need a matching normal form.
+We achieve this using `respectTransparency.types false` on this lemma, too.
+Probable fix: Figure out what the intended statement of `mapWhiskerLeft_app` and
+`mapWhiskerRight_app` is, and only then fix this lemma.
+-/
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma mapIsoWhiskerLeft_inv (H : C ⥤ E) {Fᵣ : D ⥤ E'} {Gᵣ : D ⥤ E'} (α : Fᵣ ≅ Gᵣ) :
     (mapIsoWhiskerLeft H α).inv = mapWhiskerLeft H α.inv := by

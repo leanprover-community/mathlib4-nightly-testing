@@ -534,7 +534,7 @@ lemma HomotopyGroup.genLoopEquivOfUnique_transAt (N) [DecidableEq N] [Unique N] 
       (genLoopEquivOfUnique _ q).trans (genLoopEquivOfUnique _ p) := by
   ext t
   simp only [genLoopEquivOfUnique, GenLoop.transAt, GenLoop.copy,
-    one_div, Equiv.coe_fn_mk, GenLoop.mk_apply, ContinuousMap.coe_mk, Path.coe_mk', Path.trans,
+    one_div, ContinuousMap.coe_mk, Path.coe_mk', Path.trans,
     Function.comp_apply]
   refine ite_congr rfl (fun _ ↦ congrArg q ?_)
     fun _ ↦ congrArg p ?_

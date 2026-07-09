@@ -424,7 +424,8 @@ theorem unitsSMul_neg (u : ℤˣ) (w : NormalWord d) :
     unitsSMul φ (-u) (unitsSMul φ u w) = w := by
   rw [unitsSMul]
   split_ifs with hcan
-  · have hncan : ¬ Cancels u w := (unitsSMul_cancels_iff _ _ _).1 hcan
+  · set_option backward.isDefEq.respectTransparency false in
+    have hncan : ¬ Cancels u w := (unitsSMul_cancels_iff _ _ _).1 hcan
     unfold unitsSMul
     simp only [dif_neg hncan]
     simp [unitsSMulWithCancel, unitsSMulGroup, (d.compl u).equiv_snd_eq_inv_mul,
@@ -436,7 +437,7 @@ theorem unitsSMul_neg (u : ℤˣ) (w : NormalWord d) :
     | ofGroup => simp [Cancels] at hcan2
     | cons g u' w h1 h2 ih =>
       clear ih
-      simp only [unitsSMulGroup, SetLike.coe_sort_coe, unitsSMulWithCancel, id_eq, consRecOn_cons,
+      simp only [unitsSMulGroup, SetLike.coe_sort_coe, unitsSMulWithCancel, consRecOn_cons,
         group_smul_head,
         mul_inv_rev]
       cases hcan2.2

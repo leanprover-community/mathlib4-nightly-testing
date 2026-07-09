@@ -370,8 +370,7 @@ theorem coeAddMonoidHom_eq_dfinsuppSum [DecidableEq ι]
     {M S : Type*} [DecidableEq M] [AddCommMonoid M]
     [SetLike S M] [AddSubmonoidClass S M] (A : ι → S) (x : DirectSum ι fun i => A i) :
     DirectSum.coeAddMonoidHom A x = DFinsupp.sum x fun i => (fun x : A i => ↑x) := by
-  simp only [DirectSum.coeAddMonoidHom, toAddMonoid, DFinsupp.liftAddHom, AddEquiv.coe_mk,
-    Equiv.coe_fn_mk]
+  simp only [DirectSum.coeAddMonoidHom, toAddMonoid, DFinsupp.liftAddHom, AddEquiv.coe_mk]
   exact DFinsupp.sumAddHom_apply _ x
 
 @[simp]
@@ -461,5 +460,5 @@ and the corresponding finite product. -/
 def DirectSum.addEquivProd {ι : Type*} [Fintype ι] (G : ι → Type*) [(i : ι) → AddCommMonoid (G i)] :
     DirectSum ι G ≃+ ((i : ι) → G i) :=
   ⟨DFinsupp.equivFunOnFintype, fun g h ↦ funext fun _ ↦ by
-    simp only [DFinsupp.equivFunOnFintype, Equiv.toFun_as_coe, Equiv.coe_fn_mk, add_apply,
-      Pi.add_apply]⟩
+    simp only [DFinsupp.equivFunOnFintype, Equiv.toFun_as_coe, Equiv.coe_fn_mk,
+      ← DFinsupp.add_apply, Pi.add_apply]⟩

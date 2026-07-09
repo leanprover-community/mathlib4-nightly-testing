@@ -38,14 +38,14 @@ variable {C : Type u₃} [Category.{v₃} C] {D : Type u₄} [Category.{v₄} D]
 
 /-- Given a cone `c` over `F`, we can interpret the legs of `c` as structured arrows
     `c.pt ⟶ F.obj -`. -/
-@[simps]
+@[simps, implicit_reducible]
 def Cone.toStructuredArrow {F : J ⥤ C} (c : Cone F) : J ⥤ StructuredArrow c.pt F where
   obj j := StructuredArrow.mk (c.π.app j)
   map f := StructuredArrow.homMk f
 
 /-- If `F` has a limit, then the limit projections can be interpreted as structured arrows
     `limit F ⟶ F.obj -`. -/
-@[simps]
+@[simps, implicit_reducible]
 noncomputable def limit.toStructuredArrow (F : J ⥤ C) [HasLimit F] :
     J ⥤ StructuredArrow (limit F) F where
   obj j := StructuredArrow.mk (limit.π F j)

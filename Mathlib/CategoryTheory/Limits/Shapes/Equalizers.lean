@@ -397,7 +397,7 @@ theorem Cofork.app_zero_eq_comp_π_right (s : Cofork f g) : s.ι.app zero = g �
 set_option backward.defeqAttrib.useBackward true in
 /-- A fork on `f g : X ⟶ Y` is determined by the morphism `ι : P ⟶ X` satisfying `ι ≫ f = ι ≫ g`.
 -/
-@[simps]
+@[simps, implicit_reducible]
 def Fork.ofι {P : C} (ι : P ⟶ X) (w : ι ≫ f = ι ≫ g) : Fork f g where
   pt := P
   π :=
@@ -411,7 +411,7 @@ def Fork.ofι {P : C} (ι : P ⟶ X) (w : ι ≫ f = ι ≫ g) : Fork f g where
 set_option backward.defeqAttrib.useBackward true in
 /-- A cofork on `f g : X ⟶ Y` is determined by the morphism `π : Y ⟶ P` satisfying
 `f ≫ π = g ≫ π`. -/
-@[simps]
+@[simps, implicit_reducible]
 def Cofork.ofπ {P : C} (π : Y ⟶ P) (w : f ≫ π = g ≫ π) : Cofork f g where
   pt := P
   ι :=
