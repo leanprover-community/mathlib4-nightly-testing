@@ -452,6 +452,7 @@ variable {R : Type*} [CommSemiring R]
 
 variable {c d : RingCon M} {f : M →ₐ[R] P}
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (R) in
 /-- An isomorphism of algebras `e : M ≃ₐ[R] N` generates an isomorphism between quotient spaces,
 if it is compatible with the relations. -/

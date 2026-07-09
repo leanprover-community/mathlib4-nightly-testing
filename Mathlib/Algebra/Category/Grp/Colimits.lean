@@ -143,6 +143,7 @@ def quotUliftToQuot [DecidableEq J] : Quot (F ⋙ uliftFunctor.{u'}) →+ Quot F
   obtain ⟨j, j', u, a, rfl⟩ := hx
   simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma quotUliftToQuot_ι [DecidableEq J] (j : J) (x : (F ⋙ uliftFunctor.{u'}).obj j) :
     quotUliftToQuot F (Quot.ι _ j x) = Quot.ι F j x.down := by
   dsimp [quotUliftToQuot, Quot.ι]
@@ -152,6 +153,7 @@ lemma quotUliftToQuot_ι [DecidableEq J] (j : J) (x : (F ⋙ uliftFunctor.{u'}).
     DFinsupp.sumAddHom_single, AddMonoidHom.coe_comp, Function.comp_apply]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The additive equivalence between `Quot F` and `Quot (F ⋙ uliftFunctor.{u'})`.
 -/

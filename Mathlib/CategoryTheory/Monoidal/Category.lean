@@ -863,6 +863,7 @@ set_option backward.defeqAttrib.useBackward true in
 def rightUnitorNatIso : tensorUnitRight C ≅ 𝟭 C :=
   NatIso.ofComponents MonoidalCategory.rightUnitor
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The associator as a natural isomorphism between trifunctors `C ⥤ C ⥤ C ⥤ C`. -/
 @[simps!]
@@ -888,6 +889,7 @@ theorem tensorLeftTensor_hom_app (X Y Z : C) :
     (tensorLeftTensor X Y).hom.app Z = (associator X Y Z).hom :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem tensorLeftTensor_inv_app (X Y Z : C) :
     (tensorLeftTensor X Y).inv.app Z = (associator X Y Z).inv := by simp [tensorLeftTensor]
@@ -933,6 +935,7 @@ theorem tensorRightTensor_hom_app (X Y Z : C) :
     (tensorRightTensor X Y).hom.app Z = (associator Z X Y).inv :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem tensorRightTensor_inv_app (X Y Z : C) :
     (tensorRightTensor X Y).inv.app Z = (associator Z X Y).hom := by simp [tensorRightTensor]
@@ -997,6 +1000,7 @@ section ObjectProperty
 
 open ObjectProperty
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The restriction of a monoidal category along an object property
 that's closed under the monoidal structure. -/
 -- See note [reducible non-instances]

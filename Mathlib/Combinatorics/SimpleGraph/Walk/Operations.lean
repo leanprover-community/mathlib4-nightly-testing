@@ -538,6 +538,7 @@ lemma Nil.append {p : G.Walk u v} {q : G.Walk v w} (hp : p.Nil) (hq : q.Nil) :
 lemma nil_reverse {p : G.Walk v w} : p.reverse.Nil ↔ p.Nil := by
   cases p <;> simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The walk obtained by removing the first `n` darts of a walk. -/
 def drop {u v : V} (p : G.Walk u v) (n : ℕ) : G.Walk (p.getVert n) v :=
   match p, n with
@@ -580,6 +581,7 @@ lemma darts_drop (p : G.Walk u v) (n : ℕ) : (p.drop n).darts = p.darts.drop n 
 lemma edges_drop (p : G.Walk u v) (n : ℕ) : (p.drop n).edges = p.edges.drop n := by
   induction p generalizing n <;> cases n <;> simp [*, drop]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The walk obtained by taking the first `n` darts of a walk. -/
 def take {u v : V} (p : G.Walk u v) (n : ℕ) : G.Walk u (p.getVert n) :=
   match p, n with
@@ -721,10 +723,12 @@ lemma dropLast_concat {t u v} (p : G.Walk u v) (h : G.Adj v t) :
   · rw! [concat_cons, dropLast_cons_of_not_nil] <;>
       simp [*, ← length_eq_zero_iff]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma cons_tail_eq (p : G.Walk u v) (hp : ¬ p.Nil) :
     cons (p.adj_snd hp) p.tail = p := by
   cases p <;> simp at hp ⊢
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma concat_dropLast {p : G.Walk u v} (hp : G.Adj p.penultimate v) : p.dropLast.concat hp = p := by
   induction p with

@@ -51,6 +51,7 @@ variable {𝕜 : Type u} [NontriviallyNormedField 𝕜]
 
 open AlgebraicGeometry Manifold TopologicalSpace Topology
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The units of the stalk at `x` of the sheaf of smooth functions from `M` to `𝕜`, considered as a
 sheaf of commutative rings, are the functions whose values at `x` are nonzero. -/
 theorem smoothSheafCommRing.isUnit_stalk_iff {x : M}
@@ -150,6 +151,7 @@ def ChartedSpace.locallyRingedSpaceMapAux (f : M → N) (hf : ContMDiff IM IN �
   base := TopCat.ofHom ⟨f, hf.continuous⟩
   c := (hf.smoothSheafCommRingHom _ _ f).hom
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- (Implementation): Use `ChartedSpace.stalkMap_locallyRingedSpaceMap_evalHom`. -/
 lemma ChartedSpace.stalkMap_locallyRingedSpaceMapAux (f : M → N) (hf : ContMDiff IM IN ∞ f)
     (x : M) :

@@ -44,6 +44,7 @@ theorem yonedaEquiv_symm_app_apply {X : C} {F : Sheaf J (Type v)} (x : F.obj.obj
     (Y : Cᵒᵖ) (f : Y.unop ⟶ X) : dsimp% (J.yonedaEquiv.symm x).hom.app Y f = F.obj.map f.op x :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- See also `yonedaEquiv_naturality'` for a more general version. -/
 lemma yonedaEquiv_naturality {X Y : C} {F : Sheaf J (Type v)} (f : J.yoneda.obj X ⟶ F)

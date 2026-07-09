@@ -773,6 +773,7 @@ lemma toCycles_comp_isoCycles₁_hom :
   simp [← cancel_mono (shortComplexH1 A).moduleCatLeftHomologyData.i, comp_d₂₁_eq,
     shortComplexH1_f]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma cyclesMk₁_eq (x : cycles₁ A) :
     cyclesMk 1 0 (by simp) ((chainsIso₁ A).inv x) (by
       rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, eq_d₁₀_comp_inv]; simp) =
@@ -821,6 +822,7 @@ lemma toCycles_comp_isoCycles₂_hom :
   simp [← cancel_mono (shortComplexH2 A).moduleCatLeftHomologyData.i, comp_d₃₂_eq,
     shortComplexH2_f]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma cyclesMk₂_eq (x : cycles₂ A) :
     cyclesMk 2 1 (by simp) ((chainsIso₂ A).inv x) (by
       rw [← LinearMap.comp_apply, ← ModuleCat.hom_comp, eq_d₂₁_comp_inv]

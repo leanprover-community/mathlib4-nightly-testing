@@ -223,6 +223,7 @@ section CanonicallyOrderedAddCommMonoid
 variable [Semiring R] [SetLike σ R] [AddSubmonoidClass σ R] (A : ι → σ)
 variable [AddCommMonoid ι] [PartialOrder ι] [CanonicallyOrderedAdd ι] [SetLike.GradedMonoid A]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem coe_of_mul_apply_of_not_le {i : ι} (r : A i) (r' : ⨁ i, A i) (n : ι) (h : ¬i ≤ n) :
     ((of (fun i => A i) i r * r') n : R) = 0 := by
   classical
@@ -234,6 +235,7 @@ theorem coe_of_mul_apply_of_not_le {i : ι} (r : A i) (r' : ⨁ i, A i) (n : ι)
     · rw [DFinsupp.sum, Finset.sum_ite_of_false, Finset.sum_const_zero]
       exact fun x _ H => h ((self_le_add_right i x).trans_eq H)
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem coe_mul_of_apply_of_not_le (r : ⨁ i, A i) {i : ι} (r' : A i) (n : ι) (h : ¬i ≤ n) :
     ((r * of (fun i => A i) i r') n : R) = 0 := by
   classical
@@ -436,6 +438,7 @@ section Semiring
 variable [Semiring R] [SetLike σ R] [AddSubmonoidClass σ R]
 variable {A : ι → σ} [SetLike.GradedMonoid A]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem mul_apply_eq_zero {r r' : ⨁ i, A i} {m n : ι}
     (hr : ∀ i < m, r i = 0) (hr' : ∀ i < n, r' i = 0) ⦃k : ι⦄ (hk : k < m + n) :
     (r * r') k = 0 := by

@@ -416,6 +416,7 @@ theorem FriendlyOperation.of_dist_le_pow {op : Seq α → Seq α}
   obtain ⟨n, hst⟩ := dist_eq_two_inv_pow hst
   grind
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Coinduction principle for proving that an operation is friendly. -/
 theorem FriendlyOperation.coind (motive : (Seq α → Seq α) → Prop)
     {op : Seq α → Seq α}

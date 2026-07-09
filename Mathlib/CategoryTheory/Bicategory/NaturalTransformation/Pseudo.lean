@@ -215,6 +215,7 @@ lemma naturality_naturality_hom (α : F ⟶ G) {a b : B} {f g : a ⟶ b} (η : f
      (F.map₂ η.inv) ▷ α.app b ≫ (α.naturality f).hom ≫ α.app a ◁ G.map₂ η.hom := by
   simp [← IsIso.inv_comp_eq, ← G.map₂_inv η.inv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma naturality_naturality_iso (α : F ⟶ G) {a b : B} {f g : a ⟶ b} (η : f ≅ g) :
     α.naturality g = whiskerRightIso (F.map₂Iso η.symm) (α.app b) ≪≫
       (α.naturality f) ≪≫ whiskerLeftIso (α.app a) (G.map₂Iso η) := by
@@ -222,6 +223,7 @@ lemma naturality_naturality_iso (α : F ⟶ G) {a b : B} {f g : a ⟶ b} (η : f
   rw [naturality_naturality_hom α η]
   simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma naturality_naturality_inv (α : F ⟶ G) {a b : B} {f g : a ⟶ b} (η : f ≅ g) :
     (α.naturality g).inv =
       α.app a ◁ G.map₂ η.inv ≫ (α.naturality f).inv ≫ F.map₂ η.hom ▷ α.app b := by

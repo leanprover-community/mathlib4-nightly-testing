@@ -135,6 +135,7 @@ theorem walkingParallelPairOp_left :
 theorem walkingParallelPairOp_right :
     walkingParallelPairOp.map right = @Quiver.Hom.op _ _ zero one right := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /--
 The equivalence `WalkingParallelPair ⥤ WalkingParallelPairᵒᵖ` sending left to left and right to
@@ -273,6 +274,7 @@ theorem parallelPair_map_right (f g : X ⟶ Y) : (parallelPair f g).map right = 
 theorem parallelPair_functor_obj {F : WalkingParallelPair ⥤ C} (j : WalkingParallelPair) :
     (parallelPair (F.map left) (F.map right)).obj j = F.obj j := by cases j <;> rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Every functor indexing a (co)equalizer is naturally isomorphic (actually, equal) to a
 `parallelPair` -/
 @[simps!]
@@ -622,6 +624,7 @@ def Cone.ofFork {F : WalkingParallelPair ⥤ C} (t : Fork (F.map left) (F.map ri
     { app := fun X => t.π.app X ≫ eqToHom (by simp)
       naturality := by rintro _ _ (_ | _ | _) <;> simp [t.condition] }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- This is a helper construction that can be useful when verifying that a category has all
 coequalizers. Given `F : WalkingParallelPair ⥤ C`, which is really the same as
@@ -655,6 +658,7 @@ def Fork.ofCone {F : WalkingParallelPair ⥤ C} (t : Cone F) : Fork (F.map left)
   π := { app := fun X => t.π.app X ≫ eqToHom (by simp)
          naturality := by rintro _ _ (_ | _ | _) <;> simp }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Given `F : WalkingParallelPair ⥤ C`, which is really the same as
 `parallelPair (F.map left) (F.map right)` and a cocone on `F`, we get a cofork on
@@ -933,12 +937,14 @@ variable {f g}
 def idFork (h : f = g) : Fork f g :=
   Fork.ofι (𝟙 X) <| h ▸ rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The identity on `X` is an equalizer of `(f, g)`, if `f = g`. -/
 def isLimitIdFork (h : f = g) : IsLimit (idFork h) :=
   Fork.IsLimit.mk _ (fun s => Fork.ι s) (fun _ => Category.comp_id _) fun s m h => by
     convert! h
     exact (Category.comp_id _).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Every equalizer of `(f, g)`, where `f = g`, is an isomorphism. -/
 theorem isIso_limit_cone_parallelPair_of_eq (h₀ : f = g) {c : Fork f g} (h : IsLimit c) :
     IsIso c.ι :=
@@ -1151,12 +1157,14 @@ variable {f g}
 def idCofork (h : f = g) : Cofork f g :=
   Cofork.ofπ (𝟙 Y) <| h ▸ rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The identity on `Y` is a coequalizer of `(f, g)`, where `f = g`. -/
 def isColimitIdCofork (h : f = g) : IsColimit (idCofork h) :=
   Cofork.IsColimit.mk _ (fun s => Cofork.π s) (fun _ => Category.id_comp _) fun s m h => by
     convert! h
     exact (Category.id_comp _).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Every coequalizer of `(f, g)`, where `f = g`, is an isomorphism. -/
 theorem isIso_colimit_cocone_parallelPair_of_eq (h₀ : f = g) {c : Cofork f g} (h : IsColimit c) :
     IsIso c.π :=

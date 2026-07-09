@@ -341,6 +341,7 @@ lemma InjectiveResolution.toRightDerivedZero_eq
   erw [← NatTrans.naturality]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance (F : C ⥤ D) [F.Additive] (X : C) [Injective X] :
     IsIso (F.toRightDerivedZero.app X) := by
   rw [(InjectiveResolution.self X).toRightDerivedZero_eq F]
@@ -350,6 +351,7 @@ section
 
 variable (F : C ⥤ D) [F.Additive] [PreservesFiniteLimits F]
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance {X : C} (P : InjectiveResolution X) :
     IsIso (P.toRightDerivedZero' F) := by
   dsimp [InjectiveResolution.toRightDerivedZero']

@@ -126,6 +126,7 @@ instance Lex.isStrictOrder [LinearOrder ι] [∀ a, PartialOrder (β a)] :
       ⟨N₁, fun j hj => (lt_N₁ _ hj).trans (lt_N₂ _ hj), a_lt_b.trans b_lt_c⟩,
       ⟨N₂, fun j hj => (lt_N₁ _ (hj.trans H)).trans (lt_N₂ _ hj), (lt_N₁ _ H).symm ▸ b_lt_c⟩]
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance Colex.isStrictOrder [LinearOrder ι] [∀ a, PartialOrder (β a)] :
     IsStrictOrder (Colex (∀ i, β i)) (· < ·) :=
   Lex.isStrictOrder (ι := ιᵒᵈ)
@@ -142,6 +143,7 @@ noncomputable instance Lex.linearOrder [LinearOrder ι] [WellFoundedLT ι]
   @linearOrderOfSTO (Πₗ i, β i) (· < ·)
     { trichotomous := (trichotomous_lex _ _ IsWellFounded.wf).1 } (Classical.decRel _)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `Colex (∀ i, α i)` is a linear order if the original order has well-founded `>`. -/
 noncomputable instance Colex.linearOrder [LinearOrder ι] [WellFoundedGT ι]
     [∀ a, LinearOrder (β a)] : LinearOrder (Colex (∀ i, β i)) :=
@@ -219,24 +221,30 @@ end Lex
 section Colex
 variable [WellFoundedGT ι]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem toColex_monotone : Monotone (@toColex (∀ i, β i)) :=
   toLex_monotone (ι := ιᵒᵈ)
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem toColex_strictMono : StrictMono (@toColex (∀ i, β i)) :=
   toLex_strictMono (ι := ιᵒᵈ)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem lt_toColex_update_self_iff : toColex x < toColex (update x i a) ↔ x i < a :=
   lt_toLex_update_self_iff (ι := ιᵒᵈ)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem toColex_update_lt_self_iff : toColex (update x i a) < toColex x ↔ a < x i :=
   toLex_update_lt_self_iff (ι := ιᵒᵈ)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem le_toColex_update_self_iff : toColex x ≤ toColex (update x i a) ↔ x i ≤ a :=
   le_toLex_update_self_iff (ι := ιᵒᵈ)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem toColex_update_le_self_iff : toColex (update x i a) ≤ toColex x ↔ a ≤ x i :=
   toLex_update_le_self_iff (ι := ιᵒᵈ)
@@ -296,6 +304,7 @@ instance [LinearOrder ι] [WellFoundedLT ι] [∀ a, PartialOrder (β a)]
 instance [LinearOrder ι] [WellFoundedGT ι] [∀ a, PartialOrder (β a)]
     [∀ a, BoundedOrder (β a)] : BoundedOrder (Colex (∀ a, β a)) where
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance [Preorder ι] [∀ i, LT (β i)] [∀ i, DenselyOrdered (β i)] :
     DenselyOrdered (Lex (∀ i, β i)) :=
   ⟨by
@@ -310,10 +319,12 @@ instance [Preorder ι] [∀ i, LT (β i)] [∀ i, DenselyOrdered (β i)] :
       · rw [Function.update_of_ne hj.ne a]
       · rwa [Function.update_self i a]⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance [Preorder ι] [∀ i, LT (β i)] [∀ i, DenselyOrdered (β i)] :
     DenselyOrdered (Colex (∀ i, β i)) :=
   inferInstanceAs (DenselyOrdered (Lex (∀ i : ιᵒᵈ, β (OrderDual.toDual i))))
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Lex.noMaxOrder' [Preorder ι] [∀ i, LT (β i)] (i : ι) [NoMaxOrder (β i)] :
     NoMaxOrder (Lex (∀ i, β i)) :=
   ⟨fun a => by
@@ -322,6 +333,7 @@ theorem Lex.noMaxOrder' [Preorder ι] [∀ i, LT (β i)] (i : ι) [NoMaxOrder (�
     exact ⟨Function.update a i b, i, fun j hj =>
       (Function.update_of_ne hj.ne b a).symm, by rwa [Function.update_self i b]⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Colex.noMaxOrder' [Preorder ι] [∀ i, LT (β i)] (i : ι) [NoMaxOrder (β i)] :
     NoMaxOrder (Colex (∀ i, β i)) :=
   Lex.noMaxOrder' (ι := ιᵒᵈ) i
@@ -332,6 +344,7 @@ instance [LinearOrder ι] [WellFoundedLT ι] [Nonempty ι] [∀ i, PartialOrder 
     let ⟨_, hb⟩ := exists_gt (ofLex a)
     ⟨_, toLex_strictMono hb⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance [LinearOrder ι] [WellFoundedGT ι] [Nonempty ι] [∀ i, PartialOrder (β i)]
     [∀ i, NoMaxOrder (β i)] : NoMaxOrder (Colex (∀ i, β i)) :=
   inferInstanceAs (NoMaxOrder (Lex (∀ i : ιᵒᵈ, β (OrderDual.toDual i))))
@@ -342,6 +355,7 @@ instance [LinearOrder ι] [WellFoundedLT ι] [Nonempty ι] [∀ i, PartialOrder 
     let ⟨_, hb⟩ := exists_lt (ofLex a)
     ⟨_, toLex_strictMono hb⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance [LinearOrder ι] [WellFoundedGT ι] [Nonempty ι] [∀ i, PartialOrder (β i)]
     [∀ i, NoMinOrder (β i)] : NoMinOrder (Colex (∀ i, β i)) :=
   inferInstanceAs (NoMinOrder (Lex (∀ i : ιᵒᵈ, β (OrderDual.toDual i))))

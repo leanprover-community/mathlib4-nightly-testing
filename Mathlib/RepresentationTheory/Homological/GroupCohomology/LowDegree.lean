@@ -769,6 +769,7 @@ def cocyclesIso₀ : cocycles A 0 ≅ ModuleCat.of k A.ρ.invariants :=
     ((inhomogeneousCochains A).cyclesIsKernel 0 1 (by simp)) (shortComplexH0_exact A).fIsKernel
       (dArrowIso₀₁ A)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp), elementwise (attr := simp)]
 lemma cocyclesIso₀_hom_comp_f :

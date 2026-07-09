@@ -471,6 +471,7 @@ instance mulAction : MulAction S <| (restrictScalars f).obj (of _ S) →ₗ[R] M
     one_smul := fun g => LinearMap.ext fun s : S => by simp
     mul_smul := fun (s t : S) g => LinearMap.ext fun x : S => by simp [mul_assoc] }
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance distribMulAction : DistribMulAction S <| (restrictScalars f).obj (of _ S) →ₗ[R] M :=
   { CoextendScalars.mulAction f _ with
     smul_add := fun s g h => LinearMap.ext fun _ : S => by simp
@@ -497,6 +498,7 @@ This is an implementation detail: use `(coextendScalars f).obj` instead.
 def obj' : ModuleCat S :=
   of _ ((restrictScalars f).obj (of _ S) →ₗ[R] M)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `M, M'` are `R`-modules, then any `R`-linear map `g : M ⟶ M'` induces an `S`-linear map
 `(S →ₗ[R] M) ⟶ (S →ₗ[R] M')` defined by `h ↦ g ∘ h` -/
 @[simps!]
@@ -986,6 +988,7 @@ noncomputable def extendScalarsComp :
     ((extendRestrictScalarsAdj f₁₂).comp (extendRestrictScalarsAdj f₂₃))
     (extendRestrictScalarsAdj (f₂₃.comp f₁₂))).symm (restrictScalarsComp f₁₂ f₂₃).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma homEquiv_extendScalarsComp (M : ModuleCat R₁) :
     (extendRestrictScalarsAdj (f₂₃.comp f₁₂)).homEquiv _ _
@@ -1052,6 +1055,7 @@ lemma extendScalars_id_comp :
   erw [extendScalarsId_hom_app_one_tmul]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma extendScalars_comp_id :
     (extendScalarsComp f₁₂ (RingHom.id R₂)).hom ≫ Functor.whiskerLeft _ (extendScalarsId R₂).hom ≫

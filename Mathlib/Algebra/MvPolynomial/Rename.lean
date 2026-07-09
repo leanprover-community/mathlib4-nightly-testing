@@ -54,6 +54,7 @@ section Rename
 def rename (f : σ → τ) : MvPolynomial σ R →ₐ[R] MvPolynomial τ R :=
   AddMonoidAlgebra.mapDomainAlgHom _ _ (mapDomain.addMonoidHom f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem rename_C (f : σ → τ) (r : R) : rename f (C r) = C r := by
   unfold rename C monomial MvPolynomial; simp
 

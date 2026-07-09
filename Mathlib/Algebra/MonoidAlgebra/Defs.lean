@@ -747,6 +747,7 @@ def uniqueRingEquiv [Subsingleton M] : R[M] ≃+* R where
     refine (coeff_mul ..).trans ?_
     simp [Finsupp.sum_unique, Unique.eq_default]
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (M) in
 @[to_additive (dont_translate := R) (attr := simp)]
 lemma uniqueRingEquiv_symm_apply [Subsingleton M] (r : R) :
@@ -787,6 +788,7 @@ def curryRingEquiv : R[M × N] ≃+* R[N][M] where
 lemma curryRingEquiv_single (m : M) (n : N) (r : R) :
     curryRingEquiv (single (m, n) r) = single m (single n r) := by simp [curryRingEquiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_additive (attr := simp)]
 lemma curryRingEquiv_symm_single (m : M) (n : N) (r : R) :
     curryRingEquiv.symm (single m <| single n r) = (single (m, n) r) := by

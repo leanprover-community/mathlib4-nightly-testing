@@ -184,6 +184,7 @@ lemma Algebra.tensorQuotientTensorEquiv_tmul (e : R' ⊗[R] S) (a : R'') (b : R'
       Ideal.Quotient.mk _ ((a * algebraMap R' R'' b) ⊗ₜ c) := by
   simp [Algebra.tensorQuotientTensorEquiv, ← Ideal.Quotient.mk_algebraMap, ← map_mul]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma Algebra.tensorQuotientTensorEquiv_symm_tmul (e : R' ⊗[R] S) (a : R'') (b : S) :
     (Algebra.tensorQuotientTensorEquiv R'' e).symm (Ideal.Quotient.mk _ (a ⊗ₜ b)) =

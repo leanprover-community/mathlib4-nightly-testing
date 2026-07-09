@@ -173,11 +173,13 @@ theorem conePointUniqueUpToIso_inv_comp {s t : Cone F} (P : IsLimit s) (Q : IsLi
     (conePointUniqueUpToIso P Q).inv ≫ s.π.app j = t.π.app j :=
   (uniqueUpToIso P Q).inv.w _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual (attr := reassoc (attr := simp)) coconePointUniqueUpToIso_inv_desc]
 theorem lift_comp_conePointUniqueUpToIso_hom {r s t : Cone F} (P : IsLimit s) (Q : IsLimit t) :
     P.lift r ≫ (conePointUniqueUpToIso P Q).hom = Q.lift r :=
   Q.uniq _ _ (by simp)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual (attr := reassoc (attr := simp)) coconePointUniqueUpToIso_hom_desc]
 theorem lift_comp_conePointUniqueUpToIso_inv {r s t : Cone F} (P : IsLimit s) (Q : IsLimit t) :
     Q.lift r ≫ (conePointUniqueUpToIso P Q).inv = P.lift r :=
@@ -229,12 +231,14 @@ def ofPointIso {r t : Cone F} (P : IsLimit r) [i : IsIso (P.lift t)] : IsLimit t
 
 variable {t : Cone F}
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[to_dual]
 theorem hom_lift (h : IsLimit t) {W : C} (m : W ⟶ t.pt) :
     m = h.lift { pt := W, π := { app := fun b => m ≫ t.π.app b } } :=
   h.uniq { pt := W, π := { app := fun b => m ≫ t.π.app b } } m fun _ => rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Two morphisms into a limit are equal if their compositions with
 each cone morphism are equal. -/
 @[to_dual /-- Two morphisms out of a colimit are equal if their compositions with
@@ -244,6 +248,7 @@ theorem hom_ext (h : IsLimit t) {W : C} {f f' : W ⟶ t.pt}
     f = f' := by
   rw [h.hom_lift f, h.hom_lift f']; congr; exact funext w
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual]
 lemma nonempty_isLimit_iff_isIso_lift {s t : Cone F} (hs : IsLimit s) :
     Nonempty (IsLimit t) ↔ IsIso (hs.lift t) :=
@@ -489,6 +494,7 @@ def homEquiv (h : IsLimit t) {W : C} : (W ⟶ t.pt) ≃ ((Functor.const J).obj W
   left_inv f := h.hom_ext (by simp)
   right_inv π := by cat_disch
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_dual (attr := reassoc (attr := simp)) ι_app_homEquiv_symm]
 lemma homEquiv_symm_π_app (h : IsLimit t) {W : C}
     (f : (const J).obj W ⟶ F) (j : J) :
@@ -630,6 +636,7 @@ section
 
 open OfNatIso
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `F.cones` is representable, then the cone corresponding to the identity morphism on
 the representing object is a limit cone.
 -/
@@ -757,6 +764,7 @@ section
 
 open OfNatIso
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `F.cocones` is corepresentable, then the cocone corresponding to the identity morphism on
 the representing object is a colimit cocone.
 -/

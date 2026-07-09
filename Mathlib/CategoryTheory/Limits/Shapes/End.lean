@@ -143,6 +143,7 @@ namespace Cowedge
 
 variable {F}
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A variant of `CategoryTheory.Limits.Cocone.ext` specialized to produce
 isomorphisms of cowedges. -/
 @[simps!]

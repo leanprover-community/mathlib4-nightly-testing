@@ -202,6 +202,7 @@ theorem uncurry_injective : Function.Injective (uncurry : (Y ⟶ A ⟶[C] X) →
 
 variable (A X)
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem uncurry_id_eq_ev : uncurry (𝟙 (A ⟶[C] X)) = (ihom.ev A).app X := by
   simp [uncurry_eq]
 
@@ -319,6 +320,7 @@ noncomputable def ofEquiv : MonoidalClosed C where
           adj.toEquivalence.symm.toAdjunction)).ofNatIsoLeft
             (Iso.compInverseIso (H := adj.toEquivalence) (Functor.Monoidal.commTensorLeft F X)) }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Suppose we have a monoidal equivalence `F : C ≌ D`, with `D` monoidal closed. We can pull the
 monoidal closed instance back along the equivalence. For `X, Y, Z : C`, this lemma describes the
@@ -340,6 +342,7 @@ theorem ofEquiv_curry_def {X Y Z : C} (f : X ⊗ Y ⟶ Z) :
   rw [Adjunction.comp_homEquiv, Adjunction.comp_homEquiv]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- Suppose we have a monoidal equivalence `F : C ≌ D`, with `D` monoidal closed. We can pull the
 monoidal closed instance back along the equivalence. For `X, Y, Z : C`, this lemma describes the

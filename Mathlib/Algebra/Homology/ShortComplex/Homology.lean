@@ -413,6 +413,7 @@ lemma LeftHomologyData.homologyIso_leftHomologyData [S.HasHomology] :
   dsimp [homologyIso, leftHomologyIso, ShortComplex.leftHomologyIso]
   rw [← leftHomologyMap'_comp, comp_id]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma RightHomologyData.homologyIso_rightHomologyData [S.HasHomology] :
     S.rightHomologyData.homologyIso = S.rightHomologyIso.symm := by
@@ -1050,6 +1051,7 @@ noncomputable def homologyOpIso [S.HasHomology] :
     S.op.homology ≅ Opposite.op S.homology :=
   S.op.leftHomologyIso.symm ≪≫ S.leftHomologyOpIso ≪≫ S.rightHomologyIso.symm.op
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma homologyMap'_op : (homologyMap' φ h₁ h₂).op =
     h₂.iso.inv.op ≫ homologyMap' (opMap φ) h₂.op h₁.op ≫ h₁.iso.hom.op :=

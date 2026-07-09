@@ -119,6 +119,7 @@ theorem ringQuot_mkAlgHom_freeAlgebra_ι_eq_ι (m : M) :
   rw [ι]
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given a linear map `f : M → A` where `A` is an `R`-algebra, `lift R f` is the unique lift
 of `f` to a morphism of `R`-algebras `TensorAlgebra R M → A`.
 -/

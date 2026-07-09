@@ -339,6 +339,7 @@ section OrderIso
 
 variable [SuccOrder ι] [PredOrder ι] [IsSuccArchimedean ι]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `toZ` defines an `OrderIso` between `ι` and its range. -/
 noncomputable def orderIsoRangeToZOfLinearSuccPredArch [hι : Nonempty ι] :
     ι ≃o Set.range (toZ hι.some) where
@@ -350,6 +351,7 @@ instance (priority := 100) countable_of_linear_succ_pred_arch : Countable ι := 
   · infer_instance
   · exact Countable.of_equiv _ orderIsoRangeToZOfLinearSuccPredArch.symm.toEquiv
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If the order has neither bot nor top, `toZ` defines an `OrderIso` between `ι` and `ℤ`. -/
 noncomputable def orderIsoIntOfLinearSuccPredArch [NoMaxOrder ι] [NoMinOrder ι] [hι : Nonempty ι] :
     ι ≃o ℤ where

@@ -25,6 +25,7 @@ variable {C : Type u} [Category.{v} C] (F : C ⥤ Cat)
 
 open IsFiltered
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance [IsFilteredOrEmpty C] [∀ c, IsFilteredOrEmpty (F.obj c)] :
     IsFilteredOrEmpty (Grothendieck F) := by
   refine ⟨?_, ?_⟩

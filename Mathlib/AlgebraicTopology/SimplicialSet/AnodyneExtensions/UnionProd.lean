@@ -138,6 +138,7 @@ does not belong to `Λ[m + 1, k.castSucc].unionProd ∂Δ[n]`. This is
 the smallest `l : Fin (d + 1)` such that `x l` is of the form `(k.succ, _)`. -/
 noncomputable def min : Fin (d + 1) := (finset x hd).min' (nonempty_finset x hd)
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma simplex_fst_min : dsimp% (x.cast hd).simplex.1 (min x hd) = k.succ := by
   rw [← mem_finset_iff]
   apply Finset.min'_mem
@@ -210,6 +211,7 @@ variable {x} {hd : x.dim = d + 1} {l : Fin (d + 1)} (hl : IsIndex x hd l.succ)
 
 include hl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The type (II) simplex obtained as a face of a type (I) simplex. -/
 @[simps -isSimp]
 noncomputable abbrev δ :
@@ -327,6 +329,7 @@ lemma φ_of_gt (i : Fin (d + 2)) (hi : (min x hd).castSucc < i) :
     φ x hd i = objEquiv (x.cast hd).simplex (i.pred (by aesop)) := by
   rw [φ_of_ne _ _ _ hi.ne', Fin.predAbove_of_castSucc_lt _ _ hi]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma φ_succ_snd : (φ x hd (min x hd).succ).2 = (φ x hd (min x hd).castSucc).2 := by
@@ -408,6 +411,7 @@ lemma notMem_simplex :
   exact (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).map
     (SimplexCategory.δ (min x hd).castSucc).op h
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The type (I) simplex reconstructed from a type (II) simplex. -/
 @[simps]
@@ -428,6 +432,7 @@ variable {hd : x.dim = d + 1} {l : Fin (d + 1)} (hl : IsIndex x hd l.succ)
 
 include hl
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma min_δ : min (d := d) hl.δ rfl = l := by
   refine le_antisymm (Finset.min'_le _ _ ?_)
@@ -442,6 +447,7 @@ lemma min_δ : min (d := d) hl.δ rfl = l := by
     rw [Fin.succAbove_of_castSucc_lt _ _ (by grind)] at hy
     grind [(hl.succ_le_simplex_fst_iff y.castSucc).1 hy.symm.le]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma isType₂_δ : IsType₂ hl.δ := by
   intro _ rfl t ht
@@ -454,6 +460,7 @@ lemma isType₂_δ : IsType₂ hl.δ := by
   dsimp [stdSimplex.δ_apply] at hl ht ⊢
   aesop
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 variable {x} in
 lemma eq_of_isType₂_δ {u : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N}
@@ -482,6 +489,7 @@ lemma eq_of_isType₂_δ {u : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] �
 
 end IsIndex
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma IsType₂.type₁_eq_of_δ_eq
     {t : (Subcomplex.unionProd.{u} Λ[m + 1, k.castSucc] ∂Δ[n]).N}
     (ht : IsType₂ t) (s : Type₁.{u} k n) (hst : s.δ = t) {d : ℕ} (hd : t.dim = d) :
@@ -581,6 +589,7 @@ lemma type₁_pairingCore {m : ℕ} (k : Fin (m + 1)) {n : ℕ}
     (pairingCore k n).type₁ s = s.x :=
   Subcomplex.N.cast_eq_self _ s.hd
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- A weak rank function for `pairingCore k n`. -/
 noncomputable def weakRankFunction {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
@@ -676,6 +685,7 @@ lemma pairing_castSucc {m : ℕ} (k : Fin (m + 1)) (n : ℕ) :
     pairing.{u} k.castSucc n = (pairingCore.{u} k n).pairing :=
   dif_neg (by grind)
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance {m : ℕ} (k : Fin (m + 2)) (n : ℕ) :
     (pairing.{u} k n).IsRegular := by
   by_cases! hk : k = Fin.last (m + 1)

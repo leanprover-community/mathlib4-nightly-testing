@@ -423,6 +423,7 @@ theorem weightedHomogeneousComponent_finsupp :
 
 variable (w)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Every polynomial is the sum of its weighted homogeneous components. -/
 theorem sum_weightedHomogeneousComponent :
     (finsum fun m => weightedHomogeneousComponent w m φ) = φ := by
@@ -680,12 +681,14 @@ def weightedGradedAlgebra [DecidableEq M] :
   toDecomposition := weightedDecomposition R w
   toGradedMonoid  := WeightedHomogeneousSubmodule.gradedMonoid
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem weightedDecomposition.decompose'_eq [DecidableEq M] :
     (weightedDecomposition R w).decompose' = fun φ : MvPolynomial σ R =>
       DirectSum.mk (fun i : M => ↥(weightedHomogeneousSubmodule R w i))
         (Finset.image (weight w) φ.support) fun m =>
           ⟨weightedHomogeneousComponent w m φ, weightedHomogeneousComponent_mem w φ m⟩ := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem weightedDecomposition.decompose'_apply [DecidableEq M]
     (φ : MvPolynomial σ R) (m : M) :
     ((weightedDecomposition R w).decompose' φ m : MvPolynomial σ R) =

@@ -153,6 +153,7 @@ lemma smoothSheaf.contMDiff_section {U : (Opens (TopCat.of M))ᵒᵖ}
     ContMDiff IM I ∞ f :=
   (contDiffWithinAt_localInvariantProp ∞).section_spec _ _ _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A smooth function `f : M → N` induces a morphism of sheaves (of types) `𝒪_N ⟶ f_* 𝒪_M`
 by pre-composing with `f`. -/
 @[simps! -isSimp hom_app_hom]
@@ -315,12 +316,14 @@ def smoothSheafCommRing.forgetStalk (x : TopCat.of M) :
     (smoothSheaf IM I M R).presheaf.stalk x :=
   preservesColimitIso (forget CommRingCat) _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp, reassoc, elementwise] lemma smoothSheafCommRing.ι_forgetStalk_hom (x : TopCat.of M) (U) :
     dsimp% ↾(colimit.ι ((OpenNhds.inclusion x).op ⋙
       (smoothSheafCommRing IM I M R).presheaf) U).hom ≫ (forgetStalk IM I M R x).hom =
     colimit.ι ((OpenNhds.inclusion x).op ⋙ (smoothSheaf IM I M R).presheaf) U :=
   ι_preservesColimitIso_hom (forget CommRingCat) _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp, reassoc, elementwise] lemma smoothSheafCommRing.ι_forgetStalk_inv (x : TopCat.of M) (U) :
     colimit.ι ((OpenNhds.inclusion x).op ⋙ (smoothSheaf IM I M R).presheaf) U ≫
     (smoothSheafCommRing.forgetStalk IM I M R x).inv =
@@ -400,6 +403,7 @@ variable {IM I M R}
     = f ⟨x, hx⟩ :=
   smoothSheafCommRing.evalHom_germ IM I M R U x hx f
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A smooth function `f : M → N` induces a morphism of sheaves (of rings) `𝒪_N ⟶ f_* 𝒪_M`,
 by pre-composing with `f`. -/
 @[simps! -isSimp hom_app_hom_apply]

@@ -393,6 +393,7 @@ theorem contMDiffWithinAt_iff_of_mem_maximalAtlas (he : e ∈ maximalAtlas I n M
           ((e.extend I).symm ⁻¹' s ∩ range I) (e.extend I x) :=
   (contDiffWithinAt_localInvariantProp n).liftPropWithinAt_indep_chart he hx he' hy
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- An alternative version of `contMDiffWithinAt_iff_of_mem_maximalAtlas` which takes a
 chart `e'` in the target in the maximal atlas, but uses the preferred chart on the domain. -/
 theorem contMDiffWithinAt_iff_of_mem_maximalAtlas'

@@ -191,6 +191,7 @@ noncomputable def mapTriangleOpCompTriangleOpEquivalenceFunctorApp (T : Triangle
   Triangle.isoMk _ _ (Iso.refl _) (Iso.refl _) (Iso.refl _) (by simp) (by simp)
       (by simp [shift_map_op, map_opShiftFunctorEquivalence_counitIso_inv_app_unop])
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /--
 If `F : C ⥤ D` commutes with shifts, this expresses the compatibility of `F.mapTriangle`

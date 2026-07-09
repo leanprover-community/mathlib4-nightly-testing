@@ -125,6 +125,7 @@ theorem isUnit_res_toΓSpecMapBasicOpen : IsUnit (X.toToΓSpecMapBasicOpen r r) 
   rw [← CommRingCat.comp_apply, ← Functor.map_comp]
   congr
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Define the sheaf hom on individual basic opens for the unit. -/
 def toΓSpecCApp :
     (structureSheaf <| Γ.obj <| op X).obj.obj (op <| basicOpen r) ⟶
@@ -191,6 +192,7 @@ theorem toΓSpecSheafedSpace_app_eq :
     X.toΓSpecSheafedSpace.hom.c.app (op (basicOpen r)) = X.toΓSpecCApp r := by
   apply TopCat.Sheaf.extend_hom_app _ _ _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc] theorem toΓSpecSheafedSpace_app_spec (r : Γ.obj (op X)) :
     CommRingCat.ofHom (algebraMap (Γ.obj (op X)) _) ≫
         X.toΓSpecSheafedSpace.hom.c.app (op (basicOpen r)) =
@@ -252,6 +254,7 @@ lemma toΓSpec_preimage_zeroLocus_eq {X : LocallyRingedSpace.{u}}
   rw [← PrimeSpectrum.zeroLocus_iUnion₂]
   simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem comp_ring_hom_ext {X : LocallyRingedSpace.{u}} {R : CommRingCat.{u}} {f : R ⟶ Γ.obj (op X)}
     {β : X ⟶ Spec.locallyRingedSpaceObj R}
     (w : X.toΓSpec.base ≫ (Spec.locallyRingedSpaceMap f).base = β.base)
@@ -269,6 +272,7 @@ theorem comp_ring_hom_ext {X : LocallyRingedSpace.{u}} {R : CommRingCat.{u}} {f 
   erw [toΓSpecSheafedSpace_app_spec, ← X.presheaf.map_comp]
   exact h r
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `toSpecΓ _` is an isomorphism so these are mutually two-sided inverses. -/
 theorem Γ_Spec_left_triangle : toSpecΓ (Γ.obj (op X)) ≫ X.toΓSpec.c.app (op ⊤) = 𝟙 _ := by
   unfold toSpecΓ
@@ -303,6 +307,7 @@ def identityToΓSpec : 𝟭 LocallyRingedSpace.{u} ⟶ Γ.rightOp ⋙ Spec.toLoc
 
 namespace ΓSpec
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem left_triangle (X : LocallyRingedSpace) :
     SpecΓIdentity.inv.app (Γ.obj (op X)) ≫ (identityToΓSpec.app X).c.app (op ⊤) = 𝟙 _ :=
   X.Γ_Spec_left_triangle
@@ -338,22 +343,27 @@ def locallyRingedSpaceAdjunction : Γ.rightOp ⊣ Spec.toLocallyRingedSpace.{u} 
     exact right_triangle R.unop
 
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma toSpecΓ_unop (R : CommRingCatᵒᵖ) :
     AlgebraicGeometry.toSpecΓ (Opposite.unop R) = CommRingCat.ofHom (algebraMap _ _) := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `@[simp]`-normal form of `locallyRingedSpaceAdjunction_counit_app'`. -/
 @[simp]
 lemma toSpecΓ_of (R : Type u) [CommRing R] :
     AlgebraicGeometry.toSpecΓ (CommRingCat.of R) = CommRingCat.ofHom (algebraMap _ _) := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma locallyRingedSpaceAdjunction_counit_app (R : CommRingCatᵒᵖ) :
     locallyRingedSpaceAdjunction.counit.app R =
       (CommRingCat.ofHom (algebraMap _ _)).op := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma locallyRingedSpaceAdjunction_counit_app' (R : Type u) [CommRing R] :
     locallyRingedSpaceAdjunction.counit.app (op <| CommRingCat.of R) =
       (CommRingCat.ofHom (algebraMap _ _)).op := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma unop_locallyRingedSpaceAdjunction_counit_app' (R : Type u) [CommRing R] :
     (locallyRingedSpaceAdjunction.counit.app (op <| CommRingCat.of R)).unop =
       (CommRingCat.ofHom (algebraMap _ _)) := rfl
@@ -443,6 +453,7 @@ instance isIso_adjunction_counit : IsIso ΓSpec.adjunction.counit := by
 
 end ΓSpec
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Scheme.toSpecΓ_apply (X : Scheme.{u}) (x) :
     Scheme.toSpecΓ X x = Spec.map (X.presheaf.Γgerm x) (IsLocalRing.closedPoint _) := rfl
 

@@ -47,6 +47,7 @@ def CharacterModule : Type uA := A →+ AddCircle (1 : ℚ)
 
 namespace CharacterModule
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance : FunLike (CharacterModule A) A (AddCircle (1 : ℚ)) where
   coe c := c.toFun
   coe_injective _ _ _ := by simp_all
@@ -113,6 +114,7 @@ def congr (e : A ≃ₗ[R] B) : CharacterModule A ≃ₗ[R] CharacterModule B :=
 
 open TensorProduct
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 Any linear map `L : A → B⋆` induces a character in `(A ⊗ B)⋆` by `a ⊗ b ↦ L a b`.
 -/
@@ -136,6 +138,7 @@ Any character `c` in `(A ⊗ B)⋆` induces a linear map `A → B⋆` by `a ↦ 
   map_add' _ _ := rfl
   map_smul' r c := by ext; exact congr(c $(TensorProduct.tmul_smul _ _ _)).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 Linear maps into a character module are exactly characters of the tensor product.
 -/

@@ -150,6 +150,7 @@ end OrderIso
 namespace Prod.Lex
 variable (α β : Type*)
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Lexicographic product type with `Unique` type on the right is `OrderIso` to the left. -/
 def prodUnique [PartialOrder α] [Preorder β] [Unique β] : α ×ₗ β ≃o α where
   toFun x := (ofLex x).1

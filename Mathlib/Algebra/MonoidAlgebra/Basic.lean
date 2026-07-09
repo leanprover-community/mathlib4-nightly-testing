@@ -125,6 +125,7 @@ def uniqueAlgEquiv [Subsingleton M] : A[M] ≃ₐ[R] A where
   toRingEquiv := uniqueRingEquiv _
   commutes' r := by simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 variable (R M) in
 @[to_additive (dont_translate := A) (attr := simp)]
 lemma uniqueAlgEquiv_symm_apply [Subsingleton M] (a : A) :
@@ -163,6 +164,7 @@ def curryAlgEquiv : A[M × N] ≃ₐ[R] A[N][M] where
 lemma curryAlgEquiv_single (m : M) (n : N) (a : A) :
     curryAlgEquiv R (single (m, n) a) = single m (single n a) := by simp [curryAlgEquiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_additive (attr := simp)]
 lemma curryAlgEquiv_symm_single (m : M) (n : N) (a : A) :
     (curryAlgEquiv R).symm (single m <| single n a) = (single (m, n) a) := by

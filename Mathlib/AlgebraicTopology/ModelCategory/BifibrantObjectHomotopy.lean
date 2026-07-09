@@ -142,6 +142,7 @@ section
 
 variable {X Y : C} [IsCofibrant X] [IsCofibrant Y] [IsFibrant X] [IsFibrant Y]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Right homotopy classes of maps between bifibrant objects identify
 to morphisms in the homotopy category `BifibrantObject.HoCat`. -/
 def HoCat.homEquivRight :
@@ -171,12 +172,14 @@ lemma HoCat.homEquivLeft_apply (f : X ⟶ Y) :
     HoCat.homEquivLeft (.mk f) = toHoCat.map (homMk f) := by
   simp [homEquivLeft]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma HoCat.homEquivLeft_symm_apply (f : X ⟶ Y) :
     HoCat.homEquivRight.symm (toHoCat.map (homMk f)) = .mk f := rfl
 
 end
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The inclusion functor `BifibrantObject.HoCat C ⥤ FibrantObject.HoCat C`. -/
 def HoCat.ιFibrantObject : HoCat C ⥤ FibrantObject.HoCat C :=
@@ -203,6 +206,7 @@ def toHoCatCompιFibrantObject :
     toHoCat (C := C) ⋙ HoCat.ιFibrantObject ≅
       ιFibrantObject ⋙ FibrantObject.toHoCat := Iso.refl _
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The inclusion functor `BifibrantObject.HoCat C ⥤ CofibrantObject.HoCat C`. -/
 @[implicit_reducible]
@@ -310,6 +314,7 @@ lemma bifibrantResolutionMap_fac' {X₁ X₂ : CofibrantObject C} (f : X₁ ⟶ 
     toHoCat.map f ≫ toHoCat.map X₂.iBifibrantResolutionObj :=
   toHoCat.congr_map (bifibrantResolutionMap_fac f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma bifibrantResolutionObj_hom_ext
     {X : CofibrantObject C} {Y : BifibrantObject.HoCat C} {f g :
       BifibrantObject.toHoCat.obj (bifibrantResolutionObj X) ⟶ Y}

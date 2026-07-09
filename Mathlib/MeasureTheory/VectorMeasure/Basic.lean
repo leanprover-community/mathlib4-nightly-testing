@@ -669,6 +669,7 @@ variable {R : Type*} [Semiring R] [Module R M] [Module R N]
 
 variable [ContinuousConstSMul R M] [ContinuousConstSMul R N]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem mapRange_smul {v : VectorMeasure α M} {f : M →ₗ[R] N} (hf : Continuous f) {c : R} :
     (c • v).mapRange f.toAddMonoidHom hf = c • (v.mapRange f.toAddMonoidHom hf) := by

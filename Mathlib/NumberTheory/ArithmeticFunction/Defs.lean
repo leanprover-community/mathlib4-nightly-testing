@@ -260,6 +260,7 @@ theorem mul_smul' (f g : ArithmeticFunction R) (h : ArithmeticFunction M) :
   apply sum_nbij' (fun ⟨⟨_i, j⟩, ⟨k, l⟩⟩ ↦ ⟨(k, l * j), (l, j)⟩)
     (fun ⟨⟨i, _j⟩, ⟨k, l⟩⟩ ↦ ⟨(i * k, l), (i, k)⟩) <;> aesop (add simp mul_assoc)
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem one_smul' (b : ArithmeticFunction M) : (1 : ArithmeticFunction R) • b = b := by
   ext x
   simp_all [← map_div_right_divisors, sum_eq_single 1]
@@ -270,6 +271,7 @@ section Semiring
 
 variable [Semiring R]
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance instMonoid : Monoid (ArithmeticFunction R) where
   one_mul := one_smul'
   mul_one f := by

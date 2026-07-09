@@ -410,6 +410,7 @@ alias _root.CategoryTheory.Classifier.SubobjectRepresentableBy.homEquiv_eq := ho
 @[deprecated (since := "2026-03-06")]
 alias _root_.CategoryTheory.Classifier.SubobjectRepresentableBy.homEquiv_eq := homEquiv_eq
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- For any subobject `x`, the pullback of `h.Ω₀` along the characteristic map of `x`
 given by `h.homEquiv` is `x` itself. -/
 lemma pullback_homEquiv_symm_obj_Ω₀ {X : C} (x : Subobject X) :
@@ -519,6 +520,7 @@ alias _root.CategoryTheory.Classifier.SubobjectRepresentableBy.isPullback := isP
 alias _root_.CategoryTheory.Classifier.SubobjectRepresentableBy.isPullback := isPullback
 
 variable {m}
+set_option backward.isDefEq.respectTransparency.types false in
 lemma uniq {χ' : X ⟶ Ω} {π : U ⟶ h.Ω₀}
     (sq : IsPullback m π χ' h.Ω₀.arrow) : χ' = h.χ m := by
   apply h.homEquiv.injective

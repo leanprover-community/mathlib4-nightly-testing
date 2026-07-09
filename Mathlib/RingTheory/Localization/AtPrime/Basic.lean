@@ -592,6 +592,7 @@ theorem equivQuotMaximalIdeal_symm_apply_mk (x : R) (s : p.primeCompl) :
     mk'_spec, Ideal.Quotient.mk_algebraMap, equivQuotMaximalIdeal_apply_mk,
     Ideal.Quotient.mk_algebraMap]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The isomorphism `R ⧸ p ^ n ≃ₐ[R] Rₚ ⧸ maximalIdeal Rₚ ^ n`, where `Rₚ` satisfies
 `IsLocalization.AtPrime Rₚ p`. -/
 noncomputable
@@ -617,6 +618,7 @@ theorem equivQuotMaximalIdealPow_apply_mk (n : ℕ) (x : R) :
       Ideal.Quotient.mk _ (algebraMap R Rₚ x) :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem equivQuotMaximalIdealPow_symm_apply_mk_mul (n : ℕ) (x : R) (s : p.primeCompl) :
     (equivQuotMaximalIdealPow p Rₚ n).symm (Ideal.Quotient.mk _ (IsLocalization.mk' Rₚ x s)) *

@@ -143,6 +143,7 @@ theorem zmod_congr_of_sub_mem_max_ideal (x : ℤ_[p]) (m n : ℕ) (hm : x - m �
 
 variable (x : ℤ_[p])
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem exists_mem_range : ∃ n : ℕ, n < p ∧ x - n ∈ maximalIdeal ℤ_[p] := by
   simp only [maximalIdeal_eq_span_p, Ideal.mem_span_singleton, ← norm_lt_one_iff_dvd]
   obtain ⟨r, hr⟩ := rat_dense p (x : ℚ_[p]) zero_lt_one

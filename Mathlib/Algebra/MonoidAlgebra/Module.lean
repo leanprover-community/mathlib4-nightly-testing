@@ -201,6 +201,7 @@ def comapDistribMulActionSelf [Group G] [Semiring S] : DistribMulAction G S[G] :
   have := Finsupp.comapDistribMulAction (G := G) (α := G) (M := S)
   fast_instance% coeffEquiv.distribMulAction _
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[to_additive (dont_translate := R)]
 lemma single_mem_span_single [Semiring R] [Nontrivial R] {m : M} {s : Set M} :
     single m 1 ∈ Submodule.span R ((single · (1 : R)) '' s) ↔ m ∈ s := by
