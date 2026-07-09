@@ -505,6 +505,7 @@ lemma map_imaginaryPart (f : F) (x : A) : f (ℑ x) = ℑ (f x) := by
 
 end StarHomClass
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem ker_imaginaryPart : imaginaryPart.ker = selfAdjoint.submodule ℝ A := by
   ext x

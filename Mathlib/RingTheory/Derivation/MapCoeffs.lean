@@ -52,6 +52,7 @@ def mapCoeffs : Derivation R A[X] (PolynomialModule A M) where
 @[simp]
 lemma mapCoeffs_apply (p : A[X]) (i) : (d.mapCoeffs p).coeff i = d (coeff p i) := rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma mapCoeffs_monomial (n : ℕ) (x : A) :
     d.mapCoeffs (monomial n x) = .single A n (d x) := by

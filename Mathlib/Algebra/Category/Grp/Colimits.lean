@@ -302,6 +302,7 @@ namespace AddCommGrpCat
 
 open QuotientAddGroup
 
+set_option backward.isDefEq.respectTransparency false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The categorical cokernel of a morphism in `AddCommGrpCat`
 agrees with the usual group-theoretical quotient.

@@ -351,6 +351,7 @@ theorem map_one_sub_of_lt (h : v x < 1) : v (1 - x) = 1 := by
   rw [sub_eq_add_neg 1 x]
   simpa only [v.map_one, v.map_neg] using v.map_add_eq_of_lt_left h
 
+set_option backward.isDefEq.respectTransparency false in
 /-- An ordered monoid isomorphism `Γ₀ ≃ Γ'₀` induces an equivalence
 `Valuation R Γ₀ ≃ Valuation R Γ'₀`. -/
 def congr (f : Γ₀ ≃*o Γ'₀) : Valuation R Γ₀ ≃ Valuation R Γ'₀ where
@@ -477,6 +478,7 @@ lemma restrict_def (x : R) : v.restrict x = restrict₀ (.ofClass v) x := rfl
 lemma embedding_restrict (x : R) : embedding (v.restrict x) = v x :=
   embedding_restrict₀ x
 
+set_option backward.isDefEq.respectTransparency false in
 lemma restrict_eq_mk {x : R} (hx : v x ≠ 0) : v.restrict x =
     (valueGroup.mk (.ofClass v) 1 x (by simp) hx : ValueGroup₀ (.ofClass v)) := by
   classical
@@ -886,6 +888,7 @@ theorem orderMonoidIso_symm (h : v.IsEquiv w) (h' : w.IsEquiv v) :
     h.orderMonoidIso.symm = h'.orderMonoidIso := by
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem orderMonoidIso_eq_refl (h : v.IsEquiv v) :
     h.orderMonoidIso = .refl _ := by
@@ -894,6 +897,7 @@ theorem orderMonoidIso_eq_refl (h : v.IsEquiv v) :
   · simp
   · simp [orderMonoidIso, valueGroup₀Fun_spec]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem orderMonoidIso_trans (h : v.IsEquiv w) (h' : w.IsEquiv u) :
     h.orderMonoidIso.trans h'.orderMonoidIso = (h.trans h').orderMonoidIso := by

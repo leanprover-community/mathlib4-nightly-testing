@@ -383,10 +383,12 @@ theorem addBottom_nth_snd (L : ListBlank (∀ k, Option (Γ k))) (n : ℕ) :
     ((addBottom L).nth n).2 = L.nth n := by
   conv => rhs; rw [← addBottom_map L, ListBlank.nth_map]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem addBottom_nth_succ_fst (L : ListBlank (∀ k, Option (Γ k))) (n : ℕ) :
     ((addBottom L).nth (n + 1)).1 = false := by
   rw [ListBlank.nth_succ, addBottom, ListBlank.tail_cons, ListBlank.nth_map]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem addBottom_head_fst (L : ListBlank (∀ k, Option (Γ k))) : (addBottom L).head.1 = true := by
   rw [addBottom, ListBlank.head_cons]
 
@@ -704,6 +706,7 @@ theorem tr_respects : Respects (TM2.step M) (TM1.step (tr M)) TrCfg := by
 section
 variable [Inhabited Λ] [Inhabited σ]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem trCfg_init (k) (L : List (Γ k)) : TrCfg (TM2.init k L)
     (TM1.init (trInit k L) : TM1.Cfg (Γ' K Γ) (Λ' K Γ Λ σ) σ) := by
   rw [(_ : TM1.init _ = _)]

@@ -514,6 +514,7 @@ theorem DirectSum.coeAddMonoidHom_eq_support_sum [DecidableEq σ] [DecidableEq R
       DFinsupp.sum x (fun _ x => ↑x) :=
   DirectSum.coeLinearMap_eq_dfinsuppSum R w x
 
+set_option backward.isDefEq.respectTransparency false in
 theorem DirectSum.coeLinearMap_eq_finsum [DecidableEq M]
     (x : DirectSum M fun i : M => ↥(weightedHomogeneousSubmodule R w i)) :
     (DirectSum.coeLinearMap fun i : M => weightedHomogeneousSubmodule R w i) x =
@@ -522,6 +523,7 @@ theorem DirectSum.coeLinearMap_eq_finsum [DecidableEq M]
   rw [DirectSum.coeLinearMap_eq_dfinsuppSum, DFinsupp.sum, finsum_eq_sum_of_support_subset]
   apply DirectSum.support_subset
 
+set_option backward.isDefEq.respectTransparency false in
 theorem weightedHomogeneousComponent_directSum [DecidableEq M]
     (x : DirectSum M fun i : M => ↥(weightedHomogeneousSubmodule R w i)) (m : M) :
     (weightedHomogeneousComponent w m)
@@ -647,6 +649,7 @@ theorem decompose'_apply [DecidableEq M] (φ : MvPolynomial σ R) (m : M) :
   · rw [DirectSum.mk_apply_of_notMem hm, Submodule.coe_zero,
       weightedHomogeneousComponent_eq_zero_of_notMem w φ m hm]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Given a weight `w`, the decomposition of `MvPolynomial σ R` into weighted homogeneous
 submodules -/
 @[instance_reducible]

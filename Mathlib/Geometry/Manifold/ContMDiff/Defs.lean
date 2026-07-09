@@ -314,6 +314,7 @@ theorem continuousWithinAt_iff_source :
       simp [this]
     · simp
 
+set_option backward.isDefEq.respectTransparency false in
 /-- One can reformulate being `Cⁿ` within a set at a point as being `Cⁿ` in the source space when
 composing with the extended chart. -/
 theorem contMDiffWithinAt_iff_source :

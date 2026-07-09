@@ -264,6 +264,7 @@ noncomputable def diagonalSuccIsoTensorTrivial :
 
 variable {G}
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem diagonalSuccIsoTensorTrivial_hom_hom_apply {n : ℕ} (f : Fin (n + 1) → G) :
     dsimp% (diagonalSuccIsoTensorTrivial G n).hom.hom f =
