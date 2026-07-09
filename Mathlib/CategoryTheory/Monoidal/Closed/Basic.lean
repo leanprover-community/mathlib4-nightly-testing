@@ -212,7 +212,6 @@ theorem curry_id_eq_coev : curry (𝟙 _) = (ihom.coev A).app X := by
   apply comp_id
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma whiskerLeft_curry_ihom_ev_app (g : A ⊗ Y ⟶ X) :
     A ◁ curry g ≫ (ihom.ev A).app X = g := by

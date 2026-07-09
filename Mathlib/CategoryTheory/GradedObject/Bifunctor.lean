@@ -39,9 +39,11 @@ functor `GradedObject I C₁ ⥤ GradedObject J C₂ ⥤ GradedObject (I × J) C
 def mapBifunctor (I J : Type*) :
     GradedObject I C₁ ⥤ GradedObject J C₂ ⥤ GradedObject (I × J) C₃ where
   obj X :=
+    set_option backward.isDefEq.respectTransparency.types false in
     { obj := fun Y ij => (F.obj (X ij.1)).obj (Y ij.2)
       map := fun φ ij => (F.obj (X ij.1)).map (φ ij.2) }
   map φ :=
+    set_option backward.isDefEq.respectTransparency.types false in
     { app := fun Y ij => (F.map (φ ij.1)).app (Y ij.2) }
 
 section
