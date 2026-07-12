@@ -17,7 +17,7 @@ respect to the Lebesgue measure.
 
 Gallagher's theorem concerns the approximation of real numbers by rational numbers. The input is a
 sequence of distances `δ₁, δ₂, ...`, and the theorem concerns the set of real numbers `x` for which
-there is an infinity of solutions to:
+there are infinitely many solutions to:
 $$
   |x - m/n| < δₙ,
 $$
@@ -106,7 +106,7 @@ theorem image_pow_subset_of_coprime (hm : 0 < m) (hmn : n.Coprime m) :
   replace hb : b ^ m ∈ {u : A | orderOf u = n} := by
     rw [← hb] at hmn ⊢; exact hmn.orderOf_pow
   apply ball_subset_thickening hb ((m : ℝ) • δ)
-  convert pow_mem_ball hm hab using 1
+  convert! pow_mem_ball hm hab using 1
   simp only [nsmul_eq_mul, smul_eq_mul]
 
 @[to_additive]
@@ -117,7 +117,7 @@ theorem image_pow_subset (n : ℕ) (hm : 0 < m) :
   replace hb : b ^ m ∈ {y : A | orderOf y = n} := by
     rw [mem_setOf_eq, orderOf_pow' b hm.ne', hb, Nat.gcd_mul_left_left, n.mul_div_cancel hm]
   apply ball_subset_thickening hb (m * δ)
-  convert pow_mem_ball hm hab using 1
+  convert! pow_mem_ball hm hab using 1
   simp only [nsmul_eq_mul]
 
 @[to_additive]
@@ -187,6 +187,7 @@ local notation a "∣∣" b => a ∣ b ∧ (a * a)∤b
 
 local notation "𝕊" => AddCircle T
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- **Gallagher's ergodic theorem** on Diophantine approximation. -/
 theorem addWellApproximable_ae_empty_or_univ (δ : ℕ → ℝ) (hδ : Tendsto δ atTop (𝓝 0)) :
     (∀ᵐ x, ¬addWellApproximable 𝕊 δ x) ∨ ∀ᵐ x, addWellApproximable 𝕊 δ x := by
@@ -197,7 +198,7 @@ theorem addWellApproximable_ae_empty_or_univ (δ : ℕ → ℝ) (hδ : Tendsto �
       `A p = blimsup (approxAddOrderOf 𝕊 n (δ n)) atTop (fun n => 0 < n ∧ (p ∤ n))`
       `B p = blimsup (approxAddOrderOf 𝕊 n (δ n)) atTop (fun n => 0 < n ∧ (p ∣∣ n))`
       `C p = blimsup (approxAddOrderOf 𝕊 n (δ n)) atTop (fun n => 0 < n ∧ (p*p ∣ n))`.
-    In other words, `A p` is the set of points `x` for which there exist infinitely-many `n` such
+    In other words, `A p` is the set of points `x` for which there exist infinitely many `n` such
     that `x` is within a distance `δ n` of a point of order `n` and `p ∤ n`. Similarly for `B`, `C`.
 
     These sets have the following key properties:
@@ -253,7 +254,7 @@ theorem addWellApproximable_ae_empty_or_univ (δ : ℕ → ℝ) (hδ : Tendsto �
     suffices
       f '' A p ⊆ blimsup (fun n => approxAddOrderOf 𝕊 n (p * δ n)) atTop fun n => 0 < n ∧ p∤n by
       apply (ergodic_nsmul hp.one_lt).ae_empty_or_univ_of_image_ae_le (hA₀ p).nullMeasurableSet
-      apply (HasSubset.Subset.eventuallyLE this).congr EventuallyEq.rfl
+      apply (LE.le.eventuallyLE this).congr EventuallyEq.rfl
       exact blimsup_thickening_mul_ae_eq μ (fun n => 0 < n ∧ p∤n) (fun n => {y | addOrderOf y = n})
         (Nat.cast_pos.mpr hp.pos) _ hδ
     refine (sSupHom.setImage f).apply_blimsup_le.trans (mono_blimsup fun n hn => ?_)
@@ -267,7 +268,7 @@ theorem addWellApproximable_ae_empty_or_univ (δ : ℕ → ℝ) (hδ : Tendsto �
       f '' B p ⊆ blimsup (fun n => approxAddOrderOf 𝕊 n (p * δ n)) atTop fun n => 0 < n ∧ p∣∣n by
       apply (ergodic_nsmul_add x hp.one_lt).ae_empty_or_univ_of_image_ae_le
         (hB₀ p).nullMeasurableSet
-      apply (HasSubset.Subset.eventuallyLE this).congr EventuallyEq.rfl
+      apply (LE.le.eventuallyLE this).congr EventuallyEq.rfl
       exact blimsup_thickening_mul_ae_eq μ (fun n => 0 < n ∧ p∣∣n) (fun n => {y | addOrderOf y = n})
         (Nat.cast_pos.mpr hp.pos) _ hδ
     refine (sSupHom.setImage f).apply_blimsup_le.trans (mono_blimsup ?_)
@@ -279,13 +280,13 @@ theorem addWellApproximable_ae_empty_or_univ (δ : ℕ → ℝ) (hδ : Tendsto �
     replace h_div : n / p * p = n := Nat.div_mul_cancel h_div
     have hf : f = (fun y => x + y) ∘ fun y => p • y := by
       ext; simp [f, add_comm x]
-    simp_rw [Function.comp_apply, le_eq_subset]
+    simp_rw [Function.comp_apply]
     rw [sSupHom.setImage_toFun, hf, image_comp]
     have := @monotone_image 𝕊 𝕊 fun y => x + y
     specialize this (approxAddOrderOf.image_nsmul_subset (δ n) (n / p) hp.pos)
     simp only [h_div] at this ⊢
     refine this.trans ?_
-    convert approxAddOrderOf.vadd_subset_of_coprime (p * δ n) h_cop
+    convert! approxAddOrderOf.vadd_subset_of_coprime (p * δ n) h_cop
     rw [hu₀, Subtype.coe_mk, mul_comm p, h_div]
   change (∀ᵐ x, x ∉ E) ∨ E ∈ ae volume
   rw [← eventuallyEq_empty, ← eventuallyEq_univ]
@@ -296,8 +297,7 @@ theorem addWellApproximable_ae_empty_or_univ (δ : ℕ → ℝ) (hδ : Tendsto �
     rw [OrderIso.apply_blimsup e, ← hu₀ p]
     exact blimsup_congr (Eventually.of_forall fun n hn =>
       approxAddOrderOf.vadd_eq_of_mul_dvd (δ n) hn.1 hn.2)
-  set_option push_neg.use_distrib true in
-  by_cases! h : ∀ p : Nat.Primes, A p =ᵐ[μ] (∅ : Set 𝕊) ∧ B p =ᵐ[μ] (∅ : Set 𝕊)
+  by_cases! +distrib h : ∀ p : Nat.Primes, A p =ᵐ[μ] (∅ : Set 𝕊) ∧ B p =ᵐ[μ] (∅ : Set 𝕊)
   · replace h : ∀ p : Nat.Primes, (u p +ᵥ E : Set _) =ᵐ[μ] E := by
       intro p
       replace hE₂ : E =ᵐ[μ] C p := hE₂ p (h p)
@@ -324,7 +324,6 @@ lemma _root_.NormedAddCommGroup.exists_norm_nsmul_le {A : Type*}
     [MeasurableSpace A] [BorelSpace A] {μ : Measure A} [μ.IsAddHaarMeasure]
     (ξ : A) {n : ℕ} (hn : 0 < n) (δ : ℝ) (hδ : μ univ ≤ (n + 1) • μ (closedBall (0 : A) (δ / 2))) :
     ∃ j ∈ Icc 1 n, ‖j • ξ‖ ≤ δ := by
-  have : IsFiniteMeasure μ := CompactSpace.isFiniteMeasure
   let B : Icc 0 n → Set A := fun j ↦ closedBall ((j : ℕ) • ξ) (δ / 2)
   have hB : ∀ j, IsClosed (B j) := fun j ↦ isClosed_closedBall
   suffices ¬ Pairwise (Disjoint on B) by
@@ -343,10 +342,10 @@ lemma _root_.NormedAddCommGroup.exists_norm_nsmul_le {A : Type*}
       B, μ.addHaar_closedBall_center, Finset.sum_const, Finset.card_univ, Fintype.card_Icc,
       Nat.card_Icc, tsub_zero]
     exact hδ
-  replace hδ : 0 ≤ δ/2 := by
+  replace hδ : 0 ≤ δ / 2 := by
     by_contra contra
     refine (isOpen_univ.measure_pos μ univ_nonempty).not_ge <| hδ.trans ?_
-    suffices μ (closedBall 0 (δ/2)) = 0 by simp [this]
+    suffices μ (closedBall 0 (δ / 2)) = 0 by simp [this]
     rw [not_le, ← closedBall_eq_empty (x := (0 : A))] at contra
     simp [contra]
   have h'' : ∀ j, (B j).Nonempty := by intro j; rwa [nonempty_closedBall]

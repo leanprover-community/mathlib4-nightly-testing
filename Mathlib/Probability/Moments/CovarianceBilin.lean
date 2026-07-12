@@ -51,6 +51,7 @@ def covarianceBilin (μ : Measure E) : E →L[ℝ] E →L[ℝ] ℝ :=
   ContinuousLinearMap.bilinearComp (covarianceBilinDual μ)
     (toDualMap ℝ E).toContinuousLinearMap (toDualMap ℝ E).toContinuousLinearMap
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma covarianceBilin_zero : covarianceBilin (0 : Measure E) = 0 := by
   rw [covarianceBilin]
@@ -65,6 +66,7 @@ lemma covarianceBilin_of_not_memLp (h : ¬MemLp id 2 μ) :
   ext
   simp [covarianceBilin_eq_covarianceBilinDual, h]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma covarianceBilin_apply [CompleteSpace E] [IsFiniteMeasure μ] (h : MemLp id 2 μ) (x y : E) :
     covarianceBilin μ x y = ∫ z, ⟪x, z - μ[id]⟫ * ⟪y, z - μ[id]⟫ ∂μ := by
   simp [covarianceBilin, covarianceBilinDual_apply' h]
@@ -90,14 +92,14 @@ lemma covarianceBilin_real {μ : Measure ℝ} [IsFiniteMeasure μ] (x y : ℝ) :
   by_cases h : MemLp id 2 μ
   · simp only [covarianceBilin_apply_eq_cov h, RCLike.inner_apply, conj_trivial, mul_comm]
     rw [covariance_const_mul_left, covariance_const_mul_right, ← mul_assoc,
-      covariance_self aemeasurable_id']
-    rfl
+      covariance_self aemeasurable_id', Function.id_def]
   · simp [h, variance_of_not_memLp, aestronglyMeasurable_id]
 
 lemma covarianceBilin_real_self {μ : Measure ℝ} [IsFiniteMeasure μ] (x : ℝ) :
     covarianceBilin μ x x = x ^ 2 * Var[id; μ] := by
   rw [covarianceBilin_real, pow_two]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma covarianceBilin_self_nonneg (x : E) :
     0 ≤ covarianceBilin μ x x := by
@@ -136,8 +138,8 @@ lemma covarianceBilin_map_const_add [CompleteSpace E] [IsProbabilityMeasure μ] 
   · ext
     rw [covarianceBilin_of_not_memLp, covarianceBilin_of_not_memLp h]
     rw [(measurableEmbedding_addLeft _).memLp_map_measure_iff.not]
-    contrapose! h
-    convert (memLp_const (-c)).add h
+    contrapose h
+    convert! (memLp_const (-c)).add h
     ext; simp
 
 lemma covarianceBilin_apply_basisFun {ι Ω : Type*} [Fintype ι] {mΩ : MeasurableSpace Ω}
@@ -194,10 +196,12 @@ noncomputable def covarianceOperator (μ : Measure E) : E →L[ℝ] E :=
   continuousLinearMapOfBilin <| ContinuousLinearMap.bilinearComp (uncenteredCovarianceBilinDual μ)
     (toDualMap ℝ E).toContinuousLinearMap (toDualMap ℝ E).toContinuousLinearMap
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma covarianceOperator_zero : covarianceOperator (0 : Measure E) = 0 := by
   simp [covarianceOperator]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma covarianceOperator_of_not_memLp (hμ : ¬MemLp id 2 μ) :
     covarianceOperator μ = 0 := by
@@ -205,6 +209,7 @@ lemma covarianceOperator_of_not_memLp (hμ : ¬MemLp id 2 μ) :
   refine (unique_continuousLinearMapOfBilin _ fun y ↦ ?_).symm
   simp [hμ, uncenteredCovarianceBilinDual_of_not_memLp]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma covarianceOperator_inner (hμ : MemLp id 2 μ) (x y : E) :
     ⟪covarianceOperator μ x, y⟫ = ∫ z, ⟪x, z⟫ * ⟪y, z⟫ ∂μ := by
   simp [covarianceOperator, uncenteredCovarianceBilinDual_apply hμ]

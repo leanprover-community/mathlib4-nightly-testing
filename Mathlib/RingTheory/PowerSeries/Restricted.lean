@@ -129,7 +129,7 @@ lemma mul {f g : PowerSeries R} (hf : IsRestricted c f) (hg : IsRestricted c g) 
   obtain ⟨Nf, fBound2⟩ := (hf (ε / (max a b))) (by positivity)
   obtain ⟨Ng, gBound2⟩ := (hg (ε / (max a b))) (by positivity)
   refine ⟨2 * max Nf Ng, fun n hn ↦ ?_⟩
-  obtain ⟨⟨fst, snd⟩, hi, ultrametric⟩ := exists_norm_finset_sum_le (Finset.antidiagonal n)
+  obtain ⟨⟨fst, snd⟩, hi, ultrametric⟩ := exists_norm_finsetSum_le (Finset.antidiagonal n)
     (fun a ↦ (coeff a.1) f * (coeff a.2) g)
   obtain ⟨rfl⟩ := by simpa using hi (⟨(0, n), by simp⟩)
   calc _ ≤ ‖(coeff fst) f * (coeff snd) g‖ * |c| ^ (fst + snd) := by bound
@@ -142,7 +142,7 @@ lemma mul {f g : PowerSeries R} (hf : IsRestricted c f) (hg : IsRestricted c g) 
         -/
         rw [pow_add]
         grind
-  have : max Nf Ng ≤ fst ∨ max Nf Ng ≤ snd := by omega
+  have : max Nf Ng ≤ fst ∨ max Nf Ng ≤ snd := by lia
   rcases this with this | this
   · calc _ < ε / max a b * b := by
           grw [gBound1 snd]

@@ -81,6 +81,7 @@ variable {P α} [WellFoundedLT α] [P.IsProper] (f : P.WeakRankFunction α)
 
 include f
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma wf_ancestralRel : WellFounded P.AncestralRel := by
   rw [wellFounded_iff_isEmpty_descending_chain]
   refine ⟨fun ⟨g, hg⟩ ↦ ?_⟩
@@ -92,7 +93,7 @@ lemma wf_ancestralRel : WellFounded P.AncestralRel := by
   refine not_strictAnti_of_wellFoundedLT (fun n ↦ f.rank (g (n₀ + n)))
     (strictAnti_nat_of_succ_lt (fun n ↦ ?_))
   rw [← add_assoc]
-  exact f.lt (hg _) (by rw [← hn₀ (n₀ + n + 1) (by omega), ← hn₀ (n₀ + n) (by omega)])
+  exact f.lt (hg _) (by rw [← hn₀ (n₀ + n + 1) (by lia), ← hn₀ (n₀ + n) (by lia)])
 
 lemma isRegular : P.IsRegular where
   wf := f.wf_ancestralRel
@@ -128,6 +129,7 @@ structure WeakRankFunction where
   rank : h.ι → α
   lt {x y : h.ι} : h.AncestralRel x y → h.dim x = h.dim y → rank x < rank y
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Rank functions for `h : A.PairingCore` correspond to
 rank functions for `h.pairing : A.Pairing`. -/
 noncomputable def rankFunctionEquiv :
@@ -147,6 +149,7 @@ noncomputable def rankFunctionEquiv :
   left_inv _ := by simp
   right_inv _ := by simp
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Weak rank functions for `h : A.PairingCore` correspond to
 weak rank functions for `h.pairing : A.Pairing`. -/
 noncomputable def weakRankFunctionEquiv :
@@ -165,6 +168,16 @@ noncomputable def weakRankFunctionEquiv :
         exact g.lt hxy }
   left_inv _ := by simp
   right_inv _ := by simp
+
+variable {h α} [WellFoundedLT α]
+
+lemma RankFunction.isRegular [h.IsProper] (f : h.RankFunction α) : h.IsRegular := by
+  rw [← isRegular_pairing_iff]
+  exact (h.rankFunctionEquiv α f).isRegular
+
+lemma WeakRankFunction.isRegular [h.IsProper] (f : h.WeakRankFunction α) : h.IsRegular := by
+  rw [← isRegular_pairing_iff]
+  exact (h.weakRankFunctionEquiv α f).isRegular
 
 end PairingCore
 

@@ -120,6 +120,7 @@ is required; consider ℂ with the order `z ≤ w` iff they have the same imagin
 `z - w ≤ 0` in the reals; then `1 + I` and `1 - I` are incomparable to zero, and thus we have:
 `0 * 0 = SignType.sign (1 + I) * SignType.sign (1 - I) ≠ SignType.sign 2 = 1`.
 (`Complex.orderedCommRing`) -/
+@[simps -fullyApplied]
 def signHom : α →*₀ SignType where
   toFun := sign
   map_zero' := sign_zero
@@ -179,6 +180,7 @@ theorem exists_signed_sum [DecidableEq α] (s : Finset α) (f : α → ℤ) :
   ⟨t, inferInstance, fun b => sgn b, fun b => g b, fun b => hg b, by simp [ht], fun a ha =>
     (sum_attach t fun b ↦ ite (g b = a) (sgn b : ℤ) 0).trans <| hf _ ha⟩
 
+set_option backward.isDefEq.respectTransparency false in
 /-- We can decompose a sum of absolute value less than `n` into a sum of at most `n` signs. -/
 theorem exists_signed_sum' [Nonempty α] [DecidableEq α] (s : Finset α) (f : α → ℤ)
     (n : ℕ) (h : (∑ i ∈ s, (f i).natAbs) ≤ n) :

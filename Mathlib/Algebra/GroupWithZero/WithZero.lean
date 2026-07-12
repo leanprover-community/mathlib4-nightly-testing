@@ -85,12 +85,14 @@ instance instCommSemigroup [CommSemigroup α] : CommSemigroup (WithZero α) wher
   mul_comm _ _ := Option.map₂_comm mul_comm
 
 section MulOneClass
-variable [MulOneClass α]
 
 instance instMulZeroOneClass [MulOneClass α] : MulZeroOneClass (WithZero α) where
   one_mul := Option.map₂_left_identity one_mul
   mul_one := Option.map₂_right_identity mul_one
 
+variable [MulOneClass α]
+
+set_option linter.style.whitespace false in -- manual alignment is not recognised
 /-- Coercion as a monoid hom. -/
 @[simps apply]
 def coeMonoidHom : α →* WithZero α where
@@ -260,6 +262,7 @@ instance instDivInvMonoid [DivInvMonoid α] : DivInvMonoid (WithZero α) where
 
 instance instDivInvOneMonoid [DivInvOneMonoid α] : DivInvOneMonoid (WithZero α) where
 
+set_option backward.isDefEq.respectTransparency false in
 instance instInvolutiveInv [InvolutiveInv α] : InvolutiveInv (WithZero α) where
   inv_inv a := (Option.map_map _ _ _).trans <| by simp
 
@@ -298,6 +301,7 @@ def unitsWithZeroEquiv : (WithZero α)ˣ ≃* α where
 instance [Nontrivial α] : Nontrivial (WithZero α)ˣ :=
   unitsWithZeroEquiv.toEquiv.surjective.nontrivial
 
+set_option backward.isDefEq.respectTransparency false in
 theorem coe_unitsWithZeroEquiv_eq_units_val (γ : (WithZero α)ˣ) :
     ↑(unitsWithZeroEquiv γ) = γ.val := by
   simp only [WithZero.unitsWithZeroEquiv, MulEquiv.coe_mk, Equiv.coe_fn_mk, WithZero.coe_unzero]
@@ -318,6 +322,7 @@ lemma withZeroUnitsEquiv_symm_apply_coe {G : Type*} [GroupWithZero G]
     WithZero.withZeroUnitsEquiv.symm (a : G) = a := by
   simp
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A version of `Equiv.optionCongr` for `WithZero`. -/
 @[simps!]
 def _root_.MulEquiv.withZero [Group β] :
@@ -361,6 +366,8 @@ section AddMonoid
 def exp (a : M) : Mᵐ⁰ := coe <| .ofAdd a
 
 @[simp] lemma exp_ne_zero {a : M} : exp a ≠ 0 := by simp [exp]
+
+lemma exp_eq_coe_ofAdd (a : M) : exp a = coe (Multiplicative.ofAdd a) := rfl
 
 lemma exp_injective : Injective (exp : M → Mᵐ⁰) :=
   Multiplicative.ofAdd.injective.comp WithZero.coe_injective

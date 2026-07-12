@@ -17,7 +17,7 @@ has left and right limits at any point (`Monotone.tendsto_nhdsLT`, `Monotone.ten
 
 -/
 
-@[expose] public section
+public section
 
 open Set Filter TopologicalSpace Topology Function
 
@@ -167,6 +167,28 @@ theorem Antitone.countable_not_continuousAt (hf : Antitone f) :
   hf.dual_right.countable_not_continuousAt
 
 end Continuity
+
+section OrdContinuous
+
+variable [TopologicalSpace β] [OrderTopology β]
+
+/-- A monotone left-continuous function is left-continuous in the order-theoretic sense. -/
+@[to_dual
+/-- A monotone right-continuous function is right-continuous in the order-theoretic sense. -/
+]
+theorem Monotone.leftOrdContinuous (hf : Monotone f)
+    (cont : ∀ x, ContinuousWithinAt f (Iic x) x) : LeftOrdContinuous f :=
+  fun s x hs hx ↦ IsLUB.isLUB_of_tendsto (hf.monotoneOn s) hx hs ((cont x).mono hx.1)
+
+/-- A monotone continuous function is left-continuous in the order-theoretic sense. -/
+@[to_dual
+/-- A monotone continuous function is right-continuous in the order-theoretic sense. -/
+]
+theorem Continuous.leftOrdContinuous (cont : Continuous f) (hf : Monotone f) :
+    LeftOrdContinuous f :=
+  hf.leftOrdContinuous fun _ ↦ cont.continuousWithinAt
+
+end OrdContinuous
 
 end LinearOrder
 
@@ -440,7 +462,7 @@ lemma MonotoneOn.tendsto_nhdsLT {α β : Type*} [LinearOrder α] [TopologicalSpa
   rcases eq_empty_or_nonempty (Iio x) with (h | h); · simp [h]
   refine tendsto_order.2 ⟨fun l hl => ?_, fun m hm => ?_⟩
   · obtain ⟨z, zx, lz⟩ : ∃ a : α, a < x ∧ l < f a := by
-      simpa only [mem_image, exists_prop, exists_exists_and_eq_and] using
+      simpa only [mem_image, exists_prop, exists_exists_and_eq_and] using!
         exists_lt_of_lt_csSup (h.image _) hl
     filter_upwards [Ioo_mem_nhdsLT zx] with y hy using lz.trans_le (Mf zx hy.2 hy.1.le)
   · refine mem_of_superset self_mem_nhdsWithin fun y hy => lt_of_le_of_lt ?_ hm

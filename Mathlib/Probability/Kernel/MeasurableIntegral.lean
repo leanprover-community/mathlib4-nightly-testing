@@ -21,7 +21,7 @@ The Bochner integral of a strongly measurable function against a kernel is stron
 
 -/
 
-@[expose] public section
+public section
 
 
 open MeasureTheory ProbabilityTheory Function Set Filter
@@ -50,7 +50,9 @@ namespace MeasureTheory
 
 variable [NormedSpace ℝ E]
 
+set_option backward.isDefEq.respectTransparency.types false in
 omit [IsSFiniteKernel κ] in
+@[fun_prop]
 theorem StronglyMeasurable.integral_kernel ⦃f : β → E⦄
     (hf : StronglyMeasurable f) : StronglyMeasurable fun x ↦ ∫ y, f y ∂κ x := by
   classical
@@ -74,6 +76,7 @@ theorem StronglyMeasurable.integral_kernel ⦃f : β → E⦄
       exact subset_rfl
     · simp [f', hfx, integral_undef]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem StronglyMeasurable.integral_kernel_prod_right ⦃f : α → β → E⦄
     (hf : StronglyMeasurable (uncurry f)) : StronglyMeasurable fun x => ∫ y, f x y ∂κ x := by
   classical
@@ -90,8 +93,8 @@ theorem StronglyMeasurable.integral_kernel_prod_right ⦃f : α → β → E⦄
   have hf' : ∀ n, StronglyMeasurable (f' n) := by
     intro n; refine StronglyMeasurable.indicator ?_ (measurableSet_kernel_integrable hf)
     have : ∀ x, ((s' n x).range.filter fun x => x ≠ 0) ⊆ (s n).range := by
-      intro x; refine Finset.Subset.trans (Finset.filter_subset _ _) ?_; intro y
-      simp_rw [SimpleFunc.mem_range]; rintro ⟨z, rfl⟩; exact ⟨(x, z), rfl⟩
+      intro
+      exact Finset.Subset.trans (Finset.filter_subset _ _) (SimpleFunc.range_comp_subset_range _ _)
     simp only [SimpleFunc.integral_eq_sum_of_subset (this _)]
     refine Finset.stronglyMeasurable_fun_sum _ fun x _ => ?_
     refine (Measurable.ennreal_toReal ?_).stronglyMeasurable.smul_const _

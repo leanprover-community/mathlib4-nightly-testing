@@ -10,9 +10,8 @@ public import Mathlib.Algebra.Homology.Homotopy
 public import Mathlib.Algebra.Module.Pi
 public import Mathlib.Algebra.Ring.NegOnePow
 public import Mathlib.CategoryTheory.Linear.LinearFunctor
-public import Mathlib.Tactic.Linarith
 
-/-! The cochain complex of homomorphisms between cochain complexes
+/-! # The cochain complex of homomorphisms between cochain complexes
 
 If `F` and `G` are cochain complexes (indexed by `ℤ`) in a preadditive category,
 there is a cochain complex of abelian groups whose `0`-cocycles identify to
@@ -67,14 +66,10 @@ variable (F G)
 of a family of morphisms `F.X p ⟶ G.X q` whenever `p + n = q`, i.e. for all
 triplets in `HomComplex.Triplet n`. -/
 def Cochain := ∀ (T : Triplet n), F.X T.p ⟶ G.X T.q
+deriving AddCommGroup
 
-instance : AddCommGroup (Cochain F G n) := by
-  dsimp only [Cochain]
-  infer_instance
-
-instance : Module R (Cochain F G n) := by
-  dsimp only [Cochain]
-  infer_instance
+instance : Module R (Cochain F G n) :=
+  inferInstanceAs <| Module R (∀ _, _)
 
 namespace Cochain
 
@@ -261,7 +256,7 @@ lemma comp_assoc {n₁ n₂ n₃ n₁₂ n₂₃ n₁₂₃ : ℤ}
     (h₁₂ : n₁ + n₂ = n₁₂) (h₂₃ : n₂ + n₃ = n₂₃) (h₁₂₃ : n₁ + n₂ + n₃ = n₁₂₃) :
     (z₁.comp z₂ h₁₂).comp z₃ (show n₁₂ + n₃ = n₁₂₃ by rw [← h₁₂, h₁₂₃]) =
       z₁.comp (z₂.comp z₃ h₂₃) (by rw [← h₂₃, ← h₁₂₃, add_assoc]) := by
-  substs h₁₂ h₂₃ h₁₂₃
+  subst h₁₂ h₂₃ h₁₂₃
   ext p q hpq
   rw [comp_v _ _ rfl p (p + n₁ + n₂) q (add_assoc _ _ _).symm (by lia),
     comp_v z₁ z₂ rfl p (p + n₁) (p + n₁ + n₂) (by lia) (by lia),
@@ -487,6 +482,7 @@ lemma δ_δ (n₀ n₁ n₂ : ℤ) (z : Cochain F G n₀) : δ n₁ n₂ (δ n�
     add_zero, add_neg_cancel, Units.neg_smul,
     Linear.units_smul_comp, Linear.comp_units_smul]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma δ_comp {n₁ n₂ n₁₂ : ℤ} (z₁ : Cochain F G n₁) (z₂ : Cochain G K n₂) (h : n₁ + n₂ = n₁₂)
     (m₁ m₂ m₁₂ : ℤ) (h₁₂ : n₁₂ + 1 = m₁₂) (h₁ : n₁ + 1 = m₁) (h₂ : n₂ + 1 = m₂) :
     δ n₁₂ m₁₂ (z₁.comp z₂ h) = z₁.comp (δ n₂ m₂ z₂) (by rw [← h₁₂, ← h₂, ← h, add_assoc]) +
@@ -548,6 +544,7 @@ lemma δ_ofHomotopy {φ₁ φ₂ : F ⟶ G} (h : Homotopy φ₁ φ₂) :
   simp only [Cochain.mk_v, one_smul, Int.negOnePow_zero, Cochain.sub_v, Cochain.ofHom_v, eq]
   abel
 
+set_option backward.defeqAttrib.useBackward true in
 lemma δ_neg_one_cochain (z : Cochain F G (-1)) :
     δ (-1) 0 z = Cochain.ofHom (Homotopy.nullHomotopicMap'
       (fun i j hij => z.v i j (by dsimp at hij; rw [← hij, add_neg_cancel_right]))) := by
@@ -571,7 +568,7 @@ def HomComplex : CochainComplex AddCommGrpCat ℤ where
   X i := AddCommGrpCat.of (Cochain F G i)
   d i j := AddCommGrpCat.ofHom (δ_hom ℤ F G i j)
   shape _ _ hij := by ext; simp [δ_shape _ _ hij]
-  d_comp_d' _ _ _ _ _  := by ext; simp [δ_δ]
+  d_comp_d' _ _ _ _ _ := by ext; simp [δ_δ]
 
 namespace HomComplex
 
@@ -599,7 +596,7 @@ instance : Coe (Cocycle F G n) (Cochain F G n) where
   coe x := x.1
 
 @[ext]
-lemma ext (z₁ z₂ : Cocycle F G n) (h : (z₁ : Cochain F G n) = z₂) : z₁ = z₂ :=
+lemma ext {z₁ z₂ : Cocycle F G n} (h : (z₁ : Cochain F G n) = z₂) : z₁ = z₂ :=
   Subtype.ext h
 
 instance : SMul R (Cocycle F G n) where
@@ -681,7 +678,7 @@ lemma ofHom_homOf_eq_self (z : Cocycle F G 0) : ofHom (homOf z) = z := by cat_di
 @[simp]
 lemma cochain_ofHom_homOf_eq_coe (z : Cocycle F G 0) :
     Cochain.ofHom (homOf z) = (z : Cochain F G 0) := by
-  simpa only [Cocycle.ext_iff] using ofHom_homOf_eq_self z
+  simpa only [Cocycle.ext_iff] using! ofHom_homOf_eq_self z
 
 variable (F G)
 
@@ -712,6 +709,8 @@ def toCochainAddMonoidHom : Cocycle K L n →+ Cochain K L n where
   map_zero' := by simp
   map_add' := by simp
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 variable (L n) in
 /-- `Cocycle K L n` is the kernel of the differential on `HomComplex K L`. -/
 def isKernel (hm : n + 1 = m) :
@@ -722,8 +721,16 @@ def isKernel (hm : n + 1 = m) :
       { toFun x := ⟨s.ι x, by
           rw [mem_iff _ _ hm]
           exact ConcreteCategory.congr_hom s.condition x⟩
-        map_zero' := by cat_disch
-        map_add' := by cat_disch })
+        map_zero' := by
+          #adaptation_note /-- Prior to https://github.com/leanprover/lean4/pull/12244
+          this was just `cat_disch`. -/
+          simp +instances only [HomComplex_X, map_zero]
+          rfl
+        map_add' _ _ := by
+          #adaptation_note /-- Prior to https://github.com/leanprover/lean4/pull/12244
+          this was just `cat_disch`. -/
+          simp +instances only [HomComplex_X, map_add]
+          rfl })
     (by cat_disch) (fun s l hl ↦ by ext : 3; simp [← hl])
 
 end Cocycle
@@ -759,8 +766,20 @@ lemma δ_ofHom_comp {n : ℤ} (f : F ⟶ G) (z : Cochain G K n) (m : ℤ) :
       (Cochain.ofHom f).comp (δ n m z) (zero_add m) := by
   rw [← Cocycle.ofHom_coe, δ_zero_cocycle_comp]
 
+/-- The precomposition of a cocycle with a morphism of cochain complexes. -/
+@[simps!]
+def Cocycle.precomp {n : ℤ} (z : Cocycle G K n) (f : F ⟶ G) : Cocycle F K n :=
+  Cocycle.mk ((Cochain.ofHom f).comp z (zero_add n)) _ rfl (by simp)
+
+/-- The postcomposition of a cocycle with a morphism of cochain complexes. -/
+@[simps!]
+def Cocycle.postcomp {n : ℤ} (z : Cocycle F G n) (f : G ⟶ K) : Cocycle F K n :=
+  Cocycle.mk (z.1.comp (Cochain.ofHom f) (add_zero n)) _ rfl (by simp)
+
 namespace Cochain
 
+set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.defeqAttrib.useBackward true in
 /-- Given two morphisms of complexes `φ₁ φ₂ : F ⟶ G`, the datum of a homotopy between `φ₁` and
 `φ₂` is equivalent to the datum of a `1`-cochain `z` such that `δ (-1) 0 z` is the difference
 of the zero cochains associated to `φ₂` and `φ₁`. -/
@@ -807,6 +826,7 @@ def single {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) :
       then (K.XIsoOfEq h.1).inv ≫ f ≫ (L.XIsoOfEq h.2).hom
       else 0)
 
+set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma single_v {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (hpq : p + n = q) :
     (single f n).v p q hpq = f := by
@@ -822,11 +842,59 @@ lemma single_v_eq_zero {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (p' q' : ℤ)
   intro h
   exact hp' (by lia)
 
+/-- Variant of `single_v_eq_zero` where the assumption is `q' ≠ q` rather than `p' ≠ p`. -/
+lemma single_v_eq_zero' {p q : ℤ} (f : K.X p ⟶ L.X q) (n : ℤ) (p' q' : ℤ) (hpq' : p' + n = q')
+    (hq' : q' ≠ q) :
+    (single f n).v p' q' hpq' = 0 := by
+  dsimp [single]
+  grind
+
+variable (K L) in
+@[simp]
+lemma single_zero (p q n : ℤ) :
+    (single (p := p) (q := q) 0 n : Cochain K L n) = 0 := by
+  ext p' q' hpq'
+  by_cases hp : p' = p
+  · subst hp
+    by_cases hq : q' = q
+    · subst hq
+      simp
+    · simp [single_v_eq_zero' _ _ _ _ _ hq]
+  · simp [single_v_eq_zero _ _ _ _ _ hp]
+
+set_option backward.isDefEq.respectTransparency false in
+lemma δ_single {p q : ℤ} (f : K.X p ⟶ L.X q) (n m : ℤ) (hm : n + 1 = m)
+    (p' q' : ℤ) (hp' : p' + 1 = p) (hq' : q + 1 = q') :
+    δ n m (single f n) = single (f ≫ L.d q q') m + m.negOnePow • single (K.d p' p ≫ f) m := by
+  ext p'' q'' hpq''
+  rw [δ_v n m hm (single f n) p'' q'' (by lia) (q'' - 1) (p'' + 1) rfl (by lia),
+    add_v, units_smul_v]
+  congr 1
+  · by_cases h : p'' = p
+    · subst h
+      by_cases h : q = q'' - 1
+      · subst h
+        obtain rfl : q' = q'' := by lia
+        simp only [single_v]
+      · rw [single_v_eq_zero', single_v_eq_zero', zero_comp]
+        all_goals lia
+    · rw [single_v_eq_zero _ _ _ _ _ h, single_v_eq_zero _ _ _ _ _ h, zero_comp]
+  · subst hm
+    by_cases h : q'' = q
+    · subst h
+      by_cases h : p'' = p'
+      · subst h
+        obtain rfl : p = p'' + 1 := by lia
+        simp
+      · rw [single_v_eq_zero _ _ _ _ _ h, single_v_eq_zero, comp_zero, smul_zero]
+        lia
+    · simp [single_v_eq_zero' _ _ _ _ _ h]
+
 end Cochain
 
 section
 
-variable {n} {D : Type*} [Category D] [Preadditive D] (z z' : Cochain K L n) (f : K ⟶ L)
+variable {n} {D : Type*} [Category* D] [Preadditive D] (z z' : Cochain K L n) (f : K ⟶ L)
   (Φ : C ⥤ D) [Φ.Additive]
 
 namespace Cochain
@@ -855,6 +923,7 @@ variable (K L n)
 @[simp]
 protected lemma map_zero : (0 : Cochain K L n).map Φ = 0 := by cat_disch
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma map_comp {n₁ n₂ n₁₂ : ℤ} (z₁ : Cochain F G n₁) (z₂ : Cochain G K n₂) (h : n₁ + n₂ = n₁₂)
     (Φ : C ⥤ D) [Φ.Additive] :
@@ -871,6 +940,7 @@ end Cochain
 
 variable (n)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma δ_map : δ n m (z.map Φ) = (δ n m z).map Φ := by
   by_cases hnm : n + 1 = m

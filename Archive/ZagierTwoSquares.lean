@@ -107,12 +107,13 @@ def complexInvo : Function.End (zagierSet k) := fun ⟨⟨x, y, z⟩, h⟩ =>
   · -- less: `x + z < y` (`x < y - z` as stated by Zagier)
     rw [Nat.sub_sub]; zify [less.le] at h ⊢; linarith [h]
   · -- more: `2 * y < x`
-    push_neg at less; zify [less, more.le] at h ⊢; linarith [h]
+    push Not at less; zify [less, more.le] at h ⊢; linarith [h]
   · -- middle: `x` is neither less than `y - z` or more than `2 * y`
-    push_neg at less more; zify [less, more] at h ⊢; linarith [h]⟩
+    push Not at less more; zify [less, more] at h ⊢; linarith [h]⟩
 
 variable [hk : Fact (4 * k + 1).Prime]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `complexInvo k` is indeed an involution. -/
 theorem complexInvo_sq : complexInvo k ^ 2 = 1 := by
   change complexInvo k ∘ complexInvo k = id
@@ -127,18 +128,19 @@ theorem complexInvo_sq : complexInvo k ^ 2 = 1 := by
     rw [Nat.sub_sub, two_mul, ← tsub_add_eq_add_tsub (by linarith), ← add_assoc,
       Nat.add_sub_cancel, add_comm (x + z), Nat.sub_add_cancel less.le]
   · -- more
-    push_neg at less
+    push Not at less
     simp only [show x - 2 * y + y < x + z - y by zify [less, more.le]; linarith, ite_true]
     rw [Nat.sub_add_cancel more.le, Nat.sub_right_comm, Nat.sub_sub _ _ y, ← two_mul, add_comm,
       Nat.add_sub_assoc more.le, Nat.add_sub_cancel]
   · -- middle
-    push_neg at less more
+    push Not at less more
     simp only [show ¬(2 * y - x + (x + z - y) < y) by zify [less, more]; linarith,
       show ¬(2 * y < 2 * y - x) by zify [more]; linarith, ite_false]
     rw [tsub_tsub_assoc (2 * y).le_refl more, tsub_self, zero_add,
       ← Nat.add_sub_assoc less, ← add_assoc, Nat.sub_add_cancel more, Nat.sub_sub _ _ y,
       ← two_mul, add_comm, Nat.add_sub_cancel]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Any fixed point of `complexInvo k` must be `(1, 1, k)`. -/
 theorem eq_of_mem_fixedPoints {t : zagierSet k} (mem : t ∈ fixedPoints (complexInvo k)) :
     t.val = (1, 1, k) := by
@@ -169,6 +171,7 @@ theorem eq_of_mem_fixedPoints {t : zagierSet k} (mem : t ∈ fixedPoints (comple
 def singletonFixedPoint : Finset (zagierSet k) :=
   {⟨(1, 1, k), (by simp only [zagierSet, Set.mem_setOf_eq]; linarith)⟩}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- `complexInvo k` has exactly one fixed point. -/
 theorem card_fixedPoints_eq_one : Fintype.card (fixedPoints (complexInvo k)) = 1 := by
   rw [show 1 = Finset.card (singletonFixedPoint k) by rfl, ← Set.toFinset_card]

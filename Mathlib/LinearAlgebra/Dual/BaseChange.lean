@@ -17,10 +17,10 @@ public import Mathlib.RingTheory.TensorProduct.IsBaseChangeHom
 If `f : Module.Dual R V` and `Algebra R A`, then
 
 * `Module.Dual.baseChange A f` is the element
-of `Module.Dual A (A ⊗[R] V)` deduced by base change.
+  of `Module.Dual A (A ⊗[R] V)` deduced by base change.
 
 * `Module.Dual.baseChangeHom` is the `R`-linear map
-given by `Module.Dual.baseChange`.
+  given by `Module.Dual.baseChange`.
 
 * `IsBaseChange.dual` : for finite free modules, taking dual commutes with base change.
 
@@ -84,6 +84,8 @@ theorem toDual_apply (f : Dual R V) :
   intro v
   simp [toDual_comp_apply, Algebra.algebraMap_eq_smul_one]
 
+set_option backward.isDefEq.respectTransparency false in
+set_option backward.privateInPublic true in
 /-- The linear map underlying `IsBaseChange.toDualBaseChangeLinearEquiv`. -/
 private noncomputable def toDualBaseChangeAux :
     A ⊗[R] Dual R V →ₗ[A] Dual A W where
@@ -97,12 +99,16 @@ private noncomputable def toDualBaseChangeAux :
     | add x y hx hy => aesop
     | tmul b f => simp [TensorProduct.smul_tmul', mul_smul]
 
+set_option backward.isDefEq.respectTransparency false in
+set_option backward.privateInPublic true in
 private theorem toDualBaseChangeAux_tmul (a : A) (f : Dual R V) (v : V) :
     (ibc.toDualBaseChangeAux (a ⊗ₜ[R] f)) (j v) = a * algebraMap R A (f v) := by
   simp [toDualBaseChangeAux, toDual_comp_apply]
 
 variable [Free R V] [Module.Finite R V]
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 /-- The linear equivalence underlying `IsBaseChange.dual`. -/
 noncomputable def toDualBaseChange :
     A ⊗[R] Dual R V ≃ₗ[A] Dual A W := by
@@ -129,6 +135,7 @@ theorem toDualBaseChange_tmul (a : A) (f : Dual R V) (v : V) :
     (ibc.toDualBaseChange (a ⊗ₜ[R] f)) (j v) = a * algebraMap R A (f v) :=
   toDualBaseChangeAux_tmul ibc a f v
 
+set_option backward.isDefEq.respectTransparency false in
 theorem dual : IsBaseChange A (ibc.toDual) := by
   apply of_equiv (toDualBaseChange ibc)
   intro f

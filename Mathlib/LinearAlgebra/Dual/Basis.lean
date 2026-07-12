@@ -57,6 +57,7 @@ theorem toDual_apply (i j : ι) : b.toDual (b i) (b j) = if i = j then 1 else 0 
   rw [toDual, constr_basis b, constr_basis b]
   simp only [eq_comm]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem toDual_linearCombination_left (f : ι →₀ R) (i : ι) :
     b.toDual (Finsupp.linearCombination R b f) (b i) = f i := by
@@ -64,6 +65,7 @@ theorem toDual_linearCombination_left (f : ι →₀ R) (i : ι) :
   simp_rw [map_smul, LinearMap.smul_apply, toDual_apply, smul_eq_mul, mul_boole,
     Finset.sum_ite_eq', Finsupp.if_mem_support]
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem toDual_linearCombination_right (f : ι →₀ R) (i : ι) :
     b.toDual (b i) (Finsupp.linearCombination R b f) = f i := by
@@ -103,11 +105,9 @@ theorem toDual_inj (m : M) (a : b.toDual m = 0) : m = 0 :=
 theorem toDual_ker : LinearMap.ker b.toDual = ⊥ :=
   ker_eq_bot'.mpr b.toDual_inj
 
-theorem toDual_range [Finite ι] : LinearMap.range b.toDual = ⊤ := by
-  refine eq_top_iff'.2 fun f => ?_
-  refine ⟨Finsupp.linearCombination R b (Finsupp.equivFunOnFinite.symm fun i => f (b i)),
-    b.ext fun i => ?_⟩
-  rw [b.toDual_eq_repr _ i, repr_linearCombination b, Finsupp.equivFunOnFinite_symm_apply_toFun]
+theorem toDual_range [Finite ι] : LinearMap.range b.toDual = ⊤ :=
+  eq_top_iff'.2 fun f => ⟨Finsupp.linearCombination R b <|
+    Finsupp.equivFunOnFinite.symm fun i => f (b i), b.ext fun i => by simp⟩
 
 omit [DecidableEq ι] in
 @[simp]
@@ -137,7 +137,7 @@ def dualBasis : Basis ι R (Dual R M) :=
 -- We use `j = i` to match `Basis.repr_self`
 theorem dualBasis_apply_self (i j : ι) : b.dualBasis i (b j) =
     if j = i then 1 else 0 := by
-  convert b.toDual_apply i j using 2
+  convert! b.toDual_apply i j using 2
   rw [@eq_comm _ j i]
 
 theorem linearCombination_dualBasis (f : ι →₀ R) (i : ι) :
@@ -271,7 +271,7 @@ theorem coeffs_lc (l : ι →₀ R) : h.coeffs (DualBases.lc e l) = l := by
   ext i
   rw [h.coeffs_apply, h.dual_lc]
 
-/-- For any m : M n, \sum_{p ∈ Q n} (ε p m) • e p = m -/
+/-- For any `m : M n`, $\sum_{p ∈ Q n} (ε p m) • e p = m$ -/
 @[simp]
 theorem lc_coeffs (m : M) : DualBases.lc e (h.coeffs m) = m := h.total <| by simp [h.dual_lc]
 

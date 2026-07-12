@@ -68,7 +68,7 @@ variable [TopologicalSpace R] [ContinuousSMul R E] [ContinuousSMul R F]
 
 /-- An unbounded operator is closable iff the closure of its graph is a graph. -/
 def IsClosable (f : E →ₗ.[R] F) : Prop :=
-  ∃ f' : LinearPMap R E F, f.graph.topologicalClosure = f'.graph
+  ∃ f' : E →ₗ.[R] F, f.graph.topologicalClosure = f'.graph
 
 /-- A closed operator is trivially closable. -/
 theorem IsClosed.isClosable {f : E →ₗ.[R] F} (hf : f.IsClosed) : f.IsClosable :=
@@ -91,7 +91,7 @@ theorem IsClosable.existsUnique {f : E →ₗ.[R] F} (hf : f.IsClosable) :
   refine existsUnique_of_exists_of_unique hf fun _ _ hy₁ hy₂ => eq_of_eq_graph ?_
   rw [← hy₁, ← hy₂]
 
-open Classical in
+open scoped Classical in
 /-- If `f` is closable, then `f.closure` is the closure. Otherwise it is defined
 as `f.closure = f`. -/
 noncomputable def closure (f : E →ₗ.[R] F) : E →ₗ.[R] F :=
@@ -181,6 +181,7 @@ theorem inverse_closed_iff (hf : LinearMap.ker f.toFun = ⊥) : f.inverse.IsClos
 variable [ContinuousAdd E] [ContinuousAdd F]
 variable [TopologicalSpace R] [ContinuousSMul R E] [ContinuousSMul R F]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- If `f` is invertible and closable as well as its closure being invertible, then
 the graph of the inverse of the closure is given by the closure of the graph of the inverse. -/
 theorem closure_inverse_graph (hf : LinearMap.ker f.toFun = ⊥) (hf' : f.IsClosable)
@@ -188,7 +189,8 @@ theorem closure_inverse_graph (hf : LinearMap.ker f.toFun = ⊥) (hf' : f.IsClos
     f.closure.inverse.graph = f.inverse.graph.topologicalClosure := by
   rw [inverse_graph hf, inverse_graph hcf, ← hf'.graph_closure_eq_closure_graph]
   apply SetLike.ext'
-  simp only [Submodule.topologicalClosure_coe, Submodule.map_coe, LinearEquiv.prodComm_apply]
+  simp only [Submodule.topologicalClosure_coe, Submodule.map_coe, LinearEquiv.coe_coe,
+    LinearEquiv.prodComm_apply]
   apply (image_closure_subset_closure_image continuous_swap).antisymm
   have h1 := (LinearEquiv.prodComm R E F).toEquiv.image_eq_preimage_symm f.graph
   have h2 := (LinearEquiv.prodComm R E F).toEquiv.image_eq_preimage_symm (_root_.closure f.graph)

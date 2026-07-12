@@ -99,11 +99,6 @@ lemma append_def {n m : Nat} :
       fun | ⟨l₁, h₁⟩, ⟨l₂, h₂⟩ => ⟨l₁ ++ l₂, by simp [*]⟩ :=
   rfl
 
-/-- Appending a vector to another. -/
-@[deprecated "use `++` instead" (since := "2025-06-05")]
-def append {n m : Nat} : Vector α n → Vector α m → Vector α (n + m)
-  | ⟨l₁, h₁⟩, ⟨l₂, h₂⟩ => ⟨l₁ ++ l₂, by simp [*]⟩
-
 /-- Elimination rule for `Vector`. -/
 @[elab_as_elim]
 def elim {α} {C : ∀ {n}, Vector α n → Sort u}
@@ -126,6 +121,7 @@ theorem map_nil (f : α → β) : map f nil = nil :=
 theorem map_cons (f : α → β) (a : α) : ∀ v : Vector α n, map f (cons a v) = cons (f a) (map f v)
   | ⟨_, _⟩ => rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Map a vector under a partial function. -/
 def pmap (f : (a : α) → p a → β) :
     (v : Vector α n) → (∀ x ∈ v.toList, p x) → Vector β n

@@ -88,9 +88,9 @@ def noncommCoprod : M × N →* P where
   map_one' := by simp only [Prod.fst_one, Prod.snd_one, map_one, mul_one]
   __ := f.toMulHom.noncommCoprod g.toMulHom comm
 
-/-- Variant of `MonoidHom.noncomCoprod_apply` with the product written in the other direction. -/
+/-- Variant of `MonoidHom.noncommCoprod_apply` with the product written in the other direction. -/
 @[to_additive
-  /-- Variant of `AddMonoidHom.noncomCoprod_apply` with the sum written in the other direction -/]
+  /-- Variant of `AddMonoidHom.noncommCoprod_apply` with the sum written in the other direction -/]
 theorem noncommCoprod_apply' (comm) (mn : M × N) :
     (f.noncommCoprod g comm) mn = g mn.2 * f mn.1 := by
   rw [← comm, MonoidHom.noncommCoprod_apply]
@@ -103,6 +103,7 @@ theorem noncommCoprod_comp_inl : (f.noncommCoprod g comm).comp (inl M N) = f :=
 theorem noncommCoprod_comp_inr : (f.noncommCoprod g comm).comp (inr M N) = g :=
   ext fun x => by simp
 
+set_option backward.isDefEq.respectTransparency false in
 @[to_additive (attr := simp)]
 theorem noncommCoprod_unique (f : M × N →* P) :
     (f.comp (inl M N)).noncommCoprod (f.comp (inr M N)) (fun _ _ => (commute_inl_inr _ _).map f)
@@ -114,6 +115,7 @@ theorem noncommCoprod_inl_inr {M N : Type*} [Monoid M] [Monoid N] :
     (inl M N).noncommCoprod (inr M N) commute_inl_inr = id (M × N) :=
   noncommCoprod_unique <| .id (M × N)
 
+set_option backward.isDefEq.respectTransparency false in
 @[to_additive]
 theorem comp_noncommCoprod {Q : Type*} [Monoid Q] (h : P →* Q) :
     h.comp (f.noncommCoprod g comm) =

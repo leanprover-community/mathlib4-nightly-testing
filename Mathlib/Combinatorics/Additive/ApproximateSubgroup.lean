@@ -36,7 +36,7 @@ It can be readily confirmed that approximate subgroups are a weakening of subgro
 * `isApproximateSubgroup_one`: A 1-approximate subgroup is the same thing as a subgroup.
 -/
 
-@[expose] public section
+public section
 
 open scoped Finset Pointwise
 
@@ -72,8 +72,9 @@ namespace IsApproximateSubgroup
 @[to_additive one_le]
 lemma one_le (hA : IsApproximateSubgroup K A) : 1 ≤ K := by
   obtain ⟨F, hF, hSF⟩ := hA.sq_covBySMul
-  have hF₀ : F ≠ ∅ := by rintro rfl; simp [hA.nonempty.pow.ne_empty] at hSF
-  exact hF.trans' <| by simpa [Finset.nonempty_iff_ne_empty]
+  grw [← hF]
+  have : F.Nonempty := by by_contra! rfl; simp [hA.nonempty.ne_empty] at hSF
+  simpa
 
 @[to_additive]
 lemma mono (hKL : K ≤ L) (hA : IsApproximateSubgroup K A) : IsApproximateSubgroup L A where
@@ -153,7 +154,7 @@ lemma pow_inter_pow_covBySMul_sq_inter_sq
       _ ≤ K ^ (m - 1) * L ^ (n - 1) := by gcongr
   · calc
       A ^ m ∩ B ^ n ⊆ (F₁ ^ (m - 1) * A) ∩ (F₂ ^ (n - 1) * B) := by
-        gcongr <;> apply pow_subset_pow_mul_of_sq_subset_mul <;> norm_cast <;> omega
+        gcongr <;> apply pow_subset_pow_mul_of_sq_subset_mul <;> norm_cast <;> lia
       _ = ⋃ (a ∈ F₁ ^ (m - 1)) (b ∈ F₂ ^ (n - 1)), a • A ∩ b • B := by
         simp_rw [← smul_eq_mul, ← iUnion_smul_set, iUnion₂_inter_iUnion₂]; norm_cast
       _ ⊆ ⋃ (a ∈ F₁ ^ (m - 1)) (b ∈ F₂ ^ (n - 1)), f a b • (A⁻¹ * A ∩ (B⁻¹ * B)) := by
@@ -201,7 +202,7 @@ lemma isApproximateSubgroup_one {A : Set G} :
       · simp [hA.nonempty.ne_empty] at hKA
       · rw [Finset.coe_singleton, singleton_smul, sq] at hKA
         use x
-    have hx' : x ⁻¹ • (A * A) ⊆ A := by rwa [← subset_smul_set_iff]
+    have hx' : x⁻¹ • (A * A) ⊆ A := by rwa [← subset_smul_set_iff]
     have hx_inv : x⁻¹ ∈ A := by
       simpa using hx' (smul_mem_smul_set (mul_mem_mul hA.one_mem hA.one_mem))
     have hx_sq : x * x ∈ A := by

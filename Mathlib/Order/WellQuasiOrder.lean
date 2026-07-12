@@ -52,7 +52,7 @@ theorem IsAntichain.finite_of_wellQuasiOrdered {s : Set α} (hs : IsAntichain r 
   exact hmn.ne ((hi.natEmbedding _).injective <| Subtype.val_injective <|
     hs.eq (hi.natEmbedding _ m).2 (hi.natEmbedding _ n).2 h)
 
-theorem Finite.wellQuasiOrdered (r : α → α → Prop) [Finite α] [IsRefl α r] :
+theorem Finite.wellQuasiOrdered (r : α → α → Prop) [Finite α] [Std.Refl r] :
     WellQuasiOrdered r := by
   intro f
   obtain ⟨m, n, h, hf⟩ := Set.finite_univ.exists_lt_map_eq_of_forall_mem (f := f)
@@ -96,7 +96,7 @@ theorem WellQuasiOrdered.pi {ι : Type*} {α : ι → Type*} [Finite ι] {r : �
     ∃ g : ℕ ↪o ℕ, ∀ ⦃a b : ℕ⦄, a ≤ b → ∀ i, i ∈ s → r i ((f ∘ g) a i) ((f ∘ g) b i) by
     rw [wellQuasiOrdered_iff_exists_monotone_subseq]
     intro f
-    simpa only [Finset.mem_univ, true_imp_iff] using this Finset.univ f
+    simpa only [Finset.mem_univ, true_imp_iff] using! this Finset.univ f
   refine Finset.cons_induction ?_ ?_
   · intro f
     exists RelEmbedding.refl (· ≤ ·)
@@ -112,6 +112,13 @@ theorem RelIso.wellQuasiOrdered_iff {α β} {r : α → α → Prop} {s : β →
   apply (Equiv.arrowCongr (.refl ℕ) f).forall_congr
   congr! with g a b
   simp [f.map_rel_iff]
+
+theorem WellQuasiOrdered.of_surjective {α β} {r : α → α → Prop}
+    {s : β → β → Prop} (h : WellQuasiOrdered r) (f : r →r s) (hf : Function.Surjective f) :
+    WellQuasiOrdered s := by
+  intro seq
+  have ⟨_, _, hle, hr⟩ := h (Function.surjInv hf ∘ seq)
+  exact ⟨_, _, hle, by simpa [Function.surjInv_eq] using f.map_rel hr⟩
 
 /-- A typeclass for an order with a well-quasi-ordered `≤` relation.
 
@@ -177,6 +184,16 @@ theorem wellQuasiOrderedLE_iff :
 
 instance [WellQuasiOrderedLE α] [Preorder β] [WellQuasiOrderedLE β] : WellQuasiOrderedLE (α × β) :=
   ⟨wellQuasiOrdered_le.prod wellQuasiOrdered_le⟩
+
+theorem Monotone.wellQuasiOrderedLE_of_wellQuasiOrderedLE_of_surjective [Preorder β]
+    [WellQuasiOrderedLE α] {f : α → β} (mono : Monotone f) (hf : Function.Surjective f) :
+    WellQuasiOrderedLE β :=
+  ⟨wellQuasiOrdered_le.of_surjective ⟨_, (mono ·)⟩ hf⟩
+
+theorem OrderHom.wellQuasiOrderedLE_of_wellQuasiOrderedLE_of_surjective [Preorder β]
+    [WellQuasiOrderedLE α] (f : α →o β) (hf : Function.Surjective f) :
+    WellQuasiOrderedLE β :=
+  f.monotone.wellQuasiOrderedLE_of_wellQuasiOrderedLE_of_surjective hf
 
 end Preorder
 

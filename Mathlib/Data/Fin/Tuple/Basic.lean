@@ -179,13 +179,15 @@ def consEquiv (α : Fin (n + 1) → Type*) : α 0 × (∀ i, α (succ i)) ≃ �
 
 /-- Recurse on an `n+1`-tuple by splitting it into a single element and an `n`-tuple. -/
 @[elab_as_elim]
-def consCases {P : (∀ i : Fin n.succ, α i) → Sort v} (h : ∀ x₀ x, P (Fin.cons x₀ x))
-    (x : ∀ i : Fin n.succ, α i) : P x :=
-  _root_.cast (by rw [cons_self_tail]) <| h (x 0) (tail x)
+def consCases {motive : (∀ i : Fin n.succ, α i) → Sort v} (cons : ∀ x₀ x, motive (Fin.cons x₀ x))
+    (x : ∀ i : Fin n.succ, α i) : motive x :=
+  _root_.cast (by rw [cons_self_tail]) <| cons (x 0) (tail x)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
-theorem consCases_cons {P : (∀ i : Fin n.succ, α i) → Sort v} (h : ∀ x₀ x, P (Fin.cons x₀ x))
-    (x₀ : α 0) (x : ∀ i : Fin n, α i.succ) : consCases h (cons x₀ x) = h x₀ x := by
+theorem consCases_cons {motive : (∀ i : Fin n.succ, α i) → Sort v}
+    (cons : ∀ x₀ x, motive (Fin.cons x₀ x))
+    (x₀ : α 0) (x : ∀ i : Fin n, α i.succ) : consCases cons (Fin.cons x₀ x) = cons x₀ x := by
   rw [consCases, cast_eq]
   congr
 
@@ -194,7 +196,7 @@ theorem consCases_cons {P : (∀ i : Fin n.succ, α i) → Sort v} (h : ∀ x₀
 def consInduction {α : Sort*} {motive : ∀ {n : ℕ}, (Fin n → α) → Sort v} (elim0 : motive Fin.elim0)
     (cons : ∀ {n} (x₀) (x : Fin n → α), motive x → motive (Fin.cons x₀ x)) :
     ∀ {n : ℕ} (x : Fin n → α), motive x
-  | 0, x => by convert elim0
+  | 0, x => by convert! elim0
   | _ + 1, x => consCases (fun _ _ ↦ cons _ _ <| consInduction elim0 cons _) x
 
 theorem cons_injective_of_injective {α} {x₀ : α} {x : Fin n → α} (hx₀ : x₀ ∉ Set.range x)
@@ -208,7 +210,11 @@ theorem cons_injective_iff {α} {x₀ : α} {x : Fin n → α} :
   · rintro ⟨i, hi⟩
     replace h := @h i.succ 0
     simp [hi] at h
-  · simpa [Function.comp] using h.comp (Fin.succ_injective _)
+  · simpa [Function.comp] using! h.comp (Fin.succ_injective _)
+
+theorem exists_cons {α : Fin (n + 1) → Type*} (q : ∀ i, α i) :
+    ∃ (x₀ : α 0) (x : ∀ i : Fin n, α i.succ), q = cons x₀ x :=
+  ⟨q 0, tail q, (cons_self_tail q).symm⟩
 
 @[simp]
 theorem forall_fin_zero_pi {α : Fin 0 → Sort*} {P : (∀ i, α i) → Prop} :
@@ -394,15 +400,15 @@ theorem append_castAdd_natAdd {f : Fin (m + n) → α} :
 
 /-- Splitting a dependent finite sequence v into an initial part and a final part,
 and then concatenating these components, produces an identical sequence. -/
-theorem addCases_castAdd_natAdd {γ : Fin (m + n) → Sort*} (v : ∀ i, γ i) :
-    addCases (fun i ↦ v (castAdd n i)) (fun j ↦ v (natAdd m j)) = v := by
-  ext i
+theorem addCases_castAdd_natAdd {γ : Fin (m + n) → Sort*} (v : ∀ i, γ i) (i : Fin (m + n)) :
+    addCases (fun i ↦ v (castAdd n i)) (fun j ↦ v (natAdd m j)) i = v i := by
   cases i using addCases <;> simp
 
 theorem append_comp_sumElim {xs : Fin m → α} {ys : Fin n → α} :
     Fin.append xs ys ∘ Sum.elim (Fin.castAdd _) (Fin.natAdd _) = Sum.elim xs ys := by
   ext (i | j) <;> simp
 
+set_option backward.isDefEq.respectTransparency false in
 theorem append_injective_iff {xs : Fin m → α} {ys : Fin n → α} :
     Function.Injective (Fin.append xs ys) ↔
       Function.Injective xs ∧ Function.Injective ys ∧ ∀ i j, xs i ≠ ys j := by
@@ -504,13 +510,13 @@ def snoc (p : ∀ i : Fin n, α i.castSucc) (x : α (last n)) (i : Fin (n + 1)) 
 @[simp]
 theorem init_snoc : init (snoc p x) = p := by
   ext i
-  simp only [init, snoc, val_castSucc, is_lt, cast_eq, dite_true]
-  convert cast_eq rfl (p i)
+  simp only [init, snoc, val_castSucc, is_lt, dite_true]
+  convert! cast_eq rfl (p i)
 
 @[simp]
 theorem snoc_castSucc : snoc p x i.castSucc = p i := by
-  simp only [snoc, val_castSucc, is_lt, cast_eq, dite_true]
-  convert cast_eq rfl (p i)
+  simp only [snoc, val_castSucc, is_lt, dite_true]
+  convert! cast_eq rfl (p i)
 
 @[simp]
 theorem snoc_apply_zero [NeZero n] : snoc p x 0 = p 0 := snoc_castSucc x p 0
@@ -537,21 +543,15 @@ theorem snoc_comp_natAdd {n m : ℕ} {α : Sort*} (f : Fin (m + n) → α) (a : 
   · simp only [comp_apply, snoc_castSucc]
     rw [natAdd_castSucc, snoc_castSucc]
 
-@[deprecated (since := "2025-07-04")] alias snoc_comp_nat_add := snoc_comp_natAdd
-
 @[simp]
 theorem snoc_castAdd {α : Fin (n + m + 1) → Sort*} (f : ∀ i : Fin (n + m), α i.castSucc)
     (a : α (last (n + m))) (i : Fin n) : (snoc f a) (castAdd (m + 1) i) = f (castAdd m i) :=
   dif_pos _
 
-@[deprecated (since := "2025-07-04")] alias snoc_cast_add := snoc_castAdd
-
 @[simp]
 theorem snoc_comp_castAdd {n m : ℕ} {α : Sort*} (f : Fin (n + m) → α) (a : α) :
     (snoc f a : Fin _ → α) ∘ castAdd (m + 1) = f ∘ castAdd m :=
   funext (snoc_castAdd _ _)
-
-@[deprecated (since := "2025-07-04")] alias snoc_comp_cast_add := snoc_comp_castAdd
 
 /-- Updating a tuple and adding an element at the end commute. -/
 @[simp]
@@ -665,6 +665,7 @@ theorem append_right_cons {n m} {α : Sort*} (xs : Fin n → α) (y : α) (ys : 
       Fin.append (Fin.snoc xs y) ys ∘ Fin.cast (Nat.succ_add_eq_add_succ ..).symm := by
   rw [append_left_snoc]; rfl
 
+set_option backward.isDefEq.respectTransparency false in
 theorem append_cons {α : Sort*} (a : α) (as : Fin n → α) (bs : Fin m → α) :
     Fin.append (cons a as) bs
     = cons a (Fin.append as bs) ∘ (Fin.cast <| Nat.add_right_comm n 1 m) := by
@@ -679,12 +680,13 @@ theorem append_cons {α : Sort*} (a : α) (as : Fin n → α) (bs : Fin m → α
     · have : ¬i < n := Nat.not_le_of_gt <| Nat.le_of_lt_succ <| Nat.gt_of_not_le h
       simp [addCases, this]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem append_snoc {α : Sort*} (as : Fin n → α) (bs : Fin m → α) (b : α) :
     Fin.append as (snoc bs b) = snoc (Fin.append as bs) b := by
   funext i
   rcases i with ⟨i, isLt⟩
   simp only [append, addCases, castLT, cast_mk, subNat_mk, natAdd_mk, cast, snoc.eq_1,
-    eq_rec_constant, Nat.add_eq, castLT_mk]
+    eq_rec_constant, Nat.add_eq]
   split_ifs with lt_n lt_add sub_lt nlt_add lt_add <;> (try rfl)
   · have := Nat.lt_add_right m lt_n
     contradiction
@@ -711,25 +713,27 @@ def snocEquiv (α : Fin (n + 1) → Type*) : α (last n) × (∀ i, α (castSucc
 
 /-- Recurse on an `n+1`-tuple by splitting it its initial `n`-tuple and its last element. -/
 @[elab_as_elim, inline]
-def snocCases {P : (∀ i : Fin n.succ, α i) → Sort*}
-    (h : ∀ xs x, P (Fin.snoc xs x))
-    (x : ∀ i : Fin n.succ, α i) : P x :=
-  _root_.cast (by rw [Fin.snoc_init_self]) <| h (Fin.init x) (x <| Fin.last _)
+def snocCases {motive : (∀ i : Fin n.succ, α i) → Sort*}
+    (snoc : ∀ xs x, motive (Fin.snoc xs x))
+    (x : ∀ i : Fin n.succ, α i) : motive x :=
+  _root_.cast (by rw [Fin.snoc_init_self]) <| snoc (Fin.init x) (x <| Fin.last _)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp] lemma snocCases_snoc
-    {P : (∀ i : Fin (n + 1), α i) → Sort*} (h : ∀ x x₀, P (Fin.snoc x x₀))
+    {motive : (∀ i : Fin (n + 1), α i) → Sort*} (snoc : ∀ x x₀, motive (Fin.snoc x x₀))
     (x : ∀ i : Fin n, (Fin.init α) i) (x₀ : α (Fin.last _)) :
-    snocCases h (Fin.snoc x x₀) = h x x₀ := by
+    snocCases snoc (Fin.snoc x x₀) = snoc x x₀ := by
   rw [snocCases, cast_eq_iff_heq, Fin.init_snoc, Fin.snoc_last]
 
 /-- Recurse on a tuple by splitting into `Fin.elim0` and `Fin.snoc`. -/
 @[elab_as_elim]
 def snocInduction {α : Sort*}
-    {P : ∀ {n : ℕ}, (Fin n → α) → Sort*}
-    (h0 : P Fin.elim0)
-    (h : ∀ {n} (x : Fin n → α) (x₀), P x → P (Fin.snoc x x₀)) : ∀ {n : ℕ} (x : Fin n → α), P x
-  | 0, x => by convert h0
-  | _ + 1, x => snocCases (fun _ _ ↦ h _ _ <| snocInduction h0 h _) x
+    {motive : ∀ {n : ℕ}, (Fin n → α) → Sort*}
+    (elim0 : motive Fin.elim0)
+    (snoc : ∀ {n} (x : Fin n → α) (x₀), motive x → motive (Fin.snoc x x₀)) :
+    ∀ {n : ℕ} (x : Fin n → α), motive x
+  | 0, x => by convert! elim0
+  | _ + 1, x => snocCases (fun _ _ ↦ snoc _ _ <| snocInduction elim0 snoc _) x
 
 theorem snoc_injective_of_injective {α} {x₀ : α} {x : Fin n → α}
     (hx : Function.Injective x) (hx₀ : x₀ ∉ Set.range x) :
@@ -788,8 +792,8 @@ lemma forall_iff_castSucc {P : Fin (n + 1) → Prop} :
     (∀ i, P i) ↔ P (last n) ∧ ∀ i : Fin n, P i.castSucc :=
   ⟨fun h ↦ ⟨h _, fun _ ↦ h _⟩, fun h ↦ lastCases h.1 h.2⟩
 
-/-- A finite sequence of properties P holds for {0, ..., m + n - 1} iff
-it holds separately for both {0, ..., m - 1} and {m, ..., m + n - 1}. -/
+/-- A finite sequence of properties `P` holds for `{0, ..., m + n - 1}` iff
+it holds separately for both `{0, ..., m - 1}` and `{m, ..., m + n - 1}`. -/
 theorem forall_fin_add {m n} (P : Fin (m + n) → Prop) :
     (∀ i, P i) ↔ (∀ i, P (castAdd _ i)) ∧ (∀ j, P (natAdd _ j)) :=
   ⟨fun h => ⟨fun _ => h _, fun _ => h _⟩, fun ⟨hm, hn⟩ => Fin.addCases hm hn⟩
@@ -802,7 +806,7 @@ theorem forall_fin_add_pi {γ : Fin (m + n) → Sort*} {P : (∀ i, γ i) → Pr
   mp hv vm vn := hv (addCases vm vn)
   mpr h v := by
     convert h (fun i => v (castAdd n i)) (fun j => v (natAdd m j))
-    exact (addCases_castAdd_natAdd v).symm
+    exact (addCases_castAdd_natAdd v _).symm
 
 lemma exists_iff_castSucc {P : Fin (n + 1) → Prop} :
     (∃ i, P i) ↔ P (last n) ∨ ∃ i : Fin n, P i.castSucc where
@@ -925,7 +929,7 @@ theorem insertNth_zero (x : α 0) (p : ∀ j : Fin n, α (succAbove 0 j)) :
       cons x fun j ↦ _root_.cast (congr_arg α (congr_fun succAbove_zero j)) (p j) := by
   refine insertNth_eq_iff.2 ⟨by simp, ?_⟩
   ext j
-  convert (cons_succ x p j).symm
+  convert! (cons_succ x p j).symm
 
 @[simp]
 theorem insertNth_zero' (x : β) (p : Fin n → β) : @insertNth _ (fun _ ↦ β) 0 x p = cons x p := by
@@ -958,6 +962,16 @@ theorem insertNth_comp_rev {α} (i : Fin (n + 1)) (x : α) (p : Fin n → α) :
     (Fin.insertNth i x p) ∘ Fin.rev = Fin.insertNth (Fin.rev i) x (p ∘ Fin.rev) := by
   funext x
   apply insertNth_rev
+
+@[simp]
+theorem insertNth_succ_cons {α} (i : Fin (n + 1)) (x a : α) (p : Fin n → α) :
+    (insertNth i.succ x (cons a p) : Fin (n + 2) → α) = cons a (insertNth i x p) := by
+  ext j
+  cases j using Fin.succAboveCases i.succ with
+  | x => simp
+  | p j =>
+    simp only [insertNth_apply_succAbove]
+    cases j using Fin.cases <;> simp
 
 theorem cons_rev {α n} (a : α) (f : Fin n → α) (i : Fin <| n + 1) :
     cons (α := fun _ => α) a f i.rev = snoc (α := fun _ => α) (f ∘ Fin.rev : Fin _ → α) a i := by
@@ -1074,6 +1088,7 @@ section Find
 
 variable {p q : Fin n → Prop} [DecidablePred p] [DecidablePred q] {i j : Fin n}
 
+set_option backward.privateInPublic true in
 private def findX {n : ℕ} (p : Fin n → Prop) [DecidablePred p] (h : ∃ k, p k) :
     { i : Fin n // p i ∧ ∀ j < i, ¬ p j } := go n (by grind) where
   go (m : Nat) (hj : ∀ j (hm : j < n - m), ¬p ⟨j, by grind⟩) := match m with
@@ -1081,6 +1096,8 @@ private def findX {n : ℕ} (p : Fin n → Prop) [DecidablePred p] (h : ∃ k, p
     then ⟨_, ⟨hnm, (hj ·.val)⟩⟩ else go m (by grind)
   | 0 => absurd h (fun ⟨⟨_, _⟩, _⟩ => by grind)
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 /-- `Fin.find p h` returns the smallest index `k : Fin n` where `p k` is satisfied,
   given that it is satisfied for some `k`. -/
 protected def find {n : ℕ} (p : Fin n → Prop) [DecidablePred p] (h : ∃ k, p k) : Fin n :=
@@ -1096,7 +1113,7 @@ grind_pattern Fin.find_spec => Fin.find p h
 protected theorem find_min (h : ∃ k, p k) : ∀ {j : Fin n}, j < Fin.find p h → ¬ p j :=
   @(Fin.findX p h).2.2
 
-/-- For `m : Fin n`, if `m` satsifies `p`, then `Fin.find p h ≤ m`. -/
+/-- For `m : Fin n`, if `m` satisfies `p`, then `Fin.find p h ≤ m`. -/
 protected theorem find_le_of_pos (h : ∃ k, p k) {j : Fin n} :
     p j → Fin.find p h ≤ j := (j.find_min _ <| lt_of_not_ge ·).mtr
 
@@ -1170,7 +1187,7 @@ lemma find_congr (hi : p i) (hpq : ∀ j ≤ i, p j ↔ q j) :
 
 /-- A weak version of `Fin.find_congr`, requiring `p = q` everywhere. -/
 lemma find_congr' {hp : ∃ i, p i} {hq : ∃ i, q i} (hpq : ∀ {i}, p i ↔ q i) :
-   Fin.find p hp = Fin.find q hq :=
+    Fin.find p hp = Fin.find q hq :=
   let ⟨_, hp⟩ := hp; find_congr hp fun _ _ ↦ hpq
 
 lemma find_le (hi : p i) : Fin.find p ⟨i, hi⟩ ≤ i :=
@@ -1194,10 +1211,7 @@ lemma find_of_find_le {p : Fin (m + n) → Prop} [DecidablePred p]
 
 theorem find?_eq_dite {p : Fin n → Bool} :
     find? p = if h : ∃ i, p i then some (Fin.find (p ·) h) else none := by
-  split_ifs with h
-  · simp_rw [find?_eq_some_iff, Fin.find_spec h, lt_find_iff]
-    grind
-  · simpa [find?_eq_none_iff] using h
+  split_ifs <;> grind
 
 theorem find?_decide_eq_dite :
     find? (p ·) = if h : ∃ i, p i then some (Fin.find p h) else none := by

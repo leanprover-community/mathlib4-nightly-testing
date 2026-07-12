@@ -74,7 +74,7 @@ theorem ultrafilter_isOpen_basic (s : Set α) : IsOpen { u : Ultrafilter α | s 
 /-- The basic open sets for the topology on ultrafilters are also closed. -/
 theorem ultrafilter_isClosed_basic (s : Set α) : IsClosed { u : Ultrafilter α | s ∈ u } := by
   rw [← isOpen_compl_iff]
-  convert ultrafilter_isOpen_basic sᶜ using 1
+  convert! ultrafilter_isOpen_basic sᶜ using 1
   ext u
   exact Ultrafilter.compl_mem_iff_notMem.symm
 
@@ -130,8 +130,6 @@ theorem ultrafilter_comap_pure_nhds (b : Ultrafilter α) : comap pure (𝓝 b) �
   exact principal_mono.2 fun _ ↦ id
 
 section Embedding
-
-@[deprecated (since := "2025-08-14")] alias ultrafilter_pure_injective := Ultrafilter.pure_injective
 
 open TopologicalSpace
 
@@ -247,6 +245,7 @@ instance [Inhabited α] : Inhabited (PreStoneCech α) :=
 def preStoneCechUnit (x : α) : PreStoneCech α :=
   Quot.mk _ (pure x : Ultrafilter α)
 
+set_option backward.isDefEq.respectTransparency false in
 theorem continuous_preStoneCechUnit : Continuous (preStoneCechUnit : α → PreStoneCech α) :=
   continuous_iff_ultrafilter.mpr fun x g gx ↦ by
     have : (g.map pure).toFilter ≤ 𝓝 g := by
@@ -254,7 +253,7 @@ theorem continuous_preStoneCechUnit : Continuous (preStoneCechUnit : α → PreS
       rfl
     have : (map preStoneCechUnit g : Filter (PreStoneCech α)) ≤ 𝓝 (Quot.mk _ g) :=
       (map_mono this).trans (continuous_quot_mk.tendsto _)
-    convert this
+    convert! this
     exact Quot.sound ⟨x, pure_le_nhds x, gx⟩
 
 theorem denseRange_preStoneCechUnit : DenseRange (preStoneCechUnit : α → PreStoneCech α) :=
@@ -295,6 +294,7 @@ lemma preStoneCechExtend_preStoneCechUnit (a : α) :
     preStoneCechExtend hg (preStoneCechUnit a) = g a :=
   congr_fun (preStoneCechExtend_extends hg) a
 
+set_option backward.isDefEq.respectTransparency false in
 lemma eq_if_preStoneCechUnit_eq {a b : α} (h : preStoneCechUnit a = preStoneCechUnit b) :
     g a = g b := by
   have e := ultrafilter_extend_extends g
@@ -371,6 +371,7 @@ variable [CompactSpace β]
 def stoneCechExtend : StoneCech α → β :=
   T2Quotient.lift (continuous_preStoneCechExtend hg)
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma stoneCechExtend_extends : stoneCechExtend hg ∘ stoneCechUnit = g := by
   ext x

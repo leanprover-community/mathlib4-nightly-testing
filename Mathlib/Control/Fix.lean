@@ -67,7 +67,7 @@ protected def fix (x : α) : Part (β x) :=
   (Part.assert (∃ i, (Fix.approx f i x).Dom)) fun h =>
     WellFounded.fix.{1} (Nat.Upto.wf h) (fixAux f) Nat.Upto.zero x
 
-open Classical in
+open scoped Classical in
 protected theorem fix_def {x : α} (h' : ∃ i, (Fix.approx f i x).Dom) :
     Part.fix f x = Fix.approx f (Nat.succ (Nat.find h')) x := by
   let p := fun i : ℕ => (Fix.approx f i x).Dom
@@ -98,7 +98,7 @@ protected theorem fix_def {x : α} (h' : ∃ i, (Fix.approx f i x).Dom) :
     ext : 1
     have hh : ¬(Fix.approx f z.val x).Dom := by
       apply Nat.find_min h'
-      omega
+      lia
     rw [succ_add_eq_add_succ] at _this hk
     rw [assert_pos hh, n_ih (Upto.succ z hh) _this hk]
 

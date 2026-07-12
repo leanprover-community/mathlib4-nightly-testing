@@ -86,6 +86,7 @@ theorem compProd_of_not_isSFiniteKernel_right (κ : Kernel α β) (η : Kernel (
     κ ⊗ₖ η = 0 := by
   simp [compProd, h]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem compProd_apply (hs : MeasurableSet s) (κ : Kernel α β) [IsSFiniteKernel κ]
     (η : Kernel (α × β) γ) [IsSFiniteKernel η] (a : α) :
     (κ ⊗ₖ η) a s = ∫⁻ b, η (a, b) (Prod.mk b ⁻¹' s) ∂κ a := by
@@ -110,7 +111,7 @@ theorem compProd_apply (hs : MeasurableSet s) (κ : Kernel α β) [IsSFiniteKern
   have h_int x : ∫⁻ y, swap γ β (x, y) s ∂Measure.dirac b = (Prod.mk b ⁻¹' s).indicator 1 x := by
     rw [lintegral_dirac']
     · simp [swap_apply' _ hs, Set.indicator_apply]
-    · simpa [swap_apply' _ hs, Prod.swap_prod_mk] using
+    · simpa [swap_apply' _ hs, Prod.swap_prod_mk] using!
         measurable_const.indicator (measurable_prodMk_right hs)
   simp_rw [h_int]
   rw [lintegral_indicator_one]
@@ -203,7 +204,7 @@ lemma compProd_deterministic_apply [MeasurableSingletonClass γ] {f : α × β �
   let t := {b | (b, f (x, b)) ∈ s}
   have ht : MeasurableSet t := (measurable_id.prodMk (hf.comp measurable_prodMk_left)) hs
   rw [← lintegral_add_compl _ ht]
-  convert add_zero _
+  convert! add_zero _
   · suffices ∀ b ∈ tᶜ, (if f (x, b) ∈ Prod.mk b ⁻¹' s then (1 : ℝ≥0∞) else 0) = 0 by
       rw [setLIntegral_congr_fun ht.compl this, lintegral_zero]
     intro b hb
@@ -248,7 +249,7 @@ theorem ae_null_of_compProd_null (h : (κ ⊗ₖ η) a s = 0) :
   exact
     ⟨Filter.EventuallyLE.trans_eq
         (Filter.Eventually.of_forall fun x => measure_mono (Set.preimage_mono hst)) ht,
-      Filter.Eventually.of_forall fun x => zero_le _⟩
+      Filter.Eventually.of_forall fun x => zero_le⟩
 
 theorem ae_ae_of_ae_compProd {p : β × γ → Prop} (h : ∀ᵐ bc ∂(κ ⊗ₖ η) a, p bc) :
     ∀ᵐ b ∂κ a, ∀ᵐ c ∂η (a, b), p (b, c) :=
@@ -542,7 +543,7 @@ lemma comapRight_compProd_id_prod {δ : Type*} {mδ : MeasurableSpace δ}
   · refine lintegral_congr fun b ↦ ?_
     rw [comapRight_apply']
     · congr with x
-      aesop
+      grind
     · exact measurable_prodMk_left ht
   · exact (MeasurableEmbedding.id.prodMap hf).measurableSet_image.mpr ht
 

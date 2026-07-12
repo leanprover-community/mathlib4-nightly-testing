@@ -19,17 +19,20 @@ This file proves that, given a monoidal localization functor `L : C ⥤ D`, and 
 then `F` is monoidal. See `CategoryTheory.Localization.Monoidal.functorMonoidalOfComp`.
 -/
 
+set_option backward.defeqAttrib.useBackward true
+
 @[expose] public section
 
 universe u
 
 namespace CategoryTheory
 
-open CategoryTheory MonoidalCategory Functor Monoidal LaxMonoidal OplaxMonoidal
+open CategoryTheory MonoidalCategory CategoryTheory.Functor MonoidalCategory.Functor Monoidal
+open LaxMonoidal OplaxMonoidal
 
 namespace Localization.Monoidal
 
-variable {C D E : Type*} [Category C] [Category D] [Category E]
+variable {C D E : Type*} [Category* C] [Category* D] [Category* E]
   [MonoidalCategory C] [MonoidalCategory D] [MonoidalCategory E]
   (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W] [L.Monoidal]
   (F : D ⥤ E) (G : C ⥤ E) [G.Monoidal] [W.ContainsIdentities] [Lifting L W G F]
@@ -53,6 +56,8 @@ noncomputable def curriedTensorPreIsoPost : curriedTensorPre F ≅ curriedTensor
   lift₂NatIso L L W W (curriedTensorPre G) (curriedTensorPost G) _ _
     (Functor.curriedTensorPreIsoPost G)
 
+set_option backward.isDefEq.respectTransparency.types false in
+set_option backward.defeqAttrib.useBackward true in
 @[reassoc]
 lemma curriedTensorPreIsoPost_hom_app_app (X₁ X₂ : C) :
     letI e := Lifting.iso L W G F
@@ -61,13 +66,15 @@ lemma curriedTensorPreIsoPost_hom_app_app (X₁ X₂ : C) :
         F.map (OplaxMonoidal.δ L _ _) := by
   simp [curriedTensorPreIsoPost]
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 lemma curriedTensorPreIsoPost_hom_app_app' {X₁ X₂ : C} {Y₁ Y₂ : D}
     (e₁ : Y₁ ≅ L.obj X₁) (e₂ : Y₂ ≅ L.obj X₂) :
     letI e := Lifting.iso L W G F
     ((curriedTensorPreIsoPost L W F G).hom.app Y₁).app Y₂ =
       ((F.map e₁.hom ≫ e.hom.app _) ⊗ₘ (F.map e₂.hom ≫ e.hom.app _)) ≫
         LaxMonoidal.μ G X₁ X₂ ≫ e.inv.app _ ≫
-        F.map (OplaxMonoidal.δ L _ _≫ (e₁.inv ⊗ₘ e₂.inv)) := by
+        F.map (OplaxMonoidal.δ L _ _ ≫ (e₁.inv ⊗ₘ e₂.inv)) := by
   have h₁ := ((curriedTensorPreIsoPost L W F G).hom.app Y₁).naturality e₂.hom
   have h₂ := congr_app ((curriedTensorPreIsoPost L W F G).hom.naturality e₁.hom)
   dsimp at h₁ h₂ ⊢
@@ -78,6 +85,7 @@ lemma curriedTensorPreIsoPost_hom_app_app' {X₁ X₂ : C} {Y₁ Y₂ : D}
     tensorHom_comp_tensorHom, Iso.inv_hom_id, Iso.inv_hom_id, tensorHom_id, id_whiskerRight,
     Category.comp_id]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 Monoidal structure on `F`, given that `F` lifts along `L` to a monoidal functor `G`,
 where `L` is a monoidal localization functor.
@@ -124,6 +132,7 @@ noncomputable def functorCoreMonoidalOfComp : F.CoreMonoidal := by
 Monoidal structure on `F`, given that `F` lifts along `L` to a monoidal functor `G`,
 where `L` is a monoidal localization functor.
 -/
+@[instance_reducible]
 noncomputable def functorMonoidalOfComp : F.Monoidal :=
   (functorCoreMonoidalOfComp L W F G).toMonoidal
 

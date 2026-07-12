@@ -150,7 +150,7 @@ include hsC in
 theorem swapTrue_mem_C1 (f : π (C1 C ho) (ord I · < o)) :
     SwapTrue o f.val ∈ C1 C ho := by
   obtain ⟨f, g, hg, rfl⟩ := f
-  convert hg
+  convert! hg
   dsimp +unfoldPartialApp [SwapTrue]
   ext i
   split_ifs with h
@@ -190,6 +190,7 @@ noncomputable
 def Linear_CC' : LocallyConstant C ℤ →ₗ[ℤ] LocallyConstant (C' C ho) ℤ :=
   Linear_CC'₁ C hsC ho - Linear_CC'₀ C ho
 
+set_option backward.defeqAttrib.useBackward true in
 theorem CC_comp_zero : ∀ y, (Linear_CC' C hsC ho) ((πs C o) y) = 0 := by
   intro y
   ext x
@@ -232,10 +233,11 @@ theorem C1_projOrd {x : I → Bool} (hx : x ∈ C1 C ho) : SwapTrue o (Proj (ord
     simp only [not_lt, Bool.not_eq_true, Order.succ_le_iff] at hsC
     exact (hsC h').symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 include hC in
-open scoped Classical in
 theorem CC_exact {f : LocallyConstant C ℤ} (hf : Linear_CC' C hsC ho f = 0) :
     ∃ y, πs C o y = f := by
+  classical
   dsimp [Linear_CC', Linear_CC'₀, Linear_CC'₁] at hf
   simp only [sub_eq_zero, ← LocallyConstant.coe_inj] at hf
   let C₀C : C0 C ho → C := fun x ↦ ⟨x.val, x.prop.1⟩
@@ -252,16 +254,16 @@ theorem CC_exact {f : LocallyConstant C ℤ} (hf : Linear_CC' C hsC ho f = 0) :
     refine hyC.imp (fun hyC ↦ ?_) (fun hyC ↦ ⟨y, hyC, rfl⟩)
     rwa [C0_projOrd C hsC ho hyC]
   · intro x hx
-    simpa only [h₀, h₁, LocallyConstant.coe_comap] using (congrFun hf ⟨x, hx⟩).symm
+    simpa only [h₀, h₁, LocallyConstant.coe_comap] using! (congrFun hf ⟨x, hx⟩).symm
   · ext ⟨x, hx⟩
     rw [← union_C0C1_eq C ho] at hx
     rcases hx with hx₀ | hx₁
     · have hx₀' : ProjRestrict C (ord I · < o) ⟨x, hx⟩ = x := by
-        simpa only [ProjRestrict, Set.MapsTo.val_restrict_apply] using C0_projOrd C hsC ho hx₀
+        simpa only [ProjRestrict, Set.MapsTo.val_restrict_apply] using! C0_projOrd C hsC ho hx₀
       simp only [C₀C, πs_apply_apply, hx₀', hx₀, LocallyConstant.piecewise'_apply_left,
         LocallyConstant.coe_comap, ContinuousMap.coe_mk, Function.comp_apply]
     · have hx₁' : (ProjRestrict C (ord I · < o) ⟨x, hx⟩).val ∈ π (C1 C ho) (ord I · < o) := by
-        simpa only [ProjRestrict, Set.MapsTo.val_restrict_apply] using ⟨x, hx₁, rfl⟩
+        simpa only [ProjRestrict, Set.MapsTo.val_restrict_apply] using! ⟨x, hx₁, rfl⟩
       simp only [C₁C, πs_apply_apply, LocallyConstant.coe_comap,
         Function.comp_apply, hx₁', LocallyConstant.piecewise'_apply_right]
       congr
@@ -303,7 +305,6 @@ theorem union_succ : GoodProducts C = GoodProducts (π C (ord I · < o)) ∪ Max
       apply h
       have h' := Products.prop_of_isGood_of_contained C _ h hsC
       simp only [Order.lt_succ_iff] at h'
-      simp only at hh
       have hh' : ∀ a ∈ l.val, ord I a < o := by
         intro a ha
         refine (h' a ha).lt_of_ne ?_
@@ -374,6 +375,7 @@ def SumEval : GoodProducts (π C (ord I · < o)) ⊕ MaxProducts C ho →
     LocallyConstant C ℤ :=
   Sum.elim (fun l ↦ l.1.eval C) (fun l ↦ l.1.eval C)
 
+set_option backward.isDefEq.respectTransparency false in
 include hsC in
 theorem linearIndependent_iff_sum :
     LinearIndependent ℤ (eval C) ↔ LinearIndependent ℤ (SumEval C ho) := by
@@ -381,6 +383,7 @@ theorem linearIndependent_iff_sum :
     ← sum_equiv_comp_eval_eq_elim C hsC ho]
   exact Iff.rfl
 
+set_option backward.isDefEq.respectTransparency false in
 include hsC in
 theorem span_sum : Set.range (eval C) = Set.range (Sum.elim
     (fun (l : GoodProducts (π C (ord I · < o))) ↦ Products.eval C l.1)
@@ -389,6 +392,7 @@ theorem span_sum : Set.range (eval C) = Set.range (Sum.elim
     EquivLike.range_comp (e := sum_equiv C hsC ho)]
 
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem square_commutes : SumEval C ho ∘ Sum.inl =
     ModuleCat.ofHom (πs C o) ∘ eval (π C (ord I · < o)) := by
   ext l
@@ -414,6 +418,7 @@ theorem Products.max_eq_o_cons_tail [Inhabited I] (l : Products I) (hl : l.val �
   rw [← List.cons_head!_tail hl, hlh]
   simp [Tail]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Products.max_eq_o_cons_tail' [Inhabited I] (l : Products I) (hl : l.val ≠ [])
     (hlh : l.val.head! = term I ho) (hlc : List.IsChain (· > ·) (term I ho :: l.Tail.val)) :
     l = ⟨term I ho :: l.Tail.val, hlc⟩ := by
@@ -440,11 +445,13 @@ theorem GoodProducts.max_eq_o_cons_tail (l : MaxProducts C ho) :
   Products.max_eq_o_cons_tail ho l.val (List.ne_nil_of_mem l.prop.2)
     (head!_eq_o_of_maxProducts _ hsC ho l)
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Products.evalCons {I} [LinearOrder I] {C : Set (I → Bool)} {l : List I} {a : I}
     (hla : (a::l).IsChain (· > ·)) : Products.eval C ⟨a::l,hla⟩ =
     (e C a) * Products.eval C ⟨l,List.IsChain.sublist hla (List.tail_sublist (a::l))⟩ := by
   simp only [eval.eq_1, List.map, List.prod_cons]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem Products.max_eq_eval [Inhabited I] (l : Products I) (hl : l.val ≠ [])
     (hlh : l.val.head! = term I ho) :
     Linear_CC' C hsC ho (l.eval C) = l.Tail.eval (C' C ho) := by
@@ -471,8 +478,8 @@ theorem Products.max_eq_eval [Inhabited I] (l : Products I) (hl : l.val ≠ [])
   · rw [if_pos (swapTrue_eq_true _ _), if_neg]
     · rfl
     · simp [mem_C'_eq_false C ho x x.prop]
-  · push_neg at h₂; obtain ⟨i, hi⟩ := h₂; exfalso; rw [hi' i hi.1] at hi; exact hi.2 (h₁ i hi.1)
-  · push_neg at h₁; obtain ⟨i, hi⟩ := h₁; exfalso; rw [← hi' i hi.1] at hi; exact hi.2 (h₃ i hi.1)
+  · push Not at h₂; obtain ⟨i, hi⟩ := h₂; exfalso; rw [hi' i hi.1] at hi; exact hi.2 (h₁ i hi.1)
+  · push Not at h₁; obtain ⟨i, hi⟩ := h₁; exfalso; rw [← hi' i hi.1] at hi; exact hi.2 (h₃ i hi.1)
 
 namespace GoodProducts
 
@@ -505,8 +512,6 @@ theorem isChain_cons_of_lt (l : MaxProducts C ho)
     rw [max_eq_o_cons_tail C hsC ho l, List.isChain_iff_pairwise] at this
     exact List.rel_of_pairwise_cons this (List.head!_mem_self hM)
 
-@[deprecated (since := "2025-09-24")] alias chain'_cons_of_lt := isChain_cons_of_lt
-
 include hsC in
 theorem good_lt_maxProducts (q : GoodProducts (π C (ord I · < o)))
     (l : MaxProducts C ho) : List.Lex (· < ·) q.val.val l.val.val := by
@@ -520,6 +525,7 @@ theorem good_lt_maxProducts (q : GoodProducts (π C (ord I · < o)))
     simp only [term, Ordinal.typein_enum]
     exact Products.prop_of_isGood C _ q.prop q.val.val.head! (List.head!_mem_self h)
 
+set_option backward.isDefEq.respectTransparency.types false in
 include hC hsC in
 /--
 Removing the leading `o` from a term of `MaxProducts C` yields a list which `isGood` with respect to

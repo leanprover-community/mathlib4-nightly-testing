@@ -90,7 +90,7 @@ end
 
 namespace FirstOrder
 
-open MvPolynomial FreeCommRing Language Field Ring BoundedFormula
+open MvPolynomial FreeCommRing Language FirstOrder.Field FirstOrder.Ring BoundedFormula
 
 variable {ι α : Type*} [Finite α] {K : Type*} [Field K] [CompatibleRing K]
 
@@ -186,7 +186,7 @@ theorem ACF_models_genericPolyMapSurjOnOfInjOn_of_prime_or_zero
   rcases hp with hp | rfl
   · exact ACF_models_genericPolyMapSurjOnOfInjOn_of_prime hp φ mons
   · rw [ACF_zero_realize_iff_infinite_ACF_prime_realize]
-    convert Set.infinite_univ (α := Nat.Primes)
+    convert! Set.infinite_univ (α := Nat.Primes)
     rw [Set.eq_univ_iff_forall]
     intro ⟨p, hp⟩
     exact ACF_models_genericPolyMapSurjOnOfInjOn_of_prime hp φ mons

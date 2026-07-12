@@ -17,7 +17,7 @@ This file contains miscellaneous lemmas about `Equiv.Perm` and `Equiv.swap`, bui
 of those in `Mathlib/Logic/Equiv/Basic.lean` and other files in `Mathlib/GroupTheory/Perm/*`.
 -/
 
-@[expose] public section
+public section
 
 universe u v
 
@@ -125,6 +125,7 @@ theorem perm_mapsTo_inl_iff_mapsTo_inr {m n : Type*} [Finite m] [Finite n] (σ :
     obtain ⟨y, hy⟩ := h ⟨r, rfl⟩
     grind
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem mem_sumCongrHom_range_of_perm_mapsTo_inl {m n : Type*} [Finite m] [Finite n]
     {σ : Perm (m ⊕ n)} (h : Set.MapsTo σ (Set.range Sum.inl) (Set.range Sum.inl)) :
     σ ∈ (sumCongrHom m n).range := by
@@ -142,14 +143,11 @@ theorem mem_sumCongrHom_range_of_perm_mapsTo_inl {m n : Type*} [Finite m] [Finit
   rw [Perm.sumCongrHom_apply]
   ext (a | b)
   · rw [Equiv.sumCongr_apply, Sum.map_inl, permCongr_apply, Equiv.symm_symm,
-      apply_ofInjective_symm Sum.inl_injective]
-    rw [ofInjective_apply, Subtype.coe_mk, Subtype.coe_mk]
-    dsimp [Set.range]
-    rw [subtypePerm_apply]
+      apply_ofInjective_symm Sum.inl_injective, ofInjective_apply]
+    rfl
   · rw [Equiv.sumCongr_apply, Sum.map_inr, permCongr_apply, Equiv.symm_symm,
       apply_ofInjective_symm Sum.inr_injective, ofInjective_apply]
-    dsimp [Set.range]
-    rw [subtypePerm_apply]
+    rfl
 
 nonrec theorem Disjoint.orderOf {σ τ : Perm α} (hστ : Disjoint σ τ) :
     orderOf (σ * τ) = Nat.lcm (orderOf σ) (orderOf τ) :=
@@ -170,6 +168,7 @@ theorem Disjoint.extendDomain {p : β → Prop} [DecidablePred p] (f : α ≃ Su
   · left
     rw [extendDomain_apply_not_subtype _ _ pb]
 
+set_option backward.isDefEq.respectTransparency false in
 theorem Disjoint.isConj_mul [Finite α] {σ τ π ρ : Perm α} (hc1 : IsConj σ π)
     (hc2 : IsConj τ ρ) (hd1 : Disjoint σ τ) (hd2 : Disjoint π ρ) : IsConj (σ * τ) (π * ρ) := by
   classical
@@ -222,12 +221,6 @@ theorem apply_mem_fixedPoints_iff_mem_of_mem_centralizer {g p : Perm α}
   simp only [Function.mem_fixedPoints_iff]
   rw [← mul_apply, ← hp, mul_apply, EmbeddingLike.apply_eq_iff_eq]
 
-@[deprecated (since := "2025-05-19")]
-alias mem_fixedPoints_iff_apply_mem_of_mem_centralizer :=
-  apply_mem_fixedPoints_iff_mem_of_mem_centralizer
-
-
-
 variable [DecidableEq α]
 
 lemma disjoint_ofSubtype_of_memFixedPoints_self {g : Perm α}
@@ -271,7 +264,7 @@ lemma support_closure_subset_union (S : Set (Perm α)) :
     ∀ a ∈ closure S, (a.support : Set α) ⊆ ⋃ b ∈ S, b.support := by
   apply closure_induction
   · exact fun x hx ↦ Set.subset_iUnion₂_of_subset x hx subset_rfl
-  · simp only [support_one, Finset.coe_empty, Set.empty_subset]
+  · simp
   · intro a b ha hb hc hd
     refine (Finset.coe_subset.mpr (support_mul_le a b)).trans ?_
     rw [Finset.sup_eq_union, Finset.coe_union, Set.union_subset_iff]
@@ -294,6 +287,18 @@ lemma disjoint_closure_of_disjoint_support {S T : Set (Perm α)}
   apply disjoint_of_disjoint_support
   apply disjoint_support_closure_of_disjoint_support
   exact h
+
+theorem mem_range_ofSubtype_iff {p : α → Prop} [DecidablePred p] {g : Perm α} :
+    g ∈ (ofSubtype : Perm (Subtype p) →* Perm α).range ↔ (g.support : Set α) ⊆ setOf p := by
+  constructor
+  · rintro ⟨k, rfl⟩ x
+    simp only [Finset.mem_coe, mem_support_ofSubtype, Set.mem_setOf_eq]
+    exact fun ⟨hx, _⟩ ↦ hx
+  · intro hg
+    refine ⟨g.subtypePerm fun x ↦ ?_, ofSubtype_subtypePerm _ fun x hx ↦ hg (mem_support.mpr hx)⟩
+    by_cases hx : g x = x
+    · rw [hx]
+    · refine iff_of_true (hg ?_) (hg ?_) <;> simpa
 
 end Fintype
 
