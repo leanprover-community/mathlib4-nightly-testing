@@ -45,7 +45,13 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
+<<<<<<< HEAD
    "rev": "86da25c62d1dcb2d4f4b535653a3f04a295340b1",
+||||||| ed0d70fdcd
+   "rev": "b5b9e2bb45ce91e4bc44eaa738c3a8910404ab82",
+=======
+   "rev": "24fa6b3599743c23e6debd53d5fd09ebfa587d29",
+>>>>>>> upstream/master
    "name": "aesop",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
@@ -65,7 +71,13 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
+<<<<<<< HEAD
    "rev": "44bdf79647d66b4d5c21af02d3e3b9658d60bec8",
+||||||| ed0d70fdcd
+   "rev": "9c6e03c0a86237b199ebe6b1fbac18078a767ade",
+=======
+   "rev": "dfb6d7e9949d1bb0706f651e330176bc66fc6f3d",
+>>>>>>> upstream/master
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",

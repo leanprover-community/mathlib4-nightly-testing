@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
 set -euxo pipefail
 
+<<<<<<< HEAD
 BENCH="scripts/bench"
 
 "$BENCH/repeatedly.py" -n 5 -- \
   "$BENCH/measure.py" --append -t open-mathlib -d -- \
   lake lean Mathlib.lean -- --setup=.lake/build/ir/Mathlib.setup.json
+||||||| ed0d70fdcd
+BENCH="scripts/bench"
+
+"$BENCH/repeatedly.py" -n 5 -- \
+  "$BENCH/measure.py" --append -t open-mathlib -d -- \
+  lake lean Mathlib.lean
+=======
+"$BENCH_DIR/repeatedly.py" -n 5 -o "$OUTPUT_FILE" -- \
+  "$BENCH_DIR/measure.py" -t open-mathlib -d -a -o "$OUTPUT_FILE" -- \
+  lake lean Mathlib.lean
+>>>>>>> upstream/master
