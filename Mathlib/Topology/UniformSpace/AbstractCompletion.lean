@@ -380,12 +380,8 @@ end T0Space
 variable {f : α → β → γ}
 variable [CompleteSpace γ] (f)
 
-<<<<<<< HEAD
 set_option backward.isDefEq.respectTransparency false in
-||||||| ed0d70fdcd
-=======
 @[fun_prop]
->>>>>>> upstream/master
 theorem uniformContinuous_extension₂ : UniformContinuous₂ (pkg.extend₂ pkg' f) := by
   rw [uniformContinuous₂_def, AbstractCompletion.extend₂, uncurry_curry]
   apply uniformContinuous_extend

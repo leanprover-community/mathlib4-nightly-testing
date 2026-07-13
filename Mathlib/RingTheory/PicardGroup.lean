@@ -628,15 +628,7 @@ namespace Module.Invertible
 
 variable [Module.Invertible R M]
 
-<<<<<<< HEAD
 set_option backward.isDefEq.respectTransparency.types false in
-set_option backward.defeqAttrib.useBackward true in
--- TODO: generalize to CommSemiring by generalizing `CommRing.Pic.instSubsingletonOfIsLocalRing`
-||||||| ed0d70fdcd
-set_option backward.defeqAttrib.useBackward true in
--- TODO: generalize to CommSemiring by generalizing `CommRing.Pic.instSubsingletonOfIsLocalRing`
-=======
->>>>>>> upstream/master
 theorem tensorProductComm_eq_refl : TensorProduct.comm R M M = .refl .. := by
   let f (P : Ideal R) [P.IsMaximal] := LocalizedModule.mkLinearMap P.primeCompl M
   let ff (P : Ideal R) [P.IsMaximal] := TensorProduct.map (f P) (f P)
