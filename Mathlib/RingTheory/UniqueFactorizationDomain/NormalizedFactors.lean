@@ -373,18 +373,11 @@ open Multiset Associates
 variable [CommMonoidWithZero α] [UniqueFactorizationMonoid α]
 
 open scoped Classical in
-<<<<<<< HEAD
-/-- Noncomputably defines a `normalizationMonoid` structure on a `UniqueFactorizationMonoid`. -/
-@[instance_reducible]
-protected noncomputable def normalizationMonoid : NormalizationMonoid α :=
-  normalizationMonoidOfMonoidHomRightInverse
-=======
 /-- Noncomputably defines a `StrongNormalizationMonoid` structure on a `UniqueFactorizationMonoid`.
 -/
-@[implicit_reducible]
+@[instance_reducible]
 protected noncomputable def strongNormalizationMonoid : StrongNormalizationMonoid α :=
   strongNormalizationMonoidOfMonoidHomRightInverse
->>>>>>> upstream/master
     { toFun := fun a : Associates α =>
         if a = 0 then 0
         else

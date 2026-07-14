@@ -799,11 +799,8 @@ theorem destruct_join (S : WSeq (WSeq α)) :
       case nil | cons => simp
       case think S => exact Or.inr ⟨S, by simp⟩
 
-<<<<<<< HEAD
 set_option backward.isDefEq.respectTransparency false in
 set_option linter.flexible false in -- TODO: fix non-terminal simp
-=======
->>>>>>> upstream/master
 @[simp]
 theorem map_join (f : α → β) (S) : map f (join S) = join (map (map f) S) := by
   apply

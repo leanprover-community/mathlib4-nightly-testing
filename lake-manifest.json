@@ -5,11 +5,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-<<<<<<< HEAD
    "rev": "233010c4b06379a0ec1d42fe812645d8bf357255",
-=======
-   "rev": "e12c1910fe855cbfc38803cd4e55543906d5fa62",
->>>>>>> upstream/master
    "name": "plausible",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
@@ -29,7 +25,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "7e9612bf0b9ee66db3cb5b9988a35afc706f5a12",
+   "rev": "41f407a8e85b0fdc00910633a8f14754139b63f4",
    "name": "importGraph",
    "manifestFile": "lake-manifest.json",
    "inputRev": "main",
@@ -39,11 +35,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-<<<<<<< HEAD
    "rev": "b312c33e8df8a2c453e9557a29b17ed24f31d1c4",
-=======
-   "rev": "d662197a9ca6f411c5738c45ec0192c786462f5d",
->>>>>>> upstream/master
    "name": "proofwidgets",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
@@ -53,11 +45,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-<<<<<<< HEAD
    "rev": "86da25c62d1dcb2d4f4b535653a3f04a295340b1",
-=======
-   "rev": "a7dbf0c63b694e47f425f3dcddbc0e178bb432d3",
->>>>>>> upstream/master
    "name": "aesop",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
@@ -67,11 +55,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-<<<<<<< HEAD
    "rev": "e00cb0b633f502b579f676782d5516f1f508173a",
-=======
-   "rev": "38d591e778f100aec9762bb582f9c7f55f50e9dc",
->>>>>>> upstream/master
    "name": "Qq",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
@@ -81,11 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-<<<<<<< HEAD
    "rev": "44bdf79647d66b4d5c21af02d3e3b9658d60bec8",
-=======
-   "rev": "023ce7d62a0531e22a5331e20b587817a80d49ff",
->>>>>>> upstream/master
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "nightly-testing",
@@ -95,10 +75,10 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover",
-   "rev": "88679d088c9720c27ebdf2ba4dafe17341747f94",
+   "rev": "406ebb8c8e2f7e852a1b47764b42494022ce652c",
    "name": "Cli",
    "manifestFile": "lake-manifest.json",
-   "inputRev": "v4.32.0",
+   "inputRev": "v4.32.0-rc1",
    "inherited": true,
    "configFile": "lakefile.toml"}],
  "name": "mathlib",

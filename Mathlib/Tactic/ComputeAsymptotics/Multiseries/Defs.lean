@@ -132,9 +132,6 @@ def corec {β : Type*} {basis_hd} {basis_tl}
     Multiseries basis_hd basis_tl :=
   Seq.corec (fun a => (f a).map (fun (exp, coef, next) => ((exp, coef), next))) b
 
-<<<<<<< HEAD
-set_option backward.isDefEq.respectTransparency false in
-=======
 /-- An operation on multiseries called a "friend" if any `n`-prefix of its output depends only on
 the `n`-prefix of the input. Such operations can be used in the tail of (non-primitive) corecursive
 definitions. -/
@@ -154,7 +151,7 @@ theorem FriendlyOperationClass.mk' {basis_hd basis_tl} {γ : Type*}
   suffices Seq.FriendlyOperationClass op by constructor
   exact ⟨h⟩
 
->>>>>>> upstream/master
+set_option backward.isDefEq.respectTransparency false in
 private lemma destruct_eq_destruct_map {basis_hd basis_tl}
     (s : Stream'.Seq (ℝ × MultiseriesExpansion basis_tl)) :
     s.destruct = (Multiseries.destruct (basis_hd := basis_hd) s).map

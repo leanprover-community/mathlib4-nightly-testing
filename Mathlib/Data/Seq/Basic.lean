@@ -37,11 +37,8 @@ theorem length'_of_not_terminates {s : Seq α} (h : ¬ s.Terminates) :
     s.length' = ⊤ := by
   simp [length', h]
 
-<<<<<<< HEAD
 set_option backward.isDefEq.respectTransparency false in
 set_option linter.flexible false in -- simp followed by exact rfl
-=======
->>>>>>> upstream/master
 @[simp]
 theorem length_nil : length (nil : Seq α) terminates_nil = 0 := by simp [length, terminatedAt_nil]
 
@@ -1048,11 +1045,8 @@ set_option backward.isDefEq.respectTransparency false in
 theorem map_join (f : α → β) : ∀ S, map f (join S) = join (map (map f) S)
   | ((a, s), S) => by cases s <;> simp [map]
 
-<<<<<<< HEAD
 set_option backward.isDefEq.respectTransparency false in
 set_option linter.flexible false in -- TODO: fix non-terminal simp
-=======
->>>>>>> upstream/master
 @[simp]
 theorem join_join (SS : Seq (Seq1 (Seq1 α))) :
     Seq.join (Seq.join SS) = Seq.join (Seq.map join SS) := by

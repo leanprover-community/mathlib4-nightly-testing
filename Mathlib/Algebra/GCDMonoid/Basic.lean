@@ -1058,13 +1058,8 @@ private theorem map_mk_unit_aux {f : Associates α →* α}
 variable [IsCancelMulZero α]
 
 /-- Define `NormalizationMonoid` on a structure from a `MonoidHom` inverse to `Associates.mk`. -/
-<<<<<<< HEAD
 @[instance_reducible]
-def normalizationMonoidOfMonoidHomRightInverse [DecidableEq α] (f : Associates α →* α)
-=======
-@[implicit_reducible]
 def strongNormalizationMonoidOfMonoidHomRightInverse [DecidableEq α] (f : Associates α →* α)
->>>>>>> upstream/master
     (hinv : Function.RightInverse f Associates.mk) :
     StrongNormalizationMonoid α where
   normUnit a :=
