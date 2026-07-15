@@ -13,6 +13,7 @@ public import Mathlib.FieldTheory.IsAlgClosed.Spectrum
 
 /-!
 # Schur's lemma
+
 We first prove the part of Schur's Lemma that holds in any preadditive category with kernels,
 that any nonzero morphism between simple objects
 is an isomorphism.
@@ -135,7 +136,7 @@ theorem endomorphism_simple_eq_smul_id {X : C} [Simple X] [FiniteDimensional �
 /-- Endomorphisms of a simple object form a field if they are finite dimensional.
 This can't be an instance as `𝕜` would be undetermined.
 -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def fieldEndOfFiniteDimensional (X : C) [Simple X] [I : FiniteDimensional 𝕜 (X ⟶ X)] :
     Field (End X) := by
   classical exact

@@ -476,7 +476,7 @@ instance : MulArchimedean NNRat := Nonneg.instMulArchimedean
 
 /-- A linear ordered archimedean ring is a floor ring. This is not an `instance` because in some
 cases we have a computable `floor` function. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def Archimedean.floorRing (R) [Ring R] [LinearOrder R] [IsStrictOrderedRing R]
     [Archimedean R] : FloorRing R :=
   .ofBounded _ exists_nat_ge
@@ -510,8 +510,8 @@ instance WithZero.instMulArchimedean (M) [CommMonoid M] [PartialOrder M] [MulArc
   constructor
   intro x y hxy
   cases y with
-  | zero => exact absurd hxy (zero_le _).not_gt
+  | zero => cases hxy.pos.false
   | coe y =>
     cases x with
-    | zero => refine ⟨0, zero_le _⟩
+    | zero => refine ⟨0, zero_le⟩
     | coe x => simpa [← WithZero.coe_pow] using (MulArchimedean.arch x (by simpa using hxy))

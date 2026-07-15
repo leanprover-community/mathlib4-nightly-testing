@@ -190,7 +190,7 @@ instance instInfSet : InfSet (L.Substructure M) :=
           (by
             rintro _ ⟨t, rfl⟩
             by_cases h : t ∈ s
-            · simpa [h] using t.fun_mem f
+            · simpa [h] using! t.fun_mem f
             · simp [h]) }⟩
 
 @[simp, norm_cast]
@@ -686,6 +686,7 @@ namespace LHom
 
 variable {L' : Language} [L'.Structure M]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Reduces the language of a substructure along a language hom. -/
 def substructureReduct (φ : L →ᴸ L') [φ.IsExpansionOn M] :
     L'.Substructure M ↪o L.Substructure M where
@@ -783,6 +784,12 @@ theorem subtype_comp_codRestrict (f : M →[L] N) (p : L.Substructure N) (h : �
     p.subtype.toHom.comp (codRestrict p f h) = f :=
   ext fun _ => rfl
 
+@[simp]
+theorem domRestrict_comp_codRestrict (g : N →[L] P) (f : M →[L] N) (p : L.Substructure N)
+    (h : ∀ b, f b ∈ p) :
+    (g.domRestrict p).comp (f.codRestrict p h) = g.comp f :=
+  rfl
+
 /-- The range of a first-order hom `f : M → N` is a submodule of `N`.
 See Note [range copy pattern]. -/
 def range (f : M →[L] N) : L.Substructure N :=
@@ -860,6 +867,7 @@ def domRestrict (f : M ↪[L] N) (p : L.Substructure M) : p ↪[L] N :=
 theorem domRestrict_apply (f : M ↪[L] N) (p : L.Substructure M) (x : p) : f.domRestrict p x = f x :=
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A first-order embedding `f : M → N` whose values lie in a substructure `p ⊆ N` can be restricted
 to an embedding `M → p`. -/
 def codRestrict (p : L.Substructure N) (f : M ↪[L] N) (h : ∀ c, f c ∈ p) : M ↪[L] p where

@@ -98,6 +98,9 @@ theorem comp_ι_sq_zero (g : ExteriorAlgebra R M →ₐ[R] A) (m : M) : g (ι R 
 
 variable (R)
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given a linear map `f : M →ₗ[R] A` into an `R`-algebra `A`, which satisfies the condition:
 `cond : ∀ m : M, f m * f m = 0`, this is the canonical lift of `f` to a morphism of `R`-algebras
 from `ExteriorAlgebra R M` to `A`.
@@ -254,7 +257,6 @@ theorem ι_mul_prod_list {n : ℕ} (f : Fin n → M) (i : Fin n) :
     · rw [h, ι_sq_zero, zero_mul]
     · replace hn :=
         congr_arg (ι R (f 0) * ·) <| hn (fun i => f <| Fin.succ i) (i.pred h)
-      simp only at hn
       rw [Fin.succ_pred, ← mul_assoc, mul_zero] at hn
       refine (eq_zero_iff_eq_zero_of_add_eq_zero ?_).mp hn
       rw [← add_mul, ι_add_mul_swap, zero_mul]
@@ -285,7 +287,7 @@ def ιMulti (n : ℕ) : M [⋀^Fin n]→ₗ[R] ExteriorAlgebra R M :=
           rw [hfxy, ← Fin.succ_pred y (ne_of_lt h).symm]
           exact ι_mul_prod_list (f ∘ Fin.succ) _
         -- ignore the left-most term and induct on the remaining ones, decrementing indices
-        · convert mul_zero (ι R (f 0))
+        · convert! mul_zero (ι R (f 0))
           refine
             hn
               (fun i => f <| Fin.succ i) (x.pred hx)

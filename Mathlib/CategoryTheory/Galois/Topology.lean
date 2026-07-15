@@ -34,7 +34,7 @@ namespace CategoryTheory
 
 namespace PreGaloisCategory
 
-open Functor
+open CategoryTheory.Functor
 
 variable {C : Type u₁} [Category.{u₂} C] (F : C ⥤ FintypeCat.{w})
 
@@ -47,6 +47,7 @@ def autEmbedding : Aut F →* ∀ X, Aut (F.obj X) :=
 lemma autEmbedding_apply (σ : Aut F) (X : C) : autEmbedding F σ X = σ.app X :=
   rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma autEmbedding_injective : Function.Injective (autEmbedding F) := by
   intro σ τ h
   ext X x
@@ -65,7 +66,7 @@ scoped instance (X : C) : TopologicalSpace (Aut (F.obj X)) := ⊥
 /-- We give `F.obj X  ⟶ F.obj Y` the product topology. -/
 @[local simp]
 scoped instance {X Y : C} : TopologicalSpace (F.obj X ⟶ F.obj Y) :=
-  .coinduced (fun f ↦ ObjectProperty.homMk (TypeCat.ofHom f)) inferInstance
+  .coinduced (fun f ↦ ObjectProperty.homMk (↾f)) inferInstance
 
 scoped instance {X Y : C} : DiscreteTopology (F.obj X ⟶ F.obj Y) :=
   ⟨by simp [DiscreteTopology.eq_bot]⟩
@@ -86,6 +87,7 @@ instance : TopologicalSpace (Aut F) :=
   · use NatIso.ofComponents a (fun {X Y} f ↦ h ⟨X, Y, f⟩)
     rfl-/
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The image of `Aut F` in `∀ X, Aut (F.obj X)` are precisely the compatible families of
 automorphisms. -/
 lemma autEmbedding_range :

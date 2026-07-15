@@ -112,6 +112,7 @@ def retractionOfSectionOfKerSqZero : S ⊗[P] Ω[P⁄R] →ₗ[P] RingHom.ker (a
     (IsScalarTower.toAlgHom R P S) hf' g hg).liftKaehlerDifferential
   (f.liftBaseChange S).restrictScalars P
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma retractionOfSectionOfKerSqZero_tmul_D (s : S) (t : P) :
     retractionOfSectionOfKerSqZero g hf' hg (s ⊗ₜ .D _ _ t) =
@@ -370,6 +371,7 @@ def retractionKerCotangentToTensorEquivSection :
 
 namespace Algebra.Extension
 
+set_option backward.defeqAttrib.useBackward true in
 lemma CotangentSpace.map_toInfinitesimal_bijective (P : Extension.{u} R S) :
     Function.Bijective (CotangentSpace.map P.toInfinitesimal) := by
   suffices CotangentSpace.map P.toInfinitesimal =

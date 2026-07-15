@@ -59,6 +59,7 @@ noncomputable def toClosedBall (r : ℝ) :
   apply restrictMonoidHom
   tauto
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma toClosedBall_eval_within {r : ℝ} {z : E} (f : locallyFinsupp E ℤ)
     (ha : z ∈ closedBall 0 |r|) :
@@ -66,11 +67,13 @@ lemma toClosedBall_eval_within {r : ℝ} {z : E} (f : locallyFinsupp E ℤ)
   unfold toClosedBall
   simp_all [restrict_apply]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma toClosedBall_divisor {r : ℝ} {f : ℂ → ℂ} (h : Meromorphic f) :
     (divisor f (closedBall 0 |r|)) = (locallyFinsuppWithin.toClosedBall r) (divisor f univ) := by
   simp_all [locallyFinsuppWithin.toClosedBall]
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma toClosedBall_support_subset_closedBall {E : Type*} [NormedAddCommGroup E] {r : ℝ}
     (f : locallyFinsupp E ℤ) :
     (toClosedBall r f).support ⊆ closedBall 0 |r| := by
@@ -124,6 +127,7 @@ Evaluation of the logarithmic counting function at zero yields zero.
     logCounting D 0 = 0 := by
   simp [logCounting]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The logarithmic counting function of a singleton indicator is asymptotically equal to
 `log · - log ‖e‖`.
@@ -148,6 +152,7 @@ The logarithmic counting function of a singleton indicator is asymptotically equ
 ### Elementary Properties of Logarithmic Counting Functions
 -/
 
+set_option backward.isDefEq.respectTransparency.types false in
 /--
 The logarithmic counting function is even.
 -/
@@ -278,7 +283,7 @@ noncomputable def logCounting : ℝ → ℝ := by
 Relation between `ValueDistribution.logCounting` and `locallyFinsuppWithin.logCounting`.
 -/
 lemma _root_.locallyFinsuppWithin.logCounting_divisor {f : ℂ → ℂ} :
-    locallyFinsuppWithin.logCounting (divisor f ⊤) = logCounting f 0 - logCounting f ⊤ := by
+    locallyFinsuppWithin.logCounting (divisor f univ) = logCounting f 0 - logCounting f ⊤ := by
   simp [logCounting, ← locallyFinsuppWithin.logCounting.map_sub]
 
 /--
@@ -425,7 +430,7 @@ counting function for the poles.
 -/
 @[simp] theorem logCounting_sub_const (hf : Meromorphic f) :
     logCounting (f - fun _ ↦ a₀) ⊤ = logCounting f ⊤ := by
-  simpa [sub_eq_add_neg] using logCounting_add_const hf
+  simpa [sub_eq_add_neg] using! logCounting_add_const hf
 
 /-!
 ## Behaviour under Arithmetic Operations
@@ -587,11 +592,11 @@ This is a reformulation of Jensen's formula of complex analysis. See
 -/
 theorem Function.locallyFinsuppWithin.logCounting_divisor_eq_circleAverage_sub_const {R : ℝ}
     {f : ℂ → ℂ} (h : Meromorphic f) (hR : R ≠ 0) :
-    logCounting (divisor f ⊤) R =
+    logCounting (divisor f univ) R =
       circleAverage (log ‖f ·‖) 0 R - log ‖meromorphicTrailingCoeffAt f 0‖ := by
   have h₁f : MeromorphicOn f (closedBall 0 |R|) := by tauto
-  simp only [MeromorphicOn.circleAverage_log_norm hR h₁f, logCounting, top_eq_univ,
-    AddMonoidHom.coe_mk, ZeroHom.coe_mk, zero_sub, norm_neg, add_sub_cancel_right]
+  simp only [MeromorphicOn.circleAverage_log_norm hR h₁f, logCounting, AddMonoidHom.coe_mk,
+    ZeroHom.coe_mk, zero_sub, norm_neg, add_sub_cancel_right]
   congr 1
   · simp_all
   · rw [divisor_apply, divisor_apply]

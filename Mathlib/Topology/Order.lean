@@ -64,7 +64,7 @@ inductive GenerateOpen (g : Set (Set α)) : Set α → Prop
   | sUnion : ∀ S : Set (Set α), (∀ s ∈ S, GenerateOpen g s) → GenerateOpen g (⋃₀ S)
 
 /-- The smallest topological space containing the collection `g` of basic sets -/
-@[implicit_reducible]
+@[instance_reducible]
 def generateFrom (g : Set (Set α)) : TopologicalSpace α where
   IsOpen := GenerateOpen g
   isOpen_univ := GenerateOpen.univ
@@ -95,7 +95,7 @@ lemma tendsto_nhds_generateFrom_iff {β : Type*} {m : α → β} {f : Filter α}
     tendsto_principal]; rfl
 
 /-- Construct a topology on α given the filter of neighborhoods of each point of α. -/
-@[implicit_reducible]
+@[instance_reducible]
 protected def mkOfNhds (n : α → Filter α) : TopologicalSpace α where
   IsOpen s := ∀ a ∈ s, s ∈ n a
   isOpen_univ _ _ := univ_mem
@@ -157,7 +157,7 @@ theorem le_generateFrom_iff_subset_isOpen {g : Set (Set α)} {t : TopologicalSpa
 
 /-- If `s` equals the collection of open sets in the topology it generates, then `s` defines a
 topology. -/
-@[implicit_reducible]
+@[instance_reducible]
 protected def mkOfClosure (s : Set (Set α)) (hs : { u | GenerateOpen s u } = s) :
     TopologicalSpace α where
   IsOpen u := u ∈ s
@@ -292,6 +292,7 @@ theorem closure_indiscrete [IndiscreteTopology α] {s : Set α} (h : s.Nonempty)
     closure s = Set.univ := Dense.closure_eq (dense_indiscrete h)
 
 /-- Every function to the indiscrete topology is continuous -/
+@[fun_prop]
 theorem continuous_of_indiscreteTopology {β} [TopologicalSpace β] [IndiscreteTopology β]
     {f : α → β} : Continuous f where
   isOpen_preimage := by simp [IndiscreteTopology.isOpen_iff]
@@ -354,11 +355,6 @@ theorem discreteTopology_iff_forall_isOpen [TopologicalSpace α] :
     DiscreteTopology α ↔ ∀ s : Set α, IsOpen s :=
   ⟨@isOpen_discrete _ _, fun h ↦ ⟨eq_bot_of_singletons_open fun _ ↦ h _⟩⟩
 
-@[deprecated discreteTopology_iff_forall_isOpen (since := "2025-10-10")]
-theorem forall_open_iff_discrete {X : Type*} [TopologicalSpace X] :
-    (∀ s : Set X, IsOpen s) ↔ DiscreteTopology X :=
-  discreteTopology_iff_forall_isOpen.symm
-
 theorem discreteTopology_iff_forall_isClosed [TopologicalSpace α] :
     DiscreteTopology α ↔ ∀ s : Set α, IsClosed s :=
   discreteTopology_iff_forall_isOpen.trans <| compl_surjective.forall.trans <| forall_congr' fun _ ↦
@@ -367,11 +363,6 @@ theorem discreteTopology_iff_forall_isClosed [TopologicalSpace α] :
 theorem discreteTopology_iff_isOpen_singleton [TopologicalSpace α] :
     DiscreteTopology α ↔ (∀ a : α, IsOpen ({a} : Set α)) :=
   ⟨fun _ _ ↦ isOpen_discrete _, fun h ↦ ⟨eq_bot_of_singletons_open h⟩⟩
-
-@[deprecated discreteTopology_iff_isOpen_singleton (since := "2025-10-10")]
-theorem singletons_open_iff_discrete {X : Type*} [TopologicalSpace X] :
-    (∀ a : X, IsOpen ({a} : Set X)) ↔ DiscreteTopology X :=
-  discreteTopology_iff_isOpen_singleton.symm
 
 theorem DiscreteTopology.of_finite_of_isClosed_singleton [TopologicalSpace α] [Finite α]
     (h : ∀ a : α, IsClosed {a}) : DiscreteTopology α :=
@@ -499,6 +490,8 @@ theorem induced_id [t : TopologicalSpace α] : t.induced id = t :=
   TopologicalSpace.ext <|
     funext fun s => propext <| ⟨fun ⟨_, hs, h⟩ => h ▸ hs, fun hs => ⟨s, hs, rfl⟩⟩
 
+theorem induced_fun_id {t : TopologicalSpace α} : t.induced (·) = t := induced_id
+
 theorem induced_compose {tγ : TopologicalSpace γ} {f : α → β} {g : β → γ} :
     (tγ.induced g).induced f = tγ.induced (g ∘ f) :=
   TopologicalSpace.ext <|
@@ -526,6 +519,10 @@ theorem Equiv.coinduced_symm {α β : Type*} (e : α ≃ β) :
     TopologicalSpace.coinduced e.symm = TopologicalSpace.induced e :=
   e.symm.induced_symm.symm
 
+lemma WithTopology.topology_eq_induced {X : Type*} (t : TopologicalSpace X) :
+    instTopologicalSpace X t = .induced ofTopology t :=
+  congrFun (WithTopology.equiv X t).coinduced_symm t
+
 end GaloisConnection
 
 -- constructions using the complete lattice structure
@@ -552,6 +549,9 @@ instance (priority := 100) Subsingleton.discreteTopology [t : TopologicalSpace �
 instance [TopologicalSpace α] [Subsingleton α] : IndiscreteTopology α where
   eq_top := Subsingleton.elim _ _
 
+variable (α) in
+lemma Nontrivial.of_nontrivialTopology [TopologicalSpace α] [h : NontrivialTopology α] :
+    Nontrivial α := by contrapose! h; infer_instance
 
 instance : TopologicalSpace Empty := ⊥
 instance : DiscreteTopology Empty := ⟨rfl⟩
@@ -576,6 +576,23 @@ instance : DiscreteTopology ℤ := ⟨rfl⟩
 
 instance {n} : TopologicalSpace (Fin n) := ⊥
 instance {n} : DiscreteTopology (Fin n) := ⟨rfl⟩
+
+/-- A copy of a type equipped with the discrete topology. -/
+abbrev WithDiscreteTopology (α : Type*) := WithTopology α ⊥
+
+instance : DiscreteTopology (WithDiscreteTopology α) where
+  eq_bot := coinduced_bot
+
+instance : IndiscreteTopology (WithTopology α ⊤) where
+  eq_top := by rw [WithTopology.topology_eq_induced, induced_top]
+
+protected theorem WithTopology.nontrivialTopology_iff {t : TopologicalSpace α} :
+    NontrivialTopology (WithTopology α t) ↔ t ≠ ⊤ := by
+  simp_rw [nontrivialTopology_iff, topology_eq_induced, ne_eq, not_iff_not]
+  constructor
+  · intro h
+    simpa [induced_compose, comp_def, induced_fun_id] using congr(induced (toTopology t) $h)
+  · simp +contextual
 
 lemma Nat.cast_continuous {R : Type*} [NatCast R] [TopologicalSpace R] :
     Continuous (Nat.cast (R := R)) :=
@@ -630,7 +647,7 @@ lemma generateFrom_insert_empty {α : Type*} {s : Set (Set α)} :
 
 /-- This construction is left adjoint to the operation sending a topology on `α`
   to its neighborhood filter at a fixed point `a : α`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def nhdsAdjoint (a : α) (f : Filter α) : TopologicalSpace α where
   IsOpen s := a ∈ s → s ∈ f
   isOpen_univ _ := univ_mem
