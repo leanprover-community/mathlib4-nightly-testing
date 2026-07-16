@@ -140,7 +140,6 @@ theorem continuous_infEDist : Continuous fun x => infEDist x s :=
   continuous_of_le_add_edist 1 (by simp) <| by
     simp only [one_mul, infEDist_le_infEDist_add_edist, forall₂_true_iff]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The edist to a set and to its closure coincide -/
 theorem infEDist_closure : infEDist x (closure s) = infEDist x s := by
   refine le_antisymm (infEDist_anti subset_closure) ?_
@@ -234,7 +233,6 @@ theorem _root_.IsCompact.exists_infEDist_eq_edist (hs : IsCompact s) (hne : s.No
   obtain ⟨y, ys, hy⟩ := hs.exists_isMinOn hne A.continuousOn
   exact ⟨y, ys, le_antisymm (infEDist_le_edist_of_mem ys) (by rwa [le_infEDist])⟩
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exists_pos_forall_lt_edist (hs : IsCompact s) (ht : IsClosed t) (hst : Disjoint s t) :
     ∃ r : ℝ≥0, 0 < r ∧ ∀ x ∈ s, ∀ y ∈ t, (r : ℝ≥0∞) < edist x y := by
   rcases s.eq_empty_or_nonempty with (rfl | hne)
@@ -306,7 +304,6 @@ theorem exists_edist_lt_of_hausdorffEDist_lt {r : ℝ≥0∞} (h : x ∈ s) (H :
       infEDist x t ≤ hausdorffEDist s t := infEDist_le_hausdorffEDist_of_mem h
       _ < r := H
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The distance from `x` to `s` or `t` is controlled in terms of the Hausdorff distance
 between `s` and `t`. -/
 theorem infEDist_le_infEDist_add_hausdorffEDist :
@@ -365,8 +362,8 @@ theorem hausdorffEDist_triangle : hausdorffEDist s u ≤ hausdorffEDist s t + ha
 /-- Two sets are at zero Hausdorff edistance if and only if they have the same closure. -/
 theorem hausdorffEDist_zero_iff_closure_eq_closure :
     hausdorffEDist s t = 0 ↔ closure s = closure t := by
-  simp only [hausdorffEDist_def, ENNReal.max_eq_zero_iff, ENNReal.iSup_eq_zero, ← subset_def,
-    ← mem_closure_iff_infEDist_zero, subset_antisymm_iff, isClosed_closure.closure_subset_iff]
+  simp [hausdorffEDist_def, ← subset_def, ← mem_closure_iff_infEDist_zero,
+    subset_antisymm_iff, isClosed_closure.closure_subset_iff]
 
 /-- The Hausdorff edistance between a set and its closure vanishes. -/
 @[simp]
@@ -434,7 +431,7 @@ theorem hausdorffEDist_iUnion_le {ι : Sort*} {s t : ι → Set α} :
 theorem hausdorffEDist_union_le {s₁ s₂ t₁ t₂ : Set α} :
     hausdorffEDist (s₁ ∪ s₂) (t₁ ∪ t₂) ≤ max (hausdorffEDist s₁ t₁) (hausdorffEDist s₂ t₂) := by
   simp_rw [union_eq_iUnion, sup_eq_iSup]
-  convert hausdorffEDist_iUnion_le with (_ | _)
+  convert! hausdorffEDist_iUnion_le with (_ | _)
 
 theorem hausdorffEDist_prod_le {s₁ t₁ : Set α} {s₂ t₂ : Set β} :
     hausdorffEDist (s₁ ×ˢ s₂) (t₁ ×ˢ t₂) ≤ max (hausdorffEDist s₁ t₁) (hausdorffEDist s₂ t₂) := by

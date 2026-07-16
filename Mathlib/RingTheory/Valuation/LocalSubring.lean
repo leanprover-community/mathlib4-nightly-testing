@@ -91,6 +91,7 @@ lemma ValuationSubring.isMax_toLocalSubring (R : ValuationSubring K) :
   have : x' = x := by simpa [Subtype.ext_iff, inv_mul_eq_iff_eq_mul₀ hx0] using hx'
   exact h' (this ▸ x'.2)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[stacks 00IB]
 lemma LocalSubring.exists_valuationRing_of_isMax {R : LocalSubring K} (hR : IsMax R) :
     ∃ R' : ValuationSubring K, R'.toLocalSubring = R := by
@@ -171,6 +172,7 @@ open Polynomial Algebra in
   exact ⟨V, fun r hr ↦ hV.1 (B.algebraMap_mem ⟨r, hr⟩),
     (V.inv_mem_nonunits_iff.mp <| hV.2 ⟨_, Ideal.subset_span rfl, rfl⟩).resolve_left hx0⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 open Polynomial Algebra in
 @[stacks 090P "part (2)"] lemma LocalSubring.exists_le_valuationSubring_of_isIntegrallyClosedIn
     {x : K} {R : LocalSubring K} (hxR : x ∉ R.toSubring) [IsIntegrallyClosedIn R.toSubring K] :
@@ -223,12 +225,13 @@ lemma iInf_valuationSubring_superset {s : Set K} :
   rw [Subring.integralClosure_subring_le_iff]
   exact Subring.closure_le.symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma bijective_rangeRestrict_comp_of_valuationRing [IsDomain R] [ValuationRing R]
     [IsLocalRing S] [Algebra R K] [IsFractionRing R K]
     (f : R →+* S) (g : S →+* K) (h : g.comp f = algebraMap R K) [IsLocalHom f] :
     Function.Bijective (g.rangeRestrict.comp f) := by
   refine ⟨?_, ?_⟩
-  · exact .of_comp (f := Subtype.val) (by convert (IsFractionRing.injective R K); rw [← h]; rfl)
+  · exact .of_comp (f := Subtype.val) (by convert! (IsFractionRing.injective R K); rw [← h]; rfl)
   · let V : ValuationSubring K :=
       ⟨(algebraMap R K).range, ValuationRing.isInteger_or_isInteger R⟩
     suffices LocalSubring.range g ≤ V.toLocalSubring by
@@ -242,7 +245,7 @@ lemma bijective_rangeRestrict_comp_of_valuationRing [IsDomain R] [ValuationRing 
     suffices IsUnit a from this.map (algebraMap R K).rangeRestrict
     apply IsUnit.of_map f
     apply (IsLocalHom.of_surjective g.rangeRestrict g.rangeRestrict_surjective).1
-    convert ha
+    convert! ha
     simp [← h]
 
 lemma IsLocalRing.exists_factor_valuationRing [IsLocalRing R] (f : R →+* K) :

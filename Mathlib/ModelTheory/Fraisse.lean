@@ -239,14 +239,8 @@ theorem exists_cg_is_age_of (hn : K.Nonempty)
     exact (hp.is_equiv_invariant_of_fg fg _ _ hP2).1 hP1
   choose P hPK hP hFP using fun (N : K) (n : ℕ) => jep N N.2 (F (n + 1)).out (hF' _)
   let G : ℕ → K := @Nat.rec (fun _ => K) ⟨(F 0).out, hF' 0⟩ fun n N => ⟨P N n, hPK N n⟩
-  -- Porting note: was
-  -- let f : ∀ i j, i ≤ j → G i ↪[L] G j := DirectedSystem.natLeRec fun n => (hP _ n).some
-  let f : ∀ (i j : ℕ), i ≤ j → (G i).val ↪[L] (G j).val := by
-    refine DirectedSystem.natLERec (G' := fun i => (G i).val) (L := L) ?_
-    dsimp only [G]
-    exact fun n => (hP _ n).some
-  have : DirectedSystem (fun n ↦ (G n).val) fun i j h ↦ ↑(f i j h) := by
-    dsimp [f, G]; infer_instance
+  let f : ∀ (i j : ℕ), i ≤ j → (G i).val ↪[L] (G j).val :=
+    DirectedSystem.natLERec fun n => (hP _ n).some
   refine ⟨Bundled.of (@DirectLimit L _ _ (fun n ↦ (G n).val) _ f _ _), ?_, ?_⟩
   · exact DirectLimit.cg _ (fun n => (fg _ (G n).2).cg)
   · refine (age_directLimit (fun n ↦ (G n).val) f).trans
@@ -333,6 +327,7 @@ theorem isUltrahomogeneous_iff_IsExtensionPair (M_CG : CG L M) : L.IsUltrahomoge
     ext
     rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem IsUltrahomogeneous.amalgamation_age (h : L.IsUltrahomogeneous M) :
     Amalgamation (L.age M) := by
   rintro N P Q NP NQ ⟨Nfg, ⟨-⟩⟩ ⟨Pfg, ⟨PM⟩⟩ ⟨Qfg, ⟨QM⟩⟩
@@ -410,6 +405,7 @@ end IsFraisseLimit
 
 namespace empty
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Any countable infinite structure in the empty language is a Fraïssé limit of the class of finite
 structures. -/
 theorem isFraisseLimit_of_countable_infinite

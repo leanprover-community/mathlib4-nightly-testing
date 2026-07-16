@@ -210,7 +210,6 @@ theorem thickenedIndicator_zero {δ : ℝ} (δ_pos : 0 < δ) (E : Set α) {x : �
     (x_out : x ∉ thickening δ E) : thickenedIndicator δ_pos E x = 0 := by
   rw [thickenedIndicator_apply, thickenedIndicatorAux_zero δ_pos E x_out, toNNReal_zero]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem indicator_le_thickenedIndicator {δ : ℝ} (δ_pos : 0 < δ) (E : Set α) :
     (E.indicator fun _ => (1 : ℝ≥0)) ≤ thickenedIndicator δ_pos E := by
   intro a
@@ -229,7 +228,7 @@ theorem thickenedIndicator_subset {δ : ℝ} (δ_pos : 0 < δ) {E₁ E₂ : Set 
   (toNNReal_le_toNNReal (by finiteness) (by finiteness)).mpr
     (thickenedIndicatorAux_subset δ subset x)
 
-@[gcongr]
+@[gcongr only]
 lemma thickenedIndicator_mono_infEDist {δ : ℝ} (δ_pos : 0 < δ) {E : Set α} {x y : α}
     (h : infEDist x E ≤ infEDist y E) :
     thickenedIndicator δ_pos E y ≤ thickenedIndicator δ_pos E x := by

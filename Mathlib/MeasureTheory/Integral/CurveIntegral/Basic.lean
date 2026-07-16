@@ -9,7 +9,6 @@ public import Mathlib.Algebra.Order.Field.Pointwise
 public import Mathlib.Analysis.Calculus.ContDiff.Deriv
 public import Mathlib.Analysis.Calculus.Deriv.AffineMap
 public import Mathlib.Analysis.Calculus.Deriv.Shift
-public import Mathlib.Analysis.Normed.Module.Convex
 public import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
 /-!
@@ -204,7 +203,7 @@ theorem curveIntegralFun_symm (ω : E → E →L[𝕜] F) (γ : Path a b) :
   funext <| curveIntegralFun_symm_apply ω γ
 
 protected theorem CurveIntegrable.symm (h : CurveIntegrable ω γ) : CurveIntegrable ω γ.symm := by
-  simpa [CurveIntegrable] using (h.comp_sub_left 1).neg.symm
+  simpa [CurveIntegrable] using! (h.comp_sub_left 1).neg.symm
 
 @[simp]
 theorem curveIntegrable_symm : CurveIntegrable ω γ.symm ↔ CurveIntegrable ω γ :=
@@ -258,13 +257,13 @@ theorem CurveIntegrable.intervalIntegrable_curveIntegralFun_trans_left
     (h : CurveIntegrable ω γab) (γbc : Path b c) :
     IntervalIntegrable (curveIntegralFun ω (γab.trans γbc)) volume 0 (1 / 2) := by
   refine .congr_ae ?_ (curveIntegralFun_trans_aeeq_left _ _ _).symm
-  simpa [ofNat_smul_eq_nsmul] using h.comp_mul_left.smul (2 : 𝕜)
+  simpa [ofNat_smul_eq_nsmul] using! h.comp_mul_left.smul (2 : 𝕜)
 
 theorem CurveIntegrable.intervalIntegrable_curveIntegralFun_trans_right
     (γab : Path a b) (h : CurveIntegrable ω γbc) :
     IntervalIntegrable (curveIntegralFun ω (γab.trans γbc)) volume (1 / 2) 1 := by
   refine .congr_ae ?_ (curveIntegralFun_trans_aeeq_right _ _ _).symm
-  simpa [ofNat_smul_eq_nsmul] using h.comp_sub_right 1 |>.comp_mul_left (c := 2) |>.smul (2 : 𝕜)
+  simpa [ofNat_smul_eq_nsmul] using! h.comp_sub_right 1 |>.comp_mul_left (c := 2) |>.smul (2 : 𝕜)
 
 protected theorem CurveIntegrable.trans (h₁ : CurveIntegrable ω γab) (h₂ : CurveIntegrable ω γbc) :
     CurveIntegrable ω (γab.trans γbc) :=
@@ -287,12 +286,14 @@ theorem curveIntegral_trans (h₁ : CurveIntegrable ω γab) (h₂ : CurveIntegr
   simp only [curveIntegral_def]
   norm_num
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem curveIntegralFun_segment [NormedSpace ℝ E] (ω : E → E →L[𝕜] F) (a b : E)
     {t : ℝ} (ht : t ∈ I) : curveIntegralFun ω (.segment a b) t = ω (lineMap a b t) (b - a) := by
   have := Path.eqOn_extend_segment a b
   simp only [curveIntegralFun_def, this ht, derivWithin_congr this (this ht),
     (hasDerivWithinAt_lineMap ..).derivWithin (uniqueDiffOn_Icc_zero_one t ht)]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem curveIntegrable_segment [NormedSpace ℝ E] :
     CurveIntegrable ω (.segment a b) ↔
       IntervalIntegrable (fun t ↦ ω (lineMap a b t) (b - a)) volume 0 1 := by
@@ -300,6 +301,7 @@ theorem curveIntegrable_segment [NormedSpace ℝ E] :
   rw [uIoc_of_le zero_le_one]
   exact .mono Ioc_subset_Icc_self fun _t ↦ curveIntegralFun_segment ω a b
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem curveIntegral_segment [NormedSpace ℝ E] [NormedSpace ℝ F] (ω : E → E →L[𝕜] F) (a b : E) :
     ∫ᶜ x in .segment a b, ω x = ∫ t in 0..1, ω (lineMap a b t) (b - a) := by
   rw [curveIntegral_def]
@@ -313,6 +315,7 @@ theorem curveIntegral_segment_const [NormedSpace ℝ E] [CompleteSpace F] (ω : 
   letI : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
   simp [curveIntegral_segment]
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `‖ω z‖ ≤ C` at all points of the segment `[a -[ℝ] b]`,
 then the curve integral `∫ᶜ x in .segment a b, ω x` has norm at most `C * ‖b - a‖`. -/
 theorem norm_curveIntegral_segment_le [NormedSpace ℝ E] {C : ℝ} (h : ∀ z ∈ [a -[ℝ] b], ‖ω z‖ ≤ C) :
@@ -356,7 +359,7 @@ theorem curveIntegralFun_add :
 
 protected theorem CurveIntegrable.add (h₁ : CurveIntegrable ω₁ γ) (h₂ : CurveIntegrable ω₂ γ) :
     CurveIntegrable (ω₁ + ω₂) γ := by
-  simpa [CurveIntegrable] using IntervalIntegrable.add h₁ h₂
+  simpa [CurveIntegrable] using! IntervalIntegrable.add h₁ h₂
 
 -- TODO: `to_fun` generates wrong lemma name
 theorem curveIntegral_add (h₁ : CurveIntegrable ω₁ γ) (h₂ : CurveIntegrable ω₂ γ) :
@@ -532,7 +535,7 @@ theorem HasFDerivWithinAt.curveIntegral_segment_source' (hs : Convex ℝ s)
   · rw [curveIntegrable_segment]
     refine ContinuousOn.intervalIntegrable_of_Icc zero_le_one fun t ht ↦ ?_
     refine ((hδ ?_).1.eval_const _).comp AffineMap.lineMap_continuous.continuousWithinAt ?_
-    · refine hsub <| segment_eq_image_lineMap ℝ a b ▸ mem_image_of_mem _ ht
+    · exact hsub <| lineMap_mem_segment ℝ a b ht
     · rw [mapsTo_iff_image_subset, ← segment_eq_image_lineMap]
       exact hs.segment_subset ha hbs
   · rw [curveIntegrable_segment]

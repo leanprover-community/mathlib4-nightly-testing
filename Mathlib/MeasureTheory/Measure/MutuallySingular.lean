@@ -178,7 +178,6 @@ lemma _root_.MeasurableEmbedding.mutuallySingular_map {β : Type*} {_ : Measurab
   · rw [hf.map_apply, hf.injective.preimage_image, hμν.measure_nullSet]
   · rw [hf.map_apply, Set.preimage_compl, hf.injective.preimage_image, hμν.measure_compl_nullSet]
 
-set_option backward.isDefEq.respectTransparency false in
 lemma exists_null_set_measure_lt_of_disjoint (h : Disjoint μ ν) {ε : ℝ≥0} (hε : 0 < ε) :
     ∃ s, μ s = 0 ∧ ν sᶜ ≤ 2 * ε := by
   have h₁ : (μ ⊓ ν) univ = 0 := le_bot_iff.1 (h (inf_le_left (b := ν)) inf_le_right) ▸ rfl
@@ -202,15 +201,14 @@ lemma exists_null_set_measure_lt_of_disjoint (h : Disjoint μ ν) {ε : ℝ≥0}
     exact ENNReal.summable.tsum_le_tsum (fun n ↦ (le_add_left le_rfl).trans (ht₂ n).le)
       ENNReal.summable
 
-set_option backward.isDefEq.respectTransparency false in
 lemma mutuallySingular_of_disjoint (h : Disjoint μ ν) : μ ⟂ₘ ν := by
   have h' (n : ℕ) : ∃ s, μ s = 0 ∧ ν sᶜ ≤ (1 / 2) ^ n := by
-    convert exists_null_set_measure_lt_of_disjoint h (ε := (1 / 2) ^ (n + 1))
-      <| pow_pos (by simp) (n + 1)
+    convert!
+      exists_null_set_measure_lt_of_disjoint h (ε := (1 / 2) ^ (n + 1)) <| pow_pos (by simp) (n + 1)
     conv =>
       -- this tweak is needed due to the known issue of `norm_cast` with numeric fractions
       enter [1, 1]
-      equals ((1:ℝ≥0) / (2:ℝ≥0)) => rfl
+      equals ((1 : ℝ≥0) / (2 : ℝ≥0)) => rfl
     norm_cast
     ring
   choose s hs₂ hs₃ using h'

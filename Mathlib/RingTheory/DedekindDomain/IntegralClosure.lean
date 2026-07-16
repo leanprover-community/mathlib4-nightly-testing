@@ -35,7 +35,7 @@ to add a `(h : ¬IsField A)` assumption whenever this is explicitly needed.
 dedekind domain, dedekind ring
 -/
 
-@[expose] public section
+public section
 
 open Algebra Module
 open scoped nonZeroDivisors Polynomial
@@ -57,6 +57,7 @@ variable [Algebra K L] [Algebra A L] [IsScalarTower A K L]
 variable [Algebra C L] [IsIntegralClosure C A L] [Algebra A C] [IsScalarTower A C L]
 include K L
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `L` is an algebraic extension of `K = Frac(A)` and `L` has no zero smul divisors by `A`,
 then `L` is the localization of the integral closure `C` of `A` in `L` at `A⁰`. -/
 theorem IsIntegralClosure.isLocalization [IsDomain A] [Algebra.IsAlgebraic K L] :
@@ -208,6 +209,8 @@ theorem integralClosure.isNoetherianRing [IsIntegrallyClosed A] [IsNoetherianRin
 
 variable (A K) [IsDomain C]
 
+set_option linter.overlappingInstances false
+
 /-- If `L` is a finite separable extension of `K = Frac(A)`, where `A` is a Dedekind domain,
 the integral closure `C` of `A` in `L` is a Dedekind domain.
 
@@ -218,7 +221,7 @@ theorem IsIntegralClosure.isDedekindDomain [IsDedekindDomain A] : IsDedekindDoma
   have : IsFractionRing C L := IsIntegralClosure.isFractionRing_of_finite_extension A K L C
   have : Algebra.IsIntegral A C := IsIntegralClosure.isIntegral_algebra A L
   { IsIntegralClosure.isNoetherianRing A K L C,
-    Ring.DimensionLEOne.isIntegralClosure A L C,
+    Ring.DimensionLEOne.of_isIntegral A C,
     (isIntegrallyClosed_iff L).mpr fun {x} hx =>
       ⟨IsIntegralClosure.mk' C x (isIntegral_trans (R := A) _ hx),
         IsIntegralClosure.algebraMap_mk' _ _ _⟩ with : IsDedekindDomain C }

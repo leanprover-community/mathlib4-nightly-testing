@@ -9,7 +9,7 @@ public meta import Lean.Elab.Tactic.Simp
 public meta import Lean.Elab.Tactic.Conv.Basic
 public meta import Lean.Elab.Tactic.Rewrite
 public import Mathlib.Init
-public import Lean.Elab.Tactic.Config
+public import Lean.Elab.ConfigEval
 
 /-! ## Dependent rewrite tactic -/
 
@@ -146,6 +146,7 @@ The `Nat` state tracks which occurrence of the pattern we are about to see, 1-in
 The cache stores results of `visit` together with
 - the `Nat` state before the cached call; and
 - the difference in the state resulting from the call.
+
 We store these because even if the cache hits,
 we must update the state as if the call had been made.
 Storing the difference suffices because the state increases monotonically.
@@ -634,10 +635,10 @@ namespace Conv
 open Conv
 
 @[inherit_doc depRewriteSeq]
-syntax (name := depRewrite) "rewrite!" optConfig rwRuleSeq (location)? : conv
+syntax (name := depRewrite) "rewrite!" optConfig rwRuleSeq : conv
 
 @[inherit_doc depRwSeq]
-syntax (name := depRw) "rw!" optConfig rwRuleSeq (location)? : conv
+syntax (name := depRw) "rw!" optConfig rwRuleSeq : conv
 
 /-- Apply `rewrite!` to the goal. -/
 def depRewriteTarget (stx : Syntax) (symm : Bool) (config : DepRewrite.Config := {}) :
@@ -655,28 +656,18 @@ def depRwTarget (stx : Syntax) (symm : Bool) (config : DepRewrite.Config := {}) 
     let r ←  (← getMainGoal).depRewrite (← getLhs) e symm (config := config)
     updateLhs r.eNew r.eqProof
     changeLhs (← withTransparency config.castTransparency
-      (withMainContext <| cleanupCasts (← getMainTarget)))
+      (withMainContext <| cleanupCasts (← getLhs)))
     replaceMainGoal ((← getMainGoal) :: r.mvarIds)
 
 @[tactic depRewrite, inherit_doc depRewriteSeq]
 def evalDepRewriteSeq : Tactic := fun stx => do
   let cfg ← elabDepRewriteConfig stx[1]
-  let loc   := expandOptLocation stx[3]
-  withRWRulesSeq stx[0] stx[2] fun symm term => do
-    withLocation loc
-      (DepRewrite.depRewriteLocalDecl term symm · cfg)
-      (depRewriteTarget term symm cfg)
-      (throwTacticEx `depRewrite · "did not find instance of the pattern in the current goal")
+  withRWRulesSeq stx[0] stx[2] fun symm term => depRewriteTarget term symm cfg
 
 @[tactic depRw, inherit_doc depRwSeq]
 def evalDepRwSeq : Tactic := fun stx => do
   let cfg ← elabDepRewriteConfig stx[1]
-  let loc   := expandOptLocation stx[3]
-  withRWRulesSeq stx[0] stx[2] fun symm term => do
-    withLocation loc
-      (depRwLocalDecl term symm · cfg)
-      (depRwTarget term symm cfg)
-      (throwTacticEx `depRewrite · "did not find instance of the pattern in the current goal")
+  withRWRulesSeq stx[0] stx[2] fun symm term => depRwTarget term symm cfg
 
 end Conv
 end Mathlib.Tactic.DepRewrite

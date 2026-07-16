@@ -129,17 +129,18 @@ lemma leftMulMapPreGNS_mul_eq_comp (a b : A) :
     f.leftMulMapPreGNS (a * b) = f.leftMulMapPreGNS a ∘L f.leftMulMapPreGNS b := by
   ext c; simp [mul_assoc]
 
-set_option backward.isDefEq.respectTransparency false in
 /--
 This proves map_smul' of gnsNonUnitalStarAlgHom so that map_zero' can be proven as a direct
 consequence.
 -/
 @[simp]
 private lemma completion_leftMulMapPreGNS_map_smul (m : ℂ) (x : A) :
-   (f.leftMulMapPreGNS (m • x)).completion = m • (f.leftMulMapPreGNS x).completion := by
+    (f.leftMulMapPreGNS (m • x)).completion = m • (f.leftMulMapPreGNS x).completion := by
   ext a
   induction a using induction_on with
-  | hp => apply isClosed_eq <;> fun_prop
+  | hp =>
+    exact isClosed_eq (f.leftMulMapPreGNS (m • x)).completion.continuous
+      (m • (f.leftMulMapPreGNS x).completion).continuous
   | ih a => simp [smul_mul_assoc]
 
 /--

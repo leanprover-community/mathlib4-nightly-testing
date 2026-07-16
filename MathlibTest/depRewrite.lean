@@ -250,6 +250,7 @@ theorem let_defeq_test (b : Nat) (eq : 1 = b) (f : (n : Nat) → n = 1 → Nat) 
   exact test_sorry
 
 -- Test definitional equalities that get broken by rewriting.
+set_option backward.isDefEq.respectTransparency false in
 example (b : Bool) (h : true = b)
     (s : Bool → Prop)
     (q : (c : Bool) → s c → Prop)
@@ -260,6 +261,7 @@ example (b : Bool) (h : true = b)
   exact test_sorry
 
 -- As above.
+set_option backward.isDefEq.respectTransparency false in
 example (b : Bool) (h : true = b)
     (s : Bool → Prop)
     (q : (c : Bool) → s c → Prop)
@@ -272,6 +274,7 @@ example (b : Bool) (h : true = b)
   exact test_sorry
 
 -- As above.
+set_option backward.isDefEq.respectTransparency false in
 example (b : Bool) (h : true = b)
     (s : Bool → Prop)
     (q : (c : Bool) → s c → Prop)
@@ -452,3 +455,44 @@ example (x : Fin n) : P x := by
 example {x : Bool} (h : x = x) : x = x := by
   rw! [h] at h
   exact h
+
+/-! ## Tests for `conv` mode -/
+
+example (x : Fin n) : P x.1 := by
+  conv =>
+    enter [1]
+    rewrite! (castMode := .all) [eq]
+    guard_target =ₛ (cast% eq ▸ x).1
+  guard_target =ₛ P (cast% eq ▸ x).1
+  exact test_sorry
+
+example (f : ∀ c, Fin c) : P (f n).1 := by
+  conv =>
+    enter [1, 1]
+    rewrite! (castMode := .all) [eq]
+  guard_target =ₛ P (cast% eq.symm ▸ f m).1
+  exact test_sorry
+
+example (x : Fin n) : P x.1 := by
+  conv =>
+    enter [1]
+    rw! (castMode := .all) [eq]
+    guard_target =ₛ (cast% eq ▸ x).1
+  guard_target =ₛ P (cast% eq ▸ x).1
+  exact test_sorry
+
+example (f : ∀ c, Fin c) : P (f n).1 := by
+  conv =>
+    enter [1, 1]
+    rw! (castMode := .all) [eq]
+  guard_target =ₛ P (cast% eq.symm ▸ f m).1
+  exact test_sorry
+
+example (f : Nat → ∀ c, Fin (c + n)) : P (f (f (f m n) (f n m)) n).1 := by
+  conv =>
+    enter [1, 1, 1, 1]
+    rw! (castMode := .all) [eq]
+    guard_target =~ cast% _
+  rw! (castMode := .all) [eq, ← eq]
+  guard_target =ₛ P ((f (f (f n n) (f n n))) n).1
+  exact test_sorry

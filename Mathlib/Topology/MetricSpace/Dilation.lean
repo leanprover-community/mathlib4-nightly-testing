@@ -89,7 +89,7 @@ variable [PseudoEMetricSpace α] [PseudoEMetricSpace β]
 
 instance funLike : FunLike (α →ᵈ β) α β where
   coe := toFun
-  coe_injective' f g h := by cases f; cases g; congr
+  coe_injective f g h := by cases f; cases g; congr
 
 instance toDilationClass : DilationClass (α →ᵈ β) α β where
   edist_eq' f := edist_eq' f
@@ -128,7 +128,7 @@ theorem copy_eq_self (f : α →ᵈ β) {f' : α → β} (h : f' = f) : f.copy f
 
 variable [FunLike F α β]
 
-open Classical in
+open scoped Classical in
 /-- The ratio of a dilation `f`. If the ratio is undefined (i.e., the distance between any two
 points in `α` is either zero or infinity), then we choose one as the ratio. -/
 def ratio [DilationClass F α β] (f : F) : ℝ≥0 :=
@@ -142,7 +142,6 @@ theorem ratio_of_trivial [DilationClass F α β] (f : F)
 theorem ratio_of_subsingleton [Subsingleton α] [DilationClass F α β] (f : F) : ratio f = 1 :=
   if_pos fun x y ↦ by simp [Subsingleton.elim x y]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem ratio_ne_zero [DilationClass F α β] (f : F) : ratio f ≠ 0 := by
   rw [ratio]; split_ifs
   · exact one_ne_zero
@@ -240,12 +239,11 @@ variable [PseudoEMetricSpace α] [PseudoEMetricSpace β] [PseudoEMetricSpace γ]
 variable [FunLike F α β] [DilationClass F α β]
 variable (f : F)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Every isometry is a dilation of ratio `1`. -/
 @[simps]
 def _root_.Isometry.toDilation (f : α → β) (hf : Isometry f) : α →ᵈ β where
   toFun := f
-  edist_eq' := ⟨1, one_ne_zero, by simpa using hf⟩
+  edist_eq' := ⟨1, one_ne_zero, by simpa using! hf⟩
 
 @[simp]
 lemma _root_.Isometry.toDilation_ratio {f : α → β} {hf : Isometry f} : ratio hf.toDilation = 1 := by
@@ -267,7 +265,6 @@ protected theorem injective {α : Type*} [EMetricSpace α] [FunLike F α β] [Di
     Injective f :=
   (antilipschitz f).injective
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The identity is a dilation -/
 protected def id (α) [PseudoEMetricSpace α] : α →ᵈ α where
   toFun := id

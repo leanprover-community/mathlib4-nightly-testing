@@ -42,13 +42,13 @@ instance : CoeSort NonemptyFinLinOrd (Type _) where
   coe X := X.carrier
 
 instance : LargeCategory NonemptyFinLinOrd :=
-  inferInstanceAs (Category (InducedCategory _ NonemptyFinLinOrd.toLinOrd))
+  inferInstanceAs <| Category (InducedCategory _ toLinOrd)
 
 instance : ConcreteCategory NonemptyFinLinOrd (· →o ·) :=
-  InducedCategory.concreteCategory NonemptyFinLinOrd.toLinOrd
+  inferInstanceAs <| ConcreteCategory (InducedCategory _ toLinOrd) _
 
 instance (X : NonemptyFinLinOrd) : BoundedOrder X :=
-    Fintype.toBoundedOrder X
+  Fintype.toBoundedOrder X
 
 /-- Construct a bundled `NonemptyFinLinOrd` from the underlying type and typeclass. -/
 abbrev of (α : Type*) [Nonempty α] [Fintype α] [LinearOrder α] : NonemptyFinLinOrd where
@@ -101,7 +101,7 @@ instance : Inhabited NonemptyFinLinOrd :=
   ⟨of PUnit⟩
 
 instance hasForgetToLinOrd : HasForget₂ NonemptyFinLinOrd LinOrd :=
-  InducedCategory.hasForget₂ _
+  inferInstanceAs <| HasForget₂ (InducedCategory _ toLinOrd) _
 
 instance hasForgetToFinPartOrd : HasForget₂ NonemptyFinLinOrd FinPartOrd where
   forget₂.obj X := .of X
@@ -142,6 +142,7 @@ theorem mono_iff_injective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B) :
   rw [cancel_mono] at eq
   rw [eq]
 
+set_option backward.isDefEq.respectTransparency.types false in
 theorem epi_iff_surjective {A B : NonemptyFinLinOrd.{u}} (f : A ⟶ B) :
     Epi f ↔ Function.Surjective f := by
   constructor

@@ -79,8 +79,9 @@ theorem linearIndependent_single {φ : ι → Type*} (f : ∀ i, φ i → M)
     (hf : ∀ i, LinearIndependent R (f i)) :
     LinearIndependent R fun ix : Σ i, φ i ↦ single ix.1 (f ix.1 ix.2) := by
   classical
-  convert (DFinsupp.linearIndependent_single _ hf).map_injOn
-    _ (finsuppLequivDFinsupp R).symm.injective.injOn
+  convert!
+    (DFinsupp.linearIndependent_single _ hf).map_injOn _
+      (finsuppLequivDFinsupp R).symm.injective.injOn
   simp
 
 lemma linearIndependent_single_iff {φ : ι → Type*} {f : ∀ i, φ i → M} :
@@ -147,6 +148,7 @@ lemma linearIndependent_single_of_ne_zero [IsDomain R] [Module R M] [IsTorsionFr
   rw [← linearIndependent_equiv (Equiv.sigmaPUnit ι)]
   exact linearIndependent_single (f := fun i (_ : Unit) ↦ v i) <| by simp +contextual [hv]
 
+set_option backward.isDefEq.respectTransparency false in
 lemma lcomapDomain_eq_linearProjOfIsCompl {α β : Type*}
     {u : α → ι} {v : β → ι} (hu : u.Injective) (h : IsCompl (Set.range u) (Set.range v)) :
     lcomapDomain u hu =
@@ -223,14 +225,14 @@ end FreeAbelianGroup
 namespace AddMonoidAlgebra
 variable {M R S : Type*} [Semiring R] [Semiring S] [Module R S] [Module.Free R S]
 
-instance : Module.Free R S[M] := .finsupp ..
+instance : Module.Free R S[M] := .of_equiv (coeffLinearEquiv _).symm
 
 end AddMonoidAlgebra
 
 namespace MonoidAlgebra
 variable {M R S : Type*} [Semiring R] [Semiring S] [Module R S] [Module.Free R S]
 
-instance : Module.Free R S[M] := .finsupp ..
+instance : Module.Free R S[M] := .of_equiv (coeffLinearEquiv _).symm
 
 end MonoidAlgebra
 

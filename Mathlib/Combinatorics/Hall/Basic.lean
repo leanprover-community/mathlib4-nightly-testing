@@ -77,16 +77,16 @@ theorem hallMatchingsOn.nonempty {ι : Type u} {α : Type v} [DecidableEq α] (t
     refine ⟨Classical.indefiniteDescription _ ?_⟩
     apply (all_card_le_biUnion_card_iff_existsInjective' fun i : ι' => t i).mp
     intro s'
-    convert h (s'.image (↑)) using 1
+    convert! h (s'.image (↑)) using 1
     · simp only [card_image_of_injective s' Subtype.coe_injective]
     · rw [image_biUnion]
 
 /-- This is the `hallMatchingsOn` sets assembled into a directed system.
 -/
 def hallMatchingsFunctor {ι : Type u} {α : Type v} (t : ι → Finset α) :
-    (Finset ι)ᵒᵖ ⥤ Type max u v where
+    (Finset ι)ᵒᵖ ⥤ Type (max u v) where
   obj ι' := hallMatchingsOn t ι'.unop
-  map {_ _} g f := hallMatchingsOn.restrict t (CategoryTheory.leOfHom g.unop) f
+  map {_ _} g := ↾(hallMatchingsOn.restrict t (CategoryTheory.leOfHom g.unop))
 
 instance hallMatchingsOn.finite {ι : Type u} {α : Type v} (t : ι → Finset α) (ι' : Finset ι) :
     Finite (hallMatchingsOn t ι') := by
@@ -138,7 +138,6 @@ theorem Finset.all_card_le_biUnion_card_iff_exists_injective {ι : Type u} {α :
         intro i i'
         have subi : ({i} : Finset ι) ⊆ {i, i'} := by simp
         have subi' : ({i'} : Finset ι) ⊆ {i, i'} := by simp
-        rw [← Finset.le_iff_subset] at subi subi'
         simp only
         rw [← hu (CategoryTheory.homOfLE subi).op, ← hu (CategoryTheory.homOfLE subi').op]
         let uii' := u (Opposite.op ({i, i'} : Finset ι))
@@ -152,6 +151,7 @@ theorem Finset.all_card_le_biUnion_card_iff_exists_injective {ι : Type u} {α :
     apply Finset.card_le_card
     grind
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- Given a relation such that the image of every singleton set is finite, then the image of every
 finite set is finite. -/
 instance {α : Type u} {β : Type v} [DecidableEq β] (R : SetRel α β)
@@ -162,6 +162,7 @@ instance {α : Type u} {β : Type v} [DecidableEq β] (R : SetRel α β)
   rw [h]
   apply FinsetCoe.fintype
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- This is a version of **Hall's Marriage Theorem** in terms of a relation
 between types `α` and `β` such that `α` is finite and the image of
 each `x : α` is finite (it suffices for `β` to be finite; see

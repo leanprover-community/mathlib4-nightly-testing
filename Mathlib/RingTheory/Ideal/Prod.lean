@@ -37,6 +37,11 @@ theorem mem_prod {x : R × S} : x ∈ prod I J ↔ x.1 ∈ I ∧ x.2 ∈ J :=
   Iff.rfl
 
 @[simp]
+theorem _root_.RingHom.ker_prodMap {T U : Type*} [Semiring T] [Semiring U] (f : R →+* S)
+    (g : T →+* U) : RingHom.ker (f.prodMap g) = (RingHom.ker f).prod (RingHom.ker g) := by
+  ext ⟨⟩; simp
+
+@[simp]
 theorem prod_top_top : prod (⊤ : Ideal R) (⊤ : Ideal S) = ⊤ :=
   Ideal.ext <| by simp
 
@@ -91,6 +96,7 @@ theorem map_prodComm_prod :
   refine Trans.trans (ideal_prod_eq _) ?_
   simp [map_map]
 
+set_option backward.isDefEq.respectTransparency false in
 /-- Ideals of `R × S` are in one-to-one correspondence with pairs of ideals of `R` and ideals of
 `S`. -/
 def idealProdEquiv : Ideal (R × S) ≃o Ideal R × Ideal S where
@@ -146,7 +152,7 @@ theorem prod_eq_top_iff {I : Ideal R} {J : Ideal S} :
 theorem isPrime_of_isPrime_prod_top {I : Ideal R} (h : (Ideal.prod I (⊤ : Ideal S)).IsPrime) :
     I.IsPrime := by
   constructor
-  · contrapose! h
+  · contrapose h
     rw [h, prod_top_top, isPrime_iff]
     simp
   · intro x y hxy
