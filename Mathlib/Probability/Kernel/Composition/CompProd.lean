@@ -186,7 +186,6 @@ lemma compProd_eq_zero_iff {κ : Kernel α β} {η : Kernel (α × β) γ}
 lemma compProd_preimage_fst {s : Set β} (hs : MeasurableSet s) (κ : Kernel α β)
     (η : Kernel (α × β) γ) [IsSFiniteKernel κ] [IsMarkovKernel η] (x : α) :
     (κ ⊗ₖ η) x (Prod.fst ⁻¹' s) = κ x s := by
-  classical
   simp_rw [compProd_apply (measurable_fst hs), ← Set.preimage_comp, Prod.fst_comp_mk, Set.preimage,
     Function.const_apply]
   have : ∀ b : β, η (x, b) {_c | b ∈ s} = s.indicator (fun _ ↦ 1) b := by
@@ -508,7 +507,7 @@ lemma compProd_add_right (μ : Kernel α β) (κ η : Kernel (α × β) γ)
   by_cases hμ : IsSFiniteKernel μ
   swap; · simp [hμ]
   ext a s hs
-  simp only [compProd_apply hs, coe_add, Pi.add_apply, Measure.coe_add]
+  simp only [compProd_apply hs, FunLike.coe_add, Pi.add_apply, Measure.coe_add]
   rw [lintegral_add_left]
   exact measurable_kernel_prodMk_left' hs a
 

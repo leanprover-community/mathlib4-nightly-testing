@@ -167,12 +167,12 @@ theorem codRestrict_apply (p : Submodule R₂ M₂) (f : M →ₛₗ[σ₁₂] M
 @[simp]
 theorem comp_codRestrict (p : Submodule R₃ M₃) (h : ∀ b, g b ∈ p) :
     ((codRestrict p g h).comp f : M →ₛₗ[σ₁₃] p) = codRestrict p (g.comp f) fun _ => h _ :=
-  ext fun _ => rfl
+  rfl
 
 @[simp]
 theorem subtype_comp_codRestrict (p : Submodule R₂ M₂) (h : ∀ b, f b ∈ p) :
     p.subtype.comp (codRestrict p f h) = f :=
-  ext fun _ => rfl
+  rfl
 
 @[simp]
 theorem domRestrict_comp_codRestrict (g : M₂ →ₛₗ[σ₂₃] M₃) (f : M →ₛₗ[σ₁₂] M₂) (p : Submodule R₂ M₂)
@@ -279,9 +279,6 @@ theorem coe_sum {ι : Type*} (t : Finset ι) (f : ι → M →ₛₗ[σ₁₂] M
       from { toFun := DFunLike.coe,
              map_zero' := rfl
              map_add' := fun _ _ => rfl }) _ _
-
-@[deprecated (since := "2025-11-24")]
-alias coeFn_sum := coe_sum
 
 theorem _root_.Module.End.submodule_pow_eq_zero_of_pow_eq_zero {N : Submodule R M}
     {g : Module.End R N} {G : Module.End R M} (h : G.comp N.subtype = N.subtype.comp g) {k : ℕ}
