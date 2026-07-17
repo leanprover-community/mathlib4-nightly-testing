@@ -101,7 +101,6 @@ theorem _root_.ENNReal.count_const_le_le_of_tsum_le [MeasurableSingletonClass α
   apply (MeasureTheory.meas_ge_le_lintegral_div a_mble.aemeasurable ε_ne_zero ε_ne_top).trans
   exact ENNReal.div_le_div tsum_le_c rfl.le
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Markov's inequality for the counting measure with hypothesis using `tsum` in `ℝ≥0`. -/
 theorem _root_.NNReal.count_const_le_le_of_tsum_le [MeasurableSingletonClass α] {a : α → ℝ≥0}
     (a_mble : Measurable a) (a_summable : Summable a) {c : ℝ≥0} (tsum_le_c : ∑' i, a i ≤ c)
@@ -111,7 +110,7 @@ theorem _root_.NNReal.count_const_le_le_of_tsum_le [MeasurableSingletonClass α]
   apply
     ENNReal.count_const_le_le_of_tsum_le (measurable_coe_nnreal_ennreal.comp a_mble) _
       (mod_cast ε_ne_zero) (@ENNReal.coe_ne_top ε)
-  convert ENNReal.coe_le_coe.mpr tsum_le_c
+  convert! ENNReal.coe_le_coe.mpr tsum_le_c
   simp_rw [Function.comp_apply]
   rw [ENNReal.tsum_coe_eq a_summable.hasSum]
 
@@ -239,7 +238,8 @@ theorem exists_pos_lintegral_lt_of_sigmaFinite (μ : Measure α) [SigmaFinite μ
   have hN_meas : Measurable N := measurableSet_spanningSetsIndex μ
   have hNs : ∀ n, N ⁻¹' {n} = s n := preimage_spanningSetsIndex_singleton μ
   refine ⟨δ ∘ N, fun x => δpos _, measurable_from_nat.comp hN_meas, ?_⟩
-  erw [lintegral_comp measurable_from_nat.coe_nnreal_ennreal hN_meas]
+  simp_rw [Function.comp_apply, ← Function.comp_apply (f := (fun n ↦ (↑(δ n) : ℝ≥0∞))),
+    lintegral_comp measurable_from_nat.coe_nnreal_ennreal hN_meas]
   simpa [N, hNs, lintegral_countable', measurableSet_spanningSetsIndex, mul_comm] using δsum
 
 omit [MeasurableSpace α]
@@ -284,7 +284,6 @@ theorem lintegral_le_of_forall_fin_meas_le [MeasurableSpace α] {μ : Measure α
   have : SigmaFinite (μ.trim le_rfl) := by rwa [trim_eq_self]
   lintegral_le_of_forall_fin_meas_trim_le _ C hf
 
-set_option backward.isDefEq.respectTransparency false in
 theorem SimpleFunc.exists_lt_lintegral_simpleFunc_of_lt_lintegral {m : MeasurableSpace α}
     {μ : Measure α} [SigmaFinite μ] {f : α →ₛ ℝ≥0} {L : ℝ≥0∞} (hL : L < ∫⁻ x, f x ∂μ) :
     ∃ g : α →ₛ ℝ≥0, (∀ x, g x ≤ f x) ∧ ∫⁻ x, g x ∂μ < ∞ ∧ L < ∫⁻ x, g x ∂μ := by
@@ -305,7 +304,7 @@ theorem SimpleFunc.exists_lt_lintegral_simpleFunc_of_lt_lintegral {m : Measurabl
       Measure.exists_subset_measure_lt_top hs this
     refine ⟨piecewise t ht (const α c) (const α 0), fun x => ?_, ?_, ?_⟩
     · refine indicator_le_indicator_of_subset ts (fun x => ?_) x
-      exact zero_le _
+      exact zero_le
     · simp only [ht, const_zero, coe_piecewise, coe_const, SimpleFunc.coe_zero, univ_inter,
         piecewise_eq_indicator, ENNReal.coe_indicator, Function.const_apply, lintegral_indicator,
         lintegral_const, Measure.restrict_apply', ENNReal.mul_lt_top ENNReal.coe_lt_top t_top]
@@ -322,12 +321,12 @@ theorem SimpleFunc.exists_lt_lintegral_simpleFunc_of_lt_lintegral {m : Measurabl
     · simp only [hf₁, zero_add] at hL
       rcases h₂ hL with ⟨g, g_le, g_top, gL⟩
       refine ⟨g, fun x => (g_le x).trans ?_, g_top, gL⟩
-      simp only [SimpleFunc.coe_add, Pi.add_apply, le_add_iff_nonneg_left, zero_le']
+      simp only [SimpleFunc.coe_add, Pi.add_apply, le_add_iff_nonneg_left, zero_le]
     by_cases hf₂ : ∫⁻ x, f₂ x ∂μ = 0
     · simp only [hf₂, add_zero] at hL
       rcases h₁ hL with ⟨g, g_le, g_top, gL⟩
       refine ⟨g, fun x => (g_le x).trans ?_, g_top, gL⟩
-      simp only [SimpleFunc.coe_add, Pi.add_apply, le_add_iff_nonneg_right, zero_le']
+      simp only [SimpleFunc.coe_add, Pi.add_apply, le_add_iff_nonneg_right, zero_le]
     obtain ⟨L₁, hL₁, L₂, hL₂, hL⟩ : ∃ L₁ < ∫⁻ x, f₁ x ∂μ, ∃ L₂ < ∫⁻ x, f₂ x ∂μ, L < L₁ + L₂ :=
       ENNReal.exists_lt_add_of_lt_add hL hf₁ hf₂
     rcases h₁ hL₁ with ⟨g₁, g₁_le, g₁_top, hg₁⟩
@@ -346,7 +345,7 @@ theorem exists_lt_lintegral_simpleFunc_of_lt_lintegral {m : MeasurableSpace α} 
   simp_rw [lintegral_eq_nnreal, lt_iSup_iff] at hL
   rcases hL with ⟨g₀, hg₀, g₀L⟩
   have h'L : L < ∫⁻ x, g₀ x ∂μ := by
-    convert g₀L
+    convert! g₀L
     rw [← SimpleFunc.lintegral_eq_lintegral, SimpleFunc.coe_map]
     simp only [Function.comp_apply]
   rcases SimpleFunc.exists_lt_lintegral_simpleFunc_of_lt_lintegral h'L with ⟨g, hg, gL, gtop⟩

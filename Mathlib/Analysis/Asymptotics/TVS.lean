@@ -9,7 +9,7 @@ public import Mathlib.Analysis.Convex.EGauge
 public import Mathlib.Analysis.LocallyConvex.BalancedCoreHull
 public import Mathlib.Analysis.Seminorm
 public import Mathlib.Analysis.Asymptotics.Defs
-public import Mathlib.Topology.Algebra.Module.LinearMapPiProd
+public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.PiProd
 import Mathlib.Tactic.Peel
 public import Mathlib.Tactic.Bound
 public import Mathlib.Topology.Instances.ENNReal.Lemmas
@@ -138,7 +138,6 @@ section congr
 
 variable {f f₁ f₂ : α → E} {g g₁ g₂ : α → F} {l : Filter α}
 
-set_option backward.isDefEq.respectTransparency false in
 theorem isLittleOTVS_iff_tendsto_div :
     f =o[𝕜; l] g ↔ ∀ U ∈ 𝓝 0, ∃ V ∈ 𝓝 0,
       Tendsto (fun x ↦ egauge 𝕜 U (f x) / egauge 𝕜 V (g x)) l (𝓝 0) := by
@@ -148,7 +147,6 @@ theorem isLittleOTVS_iff_tendsto_div :
 
 alias ⟨IsLittleOTVS.tendsto_div, IsLittleOTVS.of_tendsto_div⟩ := isLittleOTVS_iff_tendsto_div
 
-set_option backward.isDefEq.respectTransparency false in
 /-- A version of `IsLittleOTVS.exists_eventuallyLE_mul`
 where `ε` is quantified over `ℝ≥0∞` instead of `ℝ≥0`. -/
 theorem IsLittleOTVS.exists_eventuallyLE_mul_ennreal (h : f =o[𝕜; l] g) {U : Set E} (hU : U ∈ 𝓝 0) :
@@ -218,7 +216,6 @@ protected theorem IsThetaTVS.refl (f : α → E) (l : Filter α) : f =Θ[𝕜; l
 
 protected theorem IsThetaTVS.rfl : f =Θ[𝕜; l] f := .refl f l
 
-set_option backward.isDefEq.respectTransparency false in
 theorem IsLittleOTVS.isBigOTVS (h : f =o[𝕜; l] g) : f =O[𝕜; l] g := by
   refine ⟨fun U hU ↦ ?_⟩
   rcases h.1 U hU with ⟨V, hV₀, hV⟩
@@ -674,7 +671,6 @@ protected lemma IsLittleOTVS.smul_left (h : f =o[𝕜; l] g) (c : α → 𝕜) :
   · gcongr
   all_goals exact fun _ ↦ Filter.nonempty_of_mem ‹_›
 
-set_option backward.isDefEq.respectTransparency false in
 lemma isLittleOTVS_one [ContinuousSMul 𝕜 E] : f =o[𝕜; l] (1 : α → 𝕜) ↔ Tendsto f l (𝓝 0) := by
   constructor
   · intro hf
@@ -695,20 +691,20 @@ lemma isLittleOTVS_one [ContinuousSMul 𝕜 E] : f =o[𝕜; l] (1 : α → 𝕜)
       (ε : ℝ≥0∞) * egauge 𝕜 (ball (0 : 𝕜) r) 1 ≤ (ε * ‖c‖₊ / r : ℝ≥0∞) := by
         rw [mul_div_assoc]
         gcongr
-        simpa using egauge_ball_le_of_one_lt_norm (r := r) (x := (1 : 𝕜)) hc (by simp)
+        simpa using! egauge_ball_le_of_one_lt_norm (r := r) (x := (1 : 𝕜)) hc (by simp)
       _ < 1 := ‹_›
   · simp only [isLittleOTVS_iff]
     intro hf U hU
     refine ⟨ball 0 1, ball_mem_nhds _ one_pos, fun ε hε ↦ ?_⟩
     rcases NormedField.exists_norm_lt 𝕜 hε.bot_lt with ⟨c, hc₀, hcε⟩
-    replace hc₀ : c ≠ 0 := by simpa using hc₀
+    replace hc₀ : c ≠ 0 := by simpa using! hc₀
     filter_upwards [hf ((set_smul_mem_nhds_zero_iff hc₀).2 hU)] with a ha
     calc
       egauge 𝕜 U (f a) ≤ ‖c‖₊ := egauge_le_of_mem_smul ha
       _ ≤ ε := mod_cast hcε.le
       _ ≤ ε * egauge 𝕜 (ball (0 : 𝕜) 1) 1 := by
         apply le_mul_of_one_le_right'
-        simpa using le_egauge_ball_one 𝕜 (1 : 𝕜)
+        simpa using! le_egauge_ball_one 𝕜 (1 : 𝕜)
 
 lemma IsLittleOTVS.tendsto_inv_smul [ContinuousSMul 𝕜 E] {f : α → 𝕜} {g : α → E}
     (h : g =o[𝕜; l] f) : Tendsto (fun x ↦ (f x)⁻¹ • g x) l (𝓝 0) := by
@@ -725,7 +721,6 @@ lemma isLittleOTVS_iff_tendsto_inv_smul [ContinuousSMul 𝕜 E] {f : α → 𝕜
   refine (((isLittleOTVS_one (𝕜 := 𝕜)).mpr h).smul_left f).congr' (h₀.mono fun x hx ↦ ?_) (by simp)
   by_cases h : f x = 0 <;> simp [h, hx]
 
-set_option backward.isDefEq.respectTransparency false in
 variable (𝕜) in
 /-- If `f` converges along `l` to a finite limit `x`, then `f =O[𝕜, l] 1`. -/
 lemma Filter.Tendsto.isBigOTVS_one [ContinuousAdd E] [ContinuousSMul 𝕜 E] {x : E}
@@ -760,7 +755,6 @@ variable [NontriviallyNormedField 𝕜]
 variable [SeminormedAddCommGroup E] [SeminormedAddCommGroup F] [NormedSpace 𝕜 E] [NormedSpace 𝕜 F]
 variable {f : α → E} {g : α → F} {l : Filter α}
 
-set_option backward.isDefEq.respectTransparency false in
 lemma isLittleOTVS_iff_isLittleO : f =o[𝕜; l] g ↔ f =o[l] g := by
   rcases NormedField.exists_one_lt_norm 𝕜 with ⟨c, hc : 1 < ‖c‖₊⟩
   have hc₀ : 0 < ‖c‖₊ := one_pos.trans hc
@@ -796,7 +790,6 @@ lemma isLittleOTVS_iff_isLittleO : f =o[𝕜; l] g ↔ f =o[l] g := by
 
 alias ⟨isLittleOTVS.isLittleO, IsLittleO.isLittleOTVS⟩ := isLittleOTVS_iff_isLittleO
 
-set_option backward.isDefEq.respectTransparency false in
 lemma isBigOTVS_iff_isBigO : f =O[𝕜; l] g ↔ f =O[l] g := by
   rcases NormedField.exists_one_lt_norm 𝕜 with ⟨c, hc : 1 < ‖c‖₊⟩
   constructor

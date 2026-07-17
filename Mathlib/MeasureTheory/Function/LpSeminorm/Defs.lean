@@ -8,7 +8,6 @@ module
 public import Mathlib.Analysis.SpecialFunctions.Pow.NNReal
 public import Mathlib.MeasureTheory.Function.EssSup
 public import Mathlib.MeasureTheory.Function.StronglyMeasurable.AEStronglyMeasurable
-public import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 
 /-!
 # ℒp space
@@ -92,7 +91,6 @@ variable {μ ν : Measure α}
 theorem eLpNorm_eq_eLpNorm' (hp_ne_zero : p ≠ 0) (hp_ne_top : p ≠ ∞) {f : α → ε} :
     eLpNorm f p μ = eLpNorm' f (ENNReal.toReal p) μ := by simp [eLpNorm, hp_ne_zero, hp_ne_top]
 
-set_option backward.isDefEq.respectTransparency false in
 lemma eLpNorm_nnreal_eq_eLpNorm' {f : α → ε} {p : ℝ≥0} (hp : p ≠ 0) :
     eLpNorm f p μ = eLpNorm' f p μ :=
   eLpNorm_eq_eLpNorm' (by exact_mod_cast hp) ENNReal.coe_ne_top
@@ -135,7 +133,6 @@ theorem lintegral_rpow_enorm_eq_rpow_eLpNorm' {f : α → ε} (hq0_lt : 0 < q) :
   rw [eLpNorm'_eq_lintegral_enorm, ← ENNReal.rpow_mul, one_div, inv_mul_cancel₀, ENNReal.rpow_one]
   exact hq0_lt.ne'
 
-set_option backward.isDefEq.respectTransparency false in
 lemma eLpNorm_nnreal_pow_eq_lintegral {f : α → ε} {p : ℝ≥0} (hp : p ≠ 0) :
     eLpNorm f p μ ^ (p : ℝ) = ∫⁻ x, ‖f x‖ₑ ^ (p : ℝ) ∂μ := by
   simp [eLpNorm_eq_eLpNorm' (by exact_mod_cast hp) ENNReal.coe_ne_top,
@@ -146,7 +143,7 @@ and to `essSup ‖f‖ μ` for `p = ∞`.
 
 This is well-defined only if `MemLp f p μ`. Otherwise, it equals `0`. -/
 noncomputable def lpNorm (f : α → E) (p : ℝ≥0∞) (μ : Measure α) : ℝ :=
-  open Classical in if AEStronglyMeasurable f μ then (eLpNorm f p μ).toReal else 0
+  open scoped Classical in if AEStronglyMeasurable f μ then (eLpNorm f p μ).toReal else 0
 
 end Lp
 

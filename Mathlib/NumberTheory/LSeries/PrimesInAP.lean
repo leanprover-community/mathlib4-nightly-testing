@@ -77,43 +77,6 @@ An infinite product or sum over a function supported in prime powers can be writ
 as an iterated product or sum over primes and natural numbers.
 -/
 
-section auxiliary
-
-variable {α β γ : Type*} [CommGroup α] [UniformSpace α] [IsUniformGroup α] [CompleteSpace α]
-  [T0Space α]
-
-open Nat.Primes in
-@[to_additive tsum_eq_tsum_primes_of_support_subset_prime_powers]
-lemma tprod_eq_tprod_primes_of_mulSupport_subset_prime_powers {f : ℕ → α}
-    (hfm : Multipliable f) (hf : Function.mulSupport f ⊆ {n | IsPrimePow n}) :
-    ∏' n : ℕ, f n = ∏' (p : Nat.Primes) (k : ℕ), f (p ^ (k + 1)) := by
-  have hfm' : Multipliable fun pk : Nat.Primes × ℕ ↦ f (pk.fst ^ (pk.snd + 1)) :=
-    prodNatEquiv.symm.multipliable_iff.mp <| by
-      simpa only [← coe_prodNatEquiv_apply, Prod.eta, Function.comp_def, Equiv.apply_symm_apply]
-        using hfm.subtype _
-  simp only [← tprod_subtype_eq_of_mulSupport_subset hf, Set.coe_setOf, ← prodNatEquiv.tprod_eq,
-    ← hfm'.tprod_prod]
-  refine tprod_congr fun (p, k) ↦ congrArg f <| coe_prodNatEquiv_apply ..
-
-@[to_additive tsum_eq_tsum_primes_add_tsum_primes_of_support_subset_prime_powers]
-lemma tprod_eq_tprod_primes_mul_tprod_primes_of_mulSupport_subset_prime_powers {f : ℕ → α}
-    (hfm : Multipliable f) (hf : Function.mulSupport f ⊆ {n | IsPrimePow n}) :
-    ∏' n : ℕ, f n = (∏' p : Nat.Primes, f p) * ∏' (p : Nat.Primes) (k : ℕ), f (p ^ (k + 2)) := by
-  rw [tprod_eq_tprod_primes_of_mulSupport_subset_prime_powers hfm hf]
-  have hfs' (p : Nat.Primes) : Multipliable fun k : ℕ ↦ f (p ^ (k + 1)) :=
-    hfm.comp_injective <| (strictMono_nat_of_lt_succ
-      fun k ↦ pow_lt_pow_right₀ p.prop.one_lt <| lt_add_one (k + 1)).injective
-  conv_lhs =>
-    enter [1, p]; rw [(hfs' p).tprod_eq_zero_mul, zero_add, pow_one]
-    enter [2, 1, k]; rw [add_assoc, one_add_one_eq_two]
-  exact (Multipliable.subtype hfm _).tprod_mul <|
-    Multipliable.prod (f := fun (pk : Nat.Primes × ℕ) ↦ f (pk.1 ^ (pk.2 + 2))) <|
-    hfm.comp_injective <| Subtype.val_injective |>.comp
-    Nat.Primes.prodNatEquiv.injective |>.comp <|
-    Function.Injective.prodMap (fun ⦃_ _⦄ a ↦ a) <| add_left_injective 1
-
-end auxiliary
-
 /-!
 ### The L-series of the von Mangoldt function restricted to a residue class
 -/
@@ -148,7 +111,7 @@ lemma abscissaOfAbsConv_residueClass_le_one :
   refine abscissaOfAbsConv_le_of_forall_lt_LSeriesSummable fun y hy ↦ ?_
   unfold LSeriesSummable
   have := LSeriesSummable_vonMangoldt <| show 1 < (y : ℂ).re by simp only [ofReal_re, hy]
-  convert this.indicator {n : ℕ | (n : ZMod q) = a}
+  convert! this.indicator {n : ℕ | (n : ZMod q) = a}
   ext1 n
   by_cases hn : (n : ZMod q) = a
   · simp +contextual only [term, Set.indicator, Set.mem_setOf_eq, hn, ↓reduceIte, apply_ite,
@@ -294,7 +257,7 @@ lemma LSeries_residueClass_eq (ha : IsUnit a) {s : ℂ} (hs : 1 < s.re) :
 
 variable (a)
 
-open Classical in
+open scoped Classical in
 /-- The auxiliary function used, e.g., with the Wiener-Ikehara Theorem to prove
 Dirichlet's Theorem. On `re s > 1`, it agrees with the L-series of the von Mangoldt
 function restricted to the residue class `a : ZMod q` minus the principal part
@@ -317,7 +280,7 @@ lemma continuousOn_LFunctionResidueClassAux' :
     simp only [ne_eq, Set.mem_setOf_eq] at hs
     tauto
   · simp only [← Finset.sum_neg_distrib, mul_div_assoc, ← mul_neg, ← neg_div]
-    refine continuousOn_finset_sum _ fun χ hχ ↦ continuousOn_const.mul ?_
+    refine continuousOn_finsetSum _ fun χ hχ ↦ continuousOn_const.mul ?_
     replace hχ : χ ≠ 1 := by simpa only [ne_eq, Finset.mem_compl, Finset.mem_singleton] using hχ
     refine (continuousOn_neg_logDeriv_LFunction_of_nontriv hχ).mono fun s hs ↦ ?_
     simp only [ne_eq, Set.mem_setOf_eq] at hs
@@ -424,7 +387,7 @@ lemma not_summable_residueClass_prime_div (ha : IsUnit a) :
     ¬ Summable fun n : ℕ ↦ (if n.Prime then residueClass a n else 0) / n := by
   intro H
   have key : Summable fun n : ℕ ↦ residueClass a n / n := by
-    convert (summable_residueClass_non_primes_div a).add H using 2 with n
+    convert! (summable_residueClass_non_primes_div a).add H using 2 with n
     simp only [← add_div, ite_add_ite, zero_add, add_zero, ite_self]
   let C := ∑' n, residueClass a n / n
   have H₁ {x : ℝ} (hx : 1 < x) : ∑' n, residueClass a n / (n : ℝ) ^ x ≤ C := by
@@ -477,9 +440,6 @@ theorem infinite_setOf_prime_and_eq_mod (ha : IsUnit a) :
   by_contra! H
   exact not_summable_residueClass_prime_div ha <|
     summable_of_hasFiniteSupport <| show Set.Finite _ from support_residueClass_prime_div a ▸ H
-
-@[deprecated (since := "2025-11-01")]
-alias setOf_prime_and_eq_mod_infinite := infinite_setOf_prime_and_eq_mod
 
 /-- **Dirichlet's Theorem** on primes in arithmetic progression: if `q` is a positive
 integer and `a : ZMod q` is a unit, then there are infinitely many prime numbers `p`
