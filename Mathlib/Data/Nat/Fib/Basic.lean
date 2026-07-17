@@ -169,7 +169,10 @@ theorem fib_two_mul_add_two (n : ℕ) :
 /-- Computes `(Nat.fib n, Nat.fib (n + 1))` using the binary representation of `n`.
 Supports `Nat.fastFib`. -/
 def fastFibAux : ℕ → ℕ × ℕ :=
-  Nat.binaryRec (fib 0, fib 1) fun b _ p =>
+  -- `(0, 1)`, not `(fib 0, fib 1)`: a reference to `fib` here would form a cycle with the
+  -- `@[csimp]` replacement `fib ↦ fastFib` under separate code generation, which compiles this
+  -- definition with the end-of-module `csimp` set.
+  Nat.binaryRec (0, 1) fun b _ p =>
     if b then (p.2 ^ 2 + p.1 ^ 2, p.2 * (2 * p.1 + p.2))
     else (p.1 * (2 * p.2 - p.1), p.2 ^ 2 + p.1 ^ 2)
 
