@@ -6,7 +6,10 @@ lake clean
 rm -f .lake/packages/batteries/.lake/build/bin/runLinter
 
 # Run build
-LAKE_OVERRIDE_LEAN=true \
+# Resolved once here: `leanir` has no elan shim, and resolving it per invocation would add two
+# process spawns per module to the measured build.
+LEANIR="$(lean --print-prefix)/bin/leanir" \
+  LAKE_OVERRIDE_LEAN=true \
   LEAN="$BENCH_DIR/build/fake-root/bin/lean" \
   WRAPPER_OUT="$OUTPUT_FILE" \
   WRAPPER_PREFIX="$BENCH_DIR/build/fake-root" \

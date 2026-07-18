@@ -49,6 +49,8 @@ def get_module(setup: Path) -> str:
         return json.load(f)["name"]
 
 
+
+
 def count_bytes(module: str, path: Path, suffix: str) -> None:
     try:
         bytes = path.with_suffix(suffix).stat().st_size
@@ -60,7 +62,8 @@ def count_bytes(module: str, path: Path, suffix: str) -> None:
 def run_leanir(module: str) -> None:
     stdout, stderr = measure.main(
         cmd=[
-            "leanir",
+            # Absolute path resolved once by `build/run`: `leanir` has no elan shim on the PATH.
+            os.environ["LEANIR"],
             *sys.argv[1:],
             "--stat", "-Dprofiler=true", "-Dprofiler.threshold=9999999",
         ],
