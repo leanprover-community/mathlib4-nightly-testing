@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "8c78ae137ad094882930c977aa4007fd6cff1405",
+   "rev": "bb666dc190899f3f856b1dfb4f3b847eeac947a0",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "fix/stddev-use-population-variance",
