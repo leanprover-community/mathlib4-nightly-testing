@@ -15,6 +15,8 @@ IFS=$'\n\t'
 
 TARGET_NAME="${1-}"
 MAX_TRIES="${2:-5}"
+# Facet targets like `Mathlib:leanIR` contain a colon; keep the summary filename tame.
+SUMMARY_NAME="${TARGET_NAME//:/_}"
 SCRIPTS_DIR="$(dirname "$(realpath "$0")")"
 
 if [ -z "$TARGET_NAME" ]; then
@@ -30,7 +32,7 @@ while true; do
   counter=$((counter + 1))
 
   echo "**** start of lake build: attempt $counter"
-  LEAN_ABORT_ON_PANIC=1 "${SCRIPTS_DIR}/lake-build-wrapper.py" ".lake/build_summary_${TARGET_NAME}.json" lake build --wfail -KCI "$TARGET_NAME"
+  LEAN_ABORT_ON_PANIC=1 "${SCRIPTS_DIR}/lake-build-wrapper.py" ".lake/build_summary_${SUMMARY_NAME}.json" lake build --wfail -KCI "$TARGET_NAME"
   echo "**** end of lake build: attempt $counter"
 
   echo "::group::lake build --no-build: attempt $counter"

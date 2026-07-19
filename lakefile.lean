@@ -89,6 +89,18 @@ lean_lib Counterexamples where
 lean_lib docs where
   roots := #[`docs]
 
+/--
+Builds the `leanIR` facet (`.ir`/`.ir.sig`/`.c`) of every module of the library, including
+(via `leanir`'s dependency barrier) all transitively imported modules of dependency packages.
+With separate codegen these artifacts are otherwise only produced on demand, so CI builds this
+facet explicitly to make them available to the cache and to downstream jobs that build
+executables (lint/test drivers).
+-/
+library_facet leanIR (lib : LeanLib) : Unit := do
+  let mods ← (← lib.modules.fetch).await
+  mods.foldlM (init := Job.nil) fun job mod => do
+    return job.mix <| ← mod.leanIR.fetch
+
 /-!
 ## Executables provided by Mathlib
 -/

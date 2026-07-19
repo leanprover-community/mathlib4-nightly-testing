@@ -208,8 +208,12 @@ jobs:
           fi
           echo "::endgroup::"
 
-          ../tools-branch/scripts/lake-build-with-retry.sh Mathlib
-          # results of build at pr-branch/.lake/build_summary_Mathlib.json
+          # `Mathlib:leanIR` subsumes `Mathlib` (each module's `leanIR` job depends on
+          # its lean job) and additionally produces the `.ir`/`.c` artifacts, which
+          # separate codegen otherwise only builds on demand but the cache and the
+          # jobs building lint/test executables need for the full closure.
+          ../tools-branch/scripts/lake-build-with-retry.sh Mathlib:leanIR
+          # results of build at pr-branch/.lake/build_summary_Mathlib_leanIR.json
       - name: end gh-problem-match-wrap for build step
         uses: leanprover-community/gh-problem-matcher-wrap@65a654fcdf7b64ff7633bc7a558f7b46d59a27bf # 2026-06-25
         with:
