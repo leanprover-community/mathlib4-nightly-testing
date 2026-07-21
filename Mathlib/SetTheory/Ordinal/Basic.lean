@@ -362,7 +362,7 @@ theorem bot_eq_zero : (⊥ : Ordinal) = 0 :=
 protected theorem le_zero {o : Ordinal} : o ≤ 0 ↔ o = 0 :=
   le_bot_iff
 
-@[deprecated not_neg (since := "2025-11-21")]
+@[deprecated not_lt_zero (since := "2025-11-21")]
 protected theorem not_lt_zero (o : Ordinal) : ¬o < 0 :=
   not_lt_bot
 
@@ -1223,7 +1223,7 @@ theorem mk_Ioi_lt {α : Type*} [LinearOrder α] [WellFoundedGT α] (i : α) (h :
 theorem mk_Iio_toType_ord_lt {c : Cardinal} (i : c.ord.ToType) : #(Iio i) < c := by
   simpa using mk_Iio_lt i
 
-@[deprecated (since := "2026-03-20")] alias mk_Iio_ord_toType := mk_Iio_toType_ord_lt
+@[deprecated (since := "2026-03-20")] alias mk_Iio_ord_toType := Cardinal.mk_Iio_lt
 
 @[deprecated mk_Iio_lt (since := "2026-03-20")]
 theorem card_typein_toType_lt (c : Cardinal) (x : c.ord.ToType) :

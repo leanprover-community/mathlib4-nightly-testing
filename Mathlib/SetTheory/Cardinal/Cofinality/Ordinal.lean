@@ -65,7 +65,7 @@ theorem cof_toType (o : Ordinal) : Order.cof o.ToType = o.cof := by
 @[deprecated (since := "2026-02-18")] alias le_cof_type := le_cof_iff
 @[deprecated (since := "2026-02-18")] alias cof_type_le := cof_le
 @[deprecated (since := "2026-02-18")] alias lt_cof_type := cof_le
-@[deprecated (since := "2026-02-18")] alias cof_eq := Order.cof_eq
+@[deprecated (since := "2026-02-18")] alias cof_eq := exists_cof_eq
 
 @[simp]
 theorem lift_cof (o : Ordinal.{u}) : Cardinal.lift.{v} (cof o) = cof (Ordinal.lift.{v} o) := by
@@ -241,7 +241,7 @@ theorem cof_map_of_isNormal {f} (hf : IsNormal f) {a} (ha : IsSuccLimit a) : cof
 alias cof_eq_of_isNormal := cof_map_of_isNormal
 
 @[deprecated (since := "2025-12-25")]
-alias IsNormal.cof_eq := cof_eq_of_isNormal
+alias IsNormal.cof_eq := cof_map_of_isNormal
 
 theorem le_cof_map_of_isNormal {f} (hf : IsNormal f) (a) : cof a ≤ cof (f a) := by
   cases a using limitRecOn with
@@ -444,7 +444,7 @@ theorem nfp_lt_ord {f : Ordinal → Ordinal} {c} (hc : ℵ₀ < cof c) (hf : ∀
     a < c → nfp f a < c :=
   nfpFamily_lt_ord_lift hc (by simpa using Cardinal.one_lt_aleph0.trans hc) fun _ => hf
 
-@[deprecated exists_lsub_cof (since := "2026-03-21")]
+@[deprecated Ordinal.exists_blsub_cof (since := "2026-03-21")]
 theorem exists_blsub_cof (o : Ordinal) :
     ∃ f : ∀ a < (cof o).ord, Ordinal, blsub.{u, u} _ f = o := by
   rcases exists_lsub_cof o with ⟨ι, f, hf, hι⟩
@@ -532,7 +532,7 @@ theorem cof_preOmega {o : Ordinal} (ho : IsSuccPrelimit o) : (preOmega o).cof = 
 theorem cof_omega {o : Ordinal} (ho : IsSuccLimit o) : (ω_ o).cof = o.cof :=
   cof_map_of_isNormal isNormal_omega ho
 
-@[deprecated Order.cof_eq (since := "2026-03-20")]
+@[deprecated Order.exists_cof_eq (since := "2026-03-20")]
 theorem cof_eq' (r : α → α → Prop) [H : IsWellOrder α r] (h : IsSuccLimit (type r)) :
     ∃ S : Set α, (∀ a, ∃ b ∈ S, r a b) ∧ #S = cof (type r) := by
   classical

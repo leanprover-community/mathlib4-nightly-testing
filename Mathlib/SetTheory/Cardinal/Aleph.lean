@@ -784,6 +784,7 @@ variable {c : Cardinal.{u}} {n : ℕ}
 theorem aleph_one_le_lift : ℵ₁ ≤ lift.{v} c ↔ ℵ₁ ≤ c := by
   simp
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2025-12-22")] alias aleph1_le_lift := aleph_one_le_lift
 
 @[simp]
@@ -802,6 +803,7 @@ theorem aleph_one_lt_lift : ℵ₁ < lift.{v} c ↔ ℵ₁ < c := by
 theorem lift_lt_aleph_one : lift.{v} c < ℵ₁ ↔ c < ℵ₁ := by
   simp
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2025-12-22")] alias lift_lt_aleph1 := lift_lt_aleph_one
 
 @[simp]

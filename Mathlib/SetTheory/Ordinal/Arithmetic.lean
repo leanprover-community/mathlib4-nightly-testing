@@ -203,7 +203,7 @@ theorem boundedLimitRec_zero {l} (lLim : IsSuccLimit l) {motive} (H₁ H₂ H₃
   rw [limitRecOn_zero]
 
 set_option backward.isDefEq.respectTransparency.types false in
-@[deprecated limitRecOn_succ (since := "2025-12-26")]
+@[deprecated Ordinal.limitRecOn_add_one (since := "2025-12-26")]
 theorem boundedLimitRec_succ {l} (lLim : IsSuccLimit l) {motive} (o H₁ H₂ H₃) :
     @boundedLimitRecOn l lLim motive ⟨succ o.1, lLim.succ_lt o.2⟩ H₁ H₂ H₃ = H₂ o
     (@boundedLimitRecOn l lLim motive o H₁ H₂ H₃) := by

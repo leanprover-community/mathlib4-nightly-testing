@@ -238,6 +238,7 @@ theorem IsFundamentalSequence.of_isNormal {f : Ordinal.{u} → Ordinal.{u}} (hf 
         hg.2.2]
     exact IsNormal.blsub_eq.{u, u} hf ha
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2025-12-25")]
 alias IsNormal.isFundamentalSequence := IsFundamentalSequence.of_isNormal
 

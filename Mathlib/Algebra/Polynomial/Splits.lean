@@ -798,10 +798,12 @@ end CommRing
 variable [CommRing R] [Field K] [Field L] [Field F]
 variable (i : K →+* L)
 
+set_option linter.deprecated.deprecatedTarget false in
 /-- This lemma is for polynomials over a field. -/
 @[deprecated (since := "2025-11-30")]
 alias splits_iff := splits_iff_splits
 
+set_option linter.deprecated.deprecatedTarget false in
 /-- This lemma is for polynomials over a field. -/
 @[deprecated (since := "2025-11-30")]
 alias Splits.def := splits_iff_splits
@@ -847,7 +849,7 @@ alias natDegree_eq_card_roots := Splits.natDegree_eq_card_roots
 alias degree_eq_card_roots := Splits.degree_eq_card_roots
 
 @[deprecated (since := "2025-12-02")]
-alias roots_map := Splits.map_roots
+alias roots_map := Polynomial.Splits.roots_map
 
 @[deprecated (since := "2025-12-02")]
 alias image_rootSet := Splits.image_rootSet
