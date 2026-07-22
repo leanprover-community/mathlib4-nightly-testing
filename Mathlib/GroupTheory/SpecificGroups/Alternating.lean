@@ -201,6 +201,9 @@ namespace Equiv.Perm
 
 open alternatingGroup
 
+-- Adapt to lean4#12824 (`List.eq_or_mem_of_mem_cons` grind pattern is now guarded):
+-- locally restore the unguarded pattern used by the membership reasoning below.
+local grind_pattern List.eq_or_mem_of_mem_cons => b :: l, a ∈ l in
 @[simp]
 theorem closure_three_cycles_eq_alternating :
     closure { σ : Perm α | IsThreeCycle σ } = alternatingGroup α := by

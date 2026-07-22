@@ -107,6 +107,9 @@ theorem inv_length (m : UnitMonomial) :
     (inv m).length = m.length := by
   simp [inv]
 
+-- Adapt to lean4#12824 (`List.eq_or_mem_of_mem_cons` grind pattern is now guarded):
+-- locally restore the unguarded pattern used by the membership reasoning below.
+local grind_pattern List.eq_or_mem_of_mem_cons => b :: l, a ∈ l in
 theorem mul_toFun {m1 m2 : UnitMonomial} {basis : Basis} (h_basis : WellFormedBasis basis)
     (h_length : m1.length = m2.length) :
     (m1.mul m2).toFun basis =ᶠ[atTop] m1.toFun basis * m2.toFun basis := by
