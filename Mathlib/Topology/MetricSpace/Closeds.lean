@@ -336,6 +336,7 @@ alias NonemptyCompacts.isometry_toCloseds :=
 alias NonemptyCompacts.isUniformEmbedding_toCloseds :=
   TopologicalSpace.NonemptyCompacts.isUniformEmbedding_toCloseds
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2026-01-08")]
 alias NonemptyCompacts.isClosed_in_closeds :=
   TopologicalSpace.NonemptyCompacts.isClosed_in_closeds

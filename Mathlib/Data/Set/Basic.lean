@@ -118,11 +118,13 @@ theorem le_iff_subset : s ≤ t ↔ s ⊆ t :=
 theorem lt_iff_ssubset : s < t ↔ s ⊂ t :=
   Iff.rfl
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated "this is now a syntactic identity" (since := "2026-05-24")]
-alias ⟨_root_.LE.le.subset, _root_.HasSubset.Subset.le⟩ := Iff.rfl
+alias ⟨_root_.LE.le.subset, _root_.HasSubset.Subset.le⟩ := le_iff_subset
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated "this is now a syntactic identity" (since := "2026-05-24")]
-alias ⟨_root_.LT.lt.ssubset, _root_.HasSSubset.SSubset.lt⟩ := Iff.rfl
+alias ⟨_root_.LT.lt.ssubset, _root_.HasSSubset.SSubset.lt⟩ := lt_iff_ssubset
 
 instance PiSetCoe.canLift (ι : Type u) (α : ι → Type v) [∀ i, Nonempty (α i)] (s : Set ι) :
     CanLift (∀ i : s, α i) (∀ i, α i) (fun f i => f i) fun _ => True :=

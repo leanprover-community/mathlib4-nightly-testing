@@ -265,7 +265,7 @@ lemma vlt_of_vle_of_vlt (h1 : x ≤ᵥ y) (h2 : y <ᵥ z) : x <ᵥ z :=
 
 alias vle.trans_vlt := vlt_of_vle_of_vlt
 
-@[deprecated (since := "2025-12-20")] alias Rel.trans_srel := srel_of_rel_of_srel
+@[deprecated (since := "2025-12-20")] alias Rel.trans_srel := ValuativeRel.vlt_of_vle_of_vlt
 
 instance : @Trans R R R vlt vle vlt where
   trans := vlt_of_vlt_of_vle
@@ -904,7 +904,7 @@ variable {R : Type*} [Ring R] [ValuativeRel R] {a b c d : R}
 
 @[deprecated (since := "2026-01-06")] alias vle_mul_right_iff := mul_vle_mul_iff_left
 
-@[deprecated (since := "2025-12-20")] alias rel_mul_right_iff := vle_mul_right_iff
+@[deprecated (since := "2025-12-20")] alias rel_mul_right_iff := ValuativeRel.mul_vle_mul_iff_left
 
 @[deprecated (since := "2026-01-06")] alias vle_mul_left_iff := mul_vle_mul_iff_right
 

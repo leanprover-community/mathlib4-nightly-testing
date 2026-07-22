@@ -62,7 +62,10 @@ lemma id_hom (X : Condensed.{u} C) : (𝟙 X : X ⟶ X).hom = 𝟙 _ := rfl
 lemma comp_hom {X Y Z : Condensed.{u} C} (f : X ⟶ Y) (g : Y ⟶ Z) : (f ≫ g).hom = f.hom ≫ g.hom :=
   rfl
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2026-03-05")] alias id_val := id_hom
+
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2026-03-05")] alias comp_val := comp_hom
 
 @[ext]
