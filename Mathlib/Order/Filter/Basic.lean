@@ -488,7 +488,7 @@ theorem mem_iInf_of_directed {f : ι → Filter α} (h : Directed (· ≥ ·) f)
 
 theorem mem_biInf_of_directed {f : β → Filter α} {s : Set β} (h : DirectedOn (f ⁻¹'o (· ≥ ·)) s)
     (ne : s.Nonempty) {t : Set α} : (t ∈ ⨅ i ∈ s, f i) ↔ ∃ i ∈ s, t ∈ f i := by
-  haveI := ne.to_subtype
+  have := ne.to_subtype
   simp_rw [iInf_subtype', mem_iInf_of_directed h.directed_val, Subtype.exists, exists_prop]
 
 theorem biInf_sets_eq {f : β → Filter α} {s : Set β} (h : DirectedOn (f ⁻¹'o (· ≥ ·)) s)
@@ -593,7 +593,7 @@ theorem mem_inf_principal' {f : Filter α} {s t : Set α} : s ∈ f ⊓ 𝓟 t �
     ← (isCompl_principal (t ∩ sᶜ)).le_right_iff, compl_inter, compl_compl]
 
 lemma mem_inf_principal {f : Filter α} {s t : Set α} : s ∈ f ⊓ 𝓟 t ↔ { x | x ∈ t → x ∈ s } ∈ f := by
-  simp only [mem_inf_principal', imp_iff_not_or, setOf_or, compl_def, setOf_mem_eq]
+  simp only [mem_inf_principal', imp_iff_not_or, ofPred_or, compl_def, ofPred_mem_eq]
 
 lemma iSup_inf_principal (f : ι → Filter α) (s : Set α) : ⨆ i, f i ⊓ 𝓟 s = (⨆ i, f i) ⊓ 𝓟 s := by
   ext
@@ -632,7 +632,7 @@ theorem eventually_mem_set {s : Set α} {l : Filter α} : (∀ᶠ x in l, x ∈ 
 
 protected theorem ext' {f₁ f₂ : Filter α}
     (h : ∀ p : α → Prop, (∀ᶠ x in f₁, p x) ↔ ∀ᶠ x in f₂, p x) : f₁ = f₂ :=
-  Filter.ext <| Set.setOf_bijective.surjective.forall.mpr h
+  Filter.ext <| Set.ofPred_bijective.surjective.forall.mpr h
 
 theorem Eventually.filter_mono {f₁ f₂ : Filter α} (h : f₁ ≤ f₂) {p : α → Prop}
     (hp : ∀ᶠ x in f₂, p x) : ∀ᶠ x in f₁, p x :=
@@ -811,7 +811,7 @@ theorem frequently_iff_forall_eventually_exists_and {p : α → Prop} {f : Filte
 theorem frequently_iff {f : Filter α} {P : α → Prop} :
     (∃ᶠ x in f, P x) ↔ ∀ {U}, U ∈ f → ∃ x ∈ U, P x := by
   simp only [frequently_iff_forall_eventually_exists_and, @and_comm (P _),
-    Set.setOf_bijective.surjective.forall, Filter.Eventually, mem_setOf]
+    Set.ofPred_bijective.surjective.forall, Filter.Eventually, mem_ofPred]
 
 @[simp, push]
 theorem not_eventually {p : α → Prop} {f : Filter α} : (¬∀ᶠ x in f, p x) ↔ ∃ᶠ x in f, ¬p x := by
@@ -900,7 +900,7 @@ theorem frequently_iSup {p : α → Prop} {fs : β → Filter α} :
 
 theorem Eventually.choice {r : α → β → Prop} {l : Filter α} [l.NeBot] (h : ∀ᶠ x in l, ∃ y, r x y) :
     ∃ f : α → β, ∀ᶠ x in l, r x (f x) := by
-  haveI : Nonempty β := let ⟨_, hx⟩ := h.exists; hx.nonempty
+  have : Nonempty β := let ⟨_, hx⟩ := h.exists; hx.nonempty
   choose! f hf using fun x (hx : ∃ y, r x y) => hx
   exact ⟨f, h.mono hf⟩
 

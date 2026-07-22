@@ -199,7 +199,7 @@ omit [DecidableEq ι]
 @[simp]
 theorem linearCombination_coord [Finite ι] (b : Basis ι R M) (f : ι →₀ R) (i : ι) :
     Finsupp.linearCombination R b.coord f (b i) = f i := by
-  haveI := Classical.decEq ι
+  have := Classical.decEq ι
   rw [← coe_dualBasis, linearCombination_dualBasis]
 
 end CommSemiring
@@ -240,7 +240,7 @@ variable {e : ι → M} {ε : ι → Dual R M}
 def coeffs (h : DualBases e ε) (m : M) : ι →₀ R where
   toFun i := ε i m
   support := (h.finite m).toFinset
-  mem_support_toFun i := by rw [Set.Finite.mem_toFinset, Set.mem_setOf_eq]
+  mem_support_toFun i := by rw [Set.Finite.mem_toFinset, Set.mem_ofPred_eq]
 
 @[simp]
 theorem coeffs_apply (h : DualBases e ε) (m : M) (i : ι) : h.coeffs m i = ε i m :=

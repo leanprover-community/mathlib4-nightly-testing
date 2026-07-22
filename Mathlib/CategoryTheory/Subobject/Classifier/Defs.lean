@@ -59,7 +59,7 @@ universe v v₀ u u₀
 
 namespace CategoryTheory
 
-open Category Limits Functor IsPullback
+open Category Limits CategoryTheory.Functor IsPullback
 
 variable {C : Type u} [Category.{v} C]
 
@@ -151,7 +151,7 @@ alias _root_.CategoryTheory.Classifier.isTerminalFrom_eq_χ₀ := isTerminalFrom
 
 end Subobject.Classifier
 
-open Subobject
+open CategoryTheory.Subobject
 /-- A category `C` has a subobject classifier if there is at least one subobject classifier. -/
 class HasSubobjectClassifier (C : Type u) [Category.{v} C] : Prop where
   /-- There is some classifier. -/
@@ -501,11 +501,6 @@ alias _root.CategoryTheory.Classifier.SubobjectRepresentableBy.iso_inv_hom_left_
   iso_inv_hom_left_comp
 @[deprecated (since := "2026-03-06")]
 alias _root_.CategoryTheory.Classifier.SubobjectRepresentableBy.iso_inv_hom_left_comp :=
-  iso_inv_hom_left_comp
-
-set_option linter.dupNamespace false in
-@[deprecated (since := "2025-12-18")]
-alias _root.CategoryTheory.Classifier.SubobjectRepresentableBy.iso_inv_left_comp :=
   iso_inv_hom_left_comp
 
 set_option backward.isDefEq.respectTransparency false in

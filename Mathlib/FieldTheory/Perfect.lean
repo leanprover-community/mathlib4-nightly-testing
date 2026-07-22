@@ -5,8 +5,6 @@ Authors: Oliver Nash
 -/
 module
 
-public import Mathlib.Algebra.CharP.Basic
-public import Mathlib.Algebra.CharP.Reduced
 public import Mathlib.FieldTheory.KummerPolynomial
 public import Mathlib.FieldTheory.Separable
 
@@ -299,7 +297,7 @@ lemma PerfectRing.toPerfectField (K : Type*) (p : ℕ)
   refine PerfectField.mk fun hf ↦ ?_
   rcases separable_or p hf with h | ⟨-, g, -, rfl⟩
   · assumption
-  · exfalso; revert hf; haveI := Fact.mk hp; simp
+  · exfalso; revert hf; have := Fact.mk hp; simp
 
 namespace PerfectField
 
