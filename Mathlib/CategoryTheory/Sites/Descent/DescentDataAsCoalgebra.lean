@@ -32,7 +32,7 @@ to the adjunction `(F.map f.op.toLoc).adj`.
 
 ## TODO (@joelriou, @chrisflav)
 * Compare `DescentDataAsCoalgebra` with `DescentData` when suitable
-pullbacks exist and certain base change morphisms are isomorphims
+  pullbacks exist and certain base change morphisms are isomorphisms
 
 -/
 
@@ -76,6 +76,9 @@ structure DescentDataAsCoalgebra
 
 namespace DescentDataAsCoalgebra
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 attribute [reassoc (attr := simp)] counit coassoc
 
 section
@@ -129,11 +132,12 @@ def isoMk {D₁ D₂ : F.DescentDataAsCoalgebra f} (e : ∀ (i : ι), D₁.obj i
 
 end
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 variable (F) in
 /-- When the index type `ι` contains a unique element, the category
 `DescentDataAsCoalgebra` identifies to the category of coalgebras
-over the comonoad corresponding to the adjunction
+over the comonad corresponding to the adjunction
 `(F.map f.op.toLoc).adj`. -/
 @[simps! functor_obj_A functor_obj_a functor_map_f inverse_obj_obj inverse_obj_hom
   inverse_map_hom counitIso_hom_app_f counitIso_inv_app_f,
@@ -190,7 +194,7 @@ section
 
 variable (ι : Type*) [Unique ι] {X S : C} (f : X ⟶ S)
 
-/-- When `ι` contains a unique element and `f : X ⟶ S` is a morphim,
+/-- When `ι` contains a unique element and `f : X ⟶ S` is a morphism,
 the composition of `F.toDescentDataAsCoalgebra (fun (_ : ι) ↦ f)`
 and the functor of the equivalence
 `DescentDataAsCoalgebra.coalgebraEquivalence F ι f` identifies to

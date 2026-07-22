@@ -59,6 +59,7 @@ open scoped Moebius
 
 open LSeries Nat Complex
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma not_LSeriesSummable_moebius_at_one : ¬ LSeriesSummable ↗μ 1 := by
   refine fun h ↦ not_summable_one_div_on_primes <| summable_ofReal.mp <| .of_neg ?_
   refine (h.indicator {n | n.Prime}).congr fun n ↦ ?_
@@ -170,14 +171,14 @@ lemma modOne_eq_one {R : Type*} [CommMonoidWithZero R] {χ : DirichletCharacter 
 lemma LSeries_modOne_eq : L ↗χ₁ = L 1 :=
   congr_arg L modOne_eq_one
 
-set_option backward.isDefEq.respectTransparency false in
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The L-series of a Dirichlet character mod `N > 0` does not converge absolutely at `s = 1`. -/
 lemma not_LSeriesSummable_at_one {N : ℕ} (hN : N ≠ 0) (χ : DirichletCharacter ℂ N) :
     ¬ LSeriesSummable ↗χ 1 := by
   refine fun h ↦ (Real.not_summable_indicator_one_div_natCast hN 1) ?_
   refine h.norm.of_nonneg_of_le (fun m ↦ Set.indicator_apply_nonneg (fun _ ↦ by positivity))
     (fun n ↦ ?_)
-  simp only [norm_term_eq, Set.indicator, Set.mem_setOf_eq]
+  simp only [norm_term_eq, Set.indicator, Set.mem_ofPred_eq]
   split_ifs with h₁ h₂
   · simp [h₂]
   · simp [h₁, χ.map_one]
@@ -203,7 +204,6 @@ lemma absicssaOfAbsConv_eq_one {N : ℕ} (hn : N ≠ 0) (χ : DirichletCharacter
   simpa [abscissaOfAbsConv, LSeriesSummable_iff hn χ, Set.Ioi_def, EReal.image_coe_Ioi]
     using csInf_Ioo <| EReal.coe_lt_top 1
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The L-series of the twist of `f` by a Dirichlet character converges at `s` if the L-series
 of `f` does. -/
 lemma LSeriesSummable_mul {N : ℕ} (χ : DirichletCharacter ℂ N) {f : ℕ → ℂ} {s : ℂ}
@@ -377,7 +377,6 @@ lemma convolution_vonMangoldt_zeta : ↗Λ ⍟ ↗ζ = ↗Complex.log := by
 lemma convolution_vonMangoldt_const_one : ↗Λ ⍟ 1 = ↗Complex.log :=
   (convolution_one_eq_convolution_zeta _).trans convolution_vonMangoldt_zeta
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The L-series of the von Mangoldt function `Λ` converges at `s` when `re s > 1`. -/
 lemma LSeriesSummable_vonMangoldt {s : ℂ} (hs : 1 < s.re) : LSeriesSummable ↗Λ s := by
   have hf := LSeriesSummable_logMul_of_lt_re

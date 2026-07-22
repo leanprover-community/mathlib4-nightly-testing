@@ -476,27 +476,19 @@ instance covariant_swap_div : CovariantClass (Filter α) (Filter α) (swap (· /
 
 end Div
 
-/-- Repeated pointwise addition (not the same as pointwise repeated addition!) of a `Filter`. See
-Note [pointwise nat action]. -/
-@[instance_reducible]
-protected def instNSMul [Zero α] [Add α] : SMul ℕ (Filter α) :=
-  ⟨nsmulRec⟩
-
 /-- Repeated pointwise multiplication (not the same as pointwise repeated multiplication!) of a
 `Filter`. See Note [pointwise nat action]. -/
-@[instance_reducible, to_additive existing]
+@[to_additive (attr := instance_reducible)
+/-- Repeated pointwise addition (not the same as pointwise repeated addition!) of a `Filter`. See
+Note [pointwise nat action]. -/]
 protected def instNPow [One α] [Mul α] : Pow (Filter α) ℕ :=
   ⟨fun s n => npowRec n s⟩
 
-/-- Repeated pointwise addition/subtraction (not the same as pointwise repeated
-addition/subtraction!) of a `Filter`. See Note [pointwise nat action]. -/
-@[instance_reducible]
-protected def instZSMul [Zero α] [Add α] [Neg α] : SMul ℤ (Filter α) :=
-  ⟨zsmulRec⟩
-
 /-- Repeated pointwise multiplication/division (not the same as pointwise repeated
 multiplication/division!) of a `Filter`. See Note [pointwise nat action]. -/
-@[instance_reducible, to_additive existing]
+@[to_additive (attr := instance_reducible)
+/-- Repeated pointwise addition/subtraction (not the same as pointwise repeated
+addition/subtraction!) of a `Filter`. See Note [pointwise nat action]. -/]
 protected def instZPow [One α] [Mul α] [Inv α] : Pow (Filter α) ℤ :=
   ⟨fun s n => zpowRec npowRec n s⟩
 
@@ -1142,7 +1134,7 @@ theorem NeBot.zero_smul_nonneg (hg : g.NeBot) : 0 ≤ (0 : Filter α) • g :=
 
 theorem zero_smul_filter_nonpos : (0 : α) • g ≤ 0 := by
   refine fun s hs => mem_smul_filter.2 ?_
-  convert @univ_mem _ g
+  convert! @univ_mem _ g
   refine eq_univ_iff_forall.2 fun a => ?_
   rwa [mem_preimage, zero_smul]
 
