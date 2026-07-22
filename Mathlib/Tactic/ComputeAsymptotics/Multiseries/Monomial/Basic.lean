@@ -126,9 +126,9 @@ theorem mul_toFun {m1 m2 : UnitMonomial} {basis : Basis} (h_basis : WellFormedBa
     | cons basis_hd basis_tl =>
       simp only [List.zipWith_cons_cons, List.prod_cons] at ih ⊢
       have h1 : exps1.length = exps2.length := by grind
-      -- Adapt to lean4#12824 (`List.eq_or_mem_of_mem_cons` grind pattern is now guarded):
-      -- supply the cons-membership lemma `grind` used to derive automatically.
-      have h2 : ∀ f ∈ basis_tl, 0 < f x := by grind [List.mem_cons_of_mem]
+      -- Adapt to lean4#12824 (`List.eq_or_mem_of_mem_cons` grind pattern is now guarded, so
+      -- `grind` no longer surfaces this cons-membership): prove it directly.
+      have h2 : ∀ f ∈ basis_tl, 0 < f x := fun f hf => h_pos f (List.mem_cons_of_mem _ hf)
       have h3 : 0 < basis_hd x := h_pos _ (by simp)
       rw [ih h_basis.tail h1 h2, Real.rpow_add h3]
       grind
