@@ -498,6 +498,7 @@ theorem exists_le_iSup_basicOpen_and_smul_eq_smul_and_eq_const
       simp [Submonoid.smul_def, pow_succ', mul_smul]
     · simp
 
+set_option linter.style.longLine false in
 /-
 tl;dr: synthesized instance doesn't match unified instance
 
