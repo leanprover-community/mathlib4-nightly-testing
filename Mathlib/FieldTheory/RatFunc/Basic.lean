@@ -7,7 +7,6 @@ module
 
 public import Mathlib.Algebra.CharP.Algebra
 public import Mathlib.FieldTheory.RatFunc.Defs
-public import Mathlib.RingTheory.Polynomial.Content
 public import Mathlib.RingTheory.Algebraic.Integral
 
 /-!
@@ -198,7 +197,7 @@ variable [Monoid R] [DistribMulAction R K[X]]
 variable [IsScalarTower R K[X] K[X]]
 
 theorem mk_smul (c : R) (p q : K[X]) : RatFunc.mk (c • p) q = c • RatFunc.mk p q := by
-  letI : SMulZeroClass R (FractionRing K[X]) := inferInstance
+  let : SMulZeroClass R (FractionRing K[X]) := inferInstance
   by_cases hq : q = 0
   · rw [hq, mk_zero, mk_zero, ← ofFractionRing_smul, smul_zero]
   · rw [mk_eq_localization_mk _ hq, mk_eq_localization_mk _ hq, ← Localization.smul_mk, ←

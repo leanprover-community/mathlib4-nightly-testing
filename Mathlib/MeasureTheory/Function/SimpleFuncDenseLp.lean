@@ -653,7 +653,7 @@ lemma isDenseEmbedding (hp_ne_top : p ≠ ∞) :
   intro f
   rw [mem_closure_iff_seq_limit]
   have hfi' : MemLp f p μ := Lp.memLp f
-  haveI : SeparableSpace (range f ∪ {0} : Set E) :=
+  have : SeparableSpace (range f ∪ {0} : Set E) :=
     (Lp.stronglyMeasurable f).separableSpace_range_union_singleton
   refine
     ⟨fun n =>
@@ -727,7 +727,7 @@ theorem denseRange_coeSimpleFuncNonnegToLpNonneg [hp : Fact (1 ≤ p)] (hp_ne_to
   have hg_memLp : MemLp (g : α → G) p μ := Lp.memLp (g : Lp G p μ)
   have zero_mem : (0 : G) ∈ (range (g : α → G) ∪ {0} : Set G) ∩ { y | 0 ≤ y } := by
     simp only [union_singleton, mem_inter_iff, mem_insert_iff, true_or,
-      mem_setOf_eq, le_refl, and_self_iff]
+      mem_ofPred_eq, le_refl, and_self_iff]
   have : SeparableSpace ((range (g : α → G) ∪ {0}) ∩ { y | 0 ≤ y } : Set G) := by
     apply IsSeparable.separableSpace
     apply IsSeparable.mono _ Set.inter_subset_left
