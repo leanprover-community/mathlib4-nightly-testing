@@ -96,40 +96,6 @@ noncomputable def topCatAdjunctionCounit (X : TopCat.{u + 1}) : X.toCondensedSet
       rw [continuous_coinduced_dom]
       continuity }
 
-set_option linter.style.longLine false in
-/-
-Why `topCatAdjunctionCounit_hom_apply` keeps `backward.isDefEq.instanceTypes "none"`:
-* What fails (traced statement copy below): elaborating the statement's
-  `DFunLike.coe (F := @ContinuousMap C(PUnit, X) X (_) _)` triggers synthesis of
-  `DFunLike C(C(PUnit, X), X) ?α ?β`; the `ContinuousMap` candidate's conclusion
-  `DFunLike C(?α, ?β) ?α (fun _ => ?β)` is unified with the goal. The goal's `F`-type pairs the
-  domain index spelled as the synonym `C(PUnit, X)` (the desired `simp`-normal form, pinned in
-  the statement) with the topology instance filled by earlier unification (`(_)`) with the real
-  domain of `topCatAdjunctionCounit X` — the instance `X.toCondensedSet.toTopCat.str`, typed
-  at `TopologicalSpace ↑X.toCondensedSet.toTopCat`.
-* After `?α := C(PUnit, X)` is assigned, that instance is assigned to the corresponding
-  instance-typed mvar:
-
-  `(?inst : TopologicalSpace C(PUnit, X)) := (X.toCondensedSet.toTopCat.str : TopologicalSpace ↑X.toCondensedSet.toTopCat)`.
-
-  The assignment is rejected: identifying the two
-  types needs to unfold the semireducible `toCondensedSet`, which does not unfold at
-  `.instances` — the trace stalls at `ContinuousMap =?= X.toCondensedSet.obj.1`. (It unfolds at
-  `.default`, which is why the `rfl` proof itself is fine.) With the assignment refused, no
-  `DFunLike` instance is found and the *statement* fails to elaborate.
-* Known pattern in form (cf. `Mathlib/CategoryTheory/Filtered/CostructuredArrow.lean`): the goal
-  pairs a type index at one spelling with an instance typed at another. But this site is the
-  outlier in substance: synthesis at the mvar's type returns `ContinuousMap.compactOpen`
-  (`#synth` below), which is NOT defeq to the coinduced instance at ANY transparency (guarded
-  example below) — the point of this file is precisely that the counit is bijective but not a
-  homeomorphism. So a re-synthesis fallback would silently change the meaning of the lemma. The
-  pre-existing comment on the `(_)` pin ("type synonyms are being unfolded too far") flags the
-  same mechanism. `TopologicalSpace` is data-valued, so a Prop-exemption would not apply either.
-
-Diagnosis:
-* This is a situation where Mathlib wants an instance that is strictly different from the
-  synthesized one.
--/
 -- The dual of `filterSubtrees`: drop matching subtrees (used to remove `onFailure` duplicates).
 private meta partial def dropSubtrees (p : TracePattern) : TracePostprocessor :=
   fun trees => trees.filterMapM go
