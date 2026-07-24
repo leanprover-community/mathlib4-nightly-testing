@@ -711,7 +711,7 @@ theorem ext {p q : R[X]} : (∀ n, coeff p n = coeff q n) → p = q :=
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Monomials generate the additive monoid of polynomials. -/
-theorem addSubmonoid_closure_setOf_eq_monomial :
+theorem addSubmonoid_closure_setOfPred_eq_monomial :
     AddSubmonoid.closure { p : R[X] | ∃ n a, p = monomial n a } = ⊤ := by
   apply top_unique
   rw [← AddSubmonoid.map_equiv_top (toFinsuppIso R).symm.toAddEquiv, ← addSubmonoidClosure_single,
@@ -720,10 +720,13 @@ theorem addSubmonoid_closure_setOf_eq_monomial :
   rintro _ ⟨n, a, rfl⟩
   exact ⟨n, a, Polynomial.ofFinsupp_single _ _⟩
 
+@[deprecated (since := "2026-07-09")]
+alias addSubmonoid_closure_setOf_eq_monomial := addSubmonoid_closure_setOfPred_eq_monomial
+
 @[ext high]
 theorem addHom_ext {M : Type*} [AddZeroClass M] {f g : R[X] →+ M}
     (h : ∀ n a, f (monomial n a) = g (monomial n a)) : f = g :=
-  AddMonoidHom.eq_of_eqOn_denseM addSubmonoid_closure_setOf_eq_monomial <| by
+  AddMonoidHom.eq_of_eqOn_denseM addSubmonoid_closure_setOfPred_eq_monomial <| by
     rintro p ⟨n, a, rfl⟩
     exact h n a
 
@@ -1050,12 +1053,10 @@ theorem mem_coeffs_iff {p : R[X]} {c : R} : c ∈ p.coeffs ↔ ∃ n ∈ p.suppo
   simp [coeffs, eq_comm, (Finset.mem_image)]
 
 theorem coeffs_one : coeffs (1 : R[X]) ⊆ {1} := by
-  classical
   simp_rw [coeffs, Finset.image_subset_iff]
   simp_all [coeff_one]
 
 theorem coeff_mem_coeffs {p : R[X]} {n : ℕ} (h : p.coeff n ≠ 0) : p.coeff n ∈ p.coeffs := by
-  classical
   simp only [coeffs, mem_support_iff, Finset.mem_image, Ne]
   exact ⟨n, h, rfl⟩
 

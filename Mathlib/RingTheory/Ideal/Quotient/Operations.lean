@@ -177,7 +177,7 @@ theorem bot_quotient_isMaximal_iff (I : Ideal R) [I.IsTwoSided] :
     mk_ker (I := I) ▸
       comap_isMaximal_of_surjective (Quotient.mk I) Quotient.mk_surjective (K := ⊥) (H := hI),
     fun hI => by
-    letI := Quotient.divisionRing I
+    let := Quotient.divisionRing I
     exact bot_isMaximal⟩
 
 /-- See also `Ideal.mem_quotient_iff_mem` in case `I ≤ J`. -/
@@ -193,7 +193,7 @@ theorem mem_quotient_iff_mem {I J : Ideal R} [I.IsTwoSided] (hIJ : I ≤ J) {x :
   rw [mem_quotient_iff_mem_sup, sup_eq_left.mpr hIJ]
 
 section ChineseRemainder
-open Function Quotient Finset
+open Function Ideal.Quotient Finset
 
 variable {ι : Type*}
 

@@ -159,8 +159,11 @@ section Inv
 variable {ι : Sort*} [Inv α] {s t : Set α} {a : α}
 
 @[to_additive (attr := simp)]
-theorem inv_setOf (p : α → Prop) : {x | p x}⁻¹ = {x | p x⁻¹} :=
+theorem inv_ofPred (p : α → Prop) : {x | p x}⁻¹ = {x | p x⁻¹} :=
   rfl
+
+@[deprecated (since := "2026-07-09")] alias inv_setOf := inv_ofPred
+@[deprecated (since := "2026-07-09")] alias neg_setOf := neg_ofPred
 
 @[to_additive (attr := simp, push)]
 theorem mem_inv : a ∈ s⁻¹ ↔ a⁻¹ ∈ s :=
@@ -915,6 +918,14 @@ theorem image_mul_left' : (a⁻¹ * ·) '' t = (a * ·) ⁻¹' t := by simp
 @[to_additive]
 theorem image_mul_right' : (· * b⁻¹) '' t = (· * b) ⁻¹' t := by simp
 
+@[to_additive]
+theorem image_div_left : (a / ·) '' t = (·⁻¹ * a) ⁻¹' t := by
+  rw [image_eq_preimage_of_inverse] <;> intro c <;> simp
+
+@[to_additive]
+theorem image_div_right : (· / b) '' t = (· * b) ⁻¹' t := by
+  rw [image_eq_preimage_of_inverse] <;> intro c <;> simp
+
 @[to_additive (attr := simp)]
 theorem preimage_mul_left_singleton : (a * ·) ⁻¹' {b} = {a⁻¹ * b} := by
   rw [← image_mul_left', image_singleton]
@@ -922,6 +933,10 @@ theorem preimage_mul_left_singleton : (a * ·) ⁻¹' {b} = {a⁻¹ * b} := by
 @[to_additive (attr := simp)]
 theorem preimage_mul_right_singleton : (· * a) ⁻¹' {b} = {b * a⁻¹} := by
   rw [← image_mul_right', image_singleton]
+
+@[to_additive (attr := simp)]
+theorem preimage_inv_mul_right_singleton : (·⁻¹ * a) ⁻¹' {b} = {a / b} := by
+  rw [← image_div_left, image_singleton]
 
 @[to_additive (attr := simp)]
 theorem preimage_mul_left_one : (a * ·) ⁻¹' 1 = {a⁻¹} := by

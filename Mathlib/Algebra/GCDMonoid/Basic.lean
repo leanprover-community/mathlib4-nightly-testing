@@ -105,7 +105,6 @@ noncomputable abbrev NormalizationMonoid.ofRightInverse {α : Type*} [MonoidWith
 /-- A cancellative monoid with zero always admits a `NormalizationMonoid` structure. -/
 instance (α) [MonoidWithZero α] [IsLeftCancelMulZero α] :
     Nonempty (NormalizationMonoid α) := .intro <| by
-  classical
   exact .ofRightInverse
     (fun a ↦ by classical exact if a = 1 then 1 else a.out)
     (fun _ ↦ by split_ifs with h <;> simp [h]) (by simp)
@@ -1058,7 +1057,7 @@ private theorem map_mk_unit_aux {f : Associates α →* α}
 variable [IsCancelMulZero α]
 
 /-- Define `NormalizationMonoid` on a structure from a `MonoidHom` inverse to `Associates.mk`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def strongNormalizationMonoidOfMonoidHomRightInverse [DecidableEq α] (f : Associates α →* α)
     (hinv : Function.RightInverse f Associates.mk) :
     StrongNormalizationMonoid α where

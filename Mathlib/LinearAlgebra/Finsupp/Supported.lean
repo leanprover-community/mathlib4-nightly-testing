@@ -48,7 +48,7 @@ def supported (s : Set α) : Submodule R (α →₀ M) where
     refine Subset.trans (Subset.trans (Finset.coe_subset.2 support_add) ?_) (union_subset hp hq)
     rw [Finset.coe_union]
   zero_mem' := by
-    simp only [subset_def, Finset.mem_coe, Set.mem_setOf_eq, mem_support_iff, zero_apply]
+    simp only [subset_def, Finset.mem_coe, Set.mem_ofPred_eq, mem_support_iff, zero_apply]
     intro h ha
     exact (ha rfl).elim
   smul_mem' _ _ hp := Subset.trans (Finset.coe_subset.2 support_smul) hp
@@ -136,7 +136,7 @@ theorem supported_univ : supported M R (Set.univ : Set α) = ⊤ :=
 theorem supported_iUnion {δ : Type*} (s : δ → Set α) :
     supported M R (⋃ i, s i) = ⨆ i, supported M R (s i) := by
   refine le_antisymm ?_ (iSup_le fun i => supported_mono <| Set.subset_iUnion _ _)
-  haveI := Classical.decPred fun x => x ∈ ⋃ i, s i
+  have := Classical.decPred fun x => x ∈ ⋃ i, s i
   suffices
     LinearMap.range ((Submodule.subtype _).comp (restrictDom M R (⋃ i, s i))) ≤
       ⨆ i, supported M R (s i) by
@@ -251,7 +251,7 @@ theorem lmapDomain_disjoint_ker (f : α → α') {s : Set α}
   rintro l ⟨h₁, h₂⟩
   rw [SetLike.mem_coe, mem_ker, lmapDomain_apply, mapDomain] at h₂
   simp only [mem_bot]; ext x
-  haveI := Classical.decPred fun x => x ∈ s
+  have := Classical.decPred fun x => x ∈ s
   by_cases xs : x ∈ s
   · have : Finsupp.sum l (fun a => Finsupp.single (f a)) (f x) = 0 := by
       rw [h₂]
