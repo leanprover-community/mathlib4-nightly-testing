@@ -24,7 +24,7 @@ universe v' v u
 
 namespace CategoryTheory.GrothendieckTopology
 
-open Opposite Functor
+open Opposite CategoryTheory.Functor
 
 variable {C : Type u} [Category.{v} C] (J : GrothendieckTopology C) [Subcanonical J]
 
@@ -142,9 +142,6 @@ theorem uliftYonedaEquiv_symm_app_apply {X : C} {F : Sheaf J (Type (max v v'))}
     (x : F.obj.obj (op X)) (Y : Cᵒᵖ) (f : Y.unop ⟶ X) :
     dsimp% (J.uliftYonedaEquiv.symm x).hom.app Y ⟨f⟩ = F.obj.map f.op x :=
   rfl
-
-@[deprecated (since := "2025-11-10")] alias yonedaULiftEquiv_symm_app_apply :=
-  uliftYonedaEquiv_symm_app_apply
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

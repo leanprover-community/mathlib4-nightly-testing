@@ -39,7 +39,7 @@ universe u₁ u₂ w
 
 namespace CategoryTheory
 
-open Limits Functor
+open Limits CategoryTheory.Functor
 
 variable {C : Type u₁} [Category.{u₂} C]
 
@@ -202,7 +202,6 @@ which has at index `x : F.obj X` the element `g x`. -/
 private noncomputable def mkSelfProdFib : F.obj (selfProd F X) :=
   (PreservesProduct.iso F _).inv ((Concrete.productEquiv (fun _ : F.obj X ↦ F.obj X)).symm id)
 
-set_option backward.privateInPublic true in
 @[simp]
 private lemma mkSelfProdFib_map_π (t : F.obj X) : F.map (Pi.π _ t) (mkSelfProdFib F X) = t := by
   rw [← piComparison_comp_π]

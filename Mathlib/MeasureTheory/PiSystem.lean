@@ -144,7 +144,6 @@ lemma IsPiSystem.prod {C : Set (Set α)} {D : Set (Set β)} (hC : IsPiSystem C) 
 lemma IsPiSystem.biInter_mem {S : Set (Set α)} (h_pi : IsPiSystem S) {t : Finset (Set α)}
     (t_ne : t.Nonempty) (ht : ∀ s ∈ t, s ∈ S) (h' : (⋂ s ∈ t, s).Nonempty) :
     (⋂ s ∈ t, s) ∈ S := by
-  classical
   induction t_ne using Finset.Nonempty.cons_induction with
   | singleton a => simpa using ht
   | cons a t hat t_ne ih =>
@@ -393,7 +392,7 @@ theorem piiUnionInter_singleton_left (s : ι → Set α) (S : Set ι) :
     piiUnionInter (fun i => ({s i} : Set (Set α))) S =
       { s' : Set α | ∃ (t : Finset ι) (_ : ↑t ⊆ S), s' = ⋂ i ∈ t, s i } := by
   ext1 s'
-  simp_rw [piiUnionInter, Set.mem_singleton_iff, exists_prop, Set.mem_setOf_eq]
+  simp_rw [piiUnionInter, Set.mem_singleton_iff, exists_prop, Set.mem_ofPred_eq]
   refine ⟨fun h => ?_, fun ⟨t, htS, h_eq⟩ => ⟨t, htS, s, fun _ _ => rfl, h_eq⟩⟩
   grind
 
@@ -415,7 +414,7 @@ theorem isPiSystem_piiUnionInter (π : ι → Set (Set α)) (hpi : ∀ x, IsPiSy
     IsPiSystem (piiUnionInter π S) := by
   classical
   rintro t1 ⟨p1, hp1S, f1, hf1m, ht1_eq⟩ t2 ⟨p2, hp2S, f2, hf2m, ht2_eq⟩ h_nonempty
-  simp_rw [piiUnionInter, Set.mem_setOf_eq]
+  simp_rw [piiUnionInter, Set.mem_ofPred_eq]
   let g n := ite (n ∈ p1) (f1 n) Set.univ ∩ ite (n ∈ p2) (f2 n) Set.univ
   have hp_union_ss : ↑(p1 ∪ p2) ⊆ S := by
     simp only [hp1S, hp2S, Finset.coe_union, union_subset_iff, and_self_iff]

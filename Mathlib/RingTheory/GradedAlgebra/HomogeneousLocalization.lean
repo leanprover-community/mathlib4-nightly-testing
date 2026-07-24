@@ -631,7 +631,7 @@ theorem Away.eventually_smul_mem {m} (hf : f ∈ 𝒜 m) (z : Away 𝒜 f) :
   obtain ⟨k, hk : f ^ k = _⟩ := z.den_mem
   apply Filter.mem_of_superset (Filter.Ici_mem_atTop k)
   rintro k' (hk' : k ≤ k')
-  simp only [Set.mem_image, SetLike.mem_coe, Set.mem_setOf_eq]
+  simp only [Set.mem_image, SetLike.mem_coe, Set.mem_ofPred_eq]
   by_cases hfk : f ^ k = 0
   · refine ⟨0, zero_mem _, ?_⟩
     rw [← tsub_add_cancel_of_le hk', map_zero, pow_add, hfk, mul_zero, zero_smul]
@@ -887,7 +887,7 @@ variable {x : A} (hx : x = f * g)
 theorem Away.isLocalization_mul (hd : d ≠ 0) :
     letI := (awayMap 𝒜 hg hx).toAlgebra
     IsLocalization.Away (isLocalizationElem hf hg) (Away 𝒜 x) := by
-  letI := (awayMap 𝒜 hg hx).toAlgebra
+  let := (awayMap 𝒜 hg hx).toAlgebra
   constructor; constructor
   · rintro ⟨r, n, rfl⟩
     rw [map_pow, RingHom.algebraMap_toAlgebra]

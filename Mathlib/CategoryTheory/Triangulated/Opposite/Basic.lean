@@ -70,7 +70,7 @@ instance [Preadditive C] [∀ (n : ℤ), (shiftFunctor C n).Additive] (n : ℤ) 
 
 end Opposite
 
-open Opposite
+open Pretriangulated.Opposite
 
 /-- The shift functor on the opposite category identifies to the opposite functor
 of a shift functor on the original category. -/
@@ -293,11 +293,6 @@ lemma opShiftFunctorEquivalence_add_unitIso_inv_app_eq
   simp only [Category.assoc,
     ← unop_comp, Iso.inv_hom_id_app, Functor.comp_obj, Functor.op_obj, unop_id,
     Functor.map_id, id_comp, ← Functor.map_comp, Iso.hom_inv_id_app]
-
-@[deprecated (since := "2025-12-08")] alias opShiftFunctorEquivalence_unitIso_hom_app_eq :=
-  opShiftFunctorEquivalence_add_unitIso_hom_app_eq
-@[deprecated (since := "2025-12-08")] alias opShiftFunctorEquivalence_unitIso_inv_app_eq :=
-  opShiftFunctorEquivalence_add_unitIso_inv_app_eq
 
 lemma shift_unop_opShiftFunctorEquivalence_counitIso_inv_app (X : Cᵒᵖ) (n : ℤ) :
     ((opShiftFunctorEquivalence C n).counitIso.inv.app X).unop⟦n⟧' =

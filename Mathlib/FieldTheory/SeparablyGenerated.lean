@@ -10,7 +10,6 @@ public import Mathlib.Algebra.MvPolynomial.Nilpotent
 public import Mathlib.Algebra.MvPolynomial.NoZeroDivisors
 public import Mathlib.Algebra.Order.Ring.Finset
 public import Mathlib.FieldTheory.SeparableClosure
-public import Mathlib.RingTheory.AlgebraicIndependent.AlgebraicClosure
 public import Mathlib.RingTheory.Polynomial.GaussLemma
 
 /-!
@@ -129,7 +128,6 @@ theorem coeff_toPolynomialAdjoinImageCompl_ne_zero
 
 theorem isAlgebraic_of_mem_vars_of_forall_totalDegree_le (hFa : F.aeval a = 0) (i : ι)
     (hi : i ∈ F.vars) : IsAlgebraic (Algebra.adjoin k (a '' {i}ᶜ)) (a i) := by
-  classical
   have ⟨σ, hσ, hσi⟩ := (mem_vars_iff_mem_support i).mp hi
   refine ⟨toPolynomialAdjoinImageCompl F a i,
     fun h ↦ coeff_toPolynomialAdjoinImageCompl_ne_zero HF σ hσ i

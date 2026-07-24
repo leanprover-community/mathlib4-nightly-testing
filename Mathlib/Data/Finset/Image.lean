@@ -254,6 +254,14 @@ theorem map_nontrivial : (s.map f).Nontrivial ↔ s.Nontrivial :=
 theorem attach_map_val {s : Finset α} : s.attach.map (Embedding.subtype _) = s :=
   eq_of_veq <| by rw [map_val, attach_val]; exact Multiset.attach_map_val _
 
+variable (f s) in
+/-- A `Finset` is in bijection with its image under an `Embedding`. -/
+@[simps!]
+noncomputable def equivMap : s ≃ s.map f :=
+  .ofBijective (fun x ↦ ⟨f x, s.mem_map_of_mem f x.2⟩) (⟨fun x y ↦ by simp, fun ⟨x, hx⟩ ↦ by
+    obtain ⟨x, hxs, rfl⟩ := mem_map.mp hx
+    exact ⟨⟨x, hxs⟩, rfl⟩⟩)
+
 end Map
 
 set_option backward.isDefEq.respectTransparency false in
@@ -395,6 +403,7 @@ theorem _root_.Function.Commute.finset_image [DecidableEq α] {f g : α → α}
     (h : Function.Commute f g) : Function.Commute (image f) (image g) :=
   Function.Semiconj.finset_image h
 
+@[gcongr]
 theorem image_subset_image {s₁ s₂ : Finset α} (h : s₁ ⊆ s₂) : s₁.image f ⊆ s₂.image f := by
   simp only [subset_def, image_val, subset_dedup', dedup_subset', Multiset.map_subset_map h]
 
@@ -603,7 +612,7 @@ theorem mem_filterMap {b : β} : b ∈ s.filterMap f f_inj ↔ ∃ a ∈ s, f a 
 
 @[simp, norm_cast]
 theorem coe_filterMap : (s.filterMap f f_inj : Set β) = {b | ∃ a ∈ s, f a = some b} :=
-  Set.ext (by simp only [mem_coe, mem_filterMap, Set.mem_setOf_eq, implies_true])
+  Set.ext (by simp only [mem_coe, mem_filterMap, Set.mem_ofPred_eq, implies_true])
 
 @[simp]
 theorem filterMap_some : s.filterMap some (by simp) = s :=
@@ -693,7 +702,7 @@ theorem subset_set_image_iff [DecidableEq β] {s : Set α} {t : Finset β} {f : 
     ↑t ⊆ f '' s ↔ ∃ s' : Finset α, ↑s' ⊆ s ∧ s'.image f = t := by
   constructor
   · intro h
-    letI : CanLift β s (f ∘ (↑)) fun y => y ∈ f '' s := ⟨fun y ⟨x, hxt, hy⟩ => ⟨⟨x, hxt⟩, hy⟩⟩
+    let : CanLift β s (f ∘ (↑)) fun y => y ∈ f '' s := ⟨fun y ⟨x, hxt, hy⟩ => ⟨⟨x, hxt⟩, hy⟩⟩
     lift t to Finset s using h
     refine ⟨t.map (Embedding.subtype _), map_subtype_subset _, ?_⟩
     ext y; simp
