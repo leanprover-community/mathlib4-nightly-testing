@@ -262,7 +262,7 @@ theorem finite_torsion_of_isSMulRegular (n : ℕ) (hn : IsSMulRegular 𝕜 n) :
   nontriviality 𝕜
   obtain rfl | h0 := eq_or_ne n 0
   exacts [hn.not_zero.elim, ENat.card_lt_top.mp <|
-    (card_torsion_le_of_isSMulRegular p n h0 hn).trans_lt <| ENat.coe_lt_top n]
+    (card_torsion_le_of_isSMulRegular p n h0 hn).trans_lt <| ENat.natCast_lt_top n]
 
 theorem card_torsion_le_of_isSMulRegular_int (n : ℤ) (h0 : n ≠ 0) (hn : IsSMulRegular 𝕜 n) :
     {x : AddCircle p | n • x = 0}.encard ≤ n.natAbs := by
@@ -276,7 +276,7 @@ theorem finite_torsion_of_isSMulRegular_int (n : ℤ) (hn : IsSMulRegular 𝕜 n
   nontriviality 𝕜
   obtain rfl | h0 := eq_or_ne n 0
   exacts [hn.not_zero.elim, ENat.card_lt_top.mp <|
-    (card_torsion_le_of_isSMulRegular_int p n h0 hn).trans_lt <| ENat.coe_lt_top _]
+    (card_torsion_le_of_isSMulRegular_int p n h0 hn).trans_lt <| ENat.natCast_lt_top _]
 
 end Torsion
 
@@ -317,12 +317,12 @@ def equivIoc : AddCircle p ≃ Ioc a (a + p) :=
 /-- Given a function on `𝕜`, return the unique function on `AddCircle p` agreeing with `f` on
 `[a, a + p)`. -/
 def liftIco (f : 𝕜 → B) : AddCircle p → B :=
-  restrict _ f ∘ AddCircle.equivIco p a
+  domRestrict _ f ∘ AddCircle.equivIco p a
 
 /-- Given a function on `𝕜`, return the unique function on `AddCircle p` agreeing with `f` on
 `(a, a + p]`. -/
 def liftIoc (f : 𝕜 → B) : AddCircle p → B :=
-  restrict _ f ∘ AddCircle.equivIoc p a
+  domRestrict _ f ∘ AddCircle.equivIoc p a
 
 variable {p a}
 
@@ -797,7 +797,7 @@ theorem liftIoc_eq_liftIco {f : 𝕜 → B} (hf : f a = f (a + p)) :
 
 theorem liftIco_eq_lift_Icc {f : 𝕜 → B} (h : f a = f (a + p)) :
     liftIco p a f =
-      Quot.lift (restrict (Icc a <| a + p) f)
+      Quot.lift (domRestrict (Icc a <| a + p) f)
           (by
             rintro _ _ ⟨_⟩
             exact h) ∘
@@ -806,7 +806,7 @@ theorem liftIco_eq_lift_Icc {f : 𝕜 → B} (h : f a = f (a + p)) :
 
 theorem liftIoc_eq_lift_Icc {f : 𝕜 → B} (h : f a = f (a + p)) :
     liftIoc p a f =
-      Quot.lift (restrict (Icc a <| a + p) f)
+      Quot.lift (domRestrict (Icc a <| a + p) f)
           (by
             rintro _ _ ⟨_⟩
             exact h) ∘
@@ -826,7 +826,7 @@ theorem liftIco_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f a = f (
     (hc : ContinuousOn f <| Icc a (a + p)) : Continuous (liftIco p a f) := by
   rw [liftIco_eq_lift_Icc hf]
   refine Continuous.comp ?_ (homeoIccQuot p a).continuous_toFun
-  exact continuous_coinduced_dom.mpr (continuousOn_iff_continuous_restrict.mp hc)
+  exact continuous_coinduced_dom.mpr (continuousOn_iff_continuous_domRestrict.mp hc)
 
 theorem liftIco_zero_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f 0 = f p)
     (hc : ContinuousOn f <| Icc 0 p) : Continuous (liftIco p 0 f) :=
@@ -836,7 +836,7 @@ theorem liftIoc_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f a = f (
     (hc : ContinuousOn f <| Icc a (a + p)) : Continuous (liftIoc p a f) := by
   rw [liftIoc_eq_lift_Icc hf]
   refine Continuous.comp ?_ (homeoIccQuot p a).continuous_toFun
-  exact continuous_coinduced_dom.mpr (continuousOn_iff_continuous_restrict.mp hc)
+  exact continuous_coinduced_dom.mpr (continuousOn_iff_continuous_domRestrict.mp hc)
 
 theorem liftIoc_zero_continuous [TopologicalSpace B] {f : 𝕜 → B} (hf : f 0 = f p)
     (hc : ContinuousOn f <| Icc 0 p) : Continuous (liftIoc p 0 f) :=
