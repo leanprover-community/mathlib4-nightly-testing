@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "32546fcda0ade787f5c823c5b37228ec7af94fa3",
+   "rev": "e45b2764f9972e2739f54830e3f9234d36a446cc",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "fix/proofwanted-universe-and-instance-chain",
