@@ -139,7 +139,7 @@ theorem HasSubst.smul_X (a : σ → R) :
 
 /-- Families of `MvPowerSeries` that can be substituted, as an `Ideal` -/
 noncomputable def hasSubstIdeal : Ideal (σ → MvPowerSeries τ S) :=
-  { carrier := setOf HasSubst
+  { carrier := Set.ofPred HasSubst
     add_mem' := HasSubst.add
     zero_mem' := HasSubst.zero
     smul_mem' := HasSubst.mul_left }
@@ -485,7 +485,6 @@ variable (w : τ → ℕ)
 theorem le_weightedOrder_subst (ha : HasSubst a) (f : MvPowerSeries σ R) :
     ⨅ (d : σ →₀ ℕ) (_ : coeff d f ≠ 0), d.weight (weightedOrder w ∘ a) ≤
       (f.subst a).weightedOrder w := by
-  classical
   apply MvPowerSeries.le_weightedOrder
   intro d hd
   rw [coeff_subst ha, finsum_eq_zero_of_forall_eq_zero]
@@ -746,7 +745,7 @@ theorem rescale_eq_subst (a : σ → R) (f : MvPowerSeries σ R) :
   rw [Finset.sum_eq_single n _ _]
   · simp [mul_comm, ← monomial_eq]
   · intro b hb hbn
-    rw [← monomial_eq, coeff_monomial, if_neg (Ne.symm hbn), mul_zero]
+    rw [← monomial_eq, coeff_monomial, ite_eq_right (Ne.symm hbn), mul_zero]
   · intro hn
     simpa using hn
 

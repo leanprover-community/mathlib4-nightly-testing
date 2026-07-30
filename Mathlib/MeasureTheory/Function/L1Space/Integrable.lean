@@ -685,14 +685,15 @@ lemma Integrable.measure_norm_gt_lt_top_enorm {E : Type*} [TopologicalSpace E] [
     {f : α → E} (hf : Integrable f μ) {ε : ℝ≥0∞} (hε : 0 < ε) : μ {x | ε < ‖f x‖ₑ} < ∞ := by
   by_cases hε' : ε = ∞
   · simp [hε']
-  exact lt_of_le_of_lt (measure_mono (fun _ h ↦ (Set.mem_setOf_eq ▸ h).le))
+  exact lt_of_le_of_lt (measure_mono (fun _ h ↦ (Set.mem_ofPred_eq ▸ h).le))
     (hf.measure_enorm_ge_lt_top hε hε')
 
 /-- A non-quantitative version of Markov inequality for integrable functions: the measure of points
 where `‖f x‖ > ε` is finite for all positive `ε`. -/
 lemma Integrable.measure_norm_gt_lt_top {f : α → β} (hf : Integrable f μ) {ε : ℝ} (hε : 0 < ε) :
     μ {x | ε < ‖f x‖} < ∞ :=
-  lt_of_le_of_lt (measure_mono (fun _ h ↦ (Set.mem_setOf_eq ▸ h).le)) (hf.measure_norm_ge_lt_top hε)
+  lt_of_le_of_lt (measure_mono (fun _ h ↦ (Set.mem_ofPred_eq ▸ h).le))
+    (hf.measure_norm_ge_lt_top hε)
 
 /-- If `f` is integrable, then for any `c > 0` the set `{x | f x ≥ c}` has finite
 measure. -/
@@ -718,7 +719,7 @@ measure. -/
 lemma Integrable.measure_gt_lt_top {f : α → β} [Lattice β] [HasSolidNorm β] [AddLeftMono β]
     (hf : Integrable f μ) {ε : β} (ε_pos : 0 < ε) :
     μ {a : α | ε < f a} < ∞ :=
-  lt_of_le_of_lt (measure_mono (fun _ hx ↦ (Set.mem_setOf_eq ▸ hx).le))
+  lt_of_le_of_lt (measure_mono (fun _ hx ↦ (Set.mem_ofPred_eq ▸ hx).le))
     (Integrable.measure_ge_lt_top hf ε_pos)
 
 /-- If `f` is `ℝ`-valued and integrable, then for any `c < 0` the set `{x | f x < c}` has finite
@@ -726,7 +727,7 @@ measure. -/
 lemma Integrable.measure_lt_lt_top {f : α → β} [Lattice β] [HasSolidNorm β] [AddLeftMono β]
     (hf : Integrable f μ) {c : β} (c_neg : c < 0) :
     μ {a : α | f a < c} < ∞ :=
-  lt_of_le_of_lt (measure_mono (fun _ hx ↦ (Set.mem_setOf_eq ▸ hx).le))
+  lt_of_le_of_lt (measure_mono (fun _ hx ↦ (Set.mem_ofPred_eq ▸ hx).le))
     (Integrable.measure_le_lt_top hf c_neg)
 
 theorem LipschitzWith.integrable_comp_iff_of_antilipschitz {K K'} {f : α → β} {g : β → γ}
@@ -893,7 +894,7 @@ noncomputable def withDensitySMulLI {f : α → ℝ≥0} (f_meas : Measurable f)
   norm_map' := by
     intro u
     simp only [eLpNorm, LinearMap.coe_mk, AddHom.coe_mk,
-      one_ne_zero, ENNReal.one_ne_top, ENNReal.toReal_one, if_false, eLpNorm', ENNReal.rpow_one,
+      one_ne_zero, ENNReal.one_ne_top, ENNReal.toReal_one, ite_false, eLpNorm', ENNReal.rpow_one,
       _root_.div_one, Lp.norm_def]
     rw [lintegral_withDensity_eq_lintegral_mul_non_measurable _ f_meas.coe_nnreal_ennreal
         (Filter.Eventually.of_forall fun x => ENNReal.coe_lt_top)]
@@ -1066,8 +1067,6 @@ theorem Integrable.bdd_mul {f g : α → 𝕜} {c : ℝ} (hg : Integrable g μ)
     (hf : AEStronglyMeasurable f μ) (hf_bound : ∀ᵐ x ∂μ, ‖f x‖ ≤ c) :
     Integrable (fun x => f x * g x) μ :=
   hg.bdd_smul c hf hf_bound
-
-@[deprecated (since := "2025-11-26")] alias Integrable.bdd_mul' := Integrable.bdd_mul
 
 theorem Integrable.mul_bdd {f g : α → 𝕜} {c : ℝ} (hf : Integrable f μ)
     (hg : AEStronglyMeasurable g μ) (hg_bound : ∀ᵐ x ∂μ, ‖g x‖ ≤ c) :

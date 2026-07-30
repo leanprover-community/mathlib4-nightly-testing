@@ -217,7 +217,6 @@ variable {R} [Ring R] [IsDomain R]
 See [cohn_1995] Proposition 1.3.6 -/
 lemma aleph0_le_rank_of_isEmpty_oreSet (hS : IsEmpty (OreLocalization.OreSet R⁰)) :
     ℵ₀ ≤ Module.rank R R := by
-  classical
   rw [← not_nonempty_iff, OreLocalization.nonempty_oreSet_iff_of_noZeroDivisors] at hS
   push Not at hS
   obtain ⟨r, s, h⟩ := hS
@@ -227,7 +226,7 @@ lemma aleph0_le_rank_of_isEmpty_oreSet (hS : IsEmpty (OreLocalization.OreSet R�
   suffices ∀ (g : ℕ → R) (x), (∑ i ∈ Finset.range n, g i • (r * s ^ (i + x))) = 0 →
       ∀ i < n, g i = 0 by
     refine Fintype.linearIndependent_iff.mpr fun g hg i ↦ ?_
-    simpa only [dif_pos i.prop] using this (fun i ↦ if h : i < n then g ⟨i, h⟩ else 0) 0
+    simpa only [dite_eq_left i.prop] using this (fun i ↦ if h : i < n then g ⟨i, h⟩ else 0) 0
       (by simp [← Fin.sum_univ_eq_sum_range, ← hg]) i i.prop
   intro g x hg i hin
   induction n generalizing g x i with

@@ -67,7 +67,6 @@ variable [InvariantBasisNumber R]
 have the same cardinalities. -/
 theorem mk_eq_mk_of_basis (v : Basis ι R M) (v' : Basis ι' R M) :
     Cardinal.lift.{w'} #ι = Cardinal.lift.{w} #ι' := by
-  classical
   have := nontrivial_of_invariantBasisNumber R
   cases fintypeOrInfinite ι
   · -- `v` is a finite basis, so by `basis_finite_of_finite_spans` so is `v'`.
@@ -383,7 +382,7 @@ theorem rank_span {v : ι → M} (hv : LinearIndependent R v) :
     Cardinal.mk_range_eq_of_injective (@LinearIndependent.injective ι R M v _ _ _ _ hv)]
 
 theorem rank_span_set {s : Set M} (hs : LinearIndepOn R id s) : Module.rank R ↑(span R s) = #s := by
-  rw [← @setOf_mem_eq _ s, ← Subtype.range_coe_subtype]
+  rw [← @ofPred_mem_eq _ s, ← Subtype.range_coe_subtype]
   exact rank_span hs
 
 theorem toENat_rank_span_set {v : ι → M} {s : Set ι} (hs : LinearIndepOn R v s) :

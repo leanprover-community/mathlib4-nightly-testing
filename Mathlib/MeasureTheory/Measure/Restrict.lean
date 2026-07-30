@@ -606,7 +606,7 @@ theorem ae_restrict_uIoc_iff [LinearOrder α] {a b : α} {P : α → Prop} :
 
 theorem ae_restrict_iff₀ {p : α → Prop} (hp : NullMeasurableSet { x | p x } (μ.restrict s)) :
     (∀ᵐ x ∂μ.restrict s, p x) ↔ ∀ᵐ x ∂μ, x ∈ s → p x := by
-  simp only [ae_iff, ← compl_setOf, Measure.restrict_apply₀ hp.compl]
+  simp only [ae_iff, ← compl_ofPred, Measure.restrict_apply₀ hp.compl]
   rw [iff_iff_eq]; congr with x; simp [and_comm]
 
 theorem ae_restrict_iff {p : α → Prop} (hp : MeasurableSet { x | p x }) :
@@ -616,11 +616,11 @@ theorem ae_restrict_iff {p : α → Prop} (hp : MeasurableSet { x | p x }) :
 theorem ae_imp_of_ae_restrict {s : Set α} {p : α → Prop} (h : ∀ᵐ x ∂μ.restrict s, p x) :
     ∀ᵐ x ∂μ, x ∈ s → p x := by
   simp only [ae_iff] at h ⊢
-  simpa [setOf_and, inter_comm] using measure_inter_eq_zero_of_restrict h
+  simpa [ofPred_and, inter_comm] using measure_inter_eq_zero_of_restrict h
 
 theorem ae_restrict_iff'₀ {p : α → Prop} (hs : NullMeasurableSet s μ) :
     (∀ᵐ x ∂μ.restrict s, p x) ↔ ∀ᵐ x ∂μ, x ∈ s → p x := by
-  simp only [ae_iff, ← compl_setOf, restrict_apply₀' hs]
+  simp only [ae_iff, ← compl_ofPred, restrict_apply₀' hs]
   rw [iff_iff_eq]; congr with x; simp [and_comm]
 
 theorem ae_restrict_iff' {p : α → Prop} (hs : MeasurableSet s) :
@@ -709,7 +709,7 @@ theorem le_ae_restrict : ae μ ⊓ 𝓟 s ≤ ae (μ.restrict s) := fun _s hs =>
 @[simp]
 theorem ae_restrict_eq (hs : MeasurableSet s) : ae (μ.restrict s) = ae μ ⊓ 𝓟 s := by
   ext t
-  simp only [mem_inf_principal, mem_ae_iff, restrict_apply_eq_zero' hs, compl_setOf,
+  simp only [mem_inf_principal, mem_ae_iff, restrict_apply_eq_zero' hs, compl_ofPred,
     Classical.not_imp, fun a => and_comm (a := a ∈ s) (b := a ∉ t)]
   rfl
 
@@ -810,7 +810,7 @@ theorem MeasurableSet.nullMeasurableSet_subtype_coe {t : Set s} (hs : NullMeasur
     exact hs.inter (hs'.nullMeasurableSet)
   | empty => simp only [image_empty, nullMeasurableSet_empty]
   | compl t' _ ht' =>
-    simp only [← range_sdiff_image Subtype.coe_injective, Subtype.range_coe_subtype, setOf_mem_eq]
+    simp only [← range_sdiff_image Subtype.coe_injective, Subtype.range_coe_subtype, ofPred_mem_eq]
     exact hs.diff ht'
   | iUnion f _ hf =>
     rw [image_iUnion]
@@ -851,7 +851,7 @@ theorem Subtype.volume_def : (volume : Measure u) = volume.comap Subtype.val :=
 
 theorem Subtype.volume_univ (hu : NullMeasurableSet u) : volume (univ : Set u) = volume u := by
   rw [Subtype.volume_def, comap_apply₀ _ _ _ _ MeasurableSet.univ.nullMeasurableSet]
-  · simp only [image_univ, Subtype.range_coe_subtype, setOf_mem_eq]
+  · simp only [image_univ, Subtype.range_coe_subtype, ofPred_mem_eq]
   · exact Subtype.coe_injective
   · exact fun t => MeasurableSet.nullMeasurableSet_subtype_coe hu
 
@@ -899,7 +899,7 @@ theorem comap_map (μ : Measure α) : (map f μ).comap f = μ := by
   rw [hf.comap_apply, hf.map_apply, preimage_image_eq _ hf.injective]
 
 theorem ae_map_iff {p : β → Prop} {μ : Measure α} : (∀ᵐ x ∂μ.map f, p x) ↔ ∀ᵐ x ∂μ, p (f x) := by
-  simp only [ae_iff, hf.map_apply, preimage_setOf_eq]
+  simp only [ae_iff, hf.map_apply, preimage_ofPred_eq]
 
 theorem restrict_map (μ : Measure α) (s : Set β) :
     (μ.map f).restrict s = (μ.restrict <| f ⁻¹' s).map f :=
@@ -1018,7 +1018,7 @@ theorem mem_map_indicator_ae_iff_mem_map_restrict_ae_of_zero_mem [Zero β] {t : 
   rw [Measure.restrict_apply' hs, Set.indicator_preimage, Set.ite]
   simp_rw [Set.compl_union, Set.compl_inter]
   change μ (((f ⁻¹' t)ᶜ ∪ sᶜ) ∩ ((fun _ => (0 : β)) ⁻¹' t \ s)ᶜ) = 0 ↔ μ ((f ⁻¹' t)ᶜ ∩ s) = 0
-  simp only [ht, ← Set.compl_eq_univ_sdiff, compl_compl, if_true,
+  simp only [ht, ← Set.compl_eq_univ_sdiff, compl_compl, ite_true,
     Set.preimage_const]
   simp_rw [Set.union_inter_distrib_right, Set.compl_inter_self s, Set.union_empty]
 
@@ -1027,7 +1027,7 @@ theorem mem_map_indicator_ae_iff_of_zero_notMem [Zero β] {t : Set β} (ht : (0 
   classical
   rw [mem_map, mem_ae_iff, Set.indicator_preimage, Set.ite, Set.compl_union, Set.compl_inter]
   change μ (((f ⁻¹' t)ᶜ ∪ sᶜ) ∩ ((fun _ => (0 : β)) ⁻¹' t \ s)ᶜ) = 0 ↔ μ ((f ⁻¹' t)ᶜ ∪ sᶜ) = 0
-  simp only [ht, if_false, Set.compl_empty, Set.empty_sdiff, Set.inter_univ, Set.preimage_const]
+  simp only [ht, ite_false, Set.compl_empty, Set.empty_sdiff, Set.inter_univ, Set.preimage_const]
 
 theorem map_restrict_ae_le_map_indicator_ae [Zero β] (hs : MeasurableSet s) :
     Filter.map f (ae <| μ.restrict s) ≤ Filter.map (s.indicator f) (ae μ) := by
@@ -1145,7 +1145,7 @@ lemma MeasureTheory.Measure.sum_restrict_le {_ : MeasurableSpace α}
       exact nsmul_le_nsmul_left zero_le <| calc {a ∈ F | a ∈ C}.card
         _ ≤ C.card := card_mono <| fun i hi ↦ (F.mem_filter.mp hi).2
         _ = (C : Set ι).ncard := (ncard_coe_finset C).symm
-        _ ≤ M := ENat.toNat_le_of_le_coe hCM
+        _ ≤ M := ENat.toNat_le_of_le_natCast hCM
     _ = M • (μ.restrict (⋃ C ∈ Cs, (P C)) t) := by
       rw [← smul_sum, ← Cs.tsum_subtype, μ.restrict_biUnion_finset _ P_meas, Measure.sum_apply _ ht]
       refine fun C₁ hC₁ C₂ hC₂ hC ↦ Set.disjoint_iff.mpr fun x hx ↦ hC <| ?_

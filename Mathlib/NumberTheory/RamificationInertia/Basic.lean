@@ -202,7 +202,7 @@ theorem FinrankQuotientMap.linearIndependent_of_nontrivial [IsDedekindDomain R]
   let := Classical.propDecidable
   let g' i := if h : i ∈ s then g'' i h else 0
   have hg' : ∀ i ∈ s, algebraMap _ _ (g' i) = a * g i := by
-    intro i hi; exact (congr_arg _ (dif_pos hi)).trans (hg'' i hi)
+    intro i hi; exact (congr_arg _ (dite_eq_left hi)).trans (hg'' i hi)
   -- Because `R/I` is nontrivial, we can lift `g` to a nontrivial linear dependence in `S`.
   have hgI : algebraMap R S (g' j) ≠ 0 := by
     simp only [FractionalIdeal.mem_coeIdeal, not_exists, not_and'] at hgI
@@ -607,7 +607,6 @@ theorem sum_ramification_inertia {p : Ideal R} [p.IsMaximal] (hp0 : p ≠ ⊥) :
 theorem inertiaDeg_le_finrank [NoZeroSMulDivisors R S] {p : Ideal R} [p.IsMaximal]
     (P : Ideal S) [hP₁ : P.IsPrime] [hP₂ : P.LiesOver p] (hp0 : p ≠ ⊥) :
     p.inertiaDeg' P ≤ Module.finrank K L := by
-  classical
   have hP : P ∈ IsDedekindDomain.primesOverFinset p S :=
     (IsDedekindDomain.mem_primesOverFinset_iff hp0 _).mpr ⟨hP₁, hP₂⟩
   rw [← sum_ramification_inertia S K L hp0, ← Finset.add_sum_erase _ _ hP]
@@ -617,7 +616,6 @@ theorem inertiaDeg_le_finrank [NoZeroSMulDivisors R S] {p : Ideal R} [p.IsMaxima
 theorem ramificationIdx_le_finrank [NoZeroSMulDivisors R S] {p : Ideal R} [p.IsMaximal]
     (P : Ideal S) [hP₁ : P.IsPrime] [hP₂ : P.LiesOver p] :
     p.ramificationIdx' P ≤ Module.finrank K L := by
-  classical
   by_cases hp0 : p = ⊥
   · simp [hp0]
   have hP : P ∈ IsDedekindDomain.primesOverFinset p S :=

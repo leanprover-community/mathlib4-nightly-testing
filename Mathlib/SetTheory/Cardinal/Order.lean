@@ -261,7 +261,7 @@ theorem lift_two : lift.{u, v} 2 = 2 := by simp [← one_add_one_eq_two]
 
 @[simp]
 theorem mk_set {α : Type u} : #(Set α) = 2 ^ #α := by
-  simp [← mk_congr (Equiv.ofBijective _ Set.setOf_bijective), ← one_add_one_eq_two]
+  simp [← mk_congr (Equiv.ofBijective _ Set.ofPred_bijective), ← one_add_one_eq_two]
 
 /-- A variant of `Cardinal.mk_set` expressed in terms of a `Set` instead of a `Type`. -/
 @[simp]
@@ -380,7 +380,7 @@ instance : ConditionallyCompleteLinearOrderBot Cardinal :=
 
 @[simp]
 theorem sInf_empty : sInf (∅ : Set Cardinal.{u}) = 0 :=
-  dif_neg Set.not_nonempty_empty
+  dite_eq_right Set.not_nonempty_empty
 
 /-- Note that the successor of `c` is not the same as `c + 1` except in the case of finite `c`. -/
 @[no_expose] instance : SuccOrder Cardinal := .ofLinearWellFoundedLT _
@@ -514,7 +514,7 @@ theorem lift_mk_le_lift_mk_mul_of_lift_mk_preimage_le {α : Type u} {β : Type v
               (Equiv.trans
                 (by
                   rw [Equiv.image_eq_preimage_symm]
-                  simp only [preimage, mem_singleton_iff, ULift.up_inj, mem_setOf_eq, coe_setOf]
+                  simp only [preimage, mem_singleton_iff, ULift.up_inj, mem_ofPred_eq, coe_ofPred]
                   exact Equiv.refl _)
                 Equiv.ulift.symm)).trans_le
         (hf b)

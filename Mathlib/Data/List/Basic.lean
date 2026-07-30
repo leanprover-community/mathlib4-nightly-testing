@@ -57,8 +57,10 @@ instance : Std.Associative (α := List α) Append.append where
 
 theorem singleton_injective : Injective fun a : α => [a] := fun _ _ h => (cons_eq_cons.1 h).1
 
-theorem set_of_mem_cons (l : List α) (a : α) : { x | x ∈ a :: l } = insert a { x | x ∈ l } :=
+theorem setOfPred_mem_cons (l : List α) (a : α) : { x | x ∈ a :: l } = insert a { x | x ∈ l } :=
   Set.ext fun _ => mem_cons
+
+@[deprecated (since := "2026-07-13")] alias set_of_mem_cons := setOfPred_mem_cons
 
 /-! ### mem -/
 
@@ -136,7 +138,7 @@ instance [DecidableEq α] : Insert α (List α) := ⟨List.insert⟩
 
 instance [DecidableEq α] : LawfulSingleton α (List α) :=
   { insert_empty_eq := fun x =>
-      show (if x ∈ ([] : List α) then [] else [x]) = [x] from if_neg not_mem_nil }
+      show (if x ∈ ([] : List α) then [] else [x]) = [x] from ite_eq_right not_mem_nil }
 
 theorem singleton_eq (x : α) : ({x} : List α) = [x] :=
   rfl

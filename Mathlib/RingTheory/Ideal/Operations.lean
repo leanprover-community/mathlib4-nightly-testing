@@ -672,13 +672,12 @@ theorem sup_eq_top_iff_isCoprime {R : Type*} [CommSemiring R] (x y : R) :
       ⟨_, mem_span_singleton'.mpr ⟨_, rfl⟩, _, mem_span_singleton'.mpr ⟨_, rfl⟩, h1⟩
 
 theorem multiset_prod_le_inf {s : Multiset (Ideal R)} : s.prod ≤ s.inf := by
-  classical
-    refine s.induction_on ?_ ?_
-    · rw [Multiset.inf_zero]
-      exact le_top
-    intro a s ih
-    rw [Multiset.prod_cons, Multiset.inf_cons]
-    exact le_trans mul_le_inf (inf_le_inf le_rfl ih)
+  refine s.induction_on ?_ ?_
+  · rw [Multiset.inf_zero]
+    exact le_top
+  intro a s ih
+  rw [Multiset.prod_cons, Multiset.inf_cons]
+  exact le_trans mul_le_inf (inf_le_inf le_rfl ih)
 
 theorem prod_le_inf {s : Finset ι} {f : ι → Ideal R} : s.prod f ≤ s.inf f :=
   multiset_prod_le_inf
@@ -1335,7 +1334,7 @@ theorem range_finsuppTotal :
     rw [finsuppTotal_apply, Finsupp.sum_mapRange_index]
     · apply Finsupp.sum_congr
       intro i _
-      rw [dif_pos (ha i)]
+      rw [dite_eq_left (ha i)]
     · exact fun _ => zero_smul _ _
 
 end Total

@@ -54,7 +54,6 @@ open Finsupp (linearCombination)
 
 theorem linearIndependent_single (hf : ∀ i, LinearIndependent R (f i)) :
     LinearIndependent R fun ix : Σ i, φ i ↦ single ix.1 (f ix.1 ix.2) := by
-  classical
   have : linearCombination R (fun ix : Σ i, φ i ↦ single ix.1 (f ix.1 ix.2)) =
     DFinsupp.mapRange.linearMap (fun i ↦ linearCombination R (f i)) ∘ₗ
     (sigmaFinsuppLequivDFinsupp R).toLinearMap := by ext; simp
@@ -193,7 +192,7 @@ variable [Semiring R] [AddCommMonoid M] [Module R M]
 theorem _root_.Finset.sum_single_ite [Fintype n] (a : R) (i : n) :
     (∑ x : n, Finsupp.single x (if i = x then a else 0)) = Finsupp.single i a := by
   simp only [apply_ite (Finsupp.single _), Finsupp.single_zero, Finset.sum_ite_eq,
-    if_pos (Finset.mem_univ _)]
+    ite_eq_left (Finset.mem_univ _)]
 
 @[simp]
 theorem equivFun_symm_single [Finite n] (b : Basis n R M) (i : n) :

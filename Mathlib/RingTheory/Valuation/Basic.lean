@@ -378,7 +378,7 @@ lemma one_apply_def (x : R) : (1 : Valuation R Γ₀) x = if x = 0 then 0 else 1
 
 @[simp] lemma toMonoidWithZeroHom_one : (1 : Valuation R Γ₀).toMonoidWithZeroHom = 1 := rfl
 
-lemma one_apply_of_ne_zero {x : R} (hx : x ≠ 0) : (1 : Valuation R Γ₀) x = 1 := if_neg hx
+lemma one_apply_of_ne_zero {x : R} (hx : x ≠ 0) : (1 : Valuation R Γ₀) x = 1 := ite_eq_right hx
 
 @[simp]
 lemma one_apply_eq_zero_iff [Nontrivial Γ₀] {x : R} : (1 : Valuation R Γ₀) x = 0 ↔ x = 0 :=
@@ -445,7 +445,7 @@ def leAddSubgroup (v : Valuation R Γ₀) (γ : Γ₀) : AddSubgroup R where
   carrier := { x | v x ≤ γ }
   zero_mem' := by simp
   add_mem' {x y} x_in y_in := (v.map_add x y).trans (max_le x_in y_in)
-  neg_mem' x_in := by rwa [Set.mem_setOf, map_neg]
+  neg_mem' x_in := by rwa [Set.mem_ofPred, map_neg]
 
 @[simp]
 lemma mem_leAddSubgroup_iff {v : Valuation R Γ₀} {γ : Γ₀} {x : R} :
@@ -481,8 +481,7 @@ lemma embedding_restrict (x : R) : embedding (v.restrict x) = v x :=
 set_option backward.isDefEq.respectTransparency false in
 lemma restrict_eq_mk {x : R} (hx : v x ≠ 0) : v.restrict x =
     (valueGroup.mk (.ofClass v) 1 x (by simp) hx : ValueGroup₀ (.ofClass v)) := by
-  classical
-  simp [restrict_def, restrict₀_apply, dif_neg hx, valueGroup.mk]
+  simp [restrict_def, restrict₀_apply, dite_eq_right hx, valueGroup.mk]
 
 @[simp]
 lemma restrict_pos_iff (x : R) : 0 < v.restrict x ↔ 0 < v x := by
@@ -562,7 +561,7 @@ lemma IsEquiv.restrict {Γ₀' : Type*} [LinearOrderedCommGroupWithZero Γ₀']
   carrier := { x | v x < γ }
   zero_mem' := by simp
   add_mem' {x y} x_in y_in := lt_of_le_of_lt (v.map_add x y) (max_lt x_in y_in)
-  neg_mem' x_in := by rwa [Set.mem_setOf, map_neg]
+  neg_mem' x_in := by rwa [Set.mem_ofPred, map_neg]
 
 @[simp] lemma mem_ltAddSubgroup_iff {v : Valuation R Γ₀} {γ x} :
     x ∈ ltAddSubgroup v γ ↔ v x < γ :=
@@ -819,7 +818,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 theorem valueGroup₀Fun_spec (h : v.IsEquiv w) {r s : R} (hr : v r ≠ 0) (hs : v s ≠ 0) :
     valueGroup₀Fun h (valueGroup.mk (.ofClass v) r s hr hs) =
       valueGroup.mk (.ofClass w) r s (h.eq_zero.ne.mp hr) (h.eq_zero.ne.mp hs) := by
-  rw [valueGroup₀Fun, dif_neg (by simp)]
+  rw [valueGroup₀Fun, dite_eq_right (by simp)]
   generalize_proofs _ _ _ _ H _
   have c_spec := H.choose_spec
   simp only [MonoidWithZeroHom.coe_ofClass, ne_eq, WithZero.coe_inj, valueGroup.mk_inj] at c_spec ⊢

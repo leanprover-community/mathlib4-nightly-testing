@@ -112,6 +112,16 @@ theorem pi_proj_comp (f : M₂ →ₗ[R] ∀ i, φ i) : pi (proj · ∘ₗ f) = 
 theorem proj_surjective (i : ι) : Surjective (proj i : ((i : ι) → φ i) →ₗ[R] φ i) :=
   surjective_eval i
 
+/-- Homs to a pi module are canonically identified with a product of hom types, even linearly so. -/
+@[simps] def _root_.LinearEquiv.linearMapPi (S) [Semiring S] [(i : ι) → Module S (φ i)]
+    [∀ i, SMulCommClass R S (φ i)] : (Π i, M₂ →ₗ[R] φ i) ≃ₗ[S] M₂ →ₗ[R] Π i, φ i where
+  toFun := pi
+  map_add' _ _ := rfl
+  map_smul' _ _ := rfl
+  invFun f i := proj i ∘ₗ f
+  left_inv _ := rfl
+  right_inv _ := rfl
+
 theorem iInf_ker_proj : (⨅ i, ker (proj i : ((i : ι) → φ i) →ₗ[R] φ i) :
     Submodule R ((i : ι) → φ i)) = ⊥ :=
   bot_unique <|
@@ -307,10 +317,10 @@ def iInfKerProjEquiv {I J : Set ι} [DecidablePred fun i => i ∈ I] (hd : Disjo
     simp only [mem_iInf, mem_ker, proj_apply, pi_apply]
     intro j hjJ
     have : j ∉ I := fun hjI => hd.le_bot ⟨hjI, hjJ⟩
-    rw [dif_neg this, zero_apply]
+    rw [dite_eq_right this, zero_apply]
   · simp only [pi_comp, comp_assoc, subtype_comp_codRestrict, proj_pi, Subtype.coe_prop]
     ext b ⟨j, hj⟩
-    simp only [dif_pos,
+    simp only [dite_eq_left,
       LinearMap.coe_proj, LinearMap.pi_apply]
     rfl
   · ext1 ⟨b, hb⟩
@@ -732,7 +742,6 @@ lemma Module.pi_induction {ι : Type v} [Finite ι]
       [AddCommMonoid N'] [Module R N] [Module R N'], motive N → motive' N' → motive' (N × N'))
     (M : ι → Type u) [∀ i, AddCommMonoid (M i)] [∀ i, Module R (M i)]
     (h : ∀ i, motive (M i)) : motive' (∀ i, M i) := by
-  classical
   cases nonempty_fintype ι
   revert M
   refine Fintype.induction_empty_option
@@ -781,7 +790,6 @@ lemma Module.pi_induction' {ι : Type v} [Finite ι] (R : Type*) [Ring R]
       [AddCommGroup N'] [Module R N] [Module R N'], motive N → motive' N' → motive' (N × N'))
     (M : ι → Type u) [∀ i, AddCommGroup (M i)] [∀ i, Module R (M i)]
     (h : ∀ i, motive (M i)) : motive' (∀ i, M i) := by
-  classical
   cases nonempty_fintype ι
   revert M
   refine Fintype.induction_empty_option

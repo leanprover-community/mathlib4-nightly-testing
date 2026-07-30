@@ -890,7 +890,7 @@ theorem mfderivWithin_neg (hs : UniqueMDiffAt[s] x) :
   simp_rw [mfderivWithin]
   by_cases hf : MDiffAt[s] f x
   · exact hf.hasMFDerivWithinAt.neg.mfderivWithin hs
-  · rw [if_neg hf]; rw [← mdifferentiableWithinAt_neg] at hf; rw [if_neg hf, neg_zero]
+  · rw [ite_eq_right hf]; rw [← mdifferentiableWithinAt_neg] at hf; rw [ite_eq_right hf, neg_zero]
 
 theorem mfderiv_neg : mfderiv% (-f) x = -mfderiv% f x := by
   rw [← mfderivWithin_univ, mfderivWithin_neg (uniqueMDiffWithinAt_univ I), mfderivWithin_univ]
@@ -1005,7 +1005,6 @@ lemma HasMFDerivWithinAt.prod [DecidableEq ι]
     (hf : ∀ i ∈ t, HasMFDerivWithinAt I 𝓘(𝕜, F') (f i) s z (f' i)) :
     HasMFDerivWithinAt I 𝓘(𝕜, F') (∏ i ∈ t, f i) s z
       (∑ i ∈ t, (∏ j ∈ t.erase i, f j z) • (f' i)) := by
-  classical
   induction t using Finset.induction_on with
   | empty => simpa using! hasMFDerivWithinAt_const ..
   | insert i t hi IH =>

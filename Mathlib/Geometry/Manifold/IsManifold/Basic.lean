@@ -194,7 +194,7 @@ def ModelWithCorners.ofTargetUniv (𝕜 : Type*) [NontriviallyNormedField 𝕜]
   source_eq := hsource
   convex_range' := by
     have : range φ = φ.target := by rw [← φ.image_source_eq_target, hsource, image_univ.symm]
-    simp only [this, htarget, dite_else_true]
+    simp only [this, htarget, dite_true_right]
     intro h
     let := h.rclike 𝕜
     let := NormedSpace.restrictScalars ℝ 𝕜 E
@@ -202,9 +202,6 @@ def ModelWithCorners.ofTargetUniv (𝕜 : Type*) [NontriviallyNormedField 𝕜]
   nonempty_interior' := by
     have : range φ = φ.target := by rw [← φ.image_source_eq_target, hsource, image_univ.symm]
     simp [this, htarget]
-
-@[deprecated (since := "2025-12-19")]
-alias ModelWithCorners.of_target_univ := ModelWithCorners.ofTargetUniv
 
 attribute [simp, mfld_simps] ModelWithCorners.source_eq
 
@@ -334,9 +331,6 @@ def ofConvexRange
   nonempty_interior' := by
     have : range φ = φ.target := by rw [← φ.image_source_eq_target, hsource, image_univ.symm]
     simp [this, hint]
-
-@[deprecated (since := "2025-12-19")] noncomputable alias of_convex_range :=
-  ModelWithCorners.ofConvexRange
 
 theorem convex_range [NormedSpace ℝ E] : Convex ℝ (range I) := by
   by_cases h : IsRCLikeNormedField 𝕜
@@ -508,7 +502,7 @@ def ModelWithCorners.prod {𝕜 : Type u} [NontriviallyNormedField 𝕜] {E : Ty
     toFun := fun x => (I x.1, I' x.2)
     invFun := fun x => (I.symm x.1, I'.symm x.2)
     source := { x | x.1 ∈ I.source ∧ x.2 ∈ I'.source }
-    source_eq := by simp only [setOf_true, mfld_simps]
+    source_eq := by simp only [ofPred_true, mfld_simps]
     convex_range' := by
       have : range (fun (x : ModelProd H H') ↦ (I x.1, I' x.2)) = range (Prod.map I I') := rfl
       rw [this, Set.range_prodMap]

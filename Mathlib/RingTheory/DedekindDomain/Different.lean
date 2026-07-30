@@ -261,7 +261,7 @@ variable [IsDedekindDomain B] {I J : FractionalIdeal B⁰ L}
 
 set_option backward.isDefEq.respectTransparency.types false in
 lemma coe_dual (hI : I ≠ 0) :
-    (dual A K I : Submodule B L) = Iᵛ := by rw [dual, dif_neg hI, coe_mk]
+    (dual A K I : Submodule B L) = Iᵛ := by rw [dual, dite_eq_right hI, coe_mk]
 
 variable (B L)
 
@@ -274,14 +274,14 @@ lemma coe_dual_one :
 set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma dual_zero :
-    dual A K (0 : FractionalIdeal B⁰ L) = 0 := by rw [dual, dif_pos rfl]
+    dual A K (0 : FractionalIdeal B⁰ L) = 0 := by rw [dual, dite_eq_left rfl]
 
 variable {A K L B}
 
 set_option backward.isDefEq.respectTransparency.types false in
 lemma mem_dual (hI : I ≠ 0) {x} :
     x ∈ dual A K I ↔ ∀ a ∈ I, traceForm K L x a ∈ (algebraMap A K).range := by
-  rw [dual, dif_neg hI]; exact forall₂_congr fun _ _ ↦ mem_one
+  rw [dual, dite_eq_right hI]; exact forall₂_congr fun _ _ ↦ mem_one
 
 variable (A K)
 
@@ -318,7 +318,7 @@ variable (A K)
 set_option backward.isDefEq.respectTransparency.types false in
 lemma le_dual_inv_aux (hI : I ≠ 0) (hIJ : I * J ≤ 1) :
     J ≤ dual A K I := by
-  rw [dual, dif_neg hI]
+  rw [dual, dite_eq_right hI]
   intro x hx y hy
   rw [mem_one]
   apply IsIntegrallyClosed.isIntegral_iff.mp
@@ -592,7 +592,6 @@ lemma traceForm_dualSubmodule_adjoin
     (traceForm K L).dualSubmodule (Subalgebra.toSubmodule (Algebra.adjoin A {x})) =
       (aeval x (derivative <| minpoly K x) : L)⁻¹ •
         (Subalgebra.toSubmodule (Algebra.adjoin A {x})) := by
-  classical
   have hKx : IsIntegral K x := Algebra.IsIntegral.isIntegral x
   let pb := (Algebra.adjoin.powerBasis' hKx).map
     ((Subalgebra.equivOfEq _ _ hx).trans (Subalgebra.topEquiv))
@@ -636,7 +635,6 @@ open Polynomial Pointwise in
 lemma conductor_mul_differentIdeal
     (x : B) (hx : Algebra.adjoin K {algebraMap B L x} = ⊤) :
     (conductor A x) * differentIdeal A B = Ideal.span {aeval x (derivative (minpoly A x))} := by
-  classical
   have hAx : IsIntegral A x := IsIntegralClosure.isIntegral A L x
   have := IsIntegralClosure.isFractionRing_of_finite_extension A K L B
   apply FractionalIdeal.coeIdeal_injective (K := L)
@@ -912,7 +910,6 @@ variable {A}
 theorem not_dvd_differentIdeal_iff
     [Algebra.IsSeparable (FractionRing A) (FractionRing B)] {P : Ideal B} [P.IsPrime] :
     ¬ P ∣ differentIdeal A B ↔ Algebra.IsUnramifiedAt A P := by
-  classical
   rcases eq_or_ne P ⊥ with rfl | hPbot
   · simp_rw [← Ideal.zero_eq_bot, zero_dvd_iff]
     simp only [Submodule.zero_eq_bot, differentIdeal_ne_bot, not_false_eq_true, true_iff]

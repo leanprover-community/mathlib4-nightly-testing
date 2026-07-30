@@ -674,7 +674,7 @@ def extendEquiv (n : ℕ) :
     by_cases h : range (c.emb 0) = {0}
     · have A : c.length - 1 + 1 = c.length := Nat.sub_add_cancel (c.length_pos (Nat.zero_lt_succ n))
       dsimp only
-      rw [dif_pos h]
+      rw [dite_eq_left h]
       simp only [extend, extendLeft, eraseLeft]
       ext
       · exact A
@@ -698,7 +698,7 @@ def extendEquiv (n : ℕ) :
             exact (apply_eq_of_range_eq_singleton h _).symm
           | succ i => simp
     · dsimp only
-      rw [dif_neg h]
+      rw [dite_eq_right h]
       have B : c.partSize (c.index 0) - 1 + 1 = c.partSize (c.index 0) :=
         Nat.sub_add_cancel (c.partSize_pos (c.index 0))
       simp only [extend, extendMiddle, eraseMiddle, ↓reduceDIte]
@@ -1063,7 +1063,6 @@ theorem HasFTaylorSeriesUpToOn.comp {n : WithTop ℕ∞} {g : F → G} {f : E �
   `faaDiBruno_aux1` and `faaDiBruno_aux2`, with terms of the same form at order `m+1`. Then, one
   needs to check that one gets each term once and exactly once, which is given by the bijection
   `OrderedFinpartition.extendEquiv m`. -/
-  classical
   constructor
   · intro x hx
     simp [FormalMultilinearSeries.taylorComp, default, HasFTaylorSeriesUpToOn.zero_eq' hg (h hx)]

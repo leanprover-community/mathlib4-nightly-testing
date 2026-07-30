@@ -518,11 +518,11 @@ protected theorem map_smul (f : V →ₗ[K] V₂) (p : Submodule K V) (a : K) (h
 
 theorem comap_smul' (f : V →ₗ[K] V₂) (p : Submodule K V₂) (a : K) :
     p.comap (a • f) = ⨅ _ : a ≠ 0, p.comap f := by
-  classical by_cases h : a = 0 <;> simp [h, comap_smul]
+  by_cases h : a = 0 <;> simp [h, comap_smul]
 
 theorem map_smul' (f : V →ₗ[K] V₂) (p : Submodule K V) (a : K) :
     p.map (a • f) = ⨆ _ : a ≠ 0, map f p := by
-  classical by_cases h : a = 0 <;> simp [h, Submodule.map_smul]
+  by_cases h : a = 0 <;> simp [h, Submodule.map_smul]
 
 end Submodule
 
@@ -674,6 +674,13 @@ theorem submoduleMap_surjective [RingHomSurjective σ₁₂] (f : M →ₛₗ[σ
 theorem submoduleMap_injective [RingHomSurjective σ₁₂] {f : M →ₛₗ[σ₁₂] M₂} (hf : Injective f)
     (p : Submodule R M) : Injective (f.submoduleMap p) :=
   f.toAddMonoidHom.addSubmonoidMap_injective hf _
+
+theorem submoduleMap_injective_of_injOn [RingHomSurjective σ₁₂]
+    {p : Submodule R M} {f : M →ₛₗ[σ₁₂] M₂} (hf : Set.InjOn f p) :
+    Injective (f.submoduleMap p) := by
+  intro ⟨x, hx⟩ ⟨y, hy⟩ hxy
+  replace hxy : f x = f y := by simpa [Subtype.ext_iff] using hxy
+  aesop
 
 open Submodule
 

@@ -222,11 +222,11 @@ theorem IsMatching.verts_eq_biUnion_edgeSet {M : G.Subgraph} (h : M.IsMatching) 
     exact ⟨s(v, u), he, Sym2.mem_mk_left ..⟩
   · exact mem_verts_of_mem_edge he hv
 
-theorem IsMatching.injOn_edgeSet : (setOf IsMatching).InjOn (edgeSet (G := G)) := by
+theorem IsMatching.injOn_edgeSet : (Set.ofPred IsMatching).InjOn (edgeSet (G := G)) := by
   refine fun M₁ h₁ M₂ h₂ h ↦ Subgraph.ext ?_ <| Sym2.fromRel_eq_fromRel_iff_eq .. |>.mp h
   rw [h₁.verts_eq_biUnion_edgeSet, h₂.verts_eq_biUnion_edgeSet, h]
 
-theorem IsMatching.strictMonoOn_edgeSet : StrictMonoOn (edgeSet (G := G)) (setOf IsMatching) :=
+theorem IsMatching.strictMonoOn_edgeSet : StrictMonoOn (edgeSet (G := G)) (Set.ofPred IsMatching) :=
   edgeSet_monotone.monotoneOn _ |>.strictMonoOn_of_injOn injOn_edgeSet
 
 /--
@@ -454,7 +454,6 @@ lemma Subgraph.IsPerfectMatching.symmDiff_isCycles
 lemma IsCycles.snd_of_mem_support_of_isPath_of_adj [Finite V] {v w w' : V}
     (hcyc : G.IsCycles) (p : G.Walk v w) (hw : w ≠ w') (hw' : w' ∈ p.support) (hp : p.IsPath)
     (hadj : G.Adj v w') : p.snd = w' := by
-  classical
   apply hp.snd_of_toSubgraph_adj
   rw [Walk.mem_support_iff_exists_getVert] at hw'
   obtain ⟨n, ⟨rfl, hnl⟩⟩ := hw'
@@ -471,7 +470,6 @@ lemma IsCycles.snd_of_mem_support_of_isPath_of_adj [Finite V] {v w w' : V}
 private lemma IsCycles.reachable_sdiff_toSubgraph_spanningCoe_aux [Finite V] {v w : V}
     (hcyc : G.IsCycles) (p : G.Walk v w) (hp : p.IsPath) :
     (G \ p.toSubgraph.spanningCoe).Reachable w v := by
-  classical
   -- Consider the case when p is nil
   by_cases hvw : v = w
   · subst hvw

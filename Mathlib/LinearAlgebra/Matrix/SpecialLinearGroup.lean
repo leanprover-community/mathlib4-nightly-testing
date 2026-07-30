@@ -680,13 +680,12 @@ lemma diag_eq_diag2n_prod (i₀ : ι) (D : ι → F) (hD : det (diagonal D) = 1)
     (⟨diagonal D, hD⟩ : SpecialLinearGroup ι F) =
       Finset.noncommProd {i : ι | i ≠ i₀} (fun i ↦ if hi : i ≠ i₀ then
       diag2n hi (D i) (diagonal_neZero D hD i) else 1) (diag_commute i₀ D hD) := by
-  classical
   set g : ι → ι → F := fun i k ↦ if k = i then D i else if k = i₀ then (D i)⁻¹ else 1 with hg_def
   apply coeMonoidHom_injective
   rw [Finset.map_noncommProd]
   simp_rw [coeMonoidHom_apply, apply_dite, coe_one]
   rw [Finset.noncommProd_congr (s₂ := {i | i ≠ i₀}) rfl (fun i hi ↦
-      (dif_pos (Finset.mem_filter.1 hi).2 : _ = (diag2n (Finset.mem_filter.1 hi).2 _ _).1))]
+      (dite_eq_left (Finset.mem_filter.1 hi).2 : _ = (diag2n (Finset.mem_filter.1 hi).2 _ _).1))]
   convert_to! _ = Finset.noncommProd {i | i ≠ i₀} (fun x ↦ diagonal (g x)) _
   simp_rw [← diagonalRingHom_apply]
   rw [← Finset.map_noncommProd _ _ (fun _ _ _ _ _ ↦ Commute.all _ _), Finset.noncommProd_eq_prod]
@@ -830,11 +829,13 @@ def S : SL(2, ℤ) :=
 def T : SL(2, ℤ) :=
   ⟨!![1, 1; 0, 1], by simp [Matrix.det_fin_two_of]⟩
 
+@[simp]
 theorem coe_S : ↑S = !![0, -1; 1, 0] :=
   rfl
 
 lemma S_inv : S⁻¹ = -S := by decide
 
+@[simp]
 theorem coe_T : ↑T = (!![1, 1; 0, 1] : Matrix _ _ ℤ) :=
   rfl
 

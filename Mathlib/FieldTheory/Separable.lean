@@ -5,14 +5,9 @@ Authors: Kenny Lau
 -/
 module
 
-public import Mathlib.Algebra.Polynomial.Expand
-public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Algebra.Squarefree.Basic
 public import Mathlib.FieldTheory.IntermediateField.Basic
-public import Mathlib.FieldTheory.Minpoly.Field
-public import Mathlib.RingTheory.Polynomial.Content
 public import Mathlib.RingTheory.PowerBasis
-public import Mathlib.Data.ENat.Lattice
 
 /-!
 
@@ -179,7 +174,6 @@ theorem emultiplicity_le_one_of_separable {p q : R[X]} (hq : ¬IsUnit q) (hsep :
 See `PerfectField.separable_iff_squarefree` for the converse when the coefficients are a perfect
 field. -/
 theorem Separable.squarefree {p : R[X]} (hsep : Separable p) : Squarefree p := by
-  classical
   rw [squarefree_iff_emultiplicity_le_one p]
   exact fun f => or_iff_not_imp_right.mpr fun hunit => emultiplicity_le_one_of_separable hunit hsep
 
@@ -277,7 +271,7 @@ theorem rootMultiplicity_le_one_of_separable [Nontrivial R] {p : R[X]} (hsep : S
   classical
   by_cases hp : p = 0
   · simp [hp]
-  rw [rootMultiplicity_eq_multiplicity, if_neg hp, ← Nat.cast_le (α := ℕ∞),
+  rw [rootMultiplicity_eq_multiplicity, ite_eq_right hp, ← Nat.cast_le (α := ℕ∞),
     Nat.cast_one, ← (finiteMultiplicity_X_sub_C x hp).emultiplicity_eq_multiplicity]
   apply emultiplicity_le_one_of_separable (not_isUnit_X_sub_C _) hsep
 
@@ -782,7 +776,6 @@ theorem AlgHom.natCard_of_powerBasis (pb : PowerBasis K S) (h_sep : IsSeparable 
 theorem AlgHom.card_of_powerBasis (pb : PowerBasis K S) (h_sep : IsSeparable K pb.gen)
     (h_splits : ((minpoly K pb.gen).map (algebraMap K L)).Splits) :
     @Fintype.card (S →ₐ[K] L) (PowerBasis.AlgHom.fintype pb) = pb.dim := by
-  classical
   rw [Fintype.card_eq_nat_card, AlgHom.natCard_of_powerBasis pb h_sep h_splits]
 
 end CardAlgHom

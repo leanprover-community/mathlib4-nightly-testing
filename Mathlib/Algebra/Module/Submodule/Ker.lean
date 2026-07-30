@@ -164,6 +164,11 @@ def iterateKer (f : M →ₗ[R] M) : ℕ →o Submodule R M where
     rw [LinearMap.mem_ker] at h
     rw [LinearMap.mem_ker, add_comm, pow_add, Module.End.mul_apply, h, map_zero]
 
+lemma ker_submoduleMap {τ₂₁ : R₂ →+* R} [RingHomInvPair τ₁₂ τ₂₁]
+    (f : M →ₛₗ[τ₁₂] M₂) (p : Submodule R M) :
+    (f.submoduleMap p).ker = f.ker.comap p.subtype := by
+  ext; simp [Subtype.ext_iff]
+
 end AddCommMonoid
 
 section Ring
@@ -193,9 +198,6 @@ theorem injOn_of_disjoint_ker {p : Submodule R M} {s : Set M} (h : s ⊆ p)
 
 theorem ker_eq_bot {f : M →ₛₗ[τ₁₂] M₂} : ker f = ⊥ ↔ Injective f := by
   simpa [disjoint_iff_inf_le] using disjoint_ker_iff_injOn (f := f) (p := ⊤)
-
-@[deprecated (since := "2025-12-23")]
-alias _root_.LinearMapClass.ker_eq_bot := ker_eq_bot
 
 @[simp] lemma injective_domRestrict_iff {f : M →ₛₗ[τ₁₂] M₂} {S : Submodule R M} :
     Injective (f.domRestrict S) ↔ Disjoint S f.ker := by

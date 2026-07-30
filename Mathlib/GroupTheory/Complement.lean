@@ -225,16 +225,16 @@ lemma isComplement_subgroup_left_iff_existsUnique_quotientMk'' :
 
 @[to_additive]
 lemma isComplement_subgroup_right_iff_bijective :
-    IsComplement S H ↔ Bijective (S.restrict (QuotientGroup.mk : G → G ⧸ H)) :=
+    IsComplement S H ↔ Bijective (S.domRestrict (QuotientGroup.mk : G → G ⧸ H)) :=
   isComplement_subgroup_right_iff_existsUnique_quotientGroupMk.trans
-    (bijective_iff_existsUnique (S.restrict QuotientGroup.mk)).symm
+    (bijective_iff_existsUnique (S.domRestrict QuotientGroup.mk)).symm
 
 @[to_additive]
 lemma isComplement_subgroup_left_iff_bijective :
     IsComplement H T ↔
-      Bijective (T.restrict (Quotient.mk'' : G → Quotient (QuotientGroup.rightRel H))) :=
+      Bijective (T.domRestrict (Quotient.mk'' : G → Quotient (QuotientGroup.rightRel H))) :=
   isComplement_subgroup_left_iff_existsUnique_quotientMk''.trans
-    (bijective_iff_existsUnique (T.restrict Quotient.mk'')).symm
+    (bijective_iff_existsUnique (T.domRestrict Quotient.mk'')).symm
 
 @[to_additive]
 lemma IsComplement.card_left (h : IsComplement S H) : Nat.card S = H.index :=
@@ -276,7 +276,7 @@ lemma exists_isComplement_left (H : Subgroup G) (g : G) : ∃ S, IsComplement S 
     QuotientGroup.mk g, Function.update_self (Quotient.mk'' g) g Quotient.out⟩
   by_cases hq : q = Quotient.mk'' g
   · exact hq.symm ▸ congr_arg _ (Function.update_self (Quotient.mk'' g) g Quotient.out)
-  · simp [Function.update, dif_neg hq, q.out_eq']
+  · simp [Function.update, dite_eq_right hq, q.out_eq']
 
 @[to_additive]
 lemma exists_isComplement_right (H : Subgroup G) (g : G) :
@@ -286,7 +286,7 @@ lemma exists_isComplement_right (H : Subgroup G) (g : G) :
     Quotient.mk'' g, Function.update_self (Quotient.mk'' g) g Quotient.out⟩
   by_cases hq : q = Quotient.mk'' g
   · exact hq.symm ▸ congr_arg _ (Function.update_self (Quotient.mk'' g) g Quotient.out)
-  · simp [Function.update, dif_neg hq, q.out_eq']
+  · simp [Function.update, dite_eq_right hq, q.out_eq']
 
 /-- Given two subgroups `H' ⊆ H`, there exists a left transversal to `H'` inside `H`. -/
 @[to_additive /-- Given two subgroups `H' ⊆ H`, there exists a transversal to `H'` inside `H` -/]
@@ -611,11 +611,15 @@ theorem smul_apply_eq_smul_apply_inv_smul (f : F) (S : H.LeftTransversal) (q : G
 end Action
 
 @[to_additive]
-instance : Inhabited H.LeftTransversal :=
+-- Note: `Set` has no computational content, but Lean still attempts to compile it.
+-- See https://github.com/leanprover/lean4/issues/14084.
+noncomputable instance : Inhabited H.LeftTransversal :=
   ⟨⟨Set.range Quotient.out, isComplement_range_left Quotient.out_eq'⟩⟩
 
 @[to_additive]
-instance : Inhabited H.RightTransversal :=
+-- Note: `Set` has no computational content, but Lean still attempts to compile it.
+-- See https://github.com/leanprover/lean4/issues/14084.
+noncomputable instance : Inhabited H.RightTransversal :=
   ⟨⟨Set.range Quotient.out, isComplement_range_right Quotient.out_eq'⟩⟩
 
 theorem IsComplement'.isCompl (h : IsComplement' H K) : IsCompl H K := by
