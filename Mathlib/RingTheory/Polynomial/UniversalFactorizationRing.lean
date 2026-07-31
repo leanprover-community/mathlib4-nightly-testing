@@ -13,6 +13,8 @@ public import Mathlib.RingTheory.Polynomial.Resultant.Basic
 public import Mathlib.RingTheory.Smooth.StandardSmoothCotangent
 public import Mathlib.RingTheory.LocalRing.ResidueField.Ideal
 
+meta import Lean.PostprocessTraces
+
 
 /-!
 
@@ -30,6 +32,8 @@ We construct the universal ring of the following functors on `R-Alg`:
   See `Polynomial.UniversalCoprimeFactorizationRing.homEquiv`.
 
 -/
+
+open Lean.PostprocessTraces
 
 @[expose] public section
 
@@ -187,11 +191,17 @@ def universalFactorizationMapLiftEquiv (p : MonicDegreeEq S n) :
   left_inv f := by ext <;> simp
   right_inv q := by ext <;> simp
 
-set_option backward.isDefEq.respectTransparency.types false in
+/-!
+# Issue
+
+Fixed after adjusting the `onFailure` logic in `isDefEqApp`.
+-/
+
 lemma ker_eval₂Hom_universalFactorizationMap :
     RingHom.ker (eval₂Hom (S₁ := MvPolynomial (Fin m) R ⊗[R] MvPolynomial (Fin k) R)
       (universalFactorizationMap R n m k hn) (Sum.elim (.X · ⊗ₜ 1) (1 ⊗ₜ .X ·))) =
-    Ideal.span (Set.range fun i ↦ C (X i) - map C (tensorEquivSum _ _ _ _
+    Ideal.span (Set.range fun i ↦ C (X i) -
+      map C (tensorEquivSum _ _ _ _
       (universalFactorizationMap R n m k hn (X i)))) := by
   set f := eval₂Hom (R := MvPolynomial (Fin n) R)
     (S₁ := MvPolynomial (Fin m) R ⊗[R] MvPolynomial (Fin k) R)
@@ -221,6 +231,9 @@ lemma ker_eval₂Hom_universalFactorizationMap :
     congr 1
     ext <;> simp
 
+postprocess_traces
+  filterSubtrees fun x => containsString "=?= Mul.mul" x
+in
 set_option backward.isDefEq.respectTransparency false in
 /-- The canonical presentation of `universalFactorizationMap`. -/
 @[simps] def universalFactorizationMapPresentation :
@@ -514,7 +527,12 @@ def UniversalFactorizationRing.presentation :
   letI := ((MvPolynomial.mapEquivMonic R _ n).symm p).toAlgebra
   (MvPolynomial.universalFactorizationMapPresentation R n m k hn).baseChange _
 
-set_option backward.isDefEq.respectTransparency.types false in
+/-!
+# Issue 2 (Low Severity)
+
+Same.
+-/
+
 lemma UniversalFactorizationRing.jacobian_resentation :
     (presentation m k hn p).jacobian =
       (-1) ^ n * (factor₁ m k hn p).1.resultant (factor₂ m k hn p).1 := by

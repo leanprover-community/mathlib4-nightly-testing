@@ -11,6 +11,7 @@ public import Mathlib.CategoryTheory.ConcreteCategory.Elementwise
 public import Mathlib.Data.DFinsupp.BigOperators
 public import Mathlib.Data.DFinsupp.Small
 public import Mathlib.GroupTheory.QuotientGroup.Defs
+meta import Lean.PostprocessTraces
 /-!
 # The category of additive commutative groups has all colimits.
 
@@ -18,6 +19,7 @@ This file constructs colimits in the category of additive commutative groups, as
 quotients of finitely supported functions.
 
 -/
+open Lean.PostprocessTraces
 
 @[expose] public section
 
@@ -301,6 +303,13 @@ namespace AddCommGrpCat
 
 open QuotientAddGroup
 
+/-!
+# Issue (Trivial Severity)
+
+Actually, the `respectTransparency false` "fixes it" already by *preventing* a bump.
+However, the sustainable fix would be to fix the `lift_mk` rfl lemma.
+-/
+
 set_option backward.isDefEq.respectTransparency false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The categorical cokernel of a morphism in `AddCommGrpCat`
@@ -321,8 +330,8 @@ noncomputable def cokernelIsoQuotient {G H : AddCommGrpCat.{u}} (f : G ⟶ H) :
     rfl
   inv_hom_id := by
     ext x
-    dsimp only [hom_comp, hom_ofHom, hom_zero, AddMonoidHom.coe_comp, coe_mk',
-      Function.comp_apply, AddMonoidHom.zero_apply, id_eq, lift_mk, hom_id, AddMonoidHom.coe_id]
+    dsimp only [hom_comp, hom_ofHom, hom_zero, AddMonoidHom.coe_comp, coe_mk', lift_mk,
+      Function.comp_apply, AddMonoidHom.zero_apply, id_eq, hom_id, AddMonoidHom.coe_id]
     exact QuotientAddGroup.induction_on (α := H) x <| cokernel.π_desc_apply f _ _
 
 end AddCommGrpCat
