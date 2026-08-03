@@ -165,20 +165,18 @@ theorem emultiplicity_factorial_mul {n p : ℕ} (hp : p.Prime) :
 and `n - 1`. -/
 theorem multiplicity_factorial_pow {n p : ℕ} (hp : p.Prime) :
     multiplicity p (p ^ n).factorial = ∑ i ∈ Finset.range n, p ^ i := by
-  rw [← ENat.coe_inj, ← (Nat.finiteMultiplicity_iff.2
+  rw [← ENat.natCast_inj, ← (Nat.finiteMultiplicity_iff.2
       ⟨hp.ne_one, (p ^ n).factorial_pos⟩).emultiplicity_eq_multiplicity]
   induction n with
   | zero => simp [hp.emultiplicity_one]
   | succ n h =>
-    rw [pow_succ', hp.emultiplicity_factorial_mul, h, Finset.sum_range_succ, ENat.coe_add]
+    rw [pow_succ', hp.emultiplicity_factorial_mul, h, Finset.sum_range_succ, ENat.natCast_add]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- A prime power divides `n!` iff it is at most the sum of the quotients `n / p ^ i`.
   This sum is expressed over the set `Ico 1 b` where `b` is any bound greater than `log p n` -/
 theorem pow_dvd_factorial_iff {p : ℕ} {n r b : ℕ} (hp : p.Prime) (hbn : log p n < b) :
     p ^ r ∣ n ! ↔ r ≤ ∑ i ∈ Ico 1 b, n / p ^ i := by
-  rw [← WithTop.coe_le_coe, ENat.some_eq_coe, ← hp.emultiplicity_factorial hbn,
-    pow_dvd_iff_le_emultiplicity]
+  rw [← ENat.natCast_le_natCast, ← hp.emultiplicity_factorial hbn, pow_dvd_iff_le_emultiplicity]
 
 theorem emultiplicity_factorial_le_div_pred {p : ℕ} (hp : p.Prime) (n : ℕ) :
     emultiplicity p n ! ≤ (n / (p - 1) : ℕ) := by
@@ -279,7 +277,7 @@ theorem emultiplicity_two_factorial_lt : ∀ {n : ℕ} (_ : n ≠ 0), emultiplic
     by_cases hn : n = 0
     · subst hn
       simp only [ne_eq, bit_eq_zero_iff, true_and, Bool.not_eq_false] at h
-      simp only [bit, h, cond_true, mul_zero, zero_add, factorial_one]
+      simp only [bit, h, Bool.cond_true, mul_zero, zero_add, factorial_one]
       rw [Prime.emultiplicity_one]
       · exact zero_lt_one
       · decide
