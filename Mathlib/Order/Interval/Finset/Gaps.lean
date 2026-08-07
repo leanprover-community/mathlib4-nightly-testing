@@ -74,6 +74,11 @@ theorem intervalGapsWithin_zero_fst : (F.intervalGapsWithin h a b 0).1 = a := by
 theorem intervalGapsWithin_succ_fst_of_lt (hj : j < k) :
     (F.intervalGapsWithin h a b (j.succ)).1 = (F.orderEmbOfFin (α := α ×ₗ α) h ⟨j, hj⟩).2 := by
   have : (j.succ : Fin (k + 1)) = (⟨j, hj⟩ : Fin k).succ := by ext; simp [hj]
+  #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+  grind's `ToInt` machinery with homomorphism-based translation), the `= Fin.pred_succ` hint
+  was not needed. `grind` will not lift a `Fin` equality out of the corresponding `val`
+  equality when it is wanted only as an intermediate for congruence; the same defect breaks
+  proofs in `Incenter`, `FormalGroup`, `Intervals` and `BoundedVariation`. -/
   grind [intervalGapsWithin, intervalGapsWithin.fst, = Fin.pred_succ]
 
 theorem intervalGapsWithin_fst_of_lt_lt (hj₁ : 0 < j) (hj₂ : j - 1 < k) :
@@ -124,7 +129,15 @@ theorem intervalGapsWithin_surjOn : (Set.Iio k).SurjOn
 theorem intervalGapsWithin_le_fst {a b : α} (hFab : ∀ ⦃z⦄, z ∈ F → a ≤ z.1 ∧ z.1 ≤ z.2 ∧ z.2 ≤ b) :
     a ≤ (F.intervalGapsWithin h a b j).1 := by
   wlog hj : j < k + 1 generalizing j
-  · have := this ((j : Fin (k + 1)).val) (Fin.isLt _)
+  · #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+    grind's `ToInt` machinery with homomorphism-based translation), this was `grind
+    [cast_val_eq_self]`. `grind` instantiates the `wlog` hypothesis at the literal `j`,
+    which is useless here since `hj : k + 1 ≤ j`; what is wanted is an instantiation at
+    `(j : Fin (k + 1)).val`. That trigger term used to exist only because cutsat's `ToInt`
+    component internalized it, i.e. this matched on E-graph pollution — the same accident
+    as `Fin.val_sub_one_of_ne_zero` in `Order/Interval/Finset/Fin.lean`, and not a `grind`
+    defect. -/
+    have := this ((j : Fin (k + 1)).val) (Fin.isLt _)
     grind [cast_val_eq_self]
   by_cases hj : j = 0
   · simp [hj]
@@ -136,7 +149,15 @@ theorem intervalGapsWithin_le_fst {a b : α} (hFab : ∀ ⦃z⦄, z ∈ F → a 
 theorem intervalGapsWithin_snd_le {a b : α} (hFab : ∀ ⦃z⦄, z ∈ F → a ≤ z.1 ∧ z.1 ≤ z.2 ∧ z.2 ≤ b) :
     (F.intervalGapsWithin h a b j).2 ≤ b := by
   wlog hj : j < k + 1 generalizing j
-  · have := this ((j : Fin (k + 1)).val) (Fin.isLt _)
+  · #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+    grind's `ToInt` machinery with homomorphism-based translation), this was `grind
+    [cast_val_eq_self]`. `grind` instantiates the `wlog` hypothesis at the literal `j`,
+    which is useless here since `hj : k + 1 ≤ j`; what is wanted is an instantiation at
+    `(j : Fin (k + 1)).val`. That trigger term used to exist only because cutsat's `ToInt`
+    component internalized it, i.e. this matched on E-graph pollution — the same accident
+    as `Fin.val_sub_one_of_ne_zero` in `Order/Interval/Finset/Fin.lean`, and not a `grind`
+    defect. -/
+    have := this ((j : Fin (k + 1)).val) (Fin.isLt _)
     grind [cast_val_eq_self]
   by_cases hj : j = k
   · simp [hj]
