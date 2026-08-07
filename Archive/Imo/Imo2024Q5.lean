@@ -735,18 +735,20 @@ def winningStrategy (hN : 2 ≤ N) : Strategy N
 
 #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing grind's
 `ToInt` machinery with homomorphism-based translation), the four `Fin` bounds marked `by omega`
-in this lemma and in `path2_firstMonster_of_not_edge` below were `by lia`. `lia` no longer sees
-the range fact for `m (row1 hN) : Fin (N + 1)`. Minimised:
-```
-example {N : ℕ} (a : Fin (N + 2)) (m : (Set.Icc a ⟨N, by lia⟩ : Set (Fin (N + 2))) ↪ Fin (N + 1))
-    (r : (Set.Icc a ⟨N, by lia⟩ : Set (Fin (N + 2)))) : (m r : ℕ) < N + 1 := by lia
-```
-It needs all three of: a `Set.Icc`, a `Fin.mk` as one of its bounds, and a bundled `Embedding`.
-Making the bounds variables, replacing the embedding by a plain function, or replacing the
-`Set.Icc` by a bare `setOf` or `Subtype` (even one mentioning the same `Fin.mk`) all succeed,
-as does `omega` throughout. This is not the type canonicalisation fixed by
-https://github.com/leanprover/lean4/pull/14709, which is now part of 14473; it looks instead
-like `Fin`-literal normalisation. -/
+in this lemma and in `path2_firstMonster_of_not_edge` below were `by lia`.
+
+`grind` does assert the range fact; the trace shows both `N + 1 ≤ ↑(m r)` (the negated goal)
+and `↑(m r) ≤ N` (the `hom_pred` range fact), with byte-identical `↑(m r)` atoms, and lists
+both under "True propositions" — yet `lia` reports the linear constraints satisfiable
+(`[assign] N := 0`) and fails. So one of the two never reaches cutsat. `generalize m r = z`
+before `lia` succeeds, as does `omega` throughout.
+
+Minimised import-free in the branch notes; three ingredients are each necessary: a
+`@[reducible]` coe-sort from a `Set`-like `α → Prop` to a `Subtype`, a `Fin.mk` in the
+predicate, and a `CoeFun`-bundled function into `Fin (N + 1)`. Injectivity and `DFunLike`
+are not needed. Here that is `Set`'s reducible coe-sort, `Set.Icc`'s `Fin.mk` bound, and `↪`.
+Not the canonicalisation fixed by https://github.com/leanprover/lean4/pull/14709, which is
+part of 14473. -/
 set_option backward.isDefEq.respectTransparency false in
 lemma path0_firstMonster_eq_apply_row1 (hN : 2 ≤ N) (m : MonsterData N) :
     (path0 hN).firstMonster m = some (1, m (row1 hN)) := by
