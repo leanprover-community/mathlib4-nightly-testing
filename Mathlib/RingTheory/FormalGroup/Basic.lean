@@ -216,8 +216,15 @@ lemma coeff_one_Xzero : F.Xzero.coeff 1 = 1 := by
     by_cases hd₁ : d 1 = 0
     · by_cases hd₀ : d 0 = 0
       · simp [hd₀, hd₁]
-      simp [hd₁, PowerSeries.coeff_X_pow]
-      grind
+      #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+      grind's `ToInt` machinery with homomorphism-based translation), this was closed by
+      `grind` after `simp [hd₁, PowerSeries.coeff_X_pow]`. It only needs exhaustion of
+      `Fin 2`, but the domain is spelled `Fin (Nat.succ 0).succ` while the witness has type
+      `Fin 2`, so this may be the canonicalizer issue addressed by
+      https://github.com/leanprover/lean4/pull/14709. -/
+      have hne : (1 : ℕ) ≠ d 0 := fun h ↦
+        hd (Finsupp.ext fun w ↦ by fin_cases w <;> simp [h.symm, hd₁])
+      simp [hd₁, PowerSeries.coeff_X_pow, hne]
     simp [hd₁]
   · exact HasSubst.X_zero
 
@@ -268,8 +275,15 @@ lemma coeff_one_zeroX : F.zeroX.coeff 1 = 1 := by
     by_cases hd₁ : d 0 = 0
     · by_cases hd₀ : d 1 = 0
       · simp [hd₀, hd₁]
-      simp [hd₁, PowerSeries.coeff_X_pow]
-      grind
+      #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+      grind's `ToInt` machinery with homomorphism-based translation), this was closed by
+      `grind` after `simp [hd₁, PowerSeries.coeff_X_pow]`. It only needs exhaustion of
+      `Fin 2`, but the domain is spelled `Fin (Nat.succ 0).succ` while the witness has type
+      `Fin 2`, so this may be the canonicalizer issue addressed by
+      https://github.com/leanprover/lean4/pull/14709. -/
+      have hne : (1 : ℕ) ≠ d 1 := fun h ↦
+        hd (Finsupp.ext fun w ↦ by fin_cases w <;> simp [h.symm, hd₁])
+      simp [hd₁, PowerSeries.coeff_X_pow, hne]
     simp [hd₁]
   · exact HasSubst.zero_X
 

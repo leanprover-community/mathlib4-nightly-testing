@@ -216,8 +216,16 @@ private def multicofork (hf : horn.IsCompatible f) :
       (Subcomplex.toSSetFunctor)) :=
   Multicofork.ofπ _ X (fun ⟨j, hj⟩ ↦ (stdSimplex.faceSingletonComplIso j).inv ≫ f j hj) (by
     obtain _ | n := n
-    · rintro ⟨⟨a, b⟩, hab⟩
-      grind
+    · #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+      grind's `ToInt` machinery with homomorphism-based translation), `grind` closed this
+      goal: with `n = 0`, `{i}ᶜ` is a singleton in `Fin 2`, so `a < b` is absurd. `grind`'s
+      state mixes `Fin (0 + 2)` with `Fin (0 + 1 + 1)`, which may be the canonicalizer issue
+      addressed by https://github.com/leanprover/lean4/pull/14709. The original proof was:
+      `rintro ⟨⟨a, b⟩, hab⟩; grind` -/
+      rintro ⟨⟨⟨a, ha⟩, ⟨b, hb⟩⟩, hab⟩
+      simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at ha hb
+      simp only [Set.mem_ofPred_eq, Subtype.mk_lt_mk] at hab
+      exact absurd hab (by omega)
     · rintro ⟨⟨⟨a, ha⟩, ⟨b, hb⟩⟩, hab : a < b⟩
       simp only [Set.mem_compl_iff, Set.mem_singleton_iff] at ha hb
       dsimp

@@ -384,7 +384,13 @@ lemma strictMono_φ : StrictMono (φ x hd) := by
         dsimp
   · exact Prod.lt_of_lt_of_le (by simp) (by simp)
   · rw [φ_of_gt _ _ _ (by grind), φ_of_gt _ _ _ (by grind)]
-    exact hx' (by grind)
+    #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+    grind's `ToInt` machinery with homomorphism-based translation), the argument to `hx'`
+    was `by grind`. `grind` has all the `Fin.val` facts it needs but keeps `Fin (m + 2)` and
+    `Fin (d + 1)` as separate images, so the `<` between the two `pred`s is never translated;
+    this may be the canonicalizer issue addressed by
+    https://github.com/leanprover/lean4/pull/14709. -/
+    exact hx' (by simp only [Fin.lt_def, Fin.val_pred, Fin.val_succ, Fin.val_castSucc]; omega)
 
 /-- The type (I) simplex reconstructed from a type (II) simplex. -/
 noncomputable abbrev simplex : (Δ[m + 1] ⊗ Δ[n]) _⦋d + 1⦌ :=

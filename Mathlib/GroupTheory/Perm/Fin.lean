@@ -460,7 +460,7 @@ theorem cycleIcc_zero_eq_cycleRange (i : Fin n) [NeZero n] : cycleIcc 0 i = cycl
 theorem cycleIcc_comp_succAbove {n : ℕ} (i j : Fin (n + 1)) (hij : i ≤ j) :
     (cycleIcc i j) ∘ j.succAbove = i.succAbove := by
   grind [cycleIcc_of_lt, succAbove_of_castSucc_lt, cycleIcc_of_ge_of_lt,
-    succAbove_of_le_castSucc, coeSucc_eq_succ, cycleIcc_of_gt]
+    succAbove_of_le_castSucc, coeSucc_eq_succ, cycleIcc_of_gt, = Fin.lt_def, = Fin.le_def]
 
 theorem cycleIcc.trans [NeZero n] (hij : i ≤ j) (hjk : j ≤ k) :
     (cycleIcc i j) ∘ (cycleIcc j k) = (cycleIcc i k) := by

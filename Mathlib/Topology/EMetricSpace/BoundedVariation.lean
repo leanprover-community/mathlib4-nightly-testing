@@ -480,7 +480,12 @@ private theorem _root_.BoundedVariationOn.of_finset {E} [PseudoMetricSpace E] (f
     ext
     simp only [← s.range_orderEmbOfFin rfl, mem_image, mem_Iic, mem_range, u]
     constructor
-    · rintro ⟨i, rfl⟩; exact ⟨i.val, by grind⟩
+    · #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
+      grind's `ToInt` machinery with homomorphism-based translation), the second component
+      was `by grind`: it needed `min ↑i (s.card - 1) = ↑i` and then `Fin.eta`, facts the
+      `ToInt` machinery used to put in the E-graph. The original proof was:
+      `rintro ⟨i, rfl⟩; exact ⟨i.val, by grind⟩` -/
+      rintro ⟨i, rfl⟩; exact ⟨i.val, by omega, by congr; omega⟩
     · rintro ⟨i, hi, rfl⟩; use ⟨i, by omega⟩; congr; omega
   have hmono : Monotone u := fun _ _ _ ↦ OrderEmbedding.monotone _ (by grind)
   simp [BoundedVariationOn, this, image_range_of_monotone f hmono _]

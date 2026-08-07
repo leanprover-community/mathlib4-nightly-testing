@@ -74,7 +74,7 @@ theorem intervalGapsWithin_zero_fst : (F.intervalGapsWithin h a b 0).1 = a := by
 theorem intervalGapsWithin_succ_fst_of_lt (hj : j < k) :
     (F.intervalGapsWithin h a b (j.succ)).1 = (F.orderEmbOfFin (α := α ×ₗ α) h ⟨j, hj⟩).2 := by
   have : (j.succ : Fin (k + 1)) = (⟨j, hj⟩ : Fin k).succ := by ext; simp [hj]
-  grind [intervalGapsWithin, intervalGapsWithin.fst]
+  grind [intervalGapsWithin, intervalGapsWithin.fst, = Fin.pred_succ]
 
 theorem intervalGapsWithin_fst_of_lt_lt (hj₁ : 0 < j) (hj₂ : j - 1 < k) :
     (F.intervalGapsWithin h a b j).1 = (F.orderEmbOfFin (α := α ×ₗ α) h ⟨j - 1, hj₂⟩).2 := by
@@ -124,7 +124,8 @@ theorem intervalGapsWithin_surjOn : (Set.Iio k).SurjOn
 theorem intervalGapsWithin_le_fst {a b : α} (hFab : ∀ ⦃z⦄, z ∈ F → a ≤ z.1 ∧ z.1 ≤ z.2 ∧ z.2 ≤ b) :
     a ≤ (F.intervalGapsWithin h a b j).1 := by
   wlog hj : j < k + 1 generalizing j
-  · grind [cast_val_eq_self]
+  · have := this ((j : Fin (k + 1)).val) (Fin.isLt _)
+    grind [cast_val_eq_self]
   by_cases hj : j = 0
   · simp [hj]
   · have := hFab (F.intervalGapsWithin_mapsTo h a b (x := j - 1) (by grind))
@@ -135,7 +136,8 @@ theorem intervalGapsWithin_le_fst {a b : α} (hFab : ∀ ⦃z⦄, z ∈ F → a 
 theorem intervalGapsWithin_snd_le {a b : α} (hFab : ∀ ⦃z⦄, z ∈ F → a ≤ z.1 ∧ z.1 ≤ z.2 ∧ z.2 ≤ b) :
     (F.intervalGapsWithin h a b j).2 ≤ b := by
   wlog hj : j < k + 1 generalizing j
-  · grind [cast_val_eq_self]
+  · have := this ((j : Fin (k + 1)).val) (Fin.isLt _)
+    grind [cast_val_eq_self]
   by_cases hj : j = k
   · simp [hj]
   · have := hFab (F.intervalGapsWithin_mapsTo h a b (x := j) (by grind))

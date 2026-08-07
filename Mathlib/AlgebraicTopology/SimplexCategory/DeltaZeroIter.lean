@@ -166,9 +166,7 @@ lemma σ₀Iter_succ (i : ℕ) {n m : ℕ} (h : n + (i + 1) = m) :
   rw [dsimp% ConcreteCategory.comp_apply (σ₀Iter i) (σ 0)]
   by_cases! hk : k.val ≤ i
   · rw [σ₀Iter_coe_eq_of_lt .., coe_σ]
-    obtain hk | rfl := hk.lt_or_eq
-    · grind [Fin.predAbove_of_le_castSucc, Fin.coe_castPred, σ₀Iter_coe_eq_of_lt]
-    · grind [Fin.predAbove_of_le_castSucc, Fin.coe_castPred, σ₀Iter_coe_eq_of_ge, tsub_self]
+    grind [Fin.predAbove_of_le_castSucc, Fin.coe_castPred, σ₀Iter_coe_eq_of_le, = Fin.le_def]
   · rw [σ₀Iter_coe_eq_of_ge .., coe_σ,
       Fin.predAbove_of_castSucc_lt _ _ ?_, Fin.val_pred,
       σ₀Iter_coe_eq_of_ge .., Nat.sub_add_eq]

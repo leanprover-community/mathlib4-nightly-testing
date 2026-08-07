@@ -1282,47 +1282,52 @@ lemma excenter_eq_incenter_or_excenter_singleton_of_ne (signs : Finset (Fin 3)) 
     have : i = i₁ ∨ i = i₂ ∨ i = i₃ := by clear h; decide +revert
     grind
 
+#adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing grind's
+`ToInt` machinery with homomorphism-based translation), each of the six lemmas below ended in
+`simp; grind`. `grind` used to exhaust `Fin 3`: from `w ∈ {i₁}ᶜ` and `i₁`, `i₂`, `i₃` pairwise
+distinct it derived `w = i₂ ∨ w = i₃`. It no longer performs that case analysis, so each proof
+now supplies `{i₁}ᶜ = {i₂, i₃}` explicitly. -/
 lemma sSameSide_affineSpan_pair_incenter_point {i₁ i₂ i₃ : Fin 3} (h₁₂ : i₁ ≠ i₂) (h₁₃ : i₁ ≠ i₃)
     (h₂₃ : i₂ ≠ i₃) :
     line[ℝ, t.points i₂, t.points i₃].SSameSide t.incenter (t.points i₁) := by
   convert! t.sSameSide_incenter_point i₁
-  simp
-  grind
+  have hc : ({i₁}ᶜ : Set (Fin 3)) = {i₂, i₃} := by ext i; simp; omega
+  simp [hc, Set.image_pair]
 
 lemma sSameSide_affineSpan_pair_point_incenter {i₁ i₂ i₃ : Fin 3} (h₁₂ : i₁ ≠ i₂) (h₁₃ : i₁ ≠ i₃)
     (h₂₃ : i₂ ≠ i₃) :
     line[ℝ, t.points i₂, t.points i₃].SSameSide (t.points i₁) t.incenter := by
   convert! t.sSameSide_point_incenter i₁
-  simp
-  grind
+  have hc : ({i₁}ᶜ : Set (Fin 3)) = {i₂, i₃} := by ext i; simp; omega
+  simp [hc, Set.image_pair]
 
 lemma sOppSide_affineSpan_pair_excenter_singleton_point {i₁ i₂ i₃ : Fin 3} (h₁₂ : i₁ ≠ i₂)
     (h₁₃ : i₁ ≠ i₃) (h₂₃ : i₂ ≠ i₃) :
     line[ℝ, t.points i₂, t.points i₃].SOppSide (t.excenter {i₁}) (t.points i₁) := by
   convert! t.sOppSide_excenter_singleton_point i₁
-  simp
-  grind
+  have hc : ({i₁}ᶜ : Set (Fin 3)) = {i₂, i₃} := by ext i; simp; omega
+  simp [hc, Set.image_pair]
 
 lemma sOppSide_affineSpan_pair_point_excenter_singleton {i₁ i₂ i₃ : Fin 3} (h₁₂ : i₁ ≠ i₂)
     (h₁₃ : i₁ ≠ i₃) (h₂₃ : i₂ ≠ i₃) :
     line[ℝ, t.points i₂, t.points i₃].SOppSide (t.points i₁) (t.excenter {i₁}) := by
   convert! t.sOppSide_point_excenter_singleton i₁
-  simp
-  grind
+  have hc : ({i₁}ᶜ : Set (Fin 3)) = {i₂, i₃} := by ext i; simp; omega
+  simp [hc, Set.image_pair]
 
 lemma sSameSide_affineSpan_pair_excenter_singleton_point {i₁ i₂ i₃ : Fin 3} (h₁₂ : i₁ ≠ i₂)
     (h₁₃ : i₁ ≠ i₃) (h₂₃ : i₂ ≠ i₃) :
     line[ℝ, t.points i₂, t.points i₃].SSameSide (t.excenter {i₂}) (t.points i₁) := by
   convert! t.sSameSide_excenter_singleton_point h₁₂
-  simp
-  grind
+  have hc : ({i₁}ᶜ : Set (Fin 3)) = {i₂, i₃} := by ext i; simp; omega
+  simp [hc, Set.image_pair]
 
 lemma sSameSide_affineSpan_pair_point_excenter_singleton {i₁ i₂ i₃ : Fin 3} (h₁₂ : i₁ ≠ i₂)
     (h₁₃ : i₁ ≠ i₃) (h₂₃ : i₂ ≠ i₃) :
     line[ℝ, t.points i₂, t.points i₃].SSameSide (t.points i₁) (t.excenter {i₂}) := by
   convert! t.sSameSide_point_excenter_singleton h₁₂
-  simp
-  grind
+  have hc : ({i₁}ᶜ : Set (Fin 3)) = {i₂, i₃} := by ext i; simp; omega
+  simp [hc, Set.image_pair]
 
 lemma affineSpan_pair_eq_orthRadius [Fact (Module.finrank ℝ V = 2)] (signs : Finset (Fin 3))
     {i₁ i₂ i₃ : Fin 3} (h₁₂ : i₁ ≠ i₂) (h₁₃ : i₁ ≠ i₃) (h₂₃ : i₂ ≠ i₃) :
