@@ -385,13 +385,18 @@ lemma strictMono_φ : StrictMono (φ x hd) := by
   · exact Prod.lt_of_lt_of_le (by simp) (by simp)
   · rw [φ_of_gt _ _ _ (by grind), φ_of_gt _ _ _ (by grind)]
     #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
-    grind's `ToInt` machinery with homomorphism-based translation), the argument to `hx'`
-    was `by grind`. `grind` has all the `Fin.val` facts it needs but keeps `Fin (m + 2)` and
-    `Fin (d + 1)` as separate images, so the `<` between the two `pred`s is never translated.
-    This is not the canonicalizer issue fixed by
-    https://github.com/leanprover/lean4/pull/14709: that is now part of 14473, and `by grind`
-    still fails. -/
-    exact hx' (by simp only [Fin.lt_def, Fin.val_pred, Fin.val_succ, Fin.val_castSucc]; omega)
+    grind's `ToInt` machinery with homomorphism-based translation), the argument to `hx'` was
+    `by grind`. The single missing step is translating the goal's `Fin` `<` down to `val`:
+    `rw [Fin.lt_def]` alone makes `grind` close it. Supplying the `val`-level equation
+    `↑(i.castSucc.pred _) + 1 = ↑(i.succ.pred _)` as a hypothesis does *not* help, and
+    `grind [= Fin.lt_def]` does not either — so `grind` has every arithmetic fact it needs
+    and simply never relates them to the `<` it is asked to prove. Not reproducible outside
+    this file: the same goal in isolation, and with the ambient `Fin` types and their
+    identifications reconstructed, both succeed. Not the canonicalizer issue fixed by
+    https://github.com/leanprover/lean4/pull/14709, which is part of 14473. -/
+    exact hx' (by
+      rw [Fin.lt_def]
+      grind)
 
 /-- The type (I) simplex reconstructed from a type (II) simplex. -/
 noncomputable abbrev simplex : (Δ[m + 1] ⊗ Δ[n]) _⦋d + 1⦌ :=

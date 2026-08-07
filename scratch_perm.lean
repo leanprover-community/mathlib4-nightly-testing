@@ -459,17 +459,7 @@ theorem cycleIcc_zero_eq_cycleRange (i : Fin n) [NeZero n] : cycleIcc 0 i = cycl
 
 theorem cycleIcc_comp_succAbove {n : ℕ} (i j : Fin (n + 1)) (hij : i ≤ j) :
     (cycleIcc i j) ∘ j.succAbove = i.succAbove := by
-  #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
-  grind's `ToInt` machinery with homomorphism-based translation), the `= Fin.lt_def` and
-  `= Fin.le_def` hints were not needed. Either one alone suffices. `grind`'s failure state
-  already has the `Fin` order propositions and their `val` counterparts in the same
-  equivalence classes, so the translation happens; what it no longer does by itself is
-  decide the `Fin`-order side conditions of the conditional `cycleIcc`/`succAbove` rewrites.
-  Same family as the `UnionProd` failure, where `rw [Fin.lt_def]` is likewise the missing
-  step. Not minimised: conditional E-matching lemmas with `Fin`-order hypotheses, and case
-  splitting on `Fin` order, both behave correctly in isolation. -/
-  grind [cycleIcc_of_lt, succAbove_of_castSucc_lt, cycleIcc_of_ge_of_lt,
-    succAbove_of_le_castSucc, coeSucc_eq_succ, cycleIcc_of_gt, = Fin.lt_def, = Fin.le_def]
+  grind [cycleIcc_of_lt, succAbove_of_castSucc_lt, cycleIcc_of_ge_of_lt, succAbove_of_le_castSucc, coeSucc_eq_succ, cycleIcc_of_gt, = Fin.le_def]
 
 theorem cycleIcc.trans [NeZero n] (hij : i ≤ j) (hjk : j ≤ k) :
     (cycleIcc i j) ∘ (cycleIcc j k) = (cycleIcc i k) := by
