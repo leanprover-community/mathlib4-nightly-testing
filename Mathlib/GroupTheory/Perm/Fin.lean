@@ -461,16 +461,21 @@ theorem cycleIcc_comp_succAbove {n : ℕ} (i j : Fin (n + 1)) (hij : i ≤ j) :
     (cycleIcc i j) ∘ j.succAbove = i.succAbove := by
   #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
   grind's `ToInt` machinery with homomorphism-based translation), the `= Fin.lt_def` and
-  `= Fin.le_def` hints were not needed. Either one alone suffices. `grind`'s failure state
-  already has the `Fin` order propositions and their `val` counterparts in the same
-  equivalence classes, so the translation happens; what it no longer does by itself is
-  decide the `Fin`-order side conditions of the conditional `cycleIcc`/`succAbove` rewrites.
-  Same family as the `UnionProd` failure, where `rw [Fin.lt_def]` is likewise the missing
-  step. Minimises to an import-free example: three conditional rules for `cycleIcc` and two
-  for `succAbove`, stated as axioms over `Fin (n + 1)`, with the goal
-  `(fun w ↦ C i j (S j w)) = S i`. E-matching instantiates the conditional rules but cannot
-  select a branch, because the arithmetic truth of the translated order propositions is not
-  propagated in time to discharge their antecedents. -/
+  `= Fin.le_def` hints were not needed; either one alone suffices. `grind` enqueues a
+  case-split candidate for anything `isMorallyIff`, i.e. an equality whose carrier is `Prop`
+  (`Lean/Meta/Tactic/Grind/Internalize.lean`). `Fin.lt_def`/`Fin.le_def` are themselves
+  `[grind hom]` rules (`Init/Grind/Homo/Fin.lean`), and hom rules rewrite out of the E-graph
+  and `pushEq`, never producing an `Eq Prop _ _` term — so `Fin` comparisons are never
+  enqueued as split candidates at all. Passing one as `= Fin.lt_def` additionally registers
+  it as an E-matching equation, whose instances *are* morally-iff and do get enqueued;
+  `(splitImp := true)` also works. Minimises to four import-free lines:
+  ```
+  axiom T {n : Nat} : Fin n → Fin n → Fin n
+  axiom T_lt {n : Nat} (p x : Fin n) (h : x < p) : T p x = x
+  axiom T_ge {n : Nat} (p x : Fin n) (h : p ≤ x) : T p x = x
+  example {n : Nat} (p x : Fin n) : T p (T p x) = x := by grind [T_lt, T_ge]
+  ```
+  The identical shape over `Nat` is unaffected. -/
   grind [cycleIcc_of_lt, succAbove_of_castSucc_lt, cycleIcc_of_ge_of_lt,
     succAbove_of_le_castSucc, coeSucc_eq_succ, cycleIcc_of_gt, = Fin.lt_def, = Fin.le_def]
 
