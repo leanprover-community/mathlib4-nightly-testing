@@ -263,7 +263,7 @@ lemma Fin.prod_Iic_div [CommGroup M] {n : ℕ} (a : Fin n) (f : Fin (n + 1) → 
     grind's `ToInt` machinery with homomorphism-based translation), this bullet was `grind`.
     `grind` no longer splits the `dite`, and reports no asserted facts at all; the `Fin.val`
     facts that got it started used to come from the `ToInt` machinery. -/
-    rw [dif_pos (Nat.succ_lt_succ a.isLt), dif_pos n.succ_pos]
+    rw [dite_eq_left (Nat.succ_lt_succ a.isLt), dite_eq_left n.succ_pos]
     congr 1
 
 /-- Telescopic product over `Fin`. -/
@@ -277,7 +277,7 @@ lemma Fin.prod_Icc_div [CommGroup M] {n : ℕ} {a b : Fin n} (hab : a ≤ b)
     grind
   · #adaptation_note /-- As in `Fin.prod_Iic_div` above: before
     https://github.com/leanprover/lean4/pull/14473 this bullet was `grind`. -/
-    rw [dif_pos (Nat.succ_lt_succ b.isLt)]
+    rw [dite_eq_left (Nat.succ_lt_succ b.isLt)]
     congr 1
   · simp only [Order.lt_add_one_iff, is_le', ↓reduceDIte]
     rfl

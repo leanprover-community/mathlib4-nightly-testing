@@ -944,7 +944,7 @@ lemma Iic_sub_one_eq_Iio {n : ℕ} {b : Fin n} :
     haveI := b.neZero
     (hb : 0 < b) → Iic (b - 1) = Iio b := by
   intro hb
-  haveI := b.neZero
+  have := b.neZero
   have : (b - 1).val = b.val - 1 := Fin.val_sub_one_of_ne_zero hb.ne'
   grind [= Fin.le_def, = Fin.lt_def]
 
@@ -957,7 +957,7 @@ lemma Ioi_sub_one_eq_Ici {n : ℕ} {a : Fin n} :
     haveI := a.neZero
     (ha : 0 < a) → Ioi (a - 1) = Ici a := by
   intro ha
-  haveI := a.neZero
+  have := a.neZero
   have : (a - 1).val = a.val - 1 := Fin.val_sub_one_of_ne_zero ha.ne'
   grind [= Fin.lt_def, = Fin.le_def]
 
@@ -965,7 +965,7 @@ lemma Ioc_sub_one_eq_Icc {n : ℕ} {a b : Fin n} :
     haveI := a.neZero
     (ha : 0 < a) → Ioc (a - 1) b = Icc a b := by
   intro ha
-  haveI := a.neZero
+  have := a.neZero
   have : (a - 1).val = a.val - 1 := Fin.val_sub_one_of_ne_zero ha.ne'
   grind [= Fin.lt_def, = Fin.le_def]
 
@@ -978,7 +978,7 @@ lemma Ioo_sub_one_eq_Ico {n : ℕ} {a b : Fin n} :
     haveI := a.neZero
     (ha : 0 < a) → Ioo (a - 1) b = Ico a b := by
   intro ha
-  haveI := a.neZero
+  have := a.neZero
   have : (a - 1).val = a.val - 1 := Fin.val_sub_one_of_ne_zero ha.ne'
   grind [= Fin.lt_def, = Fin.le_def]
 
@@ -991,7 +991,7 @@ lemma Icc_sub_one_eq_Ico {n : ℕ} {a b : Fin n} :
     haveI := a.neZero
     (hb : 0 < b) → Icc a (b - 1) = Ico a b := by
   intro hb
-  haveI := b.neZero
+  have := b.neZero
   have : (b - 1).val = b.val - 1 := Fin.val_sub_one_of_ne_zero hb.ne'
   grind [= Fin.lt_def, = Fin.le_def]
 
@@ -1004,7 +1004,7 @@ lemma Ioc_sub_one_eq_Ioo {n : ℕ} {a b : Fin n} :
     haveI := a.neZero
     (hb : 0 < b) → Ioc a (b - 1) = Ioo a b := by
   intro hb
-  haveI := b.neZero
+  have := b.neZero
   have : (b - 1).val = b.val - 1 := Fin.val_sub_one_of_ne_zero hb.ne'
   grind [= Fin.lt_def, = Fin.le_def]
 
