@@ -390,10 +390,12 @@ lemma strictMono_φ : StrictMono (φ x hd) := by
     `rw [Fin.lt_def]` alone makes `grind` close it. Supplying the `val`-level equation
     `↑(i.castSucc.pred _) + 1 = ↑(i.succ.pred _)` as a hypothesis does *not* help, and
     `grind [= Fin.lt_def]` does not either — so `grind` has every arithmetic fact it needs
-    and simply never relates them to the `<` it is asked to prove. Not reproducible outside
-    this file: the same goal in isolation, and with the ambient `Fin` types and their
-    identifications reconstructed, both succeed. Not the canonicalizer issue fixed by
-    https://github.com/leanprover/lean4/pull/14709, which is part of 14473. -/
+    and simply never relates them to the `<` it is asked to prove. The dependent `φ_of_gt`
+    rewrites just above are essential to reproducing it: stating the resulting `Fin`
+    inequality directly, in any isolated form, succeeds. They are what puts the
+    `Fin (m + 2) = Fin (d + 1)` type identification into `grind`'s state. Not the
+    canonicalizer issue fixed by https://github.com/leanprover/lean4/pull/14709, which is
+    part of 14473. -/
     exact hx' (by
       rw [Fin.lt_def]
       grind)

@@ -466,8 +466,11 @@ theorem cycleIcc_comp_succAbove {n : ℕ} (i j : Fin (n + 1)) (hij : i ≤ j) :
   equivalence classes, so the translation happens; what it no longer does by itself is
   decide the `Fin`-order side conditions of the conditional `cycleIcc`/`succAbove` rewrites.
   Same family as the `UnionProd` failure, where `rw [Fin.lt_def]` is likewise the missing
-  step. Not minimised: conditional E-matching lemmas with `Fin`-order hypotheses, and case
-  splitting on `Fin` order, both behave correctly in isolation. -/
+  step. Minimises to an import-free example: three conditional rules for `cycleIcc` and two
+  for `succAbove`, stated as axioms over `Fin (n + 1)`, with the goal
+  `(fun w ↦ C i j (S j w)) = S i`. E-matching instantiates the conditional rules but cannot
+  select a branch, because the arithmetic truth of the translated order propositions is not
+  propagated in time to discharge their antecedents. -/
   grind [cycleIcc_of_lt, succAbove_of_castSucc_lt, cycleIcc_of_ge_of_lt,
     succAbove_of_le_castSucc, coeSucc_eq_succ, cycleIcc_of_gt, = Fin.lt_def, = Fin.le_def]
 
