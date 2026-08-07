@@ -733,13 +733,27 @@ def winningStrategy (hN : 2 ≤ N) : Strategy N
   | 1 => fun r => path1 hN ((r 0).getD 0).2
   | _ + 2 => fun r => path2 hN ((r 0).getD 0).2 ((r 1).getD 0).1
 
+#adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing grind's
+`ToInt` machinery with homomorphism-based translation), the four `Fin` bounds marked `by omega`
+in this lemma and in `path2_firstMonster_of_not_edge` below were `by lia`. `lia` no longer sees
+the range fact for `m (row1 hN) : Fin (N + 1)`; the trigger is an `Embedding` whose domain is a
+`Set` coe-sort, and it needs both — a plain function, or a generic `Subtype` domain, is fine:
+```
+-- fails
+example {N : ℕ} (m : (Set.Icc 0 ⟨N, by lia⟩ : Set (Fin (N + 2))) ↪ Fin (N + 1))
+    (r : (Set.Icc 0 ⟨N, by lia⟩ : Set (Fin (N + 2)))) : (m r : ℕ) < N + 1 := by lia
+-- succeeds
+example {N : ℕ} (p : Fin (N + 2) → Prop) (m : Subtype p ↪ Fin (N + 1))
+    (r : Subtype p) : (m r : ℕ) < N + 1 := by lia
+```
+-/
 set_option backward.isDefEq.respectTransparency false in
 lemma path0_firstMonster_eq_apply_row1 (hN : 2 ≤ N) (m : MonsterData N) :
     (path0 hN).firstMonster m = some (1, m (row1 hN)) := by
   simp_rw [path0, Path.firstMonster, Path.ofFn]
-  have h : (1, m (row1 hN)) = fn0 N ⟨(m (row1 hN) : ℕ) + 1, by lia⟩ := by
+  have h : (1, m (row1 hN)) = fn0 N ⟨(m (row1 hN) : ℕ) + 1, by omega⟩ := by
     simp_rw [fn0]
-    split_ifs <;> simp [Prod.ext_iff] at *; lia
+    split_ifs <;> simp [Prod.ext_iff] at *; omega
   rw [h, List.find?_ofFn_eq_some_of_injective (injective_fn0 N)]
   refine ⟨?_, fun j hj ↦ ?_⟩
   · rw [fn0]
@@ -822,9 +836,9 @@ lemma path2_firstMonster_of_not_edge (hN : 2 ≤ N) {m : MonsterData N} (hc₁0 
     (hc₁N : (m (row1 hN) : ℕ) ≠ N) (r : Fin (N + 2)) :
     (path2 hN (m (row1 hN)) r).firstMonster m = none ∨
       (path2 hN (m (row1 hN)) r).firstMonster m =
-        some (⟨2, by lia⟩, ⟨(m (row1 hN) : ℕ) + 1, by lia⟩) := by
+        some (⟨2, by lia⟩, ⟨(m (row1 hN) : ℕ) + 1, by omega⟩) := by
   suffices h : ∀ c ∈ (path2 hN (m (row1 hN)) r).cells, c ∉ m.monsterCells ∨
-      c = (⟨2, by lia⟩, ⟨(m (row1 hN) : ℕ) + 1, by lia⟩) by
+      c = (⟨2, by lia⟩, ⟨(m (row1 hN) : ℕ) + 1, by omega⟩) by
     simp only [Path.firstMonster]
     by_cases hn : List.find? (fun x ↦ decide (x ∈ m.monsterCells))
                              (path2 hN (m (row1 hN)) r).cells = none
