@@ -738,9 +738,15 @@ def winningStrategy (hN : 2 ≤ N) : Strategy N
 in this lemma and in `path2_firstMonster_of_not_edge` below were `by lia`.
 
 `grind` does assert the range fact; the trace shows both `N + 1 ≤ ↑(m r)` (the negated goal)
-and `↑(m r) ≤ N` (the `hom_pred` range fact), with byte-identical `↑(m r)` atoms, and lists
-both under "True propositions" — yet `lia` reports the linear constraints satisfiable
-(`[assign] N := 0`) and fails. So one of the two never reaches cutsat. `generalize m r = z`
+and `↑(m r) ≤ N` (the `hom_pred` range fact), and lists both under "True propositions" — yet
+`lia` reports the linear constraints satisfiable (`[assign] N := 0`) and fails, because the
+two are not the same atom. Under `pp.explicit` *and* `pp.proofs`, the `Fin.mk` bound inside
+the bundled function's domain type carries its proof raw in one and wrapped in
+`Lean.Grind.nestedProof` in the other:
+  `Fin.mk … N (@_example._proof_1 N)`  versus
+  `Fin.mk … N (@Lean.Grind.nestedProof … (@_example._proof_1 N))`.
+Proof-irrelevant and defeq, but syntactically distinct, so they become distinct arithmetic
+atoms. (`pp.explicit` alone hides this: it prints both proofs as `⋯`.) `generalize m r = z`
 before `lia` succeeds, as does `omega` throughout.
 
 Minimised import-free in the branch notes; three ingredients are each necessary: a
