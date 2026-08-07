@@ -384,28 +384,7 @@ lemma strictMono_φ : StrictMono (φ x hd) := by
         dsimp
   · exact Prod.lt_of_lt_of_le (by simp) (by simp)
   · rw [φ_of_gt _ _ _ (by grind), φ_of_gt _ _ _ (by grind)]
-    #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing
-    grind's `ToInt` machinery with homomorphism-based translation), the argument to `hx'` was
-    `by grind`. The single missing step is translating the goal's `Fin` `<` down to `val`:
-    `rw [Fin.lt_def]` alone makes `grind` close it. Supplying the `val`-level equation
-    `↑(i.castSucc.pred _) + 1 = ↑(i.succ.pred _)` as a hypothesis does *not* help, and
-    `grind [= Fin.lt_def]` does not either. The cause is that `grind`'s order translation is
-    keyed on the *syntactic* spelling of the `Fin` type: here `hx'` has domain
-    `Fin ((x.cast hd).dim + 1)` while the `pred`s are `Fin (d + 1)`, defeq but not
-    syntactically equal — hence the `set_option` above. Minimised, with no imports:
-    ```
-    def idd (n : Nat) : Nat := n
-    example (d : Nat) (a b : Fin (d + 1)) (h : (a : Nat) < (b : Nat)) :
-        @LT.lt (Fin (idd d + 1)) _ a b := by grind
-    ```
-    `≤` behaves the same, and so does putting the mismatch in a hypothesis instead; `Eq` at
-    the very same mismatch is handled fine. Same underlying defect as the `lia` failure in
-    `Archive/Imo/Imo2024Q5.lean` — there the two spellings differ by a `Lean.Grind.nestedProof`
-    wrapper on a proof inside the type rather than by the type index. Not the canonicalizer
-    issue fixed by https://github.com/leanprover/lean4/pull/14709, which is part of 14473. -/
-    exact hx' (by
-      rw [Fin.lt_def]
-      grind)
+    exact hx' (by grind)
 
 /-- The type (I) simplex reconstructed from a type (II) simplex. -/
 noncomputable abbrev simplex : (Δ[m + 1] ⊗ Δ[n]) _⦋d + 1⦌ :=
