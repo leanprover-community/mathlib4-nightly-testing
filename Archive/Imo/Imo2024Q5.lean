@@ -753,8 +753,10 @@ Minimised import-free in the branch notes; three ingredients are each necessary:
 `@[reducible]` coe-sort from a `Set`-like `α → Prop` to a `Subtype`, a `Fin.mk` in the
 predicate, and a `CoeFun`-bundled function into `Fin (N + 1)`. Injectivity and `DFunLike`
 are not needed. Here that is `Set`'s reducible coe-sort, `Set.Icc`'s `Fin.mk` bound, and `↪`.
-Not the canonicalisation fixed by https://github.com/leanprover/lean4/pull/14709, which is
-part of 14473. -/
+Same underlying defect as the `grind` failure in
+`Mathlib/AlgebraicTopology/SimplicialSet/AnodyneExtensions/UnionProd.lean` — there the two
+spellings differ by the `Fin` type index rather than by a proof buried in the type. Not the
+canonicalisation fixed by https://github.com/leanprover/lean4/pull/14709, part of 14473. -/
 set_option backward.isDefEq.respectTransparency false in
 lemma path0_firstMonster_eq_apply_row1 (hN : 2 ≤ N) (m : MonsterData N) :
     (path0 hN).firstMonster m = some (1, m (row1 hN)) := by

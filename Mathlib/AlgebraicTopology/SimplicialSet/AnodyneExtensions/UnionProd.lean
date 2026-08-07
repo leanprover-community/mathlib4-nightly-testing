@@ -399,8 +399,10 @@ lemma strictMono_φ : StrictMono (φ x hd) := by
         @LT.lt (Fin (idd d + 1)) _ a b := by grind
     ```
     `≤` behaves the same, and so does putting the mismatch in a hypothesis instead; `Eq` at
-    the very same mismatch is handled fine. Not the canonicalizer issue fixed by
-    https://github.com/leanprover/lean4/pull/14709, which is part of 14473. -/
+    the very same mismatch is handled fine. Same underlying defect as the `lia` failure in
+    `Archive/Imo/Imo2024Q5.lean` — there the two spellings differ by a `Lean.Grind.nestedProof`
+    wrapper on a proof inside the type rather than by the type index. Not the canonicalizer
+    issue fixed by https://github.com/leanprover/lean4/pull/14709, which is part of 14473. -/
     exact hx' (by
       rw [Fin.lt_def]
       grind)
