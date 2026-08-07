@@ -736,17 +736,16 @@ def winningStrategy (hN : 2 ≤ N) : Strategy N
 #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473 (replacing grind's
 `ToInt` machinery with homomorphism-based translation), the four `Fin` bounds marked `by omega`
 in this lemma and in `path2_firstMonster_of_not_edge` below were `by lia`. `lia` no longer sees
-the range fact for `m (row1 hN) : Fin (N + 1)`; the trigger is an `Embedding` whose domain is a
-`Set` coe-sort, and it needs both — a plain function, or a generic `Subtype` domain, is fine:
+the range fact for `m (row1 hN) : Fin (N + 1)`. Minimised:
 ```
--- fails
-example {N : ℕ} (m : (Set.Icc 0 ⟨N, by lia⟩ : Set (Fin (N + 2))) ↪ Fin (N + 1))
-    (r : (Set.Icc 0 ⟨N, by lia⟩ : Set (Fin (N + 2)))) : (m r : ℕ) < N + 1 := by lia
--- succeeds
-example {N : ℕ} (p : Fin (N + 2) → Prop) (m : Subtype p ↪ Fin (N + 1))
-    (r : Subtype p) : (m r : ℕ) < N + 1 := by lia
+example {N : ℕ} (a : Fin (N + 2)) (m : (Set.Icc a ⟨N, by lia⟩ : Set (Fin (N + 2))) ↪ Fin (N + 1))
+    (r : (Set.Icc a ⟨N, by lia⟩ : Set (Fin (N + 2)))) : (m r : ℕ) < N + 1 := by lia
 ```
--/
+It needs all three of: a `Set.Icc`, a `Fin.mk` as one of its bounds, and a bundled `Embedding`.
+Making the bounds variables, replacing the embedding by a plain function, or replacing the
+`Set.Icc` by a bare `setOf` or `Subtype` (even one mentioning the same `Fin.mk`) all succeed,
+as does `omega` throughout. So this looks like `Fin`-literal normalisation rather than the type
+canonicalisation addressed by https://github.com/leanprover/lean4/pull/14709. -/
 set_option backward.isDefEq.respectTransparency false in
 lemma path0_firstMonster_eq_apply_row1 (hN : 2 ≤ N) (m : MonsterData N) :
     (path0 hN).firstMonster m = some (1, m (row1 hN)) := by
