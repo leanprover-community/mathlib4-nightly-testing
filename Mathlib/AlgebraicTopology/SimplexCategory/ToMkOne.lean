@@ -133,26 +133,22 @@ lemma toMk₁_surjective {n : ℕ} : Function.Surjective (toMk₁ (n := n)) := b
     dsimp [toMk₁_apply]
     split_ifs with h
     · have hi : i ∉ S := fun hi ↦ by have := S.min'_le _ hi; grind
-      #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473
-      (replacing grind's `ToInt` machinery with homomorphism-based translation), `grind`
-      closed this goal. It now reports `2 = n + 1` among its hypotheses: `f i : Fin 2` and
-      `S.min' hS : Fin (n + 1)` are identified, and `Fin`'s injectivity does the rest. That
-      is the canonicalizer confusion which
-      https://github.com/leanprover/lean4/pull/14709 is expected to fix; it is not in 14473
-      yet, so `grind` may work again once the two are combined. The original proof was:
-      `simp [S] at hi; grind` -/
-      simp [S] at hi; omega
+      #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/13166
+      (replacing grind's canonicalizer with a type-directed normalizer), `grind` closed this
+      goal. It is not yet clear whether this is due to defeq abuse in Mathlib or a problem in
+      the new canonicalizer; a minimization would help. The original proof was: `grind` -/
+      simp [S] at hi; grind
     · simp only [Fin.castSucc_lt_castSucc_iff, Finset.lt_min'_iff, not_forall,
         not_lt] at h
       obtain ⟨j, hj, hij⟩ := h
       have := f.toOrderHom.monotone hij
-      #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/14473
-      (replacing grind's `ToInt` machinery with homomorphism-based translation), `grind`
-      closed this goal, which is just exhaustion of `Fin 2`. As above, `grind` now conflates
-      `Fin 2` with `Fin (n + 1)`; see https://github.com/leanprover/lean4/pull/14709. The
-      original proof was: `simp_all [ConcreteCategory.hom, S]; grind` -/
+      #adaptation_note /-- Before https://github.com/leanprover/lean4/pull/13166
+      (replacing grind's canonicalizer with a type-directed normalizer), `grind` closed this
+      goal. It is not yet clear whether this is due to defeq abuse in Mathlib or a problem in
+      the new canonicalizer; a minimization would help. The original proof was:
+      `grind [show f j ≤ f i from f.toOrderHom.monotone hij]` -/
       simp_all [ConcreteCategory.hom, S]
-      omega
+      grind
   · refine ⟨Fin.last _, ConcreteCategory.hom_ext _ _ (fun i ↦ ?_)⟩
     dsimp [toMk₁_apply]
     rw [ite_eq_left (by simp)]

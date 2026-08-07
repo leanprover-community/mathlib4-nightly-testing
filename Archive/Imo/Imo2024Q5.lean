@@ -744,8 +744,9 @@ example {N : ℕ} (a : Fin (N + 2)) (m : (Set.Icc a ⟨N, by lia⟩ : Set (Fin (
 It needs all three of: a `Set.Icc`, a `Fin.mk` as one of its bounds, and a bundled `Embedding`.
 Making the bounds variables, replacing the embedding by a plain function, or replacing the
 `Set.Icc` by a bare `setOf` or `Subtype` (even one mentioning the same `Fin.mk`) all succeed,
-as does `omega` throughout. So this looks like `Fin`-literal normalisation rather than the type
-canonicalisation addressed by https://github.com/leanprover/lean4/pull/14709. -/
+as does `omega` throughout. This is not the type canonicalisation fixed by
+https://github.com/leanprover/lean4/pull/14709, which is now part of 14473; it looks instead
+like `Fin`-literal normalisation. -/
 set_option backward.isDefEq.respectTransparency false in
 lemma path0_firstMonster_eq_apply_row1 (hN : 2 ≤ N) (m : MonsterData N) :
     (path0 hN).firstMonster m = some (1, m (row1 hN)) := by
