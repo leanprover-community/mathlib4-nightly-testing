@@ -88,7 +88,7 @@ class SemilatticeInf (α : Type u) extends PartialOrder α where
   /-- The infimum is the *greatest* lower bound -/
   protected le_inf : ∀ a b c : α, a ≤ b → a ≤ c → a ≤ inf b c
 
-attribute [to_dual existing] SemilatticeSup.sup_le SemilatticeSup.mk SemilatticeSup.casesOn
+attribute [to_dual existing] SemilatticeSup.casesOn
 
 @[to_dual]
 instance SemilatticeSup.toMax [SemilatticeSup α] : Max α where max a b := SemilatticeSup.sup a b
@@ -308,7 +308,7 @@ theorem Ne.lt_sup_or_lt_sup (hab : a ≠ b) : a < a ⊔ b ∨ b < a ⊔ b :=
 
 @[to_dual inf_le_ite]
 theorem ite_le_sup (a b : α) (P : Prop) [Decidable P] : ite P a b ≤ a ⊔ b :=
-  if h : P then (if_pos h).trans_le le_sup_left else (if_neg h).trans_le le_sup_right
+  if h : P then (ite_eq_left h).trans_le le_sup_left else (ite_eq_right h).trans_le le_sup_right
 
 @[to_dual (reorder := H (x y))]
 theorem SemilatticeSup.ext_sup {α} {A B : SemilatticeSup α}

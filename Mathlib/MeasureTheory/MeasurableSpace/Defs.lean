@@ -6,7 +6,6 @@ Authors: Johannes Hölzl, Mario Carneiro
 module
 
 public import Mathlib.Data.Set.Countable
-public import Mathlib.Order.ConditionallyCompleteLattice.Basic
 public import Mathlib.Tactic.CrossRefAttribute
 public import Mathlib.Tactic.FunProp.Attr
 public import Mathlib.Tactic.Measurability
@@ -195,7 +194,7 @@ protected theorem MeasurableSet.ite {t s₁ s₂ : Set α} (ht : MeasurableSet t
     (h₁ : MeasurableSet s₁) (h₂ : MeasurableSet s₂) : MeasurableSet (t.ite s₁ s₂) :=
   (h₁.inter ht).union (h₂.diff ht)
 
-open Classical in
+open scoped Classical in
 theorem MeasurableSet.ite' {s t : Set α} {p : Prop} (hs : p → MeasurableSet s)
     (ht : ¬p → MeasurableSet t) : MeasurableSet (ite p s t) := by
   split_ifs with h
@@ -203,7 +202,7 @@ theorem MeasurableSet.ite' {s t : Set α} {p : Prop} (hs : p → MeasurableSet s
 
 @[simp, measurability]
 protected theorem MeasurableSet.cond {s₁ s₂ : Set α} (h₁ : MeasurableSet s₁)
-    (h₂ : MeasurableSet s₂) {i : Bool} : MeasurableSet (cond i s₁ s₂) := by
+    (h₂ : MeasurableSet s₂) {i : Bool} : MeasurableSet (if i = true then s₁ else s₂) := by
   cases i
   exacts [h₂, h₁]
 
@@ -467,7 +466,7 @@ theorem measurableSet_sSup {ms : Set (MeasurableSpace α)} {s : Set α} :
     MeasurableSet[sSup ms] s ↔
       GenerateMeasurable { s : Set α | ∃ m ∈ ms, MeasurableSet[m] s } s := by
   change GenerateMeasurable (⋃₀ _) _ ↔ _
-  simp [← setOf_exists]
+  simp [← ofPred_exists]
 
 theorem measurableSet_iSup {ι} {m : ι → MeasurableSpace α} {s : Set α} :
     MeasurableSet[iSup m] s ↔ GenerateMeasurable { s : Set α | ∃ i, MeasurableSet[m i] s } s := by

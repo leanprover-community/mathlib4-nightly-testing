@@ -256,6 +256,7 @@ theorem _root_.Filter.Tendsto.congr_germ {f g : β → γ} {l : Filter α} {l' :
     (h : f =ᶠ[l'] g) {φ : α → β} (hφ : Tendsto φ l l') : (f ∘ φ : Germ l γ) = g ∘ φ :=
   EventuallyEq.germ_eq (h.comp_tendsto hφ)
 
+set_option linter.dupNamespace false in
 @[deprecated (since := "2026-05-24")] alias Filter.Tendsto.congr_germ := Filter.Tendsto.congr_germ
 
 lemma isConstant_comp_tendsto {lc : Filter γ} {g : γ → α}
@@ -757,7 +758,7 @@ instance instExistsMulOfLE [Mul β] [LE β] [ExistsMulOfLE β] : ExistsMulOfLE (
     choose c hc using fun x (hx : f x ≤ g x) ↦ exists_mul_of_le hx
     refine ⟨ofFun fun x ↦ if hx : f x ≤ g x then c x hx else f x, coe_eq.2 ?_⟩
     filter_upwards [h] with x hx
-    rw [dif_pos hx, hc]
+    rw [dite_eq_left hx, hc]
 
 end Germ
 

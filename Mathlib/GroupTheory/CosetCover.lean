@@ -246,7 +246,7 @@ theorem leftCoset_cover_filter_FiniteIndex_aux
     have ⟨j, hj, hjfi⟩ := exists_finiteIndex_of_leftCoset_cover hcovers
     have ⟨x, hx⟩ : (t j hj hjfi).Nonempty := Finset.nonempty_coe_sort.mp
       (ht j hj hjfi).1.leftQuotientEquiv.symm.nonempty
-    ⟨⟨⟨j, hj⟩, ⟨x, dif_pos hjfi ▸ hx⟩⟩, hjfi, if_pos hjfi⟩
+    ⟨⟨⟨j, hj⟩, ⟨x, dite_eq_left hjfi ▸ hx⟩⟩, hjfi, ite_eq_left hjfi⟩
   -- Since `D` is the unique subgroup of finite index whose cosets occur in the new covering,
   -- the cosets of the other subgroups can be omitted.
   replace hcovers' : ⋃ i ∈ Finset.univ.filter (K · = D), f i • (D : Set G) = Set.univ := by
@@ -288,18 +288,18 @@ theorem leftCoset_cover_filter_FiniteIndex_aux
     intro h i hi j hj hij c hi' hj' x hx
     have hdisjoint := pairwiseDisjoint_leftCoset_cover_const_of_index_eq hcovers' h.symm
     -- We know the `f k • K k` are pairwise disjoint and need to prove that the `g i • H i` are.
-    rw [Set.mem_setOf_eq] at hi hj
+    rw [Set.mem_ofPred_eq] at hi hj
     have hk' (i) (hi : i ∈ s ∧ (H i).FiniteIndex) (hi' : c ≤ g i • (H i : Set G)) :
         ∃ (k : κ), k.1.1 = i ∧ K k = D ∧ x ∈ f k • (D : Set G) := by
       rw [← (ht i hi.1 hi.2).2] at hi'
       suffices ∃ r : H i, r ∈ t i hi.1 hi.2 ∧ x ∈ (g i * r) • (D : Set G) by
         have ⟨r, hr, hxr⟩ := this
-        refine ⟨⟨⟨i, hi.1⟩, ⟨r, dif_pos hi.2 ▸ hr⟩⟩, rfl, ?_⟩
-        simpa [K, f, if_pos hi.2] using! hxr
+        refine ⟨⟨⟨i, hi.1⟩, ⟨r, dite_eq_left hi.2 ▸ hr⟩⟩, rfl, ?_⟩
+        simpa [K, f, ite_eq_left hi.2] using! hxr
       simpa [Set.mem_smul_set_iff_inv_smul_mem, smul_eq_mul, mul_assoc] using! hi' hx
     have ⟨k₁, hik₁, hk₁, hxk₁⟩ := hk' i hi hi'
     have ⟨k₂, hjk₂, hk₂, hxk₂⟩ := hk' j hj hj'
-    rw [← Set.singleton_subset_iff, ← Set.le_iff_subset] at hxk₁ hxk₂ ⊢
+    rw [← Set.singleton_subset_iff] at hxk₁ hxk₂ ⊢
     exact hdisjoint
       (Finset.mem_filter.mpr ⟨Finset.mem_univ k₁, hk₁⟩)
       (Finset.mem_filter.mpr ⟨Finset.mem_univ k₂, hk₂⟩)

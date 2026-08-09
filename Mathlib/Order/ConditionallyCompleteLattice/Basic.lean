@@ -45,7 +45,7 @@ Extension of `sSup` and `sInf` from a preorder `α` to `WithTop α` and `WithBot
 
 variable [LE α]
 
-open Classical in
+open scoped Classical in
 @[to_dual]
 noncomputable instance WithTop.instSupSet [SupSet α] :
     SupSet (WithTop α) :=
@@ -53,7 +53,7 @@ noncomputable instance WithTop.instSupSet [SupSet α] :
     if ⊤ ∈ S then ⊤ else if BddAbove ((fun (a : α) ↦ ↑a) ⁻¹' S : Set α) then
       ↑(sSup ((fun (a : α) ↦ (a : WithTop α)) ⁻¹' S : Set α)) else ⊤⟩
 
-open Classical in
+open scoped Classical in
 @[to_dual]
 noncomputable instance WithTop.instInfSet [InfSet α] : InfSet (WithTop α) :=
   ⟨fun S => if S ⊆ {⊤} ∨ ¬BddBelow S then ⊤ else ↑(sInf ((fun (a : α) ↦ ↑a) ⁻¹' S : Set α))⟩
@@ -61,24 +61,24 @@ noncomputable instance WithTop.instInfSet [InfSet α] : InfSet (WithTop α) :=
 @[to_dual]
 theorem WithTop.sSup_eq [SupSet α] {s : Set (WithTop α)} (hs : ⊤ ∉ s)
     (hs' : BddAbove ((↑) ⁻¹' s : Set α)) : sSup s = ↑(sSup ((↑) ⁻¹' s) : α) :=
-  (if_neg hs).trans <| if_pos hs'
+  (ite_eq_right hs).trans <| ite_eq_left hs'
 
 @[to_dual]
 theorem WithTop.sInf_eq [InfSet α] {s : Set (WithTop α)} (hs : ¬s ⊆ {⊤}) (h's : BddBelow s) :
     sInf s = ↑(sInf ((↑) ⁻¹' s) : α) :=
-  if_neg <| by simp [hs, h's]
+  ite_eq_right <| by simp [hs, h's]
 
 @[simp]
 theorem WithTop.sInf_empty [InfSet α] : sInf (∅ : Set (WithTop α)) = ⊤ :=
-  if_pos <| by simp
+  ite_eq_left <| by simp
 
 @[to_dual (attr := simp)]
 theorem WithTop.sInf_singleton_top [InfSet α] : sInf ({⊤} : Set (WithTop α)) = ⊤ :=
-  if_pos <| .inl subset_rfl
+  ite_eq_left <| .inl subset_rfl
 
 @[to_dual (attr := simp)]
 theorem WithTop.sSup_of_top_mem [SupSet α] {s : Set (WithTop α)} (h : ⊤ ∈ s) : sSup s = ⊤ :=
-  if_pos h
+  ite_eq_left h
 
 @[to_dual]
 theorem WithTop.sSup_singleton_top [SupSet α] : sSup ({⊤} : Set (WithTop α)) = ⊤ := by
@@ -89,19 +89,19 @@ theorem WithTop.sSup_of_not_bddAbove [SupSet α] {s : Set (WithTop α)}
     (h : ¬BddAbove ((↑) ⁻¹' s : Set α)) : sSup s = ⊤ := by
   by_cases hmem : ⊤ ∈ s
   · exact sSup_of_top_mem hmem
-  · exact if_neg hmem |>.trans <| if_neg h
+  · exact ite_eq_right hmem |>.trans <| ite_eq_right h
 
 @[to_dual (attr := simp)]
 theorem WithTop.sInf_of_not_bddBelow [InfSet α] {s : Set (WithTop α)} (h : ¬BddBelow s) :
     sInf s = ⊤ :=
-  if_pos <| .inr h
+  ite_eq_left <| .inr h
 
 @[to_dual (attr := norm_cast)]
 theorem WithTop.coe_sSup' [SupSet α] {s : Set α} (hs : BddAbove s) :
     ↑(sSup s) = (sSup ((fun (a : α) ↦ ↑a) '' s) : WithTop α) := by
   classical
   change _ = ite _ _ _
-  rw [if_neg, preimage_image_eq, if_pos hs]
+  rw [ite_eq_right, preimage_image_eq, ite_eq_left hs]
   · exact Option.some_injective _
   · rintro ⟨x, _, ⟨⟩⟩
 
@@ -742,7 +742,11 @@ end WithTop
 
 namespace Monotone
 
-variable [Preorder α] [ConditionallyCompleteLattice β] {f : α → β} (h_mono : Monotone f)
+variable [ConditionallyCompleteLattice β]
+
+section Preorder
+
+variable [Preorder α] {f : α → β} (h_mono : Monotone f)
 include h_mono
 
 /-! A monotone function into a conditionally complete lattice preserves the ordering properties of
@@ -757,6 +761,24 @@ theorem le_csSup_image {s : Set α} {c : α} (hcs : c ∈ s) (h_bdd : BddAbove s
 theorem csSup_image_le {s : Set α} (hs : s.Nonempty) {B : α} (hB : B ∈ upperBounds s) :
     sSup (f '' s) ≤ f B :=
   csSup_le (Nonempty.image f hs) (h_mono.mem_upperBounds_image hB)
+
+end Preorder
+
+section ConditionallyCompleteLattice
+
+variable [ConditionallyCompleteLattice α]
+variable {f : α → β} {s : Set α} (hs : s.Nonempty) (hf : Monotone f)
+include hs hf
+
+theorem csSup_image_le_map_csSup (hbdd : BddAbove s := by bddDefault) :
+    sSup (f '' s) ≤ f (sSup s) :=
+  csSup_image_le hf hs <| isLUB_csSup hs hbdd |>.left
+
+theorem map_csInf_le_csInf_image (hbdd : BddBelow s := by bddDefault) :
+    f (sInf s) ≤ sInf (f '' s) :=
+  le_csInf_image hf hs <| isGLB_csInf hs hbdd |>.left
+
+end ConditionallyCompleteLattice
 
 end Monotone
 
@@ -932,7 +954,7 @@ noncomputable instance [ConditionallyCompleteLinearOrder α] :
   csInf_of_not_bddBelow s := absurd <| OrderBot.bddBelow s
   csSup_empty := WithBot.sSup_empty
 
-open Classical in
+open scoped Classical in
 noncomputable instance WithTop.WithBot.completeLattice {α : Type*}
     [ConditionallyCompleteLattice α] : CompleteLattice (WithTop (WithBot α)) where
   isLUB_sSup S := ⟨fun a haS ↦ (WithTop.isLUB_sSup' ⟨a, haS⟩).1 haS, fun a ha ↦ by

@@ -58,7 +58,7 @@ def Fintype.groupWithZeroOfCancel (M : Type*) [MonoidWithZero M] [IsLeftCancelMu
     ‹MonoidWithZero M› with
     inv := fun a => if h : a = 0 then 0 else Fintype.bijInv (mul_right_bijective_of_finite₀ h) 1
     mul_inv_cancel := fun a ha => by
-      simp only [dif_neg ha]
+      simp only [dite_eq_right ha]
       exact Fintype.rightInverse_bijInv _ _
     inv_zero := by simp }
 
@@ -120,7 +120,7 @@ variable [CommRing R] [IsDomain R] [Group G]
 theorem card_nthRoots_subgroup_units [Fintype G] [DecidableEq G] (f : G →* R) (hf : Injective f)
     {n : ℕ} (hn : 0 < n) (g₀ : G) :
     #{g | g ^ n = g₀} ≤ Multiset.card (nthRoots n (f g₀)) := by
-  haveI : DecidableEq R := Classical.decEq _
+  have : DecidableEq R := Classical.decEq _
   calc
     _ ≤ #(nthRoots n (f g₀)).toFinset :=
       card_le_card_of_injOn f (by aesop (add safe unfold Set.MapsTo)) hf.injOn

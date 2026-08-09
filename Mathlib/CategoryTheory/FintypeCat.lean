@@ -215,6 +215,7 @@ instance : incl.Faithful where
   map_injective h := by
     simpa using TypeCat.homEquiv.symm.injective (InducedCategory.homEquiv.symm.injective h)
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance : incl.EssSurj :=
   Functor.EssSurj.mk fun X =>
     letI := X.fintype
@@ -276,8 +277,7 @@ lemma uSwitchEquiv_naturality {X Y : FintypeCat.{u}} (f : X ⟶ Y)
 
 lemma uSwitchEquiv_symm_naturality {X Y : FintypeCat.{u}} (f : X ⟶ Y) (x : X) :
     uSwitch.map f (X.uSwitchEquiv.symm x) = Y.uSwitchEquiv.symm (f x) := by
-  rw [← Equiv.apply_eq_iff_eq_symm_apply, ← uSwitchEquiv_naturality f,
-    Equiv.apply_symm_apply]
+  rw [Equiv.eq_symm_apply, ← uSwitchEquiv_naturality f, Equiv.apply_symm_apply]
 
 lemma uSwitch_map_uSwitch_map {X Y : FintypeCat.{u}} (f : X ⟶ Y) :
     uSwitch.map (uSwitch.map f) =
