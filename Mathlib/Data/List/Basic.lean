@@ -933,7 +933,7 @@ theorem filter_eq_foldr (p : α → Bool) (l : List α) :
   induction l with
   | nil => rfl
   | cons a l ih =>
-    simp [filter, ih]
+    simp only [filter, ih, foldr_cons]
     cases p a <;> rfl
 
 @[simp]
