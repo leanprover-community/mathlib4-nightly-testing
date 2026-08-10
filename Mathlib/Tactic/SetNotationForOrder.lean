@@ -127,7 +127,8 @@ If the type is not known, elaboration of this term is postponed.
 
 We assume that `le` and `sub` are names for declarations of exactly the form
 `decl.{u} {α : Type u} [Cls.{u} α] (a b : α) : Prop`, and that likewise `leCls` and `subCls` are
-names for declarations of exactly the form  `Cls.{u} (α : Type u) : Type u`. -/
+names for declarations of exactly the form  `Cls.{u} (α : Type u) : Type u`. `le` and `leCls`
+bind `α` as a `Sort`, so they take `u+1` where `sub` and `subCls` take `u`. -/
 def elabSubsetLike (x y : Term) (le leCls sub subCls : Name) (expectedType? : Option Expr) :
     TermElabM Expr := do
   let rel ← `(SubsetElabAux $x $y)
@@ -144,9 +145,10 @@ def elabSubsetLike (x y : Term) (le leCls sub subCls : Name) (expectedType? : Op
         Consider adding a type annotation, e.g. `(_ : Set _) ⊆ _`.\n\
         The term will elaborate to a different constant depending on \
         whether the type is tagged with `@[use_set_notation_for_order]`."
-  let (rel, cls) := if ← useSetNotationFor α then (le, leCls) else (sub, subCls)
-  let inst ← mkInstMVar <| .app (.const cls f.constLevels!) α
-  let rel := mkApp2 (.const rel f.constLevels!) α inst
+  let (rel, cls, us) := if ← useSetNotationFor α then
+    (le, leCls, f.constLevels!.map .succ) else (sub, subCls, f.constLevels!)
+  let inst ← mkInstMVar <| .app (.const cls us) α
+  let rel := mkApp2 (.const rel us) α inst
   -- Add the relation (e.g. `LE.le : Set Nat → Set Nat → Prop`) as a hover on the whole term
   addTermInfo' (← getRef) rel (isDisplayableTerm := true)
   return mkApp2 rel x y
