@@ -104,9 +104,9 @@ def dividedPowers {J : Ideal A} (hJ : IsSubDPIdeal hI J) [∀ x, Decidable (x �
   dpow_zero hx    := by simp [ite_eq_left hx, hI.dpow_zero (hJ.isSubideal hx)]
   dpow_one hx     := by simp [ite_eq_left hx, hI.dpow_one (hJ.isSubideal hx)]
   dpow_mem hn hx  := by simp [ite_eq_left hx, hJ.dpow_mem _ hn hx]
-  dpow_add hx hy  := by simp_rw [ite_eq_left hx, ite_eq_left hy,
-    ite_eq_left (Ideal.add_mem J hx hy),
-    hI.dpow_add (hJ.isSubideal hx) (hJ.isSubideal hy)]
+  dpow_add hx hy  := by
+    simp_rw [ite_eq_left hx, ite_eq_left hy, ite_eq_left (Ideal.add_mem J hx hy),
+      hI.dpow_add (hJ.isSubideal hx) (hJ.isSubideal hy)]
   dpow_mul hx     := by
     simp [ite_eq_left hx, ite_eq_left (mul_mem_left J _ hx), hI.dpow_mul (hJ.isSubideal hx)]
   mul_dpow hx     := by simp [ite_eq_left hx, hI.mul_dpow (hJ.isSubideal hx)]
@@ -262,7 +262,7 @@ See [P. Berthelot, *Cohomologie cristalline des schémas de caractéristique $p$
 (Proposition 1.6.1 (i))][Berthelot-1974] -/
 def prod (J : Ideal A) : SubDPIdeal hI where
   carrier := I • J
-  isSubideal := mul_le_right
+  isSubideal := mul_le_left
   dpow_mem m hm x hx := by
     induction hx using Submodule.smul_induction_on' generalizing m with
     | smul a ha b hb =>
@@ -270,7 +270,7 @@ def prod (J : Ideal A) : SubDPIdeal hI where
       exact Submodule.mul_mem_mul (J.pow_mem_of_mem hb m (zero_lt_iff.mpr hm))
         (hI.dpow_mem hm ha)
     | add x hx y hy hx' hy' =>
-      rw [hI.dpow_add' (mul_le_right hx) (mul_le_right hy)]
+      rw [hI.dpow_add' (mul_le_left hx) (mul_le_left hy)]
       apply Submodule.sum_mem (I • J)
       intro k _
       by_cases hk0 : k = 0
