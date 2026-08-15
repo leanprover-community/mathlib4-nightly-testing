@@ -3,8 +3,10 @@ Copyright (c) 2018 Johannes Hölzl. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johannes Hölzl, Callum Sutton, Yury Kudryashov
 -/
-import Mathlib.Algebra.Group.Hom.Defs
-import Mathlib.Logic.Equiv.Defs
+module
+
+public import Mathlib.Algebra.Group.Hom.Defs
+public import Mathlib.Logic.Equiv.Defs
 
 /-!
 # Multiplicative and additive equivs
@@ -30,6 +32,8 @@ notation when treating the isomorphisms as maps.
 
 Equiv, MulEquiv, AddEquiv
 -/
+
+@[expose] public section
 
 open Function
 
@@ -333,16 +337,16 @@ theorem self_comp_symm (e : M ≃* N) : e ∘ e.symm = id :=
   funext e.apply_symm_apply
 
 @[to_additive]
-theorem apply_eq_iff_symm_apply (e : M ≃* N) {x : M} {y : N} : e x = y ↔ x = e.symm y :=
-  e.toEquiv.apply_eq_iff_eq_symm_apply
-
-@[to_additive]
 theorem symm_apply_eq (e : M ≃* N) {x y} : e.symm x = y ↔ x = e y :=
   e.toEquiv.symm_apply_eq
 
 @[to_additive]
 theorem eq_symm_apply (e : M ≃* N) {x y} : y = e.symm x ↔ e y = x :=
   e.toEquiv.eq_symm_apply
+
+@[to_additive (attr := deprecated eq_symm_apply +typeChanged (since := "2026-07-26"))]
+theorem apply_eq_iff_symm_apply (e : M ≃* N) {x : M} {y : N} : e x = y ↔ x = e.symm y :=
+  e.eq_symm_apply.symm
 
 @[to_additive]
 theorem eq_comp_symm {α : Type*} (e : M ≃* N) (f : N → α) (g : M → α) :
@@ -446,7 +450,7 @@ protected def cast {ι : Type*} {M : ι → Type*} [∀ i, Mul (M i)] {i j : ι}
   map_mul' _ _ := by cases h; rfl
 
 /-!
-## Monoids
+### Monoids
 -/
 
 section MulOneClass
@@ -522,7 +526,7 @@ theorem toMonoidHom_injective : Injective (toMonoidHom : M ≃* N → M →* N) 
 end MulOneClass
 
 /-!
-# Groups
+### Groups
 -/
 
 /-- A multiplicative equivalence of groups preserves inversion. -/
@@ -571,3 +575,23 @@ def MonoidHom.toMulEquiv [MulOneClass M] [MulOneClass N] (f : M →* N) (g : N �
   left_inv := DFunLike.congr_fun h₁
   right_inv := DFunLike.congr_fun h₂
   map_mul' := f.map_mul
+
+/-- The identity equivalence between the monoid of endomorphisms `Monoid.End M` and the type
+`M →* M` of monoid homomorphisms from `M` to itself. `Monoid.End M` is definitionally (but not
+reducibly) equal to `M →* M`. -/
+@[to_additive /-- The identity equivalence between the additive monoid of endomorphisms
+`AddMonoid.End M` and the type `M →+ M` of additive monoid homomorphisms from `M` to itself.
+`AddMonoid.End M` is definitionally (but not reducibly) equal to `M →+ M`. -/]
+def Monoid.End.equiv (M : Type*) [MulOne M] : Monoid.End M ≃ (M →* M) where
+  toFun := id
+  invFun := id
+  left_inv _ := rfl
+  right_inv _ := rfl
+
+@[to_additive (attr := simp)]
+theorem Monoid.End.equiv_apply {M : Type*} [MulOne M] (f : Monoid.End M) (x : M) :
+    Monoid.End.equiv M f x = f x := rfl
+
+@[to_additive (attr := simp)]
+theorem Monoid.End.equiv_symm_apply {M : Type*} [MulOne M] (f : M →* M) (x : M) :
+    (Monoid.End.equiv M).symm f x = f x := rfl

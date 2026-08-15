@@ -3,7 +3,9 @@ Copyright (c) 2023 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies
 -/
-import Mathlib.Data.Nat.Fib.Basic
+module
+
+public import Mathlib.Data.Nat.Fib.Basic
 
 /-!
 # Zeckendorf's Theorem
@@ -30,10 +32,12 @@ the lexicographic order.
 fibonacci, zeckendorf, digit
 -/
 
+@[expose] public section
+
 open List Nat
 
 -- TODO: The `local` attribute makes this not considered as an instance by linters
-@[nolint defLemma docBlame]
+@[nolint docBlame]
 local instance : IsTrans ℕ fun a b ↦ b + 2 ≤ a where
   trans _a _b _c hba hcb := hcb.trans <| le_self_add.trans hba
 
@@ -59,10 +63,10 @@ lemma IsZeckendorfRep.sum_fib_lt : ∀ {n l}, IsZeckendorfRep l → (∀ a ∈ (
       fun b hb ↦ lt_tsub_iff_right.2 <| hl.1 _ <| mem_of_mem_head? hb
     simp only [mem_append, mem_singleton, ← isChain_iff_pairwise, or_imp, forall_and, forall_eq,
       zero_add] at hl
-    simp only [map, List.sum_cons]
-    refine (add_lt_add_left (sum_fib_lt hl.2 this) _).trans_le ?_
-    rw [add_comm, ← fib_add_one (hl.1.2.trans_lt' zero_lt_two).ne']
-    exact fib_mono (hn _ rfl)
+    calc
+      fib a + (map fib l).sum < fib a + fib (a - 1) := by gcongr; exact sum_fib_lt hl.2 this
+      _ ≤ fib n := by
+        rw [add_comm, ← fib_add_one (hl.1.2.trans_lt' zero_lt_two).ne']; exact fib_mono (hn _ rfl)
 
 end List
 
@@ -120,8 +124,6 @@ def zeckendorf : ℕ → List ℕ
   | m@(_ + 1) =>
     letI a := greatestFib m
     a :: zeckendorf (m - fib a)
-decreasing_by simp_wf; subst_vars; apply zeckendorf_aux (zero_lt_succ _)
-
 
 @[simp] lemma zeckendorf_zero : zeckendorf 0 = [] := zeckendorf.eq_1 ..
 

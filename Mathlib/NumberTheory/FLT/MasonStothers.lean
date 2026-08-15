@@ -3,7 +3,9 @@ Copyright (c) 2024 Jineon Baek and Seewoo Lee. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jineon Baek, Seewoo Lee
 -/
-import Mathlib.RingTheory.Polynomial.Radical
+module
+
+public import Mathlib.RingTheory.Polynomial.Radical
 
 /-!
 # Mason-Stothers theorem
@@ -18,7 +20,9 @@ but slightly different.
 
 -/
 
-open Polynomial UniqueFactorizationMonoid UniqueFactorizationDomain EuclideanDomain
+public section
+
+open Polynomial UniqueFactorizationMonoid EuclideanDomain
 
 variable {k : Type*} [Field k] [DecidableEq k]
 
@@ -51,21 +55,21 @@ private theorem abc_subcall {a b c w : k[X]} {hw : w ≠ 0} (wab : w = wronskian
 protected theorem Polynomial.abc
     {a b c : k[X]} (ha : a ≠ 0) (hb : b ≠ 0) (hc : c ≠ 0)
     (hab : IsCoprime a b) (hsum : a + b + c = 0) :
-    ( natDegree a + 1 ≤ (radical (a * b * c)).natDegree ∧
+    (natDegree a + 1 ≤ (radical (a * b * c)).natDegree ∧
       natDegree b + 1 ≤ (radical (a * b * c)).natDegree ∧
-      natDegree c + 1 ≤ (radical (a * b * c)).natDegree ) ∨
+      natDegree c + 1 ≤ (radical (a * b * c)).natDegree) ∨
       derivative a = 0 ∧ derivative b = 0 ∧ derivative c = 0 := by
   set w := wronskian a b with wab
   have hbc : IsCoprime b c := by
     rw [add_eq_zero_iff_neg_eq] at hsum
     rw [← hsum, IsCoprime.neg_right_iff]
-    convert IsCoprime.add_mul_left_right hab.symm 1
+    convert! IsCoprime.add_mul_left_right hab.symm 1
     rw [mul_one]
   have hsum' : b + c + a = 0 := by rwa [add_rotate] at hsum
   have hca : IsCoprime c a := by
     rw [add_eq_zero_iff_neg_eq] at hsum'
     rw [← hsum', IsCoprime.neg_right_iff]
-    convert IsCoprime.add_mul_left_right hbc.symm 1
+    convert! IsCoprime.add_mul_left_right hbc.symm 1
     rw [mul_one]
   have wbc : w = wronskian b c := wronskian_eq_of_sum_zero hsum
   have wca : w = wronskian c a := by

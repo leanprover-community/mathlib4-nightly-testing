@@ -3,7 +3,9 @@ Copyright (c) 2025 Jireh Loreaux. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jireh Loreaux
 -/
-import Mathlib.MeasureTheory.Integral.Bochner.Basic
+module
+
+public import Mathlib.MeasureTheory.Integral.Bochner.Basic
 
 /-! # Continuous bilinear maps on `MeasureTheory.Lp` spaces
 
@@ -22,7 +24,9 @@ natural map `ContinuousLinearMap.lpPairing : Lp E p μ →L[𝕜] Lp F q μ →L
 is the natural map `Lp (StrongDual 𝕜 E) p μ →L[𝕜] StrongDual 𝕜 (Lp E q μ)`.
 -/
 
-open ENNReal MeasureTheory Lp
+@[expose] public section
+
+open ENNReal MeasureTheory
 open scoped NNReal
 
 noncomputable section
@@ -44,6 +48,17 @@ theorem memLp_of_bilin {f : α → E} {g : α → F} (hf : MemLp f p μ) (hg : M
     MemLp (fun x ↦ B (f x) (g x)) r μ :=
   MeasureTheory.MemLp.of_bilin (r := r) (B · ·) ‖B‖₊ hf hg
     (B.aestronglyMeasurable_comp₂ hf.1 hg.1) (.of_forall fun _ ↦ B.le_opNorm₂ _ _)
+
+theorem integrable_of_bilin_of_bdd_left {f : α → E} {g : α → F} (C : ℝ)
+    (hf1 : AEStronglyMeasurable f μ) (hf2 : ∀ᵐ a ∂μ, ‖f a‖ ≤ C) (hg : Integrable g μ) :
+    Integrable (fun x ↦ B (f x) (g x)) μ :=
+  memLp_one_iff_integrable.1 <| B.memLp_of_bilin 1 (memLp_top_of_bound hf1 C hf2)
+    (memLp_one_iff_integrable.2 hg)
+
+theorem integrable_of_bilin_of_bdd_right {f : α → E} {g : α → F} (C : ℝ)
+    (hf : Integrable f μ) (hg1 : AEStronglyMeasurable g μ) (hg2 : ∀ᵐ a ∂μ, ‖g a‖ ≤ C) :
+    Integrable (fun x ↦ B (f x) (g x)) μ :=
+  B.flip.integrable_of_bilin_of_bdd_left C hg1 hg2 hf
 
 variable (r) in
 /-- The map between `MeasureTheory.Lp` spaces satisfying `ENNReal.HolderTriple`
@@ -129,9 +144,8 @@ def lpPairing (B : E →L[𝕜] F →L[𝕜] G) : Lp E p μ →L[𝕜] Lp F q μ
 
 lemma lpPairing_eq_integral (f : Lp E p μ) (g : Lp F q μ) :
     B.lpPairing μ p q f g = ∫ x, B (f x) (g x) ∂μ := by
-  change L1.integralCLM _ = _
-  rw [← L1.integral_def, L1.integral_eq_integral]
-  exact integral_congr_ae <| B.coeFn_holder _ _
+  simpa [lpPairing, ← L1.integral_eq', L1.integral_eq_integral] using
+    integral_congr_ae <| B.coeFn_holder _ _
 
 end ContinuousLinearMap
 
@@ -202,7 +216,7 @@ variable (E q) in
 @[simp]
 protected lemma smul_zero (f : Lp 𝕜 p μ) :
     f • (0 : Lp E q μ) = (0 : Lp E r μ) := by
-  convert MemLp.zero (ε := E) |>.toLp_zero
+  convert! MemLp.zero (ε := E) |>.toLp_zero
   apply MemLp.toLp_congr _ _ ?_
   filter_upwards [Lp.coeFn_zero E q μ] with x hx
   rw [Pi.smul_apply', hx]
@@ -212,7 +226,7 @@ variable (𝕜 p) in
 @[simp]
 protected lemma zero_smul (f : Lp E q μ) :
     (0 : Lp 𝕜 p μ) • f = (0 : Lp E r μ) := by
-  convert MemLp.zero (ε := E) |>.toLp_zero
+  convert! MemLp.zero (ε := E) |>.toLp_zero
   apply MemLp.toLp_congr _ _ ?_
   filter_upwards [Lp.coeFn_zero 𝕜 p μ] with x hx
   rw [Pi.smul_apply', hx]
@@ -240,7 +254,7 @@ protected lemma smul_assoc [IsScalarTower 𝕜' 𝕜 E]
   simp only [smul_def, ← MemLp.toLp_const_smul]
   apply MemLp.toLp_congr
   filter_upwards [Lp.coeFn_smul c f] with x hx
-  simp [- smul_eq_mul, hx]
+  simp [-smul_eq_mul, hx]
 
 protected lemma smul_comm [SMulCommClass 𝕜' 𝕜 E]
     (c : 𝕜') (f : Lp 𝕜 p μ) (g : Lp E q μ) :

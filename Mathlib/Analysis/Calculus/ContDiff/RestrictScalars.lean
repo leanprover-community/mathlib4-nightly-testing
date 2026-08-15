@@ -3,17 +3,21 @@ Copyright (c) 2025 Stefan Kebekus. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Stefan Kebekus
 -/
-import Mathlib.Analysis.Calculus.ContDiff.Defs
-import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
+module
+
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.Calculus.FDeriv.RestrictScalars
 
 /-!
-### Restricting Scalars in Iterated Fréchet Derivatives
+# Restricting Scalars in Iterated Fréchet Derivatives
 
 This file establishes standard theorems on restriction of scalars for iterated Fréchet derivatives,
 comparing iterated derivatives with respect to a field `𝕜'` to iterated derivatives with respect to
 a subfield `𝕜 ⊆ 𝕜'`. The results are analogous to those found in
 `Mathlib.Analysis.Calculus.FDeriv.RestrictScalars`.
 -/
+
+public section
 
 variable
   {𝕜 𝕜' : Type*} [NontriviallyNormedField 𝕜] [NontriviallyNormedField 𝕜'] [NormedAlgebra 𝕜 𝕜']
@@ -76,7 +80,7 @@ to `𝕜'`.
 theorem ContDiffAt.restrictScalars_iteratedFDeriv_eventuallyEq (h : ContDiffAt 𝕜' n f x) :
     (restrictScalars 𝕜) ∘ (iteratedFDeriv 𝕜' n f) =ᶠ[𝓝 x] iteratedFDeriv 𝕜 n f := by
   have h' : ContDiffWithinAt 𝕜' n f Set.univ x := h
-  convert (h'.restrictScalars_iteratedFDerivWithin_eventuallyEq _ trivial)
+  convert! (h'.restrictScalars_iteratedFDerivWithin_eventuallyEq _ trivial)
   <;> simp [iteratedFDerivWithin_univ.symm, uniqueDiffOn_univ]
 
 /--

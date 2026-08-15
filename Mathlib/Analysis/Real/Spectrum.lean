@@ -3,18 +3,22 @@ Copyright (c) 2021 Jireh Loreaux. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jireh Loreaux
 -/
-import Mathlib.Algebra.Algebra.Spectrum.Quasispectrum
-import Mathlib.Topology.Instances.NNReal.Lemmas
-import Mathlib.Tactic.ContinuousFunctionalCalculus
+module
+
+public import Mathlib.Algebra.Algebra.Spectrum.Quasispectrum
+public import Mathlib.Topology.Instances.NNReal.Lemmas
+public import Mathlib.Tactic.ContinuousFunctionalCalculus
 
 /-!
 # Some lemmas on the spectrum and quasispectrum of elements and positivity
 
 -/
 
+public section
+
 namespace SpectrumRestricts
 
-open NNReal ENNReal
+open NNReal
 
 variable {A : Type*} [Ring A] [Algebra ℝ A]
 
@@ -53,7 +57,7 @@ end SpectrumRestricts
 
 namespace QuasispectrumRestricts
 
-open NNReal ENNReal
+open NNReal
 local notation "σₙ" => quasispectrum
 
 variable {A : Type*} [NonUnitalRing A]

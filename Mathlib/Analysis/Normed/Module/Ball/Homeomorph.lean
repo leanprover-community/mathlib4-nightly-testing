@@ -3,10 +3,13 @@ Copyright (c) 2021 Yury Kudryashov. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yury Kudryashov, Oliver Nash
 -/
-import Mathlib.Topology.OpenPartialHomeomorph
-import Mathlib.Analysis.Normed.Group.AddTorsor
-import Mathlib.Analysis.Normed.Module.Ball.Pointwise
-import Mathlib.Data.Real.Sqrt
+module
+
+public import Mathlib.Topology.OpenPartialHomeomorph.Composition
+public import Mathlib.Analysis.Normed.Group.AddTorsor
+public import Mathlib.Analysis.Normed.Module.Ball.Pointwise
+public import Mathlib.Analysis.Real.Sqrt
+public import Mathlib.Tactic.Module
 
 /-!
 # (Local) homeomorphism between a normed space and a ball
@@ -30,7 +33,9 @@ to a ball of positive radius in an affine space over `E`, see `OpenPartialHomeom
 homeomorphism, ball
 -/
 
-open Set Metric Pointwise
+@[expose] public section
+
+open Set Metric
 variable {E : Type*} [SeminormedAddCommGroup E] [NormedSpace ℝ E]
 
 noncomputable section
@@ -126,14 +131,15 @@ theorem univBall_source (c : P) (r : ℝ) : (univBall c r).source = univ := by
   unfold univBall; split_ifs <;> rfl
 
 theorem univBall_target (c : P) {r : ℝ} (hr : 0 < r) : (univBall c r).target = ball c r := by
-  rw [univBall, dif_pos hr]; rfl
+  rw [univBall, dite_eq_left hr]; rfl
 
 theorem ball_subset_univBall_target (c : P) (r : ℝ) : ball c r ⊆ (univBall c r).target := by
   by_cases hr : 0 < r
   · rw [univBall_target c hr]
-  · rw [univBall, dif_neg hr]
+  · rw [univBall, dite_eq_right hr]
     exact subset_univ _
 
+set_option backward.isDefEq.respectTransparency false in
 @[simp]
 theorem univBall_apply_zero (c : P) (r : ℝ) : univBall c r 0 = c := by
   unfold univBall; split_ifs <;> simp

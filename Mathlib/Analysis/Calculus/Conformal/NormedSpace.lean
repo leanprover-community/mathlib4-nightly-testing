@@ -3,9 +3,11 @@ Copyright (c) 2021 Yourong Zang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yourong Zang
 -/
-import Mathlib.Analysis.Calculus.FDeriv.Add
-import Mathlib.Analysis.Calculus.FDeriv.Const
-import Mathlib.Analysis.Normed.Operator.Conformal
+module
+
+public import Mathlib.Analysis.Calculus.FDeriv.Add
+public import Mathlib.Analysis.Calculus.FDeriv.Const
+public import Mathlib.Analysis.Normed.Operator.Conformal
 
 /-!
 # Conformal Maps
@@ -40,6 +42,8 @@ The definition of conformality in this file does NOT require the maps to be orie
 Maps such as the complex conjugate are considered to be conformal.
 -/
 
+@[expose] public section
+
 
 noncomputable section
 
@@ -48,7 +52,7 @@ variable {X Y Z : Type*} [NormedAddCommGroup X] [NormedAddCommGroup Y] [NormedAd
 
 section LocConformality
 
-open LinearIsometry ContinuousLinearMap
+open ContinuousLinearMap
 
 /-- A map `f` is said to be conformal if it has a conformal differential `f'`. -/
 def ConformalAt (f : X → Y) (x : X) :=

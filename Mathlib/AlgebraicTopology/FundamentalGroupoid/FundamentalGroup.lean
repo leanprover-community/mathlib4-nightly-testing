@@ -3,12 +3,14 @@ Copyright (c) 2021 Mark Lavrentyev. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mark Lavrentyev
 -/
-import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
-import Mathlib.CategoryTheory.Conj
-import Mathlib.CategoryTheory.Groupoid
-import Mathlib.Topology.Category.TopCat.Basic
-import Mathlib.Topology.Connected.PathConnected
-import Mathlib.Topology.Homotopy.Path
+module
+
+public import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
+public import Mathlib.CategoryTheory.Conj
+public import Mathlib.CategoryTheory.Groupoid
+public import Mathlib.Topology.Category.TopCat.Basic
+public import Mathlib.Topology.Connected.PathConnected
+public import Mathlib.Topology.Homotopy.Path
 
 /-!
 # Fundamental group of a space
@@ -16,6 +18,8 @@ import Mathlib.Topology.Homotopy.Path
 Given a topological space `X` and a basepoint `x`, the fundamental group is the automorphism group
 of `x` i.e. the group with elements being loops based at `x` (quotiented by homotopy equivalence).
 -/
+
+@[expose] public section
 
 variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
 variable {x₀ x₁ : X}
@@ -28,16 +32,18 @@ variable (X)
 
 /-- The fundamental group is the automorphism group (vertex group) of the basepoint
 in the fundamental groupoid. -/
-def FundamentalGroup (x : X) :=
+abbrev FundamentalGroup (x : X) :=
   End (FundamentalGroupoid.mk x)
-
-instance (x : X) : Group (FundamentalGroup X x) := inferInstanceAs (Group (End _))
-
-instance (x : X) : Inhabited (FundamentalGroup X x) := inferInstanceAs (Inhabited (End _))
 
 variable {X}
 
 namespace FundamentalGroup
+
+variable {x : X} {p q : FundamentalGroup X x}
+
+theorem one_def : (1 : FundamentalGroup X x) = .refl x := rfl
+theorem mul_def : p * q = q.trans p := rfl
+theorem inv_def : p⁻¹ = p.symm := rfl
 
 /-- Get an isomorphism between the fundamental groups at two points given a path -/
 def fundamentalGroupMulEquivOfPath (p : Path x₀ x₁) :
@@ -80,8 +86,8 @@ variable (f : C(X, Y)) {x : X} {y : Y} (h : f x = y)
 def mapOfEq : FundamentalGroup X x →* FundamentalGroup Y y :=
   (eqToIso <| congr_arg FundamentalGroupoid.mk h).conj.toMonoidHom.comp (map f x)
 
-theorem mapOfEq_apply (p : Path x x) :
-    mapOfEq f h (fromPath ⟦p⟧) = fromPath ⟦(p.map f.continuous).cast h.symm h.symm⟧ :=
+theorem mapOfEq_apply (p : FundamentalGroup X x) :
+    mapOfEq f h p = (Path.Homotopic.Quotient.map p f).cast h.symm h.symm :=
   FundamentalGroupoid.conj_eqToHom ..
 
 end FundamentalGroup

@@ -3,8 +3,10 @@ Copyright (c) 2025 Joël Riou. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joël Riou
 -/
-import Mathlib.CategoryTheory.Subobject.Lattice
-import Mathlib.CategoryTheory.Limits.Shapes.StrongEpi
+module
+
+public import Mathlib.CategoryTheory.Subobject.Lattice
+public import Mathlib.CategoryTheory.Limits.Shapes.StrongEpi
 
 /-!
 # Extremal epimorphisms
@@ -22,6 +24,8 @@ the category has pullbacks.
 * https://ncatlab.org/nlab/show/extremal+epimorphism
 
 -/
+
+public section
 
 universe v u
 
@@ -56,6 +60,7 @@ instance [StrongEpi f] : ExtremalEpi f where
     have sq : CommSq p f i (𝟙 Y) := { }
     exact ⟨sq.lift, by simp [← cancel_mono i], by simp⟩
 
+set_option backward.isDefEq.respectTransparency false in
 lemma extremalEpi_iff_strongEpi_of_hasPullbacks [HasPullbacks C] :
     ExtremalEpi f ↔ StrongEpi f := by
   refine ⟨fun _ ↦ ⟨inferInstance, fun A B i _ ↦ ⟨fun {t b} sq ↦ ⟨⟨?_⟩⟩⟩⟩,

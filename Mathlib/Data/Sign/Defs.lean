@@ -3,10 +3,16 @@ Copyright (c) 2022 Eric Rodriguez. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Eric Rodriguez
 -/
-import Mathlib.Algebra.GroupWithZero.Defs
-import Mathlib.Algebra.Ring.Defs
-import Mathlib.Algebra.Order.Ring.Defs
-import Mathlib.Tactic.DeriveFintype
+module
+
+public import Mathlib.Algebra.GroupWithZero.Defs
+public import Mathlib.Algebra.Ring.Defs
+public import Mathlib.Algebra.Order.Ring.Defs
+public import Mathlib.Tactic.DeriveFintype  -- shake: keep (deriving handlers not tracked yet)
+public import Mathlib.Data.Multiset.Defs
+public import Mathlib.Data.Fintype.Defs
+public import Mathlib.Algebra.Group.Equiv.Defs
+public import Mathlib.Algebra.Group.Int.Defs
 
 /-!
 # Sign type
@@ -14,6 +20,9 @@ import Mathlib.Tactic.DeriveFintype
 This file defines the type of signs $\{-1, 0, 1\}$ and its basic arithmetic instances.
 -/
 
+@[expose] public section
+
+set_option backward.isDefEq.respectTransparency false in
 -- Don't generate unnecessary `sizeOf_spec` lemmas which the `simpNF` linter will complain about.
 set_option genSizeOfSpec false in
 /-- The type of signs. -/
@@ -69,43 +78,29 @@ protected inductive LE : SignType → SignType → Prop
 instance : LE SignType :=
   ⟨SignType.LE⟩
 
-instance LE.decidableRel : DecidableRel SignType.LE := fun a b => by
+instance : DecidableLE SignType := fun a b => by
   cases a <;> cases b <;> first | exact isTrue (by constructor) | exact isFalse (by rintro ⟨_⟩)
 
-private lemma mul_comm : ∀ (a b : SignType), a * b = b * a := by rintro ⟨⟩ ⟨⟩ <;> rfl
-private lemma mul_assoc : ∀ (a b c : SignType), (a * b) * c = a * (b * c) := by
-  rintro ⟨⟩ ⟨⟩ ⟨⟩ <;> rfl
-
-/- We can define a `Field` instance on `SignType`, but it's not mathematically sensible,
+/-- We can define a `Field` instance on `SignType`, but it's not mathematically sensible,
 so we only define the `CommGroupWithZero`. -/
 instance : CommGroupWithZero SignType where
-  zero := 0
-  one := 1
-  mul := (· * ·)
   inv := id
   mul_zero a := by cases a <;> rfl
   zero_mul a := by cases a <;> rfl
   mul_one a := by cases a <;> rfl
   one_mul a := by cases a <;> rfl
   mul_inv_cancel a ha := by cases a <;> trivial
-  mul_comm := mul_comm
-  mul_assoc := mul_assoc
+  mul_comm := by decide
+  mul_assoc := by decide
   exists_pair_ne := ⟨0, 1, by rintro ⟨_⟩⟩
   inv_zero := rfl
 
-private lemma le_antisymm (a b : SignType) (_ : a ≤ b) (_ : b ≤ a) : a = b := by
-  cases a <;> cases b <;> trivial
-
-private lemma le_trans (a b c : SignType) (_ : a ≤ b) (_ : b ≤ c) : a ≤ c := by
-  cases a <;> cases b <;> cases c <;> tauto
-
 instance : LinearOrder SignType where
-  le := (· ≤ ·)
   le_refl a := by cases a <;> constructor
-  le_total a b := by cases a <;> cases b <;> first | left; constructor | right; constructor
-  le_antisymm := le_antisymm
-  le_trans := le_trans
-  toDecidableLE := LE.decidableRel
+  le_total := by decide
+  le_antisymm := by decide
+  le_trans := by decide
+  toDecidableLE := instDecidableLE
 
 instance : BoundedOrder SignType where
   top := 1
@@ -199,6 +194,12 @@ theorem neg_eq_zero_iff {a : SignType} : -a = 0 ↔ a = 0 := by decide +revert
 theorem neg_one_lt_one : (-1 : SignType) < 1 :=
   bot_lt_top
 
+@[simp]
+protected theorem neg_le_neg_iff {a b : SignType} : -a ≤ -b ↔ b ≤ a := by decide +revert
+
+@[simp]
+protected theorem neg_lt_neg_iff {a b : SignType} : -a < -b ↔ b < a := by decide +revert
+
 end CaseBashing
 
 section cast
@@ -212,13 +213,13 @@ def cast : SignType → α
   | pos => 1
   | neg => -1
 
-/-- This is a `CoeTail` since the type on the right (trivially) determines the type on the left.
-
-`outParam`-wise it could be a `Coe`, but we don't want to try applying this instance for a
-coercion to any `α`.
+/--
+This can't be a `CoeTail` or `Coe` instance because we don't want it to fire when `SignType` isn't
+involved in the coercion (or `CoeHead` or `CoeOut` because of `outParam`s). The only other
+user-exposed option is `CoeDep` then, which allows us to match on both given and expected type.
 -/
-instance : CoeTail SignType α :=
-  ⟨cast⟩
+instance (s : SignType) : CoeDep SignType s α :=
+  ⟨cast s⟩
 
 /-- Casting out of `SignType` respects composition with functions preserving `0, 1, -1`. -/
 lemma map_cast' {β : Type*} [One β] [Neg β] [Zero β]
@@ -277,15 +278,16 @@ theorem sign_apply : sign a = ite (0 < a) 1 (ite (a < 0) (-1) 0) :=
 theorem sign_zero : sign (0 : α) = 0 := by simp [sign_apply]
 
 @[simp]
-theorem sign_pos (ha : 0 < a) : sign a = 1 := by rwa [sign_apply, if_pos]
+theorem sign_pos (ha : 0 < a) : sign a = 1 := by rwa [sign_apply, ite_eq_left]
 
 @[simp]
-theorem sign_neg (ha : a < 0) : sign a = -1 := by rwa [sign_apply, if_neg <| asymm ha, if_pos]
+theorem sign_neg (ha : a < 0) : sign a = -1 := by
+  rwa [sign_apply, ite_eq_right <| asymm ha, ite_eq_left]
 
 theorem sign_eq_one_iff : sign a = 1 ↔ 0 < a := by
   refine ⟨fun h => ?_, fun h => sign_pos h⟩
   by_contra hn
-  rw [sign_apply, if_neg hn] at h
+  rw [sign_apply, ite_eq_right hn] at h
   split_ifs at h
 
 theorem sign_eq_neg_one_iff : sign a = -1 ↔ a < 0 := by
@@ -330,6 +332,12 @@ theorem sign_nonpos_iff : sign a ≤ 0 ↔ a ≤ 0 := by
   · simp [h, h.not_ge]
   · simp [← h]
   · simp [h, h.le]
+
+lemma sign_eq_sign_or_eq_neg {b : α} (ha : a ≠ 0) (hb : b ≠ 0) :
+    sign a = sign b ∨ sign a = -sign b := by
+  rcases trichotomy (sign a) with hsa | hsa | hsa <;>
+    rcases trichotomy (sign b) with hsb | hsb | hsb <;>
+    simp_all
 
 end LinearOrder
 

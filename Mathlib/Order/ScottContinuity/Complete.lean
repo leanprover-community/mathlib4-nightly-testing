@@ -3,7 +3,9 @@ Copyright (c) 2025 Christopher Hoskin. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Christopher Hoskin
 -/
-import Mathlib.Order.ScottContinuity.Prod
+module
+
+public import Mathlib.Order.ScottContinuity.Prod
 
 /-!
 
@@ -16,13 +18,15 @@ import Mathlib.Order.ScottContinuity.Prod
 
 -/
 
+public section
+
 variable {α β : Type*}
 
 section CompleteLattice
 
 variable [CompleteLattice α] [CompleteLattice β]
 
-/- `f` is Scott continuous if and only if it commutes with `sSup` on directed sets -/
+/-- `f` is Scott continuous if and only if it commutes with `sSup` on directed sets -/
 lemma scottContinuous_iff_map_sSup {f : α → β} :
     ScottContinuous f ↔
       ∀ ⦃d : Set α⦄, d.Nonempty → DirectedOn (· ≤ ·) d → f (sSup d) = sSup (f '' d) where

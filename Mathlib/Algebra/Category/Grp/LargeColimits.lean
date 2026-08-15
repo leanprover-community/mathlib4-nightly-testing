@@ -3,9 +3,11 @@ Copyright (c) 2025 Sophie Morel. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Sophie Morel
 -/
-import Mathlib.Algebra.Category.Grp.Colimits
-import Mathlib.Algebra.Module.CharacterModule
-import Mathlib.Algebra.Group.Equiv.Basic
+module
+
+public import Mathlib.Algebra.Category.Grp.Colimits
+public import Mathlib.Algebra.Module.CharacterModule
+public import Mathlib.Algebra.Group.Equiv.Basic
 
 /-!
 # Existence of "big" colimits in the category of additive commutative groups
@@ -15,6 +17,8 @@ if `Colimits.Quot F` (the quotient of the direct sum of the commutative groups `
 by the relations given by the morphisms in the diagram) is `w`-small.
 
 -/
+
+public section
 
 universe w u v
 
@@ -26,6 +30,8 @@ variable {J : Type u} [Category.{v} J] {F : J ⥤ AddCommGrpCat.{w}} (c : Cocone
 
 open Colimits
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
 /--
 If `c` is a cocone of `F` such that `Quot.desc F c` is bijective, then `c` is a colimit
 cocone of `F`.
@@ -40,7 +46,7 @@ lemma isColimit_iff_bijective_desc [DecidableEq J] :
     apply ofHom_injective
     refine hc.hom_ext (fun j ↦ ?_)
     ext x
-    rw [ConcreteCategory.comp_apply, ConcreteCategory.comp_apply, ← Quot.ι_desc _ c j x]
+    erw [ConcreteCategory.comp_apply, ConcreteCategory.comp_apply, ← Quot.ι_desc _ c j x]
     exact DFunLike.congr_fun eq (Quot.ι F j x)
   · set c' : Cocone F :=
       { pt := AddCommGrpCat.of (ULift (AddCircle (1 : ℚ)))

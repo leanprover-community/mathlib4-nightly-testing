@@ -3,7 +3,9 @@ Copyright (c) 2022 Jujian Zhang. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jujian Zhang, Eric Wieser
 -/
-import Mathlib.RingTheory.GradedAlgebra.Homogeneous.Ideal
+module
+
+public import Mathlib.RingTheory.GradedAlgebra.Homogeneous.Ideal
 
 /-!
 
@@ -24,7 +26,7 @@ This file contains a proof that the radical of any homogeneous ideal is a homoge
 ## Implementation details
 
 Throughout this file, the indexing type `ι` of grading is assumed to be a
-`LinearOrderedCancelAddCommMonoid`. This might be stronger than necessary but cancelling
+linearly ordered cancellative monoid. This might be stronger than necessary but cancelling
 property is strictly necessary; for a counterexample of how `Ideal.IsHomogeneous.isPrime_iff`
 fails for a non-cancellative set see `Counterexamples/HomogeneousPrimeNotPrime.lean`.
 
@@ -32,6 +34,8 @@ fails for a non-cancellative set see `Counterexamples/HomogeneousPrimeNotPrime.l
 
 homogeneous, radical
 -/
+
+@[expose] public section
 
 
 open GradedRing DirectSum SetLike Finset
@@ -48,8 +52,7 @@ theorem Ideal.IsHomogeneous.isPrime_of_homogeneous_mem_or_mem {I : Ideal A} (hI 
     Ideal.IsPrime I :=
   ⟨I_ne_top, by
     intro x y hxy
-    by_contra! rid
-    obtain ⟨rid₁, rid₂⟩ := rid
+    by_contra! ⟨rid₁, rid₂⟩
     classical
       /-
         The idea of the proof is the following :
@@ -101,7 +104,7 @@ theorem Ideal.IsHomogeneous.isPrime_of_homogeneous_mem_or_mem {I : Ideal A} (hI 
         simp only [antidiag, mem_erase, Prod.mk_inj, Ne, mem_filter, mem_product] at H
         rcases H with ⟨H₁, ⟨H₂, H₃⟩, H₄⟩
         have max_lt : max₁ < i ∨ max₂ < j := by
-          convert le_or_lt_of_add_le_add H₄.ge using 1
+          convert! le_or_lt_of_add_le_add H₄.ge using 1
           rw [Ne.le_iff_lt]
           rintro rfl
           cases H₁ ⟨rfl, add_left_cancel H₄⟩

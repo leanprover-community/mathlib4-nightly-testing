@@ -3,8 +3,11 @@ Copyright (c) 2022 Yakov Pechersky. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yakov Pechersky
 -/
-import Mathlib.Data.List.Induction
-import Mathlib.Data.List.TakeWhile
+module
+
+public import Mathlib.Data.List.Induction
+public import Mathlib.Data.List.TakeWhile
+public import Mathlib.Data.List.Basic
 
 /-!
 
@@ -30,6 +33,8 @@ another function that takes a `L : ℕ` and use `L - n`. Under a proof condition
 `L = l.length`, the function would do the right thing.
 
 -/
+
+@[expose] public section
 
 -- Make sure we don't import algebra
 assert_not_exists Monoid
@@ -99,11 +104,11 @@ theorem rdropWhile_concat (x : α) :
 
 @[simp]
 theorem rdropWhile_concat_pos (x : α) (h : p x) : rdropWhile p (l ++ [x]) = rdropWhile p l := by
-  rw [rdropWhile_concat, if_pos h]
+  rw [rdropWhile_concat, ite_eq_left h]
 
 @[simp]
 theorem rdropWhile_concat_neg (x : α) (h : ¬p x) : rdropWhile p (l ++ [x]) = l ++ [x] := by
-  rw [rdropWhile_concat, if_neg h]
+  rw [rdropWhile_concat, ite_eq_right h]
 
 theorem rdropWhile_singleton (x : α) : rdropWhile p [x] = if p x then [] else [x] := by
   rw [← nil_append [x], rdropWhile_concat, rdropWhile_nil]
@@ -153,11 +158,11 @@ theorem rtakeWhile_concat (x : α) :
 
 @[simp]
 theorem rtakeWhile_concat_pos (x : α) (h : p x) :
-    rtakeWhile p (l ++ [x]) = rtakeWhile p l ++ [x] := by rw [rtakeWhile_concat, if_pos h]
+    rtakeWhile p (l ++ [x]) = rtakeWhile p l ++ [x] := by rw [rtakeWhile_concat, ite_eq_left h]
 
 @[simp]
 theorem rtakeWhile_concat_neg (x : α) (h : ¬p x) : rtakeWhile p (l ++ [x]) = [] := by
-  rw [rtakeWhile_concat, if_neg h]
+  rw [rtakeWhile_concat, ite_eq_right h]
 
 theorem rtakeWhile_suffix : l.rtakeWhile p <:+ l := by
   rw [← reverse_prefix, rtakeWhile, reverse_reverse]

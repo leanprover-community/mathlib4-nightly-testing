@@ -3,10 +3,12 @@ Copyright (c) 2018 Johan Commelin. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Johan Commelin
 -/
-import Mathlib.Algebra.Category.MonCat.Basic
-import Mathlib.Algebra.Group.End
-import Mathlib.CategoryTheory.Endomorphism
-import Mathlib.Data.Int.Cast.Lemmas
+module
+
+public import Mathlib.Algebra.Category.MonCat.Basic
+public import Mathlib.Algebra.Group.End
+public import Mathlib.CategoryTheory.Endomorphism
+public import Mathlib.Data.Int.Cast.Lemmas
 
 /-!
 # Category instances for Group, AddGroup, CommGroup, and AddCommGroup.
@@ -19,6 +21,8 @@ We introduce the bundled categories:
 
 along with the relevant forgetful functors between them, and to the bundled monoid categories.
 -/
+
+@[expose] public section
 
 universe u v
 
@@ -72,12 +76,16 @@ structure GrpCat.Hom (A B : GrpCat.{u}) where
 
 namespace GrpCat
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 @[to_additive]
 instance : Category GrpCat.{u} where
   Hom X Y := Hom X Y
   id X := ⟨MonoidHom.id X⟩
   comp f g := ⟨g.hom'.comp f.hom'⟩
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 @[to_additive]
 instance : ConcreteCategory GrpCat (· →* ·) where
   hom := Hom.hom'
@@ -111,7 +119,7 @@ lemma coe_id {X : GrpCat} : (𝟙 X : X → X) = id := rfl
 @[to_additive (attr := simp)]
 lemma coe_comp {X Y Z : GrpCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[simp] lemma forget_map {X Y : GrpCat} (f : X ⟶ Y) : (forget GrpCat).map f = (f : X → Y) := rfl
+@[deprecated (since := "2026-02-10")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
 
 @[to_additive (attr := ext)]
 lemma ext {X Y : GrpCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
@@ -186,6 +194,9 @@ instance hasForgetToMonCat : HasForget₂ GrpCat MonCat where
     (f : X →* Y) :
     (forget₂ GrpCat MonCat).map (ofHom f) = MonCat.ofHom f := rfl
 
+@[to_additive (attr := simp)] lemma forget₂_map {R S : GrpCat} (f : R ⟶ S) (x) :
+    (forget₂ GrpCat MonCat).map f x = f x := rfl
+
 @[to_additive]
 instance : Coe GrpCat.{u} MonCat.{u} where coe := (forget₂ GrpCat MonCat).obj
 
@@ -248,7 +259,7 @@ attribute [instance] AddCommGrpCat.str CommGrpCat.str
 initialize_simps_projections AddCommGrpCat (carrier → coe, -str)
 initialize_simps_projections CommGrpCat (carrier → coe, -str)
 
-/-- `Ab` is an abbreviation for `AddCommGroup`, for the sake of mathematicians' sanity. -/
+/-- `Ab` is an abbreviation for `AddCommGrpCat`, for the sake of mathematicians' sanity. -/
 abbrev Ab := AddCommGrpCat
 
 namespace CommGrpCat
@@ -281,12 +292,16 @@ structure CommGrpCat.Hom (A B : CommGrpCat.{u}) where
 
 namespace CommGrpCat
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 @[to_additive]
 instance : Category CommGrpCat.{u} where
   Hom X Y := Hom X Y
   id X := ⟨MonoidHom.id X⟩
   comp f g := ⟨g.hom'.comp f.hom'⟩
 
+set_option backward.privateInPublic true in
+set_option backward.privateInPublic.warn false in
 @[to_additive]
 instance : ConcreteCategory CommGrpCat (· →* ·) where
   hom := Hom.hom'
@@ -320,10 +335,7 @@ lemma coe_id {X : CommGrpCat} : (𝟙 X : X → X) = id := rfl
 @[to_additive (attr := simp)]
 lemma coe_comp {X Y Z : CommGrpCat} {f : X ⟶ Y} {g : Y ⟶ Z} : (f ≫ g : X → Z) = g ∘ f := rfl
 
-@[to_additive (attr := simp)]
-lemma forget_map {X Y : CommGrpCat} (f : X ⟶ Y) :
-    (forget CommGrpCat).map f = (f : X → Y) :=
-  rfl
+@[deprecated (since := "2026-02-10")] alias forget_map := ConcreteCategory.forget_map_eq_ofHom
 
 @[to_additive (attr := ext)]
 lemma ext {X Y : CommGrpCat} {f g : X ⟶ Y} (w : ∀ x : X, f x = g x) : f = g :=
@@ -398,6 +410,9 @@ instance hasForgetToGroup : HasForget₂ CommGrpCat GrpCat where
     (f : X →* Y) :
     (forget₂ CommGrpCat GrpCat).map (ofHom f) = GrpCat.ofHom f := rfl
 
+@[to_additive (attr := simp)] lemma forget₂_map {R S : CommGrpCat} (f : R ⟶ S) (x) :
+    (forget₂ CommGrpCat GrpCat).map f x = f x := rfl
+
 @[to_additive]
 instance : Coe CommGrpCat.{u} GrpCat.{u} where coe := (forget₂ CommGrpCat GrpCat).obj
 
@@ -456,7 +471,7 @@ end CommGrpCat
 
 namespace AddCommGrpCat
 
--- Note that because `ℤ : Type 0`, this forces `G : AddCommGroup.{0}`,
+-- Note that because `ℤ : Type 0`, this forces `G : AddCommGrpCat.{0}`,
 -- so we write this explicitly to be clear.
 -- TODO generalize this, requiring a `ULiftInstances.lean` file
 /-- Any element of an abelian group gives a unique morphism from `ℤ` sending
@@ -489,7 +504,7 @@ def MulEquiv.toGrpIso {X Y : GrpCat} (e : X ≃* Y) : X ≅ Y where
   hom := GrpCat.ofHom e.toMonoidHom
   inv := GrpCat.ofHom e.symm.toMonoidHom
 
-/-- Build an isomorphism in the category `AddGroup` from an `AddEquiv` between `AddGroup`s. -/
+/-- Build an isomorphism in the category `AddGrpCat` from an `AddEquiv` between `AddGroup`s. -/
 add_decl_doc AddEquiv.toAddGrpIso
 
 /-- Build an isomorphism in the category `CommGrpCat` from a `MulEquiv`
@@ -510,15 +525,15 @@ namespace CategoryTheory.Iso
 def groupIsoToMulEquiv {X Y : GrpCat} (i : X ≅ Y) : X ≃* Y :=
   MonoidHom.toMulEquiv i.hom.hom i.inv.hom (by ext; simp) (by ext; simp)
 
-/-- Build an `addEquiv` from an isomorphism in the category `AddGroup` -/
+/-- Build an `addEquiv` from an isomorphism in the category `AddGrpCat` -/
 add_decl_doc addGroupIsoToAddEquiv
 
-/-- Build a `MulEquiv` from an isomorphism in the category `CommGroup`. -/
+/-- Build a `MulEquiv` from an isomorphism in the category `CommGrpCat`. -/
 @[to_additive (attr := simps!)]
 def commGroupIsoToMulEquiv {X Y : CommGrpCat} (i : X ≅ Y) : X ≃* Y :=
   MonoidHom.toMulEquiv i.hom.hom i.inv.hom (by ext; simp) (by ext; simp)
 
-/-- Build an `AddEquiv` from an isomorphism in the category `AddCommGroup`. -/
+/-- Build an `AddEquiv` from an isomorphism in the category `AddCommGrpCat`. -/
 add_decl_doc addCommGroupIsoToAddEquiv
 
 end CategoryTheory.Iso
@@ -526,9 +541,9 @@ end CategoryTheory.Iso
 /-- multiplicative equivalences between `Group`s are the same as (isomorphic to) isomorphisms
 in `GrpCat` -/
 @[to_additive]
-def mulEquivIsoGroupIso {X Y : GrpCat.{u}} : X ≃* Y ≅ X ≅ Y where
-  hom e := e.toGrpIso
-  inv i := i.groupIsoToMulEquiv
+def mulEquivIsoGroupIso {X Y : GrpCat.{u}} : (X ≃* Y) ≅ (X ≅ Y) where
+  hom := ↾fun e ↦ e.toGrpIso
+  inv := ↾fun i ↦ i.groupIsoToMulEquiv
 
 /-- Additive equivalences between `AddGroup`s are the same
 as (isomorphic to) isomorphisms in `AddGrpCat`. -/
@@ -537,9 +552,9 @@ add_decl_doc addEquivIsoAddGroupIso
 /-- Multiplicative equivalences between `CommGroup`s are the same as (isomorphic to) isomorphisms
 in `CommGrpCat`. -/
 @[to_additive]
-def mulEquivIsoCommGroupIso {X Y : CommGrpCat.{u}} : X ≃* Y ≅ X ≅ Y where
-  hom e := e.toCommGrpIso
-  inv i := i.commGroupIsoToMulEquiv
+def mulEquivIsoCommGroupIso {X Y : CommGrpCat.{u}} : (X ≃* Y) ≅ (X ≅ Y) where
+  hom := ↾fun e ↦ e.toCommGrpIso
+  inv := ↾fun i ↦ i.commGroupIsoToMulEquiv
 
 /-- Additive equivalences between `AddCommGroup`s are
 the same as (isomorphic to) isomorphisms in `AddCommGrpCat`. -/
@@ -570,60 +585,35 @@ end CategoryTheory.Aut
 instance GrpCat.forget_reflects_isos : (forget GrpCat.{u}).ReflectsIsomorphisms where
   reflects {X Y} f _ := by
     let i := asIso ((forget GrpCat).map f)
-    let e : X ≃* Y := { i.toEquiv with map_mul' := map_mul _ }
+    let e : X ≃* Y := { i.toEquiv with map_mul' := by simp [Iso.toEquiv, i] }
     exact e.toGrpIso.isIso_hom
 
 @[to_additive]
 instance CommGrpCat.forget_reflects_isos : (forget CommGrpCat.{u}).ReflectsIsomorphisms where
   reflects {X Y} f _ := by
     let i := asIso ((forget CommGrpCat).map f)
-    let e : X ≃* Y := { i.toEquiv with map_mul' := map_mul _}
+    let e : X ≃* Y := { i.toEquiv with map_mul' := by simp [Iso.toEquiv, i] }
     exact e.toCommGrpIso.isIso_hom
 
 -- note: in the following definitions, there is a problem with `@[to_additive]`
 -- as the `Category` instance is not found on the additive variant
--- this variant is then renamed with a `Aux` suffix
-
+-- this variant is then renamed with an `Aux` suffix
+set_option linter.checkUnivs false in
 /-- An alias for `GrpCat.{max u v}`, to deal around unification issues. -/
-@[to_additive (attr := nolint checkUnivs) GrpMaxAux
+@[to_additive GrpMaxAux
   /-- An alias for `AddGrpCat.{max u v}`, to deal around unification issues. -/]
 abbrev GrpMax.{u1, u2} := GrpCat.{max u1 u2}
+
+set_option linter.checkUnivs false in
 /-- An alias for `AddGrpCat.{max u v}`, to deal around unification issues. -/
-@[nolint checkUnivs]
 abbrev AddGrpMax.{u1, u2} := AddGrpCat.{max u1 u2}
 
+set_option linter.checkUnivs false in
 /-- An alias for `CommGrpCat.{max u v}`, to deal around unification issues. -/
-@[to_additive (attr := nolint checkUnivs) AddCommGrpMaxAux
+@[to_additive AddCommGrpMaxAux
   /-- An alias for `AddCommGrpCat.{max u v}`, to deal around unification issues. -/]
 abbrev CommGrpMax.{u1, u2} := CommGrpCat.{max u1 u2}
+
+set_option linter.checkUnivs false in
 /-- An alias for `AddCommGrpCat.{max u v}`, to deal around unification issues. -/
-@[nolint checkUnivs]
 abbrev AddCommGrpMax.{u1, u2} := AddCommGrpCat.{max u1 u2}
-
-/-!
-Deprecated lemmas for `MonoidHom.comp` and categorical identities.
--/
-
-@[to_additive (attr := deprecated
-  "Proven by `simp only [GrpCat.hom_id, comp_id]`"
-  (since := "2025-01-28"))]
-theorem MonoidHom.comp_id_grp {G : GrpCat.{u}} {H : Type u} [Monoid H] (f : G →* H) :
-    f.comp (GrpCat.Hom.hom (𝟙 G)) = f := by simp
-@[to_additive (attr := deprecated
-  "Proven by `simp only [GrpCat.hom_id, id_comp]`"
-  (since := "2025-01-28"))]
-theorem MonoidHom.id_grp_comp {G : Type u} [Monoid G] {H : GrpCat.{u}} (f : G →* H) :
-    MonoidHom.comp (GrpCat.Hom.hom (𝟙 H)) f = f := by simp
-
-@[to_additive (attr := deprecated
-  "Proven by `simp only [CommGrpCat.hom_id, comp_id]`"
-  (since := "2025-01-28"))]
-theorem MonoidHom.comp_id_commGrp {G : CommGrpCat.{u}} {H : Type u} [Monoid H] (f : G →* H) :
-    f.comp (CommGrpCat.Hom.hom (𝟙 G)) = f := by
-  simp
-@[to_additive (attr := deprecated
-  "Proven by `simp only [CommGrpCat.hom_id, id_comp]`"
-  (since := "2025-01-28"))]
-theorem MonoidHom.id_commGrp_comp {G : Type u} [Monoid G] {H : CommGrpCat.{u}} (f : G →* H) :
-    MonoidHom.comp (CommGrpCat.Hom.hom (𝟙 H)) f = f := by
-  simp

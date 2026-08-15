@@ -3,8 +3,10 @@ Copyright (c) 2025 Dagur Asgeirsson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Dagur Asgeirsson
 -/
-import Mathlib.CategoryTheory.Localization.Monoidal.Basic
-import Mathlib.CategoryTheory.Monoidal.Braided.Multifunctor
+module
+
+public import Mathlib.CategoryTheory.Localization.Monoidal.Basic
+public import Mathlib.CategoryTheory.Monoidal.Braided.Multifunctor
 
 /-!
 
@@ -20,11 +22,13 @@ braided, in such a way that the localization functor is braided. If `C` is symme
 the monoidal structure on `D` is also symmetric.
 -/
 
+@[expose] public section
+
 open CategoryTheory Category MonoidalCategory BraidedCategory Functor
 
 namespace CategoryTheory.Localization.Monoidal
 
-variable {C D : Type*} [Category C] [Category D] (L : C ⥤ D) (W : MorphismProperty C)
+variable {C D : Type*} [Category* C] [Category* D] (L : C ⥤ D) (W : MorphismProperty C)
   [MonoidalCategory C] [W.IsMonoidal] [L.IsLocalization W]
   {unit : D} (ε : L.obj (𝟙_ C) ≅ unit)
 
@@ -39,7 +43,7 @@ variable [BraidedCategory C]
 noncomputable instance : Lifting₂ L' L' W W ((curriedTensor C).flip ⋙ (whiskeringRight C C
     (LocalizedMonoidal L W ε)).obj L') (tensorBifunctor L W ε).flip :=
   inferInstanceAs (Lifting₂ L' L' W W (((curriedTensor C) ⋙ (whiskeringRight C C
-    (LocalizedMonoidal L W ε)).obj L')).flip (tensorBifunctor L W ε).flip )
+    (LocalizedMonoidal L W ε)).obj L')).flip (tensorBifunctor L W ε).flip)
 
 /-- The braiding on the localized category as a natural isomorphism of bifunctors. -/
 noncomputable def braidingNatIso : tensorBifunctor L W ε ≅ (tensorBifunctor L W ε).flip :=
@@ -48,7 +52,7 @@ noncomputable def braidingNatIso : tensorBifunctor L W ε ≅ (tensorBifunctor L
       (LocalizedMonoidal L W ε)).obj L')
     (((curriedTensor C).flip ⋙ (whiskeringRight C C
       (LocalizedMonoidal L W ε)).obj L'))
-    _ _  (isoWhiskerRight (curriedBraidingNatIso C) _)
+    _ _ (isoWhiskerRight (curriedBraidingNatIso C) _)
 
 lemma braidingNatIso_hom_app (X Y : C) :
     ((braidingNatIso L W ε).hom.app ((L').obj X)).app ((L').obj Y) =
@@ -58,6 +62,9 @@ lemma braidingNatIso_hom_app (X Y : C) :
   simp [braidingNatIso, lift₂NatIso]
   rfl
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma braidingNatIso_hom_app_naturality_μ_left (X Y Z : C) :
     ((braidingNatIso L W ε).hom.app ((L').obj X)).app ((L').obj Y ⊗ (L').obj Z) ≫
@@ -66,6 +73,9 @@ lemma braidingNatIso_hom_app_naturality_μ_left (X Y Z : C) :
           ((braidingNatIso L W ε).hom.app ((L').obj X)).app ((L').obj (Y ⊗ Z)) :=
   (((braidingNatIso L W ε).hom.app ((L').obj X)).naturality ((Functor.LaxMonoidal.μ (L') Y Z))).symm
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc]
 lemma braidingNatIso_hom_app_naturality_μ_right (X Y Z : C) :
     ((braidingNatIso L W ε).hom.app ((L').obj X ⊗ (L').obj Y)).app ((L').obj Z) ≫
@@ -112,9 +122,9 @@ lemma map_hexagon_reverse (X Y Z : C) :
 noncomputable instance : BraidedCategory (LocalizedMonoidal L W ε) := by
   refine .ofBifunctor (braidingNatIso L W ε) ?_ ?_
   · apply natTrans₃_ext (L') (L') (L') W W W
-    simpa using map_hexagon_forward _ _ _
+    simpa using! map_hexagon_forward _ _ _
   · apply natTrans₃_ext (L') (L') (L') W W W
-    simpa using map_hexagon_reverse _ _ _
+    simpa using! map_hexagon_reverse _ _ _
 
 lemma β_hom_app (X Y : C) :
     (β_ ((L').obj X) ((L').obj Y)).hom =
@@ -132,6 +142,7 @@ section Symmetric
 
 variable [SymmetricCategory C]
 
+set_option backward.defeqAttrib.useBackward true in
 noncomputable instance : SymmetricCategory (LocalizedMonoidal L W ε) := by
   refine .ofCurried (natTrans₂_ext (L') (L') W W fun X Y ↦ ?_)
   simp [-Functor.map_braiding, β_hom_app, ← Functor.map_comp_assoc]

@@ -3,11 +3,13 @@ Copyright (c) 2019 Oliver Nash. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Oliver Nash
 -/
-import Mathlib.Algebra.Module.Submodule.Equiv
-import Mathlib.Algebra.Module.Equiv.Basic
-import Mathlib.Algebra.Module.Rat
-import Mathlib.Data.Bracket
-import Mathlib.Tactic.Abel
+module
+
+public import Mathlib.Algebra.Module.Submodule.Equiv
+public import Mathlib.Algebra.Module.Equiv.Basic
+public import Mathlib.Algebra.Module.Rat
+public import Mathlib.Data.Bracket
+public import Mathlib.Tactic.Abel
 
 /-!
 # Lie algebras
@@ -46,6 +48,8 @@ are partially unbundled.
 
 lie bracket, jacobi identity, lie ring, lie algebra, lie module
 -/
+
+@[expose] public section
 
 
 universe u v w w₁ w₂
@@ -117,7 +121,7 @@ lemma lie_swap_lie [Bracket L₂ L₁] [AddCommGroup M] [IsLieTower L₁ L₂ M]
     (x : L₁) (y : L₂) (m : M) : ⁅⁅x, y⁆, m⁆ = -⁅⁅y, x⁆, m⁆ := by
   have h1 := leibniz_lie x y m
   have h2 := leibniz_lie y x m
-  convert congr($h1.symm - $h2) using 1 <;> simp only [add_sub_cancel_right, sub_add_cancel_right]
+  convert congr($h1.symm - $h2) <;> simp only [add_sub_cancel_right, sub_add_cancel_right]
 
 end IsLieTower
 
@@ -206,7 +210,7 @@ theorem nsmul_lie (n : ℕ) : ⁅n • x, m⁆ = n • ⁅x, m⁆ :=
 @[simp]
 theorem lie_nsmul (n : ℕ) : ⁅x, n • m⁆ = n • ⁅x, m⁆ :=
   AddMonoidHom.map_nsmul
-    { toFun := fun m : M => ⁅x, m⁆, map_zero' := lie_zero x, map_add' := fun _ _ => lie_add _ _ _}
+    { toFun := fun m : M => ⁅x, m⁆, map_zero' := lie_zero x, map_add' := fun _ _ => lie_add _ _ _ }
     _ _
 
 theorem zsmul_lie (a : ℤ) : ⁅a • x, m⁆ = a • ⁅x, m⁆ :=
@@ -245,22 +249,21 @@ instance LinearMap.instLieRingModule : LieRingModule L (M →ₗ[R] N) where
   bracket x f :=
     { toFun := fun m => ⁅x, f m⁆ - f ⁅x, m⁆
       map_add' := fun m n => by
-        simp only [lie_add, LinearMap.map_add]
+        simp only [lie_add, map_add]
         abel
       map_smul' := fun t m => by
-        simp only [smul_sub, LinearMap.map_smul, lie_smul, RingHom.id_apply] }
+        simp only [smul_sub, map_smul, lie_smul, RingHom.id_apply] }
   add_lie x y f := by
     ext n
-    simp only [add_lie, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.add_apply, LinearMap.map_add]
+    simp only [add_lie, coe_mk, AddHom.coe_mk, add_apply, map_add]
     abel
   lie_add x f g := by
     ext n
-    simp only [LinearMap.coe_mk, AddHom.coe_mk, lie_add, LinearMap.add_apply]
+    simp only [coe_mk, AddHom.coe_mk, lie_add, add_apply]
     abel
   leibniz_lie x y f := by
     ext n
-    simp only [lie_lie, LinearMap.coe_mk, AddHom.coe_mk, LinearMap.map_sub, LinearMap.add_apply,
-      lie_sub]
+    simp only [lie_lie, coe_mk, AddHom.coe_mk, map_sub, add_apply, lie_sub]
     abel
 
 @[simp]
@@ -270,10 +273,10 @@ theorem LieHom.lie_apply (f : M →ₗ[R] N) (x : L) (m : M) : ⁅x, f⁆ m = �
 instance LinearMap.instLieModule : LieModule R L (M →ₗ[R] N) where
   smul_lie t x f := by
     ext n
-    simp only [smul_sub, smul_lie, LinearMap.smul_apply, LieHom.lie_apply, LinearMap.map_smul]
+    simp only [smul_sub, smul_lie, smul_apply, LieHom.lie_apply, map_smul]
   lie_smul t x f := by
     ext n
-    simp only [smul_sub, LinearMap.smul_apply, LieHom.lie_apply, lie_smul]
+    simp only [smul_sub, smul_apply, LieHom.lie_apply, lie_smul]
 
 /-- We could avoid defining this by instead defining a `LieRingModule L R` instance with a zero
 bracket and relying on `LinearMap.instLieRingModule`. We do not do this because in the case that
@@ -295,6 +298,7 @@ instance Module.Dual.instLieModule : LieModule R L (M →ₗ[R] R) where
 
 variable (L) in
 /-- It is sometimes useful to regard a `LieRing` as a `NonUnitalNonAssocRing`. -/
+@[instance_reducible]
 def LieRing.toNonUnitalNonAssocRing : NonUnitalNonAssocRing L :=
   { mul := Bracket.bracket
     left_distrib := lie_add
@@ -341,7 +345,7 @@ instance : Coe (L₁ →ₗ⁅R⁆ L₂) (L₁ →ₗ[R] L₂) :=
 
 instance : FunLike (L₁ →ₗ⁅R⁆ L₂) L₁ L₂ where
   coe f := f.toFun
-  coe_injective' x y h := by
+  coe_injective x y h := by
     cases x; cases y; simp at h; simp [h]
 
 initialize_simps_projections LieHom (toFun → apply)
@@ -357,16 +361,6 @@ theorem toFun_eq_coe (f : L₁ →ₗ⁅R⁆ L₂) : f.toFun = ⇑f :=
 instance : LinearMapClass (L₁ →ₗ⁅R⁆ L₂) R L₁ L₂ where
   map_add _ _ _ := by rw [← coe_toLinearMap, map_add]
   map_smulₛₗ _ _ _ := by rw [← coe_toLinearMap, map_smulₛₗ]
-
-@[deprecated (since := "2025-10-12")] alias map_smul := _root_.map_smul
-
-@[deprecated (since := "2025-10-12")] alias map_add := _root_.map_add
-
-@[deprecated (since := "2025-10-12")] alias map_sub := _root_.map_sub
-
-@[deprecated (since := "2025-10-12")] alias map_neg := _root_.map_neg
-
-@[deprecated (since := "2025-10-12")] alias map_zero := _root_.map_zero
 
 @[simp]
 theorem map_lie (f : L₁ →ₗ⁅R⁆ L₂) (x y : L₁) : f ⁅x, y⁆ = ⁅f x, f y⁆ :=
@@ -478,6 +472,7 @@ variable (f : L₁ →ₗ⁅R⁆ L₂)
 /-- A Lie ring module may be pulled back along a morphism of Lie algebras.
 
 See note [reducible non-instances]. -/
+@[instance_reducible]
 def LieRingModule.compLieHom : LieRingModule L₁ M where
   bracket x m := ⁅f x, m⁆
   lie_add x := lie_add (f x)
@@ -568,9 +563,9 @@ theorem coe_injective : @Injective (L₁ ≃ₗ⁅R⁆ L₂) (L₁ → L₂) (�
 
 instance : LinearEquivClass (L₁ ≃ₗ⁅R⁆ L₂) R L₁ L₂ where
   map_add _ _ _ := by
-    rw [← @coe_toLinearEquiv, map_add]
+    rw [← coe_toLinearEquiv, map_add]
   map_smulₛₗ _ _ _ := by
-    rw [← @coe_toLinearEquiv, map_smul, RingHom.id_apply]
+    rw [← coe_toLinearEquiv, map_smul, RingHom.id_apply]
 
 @[ext]
 theorem ext {f g : L₁ ≃ₗ⁅R⁆ L₂} (h : ∀ x, f x = g x) : f = g :=
@@ -615,6 +610,12 @@ theorem apply_symm_apply (e : L₁ ≃ₗ⁅R⁆ L₂) : ∀ x, e (e.symm x) = x
 @[simp]
 theorem symm_apply_apply (e : L₁ ≃ₗ⁅R⁆ L₂) : ∀ x, e.symm (e x) = x :=
   e.toLinearEquiv.symm_apply_apply
+
+theorem symm_apply_eq (e : L₁ ≃ₗ⁅R⁆ L₂) {x y} : e.symm x = y ↔ x = e y :=
+  e.toLinearEquiv.symm_apply_eq
+
+theorem eq_symm_apply (e : L₁ ≃ₗ⁅R⁆ L₂) {x y} : y = e.symm x ↔ e y = x :=
+  e.toLinearEquiv.eq_symm_apply
 
 @[simp]
 theorem refl_symm : (refl : L₁ ≃ₗ⁅R⁆ L₁).symm = refl :=
@@ -689,9 +690,9 @@ attribute [coe] LieModuleHom.toLinearMap
 instance : CoeOut (M →ₗ⁅R,L⁆ N) (M →ₗ[R] N) :=
   ⟨LieModuleHom.toLinearMap⟩
 
-instance : FunLike (M →ₗ⁅R, L⁆ N) M N where
+instance : FunLike (M →ₗ⁅R,L⁆ N) M N where
   coe f := f.toFun
-  coe_injective' x y h := by cases x; cases y; simp at h; simp [h]
+  coe_injective x y h := by cases x; cases y; simp at h; simp [h]
 
 initialize_simps_projections LieModuleHom (toFun → apply)
 
@@ -699,19 +700,9 @@ initialize_simps_projections LieModuleHom (toFun → apply)
 theorem coe_toLinearMap (f : M →ₗ⁅R,L⁆ N) : ((f : M →ₗ[R] N) : M → N) = f :=
   rfl
 
-instance : LinearMapClass (M →ₗ⁅R, L⁆ N) R M N where
+instance : LinearMapClass (M →ₗ⁅R,L⁆ N) R M N where
   map_add _ _ _ := by rw [← coe_toLinearMap, map_add]
   map_smulₛₗ _ _ _ := by rw [← coe_toLinearMap, map_smulₛₗ]
-
-@[deprecated (since := "2025-10-12")] alias map_smul := _root_.map_smul
-
-@[deprecated (since := "2025-10-12")] alias map_add := _root_.map_add
-
-@[deprecated (since := "2025-10-12")] alias map_sub := _root_.map_sub
-
-@[deprecated (since := "2025-10-12")] alias map_neg := _root_.map_neg
-
-@[deprecated (since := "2025-10-12")] alias map_zero := _root_.map_zero
 
 @[simp]
 theorem map_lie (f : M →ₗ⁅R,L⁆ N) (x : L) (m : M) : f ⁅x, m⁆ = ⁅x, f m⁆ :=
@@ -992,9 +983,16 @@ theorem apply_symm_apply (e : M ≃ₗ⁅R,L⁆ N) : ∀ x, e (e.symm x) = x :=
 theorem symm_apply_apply (e : M ≃ₗ⁅R,L⁆ N) : ∀ x, e.symm (e x) = x :=
   e.toLinearEquiv.symm_apply_apply
 
+theorem symm_apply_eq {m : M} {n : N} (e : M ≃ₗ⁅R,L⁆ N) : e.symm n = m ↔ n = e m :=
+  e.toEquiv.symm_apply_eq
+
+theorem eq_symm_apply {m : M} {n : N} (e : M ≃ₗ⁅R,L⁆ N) : m = e.symm n ↔ e m = n :=
+  e.toEquiv.eq_symm_apply
+
+@[deprecated eq_symm_apply +typeChanged (since := "2026-07-26")]
 theorem apply_eq_iff_eq_symm_apply {m : M} {n : N} (e : M ≃ₗ⁅R,L⁆ N) :
     e m = n ↔ m = e.symm n :=
-  (e : M ≃ N).apply_eq_iff_eq_symm_apply
+  e.eq_symm_apply.symm
 
 @[simp]
 theorem symm_symm (e : M ≃ₗ⁅R,L⁆ N) : e.symm.symm = e := rfl

@@ -3,12 +3,14 @@ Copyright (c) 2020 Joseph Myers. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Joseph Myers, Yury Kudryashov
 -/
-import Mathlib.Algebra.CharP.Invertible
-import Mathlib.Analysis.Normed.Module.Basic
-import Mathlib.Analysis.Normed.Group.AddTorsor
-import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic
-import Mathlib.LinearAlgebra.AffineSpace.Midpoint
-import Mathlib.Topology.Instances.RealVectorSpace
+module
+
+public import Mathlib.Algebra.CharP.Invertible
+public import Mathlib.Analysis.Normed.Module.Basic
+public import Mathlib.Analysis.Normed.Group.AddTorsor
+public import Mathlib.LinearAlgebra.AffineSpace.AffineSubspace.Basic
+public import Mathlib.LinearAlgebra.AffineSpace.Midpoint
+public import Mathlib.Topology.Instances.RealVectorSpace
 
 
 /-!
@@ -17,12 +19,12 @@ import Mathlib.Topology.Instances.RealVectorSpace
 This file contains lemmas about normed additive torsors over normed spaces.
 -/
 
+@[expose] public section
+
 
 noncomputable section
 
-open NNReal Topology
-
-open Filter
+open NNReal
 
 variable {V P W Q : Type*} [SeminormedAddCommGroup V] [PseudoMetricSpace P] [NormedAddTorsor V P]
   [NormedAddCommGroup W] [MetricSpace Q] [NormedAddTorsor W Q]
@@ -32,6 +34,19 @@ section NormedSpace
 variable {𝕜 : Type*} [NormedField 𝕜] [NormedSpace 𝕜 V] [NormedSpace 𝕜 W]
 
 open AffineMap
+
+@[simp]
+theorem dist_homothety (p₁ p₂ p : P) (c : 𝕜) :
+    dist (homothety p c p₁) (homothety p c p₂) = ‖c‖ * dist p₁ p₂ := by
+  simp [dist_eq_norm_vsub, ← (homothety p c).linearMap_vsub, homothety_linear, norm_smul]
+
+@[simp]
+theorem nndist_homothety (p₁ p₂ p : P) (c : 𝕜) :
+    nndist (homothety p c p₁) (homothety p c p₂) = ‖c‖₊ * nndist p₁ p₂ :=
+  NNReal.eq <| dist_homothety p₁ p₂ p c
+
+theorem lipschitzWith_homothety (p : P) (c : 𝕜) : LipschitzWith ‖c‖₊ (homothety p c) :=
+  LipschitzWith.of_dist_le_mul fun p₁ p₂ ↦ (dist_homothety p₁ p₂ p c).le
 
 @[simp]
 theorem dist_center_homothety (p₁ p₂ : P) (c : 𝕜) :

@@ -3,10 +3,12 @@ Copyright (c) 2018 Mario Carneiro, Kevin Buzzard. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Mario Carneiro, Kevin Buzzard
 -/
-import Mathlib.Algebra.Module.Submodule.IterateMapComap
-import Mathlib.Order.PartialSups
-import Mathlib.RingTheory.Noetherian.Basic
-import Mathlib.RingTheory.OrzechProperty
+module
+
+public import Mathlib.Algebra.Module.Submodule.IterateMapComap
+public import Mathlib.Order.PartialSups
+public import Mathlib.RingTheory.Noetherian.Basic
+public import Mathlib.RingTheory.OrzechProperty
 
 /-!
 # Noetherian rings have the Orzech property
@@ -19,8 +21,7 @@ import Mathlib.RingTheory.OrzechProperty
 * `IsNoetherianRing.orzechProperty`: Any Noetherian ring satisfies the Orzech property.
 -/
 
-
-open Set Filter Pointwise
+@[expose] public section
 
 open IsNoetherian Submodule Function
 
@@ -39,7 +40,7 @@ utilizing `LinearMap.iterateMapComap`.
 See also Orzech's original paper: *Onto endomorphisms are isomorphisms* [orzech1971]. -/
 theorem IsNoetherian.injective_of_surjective_of_injective (i f : N →ₗ[R] M)
     (hi : Injective i) (hf : Surjective f) : Injective f := by
-  haveI := isNoetherian_of_injective i hi
+  have := isNoetherian_of_injective i hi
   obtain ⟨n, H⟩ := monotone_stabilizes_iff_noetherian.2 ‹_›
     ⟨_, monotone_nat_of_le_succ <| f.iterateMapComap_le_succ i ⊥ (by simp)⟩
   exact LinearMap.ker_eq_bot.1 <| bot_unique <|

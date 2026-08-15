@@ -3,8 +3,10 @@ Copyright (c) 2025 Antoine Chambert-Loir. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Antoine Chambert-Loir
 -/
-import Mathlib.Data.Fin.Tuple.Basic
-import Mathlib.Order.Fin.Basic
+module
+
+public import Mathlib.Data.Fin.Tuple.Basic
+public import Mathlib.Order.Fin.Basic
 
 /-! # Constructions of embeddings of `Fin n` into a type
 
@@ -23,6 +25,8 @@ import Mathlib.Order.Fin.Basic
   into an embedding `Fin (m + n) ↪ α` if they have disjoint ranges
 
 -/
+
+@[expose] public section
 
 open Function.Embedding Fin Set Nat
 
@@ -89,10 +93,11 @@ namespace Function.Embedding
 
 variable {α : Type*}
 
+set_option backward.isDefEq.respectTransparency false in
 /-- The natural equivalence of `Fin 2 ↪ α` with pairs `(a, b)` of distinct elements of `α`. -/
-def twoEmbeddingEquiv : (Fin 2 ↪ α) ≃ { (a, b) : α × α | a ≠ b } where
+def twoEmbeddingEquiv : (Fin 2 ↪ α) ≃ {(a, b) : α × α | a ≠ b} where
   toFun e := ⟨(e 0, e 1), by
-    simp only [ne_eq, Fin.isValue, mem_setOf_eq, EmbeddingLike.apply_eq_iff_eq, zero_eq_one_iff,
+    simp only [ne_eq, Fin.isValue, mem_ofPred_eq, EmbeddingLike.apply_eq_iff_eq, zero_eq_one_iff,
       succ_ne_self, not_false_eq_true]⟩
   invFun := fun ⟨⟨a, b⟩, h⟩ ↦ {
     toFun i := if i = 0 then a else b
@@ -100,8 +105,8 @@ def twoEmbeddingEquiv : (Fin 2 ↪ α) ≃ { (a, b) : α × α | a ≠ b } where
       by_cases hi : i = 0
       · by_cases hj : j = 0
         · simp [hi, hj]
-        · simp only [if_pos hi, eq_one_of_ne_zero j hj,
-          if_neg (Ne.symm Fin.zero_ne_one)] at hij
+        · simp only [ite_eq_left hi, eq_one_of_ne_zero j hj,
+          ite_eq_right (Ne.symm Fin.zero_ne_one)] at hij
           apply (h hij).elim
       · rw [eq_one_of_ne_zero i hi] at hij ⊢
         by_cases hj : j = 0

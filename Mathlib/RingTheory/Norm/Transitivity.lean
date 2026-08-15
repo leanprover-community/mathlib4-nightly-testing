@@ -3,15 +3,17 @@ Copyright (c) 2024 Anne Baanen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Junyan Xu
 -/
-import Mathlib.LinearAlgebra.Matrix.Block
-import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
-import Mathlib.RingTheory.Norm.Defs
-import Mathlib.RingTheory.PolynomialAlgebra
-import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
-import Mathlib.FieldTheory.IntermediateField.Algebraic
-import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
-import Mathlib.RingTheory.Norm.Basic
-import Mathlib.FieldTheory.Galois.Basic
+module
+
+public import Mathlib.LinearAlgebra.Matrix.Block
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.Coeff
+public import Mathlib.RingTheory.Norm.Defs
+public import Mathlib.RingTheory.PolynomialAlgebra
+public import Mathlib.FieldTheory.IntermediateField.Adjoin.Defs
+public import Mathlib.FieldTheory.IntermediateField.Algebraic
+public import Mathlib.FieldTheory.IsAlgClosed.AlgebraicClosure
+public import Mathlib.RingTheory.Norm.Basic
+public import Mathlib.FieldTheory.Galois.Basic
 
 /-!
 # Transitivity of algebra norm
@@ -25,6 +27,8 @@ about the roots of the minimal polynomial of `s` over `R`.
 * [silvester2000] Silvester, *Determinants of Block Matrices*, The Mathematical Gazette (2000).
 
 -/
+
+@[expose] public section
 
 variable {R S A n m : Type*} [CommRing R] [CommRing S]
 variable (M : Matrix m m S) [DecidableEq m] [DecidableEq n] (k : m)
@@ -46,17 +50,18 @@ def auxMat : Matrix m m S :=
 lemma auxMat_blockTriangular : (auxMat M k).BlockTriangular (· ≠ k) :=
   fun i j lt ↦ by
     simp_rw [lt_iff_not_ge, le_Prop_eq, Classical.not_imp, not_not] at lt
-    rw [auxMat, of_apply, if_pos lt.2, if_neg lt.1]
+    rw [auxMat, of_apply, ite_eq_left lt.2, ite_eq_right lt.1]
 
 lemma auxMat_toSquareBlock_ne : (auxMat M k).toSquareBlock (· ≠ k) True = M k k • 1 := by
   ext i j
-  simp [auxMat, toSquareBlock_def, if_neg (of_eq_true i.2), if_neg (of_eq_true j.2),
+  simp [auxMat, toSquareBlock_def, ite_eq_right (of_eq_true i.2), ite_eq_right (of_eq_true j.2),
     Matrix.one_apply, Subtype.ext_iff]
 
 lemma auxMat_toSquareBlock_eq : (auxMat M k).toSquareBlock (· ≠ k) False = 1 := by
   ext ⟨i, hi⟩ ⟨j, hj⟩
   rw [eq_iff_iff, iff_false, not_not] at hi hj
-  simp [auxMat, toSquareBlock_def, if_pos hi, if_pos hj, Matrix.one_apply, if_pos (hj ▸ hi)]
+  simp [auxMat, toSquareBlock_def, ite_eq_left hi, ite_eq_left hj, Matrix.one_apply,
+    ite_eq_left (hj ▸ hi)]
 
 variable [Fintype m]
 
@@ -64,9 +69,9 @@ variable [Fintype m]
 lemma mul_auxMat_blockTriangular : (M * auxMat M k).BlockTriangular (· = k) :=
   fun i j lt ↦ by
     simp_rw [lt_iff_not_ge, le_Prop_eq, Classical.not_imp] at lt
-    simp_rw [Matrix.mul_apply, auxMat, of_apply, if_neg lt.2, mul_ite, mul_neg, mul_zero]
-    rw [Finset.sum_ite, Finset.filter_eq', if_pos (Finset.mem_univ _), Finset.sum_singleton,
-      Finset.sum_ite_eq', if_pos, lt.1, mul_comm, neg_add_cancel]
+    simp_rw [Matrix.mul_apply, auxMat, of_apply, ite_eq_right lt.2, mul_ite, mul_neg, mul_zero]
+    rw [Finset.sum_ite, Finset.filter_eq', ite_eq_left (Finset.mem_univ _), Finset.sum_singleton,
+      Finset.sum_ite_eq', ite_eq_left, lt.1, mul_comm, neg_add_cancel]
     exact Finset.mem_filter.mpr ⟨Finset.mem_univ _, lt.2⟩
 
 /-- The lower-right corner of `M * aux M k` is the same as the corner of `M`. -/
@@ -92,7 +97,7 @@ lemma det_mul_corner_pow :
     pow_one, det_one, smul_eq_mul, mul_one]
   -- `Decidable (P = Q)` diamond induced by `Prop.linearOrder`, which is classical, when `P` and `Q`
   -- are themselves decidable.
-  convert rfl
+  convert! rfl
 
 /-- A matrix with X added to the corner. -/
 noncomputable def cornerAddX : Matrix m m S[X] :=
@@ -104,7 +109,7 @@ omit [Fintype m] in
 lemma polyToMatrix_cornerAddX :
     f.polyToMatrix (cornerAddX M k k k) = (-f (M k k)).charmatrix := by
   simp [cornerAddX, Matrix.add_apply, charmatrix,
-    RingHom.polyToMatrix, - AlgEquiv.symm_toRingEquiv, map_neg]
+    RingHom.polyToMatrix, -AlgEquiv.symm_toRingEquiv, map_neg]
 
 lemma eval_zero_det_det : eval 0 (f.polyToMatrix (cornerAddX M k).det).det = (f M.det).det := by
   rw [← coe_evalRingHom, RingHom.map_det, ← RingHom.comp_apply,
@@ -215,8 +220,8 @@ theorem isIntegral_norm [Algebra R L] [Algebra R K] [IsScalarTower R K L] {x : L
   rw [← norm_norm (S := F), ← coe_gen K x, ← IntermediateField.algebraMap_apply,
     norm_algebraMap_of_basis (Module.Free.chooseBasis F L) (gen K x), map_pow]
   apply IsIntegral.pow
-  rw [← isIntegral_algebraMap_iff (algebraMap K (AlgebraicClosure F)).injective,
-    norm_gen_eq_prod_roots _ (IsAlgClosed.splits_codomain _)]
+  rw [← isIntegral_algebraMap_iff (B := AlgebraicClosure K),
+    norm_gen_eq_prod_roots _ (IsAlgClosed.splits _)]
   refine IsIntegral.multiset_prod (fun y hy ↦ ⟨minpoly R x, minpoly.monic hx, ?_⟩)
   suffices (aeval y) ((minpoly R x).map (algebraMap R K)) = 0 by simpa
   obtain ⟨P, hP⟩ := minpoly.dvd K x (show aeval x ((minpoly R x).map (algebraMap R K)) = 0 by simp)
@@ -246,7 +251,7 @@ theorem norm_eq_norm_adjoin (x : L) :
 variable (F E : Type*) [Field F] [Algebra K F] [Field E] [Algebra K E]
 
 variable {K} in
-theorem norm_eq_prod_roots {x : L} (hF : (minpoly K x).Splits (algebraMap K F)) :
+theorem norm_eq_prod_roots {x : L} (hF : ((minpoly K x).map (algebraMap K F)).Splits) :
     algebraMap K F (norm K x) =
       ((minpoly K x).aroots F).prod ^ finrank K⟮x⟯ L := by
   rw [norm_eq_norm_adjoin K x, map_pow, IntermediateField.AdjoinSimple.norm_gen_eq_prod_roots _ hF]
@@ -259,10 +264,10 @@ of `x` over all the `K`-embeddings `σ` of `L` into `E`. -/
 theorem norm_eq_prod_embeddings [Algebra.IsSeparable K L] [IsAlgClosed E]
     (x : L) : algebraMap K E (norm K x) = ∏ σ : L →ₐ[K] E, σ x := by
   have hx := Algebra.IsSeparable.isIntegral K x
-  rw [norm_eq_norm_adjoin K x, RingHom.map_pow, ← adjoin.powerBasis_gen hx,
-    norm_eq_prod_embeddings_gen E (adjoin.powerBasis hx) (IsAlgClosed.splits_codomain _)]
+  rw [norm_eq_norm_adjoin K x, map_pow, ← adjoin.powerBasis_gen hx,
+    norm_eq_prod_embeddings_gen E (adjoin.powerBasis hx) (IsAlgClosed.splits _)]
   · exact (prod_embeddings_eq_finrank_pow L (L := K⟮x⟯) E (adjoin.powerBasis hx)).symm
-  · haveI := Algebra.isSeparable_tower_bot_of_isSeparable K K⟮x⟯ L
+  · have := Algebra.isSeparable_tower_bot_of_isSeparable K K⟮x⟯ L
     exact Algebra.IsSeparable.isSeparable K _
 
 theorem norm_eq_prod_automorphisms [IsGalois K L] (x : L) :

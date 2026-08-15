@@ -3,11 +3,12 @@ Copyright (c) 2025 David Loeffler. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: David Loeffler
 -/
+module
 
-import Mathlib.GroupTheory.Commensurable
-import Mathlib.Topology.Algebra.ContinuousMonoidHom
-import Mathlib.Topology.Algebra.Group.ClosedSubgroup
-import Mathlib.Topology.Algebra.IsUniformGroup.Basic
+public import Mathlib.GroupTheory.Commensurable
+public import Mathlib.Topology.Algebra.ContinuousMonoidHom
+public import Mathlib.Topology.Algebra.Group.ClosedSubgroup
+public import Mathlib.Topology.Algebra.IsUniformGroup.Basic
 
 /-!
 # Discrete subgroups of topological groups
@@ -16,7 +17,9 @@ Note that the instance `Subgroup.isClosed_of_discrete` does not live here, in or
 be used in other files without requiring lots of group-theoretic imports.
 -/
 
-open Filter Topology Uniformity
+@[expose] public section
+
+open Filter Topology
 
 variable {G : Type*} [Group G] [TopologicalSpace G]
 
@@ -32,7 +35,8 @@ def Subgroup.subgroupOfContinuousMulEquivOfLe {H K : Subgroup G} (hHK : H ≤ K)
     simp only [subgroupOfEquivOfLe, Topology.IsInducing.subtypeVal.isOpen_iff,
       exists_exists_and_eq_and]
     simpa [Set.ext_iff] using fun s ↦ exists_congr
-      fun t ↦ and_congr_right fun _ ↦ ⟨fun aux g hgh ↦ aux g (hHK hgh) hgh, by grind⟩)
+      fun t ↦ and_congr_right fun _ ↦
+        ⟨fun aux g hgh ↦ aux g (hHK hgh) hgh, by grind [Subgroup.mem_subgroupOf]⟩)
 
 @[to_additive (attr := simp)]
 lemma Subgroup.subgroupOfContinuousMulEquivOfLe_symm_apply
@@ -61,7 +65,7 @@ lemma Subgroup.discreteTopology_iff_of_finiteIndex {H : Subgroup G} [H.FiniteInd
 @[to_additive]
 lemma Subgroup.discreteTopology_iff_of_isFiniteRelIndex {H K : Subgroup G} (hHK : H ≤ K)
     [IsFiniteRelIndex H K] : DiscreteTopology H ↔ DiscreteTopology K := by
-  haveI : (H.subgroupOf K).FiniteIndex := IsFiniteRelIndex.to_finiteIndex_subgroupOf
+  have : (H.subgroupOf K).FiniteIndex := IsFiniteRelIndex.to_finiteIndex_subgroupOf
   rw [← (subgroupOfContinuousMulEquivOfLe hHK).discreteTopology_iff,
     discreteTopology_iff_of_finiteIndex]
 

@@ -3,10 +3,12 @@ Copyright (c) 2021 Yaël Dillies. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yaël Dillies, Kim Morrison
 -/
-import Batteries.Control.AlternativeMonad
-import Mathlib.Data.Finset.Lattice.Union
-import Mathlib.Data.Finset.NAry
-import Mathlib.Data.Multiset.Functor
+module
+
+public import Batteries.Control.AlternativeMonad
+public import Mathlib.Data.Finset.Lattice.Union
+public import Mathlib.Data.Finset.NAry
+public import Mathlib.Data.Multiset.Functor
 
 /-!
 # Functoriality of `Finset`
@@ -19,6 +21,8 @@ Currently, all instances are classical because the functor classes want to run o
 instead we could state that a functor is lawful/applicative/traversable... between two given types,
 then we could provide the instances for types with decidable equality.
 -/
+
+@[expose] public section
 
 
 universe u
@@ -93,10 +97,10 @@ instance lawfulApplicative : LawfulApplicative Finset :=
     seqLeft_eq := fun s t => by
       rw [seq_def, fmap_def, seqLeft_def]
       obtain rfl | ht := t.eq_empty_or_nonempty
-      · simp_rw [image_empty, if_true]
+      · simp_rw [image_empty, ite_true]
         exact (sup_bot _).symm
       · ext a
-        rw [if_neg ht.ne_empty, mem_sup]
+        rw [ite_eq_right ht.ne_empty, mem_sup]
         refine ⟨fun ha => ⟨const _ a, mem_image_of_mem _ ha, mem_image_const_self.2 ht⟩, ?_⟩
         rintro ⟨f, hf, ha⟩
         rw [mem_image] at hf ha
@@ -106,9 +110,9 @@ instance lawfulApplicative : LawfulApplicative Finset :=
     seqRight_eq := fun s t => by
       rw [seq_def, fmap_def, seqRight_def]
       obtain rfl | hs := s.eq_empty_or_nonempty
-      · rw [if_pos rfl, image_empty, sup_empty, bot_eq_empty]
+      · rw [ite_eq_left rfl, image_empty, sup_empty, bot_eq_empty]
       · ext a
-        rw [if_neg hs.ne_empty, mem_sup]
+        rw [ite_eq_right hs.ne_empty, mem_sup]
         refine ⟨fun ha => ⟨id, mem_image_const_self.2 hs, by rwa [image_id]⟩, ?_⟩
         rintro ⟨f, hf, ha⟩
         rw [mem_image] at hf ha

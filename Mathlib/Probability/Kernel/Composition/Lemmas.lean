@@ -3,7 +3,9 @@ Copyright (c) 2025 Rémy Degenne. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Rémy Degenne, Lorenzo Luccioli
 -/
-import Mathlib.Probability.Kernel.Composition.MeasureComp
+module
+
+public import Mathlib.Probability.Kernel.Composition.MeasureComp
 
 /-!
 # Lemmas relating different ways to compose measures and kernels
@@ -12,6 +14,8 @@ This file contains lemmas about the composition of measures and kernels that do 
 the other files in this directory, because they involve several types of compositions/products.
 
 -/
+
+public section
 
 open MeasureTheory ProbabilityTheory
 
@@ -76,7 +80,7 @@ namespace MeasureTheory.Measure
 lemma compProd_eq_parallelComp_comp_copy_comp [SFinite μ] :
     μ ⊗ₘ κ = (Kernel.id ∥ₖ κ) ∘ₘ Kernel.copy α ∘ₘ μ := by
   by_cases hκ : IsSFiniteKernel κ
-  swap; · simp [hκ]
+  swap; · simp [FunLike.coe_zero, hκ]
   rw [compProd_eq_comp_prod, ← Kernel.parallelComp_comp_copy, Measure.comp_assoc]
 
 lemma prod_comp_right [SFinite ν] {κ : Kernel β γ} [IsSFiniteKernel κ] :

@@ -3,7 +3,9 @@ Copyright (c) 2023 Anatole Dedecker. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Anatole Dedecker, Etienne Marion
 -/
-import Mathlib.Topology.Homeomorph.Lemmas
+module
+
+public import Mathlib.Topology.Homeomorph.Lemmas
 
 /-!
 # Proper maps between topological spaces
@@ -57,6 +59,8 @@ so don't hesitate to have a look!
 * [N. Bourbaki, *General Topology*][bourbaki1966]
 * [Stacks: Characterizing proper maps](https://stacks.math.columbia.edu/tag/005M)
 -/
+
+public section
 
 assert_not_exists StoneCech
 
@@ -168,9 +172,9 @@ lemma IsProperMap.prodMap {g : Z → W} (hf : IsProperMap f) (hg : IsProperMap g
     simp_rw [nhds_prod_eq, tendsto_prod_iff'] at hyw
   -- Thus, by properness of `f` and `g`, we get some `x : X` and `z : Z` such that `f x = y`,
   -- `g z = w`, `map fst 𝒰` tends to  `x`, and `map snd 𝒰` tends to `y`.
-    rcases hf.2 (show Tendsto f (Ultrafilter.map fst 𝒰) (𝓝 y) by simpa using hyw.1) with
+    rcases hf.2 (show Tendsto f (Ultrafilter.map fst 𝒰) (𝓝 y) by simpa using! hyw.1) with
       ⟨x, hxy, hx⟩
-    rcases hg.2 (show Tendsto g (Ultrafilter.map snd 𝒰) (𝓝 w) by simpa using hyw.2) with
+    rcases hg.2 (show Tendsto g (Ultrafilter.map snd 𝒰) (𝓝 w) by simpa using! hyw.2) with
       ⟨z, hzw, hz⟩
   -- By the properties of the product topology, that means that `𝒰` tends to `(x, z)`,
   -- which completes the proof since `(f × g)(x, z) = (y, w)`.
@@ -191,7 +195,7 @@ lemma IsProperMap.pi_map {X Y : ι → Type*} [∀ i, TopologicalSpace (X i)]
   · intro 𝒰 y hy
   -- That means that each `f i` tends to `y i` along `map (eval i) 𝒰`.
     have : ∀ i, Tendsto (f i) (Ultrafilter.map (eval i) 𝒰) (𝓝 (y i)) := by
-      simpa [tendsto_pi_nhds] using hy
+      simpa [tendsto_pi_nhds] using! hy
   -- Thus, by properness of all the `f i`s, we can choose some `x : Π i, X i` such that, for all
   -- `i`, `f i (x i) = y i` and `map (eval i) 𝒰` tends to  `x i`.
     choose x hxy hx using fun i ↦ (h i).2 (this i)
@@ -251,7 +255,7 @@ lemma isProperMap_iff_isClosedMap_of_inj (f_cont : Continuous f) (f_inj : f.Inje
   rw [isProperMap_iff_isClosedMap_and_compact_fibers]
   exact ⟨f_cont, h, fun y ↦ (subsingleton_singleton.preimage f_inj).isCompact⟩
 
-/-- A injective continuous and closed map is proper. -/
+/-- An injective continuous and closed map is proper. -/
 lemma isProperMap_of_isClosedMap_of_inj (f_cont : Continuous f) (f_inj : f.Injective)
     (f_closed : IsClosedMap f) : IsProperMap f :=
   (isProperMap_iff_isClosedMap_of_inj f_cont f_inj).2 f_closed
@@ -297,6 +301,42 @@ lemma isProperMap_iff_isClosedMap_and_tendsto_cofinite [T1Space Y] :
 /-- A continuous map from a compact space to a T₂ space is a proper map. -/
 theorem Continuous.isProperMap [CompactSpace X] [T2Space Y] (hf : Continuous f) : IsProperMap f :=
   isProperMap_iff_isClosedMap_and_tendsto_cofinite.2 ⟨hf, hf.isClosedMap, by simp⟩
+
+/-- A constant map to a T₁ space is proper if and only if its domain is compact. -/
+theorem isProperMap_const_iff [T1Space Y] (y : Y) :
+    IsProperMap (fun _ : X ↦ y) ↔ CompactSpace X := by
+  classical
+  rw [isProperMap_iff_isClosedMap_and_compact_fibers]
+  constructor
+  · rintro ⟨-, -, h⟩
+    exact ⟨by simpa using h y⟩
+  · intro H
+    refine ⟨continuous_const, isClosedMap_const, fun y' ↦ ?_⟩
+    simp [preimage_const, mem_singleton_iff, apply_ite, isCompact_univ]
+
+theorem isProperMap_const [h : CompactSpace X] [T1Space Y] (y : Y) :
+    IsProperMap (fun _ : X ↦ y) :=
+  isProperMap_const_iff y |>.mpr h
+
+/-- If `Y` is a compact topological space, then `Prod.fst : X × Y → X` is a proper map. -/
+theorem isProperMap_fst_of_compactSpace [CompactSpace Y] :
+    IsProperMap (Prod.fst : X × Y → X) :=
+  Homeomorph.prodPUnit X |>.isProperMap.comp (isProperMap_id.prodMap (isProperMap_const ()))
+
+/-- If `X` is a compact topological space, then `Prod.snd : X × Y → Y` is a proper map. -/
+theorem isProperMap_snd_of_compactSpace [CompactSpace X] :
+    IsProperMap (Prod.snd : X × Y → Y) :=
+  Homeomorph.punitProd Y |>.isProperMap.comp ((isProperMap_const ()).prodMap isProperMap_id)
+
+/-- If `Y` is a compact topological space, then `Prod.fst : X × Y → X` is a closed map. -/
+theorem isClosedMap_fst_of_compactSpace [CompactSpace Y] :
+    IsClosedMap (Prod.fst : X × Y → X) :=
+  isProperMap_fst_of_compactSpace.isClosedMap
+
+/-- If `X` is a compact topological space, then `Prod.snd : X × Y → Y` is a closed map. -/
+theorem isClosedMap_snd_of_compactSpace [CompactSpace X] :
+    IsClosedMap (Prod.snd : X × Y → Y) :=
+  isProperMap_snd_of_compactSpace.isClosedMap
 
 /-- A proper map `f : X → Y` is **universally closed**: for any topological space `Z`, the map
 `Prod.map f id : X × Z → Y × Z` is closed. We will prove in `isProperMap_iff_universally_closed`

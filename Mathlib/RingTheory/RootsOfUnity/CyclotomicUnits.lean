@@ -3,7 +3,9 @@ Copyright (c) 2021 Alex J. Best. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Alex J. Best, Riccardo Brasca
 -/
-import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
+module
+
+public import Mathlib.RingTheory.RootsOfUnity.PrimitiveRoots
 
 /-!
 # Cyclotomic units.
@@ -29,11 +31,27 @@ Often, `Associated a b` is everything one needs, and it is more convenient to us
 other version for completeness.
 -/
 
+public section
+
 open Polynomial Finset Nat
 
 variable {n i j p : ℕ} {A K : Type*} {ζ : A}
 
-variable [CommRing A] [IsDomain A]
+variable [CommRing A] [IsDomain A] {R : Type*} [CommRing R] [Algebra R A]
+
+/-- If `ζ ^ n = 1` and `ζ ≠ 1`, then `ζ - 1` divides `n`. This does not require `ζ` to be a
+  primitive root of unity, only a root of unity different from `1`. -/
+theorem sub_one_dvd_natCast_of_pow_eq_one (hζ : ζ ^ n = 1) (hζ1 : ζ ≠ 1) : ζ - 1 ∣ (n : A) := by
+  have key : (n : A) = ∑ i ∈ range n, (1 - ζ ^ i) := by
+    have hgs : ∑ i ∈ range n, ζ ^ i = 0 := by
+      have := geom_sum_mul ζ n
+      rw [hζ, sub_self] at this
+      exact (mul_eq_zero.1 this).resolve_right fun h ↦ hζ1 (sub_eq_zero.1 h)
+    rw [Finset.sum_sub_distrib, hgs, sub_zero, Finset.sum_const, card_range, nsmul_eq_mul, mul_one]
+  rw [key]
+  refine Finset.dvd_sum fun i _ ↦ ?_
+  have h : ζ - 1 ∣ ζ ^ i - 1 := by simpa using sub_dvd_pow_sub_pow ζ 1 i
+  rwa [← dvd_neg, neg_sub] at h
 
 namespace IsPrimitiveRoot
 
@@ -47,7 +65,7 @@ theorem associated_sub_one_pow_sub_one_of_coprime (hζ : IsPrimitiveRoot ζ n) (
   | 0 => simp_all
   | 1 => simp_all
   | n + 2 =>
-      obtain ⟨m, hm⟩ := exists_mul_emod_eq_one_of_coprime hj (by omega)
+      obtain ⟨m, -, hm⟩ := exists_mul_mod_eq_one_of_coprime hj (by lia)
       use ∑ i ∈ range m, (ζ ^ j) ^ i
       rw [mul_geom_sum, ← pow_mul, ← pow_mod_orderOf, ← hζ.eq_orderOf, hm, pow_one]
 
@@ -55,9 +73,25 @@ theorem associated_sub_one_pow_sub_one_of_coprime (hζ : IsPrimitiveRoot ζ n) (
   associated for all `i` and `j` coprime with `n`. -/
 theorem associated_pow_sub_one_pow_of_coprime (hζ : IsPrimitiveRoot ζ n)
     (hi : i.Coprime n) (hj : j.Coprime n) : Associated (ζ ^ j - 1) (ζ ^ i - 1) := by
-  suffices ∀ {j}, (j.Coprime n) → Associated (ζ - 1) (ζ ^ j - 1) by
+  suffices ∀ {j}, j.Coprime n → Associated (ζ - 1) (ζ ^ j - 1) by
     grind [Associated.trans, Associated.symm]
   exact hζ.associated_sub_one_pow_sub_one_of_coprime
+
+/-- Given an `n`-th primitive root of unity `ζ`, we have that `ζ - 1` is associated to any of its
+  conjugate. -/
+theorem associated_sub_one_map_sub_one {n : ℕ} [NeZero n] (hζ : IsPrimitiveRoot ζ n)
+    (σ : A ≃ₐ[R] A) : Associated (ζ - 1) (σ (ζ - 1)) := by
+  rw [map_sub, map_one, ← hζ.autToPow_spec R σ]
+  apply hζ.associated_sub_one_pow_sub_one_of_coprime
+  exact ZMod.val_coe_unit_coprime ((autToPow R hζ) σ)
+
+/-- Given an `n`-th primitive root of unity `ζ`, we have that two conjugates of `ζ - 1`
+  are associated. -/
+theorem associated_map_sub_one_map_sub_one {n : ℕ} [NeZero n] (hζ : IsPrimitiveRoot ζ n)
+    (σ τ : A ≃ₐ[R] A) : Associated (σ (ζ - 1)) (τ (ζ - 1)) := by
+  rw [map_sub, map_sub, map_one, map_one, ← hζ.autToPow_spec R σ, ← hζ.autToPow_spec R τ]
+  apply hζ.associated_pow_sub_one_pow_of_coprime <;>
+  exact ZMod.val_coe_unit_coprime ((autToPow R hζ) _)
 
 /-- Given an `n`-th primitive root of unity `ζ`, where `2 ≤ n`, we have that `∑ i ∈ range j, ζ ^ i`
   is a unit for all `j` coprime with `n`. This is the unit given by
@@ -66,7 +100,7 @@ theorem associated_pow_sub_one_pow_of_coprime (hζ : IsPrimitiveRoot ζ n)
 theorem geom_sum_isUnit (hζ : IsPrimitiveRoot ζ n) (hn : 2 ≤ n) (hj : j.Coprime n) :
     IsUnit (∑ i ∈ range j, ζ ^ i) := by
   obtain ⟨u, hu⟩ := hζ.associated_pow_sub_one_pow_of_coprime hj (coprime_one_left n)
-  convert u.isUnit
+  convert! u.isUnit
   apply mul_right_injective₀ (show 1 - ζ ≠ 0 by grind [sub_one_ne_zero])
   grind [mul_neg_geom_sum]
 
@@ -79,15 +113,9 @@ theorem geom_sum_isUnit' (hζ : IsPrimitiveRoot ζ n) (hj : j.Coprime n) (hj_Uni
   | 1 => simp_all
   | n + 2 => exact geom_sum_isUnit hζ (by linarith) hj
 
-/-- The explicit formula for the unit whose existence is the content of
-  `associated_pow_sub_one_pow_of_coprime`. -/
-theorem pow_sub_one_mul_geom_sum_eq_pow_sub_one_mul_geom_sum (hζ : IsPrimitiveRoot ζ n)
-    (hn : 2 ≤ n) : (ζ ^ j - 1) * ∑ k ∈ range i, ζ ^ k = (ζ ^ i - 1) * ∑ k ∈ range j, ζ ^ k := by
-  apply mul_left_injective₀ (hζ.sub_one_ne_zero (by omega))
-  grind [geom_sum_mul]
-
 theorem pow_sub_one_eq_geom_sum_mul_geom_sum_inv_mul_pow_sub_one (hζ : IsPrimitiveRoot ζ n)
-    (hn : 2 ≤ n) (hi : i.Coprime n) (hj : j.Coprime n) : (ζ ^ j - 1) =
+    (hn : 2 ≤ n) (hi : i.Coprime n) (hj : j.Coprime n) :
+    (ζ ^ j - 1) =
       (hζ.geom_sum_isUnit hn hj).unit * (hζ.geom_sum_isUnit hn hi).unit⁻¹ * (ζ ^ i - 1) := by
   grind [IsUnit.mul_val_inv, pow_sub_one_mul_geom_sum_eq_pow_sub_one_mul_geom_sum, IsUnit.unit_spec]
 
@@ -97,27 +125,45 @@ theorem pow_sub_one_eq_geom_sum_mul_geom_sum_inv_mul_pow_sub_one (hζ : IsPrimit
   unit. -/
 theorem associated_pow_add_sub_sub_one (hζ : IsPrimitiveRoot ζ n) (hn : 2 ≤ n) (i : ℕ)
     (hjn : j.Coprime n) : Associated (ζ - 1) (ζ ^ (i + j) - ζ ^ i) := by
-  use (hζ.isUnit (by omega)).unit ^ i * (hζ.geom_sum_isUnit hn hjn).unit
+  use (hζ.isUnit (by lia)).unit ^ i * (hζ.geom_sum_isUnit hn hjn).unit
   suffices (ζ - 1) * ζ ^ i * ∑ i ∈ range j, ζ ^ i = (ζ ^ (i + j) - ζ ^ i) by
     simp [← this, mul_assoc]
   grind [mul_geom_sum]
 
-/-- If `p` is prime and `ζ` is a `p`-th primitive root of unit, then `ζ - 1` and `η₁ - η₂` are
-  associated for all distincts `p`-th root of unit `η₁` and `η₂`. -/
-lemma ntRootsFinset_pairwise_associated_sub_one_sub_of_prime (hζ : IsPrimitiveRoot ζ p)
-    (hp : p.Prime) : Set.Pairwise
-      (nthRootsFinset p (1 : A)) (fun η₁ η₂ ↦ Associated (ζ - 1) (η₁ - η₂)) := by
+/-- If `p` is prime and `ζ` is a `p`-th primitive root of unity, then `ζ - 1` and `η₁ - η₂` are
+  associated for all distinct `p`-th roots of unity `η₁` and `η₂`. -/
+lemma nthRootsFinset_pairwise_associated_sub_one_sub_of_prime (hζ : IsPrimitiveRoot ζ p)
+    (hp : p.Prime) :
+    Set.Pairwise (nthRootsFinset p (1 : A)) fun η₁ η₂ ↦ Associated (ζ - 1) (η₁ - η₂) := by
   intro η₁ hη₁ η₂ hη₂ e
   have : NeZero p := ⟨hp.ne_zero⟩
-  obtain ⟨i, hi, rfl⟩ :=
-    hζ.eq_pow_of_pow_eq_one ((Polynomial.mem_nthRootsFinset hp.pos 1).1 hη₁)
-  obtain ⟨j, hj, rfl⟩ :=
-    hζ.eq_pow_of_pow_eq_one ((Polynomial.mem_nthRootsFinset hp.pos 1).1 hη₂)
+  obtain ⟨i, hi, rfl⟩ := hζ.eq_pow_of_pow_eq_one ((Polynomial.mem_nthRootsFinset hp.pos 1).1 hη₁)
+  obtain ⟨j, hj, rfl⟩ := hζ.eq_pow_of_pow_eq_one ((Polynomial.mem_nthRootsFinset hp.pos 1).1 hη₂)
   wlog hij : j ≤ i
-  · simpa using (this hζ ‹_› ‹_› _ hj ‹_› _ hi ‹_› e.symm (by omega)).neg_right
+  · simpa using (this hζ ‹_› ‹_› _ hj ‹_› _ hi ‹_› e.symm (by lia)).neg_right
   have H : (i - j).Coprime p := (coprime_of_lt_prime (by grind) (by grind) hp).symm
   obtain ⟨u, h⟩ := hζ.associated_pow_add_sub_sub_one hp.two_le j H
   simp only [hij, add_tsub_cancel_of_le] at h
   rw [← h, associated_mul_unit_right_iff]
+
+@[deprecated (since := "2026-06-23")]
+alias ntRootsFinset_pairwise_associated_sub_one_sub_of_prime :=
+  nthRootsFinset_pairwise_associated_sub_one_sub_of_prime
+
+/-- If `p` is prime and `ζ` is a `p`-th primitive root of unity, then `ζ - 1` divides `η₁ - η₂`
+for all `p`-th roots of unity `η₁` and `η₂`. -/
+lemma sub_one_dvd_sub (hζ : IsPrimitiveRoot ζ p) (hp : p.Prime)
+    {η₁ : A} (hη₁ : η₁ ∈ nthRootsFinset p (1 : A))
+    {η₂ : A} (hη₂ : η₂ ∈ nthRootsFinset p (1 : A)) :
+    ζ - 1 ∣ η₁ - η₂ := by
+  rcases eq_or_ne η₁ η₂ with rfl | h
+  · simp
+  · exact (hζ.nthRootsFinset_pairwise_associated_sub_one_sub_of_prime hp hη₁ hη₂ h).dvd
+
+/-- Given an `n`-th primitive root of unity `ζ`, where `1 < n`, we have that `ζ - 1` divides `n`.
+  In particular, if `ζ` is a `p`-th primitive root of unity with `p` prime, then `ζ - 1` divides
+  `p`. -/
+theorem sub_one_dvd_natCast (hζ : IsPrimitiveRoot ζ n) (hn : 1 < n) : ζ - 1 ∣ (n : A) :=
+  sub_one_dvd_natCast_of_pow_eq_one hζ.pow_eq_one (hζ.ne_one hn)
 
 end IsPrimitiveRoot

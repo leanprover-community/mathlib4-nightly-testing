@@ -3,10 +3,12 @@ Copyright (c) 2021 Aaron Anderson, Jesse Michael Han, Floris van Doorn. All righ
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Aaron Anderson, Jesse Michael Han, Floris van Doorn
 -/
-import Mathlib.Data.Set.Prod
-import Mathlib.Logic.Equiv.Fin.Basic
-import Mathlib.ModelTheory.LanguageMap
-import Mathlib.Algebra.Order.Group.Nat
+module
+
+public import Mathlib.Data.Set.Prod
+public import Mathlib.Logic.Equiv.Fin.Basic
+public import Mathlib.ModelTheory.LanguageMap
+public import Mathlib.Algebra.Order.Group.Nat
 
 /-!
 # Basics on First-Order Syntax
@@ -50,11 +52,13 @@ This file defines first-order terms, formulas, sentences, and theories in a styl
 ## References
 
 For the Flypitch project:
-- [J. Han, F. van Doorn, *A formal proof of the independence of the continuum hypothesis*]
-  [flypitch_cpp]
+- [J. Han, F. van Doorn, *A formal proof of the independence of the continuum
+  hypothesis*][flypitch_cpp]
 - [J. Han, F. van Doorn, *A formalization of forcing and the unprovability of
   the continuum hypothesis*][flypitch_itp]
 -/
+
+@[expose] public section
 
 
 universe u v w u' v'
@@ -193,6 +197,7 @@ def varsToConstants : L.Term (γ ⊕ α) → L[[γ]].Term α
   | var (Sum.inl c) => Constants.term (Sum.inr c)
   | func f ts => func (Sum.inl f) fun i => (ts i).varsToConstants
 
+set_option backward.isDefEq.respectTransparency false in
 /-- A bijection between terms with constants and terms with extra variables. -/
 @[simps]
 def constantsVarsEquiv : L[[γ]].Term α ≃ L.Term (γ ⊕ α) :=
@@ -296,9 +301,6 @@ def LEquiv.onTerm (φ : L ≃ᴸ L') : L.Term α ≃ L'.Term α where
     rw [Function.leftInverse_iff_comp, ← LHom.comp_onTerm, φ.left_inv, LHom.id_onTerm]
   right_inv := by
     rw [Function.rightInverse_iff_comp, ← LHom.comp_onTerm, φ.right_inv, LHom.id_onTerm]
-
-/-- Maps a term's symbols along a language equivalence. Deprecated in favor of `LEquiv.onTerm`. -/
-@[deprecated LEquiv.onTerm (since := "2025-03-31")] alias Lequiv.onTerm := LEquiv.onTerm
 
 variable (L) (α)
 
@@ -732,7 +734,7 @@ end LEquiv
 @[inherit_doc] scoped[FirstOrder] infixr:62 " ⟹ " => FirstOrder.Language.BoundedFormula.imp
 -- input \==>
 
-@[inherit_doc] scoped[FirstOrder] prefix:110 "∀'" => FirstOrder.Language.BoundedFormula.all
+@[inherit_doc] scoped[FirstOrder] prefix:110 "∀' " => FirstOrder.Language.BoundedFormula.all
 
 @[inherit_doc] scoped[FirstOrder] prefix:arg "∼" => FirstOrder.Language.BoundedFormula.not
 -- input \~, the ASCII character ~ has too low precedence
@@ -740,7 +742,7 @@ end LEquiv
 @[inherit_doc] scoped[FirstOrder] infixl:61 " ⇔ " => FirstOrder.Language.BoundedFormula.iff
 -- input \<=>
 
-@[inherit_doc] scoped[FirstOrder] prefix:110 "∃'" => FirstOrder.Language.BoundedFormula.ex
+@[inherit_doc] scoped[FirstOrder] prefix:110 "∃' " => FirstOrder.Language.BoundedFormula.ex
 -- input \ex
 
 namespace Formula
@@ -783,6 +785,12 @@ noncomputable def iExsUnique [Finite β] (φ : L.Formula (α ⊕ β)) : L.Formul
     ((φ.relabel (fun a => Sum.elim (.inl ∘ .inl) .inr a)).imp <|
       .iInf fun g => Term.equal (var (.inr g)) (var (.inl (.inr g))))
 
+variable [DecidableEq α] in
+/-- `exClosure φ` is the sentence asserting that there exist values for all free variables of `φ`
+such that `φ` holds. -/
+noncomputable def exClosure (φ : L.Formula α) : L.Sentence :=
+  iExs φ.freeVarFinset (Formula.relabel Sum.inr (φ.restrictFreeVar id))
+
 /-- The biimplication between formulas, as a formula. -/
 protected nonrec abbrev iff (φ ψ : L.Formula α) : L.Formula α :=
   φ.iff ψ
@@ -820,27 +828,27 @@ variable (r : L.Relations 2)
 
 /-- The sentence indicating that a basic relation symbol is reflexive. -/
 protected def reflexive : L.Sentence :=
-  ∀'r.boundedFormula₂ (&0) &0
+  ∀' r.boundedFormula₂ (&0) &0
 
 /-- The sentence indicating that a basic relation symbol is irreflexive. -/
 protected def irreflexive : L.Sentence :=
-  ∀'∼(r.boundedFormula₂ (&0) &0)
+  ∀' ∼(r.boundedFormula₂ (&0) &0)
 
 /-- The sentence indicating that a basic relation symbol is symmetric. -/
 protected def symmetric : L.Sentence :=
-  ∀'∀'(r.boundedFormula₂ (&0) &1 ⟹ r.boundedFormula₂ (&1) &0)
+  ∀' ∀' (r.boundedFormula₂ (&0) &1 ⟹ r.boundedFormula₂ (&1) &0)
 
 /-- The sentence indicating that a basic relation symbol is antisymmetric. -/
 protected def antisymmetric : L.Sentence :=
-  ∀'∀'(r.boundedFormula₂ (&0) &1 ⟹ r.boundedFormula₂ (&1) &0 ⟹ Term.bdEqual (&0) &1)
+  ∀' ∀' (r.boundedFormula₂ (&0) &1 ⟹ r.boundedFormula₂ (&1) &0 ⟹ Term.bdEqual (&0) &1)
 
 /-- The sentence indicating that a basic relation symbol is transitive. -/
 protected def transitive : L.Sentence :=
-  ∀'∀'∀'(r.boundedFormula₂ (&0) &1 ⟹ r.boundedFormula₂ (&1) &2 ⟹ r.boundedFormula₂ (&0) &2)
+  ∀' ∀' ∀' (r.boundedFormula₂ (&0) &1 ⟹ r.boundedFormula₂ (&1) &2 ⟹ r.boundedFormula₂ (&0) &2)
 
 /-- The sentence indicating that a basic relation symbol is total. -/
 protected def total : L.Sentence :=
-  ∀'∀'(r.boundedFormula₂ (&0) &1 ⊔ r.boundedFormula₂ (&1) &0)
+  ∀' ∀' (r.boundedFormula₂ (&0) &1 ⊔ r.boundedFormula₂ (&1) &0)
 
 end Relations
 

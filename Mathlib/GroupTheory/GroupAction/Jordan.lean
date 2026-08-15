@@ -1,12 +1,13 @@
 /-
-Copyright (c) 2025. Antoine Chambert-Loir. All rights reserved.
+Copyright (c) 2025 Antoine Chambert-Loir. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Antoine Chambert-Loir
 -/
+module
 
-import Mathlib.Algebra.Group.Pointwise.Set.Card
-import Mathlib.Data.Set.Card
-import Mathlib.GroupTheory.GroupAction.MultiplePrimitivity
+public import Mathlib.Algebra.Group.Pointwise.Set.Card
+public import Mathlib.Data.Set.Card
+public import Mathlib.GroupTheory.GroupAction.MultiplePrimitivity
 
 /-! # Theorems of Jordan
 
@@ -43,6 +44,8 @@ This mostly follows the book [Wielandt, *Finite permutation groups*][Wielandt-19
 
 -/
 
+public section
+
 open MulAction SubMulAction Subgroup
 
 open scoped Pointwise
@@ -61,7 +64,7 @@ theorem normalClosure_of_stabilizer_eq_top (hsn' : 2 < ENat.card α)
   have : Nontrivial α := by
     rw [← ENat.one_lt_card_iff_nontrivial]
     exact lt_trans (by norm_num) hsn'
-  have hGa : IsCoatom (stabilizer G a) :=  by
+  have hGa : IsCoatom (stabilizer G a) := by
     rw [isCoatom_stabilizer_iff_preprimitive]
     exact isPreprimitive_of_is_two_pretransitive hG'
   apply hGa.right
@@ -87,13 +90,6 @@ theorem normalClosure_of_stabilizer_eq_top (hsn' : 2 < ENat.card α)
     rw [← hgbc, SetLike.val_smul, ← hinvab, inv_smul_eq_iff, eq_comm]
     simp only [subgroup_smul_def, smul_smul, ← mul_assoc, ← mem_stabilizer_iff]
     exact hyp (normalClosure_normal.conj_mem g (le_normalClosure hg) h)
-
--- Wielandt claims that this is proved by the same method as above.
-proof_wanted IsPreprimitive.is_two_pretransitive'
-    (hG : IsPreprimitive G α)
-    {s : Set α} {n : ℕ} (hsn : Nat.card s = n + 1) (hsn' : n + 1 < Nat.card α)
-    (hs_trans : IsPretransitive (fixingSubgroup G s) (SubMulAction.ofFixingSubgroup G s)) :
-    IsMultiplyPretransitive (Subgroup.normalClosure (fixingSubgroup G s : Set G)) α 2
 
 open MulAction.IsPreprimitive
 
@@ -155,7 +151,7 @@ theorem MulAction.IsPreprimitive.is_two_motive_of_is_motive
       exact ⟨ha, hga⟩
     have hmn : t.ncard - 1 < n := by
       rw [Nat.lt_iff_add_one_le, ← htm, Nat.le_iff_lt_add_one, ← hsn]
-      apply Set.ncard_lt_ncard _ s.toFinite
+      apply Set.ncard_lt_ncard _
       exact ⟨Set.inter_subset_left, fun h ↦ hgb (Set.inter_subset_right (h hb))⟩
     have htm' : t.ncard - 1 + 2 < Nat.card α := lt_trans (Nat.add_lt_add_right hmn 2) hsn'
     suffices IsPretransitive ↥(fixingSubgroup G s) ↥(ofFixingSubgroup G s) →
@@ -197,7 +193,7 @@ theorem MulAction.IsPreprimitive.is_two_motive_of_is_motive
       · exact fun h ↦ ha (by rw [h]; trivial)
     have hmn : t.ncard - 1 < n := by
       rw [Nat.lt_iff_add_one_le, ← htm, Nat.le_iff_lt_add_one, ← hsn]
-      apply Set.ncard_lt_ncard _ (Set.toFinite s)
+      apply Set.ncard_lt_ncard _
       refine ⟨Set.inter_subset_left, fun h ↦ hb ?_⟩
       suffices s = g • s by
         rw [this]
@@ -233,13 +229,6 @@ theorem MulAction.IsPreprimitive.is_two_preprimitive
     IsMultiplyPreprimitive G α 2 :=
   (hG.is_two_motive_of_is_motive hsn hsn').2 hs_prim
 
--- Wielandt claims that this stronger version is proved in the same way
-proof_wanted is_two_preprimitive_strong_jordan
-    (hG : IsPreprimitive G α)
-    {s : Set α} {n : ℕ} (hsn : s.ncard = n + 1) (hsn' : n + 2 < Nat.card α)
-    (hs_prim : IsPreprimitive (fixingSubgroup G s) (ofFixingSubgroup G s)) :
-    IsMultiplyPreprimitive (Subgroup.normalClosure (fixingSubgroup G s : Set G)) α 2
-
 /-- Jordan's multiple primitivity criterion (Wielandt, 13.3) -/
 theorem MulAction.IsPreprimitive.isMultiplyPreprimitive
     (hG : IsPreprimitive G α) {s : Set α} {n : ℕ}
@@ -249,24 +238,8 @@ theorem MulAction.IsPreprimitive.isMultiplyPreprimitive
   have hα : Finite α := Or.resolve_right (finite_or_infinite α) (fun _ ↦ by
     simp [Nat.card_eq_zero_of_infinite] at hsn')
   induction n generalizing α hα G with
-  | zero => -- case n = 0
-    have : IsPretransitive G α := hG.toIsPretransitive
-    simp only [zero_add, Set.ncard_eq_one] at hsn
-    obtain ⟨a, rfl⟩ := hsn
-    constructor
-    · rw [ofStabilizer.isMultiplyPretransitive (a := a), is_one_pretransitive_iff]
-      apply IsPretransitive.of_surjective_map
-        ofFixingSubgroup_of_singleton_bijective.surjective hprim.toIsPretransitive
-    · intro t h
-      rw [zero_add, Nat.cast_ofNat, ← one_add_one_eq_two,
-        (ENat.add_left_injective_of_ne_top ENat.one_ne_top).eq_iff] at h
-      obtain ⟨b, htb⟩ := Set.encard_eq_one.mp h
-      obtain ⟨g, hg⟩ := exists_smul_eq G a b
-      have hst : g • ({a} : Set α) = ({b} : Set α) := by
-        rw [Set.smul_set_singleton, hg]
-      rw [htb]
-      refine IsPreprimitive.of_surjective
-        (conjMap_ofFixingSubgroup_bijective (hst := hst)).surjective
+  -- case n = 0
+  | zero => simpa using is_two_preprimitive hG hsn hsn' hprim
   -- Induction step
   | succ n hrec =>
     suffices ∃ (a : α) (t : Set (SubMulAction.ofStabilizer G a)),
@@ -311,7 +284,7 @@ section Subgroups
 
 namespace Equiv.Perm
 
-open Equiv Set
+open Equiv
 
 variable {α : Type*}
 
@@ -322,7 +295,7 @@ theorem subgroup_eq_top_of_nontrivial [Finite α] (hα : Nat.card α ≤ 2) (hG 
   apply Subgroup.eq_top_of_le_card
   rw [Nat.card_perm]
   apply (Nat.factorial_le hα).trans
-  rwa [Nat.factorial_two, Nat.succ_le, one_lt_card_iff_ne_bot, ← nontrivial_iff_ne_bot]
+  rwa [Nat.factorial_two, Nat.succ_le_iff, one_lt_card_iff_ne_bot, ← nontrivial_iff_ne_bot]
 
 theorem isMultiplyPretransitive_of_nontrivial {K : Type*} [Group K] [MulAction K α]
     (hα : Nat.card α = 2) (hK : fixedPoints K α ≠ .univ) (n : ℕ) :
@@ -351,7 +324,7 @@ theorem isMultiplyPretransitive_of_nontrivial {K : Type*} [Group K] [MulAction K
   apply le_antisymm (card_le_card_group φ.range)
   simp only [Nat.card_perm, hα, Nat.factorial_two]
   by_contra H
-  simp only [not_le, Nat.lt_succ, Finite.card_le_one_iff_subsingleton] at H
+  simp only [not_le, Nat.lt_succ_iff, Finite.card_le_one_iff_subsingleton] at H
   apply hK
   apply Set.eq_univ_of_univ_subset
   intro a _ g
@@ -386,17 +359,20 @@ theorem isPretransitive_of_isCycle_mem {g : Perm α}
   have hg' : (⟨g, hg⟩ : ↥G) ∈ fixingSubgroup G ((↑g.support : Set α)ᶜ) := by
     simp_rw [mem_fixingSubgroup_iff G]
     intro y hy
-    simpa only [Set.mem_compl_iff, Finset.mem_coe, notMem_support] using hy
+    simpa only [Set.mem_compl_iff, Finset.mem_coe, notMem_support] using! hy
   let g' : fixingSubgroup (↥G) ((↑g.support : Set α)ᶜ) := ⟨(⟨g, hg⟩ : ↥G), hg'⟩
   obtain ⟨i, hi⟩ := hgc ((hs x).mpr hx)
   exact ⟨g' ^ i, hi.symm⟩
 
+set_option backward.isDefEq.respectTransparency false in
+omit [Fintype α] in variable [Finite α] in
 /-- A primitive subgroup of `Equiv.Perm α` that contains a swap
 is the full permutation group (Jordan). -/
-theorem eq_top_of_isPreprimitive_of_isSwap_mem
+theorem subgroup_eq_top_of_isPreprimitive_of_isSwap_mem
     (hG : IsPreprimitive G α) (g : Perm α) (h2g : IsSwap g) (hg : g ∈ G) :
     G = ⊤ := by
   classical
+  have := Fintype.ofFinite α
   rcases Nat.lt_or_ge (Nat.card α) 3 with hα3 | hα3
   · -- trivial case : Nat.card α ≤ 2
     rw [Nat.lt_succ_iff] at hα3
@@ -424,7 +400,7 @@ theorem eq_top_of_isPreprimitive_of_isSwap_mem
   · rw [hn]; apply Nat.lt_add_one
   have := isPretransitive_of_isCycle_mem h2g.isCycle hg
   apply IsPreprimitive.of_prime_card
-  convert Nat.prime_two
+  convert! Nat.prime_two
   rw [Nat.card_eq_fintype_card, Fintype.card_subtype, ← card_support_eq_two.mpr h2g]
   simp [SubMulAction.mem_ofFixingSubgroup_iff, support]
 
@@ -438,7 +414,7 @@ theorem alternatingGroup_le_of_isPreprimitive_of_isThreeCycle_mem
   · -- trivial case : Fintype.card α ≤ 3
     rw [Nat.lt_succ_iff] at hα4
     apply alternatingGroup_le_of_index_le_two
-    rw [← Nat.mul_le_mul_right_iff (k:= Nat.card G) (Nat.card_pos),
+    rw [← Nat.mul_le_mul_right_iff (k := Nat.card G) (Nat.card_pos),
       Subgroup.index_mul_card, Nat.card_perm]
     apply le_trans (Nat.factorial_le hα4)
     rw [show Nat.factorial 3 = 2 * 3 by simp [Nat.factorial]]
@@ -461,19 +437,11 @@ theorem alternatingGroup_le_of_isPreprimitive_of_isThreeCycle_mem
   · grind
   have := isPretransitive_of_isCycle_mem h3g.isCycle hg
   apply IsPreprimitive.of_prime_card
-  convert Nat.prime_three
+  convert! Nat.prime_three
   rw [Nat.card_eq_fintype_card, Fintype.card_subtype, ← h3g.card_support]
   apply congr_arg
   ext x
   simp [SubMulAction.mem_ofFixingSubgroup_iff]
-
-/-- A primitive subgroup of `Equiv.Perm α` that contains a cycle of prime order
-contains the alternating group. -/
-proof_wanted alternatingGroup_le_of_isPreprimitive_of_isCycle_mem
-  (hG : IsPreprimitive G α)
-  {p : ℕ} (hp : p.Prime) (hp' : p + 3 ≤ Nat.card α)
-  {g : Perm α} (hgc : g.IsCycle) (hgp : g.support.card = p)
-  (hg : g ∈ G) : alternatingGroup α ≤ G
 
 end Equiv.Perm
 

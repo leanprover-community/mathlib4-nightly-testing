@@ -3,16 +3,18 @@ Copyright (c) 2015 Jeremy Avigad. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Jeremy Avigad, Robert Y. Lewis, Yury Kudryashov
 -/
-import Mathlib.Algebra.Order.Monoid.Unbundled.Basic
-import Mathlib.Algebra.Order.Monoid.Unbundled.OrderDual
-import Mathlib.Tactic.Lift
-import Mathlib.Tactic.Monotonicity.Attr
+module
+
+public import Mathlib.Algebra.Order.Monoid.Unbundled.Basic
+public import Mathlib.Algebra.Order.Monoid.Unbundled.OrderDual
+public import Mathlib.Tactic.Lift
+public import Mathlib.Tactic.Monotonicity.Attr
 
 /-!
 # Lemmas about the interaction of power operations with order in terms of `CovariantClass`
 -/
 
-open Function
+public section
 
 variable {β G M : Type*}
 
@@ -58,7 +60,8 @@ variable [MulLeftMono M] {a : M} {n : ℕ}
 theorem pow_right_monotone (ha : 1 ≤ a) : Monotone fun n : ℕ ↦ a ^ n :=
   monotone_nat_of_le_succ fun n ↦ by rw [pow_succ]; exact le_mul_of_one_le_right' ha
 
-@[to_additive (attr := gcongr) nsmul_le_nsmul_left]
+-- `gcongr low` so that we prefer `Set.pow_subset_pow` and `Finset.pow_subset_pow`
+@[to_additive (attr := gcongr low) nsmul_le_nsmul_left]
 theorem pow_le_pow_right' {n m : ℕ} (ha : 1 ≤ a) (h : n ≤ m) : a ^ n ≤ a ^ m :=
   pow_right_monotone ha h
 
@@ -120,7 +123,7 @@ lemma pow_le_pow_mul_of_sq_le_mul [MulLeftMono M] {a b : M} (hab : a ^ 2 ≤ b *
   | n + 2, _ => by
     calc
       a ^ (n + 2) = a ^ (n + 1) * a := by rw [pow_succ]
-      _ ≤ b ^ n * a * a := by grw [pow_le_pow_mul_of_sq_le_mul hab (by cutsat)]; simp
+      _ ≤ b ^ n * a * a := by grw [pow_le_pow_mul_of_sq_le_mul hab (by lia)]; simp
       _ = b ^ n * a ^ 2 := by rw [mul_assoc, sq]
       _ ≤ b ^ n * (b * a) := by grw [hab]
       _ = b ^ (n + 1) * a := by rw [← mul_assoc, ← pow_succ]
@@ -169,7 +172,8 @@ theorem Monotone.pow_const {f : β → M} (hf : Monotone f) : ∀ n : ℕ, Monot
 @[to_additive nsmul_right_mono]
 theorem pow_left_mono (n : ℕ) : Monotone fun a : M => a ^ n := monotone_id.pow_const _
 
-@[to_additive (attr := gcongr)]
+-- `gcongr low` so that we prefer `Set.pow_subset_pow` and `Finset.pow_subset_pow`
+@[to_additive (attr := gcongr low)]
 lemma pow_le_pow {a b : M} (hab : a ≤ b) (ht : 1 ≤ b) {m n : ℕ} (hmn : m ≤ n) : a ^ m ≤ b ^ n :=
   (pow_le_pow_left' hab _).trans (pow_le_pow_right' ht hmn)
 
@@ -217,11 +221,6 @@ theorem one_lt_pow_iff {x : M} {n : ℕ} (hn : n ≠ 0) : 1 < x ^ n ↔ 1 < x :=
 @[to_additive]
 theorem pow_lt_one_iff {x : M} {n : ℕ} (hn : n ≠ 0) : x ^ n < 1 ↔ x < 1 :=
   lt_iff_lt_of_le_iff_le (one_le_pow_iff hn)
-
-@[to_additive]
-theorem pow_eq_one_iff {x : M} {n : ℕ} (hn : n ≠ 0) : x ^ n = 1 ↔ x = 1 := by
-  simp only [le_antisymm_iff]
-  rw [pow_le_one_iff hn, one_le_pow_iff hn]
 
 end CovariantLE
 

@@ -3,13 +3,16 @@ Copyright (c) 2025 Yakov Pechersky. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yakov Pechersky
 -/
+module
 
-import Mathlib.Algebra.Group.Submonoid.Operations
-import Mathlib.Algebra.GroupWithZero.Units.Lemmas
+public import Mathlib.Algebra.Group.Submonoid.Operations
+public import Mathlib.Algebra.GroupWithZero.Units.Lemmas
 
 /-!
 # Instances for the range submonoid of a monoid with zero hom
 -/
+
+public section
 
 assert_not_exists Ring
 
@@ -40,7 +43,7 @@ instance [GroupWithZero G] [GroupWithZero H] (f : G →*₀ H) :
     obtain ⟨y, hy⟩ := x.prop
     use y⁻¹
     simp [← hy]⟩
-  exists_pair_ne := ⟨⟨f 0, 0, rfl⟩, ⟨f 1, by simp [- map_one]⟩, by simp⟩
+  exists_pair_ne := ⟨⟨f 0, 0, rfl⟩, ⟨f 1, by simp [-map_one]⟩, by simp⟩
   inv_zero := Subtype.ext inv_zero
   mul_inv_cancel := by
     rintro ⟨a, ha⟩ h
@@ -49,5 +52,10 @@ instance [GroupWithZero G] [GroupWithZero H] (f : G →*₀ H) :
 
 instance [GroupWithZero G] [CommGroupWithZero H] (f : G →*₀ H) :
     CommGroupWithZero (MonoidHom.mrange f) where
+
+lemma mker_inverse [CommGroupWithZero H] :
+    MonoidHom.mker (MonoidWithZero.inverse (M := H)) = ⊥ := by
+  ext
+  simp
 
 end MonoidWithZeroHom
