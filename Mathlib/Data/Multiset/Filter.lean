@@ -297,7 +297,7 @@ end
 
 section
 
-variable [DecidableEq α] {s t u : Multiset α}
+variable [DecidableEq α] {s : Multiset α}
 
 @[simp]
 theorem count_filter_of_pos {p} [DecidablePred p] {a} {s : Multiset α} (h : p a) :
@@ -355,7 +355,7 @@ end
 /-! ### Subtraction -/
 
 section sub
-variable [DecidableEq α] {s t u : Multiset α} {a : α}
+variable [DecidableEq α] {s t : Multiset α} {a : α}
 
 @[simp]
 lemma filter_sub (p : α → Prop) [DecidablePred p] (s t : Multiset α) :
