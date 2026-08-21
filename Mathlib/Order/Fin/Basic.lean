@@ -93,7 +93,7 @@ instance instCoheytingAlgebra [NeZero n] : CoheytingAlgebra (Fin n) := inferInst
 instance [NeZero n] : IsBotZeroClass (Fin n) where
   isBot_zero := isBot_bot
 
-@[deprecated _root_.bot_eq_zero (since := "2026-05-07")]
+@[deprecated _root_.bot_eq_zero +typeChanged (since := "2026-05-07")]
 protected lemma bot_eq_zero (n : ℕ) [NeZero n] : ⊥ = (0 : Fin n) := _root_.bot_eq_zero
 
 lemma top_eq_last (n : ℕ) : ⊤ = Fin.last n := rfl
@@ -388,8 +388,6 @@ lemma range_succAboveOrderEmb {n : ℕ} (i : Fin (n + 1)) :
   aesop
 
 /-! ### Uniqueness of order isomorphisms -/
-
-variable {α : Type*} [Preorder α]
 
 /-- If `e` is an `orderIso` between `Fin n` and `Fin m`, then `n = m` and `e` is the identity
 map. In this lemma we state that for each `i : Fin n` we have `(e i : ℕ) = (i : ℕ)`. -/

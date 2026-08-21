@@ -695,7 +695,7 @@ theorem finrank_eq_fixingSubgroup_index (L : IntermediateField F E') [IsGalois F
   classical
   rw [← IsGalois.card_fixingSubgroup_eq_finrank L', ← IsGalois.card_aut_eq_finrank F E] at h
   rw [← L'.fixingSubgroup.index_mul_card, Nat.mul_left_inj Finite.card_pos.ne'] at h
-  rw [(restrict_algEquiv hle).toLinearEquiv.finrank_eq, h, ← L'.map_fixingSubgroup_index E']
+  rw [(restrictAlgEquiv hle).toLinearEquiv.finrank_eq, h, ← L'.map_fixingSubgroup_index E']
   congr 2
   exact lift_restrict hle
 
@@ -723,7 +723,7 @@ instance IsQuadraticExtension.isCyclic : IsCyclic Gal(K/F) := by
   · exact @isCyclic_of_subsingleton _ _ (Finite.card_le_one_iff_subsingleton.mp h.le)
   · exact isCyclic_of_prime_card h
 
-@[deprecated inferInstance (since := "2026-04-09")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-09")]
 theorem IsQuadraticExtension.isMulCommutative_galoisGroup : IsMulCommutative Gal(K/F) :=
   inferInstance
 

@@ -474,7 +474,7 @@ theorem add_log_le_log_mul {x y : Ordinal} (b : Ordinal) (hx : x ≠ 0) (hy : y 
     exact mul_le_mul' (opow_log_le_self b hx) (opow_log_le_self b hy)
   · simpa only [log_of_left_le_one hb, zero_add] using le_rfl
 
-@[deprecated opow_mul_lt_opow (since := "2026-06-01")]
+@[deprecated opow_mul_lt_opow +typeChanged (since := "2026-06-01")]
 theorem omega0_opow_mul_nat_lt {a b : Ordinal} (h : a < b) (n : ℕ) : ω ^ a * n < ω ^ b :=
   opow_mul_lt_opow (natCast_lt_omega0 n) h
 
@@ -524,10 +524,6 @@ theorem lt_omega0_omega0_opow {a b : Ordinal} (hb : b ≠ 0) :
 theorem natCast_pow (m : ℕ) : ∀ n : ℕ, ↑(m ^ n : ℕ) = (m : Ordinal) ^ n
   | 0 => by simp
   | n + 1 => by simp [pow_succ, natCast_pow m n]
-
-@[deprecated natCast_pow (since := "2026-01-31")]
-theorem natCast_opow (m : ℕ) : ∀ n : ℕ, ↑(m ^ n : ℕ) = (m : Ordinal) ^ (n : Ordinal) := by
-  simp
 
 theorem iSup_pow_natCast {o : Ordinal} (ho : 0 < o) : ⨆ n : ℕ, o ^ n = o ^ ω := by
   rcases (one_le_iff_pos.2 ho).lt_or_eq with ho₁ | rfl

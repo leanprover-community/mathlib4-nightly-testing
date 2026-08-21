@@ -31,7 +31,7 @@ namespace Polynomial
 
 universe u v w z
 
-variable {R : Type u} {S : Type v} {T : Type w} {A : Type z} {a b : R} {n : ℕ}
+variable {R : Type u} {S : Type v} {a b : R} {n : ℕ}
 
 section Semiring
 
@@ -489,7 +489,7 @@ section multiplicity
 /-- An algorithm for deciding polynomial divisibility.
 Prefer `Classical.dec`, as the algorithm relies on `%ₘ` and so is `noncomputable`.
 -/
-@[deprecated Classical.dec (since := "2026-02-07")]
+@[deprecated Classical.dec +typeChanged (since := "2026-02-07")]
 def decidableDvdMonic [DecidableEq R] (p : R[X]) (hq : Monic q) : Decidable (q ∣ p) :=
   decidable_of_iff (p %ₘ q = 0) (modByMonic_eq_zero_iff_dvd hq)
 

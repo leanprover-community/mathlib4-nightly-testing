@@ -114,7 +114,6 @@ protected theorem MeasurableSet.disjointed {f : ℕ → Set α} (h : ∀ i, Meas
     MeasurableSet (disjointed f n) :=
   disjointedRec (fun _ _ ht => MeasurableSet.diff ht <| h _) (h n)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem measurable_find {p : α → ℕ → Prop} [∀ x, DecidablePred (p x)] (hp : ∀ x, ∃ N, p x N)
     (hm : ∀ k, MeasurableSet { x | p x k }) : Measurable fun x => Nat.find (hp x) := by
   refine measurable_to_nat fun x => ?_
@@ -421,6 +420,13 @@ theorem measurable_prodMk_left {x : α} : Measurable (@Prod.mk _ β x) :=
 
 theorem measurable_prodMk_right {y : β} : Measurable fun x : α => (x, y) :=
   measurable_id.prodMk measurable_const
+
+@[fun_prop]
+theorem measurable_diag : @Measurable α (α × α) m (m.prod m) Function.diag :=
+  measurable_id.prodMk measurable_id
+
+theorem measurable_diag' {m'} (h : m' ≤ m) : @Measurable α (α × α) m (m.prod m') Function.diag :=
+  measurable_id.prodMk (measurable_id'' h)
 
 theorem Measurable.of_uncurry_left {f : α → β → γ} (hf : Measurable (uncurry f)) {x : α} :
     Measurable (f x) :=

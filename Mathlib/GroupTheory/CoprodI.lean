@@ -434,7 +434,7 @@ theorem equivPair_symm (i) (p : Pair M i) : (equivPair i).symm p = rcons p :=
 
 theorem equivPair_eq_of_fstIdx_ne {i} {w : Word M} (h : fstIdx w ≠ some i) :
     equivPair i w = ⟨1, w, h⟩ :=
-  (equivPair i).apply_eq_iff_eq_symm_apply.mpr <| Eq.symm (dite_eq_left rfl)
+  (equivPair i).eq_symm_apply.mp <| Eq.symm (dite_eq_left rfl)
 
 theorem mem_equivPair_tail_iff {i j : ι} {w : Word M} (m : M i) :
     (⟨i, m⟩ ∈ (equivPair j w).tail.toList) ↔ ⟨i, m⟩ ∈ w.toList.tail
@@ -886,7 +886,6 @@ theorem empty_of_word_prod_eq_one {w : Word H} (h : lift f w.prod = 1) :
   obtain ⟨i, j, w, rfl⟩ := NeWord.of_word w hnotempty
   exact lift_word_prod_nontrivial_of_not_empty f hcard X hXnonempty hXdisj hpp w h
 
-set_option backward.isDefEq.respectTransparency false in
 include hcard in
 /-- The **Ping-Pong-Lemma**.
 
@@ -959,7 +958,6 @@ variable (hXYdisj : ∀ i j, Disjoint (X i) (Y j))
 variable (hX : ∀ i, a i • (Y i)ᶜ ⊆ X i)
 variable (hY : ∀ i, a⁻¹ i • (X i)ᶜ ⊆ Y i)
 
-set_option backward.isDefEq.respectTransparency false in
 include hXnonempty hXdisj hYdisj hXYdisj hX hY in
 /-- The Ping-Pong-Lemma.
 

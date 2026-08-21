@@ -66,8 +66,6 @@ variable {r : α → α → Prop}
 
 @[deprecated (since := "2026-03-27")] alias Std.Refl.reflexive := refl
 
-@[deprecated (since := "2026-01-09")] alias IsRefl.reflexive := refl
-
 /-- To show a reflexive relation `r : α → α → Prop` holds over `x y : α`,
 it suffices to show it holds when `x ≠ y`. -/
 theorem Std.Refl.rel_of_ne_imp [Std.Refl r] {x y : α} (hr : x ≠ y → r x y) : r x y := by
@@ -279,7 +277,7 @@ lemma _root_.IsTrans.map {r : α → α → Prop} [IsTrans α r] {f : α → β}
 
 @[deprecated (since := "2026-03-27")] alias isTrans_map := IsTrans.map
 
-@[deprecated (since := "2026-02-21")] alias map_transitive := isTrans_map
+@[deprecated (since := "2026-02-21")] alias map_transitive := IsTrans.map
 
 lemma map_equivalence {r : α → α → Prop} (hr : Equivalence r) (f : α → β) (hf : f.Surjective)
     (hf_ker : ∀ x y, f x = f y → r x y) : Equivalence (Relation.Map r f f) where
@@ -602,7 +600,7 @@ lemma reflGen_eq_self [Std.Refl r] : ReflGen r = r := by
   ext x y
   simpa only [reflGen_iff, or_iff_right_iff_imp] using fun h ↦ h ▸ refl y
 
-@[deprecated inferInstance (since := "2026-03-27")]
+@[deprecated inferInstance +typeChanged (since := "2026-03-27")]
 lemma reflexive_reflGen : Std.Refl (ReflGen r) := inferInstance
 
 lemma reflGen_minimal {r' : α → α → Prop} [Std.Refl r'] (h : r ≤ r') : ReflGen r ≤ r' := by
@@ -649,10 +647,10 @@ theorem transGen_eq_self [IsTrans α r] : TransGen r = r :=
       | single hc => exact hc
       | tail _ hcd hac => exact IsTrans.trans _ _ _ hac hcd, TransGen.single⟩
 
-@[deprecated inferInstance (since := "2026-02-21")]
+@[deprecated inferInstance +typeChanged (since := "2026-02-21")]
 theorem transitive_transGen : IsTrans α (TransGen r) := inferInstance
 
-@[deprecated transGen_eq_self (since := "2026-03-27"), grind =]
+@[deprecated transGen_eq_self +typeChanged (since := "2026-03-27"), grind =]
 theorem transGen_idem : TransGen (TransGen r) = TransGen r :=
   transGen_eq_self
 
@@ -735,13 +733,13 @@ instance : IsPreorder α (ReflTransGen r) where
   refl := @ReflTransGen.refl α r
   trans := @ReflTransGen.trans α r
 
-@[deprecated inferInstance (since := "2026-03-27")]
+@[deprecated inferInstance +typeChanged (since := "2026-03-27")]
 theorem reflexive_reflTransGen : Std.Refl (ReflTransGen r) := inferInstance
 
-@[deprecated inferInstance (since := "2026-02-21")]
+@[deprecated inferInstance +typeChanged (since := "2026-02-21")]
 theorem transitive_reflTransGen : IsTrans α (ReflTransGen r) := inferInstance
 
-@[deprecated reflTransGen_eq_self (since := "2026-03-27"), grind =]
+@[deprecated reflTransGen_eq_self +typeChanged (since := "2026-03-27"), grind =]
 theorem reflTransGen_idem : ReflTransGen (ReflTransGen r) = ReflTransGen r :=
   reflTransGen_eq_self
 

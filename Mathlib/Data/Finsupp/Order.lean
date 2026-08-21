@@ -70,7 +70,7 @@ theorem sum_pos' (h : ∀ i ∈ f.support, 0 ≤ g i (f i)) (hf : ∃ i ∈ f.su
 end IsOrderedCancelAddMonoid
 
 section Preorder
-variable [Preorder α] {f g : ι →₀ α} {i : ι} {a b : α}
+variable [Preorder α] {i : ι} {a b : α}
 
 @[simp, gcongr] lemma single_le_single : single i a ≤ single i b ↔ a ≤ b := by
   classical exact Pi.single_le_single
@@ -217,7 +217,7 @@ instance orderBot [IsBotZeroClass α] : OrderBot (ι →₀ α) where
 instance [IsBotZeroClass α] : IsBotZeroClass (ι →₀ α) where
   isBot_zero := isBot_bot
 
-@[deprecated _root_.bot_eq_zero (since := "2026-05-07")]
+@[deprecated _root_.bot_eq_zero +typeChanged (since := "2026-05-07")]
 protected theorem bot_eq_zero [IsBotZeroClass α] : (⊥ : ι →₀ α) = 0 :=
   rfl
 
