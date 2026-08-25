@@ -9,9 +9,9 @@ public import Mathlib.Algebra.BigOperators.Group.Finset.Defs
 public import Mathlib.Algebra.Regular.Basic
 public import Mathlib.Algebra.Ring.NonZeroDivisors
 public import Mathlib.Data.Fintype.Prod
+public import Mathlib.GroupTheory.MonoidLocalization.Divisibility
 public import Mathlib.GroupTheory.MonoidLocalization.MonoidWithZero
 public import Mathlib.RingTheory.OreLocalization.Ring
-public import Mathlib.Tactic.ApplyFun
 public import Mathlib.Tactic.Ring
 
 /-!
@@ -186,14 +186,8 @@ theorem of_le_of_exists_dvd (N : Submonoid R) (h₁ : M ≤ N) (h₂ : ∀ n ∈
   of_le M N h₁ fun n hn ↦ have ⟨m, hm, dvd⟩ := h₂ n hn
     isUnit_of_dvd_unit (map_dvd _ dvd) (map_units S ⟨m, hm⟩)
 
-theorem algebraMap_isUnit_iff {x : R} : IsUnit (algebraMap R S x) ↔ ∃ m ∈ M, x ∣ m := by
-  refine ⟨fun h ↦ ?_, fun ⟨m, hm, dvd⟩ ↦ isUnit_of_dvd_unit (map_dvd _ dvd) (map_units S ⟨m, hm⟩)⟩
-  have ⟨s, hxs⟩ := isUnit_iff_dvd_one.mp h
-  have ⟨⟨r, m⟩, hrm⟩ := surj M s
-  apply_fun (algebraMap R S x * ·) at hrm
-  rw [← mul_assoc, ← hxs, one_mul, ← map_mul] at hrm
-  have ⟨m', eq⟩ := (eq_iff_exists M S).mp hrm
-  exact ⟨m' * m, mul_mem m'.2 m.2, _, mul_left_comm _ x _ ▸ eq⟩
+theorem algebraMap_isUnit_iff {x : R} : IsUnit (algebraMap R S x) ↔ ∃ m ∈ M, x ∣ m :=
+  (toLocalizationMap M S).map_isUnit_iff
 
 end
 
@@ -471,12 +465,12 @@ theorem mk'_add (x₁ x₂ : R) (y₁ y₂ : M) :
 
 set_option backward.isDefEq.respectTransparency false in
 theorem mul_add_inv_left {g : R →+* P} (h : ∀ y : M, IsUnit (g y)) (y : M) (w z₁ z₂ : P) :
-    w * ↑(IsUnit.liftRight (g.toMonoidHom.restrict M) h y)⁻¹ + z₁ =
+    w * ↑(IsUnit.liftRight (g.toMonoidHom.domRestrict M) h y)⁻¹ + z₁ =
     z₂ ↔ w + g y * z₁ = g y * z₂ := by
-  rw [mul_comm, ← one_mul z₁, ← Units.inv_mul (IsUnit.liftRight (g.toMonoidHom.restrict M) h y),
+  rw [mul_comm, ← one_mul z₁, ← Units.inv_mul (IsUnit.liftRight (g.toMonoidHom.domRestrict M) h y),
     mul_assoc, ← mul_add, Units.inv_mul_eq_iff_eq_mul, Units.inv_mul_cancel_left,
     IsUnit.coe_liftRight]
-  simp [RingHom.toMonoidHom_eq_coe, MonoidHom.restrict_apply]
+  simp [RingHom.toMonoidHom_eq_coe, MonoidHom.domRestrict_apply]
 
 theorem lift_spec_mul_add {g : R →+* P} (hg : ∀ y : M, IsUnit (g y)) (z w w' v) :
     ((toLocalizationMap M S).lift hg) z * w + w' = v ↔
@@ -512,7 +506,7 @@ variable {g : R →+* P} (hg : ∀ y : M, IsUnit (g y))
 `g : R →* P` such that `g y` is invertible for all `y : M`, the homomorphism induced from
 `S` to `P` maps `f x * (f y)⁻¹` to `g x * (g y)⁻¹` for all `x : R, y ∈ M`. -/
 theorem lift_mk' (x y) :
-    lift hg (mk' S x y) = g x * ↑(IsUnit.liftRight (g.toMonoidHom.restrict M) hg y)⁻¹ :=
+    lift hg (mk' S x y) = g x * ↑(IsUnit.liftRight (g.toMonoidHom.domRestrict M) hg y)⁻¹ :=
   (toLocalizationMap M S).lift_mk' _ _ _
 
 theorem lift_mk'_spec (x v) (y : M) : lift hg (mk' S x y) = v ↔ g x = g y * v :=
@@ -738,7 +732,7 @@ variable (M)
 theorem isLocalization_of_base_ringEquiv [IsLocalization M S] (h : R ≃+* P) :
     haveI := ((algebraMap R S).comp h.symm.toRingHom).toAlgebra
     IsLocalization (M.map h) S := by
-  letI : Algebra P S := ((algebraMap R S).comp h.symm.toRingHom).toAlgebra
+  let : Algebra P S := ((algebraMap R S).comp h.symm.toRingHom).toAlgebra
   constructor; constructor
   · rintro ⟨_, ⟨y, hy, rfl⟩⟩
     convert! IsLocalization.map_units S ⟨y, hy⟩
@@ -758,7 +752,7 @@ theorem isLocalization_iff_of_base_ringEquiv (h : R ≃+* P) :
     IsLocalization M S ↔
       haveI := ((algebraMap R S).comp h.symm.toRingHom).toAlgebra
       IsLocalization (M.map h) S := by
-  letI : Algebra P S := ((algebraMap R S).comp h.symm.toRingHom).toAlgebra
+  let : Algebra P S := ((algebraMap R S).comp h.symm.toRingHom).toAlgebra
   refine ⟨fun _ => isLocalization_of_base_ringEquiv M S h, ?_⟩
   intro (H : IsLocalization (Submonoid.map (h : R ≃* P) M) S)
   convert! isLocalization_of_base_ringEquiv (Submonoid.map (h : R ≃* P) M) S h.symm
@@ -910,7 +904,7 @@ end CommSemiring
 section CommRing
 
 variable {R : Type*} [CommRing R] {M : Submonoid R} (S : Type*) [CommRing S]
-variable [Algebra R S] {P : Type*} [CommRing P]
+variable [Algebra R S]
 
 namespace Localization
 

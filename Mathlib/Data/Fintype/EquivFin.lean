@@ -43,7 +43,7 @@ open Function
 
 universe u v
 
-variable {α β γ : Type*}
+variable {α β : Type*}
 
 open Finset
 
@@ -535,7 +535,7 @@ set_option backward.privateInPublic true in
 private theorem natEmbeddingAux_injective (α : Type*) [Infinite α] :
     Function.Injective (natEmbeddingAux α) := by
   rintro m n h
-  letI := Classical.decEq α
+  let := Classical.decEq α
   wlog hmlen : m ≤ n generalizing m n
   · exact (this h.symm <| le_of_not_ge hmlen).symm
   by_contra hmn

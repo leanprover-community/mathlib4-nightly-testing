@@ -889,7 +889,6 @@ theorem tensorLeftTensor_hom_app (X Y Z : C) :
     (tensorLeftTensor X Y).hom.app Z = (associator X Y Z).hom :=
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem tensorLeftTensor_inv_app (X Y Z : C) :
     (tensorLeftTensor X Y).inv.app Z = (associator X Y Z).inv := by simp [tensorLeftTensor]
@@ -935,7 +934,6 @@ theorem tensorRightTensor_hom_app (X Y Z : C) :
     (tensorRightTensor X Y).hom.app Z = (associator Z X Y).inv :=
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 theorem tensorRightTensor_inv_app (X Y Z : C) :
     (tensorRightTensor X Y).inv.app Z = (associator Z X Y).hom := by simp [tensorRightTensor]
@@ -948,7 +946,7 @@ section
 
 universe v₁ v₂ u₁ u₂
 
-open Prod
+open CategoryTheory.Prod
 
 variable (C₁ : Type u₁) [Category.{v₁} C₁] [MonoidalCategory.{v₁} C₁]
 variable (C₂ : Type u₂) [Category.{v₂} C₂] [MonoidalCategory.{v₂} C₂]
@@ -1000,7 +998,6 @@ section ObjectProperty
 
 open ObjectProperty
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- The restriction of a monoidal category along an object property
 that's closed under the monoidal structure. -/
 -- See note [reducible non-instances]

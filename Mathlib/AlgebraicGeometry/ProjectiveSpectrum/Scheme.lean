@@ -165,7 +165,7 @@ open Ideal
 -- So for any `x` in `Proj| (pbo f)`, we need some point in `Spec A⁰_f`, i.e. a prime ideal,
 -- and we need this correspondence to be continuous in their Zariski topology.
 variable {𝒜}
-variable {f : A} {m : ℕ} (x : Proj| (pbo f))
+variable {f : A} (x : Proj| (pbo f))
 
 /--
 For any `x` in `Proj| (pbo f)`, the corresponding ideal in `Spec A⁰_f`. This fact that this ideal
@@ -250,7 +250,7 @@ open HomogeneousLocalization
 variable {𝒜}
 variable {f : A} {m : ℕ} (f_deg : f ∈ 𝒜 m)
 
-open Lean Meta Elab Tactic
+open Lean
 
 /-- `mem_tac` tries to prove goals of the form `x ∈ 𝒜 i` when `x` has the form of:
 * `y ^ n` where `i = n • j` and `y ∈ 𝒜 j`.
@@ -734,7 +734,7 @@ lemma isLocalization_atPrime (f) (x : pbo f) {m} (f_deg : f ∈ 𝒜 m) (hm : 0 
     @IsLocalization (Away 𝒜 f) _ ((toSpec 𝒜 f).base x).asIdeal.primeCompl
       (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) _
       (mapId 𝒜 (Submonoid.powers_le.mpr x.2)).toAlgebra := by
-  letI : Algebra (Away 𝒜 f) (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=
+  let : Algebra (Away 𝒜 f) (AtPrime 𝒜 x.1.asHomogeneousIdeal.toIdeal) :=
     (mapId 𝒜 (Submonoid.powers_le.mpr x.2)).toAlgebra
   constructor; constructor
   · rintro ⟨y, hy⟩
@@ -829,10 +829,10 @@ lemma stalkMap_toSpec (f) (x : pbo f) {m} (f_deg : f ∈ 𝒜 m) (hm : 0 < m) :
 set_option backward.isDefEq.respectTransparency false in
 lemma isIso_toSpec (f) {m} (f_deg : f ∈ 𝒜 m) (hm : 0 < m) :
     IsIso (toSpec 𝒜 f) := by
-  haveI : IsIso (toSpec 𝒜 f).base := toSpec_base_isIso 𝒜 f_deg hm
-  haveI _ (x) : IsIso ((toSpec 𝒜 f).stalkMap x) := by
+  have : IsIso (toSpec 𝒜 f).base := toSpec_base_isIso 𝒜 f_deg hm
+  have _ (x) : IsIso ((toSpec 𝒜 f).stalkMap x) := by
     rw [stalkMap_toSpec 𝒜 f x f_deg hm]; infer_instance
-  haveI : LocallyRingedSpace.IsOpenImmersion (toSpec 𝒜 f) :=
+  have : LocallyRingedSpace.IsOpenImmersion (toSpec 𝒜 f) :=
     LocallyRingedSpace.IsOpenImmersion.of_stalk_iso (toSpec 𝒜 f)
       (TopCat.homeoOfIso (asIso <| (toSpec 𝒜 f).base)).isOpenEmbedding
   exact LocallyRingedSpace.IsOpenImmersion.to_iso _
@@ -848,7 +848,6 @@ def projIsoSpec (f) {m} (f_deg : f ∈ 𝒜 m) (hm : 0 < m) :
     (Proj| pbo f) ≅ (Spec (A⁰_ f)) :=
   @asIso _ _ _ _ (f := toSpec 𝒜 f) (isIso_toSpec 𝒜 f f_deg hm)
 
-set_option backward.isDefEq.respectTransparency false in
 /--
 This is the scheme `Proj(A)` for any `ℕ`-graded ring `A`.
 -/

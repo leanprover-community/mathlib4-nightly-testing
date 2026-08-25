@@ -120,7 +120,6 @@ def fromListIsChain (x : List α) (x_ne_nil : x ≠ []) (hx : x.IsChain (· ~[r]
   toFun i := x[Fin.cast (Nat.succ_pred_eq_of_pos <| List.length_pos_iff.mpr x_ne_nil) i]
   step i := List.isChain_iff_getElem.mp hx i _
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Relation series of `r` and nonempty list of `α` satisfying `r`-chain condition bijectively
 corresponds to each other. -/
 protected def Equiv : RelSeries r ≃ {x : List α | x ≠ [] ∧ x.IsChain (· ~[r] ·)} where
@@ -255,14 +254,6 @@ lemma head_toList (p : RelSeries r) : p.toList.head p.toList_ne_nil = p.head := 
 lemma toList_getElem (p : RelSeries r) {i : ℕ} (hi : i < p.toList.length) :
     p.toList[(i : ℕ)] = p ⟨i, by simpa using hi⟩ := by
   simp only [toList, List.getElem_ofFn]
-
-@[deprecated toList_getElem (since := "2025-11-25")]
-lemma toList_getElem_eq_apply (p : RelSeries r) (i : Fin (p.length + 1)) :
-    p.toList[(i : ℕ)] = p i := p.toList_getElem _
-
-@[deprecated toList_getElem (since := "2025-11-25")]
-lemma toList_getElem_eq_apply_of_lt_length {p : RelSeries r} {i : ℕ} (hi : i < p.length + 1) :
-    p.toList[i]'(by simpa using hi) = p ⟨i, hi⟩ := p.toList_getElem _
 
 lemma toList_getElem_zero_eq_head (p : RelSeries r) : p.toList[0] = p.head :=
   p.toList_getElem _
@@ -556,7 +547,6 @@ lemma snoc_cast_castSucc (s : RelSeries r) (a : α) (h : s.last ~[r] a) (i : Fin
     (i : Fin (s.length + 1)) : snoc s a connect (Fin.castSucc i) = s i :=
   Fin.append_left _ _ i
 
-set_option backward.isDefEq.respectTransparency false in
 lemma mem_snoc {p : RelSeries r} {newLast : α} {rel : p.last ~[r] newLast} {x : α} :
     x ∈ p.snoc newLast rel ↔ x ∈ p ∨ x = newLast := by
   simp only [snoc, append, mem_def, Set.mem_range]
@@ -615,7 +605,6 @@ lemma cons_self_tail {p : RelSeries r} (hp : p.length ≠ 0) :
   apply toList_injective
   simp [← head_toList]
 
-set_option backward.isDefEq.respectTransparency false in
 /--
 To show a proposition `p` for `xs : RelSeries r` it suffices to show it for all singletons
 and to show that when `p` holds for `xs` it also holds for `xs` prepended with one element.
@@ -629,7 +618,7 @@ def inductionOn (motive : RelSeries r → Sort*)
     (cons : (p : RelSeries r) → (x : α) → (hx : x ~[r] p.head) → (hp : motive p) →
       motive (p.cons x hx)) (p : RelSeries r) :
     motive p := by
-  let this {n : ℕ} (heq : p.length = n) : motive p := by
+  let {n : ℕ} (heq : p.length = n) : motive p := by
     induction n generalizing p with
     | zero =>
       convert! singleton p.head
@@ -687,7 +676,6 @@ lemma snoc_self_eraseLast (p : RelSeries r) (h : p.length ≠ 0) :
   apply toList_injective
   rw [toList_snoc, ← getLast_toList, toList_eraseLast _ h, List.dropLast_append_getLast]
 
-set_option backward.isDefEq.respectTransparency false in
 /--
 To show a proposition `p` for `xs : RelSeries r` it suffices to show it for all singletons
 and to show that when `p` holds for `xs` it also holds for `xs` appended with one element.
@@ -698,7 +686,7 @@ def inductionOn' (motive : RelSeries r → Sort*)
     (snoc : (p : RelSeries r) → (x : α) → (hx : p.last ~[r] x) → (hp : motive p) →
       motive (p.snoc x hx)) (p : RelSeries r) :
     motive p := by
-  let this {n : ℕ} (heq : p.length = n) : motive p := by
+  let {n : ℕ} (heq : p.length = n) : motive p := by
     induction n generalizing p with
     | zero =>
       convert! singleton p.head
@@ -1020,7 +1008,6 @@ theorem exists_relSeries_covBy
       simp [RelSeries.smash_castLE]
     all_goals simp [Fin.snoc, Fin.castPred_zero, hi₁]
 
-set_option backward.isDefEq.respectTransparency false in
 theorem exists_relSeries_covBy_and_head_eq_bot_and_last_eq_bot
     {α} [PartialOrder α] [BoundedOrder α] [WellFoundedLT α] [WellFoundedGT α] (s : LTSeries α) :
     ∃ (t : RelSeries {(a, b) : α × α | a ⋖ b}) (i : Fin (s.length + 1) ↪ Fin (t.length + 1)),

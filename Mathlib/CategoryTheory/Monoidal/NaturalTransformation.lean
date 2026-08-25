@@ -95,7 +95,6 @@ instance (F : C ⥤ D) (G : D ⥤ E) (H : E ⥤ E') [F.LaxMonoidal] [G.LaxMonoid
 
 end IsMonoidal
 
-set_option backward.isDefEq.respectTransparency false in
 instance {F G : C ⥤ D} {H K : C ⥤ E} (α : F ⟶ G) (β : H ⟶ K)
     [F.LaxMonoidal] [G.LaxMonoidal] [IsMonoidal α]
     [H.LaxMonoidal] [K.LaxMonoidal] [IsMonoidal β] :
@@ -234,7 +233,7 @@ a monoidal natural transformation.
 lemma natTransIsMonoidal_of_transport {F G : C ⥤ D} [F.Monoidal] (e : F ≅ G) :
     letI : G.Monoidal := transport e
     e.hom.IsMonoidal := by
-  letI : G.Monoidal := transport e
+  let : G.Monoidal := transport e
   refine ⟨rfl, fun X Y ↦ ?_⟩
   simp [transport_μ, tensorHom_comp_tensorHom_assoc]
 

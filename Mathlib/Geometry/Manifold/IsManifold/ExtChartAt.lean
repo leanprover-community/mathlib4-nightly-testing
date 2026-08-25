@@ -835,7 +835,6 @@ variable {G G' F F' N N' : Type*}
   {J : ModelWithCorners 𝕜 F G} {J' : ModelWithCorners 𝕜 F' G'}
   [ChartedSpace G N] [ChartedSpace G' N']
 
-set_option backward.isDefEq.respectTransparency false in
 lemma writtenInExtChartAt_prod {f : M → N} {g : M' → N'} {x : M} {x' : M'} :
     (writtenInExtChartAt (I.prod I') (J.prod J') (x, x') (Prod.map f g)) =
       Prod.map (writtenInExtChartAt I J x f) (writtenInExtChartAt I' J' x' g) := by
@@ -865,7 +864,6 @@ theorem ext_chart_model_space_apply {x y : E} : extChartAt 𝓘(𝕜, E) x y = y
 
 variable {𝕜}
 
-set_option backward.isDefEq.respectTransparency false in
 theorem extChartAt_prod (x : M × M') :
     extChartAt (I.prod I') x = (extChartAt I x.1).prod (extChartAt I' x.2) := by
   simp only [mfld_simps]
@@ -879,14 +877,14 @@ theorem extChartAt_comp [ChartedSpace H H'] (x : M') :
 theorem writtenInExtChartAt_chartAt_comp [ChartedSpace H H'] (x : M') {y}
     (hy : y ∈ letI := ChartedSpace.comp H H' M'; (extChartAt I x).target) :
     (letI := ChartedSpace.comp H H' M'; writtenInExtChartAt I I x (chartAt H' x) y) = y := by
-  letI := ChartedSpace.comp H H' M'
+  let := ChartedSpace.comp H H' M'
   simp_all only [mfld_simps, chartAt_comp]
 
 theorem writtenInExtChartAt_chartAt_symm_comp [ChartedSpace H H'] (x : M') {y}
     (hy : y ∈ letI := ChartedSpace.comp H H' M'; (extChartAt I x).target) :
     (letI := ChartedSpace.comp H H' M'
      writtenInExtChartAt I I (chartAt H' x x) (chartAt H' x).symm y) = y := by
-  letI := ChartedSpace.comp H H' M'
+  let := ChartedSpace.comp H H' M'
   simp_all only [mfld_simps, chartAt_comp]
 
 end ExtendedCharts
@@ -938,3 +936,7 @@ theorem FiniteDimensional.of_locallyCompact_manifold
   exact FiniteDimensional.of_locallyCompactSpace 𝕜
 
 end Topology
+
+instance {M : Type*} [TopologicalSpace M] [ChartedSpace H M] {x : M} [FiniteDimensional 𝕜 E] :
+    FiniteDimensional 𝕜 (TangentSpace I x) :=
+  inferInstanceAs (FiniteDimensional 𝕜 E)

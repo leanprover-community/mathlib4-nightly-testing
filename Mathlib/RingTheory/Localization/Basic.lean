@@ -130,7 +130,6 @@ section CompatibleSMul
 
 variable (N₁ N₂ : Type*) [AddCommMonoid N₁] [AddCommMonoid N₂] [Module R N₁] [Module R N₂]
 
-set_option backward.isDefEq.respectTransparency false in
 variable (M S) in
 include M in
 theorem linearMap_compatibleSMul [Module S N₁] [Module S N₂]
@@ -304,7 +303,6 @@ instance : IsLocalization (Algebra.algebraMapSubmonoid S (IsUnit.submonoid R)) S
 
 variable (R M)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The localization at a module of units is isomorphic to the ring. -/
 noncomputable def atUnits (H : M ≤ IsUnit.submonoid R) : R ≃ₐ[R] S := by
   refine AlgEquiv.ofBijective (Algebra.ofId R S) ⟨?_, ?_⟩
@@ -494,7 +492,7 @@ open IsLocalization
 theorem IsField.localization_map_bijective {R Rₘ : Type*} [CommRing R] [CommRing Rₘ]
     {M : Submonoid R} (hM : (0 : R) ∉ M) (hR : IsField R) [Algebra R Rₘ] [IsLocalization M Rₘ] :
     Function.Bijective (algebraMap R Rₘ) := by
-  letI := hR.toField
+  let := hR.toField
   replace hM := le_nonZeroDivisors_of_noZeroDivisors hM
   refine ⟨IsLocalization.injective _ hM, fun x => ?_⟩
   obtain ⟨r, ⟨m, hm⟩, rfl⟩ := exists_mk'_eq M x

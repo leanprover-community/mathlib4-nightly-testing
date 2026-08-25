@@ -98,7 +98,6 @@ lemma iSup_basicOpen_eq_top' {ι : Type*} (f : ι → A)
     (hfn : ∀ i, ∃ n, f i ∈ 𝒜 n)
     (hf : Algebra.adjoin (𝒜 0) (Set.range f) = ⊤) :
     ⨆ i, Proj.basicOpen 𝒜 (f i) = ⊤ := by
-  classical
   apply Proj.iSup_basicOpen_eq_top
   intro x hx
   convert_to x - GradedRing.projZeroRingHom 𝒜 x ∈ _
@@ -311,8 +310,8 @@ lemma awayι_preimage_basicOpen :
       (pullbackAwayιIso 𝒜 f_deg hm g_deg hm' rfl).inv.homeomorph.surjective),
       ← opensRange_awayι _ _ g_deg hm']
     simp [IsOpenImmersion.range_pullbackFst]
-  · letI := (awayMap (f := f) 𝒜 g_deg rfl).toAlgebra
-    letI := HomogeneousLocalization.Away.isLocalization_mul f_deg g_deg rfl hm.ne'
+  · let := (awayMap (f := f) 𝒜 g_deg rfl).toAlgebra
+    let := HomogeneousLocalization.Away.isLocalization_mul f_deg g_deg rfl hm.ne'
     exact PrimeSpectrum.localization_away_comap_range _ _
 
 open TopologicalSpace.Opens in
@@ -409,7 +408,6 @@ lemma homOfLE_toBasicOpenOfGlobalSections_ι
 
 variable (f : A →+* Γ(X, ⊤)) (hf : (HomogeneousIdeal.irrelevant 𝒜).toIdeal.map f = ⊤)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Given a graded ring `A` and a map `f : A →+* Γ(X, ⊤)` such that the image of the
 irrelevant ideal under `f` generates the whole ring, the set of `D(f(r))` for homogeneous `r`
 of positive degree forms an open cover on `X`. -/

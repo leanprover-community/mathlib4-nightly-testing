@@ -45,7 +45,6 @@ lemma zariskiTopology_le_etaleTopology : zariskiTopology ≤ etaleTopology := by
   intro X Y f hf
   infer_instance
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- The small étale site of a scheme is the Grothendieck topology on the
 category of schemes étale over `X` induced from the étale topology on `Scheme.{u}`. -/
 def smallEtaleTopology (X : Scheme.{u}) : GrothendieckTopology X.Etale :=
@@ -79,7 +78,7 @@ lemma ofArrows_mem_smallEtaleTopology_iff
     let V : Cover (precoverage @Etale) W.left :=
       Cover.mkOfCovers W.left (fun w ↦ (Z (i w)).left)
         (fun w ↦ (f (i w)).left) (fun w ↦ ⟨_, _, hz w⟩) inferInstance
-    letI : Cover.Over X V :=
+    let : Cover.Over X V :=
       { over w := ⟨(Z (i w)).hom⟩
         isOver_map w := by cat_disch }
     have (w : W.left) : Etale (V.X w ↘ X) := (Z (i w)).prop

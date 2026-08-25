@@ -98,7 +98,7 @@ theorem mem_properDivisors {m : ℕ} : n ∈ properDivisors m ↔ n ∣ m ∧ n 
 theorem insert_self_properDivisors (h : n ≠ 0) : insert n (properDivisors n) = divisors n := by
   rw [divisors, properDivisors,
     ← Finset.insert_Ico_right_eq_Ico_add_one (one_le_iff_ne_zero.2 h),
-    Finset.filter_insert, if_pos (dvd_refl n)]
+    Finset.filter_insert, ite_eq_left (dvd_refl n)]
 
 theorem cons_self_properDivisors (h : n ≠ 0) :
     cons n (properDivisors n) self_notMem_properDivisors = divisors n := by
@@ -158,12 +158,6 @@ lemma pairwise_divisorsAntidiagonalList_snd {n : ℕ} :
     and_imp, Prod.forall, Prod.mk.injEq]
   rintro a b hab _ _ ha rfl rfl _ _ hb rfl rfl
   rwa [Nat.div_lt_div_left hn ⟨_, hb.symm⟩ ⟨_, ha.symm⟩]
-
-@[deprecated (since := "2025-11-27")] alias sorted_divisorsAntidiagonalList_fst :=
-  pairwise_divisorsAntidiagonalList_fst
-
-@[deprecated (since := "2025-11-27")] alias sorted_divisorsAntidiagonalList_snd :=
-  pairwise_divisorsAntidiagonalList_snd
 
 lemma sortedLT_map_fst_divisorsAntidiagonalList {n : ℕ} :
     (n.divisorsAntidiagonalList.map Prod.fst).SortedLT :=

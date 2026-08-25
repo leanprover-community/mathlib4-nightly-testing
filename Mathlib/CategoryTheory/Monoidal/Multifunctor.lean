@@ -29,7 +29,7 @@ variable {C : Type*} [Category* C] [MonoidalCategory C]
 
 namespace MonoidalCategory
 
-open Functor
+open CategoryTheory.Functor
 
 /-- The bifunctor `(F -) ⊗ -`. -/
 abbrev curriedTensorInsertFunctor₁ (F : C ⥤ D) : C ⥤ D ⥤ D :=
@@ -71,7 +71,6 @@ abbrev curriedTensorPostPost (F : C ⥤ D) : C ⥤ C ⥤ C ⥤ D :=
 abbrev curriedTensorPostPost' (F : C ⥤ D) : C ⥤ C ⥤ C ⥤ D :=
   bifunctorComp₂₃ (curriedTensorPost F) (curriedTensor C)
 
-set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The natural isomorphism of bifunctors `F - ⊗ F - ≅ F (- ⊗ -)`, given a monoidal functor `F`. -/
 @[simps!]

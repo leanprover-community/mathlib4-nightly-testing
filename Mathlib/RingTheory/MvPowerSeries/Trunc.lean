@@ -76,7 +76,6 @@ def truncFinset (R : Type*) [CommSemiring R] (s : Finset (σ →₀ ℕ)) :
   toFun p := ∑ x ∈ s, MvPolynomial.monomial x (p.coeff x)
   map_add' _ _ := by simp [sum_add_distrib]
   map_smul' _ _ := by
-    classical
     ext
     simp [MvPolynomial.coeff, single, MvPolynomial.monomial]
 
@@ -271,7 +270,7 @@ theorem coeff_trunc'_mul_trunc'_eq_coeff_mul (n : σ →₀ ℕ)
     (trunc' R n f * trunc' R n g).coeff m = coeff m (f * g) :=
   coeff_trunc'_mul_trunc'_eq_coeff_mul₂ n n f g h h
 
-@[deprecated coeff_trunc'_mul_trunc'_eq_coeff_mul (since := "2026-02-20")]
+@[deprecated coeff_trunc'_mul_trunc'_eq_coeff_mul +typeChanged (since := "2026-02-20")]
 theorem coeff_mul_eq_coeff_trunc'_mul_trunc' (n : σ →₀ ℕ) (f g : MvPowerSeries σ R) {m : σ →₀ ℕ}
     (h : m ≤ n) : coeff m (f * g) = (trunc' R n f * trunc' R n g).coeff m :=
   (coeff_trunc'_mul_trunc'_eq_coeff_mul n f g h).symm
@@ -300,7 +299,7 @@ theorem ext_trunc' {f g : MvPowerSeries σ R} : f = g ↔ ∀ n, trunc' R n f = 
   ext n
   specialize h n
   have {f' : MvPowerSeries σ R} : f'.coeff n = (trunc' R n f').coeff n := by
-    rw [coeff_trunc', if_pos le_rfl]
+    rw [coeff_trunc', ite_eq_left le_rfl]
   simp_rw [this, h]
 
 open Filter in
@@ -310,7 +309,7 @@ theorem eq_iff_frequently_trunc'_eq {f g : MvPowerSeries σ R} :
   ext n
   obtain ⟨m, hm₁, hm₂⟩ := h.forall_exists_of_atTop n
   have {f' : MvPowerSeries σ R} : f'.coeff n = (trunc' R m f').coeff n := by
-    rw [coeff_trunc', if_pos hm₁]
+    rw [coeff_trunc', ite_eq_left hm₁]
   simp [this, hm₂]
 
 end
@@ -335,8 +334,8 @@ theorem coeff_truncTotal_eq_zero (h : n ≤ degree x) :
 theorem coeff_truncTotal_eq_ite :
     (truncTotal n p).coeff x = if x.degree < n then p.coeff x else 0 := by
   by_cases h : x.degree < n
-  · rw [if_pos h, coeff_truncTotal _ h]
-  · rw [if_neg h, coeff_truncTotal_eq_zero _ (not_lt.mp h)]
+  · rw [ite_eq_left h, coeff_truncTotal _ h]
+  · rw [ite_eq_right h, coeff_truncTotal_eq_zero _ (not_lt.mp h)]
 
 theorem constantCoeff_truncTotal_eq_ite :
     (truncTotal n p).constantCoeff = if 0 < n then p.constantCoeff else 0 := by

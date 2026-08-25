@@ -10,7 +10,6 @@ public import Mathlib.CategoryTheory.Monoidal.Braided.Basic
 public import Mathlib.CategoryTheory.Monoidal.CoherenceLemmas
 public import Mathlib.CategoryTheory.Limits.Shapes.Terminal
 
-import Mathlib.Tactic.Attr.Register
 
 /-!
 # The category of monoids in a monoidal category.
@@ -146,7 +145,7 @@ open scoped MonObj
 
 namespace Mathlib.Tactic.MonTauto
 variable {C : Type u₁} [Category.{v₁} C] [MonoidalCategory C]
-  {M W X X₁ X₂ X₃ Y Y₁ Y₂ Y₃ Z Z₁ Z₂ : C} [MonObj M]
+  {M W X X₁ X₂ Y Y₁ Y₂ Z Z₁ Z₂ : C} [MonObj M]
 
 attribute [mon_tauto] Category.id_comp Category.comp_id Category.assoc
   id_tensorHom_id tensorμ tensorδ
@@ -230,7 +229,7 @@ instance instIsMonHomComp (f : M ⟶ N) (g : N ⟶ O) [IsMonHom f] [IsMonHom g] 
 attribute [local simp] MonObj.ofIso_one MonObj.ofIso_mul in
 @[to_additive]
 instance isMonHom_ofIso (e : M ≅ X) : letI := MonObj.ofIso e; IsMonHom e.hom := by
-  letI := MonObj.ofIso e; exact { }
+  let := MonObj.ofIso e; exact { }
 
 @[to_additive]
 instance (f : M ≅ N) [IsMonHom f.hom] : IsMonHom f.inv where
@@ -606,7 +605,8 @@ instance {A B : Mon C} (f : A ⟶ B) [e : IsIso ((forget C).map f)] : IsIso f.ho
   e
 
 /-- The forgetful functor from monoid objects to the ambient category reflects isomorphisms. -/
-@[to_additive]
+@[to_additive /-- The forgetful functor from additive monoid objects to the ambient category
+reflects isomorphisms. -/]
 instance : (forget C).ReflectsIsomorphisms where
   reflects f e := ⟨⟨.mk' (inv f.hom), by cat_disch⟩⟩
 
@@ -726,7 +726,7 @@ variable (C)
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The forgetful functor from `Mon C` to `C` is monoidal when `C` is monoidal. -/
-@[to_additive]
+@[to_additive /-- The forgetful functor from `AddMon C` to `C` is monoidal when `C` is monoidal. -/]
 instance : (forget C).Monoidal :=
   Functor.CoreMonoidal.toMonoidal
     { εIso := Iso.refl _
@@ -1005,7 +1005,7 @@ variable [BraidedCategory C] [BraidedCategory D] (F)
 open scoped Obj
 
 attribute [-simp] IsMonHom.one_hom_assoc in
-attribute [local simp← ] tensorHom_comp_tensorHom tensorHom_comp_tensorHom_assoc in
+attribute [local simp ←] tensorHom_comp_tensorHom tensorHom_comp_tensorHom_assoc in
 attribute [local simp] tensorμ_comp_μ_tensorHom_μ_comp_μ_assoc MonObj.tensorObj.one_def
   MonObj.tensorObj.mul_def in
 @[to_additive instIsAddMonHomμ]
@@ -1025,7 +1025,7 @@ instance [F.LaxBraided] : F.mapMon.LaxMonoidal where
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 attribute [-simp] IsMonHom.one_hom IsMonHom.one_hom_assoc IsMonHom.mul_hom in
-attribute [local simp← ] tensorHom_comp_tensorHom tensorHom_comp_tensorHom_assoc in
+attribute [local simp ←] tensorHom_comp_tensorHom tensorHom_comp_tensorHom_assoc in
 attribute [local simp] ε_tensorHom_comp_μ_assoc tensorμ_comp_μ_tensorHom_μ_comp_μ_assoc
   MonObj.tensorObj.one_def MonObj.tensorObj.mul_def in
 @[to_additive]
@@ -1058,7 +1058,7 @@ def mapMonFunctor : LaxMonoidalFunctor C D ⥤ Mon C ⥤ Mon D where
 
 end Functor
 
-open Functor
+open CategoryTheory.Functor
 
 namespace Adjunction
 variable {F : C ⥤ D} {G : D ⥤ C} (a : F ⊣ G) [F.Monoidal] [G.LaxMonoidal] [a.IsMonoidal]
@@ -1076,7 +1076,6 @@ end Adjunction
 
 namespace Equivalence
 
-set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- An equivalence of categories lifts to an equivalence of their monoid objects. -/
 @[to_additive (attr := simps)

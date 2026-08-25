@@ -32,8 +32,6 @@ universe v₁ v₂ v₃ u₁ u₂ u₃
 
 namespace CategoryTheory
 
-open Category
-
 variable (C : Type u₁) [Category.{v₁} C]
 variable (D : Type u₂) [Category.{v₂} D]
 variable {E : Type u₃} [Category.{v₃} E]
@@ -112,9 +110,6 @@ abbrev toSkeleton (X : C) : Skeleton C := ⟦X⟧
 noncomputable def fromSkeletonToSkeletonIso (X : C) : (fromSkeleton C).obj (toSkeleton X) ≅ X :=
   Nonempty.some (Quotient.mk_out X)
 
-@[deprecated (since := "2025-12-18")] alias preCounitIso :=
-  fromSkeletonToSkeletonIso
-
 @[reassoc, simp]
 lemma Skeleton.comp_hom {X Y Z : Skeleton C} (f : X ⟶ Y) (g : Y ⟶ Z) :
     (f ≫ g).hom = f.hom ≫ g.hom := rfl
@@ -181,7 +176,6 @@ noncomputable def mapSkeleton (F : C ⥤ D) : Skeleton C ⥤ Skeleton D :=
 
 variable (F : C ⥤ D)
 
-set_option backward.isDefEq.respectTransparency.types false in
 lemma mapSkeleton_obj_toSkeleton (X : C) :
     F.mapSkeleton.obj (toSkeleton X) = toSkeleton (F.obj X) :=
   congr_toSkeleton_of_iso <| F.mapIso <| fromSkeletonToSkeletonIso X
@@ -274,7 +268,6 @@ instance thin : Quiver.IsThin (ThinSkeleton C) := fun _ _ =>
 
 variable {C} {D}
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- A functor `C ⥤ D` computably lowers to a functor `ThinSkeleton C ⥤ ThinSkeleton D`. -/
 @[simps]
 def map (F : C ⥤ D) : ThinSkeleton C ⥤ ThinSkeleton D where
@@ -433,8 +426,6 @@ def lowerAdjunction (R : D ⥤ C) (L : C ⥤ D) (h : L ⊣ R) :
         exact Quotient.recOnSubsingleton X fun x => homOfLE ⟨h.counit.app x⟩ }
 
 end ThinSkeleton
-
-open ThinSkeleton
 
 section
 

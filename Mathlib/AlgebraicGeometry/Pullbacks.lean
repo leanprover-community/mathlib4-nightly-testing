@@ -320,7 +320,6 @@ theorem gluedLift_p2 : gluedLift 𝒰 f g s ≫ p2 𝒰 f g = s.snd := by
   simp_rw [(Cover.ι_glueMorphisms <| 𝒰.pullback₁ s.fst)]
   simp [p2]
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- (Implementation)
 The canonical map `(W ×[X] Uᵢ) ×[W] (Uⱼ ×[Z] Y) ⟶ (Uⱼ ×[Z] Y) ×[X] Uᵢ = V j i` where `W` is
 the glued fibred product.
@@ -513,7 +512,7 @@ def openCoverOfLeft (𝒰 : OpenCover.{v} X) (f : X ⟶ Z) (g : Y ⟶ Z) :
   mem₀ := by
     rw [ofArrows_mem_precoverage_iff]
     refine ⟨fun x ↦ ?_, fun i ↦ ?_⟩
-    · letI 𝒱 := ((gluing 𝒰.ulift f g).openCover.pushforwardIso
+    · let 𝒱 := ((gluing 𝒰.ulift f g).openCover.pushforwardIso
               (limit.isoLimitCone ⟨_, gluedIsLimit 𝒰.ulift f g⟩).inv).copy
           𝒰.ulift.I₀ (fun i => pullback (𝒰.ulift.f i ≫ f) g)
           (fun i => pullback.map _ _ _ _ (𝒰.ulift.f i) (𝟙 _) (𝟙 _) (Category.comp_id _) (by simp))

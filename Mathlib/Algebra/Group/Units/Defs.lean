@@ -353,7 +353,7 @@ end Monoid
 
 section IsUnit
 
-variable {M : Type*} {N : Type*}
+variable {M : Type*}
 
 /-- An element `a : M` of a `Monoid` is a unit if it has a two-sided inverse.
 The actual definition says that `a` is equal to some `u : Mˣ`, where
@@ -424,8 +424,6 @@ variable [Subsingleton Mˣ]
 
 @[to_additive] lemma Units.eq_one (u : Mˣ) : u = 1 := Subsingleton.elim ..
 @[to_additive] lemma IsUnit.eq_one : IsUnit a → a = 1 := by rintro ⟨u, rfl⟩; simp [u.eq_one]
-
-@[deprecated (since := "2025-11-19")] alias units_eq_one := Units.eq_one
 
 @[to_additive (attr := simp)]
 lemma isUnit_iff_eq_one : IsUnit a ↔ a = 1 where

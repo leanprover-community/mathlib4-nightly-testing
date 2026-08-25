@@ -74,7 +74,7 @@ theorem finite_classes_ker {α β : Type*} [Finite β] (f : α → β) : (Setoid
 
 theorem card_classes_ker_le {α β : Type*} [Fintype β] (f : α → β)
     [Fintype (Setoid.ker f).classes] : Fintype.card (Setoid.ker f).classes ≤ Fintype.card β := by
-  classical exact
+  exact
       le_trans (Set.card_le_card (classes_ker_subset_fiber_set f)) (Fintype.card_range_le _)
 
 /-- Two equivalence relations are equal iff all their equivalence classes are equal. -/
@@ -442,7 +442,7 @@ theorem index_out (x : hs.Quotient) : hs.index x.out = hs.index (hs.out x) :=
 theorem proj_out (x : hs.Quotient) : hs.proj (hs.out x) = x :=
   Quotient.inductionOn' x fun x => Quotient.sound' <| hs.some_index x
 
-theorem class_of {x : α} : setOf (hs.setoid x) = s (hs.index x) :=
+theorem class_of {x : α} : Set.ofPred (hs.setoid x) = s (hs.index x) :=
   Set.ext fun _y => eq_comm.trans hs.mem_iff_index_eq.symm
 
 theorem proj_fiber (x : hs.Quotient) : hs.proj ⁻¹' {x} = s (hs.equivQuotient.symm x) :=

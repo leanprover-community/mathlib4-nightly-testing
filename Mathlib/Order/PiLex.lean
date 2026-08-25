@@ -8,6 +8,7 @@ module
 public import Mathlib.Order.Lex
 public import Mathlib.Order.WellFounded
 public import Mathlib.Tactic.Common
+public import Mathlib.Tactic.Attr.Core
 
 /-!
 # Lexicographic order on Pi types
@@ -79,8 +80,6 @@ theorem trichotomous_lex [∀ i, Std.Trichotomous (α := β i) s] (wf : WellFoun
       have := Std.Trichotomous.trichotomous (a i) (b i) (hab ⟨i, hri, ·⟩)
       exact hba ⟨i, (hri · · |>.symm), Not.imp_symm this <| wf.min_mem {i | a i ≠ b i} h⟩ }
 
-@[deprecated (since := "2026-01-24")] alias isTrichotomous_lex := trichotomous_lex
-
 /-
 These instances are leaky, because they define the relation on `∀ i, β i` instead of
 `Lex (∀ i, β i)`/`Colex (∀ i, β i)`. So, we would like to mark them `@[semireducible]`.
@@ -106,15 +105,9 @@ theorem Lex.lt_iff_of_unique [Unique ι] [∀ i, LT (β i)] [Preorder ι] {x y :
     x < y ↔ x default < y default :=
   lex_iff_of_unique
 
-@[deprecated (since := "2025-11-29")]
-alias lex_lt_iff_of_unique := Lex.lt_iff_of_unique
-
 theorem Colex.lt_iff_of_unique [Unique ι] [∀ i, LT (β i)] [Preorder ι] {x y : Colex (∀ i, β i)} :
     x < y ↔ x default < y default :=
   lex_iff_of_unique
-
-@[deprecated (since := "2025-11-29")]
-alias colex_lt_iff_of_unique := Colex.lt_iff_of_unique
 
 instance Lex.isStrictOrder [LinearOrder ι] [∀ a, PartialOrder (β a)] :
     IsStrictOrder (Lex (∀ i, β i)) (· < ·) where
@@ -254,7 +247,7 @@ end Colex
 end PartialOrder
 
 section LinearOrder
-variable [LinearOrder ι] {x y : ∀ i, β i} {i : ι} {a : β i} [∀ i, LinearOrder (β i)]
+variable [LinearOrder ι] {x y : ∀ i, β i} {i : ι} [∀ i, LinearOrder (β i)]
 
 section Lex
 

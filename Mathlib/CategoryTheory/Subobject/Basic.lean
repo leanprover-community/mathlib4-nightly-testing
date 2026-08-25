@@ -476,9 +476,6 @@ lemma isIso_hom_left_iff_subobjectMk_eq :
     fun h ↦ ⟨Subobject.ofMkLEMk _ _ h.symm.le, by simp [← cancel_mono P.1.hom],
       by simp [← cancel_mono Q.1.hom]⟩⟩
 
-@[deprecated (since := "2025-12-18")]
-alias isIso_left_iff_subobjectMk_eq := isIso_hom_left_iff_subobjectMk_eq
-
 lemma isIso_iff_subobjectMk_eq :
     IsIso f ↔ Subobject.mk P.1.hom = Subobject.mk Q.1.hom := by
   rw [isIso_iff_isIso_hom_left, isIso_hom_left_iff_subobjectMk_eq]
@@ -524,7 +521,6 @@ def lowerAdjunction {A : C} {B : D} {L : MonoOver A ⥤ MonoOver B} {R : MonoOve
     (h : L ⊣ R) : lower L ⊣ lower R :=
   ThinSkeleton.lowerAdjunction _ _ h
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- An equivalence between `MonoOver A` and `MonoOver B` gives an equivalence
 between `Subobject A` and `Subobject B`. -/
 @[simps]
@@ -670,7 +666,6 @@ lemma map_obj_injective {X Y : C} (f : X ⟶ Y) [Mono f] :
 def mapIso {A B : C} (e : A ≅ B) : Subobject A ≌ Subobject B :=
   lowerEquivalence (MonoOver.mapIso e)
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- In fact, there's a type level bijection between the subobjects of isomorphic objects,
 which preserves the order. -/
 @[simps]

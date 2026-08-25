@@ -28,7 +28,7 @@ deriving Inhabited
 
 namespace CategoryTheory
 
-open Functor
+open CategoryTheory.Functor
 
 section
 
@@ -106,9 +106,6 @@ class Congruence : Prop
   /-- `r` is an equivalence on every hom-set. -/
   equivalence : ∀ {X Y}, _root_.Equivalence (@r X Y)
 
-@[deprecated (since := "2025-12-23")] alias Congruence.compLeft := HomRel.comp_left
-@[deprecated (since := "2025-12-23")] alias Congruence.compRight := HomRel.comp_right
-
 /-- For `F : C ⥤ D`, `F.homRel` is a congruence. -/
 instance Functor.congruence_homRel {C D : Type*} [Category* C] [Category* D] (F : C ⥤ D) :
     Congruence F.homRel where
@@ -127,15 +124,6 @@ structure Quotient (r : HomRel C) where
 
 instance [Inhabited C] : Inhabited (Quotient r) :=
   ⟨{ as := default }⟩
-
-@[deprecated (since := "2025-12-23")] alias Quotient.CompClosure := HomRel.CompClosure
-@[deprecated (since := "2025-12-23")] alias Quotient.CompClosure.of := HomRel.CompClosure.of
-@[deprecated (since := "2025-12-23")] alias Quotient.comp_left := HomRel.comp_left
-@[deprecated (since := "2025-12-23")] alias Quotient.comp_right := HomRel.comp_right
-@[deprecated (since := "2025-12-23")] alias Quotient.compClosure_iff_self :=
-  HomRel.compClosure_iff_self
-@[deprecated (since := "2025-12-23")] alias Quotient.compClosure_eq_self :=
-  HomRel.compClosure_eq_self
 
 namespace Quotient
 
@@ -267,7 +255,6 @@ variable (H : ∀ (x y : C) (f₁ f₂ : x ⟶ y), r f₁ f₂ → F.map f₁ = 
 theorem lift_spec : functor r ⋙ lift r F H = F := by
   tauto
 
-set_option backward.isDefEq.respectTransparency false in
 theorem lift_unique (Φ : Quotient r ⥤ D) (hΦ : functor r ⋙ Φ = F) : Φ = lift r F H := by
   subst_vars
   fapply Functor.hext
@@ -289,7 +276,6 @@ lemma lift_unique' (F₁ F₂ : Quotient r ⥤ D) (h : functor r ⋙ F₁ = func
   apply lift_unique
   rw [h]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The original functor factors through the induced functor. -/
 def lift.isLift : functor r ⋙ lift r F H ≅ F :=
   NatIso.ofComponents fun _ ↦ Iso.refl _

@@ -158,12 +158,12 @@ attribute [instance 1] HasCoreflexiveEqualizers.has_eq
 
 theorem hasCoequalizer_of_common_section [HasReflexiveCoequalizers C] {A B : C} {f g : A ⟶ B}
     (r : B ⟶ A) (rf : r ≫ f = 𝟙 _) (rg : r ≫ g = 𝟙 _) : HasCoequalizer f g := by
-  letI := IsReflexivePair.mk' r rf rg
+  let := IsReflexivePair.mk' r rf rg
   infer_instance
 
 theorem hasEqualizer_of_common_retraction [HasCoreflexiveEqualizers C] {A B : C} {f g : A ⟶ B}
     (r : B ⟶ A) (fr : f ≫ r = 𝟙 _) (gr : g ≫ r = 𝟙 _) : HasEqualizer f g := by
-  letI := IsCoreflexivePair.mk' r fr gr
+  let := IsCoreflexivePair.mk' r fr gr
   infer_instance
 
 /-- If `C` has coequalizers, then it has reflexive coequalizers. -/
@@ -285,8 +285,6 @@ def inclusionWalkingReflexivePair : WalkingParallelPair ⥤ WalkingReflexivePair
     | .id _ => WalkingReflexivePair.Hom.id _
   map_comp := by
     intro _ _ _ f g; cases f <;> cases g <;> rfl
-
-variable {C : Type u} [Category.{v} C]
 
 instance (X : WalkingReflexivePair) :
     Nonempty (StructuredArrow X inclusionWalkingReflexivePair) := by
@@ -612,13 +610,12 @@ lemma ι_reflexiveCoequalizerIsoCoequalizer_hom :
   IsColimit.comp_coconePointUniqueUpToIso_hom
     ((ReflexiveCofork.isColimitEquiv F _).symm _) _ WalkingParallelPair.one
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma π_reflexiveCoequalizerIsoCoequalizer_inv :
     coequalizer.π _ _ ≫ (reflexiveCoequalizerIsoCoequalizer F).inv = colimit.ι F _ := by
   rw [reflexiveCoequalizerIsoCoequalizer]
   simp only [colimit.comp_coconePointUniqueUpToIso_inv,
-    Cofork.ofπ_ι_app, colimit.cocone_ι]
+    Cofork.ofπ_ι_app, ReflexiveCofork.π, colimit.cocone_ι]
 
 end
 

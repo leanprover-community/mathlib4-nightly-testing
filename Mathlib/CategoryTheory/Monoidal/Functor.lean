@@ -45,7 +45,7 @@ universe v₁ v₂ v₃ v₁' u₁ u₂ u₃ u₁'
 
 namespace CategoryTheory
 
-open Category Functor MonoidalCategory
+open Category CategoryTheory.Functor MonoidalCategory
 
 variable {C : Type u₁} [Category.{v₁} C] [MonoidalCategory.{v₁} C]
   {D : Type u₂} [Category.{v₂} D] [MonoidalCategory.{v₂} D]
@@ -155,6 +155,16 @@ lemma whiskerLeft_μ_comp_μ (X Y Z : C) :
     F.obj X ◁ μ F Y Z ≫ μ F X (Y ⊗ Z) = (α_ (F.obj X) (F.obj Y) (F.obj Z)).inv ≫
       μ F X Y ▷ F.obj Z ≫ μ F (X ⊗ Y) Z ≫ F.map (α_ X Y Z).hom := by
   rw [associativity, Iso.inv_hom_id_assoc]
+
+/-- Copy of a lax monoidal structure with new `ε` and `μ` fields equal to the old ones.
+
+This is useful to fix definitional equalities. -/
+@[implicit_reducible]
+def copy {F : C ⥤ D} (hF : F.LaxMonoidal) (ε' : 𝟙_ D ⟶ F.obj (𝟙_ C))
+    (μ' : ∀ X Y : C, F.obj X ⊗ F.obj Y ⟶ F.obj (X ⊗ Y))
+    (hε : ε' = ε F := by cat_disch) (hμ : μ' = μ F := by cat_disch) : F.LaxMonoidal where
+  ε := ε'
+  μ := μ'
 
 end
 
@@ -329,6 +339,17 @@ lemma δ_comp_whiskerLeft_δ (X Y Z : C) :
   rw [associativity, ← F.map_comp_assoc, Iso.inv_hom_id, Functor.map_id, Category.id_comp]
 
 end
+
+/-- Copy of an oplax monoidal structure on a functor `F` with new `η` and `δ` fields equal to the
+old ones.
+
+This is useful to fix definitional equalities. -/
+@[implicit_reducible]
+def copy {F : C ⥤ D} (hF : F.OplaxMonoidal) (η' : F.obj (𝟙_ C) ⟶ 𝟙_ D)
+    (δ' : ∀ X Y : C, F.obj (X ⊗ Y) ⟶ F.obj X ⊗ F.obj Y)
+    (hη : η' = η F := by cat_disch) (hδ : δ' = δ F := by cat_disch) : F.OplaxMonoidal where
+  η := η'
+  δ := δ'
 
 @[simps]
 instance id : (𝟭 C).OplaxMonoidal where
@@ -577,6 +598,19 @@ lemma toOplaxMonoidal_injective : Function.Injective
   · exact congr(($eq).η)
   · exact congr(($eq).δ)
 
+/-- Copy of a monoidal structure on a functor `F` with new `ε`, `μ`, `η` and `δ` fields equal to the
+old ones.
+
+This is useful to fix definitional equalities. -/
+@[implicit_reducible]
+def copy {F : C ⥤ D} (hF : F.Monoidal) (ε' : 𝟙_ D ⟶ F.obj (𝟙_ C))
+    (μ' : ∀ X Y : C, F.obj X ⊗ F.obj Y ⟶ F.obj (X ⊗ Y)) (η' : F.obj (𝟙_ C) ⟶ 𝟙_ D)
+    (δ' : ∀ X Y : C, F.obj (X ⊗ Y) ⟶ F.obj X ⊗ F.obj Y)
+    (hε : ε' = ε F := by cat_disch) (hμ : μ' = μ F := by cat_disch)
+    (hη : η' = η F := by cat_disch) (hδ : δ' = δ F := by cat_disch) : F.Monoidal where
+  __ := hF.toLaxMonoidal.copy ε' μ' hε hμ
+  __ := hF.toOplaxMonoidal.copy η' δ' hη hδ
+
 end Monoidal
 
 variable (F : C ⥤ D)
@@ -733,7 +767,7 @@ noncomputable def Monoidal.ofOplaxMonoidal
 
 section Prod
 
-open scoped Prod
+open scoped CategoryTheory.Prod
 
 variable (F : C ⥤ D) (G : E ⥤ C') [MonoidalCategory C']
 
@@ -755,7 +789,6 @@ end
 
 section
 
-open scoped Prod
 
 variable [F.OplaxMonoidal] [G.OplaxMonoidal]
 
@@ -802,25 +835,21 @@ variable [F.LaxMonoidal] [G.LaxMonoidal]
 instance LaxMonoidal.prod' : (prod' F G).LaxMonoidal :=
   inferInstanceAs (diag C ⋙ prod F G).LaxMonoidal
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_ε_fst : (ε (prod' F G)).1 = ε F := by
   change _ ≫ F.map (𝟙 _) = _
   rw [Functor.map_id, Category.comp_id]
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_ε_snd : (ε (prod' F G)).2 = ε G := by
   change _ ≫ G.map (𝟙 _) = _
   rw [Functor.map_id, Category.comp_id]
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_μ_fst (X Y : C) : (μ (prod' F G) X Y).1 = μ F X Y := by
   change _ ≫ F.map (𝟙 _) = _
   rw [Functor.map_id, Category.comp_id]
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_μ_snd (X Y : C) : (μ (prod' F G) X Y).2 = μ G X Y := by
   change _ ≫ G.map (𝟙 _) = _
   rw [Functor.map_id, Category.comp_id]
@@ -836,25 +865,21 @@ variable [F.OplaxMonoidal] [G.OplaxMonoidal]
 instance OplaxMonoidal.prod' : (prod' F G).OplaxMonoidal :=
   inferInstanceAs (diag C ⋙ prod F G).OplaxMonoidal
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_η_fst : (η (prod' F G)).1 = η F := by
   change F.map (𝟙 _) ≫ _ = _
   rw [Functor.map_id, Category.id_comp]
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_η_snd : (η (prod' F G)).2 = η G := by
   change G.map (𝟙 _) ≫ _ = _
   rw [Functor.map_id, Category.id_comp]
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_δ_fst (X Y : C) : (δ (prod' F G) X Y).1 = δ F X Y := by
   change F.map (𝟙 _) ≫ _ = _
   rw [Functor.map_id, Category.id_comp]
   rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[simp] lemma prod'_δ_snd (X Y : C) : (δ (prod' F G) X Y).2 = δ G X Y := by
   change G.map (𝟙 _) ≫ _ = _
   rw [Functor.map_id, Category.id_comp]
@@ -865,7 +890,6 @@ end
 -- TODO: when clearing these deprecations, remove the `CategoryTheory.` in the proof below.
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- The functor `C ⥤ D × E` obtained from two monoidal functors is monoidal. -/
 instance Monoidal.prod' [F.Monoidal] [G.Monoidal] :
     (prod' F G).Monoidal where
@@ -931,7 +955,7 @@ def rightAdjointLaxMonoidal : G.LaxMonoidal where
       counit_naturality, counit_naturality_assoc, left_triangle_components_assoc,
       MonoidalCategory.whiskerLeft_comp]
     rw [← δ_natural_left_assoc, ← δ_natural_left_assoc, ← δ_natural_left_assoc]
-    haveI := @NatTrans.whiskerRight_app_tensor_app_assoc _ _ _ _ _ _ _ _ _ adj.counit adj.counit
+    have := @NatTrans.whiskerRight_app_tensor_app_assoc _ _ _ _ _ _ _ _ _ adj.counit adj.counit
     dsimp only [id_obj, comp_obj, Functor.comp_map, Functor.id_map] at this
     rw [this, this, tensorHom_def, assoc, ← comp_whiskerRight_assoc,
       left_triangle_components, id_whiskerRight, id_comp,
@@ -974,7 +998,7 @@ class IsMonoidal [G.LaxMonoidal] : Prop where
 instance :
     letI := adj.rightAdjointLaxMonoidal
     adj.IsMonoidal := by
-  letI := adj.rightAdjointLaxMonoidal
+  let := adj.rightAdjointLaxMonoidal
   constructor
   · rfl
   · intro _ _
@@ -1076,7 +1100,7 @@ set_option backward.defeqAttrib.useBackward true in
 instance :
     letI := adj.leftAdjointOplaxMonoidal
     adj.IsMonoidal := by
-  letI := adj.leftAdjointOplaxMonoidal
+  let := adj.leftAdjointOplaxMonoidal
   refine ⟨?_, fun X Y ↦ ?_⟩
   · simp [homEquiv_counit, leftAdjointOplaxMonoidal_η]
   · simp [homEquiv_counit, ← μ_natural, leftAdjointOplaxMonoidal_δ]
@@ -1237,7 +1261,6 @@ instance : (refl (C := C)).inverse.Monoidal := inferInstanceAs (𝟭 C).Monoidal
 instance isMonoidal_refl : (Equivalence.refl (C := C)).IsMonoidal :=
   inferInstanceAs (Adjunction.id (C := C)).IsMonoidal
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The inverse of a monoidal category equivalence is also a monoidal category equivalence. -/
 instance isMonoidal_symm : e.symm.IsMonoidal where
   leftAdjoint_ε := by

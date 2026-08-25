@@ -27,7 +27,6 @@ universe v u
 variable {R : Type u} [CommRing R]
 
 variable (R) in
-set_option backward.privateInPublic true in
 /-- The category of commutative `R`-bialgebras and their morphisms. -/
 structure CommBialgCat where
   private mk ::
@@ -59,7 +58,6 @@ abbrev of (X : Type v) [CommRing X] [Bialgebra R X] : CommBialgCat.{v} R := ⟨X
 variable (R) in
 lemma coe_of (X : Type v) [CommRing X] [Bialgebra R X] : (of R X : Type v) = X := rfl
 
-set_option backward.privateInPublic true in
 /-- The type of morphisms in `CommBialgCat R`. -/
 @[ext]
 structure Hom (A B : CommBialgCat.{v} R) where
@@ -123,7 +121,7 @@ instance : Inhabited (CommBialgCat R) := ⟨of R R⟩
 lemma forget_obj (A : CommBialgCat.{v} R) : (forget (CommBialgCat.{v} R)).obj A = A :=
   rfl
 
-@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-06")]
+@[deprecated ConcreteCategory.forget_map_eq_ofHom +typeChanged (since := "2026-03-06")]
 lemma forget_map (f : A ⟶ B) : (forget (CommBialgCat.{v} R)).map f = (f : _ → _) := rfl
 
 instance : CommRing ((forget (CommBialgCat R)).obj A) := inferInstanceAs <| CommRing A

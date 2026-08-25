@@ -25,13 +25,12 @@ out of this typeclass.
 
 namespace CategoryTheory
 
-open Category Limits Functor
+open Category Limits CategoryTheory.Functor
 
 variable {J₁ J₂ : Type*} [Category* J₁] [Category* J₂]
   {C₁ C₂ C : Type*} [Category* C₁] [Category* C₂] [Category* C]
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- Given a bifunctor `G : C₁ ⥤ C₂ ⥤ C`, diagrams `K₁ : J₁ ⥤ C₁` and `K₂ : J₂ ⥤ C₂`, and cocones
 over these diagrams, `G.mapCocone₂ c₁ c₂` is the cocone over the diagram `J₁ × J₂ ⥤ C` obtained
 by applying `G` to both `c₁` and `c₂`. -/
@@ -157,7 +156,6 @@ lemma ι_comp_isoObjConePointsOfIsColimit_inv (j : J₁ × J₂) :
   dsimp [isoObjCoconePointsOfIsColimit, Functor.mapCocone₂]
   cat_disch
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Characterize the forward direction of the isomorphism
 `PreservesColimit₂.isoObjCoconePointsOfIsColimit` w.r.t. the canonical maps to the colimit. -/
 @[reassoc (attr := simp)]
@@ -234,7 +232,7 @@ instance of_preservesColimits_in_each_variable
           symm
           apply (P j₁).hom_ext
           intro j₂
-          haveI := (P j₁).fac s j₂
+          have := (P j₁).fac s j₂
           simp only [Functor.mapCocone_pt, Functor.mapCocone_ι_app, Q₀, s] at this
           simp only [Functor.mapCocone_pt,
             Functor.mapCocone_ι_app, NatTrans.naturality, this, Q₀, s])
@@ -292,7 +290,6 @@ lemma isoObjConePointsOfIsLimit_hom_comp_π (j : J₁ × J₂) :
   dsimp [isoObjConePointsOfIsLimit, Functor.mapCocone₂]
   cat_disch
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Characterize the inverse direction of the isomorphism
 `PreservesLimit₂.isoObjConePointsOfIsLimit` w.r.t. the canonical maps to the limit. -/
 @[reassoc (attr := simp)]
@@ -369,7 +366,7 @@ instance of_preservesLimits_in_each_variable
           symm
           apply (P j₁).hom_ext
           intro j₂
-          haveI := (P j₁).fac s j₂
+          have := (P j₁).fac s j₂
           simp only [whiskeringLeft₂_obj_obj_obj_obj_obj,
             Functor.mapCone_pt, Functor.mapCone_π_app, s, Q₀] at this
           simp only [whiskeringLeft₂_obj_obj_obj_obj_obj,

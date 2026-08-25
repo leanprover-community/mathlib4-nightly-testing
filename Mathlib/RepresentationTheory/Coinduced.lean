@@ -138,7 +138,7 @@ noncomputable def coindFunctor : Rep.{t} k G ⥤ Rep k H where
 instance {G : Type v'} [Group G] (S : Subgroup G) :
     (coindFunctor k S.subtype).PreservesEpimorphisms where
   preserves {X Y} f := (epi_iff_surjective _).2 fun y => by
-    letI := QuotientGroup.rightRel S
+    let := QuotientGroup.rightRel S
     choose! s hs using (Rep.epi_iff_surjective f).1 ‹_›
     choose! i hi using Quotient.mk'_surjective (α := G)
     let γ (g : G) : S := ⟨g * (i (Quotient.mk' g))⁻¹,
@@ -156,7 +156,6 @@ instance {G : Type v'} [Group G] (S : Subgroup G) :
 end Coind
 section Coind'
 
-set_option backward.isDefEq.respectTransparency.types false in
 /--
 If `φ : G →* H` and `A : Rep k G` then `coind' φ A`, the coinduction of `A` along `φ`,
 is defined as an `H`-action on `Hom_{k[G]}(k[H], A)`. If `f : k[H] → A` is `G`-equivariant

@@ -175,7 +175,7 @@ noncomputable instance : Inv ℝ≥0∞ := ⟨fun a => sInf { b | 1 ≤ a * b }�
 
 noncomputable instance : DivInvMonoid ℝ≥0∞ where
 
-variable {a b c d : ℝ≥0∞} {r p q : ℝ≥0} {n : ℕ}
+variable {a b c : ℝ≥0∞} {r p q : ℝ≥0} {n : ℕ}
 
 instance : IsOrderedMonoid ℝ≥0∞ where
   mul_le_mul_left _ _ := mul_le_mul_left
@@ -369,17 +369,15 @@ theorem toReal_ofReal_eq_iff {a : ℝ} : (ENNReal.ofReal a).toReal = a ↔ 0 ≤
 
 @[simp] theorem zero_lt_top : 0 < ∞ := coe_lt_top
 
-@[simp, norm_cast] theorem coe_le_coe : (↑r : ℝ≥0∞) ≤ ↑q ↔ r ≤ q := WithTop.coe_le_coe
+@[simp, norm_cast, gcongr] theorem coe_le_coe : (↑r : ℝ≥0∞) ≤ ↑q ↔ r ≤ q := WithTop.coe_le_coe
 
-@[simp, norm_cast] theorem coe_lt_coe : (↑r : ℝ≥0∞) < ↑q ↔ r < q := WithTop.coe_lt_coe
+@[simp, norm_cast, gcongr] theorem coe_lt_coe : (↑r : ℝ≥0∞) < ↑q ↔ r < q := WithTop.coe_lt_coe
 
--- Needed until `@[gcongr]` accepts iff statements
+@[deprecated coe_le_coe +typeChanged (since := "2026-08-04")]
 alias ⟨_, coe_le_coe_of_le⟩ := coe_le_coe
-attribute [gcongr] ENNReal.coe_le_coe_of_le
 
--- Needed until `@[gcongr]` accepts iff statements
+@[deprecated coe_lt_coe +typeChanged (since := "2026-08-04")]
 alias ⟨_, coe_lt_coe_of_lt⟩ := coe_lt_coe
-attribute [gcongr] ENNReal.coe_lt_coe_of_lt
 
 theorem coe_mono : Monotone ofNNReal := fun _ _ => coe_le_coe.2
 
@@ -566,17 +564,17 @@ theorem toReal_le_coe_of_le_coe {a : ℝ≥0∞} {b : ℝ≥0} (h : a ≤ b) : a
   lift a to ℝ≥0 using ne_top_of_le_ne_top coe_ne_top h
   simpa using h
 
-@[deprecated max_eq_zero (since := "2026-05-07")]
+@[deprecated max_eq_zero +typeChanged (since := "2026-05-07")]
 theorem max_eq_zero_iff : max a b = 0 ↔ a = 0 ∧ b = 0 := max_eq_bot
 
-@[deprecated min_eq_zero (since := "2026-05-07")]
+@[deprecated min_eq_zero +typeChanged (since := "2026-05-07")]
 theorem min_eq_zero_iff : min a b = 0 ↔ a = 0 ∨ b = 0 := min_eq_bot
 
-@[deprecated zero_max (since := "2026-05-07")]
+@[deprecated zero_max +typeChanged (since := "2026-05-07")]
 theorem max_zero_left : max 0 a = a :=
   max_eq_right zero_le
 
-@[deprecated max_zero (since := "2026-05-07")]
+@[deprecated max_zero +typeChanged (since := "2026-05-07")]
 theorem max_zero_right : max a 0 = a :=
   max_eq_left zero_le
 
@@ -743,7 +741,7 @@ unsafe instance : Repr ℝ≥0∞ where
 
 namespace Mathlib.Meta.Positivity
 
-open Lean Meta Qq
+open Lean Qq
 
 /-- Extension for the `positivity` tactic: `ENNReal.toReal`. -/
 @[positivity ENNReal.toReal _]

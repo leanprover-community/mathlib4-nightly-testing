@@ -30,6 +30,7 @@ variable {C : Type u₁} {D : Type u₂} [Category.{v₁} C] [Category.{v₂} D]
   {E : Type u₃} [Category.{v₃} E]
   (L : C ⥤ D) (W : MorphismProperty C) [L.IsLocalization W]
   (A : Type w) [AddMonoid A] [HasShift C A]
+  (G : Type w) [AddGroup G] [HasShift C G]
 
 namespace MorphismProperty
 
@@ -41,7 +42,7 @@ class IsCompatibleWithShift : Prop where
   we take its inverse image by the shift functor by `a` -/
   condition : ∀ (a : A), W.inverseImage (shiftFunctor C a) = W
 
-variable [W.IsCompatibleWithShift A]
+variable [W.IsCompatibleWithShift A] [W.IsCompatibleWithShift G]
 
 namespace IsCompatibleWithShift
 
@@ -67,6 +68,11 @@ when `a : A` and `W` is compatible with the shift by `A`. -/
 abbrev shiftLocalizerMorphism (a : A) : LocalizerMorphism W W where
   functor := shiftFunctor C a
   map := by rw [MorphismProperty.IsCompatibleWithShift.condition]
+
+instance (g : G) : (W.shiftLocalizerMorphism g).IsLocalizedEquivalence :=
+  LocalizerMorphism.IsLocalizedEquivalence.of_equivalence _
+    (fun _ _ f hf ↦ ⟨_, _, f⟦-g⟧', (IsCompatibleWithShift.iff W f _).2 hf,
+      ⟨Arrow.isoOfNatIso (shiftEquiv C g).counitIso (Arrow.mk f)⟩⟩)
 
 end MorphismProperty
 
@@ -239,7 +245,7 @@ set_option backward.defeqAttrib.useBackward true in
 instance NatTrans.commShift_iso_hom_of_localization :
     letI := Functor.commShiftOfLocalization L W A F F'
     NatTrans.CommShift (Lifting.iso L W F F').hom A := by
-  letI := Functor.commShiftOfLocalization L W A F F'
+  let := Functor.commShiftOfLocalization L W A F F'
   constructor
   intro a
   ext X
@@ -304,7 +310,7 @@ set_option backward.defeqAttrib.useBackward true in
 lemma natTransCommShift_hom :
     letI := Φ.commShift M L₁ L₂ G e
     NatTrans.CommShift e.hom M := by
-  letI := Φ.commShift M L₁ L₂ G e
+  let := Φ.commShift M L₁ L₂ G e
   refine ⟨fun m ↦ ?_⟩
   ext X
   simp [Functor.commShiftIso_comp_hom_app, commShift_iso_hom_app, ← Functor.map_comp_assoc]

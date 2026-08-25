@@ -21,7 +21,7 @@ open Set Function
 
 universe u v w x
 
-variable {α : Type u} {β : Type v} {ι : Sort w} {γ : Type x}
+variable {α : Type u} {β : Type v}
 
 namespace Finset
 
@@ -158,7 +158,7 @@ lemma sup_preimage_val_id [Lattice α] [OrderBot α] {P : α → Prop}
     letI := Subtype.orderBot Pbot
     (t.preimage Subtype.val Subtype.val_injective.injOn).sup id =
       (⟨t.sup id, sup_induction Pbot (fun _ h _ => Psup h) ht⟩ : Subtype P) := by
-  letI : OrderBot (Subtype P) := Subtype.orderBot Pbot
+  let : OrderBot (Subtype P) := Subtype.orderBot Pbot
   ext
   simp only [sup_coe, id_eq]
   apply sup_preimage_self

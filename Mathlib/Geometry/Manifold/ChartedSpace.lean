@@ -120,9 +120,11 @@ open TopologicalSpace Topology
 
 universe u
 
-variable {H : Type u} {H' : Type*} {M : Type*} {M' : Type*} {M'' : Type*}
+variable {H : Type u} {H' : Type*} {M : Type*} {M' : Type*}
 
-open Set OpenPartialHomeomorph Manifold
+open Set OpenPartialHomeomorph
+
+open scoped Manifold
 
 /-! ### Charted spaces -/
 
@@ -223,9 +225,9 @@ open TopologicalSpace
 theorem ChartedSpace.secondCountable_of_countable_cover [SecondCountableTopology H] {s : Set M}
     (hs : ⋃ (x) (_ : x ∈ s), (chartAt H x).source = univ) (hsc : s.Countable) :
     SecondCountableTopology M := by
-  haveI : ∀ x : M, SecondCountableTopology (chartAt H x).source :=
+  have : ∀ x : M, SecondCountableTopology (chartAt H x).source :=
     fun x ↦ (chartAt (H := H) x).secondCountableTopology_source
-  haveI := hsc.toEncodable
+  have := hsc.toEncodable
   rw [biUnion_eq_iUnion] at hs
   exact secondCountableTopology_of_countable_cover (fun x : s ↦ (chartAt H (x : M)).open_source) hs
 
@@ -276,8 +278,9 @@ theorem ChartedSpace.locallyPathConnectedSpace [LocallyPathConnectedSpace H] :
     apply e.symm.image_mem_nhds (by simp [e])
     exact pathComponentIn_mem_nhds <| e.image_mem_nhds (mem_chart_source _ _) ht
   · refine (isPathConnected_pathComponentIn <| mem_image_of_mem e (mem_of_mem_nhds ht)).image' ?_
-    refine e.continuousOn_symm.mono <| subset_trans ?_ e.image_source_subset
-    exact (pathComponentIn_mono <| image_mono inter_subset_right).trans pathComponentIn_subset
+    refine e.continuousOn_symm.mono ?_
+    unfold t
+    grw [pathComponentIn_subset, inter_subset_right, e.image_source_subset]
   · exact (image_mono pathComponentIn_subset).trans
       (PartialEquiv.symm_image_image_of_subset_source _ inter_subset_right).subset
 
@@ -359,7 +362,7 @@ We keep this as a definition (not an instance) to avoid instance search trying t
 `DiscreteTopology` or `Unique` instances.
 -/
 @[instance_reducible]
-def ChartedSpace.of_discreteTopology [TopologicalSpace M] [TopologicalSpace H]
+def ChartedSpace.ofDiscreteTopology [TopologicalSpace M] [TopologicalSpace H]
     [DiscreteTopology M] [h : Unique H] : ChartedSpace H M where
   atlas :=
     letI f := fun x : M ↦ OpenPartialHomeomorph.const
@@ -369,11 +372,14 @@ def ChartedSpace.of_discreteTopology [TopologicalSpace M] [TopologicalSpace H]
   mem_chart_source x := by simp
   chart_mem_atlas x := by simp
 
+@[deprecated (since := "2026-07-26")]
+alias ChartedSpace.of_discreteTopology := ChartedSpace.ofDiscreteTopology
+
 /-- A chart on the discrete space is the constant chart. -/
 @[simp, mfld_simps]
 lemma chartedSpace_of_discreteTopology_chartAt [TopologicalSpace M] [TopologicalSpace H]
     [DiscreteTopology M] [h : Unique H] {x : M} :
-    haveI := ChartedSpace.of_discreteTopology (M := M) (H := H)
+    haveI := ChartedSpace.ofDiscreteTopology (M := M) (H := H)
     chartAt H x = OpenPartialHomeomorph.const (isOpen_discrete {x}) (isOpen_discrete {h.default}) :=
   rfl
 
@@ -397,11 +403,13 @@ solves this problem. -/
 
 /-- Same thing as `H × H'`. We introduce it for technical reasons,
 see note [Manifold type tags]. -/
+@[implicit_reducible]
 def ModelProd (H : Type*) (H' : Type*) :=
   H × H'
 
 /-- Same thing as `∀ i, H i`. We introduce it for technical reasons,
 see note [Manifold type tags]. -/
+@[implicit_reducible]
 def ModelPi {ι : Type*} (H : ι → Type*) :=
   ∀ i, H i
 
@@ -459,7 +467,6 @@ theorem prodChartedSpace_chartAt :
     chartAt (ModelProd H H') x = (chartAt H x.fst).prod (chartAt H' x.snd) :=
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 theorem chartedSpaceSelf_prod : prodChartedSpace H H H' H' = chartedSpaceSelf (H × H') := by
   ext1
   · simp [atlas, ChartedSpace.atlas]
@@ -496,7 +503,7 @@ variable [TopologicalSpace H] [TopologicalSpace M] [TopologicalSpace M']
 /-- The disjoint union of two charted spaces modelled on a non-empty space `H`
 is a charted space over `H`. -/
 @[instance_reducible]
-def ChartedSpace.sum_of_nonempty [Nonempty H] : ChartedSpace H (M ⊕ M') where
+def ChartedSpace.sumOfNonempty [Nonempty H] : ChartedSpace H (M ⊕ M') where
   atlas := ((fun e ↦ e.lift_openEmbedding IsOpenEmbedding.inl) '' cm.atlas) ∪
     ((fun e ↦ e.lift_openEmbedding IsOpenEmbedding.inr) '' cm'.atlas)
   -- At `x : M`, the chart is the chart in `M`; at `x' ∈ M'`, it is the chart in `M'`.
@@ -523,9 +530,12 @@ def ChartedSpace.sum_of_nonempty [Nonempty H] : ChartedSpace H (M ⊕ M') where
       right
       use ChartedSpace.chartAt x, cm'.chart_mem_atlas x
 
+@[deprecated (since := "2026-07-26")]
+alias ChartedSpace.sum_of_nonempty := ChartedSpace.sumOfNonempty
+
 instance ChartedSpace.sum : ChartedSpace H (M ⊕ M') := by
   by_cases! h : Nonempty H
-  · exact ChartedSpace.sum_of_nonempty
+  · exact ChartedSpace.sumOfNonempty
   have : IsEmpty M := isEmpty_of_chartedSpace H
   have : IsEmpty M' := isEmpty_of_chartedSpace H
   exact empty H (M ⊕ M')
@@ -546,13 +556,13 @@ lemma ChartedSpace.sum_chartAt_inr (x' : M') :
 
 @[simp, mfld_simps] lemma sum_chartAt_inl_apply {x y : M} :
     (chartAt H (.inl x : M ⊕ M')) (Sum.inl y) = (chartAt H x) y := by
-  haveI : Nonempty H := nonempty_of_chartedSpace x
+  have : Nonempty H := nonempty_of_chartedSpace x
   rw [ChartedSpace.sum_chartAt_inl]
   exact OpenPartialHomeomorph.lift_openEmbedding_apply _ _
 
 @[simp, mfld_simps] lemma sum_chartAt_inr_apply {x y : M'} :
     (chartAt H (.inr x : M ⊕ M')) (Sum.inr y) = (chartAt H x) y := by
-  haveI : Nonempty H := nonempty_of_chartedSpace x
+  have : Nonempty H := nonempty_of_chartedSpace x
   rw [ChartedSpace.sum_chartAt_inr]
   exact OpenPartialHomeomorph.lift_openEmbedding_apply _ _
 
@@ -656,7 +666,7 @@ protected def openPartialHomeomorph (e : PartialEquiv M H) (he : e ∈ c.atlas) 
     open_source := by convert! c.open_source' he
     open_target := by convert! c.open_target he
     continuousOn_toFun := by
-      letI : TopologicalSpace M := c.toTopologicalSpace
+      let : TopologicalSpace M := c.toTopologicalSpace
       rw [continuousOn_open_iff (c.open_source' he)]
       intro s s_open
       rw [inter_comm]
@@ -664,7 +674,7 @@ protected def openPartialHomeomorph (e : PartialEquiv M H) (he : e ∈ c.atlas) 
       simp only [exists_prop, mem_iUnion, mem_singleton_iff]
       exact ⟨e, he, ⟨s, s_open, rfl⟩⟩
     continuousOn_invFun := by
-      letI : TopologicalSpace M := c.toTopologicalSpace
+      let : TopologicalSpace M := c.toTopologicalSpace
       apply continuousOn_isOpen_of_generateFrom
       intro t ht
       simp only [exists_prop, mem_iUnion, mem_singleton_iff] at ht

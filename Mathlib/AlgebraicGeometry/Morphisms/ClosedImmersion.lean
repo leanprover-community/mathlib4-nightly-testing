@@ -47,9 +47,6 @@ class IsClosedImmersion {X Y : Scheme} (f : X ⟶ Y) : Prop extends SurjectiveOn
 
 alias Scheme.Hom.isClosedEmbedding := IsClosedImmersion.isClosedEmbedding
 
-@[deprecated (since := "2026-01-20")]
-alias IsClosedImmersion.base_closed := Scheme.Hom.isClosedEmbedding
-
 namespace IsClosedImmersion
 
 lemma eq_inf : @IsClosedImmersion = (topologically IsClosedEmbedding) ⊓
@@ -102,7 +99,7 @@ theorem spec_of_surjective {R S : CommRingCat} (f : R ⟶ S) (h : Function.Surje
     IsClosedImmersion (Spec.map f) where
   isClosedEmbedding := PrimeSpectrum.isClosedEmbedding_comap_of_surjective _ _ h
   stalkMap_surjective x := by
-    haveI : (RingHom.toMorphismProperty (fun f ↦ Function.Surjective f)).RespectsIso := by
+    have : (RingHom.toMorphismProperty (fun f ↦ Function.Surjective f)).RespectsIso := by
       rw [← RingHom.toMorphismProperty_respectsIso_iff]
       exact RingHom.surjective_respectsIso
     apply (MorphismProperty.arrow_mk_iso_iff
@@ -240,8 +237,6 @@ section Affine
 
 variable {X Y : Scheme.{u}} [IsAffine Y] {f : X ⟶ Y}
 
-open IsClosedImmersion LocallyRingedSpace
-
 set_option backward.isDefEq.respectTransparency.types false in
 /-- If `f : X ⟶ Y` is a morphism of schemes with quasi-compact source and affine target,
 `f` induces an injection on global sections, then `f` is dominant. -/
@@ -326,7 +321,6 @@ theorem isAffine_surjective_of_isAffine [IsClosedImmersion f] :
   exact (ConcreteCategory.bijective_of_isIso _).2.comp
     ((ConcreteCategory.bijective_of_isIso _).2.comp Ideal.Quotient.mk_surjective)
 
-set_option backward.isDefEq.respectTransparency.types false in
 lemma Spec_iff {R : CommRingCat} {f : X ⟶ Spec R} :
     IsClosedImmersion f ↔ ∃ I : Ideal R, ∃ e : X ≅ Spec (.of <| R ⧸ I),
       f = e.hom ≫ Spec.map (CommRingCat.ofHom (Ideal.Quotient.mk I)) := by
@@ -382,7 +376,7 @@ set_option backward.isDefEq.respectTransparency.types false in
 instance IsClosedImmersion.isStableUnderBaseChange :
     MorphismProperty.IsStableUnderBaseChange @IsClosedImmersion := by
   apply HasAffineProperty.isStableUnderBaseChange
-  haveI := HasAffineProperty.isLocal_affineProperty @IsClosedImmersion
+  have := HasAffineProperty.isLocal_affineProperty @IsClosedImmersion
   apply AffineTargetMorphismProperty.IsStableUnderBaseChange.mk
   intro X Y S _ _ f g ⟨ha, hsurj⟩
   exact ⟨inferInstance, RingHom.surjective_isStableUnderBaseChange.pullback_fst_appTop _

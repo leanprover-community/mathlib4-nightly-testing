@@ -101,13 +101,12 @@ instance CostructuredArrow.closedUnderLimitsOfShape_discrete_empty [L.Faithful] 
     (P.costructuredArrowObj L (X := L.obj Y)).IsClosedUnderLimitsOfShape (Discrete PEmpty.{1}) where
   limitsOfShape_le := by
     rintro X p
-    letI t : IsTerminal X := (ObjectProperty.limitsOfShape_isEmpty_iff _ _ _ |>.mp p).some
+    let t : IsTerminal X := (ObjectProperty.limitsOfShape_isEmpty_iff _ _ _ |>.mp p).some
     let e : X ≅ CostructuredArrow.mk (𝟙 (L.obj Y)) := t.uniqueUpToIso CostructuredArrow.mkIdTerminal
     simpa [MorphismProperty.costructuredArrowObj_iff,
       P.costructuredArrow_iso_iff e] using P.id_mem (L.obj Y)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 lemma CostructuredArrow.isClosedUnderColimitsOfShape {J : Type*} [Category* J]
     {P : MorphismProperty T} [P.RespectsIso] [PreservesColimitsOfShape J L] [HasColimitsOfShape J A]
     (c : ∀ (D : J ⥤ T) [HasColimit D], Cocone D)
@@ -183,13 +182,12 @@ instance StructuredArrow.closedUnderColimitsOfShape_discrete_empty [L.Faithful] 
     (P.structuredArrowObj L (X := L.obj Y)).IsClosedUnderColimitsOfShape (Discrete PEmpty.{1}) where
   colimitsOfShape_le := by
     rintro X p
-    letI t : IsInitial X := (ObjectProperty.colimitsOfShape_isEmpty_iff _ _ _ |>.mp p).some
+    let t : IsInitial X := (ObjectProperty.colimitsOfShape_isEmpty_iff _ _ _ |>.mp p).some
     let e : X ≅ StructuredArrow.mk (𝟙 (L.obj Y)) := t.uniqueUpToIso StructuredArrow.mkIdInitial
     simpa [MorphismProperty.structuredArrowObj_iff,
       P.structuredArrow_iso_iff e] using P.id_mem (L.obj Y)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 lemma StructuredArrow.isClosedUnderLimitsOfShape {J : Type*} [Category* J]
     {P : MorphismProperty T} [P.RespectsIso] [PreservesLimitsOfShape J L] [HasLimitsOfShape J A]
     (c : ∀ (D : J ⥤ T) [HasLimit D], Cone D)

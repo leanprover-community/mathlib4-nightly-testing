@@ -28,10 +28,10 @@ submodule, subspace, linear map, pushforward, pullback
 
 @[expose] public section
 
-open Function Pointwise Set
+open Function Set
 
-variable {R : Type*} {R₁ : Type*} {R₂ : Type*} {R₃ : Type*}
-variable {M : Type*} {M₁ : Type*} {M₂ : Type*} {M₃ : Type*}
+variable {R : Type*} {R₂ : Type*} {R₃ : Type*}
+variable {M : Type*} {M₂ : Type*} {M₃ : Type*}
 
 namespace Submodule
 
@@ -453,8 +453,7 @@ end OrderIso
 --TODO(Mario): is there a way to prove this from order properties?
 theorem map_inf_eq_map_inf_comap [RingHomSurjective σ₁₂] {f : M →ₛₗ[σ₁₂] M₂} {p : Submodule R M}
     {p' : Submodule R₂ M₂} : map f p ⊓ p' = map f (p ⊓ comap f p') :=
-  le_antisymm (by rintro _ ⟨⟨x, h₁, rfl⟩, h₂⟩; exact ⟨_, ⟨h₁, h₂⟩, rfl⟩)
-    (le_inf (map_mono inf_le_left) (map_le_iff_le_comap.2 inf_le_right))
+  .symm <| SetLike.coe_injective <| image_inter_preimage _ _ _
 
 @[simp]
 theorem map_comap_subtype : map p.subtype (comap p.subtype p') = p ⊓ p' :=
@@ -519,11 +518,11 @@ protected theorem map_smul (f : V →ₗ[K] V₂) (p : Submodule K V) (a : K) (h
 
 theorem comap_smul' (f : V →ₗ[K] V₂) (p : Submodule K V₂) (a : K) :
     p.comap (a • f) = ⨅ _ : a ≠ 0, p.comap f := by
-  classical by_cases h : a = 0 <;> simp [h, comap_smul]
+  by_cases h : a = 0 <;> simp [h, comap_smul]
 
 theorem map_smul' (f : V →ₗ[K] V₂) (p : Submodule K V) (a : K) :
     p.map (a • f) = ⨆ _ : a ≠ 0, map f p := by
-  classical by_cases h : a = 0 <;> simp [h, Submodule.map_smul]
+  by_cases h : a = 0 <;> simp [h, Submodule.map_smul]
 
 end Submodule
 
@@ -675,6 +674,13 @@ theorem submoduleMap_surjective [RingHomSurjective σ₁₂] (f : M →ₛₗ[σ
 theorem submoduleMap_injective [RingHomSurjective σ₁₂] {f : M →ₛₗ[σ₁₂] M₂} (hf : Injective f)
     (p : Submodule R M) : Injective (f.submoduleMap p) :=
   f.toAddMonoidHom.addSubmonoidMap_injective hf _
+
+theorem submoduleMap_injective_of_injOn [RingHomSurjective σ₁₂]
+    {p : Submodule R M} {f : M →ₛₗ[σ₁₂] M₂} (hf : Set.InjOn f p) :
+    Injective (f.submoduleMap p) := by
+  intro ⟨x, hx⟩ ⟨y, hy⟩ hxy
+  replace hxy : f x = f y := by simpa [Subtype.ext_iff] using hxy
+  aesop
 
 open Submodule
 

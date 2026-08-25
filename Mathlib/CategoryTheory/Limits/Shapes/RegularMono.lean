@@ -72,7 +72,6 @@ attribute [reassoc] RegularMono.w
 lemma RegularMono.mono {f : X ⟶ Y} (h : RegularMono f) : Mono f :=
   mono_of_isLimit_fork h.isLimit
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- Every isomorphism is a regular monomorphism. -/
 def RegularMono.ofIso (e : X ≅ Y) : RegularMono e.hom where
   Z := Y
@@ -118,9 +117,6 @@ lemma isRegularMono_of_regularMono {f : X ⟶ Y} (h : RegularMono f) : IsRegular
 /-- Given `IsRegularMono f`, a choice of data for `RegularMono f`. -/
 def IsRegularMono.getStruct (f : X ⟶ Y) [IsRegularMono f] : RegularMono f :=
   IsRegularMono.regularMono.some
-
-@[deprecated (since := "2025-12-01")] noncomputable alias regularMonoOfIsRegularMono :=
-  IsRegularMono.getStruct
 
 /-- An equalizer diagram gives rise to a regular monomorphism. -/
 def Fork.IsLimit.regularMono {A B : C} {p₁ p₂ : A ⟶ B} {c : Fork p₁ p₂} (h : IsLimit c) :
@@ -183,7 +179,6 @@ lemma IsRegularMono.uniq {W : C} (f : X ⟶ Y) [IsRegularMono f] (k : W ⟶ Y)
 
 end IsRegularMono
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The chosen equalizer of a parallel pair is a regular monomorphism. -/
 def RegularMono.equalizer (g h : X ⟶ Y) [HasLimit (parallelPair g h)] :
     RegularMono (equalizer.ι g h) where
@@ -326,7 +321,6 @@ attribute [reassoc] RegularEpi.w
 lemma RegularEpi.epi (f : X ⟶ Y) (h : RegularEpi f) : Epi f :=
   epi_of_isColimit_cofork h.isColimit
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- Every isomorphism is a regular epimorphism. -/
 def RegularEpi.ofIso (e : X ≅ Y) : RegularEpi e.hom where
   W := X
@@ -375,9 +369,6 @@ lemma isRegularEpi_of_regularEpi {f : X ⟶ Y} (h : RegularEpi f) : IsRegularEpi
 /-- Given `IsRegularEpi f`, a choice of data for `RegularEpi f`. -/
 def IsRegularEpi.getStruct (f : X ⟶ Y) [h : IsRegularEpi f] : RegularEpi f :=
   h.regularEpi.some
-
-@[deprecated (since := "2025-12-01")] noncomputable alias regularEpiOfIsRegularEpi :=
-  IsRegularEpi.getStruct
 
 /-- A coequalizer diagram gives rise to a regular epimorphism. -/
 def Cofork.IsColimit.regularEpi {A B : C} {p₁ p₂ : A ⟶ B} {c : Cofork p₁ p₂} (h : IsColimit c) :
@@ -442,7 +433,6 @@ lemma IsRegularEpi.uniq {Z : C} (f : X ⟶ Y) [IsRegularEpi f] (k : X ⟶ Z)
 
 end IsRegularEpi
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The chosen coequalizer of a parallel pair is a regular epimorphism. -/
 def coequalizerRegular (g h : X ⟶ Y) [HasColimit (parallelPair g h)] :
     RegularEpi (coequalizer.π g h) where
@@ -468,7 +458,6 @@ def regularEpiOfKernelPair {B X : C} (f : X ⟶ B) [HasPullback f f]
   w := pullback.condition
   isColimit := hc
 
-set_option backward.isDefEq.respectTransparency false in
 lemma IsRegularEpi.of_epi_of_exists {X B : C} {f : X ⟶ B} [HasPullback f f] [Epi f]
     (h : ∀ ⦃Z : C⦄ ⦃g : X ⟶ Z⦄, pullback.fst f f ≫ g = pullback.snd f f ≫ g →
       ∃ (u : B ⟶ Z), f ≫ u = g) :
@@ -497,9 +486,6 @@ theorem effectiveEpi_of_kernelPair {B X : C} (f : X ⟶ B) [HasPullback f f]
     (hc : IsColimit (Cofork.ofπ f pullback.condition)) : EffectiveEpi f :=
   RegularEpi.effectiveEpi <| regularEpiOfKernelPair f hc
 
-@[deprecated (since := "2025-11-20")] alias effectiveEpiOfKernelPair := effectiveEpi_of_kernelPair
-
-set_option backward.isDefEq.respectTransparency false in
 /--
 Given a kernel pair of an effective epimorphism `f : X ⟶ B`, the induced cofork is a coequalizer.
 -/
@@ -610,11 +596,6 @@ def regularOfIsPushoutFstOfRegular {P Q R S : C} {f : P ⟶ Q} {g : P ⟶ R} {h 
     RegularEpi k :=
   regularOfIsPushoutSndOfRegular hf comm.symm (PushoutCocone.flipIsColimit t)
 
-@[deprecated "No replacement" (since := "2025-11-20")]
-lemma strongEpi_of_regularEpi (f : X ⟶ Y) (h : RegularEpi f) : StrongEpi f :=
-  have := isRegularEpi_of_regularEpi h
-  inferInstance
-
 /-- A regular epimorphism is an isomorphism if it is a monomorphism. -/
 theorem isIso_of_regularEpi_of_mono (f : X ⟶ Y) (h : RegularEpi f) [Mono f] : IsIso f :=
   have := isRegularEpi_of_regularEpi h
@@ -712,13 +693,13 @@ def regularEpiOfEpi [IsRegularEpiCategory C] (f : X ⟶ Y) [Epi f] : RegularEpi 
 instance (priority := 100) regularEpiCategoryOfSplitEpiCategory [SplitEpiCategory C] :
     IsRegularEpiCategory C where
   regularEpiOfEpi f _ := by
-    haveI := isSplitEpi_of_epi f
+    have := isSplitEpi_of_epi f
     infer_instance
 
 instance (priority := 100) strongEpiCategory_of_regularEpiCategory [IsRegularEpiCategory C] :
     StrongEpiCategory C where
   strongEpi_of_epi f _ := by
-    haveI := isRegularEpi_of_regularEpi <| regularEpiOfEpi f
+    have := isRegularEpi_of_regularEpi <| regularEpiOfEpi f
     infer_instance
 
 end CategoryTheory

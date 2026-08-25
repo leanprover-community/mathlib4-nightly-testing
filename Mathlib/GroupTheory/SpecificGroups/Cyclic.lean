@@ -198,7 +198,7 @@ theorem MonoidHom.isMulCommutative_of_isCyclic_of_ker_le_center [IsCyclic G'] (f
     _ = b * a := by group
 
 @[to_additive (attr := deprecated MonoidHom.isMulCommutative_of_isCyclic_of_ker_le_center
-  (since := "2026-05-26"))]
+  +typeChanged (since := "2026-05-26"))]
 theorem commutative_of_cyclic_center_quotient [IsCyclic G'] (f : G →* G') (hf : f.ker ≤ center G)
     (a b : G) : a * b = b * a :=
   f.isMulCommutative_of_isCyclic_of_ker_le_center hf |>.is_comm.comm a b
@@ -272,9 +272,6 @@ theorem Group.is_simple_iff_prime_card [Group α] [IsMulCommutative α] :
 theorem CommGroup.is_simple_iff_prime_card [CommGroup α] : IsSimpleGroup α ↔ (Nat.card α).Prime :=
   Group.is_simple_iff_prime_card
 
-@[deprecated (since := "2025-11-19")]
-alias CommGroup.is_simple_iff_isCyclic_and_prime_card := CommGroup.is_simple_iff_prime_card
-
 section SpecificInstances
 
 instance : IsAddCyclic ℤ := ⟨1, fun n ↦ ⟨n, by simp only [smul_eq_mul, mul_one]⟩⟩
@@ -308,7 +305,6 @@ lemma LinearOrderedAddCommGroup.isAddCyclic_iff_nonempty_equiv_int {A : Type*}
     map_add' := add_zsmul g
     map_le_map_iff' := zsmul_le_zsmul_iff_left hg' }⟩
 
-set_option backward.isDefEq.respectTransparency false in
 /-- A linearly-ordered abelian group is cyclic iff it is isomorphic to `Multiplicative ℤ` as an
 ordered monoid. -/
 lemma LinearOrderedCommGroup.isCyclic_iff_nonempty_equiv_int {G : Type*}
@@ -354,7 +350,8 @@ protected theorem ZMod.exponent (n : ℕ) : AddMonoid.exponent (ZMod n) = n := b
   rw [IsAddCyclic.exponent_eq_card, Nat.card_zmod]
 
 /-- A group of order `p ^ 2` is not cyclic if and only if its exponent is `p`. -/
-@[to_additive]
+@[to_additive /-- An additive group of order `p ^ 2` is not cyclic if and only if its exponent is
+`p`. -/]
 lemma not_isCyclic_iff_exponent_eq_prime [Group α] {p : ℕ} (hp : p.Prime)
     (hα : Nat.card α = p ^ 2) : ¬ IsCyclic α ↔ Monoid.exponent α = p := by
   -- G is a nontrivial fintype of cardinality `p ^ 2`

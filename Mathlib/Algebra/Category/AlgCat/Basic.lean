@@ -5,7 +5,6 @@ Authors: Kim Morrison
 -/
 module
 
-public import Mathlib.CategoryTheory.ConcreteCategory.ReflectsIso
 public import Mathlib.Algebra.Algebra.Subalgebra.Basic
 public import Mathlib.Algebra.FreeAlgebra
 public import Mathlib.Algebra.Category.Ring.Basic
@@ -21,13 +20,12 @@ associating to a type the free `R`-algebra on that type is left adjoint to the f
 
 @[expose] public section
 
-open CategoryTheory Limits
+open CategoryTheory
 
 universe v u
 
 variable (R : Type u) [CommRing R]
 
-set_option backward.privateInPublic true in
 /-- The category of R-algebras and their morphisms. -/
 structure AlgCat where
   private mk ::
@@ -58,7 +56,6 @@ lemma coe_of (X : Type v) [Ring X] [Algebra R X] : (of R X : Type v) = X :=
   rfl
 
 variable {R} in
-set_option backward.privateInPublic true in
 /-- The type of morphisms in `AlgCat R`. -/
 @[ext]
 structure Hom (A B : AlgCat.{v} R) where
@@ -151,7 +148,7 @@ instance : Inhabited (AlgCat R) :=
 
 lemma forget_obj {A : AlgCat.{v} R} : (forget (AlgCat.{v} R)).obj A = A := rfl
 
-@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-03")]
+@[deprecated ConcreteCategory.forget_map_eq_ofHom +typeChanged (since := "2026-03-03")]
 lemma forget_map {A B : AlgCat.{v} R} (f : A ⟶ B) :
     (forget (AlgCat.{v} R)).map f = (f : _ → _) :=
   rfl

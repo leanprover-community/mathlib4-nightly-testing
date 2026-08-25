@@ -87,8 +87,9 @@ and a future formalization of Poincaré lemma.
 
 @[expose] public section
 
-open Metric MeasureTheory Topology Set Interval AffineMap Convex Filter
-open scoped Pointwise unitInterval
+open Metric MeasureTheory Set AffineMap Convex Filter
+
+open scoped Topology Interval Pointwise unitInterval
 
 section Defs
 
@@ -286,14 +287,12 @@ theorem curveIntegral_trans (h₁ : CurveIntegrable ω γab) (h₂ : CurveIntegr
   simp only [curveIntegral_def]
   norm_num
 
-set_option backward.isDefEq.respectTransparency.types false in
 theorem curveIntegralFun_segment [NormedSpace ℝ E] (ω : E → E →L[𝕜] F) (a b : E)
     {t : ℝ} (ht : t ∈ I) : curveIntegralFun ω (.segment a b) t = ω (lineMap a b t) (b - a) := by
   have := Path.eqOn_extend_segment a b
   simp only [curveIntegralFun_def, this ht, derivWithin_congr this (this ht),
     (hasDerivWithinAt_lineMap ..).derivWithin (uniqueDiffOn_Icc_zero_one t ht)]
 
-set_option backward.isDefEq.respectTransparency.types false in
 theorem curveIntegrable_segment [NormedSpace ℝ E] :
     CurveIntegrable ω (.segment a b) ↔
       IntervalIntegrable (fun t ↦ ω (lineMap a b t) (b - a)) volume 0 1 := by
@@ -301,7 +300,6 @@ theorem curveIntegrable_segment [NormedSpace ℝ E] :
   rw [uIoc_of_le zero_le_one]
   exact .mono Ioc_subset_Icc_self fun _t ↦ curveIntegralFun_segment ω a b
 
-set_option backward.isDefEq.respectTransparency.types false in
 theorem curveIntegral_segment [NormedSpace ℝ E] [NormedSpace ℝ F] (ω : E → E →L[𝕜] F) (a b : E) :
     ∫ᶜ x in .segment a b, ω x = ∫ t in 0..1, ω (lineMap a b t) (b - a) := by
   rw [curveIntegral_def]
@@ -312,16 +310,15 @@ theorem curveIntegral_segment [NormedSpace ℝ E] [NormedSpace ℝ F] (ω : E �
 @[simp]
 theorem curveIntegral_segment_const [NormedSpace ℝ E] [CompleteSpace F] (ω : E →L[𝕜] F) (a b : E) :
     ∫ᶜ _ in .segment a b, ω = ω (b - a) := by
-  letI : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
+  let : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
   simp [curveIntegral_segment]
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- If `‖ω z‖ ≤ C` at all points of the segment `[a -[ℝ] b]`,
 then the curve integral `∫ᶜ x in .segment a b, ω x` has norm at most `C * ‖b - a‖`. -/
 theorem norm_curveIntegral_segment_le [NormedSpace ℝ E] {C : ℝ} (h : ∀ z ∈ [a -[ℝ] b], ‖ω z‖ ≤ C) :
     ‖∫ᶜ x in .segment a b, ω x‖ ≤ C * ‖b - a‖ := calc
   ‖∫ᶜ x in .segment a b, ω x‖ ≤ C * ‖b - a‖ * |1 - 0| := by
-    letI : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
+    let : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
     rw [curveIntegral_segment]
     refine intervalIntegral.norm_integral_le_of_norm_le_const fun t ht ↦ ?_
     rw [segment_eq_image_lineMap] at h
@@ -364,7 +361,7 @@ protected theorem CurveIntegrable.add (h₁ : CurveIntegrable ω₁ γ) (h₂ : 
 -- TODO: `to_fun` generates wrong lemma name
 theorem curveIntegral_add (h₁ : CurveIntegrable ω₁ γ) (h₂ : CurveIntegrable ω₂ γ) :
     curveIntegral (ω₁ + ω₂) γ = ∫ᶜ x in γ, ω₁ x + ∫ᶜ x in γ, ω₂ x := by
-  letI : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
+  let : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
   simp only [curveIntegral, curveIntegralFun_add]
   exact intervalIntegral.integral_add h₁ h₂
 
@@ -440,7 +437,7 @@ variable {𝕝 : Type*} [RCLike 𝕝] [NormedSpace 𝕝 F] [NormedSpace 𝕝 E]
 theorem curveIntegralFun_restrictScalars :
     curveIntegralFun (fun t ↦ (ω t).restrictScalars 𝕝) γ = curveIntegralFun ω γ := by
   ext
-  letI : NormedSpace ℝ E := .restrictScalars ℝ 𝕜 E
+  let : NormedSpace ℝ E := .restrictScalars ℝ 𝕜 E
   simp [curveIntegralFun_def]
 
 @[simp]
@@ -451,7 +448,7 @@ theorem curveIntegrable_restrictScalars_iff :
 @[simp]
 theorem curveIntegral_restrictScalars :
     ∫ᶜ x in γ, (ω x).restrictScalars 𝕝 = ∫ᶜ x in γ, ω x := by
-  letI : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
+  let : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
   simp [curveIntegral_def]
 
 end RestrictScalars
@@ -477,7 +474,7 @@ theorem curveIntegrable_smul_iff : CurveIntegrable (c • ω) γ ↔ c = 0 ∨ C
 
 @[simp]
 theorem curveIntegral_smul : curveIntegral (c • ω) γ = c • curveIntegral ω γ := by
-  letI : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
+  let : NormedSpace ℝ F := .restrictScalars ℝ 𝕜 F
   simp [curveIntegral_def, intervalIntegral.integral_smul]
 
 @[simp]
@@ -523,7 +520,7 @@ theorem HasFDerivWithinAt.curveIntegral_segment_source' (hs : Convex ℝ s)
   intro ε hε
   obtain ⟨δ, hδ₀, hδ⟩ : ∃ δ > 0,
       ball a δ ∩ s ⊆ {z | ContinuousWithinAt ω s z ∧ dist (ω z) (ω a) ≤ ε} := by
-    rw [← Metric.mem_nhdsWithin_iff, setOf_and, inter_mem_iff]
+    rw [← Metric.mem_nhdsWithin_iff, ofPred_and, inter_mem_iff]
     exact ⟨hω, (hω.self_of_nhdsWithin ha).eventually <| closedBall_mem_nhds _ hε⟩
   rw [eventually_nhdsWithin_iff]
   filter_upwards [Metric.ball_mem_nhds _ hδ₀] with b hb hbs

@@ -221,13 +221,12 @@ theorem slice_zero [Zero α] (i : ℕ) (hid : i < d) : slice (0 : Holor α (d ::
 
 theorem slice_sum [AddCommMonoid α] {β : Type} (i : ℕ) (hid : i < d) (s : Finset β)
     (f : β → Holor α (d :: ds)) : (∑ x ∈ s, slice (f x) i hid) = slice (∑ x ∈ s, f x) i hid := by
-  letI := Classical.decEq β
+  let := Classical.decEq β
   refine Finset.induction_on s ?_ ?_
   · simp [slice_zero]
   · intro _ _ h_not_in ih
     rw [Finset.sum_insert h_not_in, ih, slice_add, Finset.sum_insert h_not_in]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The original holor can be recovered from its slices by multiplying with unit vectors and
 summing up. -/
 @[simp]
@@ -285,7 +284,6 @@ theorem cprankMax_add [Mul α] [AddMonoid α] :
     · assumption
     · exact cprankMax_add hx₂ hy
 
-set_option backward.isDefEq.respectTransparency false in
 theorem cprankMax_mul [NonUnitalNonAssocSemiring α] :
     ∀ (n : ℕ) (x : Holor α [d]) (y : Holor α ds), CPRankMax n y → CPRankMax n (x ⊗ y)
   | 0, x, _, CPRankMax.zero => by simp [mul_zero x, CPRankMax.zero]

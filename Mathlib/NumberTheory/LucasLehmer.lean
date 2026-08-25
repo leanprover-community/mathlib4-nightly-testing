@@ -514,13 +514,10 @@ theorem ω_pow_formula (p' : ℕ) (h : lucasLehmerResidue (p' + 2) = 0) :
   have : 1 ≤ 2 ^ (p' + 2) := Nat.one_le_pow _ _ (by decide)
   exact mod_cast h
 
--- TODO: fix non-terminal simp (acting on two goals with different simp sets)
-set_option linter.flexible false in
 set_option backward.isDefEq.respectTransparency false in
 /-- `q` is the minimum factor of `mersenne p`, so `M p = 0` in `X q`. -/
 theorem mersenne_coe_X (p : ℕ) : (mersenne p : X (q p)) = 0 := by
-  ext <;> simp [mersenne, q, ZMod.natCast_eq_zero_iff, -pow_pos]
-  apply Nat.minFac_dvd
+  ext <;> simp [mersenne, q, ZMod.natCast_eq_zero_iff, Nat.minFac_dvd, -pow_pos]
 
 theorem ω_pow_eq_neg_one (p' : ℕ) (h : lucasLehmerResidue (p' + 2) = 0) :
     (ω : X (q (p' + 2))) ^ 2 ^ (p' + 1) = -1 := by
@@ -559,7 +556,7 @@ theorem order_ω (p' : ℕ) (h : lucasLehmerResidue (p' + 2) = 0) :
         orderOf_dvd_iff_pow_eq_one.1 o
     have h : (1 : ZMod (q (p' + 2))) = -1 :=
       congr_arg Prod.fst (ω_pow.symm.trans (ω_pow_eq_neg_one p' h))
-    haveI : Fact (2 < (q (p' + 2) : ℕ)) := ⟨two_lt_q _⟩
+    have : Fact (2 < (q (p' + 2) : ℕ)) := ⟨two_lt_q _⟩
     apply ZMod.neg_one_ne_one h.symm
   · apply orderOf_dvd_iff_pow_eq_one.2
     apply Units.ext

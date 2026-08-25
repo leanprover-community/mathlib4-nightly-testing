@@ -8,7 +8,6 @@ module
 public import Mathlib.Algebra.Category.ModuleCat.Adjunctions
 public import Mathlib.AlgebraicTopology.ExtraDegeneracy
 public import Mathlib.CategoryTheory.Abelian.Ext
-public import Mathlib.CategoryTheory.Functor.ReflectsIso.Balanced
 public import Mathlib.RepresentationTheory.Rep.Iso
 
 /-!
@@ -205,7 +204,7 @@ def xIso (n : ℕ) : (standardComplex k G).X n ≅ Rep.ofMulAction k G (Fin (n +
 
 instance x_projective (G : Type u) [Group G] (n : ℕ) :
     Projective ((standardComplex k G).X n) := by
-  classical exact inferInstanceAs <| Projective (Rep.diagonal k G (n + 1))
+  exact inferInstanceAs <| Projective (Rep.diagonal k G (n + 1))
 
 set_option backward.defeqAttrib.useBackward true in
 unif_hint where ⊢ Action.V (Action.ofMulAction G (Fin (n + 1) → G)) ≟ Fin (n + 1) → G in
@@ -276,7 +275,7 @@ theorem forget₂ToModuleCatHomotopyEquiv_f_0_eq :
     AlgebraicTopology.AlternatingFaceMapComplex.ε_app_f_zero, compForgetAugmentedIso, eqToIso.inv,
     HomologicalComplex.eqToHom_f, compForgetAugmented, compForgetAugmented.toModule, ε,
     SimplicialObject.augment, Unique.eq_default (terminal.from _), MonoidAlgebra.coeff_single,
-    Finsupp.single_apply, if_pos (Subsingleton.elim _ _)]
+    Finsupp.single_apply, ite_eq_left (Subsingleton.elim _ _)]
 
 set_option backward.isDefEq.respectTransparency false in
 theorem d_comp_ε : (standardComplex k G).d 1 0 ≫ ε k G = 0 := by

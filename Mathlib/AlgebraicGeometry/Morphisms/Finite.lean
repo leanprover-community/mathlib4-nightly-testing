@@ -8,6 +8,7 @@ module
 public import Mathlib.AlgebraicGeometry.Morphisms.Integral
 public import Mathlib.Algebra.Category.Ring.Epi
 public import Mathlib.RingTheory.Finiteness.Prod
+public import Mathlib.RingTheory.RingHom.Finite
 
 /-!
 
@@ -80,7 +81,6 @@ variable {X Y Z : Scheme.{u}} (f : X ⟶ Y)
 set_option backward.isDefEq.respectTransparency.types false in
 instance (priority := 900) [IsIso f] : IsFinite f := of_isIso @IsFinite f
 
-set_option backward.isDefEq.respectTransparency.types false in
 instance {Z : Scheme.{u}} (g : Y ⟶ Z) [IsFinite f] [IsFinite g] : IsFinite (f ≫ g) :=
   IsStableUnderComposition.comp_mem f g ‹IsFinite f› ‹IsFinite g›
 
@@ -199,8 +199,8 @@ lemma isFinite_iff_locallyOfFiniteType_of_jacobsonSpace
   obtain ⟨φ, rfl⟩ := Spec.map_surjective f
   rw [IsFinite.SpecMap_iff, HasRingHomProperty.Spec_iff (P := @LocallyOfFiniteType)]
   have := (PrimeSpectrum.t1Space_iff_isField (R := R)).mp (show T1Space (Spec R) by infer_instance)
-  letI := this.toField
-  letI := φ.hom.toAlgebra
+  let := this.toField
+  let := φ.hom.toAlgebra
   have := PrimeSpectrum.isJacobsonRing_iff_jacobsonSpace.mpr ‹_›
   change Module.Finite _ _ ↔ Algebra.FiniteType _ _
   exact ⟨fun _ ↦ inferInstance, fun _ ↦ finite_of_finite_type_of_isJacobsonRing _ _⟩

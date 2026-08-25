@@ -152,15 +152,15 @@ Note that the slash is `\textfractionsolidus`.
 -/
 def KaehlerDifferential : Type v :=
   (KaehlerDifferential.ideal R S).Cotangent
-deriving AddCommGroup, Module (S ⊗[R] S), IsScalarTower S (S ⊗[R] S), Inhabited
+deriving Inhabited
+
+-- The `SMul R'` instance exists to avoid a zsmul diamond.
+variable {R' : Type*} [CommRing R'] [Algebra R' S] [SMulCommClass R R' S] in
+deriving instance SMul R', AddCommGroup, Module R', Module (S ⊗[R] S), IsScalarTower S (S ⊗[R] S)
+  for KaehlerDifferential R S
 
 @[inherit_doc KaehlerDifferential]
 notation "Ω[" S "⁄" R "]" => KaehlerDifferential R S
-
-instance KaehlerDifferential.module' {R' : Type*} [CommRing R'] [Algebra R' S]
-    [SMulCommClass R R' S] :
-    Module R' Ω[S⁄R] :=
-  inferInstanceAs <| Module R' (_ ⧸ _)
 
 instance KaehlerDifferential.isScalarTower_of_tower {R₁ R₂ : Type*} [CommRing R₁] [CommRing R₂]
     [Algebra R₁ S] [Algebra R₂ S] [SMul R₁ R₂]
@@ -192,6 +192,37 @@ theorem KaehlerDifferential.DLinearMap_apply (s : S) :
       (KaehlerDifferential.ideal R S).toCotangent
         ⟨1 ⊗ₜ s - s ⊗ₜ 1, KaehlerDifferential.one_smul_sub_smul_one_mem_ideal R s⟩ := rfl
 
+#adaptation_note
+/--
+We had to use the `instanceSearchTypes` backward compatibility flag to make an instance search
+succeed. Concretely, the following instance cannot be synthesized:
+`LinearMap.CompatibleSMul (↥(ideal R S)) (ideal R S).Cotangent S (S ⊗[R] S)`
+It is needed by the two `← LinearMap.map_smul_of_tower (ideal R S).toCotangent` rewrites in
+`leibniz'` below. The `have` just above them does not rescue the search: it is stated for `Ω[S⁄R]`,
+and `(ideal R S).Cotangent =?= Ω[S⁄R]` already fails at `.instances`.
+
+The failure happens while applying `@LinearMap.IsScalarTower.compatibleSMul`: assigning one of its
+instance-implicit-argument metavariables is rejected because the metavariable's type and the type
+of the assigned value do not match at `.instances` transparency. The metavariable's expected type
+is `SMul S (ideal R S).Cotangent`, whereas the assigned value
+`DistribMulAction.toDistribSMul.toSMul` has type `SMul S Ω[S⁄R]`. The comparison bottoms out at
+`@Ideal.Cotangent =?= KaehlerDifferential`,
+where `KaehlerDifferential` is a plain semireducible `def` and therefore does not unfold at the
+`.instances` transparency that instance search runs at. Lean falls back to synthesize an instance of
+the correct type, which succeeds, but it returns `(ideal R S).instSMulCotangentOfAlgebra`, which
+is not defeq to the assigned value, the comparison bottoming out at
+`instSMulKaehlerDifferentialOfSMulCommClass._aux_1 =?= @Ideal.instSMulCotangentOfAlgebra._aux_1`.
+That second comparison also runs at `.instances`, `respectTransparency false` suppressing the
+transparency bump.
+
+Potential fix: mark `KaehlerDifferential` `@[implicit_reducible]` at its definition site.
+Then `instanceSearchTypes false` and `respectTransparency false` can go, but only together: with
+`respectTransparency false` still in place, the comparison stays at `.instances`, where an
+implicit-reducible definition does not unfold, and the search fails as before.
+The `_aux_1` wrappers for the instance fields become implicit-reducible as soon as
+`KaehlerDifferential` is.
+-/
+set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The universal derivation into `Ω[S⁄R]`. -/
@@ -504,7 +535,7 @@ theorem KaehlerDifferential.kerTotal_mkQ_single_algebraMap_one (x) : (x𝖣1) = 
   rw [← (algebraMap R S).map_one, KaehlerDifferential.kerTotal_mkQ_single_algebraMap]
 
 theorem KaehlerDifferential.kerTotal_mkQ_single_smul (r : R) (x y) : (y𝖣r • x) = r • y𝖣x := by
-  letI : SMulZeroClass R S := inferInstance
+  let : SMulZeroClass R S := inferInstance
   rw [Algebra.smul_def, KaehlerDifferential.kerTotal_mkQ_single_mul,
     KaehlerDifferential.kerTotal_mkQ_single_algebraMap, add_zero, ← LinearMap.map_smul_of_tower,
     Finsupp.smul_single, mul_comm, Algebra.smul_def]

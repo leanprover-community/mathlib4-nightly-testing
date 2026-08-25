@@ -89,7 +89,6 @@ end Linear
 
 variable (R)
 
-set_option backward.isDefEq.respectTransparency false in
 /-- Assuming `Quotient r` has already been endowed with a preadditive category structure
 such that `functor r : C ⥤ Quotient r` is additive, and that `C` has an `R`-linear category
 structure compatible with `r`, this is the induced `R`-linear category structure on
@@ -116,7 +115,7 @@ instance linear_functor
     (hr : ∀ (a : R) ⦃X Y : C⦄ (f₁ f₂ : X ⟶ Y) (_ : r f₁ f₂), r (a • f₁) (a • f₂))
     [Preadditive (Quotient r)] [(functor r).Additive] :
     letI := linear R r hr; Functor.Linear R (functor r) := by
-  letI := linear R r hr; exact { }
+  let := linear R r hr; exact { }
 
 end Quotient
 

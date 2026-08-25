@@ -35,9 +35,9 @@ The Coq code is available at the following address: <http://www.lri.fr/~sboldo/e
 
 @[expose] public section
 
-variable {𝕜 E F : Type*} [RCLike 𝕜]
-variable [NormedAddCommGroup E] [NormedAddCommGroup F]
-variable [InnerProductSpace 𝕜 E] [InnerProductSpace ℝ F]
+variable {𝕜 E : Type*} [RCLike 𝕜]
+variable [NormedAddCommGroup E]
+variable [InnerProductSpace 𝕜 E]
 
 local notation "⟪" x ", " y "⟫" => inner 𝕜 x y
 local notation "absR" => @abs ℝ _ _
@@ -82,7 +82,7 @@ instance HasOrthogonalProjection.map_linearIsometryEquiv' [K.HasOrthogonalProjec
 instance : (⊤ : Submodule 𝕜 E).HasOrthogonalProjection := ⟨fun v ↦ ⟨v, trivial, by simp⟩⟩
 
 instance (K : ClosedSubmodule 𝕜 E) [CompleteSpace E] : K.HasOrthogonalProjection := by
-  letI := K.isClosed'
+  let := K.isClosed'
   infer_instance
 
 /-- If `K` admits an orthogonal projection, `K` and `Kᗮ` are complements of each other. -/
@@ -109,7 +109,7 @@ section orthogonalProjection
 
 variable [K.HasOrthogonalProjection]
 
-/-- The orthogonal projection onto a complete subspace. -/
+/-- The orthogonal projection onto a subspace. -/
 def orthogonalProjectionOnto : E →L[𝕜] K := K.projectionOntoL Kᗮ K.isTopCompl_orthogonal
 
 /-- The orthogonal projection onto a subspace. -/
@@ -653,7 +653,7 @@ lemma re_inner_starProjection_eq_normSq [K.HasOrthogonalProjection] (v : E) :
     ← mul_sub_one, show (2 : ℝ) - 1 = 1 by norm_num, mul_one, sub_eq_iff_eq_add', norm_sub_rev]
   simpa [sq, add_comm] using K.norm_sq_eq_add_norm_sq_starProjection v
 
-@[deprecated norm_sq_eq_add_norm_sq_starProjection (since := "2026-06-10")]
+@[deprecated norm_sq_eq_add_norm_sq_starProjection +typeChanged (since := "2026-06-10")]
 theorem orthogonalProjectionFn_norm_sq [K.HasOrthogonalProjection] (v : E) :
     ‖v‖ * ‖v‖ = ‖v - K.orthogonalProjectionFn v‖ * ‖v - K.orthogonalProjectionFn v‖ +
       ‖K.orthogonalProjectionFn v‖ * ‖K.orthogonalProjectionFn v‖ := by

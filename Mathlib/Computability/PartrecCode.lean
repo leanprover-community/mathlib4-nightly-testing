@@ -766,8 +766,6 @@ theorem evaln_complete {c n x} : x ∈ eval c n ↔ ∃ k, x ∈ evaln k c n := 
 
 section
 
-open Primrec
-
 private def lup (L : List (List (Option ℕ))) (p : ℕ × Code) (n : ℕ) := do
   let l ← L[encode p]?
   let o ← l[n]?
@@ -842,7 +840,7 @@ private theorem hG : Primrec G := by
     conv =>
       congr
       · ext p
-        dsimp only []
+        dsimp only
         erw [Option.bind_eq_bind, ← Option.map_eq_bind]
     refine Primrec.option_map ((hlup.comp <| L.pair <| (k.pair cg).pair n).comp Primrec.fst) ?_
     unfold Primrec₂
@@ -989,7 +987,7 @@ end
 
 section
 
-open Partrec Computable
+open Computable
 
 theorem eval_eq_rfindOpt (c n) : eval c n = Nat.rfindOpt fun k => evaln k c n :=
   Part.ext fun x => by

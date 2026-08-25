@@ -44,7 +44,7 @@ universe v₁ v₂ v₃ v₄ u₁ u₂ u₃ u₄ w
 
 namespace CategoryTheory
 
-open Functor Limits GrothendieckTopology
+open CategoryTheory.Functor Limits GrothendieckTopology
 
 variable {C : Type u₁} [Category.{v₁} C] (J : GrothendieckTopology C)
 variable {D : Type u₂} [Category.{v₂} D] (K : GrothendieckTopology D) (e : C ≌ D) (G : D ⥤ C)
@@ -134,7 +134,6 @@ def sheafCongr.counitIso : inverse J K e A ⋙ functor J K e A ≅ 𝟭 (Sheaf _
   NatIso.ofComponents
     (fun F ↦ ObjectProperty.isoMk _ (isoWhiskerRight e.op.counitIso F.obj))
 
-set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence of sheaf categories. -/
 @[simps]
@@ -244,7 +243,6 @@ variable [Functor.IsContinuous G K J] [(G.sheafPushforwardContinuous A K J).EssS
 
 open Localization
 
-set_option backward.isDefEq.respectTransparency false in
 lemma W_inverseImage_whiskeringLeft :
     K.W.inverseImage ((whiskeringLeft Dᵒᵖ Cᵒᵖ A).obj G.op) = J.W := by
   ext P Q f
@@ -292,7 +290,7 @@ lemma PreservesSheafification.transport
     rw [← J.W_whiskerLeft_iff (G := G) (K := K)] at hf
     have := K.W_of_preservesSheafification F (whiskerLeft G.op f) hf
     rw [whiskerRight_left] at this
-    haveI := K.W.of_postcomp (W' := MorphismProperty.isomorphisms _) _ _ (Iso.isIso_inv _) <|
+    have := K.W.of_postcomp (W' := MorphismProperty.isomorphisms _) _ _ (Iso.isIso_inv _) <|
       K.W.of_precomp (W' := MorphismProperty.isomorphisms _) _ _ (Iso.isIso_hom _) this
     rwa [K.W_whiskerLeft_iff (G := G) (J := J) (f := whiskerRight f F)] at this
 

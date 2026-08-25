@@ -6,6 +6,7 @@ Authors: Markus Himmel, Andrew Yang
 module
 
 public import Mathlib.Algebra.Category.MonCat.Limits
+public import Mathlib.Algebra.Group.IsCommutative
 public import Mathlib.CategoryTheory.Limits.Shapes.ZeroMorphisms
 public import Mathlib.CategoryTheory.Monoidal.Cartesian.Basic
 public import Mathlib.CategoryTheory.Monoidal.Mon
@@ -126,7 +127,6 @@ end MonObj
 namespace Mon
 variable [BraidedCategory C]
 
-set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] tensorObj.one_def tensorObj.mul_def in
 @[to_additive]
 instance : CartesianMonoidalCategory (Mon C) where
@@ -420,7 +420,7 @@ lemma essImage_yonedaMon :
   · rintro ⟨M, ⟨α⟩⟩
     exact ⟨M.X, ⟨Functor.representableByEquiv.symm (Functor.isoWhiskerRight α (forget _))⟩⟩
   · rintro ⟨X, ⟨e⟩⟩
-    letI := MonObj.ofRepresentableBy X F e
+    let := MonObj.ofRepresentableBy X F e
     exact ⟨Mon.mk X, ⟨yonedaMonObjIsoOfRepresentableBy X F e⟩⟩
 
 @[to_additive (attr := reassoc (attr := simp))]
@@ -474,7 +474,9 @@ end Hom
 
 open scoped IsMulCommutative in
 /-- A monoid object `M` is commutative if and only if `X ⟶ M` is commutative for all `X`. -/
-@[to_additive]
+@[to_additive
+/-- An additive monoid object `M` is commutative if and only if `X ⟶ M` is commutative for all
+`X`. -/]
 lemma isCommMonObj_iff_isMulCommutative (M : C) [MonObj M] [BraidedCategory C] :
     IsCommMonObj M ↔ ∀ (X : C), IsMulCommutative (X ⟶ M) := by
   exact ⟨fun h X ↦ ⟨⟨by simp [mul_comm]⟩⟩, fun h ↦ ⟨by simp [mul_eq_mul, comp_mul, mul_comm]⟩⟩

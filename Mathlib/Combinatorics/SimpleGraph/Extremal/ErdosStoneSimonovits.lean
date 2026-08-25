@@ -21,12 +21,11 @@ This file proves the **Erdős-Stone-Simonovits theorem** for simple graphs.
   minimal degree version of the **Erdős-Stone theorem** for simple graphs.
 -/
 
-open Filter Finset Fintype Real Topology
+open Filter Finset Fintype Real
 
 namespace SimpleGraph
 
 variable {n : ℕ} {G : SimpleGraph (Fin n)} [DecidableRel G.Adj]
-  {W : Type*} [Fintype W] {H : SimpleGraph W}
 
 section ErdosStone
 
@@ -270,7 +269,7 @@ public theorem eventually_completeEquipartiteGraph_isContained_of_minDegree
     obtain ⟨K⟩ := completeEquipartiteGraph_isContained_iff.mp ih
     -- find `t` vertices not in `K` adjacent to `t` vertices in each `K.parts` using the
     -- pigeonhole principle
-    obtain ⟨⟨y, hy⟩, ht_le_card_filter⟩ := by classical
+    obtain ⟨⟨y, hy⟩, ht_le_card_filter⟩ := by
       apply ErdosStone.filter.pi.exists_le_card_fiber K hr_pos ht'_pos ht_lt_t' hδ
       rw [← div_le_iff₀ (sub_pos_of_lt ht_lt_rt'ε)]
       trans (N : ℝ)

@@ -51,7 +51,7 @@ universe u₁ u₂ v₁ v₂ w t
 
 namespace CategoryTheory
 
-open Limits Functor
+open Limits CategoryTheory.Functor
 
 /-!
 A category `C` is a PreGalois category if it satisfies all properties
@@ -156,22 +156,22 @@ instance {G : Type*} [Group G] [Finite G] :
 /-- Fiber functors reflect monomorphisms. -/
 instance : ReflectsMonomorphisms F := ReflectsMonomorphisms.mk <| by
   intro X Y f _
-  haveI : IsIso (pullback.fst (F.map f) (F.map f)) :=
+  have : IsIso (pullback.fst (F.map f) (F.map f)) :=
     isIso_fst_of_mono (F.map f)
-  haveI : IsIso (F.map (pullback.fst f f)) := by
+  have : IsIso (F.map (pullback.fst f f)) := by
     rw [← PreservesPullback.iso_hom_fst]
     exact IsIso.comp_isIso
-  haveI : IsIso (pullback.fst f f) := isIso_of_reflects_iso (pullback.fst _ _) F
+  have : IsIso (pullback.fst f f) := isIso_of_reflects_iso (pullback.fst _ _) F
   exact (pullback.diagonal_isKernelPair f).mono_of_isIso_fst
 
 /-- Fiber functors are faithful. -/
 instance : F.Faithful where
   map_injective {X Y} f g h := by
-    haveI : IsIso (equalizer.ι (F.map f) (F.map g)) := equalizer.ι_of_eq h
-    haveI : IsIso (F.map (equalizer.ι f g)) := by
+    have : IsIso (equalizer.ι (F.map f) (F.map g)) := equalizer.ι_of_eq h
+    have : IsIso (F.map (equalizer.ι f g)) := by
       rw [← equalizerComparison_comp_π f g F]
       exact IsIso.comp_isIso
-    haveI : IsIso (equalizer.ι f g) := isIso_of_reflects_iso _ F
+    have : IsIso (equalizer.ι f g) := isIso_of_reflects_iso _ F
     exact eq_of_epi_equalizer
 
 section
@@ -220,12 +220,6 @@ variable [PreGaloisCategory C] [FiberFunctor F]
 /-- An object is initial if and only if its fiber is empty. -/
 lemma initial_iff_fiber_empty (X : C) : Nonempty (IsInitial X) ↔ IsEmpty (F.obj X) := by
   rw [(IsInitial.isInitialIffObj F X).nonempty_congr]
-  haveI : PreservesFiniteColimits (forget FintypeCat) := by
-    change PreservesFiniteColimits FintypeCat.incl
-    infer_instance
-  haveI : ReflectsColimit (Functor.empty.{0} _) (forget FintypeCat) := by
-    change ReflectsColimit (Functor.empty.{0} _) FintypeCat.incl
-    infer_instance
   exact Concrete.initial_iff_empty_of_preserves_of_reflects (F.obj X)
 
 /-- An object is not initial if and only if its fiber is nonempty. -/
@@ -312,7 +306,7 @@ lemma fiberBinaryProductEquiv_symm_snd_apply {X Y : C} (x : F.obj X) (y : F.obj 
 lemma evaluation_injective_of_isConnected (A X : C) [IsConnected A] (a : F.obj A) :
     Function.Injective (fun (f : A ⟶ X) ↦ F.map f a) := by
   intro f g (h : F.map f a = F.map g a)
-  haveI : IsIso (equalizer.ι f g) := by
+  have : IsIso (equalizer.ι f g) := by
     apply IsConnected.noTrivialComponent _ (equalizer.ι f g)
     exact not_initial_of_inhabited F ((fiberEqualizerEquiv F f g).symm ⟨a, h⟩)
   exact eq_of_epi_equalizer
@@ -336,7 +330,7 @@ lemma epi_of_nonempty_of_isConnected {X A : C} [IsConnected A] [h : Nonempty (F.
 lemma surjective_on_fiber_of_epi {X Y : C} (f : X ⟶ Y) [Epi f] : Function.Surjective (F.map f) :=
   surjective_of_epi (FintypeCat.incl.map (F.map f))
 
-/- A morphism from an object with non-empty fiber to a connected object is surjective on fibers. -/
+/-- A morphism from an object with non-empty fiber to a connected object is surjective on fibers. -/
 lemma surjective_of_nonempty_fiber_of_isConnected {X A : C} [Nonempty (F.obj X)]
     [IsConnected A] (f : X ⟶ A) :
     Function.Surjective (F.map f) := by
@@ -417,39 +411,45 @@ end PreGaloisCategory
 /-- A `PreGaloisCategory` is a `GaloisCategory` if it admits a fiber functor. -/
 class GaloisCategory (C : Type u₁) [Category.{u₂, u₁} C] : Prop
     extends PreGaloisCategory C where
-  hasFiberFunctor : ∃ F : C ⥤ FintypeCat.{u₂}, Nonempty (PreGaloisCategory.FiberFunctor F)
+  hasFiberFunctor (C) : ∃ F : C ⥤ FintypeCat.{u₂}, PreGaloisCategory.FiberFunctor F
+
+/-- Arbitrarily choose a fiber functor for a Galois category using choice. -/
+noncomputable def GaloisCategory.getFiberFunctor
+    (C : Type u₁) [Category.{u₂, u₁} C] [GaloisCategory C] : C ⥤ FintypeCat.{u₂} :=
+  Classical.choose <| hasFiberFunctor C
+
+open GaloisCategory
+
+@[deprecated (since := "2026-08-10")]
+alias PreGaloisCategory.GaloisCategory.getFiberFunctor := getFiberFunctor
 
 namespace PreGaloisCategory
 
 variable (C : Type u₁) [Category.{u₂, u₁} C] [GaloisCategory C]
 
-/-- Arbitrarily choose a fiber functor for a Galois category using choice. -/
-noncomputable def GaloisCategory.getFiberFunctor : C ⥤ FintypeCat.{u₂} :=
-  Classical.choose <| @GaloisCategory.hasFiberFunctor C _ _
-
 /-- The arbitrarily chosen fiber functor `GaloisCategory.getFiberFunctor` is a fiber functor. -/
-noncomputable instance : FiberFunctor (GaloisCategory.getFiberFunctor C) :=
-  Classical.choice <| Classical.choose_spec (@GaloisCategory.hasFiberFunctor C _ _)
+noncomputable instance : FiberFunctor (getFiberFunctor C) :=
+  Classical.choose_spec (hasFiberFunctor C)
 
 variable {C}
 
 /-- In a `GaloisCategory` the set of morphisms out of a connected object is finite. -/
 instance (A X : C) [IsConnected A] : Finite (A ⟶ X) := by
-  let F := GaloisCategory.getFiberFunctor C
+  let F := getFiberFunctor C
   obtain ⟨a⟩ := nonempty_fiber_of_isConnected F A
   apply Finite.of_injective (fun f ↦ F.map f a)
   exact evaluation_injective_of_isConnected F A X a
 
 /-- In a `GaloisCategory` the set of automorphism of a connected object is finite. -/
 instance (A : C) [IsConnected A] : Finite (Aut A) := by
-  let F := GaloisCategory.getFiberFunctor C
+  let F := getFiberFunctor C
   obtain ⟨a⟩ := nonempty_fiber_of_isConnected F A
   apply Finite.of_injective (fun f ↦ F.map f.hom a)
   exact evaluation_aut_injective_of_isConnected F A a
 
 /-- Coproduct inclusions are monic in Galois categories. -/
 instance : MonoCoprod C := by
-  let F := GaloisCategory.getFiberFunctor C
+  let F := getFiberFunctor C
   exact MonoCoprod.monoCoprod_of_preservesCoprod_of_reflectsMono F
 
 end PreGaloisCategory

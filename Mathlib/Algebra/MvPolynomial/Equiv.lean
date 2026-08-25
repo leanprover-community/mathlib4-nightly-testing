@@ -10,7 +10,6 @@ public import Mathlib.Algebra.MonoidAlgebra.Basic
 public import Mathlib.Algebra.MvPolynomial.Degrees
 public import Mathlib.Algebra.MvPolynomial.Rename
 public import Mathlib.Algebra.Polynomial.AlgebraMap
-public import Mathlib.Algebra.Polynomial.Degree.Lemmas
 public import Mathlib.Data.Finsupp.Option
 public import Mathlib.Logic.Equiv.Fin.Basic
 
@@ -56,7 +55,7 @@ variable {R : Type u} {S₁ : Type v} {S₂ : Type w} {S₃ : Type x}
 
 namespace MvPolynomial
 
-variable {σ : Type*} {a a' a₁ a₂ : R} {e : ℕ} {s : σ →₀ ℕ}
+variable {σ : Type*} {a : R} {e : ℕ} {s : σ →₀ ℕ}
 
 section Equiv
 
@@ -120,16 +119,16 @@ theorem coeff_uniqueAlgEquiv_symm [Unique σ] (P : Polynomial R) (d : σ →₀ 
 
 /-- The algebra isomorphism between multivariable polynomials in a single variable and
 polynomials over the ground ring. -/
-@[deprecated uniqueAlgEquiv (since := "2026-04-15")]
+@[deprecated uniqueAlgEquiv +typeChanged (since := "2026-04-15")]
 abbrev pUnitAlgEquiv := uniqueAlgEquiv (R := R) PUnit
 
-@[deprecated uniqueAlgEquiv_monomial (since := "2026-04-15")]
+@[deprecated uniqueAlgEquiv_monomial +typeChanged (since := "2026-04-15")]
 theorem pUnitAlgEquiv_monomial {d : PUnit →₀ ℕ} {r : R} :
     MvPolynomial.pUnitAlgEquiv R (MvPolynomial.monomial d r)
       = Polynomial.monomial (d ()) r :=
   uniqueAlgEquiv_monomial _
 
-@[deprecated uniqueAlgEquiv_symm_monomial (since := "2026-04-15")]
+@[deprecated uniqueAlgEquiv_symm_monomial +typeChanged (since := "2026-04-15")]
 theorem pUnitAlgEquiv_symm_monomial {d : PUnit →₀ ℕ} {r : R} :
     (MvPolynomial.pUnitAlgEquiv R).symm (Polynomial.monomial (d ()) r)
       = MvPolynomial.monomial d r :=
@@ -228,24 +227,24 @@ theorem eval₂_const_uniqueAlgEquiv [Unique σ] {f : MvPolynomial σ R}
       f.eval₂ φ (fun _ ↦ a) := by
   rw [← eval₂_uniqueAlgEquiv]
 
-@[deprecated eval₂_uniqueAlgEquiv_symm (since := "2026-04-15")]
+@[deprecated eval₂_uniqueAlgEquiv_symm +typeChanged (since := "2026-04-15")]
 theorem eval₂_pUnitAlgEquiv_symm {f : Polynomial R} {φ : R →+* S} {a : Unit → S} :
     ((MvPolynomial.pUnitAlgEquiv R).symm f : MvPolynomial Unit R).eval₂ φ a =
       f.eval₂ φ (a ()) :=
   eval₂_uniqueAlgEquiv_symm
 
-@[deprecated eval₂_const_uniqueAlgEquiv_symm (since := "2026-04-15")]
+@[deprecated eval₂_const_uniqueAlgEquiv_symm +typeChanged (since := "2026-04-15")]
 theorem eval₂_const_pUnitAlgEquiv_symm {f : Polynomial R} {φ : R →+* S} {a : S} :
     ((MvPolynomial.pUnitAlgEquiv R).symm f : MvPolynomial Unit R).eval₂ φ (fun _ ↦ a) =
       f.eval₂ φ a :=
   eval₂_const_uniqueAlgEquiv_symm
 
-@[deprecated eval₂_uniqueAlgEquiv (since := "2026-04-15")]
+@[deprecated eval₂_uniqueAlgEquiv +typeChanged (since := "2026-04-15")]
 theorem eval₂_pUnitAlgEquiv {f : MvPolynomial PUnit R} {φ : R →+* S} {a : PUnit → S} :
     ((MvPolynomial.pUnitAlgEquiv R) f : Polynomial R).eval₂ φ (a default) = f.eval₂ φ a :=
   eval₂_uniqueAlgEquiv
 
-@[deprecated eval₂_const_uniqueAlgEquiv (since := "2026-04-15")]
+@[deprecated eval₂_const_uniqueAlgEquiv +typeChanged (since := "2026-04-15")]
 theorem eval₂_const_pUnitAlgEquiv {f : MvPolynomial PUnit R} {φ : R →+* S} {a : S} :
     ((MvPolynomial.pUnitAlgEquiv R) f : Polynomial R).eval₂ φ a = f.eval₂ φ (fun _ ↦ a) :=
   eval₂_const_uniqueAlgEquiv
@@ -349,19 +348,19 @@ with coefficients in multivariable polynomials in the other type.
 
 See `sumRingEquiv` for the ring isomorphism.
 -/
-@[deprecated sumRingEquiv (since := "2026-06-18")]
+@[deprecated sumRingEquiv +typeChanged (since := "2026-06-18")]
 def sumToIter : MvPolynomial (S₁ ⊕ S₂) R →+* MvPolynomial S₁ (MvPolynomial S₂ R) :=
   eval₂Hom (C.comp C) fun bc => Sum.recOn bc X (C ∘ X)
 
-@[deprecated sumRingEquiv_C (since := "2026-06-18")]
+@[deprecated sumRingEquiv_C +typeChanged (since := "2026-06-18")]
 theorem sumToIter_C (a : R) : sumToIter R S₁ S₂ (C a) = C (C a) :=
   eval₂_C _ _ a
 
-@[deprecated sumRingEquiv_X_inl (since := "2026-06-18")]
+@[deprecated sumRingEquiv_X_inl +typeChanged (since := "2026-06-18")]
 theorem sumToIter_Xl (b : S₁) : sumToIter R S₁ S₂ (X (Sum.inl b)) = X b :=
   eval₂_X _ _ (Sum.inl b)
 
-@[deprecated sumRingEquiv_X_inr (since := "2026-06-18")]
+@[deprecated sumRingEquiv_X_inr +typeChanged (since := "2026-06-18")]
 theorem sumToIter_Xr (c : S₂) : sumToIter R S₁ S₂ (X (Sum.inr c)) = C (X c) :=
   eval₂_X _ _ (Sum.inr c)
 
@@ -371,26 +370,25 @@ to multivariable polynomials in the sum of the two types.
 
 See `sumRingEquiv` for the ring isomorphism.
 -/
-@[deprecated sumRingEquiv (since := "2026-06-18")]
+@[deprecated sumRingEquiv +typeChanged (since := "2026-06-18")]
 def iterToSum : MvPolynomial S₁ (MvPolynomial S₂ R) →+* MvPolynomial (S₁ ⊕ S₂) R :=
   eval₂Hom (eval₂Hom C (X ∘ Sum.inr)) (X ∘ Sum.inl)
 
-@[deprecated sumRingEquiv_symm_C_C (since := "2026-06-18")]
+@[deprecated sumRingEquiv_symm_C_C +typeChanged (since := "2026-06-18")]
 theorem iterToSum_C_C (a : R) : iterToSum R S₁ S₂ (C (C a)) = C a :=
   Eq.trans (eval₂_C _ _ (C a)) (eval₂_C _ _ _)
 
-@[deprecated sumRingEquiv_symm_X (since := "2026-06-18")]
+@[deprecated sumRingEquiv_symm_X +typeChanged (since := "2026-06-18")]
 theorem iterToSum_X (b : S₁) : iterToSum R S₁ S₂ (X b) = X (Sum.inl b) :=
   eval₂_X _ _ _
 
-@[deprecated sumRingEquiv_symm_C_X (since := "2026-06-18")]
+@[deprecated sumRingEquiv_symm_C_X +typeChanged (since := "2026-06-18")]
 theorem iterToSum_C_X (c : S₂) : iterToSum R S₁ S₂ (C (X c)) = X (Sum.inr c) :=
   Eq.trans (eval₂_C _ _ (X c)) (eval₂_X _ _ _)
 
 @[deprecated (since := "2026-06-18")] alias iterToSum_sumToIter := RingEquiv.symm_apply_apply
 @[deprecated (since := "2026-06-18")] alias sumToIter_iterToSum := RingEquiv.apply_symm_apply
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The algebra isomorphism between multivariable polynomials in a sum of two types,
 and multivariable polynomials in one of the types,
 with coefficients in multivariable polynomials in the other type.
@@ -519,7 +517,7 @@ theorem optionEquivLeft_coeff_some_coeff_none
     simp only [coeff_zero]
     by_cases hj : j = n
     · simp [hj]
-    · rw [if_neg hj]
+    · rw [ite_eq_right hj]
       simp only [ite_eq_right_iff]
       intro hj_none hj_some
       apply False.elim (hj _)
@@ -551,7 +549,6 @@ theorem mem_support_coeff_optionEquivLeft {f : MvPolynomial (Option σ) R} {i : 
     m ∈ ((optionEquivLeft R σ f).coeff i).support ↔ m.optionElim i ∈ f.support := by
   simp [← optionEquivLeft_coeff_some_coeff_none]
 
-set_option backward.isDefEq.respectTransparency false in
 lemma support_optionEquivLeft (p : MvPolynomial (Option σ) R) :
     (optionEquivLeft R σ p).support = Finset.image (fun m => m none) p.support := by
   ext i
@@ -696,18 +693,18 @@ theorem finSuccEquiv_coeff_coeff (m : Fin n →₀ ℕ) (f : MvPolynomial (Fin (
       Fin.cases_succ, ← _root_.map_prod, ← map_pow, Function.comp_apply]
     rw [← mul_boole, mul_comm (Polynomial.X ^ j 0), Polynomial.coeff_C_mul_X_pow]; congr 1
     obtain rfl | hjmi := eq_or_ne j (m.cons i)
-    · simpa only [cons_zero, cons_succ, if_pos rfl, monomial_eq, C_1, one_mul,
+    · simpa only [cons_zero, cons_succ, ite_eq_left rfl, monomial_eq, C_1, one_mul,
         Finsupp.prod_pow] using! coeff_monomial m m (1 : R)
-    · simp only [hjmi, if_false]
+    · simp only [hjmi, ite_false]
       obtain hij | rfl := ne_or_eq i (j 0)
-      · simp only [hij, if_false, coeff_zero]
-      simp only [if_true]
+      · simp only [hij, ite_false, coeff_zero]
+      simp only [ite_true]
       have hmj : m ≠ j.tail := by
         rintro rfl
         rw [cons_tail] at hjmi
         contradiction
-      simpa only [monomial_eq, C_1, one_mul, Finsupp.prod_pow, tail_apply, if_neg hmj.symm] using!
-        coeff_monomial m j.tail (1 : R)
+      simpa only [monomial_eq, C_1, one_mul, Finsupp.prod_pow, tail_apply,
+        ite_eq_right hmj.symm] using! coeff_monomial m j.tail (1 : R)
 
 theorem eval_eq_eval_mv_eval' (s : Fin n → R) (y : R) (f : MvPolynomial (Fin (n + 1)) R) :
     eval (Fin.cons y s : Fin (n + 1) → R) f =
@@ -742,9 +739,6 @@ theorem mem_support_coeff_finSuccEquiv {f : MvPolynomial (Fin (n + 1)) R} {i : �
   · intro h
     simpa [mem_support_iff, ← finSuccEquiv_coeff_coeff m f i] using h
 
-@[deprecated (since := "2025-11-28")] alias support_coeff_finSuccEquiv :=
-mem_support_coeff_finSuccEquiv
-
 /--
 The `totalDegree` of a multivariable polynomial `p` is at least `i` more than the `totalDegree` of
 the `i`th coefficient of `finSuccEquiv` applied to `p`, if this is nonzero.
@@ -765,7 +759,6 @@ lemma totalDegree_coeff_finSuccEquiv_add_le (f : MvPolynomial (Fin (n + 1)) R) (
   · rw [← mem_support_coeff_finSuccEquiv]
     exact hσ1
 
-set_option backward.isDefEq.respectTransparency false in
 theorem support_finSuccEquiv (f : MvPolynomial (Fin (n + 1)) R) :
     (finSuccEquiv R n f).support = Finset.image (fun m : Fin (n + 1) →₀ ℕ => m 0) f.support := by
   ext i
@@ -806,9 +799,6 @@ theorem nonempty_support_finSuccEquiv {f : MvPolynomial (Fin (n + 1)) R} (h : f 
     (finSuccEquiv R n f).support.Nonempty := by
   rwa [Polynomial.support_nonempty, EmbeddingLike.map_ne_zero_iff]
 
-@[deprecated (since := "2025-11-28")] alias support_finSuccEquiv_nonempty :=
-nonempty_support_finSuccEquiv
-
 theorem degree_finSuccEquiv {f : MvPolynomial (Fin (n + 1)) R} (h : f ≠ 0) :
     (finSuccEquiv R n f).degree = degreeOf 0 f := by
   -- TODO: these should be lemmas
@@ -836,7 +826,7 @@ lemma degreeOf_eq_natDegree [DecidableEq σ] (a : σ) (p : MvPolynomial σ R) :
       (optionEquivLeft R {b // b ≠ a} (rename (Equiv.optionSubtypeNe a).symm p)).natDegree := by
   rw [natDegree_optionEquivLeft, eq_comm]
   convert! degreeOf_rename_of_injective (Equiv.injective (Equiv.optionSubtypeNe a).symm) a
-  rw [Equiv.optionSubtypeNe_symm_apply, dif_pos rfl]
+  rw [Equiv.optionSubtypeNe_symm_apply, dite_eq_left rfl]
 
 theorem degreeOf_coeff_finSuccEquiv (p : MvPolynomial (Fin (n + 1)) R) (j : Fin n) (i : ℕ) :
     degreeOf j (Polynomial.coeff (finSuccEquiv R n p) i) ≤ degreeOf j.succ p := by

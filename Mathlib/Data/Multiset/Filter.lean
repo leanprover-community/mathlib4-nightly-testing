@@ -262,7 +262,7 @@ theorem map_filter_eq_filterMap (f : α → β) (p : α → Prop) [DecidablePred
   induction s using Multiset.induction with
   | empty => simp
   | cons a s ih =>
-    simp only [filter_cons, map_add, ih, filterMap_cons, Option.map_if]; clear ih; congr
+    simp only [filter_cons, map_add, ih, filterMap_cons, Option.map_ite]; clear ih; congr
     split_ifs <;> simp
 
 /-! ### countP -/
@@ -276,9 +276,7 @@ theorem countP_filter (q) [DecidablePred q] (s : Multiset α) :
 
 theorem countP_eq_countP_filter_add (s) (p q : α → Prop) [DecidablePred p] [DecidablePred q] :
     countP p s = (filter q s).countP p + (filter (fun a => ¬q a) s).countP p :=
-  Quot.inductionOn s fun l => by
-    convert! l.countP_eq_countP_filter_add (p ·) (q ·)
-    simp
+  Quot.inductionOn s fun l => l.countP_eq_countP_filter_add (p ·) (q ·)
 
 theorem countP_map (f : α → β) (s : Multiset α) (p : β → Prop) [DecidablePred p] :
     countP p (map f s) = card (s.filter fun a => p (f a)) := by
@@ -299,7 +297,7 @@ end
 
 section
 
-variable [DecidableEq α] {s t u : Multiset α}
+variable [DecidableEq α] {s : Multiset α}
 
 @[simp]
 theorem count_filter_of_pos {p} [DecidablePred p] {a} {s : Multiset α} (h : p a) :
@@ -357,7 +355,7 @@ end
 /-! ### Subtraction -/
 
 section sub
-variable [DecidableEq α] {s t u : Multiset α} {a : α}
+variable [DecidableEq α] {s t : Multiset α} {a : α}
 
 @[simp]
 lemma filter_sub (p : α → Prop) [DecidablePred p] (s t : Multiset α) :

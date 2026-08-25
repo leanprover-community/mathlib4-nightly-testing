@@ -237,7 +237,6 @@ lemma appLE_congr (e : V ≤ f ⁻¹ᵁ U) (e₁ : U = U') (e₂ : V = V')
 def stalkMap (x : X) : Y.presheaf.stalk (f x) ⟶ X.presheaf.stalk x :=
   f.toLRSHom.stalkMap x
 
-set_option backward.isDefEq.respectTransparency.types false in
 protected lemma ext {f g : X ⟶ Y} (h_base : f.base = g.base)
     (h_app : ∀ U, f.app U ≫ X.presheaf.map
       (eqToHom congr((Opens.map $h_base.symm).obj U)).op = g.app U) : f = g := by
@@ -428,7 +427,6 @@ instance isIso_toPshHom {X Y : Scheme} (f : X ⟶ Y) [IsIso f] : IsIso f.toPshHo
 instance isIso_base {X Y : Scheme.{u}} (f : X ⟶ Y) [IsIso f] : IsIso f.base :=
   Scheme.forgetToTop.map_isIso f
 
-set_option backward.isDefEq.respectTransparency false in
 instance {X Y : Scheme} (f : X ⟶ Y) [IsIso f] (U) : IsIso (f.app U) :=
   haveI := PresheafedSpace.c_isIso_of_iso f.toPshHom
   NatIso.isIso_app_of_isIso f.c _
@@ -466,32 +464,10 @@ end Hom
 
 end Scheme
 
-/-- The spectrum of a commutative ring, as a scheme.
-
-The notation `Spec(R)` for `(R : Type*) [CommRing R]` to mean `Spec (CommRingCat.of R)` is
-enabled in the scope `SpecOfNotation`. Please do not use it within Mathlib, but it can be
-used in downstream projects if desired. To use this, do:
-```lean
-import Mathlib.AlgebraicGeometry.Scheme
-
-variable (R : Type*) [CommRing R]
-
-open scoped SpecOfNotation
-
-#check Spec(R)
-```
--/
+/-- The spectrum of a commutative ring, as a scheme. -/
 def Spec (R : CommRingCat) : Scheme where
   local_affine _ := ⟨⟨⊤, trivial⟩, R, ⟨(Spec.toLocallyRingedSpace.obj (op R)).restrictTopIso⟩⟩
   toLocallyRingedSpace := Spec.locallyRingedSpaceObj R
-
-/-- The spectrum of an unbundled ring as a scheme.
-WARNING: This is potentially confusing as `Spec (R)` and `Spec(R)` have different meanings.
-Hence we avoid using it in mathlib but leave it as a scoped instance for downstream projects.
-
-WARNING: If `R` is already an element of `CommRingCat`, you should use `Spec R` instead of
-`Spec(R)`, which is secretly `Spec(↑R)`. -/
-scoped[SpecOfNotation] notation3 "Spec("R")" => AlgebraicGeometry.Spec <| .of R
 
 theorem Spec_toLocallyRingedSpace (R : CommRingCat) :
     (Spec R).toLocallyRingedSpace = Spec.locallyRingedSpaceObj R :=
@@ -505,14 +481,13 @@ def Spec.map {R S : CommRingCat} (f : R ⟶ S) : Spec S ⟶ Spec R :=
 theorem Spec.map_id (R : CommRingCat) : Spec.map (𝟙 R) = 𝟙 (Spec R) :=
   Scheme.Hom.ext' <| Spec.locallyRingedSpaceMap_id R
 
-set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc, simp]
 theorem Spec.map_comp {R S T : CommRingCat} (f : R ⟶ S) (g : S ⟶ T) :
     Spec.map (f ≫ g) = Spec.map g ≫ Spec.map f :=
   Scheme.Hom.ext' <| Spec.locallyRingedSpaceMap_comp f g
 
 /-- The spectrum, as a contravariant functor from commutative rings to schemes. -/
-@[simps]
+@[simps, implicit_reducible]
 protected def Scheme.Spec : CommRingCatᵒᵖ ⥤ Scheme where
   obj R := Spec (unop R)
   map f := Spec.map f.unop
@@ -641,7 +616,6 @@ set_option backward.isDefEq.respectTransparency.types false in
 -- This is not marked simp to respect the abstraction
 lemma ΓSpecIso_inv : (ΓSpecIso R).inv = CommRingCat.ofHom (algebraMap _ _) := rfl
 
-set_option backward.isDefEq.respectTransparency.types false in
 lemma toOpen_eq (U) :
     CommRingCat.ofHom (algebraMap R <| (Spec.structureSheaf R).presheaf.obj (.op U)) =
     (ΓSpecIso R).inv ≫ (Spec R).presheaf.map (homOfLE le_top).op := rfl

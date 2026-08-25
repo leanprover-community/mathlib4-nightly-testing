@@ -552,7 +552,7 @@ def supp (C : G.ConnectedComponent) :=
 theorem supp_injective :
     Function.Injective (ConnectedComponent.supp : G.ConnectedComponent → Set V) := by
   refine ConnectedComponent.ind₂ ?_
-  simp only [ConnectedComponent.supp, Set.ext_iff, ConnectedComponent.eq, Set.mem_setOf_eq]
+  simp only [ConnectedComponent.supp, Set.ext_iff, ConnectedComponent.eq, Set.mem_ofPred_eq]
   intro v w h
   rw [reachable_comm, h]
 
@@ -773,7 +773,6 @@ theorem IsBridge.reachable_iff_adj (h : G.IsBridge s(u, v)) : G.Reachable u v �
 lemma IsBridge.nontrivial {e : Sym2 V} (he : G.IsBridge e) : Nontrivial V := by
   cases e with | h u v; exact ⟨u, v, by rintro rfl; simp [IsBridge] at he⟩
 
-set_option backward.isDefEq.respectTransparency false in
 theorem reachable_deleteEdges_iff_exists_walk {v w v' w' : V} :
     (G.deleteEdges {s(v, w)}).Reachable v' w' ↔ ∃ p : G.Walk v' w', s(v, w) ∉ p.edges := by
   constructor
@@ -896,6 +895,7 @@ theorem IsBridge.anti {G' : SimpleGraph V} {e : Sym2 V} (hG : G ≤ G') (h : G'.
 theorem IsBridge.sup_edge_of_not_reachable {u v : V} (h : ¬G.Reachable u v) :
     (G ⊔ edge u v).IsBridge s(u, v) := isBridge_sup_edge.mpr (of_not_reachable h)
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2026-03-18")]
 alias IsBridge.sup_fromEdgeSet_of_not_reachable := IsBridge.sup_edge_of_not_reachable
 

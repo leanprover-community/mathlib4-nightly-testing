@@ -7,7 +7,8 @@ module
 
 public import Mathlib.Geometry.Convex.ConvexSpace.Prod
 
-import Mathlib.Data.Fintype.Order
+public import Mathlib.Data.Set.Finite.Lattice
+import Mathlib.Order.ConditionallyCompleteLattice.Basic
 
 /-!
 # Convex sets
@@ -100,7 +101,6 @@ protected lemma IsConvexSet.iUnion {ι : Sort*} {s : ι → Set X} (hs : Directe
 
 protected lemma IsConvexSet.preimage {s : Set Y} (hf : IsAffineMap R f) (hs : IsConvexSet R s) :
     IsConvexSet R (f ⁻¹' s) := by
-  classical
   rintro w hw
   simp only [mem_preimage, hf.map_sConvexComb, sConvexComb_map]
   exact hs.iConvexComb_mem fun x hx ↦ hw <| by simpa
@@ -126,7 +126,7 @@ protected lemma IsConvexSet.image (hf : IsAffineMap R f) (hs : IsConvexSet R s) 
   · rw [← huw, Finset.mem_image] at hy
     obtain ⟨x, hx, rfl⟩ := hy
     convert mapDomain_apply' _ _ support_onFinset_subset hfu hx
-    exact (if_pos hx).symm
+    exact (ite_eq_left hx).symm
   · rw [mapDomain_of_not_mem_image_support (by simp [← huw] at ⊢ hy; tauto)]
     simp_all
 

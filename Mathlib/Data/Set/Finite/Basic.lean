@@ -49,7 +49,7 @@ open scoped symmDiff
 
 universe u v w x
 
-variable {α : Type u} {β : Type v} {ι : Sort w} {γ : Type x}
+variable {α : Type u} {β : Type v} {γ : Type x}
 
 namespace Set
 
@@ -158,8 +158,10 @@ protected alias ⟨_, toFinset_mono⟩ := Finite.toFinset_subset_toFinset
 protected alias ⟨_, toFinset_strictMono⟩ := Finite.toFinset_ssubset_toFinset
 
 @[simp high]
-protected theorem toFinset_setOf [Fintype α] (p : α → Prop) [DecidablePred p]
+protected theorem toFinset_ofPred [Fintype α] (p : α → Prop) [DecidablePred p]
     (h : { x | p x }.Finite) : h.toFinset = ({x | p x} : Finset α) := by simp
+
+@[deprecated (since := "2026-07-09")] protected alias toFinset_setOf := Set.Finite.toFinset_ofPred
 
 @[simp]
 nonrec theorem disjoint_toFinset {hs : s.Finite} {ht : t.Finite} :
@@ -294,7 +296,6 @@ instance fintypeInsert (a : α) (s : Set α) [DecidableEq α] [Fintype s] :
     Fintype (insert a s : Set α) :=
   Fintype.ofFinset (insert a s.toFinset) <| by simp
 
-set_option backward.isDefEq.respectTransparency false in
 /-- A `Fintype` structure on `insert a s` when inserting a new element. -/
 @[instance_reducible]
 def fintypeInsertOfNotMem {a : α} (s : Set α) [Fintype s] (h : a ∉ s) :
@@ -752,7 +753,7 @@ so `u n` is related to the image of `{0, 1, ..., n-1}` under `u`.
 -/
 theorem seq_of_forall_finite_exists {γ : Type*} {P : γ → Set γ → Prop}
     (h : ∀ t : Set γ, t.Finite → ∃ c, P c t) : ∃ u : ℕ → γ, ∀ n, P (u n) (u '' Iio n) := by
-  haveI : Nonempty γ := (h ∅ finite_empty).nonempty
+  have : Nonempty γ := (h ∅ finite_empty).nonempty
   choose! c hc using h
   set f : (n : ℕ) → (g : (m : ℕ) → m < n → γ) → γ := fun n g => c (range fun k : Iio n => g k.1 k.2)
   set u : ℕ → γ := fun n ↦ Nat.strongRecOn n f
@@ -768,7 +769,6 @@ end
 theorem card_empty : Fintype.card (∅ : Set α) = 0 :=
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 theorem card_fintypeInsertOfNotMem {a : α} (s : Set α) [Fintype s] (h : a ∉ s) :
     @Fintype.card _ (fintypeInsertOfNotMem s h) = Fintype.card s + 1 := by
   simp [Fintype.card_ofFinset]
@@ -818,8 +818,8 @@ theorem Finite.card_toFinset {s : Set α} [Fintype s] (h : s.Finite) :
 
 theorem card_ne_eq [Fintype α] (a : α) [Fintype { x : α | x ≠ a }] :
     Fintype.card { x : α | x ≠ a } = Fintype.card α - 1 := by
-  haveI := Classical.decEq α
-  rw [← toFinset_card, toFinset_setOf, Finset.filter_ne',
+  have := Classical.decEq α
+  rw [← toFinset_card, toFinset_ofPred, Finset.filter_ne',
     Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ]
 
 /-! ### Infinite sets -/
@@ -915,7 +915,7 @@ theorem not_injOn_infinite_finite_image {f : α → β} {s : Set α} (h_inf : s.
   have : Finite (f '' s) := finite_coe_iff.mpr h_fin
   have : Infinite s := infinite_coe_iff.mpr h_inf
   have h := not_injective_infinite_finite
-            ((f '' s).codRestrict (s.restrict f) fun x => ⟨x, x.property, rfl⟩)
+            ((f '' s).codRestrict (s.domRestrict f) fun x => ⟨x, x.property, rfl⟩)
   contrapose h
   rwa [injective_codRestrict, ← injOn_iff_injective]
 

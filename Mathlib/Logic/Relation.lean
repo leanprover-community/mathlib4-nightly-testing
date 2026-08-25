@@ -56,17 +56,15 @@ open Function
 
 variable {α β γ δ ε ζ : Type*}
 
-theorem Subrelation.antisymm {r r' : α → α → Prop} (h1 : Subrelation r r') (h2 : Subrelation r' r) :
+theorem Subrelation.antisymm {r r' : α → α → Prop} (h1 : r ≤ r') (h2 : r' ≤ r) :
     r = r' :=
-  funext₂ fun _ _ => propext ⟨h1, h2⟩
+  funext₂ fun a b => propext ⟨h1 a b, h2 a b⟩
 
 section NeImp
 
 variable {r : α → α → Prop}
 
 @[deprecated (since := "2026-03-27")] alias Std.Refl.reflexive := refl
-
-@[deprecated (since := "2026-01-09")] alias IsRefl.reflexive := refl
 
 /-- To show a reflexive relation `r : α → α → Prop` holds over `x y : α`,
 it suffices to show it holds when `x ≠ y`. -/
@@ -279,7 +277,7 @@ lemma _root_.IsTrans.map {r : α → α → Prop} [IsTrans α r] {f : α → β}
 
 @[deprecated (since := "2026-03-27")] alias isTrans_map := IsTrans.map
 
-@[deprecated (since := "2026-02-21")] alias map_transitive := isTrans_map
+@[deprecated (since := "2026-02-21")] alias map_transitive := IsTrans.map
 
 lemma map_equivalence {r : α → α → Prop} (hr : Equivalence r) (f : α → β) (hf : f.Surjective)
     (hf_ker : ∀ x y, f x = f y → r x y) : Equivalence (Relation.Map r f f) where
@@ -602,7 +600,7 @@ lemma reflGen_eq_self [Std.Refl r] : ReflGen r = r := by
   ext x y
   simpa only [reflGen_iff, or_iff_right_iff_imp] using fun h ↦ h ▸ refl y
 
-@[deprecated inferInstance (since := "2026-03-27")]
+@[deprecated inferInstance +typeChanged (since := "2026-03-27")]
 lemma reflexive_reflGen : Std.Refl (ReflGen r) := inferInstance
 
 lemma reflGen_minimal {r' : α → α → Prop} [Std.Refl r'] (h : r ≤ r') : ReflGen r ≤ r' := by
@@ -649,10 +647,10 @@ theorem transGen_eq_self [IsTrans α r] : TransGen r = r :=
       | single hc => exact hc
       | tail _ hcd hac => exact IsTrans.trans _ _ _ hac hcd, TransGen.single⟩
 
-@[deprecated inferInstance (since := "2026-02-21")]
+@[deprecated inferInstance +typeChanged (since := "2026-02-21")]
 theorem transitive_transGen : IsTrans α (TransGen r) := inferInstance
 
-@[deprecated transGen_eq_self (since := "2026-03-27"), grind =]
+@[deprecated transGen_eq_self +typeChanged (since := "2026-03-27"), grind =]
 theorem transGen_idem : TransGen (TransGen r) = TransGen r :=
   transGen_eq_self
 
@@ -735,13 +733,13 @@ instance : IsPreorder α (ReflTransGen r) where
   refl := @ReflTransGen.refl α r
   trans := @ReflTransGen.trans α r
 
-@[deprecated inferInstance (since := "2026-03-27")]
+@[deprecated inferInstance +typeChanged (since := "2026-03-27")]
 theorem reflexive_reflTransGen : Std.Refl (ReflTransGen r) := inferInstance
 
-@[deprecated inferInstance (since := "2026-02-21")]
+@[deprecated inferInstance +typeChanged (since := "2026-02-21")]
 theorem transitive_reflTransGen : IsTrans α (ReflTransGen r) := inferInstance
 
-@[deprecated reflTransGen_eq_self (since := "2026-03-27"), grind =]
+@[deprecated reflTransGen_eq_self +typeChanged (since := "2026-03-27"), grind =]
 theorem reflTransGen_idem : ReflTransGen (ReflTransGen r) = ReflTransGen r :=
   reflTransGen_eq_self
 
@@ -816,34 +814,33 @@ theorem mono {r p : α → α → Prop} (hrp : r ≤ p) : EqvGen r ≤ EqvGen p 
   | symm a b _ ih => exact EqvGen.symm _ _ ih
   | trans a b c _ _ hab hbc => exact EqvGen.trans _ _ _ hab hbc
 
-lemma eqvGen_le {r r' : α → α → Prop} [IsEquiv α r'] (h : Subrelation r r') :
-    Subrelation (EqvGen r) r'
+lemma eqvGen_le {r r' : α → α → Prop} [IsEquiv α r'] (h : r ≤ r') : EqvGen r ≤ r'
   | _, _, .refl _ => _root_.refl _
-  | _, _, .symm _ _ hxy => _root_.symm (eqvGen_le h hxy :)
-  | _, _, .trans _ _ _ hxy hyz => _root_.trans (eqvGen_le h hxy :) (eqvGen_le h hyz :)
-  | _, _, .rel _ _ hab => h hab
+  | _, _, .symm _ _ hxy => _root_.symm (eqvGen_le h _ _ hxy)
+  | _, _, .trans _ _ _ hxy hyz => _root_.trans (eqvGen_le h _ _ hxy) (eqvGen_le h _ _ hyz)
+  | _, _, .rel _ _ hab => h _ _ hab
 
-lemma eqvGen_mono {r r' : α → α → Prop} (h : Subrelation r r') : Subrelation (EqvGen r) (EqvGen r')
+lemma eqvGen_mono {r r' : α → α → Prop} (h : r ≤ r') : EqvGen r ≤ EqvGen r'
   | _, _, .refl _ => .refl _
-  | _, _, .symm _ _ hxy => .symm _ _ (eqvGen_mono h hxy)
-  | _, _, .trans _ _ _ hxy hyz => .trans _ _ _ (eqvGen_mono h hxy) (eqvGen_mono h hyz)
-  | _, _, .rel _ _ hab => .rel _ _ (h hab)
+  | _, _, .symm _ _ hxy => .symm _ _ (eqvGen_mono h _ _ hxy)
+  | _, _, .trans _ _ _ hxy hyz => .trans _ _ _ (eqvGen_mono h _ _ hxy) (eqvGen_mono h _ _ hyz)
+  | _, _, .rel _ _ hab => .rel _ _ (h _ _ hab)
 
-lemma reflGen_le_eqvGen : Subrelation (ReflGen r) (EqvGen r)
+lemma reflGen_le_eqvGen : ReflGen r ≤ EqvGen r
   |  _, _, .refl => .refl _
   |  _, _, .single h => .rel _ _ h
 
-lemma symmGen_le_eqvGen : Subrelation (SymmGen r) (EqvGen r)
+lemma symmGen_le_eqvGen : SymmGen r ≤ EqvGen r
   | _, _, .inl h => .rel _ _ h
   | _, _, .inr h => _root_.symm <| .rel _ _ h
 
-lemma transGen_le_eqvGen : Subrelation (TransGen r) (EqvGen r) := by
+lemma transGen_le_eqvGen : TransGen r ≤ EqvGen r := by
   intro _ _ h
   induction h using TransGen.trans_induction_on with
   | trans _ _ h1 h2 => exact _root_.trans h1 h2
   | single h => exact .rel _ _ h
 
-lemma reflTransGen_le_eqvGen : Subrelation (ReflTransGen r) (EqvGen r) := by
+lemma reflTransGen_le_eqvGen : ReflTransGen r ≤ EqvGen r := by
   intro _ _ h
   induction h using ReflTransGen.trans_induction_on with
   | refl => exact .refl _
@@ -853,27 +850,27 @@ lemma reflTransGen_le_eqvGen : Subrelation (ReflTransGen r) (EqvGen r) := by
 @[simp, grind =]
 lemma eqvGen_reflGen : EqvGen (ReflGen r) = EqvGen r :=
   Subrelation.antisymm
-    (eqvGen_le (reflGen_le_eqvGen _)) (eqvGen_mono (.single))
+    (eqvGen_le (reflGen_le_eqvGen _)) (eqvGen_mono fun _ _ => .single)
 
 @[simp, grind =]
 lemma eqvGen_transGen : EqvGen (TransGen r) = EqvGen r :=
   Subrelation.antisymm
-    (eqvGen_le (transGen_le_eqvGen _)) (eqvGen_mono .single)
+    (eqvGen_le (transGen_le_eqvGen _)) (eqvGen_mono fun _ _ => .single)
 
 @[simp, grind =]
 lemma eqvGen_symmGen : EqvGen (SymmGen r) = EqvGen r :=
   Subrelation.antisymm
-    (eqvGen_le (symmGen_le_eqvGen _)) (eqvGen_mono .inl)
+    (eqvGen_le (symmGen_le_eqvGen _)) (eqvGen_mono fun _ _ => .inl)
 
 @[simp, grind =]
 lemma eqvGen_reflTransGen : EqvGen (ReflTransGen r) = EqvGen r :=
   Subrelation.antisymm
-    (eqvGen_le (reflTransGen_le_eqvGen _)) (eqvGen_mono .single)
+    (eqvGen_le (reflTransGen_le_eqvGen _)) (eqvGen_mono fun _ _ => .single)
 
 @[grind =]
 lemma eqvGen_eq_reflTransGen [Std.Symm r] : EqvGen r = ReflTransGen r :=
   have : IsEquiv α (ReflTransGen r) := ⟨⟩
-  Subrelation.antisymm (eqvGen_le .single) (reflTransGen_le_eqvGen _)
+  Subrelation.antisymm (eqvGen_le fun _ _ => .single) (reflTransGen_le_eqvGen _)
 
 lemma reflTransGen_symmGen : ReflTransGen (SymmGen r) = EqvGen r := by
   rw [← eqvGen_eq_reflTransGen, eqvGen_symmGen]
@@ -963,8 +960,6 @@ alias reflTransGen_of_isTrans_reflexive := reflTransGen_le_of_le
 
 @[deprecated (since := "2026-02-21")]
 alias reflTransGen_of_transitive_reflexive := reflTransGen_le_of_le
-
-@[deprecated (since := "2025-12-17")] alias reflTransGen_minimal := reflTransGen_le_of_le
 
 theorem reflTransGen_le_of_equivalence_of_le {r' : α → α → Prop} (hr : Equivalence r) :
     r' ≤ r → ReflTransGen r' ≤ r :=

@@ -5,7 +5,6 @@ Authors: Nailin Guan, Jingting Wang
 -/
 module
 
-public import Mathlib.Algebra.Homology.ShortComplex.ExactFunctor
 public import Mathlib.Algebra.Homology.DerivedCategory.Ext.ExtClass
 public import Mathlib.Algebra.Homology.DerivedCategory.Ext.Linear
 public import Mathlib.Algebra.Homology.DerivedCategory.ExactFunctor
@@ -135,7 +134,6 @@ noncomputable def Abelian.Ext.mapExactFunctor [HasExt.{w} C] [HasExt.{w'} D] {X 
     ((F.mapCochainComplexSingleFunctor 0).app X) ((F.mapCochainComplexSingleFunctor 0).app Y) f
 
 set_option backward.isDefEq.respectTransparency false in
-open Functor in
 lemma Abelian.Ext.mapExactFunctor_hom
     [HasDerivedCategory.{t} C] [HasDerivedCategory.{t'} D]
     [HasExt.{w} C] [HasExt.{w'} D] {X Y : C} {n : ℕ} (e : Ext X Y n) :

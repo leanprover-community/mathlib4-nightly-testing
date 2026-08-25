@@ -67,7 +67,7 @@ namespace CategoryTheory.Pseudofunctor
 
 universe w v₁ v₂ v₃ u₁ u₂ u₃
 
-open Functor Category Opposite Discrete Bicategory StrongTrans
+open CategoryTheory.Functor Category Opposite Discrete Bicategory StrongTrans
 
 variable {𝒮 : Type u₁} [Category.{v₁} 𝒮]
 
@@ -293,7 +293,6 @@ lemma Hom.congr {a b : ∫ᶜ F} {f g : a ⟶ b} (h : f = g) :
 
 end
 
-set_option backward.isDefEq.respectTransparency false in
 attribute [local simp] PrelaxFunctor.map₂_eqToHom in
 /-- The category structure on `∫ᶜ F`. -/
 instance category : Category (∫ᶜ F) where

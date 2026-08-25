@@ -75,7 +75,7 @@ lemma tensorCotangentSpace_tmul_tmul (t : T) (s : S) (x : Ω[P.Ring⁄R]) :
     ← mk_apply s x, IsTensorProduct.assocOfMapSMul_symm_tmul]
   simp only [mk_apply, AlgebraTensorModule.cancelBaseChange_symm_tmul,
     AlgebraTensorModule.congr_tmul, LinearEquiv.refl_apply]
-  have this : x ∈ Submodule.span P.Ring (Set.range (KaehlerDifferential.D R P.Ring)) := by
+  have : x ∈ Submodule.span P.Ring (Set.range (KaehlerDifferential.D R P.Ring)) := by
     rw [KaehlerDifferential.span_range_derivation]
     trivial
   induction this using Submodule.span_induction with
@@ -205,7 +205,6 @@ noncomputable def tensorH1CotangentOfFlat (T : Type*) [CommRing T] [Algebra R T]
       ((Generators.self R S).baseChangeToBaseChange T)).restrictScalars T ≪≫ₗ
     ((Generators.self R S).baseChange (T := T)).equivH1Cotangent.restrictScalars T
 
-set_option backward.isDefEq.respectTransparency.types false in
 attribute [local instance] TensorProduct.rightAlgebra in
 lemma tensorH1CotangentOfFlat_tmul (T : Type*) [CommRing T] [Algebra R T] [Module.Flat R T]
     (t : T) (x : H1Cotangent R S) :

@@ -120,7 +120,7 @@ lemma Cotangent.exact :
     obtain ⟨y, hy, e⟩ := hx
     rw [eq_comm, ← sub_eq_zero, ← map_sub, ← RingHom.mem_ker, ← map_toComp_ker] at e
     rw [LinearMap.range_liftBaseChange]
-    let z : (Q.comp P).ker := ⟨x - y, Ideal.sub_mem _ hx' (Ideal.mul_le_left hy)⟩
+    let z : (Q.comp P).ker := ⟨x - y, Ideal.sub_mem _ hx' (Ideal.mul_le_right hy)⟩
     have hz : z.1 ∈ P.ker.map (Q.toComp P).toAlgHom.toRingHom := e
     have : Extension.Cotangent.mk (P := (Q.comp P).toExtension) ⟨x, hx'⟩ =
       Extension.Cotangent.mk z := by
@@ -251,7 +251,7 @@ lemma δAux_mul (x y) :
   | monomial n r =>
     induction y using MvPolynomial.induction_on' with
     | monomial m s =>
-      simp only [monomial_mul, δAux_monomial, Derivation.leibniz, tmul_add, tmul_smul,
+      simp only [monomial_mul_monomial, δAux_monomial, Derivation.leibniz, tmul_add, tmul_smul,
         smul_tmul', Algebra.smul_def, algebraMap_apply, aeval_monomial, mul_assoc]
       rw [mul_comm (m.prod _) (n.prod _)]
       simp only [pow_zero, implies_true, pow_add, Finsupp.prod_add_index']
@@ -267,7 +267,7 @@ variable {Q} {Q'} in
 lemma δAux_toAlgHom (f : Hom Q Q') (x) :
     δAux R Q' (f.toAlgHom x) = δAux R Q x + Finsupp.linearCombination _ (δAux R Q' ∘ f.val)
       (Q.cotangentSpaceBasis.repr ((1 : T) ⊗ₜ[Q.Ring] D S Q.Ring x :)) := by
-  letI : AddCommGroup (T ⊗[S] Ω[S⁄R]) := inferInstance
+  let : AddCommGroup (T ⊗[S] Ω[S⁄R]) := inferInstance
   have : IsScalarTower Q.Ring Q.Ring T := IsScalarTower.left _
   induction x using MvPolynomial.induction_on with
   | C s => simp [MvPolynomial.algebraMap_eq, δAux_C]
@@ -289,7 +289,7 @@ lemma δAux_ofComp (x : (Q.comp P).Ring) :
     δAux R Q ((Q.ofComp P).toAlgHom x) =
       P.toExtension.toKaehler.baseChange T (CotangentSpace.compEquiv Q P
         (1 ⊗ₜ[(Q.comp P).Ring] (D R (Q.comp P).Ring) x : _)).2 := by
-  letI : AddCommGroup (T ⊗[S] Ω[S⁄R]) := inferInstance
+  let : AddCommGroup (T ⊗[S] Ω[S⁄R]) := inferInstance
   have : IsScalarTower (Q.comp P).Ring (Q.comp P).Ring T := IsScalarTower.left _
   induction x using MvPolynomial.induction_on with
   | C s =>
@@ -440,7 +440,7 @@ lemma exact_map_δ :
 set_option backward.isDefEq.respectTransparency false in
 lemma δ_map (f : Hom Q' Q) (x) :
     δ Q P (Extension.H1Cotangent.map f.toExtensionHom x) = δ Q' P' x := by
-  letI : AddCommGroup (T ⊗[S] Ω[S⁄R]) := inferInstance
+  let : AddCommGroup (T ⊗[S] Ω[S⁄R]) := inferInstance
   obtain ⟨x, hx⟩ := x
   obtain ⟨⟨y, hy⟩, rfl⟩ := Extension.Cotangent.mk_surjective x
   change δ _ _ ⟨_, _⟩ = δ _ _ _

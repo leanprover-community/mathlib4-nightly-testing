@@ -79,7 +79,7 @@ instance : LE SignType :=
   ⟨SignType.LE⟩
 
 instance : DecidableLE SignType := fun a b => by
-  cases a <;> cases b <;> first | exact isTrue (by constructor) | exact isFalse (by rintro ⟨_⟩)
+  cases a <;> cases b <;> first | exact isTrue (by constructor!) | exact isFalse (by rintro ⟨_⟩)
 
 /-- We can define a `Field` instance on `SignType`, but it's not mathematically sensible,
 so we only define the `CommGroupWithZero`. -/
@@ -266,7 +266,7 @@ variable [Zero α] [Preorder α] [DecidableLT α] {a : α}
 def SignType.sign : α →o SignType :=
   ⟨fun a => if 0 < a then 1 else if a < 0 then -1 else 0, fun a b h => by
     dsimp
-    split_ifs with h₁ h₂ h₃ h₄ _ _ h₂ h₃ <;> try constructor
+    split_ifs with h₁ h₂ h₃ h₄ _ _ h₂ h₃ <;> try constructor!
     · cases lt_irrefl 0 (h₁.trans <| h.trans_lt h₃)
     · cases h₂ (h₁.trans_le h)
     · cases h₄ (h.trans_lt h₃)⟩
@@ -278,15 +278,16 @@ theorem sign_apply : sign a = ite (0 < a) 1 (ite (a < 0) (-1) 0) :=
 theorem sign_zero : sign (0 : α) = 0 := by simp [sign_apply]
 
 @[simp]
-theorem sign_pos (ha : 0 < a) : sign a = 1 := by rwa [sign_apply, if_pos]
+theorem sign_pos (ha : 0 < a) : sign a = 1 := by rwa [sign_apply, ite_eq_left]
 
 @[simp]
-theorem sign_neg (ha : a < 0) : sign a = -1 := by rwa [sign_apply, if_neg <| asymm ha, if_pos]
+theorem sign_neg (ha : a < 0) : sign a = -1 := by
+  rwa [sign_apply, ite_eq_right <| asymm ha, ite_eq_left]
 
 theorem sign_eq_one_iff : sign a = 1 ↔ 0 < a := by
   refine ⟨fun h => ?_, fun h => sign_pos h⟩
   by_contra hn
-  rw [sign_apply, if_neg hn] at h
+  rw [sign_apply, ite_eq_right hn] at h
   split_ifs at h
 
 theorem sign_eq_neg_one_iff : sign a = -1 ↔ a < 0 := by
