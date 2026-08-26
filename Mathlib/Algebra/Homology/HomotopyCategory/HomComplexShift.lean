@@ -293,6 +293,8 @@ lemma rightShift_smul (a n' : ℤ) (hn' : n' + a = n) (x : R) :
 
 #adaptation_note
 /--
+After https://github.com/leanprover/lean4/pull/14624:
+
 We had to use the `instanceSearchTypes` backward compatibility option.
 Concretely, the following instance cannot be synthesized:
 `SMulCommClass R ℤˣ (K.X (p + a) ⟶ L.X q)`
