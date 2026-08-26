@@ -27,11 +27,10 @@ to connect 1 and 2.
 open Function Module
 
 namespace LinearMap
-variable {R K M M' N N' : Type*} [AddCommGroup M] [AddCommGroup N] [AddCommGroup M']
-  [AddCommGroup N']
 
-section CommRing
-variable [CommRing R] [Module R M] [Module R M'] [Module R N] [Module R N']
+section CommSemiring
+variable {R M M' N N' : Type*} [AddCommMonoid M] [AddCommMonoid N] [AddCommMonoid M']
+  [AddCommMonoid N'] [CommSemiring R] [Module R M] [Module R M'] [Module R N] [Module R N']
   {p : M →ₗ[R] N →ₗ[R] R} {x : M} {y : N}
 
 /-- For a ring `R` and two modules `M` and `N`, a perfect pairing is a bilinear map `M × N → R`
@@ -71,7 +70,7 @@ noncomputable def toPerfPair : M ≃ₗ[R] Dual R N :=
 include p in
 lemma _root_.Module.IsReflexive.of_isPerfPair : IsReflexive R M where
   bijective_dual_eval' := by
-    convert (p.toPerfPair.trans p.flip.toPerfPair.dualMap.symm).bijective
+    convert! (p.toPerfPair.trans p.flip.toPerfPair.dualMap.symm).bijective
     ext x f
     simp
 
@@ -106,10 +105,11 @@ lemma IsPerfPair.of_bijective (p : M →ₗ[R] N →ₗ[R] R) [IsReflexive R N] 
     (LinearEquiv.ofBijective p h : M →ₗ[R] N →ₗ[R] R)
     (LinearEquiv.refl R N : N →ₗ[R] N)).IsPerfPair
 
-end CommRing
+end CommSemiring
 
 section Field
-variable [Field K] [Module K M] [Module K N] {p : M →ₗ[K] N →ₗ[K] K} {x : M} {y : N}
+variable {K M N : Type*} [Field K] [AddCommGroup M] [AddCommGroup N]
+  [Module K M] [Module K N] {p : M →ₗ[K] N →ₗ[K] K}
 
 /-- If the coefficients are a field, and one of the spaces is finite-dimensional, it is sufficient
 to check only injectivity instead of bijectivity of the bilinear pairing. -/
@@ -130,7 +130,8 @@ end LinearMap
 
 noncomputable section
 
-variable {R M N : Type*} [CommRing R] [AddCommGroup M] [Module R M] [AddCommGroup N] [Module R N]
+variable {R M N : Type*} [CommSemiring R] [AddCommMonoid M] [Module R M]
+  [AddCommMonoid N] [Module R N]
 
 namespace LinearMap
 variable {p : M →ₗ[R] N →ₗ[R] R} [p.IsPerfPair]
@@ -229,7 +230,8 @@ lemma map_dualAnnihilator_linearEquiv_flip_symm (p : Submodule R N) :
     p.dualAnnihilator.map (e.flip.symm : Dual R N →ₗ[R] M) =
       (p.map (e : N →ₗ[R] Dual R M)).dualCoannihilator := by
   have : IsReflexive R N := e.isReflexive_of_equiv_dual_of_isReflexive
-  rw [← dualCoannihilator_map_linearEquiv_flip, ← LinearEquiv.coe_toLinearMap_flip, flip_flip]
+  rw [← dualCoannihilator_map_linearEquiv_flip, ← LinearEquiv.coe_toLinearMap_flip,
+    LinearEquiv.flip_flip]
 
 @[simp]
 lemma map_dualCoannihilator_linearEquiv_flip (p : Submodule R (Dual R M)) :
@@ -240,8 +242,8 @@ lemma map_dualCoannihilator_linearEquiv_flip (p : Submodule R (Dual R M)) :
       (p.map (e.symm : Dual R M →ₗ[R] N)).dualAnnihilator.map (e.flip.symm : Dual R N →ₗ[R] M) =
         (p.dualCoannihilator.map (e.flip : M →ₗ[R] Dual R N)).map (e.flip.symm : Dual R N →ₗ[R] M)
     from (Submodule.map_injective_of_injective e.flip.symm.injective this).symm
-  rw [← dualCoannihilator_map_linearEquiv_flip, ← LinearEquiv.coe_toLinearMap_flip, flip_flip,
-    ← map_comp, ← map_comp]
+  rw [← dualCoannihilator_map_linearEquiv_flip, ← LinearEquiv.coe_toLinearMap_flip,
+    LinearEquiv.flip_flip, ← map_comp, ← map_comp]
   simp [-coe_toLinearMap_flip]
 
 @[simp]
@@ -249,6 +251,7 @@ lemma dualAnnihilator_map_linearEquiv_flip_symm (p : Submodule R (Dual R N)) :
     (p.map (e.flip.symm : Dual R N →ₗ[R] M)).dualAnnihilator =
       p.dualCoannihilator.map (e : N →ₗ[R] Dual R M) := by
   have : IsReflexive R N := e.isReflexive_of_equiv_dual_of_isReflexive
-  rw [← map_dualCoannihilator_linearEquiv_flip, ← LinearEquiv.coe_toLinearMap_flip, flip_flip]
+  rw [← map_dualCoannihilator_linearEquiv_flip, ← LinearEquiv.coe_toLinearMap_flip,
+    LinearEquiv.flip_flip]
 
 end Submodule
