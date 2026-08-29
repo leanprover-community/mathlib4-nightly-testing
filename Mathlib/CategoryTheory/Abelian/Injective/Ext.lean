@@ -214,7 +214,6 @@ lemma extMk_surjective (α : Ext X Y n) (m : ℕ) (hm : n + 1 = m) :
     by simpa [R.cochainComplex_d _ _ _ _ rfl rfl,
       ← cancel_mono (R.cochainComplexXIso m m rfl).inv] using hf, by simp [extMk]⟩
 
-set_option backward.isDefEq.respectTransparency false in
 lemma mk₀_comp_extMk {n : ℕ} (f : X ⟶ R.cocomplex.X n) (m : ℕ) (hm : n + 1 = m)
     (hf : f ≫ R.cocomplex.d n m = 0) {X' : C} (g : X' ⟶ X) :
     (Ext.mk₀ g).comp (R.extMk f m hm hf) (zero_add _) =
@@ -231,7 +230,6 @@ lemma mk₀_comp_extMk {n : ℕ} (f : X ⟶ R.cocomplex.X n) (m : ℕ) (hm : n +
     ← ShiftedHom.comp_assoc _ _ _ (add_zero _) (add_zero (n : ℤ)) (by simp)]
   simp
 
-set_option backward.isDefEq.respectTransparency false in
 variable {R} in
 lemma extMk_comp_mk₀ {n : ℕ} (f : X ⟶ R.cocomplex.X n) (m : ℕ) (hm : n + 1 = m)
     (hf : f ≫ R.cocomplex.d n m = 0)
@@ -256,6 +254,6 @@ lemma extMk_comp_mk₀ {n : ℕ} (f : X ⟶ R.cocomplex.X n) (m : ℕ) (hm : n +
   rw [Category.assoc, ← NatTrans.naturality, ← Category.assoc, ← Category.assoc]
   congr 1
   simpa only [IsIso.eq_comp_inv, Category.assoc, IsIso.inv_comp_eq,
-    Functor.map_comp] using DerivedCategory.Q.congr_map φ.ι'_comp_hom'.symm
+    Functor.map_comp] using! DerivedCategory.Q.congr_map φ.ι'_comp_hom'.symm
 
 end CategoryTheory.InjectiveResolution

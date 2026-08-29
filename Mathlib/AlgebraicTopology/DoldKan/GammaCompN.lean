@@ -27,7 +27,9 @@ suppress_compilation
 noncomputable section
 
 open CategoryTheory CategoryTheory.Category CategoryTheory.Functor CategoryTheory.Limits
-  CategoryTheory.Idempotents Opposite SimplicialObject Simplicial
+  CategoryTheory.Idempotents Opposite SimplicialObject
+
+open scoped Simplicial
 
 namespace AlgebraicTopology
 
@@ -149,7 +151,7 @@ lemma N₂Γ₂ToKaroubiIso_inv_app (X : ChainComplex C ℕ) :
   ext n
   dsimp [N₂Γ₂ToKaroubiIso]
   simp only [comp_id, PInfty_f_idem_assoc, AlternatingFaceMapComplex.obj_X, Γ₀_obj_obj]
-  convert comp_id _
+  convert! comp_id _
   apply (Γ₀.splitting X).hom_ext'
   intro A
   rw [Splitting.ι_desc]

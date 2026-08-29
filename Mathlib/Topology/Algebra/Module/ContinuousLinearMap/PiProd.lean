@@ -10,6 +10,51 @@ public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
 
 /-!
 # Continuous linear maps on products and Pi types
+
+In this file, we collect various constructions relating continuous linear maps with (binary or
+arbitrary) products.
+
+## Main definitions
+
+Binary products (viewed as categorical products):
+
+* `ContinuousLinearMap.fst R M₁ M₂ : M₁ × M₂ →L[R] M₁` and
+  `ContinuousLinearMap.snd R M₁ M₂ : M₁ × M₂ →L[R] M₂` are the two projections, given
+  respectively by `fst (x, y) = x` and `snd (x, y) = y`. These are the continuous versions
+  of `LinearMap.fst` and `LinearMap.snd`.
+* `ContinuousLinearMap.prod f₁ f₂` is the continuous linear map `M →L[R] N₁ × N₂` given by two
+  continuous linear maps `f₁ : M →L[R] N₁` and `f₂ : M →L[R] N₂`. This is the continuous version
+  of `LinearMap.prod`.
+* `ContinuousLinearMap.prodEquiv` shows that the above is a bijection: every continuous linear
+  map to a product is obtained this way. In other words, this is the universal property of the
+  product.
+* `ContinuousLinearMap.prodMap f₁ f₂` is the continuous linear map `M₁ × M₂ →L[R] N₁ × N₂` given by
+  two continuous linear maps `f₁ : M₁ →L[R] N₁` and `f₂ : M₂ →L[R] N₂`. This is the continuous
+  version of `LinearMap.prodMap`.
+
+Binary products (viewed as categorical coproducts):
+
+* `ContinuousLinearMap.inl R M₁ M₂ : M₁ →L[R] M₁ × M₂` and
+  `ContinuousLinearMap.inr R M₁ M₂ : M₂ →L[R] M₁ × M₂` are the two inclusions, given
+  respectively by `inl x = (x, 0)` and `inr x = (0, x)`. These are the continuous versions
+  of `LinearMap.inl` and `LinearMap.inr`.
+* `ContinuousLinearMap.coprod f₁ f₂` is the continuous linear map ` M₁ × M₂ →L[R] N` given by
+  two continuous linear maps `f₁ : M₁ →L[R] N` and `f₂ : M₂ →L[R] N`. This is the continuous
+  version of `LinearMap.coprod`.
+* `ContinuousLinearMap.coprodEquiv` shows that the above is a bijection: every continuous linear
+  map from a (binary) product is obtained this way. In other words, this is the universal property
+  of the coproduct.
+
+Indexed products:
+
+* `ContinuousLinearMap.pi f` is the continuous linear map `M →L[R] (Π i, N i)` given by a family
+  `f₁ : Π i, M →L[R] N i` of continuous linear maps. This is the continuous version
+  of `LinearMap.pi`.
+* `ContinuousLinearMap.piMap f` is the continuous linear map `(Π i, M i) →L[R] (Π i, N i)` given by
+  a family `f : Π i, M i →L[R] N i` of continuous linear maps. This is the continuous
+  version of `LinearMap.piMap`.
+* `ContinuousLinearMap.proj j : (Π i, M i) →L[R] M j` is the projection given by
+  `proj i f = f i`. This is the continuous version of `LinearMap.proj`.
 -/
 
 @[expose] public section
@@ -17,7 +62,6 @@ public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
 assert_not_exists TrivialStar
 
 open LinearMap (ker range)
-open Topology Filter Pointwise
 
 universe u v w u'
 

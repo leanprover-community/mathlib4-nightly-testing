@@ -52,11 +52,11 @@ set_option backward.isDefEq.respectTransparency false in
     · have := (Subobject.pullback (prod.map π₁ π₁ :
         (X₁.src ⨯ Y₁.src) ⨯ X₂.tgt ⨯ Y₂.tgt ⟶ _)).monotone (Hom.le f)
       rw [← Subobject.pullback_comp, ← Subobject.pullback_comp] at this
-      convert this using 3 <;> simp
+      convert! this using 3 <;> simp
     · have := (Subobject.pullback (prod.map π₂ π₂ :
         (X₁.src ⨯ Y₁.src) ⨯ X₂.tgt ⨯ Y₂.tgt ⟶ _)).monotone (Hom.le g)
       rw [← Subobject.pullback_comp, ← Subobject.pullback_comp] at this
-      convert this using 3 <;> simp
+      convert! this using 3 <;> simp
 
 /-- The unit for the tensor `X ⊗ Y` in `Dial C`. -/
 @[simps] def tensorUnitImpl : Dial C := { src := ⊤_ _, tgt := ⊤_ _, rel := ⊤ }
@@ -82,6 +82,9 @@ def associatorImpl (X Y Z : Dial C) :
   isoMk (prod.associator ..) (prod.associator ..) <| by
     simp [Subobject.inf_pullback, ← Subobject.pullback_comp, inf_assoc]
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 @[simps!]
 instance : MonoidalCategoryStruct (Dial C) where
   tensorUnit := tensorUnitImpl
@@ -100,12 +103,11 @@ theorem id_tensorHom_id (X₁ X₂ : Dial C) : (𝟙 X₁ ⊗ₘ 𝟙 X₂ : _ �
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
--- TODO: fix the non-terminal simp
-set_option linter.flexible false in
 theorem tensorHom_comp_tensorHom {X₁ Y₁ Z₁ X₂ Y₂ Z₂ : Dial C}
     (f₁ : X₁ ⟶ Y₁) (f₂ : X₂ ⟶ Y₂) (g₁ : Y₁ ⟶ Z₁) (g₂ : Y₂ ⟶ Z₂) :
     (f₁ ⊗ₘ f₂) ≫ (g₁ ⊗ₘ g₂) = (f₁ ≫ g₁) ⊗ₘ (f₂ ≫ g₂) := by
-  ext <;> simp; ext <;> simp <;> (rw [← Category.assoc]; congr 1; simp)
+  ext <;> simp only [tensorObj_src, comp_f, tensorHom_f, prod.map_map, tensorObj_tgt]
+  ext <;> simp [← Category.assoc]
 
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in

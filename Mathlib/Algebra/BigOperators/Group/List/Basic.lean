@@ -16,6 +16,7 @@ public import Mathlib.Algebra.Group.Commute.Defs
 public import Mathlib.Algebra.Group.Nat.Defs
 public import Mathlib.Algebra.Group.Int.Defs
 public import Mathlib.Order.Basic
+public import Mathlib.Data.List.Basic
 
 /-!
 # Sums and products from lists
@@ -249,7 +250,6 @@ lemma prod_map_erase [DecidableEq α] (f : α → M) {a} :
 
 @[to_additive] lemma Perm.prod_eq (h : Perm l₁ l₂) : prod l₁ = prod l₂ := h.foldr_op_eq
 
-set_option linter.existingAttributeWarning false in
 attribute [to_additive existing] prod_reverse
 
 @[to_additive]
@@ -303,7 +303,7 @@ lemma eq_of_prod_take_eq [LeftCancelMonoid M] {L L' : List M} (h : L.length = L'
   refine ext_get h fun i h₁ h₂ => ?_
   have : (L.take (i + 1)).prod = (L'.take (i + 1)).prod := h' _ (Nat.succ_le_of_lt h₁)
   rw [prod_take_succ L i h₁, prod_take_succ L' i h₂, h' i (Nat.le_of_lt h₁)] at this
-  convert mul_left_cancel this
+  convert! mul_left_cancel this
 
 section Group
 

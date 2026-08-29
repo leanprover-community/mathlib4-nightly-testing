@@ -85,7 +85,7 @@ lemma map_comp_uliftYonedaEquiv_down (E : ℰ) {X Y : C} (f : X ⟶ Y)
     (g : uliftYoneda.{max w v₂}.obj Y ⟶ (restrictedULiftYoneda.{max w v₁} A).obj E) :
     A.map f ≫ (uliftYonedaEquiv g).down =
       (uliftYonedaEquiv (uliftYoneda.map f ≫ g)).down := by
-  have this := (g.naturality_apply f.op) (ULift.up (𝟙 Y))
+  have := (g.naturality_apply f.op) (ULift.up (𝟙 Y))
   dsimp [uliftYonedaEquiv, uliftYoneda] at this ⊢
   cat_disch
 
@@ -108,7 +108,7 @@ def restrictedULiftYonedaHomEquiv' (P : Cᵒᵖ ⥤ Type max w v₁ v₂) (E : �
               rw [uliftYonedaEquiv_symm_map])
         dsimp
         congr 1
-        simpa using (f.naturality φ).symm }
+        simpa using! (f.naturality φ).symm }
   invFun g :=
     { app y := (uliftYonedaEquiv.{max w v₂} (y.hom ≫ g)).down
       naturality y y' f := by
@@ -122,7 +122,7 @@ def restrictedULiftYonedaHomEquiv' (P : Cᵒᵖ ⥤ Type max w v₁ v₂) (E : �
           ext Y x
           dsimp
           simp [← NatTrans.naturality_apply])
-    simpa [e] using f.naturality e.inv
+    simpa [e] using! f.naturality e.inv
   right_inv g := by
     ext X x
     apply ULift.down_injective
@@ -166,7 +166,6 @@ noncomputable def restrictedULiftYonedaHomEquiv (P : Cᵒᵖ ⥤ Type max w v₁
     (restrictedULiftYonedaHomEquiv' A P E)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- If `L : (Cᵒᵖ ⥤ Type max w v₁ v₂) ⥤ ℰ` is a pointwise left Kan extension
 of a functor `A : C ⥤ ℰ` along the Yoneda embedding,
 then `L` is a left adjoint of `restrictedULiftYoneda A : ℰ ⥤ Cᵒᵖ ⥤ Type max w v₁ v₂` -/
@@ -195,6 +194,7 @@ noncomputable def uliftYonedaAdjunction : L ⊣ restrictedULiftYoneda.{max w v�
         simp [restrictedULiftYonedaHomEquiv,
           restrictedULiftYonedaHomEquiv'_symm_naturality_right, this] }
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 @[simp]
 lemma uliftYonedaAdjunction_homEquiv_app {P : Cᵒᵖ ⥤ Type max w v₁ v₂}
@@ -204,8 +204,8 @@ lemma uliftYonedaAdjunction_homEquiv_app {P : Cᵒᵖ ⥤ Type max w v₁ v₂}
   simp [uliftYonedaAdjunction, restrictedULiftYonedaHomEquiv,
     restrictedULiftYonedaHomEquiv', IsColimit.homEquiv]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma uliftYonedaAdjunction_unit_app_app (P : Cᵒᵖ ⥤ Type max w v₁ v₂)
     {Z : Cᵒᵖ} (z : P.obj Z) :
@@ -331,6 +331,7 @@ variable (L : (Cᵒᵖ ⥤ Type max w v₁ v₂) ⥤ ℰ) (α : A ⟶ uliftYoned
 instance [L.IsLeftKanExtension α] : IsIso α :=
   (Functor.isPointwiseLeftKanExtensionOfIsLeftKanExtension L α).isIso_hom
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma isLeftKanExtension_along_uliftYoneda_iff :
     L.IsLeftKanExtension α ↔
@@ -400,13 +401,12 @@ section
 variable {D : Type u₂} [Category.{v₁} D] (F : C ⥤ D)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 instance (X : C) (Y : F.op.LeftExtension (yoneda.obj X)) :
     Unique (Functor.LeftExtension.mk _ (yonedaMap F X) ⟶ Y) where
   default := StructuredArrow.homMk
       (yonedaEquiv.symm (yonedaEquiv (F := F.op.comp Y.right) Y.hom)) (by
         ext Z f
-        convert (Y.hom.naturality_apply f.op _).symm
+        convert! (Y.hom.naturality_apply f.op _).symm
         simp)
   uniq φ := by
     ext1
@@ -472,7 +472,6 @@ noncomputable def compULiftYonedaIsoULiftYonedaCompLan :
       simp only [id_comp] at eq₃
       simp [eq₁, eq₂, eq₃])
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma compULiftYonedaIsoULiftYonedaCompLan_inv_app_app_apply_eq_id (X : C) :
     dsimp% ((compULiftYonedaIsoULiftYonedaCompLan.{w} F).inv.app X).app (op (F.obj X))
@@ -545,10 +544,9 @@ lemma uliftYonedaEquiv_ι_presheafHom (P : Cᵒᵖ ⥤ Type max w v₁ v₂) {X 
 lemma uliftYonedaEquiv_presheafHom_uliftYoneda_obj (X : C) :
     uliftYonedaEquiv.{max w v₂} (presheafHom.{w} φ (uliftYoneda.{max w v₂}.obj X)) =
       ((φ.app X).app (F.op.obj (Opposite.op X)) (ULift.up (𝟙 _))) := by
-  simpa using uliftYonedaEquiv_ι_presheafHom.{w} φ (uliftYoneda.obj X) (𝟙 _)
+  simpa using! uliftYonedaEquiv_ι_presheafHom.{w} φ (uliftYoneda.obj X) (𝟙 _)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
 lemma presheafHom_naturality {P Q : Cᵒᵖ ⥤ Type max w v₁ v₂} (f : P ⟶ Q) :
     presheafHom.{w} φ P ≫ Functor.whiskerLeft F.op (G.map f) = f ≫ presheafHom φ Q :=
@@ -576,7 +574,6 @@ noncomputable def natTrans : F.op.lan ⟶ G where
     rw [Functor.descOfIsLeftKanExtension_fac_assoc, ← reassoc_of% eq,
       Functor.descOfIsLeftKanExtension_fac, presheafHom_naturality]
 
-set_option backward.isDefEq.respectTransparency false in
 lemma natTrans_app_uliftYoneda_obj (X : C) :
     (natTrans.{w} φ).app (uliftYoneda.{max w v₂}.obj X) =
       (compULiftYonedaIsoULiftYonedaCompLan.{w} F).inv.app X ≫ φ.app X := by
@@ -592,7 +589,6 @@ end
 variable [∀ (P : Cᵒᵖ ⥤ Type max w v₁ v₂), F.op.HasLeftKanExtension P]
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- Given a functor `F : C ⥤ D`, this definition is part of the verification that
 `Functor.LeftExtension.mk F.op.lan (compULiftYonedaIsoULiftYonedaCompLan F).hom`
 is universal, i.e. that  `F.op.lan : (Cᵒᵖ ⥤ Type max w v₁ v₂) ⥤ Dᵒᵖ ⥤ Type max w v₁ v₂`
@@ -836,7 +832,6 @@ lemma shrinkYonedaCompWhiskeringLeftObjπCompColimIso_inv_app_apply
   simpa using ConcreteCategory.congr_hom this (shrinkYonedaObjObjEquiv.symm (𝟙 _))
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- The object of the category of elements `shrinkYoneda.{w}.flip.obj (op X)`
 corresponding to the identity of `X` is initial. -/
 noncomputable def isInitialElementsMkShrinkYonedaObjObjEquivId (X : C) :

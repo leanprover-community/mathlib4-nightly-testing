@@ -6,9 +6,24 @@ Authors: Anatole Dedecker, Sharvil Kesarwani
 module
 
 public import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Basic
+public import Mathlib.LinearAlgebra.Quotient.Basic
 
 /-!
 # Continuous linear maps and quotient topological modules
+
+In this file, we collect various continuous linear maps associated to quotient spaces.
+
+## Main definitions
+
+* `Submodule.mkQL S` is the quotient map `M →L[R] M ⧸ S`. In other words, it is
+  `Submodule.mkQ S` bundled as a `ContinuousLinearMap`.
+* `Submodule.liftQL S f h` is the map `M ⧸ S →SL[σ] N` given by `f : M →SL[σ] N` and a proof
+  `h : S ≤ f.ker` that `f` vanishes on `S`. In other words, it is `Submodule.liftQ S f h` bundled
+  as a `ContinuousLinearMap`.
+
+## TODO
+
+* Define `Submodule.mapQL`, the continuous linear bundling of `Submodule.mapQ`.
 -/
 
 @[expose] public section

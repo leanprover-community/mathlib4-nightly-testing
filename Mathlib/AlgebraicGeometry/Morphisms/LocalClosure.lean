@@ -59,6 +59,7 @@ lemma iff_forall_exists [P.RespectsIso] {f : X ⟶ Y} :
 
 variable [W.IsStableUnderBaseChange] [Scheme.IsJointlySurjectivePreserving W]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance [P.RespectsLeft Q] [Q.IsStableUnderBaseChange] :
     (sourceLocalClosure W P).RespectsLeft Q := by
@@ -73,16 +74,18 @@ instance [P.RespectsRight Q] : (sourceLocalClosure W P).RespectsRight Q := by
 
 instance [P.RespectsIso] : (sourceLocalClosure W P).RespectsIso where
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance [P.RespectsIso] [P.RespectsLeft @IsOpenImmersion] :
     IsZariskiLocalAtSource (sourceLocalClosure IsOpenImmersion P) := by
-  refine .mk_of_iff fun f 𝒰 ↦ ?_
+  refine .mk_of_iff_of_zeroHypercover fun f 𝒰 ↦ ?_
   refine ⟨fun ⟨𝒱, h⟩ ↦ fun i ↦ ⟨𝒱.pullback₁ (𝒰.f i), fun j ↦ ?_⟩, fun h ↦ ?_⟩
   · simpa [pullback.condition_assoc] using
       RespectsLeft.precomp (Q := @IsOpenImmersion) _ inferInstance _ (h j)
   · choose 𝒱 h𝒱 using h
-    exact ⟨𝒰.bind 𝒱, fun i ↦ h𝒱 _ _⟩
+    exact ⟨(Scheme.Cover.ulift 𝒰).bind (fun i ↦ Scheme.Cover.ulift (𝒱 _)), fun i ↦ h𝒱 _ _⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance [P.IsStableUnderBaseChange] : (sourceLocalClosure W P).IsStableUnderBaseChange := by
   refine .mk' fun X Y S f g _ ⟨𝒰, hg⟩ ↦ ⟨𝒰.pullback₁ (pullback.snd f g), fun i ↦ ?_⟩
@@ -93,6 +96,7 @@ instance [W.ContainsIdentities] [P.ContainsIdentities] :
     (sourceLocalClosure W P).ContainsIdentities :=
   ⟨fun X ↦ ⟨X.coverOfIsIso (𝟙 X), fun _ ↦ P.id_mem _⟩⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance [W.IsStableUnderComposition] [P.IsStableUnderBaseChange] [P.IsStableUnderComposition] :
     (sourceLocalClosure W P).IsStableUnderComposition := by

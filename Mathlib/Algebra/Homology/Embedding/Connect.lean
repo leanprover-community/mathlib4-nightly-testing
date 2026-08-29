@@ -93,11 +93,12 @@ def d : ∀ (n m : ℤ), X K L n ⟶ X K L m
 @[simp] lemma d_zero_one : h.d 0 1 = L.d 0 1 := rfl
 @[simp] lemma d_sub_two_sub_one : h.d (-2) (-1) = K.d 1 0 := rfl
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma shape (n m : ℤ) (hnm : n + 1 ≠ m) : h.d n m = 0 :=
   match n, m with
   | .ofNat n, .ofNat m => L.shape _ _ (by simp at hnm ⊢; lia)
   | .negSucc n, .negSucc m => by
-    simpa only [d_negSucc] using K.shape n m (by simp at hnm ⊢; lia)
+    simpa only [d_negSucc] using! K.shape n m (by simp at hnm ⊢; lia)
   | .negSucc 0, .ofNat 0 => by simp at hnm
   | .ofNat _, .negSucc m => rfl
   | .negSucc n, .ofNat m => by
@@ -148,11 +149,11 @@ def restrictionGEIso :
     (fun n ↦ h.cochainComplex.restrictionXIso (ComplexShape.embeddingUpIntGE 0)
       (i := n) (i' := n) (by simp)) (by
     rintro n _ rfl
-    dsimp only
     rw [restriction_d_eq (e := (ComplexShape.embeddingUpIntGE 0)) _ (i' := n)
       (j' := (n + 1 : ℕ)) (by simp) (by simp), cochainComplex_d, h.d_ofNat]
     simp)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- If `h : ConnectData K L`, then `h.cochainComplex` identifies to `K` in degrees `≤ -1`. -/
 @[simps!]
@@ -162,7 +163,6 @@ def restrictionLEIso :
     (fun n ↦ h.cochainComplex.restrictionXIso (ComplexShape.embeddingUpIntLE (-1))
         (i := n) (i' := .negSucc n) (by dsimp; lia)) (by
     rintro _ n rfl
-    dsimp only
     rw [restriction_d_eq (e := (ComplexShape.embeddingUpIntLE (-1))) _
       (i' := Int.negSucc (n + 1)) (j' := Int.negSucc n) (by dsimp; lia) (by dsimp; lia),
       cochainComplex_d, d_negSucc]

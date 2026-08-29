@@ -232,7 +232,7 @@ def sheafIsoOfIso (H : X ≅ Y) : Y.2 ≅ H.hom.base _* X.2 where
   hom_inv_id := by
     ext U
     rw [NatTrans.comp_app]
-    simpa using congr_arg (fun f => f ≫ eqToHom _) (congr_app H.inv_hom_id (op U))
+    simpa using! congr_arg (fun f => f ≫ eqToHom _) (congr_app H.inv_hom_id (op U))
   inv_hom_id := by
     ext U
     dsimp
@@ -286,7 +286,7 @@ def ofRestrict {U : TopCat} (X : PresheafedSpace C) {f : U ⟶ (X : TopCat)}
 set_option backward.isDefEq.respectTransparency false in
 instance ofRestrict_mono {U : TopCat} (X : PresheafedSpace C) (f : U ⟶ X.1)
     (hf : IsOpenEmbedding f) : Mono (X.ofRestrict hf) := by
-  haveI : Mono f := (TopCat.mono_iff_injective _).mpr hf.injective
+  have : Mono f := (TopCat.mono_iff_injective _).mpr hf.injective
   constructor
   intro Z g₁ g₂ eq
   ext1
@@ -298,7 +298,7 @@ instance ofRestrict_mono {U : TopCat} (X : PresheafedSpace C) (f : U ⟶ X.1)
     have hV : (Opens.map (X.ofRestrict hf).base).obj (hf.functor.obj V) = V := by
       ext1
       exact Set.preimage_image_eq _ hf.injective
-    haveI :
+    have :
       IsIso (hf.isOpenMap.adjunction.counit.app (unop (op (hf.functor.obj V)))) :=
         NatIso.isIso_app_of_isIso
           (whiskerLeft hf.functor hf.isOpenMap.adjunction.counit) V

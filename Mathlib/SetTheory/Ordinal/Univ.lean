@@ -15,7 +15,7 @@ order type of the ordinals. These are related via `Cardinal.univ.ord = Ordinal.u
 `Ordinal.univ.card = Cardinal.univ`.
 
 The cardinal `Cardinal.univ` is strongly inaccessible. This reflects the fact that in ZFC, the
-cardinals form a proper class. See `IsInaccessible.univ` for a proof.
+cardinals form a proper class. See `Cardinal.IsInaccessible.univ` for a proof.
 
 ## Implementation notes
 
@@ -28,19 +28,21 @@ This makes the basic API easier to set up. See `Cardinal.mk_cardinal` for a proo
 
 universe u v w
 
+set_option linter.checkUnivs false in
 open Ordinal in
 -- intended to be used with explicit universe parameters
 /-- The ordinal `univ.{u, v}` is the order type of `Ordinal.{u}` or `Cardinal.{u}`, as an element of
 `Ordinal.{v}` (when `u < v`). -/
-@[pp_with_univ, nolint checkUnivs]
+@[pp_with_univ]
 def Ordinal.univ : Ordinal.{max (u + 1) v} :=
   lift.{v, u + 1} (typeLT Ordinal)
 
+set_option linter.checkUnivs false in
 open Cardinal in
 -- intended to be used with explicit universe parameters
 /-- The cardinal `univ.{u, v}` is the cardinality of `Ordinal.{u}` or `Cardinal.{u}`, as an element
 of `Cardinal.{v}` (when `u < v`). -/
-@[pp_with_univ, nolint checkUnivs]
+@[pp_with_univ]
 def Cardinal.univ : Cardinal.{max (u + 1) v} :=
   lift.{v, u + 1} #Ordinal
 
@@ -52,7 +54,7 @@ namespace Ordinal
 theorem type_lt_ordinal : typeLT Ordinal = univ.{u, u + 1} :=
   (lift_id _).symm
 
-@[deprecated type_lt_ordinal (since := "2026-03-20")]
+@[deprecated type_lt_ordinal +typeChanged (since := "2026-03-20")]
 theorem univ_id : univ.{u, u + 1} = typeLT Ordinal :=
   lift_id _
 
@@ -100,7 +102,7 @@ theorem liftPrincipalSeg_coe :
 theorem liftPrincipalSeg_top : (liftPrincipalSeg.{u, v}).top = univ.{u, v} :=
   rfl
 
-@[deprecated liftPrincipalSeg_top (since := "2026-03-20")]
+@[deprecated liftPrincipalSeg_top +typeChanged (since := "2026-03-20")]
 theorem liftPrincipalSeg_top' : liftPrincipalSeg.{u, u + 1}.top = typeLT Ordinal := by
   simp
 
@@ -118,7 +120,7 @@ namespace Cardinal
 theorem mk_ordinal : #Ordinal = univ.{u, u + 1} :=
   (lift_id _).symm
 
-@[deprecated mk_ordinal (since := "2026-04-22")]
+@[deprecated mk_ordinal +typeChanged (since := "2026-04-22")]
 theorem univ_id : univ.{u, u + 1} = #Ordinal :=
   lift_id _
 
@@ -130,7 +132,8 @@ theorem univ_umax : univ.{u, max (u + 1) v} = univ.{u, v} :=
   congr_fun lift_umax _
 
 theorem lift_lt_univ (c : Cardinal) : lift.{u + 1, u} c < univ.{u, u + 1} := by
-  simpa only [Ordinal.liftPrincipalSeg_coe, lift_ord, lift_succ, ord_le, Order.succ_le_iff] using
+  simpa only [Ordinal.liftPrincipalSeg_coe, lift_ord, Cardinal.lift_succ, ord_le,
+    Order.succ_le_iff] using!
     le_of_lt (Ordinal.liftPrincipalSeg.{u, u + 1}.lt_top (Order.succ c).ord)
 
 theorem lift_lt_univ' (c : Cardinal) : lift.{max (u + 1) v, u} c < univ.{u, v} := by

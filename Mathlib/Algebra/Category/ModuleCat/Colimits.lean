@@ -41,7 +41,6 @@ namespace HasColimit
 variable [HasColimit (F ⋙ forget₂ _ AddCommGrpCat)]
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- The induced scalar multiplication on
 `colimit (F ⋙ forget₂ _ AddCommGrpCat)`. -/
 @[simps]
@@ -178,7 +177,7 @@ def finsuppCoconeIsColimit : IsColimit (finsuppCocone R M ι) where
   fac := by aesop (add simp finsuppCocone)
   uniq s f h := by
     ext : 1
-    exact Finsupp.lhom_ext' fun i ↦ LinearMap.ext fun x ↦ by simpa using congr($(h ⟨i⟩) (x : M))
+    exact Finsupp.lhom_ext' fun i ↦ LinearMap.ext fun x ↦ by simpa using! congr($(h ⟨i⟩) (x : M))
 
 end
 

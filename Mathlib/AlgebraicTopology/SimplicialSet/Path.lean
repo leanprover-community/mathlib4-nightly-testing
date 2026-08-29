@@ -25,7 +25,9 @@ of length `n`.
 
 universe v u
 
-open CategoryTheory Opposite Simplicial SimplexCategory
+open CategoryTheory Opposite SimplexCategory
+
+open scoped Simplicial
 
 namespace SSet
 namespace Truncated
@@ -373,7 +375,7 @@ def horn.spineId {n : ℕ} (i : Fin (n + 3))
     (h₀ : 0 < i) (hₙ : i < Fin.last (n + 2)) :
     Path (Λ[n + 2, i] : SSet.{u}) (n + 2) :=
   Λ[n + 2, i].liftPath (stdSimplex.spineId (n + 2)) (by simp) (fun j ↦ by
-    convert (horn.primitiveEdge.{u} h₀ hₙ j).2
+    convert! (horn.primitiveEdge.{u} h₀ hₙ j).2
     ext a
     fin_cases a <;> rfl)
 

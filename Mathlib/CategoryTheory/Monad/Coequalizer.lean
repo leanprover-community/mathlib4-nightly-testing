@@ -67,7 +67,6 @@ theorem FreeCoequalizer.condition :
   Algebra.Hom.ext X.assoc.symm
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 instance : IsReflexivePair (FreeCoequalizer.topMap X) (FreeCoequalizer.bottomMap X) := by
   apply IsReflexivePair.mk' _ _ _
   · apply (free T).map (T.η.app X.A)
@@ -99,7 +98,7 @@ def beckAlgebraCoequalizer : IsColimit (beckAlgebraCofork X) :=
       rw [Functor.map_comp, Category.assoc, h₂, Monad.right_unit_assoc,
         show X.a ≫ _ ≫ _ = _ from T.η.naturality_assoc _ _, h₁, Monad.left_unit_assoc]
     · ext
-      simpa [← T.η.naturality_assoc, T.left_unit_assoc] using T.η.app ((T : C ⥤ C).obj X.A) ≫= h₁
+      simpa [← T.η.naturality_assoc, T.left_unit_assoc] using! T.η.app ((T : C ⥤ C).obj X.A) ≫= h₁
     · intro m hm
       ext
       dsimp only

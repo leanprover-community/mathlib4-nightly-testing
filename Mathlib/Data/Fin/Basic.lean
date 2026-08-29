@@ -9,6 +9,7 @@ public import Mathlib.Data.Int.DivMod
 public import Mathlib.Order.Lattice
 public import Mathlib.Tactic.Common
 public import Batteries.Data.Fin.Basic
+public import Mathlib.Tactic.Attr.Core
 
 /-!
 # The finite type with `n` elements
@@ -83,6 +84,21 @@ lemma ne_zero_of_lt {a b : Fin (n + 1)} (hab : a < b) : b ≠ 0 :=
 
 lemma ne_last_of_lt {a b : Fin (n + 1)} (hab : a < b) : a ≠ last n :=
   Fin.ne_of_lt <| Fin.lt_of_lt_of_le hab b.le_last
+
+lemma ne_last_of_ne_last_of_le {a b : Fin (n + 1)} (hb : b ≠ last n) (hab : a ≤ b) :
+    a ≠ last n := by
+  intro rfl
+  exact Nat.not_lt_of_le hab (lt_last_iff_ne_last.mpr hb)
+
+lemma val_sub_lt_of_lt_of_le {a b : Fin n} (ha : a.val < m) (hab : b ≤ a) :
+    (a - b).val < m := by
+  rw [Fin.sub_val_of_le hab]
+  exact sub_lt_of_lt ha
+
+lemma sub_ne_last_of_ne_last_of_le {a b : Fin (n + 1)} (ha : a ≠ last n) (hab : b ≤ a) :
+    a - b ≠ last n := by
+  rw [← lt_last_iff_ne_last, lt_def]
+  exact val_sub_lt_of_lt_of_le (val_lt_last ha) hab
 
 /-- Equivalence between `Fin n` and `{ i // i < n }`. -/
 @[simps apply symm_apply]
@@ -481,7 +497,7 @@ theorem coe_neg_one : ↑(-1 : Fin (n + 1)) = n := by
   cases n
   · simp
   rw [Fin.val_neg', Fin.val_one, Nat.add_one_sub_one, Nat.mod_eq_of_lt]
-  constructor
+  exact Nat.lt_add_one _
 
 theorem last_sub (i : Fin (n + 1)) : last n - i = Fin.rev i :=
   Fin.ext <| by rw [coe_sub_iff_le.2 i.le_last, val_last, val_rev, Nat.succ_sub_succ_eq_sub]
@@ -529,9 +545,9 @@ theorem val_add_one_of_lt' {n : ℕ} {i : Fin n} (h : i + 1 < n) :
   simpa [add_def] using Nat.mod_eq_of_lt (by lia)
 
 instance [NeZero n] [NeZero ofNat(m)] : NeZero (ofNat(m) : Fin (n + ofNat(m))) := by
-  suffices m % (n + m) = m by simpa [neZero_iff, Fin.ext_iff, OfNat.ofNat, this] using NeZero.ne m
+  suffices m % (n + m) = m by simpa [neZero_iff, Fin.ext_iff, OfNat.ofNat, this] using! NeZero.ne m
   apply Nat.mod_eq_of_lt
-  simpa using zero_lt_of_ne_zero (NeZero.ne n)
+  simpa using! zero_lt_of_ne_zero (NeZero.ne n)
 
 section Mul
 

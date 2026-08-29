@@ -164,7 +164,7 @@ theorem f_invApp_f_app (i j k : D.J) (U : Opens (D.V (i, j)).carrier) :
   erw [(π₁ i, j, k).c.naturality_assoc, reassoc_of% this, ← Functor.map_comp_assoc,
     IsOpenImmersion.inv_naturality_assoc, IsOpenImmersion.app_invApp_assoc, ←
     (D.V (i, k)).presheaf.map_comp, ← (D.V (i, k)).presheaf.map_comp]
-  convert (Category.comp_id _).symm
+  convert! (Category.comp_id _).symm
   erw [(D.V (i, k)).presheaf.map_id]
   rfl
 
@@ -180,7 +180,7 @@ theorem snd_invApp_t_app' (i j k : D.J) (U : Opens (pullback (D.f i j) (D.f i k)
   fconstructor
   -- Porting note: I don't know what the magic was in Lean3 proof, it just skipped the proof of `eq`
   · delta IsOpenImmersion.opensFunctor IsOpenEmbedding.functor
-    dsimp only [Functor.op, Opens.map, IsOpenMap.functor, unop_op, Opens.coe_mk]
+    dsimp only [Functor.op, Opens.map_def, IsOpenMap.functor, unop_op, Opens.coe_mk]
     congr 2
     have := (𝖣.t_fac k i j).symm
     rw [← IsIso.inv_comp_eq] at this
@@ -296,7 +296,6 @@ theorem opensImagePreimageMap_app (i j k : D.J) (U : Opens (D.U i).carrier) :
           (D.V (j, k)).presheaf.map (eqToHom (opensImagePreimageMap_app' D i j k U).choose) :=
   (opensImagePreimageMap_app' D i j k U).choose_spec
 
-set_option backward.isDefEq.respectTransparency false in
 -- This is proved separately since `reassoc` somehow timeouts.
 theorem opensImagePreimageMap_app_assoc (i j k : D.J) (U : Opens (D.U i).carrier) {X' : C}
     (f' : _ ⟶ X') :
@@ -400,7 +399,7 @@ theorem ιInvApp_π {i : D.J} (U : Opens (D.U i).carrier) :
     simp only [SetLike.mem_coe, unop_op, Set.mem_preimage, Set.mem_image]
     refine ⟨fun h => ⟨_, h, rfl⟩, ?_⟩
     rintro ⟨y, h1, h2⟩
-    convert h1 using 1
+    convert! h1 using 1
     delta ι Multicoequalizer.π at h2
     apply_fun (D.ι _).base
     · exact h2.symm
@@ -449,7 +448,7 @@ theorem π_ιInvApp_π (i j : D.J) (U : Opens (D.U i).carrier) :
     iterate 3 rw [← Functor.map_comp_assoc]
     rw [NatTrans.naturality_assoc]
     erw [← (D.V (i, j)).presheaf.map_comp]
-    convert
+    convert!
       limit.w (componentwiseDiagram 𝖣.diagram.multispan _)
         (Quiver.Hom.op (WalkingMultispan.Hom.fst (i, j)))
   · rw [Category.comp_id]
@@ -462,6 +461,7 @@ theorem π_ιInvApp_π (i j : D.J) (U : Opens (D.U i).carrier) :
     · have : IsIso (D.t i j).c := by apply c_isIso_of_iso
       infer_instance
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- `ιInvApp` is the inverse of `D.ι i` on `U`. -/
 theorem π_ιInvApp_eq_id (i : D.J) (U : Opens (D.U i).carrier) :
     D.diagramOverOpenπ U i ≫ D.ιInvAppπEqMap U ≫ D.ιInvApp U = 𝟙 _ := by
@@ -478,6 +478,7 @@ theorem π_ιInvApp_eq_id (i : D.J) (U : Opens (D.U i).carrier) :
     rw [Category.id_comp]
     apply π_ιInvApp_π
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance componentwise_diagram_π_isIso (i : D.J) (U : Opens (D.U i).carrier) :
     IsIso (D.diagramOverOpenπ U i) := by
   use D.ιInvAppπEqMap U ≫ D.ιInvApp U

@@ -191,7 +191,6 @@ instance (priority := 100) hasStrictInitialObjects_of_finitaryPreExtensive
       dsimp
       infer_instance)).some)
 
-set_option backward.isDefEq.respectTransparency false in
 theorem finitaryExtensive_iff_of_isTerminal (C : Type u) [Category.{v} C] [HasFiniteCoproducts C]
     [HasPullbacksOfInclusions C]
     (T : C) (HT : IsTerminal T) (c₀ : BinaryCofan T T) (hc₀ : IsColimit c₀) :
@@ -207,6 +206,7 @@ theorem finitaryExtensive_iff_of_isTerminal (C : Type u) [Category.{v} C] [HasFi
   obtain ⟨hl, hr⟩ := (H c (HT.from _) (HT.from _) d hd.symm hd'.symm).mp ⟨hc⟩
   rw [hl.paste_vert_iff hX.symm, hr.paste_vert_iff hY.symm]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance types.finitaryExtensive : FinitaryExtensive (Type u) := by
   classical
@@ -255,7 +255,7 @@ instance types.finitaryExtensive : FinitaryExtensive (Type u) := by
       rcases f x with (⟨⟨⟩⟩ | ⟨⟨⟩⟩)
       exacts [Or.inl rfl, Or.inr rfl]
     let eX : { p : Z × PUnit // f p.fst = Sum.inl p.snd } ≃ { x : Z // f x = Sum.inl PUnit.unit } :=
-      ⟨fun p => ⟨p.1.1, by convert p.2⟩, fun x => ⟨⟨_, _⟩, x.2⟩, fun _ => by ext; rfl,
+      ⟨fun p => ⟨p.1.1, by convert! p.2⟩, fun x => ⟨⟨_, _⟩, x.2⟩, fun _ => by ext; rfl,
         fun _ => by ext; rfl⟩
     let eY : { p : Z × PUnit // f p.fst = Sum.inr p.snd } ≃ { x : Z // f x = Sum.inr PUnit.unit } :=
       ⟨fun p => ⟨p.1.1, p.2.trans (congr_arg Sum.inr <| Subsingleton.elim _ _)⟩,
@@ -303,11 +303,12 @@ noncomputable def finitaryExtensiveTopCatAux (Z : TopCat.{u})
     · rintro x ⟨⟨⟩, hx⟩; refine ⟨⟨⟨x, PUnit.unit⟩, hx.symm⟩, rfl⟩
   refine ((TopCat.binaryCofan_isColimit_iff _).mpr ⟨?_, ?_, ?_⟩).some
   · refine ⟨(Homeomorph.prodPUnit Z).isEmbedding.comp .subtypeVal, ?_⟩
-    convert f.hom.2.1 _ isOpen_range_inl
+    convert! f.hom.2.1 _ isOpen_range_inl
   · refine ⟨(Homeomorph.prodPUnit Z).isEmbedding.comp .subtypeVal, ?_⟩
-    convert f.hom.2.1 _ isOpen_range_inr
-  · convert Set.isCompl_range_inl_range_inr.preimage f
+    convert! f.hom.2.1 _ isOpen_range_inr
+  · convert! Set.isCompl_range_inl_range_inr.preimage f
 
+set_option backward.isDefEq.respectTransparency.types false in
 instance finitaryExtensive_TopCat : FinitaryExtensive TopCat.{u} := by
   rw [finitaryExtensive_iff_of_isTerminal TopCat.{u} _ TopCat.isTerminalPUnit _
       (TopCat.binaryCofanIsColimit _ _)]
@@ -331,7 +332,7 @@ instance finitaryExtensive_TopCat : FinitaryExtensive TopCat.{u} := by
         fun {l'} h₁ _ => TopCat.ext fun x =>
           hl' x (l' x) (ConcreteCategory.congr_hom h₁ x).symm⟩
       apply (IsEmbedding.inl (X := X') (Y := Y')).isInducing.continuous_iff.mpr
-      convert s.fst.hom.2 using 1
+      convert! s.fst.hom.2 using 1
       exact (funext hl).symm
     · refine ⟨⟨hαY.symm⟩, ⟨PullbackCone.isLimitAux' _ ?_⟩⟩
       intro s
@@ -349,7 +350,7 @@ instance finitaryExtensive_TopCat : FinitaryExtensive TopCat.{u} := by
         fun {l'} h₁ _ =>
           TopCat.ext fun x => hl' x (l' x) (ConcreteCategory.congr_hom h₁ x).symm⟩
       apply (IsEmbedding.inr (X := X') (Y := Y')).isInducing.continuous_iff.mpr
-      convert s.fst.hom.2 using 1
+      convert! s.fst.hom.2 using 1
       exact (funext hl).symm
   · intro Z f
     exact finitaryExtensiveTopCatAux Z f
@@ -420,8 +421,8 @@ theorem finitaryExtensive_of_preserves_and_reflects_isomorphism (F : C ⥤ D) [F
     [HasFiniteCoproducts C] [HasPullbacks C] [PreservesLimitsOfShape WalkingCospan F]
     [PreservesColimitsOfShape (Discrete WalkingPair) F] [F.ReflectsIsomorphisms] :
     FinitaryExtensive C := by
-  haveI : ReflectsLimitsOfShape WalkingCospan F := reflectsLimitsOfShape_of_reflectsIsomorphisms
-  haveI : ReflectsColimitsOfShape (Discrete WalkingPair) F :=
+  have : ReflectsLimitsOfShape WalkingCospan F := reflectsLimitsOfShape_of_reflectsIsomorphisms
+  have : ReflectsColimitsOfShape (Discrete WalkingPair) F :=
     reflectsColimitsOfShape_of_reflectsIsomorphisms
   exact finitaryExtensive_of_preserves_and_reflects F
 
@@ -504,7 +505,7 @@ lemma FinitaryPreExtensive.hasPullbacks_of_is_coproduct [FinitaryPreExtensive C]
       · simp only [coprod.desc_comp, colimit.ι_desc, Cofan.mk_ι_app,
           eqToHom_refl, Category.id_comp, dite_true, BinaryCofan.ι_app_right,
           BinaryCofan.mk_inr, colimit.ι_desc_assoc, Discrete.functor_obj, Category.comp_id]
-        exact dif_neg j.prop }
+        exact dite_eq_right j.prop }
   let e' : c.pt ≅ f i ⨿ (∐ fun j : ({i}ᶜ : Set ι) ↦ f j) :=
     hc.coconePointUniqueUpToIso (getColimitCocone _).2 ≪≫ e
   have : coprod.inl ≫ e'.inv = c.ι.app ⟨i⟩ := by
@@ -587,7 +588,6 @@ instance FinitaryPreExtensive.isIso_sigmaDesc_map [HasPullbacks C] [FinitaryPreE
   · exact pullback.isLimit (Sigma.desc f) (Sigma.desc g)
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 /-- If `C` has pullbacks and is finitary (pre-)extensive, pullbacks distribute over finite
 coproducts, i.e., `∐ (Xᵢ ×[S] Xⱼ) ≅ (∐ Xᵢ) ×[S] (∐ Xⱼ)`.
 For a variant, see `FinitaryPreExtensive.isIso_sigmaDesc_map`. -/
@@ -598,11 +598,12 @@ lemma FinitaryPreExtensive.isPullback_sigmaDesc [HasPullbacks C] [FinitaryPreExt
       (Limits.Sigma.desc fun (p : ι × ι') ↦ pullback.fst (f p.1) (g p.2) ≫ Sigma.ι X p.1)
       (Limits.Sigma.desc fun (p : ι × ι') ↦ pullback.snd (f p.1) (g p.2) ≫ Sigma.ι Y p.2)
       (Limits.Sigma.desc f) (Limits.Sigma.desc g) := by
-  convert IsUniversalColimit.isPullback_prod_of_isColimit
-      (d := Cofan.mk _ (Sigma.ι fun (p : ι × ι') ↦ pullback (f p.1) (g p.2)))
-      (hd := coproductIsCoproduct (fun (p : ι × ι') ↦ pullback (f p.1) (g p.2)))
-      (a := Cofan.mk _ <| fun i ↦ Sigma.ι _ i) (b := Cofan.mk _ <| fun i ↦ Sigma.ι _ i)
-      ?_ ?_ f g (Sigma.desc f) (Sigma.desc g) (fun i j ↦ IsPullback.of_hasPullback (f i) (g j))
+  convert!
+    IsUniversalColimit.isPullback_prod_of_isColimit (d :=
+      Cofan.mk _ (Sigma.ι fun (p : ι × ι') ↦ pullback (f p.1) (g p.2))) (hd :=
+      coproductIsCoproduct (fun (p : ι × ι') ↦ pullback (f p.1) (g p.2))) (a :=
+      Cofan.mk _ <| fun i ↦ Sigma.ι _ i) (b := Cofan.mk _ <| fun i ↦ Sigma.ι _ i) ?_ ?_ f g
+      (Sigma.desc f) (Sigma.desc g) (fun i j ↦ IsPullback.of_hasPullback (f i) (g j))
   · ext
     simp [Cofan.IsColimit.desc, Sigma.ι, coproductIsCoproduct]
   · ext

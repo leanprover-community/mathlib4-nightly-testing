@@ -256,8 +256,7 @@ lemma le_of_iSup_eq_top {I J : X.IdealSheafData} {ι : Type*}
   refine Submodule.le_of_isLocalized_span _ this (fun i ↦ Γ(X, X.basicOpen i.1))
     (fun i ↦ Algebra.linearMap Γ(X, V.1) Γ(X, X.basicOpen i.1)) ?_
   rintro ⟨_, j, rfl⟩
-  dsimp
-  simp +instances only [← Submodule.restrictScalars_localized' Γ(X, X.basicOpen (r j)),
+  simp only [← Submodule.restrictScalars_localized' Γ(X, X.basicOpen (r j)),
     Ideal.localized'_eq_map, RingHom.algebraMap_toAlgebra]
   erw [I.map_ideal (U := ⟨_, V.2.basicOpen _⟩) (X.basicOpen_le (r j)),
     J.map_ideal (U := ⟨_, V.2.basicOpen _⟩) (X.basicOpen_le (r j))]
@@ -388,6 +387,7 @@ lemma support_antitone : Antitone (support (X := X)) := by
     J.coe_support_eq_eq_iInter_zeroLocus]
   exact Set.iInter_mono fun U ↦ X.zeroLocus_mono (h U)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma support_eq_bot_iff : support I = ⊥ ↔ I = ⊤ := by
   refine ⟨fun H ↦ top_le_iff.mp fun U ↦ ?_, by simp +contextual⟩
@@ -571,13 +571,13 @@ noncomputable nonrec def vanishingIdeal (Z : Closeds X) : IdealSheafData X :=
       · rw [Ideal.map_le_iff_le_comap]
         intro x hx
         suffices ∀ p, (X.affineBasicOpen f).2.fromSpec p ∈ Z → F.hom x ∈ p.asIdeal by
-          simpa [PrimeSpectrum.mem_vanishingIdeal] using this
+          simpa [PrimeSpectrum.mem_vanishingIdeal] using! this
         intro x hxZ
         refine (PrimeSpectrum.mem_vanishingIdeal _ _).mp hx
           (Spec.map (X.presheaf.map (homOfLE _).op) x) ?_
         rwa [Set.mem_preimage, ← Scheme.Hom.comp_apply,
           IsAffineOpen.map_fromSpec _ (X.affineBasicOpen f).2]
-      · letI : Algebra Γ(X, U) Γ(X, X.affineBasicOpen f) := F.hom.toAlgebra
+      · let : Algebra Γ(X, U) Γ(X, X.affineBasicOpen f) := F.hom.toAlgebra
         have : IsLocalization.Away f Γ(X, X.basicOpen f) :=
           U.2.isLocalization_of_eq_basicOpen _ _ rfl
         intro x hx
@@ -770,6 +770,7 @@ lemma Hom.range_subset_ker_support (f : X ⟶ Y) :
 lemma Hom.ker_eq_top_iff_isEmpty (f : X.Hom Y) : f.ker = ⊤ ↔ IsEmpty X :=
   ⟨fun H ↦ by simpa [H] using f.range_subset_ker_support, fun _ ↦ ker_eq_top_of_isEmpty f⟩
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma Hom.iInf_ker_openCover_map_comp_apply
     (f : X.Hom Y) [QuasiCompact f] (𝒰 : X.OpenCover) (U : Y.affineOpens) :
     ⨅ i, (𝒰.f i ≫ f).ker.ideal U = f.ker.ideal U := by
@@ -787,7 +788,7 @@ lemma Hom.iInf_ker_openCover_map_comp_apply
     Scheme.Hom.appIso_hom']
   simp only [homOfLE_leOfHom, Scheme.Hom.app_eq_appLE, ← RingHom.comp_apply,
     ← CommRingCat.hom_comp, Scheme.Hom.appLE_map, Scheme.Hom.appLE_comp_appLE]
-  simpa [Scheme.Hom.appLE] using ideal_ker_le _ _ (Ideal.mem_iInf.mp hs i)
+  simpa [Scheme.Hom.appLE] using! ideal_ker_le _ _ (Ideal.mem_iInf.mp hs i)
 
 lemma Hom.iInf_ker_openCover_map_comp (f : X ⟶ Y) [QuasiCompact f] (𝒰 : X.OpenCover) :
     ⨅ i, (𝒰.f i ≫ f).ker = f.ker := by
@@ -816,7 +817,7 @@ lemma ker_morphismRestrict_ideal (f : X.Hom Y) [QuasiCompact f]
     (U : Y.Opens) (V : U.toScheme.affineOpens) :
     (f ∣_ U).ker.ideal V = f.ker.ideal ⟨U.ι ''ᵁ V, V.2.image_of_isOpenImmersion _⟩ := by
   ext x
-  simpa [Scheme.Hom.appLE] using map_eq_zero_iff _
+  simpa [Scheme.Hom.appLE] using! map_eq_zero_iff _
     (ConcreteCategory.bijective_of_isIso
       (X.presheaf.map (eqToHom (image_morphismRestrict_preimage f U V)).op)).1
 
@@ -840,6 +841,7 @@ lemma ker_ideal_of_isPullback_of_isOpenImmersion {X Y U V : Scheme.{u}}
     ← CommRingCat.hom_comp, this]
   simpa using (map_eq_zero_iff _ (ConcreteCategory.bijective_of_isIso e.inv).1).symm
 
+set_option backward.isDefEq.respectTransparency.types false in
 lemma Hom.support_ker (f : X ⟶ Y) [QuasiCompact f] :
     f.ker.support = closure (Set.range f) := by
   apply subset_antisymm
@@ -894,7 +896,7 @@ variable (X) in
 @[simp]
 lemma ker_toSpecΓ [CompactSpace X] : X.toSpecΓ.ker = ⊥ := by
   apply IdealSheafData.ext_of_isAffine
-  simpa using RingHom.ker_coe_equiv (ΓSpecIso Γ(X, ⊤)).commRingCatIsoToRingEquiv
+  simpa using! RingHom.ker_coe_equiv (ΓSpecIso Γ(X, ⊤)).commRingCatIsoToRingEquiv
 
 end ker
 

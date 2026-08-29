@@ -56,12 +56,11 @@ theorem app_p_comm : P.p.app X ≫ f.f.app X = f.f.app X ≫ Q.p.app X :=
 
 variable (J C)
 
-set_option backward.isDefEq.respectTransparency false in
 instance functor_category_isIdempotentComplete [IsIdempotentComplete C] :
     IsIdempotentComplete (J ⥤ C) := by
   refine ⟨fun F p hp => ?_⟩
   have hC := (isIdempotentComplete_iff_hasEqualizer_of_id_and_idempotent C).mp inferInstance
-  haveI : ∀ j : J, HasEqualizer (𝟙 _) (p.app j) := fun j => hC _ _ (congr_app hp j)
+  have : ∀ j : J, HasEqualizer (𝟙 _) (p.app j) := fun j => hC _ _ (congr_app hp j)
   /- We construct the direct factor `Y` associated to `p : F ⟶ F` by computing
       the equalizer of the identity and `p.app j` on each object `(j : J)`. -/
   let Y : J ⥤ C :=
@@ -74,7 +73,7 @@ instance functor_category_isIdempotentComplete [IsIdempotentComplete C] :
       naturality := fun _ _ _ => by rw [equalizer.lift_ι] }
   let e : F ⟶ Y :=
     { app := fun j =>
-        equalizer.lift (p.app j) (by simpa only [comp_id] using (congr_app hp j).symm)
+        equalizer.lift (p.app j) (by simpa only [comp_id] using! (congr_app hp j).symm)
       naturality := fun j j' φ => equalizer.hom_ext (by simp [Y]) }
   use Y, i, e
   constructor
@@ -138,6 +137,7 @@ instance : (karoubiFunctorCategoryEmbedding J C).Faithful where
     ext j
     exact hom_ext_iff.mp (congr_app h j)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The composition of `(J ⥤ C) ⥤ Karoubi (J ⥤ C)` and `Karoubi (J ⥤ C) ⥤ (J ⥤ Karoubi C)`
 equals the functor `(J ⥤ C) ⥤ (J ⥤ Karoubi C)` given by the composition with
