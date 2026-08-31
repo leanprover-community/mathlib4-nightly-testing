@@ -48,7 +48,7 @@ structure NormedAddGroupHom (V W : Type*) [SeminormedAddCommGroup V]
 namespace AddMonoidHom
 
 variable {V W : Type*} [SeminormedAddCommGroup V] [SeminormedAddCommGroup W]
-  {f g : NormedAddGroupHom V W}
+  {f : NormedAddGroupHom V W}
 
 /-- Associate to a group homomorphism a bounded group homomorphism under a norm control condition.
 
@@ -208,7 +208,8 @@ theorem le_opNorm (x : V₁) : ‖f x‖ ≤ ‖f‖ * ‖x‖ := by
   obtain ⟨C, _Cpos, hC⟩ := f.bound
   replace hC := hC x
   by_cases h : ‖x‖ = 0
-  · rwa [h, mul_zero] at hC ⊢
+  · rw [h, mul_zero] at hC ⊢
+    assumption
   have hlt : 0 < ‖x‖ := lt_of_le_of_ne (norm_nonneg x) (Ne.symm h)
   exact
     (div_le_iff₀ hlt).mp

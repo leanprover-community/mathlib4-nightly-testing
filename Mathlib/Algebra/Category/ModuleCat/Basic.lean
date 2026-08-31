@@ -218,7 +218,7 @@ end
 definitional equality issues. -/
 lemma forget_obj {M : ModuleCat.{v} R} : (forget (ModuleCat.{v} R)).obj M = M := rfl
 
-@[deprecated ConcreteCategory.forget_map_eq_ofHom (since := "2026-03-02")]
+@[deprecated ConcreteCategory.forget_map_eq_ofHom +typeChanged (since := "2026-03-02")]
 lemma forget_map {M N : ModuleCat.{v} R} (f : M ⟶ N) :
     (forget (ModuleCat.{v} R)).map f = (f : _ → _) :=
   rfl
@@ -287,7 +287,7 @@ variable {X Y : ModuleCat R}
 
 /-- Build a `LinearEquiv` from an isomorphism in the category `ModuleCat R`. -/
 def toLinearEquiv (i : X ≅ Y) : X ≃ₗ[R] Y :=
-  .ofLinear i.hom.hom i.inv.hom (by aesop) (by aesop)
+  .ofLinearMap i.hom.hom i.inv.hom (by aesop) (by aesop)
 
 @[simp] lemma toLinearEquiv_apply (i : X ≅ Y) (x : X) : i.toLinearEquiv x = i.hom x := rfl
 @[simp] lemma toLinearEquiv_symm (i : X ≅ Y) : i.toLinearEquiv.symm = i.symm.toLinearEquiv := rfl
@@ -495,7 +495,6 @@ variable (M N : ModuleCat.{v} R)
   map_mul' _ _ := rfl
   map_add' _ _ := rfl
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The scalar multiplication on an object of `ModuleCat R` considered as
 a morphism of rings from `R` to the endomorphisms of the underlying abelian group. -/
 def smul : R →+* End ((forget₂ (ModuleCat R) AddCommGrpCat).obj M) where

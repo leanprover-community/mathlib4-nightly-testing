@@ -130,7 +130,7 @@ theorem veblenWith_add_one (o : Ordinal) : veblenWith f (o + 1) = deriv (veblenW
 theorem veblenWith_one : veblenWith f 1 = deriv f := by
   simpa using veblenWith_add_one hf 0
 
-@[deprecated veblenWith_add_one (since := "2026-02-26")]
+@[deprecated veblenWith_add_one +typeChanged (since := "2026-02-26")]
 theorem veblenWith_succ (o : Ordinal) : veblenWith f (succ o) = deriv (veblenWith f o) :=
   veblenWith_add_one hf o
 
@@ -310,7 +310,7 @@ theorem veblen_mem_range_opow (o a : Ordinal) : veblen o a ∈ range (ω ^ · : 
 theorem veblen_add_one (o : Ordinal) : veblen (o + 1) = deriv (veblen o) :=
   veblenWith_add_one (isNormal_opow one_lt_omega0) o
 
-@[deprecated veblen_add_one (since := "2026-02-26")]
+@[deprecated veblen_add_one +typeChanged (since := "2026-02-26")]
 theorem veblen_succ (o : Ordinal) : veblen (succ o) = deriv (veblen o) :=
   veblen_add_one o
 
@@ -554,8 +554,12 @@ theorem epsilon_zero_eq_nfp : ε₀ = nfp (fun a ↦ ω ^ a) 0 := by
 @[deprecated (since := "2026-02-02")]
 alias epsilon0_eq_nfp := epsilon_zero_eq_nfp
 
+theorem epsilon_add_one_eq_nfp (o : Ordinal) : ε_ (o + 1) = nfp (fun a ↦ ω ^ a) (ε_ o + 1) := by
+  simp [epsilon_eq_deriv, deriv_add_one]
+
+@[deprecated epsilon_add_one_eq_nfp +typeChanged (since := "2026-06-18")]
 theorem epsilon_succ_eq_nfp (o : Ordinal) : ε_ (succ o) = nfp (fun a ↦ ω ^ a) (succ (ε_ o)) := by
-  rw [epsilon_eq_deriv, epsilon_eq_deriv, deriv_succ]
+  simpa [succ_eq_add_one] using epsilon_add_one_eq_nfp o
 
 theorem epsilon_zero_le_of_omega0_opow_le (h : ω ^ o ≤ o) : ε₀ ≤ o := by
   rw [epsilon_zero_eq_nfp]
@@ -650,8 +654,12 @@ theorem gamma_zero_eq_nfp : Γ₀ = nfp (veblen · 0) 0 :=
 @[deprecated (since := "2026-02-02")]
 alias gamma0_eq_nfp := gamma_zero_eq_nfp
 
+theorem gamma_add_one_eq_nfp (o : Ordinal) : Γ_ (o + 1) = nfp (veblen · 0) (Γ_ o + 1) :=
+  by simp [gamma, deriv_add_one]
+
+@[deprecated gamma_add_one_eq_nfp +typeChanged (since := "2026-06-18")]
 theorem gamma_succ_eq_nfp (o : Ordinal) : Γ_ (succ o) = nfp (veblen · 0) (succ (Γ_ o)) :=
-  deriv_succ _ _
+  by simpa [succ_eq_add_one] using gamma_add_one_eq_nfp o
 
 theorem gamma_zero_le_of_veblen_le (h : veblen o 0 ≤ o) : Γ₀ ≤ o := by
   rw [gamma_zero_eq_nfp]

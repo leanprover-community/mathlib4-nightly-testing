@@ -9,6 +9,7 @@ public import Mathlib.RingTheory.MvPolynomial.Symmetric.Defs
 public import Mathlib.RingTheory.MvPolynomial.Tower
 public import Mathlib.Data.Finsupp.Notation
 public import Mathlib.Data.Finsupp.WellFounded
+public import Mathlib.Algebra.MvPolynomial.Variables
 
 /-!
 # The Fundamental Theorem of Symmetric Polynomials
@@ -113,8 +114,7 @@ lemma accumulate_invAccumulate {n m} (hmn : m ≤ n) {s : Fin m → ℕ} (hs : A
     exact Nat.sub_add_cancel (hs i.le_succ)
   · have := (Nat.sub_one_add_one <| Nat.ne_zero_of_lt hm).symm
     rw [accumulate_last (hm.trans_le hmn) this, invAccumulate, dite_eq_left hm,
-      dite_eq_right this.not_gt,
-      Nat.sub_zero]
+      dite_eq_right this.not_gt, Nat.sub_zero]
     intro j hj
     rw [invAccumulate, dite_eq_right hj.not_gt, Nat.zero_sub]
 
@@ -169,7 +169,7 @@ lemma esymmAlgHomMonomial_single_one :
 
 lemma esymmAlgHomMonomial_add {t s : Fin n →₀ ℕ} :
     esymmAlgHomMonomial σ (t + s) r = esymmAlgHomMonomial σ t r * esymmAlgHomMonomial σ s 1 := by
-  simp_rw [esymmAlgHomMonomial, esymmAlgHom_apply, ← map_mul, monomial_mul, mul_one]
+  simp_rw [esymmAlgHomMonomial, esymmAlgHom_apply, ← map_mul, monomial_mul_monomial, mul_one]
 
 lemma esymmAlgHom_zero : esymmAlgHomMonomial σ (0 : Fin n →₀ ℕ) r = C r := by
   rw [esymmAlgHomMonomial, monomial_zero', esymmAlgHom_apply, aeval_C, algebraMap_eq]

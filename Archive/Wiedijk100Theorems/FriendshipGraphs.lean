@@ -3,8 +3,10 @@ Copyright (c) 2020 Aaron Anderson. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Aaron Anderson, Jalex Stark, Kyle Miller
 -/
-import Mathlib.Combinatorics.SimpleGraph.AdjMatrix
-import Mathlib.LinearAlgebra.Matrix.Charpoly.FiniteField
+module
+
+public import Mathlib.Combinatorics.SimpleGraph.AdjMatrix
+public import Mathlib.LinearAlgebra.Matrix.Charpoly.FiniteField
 
 /-!
 # The Friendship Theorem
@@ -34,6 +36,8 @@ be phrased in terms of counting walks.
 - [C. Huneke, *The Friendship Theorem*][huneke2002]
 
 -/
+
+@[expose] public section
 
 namespace Theorems100
 
@@ -250,7 +254,7 @@ theorem false_of_three_le_degree (hd : G.IsRegularOfDegree d) (h : 3 ≤ d) : Fa
   have p_dvd_d_pred := (ZMod.natCast_eq_zero_iff _ _).mpr (d - 1).minFac_dvd
   have dpos : 1 ≤ d := by lia
   have d_cast : ↑(d - 1) = (d : ℤ) - 1 := by norm_cast
-  haveI : Fact p.Prime := ⟨Nat.minFac_prime (by lia)⟩
+  have : Fact p.Prime := ⟨Nat.minFac_prime (by lia)⟩
   have hp2 : 2 ≤ p := (Fact.out (p := p.Prime)).two_le
   have dmod : (d : ZMod p) = 1 := by
     rw [← Nat.succ_pred_eq_of_pos dpos, Nat.succ_eq_add_one, Nat.pred_eq_sub_one]

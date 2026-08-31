@@ -91,7 +91,7 @@ def jacobiSym (a : ℤ) (b : ℕ) : ℤ :=
 @[inherit_doc]
 scoped[NumberTheorySymbols] notation "J(" a " | " b ")" => jacobiSym a b
 
-open NumberTheorySymbols
+open scoped NumberTheorySymbols
 
 /-!
 ### Properties of the Jacobi symbol
@@ -152,7 +152,7 @@ theorem one_left (b : ℕ) : J(1 | b) = 1 :=
 
 /-- The Jacobi symbol is multiplicative in its first argument. -/
 theorem mul_left (a₁ a₂ : ℤ) (b : ℕ) : J(a₁ * a₂ | b) = J(a₁ | b) * J(a₂ | b) := by
-  simp_rw [jacobiSym, List.pmap_eq_map_attach, legendreSym.mul _ _ _]
+  simp_rw [jacobiSym, List.pmap_eq_map_attach, legendreSym.mul]
   exact List.prod_map_mul (l := (primeFactorsList b).attach)
     (f := fun x ↦ @legendreSym x { out := prime_of_mem_primeFactorsList x.2 } a₁)
     (g := fun x ↦ @legendreSym x { out := prime_of_mem_primeFactorsList x.2 } a₂)
@@ -501,7 +501,9 @@ We follow the implementation as in `Mathlib/Tactic/NormNum/LegendreSymbol.lean`.
 -- i.e. needs to be used publicly.
 set_option backward.privateInPublic true
 
-open NumberTheorySymbols jacobiSym
+open jacobiSym
+
+open scoped NumberTheorySymbols
 
 /-- Computes `J(a | b)` (or `-J(a | b)` if `flip` is set to `true`) given assumptions, by reducing
 `a` to odd by repeated division and then using quadratic reciprocity to swap `a`, `b`. -/

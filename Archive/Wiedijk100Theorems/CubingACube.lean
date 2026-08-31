@@ -3,10 +3,12 @@ Copyright (c) 2019 Floris van Doorn. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Floris van Doorn
 -/
-import Mathlib.Algebra.Order.Interval.Set.Group
-import Mathlib.Data.Real.Basic
-import Mathlib.Data.Set.Finite.Lemmas
-import Mathlib.Order.Interval.Set.Disjoint
+module
+
+public import Mathlib.Algebra.Order.Interval.Set.Group
+public import Mathlib.Data.Real.Basic
+public import Mathlib.Data.Set.Finite.Lemmas
+public import Mathlib.Order.Interval.Set.Disjoint
 
 /-!
 # Dissection of Cubes
@@ -19,6 +21,7 @@ We follow the proof described here:
 http://www.alaricstephen.com/main-featured/2017/9/28/cubing-a-cube-proof
 -/
 
+@[expose] public section
 
 open Real Set Function Fin
 
@@ -378,7 +381,7 @@ variable (h v)
   direction will intersect one of the neighbouring cubes on the same boundary as `mi`. -/
 theorem mi_not_onBoundary (j : Fin n) : ¬OnBoundary (mi_mem_bcubes : mi h v ∈ _) j := by
   let i := mi h v; have hi : i ∈ bcubes cs c := mi_mem_bcubes
-  haveI := h.nontrivial_fin
+  have := h.nontrivial_fin
   rcases exists_ne j with ⟨j', hj'⟩
   intro hj
   rcases smallest_onBoundary hj with ⟨x, ⟨hx, h2x⟩, h3x⟩

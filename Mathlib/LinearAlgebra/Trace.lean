@@ -302,7 +302,7 @@ theorem trace_conj' (f : M →ₗ[R] M) (e : M ≃ₗ[R] N) : trace R N (e.conj 
   · rw [trace, trace, dite_eq_right hM, dite_eq_right ?_, zero_apply, zero_apply]
     rintro ⟨s, ⟨b⟩⟩
     exact hM ⟨s.image e.symm, ⟨(b.map e.symm).reindex
-      ((e.symm.toEquiv.image s).trans (Equiv.setCongr Finset.coe_image.symm))⟩⟩
+      ((e.symm.toEquiv.image s).trans (Equiv.Set.congr Finset.coe_image.symm))⟩⟩
 
 @[simp] theorem trace_map {K V W : Type*} [Field K] [AddCommGroup V] [Module K V] [AddCommGroup W]
     [Module K W] {F : Type*} [EquivLike F (End K V) (End K W)] [AlgEquivClass F K _ _]
@@ -402,6 +402,6 @@ lemma Module.Free.bijective_algebraMap_of_finrank_eq_one {R S : Type*} [CommRing
   have h2 : (f ∘ₗ Algebra.linearMap R S) ∘ₗ LinearMap.trace R S = LinearMap.id :=
     b.ext fun i ↦
       (basisUnique Unit h).ext fun j ↦ (by simp [f, b, Basis.tensorProduct])
-  let eq : R ≃ₗ[R] End R S := .ofLinear (f ∘ₗ Algebra.linearMap R S) (.trace R S) h2 h1
+  let eq : R ≃ₗ[R] End R S := .ofLinearMap (f ∘ₗ Algebra.linearMap R S) (.trace R S) h2 h1
   have hf : Function.Bijective f := ⟨Algebra.lmul_injective, .of_comp eq.surjective⟩
   exact (Function.Bijective.of_comp_iff' hf _).mp eq.bijective

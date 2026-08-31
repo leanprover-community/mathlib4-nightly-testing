@@ -211,8 +211,7 @@ theorem trunc'_expand [DecidableEq σ] {n : σ →₀ ℕ} (φ : MvPowerSeries �
           simp [Nat.mul_lt_mul_of_pos_left hi (p.ne_zero_iff_zero_lt.mp hp)]
         exact Not.intro fun a ↦ this (a i)
       rw [coeff_trunc', ← hm, ite_eq_right not_le, MvPolynomial.coeff_expand_smul _ hp,
-        coeff_trunc',
-        ite_eq_right h_le]
+        coeff_trunc', ite_eq_right h_le]
   · obtain ⟨i, hi⟩ := h
     rw [MvPolynomial.coeff_expand_of_not_dvd _ hi]
     by_cases hd : d ≤ p • n
@@ -255,6 +254,16 @@ theorem map_iterateFrobenius_expand (f : MvPowerSeries σ R) (n : ℕ) :
     conv_lhs => rw [pow_succ, pow_mul, ← n_ih]
     simp_rw [← map_frobenius_expand p hp, pow_succ', add_comm k, iterateFrobenius_add,
       ← map_map, ← map_expand, ← expand_mul, iterateFrobenius_one]
+
+theorem _root_.FiniteField.MvPowerSeries.expand_card {K : Type*} [Field K] [Fintype K]
+    (f : MvPowerSeries σ K) :
+    f.expand (Fintype.card K) Fintype.card_ne_zero = f ^ (Fintype.card K) := by
+  obtain ⟨p, hp⟩ := CharP.exists K
+  rcases FiniteField.card K p with ⟨⟨n, npos⟩, ⟨hp, hn⟩⟩
+  have : Fact p.Prime := ⟨hp⟩
+  simp_rw [hn]
+  rw [← MvPowerSeries.map_iterateFrobenius_expand _ (NeZero.ne' p).symm, iterateFrobenius_eq_pow,
+    FiniteField.frobenius_pow hn, RingHom.one_def, MvPowerSeries.map_id, RingHom.id_apply]
 
 end ExpChar
 

@@ -5,7 +5,7 @@ Authors: Jeremy Avigad, Mario Carneiro, Yury Kudryashov
 -/
 module
 
-public import Mathlib.Logic.IsEmpty.Basic
+public import Mathlib.Basic.IsEmpty.Basic
 public import Mathlib.Order.OrderDual
 public import Mathlib.Tactic.CrossRefAttribute
 public import Mathlib.Tactic.MkIffOfInductiveProp
@@ -27,49 +27,43 @@ variable {α : Type u} {β : Type v} {r : α → α → Prop} {s : β → β →
 
 open Function
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem Std.Refl.swap (r : α → α → Prop) [Std.Refl r] : Std.Refl (swap r) :=
   inferInstance
 
-@[deprecated (since := "2026-01-09")] alias IsRefl.swap := Std.Refl.swap
-
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem Std.Irrefl.swap (r : α → α → Prop) [Std.Irrefl r] : Std.Irrefl (swap r) :=
   inferInstance
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem IsTrans.swap (r) [IsTrans α r] : IsTrans α (swap r) :=
   inferInstance
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem Std.Antisymm.swap (r : α → α → Prop) [Std.Antisymm r] : Std.Antisymm (swap r) :=
   inferInstance
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem Std.Asymm.swap (r : α → α → Prop) [Std.Asymm r] : Std.Asymm (swap r) :=
   inferInstance
 
-@[deprecated (since := "2026-01-05")] alias IsAsymm.swap := Std.Asymm.swap
-
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem Std.Total.swap (r : α → α → Prop) [Std.Total r] : Std.Total (swap r) :=
   inferInstance
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem Std.Trichotomous.swap (r : α → α → Prop) [Std.Trichotomous r] : Std.Trichotomous (swap r) :=
   inferInstance
 
-@[deprecated (since := "2026-01-24")] alias IsTrichotomous.swap := Std.Trichotomous.swap
-
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem IsPreorder.swap (r) [IsPreorder α r] : IsPreorder α (swap r) :=
   inferInstance
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem IsStrictOrder.swap (r) [IsStrictOrder α r] : IsStrictOrder α (swap r) :=
   inferInstance
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem IsPartialOrder.swap (r) [IsPartialOrder α r] : IsPartialOrder α (swap r) :=
   inferInstance
 
@@ -114,7 +108,7 @@ abbrev linearOrderOfSTO (r) [IsStrictTotalOrder α r] [DecidableRel r] : LinearO
     toMax := maxOfLe,
     toDecidableLE := hD }
 
-@[deprecated inferInstance (since := "2026-04-28")]
+@[deprecated inferInstance +typeChanged (since := "2026-04-28")]
 theorem IsStrictTotalOrder.swap (r) [IsStrictTotalOrder α r] : IsStrictTotalOrder α (swap r) :=
   inferInstance
 
@@ -150,8 +144,6 @@ instance (priority := 100) isStrictOrderConnected_of_isStrictTotalOrder [IsStric
 theorem InvImage.trichotomous [Std.Trichotomous r] {f : β → α} (h : Function.Injective f) :
     Std.Trichotomous (InvImage r f) :=
   ⟨fun {a b} hab hba ↦ h <| Std.Trichotomous.trichotomous (f a) (f b) hab hba⟩
-
-@[deprecated (since := "2026-01-24")] alias InvImage.isTrichotomous := InvImage.trichotomous
 
 instance InvImage.asymm [Std.Asymm r] (f : β → α) : Std.Asymm (InvImage r f) where
   asymm a b h h2 := Std.Asymm.asymm (f a) (f b) h h2
@@ -379,9 +371,6 @@ instance Prod.wellFoundedLT [Preorder α] [WellFoundedLT α] [Preorder β] [Well
     · exact iha x.1 (ha'.trans_le ha) x.1 le_rfl x.2
     · exact ihb x.2 hb x.1 (ha'.trans ha)
 
-@[deprecated (since := "2026-01-12")] alias Prod.wellFoundedLT' := Prod.wellFoundedLT
-@[deprecated (since := "2026-01-12")] alias Prod.wellFoundedGT' := Prod.wellFoundedGT
-
 namespace Set
 
 /-- An unbounded or cofinal set. -/
@@ -438,8 +427,6 @@ instance instTotal [Std.Total r] {f : β → α} : Std.Total (f ⁻¹'o r) :=
 theorem antisymm [Std.Antisymm r] {f : β → α} (hf : f.Injective) : Std.Antisymm (f ⁻¹'o r) :=
   ⟨fun _ _ h₁ h₂ ↦ hf <| antisymm_of r h₁ h₂⟩
 
-@[deprecated (since := "2026-01-06")] alias isAntisymm := antisymm
-
 end Order.Preimage
 
 /-! ### Strict-non strict relations -/
@@ -475,15 +462,13 @@ attribute [to_set_notation]
 
 @[deprecated (since := "2026-05-24")] alias HasSubset.subset.trans_eq := LE.le.trans_eq
 
-@[deprecated (since := "2026-01-24")] alias Eq.subset' := Eq.subset
-
-@[deprecated LE.le.trans (since := "2026-05-24")]
+@[deprecated LE.le.trans +typeChanged (since := "2026-05-24")]
 alias HasSubset.Subset.trans := subset_trans
 
-@[deprecated LE.le.antisymm (since := "2026-05-24")]
+@[deprecated LE.le.antisymm +typeChanged (since := "2026-05-24")]
 alias HasSubset.Subset.antisymm := subset_antisymm
 
-@[deprecated LE.le.antisymm' (since := "2026-05-24")]
+@[deprecated LE.le.antisymm' +typeChanged (since := "2026-05-24")]
 alias HasSubset.Subset.antisymm' := superset_antisymm
 
 end Subset

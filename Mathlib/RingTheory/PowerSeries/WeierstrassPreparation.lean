@@ -246,8 +246,7 @@ theorem coeff_seq_mem (k : ℕ) {i : ℕ} (hi : i ≥ (g.map (Ideal.Quotient.mk 
       rw [add_mul, mul_assoc, IsUnit.mul_val_inv, hs]
       ring
     rw [key, map_sub, Polynomial.coeff_coe, coeff_trunc, ite_eq_right hi.not_gt, zero_sub,
-      neg_mem_iff,
-      pow_succ']
+      neg_mem_iff, pow_succ']
     refine coeff_mul_mem_ideal_of_coeff_left_mem_ideal' (fun i ↦ ?_) i
     refine coeff_mul_mem_ideal_mul_ideal_of_coeff_mem_ideal'
       (by simp [n, g.coeff_trunc_order_mem]) (fun i ↦ ?_) i
@@ -781,7 +780,8 @@ theorem IsWeierstrassFactorization.isWeierstrassDivision
       (Polynomial.X ^ (g.map (IsLocalRing.residue A)).order.toNat - f) := by
   set n := (g.map (IsLocalRing.residue A)).order.toNat with hn
   constructor
-  · refine (Polynomial.degree_sub_lt ?_ (Polynomial.monic_X_pow n).ne_zero ?_).trans_eq (by simpa)
+  · refine (Polynomial.degree_sub_lt_left ?_ (Polynomial.monic_X_pow n).ne_zero ?_).trans_eq
+      (by simpa)
     · simp_rw [H.degree_eq_coe_lift_order_map, Polynomial.degree_X_pow, n,
         ENat.lift_eq_toNat_of_lt_top]
     · rw [(Polynomial.monic_X_pow n).leadingCoeff, H.isDistinguishedAt.monic.leadingCoeff]

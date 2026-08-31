@@ -3,7 +3,9 @@ Copyright (c) 2022 Bhavik Mehta, Kexing Ying. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Bhavik Mehta, Kexing Ying
 -/
-import Mathlib.Probability.UniformOn
+module
+
+public import Mathlib.Probability.UniformOn
 
 /-!
 # Ballot problem
@@ -29,6 +31,7 @@ throughout the count. The probability of this is `(p - q) / (p + q)`.
 
 -/
 
+@[expose] public section
 
 open Set ProbabilityTheory MeasureTheory
 open scoped ENNReal
@@ -165,7 +168,8 @@ theorem disjoint_bits (p q : ℕ) :
 
 open MeasureTheory.Measure
 
-private local instance measurableSpace_list_int : MeasurableSpace (List ℤ) := ⊤
+-- This instance needs to be public, for (public) theorem statements to make sense.
+local instance measurableSpace_list_int : MeasurableSpace (List ℤ) := ⊤
 
 private local instance measurableSingletonClass_list_int : MeasurableSingletonClass (List ℤ) :=
   { measurableSet_singleton := fun _ => trivial }
@@ -315,9 +319,9 @@ theorem ballot_problem' :
     rw [div_self]
     exact Nat.cast_add_one_ne_zero p
   · intro q p qp h₁ h₂
-    haveI := isProbabilityMeasure_uniformOn
+    have := isProbabilityMeasure_uniformOn
       (countedSequence_finite p (q + 1)) (countedSequence_nonempty _ _)
-    haveI := isProbabilityMeasure_uniformOn
+    have := isProbabilityMeasure_uniformOn
       (countedSequence_finite (p + 1) q) (countedSequence_nonempty _ _)
     have h₃ : 0 < p + 1 + (q + 1) := Nat.add_pos_left (Nat.succ_pos _) _
     rw [← uniformOn_add_compl_eq {l : List ℤ | l.headI = 1} _ (countedSequence_finite _ _),
@@ -344,7 +348,7 @@ theorem ballot_problem' :
 theorem ballot_problem :
     ∀ q p, q < p → uniformOn (countedSequence p q) staysPositive = (p - q) / (p + q) := by
   intro q p qp
-  haveI :=
+  have :=
     isProbabilityMeasure_uniformOn (countedSequence_finite p q) (countedSequence_nonempty _ _)
   have :
     (uniformOn (countedSequence p q) staysPositive).toReal =

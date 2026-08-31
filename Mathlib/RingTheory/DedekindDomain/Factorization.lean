@@ -5,9 +5,10 @@ Authors: María Inés de Frutos-Fernández
 -/
 module
 
-public import Mathlib.RingTheory.RamificationInertia.Basic
 public import Mathlib.Order.Filter.Cofinite
 public import Mathlib.RingTheory.UniqueFactorizationDomain.Finsupp
+public import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+public import Mathlib.RingTheory.RamificationInertia.Ramification
 
 /-!
 # Factorization of ideals and fractional ideals of Dedekind domains
@@ -288,8 +289,8 @@ open Classical in
 theorem finprod_heightOneSpectrum_factorization_principal {I : FractionalIdeal R⁰ K} (hI : I ≠ 0)
     (k : K) (hk : I = spanSingleton R⁰ k) :
     ∏ᶠ v : HeightOneSpectrum R, (v.asIdeal : FractionalIdeal R⁰ K) ^
-      ((Associates.mk v.asIdeal).count (Associates.mk (Ideal.span {choose
-          (exists_mk'_eq R⁰ k)} : Ideal R)).factors -
+      ((Associates.mk v.asIdeal).count (Associates.mk (Ideal.span
+          {choose (exists_mk'_eq R⁰ k)} : Ideal R)).factors -
         (Associates.mk v.asIdeal).count (Associates.mk ((Ideal.span {(↑(choose
           (choose_spec (exists_mk'_eq R⁰ k)) : ↥R⁰) : R)}) : Ideal R)).factors : ℤ) = I := by
   set n : R := choose (exists_mk'_eq R⁰ k)
@@ -631,7 +632,7 @@ lemma IsDedekindDomain.exists_sup_span_eq {I J : Ideal R} (hIJ : I ≤ J) (hI : 
   choose! a ha ha' using fun p hps ↦ SetLike.exists_of_lt (this p hps)
   obtain ⟨K, hK⟩ : J ∣ Ideal.span {∑ p ∈ s, a p} := by
     rw [Ideal.dvd_iff_le, Ideal.span_singleton_le_iff_mem]
-    exact sum_mem fun p hp ↦ Ideal.mul_le_right (ha p hp)
+    exact sum_mem fun p hp ↦ Ideal.mul_le_left (ha p hp)
   refine ⟨_, _, hK.symm, ?_⟩
   by_contra H
   obtain ⟨p, hp, h⟩ := Ideal.exists_le_maximal _ H
@@ -800,7 +801,7 @@ section primesOver
 variable {S : Type*} [CommRing S] [Algebra S R] [Algebra.IsIntegral S R] [IsDomain S]
   [Module.IsTorsionFree S R]
 
-open IsDedekindDomain Ideal.IsDedekindDomain HeightOneSpectrum
+open IsDedekindDomain Ideal.IsDedekindDomain
 
 /--
 If `p` is a maximal ideal, then the lift of `p` in an extension is the product of the primes

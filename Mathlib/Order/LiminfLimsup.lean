@@ -5,6 +5,7 @@ Authors: Sébastien Gouëzel, Johannes Hölzl, Rémy Degenne
 -/
 module
 
+public import Mathlib.Data.Set.Lattice.Order
 public import Mathlib.Order.ConditionallyCompleteLattice.Indexed
 public import Mathlib.Order.Filter.IsBounded
 public import Mathlib.Order.Hom.CompleteLattice
@@ -444,7 +445,6 @@ theorem bliminf_congr' {f : Filter β} {p q : β → Prop} {u : β → α}
     (h : ∀ᶠ x in f, u x ≠ ⊤ → (p x ↔ q x)) : bliminf u f p = bliminf u f q :=
   blimsup_congr' (α := αᵒᵈ) h
 
-set_option backward.isDefEq.respectTransparency false in
 lemma HasBasis.blimsup_eq_iInf_iSup {p : ι → Prop} {s : ι → Set β} {f : Filter β} {u : β → α}
     (hf : f.HasBasis p s) {q : β → Prop} :
     blimsup u f q = ⨅ (i) (_ : p i), ⨆ a ∈ s i, ⨆ (_ : q a), u a := by
@@ -881,7 +881,7 @@ theorem limsup_le_iff {x : β} (h₁ : f.IsCoboundedUnder (· ≤ ·) u := by is
     rcases h' with ⟨z, x_z, hz⟩
     exact (h z x_z).mono <| fun w hw ↦ (or_iff_left (not_le_of_gt hw)).1 (hz (u w))
 
-/- A version of `limsup_le_iff` with large inequalities in densely ordered spaces.-/
+/-- A version of `limsup_le_iff` with large inequalities in densely ordered spaces -/
 lemma limsup_le_iff' [DenselyOrdered β] {x : β}
     (h₁ : IsCoboundedUnder (· ≤ ·) f u := by isBoundedDefault)
     (h₂ : IsBoundedUnder (· ≤ ·) f u := by isBoundedDefault) :

@@ -152,8 +152,6 @@ theorem IsMultiplicative.prodPrimeFactors_one_sub_of_squarefree [CommRing R]
   · rw [(isMultiplicative_moebius.intCast.pmul hf).prodPrimeFactors_one_add_of_squarefree hn]
     simp_rw [pmul_apply, intCoe_apply]
 
-open UniqueFactorizationMonoid
-
 @[simp]
 theorem moebius_mul_coe_zeta : (μ * ζ : ArithmeticFunction ℤ) = 1 := by
   ext n
@@ -270,8 +268,7 @@ theorem prod_eq_iff_prod_pow_moebius_eq_of_nonzero [CommGroupWithZero R] {f g : 
       prod_congr rfl _]
     intro x hx
     rw [dite_eq_left (pos_of_mem_divisors (snd_mem_divisors_of_mem_antidiagonal hx)),
-      Units.coeHom_apply,
-      Units.val_zpow_eq_zpow_val, Units.val_mk0]
+      Units.coeHom_apply, Units.val_zpow_eq_zpow_val, Units.val_mk0]
 
 /-- Möbius inversion for functions to an `AddCommGroup`, where the equalities only hold on a
 well-behaved set. -/

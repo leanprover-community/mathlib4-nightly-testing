@@ -73,9 +73,8 @@ lemma indToCoindAux_mul_fst (g₁ g₂ : G) (a : A) (s : S) :
      indToCoindAux A (s * g₁) (A.ρ s a) g₂ = indToCoindAux A g₁ a g₂ := by
   rcases em ((QuotientGroup.rightRel S).r g₂ g₁) with ⟨s₁, rfl⟩ | h
   · simp only [indToCoindAux, LinearMap.pi_apply]
-    rw [dite_eq_left ⟨s₁ * s⁻¹, by simp [S.1.smul_def, smul_eq_mul, mul_assoc]⟩, dite_eq_left ⟨s₁,
-      rfl⟩,
-      ← Module.End.mul_apply, ← map_mul]
+    rw [dite_eq_left ⟨s₁ * s⁻¹, by simp [S.1.smul_def, smul_eq_mul, mul_assoc]⟩,
+      dite_eq_left ⟨s₁, rfl⟩, ← Module.End.mul_apply, ← map_mul]
     congr
     simp [Subtype.ext_iff, S.1.smul_def, mul_assoc]
   · rw [indToCoindAux_of_not_rel (h := h), indToCoindAux_of_not_rel]
@@ -178,7 +177,7 @@ The forward map sends `(⟦g ⊗ₜ[k] a⟧, sg) ↦ ρ(s)(a)`, and the inverse 
 @[simps! hom_hom_toLinearMap inv_hom_toLinearMap]
 noncomputable def indCoindIso (A : Rep.{max w u} k S) :
     ind S.subtype A ≅ coind S.subtype A :=
-  mkIso (.mk (.ofLinear (indToCoind A) (coindToInd A)
+  mkIso (.mk (.ofLinearMap (indToCoind A) (coindToInd A)
     (coindToInd_indToCoind A) (indToCoind_coindToInd A)) <| fun g ↦ by ext; simp)
 
 variable (k S)
@@ -254,7 +253,6 @@ lemma coindResAdjunction_counit_app (B : Rep.{max w u v} k G) :
       (indResAdjunction k S.subtype).counit.app B :=
   rfl
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma coindResAdjunction_unit_app (A : Rep.{max w u v} k S) :
     (coindResAdjunction k S).unit.app A = (indResAdjunction k S.subtype).unit.app A ≫

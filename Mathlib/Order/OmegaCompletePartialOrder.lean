@@ -6,12 +6,11 @@ Authors: Simon Hudon, Ira Fesefeldt
 module
 
 public import Mathlib.Control.Monad.Basic
-public import Mathlib.Dynamics.FixedPoints.Basic
-public import Mathlib.Order.CompleteLattice.Basic
 public import Mathlib.Order.Iterate
 public import Mathlib.Order.Part
 public import Mathlib.Order.Preorder.Chain
 public import Mathlib.Order.ScottContinuity
+public import Mathlib.Dynamics.FixedPoints.Defs
 
 /-!
 # Omega Complete Partial Orders
@@ -97,7 +96,7 @@ instance [Inhabited α] : Inhabited (Chain α) :=
 instance : Membership α (Chain α) where
   mem c a := ∃ i, a = c i
 
-variable (c c' : Chain α)
+variable (c : Chain α)
 variable (f : α →o β)
 variable (g : β →o γ)
 
@@ -294,7 +293,8 @@ lemma ωScottContinuous_iff_monotone_map_ωSup :
 alias ⟨ωScottContinuous.monotone_map_ωSup, ωScottContinuous.of_monotone_map_ωSup⟩ :=
   ωScottContinuous_iff_monotone_map_ωSup
 
-/- A monotone function `f : α →o β` is ωScott continuous if and only if it distributes over ωSup. -/
+/--
+A monotone function `f : α →o β` is ωScott continuous if and only if it distributes over ωSup. -/
 lemma ωScottContinuous_iff_map_ωSup_of_orderHom {f : α →o β} :
     ωScottContinuous f ↔ ∀ c : Chain α, f (ωSup c) = ωSup (c.map f) := by
   rw [ωScottContinuous_iff_monotone_map_ωSup]

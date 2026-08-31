@@ -36,9 +36,9 @@ point of view are in the `ZLattice` namespace.
   `ℤ`-module
 * `ZLattice.rank`: a `ℤ`-submodule of `E` that is discrete and spans `E` over `K` is free
   of `ℤ`-rank equal to the `K`-rank of `E`
-* `ZLattice.comap`: for `e : E → F` a linear map and `L : Submodule ℤ E`, define the pullback of
-  `L` by `e`. If `L` is a `IsZLattice` and `e` is a continuous linear equiv, then it is also a
-  `IsZLattice`, see `instIsZLatticeComap`.
+* `ZLattice.comap`: for `e : F → E` a linear map and `L : Submodule ℤ E`, `L.comap e` is the
+  `Submodule ℤ F` that is the pullback of `L` by `e`. If `IsZLattice L` and `e` is a continuous
+  linear equiv, then it is a `IsZLattice` of `F`, see `instIsZLatticeComap`.
 
 ## Note
 
@@ -317,7 +317,8 @@ theorem fundamentalDomain_subset_parallelepiped [Fintype ι] :
 instance [Finite ι] : DiscreteTopology (span ℤ (Set.range b)) := by
   have h : Set.MapsTo b.equivFun (span ℤ (Set.range b)) (span ℤ (Set.range (Pi.basisFun ℝ ι))) := by
     intro _ hx
-    rwa [SetLike.mem_coe, Basis.mem_span_iff_repr_mem] at hx ⊢
+    rw [SetLike.mem_coe, Basis.mem_span_iff_repr_mem] at hx ⊢
+    assumption
   convert! DiscreteTopology.of_continuous_injective ((continuous_equivFun_basis b).restrict h) ?_
   · exact discreteTopology_pi_basisFun
   · refine Subtype.map_injective _ (Basis.equivFun b).injective
@@ -691,9 +692,9 @@ section comap
 variable (K : Type*) [NormedField K] {E F : Type*} [NormedAddCommGroup E] [NormedSpace K E]
     [NormedAddCommGroup F] [NormedSpace K F] (L : Submodule ℤ E)
 
-/-- Let `e : E → F` a linear map, the map that sends a `L : Submodule ℤ E` to the
+/-- For `e : F → E` a linear map and `L : Submodule ℤ E`, `L.comap e` is the
 `Submodule ℤ F` that is the pullback of `L` by `e`. If `IsZLattice L` and `e` is a continuous
-linear equiv, then it is a `IsZLattice` of `E`, see `instIsZLatticeComap`. -/
+linear equiv, then it is a `IsZLattice` of `F`, see `instIsZLatticeComap`. -/
 protected def ZLattice.comap (e : F →ₗ[K] E) := L.comap (e.restrictScalars ℤ)
 
 @[simp]

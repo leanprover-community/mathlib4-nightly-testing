@@ -232,7 +232,6 @@ theorem intValuation_lt_one_iff_mem (r : R) :
     v.intValuation r < 1 ↔ r ∈ v.asIdeal := by
   rw [intValuation_lt_one_iff_dvd, Ideal.dvd_span_singleton]
 
-set_option backward.isDefEq.respectTransparency.types false in
 /-- The `v`-adic valuation of `r : R` is equal to 1 if and only if `r ∈ vᶜ`. -/
 theorem intValuation_eq_one_iff_mem_primeCompl (r : R) :
     v.intValuation r = 1 ↔ r ∈ v.asIdeal.primeCompl := by
@@ -441,12 +440,20 @@ theorem mem_integers_of_valuation_le_one (x : K)
     Associates.factors_mk _ (ine hd0), Associates.count_some hv'] at h
   simpa using h
 
-variable {K}
-
+variable {K} in
 theorem eq_of_valuation_isEquiv_valuation {p q : HeightOneSpectrum R}
     (hpq : (valuation K p).IsEquiv (valuation K q)) : p = q := by
   simp_all [Valuation.isEquiv_iff_val_lt_one, HeightOneSpectrum.ext_iff, Ideal.ext_iff,
     ← valuation_lt_one_iff_mem (K := K)]
+
+theorem valuation_injective : Function.Injective (valuation (R := R) K) :=
+  fun _ _ h ↦ eq_of_valuation_isEquiv_valuation (by rw [h])
+
+theorem valuationSubring_valuation_injective :
+    Function.Injective fun p : HeightOneSpectrum R ↦ (p.valuation K).valuationSubring :=
+  fun _ _ h ↦ eq_of_valuation_isEquiv_valuation ((Valuation.isEquiv_iff_valuationSubring ..).mpr h)
+
+variable {K}
 
 section Localization
 
@@ -588,11 +595,6 @@ def adicValued : Valued K ℤᵐ⁰ :=
 theorem adicValued_apply {x : K} : v.adicValued.v x = v.valuation K x :=
   rfl
 
-@[deprecated adicValued_apply (since := "2026-01-28")]
-theorem adicValued_apply' (x : WithVal (v.valuation K)) :
-    v.adicValued.v (WithVal.equiv _ x) = v.valuation K (WithVal.equiv _ x) :=
-  rfl
-
 variable (K)
 
 /-- The completion of `K` with respect to its `v`-adic valuation, defined as a one-field structure
@@ -666,7 +668,7 @@ back along `equiv`, and that of the completion. -/
 def valueGroupEquiv :
     valueGroup (.ofClass (valuation K v)) ≃*
       valueGroup (.ofClass (Valued.v : Valuation (v.valuation K).Completion ℤᵐ⁰)) where
-  __ := Equiv.setCongr (by rw [valueGroup_eq K v])
+  __ := Equiv.Set.congr (by rw [valueGroup_eq K v])
   map_mul' _ _ := rfl
 
 @[simp] theorem coe_valueGroupEquiv (a : valueGroup (.ofClass (valuation K v))) :

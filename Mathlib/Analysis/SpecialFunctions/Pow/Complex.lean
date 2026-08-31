@@ -15,7 +15,9 @@ We construct the power functions `x ^ y`, where `x` and `y` are complex numbers.
 
 @[expose] public section
 
-open Real Topology Filter ComplexConjugate Finset Set
+open Real Topology Filter Finset Set
+
+open scoped ComplexConjugate
 
 namespace Complex
 
@@ -71,8 +73,8 @@ theorem eq_zero_cpow_iff {x : ℂ} {a : ℂ} : a = (0 : ℂ) ^ x ↔ x ≠ 0 ∧
 @[simp]
 theorem cpow_one (x : ℂ) : x ^ (1 : ℂ) = x :=
   if hx : x = 0 then by simp [hx, cpow_def]
-  else by rw [cpow_def, ite_eq_right (one_ne_zero : (1 : ℂ) ≠ 0), ite_eq_right hx, mul_one,
-    exp_log hx]
+  else by
+    rw [cpow_def, ite_eq_right (one_ne_zero : (1 : ℂ) ≠ 0), ite_eq_right hx, mul_one, exp_log hx]
 
 @[simp]
 theorem one_cpow (x : ℂ) : (1 : ℂ) ^ x = 1 := by

@@ -39,10 +39,8 @@ open Set LinearMap Submodule
 
 namespace Finsupp
 
-variable {α : Type*} {M : Type*} {N : Type*} {P : Type*} {R : Type*} {S : Type*}
+variable {α : Type*} {M : Type*} {R : Type*} {S : Type*}
 variable [Semiring R] [Semiring S] [AddCommMonoid M] [Module R M]
-variable [AddCommMonoid N] [Module R N]
-variable [AddCommMonoid P] [Module R P]
 
 section LinearCombination
 
@@ -250,7 +248,6 @@ theorem linearCombinationOn_range (s : Set α) :
     range_subtype]
   exact (span_image_eq_map_linearCombination _ _).le
 
-set_option backward.isDefEq.respectTransparency false in
 theorem linearCombination_restrict (s : Set α) :
     linearCombination R (s.domRestrict v) = Submodule.subtype _ ∘ₗ
       linearCombinationOn α M R v s ∘ₗ (supportedEquivFinsupp s).symm.toLinearMap := by
@@ -530,7 +527,7 @@ variable {R M ι : Type*} [Ring R] [AddCommGroup M] [Module R M] (i : ι) (c : �
 the `j`-th standard basis vector to itself plus `c j` multiplied with the `i`-th standard basis
 vector (in particular, the `i`-th standard basis vector is kept invariant). -/
 def Finsupp.addSingleEquiv : (ι →₀ R) ≃ₗ[R] (ι →₀ R) := by
-  refine .ofLinear (linearCombination _ fun j ↦ single j 1 + single i (c j))
+  refine .ofLinearMap (linearCombination _ fun j ↦ single j 1 + single i (c j))
     (linearCombination _ fun j ↦ single j 1 - single i (c j)) ?_ ?_ <;>
   ext j k <;> obtain rfl | hk := eq_or_ne i k
   · simp [h₀]

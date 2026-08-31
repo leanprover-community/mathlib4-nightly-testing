@@ -7,8 +7,7 @@ module
 
 public import Mathlib.RingTheory.Valuation.Basic
 public import Mathlib.Data.NNReal.Defs
-public import Mathlib.Topology.Defs.Filter
-public import Mathlib.Order.Filter.Bases.Basic
+public import Mathlib.Tactic.Continuity
 
 /-!
 
@@ -181,10 +180,6 @@ theorem vlt.ne_zero (h : x <ᵥ y) : y ≠ 0 := by
 lemma zero_vlt_one : (0 : R) <ᵥ 1 :=
   not_vle_one_zero
 
-@[deprecated mul_vle_mul_left (since := "2026-01-06")]
-lemma vle_mul_right (z) (h : x ≤ᵥ y) : x * z ≤ᵥ y * z :=
-  mul_vle_mul_left h z
-
 lemma mul_vle_mul_right (h : x ≤ᵥ y) (z) : z * x ≤ᵥ z * y :=
   vle_trans (veq_mul_comm _ _).1 (vle_trans (mul_vle_mul_left h z) ((veq_mul_comm _ _).1))
 
@@ -275,13 +270,11 @@ lemma mul_vle_mul {x x' y y' : R} (h1 : x ≤ᵥ y) (h2 : x' ≤ᵥ y') : x * x'
   (mul_vle_mul_iff_left hz).not
 
 @[gcongr] alias ⟨_, mul_vlt_mul_left⟩ := mul_vlt_mul_iff_left
-@[deprecated (since := "2026-01-06")] alias vlt_mul_right := mul_vlt_mul_left
 
 @[simp] lemma mul_vlt_mul_iff_right (hx : 0 <ᵥ x) : x * y <ᵥ x * z ↔ y <ᵥ z :=
   (mul_vle_mul_iff_right hx).not
 
 @[gcongr] alias ⟨_, mul_vlt_mul_right⟩ := mul_vlt_mul_iff_right
-@[deprecated (since := "2026-01-06")] alias vlt_mul_left := mul_vlt_mul_right
 
 @[gcongr]
 lemma mul_veq_mul (h1 : x =ᵥ y) (h2 : x' =ᵥ y') : x * x' =ᵥ y * y' :=
@@ -832,14 +825,6 @@ section Ring
 
 variable {R : Type*} [Ring R] [ValuativeRel R] {a b c d : R}
 
-@[deprecated (since := "2026-01-06")] alias vle_mul_right_iff := mul_vle_mul_iff_left
-
-@[deprecated (since := "2026-01-06")] alias vle_mul_left_iff := mul_vle_mul_iff_right
-
-@[deprecated (since := "2026-01-06")] alias vlt_mul_right_iff := mul_vlt_mul_iff_left
-
-@[deprecated (since := "2026-01-06")] alias vlt_mul_left_iff := mul_vlt_mul_iff_right
-
 lemma mul_vlt_mul_of_vlt_of_vle (hab : a <ᵥ b) (hcd : c ≤ᵥ d) (hd : 0 <ᵥ d) :
     a * c <ᵥ b * d :=
   (mul_vle_mul_right hcd _).trans_vlt (mul_vlt_mul_left hd hab)
@@ -1149,7 +1134,6 @@ lemma embed_strictMono [v.Compatible] : StrictMono (embed v) := by
   · simp [restrict₀_apply, embed]
   · simp [restrict₀_apply, embed]
 
-set_option backward.isDefEq.respectTransparency false in
 /--
 When we have `h : w.IsEquiv v`, the image group (with zero) of `v` is
 isomorphic to that of `w` via `h.orderMonoidIso`. Then the following diagram is commutative:
@@ -1170,10 +1154,9 @@ theorem orderMonoidIso_embed [v.Compatible] {Γ' : Type*} [LinearOrderedCommGrou
     (w : Valuation R Γ') [w.Compatible] (x : ValueGroupWithZero R) (h : w.IsEquiv v) :
     h.orderMonoidIso
     (embed w x) = embed v x := by
-  simp only [embed, ← Valuation.restrict_def, coe_mk, ZeroHom.coe_mk]
+  simp only [embed, coe_mk, ZeroHom.coe_mk]
   induction x using ValueGroupWithZero.ind with
-  | mk r s =>
-    simp
+  | mk r s => simp [Valuation.IsEquiv.orderMonoidIso_spec₀]
 
 /-- If a valuation `v` is compatible with the valuative relation, then `ValueGroupWithZero R`
 is isomorphic to the image group (with zero) of `v` as an ordered group with zero. -/

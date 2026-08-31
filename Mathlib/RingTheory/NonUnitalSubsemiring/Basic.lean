@@ -283,6 +283,22 @@ theorem mem_center_iff {R} [NonUnitalSemiring R] {z : R} : z ∈ center R ↔ �
 instance decidableMemCenter {R} [NonUnitalSemiring R] [DecidableEq R] [Fintype R] :
     DecidablePred (· ∈ center R) := fun _ => decidable_of_iff' _ mem_center_iff
 
+theorem map_center_le_center {F} [NonUnitalNonAssocSemiring S] [FunLike F R S]
+    [NonUnitalRingHomClass F R S] {f : F} (hf : Function.Surjective f) :
+    map f (center R) ≤ center S :=
+  Set.image_center_subset hf
+
+theorem comap_center_le_center {F} [NonUnitalNonAssocSemiring S] [FunLike F R S]
+    [NonUnitalRingHomClass F R S] {f : F} (hf : Function.Injective f) :
+    comap f (center S) ≤ center R :=
+  Set.preimage_center_subset hf
+
+@[simp]
+theorem map_center_eq {F} [NonUnitalNonAssocSemiring S] [EquivLike F R S]
+    [RingEquivClass F R S] (f : F) :
+    map f (center R) = center S :=
+  SetLike.coe_injective (Set.image_center_eq f)
+
 @[simp]
 theorem center_eq_top (R) [NonUnitalCommSemiring R] : center R = ⊤ :=
   SetLike.coe_injective (Set.center_eq_univ R)
@@ -377,7 +393,7 @@ theorem isMulCommutative_closure {R : Type*} [NonUnitalSemiring R] {s : Set R}
 open scoped IsMulCommutative in
 /-- If all the elements of a set `s` commute, then `closure s` is a non-unital commutative
 semiring. -/
-@[deprecated isMulCommutative_closure (since := "2026-03-11")]
+@[deprecated isMulCommutative_closure +typeChanged (since := "2026-03-11")]
 abbrev closureNonUnitalCommSemiringOfComm {R : Type*} [NonUnitalSemiring R] {s : Set R}
     (hcomm : ∀ x ∈ s, ∀ y ∈ s, x * y = y * x) : NonUnitalCommSemiring (closure s) :=
   have := isMulCommutative_closure hcomm
@@ -749,7 +765,7 @@ variable [NonUnitalNonAssocSemiring S] {F : Type*} [FunLike F R S] [NonUnitalRin
 /-- Makes the identity isomorphism from a proof two non-unital subsemirings of a multiplicative
 monoid are equal. -/
 def nonUnitalSubsemiringCongr (h : s = t) : s ≃+* t :=
-  { Equiv.setCongr <| congr_arg _ h with
+  { Equiv.Set.congr <| congr_arg _ h with
     map_mul' := fun _ _ => rfl
     map_add' := fun _ _ => rfl }
 

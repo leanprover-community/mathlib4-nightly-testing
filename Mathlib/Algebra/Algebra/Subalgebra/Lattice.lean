@@ -769,7 +769,7 @@ open scoped IsMulCommutative in
 semiring.
 
 See note [reducible non-instances]. -/
-@[deprecated isMulCommutative_adjoin (since := "2026-03-11")]
+@[deprecated isMulCommutative_adjoin +typeChanged (since := "2026-03-11")]
 abbrev adjoinCommSemiringOfComm {s : Set A} (hcomm : ∀ a ∈ s, ∀ b ∈ s, a * b = b * a) :
     CommSemiring (adjoin R s) :=
   have := isMulCommutative_adjoin R hcomm
@@ -824,7 +824,7 @@ end CommSemiring
 section Ring
 
 variable [CommRing R] [Ring A]
-variable [Algebra R A] {s t : Set A}
+variable [Algebra R A] {s : Set A}
 
 @[simp]
 theorem adjoin_singleton_intCast (n : ℤ) : R[n : A] = ⊥ := by
@@ -849,7 +849,7 @@ variable (R)
 open scoped IsMulCommutative in
 /-- If all elements of `s : Set A` commute pairwise, then `adjoin R s` is a commutative
 ring. -/
-@[deprecated isMulCommutative_adjoin (since := "2026-03-11")]
+@[deprecated isMulCommutative_adjoin +typeChanged (since := "2026-03-11")]
 abbrev adjoinCommRingOfComm {s : Set A} (hcomm : ∀ a ∈ s, ∀ b ∈ s, a * b = b * a) :
     CommRing (adjoin R s) :=
   have := isMulCommutative_adjoin R hcomm

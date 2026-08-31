@@ -31,7 +31,7 @@ namespace Polynomial
 
 universe u v w z
 
-variable {R : Type u} {S : Type v} {T : Type w} {A : Type z} {a b : R} {n : ℕ}
+variable {R : Type u} {S : Type v} {a b : R} {n : ℕ}
 
 section Semiring
 
@@ -110,7 +110,7 @@ theorem div_wf_lemma (h : degree q ≤ degree p ∧ p ≠ 0) (hq : Monic q) :
   have hlt : natDegree q ≤ natDegree p :=
     (Nat.cast_le (α := WithBot ℕ)).1
       (by rw [← degree_eq_natDegree h.2, ← degree_eq_natDegree hq0]; exact h.1)
-  degree_sub_lt
+  degree_sub_lt_left
     (by
       rw [hq.degree_mul_comm, hq.degree_mul, degree_C_mul_X_pow _ hp, degree_eq_natDegree h.2,
         degree_eq_natDegree hq0, ← Nat.cast_add, tsub_add_cancel_of_le hlt])
@@ -210,8 +210,8 @@ theorem modByMonic_eq_of_not_monic (p : R[X]) (hq : ¬Monic q) : p %ₘ q = p :=
 theorem modByMonic_eq_self_iff [Nontrivial R] (hq : Monic q) : p %ₘ q = p ↔ degree p < degree q :=
   ⟨fun h => h ▸ degree_modByMonic_lt _ hq, fun h => by
     have : ¬degree q ≤ degree p := not_le_of_gt h
-    unfold modByMonic divModByMonicAux; dsimp; rw [dite_eq_left hq,
-      ite_eq_right (mt And.left this)]⟩
+    unfold modByMonic divModByMonicAux; dsimp
+    rw [dite_eq_left hq, ite_eq_right (mt And.left this)]⟩
 
 theorem degree_modByMonic_le (p : R[X]) {q : R[X]} (hq : Monic q) : degree (p %ₘ q) ≤ degree q := by
   nontriviality R
@@ -275,8 +275,8 @@ theorem divByMonic_eq_zero_iff [Nontrivial R] (hq : Monic q) : p /ₘ q = 0 ↔ 
     rwa [h, mul_zero, add_zero, modByMonic_eq_self_iff hq] at this,
   fun h => by
     have : ¬degree q ≤ degree p := not_le_of_gt h
-    unfold divByMonic divModByMonicAux; dsimp; rw [dite_eq_left hq,
-      ite_eq_right (mt And.left this)]⟩
+    unfold divByMonic divModByMonicAux; dsimp
+    rw [dite_eq_left hq, ite_eq_right (mt And.left this)]⟩
 
 theorem degree_add_divByMonic (hq : Monic q) (h : degree q ≤ degree p) :
     degree q + degree (p /ₘ q) = degree p := by
@@ -484,19 +484,12 @@ theorem coeff_divByMonic_X_sub_C (p : R[X]) (a : R) (n : ℕ) :
     rw [natDegree_divByMonic p (monic_X_sub_C a), natDegree_X_sub_C]
     exact (Nat.pred_lt hp).trans_le h
 
-variable (R) in
-theorem not_isField : ¬IsField R[X] := by
-  nontriviality R
-  intro h
-  let := h.toField
-  simpa using congr_arg natDegree (monic_X.eq_one_of_isUnit <| monic_X (R := R).ne_zero.isUnit)
-
 section multiplicity
 
 /-- An algorithm for deciding polynomial divisibility.
 Prefer `Classical.dec`, as the algorithm relies on `%ₘ` and so is `noncomputable`.
 -/
-@[deprecated Classical.dec (since := "2026-02-07")]
+@[deprecated Classical.dec +typeChanged (since := "2026-02-07")]
 def decidableDvdMonic [DecidableEq R] (p : R[X]) (hq : Monic q) : Decidable (q ∣ p) :=
   decidable_of_iff (p %ₘ q = 0) (modByMonic_eq_zero_iff_dvd hq)
 
