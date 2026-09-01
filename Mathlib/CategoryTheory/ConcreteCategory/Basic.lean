@@ -6,6 +6,7 @@ Authors: Kim Morrison, Johannes Hölzl, Reid Barton, Sean Leather, Yury Kudryash
 -/
 module
 
+public import Mathlib.CategoryTheory.ConcreteCategory.Notation
 public import Mathlib.CategoryTheory.ObjectProperty.FullSubcategory
 
 /-!
@@ -109,6 +110,7 @@ abbrev instFunLike {X Y : C} :
     rw [← ofHom_hom f, ← ofHom_hom g]
     simp_all
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2026-04-03")] alias _root_.CategoryTheory.HasForget.instFunLike :=
   instFunLike
 

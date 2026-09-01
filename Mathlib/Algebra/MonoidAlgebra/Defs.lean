@@ -30,7 +30,7 @@ In this file we define `MonoidAlgebra R M` and `AddMonoidAlgebra R M` as one-fie
 When the domain is additive, this is used to define polynomials:
 ```
 Polynomial R := AddMonoidAlgebra R ℕ
-MvPolynomial σ α := AddMonoidAlgebra R (σ →₀ ℕ)
+MvPolynomial σ R := AddMonoidAlgebra R (σ →₀ ℕ)
 ```
 
 When the domain is multiplicative, e.g. a group, this will be used to define the group ring.
@@ -426,6 +426,7 @@ theorem coeff_single_apply {a a' : M} {b : R} [Decidable (a = a')] :
     (single a b).coeff a' = if a = a' then b else 0 :=
   Finsupp.single_apply
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2026-06-18")] protected alias single_apply := coeff_single_apply
 
 @[to_additive (attr := simp)]
@@ -591,15 +592,13 @@ lemma coeff_single_mul_of_forall_mul_ne (r : R) (x : R[M]) (h : ∀ d, m * d ≠
     (single m r * x).coeff m' = 0 := by classical simp [coeff_mul, h]
 
 @[to_additive (attr := deprecated coeff_mul_single_of_forall_mul_ne +typeChanged
-  (since := "2026-06-18"))
-  (dont_translate := R)]
+  (since := "2026-06-18")) (dont_translate := R)]
 lemma mul_single_apply_of_not_exists_mul (r : R) {g g' : M} (x : R[M])
     (h : ¬∃ d, g' = d * g) : (x * single g r).coeff g' = 0 :=
   coeff_mul_single_of_forall_mul_ne _ _ <| by simpa [eq_comm] using h
 
 @[to_additive (attr := deprecated coeff_single_mul_of_forall_mul_ne +typeChanged
-  (since := "2026-06-18"))
-  (dont_translate := R)]
+  (since := "2026-06-18")) (dont_translate := R)]
 lemma single_mul_apply_of_not_exists_mul (r : R) {g g' : M} (x : R[M])
     (h : ¬∃ d, g' = g * d) : (single g r * x).coeff g' = 0 :=
   coeff_single_mul_of_forall_mul_ne _ _ <| by simpa [eq_comm] using h
