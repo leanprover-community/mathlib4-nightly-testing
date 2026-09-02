@@ -688,20 +688,20 @@ theorem enum_zero_le' {o : Ordinal} (h0 : 0 < o) (a : o.ToType) :
 
 /-- Given two ordinals `α ≤ β`, then `initialSegToType α β` is the initial segment embedding of
 `α.ToType` into `β.ToType`. -/
-@[deprecated type_le_iff (since := "2026-04-12")]
+@[deprecated type_le_iff +typeChanged (since := "2026-04-12")]
 noncomputable def initialSegToType {α β : Ordinal} (h : α ≤ β) : α.ToType ≤i β.ToType := by
   apply Classical.choice (type_le_iff.mp _)
   rwa [type_toType, type_toType]
 
 /-- Given two ordinals `α < β`, then `principalSegToType α β` is the principal segment embedding
 of `α.ToType` into `β.ToType`. -/
-@[deprecated type_lt_iff (since := "2026-04-12")]
+@[deprecated type_lt_iff +typeChanged (since := "2026-04-12")]
 noncomputable def principalSegToType {α β : Ordinal} (h : α < β) : α.ToType <i β.ToType := by
   apply Classical.choice (type_lt_iff.mp _)
   rwa [type_toType, type_toType]
 
 /-- `o.ToType` is an `OrderBot` whenever `o ≠ 0`. -/
-@[instance_reducible, deprecated WellFoundedLT.toOrderBot (since := "2026-04-12")]
+@[instance_reducible, deprecated WellFoundedLT.toOrderBot +typeChanged (since := "2026-04-12")]
 noncomputable def toTypeOrderBot {o : Ordinal} (ho : o ≠ 0) : OrderBot o.ToType where
   bot := (enum (· < ·)) ⟨0, _⟩
   bot_le := enum_zero_le' (bot_lt_iff_ne_bot.2 ho)
@@ -890,7 +890,7 @@ instance : SuccOrder Ordinal.{u} :=
 
 instance : SuccAddOrder Ordinal := ⟨fun _ => rfl⟩
 
-@[deprecated Order.one_le_iff_ne_zero (since := "2026-03-24")]
+@[deprecated Order.one_le_iff_ne_zero +typeChanged (since := "2026-03-24")]
 protected theorem one_le_iff_ne_zero {o : Ordinal} : 1 ≤ o ↔ o ≠ 0 :=
   Order.one_le_iff_ne_zero
 
@@ -902,7 +902,7 @@ theorem succ_pos (o : Ordinal) : 0 < succ o :=
 theorem add_one_ne_zero (o : Ordinal) : o + 1 ≠ 0 :=
   (add_pos_of_right zero_lt_one o).ne'
 
-@[deprecated Order.lt_one_iff (since := "2026-03-24")]
+@[deprecated Order.lt_one_iff +typeChanged (since := "2026-03-24")]
 theorem lt_one_iff_zero {a : Ordinal} : a < 1 ↔ a = 0 :=
   Order.lt_one_iff
 
@@ -910,7 +910,7 @@ theorem lt_one_iff_zero {a : Ordinal} : a < 1 ↔ a = 0 :=
 protected theorem le_one_iff {a : Ordinal} : a ≤ 1 ↔ a = 0 ∨ a = 1 :=
   Order.le_one_iff
 
-@[deprecated Nat.cast_add_one (since := "2026-05-21")]
+@[deprecated Nat.cast_add_one +typeChanged (since := "2026-05-21")]
 theorem natCast_succ (n : ℕ) : ↑n.succ = succ (n : Ordinal) :=
   n.cast_add_one
 
