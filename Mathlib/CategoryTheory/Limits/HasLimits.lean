@@ -450,10 +450,13 @@ variable {L : Type u₃} [Category.{v₃} L]
 variable (D : L ⥤ K)
 
 @[simp]
-theorem limit.pre_pre [h : HasLimit (D ⋙ E ⋙ F)] : haveI : HasLimit ((D ⋙ E) ⋙ F) := h
-    limit.pre F E ≫ limit.pre (E ⋙ F) D = limit.pre F (D ⋙ E) := by
-  have : HasLimit ((D ⋙ E) ⋙ F) := h
-  ext j; erw [assoc, limit.pre_π, limit.pre_π, limit.pre_π]; rfl
+theorem limit.pre_pre [HasLimit (D ⋙ E ⋙ F)] :
+    letI : HasLimit ((D ⋙ E) ⋙ F) := hasLimit_of_iso (Functor.associator D E F).symm
+    limit.pre F E ≫ limit.pre (E ⋙ F) D =
+      limit.pre F (D ⋙ E) ≫ (HasLimit.isoOfNatIso (Functor.associator D E F)).hom := by
+  let _ : HasLimit ((D ⋙ E) ⋙ F) := hasLimit_of_iso (Functor.associator D E F).symm
+  ext j
+  simp
 
 variable {E F}
 
@@ -489,13 +492,14 @@ theorem limit.lift_post (c : Cone F) :
   rfl
 
 @[simp]
-theorem limit.post_post {E : Type u''} [Category.{v''} E] (H : D ⥤ E) [h : HasLimit ((F ⋙ G) ⋙ H)] :
-    -- H G (limit F) ⟶ H (limit (F ⋙ G)) ⟶ limit ((F ⋙ G) ⋙ H) equals
-    -- H G (limit F) ⟶ limit (F ⋙ (G ⋙ H))
-    haveI : HasLimit (F ⋙ G ⋙ H) := h
-    H.map (limit.post F G) ≫ limit.post (F ⋙ G) H = limit.post F (G ⋙ H) := by
-  have : HasLimit (F ⋙ G ⋙ H) := h
-  ext; erw [assoc, limit.post_π, ← H.map_comp, limit.post_π, limit.post_π]; rfl
+theorem limit.post_post {E : Type u''} [Category.{v''} E] (H : D ⥤ E)
+    [HasLimit ((F ⋙ G) ⋙ H)] :
+    letI : HasLimit (F ⋙ G ⋙ H) := hasLimit_of_iso (Functor.associator F G H)
+    H.map (limit.post F G) ≫ limit.post (F ⋙ G) H =
+      limit.post F (G ⋙ H) ≫ (HasLimit.isoOfNatIso (Functor.associator F G H)).inv := by
+  let _ : HasLimit (F ⋙ G ⋙ H) := hasLimit_of_iso (Functor.associator F G H)
+  ext
+  simp [← H.map_comp]
 
 end Post
 
@@ -811,13 +815,13 @@ variable {L : Type u₃} [Category.{v₃} L]
 variable (D : L ⥤ K)
 
 @[simp]
-theorem colimit.pre_pre [h : HasColimit (D ⋙ E ⋙ F)] :
-    haveI : HasColimit ((D ⋙ E) ⋙ F) := h
-    colimit.pre (E ⋙ F) D ≫ colimit.pre F E = colimit.pre F (D ⋙ E) := by
+theorem colimit.pre_pre [HasColimit (D ⋙ E ⋙ F)] :
+    letI : HasColimit ((D ⋙ E) ⋙ F) := hasColimit_of_iso (Functor.associator D E F)
+    colimit.pre (E ⋙ F) D ≫ colimit.pre F E =
+      (HasColimit.isoOfNatIso (Functor.associator D E F)).inv ≫ colimit.pre F (D ⋙ E) := by
+  let _ : HasColimit ((D ⋙ E) ⋙ F) := hasColimit_of_iso (Functor.associator D E F)
   ext j
-  rw [← assoc, colimit.ι_pre, colimit.ι_pre]
-  have : HasColimit ((D ⋙ E) ⋙ F) := h
-  exact (colimit.ι_pre F (D ⋙ E) j).symm
+  simp
 
 variable {E F}
 
@@ -859,14 +863,13 @@ theorem colimit.post_desc (c : Cocone F) :
 
 @[simp]
 theorem colimit.post_post {E : Type u''} [Category.{v''} E] (H : D ⥤ E)
-    -- H G (colimit F) ⟶ H (colimit (F ⋙ G)) ⟶ colimit ((F ⋙ G) ⋙ H) equals
-    -- H G (colimit F) ⟶ colimit (F ⋙ (G ⋙ H))
-    [h : HasColimit ((F ⋙ G) ⋙ H)] : haveI : HasColimit (F ⋙ G ⋙ H) := h
-    colimit.post (F ⋙ G) H ≫ H.map (colimit.post F G) = colimit.post F (G ⋙ H) := by
-  ext j
-  rw [← assoc, colimit.ι_post, ← H.map_comp, colimit.ι_post]
-  have : HasColimit (F ⋙ G ⋙ H) := h
-  exact (colimit.ι_post F (G ⋙ H) j).symm
+    [HasColimit ((F ⋙ G) ⋙ H)] :
+    letI : HasColimit (F ⋙ G ⋙ H) := hasColimit_of_iso (Functor.associator F G H).symm
+    colimit.post (F ⋙ G) H ≫ H.map (colimit.post F G) =
+      (HasColimit.isoOfNatIso (Functor.associator F G H)).hom ≫ colimit.post F (G ⋙ H) := by
+  let _ : HasColimit (F ⋙ G ⋙ H) := hasColimit_of_iso (Functor.associator F G H).symm
+  ext
+  simp [← H.map_comp]
 
 end Post
 

@@ -869,7 +869,6 @@ theorem initial_iff_equivalence_comp [IsEquivalence F] : Initial G ↔ Initial (
   ⟨fun _ => initial_equivalence_comp _ _, fun _ => initial_of_equivalence_comp F _⟩
 
 instance final_comp [hF : Final F] [hG : Final G] : Final (F ⋙ G) := by
-  set_option backward.isDefEq.respectTransparency false in
   let s₁ : C ≌ AsSmall.{max u₁ v₁ u₂ v₂ u₃ v₃} C := AsSmall.equiv
   let s₂ : D ≌ AsSmall.{max u₁ v₁ u₂ v₂ u₃ v₃} D := AsSmall.equiv
   let s₃ : E ≌ AsSmall.{max u₁ v₁ u₂ v₂ u₃ v₃} E := AsSmall.equiv
@@ -883,15 +882,17 @@ instance final_comp [hF : Final F] [hG : Final G] : Final (F ⋙ G) := by
   rw [final_iff_comp_equivalence G s₃.functor, final_iff_equivalence_comp s₂.inverse,
     final_iff_isIso_colimit_pre] at hG
   intro H
-  rw [← colimit.pre_pre]
-  infer_instance
+  have : IsIso (colimit.pre ((s₂.inverse ⋙ G ⋙ s₃.functor) ⋙ H) (s₁.inverse ⋙ F ⋙ s₂.functor) ≫
+      colimit.pre H (s₂.inverse ⋙ G ⋙ s₃.functor)) := inferInstance
+  rw [colimit.pre_pre] at this
+  exact IsIso.of_isIso_comp_left (HasColimit.isoOfNatIso (Functor.associator
+    (s₁.inverse ⋙ F ⋙ s₂.functor) (s₂.inverse ⋙ G ⋙ s₃.functor) H)).inv _
 
 instance initial_comp [Initial F] [Initial G] : Initial (F ⋙ G) := by
   suffices Final (F ⋙ G).op from initial_of_final_op _
   exact final_comp F.op G.op
 
 theorem final_of_final_comp [hF : Final F] [hFG : Final (F ⋙ G)] : Final G := by
-  set_option backward.isDefEq.respectTransparency false in
   let s₁ : C ≌ AsSmall.{max u₁ v₁ u₂ v₂ u₃ v₃} C := AsSmall.equiv
   let s₂ : D ≌ AsSmall.{max u₁ v₁ u₂ v₂ u₃ v₃} D := AsSmall.equiv
   let s₃ : E ≌ AsSmall.{max u₁ v₁ u₂ v₂ u₃ v₃} E := AsSmall.equiv
@@ -905,8 +906,11 @@ theorem final_of_final_comp [hF : Final F] [hFG : Final (F ⋙ G)] : Final G := 
   rw [final_iff_comp_equivalence (F ⋙ G) s₃.functor, final_iff_equivalence_comp s₁.inverse,
     final_natIso_iff _i, final_iff_isIso_colimit_pre] at hFG
   intro H
-  replace hFG := hFG H
-  rw [← colimit.pre_pre] at hFG
+  have := hFG H
+  have : IsIso (colimit.pre ((s₂.inverse ⋙ G ⋙ s₃.functor) ⋙ H) (s₁.inverse ⋙ F ⋙ s₂.functor) ≫
+      colimit.pre H (s₂.inverse ⋙ G ⋙ s₃.functor)) := by
+    rw [colimit.pre_pre]
+    infer_instance
   exact IsIso.of_isIso_comp_left (colimit.pre _ (s₁.inverse ⋙ F ⋙ s₂.functor)) _
 
 theorem initial_of_initial_comp [Initial F] [Initial (F ⋙ G)] : Initial G := by

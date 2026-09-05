@@ -325,7 +325,8 @@ induced by a natural transformation `L' ⟶ L ⋙ G'`. -/
 def LeftExtension.postcomp₁ (f : L' ⟶ L ⋙ G) (F : C ⥤ H) :
     LeftExtension L' F ⥤ LeftExtension L F :=
   StructuredArrow.map₂ (F := (whiskeringLeft D D' H).obj G) (G := 𝟭 _) (𝟙 _)
-    ((whiskeringLeft C D' H).map f)
+    ((Functor.rightUnitor _).hom ≫ (whiskeringLeft C D' H).map f ≫
+      (whiskeringLeftObjCompIso L G).hom)
 
 /-- The functor `RightExtension L' F ⥤ RightExtension L F`
 induced by a natural transformation `L ⋙ G ⟶ L'`. -/
@@ -333,18 +334,17 @@ induced by a natural transformation `L ⋙ G ⟶ L'`. -/
 def RightExtension.postcomp₁ (f : L ⋙ G ⟶ L') (F : C ⥤ H) :
     RightExtension L' F ⥤ RightExtension L F :=
   CostructuredArrow.map₂ (F := (whiskeringLeft D D' H).obj G) (G := 𝟭 _)
-    ((whiskeringLeft C D' H).map f) (𝟙 _)
+    ((whiskeringLeftObjCompIso L G).inv ≫ (whiskeringLeft C D' H).map f ≫
+      (Functor.rightUnitor _).inv) (𝟙 _)
 
 variable [IsEquivalence G]
 
 noncomputable instance (f : L' ⟶ L ⋙ G) [IsIso f] (F : C ⥤ H) :
     IsEquivalence (LeftExtension.postcomp₁ G f F) := by
-  set_option backward.isDefEq.respectTransparency false in
   apply StructuredArrow.isEquivalenceMap₂
 
 noncomputable instance (f : L ⋙ G ⟶ L') [IsIso f] (F : C ⥤ H) :
     IsEquivalence (RightExtension.postcomp₁ G f F) := by
-  set_option backward.isDefEq.respectTransparency false in
   apply CostructuredArrow.isEquivalenceMap₂
 
 variable {G} in
@@ -476,7 +476,8 @@ def LeftExtension.precomp : LeftExtension L F ⥤ LeftExtension (G ⋙ L) (G ⋙
 obtained by precomposition. -/
 @[simps!, implicit_reducible]
 def RightExtension.precomp : RightExtension L F ⥤ RightExtension (G ⋙ L) (G ⋙ F) :=
-  CostructuredArrow.map₂ (F := 𝟭 _) (G := (whiskeringLeft C' C H).obj G) (𝟙 _) (𝟙 _)
+  CostructuredArrow.map₂ (F := 𝟭 _) (G := (whiskeringLeft C' C H).obj G)
+    ((Functor.leftUnitor _).hom ≫ (whiskeringLeftObjCompIso G L).hom) (𝟙 _)
 
 variable [IsEquivalence G]
 
@@ -484,7 +485,6 @@ noncomputable instance : IsEquivalence (LeftExtension.precomp L F G) := by
   apply StructuredArrow.isEquivalenceMap₂
 
 noncomputable instance : IsEquivalence (RightExtension.precomp L F G) := by
-  set_option backward.isDefEq.respectTransparency false in
   apply CostructuredArrow.isEquivalenceMap₂
 
 /-- If `G` is an equivalence, then a left extension of `F` along `L` is universal iff
@@ -896,7 +896,7 @@ variable (F' : D ⥤ H) {L : C ⥤ D} {F : C ⥤ H} (α : L ⋙ F' ⟶ F) [F'.Is
 @[simps, implicit_reducible]
 noncomputable def coneOfIsRightKanExtension (c : Cone F) : Cone F' where
   pt := c.pt
-  π := F'.liftOfIsRightKanExtension α _ c.π
+  π := F'.liftOfIsRightKanExtension α _ { app := fun X ↦ c.π.app X }
 
 /-- If `c` is a limit cone for a functor `F : C ⥤ H` and `α : L ⋙ F' ⟶ F` is the counit of any
 right Kan extension `F' : D ⥤ H` of `F` along `L : C ⥤ D`, then `coneOfIsRightKanExtension α c` is
@@ -904,20 +904,20 @@ a limit cone, too. -/
 @[simps]
 noncomputable def isLimitConeOfIsRightKanExtension {c : Cone F} (hc : IsLimit c) :
     IsLimit (F'.coneOfIsRightKanExtension α c) where
-  lift s := hc.lift (Cone.mk _ (whiskerLeft L s.π ≫ α))
+  lift s := hc.lift ((Cone.postcompose α).obj (s.whisker L))
   fac s := by
-    set_option backward.isDefEq.respectTransparency false in
-      have : (Functor.const _).map (hc.lift (Cone.mk _ (whiskerLeft L s.π ≫ α))) ≫
-          F'.liftOfIsRightKanExtension α ((const D).obj c.pt) c.π = s.π :=
-        F'.hom_ext_of_isRightKanExtension α _ _ (by cat_disch)
-      exact congr_app this
-  uniq s m hm := by
-    set_option backward.isDefEq.respectTransparency false in
-      exact hc.hom_ext (fun j ↦ by
-        have := hm (L.obj j)
-        nth_rw 1 [← F'.liftOfIsRightKanExtension_fac_app α ((const D).obj c.pt)]
-        dsimp at this ⊢
-        rw [← assoc, this, IsLimit.fac, NatTrans.comp_app, whiskerLeft_app])
+    have : (Functor.const _).map (hc.lift ((Cone.postcompose α).obj (s.whisker L))) ≫
+        F'.liftOfIsRightKanExtension α ((const D).obj c.pt)
+          { app := fun X ↦ c.π.app X } = s.π :=
+      F'.hom_ext_of_isRightKanExtension α _ _ (by cat_disch)
+    exact congr_app this
+  uniq s m hm := hc.hom_ext (fun j ↦ by
+    have := hm (L.obj j)
+    nth_rw 1 [← F'.liftOfIsRightKanExtension_fac_app α ((const D).obj c.pt)
+      { app := fun X ↦ c.π.app X }]
+    dsimp at this ⊢
+    rw [← assoc, this, IsLimit.fac, Cone.postcompose_obj_π, NatTrans.comp_app,
+      Cone.whisker_π_app])
 
 variable [HasLimit F] [HasLimit F']
 
@@ -930,7 +930,6 @@ noncomputable def limitIsoOfIsRightKanExtension : limit F' ≅ limit F :=
 @[reassoc (attr := simp)]
 lemma limitIsoOfIsRightKanExtension_inv_π (i : C) :
     (F'.limitIsoOfIsRightKanExtension α).inv ≫ limit.π F' (L.obj i) ≫ α.app i = limit.π F i := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [limitIsoOfIsRightKanExtension]
 
 @[reassoc (attr := simp)]

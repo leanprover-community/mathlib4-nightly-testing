@@ -664,9 +664,11 @@ def prodComparisonNatTrans (A : C) :
 
 set_option backward.defeqAttrib.useBackward true in
 theorem prodComparisonNatTrans_comp :
-    prodComparisonNatTrans (F ⋙ G) A = Functor.whiskerRight (prodComparisonNatTrans F A) G ≫
-      Functor.whiskerLeft F (prodComparisonNatTrans G (F.obj A)) := by
-  set_option backward.isDefEq.respectTransparency false in
+    prodComparisonNatTrans (F ⋙ G) A =
+      (Functor.associator _ F G).inv ≫ Functor.whiskerRight (prodComparisonNatTrans F A) G ≫
+        (Functor.associator F _ G).hom ≫
+          Functor.whiskerLeft F (prodComparisonNatTrans G (F.obj A)) ≫
+            (Functor.associator F G _).inv := by
   ext; simp [prodComparison_comp]
 
 set_option backward.defeqAttrib.useBackward true in
