@@ -95,6 +95,41 @@ def curriedTensorPreFunctor : (C ⥤ D) ⥤ C ⥤ C ⥤ D where
 abbrev curriedTensorPostFunctor : (C ⥤ D) ⥤ C ⥤ C ⥤ D :=
   Functor.postcompose₂.flip.obj (curriedTensor C)
 
+section
+
+variable {E : Type*} [Category* E] [MonoidalCategory E] (F : C ⥤ D) (G : D ⥤ E)
+
+/-- `(F ⋙ G) (A ⊗ B) ≅ G (F (A ⊗ B))`, naturally in `A` and `B`. -/
+@[simps!]
+def curriedTensorPostCompIso :
+    curriedTensorPost (F ⋙ G) ≅ curriedTensorPost F ⋙ (Functor.whiskeringRight C D E).obj G :=
+  Functor.isoWhiskerLeft (curriedTensor C) (Functor.whiskeringRightObjCompIso F G).symm ≪≫
+    (Functor.associator _ _ _).symm
+
+/-- `G` applied to the bifunctor `F - ⊗ F -` is the bifunctor `G (- ⊗ -)` evaluated at
+`(F A, F B)`: both are `G (F A ⊗ F B)`, naturally in `A` and `B`. -/
+@[simps!]
+def curriedTensorPreCompPostIso :
+    curriedTensorPre F ⋙ (Functor.whiskeringRight C D E).obj G ≅
+      F ⋙ curriedTensorPost G ⋙ (Functor.whiskeringLeft C D E).obj F :=
+  Functor.associator _ _ _ ≪≫
+    Functor.isoWhiskerLeft F (Functor.associator _ _ _ ≪≫
+      Functor.isoWhiskerLeft (curriedTensor D)
+        (Functor.whiskeringLeftObjCompWhiskeringRightObjIso F G) ≪≫
+      (Functor.associator _ _ _).symm)
+
+/-- `G (F A) ⊗ G (F B) ≅ (F ⋙ G) A ⊗ (F ⋙ G) B`, naturally in `A` and `B`. -/
+@[simps!]
+def curriedTensorPreCompIso :
+    F ⋙ curriedTensorPre G ⋙ (Functor.whiskeringLeft C D E).obj F ≅ curriedTensorPre (F ⋙ G) :=
+  Functor.isoWhiskerLeft F (Functor.associator _ _ _ ≪≫
+      Functor.isoWhiskerLeft G (Functor.associator _ _ _ ≪≫
+        Functor.isoWhiskerLeft (curriedTensor E)
+          (Functor.whiskeringLeftObjCompIso F G).symm)) ≪≫
+    (Functor.associator _ _ _).symm
+
+end
+
 end MonoidalCategory
 
 open MonoidalCategory
@@ -253,9 +288,9 @@ def topMapᵣ {F : C ⥤ D} (ε : 𝟙_ D ⟶ F.obj (𝟙_ C)) :
 /--
 The bottom map in the right unitality square.
 -/
-@[simps!]
-def bottomMapᵣ (F : C ⥤ D) : (curriedTensor C).flip.obj (𝟙_ C) ⋙ F ⟶ F :=
-  whiskerRight (rightUnitorNatIso C).hom F
+@[simps]
+def bottomMapᵣ (F : C ⥤ D) : (curriedTensorPost F).flip.obj (𝟙_ C) ⟶ F where
+  app X := F.map (ρ_ X).hom
 
 end ofBifunctor
 
@@ -438,9 +473,9 @@ def leftMapᵣ (F : C ⥤ D) : F ⟶ F ⋙ tensorUnitRight D :=
 /--
 The top map in the oplax right unitality square.
 -/
-@[simps!]
-def topMapᵣ (F : C ⥤ D) : F ⟶ (curriedTensor C).flip.obj (𝟙_ C) ⋙ F :=
-  whiskerRight (rightUnitorNatIso C).inv F
+@[simps]
+def topMapᵣ (F : C ⥤ D) : F ⟶ (curriedTensorPost F).flip.obj (𝟙_ C) where
+  app X := F.map (ρ_ X).inv
 
 /--
 The bottom map in the oplax right unitality square.

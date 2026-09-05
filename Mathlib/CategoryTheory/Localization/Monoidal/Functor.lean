@@ -45,8 +45,19 @@ instance lifting₂CurriedTensorPre :
 @[simps]
 instance lifting₂CurriedTensorPost :
     Lifting₂ L L W W (curriedTensorPost G) (curriedTensorPost F) where
-  iso := (postcompose₂.obj F).mapIso (curriedTensorPreIsoPost L) ≪≫
-    curriedTensorPostFunctor.mapIso (Lifting.iso L W G F)
+  iso := NatIso.ofComponents (fun X₁ ↦ NatIso.ofComponents
+      (fun X₂ ↦ F.mapIso (μIso L X₁ X₂) ≪≫ (Lifting.iso L W G F).app (X₁ ⊗ X₂))
+      (fun f ↦ by
+        have h := (Lifting.iso L W G F).hom.naturality (X₁ ◁ f)
+        simp only [Functor.comp_map] at h
+        dsimp
+        rw [← F.map_comp_assoc, μ_natural_right, F.map_comp, Category.assoc, h, Category.assoc]))
+    (fun f ↦ by
+      ext X₂
+      have h := (Lifting.iso L W G F).hom.naturality (f ▷ X₂)
+      simp only [Functor.comp_map] at h
+      dsimp
+      rw [← F.map_comp_assoc, μ_natural_left, F.map_comp, Category.assoc, h, Category.assoc])
 
 /--
 The natural isomorphism of bifunctors `F - ⊗ F - ≅ F (- ⊗ -)`, given that `F` lifts along `L`
@@ -63,7 +74,6 @@ lemma curriedTensorPreIsoPost_hom_app_app (X₁ X₂ : C) :
     ((curriedTensorPreIsoPost L W F G).hom.app (L.obj X₁)).app (L.obj X₂) =
       (e.hom.app _ ⊗ₘ e.hom.app _) ≫ LaxMonoidal.μ G X₁ X₂ ≫ e.inv.app _ ≫
         F.map (OplaxMonoidal.δ L _ _) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [curriedTensorPreIsoPost]
 
 set_option backward.defeqAttrib.useBackward true in
@@ -90,7 +100,6 @@ where `L` is a monoidal localization functor.
 -/
 @[simps!]
 noncomputable def functorCoreMonoidalOfComp : F.CoreMonoidal := by
-  set_option backward.isDefEq.respectTransparency false in
   letI e := Lifting.iso L W G F
   refine Functor.CoreMonoidal.ofBifunctor
     (εIso G ≪≫ e.symm.app _ ≪≫ F.mapIso (εIso L).symm) (curriedTensorPreIsoPost L W F G) ?_ ?_ ?_

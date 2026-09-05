@@ -9,6 +9,7 @@ public import Mathlib.CategoryTheory.Limits.Constructions.FiniteProductsOfBinary
 public import Mathlib.CategoryTheory.Limits.FullSubcategory
 public import Mathlib.CategoryTheory.Limits.Preserves.Shapes.Terminal
 public import Mathlib.CategoryTheory.Monoidal.Braided.Basic
+public import Mathlib.CategoryTheory.Monoidal.Multifunctor
 
 /-!
 # Categories with chosen finite products
@@ -691,12 +692,15 @@ def prodComparisonBifunctorNatTrans :
 variable {E : Type u₂} [Category.{v₂} E] [CartesianMonoidalCategory E] (G : D ⥤ E)
 
 set_option backward.defeqAttrib.useBackward true in
-theorem prodComparisonBifunctorNatTrans_comp : prodComparisonBifunctorNatTrans (F ⋙ G) =
-    Functor.whiskerRight
-      (prodComparisonBifunctorNatTrans F) ((Functor.whiskeringRight _ _ _).obj G) ≫
-        Functor.whiskerLeft F (Functor.whiskerRight (prodComparisonBifunctorNatTrans G)
-          ((Functor.whiskeringLeft _ _ _).obj F)) := by
-  set_option backward.isDefEq.respectTransparency false in
+theorem prodComparisonBifunctorNatTrans_comp :
+    prodComparisonBifunctorNatTrans (F ⋙ G) =
+      (curriedTensorPostCompIso F G).hom ≫
+        Functor.whiskerRight (prodComparisonBifunctorNatTrans F)
+            ((Functor.whiskeringRight C D E).obj G) ≫
+          (curriedTensorPreCompPostIso F G).hom ≫
+            Functor.whiskerLeft F (Functor.whiskerRight (prodComparisonBifunctorNatTrans G)
+              ((Functor.whiskeringLeft C D E).obj F)) ≫
+              (curriedTensorPreCompIso F G).hom := by
   ext; simp [prodComparison_comp]
 
 instance (A : C) [∀ B, IsIso (prodComparison F A B)] : IsIso (prodComparisonNatTrans F A) := by
