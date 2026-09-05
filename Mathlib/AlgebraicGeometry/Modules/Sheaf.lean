@@ -417,10 +417,8 @@ def pseudofunctor :
   LocallyDiscrete.mkPseudofunctor
     (fun X ↦ Adj.mk (Cat.of X.unop.Modules))
     (fun f ↦ .mk (pullbackPushforwardAdjunction f.unop).toCat)
-    -- The five proofs below are given explicitly rather than left to `cat_disch`: the goals are
-    -- not definitional equalities, and `cat_disch` would first try `rfl` at default transparency,
-    -- comparing the conjugate-adjunction description of `pullbackId`/`pullbackComp` with
-    -- `pushforwardId`/`pushforwardComp` all the way down to elements before giving up.
+    -- `cat_disch` exceeds the heartbeat budget on reflexivity checks at default transparency.
+    -- Extensionality exposes the natural transformation equalities that `simp` can prove.
     (fun _ ↦ Adj.iso₂Mk (Cat.Hom.isoMk (pullbackId _))
         (Cat.Hom.isoMk (pushforwardId _).symm) (Cat.Hom₂.ext (by simp)))
     (fun _ _ ↦ Adj.iso₂Mk (Cat.Hom.isoMk (pullbackComp _ _).symm)

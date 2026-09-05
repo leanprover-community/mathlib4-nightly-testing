@@ -342,7 +342,6 @@ lemma natTrans_ext {F F' : C ⋆ D ⥤ E} {α β : F ⟶ F'}
   | left t => exact congrArg (fun x ↦ x.app t) h₁
   | right t => exact congrArg (fun x ↦ x.app t) h₂
 
--- TODO: `mkNatTrans` contains the defeq abuse
 set_option backward.defeqAttrib.useBackward true in
 lemma eq_mkNatTrans {F F' : C ⋆ D ⥤ E} (α : F ⟶ F') :
     mkNatTrans (whiskerLeft (inclLeft C D) α) (whiskerLeft (inclRight C D) α) = α := by
@@ -350,7 +349,6 @@ lemma eq_mkNatTrans {F F' : C ⋆ D ⥤ E} (α : F ⟶ F') :
 
 section
 
--- TODO: `mkNatTrans` contains the defeq abuse
 /-- `mkNatTrans` respects vertical composition. -/
 lemma mkNatTransComp
     {F F' F'' : C ⋆ D ⥤ E}

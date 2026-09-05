@@ -416,7 +416,6 @@ theorem HasLimit.isoOfEquivalence_hom_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (k : K) :
     (HasLimit.isoOfEquivalence e w).hom ≫ limit.π G k =
       limit.π F (e.inverse.obj k) ≫ w.inv.app (e.inverse.obj k) ≫ G.map (e.counit.app k) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp only [HasLimit.isoOfEquivalence, IsLimit.conePointsIsoOfEquivalence_hom]
   simp
 
@@ -426,7 +425,6 @@ theorem HasLimit.isoOfEquivalence_inv_π {F : J ⥤ C} [HasLimit F] {G : K ⥤ C
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (j : J) :
     (HasLimit.isoOfEquivalence e w).inv ≫ limit.π F j =
     limit.π G (e.functor.obj j) ≫ w.hom.app j := by
-  set_option backward.isDefEq.respectTransparency false in
   simp only [HasLimit.isoOfEquivalence]
   simp
 
@@ -768,7 +766,6 @@ theorem HasColimit.ι_isoOfEquivalence_hom {F : J ⥤ C} [HasColimit F] {G : K �
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (j : J) :
     colimit.ι F j ≫ (HasColimit.isoOfEquivalence e w).hom =
       F.map (e.unit.app j) ≫ w.inv.app _ ≫ colimit.ι G _ := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [HasColimit.isoOfEquivalence]
 
 set_option backward.defeqAttrib.useBackward true in
@@ -777,7 +774,6 @@ theorem HasColimit.ι_isoOfEquivalence_inv {F : J ⥤ C} [HasColimit F] {G : K �
     (e : J ≌ K) (w : e.functor ⋙ G ≅ F) (k : K) :
     colimit.ι G k ≫ (HasColimit.isoOfEquivalence e w).inv =
       G.map (e.counitInv.app k) ≫ w.hom.app (e.inverse.obj k) ≫ colimit.ι F (e.inverse.obj k) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [HasColimit.isoOfEquivalence, IsColimit.coconePointsIsoOfEquivalence_inv]
 
 @[deprecated (since := "2026-05-25")]
