@@ -61,32 +61,29 @@ variable [HasPullbacks C]
 /-- Evaluating a pullback amounts to taking the pullback of the evaluations. -/
 noncomputable def pullbackObjIso (f : F ⟶ H) (g : G ⟶ H) (d : D) :
     (pullback f g).obj d ≅ pullback (f.app d) (g.app d) :=
-  limitObjIsoLimitCompEvaluation (cospan f g) d ≪≫ HasLimit.isoOfNatIso (diagramIsoCospan _)
+  limitObjIsoLimitCompEvaluation (cospan f g) d ≪≫
+    HasLimit.isoOfNatIso (cospanCompIso ((evaluation D C).obj d) f g)
 
 @[reassoc (attr := simp)]
 theorem pullbackObjIso_hom_comp_fst (f : F ⟶ H) (g : G ⟶ H) (d : D) :
     (pullbackObjIso f g d).hom ≫ pullback.fst (f.app d) (g.app d) = (pullback.fst f g).app d := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pullbackObjIso]
 
 @[reassoc (attr := simp)]
 theorem pullbackObjIso_hom_comp_snd (f : F ⟶ H) (g : G ⟶ H) (d : D) :
     (pullbackObjIso f g d).hom ≫ pullback.snd (f.app d) (g.app d) = (pullback.snd f g).app d := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pullbackObjIso]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 theorem pullbackObjIso_inv_comp_fst (f : F ⟶ H) (g : G ⟶ H) (d : D) :
     (pullbackObjIso f g d).inv ≫ (pullback.fst f g).app d = pullback.fst (f.app d) (g.app d) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pullbackObjIso]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 theorem pullbackObjIso_inv_comp_snd (f : F ⟶ H) (g : G ⟶ H) (d : D) :
     (pullbackObjIso f g d).inv ≫ (pullback.snd f g).app d = pullback.snd (f.app d) (g.app d) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pullbackObjIso]
 
 end Pullback
@@ -98,32 +95,29 @@ variable [HasPushouts C]
 /-- Evaluating a pushout amounts to taking the pushout of the evaluations. -/
 noncomputable def pushoutObjIso (f : F ⟶ G) (g : F ⟶ H) (d : D) :
     (pushout f g).obj d ≅ pushout (f.app d) (g.app d) :=
-  colimitObjIsoColimitCompEvaluation (span f g) d ≪≫ HasColimit.isoOfNatIso (diagramIsoSpan _)
+  colimitObjIsoColimitCompEvaluation (span f g) d ≪≫
+    HasColimit.isoOfNatIso (spanCompIso ((evaluation D C).obj d) f g)
 
 @[reassoc (attr := simp)]
 theorem inl_comp_pushoutObjIso_hom (f : F ⟶ G) (g : F ⟶ H) (d : D) :
     (pushout.inl f g).app d ≫ (pushoutObjIso f g d).hom = pushout.inl (f.app d) (g.app d) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pushoutObjIso]
 
 @[reassoc (attr := simp)]
 theorem inr_comp_pushoutObjIso_hom (f : F ⟶ G) (g : F ⟶ H) (d : D) :
     (pushout.inr f g).app d ≫ (pushoutObjIso f g d).hom = pushout.inr (f.app d) (g.app d) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pushoutObjIso]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 theorem inl_comp_pushoutObjIso_inv (f : F ⟶ G) (g : F ⟶ H) (d : D) :
     pushout.inl (f.app d) (g.app d) ≫ (pushoutObjIso f g d).inv = (pushout.inl f g).app d := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pushoutObjIso]
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc (attr := simp)]
 theorem inr_comp_pushoutObjIso_inv (f : F ⟶ G) (g : F ⟶ H) (d : D) :
     pushout.inr (f.app d) (g.app d) ≫ (pushoutObjIso f g d).inv = (pushout.inr f g).app d := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [pushoutObjIso]
 
 end Pushout
