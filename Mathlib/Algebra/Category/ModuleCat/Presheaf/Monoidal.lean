@@ -40,6 +40,37 @@ namespace Monoidal
 
 variable (M₁ M₂ M₃ M₄ : PresheafOfModules.{u} (R ⋙ forget₂ _ _))
 
+#adaptation_note
+/--
+We had to use the `instanceSearchTypes` backward compatibility flag to make an instance search
+succeed. Concretely, the following instance cannot be synthesized:
+`TensorProduct.CompatibleSMul ↑(R.obj Y) ↑(R.obj Y) ↑(M₁.obj Y) ↑(M₂.obj Y)`
+
+The failure happens while applying `@TensorProduct.CompatibleSMul.isScalarTower`: assigning one of
+its instance-implicit-argument metavariables is rejected because the metavariable's type and the
+type of the assigned value do not match at `.instances` transparency. The metavariable's expected
+type is `DistribMulAction ↑(R.obj Y) ↑(M₂.obj Y)`, whereas the assigned value
+`ModuleCat.instModuleCarrierObjRestrictScalars.toDistribMulAction` has type
+```
+DistribMulAction ↑((R ⋙ forget₂ CommRingCat RingCat).obj Y)
+  ↑((ModuleCat.restrictScalars (RingCat.Hom.hom ((R ⋙ forget₂ CommRingCat RingCat).map f))).obj
+      (M₂.obj Y))
+```
+Lean falls back to synthesize an instance of the correct type, but it returns
+`(M₂.obj Y).isModule.toDistribMulAction`, which is again not defeq to the assigned value. Both
+comparisons bottom out at `↑(R.obj Y) =?= ↑((R ⋙ forget₂ CommRingCat RingCat).obj Y)`, the same
+ring bundled once as a `CommRingCat` and once as a `RingCat`; seeing that these agree requires
+unfolding `⋙`, which is `@[implicit_reducible]`.
+
+Potential fix: Concentrate on removing `respectTransparency false` first.
+For example, do this by making `ModuleCat.RestrictScalars.obj'` and `ModuleCat.restrictScalars`
+implicit-reducible *at their definition site*.
+Without the backward-compatibility flag `respectTransparency false`, Lean bumps transparency for
+instance-implicit arguments to `implicit`, thereby comparing the synthesized and unified instances
+at implicit transparency instead of the stricter instance transparency.
+After that, you can remove `instanceSearchTypes false`, too.
+-/
+set_option backward.isDefEq.respectTransparency.instanceSearchTypes false in
 set_option backward.isDefEq.respectTransparency false in
 /-- Auxiliary definition for `tensorObj`. -/
 noncomputable def tensorObjMap {X Y : Cᵒᵖ} (f : X ⟶ Y) : M₁.obj X ⊗ M₂.obj X ⟶
@@ -56,6 +87,7 @@ noncomputable def tensorObjMap {X Y : Cᵒᵖ} (f : X ⟶ Y) : M₁.obj X ⊗ M�
       rw [map_add, TensorProduct.tmul_add])
     (by intro a m₁ m₂; dsimp; erw [M₂.map_smul, TensorProduct.tmul_smul (r := R.map f a)]; rfl)
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The tensor product of two presheaves of modules. -/
 @[simps obj]
@@ -74,7 +106,6 @@ noncomputable def tensorObj : PresheafOfModules (R ⋙ forget₂ _ _) where
 
 variable {M₁ M₂ M₃ M₄}
 
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma tensorObj_map_tmul {X Y : Cᵒᵖ} (f : X ⟶ Y) (m₁ : M₁.obj X) (m₂ : M₂.obj X) :
     DFunLike.coe (α := (M₁.obj X ⊗ M₂.obj X :))
@@ -82,6 +113,7 @@ lemma tensorObj_map_tmul {X Y : Cᵒᵖ} (f : X ⟶ Y) (m₁ : M₁.obj X) (m₂
       (ModuleCat.Hom.hom (R := ↑(R.obj X)) ((tensorObj M₁ M₂).map f)) (m₁ ⊗ₜ[R.obj X] m₂) =
     M₁.map f m₁ ⊗ₜ[R.obj Y] M₂.map f m₂ := rfl
 
+set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The tensor product of two morphisms of presheaves of modules. -/
 @[simps]
@@ -99,7 +131,6 @@ end Monoidal
 
 open Monoidal
 
-set_option backward.isDefEq.respectTransparency false in
 open ModuleCat.MonoidalCategory in
 noncomputable instance monoidalCategoryStruct :
     MonoidalCategoryStruct (PresheafOfModules.{u} (R ⋙ forget₂ _ _)) where
@@ -121,7 +152,6 @@ noncomputable instance monoidalCategoryStruct :
     erw [rightUnitor_inv_apply, rightUnitor_inv_apply, tensorObj_map_tmul, (R.map f).hom.map_one]
     rfl))
 
-set_option backward.isDefEq.respectTransparency false in
 noncomputable instance monoidalCategory :
     MonoidalCategory (PresheafOfModules.{u} (R ⋙ forget₂ _ _)) where
   tensorHom_def _ _ := by ext1; apply tensorHom_def

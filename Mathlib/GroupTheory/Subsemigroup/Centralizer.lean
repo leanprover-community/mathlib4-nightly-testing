@@ -6,6 +6,7 @@ Authors: Thomas Browning, Jireh Loreaux
 module
 
 public import Mathlib.Algebra.Group.Center
+public import Mathlib.Algebra.Group.IsCommutative
 public import Mathlib.Algebra.Group.Subsemigroup.Basic
 public import Mathlib.GroupTheory.Subsemigroup.Center
 
@@ -88,7 +89,7 @@ theorem isMulCommutative_closure {s : Set M} (hcomm : ∀ a ∈ s, ∀ b ∈ s, 
 
 open scoped IsMulCommutative in
 /-- If all the elements of a set `s` commute, then `closure s` is a commutative semigroup. -/
-@[to_additive (attr := deprecated isMulCommutative_closure (since := "2026-03-09"))
+@[to_additive (attr := deprecated isMulCommutative_closure +typeChanged (since := "2026-03-09"))
 /-- If all the elements of a set `s` commute, then `closure s` forms an additive
 commutative semigroup. -/]
 abbrev closureCommSemigroupOfComm {s : Set M} (hcomm : ∀ a ∈ s, ∀ b ∈ s, a * b = b * a) :
