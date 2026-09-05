@@ -5,12 +5,12 @@ Authors: Johannes Hölzl, Mario Carneiro
 -/
 module
 
+public import Mathlib.Basic.IsEmpty.Basic
 public import Mathlib.Data.Option.Basic
 public import Mathlib.Data.Prod.Basic
 public import Mathlib.Data.Prod.PProd
 public import Mathlib.Data.Sum.Basic
 public import Mathlib.Logic.Equiv.Basic
-public import Mathlib.Logic.IsEmpty.Basic
 
 /-!
 # Injective functions
@@ -79,7 +79,7 @@ theorem toEmbedding_apply (a : α) : f.toEmbedding a = f a :=
   rfl
 
 theorem toEmbedding_injective : Function.Injective (Equiv.toEmbedding : (α ≃ β) → (α ↪ β)) :=
-  fun _ _ h ↦ by rwa [DFunLike.ext'_iff] at h ⊢
+  fun _ _ h ↦ by rw [DFunLike.ext'_iff] at h ⊢; exact h
 
 instance coeEmbedding : Coe (α ≃ β) (α ↪ β) :=
   ⟨Equiv.toEmbedding⟩

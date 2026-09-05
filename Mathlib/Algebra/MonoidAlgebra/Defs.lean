@@ -30,7 +30,7 @@ In this file we define `MonoidAlgebra R M` and `AddMonoidAlgebra R M` as one-fie
 When the domain is additive, this is used to define polynomials:
 ```
 Polynomial R := AddMonoidAlgebra R ℕ
-MvPolynomial σ α := AddMonoidAlgebra R (σ →₀ ℕ)
+MvPolynomial σ R := AddMonoidAlgebra R (σ →₀ ℕ)
 ```
 
 When the domain is multiplicative, e.g. a group, this will be used to define the group ring.
@@ -426,6 +426,7 @@ theorem coeff_single_apply {a a' : M} {b : R} [Decidable (a = a')] :
     (single a b).coeff a' = if a = a' then b else 0 :=
   Finsupp.single_apply
 
+set_option linter.deprecated.deprecatedTarget false in
 @[deprecated (since := "2026-06-18")] protected alias single_apply := coeff_single_apply
 
 @[to_additive (attr := simp)]

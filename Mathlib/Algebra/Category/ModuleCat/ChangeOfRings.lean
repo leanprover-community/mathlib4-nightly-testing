@@ -106,7 +106,7 @@ instance {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) :
 
 instance {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) :
     (restrictScalars.{v} f).PreservesMonomorphisms where
-  preserves _ h := by rwa [mono_iff_injective] at h ⊢
+  preserves _ h := by rw [mono_iff_injective] at h ⊢; assumption
 
 instance {R S : Type*} [Ring R] [Ring S] (f : R →+* S) :
     (restrictScalars f).ReflectsIsomorphisms :=
@@ -361,7 +361,7 @@ scoped[ChangeOfRings] notation:100 s:100 " ⊗ₜ[" R "," f "] " m:101 =>
 
 end Unbundled
 
-open ChangeOfRings
+open scoped ChangeOfRings
 
 namespace ExtendScalars
 
