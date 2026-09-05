@@ -103,9 +103,6 @@ noncomputable def isColimitMapCoconeOfSubobjectMkEqISup
   haveI := mono_of_isColimit_monoOver F (colimit.isColimit _) f (by simp [f])
   have := subobjectMk_of_isColimit_eq_iSup F (colimit.isColimit _) f (by simp [f])
   rw [← h] at this
-  -- The goal is a cocone over `(F ⋙ MonoOver.forget X) ⋙ Over.forget X`, while `f` lives over
-  -- `F ⋙ MonoOver.forget X ⋙ Over.forget X`; reindex along the associator instead of relying
-  -- on the two functors being definitionally equal.
   refine IsColimit.ofIsoColimit ((IsColimit.precomposeHomEquiv (Functor.associator _ _ _) _).symm
     (colimit.isColimit (F ⋙ MonoOver.forget X ⋙ Over.forget X)))
     (Cocone.ext (Subobject.isoOfMkEqMk _ _ this) (fun j ↦ ?_))

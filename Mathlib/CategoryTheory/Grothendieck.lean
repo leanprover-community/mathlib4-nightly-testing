@@ -310,8 +310,8 @@ def mapCompIso (α : F ⟶ G) (β : G ⟶ H) : map (α ≫ β) ≅ map α ⋙ ma
 
 variable (F)
 
-/-- `Functor.comp_map` under `Cat.Hom.toFunctor.map`: the functor sits in a fixed argument of
-`Prefunctor.map` (the result type depends on it), so `simp` cannot rewrite it there and the
+/-- `Functor.comp_map` under `Cat.Hom.toFunctor.map`: the functor sits in an argument of
+`Prefunctor.map` that affects the latter's type, so `simp` cannot rewrite it there and the
 equation has to be transported along `eqToHom`. -/
 @[simp]
 theorem _root_.CategoryTheory.Functor.comp_map_map
