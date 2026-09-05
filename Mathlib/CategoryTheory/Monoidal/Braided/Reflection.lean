@@ -92,7 +92,6 @@ theorem isIso_tfae : List.TFAE
     , ∀ (c : C) (d : D), IsIso ((pre (adj.unit.app d)).app (R.obj c))
     , ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ▷ d'))
     , ∀ (d d' : D), IsIso (L.map ((adj.unit.app d) ⊗ₘ (adj.unit.app d')))] := by
-  set_option backward.isDefEq.respectTransparency false in
   tfae_have 3 → 4
   | h => by
     -- We can commute the tensor product in the condition that `L.map ((adj.unit.app d) ▷ d')` is
@@ -118,8 +117,8 @@ theorem isIso_tfae : List.TFAE
     -- by `adjRetraction` above.
     let _ : Reflective R := { L := L, adj := adj }
     have : IsIso adj.toMonad.μ := μ_iso_of_reflective (R := R)
-    dsimp
-    rw [← dsimp% [Adjunction.toMonad] adj.toMonad.isSplitMono_iff_isIso_unit]
+    dsimp at this ⊢
+    rw [← dsimp% [Adjunction.toMonad_η] adj.toMonad.isSplitMono_iff_isIso_unit]
     exact ⟨⟨adjRetraction adj _ _, adjRetraction_is_retraction adj _ _⟩⟩
   tfae_have 1 → 3
   | h, d, d' => by

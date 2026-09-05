@@ -469,8 +469,8 @@ def mkOfUnitCounit (adj : CoreUnitCounit F G) : F ⊣ G where
 /-- The adjunction between the identity functor on a category and itself. -/
 @[simps]
 def id : 𝟭 C ⊣ 𝟭 C where
-  unit := 𝟙 _
-  counit := 𝟙 _
+  unit := { app := fun X ↦ 𝟙 X }
+  counit := { app := fun X ↦ 𝟙 X }
 
 -- Satisfy the inhabited linter.
 instance : Inhabited (Adjunction (𝟭 C) (𝟭 C)) :=

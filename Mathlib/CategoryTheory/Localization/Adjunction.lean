@@ -136,7 +136,6 @@ end
 include adj in
 lemma isLocalization [F.Full] [F.Faithful] :
     G.IsLocalization ((MorphismProperty.isomorphisms C₂).inverseImage G) := by
-  set_option backward.isDefEq.respectTransparency false in
   let W := ((MorphismProperty.isomorphisms C₂).inverseImage G)
   have hG : W.IsInvertedBy G := fun _ _ _ hf => hf
   have : ∀ (X : C₁), IsIso ((whiskerRight adj.unit W.Q).app X) := fun X =>
@@ -146,7 +145,8 @@ lemma isLocalization [F.Full] [F.Faithful] :
   have : IsIso (whiskerRight adj.unit W.Q) := NatIso.isIso_of_isIso_app _
   let e : W.Localization ≌ C₂ := Equivalence.mk (Localization.lift G hG W.Q) (F ⋙ W.Q)
     (liftNatIso W.Q W W.Q (G ⋙ F ⋙ W.Q) _ _
-    (W.Q.leftUnitor.symm ≪≫ asIso (whiskerRight adj.unit W.Q)))
+    (W.Q.leftUnitor.symm ≪≫ asIso (whiskerRight adj.unit W.Q) ≪≫
+      Functor.associator G F W.Q))
     (Functor.associator _ _ _ ≪≫ isoWhiskerLeft _ (Localization.fac G hG W.Q) ≪≫
       asIso adj.counit)
   apply Functor.IsLocalization.of_equivalence_target W.Q W G e

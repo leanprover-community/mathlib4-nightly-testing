@@ -160,7 +160,6 @@ set_option backward.defeqAttrib.useBackward true in
 transformation `H ⟶ F`. -/
 @[simp]
 lemma op_rightToLeft : t.op.rightToLeft = NatTrans.op t.rightToLeft := by
-  set_option backward.isDefEq.respectTransparency false in
   ext
   rw [rightToLeft_eq_units, rightToLeft_eq_counits]
   simp
@@ -264,7 +263,6 @@ transformation `H.op ⟶ F.op` obtained from the dual adjoint triple `H.op ⊣ G
 dual to the natural transformation `F ⟶ H`. -/
 @[simp]
 lemma leftToRight_op : t.op.leftToRight = NatTrans.op t.leftToRight := by
-  set_option backward.isDefEq.respectTransparency false in
   ext
   rw [leftToRight, leftToRight_eq_counits]
   simp

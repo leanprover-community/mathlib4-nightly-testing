@@ -327,13 +327,11 @@ theorem conjugateEquiv_symm_id : (conjugateEquiv adj₁ adj₁).symm (𝟙 _) = 
 set_option backward.defeqAttrib.useBackward true in
 theorem conjugateEquiv_adjunction_id {L R : C ⥤ C} (adj : L ⊣ R) (α : 𝟭 C ⟶ L) (c : C) :
     (conjugateEquiv adj Adjunction.id α).app c = α.app (R.obj c) ≫ adj.counit.app c := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [conjugateEquiv, mateEquiv, Adjunction.id]
 
 set_option backward.defeqAttrib.useBackward true in
 theorem conjugateEquiv_adjunction_id_symm {L R : C ⥤ C} (adj : L ⊣ R) (α : R ⟶ 𝟭 C) (c : C) :
     ((conjugateEquiv adj Adjunction.id).symm α).app c = adj.unit.app c ≫ α.app (L.obj c) := by
-  set_option backward.isDefEq.respectTransparency false in
   simp [conjugateEquiv, mateEquiv, Adjunction.id]
 
 end conjugateEquiv

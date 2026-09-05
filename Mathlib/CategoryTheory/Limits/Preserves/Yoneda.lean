@@ -79,12 +79,10 @@ theorem yonedaYonedaColimit_app_inv {X : C} : ((yonedaYonedaColimit F).app (op X
   simp [← NatTrans.naturality_apply]
 
 noncomputable instance {X : C} : PreservesColimit F (coyoneda.obj (op (yoneda.obj X))) := by
-  set_option backward.isDefEq.respectTransparency false in
   suffices IsIso (colimit.post F (coyoneda.obj (op (yoneda.obj X)))) from
     preservesColimit_of_isIso_post _ _
-  suffices colimit.post F (coyoneda.obj (op (yoneda.obj X))) =
-      (colimitObjIsoColimitCompEvaluation _ _).inv ≫ ((yonedaYonedaColimit F).app (op X)).inv from
-    this ▸ inferInstance
-  rw [yonedaYonedaColimit_app_inv, Iso.inv_hom_id_assoc]
+  exact IsIso.of_isIso_fac_left
+    (f := (colimitObjIsoColimitCompEvaluation (F ⋙ yoneda) (yoneda.op.obj (op X))).hom)
+    (yonedaYonedaColimit_app_inv (F := F) (X := X)).symm
 
 end CategoryTheory

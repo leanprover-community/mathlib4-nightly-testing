@@ -481,7 +481,6 @@ def RightExtension.precomp : RightExtension L F ⥤ RightExtension (G ⋙ L) (G 
 variable [IsEquivalence G]
 
 noncomputable instance : IsEquivalence (LeftExtension.precomp L F G) := by
-  set_option backward.isDefEq.respectTransparency false in
   apply StructuredArrow.isEquivalenceMap₂
 
 noncomputable instance : IsEquivalence (RightExtension.precomp L F G) := by
@@ -506,7 +505,6 @@ set_option backward.defeqAttrib.useBackward true in
 lemma isLeftKanExtension_iff_precomp (α : F ⟶ L ⋙ F') :
     F'.IsLeftKanExtension α ↔ F'.IsLeftKanExtension
       (whiskerLeft G α ≫ (associator _ _ _).inv) := by
-  set_option backward.isDefEq.respectTransparency false in
   let eq : (LeftExtension.mk _ α).IsUniversal ≃ (LeftExtension.mk _
       (whiskerLeft G α ≫ (associator _ _ _).inv)).IsUniversal :=
     (LeftExtension.isUniversalPrecompEquiv L F G _).trans
@@ -810,12 +808,12 @@ lemma isLeftKanExtension_iff_precomp_equivalence
       whiskerRight iso.hom F₂' ≫ (associator _ _ _).hom ≫
       whiskerLeft L₁ e'.hom := by cat_disch) :
     F₂'.IsLeftKanExtension α₂ ↔ F₁'.IsLeftKanExtension α₁ := by
-  set_option backward.isDefEq.respectTransparency false in
   simp only [isLeftKanExtension_iff]
   let Φ : L₂.LeftExtension F₂ ⥤ L₁.LeftExtension F₁ :=
     StructuredArrow.map₂ (F := (whiskeringLeft _ _ _).obj G')
       (G := (whiskeringLeft _ _ _).obj G) e.hom
-        ((whiskeringLeft C D' H).mapIso iso).hom
+        ((whiskeringLeftObjCompIso G L₂).inv ≫ ((whiskeringLeft C D' H).mapIso iso).hom ≫
+          (whiskeringLeftObjCompIso L₁ G').hom)
   exact Equiv.nonempty_congr ((IsInitial.isInitialIffObj Φ _).trans
     (IsInitial.equivOfIso (StructuredArrow.isoMk e')))
 
@@ -827,12 +825,12 @@ lemma isRightKanExtension_iff_precomp_equivalence
     (h : α₁ = whiskerLeft L₁ e'.inv ≫ (associator _ _ _).inv ≫ whiskerRight iso.inv _ ≫
       (associator _ _ _).hom ≫ whiskerLeft G α₂ ≫ e.inv := by cat_disch) :
     F₂'.IsRightKanExtension α₂ ↔ F₁'.IsRightKanExtension α₁ := by
-  set_option backward.isDefEq.respectTransparency false in
   simp only [isRightKanExtension_iff]
   let Φ : L₂.RightExtension F₂ ⥤ L₁.RightExtension F₁ :=
     CostructuredArrow.map₂ (F := (whiskeringLeft _ _ _).obj G')
       (G := (whiskeringLeft _ _ _).obj G)
-      ((whiskeringLeft C D' H).mapIso iso).inv e.inv
+      ((whiskeringLeftObjCompIso L₁ G').inv ≫ ((whiskeringLeft C D' H).mapIso iso).inv ≫
+        (whiskeringLeftObjCompIso G L₂).hom) e.inv
   exact Equiv.nonempty_congr ((IsTerminal.isTerminalIffObj Φ _).trans
     (IsTerminal.equivOfIso (CostructuredArrow.isoMk e'.symm).symm))
 

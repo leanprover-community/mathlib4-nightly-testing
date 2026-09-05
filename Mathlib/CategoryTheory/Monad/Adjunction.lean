@@ -45,11 +45,14 @@ set_option backward.defeqAttrib.useBackward true in
 /-- For a pair of functors `L : C ⥤ D`, `R : D ⥤ C`, an adjunction `h : L ⊣ R` induces a monad on
 the category `C`.
 -/
-@[simps! coe η μ]
+@[simps! coe η μ_app]
 def toMonad (h : L ⊣ R) : Monad C where
   toFunctor := L ⋙ R
   η := h.unit
-  μ := whiskerRight (whiskerLeft L h.counit) R
+  μ :=
+    { app := fun X ↦ R.map (h.counit.app (L.obj X))
+      naturality := fun _ _ _ ↦ by
+        simp only [Functor.comp_map, ← Functor.map_comp, h.counit_naturality] }
   assoc X := by
     dsimp
     rw [Functor.comp_map]
@@ -65,11 +68,14 @@ set_option backward.defeqAttrib.useBackward true in
 /-- For a pair of functors `L : C ⥤ D`, `R : D ⥤ C`, an adjunction `h : L ⊣ R` induces a comonad on
 the category `D`.
 -/
-@[simps coe ε δ]
+@[simps coe ε δ_app]
 def toComonad (h : L ⊣ R) : Comonad D where
   toFunctor := R ⋙ L
   ε := h.counit
-  δ := whiskerRight (whiskerLeft R h.unit) L
+  δ :=
+    { app := fun X ↦ L.map (h.unit.app (R.obj X))
+      naturality := fun _ _ _ ↦ by
+        simp only [Functor.comp_map, ← Functor.map_comp, h.unit_naturality] }
   coassoc X := by
     dsimp
     rw [Functor.comp_map]
@@ -322,16 +328,20 @@ noncomputable instance (G : Comonad C) : ComonadicLeftAdjoint G.forget where
 
 set_option backward.defeqAttrib.useBackward true in
 -- TODO: This holds more generally for idempotent adjunctions, not just reflective adjunctions.
-instance μ_iso_of_reflective [Reflective R] : IsIso (reflectorAdjunction R).toMonad.μ := by
-  set_option backward.isDefEq.respectTransparency false in
+instance [Reflective R] (X : C) : IsIso ((reflectorAdjunction R).toMonad.μ.app X) := by
   dsimp
   infer_instance
 
+instance μ_iso_of_reflective [Reflective R] : IsIso (reflectorAdjunction R).toMonad.μ :=
+  NatIso.isIso_of_isIso_app _
+
 set_option backward.defeqAttrib.useBackward true in
-instance δ_iso_of_coreflective [Coreflective R] : IsIso (coreflectorAdjunction R).toComonad.δ := by
-  set_option backward.isDefEq.respectTransparency false in
+instance [Coreflective R] (X : C) : IsIso ((coreflectorAdjunction R).toComonad.δ.app X) := by
   dsimp
   infer_instance
+
+instance δ_iso_of_coreflective [Coreflective R] : IsIso (coreflectorAdjunction R).toComonad.δ :=
+  NatIso.isIso_of_isIso_app _
 
 attribute [instance] MonadicRightAdjoint.eqv
 attribute [instance] ComonadicLeftAdjoint.eqv

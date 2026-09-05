@@ -51,12 +51,9 @@ set_option backward.defeqAttrib.useBackward true in
 lemma equivalence_counitIso_app (X : C₂) :
     (equivalence L₁ W₁ L₂ W₂ G G' F F' α β).counitIso.app (L₂.obj X) =
       (Lifting.iso L₂ W₂ (F ⋙ G') (F' ⋙ G')).app X ≪≫ β.app X := by
-  set_option backward.isDefEq.respectTransparency false in
   ext
-  dsimp [equivalence, Equivalence.mk]
-  rw [liftNatTrans_app]
-  dsimp [Lifting.iso]
-  rw [comp_id]
+  dsimp only [equivalence, Equivalence.mk, Iso.app_hom, Iso.trans_hom]
+  rw [liftNatIso_hom, liftNatTrans_app, Lifting.id_iso, Functor.rightUnitor_inv_app, comp_id]
 
 include L₁ W₁ L₂ W₂ G F F' α β in
 /-- Basic constructor of an equivalence between localized categories -/

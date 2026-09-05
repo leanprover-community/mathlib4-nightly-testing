@@ -312,19 +312,21 @@ set_option backward.defeqAttrib.useBackward true in
 instance (priority := 100) comp_preservesColimit {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [PreservesColimit G H] : PreservesColimit (F ⋙ G) H where
   preserves {c} hc := by
-    set_option backward.isDefEq.respectTransparency false in
-    refine ⟨isColimitExtendCoconeEquiv (G := G ⋙ H) F (H.mapCocone c) ?_⟩
-    let hc' := isColimitOfPreserves H ((isColimitExtendCoconeEquiv F c).symm hc)
-    exact IsColimit.ofIsoColimit hc' (Cocone.ext (Iso.refl _) (by simp))
+    refine ⟨IsColimit.ofIsoColimit ?_
+      (((Cocone.functoriality (F ⋙ G) H).mapIso ((coconesEquiv F G).unitIso.app c)).symm)⟩
+    exact IsColimit.ofIsoColimit ((isColimitWhiskerEquiv F _).symm
+      (isColimitOfPreserves H ((isColimitExtendCoconeEquiv F c).symm hc)))
+      (Functor.mapCoconeWhisker H).symm
 
 set_option backward.defeqAttrib.useBackward true in
 instance (priority := 100) comp_reflectsColimit {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [ReflectsColimit G H] : ReflectsColimit (F ⋙ G) H where
   reflects {c} hc := by
-    set_option backward.isDefEq.respectTransparency false in
-    refine ⟨isColimitExtendCoconeEquiv F _ (isColimitOfReflects H ?_)⟩
-    let hc' := (isColimitExtendCoconeEquiv (G := G ⋙ H) F _).symm hc
-    exact IsColimit.ofIsoColimit hc' (Cocone.ext (Iso.refl _) (by simp))
+    refine ⟨isColimitExtendCoconeEquiv F c (isColimitOfReflects H
+      (isColimitWhiskerEquiv F _ ?_))⟩
+    exact IsColimit.ofIsoColimit hc
+      ((Cocone.functoriality (F ⋙ G) H).mapIso ((coconesEquiv F G).unitIso.app c) ≪≫
+        Functor.mapCoconeWhisker H)
 
 instance (priority := 100) compCreatesColimit {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [CreatesColimit G H] : CreatesColimit (F ⋙ G) H where
@@ -420,11 +422,12 @@ def createsColimitOfComp {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [CreatesColimit (F ⋙ G) H] : CreatesColimit G H where
   reflects := (reflectsColimit_of_comp F).reflects
   lifts {c} hc := by
-    set_option backward.isDefEq.respectTransparency false in
-      refine ⟨(extendCocone (F := F)).obj (liftColimit ((isColimitWhiskerEquiv F _).symm hc)), ?_⟩
-      let i := liftedColimitMapsToOriginal (K := (F ⋙ G)) ((isColimitWhiskerEquiv F _).symm hc)
-      refine ?_ ≪≫ ((extendCocone (F := F)).mapIso i) ≪≫ ((coconesEquiv F (G ⋙ H)).counitIso.app _)
-      exact Cocone.ext (Iso.refl _)
+    refine ⟨(extendCocone (F := F)).obj (liftColimit ((isColimitWhiskerEquiv F _).symm hc)), ?_⟩
+    let i := liftedColimitMapsToOriginal (K := (F ⋙ G)) ((isColimitWhiskerEquiv F _).symm hc)
+    refine ?_ ≪≫ ((extendCocone (F := F)).mapIso i) ≪≫ ((coconesEquiv F (G ⋙ H)).counitIso.app _)
+    exact ((coconesEquiv F (G ⋙ H)).counitIso.app _).symm ≪≫
+      (extendCocone (F := F)).mapIso ((Functor.mapCoconeWhisker H).symm ≪≫
+        ((Cocone.functoriality (F ⋙ G) H).mapIso ((coconesEquiv F G).unitIso.app _)).symm)
 
 include F in
 theorem hasColimitsOfShape_of_final [HasColimitsOfShape C E] : HasColimitsOfShape D E where
@@ -677,19 +680,21 @@ set_option backward.defeqAttrib.useBackward true in
 instance (priority := 100) comp_preservesLimit {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [PreservesLimit G H] : PreservesLimit (F ⋙ G) H where
   preserves {c} hc := by
-    set_option backward.isDefEq.respectTransparency false in
-    refine ⟨isLimitExtendConeEquiv (G := G ⋙ H) F (H.mapCone c) ?_⟩
-    let hc' := isLimitOfPreserves H ((isLimitExtendConeEquiv F c).symm hc)
-    exact IsLimit.ofIsoLimit hc' (Cone.ext (Iso.refl _) (by simp))
+    refine ⟨IsLimit.ofIsoLimit ?_
+      (((Cone.functoriality (F ⋙ G) H).mapIso ((conesEquiv F G).unitIso.app c)).symm)⟩
+    exact IsLimit.ofIsoLimit ((isLimitWhiskerEquiv F _).symm
+      (isLimitOfPreserves H ((isLimitExtendConeEquiv F c).symm hc)))
+      (Functor.mapConeWhisker H).symm
 
 set_option backward.defeqAttrib.useBackward true in
 instance (priority := 100) comp_reflectsLimit {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [ReflectsLimit G H] : ReflectsLimit (F ⋙ G) H where
   reflects {c} hc := by
-    set_option backward.isDefEq.respectTransparency false in
-    refine ⟨isLimitExtendConeEquiv F _ (isLimitOfReflects H ?_)⟩
-    let hc' := (isLimitExtendConeEquiv (G := G ⋙ H) F _).symm hc
-    exact IsLimit.ofIsoLimit hc' (Cone.ext (Iso.refl _) (by simp))
+    refine ⟨isLimitExtendConeEquiv F c (isLimitOfReflects H
+      (isLimitWhiskerEquiv F _ ?_))⟩
+    exact IsLimit.ofIsoLimit hc
+      ((Cone.functoriality (F ⋙ G) H).mapIso ((conesEquiv F G).unitIso.app c) ≪≫
+        Functor.mapConeWhisker H)
 
 instance (priority := 100) compCreatesLimit {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [CreatesLimit G H] : CreatesLimit (F ⋙ G) H where
@@ -775,11 +780,12 @@ def createsLimitOfComp {B : Type u₄} [Category.{v₄} B] {H : E ⥤ B}
     [CreatesLimit (F ⋙ G) H] : CreatesLimit G H where
   reflects := (reflectsLimit_of_comp F).reflects
   lifts {c} hc := by
-    set_option backward.isDefEq.respectTransparency false in
-      refine ⟨(extendCone (F := F)).obj (liftLimit ((isLimitWhiskerEquiv F _).symm hc)), ?_⟩
-      let i := liftedLimitMapsToOriginal (K := (F ⋙ G)) ((isLimitWhiskerEquiv F _).symm hc)
-      refine ?_ ≪≫ ((extendCone (F := F)).mapIso i) ≪≫ ((conesEquiv F (G ⋙ H)).counitIso.app _)
-      exact Cone.ext (Iso.refl _)
+    refine ⟨(extendCone (F := F)).obj (liftLimit ((isLimitWhiskerEquiv F _).symm hc)), ?_⟩
+    let i := liftedLimitMapsToOriginal (K := (F ⋙ G)) ((isLimitWhiskerEquiv F _).symm hc)
+    refine ?_ ≪≫ ((extendCone (F := F)).mapIso i) ≪≫ ((conesEquiv F (G ⋙ H)).counitIso.app _)
+    exact ((conesEquiv F (G ⋙ H)).counitIso.app _).symm ≪≫
+      (extendCone (F := F)).mapIso ((Functor.mapConeWhisker H).symm ≪≫
+        ((Cone.functoriality (F ⋙ G) H).mapIso ((conesEquiv F G).unitIso.app _)).symm)
 
 include F in
 theorem hasLimitsOfShape_of_initial [HasLimitsOfShape C E] : HasLimitsOfShape D E where

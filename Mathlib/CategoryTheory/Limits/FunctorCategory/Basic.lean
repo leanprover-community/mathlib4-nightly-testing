@@ -285,7 +285,6 @@ theorem limitCompWhiskeringLeftIsoCompLimit_hom_whiskerLeft_π (F : J ⥤ K ⥤ 
     [HasLimitsOfShape J C] (j : J) :
     (limitCompWhiskeringLeftIsoCompLimit F G).hom ≫ whiskerLeft G (limit.π F j) =
       limit.π (F ⋙ (whiskeringLeft _ _ _).obj G) j := by
-  set_option backward.isDefEq.respectTransparency false in
   ext d
   simp [limitCompWhiskeringLeftIsoCompLimit]
 
@@ -384,7 +383,6 @@ theorem ι_colimitCompWhiskeringLeftIsoCompColimit_hom (F : J ⥤ K ⥤ C) (G : 
     [HasColimitsOfShape J C] (j : J) :
     colimit.ι (F ⋙ (whiskeringLeft _ _ _).obj G) j ≫
       (colimitCompWhiskeringLeftIsoCompColimit F G).hom = whiskerLeft G (colimit.ι F j) := by
-  set_option backward.isDefEq.respectTransparency false in
   ext d
   simp [colimitCompWhiskeringLeftIsoCompColimit]
 

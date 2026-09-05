@@ -541,13 +541,15 @@ def createsLimitsOfShapeOfEquiv {J' : Type w₁} [Category.{w'₁} J'] (e : J �
     [CreatesLimitsOfShape J F] : CreatesLimitsOfShape J' F where
   CreatesLimit {K} :=
     { lifts c hc := by
-        set_option backward.isDefEq.respectTransparency false in
-          refine ⟨(Cone.whiskeringEquivalence e).inverse.obj
-            (liftLimit (hc.whiskerEquivalence e)), ?_⟩
-          letI inner := (Cone.whiskeringEquivalence (F := K ⋙ F) e).inverse.mapIso
-            (liftedLimitMapsToOriginal (K := e.functor ⋙ K) (hc.whiskerEquivalence e))
-          refine ?_ ≪≫ inner ≪≫ ((Cone.whiskeringEquivalence e).unitIso.app c).symm
-          exact Cone.ext (Iso.refl _)
+        refine ⟨(Cone.whiskeringEquivalence e).inverse.obj
+          (liftLimit (hc.whiskerEquivalence e)), ?_⟩
+        refine (Cone.whiskeringEquivalence (F := K ⋙ F) e).unitIso.app _ ≪≫
+          (Cone.whiskeringEquivalence (F := K ⋙ F) e).inverse.mapIso ?_ ≪≫
+          ((Cone.whiskeringEquivalence e).unitIso.app c).symm
+        exact (Functor.mapConeWhisker F).symm ≪≫
+          (Cone.functoriality (e.functor ⋙ K) F).mapIso
+            ((Cone.whiskeringEquivalence e).counitIso.app _) ≪≫
+          liftedLimitMapsToOriginal (K := e.functor ⋙ K) (hc.whiskerEquivalence e)
       toReflectsLimit := have := reflectsLimitsOfShape_of_equiv e F; inferInstance }
 
 set_option backward.defeqAttrib.useBackward true in
@@ -597,13 +599,15 @@ def createsColimitsOfShapeOfEquiv {J' : Type w₁} [Category.{w'₁} J'] (e : J 
     [CreatesColimitsOfShape J F] : CreatesColimitsOfShape J' F where
   CreatesColimit {K} :=
     { lifts c hc := by
-        set_option backward.isDefEq.respectTransparency false in
-          refine ⟨(Cocone.whiskeringEquivalence e).inverse.obj
-            (liftColimit (hc.whiskerEquivalence e)), ?_⟩
-          letI inner := (Cocone.whiskeringEquivalence (F := K ⋙ F) e).inverse.mapIso
-            (liftedColimitMapsToOriginal (K := e.functor ⋙ K) (hc.whiskerEquivalence e))
-          refine ?_ ≪≫ inner ≪≫ ((Cocone.whiskeringEquivalence e).unitIso.app c).symm
-          exact Cocone.ext (Iso.refl _)
+        refine ⟨(Cocone.whiskeringEquivalence e).inverse.obj
+          (liftColimit (hc.whiskerEquivalence e)), ?_⟩
+        refine (Cocone.whiskeringEquivalence (F := K ⋙ F) e).unitIso.app _ ≪≫
+          (Cocone.whiskeringEquivalence (F := K ⋙ F) e).inverse.mapIso ?_ ≪≫
+          ((Cocone.whiskeringEquivalence e).unitIso.app c).symm
+        exact (Functor.mapCoconeWhisker F).symm ≪≫
+          (Cocone.functoriality (e.functor ⋙ K) F).mapIso
+            ((Cocone.whiskeringEquivalence e).counitIso.app _) ≪≫
+          liftedColimitMapsToOriginal (K := e.functor ⋙ K) (hc.whiskerEquivalence e)
       toReflectsColimit := have := reflectsColimitsOfShape_of_equiv e F; inferInstance }
 
 -- For the inhabited linter later.
