@@ -56,8 +56,9 @@ elab_rules : command
 #guard_msgs in
 #ensure_defeq CategoryTheory.Iso.trans_hom
 
-/-- info: `CategoryTheory.Functor.comp_map` is tagged with @[defeq] -/
-#guard_msgs in
+-- By design, `Functor.comp.map` is semireducible.
+/-- error: `CategoryTheory.Functor.comp_map` is not tagged @[defeq] nor @[backward_defeq]! -/
+#guard_msgs (error) in
 #ensure_defeq CategoryTheory.Functor.comp_map
 
 /-- info: `CategoryTheory.Functor.comp_obj` is tagged with @[defeq] -/
@@ -72,8 +73,10 @@ elab_rules : command
 #guard_msgs in
 #ensure_defeq CategoryTheory.Functor.uncurry_obj_obj
 
-/-- info: `CategoryTheory.Functor.associator_hom_app` is tagged with @[defeq] -/
-#guard_msgs in
+/--
+error: `CategoryTheory.Functor.associator_hom_app` is not tagged @[defeq] nor @[backward_defeq]!
+-/
+#guard_msgs (error) in
 #ensure_defeq CategoryTheory.Functor.associator_hom_app
 
 /-- info: `CategoryTheory.Functor.leftUnitor_hom_app` is tagged with @[defeq] -/

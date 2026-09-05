@@ -19,14 +19,14 @@ Taking into account the placement of parentheses, we want to allow
 `(F ⋙ G) ⋙ H` and `F ⋙ (G ⋙ H)` to have their own instances
 (even though they are usually propositionally equal).
 
-Currently, `Functor.comp` has the attribute `implicit_reducible` which
-allows Lean to see through the definition of the `obj/map` fields of
-compositions of functors, while allowing `(F ⋙ G) ⋙ H` and `F ⋙ (G ⋙ H)`
-to have their own instances. In order to keep allowing different instances
-for these two "identical" functors, we must not make `Functor.comp`
-more reducible: in particular, if `Functor.comp` had the attribute
-`instance_reducible`, an instance for `(F ⋙ G) ⋙ H` would be found
-when there is an instance for `F ⋙ (G ⋙ H)` (which would be bad).
+Currently, `Functor.comp` has the attribute `instance_reducible`, but its `map` field
+is the opaque auxiliary definition `Functor.comp.map`, so that `(F ⋙ G).obj X` unfolds
+to `G.obj (F.obj X)` at instance transparency while `(F ⋙ G).map f = G.map (F.map f)`
+is only the simp lemma `Functor.comp_map`. Consequently `(F ⋙ G) ⋙ H` and
+`F ⋙ (G ⋙ H)` are not definitionally equal below default transparency, and they
+can have their own instances. Making `Functor.comp.map` instance-reducible too would break this:
+an instance for `(F ⋙ G) ⋙ H` would then be found when there is an instance for
+`F ⋙ (G ⋙ H)` (which would be bad).
 
 -/
 
@@ -68,11 +68,10 @@ example [F.Foo] [G.Foo] [H.Foo] :
   fail_if_success rfl
   exact Nat.add_assoc _ _ _
 
--- This test demonstrates that if `Functor.comp` had the attribute
--- `instance_reducible`, an instance for `(F ⋙ G) ⋙ H` would be
--- found when `F ⋙ (G ⋙ H)` has an instance.
+-- This test demonstrates that if `Functor.comp.map` were instance-reducible, an instance
+-- for `(F ⋙ G) ⋙ H` would be found when `F ⋙ (G ⋙ H)` has an instance.
 set_option allowUnsafeReducibility true
-attribute [local instance_reducible] Functor.comp in
+attribute [local instance_reducible] Functor.comp.map in
 example [(F ⋙ (G ⋙ H)).Foo] : ((F ⋙ G) ⋙ H).Foo := inferInstance
 
 end CategoryTheory.Functor
