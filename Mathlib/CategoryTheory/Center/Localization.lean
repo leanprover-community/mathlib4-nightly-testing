@@ -34,15 +34,15 @@ namespace CatCenter
 to `W : MorphismProperty D`, this is the induced element in `CatCenter D`
 obtained by localization. -/
 noncomputable def localization : CatCenter D :=
-  Localization.liftNatTrans L W L L (𝟭 D) (𝟭 D) (Functor.whiskerRight r L)
+  Localization.liftNatTrans L W L L (𝟭 D) (𝟭 D)
+    { app := fun X ↦ L.map (r.app X)
+      naturality := fun X Y f ↦ by
+        simp only [← Functor.map_comp, r.naturality] }
 
 @[simp]
 lemma localization_app (X : C) :
     (r.localization L W).app (L.obj X) = L.map (r.app X) := by
-  set_option backward.isDefEq.respectTransparency false in
-  dsimp [localization]
-  simp only [Localization.liftNatTrans_app, Functor.id_obj, Functor.whiskerRight_app,
-    NatTrans.naturality, Functor.comp_map, Functor.id_map, Iso.hom_inv_id_app_assoc]
+  simp [localization]
 
 include W
 
