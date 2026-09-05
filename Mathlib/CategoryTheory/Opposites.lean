@@ -151,8 +151,8 @@ def opOp : C ⥤ Cᵒᵖᵒᵖ where
 def opOpEquivalence : Cᵒᵖᵒᵖ ≌ C where
   functor := unopUnop C
   inverse := opOp C
-  unitIso := Iso.refl (𝟭 Cᵒᵖᵒᵖ)
-  counitIso := Iso.refl (opOp C ⋙ unopUnop C)
+  unitIso := NatIso.ofComponents fun _ ↦ Iso.refl _
+  counitIso := NatIso.ofComponents fun _ ↦ Iso.refl _
 
 instance : (opOp C).IsEquivalence :=
   (opOpEquivalence C).isEquivalence_inverse
