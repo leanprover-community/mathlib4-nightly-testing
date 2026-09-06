@@ -39,8 +39,6 @@ variable (M₁ M₂ M₃ M₄ : PresheafOfModulesOfCommRing.{u} R)
 
 #adaptation_note
 /--
-After https://github.com/leanprover/lean4/pull/14624:
-
 We had to use the `instanceSearchTypes` backward compatibility flag to make an instance search
 succeed. Concretely, the following instance cannot be synthesized:
 `TensorProduct.CompatibleSMul ↑(R.obj Y) ↑(R.obj Y) ↑(M₁.obj Y) ↑(M₂.obj Y)`
@@ -152,18 +150,30 @@ noncomputable instance monoidalCategory :
     MonoidalCategory (PresheafOfModulesOfCommRing.{u} R) where
   tensorHom_def _ _ := by ext1; apply tensorHom_def
   id_tensorHom_id _ _ := by ext1; apply id_tensorHom_id
-  tensorHom_comp_tensorHom _ _ _ _ := by ext1; apply tensorHom_comp_tensorHom
+  tensorHom_comp_tensorHom _ _ _ _ := by
+    ext1 X
+    apply tensorHom_comp_tensorHom (C := ModuleCat (R.obj X))
   whiskerLeft_id M₁ M₂ := by
     ext1 X
     apply MonoidalCategory.whiskerLeft_id (C := ModuleCat (R.obj X))
   id_whiskerRight _ _ := by
     ext1 X
     apply MonoidalCategory.id_whiskerRight (C := ModuleCat (R.obj X))
-  associator_naturality _ _ _ := by ext1; apply associator_naturality
-  leftUnitor_naturality _ := by ext1; apply leftUnitor_naturality
-  rightUnitor_naturality _ := by ext1; apply rightUnitor_naturality
-  pentagon _ _ _ _ := by ext1; apply pentagon
-  triangle _ _ := by ext1; apply triangle
+  associator_naturality _ _ _ := by
+    ext1 X
+    apply associator_naturality (C := ModuleCat (R.obj X))
+  leftUnitor_naturality _ := by
+    ext1 X
+    apply leftUnitor_naturality (C := ModuleCat (R.obj X))
+  rightUnitor_naturality _ := by
+    ext1 X
+    apply rightUnitor_naturality (C := ModuleCat (R.obj X))
+  pentagon _ _ _ _ := by
+    ext1 X
+    apply pentagon (C := ModuleCat (R.obj X))
+  triangle _ _ := by
+    ext1 X
+    apply triangle (C := ModuleCat (R.obj X))
 
 open BraidedCategory
 

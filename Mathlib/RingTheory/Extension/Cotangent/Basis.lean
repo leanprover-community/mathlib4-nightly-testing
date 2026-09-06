@@ -238,8 +238,6 @@ def basisRight : Module.Basis Unit S D.presRight.toExtension.Cotangent :=
 
 #adaptation_note
 /--
-After https://github.com/leanprover/lean4/pull/14624:
-
 We had to use the `instanceSearchTypes` backward compatibility flag to make an instance search
 succeed. Concretely, the following instance cannot be synthesized:
 `AddCommMonoid D.presRight.toExtension.Cotangent`
@@ -277,8 +275,6 @@ lemma basis_inl [Nontrivial S] :
 
 #adaptation_note
 /--
-After https://github.com/leanprover/lean4/pull/14624:
-
 We had to use the `instanceSearchTypes` backward compatibility flag to make an instance search
 succeed. Concretely, the following two instances cannot be synthesized:
 `OfNat D.presRight.toExtension.Cotangent 0`
@@ -326,8 +322,6 @@ end
 
 #adaptation_note
 /--
-After https://github.com/leanprover/lean4/pull/14624:
-
 We had to use the `instanceSearchTypes` backward compatibility flag to make an instance search
 succeed. Concretely, the following instance cannot be synthesized:
 `LE (Submodule P.Ring P.toExtension.Cotangent)`
