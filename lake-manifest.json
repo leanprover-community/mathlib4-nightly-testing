@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "0d193a64ae703a8d65d6e576ef17ff500fb83333",
+   "rev": "a1a36ce044ea9587a6c072f8ade4447a61e323a7",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "wanted-surface-deps-rename",
