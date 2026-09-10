@@ -29,7 +29,7 @@ variable {ι ι' : Type*} {c : ComplexShape ι} {c' : ComplexShape ι'}
   {C : Type*} [Category* C] [HasZeroMorphisms C]
   [HasZeroObject C]
 
-variable (K L M : HomologicalComplex C c) (φ : K ⟶ L) (φ' : L ⟶ M) (e : c.Embedding c')
+variable (K L : HomologicalComplex C c) (φ : K ⟶ L) (e : c.Embedding c')
 
 namespace extend
 
@@ -207,7 +207,7 @@ lemma d_comp_desc_eq_zero_iff ⦃W : C⦄ (φ : W ⟶ cocone.pt) :
       φ ≫ ((isColimitCokernelCofork K e hj' hi hi' cocone hcocone).desc
       (CokernelCofork.ofπ ((K.extend e).d j' k') (d_comp_d _ _ _ _))) = 0 :=
   d_comp_desc_eq_zero_iff' K e hj' hk hk' cocone hcocone _ (hcocone.fac _ _) _ (by
-    simpa using (isColimitCokernelCofork K e hj' hi hi' cocone hcocone).fac _
+    simpa using! (isColimitCokernelCofork K e hj' hi hi' cocone hcocone).fac _
       WalkingParallelPair.one) _
 
 set_option backward.isDefEq.respectTransparency false in
@@ -261,6 +261,7 @@ lemma rightHomologyData_g' (h : (K.sc' i j k).RightHomologyData) (hk'' : e.f k =
   rw [assoc] at this
   rw [this, K.extend_d_eq e hj' hk'', h.p_g'_assoc, shortComplexFunctor'_obj_g]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The homology data of `(K.extend e).sc' i' j' k'` that is deduced
 from a homology data of `K.sc' i j k`. -/

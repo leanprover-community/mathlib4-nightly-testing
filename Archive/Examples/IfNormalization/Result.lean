@@ -5,7 +5,6 @@ Authors: Chris Hughes
 -/
 import Archive.Examples.IfNormalization.Statement
 import Mathlib.Data.List.AList
-import Mathlib.Tactic.Recall
 
 /-!
 # A solution to the if normalization challenge in Lean.
@@ -13,8 +12,8 @@ import Mathlib.Tactic.Recall
 See `Statement.lean` for background.
 -/
 
-macro "◾" : tactic => `(tactic| aesop)
-macro "◾" : term => `(term| by aesop)
+local macro "◾" : tactic => `(tactic| aesop)
+local macro "◾" : term => `(term| by aesop)
 
 namespace IfExpr
 
@@ -23,9 +22,6 @@ We add some local simp lemmas so we can unfold the definitions of the normalizat
 -/
 attribute [local simp] normalized hasNestedIf hasConstantIf hasRedundantIf disjoint vars
   List.disjoint
-
-set_option warning.simp.varHead false in
-attribute [local simp] apply_ite ite_eq_iff'
 
 variable {b : Bool} {f : ℕ → Bool} {i : ℕ} {t e : IfExpr}
 
@@ -74,7 +70,7 @@ def normalize (l : AList (fun _ : ℕ => Bool)) :
       ⟨if t' = e' then t' else .ite (var v) t' e', by
         refine ⟨fun f => ?_, ?_, fun w b => ?_⟩
         · -- eval = eval
-          simp? says simp only [apply_ite, eval_ite_var, ite_eq_iff']
+          simp only [apply_ite, eval_ite_var, ite_eq_iff']
           cases hfv : f v
           · simp_all
             congr

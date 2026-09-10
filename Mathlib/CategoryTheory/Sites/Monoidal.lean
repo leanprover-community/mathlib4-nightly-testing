@@ -72,7 +72,7 @@ noncomputable def functorEnrichedHomCoyonedaObjEquiv (M : A) (F G : Cᵒᵖ ⥤ 
       congr 1
       let α : Over.mk j'.hom.unop ⟶ Over.mk j.hom.unop := Over.homMk φ.right.unop
         (Quiver.Hom.op_inj (by simp))
-      simpa using (g.naturality α.op).symm)
+      simpa using! (g.naturality α.op).symm)
   left_inv f := by
     dsimp
     ext j
@@ -138,7 +138,7 @@ lemma whiskerLeft {G₁ G₂ : Cᵒᵖ ⥤ A} {g : G₁ ⟶ G₂} (hg : J.W g) (
     ((ihom.adjunction _).homEquiv _ _).bijective]
   rw [← Function.Bijective.of_comp_iff (g := MonoidalClosed.curry) _
     ((ihom.adjunction _).homEquiv _ _).bijective] at this
-  convert this using 1
+  convert! this using 1
   ext α : 1
   dsimp
   rw [curry_natural_left]
@@ -174,7 +174,7 @@ attribute [local instance] monoidalCategory
 
 /-- The monoidal category structure on `Sheaf J A` obtained in `Sheaf.monoidalCategory` is
 braided when `A` is braided. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def braidedCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J A]
     [BraidedCategory A] : BraidedCategory (Sheaf J A) :=
   inferInstanceAs (BraidedCategory
@@ -182,7 +182,7 @@ noncomputable def braidedCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J
 
 /-- The monoidal category structure on `Sheaf J A` obtained in `Sheaf.monoidalCategory` is
 symmetric when `A` is symmetric. -/
-@[implicit_reducible]
+@[instance_reducible]
 noncomputable def symmetricCategory [(J.W (A := A)).IsMonoidal] [HasWeakSheafify J A]
     [SymmetricCategory A] :
     SymmetricCategory (Sheaf J A) :=

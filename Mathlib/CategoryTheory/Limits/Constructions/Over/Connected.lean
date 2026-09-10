@@ -60,7 +60,7 @@ def raiseCone [IsConnected J] {B : D} {F : J ⥤ CostructuredArrow K B}
     let z : (Functor.const J).obj (K.obj c.pt) ⟶ _ :=
       (CategoryTheory.Functor.constComp J c.pt K).inv ≫ Functor.whiskerRight c.π K ≫
         natTransInCostructuredArrow F
-    convert (nat_trans_from_is_connected z j (Classical.arbitrary J)) <;> simp [z]
+    convert! (nat_trans_from_is_connected z j (Classical.arbitrary J)) <;> simp [z]
   π.naturality X Y f := by
     apply CommaMorphism.ext
     · simpa using (c.w f).symm
@@ -157,6 +157,7 @@ instance hasLimitsOfShape_of_isConnected {B : C} [IsConnected J] [HasLimitsOfSha
     HasLimitsOfShape J (Over B) where
   has_limit F := hasLimit_of_created F (forget B)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The functor taking a cone over `F` to a cone over `Over.post F : Over i ⥤ Over (F.obj i)`.
 This takes limit cones to limit cones when `J` is cofiltered. See `isLimitConePost` -/

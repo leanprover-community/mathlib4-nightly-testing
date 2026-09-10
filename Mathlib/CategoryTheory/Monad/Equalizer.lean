@@ -68,7 +68,6 @@ theorem CofreeEqualizer.condition :
   Coalgebra.Hom.ext X.coassoc.symm
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 instance : IsCoreflexivePair (CofreeEqualizer.topMap X) (CofreeEqualizer.bottomMap X) := by
   apply IsCoreflexivePair.mk' _ _ _
   · apply (cofree T).map (T.ε.app X.A)
@@ -103,7 +102,7 @@ def beckCoalgebraEqualizer : IsLimit (beckCoalgebraFork X) :=
         reassoc_of% h₁, Comonad.left_counit]
       simp
     · ext
-      simpa [← T.ε.naturality_assoc, T.left_counit_assoc] using h₁ =≫ T.ε.app ((T : C ⥤ C).obj X.A)
+      simpa [← T.ε.naturality_assoc, T.left_counit_assoc] using! h₁ =≫ T.ε.app ((T : C ⥤ C).obj X.A)
     · intro m hm
       ext
       dsimp only

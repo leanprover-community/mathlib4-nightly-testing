@@ -57,7 +57,7 @@ set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- `U.power α` identifies to the product of copies of `U` indexed by `α`. -/
 noncomputable def isLimitPowerFan : IsLimit (U.powerFan α) :=
-  mkFanLimit _
+  Fan.IsLimit.mk _
     (fun s ↦
       { f i a := (s.proj a).f i
         φ i := Pi.lift (fun a ↦ (s.proj a).φ i) })
@@ -186,7 +186,7 @@ variable [HasFiniteProducts C]
 
 /-- Given `U : FormalCoproduct C`, this is the simplicial object
 in `FormalCoproduct C` which sends `⦋n⦌` to `U.power (Fin (n + 1))`. -/
-@[simps]
+@[implicit_reducible, simps]
 noncomputable def cech (U : FormalCoproduct.{w} C) :
     SimplicialObject (FormalCoproduct.{w} C) where
   obj n := U.power (ToType n.unop)

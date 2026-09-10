@@ -5,10 +5,8 @@ Authors: Kim Morrison, Bhavik Mehta
 -/
 module
 
-public import Mathlib.CategoryTheory.Monoidal.Internal.FunctorCategory
-public import Mathlib.CategoryTheory.Monoidal.Limits.Basic
-public import Mathlib.CategoryTheory.Limits.Preserves.Basic
 public import Mathlib.CategoryTheory.Limits.Creates
+public import Mathlib.CategoryTheory.Monoidal.Mon
 
 /-!
 # Limits of monoid objects.
@@ -70,6 +68,7 @@ def limitCone (F : J ⥤ Mon C) (c : Cone (F ⋙ Mon.forget C)) (hc : IsLimit c)
   π.app j := .mk' (c.π.app j)
   π.naturality j j' f := Hom.ext' (c.π.naturality f)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 /-- The image of the proposed limit cone for `F : J ⥤ Mon C` under the forgetful functor
 `forget C : Mon C ⥤ C` is isomorphic to the limit cone of `F ⋙ forget C`.

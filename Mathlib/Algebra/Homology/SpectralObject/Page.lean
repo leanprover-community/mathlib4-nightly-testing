@@ -80,7 +80,6 @@ variable {i j k l : ι} (f₁ : i ⟶ j) (f₂ : j ⟶ k) (f₃ : k ⟶ l)
   {i'' j'' k'' l'' : ι} (f₁'' : i'' ⟶ j'') (f₂'' : j'' ⟶ k'') (f₃'' : k'' ⟶ l'')
   (α : mk₃ f₁ f₂ f₃ ⟶ mk₃ f₁' f₂' f₃')
   (β : mk₃ f₁' f₂' f₃' ⟶ mk₃ f₁'' f₂'' f₃'')
-  (γ : mk₃ f₁ f₂ f₃ ⟶ mk₃ f₁'' f₂'' f₃'')
   (n₀ n₁ n₂ : ℤ)
 
 /-- The functoriality of `shortComplex` with respect to morphisms
@@ -100,7 +99,7 @@ set_option backward.defeqAttrib.useBackward true in
 lemma shortComplexMap_id (hn₁ : n₀ + 1 = n₁ := by lia) (hn₂ : n₁ + 1 = n₂ := by lia) :
     X.shortComplexMap f₁ f₂ f₃ f₁ f₂ f₃ (𝟙 _) n₀ n₁ n₂ hn₁ hn₂ = 𝟙 _ := by
   ext
-  all_goals dsimp; convert (X.H _).map_id _; cat_disch
+  all_goals dsimp; convert! (X.H _).map_id _; cat_disch
 
 set_option backward.defeqAttrib.useBackward true in
 @[reassoc, simp]
@@ -189,7 +188,7 @@ noncomputable def leftHomologyDataShortComplex
   let hi := (X.kernelSequenceCycles_exact f₁ f₂ _ _ hn₂).fIsKernel
   have : hi.lift (KernelFork.ofι _ (X.shortComplex f₁ f₂ f₃ n₀ n₁ n₂).zero) =
       X.δToCycles f₁ f₂ f₃ n₀ n₁ :=
-    Fork.IsLimit.hom_ext hi (by simpa using hi.fac _ .zero)
+    Fork.IsLimit.hom_ext hi (by simpa using! hi.fac _ .zero)
   exact {
     K := X.cycles f₁ f₂ n₁
     H := cokernel (X.δToCycles f₁ f₂ f₃ n₀ n₁)
@@ -210,7 +209,7 @@ lemma leftHomologyDataShortComplex_f' (hn₁ : n₀ + 1 = n₁ := by lia) (hn₂
     (X.leftHomologyDataShortComplex f₁ f₂ f₃ n₀ n₁ n₂ hn₁ hn₂).f' =
       X.δToCycles f₁ f₂ f₃ n₀ n₁ hn₁ := by
   let hi := (X.kernelSequenceCycles_exact f₁ f₂ _ _ hn₂).fIsKernel
-  exact Fork.IsLimit.hom_ext hi (by simpa using hi.fac _ .zero)
+  exact Fork.IsLimit.hom_ext hi (by simpa using! hi.fac _ .zero)
 
 /-- The cycles of the short complex `shortComplex` at `E^{n₁}(f₁, f₂, f₃)`
 identifies to `Z^{n₁}(f₁, f₂)`. -/
@@ -236,11 +235,8 @@ noncomputable def πE (hn₁ : n₀ + 1 = n₁ := by lia) (hn₂ : n₁ + 1 = n�
   (X.cyclesIso f₁ f₂ f₃ n₀ n₁ n₂).inv ≫
     (X.shortComplex f₁ f₂ f₃ n₀ n₁ n₂).homologyπ
 
-#adaptation_note /-- nightly-2026-03-04
-The `deriving` keyword on a `def` should just apply `noncomputable` to all
-instances automatically if the main `def` is already `noncomputable`. -/
 set_option backward.isDefEq.respectTransparency false in
-deriving noncomputable instance Epi for πE
+deriving instance Epi for πE
 
 set_option backward.isDefEq.respectTransparency false in
 @[reassoc (attr := simp)]
@@ -294,7 +290,7 @@ noncomputable def rightHomologyDataShortComplex
   let hp := (X.cokernelSequenceOpcycles_exact f₂ f₃ _ _ hn₁).gIsCokernel
   have : hp.desc (CokernelCofork.ofπ _ (X.shortComplex f₁ f₂ f₃ n₀ n₁ n₂ hn₁ hn₂).zero) =
       X.δFromOpcycles f₁ f₂ f₃ n₁ n₂ hn₂ :=
-    Cofork.IsColimit.hom_ext hp (by simpa using hp.fac _ .one)
+    Cofork.IsColimit.hom_ext hp (by simpa using! hp.fac _ .one)
   exact {
     Q := X.opcycles f₂ f₃ n₁
     H := kernel (X.δFromOpcycles f₁ f₂ f₃ n₁ n₂)
@@ -316,7 +312,7 @@ lemma rightHomologyDataShortComplex_g'
     (X.rightHomologyDataShortComplex f₁ f₂ f₃ n₀ n₁ n₂ hn₁ hn₂).g' =
       X.δFromOpcycles f₁ f₂ f₃ n₁ n₂ hn₂ := by
   let hp := (X.cokernelSequenceOpcycles_exact f₂ f₃ _ _ hn₁).gIsCokernel
-  exact Cofork.IsColimit.hom_ext hp (by simpa using hp.fac _ .one)
+  exact Cofork.IsColimit.hom_ext hp (by simpa using! hp.fac _ .one)
 
 /-- The opcycles of the short complex `shortComplex` at `E^{n₁}(f₁, f₂, f₃)`
 identifies to `opZ^{n₁}(f₂, f₃)`. -/
@@ -418,12 +414,12 @@ lemma cokernelSequenceE_exact (hn₁ : n₀ + 1 = n₁ := by lia) (hn₂ : n₁ 
   dsimp at x₂ hx₂
   obtain ⟨A₁, π₁, _, y₁, hy₁⟩ :=
     (X.cokernelSequenceCyclesE_exact f₁ f₂ f₃ n₀ n₁ n₂).exact_up_to_refinements
-      (x₂ ≫ X.toCycles f₁ f₂ f₁₂ h₁₂ n₁) (by simpa using hx₂)
+      (x₂ ≫ X.toCycles f₁ f₂ f₁₂ h₁₂ n₁) (by simpa using! hx₂)
   dsimp at y₁ hy₁
   let z := π₁ ≫ x₂ - y₁ ≫ X.δ f₁₂ f₃ n₀ n₁
   obtain ⟨A₂, π₂, _, x₁, hx₁⟩ := (X.exact₂ f₁ f₂ f₁₂ h₁₂ n₁).exact_up_to_refinements z (by
       have : z ≫ X.toCycles f₁ f₂ f₁₂ h₁₂ n₁ = 0 := by simp [z, hy₁]
-      simpa only [zero_comp, Category.assoc, toCycles_i] using this =≫ X.iCycles f₁ f₂ n₁)
+      simpa only [zero_comp, Category.assoc, toCycles_i] using! this =≫ X.iCycles f₁ f₂ n₁)
   dsimp at x₁ hx₁
   exact ⟨A₂, π₂ ≫ π₁, epi_comp _ _, biprod.lift x₁ (π₂ ≫ y₁), by simp [z, ← hx₁]⟩
 
@@ -440,6 +436,7 @@ noncomputable def descE (hn₂ : n₁ + 1 = n₂ := by lia) :
     X.E f₁ f₂ f₃ n₀ n₁ n₂ hn₁ hn₂ ⟶ A :=
   (X.cokernelSequenceE_exact f₁ f₂ f₃ f₁₂ h₁₂ n₀ n₁ n₂).desc x (by cat_disch)
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[reassoc (attr := simp)]
 lemma toCycles_πE_descE (hn₂ : n₁ + 1 = n₂ := by lia) :
     X.toCycles f₁ f₂ f₁₂ h₁₂ n₁ ≫ X.πE f₁ f₂ f₃ n₀ n₁ n₂ hn₁ hn₂ ≫
@@ -624,7 +621,7 @@ lemma cokernelSequenceOpcyclesE_exact
   obtain ⟨A₂, π₂, _, y₁, hy₁⟩ :=
     (X.cokernelSequenceE_exact f₁ f₂ f₃ f₁₂ h₁₂ n₀ n₁ n₂ hn₁ hn₂).exact_up_to_refinements y₂
       (by simpa only [Category.assoc, p_opcyclesToE, hx₂, comp_zero]
-        using hy₂.symm =≫ X.opcyclesToE f₁ f₂ f₃ f₁₂ h₁₂ n₀ n₁ n₂ hn₁ hn₂)
+        using! hy₂.symm =≫ X.opcyclesToE f₁ f₂ f₃ f₁₂ h₁₂ n₀ n₁ n₂ hn₁ hn₂)
   dsimp at y₁ hy₁
   obtain ⟨a, b, rfl⟩ : ∃ a b, y₁ = a ≫ biprod.inl + b ≫ biprod.inr :=
     ⟨y₁ ≫ biprod.fst, y₁ ≫ biprod.snd, by ext <;> simp⟩
@@ -691,6 +688,9 @@ section
 
 variable {i j : ι} (f : i ⟶ j) {i' j' : ι} (f' : i' ⟶ j')
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- An homology data for `X.shortComplex n₀ n₁ n₂ hn₁ hn₂ (𝟙 i) f (𝟙 j)`,
 expressing `H^n₁(f)` as the homology of this short complex,
 see `EIsoH`. -/
@@ -709,6 +709,7 @@ noncomputable def EIsoH (n₀ n₁ n₂ : ℤ)
     X.E (𝟙 i) f (𝟙 j) n₀ n₁ n₂ hn₁ hn₂ ≅ (X.H n₁).obj (mk₁ f) :=
   (X.homologyDataIdId ..).left.homologyIso
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma EIsoH_hom_naturality
     (α : mk₁ f ⟶ mk₁ f') (β : mk₃ (𝟙 _) f (𝟙 _) ⟶ mk₃ (𝟙 _) f' (𝟙 _))
@@ -874,6 +875,7 @@ noncomputable def shortComplexOpcyclesThreeδ₂Toδ₁
   ShortComplex.mk _ _
     (X.opcyclesMap_threeδ₂Toδ₁_opcyclesToE f₁ f₂ f₃ f₁₂ f₂₃ h₁₂ h₂₃ n₀ n₁ n₂ hn₁ hn₂)
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 instance (n₀ n₁ n₂ : ℤ) (hn₁ : n₀ + 1 = n₁) (hn₂ : n₁ + 1 = n₂) :
     Mono (X.shortComplexOpcyclesThreeδ₂Toδ₁ f₁ f₂ f₃ f₁₂ f₂₃ h₁₂ h₂₃ n₀ n₁ n₂ hn₁ hn₂).f := by

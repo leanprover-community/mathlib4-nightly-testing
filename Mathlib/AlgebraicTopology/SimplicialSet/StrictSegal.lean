@@ -29,7 +29,9 @@ in `Mathlib/AlgebraicTopology/SimplicialSet/Coskeletal.lean`.
 
 universe v u
 
-open CategoryTheory Simplicial SimplexCategory
+open CategoryTheory SimplexCategory
+
+open scoped Simplicial
 
 namespace SSet
 namespace Truncated
@@ -56,8 +58,6 @@ class IsStrictSegal (X : SSet.Truncated.{u} (n + 1)) : Prop where
   spine_bijective (X) (m : ℕ) (h : m ≤ n + 1 := by grind) : Function.Bijective (X.spine m)
 
 export IsStrictSegal (spine_bijective)
-
-@[deprecated (since := "2025-11-04")] alias IsStrictSegal.segal := spine_bijective
 
 lemma spine_injective (X : SSet.Truncated.{u} (n + 1)) [X.IsStrictSegal]
     {m : ℕ} {h : m ≤ n + 1} :
@@ -168,7 +168,7 @@ theorem spineToSimplex_interval (f : Path X m) (j l : ℕ) (hjl : j + l ≤ m) :
   apply sx.spineInjective l
   dsimp only [spineEquiv, Equiv.coe_fn_mk]
   rw [spine_spineToSimplex_apply]
-  convert spine_map_subinterval X m h j l hjl <| sx.spineToSimplex m h f
+  convert! spine_map_subinterval X m h j l hjl <| sx.spineToSimplex m h f
   exact sx.spine_spineToSimplex_apply m h f |>.symm
 
 theorem spineToSimplex_edge (f : Path X m) (j l : ℕ) (hjl : j + l ≤ m) :

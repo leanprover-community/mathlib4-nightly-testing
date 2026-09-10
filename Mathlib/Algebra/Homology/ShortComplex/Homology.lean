@@ -41,7 +41,7 @@ namespace CategoryTheory
 open Category Limits
 
 variable {C : Type u} [Category.{v} C] [HasZeroMorphisms C] (S : ShortComplex C)
-  {S₁ S₂ S₃ S₄ : ShortComplex C}
+  {S₁ S₂ S₃ : ShortComplex C}
 
 namespace ShortComplex
 
@@ -178,6 +178,9 @@ noncomputable def ofEpiOfIsIsoOfMono' (φ : S₁ ⟶ S₂) (h : HomologyData S�
   right := RightHomologyData.ofEpiOfIsIsoOfMono' φ h.right
   iso := h.iso
 
+#adaptation_note
+/-- `respectTransparency.types true` changes the auto-generated lemmas' signature -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- If `e : S₁ ≅ S₂` is an isomorphism of short complexes and `h₁ : HomologyData S₁`,
 this is the homology data for `S₂` deduced from the isomorphism. -/
 @[simps!]
@@ -413,6 +416,7 @@ lemma LeftHomologyData.homologyIso_leftHomologyData [S.HasHomology] :
   dsimp [homologyIso, leftHomologyIso, ShortComplex.leftHomologyIso]
   rw [← leftHomologyMap'_comp, comp_id]
 
+set_option backward.isDefEq.respectTransparency.types false in
 @[simp]
 lemma RightHomologyData.homologyIso_rightHomologyData [S.HasHomology] :
     S.rightHomologyData.homologyIso = S.rightHomologyIso.symm := by
@@ -697,7 +701,7 @@ variable (S)
 lemma leftRightHomologyComparison_fac [S.HasHomology] :
     S.leftRightHomologyComparison = S.leftHomologyIso.hom ≫ S.rightHomologyIso.inv := by
   simpa only [LeftHomologyData.homologyIso_leftHomologyData, Iso.symm_inv,
-    RightHomologyData.homologyIso_rightHomologyData, Iso.symm_hom] using
+    RightHomologyData.homologyIso_rightHomologyData, Iso.symm_hom] using!
       leftRightHomologyComparison'_fac S.leftHomologyData S.rightHomologyData
 
 variable {S}
@@ -727,7 +731,7 @@ lemma hasHomology_of_isIso_leftRightHomologyComparison'
 lemma hasHomology_of_isIsoLeftRightHomologyComparison [S.HasLeftHomology]
     [S.HasRightHomology] [h : IsIso S.leftRightHomologyComparison] :
     S.HasHomology := by
-  haveI : IsIso (leftRightHomologyComparison' S.leftHomologyData S.rightHomologyData) := h
+  have : IsIso (leftRightHomologyComparison' S.leftHomologyData S.rightHomologyData) := h
   exact hasHomology_of_isIso_leftRightHomologyComparison' S.leftHomologyData S.rightHomologyData
 
 section
@@ -758,14 +762,14 @@ lemma LeftHomologyData.leftHomologyIso_inv_naturality
 lemma leftHomologyIso_hom_naturality :
     S₁.leftHomologyIso.hom ≫ homologyMap φ =
       leftHomologyMap φ ≫ S₂.leftHomologyIso.hom := by
-  simpa only [LeftHomologyData.homologyIso_leftHomologyData, Iso.symm_inv] using
+  simpa only [LeftHomologyData.homologyIso_leftHomologyData, Iso.symm_inv] using!
     LeftHomologyData.leftHomologyIso_inv_naturality φ S₁.leftHomologyData S₂.leftHomologyData
 
 @[reassoc]
 lemma leftHomologyIso_inv_naturality :
     S₁.leftHomologyIso.inv ≫ leftHomologyMap φ =
       homologyMap φ ≫ S₂.leftHomologyIso.inv := by
-  simpa only [LeftHomologyData.homologyIso_leftHomologyData, Iso.symm_inv] using
+  simpa only [LeftHomologyData.homologyIso_leftHomologyData, Iso.symm_inv] using!
     LeftHomologyData.leftHomologyIso_hom_naturality φ S₁.leftHomologyData S₂.leftHomologyData
 
 @[reassoc]
@@ -793,14 +797,14 @@ lemma RightHomologyData.rightHomologyIso_inv_naturality
 lemma rightHomologyIso_hom_naturality :
     S₁.rightHomologyIso.hom ≫ homologyMap φ =
       rightHomologyMap φ ≫ S₂.rightHomologyIso.hom := by
-  simpa only [RightHomologyData.homologyIso_rightHomologyData, Iso.symm_inv] using
+  simpa only [RightHomologyData.homologyIso_rightHomologyData, Iso.symm_inv] using!
     RightHomologyData.rightHomologyIso_inv_naturality φ S₁.rightHomologyData S₂.rightHomologyData
 
 @[reassoc]
 lemma rightHomologyIso_inv_naturality :
     S₁.rightHomologyIso.inv ≫ rightHomologyMap φ =
       homologyMap φ ≫ S₂.rightHomologyIso.inv := by
-  simpa only [RightHomologyData.homologyIso_rightHomologyData, Iso.symm_inv] using
+  simpa only [RightHomologyData.homologyIso_rightHomologyData, Iso.symm_inv] using!
     RightHomologyData.rightHomologyIso_hom_naturality φ S₁.rightHomologyData S₂.rightHomologyData
 
 end
@@ -1050,6 +1054,7 @@ noncomputable def homologyOpIso [S.HasHomology] :
     S.op.homology ≅ Opposite.op S.homology :=
   S.op.leftHomologyIso.symm ≪≫ S.leftHomologyOpIso ≪≫ S.rightHomologyIso.symm.op
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma homologyMap'_op : (homologyMap' φ h₁ h₂).op =
     h₂.iso.inv.op ≫ homologyMap' (opMap φ) h₂.op h₁.op ≫ h₁.iso.hom.op :=

@@ -98,7 +98,6 @@ variable [HasZeroObject C] [HasShift C ℤ] [Preadditive C]
   [∀ (n : ℤ), (shiftFunctor C n).Additive] [Pretriangulated C]
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 lemma isVerdierRightLocalizing_iff [A.IsTriangulated] [B.IsTriangulated]
     [B.IsClosedUnderIsomorphisms] :
     A.IsVerdierRightLocalizing B ↔
@@ -158,7 +157,7 @@ and `B : ObjectProperty C`, this is the inclusion functor
 `A.ι : A.FullSubcategory ⥤ C`, considered as a localizer morphism,
 where `C` is equipped with the property of morphisms `B.trW`
 and `A.FullSubcategory` with the property of morphisms `(B.inverseImage A.ι).trW`. -/
-@[implicit_reducible]
+@[instance_reducible]
 def triangulatedLocalizerMorphism [A.IsTriangulated] :
     LocalizerMorphism (B.inverseImage A.ι).trW B.trW where
   functor := A.ι
@@ -191,6 +190,7 @@ lemma trW_inverseImage_ι_iff [A.IsTriangulated] {X Y : A.FullSubcategory} (f : 
     · cat_disch
     · simp [dsimp% (A.ι.commShiftIso (1 : ℤ)).inv_hom_id_app X]
 
+set_option backward.isDefEq.respectTransparency.types false in
 set_option backward.defeqAttrib.useBackward true in
 lemma inverseImage_opEquivalence_inverse_trW_inverseImage_ι_op [A.IsTriangulated]
     [B.IsTriangulated] [B.IsClosedUnderIsomorphisms] :
@@ -242,8 +242,8 @@ instance [Preadditive D₁] [Preadditive D₂] [L₁.Additive] [L₂.Additive] :
 
 set_option backward.defeqAttrib.useBackward true in
 instance : ((A.triangulatedLocalizerMorphism B).localizedFunctor L₁ L₂).Faithful := by
-  letI := Localization.preadditive L₁ (B.inverseImage A.ι).trW
-  letI := Localization.preadditive L₂ B.trW
+  let := Localization.preadditive L₁ (B.inverseImage A.ι).trW
+  let := Localization.preadditive L₂ B.trW
   have := Localization.functor_additive L₁ (B.inverseImage A.ι).trW
   have := Localization.functor_additive L₂ B.trW
   let F := (A.triangulatedLocalizerMorphism B).localizedFunctor L₁ L₂
@@ -277,7 +277,7 @@ instance [A.IsVerdierLeftLocalizing B] :
   let L₂ := B.trW.Q
   let F : (B.inverseImage A.ι).trW.Localization ⥤ B.trW.Localization :=
     (A.triangulatedLocalizerMorphism B).localizedFunctor L₁ L₂
-  letI : CatCommSq (A.op.triangulatedLocalizerMorphism B.op).functor
+  let : CatCommSq (A.op.triangulatedLocalizerMorphism B.op).functor
     (A.opEquivalence.functor ⋙ L₁.op) L₂.op F.op :=
     ⟨Functor.isoWhiskerLeft A.opEquivalence.functor
       (NatIso.op (CatCommSq.iso (A.triangulatedLocalizerMorphism B).functor L₁ L₂ F).symm)⟩
@@ -292,7 +292,7 @@ instance [A.IsVerdierLeftLocalizing B] :
       simp only [MorphismProperty.inverseImage_iff, Equivalence.symm_functor] at hf ⊢
       exact MorphismProperty.le_isoClosure _ _ hf
     · refine fun _ _ _ hf ↦ Localization.inverts L₁.op (B.inverseImage A.ι).trW.op _ ?_
-      simpa [trW_inverseImage_ι_iff, ← op_inf, trW_op] using hf
+      simpa [trW_inverseImage_ι_iff, ← op_inf, trW_op] using! hf
   exact LocalizerMorphism.IsLocalizedFullyFaithful.mk' (A.triangulatedLocalizerMorphism B)
     L₁ L₂ F (((A.op.triangulatedLocalizerMorphism B.op).fullyFaithful
     (A.opEquivalence.functor ⋙ L₁.op) L₂.op F.op).unop)
@@ -309,8 +309,7 @@ example : ((A.triangulatedLocalizerMorphism B).localizedFunctor L₁ L₂).Full 
 example : ((A.triangulatedLocalizerMorphism B).localizedFunctor L₁ L₂).Faithful := by
   infer_instance
 
-instance [A.IsVerdierLeftLocalizing B] [Preadditive D₁] [Preadditive D₂]
-    [L₁.Additive] [L₂.Additive] :
+instance [Preadditive D₁] [Preadditive D₂] [L₁.Additive] [L₂.Additive] :
     ((A.triangulatedLocalizerMorphism B).localizedFunctor L₁ L₂).Additive := by
   let F := (A.triangulatedLocalizerMorphism B).localizedFunctor L₁ L₂
   rw [Localization.functor_additive_iff L₁ (B.inverseImage A.ι).trW]
@@ -322,7 +321,7 @@ instance [A.IsVerdierLeftLocalizing B] [Preadditive D₁] [Preadditive D₂]
 then the induced functor between the localizations with respect to `(B.inverseImage A.ι).trW`
 and `B.trW` is fully faithful. -/
 @[no_expose]
-noncomputable def IsVerdierLeftLocalizing.fullyFaithful [A.IsVerdierLeftLocalizing B]
+noncomputable def IsVerdierLeftLocalizing.fullyFaithful
     {L₁ : A.FullSubcategory ⥤ D₁} {L₂ : C ⥤ D₂} {F : D₁ ⥤ D₂}
     [L₁.IsLocalization (B.inverseImage A.ι).trW] [L₂.IsLocalization B.trW]
     (e : L₁ ⋙ F ≅ A.ι ⋙ L₂) :

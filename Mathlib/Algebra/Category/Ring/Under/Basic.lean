@@ -39,7 +39,7 @@ def toAlgHom {A B : Under R} (f : A ⟶ B) : A →ₐ[R] B where
   __ := f.right.hom
   commutes' a := by
     have : (A.hom ≫ f.right) a = B.hom a := by simp
-    simpa only [Functor.const_obj_obj, Functor.id_obj, CommRingCat.comp_apply] using this
+    simpa only [Functor.const_obj_obj, Functor.id_obj, CommRingCat.comp_apply] using! this
 
 @[simp]
 lemma toAlgHom_id (A : Under R) : toAlgHom (𝟙 A) = AlgHom.id R A := rfl
@@ -55,7 +55,7 @@ lemma toAlgHom_apply {A B : Under R} (f : A ⟶ B) (a : A) :
 
 variable (R) in
 /-- Make an object of `Under R` from an `R`-algebra. -/
-@[simps! hom, simps! -isSimp right]
+@[implicit_reducible, simps! hom, simps! -isSimp right]
 def mkUnder (A : Type u) [CommRing A] [Algebra R A] : Under R :=
   Under.mk (CommRingCat.ofHom <| algebraMap R A)
 
@@ -80,7 +80,7 @@ def toUnder {A B : Type u} [CommRing A] [CommRing B] [Algebra R A] [Algebra R B]
 @[simp]
 lemma toUnder_right {A B : Type u} [CommRing A] [CommRing B] [Algebra R A]
     [Algebra R B] (f : A →ₐ[R] B) (a : A) :
-    f.toUnder.right a = f a :=
+    Under.Hom.right f.toUnder a = f a :=
   rfl
 
 @[simp]
@@ -99,12 +99,6 @@ def toUnder {A B : Type u} [CommRing A] [CommRing B] [Algebra R A] [Algebra R B]
     CommRingCat.mkUnder R A ≅ CommRingCat.mkUnder R B where
   hom := f.toAlgHom.toUnder
   inv := f.symm.toAlgHom.toUnder
-  hom_inv_id := by
-    ext (a : (CommRingCat.mkUnder R A).right)
-    simp
-  inv_hom_id := by
-    ext a
-    simp
 
 @[simp]
 lemma toUnder_hom_right_apply {A B : Type u} [CommRing A] [CommRing B] [Algebra R A]
@@ -130,7 +124,7 @@ variable [Algebra R S]
 
 variable (R S) in
 /-- The base change functor `A ↦ S ⊗[R] A`. -/
-@[simps! map_right]
+@[simps! obj_right map_right]
 def tensorProd : Under R ⥤ Under S where
   obj A := mkUnder S (S ⊗[R] A)
   map f := Algebra.TensorProduct.map (AlgHom.id S S) (toAlgHom f) |>.toUnder

@@ -6,7 +6,6 @@ Authors: Adam Topaz
 module
 
 public import Mathlib.CategoryTheory.Limits.Shapes.Products
-public import Mathlib.CategoryTheory.Functor.EpiMono
 
 /-!
 
@@ -33,7 +32,6 @@ section
 
 variable [∀ a b : C, HasCoproductsOfShape (a ⟶ b) D]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The left adjoint of evaluation. -/
 @[simps]
 def evaluationLeftAdjoint (c : C) : D ⥤ C ⥤ D where
@@ -85,7 +83,6 @@ section
 
 variable [∀ a b : C, HasProductsOfShape (a ⟶ b) D]
 
-set_option backward.isDefEq.respectTransparency false in
 /-- The right adjoint of evaluation. -/
 @[simps]
 def evaluationRightAdjoint (c : C) : D ⥤ C ⥤ D where

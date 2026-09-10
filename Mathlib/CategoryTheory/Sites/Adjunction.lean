@@ -10,6 +10,7 @@ public import Mathlib.CategoryTheory.Adjunction.Whiskering
 public import Mathlib.CategoryTheory.Sites.PreservesSheafification
 
 /-!
+# Adjunctions between categories of sheaves
 
 In this file, we show that an adjunction `G ⊣ F` induces an adjunction between
 categories of sheaves. We also show that `G` preserves sheafification.
@@ -21,7 +22,7 @@ categories of sheaves. We also show that `G` preserves sheafification.
 
 namespace CategoryTheory
 
-open GrothendieckTopology Limits Opposite Functor
+open GrothendieckTopology Limits Opposite CategoryTheory.Functor
 
 universe v₁ v₂ u₁ u₂
 
@@ -93,8 +94,9 @@ lemma preservesSheafification_of_adjunction (adj : G ⊣ F) :
     dsimp
     intro R hR
     rw [← ((adj.whiskerRight Cᵒᵖ).homEquiv P R).comp_bijective]
-    convert (((adj.whiskerRight Cᵒᵖ).homEquiv Q R).trans
-      (hf.homEquiv (R ⋙ F) ((sheafCompose J F).obj ⟨R, hR⟩).property)).bijective
+    convert!
+      (((adj.whiskerRight Cᵒᵖ).homEquiv Q R).trans
+          (hf.homEquiv (R ⋙ F) ((sheafCompose J F).obj ⟨R, hR⟩).property)).bijective
     ext g X
     -- The rest of this proof was
     -- `dsimp [Adjunction.whiskerRight, Adjunction.mkOfUnitCounit]; simp` before https://github.com/leanprover-community/mathlib4/pull/16317.

@@ -78,7 +78,6 @@ def transitionMap {i j : 𝒰.I₀} (hij : i ⟶ j) :
   (isColimitOfPreserves (Over.map ⊤ (d.prop_trans hij)) (d.isColimit i)).desc
     (d.transitionCocone hij)
 
-set_option backward.isDefEq.respectTransparency false in
 @[reassoc]
 lemma cocone_ι_transitionMap {i j : 𝒰.I₀} (hij : i ⟶ j) (a : J) :
     (Over.map ⊤ (d.prop_trans hij)).map ((d.cocone i).ι.app a) ≫
@@ -86,7 +85,6 @@ lemma cocone_ι_transitionMap {i j : 𝒰.I₀} (hij : i ⟶ j) (a : J) :
   simp [transitionMap, ← Functor.mapCocone_ι_app, transitionCocone]
 
 set_option backward.defeqAttrib.useBackward true in
-set_option backward.isDefEq.respectTransparency false in
 @[simp]
 lemma transitionMap_id (i : 𝒰.I₀) :
     d.transitionMap (𝟙 i) = ((Over.mapId _ _ _).hom.app <| (d.cocone i).pt) := by
@@ -144,7 +142,7 @@ lemma isPullback {i j : 𝒰.I₀} (hij : i ⟶ j) :
     (MorphismProperty.Over.forget _ _ _ ⋙ Over.forget _).mapIso iso1
   refine .of_iso (IsPullback.of_hasPullback _ _) iso2.symm (.refl _) (.refl _) (.refl _) ?_ ?_
       (by simp) (by simp)
-  · simpa [← cancel_epi iso2.hom] using congr($(heq).left)
+  · simpa [← cancel_epi iso2.hom] using! congr($(heq).left)
   · exact (Over.w iso1.inv).symm
 
 set_option backward.isDefEq.respectTransparency false in
@@ -259,7 +257,7 @@ def isColimitGluedCocone : IsColimit d.gluedCocone := by
       rw [reassoc_of% this]
       simp
   · intro s a
-    letI 𝒲 (a : J) : (D.obj a).left.OpenCover := 𝒰.pullback₁ (D.obj a).hom
+    let 𝒲 (a : J) : (D.obj a).left.OpenCover := 𝒰.pullback₁ (D.obj a).hom
     ext
     refine (𝒲 a).hom_ext _ _ fun i ↦ ?_
     dsimp

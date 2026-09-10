@@ -49,8 +49,8 @@ variable {R : Type u} [CommRing R]
 noncomputable instance (X : CoalgCat R) : ComonObj (ModuleCat.of R X) where
   counit := ModuleCat.ofHom Coalgebra.counit
   comul := ModuleCat.ofHom Coalgebra.comul
-  counit_comul := ModuleCat.hom_ext <| by simpa using Coalgebra.rTensor_counit_comp_comul
-  comul_counit := ModuleCat.hom_ext <| by simpa using Coalgebra.lTensor_counit_comp_comul
+  counit_comul := ModuleCat.hom_ext <| by simpa using! Coalgebra.rTensor_counit_comp_comul
+  comul_counit := ModuleCat.hom_ext <| by simpa using! Coalgebra.lTensor_counit_comp_comul
   comul_assoc := ModuleCat.hom_ext <| by simp_rw [ModuleCat.of_coe]; exact Coalgebra.coassoc.symm
 
 /-- An `R`-coalgebra is a comonoid object in the category of `R`-modules. -/
@@ -187,8 +187,6 @@ theorem comul_tensorObj_tensorObj_left :
       (A := ((CoalgCat.of R M ⊗ CoalgCat.of R N) ⊗ CoalgCat.of R P : CoalgCat R))
       = Coalgebra.comul (A := M ⊗[R] N ⊗[R] P) := by
   rw [ofComonObjCoalgebraStruct_comul]
-  dsimp +instances
-  simp +instances only [toComonObj]
   simp [tensorμ_eq_tensorTensorTensorComm, TensorProduct.comul_def,
     AlgebraTensorModule.tensorTensorTensorComm_eq]
   rfl

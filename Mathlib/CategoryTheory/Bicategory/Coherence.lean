@@ -72,6 +72,7 @@ bicategory.
 def inclusionPath (a b : B) : Discrete (Path.{v} a b) ⥤ Hom a b :=
   Discrete.functor inclusionPathAux
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The inclusion from the locally discrete bicategory on the path category into the free bicategory
 as a prelax functor. This will be promoted to a pseudofunctor after proving the coherence theorem.
 See `inclusion`.
@@ -121,6 +122,7 @@ example {a b c : B} (p : Path a b) (f : Hom b c) :
   case comp _ _ _ _ _ ihf ihg => rw [normalizeAux, ihf, ihg]; apply comp_assoc
 ```
 -/
+set_option backward.isDefEq.respectTransparency.types false in
 /-- A 2-isomorphism between a partially-normalized 1-morphism in the free bicategory to the
 fully-normalized 1-morphism.
 -/
@@ -140,15 +142,19 @@ def normalizeIso {a : B} :
 @[simp] theorem normalizeAux_comp {a : B} {b c d : FreeBicategory B}
     (p : Path a b) (f : b ⟶ c) (g : c ⟶ d) :
     normalizeAux p (f ≫ g) = normalizeAux (normalizeAux p f) g := rfl
+
 @[simp] theorem normalizeAux_id {a : B} {b : FreeBicategory B} (p : Path a b) :
     normalizeAux p (𝟙 b) = p := rfl
+
 @[simp] theorem normalizeIso_comp {a : B} {b c d : FreeBicategory B}
     (p : Path a b) (f : b ⟶ c) (g : c ⟶ d) :
     normalizeIso p (f ≫ g) =
       (α_ _ _ _).symm ≪≫ whiskerRightIso (normalizeIso p f) g ≪≫
         normalizeIso (normalizeAux p f) g := rfl
+
 @[simp] theorem normalizeIso_id {a : B} {b : FreeBicategory B} (p : Path a b) :
     normalizeIso p (𝟙 b) = ρ_ _ := rfl
+
 @[simp] theorem quot_whisker_left {a b c : FreeBicategory B} (f : a ⟶ b) {g h : b ⟶ c}
     (η : Hom₂ g h) : Quot.mk Rel (Hom₂.whisker_left f η) = f ◁ (Quot.mk Rel η) := rfl
 
@@ -233,6 +239,7 @@ def normalizeEquiv (a b : B) : Hom a b ≌ Discrete (Path.{v} a b) :=
         conv_rhs => rw [← ih]
         rfl))
 
+set_option backward.isDefEq.respectTransparency.types false in
 /-- The coherence theorem for bicategories. -/
 instance locally_thin {a b : FreeBicategory B} : Quiver.IsThin (a ⟶ b) := fun _ _ =>
   ⟨fun _ _ =>
