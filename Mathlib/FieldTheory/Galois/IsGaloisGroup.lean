@@ -210,7 +210,7 @@ has not been pinned down; it lies between nightly-2026-09-09 and nightly-2026-09
 itself is unchanged, so the original is restored by deleting the `set_option` line below. -/
 set_option synthInstance.maxHeartbeats 80000 in
 -- Synthesizing `Algebra K ↑(IsScalarTower.toAlgHom K F L).fieldRange` needs more than the
--- default limit; see the adaptation note above.
+-- default limit; see adaptation note above.
 attribute [local instance] FractionRing.liftAlgebra in
 /-- If `G` is a finite Galois group for `B / R` and `R ⊆ A ⊆ B` is a tower of commutative domains
 with `A` integrally closed, then the fixing subgroup of the image of `A` in `B` is a Galois group
