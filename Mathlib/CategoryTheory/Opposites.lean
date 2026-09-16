@@ -222,12 +222,12 @@ protected def unop (F : Cᵒᵖ ⥤ Dᵒᵖ) : C ⥤ D where
 /-- The isomorphism between `F.op.unop` and `F`. -/
 @[simps!]
 def opUnopIso (F : C ⥤ D) : F.op.unop ≅ F :=
-  NatIso.refl
+  obj% (Iso.refl _)
 
 /-- The isomorphism between `F.unop.op` and `F`. -/
 @[simps!]
 def unopOpIso (F : Cᵒᵖ ⥤ Dᵒᵖ) : F.unop.op ≅ F :=
-  NatIso.refl
+  obj% (Iso.refl _)
 
 variable (C D)
 
@@ -353,7 +353,7 @@ functor. -/
 @[simps!]
 def leftOpCompOp {E : Type*} [Category* E] (F : C ⥤ Dᵒᵖ) (G : D ⥤ E) :
     (F ⋙ G.op).leftOp ≅ F.leftOp ⋙ G :=
-  NatIso.refl
+  obj% (Iso.refl _)
 
 section
 variable (C)
@@ -371,17 +371,17 @@ end
 /-- The isomorphism between `F.leftOp.rightOp` and `F`. -/
 @[simps!]
 def leftOpRightOpIso (F : C ⥤ Dᵒᵖ) : F.leftOp.rightOp ≅ F :=
-  NatIso.refl
+  obj% (Iso.refl _)
 
 /-- Reindexing `F.leftOp.op` along `opOp C` recovers `F`. -/
 @[simps!]
 def opOpCompLeftOpOpIso (F : C ⥤ Dᵒᵖ) : opOp C ⋙ F.leftOp.op ≅ F :=
-  NatIso.refl
+  obj% (Iso.refl _)
 
 /-- The isomorphism between `F.rightOp.leftOp` and `F`. -/
 @[simps!]
 def rightOpLeftOpIso (F : Cᵒᵖ ⥤ D) : F.rightOp.leftOp ≅ F :=
-  NatIso.refl
+  obj% (Iso.refl _)
 
 /-- Whenever possible, it is advisable to use the isomorphism `rightOpLeftOpIso`
 instead of this equality of functors. -/

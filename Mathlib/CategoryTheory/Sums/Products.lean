@@ -74,16 +74,18 @@ precomposition with `inl_ A A'`. -/
 @[simps!]
 def functorEquivFunctorCompFstIso :
     (functorEquiv A A' B).functor ⋙ Prod.fst (A ⥤ B) (A' ⥤ B) ≅
-    (whiskeringLeft A (A ⊕ A') B).obj (inl_ A A') :=
-  NatIso.refl
+    (whiskeringLeft A (A ⊕ A') B).obj (inl_ A A') := by
+  dsimp only [functorEquiv]
+  exact obj% (Iso.refl _)
 
 /-- Composing the forward direction of `functorEquiv` with the second projection is the same as
 precomposition with `inr_ A A'`. -/
 @[simps!]
 def functorEquivFunctorCompSndIso :
     (functorEquiv A A' B).functor ⋙ Prod.snd (A ⥤ B) (A' ⥤ B) ≅
-    (whiskeringLeft A' (A ⊕ A') B).obj (inr_ A A') :=
-  NatIso.refl
+    (whiskeringLeft A' (A ⊕ A') B).obj (inr_ A A') := by
+  dsimp only [functorEquiv]
+  exact obj% (Iso.refl _)
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Composing the backward direction of `functorEquiv` with precomposition with `inl_ A A'`.
