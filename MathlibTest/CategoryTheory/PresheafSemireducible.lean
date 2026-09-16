@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Category.ModuleCat.Presheaf.Pushforward
-import Mathlib.Tactic.CategoryTheory.Obj
+import Mathlib.Tactic.CategoryTheory.CastProofs
 
 open CategoryTheory Functor PresheafOfModules
 
@@ -50,7 +50,7 @@ example (φ : M ⟶ N) (X : Cᵒᵖ) :
 -- The comparison needs no preliminary unfolding, even in a restricted context.
 example : pushforward₀.{v} F R ⋙ toPresheaf _ ≅
     toPresheaf _ ⋙ (whiskeringLeft _ _ _).obj F.op := by
-  with_reducible_and_instances exact obj% Iso.refl
+  with_reducible_and_instances exact cast_proofs% (Iso.refl _)
 
 example (X : Cᵒᵖ) :
     ((pushforward₀CompToPresheaf F R).hom.app M).app X = 𝟙 (M.presheaf.obj (F.op.obj X)) := by

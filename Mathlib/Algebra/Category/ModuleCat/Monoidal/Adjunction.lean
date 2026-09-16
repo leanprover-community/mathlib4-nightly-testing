@@ -64,8 +64,7 @@ noncomputable instance : (extendScalars f).Monoidal :=
         erw [AlgebraTensorModule.distribBaseChange_tmul,
           MonoidalCategory.whiskerRight_apply,
           AlgebraTensorModule.rid_tmul]
-        rw [one_smul]
-        rfl)
+        rw [one_smul])
       (oplax_right_unitality := fun M ↦ by
         ext m
         dsimp
@@ -73,8 +72,7 @@ noncomputable instance : (extendScalars f).Monoidal :=
         erw [AlgebraTensorModule.distribBaseChange_tmul,
           MonoidalCategory.whiskerLeft_apply,
           AlgebraTensorModule.rid_tmul]
-        rw [one_smul]
-        rfl))
+        rw [one_smul]))
 
 set_option backward.defeqAttrib.useBackward true in
 lemma extendScalars_ε :

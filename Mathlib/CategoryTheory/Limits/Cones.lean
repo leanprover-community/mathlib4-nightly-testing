@@ -5,7 +5,7 @@ Authors: Stephen Morgan, Kim Morrison, Floris van Doorn
 -/
 module
 
-public meta import Mathlib.Tactic.CategoryTheory.Obj
+public meta import Mathlib.Tactic.CategoryTheory.CastProofs
 
 public import Mathlib.CategoryTheory.Yoneda
 
@@ -506,7 +506,7 @@ def functoriality : Cone F ⥤ Cone (F ⋙ G) where
 def functorialityCompFunctoriality (H : D ⥤ E) :
     functoriality F G ⋙ functoriality (F ⋙ G) H ≅ functoriality F (G ⋙ H) :=
   -- The outer `NatIso.ofComponents` predated the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 @[to_dual]
 instance functoriality_full [G.Full] [G.Faithful] : (functoriality F G).Full where

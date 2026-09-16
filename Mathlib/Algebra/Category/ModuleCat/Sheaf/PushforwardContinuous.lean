@@ -38,13 +38,18 @@ variable {C : Type u₁} [Category.{v₁} C] {D : Type u₂} [Category.{v₂} D]
 
 /-- The pushforward of sheaves of modules that is induced by a continuous functor `F`
 and a morphism of sheaves of rings `φ : S ⟶ (F.sheafPushforwardContinuous RingCat J K).obj R`. -/
-@[simps map_val, simps -isSimp obj_val]
+@[simps -isSimp obj_val, instance_reducible]
 noncomputable def pushforward : SheafOfModules.{v} R ⥤ SheafOfModules.{v} S where
   obj M :=
     { val := (PresheafOfModules.pushforward φ.hom).obj M.val
       isSheaf := ((F.sheafPushforwardContinuous _ J K).obj ⟨_, M.isSheaf⟩).property }
-  map f :=
+  map f := semireducible%
     { val := (PresheafOfModules.pushforward φ.hom).map f.val }
+
+@[simp]
+lemma pushforward_map_val {M N : SheafOfModules.{v} R} (f : M ⟶ N) :
+    ((pushforward φ).map f).val = (PresheafOfModules.pushforward φ.hom).map f.val := by
+  simp [pushforward]
 
 lemma forget₂_map_pushforward_obj_val_map {U V : Cᵒᵖ} (f : U ⟶ V) (M) :
     (forget₂ _ Ab).map (((pushforward.{v} φ).obj M).val.map f) =
@@ -112,10 +117,8 @@ lemma pushforwardIdHom_hom : (pushforwardIdHom R).hom = PresheafOfModules.pushfo
 variable (R) in
 /-- The pushforward functor by the identity morphism identifies to
 the identify functor of the category of sheaves of modules. -/
-noncomputable def pushforwardId : pushforward.{v} (pushforwardIdHom R) ≅ 𝟭 _ := by
-  dsimp only [pushforward, PresheafOfModules.pushforward, PresheafOfModules.restrictScalars,
-    PresheafOfModules.restrictScalarsObj, ModuleCat.restrictScalars, ModuleCat.RestrictScalars.obj']
-  exact obj% Iso.refl
+noncomputable def pushforwardId : pushforward.{v} (pushforwardIdHom R) ≅ 𝟭 _ :=
+  cast_proofs% (Iso.refl _)
 
 /-- Pushforwards along equal morphisms of sheaves of rings are isomorphic. -/
 noncomputable
@@ -162,10 +165,8 @@ lemma pushforwardCompHom_hom :
 identify to the pushforward for the composition. -/
 noncomputable def pushforwardComp :
     haveI : Functor.IsContinuous (F ⋙ G) J K' := Functor.isContinuous_comp _ _ _ K _
-    pushforward.{v} ψ ⋙ pushforward.{v} φ ≅ pushforward.{v} (pushforwardCompHom φ ψ) := by
-  dsimp only [pushforward, PresheafOfModules.pushforward, PresheafOfModules.restrictScalars,
-    PresheafOfModules.restrictScalarsObj, ModuleCat.restrictScalars, ModuleCat.RestrictScalars.obj']
-  exact obj% Iso.refl
+    pushforward.{v} ψ ⋙ pushforward.{v} φ ≅ pushforward.{v} (pushforwardCompHom φ ψ) :=
+  cast_proofs% (Iso.refl _)
 
 -- Not a simp because the type of the LHS is dsimp-able
 lemma pushforwardComp_hom_app_val_app (M U x) :

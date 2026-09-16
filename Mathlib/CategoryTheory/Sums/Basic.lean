@@ -6,6 +6,7 @@ Authors: Kim Morrison, Robin Carlier
 module
 
 public import Mathlib.CategoryTheory.Equivalence
+public meta import Mathlib.Tactic.Semireducible
 
 /-!
 # Binary disjoint unions of categories
@@ -83,16 +84,16 @@ variable (C : Type u₁) [Category.{v₁} C] (D : Type u₂) [Category.{v₂} D]
 
 -- Unfortunate naming here, suggestions welcome.
 /-- `inl_` is the functor `X ↦ inl X`. -/
-@[simps! obj]
+@[simps! obj, instance_reducible]
 def inl_ : C ⥤ C ⊕ D where
   obj X := inl X
-  map f := ULift.up f
+  map f := semireducible% ULift.up f
 
 /-- `inr_` is the functor `X ↦ inr X`. -/
-@[simps! obj]
+@[simps! obj, instance_reducible]
 def inr_ : D ⥤ C ⊕ D where
   obj X := inr X
-  map f := ULift.up f
+  map f := semireducible% ULift.up f
 
 variable {C D}
 
@@ -134,11 +135,13 @@ variable (F : A ⥤ C) (G : B ⥤ C)
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The sum of two functors that land in a given category `C`. -/
+@[instance_reducible]
 def sum' : A ⊕ B ⥤ C where
   obj
   | inl X => F.obj X
   | inr X => G.obj X
-  map {X Y} f := Sum.homInduction (inl := fun _ _ f ↦ F.map f) (inr := fun _ _ g ↦ G.map g) f
+  map {X Y} f := semireducible%
+    Sum.homInduction (inl := fun _ _ f ↦ F.map f) (inr := fun _ _ g ↦ G.map g) f
   map_comp {x y z} f g := by
     cases f <;> cases g <;> simp [← Functor.map_comp]
   map_id x := by
@@ -146,15 +149,13 @@ def sum' : A ⊕ B ⥤ C where
 
 /-- The sum `F.sum' G` precomposed with the left inclusion functor is isomorphic to `F` -/
 @[simps!]
-def inlCompSum' : Sum.inl_ A B ⋙ F.sum' G ≅ F := by
-  dsimp only [sum', Sum.inl_]
-  exact obj% (Iso.refl _)
+def inlCompSum' : Sum.inl_ A B ⋙ F.sum' G ≅ F :=
+  cast_proofs% (Iso.refl _)
 
 /-- The sum `F.sum' G` precomposed with the right inclusion functor is isomorphic to `G` -/
 @[simps!]
-def inrCompSum' : Sum.inr_ A B ⋙ F.sum' G ≅ G := by
-  dsimp only [sum', Sum.inr_]
-  exact obj% (Iso.refl _)
+def inrCompSum' : Sum.inr_ A B ⋙ F.sum' G ≅ G :=
+  cast_proofs% (Iso.refl _)
 
 @[simp]
 theorem sum'_obj_inl (a : A) : (F.sum' G).obj (inl a) = (F.obj a) :=

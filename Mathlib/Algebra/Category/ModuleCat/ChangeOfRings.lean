@@ -63,6 +63,7 @@ variable (M : ModuleCat.{v} S)
 
 /-- Any `S`-module M is also an `R`-module via a ring homomorphism `f : R ⟶ S` by defining
 `r • m := f r • m` (`Module.compHom`). This is called restriction of scalars. -/
+@[instance_reducible]
 def obj' : ModuleCat R :=
   let _ := Module.compHom M f
   of R M
@@ -82,6 +83,7 @@ end RestrictScalars
 * an `S`-module `M` can be considered as `R`-module by `r • m = f r • m`
 * an `S`-linear map is also `R`-linear
 -/
+@[instance_reducible]
 def restrictScalars {R : Type u₁} {S : Type u₂} [Ring R] [Ring S] (f : R →+* S) :
     ModuleCat.{v} S ⥤ ModuleCat.{v} R where
   obj := RestrictScalars.obj' f
@@ -1066,7 +1068,6 @@ lemma extendScalars_comp_id :
   dsimp
   erw [extendScalarsComp_hom_app_one_tmul f₁₂ (RingHom.id R₂) M m,
     extendScalarsId_hom_app_one_tmul]
-  rfl
 
 end
 

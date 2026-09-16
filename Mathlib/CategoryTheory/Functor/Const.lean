@@ -113,7 +113,7 @@ set_option backward.defeqAttrib.useBackward true in
 @[simps!]
 def constCompWhiskeringLeftIso (F : J ⥤ D) :
     const D ⋙ (whiskeringLeft J D C).obj F ≅ const J :=
-  obj% (Iso.refl _)
+  cast_proofs% (Iso.refl _)
 
 end
 

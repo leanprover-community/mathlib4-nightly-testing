@@ -90,7 +90,7 @@ to presheaves of abelian groups. -/
 @[simps! hom_app_app inv_app_app]
 noncomputable def pushforward₀CompToPresheaf (R : Dᵒᵖ ⥤ RingCat.{u}) :
     pushforward₀.{v} F R ⋙ toPresheaf _ ≅ toPresheaf _ ⋙ (whiskeringLeft _ _ _).obj F.op :=
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 variable {F}
 variable {R : Dᵒᵖ ⥤ RingCat.{u}} {S : Cᵒᵖ ⥤ RingCat.{u}} (φ : S ⟶ F.op ⋙ R)
@@ -98,7 +98,7 @@ variable {R : Dᵒᵖ ⥤ RingCat.{u}} {S : Cᵒᵖ ⥤ RingCat.{u}} (φ : S ⟶
 attribute [local simp] pushforward₀ in
 /-- The pushforward functor `PresheafOfModules R ⥤ PresheafOfModules S` induced by
 a morphism of presheaves of rings `S ⟶ F.op ⋙ R`. -/
-@[simps! obj_obj]
+@[simps! obj_obj, instance_reducible]
 noncomputable def pushforward : PresheafOfModules.{v} R ⥤ PresheafOfModules.{v} S :=
   pushforward₀ F R ⋙ restrictScalars φ
 
@@ -115,10 +115,8 @@ lemma forget₂_map_pushforward_map_app {U : Cᵒᵖ} {M N : PresheafOfModules _
 to presheaves of abelian groups. -/
 @[simps! hom_app_app inv_app_app]
 noncomputable def pushforwardCompToPresheaf :
-    pushforward.{v} φ ⋙ toPresheaf _ ≅ toPresheaf _ ⋙ (whiskeringLeft _ _ _).obj F.op := by
-  dsimp only [pushforward, restrictScalars, restrictScalarsObj,
-    ModuleCat.restrictScalars, ModuleCat.RestrictScalars.obj']
-  exact obj% Iso.refl
+    pushforward.{v} φ ⋙ toPresheaf _ ≅ toPresheaf _ ⋙ (whiskeringLeft _ _ _).obj F.op :=
+  cast_proofs% (Iso.refl _)
 
 lemma pushforward_obj_map_apply (M : PresheafOfModules.{v} R) {X Y : Cᵒᵖ} (f : X ⟶ Y)
     (m : (ModuleCat.restrictScalars (φ.app X).hom).obj (M.obj (Opposite.op (F.obj X.unop)))) :
@@ -161,10 +159,8 @@ variable (R) in
 /-- The pushforward functor by the identity morphism identifies to
 the identify functor of the category of presheaves of modules. -/
 @[simps! hom_app_app inv_app_app]
-noncomputable def pushforwardId : pushforward.{v} (pushforwardIdHom R) ≅ 𝟭 _ := by
-  dsimp only [pushforward, restrictScalars, restrictScalarsObj,
-    ModuleCat.restrictScalars, ModuleCat.RestrictScalars.obj']
-  exact obj% Iso.refl
+noncomputable def pushforwardId : pushforward.{v} (pushforwardIdHom R) ≅ 𝟭 _ :=
+  cast_proofs% (Iso.refl _)
 
 section
 
@@ -182,10 +178,8 @@ def pushforwardCompHom : S ⟶ (F ⋙ G).op ⋙ T where
 identify to the pushforward for the composition. -/
 @[simps! hom_app_app inv_app_app]
 noncomputable def pushforwardComp :
-    pushforward.{v} ψ ⋙ pushforward.{v} φ ≅ pushforward.{v} (pushforwardCompHom φ ψ) := by
-  dsimp only [pushforward, restrictScalars, restrictScalarsObj,
-    ModuleCat.restrictScalars, ModuleCat.RestrictScalars.obj']
-  exact obj% Iso.refl
+    pushforward.{v} ψ ⋙ pushforward.{v} φ ≅ pushforward.{v} (pushforwardCompHom φ ψ) :=
+  cast_proofs% (Iso.refl _)
 
 end
 

@@ -28,13 +28,13 @@ namespace PresheafOfModules
 variable {C : Type u'} [Category.{v'} C] {R R' : Cᵒᵖ ⥤ RingCat.{u}}
 
 /-- The restriction of scalars of presheaves of modules, on objects. -/
-@[simps]
+@[simps! obj map, instance_reducible]
 noncomputable def restrictScalarsObj (M' : PresheafOfModules.{v} R') (α : R ⟶ R') :
     PresheafOfModules R where
   obj := fun X ↦ (ModuleCat.restrictScalars (α.app X).hom).obj (M'.obj X)
   -- TODO: after https://github.com/leanprover-community/mathlib4/pull/19511 we need to hint `(X := ...)` and `(Y := ...)`.
   -- This suggests `restrictScalars` needs to be redesigned.
-  map := fun {X Y} f ↦ ModuleCat.ofHom
+  map {X Y} f := semireducible% ModuleCat.ofHom
       (X := (ModuleCat.restrictScalars (α.app X).hom).obj (M'.obj X))
       (Y := (ModuleCat.restrictScalars (R.map f).hom).obj
         ((ModuleCat.restrictScalars (α.app Y).hom).obj (M'.obj Y)))
@@ -48,15 +48,22 @@ noncomputable def restrictScalarsObj (M' : PresheafOfModules.{v} R') (α : R ⟶
 
 /-- The restriction of scalars functor `PresheafOfModules R' ⥤ PresheafOfModules R`
 induced by a morphism of presheaves of rings `R ⟶ R'`. -/
-@[simps]
+@[simps obj, instance_reducible]
 noncomputable def restrictScalars (α : R ⟶ R') :
     PresheafOfModules.{v} R' ⥤ PresheafOfModules.{v} R where
   obj M' := M'.restrictScalarsObj α
-  map φ' :=
+  map φ' := semireducible%
     { app := fun X ↦ (ModuleCat.restrictScalars (α.app X).hom).map (Hom.app φ' X)
       naturality := fun {X Y} f ↦ by
         ext x
         exact naturality_apply φ' f x }
+
+@[simp]
+lemma restrictScalars_map_app (α : R ⟶ R') {M N : PresheafOfModules.{v} R'}
+    (φ : M ⟶ N) (X : Cᵒᵖ) :
+    ((restrictScalars α).map φ).app X =
+      (ModuleCat.restrictScalars (α.app X).hom).map (φ.app X) := by
+  simp [restrictScalars]
 
 instance (α : R ⟶ R') : (restrictScalars.{v} α).Additive where
 

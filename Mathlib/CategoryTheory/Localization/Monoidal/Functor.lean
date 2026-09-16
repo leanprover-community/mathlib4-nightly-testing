@@ -5,7 +5,7 @@ Authors: Dagur Asgeirsson
 -/
 module
 
-public meta import Mathlib.Tactic.CategoryTheory.Obj
+public meta import Mathlib.Tactic.CategoryTheory.CastProofs
 
 public import Mathlib.CategoryTheory.Localization.Trifunctor
 public import Mathlib.CategoryTheory.Monoidal.Multifunctor
@@ -44,10 +44,10 @@ instance lifting₂CurriedTensorPre :
     Lifting₂ L L W W (curriedTensorPre G) (curriedTensorPre F) where
   iso := curriedTensorPreFunctor.mapIso (Lifting.iso L W G F)
 
-@[simps]
+@[simps! iso_hom_app_app iso_inv_app_app]
 instance lifting₂CurriedTensorPost :
     Lifting₂ L L W W (curriedTensorPost G) (curriedTensorPost F) where
-  iso := obj% ((postcompose₂.obj F).mapIso (curriedTensorPreIsoPost L) ≪≫
+  iso := cast_proofs% ((postcompose₂.obj F).mapIso (curriedTensorPreIsoPost L) ≪≫
     curriedTensorPostFunctor.mapIso (Lifting.iso L W G F))
 
 /--

@@ -5,7 +5,7 @@ Authors: Joël Riou, Andrew Yang
 -/
 module
 
-public meta import Mathlib.Tactic.CategoryTheory.Obj
+public meta import Mathlib.Tactic.CategoryTheory.CastProofs
 
 public import Mathlib.Algebra.Category.ModuleCat.Sheaf.PullbackContinuous
 public import Mathlib.AlgebraicGeometry.Modules.Presheaf
@@ -206,7 +206,7 @@ variable (X) in
 /-- Taking preimages along the identity morphism of a scheme identifies to the identity
 functor on open subsets. -/
 def opensMapIdIso : 𝟭 X.Opens ≅ Opens.map (𝟙 X :).base :=
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 variable (X) in
 /-- The pushforward of sheaves of modules by the identity morphism identifies
@@ -239,7 +239,7 @@ lemma conjugateEquiv_pullbackId_hom :
 /-- Taking preimages along a composition of morphisms of schemes identifies to the
 composition of the preimage functors. -/
 def opensMapCompIso : Opens.map (f ≫ g).base ≅ Opens.map g.base ⋙ Opens.map f.base :=
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 /-- The composition of two pushforward functors for sheaves of modules on schemes
 identify to the pushforward for the composition. -/

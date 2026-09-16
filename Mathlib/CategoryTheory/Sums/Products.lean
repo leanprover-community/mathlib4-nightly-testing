@@ -35,16 +35,16 @@ namespace Sum
 
 set_option backward.defeqAttrib.useBackward true in
 /-- The equivalence between functors from a sum and the product of the functor categories. -/
-@[simps]
+@[simps! functor_obj functor_map inverse_obj inverse_map unitIso counitIso, instance_reducible]
 def functorEquiv : A ⊕ A' ⥤ B ≌ (A ⥤ B) × (A' ⥤ B) where
   functor :=
     { obj F := ⟨inl_ A A' ⋙ F, inr_ A A' ⋙ F⟩
-      map η := whiskerLeft (inl_ A A') η ×ₘ whiskerLeft (inr_ A A') η }
+      map η := semireducible% whiskerLeft (inl_ A A') η ×ₘ whiskerLeft (inr_ A A') η }
   inverse :=
     { obj F := Functor.sum' F.1 F.2
-      map η := NatTrans.sum' η.1 η.2 }
-  unitIso := NatIso.ofComponents <| fun F ↦ F.isoSum
-  counitIso := NatIso.ofComponents (fun F ↦
+      map η := semireducible% NatTrans.sum' η.1 η.2 }
+  unitIso := semireducible% NatIso.ofComponents <| fun F ↦ F.isoSum
+  counitIso := semireducible% NatIso.ofComponents (fun F ↦
     (Functor.inlCompSum' _ _).prod (Functor.inrCompSum' _ _) ≪≫ prod.etaIso F)
 
 variable {A A' B}
@@ -74,18 +74,16 @@ precomposition with `inl_ A A'`. -/
 @[simps!]
 def functorEquivFunctorCompFstIso :
     (functorEquiv A A' B).functor ⋙ Prod.fst (A ⥤ B) (A' ⥤ B) ≅
-    (whiskeringLeft A (A ⊕ A') B).obj (inl_ A A') := by
-  dsimp only [functorEquiv]
-  exact obj% (Iso.refl _)
+    (whiskeringLeft A (A ⊕ A') B).obj (inl_ A A') :=
+  cast_proofs% (Iso.refl _)
 
 /-- Composing the forward direction of `functorEquiv` with the second projection is the same as
 precomposition with `inr_ A A'`. -/
 @[simps!]
 def functorEquivFunctorCompSndIso :
     (functorEquiv A A' B).functor ⋙ Prod.snd (A ⥤ B) (A' ⥤ B) ≅
-    (whiskeringLeft A' (A ⊕ A') B).obj (inr_ A A') := by
-  dsimp only [functorEquiv]
-  exact obj% (Iso.refl _)
+    (whiskeringLeft A' (A ⊕ A') B).obj (inr_ A A') :=
+  cast_proofs% (Iso.refl _)
 
 set_option backward.defeqAttrib.useBackward true in
 /-- Composing the backward direction of `functorEquiv` with precomposition with `inl_ A A'`.
@@ -193,12 +191,12 @@ def associativityFunctorEquivNaturalityFunctorIso :
       ext
       all_goals
         dsimp
-        simp only [Functor.comp_map]
+        simp only [Functor.comp_map, functorEquiv_functor_map]
         dsimp
         simp only [Functor.associator_hom_app, Functor.associator_inv_app, comp_obj, inl__obj,
           inr__obj, sum.inverseAssociator_obj_inl, sum.inverseAssociator_obj_inr_inl,
           sum.inverseAssociator_obj_inr_inr, Category.comp_id, Category.id_comp,
-          NatTrans.naturality, Functor.id_map, Functor.whiskerLeft_app])
+          NatTrans.naturality, Functor.id_map, Functor.whiskerLeft_app, functorEquiv_functor_map])
 
 end CompatibilityWithProductAssociator
 

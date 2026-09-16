@@ -5,7 +5,7 @@ Authors: Stephen Morgan, Kim Morrison
 -/
 module
 
-public meta import Mathlib.Tactic.CategoryTheory.Obj
+public meta import Mathlib.Tactic.CategoryTheory.CastProofs
 
 public import Mathlib.CategoryTheory.Equivalence
 
@@ -153,8 +153,8 @@ def opOp : C ⥤ Cᵒᵖᵒᵖ where
 def opOpEquivalence : Cᵒᵖᵒᵖ ≌ C where
   functor := unopUnop C
   inverse := opOp C
-  unitIso := obj% Iso.refl
-  counitIso := obj% Iso.refl
+  unitIso := cast_proofs% (Iso.refl _)
+  counitIso := cast_proofs% (Iso.refl _)
 
 instance : (opOp C).IsEquivalence :=
   (opOpEquivalence C).isEquivalence_inverse
@@ -222,12 +222,12 @@ protected def unop (F : Cᵒᵖ ⥤ Dᵒᵖ) : C ⥤ D where
 /-- The isomorphism between `F.op.unop` and `F`. -/
 @[simps!]
 def opUnopIso (F : C ⥤ D) : F.op.unop ≅ F :=
-  obj% (Iso.refl _)
+  cast_proofs% (Iso.refl _)
 
 /-- The isomorphism between `F.unop.op` and `F`. -/
 @[simps!]
 def unopOpIso (F : Cᵒᵖ ⥤ Dᵒᵖ) : F.unop.op ≅ F :=
-  obj% (Iso.refl _)
+  cast_proofs% (Iso.refl _)
 
 variable (C D)
 
@@ -353,7 +353,7 @@ functor. -/
 @[simps!]
 def leftOpCompOp {E : Type*} [Category* E] (F : C ⥤ Dᵒᵖ) (G : D ⥤ E) :
     (F ⋙ G.op).leftOp ≅ F.leftOp ⋙ G :=
-  obj% (Iso.refl _)
+  cast_proofs% (Iso.refl _)
 
 section
 variable (C)
@@ -371,17 +371,17 @@ end
 /-- The isomorphism between `F.leftOp.rightOp` and `F`. -/
 @[simps!]
 def leftOpRightOpIso (F : C ⥤ Dᵒᵖ) : F.leftOp.rightOp ≅ F :=
-  obj% (Iso.refl _)
+  cast_proofs% (Iso.refl _)
 
 /-- Reindexing `F.leftOp.op` along `opOp C` recovers `F`. -/
 @[simps!]
 def opOpCompLeftOpOpIso (F : C ⥤ Dᵒᵖ) : opOp C ⋙ F.leftOp.op ≅ F :=
-  obj% (Iso.refl _)
+  cast_proofs% (Iso.refl _)
 
 /-- The isomorphism between `F.rightOp.leftOp` and `F`. -/
 @[simps!]
 def rightOpLeftOpIso (F : Cᵒᵖ ⥤ D) : F.rightOp.leftOp ≅ F :=
-  obj% (Iso.refl _)
+  cast_proofs% (Iso.refl _)
 
 /-- Whenever possible, it is advisable to use the isomorphism `rightOpLeftOpIso`
 instead of this equality of functors. -/
@@ -857,8 +857,8 @@ def opUnopEquiv : (C ⥤ D)ᵒᵖ ≌ Cᵒᵖ ⥤ Dᵒᵖ where
   functor := opHom _ _
   inverse := opInv _ _
   -- Both `NatIso.ofComponents` constructions predated the comp/id redesign.
-  unitIso := obj% Iso.refl
-  counitIso := obj% Iso.refl
+  unitIso := cast_proofs% (Iso.refl _)
+  counitIso := cast_proofs% (Iso.refl _)
   functor_unitIso_comp X := by
     ext Y
     simp
@@ -875,8 +875,8 @@ def leftOpRightOpEquiv : (Cᵒᵖ ⥤ D)ᵒᵖ ≌ C ⥤ Dᵒᵖ where
     { obj := fun F => op F.leftOp
       map := fun η => η.leftOp.op }
   -- Both `NatIso.ofComponents` constructions predated the comp/id redesign.
-  unitIso := obj% Iso.refl
-  counitIso := obj% Iso.refl
+  unitIso := cast_proofs% (Iso.refl _)
+  counitIso := cast_proofs% (Iso.refl _)
   functor_unitIso_comp X := by
     ext Y
     simp

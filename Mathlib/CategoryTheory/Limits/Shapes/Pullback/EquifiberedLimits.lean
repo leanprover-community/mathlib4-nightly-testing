@@ -71,7 +71,7 @@ instance (F : C ⥤ D) [∀ a b : C, HasProductsOfShape (a ⟶ b) D] :
   rw [isClosedUnderColimitsOfShape_iff_op, ← isClosedUnderLimitsOfShape_inverseImage_iff _ _ e]
   convert!
     (inferInstance : IsClosedUnderLimitsOfShape (fun f : Over F.op ↦ f.hom.Equifibered) Jᵒᵖ) with f
-  simp [e, MorphismProperty.cancel_left_of_respectsIso, ← coequifibered_unop_iff]
+  simp [e, ← coequifibered_unop_iff]
   rfl
 
 end CategoryTheory.NatTrans

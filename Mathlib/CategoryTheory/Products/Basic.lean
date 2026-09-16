@@ -5,7 +5,7 @@ Authors: Stephen Morgan, Kim Morrison
 -/
 module
 
-public meta import Mathlib.Tactic.CategoryTheory.Obj
+public meta import Mathlib.Tactic.CategoryTheory.CastProofs
 
 public import Mathlib.CategoryTheory.EqToHom
 public import Mathlib.CategoryTheory.Functor.Const
@@ -254,7 +254,7 @@ variable {C}
 @[implicit_reducible, simps!]
 def Functor.constCompEvaluationObj (X : C) : Functor.const C ⋙ (evaluation C D).obj X ≅ 𝟭 D :=
   -- Replaces `NatIso.ofComponents` predating the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 end
 
@@ -281,13 +281,13 @@ def prod' (F : A ⥤ B) (G : A ⥤ C) : A ⥤ B × C where
 @[implicit_reducible, simps!]
 def prod'CompFst (F : A ⥤ B) (G : A ⥤ C) : F.prod' G ⋙ CategoryTheory.Prod.fst B C ≅ F :=
   -- Replaces `NatIso.ofComponents` predating the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 /-- The product `F.prod' G` followed by projection on the second component is isomorphic to `G` -/
 @[implicit_reducible, simps!]
 def prod'CompSnd (F : A ⥤ B) (G : A ⥤ C) : F.prod' G ⋙ CategoryTheory.Prod.snd B C ≅ G :=
   -- Replaces `NatIso.ofComponents` predating the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 section
 
@@ -353,7 +353,7 @@ end Equivalence
 @[implicit_reducible, simps!]
 def flipCompEvaluation (F : A ⥤ B ⥤ C) (a) : F.flip ⋙ (evaluation _ _).obj a ≅ F.obj a :=
   -- Replaces `NatIso.ofComponents` predating the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 theorem flip_comp_evaluation (F : A ⥤ B ⥤ C) (a) : F.flip ⋙ (evaluation _ _).obj a = F.obj a :=
   rfl
@@ -362,7 +362,7 @@ theorem flip_comp_evaluation (F : A ⥤ B ⥤ C) (a) : F.flip ⋙ (evaluation _ 
 @[implicit_reducible, simps!]
 def compEvaluation (F : A ⥤ B ⥤ C) (b) : F ⋙ (evaluation _ _).obj b ≅ F.flip.obj b :=
   -- Replaces `NatIso.ofComponents` predating the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 theorem comp_evaluation (F : A ⥤ B ⥤ C) (b) : F ⋙ (evaluation _ _).obj b = F.flip.obj b :=
   rfl
@@ -371,7 +371,7 @@ theorem comp_evaluation (F : A ⥤ B ⥤ C) (b) : F ⋙ (evaluation _ _).obj b =
 @[implicit_reducible, simps!]
 def whiskeringLeftCompEvaluation (F : A ⥤ B) (a : A) :
     (whiskeringLeft A B C).obj F ⋙ (evaluation A C).obj a ≅ (evaluation B C).obj (F.obj a) :=
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 /-- Whiskering by `F` and then evaluating at `a` is the same as evaluating at `F.obj a`. -/
 @[simp]
@@ -384,7 +384,7 @@ applying `F`. -/
 @[implicit_reducible, simps!]
 def whiskeringRightCompEvaluation (F : B ⥤ C) (a : A) :
     (whiskeringRight A B C).obj F ⋙ (evaluation _ _).obj a ≅ (evaluation _ _).obj a ⋙ F :=
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 /-- Whiskering by `F` and then evaluating at `a` is the same as evaluating at `F` and then
 applying `F`. -/
@@ -412,14 +412,14 @@ def functorProdToProdFunctor : (A ⥤ B × C) ⥤ (A ⥤ B) × (A ⥤ C) where
 def functorProdFunctorEquivUnitIso :
     𝟭 _ ≅ prodFunctorToFunctorProd A B C ⋙ functorProdToProdFunctor A B C :=
   -- Replaces `NatIso.ofComponents` predating the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 /-- The counit isomorphism for `functorProdFunctorEquiv` -/
 @[implicit_reducible, simps!]
 def functorProdFunctorEquivCounitIso :
     functorProdToProdFunctor A B C ⋙ prodFunctorToFunctorProd A B C ≅ 𝟭 _ :=
   -- Replaces two nested `NatIso.ofComponents` predating the comp/id redesign.
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 /-- The equivalence of categories between `(A ⥤ B) × (A ⥤ C)` and `A ⥤ (B × C)` -/
 @[implicit_reducible, simps]

@@ -5,7 +5,7 @@ Authors: Kim Morrison
 -/
 module
 
-public meta import Mathlib.Tactic.CategoryTheory.Obj
+public meta import Mathlib.Tactic.CategoryTheory.CastProofs
 
 public import Mathlib.Algebra.Group.Pi.Basic
 public import Mathlib.Algebra.Homology.Single
@@ -221,7 +221,7 @@ def Functor.mapHomologicalComplexComp {W₃ : Type*} [Category* W₃] [HasZeroMo
     (c : ComplexShape ι) :
     (F ⋙ G).mapHomologicalComplex c ≅
       F.mapHomologicalComplex c ⋙ G.mapHomologicalComplex c :=
-  obj% Iso.refl
+  cast_proofs% (Iso.refl _)
 
 /-- An equivalence of categories induces an equivalences between the respective categories
 of homological complex.
