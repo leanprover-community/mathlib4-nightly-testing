@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "cd3d62f73108843fdfcc58e260bcdde259f79a35",
+   "rev": "f86183ffa2f4c4ab3c916444cbb26a89330d1ce9",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "codex/mathlib-adaptation-prs",
