@@ -736,7 +736,7 @@ lemma Nat.stabilises_of_antitone {f : ℕ → ℕ} (hfmono : Antitone f)
       let g (i : ℕ) := f (i + 1)
       #adaptation_note /-- Before nightly-2026-09-29, the proof of
       `Antitone g` was `by grind [Antitone]`; now it fails to find a witness. -/
-      have hg_anti : Antitone g := fun _ _ hab => hfmono (by omega)
+      have hg_anti : Antitone g := fun _ _ hab => hfmono (by lia)
       obtain ⟨p, hp, hp'⟩ := ih (f 1) (by grind) hg_anti (by grind) rfl
       refine ⟨p + 1, by omega, fun m hm => ?_⟩
       specialize hp' (m - 1) (by lia)
