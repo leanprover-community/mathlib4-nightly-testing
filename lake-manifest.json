@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "bded2dfb8a240b8265386f2f5fe99e3c0aaf35af",
+   "rev": "3fb511673a6caa4807fffbe0ed5de2a97b0275bd",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "Jovan-UnnecessarySeqFocus",
