@@ -65,7 +65,7 @@
    "type": "git",
    "subDir": null,
    "scope": "leanprover-community",
-   "rev": "91afa399687117de02fccc0c2d8b0719d6a3e6fd",
+   "rev": "b8a9b62e044fd34cb634246e30aeea267ae7603a",
    "name": "batteries",
    "manifestFile": "lake-manifest.json",
    "inputRev": "cell-network",
