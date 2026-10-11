@@ -7,7 +7,8 @@ module
 
 public import Mathlib.Algebra.Polynomial.Splits
 public import Mathlib.Analysis.Normed.Unbundled.RingSeminorm
-public import Mathlib.RingTheory.LocalRing.Basic
+
+import Mathlib.RingTheory.LocalRing.Basic
 
 /-!
 # Approximate roots and polynomials in a normed field
@@ -16,7 +17,7 @@ In this file, we prove several approximation lemmas on a normed field.
 
 ## Main results
 - `Polynomial.exists_roots_norm_sub_lt_of_norm_coeff_sub_lt` :  **Continuity of Roots.**
-Let `f` and `g` be two monic polynoials such that `g` splits. If the coefficients of two
+Let `f` and `g` be two monic polynomials such that `g` splits. If the coefficients of two
 polynomials `f` and `g` are sufficiently close, then every root of `f` has a corresponding root
 of `g` nearby.
 
@@ -34,7 +35,7 @@ current theorem `IsAlgClosed.of_denseRange`.
 Approximation, polynomial, normed field, continuity of roots
 -/
 
-@[expose] public section
+public section
 
 variable {K L : Type*}
 
@@ -45,7 +46,7 @@ section ContinuityOfRoots
 variable [NormedField K] [NormedField L] [NormedAlgebra K L] {f g : Polynomial K}
   {f g : Polynomial K} {ε : ℝ}
 
-/-- **Continuity of Roots.** Let `f` and `g` be two monic polynoials with `g` splits.
+/-- **Continuity of Roots.** Let `f` and `g` be two monic polynomials with `g` splits.
 If the coefficients of two polynomials `f` and `g` are sufficiently close, then every root of `f`
 has a corresponding root of `g` nearby. -/
 theorem exists_roots_norm_sub_lt_of_norm_coeff_sub_lt (hε : 0 < ε) {a : K} (ha : f.eval a = 0)
@@ -68,7 +69,7 @@ theorem exists_roots_norm_sub_lt_of_norm_coeff_sub_lt (hε : 0 < ε) {a : K} (ha
       intro h
       simp [h] at ha
   -- `∏ (b ∈ g.roots) ‖a - b‖ = ‖g(a)‖ = ‖(g - f)(a)‖` is small since every
-  -- coeffcient of `‖g - f‖` is small.
+  -- coefficient of `‖g - f‖` is small.
   calc
   _ = (g.roots.map (fun x ↦ NormedField.toMulRingNorm K (a - x))).prod := rfl
   _ = ‖(g.roots.map (fun x ↦ a - x)).prod‖ := by
@@ -90,13 +91,14 @@ theorem exists_roots_norm_sub_lt_of_norm_coeff_sub_lt (hε : 0 < ε) {a : K} (ha
   _ ≤ ∑ i ∈ Finset.range (g.natDegree + 1), ‖(g.coeff i - f.coeff i) * a ^ i‖ := by
     have := norm_sum_le (Finset.range (g.natDegree + 1))
         (fun i ↦ (C (g.coeff i - f.coeff i) * X ^ i).eval a)
-    simpa [eval_mul, eval_finset_sum] using this
+    simpa [eval_mul, eval_finsetSum] using this
     -- The following tactic does not work here:
-    -- simpa [eval_mul, eval_finset_sum] using norm_sum_le (Finset.range (g.natDegree + 1))
+    -- simpa [eval_mul, eval_finsetSum] using norm_sum_le (Finset.range (g.natDegree + 1))
     --     (fun i ↦ (C (g.coeff i - f.coeff i) * X ^ i).eval a)
   _ < _ := by
     rw [hdeg]
-    convert Finset.sum_lt_sum_of_nonempty (g := fun i ↦ ε * (‖a‖ ⊔ 1) ^ ↑f.natDegree)
+    convert
+      Finset.sum_lt_sum_of_nonempty (g := fun i ↦ ε * (‖a‖ ⊔ 1) ^ ↑f.natDegree)
         (Finset.nonempty_range_add_one) ?_
     · simp [mul_assoc]
     · simp only [Finset.mem_range, norm_mul, norm_pow]

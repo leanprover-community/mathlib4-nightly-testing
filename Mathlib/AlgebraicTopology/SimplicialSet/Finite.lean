@@ -7,7 +7,8 @@ module
 
 public import Mathlib.AlgebraicTopology.SimplicialSet.Dimension
 public import Mathlib.AlgebraicTopology.SimplicialSet.NonDegenerateSimplices
-public import Mathlib.Data.Finite.Sigma
+
+import Mathlib.Basic.Finite.Sigma
 
 /-!
 # Finite simplicial sets
@@ -17,11 +18,13 @@ many nondegenerate simplices.
 
 -/
 
-@[expose] public section
+public section
 
 universe u
 
-open Simplicial CategoryTheory
+open CategoryTheory
+
+open scoped Simplicial
 
 namespace SSet
 
@@ -48,8 +51,9 @@ lemma finite_of_hasDimensionLT (d : ℕ) [X.HasDimensionLT d]
     by_cases hj : x.dim < d
     · exact ⟨⟨⟨_, hj⟩, ⟨_, x.nonDegenerate⟩⟩, rfl⟩
     · have := x.nonDegenerate
-      simp [X.nonDegenerate_eq_bot_of_hasDimensionLT d x.dim (by simpa using hj)] at this
+      simp [X.nonDegenerate_eq_empty_of_hasDimensionLT d x.dim (by simpa using hj)] at this
 
+set_option backward.defeqAttrib.useBackward true in
 lemma hasDimensionLT_of_finite [X.Finite] :
     ∃ (d : ℕ), X.HasDimensionLT d := by
   have : Fintype X.N := Fintype.ofFinite _
@@ -90,7 +94,6 @@ instance [X.Finite] (A : X.Subcomplex) : SSet.Finite A := by
 
 variable {X}
 
-set_option backward.isDefEq.respectTransparency false in
 lemma finite_of_mono {Y : SSet.{u}} [Y.Finite] (f : X ⟶ Y) [hf : Mono f] : X.Finite := by
   obtain ⟨d, _⟩ := Y.hasDimensionLT_of_finite
   have := hasDimensionLT_of_mono f d
@@ -98,7 +101,6 @@ lemma finite_of_mono {Y : SSet.{u}} [Y.Finite] (f : X ⟶ Y) [hf : Mono f] : X.F
     (fun _ _ ↦ Finite.of_injective _
       ((injective_of_mono (f.app _)).comp Subtype.val_injective))
 
-set_option backward.isDefEq.respectTransparency false in
 lemma finite_of_epi {Y : SSet.{u}} [X.Finite] (f : X ⟶ Y) [hf : Epi f] : Y.Finite := by
   obtain ⟨d, _⟩ := X.hasDimensionLT_of_finite
   have := hasDimensionLT_of_epi f d
@@ -124,7 +126,6 @@ instance finite_range {Y : SSet.{u}} (f : Y ⟶ X) [Y.Finite] :
     SSet.Finite (Subcomplex.range f) :=
   finite_of_epi (Subcomplex.toRange f)
 
-set_option backward.isDefEq.respectTransparency false in
 lemma finite_iSup_iff {X : SSet.{u}} {ι : Type*} [Finite ι]
     (A : ι → X.Subcomplex) :
     SSet.Finite (⨆ i, A i :) ↔ ∀ i, SSet.Finite (A i) := by

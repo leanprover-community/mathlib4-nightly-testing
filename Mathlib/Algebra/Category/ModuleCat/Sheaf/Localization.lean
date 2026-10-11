@@ -6,7 +6,6 @@ Authors: Joël Riou
 module
 
 public import Mathlib.Algebra.Category.ModuleCat.Presheaf.Sheafification
-public import Mathlib.CategoryTheory.Sites.Localization
 
 /-!
 # The category of sheaves of modules as a localization of presheaves of modules
@@ -20,7 +19,7 @@ is a localization functor.
 
 -/
 
-@[expose] public section
+public section
 
 universe v u v' u'
 
@@ -30,7 +29,7 @@ variable {C : Type u'} [Category.{v'} C] {J : GrothendieckTopology C}
 
 namespace PresheafOfModules
 
-variable {R₀ : Cᵒᵖ ⥤ RingCat.{u}} {R : Sheaf J RingCat.{u}} (α : R₀ ⟶ R.val)
+variable {R₀ : Cᵒᵖ ⥤ RingCat.{u}} {R : Sheaf J RingCat.{u}} (α : R₀ ⟶ R.obj)
   [Presheaf.IsLocallyInjective J α] [Presheaf.IsLocallySurjective J α]
   [J.WEqualsLocallyBijective AddCommGrpCat.{v}]
   [HasWeakSheafify J AddCommGrpCat.{v}]

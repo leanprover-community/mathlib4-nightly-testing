@@ -6,7 +6,7 @@ Authors: Yizheng Zhu
 module
 
 public import Mathlib.Data.Finset.Sort
-public import Mathlib.Data.Prod.Lex
+public import Mathlib.Order.Prod.Lex.Basic
 
 /-!
 # Gaps of disjoint closed intervals
@@ -27,16 +27,16 @@ Technically, the definition `F.intervalGapsWithin a b` does not require `F` to b
 or endpoints to be within `[a, b]` or even require that `a ≤ b`, but it makes the most sense if
 they are actually satisfied. If they are actually satisfied, then we show that
 * `Finset.intervalGapsWithin_mapsTo`, `Finset.intervalGapsWithin_injective`,
-`Finset.intervalGapsWithin_surjOn`:
-`(fun j ↦ ((F.intervalGapsWithin h a b j.castSucc).2, (F.intervalGapsWithin h a b j.succ).1))` is
-a bijection between `Set.Iio k` and `F`.
+  `Finset.intervalGapsWithin_surjOn`:
+  `(fun j ↦ ((F.intervalGapsWithin h a b j.castSucc).2, (F.intervalGapsWithin h a b j.succ).1))` is
+  a bijection between `Set.Iio k` and `F`.
 * `Finset.intervalGapsWithin_le_fst`, `Finset.intervalGapsWithin_snd_le`,
-`Finset.intervalGapsWithin_fst_le_snd`:
-`[(F.intervalGapsWithin h a b j).1, (F.intervalGapsWithin h a b j).2]` is indeed a subinterval of
-`[a, b]` when `j < k`.
+  `Finset.intervalGapsWithin_fst_le_snd`:
+  `[(F.intervalGapsWithin h a b j).1, (F.intervalGapsWithin h a b j).2]` is indeed a subinterval of
+  `[a, b]` when `j < k`.
 * `Finset.intervalGapsWithin_pairwiseDisjoint_Ioc`: the half-closed intervals
-`[(F.intervalGapsWithin h a b j).1, (F.intervalGapsWithin h a b j).2)` are pairwise disjoint
-for `j < k + 1`.
+  `[(F.intervalGapsWithin h a b j).1, (F.intervalGapsWithin h a b j).2)` are pairwise disjoint
+  for `j < k + 1`.
 -/
 
 @[expose] public section
@@ -100,8 +100,8 @@ theorem intervalGapsWithin_mapsTo : (Set.Iio k).MapsTo
   intro j hj
   rw [mem_Iio] at hj
   simp only [intervalGapsWithin_snd_of_lt, intervalGapsWithin_succ_fst_of_lt,
-    Prod.mk.eta, SetLike.mem_coe, hj]
-  convert F.orderEmbOfFin_mem h ⟨j, hj⟩ using 1
+    SetLike.mem_coe, hj]
+  convert! F.orderEmbOfFin_mem h ⟨j, hj⟩ using 1
 
 theorem intervalGapsWithin_injOn : (Set.Iio k).InjOn
     (fun (j : ℕ) ↦ ((F.intervalGapsWithin h a b j).2, (F.intervalGapsWithin h a b j.succ).1)) := by
@@ -157,8 +157,7 @@ theorem intervalGapsWithin_fst_le_snd {a b : α} (hab : a ≤ b)
   have hk : k - 1 + 1 = k := by omega
   by_cases hj₂ : j = k
   · simp only [hj₂, natCast_eq_last, intervalGapsWithin_last_snd, ge_iff_le]
-    convert hFab (F.intervalGapsWithin_mapsTo h a b (x := j - 1) (by grind)) |>.right.right
-      using 1
+    convert hFab (F.intervalGapsWithin_mapsTo h a b (x := j - 1) (by grind)) |>.right.right using 1
     simp [hj₂, hk]
   rw [intervalGapsWithin_fst_of_lt_lt (hj₁ := by omega) (hj₂ := by omega),
       intervalGapsWithin_snd_of_lt (hj := by omega)]
