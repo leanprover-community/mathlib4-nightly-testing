@@ -7,7 +7,7 @@ module
 
 public meta import Lean.Elab.Tactic.Doc
 public meta import Lean.Parser.Tactic.Doc
-public import Batteries.Tactic.Lint.Basic
+public import Batteries.Linter.Basic
 public import Lean.Elab.Tactic.Doc
 -- Import this linter explicitly to ensure that
 -- this file has a valid copyright header and module docstring.
@@ -28,7 +28,7 @@ meta def isNonemptyDoc (doc : TacticDoc) : Bool :=
   doc.docString.isSome || doc.extensionDocs.any (! ·.isEmpty)
 
 /-- Check that all tactics available in Mathlib have a docstring. -/
-@[env_linter] public meta def tacticDocs : Batteries.Tactic.Lint.Linter where
+@[env_linter] public meta def tacticDocs : Batteries.Linter where
   noErrorsFound := "No tactics are missing documentation."
   errorsFound := "TACTICS ARE MISSING DOCUMENTATION STRINGS:"
   test tac := do
@@ -56,7 +56,7 @@ meta def isNonemptyDoc (doc : TacticDoc) : Bool :=
 
 /-- Check tactics with the same user-facing name (usually: first syntax token) get a `@[tactic_alt]`
 attribute. -/
-@[env_linter] public meta def tacticAlt : Batteries.Tactic.Lint.Linter where
+@[env_linter] public meta def tacticAlt : Batteries.Linter where
   noErrorsFound := "No tactics sharing the same user-facing name."
   errorsFound := "TACTICS ARE MISSING `@[tactic_alt]` ATTRIBUTES:"
   test tac := do

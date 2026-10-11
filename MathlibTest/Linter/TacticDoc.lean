@@ -1,5 +1,5 @@
 import Mathlib.Tactic.Linter.TacticDocumentation
-import Batteries.Tactic.Lint.Frontend
+import Batteries.Linter.Frontend
 
 syntax "noDocs" : tactic
 
