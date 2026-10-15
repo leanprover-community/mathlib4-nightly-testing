@@ -465,7 +465,7 @@ def renderRewrites (e : Expr) (results : Array (Array RewriteInterface × Kind))
     MetaM Html := do
   let htmls ← results.filterMapM (renderSection showNames)
   if htmls.isEmpty then
-    return jsx%{<p> No rewrites found for <InteractiveCode fmt={← ppExprTagged e}/></p>}
+    return jsx%{<p>No rewrites found for <InteractiveCode fmt={← ppExprTagged e}/></p>}
   else
     return .element "div" #[("style", json% {"marginLeft" : "4px"})] htmls
 where

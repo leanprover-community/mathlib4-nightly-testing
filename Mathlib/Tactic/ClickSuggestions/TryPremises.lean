@@ -176,7 +176,7 @@ public def librarySearchSuggestions (rootExpr subExpr : Expr) (lctx : LocalConte
   }
 
   Core.checkInterrupted
-  token.update jsx%{<div> loading local hypotheses ⏳️ </div>}
+  token.update jsx%{<div>loading local hypotheses ⏳️</div>}
   let pres ← computeLCtxDiscrTrees choice lctx fvarId?
   Core.checkInterrupted
   for cand in ← getCandidates rwInfo gpos pres do
@@ -185,7 +185,7 @@ public def librarySearchSuggestions (rootExpr subExpr : Expr) (lctx : LocalConte
   Core.checkInterrupted
   token.update jsx%{<div>
     {.element "div" #[] sections}
-    <div> loading theorem in the current file ⏳️ </div>
+    <div>loading theorem in the current file ⏳️</div>
     </div>}
   let pres ← computeModuleDiscrTrees choice parentDecl?
   Core.checkInterrupted
@@ -195,7 +195,7 @@ public def librarySearchSuggestions (rootExpr subExpr : Expr) (lctx : LocalConte
   Core.checkInterrupted
   token.update jsx%{<div>
     {.element "div" #[] sections}
-    <div> initializing discrimination trees ⏳️ </div>
+    <div>initializing discrimination trees ⏳️</div>
     </div>}
   computeImportDiscrTrees choice
   Core.checkInterrupted
