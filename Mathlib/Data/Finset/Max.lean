@@ -66,11 +66,11 @@ theorem max_of_nonempty {s : Finset α} (h : s.Nonempty) : ∃ a : α, s.max = a
 
 @[to_dual]
 theorem max_eq_bot {s : Finset α} : s.max = ⊥ ↔ s = ∅ := ⟨
-  fun h ↦
+  (fun h ↦
     s.eq_empty_or_nonempty.elim id fun H ↦ by
       obtain ⟨a, ha⟩ := max_of_nonempty H
       rw [h] at ha
-      cases ha, -- the `;` is needed since the `cases` syntax allows `cases a, b`
+      cases ha), -- the `;` is needed since the `cases` syntax allows `cases a, b`
   fun h ↦ h.symm ▸ max_empty
 ⟩
 
